@@ -45,7 +45,6 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_ConfigApplyEnv )                 \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Status_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Timer_Initialize )               \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_BeginEpoch )                     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_CreateExperimentDir )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Memory_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( scorep_otf2_initialize )                \
@@ -55,6 +54,7 @@
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize_location ) \
     SCOREP_TIMING_TRANSFORM_OP( scorep_profile_initialize )             \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_BeginEpoch )                     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMeasurement )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMeasurementMPI )             \
     SCOREP_TIMING_TRANSFORM_OP( MeasurementDuration  )                  \

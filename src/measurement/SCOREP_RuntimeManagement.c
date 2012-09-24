@@ -164,7 +164,6 @@ SCOREP_InitMeasurement()
 
     SCOREP_TIME( SCOREP_Status_Initialize, ( ) );
     SCOREP_TIME( SCOREP_Timer_Initialize, ( ) );
-    SCOREP_TIME( SCOREP_BeginEpoch, ( ) );
     SCOREP_TIME( SCOREP_CreateExperimentDir, ( ) );
 
     // Need to be called before the first use of any SCOREP_Alloc function, in
@@ -192,7 +191,6 @@ SCOREP_InitMeasurement()
     if ( !SCOREP_Mpi_HasMpi() )
     {
         scorep_set_otf2_archive_master_slave();
-        SCOREP_SynchronizeClocks();
     }
 
     SCOREP_TIME( SCOREP_Filter_Initialize, ( ) );
@@ -205,6 +203,12 @@ SCOREP_InitMeasurement()
      * SCOREP_FinalizeMeasurementMPI(). We need to make sure that our handler is
      * called before the MPI one. */
     atexit( scorep_finalize );
+
+    SCOREP_TIME( SCOREP_BeginEpoch, ( ) );
+    if ( !SCOREP_Mpi_HasMpi() )
+    {
+        SCOREP_SynchronizeClocks();
+    }
 
     SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurement );
     SCOREP_TIME_START_TIMING( MeasurementDuration );
