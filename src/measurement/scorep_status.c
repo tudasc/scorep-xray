@@ -56,7 +56,7 @@ struct scorep_status
 };
 
 
-scorep_status status = {
+static scorep_status scorep_process_local_status = {
     INT_MAX,                              // mpi_rank
     false,                                // mpi_rank_is_set
     false,                                // mpi_is_initialized
@@ -76,8 +76,8 @@ scorep_status_initialize_common()
     // environment variables already processed. can we check this somehow?
 
     // These two variables may become public in future due to performance reasons.
-    status.is_profiling_enabled = SCOREP_Env_DoProfiling();
-    status.is_tracing_enabled   = SCOREP_Env_DoTracing();
+    scorep_process_local_status.is_profiling_enabled = SCOREP_Env_DoProfiling();
+    scorep_process_local_status.is_tracing_enabled   = SCOREP_Env_DoTracing();
 }
 
 
@@ -91,123 +91,123 @@ scorep_status_initialize_mpi()
 void
 scorep_status_initialize_non_mpi()
 {
-    status.mpi_rank            = 0;
-    status.mpi_rank_is_set     = true;
-    status.mpi_is_initialized  = true;
-    status.mpi_is_finalized    = true;
-    status.mpi_comm_world_size = 1;
+    scorep_process_local_status.mpi_rank            = 0;
+    scorep_process_local_status.mpi_rank_is_set     = true;
+    scorep_process_local_status.mpi_is_initialized  = true;
+    scorep_process_local_status.mpi_is_finalized    = true;
+    scorep_process_local_status.mpi_comm_world_size = 1;
 }
 
 
 void
 SCOREP_OnPMPI_Init()
 {
-    assert( !status.mpi_is_initialized );
-    assert( !status.mpi_is_finalized );
-    status.mpi_is_initialized = true;
+    assert( !scorep_process_local_status.mpi_is_initialized );
+    assert( !scorep_process_local_status.mpi_is_finalized );
+    scorep_process_local_status.mpi_is_initialized = true;
 
     SCOREP_Mpi_DuplicateCommWorld(); // call before SCOREP_Mpi_CalculateCommWorldSize()
 
-    assert( status.mpi_comm_world_size == 0 );
-    status.mpi_comm_world_size = SCOREP_Mpi_CalculateCommWorldSize();
-    assert( status.mpi_comm_world_size > 0 );
+    assert( scorep_process_local_status.mpi_comm_world_size == 0 );
+    scorep_process_local_status.mpi_comm_world_size = SCOREP_Mpi_CalculateCommWorldSize();
+    assert( scorep_process_local_status.mpi_comm_world_size > 0 );
 }
 
 
 void
 SCOREP_OnPMPI_Finalize()
 {
-    assert( status.mpi_is_initialized );
-    assert( !status.mpi_is_finalized );
-    status.mpi_is_finalized = true;
+    assert( scorep_process_local_status.mpi_is_initialized );
+    assert( !scorep_process_local_status.mpi_is_finalized );
+    scorep_process_local_status.mpi_is_finalized = true;
 }
 
 
 void
 SCOREP_Mpi_SetRankTo( int rank )
 {
-    assert( !status.mpi_rank_is_set );
-    assert( status.mpi_is_initialized );
-    assert( !status.mpi_is_finalized );
+    assert( !scorep_process_local_status.mpi_rank_is_set );
+    assert( scorep_process_local_status.mpi_is_initialized );
+    assert( !scorep_process_local_status.mpi_is_finalized );
     assert( rank >= 0 );
-    status.mpi_rank        = rank;
-    status.mpi_rank_is_set = true;
+    scorep_process_local_status.mpi_rank        = rank;
+    scorep_process_local_status.mpi_rank_is_set = true;
 }
 
 
 int
 SCOREP_Mpi_GetRank()
 {
-    assert( status.mpi_rank_is_set );
-    return status.mpi_rank;
+    assert( scorep_process_local_status.mpi_rank_is_set );
+    return scorep_process_local_status.mpi_rank;
 }
 
 
 bool
 SCOREP_Mpi_IsInitialized()
 {
-    return status.mpi_is_initialized;
+    return scorep_process_local_status.mpi_is_initialized;
 }
 
 
 bool
 SCOREP_Mpi_IsFinalized()
 {
-    return status.mpi_is_finalized;
+    return scorep_process_local_status.mpi_is_finalized;
 }
 
 
 int
 SCOREP_Mpi_GetCommWorldSize()
 {
-    assert( status.mpi_is_initialized );
-    return status.mpi_comm_world_size;
+    assert( scorep_process_local_status.mpi_is_initialized );
+    return scorep_process_local_status.mpi_comm_world_size;
 }
 
 
 bool
 SCOREP_IsTracingEnabled()
 {
-    return status.is_tracing_enabled;
+    return scorep_process_local_status.is_tracing_enabled;
 }
 
 
 bool
 SCOREP_IsProfilingEnabled()
 {
-    return status.is_profiling_enabled;
+    return scorep_process_local_status.is_profiling_enabled;
 }
 
 bool
 SCOREP_IsOAEnabled()
 {
-    return status.is_oa_enabled;
+    return scorep_process_local_status.is_oa_enabled;
 }
 
 void
 SCOREP_Otf2_OnFlush()
 {
-    status.otf2_has_flushed = true;
+    scorep_process_local_status.otf2_has_flushed = true;
 }
 
 
 bool
 SCOREP_Otf2_HasFlushed()
 {
-    return status.otf2_has_flushed;
+    return scorep_process_local_status.otf2_has_flushed;
 }
 
 
 bool
 SCOREP_IsExperimentDirCreated()
 {
-    return status.is_experiment_dir_created;
+    return scorep_process_local_status.is_experiment_dir_created;
 }
 
 
 void
 SCOREP_OnExperimentDirCreation()
 {
-    assert( !status.is_experiment_dir_created );
-    status.is_experiment_dir_created = true;
+    assert( !scorep_process_local_status.is_experiment_dir_created );
+    scorep_process_local_status.is_experiment_dir_created = true;
 }
