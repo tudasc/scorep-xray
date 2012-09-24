@@ -160,6 +160,7 @@ scorep_pomp_init_region( SCOREP_Pomp_Region* region )
     region->innerParallel = SCOREP_INVALID_REGION;
     region->outerBlock    = SCOREP_INVALID_REGION;
     region->innerBlock    = SCOREP_INVALID_REGION;
+    region->barrier       = SCOREP_INVALID_REGION;
     region->startFileName = 0;
     region->startLine1    = 0;
     region->startLine2    = 0;
