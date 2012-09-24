@@ -1985,7 +1985,8 @@ FSUB( MPI_Type_struct )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_F
     c_array_of_types = ( MPI_Datatype* )malloc( *count * sizeof( MPI_Datatype ) );
     if ( !c_array_of_types )
     {
-        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED );
+        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                     "We have UTILS_FATAL() to abort!" );
         abort();
     }
     /* index variable i, is already defined by the implicit conversion done

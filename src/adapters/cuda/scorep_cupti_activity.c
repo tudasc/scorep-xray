@@ -379,7 +379,7 @@ scorep_cupti_activity_flush_context_activities( CUcontext cudaContext )
     context = scorep_cupti_activity_get_context( cudaContext );
     if ( context == NULL )
     {
-        UTILS_WARNING( "[CUPTI Activity] Context not found!\n" );
+        UTILS_WARNING( "[CUPTI Activity] Context not found!" );
 
         SCOREP_ExitRegion( scorep_flush_cupti_activity_buffer_region_handle );
 

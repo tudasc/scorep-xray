@@ -53,7 +53,9 @@ SCOREP_Timer_Initialize()
         retval = PAPI_library_init( PAPI_VER_CURRENT );
         if ( retval != PAPI_VER_CURRENT && retval > 0 )
         {
-            UTILS_ERROR( SCOREP_ERROR_PAPI_INIT );
+            UTILS_ERROR( SCOREP_ERROR_PAPI_INIT,
+                         "Coudn't init PAPI with version %d, got %d",
+                         PAPI_VER_CURRENT, retval );
             return;
         }
     }

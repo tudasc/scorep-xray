@@ -51,7 +51,8 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
 {
     if ( !scorepMutex )
     {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                            "Invalid mutex handle given." );
     }
 
     /* mark this lock initialized */
@@ -70,7 +71,8 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
 {
     if ( !scorepMutex )
     {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                            "Invalid mutex handle given." );
     }
 
     if ( *scorepMutex == NULL )
@@ -98,7 +100,8 @@ SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
 {
     if ( !scorepMutex )
     {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                            "Invalid mutex handle given." );
     }
 
     if ( scorepMutex != SCOREP_MUTEXT_MARKER )
@@ -119,7 +122,8 @@ SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
 {
     if ( !scorepMutex )
     {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                            "Invalid mutex handle given." );
     }
 
     if ( scorepMutex != SCOREP_MUTEXT_MARKER )

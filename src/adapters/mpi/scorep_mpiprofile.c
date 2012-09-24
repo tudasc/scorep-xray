@@ -109,7 +109,8 @@ scorep_mpiprofile_init
          || mpi_profiling_local_time_pack == NULL
          || mpi_profiling_remote_time_pack == NULL )
     {
-        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED );
+        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                     "We have UTILS_FATAL() to abort!" );
         abort();
     }
     #endif
@@ -205,7 +206,7 @@ scorep_mpiprofile_get_timepack_from_pool( void** free_buffer, int* index )
         timepack_requests  = malloc( POOL_INITIAL_SIZE * sizeof( MPI_Request ) );
         if ( send_timepack_pool == NULL || timepack_requests == NULL )
         {
-            UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED );
+            UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "We have SCOREP_BUG() to abort!" );
             abort();
         }
         timepack_pool_size = POOL_INITIAL_SIZE;
@@ -216,7 +217,7 @@ scorep_mpiprofile_get_timepack_from_pool( void** free_buffer, int* index )
             send_timepack_pool[ i ] = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
             if ( send_timepack_pool[ i ] == NULL )
             {
-                UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED );
+                UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "We have SCOREP_BUG() to abort!" );
                 abort();
             }
         }
@@ -253,7 +254,7 @@ scorep_mpiprofile_get_timepack_from_pool( void** free_buffer, int* index )
             timepack_requests   = realloc( timepack_requests, timepack_pool_size * sizeof( MPI_Request ) );
             if ( send_timepack_pool == NULL || timepack_requests == NULL )
             {
-                UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED );
+                UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "We have SCOREP_BUG() to abort!" );
                 abort();
             }
             int i;
@@ -263,7 +264,7 @@ scorep_mpiprofile_get_timepack_from_pool( void** free_buffer, int* index )
                 send_timepack_pool[ i ] = malloc( MPIPROFILER_TIMEPACK_BUFSIZE );
                 if ( send_timepack_pool[ i ] == NULL )
                 {
-                    UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED );
+                    UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED, "We have SCOREP_BUG() to abort!" );
                     abort();
                 }
             }

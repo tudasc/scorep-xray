@@ -47,7 +47,8 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
 {
     if ( !root )
     {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                            "Invalid system tree root reference given." );
     }
     *root = NULL;
     SCOREP_Platform_SystemTreePathElement** tail = root;

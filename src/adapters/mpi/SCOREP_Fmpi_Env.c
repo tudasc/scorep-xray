@@ -347,7 +347,8 @@ FSUB( MPI_Init_thread )( MPI_Fint* required,
 {
     if ( sizeof( MPI_Fint ) != sizeof( int ) )
     {
-        UTILS_ERROR( SCOREP_ERROR_F2C_INT_SIZE_MISMATCH );
+        UTILS_ERROR( SCOREP_ERROR_F2C_INT_SIZE_MISMATCH,
+                     "Shouldn't this error abort!" );
     }
     *ierr = MPI_Init_thread( 0, ( char*** )0, *required, provided );
 }
@@ -365,7 +366,8 @@ FSUB( MPI_Init )( MPI_Fint* ierr )
 {
     if ( sizeof( MPI_Fint ) != sizeof( int ) )
     {
-        UTILS_ERROR( SCOREP_ERROR_F2C_INT_SIZE_MISMATCH );
+        UTILS_ERROR( SCOREP_ERROR_F2C_INT_SIZE_MISMATCH,
+                     "Shouldn't this error abort!" );
     }
     *ierr = MPI_Init( 0, ( char*** )0 );
 }
