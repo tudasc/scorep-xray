@@ -106,7 +106,7 @@ scorep_error_callback( void*            userData,
         fprintf( stderr, "[%s] Please report this to %s. Thank you.\n",
                  PACKAGE_NAME,
                  PACKAGE_BUGREPORT );
-        fprintf( stderr, "[%s] Try to also preserve any generated core dumps.\n",
+        fprintf( stderr, "[%s] Try also to preserve any generated core dumps.\n",
                  PACKAGE_NAME );
     }
 
