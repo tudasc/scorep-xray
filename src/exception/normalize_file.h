@@ -29,17 +29,15 @@
 
 
 static char*
-normalize_file( const char* srcdir,
-                const char* builddir,
-                const char* file )
+normalize_file( const char* file )
 {
-    char* normalized_file = UTILS_IO_JoinPath( 2, builddir, file );
+    char* normalized_file = UTILS_IO_JoinPath( 2, PACKAGE_BUILDDIR, file );
     UTILS_IO_SimplifyPath( normalized_file );
-    char* srcdir_dup = UTILS_CStr_dup( srcdir );
-    UTILS_IO_SimplifyPath( srcdir_dup );
-    size_t srcdir_len = strlen( srcdir_dup );
+    char srcdir[] = PACKAGE_SRCDIR;
+    UTILS_IO_SimplifyPath( srcdir );
+    size_t srcdir_len = strlen( srcdir );
 
-    if ( strncmp( normalized_file, srcdir_dup, srcdir_len ) == 0
+    if ( strncmp( normalized_file, srcdir, srcdir_len ) == 0
          && normalized_file[ srcdir_len ] == '/' )
     {
         char* to   = normalized_file;
@@ -50,7 +48,6 @@ normalize_file( const char* srcdir,
         }
         *to = *from;
     }
-    free( srcdir_dup );
 
     return normalized_file;
 }

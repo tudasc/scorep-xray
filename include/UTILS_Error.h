@@ -55,25 +55,21 @@ UTILS_BEGIN_C_DECLS
  * @ingroup UTILS_Exception_module
  */
 #define UTILS_ERROR( errCode, ... ) \
-    UTILS_Error_Handler( PACKAGE_SRCDIR, \
-                         PACKAGE_BUILDDIR, \
-                         __FILE__, \
+    UTILS_Error_Handler( __FILE__, \
                          __LINE__, \
                          __func__, \
                          errCode, \
-                         "" __VA_ARGS__ )
+                         __VA_ARGS__ )
 
 /**
  * Emit a warning.
  */
 #define UTILS_WARNING( ... ) \
-    UTILS_Error_Handler( PACKAGE_SRCDIR, \
-                         PACKAGE_BUILDDIR, \
-                         __FILE__, \
+    UTILS_Error_Handler( __FILE__, \
                          __LINE__, \
                          __func__, \
                          PACKAGE_MANGLE_NAME_CAPS( WARNING ), \
-                         "" __VA_ARGS__ )
+                         __VA_ARGS__ )
 /**
  * Emit a warning, but only on first occurrence
  */
@@ -102,13 +98,11 @@ UTILS_BEGIN_C_DECLS
         if ( !utils_deprecated_##__LINE__ ) \
         { \
             utils_deprecated_##__LINE__ = 1; \
-            UTILS_Error_Handler( PACKAGE_SRCDIR, \
-                                 PACKAGE_BUILDDIR, \
-                                 __FILE__, \
+            UTILS_Error_Handler( __FILE__, \
                                  __LINE__, \
                                  __func__, \
                                  PACKAGE_MANGLE_NAME_CAPS( DEPRECATED ), \
-                                 "" __VA_ARGS__ ); \
+                                 __VA_ARGS__ ); \
         } \
     } while ( 0 )
 
@@ -127,9 +121,7 @@ UTILS_BEGIN_C_DECLS
  */
 #define UTILS_Error_Handler PACKAGE_MANGLE_NAME_CAPS( UTILS_Error_Handler )
 PACKAGE_ErrorCode
-UTILS_Error_Handler( const char*       srcdir,
-                     const char*       builddir,
-                     const char*       file,
+UTILS_Error_Handler( const char*       file,
                      uint64_t          line,
                      const char*       function,
                      PACKAGE_ErrorCode errorCode,
@@ -174,8 +166,6 @@ UTILS_Error_FromPosix( const int posixErrorCode );
 
 #define UTILS_ASSERT( expression ) \
     UTILS_Error_Abort( !!( expression ), \
-                       PACKAGE_SRCDIR, \
-                       PACKAGE_BUILDDIR, \
                        __FILE__, \
                        __LINE__, \
                        __func__, \
@@ -188,16 +178,28 @@ UTILS_Error_FromPosix( const int posixErrorCode );
 #endif
 
 /**
+ * @def UTILS_FATAL
+ *
+ * Indicates a fatel condition. The program will abort immediately.
+ *
+ */
+#define UTILS_FATAL( ... ) \
+    UTILS_Error_Abort( 0, \
+                       __FILE__, \
+                       __LINE__, \
+                       __func__, \
+                       __VA_ARGS__ )
+
+
+/**
  * @def UTILS_BUG
  *
  * Indicates an error in the software, not induced by wrong usage of an user.
  * The program will abort immediately.
  *
  */
-#define UTILS_BUG( message, ... ) \
+#define UTILS_BUG( ... ) \
     UTILS_Error_Abort( 0, \
-                       PACKAGE_SRCDIR, \
-                       PACKAGE_BUILDDIR, \
                        __FILE__, \
                        __LINE__, \
                        __func__, \
@@ -212,8 +214,6 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  */
 #define UTILS_BUG_ON( expression, ... ) \
     UTILS_Error_Abort( !( expression ), \
-                       PACKAGE_SRCDIR, \
-                       PACKAGE_BUILDDIR, \
                        __FILE__, \
                        __LINE__, \
                        __func__, \
@@ -235,8 +235,6 @@ UTILS_Error_FromPosix( const int posixErrorCode );
 #define UTILS_Error_Abort PACKAGE_MANGLE_NAME_CAPS( UTILS_Error_Abort )
 void
 UTILS_Error_Abort( const bool     truthValue,
-                   const char*    srcdir,
-                   const char*    builddir,
                    const char*    file,
                    const uint64_t line,
                    const char*    func,

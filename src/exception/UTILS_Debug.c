@@ -304,8 +304,6 @@ debug_init( void )
 
 void
 UTILS_Debug_Printf( uint64_t    bitMask,
-                    const char* srcdir,
-                    const char* builddir,
                     const char* file,
                     uint64_t    line,
                     const char* function,
@@ -327,7 +325,7 @@ UTILS_Debug_Printf( uint64_t    bitMask,
     size_t msg_format_string_length = msgFormatString ?
                                       strlen( msgFormatString ) : 0;
 
-    char* normalized_file = normalize_file( srcdir, builddir, file );
+    char* normalized_file = normalize_file( file );
 
     if ( kind )
     {
@@ -394,8 +392,6 @@ UTILS_Debug_RawPrintf( uint64_t    bitMask,
 
 void
 UTILS_Debug_Prefix( uint64_t    bitMask,
-                    const char* srcdir,
-                    const char* builddir,
                     const char* file,
                     uint64_t    line,
                     const char* function )
@@ -412,7 +408,7 @@ UTILS_Debug_Prefix( uint64_t    bitMask,
 
     assert( kind != ( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT ) );
 
-    char* normalized_file = normalize_file( srcdir, builddir, file );
+    char* normalized_file = normalize_file( file );
 
     if ( kind )
     {

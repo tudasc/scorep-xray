@@ -70,16 +70,14 @@ static void*                 utils_error_callback_user_data;
 /*--- External visible functions ----------------------------------*/
 
 static PACKAGE_ErrorCode
-utils_error_handler_va( const char*       srcdir,
-                        const char*       builddir,
-                        const char*       file,
+utils_error_handler_va( const char*       file,
                         const uint64_t    line,
                         const char*       function,
                         PACKAGE_ErrorCode errorCode,
                         const char*       msgFormatString,
                         va_list           va )
 {
-    char* normalized_file = normalize_file( srcdir, builddir, file );
+    char* normalized_file = normalize_file( file );
 
     if ( utils_error_callback )
     {
@@ -135,9 +133,7 @@ utils_error_handler_va( const char*       srcdir,
 }
 
 PACKAGE_ErrorCode
-UTILS_Error_Handler( const char*       srcdir,
-                     const char*       builddir,
-                     const char*       file,
+UTILS_Error_Handler( const char*       file,
                      const uint64_t    line,
                      const char*       function,
                      PACKAGE_ErrorCode errorCode,
@@ -152,9 +148,7 @@ UTILS_Error_Handler( const char*       srcdir,
     va_list va;
     va_start( va, msgFormatString );
 
-    errorCode = utils_error_handler_va( srcdir,
-                                        builddir,
-                                        file,
+    errorCode = utils_error_handler_va( file,
                                         line,
                                         function,
                                         errorCode,
@@ -596,8 +590,6 @@ UTILS_Error_FromPosix( const int posixErrno )
 
 void
 UTILS_Error_Abort( const bool     truthValue,
-                   const char*    srcdir,
-                   const char*    builddir,
                    const char*    file,
                    const uint64_t line,
                    const char*    func,
@@ -612,9 +604,7 @@ UTILS_Error_Abort( const bool     truthValue,
     va_list va;
     va_start( va, msgFormatString );
 
-    utils_error_handler_va( srcdir,
-                            builddir,
-                            file,
+    utils_error_handler_va( file,
                             line,
                             func,
                             PACKAGE_ABORT,

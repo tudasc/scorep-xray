@@ -107,7 +107,8 @@ UTILS_GetExecutablePath( const char* exe )
             full_file_name = ( char* )malloc( path_len + strlen( exe ) + 2 );
             if ( full_file_name == NULL )
             {
-                UTILS_ERROR( PACKAGE_ERROR_MEM_ALLOC_FAILED );
+                UTILS_ERROR( PACKAGE_ERROR_MEM_ALLOC_FAILED,
+                             "Please tell me what you were trying to do!" );
                 free( path_list );
                 return NULL;
             }

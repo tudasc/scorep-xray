@@ -57,17 +57,15 @@ main()
     UTILS_ERROR( PACKAGE_ERROR_END_OF_FUNCTION,
                  "This error message is no real error: "
                  UTILS_STRINGIFY( PACKAGE_ERROR_END_OF_FUNCTION ) );
-    UTILS_ERROR( PACKAGE_ERROR_END_OF_FUNCTION );
+    UTILS_ERROR( PACKAGE_ERROR_END_OF_FUNCTION, "Just a test of the error system." );
     UTILS_ERROR( 1024,
                  "This error message is no real error: error invlid positive code" );
     UTILS_ERROR( -1024,
                  "This error message is no real error: error invalid negative code" );
 
     UTILS_WARNING( "This is just a warning from the exception module." );
-    UTILS_WARNING();
 
     UTILS_DEPRECATED( "This is just a deprecation warning from the exception module." );
-    UTILS_DEPRECATED();
 
     printf( "================================================================\n"
             "End of error tests.\n"
