@@ -294,9 +294,10 @@ SCOREP_DEFINE_DEFINITION_TYPE( Property )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( Property );
 
-    // Add SCOREP_Property stuff from here on.
-    SCOREP_Property property;
-    bool            value;
+    SCOREP_Property          property;
+    SCOREP_PropertyCondition condition;
+    bool                     initialValue;
+    bool                     invalidated;
 };
 
 

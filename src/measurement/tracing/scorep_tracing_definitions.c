@@ -853,7 +853,9 @@ scorep_tracing_set_properties( OTF2_Archive* scorep_otf2_archive )
 
         OTF2_Archive_SetBoolProperty( scorep_otf2_archive,
                                       property_name,
-                                      definition->value,
+                                      definition->invalidated
+                                      ? !definition->initialValue
+                                      : definition->initialValue,
                                       false );
     }
     SCOREP_DEFINITION_FOREACH_WHILE();

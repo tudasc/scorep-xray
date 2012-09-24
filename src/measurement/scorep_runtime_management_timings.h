@@ -54,6 +54,7 @@
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize_location ) \
     SCOREP_TIMING_TRANSFORM_OP( scorep_profile_initialize )             \
+    SCOREP_TIMING_TRANSFORM_OP( scorep_properties_initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_BeginEpoch )                     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMeasurement )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMeasurementMPI )             \
@@ -66,6 +67,7 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Profile_Process )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_FinalizeLocationGroup )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Unify )                          \
+    SCOREP_TIMING_TRANSFORM_OP( scorep_properties_write )               \
     SCOREP_TIMING_TRANSFORM_OP( scorep_profile_finalize )               \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Write )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Finalize )           \

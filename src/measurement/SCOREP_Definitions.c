@@ -2224,7 +2224,9 @@ scorep_callpath_definitions_equal( const SCOREP_Callpath_Definition* existingDef
 static SCOREP_PropertyHandle
 scorep_property_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    SCOREP_Property           property,
-                                   bool                      value );
+                                   SCOREP_PropertyCondition  condition,
+                                   bool                      initialValue,
+                                   bool                      invalidated );
 
 
 static bool
@@ -2236,19 +2238,25 @@ scorep_property_definitions_equal( const SCOREP_Property_Definition* existingDef
  * Associate a name with a process unique property handle.
  */
 SCOREP_PropertyHandle
-SCOREP_DefineProperty( SCOREP_Property property,
-                       bool            value )
+SCOREP_DefineProperty( SCOREP_Property          property,
+                       SCOREP_PropertyCondition condition,
+                       bool                     initialValue )
 {
-    UTILS_DEBUG_ENTRY( "%d", property );
+    UTILS_DEBUG_ENTRY( "%d, %d, %s",
+                       property,
+                       condition,
+                       initialValue ? "true" : "false" );
 
-    UTILS_BUG_ON( property >= SCOREP_PROPERTY_MAX, "Invalid property enum value" );
+    UTILS_ASSERT( property < SCOREP_PROPERTY_MAX );
 
     SCOREP_Definitions_Lock();
 
     SCOREP_PropertyHandle new_handle = scorep_property_definition_define(
         &scorep_local_definition_manager,
         property,
-        value );
+        condition,
+        initialValue,
+        false );
 
     SCOREP_Definitions_Unlock();
 
@@ -2267,14 +2275,18 @@ SCOREP_CopyPropertyDefinitionToUnified( SCOREP_Property_Definition*   definition
     definition->unified = scorep_property_definition_define(
         scorep_unified_definition_manager,
         definition->property,
-        definition->value );
+        definition->condition,
+        definition->initialValue,
+        definition->invalidated );
 }
 
 
 SCOREP_PropertyHandle
 scorep_property_definition_define( SCOREP_DefinitionManager* definition_manager,
                                    SCOREP_Property           property,
-                                   bool                      value )
+                                   SCOREP_PropertyCondition  condition,
+                                   bool                      initialValue,
+                                   bool                      invalidated )
 {
     assert( definition_manager );
 
@@ -2283,8 +2295,13 @@ scorep_property_definition_define( SCOREP_DefinitionManager* definition_manager,
 
     SCOREP_DEFINITION_ALLOC( Property );
     new_definition->property = property;
-    new_definition->value    = value;
     HASH_ADD_POD( new_definition, property );
+    new_definition->condition = condition;
+    HASH_ADD_POD( new_definition, condition );
+    new_definition->initialValue = initialValue;
+    HASH_ADD_POD( new_definition, initialValue );
+    new_definition->invalidated = invalidated;
+    // no hashing, can be modified
 
     // modified SCOREP_DEFINITION_MANAGER_ADD_DEFINITION macro:
 
@@ -2302,9 +2319,21 @@ scorep_property_definition_define( SCOREP_DefinitionManager* definition_manager,
                 hash_list_iterator, Property );
             if ( scorep_property_definitions_equal( existing_definition, new_definition ) )
             {
-                /* boolean AND operation for property values */
+                /* the hash guarantees that both properties have the same condition */
+                switch ( existing_definition->condition )
+                {
+                    case SCOREP_PROPERTY_CONDITION_ALL:
+                        existing_definition->invalidated =
+                            existing_definition->invalidated && new_definition->invalidated;
+                        break;
 
-                existing_definition->value = existing_definition->value && new_definition->value;
+                    case SCOREP_PROPERTY_CONDITION_ANY:
+                        existing_definition->invalidated =
+                            existing_definition->invalidated || new_definition->invalidated;
+                        break;
+                    default:
+                        UTILS_BUG( "Invalid condition for property" );
+                }
 
                 SCOREP_Allocator_RollbackAllocMovable(
                     SCOREP_Memory_GetLocalDefinitionPageManager(),

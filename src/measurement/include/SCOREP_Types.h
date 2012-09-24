@@ -636,6 +636,17 @@ typedef enum
     SCOREP_PROPERTY_MAX
 } SCOREP_Property;
 
+/**
+ * List of possible conditions for properties.
+ */
+typedef enum
+{
+    /** All processes must invalidated the property */
+    SCOREP_PROPERTY_CONDITION_ALL,
+    /** Any process must invalidated the property */
+    SCOREP_PROPERTY_CONDITION_ANY
+} SCOREP_PropertyCondition;
+
 /*@}*/
 
 

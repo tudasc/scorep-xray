@@ -56,8 +56,6 @@ SCOREP_ClockOffset*       scorep_clock_offset_head          = NULL;
 SCOREP_ClockOffset**      scorep_clock_offset_tail          =
     &scorep_clock_offset_head;
 
-bool scorep_properties[ SCOREP_PROPERTY_MAX ];
-
 
 /* global definition lock */
 static SCOREP_Mutex definitions_lock;
@@ -90,12 +88,6 @@ SCOREP_Definitions_Initialize()
     SCOREP_InitializeDefinitionManager( &local_definition_manager,
                                         SCOREP_Memory_GetLocalDefinitionPageManager(),
                                         false );
-    /* initialize properties */
-
-    for ( int i = 0; i < SCOREP_PROPERTY_MAX; i++ )
-    {
-        scorep_properties[ i ] = true;
-    }
 }
 
 
@@ -227,30 +219,4 @@ SCOREP_Definitions_Write()
     }
 
     /// @todo Daniel, what to do here for profiling?
-}
-
-void
-SCOREP_Properties_Finalize()
-{
-    if ( !scorep_definitions_initialized )
-    {
-        return;
-    }
-    for ( int i = 0; i < SCOREP_PROPERTY_MAX; i++ )
-    {
-        SCOREP_DefineProperty( i, scorep_properties[ i ] );
-    }
-}
-
-void
-SCOREP_Properties_Write()
-{
-    if ( !scorep_definitions_initialized || SCOREP_Mpi_GetRank() != 0 )
-    {
-        return;
-    }
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        SCOREP_Tracing_WriteProperties();
-    }
 }

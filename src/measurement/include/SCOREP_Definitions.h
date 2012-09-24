@@ -444,11 +444,12 @@ SCOREP_DefineParameter( const char*          name,
 
 
 /**
- * Associate a name with a process unique property handle.
+ * Define a property with its initial value.
  */
 SCOREP_PropertyHandle
-SCOREP_DefineProperty( SCOREP_Property property,
-                       bool            value );
+SCOREP_DefineProperty( SCOREP_Property          property,
+                       SCOREP_PropertyCondition condition,
+                       bool                     initialValue );
 
 /**
  * Returns the sequence number of the unified definitions for a local callpath handle from

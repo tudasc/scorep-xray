@@ -138,12 +138,6 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    manager,
 void
 SCOREP_Definitions_Write();
 
-void
-SCOREP_Properties_Finalize();
-
-void
-SCOREP_Properties_Write();
-
 SCOREP_StringHandle
 SCOREP_DefineString( const char* str );
 

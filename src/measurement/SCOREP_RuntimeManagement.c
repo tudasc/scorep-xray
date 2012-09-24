@@ -67,6 +67,7 @@
 #include "scorep_runtime_management.h"
 #include "scorep_system_tree.h"
 #include "scorep_clock_synchronization.h"
+#include "scorep_properties.h"
 #include "scorep_runtime_management_timings.h"
 
 #define SCOREP_DEBUG_MODULE_NAME CORE
@@ -198,6 +199,8 @@ SCOREP_InitMeasurement()
     SCOREP_TIME( scorep_subsystems_initialize_location,
                  ( SCOREP_Location_GetCurrentCPULocation() ) );
     SCOREP_TIME( scorep_profile_initialize, ( ) );
+
+    SCOREP_TIME( scorep_properties_initialize, ( ) );
 
     /* Register finalization handler, also called in SCOREP_InitMeasurementMPI() and
      * SCOREP_FinalizeMeasurementMPI(). We need to make sure that our handler is
@@ -480,11 +483,9 @@ scorep_finalize( void )
 
     SCOREP_TIME( SCOREP_FinalizeLocationGroup, ( ) );
 
-    SCOREP_Properties_Finalize(); // before SCOREP_Unify
-
     SCOREP_TIME( SCOREP_Unify, ( ) );
 
-    SCOREP_Properties_Write();
+    SCOREP_TIME( scorep_properties_write, ( ) );
 
     SCOREP_TIME( scorep_profile_finalize, ( ) );
     SCOREP_TIME( SCOREP_Definitions_Write, ( ) );

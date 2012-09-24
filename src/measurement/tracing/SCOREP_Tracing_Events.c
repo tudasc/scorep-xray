@@ -32,8 +32,6 @@
 
 
 #include <UTILS_Error.h>
-
-
 #include <UTILS_Debug.h>
 
 
@@ -41,17 +39,16 @@
 
 
 #include <SCOREP_Types.h>
-#include <scorep_thread.h>
 #include <SCOREP_Definitions.h>
+#include <SCOREP_Properties.h>
+
+#include <scorep_thread.h>
 #include <scorep_definition_structs.h>
 #include <scorep_definitions.h>
 
 
 #include "scorep_tracing_internal.h"
 #include "scorep_tracing_types.h"
-
-
-extern bool scorep_properties[ SCOREP_PROPERTY_MAX ];
 
 
 void
@@ -584,12 +581,12 @@ SCOREP_Tracing_ExitRewindRegion( SCOREP_Location*    location,
         /* Did it affect MPI events? */
         if ( paradigm_affected[ SCOREP_PARADIGM_MPI ] )
         {
-            scorep_properties[ SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE ] = false;
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
         }
         /* Did it affect OMP events? */
         if ( paradigm_affected[ SCOREP_PARADIGM_OPENMP ] )
         {
-            scorep_properties[ SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE ] = false;
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
         }
     }
 
