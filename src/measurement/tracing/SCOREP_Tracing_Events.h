@@ -31,17 +31,7 @@
 #include <stdbool.h>
 
 
-#include <scorep_status.h>
 #include <scorep_thread.h>
-#include <SCOREP_RuntimeManagement.h>
-
-
-/** Use this predicate to decide, whether to record an event in the trace. */
-static inline bool
-scorep_tracing_consume_event( void )
-{
-    return SCOREP_IsTracingEnabled() && SCOREP_RecordingEnabled();
-}
 
 
 void

@@ -26,6 +26,7 @@
 
 #include <config.h>
 
+#include "SCOREP_Tracing_Events.h"
 
 #include <stdlib.h>
 #include <stdio.h>

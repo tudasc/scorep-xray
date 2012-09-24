@@ -62,6 +62,16 @@ scorep_get_timestamp( SCOREP_Location* location )
     return timestamp;
 }
 
+
+
+/** Use this predicate to decide, whether to record an event in the trace. */
+static inline bool
+scorep_tracing_consume_event( void )
+{
+    return SCOREP_IsTracingEnabled() && SCOREP_RecordingEnabled();
+}
+
+
 /**
  * Process a region enter event in the measurement system.
  */
