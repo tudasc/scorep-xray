@@ -80,11 +80,11 @@ typedef struct
          2. enclosing sections construct (sections enter/exit)
          3. individual sections begin/end                                              */
     SCOREP_RegionHandle innerParallel;        /* SCOREP handle for the inner parallel region */
+    SCOREP_RegionHandle barrier;              /* SCOREP handle for the (implicit barrier)    */
     SCOREP_RegionHandle outerBlock;           /* SCOREP handle for the enclosing region      */
     SCOREP_RegionHandle innerBlock;           /* SCOREP handle for the enclosed region       */
 #ifdef _OPENMP
-    //SCOREP_Pomp_LockHandleType lock;          /* SCOREP handle for lock in critical regions */
-    SCOREP_PompLock* lock;
+    SCOREP_PompLock*    lock;
 #endif
 
     char*   startFileName;                /* File containing opening statement         */

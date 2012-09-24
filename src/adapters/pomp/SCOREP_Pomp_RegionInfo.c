@@ -100,7 +100,10 @@ const size_t scorep_pomp_token_map_size =
 typedef struct
 {
     char*                  regionTypeString;
+    char*                  outerRegionName;
     char*                  innerRegionName;
+    bool                   hasParallel;
+    bool                   hasImplicitBarrier;
     SCOREP_Pomp_RegionType regionType;
     SCOREP_RegionType      outerRegionType;
     SCOREP_RegionType      innerRegionType;
@@ -115,25 +118,25 @@ static const scorep_pomp_region_type_map_entry scorep_pomp_region_type_map[] =
     /* Entries must be sorted to be used in binary search. */
     /* If you add/remove items, scorep_pomp_region_type_map_size. */
     /* Entries must be in same order like SCOREP_Pomp_RegionType to allow lookup. */
-  { "atomic",            "",                SCOREP_Pomp_Atomic              , SCOREP_REGION_OMP_ATOMIC,      SCOREP_REGION_UNKNOWN             },
-  { "barrier",           "",                SCOREP_Pomp_Barrier             , SCOREP_REGION_OMP_BARRIER,     SCOREP_REGION_UNKNOWN             },
-  { "critical",          "critical sblock", SCOREP_Pomp_Critical            , SCOREP_REGION_OMP_CRITICAL,    SCOREP_REGION_OMP_CRITICAL_SBLOCK },
-  { "do",                "",                SCOREP_Pomp_Do                  , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
-  { "flush",             "",                SCOREP_Pomp_Flush               , SCOREP_REGION_OMP_FLUSH,       SCOREP_REGION_UNKNOWN             },
-  { "for",               "",                SCOREP_Pomp_For                 , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
-  { "master",            "master",          SCOREP_Pomp_Master              , SCOREP_REGION_UNKNOWN,         SCOREP_REGION_OMP_MASTER          },
-  { "ordered",           "ordered sblock",  SCOREP_Pomp_Ordered             , SCOREP_REGION_OMP_ORDERED,     SCOREP_REGION_OMP_ORDERED_SBLOCK  },
-  { "parallel",          "",                SCOREP_Pomp_Parallel            , SCOREP_REGION_UNKNOWN,         SCOREP_REGION_UNKNOWN             },
-  { "parallel do",       "",                SCOREP_Pomp_ParallelDo          , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
-  { "parallel for",      "",                SCOREP_Pomp_ParallelFor         , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
-  { "parallel sections", "section",         SCOREP_Pomp_ParallelSections    , SCOREP_REGION_OMP_SECTIONS,    SCOREP_REGION_OMP_SECTION         },
-  { "parallel workshare","",                SCOREP_Pomp_ParallelWorkshare   , SCOREP_REGION_OMP_WORKSHARE,   SCOREP_REGION_UNKNOWN             },
-  { "region",            "region",          SCOREP_Pomp_UserRegion          , SCOREP_REGION_UNKNOWN,         SCOREP_REGION_USER,               },
-  { "sections",          "section",         SCOREP_Pomp_Sections            , SCOREP_REGION_OMP_SECTIONS,    SCOREP_REGION_OMP_SECTION         },
-  { "single",            "single sblock",   SCOREP_Pomp_Single              , SCOREP_REGION_OMP_SINGLE,      SCOREP_REGION_OMP_SINGLE_SBLOCK,  },
-  { "task",              "create task",     SCOREP_Pomp_Task                , SCOREP_REGION_OMP_TASK,        SCOREP_REGION_OMP_TASK_CREATE     },
-  { "taskwait",          "",                SCOREP_Pomp_Taskwait            , SCOREP_REGION_OMP_TASKWAIT,    SCOREP_REGION_UNKNOWN             },
-  { "workshare",         "",                SCOREP_Pomp_Workshare           , SCOREP_REGION_OMP_WORKSHARE,   SCOREP_REGION_UNKNOWN             }
+  { "atomic",            "atomic",      "",                false, false, SCOREP_Pomp_Atomic            , SCOREP_REGION_OMP_ATOMIC,      SCOREP_REGION_UNKNOWN             },
+  { "barrier",           "barrier",     "",                false, false, SCOREP_Pomp_Barrier           , SCOREP_REGION_OMP_BARRIER,     SCOREP_REGION_UNKNOWN             },
+  { "critical",          "critical",    "critical sblock", false, false, SCOREP_Pomp_Critical          , SCOREP_REGION_OMP_CRITICAL,    SCOREP_REGION_OMP_CRITICAL_SBLOCK },
+  { "do",                "do",          "",                false, true,  SCOREP_Pomp_Do                , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
+  { "flush",             "flush",       "",                false, false, SCOREP_Pomp_Flush             , SCOREP_REGION_OMP_FLUSH,       SCOREP_REGION_UNKNOWN             },
+  { "for",               "for",         "",                false, true,  SCOREP_Pomp_For               , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
+  { "master",            "",            "master",          false, false, SCOREP_Pomp_Master            , SCOREP_REGION_UNKNOWN,         SCOREP_REGION_OMP_MASTER          },
+  { "ordered",           "ordered",     "ordered sblock",  false, false, SCOREP_Pomp_Ordered           , SCOREP_REGION_OMP_ORDERED,     SCOREP_REGION_OMP_ORDERED_SBLOCK  },
+  { "parallel",          "",            "",                true,  true,  SCOREP_Pomp_Parallel          , SCOREP_REGION_UNKNOWN,         SCOREP_REGION_UNKNOWN             },
+  { "parallel do",       "do",          "",                true,  true,  SCOREP_Pomp_ParallelDo        , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
+  { "parallel for",      "for",         "",                true,  true,  SCOREP_Pomp_ParallelFor       , SCOREP_REGION_OMP_LOOP,        SCOREP_REGION_UNKNOWN             },
+  { "parallel sections", "sections",    "section",         true,  true,  SCOREP_Pomp_ParallelSections  , SCOREP_REGION_OMP_SECTIONS,    SCOREP_REGION_OMP_SECTION         },
+  { "parallel workshare","workshare",   "",                true,  true,  SCOREP_Pomp_ParallelWorkshare , SCOREP_REGION_OMP_WORKSHARE,   SCOREP_REGION_UNKNOWN             },
+  { "region",            "",            "region",          false, false, SCOREP_Pomp_UserRegion        , SCOREP_REGION_UNKNOWN,         SCOREP_REGION_USER,               },
+  { "sections",          "sections",    "section",         false, true,  SCOREP_Pomp_Sections          , SCOREP_REGION_OMP_SECTIONS,    SCOREP_REGION_OMP_SECTION         },
+  { "single",            "single",      "single sblock",   false, true,  SCOREP_Pomp_Single            , SCOREP_REGION_OMP_SINGLE,      SCOREP_REGION_OMP_SINGLE_SBLOCK,  },
+  { "task",              "create task", "task",            false, false, SCOREP_Pomp_Task              , SCOREP_REGION_OMP_TASK_CREATE, SCOREP_REGION_OMP_TASK            },
+  { "taskwait",          "taskwait",    "",                false, false, SCOREP_Pomp_Taskwait          , SCOREP_REGION_OMP_TASKWAIT,    SCOREP_REGION_UNKNOWN             },
+  { "workshare",         "workshare",   "",                false, true,  SCOREP_Pomp_Workshare         , SCOREP_REGION_OMP_WORKSHARE,   SCOREP_REGION_UNKNOWN             }
 };
 /* *INDENT-ON* */
 
@@ -224,8 +227,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     type_inner = scorep_pomp_region_type_map[ region->regionType ].innerRegionType;
 
     /* Register parallel region */
-    if ( ( region->regionType >= SCOREP_Pomp_Parallel ) &&
-         ( region->regionType <= SCOREP_Pomp_ParallelWorkshare ) )
+    if ( scorep_pomp_region_type_map[ region->regionType ].hasParallel )
     {
         int   length        = 16 + strlen( source_name ) + 1;
         char* parallel_name = ( char* )malloc( length );
@@ -244,13 +246,12 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     /* Register outer region */
     if ( type_outer != SCOREP_REGION_UNKNOWN )
     {
-        char* type_name = scorep_pomp_region_type_map[ region->regionType ].regionTypeString;
+        char* type_name = scorep_pomp_region_type_map[ region->regionType ].outerRegionName;
         int   length    = strlen( type_name ) + 7 + strlen( source_name ) + 1;
         region_name = ( char* )malloc( length );
         sprintf( region_name, "!$omp %s %s", type_name, source_name );
 
-        if ( ( region->regionType >= SCOREP_Pomp_ParallelDo ) &&
-             ( region->regionType <= SCOREP_Pomp_ParallelWorkshare ) )
+        if ( scorep_pomp_region_type_map[ region->regionType ].hasParallel )
         {
             start = region->startLine2;
             end   = region->endLine1;
@@ -296,6 +297,24 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
                                                   type_inner );
         free( region_name );
     }
+
+    /* Register implicit barrier */
+    if ( scorep_pomp_region_type_map[ region->regionType ].hasImplicitBarrier )
+    {
+        int   length       = 24 + strlen( basename ) + 1 + 10 + 1;
+        char* barrier_name = ( char* )malloc( length );
+        sprintf( barrier_name, "!$omp implicit barrier @%s:%" PRIu32, basename, region->endLine1 );
+
+        region->barrier = SCOREP_DefineRegion( barrier_name,
+                                               NULL,
+                                               last_file,
+                                               region->endLine1,
+                                               region->endLine2,
+                                               SCOREP_ADAPTER_POMP,
+                                               SCOREP_REGION_OMP_IMPLICIT_BARRIER );
+        free( barrier_name );
+    }
+
 
     free( source_name );
 

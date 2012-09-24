@@ -136,11 +136,11 @@ POMP2_Implicit_barrier_enter( POMP2_Region_handle* pomp_handle,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Implicit_barrier_enter" );
     SCOREP_POMP2_ENSURE_INITIALIZED;
 
-    // For now identical to POMP2_Barrier_enter
     *pomp_old_task = pomp_current_task;
     if ( scorep_pomp_is_tracing_on )
     {
-        SCOREP_EnterRegion( scorep_pomp_implicit_barrier_region );
+        SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
+        SCOREP_EnterRegion( region->barrier );
     }
 }
 
@@ -150,15 +150,15 @@ POMP2_Implicit_barrier_exit( POMP2_Region_handle* pomp_handle,
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Implicit_barrier_exit" );
 
-    // For now identical to POMP2_Barrier_exit
     pomp_current_task = pomp_old_task;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         if ( pomp_current_task != pomp_old_task )
         {
             SCOREP_OmpTaskSwitch( pomp_current_task );
         }
-        SCOREP_ExitRegion( scorep_pomp_implicit_barrier_region );
+        SCOREP_ExitRegion( region->barrier );
     }
 }
 
@@ -509,8 +509,7 @@ POMP2_Task_create_begin( POMP2_Region_handle* pomp_handle,
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        /* For tasks inner and outrer block are inverted because of the type table */
-        SCOREP_EnterRegion( region->innerBlock );
+        SCOREP_EnterRegion( region->outerBlock );
         SCOREP_OmpTaskCreate( *pomp_new_task );
     }
 }
@@ -528,8 +527,7 @@ POMP2_Task_create_end( POMP2_Region_handle* pomp_handle,
         {
             SCOREP_OmpTaskSwitch( pomp_old_task );
         }
-        /* For tasks inner and outrer block are inverted because of the type table */
-        SCOREP_ExitRegion( region->innerBlock );
+        SCOREP_ExitRegion( region->outerBlock );
     }
     pomp_current_task = pomp_old_task;
 }
@@ -546,8 +544,7 @@ POMP2_Task_begin( POMP2_Region_handle* pomp_handle,
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        /* For tasks inner and outrer block are inverted because of the type table */
-        SCOREP_OmpTaskBegin( region->outerBlock, pomp_current_task );
+        SCOREP_OmpTaskBegin( region->innerBlock, pomp_current_task );
     }
 }
 
@@ -558,8 +555,7 @@ POMP2_Task_end( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        /* For tasks inner and outrer block are inverted because of the type table */
-        SCOREP_OmpTaskEnd( region->outerBlock, pomp_current_task );
+        SCOREP_OmpTaskEnd( region->innerBlock, pomp_current_task );
     }
 }
 
@@ -578,8 +574,7 @@ POMP2_Untied_task_create_begin( POMP2_Region_handle* pomp_handle,
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        /* For tasks inner and outrer block are inverted because of the type table */
-        SCOREP_EnterRegion( region->innerBlock );
+        SCOREP_EnterRegion( region->outerBlock );
         SCOREP_OmpTaskCreate( *pomp_new_task );
     }
 }
@@ -597,8 +592,7 @@ POMP2_Untied_task_create_end( POMP2_Region_handle* pomp_handle,
         {
             SCOREP_OmpTaskSwitch( pomp_old_task );
         }
-        /* For tasks inner and outrer block are inverted because of the type table */
-        SCOREP_ExitRegion( region->innerBlock );
+        SCOREP_ExitRegion( region->outerBlock );
     }
     pomp_current_task = pomp_old_task;
 }
@@ -615,8 +609,7 @@ POMP2_Untied_task_begin( POMP2_Region_handle* pomp_handle,
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        /* For tasks inner and outrer block are inverted because of the type table */
-        SCOREP_OmpTaskBegin( region->outerBlock, pomp_current_task );
+        SCOREP_OmpTaskBegin( region->innerBlock, pomp_current_task );
     }
 }
 
@@ -627,8 +620,7 @@ POMP2_Untied_task_end( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        /* For tasks inner and outrer block are inverted because of the type table */
-        SCOREP_OmpTaskEnd( region->outerBlock, pomp_current_task );
+        SCOREP_OmpTaskEnd( region->innerBlock, pomp_current_task );
     }
 }
 
