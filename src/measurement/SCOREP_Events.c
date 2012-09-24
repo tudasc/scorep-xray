@@ -28,6 +28,8 @@
 
 #include <config.h>
 
+#include <SCOREP_Events.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -37,7 +39,6 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Properties.h>
-#include <SCOREP_Events.h>
 #include <SCOREP_Timing.h>
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Profile.h>
