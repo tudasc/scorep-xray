@@ -36,6 +36,7 @@
 
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
+#include <SCOREP_Properties.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Timing.h>
 #include <tracing/SCOREP_Tracing_Events.h>
@@ -299,6 +300,10 @@ SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
                                 tag,
                                 bytesSent );
     }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+    }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -346,6 +351,10 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
                                 tag,
                                 bytesReceived );
     }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+    }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -375,6 +384,10 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
     {
         SCOREP_Tracing_MpiCollectiveBegin( location,
                                            timestamp );
+    }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -416,6 +429,10 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
                                          collectiveType,
                                          bytesSent,
                                          bytesReceived );
+    }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -466,6 +483,10 @@ SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
                                         timestamp,
                                         requestId );
     }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+    }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -487,6 +508,10 @@ SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
                                          timestamp,
                                          requestId );
     }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+    }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -507,6 +532,10 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
         SCOREP_Tracing_MpiRequestCancelled( location,
                                             timestamp,
                                             requestId );
+    }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -539,6 +568,10 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                    destinationRank,
                                  tag,
                                  bytesSent,
                                  requestId );
+    }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -576,6 +609,10 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
                                  bytesReceived,
                                  requestId );
     }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+    }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -607,6 +644,10 @@ SCOREP_OmpFork( uint32_t nRequestedThreads )
     {
         SCOREP_Tracing_OmpFork( location, timestamp, nRequestedThreads );
     }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+    }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -636,6 +677,10 @@ SCOREP_OmpJoin( void )
         SCOREP_Tracing_OmpJoin( location,
                                 timestamp );
         UTILS_DEBUG_PRINTF( 0, "Only partially implemented." );
+    }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -678,6 +723,10 @@ SCOREP_OmpAcquireLock( uint32_t lockId,
                                        lockId,
                                        acquisitionOrder );
     }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+    }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -705,6 +754,10 @@ SCOREP_OmpReleaseLock( uint32_t lockId,
                                        lockId,
                                        acquisitionOrder );
     }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+    }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -724,6 +777,10 @@ SCOREP_OmpTaskCreate( uint64_t taskId )
                                       timestamp,
                                       taskId );
     }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+    }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -742,6 +799,10 @@ SCOREP_OmpTaskSwitch( uint64_t taskId )
         SCOREP_Tracing_OmpTaskSwitch( location,
                                       timestamp,
                                       taskId );
+    }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -774,6 +835,10 @@ SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
 
         SCOREP_Tracing_Enter( location, timestamp, regionHandle );
     }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+    }
 
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -805,6 +870,10 @@ SCOREP_OmpTaskEnd( SCOREP_RegionHandle regionHandle,
 
         SCOREP_Tracing_Leave( location, timestamp, regionHandle );
         SCOREP_Tracing_OmpTaskComplete( location, timestamp, taskId );
+    }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
     }
 
     if ( SCOREP_IsProfilingEnabled() )
