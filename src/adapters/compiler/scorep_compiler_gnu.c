@@ -27,7 +27,6 @@
 #include <config.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <sys/stat.h>
 
 #include <SCOREP_Types.h>
 #include <SCOREP_Location.h>

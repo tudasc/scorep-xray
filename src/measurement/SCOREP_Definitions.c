@@ -35,7 +35,6 @@
 #include <string.h>
 #include <stdint.h>
 #include <inttypes.h>
-#include <sys/stat.h>
 
 
 #include <UTILS_Debug.h>
