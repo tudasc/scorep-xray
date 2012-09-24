@@ -90,6 +90,10 @@ get_region_handle( char* region_name,
     /* put function to list */
     if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) == 0 )
     {
+        /* The IBM compiler instruments outlined functions of OpenMP parallel regions.
+           These functions are called at a stage, where locks do not yet work. Thus,
+           make sure that in case of race conditions, functions can only get filtered.
+         */
         SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) == 0 )
         {
@@ -111,22 +115,25 @@ get_region_handle( char* region_name,
                     or '@' symbol.
                  2. POMP and POMP2 functions.
              */
-            bool is_filtered = false;
-            if ( ( strchr( region_name, '$' ) != NULL ) ||
-                 ( strchr( region_name, '@' ) != NULL ) ||
-                 ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
-                 ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
-                 ( strncmp( region_name, "pomp", 4 ) == 0 ) ||
-                 SCOREP_Filter_Match( file, region_name, true ) )
+            bool is_filtered = true;
+            if ( ( strchr( region_name, '$' ) == NULL ) &&
+                 ( strchr( region_name, '@' ) == NULL ) &&
+                 ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
+                 ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
+                 ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
+                 !SCOREP_Filter_Match( file, region_name, true ) )
             {
-                is_filtered              = true;
-                hash_node->region_handle = SCOREP_INVALID_REGION;
+                is_filtered = false;
             }
 
             /* If not filtered register region */
             if ( !is_filtered )
             {
                 scorep_compiler_register_region( hash_node );
+            }
+            else
+            {
+                hash_node->region_handle = SCOREP_INVALID_REGION;
             }
             free( file );
         }
@@ -150,12 +157,20 @@ __func_trace_enter( char*                region_name,
                     int                  line_no,
                     SCOREP_RegionHandle* handle )
 {
+    /* The IBM compiler instruments outlined functions of OpenMP parallel regions.
+       These functions are called at a stage, where locks do not yet work. Thus,
+       make sure that only final valid values are assigned to *handle.
+     */
     if ( *handle == 0 )
     {
-        *handle = get_region_handle( region_name, file_name, line_no );
-        if ( *handle == SCOREP_INVALID_REGION )
+        SCOREP_RegionHandle region = get_region_handle( region_name, file_name, line_no );
+        if ( region == SCOREP_INVALID_REGION )
         {
             *handle = SCOREP_FILTER_REGION;
+        }
+        else
+        {
+            *handle = region;
         }
     }
     if ( *handle != SCOREP_FILTER_REGION )
@@ -186,10 +201,11 @@ __func_trace_enter( char* region_name,
  * @ param line_no     line number
  */
 #if __IBMC__ > 1100
-__func_trace_exit( char* region_name,
-                   char* file_name,
-                   int line_no,
-                   SCOREP_RegionHandle * handle )
+void
+__func_trace_exit( char*                region_name,
+                   char*                file_name,
+                   int                  line_no,
+                   SCOREP_RegionHandle* handle )
 {
     if ( *handle != SCOREP_FILTER_REGION )
     {
