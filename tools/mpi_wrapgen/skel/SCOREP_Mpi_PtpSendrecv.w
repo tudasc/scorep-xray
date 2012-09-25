@@ -26,8 +26,8 @@ ${proto:c}
     if (dest != MPI_PROC_NULL)
     {
       PMPI_Type_size(sendtype, &sendsz);
-      SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(dest, comm), SCOREP_MPI_COMM_HANDLE(comm),
-                   sendtag, ${mpi:sendcount});
+      SCOREP_MpiSend(dest, SCOREP_MPI_COMM_HANDLE(comm),
+                     sendtag, ${mpi:sendcount});
     }
     if (status == MPI_STATUS_IGNORE)
     {
@@ -38,8 +38,8 @@ ${proto:c}
     {
       PMPI_Type_size(recvtype, &recvsz);
       PMPI_Get_count(status, recvtype, &recvcount);
-      SCOREP_MpiRecv(SCOREP_MPI_RANK_TO_PE(status->MPI_SOURCE, comm),
-                   SCOREP_MPI_COMM_HANDLE(comm), status->MPI_TAG, ${mpi:recvcount});
+      SCOREP_MpiRecv(status->MPI_SOURCE, SCOREP_MPI_COMM_HANDLE(comm),
+                     status->MPI_TAG, ${mpi:recvcount});
     }
 
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);

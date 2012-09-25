@@ -110,8 +110,8 @@ int MPI_Recv( void* buf,
     {
       PMPI_Type_size(datatype, &sz);
       PMPI_Get_count(status, datatype, &count);
-      SCOREP_MpiRecv(SCOREP_MPI_RANK_TO_PE(status->MPI_SOURCE, comm),
-                   SCOREP_MPI_COMM_HANDLE(comm), status->MPI_TAG, count * sz);
+      SCOREP_MpiRecv(status->MPI_SOURCE, SCOREP_MPI_COMM_HANDLE(comm),
+                     status->MPI_TAG, count * sz);
     }
 
 
@@ -945,11 +945,11 @@ int MPI_Start(MPI_Request* request)
         if ((req->flags & SCOREP_MPI_REQUEST_SEND) && (req->dest != MPI_PROC_NULL))
           {
             if (xnb_active)
-              SCOREP_MpiIsend(SCOREP_MPI_RANK_TO_PE(req->dest, req->comm),
-                           SCOREP_MPI_COMM_HANDLE(req->comm), req->tag,  req->bytes, req->id);
+              SCOREP_MpiIsend(req->dest, req->comm_handle,
+                              req->tag, req->bytes, req->id);
             else
-              SCOREP_MpiSend(SCOREP_MPI_RANK_TO_PE(req->dest, req->comm),
-                           SCOREP_MPI_COMM_HANDLE(req->comm), req->tag,  req->bytes);
+              SCOREP_MpiSend(req->dest, req->comm_handle,
+                             req->tag, req->bytes);
           }
         else if (req->flags & SCOREP_MPI_REQUEST_RECV && xnb_active)
           {
@@ -1017,8 +1017,8 @@ int MPI_Startall(int count,
           req->flags |= SCOREP_MPI_REQUEST_IS_ACTIVE;
           if ((req->flags & SCOREP_MPI_REQUEST_SEND) && (req->dest != MPI_PROC_NULL))
             {
-              SCOREP_MpiIsend(SCOREP_MPI_RANK_TO_PE(req->dest, req->comm),
-                           SCOREP_MPI_COMM_HANDLE(req->comm), req->tag,  req->bytes, req->id);
+              SCOREP_MpiIsend(req->dest, req->comm_handle,
+                              req->tag, req->bytes, req->id);
             }
           else if (req->flags & SCOREP_MPI_REQUEST_RECV && xnb_active)
             {
