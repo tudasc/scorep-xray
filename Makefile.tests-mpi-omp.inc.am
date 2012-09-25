@@ -39,22 +39,22 @@ XFAIL_TESTS_MPI_OMP =
 ## variables TESTS, XFAIL_TESTS and TESTs_ENVIRONMENT have been
 ## replaced with SERIAL/OMP/MPI/HYBRID versions.
 
-if OPENMP_SUPPORTED
-if MPI_SUPPORTED
+if HAVE_OPENMP_SUPPORT
+if HAVE_MPI_SUPPORT
 check-run-mpi-omp: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-mpi-omp-am
 check-file-mpi-omp: 
 	rm -f check-file-mpi-omp
 	echo "# Available hybrid tests:" > check-file-mpi-omp
 	for i in $(TESTS_MPI_OMP); do echo "$$i" >> check-file-mpi-omp; done
-else !MPI_SUPPORTED
+else !HAVE_MPI_SUPPORT
 check-run-mpi-omp:
 check-file-mpi-omp:
-endif !MPI_SUPPORTED
-else !OPENMP_SUPPORTED
+endif !HAVE_MPI_SUPPORT
+else !HAVE_OPENMP_SUPPORT
 check-run-mpi-omp:
 check-file-mpi-omp:
-endif !OPENMP_SUPPORTED
+endif !HAVE_OPENMP_SUPPORT
 
 CLEANFILES += check-file-mpi-omp
 

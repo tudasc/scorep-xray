@@ -37,17 +37,17 @@ XFAIL_TESTS_MPI =
 ## variables TESTS, XFAIL_TESTS and TESTs_ENVIRONMENT have been
 ## replaced with SERIAL/OMP/MPI/HYBRID versions.
 
-if MPI_SUPPORTED
+if HAVE_MPI_SUPPORT
 check-run-mpi: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-mpi-am
 check-file-mpi: 
 	rm -f check-file-mpi
 	echo "# Available MPI tests:" > check-file-mpi
 	for i in $(TESTS_MPI); do echo "$$i" >> check-file-mpi; done
-else !MPI_SUPPORTED
+else !HAVE_MPI_SUPPORT
 check-run-mpi:
 check-file-mpi:
-endif !MPI_SUPPORTED
+endif !HAVE_MPI_SUPPORT
 
 CLEANFILES += check-file-mpi
 

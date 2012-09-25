@@ -37,17 +37,17 @@ XFAIL_TESTS_OMP =
 ## variables TESTS, XFAIL_TESTS and TESTs_ENVIRONMENT have been
 ## replaced with SERIAL/OMP/MPI/HYBRID versions
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 check-run-omp: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-omp-am
 check-file-omp: 
 	rm -f check-file-omp
 	echo "# Available OpenMP tests:" > check-file-omp
 	for i in $(TESTS_OMP); do echo "$$i" >> check-file-omp; done
-else !OPENMP_SUPPORTED
+else !HAVE_OPENMP_SUPPORT
 check-run-omp:
 check-file-omp:
-endif !OPENMP_SUPPORTED
+endif !HAVE_OPENMP_SUPPORT
 
 CLEANFILES += check-file-omp
 

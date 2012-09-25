@@ -96,15 +96,13 @@ if test "x${ac_scorep_papi_header}" = "xyes" && test "x${ac_scorep_papi_library}
 fi
 AC_MSG_CHECKING([for papi support])
 AC_MSG_RESULT([$ac_scorep_have_papi])
-if test "x${ac_scorep_have_papi}" = "xyes"; then
-    AC_SCOREP_DEFINE_HAVE([PAPI], [1],   [Defined if libpapi is available.])
-    AC_SUBST([SCOREP_PAPI_LDFLAGS], ["-L${ac_scorep_papi_lib_dir} -R${ac_scorep_papi_lib_dir}"])
-    AC_SUBST([SCOREP_PAPI_LIBS],    ["-l${ac_scorep_papi_lib_name} ${ac_scorep_papi_additional_libs}"])
-else
-    AC_SUBST([SCOREP_PAPI_LDFLAGS], [""])
-    AC_SUBST([SCOREP_PAPI_LIBS],    [""])
-fi
-AM_CONDITIONAL([HAVE_PAPI],         [test "x${ac_scorep_have_papi}" = "xyes"])
+AC_SCOREP_COND_HAVE([PAPI],
+                    [test "x${ac_scorep_have_papi}" = "xyes"],
+                    [Defined if libpapi is available.],
+                    [AC_SUBST([SCOREP_PAPI_LDFLAGS], ["-L${ac_scorep_papi_lib_dir} -R${ac_scorep_papi_lib_dir}"])
+                     AC_SUBST([SCOREP_PAPI_LIBS],    ["-l${ac_scorep_papi_lib_name} ${ac_scorep_papi_additional_libs}"])],
+                    [AC_SUBST([SCOREP_PAPI_LDFLAGS], [""])
+                     AC_SUBST([SCOREP_PAPI_LIBS],    [""])])
 AC_SUBST([SCOREP_PAPI_CPPFLAGS],    [$ac_scorep_papi_cppflags])
 AC_SUBST([SCOREP_PAPI_LIBDIR],      [$ac_scorep_papi_lib_dir])
 AC_SCOREP_SUMMARY([PAPI support],   [${ac_scorep_have_papi}])
@@ -152,13 +150,13 @@ AC_LANG_POP([C])
 
 
 dnl generating results/output/summary
-AS_IF([test "x${ac_scorep_getrusage}" = "xyes"],
-      [AC_SCOREP_DEFINE_HAVE([GETRUSAGE], [1], [Defined if getrusage() is available.])])
+AC_SCOREP_COND_HAVE([GETRUSAGE],
+                    [test "x${ac_scorep_getrusage}" = "xyes"],
+                    [Defined if getrusage() is available.])
 AS_IF([test "x${ac_scorep_rusage_thread}" = "xyes"],
       [AC_DEFINE([HAVE_RUSAGE_THREAD], [1], [Defined if RUSAGE_THREAD is available.])
        AC_DEFINE([SCOREP_RUSAGE_SCOPE], [RUSAGE_THREAD], [Defined to RUSAGE_THREAD, if it is available, else to RUSAGE_SELF.])],
       [AC_DEFINE([SCOREP_RUSAGE_SCOPE], [RUSAGE_SELF],   [Defined to RUSAGE_THREAD, if it is available, else to RUSAGE_SELF.])])
-AM_CONDITIONAL([HAVE_GETRUSAGE], [test "x${ac_scorep_getrusage}" = "xyes"])
 AC_SUBST([SCOREP_RUSAGE_CPPFLAGS], [$ac_scorep_rusage_cppflags])
 AC_SCOREP_SUMMARY([getrusage support], [${ac_scorep_getrusage}])
 AS_IF([test "x${ac_scorep_rusage_thread}" = "xno"],

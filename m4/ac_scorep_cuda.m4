@@ -53,20 +53,16 @@ AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcudart_cppflags}], [${cu
 
 AC_SCOREP_BACKEND_LIB([libcuda])
 
-AS_IF([test "x${scorep_have_libcudart}" = "xyes" && \
-       test "x${scorep_have_libcupti}"  = "xyes" && \
-       test "x${scorep_have_libcuda}"   = "xyes"],
-      [scorep_have_cuda="yes"
-       AM_CONDITIONAL([HAVE_CUDA], [test 1 -eq 1])
-       AC_SCOREP_DEFINE_HAVE([CUDA], [1], [Defined if cuda is available.])
-       AC_SUBST(CUDA_CPPFLAGS, ["${with_libcudart_cppflags} ${with_libcupti_cppflags}"])
-       AC_SUBST(CUDA_LDFLAGS,  ["${with_libcuda_ldflags} ${with_libcudart_ldflags} ${with_libcupti_ldflags}"])
-       AC_SUBST(CUDA_LIBS,     ["${with_libcuda_libs} ${with_libcudart_libs} ${with_libcupti_libs}"])],
-      [AM_CONDITIONAL([HAVE_CUDA], [test 1 -eq 0])
-       AC_DEFINE(HAVE_CUDA,    [0], [Defined if cuda is available.])
-       AC_SUBST(CUDA_CPPFLAGS, [""])
-       AC_SUBST(CUDA_LDFLAGS,  [""])
-       AC_SUBST(CUDA_LIBS,     [""])])
+AC_SCOREP_COND_HAVE([CUDA],
+                    [test "x${scorep_have_libcudart}" = "xyes" && test "x${scorep_have_libcupti}"  = "xyes" && test "x${scorep_have_libcuda}"   = "xyes"],
+                    [Defined if cuda is available.],
+                    [scorep_have_cuda="yes"
+                     AC_SUBST(CUDA_CPPFLAGS, ["${with_libcudart_cppflags} ${with_libcupti_cppflags}"])
+                     AC_SUBST(CUDA_LDFLAGS,  ["${with_libcuda_ldflags} ${with_libcudart_ldflags} ${with_libcupti_ldflags}"])
+                     AC_SUBST(CUDA_LIBS,     ["${with_libcuda_libs} ${with_libcudart_libs} ${with_libcupti_libs}"])],
+                    [AC_SUBST(CUDA_CPPFLAGS, [""])
+                     AC_SUBST(CUDA_LDFLAGS,  [""])
+                     AC_SUBST(CUDA_LIBS,     [""])])
 
 AC_SCOREP_SUMMARY([cuda support], [${scorep_have_cuda}, see also libcudart, libcuda, and libcupti support])
 ])

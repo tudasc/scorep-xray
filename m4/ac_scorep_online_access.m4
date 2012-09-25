@@ -59,10 +59,9 @@ case ${build_os} in
             ;;
 esac
 
-AM_CONDITIONAL([HAVE_ONLINE_ACCESS], [test "x${ac_scorep_have_online_access}" = "xyes" ])
-AM_COND_IF([HAVE_ONLINE_ACCESS],
-           [AC_SCOREP_DEFINE_HAVE([ONLINE_ACCESS], [1], [Defined if online access is possible.])])
-
+AC_SCOREP_COND_HAVE([ONLINE_ACCESS],
+                    [test "x${ac_scorep_have_online_access}" = "xyes" ],
+                    [Defined if online access is possible.])
 AC_MSG_CHECKING([for online access possible])
 AC_MSG_RESULT([${ac_scorep_have_online_access}])
 AC_SCOREP_SUMMARY([Online access support], [${ac_scorep_have_online_access}])

@@ -46,14 +46,26 @@ AH_TEMPLATE([HAVE_]$1_UP[_NO_ASSERT],
             [Define to 1 to disable assertions (like NDEBUG).])
 ])
 
-# AC_SCOREP_DEFINE_HAVE(VARIABLE, VALUE, [DESCRIPTION])
+# AC_SCOREP_DEFINE_HAVE(VARIABLE, VALUE[, DESCRIPTION])
 # ------------------------------------------------------
 # Like AC_DEFINE, but prepends the HAVE_ prefix and also defines the
 # HAVE_BACKEND_ variant, if in cross mode.
 #
 AC_DEFUN([AC_SCOREP_DEFINE_HAVE], [
-AC_DEFINE(HAVE_[]$1, [$2], [$3])
-AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"], [
+AC_DEFINE(HAVE_[]$1,         [$2], [$3])
 AC_DEFINE(HAVE_BACKEND_[]$1, [$2], [$3])
 ])
+
+# AC_SCOREP_COND_HAVE(VARIABLE, CONDITION[, DESCRIPTION[, COND_TRUE[, COND_FALSE]]])
+# --------------------------------------------------
+# Convinience macro to define a AM_CONDITIONAL and always a
+# AC_SCOREP_DEFINE_HAVE at once. VARIABLE will be prefixed with HAVE_
+#
+AC_DEFUN([AC_SCOREP_COND_HAVE], [
+AM_CONDITIONAL(HAVE_[]$1, [$2])
+AM_COND_IF(HAVE_[]$1,
+           [AC_SCOREP_DEFINE_HAVE([$1], [1], [$3])
+            $4],
+           [AC_SCOREP_DEFINE_HAVE([$1], [0], [$3])
+            $5])
 ])
