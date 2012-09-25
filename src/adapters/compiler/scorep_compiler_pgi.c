@@ -45,112 +45,27 @@
  ***************************************************************************************/
 
 /**
- * @brief Data structures to be used by the PGI compiler.
+ * @brief Data structure to be used by the PGI compiler.
  * Container structure to map profiling informations, like function names
  * and region handles.
  */
-
-#if __i386__
-
-/*
- * .LENT1:
- *      .4byte	0,0,0,0,0,0,0,0
- */
-struct PGI_LENT_32
+struct s1
 {
-    uint32_t data[ 8 ];
+    long       l1;
+    long       l2;
+    double     file_handle;
+    double     region_handle;
+    long       isseen;
+    char*      c;
+    void*      p1;
+    long       lineno;
+    void*      p2;
+    struct s1* p3;
+    int        i1;
+    int        i2;
+    char*      file_name;
+    char*      region_name;
 };
-
-/*
- * .LOOP1:
- *      .4byte	0,0,0,0,0,0,0,0
- */
-struct PGI_LOOP_32
-{
-    uint32_t data[ 8 ];
-};
-
-/*
- * PGI_PROFENT1:
- *      .4byte	0,0,0,0,0,0,0
- *      .4byte	main,.LENT1,19,.LOOP1,0,0,0,.FLNM,.FCNM1
- */
-struct PGI_PROFENT_32
-{
-    uint32_t            handle;
-    uint32_t            data0[ 6 ];
-    void                ( * func )();
-    struct PGI_LENT_32* lent;
-    uint32_t            lineno;
-    struct PGI_LOOP_32* loop;
-    uint32_t            data1[ 3 ];
-    char*               flnm;
-    char*               fcnm;
-};
-
-#elif __x68_64__
-
-/*
- * .LENT1:
- *      .4byte	0,0
- *      .quad	0
- *      .4byte	0,0,0,0,0,0
- *      .quad	0
- */
-struct PGI_LENT_64
-{
-    uint32_t data0[ 2 ];
-    uint64_t data1;
-    uint32_t data2[ 6 ];
-    uint64_t data3;
-};
-
-/*
- * .LOOP1:
- *      .4byte	0,0,0,0
- *      .quad	0,0
- *      .4byte	0,0
- */
-struct PGI_LOOP_64
-{
-    uint32_t data0[ 4 ];
-    uint64_t data1[ 2 ];
-    uint32_t data2[ 2 ];
-};
-
-/*
- * PGI_PROFENT1:
- *      .4byte	0,0
- *      .quad	0
- *      .4byte	0,0,0,0,0,0
- *      .quad	main,.LENT1
- *      .4byte	19,0
- *      .quad	.LOOP1,0
- *      .4byte	0,0
- *      .quad	.FLNM,.FCNM1
- */
-struct PGI_PROFENT_64
-{
-    uint32_t            handle;
-    uint32_t            data0;
-    uint64_t            data1;
-    uint32_t            data2[ 6 ];
-    void                ( * func )();
-    struct PGI_LENT_64* lent;
-    uint32_t            lineno;
-    uint32_t            data3;
-    struct PGI_LOOP_64* loop;
-    uint64_t            data4;
-    uint32_t            data5[ 2 ];
-    char*               flnm;
-    char*               fcnm;
-};
-
-#else
-
-#error "unsupported architecture"
-
-#endif
 
 
 extern size_t scorep_compiler_subsystem_id;
@@ -320,12 +235,18 @@ __rouexit()
                         "Termination routine from PGI compiler instrumentation called" );
 }
 
-static inline void
-pgi_enter_region( SCOREP_RegionHandle* region,
-                  char*                region_name,
-                  char*                file_name,
-                  int                  lineno )
+/**
+ * called at the beginning of each instrumented routine
+ */
+#pragma save_all_regs
+void
+___rouent2( struct s1* p )
 {
+    /* For the reason of having 8 bytes the handles are stored in double fields.
+       However, we want to use them as 64 byte integers. */
+    SCOREP_SourceFileHandle* file   = ( SCOREP_SourceFileHandle* )&( p->file_handle );
+    SCOREP_RegionHandle*     region = ( SCOREP_RegionHandle* )&( p->region_handle );
+
     /* Ensure the compiler adapter is initialized */
     if ( scorep_compiler_initialize )
     {
@@ -348,22 +269,25 @@ pgi_enter_region( SCOREP_RegionHandle* region,
     }
 
     /* Register new regions */
-    if ( !*region )
+    if ( !p->isseen )
     {
+        /* get file id belonging to file name */
         SCOREP_MutexLock( scorep_compiler_region_mutex );
-        if ( !*region )
+        if ( !p->isseen )
         {
-            UTILS_IO_SimplifyPath( file_name );
+            p->isseen = 1;
+            UTILS_IO_SimplifyPath( p->file_name );
 
-            if ( ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
-                 ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
-                 ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
-                 ( !SCOREP_Filter_Match( file_name, region_name, false ) ) )
+            *file = scorep_compiler_get_file( p->file_name );
+            if ( ( strncmp( p->region_name, "POMP", 4 ) != 0 ) &&
+                 ( strncmp( p->region_name, "Pomp", 4 ) != 0 ) &&
+                 ( strncmp( p->region_name, "pomp", 4 ) != 0 ) &&
+                 ( !SCOREP_Filter_Match( p->file_name, p->region_name, false ) ) )
             {
-                *region = SCOREP_DefineRegion( region_name,
+                *region = SCOREP_DefineRegion( p->region_name,
                                                NULL,
-                                               SCOREP_DefineSourceFile( file_name ),
-                                               lineno,
+                                               *file,
+                                               p->lineno,
                                                SCOREP_INVALID_LINE_NO,
                                                SCOREP_ADAPTER_COMPILER,
                                                SCOREP_REGION_FUNCTION );
@@ -392,59 +316,27 @@ pgi_enter_region( SCOREP_RegionHandle* region,
     pgi_data->callstack_count++;
 }
 
-#if __i386__
-
 #pragma save_all_regs
 void
-___rouent( struct PGI_PROFENT_32* profent )
+___rouent( struct s1* p )
 {
-    pgi_enter_region( &profent->handle,
-                      profent->fcnm,
-                      profent->flnm,
-                      profent->lineno );
+    ___rouent2( p );
 }
 
 #pragma save_all_regs
 void
-___rouent2( struct PGI_PROFENT_32* profent )
+___rouent64( void )
 {
-    pgi_enter_region( &profent->handle,
-                      profent->fcnm,
-                      profent->flnm,
-                      profent->lineno );
+    UTILS_WARN_ONCE( "Unsupported PGI %d.%d-%d compiler function instrumentation.",
+                     __PGIC__, __PGIC_MINOR__, __PGIC_PATCHLEVEL__ );
 }
-
-#elif __x86_64__
-
-/**
- * Called at the beginning of each instrumented routine
- *
- * The profent is in register %r9, which is by the amd64 calling convention
- * the 6th argument
- */
-#pragma save_all_regs
-void
-___rouent64( void*                  arg0,
-             void*                  arg1,
-             void*                  arg2,
-             void*                  arg3,
-             void*                  arg4,
-             struct PGI_PROFENT_64* profent )
-{
-    pgi_enter_region( &profent->handle,
-                      profent->fcnm,
-                      profent->flnm,
-                      profent->lineno );
-}
-
-#endif
 
 /**
  * called at the end of each instrumented routine
  */
 #pragma save_all_regs
 void
-___rouret( void )
+___rouret2( void )
 {
     /* Check whether adapter is already finalized */
     if ( scorep_compiler_finalized )
@@ -478,16 +370,16 @@ ___rouret( void )
 
 #pragma save_all_regs
 void
-___rouret2( void )
+___rouret( void )
 {
-    ___rouret();
+    ___rouret2();
 }
 
 #pragma save_all_regs
 void
 ___rouret64( void )
 {
-    ___rouret();
+    /* The ...64 bit versions are not supported. */
 }
 
 #pragma save_all_regs
