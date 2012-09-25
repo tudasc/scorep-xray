@@ -588,7 +588,7 @@ SCOREP_Hooks_Post_MPI_Irecv
         /*
          * get the internal MPI_Group of the communicator for later rank
          * translation, can't store the MPI_Comm, because it may have gone
-         * until completion of this reuest
+         * until completion of this request
          */
         if ( scorep_mpiprofiling_get_group( comm, &group ) != 0 )
         {
@@ -829,7 +829,7 @@ SCOREP_Hooks_Post_MPI_Recv_init
         /*
          * get the internal MPI_Group of the communicator for later rank
          * translation, can't store the MPI_Comm, because it may have gone
-         * until completion of this reuest
+         * until completion of this request
          */
         if ( scorep_mpiprofiling_get_group( comm, &group ) != 0 )
         {
