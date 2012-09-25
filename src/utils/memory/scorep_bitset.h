@@ -27,6 +27,11 @@
  *
  */
 
+#include <assert.h>
+#include <stdint.h>
+#include <stddef.h>
+#include <stdio.h>
+
 
 #define BITSET_WORDSIZE    64
 #define __BITSET_TYPE( x ) uint##x##_t

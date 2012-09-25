@@ -26,19 +26,19 @@
  */
 
 #include <config.h>
-
-
-#include <SCOREP_Allocator.h>
-#include <UTILS_Debug.h>
 #include "scorep_allocator.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
-#include <assert.h>
+#include <SCOREP_Allocator.h>
 
-#include "scorep_page.h"
+#include <assert.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <UTILS_Debug.h>
+
 #include "scorep_bitset.h"
+#include "scorep_page.h"
 
 #if HAVE( SCOREP_VALGRIND )
 #  include <valgrind/memcheck.h>

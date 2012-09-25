@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+#include <SCOREP_Hashtab.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -31,7 +32,6 @@
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 
-#include <SCOREP_Hashtab.h>
 
 /*
  * --------------------------------------------------------------------------

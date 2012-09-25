@@ -27,6 +27,11 @@
  *
  */
 
+#include <assert.h>
+#include <stdint.h>
+#include <stdio.h>
+
+#include "scorep_allocator.h"
 
 static inline uint32_t
 page_size( SCOREP_Allocator_Allocator* allocator )

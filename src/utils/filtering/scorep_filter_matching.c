@@ -29,6 +29,8 @@
  */
 
 #include <config.h>
+#include <scorep_filter_matching.h>
+
 #include <fnmatch.h>
 #include <ctype.h>
 #include <malloc.h>
@@ -38,7 +40,6 @@
 #include <UTILS_CStr.h>
 #include <UTILS_Debug.h>
 #include <SCOREP_Filter.h>
-#include <scorep_filter_matching.h>
 
 #define STR( x ) STR_( x )
 #define STR_( x ) #x

@@ -24,8 +24,9 @@
  */
 
 #include <config.h>
-#include <string.h>
 #include <SCOREP_Bitstring.h>
+
+#include <string.h>
 
 void
 SCOREP_Bitstring_Set( uint8_t* bitstring, uint32_t index )

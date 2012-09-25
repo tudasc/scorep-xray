@@ -28,11 +28,10 @@
  */
 
 
+#include <SCOREP_Allocator.h>
+
 #include <stdbool.h>
 #include <stdint.h>
-
-
-#include <SCOREP_Allocator.h>
 
 
 typedef union SCOREP_Allocator_Object SCOREP_Allocator_Object;

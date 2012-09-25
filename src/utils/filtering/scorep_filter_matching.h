@@ -27,6 +27,9 @@
  * manipulation functions.
  */
 
+#include <stdbool.h>
+#include <UTILS_Error.h>
+
 /**
  * Adds a filter rule to the file filter rule list.
  * @param rule       The rule's string pattern.
