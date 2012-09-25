@@ -217,26 +217,28 @@ void
 SCOREP_Filter_FreeRules()
 {
     /* Free function rules. */
-    scorep_filter_rule_t* current_rule = scorep_filter_function_rules_head;
-    scorep_filter_rule_t* deleted_rule;
-    while ( current_rule != NULL )
+    while ( scorep_filter_function_rules_head )
     {
+        scorep_filter_rule_t* current_rule = scorep_filter_function_rules_head;
+        scorep_filter_function_rules_head = current_rule->next;
+
         free( current_rule->pattern );
         free( current_rule->pattern2 );
-        deleted_rule = current_rule;
-        current_rule = current_rule->next;
-        free( deleted_rule );
+        free( current_rule );
     }
+    scorep_filter_function_rules_tail = NULL;
 
     /* Free file rules. */
-    current_rule = scorep_filter_file_rules_head;
-    while ( current_rule != NULL )
+    while ( scorep_filter_file_rules_head )
     {
+        scorep_filter_rule_t* current_rule = scorep_filter_file_rules_head;
+        scorep_filter_file_rules_head = current_rule->next;
+
         free( current_rule->pattern );
-        deleted_rule = current_rule;
-        current_rule = current_rule->next;
-        free( deleted_rule );
+        free( current_rule->pattern2 );
+        free( current_rule );
     }
+    scorep_filter_file_rules_tail = NULL;
 }
 
 /* **************************************************************************************
