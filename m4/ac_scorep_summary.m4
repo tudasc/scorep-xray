@@ -54,7 +54,7 @@ AC_DEFUN([AC_SCOREP_SUMMARY_COLLECT], [
     (
     AS_ECHO(["Configure command:"])
     cat <<_ACEOC
-AS_HELP_STRING([$ac_scorep_summary_orig_configure_command], [], 32, 128)
+AS_HELP_STRING([$ac_scorep_summary_orig_configure_command], [], 128, 128)
 
 _ACEOC
     sep="Configuration summary:"
