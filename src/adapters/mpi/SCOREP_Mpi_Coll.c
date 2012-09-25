@@ -580,7 +580,7 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
     {
         int32_t        sz, N, me;
         uint64_t       sendbytes = 0, recvbytes = 0;
-        SCOREP_MpiRank root_loc  = SCOREP_MPI_RANK_TO_PE( root, comm );
+        SCOREP_MpiRank root_loc  = root;
 
         SCOREP_MPI_EVENT_GEN_OFF();
 
@@ -709,7 +709,7 @@ MPI_Gather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, 
     {
         int            sendsz, recvsz, N, me;
         uint64_t       sendbytes = 0, recvbytes = 0;
-        SCOREP_MpiRank root_loc  = SCOREP_MPI_RANK_TO_PE( root, comm );
+        SCOREP_MpiRank root_loc  = root;
 
         SCOREP_MPI_EVENT_GEN_OFF();
 
@@ -786,7 +786,7 @@ MPI_Gatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf,
     {
         int            recvsz, sendsz, me, N, i;
         uint64_t       sendbytes = 0, recvbytes = 0;
-        SCOREP_MpiRank root_loc  = SCOREP_MPI_RANK_TO_PE( root, comm );
+        SCOREP_MpiRank root_loc  = root;
 
         SCOREP_MPI_EVENT_GEN_OFF();
 
@@ -868,7 +868,7 @@ MPI_Reduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_
     {
         int            sz, me, N;
         uint64_t       sendbytes = 0, recvbytes = 0;
-        SCOREP_MpiRank root_loc  = SCOREP_MPI_RANK_TO_PE( root, comm );
+        SCOREP_MpiRank root_loc  = root;
 
         SCOREP_MPI_EVENT_GEN_OFF();
 
@@ -1158,7 +1158,7 @@ MPI_Scatter( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf,
     {
         int            sendsz, recvsz, N, me;
         uint64_t       sendbytes = 0, recvbytes = 0;
-        SCOREP_MpiRank root_loc  = SCOREP_MPI_RANK_TO_PE( root, comm );
+        SCOREP_MpiRank root_loc  = root;
 
         SCOREP_MPI_EVENT_GEN_OFF();
 
@@ -1238,7 +1238,7 @@ MPI_Scatterv( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype sendtype
     {
         int            sendcount, sendsz, recvsz, me, N, i;
         uint64_t       sendbytes = 0, recvbytes = 0;
-        SCOREP_MpiRank root_loc  = SCOREP_MPI_RANK_TO_PE( root, comm );
+        SCOREP_MpiRank root_loc  = root;
 
         SCOREP_MPI_EVENT_GEN_OFF();
 

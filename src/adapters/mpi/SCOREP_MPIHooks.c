@@ -349,6 +349,9 @@ SCOREP_Hooks_Post_MPI_Isend
      * operation timpack request is needed to cancel the timepack send aswell*/
     online_analysis_pod->tp_request = tp_request;
 
+    /* no rank translation done at completion */
+    online_analysis_pod->group = MPI_GROUP_NULL;
+
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
     scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
@@ -411,6 +414,9 @@ SCOREP_Hooks_Post_MPI_Issend
      * be automatically checked by the timepack pool. Only in case of original send cancel
      * operation timpack request is needed to cancel the timepack send aswell*/
     online_analysis_pod->tp_request = tp_request;
+
+    /* no rank translation done at completion */
+    online_analysis_pod->group = MPI_GROUP_NULL;
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
@@ -475,6 +481,9 @@ SCOREP_Hooks_Post_MPI_Ibsend
      * operation timpack request is needed to cancel the timepack send aswell*/
     online_analysis_pod->tp_request = tp_request;
 
+    /* no rank translation done at completion */
+    online_analysis_pod->group = MPI_GROUP_NULL;
+
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
     scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
@@ -538,6 +547,9 @@ SCOREP_Hooks_Post_MPI_Irsend
      * operation timpack request is needed to cancel the timepack send aswell*/
     online_analysis_pod->tp_request = tp_request;
 
+    /* no rank translation done at completion */
+    online_analysis_pod->group = MPI_GROUP_NULL;
+
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
     scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
@@ -560,12 +572,25 @@ SCOREP_Hooks_Post_MPI_Irecv
 )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __func__ );
-    int global_source = 0;
+    MPI_Group group         = MPI_GROUP_NULL;
+    int       global_source = 0;
 
     if ( source != MPI_ANY_SOURCE )
     {
         /* translate rank within the comm to the rank in the mpiprofiler world communicator, if not translated don't profile */
         if ( scorep_mpiprofiling_rank_to_pe( source, comm, &global_source ) != 0 )
+        {
+            return;
+        }
+    }
+    else
+    {
+        /*
+         * get the internal MPI_Group of the communicator for later rank
+         * translation, can't store the MPI_Comm, because it may have gone
+         * until completion of this reuest
+         */
+        if ( scorep_mpiprofiling_get_group( comm, &group ) != 0 )
         {
             return;
         }
@@ -597,6 +622,9 @@ SCOREP_Hooks_Post_MPI_Irecv
     /* Store global rank of the source and the communication tag associated with the recv operation */
     online_analysis_pod->tp_comm_partner = global_source;
     online_analysis_pod->tp_tag          = tag;
+
+    /* store the associated MPI_Group for later rank translation of the source */
+    online_analysis_pod->group = group;
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* orig_req = scorep_mpi_request_get( *request );
@@ -638,6 +666,9 @@ SCOREP_Hooks_Post_MPI_Send_init
     online_analysis_pod->tp_comm_partner = global_dest;
     online_analysis_pod->tp_tag          = tag;
 
+    /* no rank translation done at completion */
+    online_analysis_pod->group = MPI_GROUP_NULL;
+
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
     scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
@@ -675,6 +706,9 @@ SCOREP_Hooks_Post_MPI_Ssend_init
     /* store communoication partner rank and tag for later piggyback send operation */
     online_analysis_pod->tp_comm_partner = global_dest;
     online_analysis_pod->tp_tag          = tag;
+
+    /* no rank translation done at completion */
+    online_analysis_pod->group = MPI_GROUP_NULL;
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
@@ -714,6 +748,9 @@ SCOREP_Hooks_Post_MPI_Rsend_init
     online_analysis_pod->tp_comm_partner = global_dest;
     online_analysis_pod->tp_tag          = tag;
 
+    /* no rank translation done at completion */
+    online_analysis_pod->group = MPI_GROUP_NULL;
+
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
     scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
@@ -752,6 +789,9 @@ SCOREP_Hooks_Post_MPI_Bsend_init
     online_analysis_pod->tp_comm_partner = global_dest;
     online_analysis_pod->tp_tag          = tag;
 
+    /* no rank translation done at completion */
+    online_analysis_pod->group = MPI_GROUP_NULL;
+
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
     scorep_request->online_analysis_pod = ( void* )online_analysis_pod;
@@ -773,12 +813,25 @@ SCOREP_Hooks_Post_MPI_Recv_init
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", myrank, __func__ );
 
-    int global_source = 0;
+    MPI_Group group         = MPI_GROUP_NULL;
+    int       global_source = 0;
 
     if ( source != MPI_ANY_SOURCE )
     {
         /* translate rank within the comm to the rank in the mpiprofiler world communicator, if not translated don't profile */
         if ( scorep_mpiprofiling_rank_to_pe( source, comm, &global_source ) != 0 )
+        {
+            return;
+        }
+    }
+    else
+    {
+        /*
+         * get the internal MPI_Group of the communicator for later rank
+         * translation, can't store the MPI_Comm, because it may have gone
+         * until completion of this reuest
+         */
+        if ( scorep_mpiprofiling_get_group( comm, &group ) != 0 )
         {
             return;
         }
@@ -810,6 +863,9 @@ SCOREP_Hooks_Post_MPI_Recv_init
     /* Store global rank of the source and the communication tag associated with the recv operation */
     online_analysis_pod->tp_comm_partner = global_source;
     online_analysis_pod->tp_tag          = tag;
+
+    /* store the associated MPI_Group for later rank translation of the source */
+    online_analysis_pod->group = group;
 
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* orig_req = scorep_mpi_request_get( *request );
@@ -908,7 +964,13 @@ SCOREP_Hooks_Pre_MPI_Request_free
 //      printf("canceled successfully\n");
 
     /* free online analysis request pod */
+    scorep_wait_state_request_tracking* online_analysis_pod = ( scorep_wait_state_request_tracking* )scorep_req->online_analysis_pod;
+    if ( online_analysis_pod->group != MPI_GROUP_NULL )
+    {
+        PMPI_Group_free( &online_analysis_pod->group );
+    }
     free( scorep_req->online_analysis_pod );
+    scorep_req->online_analysis_pod = NULL;
 }
 
 void
@@ -978,8 +1040,7 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete
          * and translate it to the global rank. Else get it from the pod*/
         if ( online_analysis_pod->tp_comm_partner_wc == 1 )
         {
-            MPI_Comm orig_comm = orig_req->comm;
-            if ( scorep_mpiprofiling_rank_to_pe( status->MPI_SOURCE, orig_comm, &global_source ) != 0 )
+            if ( scorep_mpiprofiling_rank_to_pe_by_group( status->MPI_SOURCE, online_analysis_pod->group, &global_source ) != 0 )
             {
                 global_source = MPI_PROC_NULL;
                 UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "%s: WARNING: The source global rank of the non-blocking receive operation using wild-card as a source could not be recovered. Online MPI Wait States analysis might produce wrong results or hang the application.\n" );
@@ -1028,7 +1089,7 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete
     /* Free the memory of the pod unless the request is persistent*/
     if ( !( flags & SCOREP_MPI_REQUEST_IS_PERSISTENT ) )
     {
-        free( orig_req->online_analysis_pod );
+        SCOREP_Hooks_Pre_MPI_Request_free( orig_req );
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "%s, online_pod freed\n", __func__ );
     }
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING,  "EXIT: HOOK : myrank = %d,%s\n", myrank, __func__ );
@@ -1077,8 +1138,7 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking
          * and translate it to the global rank. Else get it from the pod*/
         if ( online_analysis_pod->tp_comm_partner_wc == 1 )
         {
-            MPI_Comm orig_comm = orig_req->comm;
-            if ( scorep_mpiprofiling_rank_to_pe( status->MPI_SOURCE, orig_comm, &global_source ) != 0 )
+            if ( scorep_mpiprofiling_rank_to_pe_by_group( status->MPI_SOURCE, online_analysis_pod->group, &global_source ) != 0 )
             {
                 global_source = MPI_PROC_NULL;
                 UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "%s: WARNING: The source global rank of the non-blocking receive operation using wild-card as a source could not be recovered. Online MPI Wait States analysis might produce wrong results or hang the application.\n" );
@@ -1131,7 +1191,7 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking
     /* Free the memory of the pod unless the request is persistent*/
     if ( !( flags & SCOREP_MPI_REQUEST_IS_PERSISTENT ) )
     {
-        free( orig_req->online_analysis_pod );
+        SCOREP_Hooks_Pre_MPI_Request_free( orig_req );
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "%s, online_pod freed\n", __func__ );
     }
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING,  "EXIT: HOOK : myrank = %d,%s\n", myrank, __func__ );

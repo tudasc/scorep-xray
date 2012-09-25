@@ -303,10 +303,4 @@ extern struct scorep_mpi_world_type scorep_mpi_world;
  */
 #define SCOREP_MPI_COMM_HANDLE( c ) ( ( c ) == MPI_COMM_WORLD ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_handle( c ) )
 
-/**
- * @def SCOREP_MPI_RANK_TO_PE
- * Translates a rank with respect to arbitrary communicator to its global rank
- */
-#define SCOREP_MPI_RANK_TO_PE( r, c ) r
-
 #endif // SCOREP_MPI_COMMUNICATOR_H

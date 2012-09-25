@@ -322,40 +322,51 @@ scorep_mpiprofile_init_timepack( void* buf, uint64_t time )
 }
 
 int
-scorep_mpiprofiling_rank_to_pe( int      rank,
-                                MPI_Comm comm,
-                                int*     global_rank )
+scorep_mpiprofiling_get_group( MPI_Comm   comm,
+                               MPI_Group* group )
 {
-    MPI_Group group;
-    int32_t   inter;
-    int       ret_value;
+    *group = MPI_GROUP_NULL;
 
     if ( comm == MPI_COMM_WORLD )
     {
-        ( *global_rank ) = rank;
         return 0;
     }
+
+    int32_t inter;
+    int     ret_value;
     /* inter-communicators need different call than intra-communicators */
     PMPI_Comm_test_inter( comm, &inter );
     if ( inter )
     {
-        ret_value = PMPI_Comm_remote_group( comm, &group );
+        ret_value = PMPI_Comm_remote_group( comm, group );
     }
     else
     {
-        ret_value = PMPI_Comm_group( comm, &group );
+        ret_value = PMPI_Comm_group( comm, group );
     }
 
     if ( ret_value == MPI_ERR_COMM )
     {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "%s: WARNING: the communicator is not valid\n", __func__ );
+        UTILS_WARNING( "The communicator is not valid" );
         return 2;
+    }
+
+    return 0;
+}
+
+int
+scorep_mpiprofiling_rank_to_pe_by_group( int       rank,
+                                         MPI_Group group,
+                                         int*      global_rank )
+{
+    if ( group == MPI_GROUP_NULL )
+    {
+        ( *global_rank ) = rank;
+        return 0;
     }
 
     /* translate rank with respect to \a MPI_COMM_WORLD */
     PMPI_Group_translate_ranks( group, 1, &rank, world_comm_dup.group, global_rank );
-    /* free internal group of input communicator */
-    PMPI_Group_free( &group );
 
     if ( *global_rank == MPI_UNDEFINED )
     {
@@ -363,6 +374,26 @@ scorep_mpiprofiling_rank_to_pe( int      rank,
     }
 
     return 0;
+}
+
+int
+scorep_mpiprofiling_rank_to_pe( int      rank,
+                                MPI_Comm comm,
+                                int*     global_rank )
+{
+    MPI_Group group;
+    if ( scorep_mpiprofiling_get_group( comm, &group ) )
+    {
+        return 2;
+    }
+
+    int ret_value = scorep_mpiprofiling_rank_to_pe_by_group( rank,
+                                                             group,
+                                                             global_rank );
+    /* free internal group of input communicator */
+    PMPI_Group_free( &group );
+
+    return ret_value;
 }
 
 /**

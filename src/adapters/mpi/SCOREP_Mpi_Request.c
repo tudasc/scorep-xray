@@ -447,7 +447,7 @@ scorep_mpi_request_create( MPI_Request         request,
     hash_entry->lastreq->dest                = dest;
     hash_entry->lastreq->bytes               = bytes;
     hash_entry->lastreq->datatype            = datatype;
-    hash_entry->lastreq->comm                = comm;
+    hash_entry->lastreq->comm_handle         = SCOREP_MPI_COMM_HANDLE( comm );
     hash_entry->lastreq->id                  = id;
     hash_entry->lastreq->online_analysis_pod = NULL;
 }
@@ -572,8 +572,7 @@ scorep_mpi_check_request( scorep_mpi_request* req, MPI_Status* status )
 
             if ( xnb_active )
             {
-                SCOREP_MpiIrecv( SCOREP_MPI_RANK_TO_PE( status->MPI_SOURCE, req->comm ),
-                                 SCOREP_MPI_COMM_HANDLE( req->comm ),
+                SCOREP_MpiIrecv( status->MPI_SOURCE, req->comm_handle,
                                  status->MPI_TAG, count * sz, req->id );
             }
         }

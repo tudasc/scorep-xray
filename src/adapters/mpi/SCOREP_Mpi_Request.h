@@ -43,15 +43,15 @@ enum scorep_mpi_requests_flags
 
 typedef struct
 {
-    MPI_Request         request;
-    unsigned            flags;
-    int                 tag;
-    int                 dest;
-    int                 bytes;
-    MPI_Datatype        datatype;
-    MPI_Comm            comm;
-    SCOREP_MpiRequestId id;
-    void*               online_analysis_pod;
+    MPI_Request                       request;
+    unsigned                          flags;
+    int                               tag;
+    int                               dest;
+    int                               bytes;
+    MPI_Datatype                      datatype;
+    SCOREP_LocalMPICommunicatorHandle comm_handle;
+    SCOREP_MpiRequestId               id;
+    void*                             online_analysis_pod;
 } scorep_mpi_request;
 
 /**
