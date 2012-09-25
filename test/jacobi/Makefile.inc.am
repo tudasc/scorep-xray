@@ -42,7 +42,7 @@ TESTS_SERIAL += jacobi_serial_c
 
 ## OpenMP C
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 
 # the pomp.c file needs to be compiled without compiler instrumentation
 # so achieve this, we put it in a noinst library and link against it
@@ -102,7 +102,7 @@ TESTS_SERIAL += jacobi_serial_cxx
 
 ## OpenMP C++
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 noinst_LTLIBRARIES           += libjacobi_pomp_cxx.la
 libjacobi_pomp_cxx_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C++/pomp.c
 libjacobi_pomp_cxx_la_CPPFLAGS = $(AM_CPPFLAGS)
@@ -162,7 +162,7 @@ TESTS_SERIAL += jacobi_serial_f90
 
 ## OpenMP Fortran
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 
 if ! SCOREP_COMPILER_CRAY
 # The cray fortran compiler bails out on #line directives so we just
@@ -206,7 +206,7 @@ endif
 # if ! SCOREP_COMPILER_CRAY
 
 endif
-# if OPENMP_SUPPORTED
+# if HAVE_OPENMP_SUPPORT
 
 endif
 # if FORTRAN_SUPPORT_ALLOCATABLE

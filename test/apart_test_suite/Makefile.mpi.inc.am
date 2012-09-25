@@ -19,7 +19,7 @@
 ## author     Yury Oleynik <oleynik@in.tum.de>
 ## maintainer Yury Oleynik <oleynik@in.tum.de>
 
-if MPI_SUPPORTED
+if HAVE_MPI_SUPPORT
 
 
 ## MPI Fortran

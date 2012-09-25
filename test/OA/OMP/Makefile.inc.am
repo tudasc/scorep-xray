@@ -1,4 +1,4 @@
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 if HAVE_ONLINE_ACCESS
 
 check_PROGRAMS += oa_omp_test
@@ -26,4 +26,4 @@ TESTS_OMP += ./../test/OA/OMP/run_oa_omp_test.sh
 EXTRA_DIST       += $(SRC_ROOT)test/OA/OMP/run_oa_omp_test.sh.in
 
 endif #if HAVE_ONLINE_ACCESS
-endif #if OPENMP_SUPPORTED
+endif #if HAVE_OPENMP_SUPPORT

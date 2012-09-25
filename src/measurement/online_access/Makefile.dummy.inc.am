@@ -63,7 +63,7 @@ noinst_LTLIBRARIES +=                      	\
     libscorep_oa_fortran_sub3.la 			\
     libscorep_oa_fortran_sub4.la
     
-if MPI_SUPPORTED
+if HAVE_MPI_SUPPORT
 
 noinst_LTLIBRARIES += libscorep_oa_mpi.la
 

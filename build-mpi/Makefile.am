@@ -73,8 +73,8 @@ distclean-local:
 	rm -rf ../test/jacobi/hybrid
 
 
-if MPI_SUPPORTED
-if OPENMP_SUPPORTED
+if HAVE_MPI_SUPPORT
+if HAVE_OPENMP_SUPPORT
 installcheck-local: instrumenter-checks
 	@$(am__cd) ../test/jacobi/MPI/C    && $(MAKE) $(AM_MAKEFLAGS)
 	@$(am__cd) ../test/jacobi/hybrid/C && $(MAKE) $(AM_MAKEFLAGS)
@@ -87,9 +87,9 @@ installcheck-local:
 endif
 
 
-if MPI_SUPPORTED
+if HAVE_MPI_SUPPORT
 PARADIGMS = mpi
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 PARADIGMS += mpi_omp
 endif
 endif

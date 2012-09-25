@@ -71,21 +71,21 @@ for user_arg in user nouser; do
                     echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg" >> ${file_prefix}serial
 
                     # omp -------------------------------#
-@OPENMP_SUPPORTED_TRUE@                    for omp_args in openmp; do # add noopenmp when multilibs are ready, see above comment
-@OPENMP_SUPPORTED_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg $omp_arg" >> ${file_prefix}omp
-@OPENMP_SUPPORTED_TRUE@                    done
+@HAVE_OPENMP_SUPPORT_TRUE@                    for omp_args in openmp; do # add noopenmp when multilibs are ready, see above comment
+@HAVE_OPENMP_SUPPORT_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg $omp_arg" >> ${file_prefix}omp
+@HAVE_OPENMP_SUPPORT_TRUE@                    done
 
                     # mpi -------------------------------#
-@MPI_SUPPORTED_TRUE@                    for mpi_args in mpi; do # add nompi when multilibs are ready, see above comment
-@MPI_SUPPORTED_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg $mpi_arg" >> ${file_prefix}mpi
-@MPI_SUPPORTED_TRUE@                    done
+@HAVE_MPI_SUPPORT_TRUE@                    for mpi_args in mpi; do # add nompi when multilibs are ready, see above comment
+@HAVE_MPI_SUPPORT_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg $mpi_arg" >> ${file_prefix}mpi
+@HAVE_MPI_SUPPORT_TRUE@                    done
 
                     # mpi_omp ---------------------------#
-@MPI_SUPPORTED_TRUE@@OPENMP_SUPPORTED_TRUE@                    for mpi_args in mpi; do # add nompi when multilibs are ready, see above comment
-@MPI_SUPPORTED_TRUE@@OPENMP_SUPPORTED_TRUE@                        for omp_args in openmp; do # add noopenmp when multilibs are ready, see above comment
-@MPI_SUPPORTED_TRUE@@OPENMP_SUPPORTED_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg $mpi_arg $omp_arg" >> ${file_prefix}mpi_omp
-@MPI_SUPPORTED_TRUE@@OPENMP_SUPPORTED_TRUE@                        done                    
-@MPI_SUPPORTED_TRUE@@OPENMP_SUPPORTED_TRUE@                    done
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    for mpi_args in mpi; do # add nompi when multilibs are ready, see above comment
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_args in openmp; do # add noopenmp when multilibs are ready, see above comment
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg $mpi_arg $omp_arg" >> ${file_prefix}mpi_omp
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        done
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    done
 
                     # cuda ------------------------------#
 
@@ -103,6 +103,6 @@ done
 
 # Notify about created files
 echo "  GEN    ${file_prefix}serial"
-@OPENMP_SUPPORTED_TRUE@echo "  GEN    ${file_prefix}omp"
-@MPI_SUPPORTED_TRUE@echo "  GEN    ${file_prefix}mpi"
-@MPI_SUPPORTED_TRUE@@OPENMP_SUPPORTED_TRUE@echo "  GEN    ${file_prefix}mpi_omp"
+@HAVE_OPENMP_SUPPORT_TRUE@echo "  GEN    ${file_prefix}omp"
+@HAVE_MPI_SUPPORT_TRUE@echo "  GEN    ${file_prefix}mpi"
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@echo "  GEN    ${file_prefix}mpi_omp"

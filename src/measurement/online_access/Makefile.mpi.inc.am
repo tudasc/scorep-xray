@@ -19,7 +19,7 @@
 ## maintainer Yury Oleynik <oleynik@in.tum.de>
 
 
-if MPI_SUPPORTED
+if HAVE_MPI_SUPPORT
 if HAVE_ONLINE_ACCESS
 
 BUILT_SOURCES += scorep_oa_scanner.h
@@ -172,6 +172,6 @@ libscorep_oa_mpi_la_LIBADD =                    \
     libscorep_oa_fortran_sub4.la
 
 endif #if HAVE_ONLINE_ACCESS
-endif #if MPI_SUPPORTED
+endif #if HAVE_MPI_SUPPORT
 
 

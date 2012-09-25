@@ -20,7 +20,7 @@
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
-if MPI_SUPPORTED
+if HAVE_MPI_SUPPORT
 
 ## MPI C
 
@@ -44,7 +44,7 @@ TESTS_MPI += jacobi_mpi_c
 
 ## MPI + OpenMP C
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 noinst_LTLIBRARIES             += libjacobi_mpi_pomp_c.la
 libjacobi_mpi_pomp_c_la_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C/pomp.c
 libjacobi_mpi_pomp_c_la_CPPFLAGS = $(AM_CPPFLAGS)
@@ -101,7 +101,7 @@ TESTS_MPI += jacobi_mpi_cxx
 
 ## MPI + OpenMP C++
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 noinst_LTLIBRARIES               += libjacobi_mpi_pomp_cxx.la
 libjacobi_mpi_pomp_cxx_la_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C++/pomp.c
 libjacobi_mpi_pomp_cxx_la_CPPFLAGS = $(AM_CPPFLAGS)
@@ -163,7 +163,7 @@ TESTS_MPI += jacobi_mpi_f90
 
 ## MPI + OpenMP Fortran
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 
 if ! SCOREP_COMPILER_CRAY
 # The cray fortran compiler bails out on #line directives so we just
@@ -207,7 +207,7 @@ endif
 # if ! SCOREP_COMPILER_CRAY
 
 endif
-# if OPENMP_SUPPORTED
+# if HAVE_OPENMP_SUPPORT
 
 endif
 # if FORTRAN_SUPPORT_ALLOCATABLE

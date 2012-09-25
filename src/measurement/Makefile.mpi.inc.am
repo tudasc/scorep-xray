@@ -27,7 +27,7 @@ include ../src/measurement/Makefile.common.inc.am
 
 ## paradigm mpi
 
-if MPI_SUPPORTED
+if HAVE_MPI_SUPPORT
 noinst_LTLIBRARIES += libscorep_paradigm_mpi.la
 libscorep_paradigm_mpi_la_SOURCES =                                 \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mpi_enabled.c        \

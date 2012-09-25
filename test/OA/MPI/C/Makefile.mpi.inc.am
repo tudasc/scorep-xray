@@ -1,5 +1,5 @@
 ## -*- mode: makefile -*-
-if MPI_SUPPORTED
+if HAVE_MPI_SUPPORT
 if HAVE_ONLINE_ACCESS
 
 check_PROGRAMS += oa_c_test_mpi
@@ -28,4 +28,4 @@ EXTRA_DIST       += \
 #TESTS += ./../test/OA/MPI/C/run_oa_c_test_mpi.sh
 
 endif #if HAVE_ONLINE_ACCESS
-endif #if MPI_SUPPORTED
+endif #if HAVE_MPI_SUPPORT

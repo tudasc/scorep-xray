@@ -20,7 +20,7 @@
 ## maintainer Dirk Schmidl <schmidl@rz.rwth-aachen.de>
 
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 
 check_PROGRAMS += omp_tasks_unistrumented
 

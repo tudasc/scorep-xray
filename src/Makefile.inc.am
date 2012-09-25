@@ -64,7 +64,7 @@ common_ldflags += @OTF2_LDFLAGS@        \
 
 ## MPI
 
-if MPI_SUPPORTED
+if HAVE_MPI_SUPPORT
 
 $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi.la:
 	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_adapter_mpi.la
@@ -110,7 +110,7 @@ libscorep_serial_la_LDFLAGS  = $(common_ldflags)
 
 ## OpenMP
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 lib_LTLIBRARIES          += libscorep_omp.la
 libscorep_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_adapter_libscorep_omp.c
 libscorep_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
@@ -127,8 +127,8 @@ endif
 
 ## Hybrid
 
-if MPI_SUPPORTED
-if OPENMP_SUPPORTED
+if HAVE_MPI_SUPPORT
+if HAVE_OPENMP_SUPPORT
 
 $(LIB_DIR_SCOREP_MPI)libscorep_sion_mpi_omp.la:
 	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_sion_mpi_omp.la

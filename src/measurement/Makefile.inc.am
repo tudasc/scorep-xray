@@ -79,7 +79,7 @@ libscorep_measurement_la_CPPFLAGS = \
 
 ## paradigm omp
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 noinst_LTLIBRARIES              += libscorep_paradigm_omp.la
 libscorep_paradigm_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 # Sources include SCOREP_Omp.h that conditionally compiles on _OPENMP

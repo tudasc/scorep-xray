@@ -20,7 +20,7 @@
 
 
 
-if MPI_SUPPORTED
+if HAVE_MPI_SUPPORT
 
 check_PROGRAMS                += mpi_unification_test
 mpi_unification_test_SOURCES   =  $(SRC_ROOT)test/unification/mpi_unification_test.c

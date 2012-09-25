@@ -36,7 +36,7 @@ endif
 
 ## OpenMP
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 
 # the pomp.c file needs to be compiled without compiler instrumentation
 # to achieve this, we put it in a noinst library and link against it
@@ -96,4 +96,4 @@ endif
 endif
 
 endif
-# !OPENMP_SUPPORTED
+# !HAVE_OPENMP_SUPPORT

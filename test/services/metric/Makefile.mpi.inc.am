@@ -1,6 +1,6 @@
 # Metric test
 
-if MPI_SUPPORTED
+if HAVE_MPI_SUPPORT
 
 ## MPI C
 
@@ -46,7 +46,7 @@ TESTS_MPI += jacobi_mpi_c_metric_test
 
 ## MPI + OpenMP C
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 
 noinst_LTLIBRARIES                          += libjacobi_mpi_pomp_c_metric_test.la
 libjacobi_mpi_pomp_c_metric_test_la_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/pomp.c
@@ -109,7 +109,7 @@ TESTS_MPI_OMP += jacobi_mpi_omp_c_metric_test
 
 
 endif
-# !OPENMP_SUPPORTED
+# !HAVE_OPENMP_SUPPORT
 
 endif
-# !MPI_SUPPORTED
+# !HAVE_MPI_SUPPORT

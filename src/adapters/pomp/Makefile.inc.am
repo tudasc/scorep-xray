@@ -97,7 +97,7 @@ libscorep_adapter_pomp_user_fortran_sub4_la_CPPFLAGS =    \
     -DFSUB=SCOREP_FORTRAN_SUB4                            \
     $(SCOREP_POMP_USER_FORTRAN_FLAGS)
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 SCOREP_POMP_OMP_FORTRAN_SOURCES =                         \
     $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_UserF.c      \
     $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_LibF.c       \

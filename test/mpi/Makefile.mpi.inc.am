@@ -1,4 +1,4 @@
-if MPI_SUPPORTED
+if HAVE_MPI_SUPPORT
 
 check_PROGRAMS += mpitest
 mpitest_SOURCES =  $(SRC_ROOT)/test/mpi/mpitest.c

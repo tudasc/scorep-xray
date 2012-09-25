@@ -18,8 +18,8 @@
 ## file       Makefile.mpi.inc.am
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
-if MPI_SUPPORTED
-if OPENMP_SUPPORTED
+if HAVE_MPI_SUPPORT
+if HAVE_OPENMP_SUPPORT
 
 check_PROGRAMS += mpi_omp_hello_world_uninstrumented
 

@@ -19,7 +19,7 @@
 ## author     Christian Roessel <c.roessel@fz-juelich.de>
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 
 check_PROGRAMS += omp_test_unistrumented
 

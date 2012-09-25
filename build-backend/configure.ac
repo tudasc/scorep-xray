@@ -230,9 +230,9 @@ AC_SEARCH_LIBS([ceil], [m])
 AC_SCOREP_POSIX_FUNCTIONS
 
 # assuming that mpi configure already ran
-AM_CONDITIONAL([MPI_SUPPORTED], [test -f ../build-mpi/mpi_supported])
-AM_COND_IF([MPI_SUPPORTED],
-           [AC_SCOREP_DEFINE_HAVE([MPI_SUPPORTED], [1], [Defined if MPI support is available.])])
+AC_SCOREP_COND_HAVE([MPI_SUPPORT],
+                    [test -f ../build-mpi/mpi_supported],
+                    [Defined if MPI support is available.])
 
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION([../])
 
