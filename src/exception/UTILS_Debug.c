@@ -29,6 +29,8 @@
 
 
 #include <config.h>
+#include <UTILS_Debug.h>
+
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -40,7 +42,6 @@
 #include <ctype.h>
 
 
-#include <UTILS_Debug.h>
 #include <UTILS_Error.h>
 #include <UTILS_CStr.h>
 #include <UTILS_IO.h>

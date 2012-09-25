@@ -26,6 +26,8 @@
 
 
 #include <config.h>
+#include <UTILS_Error.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,8 +37,6 @@
 
 #include <UTILS_CStr.h>
 #include <UTILS_IO.h>
-
-#include <UTILS_Error.h>
 
 #include <utils_package.h>
 

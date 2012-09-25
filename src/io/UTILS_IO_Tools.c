@@ -23,6 +23,8 @@
  */
 
 #include <config.h>
+#include <UTILS_IO.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,7 +34,6 @@
 
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
-#include <UTILS_IO.h>
 #include <UTILS_CStr.h>
 
 #define BUFFER_SIZE 1024

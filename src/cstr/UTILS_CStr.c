@@ -24,11 +24,12 @@
  */
 
 #include <config.h>
+#include <UTILS_CStr.h>
+
 #include <string.h>
 #include <stdlib.h>
 
 #include <UTILS_Error.h>
-#include <UTILS_CStr.h>
 
 const size_t UTILS_CStr_npos = ( size_t )-1;
 
