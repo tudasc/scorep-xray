@@ -166,10 +166,12 @@ SCOREP_Tracing_OmpTaskCreate( SCOREP_Location* location,
                               uint64_t         timestamp,
                               uint64_t         taskId );
 
+
 void
 SCOREP_Tracing_OmpTaskSwitch( SCOREP_Location* location,
                               uint64_t         timestamp,
                               uint64_t         taskId );
+
 
 void
 SCOREP_Tracing_OmpTaskComplete( SCOREP_Location* location,
@@ -182,6 +184,7 @@ SCOREP_Tracing_ParameterInt64( SCOREP_Location*       location,
                                uint64_t               timestamp,
                                SCOREP_ParameterHandle parameterHandle,
                                int64_t                value );
+
 
 void
 SCOREP_Tracing_ParameterUint64( SCOREP_Location*       location,
@@ -196,24 +199,36 @@ SCOREP_Tracing_ParameterString( SCOREP_Location*       location,
                                 SCOREP_ParameterHandle parameterHandle,
                                 SCOREP_StringHandle    stringHandle );
 
+
 void
 SCOREP_Tracing_StoreRewindPoint( SCOREP_Location*    location,
                                  SCOREP_RegionHandle regionHandle,
                                  uint64_t            timestamp );
 
+
 void
 SCOREP_Tracing_ClearRewindPoint( SCOREP_Location* location,
                                  uint32_t         region_id );
 
+
 void
 SCOREP_Tracing_Rewind( SCOREP_Location* location,
                        uint32_t         region_id );
+
 
 void
 SCOREP_Tracing_ExitRewindRegion( SCOREP_Location*    location,
                                  SCOREP_RegionHandle regionHandle,
                                  uint64_t            leavetimestamp,
                                  bool                do_rewind );
+
+
+size_t
+SCOREP_Tracing_GetSamplingSetCacheSize( uint32_t numberOfMetrics );
+
+
+void
+SCOREP_Tracing_CacheSamplingSet( SCOREP_SamplingSetHandle samplingSet );
 
 
 #endif /* SCOREP_TRACING_EVENTS_H */

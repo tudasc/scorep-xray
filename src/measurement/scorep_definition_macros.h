@@ -210,6 +210,26 @@
 /* *INDENT-ON* */
 
 /**
+ * Allocate a new definition of definition type @a Type with the given size.
+ *
+ * @needs Variable with name @a new_handle of handle type @a Type.
+ * @needs Variable with name @a new_definition of definition type @a Type*.
+ *
+ * @note Only usable for local objects (ie. uses the local page manager).
+ */
+/* *INDENT-OFF* */
+#define SCOREP_DEFINITION_ALLOC_SIZE( Type, size ) \
+    do \
+    { \
+        new_handle = SCOREP_Memory_AllocForDefinitions( size ); \
+        new_definition = SCOREP_LOCAL_HANDLE_DEREF( new_handle, Type ); \
+        SCOREP_INIT_DEFINITION_HEADER( new_definition ); \
+    } \
+    while ( 0 )
+/* *INDENT-ON* */
+
+
+/**
  * Search for the definition @a new_definition in the definition manager @a
  * definition_manager, if the manager has a hash table allocated.
  *
@@ -263,7 +283,6 @@
             &new_definition->next; \
         new_definition->sequence_number = \
             definition_manager->type ## _definition_counter++; \
-        return new_handle; \
     } \
     while ( 0 )
 /* *INDENT-ON* */

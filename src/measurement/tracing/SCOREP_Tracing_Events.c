@@ -87,16 +87,8 @@ SCOREP_Tracing_Metric( SCOREP_Location*         location,
                                                   SamplingSet );
     }
 
-    OTF2_Type value_types[ sampling_set->number_of_metrics ];
-    for ( uint8_t i = 0; i < sampling_set->number_of_metrics; i++ )
-    {
-        SCOREP_MetricHandle       metric_handle = sampling_set->metric_handles[ i ];
-        SCOREP_Metric_Definition* metric        =
-            SCOREP_LOCAL_HANDLE_DEREF( metric_handle, Metric );
-        value_types[ i ]
-            = scorep_tracing_metric_value_type_to_otf2( metric->value_type );
-    }
-
+    OTF2_Type* value_types = ( OTF2_Type* )(
+        ( char* )sampling_set + sampling_set->tracing_cache_offset );
     OTF2_EvtWriter_Metric( evt_writer,
                            NULL,
                            timestamp,
@@ -593,4 +585,28 @@ SCOREP_Tracing_ExitRewindRegion( SCOREP_Location*    location,
 
     /* And remove the rewind point from otf2 internal memory. */
     SCOREP_Tracing_ClearRewindPoint( location, id );
+}
+
+size_t
+SCOREP_Tracing_GetSamplingSetCacheSize( uint32_t numberOfMetrics )
+{
+    return numberOfMetrics * sizeof( OTF2_Type );
+}
+
+void
+SCOREP_Tracing_CacheSamplingSet( SCOREP_SamplingSetHandle samplingSet )
+{
+    SCOREP_SamplingSet_Definition* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, SamplingSet );
+
+    OTF2_Type* value_types = ( OTF2_Type* )(
+        ( char* )sampling_set + sampling_set->tracing_cache_offset );
+    for ( uint8_t i = 0; i < sampling_set->number_of_metrics; i++ )
+    {
+        SCOREP_MetricHandle       metric_handle = sampling_set->metric_handles[ i ];
+        SCOREP_Metric_Definition* metric        =
+            SCOREP_LOCAL_HANDLE_DEREF( metric_handle, Metric );
+        value_types[ i ]
+            = scorep_tracing_metric_value_type_to_otf2( metric->value_type );
+    }
 }

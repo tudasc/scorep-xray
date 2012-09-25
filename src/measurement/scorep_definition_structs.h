@@ -195,6 +195,9 @@ SCOREP_DEFINE_DEFINITION_TYPE( SamplingSet )
     // order is important
     bool is_scoped;
 
+    /* offset after this struct to the caching for tracing */
+    size_t tracing_cache_offset;
+
     SCOREP_MetricOccurrence occurrence;
     uint8_t                 number_of_metrics;
     SCOREP_MetricHandle     metric_handles[];
