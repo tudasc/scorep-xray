@@ -113,7 +113,7 @@ main( int   argc,
         }
 
 
-        std::cout << "Invalid info command:" << argv[ 1 ] << std::endl;
+        std::cout << "Invalid info command: " << argv[ 1 ] << std::endl;
         print_short_usage();
         return EXIT_FAILURE;
     }

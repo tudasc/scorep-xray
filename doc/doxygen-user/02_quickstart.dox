@@ -306,12 +306,12 @@ additional identification number. Thus, repeated measurements,
 as required by the optimization work cycle, can
 easily be performed without the danger of accidentally overwriting
 results of earlier measurements. The environment variables 
-<tt>SCOREP_ENABLE_TRACING</tt> and <tt>SCOREP_ENABLE_PROFILING</tt>
+\confvar{SCOREP_ENABLE_TRACING} and \confvar{SCOREP_ENABLE_PROFILING}
 control whether event trace data or profiles are stored in this
 directory. By setting either variable to <tt>true</tt>, the corresponding
 data will be written to the directory. The default values are <tt>true</tt>
-for <tt>SCOREP_ENABLE_PROFILING</tt> and <tt>false</tt> for 
-<tt>SCOREP_ENABLE_TRACING</tt>. 
+for \confvar{SCOREP_ENABLE_PROFILING} and <tt>false</tt> for 
+\confvar{SCOREP_ENABLE_TRACING}. 
 
 
 @section quick_examination Report Examination
@@ -389,7 +389,7 @@ profiling mode was active by default. We obtain a file called
 as the result of the measurement run. This file can be visually analyzed with
 the help of CUBE.
 
-If we had set the variable <tt>SCOREP_ENABLE_TRACING</tt> to <tt>true</tt>, we
+If we had set the variable \confvar{SCOREP_ENABLE_TRACING} to <tt>true</tt>, we
 would additionally have obtained trace data, namely the so called anchor file
 <tt>traces.otf2</tt> and the global definitions <tt>traces.def</tt> as well as
 a subdirectory <tt>traces</tt> that contains the actual trace data. This trace

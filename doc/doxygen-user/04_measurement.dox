@@ -7,16 +7,16 @@ will find an experiment directory in your current working directory, which conta
 all recorded data. The experiment directory has the format 
 <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt>, where <tt>YYYYMMDD</tt> and <tt>HHMM</tt> encodes
 the date followed by a series of random numbers. You may specify the name of the
-experiment directory by setting the environment variable <tt>SCOREP_EXPERIMENT_DIRECTORY</tt>
+experiment directory by setting the environment variable \confvar{SCOREP_EXPERIMENT_DIRECTORY}
 to the desired name of the directory. If the directory already exists, the existing
 directory will be renamed by appending a date like above by default. You can let
-@scorep abort the measurement immediately by setting <tt>SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY</tt>
+@scorep abort the measurement immediately by setting \confvar{SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY}
 to <tt>false</tt> if the experiment directory already exists. This has only an
-effect if <tt>SCOREP_EXPERIMENT_DIRECTORY</tt> was set too.
+effect if \confvar{SCOREP_EXPERIMENT_DIRECTORY} was set too.
 
 In general, you can record a profile and/or a event trace. Whether a profile and/or a
 trace is recorded, is specified by the environment variables 
-<tt>SCOREP_ENABLE_PROFILING</tt> and <tt>SCOREP_ENABLE_TRACING</tt>. If the value of this
+\confvar{SCOREP_ENABLE_PROFILING} and \confvar{SCOREP_ENABLE_TRACING}. If the value of this
 variables is zero or <tt>false</tt>, profiling/tracing is disabled. 
 Otherwise @scorep will record a profile and/or trace. By default, profiling and tracing
 are both enabled.
@@ -52,13 +52,13 @@ By default, the runtime and the number of visits are recorded. Additionally, har
 counters can be configured and are stored for every call-path. User defined metrics
 are only stored in those nodes, where the metric was triggered.
 
-For enabling profiling, set the environment variable <tt>SCOREP_ENABLE_PROFILING</tt>
+For enabling profiling, set the environment variable \confvar{SCOREP_ENABLE_PROFILING}
 to 1 or <tt>true</tt>. After the execution of your application you will then find
 a file, named <tt>profile.cubex</tt> in your measurement directory, which you can display
 with the @cube4 with <tt>cube-qt profile.cubex</tt>. The name of the profile can be
-changed through the environment variable <tt>SCOREP_PROFILING_BASE_NAME</tt>. The
+changed through the environment variable \confvar{SCOREP_PROFILING_BASE_NAME}. The
 extension <tt>.cubex</tt> will be appended to the base name you specify in the 
-environment variable <tt>SCOREP_PROFILING_BASE_NAME</tt>.
+environment variable \confvar{SCOREP_PROFILING_BASE_NAME}.
 
 If you want to record the profile in TAU snapshot format instead of the @cube4 format,
 set <tt>SCOREP_PROFILING_FORMAT=TAU_SNAPSHOT</tt>. Vice versa, you might set 
@@ -67,7 +67,7 @@ set <tt>SCOREP_PROFILING_FORMAT=TAU_SNAPSHOT</tt>. Vice versa, you might set
 @scorep records a call tree profile. The maximum call-path depth that is recorded 
 is limited to 30, by default. This avoids
 extremely large profiles for recursive calls. However, this limit can be changed with
-the environment variable <tt>SCOREP_PROFILING_MAX_CALLPATH_DEPTH</tt>. 
+the environment variable \confvar{SCOREP_PROFILING_MAX_CALLPATH_DEPTH}. 
 
 
 @subsection parameter_profiling Parameter-Based Profiling
@@ -161,7 +161,7 @@ tracing (see Section @secref{selective_tracing}) might be a memory space save al
 @seclabel{tracing}
 
 @scorep can write events to OTF2 traces. By setting the environment variable
-<tt>SCOREP_ENABLE_TRACING</tt>, you can control whether a trace is recorded. If the
+\confvar{SCOREP_ENABLE_TRACING}, you can control whether a trace is recorded. If the
 value is <tt>0</tt> or <tt>false</tt> no trace is recorded, if the value is non-zero 
 or <tt>true</tt>, a trace is recorded. If the variable is not specified, 
 @scorep records traces on default.
@@ -188,7 +188,7 @@ Regions can be filtered based on their region name (e.g., their function name)
 or based on the source file, in which they are defined. 
 
 A file that contains the filter definition can be specified via the environment
-variable <tt>SCOREP_FILTERING_FILE</tt>. If no filter definition file is specified,
+variable \confvar{SCOREP_FILTERING_FILE}. If no filter definition file is specified,
 all instrumented regions are recorded. For filtered regions, the enter/exit events
 are not recorded in trace and profile.
 
@@ -394,9 +394,9 @@ This configuration file would record all executions of foo, the executions 23, 2
 are recorded.
 
 To apply the selective tracing configuration file to a measurement run of your 
-application, set the environment variable <tt>SCOREP_SELECTIVE_CONFIG_FILE</tt>
+application, set the environment variable \confvar{SCOREP_SELECTIVE_CONFIG_FILE}
 to the configuration file and run your instrumented application. If 
-<tt>SCOREP_SELECTIVE_CONFIG_FILE</tt> is empty, or the given file can not be opened,
+\confvar{SCOREP_SELECTIVE_CONFIG_FILE} is empty, or the given file can not be opened,
 the whole application run will be recorded (no selective tracing will apply).
 
 
@@ -459,7 +459,7 @@ the user can decide whether event generation is turned on or off for a group of
 are the listed sub modules of this adapter. Each module has a short
 string token that identifies this group. To activate event generation
 for a specific group, the user can specify a comma-separated list of
-tokens in the configuration variable \p SCOREP_MPI_ENABLE_GROUPS. Additionally,
+tokens in the configuration variable \confvar{SCOREP_MPI_ENABLE_GROUPS}. Additionally,
 special tokens exist to ease the handling by the user. A complete list
 of available tokens that can be specified in the runtime configuration
 is listed below.
@@ -590,7 +590,7 @@ The user can leave these environment variables unset to indicate that no counter
 metrics into the trace and/or profile. @scorep uses the 
 @href{http://icl.cs.utk.edu/papi/,Performance Application Programming Interface} 
 (PAPI) to access hardware performance counters.
-Recording of PAPI performance counters is enabled by setting the environment variable <tt>SCOREP_METRIC_PAPI</tt> to a comma-separated list of counter names.
+Recording of PAPI performance counters is enabled by setting the environment variable \confvar{SCOREP_METRIC_PAPI} to a comma-separated list of counter names.
 Counter names can be any PAPI preset names or PAPI native counter names.
 
 Example:
@@ -602,10 +602,10 @@ This will record the number of floating point instructions and level 2 cache mis
 If any of the requested counters is not recognized, program execution will be aborted with an error message.
 The PAPI utility programs <tt>papi_avail</tt> and <tt>papi_native_avail</tt> report information about the counters available on the current platform.
 
-If you want to change the separator used in the list of PAPI counter names, set the environment variable <tt>SCOREP_METRIC_PAPI_SEP</tt> to the desired character.
+If you want to change the separator used in the list of PAPI counter names, set the environment variable \confvar{SCOREP_METRIC_PAPI_SEP} to the desired character.
 
 @note
-In addition it is possible to specify metrics that will be recorded per-process. Please use <tt>SCOREP_METRIC_PAPI_PER_PROCESS</tt> for that reason.
+In addition it is possible to specify metrics that will be recorded per-process. Please use \confvar{SCOREP_METRIC_PAPI_PER_PROCESS} for that reason.
 
 @subsection rusage_counters Resource Usage Counters
 @seclabel{rusage_counters}
@@ -615,7 +615,7 @@ These metrics use the Unix system call <tt>getrusage</tt> to provide information
 The manual page of <tt>getrusage</tt> provides a list of resource usage counters.
 Please note that the availability of specific counters depends on the operating system.
 
-You can enable recording of resource usage counters by setting the environment variable <tt>SCOREP_METRIC_RUSAGE</tt>.
+You can enable recording of resource usage counters by setting the environment variable \confvar{SCOREP_METRIC_RUSAGE}.
 The variable should contain a comma-separated list of counter names.
 
 Example:
@@ -641,7 +641,7 @@ SCOREP_METRIC_RUSAGE=all
 </pre>
 However, this is not recommended as most operating systems does not support all metrics.
 
-If you want to change the separator used in the list of resource usage metrics, set the environment variable <tt>SCOREP_METRIC_RUSAGE_SEP</tt> to the desired character.
+If you want to change the separator used in the list of resource usage metrics, set the environment variable \confvar{SCOREP_METRIC_RUSAGE_SEP} to the desired character.
 
 Example:
 <pre>
@@ -650,7 +650,7 @@ SCOREP_METRIC_RUSAGE_SEP=:
 This indicates that counter names in the list are separated by colons.
 
 @note
-In addition it is possible to specify metrics that will be recorded per-process. Please use <tt>SCOREP_METRIC_RUSAGE_PER_PROCESS</tt> for that reason.
+In addition it is possible to specify metrics that will be recorded per-process. Please use \confvar{SCOREP_METRIC_RUSAGE_PER_PROCESS} for that reason.
 
 @section cuda_adapter CUDA Performance Measurement
 @seclabel{cuda_adapter}
@@ -659,7 +659,7 @@ If @scorep has been built with CUDA support it is capable of recording CUDA API 
 
 @scorep can wrap the NVIDIA compiler (<b><tt>scorep nvcc</tt></b>) to instrument .cu files. If @scorep has been built with the Intel compiler an additional flag has to be added for instrumentation: <tt>--compiler-bindir=<path-to-intel-compiler-command></tt>. Otherwise the program will not be instrumented, as <tt>nvcc</tt> uses the GNU compiler by default. 
 
-Setting the environment variable <b><tt>SCOREP_CUDA_ENABLE</tt></b> to <b><tt>yes</tt></b> enables CUDA measurement. 
+Setting the environment variable \confvar{SCOREP_CUDA_ENABLE} to <b><tt>yes</tt></b> enables CUDA measurement. 
 To enable a particular composition of CUDA measurement features the variable should contain a comma-separated list of the following CUDA measurement options:
 
 @code
@@ -689,7 +689,7 @@ The Online Access interface implememts a client-server paradigm, where @scorep a
 from the remote tool. During the initialization, the OA module of the @scorep creates one socket for each application 
 process. The network addresses and the ports of these sockets are published at the registry service  
 and could be later queried by the remote tool. The hostname and the port of the registry service should be specified 
-via the <tt>SCOREP_ONLINEACCESS_REG_HOST</tt> and <tt>SCOREP_ONLINEACCESS_REG_PORT</tt> environment variables, respectively. After publishing the socket 
+via the \confvar{SCOREP_ONLINEACCESS_REG_HOST} and \confvar{SCOREP_ONLINEACCESS_REG_PORT} environment variables, respectively. After publishing the socket 
 addresses and ports, the OA module will accept connections. Once the connection is established the OA module will suspend the 
 application execution and wait for requests. The format of the requests is plain text following the syntax below: 
 

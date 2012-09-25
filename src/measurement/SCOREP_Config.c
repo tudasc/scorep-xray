@@ -527,9 +527,12 @@ SCOREP_ConfigHelp( bool full, bool html )
               variable;
               variable = variable->next )
         {
-            printf( "%s%s%s%s\n",
+            printf( "%s%s%s%s%s%s%s\n",
                     sep,
-                    html ? " <dt><tt>" : "",
+                    html ? " <dt>" : "",
+                    html ? "@anchor " : "",
+                    html ? variable->env_var_name : "",
+                    html ? "<tt>" : "",
                     variable->env_var_name,
                     html ? "</tt></dt>" : "" );
             printf( "%s%s%s\n",

@@ -55,7 +55,7 @@ by a single process for the trace. The memory space that @scorep reserves on eac
 at application start must be large enough to hold the process' trace in memory 
 in order to avoid flushes during runtime, because flushes heavily disturb 
 measurements. The memory size per process that @scorep reserves is set via the 
-environment variable @verb{SCOREP_TOTAL_MEMORY}. In the given example the per 
+environment variable @confvar{SCOREP_TOTAL_MEMORY}. In the given example the per 
 process memory should be larger than 6381 bytes.
 
 Beginning with the 6th line, @verb{scorep-score} prints a table that show
