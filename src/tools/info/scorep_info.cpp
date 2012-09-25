@@ -95,12 +95,12 @@ main( int   argc,
         if ( info_command == "config-vars" )
         {
             SCOREP_ConfigInit();
-            SCOREP_RegisterAllConfigVariables();
 
             std::string mode( argc > 2 ? argv[ 2 ] : "" );
             if ( mode == "--values" )
             {
                 // @todo print warning again
+                SCOREP_RegisterAllConfigVariables();
                 SCOREP_ConfigApplyEnv();
                 SCOREP_ConfigDump( stdout );
             }
@@ -112,11 +112,27 @@ main( int   argc,
                 {
                     full = true;
                 }
-                if ( mode == "--full=html" )
+                else if ( mode == "--full=html" )
                 {
                     full = true;
                     html = true;
                 }
+                else if ( mode == "--doxygen" )
+                {
+                    full = true;
+                    html = true;
+                    SCOREP_ConfigForceConditionalRegister();
+                }
+                else
+                {
+                    std::cout << "Invalid option for info command "
+                              << info_command << ": " << mode << std::endl;
+                    print_short_usage();
+                    SCOREP_ConfigFini();
+                    return EXIT_FAILURE;
+                }
+
+                SCOREP_RegisterAllConfigVariables();
                 SCOREP_ConfigHelp( full, html );
             }
 

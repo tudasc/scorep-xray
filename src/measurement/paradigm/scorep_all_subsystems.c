@@ -44,12 +44,8 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Compiler_Adapter,
     &SCOREP_User_Adapter,
     &SCOREP_Pomp_Adapter,
-#if HAVE_BACKEND( MPI_SUPPORTED )
     &SCOREP_Mpi_Adapter,
-#endif
-#if HAVE_BACKEND( CUDA )
     &SCOREP_Cuda_Adapter,
-#endif
 };
 
 const size_t scorep_number_of_subsystems = sizeof( scorep_subsystems ) /

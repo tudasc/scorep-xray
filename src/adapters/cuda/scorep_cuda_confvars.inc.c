@@ -70,22 +70,3 @@ static SCOREP_ConfigVariable scorep_cuda_configs[] = {
     },
     SCOREP_CONFIG_TERMINATOR
 };
-
-
-/** Registers the required configuration variables of the CUDA adapter
-    to the measurement system.
- */
-static SCOREP_ErrorCode
-scorep_cuda_register( size_t subsystem_id )
-{
-    UTILS_DEBUG( "Register environment variables" );
-
-    return SCOREP_ConfigRegister( "cuda", scorep_cuda_configs );
-}
-
-
-/** De-registers the CUDA adapter. */
-static void
-scorep_cuda_deregister( void )
-{
-}

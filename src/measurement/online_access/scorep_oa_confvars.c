@@ -46,7 +46,7 @@
 void
 SCOREP_OA_Register()
 {
-#if HAVE_BACKEND( ONLINE_ACCESS )
-    SCOREP_ConfigRegister( "onlineaccess", scorep_oa_configs );
-#endif
+    SCOREP_ConfigRegisterCond( "onlineaccess",
+                               scorep_oa_configs,
+                               HAVE_BACKEND_ONLINE_ACCESS );
 }

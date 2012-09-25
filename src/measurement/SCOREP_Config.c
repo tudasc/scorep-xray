@@ -338,6 +338,28 @@ SCOREP_ConfigRegister( const char*            nameSpaceName,
     return SCOREP_SUCCESS;
 }
 
+static bool force_conditional_registrations;
+
+SCOREP_ErrorCode
+SCOREP_ConfigRegisterCond( const char*            nameSpaceName,
+                           SCOREP_ConfigVariable* variables,
+                           bool                   isAvailable )
+{
+    if ( isAvailable || force_conditional_registrations )
+    {
+        return SCOREP_ConfigRegister( nameSpaceName,
+                                      variables );
+    }
+
+    return SCOREP_SUCCESS;
+}
+
+void
+SCOREP_ConfigForceConditionalRegister( void )
+{
+    force_conditional_registrations = true;
+}
+
 
 SCOREP_ErrorCode
 SCOREP_ConfigApplyEnv( void )

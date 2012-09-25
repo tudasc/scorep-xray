@@ -144,7 +144,7 @@ create-cobi-config-local:
 	fi
 
 
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 installcheck-local: instrumenter-checks
 	@$(am__cd) ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)
 	@$(am__cd) ../test/jacobi/OpenMP/C && $(MAKE) $(AM_MAKEFLAGS)
@@ -158,7 +158,7 @@ PARADIGMS = serial
 
 # component separation will provide the HAVE_OPARI2 conditional
 #if HAVE_OPARI2
-if OPENMP_SUPPORTED
+if HAVE_OPENMP_SUPPORT
 PARADIGMS += omp
 endif
 #endif

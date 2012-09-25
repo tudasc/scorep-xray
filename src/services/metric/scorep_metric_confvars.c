@@ -50,12 +50,12 @@
 static SCOREP_ErrorCode
 scorep_metric_register( size_t subsystem_id )
 {
-#if HAVE_BACKEND( PAPI )
-    SCOREP_ConfigRegister( "metric", scorep_metric_papi_configs );
-#endif
-#if HAVE_BACKEND( GETRUSAGE )
-    SCOREP_ConfigRegister( "metric", scorep_metric_rusage_configs );
-#endif
+    SCOREP_ConfigRegisterCond( "metric",
+                               scorep_metric_papi_configs,
+                               HAVE_BACKEND_PAPI );
+    SCOREP_ConfigRegisterCond( "metric",
+                               scorep_metric_rusage_configs,
+                               HAVE_BACKEND_GETRUSAGE );
 
     return SCOREP_SUCCESS;
 }

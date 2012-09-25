@@ -160,6 +160,21 @@ SCOREP_FORTRAN_GET_MPI_UNWEIGHTED();
 
 #include "scorep_mpi_confvars.inc.c"
 
+static size_t scorep_mpi_subsystem_id;
+
+/**
+   Implementation of the adapter_register function of the @ref SCOREP_Subsystem struct
+   for the initialization process of the MPI adapter.
+ */
+static SCOREP_ErrorCode
+scorep_mpi_register( size_t subsystem_id )
+{
+    UTILS_DEBUG_ENTRY();
+
+    scorep_mpi_subsystem_id = subsystem_id;
+
+    return SCOREP_ConfigRegister( "mpi", scorep_mpi_configs );
+}
 /**
    Implementation of the subsystem_init function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.

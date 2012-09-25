@@ -87,7 +87,7 @@ CLEANFILES += doc/doxygen-user/confvars.dox.in
 
 doc/doxygen-user/confvars.dox.in: $(INFO_TOOL_BUILD)/scorep-info
 	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
-	./$(INFO_TOOL_BUILD)/scorep-info config-vars --full=html >$@
+	./$(INFO_TOOL_BUILD)/scorep-info config-vars --doxygen >$@
 
 doc/doxygen-user/main.dox: $(srcdir)/doc/doxygen-user/main_1.dox.in \
     $(srcdir)/doc/doxygen-user/scorep_usage.dox.in \
