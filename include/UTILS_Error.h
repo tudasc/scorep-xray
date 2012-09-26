@@ -180,7 +180,7 @@ UTILS_Error_FromPosix( const int posixErrorCode );
 /**
  * @def UTILS_FATAL
  *
- * Indicates a fatel condition. The program will abort immediately.
+ * Indicates a fatal condition. The program will abort immediately.
  *
  */
 #define UTILS_FATAL( ... ) \
