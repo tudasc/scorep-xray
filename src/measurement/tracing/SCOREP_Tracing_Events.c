@@ -499,7 +499,7 @@ SCOREP_Tracing_StoreRewindPoint( SCOREP_Location*    location,
     OTF2_EvtWriter_StoreRewindPoint( evt_writer, region_id );
 
     /* Push this rewind region on the stack to manage nested rewind points. */
-    scorep_rewind_stack_push( region_id, timestamp );
+    scorep_rewind_stack_push( location, region_id, timestamp );
 }
 
 void
@@ -535,7 +535,7 @@ SCOREP_Tracing_ExitRewindRegion( SCOREP_Location*    location,
     id = SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region );
 
     /* Search for the region id in the rewind stack, and print a warning when it is not found and leave function. */
-    if ( scorep_rewind_stack_find( id ) == false )
+    if ( scorep_rewind_stack_find( location, id ) == false )
     {
         UTILS_WARNING( "ID of rewind region is not in rewind stack, maybe "
                        "there was a buffer flush or a programming error!" );
@@ -549,7 +549,7 @@ SCOREP_Tracing_ExitRewindRegion( SCOREP_Location*    location,
     do
     {
         /* Remove from stack. */
-        scorep_rewind_stack_pop( &id_pop, &entertimestamp, paradigm_affected );
+        scorep_rewind_stack_pop( location, &id_pop, &entertimestamp, paradigm_affected );
 
         /* Remove nested rewind points from otf2 internal memory for rewind points. */
         if ( id != id_pop )

@@ -112,6 +112,9 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
     }
     SCOREP_Tracing_UnlockArchive();
 
+    OTF2_EvtWriter_SetLocation( tracing_data->otf_writer,
+                                ( void* )locationData );
+
     if ( !SCOREP_Mpi_IsInitialized() )
     {
         // Global location id unknown because rank not accessible.

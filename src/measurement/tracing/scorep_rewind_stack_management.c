@@ -39,9 +39,9 @@
  * Search for a specific id of a rewind region in the rewind stack.
  */
 bool
-scorep_rewind_stack_find( uint32_t id )
+scorep_rewind_stack_find( SCOREP_Location* location,
+                          uint32_t         id )
 {
-    SCOREP_Location*     location   = SCOREP_Location_GetCurrentCPULocation();
     scorep_rewind_stack* stack_item = SCOREP_Location_GetTracingData( location )->rewind_stack;
 
     while ( stack_item && stack_item->id != id )
@@ -64,15 +64,16 @@ scorep_rewind_stack_find( uint32_t id )
  * The function manipulates the stack_head pointer.
  */
 void
-scorep_rewind_stack_push( uint32_t id, uint64_t entertimestamp )
+scorep_rewind_stack_push( SCOREP_Location* location,
+                          uint32_t         id,
+                          uint64_t         entertimestamp )
 {
-    SCOREP_Location*     location        = SCOREP_Location_GetCurrentCPULocation();
     scorep_rewind_stack* stack_head      = SCOREP_Location_GetTracingData( location )->rewind_stack;
     scorep_rewind_stack* stack_item      = stack_head;
     scorep_rewind_stack* last_stack_item = stack_head;
 
     /* If the id was stored before, then */
-    if ( scorep_rewind_stack_find( id ) )
+    if ( scorep_rewind_stack_find( location, id ) )
     {
         /* Search for the id in the stack */
         while ( stack_item && stack_item->id != id )
@@ -115,10 +116,11 @@ scorep_rewind_stack_push( uint32_t id, uint64_t entertimestamp )
  * The function manipulates the stack_head pointer.
  */
 void
-scorep_rewind_stack_pop( uint32_t* id, uint64_t* entertimestamp,
-                         bool paradigm_affected[ SCOREP_PARADIGM_MAX ] )
+scorep_rewind_stack_pop( SCOREP_Location* location,
+                         uint32_t*        id,
+                         uint64_t*        entertimestamp,
+                         bool             paradigm_affected[ SCOREP_PARADIGM_MAX ] )
 {
-    SCOREP_Location*     location   = SCOREP_Location_GetCurrentCPULocation();
     scorep_rewind_stack* stack_head = SCOREP_Location_GetTracingData( location )->rewind_stack;
     scorep_rewind_stack* stack_item = NULL;
 
@@ -143,9 +145,8 @@ scorep_rewind_stack_pop( uint32_t* id, uint64_t* entertimestamp,
  * Remove all stack elements and assign NULL to the stack_head pointer.
  */
 void
-scorep_rewind_stack_delete()
+scorep_rewind_stack_delete( SCOREP_Location* location )
 {
-    SCOREP_Location*     location   = SCOREP_Location_GetCurrentCPULocation();
     scorep_rewind_stack* stack_head = SCOREP_Location_GetTracingData( location )->rewind_stack;
     scorep_rewind_stack* stack_item = NULL;
 
