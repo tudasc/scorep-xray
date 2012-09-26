@@ -137,17 +137,18 @@ SCOREP_InitMeasurement()
         return;
     }
 
-    SCOREP_TIME_START_TIMING( SCOREP_InitMeasurement );
-
     // even if we are not ready with the initialization we must prevent recursive
     // calls e.g. during the subsystem initialization.
     scorep_initialized = true;
     scorep_initialization_sanity_checks();
 
+    SCOREP_Timer_Initialize();
+    SCOREP_TIME_START_TIMING( SCOREP_InitMeasurement );
+
     /* initialize the config system */
     SCOREP_TIME( SCOREP_ConfigInit, ( ) );
 
-    /* Build system tree at an early date, because it will be used by
+    /* Build system tree at an early time, because it will be used by
      * metric service to determine additional metrics (e.g. per-process
      * metrcis). */
     system_tree_path = SCOREP_BuildSystemTree();
@@ -164,7 +165,6 @@ SCOREP_InitMeasurement()
     }
 
     SCOREP_TIME( SCOREP_Status_Initialize, ( ) );
-    SCOREP_TIME( SCOREP_Timer_Initialize, ( ) );
     SCOREP_TIME( SCOREP_CreateExperimentDir, ( ) );
 
     // Need to be called before the first use of any SCOREP_Alloc function, in
