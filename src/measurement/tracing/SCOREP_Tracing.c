@@ -149,7 +149,7 @@ scorep_on_trace_pre_flush( void*         userData,
          * -> get location from event writer */
         OTF2_EvtWriter* writer = ( OTF2_EvtWriter* )callerData;
         void*           temp;
-        OTF2_ErrorCode  status = OTF2_EvtWriter_GetLocation( writer, &temp );
+        OTF2_ErrorCode  status = OTF2_EvtWriter_GetUserData( writer, &temp );
         assert( status == OTF2_SUCCESS );
         SCOREP_Location* location = ( SCOREP_Location* )temp;
         scorep_rewind_stack_delete( location );
