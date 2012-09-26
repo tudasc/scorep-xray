@@ -88,7 +88,7 @@ struct PGI_PROFENT_32
     char*               fcnm;
 };
 
-#elif __x68_64__
+#elif __x86_64__
 
 /*
  * .LENT1:
