@@ -553,7 +553,7 @@
                     definition_writer, \
                     OTF2_MAPPING_ ## TYPE, \
                     map ); \
-                assert( status == OTF2_SUCCESS ); \
+                UTILS_ASSERT( status == OTF2_SUCCESS ); \
                 OTF2_IdMap_Free( map ); \
             } \
         } \

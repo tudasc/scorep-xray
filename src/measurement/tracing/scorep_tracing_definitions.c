@@ -32,7 +32,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <assert.h>
 
 
 #include <otf2/otf2.h>
@@ -67,7 +66,10 @@ static void
 scorep_handle_definition_writing_error( OTF2_ErrorCode status,
                                         const char*    definitionType )
 {
-    assert( false ); // implement me
+    // Do we really need to abort here?
+    UTILS_WARNING( "Couldn't write %s definition: %s",
+                   definitionType,
+                   OTF2_Error_GetName( status ) );
 }
 
 
@@ -76,7 +78,7 @@ scorep_write_string_definitions( void*                     writerHandle,
                                  SCOREP_DefinitionManager* definitionManager,
                                  bool                      isGlobal )
 {
-    assert( writerHandle );
+    UTILS_ASSERT( writerHandle );
     typedef OTF2_ErrorCode ( *def_string_pointer_t )( void*,
                                                       OTF2_StringRef,
                                                       const char* );
@@ -111,7 +113,7 @@ scorep_write_location_definitions(
     SCOREP_DefinitionManager* definitionManager,
     bool                      isGlobal )
 {
-    assert( writerHandle );
+    UTILS_ASSERT( writerHandle );
     typedef OTF2_ErrorCode ( *def_location_pointer_t )( void*,
                                                         OTF2_LocationRef,
                                                         OTF2_StringRef,
@@ -151,7 +153,7 @@ scorep_write_location_group_definitions(
     SCOREP_DefinitionManager* definitionManager,
     bool                      isGlobal )
 {
-    assert( writerHandle );
+    UTILS_ASSERT( writerHandle );
     typedef OTF2_ErrorCode ( *def_location_group_pointer_t )( void*,
                                                               OTF2_LocationGroupRef,
                                                               OTF2_StringRef,
@@ -187,7 +189,7 @@ scorep_write_system_tree_node_definitions(
     SCOREP_DefinitionManager* definitionManager,
     bool                      isGlobal )
 {
-    assert( writerHandle );
+    UTILS_ASSERT( writerHandle );
     typedef OTF2_ErrorCode ( *def_system_tree_node_pointer_t )( void*,
                                                                 OTF2_SystemTreeNodeRef,
                                                                 OTF2_StringRef,
@@ -232,7 +234,7 @@ scorep_write_region_definitions( void*                     writerHandle,
                                  SCOREP_DefinitionManager* definitionManager,
                                  bool                      isGlobal )
 {
-    assert( writerHandle );
+    UTILS_ASSERT( writerHandle );
     typedef OTF2_ErrorCode ( *def_region_pointer_t )( void*,
                                                       OTF2_RegionRef,
                                                       OTF2_StringRef,
@@ -431,7 +433,7 @@ static void
 scorep_write_communicator_definitions( void*                     writerHandle,
                                        SCOREP_DefinitionManager* definitionManager )
 {
-    assert( writerHandle );
+    UTILS_ASSERT( writerHandle );
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
     {
@@ -463,7 +465,7 @@ scorep_write_group_definitions( void*                     writerHandle,
                                 SCOREP_DefinitionManager* definitionManager,
                                 bool                      isGlobal )
 {
-    assert( writerHandle );
+    UTILS_ASSERT( writerHandle );
 
 
     typedef OTF2_ErrorCode ( *def_group_pointer_t )( void*,
@@ -504,7 +506,7 @@ scorep_write_metric_definitions( void*                     writerHandle,
                                  SCOREP_DefinitionManager* definitionManager,
                                  bool                      isGlobal )
 {
-    assert( writerHandle );
+    UTILS_ASSERT( writerHandle );
 
     typedef OTF2_ErrorCode ( *def_metric_pointer_t )( void*,
                                                       OTF2_MetricMemberRef,
@@ -554,7 +556,7 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
                                        SCOREP_DefinitionManager* definitionManager,
                                        bool                      isGlobal )
 {
-    assert( writerHandle );
+    UTILS_ASSERT( writerHandle );
 
     typedef OTF2_ErrorCode ( *def_metric_class_pointer_t )( void*,
                                                             OTF2_MetricRef,
@@ -667,7 +669,7 @@ scorep_write_parameter_definitions( void*                     writerHandle,
                                     SCOREP_DefinitionManager* definitionManager,
                                     bool                      isGlobal )
 {
-    assert( writerHandle );
+    UTILS_ASSERT( writerHandle );
 
     typedef  OTF2_ErrorCode ( *def_parameter_pointer_t )( void*,
                                                           OTF2_ParameterRef,
@@ -705,7 +707,7 @@ scorep_write_callpath_definitions( void*                     writerHandle,
                                    SCOREP_DefinitionManager* definitionManager,
                                    bool                      isGlobal )
 {
-    assert( writerHandle );
+    UTILS_ASSERT( writerHandle );
 
     typedef  OTF2_ErrorCode ( *def_callpath_pointer_t )( void*,
                                                          OTF2_CallpathRef,
@@ -781,7 +783,7 @@ scorep_tracing_write_clock_offsets( OTF2_DefWriter* localDefinitionWriter )
             clock_offset->time,
             clock_offset->offset,
             clock_offset->stddev );
-        assert( status == OTF2_SUCCESS );
+        UTILS_ASSERT( status == OTF2_SUCCESS );
     }
 }
 
@@ -818,8 +820,8 @@ scorep_tracing_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
 void
 scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition_writer )
 {
-    assert( SCOREP_Mpi_GetRank() == 0 );
-    assert( scorep_unified_definition_manager );
+    UTILS_ASSERT( SCOREP_Mpi_GetRank() == 0 );
+    UTILS_ASSERT( scorep_unified_definition_manager );
 
     scorep_write_string_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_system_tree_node_definitions(       global_definition_writer, scorep_unified_definition_manager, true );
@@ -837,7 +839,7 @@ scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition
 void
 scorep_tracing_set_properties( OTF2_Archive* scorep_otf2_archive )
 {
-    assert( scorep_unified_definition_manager );
+    UTILS_ASSERT( scorep_unified_definition_manager );
 
     /* set all defined properties*/
 
