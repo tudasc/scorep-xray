@@ -40,8 +40,8 @@ SCOREP_BuildSystemTree()
 {
     /* Obtain system tree information from platform dependent implementation */
 
-    SCOREP_Platform_SystemTreePathElement* path;
-    SCOREP_ErrorCode                       err = SCOREP_Platform_GetPathInSystemTree( &path );
+    SCOREP_Platform_SystemTreePathElement* path = 0;
+    SCOREP_ErrorCode                       err  = SCOREP_Platform_GetPathInSystemTree( &path );
     if ( err != SCOREP_SUCCESS )
     {
         UTILS_ERROR( err, "Failed to obtain system tree information." );
