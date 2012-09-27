@@ -112,8 +112,9 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
     }
     SCOREP_Tracing_UnlockArchive();
 
+    /* We need to access to our location in case of a flush */
     OTF2_EvtWriter_SetUserData( tracing_data->otf_writer,
-                                ( void* )locationData );
+                                locationData );
 
     if ( !SCOREP_Mpi_IsInitialized() )
     {
