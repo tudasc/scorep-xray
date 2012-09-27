@@ -125,14 +125,11 @@ scorep_on_trace_pre_flush( void*         userData,
          *   because we still need this to correctly finalize
          */
 
-        if ( SCOREP_Env_RunVerbose() )
-        {
-            fprintf( stderr,
-                     "[Score-P] Trace buffer flush on rank %d.\n",
-                     SCOREP_Mpi_GetRank() );
-            fprintf( stderr,
-                     "[Score-P] Increase SCOREP_TOTAL_MEMORY and try again.\n" );
-        }
+        fprintf( stderr,
+                 "[Score-P] Trace buffer flush on rank %d.\n",
+                 SCOREP_Mpi_GetRank() );
+        fprintf( stderr,
+                 "[Score-P] Increase SCOREP_TOTAL_MEMORY and try again.\n" );
     }
 
     OTF2_FlushType do_flush = OTF2_FLUSH;
