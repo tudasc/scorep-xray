@@ -14,6 +14,15 @@
  *
  */
 
+                        Score-P v1.1 OPEN ISSUES
+                        ========================
+
+* MPI support
+
+  - When using derived data types in non-blocking communications, and
+    no support for MPI_Type_dup() was detected, than please ensure, that
+    the MPI_Datatype handle is still valid at the time the request finishes.
+
 
                         Score-P v1.0 OPEN ISSUES
                         ========================

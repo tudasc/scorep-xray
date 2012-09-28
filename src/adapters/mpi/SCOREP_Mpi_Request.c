@@ -440,13 +440,17 @@ scorep_mpi_request_create( MPI_Request         request,
         hash_entry->lastreq++;
     }
     /* store request information */
-    hash_entry->lastreq->request             = request;
-    hash_entry->lastreq->flags               = SCOREP_MPI_REQUEST_NONE;
-    hash_entry->lastreq->flags              |= flags;
-    hash_entry->lastreq->tag                 = tag;
-    hash_entry->lastreq->dest                = dest;
-    hash_entry->lastreq->bytes               = bytes;
-    hash_entry->lastreq->datatype            = datatype;
+    hash_entry->lastreq->request = request;
+    hash_entry->lastreq->flags   = SCOREP_MPI_REQUEST_NONE;
+    hash_entry->lastreq->flags  |= flags;
+    hash_entry->lastreq->tag     = tag;
+    hash_entry->lastreq->dest    = dest;
+    hash_entry->lastreq->bytes   = bytes;
+#if HAVE( DECL_PMPI_TYPE_DUP )
+    PMPI_Type_dup( datatype, &hash_entry->lastreq->datatype );
+#else
+    hash_entry->lastreq->datatype = datatype;
+#endif
     hash_entry->lastreq->comm_handle         = SCOREP_MPI_COMM_HANDLE( comm );
     hash_entry->lastreq->id                  = id;
     hash_entry->lastreq->online_analysis_pod = NULL;
@@ -496,6 +500,14 @@ void
 scorep_mpi_request_free( scorep_mpi_request* req )
 {
     struct scorep_mpi_request_hash* hash_entry = scorep_mpi_get_request_hash_entry( req->request );
+
+    /*
+     * Drop type duplicate, but only if we could have make a duplicate in the
+     * first place
+     */
+#if HAVE( DECL_PMPI_TYPE_DUP )
+    PMPI_Type_free( &req->datatype );
+#endif
 
     /* delete request by copying last request in place of req */
     if ( !hash_entry->lastreq )
