@@ -117,37 +117,46 @@ AS_IF([test "x${ac_scorep_have_papi}" = "xyes"], [
 
 AC_DEFUN([AC_SCOREP_RUSAGE], [
 
-dnl Check for headers
-dnl Header availability is checked implicitly by AC_CHECK_DECL checks, see below.
-dnl AC_CHECK_HEADERS([sys/time.h sys/resource.h], [ac_scorep_rusage_header="yes"], [ac_scorep_rusage_header="no"])
+AS_IF([test "x${ac_scorep_platform}" = "xbgq"],
+      [ac_scorep_getrusage="no, not supported on BG/Q"
+       ac_scorep_rusage_thread="no, not supported on BG/Q"
+       ac_scorep_rusage_cppflags=""],
+      [dnl Check for getrusage function
+       AC_LANG_PUSH([C])
+       AC_CHECK_DECL([getrusage], 
+                     [ac_scorep_getrusage="yes"], 
+                     [ac_scorep_getrusage="no"], 
+                     [[
+#include <sys/time.h>
+#include <sys/resource.h>
+                     ]])
 
-
-dnl Check for getrusage function
-AC_LANG_PUSH([C])
-AC_CHECK_DECL([getrusage], [ac_scorep_getrusage="yes"], [ac_scorep_getrusage="no"], [[#include <sys/time.h>
-#include <sys/resource.h>]])
-AC_LANG_POP([C])
-
-
-dnl Check for availability of RUSAGE_THREAD
-AC_LANG_PUSH([C])
-ac_scorep_rusage_cppflags=""
-AC_CHECK_DECL([RUSAGE_THREAD], [ac_scorep_rusage_thread="yes"], [ac_scorep_rusage_thread="no"], [[#include <sys/time.h>
-#include <sys/resource.h>]])
-AS_IF([test "x$ac_scorep_rusage_thread" = "xno"],
-      [unset ac_cv_have_decl_RUSAGE_THREAD
-       cppflags_save="$CPPFLAGS"
-       dnl For the affects of _GNU_SOURCE see /usr/include/features.h. Without
-       dnl -D_GNU_SOURCE it seems that we don't get rusage per thread (RUSAGE_THREAD)
-       dnl but per process only.
-       ac_scorep_rusage_cppflags="-D_GNU_SOURCE"
-       CPPFLAGS="${ac_scorep_rusage_cppflags} $CPPFLAGS"
-       AC_CHECK_DECL([RUSAGE_THREAD], [ac_scorep_rusage_thread="yes"], [ac_scorep_rusage_thread="no"], [[#include <sys/time.h>
-       #include <sys/resource.h>]])
-       CPPFLAGS="$cppflags_save"
-])
-AC_LANG_POP([C])
-
+       dnl Check for availability of RUSAGE_THREAD
+       ac_scorep_rusage_cppflags=""
+       AC_CHECK_DECL([RUSAGE_THREAD], 
+                     [ac_scorep_rusage_thread="yes"], 
+                     [ac_scorep_rusage_thread="no"], 
+                     [[
+#include <sys/time.h>
+#include <sys/resource.h>
+                     ]])
+       AS_IF([test "x$ac_scorep_rusage_thread" = "xno"],
+             [unset ac_cv_have_decl_RUSAGE_THREAD
+              cppflags_save="$CPPFLAGS"
+              dnl For the affects of _GNU_SOURCE see /usr/include/features.h. Without
+              dnl -D_GNU_SOURCE it seems that we don't get rusage per thread (RUSAGE_THREAD)
+              dnl but per process only.
+              ac_scorep_rusage_cppflags="-D_GNU_SOURCE"
+              CPPFLAGS="${ac_scorep_rusage_cppflags} $CPPFLAGS"
+              AC_CHECK_DECL([RUSAGE_THREAD], 
+                            [ac_scorep_rusage_thread="yes"], 
+                            [ac_scorep_rusage_thread="no"], 
+                            [[
+#include <sys/time.h>
+#include <sys/resource.h>
+                            ]])
+              CPPFLAGS="$cppflags_save"])
+       AC_LANG_POP([C])])
 
 dnl generating results/output/summary
 AC_SCOREP_COND_HAVE([GETRUSAGE],
@@ -159,7 +168,7 @@ AS_IF([test "x${ac_scorep_rusage_thread}" = "xyes"],
       [AC_DEFINE([SCOREP_RUSAGE_SCOPE], [RUSAGE_SELF],   [Defined to RUSAGE_THREAD, if it is available, else to RUSAGE_SELF.])])
 AC_SUBST([SCOREP_RUSAGE_CPPFLAGS], [$ac_scorep_rusage_cppflags])
 AC_SCOREP_SUMMARY([getrusage support], [${ac_scorep_getrusage}])
-AS_IF([test "x${ac_scorep_rusage_thread}" = "xno"],
-      [AC_SCOREP_SUMMARY([RUSAGE_THREAD support], [${ac_scorep_rusage_thread}])],
-      [AC_SCOREP_SUMMARY([RUSAGE_THREAD support], [${ac_scorep_rusage_thread}, using ${ac_scorep_rusage_cppflags}])])
+AS_IF([test "x${ac_scorep_rusage_thread}" = "xyes"],
+      [AC_SCOREP_SUMMARY([RUSAGE_THREAD support], [${ac_scorep_rusage_thread}, using ${ac_scorep_rusage_cppflags}])],
+      [AC_SCOREP_SUMMARY([RUSAGE_THREAD support], [${ac_scorep_rusage_thread}])])
 ])
