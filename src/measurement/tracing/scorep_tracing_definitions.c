@@ -216,7 +216,7 @@ scorep_write_system_tree_node_definitions(
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, SystemTreeNode, system_tree_node )
     {
         /* Determine parent id savely */
-        uint32_t parent = OTF2_UNDEFINED_UINT32;
+        uint32_t parent = OTF2_UNDEFINED_SYSTEM_TREE_NODE;
         if ( definition->parent_handle != SCOREP_INVALID_SYSTEM_TREE_NODE )
         {
             parent = SCOREP_HANDLE_TO_ID( definition->parent_handle, SystemTreeNode, definitionManager->page_manager );
@@ -265,7 +265,7 @@ scorep_write_region_definitions( void*                     writerHandle,
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, Region, region )
     {
-        uint32_t source_file_id = OTF2_UNDEFINED_UINT32;
+        uint32_t source_file_id = OTF2_UNDEFINED_STRING;
         if ( definition->file_name_handle != SCOREP_INVALID_STRING )
         {
             source_file_id = SCOREP_HANDLE_TO_ID(
@@ -446,7 +446,7 @@ scorep_write_communicator_definitions( void*                     writerHandle,
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
     {
-        uint32_t comm_parent_id = OTF2_UNDEFINED_UINT32;
+        uint32_t comm_parent_id = OTF2_UNDEFINED_MPI_COMM;
         if ( definition->parent_handle != SCOREP_INVALID_CALLPATH )
         {
             comm_parent_id = SCOREP_HANDLE_TO_ID( definition->parent_handle,
@@ -736,7 +736,7 @@ scorep_write_callpath_definitions( void*                     writerHandle,
     {
         if ( !definition->with_parameter )
         {
-            uint32_t parent_callpath_sequence_number = OTF2_UNDEFINED_UINT32;
+            uint32_t parent_callpath_sequence_number = OTF2_UNDEFINED_CALLPATH;
             if ( definition->parent_callpath_handle != SCOREP_INVALID_CALLPATH )
             {
                 parent_callpath_sequence_number = SCOREP_HANDLE_TO_ID( definition->parent_callpath_handle,
