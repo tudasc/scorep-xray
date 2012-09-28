@@ -34,6 +34,8 @@ PREPS_FILE      = @abs_top_builddir@/../installcheck/configurations_$(PARADIGM)
 @SCOREP_COMPILER_SUN_TRUE@SKIP_DEFAULT = yes
 @SCOREP_COMPILER_SUN_FALSE@SKIP_DEFAULT = no
 
+SCOREP_INSTRUMENTER_CHECKS_VERBOSE = $(V)
+
 #------------------------------------------------------------------------------
 # Instrument possible configurations: 
 # If we have a Makefile in PARADIGM_SRCDIR/<code>/<language>, create
@@ -46,16 +48,21 @@ PREPS_FILE      = @abs_top_builddir@/../installcheck/configurations_$(PARADIGM)
 # codes can be found in BINDIR.
 #------------------------------------------------------------------------------
 instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
-	@for code in $(CODES); do \
+	@obj_dir_prefix="`pwd`/build"; \
+	for code in $(CODES); do \
             for language in $(LANGUAGES); do \
                 if test -e $(PARADIGM_SRCDIR)/$$code/$$language/Makefile; then \
                     if test "x$(SKIP_DEFAULT)" = "xno"; then \
                         suffix="_default"; \
-                        obj_dir="`pwd`/build/$$code/$$language/$$suffix"; \
+                        obj_dir="$$obj_dir_prefix/$$code/$$language/$$suffix"; \
                         mkdir -p "$$obj_dir"; \
                         cp $(PARADIGM_SRCDIR)/$$code/$$language/Makefile "$$obj_dir"/; \
-                        echo "  GEN    ../installcheck/bin/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
-                        $(MAKE) -C $$obj_dir \
+                        if test "$(SCOREP_INSTRUMENTER_CHECKS_VERBOSE)" = "1"; then \
+                            set -x; \
+                        else \
+                            echo "  GEN     $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
+                        fi; \
+                        $(MAKE) -C $$obj_dir $(AM_MAKEFLAGS) \
                             PREP="@prefix@/bin/scorep" \
                             SUFFIX="$$suffix" \
                             OBJDIR="$$obj_dir" \
@@ -71,18 +78,23 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             FC="$(FC)" \
                             CFLAGS="$(CFLAGS)" \
                             CXXFLAGS="$(CXXFLAGS)" \
-                            F77FLAGS="$(F77FLAGS)" \
+                            F77FLAGS="$(FFLAGS)" \
                             FCFLAGS="$(FCFLAGS)" \
                             $$code || exit 1; \
+                        set +x; \
                     fi; \
                     while read line; do \
                         prep=`echo $$line | awk '{for (i=1; i<= NF; i++) {options = options " --" $$i} } END{print "@prefix@/bin/scorep" options}'`; \
                         suffix=`echo $$line | awk '{for (i=1; i<= NF; i++) {suffix = suffix "_" $$i} } END{print suffix}'`; \
-                        obj_dir="`pwd`/build/$$code/$$language/$$suffix"; \
+                        obj_dir="$$obj_dir_prefix/$$code/$$language/$$suffix"; \
                         mkdir -p "$$obj_dir"; \
                         cp $(PARADIGM_SRCDIR)/$$code/$$language/Makefile "$$obj_dir"/; \
-                        echo "  GEN    ../installcheck/bin/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
-                        $(MAKE) -C $$obj_dir \
+                        if test "$(SCOREP_INSTRUMENTER_CHECKS_VERBOSE)" = "1"; then \
+                            set -x; \
+                        else \
+                            echo "  GEN     $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
+                        fi; \
+                        $(MAKE) -C $$obj_dir $(AM_MAKEFLAGS) \
                             PREP="$$prep" \
                             SUFFIX="$$suffix" \
                             OBJDIR="$$obj_dir" \
@@ -98,9 +110,10 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             FC="$(FC)" \
                             CFLAGS="$(CFLAGS)" \
                             CXXFLAGS="$(CXXFLAGS)" \
-                            F77FLAGS="$(F77FLAGS)" \
+                            F77FLAGS="$(FFLAGS)" \
                             FCFLAGS="$(FCFLAGS)" \
                             $$code || exit 1; \
+                        set +x; \
                     done < $(PREPS_FILE); \
                 fi; \
             done; \
