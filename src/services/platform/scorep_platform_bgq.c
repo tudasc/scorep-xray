@@ -35,5 +35,28 @@
 SCOREP_ErrorCode
 SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root )
 {
+    if ( !root )
+    {
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                            "Invalid system tree root reference given." );
+    }
+    *root = NULL;
+    SCOREP_Platform_SystemTreePathElement** tail = root;
+    SCOREP_Platform_SystemTreePathElement*  node;
+
+    node = scorep_platform_system_tree_top_down_add( &tail,
+                                                     "machine",
+                                                     0, "Blue Gene/Q" );
+    if ( !node )
+    {
+        goto fail;
+    }
+
     return SCOREP_SUCCESS;
+
+fail:
+    SCOREP_Platform_FreePath( *root );
+
+    return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                        "Failed to build system tree path" );
 }

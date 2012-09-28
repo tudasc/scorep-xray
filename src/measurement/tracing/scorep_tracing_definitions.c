@@ -169,12 +169,21 @@ scorep_write_location_group_definitions(
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, LocationGroup, location_group )
     {
+        uint32_t system_tree_parent = OTF2_UNDEFINED_SYSTEM_TREE_NODE;
+        if ( definition->parent != SCOREP_INVALID_SYSTEM_TREE_NODE )
+        {
+            system_tree_parent = SCOREP_HANDLE_TO_ID(
+                definition->parent,
+                SystemTreeNode,
+                definitionManager->page_manager );
+        }
+
         OTF2_ErrorCode status = defLocationGroup(
             writerHandle,
             definition->global_location_group_id,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
             scorep_tracing_location_group_type_to_otf2( definition->location_group_type ),
-            SCOREP_HANDLE_TO_ID( definition->parent, SystemTreeNode, definitionManager->page_manager ) );
+            system_tree_parent );
         if ( status != OTF2_SUCCESS )
         {
             scorep_handle_definition_writing_error( status, "LocationGroup" );
