@@ -68,6 +68,8 @@ LDFLAGS="-L$ac_scorep_papi_lib_dir $LDFLAGS"
 # their performance monitor library (-lpmapi)
 if test "x${ac_scorep_platform}" = "xaix"; then
     ac_scorep_papi_additional_libs="-lpmapi"
+elif test "x${ac_scorep_platform}" = "xbgq"; then
+    ac_scorep_papi_additional_libs="-lstdc++ -lrt"
 else
     ac_scorep_papi_additional_libs=""
 fi
