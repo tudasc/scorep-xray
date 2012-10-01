@@ -31,6 +31,9 @@
 #include <stdio.h>
 #include <mpi.h>
 
+#include <UTILS_Error.h>
+#include <UTILS_Debug.h>
+
 #include <SCOREP_Config.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Mpi.h>

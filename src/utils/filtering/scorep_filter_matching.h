@@ -28,7 +28,7 @@
  */
 
 #include <stdbool.h>
-#include <UTILS_Error.h>
+#include <SCOREP_ErrorCodes.h>
 
 /**
  * Adds a filter rule to the file filter rule list.

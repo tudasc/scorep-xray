@@ -37,12 +37,11 @@
 #include <string.h>
 #include <assert.h>
 
-#include <UTILS_CStr.h>
+#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
+#include <UTILS_CStr.h>
 #include <SCOREP_Filter.h>
 
-#define STR( x ) STR_( x )
-#define STR_( x ) #x
 
 /* **************************************************************************************
    Variable and type definitions
@@ -108,7 +107,7 @@ scorep_filter_mangle_pattern( const char* pattern )
     strcpy( result, pattern );
 
     /* Put everything to lower or upper case */
-    char* test_case = STR( FC_FUNC( x, X ) );
+    char* test_case = UTILS_STRINGIFY( FC_FUNC( x, X ) );
 
     if ( *test_case == 'x' )
     {

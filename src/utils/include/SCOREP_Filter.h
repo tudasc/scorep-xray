@@ -29,9 +29,9 @@
  * found, filtering is disabled.
  */
 
-#include <UTILS_Error.h>
+#include <SCOREP_ErrorCodes.h>
 
-#ifdef __cplusplus
+#ifndef __cplusplus
 #include <stdbool.h>
 #endif
 

@@ -37,8 +37,9 @@
 #include <inttypes.h>
 
 
-#include <UTILS_Debug.h>
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME DEFINITIONS
+#include <UTILS_Debug.h>
 
 
 #include <jenkins_hash.h>
@@ -52,9 +53,6 @@
 #include <scorep_definitions.h>
 #include <scorep_types.h>
 #include <tracing/SCOREP_Tracing_Events.h>
-
-
-#define SCOREP_DEBUG_MODULE_NAME DEFINITIONS
 
 
 extern SCOREP_DefinitionManager  scorep_local_definition_manager;

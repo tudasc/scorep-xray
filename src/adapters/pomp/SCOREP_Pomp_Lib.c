@@ -30,6 +30,7 @@
 #include <SCOREP_Pomp_Init.h>
 #include <opari2/pomp2_lib.h>
 #include "SCOREP_Pomp_RegionInfo.h"
+#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include "SCOREP_Pomp_Variables.h"
 #include <stdio.h>

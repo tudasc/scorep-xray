@@ -29,9 +29,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include <UTILS_Debug.h>
-#include <UTILS_Error.h>
-
 /*
  * CUDA features (to be enabled/disabled via environment variables)
  */

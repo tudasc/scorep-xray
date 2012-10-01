@@ -42,6 +42,7 @@
 
 #include "SCOREP_Config.h"
 #include <SCOREP_Memory.h>
+#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <tracing/SCOREP_Tracing_Events.h>

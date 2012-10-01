@@ -31,13 +31,13 @@
 #include "SCOREP_Types.h"
 #include "SCOREP_Cuda_Init.h"
 
+#include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME CUDA
 #include <UTILS_Debug.h>
 #include <SCOREP_Timing.h>
 
 #include "scorep_cuda.h"
 #include "scorep_cupti_callbacks.h"
-
-#define SCOREP_DEBUG_MODULE_NAME CUDA
 
 
 uint64_t scorep_cuda_init_timestamp = 0;

@@ -33,14 +33,13 @@
 
 
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME OPENMP
 #include <UTILS_Debug.h>
 
 
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Location.h>
-
-#define SCOREP_DEBUG_MODULE_NAME OPENMP
 
 
 #include "scorep_pomp_confvars.inc.c"

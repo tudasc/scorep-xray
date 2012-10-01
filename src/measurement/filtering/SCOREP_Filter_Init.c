@@ -27,6 +27,7 @@
 #include <config.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Filter.h>
+#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 
 /* **************************************************************************************

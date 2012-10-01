@@ -27,6 +27,10 @@
 
 #include <stdbool.h>
 
+#include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME MPI
+#include <UTILS_Debug.h>
+
 #include <SCOREP_Location.h>
 #include "SCOREP_Mpi_Init.h"
 #include "SCOREP_Mpi_Reg.h"
@@ -35,9 +39,6 @@
 #include <SCOREP_RuntimeManagement.h>
 
 #include <stdio.h>
-
-
-#define SCOREP_DEBUG_MODULE_NAME MPI
 
 
 /**

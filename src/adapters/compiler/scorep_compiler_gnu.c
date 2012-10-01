@@ -28,6 +28,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include <UTILS_Debug.h>
+
 #include <SCOREP_Types.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Events.h>

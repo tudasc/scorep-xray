@@ -36,6 +36,7 @@
 #include "scorep_oa_request.h"
 #include "scorep_oa_connection.h"
 #include "SCOREP_OA_Init.h"
+#include <UTILS_Debug.h>
 #include <UTILS_CStr.h>
 #include <stdio.h>
 #include <string.h>

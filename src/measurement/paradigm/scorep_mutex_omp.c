@@ -36,6 +36,9 @@
 #include <omp.h>
 
 
+#include <UTILS_Error.h>
+
+
 #include <SCOREP_Mutex.h>
 #include <SCOREP_RuntimeManagement.h>
 

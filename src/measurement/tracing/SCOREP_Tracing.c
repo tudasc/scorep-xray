@@ -37,6 +37,7 @@
 
 
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME TRACING
 #include <UTILS_Debug.h>
 
 
@@ -59,8 +60,6 @@
 #include "SCOREP_Tracing_ThreadInteraction.h"
 #include "scorep_tracing_definitions.h"
 #include "scorep_tracing_file_substrate.h"
-
-#define SCOREP_DEBUG_MODULE_NAME TRACING
 
 static OTF2_Archive* scorep_otf2_archive;
 static SCOREP_Mutex  scorep_otf2_archive_lock;

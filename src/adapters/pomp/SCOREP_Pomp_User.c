@@ -35,10 +35,10 @@
 #include <opari2/pomp2_lib.h>
 #include "SCOREP_Pomp_RegionInfo.h"
 #include "SCOREP_Pomp_Lock.h"
+#define SCOREP_DEBUG_MODULE_NAME OPENMP
+#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include "SCOREP_Pomp_Variables.h"
-
-#define SCOREP_DEBUG_MODULE_NAME OPENMP
 
 /** @ingroup POMP2
     @{

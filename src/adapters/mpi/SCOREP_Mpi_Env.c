@@ -42,6 +42,7 @@
 
 #include <config.h>
 #include "SCOREP_Mpi.h"
+#include <UTILS_Error.h>
 
 
 /** Flag set if the measurement sysem was already opened by another adapter.

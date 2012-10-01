@@ -28,7 +28,7 @@
  */
 
 
-#include <UTILS_Error.h>
+#include <SCOREP_ErrorCodes.h>
 
 
 /**

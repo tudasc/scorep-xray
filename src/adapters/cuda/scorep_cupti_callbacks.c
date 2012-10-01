@@ -29,6 +29,9 @@
 #include "SCOREP_Events.h"
 #include "SCOREP_Types.h"
 
+#include <UTILS_Error.h>
+#include <UTILS_Debug.h>
+
 #include "scorep_cuda.h"
 #include "scorep_cupti.h"
 #include "scorep_cupti_callbacks.h"

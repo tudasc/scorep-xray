@@ -24,6 +24,7 @@
 
 #include <config.h>
 
+#include <UTILS_Debug.h>
 #include "scorep_oa_mri_control.h"
 
 #include <string.h>

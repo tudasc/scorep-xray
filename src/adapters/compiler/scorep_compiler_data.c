@@ -27,6 +27,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <UTILS_Debug.h>
+
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
 

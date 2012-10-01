@@ -38,8 +38,9 @@
 #include <string.h>
 #include <inttypes.h>
 
-#include <UTILS_Debug.h>
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME CORE
+#include <UTILS_Debug.h>
 
 #include <SCOREP_Memory.h>
 #include <SCOREP_Subsystem.h>
@@ -69,8 +70,6 @@
 #include "scorep_clock_synchronization.h"
 #include "scorep_properties.h"
 #include "scorep_runtime_management_timings.h"
-
-#define SCOREP_DEBUG_MODULE_NAME CORE
 
 /** @brief Measurement system initialized? */
 static bool scorep_initialized = false;

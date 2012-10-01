@@ -28,6 +28,9 @@
  * @status alpha
  */
 
+#include <stdint.h>
+#include <stdbool.h>
+
 extern bool scorep_oa_is_requested;
 
 #define SCOREP_OA_IS_REQUESTED            ( scorep_oa_is_requested )

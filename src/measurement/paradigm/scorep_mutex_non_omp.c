@@ -38,6 +38,9 @@
 #include <SCOREP_Mutex.h>
 
 
+#include <UTILS_Error.h>
+
+
 /** Magic number to identify an initialized lock */
 #define SCOREP_MUTEXT_MARKER ( void* )0x10C88c01
 

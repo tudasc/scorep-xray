@@ -27,11 +27,10 @@
           Declarations common to all MPI wrappers.
  */
 
+#include <SCOREP_ErrorCodes.h>
 #include "SCOREP_Mpi_Communicator.h"
 #include "SCOREP_Mpi_Reg.h"
 #include "SCOREP_Mpi_Request.h"
-#include <UTILS_Error.h>
-#include <UTILS_Debug.h>
 
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>

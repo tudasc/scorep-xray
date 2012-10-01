@@ -31,19 +31,15 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
-
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME MPI
 #include <UTILS_Debug.h>
-
 
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Location.h>
 
 #include "SCOREP_Mpi_Reg.h"
-
-#define SCOREP_DEBUG_MODULE_NAME MPI
-
 
 #include "scorep_mpi_confvars.inc.c"
 

@@ -37,6 +37,7 @@
 #include <sys/resource.h>
 
 #include "SCOREP_Config.h"
+#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include <UTILS_CStr.h>
 

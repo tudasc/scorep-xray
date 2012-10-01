@@ -24,6 +24,7 @@
 
 
 #include <config.h>
+#include <UTILS_Debug.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_RuntimeManagement.h>
 

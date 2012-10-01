@@ -31,6 +31,9 @@
 #include <assert.h>
 
 #include "SCOREP_Mpi.h"
+
+#include <UTILS_Error.h>
+
 #include "SCOREP_Mpi_Communicator.h"
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>

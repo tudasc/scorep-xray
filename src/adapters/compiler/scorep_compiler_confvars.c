@@ -33,14 +33,12 @@
 
 
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
 
 #include <SCOREP_Config.h>
 #include <SCOREP_Subsystem.h>
-
-
-#define SCOREP_DEBUG_MODULE_NAME COMPILER
 
 
 #include "scorep_compiler_confvars.inc.c"

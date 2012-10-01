@@ -33,6 +33,7 @@
 
 
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME CUDA
 #include <UTILS_Debug.h>
 
 
@@ -41,9 +42,6 @@
 
 
 #include "scorep_cuda.h"
-
-
-#define SCOREP_DEBUG_MODULE_NAME CUDA
 
 
 #include "scorep_cuda_confvars.inc.c"

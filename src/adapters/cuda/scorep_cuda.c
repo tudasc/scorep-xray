@@ -24,6 +24,9 @@
 
 #include <config.h>
 
+#include <UTILS_Error.h>
+#include <UTILS_Debug.h>
+
 #include "scorep_cuda.h"
 #include "scorep_cupti.h"
 

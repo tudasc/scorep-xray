@@ -28,6 +28,8 @@
 
 #include <SCOREP_Mpi.h>
 
+#include <UTILS_Error.h>
+
 /**
  * @internal
  * size of element list behind a hash entry

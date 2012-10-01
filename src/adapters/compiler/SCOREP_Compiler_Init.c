@@ -34,9 +34,9 @@
 #include "SCOREP_Types.h"
 #include <SCOREP_Location.h>
 #include "SCOREP_Config.h"
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
-#define SCOREP_DEBUG_MODULE_NAME COMPILER
 
 #include "scorep_compiler_confvars.inc.c"
 

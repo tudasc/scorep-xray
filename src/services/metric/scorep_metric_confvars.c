@@ -33,15 +33,13 @@
 
 
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME METRIC
 #include <UTILS_Debug.h>
 
 
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Location.h>
-
-#define SCOREP_DEBUG_MODULE_NAME METRIC
-
 
 #include "scorep_metric_papi_confvars.inc.c"
 

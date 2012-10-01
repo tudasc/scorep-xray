@@ -37,14 +37,13 @@
 #include <SCOREP_Config.h>
 
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME CONFIG
 #include <UTILS_Debug.h>
 #include <UTILS_CStr.h>
 
 #include <SCOREP_Hashtab.h>
 
 #include "scorep_types.h"
-
-#define SCOREP_DEBUG_MODULE_NAME CONFIG
 
 static size_t
 hash_variable( const void* key );

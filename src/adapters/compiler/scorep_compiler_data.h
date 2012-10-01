@@ -32,7 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <UTILS_Debug.h>
 #include <UTILS_IO.h>
 #include <SCOREP_Hashtab.h>
 #include <UTILS_CStr.h>

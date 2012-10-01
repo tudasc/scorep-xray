@@ -26,7 +26,7 @@
  *  @maintainer Ronny Tschueter (ronny.tschueter@zih.tu-dresden.de)
  */
 
-#include <UTILS_Error.h>
+#include <SCOREP_ErrorCodes.h>
 #include <SCOREP_Location.h>
 
 /* *********************************************************************

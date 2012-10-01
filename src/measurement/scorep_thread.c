@@ -41,6 +41,7 @@
 #include "scorep_subsystem.h"
 #include <tracing/SCOREP_Tracing_ThreadInteraction.h>
 
+#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 
 #include "scorep_environment.h"

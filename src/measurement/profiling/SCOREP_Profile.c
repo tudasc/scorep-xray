@@ -26,6 +26,8 @@
 
 #include <config.h>
 #include <SCOREP_Memory.h>
+#include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME PROFILE
 #include <UTILS_Debug.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Config.h>
@@ -46,8 +48,6 @@
 #include <SCOREP_Timing.h>
 #include <SCOREP_Location.h>
 #include "SCOREP_Metric_Management.h"
-
-#define SCOREP_DEBUG_MODULE_NAME PROFILE
 
 /* ***************************************************************************************
    Type definitions and variables

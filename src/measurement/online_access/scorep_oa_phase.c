@@ -26,6 +26,8 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include <UTILS_Debug.h>
+
 #include "SCOREP_Types.h"
 
 #include "scorep_oa_phase.h"
