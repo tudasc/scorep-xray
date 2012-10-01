@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include <UTILS_IO.h>
 #include <SCOREP_Location.h>

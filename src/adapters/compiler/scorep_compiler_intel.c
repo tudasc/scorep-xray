@@ -30,6 +30,7 @@
 
 #include <SCOREP_Types.h>
 #include <SCOREP_Location.h>
+#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>

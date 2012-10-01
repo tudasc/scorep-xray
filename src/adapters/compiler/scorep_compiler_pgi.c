@@ -27,6 +27,7 @@
 
 #include <config.h>
 #include <stdio.h>
+#include <UTILS_Errro.h>
 #include <UTILS_Debug.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Events.h>
