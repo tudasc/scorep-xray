@@ -68,6 +68,128 @@
 #include <sys/types.h>
 
 
+#if !HAVE( PAPI ) && !HAVE( GETRUSAGE )
+
+/*
+ * No metric sources supported
+ */
+
+uint64_t*
+SCOREP_Metric_Read( SCOREP_Location* location )
+{
+    return NULL;
+}
+
+SCOREP_ErrorCode
+SCOREP_Metric_Reinitialize()
+{
+    return SCOREP_SUCCESS;
+}
+
+SCOREP_SamplingSetHandle
+SCOREP_Metric_GetSamplingSet()
+{
+    return SCOREP_INVALID_SAMPLING_SET;
+}
+
+uint32_t
+SCOREP_Metric_GetNumberOfSynchronousStrictMetrics()
+{
+    return 0;
+}
+
+SCOREP_SamplingSetHandle
+SCOREP_Metric_GetSynchronousStrictMetricHandle( uint32_t index )
+{
+    return SCOREP_INVALID_SAMPLING_SET;
+}
+
+SCOREP_SamplingSetHandle*
+SCOREP_Metric_GetAdditionalScopedMetricHandles( SCOREP_Location* location )
+{
+    return NULL;
+}
+
+void
+SCOREP_Metric_WriteToTrace( SCOREP_Location* locationData,
+                            uint64_t         timestamp )
+{
+}
+
+uint32_t
+SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( SCOREP_Location* location )
+{
+    return 0;
+}
+
+/** @brief Called on deregistration of the metric service.
+ */
+static void
+scorep_metric_deregister()
+{
+}
+
+/** @brief Location specific finalization function for metric services.
+ *
+ *  @param location             Location data.
+ *
+ *  @param location Reference to location that will finalize its metric related data structures.
+ */
+static void
+scorep_metric_finalize_location( SCOREP_Location* location )
+{
+}
+
+/** @brief Service finalization.
+ */
+static void
+scorep_metric_finalize_service()
+{
+}
+
+/** @brief  Location specific initialization function for metric services.
+ *
+ *  @param location             Location data.
+ *
+ *  @return It returns SCOREP_SUCCESS if successful,
+ *          otherwise an error code will be reported.
+ */
+static SCOREP_ErrorCode
+scorep_metric_initialize_location( SCOREP_Location* location )
+{
+    return SCOREP_SUCCESS;
+}
+
+/** @brief Called on initialization of the metric service.
+ *
+ *  @return It returns SCOREP_SUCCESS if successful,
+ *          otherwise an error code will be reported.
+ */
+static SCOREP_ErrorCode
+scorep_metric_initialize_service()
+{
+    return SCOREP_SUCCESS;
+}
+
+/** @brief Registers configuration variables for the metric services.
+ *
+ *  @param subsystem_id         Identifier of metric subsystem.
+ *
+ *  @return It returns SCOREP_SUCCESS if successful,
+ *          otherwise an error code will be reported.
+ */
+static SCOREP_ErrorCode
+scorep_metric_register( size_t subsystem_id )
+{
+    return SCOREP_SUCCESS;
+}
+
+#else // if !HAVE( PAPI ) && !HAVE( GETRUSAGE )
+
+/*
+ * At least one metric source supported
+ */
+
 
 /** List of metric sources. */
 static const SCOREP_MetricSource* scorep_metric_sources[] = {
@@ -859,6 +981,8 @@ SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( SCOREP_Location* location )
 
     return number_of_additional_scorep_metrics;
 }
+
+#endif // if !HAVE( PAPI ) && !HAVE( GETRUSAGE )
 
 /* *********************************************************************
  * Subsystem declaration
