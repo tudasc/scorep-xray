@@ -111,6 +111,11 @@ enum
         __func__,         \
         __VA_ARGS__ )
 
+#define HAVE_DEBUG_MODULE_NAME_( sym ) defined( sym ## _DEBUG_MODULE_NAME )
+#define HAVE_DEBUG_MODULE_NAME( sym )  HAVE_DEBUG_MODULE_NAME_( sym )
+
+#if HAVE_DEBUG_MODULE_NAME( PACKAGE_SYM_CAPS )
+
 #define UTILS_DEBUG( ... ) \
     UTILS_Debug_Printf( \
         UTILS_JOIN_SYMS( PACKAGE_SYM_CAPS, \
@@ -142,6 +147,19 @@ enum
         __LINE__,                                  \
         __func__,                                  \
         "" __VA_ARGS__ )
+
+#else
+
+#define UTILS_DEBUG( ... ) \
+    PACKAGE_MANGLE_NAME_CAPS( DEBUG_MODULE_NAME ) = "You need to define a debug module name before including <UTILS_Debug.h>."
+
+#define UTILS_DEBUG_ENTRY( ... ) \
+    PACKAGE_MANGLE_NAME_CAPS( DEBUG_MODULE_NAME ) = "You need to define a debug module name before including <UTILS_Debug.h>."
+
+#define UTILS_DEBUG_EXIT( ... ) \
+    PACKAGE_MANGLE_NAME_CAPS( DEBUG_MODULE_NAME ) = "You need to define a debug module name before including <UTILS_Debug.h>."
+
+#endif
 
 /* *INDENT-ON* */
 
