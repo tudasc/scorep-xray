@@ -25,8 +25,6 @@ Common options are:
                   it is no mpi program.
   --opari         Enables Opari instrumentation. Is enabled by default
                   if it is an OpenMP program.
-  --noopari       Disables Opari instrumentation. Is disabled by default
-                  if it is no OpenMP program.
   --user          Enables manual user instrumentation.
   --nouser        Disables manual user instrumentation. Is disabled by default.
   --pdt           Enables source code instrumentation with PDT using

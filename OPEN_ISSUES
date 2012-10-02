@@ -23,6 +23,19 @@
     no support for MPI_Type_dup() was detected, than please ensure, that
     the MPI_Datatype handle is still valid at the time the request finishes.
 
+--------------------------------------------------------------------------------
+
+* Score-P misc
+
+  - Currently, the instrumenter allows to switch off OPARI2 instrumentation for
+    OpenMP programs. If OpenMP parallel regions are not instrumented and an event
+    occures inside a parallel region (e.g., because an instrumented function is 
+    called inside of a parallel region) Score-P will crash. We are considering 
+    to make the usage more secure in future versions of Score-P. This might result
+    in a change of the instrumenter option or the option may vanish completely.
+    However, there are some use-cases where disabling OPARI2 instrumentation
+    is helpful.
+
 
                         Score-P v1.0 OPEN ISSUES
                         ========================

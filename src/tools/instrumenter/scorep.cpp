@@ -78,8 +78,10 @@ print_help()
               << "                  it is no mpi program.\n"
               << "  --opari         Enables Opari instrumentation. Is enabled by default\n"
               << "                  if it is an OpenMP program.\n"
-              << "  --noopari       Disables Opari instrumentation. Is disabled by default\n"
-              << "                  if it is no OpenMP program.\n"
+    /*
+            << "  --noopari       Disables Opari instrumentation. Is disabled by default\n"
+            << "                  if it is no OpenMP program.\n"
+     */
               << "  --user          Enables manual user instrumentation.\n"
               << "  --nouser        Disables manual user instrumentation. Is disabled by default.\n"
 #ifdef HAVE_PDT

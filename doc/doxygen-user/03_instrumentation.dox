@@ -119,7 +119,7 @@ source routines and arbitrary regions, in addition to fully-automatic
 	    OpenMP & {\ttfamily -\/-\/openmp\-\_support/ \newline -\/-\/noopenmp\-\_support} & (auto) &  opari2 user re\-gions, Sec. \ref{sec:pomp_instrumentation} \newline + all parallel constructs  &  --  \\ \hline
 	    Compiler, Sec. \ref{sec:compiler_instrumentation} & {\ttfamily -\/-\/compiler/ \newline -\/-\/nocompiler} & enabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    PDT,\newline Sec. \ref{sec:tau_instrumentation} & {\ttfamily -\/-\/pdt/ \newline -\/-\/nopdt} & disabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
-	    OPARI2, Sec. \ref{sec:pomp_instrumentation} & {\ttfamily -\/-\/opari/ \newline -\/-\/noopari} & depends on OpenMP usage &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}  \\ \hline
+	    OPARI2, Sec. \ref{sec:pomp_instrumentation} & {\ttfamily -\/-\/opari} & depends on OpenMP usage &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    Manual, Sec. \ref{sec:manual_instrumentation} & {\ttfamily -\/-\/user/ \newline -\/-\/nouser} & disabled &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}, and selective tracing, Sec. \ref{sec:selective_tracing}\\ \hline
     	\end{tabular}
     \end{table}
@@ -165,7 +165,7 @@ source routines and arbitrary regions, in addition to fully-automatic
     </tr>
     <tr>
       <td align="left" valign="middle"> @opari2 (see Sec. @ref pomp_instrumentation ) </td>
-      <td align="center" valign="middle"> --opari/--noopari </td>
+      <td align="center" valign="middle"> --opari</td>
       <td align="center" valign="middle"> depends on OpenMP usage </td>
       <td align="center" valign="middle"> manually annotated </td>
       <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </td> 
@@ -202,7 +202,7 @@ because it inserts @scorep user macros into the source code.
 Sometimes it is desirable to explicitly direct the @scorep instrumentor to
 do nothing except execute the associated compile/link command. For such cases 
 it is possible to disable default instrumentation with <tt>--nocompiler</tt>,
-<tt>--noopari</tt>, and/or <tt>--nompi</tt>. Although no instrumentation is
+and/or <tt>--nompi</tt>. Although no instrumentation is
 performed, this can help verify that the @scorep instrumentor correctly
 handles the compile/link commands. 
 
