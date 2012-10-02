@@ -56,6 +56,7 @@ libscorep_adapter_pomp_user_la_SOURCES  =                 \
     $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_User.c       \
     $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_RegionInfo.c \
     $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_RegionInfo.h \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Dummy.c      \
     $(SRC_ROOT)src/adapters/include/SCOREP_Pomp_Init.h
 libscorep_adapter_pomp_user_la_CPPFLAGS =                 \
     $(AM_CPPFLAGS)                                        \

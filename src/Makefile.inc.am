@@ -88,8 +88,7 @@ libscorep_mpi_la_LIBADD               = $(common_libadd)                        
                                         $(LIB_DIR_SCOREP_MPI)libscorep_sion_mpi.la     \
                                         $(LIB_DIR_SCOREP_MPI)libscorep_oa_mpi.la       \
                                         libscorep_adapter_pomp_user.la                 \
-                                        libscorep_paradigm_non_omp.la                  \
-                                        libscorep_pomp_dummy.la
+                                        libscorep_paradigm_non_omp.la
 libscorep_mpi_la_LDFLAGS              = $(common_ldflags)
 
 endif              		
@@ -103,7 +102,6 @@ libscorep_serial_la_LIBADD   = $(common_libadd)               \
                                libscorep_adapter_pomp_user.la \
                                libscorep_paradigm_non_mpi.la  \
                                libscorep_paradigm_non_omp.la  \
-                               libscorep_pomp_dummy.la        \
                                libscorep_sion_serial.la       \
                                libscorep_oa_serial.la
 libscorep_serial_la_LDFLAGS  = $(common_ldflags)
@@ -150,13 +148,3 @@ libscorep_mpi_omp_la_LDFLAGS              = $(common_ldflags)
 
 endif
 endif
-
-## POMP dummy
-noinst_LTLIBRARIES              += libscorep_pomp_dummy.la
-libscorep_pomp_dummy_la_SOURCES  = $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Dummy.c
-libscorep_pomp_dummy_la_CFLAGS   = $(AM_CFLAGS)
-libscorep_pomp_dummy_la_CPPFLAGS = $(common_cppflags)
-libscorep_pomp_dummy_la_LIBADD   =
-
-
-
