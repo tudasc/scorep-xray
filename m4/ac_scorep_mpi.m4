@@ -173,6 +173,7 @@ AC_COMPILE_IFELSE([
 ) # AC_COMPILE_IF_ELSE
 
 AC_MSG_CHECKING([for MPI_STATUSES_IGNORE])
+scorep_has_statuses_ignore="no"
 AC_COMPILE_IFELSE([
       PROGRAM test
       IMPLICIT NONE
@@ -180,10 +181,25 @@ AC_COMPILE_IFELSE([
       integer :: i
       i = MPI_STATUSES_IGNORE(1,1)
       END PROGRAM test
-], [AC_MSG_RESULT(yes);
-    AC_DEFINE(HAVE_MPI_STATUSES_IGNORE, 1, [Fortran MPI defines MPI_STATUSES_IGNORE])
-], [AC_MSG_RESULT(no)]
+], [scorep_has_statuses_ignore="yes"], []
 ) # AC_COMPILE_IF_ELSE
+
+AC_COMPILE_IFELSE([
+      PROGRAM test
+      IMPLICIT NONE
+      INCLUDE  'mpif.h'
+      double precision :: i
+      i = MPI_STATUSES_IGNORE
+      END PROGRAM test
+], [scorep_has_statuses_ignore="yes"], []
+) # AC_COMPILE_IF_ELSE
+
+if test "x${scorep_has_statuses_ignore}" = "xyes"; then
+   AC_MSG_RESULT(yes);
+   AC_DEFINE(HAVE_MPI_STATUSES_IGNORE, 1, [Fortran MPI defines MPI_STATUSES_IGNORE])
+else
+   AC_MSG_RESULT(no)
+fi
 
 AC_MSG_CHECKING([for MPI_UNWEIGHTED])
 AC_COMPILE_IFELSE([
