@@ -393,8 +393,12 @@ scorep_mpiprofiling_rank_to_pe( int      rank,
     int ret_value = scorep_mpiprofiling_rank_to_pe_by_group( rank,
                                                              group,
                                                              global_rank );
+
     /* free internal group of input communicator */
-    PMPI_Group_free( &group );
+    if ( group != MPI_GROUP_NULL )
+    {
+        PMPI_Group_free( &group );
+    }
 
     return ret_value;
 }
