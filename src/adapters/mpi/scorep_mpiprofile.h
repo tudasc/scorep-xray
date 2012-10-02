@@ -49,7 +49,7 @@ typedef struct scorep_wait_state_tracking_struct
 }scorep_wait_state_request_tracking;
 
 
-extern int myrank;
+extern int scorep_mpiprofiling_myrank;
 
 /**
  * @internal
@@ -64,7 +64,7 @@ typedef struct scorep_mpiprofile_world_comm_dup_struct
 /**
  * Contains the data of the MPI_COMM_WORLD definition.
  */
-extern scorep_mpiprofile_world_comm_dup world_comm_dup;
+extern scorep_mpiprofile_world_comm_dup scorep_mpiprofiling_world_comm_dup;
 
 int
 scorep_mpiprofile_get_timepack_from_pool
