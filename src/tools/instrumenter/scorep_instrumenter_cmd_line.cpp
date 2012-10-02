@@ -540,6 +540,9 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
     else if ( arg == "-c" )
     {
         m_is_linking = false;
+        /* Do not add -c to the compiler options, because the instrumenter
+           will add a -c during the compile step, anyway. */
+        return scorep_parse_mode_command;
     }
     else if ( arg == "-l" )
     {
