@@ -48,6 +48,7 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Memory_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( scorep_otf2_initialize )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Initialize )         \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_Initialize )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filter_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize )          \

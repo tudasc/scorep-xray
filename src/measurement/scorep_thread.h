@@ -73,6 +73,10 @@ void
 SCOREP_Thread_OnThreadJoin();
 
 
+
+void
+SCOREP_Location_Initialize();
+
 /**
  * Call from master thread, e.g. SCOREP_FinalizeMeasurement(). Cleans up
  * locations data structures.

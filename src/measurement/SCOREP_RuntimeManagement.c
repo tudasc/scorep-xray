@@ -186,6 +186,7 @@ SCOREP_InitMeasurement()
     SCOREP_FreeSystemTree( system_tree_path );
     system_tree_path = NULL;
 
+    SCOREP_TIME( SCOREP_Location_Initialize, ( ) );
     SCOREP_TIME( SCOREP_Thread_Initialize, ( ) );
 
     if ( !SCOREP_Mpi_HasMpi() )

@@ -40,6 +40,7 @@
 #include "scorep_status.h"
 #include "scorep_subsystem.h"
 #include <tracing/SCOREP_Tracing_ThreadInteraction.h>
+#include <SCOREP_Mutex.h>
 
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
@@ -140,6 +141,7 @@ static struct SCOREP_Location**                location_list_tail = &location_li
 static struct SCOREP_Thread_ThreadPrivateData* initial_thread;
 static struct SCOREP_Location*                 initial_location;
 static uint32_t                                location_counter;
+static SCOREP_Mutex                            scorep_location_list_mutex;
 
 
 void
@@ -169,6 +171,13 @@ SCOREP_Thread_Initialize()
     scorep_thread_call_externals_on_thread_activation( TPD->location_data, 0 );
 }
 
+
+void
+SCOREP_Location_Initialize()
+{
+    SCOREP_ErrorCode result = SCOREP_MutexCreate( &scorep_location_list_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS );
+}
 
 SCOREP_Location*
 SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
@@ -376,13 +385,17 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         assert( new_location->tracing_data );
     }
 
-    SCOREP_PRAGMA_OMP( critical( new_location ) )
-    {
-        new_location->local_id = location_counter++;
-        new_location->next     = NULL;
-        *location_list_tail    = new_location;
-        location_list_tail     = &new_location->next;
-    }
+
+    SCOREP_ErrorCode result = SCOREP_MutexLock( scorep_location_list_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS );
+
+    new_location->local_id = location_counter++;
+    new_location->next     = NULL;
+    *location_list_tail    = new_location;
+    location_list_tail     = &new_location->next;
+
+    result = SCOREP_MutexUnlock( scorep_location_list_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS );
 
     return new_location;
 }
@@ -476,6 +489,10 @@ SCOREP_Location_Finalize()
     assert( location_counter == 0 );
     location_list_head = 0;
     location_list_tail = &location_list_head;
+
+    SCOREP_ErrorCode result = SCOREP_MutexDestroy( &scorep_location_list_mutex );
+    UTILS_ASSERT( result == SCOREP_SUCCESS );
+    scorep_location_list_mutex = 0;
 }
 
 
