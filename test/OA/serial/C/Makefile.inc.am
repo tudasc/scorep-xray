@@ -14,8 +14,7 @@ oa_c_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@       \
     -DSCOREP_USER_ENABLE
 
 oa_c_test_LDADD =                        \
-    $(LIB_ROOT)libscorep_serial.la         \
-    $(LIB_ROOT)libscorep_pomp_dummy.la
+    $(LIB_ROOT)libscorep_serial.la
 
 if HAVE_PAPI
 oa_c_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@

@@ -19,8 +19,7 @@ user_f_test_CPPFLAGS += -DSCOREP_COMPILER_PGI=1
 endif
 
 user_f_test_LDADD =                        \
-    $(LIB_ROOT)libscorep_serial.la         \
-    $(LIB_ROOT)libscorep_pomp_dummy.la
+    $(LIB_ROOT)libscorep_serial.la
 
 if HAVE_PAPI
 user_f_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@

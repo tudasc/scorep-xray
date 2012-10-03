@@ -15,8 +15,7 @@ user_c_test_CPPFLAGS = $(AM_CPPFLAGS)       \
     -DSCOREP_USER_ENABLE
 
 user_c_test_LDADD =                         \
-    $(LIB_ROOT)libscorep_serial.la          \
-    $(LIB_ROOT)libscorep_pomp_dummy.la
+    $(LIB_ROOT)libscorep_serial.la
 
 EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/C/scorep_phase_test.c \
