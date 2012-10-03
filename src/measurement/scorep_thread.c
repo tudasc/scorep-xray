@@ -108,6 +108,7 @@ struct SCOREP_Thread_ThreadPrivateData
     SCOREP_Thread_ThreadPrivateData** children;
     uint32_t                          n_children;
     bool                              is_active;
+    uint32_t                          n_reusages;
     SCOREP_Location*                  location_data;
 };
 
@@ -397,6 +398,7 @@ scorep_thread_create_thread_private_data()
     new_tpd->children      = 0;
     new_tpd->n_children    = 0;
     new_tpd->is_active     = true;
+    new_tpd->n_reusages    = 0;
     new_tpd->location_data = 0;
     return new_tpd;
 }
@@ -511,15 +513,16 @@ scorep_thread_init_children_to_null( SCOREP_Thread_ThreadPrivateData** children,
 void
 SCOREP_Thread_OnThreadJoin()
 {
-    if ( TPD->parent )
+    if ( TPD->n_reusages == 0 )
     {
+        assert( TPD->parent );
         scorep_thread_update_tpd( TPD->parent );
     }
     else
     {
-        // There was no parallelism in the previous parallel region and
-        // we are are the initial thread. Then, there is no parent and
-        // we don't need to update TPD.
+        assert( TPD->is_active );
+        // There was no parallelism in the previous parallel region
+        // so we must not update TPD.
     }
 
     if ( !TPD->is_active )
@@ -539,6 +542,8 @@ SCOREP_Thread_OnThreadJoin()
     }
     else
     {
+        assert( TPD->n_reusages > 0 );
+        TPD->n_reusages--;
         // no parallelism in last parallel region, parent == child
         scorep_thread_call_externals_on_thread_deactivation( TPD->location_data,
                                                              TPD->location_data );
@@ -573,6 +578,7 @@ SCOREP_Location_GetCurrentCPULocation()
         // there is no additional parallelism in this parallel region. don't
         // update TPD with a child but reuse the parent.
         TPD->is_active = true;
+        TPD->n_reusages++;
         if ( !TPD->children[ 0 ] )
         {
             /// @todo do we see this as a new thread?
@@ -585,8 +591,9 @@ SCOREP_Location_GetCurrentCPULocation()
     else
     {
         // set TPD to a child of itself, create new one if neccessary
-        size_t                            my_thread_id = omp_get_thread_num();
-        SCOREP_Thread_ThreadPrivateData** my_tpd       = &( TPD->children[ my_thread_id ] );
+        size_t my_thread_id = omp_get_thread_num();
+        assert( my_thread_id < TPD->n_children );
+        SCOREP_Thread_ThreadPrivateData** my_tpd = &( TPD->children[ my_thread_id ] );
         if ( *my_tpd )
         {
             // already been in this thread
