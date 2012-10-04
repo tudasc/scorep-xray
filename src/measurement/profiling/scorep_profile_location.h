@@ -37,6 +37,8 @@
    Typedefs
 ****************************************************************************************/
 
+typedef struct scorep_profile_fork_list_node scorep_profile_fork_list_node;
+
 /**
  * Data structure type for profile location data. Contains information about a
  * location that is needed by the profiling system.
@@ -45,10 +47,8 @@ struct SCOREP_Profile_LocationData
 {
     scorep_profile_node*                 current_implicit_node;         /**< Current callpath of this thread */
     scorep_profile_node*                 root_node;                     /**< Root node of this thread */
-    scorep_profile_node*                 fork_node;                     /**< Last Fork node created by this thread */
     scorep_profile_node*                 creation_node;                 /**< Node where the thread was created */
     uint32_t                             current_depth;                 /**< Stores the current length of the callpath */
-    uint32_t                             fork_depth;                    /**< Depth of last fork node */
     uint32_t                             implicit_depth;                /**< Depth of the implicit task */
     scorep_profile_node*                 free_nodes;                    /**< List of records for recycling */
     scorep_profile_sparse_metric_int*    free_int_metrics;              /**< List of records for recycling */
@@ -60,6 +60,8 @@ struct SCOREP_Profile_LocationData
     uint32_t                             num_location_specific_metrics; /**< Number of scoped metrics recorded by this location
                                                                              (in addition to dense metrics recorded by all locations) */
     SCOREP_Location*                     location_data;                 /**< Pointer to the Score-P location */
+    scorep_profile_fork_list_node*       fork_list_head;                /**< Pointer to the list head of fork points */
+    scorep_profile_fork_list_node*       fork_list_tail;                /**< Pointer to the list tail of fork points */
 };
 
 /* **************************************************************************************
@@ -126,5 +128,52 @@ scorep_profile_set_num_location_metrics( SCOREP_Profile_LocationData* location,
  */
 uint32_t
 scorep_profile_get_num_location_metrics( SCOREP_Profile_LocationData* location );
+
+/**
+ * Adds a fork node to the list
+ *
+ * @param location      Location.
+ * @param fork_node     The fork node.
+ * @param profile_depth Depth of the profile node in the call tree.
+ * @param nesting_level The nesting level of the forked paralle region.
+ */
+void
+scorep_profile_add_fork_node( SCOREP_Profile_LocationData* location,
+                              scorep_profile_node*         fork_node,
+                              uint32_t                     profile_depth,
+                              uint32_t                     nesting_level );
+
+/**
+ * Returns the fork node of the parallel region at @a nesting_level.
+ *
+ * @param location      Location.
+ * @param nesting_level The nesting level of the forked paralle region.
+ */
+scorep_profile_node*
+scorep_profile_get_fork_node( SCOREP_Profile_LocationData* location,
+                              uint32_t                     nesting_level );
+
+
+/**
+ * Returns the depth level of fork node of the parallel region at @a nesting_level.
+ *
+ * @param location      Location.
+ * @param nesting_level The nesting level of the forked paralle region.
+ */
+uint32_t
+scorep_profile_get_fork_depth( SCOREP_Profile_LocationData* location,
+                               uint32_t                     nesting_level );
+
+
+/**
+ * Removes the fork node of the parallel region at @a nesting_level,
+ * from the list of fork nodes.
+ *
+ * @param location      Location.
+ * @param nesting_level The nesting level of the forked paralle region.
+ */
+void
+scorep_profile_remove_fork_node( SCOREP_Profile_LocationData* location,
+                                 uint32_t                     nesting_level );
 
 #endif // SCOREP_PROFILE_LOCATION_H

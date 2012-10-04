@@ -25,8 +25,17 @@
 #include <config.h>
 #include <scorep_profile_location.h>
 #include <scorep_thread.h>
-#include <assert.h>
 #include <SCOREP_Memory.h>
+#include <UTILS_Error.h>
+
+struct scorep_profile_fork_list_node
+{
+    scorep_profile_node*           fork_node;
+    uint32_t                       nesting_level;
+    uint32_t                       profile_depth;
+    scorep_profile_fork_list_node* prev;
+    scorep_profile_fork_list_node* next;
+};
 
 scorep_profile_node*
 scorep_profile_get_current_node( SCOREP_Profile_LocationData* location )
@@ -69,7 +78,8 @@ scorep_profile_finalize_location( SCOREP_Profile_LocationData* location )
     location->current_implicit_node = location->root_node;
     location->current_depth         = 0;
     location->implicit_depth        = 0;
-    location->fork_node             = NULL;
+    location->fork_list_head        = NULL;
+    location->fork_list_tail        = NULL;
     location->free_nodes            = NULL;
     location->free_int_metrics      = NULL;
     location->free_double_metrics   = NULL;
@@ -90,11 +100,11 @@ scorep_profile_create_location_data( SCOREP_Location* locationData )
     /* Set default values. */
     location->current_implicit_node         = NULL;
     location->root_node                     = NULL;
-    location->fork_node                     = NULL;
+    location->fork_list_head                = NULL;
+    location->fork_list_tail                = NULL;
     location->creation_node                 = NULL;
     location->current_depth                 = 0;
     location->implicit_depth                = 0;
-    location->fork_depth                    = 0;
     location->num_location_specific_metrics = 0;
     location->free_nodes                    = NULL;
     location->free_int_metrics              = NULL;
@@ -120,4 +130,122 @@ scorep_profile_delete_location_data( SCOREP_Profile_LocationData* location )
 
     /* Finalize locations task instance table */
     scorep_profile_task_finalize( location );
+}
+
+static scorep_profile_fork_list_node*
+create_fork_list_item( SCOREP_Profile_LocationData* location )
+{
+    scorep_profile_fork_list_node* new_list_item =
+        SCOREP_Memory_AllocForProfile( sizeof(  scorep_profile_fork_list_node ) );
+    new_list_item->next = NULL;
+
+    /* Append to end of list */
+    if ( location->fork_list_tail == NULL )
+    {
+        location->fork_list_head = new_list_item;
+    }
+    else
+    {
+        new_list_item->prev            = location->fork_list_tail;
+        location->fork_list_tail->next = new_list_item;
+    }
+}
+
+void
+scorep_profile_add_fork_node( SCOREP_Profile_LocationData* location,
+                              scorep_profile_node*         fork_node,
+                              uint32_t                     profile_depth,
+                              uint32_t                     nesting_level )
+{
+    /* Create or reuse new list item */
+    scorep_profile_fork_list_node* new_list_item = NULL;
+    if ( location->fork_list_tail == NULL )
+    {
+        if ( location->fork_list_head == NULL )
+        {
+            new_list_item = create_fork_list_item( location );
+        }
+        else
+        {
+            new_list_item = location->fork_list_head;
+        }
+    }
+    else
+    {
+        if ( location->fork_list_tail->next == NULL )
+        {
+            new_list_item = create_fork_list_item( location );
+        }
+        else
+        {
+            new_list_item = location->fork_list_tail->next;
+            if ( new_list_item == NULL )
+            {
+                new_list_item = create_fork_list_item( location );
+            }
+        }
+    }
+
+    UTILS_ASSERT( new_list_item );
+
+    /* Initialize entry */
+    new_list_item->fork_node     = fork_node;
+    new_list_item->nesting_level = nesting_level;
+    new_list_item->profile_depth = profile_depth;
+
+    location->fork_list_tail = new_list_item;
+}
+
+void
+scorep_profile_remove_fork_node( SCOREP_Profile_LocationData* location,
+                                 uint32_t                     nesting_level )
+{
+    /* The parallel regions should appear in sorted order */
+    UTILS_ASSERT( location );
+    if ( location->fork_list_tail == NULL )
+    {
+        return;
+    }
+    UTILS_ASSERT( location->fork_list_tail );
+    UTILS_ASSERT( location->fork_list_tail->nesting_level == nesting_level );
+
+    /* Move tail pointer to the previous element, the list element stays
+       for later reuse. */
+    location->fork_list_tail = location->fork_list_tail->prev;
+}
+
+scorep_profile_node*
+scorep_profile_get_fork_node( SCOREP_Profile_LocationData* location,
+                              uint32_t                     nesting_level )
+{
+    /* Must iterate from the top. Because the tail may be modified in between.
+       We assume that the fork node is never removed before this child thread
+       is completed. And the list is sorted.  Thus the searched part is save
+       to read. */
+    scorep_profile_fork_list_node* current = location->fork_list_head;
+    while ( ( current != NULL ) && ( current->nesting_level < nesting_level ) )
+    {
+        current = current->next;
+    }
+    UTILS_ASSERT( current );
+    UTILS_ASSERT( current->nesting_level == nesting_level );
+    return current->fork_node;
+}
+
+uint32_t
+scorep_profile_get_fork_depth( SCOREP_Profile_LocationData* location,
+                               uint32_t                     nesting_level )
+{
+    /* Must iterate from the top. Because the tail may be modified in between.
+       We assume that the fork node is never removed before this child thread
+       is completed. And the list is sorted.  Thus the searched part is save
+       to read. */
+    scorep_profile_fork_list_node* current = location->fork_list_head;
+    while ( ( current != NULL ) && ( current->nesting_level < nesting_level ) )
+    {
+        current = current->next;
+    }
+    UTILS_ASSERT( current );
+    UTILS_ASSERT( current->nesting_level == nesting_level );
+    return current->profile_depth;
 }

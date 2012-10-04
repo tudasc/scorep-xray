@@ -164,7 +164,8 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
 
         /* Update additional metrics */
         uint32_t j = 0;
-        for ( uint32_t i = number_of_synchronus_strict_metrics; i < number_of_synchronus_strict_metrics + number_of_additional_metrics; i++ )
+        for ( uint32_t i = number_of_synchronus_strict_metrics;
+              i < number_of_synchronus_strict_metrics + number_of_additional_metrics; i++ )
         {
             scorep_profile_update_dense_metric( &node->location_specific_metrics[ j ],
                                                 metrics[ i ] );

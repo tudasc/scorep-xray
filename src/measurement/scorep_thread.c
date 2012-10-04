@@ -781,3 +781,16 @@ SCOREP_Location_ForAll( void  ( * cb )( SCOREP_Location*,
         cb( location_data, data );
     }
 }
+
+uint32_t
+SCOREP_Location_GetNestingLevel( SCOREP_Location* location )
+{
+    /* TODO: More protable implementation of the function. Current implementation
+       returns the nesting level of the current CPU location. Better is to
+       return the nesting level of the provoded location */
+#if defined( _OPENMP ) && _OPENMP >= 200805
+    return omp_get_level();
+#else
+    return location->local_id == 0 ? 0 : 1;
+#endif
+}

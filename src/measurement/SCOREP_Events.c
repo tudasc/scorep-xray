@@ -649,8 +649,6 @@ SCOREP_OmpFork( uint32_t nRequestedThreads )
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    SCOREP_Thread_OnThreadFork( nRequestedThreads );
-
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_OmpFork( location, timestamp, nRequestedThreads );
@@ -664,6 +662,12 @@ SCOREP_OmpFork( uint32_t nRequestedThreads )
     {
         SCOREP_Profile_OnFork( location, nRequestedThreads );
     }
+
+    /* The backends will access the trading system and, thus, need an
+       valid state of the thread. They might (implicitly) call
+       SCOREP_Location_GetCurrentCPU location, e.g. during memory allocation
+       and reiinitialize the thread if already updated before. */
+    SCOREP_Thread_OnThreadFork( nRequestedThreads );
 }
 
 
@@ -696,6 +700,7 @@ SCOREP_OmpJoin( void )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
+        SCOREP_Profile_OnJoin( location );
     }
 
     /*

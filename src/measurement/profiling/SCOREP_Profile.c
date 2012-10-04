@@ -591,6 +591,8 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
     scorep_profile_node*         node           = NULL;
     scorep_profile_node*         creation_point = NULL;
 
+    uint32_t nesting_level = SCOREP_Location_GetNestingLevel( locationData );
+
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Activated thread" );
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
@@ -620,7 +622,7 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
         parent_data = SCOREP_Location_GetProfileData( parentLocationData );
         if ( parent_data != NULL )
         {
-            creation_point = parent_data->fork_node;
+            creation_point = scorep_profile_get_fork_node( parent_data, nesting_level );
         }
     }
 
@@ -690,6 +692,8 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
     scorep_profile_type_data_t   node_data;
     uint64_t                     thread_id = 0;
 
+    uint32_t nesting_level = SCOREP_Location_GetNestingLevel( locationData );
+
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Create Location" );
@@ -723,8 +727,10 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
     if ( parentLocationData != NULL )
     {
         parent_data                = SCOREP_Location_GetProfileData( parentLocationData );
-        thread_data->creation_node = parent_data->fork_node;
-        thread_data->current_depth = parent_data->fork_depth;
+        thread_data->creation_node = scorep_profile_get_fork_node( parent_data,
+                                                                   nesting_level );
+        thread_data->current_depth = scorep_profile_get_fork_depth( parent_data,
+                                                                    nesting_level );
     }
 
     /* Add it to the profile node list */
@@ -769,6 +775,15 @@ SCOREP_Profile_OnFork( SCOREP_Location* threadData,
     }
 
     /* Store current fork node */
-    location->fork_node  = fork_node;
-    location->fork_depth = location->current_depth;
+    scorep_profile_add_fork_node( location, fork_node, location->current_depth,
+                                  SCOREP_Location_GetNestingLevel( threadData ) + 1 );
+}
+
+void
+SCOREP_Profile_OnJoin( SCOREP_Location* locationData )
+{
+    SCOREP_Profile_LocationData* location =
+        SCOREP_Location_GetProfileData( locationData );
+    scorep_profile_remove_fork_node( location,
+                                     SCOREP_Location_GetNestingLevel( locationData ) + 1 );
 }
