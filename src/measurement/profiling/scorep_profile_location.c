@@ -149,6 +149,7 @@ create_fork_list_item( SCOREP_Profile_LocationData* location )
         new_list_item->prev            = location->fork_list_tail;
         location->fork_list_tail->next = new_list_item;
     }
+    return new_list_item;
 }
 
 void
