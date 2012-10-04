@@ -530,6 +530,9 @@ scorep_thread_init_children_to_null( SCOREP_Thread_ThreadPrivateData** children,
 void
 SCOREP_Thread_OnThreadJoin()
 {
+    // We are still referencing the TPD object of the previous parallel
+    // regions's master thread.
+
     if ( TPD->n_reusages == 0 )
     {
         assert( TPD->parent );

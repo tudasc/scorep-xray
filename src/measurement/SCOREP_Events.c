@@ -663,10 +663,8 @@ SCOREP_OmpFork( uint32_t nRequestedThreads )
         SCOREP_Profile_OnFork( location, nRequestedThreads );
     }
 
-    /* The backends will access the trading system and, thus, need an
-       valid state of the thread. They might (implicitly) call
-       SCOREP_Location_GetCurrentCPU location, e.g. during memory allocation
-       and reiinitialize the thread if already updated before. */
+    // Fork last as it modifies TPD state in the OpenMP thread implementation
+    // that affects subsequent calls to SCOREP_Location_GetCurrentCPU.
     SCOREP_Thread_OnThreadFork( nRequestedThreads );
 }
 
@@ -677,6 +675,11 @@ SCOREP_OmpFork( uint32_t nRequestedThreads )
 void
 SCOREP_OmpJoin( void )
 {
+    // Join first as it modifies TPD in the OpenMP thread implementation,
+    // should not affect calls to SCOREP_Location_GetCurrentCPU though
+    // as master thread's location data is reused.
+    SCOREP_Thread_OnThreadJoin();
+
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
@@ -684,8 +687,6 @@ SCOREP_OmpJoin( void )
                       )
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
-
-    SCOREP_Thread_OnThreadJoin();
 
     if ( scorep_tracing_consume_event() )
     {
