@@ -192,12 +192,12 @@ get_cube_node(  cube_t* my_cube,
     }                                                                         \
     else                                                                      \
     {                                                                         \
-        UTILS_ASSERT( false );                                               \
+        UTILS_ASSERT( false );                                                \
         goto cleanup;                                                         \
     }                                                                         \
     if ( map-> type ## _table_cube == NULL )                                  \
     {                                                                         \
-        UTILS_ERROR_POSIX( "Unable to create " #type " mapping table" );     \
+        UTILS_ERROR_POSIX( "Unable to create " #type " mapping table" );      \
         goto cleanup;                                                         \
     }                                                                         \
     map-> type ## _table_scorep                                               \
@@ -206,7 +206,7 @@ get_cube_node(  cube_t* my_cube,
                                    &SCOREP_Hashtab_ComparePointer );          \
     if ( map-> type ## _table_scorep == NULL )                                \
     {                                                                         \
-        UTILS_ERROR_POSIX( "Unable to create " #type " mapping table" );     \
+        UTILS_ERROR_POSIX( "Unable to create " #type " mapping table" );      \
         goto cleanup;                                                         \
     }
 /* *INDENT-ON* */
@@ -476,6 +476,7 @@ write_metric_definitions( cube_t*                       my_cube,
     char*                     metric_unit;
     char*                     metric_description;
     char*                     data_type;
+    bool                      free_unit;
     enum CubeMetricType       cube_metric_type;
 
     //for ( uint8_t i = 0; i < num_metrics; i++ )
@@ -488,6 +489,16 @@ write_metric_definitions( cube_t*                       my_cube,
                                                    String )->string_data;
         metric_description = SCOREP_UNIFIED_HANDLE_DEREF( definition->description_handle,
                                                           String )->string_data;
+
+        free_unit = false;
+        if ( definition->exponent != 0 )
+        {
+            free_unit = true;
+            char*    unit = ( char* )malloc( strlen( metric_unit ) + 32 );
+            uint32_t base = ( definition->base == SCOREP_METRIC_BASE_BINARY ? 2 : 10 );
+            sprintf( unit, "%u^%" PRIi64 " %s", base, definition->exponent, metric_unit );
+            metric_unit = unit;
+        }
 
         switch ( definition->value_type )
         {
@@ -541,6 +552,11 @@ write_metric_definitions( cube_t*                       my_cube,
                                         cube_metric_type );
 
             add_metric_mapping( map, cube_handle, handle );
+        }
+
+        if ( free_unit )
+        {
+            free( metric_unit );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
