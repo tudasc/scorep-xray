@@ -22,6 +22,9 @@
   - When using derived data types in non-blocking communications, and
     no support for MPI_Type_dup() was detected, than please ensure, that
     the MPI_Datatype handle is still valid at the time the request finishes.
+    
+  - Online detection of MPI wait states might produce wrong results when messages 
+    sent within different communicators overtake each other. 
 
 --------------------------------------------------------------------------------
 
