@@ -25,7 +25,7 @@ AS_CASE([${CXX_STRIPPED}],
         [CC],          [CC=cc],    # studio
         [xlC*|xlc++*], [CC=xlc_r], # ibm
         [pgCC],        [CC=pgcc],  # pgi
-        [AC_MSG_ERROR([invalid value of CXX, cannot determine corresponding CC])])
+        [AC_MSG_ERROR([invalid value of CXX (${CXX_STRIPPED}), cannot determine corresponding CC])])
 
 AC_PROG_CC
 AC_SCOREP_PROG_CC_C99
