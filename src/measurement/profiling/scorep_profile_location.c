@@ -219,17 +219,19 @@ scorep_profile_node*
 scorep_profile_get_fork_node( SCOREP_Profile_LocationData* location,
                               uint32_t                     nesting_level )
 {
-    /* Must iterate from the top. Because the tail may be modified in between.
-       We assume that the fork node is never removed before this child thread
+    /* We assume that the fork node is never removed before this child thread
        is completed. And the list is sorted.  Thus the searched part is save
        to read. */
-    scorep_profile_fork_list_node* current = location->fork_list_head;
-    while ( ( current != NULL ) && ( current->nesting_level < nesting_level ) )
+    scorep_profile_fork_list_node* current = location->fork_list_tail;
+    while ( ( current != NULL ) && ( current->nesting_level > nesting_level ) )
     {
-        current = current->next;
+        current = current->prev;
     }
-    UTILS_ASSERT( current );
-    UTILS_ASSERT( current->nesting_level == nesting_level );
+    if ( current == NULL )
+    {
+        return NULL;
+    }
+    //UTILS_ASSERT( current->nesting_level == nesting_level );
     return current->fork_node;
 }
 
@@ -237,16 +239,18 @@ uint32_t
 scorep_profile_get_fork_depth( SCOREP_Profile_LocationData* location,
                                uint32_t                     nesting_level )
 {
-    /* Must iterate from the top. Because the tail may be modified in between.
-       We assume that the fork node is never removed before this child thread
+    /* We assume that the fork node is never removed before this child thread
        is completed. And the list is sorted.  Thus the searched part is save
        to read. */
-    scorep_profile_fork_list_node* current = location->fork_list_head;
-    while ( ( current != NULL ) && ( current->nesting_level < nesting_level ) )
+    scorep_profile_fork_list_node* current = location->fork_list_tail;
+    while ( ( current != NULL ) && ( current->nesting_level > nesting_level ) )
     {
-        current = current->next;
+        current = current->prev;
     }
-    UTILS_ASSERT( current );
-    UTILS_ASSERT( current->nesting_level == nesting_level );
+    if ( current == NULL )
+    {
+        return 0;
+    }
+    //UTILS_ASSERT( current->nesting_level == nesting_level );
     return current->profile_depth;
 }
