@@ -82,7 +82,7 @@ static SCOREP_Location* scorep_thread_create_location_data_for(SCOREP_Thread_Thr
 static SCOREP_Thread_ThreadPrivateData* scorep_thread_create_thread_private_data();
 static void scorep_thread_call_externals_on_new_location(SCOREP_Location* locationData, SCOREP_Location* parent, bool isMainLocation );
 static void scorep_thread_call_externals_on_new_thread(SCOREP_Location* locationData, SCOREP_Location* parent);
-static void scorep_thread_call_externals_on_thread_activation(SCOREP_Location* locationData, SCOREP_Location* parent);
+static void scorep_thread_call_externals_on_thread_activation(SCOREP_Location* locationData, SCOREP_Location* parent, uint32_t nestingLevel);
 static void scorep_thread_call_externals_on_thread_deactivation(SCOREP_Location* locationData, SCOREP_Location* parent);
 static void scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivateData* tpd );
 static void scorep_thread_init_children_to_null(SCOREP_Thread_ThreadPrivateData** children, size_t startIndex, size_t endIndex);
@@ -110,6 +110,7 @@ struct SCOREP_Thread_ThreadPrivateData
     uint32_t                          n_children;
     bool                              is_active;
     uint32_t                          n_reusages;
+    uint32_t                          nesting_level; // starting at 1, but SCOREP_Thread_Initialize passes 0 to profiling
     SCOREP_Location*                  location_data;
 };
 
@@ -168,7 +169,7 @@ SCOREP_Thread_Initialize()
 
     scorep_thread_call_externals_on_new_thread( TPD->location_data, 0 );
     scorep_thread_call_externals_on_new_location( TPD->location_data, 0, true );
-    scorep_thread_call_externals_on_thread_activation( TPD->location_data, 0 );
+    scorep_thread_call_externals_on_thread_activation( TPD->location_data, 0, 0 /* nesting level */ );
 }
 
 
@@ -212,7 +213,8 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
     scorep_thread_call_externals_on_new_thread( new_location,
                                                 parent );
     scorep_thread_call_externals_on_thread_activation( new_location,
-                                                       parent );
+                                                       parent,
+                                                       1 /* nesting level for non CPU "threads" */ );
 
     return new_location;
 }
@@ -327,11 +329,12 @@ scorep_thread_call_externals_on_new_location( SCOREP_Location* locationData,
 
 void
 scorep_thread_call_externals_on_thread_activation( SCOREP_Location* locationData,
-                                                   SCOREP_Location* parent )
+                                                   SCOREP_Location* parent,
+                                                   uint32_t         nestingLevel )
 {
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_OnThreadActivation( locationData, parent, 1 );
+        SCOREP_Profile_OnThreadActivation( locationData, parent, nestingLevel );
     }
     SCOREP_Tracing_OnThreadActivation( locationData, parent );
 }
@@ -406,12 +409,20 @@ scorep_thread_create_thread_private_data()
 {
     // need synchronized malloc here
     SCOREP_Thread_ThreadPrivateData* new_tpd;
-    new_tpd                = malloc( sizeof( SCOREP_Thread_ThreadPrivateData ) );
-    new_tpd->parent        = TPD;
-    new_tpd->children      = 0;
-    new_tpd->n_children    = 0;
-    new_tpd->is_active     = true;
-    new_tpd->n_reusages    = 0;
+    new_tpd             = malloc( sizeof( SCOREP_Thread_ThreadPrivateData ) );
+    new_tpd->parent     = TPD;
+    new_tpd->children   = 0;
+    new_tpd->n_children = 0;
+    new_tpd->is_active  = true;
+    new_tpd->n_reusages = 0;
+    if ( TPD )
+    {
+        new_tpd->nesting_level = TPD->nesting_level + 1;
+    }
+    else
+    {
+        new_tpd->nesting_level = 1;
+    }
     new_tpd->location_data = 0;
     return new_tpd;
 }
@@ -606,7 +617,8 @@ SCOREP_Location_GetCurrentCPULocation()
                                                         TPD->location_data );
         }
         scorep_thread_call_externals_on_thread_activation( TPD->location_data,
-                                                           TPD->location_data );
+                                                           TPD->location_data,
+                                                           TPD->nesting_level ); // use same nesting level as in fork
     }
     else
     {
@@ -642,7 +654,8 @@ SCOREP_Location_GetCurrentCPULocation()
                                                         TPD->parent->location_data );
         }
         scorep_thread_call_externals_on_thread_activation( TPD->location_data,
-                                                           TPD->parent->location_data );
+                                                           TPD->parent->location_data,
+                                                           TPD->parent->nesting_level ); // use same nesting level as in fork
     }
 
     return TPD->location_data;
@@ -783,4 +796,11 @@ SCOREP_Location_ForAll( void  ( * cb )( SCOREP_Location*,
     {
         cb( location_data, data );
     }
+}
+
+
+uint32_t
+scorep_thread_get_nesting_level()
+{
+    return TPD->nesting_level;
 }
