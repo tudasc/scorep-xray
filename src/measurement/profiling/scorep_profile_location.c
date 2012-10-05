@@ -198,8 +198,7 @@ scorep_profile_add_fork_node( SCOREP_Profile_LocationData* location,
 }
 
 void
-scorep_profile_remove_fork_node( SCOREP_Profile_LocationData* location,
-                                 uint32_t                     nesting_level )
+scorep_profile_remove_fork_node( SCOREP_Profile_LocationData* location )
 {
     /* The parallel regions should appear in sorted order */
     UTILS_ASSERT( location );
@@ -207,8 +206,6 @@ scorep_profile_remove_fork_node( SCOREP_Profile_LocationData* location,
     {
         return;
     }
-    UTILS_ASSERT( location->fork_list_tail );
-    UTILS_ASSERT( location->fork_list_tail->nesting_level == nesting_level );
 
     /* Move tail pointer to the previous element, the list element stays
        for later reuse. */

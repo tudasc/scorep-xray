@@ -170,10 +170,8 @@ scorep_profile_get_fork_depth( SCOREP_Profile_LocationData* location,
  * from the list of fork nodes.
  *
  * @param location      Location.
- * @param nesting_level The nesting level of the forked paralle region.
  */
 void
-scorep_profile_remove_fork_node( SCOREP_Profile_LocationData* location,
-                                 uint32_t                     nesting_level );
+scorep_profile_remove_fork_node( SCOREP_Profile_LocationData* location );
 
 #endif // SCOREP_PROFILE_LOCATION_H

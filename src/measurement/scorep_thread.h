@@ -112,10 +112,4 @@ SCOREP_Location_SetLastTimestamp( SCOREP_Location* locationData,
 void
 SCOREP_Location_ProcessDeferredOnes();
 
-/**
- * Returns the current nesting level of @a location.
- */
-uint32_t
-SCOREP_Location_GetNestingLevel( SCOREP_Location* location );
-
 #endif /* SCOREP_INTERNAL_THREAD_H */

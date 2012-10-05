@@ -248,10 +248,14 @@ SCOREP_Profile_DeleteLocationData( SCOREP_Profile_LocationData* profileLocationD
  * @param threadData  A pointer to the thread location data of the thread that executed
  *                    the event.
  * @param  maxChildThreads Not used. Uppe bound of the number of created threads.
+ * @param  nestingLevel Nesting level of the newly created region. It should be the same
+ *                      number that will be passed to SCOREP_Profile_OnThreadActivation
+ *                      for the threads of the newly created parallel region.
  */
 void
 SCOREP_Profile_OnFork( SCOREP_Location* threadData,
-                       size_t           maxChildThreads );
+                       size_t           maxChildThreads,
+                       uint32_t         nestingLevel );
 
 
 /**
@@ -285,10 +289,12 @@ SCOREP_Profile_OnThreadCreation( SCOREP_Location* locationData,
  * region.
  * @param parentLocationData Location data of the parent thread, may equal @a
  * locationData.
+ * @param nestingLevel The nesting Level of the activated thread.
  */
 void
 SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
-                                   SCOREP_Location* parentLocationData );
+                                   SCOREP_Location* parentLocationData,
+                                   uint32_t         nestingLevel );
 
 
 /**

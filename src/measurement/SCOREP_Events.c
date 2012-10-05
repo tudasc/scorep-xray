@@ -660,7 +660,7 @@ SCOREP_OmpFork( uint32_t nRequestedThreads )
 
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_OnFork( location, nRequestedThreads );
+        SCOREP_Profile_OnFork( location, nRequestedThreads, 1 );
     }
 
     // Fork last as it modifies TPD state in the OpenMP thread implementation
