@@ -46,19 +46,7 @@
   - Due to a bug in PDT 3.18 and earlier versions, PDT support is
     disabled on BlueGene systems.
 
---------------------------------------------------------------------------------
 
-* OpenMP support
-
-  - When using nested parallel regions with an compiler that does not
-    support OpenMP 3.0, but only OpenMP 2.5, the profile sometimes
-    nestes the parallel regions incorrectly. In particular, if the
-    master thread of a parallel region creates another nested parallel
-    region before all threads of the first parallel region have
-    executed their first event, the remaining threads of the first
-    parallel region appear also inside the second parallel region.
-    When using compilers that support OpenMP 3.0, this error does not
-    occur.
 
 
 
