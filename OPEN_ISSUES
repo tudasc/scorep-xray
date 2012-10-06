@@ -46,6 +46,8 @@
   - Due to a bug in PDT 3.18 and earlier versions, PDT support is
     disabled on BlueGene systems.
 
+  - Rusage-based metrics are not supported on BlueGene systems.
+
 
 
 
