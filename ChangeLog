@@ -1,2 +1,77 @@
-Version 0.1 (Nov-08-2010)
-- first technology preview
+------------------- Released version 1.1 -----------------------------
+
+- Rewind, a new event-trace recording mode for long-running
+  experiments, triggered by user-instrumentation macros. Writes
+  semantics information in OTF2 anchor file as rewind might affect
+  analysis.
+- ARM support (detection + compiler adapter).
+- Metric service improvements. Support for per-process metrics and
+  per-system-tree-class metrics.
+- Support for OpenMP-task profiling and tracing alongside with
+  improvements of the POMP adapter.
+- Component separation: Score-P can now use pre-installed OTF2,
+  OPARI2, and CUBE packages instead of the internal ones.
+  - Removed dependency to external repository that was used by
+    Score-P, OTF2, and OPARI2 in order to prevent version conflicts.
+- Support for CUDA profiling and tracing.
+- Easier experiment configuration via scorep-info which porvides a
+  list of all measurement configuration variables.
+- scorep-info also provides the improved configure-summary of the
+  installation.
+- Scoring of profile experiments via scorep-score (if configured with
+  external CUBE) to prepare a filter for subsequent trace experiment.
+- Documentation improvements.
+- Numereous configure improvements. Let external libraries use
+  generic configure options (tbc). Fixed portability issues.
+- Numerous instrumenter improvements. All possible combinations of
+  options supported.
+- MPI profiling improvements.
+- OpenMP nesting supported altough little tested.
+- Several compiler-dependent OpenMP-related bugfixes.
+
+------------------- Released version 1.0.2 ---------------------------
+
+- Several instrumentation fixes:
+  - Improvements for PDT Fortran instrumentation.
+  - Improvements for C++ user instrumentation.
+  - Return real failure if instrumentation is erroneous. Failures may
+    went undetected previously.
+  - Allow for out-of-place builds.
+  - Provide correct parameter to SCOREP_USER_REGION_ENTER macro.
+
+- Provide correct timestamp to OmpTaskCreate events.
+
+- Fix invalid order of arguments provided to MpiCollectiveEnd events.
+
+- Fix bug in parameter profiling.
+
+- Enable SIONlib support, currently just for MPI applications. 
+
+- Various fixes for the generated OpenMP region names:
+  - Inner and outer blocks got different names.
+  - Regions with the ordered clause got a special name.
+  - All region names got it '@file:lno' appended, to make them distinguishable.
+
+------------------- Released version 1.0.1 ---------------------------
+
+- Renaming of the configure related variable LD_FLAGS_FOR_BUILD to
+  LDFLAGS_FOR_BUILD for consistency.
+
+- Renaming of installed tool and options for consistency, i.e.
+  changing underscores to dashes. Also, the --(no)openmp_support
+  option changed to --(no)openmp.
+
+- Improved linking on AIX systems.
+
+- Robustness improvements when instrumenting with PDT.
+
+- On x86 platforms, be more cautious using the tsc counter. If
+  /proc/cpuinfo reports constant_tsc but not nonstop_tsc, then it is
+  likely that the counter is unreliable.
+
+- Improved configure summary.
+
+- configure will not fail if -q or --silent is passed.
+
+
+------------------- Released version 1.0 -----------------------------
