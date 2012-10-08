@@ -18,54 +18,10 @@
                         ========================
                                                            Status: Oct 2012
 
-* MPI support
-
-  - When using derived data types in non-blocking communications, and
-    no support for MPI_Type_dup() was detected, then please ensure,
-    that the MPI_Datatype handle is still valid at the time the
-    request finishes.
-    
-  - Online detection of MPI wait states might produce wrong results
-    when messages sent within different communicators overtake each
-    other.
-
---------------------------------------------------------------------------------
-
-* Score-P misc
-
-  - Currently, the instrumenter allows to switch off OPARI2
-    instrumentation for OpenMP programs. If OpenMP parallel regions
-    are not instrumented and an event occures inside a parallel region
-    (e.g., because an instrumented function is called inside of a
-    parallel region) Score-P will crash. We are considering to make
-    the usage more secure in future versions of Score-P. This might
-    result in a change of the instrumenter option or the option may
-    vanish completely.  However, there are some use-cases where
-    disabling OPARI2 instrumentation is helpful.
-
-  - Due to a bug in PDT 3.18 and earlier versions, PDT support is
-    disabled on BlueGene systems.
-
-  - Rusage-based metrics are not supported on BlueGene systems.
-
-
-
-
-
-                        Score-P v1.0 OPEN ISSUES
-                        ========================
-
-                                                           Status: Jan 2012
-
-This file lists known limitations and unimplemented features of
-various Score-P components.
-
---------------------------------------------------------------------------------
-
 * Platform support
 
   - Score-P has been tested on the following platforms:
-    + IBM Blue Gene/P, only static libraries supported
+    + IBM Blue Gene/Q, only static libraries supported
     + IBM SP & BladeCenter clusters, only static libraries supported
     + SGI Altix/ICE
     + various Linux/Intel (x86/x64) clusters
@@ -73,6 +29,7 @@ various Score-P components.
     basis for building and testing the toolset on other systems.
 
   - The following platforms have not been tested recently:
+    + IBM Blue Gene/P
     + Cray XE6/XK6
     + Sun Solaris/SPARC-based clusters
     However the supplied buildsystem might still work on these
@@ -95,9 +52,6 @@ various Score-P components.
     supporting automatic function instrumentation.
 
   - To build Score-P it is required to have MPI and Fortran compilers.
-
-  - To use PAPI in a shared library build of Score-P, libpapi.so needs
-    to be in the linker's search path, e.g., in LD_LIBRARY_PATH.
 
 --------------------------------------------------------------------------------
 
@@ -133,6 +87,19 @@ various Score-P components.
 
 --------------------------------------------------------------------------------
 
+* MPI support
+
+  - When using derived data types in non-blocking communications, and
+    no support for MPI_Type_dup() was detected, then please ensure,
+    that the MPI_Datatype handle is still valid at the time the
+    request finishes.
+    
+  - Online detection of MPI wait states might produce wrong results
+    when messages sent within different communicators overtake each
+    other.
+
+--------------------------------------------------------------------------------
+
 * Score-P misc.
 
   - Applications using an autotools-based buildsystem should add the
@@ -140,96 +107,25 @@ various Score-P components.
     call. Score-P is added only at make time like "make CC="scorep
     <your-CC>" (same for CXX, F77, and FC)
 
-  - Measurements of applications using OpenMP tasking is at the moment
-    only supported in tracing mode.
-
   - Literal file-filter rules like "INCLUDE bt.f" for Fortran files that 
     will be processed by OPARI2 (i.e., files containing OpenMP or POMP 
     user pragmas) do not work as expected as OPARI2 changes the file 
     name (here to bt.opari.f)
 
---------------------------------------------------------------------------------
+  - Currently, the instrumenter allows to switch off OPARI2
+    instrumentation for OpenMP programs. If OpenMP parallel regions
+    are not instrumented and an event occures inside a parallel region
+    (e.g., because an instrumented function is called inside of a
+    parallel region) Score-P will crash. We are considering to make
+    the usage more secure in future versions of Score-P. This might
+    result in a change of the instrumenter option or the option may
+    vanish completely.  However, there are some use-cases where
+    disabling OPARI2 instrumentation is helpful.
 
-* OTF2 v1.0
+  - Due to a bug in PDT 3.18 and earlier versions, PDT support is
+    disabled on BlueGene systems.
 
-  - Please avoid usage of OTF2_EvtReader_Seek function. Event seeking
-    is broken in recent OTF2 release.
-
-  - ZLIB compression of trace files is untested. Problems may occur if
-    you change compression mode to ZLIB manually.
-
-  - The MODIFY mode of OTF2, which can be used to rewrite time stamps
-    in trace files, is untested.
-
-  - OTF2 currently assumes "homogeneous" systems, meaning that the 
-    clocks of all nodes/cores run at the same clock frequency.
-
---------------------------------------------------------------------------------
-
-* OPARI2 v1.0
-
-  - OPARI2 reports "ERROR: unbalanced pragma nesting".
-    This is normally caused by missing do-loop end directives.  In
-    contrast to the OpenMP standard, where they are optional, OPARI2
-    requires "!$OMP END DO" and "!$OMP END PARALLEL DO" directives for
-    parallel loops in Fortran. The workaround is to add them.
-
-  - Some OpenMP compilers (e.g. PGI) are non-standard-conforming in
-    the way they process OpenMP directives by not allowing macro
-    replacement of OpenMP directive parameters. This results in error
-    messages containing references to POMP_DLIST_##### where ##### is
-    a five-digit number.  In this case, try to use the OPARI2 option
-    "--nodecl". This is unfortunately not a perfect workaround, as
-    this can trigger other errors in some rare cases.
-
-  - Some Fortran compilers (e.g., Oracle) don't fully support C
-    preprocessor commands, especially the "#line" commands.  In case
-    you track a compilation error on a OPARI2 modified/instrumented
-    file down to such a statement, try using "--nosrc" as this
-    suppresses the generation of "#line" statements.  (With the Sun
-    Fortran compiler, using "-xpp=cpp" is a better workaround.)
-
-  - Sometimes instrumentation of OpenMP source files work, but the
-    traces get enormously large because the application is using large
-    numbers (millions) of small OpenMP synchronization operations like
-    atomic, locks or flushes which are instrumented by default. Also,
-    in that case, the instrumentation overhead might become excessive.
-
-    In that case, you can tell OPARI2 to not instrument these constructs
-    by using the "--disable=<construct>[,<construct>]..." option.
-    Valid values for constructs are:
-
-      atomic, critical, flush, locks, master, ordered, single
-
-    or "sync" which disables all of the above.
-
-    Of course, then these constructs are not measured and you have to
-    keep this in mind later, when you analyze the results, that
-    although they do not show up in the analysis report that the
-    application might have some performance problem because of too
-    many OpenMP synchronization calls!
-
-  - In Fortran sources Opari2 inserts variables in the variable
-    definition part of functions, subroutines, etc. If #ifdef
-    statements are used at the beginning of the variable definition
-    part, opari may insert its own variables in an #ifdef block which
-    is not compiled later on. This will cause the compile step to
-    fail. Workaround is to move #ifdef blocks between other variable
-    definitions, then opari2 inserts its variables before those.
-
-  - Having more than one Fortran statement per line, separated by
-    semicolons can lead to problems in opari2 to detect start and end
-    of loops. Sometimes this can lead "ERROR: unbalanced pragma
-    nesting" messages and will abort parsing the source
-    file. Workaround is to write one statement per line.
-
-  - Having the keyword "function", "module" or "subroutine" as part of
-    identifier names for variables, modules, etc. may result in
-    incorrect parsing of the fortran file. This may insert include
-    statements at incorrect points in the program. The compiler will
-    give en error saying that variables are declared at illegal
-    positions. The workaround is to rename identifiers, so that they do
-    not include "function", "module" or "subroutine" as substring.
+  - Rusage-based metrics are not supported on BlueGene systems.
 
 --------------------------------------------------------------------------------
 
