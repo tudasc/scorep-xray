@@ -135,6 +135,8 @@ AC_SCOREP_SUMMARY_VERBOSE([OTF LIBS],   [${OTF_LIBS}])
 ])
 AM_CONDITIONAL([HAVE_OTF], [test "x$scorep_have_otf" = "xyes"])
 
+AM_CONDITIONAL([HAVE_ZLIB], [false])
+
 AC_CONFIG_FILES([
     run_otf2_buffer_test.sh:../test/OTF2_Buffer_test/run_otf2_buffer_test.sh.in
 ], [
