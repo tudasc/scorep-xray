@@ -518,6 +518,10 @@ SCOREP_ConfigHelp( bool full, bool html )
 {
     const char* sep = "";
 
+    if ( html )
+    {
+        printf( "<dl>\n" );
+    }
     for ( struct scorep_config_name_space* name_space = name_spaces_head;
           name_space;
           name_space = name_space->next )
@@ -570,6 +574,10 @@ SCOREP_ConfigHelp( bool full, bool html )
             printf( "%s", html ? " </dd>" : "" );
             sep = "\n";
         }
+    }
+    if ( html )
+    {
+        printf( "%s</dl>\n", sep );
     }
 }
 
