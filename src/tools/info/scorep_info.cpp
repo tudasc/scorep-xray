@@ -97,37 +97,42 @@ main( int   argc,
             SCOREP_ConfigInit();
 
             std::string mode( argc > 2 ? argv[ 2 ] : "" );
+            bool        values = false;
+            bool        full   = false;
+            bool        html   = false;
             if ( mode == "--values" )
             {
                 // @todo print warning again
+                values = true;
+            }
+            if ( mode == "--full" )
+            {
+                full = true;
+            }
+            else if ( mode == "--doxygen" )
+            {
+                full = true;
+                html = true;
+                SCOREP_ConfigForceConditionalRegister();
+            }
+            else if ( mode != "" )
+            {
+                std::cout << "Invalid option for info command "
+                          << info_command << ": " << mode << std::endl;
+                print_short_usage();
+                SCOREP_ConfigFini();
+                return EXIT_FAILURE;
+            }
+
+            SCOREP_RegisterAllConfigVariables();
+            if ( values )
+            {
                 SCOREP_RegisterAllConfigVariables();
                 SCOREP_ConfigApplyEnv();
                 SCOREP_ConfigDump( stdout );
             }
             else
             {
-                bool full = false;
-                bool html = false;
-                if ( mode == "--full" )
-                {
-                    full = true;
-                }
-                else if ( mode == "--doxygen" )
-                {
-                    full = true;
-                    html = true;
-                    SCOREP_ConfigForceConditionalRegister();
-                }
-                else if ( mode != "" )
-                {
-                    std::cout << "Invalid option for info command "
-                              << info_command << ": " << mode << std::endl;
-                    print_short_usage();
-                    SCOREP_ConfigFini();
-                    return EXIT_FAILURE;
-                }
-
-                SCOREP_RegisterAllConfigVariables();
                 SCOREP_ConfigHelp( full, html );
             }
 
