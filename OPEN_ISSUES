@@ -127,6 +127,10 @@
 
   - Rusage-based metrics are not supported on BlueGene systems.
 
+  - In order to use CUDA/CUPTI support you need to add the directories
+    hosting libcuda, libcudart, and libcupti to your LD_LIBRARY_PATH
+    environment variable.
+
 --------------------------------------------------------------------------------
 
 Please report bugs, wishes, and suggestions to
