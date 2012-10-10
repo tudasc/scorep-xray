@@ -112,11 +112,6 @@ main( int   argc,
                 {
                     full = true;
                 }
-                else if ( mode == "--full=html" )
-                {
-                    full = true;
-                    html = true;
-                }
                 else if ( mode == "--doxygen" )
                 {
                     full = true;
