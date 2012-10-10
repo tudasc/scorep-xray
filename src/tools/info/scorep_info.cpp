@@ -125,9 +125,9 @@ main( int   argc,
             }
 
             SCOREP_RegisterAllConfigVariables();
+
             if ( values )
             {
-                SCOREP_RegisterAllConfigVariables();
                 SCOREP_ConfigApplyEnv();
                 SCOREP_ConfigDump( stdout );
             }
