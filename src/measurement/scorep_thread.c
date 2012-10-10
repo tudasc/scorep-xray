@@ -80,7 +80,7 @@ typedef struct SCOREP_Thread_ThreadPrivateData SCOREP_Thread_ThreadPrivateData;
 /* *INDENT-OFF* */
 static SCOREP_Location* scorep_thread_create_location_data_for(SCOREP_Thread_ThreadPrivateData* tpd);
 static SCOREP_Thread_ThreadPrivateData* scorep_thread_create_thread_private_data();
-static void scorep_thread_call_externals_on_new_location(SCOREP_Location* locationData, SCOREP_Location* parent, bool isMainLocation );
+static void scorep_thread_call_externals_on_new_location(SCOREP_Location* locationData, const char* name, SCOREP_Location* parent, bool isMainLocation );
 static void scorep_thread_call_externals_on_new_thread(SCOREP_Location* locationData, SCOREP_Location* parent);
 static void scorep_thread_call_externals_on_thread_activation(SCOREP_Location* locationData, SCOREP_Location* parent, uint32_t nestingLevel);
 static void scorep_thread_call_externals_on_thread_deactivation(SCOREP_Location* locationData, SCOREP_Location* parent);
@@ -168,7 +168,7 @@ SCOREP_Thread_Initialize()
     initial_location = TPD->location_data;
 
     scorep_thread_call_externals_on_new_thread( TPD->location_data, 0 );
-    scorep_thread_call_externals_on_new_location( TPD->location_data, 0, true );
+    scorep_thread_call_externals_on_new_location( TPD->location_data, "", 0, true );
     scorep_thread_call_externals_on_thread_activation( TPD->location_data, 0, 0 /* nesting level */ );
 }
 
@@ -208,6 +208,7 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
     new_location->type = type;
 
     scorep_thread_call_externals_on_new_location( new_location,
+                                                  name,
                                                   parent,
                                                   false );
     scorep_thread_call_externals_on_new_thread( new_location,
@@ -290,6 +291,7 @@ scorep_thread_call_externals_on_new_thread( SCOREP_Location* locationData,
 
 void
 scorep_thread_call_externals_on_new_location( SCOREP_Location* locationData,
+                                              const char*      name,
                                               SCOREP_Location* parent,
                                               bool             isMainLocation )
 {
@@ -306,7 +308,7 @@ scorep_thread_call_externals_on_new_location( SCOREP_Location* locationData,
             INVALID_LOCATION_DEFINITION_ID,
             locationData->type,
             SCOREP_INVALID_LOCATION,
-            "" );
+            name );
         scorep_defer_location_initialization( locationData, parent );
     }
     else
@@ -316,7 +318,7 @@ scorep_thread_call_externals_on_new_location( SCOREP_Location* locationData,
             locationData->location_id,
             locationData->type,
             parent ? parent->location_handle : SCOREP_INVALID_LOCATION,
-            "" );
+            name );
     }
 
     /* For the main location (e.g. first thread ) we will initialize subsystem later on,
@@ -647,6 +649,7 @@ SCOREP_Location_GetCurrentCPULocation()
             {
                 scorep_thread_create_location_data_for( *my_tpd );
                 scorep_thread_call_externals_on_new_location( ( *my_tpd )->location_data,
+                                                              "",
                                                               TPD->parent->location_data,
                                                               false );
             }
