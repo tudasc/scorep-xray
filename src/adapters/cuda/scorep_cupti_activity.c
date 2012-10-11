@@ -443,7 +443,7 @@ scorep_cupti_activity_flush_context_activities( CUcontext cudaContext )
     }
 
     /* enter GPU idle region after last kernel, if exited before */
-    if ( context->gpu_idle_on == 0 )
+    if ( scorep_cuda_record_idle && context->gpu_idle_on == 0 )
     {
         SCOREP_Location_EnterRegion( context->stream_list->scorep_location,
                                      context->scorep_last_gpu_timestamp,
@@ -863,7 +863,7 @@ scorep_cupti_activity_write_kernel_record( CUpti_ActivityKernel*          kernel
         /* GPU idle time will be written to first CUDA stream in list */
         if ( scorep_cuda_record_idle )
         {
-            if ( context->gpu_idle_on )
+            if ( context->gpu_idle_on == 1 )
             {
                 SCOREP_Location_ExitRegion( context->stream_list->scorep_location, start,
                                             scorep_cuda_idle_region_handle );
@@ -875,7 +875,9 @@ scorep_cupti_activity_write_kernel_record( CUpti_ActivityKernel*          kernel
                 SCOREP_Location_EnterRegion( context->stream_list->scorep_location,
                                              context->scorep_last_gpu_timestamp,
                                              scorep_cuda_idle_region_handle );
-                SCOREP_Location_ExitRegion( context->stream_list->scorep_location, start, scorep_cuda_idle_region_handle );
+                SCOREP_Location_ExitRegion( context->stream_list->scorep_location,
+                                            start,
+                                            scorep_cuda_idle_region_handle );
             }
         }
 
@@ -979,7 +981,9 @@ scorep_cupti_activity_write_memcpy_record( CUpti_ActivityMemcpy*          mcpy,
         }
     }
 
-    if ( context->gpu_idle_on == 0 && mcpy->streamId == context->default_stream_id )
+    if ( scorep_cuda_record_idle
+         && context->gpu_idle_on == 0
+         && mcpy->streamId == context->default_stream_id )
     {
         SCOREP_Location_EnterRegion( context->stream_list->scorep_location,
                                      context->scorep_last_gpu_timestamp,
