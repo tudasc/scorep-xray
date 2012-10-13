@@ -360,15 +360,15 @@ scorep_compiler_create_nm_file( char* nmfile,
 {
     char command[ 1024 ];
 #ifdef GNU_DEMANGLE
-    sprintf( command, "nm -Aol %s > %s", exefile, nmfile );
+    sprintf( command, SCOREP_BACKEND_NM " -Aol %s > %s", exefile, nmfile );
 #else /* GNU_DEMANGLE */
-    sprintf( command, "nm -ol %s > %s", exefile, nmfile );
+    sprintf( command, SCOREP_BACKEND_NM " -ol %s > %s", exefile, nmfile );
 #endif /* GNU_DEMANGLE */
     if ( system( command ) != EXIT_SUCCESS )
     {
         UTILS_ERROR( SCOREP_ERROR_ON_SYSTEM_CALL,
-                     "Failed to get symbol table output for binary %s using nm",
-                     exefile );
+                     "Failed to get symbol table output using following command: %s",
+                     command );
         return false;
     }
     return true;
