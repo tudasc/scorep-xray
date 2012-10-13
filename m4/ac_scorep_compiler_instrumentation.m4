@@ -28,7 +28,7 @@ AS_IF([test "x${ac_scorep_compiler_gnu}" = "xyes" || test "x${ac_scorep_compiler
              [result=${libbfd_result}],
              [# search for nm if bfd is not usable
               AC_MSG_WARN([libbfd not available. Trying compiler instrumentation via nm.])
-              AC_CHECK_PROG([scorep_have_nm], [nm], ["yes"], ["no"])
+              AC_CHECK_PROG([scorep_have_nm], [nm], ["`which nm`"], ["no"])
               AS_IF([test "x${scorep_have_nm}" = "xno"],
                     [have_compiler_instrumentation="no"
                      AC_MSG_WARN([Neither libbfd nor nm are available. Compiler instrumentation will not work.])
@@ -48,15 +48,19 @@ AC_SCOREP_SUMMARY([compiler instrumentation], [${result}])
 #  - Makefile substitutions LIBBFD_(CPPFLAGS|LDFLAGS|LIBS)
 AM_CONDITIONAL([HAVE_DEMANGLE],                 
                [test "x${scorep_have_demangle}" = "xyes"])
-AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT],    
-               [test "x${scorep_have_libbfd}" = "xno" && test "x${scorep_have_nm}" = "xyes"])
+AM_COND_IF([HAVE_DEMANGLE],
+           [AC_DEFINE([HAVE_DEMANGLE], [1], [Define if cplus_demangle is available.])])
+
 AM_CONDITIONAL([HAVE_COMPILER_INSTRUMENTATION], 
                [test "x${have_compiler_instrumentation}" = "xyes"])
 
-AS_IF([test "x${scorep_have_demangle}" = "xyes"], 
-      [AC_DEFINE([HAVE_DEMANGLE], [1], [Define if cplus_demangle is available.])])
-AS_IF([test "x${scorep_have_libbfd}" = "xno" && test "x${scorep_have_nm}" = "xyes"],
-      [AC_DEFINE([HAVE_NM_AS_BFD_REPLACEMENT], [1], [Define if nm is available as a libbfd replacement.])])
+AS_IF([test "x${scorep_have_libbfd}" = "xno" && test "x${scorep_have_nm}" != "xno"],
+      [AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -eq 1])
+       AC_DEFINE([HAVE_NM_AS_BFD_REPLACEMENT], [1], [Define if nm is available as a libbfd replacement.])
+       dnl scorep_have_nm=`which nm` is the correct one for BG and Cray, but 
+       dnl wrong for NEC-SX, see opari2:ticket:54 and silc:ticket:620.
+       AC_DEFINE_UNQUOTED([SCOREP_BACKEND_NM], ["${scorep_have_nm}"], [Backend nm as bfd replacement])],
+      [AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -eq 0])])
 
 ])
 
