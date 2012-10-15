@@ -410,7 +410,8 @@ scorep_write_region_definitions( void*                     writerHandle,
                 break;
 
             case SCOREP_REGION_PHASE:
-                region_role = OTF2_REGION_ROLE_CODE;
+                region_role  = OTF2_REGION_ROLE_CODE;
+                region_flags = OTF2_REGION_FLAG_PHASE;
                 break;
 
             default:
