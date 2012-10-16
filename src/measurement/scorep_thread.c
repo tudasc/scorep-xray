@@ -31,11 +31,13 @@
 #include <SCOREP_Memory.h>
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Omp.h>
+#include <SCOREP_Timing.h>
 #include <scorep_mpi.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <inttypes.h>
 #include "scorep_runtime_management.h"
 #include "scorep_status.h"
 #include "scorep_subsystem.h"
@@ -373,8 +375,9 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         SCOREP_Memory_CreatePageManagers( new_location->page_managers );
     }
 
-    new_location->type        = SCOREP_LOCATION_TYPE_CPU_THREAD;
-    new_location->location_id = INVALID_LOCATION_DEFINITION_ID;
+    new_location->type           = SCOREP_LOCATION_TYPE_CPU_THREAD;
+    new_location->location_id    = INVALID_LOCATION_DEFINITION_ID;
+    new_location->last_timestamp = 0;
 
     new_location->profile_data = 0;
     if ( SCOREP_IsProfilingEnabled() )
@@ -570,6 +573,10 @@ SCOREP_Thread_OnThreadJoin()
                 TPD->children[ i ]->is_active = false;
             }
         }
+        uint64_t current_timestamp = SCOREP_GetClockTicks();
+        UTILS_BUG_ON( TPD->location_data->last_timestamp > current_timestamp,
+                      "Wrong timestamp order [0]: %" PRIu64 " (last recorded) > %" PRIu64 " (current).",
+                      TPD->location_data->last_timestamp, current_timestamp );
         TPD->is_active = true;
         // need activation here?
     }
@@ -634,6 +641,10 @@ SCOREP_Location_GetCurrentCPULocation()
             assert( !( *my_tpd )->is_active );
             ( *my_tpd )->is_active = true;
             scorep_thread_update_tpd( *my_tpd );
+            uint64_t current_timestamp = SCOREP_GetClockTicks();
+            UTILS_BUG_ON( TPD->location_data->last_timestamp > current_timestamp,
+                          "Wrong timestamp order [1]: %" PRIu64 " (last recorded) > %" PRIu64 " (current).",
+                          TPD->location_data->last_timestamp, current_timestamp );
         }
         else
         {
@@ -644,10 +655,18 @@ SCOREP_Location_GetCurrentCPULocation()
                 // reuse parents location data
                 ( *my_tpd )->location_data = TPD->location_data;
                 scorep_thread_update_tpd( *my_tpd );
+                uint64_t current_timestamp = SCOREP_GetClockTicks();
+                UTILS_BUG_ON( TPD->location_data->last_timestamp > current_timestamp,
+                              "Wrong timestamp order [2]: %" PRIu64 " (last recorded) > %" PRIu64 " (current).",
+                              TPD->location_data->last_timestamp, current_timestamp );
             }
             else
             {
                 scorep_thread_create_location_data_for( *my_tpd );
+                uint64_t current_timestamp = SCOREP_GetClockTicks();
+                UTILS_BUG_ON( TPD->location_data->last_timestamp > current_timestamp,
+                              "Wrong timestamp order [3]: %" PRIu64 " (last recorded) > %" PRIu64 " (current).",
+                              TPD->location_data->last_timestamp, current_timestamp );
                 scorep_thread_call_externals_on_new_location( ( *my_tpd )->location_data,
                                                               "",
                                                               TPD->parent->location_data,
