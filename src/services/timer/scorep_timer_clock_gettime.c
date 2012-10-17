@@ -38,9 +38,15 @@
 
 #include "SCOREP_Timing.h"
 
-#include <assert.h>
+#include <UTILS_Error.h>
 #include <stdbool.h>
 #include <time.h>
+
+/* clock_gettime fills a timespec struct that gives us seconds and
+ * nanoseconds. In SCOREP_GetClockTicks we return nanoseconds, so
+ * the resolution is always nanoseconds.
+ */
+#define SCOREP_CLOCK_GETTIME_FREQUENCY 1000000000
 
 static bool isInitialized = false;
 
@@ -59,15 +65,16 @@ uint64_t
 SCOREP_GetClockTicks()
 {
     struct timespec time;
-    clock_gettime( CLOCK_REALTIME, &time );
-    return ( uint64_t )time.tv_sec * ( uint64_t )1000000000 + time.tv_nsec;
+    int             result = clock_gettime( SCOREP_CLOCK_GETTIME_CLOCK, &time );
+    UTILS_ASSERT( result == 0 );
+    return ( uint64_t )time.tv_sec * ( uint64_t )SCOREP_CLOCK_GETTIME_FREQUENCY + time.tv_nsec;
 }
 
 
 uint64_t
 SCOREP_GetClockResolution()
 {
-    return 1000000000;
+    return SCOREP_CLOCK_GETTIME_FREQUENCY;
 }
 
 
