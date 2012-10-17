@@ -104,10 +104,6 @@ uint64_t
 SCOREP_Location_GetGlobalId( SCOREP_Location* locationData );
 
 
-void
-SCOREP_Location_SetLastTimestamp( SCOREP_Location* locationData,
-                                  int64_t          timestamp );
-
 
 // temporary to get nesting running. nesting_level will be replaced by
 // fork_count (in generic threading) to match parent- and child-threads.

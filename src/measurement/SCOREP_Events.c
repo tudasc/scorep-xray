@@ -141,14 +141,11 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
         location = SCOREP_Location_GetCurrentCPULocation();
     }
 
-    UTILS_BUG_ON( timestamp < SCOREP_Location_GetLastTimestamp( location ),
-                  "Invalid event order." );
+    SCOREP_Location_SetLastTimestamp( location, timestamp );
 
     uint64_t* metric_values = SCOREP_Metric_Read( location );
 
     scorep_enter_region( timestamp, regionHandle, metric_values, location );
-
-    SCOREP_Location_SetLastTimestamp( location, timestamp );
 }
 
 
@@ -217,14 +214,11 @@ SCOREP_Location_ExitRegion( SCOREP_Location*    location,
         location = SCOREP_Location_GetCurrentCPULocation();
     }
 
-    UTILS_BUG_ON( timestamp < SCOREP_Location_GetLastTimestamp( location ),
-                  "Invalid event order." );
+    SCOREP_Location_SetLastTimestamp( location, timestamp );
 
     uint64_t* metric_values = SCOREP_Metric_Read( location );
 
     scorep_exit_region( timestamp, regionHandle, metric_values, location );
-
-    SCOREP_Location_SetLastTimestamp( location, timestamp );
 }
 
 

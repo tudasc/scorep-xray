@@ -259,13 +259,6 @@ SCOREP_Location_GetLocationHandle( SCOREP_Location* locationData )
     return locationData->location_handle;
 }
 
-uint64_t
-SCOREP_Location_GetLastTimestamp( SCOREP_Location* locationData )
-{
-    return locationData->last_timestamp;
-}
-
-
 void
 scorep_thread_update_tpd( SCOREP_Thread_ThreadPrivateData* newTPD )
 {
@@ -731,7 +724,17 @@ void
 SCOREP_Location_SetLastTimestamp( SCOREP_Location* locationData,
                                   int64_t          timestamp )
 {
+    UTILS_BUG_ON( timestamp < locationData->last_timestamp,
+                  "Wrong timestamp order: %" PRIu64 " (last recorded) > %" PRIu64 " (current).",
+                  locationData->last_timestamp, timestamp );
     locationData->last_timestamp = timestamp;
+}
+
+
+uint64_t
+SCOREP_Location_GetLastTimestamp( SCOREP_Location* locationData )
+{
+    return locationData->last_timestamp;
 }
 
 

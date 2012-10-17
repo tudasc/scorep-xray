@@ -101,5 +101,8 @@ SCOREP_Location_GetLocationHandle( SCOREP_Location* locationData );
 uint64_t
 SCOREP_Location_GetLastTimestamp( SCOREP_Location* locationData );
 
+void
+SCOREP_Location_SetLastTimestamp( SCOREP_Location* locationData,
+                                  int64_t          timestamp );
 
 #endif /* SCOREP_LOCATION_H */
