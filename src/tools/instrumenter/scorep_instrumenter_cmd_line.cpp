@@ -39,7 +39,7 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_install_data = install_data;
 
     /* Instrumentation methods */
-    m_compiler_instrumentation = enabled;
+    m_compiler_instrumentation = detect;
     m_opari_instrumentation    = detect;
     m_user_instrumentation     = disabled;
     m_mpi_instrumentation      = detect;
@@ -700,14 +700,23 @@ SCOREP_Instrumenter_CmdLine::check_parameter()
     /* Check pdt dependencies */
     if ( m_pdt_instrumentation == enabled )
     {
-        m_user_instrumentation     = enabled;  // Needed to activate the inserted macros.
-        m_compiler_instrumentation = disabled; // Avoid double instrumentation.
+        m_user_instrumentation = enabled;      // Needed to activate the inserted macros.
     }
 
-    /* Check pdt dependencies */
-    if ( m_cobi_instrumentation == enabled )
+    /* Evaluate the default compiler instrumentation. By default use compiler
+       instrumentation if no other generic functions instrumentation was
+       selected by the user. */
+    if ( m_compiler_instrumentation == detetct )
     {
-        m_compiler_instrumentation = disabled; // Avoid double instrumentation.
+        if ( m_cobi_instrumentation == enabled ||
+             m_pdt_instrumentation == enabled )
+        {
+            m_compiler_instrumentation = disabled;
+        }
+        else
+        {
+            m_compiler_instrumentation = enabled;
+        }
     }
 
     /* If this is a dry run, enable printing out commands, if it is not already */
