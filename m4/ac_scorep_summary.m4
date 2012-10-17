@@ -59,7 +59,7 @@ AS_HELP_STRING([$ac_scorep_summary_orig_configure_command], [], 128, 128)
 _ACEOC
     sep="Configuration summary:"
     LC_ALL=C find . -name config.summary |
-        LC_ALL=C $AWK -F "/" '{print NF, $0}' |
+        LC_ALL=C $AWK -F "/" '{print NF, $[]0}' |
         LC_ALL=C sort |
         while read level summary
     do
