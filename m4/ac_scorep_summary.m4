@@ -60,6 +60,7 @@ _ACEOC
     sep="Configuration summary:"
     LC_ALL=C find . -name config.summary |
         LC_ALL=C $AWK -F "/" '{print NF, $[]0}' |
+        LC_ALL=C sed -e 's/^. /0&/' |
         LC_ALL=C sort |
         while read level summary
     do
