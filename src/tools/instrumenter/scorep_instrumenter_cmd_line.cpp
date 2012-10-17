@@ -706,7 +706,7 @@ SCOREP_Instrumenter_CmdLine::check_parameter()
     /* Evaluate the default compiler instrumentation. By default use compiler
        instrumentation if no other generic functions instrumentation was
        selected by the user. */
-    if ( m_compiler_instrumentation == detetct )
+    if ( m_compiler_instrumentation == detect )
     {
         if ( m_cobi_instrumentation == enabled ||
              m_pdt_instrumentation == enabled )
