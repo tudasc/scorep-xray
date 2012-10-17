@@ -67,19 +67,18 @@ AC_MSG_RESULT([$ac_scorep_timer_bgp_get_timebase_available])
 
 AC_DEFUN([AC_SCOREP_TIMER_CLOCK_GETTIME_AVAILABLE],[
 ac_scorep_timer_clock_gettime_available="no"
-
-AH_TEMPLATE([HAVE_CLOCK_GETTIME],
-            [Define to 1 if the clock_gettime() function is available.])
+ac_scorep_timer_clock_gettime_clock=""
 
 ac_scorep_timer_save_LIBS="$LIBS"
 AC_SEARCH_LIBS([clock_gettime], [rt], [ac_scorep_timer_have_librt="yes"])
-LIBS="$ac_scorep_timer_save_LIBS"
 
-if test "x${ac_scorep_timer_have_librt}" = "xyes"; then
-    ac_scorep_timer_librt="$ac_cv_search_clock_gettime"
+AS_IF([test "x${ac_scorep_timer_have_librt}" = "xyes"],
+      [ac_scorep_timer_librt="$ac_cv_search_clock_gettime"
 
-    AC_MSG_CHECKING([for clock_gettime timer])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+       m4_foreach([clock], 
+                  [[CLOCK_REALTIME], [CLOCK_MONOTONIC], [CLOCK_MONOTONIC_RAW]], 
+                  [AC_MSG_CHECKING([for clock])
+                   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 #ifdef _POSIX_C_SOURCE
 #  if _POSIX_C_SOURCE < 199309L
 #    undef _POSIX_C_SOURCE
@@ -89,16 +88,28 @@ if test "x${ac_scorep_timer_have_librt}" = "xyes"; then
 #  define _POSIX_C_SOURCE 199309L
 #endif
 #include <time.h>
-                                       ]], [[
-struct timespec tp;
-clock_getres(  CLOCK_REALTIME, &tp );
-clock_gettime( CLOCK_REALTIME, &tp );
-                                       ]])], [
-ac_scorep_timer_clock_gettime_available="yes"
-AC_DEFINE([HAVE_CLOCK_GETTIME])
-                                       ], [])
-    AC_MSG_RESULT([$ac_scorep_timer_clock_gettime_available])
-fi
+                                                      ], 
+                                                      [
+    struct timespec tp;
+    clock_getres(  clock, &tp );
+    clock_gettime( clock, &tp );
+                                                      ])], 
+                                     [ac_scorep_timer_clock_gettime_clock="clock"
+                                      AC_MSG_RESULT([yes])], 
+                                     [AC_MSG_RESULT([no])])
+])dnl
+      ])
+
+LIBS="$ac_scorep_timer_save_LIBS"
+
+AS_IF([test "x${ac_scorep_timer_clock_gettime_clock}" != "x"],
+      [ac_scorep_timer_clock_gettime_available="yes"
+       AC_DEFINE_UNQUOTED([SCOREP_CLOCK_GETTIME_CLOCK], 
+                          [${ac_scorep_timer_clock_gettime_clock}],
+                          [The clock used in clock_gettime calls.])])
+AC_MSG_CHECKING([for clock_gettime timer])
+AC_MSG_RESULT([$ac_scorep_timer_clock_gettime_available])
+
 ])
 
 ###############################################################################
@@ -506,12 +517,19 @@ AM_CONDITIONAL([SCOREP_TIMER_PAPI_REAL_CYC],        [test "x${ac_scorep_timer_pa
 AM_CONDITIONAL([SCOREP_TIMER_PAPI_REAL_USEC],       [test "x${ac_scorep_timer_papi_real_usec}"       = "xyes"])
 AM_CONDITIONAL([SCOREP_TIMER_SUN_GETHRTIME],        [test "x${ac_scorep_timer_sun_gethrtime}"        = "xyes"])
 
+ac_scorep_timer_summary="${ac_scorep_timer}"
 # specific libs are defined during the checks in the SCOREP_TIMER_*_AVAILABLE macros
 ac_scorep_timer_lib=""
-AS_IF([test "x${ac_scorep_timer_clock_gettime}"    = "xyes"], [ac_scorep_timer_lib=${ac_scorep_timer_librt}],
-      [test "x${ac_scorep_timer_ibm_switch_clock}" = "xyes"], [ac_scorep_timer_lib=${ac_scorep_timer_libswclock}],
-      [test "x${ac_scorep_timer_bgp_get_timebase}" = "xyes"], [ac_scorep_timer_lib="-lSPI.cna -lrt"])
+AS_IF([test "x${ac_scorep_timer_clock_gettime}"    = "xyes"], 
+          [ac_scorep_timer_lib=${ac_scorep_timer_librt}
+           ac_scorep_timer_summary="${ac_scorep_timer_summary}, using ${ac_scorep_timer_clock_gettime_clock} and ${ac_scorep_timer_librt}"],
+      [test "x${ac_scorep_timer_ibm_switch_clock}" = "xyes"], 
+          [ac_scorep_timer_lib=${ac_scorep_timer_libswclock}
+           ac_scorep_timer_summary="${ac_scorep_timer_summary}, using ${ac_scorep_timer_libswclock}"],
+      [test "x${ac_scorep_timer_bgp_get_timebase}" = "xyes"], 
+          [ac_scorep_timer_lib="-lSPI.cna -lrt"
+           ac_scorep_timer_summary="${ac_scorep_timer_summary}, using -lSPI.cna -lrt"])
 AC_SUBST([TIMER_LIB], ["$ac_scorep_timer_lib"])
 
-AC_SCOREP_SUMMARY([Clock source used for measurement], [$ac_scorep_timer])
+AC_SCOREP_SUMMARY([Clock used for measurement], [${ac_scorep_timer_summary}])
 ])
