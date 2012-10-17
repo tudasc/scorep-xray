@@ -588,8 +588,11 @@ SCOREP_Instrumenter::prepare_opari_linking()
     invoke_awk_script( object_files, init_source );
     compile_init_file( init_source, init_object );
 
-    // Add the object file for POMP2 initialization to the input files for linking.
-    m_input_files += " " + init_object;
+    /* Add the object file for POMP2 initialization to the input files for linking.
+       Prepend it to the front of input symbols, because some compilers do not
+       find the POMP_Init_<ID> symbols (in libraries) if it is appended.
+       See  ticket #627. */
+    m_input_files = init_object + " " + m_input_files;
 }
 
 void
