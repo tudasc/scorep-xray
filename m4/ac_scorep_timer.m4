@@ -104,6 +104,8 @@ LIBS="$ac_scorep_timer_save_LIBS"
 
 AS_IF([test "x${ac_scorep_timer_clock_gettime_clock}" != "x"],
       [ac_scorep_timer_clock_gettime_available="yes"
+       AC_DEFINE([HAVE_CLOCK_GETTIME], [1], 
+                 [Defined to 1 if the clock_gettime() function is available.])
        AC_DEFINE_UNQUOTED([SCOREP_CLOCK_GETTIME_CLOCK], 
                           [${ac_scorep_timer_clock_gettime_clock}],
                           [The clock used in clock_gettime calls.])])
