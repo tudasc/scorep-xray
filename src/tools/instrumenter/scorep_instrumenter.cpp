@@ -377,8 +377,12 @@ SCOREP_Instrumenter::invoke_opari( std::string input_file,
 #ifdef OPARI_MANGLING_SCHEME
                           "--tpd-mangling=" OPARI_MANGLING_SCHEME " "
 #endif
-                          + input_file
-                          + " " + output_file;
+    ;
+    if ( m_command_line->isPdtInstrumenting() && is_fortran_file( input_file ) )
+    {
+        command += "--nosrc ";
+    }
+    command += input_file + " " + output_file;
 
     execute_command( command );
 }
