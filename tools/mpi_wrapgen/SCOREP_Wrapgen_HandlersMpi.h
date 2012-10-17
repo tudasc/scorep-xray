@@ -350,10 +350,10 @@ recv_rule
     const SCOREP::Wrapgen::Func& func
 );
 
-/** Returns the kind of collective operation in capital letters.
+/** Returns the kind of communication in capital letters.
  */
 std::string
-multiplicity
+kind
 (
     const SCOREP::Wrapgen::Func& func
 );

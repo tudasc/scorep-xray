@@ -15,7 +15,8 @@
 
 #include "SCOREP_Mpi.h"
 
-#define SCOREP_REGION_MPI SCOREP_REGION_FUNCTION
+/* Placeholder for MPI functions which are not communicative */
+#define SCOREP_REGION_NONE SCOREP_REGION_FUNCTION
 
 /** 
  * MPI operation event type 
@@ -34,7 +35,7 @@ static const scorep_mpi_type scorep_mpi_pt2pt[] = {
   { "MPI_Irsend",           SCOREP_MPI_TYPE__SEND },
   { "MPI_Isend",            SCOREP_MPI_TYPE__SEND },
   { "MPI_Issend",           SCOREP_MPI_TYPE__SEND },
-  { "MPI_Recv",                                   SCOREP_MPI_TYPE__RECV },
+  { "MPI_Recv",                                     SCOREP_MPI_TYPE__RECV },
   { "MPI_Rsend",            SCOREP_MPI_TYPE__SEND },
   { "MPI_Send",             SCOREP_MPI_TYPE__SEND },
   { "MPI_Sendrecv",         SCOREP_MPI_TYPE__SEND | SCOREP_MPI_TYPE__RECV },
@@ -42,14 +43,14 @@ static const scorep_mpi_type scorep_mpi_pt2pt[] = {
   { "MPI_Ssend",            SCOREP_MPI_TYPE__SEND },
   { "MPI_Start",            SCOREP_MPI_TYPE__SEND },
   { "MPI_Startall",         SCOREP_MPI_TYPE__SEND },
-  { "MPI_Test",                                  SCOREP_MPI_TYPE__RECV },
-  { "MPI_Testall",                               SCOREP_MPI_TYPE__RECV },
-  { "MPI_Testany",                               SCOREP_MPI_TYPE__RECV },
-  { "MPI_Testsome",                              SCOREP_MPI_TYPE__RECV },
-  { "MPI_Wait",                                  SCOREP_MPI_TYPE__RECV },
-  { "MPI_Waitall",                               SCOREP_MPI_TYPE__RECV },
-  { "MPI_Waitany",                               SCOREP_MPI_TYPE__RECV },
-  { "MPI_Waitsome",                              SCOREP_MPI_TYPE__RECV },
+  { "MPI_Test",                                     SCOREP_MPI_TYPE__RECV },
+  { "MPI_Testall",                                  SCOREP_MPI_TYPE__RECV },
+  { "MPI_Testany",                                  SCOREP_MPI_TYPE__RECV },
+  { "MPI_Testsome",                                 SCOREP_MPI_TYPE__RECV },
+  { "MPI_Wait",                                     SCOREP_MPI_TYPE__RECV },
+  { "MPI_Waitall",                                  SCOREP_MPI_TYPE__RECV },
+  { "MPI_Waitany",                                  SCOREP_MPI_TYPE__RECV },
+  { "MPI_Waitsome",                                 SCOREP_MPI_TYPE__RECV },
 };
 
 /** MPI collective function types 

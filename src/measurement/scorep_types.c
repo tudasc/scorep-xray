@@ -67,6 +67,8 @@ scorep_region_type_to_string( SCOREP_RegionType regionType )
             return "loop";
         case SCOREP_REGION_USER:
             return "user";
+        case SCOREP_REGION_CODE:
+            return "code";
         case SCOREP_REGION_PHASE:
             return "phase";
         case SCOREP_REGION_DYNAMIC:
@@ -79,56 +81,54 @@ scorep_region_type_to_string( SCOREP_RegionType regionType )
             return "dynamix function";
         case SCOREP_REGION_DYNAMIC_LOOP_PHASE:
             return "dynamix loop phase";
-        case SCOREP_REGION_MPI_COLL_BARRIER:
-            return "mpi barrier";
-        case SCOREP_REGION_MPI_COLL_ONE2ALL:
-            return "mpi one2all";
-        case SCOREP_REGION_MPI_COLL_ALL2ONE:
-            return "mpi all2one";
-        case SCOREP_REGION_MPI_COLL_ALL2ALL:
-            return "mpi all2all";
-        case SCOREP_REGION_MPI_COLL_OTHER:
-            return "mpi other";
-        case SCOREP_REGION_OMP_PARALLEL:
-            return "omp parallel";
-        case SCOREP_REGION_OMP_LOOP:
-            return "omp loop";
-        case SCOREP_REGION_OMP_SECTIONS:
-            return "omp secions";
-        case SCOREP_REGION_OMP_SECTION:
-            return "omp section";
-        case SCOREP_REGION_OMP_WORKSHARE:
-            return "omp workshare";
-        case SCOREP_REGION_OMP_SINGLE:
-            return "omp single";
-        case SCOREP_REGION_OMP_MASTER:
-            return "omp master";
-        case SCOREP_REGION_OMP_CRITICAL:
-            return "omp critical";
-        case SCOREP_REGION_OMP_ATOMIC:
-            return "omp atomic";
-        case SCOREP_REGION_OMP_BARRIER:
-            return "omp barrier";
-        case SCOREP_REGION_OMP_IMPLICIT_BARRIER:
-            return "omp implicit barrier";
-        case SCOREP_REGION_OMP_FLUSH:
-            return "omp flush";
-        case SCOREP_REGION_OMP_CRITICAL_SBLOCK:
-            return "omp critical sblock";
-        case SCOREP_REGION_OMP_SINGLE_SBLOCK:
-            return "omp single sblock";
-        case SCOREP_REGION_OMP_TASK:
-            return "omp task";
-        case SCOREP_REGION_OMP_TASK_CREATE:
-            return "omp task create";
-        case SCOREP_REGION_OMP_ORDERED:
-            return "omp ordered";
-        case SCOREP_REGION_OMP_ORDERED_SBLOCK:
-            return "omp ordered sblock";
-        case SCOREP_REGION_OMP_WRAPPER:
-            return "omp wrapper";
-        case SCOREP_REGION_OMP_TASKWAIT:
-            return "omp taskwait";
+        case SCOREP_REGION_COLL_ONE2ALL:
+            return "one2all";
+        case SCOREP_REGION_COLL_ALL2ONE:
+            return "all2one";
+        case SCOREP_REGION_COLL_ALL2ALL:
+            return "all2all";
+        case SCOREP_REGION_COLL_OTHER:
+            return "other collective";
+        case SCOREP_REGION_POINT2POINT:
+            return "point2point";
+        case SCOREP_REGION_PARALLEL:
+            return "parallel";
+        case SCOREP_REGION_SECTIONS:
+            return "secions";
+        case SCOREP_REGION_SECTION:
+            return "section";
+        case SCOREP_REGION_WORKSHARE:
+            return "workshare";
+        case SCOREP_REGION_SINGLE:
+            return "single";
+        case SCOREP_REGION_MASTER:
+            return "master";
+        case SCOREP_REGION_CRITICAL:
+            return "critical";
+        case SCOREP_REGION_ATOMIC:
+            return "atomic";
+        case SCOREP_REGION_BARRIER:
+            return "barrier";
+        case SCOREP_REGION_IMPLICIT_BARRIER:
+            return "implicit barrier";
+        case SCOREP_REGION_FLUSH:
+            return "flush";
+        case SCOREP_REGION_CRITICAL_SBLOCK:
+            return "critical sblock";
+        case SCOREP_REGION_SINGLE_SBLOCK:
+            return "single sblock";
+        case SCOREP_REGION_TASK:
+            return "task";
+        case SCOREP_REGION_TASK_CREATE:
+            return "task create";
+        case SCOREP_REGION_ORDERED:
+            return "ordered";
+        case SCOREP_REGION_ORDERED_SBLOCK:
+            return "ordered sblock";
+        case SCOREP_REGION_WRAPPER:
+            return "wrapper";
+        case SCOREP_REGION_TASKWAIT:
+            return "taskwait";
         default:
             return "unknown";
     }

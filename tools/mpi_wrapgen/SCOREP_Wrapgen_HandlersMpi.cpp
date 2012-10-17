@@ -69,7 +69,7 @@ static handler::info_t f2c_types;
 /** @internal
  * Map to enable the 'class' template variable
  */
-static handler::info_t comm_multiplicity;
+static handler::info_t comm_kind;
 
 
 /**
@@ -81,60 +81,84 @@ SCOREP::Wrapgen::handler::mpi::_initialize
     ()
 {
     /** - Collective class macros */
-    comm_multiplicity[ "MPI_Allgather" ]            = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Allgatherv" ]           = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Allreduce" ]            = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Alltoall" ]             = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Alltoallv" ]            = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Barrier" ]              = "_COLL_BARRIER";
-    comm_multiplicity[ "MPI_Bcast" ]                = "_COLL_ONE2ALL";
-    comm_multiplicity[ "MPI_Gather" ]               = "_COLL_ALL2ONE";
-    comm_multiplicity[ "MPI_Gatherv" ]              = "_COLL_ALL2ONE";
-    comm_multiplicity[ "MPI_Reduce" ]               = "_COLL_ALL2ONE";
-    comm_multiplicity[ "MPI_Reduce_scatter" ]       = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Reduce_scatter_block" ] = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Scan" ]                 = "_COLL_OTHER";
-    comm_multiplicity[ "MPI_Scatter" ]              = "_COLL_ONE2ALL";
-    comm_multiplicity[ "MPI_Scatterv" ]             = "_COLL_ONE2ALL";
-    comm_multiplicity[ "MPI_Alltoallw" ]            = "_COLL_ALL2ALL";
-    comm_multiplicity[ "MPI_Exscan" ]               = "_COLL_OTHER";
+    comm_kind[ "MPI_Allgather" ]            = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Allgatherv" ]           = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Allreduce" ]            = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Alltoall" ]             = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Alltoallv" ]            = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Barrier" ]              = "BARRIER";
+    comm_kind[ "MPI_Bcast" ]                = "COLL_ONE2ALL";
+    comm_kind[ "MPI_Gather" ]               = "COLL_ALL2ONE";
+    comm_kind[ "MPI_Gatherv" ]              = "COLL_ALL2ONE";
+    comm_kind[ "MPI_Reduce" ]               = "COLL_ALL2ONE";
+    comm_kind[ "MPI_Reduce_scatter" ]       = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Reduce_scatter_block" ] = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Scan" ]                 = "COLL_OTHER";
+    comm_kind[ "MPI_Scatter" ]              = "COLL_ONE2ALL";
+    comm_kind[ "MPI_Scatterv" ]             = "COLL_ONE2ALL";
+    comm_kind[ "MPI_Alltoallw" ]            = "COLL_ALL2ALL";
+    comm_kind[ "MPI_Exscan" ]               = "COLL_OTHER";
+
+    /** - Point to Point class macros */
+    comm_kind[ "MPI_Bsend" ]            = "POINT2POINT";
+    comm_kind[ "MPI_Ibsend" ]           = "POINT2POINT";
+    comm_kind[ "MPI_Irsend" ]           = "POINT2POINT";
+    comm_kind[ "MPI_Isend" ]            = "POINT2POINT";
+    comm_kind[ "MPI_Issend" ]           = "POINT2POINT";
+    comm_kind[ "MPI_Recv" ]             = "POINT2POINT";
+    comm_kind[ "MPI_Rsend" ]            = "POINT2POINT";
+    comm_kind[ "MPI_Send" ]             = "POINT2POINT";
+    comm_kind[ "MPI_Sendrecv" ]         = "POINT2POINT";
+    comm_kind[ "MPI_Sendrecv_replace" ] = "POINT2POINT";
+    comm_kind[ "MPI_Ssend" ]            = "POINT2POINT";
+    comm_kind[ "MPI_Start" ]            = "POINT2POINT";
+    comm_kind[ "MPI_Startall" ]         = "POINT2POINT";
+    comm_kind[ "MPI_Test" ]             = "POINT2POINT";
+    comm_kind[ "MPI_Testall" ]          = "POINT2POINT";
+    comm_kind[ "MPI_Testany" ]          = "POINT2POINT";
+    comm_kind[ "MPI_Testsome" ]         = "POINT2POINT";
+    comm_kind[ "MPI_Wait" ]             = "POINT2POINT";
+    comm_kind[ "MPI_Waitall" ]          = "POINT2POINT";
+    comm_kind[ "MPI_Waitany" ]          = "POINT2POINT";
+    comm_kind[ "MPI_Waitsome" ]         = "POINT2POINT";
+
 
     /** - Func-object template handlers */
-    func_handlers[ "call:f2c_c2f" ]     = handler::mpi::call_f2c_c2f;
-    func_handlers[ "call:fortran" ]     = handler::mpi::call_fortran;
-    func_handlers[ "call:pmpi" ]        = handler::mpi::call_pmpi;
-    func_handlers[ "call:posthook" ]    = handler::mpi::call_posthook;
-    func_handlers[ "call:prehook" ]     = handler::mpi::call_prehook;
-    func_handlers[ "declarehooks" ]     = handler::mpi::declare_hooks;
-    func_handlers[ "cleanup" ]          = handler::mpi::cleanup;
-    func_handlers[ "cleanup:f2c_c2f" ]  = handler::mpi::cleanup_f2c_c2f;
-    func_handlers[ "cleanup:fortran" ]  = handler::mpi::cleanup_fortran;
-    func_handlers[ "decl" ]             = handler::mpi::decl;
-    func_handlers[ "decl:f2c_c2f" ]     = handler::mpi::decl_f2c_c2f;
-    func_handlers[ "decl:fortran" ]     = handler::mpi::decl_fortran;
-    func_handlers[ "group" ]            = handler::mpi::group;
-    func_handlers[ "id" ]               = handler::mpi::id;
-    func_handlers[ "init" ]             = handler::mpi::init;
-    func_handlers[ "init:f2c_c2f" ]     = handler::mpi::init_f2c_c2f;
-    func_handlers[ "init:fortran" ]     = handler::mpi::init_fortran;
-    func_handlers[ "mpi:multiplicity" ] = handler::mpi::multiplicity;
-    func_handlers[ "mpi:sendcount" ]    = handler::mpi::send_rule;
-    func_handlers[ "mpi:recvcount" ]    = handler::mpi::recv_rule;
-    func_handlers[ "mpi:version" ]      = handler::mpi::version;
-    func_handlers[ "name" ]             = handler::mpi::name;
-    func_handlers[ "proto:c" ]          = handler::mpi::proto_c;
-    func_handlers[ "proto:fortran" ]    = handler::mpi::proto_fortran;
-    func_handlers[ "proto:f2c_c2f" ]    = handler::mpi::proto_f2c_c2f;
-    func_handlers[ "rtype" ]            = handler::mpi::rtype;
-    func_handlers[ "xblock" ]           = handler::mpi::xblock;
-    func_handlers[ "xblock:fortran" ]   = handler::mpi::xblock_fortran;
-    func_handlers[ "xblock:f2c_c2f" ]   = handler::mpi::xblock_f2c_c2f;
-    func_handlers[ "guard:start" ]      = handler::mpi::guard_start;
-    func_handlers[ "guard:end" ]        = handler::mpi::guard_end;
-    func_handlers[ "guard:hooks" ]      = handler::mpi::guard_hooks;
-    func_handlers[ "check:hooks" ]      = handler::mpi::check_hooks;
-    func_handlers[ "comm:new" ]         = handler::mpi::comm_new;
-    func_handlers[ "comm:parent" ]      = handler::mpi::comm_parent;
+    func_handlers[ "call:f2c_c2f" ]    = handler::mpi::call_f2c_c2f;
+    func_handlers[ "call:fortran" ]    = handler::mpi::call_fortran;
+    func_handlers[ "call:pmpi" ]       = handler::mpi::call_pmpi;
+    func_handlers[ "call:posthook" ]   = handler::mpi::call_posthook;
+    func_handlers[ "call:prehook" ]    = handler::mpi::call_prehook;
+    func_handlers[ "declarehooks" ]    = handler::mpi::declare_hooks;
+    func_handlers[ "cleanup" ]         = handler::mpi::cleanup;
+    func_handlers[ "cleanup:f2c_c2f" ] = handler::mpi::cleanup_f2c_c2f;
+    func_handlers[ "cleanup:fortran" ] = handler::mpi::cleanup_fortran;
+    func_handlers[ "decl" ]            = handler::mpi::decl;
+    func_handlers[ "decl:f2c_c2f" ]    = handler::mpi::decl_f2c_c2f;
+    func_handlers[ "decl:fortran" ]    = handler::mpi::decl_fortran;
+    func_handlers[ "group" ]           = handler::mpi::group;
+    func_handlers[ "id" ]              = handler::mpi::id;
+    func_handlers[ "init" ]            = handler::mpi::init;
+    func_handlers[ "init:f2c_c2f" ]    = handler::mpi::init_f2c_c2f;
+    func_handlers[ "init:fortran" ]    = handler::mpi::init_fortran;
+    func_handlers[ "mpi:kind" ]        = handler::mpi::kind;
+    func_handlers[ "mpi:sendcount" ]   = handler::mpi::send_rule;
+    func_handlers[ "mpi:recvcount" ]   = handler::mpi::recv_rule;
+    func_handlers[ "mpi:version" ]     = handler::mpi::version;
+    func_handlers[ "name" ]            = handler::mpi::name;
+    func_handlers[ "proto:c" ]         = handler::mpi::proto_c;
+    func_handlers[ "proto:fortran" ]   = handler::mpi::proto_fortran;
+    func_handlers[ "proto:f2c_c2f" ]   = handler::mpi::proto_f2c_c2f;
+    func_handlers[ "rtype" ]           = handler::mpi::rtype;
+    func_handlers[ "xblock" ]          = handler::mpi::xblock;
+    func_handlers[ "xblock:fortran" ]  = handler::mpi::xblock_fortran;
+    func_handlers[ "xblock:f2c_c2f" ]  = handler::mpi::xblock_f2c_c2f;
+    func_handlers[ "guard:start" ]     = handler::mpi::guard_start;
+    func_handlers[ "guard:end" ]       = handler::mpi::guard_end;
+    func_handlers[ "guard:hooks" ]     = handler::mpi::guard_hooks;
+    func_handlers[ "check:hooks" ]     = handler::mpi::check_hooks;
+    func_handlers[ "comm:new" ]        = handler::mpi::comm_new;
+    func_handlers[ "comm:parent" ]     = handler::mpi::comm_parent;
 
     /** - Fortran<->C conversion types */
     f2c_types[ "MPI_Status" ]   = "PMPI_Status";
@@ -1147,20 +1171,20 @@ SCOREP::Wrapgen::handler::mpi::rtype
 }
 
 string
-SCOREP::Wrapgen::handler::mpi::multiplicity
+SCOREP::Wrapgen::handler::mpi::kind
 (
     const Func& func
 )
 {
-    info_t::const_iterator it = comm_multiplicity.find( func.get_name() );
+    info_t::const_iterator it = comm_kind.find( func.get_name() );
 
-    if ( it != comm_multiplicity.end() )
+    if ( it != comm_kind.end() )
     {
         return it->second;
     }
     else
     {
-        return "";
+        return "NONE";
     }
 }
 

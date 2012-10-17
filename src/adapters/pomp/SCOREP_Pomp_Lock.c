@@ -76,7 +76,7 @@ scorep_pomp_register_lock_regions()
                                                       SCOREP_INVALID_LINE_NO,
                                                       SCOREP_INVALID_LINE_NO,
                                                       SCOREP_ADAPTER_POMP,
-                                                      SCOREP_REGION_OMP_WRAPPER );
+                                                      SCOREP_REGION_WRAPPER );
     }
 }
 

@@ -48,7 +48,7 @@ visit_to_switches( scorep_profile_node* node,
     }
 
     SCOREP_RegionHandle region = scorep_profile_type_get_region_handle( node->type_specific_data );
-    if ( SCOREP_Region_GetType( region ) != SCOREP_REGION_OMP_TASK )
+    if ( SCOREP_Region_GetType( region ) != SCOREP_REGION_TASK )
     {
         return;
     }
@@ -92,7 +92,7 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
                                            SCOREP_INVALID_LINE_NO,
                                            SCOREP_INVALID_LINE_NO,
                                            SCOREP_ADAPTER_POMP,
-                                           SCOREP_REGION_OMP_TASK );
+                                           SCOREP_REGION_TASK );
     }
 
     /* Create root node for each new location */

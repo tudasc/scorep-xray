@@ -388,7 +388,7 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
     location = SCOREP_Location_GetProfileData( thread );
 
     /* Store task metrics if we leave a parallel region */
-    if ( SCOREP_Region_GetType( region ) == SCOREP_REGION_OMP_PARALLEL )
+    if ( SCOREP_Region_GetType( region ) == SCOREP_REGION_PARALLEL )
     {
         scorep_profile_task_parallel_exit( location );
     }
