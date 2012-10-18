@@ -34,8 +34,8 @@ include ../vendor/common/build-config/Makefile.tests-omp.inc.am
 
 AM_CPPFLAGS += -DBACKEND_BUILD_NOMPI
 
-bindir=${exec_prefix}@backend_bin_dir@
-libdir=${exec_prefix}@backend_lib_dir@
+bindir = @bindir@@backend_suffix@
+libdir = @libdir@@backend_suffix@
 
 if CROSS_BUILD
 AM_CPPFLAGS += -DCROSS_BUILD

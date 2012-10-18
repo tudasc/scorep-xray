@@ -34,9 +34,8 @@ include ../vendor/common/build-config/Makefile.tests-mpi-omp.inc.am
 
 AM_CPPFLAGS += -DBACKEND_BUILD_MPI
 
-bindir=${exec_prefix}@backend_bin_dir@
-libdir=${exec_prefix}@backend_lib_dir@
-
+bindir = @bindir@@backend_suffix@
+libdir = @libdir@@backend_suffix@
 
 include ../build-includes/mpi-backend-only.am
 

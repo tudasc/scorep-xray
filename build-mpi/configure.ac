@@ -146,16 +146,11 @@ AC_SUBST([LIBTOOL_DEPS])
 AC_SCOREP_BUILD_MODE
 AC_SCOREP_CUDA
 
-# don't use ${exec_prefix} here, evaluates to 'NONE' but use it in Makefile.am
-backend_bin_dir="/bin"
-backend_lib_dir="/lib"
-if test "x${ac_scorep_cross_compiling}" = "xyes"; then
-    backend_bin_dir="/bin/backend"
-    backend_lib_dir="/lib/backend"
-fi
-AC_SUBST(backend_bin_dir)
-AC_SUBST(backend_lib_dir)
-
+# On crosscompile machines, install backend stuff into $(bin|lid)dir/backend.
+backend_suffix=""
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+      [backend_suffix="/backend"])
+AC_SUBST([backend_suffix])
 
 ## Determine a Fortran 77 compiler to use. If F77 is not already set in the
 ## environment, then check for g77 and f77, and then some other names. Set the
