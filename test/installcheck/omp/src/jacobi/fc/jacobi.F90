@@ -3,7 +3,7 @@ module JacobiMod
     implicit none 
 
     contains
-   
+    
     subroutine Jacobi(myData)
         implicit none
         !********************************************************************
@@ -74,7 +74,7 @@ module JacobiMod
                            myData%afU(i, j) = uold(i, j) - myData%fRelax * fLRes
                     
                            ! Accumulate residual error
-                           residual = residual + fLRes * fLRes
+                           call update_residual(residual, fLRes)
                        end do
                    end do
 !$omp end do

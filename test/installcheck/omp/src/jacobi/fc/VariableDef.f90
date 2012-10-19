@@ -37,4 +37,13 @@ module VariableDef
 
    END TYPE JacobiData
 
+   contains
+
+   subroutine update_residual(residual, fLRes)
+       implicit none
+       double precision, intent(inout) :: residual
+       double precision, intent(in) :: fLRes
+       residual = residual + fLRes * fLRes
+   end subroutine
+
 end module VariableDef
