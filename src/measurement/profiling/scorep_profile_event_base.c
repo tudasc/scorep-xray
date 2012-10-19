@@ -103,7 +103,7 @@ scorep_profile_enter( SCOREP_Profile_LocationData* location,
     }
 
     /* Store start values for additional metrics */
-    uint32_t number_of_additional_metrics = SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( SCOREP_Location_GetCurrentCPULocation() );
+    uint32_t number_of_additional_metrics = SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( location->location_data );
     uint32_t j                            = 0;
     for ( uint32_t i = number_of_synchronus_strict_metrics; i < number_of_synchronus_strict_metrics + number_of_additional_metrics; i++ )
     {
@@ -148,7 +148,7 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
     parent = node;
 
     uint32_t number_of_synchronus_strict_metrics = SCOREP_Metric_GetNumberOfSynchronousStrictMetrics();
-    uint32_t number_of_additional_metrics        = SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( SCOREP_Location_GetCurrentCPULocation() );
+    uint32_t number_of_additional_metrics        = SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( location->location_data );
     do
     {
         location->current_depth--;

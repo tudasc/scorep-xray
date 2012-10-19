@@ -520,7 +520,7 @@ scorep_profile_finalize()
 {
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_Write();
+        SCOREP_Profile_Write( SCOREP_Location_GetCurrentCPULocation() );
         SCOREP_Profile_Finalize();
     }
 }

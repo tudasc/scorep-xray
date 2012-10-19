@@ -105,9 +105,10 @@ SCOREP_Profile_Process( SCOREP_Location* location );
    Writes the Profile. The output format can be set via environment variable
    SCOREP_ProfileFormat. Possible values are None, TauSnapshot, Cube4, Default.
    Should be called after unification.
+   @param location  The location data structure of the main thread of the process.
  */
 void
-SCOREP_Profile_Write();
+SCOREP_Profile_Write( SCOREP_Location* location );
 
 /**
    Configures the callpath size for the next profile. The configuration is stored and

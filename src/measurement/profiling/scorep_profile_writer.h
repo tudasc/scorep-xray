@@ -38,8 +38,9 @@ scorep_profile_write_tau_snapshot();
 /**
    Writes the profile in Cube 4 format to disk. For each metric a separate
    file is created.
+   @param location_data The location data structure of the main thread of the process.
  */
 extern void
-scorep_profile_write_cube4();
+scorep_profile_write_cube4( SCOREP_Location* location_data );
 
 #endif /* SCOREP_PROFILE_WRITER_H */

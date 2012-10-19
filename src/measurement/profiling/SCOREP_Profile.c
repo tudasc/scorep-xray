@@ -287,7 +287,7 @@ SCOREP_Profile_Process( SCOREP_Location* location )
 }
 
 void
-SCOREP_Profile_Write()
+SCOREP_Profile_Write( SCOREP_Location* location )
 {
     if ( scorep_profile_output_format == SCOREP_Profile_OutputNone )
     {
@@ -295,7 +295,7 @@ SCOREP_Profile_Write()
     }
     else if ( scorep_profile_output_format & SCOREP_Profile_OutputCube4 )
     {
-        scorep_profile_write_cube4();
+        scorep_profile_write_cube4( location );
     }
     else if ( scorep_profile_output_format & SCOREP_Profile_OutputTauSnapshot )
     {

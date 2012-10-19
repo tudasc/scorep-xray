@@ -765,7 +765,7 @@ add_mapping_to_cube_writing_data( scorep_cube_writing_data* write_set )
    Main writer function
 *******************************************************************************/
 void
-scorep_profile_write_cube4()
+scorep_profile_write_cube4( SCOREP_Location* location_data )
 {
     /*-------------------------------- Variable definition */
 
@@ -858,7 +858,6 @@ scorep_profile_write_cube4()
 
     /* Write additional location-specific metrics */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing location-specific metrics" );
-    SCOREP_Location*             location_data         = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_Profile_LocationData* profile_location_data = SCOREP_Location_GetProfileData( location_data );
     SCOREP_MetricHandle*         additional_metrics    = SCOREP_Metric_GetAdditionalScopedMetricHandles( location_data );
 
