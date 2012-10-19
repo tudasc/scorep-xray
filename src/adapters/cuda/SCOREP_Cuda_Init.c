@@ -40,9 +40,6 @@
 #include "scorep_cupti_callbacks.h"
 
 
-uint64_t scorep_cuda_init_timestamp = 0;
-
-
 #include "scorep_cuda_confvars.inc.c"
 
 
@@ -84,8 +81,6 @@ scorep_cuda_init()
     if ( scorep_cuda_features > 0 )
     {
         SCOREP_RegisterExitCallback( scorep_cuda_finalize_callback );
-
-        scorep_cuda_init_timestamp = SCOREP_GetClockTicks();
 
         scorep_cupti_callbacks_init();
     }

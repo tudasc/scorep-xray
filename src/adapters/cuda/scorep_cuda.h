@@ -66,10 +66,4 @@ extern bool scorep_cuda_record_idle;
  */
 extern bool scorep_cuda_record_memcpy;
 
-/*
- * Set an init timestamp for GPU idle time and initialization of allocated
- * timestamps variables.
- */
-extern uint64_t scorep_cuda_init_timestamp;
-
 #endif  /* SCOREP_CUDA_H */

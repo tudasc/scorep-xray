@@ -35,6 +35,9 @@ SCOREP_SynchronizeClocks();
 void
 SCOREP_BeginEpoch();
 
+uint64_t
+SCOREP_GetBeginEpoch();
+
 void
 SCOREP_EndEpoch();
 

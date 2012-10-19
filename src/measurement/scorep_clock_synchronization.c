@@ -53,6 +53,14 @@ SCOREP_BeginEpoch()
 }
 
 
+uint64_t
+SCOREP_GetBeginEpoch()
+{
+    assert( scorep_epoch_begin_set );
+    return scorep_epoch_begin;
+}
+
+
 void
 SCOREP_EndEpoch()
 {
@@ -62,6 +70,8 @@ SCOREP_EndEpoch()
     assert( scorep_epoch_end > scorep_epoch_begin );
     scorep_epoch_end_set = true;
 }
+
+
 
 
 void

@@ -36,6 +36,7 @@
 
 #include "SCOREP_Location.h"
 #include <SCOREP_Timing.h>
+#include <scorep_clock_synchronization.h>
 
 #include "scorep_cuda.h"
 #include "scorep_cupti.h"
@@ -508,7 +509,7 @@ scorep_cupti_activity_create_stream( scorep_cupti_activity_context* context,
                      "[CUPTI Activity] Could not allocate memory for stream!" );
     }
     stream->stream_id             = streamId;
-    stream->scorep_last_timestamp = scorep_cuda_init_timestamp;
+    stream->scorep_last_timestamp = SCOREP_GetBeginEpoch();
     stream->next                  = NULL;
 
     /* if no valid stream ID is given, create default stream 0 */
@@ -548,7 +549,7 @@ scorep_cupti_activity_create_stream( scorep_cupti_activity_context* context,
         if ( scorep_cuda_record_idle )
         {
             SCOREP_Location_EnterRegion( stream->scorep_location,
-                                         scorep_cuda_init_timestamp,
+                                         stream->scorep_last_timestamp,
                                          scorep_cuda_idle_region_handle );
             context->gpu_idle_on = 1;
         }
@@ -646,7 +647,7 @@ scorep_cupti_activity_create_context( uint32_t  contextId,
     context->next                      = NULL;
     context->stream_list               = NULL;
     context->buffer                    = NULL;
-    context->scorep_last_gpu_timestamp = scorep_cuda_init_timestamp;
+    context->scorep_last_gpu_timestamp = SCOREP_GetBeginEpoch();
     context->gpu_idle_on               = 1;
 
     /*

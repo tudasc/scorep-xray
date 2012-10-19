@@ -39,6 +39,7 @@ libscorep_adapter_cuda_la_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR)           \
     $(UTILS_CPPFLAGS)             \
     -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/adapters/include \
     -I$(INC_ROOT)src/services/include
 
