@@ -30,7 +30,7 @@ measurement run you can find a <tt>scorep.cfg</tt> file in your experiment direc
 which contains the configuration of the measurement run. If you had not set configuration
 values explicitly, the file will contain the default values. This file is safe to be used
 as input for a POSIX shell. For example if you want to reuse the same configuration from
-an previous measurement run use something like this:
+an previous measurement run something like this:
 
 @code
 $ set -a
@@ -228,12 +228,12 @@ An exclude rule starts with the keyword <tt>EXCLUDE</tt> followed by
 one or multiple whitespace separated source file names. 
 Respectively, include rules start with <tt>INCLUDE</tt>
 followed by one or multiple whitespace separated file names. For the specification of 
-file names, bash-like wildcards are supported. In particular, the '*' wildcards an 
-string of arbitrary length, the '?' matches exactly one arbitrary character, or within
-`[]` you may specify multiple options.
+file names, bash-like wildcards are supported. In particular, the '*' wildcard
+matches an string of arbitrary length, the '?' matches exactly one arbitrary
+character, or within `[]` you may specify multiple options.
 
-@note: Unlike bash, a '*' may match a string that contains slashes. E.g, you may 
-       use the '*' wildcard for path prefixes. 
+@note Unlike bash, a '*' may match a string that contains slashes. E.g, you may
+      use the '*' wildcard for path prefixes.
 
 An example source file filter block could look like this:
 @code
@@ -273,13 +273,12 @@ An exclude rule starts with the keyword <tt>EXCLUDE</tt> followed by
 one or multiple whitespace separated region names. 
 Respectively, include rules start with <tt>INCLUDE</tt>
 followed by one or multiple whitespace separated expressions. For the specification of 
-file names, bash-like wildcards are supported. In particular, the '*' wildcards an 
-string of arbitrary length, the '?' matches exactly one arbitrary character, or within
-`[]` you may specify multiple options.
+file names, bash-like wildcards are supported. In particular, the '*' wildcard
+matches an string of arbitrary length, the '?' matches exactly one arbitrary
+character, or within `[]` you may specify multiple options.
 
 
- An example region
-filter block could look like this:
+An example region filter block could look like this:
 @code
 SCOREP_REGION_NAMES_BEGIN
   EXCLUDE *
@@ -309,7 +308,7 @@ evaluating the expression. A Fortran rule would look like this:
 @seclabel{selective_tracing}
 
 @scorep experiments record by default all events during the whole execution run.
-If tracing is enabled of the event data are collected in buffers on each process 
+If tracing is enabled the event data will be collected in buffers on each process
 that must be adequately sized to store events from the entire execution.
 
 Instrumented routines which are executed frequently, while only performing a

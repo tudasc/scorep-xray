@@ -94,7 +94,7 @@
  *
  * @see SCOREP_DEFINE_DEFINITION_TYPE
  *
- * @note: No ';' after
+ * @note No ';' after
  */
 #define SCOREP_DEFINE_DEFINITION_HEADER( Type ) \
     SCOREP_ ## Type ## Handle next;             \
@@ -108,7 +108,7 @@
  *
  * @param definition pointer to definition.
  *
- * @note: This needs to be in-sync with @a SCOREP_DEFINE_DEFINITION_HEADER
+ * @note This needs to be in-sync with @a SCOREP_DEFINE_DEFINITION_HEADER
  * @see SCOREP_DEFINE_DEFINITION_HEADER
  */
 #define SCOREP_INIT_DEFINITION_HEADER( definition )             \
@@ -126,8 +126,8 @@
 /**
  *  Extracts the ID out of an handle pointer.
  *
- *  @note: This is only the process local sequence number, which
- *         may happen to be the OTF2 definition id.
+ *  @note This is only the process local sequence number, which
+ *        may happen to be the OTF2 definition id.
  *
  *  @note You can take also the address of this member with this macro
  */
@@ -296,7 +296,7 @@
 /**
  * Defines a new type of definition for use in @a SCOREP_DefinitionManager.
  *
- * @note: No ';'
+ * @note No ';'
  */
 #define SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Type, type ) \
     SCOREP_ ## Type ## Handle type ## _definition_head; \

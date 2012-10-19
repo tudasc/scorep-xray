@@ -2247,10 +2247,10 @@ scorep_callpath_definitions_equal( const SCOREP_Callpath_Definition* existingDef
         return false;
     }
 
-    /** @note: we need to deref parameter_handle to know the type,
-     *         but we don't have the associated page manager
-     *         thus, we use memcmp for comparison
-     *         luckily, the union members have equal size, currently
+    /** @note we need to deref parameter_handle to know the type,
+     *        but we don't have the associated page manager
+     *        thus, we use memcmp for comparison
+     *        luckily, the union members have equal size, currently
      */
     return 0 == memcmp( &existingDefinition->parameter_value,
                         &newDefinition->parameter_value,
