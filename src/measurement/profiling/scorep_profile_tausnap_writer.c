@@ -108,7 +108,7 @@ write_region_tau( SCOREP_Profile_LocationData* location,
     {
         length += strlen( parentpath ) + 7;
     }
-    char* path = SCOREP_Memory_AllocForProfile( location->location_data, length );
+    char* path = SCOREP_Location_AllocForProfile( location->location_data, length );
     if ( parentpath == NULL )
     {
         strcpy( path, name );
@@ -546,7 +546,7 @@ write_userevent_data_metric_tau( SCOREP_Profile_LocationData* location,
             if ( found != NULL )
             {
                 int   length     = strlen( metric_name ) + 1 + strlen( parentpath ) + 2;
-                char* metricpath = SCOREP_Memory_AllocForProfile( location->location_data, length );
+                char* metricpath = SCOREP_Location_AllocForProfile( location->location_data, length );
                 sprintf( metricpath, "%s %s", metric_name, parentpath );
                 metric_name = metricpath;
             }
@@ -569,7 +569,7 @@ write_userevent_data_metric_tau( SCOREP_Profile_LocationData* location,
             {
                 length += strlen( parentpath ) + 7;
             }
-            char* path = SCOREP_Memory_AllocForProfile( location->location_data, length );
+            char* path = SCOREP_Location_AllocForProfile( location->location_data, length );
             if ( parentpath == NULL )
             {
                 strcpy( path, name );
@@ -619,7 +619,7 @@ write_userevent_data_tau( SCOREP_Profile_LocationData* location,
             {
                 length += strlen( parentpath ) + 7;
             }
-            char* path = SCOREP_Memory_AllocForProfile( location->location_data, length );
+            char* path = SCOREP_Location_AllocForProfile( location->location_data, length );
             if ( parentpath == NULL )
             {
                 strcpy( path, name );

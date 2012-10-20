@@ -136,7 +136,7 @@ static scorep_profile_fork_list_node*
 create_fork_list_item( SCOREP_Profile_LocationData* location )
 {
     scorep_profile_fork_list_node* new_list_item =
-        SCOREP_Memory_AllocForProfile( location->location_data, sizeof(  scorep_profile_fork_list_node ) );
+        SCOREP_Location_AllocForProfile( location->location_data, sizeof(  scorep_profile_fork_list_node ) );
     new_list_item->next = NULL;
 
     /* Append to end of list */

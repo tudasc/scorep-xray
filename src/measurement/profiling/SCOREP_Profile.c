@@ -128,7 +128,7 @@ SCOREP_Profile_Initialize()
             if ( num_dense_metrics > 0 )
             {
                 current->dense_metrics = ( scorep_profile_dense_metric* )
-                                         SCOREP_Memory_AllocForProfile( profile_location->location_data, size );
+                                         SCOREP_Location_AllocForProfile( profile_location->location_data, size );
 
                 scorep_profile_init_dense_metric( &current->inclusive_time );
                 scorep_profile_init_dense_metric_array( current->dense_metrics,

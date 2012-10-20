@@ -199,7 +199,7 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
     else
     {
         new_node = ( scorep_profile_node* )
-                   SCOREP_Memory_AllocForProfile( location->location_data, sizeof( scorep_profile_node ) );
+                   SCOREP_Location_AllocForProfile( location->location_data, sizeof( scorep_profile_node ) );
     }
 
     /* Reserve space for dense metrics,
@@ -211,7 +211,7 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
     if ( SCOREP_Metric_GetNumberOfSynchronousStrictMetrics() > 0 )
     {
         new_node->dense_metrics = ( scorep_profile_dense_metric* )
-                                  SCOREP_Memory_AllocForProfile( location->location_data, size );
+                                  SCOREP_Location_AllocForProfile( location->location_data, size );
     }
     else
     {
@@ -235,7 +235,7 @@ scorep_profile_alloc_location_specific_metrics_store( SCOREP_Profile_LocationDat
 
     uint32_t size = location->num_location_specific_metrics * sizeof( scorep_profile_dense_metric );
     node->location_specific_metrics = ( scorep_profile_dense_metric* )
-                                      SCOREP_Memory_AllocForProfile( location->location_data, size );
+                                      SCOREP_Location_AllocForProfile( location->location_data, size );
     if ( !node->location_specific_metrics )
     {
         UTILS_ERROR( SCOREP_ERROR_MEM_FAULT,

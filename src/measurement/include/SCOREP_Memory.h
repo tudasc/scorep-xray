@@ -77,7 +77,7 @@ SCOREP_Memory_HandleOutOfMemory( void );
  * Clean up the memory system.
  */
 void
-SCOREP_Memory_Finalize();
+SCOREP_Memory_Finalize( void );
 
 
 /**
@@ -163,7 +163,7 @@ SCOREP_Location_AllocForMisc( SCOREP_Location* locationData,
  * @see SCOREP_Memory_AllocForMisc()
  */
 void
-SCOREP_Memory_FreeMiscMem();
+SCOREP_Memory_FreeMiscMem( void );
 
 
 /**
@@ -182,8 +182,8 @@ SCOREP_Memory_FreeMiscMem();
  * @{
  */
 void*
-SCOREP_Memory_AllocForProfile( SCOREP_Location* location,
-                               size_t           size );
+SCOREP_Location_AllocForProfile( SCOREP_Location* location,
+                                 size_t           size );
 
 
 /**
@@ -196,7 +196,7 @@ SCOREP_Memory_AllocForProfile( SCOREP_Location* location,
  * @see SCOREP_Memory_AllocForSummary()
  */
 void
-SCOREP_Memory_FreeProfileMem();
+SCOREP_Memory_FreeProfileMem( void );
 
 
 /**
@@ -224,7 +224,7 @@ SCOREP_Memory_AllocForDefinitions( size_t size );
  * @see SCOREP_Memory_AllocForDefinitions()
  */
 void
-SCOREP_Memory_FreeDefinitionMem();
+SCOREP_Memory_FreeDefinitionMem( void );
 
 
 void*
@@ -236,7 +236,7 @@ SCOREP_Memory_CreateMovedPagedMemory( void );
 
 
 SCOREP_Allocator_PageManager*
-SCOREP_Memory_GetLocalDefinitionPageManager();
+SCOREP_Memory_GetLocalDefinitionPageManager( void );
 
 
 /*@}*/

@@ -76,7 +76,7 @@ insert_task( SCOREP_Profile_LocationData* location,
     else
     {
         new_entry = ( scorep_profile_task* )
-                    SCOREP_Memory_AllocForProfile( location->location_data, sizeof( scorep_profile_task ) );
+                    SCOREP_Location_AllocForProfile( location->location_data, sizeof( scorep_profile_task ) );
     }
     if ( new_entry == NULL )
     {
@@ -189,7 +189,7 @@ scorep_profile_task_initialize( SCOREP_Location*             locationData,
     }
 
     size_t task_table_size = sizeof( scorep_profile_task* ) * scorep_profile_task_table_size;
-    location->tasks = SCOREP_Memory_AllocForProfile(
+    location->tasks = SCOREP_Location_AllocForProfile(
         locationData,
         sizeof( *location->tasks ) + task_table_size );
     memset( location->tasks->items, 0, task_table_size );

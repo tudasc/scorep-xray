@@ -125,7 +125,7 @@ scorep_profile_alloc_sparse_int( SCOREP_Profile_LocationData* location )
     else
     {
         new_sparse = ( scorep_profile_sparse_metric_int* )
-                     SCOREP_Memory_AllocForProfile( location->location_data, sizeof( scorep_profile_sparse_metric_int ) );
+                     SCOREP_Location_AllocForProfile( location->location_data, sizeof( scorep_profile_sparse_metric_int ) );
     }
     return new_sparse;
 }
@@ -228,7 +228,7 @@ scorep_profile_alloc_sparse_double( SCOREP_Profile_LocationData* location )
     else
     {
         new_sparse = ( scorep_profile_sparse_metric_double* )
-                     SCOREP_Memory_AllocForProfile( location->location_data, sizeof( scorep_profile_sparse_metric_double ) );
+                     SCOREP_Location_AllocForProfile( location->location_data, sizeof( scorep_profile_sparse_metric_double ) );
     }
     return new_sparse;
 }
