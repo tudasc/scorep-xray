@@ -269,7 +269,7 @@ scorep_profile_initialize( SCOREP_Location* location )
         return;
     }
 
-    SCOREP_Profile_Initialize( location );
+    SCOREP_Profile_Initialize();
 
     SCOREP_Profile_OnLocationCreation( location, NULL ); // called also from scorep_thread_call_externals_on_new_location
 

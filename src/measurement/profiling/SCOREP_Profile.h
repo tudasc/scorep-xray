@@ -74,14 +74,14 @@ typedef enum
    configuration and program start from SCOREP configuration mechanisms.
  */
 void
-SCOREP_Profile_Register();
+SCOREP_Profile_Register( void );
 
 /**
    Initializes the Profiling system. Needed to be called before any other
    profile function is called.
  */
 void
-SCOREP_Profile_Initialize( SCOREP_Location* location );
+SCOREP_Profile_Initialize( void  );
 
 /**
    Deletes a existing profile and profile definition. Before other profile functions
@@ -89,7 +89,7 @@ SCOREP_Profile_Initialize( SCOREP_Location* location );
    @ref SCOREP_Profile_Initialize.
  */
 void
-SCOREP_Profile_Finalize();
+SCOREP_Profile_Finalize( void );
 
 
 /**

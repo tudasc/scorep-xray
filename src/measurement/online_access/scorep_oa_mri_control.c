@@ -205,7 +205,7 @@ scorep_oa_mri_end_request
 (
 )
 {
-    SCOREP_OA_RequestsSubmit( SCOREP_Location_GetCurrentCPULocation() );
+    SCOREP_OA_RequestsSubmit();
 }
 
 void

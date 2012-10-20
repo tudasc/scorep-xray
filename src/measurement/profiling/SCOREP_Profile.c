@@ -94,7 +94,7 @@ setup_start_from_parent( scorep_profile_node* node )
 #include "scorep_profile_confvars.inc.c"
 
 void
-SCOREP_Profile_Initialize( SCOREP_Location* location )
+SCOREP_Profile_Initialize()
 {
     UTILS_DEBUG_ENTRY();
 

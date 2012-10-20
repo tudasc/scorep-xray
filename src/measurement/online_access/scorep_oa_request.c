@@ -180,7 +180,6 @@ SCOREP_OA_RequestBegin
 void
 SCOREP_OA_RequestsSubmit
 (
-    SCOREP_Location* location
 )
 {
     assert( requestsStatus == ACCEPTING );
@@ -294,7 +293,7 @@ SCOREP_OA_RequestsSubmit
             number_of_metrics = sampling_set->number_of_metrics;
             metrics           = sampling_set->metric_handles;
         }
-        SCOREP_Profile_Initialize( location /* number_of_metrics, metrics */ );
+        SCOREP_Profile_Initialize( /* number_of_metrics, metrics */ );
     }
 
     /** Create hashtab storing requested metrics by definition ID*/

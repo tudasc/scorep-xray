@@ -60,6 +60,7 @@ typedef struct MetricRequest
 void
 SCOREP_OA_RequestBegin
 (
+    void
 );
 
 /**
@@ -68,7 +69,7 @@ SCOREP_OA_RequestBegin
 void
 SCOREP_OA_RequestsSubmit
 (
-    SCOREP_Location* location
+    void
 );
 
 /**
@@ -111,6 +112,7 @@ SCOREP_OA_RequestGet
 MetricRequest*
 SCOREP_OA_RequestGetExecutionTime
 (
+    void
 );
 
 /**
@@ -119,6 +121,7 @@ SCOREP_OA_RequestGetExecutionTime
 uint32_t
 SCOREP_OA_GetNumberOfRequests
 (
+    void
 );
 
 /**
@@ -127,6 +130,7 @@ SCOREP_OA_GetNumberOfRequests
 void
 SCOREP_OA_RequestsDismiss
 (
+    void
 );
 
 #endif /* SCOREP_OA_REQUEST_H_ */
