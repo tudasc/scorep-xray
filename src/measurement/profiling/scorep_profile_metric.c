@@ -113,31 +113,33 @@ scorep_profile_merge_dense_metric( scorep_profile_dense_metric* destination,
    Sparse metrics for integer values
 *****************************************************************************************/
 static scorep_profile_sparse_metric_int*
-scorep_profile_alloc_sparse_int( SCOREP_Profile_LocationData* location )
+scorep_profile_alloc_sparse_int( SCOREP_Location*             location,
+                                 SCOREP_Profile_LocationData* profile_location )
 {
     scorep_profile_sparse_metric_int* new_sparse = NULL;
 
-    if ( location->free_int_metrics != NULL )
+    if ( profile_location->free_int_metrics != NULL )
     {
-        new_sparse                 = location->free_int_metrics;
-        location->free_int_metrics = new_sparse->next_metric;
+        new_sparse                         = profile_location->free_int_metrics;
+        profile_location->free_int_metrics = new_sparse->next_metric;
     }
     else
     {
         new_sparse = ( scorep_profile_sparse_metric_int* )
-                     SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_sparse_metric_int ) );
+                     SCOREP_Memory_AllocForProfile( location, sizeof( scorep_profile_sparse_metric_int ) );
     }
     return new_sparse;
 }
 
 /* Creates a new sparse metric struct instance for integer values */
 scorep_profile_sparse_metric_int*
-scorep_profile_create_sparse_int( SCOREP_Profile_LocationData* location,
+scorep_profile_create_sparse_int( SCOREP_Location*             location,
+                                  SCOREP_Profile_LocationData* profile_location,
                                   SCOREP_MetricHandle          metric,
                                   uint64_t                     value )
 {
     scorep_profile_sparse_metric_int* new_sparse =
-        scorep_profile_alloc_sparse_int( location );
+        scorep_profile_alloc_sparse_int( location, profile_location );
     if ( new_sparse == NULL )
     {
         return NULL;
@@ -155,11 +157,12 @@ scorep_profile_create_sparse_int( SCOREP_Profile_LocationData* location,
 
 /* Copy constructor for sparse metric for integer values. */
 scorep_profile_sparse_metric_int*
-scorep_profile_copy_sparse_int( SCOREP_Profile_LocationData*      location,
+scorep_profile_copy_sparse_int( SCOREP_Location*                  location,
+                                SCOREP_Profile_LocationData*      profile_location,
                                 scorep_profile_sparse_metric_int* source )
 {
     scorep_profile_sparse_metric_int* new_sparse =
-        scorep_profile_alloc_sparse_int( location );
+        scorep_profile_alloc_sparse_int( location,  profile_location );
     if ( new_sparse == NULL )
     {
         return NULL;
@@ -216,31 +219,33 @@ scorep_profile_merge_sparse_metric_int( scorep_profile_sparse_metric_int* destin
 *****************************************************************************************/
 
 static scorep_profile_sparse_metric_double*
-scorep_profile_alloc_sparse_double( SCOREP_Profile_LocationData* location )
+scorep_profile_alloc_sparse_double( SCOREP_Location*             location,
+                                    SCOREP_Profile_LocationData* profile_location )
 {
     scorep_profile_sparse_metric_double* new_sparse = NULL;
 
-    if ( ( location != NULL ) && ( location->free_int_metrics != NULL ) )
+    if ( ( profile_location != NULL ) && ( profile_location->free_int_metrics != NULL ) )
     {
-        new_sparse                    = location->free_double_metrics;
-        location->free_double_metrics = new_sparse->next_metric;
+        new_sparse                            = profile_location->free_double_metrics;
+        profile_location->free_double_metrics = new_sparse->next_metric;
     }
     else
     {
         new_sparse = ( scorep_profile_sparse_metric_double* )
-                     SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_sparse_metric_double ) );
+                     SCOREP_Memory_AllocForProfile( location, sizeof( scorep_profile_sparse_metric_double ) );
     }
     return new_sparse;
 }
 
 /* Creates a new sparse metric struct instance for double values */
 scorep_profile_sparse_metric_double*
-scorep_profile_create_sparse_double( SCOREP_Profile_LocationData* location,
+scorep_profile_create_sparse_double( SCOREP_Location*             location,
+                                     SCOREP_Profile_LocationData* profile_location,
                                      SCOREP_MetricHandle          metric,
                                      double                       value )
 {
     scorep_profile_sparse_metric_double* new_sparse =
-        scorep_profile_alloc_sparse_double( location );
+        scorep_profile_alloc_sparse_double( location, profile_location );
     if ( new_sparse == NULL )
     {
         return NULL;
@@ -258,11 +263,12 @@ scorep_profile_create_sparse_double( SCOREP_Profile_LocationData* location,
 
 /* Copy constructor for  sparse metric for double values */
 scorep_profile_sparse_metric_double*
-scorep_profile_copy_sparse_double( SCOREP_Profile_LocationData*         location,
+scorep_profile_copy_sparse_double( SCOREP_Location*                     location,
+                                   SCOREP_Profile_LocationData*         profile_location,
                                    scorep_profile_sparse_metric_double* source )
 {
     scorep_profile_sparse_metric_double* new_sparse =
-        scorep_profile_alloc_sparse_double( location );
+        scorep_profile_alloc_sparse_double( location, profile_location );
     if ( new_sparse == NULL )
     {
         return NULL;

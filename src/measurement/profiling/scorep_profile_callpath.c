@@ -110,7 +110,7 @@ sort_tree()
    @ref scorep_profile_process_func_t.
  */
 static void
-assign_callpath( scorep_profile_node* current, void* param )
+assign_callpath( SCOREP_Location* location, scorep_profile_node* current, void* param )
 {
     SCOREP_CallpathHandle parent_path = SCOREP_INVALID_CALLPATH;
 
@@ -176,7 +176,8 @@ assign_callpath( scorep_profile_node* current, void* param )
    Recursively, it processes all children of @a current.
  */
 static void
-match_callpath( SCOREP_Profile_LocationData* location,
+match_callpath( SCOREP_Location*             location,
+                SCOREP_Profile_LocationData* profileLocation,
                 scorep_profile_node*         master,
                 scorep_profile_node*         current )
 {
@@ -184,7 +185,9 @@ match_callpath( SCOREP_Profile_LocationData* location,
 
     /* Find a matching node in the master thread */
     scorep_profile_node* match =
-        scorep_profile_find_create_child( location,                                                                                 master,
+        scorep_profile_find_create_child( location,
+                                          profileLocation,
+                                          master,
                                           current->node_type,
                                           current->type_specific_data,
                                           current->first_enter_time );
@@ -192,7 +195,7 @@ match_callpath( SCOREP_Profile_LocationData* location,
     /* Make sure the mathcing node has a callpath assigned */
     if ( match->callpath_handle == SCOREP_INVALID_CALLPATH )
     {
-        assign_callpath( match, NULL );
+        assign_callpath( location, match, NULL );
     }
 
     /* Copy callpath handle */
@@ -202,7 +205,7 @@ match_callpath( SCOREP_Profile_LocationData* location,
     child = current->first_child;
     while ( child != NULL )
     {
-        match_callpath( location, match, child );
+        match_callpath( location, profileLocation, match, child );
         child = child->next_sibling;
     }
 }
@@ -211,7 +214,7 @@ match_callpath( SCOREP_Profile_LocationData* location,
    Walks through the master thread and assigns new callpath ids.
  */
 void
-scorep_profile_assign_callpath_to_master()
+scorep_profile_assign_callpath_to_master( SCOREP_Location* location )
 {
     scorep_profile_node* master = scorep_profile.first_root_node;
 
@@ -231,26 +234,25 @@ scorep_profile_assign_callpath_to_master()
     }
 
     /* Process subtree */
-    scorep_profile_for_all( master, assign_callpath, NULL );
+    scorep_profile_for_all( location, master, assign_callpath, NULL );
 }
 
 /**
    Traverses all threads and matches their callpathes to the master thread.
  */
 void
-scorep_profile_assign_callpath_to_workers()
+scorep_profile_assign_callpath_to_workers( SCOREP_Location* location )
 {
-    scorep_profile_node*         master   = scorep_profile.first_root_node;
-    scorep_profile_node*         thread   = NULL;
-    scorep_profile_node*         child    = NULL;
-    SCOREP_Profile_LocationData* location = NULL;
+    scorep_profile_node* master = scorep_profile.first_root_node;
+    scorep_profile_node* thread = NULL;
+    scorep_profile_node* child  = NULL;
 
     if ( master == NULL )
     {
         return;
     }
-    location = scorep_profile_type_get_location_data( master->type_specific_data );
-    thread   = master->next_sibling;
+    SCOREP_Profile_LocationData* profile_location = scorep_profile_type_get_location_data( master->type_specific_data );
+    thread = master->next_sibling;
 
     /* For each worker thread ... */
     while ( thread != NULL )
@@ -261,7 +263,7 @@ scorep_profile_assign_callpath_to_workers()
         while ( child != NULL )
         {
             /* match callpath */
-            match_callpath( location, master, child );
+            match_callpath( location, profile_location, master, child );
 
             child = child->next_sibling;
         }

@@ -26,6 +26,7 @@
  */
 
 #include "SCOREP_Types.h"
+#include <SCOREP_Location.h>
 
 typedef enum OA_MetricSource
 {
@@ -62,11 +63,12 @@ SCOREP_OA_RequestBegin
 );
 
 /**
- * Configures Score-P measurment core according to the received measurement requests
+ * Configures Score-P measurement core according to the received measurement requests
  */
 void
 SCOREP_OA_RequestsSubmit
 (
+    SCOREP_Location* location
 );
 
 /**

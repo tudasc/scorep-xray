@@ -60,7 +60,8 @@ struct scorep_profile_task_table
 };
 
 static scorep_profile_task*
-insert_task( scorep_profile_task_table* table,
+insert_task( SCOREP_Location*           location,
+             scorep_profile_task_table* table,
              scorep_profile_task_id     task_id,
              scorep_profile_node*       current_node,
              uint32_t                   depth )
@@ -75,7 +76,7 @@ insert_task( scorep_profile_task_table* table,
     else
     {
         new_entry = ( scorep_profile_task* )
-                    SCOREP_Memory_AllocForProfile( sizeof( scorep_profile_task ) );
+                    SCOREP_Memory_AllocForProfile( location, sizeof( scorep_profile_task ) );
     }
     if ( new_entry == NULL )
     {
@@ -176,8 +177,8 @@ scorep_profile_remove_task( SCOREP_Profile_LocationData* location,
 }
 
 void
-scorep_profile_task_initialize( SCOREP_Location*             locationData,
-                                SCOREP_Profile_LocationData* location )
+scorep_profile_task_initialize( SCOREP_Location*             location,
+                                SCOREP_Profile_LocationData* profileLocation )
 {
     /* The task table must have at least one bin, else we need a lot of extra checks for
        this special case, or the program seg faults when a task occur.
@@ -188,15 +189,15 @@ scorep_profile_task_initialize( SCOREP_Location*             locationData,
     }
 
     size_t task_table_size = sizeof( scorep_profile_task* ) * scorep_profile_task_table_size;
-    location->tasks = SCOREP_Location_AllocForProfile(
-        locationData,
-        sizeof( *location->tasks ) + task_table_size );
-    memset( location->tasks->items, 0, task_table_size );
+    profileLocation->tasks = SCOREP_Memory_AllocForProfile(
+        location,
+        sizeof( *profileLocation->tasks ) + task_table_size );
+    memset( profileLocation->tasks->items, 0, task_table_size );
 
-    location->tasks->size         = scorep_profile_task_table_size;
-    location->tasks->free_entries = NULL;
-    location->tasks->fill_level   = 0;
-    location->tasks->max_tasks    = 0;
+    profileLocation->tasks->size         = scorep_profile_task_table_size;
+    profileLocation->tasks->free_entries = NULL;
+    profileLocation->tasks->fill_level   = 0;
+    profileLocation->tasks->max_tasks    = 0;
 
     /* Initialize metric */
     if ( scorep_profile_active_task_metric == SCOREP_INVALID_METRIC )
@@ -223,11 +224,12 @@ scorep_profile_task_finalize( SCOREP_Profile_LocationData* location )
 }
 
 scorep_profile_task*
-scorep_profile_create_task( SCOREP_Profile_LocationData* location,
+scorep_profile_create_task( SCOREP_Location*             location,
+                            SCOREP_Profile_LocationData* profile_location,
                             scorep_profile_task_id       task_id,
                             scorep_profile_node*         task_root )
 {
-    return insert_task( location->tasks, task_id, task_root, 1 );
+    return insert_task( location, profile_location->tasks, task_id, task_root, 1 );
 }
 
 void
@@ -287,17 +289,19 @@ scorep_profile_is_implicit_task( SCOREP_Profile_LocationData* location,
 }
 
 void
-scorep_profile_task_parallel_exit( SCOREP_Profile_LocationData* location )
+scorep_profile_task_parallel_exit( SCOREP_Location*             location,
+                                   SCOREP_Profile_LocationData* profileLocation )
 {
-    if ( location->tasks->max_tasks > 0 )
+    if ( profileLocation->tasks->max_tasks > 0 )
     {
         scorep_profile_trigger_double( location,
+                                       profileLocation,
                                        scorep_profile_active_task_metric,
-                                       location->tasks->max_tasks,
-                                       scorep_profile_get_current_node( location ) );
+                                       profileLocation->tasks->max_tasks,
+                                       scorep_profile_get_current_node( profileLocation ) );
 
-        location->tasks->max_tasks    = 0;
-        scorep_profile_has_tasks_flag = 1;
+        profileLocation->tasks->max_tasks = 0;
+        scorep_profile_has_tasks_flag     = 1;
     }
 }
 

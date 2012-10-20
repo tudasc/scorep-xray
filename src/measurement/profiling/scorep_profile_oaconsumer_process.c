@@ -110,6 +110,7 @@ scorep_oaconsumer_get_phase_node
 SCOREP_OA_FlatProfileMeasurement*
 get_static_profile_measurements
 (
+    SCOREP_Location*            location,
     thread_private_index_type** private_index_pointer_array
 )
 {
@@ -130,7 +131,8 @@ get_static_profile_measurements
     for ( i = 0; i < thread_count; i++ )
     {
         /** Copy flat profile measurements of thread i to the buffer*/
-        scorep_profile_for_all( private_index_pointer_array[ i ]->phase_node,
+        scorep_profile_for_all( location,
+                                private_index_pointer_array[ i ]->phase_node,
                                 &scorep_oaconsumer_copy_static_measurement,
                                 private_index_pointer_array[ i ] );
     }
@@ -158,6 +160,7 @@ get_static_profile_measurements
 SCOREP_OA_CallPathRegionDef*
 get_merged_region_definitions
 (
+    SCOREP_Location*            location,
     thread_private_index_type** private_index_pointer_array
 )
 {
@@ -177,7 +180,8 @@ get_merged_region_definitions
     for ( i = 0; i < thread_count; i++ )
     {
         /** Copy merged regions definitions to the buffer*/
-        scorep_profile_for_all( private_index_pointer_array[ i ]->phase_node,
+        scorep_profile_for_all( location,
+                                private_index_pointer_array[ i ]->phase_node,
                                 &scorep_oaconsumer_copy_merged_region_definitions,
                                 private_index_pointer_array[ i ] );
     }
@@ -394,6 +398,7 @@ scorep_oa_consumer_initialize_index
 void
 scorep_oaconsumer_count_index
 (
+    SCOREP_Location*     location,
     scorep_profile_node* node,
     void*                param
 )
@@ -645,6 +650,7 @@ update_static_measurement
 void
 scorep_oaconsumer_copy_static_measurement
 (
+    SCOREP_Location*     location,
     scorep_profile_node* node,
     void*                param                          /// COREP_OA_StaticProfileMeasurement* buffer
 )
@@ -731,6 +737,7 @@ scorep_oaconsumer_copy_static_measurement
 void
 scorep_oaconsumer_copy_merged_region_definitions
 (
+    SCOREP_Location*     location,
     scorep_profile_node* node,
     void*                param                          /// COREP_OA_StaticProfileMeasurement* buffer
 )

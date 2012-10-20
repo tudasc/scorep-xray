@@ -102,8 +102,8 @@ static void scorep_otf2_initialize();
 static void scorep_otf2_finalize();
 static void scorep_set_otf2_archive_master_slave();
 static void scorep_initialization_sanity_checks();
-static void scorep_profile_initialize();
-static void scorep_profile_finalize();
+static void scorep_profile_initialize( SCOREP_Location* loaction );
+static void scorep_profile_finalize( SCOREP_Location* loaction );
 static void scorep_trigger_exit_callbacks();
 static void scorep_dump_config( void );
 //static void scorep_deregister_config_variables( SCOREP_ConfigVariable configVars[] ); needed?
@@ -188,6 +188,7 @@ SCOREP_InitMeasurement()
 
     SCOREP_TIME( SCOREP_Location_Initialize, ( ) );
     SCOREP_TIME( SCOREP_Thread_Initialize, ( ) );
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
 
     if ( !SCOREP_Mpi_HasMpi() )
     {
@@ -196,9 +197,8 @@ SCOREP_InitMeasurement()
 
     SCOREP_TIME( SCOREP_Filter_Initialize, ( ) );
     SCOREP_TIME( scorep_subsystems_initialize, ( ) );
-    SCOREP_TIME( scorep_subsystems_initialize_location,
-                 ( SCOREP_Location_GetCurrentCPULocation() ) );
-    SCOREP_TIME( scorep_profile_initialize, ( ) );
+    SCOREP_TIME( scorep_subsystems_initialize_location, ( location ) );
+    SCOREP_TIME( scorep_profile_initialize, ( location ) );
 
     SCOREP_TIME( scorep_properties_initialize, ( ) );
 
@@ -262,21 +262,21 @@ scorep_otf2_finalize()
 
 
 void
-scorep_profile_initialize()
+scorep_profile_initialize( SCOREP_Location* location )
 {
     if ( !SCOREP_IsProfilingEnabled() )
     {
         return;
     }
 
-    SCOREP_Profile_Initialize();
+    SCOREP_Profile_Initialize( location );
 
-    SCOREP_Profile_OnLocationCreation( SCOREP_Location_GetCurrentCPULocation(), NULL ); // called also from scorep_thread_call_externals_on_new_location
+    SCOREP_Profile_OnLocationCreation( location, NULL ); // called also from scorep_thread_call_externals_on_new_location
 
-    SCOREP_Profile_AddLocationSpecificMetrics( SCOREP_Location_GetCurrentCPULocation(),
-                                               SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( SCOREP_Location_GetCurrentCPULocation() ) );
+    SCOREP_Profile_AddLocationSpecificMetrics( location,
+                                               SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( location ) );
 
-    SCOREP_Profile_OnThreadActivation( SCOREP_Location_GetCurrentCPULocation(), NULL, 0 ); // called also from scorep_thread_call_externals_on_thread_activation
+    SCOREP_Profile_OnThreadActivation( location, NULL, 0 ); // called also from scorep_thread_call_externals_on_thread_activation
 }
 
 
@@ -451,6 +451,8 @@ scorep_finalize( void )
     }
     scorep_finalized = true;
 
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+
     SCOREP_OA_Finalize();
 
     SCOREP_TIME_STOP_TIMING( MeasurementDuration );
@@ -478,7 +480,7 @@ scorep_finalize( void )
     // order is important
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_TIME( SCOREP_Profile_Process, ( SCOREP_Location_GetCurrentCPULocation() ) );
+        SCOREP_TIME( SCOREP_Profile_Process, ( location ) );
     }
 
     SCOREP_TIME( SCOREP_FinalizeLocationGroup, ( ) );
@@ -487,7 +489,7 @@ scorep_finalize( void )
 
     SCOREP_TIME( scorep_properties_write, ( ) );
 
-    SCOREP_TIME( scorep_profile_finalize, ( ) );
+    SCOREP_TIME( scorep_profile_finalize, ( location ) );
     SCOREP_TIME( SCOREP_Definitions_Write, ( ) );
     SCOREP_TIME( SCOREP_Definitions_Finalize, ( ) );
     SCOREP_TIME( scorep_otf2_finalize, ( ) );
@@ -516,12 +518,12 @@ scorep_finalize( void )
 
 
 static void
-scorep_profile_finalize()
+scorep_profile_finalize( SCOREP_Location* location )
 {
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_Write( SCOREP_Location_GetCurrentCPULocation() );
-        SCOREP_Profile_Finalize();
+        SCOREP_Profile_Write( location );
+        SCOREP_Profile_Finalize( location );
     }
 }
 

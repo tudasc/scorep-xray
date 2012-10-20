@@ -245,7 +245,7 @@ SCOREP_Memory_FreeMiscMem()
 
 
 void*
-SCOREP_Location_AllocForProfile( SCOREP_Location* locationData, size_t size )
+SCOREP_Memory_AllocForProfile( SCOREP_Location* location, size_t size )
 {
     // collect statistics
     if ( size == 0 )
@@ -254,7 +254,7 @@ SCOREP_Location_AllocForProfile( SCOREP_Location* locationData, size_t size )
     }
 
     void* mem = SCOREP_Allocator_Alloc(
-        SCOREP_Location_GetMemoryPageManager( locationData,
+        SCOREP_Location_GetMemoryPageManager( location,
                                               SCOREP_MEMORY_TYPE_PROFILING ),
         size );
     if ( !mem )
@@ -263,13 +263,6 @@ SCOREP_Location_AllocForProfile( SCOREP_Location* locationData, size_t size )
         SCOREP_Memory_HandleOutOfMemory();
     }
     return mem;
-}
-
-void*
-SCOREP_Memory_AllocForProfile( size_t size )
-{
-    return SCOREP_Location_AllocForProfile( SCOREP_Location_GetCurrentCPULocation(),
-                                            size );
 }
 
 

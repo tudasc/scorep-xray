@@ -34,7 +34,7 @@
    post-processing and writing. It must occur before scorep_profile_expand_threads().
  */
 void
-scorep_profile_process_collapse();
+scorep_profile_process_collapse( SCOREP_Location* location );
 
 /**
    Expands all threads. All nodes of type @ref scorep_profile_node_thread_start
@@ -43,7 +43,7 @@ scorep_profile_process_collapse();
    statement.
  */
 void
-scorep_profile_expand_threads();
+scorep_profile_expand_threads( SCOREP_Location* location );
 
 /**
    We store the locations in the order they appear, which might be different from the
@@ -60,7 +60,7 @@ scorep_profile_sort_threads();
    which have no callpath handle so far.
  */
 void
-scorep_profile_assign_callpath_to_master();
+scorep_profile_assign_callpath_to_master( SCOREP_Location* location );
 
 /**
    Traverses all threads and matches their callpathes to the master thread. If a worker
@@ -69,13 +69,13 @@ scorep_profile_assign_callpath_to_master();
    execute @ref scorep_profile_assign_callpath_to_master().
  */
 void
-scorep_profile_assign_callpath_to_workers();
+scorep_profile_assign_callpath_to_workers( SCOREP_Location* location );
 
 /**
    Cuts out phases from the tree and makes phases to root nodes of separate trees.
  */
 void
-scorep_profile_process_phases();
+scorep_profile_process_phases( SCOREP_Location* location );
 
 /**
    Substitute parameter nodes by regular region nodes. Thus they can be processed like
@@ -83,12 +83,12 @@ scorep_profile_process_phases();
    parameter profiling.
  */
 void
-scorep_profile_substitute_parameter();
+scorep_profile_substitute_parameter( SCOREP_Location* location );
 
 /**
    Move the visit count of task pointer metrics to the "number of switches" metric.
  */
 void
-scorep_profile_process_tasks();
+scorep_profile_process_tasks( SCOREP_Location* location );
 
 #endif // SCOREP_PROFILE_PROCESS_H

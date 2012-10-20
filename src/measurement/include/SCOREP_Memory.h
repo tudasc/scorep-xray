@@ -182,11 +182,9 @@ SCOREP_Memory_FreeMiscMem();
  * @{
  */
 void*
-SCOREP_Memory_AllocForProfile( size_t size );
+SCOREP_Memory_AllocForProfile( SCOREP_Location* location,
+                               size_t           size );
 
-void*
-SCOREP_Location_AllocForProfile( SCOREP_Location* locationData,
-                                 size_t           size );
 
 /**
  * @}

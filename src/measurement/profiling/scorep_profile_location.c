@@ -133,56 +133,58 @@ scorep_profile_delete_location_data( SCOREP_Profile_LocationData* location )
 }
 
 static scorep_profile_fork_list_node*
-create_fork_list_item( SCOREP_Profile_LocationData* location )
+create_fork_list_item( SCOREP_Location*             location,
+                       SCOREP_Profile_LocationData* profileLocation )
 {
     scorep_profile_fork_list_node* new_list_item =
-        SCOREP_Memory_AllocForProfile( sizeof(  scorep_profile_fork_list_node ) );
+        SCOREP_Memory_AllocForProfile( location, sizeof(  scorep_profile_fork_list_node ) );
     new_list_item->next = NULL;
 
     /* Append to end of list */
-    if ( location->fork_list_tail == NULL )
+    if ( profileLocation->fork_list_tail == NULL )
     {
-        location->fork_list_head = new_list_item;
+        profileLocation->fork_list_head = new_list_item;
     }
     else
     {
-        new_list_item->prev            = location->fork_list_tail;
-        location->fork_list_tail->next = new_list_item;
+        new_list_item->prev                   = profileLocation->fork_list_tail;
+        profileLocation->fork_list_tail->next = new_list_item;
     }
     return new_list_item;
 }
 
 void
-scorep_profile_add_fork_node( SCOREP_Profile_LocationData* location,
+scorep_profile_add_fork_node( SCOREP_Location*             location,
+                              SCOREP_Profile_LocationData* profileLocation,
                               scorep_profile_node*         fork_node,
                               uint32_t                     profile_depth,
                               uint32_t                     nesting_level )
 {
     /* Create or reuse new list item */
     scorep_profile_fork_list_node* new_list_item = NULL;
-    if ( location->fork_list_tail == NULL )
+    if ( profileLocation->fork_list_tail == NULL )
     {
-        if ( location->fork_list_head == NULL )
+        if ( profileLocation->fork_list_head == NULL )
         {
-            new_list_item = create_fork_list_item( location );
+            new_list_item = create_fork_list_item( location, profileLocation );
         }
         else
         {
-            new_list_item = location->fork_list_head;
+            new_list_item = profileLocation->fork_list_head;
         }
     }
     else
     {
-        if ( location->fork_list_tail->next == NULL )
+        if ( profileLocation->fork_list_tail->next == NULL )
         {
-            new_list_item = create_fork_list_item( location );
+            new_list_item = create_fork_list_item( location, profileLocation );
         }
         else
         {
-            new_list_item = location->fork_list_tail->next;
+            new_list_item = profileLocation->fork_list_tail->next;
             if ( new_list_item == NULL )
             {
-                new_list_item = create_fork_list_item( location );
+                new_list_item = create_fork_list_item( location, profileLocation );
             }
         }
     }
@@ -194,7 +196,7 @@ scorep_profile_add_fork_node( SCOREP_Profile_LocationData* location,
     new_list_item->nesting_level = nesting_level;
     new_list_item->profile_depth = profile_depth;
 
-    location->fork_list_tail = new_list_item;
+    profileLocation->fork_list_tail = new_list_item;
 }
 
 void

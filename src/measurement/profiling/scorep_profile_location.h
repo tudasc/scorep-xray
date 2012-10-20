@@ -138,7 +138,8 @@ scorep_profile_get_num_location_metrics( SCOREP_Profile_LocationData* location )
  * @param nesting_level The nesting level of the forked paralle region.
  */
 void
-scorep_profile_add_fork_node( SCOREP_Profile_LocationData* location,
+scorep_profile_add_fork_node( SCOREP_Location*             location,
+                              SCOREP_Profile_LocationData* profileLocation,
                               scorep_profile_node*         fork_node,
                               uint32_t                     profile_depth,
                               uint32_t                     nesting_level );

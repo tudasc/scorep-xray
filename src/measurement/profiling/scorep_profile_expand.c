@@ -48,7 +48,8 @@
                  found or created node.
  */
 static scorep_profile_node*
-merge_child( SCOREP_Profile_LocationData* location,
+merge_child( SCOREP_Location*             location,
+             SCOREP_Profile_LocationData* profileLocation,
              scorep_profile_node*         parent,
              scorep_profile_node*         type,
              scorep_profile_node*         source )
@@ -57,6 +58,7 @@ merge_child( SCOREP_Profile_LocationData* location,
     UTILS_ASSERT( parent != NULL );
     scorep_profile_node* child =
         scorep_profile_find_create_child( location,
+                                          profileLocation,
                                           parent,
                                           type->node_type,
                                           type->type_specific_data,
@@ -78,7 +80,8 @@ merge_child( SCOREP_Profile_LocationData* location,
           nodes on the newly created callpath.
  */
 static scorep_profile_node*
-add_callpath( SCOREP_Profile_LocationData* location,
+add_callpath( SCOREP_Location*             location,
+              SCOREP_Profile_LocationData* profileLocation,
               scorep_profile_node*         destination_root,
               scorep_profile_node*         callpath_leaf,
               scorep_profile_node*         data_source )
@@ -90,15 +93,15 @@ add_callpath( SCOREP_Profile_LocationData* location,
          ( ( parent->node_type == scorep_profile_node_thread_root ) ||
            ( parent->node_type == scorep_profile_node_thread_start ) ) )
     {
-        return merge_child( location, destination_root,
+        return merge_child( location, profileLocation, destination_root,
                             callpath_leaf, data_source );
     }
 
     /* Else reconstruct the new callpath */
-    parent = add_callpath( location, destination_root,
+    parent = add_callpath( location, profileLocation, destination_root,
                            callpath_leaf->parent,
                            data_source );
-    return merge_child( location, parent, callpath_leaf, data_source );
+    return merge_child( location, profileLocation, parent, callpath_leaf, data_source );
 }
 
 /**
@@ -137,7 +140,8 @@ sum_children( scorep_profile_node* parent )
            data.
  */
 static void
-expand_thread_start( SCOREP_Profile_LocationData* location,
+expand_thread_start( SCOREP_Location*             location,
+                     SCOREP_Profile_LocationData* profileLocation,
                      scorep_profile_node*         thread_start )
 {
     scorep_profile_node* creation_point = NULL;
@@ -174,7 +178,8 @@ expand_thread_start( SCOREP_Profile_LocationData* location,
         sum_children( thread_start );
 
         /* Add callpath */
-        creation_point = add_callpath( location, thread_root,
+        creation_point = add_callpath( location,
+                                       profileLocation, thread_root,
                                        creation_point,
                                        thread_start );
 
@@ -189,12 +194,13 @@ expand_thread_start( SCOREP_Profile_LocationData* location,
           @ref scorep_profile_node_thread_start are expanded.
  */
 static void
-expand_thread_root( scorep_profile_node* thread_root )
+expand_thread_root( SCOREP_Location*     location,
+                    scorep_profile_node* thread_root )
 {
     /* Expand the start nodes */
-    scorep_profile_node*         thread_start = thread_root->first_child;
-    scorep_profile_node*         next_node    = NULL;
-    SCOREP_Profile_LocationData* location     = scorep_profile_type_get_location_data( thread_root->type_specific_data );
+    scorep_profile_node*         thread_start     = thread_root->first_child;
+    scorep_profile_node*         next_node        = NULL;
+    SCOREP_Profile_LocationData* profile_location = scorep_profile_type_get_location_data( thread_root->type_specific_data );
     while ( thread_start != NULL )
     {
         /* Need to store the next sibling, because the current is removed
@@ -204,7 +210,7 @@ expand_thread_root( scorep_profile_node* thread_root )
         /* Expand thread_start node */
         if ( thread_start->node_type == scorep_profile_node_thread_start )
         {
-            expand_thread_start( location, thread_start );
+            expand_thread_start( location, profile_location, thread_start );
         }
 
         /* Go to next node */
@@ -222,14 +228,14 @@ expand_thread_root( scorep_profile_node* thread_root )
    statement.
  */
 void
-scorep_profile_expand_threads()
+scorep_profile_expand_threads( SCOREP_Location* location )
 {
     scorep_profile_node* thread_root = scorep_profile.first_root_node;
     while ( thread_root != NULL )
     {
         if ( thread_root->node_type == scorep_profile_node_thread_root )
         {
-            expand_thread_root( thread_root );
+            expand_thread_root( location, thread_root );
         }
         thread_root = thread_root->next_sibling;
     }

@@ -39,7 +39,7 @@
 static SCOREP_RegionHandle scorep_profile_collapse_region = SCOREP_INVALID_REGION;
 
 static void
-substitute_collapse( scorep_profile_node* node, void* param )
+substitute_collapse( SCOREP_Location* location, scorep_profile_node* node, void* param )
 {
     if ( node->node_type == scorep_profile_node_collapse )
     {
@@ -50,7 +50,7 @@ substitute_collapse( scorep_profile_node* node, void* param )
 }
 
 void
-scorep_profile_process_collapse()
+scorep_profile_process_collapse( SCOREP_Location* location )
 {
     if ( !scorep_profile.has_collapse_node )
     {
@@ -70,7 +70,8 @@ scorep_profile_process_collapse()
                                                           SCOREP_ADAPTER_USER,
                                                           SCOREP_REGION_UNKNOWN );
 
-    scorep_profile_for_all( scorep_profile.first_root_node,
+    scorep_profile_for_all( location,
+                            scorep_profile.first_root_node,
                             &substitute_collapse,
                             NULL );
 }

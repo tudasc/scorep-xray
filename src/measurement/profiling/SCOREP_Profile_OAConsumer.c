@@ -57,6 +57,7 @@ static uint32_t thread_count = 0;
 void
 SCOREP_OAConsumer_Initialize
 (
+    SCOREP_Location*    location,
     SCOREP_RegionHandle phase_handle
 )
 {
@@ -72,7 +73,7 @@ SCOREP_OAConsumer_Initialize
     //   scorep_profile_dump_subtree( scorep_profile.first_root_node, 0 );
 
     /** Performs default profile call-tree transformation */
-    SCOREP_Profile_Process( SCOREP_Location_GetCurrentCPULocation() );
+    SCOREP_Profile_Process( location );
 
     thread_count = scorep_oaconsumer_get_number_of_roots();
 
@@ -88,7 +89,7 @@ SCOREP_OAConsumer_Initialize
 //		}
 
         /** Index all nodes starting from phase node*/
-        scorep_profile_for_all( thread_index_pointer_array[ i ]->phase_node, &scorep_oaconsumer_count_index,  thread_index_pointer_array[ i ] );
+        scorep_profile_for_all( location, thread_index_pointer_array[ i ]->phase_node, &scorep_oaconsumer_count_index,  thread_index_pointer_array[ i ] );
 
 //		if ( do_print_out )
 //		{
@@ -133,6 +134,7 @@ SCOREP_OAConsumer_GetDataSize
 void*
 SCOREP_OAConsumer_GetData
 (
+    SCOREP_Location*            location,
     SCOREP_OAConsumer_DataTypes data_type
 )
 {
@@ -144,9 +146,9 @@ SCOREP_OAConsumer_GetData
     switch ( data_type )
     {
         case FLAT_PROFILE:
-            return get_static_profile_measurements( thread_index_pointer_array );
+            return get_static_profile_measurements( location, thread_index_pointer_array );
         case MERGED_REGION_DEFINITIONS:
-            return get_merged_region_definitions( thread_index_pointer_array );
+            return get_merged_region_definitions( location, thread_index_pointer_array );
         case REGION_DEFINITIONS:
             return NULL;
         case COUNTER_DEFINITIONS:

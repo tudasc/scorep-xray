@@ -119,7 +119,7 @@ typedef struct scorep_profile_node_struct
    @param param Pointer to a parameter that can be given to
                 @ref scorep_profile_for_all()
  */
-typedef void ( scorep_profile_process_func_t )( scorep_profile_node* node, void* param );
+typedef void ( scorep_profile_process_func_t )( SCOREP_Location* location, scorep_profile_node* node, void* param );
 
 /* ***************************************************************************************
    Node creation/destruction
@@ -137,7 +137,8 @@ typedef void ( scorep_profile_process_func_t )( scorep_profile_node* node, void*
    @return A pointer to the newly created node.
  */
 extern scorep_profile_node*
-scorep_profile_create_node( SCOREP_Profile_LocationData* location,
+scorep_profile_create_node( SCOREP_Location*             location,
+                            SCOREP_Profile_LocationData* profile_location,
                             scorep_profile_node*         parent,
                             scorep_profile_node_type     type,
                             scorep_profile_type_data_t   data,
@@ -152,7 +153,8 @@ scorep_profile_create_node( SCOREP_Profile_LocationData* location,
    @return A pointer to the new node.
  */
 extern scorep_profile_node*
-scorep_profile_copy_node( SCOREP_Profile_LocationData* location,
+scorep_profile_copy_node( SCOREP_Location*             location,
+                          SCOREP_Profile_LocationData* profile_location,
                           scorep_profile_node*         source );
 
 /**
@@ -175,21 +177,24 @@ scorep_profile_release_subtree( SCOREP_Profile_LocationData* location,
                    reconfiguration.
  */
 extern scorep_profile_node*
-scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
+scorep_profile_alloc_node( SCOREP_Location*             location,
+                           SCOREP_Profile_LocationData* profile_location,
                            scorep_profile_node_type     type );
 
 /**
    Allocates memory for additional metrics (recorded only by this location).
  */
 extern void
-scorep_profile_alloc_location_specific_metrics_store( SCOREP_Profile_LocationData* location,
+scorep_profile_alloc_location_specific_metrics_store( SCOREP_Location*             location,
+                                                      SCOREP_Profile_LocationData* profile_location,
                                                       scorep_profile_node*         node );
 
 /**
    Tests whether root node of this subtree has allocated memory for additional metrics.
  */
 extern void
-scorep_profile_test_location_metrics_of_root_node( SCOREP_Profile_LocationData* location );
+scorep_profile_test_location_metrics_of_root_node( SCOREP_Location*             location,
+                                                   SCOREP_Profile_LocationData* profile_location );
 
 
 /**
@@ -214,7 +219,8 @@ scorep_profile_test_location_metrics_of_root_node( SCOREP_Profile_LocationData* 
             created node.
  */
 extern scorep_profile_node*
-scorep_profile_find_create_child( SCOREP_Profile_LocationData* location,
+scorep_profile_find_create_child( SCOREP_Location*             location,
+                                  SCOREP_Profile_LocationData* profileLocation,
                                   scorep_profile_node*         parent,
                                   scorep_profile_node_type     node_type,
                                   scorep_profile_type_data_t   specific,
@@ -293,7 +299,8 @@ scorep_profile_remove_node( scorep_profile_node* node );
    @param param     Pointer to a parameter that is passed to @a func.
  */
 extern void
-scorep_profile_for_all( scorep_profile_node*           root_node,
+scorep_profile_for_all( SCOREP_Location*               location,
+                        scorep_profile_node*           root_node,
                         scorep_profile_process_func_t* func,
                         void*                          param );
 
@@ -309,7 +316,8 @@ scorep_profile_for_all( scorep_profile_node*           root_node,
                       @a destination.
  */
 void
-scorep_profile_merge_subtree( SCOREP_Profile_LocationData* location,
+scorep_profile_merge_subtree( SCOREP_Location*             location,
+                              SCOREP_Profile_LocationData* profileLocation,
                               scorep_profile_node*         destination,
                               scorep_profile_node*         source );
 
@@ -393,7 +401,8 @@ scorep_profile_merge_node_dense( scorep_profile_node* destination,
    @param source      A pointer to a node which metrics are added to @a destination.
  */
 extern void
-scorep_profile_merge_node_sparse( SCOREP_Profile_LocationData* location,
+scorep_profile_merge_node_sparse( SCOREP_Location*             location,
+                                  SCOREP_Profile_LocationData* profileLocation,
                                   scorep_profile_node*         destination,
                                   scorep_profile_node*         source );
 
