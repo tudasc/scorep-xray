@@ -24,6 +24,7 @@
  */
 
 #include <config.h>
+#include <SCOREP_RuntimeManagement.h>
 #include "SCOREP_Config.h"
 #include "SCOREP_Definitions.h"
 #include "SCOREP_Memory.h"
@@ -36,7 +37,6 @@
 
 #include "SCOREP_Location.h"
 #include <SCOREP_Timing.h>
-#include <scorep_clock_synchronization.h>
 
 #include "scorep_cuda.h"
 #include "scorep_cupti.h"

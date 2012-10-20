@@ -30,16 +30,13 @@
 #include <stdint.h>
 
 void
-SCOREP_SynchronizeClocks();
+SCOREP_SynchronizeClocks( void );
 
 void
-SCOREP_BeginEpoch();
-
-uint64_t
-SCOREP_GetBeginEpoch();
+SCOREP_BeginEpoch( void );
 
 void
-SCOREP_EndEpoch();
+SCOREP_EndEpoch( void );
 
 void
 SCOREP_GetGlobalEpoch( uint64_t* globalEpochBegin,

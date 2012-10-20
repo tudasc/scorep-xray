@@ -53,6 +53,7 @@
 
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #include <SCOREP_DefinitionHandles.h>
 
@@ -86,7 +87,7 @@ SCOREP_IsInitialized();
  * @see SCOREP_FinalizeMeasurement()
  */
 void
-SCOREP_InitMeasurement();
+SCOREP_InitMeasurement( void );
 
 
 
@@ -100,7 +101,7 @@ SCOREP_InitMeasurement();
  * @see SCOREP_InitMeasurement()
  */
 void
-SCOREP_FinalizeMeasurement();
+SCOREP_FinalizeMeasurement( void );
 
 
 /**
@@ -120,7 +121,7 @@ SCOREP_InitMeasurementMPI( int rank );
  * finalization can access threadprivate variables.
  */
 void
-SCOREP_RegisterExitHandler();
+SCOREP_RegisterExitHandler( void );
 
 /**
  * Special initialization of the measurement system when using MPI. This
@@ -128,7 +129,7 @@ SCOREP_RegisterExitHandler();
  *
  */
 void
-SCOREP_OnPMPI_Init();
+SCOREP_OnPMPI_Init( void );
 
 
 /**
@@ -137,7 +138,7 @@ SCOREP_OnPMPI_Init();
  *
  */
 void
-SCOREP_FinalizeMeasurementMPI();
+SCOREP_FinalizeMeasurementMPI( void );
 
 
 /**
@@ -146,7 +147,7 @@ SCOREP_FinalizeMeasurementMPI();
  *
  */
 void
-SCOREP_OnPMPI_Finalize();
+SCOREP_OnPMPI_Finalize( void );
 
 
 /**
@@ -155,7 +156,7 @@ SCOREP_OnPMPI_Finalize();
  *
  */
 void
-SCOREP_EnableRecording();
+SCOREP_EnableRecording( void );
 
 
 /**
@@ -164,7 +165,7 @@ SCOREP_EnableRecording();
  *
  */
 void
-SCOREP_DisableRecording();
+SCOREP_DisableRecording( void );
 
 
 /**
@@ -186,7 +187,7 @@ SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback );
  * @return Returns handle of current location group.
  */
 SCOREP_LocationGroupHandle
-SCOREP_GetLocationGroup();
+SCOREP_GetLocationGroup( void );
 
 
 /** Flag to indicate whether MPI event generation is turned on or off.
@@ -215,6 +216,12 @@ extern bool scorep_mpi_generate_events;
  */
 #define SCOREP_MPI_EVENT_GEN_ON()  scorep_mpi_generate_events = true
 
+
+/** Get the initiali timestamp of this process which denotes the begin of the
+ *  epoch.
+ */
+uint64_t
+SCOREP_GetBeginEpoch( void );
 
 /*@}*/
 
