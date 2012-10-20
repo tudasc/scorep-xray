@@ -39,8 +39,7 @@
 
 
 static void
-visit_to_switches( SCOREP_Location*     location,
-                   scorep_profile_node* node,
+visit_to_switches( scorep_profile_node* node,
                    void*                param )
 {
     if ( node->node_type != scorep_profile_node_regular_region  )
@@ -71,8 +70,7 @@ visit_to_switches( SCOREP_Location*     location,
                                                SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
     }
 
-    scorep_profile_trigger_int64( location,
-                                  ( SCOREP_Profile_LocationData* )param,
+    scorep_profile_trigger_int64( ( SCOREP_Profile_LocationData* )param,
                                   switches_metric,
                                   node->count,
                                   node );
@@ -80,8 +78,7 @@ visit_to_switches( SCOREP_Location*     location,
 }
 
 static scorep_profile_node*
-chroot_tasks( SCOREP_Location*             location,
-              SCOREP_Profile_LocationData* profileLocation,
+chroot_tasks( SCOREP_Profile_LocationData* location,
               scorep_profile_node*         task_root,
               scorep_profile_node*         task )
 {
@@ -105,7 +102,6 @@ chroot_tasks( SCOREP_Location*             location,
         scorep_profile_type_set_region_handle( &data, root_region );
 
         task_root = scorep_profile_create_node( location,
-                                                profileLocation,
                                                 NULL,
                                                 scorep_profile_node_task_root,
                                                 data,
@@ -122,16 +118,17 @@ chroot_tasks( SCOREP_Location*             location,
 
 
 void
-scorep_profile_process_tasks( SCOREP_Location* location )
+scorep_profile_process_tasks()
 {
-    scorep_profile_node* thread_root = scorep_profile.first_root_node;
+    scorep_profile_node*         thread_root = scorep_profile.first_root_node;
+    SCOREP_Profile_LocationData* location    = NULL;
 
     while ( thread_root != NULL )
     {
-        scorep_profile_node*         next             = NULL;
-        scorep_profile_node*         node             = thread_root->first_child;
-        scorep_profile_node*         task_root        = NULL;
-        SCOREP_Profile_LocationData* profile_location = scorep_profile_type_get_location_data( thread_root->type_specific_data );
+        scorep_profile_node* next      = NULL;
+        scorep_profile_node* node      = thread_root->first_child;
+        scorep_profile_node* task_root = NULL;
+        location = scorep_profile_type_get_location_data( thread_root->type_specific_data );
         while ( node != NULL )
         {
             next = node->next_sibling;
@@ -148,7 +145,7 @@ scorep_profile_process_tasks( SCOREP_Location* location )
             /* Else move the task tree to a common root */
             else
             {
-                task_root = chroot_tasks( location, profile_location, task_root, node );
+                task_root = chroot_tasks( location, task_root, node );
             }
 
             node = next;

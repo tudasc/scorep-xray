@@ -450,9 +450,7 @@ scorep_finalize( void )
         return;
     }
     scorep_finalized = true;
-
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-
     SCOREP_OA_Finalize();
 
     SCOREP_TIME_STOP_TIMING( MeasurementDuration );
@@ -523,7 +521,7 @@ scorep_profile_finalize( SCOREP_Location* location )
     if ( SCOREP_IsProfilingEnabled() )
     {
         SCOREP_Profile_Write( location );
-        SCOREP_Profile_Finalize( location );
+        SCOREP_Profile_Finalize();
     }
 }
 

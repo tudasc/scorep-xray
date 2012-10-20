@@ -277,7 +277,7 @@ SCOREP_OA_RequestsSubmit
     // Finalize profile
     if ( scorep_profile.is_initialized )
     {
-        SCOREP_Profile_Finalize( location );
+        SCOREP_Profile_Finalize();
     }
 
     // Initialize profile
@@ -294,7 +294,7 @@ SCOREP_OA_RequestsSubmit
             number_of_metrics = sampling_set->number_of_metrics;
             metrics           = sampling_set->metric_handles;
         }
-        SCOREP_Profile_Initialize( location /*, number_of_metrics, metrics */ );
+        SCOREP_Profile_Initialize( location /* number_of_metrics, metrics */ );
     }
 
     /** Create hashtab storing requested metrics by definition ID*/

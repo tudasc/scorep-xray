@@ -146,8 +146,7 @@ substitute_parameter_data( scorep_profile_node* node,
    @param param unused.
  */
 static void
-substitute_parameter_in_node( SCOREP_Location*     location,
-                              scorep_profile_node* node,
+substitute_parameter_in_node( scorep_profile_node* node,
                               void*                param )
 {
     SCOREP_RegionHandle handle = scorep_profile_type_get_region_handle( node->type_specific_data );
@@ -213,7 +212,7 @@ substitute_parameter_in_node( SCOREP_Location*     location,
    region has the name '<parameter name>=<value>'.
  */
 void
-scorep_profile_substitute_parameter( SCOREP_Location* location )
+scorep_profile_substitute_parameter()
 {
     scorep_profile_node* node = scorep_profile.first_root_node;
 
@@ -221,7 +220,7 @@ scorep_profile_substitute_parameter( SCOREP_Location* location )
 
     while ( node != NULL )
     {
-        scorep_profile_for_all( location, node, substitute_parameter_in_node, NULL );
+        scorep_profile_for_all( node, substitute_parameter_in_node, NULL );
         node = node->next_sibling;
     }
 

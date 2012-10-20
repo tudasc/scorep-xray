@@ -38,8 +38,7 @@
 #include <inttypes.h>
 
 scorep_profile_node*
-scorep_profile_enter( SCOREP_Location*             location,
-                      SCOREP_Profile_LocationData* profileLocation,
+scorep_profile_enter( SCOREP_Profile_LocationData* location,
                       scorep_profile_node*         current_node,
                       SCOREP_RegionHandle          region,
                       SCOREP_RegionType            type,
@@ -53,24 +52,23 @@ scorep_profile_enter( SCOREP_Location*             location,
     if ( ( current_node != NULL ) &&
          ( current_node->node_type == scorep_profile_node_collapse ) )
     {
-        if ( scorep_profile.reached_depth <  profileLocation->current_depth )
+        if ( scorep_profile.reached_depth <  location->current_depth )
         {
-            scorep_profile.reached_depth = profileLocation->current_depth;
+            scorep_profile.reached_depth = location->current_depth;
         }
         return current_node;
     }
 
     /* If we just reached the depth limit */
-    if ( profileLocation->current_depth > scorep_profile.max_callpath_depth )
+    if ( location->current_depth > scorep_profile.max_callpath_depth )
     {
         scorep_profile.has_collapse_node = true;
-        if ( scorep_profile.reached_depth <  profileLocation->current_depth )
+        if ( scorep_profile.reached_depth <  location->current_depth )
         {
-            scorep_profile.reached_depth = profileLocation->current_depth;
+            scorep_profile.reached_depth = location->current_depth;
         }
-        scorep_profile_type_set_depth( &node_data, profileLocation->current_depth );
+        scorep_profile_type_set_depth( &node_data, location->current_depth );
         node = scorep_profile_find_create_child( location,
-                                                 profileLocation,
                                                  current_node,
                                                  scorep_profile_node_collapse,
                                                  node_data,
@@ -81,7 +79,6 @@ scorep_profile_enter( SCOREP_Location*             location,
     {
         scorep_profile_type_set_region_handle( &node_data, region );
         node = scorep_profile_find_create_child( location,
-                                                 profileLocation,
                                                  current_node,
                                                  scorep_profile_node_regular_region,
                                                  node_data,
@@ -106,7 +103,7 @@ scorep_profile_enter( SCOREP_Location*             location,
     }
 
     /* Store start values for additional metrics */
-    uint32_t number_of_additional_metrics = SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( profileLocation->location_data );
+    uint32_t number_of_additional_metrics = SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( location->location_data );
     uint32_t j                            = 0;
     for ( uint32_t i = number_of_synchronus_strict_metrics; i < number_of_synchronus_strict_metrics + number_of_additional_metrics; i++ )
     {
@@ -201,8 +198,7 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
 
 
 void
-scorep_profile_trigger_int64( SCOREP_Location*             location,
-                              SCOREP_Profile_LocationData* profileLocation,
+scorep_profile_trigger_int64( SCOREP_Profile_LocationData* location,
                               SCOREP_MetricHandle          metric,
                               uint64_t                     value,
                               scorep_profile_node*         node )
@@ -215,7 +211,6 @@ scorep_profile_trigger_int64( SCOREP_Location*             location,
     if ( next == NULL )
     {
         node->first_int_sparse = scorep_profile_create_sparse_int( location,
-                                                                   profileLocation,
                                                                    metric, value );
         return;
     }
@@ -234,13 +229,11 @@ scorep_profile_trigger_int64( SCOREP_Location*             location,
     while ( next != NULL );
 
     /* Append new sparse metric */
-    current->next_metric = scorep_profile_create_sparse_int( location,
-                                                             profileLocation, metric, value );
+    current->next_metric = scorep_profile_create_sparse_int( location, metric, value );
 }
 
 void
-scorep_profile_trigger_double(  SCOREP_Location*             location,
-                                SCOREP_Profile_LocationData* profileLocation,
+scorep_profile_trigger_double(  SCOREP_Profile_LocationData* location,
                                 SCOREP_MetricHandle          metric,
                                 double                       value,
                                 scorep_profile_node*         node )
@@ -252,7 +245,7 @@ scorep_profile_trigger_double(  SCOREP_Location*             location,
     next = node->first_double_sparse;
     if ( next == NULL )
     {
-        node->first_double_sparse = scorep_profile_create_sparse_double( location, profileLocation, metric, value );
+        node->first_double_sparse = scorep_profile_create_sparse_double( location, metric, value );
         return;
     }
 
@@ -270,5 +263,5 @@ scorep_profile_trigger_double(  SCOREP_Location*             location,
     while ( next != NULL );
 
     /* Append new sparse metric */
-    current->next_metric = scorep_profile_create_sparse_double( location, profileLocation, metric, value );
+    current->next_metric = scorep_profile_create_sparse_double( location, metric, value );
 }

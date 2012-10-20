@@ -68,8 +68,8 @@ scorep_profile_has_tasks();
    @param location The location structure of the location which is initialized.
  */
 void
-scorep_profile_task_initialize( SCOREP_Location*             location,
-                                SCOREP_Profile_LocationData* profileLocation );
+scorep_profile_task_initialize( SCOREP_Location*             locationData,
+                                SCOREP_Profile_LocationData* location );
 
 /**
    Finalizes the tasking data structures for a location.
@@ -85,8 +85,7 @@ scorep_profile_task_finalize( SCOREP_Profile_LocationData* location );
    @param task_root  Pointer to the profile node, where the task starts.
  */
 scorep_profile_task*
-scorep_profile_create_task( SCOREP_Location*             location,
-                            SCOREP_Profile_LocationData* profileLocation,
+scorep_profile_create_task( SCOREP_Profile_LocationData* location,
                             scorep_profile_task_id       task_id,
                             scorep_profile_node*         task_root );
 
@@ -96,7 +95,7 @@ scorep_profile_create_task( SCOREP_Location*             location,
    @param task_id  The task instance that is to be removed.
  */
 void
-scorep_profile_remove_task( SCOREP_Profile_LocationData* profileLocation,
+scorep_profile_remove_task( SCOREP_Profile_LocationData* location,
                             scorep_profile_task_id       task_id );
 
 /**
@@ -105,7 +104,7 @@ scorep_profile_remove_task( SCOREP_Profile_LocationData* profileLocation,
    @param task_id  The task instance that is to be looked up.
  */
 scorep_profile_task*
-scorep_profile_task_find( SCOREP_Profile_LocationData* profileLocation,
+scorep_profile_task_find( SCOREP_Profile_LocationData* location,
                           scorep_profile_task_id       task_id );
 
 /**
@@ -113,14 +112,14 @@ scorep_profile_task_find( SCOREP_Profile_LocationData* profileLocation,
    the correct depth level for each task.
  */
 void
-scorep_profile_store_task( SCOREP_Profile_LocationData* profileLocation );
+scorep_profile_store_task( SCOREP_Profile_LocationData* location );
 
 /**
    Restores the depth of the current task. Needed after a task switch to reset the
    depth level of the new task.
  */
 void
-scorep_profile_restore_task( SCOREP_Profile_LocationData* profileLocation );
+scorep_profile_restore_task( SCOREP_Profile_LocationData* location );
 
 /**
    Checks whether @a task_id is the implicit task.
@@ -136,8 +135,7 @@ scorep_profile_is_implicit_task( SCOREP_Profile_LocationData* location,
    @param thread Location data of the current location.
  */
 void
-scorep_profile_task_parallel_exit( SCOREP_Location*             location,
-                                   SCOREP_Profile_LocationData* profileLocation );
+scorep_profile_task_parallel_exit( SCOREP_Profile_LocationData* location );
 
 /**
    @def SCOREP_PROFILE_IMPLICIT_TASK_ID

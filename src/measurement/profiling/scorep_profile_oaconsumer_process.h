@@ -161,7 +161,6 @@ scorep_oaconsumer_get_phase_node
 SCOREP_OA_FlatProfileMeasurement*
 get_static_profile_measurements
 (
-    SCOREP_Location*            location,
     thread_private_index_type** private_index_pointer_array
 );
 
@@ -170,7 +169,6 @@ get_static_profile_measurements
 SCOREP_OA_CallPathRegionDef*
 get_merged_region_definitions
 (
-    SCOREP_Location*            location,
     thread_private_index_type** private_index_pointer_array
 );
 
@@ -229,7 +227,6 @@ scorep_oa_consumer_initialize_index
 void
 scorep_oaconsumer_count_index
 (
-    SCOREP_Location*     location,
     scorep_profile_node* node,
     void*                param
 );
@@ -289,7 +286,6 @@ update_static_measurement
 void
 scorep_oaconsumer_copy_static_measurement
 (
-    SCOREP_Location*     location,
     scorep_profile_node* node,
     void*                param                          /// SCOREP_OA_FlatProfileMeasurement* buffer
 );
@@ -304,7 +300,6 @@ scorep_oaconsumer_copy_static_measurement
 void
 scorep_oaconsumer_copy_merged_region_definitions
 (
-    SCOREP_Location*     location,
     scorep_profile_node* node,
     void*                param                          /// SCOREP_OA_FlatProfileMeasurement* buffer
 );

@@ -89,8 +89,7 @@ update_on_resume( scorep_profile_node* node,
 }
 
 scorep_profile_node*
-create_task_root( SCOREP_Location*             location,
-                  SCOREP_Profile_LocationData* profile_location,
+create_task_root( SCOREP_Profile_LocationData* location,
                   SCOREP_RegionHandle          regionHandle,
                   uint64_t                     timestamp,
                   uint64_t*                    metric_values )
@@ -101,8 +100,7 @@ create_task_root( SCOREP_Location*             location,
                                            regionHandle );
 
     scorep_profile_node* new_node =
-        scorep_profile_create_node( location,
-                                    profile_location, NULL,
+        scorep_profile_create_node( location, NULL,
                                     scorep_profile_node_task_root,
                                     specific_data,
                                     timestamp );
@@ -121,8 +119,7 @@ create_task_root( SCOREP_Location*             location,
 }
 
 static void
-enter_task_pointer( SCOREP_Location*             location,
-                    SCOREP_Profile_LocationData* profileLocation,
+enter_task_pointer( SCOREP_Profile_LocationData* location,
                     scorep_profile_task*         task,
                     uint64_t                     timestamp,
                     uint64_t*                    metric_values )
@@ -133,29 +130,28 @@ enter_task_pointer( SCOREP_Location*             location,
        implicit task. The implicit task never executes this function. Thus, we
        temporarily set the location depth information to the depth of the
        implicit task */
-    uint32_t task_depth = profileLocation->current_depth;
-    profileLocation->current_depth = profileLocation->implicit_depth;
+    uint32_t task_depth = location->current_depth;
+    location->current_depth = location->implicit_depth;
 
     /* Determine the region handle of the tasks root region */
     scorep_profile_node* node = task->root_node;
     region = scorep_profile_type_get_region_handle( node->type_specific_data );
     assert( region != SCOREP_INVALID_REGION );
-    assert( profileLocation->current_implicit_node != NULL );
+    assert( location->current_implicit_node != NULL );
 
     /* Enter the task pointer region with the implicit task */
     node = scorep_profile_enter( location,
-                                 profileLocation,
-                                 profileLocation->current_implicit_node,
+                                 location->current_implicit_node,
                                  region,
                                  SCOREP_Region_GetType( region ),
                                  timestamp,
                                  metric_values );
 
     assert( node != NULL );
-    profileLocation->current_implicit_node = node;
+    location->current_implicit_node = node;
 
     /* reset depth information */
-    profileLocation->current_depth =  task_depth;
+    location->current_depth =  task_depth;
 }
 
 static void
@@ -194,36 +190,34 @@ exit_task_pointer( SCOREP_Profile_LocationData* location,
    internal implementation of events
 ****************************************************************************************/
 static void
-task_switch( SCOREP_Location*             location,
-             SCOREP_Profile_LocationData* profileLocation,
+task_switch( SCOREP_Profile_LocationData* location,
              scorep_profile_task*         task,
              uint64_t                     timestamp,
              uint64_t*                    metric_values )
 {
     /* Suspend old task */
-    scorep_profile_store_task( profileLocation );
+    scorep_profile_store_task( location );
 
-    if ( !scorep_profile_is_implicit_task( profileLocation, profileLocation->current_task ) )
+    if ( !scorep_profile_is_implicit_task( location, location->current_task ) )
     {
-        exit_task_pointer( profileLocation, timestamp, metric_values );
-        update_on_suspend( scorep_profile_get_current_node( profileLocation ),
+        exit_task_pointer( location, timestamp, metric_values );
+        update_on_suspend( scorep_profile_get_current_node( location ),
                            timestamp,
                            metric_values );
     }
 
     /* Activate new task */
-    profileLocation->current_task = task;
-    scorep_profile_restore_task( profileLocation );
+    location->current_task = task;
+    scorep_profile_restore_task( location );
 
-    if ( !scorep_profile_is_implicit_task( profileLocation, task ) )
+    if ( !scorep_profile_is_implicit_task( location, task ) )
     {
-        scorep_profile_node* current = scorep_profile_get_current_node( profileLocation );
+        scorep_profile_node* current = scorep_profile_get_current_node( location );
         update_on_resume( current,
                           timestamp,
                           metric_values );
 
-        enter_task_pointer( location,
-                            profileLocation, task,
+        enter_task_pointer( location, task,
                             timestamp, metric_values );
     }
 }
@@ -241,7 +235,7 @@ SCOREP_Profile_TaskCreate( SCOREP_Location* location,
 
 
 void
-SCOREP_Profile_TaskBegin( SCOREP_Location*    location,
+SCOREP_Profile_TaskBegin( SCOREP_Location*    thread,
                           SCOREP_RegionHandle regionHandle,
                           uint64_t            taskId,
                           uint64_t            timestamp,
@@ -250,46 +244,46 @@ SCOREP_Profile_TaskBegin( SCOREP_Location*    location,
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
     /* Create new task entry */
-    SCOREP_Profile_LocationData* profile_location =
-        SCOREP_Location_GetProfileData( location );
+    SCOREP_Profile_LocationData* location =
+        SCOREP_Location_GetProfileData( thread );
 
     scorep_profile_type_data_t specific_data;
     scorep_profile_type_set_region_handle( &specific_data, regionHandle );
 
     scorep_profile_node* task_root =
-        create_task_root( location, profile_location, regionHandle,
+        create_task_root( location, regionHandle,
                           timestamp, metric_values );
 
-    scorep_profile_task* task = scorep_profile_create_task( location, profile_location, taskId, task_root );
+    scorep_profile_task* task = scorep_profile_create_task( location, taskId, task_root );
     if ( task == NULL )
     {
         return;
     }
 
     /* Perform activation */
-    task_switch( location, profile_location, task, timestamp, metric_values );
+    task_switch( location, task, timestamp, metric_values );
 }
 
 
 void
-SCOREP_Profile_TaskSwitch( SCOREP_Location* location,
+SCOREP_Profile_TaskSwitch( SCOREP_Location* thread,
                            uint64_t         taskId,
                            uint64_t         timestamp,
                            uint64_t*        metric_values )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    SCOREP_Profile_LocationData* profile_location =
-        SCOREP_Location_GetProfileData( location );
+    SCOREP_Profile_LocationData* location =
+        SCOREP_Location_GetProfileData( thread );
 
-    scorep_profile_task* task = scorep_profile_task_find( profile_location, taskId );
+    scorep_profile_task* task = scorep_profile_task_find( location, taskId );
 
-    task_switch( location, profile_location, task, timestamp, metric_values );
+    task_switch( location, task, timestamp, metric_values );
 }
 
 
 void
-SCOREP_Profile_TaskEnd( SCOREP_Location*    location,
+SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
                         SCOREP_RegionHandle regionHandle,
                         uint64_t            taskId,
                         uint64_t            timestamp,
@@ -297,19 +291,18 @@ SCOREP_Profile_TaskEnd( SCOREP_Location*    location,
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    SCOREP_Profile_LocationData* profile_location =
-        SCOREP_Location_GetProfileData( location );
+    SCOREP_Profile_LocationData* location =
+        SCOREP_Location_GetProfileData( thread );
 
     /* Remember some data before it has changed */
-    scorep_profile_task* task      = profile_location->current_task;
-    scorep_profile_node* task_node = profile_location->current_task_node;
-    scorep_profile_node* root_node = profile_location->root_node;
+    scorep_profile_task* task      = location->current_task;
+    scorep_profile_node* task_node = location->current_task_node;
+    scorep_profile_node* root_node = location->root_node;
 
     /* Exit task region and switch control to implicit task to ensure that the
        current task is always valid */
-    SCOREP_Profile_Exit( location, regionHandle, timestamp, metric_values );
+    SCOREP_Profile_Exit( thread, regionHandle, timestamp, metric_values );
     task_switch( location,
-                 profile_location,
                  SCOREP_PROFILE_IMPLICIT_TASK,
                  timestamp,
                  metric_values );
@@ -323,9 +316,9 @@ SCOREP_Profile_TaskEnd( SCOREP_Location*    location,
     }
     else
     {
-        scorep_profile_merge_subtree( location, profile_location, match, task->root_node );
+        scorep_profile_merge_subtree( location, match, task->root_node );
     }
 
     /* Delete task entry from hastable */
-    scorep_profile_remove_task( profile_location, taskId );
+    scorep_profile_remove_task( location, taskId );
 }

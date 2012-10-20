@@ -215,16 +215,15 @@ scorep_oa_mri_return_summary_data
 )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
 
     /** Initialize OA Consumer interface and index Profile data */
-    SCOREP_OAConsumer_Initialize( location, phase_handle );
+    SCOREP_OAConsumer_Initialize( SCOREP_Location_GetCurrentCPULocation(), phase_handle );
 
     /** Get number of merged regions definitions*/
     int region_defs_size = ( int )SCOREP_OAConsumer_GetDataSize( MERGED_REGION_DEFINITIONS );
     /** Generate merged regions definitions buffer*/
     SCOREP_OA_CallPathRegionDef* region_defs = ( SCOREP_OA_CallPathRegionDef* )SCOREP_OAConsumer_GetData(
-        location, MERGED_REGION_DEFINITIONS );
+        MERGED_REGION_DEFINITIONS );
 
     /** Send merged region definitions to the agent*/
     //printf( "Sending MERGED_REGION_DEFINITIONS size: %d elements of size %d\n", region_defs_size, sizeof( SCOREP_OA_CallPathRegionDef ) );
@@ -235,7 +234,7 @@ scorep_oa_mri_return_summary_data
     int static_profile_size = ( int )SCOREP_OAConsumer_GetDataSize( FLAT_PROFILE );
     /** Get static profile buffer*/
     SCOREP_OA_FlatProfileMeasurement* static_profile = ( SCOREP_OA_FlatProfileMeasurement* )SCOREP_OAConsumer_GetData(
-        location, FLAT_PROFILE );
+        FLAT_PROFILE );
     /** Send static profile to the agent*/
     //printf( "Sending STATIC_PROFILE size: %d elements of size %d\n", static_profile_size, sizeof( SCOREP_OA_FlatProfileMeasurement ) );
     scorep_oa_connection_send_string( connection, "FLAT_PROFILE\n" );
@@ -245,7 +244,7 @@ scorep_oa_mri_return_summary_data
     int metric_def_size = ( int )SCOREP_OAConsumer_GetDataSize( COUNTER_DEFINITIONS );
     /** Get metric definitions */
     SCOREP_OA_CallPathCounterDef* metric_def = ( SCOREP_OA_CallPathCounterDef* )SCOREP_OAConsumer_GetData(
-        location, COUNTER_DEFINITIONS );
+        COUNTER_DEFINITIONS );
     /** Send metric definitions */
     scorep_oa_connection_send_string( connection, "METRIC_DEFINITIONS\n" );
     scorep_oa_connection_send_data( connection, metric_def, metric_def_size, sizeof( SCOREP_OA_CallPathCounterDef ) );

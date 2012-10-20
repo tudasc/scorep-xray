@@ -81,7 +81,7 @@ SCOREP_Profile_Register();
    profile function is called.
  */
 void
-SCOREP_Profile_Initialize( SCOREP_Location* locationData );
+SCOREP_Profile_Initialize( SCOREP_Location* location );
 
 /**
    Deletes a existing profile and profile definition. Before other profile functions
@@ -89,7 +89,7 @@ SCOREP_Profile_Initialize( SCOREP_Location* locationData );
    @ref SCOREP_Profile_Initialize.
  */
 void
-SCOREP_Profile_Finalize( SCOREP_Location* locationData );
+SCOREP_Profile_Finalize();
 
 
 /**
@@ -153,7 +153,7 @@ SCOREP_Profile_AddLocationSpecificMetrics( SCOREP_Location* location,
                     at the @ref SCOREP_Profile_Initialize call.
  */
 void
-SCOREP_Profile_Enter( SCOREP_Location*    location,
+SCOREP_Profile_Enter( SCOREP_Location*    thread,
                       SCOREP_RegionHandle region,
                       SCOREP_RegionType   type,
                       uint64_t            timestamp,
@@ -170,7 +170,7 @@ SCOREP_Profile_Enter( SCOREP_Location*    location,
                     at the @ref SCOREP_Profile_Initialize call.
  */
 void
-SCOREP_Profile_Exit( SCOREP_Location*    location,
+SCOREP_Profile_Exit( SCOREP_Location*    thread,
                      SCOREP_RegionHandle region,
                      uint64_t            timestamp,
                      uint64_t*           metrics );

@@ -30,8 +30,7 @@
 #include <scorep_profile_node.h>
 
 scorep_profile_node*
-scorep_profile_enter( SCOREP_Location*             location,
-                      SCOREP_Profile_LocationData* profileLocation,
+scorep_profile_enter( SCOREP_Profile_LocationData* location,
                       scorep_profile_node*         current_node,
                       SCOREP_RegionHandle          region,
                       SCOREP_RegionType            type,
@@ -46,15 +45,13 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
                      uint64_t*                    metrics );
 
 void
-scorep_profile_trigger_int64( SCOREP_Location*             location,
-                              SCOREP_Profile_LocationData* profileLocation,
+scorep_profile_trigger_int64( SCOREP_Profile_LocationData* location,
                               SCOREP_MetricHandle          metric,
                               uint64_t                     value,
                               scorep_profile_node*         node );
 
 void
-scorep_profile_trigger_double(  SCOREP_Location*             location,
-                                SCOREP_Profile_LocationData* profileLocation,
+scorep_profile_trigger_double(  SCOREP_Profile_LocationData* location,
                                 SCOREP_MetricHandle          metric,
                                 double                       value,
                                 scorep_profile_node*         node );

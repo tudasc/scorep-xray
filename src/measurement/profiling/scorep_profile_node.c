@@ -44,14 +44,13 @@
 
 /** Creates a new child node of given type and data */
 scorep_profile_node*
-scorep_profile_create_node( SCOREP_Location*             location,
-                            SCOREP_Profile_LocationData* profile_location,
+scorep_profile_create_node( SCOREP_Profile_LocationData* location,
                             scorep_profile_node*         parent,
                             scorep_profile_node_type     type,
                             scorep_profile_type_data_t   data,
                             uint64_t                     timestamp )
 {
-    scorep_profile_node* node = scorep_profile_alloc_node( location, profile_location, type );
+    scorep_profile_node* node = scorep_profile_alloc_node( location, type );
     if ( node == NULL )
     {
         return NULL;
@@ -80,8 +79,7 @@ scorep_profile_create_node( SCOREP_Location*             location,
 
 /* Copies a node */
 scorep_profile_node*
-scorep_profile_copy_node( SCOREP_Location*             location,
-                          SCOREP_Profile_LocationData* profile_location,
+scorep_profile_copy_node( SCOREP_Profile_LocationData* location,
                           scorep_profile_node*         source )
 {
     scorep_profile_sparse_metric_int*    dest_sparse_int      = NULL;
@@ -91,7 +89,6 @@ scorep_profile_copy_node( SCOREP_Location*             location,
 
     /* Create node */
     scorep_profile_node* node = scorep_profile_create_node( location,
-                                                            profile_location,
                                                             NULL,
                                                             source->node_type,
                                                             source->type_specific_data,
@@ -104,7 +101,6 @@ scorep_profile_copy_node( SCOREP_Location*             location,
     while ( source_sparse_int != NULL )
     {
         dest_sparse_int = scorep_profile_copy_sparse_int( location,
-                                                          profile_location,
                                                           source_sparse_int );
         dest_sparse_int->next_metric = node->first_int_sparse;
         node->first_int_sparse       = dest_sparse_int;
@@ -116,7 +112,6 @@ scorep_profile_copy_node( SCOREP_Location*             location,
     while ( source_sparse_double != NULL )
     {
         dest_sparse_double = scorep_profile_copy_sparse_double( location,
-                                                                profile_location,
                                                                 source_sparse_double );
         dest_sparse_double->next_metric = node->first_double_sparse;
         node->first_double_sparse       = dest_sparse_double;
@@ -169,19 +164,18 @@ scorep_profile_release_subtree( SCOREP_Profile_LocationData* location,
 }
 
 scorep_profile_node*
-scorep_profile_alloc_node( SCOREP_Location*             location,
-                           SCOREP_Profile_LocationData* profile_location,
+scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
                            scorep_profile_node_type     type )
 {
     scorep_profile_node* new_node;
 
     /* Try to recycle released nodes */
-    if ( ( profile_location != NULL ) &&
-         ( profile_location->free_nodes != NULL ) &&
+    if ( ( location != NULL ) &&
+         ( location->free_nodes != NULL ) &&
          ( type != scorep_profile_node_thread_root ) )
     {
-        new_node                     = profile_location->free_nodes;
-        profile_location->free_nodes = new_node->first_child;
+        new_node             = location->free_nodes;
+        location->free_nodes = new_node->first_child;
         return new_node;
     }
 
@@ -205,7 +199,7 @@ scorep_profile_alloc_node( SCOREP_Location*             location,
     else
     {
         new_node = ( scorep_profile_node* )
-                   SCOREP_Memory_AllocForProfile( location, sizeof( scorep_profile_node ) );
+                   SCOREP_Memory_AllocForProfile( location->location_data, sizeof( scorep_profile_node ) );
     }
 
     /* Reserve space for dense metrics,
@@ -217,32 +211,31 @@ scorep_profile_alloc_node( SCOREP_Location*             location,
     if ( SCOREP_Metric_GetNumberOfSynchronousStrictMetrics() > 0 )
     {
         new_node->dense_metrics = ( scorep_profile_dense_metric* )
-                                  SCOREP_Memory_AllocForProfile( location, size );
+                                  SCOREP_Memory_AllocForProfile( location->location_data, size );
     }
     else
     {
         new_node->dense_metrics = NULL;
     }
 
-    scorep_profile_alloc_location_specific_metrics_store( location, profile_location, new_node );
+    scorep_profile_alloc_location_specific_metrics_store( location, new_node );
 
     return new_node;
 }
 
 void
-scorep_profile_alloc_location_specific_metrics_store( SCOREP_Location*             location,
-                                                      SCOREP_Profile_LocationData* profile_location,
+scorep_profile_alloc_location_specific_metrics_store( SCOREP_Profile_LocationData* location,
                                                       scorep_profile_node*         node )
 {
-    if ( profile_location->num_location_specific_metrics == 0 )
+    if ( location->num_location_specific_metrics == 0 )
     {
         node->location_specific_metrics = NULL;
         return;
     }
 
-    uint32_t size = profile_location->num_location_specific_metrics * sizeof( scorep_profile_dense_metric );
+    uint32_t size = location->num_location_specific_metrics * sizeof( scorep_profile_dense_metric );
     node->location_specific_metrics = ( scorep_profile_dense_metric* )
-                                      SCOREP_Memory_AllocForProfile( location, size );
+                                      SCOREP_Memory_AllocForProfile( location->location_data, size );
     if ( !node->location_specific_metrics )
     {
         UTILS_ERROR( SCOREP_ERROR_MEM_FAULT,
@@ -251,15 +244,14 @@ scorep_profile_alloc_location_specific_metrics_store( SCOREP_Location*          
 }
 
 void
-scorep_profile_test_location_metrics_of_root_node( SCOREP_Location*             location,
-                                                   SCOREP_Profile_LocationData* profile_location )
+scorep_profile_test_location_metrics_of_root_node( SCOREP_Profile_LocationData* location )
 {
-    scorep_profile_node* node = profile_location->root_node;
+    scorep_profile_node* node = location->root_node;
     assert( node );
 
     if ( node->location_specific_metrics == NULL )
     {
-        scorep_profile_alloc_location_specific_metrics_store( location, profile_location, node );
+        scorep_profile_alloc_location_specific_metrics_store( location, node );
     }
     else
     {
@@ -434,8 +426,7 @@ scorep_profile_remove_node( scorep_profile_node* node )
 
 /* Traverse a subtree (depth search) and execute a given function on each node */
 void
-scorep_profile_for_all( SCOREP_Location*               location,
-                        scorep_profile_node*           root_node,
+scorep_profile_for_all( scorep_profile_node*           root_node,
                         scorep_profile_process_func_t* func,
                         void*                          param )
 {
@@ -446,7 +437,7 @@ scorep_profile_for_all( SCOREP_Location*               location,
     {
         return;
     }
-    ( *func )( location, current, param );
+    ( *func )( current, param );
 
     /* Process children */
     current = current->first_child;
@@ -457,7 +448,7 @@ scorep_profile_for_all( SCOREP_Location*               location,
 
     while ( current != root_node )
     {
-        ( *func )( location, current, param );
+        ( *func )( current, param );
 
         /* Find next node */
         if ( current->first_child != NULL )
@@ -499,8 +490,7 @@ scorep_profile_find_child( scorep_profile_node* parent,
 
 /* Find or create a child node of a specified type */
 scorep_profile_node*
-scorep_profile_find_create_child( SCOREP_Location*             location,
-                                  SCOREP_Profile_LocationData* profileLocation,
+scorep_profile_find_create_child( SCOREP_Profile_LocationData* location,
                                   scorep_profile_node*         parent,
                                   scorep_profile_node_type     node_type,
                                   scorep_profile_type_data_t   specific_data,
@@ -521,7 +511,7 @@ scorep_profile_find_create_child( SCOREP_Location*             location,
     /* If not found -> create new node */
     if ( child == NULL )
     {
-        child = scorep_profile_create_node( location, profileLocation, parent, node_type,
+        child = scorep_profile_create_node( location, parent, node_type,
                                             specific_data,
                                             timestamp );
         child->next_sibling = parent->first_child;
@@ -641,8 +631,7 @@ scorep_profile_merge_node_dense( scorep_profile_node* destination,
 }
 
 void
-scorep_profile_merge_node_sparse( SCOREP_Location*             location,
-                                  SCOREP_Profile_LocationData* profileLocation,
+scorep_profile_merge_node_sparse( SCOREP_Profile_LocationData* location,
                                   scorep_profile_node*         destination,
                                   scorep_profile_node*         source )
 {
@@ -663,7 +652,6 @@ scorep_profile_merge_node_sparse( SCOREP_Location*             location,
         if ( dest_sparse_int == NULL )
         {
             dest_sparse_int = scorep_profile_copy_sparse_int( location,
-                                                              profileLocation,
                                                               source_sparse_int );
             dest_sparse_int->next_metric  = destination->first_int_sparse;
             destination->first_int_sparse = dest_sparse_int;
@@ -687,7 +675,7 @@ scorep_profile_merge_node_sparse( SCOREP_Location*             location,
         }
         if ( dest_sparse_double == NULL )
         {
-            dest_sparse_double               = scorep_profile_copy_sparse_double( location, profileLocation, source_sparse_double );
+            dest_sparse_double               = scorep_profile_copy_sparse_double( location, source_sparse_double );
             dest_sparse_double->next_metric  = destination->first_double_sparse;
             destination->first_double_sparse = dest_sparse_double;
         }
@@ -701,8 +689,7 @@ scorep_profile_merge_node_sparse( SCOREP_Location*             location,
 }
 
 void
-scorep_profile_merge_subtree( SCOREP_Location*             location,
-                              SCOREP_Profile_LocationData* profileLocation,
+scorep_profile_merge_subtree( SCOREP_Profile_LocationData* location,
                               scorep_profile_node*         destination,
                               scorep_profile_node*         source )
 {
@@ -710,7 +697,7 @@ scorep_profile_merge_subtree( SCOREP_Location*             location,
     assert( source );
 
     scorep_profile_merge_node_dense( destination, source );
-    scorep_profile_merge_node_sparse( location, profileLocation, destination, source );
+    scorep_profile_merge_node_sparse( location, destination, source );
 
     scorep_profile_node* child = source->first_child;
     scorep_profile_node* next  = NULL;
@@ -729,7 +716,7 @@ scorep_profile_merge_subtree( SCOREP_Location*             location,
         /* If a matching node exists, merge the subtree recursively */
         else
         {
-            scorep_profile_merge_subtree( location, profileLocation, match, child );
+            scorep_profile_merge_subtree( location, match, child );
         }
 
         child = next;
@@ -738,5 +725,5 @@ scorep_profile_merge_subtree( SCOREP_Location*             location,
     /* Clean up. The children are either integrated into another tree, or already
        released, recursively. Thus we must release only this node. */
     source->first_child = NULL;
-    scorep_profile_release_subtree( profileLocation, source );
+    scorep_profile_release_subtree( location, source );
 }

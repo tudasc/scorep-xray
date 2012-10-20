@@ -25,7 +25,7 @@
  *
  */
 #include "SCOREP_Types.h"
-#include <SCOREP_Location.h>
+#include "SCOREP_Location.h"
 
 #define MAX_COUNTER_NAME_LENGTH                         256
 #define MAX_COUNTER_UNIT_LENGTH                         10
@@ -125,7 +125,6 @@ SCOREP_OAConsumer_DismissData
 void*
 SCOREP_OAConsumer_GetData
 (
-    SCOREP_Location*            location,
     SCOREP_OAConsumer_DataTypes data_type
 );
 

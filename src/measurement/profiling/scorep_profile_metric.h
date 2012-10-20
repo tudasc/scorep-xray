@@ -154,8 +154,7 @@ scorep_profile_merge_dense_metric( scorep_profile_dense_metric* destination,
  * @param value  The first sample for the recorded statistics.
  */
 scorep_profile_sparse_metric_int*
-scorep_profile_create_sparse_int( SCOREP_Location*             location,
-                                  SCOREP_Profile_LocationData* profile_location,
+scorep_profile_create_sparse_int( SCOREP_Profile_LocationData* location,
                                   SCOREP_MetricHandle          metric,
                                   uint64_t                     value );
 
@@ -167,8 +166,7 @@ scorep_profile_create_sparse_int( SCOREP_Location*             location,
  * @return the newly created instance.
  */
 scorep_profile_sparse_metric_int*
-scorep_profile_copy_sparse_int( SCOREP_Location*                  location,
-                                SCOREP_Profile_LocationData*      profile_location,
+scorep_profile_copy_sparse_int( SCOREP_Profile_LocationData*      location,
                                 scorep_profile_sparse_metric_int* source );
 
 /**
@@ -206,8 +204,7 @@ scorep_profile_merge_sparse_metric_int( scorep_profile_sparse_metric_int* destin
  * @param value  The first sample for the recorded statistics.
  */
 scorep_profile_sparse_metric_double*
-scorep_profile_create_sparse_double( SCOREP_Location*             location,
-                                     SCOREP_Profile_LocationData* profile_location,
+scorep_profile_create_sparse_double( SCOREP_Profile_LocationData* location,
                                      SCOREP_MetricHandle          metric,
                                      double                       value );
 
@@ -219,8 +216,7 @@ scorep_profile_create_sparse_double( SCOREP_Location*             location,
  * @return the newly created instance.
  */
 scorep_profile_sparse_metric_double*
-scorep_profile_copy_sparse_double( SCOREP_Location*                     location,
-                                   SCOREP_Profile_LocationData*         profile_location,
+scorep_profile_copy_sparse_double( SCOREP_Profile_LocationData*         location,
                                    scorep_profile_sparse_metric_double* source );
 
 /**

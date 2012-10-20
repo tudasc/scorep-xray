@@ -122,8 +122,7 @@ static scorep_cube4_definitions_map* scorep_map;
                 the unified definitions.
  */
 static void
-make_callpath_mapping( SCOREP_Location*     location,
-                       scorep_profile_node* node,
+make_callpath_mapping( scorep_profile_node* node,
                        void*                param )
 {
     /* Check whether this node has a callpath handle assigned. Thread nodes have none */
@@ -737,8 +736,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
 }
 
 static void
-add_mapping_to_cube_writing_data( SCOREP_Location*          location,
-                                  scorep_cube_writing_data* write_set )
+add_mapping_to_cube_writing_data( scorep_cube_writing_data* write_set )
 {
     /* Map global sequence numbers to profile nodes */
     write_set->id_2_node = calloc( write_set->callpath_number * write_set->local_threads,
@@ -747,8 +745,7 @@ add_mapping_to_cube_writing_data( SCOREP_Location*          location,
     scorep_profile_node* node = scorep_profile.first_root_node;
     for ( uint64_t i = 0; node != NULL; node = node->next_sibling )
     {
-        scorep_profile_for_all( location,
-                                node,
+        scorep_profile_for_all( node,
                                 make_callpath_mapping,
                                 &write_set->id_2_node[ i ] );
         i += write_set->callpath_number;
@@ -768,7 +765,7 @@ add_mapping_to_cube_writing_data( SCOREP_Location*          location,
    Main writer function
 *******************************************************************************/
 void
-scorep_profile_write_cube4( SCOREP_Location* location )
+scorep_profile_write_cube4( SCOREP_Location* location_data )
 {
     /*-------------------------------- Variable definition */
 
@@ -810,7 +807,7 @@ scorep_profile_write_cube4( SCOREP_Location* location )
     /* Build mapping from sequence number in unified callpath definitions to
        profile nodes */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Create mappings" );
-    add_mapping_to_cube_writing_data( location, &write_set );
+    add_mapping_to_cube_writing_data( &write_set );
 
     /* -------------------------------- dense metrics */
 
@@ -861,8 +858,8 @@ scorep_profile_write_cube4( SCOREP_Location* location )
 
     /* Write additional location-specific metrics */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing location-specific metrics" );
-    SCOREP_Profile_LocationData* profile_location_data = SCOREP_Location_GetProfileData( location );
-    SCOREP_MetricHandle*         additional_metrics    = SCOREP_Metric_GetAdditionalScopedMetricHandles( location );
+    SCOREP_Profile_LocationData* profile_location_data = SCOREP_Location_GetProfileData( location_data );
+    SCOREP_MetricHandle*         additional_metrics    = SCOREP_Metric_GetAdditionalScopedMetricHandles( location_data );
 
     /* Work during finalization is done by main thread, so this location was responsible to record per-process metrics */
     for ( uint8_t i = 0; i  < profile_location_data->num_location_specific_metrics; i++ )
