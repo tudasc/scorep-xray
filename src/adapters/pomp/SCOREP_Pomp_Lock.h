@@ -106,10 +106,10 @@ scorep_pomp_lock_destroy( const void* lock );
 
 /** Clean up of the locking management. Frees all memory for locking managment. */
 void
-scorep_pomp_lock_close();
+scorep_pomp_lock_close( void );
 
 /** Registers omp lock regions ot the measurement system */
 void
-scorep_pomp_register_lock_regions();
+scorep_pomp_register_lock_regions( void );
 
 #endif // SCOREP_POMP_LOCK_H

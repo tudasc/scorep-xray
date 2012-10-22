@@ -50,22 +50,22 @@ void FSUB(POMP2_Assign_handle)(POMP2_Region_handle_fortran* regionHandle,
     free(str);
 }
 
-void FSUB(POMP2_Finalize)()
+void FSUB(POMP2_Finalize)( void )
 {
   POMP2_Finalize();
 }
 
-void FSUB(POMP2_Init)()
+void FSUB(POMP2_Init)( void )
 {
   POMP2_Init();
 }
 
-void FSUB(POMP2_Off)()
+void FSUB(POMP2_Off)( void )
 {
   scorep_pomp_is_tracing_on = 0;
 }
 
-void FSUB(POMP2_On)()
+void FSUB(POMP2_On)( void )
 {
   scorep_pomp_is_tracing_on = 1;
 }

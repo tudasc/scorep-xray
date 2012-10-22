@@ -31,12 +31,12 @@
 #include <stddef.h>
 
 void
-POMP2_Init_regions()
+POMP2_Init_regions( void )
 {
 }
 
 size_t
-POMP2_Get_num_regions()
+POMP2_Get_num_regions( void )
 {
     return 0;
 }

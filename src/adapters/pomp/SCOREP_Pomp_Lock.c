@@ -65,7 +65,7 @@ char* scorep_pomp_region_names[] =
 };
 
 void
-scorep_pomp_register_lock_regions()
+scorep_pomp_register_lock_regions( void )
 {
     int i = 0;
     for ( i = 0; i < SCOREP_POMP_REGION_NUM; i++ )
@@ -81,7 +81,7 @@ scorep_pomp_register_lock_regions()
 }
 
 void
-scorep_pomp_lock_close()
+scorep_pomp_lock_close( void )
 {
     struct scorep_pomp_lock_block* block;
 

@@ -133,7 +133,7 @@ scorep_pomp_register( size_t subsystem_id )
 /** Adapter initialization function.
  */
 static SCOREP_ErrorCode
-scorep_pomp_init()
+scorep_pomp_init( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -186,7 +186,7 @@ scorep_pomp_finalize_location( SCOREP_Location* locationData )
 /** Adapter finalialization function.
  */
 static void
-scorep_pomp_finalize()
+scorep_pomp_finalize( void )
 {
     size_t       i;
     const size_t nRegions = POMP2_Get_num_regions();
@@ -215,7 +215,7 @@ scorep_pomp_finalize()
 /** Called when the adapter is derigistered. Nothing done inside the function
  */
 static void
-scorep_pomp_deregister()
+scorep_pomp_deregister( void )
 {
     UTILS_DEBUG_ENTRY();
 }
@@ -241,13 +241,13 @@ const SCOREP_Subsystem SCOREP_Pomp_Adapter =
 
 
 void
-POMP2_Finalize()
+POMP2_Finalize( void )
 {
     UTILS_DEBUG_ENTRY();
 }
 
 void
-POMP2_Init()
+POMP2_Init( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -257,14 +257,14 @@ POMP2_Init()
 }
 
 void
-POMP2_Off()
+POMP2_Off( void )
 {
     SCOREP_POMP2_ENSURE_INITIALIZED;
     scorep_pomp_is_tracing_on = false;
 }
 
 void
-POMP2_On()
+POMP2_On( void )
 {
     SCOREP_POMP2_ENSURE_INITIALIZED;
     scorep_pomp_is_tracing_on = true;

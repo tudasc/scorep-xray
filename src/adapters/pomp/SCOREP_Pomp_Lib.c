@@ -47,7 +47,7 @@ POMP2_Task_handle pomp_task_counter = 1;
 #pragma omp threadprivate(pomp_task_counter)
 
 POMP2_Task_handle
-POMP2_Get_new_task_handle()
+POMP2_Get_new_task_handle( void )
 {
     return ( ( POMP2_Task_handle )omp_get_thread_num() << 32 ) + pomp_task_counter++;
 }
@@ -59,7 +59,7 @@ POMP2_Set_current_task( POMP2_Task_handle task )
 }
 
 POMP2_Task_handle
-POMP2_Get_current_task()
+POMP2_Get_current_task( void )
 {
     return pomp_current_task;
 }
@@ -689,7 +689,7 @@ POMP2_Workshare_exit( POMP2_Region_handle* pomp_handle )
 }
 
 int
-POMP2_Lib_get_max_threads()
+POMP2_Lib_get_max_threads( void )
 {
     return omp_get_max_threads();
 }
