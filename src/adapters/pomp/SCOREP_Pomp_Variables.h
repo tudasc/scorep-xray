@@ -69,6 +69,19 @@ extern bool scorep_pomp_is_finalized;
         POMP2_Init();                        \
     }
 
+/**
+   @def POMP2_HANDLE_UNITIALIZED_REGION( handle, ctc_string )
+   Checks whether @a handle is initialized and initializes it if it is not.
+   @param handle      A pointer to a POMP2_Region_handle.
+   @param ctc_string  A string that contains the initialization information.
+ */
+#define SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( handle, ctc_string ) \
+    if ( handle == NULL )                                            \
+    {                                                                \
+        POMP2_Assign_handle( handle, ctc_string );                  \
+    }
+
+
 /** @} */
 
 #endif // SCOREP_POMP_VARIABLES_H

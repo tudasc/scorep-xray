@@ -38,6 +38,7 @@
 #include <string.h>
 #include "SCOREP_Pomp_Lock.h"
 
+
 /** Id of the currently executing task*/
 POMP2_Task_handle pomp_current_task = 0;
 #pragma omp threadprivate(pomp_current_task)
@@ -80,6 +81,7 @@ POMP2_Atomic_enter( POMP2_Region_handle* pomp_handle,
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -107,6 +109,7 @@ POMP2_Barrier_enter( POMP2_Region_handle* pomp_handle,
     *pomp_old_task = pomp_current_task;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -171,6 +174,7 @@ POMP2_Flush_enter( POMP2_Region_handle* pomp_handle,
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -220,6 +224,7 @@ POMP2_Critical_enter( POMP2_Region_handle* pomp_handle,
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -244,6 +249,7 @@ POMP2_For_enter( POMP2_Region_handle* pomp_handle,
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -268,6 +274,7 @@ POMP2_Master_begin( POMP2_Region_handle* pomp_handle,
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->innerBlock );
     }
@@ -325,6 +332,7 @@ POMP2_Parallel_fork( POMP2_Region_handle* pomp_handle,
     /* Generate fork event */
     if ( !scorep_pomp_is_finalized )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         UTILS_ASSERT( region != NULL );
         SCOREP_OmpFork( num_threads );
@@ -353,6 +361,7 @@ POMP2_Section_begin( POMP2_Region_handle* pomp_handle,
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->innerBlock );
     }
@@ -377,6 +386,7 @@ POMP2_Sections_enter( POMP2_Region_handle* pomp_handle,
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -424,6 +434,7 @@ POMP2_Single_enter( POMP2_Region_handle* pomp_handle,
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -475,6 +486,7 @@ POMP2_Ordered_enter( POMP2_Region_handle* pomp_handle,
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -509,6 +521,7 @@ POMP2_Task_create_begin( POMP2_Region_handle* pomp_handle,
     *pomp_new_task = POMP2_Get_new_task_handle();
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
         SCOREP_OmpTaskCreate( *pomp_new_task );
@@ -574,6 +587,7 @@ POMP2_Untied_task_create_begin( POMP2_Region_handle* pomp_handle,
 
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
         SCOREP_OmpTaskCreate( *pomp_new_task );
@@ -636,6 +650,7 @@ POMP2_Taskwait_begin( POMP2_Region_handle* pomp_handle,
     *pomp_old_task = pomp_current_task;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
@@ -672,6 +687,7 @@ POMP2_Workshare_enter( POMP2_Region_handle* pomp_handle,
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
     }
