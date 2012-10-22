@@ -41,16 +41,16 @@ SCOREP_ErrorCode
 SCOREP_Filter_ParseFile( const char* file_name );
 
 void
-SCOREP_Filter_FreeRules();
+SCOREP_Filter_FreeRules( void );
 
 void
-SCOREP_Filter_Enable();
+SCOREP_Filter_Enable( void );
 
 void
-SCOREP_Filter_Disable();
+SCOREP_Filter_Disable( void );
 
 bool
-SCOREP_Filter_IsEnabled();
+SCOREP_Filter_IsEnabled( void );
 
 bool
 SCOREP_Filter_Match( const char* file_name,

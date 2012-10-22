@@ -213,7 +213,7 @@ scorep_filter_add_function_rule( const char* rule, bool is_exclude, bool is_fort
 }
 
 void
-SCOREP_Filter_FreeRules()
+SCOREP_Filter_FreeRules( void )
 {
     /* Free function rules. */
     while ( scorep_filter_function_rules_head )

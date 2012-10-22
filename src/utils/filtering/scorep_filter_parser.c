@@ -392,19 +392,19 @@ cleanup:
 ****************************************************************************************/
 
 void
-SCOREP_Filter_Enable()
+SCOREP_Filter_Enable( void )
 {
     scorep_filter_is_enabled = true;
 }
 
 void
-SCOREP_Filter_Disable()
+SCOREP_Filter_Disable( void )
 {
     scorep_filter_is_enabled = false;
 }
 
 bool
-SCOREP_Filter_IsEnabled()
+SCOREP_Filter_IsEnabled( void )
 {
     return scorep_filter_is_enabled;
 }

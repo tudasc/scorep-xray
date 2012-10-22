@@ -54,6 +54,6 @@ scorep_filter_add_function_rule( const char* rule,
  * Frees memory allocations for filter rules.
  */
 void
-scorep_filter_free_rules();
+scorep_filter_free_rules( void );
 
 #endif /* SCOREP_FILTER_MATCHING_H */
