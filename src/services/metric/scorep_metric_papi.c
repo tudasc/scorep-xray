@@ -204,7 +204,7 @@ static int scorep_metric_papi_initialize = 1;
  *  @return It returns the identifier of recent location.
  */
 static unsigned long
-scorep_metric_get_location_id()
+scorep_metric_get_location_id( void )
 {
     /* Get the thread id from the measurement system */
     SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
@@ -359,7 +359,7 @@ out:
  *         scorep_metric_papi_open.
  */
 static void
-scorep_metric_papi_close()
+scorep_metric_papi_close( void )
 {
     /* PAPI_shutdown() should be called only if there were PAPI metrics */
     bool shutdown_papi = false;
@@ -789,7 +789,7 @@ scorep_metric_papi_test( scorep_metric_definition_data* metricDefinition )
  *          otherwise an error code will be reported.
  */
 static SCOREP_ErrorCode
-scorep_metric_papi_register()
+scorep_metric_papi_register( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register PAPI metric source!" );
 
@@ -809,7 +809,7 @@ scorep_metric_papi_register()
  *         on deregistration.
  */
 static void
-scorep_metric_papi_deregister()
+scorep_metric_papi_deregister( void )
 {
     /* Free environment variables for 'synchronous strict' and per-process metrics */
     free( scorep_metrics_papi );
@@ -837,7 +837,7 @@ scorep_metric_papi_deregister()
  *  @return It returns the number of used 'synchronous strict' metrics.
  */
 static uint32_t
-scorep_metric_papi_initialize_source()
+scorep_metric_papi_initialize_source( void )
 {
     /* Number of used 'synchronous strict' metrics */
     uint32_t metric_counts = 0;
@@ -878,7 +878,7 @@ scorep_metric_papi_initialize_source()
 /** @brief Adapter finalization.
  */
 static void
-scorep_metric_papi_finalize_source()
+scorep_metric_papi_finalize_source( void )
 {
     /* Call only, if previously initialized */
     if ( !scorep_metric_papi_initialize )
@@ -1160,7 +1160,7 @@ scorep_metric_papi_get_metric_properties( SCOREP_Metric_EventSet* eventSet,
  *  @return It returns the clock rate.
  */
 static uint64_t
-scorep_metric_papi_clock_rate()
+scorep_metric_papi_clock_rate( void )
 {
     double hertz = 0;
 

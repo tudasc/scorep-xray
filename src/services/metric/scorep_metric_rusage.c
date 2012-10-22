@@ -304,7 +304,7 @@ scorep_metric_rusage_open( const char* listOfMetricNames,
  *          otherwise an error code will be reported.
  */
 static SCOREP_ErrorCode
-scorep_metric_rusage_register()
+scorep_metric_rusage_register( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register rusage metric source!" );
 
@@ -323,7 +323,7 @@ scorep_metric_rusage_register()
 /** @brief Called on deregistration of the metric source.
  */
 static void
-scorep_metric_rusage_deregister()
+scorep_metric_rusage_deregister( void )
 {
     /* Free environment variables for 'synchronous strict' and per-process metrics */
     free( scorep_metrics_rusage );
@@ -357,7 +357,7 @@ scorep_metric_rusage_deregister()
  *  @return Returns the number of used 'synchronous strict' metrics.
  */
 static uint32_t
-scorep_metric_rusage_initialize_source()
+scorep_metric_rusage_initialize_source( void )
 {
     /* Number of used 'synchronous strict' metrics */
     uint32_t metric_counts = 0;
@@ -396,7 +396,7 @@ scorep_metric_rusage_initialize_source()
 /** @brief Metric source finalization.
  */
 static void
-scorep_metric_rusage_finalize_source()
+scorep_metric_rusage_finalize_source( void )
 {
     /* Call only, if previously initialized */
     if ( !scorep_metric_rusage_initialize )
@@ -724,7 +724,7 @@ scorep_metric_rusage_get_metric_properties( SCOREP_Metric_EventSet* eventSet,
  *  @return Returns recent clock rate.
  */
 static uint64_t
-scorep_metric_rusage_clock_rate()
+scorep_metric_rusage_clock_rate( void )
 {
     // Resource usage counters don't provide a clock source.
     return 0;

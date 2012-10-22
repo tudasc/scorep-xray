@@ -35,14 +35,14 @@
 #include <sys/systemcfg.h>
 
 void
-SCOREP_Timer_Initialize()
+SCOREP_Timer_Initialize( void )
 {
     return;
 }
 
 
 uint64_t
-SCOREP_GetClockTicks()
+SCOREP_GetClockTicks( void )
 {
     timebasestruct_t t;
     read_real_time( &t, TIMEBASE_SZ );
@@ -52,14 +52,14 @@ SCOREP_GetClockTicks()
 
 
 uint64_t
-SCOREP_GetClockResolution()
+SCOREP_GetClockResolution( void )
 {
     return 1e9;
 }
 
 
 bool
-SCOREP_ClockIsGlobal()
+SCOREP_ClockIsGlobal( void )
 {
     return false;
 }

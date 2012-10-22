@@ -82,19 +82,19 @@ SCOREP_Metric_Read( SCOREP_Location* location )
 }
 
 SCOREP_ErrorCode
-SCOREP_Metric_Reinitialize()
+SCOREP_Metric_Reinitialize( void )
 {
     return SCOREP_SUCCESS;
 }
 
 SCOREP_SamplingSetHandle
-SCOREP_Metric_GetSamplingSet()
+SCOREP_Metric_GetSamplingSet( void )
 {
     return SCOREP_INVALID_SAMPLING_SET;
 }
 
 uint32_t
-SCOREP_Metric_GetNumberOfSynchronousStrictMetrics()
+SCOREP_Metric_GetNumberOfSynchronousStrictMetrics( void )
 {
     return 0;
 }
@@ -126,7 +126,7 @@ SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( SCOREP_Location* location )
 /** @brief Called on deregistration of the metric service.
  */
 static void
-scorep_metric_deregister()
+scorep_metric_deregister( void )
 {
 }
 
@@ -144,7 +144,7 @@ scorep_metric_finalize_location( SCOREP_Location* location )
 /** @brief Service finalization.
  */
 static void
-scorep_metric_finalize_service()
+scorep_metric_finalize_service( void )
 {
 }
 
@@ -167,7 +167,7 @@ scorep_metric_initialize_location( SCOREP_Location* location )
  *          otherwise an error code will be reported.
  */
 static SCOREP_ErrorCode
-scorep_metric_initialize_service()
+scorep_metric_initialize_service( void )
 {
     return SCOREP_SUCCESS;
 }
@@ -325,7 +325,7 @@ scorep_metric_register( size_t subsystem_id )
 /** @brief Called on deregistration of the metric service.
  */
 static void
-scorep_metric_deregister()
+scorep_metric_deregister( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " deregister metric management." );
 
@@ -342,7 +342,7 @@ scorep_metric_deregister()
  *          otherwise an error code will be reported.
  */
 static SCOREP_ErrorCode
-scorep_metric_initialize_service()
+scorep_metric_initialize_service( void )
 {
     /* Call only, if not previously initialized */
     if ( !scorep_metric_management_initialized )
@@ -378,7 +378,7 @@ scorep_metric_initialize_service()
 /** @brief Service finalization.
  */
 static void
-scorep_metric_finalize_service()
+scorep_metric_finalize_service( void )
 {
     /* Call only, if previously initialized */
     if ( scorep_metric_management_initialized )
@@ -786,7 +786,7 @@ SCOREP_Metric_Read( SCOREP_Location* location )
  *          otherwise an error code will be reported.
  */
 SCOREP_ErrorCode
-SCOREP_Metric_Reinitialize()
+SCOREP_Metric_Reinitialize( void )
 {
     /* Finalize each location (frees internal buffers) */
     SCOREP_Location_ForAll( finalize_location_metric_cb, NULL );
@@ -808,7 +808,7 @@ SCOREP_Metric_Reinitialize()
  *  @return Returns the sampling set handle to the measurement system.
  */
 SCOREP_SamplingSetHandle
-SCOREP_Metric_GetSamplingSet()
+SCOREP_Metric_GetSamplingSet( void )
 {
     return synchronous_strict_metrics.sampling_set;
 }
@@ -830,7 +830,7 @@ SCOREP_Metric_GetSynchronousStrictMetricHandle( uint32_t index )
  *  @return Returns the number of a synchronous metrics.
  */
 uint32_t
-SCOREP_Metric_GetNumberOfSynchronousStrictMetrics()
+SCOREP_Metric_GetNumberOfSynchronousStrictMetrics( void )
 {
     return synchronous_strict_metrics.overall_number_of_metrics;
 }

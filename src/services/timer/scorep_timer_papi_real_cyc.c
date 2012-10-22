@@ -40,7 +40,7 @@ static uint64_t clock_rate    = 0;
 
 
 void
-SCOREP_Timer_Initialize()
+SCOREP_Timer_Initialize( void )
 {
     int                   retval;
     const PAPI_hw_info_t* hwinfo = NULL;
@@ -75,21 +75,21 @@ SCOREP_Timer_Initialize()
 
 
 uint64_t
-SCOREP_GetClockTicks()
+SCOREP_GetClockTicks( void )
 {
     return PAPI_get_real_cyc();
 }
 
 
 uint64_t
-SCOREP_GetClockResolution()
+SCOREP_GetClockResolution( void )
 {
     return clock_rate;
 }
 
 
 bool
-SCOREP_ClockIsGlobal()
+SCOREP_ClockIsGlobal( void )
 {
     return false;
 }

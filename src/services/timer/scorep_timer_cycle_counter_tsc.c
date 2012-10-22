@@ -57,14 +57,14 @@ static uint64_t
 scorep_get_cylce_counter_frequency( useconds_t usleep_time );
 
 static uint64_t
-scorep_get_frequency_from_proc_cpuinfo();
+scorep_get_frequency_from_proc_cpuinfo( void );
 
 static uint64_t
-scorep_get_improved_frequency_from_timing_measurement();
+scorep_get_improved_frequency_from_timing_measurement( void );
 
 
 void
-SCOREP_Timer_Initialize()
+SCOREP_Timer_Initialize( void )
 {
     if ( isInitialized )
     {
@@ -80,7 +80,7 @@ SCOREP_Timer_Initialize()
 
 
 static uint64_t
-scorep_get_frequency_from_proc_cpuinfo()
+scorep_get_frequency_from_proc_cpuinfo( void )
 {
     FILE* cpuinfofp;
     if ( ( cpuinfofp = fopen( SCOREP_PROCDIR "cpuinfo", "r" ) ) == NULL )
@@ -114,7 +114,7 @@ scorep_get_frequency_from_proc_cpuinfo()
 
 
 static uint64_t
-scorep_get_improved_frequency_from_timing_measurement()
+scorep_get_improved_frequency_from_timing_measurement( void )
 {
     /* try to something better than reading proc/cpuinfo on ia32 by doing
      * timing measurements on the TSC */
@@ -193,7 +193,7 @@ scorep_get_cylce_counter_frequency( useconds_t usleep_time )
 
 
 uint64_t
-SCOREP_GetClockTicks()
+SCOREP_GetClockTicks( void )
 {
     uint64_t clock_value;
 
@@ -233,14 +233,14 @@ SCOREP_GetClockTicks()
 
 
 uint64_t
-SCOREP_GetClockResolution()
+SCOREP_GetClockResolution( void )
 {
     return scorep_ticks_per_sec;
 }
 
 
 bool
-SCOREP_ClockIsGlobal()
+SCOREP_ClockIsGlobal( void )
 {
     return false;
 }

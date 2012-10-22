@@ -67,7 +67,7 @@ static unsigned long ticks_per_sec = 0;
 static volatile unsigned long* mmdev_timer_addr = NULL;
 
 void
-SCOREP_Timer_Initialize()
+SCOREP_Timer_Initialize( void )
 {
     if ( isInitialized )
     {
@@ -105,21 +105,21 @@ SCOREP_Timer_Initialize()
 }
 
 uint64_t
-SCOREP_GetClockTicks()
+SCOREP_GetClockTicks( void )
 {
     return *mmdev_timer_addr;
 }
 
 
 uint64_t
-SCOREP_GetClockResolution()
+SCOREP_GetClockResolution( void )
 {
     return ticks_per_sec;
 }
 
 
 bool
-SCOREP_ClockIsGlobal()
+SCOREP_ClockIsGlobal( void )
 {
     return true;
 }

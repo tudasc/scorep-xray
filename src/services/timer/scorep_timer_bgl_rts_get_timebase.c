@@ -36,10 +36,10 @@
 
 static uint64_t scorep_ticks_per_sec = 0;
 
-static bool     isInitialized = false;
+static bool isInitialized = false;
 
 void
-SCOREP_Timer_Initialize()
+SCOREP_Timer_Initialize( void )
 {
     if ( isInitialized )
     {
@@ -55,21 +55,21 @@ SCOREP_Timer_Initialize()
 
 
 uint64_t
-SCOREP_GetClockTicks()
+SCOREP_GetClockTicks( void )
 {
     return ( uint64_t )rts_get_timebase();
 }
 
 
 uint64_t
-SCOREP_GetClockResolution()
+SCOREP_GetClockResolution( void )
 {
     return scorep_ticks_per_sec;
 }
 
 
 bool
-SCOREP_ClockIsGlobal()
+SCOREP_ClockIsGlobal( void )
 {
     return true;
 }

@@ -37,7 +37,7 @@
  * @note The init function is not thread safe.
  */
 void
-SCOREP_Timer_Initialize();
+SCOREP_Timer_Initialize( void );
 
 
 /**
@@ -50,7 +50,7 @@ SCOREP_Timer_Initialize();
  * @return Wall clock time in ticks.
  */
 uint64_t
-SCOREP_GetClockTicks();
+SCOREP_GetClockTicks( void );
 
 
 
@@ -61,14 +61,14 @@ SCOREP_GetClockTicks();
  * @return Clock resolution in ticks/second.
  */
 uint64_t
-SCOREP_GetClockResolution();
+SCOREP_GetClockResolution( void );
 
 
 /**
  * @return true if we have a global clock, e.g. on BG/P systems. False otherwise.
  */
 bool
-SCOREP_ClockIsGlobal();
+SCOREP_ClockIsGlobal( void );
 
 
 #endif /* SCOREP_TIMING_H */

@@ -38,7 +38,7 @@
 static bool isInitialized = false;
 
 void
-SCOREP_Timer_Initialize()
+SCOREP_Timer_Initialize( void )
 {
     int retval;
 
@@ -65,21 +65,21 @@ SCOREP_Timer_Initialize()
 
 
 uint64_t
-SCOREP_GetClockTicks()
+SCOREP_GetClockTicks( void )
 {
     return PAPI_get_real_usec();
 }
 
 
 uint64_t
-SCOREP_GetClockResolution()
+SCOREP_GetClockResolution( void )
 {
     return 1000000;
 }
 
 
 bool
-SCOREP_ClockIsGlobal()
+SCOREP_ClockIsGlobal( void )
 {
     return false;
 }

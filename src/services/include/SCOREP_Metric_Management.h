@@ -48,19 +48,19 @@ SCOREP_Metric_Read( SCOREP_Location* location );
  *          separate phases of program execution.
  */
 SCOREP_ErrorCode
-SCOREP_Metric_Reinitialize();
+SCOREP_Metric_Reinitialize( void );
 
 /** @brief  Returns the sampling set handle to the measurement system.
  */
 SCOREP_SamplingSetHandle
-SCOREP_Metric_GetSamplingSet();
+SCOREP_Metric_GetSamplingSet( void );
 
 /** @brief  Returns the number of a synchronous metrics.
  *
  *  @return Returns the number of a synchronous metrics.
  */
 uint32_t
-SCOREP_Metric_GetNumberOfSynchronousStrictMetrics();
+SCOREP_Metric_GetNumberOfSynchronousStrictMetrics( void );
 
 /** @brief  Returns the handle of a synchronous metric to the measurement system.
  *

@@ -36,7 +36,7 @@ static bool isInitialized = false;
 
 
 void
-SCOREP_Timer_Initialize()
+SCOREP_Timer_Initialize( void )
 {
     if ( isInitialized )
     {
@@ -47,7 +47,7 @@ SCOREP_Timer_Initialize()
 
 
 uint64_t
-SCOREP_GetClockTicks()
+SCOREP_GetClockTicks( void )
 {
     struct timeval tp;
     gettimeofday( &tp, 0 );
@@ -56,14 +56,14 @@ SCOREP_GetClockTicks()
 
 
 uint64_t
-SCOREP_GetClockResolution()
+SCOREP_GetClockResolution( void )
 {
     return 1e6;
 }
 
 
 bool
-SCOREP_ClockIsGlobal()
+SCOREP_ClockIsGlobal( void )
 {
     return false;
 }
