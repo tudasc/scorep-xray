@@ -60,7 +60,7 @@ SCOREP_Mutex scorep_user_region_mutex;
 SCOREP_Hashtab* scorep_user_region_table = NULL;
 
 void
-scorep_user_init_regions()
+scorep_user_init_regions( void )
 {
     SCOREP_MutexCreate( &scorep_user_region_mutex );
     SCOREP_MutexCreate( &scorep_user_file_table_mutex );
@@ -69,7 +69,7 @@ scorep_user_init_regions()
 }
 
 void
-scorep_user_finalize_regions()
+scorep_user_finalize_regions( void )
 {
     /* the value entry is stored in a structure that is allocated with the scorep
        memory management system. Thus, it must not free the value. */

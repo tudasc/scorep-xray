@@ -55,7 +55,7 @@ scorep_user_register( size_t subsystem_id )
 /** Initializes the user adapter.
  */
 static SCOREP_ErrorCode
-scorep_user_init()
+scorep_user_init( void )
 {
     if ( scorep_user_is_initialized == 0 )
     {
@@ -86,7 +86,7 @@ scorep_user_finalize_location( SCOREP_Location* locationData )
 /** Finalizes the user adapter.
  */
 static void
-scorep_user_finalize()
+scorep_user_finalize( void )
 {
     if ( scorep_user_is_initialized == 1 )
     {
@@ -101,7 +101,7 @@ scorep_user_finalize()
 /** Deregisters the user adapter.
  */
 static void
-scorep_user_deregister()
+scorep_user_deregister( void )
 {
 }
 

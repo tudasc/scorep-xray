@@ -40,13 +40,13 @@ SCOREP_Mutex scorep_user_metric_mutex;
 
 
 void
-scorep_user_init_metrics()
+scorep_user_init_metrics( void )
 {
     SCOREP_MutexCreate( &scorep_user_metric_mutex );
 }
 
 void
-scorep_user_finalize_metrics()
+scorep_user_finalize_metrics( void )
 {
     SCOREP_MutexDestroy( &scorep_user_metric_mutex );
 }

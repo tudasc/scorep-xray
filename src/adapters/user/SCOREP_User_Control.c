@@ -28,7 +28,7 @@
 #include "SCOREP_RuntimeManagement.h"
 
 void
-SCOREP_User_EnableRecording()
+SCOREP_User_EnableRecording( void )
 {
     /* Assert that the adapter and management system are initialized */
     SCOREP_USER_ASSERT_INITIALIZED;
@@ -38,7 +38,7 @@ SCOREP_User_EnableRecording()
 }
 
 void
-SCOREP_User_DisableRecording()
+SCOREP_User_DisableRecording( void )
 {
     /* Assert that the adapter and management system are initialized */
     SCOREP_USER_ASSERT_INITIALIZED;
@@ -48,7 +48,7 @@ SCOREP_User_DisableRecording()
 }
 
 bool
-SCOREP_User_RecordingEnabled()
+SCOREP_User_RecordingEnabled( void )
 {
     /* Assert that the adapter and management system are initialized */
     if ( scorep_user_is_initialized != 1 )

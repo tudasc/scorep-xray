@@ -102,7 +102,7 @@ scorep_selective_compare_regions( const void* value,
    Initializes the traced region list
  */
 static SCOREP_ErrorCode
-scorep_selective_init_region_list()
+scorep_selective_init_region_list( void )
 {
     scorep_selected_regions = SCOREP_Vector_CreateSize( 4 );
     if ( scorep_selected_regions == NULL )
@@ -355,7 +355,7 @@ scorep_selective_get_region( const char* name )
    Initializes the selective tracing.
  */
 void
-scorep_selective_init()
+scorep_selective_init( void )
 {
     FILE* config_file = NULL;
 
@@ -415,7 +415,7 @@ scorep_selective_init()
    Registers the config variables for selective tracing.
  */
 SCOREP_ErrorCode
-scorep_selective_register()
+scorep_selective_register( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
                         "Register config variables for selective tracing" );
@@ -426,7 +426,7 @@ scorep_selective_register()
    Cleans up the data structures
  */
 void
-scorep_selective_finalize()
+scorep_selective_finalize( void )
 {
     SCOREP_Vector_Foreach( scorep_selected_regions,
                            scorep_selective_delete_selected_region );

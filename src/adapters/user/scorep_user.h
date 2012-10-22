@@ -25,24 +25,24 @@
 #define SCOREP_INTERNAL_USER_H
 
 void
-scorep_user_init_regions();
+scorep_user_init_regions( void );
 
 void
-scorep_user_finalize_regions();
+scorep_user_finalize_regions( void );
 
 void
-scorep_user_init_metrics();
+scorep_user_init_metrics( void );
 
 void
-scorep_user_finalize_metrics();
+scorep_user_finalize_metrics( void );
 
 void
-scorep_selective_init();
+scorep_selective_init( void );
 
 SCOREP_ErrorCode
-scorep_selective_register();
+scorep_selective_register( void );
 
 void
-scorep_selective_finalize();
+scorep_selective_finalize( void );
 
 #endif /* SCOREP_INTERNAL_USER_H */

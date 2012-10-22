@@ -36,7 +36,7 @@
 #define SCOREP_F_RecordingEnabled_L scorep_f_recordingenabled
 
 void
-FSUB( SCOREP_F_EnableRecording )()
+FSUB( SCOREP_F_EnableRecording )( void )
 {
     /* Assert that the adapter and management system are initialized */
     SCOREP_USER_ASSERT_INITIALIZED;
@@ -46,7 +46,7 @@ FSUB( SCOREP_F_EnableRecording )()
 }
 
 void
-FSUB( SCOREP_F_DisableRecording )()
+FSUB( SCOREP_F_DisableRecording )( void )
 {
     /* Assert that the adapter and management system are initialized */
     SCOREP_USER_ASSERT_INITIALIZED;
