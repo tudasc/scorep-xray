@@ -82,7 +82,7 @@ SCOREP_Instrumenter::~SCOREP_Instrumenter ()
 }
 
 int
-SCOREP_Instrumenter::Run()
+SCOREP_Instrumenter::Run( void )
 {
     int ret_val = 0;
 
@@ -263,7 +263,7 @@ SCOREP_Instrumenter::Run()
    Cleanup
 ******************************************************************************/
 void
-SCOREP_Instrumenter::clean_temp_files()
+SCOREP_Instrumenter::clean_temp_files( void )
 {
     if ( ( !m_command_line->hasKeepFiles() ) && ( m_temp_files != "" ) )
     {
@@ -321,16 +321,10 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string input_file )
         m_compiler_flags += "`" + m_install_data->getOpariConfig()
                             + " --cflags` ";
     }
-
-    // Handle manual -lmpi flag
-    if ( m_command_line->isLmpiSet() )
-    {
-        m_linker_flags += "-lmpi ";
-    }
 }
 
 void
-SCOREP_Instrumenter::prepare_compiler()
+SCOREP_Instrumenter::prepare_compiler( void )
 {
     /* The sun compiler can only instrument Fortran files. Thus, any C/C++
        files are not instrumented. To avoid user confusion, the instrumenter
@@ -422,10 +416,10 @@ SCOREP_Instrumenter::compile_source_file( std::string input_file,
 {
     /* Construct command */
     std::string command = m_command_line->getCompilerName()
-                          + " " + m_command_line->getCompilerFlags()
+                          + " " + m_command_line->getFlagsBeforeLmpi()
                           + " " + m_compiler_flags
+                          + " " + m_command_line->getFlagsAfterLmpi()
                           + " -c " + input_file
-                          + " " + m_command_line->getDefineFlags()
                           + " -o " + output_file;
     execute_command( command );
 }
@@ -532,7 +526,7 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
 ******************************************************************************/
 
 std::string
-SCOREP_Instrumenter::get_library_files()
+SCOREP_Instrumenter::get_library_files( void )
 {
     std::string libraries   = m_command_line->getLibraries();
     std::string libdirs     = m_command_line->getLibDirs();
@@ -547,8 +541,7 @@ SCOREP_Instrumenter::get_library_files()
         if ( old_pos < cur_pos ) // Discard a blank
         {
             current_lib = libraries.substr( old_pos, cur_pos - old_pos );
-
-            lib_files += " " + find_library( current_lib, libdirs, " " );
+            lib_files  += " " + find_library( current_lib, libdirs, " " );
         }
         // Setup for next file
         old_pos = cur_pos + 1;
@@ -557,7 +550,7 @@ SCOREP_Instrumenter::get_library_files()
 }
 
 void
-SCOREP_Instrumenter::prepare_opari_linking()
+SCOREP_Instrumenter::prepare_opari_linking( void )
 {
     std::string output_name  = m_command_line->getOutputName();
     std::string current_file = "";
@@ -596,13 +589,13 @@ SCOREP_Instrumenter::prepare_opari_linking()
 }
 
 void
-SCOREP_Instrumenter::link_step()
+SCOREP_Instrumenter::link_step( void )
 {
     std::string command = m_command_line->getCompilerName()
                           + " " + m_input_files
+                          + " " + m_command_line->getFlagsBeforeLmpi()
                           + " " + m_linker_flags
-                          + " " + m_command_line->getCompilerFlags()
-                          + " " + m_linker_flags;
+                          + " " + m_command_line->getFlagsAfterLmpi();
 
     if ( m_command_line->getOutputName() != "" )
     {

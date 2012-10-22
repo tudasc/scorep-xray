@@ -36,7 +36,7 @@ const std::string toolname = "scorep";
     Prints a short usage message.
  */
 void
-print_short_usage()
+print_short_usage( void )
 {
     std::cout << "\nThis is the SCOREP instrumentation tool. The usage is:\n"
               << toolname << " <options> <orginal command>\n\n"
@@ -50,7 +50,7 @@ print_short_usage()
    Prints the long help text.
  */
 void
-print_help()
+print_help( void )
 {
     std::cout << "\nThis is the SCOREP instrumentation tool. The usage is:\n"
               << toolname << " <options> <orginal command>\n\n"

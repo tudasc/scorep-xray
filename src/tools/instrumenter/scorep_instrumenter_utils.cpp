@@ -276,6 +276,10 @@ find_library( std::string library, std::string path_list, std::string delimiter 
     {
         library.replace( 0, 2, "lib" );
     }
+    else
+    {
+        return library;
+    }
     while ( cur_pos != std::string::npos )
     {
         cur_pos = path_list.find( delimiter, old_pos );

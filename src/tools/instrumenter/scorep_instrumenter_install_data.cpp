@@ -50,7 +50,7 @@ simplify_path( std::string path )
    Main interface
 ******************************************************************************/
 
-SCOREP_Instrumenter_InstallData::SCOREP_Instrumenter_InstallData()
+SCOREP_Instrumenter_InstallData::SCOREP_Instrumenter_InstallData( void )
 {
     m_scorep_config   = SCOREP_PREFIX "/bin/scorep-config";
     m_c_compiler      = SCOREP_CC;
@@ -72,79 +72,79 @@ SCOREP_Instrumenter_InstallData::~SCOREP_Instrumenter_InstallData()
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getScorepConfig()
+SCOREP_Instrumenter_InstallData::getScorepConfig( void )
 {
     return m_scorep_config;
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getCC()
+SCOREP_Instrumenter_InstallData::getCC( void )
 {
     return m_c_compiler;
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getOpenmpFlags()
+SCOREP_Instrumenter_InstallData::getOpenmpFlags( void )
 {
     return m_openmp_cflags;
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getNm()
+SCOREP_Instrumenter_InstallData::getNm( void )
 {
     return m_nm;
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getAwk()
+SCOREP_Instrumenter_InstallData::getAwk( void )
 {
     return m_awk;
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getOpari()
+SCOREP_Instrumenter_InstallData::getOpari( void )
 {
     return m_opari;
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getOpariScript()
+SCOREP_Instrumenter_InstallData::getOpariScript( void )
 {
     return m_opari_script;
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getOpariConfig()
+SCOREP_Instrumenter_InstallData::getOpariConfig( void )
 {
     return m_opari_config;
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getGrep()
+SCOREP_Instrumenter_InstallData::getGrep( void )
 {
     return m_grep;
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getCobi()
+SCOREP_Instrumenter_InstallData::getCobi( void )
 {
     return m_cobi;
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getCobiConfigDir()
+SCOREP_Instrumenter_InstallData::getCobiConfigDir( void )
 {
     return m_cobi_config_dir;
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getPdtBinPath()
+SCOREP_Instrumenter_InstallData::getPdtBinPath( void )
 {
     return m_pdt_bin_path;
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getPdtConfigFile()
+SCOREP_Instrumenter_InstallData::getPdtConfigFile( void )
 {
     return m_pdt_config_file;
 }
@@ -172,7 +172,7 @@ SCOREP_Instrumenter_InstallData::readConfigFile( std::string arg0 )
 }
 
 void
-SCOREP_Instrumenter_InstallData::setBuildCheck()
+SCOREP_Instrumenter_InstallData::setBuildCheck( void )
 {
     m_scorep_config = simplify_path( BUILD_DIR "/scorep-config" )
                       + " --build-check";

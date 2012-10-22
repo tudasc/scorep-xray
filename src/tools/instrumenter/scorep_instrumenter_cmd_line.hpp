@@ -107,55 +107,57 @@ public:
                   char** argv );
 
     bool
-    isCompilerInstrumenting();
+    isCompilerInstrumenting( void );
     bool
-    isOpariInstrumenting();
+    isOpariInstrumenting( void );
     bool
-    isUserInstrumenting();
+    isUserInstrumenting( void );
     bool
-    isMpiInstrumenting();
+    isMpiInstrumenting( void );
     bool
-    isPdtInstrumenting();
+    isPdtInstrumenting( void );
     bool
-    isCobiInstrumenting();
+    isCobiInstrumenting( void );
     bool
-    isMpiApplication();
+    isMpiApplication( void );
     bool
-    isOpenmpApplication();
+    isOpenmpApplication( void );
     bool
-    isCudaApplication();
+    isCudaApplication( void );
     bool
-    isCompiling();
+    isCompiling( void );
     bool
-    isLinking();
+    isLinking( void );
     std::string
-    getCompilerName();
+    getCompilerName( void );
     std::string
-    getCompilerFlags();
+    getFlagsBeforeLmpi( void );
     std::string
-    getIncludeFlags();
+    getFlagsAfterLmpi( void );
     std::string
-    getDefineFlags();
+    getIncludeFlags( void );
     std::string
-    getOutputName();
+    getDefineFlags( void );
     std::string
-    getInputFiles();
+    getOutputName( void );
     std::string
-    getLibraries();
+    getInputFiles( void );
     std::string
-    getLibDirs();
+    getLibraries( void );
+    std::string
+    getLibDirs( void );
     int
-    getInputFileNumber();
+    getInputFileNumber( void );
     bool
-    isLmpiSet();
+    isLmpiSet( void );
     bool
-    isDryRun();
+    isDryRun( void );
     bool
-    hasKeepFiles();
+    hasKeepFiles( void );
     int
-    getVerbosity();
+    getVerbosity( void );
     bool
-    isBuildCheck();
+    isBuildCheck( void );
 
     /* ***************************************************** Private methods */
 private:
@@ -165,14 +167,14 @@ private:
        configuration file to screen.
      */
     virtual void
-    print_parameter();
+    print_parameter( void );
 
     /**
        Checks whether command line parameter parsing provided meaningful
        information, applies remaining detection decisions.
      */
     void
-    check_parameter();
+    check_parameter( void );
 
     /**
        Evaluates one parameter when in output mode.
@@ -329,9 +331,22 @@ private:
     std::string m_compiler_name;
 
     /**
-       all compiler/linker flags, except defines.
+       all compiler/linker flags, before an explicit -lmpi,
+       except source files, object files, -c and -o options.
      */
-    std::string m_compiler_flags;
+    std::string m_flags_before_lmpi;
+
+    /**
+       all compiler/linker flags, after an explicit -lmpi,
+       except source files, object files, -c and -o options.
+     */
+    std::string m_flags_after_lmpi;
+
+    /**
+       Pointers to @a m_flags_before_lmpi or @a m_flags_after_lmpi, depending
+       whether -lmpi already occured.
+     */
+    std::string* m_current_flags;
 
     /**
        include flags

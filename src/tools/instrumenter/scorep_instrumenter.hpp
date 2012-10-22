@@ -60,7 +60,7 @@ public:
        Performs the instrumentation of an application
      */
     virtual int
-    Run();
+    Run( void );
 
     /* ***************************************************** Private methods */
 private:
@@ -69,14 +69,14 @@ private:
        Executes the linking command. Aborts if an error occurs.
      */
     void
-    link_step();
+    link_step( void );
 
     /**
        Performs necessary modifications to the command for enabling
        compiler instrumentation.
      */
     void
-    prepare_compiler();
+    prepare_compiler( void );
 
     /**
        Instruments @a source_file with the Tau instrumentor.
@@ -98,7 +98,7 @@ private:
        Returns the list of full filenames for all libraries specified via -l flags.
      */
     std::string
-    get_library_files();
+    get_library_files( void );
 
     /**
        Performs the necessary actions for linking Opari instrumented object
@@ -106,7 +106,7 @@ private:
        creates the POMP2_Init Function, and compiles it.
      */
     void
-    prepare_opari_linking();
+    prepare_opari_linking( void );
 
     /**
        Constructs calls to the config tools.
@@ -173,7 +173,7 @@ private:
        Removes temorarily created files.
      */
     void
-    clean_temp_files();
+    clean_temp_files( void );
 
     /**
        Executes the command specified by @ command. It checks verbosity level

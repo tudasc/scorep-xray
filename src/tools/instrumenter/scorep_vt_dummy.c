@@ -35,7 +35,7 @@
  * Dummy function for the VT dummy library. Should never be called.
  */
 void
-scorep_vt_dummy()
+scorep_vt_dummy( void )
 {
     printf( "Score-P dummy library for libVT\n" );
 }
