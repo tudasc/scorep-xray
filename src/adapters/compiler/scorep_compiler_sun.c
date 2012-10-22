@@ -173,6 +173,10 @@ scorep_compiler_init_location( SCOREP_Location* locationData )
        at the measurement system. */
     if ( 0 == SCOREP_Location_GetId( locationData ) )
     {
+        /* I would like to call SCOREP_Location_EnterRegion() here,
+           but we prevent this for CPU locations. We could check
+           the passed locationData against
+           SCOREP_Location_GetCurrentCPULocation(). */
         SCOREP_EnterRegion( scorep_compiler_main_handle );
     }
     return SCOREP_SUCCESS;
