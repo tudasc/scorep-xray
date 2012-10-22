@@ -156,7 +156,7 @@ phat_exit( char* name,
 }
 
 SCOREP_ErrorCode
-scorep_compiler_init_adapter()
+scorep_compiler_init_adapter( void )
 {
     SCOREP_MutexCreate( &scorep_compiler_hash_lock  );
     scorep_compiler_main_handle = scorep_compiler_register_region( "main" );
@@ -186,7 +186,7 @@ scorep_compiler_finalize_location( SCOREP_Location* locationData )
 }
 
 int
-on_scorep_finalize()
+on_scorep_finalize( void )
 {
     /* We manually entered the artificial "main" region. We also need to exit
        it manually. See also scorep_compiler_init_adapter().
@@ -197,7 +197,7 @@ on_scorep_finalize()
 }
 
 void
-scorep_compiler_finalize()
+scorep_compiler_finalize( void )
 {
     SCOREP_MutexDestroy( &scorep_compiler_hash_lock );
     scorep_compiler_finalized = 1;

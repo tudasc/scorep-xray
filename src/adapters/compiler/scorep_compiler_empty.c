@@ -36,7 +36,7 @@
 #include <SCOREP_Compiler_Init.h>
 
 SCOREP_ErrorCode
-scorep_compiler_init_adapter()
+scorep_compiler_init_adapter( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                         "No compiler adapter available" );
@@ -58,6 +58,6 @@ scorep_compiler_finalize_location( SCOREP_Location* locationData )
 }
 
 void
-scorep_compiler_finalize()
+scorep_compiler_finalize( void )
 {
 }

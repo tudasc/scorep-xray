@@ -245,7 +245,7 @@ scorep_compiler_finalize_location( SCOREP_Location* locationData )
 
 /* Adapter initialization */
 SCOREP_ErrorCode
-scorep_compiler_init_adapter()
+scorep_compiler_init_adapter( void )
 {
     if ( scorep_compiler_initialize )
     {
@@ -266,7 +266,7 @@ scorep_compiler_init_adapter()
 
 /* Adapter finalization */
 void
-scorep_compiler_finalize()
+scorep_compiler_finalize( void )
 {
     /* call only, if previously initialized */
     if ( !scorep_compiler_initialize )
@@ -292,7 +292,7 @@ scorep_compiler_finalize()
  */
 #pragma save_all_regs
 void
-__rouinit()
+__rouinit( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI init routine" );
 
@@ -315,7 +315,7 @@ __rouinit()
 
 #pragma save_all_regs
 void
-__rouexit()
+__rouexit( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                         "Termination routine from PGI compiler instrumentation called" );

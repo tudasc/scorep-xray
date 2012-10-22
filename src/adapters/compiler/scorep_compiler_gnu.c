@@ -156,7 +156,7 @@ __cyg_profile_func_exit( void* func,
 *****************************************************************************************/
 
 SCOREP_ErrorCode
-scorep_compiler_init_adapter()
+scorep_compiler_init_adapter( void )
 {
     if ( scorep_compiler_initialize )
     {
@@ -197,7 +197,7 @@ scorep_compiler_finalize_location( SCOREP_Location* locationData )
 
 /* Adapter finalization */
 void
-scorep_compiler_finalize()
+scorep_compiler_finalize( void )
 {
     /* call only, if previously initialized */
     if ( !scorep_compiler_initialize )

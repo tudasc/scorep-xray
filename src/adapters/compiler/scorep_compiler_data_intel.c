@@ -69,7 +69,7 @@ scorep_compiler_delete_file_entry( SCOREP_Hashtab_Entry* entry )
 
 /* Initialize the file table */
 void
-scorep_compiler_init_file_table()
+scorep_compiler_init_file_table( void )
 {
     SCOREP_MutexCreate( &scorep_compiler_file_table_mutex );
     scorep_compiler_file_table = SCOREP_Hashtab_CreateSize( SCOREP_COMPILER_FILE_SLOTS,
@@ -79,7 +79,7 @@ scorep_compiler_init_file_table()
 
 /* Finalize the file table */
 void
-scorep_compiler_final_file_table()
+scorep_compiler_final_file_table( void )
 {
     SCOREP_Hashtab_Foreach( scorep_compiler_file_table, &scorep_compiler_delete_file_entry );
     SCOREP_Hashtab_Free( scorep_compiler_file_table );
@@ -135,7 +135,7 @@ scorep_compiler_get_file( const char* file )
 
 /* Initialize slots of compiler hash table. */
 void
-scorep_compiler_hash_init()
+scorep_compiler_hash_init( void )
 {
     uint64_t i;
 
@@ -245,7 +245,7 @@ scorep_compiler_hash_put( uint64_t      key,
 
 /* Free elements of compiler hash table. */
 void
-scorep_compiler_hash_free()
+scorep_compiler_hash_free( void )
 {
     scorep_compiler_hash_node* next;
     scorep_compiler_hash_node* cur;

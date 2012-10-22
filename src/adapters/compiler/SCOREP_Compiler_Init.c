@@ -45,7 +45,7 @@
    compiler adapter implementation.
  */
 extern SCOREP_ErrorCode
-scorep_compiler_init_adapter();
+scorep_compiler_init_adapter( void );
 
 /**
    The location init function is compiler specific. Thus it is contained in each
@@ -66,7 +66,7 @@ scorep_compiler_finalize_location( SCOREP_Location* location );
    compiler adapter implementation.
  */
 extern void
-scorep_compiler_finalize();
+scorep_compiler_finalize( void );
 
 /* Implementation of the compiler adapter initialization/finalization struct */
 const SCOREP_Subsystem SCOREP_Compiler_Adapter =

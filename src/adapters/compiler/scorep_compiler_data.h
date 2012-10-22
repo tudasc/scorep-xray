@@ -103,13 +103,13 @@ scorep_compiler_hash_put( uint64_t      key,
    Frees the memory allocated for the hash table.
  */
 extern void
-scorep_compiler_hash_free();
+scorep_compiler_hash_free( void );
 
 /**
    Initializes the hash table.
  */
 extern void
-scorep_compiler_hash_init();
+scorep_compiler_hash_init( void );
 
 /**
    Registers a region to the SCOREP measurement system from data of a hash node.
@@ -123,13 +123,13 @@ scorep_compiler_register_region( scorep_compiler_hash_node* node );
    Initialize the file table.
  */
 void
-scorep_compiler_init_file_table();
+scorep_compiler_init_file_table( void );
 
 /**
    Finalize the file table
  */
 void
-scorep_compiler_finalize_file_table();
+scorep_compiler_finalize_file_table( void );
 
 /**
    Returns the file handle for a given file name. It searches in the hash table if the
