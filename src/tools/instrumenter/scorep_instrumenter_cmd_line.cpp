@@ -344,7 +344,8 @@ SCOREP_Instrumenter_CmdLine::print_parameter( void )
     }
 
     std::cout << "\nCompiler name: " << m_compiler_name << std::endl;
-    std::cout << "Compiler flags: " << ( *m_current_flags ) << std::endl;
+    std::cout << "Flags before -lmpi: " << m_flags_before_lmpi << std::endl;
+    std::cout << "Flags after -lmpi: " << m_flags_after_lmpi << std::endl;
     std::cout << "Output file: " << m_output_name << std::endl;
     std::cout << "Input file(s): " << m_input_files << std::endl;
 }
