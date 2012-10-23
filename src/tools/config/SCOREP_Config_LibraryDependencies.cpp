@@ -189,13 +189,18 @@ SCOREP_Config_LibraryDependencies::~SCOREP_Config_LibraryDependencies()
 string
 SCOREP_Config_LibraryDependencies::GetLibraries( const deque<string> input_libs )
 {
-    deque<string>           deps = get_dependencies( input_libs );
-    deque<string>           libs;
-    deque<string>::iterator i;
-    for ( i = deps.begin(); i != deps.end(); i++ )
+    /* Traversing backwards will add the -l flags from the scorep_* lib last.
+       this makes the system more robust against broken dependencies in installed
+       .la files of other libraries, in particular libbfd.
+       During configure we tested whether linking works and this is more reliable
+       than installed .la files. */
+    deque<string>                         deps = get_dependencies( input_libs );
+    deque<string>                         libs;
+    deque<string>::const_reverse_iterator i;
+    for ( i = deps.rbegin(); i != deps.rend(); i++ )
     {
         la_object obj = la_objects[ *i ];
-        libs.push_back( "-l" + obj.m_lib_name.substr( 3 ) );
+        libs.push_front( "-l" + obj.m_lib_name.substr( 3 ) );
         libs.insert( libs.end(),
                      obj.m_libs.begin(),
                      obj.m_libs.end() );
