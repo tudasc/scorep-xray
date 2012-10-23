@@ -194,10 +194,10 @@ SCOREP_Config_LibraryDependencies::GetLibraries( const deque<string> input_libs 
        .la files of other libraries, in particular libbfd.
        During configure we tested whether linking works and this is more reliable
        than installed .la files. */
-    deque<string>                         deps = get_dependencies( input_libs );
-    deque<string>                         libs;
-    deque<string>::const_reverse_iterator i;
-    for ( i = deps.rbegin(); i != deps.rend(); i++ )
+    deque<string>                   deps = get_dependencies( input_libs );
+    deque<string>                   libs;
+    deque<string>::reverse_iterator i;
+    for ( i = deps.rbegin(); i < deps.rend(); i++ )
     {
         la_object obj = la_objects[ *i ];
         libs.push_front( "-l" + obj.m_lib_name.substr( 3 ) );
