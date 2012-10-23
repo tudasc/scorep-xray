@@ -59,6 +59,7 @@ common_ldflags  = -version-info @LIBRARY_INTERFACE_VERSION@
 common_ldflags += @OTF2_LDFLAGS@        \
                   @LIBBFD_LDFLAGS@      \
                   @SCOREP_PAPI_LDFLAGS@ \
+                  @CUDA_LDFLAGS@        \
                   @CUBE_WRITER_LDFLAGS@
 
 
