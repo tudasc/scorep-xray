@@ -84,8 +84,6 @@ SCOREP_Instrumenter::~SCOREP_Instrumenter ()
 int
 SCOREP_Instrumenter::Run( void )
 {
-    int ret_val = 0;
-
     /* Because the sun compiler can only instrument Fortran files, check
        whether all source files can be instrumented */
     if ( m_command_line->isCompilerInstrumenting() )
@@ -457,7 +455,6 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
                                              "_pdt" + extension );
     std::string       pdb_file = remove_path( remove_extension( source_file ) + ".pdb" );
     std::stringstream command;
-    int               return_value = 0;
     std::string       pdt_bin_path = m_install_data->getPdtBinPath();
 
     // Create database file
