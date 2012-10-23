@@ -297,6 +297,7 @@ m4_ifnblank($2, [
 # check libs
 with_$1_lib_checks_successful="unknown"
 with_$1_ldflags=""
+with_$1_rpathflag=""
 with_$1_libs="unknown"
 AS_IF([test "x${with_$1_lib}" != "xno" && test "x${with_$1_include_checks_successful}" = "xyes"],
       [ld_flags_save_$1="${LDFLAGS}"
@@ -304,6 +305,7 @@ AS_IF([test "x${with_$1_lib}" != "xno" && test "x${with_$1_include_checks_succes
        cpp_flags_save_$1="${CPPFLAGS}"
        AS_IF([test "x${with_$1_lib}" != "xyes"], 
              [with_$1_ldflags="-L${with_$1_lib}"
+              with_$1_rpathflag="-R${with_$1_lib}"
               _AC_SCOREP_ONE_OF_FILES_EXIST([$1.a $1.so $1.dylib], [${with_$1_lib}], [with_$1_lib_checks_successful])
               AS_IF([test "x${with_$1_lib_checks_successful}" = "xno"],
                     [AC_MSG_ERROR([cannot find $1.a, $1.so, or $1.dylib])])])
@@ -336,13 +338,13 @@ AS_IF([test "x${with_$1_include_checks_successful}" = "xyes" && \
        test "x${with_$1_lib_checks_successful}" = "xyes" ],
       # then
       [# strip whitespace
-       $1_result=`echo "yes, using ${with_$1_cppflags} ${with_$1_ldflags} ${with_$1_libs}" | sed 's/  */\ /g'`
+       $1_result=`echo "yes, using ${with_$1_cppflags} ${with_$1_ldflags} ${with_$1_rpathflag} ${with_$1_libs}" | sed 's/  */\ /g'`
        $1_result="${$1_result}${$1_success_post_result}"
        scorep_have_$1="yes"
        AM_CONDITIONAL(HAVE_[]$1_NAME, [test 1 -eq 1])
        AC_DEFINE(HAVE_[]$1_NAME, [1], [Defined if $1 is available.])
        AC_SUBST($1_NAME[]_CPPFLAGS, ["${with_$1_cppflags}"])
-       AC_SUBST($1_NAME[]_LDFLAGS, ["${with_$1_ldflags}"])
+       AC_SUBST($1_NAME[]_LDFLAGS, ["${with_$1_ldflags} ${with_$1_rpathflag}"]) 
        AC_SUBST($1_NAME[]_LIBS, ["${with_$1_libs}"])],
       # else
       [$1_result="no"

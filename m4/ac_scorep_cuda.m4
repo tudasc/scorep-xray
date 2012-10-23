@@ -58,7 +58,7 @@ AC_SCOREP_COND_HAVE([CUDA],
                     [Defined if cuda is available.],
                     [scorep_have_cuda="yes"
                      AC_SUBST(CUDA_CPPFLAGS, ["${with_libcudart_cppflags} ${with_libcupti_cppflags}"])
-                     AC_SUBST(CUDA_LDFLAGS,  ["${with_libcuda_ldflags} ${with_libcudart_ldflags} ${with_libcupti_ldflags}"])
+                     AC_SUBST(CUDA_LDFLAGS,  ["${with_libcuda_ldflags} ${with_libcudart_ldflags} ${with_libcupti_ldflags} ${with_libcuda_rpathflag} ${with_libcudart_rpathflag} ${with_libcupti_rpathflag}"])
                      AC_SUBST(CUDA_LIBS,     ["${with_libcuda_libs} ${with_libcudart_libs} ${with_libcupti_libs}"])],
                     [AC_SUBST(CUDA_CPPFLAGS, [""])
                      AC_SUBST(CUDA_LDFLAGS,  [""])
