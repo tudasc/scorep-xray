@@ -88,7 +88,7 @@ static void scorep_thread_call_externals_on_location_deactivation(SCOREP_Locatio
 static void scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivateData* tpd );
 static void scorep_thread_init_children_to_null(SCOREP_Thread_ThreadPrivateData** children, size_t startIndex, size_t endIndex);
 static void scorep_thread_update_tpd(SCOREP_Thread_ThreadPrivateData* newTPD);
-static void scorep_defer_location_initialization( SCOREP_Location* locationData, SCOREP_Location* parent );
+static void scorep_location_defer_definition_closure( SCOREP_Location* locationData, SCOREP_Location* parent );
 /* *INDENT-ON* */
 
 
@@ -124,7 +124,6 @@ struct SCOREP_Thread_ThreadPrivateData
 struct SCOREP_Location
 {
     uint32_t                      local_id;    // process local id, 0, 1, ...
-    uint64_t                      location_id; // global id
     uint64_t                      last_timestamp;
     SCOREP_LocationType           type;
     SCOREP_Allocator_PageManager* page_managers[ SCOREP_NUMBER_OF_MEMORY_TYPES ];
@@ -144,6 +143,7 @@ static struct SCOREP_Thread_ThreadPrivateData* initial_thread;
 static struct SCOREP_Location*                 initial_location;
 static uint32_t                                location_counter;
 static SCOREP_Mutex                            scorep_location_list_mutex;
+static SCOREP_Mutex                            scorep_location_deferred_list_mutex;
 
 
 void
@@ -177,6 +177,9 @@ SCOREP_Location_Initialize()
 {
     SCOREP_ErrorCode result = SCOREP_MutexCreate( &scorep_location_list_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS );
+
+    result = SCOREP_MutexCreate( &scorep_location_deferred_list_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS );
 }
 
 
@@ -197,8 +200,7 @@ scorep_location_create_location( SCOREP_Location*    parent,
     // Locking done in SCOREP_Allocator_CreatePageManager
     SCOREP_Memory_CreatePageManagers( new_location->page_managers );
 
-    new_location->type        = type;
-    new_location->location_id = INVALID_LOCATION_DEFINITION_ID;
+    new_location->type = type;
 
     if ( SCOREP_IsProfilingEnabled() )
     {
@@ -338,13 +340,13 @@ scorep_location_call_externals_on_new_location( SCOREP_Location* locationData,
             locationData->type,
             SCOREP_INVALID_LOCATION,
             name );
-        scorep_defer_location_initialization( locationData, parent );
+        scorep_location_defer_definition_closure( locationData, parent );
     }
     else
     {
         SCOREP_Location_GetGlobalId( locationData );
         locationData->location_handle = SCOREP_DefineLocation(
-            locationData->location_id,
+            SCOREP_Location_GetGlobalId( locationData ),
             locationData->type,
             parent ? parent->location_handle : SCOREP_INVALID_LOCATION,
             name );
@@ -493,6 +495,10 @@ SCOREP_Location_Finalize()
     SCOREP_ErrorCode result = SCOREP_MutexDestroy( &scorep_location_list_mutex );
     UTILS_ASSERT( result == SCOREP_SUCCESS );
     scorep_location_list_mutex = 0;
+
+    result = SCOREP_MutexDestroy( &scorep_location_deferred_list_mutex );
+    UTILS_ASSERT( result == SCOREP_SUCCESS );
+    scorep_location_deferred_list_mutex = 0;
 }
 
 
@@ -684,18 +690,13 @@ SCOREP_Location_GetGlobalId( SCOREP_Location* locationData )
 {
     assert( SCOREP_Mpi_IsInitialized() );
 
-    if ( locationData->location_id == INVALID_LOCATION_DEFINITION_ID )
-    {
-        uint64_t local_location_id = SCOREP_Location_GetId( locationData );
-        uint64_t rank              = SCOREP_Mpi_GetRank();
+    uint64_t local_location_id = locationData->local_id;
+    uint64_t rank              = SCOREP_Mpi_GetRank();
 
-        assert( rank >> 32 == 0 );
-        assert( local_location_id >> 32 == 0 );
+    assert( rank >> 32 == 0 );
+    assert( local_location_id >> 32 == 0 );
 
-        locationData->location_id = ( local_location_id << 32 ) | rank;
-    }
-
-    return locationData->location_id;
+    return ( local_location_id << 32 ) | rank;
 }
 
 
@@ -718,8 +719,8 @@ SCOREP_Location_GetLastTimestamp( SCOREP_Location* locationData )
 
 
 void
-scorep_defer_location_initialization( SCOREP_Location* locationData,
-                                      SCOREP_Location* parent )
+scorep_location_defer_definition_closure( SCOREP_Location* locationData,
+                                          SCOREP_Location* parent )
 {
     scorep_deferred_location* deferred_location = SCOREP_Memory_AllocForMisc( sizeof( scorep_deferred_location ) );
     assert( deferred_location );
@@ -727,64 +728,68 @@ scorep_defer_location_initialization( SCOREP_Location* locationData,
     deferred_location->location = locationData;
     deferred_location->parent   = parent;
     deferred_location->next     = 0;
-    SCOREP_PRAGMA_OMP( critical( deferred_locations ) )
-    {
-        *scorep_deferred_locations_tail = deferred_location;
-        scorep_deferred_locations_tail  = &deferred_location->next;
-    }
+
+    SCOREP_ErrorCode result = SCOREP_MutexLock( scorep_location_deferred_list_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS );
+
+    *scorep_deferred_locations_tail = deferred_location;
+    scorep_deferred_locations_tail  = &deferred_location->next;
+
+    result = SCOREP_MutexUnlock( scorep_location_deferred_list_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS );
 }
 
 
 void
-SCOREP_Location_ProcessDeferredOnes()
+SCOREP_Location_CloseDeferredDefinitions()
 {
     SCOREP_Location* current_location = SCOREP_Location_GetCurrentCPULocation();
 
-    SCOREP_PRAGMA_OMP( critical( deferred_locations ) )
+    SCOREP_ErrorCode result = SCOREP_MutexLock( scorep_location_deferred_list_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS );
+
+    scorep_deferred_location* deferred_location                      = scorep_deferred_locations_head;
+    bool                      current_location_in_deferred_locations = false;
+
+    while ( deferred_location )
     {
-        scorep_deferred_location* deferred_location                      = scorep_deferred_locations_head;
-        bool                      current_location_in_deferred_locations = false;
-
-        while ( deferred_location )
+        SCOREP_Location* location = deferred_location->location;
+        if ( location == current_location )
         {
-            SCOREP_Location* location = deferred_location->location;
-            if ( location == current_location )
-            {
-                current_location_in_deferred_locations = true;
-            }
+            current_location_in_deferred_locations = true;
+        }
 
-            /* Ensure that the location id is available */
+        SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->global_location_id =
             SCOREP_Location_GetGlobalId( location );
 
-            SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->global_location_id =
-                location->location_id;
+        SCOREP_Tracing_AssignLocationId( location );
 
-            SCOREP_Tracing_AssignLocationId( location );
-
-            deferred_location = deferred_location->next;
-        }
-
-        assert( current_location_in_deferred_locations );
-
-        // update parents
-        deferred_location = scorep_deferred_locations_head;
-        while ( deferred_location )
-        {
-            SCOREP_Location* location = deferred_location->location;
-            SCOREP_Location* parent   = deferred_location->parent;
-            if ( parent )
-            {
-                SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->parent =
-                    parent->location_handle;
-            }
-            else
-            {
-                assert( SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->parent
-                        == SCOREP_INVALID_LOCATION );
-            }
-            deferred_location = deferred_location->next;
-        }
+        deferred_location = deferred_location->next;
     }
+
+    assert( current_location_in_deferred_locations );
+
+    // update parents
+    deferred_location = scorep_deferred_locations_head;
+    while ( deferred_location )
+    {
+        SCOREP_Location* location = deferred_location->location;
+        SCOREP_Location* parent   = deferred_location->parent;
+        if ( parent )
+        {
+            SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->parent =
+                parent->location_handle;
+        }
+        else
+        {
+            assert( SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location )->parent
+                    == SCOREP_INVALID_LOCATION );
+        }
+        deferred_location = deferred_location->next;
+    }
+
+    result = SCOREP_MutexUnlock( scorep_location_deferred_list_mutex );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS );
 }
 
 void

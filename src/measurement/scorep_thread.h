@@ -112,6 +112,6 @@ scorep_thread_get_nesting_level();
 
 
 void
-SCOREP_Location_ProcessDeferredOnes();
+SCOREP_Location_CloseDeferredDefinitions();
 
 #endif /* SCOREP_INTERNAL_THREAD_H */

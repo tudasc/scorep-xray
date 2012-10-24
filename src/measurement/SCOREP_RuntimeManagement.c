@@ -328,7 +328,7 @@ SCOREP_InitMeasurementMPI( int rank )
 
     SCOREP_Mpi_SetRankTo( rank );
     SCOREP_CreateExperimentDir();
-    SCOREP_Location_ProcessDeferredOnes();
+    SCOREP_Location_CloseDeferredDefinitions();
     SCOREP_SynchronizeClocks();
     scorep_set_otf2_archive_master_slave();
 
