@@ -244,14 +244,14 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
     SCOREP_Location* new_location = scorep_location_create_location( parent, type, name,
                                                                      false /* defer_new_location_notication */ );
 
-    if ( parent == NULL )
-    {
-        parent = SCOREP_Location_GetCurrentCPULocation();
-    }
+    //if ( parent == NULL )
+    //{
+    //    parent = SCOREP_Location_GetCurrentCPULocation();
+    //}
 
-    scorep_thread_call_externals_on_new_thread( new_location, parent );
-    scorep_thread_call_externals_on_thread_activation( new_location, parent,
-                                                       1 /* non_CPU_thread_nesting_level */ );
+    //scorep_thread_call_externals_on_new_thread( new_location, parent );
+    //scorep_thread_call_externals_on_thread_activation( new_location, parent,
+    //                                                   1 /* non_CPU_thread_nesting_level */ );
 
     return new_location;
 }

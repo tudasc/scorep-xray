@@ -748,6 +748,11 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
         parent_data->root_node->next_sibling = node;
         SCOREP_MutexUnlock( scorep_profile_location_mutex );
     }
+
+    /* Make the root node the current node of the location.
+       It allows to use the location without an activation, e.g.,
+       for non-CPU-locations. */
+    scorep_profile_set_current_node( thread_data, node );
 }
 
 void
