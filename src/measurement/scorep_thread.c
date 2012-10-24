@@ -83,7 +83,6 @@ typedef struct SCOREP_Thread_ThreadPrivateData SCOREP_Thread_ThreadPrivateData;
 static SCOREP_Location* scorep_thread_create_location_data_for(SCOREP_Thread_ThreadPrivateData* tpd);
 static SCOREP_Thread_ThreadPrivateData* scorep_thread_create_thread_private_data();
 static void scorep_location_call_externals_on_new_location(SCOREP_Location* locationData, const char* name, SCOREP_Location* parent, bool isMainLocation );
-static void scorep_thread_call_externals_on_new_thread(SCOREP_Location* locationData, SCOREP_Location* parent);
 static void scorep_thread_call_externals_on_thread_activation(SCOREP_Location* locationData, SCOREP_Location* parent, uint32_t nestingLevel);
 static void scorep_thread_call_externals_on_thread_deactivation(SCOREP_Location* locationData, SCOREP_Location* parent);
 static void scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivateData* tpd );
@@ -169,7 +168,6 @@ SCOREP_Thread_Initialize()
 
     initial_location = TPD->location_data;
 
-    scorep_thread_call_externals_on_new_thread( TPD->location_data, 0 );
     scorep_thread_call_externals_on_thread_activation( TPD->location_data, 0, 0 /* nesting level */ );
 }
 
@@ -317,18 +315,6 @@ scorep_thread_update_tpd( SCOREP_Thread_ThreadPrivateData* newTPD )
 #else
 #error Unsupported architecture. Only 32 bit and 64 bit architectures are supported.
 #endif
-}
-
-
-void
-scorep_thread_call_externals_on_new_thread( SCOREP_Location* locationData,
-                                            SCOREP_Location* parent )
-{
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_OnThreadCreation( locationData, parent );
-    }
-    SCOREP_Tracing_OnThreadCreation( locationData, parent );
 }
 
 
@@ -617,12 +603,6 @@ SCOREP_Location_GetCurrentCPULocation()
         // update TPD with a child but reuse the parent.
         TPD->is_active = true;
         TPD->n_reusages++;
-        if ( !TPD->children[ 0 ] )
-        {
-            /// @todo do we see this as a new thread?
-            scorep_thread_call_externals_on_new_thread( TPD->location_data,
-                                                        TPD->location_data );
-        }
         scorep_thread_call_externals_on_thread_activation( TPD->location_data,
                                                            TPD->location_data,
                                                            TPD->nesting_level ); // use same nesting level as in fork
@@ -666,8 +646,6 @@ SCOREP_Location_GetCurrentCPULocation()
                               "Wrong timestamp order [3]: %" PRIu64 " (last recorded) > %" PRIu64 " (current).",
                               TPD->location_data->last_timestamp, current_timestamp );
             }
-            scorep_thread_call_externals_on_new_thread( ( *my_tpd )->location_data,
-                                                        TPD->parent->location_data );
         }
         scorep_thread_call_externals_on_thread_activation( TPD->location_data,
                                                            TPD->parent->location_data,
