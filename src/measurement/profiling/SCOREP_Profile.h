@@ -293,9 +293,9 @@ SCOREP_Profile_OnThreadCreation( SCOREP_Location* locationData,
  * @param nestingLevel The nesting Level of the activated thread.
  */
 void
-SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
-                                   SCOREP_Location* parentLocationData,
-                                   uint32_t         nestingLevel );
+SCOREP_Profile_OnLocationActivation( SCOREP_Location* locationData,
+                                     SCOREP_Location* parentLocationData,
+                                     uint32_t         nestingLevel );
 
 
 /**
@@ -308,8 +308,8 @@ SCOREP_Profile_OnThreadActivation( SCOREP_Location* locationData,
  * locationData.
  */
 void
-SCOREP_Profile_OnThreadDeactivation( SCOREP_Location* locationData,
-                                     SCOREP_Location* parentLocationData );
+SCOREP_Profile_OnLocationDeactivation( SCOREP_Location* locationData,
+                                       SCOREP_Location* parentLocationData );
 
 
 /**

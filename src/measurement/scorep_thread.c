@@ -83,8 +83,8 @@ typedef struct SCOREP_Thread_ThreadPrivateData SCOREP_Thread_ThreadPrivateData;
 static SCOREP_Location* scorep_thread_create_location_data_for(SCOREP_Thread_ThreadPrivateData* tpd);
 static SCOREP_Thread_ThreadPrivateData* scorep_thread_create_thread_private_data();
 static void scorep_location_call_externals_on_new_location(SCOREP_Location* locationData, const char* name, SCOREP_Location* parent, bool isMainLocation );
-static void scorep_thread_call_externals_on_thread_activation(SCOREP_Location* locationData, SCOREP_Location* parent, uint32_t nestingLevel);
-static void scorep_thread_call_externals_on_thread_deactivation(SCOREP_Location* locationData, SCOREP_Location* parent);
+static void scorep_thread_call_externals_on_location_activation(SCOREP_Location* locationData, SCOREP_Location* parent, uint32_t nestingLevel);
+static void scorep_thread_call_externals_on_location_deactivation(SCOREP_Location* locationData, SCOREP_Location* parent);
 static void scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivateData* tpd );
 static void scorep_thread_init_children_to_null(SCOREP_Thread_ThreadPrivateData** children, size_t startIndex, size_t endIndex);
 static void scorep_thread_update_tpd(SCOREP_Thread_ThreadPrivateData* newTPD);
@@ -168,7 +168,7 @@ SCOREP_Thread_Initialize()
 
     initial_location = TPD->location_data;
 
-    scorep_thread_call_externals_on_thread_activation( TPD->location_data, 0, 0 /* nesting level */ );
+    scorep_thread_call_externals_on_location_activation( TPD->location_data, 0, 0 /* nesting level */ );
 }
 
 
@@ -359,15 +359,15 @@ scorep_location_call_externals_on_new_location( SCOREP_Location* locationData,
 }
 
 void
-scorep_thread_call_externals_on_thread_activation( SCOREP_Location* locationData,
-                                                   SCOREP_Location* parent,
-                                                   uint32_t         nestingLevel )
+scorep_thread_call_externals_on_location_activation( SCOREP_Location* locationData,
+                                                     SCOREP_Location* parent,
+                                                     uint32_t         nestingLevel )
 {
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_OnThreadActivation( locationData, parent, nestingLevel );
+        SCOREP_Profile_OnLocationActivation( locationData, parent, nestingLevel );
     }
-    SCOREP_Tracing_OnThreadActivation( locationData, parent );
+    SCOREP_Tracing_OnLocationActivation( locationData, parent );
 }
 
 
@@ -552,7 +552,7 @@ SCOREP_Thread_OnThreadJoin()
         {
             if ( TPD->children[ i ]->is_active )
             {
-                scorep_thread_call_externals_on_thread_deactivation(
+                scorep_thread_call_externals_on_location_deactivation(
                     TPD->children[ i ]->location_data, TPD->location_data );
                 TPD->children[ i ]->is_active = false;
             }
@@ -569,21 +569,21 @@ SCOREP_Thread_OnThreadJoin()
         assert( TPD->n_reusages > 0 );
         TPD->n_reusages--;
         // no parallelism in last parallel region, parent == child
-        scorep_thread_call_externals_on_thread_deactivation( TPD->location_data,
-                                                             TPD->location_data );
+        scorep_thread_call_externals_on_location_deactivation( TPD->location_data,
+                                                               TPD->location_data );
     }
 }
 
 
 void
-scorep_thread_call_externals_on_thread_deactivation( SCOREP_Location* locationData,
-                                                     SCOREP_Location* parent )
+scorep_thread_call_externals_on_location_deactivation( SCOREP_Location* locationData,
+                                                       SCOREP_Location* parent )
 {
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_OnThreadDeactivation( locationData, parent );
+        SCOREP_Profile_OnLocationDeactivation( locationData, parent );
     }
-    SCOREP_Tracing_OnThreadDeactivation( locationData, parent );
+    SCOREP_Tracing_OnLocationDeactivation( locationData, parent );
 }
 
 
@@ -603,9 +603,9 @@ SCOREP_Location_GetCurrentCPULocation()
         // update TPD with a child but reuse the parent.
         TPD->is_active = true;
         TPD->n_reusages++;
-        scorep_thread_call_externals_on_thread_activation( TPD->location_data,
-                                                           TPD->location_data,
-                                                           TPD->nesting_level ); // use same nesting level as in fork
+        scorep_thread_call_externals_on_location_activation( TPD->location_data,
+                                                             TPD->location_data,
+                                                             TPD->nesting_level ); // use same nesting level as in fork
     }
     else
     {
@@ -647,9 +647,9 @@ SCOREP_Location_GetCurrentCPULocation()
                               TPD->location_data->last_timestamp, current_timestamp );
             }
         }
-        scorep_thread_call_externals_on_thread_activation( TPD->location_data,
-                                                           TPD->parent->location_data,
-                                                           TPD->parent->nesting_level ); // use same nesting level as in fork
+        scorep_thread_call_externals_on_location_activation( TPD->location_data,
+                                                             TPD->parent->location_data,
+                                                             TPD->parent->nesting_level ); // use same nesting level as in fork
     }
 
     return TPD->location_data;

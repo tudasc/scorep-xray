@@ -276,7 +276,7 @@ scorep_profile_initialize( SCOREP_Location* location )
     SCOREP_Profile_AddLocationSpecificMetrics( location,
                                                SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( location ) );
 
-    SCOREP_Profile_OnThreadActivation( location, NULL, 0 ); // called also from scorep_thread_call_externals_on_thread_activation
+    SCOREP_Profile_OnLocationActivation( location, NULL, 0 ); // called also from scorep_thread_call_externals_on_thread_activation
 }
 
 
