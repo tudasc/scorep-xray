@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "jacobi.h"
+#include <SCOREP_User.h>
 
 #define U( j, i ) afU[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define F( j, i ) afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
@@ -57,6 +58,8 @@ Jacobi( struct JacobiData* data )
 
         while ( data->iIterCount < data->iIterMax && residual > data->fTolerance )
         {
+            SCOREP_USER_REGION_DEFINE( main_loop );
+            SCOREP_USER_REGION_BEGIN( main_loop, "main_loop", SCOREP_USER_REGION_TYPE_DYNAMIC );
             residual = 0.0;
 
             /* copy new solution into old */
@@ -88,6 +91,7 @@ Jacobi( struct JacobiData* data )
             /* error check */
             ( data->iIterCount )++;
             residual = sqrt( residual ) / ( data->iCols * data->iRows );
+            SCOREP_USER_REGION_END( main_loop );
         } /* while */
 
         data->fResidual = residual;

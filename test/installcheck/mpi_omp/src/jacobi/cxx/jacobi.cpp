@@ -24,8 +24,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "jacobi.h"
-
-#include <scorep/SCOREP_User.h>
+#include <SCOREP_User.h>
 
 using namespace std;
 
@@ -49,8 +48,6 @@ Jacobi( JacobiData &data )
     MPI_Request request[ 4 ];
     MPI_Status  status[ 4 ];
 
-    SCOREP_USER_REGION_DEFINE( scorep_iteration );
-
     double* uold = new double[ data.iCols * ( data.iRowLast - data.iRowFirst + 1 ) ];
 
     if ( uold )
@@ -62,8 +59,8 @@ Jacobi( JacobiData &data )
 
         while ( data.iIterCount < data.iIterMax && residual > data.fTolerance )
         {
-            SCOREP_USER_REGION_BEGIN( scorep_iteration, "ITERATION",
-                                      SCOREP_USER_REGION_TYPE_DYNAMIC );
+            SCOREP_USER_REGION_DEFINE( main_loop );
+            SCOREP_USER_REGION_BEGIN( main_loop, "main_loop", SCOREP_USER_REGION_TYPE_DYNAMIC );
 
             residual = 0.0;
 
@@ -98,7 +95,7 @@ Jacobi( JacobiData &data )
             data.iIterCount++;
             residual = sqrt( residual ) / ( data.iCols * data.iRows );
 
-            SCOREP_USER_REGION_END( scorep_iteration );
+            SCOREP_USER_REGION_END( main_loop );
         } /* while */
 
         data.fResidual = residual;
