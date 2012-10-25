@@ -42,7 +42,7 @@
 #include <scorep_mpi.h>
 #include <scorep_runtime_management.h>
 
-#include "scorep_thread.h"
+#include <scorep_location.h>
 
 #include <cubew_cube.h>
 #include <cubew_cubew.h>

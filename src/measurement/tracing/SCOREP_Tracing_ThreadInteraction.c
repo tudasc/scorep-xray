@@ -37,7 +37,7 @@
 #include <SCOREP_Memory.h>
 #include <scorep_runtime_management.h>
 #include <scorep_definitions.h>
-#include <scorep_thread.h>
+#include <scorep_location.h>
 #include <scorep_status.h>
 #include <scorep_mpi.h>
 

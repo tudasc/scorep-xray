@@ -46,7 +46,7 @@
 #include <scorep_environment.h>
 #include <scorep_runtime_management.h>
 #include <scorep_clock_synchronization.h>
-#include <scorep_thread.h>
+#include <scorep_location.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Timing.h>
 #include <scorep_definitions.h>

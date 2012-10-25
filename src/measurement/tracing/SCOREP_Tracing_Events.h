@@ -31,8 +31,7 @@
 #include <stdbool.h>
 
 
-#include <scorep_thread.h>
-
+#include <scorep_location.h>
 
 void
 SCOREP_Tracing_MeasurementOnOff( SCOREP_Location* location,

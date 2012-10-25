@@ -29,7 +29,7 @@
 #include <string.h>
 
 #include "scorep_rewind_stack_management.h"
-#include "scorep_thread.h"
+#include <scorep_location.h>
 
 #include <otf2/otf2.h>
 #include "scorep_tracing_internal.h"

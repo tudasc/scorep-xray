@@ -29,10 +29,6 @@
  */
 
 
-#include <SCOREP_Memory.h>
-#include <SCOREP_Profile.h>
-#include <SCOREP_Location.h>
-#include <tracing/SCOREP_Tracing_ThreadInteraction.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -73,45 +69,10 @@ void
 SCOREP_Thread_OnThreadJoin();
 
 
-
-void
-SCOREP_Location_Initialize();
-
-/**
- * Call from master thread, e.g. SCOREP_FinalizeMeasurement(). Cleans up
- * locations data structures.
- *
- * Must be called before SCOREP_Thread_Finalize().
- */
-void
-SCOREP_Location_Finalize();
-
-
-SCOREP_Allocator_PageManager*
-SCOREP_Location_GetMemoryPageManager( SCOREP_Location*  locationData,
-                                      SCOREP_MemoryType type );
-
-
-SCOREP_Profile_LocationData*
-SCOREP_Location_GetProfileData( SCOREP_Location* locationData );
-
-
-SCOREP_TracingData*
-SCOREP_Location_GetTracingData( SCOREP_Location* locationData );
-
-
-uint64_t
-SCOREP_Location_GetGlobalId( SCOREP_Location* locationData );
-
-
-
 // temporary to get nesting running. nesting_level will be replaced by
 // fork_count (in generic threading) to match parent- and child-threads.
 uint32_t
 scorep_thread_get_nesting_level();
 
-
-void
-SCOREP_Location_CloseDeferredDefinitions();
 
 #endif /* SCOREP_INTERNAL_THREAD_H */

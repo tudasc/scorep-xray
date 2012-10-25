@@ -29,7 +29,7 @@
 #include <UTILS_Error.h>
 #include <SCOREP_Mutex.h>
 #include "scorep_environment.h"
-#include "scorep_thread.h"
+#include "scorep_location.h"
 #include "scorep_status.h"
 #include <assert.h>
 #include <stdbool.h>

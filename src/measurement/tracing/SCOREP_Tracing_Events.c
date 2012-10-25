@@ -43,7 +43,6 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Properties.h>
 
-#include <scorep_thread.h>
 #include <scorep_definition_structs.h>
 #include <scorep_definitions.h>
 

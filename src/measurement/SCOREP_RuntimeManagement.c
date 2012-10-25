@@ -65,6 +65,7 @@
 #include "scorep_status.h"
 #include "scorep_mpi.h"
 #include "scorep_thread.h"
+#include "scorep_location.h"
 #include "scorep_runtime_management.h"
 #include "scorep_system_tree.h"
 #include "scorep_clock_synchronization.h"

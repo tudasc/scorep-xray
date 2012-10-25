@@ -33,7 +33,7 @@
 #include <SCOREP_Config.h>
 #include <SCOREP_Mutex.h>
 
-#include <scorep_thread.h>
+#include <scorep_location.h>
 #include <inttypes.h>
 #include <stdlib.h>
 
