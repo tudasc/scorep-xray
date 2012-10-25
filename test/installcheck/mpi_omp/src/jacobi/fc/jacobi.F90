@@ -37,7 +37,7 @@ module JacobiMod
         !.. Local Arrays .. 
         double precision, allocatable :: uold(:,:)
          
-        SCOREP_USER_REGION_DEFINE( main_loop );
+        SCOREP_USER_REGION_DEFINE( main_loop )
 
         !.. Intrinsic Functions .. 
         intrinsic DBLE, SQRT
@@ -54,7 +54,7 @@ module JacobiMod
             residual = 10.0d0 * myData%fTolerance
         
             do while (myData%iIterCount < myData%iIterMax .and. residual > myData%fTolerance)
-	        SCOREP_USER_REGION_BEGIN( main_loop, "main_loop", SCOREP_USER_REGION_TYPE_DYNAMIC );
+	        SCOREP_USER_REGION_BEGIN( main_loop, "main_loop", SCOREP_USER_REGION_TYPE_DYNAMIC )
                 residual = 0.0d0
         
                 ! Copy new solution into old
@@ -86,7 +86,7 @@ module JacobiMod
                  myData%iIterCount = myData%iIterCount + 1      
                  residual = SQRT(residual) / DBLE(myData%iCols * myData%iRows)
              
-	         SCOREP_USER_REGION_END( main_loop );
+	         SCOREP_USER_REGION_END( main_loop )
             ! End iteration loop 
             end do
             myData%fResidual = residual
