@@ -63,7 +63,6 @@ AC_SUBST([LIBTOOL_DEPS])
 
 AC_SCOREP_BUILD_MODE
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION([../])
-AC_SCOREP_CUBE_READER
 
 AC_CONFIG_FILES([Makefile], [[
 sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&FE/' \
