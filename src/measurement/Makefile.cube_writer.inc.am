@@ -20,6 +20,12 @@
 
 if ! HAVE_EXTERNAL_CUBE_WRITER
 
+# Get dependencies right: @CUBE_WRITER_LIBS@ in common_libadd is known
+# only at configure time. automake therefore can't create dependencies
+# at bootstrap time (which it does for hardcoded .la files). Ensure
+# libscorep_cube_writer.la is build in the beginning.
+BUILT_SOURCES += libscorep_cube_writer.la
+
 noinst_LTLIBRARIES += libscorep_cube_writer.la
 libscorep_cube_writer_la_SOURCES =                             \
     $(SRC_ROOT)src/measurement/cube_writer/cubew_cartesian.c   \

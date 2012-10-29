@@ -19,8 +19,6 @@
 ## author     Christian Roessel <c.roessel@fz-juelich.de>
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
-BUILT_SOURCES += @CUBE_WRITER_BUILT_SOURCES@
-
 common_libadd = libscorep_measurement.la              \
                 libscorep_timer.la                    \
                 libscorep_metric.la                   \

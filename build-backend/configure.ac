@@ -78,16 +78,11 @@ AS_IF([test -n "${scorep_cube_bindir}"],
       [AC_SUBST([CUBE_WRITER_CPPFLAGS],      ["`${scorep_cube_bindir}/cube-config --writer-cppflags`"])
        AC_SUBST([CUBE_WRITER_LIBS],          ["`${scorep_cube_bindir}/cube-config --writer-libs`"])
        AC_SUBST([CUBE_WRITER_LDFLAGS],       ["`${scorep_cube_bindir}/cube-config --writer-ldflags ${scorep_cube_config_backend_arg}`"])
-       AC_SUBST([CUBE_WRITER_BUILT_SOURCES], [])
        AM_CONDITIONAL([HAVE_EXTERNAL_CUBE_WRITER], [test 1 -eq 1])
       ],
       [AC_SUBST([CUBE_WRITER_CPPFLAGS],      ['-I$(srcdir)/../src/measurement/cube_writer'])
        AC_SUBST([CUBE_WRITER_LIBS],          [libscorep_cube_writer.la])
        AC_SUBST([CUBE_WRITER_LDFLAGS],       [])
-       # Get dependencies right: @CUBE_WRITER_LIBS@ is evaluated only at 
-       # configure time which is too late to trigger automake's dependency
-       # mechanism.
-       AC_SUBST([CUBE_WRITER_BUILT_SOURCES], [libscorep_cube_writer.la]) 
        AM_CONDITIONAL([HAVE_EXTERNAL_CUBE_WRITER], [test 1 -eq 0])
       ])
 
