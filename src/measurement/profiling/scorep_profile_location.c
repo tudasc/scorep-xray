@@ -142,6 +142,7 @@ create_fork_list_item( SCOREP_Profile_LocationData* location )
     /* Append to end of list */
     if ( location->fork_list_tail == NULL )
     {
+        new_list_item->prev      = NULL;
         location->fork_list_head = new_list_item;
     }
     else
