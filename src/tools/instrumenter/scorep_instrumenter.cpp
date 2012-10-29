@@ -505,6 +505,7 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
 #endif
     command << " -o " << modified_file
             << " -spec " << m_install_data->getPdtConfigFile();
+    command << " " << m_command_line->getPdtParams();
 
     if ( m_command_line->isMpiApplication() )
     {

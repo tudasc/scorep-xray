@@ -158,6 +158,8 @@ public:
     getVerbosity( void );
     bool
     isBuildCheck( void );
+    std::string
+    getPdtParams( void );
 
     /* ***************************************************** Private methods */
 private:
@@ -246,6 +248,16 @@ private:
      */
     void
     add_define( std::string arg );
+
+    /**
+       Extracts the paramter list out of @a arg. It assumes that it has
+       a structure like, e.g., "--opari=paramater"
+       @param arg  The full current argument.
+       @param pos  The length of the tool argument, e.g., length of --opari.
+     */
+    std::string
+    get_tool_params( std::string arg,
+                     size_t      pos );
 
 
     /* ***************************************************** Private members */
@@ -422,6 +434,15 @@ private:
        from an instrumented run, but from the build location.
      */
     bool m_is_build_check;
+
+
+    /* --------------------------------------------
+       Tools flags
+       ------------------------------------------*/
+    /**
+       Extra parameters for the tau_instrumenter
+     */
+    std::string m_pdt_params;
 };
 
 #endif

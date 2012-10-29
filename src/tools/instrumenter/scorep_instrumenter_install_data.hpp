@@ -146,6 +146,20 @@ public:
     void
     setBuildCheck( void );
 
+    /**
+       Sets user specified Opari2 flags.
+       @param params The Opari2 parameters
+     */
+    void
+    setOpariParams( std::string params );
+
+    /**
+       Sets user specified Cobi flags.
+       @param params The Cobi parameters
+     */
+    void
+    setCobiParams( std::string params );
+
 
     /* ***************************************************** Private methods */
 private:
@@ -247,6 +261,21 @@ private:
         PDT instrumentation specificaion file.
      */
     std::string m_pdt_config_file;
+
+    /**
+       Extra parameter for opari.
+     */
+    std::string m_opari_params;
+
+    /**
+       Extra parameters for the tau_instrumenter
+     */
+    std::string m_pdt_params;
+
+    /**
+       Extra parameter for the Cobi instrumenter
+     */
+    std::string m_cobi_params;
 };
 
 #endif

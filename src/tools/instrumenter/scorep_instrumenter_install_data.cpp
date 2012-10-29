@@ -65,6 +65,8 @@ SCOREP_Instrumenter_InstallData::SCOREP_Instrumenter_InstallData( void )
     m_cobi_config_dir = COBI_CONFIG_DIR;
     m_pdt_bin_path    = PDT;
     m_pdt_config_file = PDT_CONFIG;
+    m_opari_params    = "";
+    m_cobi_params     = "";
 }
 
 SCOREP_Instrumenter_InstallData::~SCOREP_Instrumenter_InstallData()
@@ -104,7 +106,7 @@ SCOREP_Instrumenter_InstallData::getAwk( void )
 std::string
 SCOREP_Instrumenter_InstallData::getOpari( void )
 {
-    return m_opari;
+    return m_opari + " " + m_opari_params;
 }
 
 std::string
@@ -128,7 +130,7 @@ SCOREP_Instrumenter_InstallData::getGrep( void )
 std::string
 SCOREP_Instrumenter_InstallData::getCobi( void )
 {
-    return m_cobi;
+    return m_cobi + " " + m_cobi_params;
 }
 
 std::string
@@ -187,6 +189,18 @@ SCOREP_Instrumenter_InstallData::setBuildCheck( void )
     m_grep            = "`" + m_opari_config + " --egrep`";
     m_cobi_config_dir = simplify_path( BUILD_DIR "/../share" );
     m_pdt_config_file = simplify_path( BUILD_PDT_CONFIG );
+}
+
+void
+SCOREP_Instrumenter_InstallData::setOpariParams( std::string params )
+{
+    m_opari_params = params;
+}
+
+void
+SCOREP_Instrumenter_InstallData::setCobiParams( std::string params )
+{
+    m_cobi_params = params;
 }
 
 /* ****************************************************************************

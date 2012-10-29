@@ -76,25 +76,29 @@ print_help( void )
               << "                  mpi program.\n"
               << "  --nompi         Disables mpi wrappers. They are disabled by default if\n"
               << "                  it is no mpi program.\n"
-              << "  --opari         Enables Opari instrumentation. Is enabled by default\n"
+              << "  --opari[=\"<parameter-list>\"] Enables Opari2 instrumentation. Is enabled by default\n"
               << "                  if it is an OpenMP program.\n"
+              << "                  You may specify additional parameters that are passed to Opari2.\n"
     /*
-            << "  --noopari       Disables Opari instrumentation. Is disabled by default\n"
+            << "  --noopari       Disables Opari2 instrumentation. Is disabled by default\n"
             << "                  if it is no OpenMP program.\n"
      */
               << "  --user          Enables manual user instrumentation.\n"
               << "  --nouser        Disables manual user instrumentation. Is disabled by default.\n"
 #ifdef HAVE_PDT
-              << "  --pdt           Enables source code instrumentation with PDT using\n"
+              << "  --pdt[=\"<parameter-list>\"] Enables source code instrumentation with PDT using\n"
               << "                  the TAU instrumentor.\n"
               << "                  It will automatically enable the user instrumentation\n"
               << "                  and disable compiler instrumentation.\n"
+              << "                  You may specify additional parameters that are passed\n"
+              << "                  to the TAU instrumentor.\n"
               << "  --nopdt         Disables the source code instrumentation with PDT.\n"
               << "                  It is disabled by default.\n"
 #endif
 #if HAVE( COBI )
-    << "  --cobi          Enables binary instrumentation with Cobi.\n"
+    << "  --cobi[=\"<parameter-list>\"] Enables binary instrumentation with Cobi.\n"
     << "                  Disables compiler instrumentation.\n"
+    << "                  You may specify additional parameters that are passed to Cobi.\n"
     << "  --nocobi        Disables the binary instrumentation with Cobi.\n"
     << "                  It is disabled by default.\n"
 #endif

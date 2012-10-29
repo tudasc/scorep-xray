@@ -68,6 +68,7 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_libraries         = "";
     m_libdirs           = "";
     m_lmpi_set          = false;
+    m_pdt_params        = "";
 
     /* Instrumenter flags */
     m_is_dry_run     = false;
@@ -286,6 +287,13 @@ SCOREP_Instrumenter_CmdLine::isBuildCheck( void )
     return m_is_build_check;
 }
 
+std::string
+SCOREP_Instrumenter_CmdLine::getPdtParams( void )
+{
+    return m_pdt_params;
+}
+
+
 /* ****************************************************************************
    private methods
 ******************************************************************************/
@@ -392,9 +400,10 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
         m_compiler_instrumentation = disabled;
         return scorep_parse_mode_param;
     }
-    else if ( arg == "--opari" )
+    else if ( arg.substr( 0, 7 ) == "--opari" )
     {
         m_opari_instrumentation = enabled;
+        m_install_data->setOpariParams( get_tool_params( arg, 7 ) );
         return scorep_parse_mode_param;
     }
     else if ( arg == "--noopari" )
@@ -425,9 +434,10 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
         return scorep_parse_mode_param;
     }
 #ifdef HAVE_PDT
-    else if ( arg == "--pdt" )
+    else if ( arg.substr( 0, 5 ) == "--pdt" )
     {
         m_pdt_instrumentation = enabled;
+        m_pdt_params          = get_tool_params( arg, 5 );
         return scorep_parse_mode_param;
     }
     else if ( arg == "--nopdt" )
@@ -437,9 +447,10 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
     }
 #endif
 #if HAVE( COBI )
-    else if ( arg == "--cobi" )
+    else if ( arg.substr( 0, 6 ) == "--cobi" )
     {
         m_cobi_instrumentation = enabled;
+        m_install_data->setOpariParams( get_tool_params( arg, 6 ) );
         return scorep_parse_mode_param;
     }
     else if ( arg == "--nocobi" )
@@ -812,4 +823,22 @@ SCOREP_Instrumenter_CmdLine::parse_libdir( std::string arg )
     *m_current_flags += " -L" + arg;
     m_libdirs        += " " + arg;
     return scorep_parse_mode_command;
+}
+
+std::string
+SCOREP_Instrumenter_CmdLine::get_tool_params( std::string arg, size_t pos )
+{
+    if ( arg.length() <= pos + 1 )
+    {
+        return "";
+    }
+
+    if ( arg[ pos ] !=  '=' )
+    {
+        std::cerr << "ERROR: Unknown paramter: " << arg << std::endl;
+        std::cerr << "You may specify " << arg.substr( 0, pos )
+                  << " or " << arg.substr( 0, pos ) << "=\"<parameter-list>\"" << std::endl;
+        exit( EXIT_FAILURE );
+    }
+    return arg.substr( pos + 1, std::string::npos );
 }

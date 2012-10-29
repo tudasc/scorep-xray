@@ -136,9 +136,9 @@ remove_multiple_whitespaces( std::string str );
             replaced by @ replacement.
  */
 std::string
-replace_all( std::string &pattern,
-             std::string &replacement,
-             std::string  original );
+replace_all( std::string pattern,
+             std::string replacement,
+             std::string original );
 
 /**
    Tests whether a given file exists.

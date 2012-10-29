@@ -58,9 +58,9 @@ remove_multiple_whitespaces( std::string str )
 }
 
 std::string
-replace_all( std::string &pattern,
-             std::string &replacement,
-             std::string  original )
+replace_all( std::string pattern,
+             std::string replacement,
+             std::string original )
 {
     std::string::size_type pos            = original.find( pattern, 0 );
     int                    pattern_length = pattern.length();
