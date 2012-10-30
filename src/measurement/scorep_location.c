@@ -102,7 +102,8 @@ SCOREP_Location_Initialize()
 SCOREP_Location*
 scorep_location_create_location( SCOREP_Location*    parent,
                                  SCOREP_LocationType type,
-                                 const char*         name )
+                                 const char*         name,
+                                 bool                deferNewLocationNotication )
 {
     SCOREP_Location* new_location;
     size_t           total_memory = sizeof( *new_location )
@@ -140,7 +141,10 @@ scorep_location_create_location( SCOREP_Location*    parent,
     result = SCOREP_MutexUnlock( scorep_location_list_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS );
 
-    scorep_location_call_externals_on_new_location( new_location, name, parent );
+    if ( !deferNewLocationNotication )
+    {
+        scorep_location_call_externals_on_new_location( new_location, name, parent );
+    }
 
     return new_location;
 }
@@ -153,7 +157,8 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
     UTILS_BUG_ON( type == SCOREP_LOCATION_TYPE_CPU_THREAD,
                   "SCOREP_CreateNonCPULocation() does not support creation of CPU locations." );
 
-    SCOREP_Location* new_location = scorep_location_create_location( parent, type, name );
+    SCOREP_Location* new_location = scorep_location_create_location( parent, type, name,
+                                                                     false /* defer_new_location_notication */ );
 
     return new_location;
 }
@@ -161,11 +166,13 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
 
 SCOREP_Location*
 SCOREP_Location_CreateCPULocation( SCOREP_Location* parent,
-                                   const char*      name )
+                                   const char*      name,
+                                   bool             deferNewLocationNotication )
 {
     SCOREP_Location* new_location = scorep_location_create_location( parent,
                                                                      SCOREP_LOCATION_TYPE_CPU_THREAD,
-                                                                     name );
+                                                                     name,
+                                                                     deferNewLocationNotication );
     return new_location;
 }
 
