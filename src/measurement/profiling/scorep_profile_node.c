@@ -194,7 +194,7 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
     if ( type == scorep_profile_node_thread_root )
     {
         new_node = ( scorep_profile_node* )
-                   SCOREP_Memory_AllocForMisc( sizeof( scorep_profile_node ) );
+                   SCOREP_Location_AllocForMisc( location->location_data, sizeof( scorep_profile_node ) );
     }
     else
     {
