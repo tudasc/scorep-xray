@@ -17,7 +17,7 @@
 
 
 /**
- * @file       scorep_thread.c
+ * @file       src/measurement/scorep_thread_omp_tpd.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha

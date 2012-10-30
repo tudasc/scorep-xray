@@ -86,7 +86,7 @@ noinst_LTLIBRARIES              += libscorep_paradigm_omp.la
 libscorep_paradigm_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 # Sources include SCOREP_Omp.h that conditionally compiles on _OPENMP
 libscorep_paradigm_omp_la_SOURCES  =                       \
-    $(SRC_ROOT)src/measurement/scorep_thread.c             \
+    $(SRC_ROOT)src/measurement/scorep_thread_omp_tpd.c     \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.c    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c 
@@ -99,7 +99,7 @@ endif
 
 noinst_LTLIBRARIES                  += libscorep_paradigm_non_omp.la
 libscorep_paradigm_non_omp_la_SOURCES  =                   \
-    $(SRC_ROOT)src/measurement/scorep_thread.c             \
+    $(SRC_ROOT)src/measurement/scorep_thread_serial.c      \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.c    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_non_omp.c 

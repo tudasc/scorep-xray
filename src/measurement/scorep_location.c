@@ -350,7 +350,7 @@ void
 scorep_location_defer_definition_closure( SCOREP_Location* locationData,
                                           SCOREP_Location* parent )
 {
-    scorep_deferred_location* deferred_location = SCOREP_Memory_AllocForMisc( sizeof( scorep_deferred_location ) );
+    scorep_deferred_location* deferred_location = SCOREP_Location_AllocForMisc( locationData, sizeof( scorep_deferred_location ) );
     assert( deferred_location );
 
     deferred_location->location = locationData;
