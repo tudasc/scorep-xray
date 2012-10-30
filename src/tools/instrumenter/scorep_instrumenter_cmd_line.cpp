@@ -54,6 +54,7 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     /* Execution modes */
     m_is_compiling = true; // Opposite recognized if no source files in input
     m_is_linking   = true; // Opposite recognized on existence of -c flag
+    m_link_static  = detect;
 
     /* Input command elements */
     m_compiler_name     = "";
@@ -293,6 +294,17 @@ SCOREP_Instrumenter_CmdLine::getPdtParams( void )
     return m_pdt_params;
 }
 
+bool
+SCOREP_Instrumenter_CmdLine::enforceStaticLinking( void )
+{
+    return m_link_static == enabled;
+}
+
+bool
+SCOREP_Instrumenter_CmdLine::enforceDynamicLinking( void )
+{
+    return m_link_static == disabled;
+}
 
 /* ****************************************************************************
    private methods
@@ -476,6 +488,45 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
         print_help();
         exit( EXIT_SUCCESS );
     }
+
+    /* Link options */
+#if defined( SCOREP_STATIC_BUILD ) && defined( SCOREP_SHARED_BUILD )
+    else if ( arg == "--static" )
+    {
+        m_link_static = enabled;
+        return scorep_parse_mode_param;
+    }
+    else if ( arg == "--dynamic" )
+    {
+        m_link_static = disabled;
+        return scorep_parse_mode_param;
+    }
+#else
+#if defined( SCOREP_STATIC_BUILD )
+    else if ( arg == "--static" )
+    {
+        return scorep_parse_mode_param;
+    }
+    else if ( arg == "--dynamic" )
+    {
+        std::cerr << "Dynamic linking is not possible. This installation contains "
+                  << "no shared Score-P libraries."
+        exit( EXIT_FAILURE );
+    }
+#else if defined( SCOREP_SHARED_BUILD )
+    else if ( arg == "--static" )
+    {
+        std::cerr << "Static linking is not possible. This installation contains "
+                  << "no static Score-P libraries."
+        exit( EXIT_FAILURE );
+    }
+    else if ( arg == "--dynamic" )
+    {
+        return scorep_parse_mode_param;
+    }
+#endif
+#endif
+
     /* Misc parameters */
     else if ( arg == "--version" )
     {

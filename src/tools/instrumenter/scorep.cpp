@@ -106,6 +106,10 @@ print_help( void )
     << "                  does not correctly identify your application as OpenMP\n"
     << "                  program.\n"
     << "  --noopenmp      Disables OpenMP support.\n"
+#if defined( SCOREP_SHARED_BUILD ) && defined ( SCOREP_STATIC_BUILD )
+    << "  --static        Enforce static linking of the Score-P libraries.\n"
+    << "  --dynamic       Enforce dynamic linking of the Score-P libraries.\n"
+#endif
     << std::endl;
 }
 

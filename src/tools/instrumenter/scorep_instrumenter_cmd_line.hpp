@@ -160,6 +160,10 @@ public:
     isBuildCheck( void );
     std::string
     getPdtParams( void );
+    bool
+    enforceStaticLinking( void );
+    bool
+    enforceDynamicLinking( void );
 
     /* ***************************************************** Private methods */
 private:
@@ -333,6 +337,15 @@ private:
        True if linking
      */
     bool m_is_linking;
+
+    /**
+       Specification of static or dynamic linking of Score-P libraries into the
+       application.
+       Enabled means link static.
+       Detect means use compiler default.
+       Disabeld means link dynamic libraries if possible.
+     */
+    instrumentation_usage_t m_link_static;
 
     /* --------------------------------------------
        Input command elements

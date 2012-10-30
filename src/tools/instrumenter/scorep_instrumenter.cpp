@@ -588,6 +588,15 @@ SCOREP_Instrumenter::prepare_opari_linking( void )
 void
 SCOREP_Instrumenter::link_step( void )
 {
+    if ( m_command_line->enforceStaticLinking() )
+    {
+        m_linker_flags = "-Bstatic " + m_linker_flags;
+    }
+    else if ( m_command_line->enforceDynamicLinking() )
+    {
+        m_linker_flags = "-Bdynamic " + m_linker_flags;
+    }
+
     std::string command = m_command_line->getCompilerName()
                           + " " + m_input_files
                           + " " + m_command_line->getFlagsBeforeLmpi()
