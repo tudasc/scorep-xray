@@ -33,7 +33,6 @@
 #include "scorep_definition_structs.h"
 #include "scorep_definition_macros.h"
 #include "scorep_runtime_management.h"
-#include "scorep_thread.h"
 #include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_Timing.h>
 #include <SCOREP_Mutex.h>

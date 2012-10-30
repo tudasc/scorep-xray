@@ -24,7 +24,6 @@
 
 #include <config.h>
 #include <scorep_profile_location.h>
-#include <scorep_thread.h>
 #include <SCOREP_Memory.h>
 #include <UTILS_Error.h>
 

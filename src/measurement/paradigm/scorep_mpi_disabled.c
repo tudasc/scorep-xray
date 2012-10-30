@@ -36,7 +36,6 @@
 
 #include "scorep_mpi.h"
 
-#include <scorep_thread.h>
 #include <scorep_definitions.h>
 #include <stdlib.h>
 #include <assert.h>
