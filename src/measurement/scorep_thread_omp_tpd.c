@@ -163,13 +163,13 @@ scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
         parent = tpd->parent->location_data;
     }
     /* the tpd-based thread implementation must notify not before the tpd update. */
-    SCOREP_Location* new_location = SCOREP_Location_CreateCPULocation( parent, name, true /* defer_new_location_notication */ );
+    SCOREP_Location* new_location = SCOREP_Location_CreateCPULocation( parent, name );
 
     assert( tpd->location_data == 0 );
     tpd->location_data = new_location;
     scorep_thread_update_tpd( tpd );
 
-    scorep_location_call_externals_on_new_location( new_location, name, parent );
+    //scorep_location_call_externals_on_new_location( new_location, name, parent );
 
     return new_location;
 }

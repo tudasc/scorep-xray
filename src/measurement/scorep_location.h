@@ -49,8 +49,7 @@ SCOREP_Location_Finalize();
 
 SCOREP_Location*
 SCOREP_Location_CreateCPULocation( SCOREP_Location* parent,
-                                   const char*      name,
-                                   bool             deferNewLocationNotication );
+                                   const char*      name );
 
 
 SCOREP_Allocator_PageManager*
