@@ -42,6 +42,7 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     /* Instrumentation methods */
     m_compiler_instrumentation = detect;
     m_opari_instrumentation    = detect;
+    m_pomp_instrumentation     = detect;
     m_user_instrumentation     = disabled;
     m_mpi_instrumentation      = detect;
     m_pdt_instrumentation      = disabled;
@@ -431,6 +432,16 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
         m_opari_instrumentation = disabled;
         return scorep_parse_mode_param;
     }
+    else if ( arg == "--pomp" )
+    {
+        m_pomp_instrumentation = enabled;
+        return scorep_parse_mode_param;
+    }
+    else if ( arg == "--nopomp" )
+    {
+        m_pomp_instrumentation = disabled;
+        return scorep_parse_mode_param;
+    }
     else if ( arg == "--user" )
     {
         m_user_instrumentation = enabled;
@@ -803,10 +814,33 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
     {
         m_opari_instrumentation = m_is_openmp_application;
     }
+    if ( m_opari_instrumentation == disabled &&
+         m_is_openmp_application == enabled )
+    {
+        std::cerr << "\n"
+                  << "WARNING: You disabled OPARI2 instrumentation for an OpenMP\n"
+                  << "         enabled application. The application will crash at runtime\n"
+                  << "         if any event occurs inside a parallel region.\n"
+                  << std::endl;
+    }
 
     if ( m_mpi_instrumentation == detect )
     {
         m_mpi_instrumentation = m_is_mpi_application;
+    }
+
+    /* Check interference between POMP and Opari instrumentation */
+    if ( m_opari_instrumentation == enabled &&
+         m_pomp_instrumentation == disabled )
+    {
+        m_install_data->setOpariParams( "--disable=region" );
+    }
+
+    if ( m_opari_instrumentation == disabled &&
+         m_pomp_instrumentation == enabled )
+    {
+        m_opari_instrumentation = enabled;
+        m_install_data->setOpariParams( "--disable=omp" );
     }
 
     /* Check pdt dependencies */

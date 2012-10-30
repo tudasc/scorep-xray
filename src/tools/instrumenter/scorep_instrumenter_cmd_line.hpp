@@ -287,12 +287,18 @@ private:
     instrumentation_usage_t m_compiler_instrumentation;
 
     /**
-       Specifies if OPARI instrumentation is enabled. Default detect.
+       Specifies if OPARI2 instrumentation is enabled. Default detect.
      */
     instrumentation_usage_t m_opari_instrumentation;
 
     /**
-       Specifies if user instrumentation is enabled. Default is disabled.
+       Specifies if POMP2 user instrumentation is enabled. Default detect
+       which means it is enabled if opari is enabled.
+     */
+    instrumentation_usage_t m_pomp_instrumentation;
+
+    /**
+        Specifies if user instrumentation is enabled. Default is disabled.
      */
     instrumentation_usage_t m_user_instrumentation;
 

@@ -194,7 +194,7 @@ SCOREP_Instrumenter_InstallData::setBuildCheck( void )
 void
 SCOREP_Instrumenter_InstallData::setOpariParams( std::string params )
 {
-    m_opari_params = params;
+    m_opari_params += " " + params;
 }
 
 void

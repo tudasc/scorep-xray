@@ -84,6 +84,12 @@ print_help( void )
             << "  --noopari       Disables Opari2 instrumentation. Is disabled by default\n"
             << "                  if it is no OpenMP program.\n"
      */
+              << "  --pomp          Enables semi-automatic pomp user instrumentation.\n"
+              << "                  By default, it is enabled if OPARI2 instrumentation is\n"
+              << "                  enabled.\n"
+              << "  --nopomp        Disables semi-automatic pomp user instrumentation.\n"
+              << "                  By default, it is enabled if OPARI2 instrumentation is\n"
+              << "                  enabled.\n"
               << "  --user          Enables manual user instrumentation.\n"
               << "  --nouser        Disables manual user instrumentation. Is disabled by default.\n"
 #ifdef HAVE_PDT
