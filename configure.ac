@@ -42,13 +42,11 @@ if test ! -n "$ac_scorep_platform_data_provided" -o "x${ac_scorep_platform_data_
            user_provided_configure_args`"
 else
     AC_MSG_NOTICE([platform data provided by toplevel configure.])
+    AC_SCOREP_SUMMARY([Platform], [$ac_scorep_platform (provided)])
     # determine arguments for subdir configures
     args="`$AWK -f $srcdir/vendor/common/build-config/process_arguments.awk \
            user_provided_configure_args`"
 fi
-
-AC_SCOREP_SUMMARY([Cross compiling], [$ac_scorep_cross_compiling])
-AC_SCOREP_SUMMARY([Platform], [$ac_scorep_platform])
 
 AC_SCOREP_SVN_CONTROLLED
 
