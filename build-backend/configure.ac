@@ -53,6 +53,7 @@ AC_SCOREP_LIBPAPI
 AC_SCOREP_RUSAGE
 AC_SCOREP_SAMPLING
 AC_SCOREP_LIBUNWIND
+AC_SCOREP_LINK_FLAGS_CHECK
 
 AS_IF([test -n "${scorep_otf2_bindir}"],
       [AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cppflags ${scorep_otf2_config_backend_arg}`"])

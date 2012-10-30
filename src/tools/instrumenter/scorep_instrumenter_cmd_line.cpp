@@ -24,6 +24,7 @@
 #include <scorep_instrumenter_cmd_line.hpp>
 #include <scorep_instrumenter_utils.hpp>
 #include <scorep_config_tool_mpi.h>
+#include <scorep_config_tool_backend.h>
 
 #include <iostream>
 #include <stdlib.h>
@@ -493,13 +494,25 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
 #if defined( SCOREP_STATIC_BUILD ) && defined( SCOREP_SHARED_BUILD )
     else if ( arg == "--static" )
     {
+#if HAVE_LINK_FLAG_BSTATIC
         m_link_static = enabled;
         return scorep_parse_mode_param;
+#else   // HAVE_LINK_FLAG_BSTATIC
+        std::cerr << "The --static option is not supported with the used compiler."
+                  << std::endl;
+        exit( EXIT_FAILURE );
+#endif  // HAVE_LINK_FLAG_BSTATIC
     }
     else if ( arg == "--dynamic" )
     {
+#if HAVE_LINK_FLAG_BDYNAMIC
         m_link_static = disabled;
         return scorep_parse_mode_param;
+#else   // HAVE_LINK_FLAG_BDYNAMIC
+        std::cerr << "The --dynamic option is not supported with the used compiler."
+                  << std::endl;
+        exit( EXIT_FAILURE );
+#endif  // HAVE_LINK_FLAG_BDYNAMIC
     }
 #elif defined( SCOREP_STATIC_BUILD )
     else if ( arg == "--static" )
@@ -509,14 +522,16 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
     else if ( arg == "--dynamic" )
     {
         std::cerr << "Dynamic linking is not possible. This installation contains "
-                  << "no shared Score-P libraries.";
+                  << "no shared Score-P libraries."
+                  << std::endl;
         exit( EXIT_FAILURE );
     }
 #elif defined( SCOREP_SHARED_BUILD )
     else if ( arg == "--static" )
     {
         std::cerr << "Static linking is not possible. This installation contains "
-                  << "no static Score-P libraries.";
+                  << "no static Score-P libraries."
+                  << std::endl;
         exit( EXIT_FAILURE );
     }
     else if ( arg == "--dynamic" )
