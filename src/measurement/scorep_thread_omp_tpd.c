@@ -27,28 +27,18 @@
 
 #include <config.h>
 #include "scorep_thread.h"
-#include "scorep_location.h"
-#include <scorep_definitions.h>
-#include <SCOREP_Memory.h>
-#include <SCOREP_Subsystem.h>
-#include <SCOREP_Omp.h>
-#include <SCOREP_Timing.h>
-#include <scorep_mpi.h>
+
 #include <assert.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <inttypes.h>
-#include "scorep_runtime_management.h"
+#include <stdlib.h>
+
+#include "scorep_location.h"
+#include <SCOREP_Omp.h>
 #include "scorep_status.h"
-#include "scorep_subsystem.h"
-#include <tracing/SCOREP_Tracing_ThreadInteraction.h>
-#include <SCOREP_Mutex.h>
+#include <SCOREP_Timing.h>
 
 #include <UTILS_Error.h>
-#include <UTILS_Debug.h>
 
-#include "scorep_environment.h"
 
 #define POMP_TPD_MANGLED FORTRAN_MANGLED( pomp_tpd )
 
@@ -79,6 +69,19 @@ SCOREP_PRAGMA_OMP( threadprivate( POMP_TPD_MANGLED ) )
 
 typedef struct SCOREP_Thread_ThreadPrivateData SCOREP_Thread_ThreadPrivateData;
 
+struct SCOREP_Thread_ThreadPrivateData
+{
+    SCOREP_Thread_ThreadPrivateData*  parent;
+    SCOREP_Thread_ThreadPrivateData** children;
+    uint32_t                          n_children;
+    bool                              is_active;
+    uint32_t                          n_reusages;
+    uint32_t                          nesting_level; // starting at 1, but SCOREP_Thread_Initialize passes 0 to profiling
+    SCOREP_Location*                  location_data;
+};
+
+static SCOREP_Thread_ThreadPrivateData* scorep_thread_initial_thread;
+
 
 /* *INDENT-OFF* */
 static SCOREP_Location* scorep_thread_create_location_data_for(SCOREP_Thread_ThreadPrivateData* tpd);
@@ -91,32 +94,17 @@ static void scorep_thread_update_tpd(SCOREP_Thread_ThreadPrivateData* newTPD);
 /* *INDENT-ON* */
 
 
-struct SCOREP_Thread_ThreadPrivateData
-{
-    SCOREP_Thread_ThreadPrivateData*  parent;
-    SCOREP_Thread_ThreadPrivateData** children;
-    uint32_t                          n_children;
-    bool                              is_active;
-    uint32_t                          n_reusages;
-    uint32_t                          nesting_level; // starting at 1, but SCOREP_Thread_Initialize passes 0 to profiling
-    SCOREP_Location*                  location_data;
-};
-
-
-static struct SCOREP_Thread_ThreadPrivateData* initial_thread;
-
-
 void
 SCOREP_Thread_Initialize()
 {
     assert( !omp_in_parallel() );
-    assert( initial_thread == 0 );
+    assert( scorep_thread_initial_thread == 0 );
     assert( POMP_TPD_MANGLED == 0 );
 
-    initial_thread         = scorep_thread_create_thread_private_data();
-    initial_thread->parent = 0;
+    scorep_thread_initial_thread         = scorep_thread_create_thread_private_data();
+    scorep_thread_initial_thread->parent = 0;
 
-    scorep_thread_create_location_data_for( initial_thread );
+    scorep_thread_create_location_data_for( scorep_thread_initial_thread );
 
     assert( POMP_TPD_MANGLED );
     assert( TPD );
@@ -180,12 +168,9 @@ scorep_thread_create_thread_private_data()
 {
     // need synchronized malloc here
     SCOREP_Thread_ThreadPrivateData* new_tpd;
-    new_tpd             = malloc( sizeof( SCOREP_Thread_ThreadPrivateData ) );
-    new_tpd->parent     = TPD;
-    new_tpd->children   = 0;
-    new_tpd->n_children = 0;
-    new_tpd->is_active  = true;
-    new_tpd->n_reusages = 0;
+    new_tpd            = calloc( 1, sizeof( SCOREP_Thread_ThreadPrivateData ) );
+    new_tpd->parent    = TPD;
+    new_tpd->is_active = true;
     if ( TPD )
     {
         new_tpd->nesting_level = TPD->nesting_level + 1;
@@ -194,7 +179,7 @@ scorep_thread_create_thread_private_data()
     {
         new_tpd->nesting_level = 1;
     }
-    new_tpd->location_data = 0;
+
     return new_tpd;
 }
 
@@ -203,12 +188,12 @@ void
 SCOREP_Thread_Finalize()
 {
     assert( !omp_in_parallel() );
-    assert( initial_thread != 0 );
+    assert( scorep_thread_initial_thread != 0 );
     assert( POMP_TPD_MANGLED != 0 );
 
-    scorep_thread_delete_thread_private_data_recursively( initial_thread );
+    scorep_thread_delete_thread_private_data_recursively( scorep_thread_initial_thread );
 
-    initial_thread = 0;
+    scorep_thread_initial_thread = 0;
 }
 
 
