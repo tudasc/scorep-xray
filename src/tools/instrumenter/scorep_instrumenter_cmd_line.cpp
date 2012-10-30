@@ -501,8 +501,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
         m_link_static = disabled;
         return scorep_parse_mode_param;
     }
-#else
-#if defined( SCOREP_STATIC_BUILD )
+#elif defined( SCOREP_STATIC_BUILD )
     else if ( arg == "--static" )
     {
         return scorep_parse_mode_param;
@@ -510,21 +509,20 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
     else if ( arg == "--dynamic" )
     {
         std::cerr << "Dynamic linking is not possible. This installation contains "
-                  << "no shared Score-P libraries."
+                  << "no shared Score-P libraries.";
         exit( EXIT_FAILURE );
     }
-#else if defined( SCOREP_SHARED_BUILD )
+#elif defined( SCOREP_SHARED_BUILD )
     else if ( arg == "--static" )
     {
         std::cerr << "Static linking is not possible. This installation contains "
-                  << "no static Score-P libraries."
+                  << "no static Score-P libraries.";
         exit( EXIT_FAILURE );
     }
     else if ( arg == "--dynamic" )
     {
         return scorep_parse_mode_param;
     }
-#endif
 #endif
 
     /* Misc parameters */
