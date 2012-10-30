@@ -218,8 +218,9 @@ SCOREP_Instrumenter::Run( void )
         prepare_config_tool_calls( "" );
 
         // Perform Opari instrumentation
-        if ( m_command_line->isOpariInstrumenting() ||
-             m_command_line->isOpenmpApplication() )
+        if ( ( m_command_line->isOpariInstrumenting() ||
+               m_command_line->isOpenmpApplication() ) &&
+             !m_command_line->isTargetSharedLib() )
         {
             prepare_opari_linking();
         }

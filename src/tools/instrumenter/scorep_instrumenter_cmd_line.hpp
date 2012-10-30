@@ -165,6 +165,12 @@ public:
     bool
     enforceDynamicLinking( void );
 
+    /**
+       Returns true if the link target is a shared library.
+     */
+    bool
+    isTargetSharedLib( void );
+
     /* ***************************************************** Private methods */
 private:
 
@@ -324,6 +330,11 @@ private:
        Specifies whether it is an CUDA application.
      */
     instrumentation_usage_t m_is_cuda_application;
+
+    /**
+       True is the link target is a shared library.
+     */
+    bool m_target_is_shared_lib;
 
     /* --------------------------------------------
        Work mode information

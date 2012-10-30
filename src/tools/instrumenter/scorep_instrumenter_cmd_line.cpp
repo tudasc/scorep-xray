@@ -51,6 +51,7 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_is_mpi_application    = detect;
     m_is_openmp_application = detect;
     m_is_cuda_application   = detect;
+    m_target_is_shared_lib  = false;
 
     /* Execution modes */
     m_is_compiling = true; // Opposite recognized if no source files in input
@@ -305,6 +306,12 @@ bool
 SCOREP_Instrumenter_CmdLine::enforceDynamicLinking( void )
 {
     return m_link_static == disabled;
+}
+
+bool
+SCOREP_Instrumenter_CmdLine::isTargetSharedLib( void )
+{
+    return m_target_is_shared_lib;
 }
 
 /* ****************************************************************************
@@ -659,6 +666,25 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
     {
         *m_current_flags += " " + arg;
         return scorep_parse_mode_option_part;
+    }
+
+    /* Check whether the target is a shared library */
+    else if ( 0
+#if HAVE_LINK_FLAG_SHARED
+              || arg == "-shared"
+#endif
+#if HAVE_LINK_FLAG_DYNAMICLIB
+              || arg == "-dynamiclib"
+#endif
+#if HAVE_LINK_FLAG_QMKSHROBJ
+              || arg == "-qmkshrobj"
+#endif
+#if HAVE_LINK_FLAG_G_FOR_SHARED
+              || arg == "-G"
+#endif
+              )
+    {
+        m_target_is_shared_lib = true;
     }
 
     /* Check for OpenMP flags. The compiler's OpenMP flag is detected during
