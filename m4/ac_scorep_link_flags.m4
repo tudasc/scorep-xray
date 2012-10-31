@@ -15,9 +15,9 @@ dnl ---------------------------------------------------------------------------
 #________________________________________________________________________
 AC_DEFUN([_AC_SCOREP_LINK_FLAG_CHECK], [
 
-my_save_cflags="$CFLAGS"
-CFLAGS="$1"
-AC_MSG_CHECKING([whether CC supports $1])
+my_save_ldflags="$LDFLAGS"
+LDFLAGS="$1"
+AC_MSG_CHECKING([whether LD supports $1])
 AC_LINK_IFELSE([_AC_SCOREP_HELLO_WORLD_PROGRAM],
     [AC_MSG_RESULT([yes])
      result="1"],
@@ -25,7 +25,7 @@ AC_LINK_IFELSE([_AC_SCOREP_HELLO_WORLD_PROGRAM],
      result="0"]
 )
 AC_SUBST([$2],[$result])
-CFLAGS="$my_save_cflags"
+LDFLAGS="$my_save_ldflags"
 ])
 
 dnl ---------------------------------------------------------------------------
