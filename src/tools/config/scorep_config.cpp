@@ -93,7 +93,7 @@
 
 
 void
-get_rpath_struct_data();
+get_rpath_struct_data( void );
 
 std::string
 prepare_string( std::string str );
@@ -102,9 +102,13 @@ std::string
 remove_multiple_whitespaces( std::string str );
 
 std::string
-replace_all( std::string &pattern,
-             std::string &replacement,
-             std::string  original );
+replace_all( std::string pattern,
+             std::string replacement,
+             std::string original );
+
+std::string
+append_ld_run_path_to_rpath( std::string rpath );
+
 
 std::string m_rpath_head      = "";
 std::string m_rpath_delimiter = "";
@@ -262,6 +266,7 @@ main( int    argc,
                                       m_rpath_head,
                                       m_rpath_delimiter,
                                       m_rpath_tail );
+            str = append_ld_run_path_to_rpath( str );
             if ( cuda )
             {
                 str = " -Xlinker " + prepare_string( str );
@@ -363,7 +368,7 @@ main( int    argc,
 
 /** constructor and destructor */
 void
-get_rpath_struct_data()
+get_rpath_struct_data( void )
 {
     // Replace ${wl} by LIBDIR_FLAG_WL and erase everything from
     // $libdir on in order to create m_rpath_head and
@@ -413,7 +418,8 @@ get_rpath_struct_data()
     }
 }
 
-/** Make string with compiler or linker flags compatible to CUDA
+/**
+ *  Make string with compiler or linker flags compatible to CUDA
  *  compiler requirements.
  *
  *  @param str              String to be processed.
@@ -443,7 +449,8 @@ prepare_string( std::string str )
     return str;
 }
 
-/** Trim  and replace multiple white-spaces in @ str by a single one.
+/**
+ *  Trim  and replace multiple white-spaces in @ str by a single one.
  *
  *  @param str              String to be processed.
  *
@@ -482,7 +489,8 @@ remove_multiple_whitespaces( std::string str )
     return str;
 }
 
-/** Replace all occurrences of @ pattern in string @ original by
+/**
+ *  Replace all occurrences of @ pattern in string @ original by
  *  @ replacement.
  *
  *  @param pattern          String that should be replaced.
@@ -493,9 +501,9 @@ remove_multiple_whitespaces( std::string str )
  *          replaced by @ replacement.
  */
 std::string
-replace_all( std::string &pattern,
-             std::string &replacement,
-             std::string  original )
+replace_all( std::string pattern,
+             std::string replacement,
+             std::string original )
 {
     std::string::size_type pos            = original.find( pattern, 0 );
     int                    pattern_length = pattern.length();
@@ -507,4 +515,32 @@ replace_all( std::string &pattern,
     }
 
     return original;
+}
+
+/**
+ * Add content of the environment variable LD_RUN_PATH as -rpath argument
+ */
+std::string
+append_ld_run_path_to_rpath( std::string rpath )
+{
+    /* Get variable values */
+    const char* ld_run_path = getenv( "LD_RUN_PATH" );
+    if ( ld_run_path == NULL || *ld_run_path == '\0' )
+    {
+        return rpath;
+    }
+
+    /* On AIX ist just a colon separated list, after a head */
+    if ( "" != LIBDIR_AIX_LIBPATH )
+    {
+        if ( rpath == "" )
+        {
+            return m_rpath_head + ld_run_path;
+        }
+        return rpath + m_rpath_delimiter + ld_run_path;
+    }
+
+    /* Otherwise replace all colons by the rpath flags */
+    rpath += m_rpath_delimiter + replace_all( ":", m_rpath_delimiter, ld_run_path );
+    return rpath;
 }
