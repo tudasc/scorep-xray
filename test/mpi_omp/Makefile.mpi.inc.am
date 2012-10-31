@@ -41,7 +41,7 @@ mpi_omp_hello_world_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRU
 mpi_omp_hello_world_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi_omp.la libmpi_omp_hello_world_pomp.la
 
 if HAVE_PAPI
-mpi_omp_hello_world_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
+mpi_omp_hello_world_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 endif
 
 TESTS_MPI_OMP += mpi_omp_hello_world

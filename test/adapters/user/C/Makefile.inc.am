@@ -38,7 +38,7 @@ selective_test_LDADD =                      \
     $(LIB_ROOT)libscorep_serial.la
 
 if HAVE_PAPI
-selective_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@
+selective_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 endif
 
 EXTRA_DIST       += \

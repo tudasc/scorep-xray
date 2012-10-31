@@ -30,6 +30,6 @@ rewind_test_CPPFLAGS = $(AM_CPPFLAGS)    \
 rewind_test_LDADD =                      \
     $(LIB_ROOT)libscorep_serial.la
 
-rewind_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@
+rewind_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 
 TESTS_SERIAL += ../test/rewind/run_rewind_test.sh

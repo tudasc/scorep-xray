@@ -7,7 +7,7 @@ distribution_test_SOURCES        = $(distribution_test_sources)
 distribution_test_CPPFLAGS       = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 distribution_test_LDADD          = $(LIB_ROOT)libscorep_serial.la
 if HAVE_PAPI
-distribution_test_LDFLAGS        = @SCOREP_PAPI_LDFLAGS@
+distribution_test_LDFLAGS        = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 endif
 
 check_PROGRAMS                  += distribution_test2
@@ -17,7 +17,7 @@ distribution_test2_SOURCES       = $(distribution_test2_sources)
 distribution_test2_CPPFLAGS      = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 distribution_test2_LDADD         = $(LIB_ROOT)libscorep_serial.la
 if HAVE_PAPI
-distribution_test2_LDFLAGS       = @SCOREP_PAPI_LDFLAGS@
+distribution_test2_LDFLAGS       = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 endif
 
 CLEANFILES += distribution.mod

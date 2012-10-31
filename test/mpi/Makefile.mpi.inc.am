@@ -5,7 +5,7 @@ mpitest_SOURCES =  $(SRC_ROOT)/test/mpi/mpitest.c
 mpitest_LDADD = \
     $(LIB_DIR_SCOREP)libscorep_mpi.la
 if HAVE_PAPI
-mpitest_LDFLAGS = @SCOREP_PAPI_LDFLAGS@
+mpitest_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 endif
 
 
@@ -18,7 +18,7 @@ test_link_CPPFLAGS = $(AM_CPPFLAGS)         \
 test_link_LDADD = \
     $(LIB_DIR_SCOREP)libscorep_mpi.la
 if HAVE_PAPI
-test_link_LDFLAGS = @SCOREP_PAPI_LDFLAGS@
+test_link_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 endif
 
 
@@ -27,7 +27,7 @@ mpi_hello_world_SOURCES =  $(SRC_ROOT)/test/mpi/mpi_hello_world.c
 mpi_hello_world_LDADD =                 \
     $(LIB_DIR_SCOREP)libscorep_mpi.la
 if HAVE_PAPI
-mpi_hello_world_LDFLAGS = @SCOREP_PAPI_LDFLAGS@
+mpi_hello_world_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 endif
 TESTS_MPI += mpi_hello_world
 
@@ -44,7 +44,7 @@ metric_on_one_rank_only_test_CPPFLAGS = $(AM_CPPFLAGS) \
     -DSCOREP_USER_ENABLE
 metric_on_one_rank_only_test_LDADD =      \
     $(LIB_DIR_SCOREP)libscorep_mpi.la
-metric_on_one_rank_only_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@
+metric_on_one_rank_only_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 TESTS_MPI += metric_on_one_rank_only_test
 
 endif

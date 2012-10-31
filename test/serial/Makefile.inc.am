@@ -25,7 +25,7 @@ check_PROGRAMS += serial_test
 serial_test_SOURCES  = $(SRC_ROOT)test/serial/serial_test.c
 serial_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 serial_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
-serial_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
+serial_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 
 TESTS_SERIAL += $(srcdir)/../test/serial/run_serial_test.sh
 EXTRA_DIST          += $(SRC_ROOT)test/serial/run_serial_test.sh
@@ -38,7 +38,7 @@ check_PROGRAMS += serial_ack_test
 serial_ack_test_SOURCES  = $(SRC_ROOT)test/serial/serial_ack_test.c
 serial_ack_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 serial_ack_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
-serial_ack_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
+serial_ack_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 
 TESTS_SERIAL += $(srcdir)/../test/serial/run_serial_ack_test.sh
 EXTRA_DIST   += $(SRC_ROOT)test/serial/run_serial_ack_test.sh
@@ -55,7 +55,7 @@ region_types_consistency_check_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR) \
     $(UTILS_CPPFLAGS)
 region_types_consistency_check_LDADD   = $(LIB_ROOT)libscorep_serial.la
-region_types_consistency_check_LDFLAGS = @SCOREP_PAPI_LDFLAGS@
+region_types_consistency_check_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 
 EXTRA_DIST   += $(SRC_ROOT)test/serial/run_region_types_consistency_check.sh
 TESTS_SERIAL += $(srcdir)/../test/serial/run_region_types_consistency_check.sh

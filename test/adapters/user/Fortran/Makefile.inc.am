@@ -22,7 +22,7 @@ user_f_test_LDADD =                        \
     $(LIB_ROOT)libscorep_serial.la
 
 if HAVE_PAPI
-user_f_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@
+user_f_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 endif
 
 TESTS_SERIAL += ./user_f_test

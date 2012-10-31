@@ -55,7 +55,7 @@ endif
 mpi_patt_all_test_f90_with_oa_LDADD      = $(LIB_DIR_SCOREP)libscorep_mpi.la	
 
 if HAVE_PAPI
-mpi_patt_all_test_f90_with_oa_LDFLAGS    = @SCOREP_PAPI_LDFLAGS@
+mpi_patt_all_test_f90_with_oa_LDFLAGS    = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 endif
 
 EXTRA_DIST += $(SRC_ROOT)test/apart_test_suite/run_apart_test_suite_with_oa_test.sh.in
@@ -83,7 +83,7 @@ mpi_patt_all_test_f90_CPPFLAGS = \
 mpi_patt_all_test_f90_LDADD      = $(LIB_DIR_SCOREP)libscorep_mpi.la	
 
 if HAVE_PAPI
-mpi_patt_all_test_f90_LDFLAGS    = @SCOREP_PAPI_LDFLAGS@
+mpi_patt_all_test_f90_LDFLAGS    = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 endif
 
 TESTS_MPI += mpi_patt_all_test_f90
