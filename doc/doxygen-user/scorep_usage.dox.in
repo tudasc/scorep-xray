@@ -23,22 +23,34 @@ Common options are:
                   mpi program.
   --nompi         Disables mpi wrappers. They are disabled by default if
                   it is no mpi program.
-  --opari         Enables Opari instrumentation. Is enabled by default
+  --opari[="<parameter-list>"] Enables Opari2 instrumentation. Is enabled by default
                   if it is an OpenMP program.
+                  You may specify additional parameters that are passed to Opari2.
+  --pomp          Enables semi-automatic pomp user instrumentation.
+                  By default, it is enabled if OPARI2 instrumentation is
+                  enabled.
+  --nopomp        Disables semi-automatic pomp user instrumentation.
+                  By default, it is enabled if OPARI2 instrumentation is
+                  enabled.
   --user          Enables manual user instrumentation.
   --nouser        Disables manual user instrumentation. Is disabled by default.
-  --pdt           Enables source code instrumentation with PDT using
+  --pdt[="<parameter-list>"] Enables source code instrumentation with PDT using
                   the TAU instrumentor.
                   It will automatically enable the user instrumentation
                   and disable compiler instrumentation.
+                  You may specify additional parameters that are passed
+                  to the TAU instrumentor.
   --nopdt         Disables the source code instrumentation with PDT.
                   It is disabled by default.
-  --cobi          Enables binary instrumentation with Cobi.
+  --cobi[=\"<parameter-list>\"] Enables binary instrumentation with Cobi.
                   Disables compiler instrumentation.
+                  You may specify additional parameters that are passed to Cobi.
   --nocobi        Disables the binary instrumentation with Cobi.
                   It is disabled by default.
   --openmp        Enables OpenMP support. Needed if the instrumentation
                   does not correctly identify your application as OpenMP
                   program.
   --noopenmp      Disables OpenMP support.
+  --static        Enforce static linking of the Score-P libraries.
+  --dynamic       Enforce dynamic linking of the Score-P libraries.
 

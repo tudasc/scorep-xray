@@ -116,10 +116,10 @@ source routines and arbitrary regions, in addition to fully-automatic
 	    \bf Type of\newline instrumen\-tation & \bf Instrumenter switch & \bf Default value & \bf Instrumented routines & \bf  Runtime measurement control \\ \hline
       
 	    MPI & {\ttfamily -\/-\/mpi/ \newline -\/-\/nompi} & (auto) &  configured by install & see Sec. \ref{sec:mpi_groups}  \\ \hline	    
-	    OpenMP & {\ttfamily -\/-\/openmp\-\_support/ \newline -\/-\/noopenmp\-\_support} & (auto) &  opari2 user re\-gions, Sec. \ref{sec:pomp_instrumentation} \newline + all parallel constructs  &  --  \\ \hline
+	    OpenMP & {\ttfamily -\/-\/opari} & (auto) &  all parallel constricts \newline + pomp2 user re\-gions, Sec. \ref{sec:pomp_instrumentation} &  --  \\ \hline
 	    Compiler, Sec. \ref{sec:compiler_instrumentation} & {\ttfamily -\/-\/compiler/ \newline -\/-\/nocompiler} & enabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    PDT,\newline Sec. \ref{sec:tau_instrumentation} & {\ttfamily -\/-\/pdt/ \newline -\/-\/nopdt} & disabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
-	    OPARI2, Sec. \ref{sec:pomp_instrumentation} & {\ttfamily -\/-\/opari} & depends on OpenMP usage &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}  \\ \hline
+	    POMP2 user regions, Sec. \ref{sec:pomp_instrumentation} & {\ttfamily -\/-\/pomp/ \newline -\/-\/nopomp} & depends on OpenMP usage &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    Manual, Sec. \ref{sec:manual_instrumentation} & {\ttfamily -\/-\/user/ \newline -\/-\/nouser} & disabled &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}, and selective tracing, Sec. \ref{sec:selective_tracing}\\ \hline
     	\end{tabular}
     \end{table}
@@ -144,9 +144,9 @@ source routines and arbitrary regions, in addition to fully-automatic
     </tr>
     <tr>
       <td align="left" valign="middle"> OpenMP </td>
-      <td align="center" valign="middle"> --openmp_support/--noopenmp_support </td>
+      <td align="center" valign="middle"> --opari </td>
       <td align="center" valign="middle"> (auto) </td>
-      <td align="center" valign="middle"> @opari2 user regions (see Sec. @ref pomp_instrumentation ) + all parallel constructs </td>
+      <td align="center" valign="middle"> all parallel constructs + @pomp2 user regions (see Sec. @ref pomp_instrumentation ) </td>
       <td align="center" valign="middle"> &mdash; </td> 
     </tr>
     <tr>
@@ -164,8 +164,8 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </td> 
     </tr>
     <tr>
-      <td align="left" valign="middle"> @opari2 (see Sec. @ref pomp_instrumentation ) </td>
-      <td align="center" valign="middle"> --opari</td>
+      <td align="left" valign="middle"> @pomp2 user regions (see Sec. @ref pomp_instrumentation ) </td>
+      <td align="center" valign="middle"> --pomp/--nopomp</td>
       <td align="center" valign="middle"> depends on OpenMP usage </td>
       <td align="center" valign="middle"> manually annotated </td>
       <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </td> 
@@ -191,7 +191,7 @@ the compiler is enabled (equivalent to specifying <tt>--compiler</tt>).
 The compiler instrumentation can be disabled with <tt>--nocompiler</tt> when desired, 
 such as when
 using PDToolkit, or POMP2 or @scorep user API manual source annotations, are
-enabled with <tt>--pdt</tt>, <tt>--opari</tt> and <tt>--user</tt>, respectively.
+enabled with <tt>--pdt</tt>, <tt>--pomp</tt> and <tt>--user</tt>, respectively.
 Compiler, PDToolkit, POMP2 and @scorep user API instrumentation can all be
 used simultaneously, or in arbitrary combinations, however, it is
 generally desirable to avoid instrumentation duplication (which would
@@ -573,14 +573,15 @@ C/C++:
     }
 @endcode
 
-@section pomp_instrumentation Semi-Automatic Instrumentation with @opari2
+@section pomp_instrumentation Semi-Automatic Instrumentation of @pomp2 User Regions
 @seclabel{pomp_instrumentation}
 
 If you manually instrument the desired user functions and regions of your
 application source files using the @pomp2 <tt>INST</tt> directives described
-below, the @scorep instrumentor <tt>--opari</tt> flag will generate
-instrumentation for them. @pomp2 instrumentation directives are supported for
-Fortran and C/C++. The main advantages are that
+below, the @scorep instrumentor <tt>--pomp</tt> flag will generate
+instrumentation for them. It is automatically enabled for @openmp applications,
+but can be disabled with <tt>--nopomp</tt>. @pomp2 instrumentation directives 
+are supported for Fortran and C/C++. The main advantages are that
 <ul>
   <li>
     being directives, the instrumentation is ignored during "normal"
@@ -653,6 +654,13 @@ C/C++:
     }
 @endcode
 
+@note The @pomp2 instrumentation uses the @opari2 instrumenter. Thus, for
+      @openmp application, which automatically enable @opari2 
+      to instrument the parallel constructs, @pomp2 user region 
+      instrumentation is enabled, too. Too disable @pomp2 user
+      region instrumentation for @openmp applications, pass 
+      <tt>--nopomp</tt> to the instrumenter.
+
 @section tau_instrumentation Source-Code Instrumentation Using PDT
 @seclabel{tau_instrumentation}
 
@@ -668,8 +676,10 @@ To enable PDT-based source-code instrumentation, call <tt>scorep</tt> with the <
     scorep --pdt  mpicc -c foo.c
 @endverbatim
 This will by default instrument all routines found in <tt>foo.c</tt>. 
-(To avoid double instrumentation, automatic compiler instrumentation can
-be disabled with @verb{--nocompiler}.)
+(To avoid double instrumentation, automatic compiler instrumentation is
+disabled when using Source-Code Instrumentation with PDT. However,
+if you you can enforce additional compiler instrumentation with 
+@verb{--compiler}.)
 
 @subsection tau_inst_limitations Limitations
 @seclabel{tau_inst_limitations}
@@ -700,6 +710,58 @@ of limitations:
   </li>
 </ul>
 
+
+@section cobi_instrumentation Binary Instrumentation Using Cobi
+@seclabel{cobi_instrumentation}
+
+If you have an installation of the binary instrumenter Cobi, you can configure
+@scorep to support binary instrumentation of functions with Cobi during
+@scorep installation. To use Cobi for function instrumentation, you 
+must set the <tt>--cobi</tt> flag. E.g.
+
+@verbatim
+    scorep --cobi mpicc foo.c -o foo
+@endverbatim
+
+By default, it will disable automatic compiler instrumentation during 
+compilation and instrument all function in the executable. Although
+the instrumentation happens after linking, we recommend to compile
+all objects with the <tt>--cobi</tt> flag to avoid double instrumentation. 
+However, you can enforce compiler instrumentation with @verb{--compiler}.
+
+@note Cobi is still considered to be an experimental tool. Thus, it may
+      have some limitations. E.g. it is currently only available for
+      GNU compilers and requires @scorep to be build in shared mode. Also the 
+      support for Cobi itself is limited.
+
+
+@section scorep_link_mode Enforce Linking of Static/Shared @scorep Libraries
+@seclabel{scorep_link_mode}
+
+If the @scorep was build with shared libraries and with static libraries, 
+the instrumenter uses the compiler defaults for linking. E.g. if the compiler
+chooses shared libraries by default, the instrumenter will link your application
+with the shared Score-P libraries. Furthermore, the linking is affected by 
+parameters in the original link command. E.g. if your link command contains
+a <tt>-Bstatic</tt> flag, afterwards appended @scorep libraries are also linked
+statically.
+
+If you want to override the default and enforce linking of static or dynamic
+@scorep libraries, you can add the flag <tt>--static</tt> or <tt>--dynamic</tt>
+for the instrumenter. E.g. a command to enforce static linking can look like:
+
+@verbatim
+    scorep --static mpicc foo.c -o foo
+@endverbatim
+
+In this case, the linking against the static version of the @scorep libraries
+is enforced.
+
+If enforcing static or dynamic linking is not possible on your 
+system, e.g., because no static/dynamic @scorep libraries are installed,
+the instrumenter will abort with an error. You can determine whether
+<tt>--static</tt> or <tt>--dynamic</tt> is available from the 
+output of <tt>scorep --help</tt>. If the <tt>--static</tt> or 
+<tt>--dynamic</tt> flags are not shown, then they are not available.
+
 */
-
-
