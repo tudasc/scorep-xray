@@ -232,15 +232,20 @@ SCOREP_Memory_AllocForMisc( size_t size )
                                          size );
 }
 
+static void
+free_memory_type_for_location( SCOREP_Location* location,
+                               void*            arg )
+{
+    SCOREP_MemoryType type = *( SCOREP_MemoryType* )arg;
+    SCOREP_Allocator_Free( SCOREP_Location_GetMemoryPageManager( location, type ) );
+}
 
 void
 SCOREP_Memory_FreeMiscMem()
 {
     // print mem usage statistics
-    SCOREP_Allocator_Free(
-        SCOREP_Location_GetMemoryPageManager(
-            SCOREP_Location_GetCurrentCPULocation(),
-            SCOREP_MEMORY_TYPE_MISC ) );
+    SCOREP_MemoryType type = SCOREP_MEMORY_TYPE_MISC;
+    SCOREP_Location_ForAll( free_memory_type_for_location, &type );
 }
 
 
@@ -270,10 +275,8 @@ void
 SCOREP_Memory_FreeProfileMem()
 {
     // print mem usage statistics
-    SCOREP_Allocator_Free(
-        SCOREP_Location_GetMemoryPageManager(
-            SCOREP_Location_GetCurrentCPULocation(),
-            SCOREP_MEMORY_TYPE_PROFILING ) );
+    SCOREP_MemoryType type = SCOREP_MEMORY_TYPE_PROFILING;
+    SCOREP_Location_ForAll( free_memory_type_for_location, &type );
 }
 
 

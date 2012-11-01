@@ -193,7 +193,7 @@ SCOREP_Location_AllocForProfile( SCOREP_Location* location,
 /**
  * Release the entire allocated runtime summarization data memory.
  *
- * @see SCOREP_Memory_AllocForSummary()
+ * @see SCOREP_Memory_AllocForProfile()
  */
 void
 SCOREP_Memory_FreeProfileMem( void );
