@@ -85,7 +85,7 @@ public:
        @param install_data Pointer to a installation configuration data
                            object.
      */
-    SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_InstallData* install_data );
+    SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_InstallData& install_data );
 
 
     /**
@@ -275,7 +275,7 @@ private:
     /**
        Pointer to the associated installation configration data
      */
-    SCOREP_Instrumenter_InstallData* m_install_data;
+    SCOREP_Instrumenter_InstallData& m_install_data;
 
 
     /* --------------------------------------------

@@ -35,10 +35,9 @@ print_help( void );
 /* ****************************************************************************
    Main interface
 ******************************************************************************/
-SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_InstallData* install_data )
+SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_InstallData& install_data )
+    : m_install_data( install_data )
 {
-    m_install_data = install_data;
-
     /* Instrumentation methods */
     m_compiler_instrumentation = detect;
     m_opari_instrumentation    = detect;
@@ -400,7 +399,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
     else if ( arg == "--build-check" )
     {
         m_is_build_check = true;
-        m_install_data->setBuildCheck();
+        m_install_data.setBuildCheck();
         return scorep_parse_mode_param;
     }
 
@@ -424,7 +423,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
     else if ( arg.substr( 0, 7 ) == "--opari" )
     {
         m_opari_instrumentation = enabled;
-        m_install_data->setOpariParams( get_tool_params( arg, 7 ) );
+        m_install_data.setOpariParams( get_tool_params( arg, 7 ) );
         return scorep_parse_mode_param;
     }
     else if ( arg == "--noopari" )
@@ -481,7 +480,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
     else if ( arg.substr( 0, 6 ) == "--cobi" )
     {
         m_cobi_instrumentation = enabled;
-        m_install_data->setOpariParams( get_tool_params( arg, 6 ) );
+        m_install_data.setOpariParams( get_tool_params( arg, 6 ) );
         return scorep_parse_mode_param;
     }
     else if ( arg == "--nocobi" )
@@ -572,7 +571,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
             std::cerr << "ERROR: No config file specified." << std::endl;
             exit( EXIT_FAILURE );
         }
-        if ( m_install_data->readConfigFile( config_file ) != SCOREP_SUCCESS )
+        if ( m_install_data.readConfigFile( config_file ) != SCOREP_SUCCESS )
         {
             std::cerr << "ERROR: Failed to read config file." << std::endl;
             exit( EXIT_FAILURE );
@@ -706,9 +705,9 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
      */
 #ifdef SCOREP_COMPILER_INTEL
     else if ( ( arg == "-openmp" ) ||
-              ( arg == m_install_data->getOpenmpFlags() ) )
+              ( arg == m_install_data.getOpenmpFlags() ) )
 #else
-    else if ( arg == m_install_data->getOpenmpFlags() )
+    else if ( arg == m_install_data.getOpenmpFlags() )
 #endif
     {
         if ( m_is_openmp_application == detect )
@@ -833,14 +832,14 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
     if ( m_opari_instrumentation == enabled &&
          m_pomp_instrumentation == disabled )
     {
-        m_install_data->setOpariParams( "--disable=region" );
+        m_install_data.setOpariParams( "--disable=region" );
     }
 
     if ( m_opari_instrumentation == disabled &&
          m_pomp_instrumentation == enabled )
     {
         m_opari_instrumentation = enabled;
-        m_install_data->setOpariParams( "--disable=omp" );
+        m_install_data.setOpariParams( "--disable=omp" );
     }
 
     /* Check pdt dependencies */

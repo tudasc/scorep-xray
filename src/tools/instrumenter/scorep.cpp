@@ -138,10 +138,10 @@ main( int   argc,
     if ( argc > 1 )
     {
         SCOREP_Instrumenter_InstallData install_data;
-        SCOREP_Instrumenter_CmdLine     command_line( &install_data );
+        SCOREP_Instrumenter_CmdLine     command_line( install_data );
         command_line.ParseCmdLine( argc, argv );
 
-        SCOREP_Instrumenter app( &install_data, &command_line );
+        SCOREP_Instrumenter app( install_data, command_line );
         if ( app.Run() == EXIT_SUCCESS )
         {
             return EXIT_SUCCESS;

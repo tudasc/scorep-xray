@@ -47,8 +47,8 @@ public:
     /**
        Creates a new SCOREP_Instrumenter object.
      */
-    SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData* install_data,
-                         SCOREP_Instrumenter_CmdLine*     command_line );
+    SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& install_data,
+                         SCOREP_Instrumenter_CmdLine&     command_line );
 
     /**
        Destroys a SCOREP_Instrumenter object.
@@ -188,12 +188,12 @@ private:
     /**
        Installation configuration data set.
      */
-    SCOREP_Instrumenter_InstallData* m_install_data;
+    SCOREP_Instrumenter_InstallData& m_install_data;
 
     /**
        The command line parser.
      */
-    SCOREP_Instrumenter_CmdLine* m_command_line;
+    SCOREP_Instrumenter_CmdLine& m_command_line;
 
     /**
        input file names. Need to be separated because OPARI may
