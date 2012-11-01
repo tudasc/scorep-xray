@@ -24,6 +24,7 @@
 #include <iostream>
 #include <cstddef>
 #include <cstdlib>
+#include <cstdio>
 #include <string.h>
 #include <errno.h>
 #include "jacobi.h"

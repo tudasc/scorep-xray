@@ -22,6 +22,7 @@
 #include <iostream>
 #include <cstddef>
 #include <cstdlib>
+#include <cstdio>
 #include "jacobi.h"
 
 #include <stddef.h>
