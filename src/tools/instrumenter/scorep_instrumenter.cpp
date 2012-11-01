@@ -654,7 +654,12 @@ SCOREP_Instrumenter::execute_command( std::string command )
 {
     if ( m_command_line->getVerbosity() >= 1 )
     {
-        std::cout << command << std::endl;
+        std::string echo_command( "echo " + command );
+        int         return_value = system( echo_command.c_str() );
+        if ( return_value != 0 )
+        {
+            exit( EXIT_FAILURE );
+        }
     }
     if ( !m_command_line->isDryRun() )
     {
