@@ -112,6 +112,8 @@ dnl --------------------------------------------------------------------------
 AC_DEFUN([_AC_SCOREP_LIBCUPTI_LIB_CHECK], [
 scorep_cupti_error="no"
 scorep_cupti_lib_name="cupti"
+ldflags_save="${LDFLAGS}"
+LDFLAGS="${LDFLAGS} ${with_libcudart_ldflags} -l${scorep_cudart_lib_name}"
 
 dnl checking for CUPTI library
 AS_IF([test "x$scorep_cupti_error" = "xno"],
@@ -120,6 +122,7 @@ AS_IF([test "x$scorep_cupti_error" = "xno"],
                     [],
                     [AC_MSG_NOTICE([no libcupti found; check path to CUPTI library ...])
                      scorep_cupti_error="yes" ])])
+LDFLAGS="${ldflags_save}"
                      
 dnl check the version of CUPTI
 AS_IF([test "x$scorep_cupti_error" = "xno"],
