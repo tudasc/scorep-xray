@@ -95,7 +95,7 @@ remove_double_entries( const deque<string> input )
 {
     deque<string>                         output;
     deque<string>::const_reverse_iterator i;
-    for ( i = input.rbegin(); i < input.rend(); i++ )
+    for ( i = input.rbegin(); i != input.rend(); i++ )
     {
         if ( !has_item( output, *i ) )
         {
@@ -197,7 +197,7 @@ SCOREP_Config_LibraryDependencies::GetLibraries( const deque<string> input_libs 
     deque<string>                   deps = get_dependencies( input_libs );
     deque<string>                   libs;
     deque<string>::reverse_iterator i;
-    for ( i = deps.rbegin(); i < deps.rend(); i++ )
+    for ( i = deps.rbegin(); i != deps.rend(); i++ )
     {
         la_object obj = la_objects[ *i ];
         libs.push_front( "-l" + obj.m_lib_name.substr( 3 ) );
