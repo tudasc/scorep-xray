@@ -116,7 +116,7 @@ source routines and arbitrary regions, in addition to fully-automatic
 	    \bf Type of\newline instrumen\-tation & \bf Instrumenter switch & \bf Default value & \bf Instrumented routines & \bf  Runtime measurement control \\ \hline
       
 	    MPI & {\ttfamily -\/-\/mpi/ \newline -\/-\/nompi} & (auto) &  configured by install & see Sec. \ref{sec:mpi_groups}  \\ \hline	    
-	    OpenMP & {\ttfamily -\/-\/opari} & (auto) &  all parallel constricts \newline + pomp2 user re\-gions, Sec. \ref{sec:pomp_instrumentation} &  --  \\ \hline
+	    OpenMP & {\ttfamily -\/-\/openmp/ \newline -\/-\/noopenmp} & (auto) &  all parallel constricts &  --  \\ \hline
 	    Compiler, Sec. \ref{sec:compiler_instrumentation} & {\ttfamily -\/-\/compiler/ \newline -\/-\/nocompiler} & enabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    PDT,\newline Sec. \ref{sec:tau_instrumentation} & {\ttfamily -\/-\/pdt/ \newline -\/-\/nopdt} & disabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    POMP2 user regions, Sec. \ref{sec:pomp_instrumentation} & {\ttfamily -\/-\/pomp/ \newline -\/-\/nopomp} & depends on OpenMP usage &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}  \\ \hline
@@ -144,9 +144,9 @@ source routines and arbitrary regions, in addition to fully-automatic
     </tr>
     <tr>
       <td align="left" valign="middle"> OpenMP </td>
-      <td align="center" valign="middle"> --opari </td>
+      <td align="center" valign="middle"> --openmp/--noopenmp </td>
       <td align="center" valign="middle"> (auto) </td>
-      <td align="center" valign="middle"> all parallel constructs + @pomp2 user regions (see Sec. @ref pomp_instrumentation ) </td>
+      <td align="center" valign="middle"> all parallel constructs </td>
       <td align="center" valign="middle"> &mdash; </td> 
     </tr>
     <tr>
@@ -202,9 +202,14 @@ because it inserts @scorep user macros into the source code.
 Sometimes it is desirable to explicitly direct the @scorep instrumentor to
 do nothing except execute the associated compile/link command. For such cases 
 it is possible to disable default instrumentation with <tt>--nocompiler</tt>,
-and/or <tt>--nompi</tt>. Although no instrumentation is
+<tt>-noopenmp</tt>, and/or <tt>--nompi</tt>. Although no instrumentation is
 performed, this can help verify that the @scorep instrumentor correctly
 handles the compile/link commands. 
+
+@note Disabling @openmp in the instrumenter for @openmp applications will cause 
+      errors during program execution if any event occures inside of a parallel 
+      region.
+
 
 @section compiler_instrumentation Automatic Compiler Instrumentation
 @seclabel{compiler_instrumentation}

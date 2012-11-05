@@ -304,7 +304,7 @@ evaluating the expression. A Fortran rule would look like this:
       <tt>SCOREP_REGION_NAMES_END</tt>, <tt>EXCLUDE</tt>, <tt>INCLUDE</tt>, 
       and <tt>FORTRAN</tt>) are case-sensitive.
 
-@subsection selective_tracing Selective Tracing
+@section selective_tracing Selective Tracing
 @seclabel{selective_tracing}
 
 @scorep experiments record by default all events during the whole execution run.
