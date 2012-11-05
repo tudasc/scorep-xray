@@ -480,7 +480,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
     else if ( arg.substr( 0, 6 ) == "--cobi" )
     {
         m_cobi_instrumentation = enabled;
-        m_install_data.setOpariParams( get_tool_params( arg, 6 ) );
+        m_install_data.setCobiParams( get_tool_params( arg, 6 ) );
         return scorep_parse_mode_param;
     }
     else if ( arg == "--nocobi" )
