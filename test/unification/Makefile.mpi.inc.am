@@ -33,9 +33,7 @@ mpi_unification_test_CPPFLAGS  = $(AM_CPPFLAGS) \
                                 $(UTILS_CPPFLAGS)
 mpi_unification_test_LDADD     = $(LIB_DIR_SCOREP)libscorep_mpi.la
 
-if HAVE_PAPI
 mpi_unification_test_LDFLAGS   = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 TESTS_MPI += mpi_unification_test
 

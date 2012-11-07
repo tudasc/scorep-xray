@@ -18,9 +18,7 @@ oa_c_test_mpi_CPPFLAGS = $(AM_CPPFLAGS)       \
 oa_c_test_mpi_LDADD =                        \
     $(LIB_DIR_SCOREP)libscorep_mpi.la
 
-if HAVE_PAPI
 oa_c_test_mpi_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 EXTRA_DIST       += \
     $(SRC_ROOT)/test/OA/MPI/C/run_oa_c_test_mpi.sh.in

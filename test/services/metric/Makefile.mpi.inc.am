@@ -25,9 +25,7 @@ EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_mpi_metric_test.sh \
               $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_papi_metric_definitions.out \
               $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_papi_metric_events.out
 
-if HAVE_PAPI
 jacobi_mpi_c_metric_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 # As long as there is no appropriate make target add binary to MPI test 
 # cases. No metrics will be recorded because corresponding environment
@@ -89,9 +87,7 @@ EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_hybrid_metric_test.sh \
               $(SRC_ROOT)test/services/metric/data/jacobi_c_hybrid_papi_metric_definitions.out \
               $(SRC_ROOT)test/services/metric/data/jacobi_c_hybrid_papi_metric_events.out
 
-if HAVE_PAPI
 jacobi_mpi_omp_c_metric_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 # As long as there is no appropriate make target add binary to MPI test 
 # cases. No metrics will be recorded because corresponding environment

@@ -75,9 +75,7 @@ definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
                               $(UTILS_CPPFLAGS) \
                               -I$(INC_DIR_COMMON_HASH)
 definitions_test_c_LDADD = libscorep_serial.la
-if HAVE_PAPI
 definitions_test_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 TESTS_SERIAL += definitions_test_c
 
@@ -91,8 +89,6 @@ string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
                                $(UTILS_CPPFLAGS) \
                                -I$(INC_DIR_COMMON_HASH)
 string_duplicates_c_LDADD    = libscorep_serial.la
-if HAVE_PAPI
 string_duplicates_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 TESTS_SERIAL += string_duplicates_c

@@ -39,9 +39,7 @@ omp_tasks_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks.mod.c       \
 omp_tasks_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 omp_tasks_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
 omp_tasks_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_tasks_pomp.la
-if HAVE_PAPI
 omp_tasks_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_omp_tasks.sh

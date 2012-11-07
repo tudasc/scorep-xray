@@ -36,35 +36,27 @@ test_scorep_config_bool_SOURCES  = $(SRC_ROOT)test/measurement/config/bool.c \
                                    $(SRC_ROOT)vendor/common/cutest/CuTest.c
 test_scorep_config_bool_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_bool_LDADD    = $(test_scorep_config_ldadd)
-if HAVE_PAPI
 test_scorep_config_bool_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 test_scorep_config_number_SOURCES  = $(SRC_ROOT)test/measurement/config/number.c \
                                      $(SRC_ROOT)test/measurement/config/error_callback.c \
                                      $(SRC_ROOT)vendor/common/cutest/CuTest.c
 test_scorep_config_number_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_number_LDADD    = $(test_scorep_config_ldadd)
-if HAVE_PAPI
 test_scorep_config_number_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 test_scorep_config_size_SOURCES  = $(SRC_ROOT)test/measurement/config/size.c \
                                    $(SRC_ROOT)test/measurement/config/error_callback.c \
                                    $(SRC_ROOT)vendor/common/cutest/CuTest.c
 test_scorep_config_size_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_size_LDADD    = $(test_scorep_config_ldadd)
-if HAVE_PAPI
 test_scorep_config_size_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 test_scorep_config_string_SOURCES  = $(SRC_ROOT)test/measurement/config/string.c \
                                      $(SRC_ROOT)vendor/common/cutest/CuTest.c
 test_scorep_config_string_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_string_LDADD    = $(test_scorep_config_ldadd)
-if HAVE_PAPI
 test_scorep_config_string_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 TESTS_SERIAL += test_scorep_config_bool \
                 test_scorep_config_string \

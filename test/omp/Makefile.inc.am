@@ -44,9 +44,7 @@ omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 omp_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
 omp_test_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_test_pomp.la
 
-if HAVE_PAPI
 omp_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 TESTS_OMP += $(srcdir)/../test/omp/run_omp_test.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test.sh
@@ -62,9 +60,7 @@ internal_thread_handling_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 internal_thread_handling_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
 internal_thread_handling_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_test_pomp.la
 
-if HAVE_PAPI
 internal_thread_handling_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 TESTS_OMP += $(srcdir)/../test/omp/run_internal_thread_handling.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_internal_thread_handling.sh

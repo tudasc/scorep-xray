@@ -16,9 +16,7 @@ oa_c_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@       \
 oa_c_test_LDADD =                        \
     $(LIB_ROOT)libscorep_serial.la
 
-if HAVE_PAPI
 oa_c_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 EXTRA_DIST       += \
     $(SRC_ROOT)/test/OA/serial/C/run_oa_c_test.sh.in

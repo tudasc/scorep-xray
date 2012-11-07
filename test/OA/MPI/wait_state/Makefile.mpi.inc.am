@@ -14,9 +14,7 @@ mpi_nonblocking_wait_states_CPPFLAGS = $(AM_CPPFLAGS)       \
 mpi_nonblocking_wait_states_LDADD =                        \
     $(LIB_DIR_SCOREP)libscorep_mpi.la
 
-if HAVE_PAPI
 mpi_nonblocking_wait_states_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
-endif
 
 TESTS_MPI += mpi_nonblocking_wait_states
 endif #if HAVE_MPI_SUPPORT
