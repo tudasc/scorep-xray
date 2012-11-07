@@ -74,7 +74,7 @@ scorep_cuda_finalize_callback( void )
 
 /** Initializes the CUDA adapter. */
 static SCOREP_ErrorCode
-scorep_cuda_init()
+scorep_cuda_init( void )
 {
     UTILS_DEBUG( "Selected options: %llu", scorep_cuda_features );
 
@@ -103,7 +103,7 @@ scorep_cuda_final_location( SCOREP_Location* location )
 
 /** Finalizes the CUDA adapter. */
 static void
-scorep_cuda_finalize()
+scorep_cuda_finalize( void )
 {
     if ( scorep_cuda_features > 0 )
     {

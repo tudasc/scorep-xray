@@ -230,7 +230,7 @@ hash_string( const char* str )
 }
 
 void
-scorep_cupti_activity_init()
+scorep_cupti_activity_init( void )
 {
     if ( !scorep_cupti_activity_initialized )
     {
@@ -297,7 +297,7 @@ scorep_cupti_activity_init()
 }
 
 void
-scorep_cupti_activity_finalize()
+scorep_cupti_activity_finalize( void )
 {
     if ( !scorep_cupti_activity_finalized && scorep_cupti_activity_initialized )
     {
@@ -1058,7 +1058,7 @@ scorep_cupti_activity_string_hash_get( const char* name )
  * Clear the CUPTI Activity hash table (free allocated memory).
  */
 static void
-scorep_cupti_activity_string_hash_clear()
+scorep_cupti_activity_string_hash_clear( void )
 {
     int                                     i;
     scorep_cupti_activity_hash_node_string* tmp_node;
