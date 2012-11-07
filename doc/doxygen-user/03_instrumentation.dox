@@ -202,7 +202,7 @@ because it inserts @scorep user macros into the source code.
 Sometimes it is desirable to explicitly direct the @scorep instrumentor to
 do nothing except execute the associated compile/link command. For such cases 
 it is possible to disable default instrumentation with <tt>--nocompiler</tt>,
-<tt>-noopenmp</tt>, and/or <tt>--nompi</tt>. Although no instrumentation is
+<tt>--noopenmp</tt>, and/or <tt>--nompi</tt>. Although no instrumentation is
 performed, this can help verify that the @scorep instrumentor correctly
 handles the compile/link commands. 
 
