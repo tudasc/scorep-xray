@@ -15,7 +15,7 @@
  */
 
 /**
- * @file  SCOREP_Mpi_Communicator.h
+ * @file       scorep_mpi_communicator.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     ALPHA
  * @ingroup    MPI_Wrapper

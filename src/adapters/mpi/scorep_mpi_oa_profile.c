@@ -17,7 +17,7 @@
 
 /**
  * @status      alpha
- * @file        scorep_mpiprofile.c
+ * @file        scorep_mpi_oa_profile.c
  * @maintainer  Yury Olenyik <oleynik@in.tum.de>
  *
  * @brief   Declaration of MPI profiling functions
@@ -41,7 +41,7 @@
 #define SCOREP_USER_ENABLE
 #include <scorep/SCOREP_User.h>
 
-#include "scorep_mpiprofile.h"
+#include <scorep_mpi_oa_profile.h>
 
 
 static int64_t scorep_mpiprofiling_lateThreshold;

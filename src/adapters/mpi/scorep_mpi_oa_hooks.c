@@ -16,7 +16,7 @@
 
 
 /**
- * @file        SCOREP_MPIHooks.c
+ * @file        scorep_mpi_oa_hooks.c
  * @maintainer  Yury Olenyik <oleynik@in.tum.de>
  *
  * @brief   mpi hooks functions to be used by MPI profiling
@@ -27,10 +27,10 @@
 
 #include <config.h>
 
-#include "SCOREP_Mpi.h"
-#include "SCOREP_MPIHooks.h"
+#include <SCOREP_Mpi.h>
+#include <scorep_mpi_oa_hooks.h>
 #include <UTILS_Debug.h>
-#include "scorep_mpiprofile.h"
+#include <scorep_mpi_oa_profile.h>
 
 #include <stdlib.h>
 #include <stdio.h>

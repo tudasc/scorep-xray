@@ -28,9 +28,9 @@
  */
 
 #include <SCOREP_ErrorCodes.h>
-#include "SCOREP_Mpi_Communicator.h"
-#include "SCOREP_Mpi_Reg.h"
-#include "SCOREP_Mpi_Request.h"
+#include <scorep_mpi_communicator.h>
+#include <SCOREP_Mpi_Reg.h>
+#include <scorep_mpi_request.h>
 
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
@@ -38,7 +38,7 @@
 #include <SCOREP_DefinitionHandles.h>
 
 #if !defined( SCOREP_MPI_NO_HOOKS )
-#include "SCOREP_MPIHooks.h"
+#include <scorep_mpi_oa_hooks.h>
 #endif
 
 #include <stdio.h>

@@ -16,7 +16,7 @@
 
 /**
  * @status     alpha
- * @file       SCOREP_Mpi_Request.c
+ * @file       scorep_mpi_request.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @ingroup    MPI_Wrapper
  *

@@ -20,7 +20,7 @@
 
 
 /**
- * @file        SCOREP_MPIHooks.h
+ * @file        scorep_mpi_oa_hooks.h
  * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief   Declaration of MPI pre and post communication hooks
@@ -31,17 +31,13 @@
 #include <mpi.h>
 
 #include "SCOREP_Types.h"
-#include "SCOREP_Mpi_Request.h"
+#include "scorep_mpi_request.h"
 
 void
-scorep_mpiprofile_init
-(
-);
+scorep_mpiprofile_init( void );
 
 void
-scorep_mpiprofile_finalize
-(
-);
+scorep_mpiprofile_finalize( void );
 
 
 /*----------------------------------------------

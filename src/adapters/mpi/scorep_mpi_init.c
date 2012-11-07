@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       SCOREP_Mpi_Init.c
+ * @file       scorep_mpi_init.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     alpha
  * @ingroup    MPI_Wrapper
@@ -32,10 +32,10 @@
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Location.h>
-#include "SCOREP_Mpi_Init.h"
-#include "SCOREP_Mpi_Reg.h"
-#include "SCOREP_Config.h"
-#include "SCOREP_Mpi.h"
+#include <SCOREP_Mpi_Init.h>
+#include <SCOREP_Mpi_Reg.h>
+#include <SCOREP_Config.h>
+#include <SCOREP_Mpi.h>
 #include <SCOREP_RuntimeManagement.h>
 
 #include <stdio.h>

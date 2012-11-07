@@ -18,7 +18,7 @@
 #define SCOREP_MPI_REQUEST_H
 
 /**
-   @file       SCOREP_Mpi_Request.h
+   @file       scorep_mpi_request.h
    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
    @status     ALPHA
    @ingroup    MPI_Wrapper

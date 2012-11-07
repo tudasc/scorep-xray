@@ -3,9 +3,6 @@
 if HAVE_MPI_SUPPORT
 noinst_LTLIBRARIES += libscorep_adapter_mpi_c_wrapper.la
 libscorep_adapter_mpi_c_wrapper_la_SOURCES =                  \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Communicator.c     \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Request.c          \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Init.c             \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Cg.c               \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Coll.c             \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Env.c              \
@@ -19,15 +16,18 @@ libscorep_adapter_mpi_c_wrapper_la_SOURCES =                  \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Spawn.c            \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Topo.c             \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Type.c             \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Communicator.h     \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Request.h          \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi.h                  \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h              \
     $(SRC_ROOT)src/adapters/include/SCOREP_Mpi_Init.h	      \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_MPIHooks.c             \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_MPIHooks.h	      \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpiprofile.c           \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpiprofile.h	
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_init.c             \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator.h     \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator.c     \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_request.h          \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_request.c          \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_hooks.c         \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_hooks.h	      \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile.c       \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile.h	
 
 libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                          \

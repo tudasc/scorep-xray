@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       SCOREP_Mpi_Communicator.c
+ * @file       scorep_mpi_communicator.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     alpha
  * @ingroup    MPI_Wrapper
@@ -24,20 +24,19 @@
  */
 
 #include <config.h>
+#include <scorep_mpi_communicator.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Mutex.h>
+#include <SCOREP_Memory.h>
+#include <SCOREP_Mpi.h>
+
+#include <UTILS_Error.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 #include <inttypes.h>
 #include <assert.h>
-
-#include "SCOREP_Mpi.h"
-
-#include <UTILS_Error.h>
-
-#include "SCOREP_Mpi_Communicator.h"
-#include <SCOREP_Definitions.h>
-#include <SCOREP_Mutex.h>
-#include <SCOREP_Memory.h>
 
 /*
  * ----------------------------------------------------------------------------
