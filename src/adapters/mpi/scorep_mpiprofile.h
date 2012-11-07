@@ -81,7 +81,7 @@ scorep_mpiprofile_store_timepack_request_in_pool
 );
 
 void
-scorep_mpiprofile_free_timepack_pool();
+scorep_mpiprofile_free_timepack_pool( void );
 
 void
 scorep_mpiprofile_init_timepack
@@ -108,24 +108,16 @@ scorep_mpiprofiling_rank_to_pe
 );
 
 void
-scorep_mpiprofile_init
-(
-);
+scorep_mpiprofile_init( void );
 
 void
-scorep_mpiprofile_init_metrics
-(
-);
+scorep_mpiprofile_init_metrics( void );
 
 void
-scorep_mpiprofile_reinit_metrics
-(
-);
+scorep_mpiprofile_reinit_metrics( void );
 
 void
-scorep_mpiprofile_finalize
-(
-);
+scorep_mpiprofile_finalize( void );
 
 void*
 scorep_mpiprofile_get_remote_time_packs
@@ -134,9 +126,7 @@ scorep_mpiprofile_get_remote_time_packs
 );
 
 void*
-scorep_mpiprofile_get_remote_time_pack
-(
-);
+scorep_mpiprofile_get_remote_time_pack( void );
 
 void
 scorep_mpiprofile_release_local_time_pack
@@ -232,9 +222,7 @@ scorep_mpiprofile_eval_time_stamps
  * @return Threshold value.
  */
 int64_t
-mpiprofiling_get_late_threshold
-(
-);
+mpiprofiling_get_late_threshold( void );
 
 /**
  * Sets threshold value for determining late process wait states for mpi profiling.

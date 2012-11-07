@@ -78,9 +78,7 @@ SCOREP_USER_METRIC_LOCAL( scorep_mpiprofiling_lateRecv )
  * Initializes MPI profiling module
  */
 void
-scorep_mpiprofile_init
-(
-)
+scorep_mpiprofile_init( void )
 {
     if ( scorep_mpiprofiling_initialized )
     {
@@ -122,9 +120,7 @@ scorep_mpiprofile_init
 }
 
 void
-scorep_mpiprofile_init_metrics
-(
-)
+scorep_mpiprofile_init_metrics( void )
 {
     if ( scorep_mpiprofiling_metrics_initialized )
     {
@@ -140,18 +136,14 @@ scorep_mpiprofile_init_metrics
 }
 
 void
-scorep_mpiprofile_reinit_metrics
-(
-)
+scorep_mpiprofile_reinit_metrics( void )
 {
     scorep_mpiprofiling_metrics_initialized = 0;
     scorep_mpiprofile_init_metrics();
 }
 
 void
-scorep_mpiprofile_finalize
-(
-)
+scorep_mpiprofile_finalize( void )
 {
     if ( !scorep_mpiprofiling_initialized )
     {
@@ -289,7 +281,7 @@ scorep_mpiprofile_store_timepack_request_in_pool( MPI_Request request, int posit
     scorep_mpiprofiling_timepack_requests[ position ] = request;
 }
 void
-scorep_mpiprofile_free_timepack_pool()
+scorep_mpiprofile_free_timepack_pool( void )
 {
     int i;
     for ( i = 0; i < scorep_mpiprofiling_timepack_pool_size; i++ )
@@ -489,9 +481,7 @@ scorep_mpiprofile_get_remote_time_packs
  *
  */
 void*
-scorep_mpiprofile_get_remote_time_pack
-(
-)
+scorep_mpiprofile_get_remote_time_pack( void )
 {
     if ( !scorep_mpiprofiling_metrics_initialized )
     {
@@ -761,9 +751,7 @@ scorep_mpiprofile_eval_time_stamps
 }
 
 int64_t
-mpiprofiling_get_late_threshold
-(
-)
+mpiprofiling_get_late_threshold( void )
 {
     return scorep_mpiprofiling_lateThreshold;
 }

@@ -368,7 +368,7 @@ scorep_mpi_get_request_hash_entry( MPI_Request req )
 }
 
 void
-scorep_mpi_request_finalize()
+scorep_mpi_request_finalize( void )
 {
     struct scorep_mpi_request_block* block;
     int                              i;
@@ -387,7 +387,7 @@ scorep_mpi_request_finalize()
 }
 
 SCOREP_MpiRequestId
-scorep_mpi_get_request_id()
+scorep_mpi_get_request_id( void )
 {
     return ++scorep_mpi_last_request_id;
 }

@@ -58,13 +58,13 @@ typedef struct
  * @brief Clean up request tracking infrastructure
  */
 void
-scorep_mpi_request_finalize();
+scorep_mpi_request_finalize( void );
 
 /**
  * @brief Return a new request id
  */
 SCOREP_MpiRequestId
-scorep_mpi_get_request_id();
+scorep_mpi_get_request_id( void );
 
 /**
  * @brief Create entry for a given MPI request handle

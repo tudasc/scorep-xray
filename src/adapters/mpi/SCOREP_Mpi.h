@@ -118,13 +118,13 @@ extern int scorep_mpi_status_size;
  * Intialize MPI Profiling module
  */
 extern void
-scorep_mpiprofile_init();
+scorep_mpiprofile_init( void );
 
 /**
  * Reinitialize MPI profiling metrics
  */
 extern void
-scorep_mpiprofile_reinit_metrics();
+scorep_mpiprofile_reinit_metrics( void );
 
 /** @def SCOREP_MPI_IS_EVENT_GEN_ON_FOR
     Check whether event generation is turned on for a specific group.

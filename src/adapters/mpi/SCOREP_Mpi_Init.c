@@ -133,31 +133,31 @@ SCOREP_FORTRAN_GET_MPI_STATUS_SIZE( int* status_size );
    External fortran function to trigger a callback which sets MPI_BOTTOM.
  */
 extern void
-SCOREP_FORTRAN_GET_MPI_BOTTOM();
+SCOREP_FORTRAN_GET_MPI_BOTTOM( void );
 
 /**
    External fortran function to trigger a callback which sets MPI_IN_PLACE.
  */
 extern void
-SCOREP_FORTRAN_GET_MPI_IN_PLACE();
+SCOREP_FORTRAN_GET_MPI_IN_PLACE( void );
 
 /**
    External fortran function to trigger a callback which sets MPI_STATUS_IGNORE.
  */
 extern void
-SCOREP_FORTRAN_GET_MPI_STATUS_IGNORE();
+SCOREP_FORTRAN_GET_MPI_STATUS_IGNORE( void );
 
 /**
    External fortran function to trigger a callback which sets MPI_STATUSES_IGNORE.
  */
 extern void
-SCOREP_FORTRAN_GET_MPI_STATUSES_IGNORE();
+SCOREP_FORTRAN_GET_MPI_STATUSES_IGNORE( void );
 
 /**
    External fortran function to trigger a callback which sets MPI_STATUSES_IGNORE.
  */
 extern void
-SCOREP_FORTRAN_GET_MPI_UNWEIGHTED();
+SCOREP_FORTRAN_GET_MPI_UNWEIGHTED( void );
 
 #include "scorep_mpi_confvars.inc.c"
 
@@ -181,7 +181,7 @@ scorep_mpi_register( size_t subsystem_id )
    for the initialization process of the MPI adapter.
  */
 static SCOREP_ErrorCode
-scorep_mpi_init_adapter()
+scorep_mpi_init_adapter( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -234,7 +234,7 @@ scorep_mpi_finalize_location( SCOREP_Location* locationData )
    for the initialization process of the MPI adapter.
  */
 static void
-scorep_mpi_finalize()
+scorep_mpi_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -255,7 +255,7 @@ scorep_mpi_finalize()
    for the initialization process of the MPI adapter.
  */
 static void
-scorep_mpi_deregister()
+scorep_mpi_deregister( void )
 {
     int res;
 

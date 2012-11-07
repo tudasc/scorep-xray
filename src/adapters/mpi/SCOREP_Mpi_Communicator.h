@@ -70,14 +70,14 @@ typedef uint8_t SCOREP_Mpi_Color;
  * MPI_COMM_WORLD.
  */
 extern void
-scorep_mpi_comm_init();
+scorep_mpi_comm_init( void );
 
 /**
  * @internal
  * @brief Cleanup communicator management.
  */
 extern void
-scorep_mpi_comm_finalize();
+scorep_mpi_comm_finalize( void );
 
 /**
  *  @internal
@@ -134,13 +134,13 @@ scorep_mpi_group_search( MPI_Group group );
  * Initializes the window handling specific data structures.
  */
 extern void
-scorep_mpi_win_init();
+scorep_mpi_win_init( void );
 
 /**
  * Finalizes the window handling specific data structures.
  */
 extern void
-scorep_mpi_win_finalize();
+scorep_mpi_win_finalize( void );
 
 #ifndef SCOREP_MPI_NO_RMA
 

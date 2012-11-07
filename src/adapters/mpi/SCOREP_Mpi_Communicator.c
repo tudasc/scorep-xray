@@ -304,7 +304,7 @@ scorep_mpi_rank_to_pe( SCOREP_MpiRank rank,
 
 /* -------------------------------------------------------------------- window handling */
 void
-scorep_mpi_win_init()
+scorep_mpi_win_init( void )
 {
 #ifndef SCOREP_MPI_NO_RMA
     SCOREP_MutexCreate( &scorep_mpi_window_mutex );
@@ -362,7 +362,7 @@ scorep_mpi_win_init()
 }
 
 void
-scorep_mpi_win_finalize()
+scorep_mpi_win_finalize( void )
 {
 #ifndef SCOREP_MPI_NO_RMA
     SCOREP_MutexDestroy( &scorep_mpi_window_mutex );
@@ -478,7 +478,7 @@ scorep_mpi_win_free( MPI_Win win )
 
 /* no static, because this is called from the mpi unification test */
 void
-scorep_mpi_setup_world()
+scorep_mpi_setup_world( void )
 {
     assert( scorep_mpi_comm_initialized == 0 );
 
@@ -568,7 +568,7 @@ scorep_mpi_setup_world()
 }
 
 void
-scorep_mpi_comm_init()
+scorep_mpi_comm_init( void )
 {
     SCOREP_MutexCreate( &scorep_mpi_communicator_mutex );
 
@@ -614,7 +614,7 @@ scorep_mpi_comm_init()
 }
 
 void
-scorep_mpi_comm_finalize()
+scorep_mpi_comm_finalize( void )
 {
     /* reset initialization flag
      * (needed to prevent crashes with broken MPI implementations) */
