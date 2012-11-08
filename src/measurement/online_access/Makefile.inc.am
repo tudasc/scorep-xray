@@ -107,7 +107,11 @@ libscorep_oa_serial_la_SOURCES =                                           \
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.c             \
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.h
 
+if PLATFORM_AIX
+libscorep_oa_serial_la_CPPFLAGS = $(OA_SERIAL_FLAGS)
+else
 libscorep_oa_serial_la_CPPFLAGS = $(OA_SERIAL_FLAGS) -D_POSIX_SOURCE
+endif 
 
 libscorep_oa_serial_la_LIBADD =                 \
     libscorep_oa_fortran_sub1.la                \
