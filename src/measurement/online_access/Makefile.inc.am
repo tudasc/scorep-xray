@@ -178,6 +178,6 @@ libscorep_oa_serial_la_LIBADD =                 \
     libscorep_oa_fortran_sub3.la                \
     libscorep_oa_fortran_sub4.la
 
-endif #if HAVE_ONLINE_ACCESS
+endif #if HAVE_ONLINE_ACCESS 
 
 
