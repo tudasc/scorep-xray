@@ -85,16 +85,13 @@ extern "C" {
                       region.
  */
 void
-SCOREP_User_RegionBegin
-(
-    SCOREP_User_RegionHandle*    handle,
-    const char**                 lastFileName,
-    SCOREP_SourceFileHandle*     lastFile,
-    const char*                  name,
-    const SCOREP_User_RegionType regionType,
-    const char*                  fileName,
-    const uint32_t               lineNo
-);
+SCOREP_User_RegionBegin( SCOREP_User_RegionHandle*    handle,
+                         const char**                 lastFileName,
+                         SCOREP_SourceFileHandle*     lastFile,
+                         const char*                  name,
+                         const SCOREP_User_RegionType regionType,
+                         const char*                  fileName,
+                         const uint32_t               lineNo );
 
 /**
     Generates an exit event for the specified region.
@@ -103,10 +100,7 @@ SCOREP_User_RegionBegin
     @param handle     The handle for this region. It must be defined before.
  */
 void
-SCOREP_User_RegionEnd
-(
-    const SCOREP_User_RegionHandle handle
-);
+SCOREP_User_RegionEnd( const SCOREP_User_RegionHandle handle );
 
 /**
     Registers a region. The region handle must be defined before. If the handle
@@ -135,16 +129,13 @@ SCOREP_User_RegionEnd
                       region.
  */
 void
-SCOREP_User_RegionInit
-(
-    SCOREP_User_RegionHandle*    handle,
-    const char**                 lastFileName,
-    SCOREP_SourceFileHandle*     lastFile,
-    const char*                  name,
-    const SCOREP_User_RegionType regionType,
-    const char*                  fileName,
-    const uint32_t               lineNo
-);
+SCOREP_User_RegionInit( SCOREP_User_RegionHandle*    handle,
+                        const char**                 lastFileName,
+                        SCOREP_SourceFileHandle*     lastFile,
+                        const char*                  name,
+                        const SCOREP_User_RegionType regionType,
+                        const char*                  fileName,
+                        const uint32_t               lineNo );
 
 /**
     Generates an enter event for the specified region. The region must be declared and
@@ -154,10 +145,7 @@ SCOREP_User_RegionInit
     @param handle     The handle for this region. It must be defined before.
  */
 void
-SCOREP_User_RegionEnter
-(
-    const SCOREP_User_RegionHandle handle
-);
+SCOREP_User_RegionEnter( const SCOREP_User_RegionHandle handle );
 
 /* **************************************************************************************
  * Rewind region functions
@@ -188,16 +176,13 @@ SCOREP_User_RegionEnter
                       region.
  */
 void
-SCOREP_User_RewindRegionBegin
-(
-    SCOREP_User_RegionHandle*    handle,
-    const char**                 lastFileName,
-    SCOREP_SourceFileHandle*     lastFile,
-    const char*                  name,
-    const SCOREP_User_RegionType regionType,
-    const char*                  fileName,
-    const uint32_t               lineNo
-);
+SCOREP_User_RewindRegionBegin( SCOREP_User_RegionHandle*    handle,
+                               const char**                 lastFileName,
+                               SCOREP_SourceFileHandle*     lastFile,
+                               const char*                  name,
+                               const SCOREP_User_RegionType regionType,
+                               const char*                  fileName,
+                               const uint32_t               lineNo );
 
 /**
     Generates an exit event for the specified rewind region. For detailed
@@ -207,11 +192,8 @@ SCOREP_User_RewindRegionBegin
                       prevous saved tracce buffer state.
  */
 void
-SCOREP_User_RewindRegionEnd
-(
-    const SCOREP_User_RegionHandle handle,
-    const bool                     value
-);
+SCOREP_User_RewindRegionEnd( const SCOREP_User_RegionHandle handle,
+                             const bool                     value );
 
 /**
     Generates an enter event for the specified rewind region. For detailed
@@ -219,10 +201,7 @@ SCOREP_User_RewindRegionEnd
     @param handle     The handle for this rewind region. It must be defined before.
  */
 void
-SCOREP_User_RewindRegionEnter
-(
-    const SCOREP_User_RegionHandle handle
-);
+SCOREP_User_RewindRegionEnter( const SCOREP_User_RegionHandle handle );
 
 /* **************************************************************************************
  * Parameter functions
@@ -238,12 +217,9 @@ SCOREP_User_RewindRegionEnter
     @param value The value for the parameter.
  */
 void
-SCOREP_User_ParameterInt64
-(
-    SCOREP_User_ParameterHandle* handle,
-    const char*                  name,
-    int64_t                      value
-);
+SCOREP_User_ParameterInt64( SCOREP_User_ParameterHandle* handle,
+                            const char*                  name,
+                            int64_t                      value );
 
 /**
     Generates a parameter event for a parameter of 64 bit unsigned integer data type.
@@ -255,12 +231,9 @@ SCOREP_User_ParameterInt64
     @param value The value for the parameter.
  */
 void
-SCOREP_User_ParameterUint64
-(
-    SCOREP_User_ParameterHandle* handle,
-    const char*                  name,
-    uint64_t                     value
-);
+SCOREP_User_ParameterUint64( SCOREP_User_ParameterHandle* handle,
+                             const char*                  name,
+                             uint64_t                     value );
 
 /**
     Generates a parameter event for a parameter of string type.
@@ -272,12 +245,9 @@ SCOREP_User_ParameterUint64
     @param value The value for the parameter.
  */
 void
-SCOREP_User_ParameterString
-(
-    SCOREP_User_ParameterHandle* handle,
-    const char*                  name,
-    char*                        value
-);
+SCOREP_User_ParameterString( SCOREP_User_ParameterHandle* handle,
+                             const char*                  name,
+                             char*                        value );
 
 /* **************************************************************************************
  * User metric functions
@@ -287,6 +257,7 @@ SCOREP_User_ParameterString
     Initializes a user metric. Every user metric must be registered before it is used
     the first time.
     @param metricHandle A handle which identify the user metric.
+    @param name        A string for the name of the user metric.
     @param unit        A string for the unit of the user metric.
     @param metricType Specifies the data type of the user metric. Possible are
                        SCOREP_USER_METRIC_TYPE_INT64 for 64 bit signed integer,
@@ -299,14 +270,11 @@ SCOREP_User_ParameterString
                        per callpath enter SCOREP_USER_METRIC_CONTEXT_CALLPATH.
  */
 void
-SCOREP_User_InitMetric
-(
-    SCOREP_SamplingSetHandle*    metricHandle,
-    const char*                  name,
-    const char*                  unit,
-    const SCOREP_User_MetricType metricType,
-    const int8_t                 context
-);
+SCOREP_User_InitMetric( SCOREP_SamplingSetHandle*    metricHandle,
+                        const char*                  name,
+                        const char*                  unit,
+                        const SCOREP_User_MetricType metricType,
+                        const int8_t                 context );
 
 /**
     Triggers an user metric of type signed integer. Every user metric must be
@@ -315,11 +283,8 @@ SCOREP_User_InitMetric
     @param value        The value for the metric.
  */
 void
-SCOREP_User_TriggerMetricInt64
-(
-    SCOREP_SamplingSetHandle metricHandle,
-    int64_t                  value
-);
+SCOREP_User_TriggerMetricInt64( SCOREP_SamplingSetHandle metricHandle,
+                                int64_t                  value );
 
 /**
     Triggers an user metric of type unsigned integer. Every user metric must be
@@ -328,11 +293,8 @@ SCOREP_User_TriggerMetricInt64
     @param value        The value for the metric.
  */
 void
-SCOREP_User_TriggerMetricUint64
-(
-    SCOREP_SamplingSetHandle metricHandle,
-    uint64_t                 value
-);
+SCOREP_User_TriggerMetricUint64( SCOREP_SamplingSetHandle metricHandle,
+                                 uint64_t                 value );
 
 /**
     Triggers an user metric of type integer. Every user metric must be registered
@@ -341,11 +303,8 @@ SCOREP_User_TriggerMetricUint64
     @param value        The value for the metric.
  */
 void
-SCOREP_User_TriggerMetricDouble
-(
-    SCOREP_SamplingSetHandle metricHandle,
-    double                   value
-);
+SCOREP_User_TriggerMetricDouble( SCOREP_SamplingSetHandle metricHandle,
+                                 double                   value );
 
 /* *************************************************************************************
 * Control functions
@@ -359,7 +318,7 @@ SCOREP_User_TriggerMetricDouble
     but use the SCOREP_RECORDING_ON macro instead.
  */
 void
-SCOREP_User_EnableRecording();
+SCOREP_User_EnableRecording( void );
 
 /**
     Disables recording of events. If already disabled, this command has no effect.
@@ -369,7 +328,7 @@ SCOREP_User_EnableRecording();
     but use the SCOREP_RECORDING_OFF macro instead.
  */
 void
-SCOREP_User_DisableRecording();
+SCOREP_User_DisableRecording( void );
 
 /**
     Checks if the recording is enabled.
@@ -378,7 +337,7 @@ SCOREP_User_DisableRecording();
     @returns false if the recording of events is disabled, else it returns true.
  */
 bool
-SCOREP_User_RecordingEnabled();
+SCOREP_User_RecordingEnabled( void );
 
 #ifdef __cplusplus
 } /* extern "C" */
