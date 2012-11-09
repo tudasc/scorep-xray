@@ -49,7 +49,7 @@ AS_IF([test "x${with_libcudart_lib}" = "xyes"],
        done
        cupti_root="${path}"],
       [cupti_root="${with_libcudart}/extras/CUPTI"])
-AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcudart_cppflags}], [${cupti_root}], [no-configure-help-string])
+AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcudart_cppflags}], [${cupti_root}])
 
 AC_SCOREP_BACKEND_LIB([libcuda])
 
