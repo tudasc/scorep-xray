@@ -35,12 +35,13 @@ AC_ARG_WITH([papi-header],
             [ac_scorep_papi_inc_dir="${withval}"],  # action-if-given.
             [ac_scorep_papi_inc_dir="${PAPI_INC-}"] # action-if-not-given
 )
+# The -DC99 is a necessary gcc workaround for a
+# bug in papi 4.1.2.1. It might be compiler dependent.
+dc99_fix="-DC99"
 AS_IF([test "x$ac_scorep_papi_inc_dir" != "x"], [
-    # The -DC99 is a necessary gcc workaround for a
-    # bug in papi 4.1.2.1. It might be compiler dependent.
-    ac_scorep_papi_cppflags=-"I$ac_scorep_papi_inc_dir -DC99"
+    ac_scorep_papi_cppflags=-"I$ac_scorep_papi_inc_dir $dc99_fix"
 ], [
-    ac_scorep_papi_cppflags=""
+    ac_scorep_papi_cppflags="$dc99_fix"
 ])
 
 AC_LANG_PUSH([C])
