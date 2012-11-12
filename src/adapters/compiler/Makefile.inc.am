@@ -104,6 +104,34 @@ libscorep_adapter_compiler_la_SOURCES += \
 	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
 endif
 
+# cray specific settings
+
+if SCOREP_COMPILER_CRAY
+if HAVE_LIBBFD
+libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
+endif
+if HAVE_DEMANGLE
+libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
+endif 
+
+if HAVE_NM_AS_BFD_REPLACEMENT
+libscorep_adapter_compiler_la_CPPFLAGS += \
+	-I$(INC_ROOT)src/services/include \
+        -DHAVE_NM
+
+libscorep_adapter_compiler_la_SOURCES  += \
+	$(SRC_ROOT)src/services/include/SCOREP_Timing.h
+endif
+
+libscorep_adapter_compiler_la_SOURCES += \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c         \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h         \
+	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c          \
+	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_cray.c
+endif
+
 # sx specific settings
 
 if SCOREP_COMPILER_SX
@@ -131,14 +159,16 @@ endif
 #endif
 
 # If no compiler adapter is available
-if !SCOREP_COMPILER_INTEL 
-if !SCOREP_COMPILER_IBM 
-if !SCOREP_COMPILER_PGI 
-if !SCOREP_COMPILER_GNU 
+if !SCOREP_COMPILER_CRAY
+if !SCOREP_COMPILER_INTEL
+if !SCOREP_COMPILER_IBM
+if !SCOREP_COMPILER_PGI
+if !SCOREP_COMPILER_GNU
 if !SCOREP_COMPILER_SX
 if !SCOREP_COMPILER_SUN
 libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_empty.c
+endif
 endif
 endif
 endif
@@ -158,6 +188,7 @@ endif
 #    -I$(INC_ROOT)src/measurement/include
 #
 #libscorep_adapter_compiler_all_la_SOURCES = \
+#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_cray.c \
 #    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c \
 #    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm.c \
 #    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c \
