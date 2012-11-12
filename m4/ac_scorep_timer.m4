@@ -70,7 +70,9 @@ ac_scorep_timer_clock_gettime_available="no"
 ac_scorep_timer_clock_gettime_clock=""
 
 ac_scorep_timer_save_LIBS="$LIBS"
-AC_SEARCH_LIBS([clock_gettime], [rt], [ac_scorep_timer_have_librt="yes"])
+AC_SEARCH_LIBS([clock_gettime], [rt],
+               [AS_IF([test "x${ac_cv_search_clock_gettime}" != "xnone required"],
+                      [ac_scorep_timer_have_librt="yes"])])
 
 AS_IF([test "x${ac_scorep_timer_have_librt}" = "xyes"],
       [ac_scorep_timer_librt="$ac_cv_search_clock_gettime"
