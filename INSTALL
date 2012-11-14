@@ -216,6 +216,23 @@ Optional Packages:
                           explicit include and lib options directly.
   --with-libcudart-include=<Path to libcudart headers>
   --with-libcudart-lib=<Path to libcudart libraries>
+  --with-libcupti=<Path to libcupti installation>
+                          If you want to build scorep with libcupti but do not
+                          have a libcupti in a standard location then you need
+                          to explicitly specify the directory where it is
+                          installed. On non-cross-compile systems we search
+                          the system include and lib paths per default [yes],
+                          on cross-compile systems however,you have to specify
+                          a path [no]. --with-libcupti is a shorthand for
+                          --with-libcupti-include=<Path/include> and
+                          --with-libcupti-lib=<Path/lib>. If these shorthand
+                          assumptions are not correct, you can use the
+                          explicit include and lib options directly.
+                          NOTE: If libcupti is installed in its default location
+                          <Path to libcudart installation>/extras/CUPTI this
+                          option is not required.                          
+  --with-libcupti-include=<Path to libcupti headers>
+  --with-libcupti-lib=<Path to libcupti libraries>
   --with-libcuda=<Path to libcuda installation>
                           If you want to build scorep with libcuda but do not
                           have a libcuda in a standard location then you need
@@ -338,6 +355,10 @@ Some influential environment variables:
               Path to libcudart headers.
   LIBCUDART_LIB
               Path to libcudart libraries.
+  LIBCUPTI_INCLUDE
+              Path to libcupti headers.
+  LIBCUPTI_LIB
+              Path to libcupti libraries.
   LIBCUDA_INCLUDE
               Path to libcuda headers.
   LIBCUDA_LIB Path to libcuda libraries.
