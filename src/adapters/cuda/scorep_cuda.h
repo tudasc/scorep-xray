@@ -66,4 +66,9 @@ extern bool scorep_cuda_record_idle;
  */
 extern bool scorep_cuda_record_memcpy;
 
+/*
+ * The default buffer size for the CUPTI activity buffer.
+ */
+extern uint64_t scorep_cupti_activity_buffer_size;
+
 #endif  /* SCOREP_CUDA_H */

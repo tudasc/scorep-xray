@@ -25,7 +25,8 @@
 
 
 
-uint64_t scorep_cuda_features = 0;
+uint64_t scorep_cuda_features;
+uint64_t scorep_cupti_activity_buffer_size;
 
 
 /*
@@ -67,6 +68,15 @@ static SCOREP_ConfigVariable scorep_cuda_configs[] = {
         "  memcpy:        CUDA memory copies (not available yet)\n"
         "  default/yes/1: CUDA runtime API and GPU activities\n"
         "  no:            disable CUDA measurement\n"
+    },
+    {
+        "buffer",
+        SCOREP_CONFIG_TYPE_SIZE,
+        &scorep_cupti_activity_buffer_size,
+        NULL,
+        "64k",
+        "Total memory in bytes for the CUDA record buffer",
+        ""
     },
     SCOREP_CONFIG_TERMINATOR
 };

@@ -56,9 +56,6 @@
     ( ( ( uintptr_t )( buffer ) & ( ( align ) - 1 ) ) ? \
       ( ( buffer ) - ( ( uintptr_t )( buffer ) & ( ( align ) - 1 ) ) ) : ( buffer ) )
 
-/* the default buffer size for the CUPTI activity buffer */
-#define SCOREP_CUPTI_ACTIVITY_DEFAULT_BUFFER_SIZE 65536
-
 /* the default size for the CUDA kernel name hash table */
 #define SCOREP_CUPTI_ACTIVITY_HASHTABLE_SIZE 1024
 
@@ -129,9 +126,6 @@ static bool scorep_cupti_activity_finalized   = false;
 static SCOREP_Mutex cupti_activity_mutex = NULL;
 # define SCOREP_CUPTI_ACTIVITY_LOCK() SCOREP_MutexLock( cupti_activity_mutex )
 # define SCOREP_CUPTI_ACTIVITY_UNLOCK() SCOREP_MutexUnlock( cupti_activity_mutex )
-
-/* size of the activity buffer */
-static size_t scorep_cupti_activity_buffer_size = SCOREP_CUPTI_ACTIVITY_DEFAULT_BUFFER_SIZE;
 
 /* hash table for CUDA kernels */
 static scorep_cupti_activity_hash_node_string* scorep_cupti_activity_string_hashtab[ SCOREP_CUPTI_ACTIVITY_HASHTABLE_SIZE ];
