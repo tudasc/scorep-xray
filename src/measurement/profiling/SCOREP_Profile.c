@@ -771,7 +771,8 @@ SCOREP_Profile_OnFork( SCOREP_Location* threadData,
 
     /* In case the fork node is a thread start node, this thread started at the same
        node like its parent thread. Thus, transfer the pointer. */
-    if ( fork_node->node_type == scorep_profile_node_thread_start )
+    if ( fork_node->node_type == scorep_profile_node_thread_start &&
+         scorep_profile_type_get_fork_node( fork_node->type_specific_data ) != NULL )
     {
         fork_node = scorep_profile_type_get_fork_node( fork_node->type_specific_data );
     }
