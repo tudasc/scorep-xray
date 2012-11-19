@@ -90,8 +90,7 @@ parse_la ()
     {
         for (i=1; i<= NF; i++) 
         { 
-            if      (index($i, "vendor/otf2/build-backend") > 0) {} 
-            else if (index($i, "-L") == 1) {ldflags = ldflags $i ":"}
+            if      (index($i, "-L") == 1) {ldflags = ldflags $i ":"} 
             else if (index($i, "-R") == 1) {rpath = rpath $i ":"}
             else if (index($i, "-l") == 1) {libs = libs $i ":"}  
             else                           {dependency_la = dependency_la $i ":"} 
