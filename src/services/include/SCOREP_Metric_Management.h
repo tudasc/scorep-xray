@@ -51,6 +51,8 @@ SCOREP_ErrorCode
 SCOREP_Metric_Reinitialize( void );
 
 /** @brief  Returns the sampling set handle to the measurement system.
+ *
+ *  @return Returns the sampling set handle to the measurement system.
  */
 SCOREP_SamplingSetHandle
 SCOREP_Metric_GetSamplingSet( void );
