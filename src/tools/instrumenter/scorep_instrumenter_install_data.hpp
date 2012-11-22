@@ -160,6 +160,12 @@ public:
     void
     setCobiParams( std::string params );
 
+    /**
+       Sets OPARI2 parameters to explicitly specify fixed or free form fortran.
+       @param is_free  True if free form is specifed. False specifies fixed form.
+     */
+    void
+    setOpariFortranForm( bool is_free );
 
     /* ***************************************************** Private methods */
 private:

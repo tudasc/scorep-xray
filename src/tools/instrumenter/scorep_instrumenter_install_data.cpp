@@ -33,6 +33,8 @@
 #include <stdlib.h>
 
 
+#define HAVE_OPARI2_FREE_FIXED_FORM 0
+
 /* ****************************************************************************
    Helper functions
 ******************************************************************************/
@@ -202,6 +204,31 @@ SCOREP_Instrumenter_InstallData::setCobiParams( std::string params )
 {
     m_cobi_params = params;
 }
+
+void
+SCOREP_Instrumenter_InstallData::setOpariFortranForm( bool is_free )
+{
+#if HAVE( OPARI2_FREE_FIXED_FORM )
+    if ( is_free )
+    {
+        setOpariParams( "--free-form" );
+    }
+    else
+    {
+        setOpariParams( "--fix-form" );
+    }
+#else
+    if ( is_free )
+    {
+        setOpariParams( "--f90" );
+    }
+    else
+    {
+        setOpariParams( "--f77" );
+    }
+#endif
+}
+
 
 /* ****************************************************************************
    Private methods

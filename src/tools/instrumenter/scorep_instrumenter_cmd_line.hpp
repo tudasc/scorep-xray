@@ -74,7 +74,8 @@ private:
         scorep_parse_mode_library,
         scorep_parse_mode_define,
         scorep_parse_mode_libdir,
-        scorep_parse_mode_incdir
+        scorep_parse_mode_incdir,
+        scorep_parse_mode_fortran_form
     } scorep_parse_mode_t;
 
     /* ****************************************************** Public methods */
@@ -251,6 +252,16 @@ private:
      */
     scorep_parse_mode_t
     parse_libdir( std::string arg );
+
+    /**
+       Evaluates one parameter when in fortran_form mode.
+       It can occur with Cray compilers if the -f and the
+       free or fixed argument are separated by a whitespace.
+       @param arg The current argument
+       @returns the parsing mode for the next parameter.
+     */
+    scorep_parse_mode_t
+    parse_fortran_form( std::string arg );
 
     /**
        Processes a define parameter.

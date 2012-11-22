@@ -124,6 +124,9 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
             case scorep_parse_mode_libdir:
                 mode = parse_libdir( argv[ i ] );
                 break;
+            case scorep_parse_mode_fortran_form:
+                mode = parse_fortran_form( argv[ i ] );
+                break;
         }
     }
 
@@ -719,6 +722,73 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
             m_opari_instrumentation = enabled;
         }
     }
+    /* Check whether free form or fixed form is explicitly enabled. */
+#ifdef SCOREP_COMPILER_CRAY
+    else if ( arg == "-ffree" )
+    {
+        m_install_data.setOpariFortranForm( true );
+    }
+    else if ( arg == "-ffixed" )
+    {
+        m_install_data.setOpariFortranForm( false );
+    }
+    else if ( arg == "-f" )
+    {
+        *m_current_flags += " " + arg;
+        return scorep_parse_mode_fortran_form;
+    }
+#endif
+#ifdef SCOREP_COMPILER_GNU
+    else if ( arg == "-ffree-form" )
+    {
+        m_install_data.setOpariFortranForm( true );
+    }
+    else if ( arg == "-ffixed-form" )
+    {
+        m_install_data.setOpariFortranForm( false );
+    }
+#endif
+#ifdef SCOREP_COMPILER_IBM
+    else if ( arg.substr( 0, 6 ) == "-qfree" )
+    {
+        m_install_data.setOpariFortranForm( true );
+    }
+    else if ( arg.substr( 0, 7 ) == "-qfixed" )
+    {
+        m_install_data.setOpariFortranForm( false );
+    }
+#endif
+#ifdef SCOREP_COMPILER_INTEL
+    else if ( arg == "-free" )
+    {
+        m_install_data.setOpariFortranForm( true );
+    }
+    else if ( arg == "-nofree" )
+    {
+        m_install_data.setOpariFortranForm( false );
+    }
+#endif
+#ifdef SCOREP_COMPILER_PGI
+    else if ( arg == "-Mfree" || arg == "-Mfreeform" )
+    {
+        m_install_data.setOpariFortranForm( true );
+    }
+    else if ( arg == "-Mnofree" || arg == "-Mnofreeform" )
+    {
+        m_install_data.setOpariFortranForm( false );
+    }
+#endif
+#ifdef SCOREP_COMPILER_STUDIO
+    else if ( arg == "-free" )
+    {
+        m_install_data.setOpariFortranForm( true );
+    }
+    else if ( arg == "-fixed" )
+    {
+        m_install_data.setOpariFortranForm( false );
+    }
+#endif
+    /* Check standard parameters */
     else if ( arg[ 1 ] == 'o' )
     {
         m_output_name = arg.substr( 2, std::string::npos );
@@ -964,4 +1034,19 @@ SCOREP_Instrumenter_CmdLine::get_tool_params( std::string arg, size_t pos )
         exit( EXIT_FAILURE );
     }
     return arg.substr( pos + 1, std::string::npos );
+}
+
+SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
+SCOREP_Instrumenter_CmdLine::parse_fortran_form( std::string arg )
+{
+    if ( arg == "free" )
+    {
+        m_install_data.setOpariFortranForm( true );
+    }
+    else if ( arg == "fixed" )
+    {
+        m_install_data.setOpariFortranForm( false );
+    }
+    *m_current_flags += " " + arg;
+    return scorep_parse_mode_command;
 }
