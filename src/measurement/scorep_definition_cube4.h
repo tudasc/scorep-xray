@@ -72,7 +72,7 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
    NULL is returned.
  */
 scorep_cube4_definitions_map*
-scorep_cube4_create_definitions_map();
+scorep_cube4_create_definitions_map( void );
 
 /**
    Deletes the scorep_cube4_definitions_map given by @a map. All elements of
@@ -203,24 +203,24 @@ scorep_cube4_get_number_of_callpathes( scorep_cube4_definitions_map* map );
    Returns the handle used for the metric 'number of visits'.
  */
 cube_metric*
-scorep_get_visits_handle();
+scorep_get_visits_handle( void );
 
 /**
    Returns the handle used for metric 'inclusive time sum'.
  */
 cube_metric*
-scorep_get_sum_time_handle();
+scorep_get_sum_time_handle( void );
 
 /**
    Returns the handle used for metric 'inclusive time maximum'.
  */
 cube_metric*
-scorep_get_max_time_handle();
+scorep_get_max_time_handle( void );
 
 /**
    Returns the handle used for metric 'inclusive time minimum'.
  */
 cube_metric*
-scorep_get_min_time_handle();
+scorep_get_min_time_handle( void );
 
 #endif /* SCOREP_DEFINITION_CUBE4_H */

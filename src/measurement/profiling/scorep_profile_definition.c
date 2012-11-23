@@ -60,7 +60,7 @@ scorep_profile_definition scorep_profile =
 /** Initializes the profile definition struct
  */
 void
-scorep_profile_init_definition()
+scorep_profile_init_definition( void )
 {
     scorep_profile.is_initialized = true;
 
@@ -73,7 +73,7 @@ scorep_profile_init_definition()
 /** Resets the profile definition struct
  */
 void
-scorep_profile_delete_definition()
+scorep_profile_delete_definition( void )
 {
     scorep_profile.is_initialized = false;
     scorep_profile.reinitialize   = true;
@@ -88,7 +88,7 @@ scorep_profile_delete_definition()
    -------------------------------------------------------------------------------------*/
 
 uint64_t
-scorep_profile_get_number_of_threads()
+scorep_profile_get_number_of_threads( void )
 {
     uint64_t             no_of_threads = 0;
     scorep_profile_node* current       = scorep_profile.first_root_node;
@@ -147,7 +147,7 @@ scorep_profile_dump_subtree( scorep_profile_node* node,
 }
 
 void
-scorep_profile_dump()
+scorep_profile_dump( void )
 {
     printf( "\n" );
     scorep_profile_dump_subtree( scorep_profile.first_root_node, 0 );

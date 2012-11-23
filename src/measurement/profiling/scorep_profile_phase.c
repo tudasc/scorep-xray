@@ -126,7 +126,7 @@ search_subtree_for_phases( SCOREP_Profile_LocationData* location,
 
 /* Post-processing for phases */
 void
-scorep_profile_process_phases()
+scorep_profile_process_phases( void )
 {
     scorep_profile_node*         thread_root = scorep_profile.first_root_node;
     scorep_profile_node*         child       = NULL;

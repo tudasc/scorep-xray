@@ -222,7 +222,7 @@ expand_thread_root( scorep_profile_node* thread_root )
    statement.
  */
 void
-scorep_profile_expand_threads()
+scorep_profile_expand_threads( void )
 {
     scorep_profile_node* thread_root = scorep_profile.first_root_node;
     while ( thread_root != NULL )
@@ -242,7 +242,7 @@ scorep_profile_expand_threads()
    profile writing algorithms find them in the correct order.
  */
 void
-scorep_profile_sort_threads()
+scorep_profile_sort_threads( void )
 {
     uint32_t thread_count = 0;
     bool     sort         = true;

@@ -171,7 +171,7 @@ make_metric_mapping( uint32_t metric_number )
    global sequence numbers define the order in which the metrics are written.
  */
 static SCOREP_MetricHandle*
-make_unified_mapping()
+make_unified_mapping( void )
 {
     uint32_t             i             = 0;
     uint32_t             metric_number = SCOREP_Metric_GetNumberOfUnifiedDefinitions();

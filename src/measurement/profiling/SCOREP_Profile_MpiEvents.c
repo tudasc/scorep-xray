@@ -33,7 +33,7 @@ static SCOREP_MetricHandle scorep_bytes_send_metric = SCOREP_INVALID_METRIC;
 static SCOREP_MetricHandle scorep_bytes_recv_metric = SCOREP_INVALID_METRIC;
 
 void
-SCOREP_Profile_InitializeMpi()
+SCOREP_Profile_InitializeMpi( void )
 {
     scorep_bytes_send_metric =
         SCOREP_DefineMetric( "bytes_sent",

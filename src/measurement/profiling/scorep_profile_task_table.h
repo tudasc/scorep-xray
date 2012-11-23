@@ -60,7 +60,7 @@ typedef struct scorep_profile_task_struct
    valid result only after the parallel regions are done.
  */
 int32_t
-scorep_profile_has_tasks();
+scorep_profile_has_tasks( void );
 
 
 /**

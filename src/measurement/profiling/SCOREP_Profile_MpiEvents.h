@@ -34,7 +34,7 @@
  * Initializes MPI Event specific data. Is called from MPI Initialize
  */
 void
-SCOREP_Profile_InitializeMpi();
+SCOREP_Profile_InitializeMpi( void );
 
 /**
  * Process an MPI send event in the profile.

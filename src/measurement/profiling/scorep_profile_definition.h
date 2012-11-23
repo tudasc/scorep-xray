@@ -142,26 +142,26 @@ extern uint64_t scorep_profile_output_format;
    Initializes the profile definition struct
  */
 void
-scorep_profile_init_definition();
+scorep_profile_init_definition( void );
 
 /**
    Resets the profile definition struct
  */
 void
-scorep_profile_delete_definition();
+scorep_profile_delete_definition( void );
 
 /**
    Returns the number of locations stored in the profile.
    @return number of locations stored in the profile.
  */
 uint64_t
-scorep_profile_get_number_of_threads();
+scorep_profile_get_number_of_threads( void );
 
 /**
    Dumps the tree structure to the screen.
  */
 void
-scorep_profile_dump();
+scorep_profile_dump( void );
 
 SCOREP_ParameterHandle scorep_profile_param_instance;
 

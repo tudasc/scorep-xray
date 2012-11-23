@@ -119,7 +119,7 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
 };
 
 void
-SCOREP_Profile_Register()
+SCOREP_Profile_Register( void )
 {
     SCOREP_ConfigRegister( "profiling", scorep_profile_configs );
 }

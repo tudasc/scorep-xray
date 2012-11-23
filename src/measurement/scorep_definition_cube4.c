@@ -213,7 +213,7 @@ get_cube_node(  cube_t* my_cube,
 
 /* Creates a new scorep_cube4_definitions_map. */
 scorep_cube4_definitions_map*
-scorep_cube4_create_definitions_map()
+scorep_cube4_create_definitions_map( void )
 {
     scorep_cube4_definitions_map* map = NULL;
 
@@ -408,26 +408,26 @@ scorep_cube4_get_number_of_callpathes( scorep_cube4_definitions_map* map )
 }
 
 cube_metric*
-scorep_get_visits_handle()
+scorep_get_visits_handle( void )
 {
     return visits_handle;
 }
 
 
 cube_metric*
-scorep_get_sum_time_handle()
+scorep_get_sum_time_handle( void )
 {
     return time_sum_handle;
 }
 
 cube_metric*
-scorep_get_max_time_handle()
+scorep_get_max_time_handle( void )
 {
     return time_max_handle;
 }
 
 cube_metric*
-scorep_get_min_time_handle()
+scorep_get_min_time_handle( void )
 {
     return time_min_handle;
 }

@@ -118,7 +118,7 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
 
 
 void
-scorep_profile_process_tasks()
+scorep_profile_process_tasks( void )
 {
     scorep_profile_node*         thread_root = scorep_profile.first_root_node;
     SCOREP_Profile_LocationData* location    = NULL;

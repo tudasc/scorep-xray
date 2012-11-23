@@ -50,7 +50,7 @@ substitute_collapse( scorep_profile_node* node, void* param )
 }
 
 void
-scorep_profile_process_collapse()
+scorep_profile_process_collapse( void )
 {
     if ( !scorep_profile.has_collapse_node )
     {

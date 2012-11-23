@@ -302,7 +302,7 @@ scorep_profile_task_parallel_exit( SCOREP_Profile_LocationData* location )
 }
 
 int32_t
-scorep_profile_has_tasks()
+scorep_profile_has_tasks( void )
 {
     return scorep_profile_has_tasks_flag;
 }

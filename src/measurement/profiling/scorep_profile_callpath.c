@@ -94,7 +94,7 @@ sort_subtree( scorep_profile_node* parent )
 }
 
 static void
-sort_tree()
+sort_tree( void )
 {
     scorep_profile_node* root = scorep_profile.first_root_node;
     while ( root != NULL )
@@ -211,7 +211,7 @@ match_callpath( SCOREP_Profile_LocationData* location,
    Walks through the master thread and assigns new callpath ids.
  */
 void
-scorep_profile_assign_callpath_to_master()
+scorep_profile_assign_callpath_to_master( void )
 {
     scorep_profile_node* master = scorep_profile.first_root_node;
 
@@ -238,7 +238,7 @@ scorep_profile_assign_callpath_to_master()
    Traverses all threads and matches their callpathes to the master thread.
  */
 void
-scorep_profile_assign_callpath_to_workers()
+scorep_profile_assign_callpath_to_workers( void )
 {
     scorep_profile_node*         master   = scorep_profile.first_root_node;
     scorep_profile_node*         thread   = NULL;

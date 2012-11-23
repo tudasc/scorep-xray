@@ -66,7 +66,7 @@ delete_name_table_entry( SCOREP_Hashtab_Entry* entry )
    Initialize the name table
  */
 static void
-init_name_table()
+init_name_table( void )
 {
     scorep_profile_name_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
                                                            &SCOREP_Hashtab_CompareStrings );
@@ -76,7 +76,7 @@ init_name_table()
    Finalize the file table
  */
 static void
-finalize_name_table()
+finalize_name_table( void )
 {
     SCOREP_Hashtab_Foreach( scorep_profile_name_table, &delete_name_table_entry );
     SCOREP_Hashtab_Free( scorep_profile_name_table );
@@ -212,7 +212,7 @@ substitute_parameter_in_node( scorep_profile_node* node,
    region has the name '<parameter name>=<value>'.
  */
 void
-scorep_profile_substitute_parameter()
+scorep_profile_substitute_parameter( void )
 {
     scorep_profile_node* node = scorep_profile.first_root_node;
 
