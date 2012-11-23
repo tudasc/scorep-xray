@@ -30,18 +30,18 @@
    Initializes the filtering system and parses the configuration file.
  */
 void
-SCOREP_Filter_Initialize();
+SCOREP_Filter_Initialize( void );
 
 /**
    Registers the config variables for filtering.
  */
 SCOREP_ErrorCode
-SCOREP_Filter_Register();
+SCOREP_Filter_Register( void );
 
 /**
    Finalizes the filtering system and frees all memory.
  */
 void
-SCOREP_Filter_Finalize();
+SCOREP_Filter_Finalize( void );
 
 #endif

@@ -41,7 +41,7 @@
 ****************************************************************************************/
 
 void
-SCOREP_Filter_Initialize()
+SCOREP_Filter_Initialize( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
                         "Initialize selective tracing" );
@@ -71,7 +71,7 @@ SCOREP_Filter_Initialize()
 }
 
 void
-SCOREP_Filter_Finalize()
+SCOREP_Filter_Finalize( void )
 {
     SCOREP_Filter_FreeRules();
 }

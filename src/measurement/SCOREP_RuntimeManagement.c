@@ -114,7 +114,7 @@ static void scorep_dump_config( void );
  * Return true if SCOREP_InitMeasurement() has been executed.
  */
 bool
-SCOREP_IsInitialized()
+SCOREP_IsInitialized( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -126,7 +126,7 @@ SCOREP_IsInitialized()
  * Initialize the measurement system from the subsystem layer.
  */
 void
-SCOREP_InitMeasurement()
+SCOREP_InitMeasurement( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -220,14 +220,14 @@ SCOREP_InitMeasurement()
 
 
 SCOREP_LocationGroupHandle
-SCOREP_GetLocationGroup()
+SCOREP_GetLocationGroup( void )
 {
     return location_group_handle;
 }
 
 
 void
-scorep_initialization_sanity_checks()
+scorep_initialization_sanity_checks( void )
 {
     if ( scorep_finalized )
     {
@@ -243,7 +243,7 @@ scorep_initialization_sanity_checks()
 
 
 void
-scorep_otf2_initialize()
+scorep_otf2_initialize( void )
 {
     if ( SCOREP_IsTracingEnabled() )
     {
@@ -253,7 +253,7 @@ scorep_otf2_initialize()
 
 
 void
-scorep_otf2_finalize()
+scorep_otf2_finalize( void )
 {
     if ( SCOREP_IsTracingEnabled() )
     {
@@ -282,7 +282,7 @@ scorep_profile_initialize( SCOREP_Location* location )
 
 
 void
-scorep_set_otf2_archive_master_slave()
+scorep_set_otf2_archive_master_slave( void )
 {
     if ( SCOREP_IsTracingEnabled() )
     {
@@ -295,7 +295,7 @@ scorep_set_otf2_archive_master_slave()
  * Finalize the measurement system.
  */
 void
-SCOREP_FinalizeMeasurement()
+SCOREP_FinalizeMeasurement( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -344,14 +344,14 @@ SCOREP_InitMeasurementMPI( int rank )
 }
 
 void
-SCOREP_RegisterExitHandler()
+SCOREP_RegisterExitHandler( void )
 {
     atexit( scorep_finalize );
 }
 
 
 void
-SCOREP_FinalizeMeasurementMPI()
+SCOREP_FinalizeMeasurementMPI( void )
 {
     /* Register finalization handler, also called in SCOREP_InitMeasurement() and
      * SCOREP_InitMeasurementMPI(). We need to make sure that our handler is
@@ -374,7 +374,7 @@ SCOREP_FinalizeMeasurementMPI()
  * Enable event recording for this process.
  */
 void
-SCOREP_EnableRecording()
+SCOREP_EnableRecording( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -404,7 +404,7 @@ SCOREP_EnableRecording()
  * Disable event recording for this process.
  */
 void
-SCOREP_DisableRecording()
+SCOREP_DisableRecording( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -434,7 +434,7 @@ SCOREP_DisableRecording()
  * Predicate indicating if the process is recording events or not.
  */
 bool
-SCOREP_RecordingEnabled()
+SCOREP_RecordingEnabled( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -535,7 +535,7 @@ SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback )
 }
 
 void
-scorep_trigger_exit_callbacks()
+scorep_trigger_exit_callbacks( void )
 {
     assert( scorep_n_exit_callbacks < scorep_max_exit_callbacks );
     // trigger in lifo order

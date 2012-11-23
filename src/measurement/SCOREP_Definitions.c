@@ -2684,13 +2684,13 @@ SCOREP_Callpath_GetUnifiedHandle( SCOREP_CallpathHandle handle )
  * Returns the number of unified callpath definitions.
  */
 uint32_t
-SCOREP_Callpath_GetNumberOfUnifiedDefinitions()
+SCOREP_Callpath_GetNumberOfUnifiedDefinitions( void )
 {
     return scorep_unified_definition_manager->callpath_definition_counter;
 }
 
 uint32_t
-SCOREP_GetNumberOfRegionDefinitions()
+SCOREP_GetNumberOfRegionDefinitions( void )
 {
     assert( !SCOREP_Omp_InParallel() );
     return scorep_local_definition_manager.region_definition_counter;
@@ -2737,7 +2737,7 @@ SCOREP_Metric_GetUnifiedHandle( SCOREP_MetricHandle handle )
  * Returns the number of unified metric definitions.
  */
 uint32_t
-SCOREP_Metric_GetNumberOfUnifiedDefinitions()
+SCOREP_Metric_GetNumberOfUnifiedDefinitions( void )
 {
     return scorep_unified_definition_manager->metric_definition_counter;
 }

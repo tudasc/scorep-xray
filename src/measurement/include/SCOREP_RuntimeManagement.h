@@ -64,7 +64,7 @@
  * @return true if measurement system is initialized, false otherwise.
  */
 bool
-SCOREP_IsInitialized();
+SCOREP_IsInitialized( void );
 
 
 /**
@@ -174,7 +174,7 @@ SCOREP_DisableRecording( void );
  * @return True if the process is recording, false otherwise.
  */
 bool
-SCOREP_RecordingEnabled();
+SCOREP_RecordingEnabled( void );
 
 
 typedef int ( *SCOREP_ExitCallback )( void );

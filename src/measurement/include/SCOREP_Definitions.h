@@ -470,7 +470,7 @@ SCOREP_Callpath_GetUnifiedHandle( SCOREP_CallpathHandle handle );
  * Returns the number of unified callpath definitions.
  */
 uint32_t
-SCOREP_Callpath_GetNumberOfUnifiedDefinitions();
+SCOREP_Callpath_GetNumberOfUnifiedDefinitions( void );
 
 /**
  * Returns the sequence number of the unified definitions for a local metric handle from
@@ -490,7 +490,7 @@ SCOREP_Metric_GetUnifiedHandle( SCOREP_MetricHandle handle );
  * Returns the number of unified metric definitions.
  */
 uint32_t
-SCOREP_Metric_GetNumberOfUnifiedDefinitions();
+SCOREP_Metric_GetNumberOfUnifiedDefinitions( void );
 
 /**
  * Returns the value type of a metric.

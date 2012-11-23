@@ -47,7 +47,7 @@ SCOREP_ConfigVariable scorep_filter_configs[] = {
 };
 
 SCOREP_ErrorCode
-SCOREP_Filter_Register()
+SCOREP_Filter_Register( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
                         "Register config variables for filtering system" );
