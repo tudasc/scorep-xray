@@ -800,6 +800,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
     else if ( arg[ 1 ] == 'D' )
     {
         add_define( arg );
+        return scorep_parse_mode_command;
     }
     else if ( arg[ 1 ] == 'L' )
     {
