@@ -374,7 +374,7 @@ SCOREP_Score_Estimator::PrintGroups()
     }
 
     cout << endl;
-    cout << "Estimated aggregate size of event trace (total_tbc):       "
+    cout << "Estimated aggregate size of event trace:                   "
          << total_tbc << " bytes" << endl;
     cout << "Estimated requirements for largest trace buffer (max_tbc): "
          << max_tbc << " bytes" << endl;
