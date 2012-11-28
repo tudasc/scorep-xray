@@ -65,15 +65,19 @@ AS_IF([test -n "${scorep_otf2_bindir}"],
        AC_SUBST([OTF2_LDFLAGS],  [])
        AC_SUBST([OTF2_BINDIR],   [../vendor/otf2/build-backend])])
 
+opari2_fix_and_free_form_options=1
 AS_IF([test -n "${scorep_opari2_bindir}"],
       [AC_SUBST([OPARI2_BINDIR],            ["${scorep_opari2_bindir}"])
        AC_SUBST([OPARI2_MAKE_CHECK_BINDIR], ["${scorep_opari2_bindir}"])
        AC_SUBST([OPARI2_CPPFLAGS],          ["`${scorep_opari2_bindir}/opari2-config --cflags`"])
-       AC_SUBST([HAVE_EXTERNAL_OPARI2],     [1])],
+       AC_SUBST([HAVE_EXTERNAL_OPARI2],     [1])
+       ${scorep_opari2_bindir}/opari2-config --fix-form > /dev/null 2>&1
+       AS_IF([test $? -ne 0], [opari_fix_and_free_form_options=0])],
       [AC_SUBST([OPARI2_BINDIR],            ["${prefix}/bin"])
        AC_SUBST([OPARI2_MAKE_CHECK_BINDIR], ["../vendor/opari2/build-frontend"])
        AC_SUBST([OPARI2_CPPFLAGS],          ['-I$(srcdir)/../vendor/opari2/include'])
        AC_SUBST([HAVE_EXTERNAL_OPARI2],     [0])])
+AC_SUBST([HAVE_OPARI2_FIX_AND_FREE_FORM_OPTIONS], [${opari2_fix_and_free_form_options}])
 
 AS_IF([test -n "${scorep_cube_bindir}"],
       [AC_SUBST([CUBE_WRITER_CPPFLAGS],      ["`${scorep_cube_bindir}/cube-config --writer-cppflags`"])
