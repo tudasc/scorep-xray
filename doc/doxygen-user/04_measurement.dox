@@ -290,19 +290,15 @@ SCOREP_REGION_NAMES_END
 
 In this example all but the functions bar, foo, baz and main are filtered.
 
-Some instrumentation methods provide only mangled function names for Fortran
-subroutines and functions, where the name is made all upper/lower case or decorated
-with underscores. To keep a filter definition portable, we provide the <tt>FORTRAN</tt>
-keyword, which must be specified between the <tt>INCLUDE</tt> or <tt>EXCLUDE</tt>
-and the expression. It will cause @scorep to consider the effects of mangling when
-evaluating the expression. A Fortran rule would look like this:
-@code
-  EXCLUDE FORTRAN MyFortranSub
-@endcode
+The filtering is based on the region names as seen by the measurement system. 
+Depending on instrumentation method and compiler the actual region name may
+be mangled, or decorated. Thus, you may want to inspect
+the profile to determine the name of a region inside the measurement system.
 
 @note The keywords (e.g., <tt>SCOREP_REGION_NAMES_BEGIN</tt>, 
-      <tt>SCOREP_REGION_NAMES_END</tt>, <tt>EXCLUDE</tt>, <tt>INCLUDE</tt>, 
-      and <tt>FORTRAN</tt>) are case-sensitive.
+      <tt>SCOREP_REGION_NAMES_END</tt>, <tt>EXCLUDE</tt>, and <tt>INCLUDE</tt>, 
+      are case-sensitive.
+
 
 @section selective_tracing Selective Tracing
 @seclabel{selective_tracing}

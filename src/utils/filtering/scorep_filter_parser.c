@@ -232,23 +232,24 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
     }
 
     /* ------------------------------ FORTRAN */
-    else if ( strcmp( token, "FORTRAN" ) == 0 )
-    {
+    /*
+       else if ( strcmp( token, "FORTRAN" ) == 0 )
+       {
         switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
         {
             case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
-                *mode = SCOREP_FILTER_PARSE_REGIONS_EXCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
+       *mode = SCOREP_FILTER_PARSE_REGIONS_EXCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
                 break;
             case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
-                *mode = SCOREP_FILTER_PARSE_REGIONS_INCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
+       *mode = SCOREP_FILTER_PARSE_REGIONS_INCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
                 break;
             default:
                 UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
                              "Unexpected token 'FORTRAN'" );
                 return SCOREP_ERROR_PARSE_SYNTAX;
         }
-    }
-
+       }
+     */
     /* ------------------------------ Default */
     else
     {
