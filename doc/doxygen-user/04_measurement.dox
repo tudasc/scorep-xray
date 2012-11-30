@@ -295,9 +295,37 @@ Depending on instrumentation method and compiler the actual region name may
 be mangled, or decorated. Thus, you may want to inspect
 the profile to determine the name of a region inside the measurement system.
 
+In some cases, the instrumentation provides mangled names, which are demangled
+by Score-P. In this cases, Score-P uses the demangled form for display in profile and
+trace definitions, and thus, the demangled form should be used in the filter 
+file. However, The <tt>MANGLED</tt> keyword marks a filter rule to be applied 
+on the mangled name, if a different
+mangled name is available. If no mangled name is available, the rule is applied on
+the displayed name instead. The <tt>MANGLED</tt> keyword must appear inside of an
+include rule or exclude rule. All patterns of the rule that follow the 
+<tt>MANGLED</tt> keyword, are applied to the mangled name, if the mangled 
+name is available.
+
+
+In the following example, foo and baz are applied to the mangled name, 
+while bar and main are applied on the displayed name.
+@code
+SCOREP_REGION_NAMES_BEGIN
+  EXCLUDE *
+  INCLUDE bar MANGLED foo
+          baz
+  INCLUDE main
+SCOREP_REGION_NAMES_END
+@endcode
+
+The displayed name may also be mangled if no demangled form is available. It is
+not necessary to prepend rules with the <tt>MANGLED</tt> keyword if the
+displayed name is mangled, but only if a mangled name is available that differs
+from the displayed name.
+
 @note The keywords (e.g., <tt>SCOREP_REGION_NAMES_BEGIN</tt>, 
-      <tt>SCOREP_REGION_NAMES_END</tt>, <tt>EXCLUDE</tt>, and <tt>INCLUDE</tt>, 
-      are case-sensitive.
+      <tt>SCOREP_REGION_NAMES_END</tt>, <tt>EXCLUDE</tt>, <tt>INCLUDE</tt>, 
+      and <tt>MANGLED</tt> are case-sensitive.
 
 
 @section selective_tracing Selective Tracing

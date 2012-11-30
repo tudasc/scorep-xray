@@ -59,7 +59,7 @@ typedef struct scorep_filter_rule_struct scorep_filter_rule_t;
 struct scorep_filter_rule_struct
 {
     char*                 pattern;    /**< Pointer to the pattern string */
-    char*                 pattern2;   /**< Pointer to the mangled pattern string */
+    bool                  is_mangled; /**< Apply this rule on the mangled name */
     bool                  is_exclude; /**< True if it is a exclude rule, false else */
     scorep_filter_rule_t* next;       /**< Next filter rule */
 };
@@ -88,51 +88,6 @@ static scorep_filter_rule_t* scorep_filter_function_rules_tail = NULL;
    Rule representation manipulation functions
 ****************************************************************************************/
 
-/**
- * Creates a string which contains the content of @a pattern which is mangled according
- * to Fortran rules. Currently, upper or lower case are considered and up to one
- * underscore appended.
- * @param pattern The pattern that is mangled
- * @returns A pointer to the mangled pattern string. The new string is allocated in
- *          a Score-P Misc page. Thus it is automatically freed at memory management
-            finalization.
- */
-static char*
-scorep_filter_mangle_pattern( const char* pattern )
-{
-    size_t i;
-    size_t len = strlen( pattern );
-    /* Cannot use strdup here because we eventually append an underscore */
-    char* result = ( char* )malloc( len + 2 );
-    strcpy( result, pattern );
-
-    /* Put everything to lower or upper case */
-    char* test_case = UTILS_STRINGIFY( FC_FUNC( x, X ) );
-
-    if ( *test_case == 'x' )
-    {
-        for ( i = 0; i < len; i++ )
-        {
-            result[ i ] = ( char )tolower( result[ i ] );
-        }
-    }
-    else
-    {
-        for ( i = 0; i < len; i++ )
-        {
-            result[ i ] = ( char )toupper( result[ i ] );
-        }
-    }
-
-    /* Append underscore */
-    if ( test_case[ 1 ] == '_' )
-    {
-        result[ len ]     = '_';
-        result[ len + 1 ] = '\0';
-    }
-    return result;
-}
-
 SCOREP_ErrorCode
 scorep_filter_add_file_rule( const char* rule, bool is_exclude )
 {
@@ -150,7 +105,7 @@ scorep_filter_add_file_rule( const char* rule, bool is_exclude )
     }
 
     new_rule->pattern    = UTILS_CStr_dup( rule );
-    new_rule->pattern2   = NULL;
+    new_rule->is_mangled = false;
     new_rule->is_exclude = is_exclude;
     new_rule->next       = NULL;
 
@@ -171,7 +126,7 @@ scorep_filter_add_file_rule( const char* rule, bool is_exclude )
 
 
 SCOREP_ErrorCode
-scorep_filter_add_function_rule( const char* rule, bool is_exclude, bool is_fortran )
+scorep_filter_add_function_rule( const char* rule, bool is_exclude, bool is_mangled )
 {
     assert( rule );
     assert( *rule != '\0' );
@@ -186,15 +141,8 @@ scorep_filter_add_function_rule( const char* rule, bool is_exclude, bool is_fort
         return SCOREP_ERROR_MEM_ALLOC_FAILED;
     }
 
-    new_rule->pattern = UTILS_CStr_dup( rule );
-    if ( is_fortran )
-    {
-        new_rule->pattern2 = scorep_filter_mangle_pattern( new_rule->pattern );
-    }
-    else
-    {
-        new_rule->pattern2 = NULL;
-    }
+    new_rule->pattern    = UTILS_CStr_dup( rule );
+    new_rule->is_mangled = is_mangled;
     new_rule->is_exclude = is_exclude;
     new_rule->next       = NULL;
 
@@ -222,7 +170,6 @@ SCOREP_Filter_FreeRules( void )
         scorep_filter_function_rules_head = current_rule->next;
 
         free( current_rule->pattern );
-        free( current_rule->pattern2 );
         free( current_rule );
     }
     scorep_filter_function_rules_tail = NULL;
@@ -234,7 +181,6 @@ SCOREP_Filter_FreeRules( void )
         scorep_filter_file_rules_head = current_rule->next;
 
         free( current_rule->pattern );
-        free( current_rule->pattern2 );
         free( current_rule );
     }
     scorep_filter_file_rules_tail = NULL;
@@ -271,14 +217,14 @@ scorep_filter_match_file( const char*           with_path,
 
 static bool
 scorep_filter_match_function( const char*           function_name,
+                              const char*           mangled_name,
                               scorep_filter_rule_t* rule,
-                              bool                  use_fortran,
                               SCOREP_ErrorCode*     error_code )
 {
     int error_value = 0;
-    if ( use_fortran && ( rule->pattern2 != NULL ) )
+    if ( rule->is_mangled && ( mangled_name != NULL ) )
     {
-        error_value = fnmatch( rule->pattern2, function_name, 0 );
+        error_value = fnmatch( rule->pattern, mangled_name, 0 );
     }
     else
     {
@@ -303,7 +249,9 @@ scorep_filter_match_function( const char*           function_name,
 }
 
 bool
-SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_fortran )
+SCOREP_Filter_Match( const char* file_name,
+                     const char* function_name,
+                     const char* mangled_name )
 {
     scorep_filter_rule_t* current_rule = scorep_filter_file_rules_head;
     bool                  excluded     = false; /* Start with all included */
@@ -365,8 +313,8 @@ SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_
             if ( ( !excluded ) && current_rule->is_exclude )
             {
                 excluded = scorep_filter_match_function( function_name,
+                                                         mangled_name,
                                                          current_rule,
-                                                         use_fortran,
                                                          &error_code );
 
                 if ( error_code != SCOREP_SUCCESS )
@@ -378,8 +326,8 @@ SCOREP_Filter_Match( const char* file_name, const char* function_name, bool use_
             else if ( excluded && ( !current_rule->is_exclude ) )
             {
                 excluded = !scorep_filter_match_function( function_name,
+                                                          mangled_name,
                                                           current_rule,
-                                                          use_fortran,
                                                           &error_code );
 
                 if ( error_code != SCOREP_SUCCESS )

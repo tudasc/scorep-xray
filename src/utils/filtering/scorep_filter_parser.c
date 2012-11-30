@@ -61,10 +61,10 @@ static bool scorep_filter_is_enabled;
  * </dl>
  * Beside this basic states two further values are defined with special purpose:
  * <dl>
- * <dt> SCOREP_FILTER_PARSE_FORTRAN
- * <dd> Can be combined with SCOREP_FILTER_PARSE_REGIONS_exclude or
- *      SCOREP_FILTER_PARSE_REGIONS_include to indicate that the rules should be
- *      Fortran mangled.
+ * <dt> SCOREP_FILTER_PARSE_MANGLED
+ * <dd> Can be combined with SCOREP_FILTER_PARSE_REGIONS_EXCLUDE or
+ *      SCOREP_FILTER_PARSE_REGIONS_INCLUDE to indicate that the rules should be
+ *      applied to the mangled name.
  * <dt> SCOREP_FILTER_PARSE_BASE
  * <dd> Is used to extract the base state without the fortran option from the
  *      state variable.
@@ -86,14 +86,14 @@ typedef int scorep_filter_parse_modes;
 #define SCOREP_FILTER_PARSE_REGIONS_EXCLUDE   5
 #define SCOREP_FILTER_PARSE_REGIONS_INCLUDE   6
 #define SCOREP_FILTER_PARSE_BASE              7
-#define SCOREP_FILTER_PARSE_FORTRAN           8
+#define SCOREP_FILTER_PARSE_MANGLED           8
 
 /**
  * @def SCOREP_FILTER_MODE_IS_FORTRAN
  * Expands to a non-zero value if @mode has not the fortran mode set.
  */
-#define SCOREP_FILTER_MODE_IS_FORTRAN( mode ) \
-    ( mode & SCOREP_FILTER_PARSE_FORTRAN )
+#define SCOREP_FILTER_MODE_IS_MANGLED( mode ) \
+    ( mode & SCOREP_FILTER_PARSE_MANGLED )
 
 /**
  * @def SCOREP_FILTER_MODE_BASE
@@ -231,25 +231,24 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
         }
     }
 
-    /* ------------------------------ FORTRAN */
-    /*
-       else if ( strcmp( token, "FORTRAN" ) == 0 )
-       {
+    /* ------------------------------ MANGLED */
+    else if ( strcmp( token, "MANGLED" ) == 0 )
+    {
         switch ( SCOREP_FILTER_MODE_BASE( *mode ) )
         {
             case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
-       *mode = SCOREP_FILTER_PARSE_REGIONS_EXCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
+                *mode = SCOREP_FILTER_PARSE_REGIONS_EXCLUDE | SCOREP_FILTER_PARSE_MANGLED;
                 break;
             case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
-       *mode = SCOREP_FILTER_PARSE_REGIONS_INCLUDE | SCOREP_FILTER_PARSE_FORTRAN;
+                *mode = SCOREP_FILTER_PARSE_REGIONS_INCLUDE | SCOREP_FILTER_PARSE_MANGLED;
                 break;
             default:
                 UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
-                             "Unexpected token 'FORTRAN'" );
+                             "Unexpected token 'MANGLED'" );
                 return SCOREP_ERROR_PARSE_SYNTAX;
         }
-       }
-     */
+    }
+
     /* ------------------------------ Default */
     else
     {
@@ -263,11 +262,11 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
                 break;
             case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
                 scorep_filter_add_function_rule( token, true,
-                                                 SCOREP_FILTER_MODE_IS_FORTRAN( *mode ) );
+                                                 SCOREP_FILTER_MODE_IS_MANGLED( *mode ) );
                 break;
             case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
                 scorep_filter_add_function_rule( token, false,
-                                                 SCOREP_FILTER_MODE_IS_FORTRAN( *mode ) );
+                                                 SCOREP_FILTER_MODE_IS_MANGLED( *mode ) );
                 break;
             default:
                 UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,

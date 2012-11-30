@@ -197,7 +197,7 @@ scorep_compiler_process_symbol( long         addr,
          ( strncmp( funcname_demangled, "OTF2_", 5 ) != 0 ) &&
          ( strncmp( funcname_demangled, "otf2_", 5 ) != 0 ) &&
          ( strncmp( funcname_demangled, "cube_", 5 ) != 0 ) &&
-         ( !SCOREP_Filter_Match( filename, funcname_demangled, true ) ) )
+         ( !SCOREP_Filter_Match( filename, funcname_demangled, funcname ) ) )
     {
         scorep_compiler_hash_put( addr, funcname, funcname_demangled, filename, lno );
     }

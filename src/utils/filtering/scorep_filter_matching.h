@@ -43,12 +43,13 @@ scorep_filter_add_file_rule( const char* rule,
  * Adds a filter rule to the function filter rule list.
  * @param rule       The rule's string pattern.
  * @param is_exclude True if it is an exclude rule, false otherwise.
- * @param is_fortran True if Fortran mangling should be applied to the rule.
+ * @param is_mangled True if the mangled name should be used instead of the displayed
+ *                   name.
  */
 SCOREP_ErrorCode
 scorep_filter_add_function_rule( const char* rule,
                                  bool        is_exclude,
-                                 bool        is_fortran );
+                                 bool        is_mangled );
 
 /**
  * Frees memory allocations for filter rules.

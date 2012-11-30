@@ -40,22 +40,48 @@ UTILS_BEGIN_C_DECLS
 SCOREP_ErrorCode
 SCOREP_Filter_ParseFile( const char* file_name );
 
+/**
+ * Frees the memory allocated to store filter rules. After calling this
+ * function, no filter rules are available anymore.
+ */
 void
 SCOREP_Filter_FreeRules( void );
 
+/**
+ * Enables filtering.
+ */
 void
 SCOREP_Filter_Enable( void );
 
+/**
+ * Disables filtering.
+ */
 void
 SCOREP_Filter_Disable( void );
 
+/**
+ * Returns true if filtering is enabled.
+ */
 bool
 SCOREP_Filter_IsEnabled( void );
 
+/**
+ * Checks whether a file is filtered.
+ * @param filename      The file name of the file that contain the considered function.
+ * @param function_name The function name as it will be displayed in profile and
+ *                      trace definitions.
+ * @param mangled_name  A mangled name of the function is available that differs
+ *                      from @a function_name. If no different mangled name is
+ *                      available you may pass NULL here. In this case the function_name
+ *                      will be used to compare against patterns that are prepended
+ *                      by the MANGLED keyword. In praticular passing NULL or the
+ *                      same string as for @a function_name leads to the same results.
+ * @returns True, if the tested function should be excluded from measurement.
+ */
 bool
 SCOREP_Filter_Match( const char* file_name,
                      const char* function_name,
-                     bool        use_fortran );
+                     const char* mangled_name );
 
 UTILS_END_C_DECLS
 

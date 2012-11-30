@@ -215,7 +215,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
 
     /* User regions can be filtered */
     if ( ( region->regionType == SCOREP_Pomp_UserRegion ) &&
-         SCOREP_Filter_Match( region->startFileName, region_name, false ) )
+         SCOREP_Filter_Match( region->startFileName, region_name, NULL ) )
     {
         region->innerBlock = SCOREP_INVALID_REGION;
         free( source_name );

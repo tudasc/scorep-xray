@@ -216,7 +216,7 @@ SCOREP_Score_Estimator::match_filter( uint64_t region )
 {
     bool do_filter = SCOREP_Filter_Match( m_profile->GetFileName( region ).c_str(),
                                           m_profile->GetRegionName( region ).c_str(),
-                                          false );
+                                          NULL );
     return do_filter &&
            SCOREP_Score_GetFilterState( m_profile->GetGroup( region ) ) != SCOREP_SCORE_FILTER_NO;
 }

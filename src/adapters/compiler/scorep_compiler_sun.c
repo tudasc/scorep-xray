@@ -88,7 +88,7 @@ scorep_compiler_register_region( char* region_name )
          ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
          ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
          ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
-         ( !SCOREP_Filter_Match( NULL, region_name, true ) ) )
+         ( !SCOREP_Filter_Match( NULL, region_name, NULL ) ) )
     {
         handle = SCOREP_DefineRegion( region_name,
                                       NULL,
