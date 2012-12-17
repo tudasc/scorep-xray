@@ -76,7 +76,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( LocationGroup )
 
 SCOREP_DEFINE_DEFINITION_TYPE( SystemTreeNode )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( LocationGroup );
+    SCOREP_DEFINE_DEFINITION_HEADER( SystemTreeNode );
 
     SCOREP_SystemTreeNodeHandle parent_handle;
     SCOREP_StringHandle         name_handle;
