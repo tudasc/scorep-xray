@@ -24,13 +24,14 @@
  * system.
  */
 
-
 #include <config.h>
+
+#include <stdio.h>
+#include <pami.h>
 
 #include <UTILS_Error.h>
 #include <SCOREP_Platform.h>
 #include "scorep_platform_system_tree.h"
-
 
 SCOREP_ErrorCode
 SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root )
@@ -41,12 +42,75 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
                             "Invalid system tree root reference given." );
     }
     *root = NULL;
+
+    /* initialize the client */
+    char*         clientname = "";
+    pami_client_t client;
+    pami_result_t result = PAMI_Client_create( clientname, &client, NULL, 0 );
+    if ( !result )
+    {
+        goto fail;
+    }
+
+    /* PAMI on BG/Q returns a string (!) with Processor name and coordinates. */
+    pami_configuration_t config;
+    config.name = PAMI_CLIENT_PROCESSOR_NAME;
+    result      = PAMI_Client_query( client, &config, 1 );
+    UTILS_ASSERT( result == PAMI_SUCCESS );
+
+    /* Map the coordinates to values */
+    unsigned task;
+    unsigned total_tasks;
+    unsigned acoord, bcoord, ccoord, dcoord, ecoord, tcoord;
+    unsigned rack;
+    unsigned midplane;
+    unsigned nodeboard;
+    unsigned nodecard;
+    sscanf( config.value.chararray,
+            "Task %u of %u (%u,%u,%u,%u,%u,%u)  R%u-M%u-N%u-J%u",
+            &task, &total_tasks,
+            &acoord, &bcoord, &ccoord, &dcoord, &ecoord, &tcoord,
+            &rack, &midplane, &nodeboard, &nodecard );
+
+    /* finalize the client */
+    result = PAMI_Client_destroy( &client );
+    UTILS_ASSERT( result == PAMI_SUCCESS );
+
     SCOREP_Platform_SystemTreePathElement** tail = root;
     SCOREP_Platform_SystemTreePathElement*  node;
 
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      "machine",
-                                                     0, "Blue Gene/Q" );
+                                                     16, "Blue Gene/Q" );
+    if ( !node )
+    {
+        goto fail;
+    }
+
+    node = scorep_platform_system_tree_top_down_add( &tail,
+                                                     "rack",
+                                                     16, "Rack %u", rack );
+    if ( !node )
+    {
+        goto fail;
+    }
+    node = scorep_platform_system_tree_top_down_add( &tail,
+                                                     "midplane",
+                                                     16, "Midplane %u", midplane );
+    if ( !node )
+    {
+        goto fail;
+    }
+    node = scorep_platform_system_tree_top_down_add( &tail,
+                                                     "nodeboard",
+                                                     16, "Node board %u", nodeboard );
+    if ( !node )
+    {
+        goto fail;
+    }
+    node = scorep_platform_system_tree_top_down_add( &tail,
+                                                     "nodecard",
+                                                     16, "Compute card %u", nodecard );
     if ( !node )
     {
         goto fail;

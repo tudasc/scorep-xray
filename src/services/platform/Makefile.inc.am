@@ -31,7 +31,9 @@ endif
 
 if PLATFORM_BGQ
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_bgq.c
-#libscorep_platform_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor/arch/include
+libscorep_platform_la_LDFLAGS = $(AM_LDFLAGS) -L/bgsys/drivers/ppcfloor/comm/sys-fast/lib -lpami -lstdc++ -L/bgsys/drivers/V1R1M2/ppc64/spi/lib -lSPI -lSPI_cnk -lrt
+libscorep_platform_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor/comm/sys/include -I/bgsys/drivers/ppcfloor/comm/sys-fast/include
+
 endif
 
 # for any platform not handled above, use the dummy platform
