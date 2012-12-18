@@ -944,7 +944,7 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
     if ( m_compiler_name == "" )
     {
         std::cerr << "ERROR: Could not identify compiler name." << std::endl;
-        abort();
+        exit( EXIT_FAILURE );
     }
     /*
        if ( output_name != "" && !is_linking && input_file_number > 1 )
@@ -967,7 +967,7 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
     {
         std::cerr << "Error: Your installation does not support PDT instrumentation for "
                   << "MPI applications." << std::endl;
-        abort();
+        exit( EXIT_FAILURE );
     }
 
     /* To avoid remarks from the compiler about VT_ROOT' environment variable not set

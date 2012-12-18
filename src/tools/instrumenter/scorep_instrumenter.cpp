@@ -347,7 +347,7 @@ SCOREP_Instrumenter::prepare_compiler( void )
                               << "switch off compiler instrumentation, please use the "
                               << "--nocompiler option."
                               << std::endl;
-                    abort();
+                    exit( EXIT_FAILURE );
                 }
             }
             // Setup for next file

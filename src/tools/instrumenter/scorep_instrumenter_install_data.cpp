@@ -292,7 +292,7 @@ SCOREP_Instrumenter_InstallData::set_pdt_path( std::string pdt )
         else
         {
             std::cout << "ERROR: Unable to find PDT binaries.\n";
-            abort();
+            exit( EXIT_FAILURE );
         }
     }
     else if ( pdt == "no" )
