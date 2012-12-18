@@ -57,6 +57,89 @@ write_node_tau( SCOREP_Profile_LocationData* location,
                 uint64_t*                    callpath_counter );
 
 /**
+   Replaces all occurences of symbols in a string that have a special meaning in XML
+   by their predefined entities. It Allocates memory for the resulting string,
+   which the application must free.
+   @param str  A string in which the function replaces the symbols.
+   @returns a string where the symbols are replaced,
+ */
+static char*
+xmlize_string( const char* str )
+{
+    if ( str == NULL )
+    {
+        return NULL;
+    }
+
+    /* Calculate len of result string */
+    size_t len = 1; // for the terminating '\0'
+    for ( int i = 0; str[ i ] != '\0'; i++ )
+    {
+        switch ( str[ i ] )
+        {
+            case '\"':
+                len += 6; // &quot;
+                break;
+            case '&':
+                len += 5; // &amp;
+                break;
+            case '\'':
+                len += 6; // &apos;
+                break;
+            case '<':
+                len += 4; // &lt;
+                break;
+            case '>':
+                len += 4; // &gt;
+                break;
+            default:
+                len++; // copy char
+        }
+    }
+
+    /* Allocate memory for result string */
+    char* output = ( char* )malloc( len );
+    UTILS_ASSERT( output );
+
+    /* Copy string and replace symbols */
+    size_t pos = 0;
+    for ( int i = 0; str[ i ] != '\0'; i++ )
+    {
+        switch ( str[ i ] )
+        {
+            case '\"':
+                strcpy( &output[ pos ], "&quot;" );
+                pos += 6; // &quot;
+                break;
+            case '&':
+                strcpy( &output[ pos ], "&amp;" );
+                pos += 5; // &amp;
+                break;
+            case '\'':
+                strcpy( &output[ pos ], "&apos;" );
+                pos += 6; // &apos;
+                break;
+            case '<':
+                strcpy( &output[ pos ], "&lt;" );
+                pos += 4; // &lt;
+                break;
+            case '>':
+                strcpy( &output[ pos ], "&gt;" );
+                pos += 4; // &gt;
+                break;
+            default:
+                output[ pos ] = str[ i ];
+                pos++;
+        }
+    }
+    output[ pos ] = '\0';
+
+    return output;
+}
+
+
+
+/**
    Helper function for the profile writer in TAU snapshot format.
    Writes callpath definition to a file.
    @param path String,     containing the callpath.
@@ -102,8 +185,8 @@ write_region_tau( SCOREP_Profile_LocationData* location,
                   uint64_t*                    callpath_counter )
 {
     /* Construct callpath name */
-    const char* name   = SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) );
-    int         length = strlen( name ) + 1;
+    char* name   = xmlize_string( SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
+    int   length = strlen( name ) + 1;
     if ( parentpath )
     {
         length += strlen( parentpath ) + 7;
@@ -117,6 +200,7 @@ write_region_tau( SCOREP_Profile_LocationData* location,
     {
         sprintf( path, "%s =&gt; %s", parentpath, name );
     }
+    free( name );
 
     /* write definition */
     if ( SCOREP_Region_GetType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) != SCOREP_REGION_DYNAMIC )
@@ -157,9 +241,10 @@ write_paramstring_tau( SCOREP_Profile_LocationData* location,
                        uint64_t*                    callpath_counter )
 {
     /* Construct callpath name */
-    char*       path;
-    const char* param_name  = SCOREP_Parameter_GetName( node->type_specific_data.handle );
-    const char* param_value = SCOREP_String_Get( node->type_specific_data.value );
+    char* path;
+    char* param_name  = xmlize_string( SCOREP_Parameter_GetName( node->type_specific_data.handle ) );
+    char* param_value = xmlize_string( SCOREP_String_Get( node->type_specific_data.value ) );
+
     if ( parentpath == NULL )
     {
         const char* parentname = SCOREP_Parameter_GetName( node->parent->type_specific_data.handle );
@@ -170,6 +255,8 @@ write_paramstring_tau( SCOREP_Profile_LocationData* location,
     path = ( char* )malloc( length );
 // [ &lt;%s&gt; = &lt;%" PRIi64 "&gt; ]
     sprintf( path, "%s [ &lt;%s&gt; = &lt;%s&gt; ]", parentpath, param_name, param_value );
+    free( param_name );
+    free( param_value );
 
     /* write definition */
     write_tausnap_def( path, file, callpath_counter );
@@ -210,7 +297,7 @@ write_paramint_tau( SCOREP_Profile_LocationData* location,
     char*                  path;
     SCOREP_ParameterHandle param =
         scorep_profile_type_get_parameter_handle( node->type_specific_data );
-    const char* param_name = SCOREP_Parameter_GetName( param );
+    char* param_name = xmlize_string( SCOREP_Parameter_GetName( param ) );
     if ( parentpath == NULL )
     {
         const char* parentname = SCOREP_Parameter_GetName( node->parent->type_specific_data.handle );
@@ -246,6 +333,8 @@ write_paramint_tau( SCOREP_Profile_LocationData* location,
                      scorep_profile_type_get_int_value( node->type_specific_data ) );
         }
     }
+    free( param_name );
+
     /* write definition */
     write_tausnap_def( path, file, callpath_counter );
 
@@ -356,11 +445,18 @@ write_metrics_tau( scorep_profile_node*      node,
                                                        String )->string_data;
             metric_description = SCOREP_UNIFIED_HANDLE_DEREF( definition->description_handle,
                                                               String )->string_data;
+            metric_name        = xmlize_string( metric_name );
+            metric_unit        = xmlize_string( metric_unit );
+            metric_description = xmlize_string( metric_description );
 
             fprintf( file, "<metric id=\"%d\"><name>%s</name>\n", i, metric_name );
             fprintf( file, "<units>%s</units>\n", metric_unit );
             fprintf( file, "</metric>\n" );
             i++;
+
+            free( metric_name );
+            free( metric_unit );
+            free( metric_description );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -541,17 +637,22 @@ write_userevent_data_metric_tau( SCOREP_Profile_LocationData* location,
             metric_definition = SCOREP_LOCAL_HANDLE_DEREF( metric->metric, Metric );
             metric_name       = SCOREP_UNIFIED_HANDLE_DEREF( metric_definition->name_handle,
                                                              String )->string_data;
+            metric_name = xmlize_string( metric_name );
+
 //In the future context events should somehow be marked
             char* found = strchr( metric_name, ':' );
             if ( found != NULL )
             {
                 int   length     = strlen( metric_name ) + 1 + strlen( parentpath ) + 2;
-                char* metricpath = SCOREP_Location_AllocForProfile( location->location_data, length );
+                char* metricpath = ( char* )malloc( length );
                 sprintf( metricpath, "%s %s", metric_name, parentpath );
+                free( metric_name );
                 metric_name = metricpath;
             }
             fprintf( file, "<userevent id=\"%d\"><name>%s</name>", eventID, metric_name );
             fprintf( file, "</userevent>\n" );
+
+            free( metric_name );
         }
         metric = metric->next_metric;
     }
@@ -563,13 +664,13 @@ write_userevent_data_metric_tau( SCOREP_Profile_LocationData* location,
         if ( child != NULL )
         {
             /* Construct callpath name */
-            const char* name   = SCOREP_Region_GetName( scorep_profile_type_get_region_handle( child->type_specific_data ) );
-            int         length = strlen( name ) + 1;
+            char* name   = xmlize_string( SCOREP_Region_GetName( scorep_profile_type_get_region_handle( child->type_specific_data ) ) );
+            int   length = strlen( name ) + 1;
             if ( parentpath )
             {
                 length += strlen( parentpath ) + 7;
             }
-            char* path = SCOREP_Location_AllocForProfile( location->location_data, length );
+            char* path = malloc( length );
             if ( parentpath == NULL )
             {
                 strcpy( path, name );
@@ -579,6 +680,8 @@ write_userevent_data_metric_tau( SCOREP_Profile_LocationData* location,
                 sprintf( path, "%s =&gt; %s", parentpath, name );
             }
             parentpath = path;
+            free( name );
+            free( path );
         }
         while ( child != NULL )
         {
@@ -613,13 +716,13 @@ write_userevent_data_tau( SCOREP_Profile_LocationData* location,
         while ( child != NULL )
         {
             /* Construct callpath name */
-            const char* name   = SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) );
-            int         length = strlen( name ) + 1;
+            char* name   = xmlize_string( SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
+            int   length = strlen( name ) + 1;
             if ( parentpath )
             {
                 length += strlen( parentpath ) + 7;
             }
-            char* path = SCOREP_Location_AllocForProfile( location->location_data, length );
+            char* path = ( char* )malloc( length );
             if ( parentpath == NULL )
             {
                 strcpy( path, name );
@@ -629,10 +732,12 @@ write_userevent_data_tau( SCOREP_Profile_LocationData* location,
                 sprintf( path, "%s =&gt; %s", parentpath, name );
             }
 
-
             parentpath = path;
             write_userevent_data_metric_tau( location, child, path, file, manager );
             child = child->next_sibling;
+
+            free( name );
+            free( path );
         }
         child = node->first_child;
         node  = node->first_child;
