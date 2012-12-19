@@ -79,15 +79,6 @@ get_region_handle( char* region_name,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                         " function name: %s %s", region_name, file_name );
 
-    if ( scorep_compiler_initialize )
-    {
-        if ( scorep_compiler_finalized )
-        {
-            return SCOREP_INVALID_REGION;
-        }
-        SCOREP_InitMeasurement();
-    }
-
     /* put function to list */
     if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) == 0 )
     {
@@ -158,6 +149,16 @@ __func_trace_enter( char*                region_name,
                     int                  line_no,
                     SCOREP_RegionHandle* handle )
 {
+    if ( scorep_compiler_initialize )
+    {
+        if ( scorep_compiler_finalized )
+        {
+            *handle = SCOREP_INVALID_REGION;
+            return;
+        }
+        SCOREP_InitMeasurement();
+    }
+
     /* The IBM compiler instruments outlined functions of OpenMP parallel regions.
        These functions are called at a stage, where locks do not yet work. Thus,
        make sure that only final valid values are assigned to *handle.
@@ -185,6 +186,15 @@ __func_trace_enter( char* region_name,
                     char* file_name,
                     int   line_no )
 {
+    if ( scorep_compiler_initialize )
+    {
+        if ( scorep_compiler_finalized )
+        {
+            return;
+        }
+        SCOREP_InitMeasurement();
+    }
+
     SCOREP_RegionHandle handle = get_region_handle( region_name, file_name, line_no );
     if ( handle != SCOREP_INVALID_REGION )
     {
@@ -208,6 +218,10 @@ __func_trace_exit( char*                region_name,
                    int                  line_no,
                    SCOREP_RegionHandle* handle )
 {
+    if ( scorep_compiler_finalized )
+    {
+        return;
+    }
     if ( *handle != SCOREP_FILTER_REGION )
     {
         SCOREP_ExitRegion( *handle );
