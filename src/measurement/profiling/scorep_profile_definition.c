@@ -36,6 +36,19 @@
 #include "scorep_definitions.h"
 
 /*----------------------------------------------------------------------------------------
+   External configuration variables
+   -------------------------------------------------------------------------------------*/
+
+extern uint64_t scorep_profile_max_callpath_depth;
+extern uint64_t scorep_profile_task_table_size;
+extern char*    scorep_profile_basename;
+extern uint64_t scorep_profile_output_format;
+extern uint64_t scorep_profile_cluster_count;
+extern uint64_t scorep_profile_cluster_mode;
+extern char*    scorep_profile_clustered_region;
+extern bool     scorep_profile_enable_clustering;
+
+/*----------------------------------------------------------------------------------------
    Global variables
    -------------------------------------------------------------------------------------*/
 
@@ -106,6 +119,58 @@ scorep_profile_get_number_of_threads( void )
 }
 
 /*----------------------------------------------------------------------------------------
+   Get configuration variables
+   -------------------------------------------------------------------------------------*/
+
+uint64_t
+scorep_profile_get_max_callapth_depth( void )
+{
+    return scorep_profile_max_callpath_depth;
+}
+
+uint64_t
+scorep_profile_get_task_table_size( void )
+{
+    return scorep_profile_task_table_size;
+}
+
+const char*
+scorep_profile_get_basename( void )
+{
+    return scorep_profile_basename;
+}
+
+uint64_t
+scorep_profile_get_output_format( void )
+{
+    return scorep_profile_output_format;
+}
+
+uint64_t
+scorep_profile_get_cluster_count( void )
+{
+    return scorep_profile_cluster_count;
+}
+
+uint64_t
+scorep_profile_get_cluster_mode( void )
+{
+    return scorep_profile_cluster_mode;
+}
+
+const char*
+scorep_profile_get_clustered_region( void )
+{
+    return scorep_profile_clustered_region;
+}
+
+bool
+scorep_profile_do_clustering( void )
+{
+    return scorep_profile_enable_clustering;
+}
+
+/*----------------------------------------------------------------------------------------
    Debug
    -------------------------------------------------------------------------------------*/
 void
@@ -134,6 +199,10 @@ scorep_profile_dump_subtree( scorep_profile_node* node,
     if ( node->node_type == scorep_profile_node_regular_region )
     {
         printf( "  name: %s", SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
+    }
+    else if ( node->node_type == scorep_profile_node_thread_start )
+    {
+        printf( "  fork node: %p", scorep_profile_type_get_fork_node( node->type_specific_data ) );
     }
     printf( "\n" );
     if ( node->first_child != NULL )

@@ -86,6 +86,27 @@ static void
 copy_flat( scorep_profile_type_data_t* destination,
            scorep_profile_type_data_t  source );
 
+static uint64_t
+hash_by_handle( scorep_profile_type_data_t data );
+
+static uint64_t
+hash_by_value( scorep_profile_type_data_t data );
+
+static uint64_t
+hash_by_both_entries( scorep_profile_type_data_t data );
+
+static bool
+less_than_by_handle( scorep_profile_type_data_t data1,
+                     scorep_profile_type_data_t data2 );
+
+static bool
+less_than_by_value( scorep_profile_type_data_t data1,
+                    scorep_profile_type_data_t data2 );
+
+static bool
+less_than_by_both_entries( scorep_profile_type_data_t data1,
+                           scorep_profile_type_data_t data2 );
+
 static bool
 compare_only_handle( scorep_profile_type_data_t data1,
                      scorep_profile_type_data_t data2 );
@@ -110,6 +131,10 @@ compare_both_entries( scorep_profile_type_data_t data1,
  */
 typedef struct
 {
+    uint64_t ( * hash_func )( scorep_profile_type_data_t );
+
+    bool ( * less_than_func )( scorep_profile_type_data_t,
+                               scorep_profile_type_data_t );
     bool ( * comp_func )( scorep_profile_type_data_t,
                           scorep_profile_type_data_t );
     void ( * copy_func )( scorep_profile_type_data_t*,
@@ -123,13 +148,13 @@ typedef struct
   same order like in @a scorep_profile_node_type.
  */
 scorep_profile_type_data_func_t scorep_profile_type_data_funcs[] = {
-  { &compare_only_handle,  &copy_flat }, /* Regular region */
-  { &compare_both_entries, &copy_flat }, /* Parameter string */
-  { &compare_both_entries, &copy_flat }, /* Parameter integer */
-  { &compare_only_value,   &copy_flat }, /* Thread root */
-  { &compare_only_handle,  &copy_flat }, /* Thread start */
-  { &compare_only_value,   &copy_flat }, /* Collapse */
-  { &compare_only_handle,  &copy_flat }, /* Task root */
+  { &hash_by_handle,       &less_than_by_handle,       &compare_only_handle,  &copy_flat }, /* Regular region */
+  { &hash_by_both_entries, &less_than_by_both_entries, &compare_both_entries, &copy_flat }, /* Parameter string */
+  { &hash_by_both_entries, &less_than_by_both_entries, &compare_both_entries, &copy_flat }, /* Parameter integer */
+  { &hash_by_value,        &less_than_by_value,        &compare_only_value,   &copy_flat }, /* Thread root */
+  { &hash_by_handle,       &less_than_by_handle,       &compare_only_handle,  &copy_flat }, /* Thread start */
+  { &hash_by_value,        &less_than_by_value,        &compare_only_value,   &copy_flat }, /* Collapse */
+  { &hash_by_handle,       &less_than_by_handle,       &compare_only_handle,  &copy_flat }, /* Task root */
 };
 
 /* *INDENT-ON* */
@@ -168,11 +193,78 @@ compare_both_entries( scorep_profile_type_data_t data1,
            ( data1.value  == data2.value );
 }
 
+static uint64_t
+hash_by_handle( scorep_profile_type_data_t data )
+{
+    return data.handle;
+}
+
+static uint64_t
+hash_by_value( scorep_profile_type_data_t data )
+{
+    return data.value;
+}
+
+static uint64_t
+hash_by_both_entries( scorep_profile_type_data_t data )
+{
+    uint64_t val = data.handle;
+    val  = ( val >> 1 ) | ( val << 31 );
+    val += data.value;
+
+    return val;
+}
+
+static bool
+less_than_by_handle( scorep_profile_type_data_t data1,
+                     scorep_profile_type_data_t data2 )
+{
+    return data1.handle < data2.handle;
+}
+
+static bool
+less_than_by_value( scorep_profile_type_data_t data1,
+                    scorep_profile_type_data_t data2 )
+{
+    return data1.value < data2.value;
+}
+
+static bool
+less_than_by_both_entries( scorep_profile_type_data_t data1,
+                           scorep_profile_type_data_t data2 )
+{
+    if ( data1.handle < data2.handle )
+    {
+        return true;
+    }
+    if ( data1.handle > data2.handle )
+    {
+        return false;
+    }
+    return data1.value < data2.value;
+}
+
 /* ***************************************************************************************
    Type dependent functions
 *****************************************************************************************/
 
-/* Compares to data sets */
+uint64_t
+scorep_profile_hash_for_type_data( scorep_profile_type_data_t data,
+                                   scorep_profile_node_type   type )
+{
+    return ( *scorep_profile_type_data_funcs[ type ].hash_func )( data );
+}
+
+/* Gives an ordering for two data sets */
+bool
+scorep_profile_less_than_for_type_data( scorep_profile_type_data_t data1,
+                                        scorep_profile_type_data_t data2,
+                                        scorep_profile_node_type   type )
+{
+    return ( *scorep_profile_type_data_funcs[ type ].less_than_func )( data1, data2 );
+}
+
+/* Compares two data sets */
 bool
 scorep_profile_compare_type_data( scorep_profile_type_data_t data1,
                                   scorep_profile_type_data_t data2,

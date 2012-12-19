@@ -187,7 +187,6 @@ SCOREP_Env_GetPageSize()
     return scorep_env_page_size;
 }
 
-
 const char*
 SCOREP_Env_ExperimentDirectory()
 {

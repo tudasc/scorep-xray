@@ -113,8 +113,10 @@ definition of phases that are have multiple partitions
 @subsection dynamic_profiling Dynamic Region Profiling
 @seclabel{dynamic_profiling}
 
-When profiling, multiple visits of a callpath are summarized. However, @scorep allows
-to define regions to by of type dynamic. For dynamic
+When profiling, multiple visits of a callpath are summarized. However, e.g, for 
+investigations in time-dependent behavior of an application, each iteration of 
+a main loop (or some other region) should create a separate profile sub tree.
+For such cases, @scorep allows to define regions to by of type dynamic. For dynamic
 regions, each entry of the region will create a separate path. For this cause, the
 @scorep profiling system creates an extra parameter, named <tt>instance</tt>. On each
 visit to a dynamic region, the instance parameter for this callpath is increased 
@@ -153,9 +155,115 @@ instrumentation, described in Section @secref{manual_instrumentation}.
 
 
 @note Using dynamic regions can easily create very large profiles. Thus, use this
-feature with care. If you are only interested in some parts of the application, selective
-tracing (see Section @secref{selective_tracing}) might be a memory space save alternative.
+      feature with care. If you are only interested in some parts of the application, 
+      selective tracing (see Section @secref{selective_tracing}) might be a memory 
+      space save alternative. Furthermore, you can use clustering 
+      (see Section @secref{clustering}) to reduce the memory requirements.
 
+
+@subsection clustering Clustering
+@seclabel{clustering}
+
+Clustering allows to reduce the memory requirements of a dynamic region, by clustering
+similar subtrees into one cluster. A visualization tool (like CUBE 4) might expand
+the clusters back to single iterations transparently. You can enable/disable 
+clustering via the environment variable \confvar{SCOREP_PROFILING_ENABLE_CLUSTERING}. 
+By default, clustering is enabled.
+
+Currently, clustering is limited to the instances of one node in the
+call-tree. If a dynamic region appears on several call paths, @scorep will only
+cluster one, and generate separate sub-trees for every iterations in all other
+call-paths. By default, @scorep will cluster the instances of that dynamic region
+call path that it enters first. If you have only one call-path where a dynamic region
+occurs (e.g., if the body of the main loop is the only dynamic region), this
+region will be clustered automatically. Otherwise, we recommend to specify
+the region you want to cluster in the environment variable
+\confvar{SCOREP_PROFILING_CLUSTERED_REGION}.
+
+@note If the selected region appears on multiple call paths, only one of them
+      is clustered. @scorep chooses the call path of that regions that it enters first.
+      In particular, if the selected dynamic region is nested into itself, the 
+      outermost occurrence is clustered.
+
+Furthermore, the clustered region must not be inside of a parallel region, but must 
+be at a sequential part of the program. However, the clustered region may contain
+parallel regions.
+
+Clustering is a lossy compression mechanism. The accuracy increases if more clusters
+are available. On the downside, more clusters require more memory. You can 
+specify the number of clusters you want by setting the environment variable
+\confvar{SCOREP_PROFILING_CLUSTER_COUNT} to the number of cluster you want to have. 
+The default cluster number is 64.
+
+Furthermore, you can enforce a minimal structural similarity of instances of a cluster.
+Clusters that fit the minimal structural similarity requirements belong to the 
+same equivalence class. Only instances of the same equivalence class will be clustered
+together. If you have more equivalence classes than the number of clusters you specified
+in \confvar{SCOREP_PROFILING_CLUSTER_COUNT}, the maximal number of clusters is 
+increased. Thus, you might get more clusters than you specified.
+
+The minimal structural similarity is defined by the clustering mode which can be set
+via the environment variable \confvar{SCOREP_PROFILING_CLUSTERING_MODE}. The value 
+of this variable is a number between 0 and 5, specifying one of the modes described 
+in Table @tabref{Clustering modes}.
+
+\if LATEX
+\latexonly
+  \begin{table}
+    \centering
+    \caption{Clustering modes}
+    \label{tab:Clustering modes}
+    \begin{tabular}{ | p{1cm} | p{10cm} | }
+      \hline
+      \bf Mode & \bf Description \\
+      \hline
+      0   & No structural similarity required. \\ 
+      \hline
+      1   & The sub-trees structure must match. \\
+      \hline
+      2   & The sub-trees structure and the number of visits must match. \\
+      \hline
+      3   & The structure of the call path to MPI calls must match. Nodes that
+            are not on an MPI call path may differ. \\
+      \hline
+      4   & Like Mode 3, but the number of visits of the MPI calls must match, too. \\
+      \hline
+      5   & Like Mode 4, but the number of visits must match also match on
+            all nodes on the call path to an MPI function.\\
+      \hline
+    \end{tabular}
+  \end{table}
+\endlatexonly
+\else
+  <table border=1 cellspacing=0>
+    <caption>Clustering modes</caption>
+    <tr>
+      <th WIDTH=10%>Mode</th>
+      <th WIDTH=90%>Description</th>
+    </tr><tr>
+      <td WIDTH=10%>0</td>
+      <td WIDTH=90%>No structural similarity required.</td>
+    </tr><tr>
+      <td WIDTH=10%>1</td>
+      <td WIDTH=90%>The sub-trees structure must match.</td>
+    </tr><tr>
+      <td WIDTH=10%>2</td>
+      <td WIDTH=90%>The sub-trees structure and the number of visits must match.</td>
+    </tr><tr>
+      <td WIDTH=10%>3</td>
+      <td WIDTH=90%>The structure of the call path to MPI calls must match. Nodes that
+                    are not on an MPI call path may differ.</td>
+    </tr><tr>
+      <td WIDTH=10%>4</td>
+      <td WIDTH=90%>Like Mode 3, but the number of visits of the MPI calls must match, 
+                    too.</td>
+    </tr><tr>
+      <td WIDTH=10%>5</td>
+      <td WIDTH=90%>Like Mode 4, but the number of visits must match also match on
+                    all nodes on the call path to an MPI function.</td>
+    </tr>
+  </table>
+\endif
 
 @section tracing Tracing
 @seclabel{tracing}

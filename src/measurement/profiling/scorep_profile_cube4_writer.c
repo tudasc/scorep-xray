@@ -15,15 +15,16 @@
  */
 
 /**
- * @file scorep_profile_cube4_writer_mpi.c
+ * @file scorep_profile_cube4_writer.c
  *
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @status alpha
- * Implements a profile writer in Cube 4 format for mpi applications.
+ * Implements a profile writer in Cube 4 format.
  */
 
 #include <config.h>
+#include <scorep_profile_cube4_writer.h>
 #include <sys/stat.h>
 #include <inttypes.h>
 
@@ -37,16 +38,10 @@
 
 #include <scorep_profile_definition.h>
 #include <scorep_profile_location.h>
-#include <scorep_definition_cube4.h>
 #include <scorep_definitions.h>
 #include <scorep_mpi.h>
 #include <scorep_runtime_management.h>
-
 #include <scorep_location.h>
-
-#include <cubew_cube.h>
-#include <cubew_cubew.h>
-#include <cubew_services.h>
 
 #define SCOREP_PROFILE_DENSE_METRIC ( ( SCOREP_MetricHandle )UINT32_MAX - 1 )
 
@@ -54,36 +49,12 @@ extern SCOREP_DefinitionManager  scorep_local_definition_manager;
 extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 extern SCOREP_MetricHandle       scorep_profile_active_task_metric;
 
+extern void
+scorep_cluster_write_cube4( scorep_cube_writing_data* write_data );
+
 /* *****************************************************************************
    Typedefs and variable declarations
 *******************************************************************************/
-
-/**
-   Data set needed for various writing functions
- */
-typedef struct
-{
-    cube_t*                       my_cube;          /**< Cube object that is created */
-    cube_writer*                  cube_writer;      /**< Cube writer object */
-    scorep_profile_node**         id_2_node;        /**< maps global sequence number */
-    scorep_cube4_definitions_map* map;              /**< maps Score-P and Cube handles */
-    uint32_t                      callpath_number;  /**< Number of callpathes */
-    uint32_t                      global_threads;   /**< Global number of locations */
-    uint32_t                      local_threads;    /**< Number of threads in this rank */
-    uint32_t                      offset;           /**< Offset for this rank */
-    uint32_t                      my_rank;          /**< This rank */
-    uint32_t                      ranks_number;     /**< Number of ranks in COMM_WORLD */
-    int*                          threads_per_rank; /**< List of elements per rank */
-    int*                          offsets_per_rank; /**< List of offsets per rank */
-    SCOREP_MetricHandle*          metric_map;       /**< map sequence no to handle */
-    SCOREP_MetricHandle*          unified_map;      /**< map sequence to unified handle */
-    uint8_t*                      bit_vector;       /**< Indicates callpath with values */
-    int32_t                       has_tasks;        /**< Whether tasks occured */
-    uint32_t                      num_unified;      /**< Number of unified metrics */
-    int32_t                       same_thread_num;  /**< Non-zero if same number of
-                                                         threads on all ranks */
-} scorep_cube_writing_data;
-
 
 /**
    Defines a function type which returns a metric value from a given node.
@@ -691,11 +662,12 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
         /* Construct cube file name */
         const char* dirname  = SCOREP_GetExperimentDirName();
         char*       filename = NULL;
+        const char* basename = scorep_profile_get_basename();
 
-        filename = ( char* )malloc( strlen( dirname ) +               /* Directory     */
-                                    1 +                               /* separator '/' */
-                                    strlen( scorep_profile_basename ) /* basename      */
-                                    + 1 );                            /* trailing '\0' */
+        filename = ( char* )malloc( strlen( dirname ) +  /* Directory     */
+                                    1 +                  /* separator '/' */
+                                    strlen( basename )   /* basename      */
+                                    + 1 );               /* trailing '\0' */
         if ( filename == NULL )
         {
             UTILS_ERROR_POSIX( "Failed to allocate memory for filename.\n"
@@ -703,7 +675,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
             delete_cube_writing_data( write_set );
             return false;
         }
-        sprintf( filename, "%s/%s", dirname, scorep_profile_basename );
+        sprintf( filename, "%s/%s", dirname, basename );
 
         /* Create Cube objects */
         write_set->cube_writer
@@ -808,6 +780,9 @@ scorep_profile_write_cube4( SCOREP_Location* location_data )
        profile nodes */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Create mappings" );
     add_mapping_to_cube_writing_data( &write_set );
+
+    /* Write clustering mappings */
+    scorep_cluster_write_cube4( &write_set );
 
     /* -------------------------------- dense metrics */
 

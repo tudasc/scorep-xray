@@ -37,6 +37,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
+#include <scorep_profile_cluster.h>
 #include <scorep_profile_node.h>
 #include <scorep_profile_definition.h>
 #include <scorep_profile_process.h>
@@ -104,6 +105,8 @@ SCOREP_Profile_Initialize( void )
     }
 
     SCOREP_MutexCreate( &scorep_profile_location_mutex );
+
+    scorep_cluster_initialize();
 
     scorep_profile_init_definition();
 
@@ -193,6 +196,9 @@ SCOREP_Profile_Finalize( void )
     /* Reset profile definition struct */
     scorep_profile_delete_definition();
 
+    /* Finalize clustering system */
+    scorep_cluster_finalize();
+
     /* Delete mutex */
     SCOREP_MutexDestroy( &scorep_profile_location_mutex );
 
@@ -266,6 +272,9 @@ SCOREP_Profile_Process( SCOREP_Location* location )
 
     /* Substitute collapse nodes by normal region nodes */
     scorep_profile_process_collapse();
+
+    /* Reenumerate clusters */
+    scorep_cluster_postprocess();
 
     /* Substitute parameter entries by regions */
     if ( scorep_profile_output_format != SCOREP_Profile_OutputTauSnapshot )
@@ -360,6 +369,9 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
         case SCOREP_REGION_DYNAMIC_FUNCTION:
         case SCOREP_REGION_DYNAMIC_LOOP_PHASE:
 
+            /* Identify cluster regions */
+            scorep_cluster_on_enter_dynamic( location, node );
+
             /* For Dynamic Regions we use a special "instance" parameter defined
              * during initialization */
             SCOREP_Profile_ParameterInteger( thread,
@@ -380,6 +392,7 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
     scorep_profile_node*         node   = NULL;
     scorep_profile_node*         parent = NULL;
     SCOREP_Profile_LocationData* location;
+    SCOREP_RegionType            type = SCOREP_Region_GetType( region );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
                         "Exit event of profiling system called" );
@@ -388,7 +401,7 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
     location = SCOREP_Location_GetProfileData( thread );
 
     /* Store task metrics if we leave a parallel region */
-    if ( SCOREP_Region_GetType( region ) == SCOREP_REGION_PARALLEL )
+    if ( SCOREP_REGION_PARALLEL == type )
     {
         scorep_profile_task_parallel_exit( location );
     }
@@ -399,6 +412,18 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
     node = scorep_profile_get_current_node( location );
     UTILS_ASSERT( node != NULL );
     parent = scorep_profile_exit( location, node, region, timestamp, metrics );
+
+    /* Check, if clustering has to be done */
+    switch ( type )
+    {
+        case SCOREP_REGION_DYNAMIC:
+        case SCOREP_REGION_DYNAMIC_PHASE:
+        case SCOREP_REGION_DYNAMIC_LOOP:
+        case SCOREP_REGION_DYNAMIC_FUNCTION:
+        case SCOREP_REGION_DYNAMIC_LOOP_PHASE:
+            scorep_cluster_if_necessary( location, node );
+            break;
+    }
 
     /* Update current node */
     scorep_profile_set_current_node( location, parent );
@@ -778,6 +803,7 @@ SCOREP_Profile_OnFork( SCOREP_Location* threadData,
     }
 
     /* Store current fork node */
+    scorep_profile_set_fork_node( fork_node, true );
     scorep_profile_add_fork_node( location, fork_node, location->current_depth, nestingLevel );
 }
 

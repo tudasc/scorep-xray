@@ -31,3 +31,12 @@ EXTRA_DIST          += $(SRC_ROOT)test/profiling/run_profile_depth_limit_test.sh
 if !SCOREP_COMPILER_SUN
 TESTS_SERIAL += $(srcdir)/../test/profiling/run_profile_depth_limit_test.sh
 endif
+
+check_PROGRAMS += clustering_test
+clustering_test_SOURCES = $(SRC_ROOT)test/profiling/clustering_test.c
+clustering_test_CPPFLAGS = $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR)                   \
+    -DSCOREP_USER_ENABLE
+clustering_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
+
+TESTS_SERIAL += ./clustering_test

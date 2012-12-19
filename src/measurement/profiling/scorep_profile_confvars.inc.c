@@ -45,6 +45,26 @@ char* scorep_profile_basename = NULL;
 uint64_t scorep_profile_output_format;
 
 /**
+   Stores the number of clusters
+ */
+uint64_t scorep_profile_cluster_count;
+
+/**
+   Stores the cluster mode
+ */
+uint64_t scorep_profile_cluster_mode;
+
+/**
+   Stores the name of the cluster region-
+ */
+char* scorep_profile_clustered_region;
+
+/**
+   Stores whether clustering is enabled
+ */
+bool scorep_profile_enable_clustering;
+
+/**
    Bitset table for output format string configuration.
  */
 static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
@@ -114,6 +134,46 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
         "  cube4:        Cube4 format\n"
         "  default:      Default format. If Cube4 is supported, Cube4 is the default\n"
         "                else the Tau snapshot format is default"
+    },
+    {
+        "enable_clustering",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_profile_enable_clustering,
+        NULL,
+        "true",
+        "Enable clustering",
+        ""
+    },
+    {
+        "cluster_count",
+        SCOREP_CONFIG_TYPE_SIZE,
+        &scorep_profile_cluster_count,
+        NULL,
+        "64",
+        "maximum cluster count for iteration clustering.",
+        "maximum cluster count for iteration clustering."
+    },
+    {
+        "clustering_mode",
+        SCOREP_CONFIG_TYPE_SIZE,
+        &scorep_profile_cluster_mode,
+        NULL,
+        "1",
+        "Specifies the level of strictness when comparing call trees for equivalence.",
+        "Specifies the level of strictness when comparing call trees for equivalence."
+    },
+    {
+        "clustered_region",
+        SCOREP_CONFIG_TYPE_STRING,
+        &scorep_profile_clustered_region,
+        NULL,
+        "",
+        "Name of the clustered region",
+        "The clustering can only cluster one dynamic region. If more than one "
+        "dynamic region are defined by the user, the region is clustered "
+        "which is exited first. If another region should be clustered instead "
+        "you can specify the region name in this variable. If the variable is "
+        "unset or empty, the first exited dynamic region is clustered."
     },
     SCOREP_CONFIG_TERMINATOR
 };

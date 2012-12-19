@@ -113,26 +113,7 @@ typedef struct
  */
 extern scorep_profile_definition scorep_profile;
 
-/**
-   Initial value for scorep_profile.max_callpath_depth, which may change over
-   time.
- */
-extern uint64_t scorep_profile_max_callpath_depth;
 
-/**
-   Stores the configuration of the hash table size.
- */
-extern uint64_t scorep_profile_task_table_size;
-
-/**
-   Contains the basename for profile files.
- */
-extern char* scorep_profile_basename;
-
-/**
-   Stores the configuration setting for output format.
- */
-extern uint64_t scorep_profile_output_format;
 
 /* **************************************************************************************
    Functions
@@ -149,6 +130,56 @@ scorep_profile_init_definition( void );
  */
 void
 scorep_profile_delete_definition( void );
+
+
+/**
+   Returns the configuration value for SCOREP_PROFILE_MAX_CALLPATH_DEPTH.
+ */
+uint64_t
+scorep_profile_get_max_callapth_depth( void );
+
+/**
+   Returns the configuration value for SCOREP_PROFILE_TASK_TABLE_SIZE.
+ */
+uint64_t
+scorep_profile_get_task_table_size( void );
+
+/**
+   Returns the configuration value for SCOREP_PROFILE_BASENAME.
+ */
+const char*
+scorep_profile_get_basename( void );
+
+/**
+   Returns the configuration value for SCOREP_PROFILE_OUTPUT_FORMAT.
+ */
+uint64_t
+scorep_profile_get_output_format( void );
+
+/**
+   Returns the configuration value for SCOREP_PROFILE_CLUSTER_COUNT.
+ */
+uint64_t
+scorep_profile_get_cluster_count( void );
+
+/**
+   Returns the configuration value for SCOREP_PROFILE_CLUSTER_MODE.
+ */
+uint64_t
+scorep_profile_get_cluster_mode( void );
+
+/**
+   Returns the configuration value for SCOREP_PROFILE_CLUSTERED_REGION.
+ */
+const char*
+scorep_profile_get_clustered_region( void );
+
+/**
+   Returns the configuration value for SCORE_PROFILE_ENABLE_CLUSTERING.
+ */
+bool
+scorep_profile_do_clustering( void );
+
 
 /**
    Returns the number of locations stored in the profile.

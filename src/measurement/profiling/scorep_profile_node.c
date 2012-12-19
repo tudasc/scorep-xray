@@ -67,6 +67,7 @@ scorep_profile_create_node( SCOREP_Profile_LocationData* location,
     node->first_enter_time    = timestamp;
     node->last_exit_time      = timestamp;
     node->node_type           = type;
+    node->flags               = 0;
     scorep_profile_copy_type_data( &node->type_specific_data, data, type );
 
     /* Initialize dense metric values */
@@ -284,6 +285,36 @@ scorep_profile_compare_nodes( scorep_profile_node* node1,
     return scorep_profile_compare_type_data( node1->type_specific_data,
                                              node2->type_specific_data,
                                              node1->node_type );
+}
+
+uint64_t
+scorep_profile_node_hash( scorep_profile_node* node )
+{
+    uint64_t val;
+    val  = node->node_type;
+    val  =  ( val >> 1 ) | ( val << 31 );
+    val += scorep_profile_hash_for_type_data( node->type_specific_data,
+                                              node->node_type );
+
+    return val;
+}
+
+/* Provides an ordering for nodes */
+bool
+scorep_profile_node_less_than( scorep_profile_node* a,
+                               scorep_profile_node* b )
+{
+    if ( a->node_type < b->node_type )
+    {
+        return true;
+    }
+    if ( a->node_type > b->node_type )
+    {
+        return false;
+    }
+    return scorep_profile_less_than_for_type_data( a->type_specific_data,
+                                                   b->type_specific_data,
+                                                   a->node_type );
 }
 
 /* Copies all dense metrics from source to destination */
@@ -688,6 +719,89 @@ scorep_profile_merge_node_sparse( SCOREP_Profile_LocationData* location,
     }
 }
 
+/**
+   Searches for a a thread start node to a given fork
+   in a specific location subtree.
+   @param root  The root node of a location subtree.
+   @param fork  The node where the fork happended.
+   @return The thread start node forked at @a fork if it exists.
+           If no matching node is found, the function returns NULL.
+ */
+static scorep_profile_node*
+get_thread_start_for_fork( scorep_profile_node* root,
+                           scorep_profile_node* fork )
+{
+    scorep_profile_node* child = root->first_child;
+    while ( child != NULL )
+    {
+        if ( ( child->node_type == scorep_profile_node_thread_start ) &&
+             ( scorep_profile_type_get_fork_node( child->type_specific_data ) == fork ) )
+        {
+            return child;
+        }
+
+        child = child->next_sibling;
+    }
+    return NULL;
+}
+
+/**
+   Replaces all occurences of @a old in thread start nodes by @a substitute.
+   @param old        A pointer to a fork node, that is replaced in the type specific data
+                     of all thread start nodes.
+   @param substitute A pointer to a fork node, that will replace the occurences of
+                     @a old.
+ */
+static void
+substitute_thread_starts( scorep_profile_node* old,
+                          scorep_profile_node* substitute )
+{
+    for ( scorep_profile_node* root = scorep_profile.first_root_node;
+          root != NULL;
+          root = root->next_sibling )
+    {
+        scorep_profile_node* child = get_thread_start_for_fork( root, old );
+        if ( child != NULL )
+        {
+            scorep_profile_type_set_fork_node( &child->type_specific_data, substitute );
+        }
+    }
+}
+
+/**
+   Merges all on all locations the subtrees rooted in a thread start node that
+   point to @a source as its fork node into the subtree that
+   point to @a destination.as its fork node.
+   @param destination Pointer to a fork node.
+   @param source      Pointer to a fork node.
+ */
+static void
+merge_thread_starts( scorep_profile_node* destination,
+                     scorep_profile_node* source )
+{
+    for ( scorep_profile_node* root = scorep_profile.first_root_node;
+          root != NULL;
+          root = root->next_sibling )
+    {
+        scorep_profile_node* src = get_thread_start_for_fork( root, source );
+        if ( src == NULL )
+        {
+            continue;
+        }
+
+        scorep_profile_node* dest = get_thread_start_for_fork( root, destination );
+        if ( dest == NULL )
+        {
+            scorep_profile_type_set_fork_node( &src->type_specific_data, destination );
+            continue;
+        }
+
+        scorep_profile_remove_node( src );
+        scorep_profile_merge_subtree( scorep_profile_get_location_of_node( root ),
+                                      dest, src );
+    }
+}
+
 void
 scorep_profile_merge_subtree( SCOREP_Profile_LocationData* location,
                               scorep_profile_node*         destination,
@@ -696,9 +810,28 @@ scorep_profile_merge_subtree( SCOREP_Profile_LocationData* location,
     assert( destination );
     assert( source );
 
+    /* Handle forked subtrees */
+    if ( scorep_profile_is_fork_node( source ) )
+    {
+        if ( scorep_profile_is_fork_node( destination ) )
+        {
+            /* Merge the subtrees of the nodes */
+            merge_thread_starts( destination, source );
+        }
+        else
+        {
+            /* Set the thread start node data that points to the source tree to
+               the destination tree */
+            substitute_thread_starts( source, destination );
+        }
+    }
+
+    /* Merge current node data */
     scorep_profile_merge_node_dense( destination, source );
     scorep_profile_merge_node_sparse( location, destination, source );
+    destination->flags = destination->flags | source->flags;
 
+    /* Process children */
     scorep_profile_node* child = source->first_child;
     scorep_profile_node* next  = NULL;
     scorep_profile_node* match = NULL;
@@ -726,4 +859,140 @@ scorep_profile_merge_subtree( SCOREP_Profile_LocationData* location,
        released, recursively. Thus we must release only this node. */
     source->first_child = NULL;
     scorep_profile_release_subtree( location, source );
+}
+
+/**
+   Helper function for @ref scorep_profile_sort_subtree. Implements a recursive
+   merge sort algorithm on a linked list of profile nodes.
+   @param head       Head of the linked list of profile nodes. Will return the head of
+                     the sorted list.
+   @param tail       Returns the tail of the sorted list.
+   @param number     Number of elements in the list.
+   @param comp_func  Comparison function.
+ */
+
+static void
+scorep_profile_sort_list( scorep_profile_node**          head,
+                          scorep_profile_node**          tail,
+                          uint32_t                       number,
+                          scorep_profile_compare_node_t* func )
+{
+    /* If it's a single element list, return that list */
+    if ( number <= 1 )
+    {
+        *tail = *head;
+        return;
+    }
+    uint32_t              pos;
+    uint32_t              pos_end = number / 2;
+    scorep_profile_node*  head_tail;
+    scorep_profile_node*  mid;
+    scorep_profile_node** last;
+    /* Find the middle of the list */
+    for ( pos = 0, mid = *head; pos < pos_end; pos++ )
+    {
+        last = &( mid->next_sibling );
+        mid  = *last;
+    }
+
+    /* Cut the list in the middle */
+    *last = NULL;
+
+    /* Sort the two sub-lists */
+    scorep_profile_sort_list( head, &head_tail, pos_end, func );
+    scorep_profile_sort_list( &mid, tail, number - pos_end, func );
+
+    /* See if it's a merge or a concatenation */
+    // TODO: What is nodeid?
+    if ( !func( head_tail, mid ) )
+    {
+        /* Concatenate the two lists */
+        head_tail->next_sibling = mid;
+    }
+    else
+    {
+        /* Merge the two lists */
+        last      = head;
+        head_tail = *last;
+        while ( NULL != mid && NULL != head_tail )
+        {
+            if ( !func( head_tail, mid ) )
+            {
+                /* Just advance head_tail */
+                last      = &( head_tail->next_sibling );
+                head_tail = *last;
+            }
+            else
+            {
+                /* Insert the element from mid before head_tail and advance mid */
+                scorep_profile_node* mid_next = mid->next_sibling;
+                *last = mid;
+                last  = &( mid->next_sibling );
+                *last = head_tail;
+                mid   = mid_next;
+            }
+        }
+        if ( NULL != mid )
+        {
+            /* Concatenate. tail is already at the end of the list */
+            *last = mid;
+        }
+        else if ( NULL != head_tail )
+        {
+            /* Bring tail to the end of the list */
+            while ( NULL != head_tail->next_sibling )
+            {
+                head_tail = head_tail->next_sibling;
+            }
+            *tail = head_tail;
+        }
+    }
+}
+
+void
+scorep_profile_sort_subtree( scorep_profile_node*           root,
+                             scorep_profile_compare_node_t* comparision_func )
+{
+    scorep_profile_node* curr;
+
+    /* Sort children */
+    scorep_profile_sort_list( &( root->first_child ), &curr,
+                              scorep_profile_get_number_of_children( root ),
+                              comparision_func );
+
+    /* Sort the subtrees of the children */
+    for ( curr = root->first_child; NULL != curr; curr = curr->next_sibling )
+    {
+        scorep_profile_sort_subtree( curr, comparision_func );
+    }
+}
+
+bool
+scorep_profile_is_mpi_in_subtree( scorep_profile_node* node )
+{
+    return node->flags & SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE;
+}
+
+void
+scorep_profile_set_mpi_in_subtree( scorep_profile_node* node,
+                                   bool                 mpi_in_subtree )
+{
+    node->flags = ( mpi_in_subtree ?
+                    node->flags | SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE :
+                    node->flags & ( ~SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE ) );
+}
+
+bool
+scorep_profile_is_fork_node( scorep_profile_node* node )
+{
+    return node->flags & SCOREP_PROFILE_FLAG_IS_FORK_NODE;
+}
+
+void
+scorep_profile_set_fork_node( scorep_profile_node* node,
+                              bool                 is_fork_node )
+{
+    node->flags = ( is_fork_node ?
+                    node->flags | SCOREP_PROFILE_FLAG_IS_FORK_NODE :
+                    node->flags & ( ~SCOREP_PROFILE_FLAG_IS_FORK_NODE ) );
 }

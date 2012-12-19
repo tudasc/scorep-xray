@@ -45,52 +45,11 @@
 #include <scorep_definitions.h>
 #include <scorep_profile_location.h>
 
-/**
-   Sorts the children of a node according to thair first entry.
- */
-static void
-sort_children( scorep_profile_node* parent )
+static bool
+compare_first_enter_time( scorep_profile_node* node_a,
+                          scorep_profile_node* node_b )
 {
-    scorep_profile_node* child      = parent->first_child;
-    scorep_profile_node* last_child = NULL;
-    while ( child != NULL )
-    {
-        scorep_profile_node*  current      = parent->first_child;
-        scorep_profile_node** last_pointer = &parent->first_child;
-        bool                  update       = true;
-        while ( current != child )
-        {
-            if ( current->first_enter_time > child->first_enter_time )
-            {
-                scorep_profile_node* next_child = child->next_sibling;
-                *last_pointer            = child;
-                child->next_sibling      = current;
-                last_child->next_sibling = next_child;
-                child                    = next_child;
-                update                   = false;
-                break;
-            }
-            last_pointer = &current->next_sibling;
-            current      = current->next_sibling;
-        }
-        if ( update )
-        {
-            last_child = child;
-            child      = child->next_sibling;
-        }
-    }
-}
-
-static void
-sort_subtree( scorep_profile_node* parent )
-{
-    sort_children( parent );
-    scorep_profile_node* child = parent->first_child;
-    while ( child != NULL )
-    {
-        sort_subtree( child );
-        child = child->next_sibling;
-    }
+    return node_a->first_enter_time > node_b->first_enter_time;
 }
 
 static void
@@ -99,7 +58,7 @@ sort_tree( void )
     scorep_profile_node* root = scorep_profile.first_root_node;
     while ( root != NULL )
     {
-        sort_subtree( root );
+        scorep_profile_sort_subtree( root, compare_first_enter_time );
         root = root->next_sibling;
     }
 }

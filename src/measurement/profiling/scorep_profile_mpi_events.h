@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -14,27 +14,22 @@
  *
  */
 
+#ifndef SCOREP_PROFILE_MPI_EVENTS_H
+#define SCOREP_PROFILE_MPI_EVENTS_H
+
 /**
- * @ file      profile_depth_limit_test.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status      alpha
+ * @file        scorep_profile_mpi_events.h
+ * @maintainer  Daniel Lorenz<d.lorenz@fz-juelich.de>
  *
- * @brief Tests profile depth limitations.
  */
 
-#include <config.h>
+#include <SCOREP_DefinitionHandles.h>
 
-void
-foo( int depth )
-{
-    if ( depth < 20 )
-    {
-        foo( depth + 1 );
-    }
-}
+SCOREP_MetricHandle
+scorep_profile_get_bytes_recv_metric_handle( void );
 
-int
-main()
-{
-    foo( 0 );
-    return 0;
-}
+SCOREP_MetricHandle
+scorep_profile_get_bytes_send_metric_handle( void );
+
+#endif // SCOREP_PROFILE_MPI_EVENTS_H

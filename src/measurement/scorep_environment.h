@@ -53,18 +53,14 @@ SCOREP_Env_DoTracing();
 bool
 SCOREP_Env_DoProfiling();
 
-
 uint64_t
 SCOREP_Env_GetTotalMemory();
-
 
 uint64_t
 SCOREP_Env_GetPageSize();
 
-
 const char*
 SCOREP_Env_ExperimentDirectory();
-
 
 bool
 SCOREP_Env_OverwriteExperimentDirectory();

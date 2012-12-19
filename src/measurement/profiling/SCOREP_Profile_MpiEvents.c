@@ -28,6 +28,7 @@
 #include <SCOREP_Profile_MpiEvents.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Definitions.h>
+#include <scorep_profile_mpi_events.h>
 
 static SCOREP_MetricHandle scorep_bytes_send_metric = SCOREP_INVALID_METRIC;
 static SCOREP_MetricHandle scorep_bytes_recv_metric = SCOREP_INVALID_METRIC;
@@ -89,4 +90,16 @@ SCOREP_Profile_CollectiveEnd( SCOREP_Location*                  location,
 {
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_send_metric, bytesSent );
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_recv_metric, bytesReceived );
+}
+
+SCOREP_MetricHandle
+scorep_profile_get_bytes_recv_metric_handle( void )
+{
+    return scorep_bytes_recv_metric;
+}
+
+SCOREP_MetricHandle
+scorep_profile_get_bytes_send_metric_handle( void )
+{
+    return scorep_bytes_send_metric;
 }

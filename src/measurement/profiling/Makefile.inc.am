@@ -26,6 +26,7 @@ PROFILE_FLAGS =                                 \
     -I$(INC_ROOT)src/utils/include              \
     -I$(INC_ROOT)src/measurement/profiling      \
     -I$(INC_ROOT)src/measurement/include        \
+    -I$(INC_ROOT)src/measurement/paradigm       \
     -I$(INC_ROOT)src/services/include           \
     -I$(INC_ROOT)src/measurement                \
     @CUBE_WRITER_CPPFLAGS@                      \
@@ -41,11 +42,14 @@ libscorep_profile_la_SOURCES =                                           \
     $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_Tasking.h        \
     $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_Tasking.c        \
     $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_MpiEvents.h      \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_mpi_events.h     \
     $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_MpiEvents.c      \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_metric.h         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_metric.c         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_node.h           \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_node.c           \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cluster.h        \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cluster.c        \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_event_base.h     \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_event_base.c     \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_node_type.c      \
@@ -64,7 +68,8 @@ libscorep_profile_la_SOURCES =                                           \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_writer.h         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_callpath.c       \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_substitute_paramater.c \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.c
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.c   \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.h
 
 libscorep_profile_la_CPPFLAGS = $(PROFILE_FLAGS) -DDOCDIR='"$(docdir)"'
 

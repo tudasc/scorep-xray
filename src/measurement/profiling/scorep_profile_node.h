@@ -93,6 +93,9 @@ typedef enum
     <dt>scorep_profile_node_task_root</dt>
     <dd>The region handle</dd>
    </dl>
+
+   The  field @a flag is an bitstring to set various flags. Possible flags are defined
+   in @a scorep_profile_node_flag.
  */
 typedef struct scorep_profile_node_struct
 {
@@ -110,7 +113,17 @@ typedef struct scorep_profile_node_struct
     uint64_t                             last_exit_time;   // Required by Scalasca
     scorep_profile_node_type             node_type;
     scorep_profile_type_data_t           type_specific_data;
+    uint8_t                              flags;
 } scorep_profile_node;
+
+/**
+   A type which specifies possibl flags for the scorep_profile_node::flags field.
+ */
+typedef enum
+{
+    SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE = 1, /**< Set if the subtree contains MPI calls */
+    SCOREP_PROFILE_FLAG_IS_FORK_NODE   = 2  /**< Set if another thread was forked here */
+} scorep_profile_node_flag;
 
 /**
    Type of function pointer that must be passed to @ref scorep_profile_for_all().
@@ -120,6 +133,17 @@ typedef struct scorep_profile_node_struct
                 @ref scorep_profile_for_all()
  */
 typedef void ( scorep_profile_process_func_t )( scorep_profile_node* node, void* param );
+
+/**
+   Type of the comparison function pointer that must be passed to
+   @red scorep_profile_sort_subtree(). It should compare two profile nodes.
+   @param node_a  Pointer to the first profile node to be compared.
+   @param node_b  Pointer to the second profile node.
+   @return The function should return true if @a node_a is greater than @a node_b.
+           Else it returns false.
+ */
+typedef bool ( scorep_profile_compare_node_t )( scorep_profile_node* node_a,
+                                                scorep_profile_node* node_b );
 
 /* ***************************************************************************************
    Node creation/destruction
@@ -262,6 +286,26 @@ scorep_profile_compare_nodes( scorep_profile_node* node1,
                               scorep_profile_node* node2 );
 
 /**
+   Provides a hash value for a single node (without its subtree).
+   @param node The node to be hashed.
+   @return a 64-bit hash value.
+ */
+uint64_t
+scorep_profile_node_hash( scorep_profile_node* node );
+
+/**
+   Provides an ordering for two nodes based on their type-specific data.
+   @param node1 The node that is compared to @a node2
+   @param node2 The node that is compared to @a node1
+   @return true, iff @a node1 is less than @a node2. If their types are
+   different, an arbitrary (but well-defined) ordering is applied based on
+   their types.
+ */
+extern bool
+scorep_profile_node_less_than( scorep_profile_node* a,
+                               scorep_profile_node* b );
+
+/**
    Removes the children from @a source and appends them to the children list of
    @a destination.
    @param destination Pointer to a node to which the children are added. If this
@@ -313,8 +357,15 @@ scorep_profile_merge_subtree( SCOREP_Profile_LocationData* location,
                               scorep_profile_node*         destination,
                               scorep_profile_node*         source );
 
-
-
+/**
+   Sorts the children of all nodes in the subtree according to the given comparison
+   function @a comparison_func.
+   @param root             Pointer to the root of the subtree to be sorted.
+   @param comparison_func  Pointer to the comparison function.
+ */
+void
+scorep_profile_sort_subtree( scorep_profile_node*           root,
+                             scorep_profile_compare_node_t* comparision_func );
 
 /* ***************************************************************************************
    Data accesss and evaluation
@@ -325,7 +376,7 @@ scorep_profile_merge_subtree( SCOREP_Profile_LocationData* location,
    @param destination Pointer to a node to which the metric values are written.
    @param source      Pointer to a node from which the metric values are read.
  */
-extern void
+void
 scorep_profile_copy_all_dense_metrics( scorep_profile_node* destination,
                                        scorep_profile_node* source );
 
@@ -342,7 +393,7 @@ scorep_profile_get_location_of_node( scorep_profile_node* node );
    @return the number of child nodes for @a node. If a NULL pointer is given, 0 is
            returned.
  */
-extern uint64_t
+uint64_t
 scorep_profile_get_number_of_children( scorep_profile_node* node );
 
 /**
@@ -351,7 +402,7 @@ scorep_profile_get_number_of_children( scorep_profile_node* node );
    @return the number of child calls for @a node. If a NULL pointer is given, 0 is
            returned.
  */
-extern uint64_t
+uint64_t
 scorep_profile_get_number_of_child_calls( scorep_profile_node* node );
 
 /**
@@ -360,7 +411,7 @@ scorep_profile_get_number_of_child_calls( scorep_profile_node* node );
    @return the exclusive runtime for @a node. If a NULL pointer is given, 0 is
            returned.
  */
-extern uint64_t
+uint64_t
 scorep_profile_get_exclusive_time( scorep_profile_node* node );
 
 /**
@@ -369,7 +420,7 @@ scorep_profile_get_exclusive_time( scorep_profile_node* node );
    @param destination A pointer to a node to which the metrics are added.
    @param source      A pointer to a node which metrics are added to @a destination.
  */
-extern void
+void
 scorep_profile_merge_node_inclusive( scorep_profile_node* destination,
                                      scorep_profile_node* source );
 
@@ -380,7 +431,7 @@ scorep_profile_merge_node_inclusive( scorep_profile_node* destination,
    @param destination A pointer to a node to which the metrics are added.
    @param source      A pointer to a node which metrics are added to @a destination.
  */
-extern void
+void
 scorep_profile_merge_node_dense( scorep_profile_node* destination,
                                  scorep_profile_node* source );
 
@@ -392,10 +443,43 @@ scorep_profile_merge_node_dense( scorep_profile_node* destination,
    @param destination A pointer to a node to which the metrics are added.
    @param source      A pointer to a node which metrics are added to @a destination.
  */
-extern void
+void
 scorep_profile_merge_node_sparse( SCOREP_Profile_LocationData* location,
                                   scorep_profile_node*         destination,
                                   scorep_profile_node*         source );
+
+/**
+   Returns whether the SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE flag is set for @a node.
+   @param node         Pointer to the node which flag is requested.
+ */
+bool
+scorep_profile_is_mpi_in_subtree( scorep_profile_node* node );
+
+/**
+   Sets the value of the SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE flag in @a node.
+   @param node         Pointer to the node which flag is set.
+   @param is_fork_node Specifies the value of the
+                       SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE flag.
+ */
+void
+scorep_profile_set_mpi_in_subtree( scorep_profile_node* node,
+                                   bool                 mpi_in_subtree );
+
+/**
+   Returns whether the SCOREP_PROFILE_FLAG_IS_FORK_NODE flag is set for @a node.
+   @param node         Pointer to the node which flag is requested.
+ */
+bool
+scorep_profile_is_fork_node( scorep_profile_node* node );
+
+/**
+   Sets the value of the SCOREP_PROFILE_FLAG_IS_FORK_NODE flag in @a node.
+   @param node         Pointer to the node which flag is set.
+   @param is_fork_node Specifies the value of the SCOREP_PROFILE_FLAG_IS_FORK_NODE flag.
+ */
+void
+scorep_profile_set_fork_node( scorep_profile_node* node,
+                              bool                 is_fork_node );
 
 
 
@@ -497,6 +581,29 @@ scorep_profile_type_set_int_value( scorep_profile_type_data_t* data,
                                    uint64_t                    value );
 
 /**
+   Provides a hash value for type-dependent data.
+   @param data The data to provide a hash value for.
+   @param type Specifies the node type in which @a data belongs.
+   @return a 64-bit hash value.
+ */
+uint64_t
+scorep_profile_hash_for_type_data( scorep_profile_type_data_t data,
+                                   scorep_profile_node_type   type );
+
+/**
+   Provides an ordering for type-dependent data. Both objects are assumed to
+   be of the same type @a type.
+   @param data1 The data which is compared to @a data2.
+   @param data2 The data which is compared to @a data1.
+   @param type Specifies the node type in which @a data1 and @a data2 belong.
+   @return true, iff @a data1 is less than @a data2.
+ */
+bool
+scorep_profile_less_than_for_type_data( scorep_profile_type_data_t data1,
+                                        scorep_profile_type_data_t data2,
+                                        scorep_profile_node_type   type );
+
+/**
    Compares the type dependent data. Both objects are assumed to be of the same type
    @a type.
    @param data1 The data which is compared to @a data2.
@@ -504,7 +611,7 @@ scorep_profile_type_set_int_value( scorep_profile_type_data_t* data,
    @param type  Specifies the node type to which @a data1 and @a data2 belong.
    @return true, if @a data1 equals @a data2.
  */
-extern bool
+bool
 scorep_profile_compare_type_data( scorep_profile_type_data_t data1,
                                   scorep_profile_type_data_t data2,
                                   scorep_profile_node_type   type );
@@ -514,7 +621,7 @@ scorep_profile_compare_type_data( scorep_profile_type_data_t data1,
    @param data The data which is copied.
    @param type  Specifies the node type of @a data.
  */
-extern void
+void
 scorep_profile_copy_type_data( scorep_profile_type_data_t* destination,
                                scorep_profile_type_data_t  source,
                                scorep_profile_node_type    type );
