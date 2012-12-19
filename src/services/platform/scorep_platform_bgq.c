@@ -47,10 +47,7 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
     char*         clientname = "";
     pami_client_t client;
     pami_result_t result = PAMI_Client_create( clientname, &client, NULL, 0 );
-    if ( !result )
-    {
-        goto fail;
-    }
+    UTILS_ASSERT( result == PAMI_SUCCESS );
 
     /* PAMI on BG/Q returns a string (!) with Processor name and coordinates. */
     pami_configuration_t config;
