@@ -91,8 +91,7 @@ libscorep_paradigm_omp_la_SOURCES  =                       \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c 
 libscorep_paradigm_omp_la_CPPFLAGS = \
-    $(common_libscorep_cppflags)     \
-    -I$(INC_ROOT)src/services/metric
+    $(common_libscorep_cppflags)
 endif
 
 ##paradigm non omp
@@ -104,8 +103,8 @@ libscorep_paradigm_non_omp_la_SOURCES  =                   \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_non_omp.c 
 libscorep_paradigm_non_omp_la_CPPFLAGS = \
-    $(common_libscorep_cppflags)         \
-    -I$(INC_ROOT)src/services/metric
+    $(common_libscorep_cppflags)
+
 ## paradigm non mpi
 
 noinst_LTLIBRARIES                  += libscorep_paradigm_non_mpi.la

@@ -20,7 +20,6 @@
 scorep_metric_common_cppflags = $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS)                          \
     -I$(PUBLIC_INC_DIR)                        \
-    -I$(INC_ROOT)src/services/metric           \
     -I$(INC_ROOT)src/services/include          \
     -I$(INC_ROOT)src/measurement/include       \
     -I$(INC_ROOT)src/measurement               \
