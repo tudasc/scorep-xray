@@ -683,16 +683,16 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
 
     /* Check whether the target is a shared library */
     else if ( 0
-#if HAVE_LINK_FLAG_SHARED
+#if SCOREP_COMPILER_GNU || SCOREP_COMPILER_INTEL || SCOREP_COMPILER_PGI
               || arg == "-shared"
 #endif
-#if HAVE_LINK_FLAG_DYNAMICLIB
+#if SCOREP_COMPILER_INTEL
               || arg == "-dynamiclib"
 #endif
-#if HAVE_LINK_FLAG_QMKSHROBJ
+#if SCOREP_COMPILER_IBM
               || arg == "-qmkshrobj"
 #endif
-#if HAVE_LINK_FLAG_G_FOR_SHARED
+#if SCOREP_COMPILER_STUDIO
               || arg == "-G"
 #endif
               )
