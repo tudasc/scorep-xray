@@ -2,10 +2,6 @@
 AC_DEFUN([AC_SCOREP_LINK_FLAGS_CHECK], [
  _AC_SCOREP_LINK_FLAG_CHECK([-Bstatic], [HAVE_LINK_FLAG_BSTATIC])
  _AC_SCOREP_LINK_FLAG_CHECK([-Bdynamic], [HAVE_LINK_FLAG_BDYNAMIC])
- _AC_SCOREP_LINK_FLAG_CHECK([-shared], [HAVE_LINK_FLAG_SHARED])
- _AC_SCOREP_LINK_FLAG_CHECK([-dynamiclib], [HAVE_LINK_FLAG_DYNAMICLIB])
- _AC_SCOREP_LINK_FLAG_CHECK([-qmkshrobj], [HAVE_LINK_FLAG_QMKSHROBJ])
- _AC_SCOREP_LINK_FLAG_CHECK([-G], [HAVE_LINK_FLAG_G_FOR_SHARED])
 ])
 
 dnl ---------------------------------------------------------------------------
@@ -34,9 +30,6 @@ AC_DEFUN([_AC_SCOREP_HELLO_WORLD_PROGRAM], [
 AC_LANG_PROGRAM([[
 #include <stdio.h>
 ]], [[
-int main()
-{
     printf("hello world!\n");
-}
 ]])
 ])
