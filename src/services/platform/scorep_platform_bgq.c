@@ -25,8 +25,10 @@
  */
 
 #include <config.h>
-
 #include <stdio.h>
+#include <math.h>
+#include <limits.h>
+#include <string.h>
 #include <pami.h>
 
 #include <UTILS_Error.h>
@@ -78,36 +80,38 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
 
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      "machine",
-                                                     16, "Blue Gene/Q" );
+                                                     0, "Blue Gene/Q" );
     if ( !node )
     {
         goto fail;
     }
+    // Maximum unsigned string's length
+    size_t max_uint_digits = floor( log10( ( double )UINT_MAX ) ) + 1;
 
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      "rack",
-                                                     16, "Rack %u", rack );
+                                                     ( strlen( "Rack " ) + max_uint_digits ), "Rack %u", rack );
     if ( !node )
     {
         goto fail;
     }
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      "midplane",
-                                                     16, "Midplane %u", midplane );
+                                                     ( strlen( "Midplane " ) + max_uint_digits ), "Midplane %u", midplane );
     if ( !node )
     {
         goto fail;
     }
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      "nodeboard",
-                                                     16, "Node board %u", nodeboard );
+                                                     ( strlen( "Node board " ) + max_uint_digits ), "Node board %u", nodeboard );
     if ( !node )
     {
         goto fail;
     }
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      "nodecard",
-                                                     16, "Compute card %u", nodecard );
+                                                     ( strlen( "Compute card " ) + max_uint_digits ), "Compute card %u", nodecard );
     if ( !node )
     {
         goto fail;
