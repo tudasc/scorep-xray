@@ -239,6 +239,48 @@ AM_CONDITIONAL([SCOREP_COMPILER_GNU],   [test "x${ac_scorep_compiler_gnu}"   = "
 dnl AM_CONDITIONAL([SCOREP_COMPILER_HP],    [test "x${ac_scorep_compiler_hp}"    = "xyes"])
 AM_CONDITIONAL([SCOREP_COMPILER_SX],    [test "x${ac_scorep_compiler_sx}"    = "xyes"])
 AM_CONDITIONAL([SCOREP_COMPILER_CRAY],  [test "x${ac_scorep_compiler_cray}"  = "xyes"])
+
+if test "x${ac_scorep_compiler_intel}" = "xyes"; then
+   AC_SUBST([SCOREP_COMPILER_INTEL], [1])
+else
+   AC_SUBST([SCOREP_COMPILER_INTEL], [0])
+fi
+
+if test "x${ac_scorep_compiler_sun}" = "xyes"; then
+   AC_SUBST([SCOREP_COMPILER_SUN], [1])
+else
+   AC_SUBST([SCOREP_COMPILER_SUN], [0])
+fi
+
+if test "x${ac_scorep_compiler_ibm}" = "xyes"; then
+   AC_SUBST([SCOREP_COMPILER_IBM], [1])
+else
+   AC_SUBST([SCOREP_COMPILER_IBM], [0])
+fi
+
+if test "x${ac_scorep_compiler_pgi}" = "xyes"; then
+   AC_SUBST([SCOREP_COMPILER_PGI], [1])
+else
+   AC_SUBST([SCOREP_COMPILER_PGI], [0])
+fi
+
+if test "x${ac_scorep_compiler_gnu}" = "xyes"; then
+   AC_SUBST([SCOREP_COMPILER_GNU], [1])
+else
+   AC_SUBST([SCOREP_COMPILER_GNU], [0])
+fi
+
+if test "x${ac_scorep_compiler_sx}" = "xyes"; then
+   AC_SUBST([SCOREP_COMPILER_SX], [1])
+else
+   AC_SUBST([SCOREP_COMPILER_SX], [0])
+fi
+
+if test "x${ac_scorep_compiler_cray}" = "xyes"; then
+   AC_SUBST([SCOREP_COMPILER_CRAY], [1])
+else
+   AC_SUBST([SCOREP_COMPILER_CRAY], [0])
+fi
 ])
 
 ##
