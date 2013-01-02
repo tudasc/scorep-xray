@@ -85,12 +85,6 @@ SCOREP_Instrumenter_InstallData::getCC( void )
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getOpenmpFlags( void )
-{
-    return m_openmp_cflags;
-}
-
-std::string
 SCOREP_Instrumenter_InstallData::getNm( void )
 {
     return m_nm;
@@ -225,6 +219,168 @@ SCOREP_Instrumenter_InstallData::setOpariFortranForm( bool is_free )
     }
 #endif
 }
+
+
+/* ****************************************************************************
+   Compiler dependent implementations
+******************************************************************************/
+
+/* *************************************** CRAY */
+#if SCOREP_BACKEND_COMPILER_CRAY
+bool
+SCOREP_Instrumenter_InstallData::isArgForOpenmp( std::string arg )
+{
+    return arg == m_openmp_cflags;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForShared( std::string arg )
+{
+    return arg == "-dynamic";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( std::string arg )
+{
+    return arg == "-ffree";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
+{
+    return arg == "-ffixed";
+}
+
+/* *************************************** GNU */
+#elif SCOREP_BACKEND_COMPILER_GNU
+bool
+SCOREP_Instrumenter_InstallData::isArgForOpenmp( std::string arg )
+{
+    return arg == m_openmp_cflags;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForShared( std::string arg )
+{
+    return arg == "-shared";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( std::string arg )
+{
+    return arg == "-ffree-form";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
+{
+    return arg == "-ffixed-form";
+}
+
+/* *************************************** IBM */
+#elif SCOREP_BACKEND_COMPILER_IBM
+bool
+SCOREP_Instrumenter_InstallData::isArgForOpenmp( std::string arg )
+{
+    return arg == m_openmp_cflags;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForShared( std::string arg )
+{
+    return arg == "-qmkshrobj";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( std::string arg )
+{
+    return arg == "-qfree";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
+{
+    return arg == "-qfixed";
+}
+
+/* *************************************** INTEL */
+#elif SCOREP_BACKEND_COMPILER_INTEL
+bool
+SCOREP_Instrumenter_InstallData::isArgForOpenmp( std::string arg )
+{
+    return ( arg == m_openmp_cflags ) || ( arg == "-openmp" );
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForShared( std::string arg )
+{
+    return ( arg == "-shared" ) || ( arg == "-dynamiclib" );
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( std::string arg )
+{
+    return arg == "-free";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
+{
+    return arg == "-nofree";
+}
+
+/* *************************************** PGI */
+#elif SCOREP_BACKEND_COMPILER_PGI
+bool
+SCOREP_Instrumenter_InstallData::isArgForOpenmp( std::string arg )
+{
+    return arg == m_openmp_cflags;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForShared( std::string arg )
+{
+    return arg == "-shared";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( std::string arg )
+{
+    return arg == "-Mfree" || arg == "-Mfreeform";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
+{
+    return arg == "-Mnofree" || arg == "-Mnofreeform";
+}
+
+/* *************************************** STUDIO */
+#elif SCOREP_BACKEND_COMPILER_STUDIO
+bool
+SCOREP_Instrumenter_InstallData::isArgForOpenmp( std::string arg )
+{
+    return arg == m_openmp_cflags;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForShared( std::string arg )
+{
+    return arg == "-G";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( std::string arg )
+{
+    return arg == "-free";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
+{
+    return arg == "-fixed";
+}
+#endif
 
 
 /* ****************************************************************************

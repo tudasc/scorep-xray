@@ -680,38 +680,11 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
         *m_current_flags += " " + arg;
         return scorep_parse_mode_option_part;
     }
-
-    /* Check whether the target is a shared library */
-    else if ( 0
-#if SCOREP_COMPILER_GNU || SCOREP_COMPILER_INTEL || SCOREP_COMPILER_PGI
-              || arg == "-shared"
-#endif
-#if SCOREP_COMPILER_INTEL
-              || arg == "-dynamiclib"
-#endif
-#if SCOREP_COMPILER_IBM
-              || arg == "-qmkshrobj"
-#endif
-#if SCOREP_COMPILER_STUDIO
-              || arg == "-G"
-#endif
-              )
+    else if (  m_install_data.isArgForShared( arg ) )
     {
         m_target_is_shared_lib = true;
     }
-
-    /* Check for OpenMP flags. The compiler's OpenMP flag is detected during
-       configure time. Unfortunately, newer intel compiler versions support
-       the gnu-like -fopenmp in addition. In this case the configure test
-       detects -fopenmp as the OpenMP flag. Thus, we hardcode support for the
-       standard -openmp flag for intel compilers.
-     */
-#ifdef SCOREP_COMPILER_INTEL
-    else if ( ( arg == "-openmp" ) ||
-              ( arg == m_install_data.getOpenmpFlags() ) )
-#else
-    else if ( arg == m_install_data.getOpenmpFlags() )
-#endif
+    else if ( m_install_data.isArgForOpenmp( arg ) )
     {
         if ( m_is_openmp_application == detect )
         {
@@ -722,13 +695,13 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
             m_opari_instrumentation = enabled;
         }
     }
+
     /* Check whether free form or fixed form is explicitly enabled. */
-#ifdef SCOREP_COMPILER_CRAY
-    else if ( arg == "-ffree" )
+    else if ( m_install_data.isArgForFreeform( arg ) )
     {
         m_install_data.setOpariFortranForm( true );
     }
-    else if ( arg == "-ffixed" )
+    else if (  m_install_data.isArgForFixedform( arg ) )
     {
         m_install_data.setOpariFortranForm( false );
     }
@@ -737,57 +710,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
         *m_current_flags += " " + arg;
         return scorep_parse_mode_fortran_form;
     }
-#endif
-#ifdef SCOREP_COMPILER_GNU
-    else if ( arg == "-ffree-form" )
-    {
-        m_install_data.setOpariFortranForm( true );
-    }
-    else if ( arg == "-ffixed-form" )
-    {
-        m_install_data.setOpariFortranForm( false );
-    }
-#endif
-#ifdef SCOREP_COMPILER_IBM
-    else if ( arg.substr( 0, 6 ) == "-qfree" )
-    {
-        m_install_data.setOpariFortranForm( true );
-    }
-    else if ( arg.substr( 0, 7 ) == "-qfixed" )
-    {
-        m_install_data.setOpariFortranForm( false );
-    }
-#endif
-#ifdef SCOREP_COMPILER_INTEL
-    else if ( arg == "-free" )
-    {
-        m_install_data.setOpariFortranForm( true );
-    }
-    else if ( arg == "-nofree" )
-    {
-        m_install_data.setOpariFortranForm( false );
-    }
-#endif
-#ifdef SCOREP_COMPILER_PGI
-    else if ( arg == "-Mfree" || arg == "-Mfreeform" )
-    {
-        m_install_data.setOpariFortranForm( true );
-    }
-    else if ( arg == "-Mnofree" || arg == "-Mnofreeform" )
-    {
-        m_install_data.setOpariFortranForm( false );
-    }
-#endif
-#ifdef SCOREP_COMPILER_STUDIO
-    else if ( arg == "-free" )
-    {
-        m_install_data.setOpariFortranForm( true );
-    }
-    else if ( arg == "-fixed" )
-    {
-        m_install_data.setOpariFortranForm( false );
-    }
-#endif
+
     /* Check standard parameters */
     else if ( arg[ 1 ] == 'o' )
     {
@@ -972,7 +895,7 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
 
     /* To avoid remarks from the compiler about VT_ROOT' environment variable not set
        we set those variables to harmless values when using intel compilers. */
-    #ifdef SCOREP_COMPILER_INTEL
+    #ifdef SCOREP_BACKEND_COMPILER_INTEL
     m_compiler_name = "VT_LIB_DIR=. VT_ROOT=. VT_ADD_LIBS=\"\" " + m_compiler_name;
     #endif
 }
@@ -1040,13 +963,17 @@ SCOREP_Instrumenter_CmdLine::get_tool_params( std::string arg, size_t pos )
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
 SCOREP_Instrumenter_CmdLine::parse_fortran_form( std::string arg )
 {
-    if ( arg == "free" )
+    if ( m_install_data.isArgForFreeform( "-f" + arg ) )
     {
         m_install_data.setOpariFortranForm( true );
     }
-    else if ( arg == "fixed" )
+    else if ( m_install_data.isArgForFixedform( "-f" + arg ) )
     {
         m_install_data.setOpariFortranForm( false );
+    }
+    else
+    {
+        return parse_command( arg );
     }
     *m_current_flags += " " + arg;
     return scorep_parse_mode_command;

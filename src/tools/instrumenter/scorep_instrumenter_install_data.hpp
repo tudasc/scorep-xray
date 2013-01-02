@@ -66,12 +66,6 @@ public:
     getCC( void );
 
     /**
-       Stores C compiler OpenMP flags
-     */
-    std::string
-    getOpenmpFlags( void );
-
-    /**
        The nm command
      */
     std::string
@@ -166,6 +160,36 @@ public:
      */
     void
     setOpariFortranForm( bool is_free );
+
+    /* ************************************** Compiler dependent implemented */
+
+    /**
+       Checks whether @a arg is the compiler option to build a shared library.
+       @param arg the argument that is considered
+     */
+    bool
+    isArgForShared( std::string arg );
+
+    /**
+       Checks whether @a arg is the compiler option to use OpenMP.
+       @param arg the argument that is considered
+     */
+    bool
+    isArgForOpenmp( std::string arg );
+
+    /**
+       Checks whether @a arg is the compiler option to enable free form Fortran
+       @param arg the argument that is considered
+     */
+    bool
+    isArgForFreeform( std::string arg );
+
+    /**
+       Checks whether @a arg is the compiler option to enable fixed form Fortran
+       @param arg the argument that is considered
+     */
+    bool
+    isArgForFixedform( std::string );
 
     /* ***************************************************** Private methods */
 private:
