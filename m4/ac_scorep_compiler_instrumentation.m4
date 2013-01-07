@@ -22,7 +22,7 @@ AC_REQUIRE([AC_SCOREP_COMPILER_CHECKS])
 have_compiler_instrumentation="yes"
 scorep_have_demangle="no"
 
-AS_IF([test "x${ac_scorep_compiler_gnu}" = "xyes" || test "x${ac_scorep_compiler_intel}" = "xyes"],
+AS_IF([test "x${ac_scorep_compiler_gnu}" = "xyes" || test "x${ac_scorep_compiler_intel}" = "xyes" || test "x${ac_scorep_compiler_cray}" = "xyes" ],
       [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])
        AS_IF([test "x${scorep_have_libbfd}" = "xyes"],
              [result=${libbfd_result}],
