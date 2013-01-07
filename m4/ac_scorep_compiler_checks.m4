@@ -169,6 +169,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
 AC_MSG_RESULT([$ac_scorep_compiler_cray])
 AS_IF([test "x${ac_scorep_compiler_cray}" = "xyes"],
       [ac_scorep_compiler_instrumentation_cppflags="-hfunc_trace"]
+      [ac_scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"]
       [CC="${CC} -hnoomp -O2"]
       [CXX="${CXX} -hnoomp -O2"]
       [F77="${F77} -hnoomp -O2"]
@@ -213,6 +214,7 @@ ac_scorep_compiler_sx="no"
 ac_scorep_compiler_cray="no"
 
 ac_scorep_compiler_instrumentation_cppflags=""
+ac_scorep_compiler_instrumentation_ldflags=""
 
 # I (croessel) don't think that more than one test can possibly succeed,
 # so I skip extra testing here.
@@ -294,7 +296,11 @@ AC_ARG_WITH([extra-instrumentation-flags],
             [ac_scorep_with_extra_instrumentation_cppflags=""])
 
 AC_SUBST([COMPILER_INSTRUMENTATION_CPPFLAGS], ["${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}"])
+AC_SUBST([COMPILER_INSTRUMENTATION_LDFLAGS], ["${ac_scorep_compiler_instrumentation_ldflags}"])
 
-AC_MSG_NOTICE([using instrumentation flags: ${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
-AC_SCOREP_SUMMARY_VERBOSE([instrumentation flags: ${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
+AC_MSG_NOTICE([using instrumentation cppflags: ${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
+AC_SCOREP_SUMMARY_VERBOSE([instrumentation cppflags: ${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
+])
+AC_MSG_NOTICE([using instrumentation ldflags: ${ac_scorep_compiler_instrumentation_ldflags}])
+AC_SCOREP_SUMMARY_VERBOSE([instrumentation ldflags: ${ac_scorep_compiler_instrumentation_ldflags}])
 ])
