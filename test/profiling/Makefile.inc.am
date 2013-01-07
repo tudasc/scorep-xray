@@ -24,7 +24,7 @@ check_PROGRAMS += profile_depth_limit_test
 profile_depth_limit_test_SOURCES = $(SRC_ROOT)test/profiling/profile_depth_limit_test.c
 profile_depth_limit_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 profile_depth_limit_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
-profile_depth_limit_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+profile_depth_limit_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 EXTRA_DIST          += $(SRC_ROOT)test/profiling/run_profile_depth_limit_test.sh
 if !SCOREP_COMPILER_SUN

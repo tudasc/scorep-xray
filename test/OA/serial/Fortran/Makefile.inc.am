@@ -23,7 +23,7 @@ endif
 oa_f_test_LDADD =                        \
     $(LIB_ROOT)libscorep_serial.la
 
-oa_f_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+oa_f_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 EXTRA_DIST       += \
     $(SRC_ROOT)/test/OA/serial/Fortran/run_oa_f_test.sh.in

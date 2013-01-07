@@ -31,7 +31,7 @@ jacobi_mpi_c_sources  = $(SRC_ROOT)test/jacobi/MPI/C/jacobi.c  \
 jacobi_mpi_c_SOURCES  = $(jacobi_mpi_c_sources)
 jacobi_mpi_c_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_mpi_c_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi.la
-jacobi_mpi_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+jacobi_mpi_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 check_PROGRAMS                      += jacobi_mpi_c_uninstrumented
 jacobi_mpi_c_uninstrumented_SOURCES  = $(jacobi_mpi_c_sources)
@@ -56,7 +56,7 @@ jacobi_mpi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.mod.c       \
 jacobi_mpi_omp_c_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 jacobi_mpi_omp_c_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_mpi_omp_c_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi_omp.la libjacobi_mpi_pomp_c.la
-jacobi_mpi_omp_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+jacobi_mpi_omp_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 # for some unknown reason we need an extra -I for the SUN compiler in
 # OpenMP and hybrid mode.
@@ -84,7 +84,7 @@ jacobi_mpi_cxx_sources  = $(SRC_ROOT)test/jacobi/MPI/C++/jacobi.cpp  \
 jacobi_mpi_cxx_SOURCES  = $(jacobi_mpi_cxx_sources)
 jacobi_mpi_cxx_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_mpi_cxx_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi.la
-jacobi_mpi_cxx_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+jacobi_mpi_cxx_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 check_PROGRAMS                        += jacobi_mpi_cxx_uninstrumented
 jacobi_mpi_cxx_uninstrumented_SOURCES  = $(jacobi_mpi_cxx_sources)
@@ -110,7 +110,7 @@ jacobi_mpi_omp_cxx_CXXFLAGS = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_cxx_CFLAGS   = $(AM_CFLAGS)   $(OPENMP_CFLAGS)
 jacobi_mpi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_mpi_omp_cxx_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi_omp.la libjacobi_mpi_pomp_cxx.la
-jacobi_mpi_omp_cxx_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+jacobi_mpi_omp_cxx_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 check_PROGRAMS                            += jacobi_mpi_omp_cxx_unistrumented
 jacobi_mpi_omp_cxx_unistrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.cpp \
@@ -140,7 +140,7 @@ jacobi_mpi_f90_sources  = $(SRC_ROOT)test/jacobi/MPI/Fortran/VariableDef.f90 \
 jacobi_mpi_f90_SOURCES  = $(jacobi_mpi_f90_sources)
 jacobi_mpi_f90_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@ 
 jacobi_mpi_f90_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi.la
-jacobi_mpi_f90_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+jacobi_mpi_f90_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 check_PROGRAMS                        += jacobi_mpi_f90_uninstrumented
 jacobi_mpi_f90_uninstrumented_SOURCES  = $(jacobi_mpi_f90_sources)
@@ -178,7 +178,7 @@ jacobi_mpi_omp_f90_CFLAGS   = $(AM_CFLAGS)  $(OPENMP_CFLAGS)
 jacobi_mpi_omp_f90_CPPFLAGS = $(OPENMP_CXXFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@ -I$(INC_ROOT)test/jacobi/hybrid/Fortran -I$(INC_ROOT)/src -I$(SRC_ROOT)/src
 jacobi_mpi_omp_f90_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi_omp.la libjacobi_mpi_pomp_f90.la
 jacobi_mpi_omp_f90_LDFLAGS  = $(OPENMP_CXXFLAGS)
-jacobi_mpi_omp_f90_LDFLAGS += @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+jacobi_mpi_omp_f90_LDFLAGS += @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 check_PROGRAMS                            += jacobi_mpi_omp_f90_unistrumented
 jacobi_mpi_omp_f90_unistrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.f90 \

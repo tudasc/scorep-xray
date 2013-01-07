@@ -267,6 +267,10 @@ main( int    argc,
                                       m_rpath_delimiter,
                                       m_rpath_tail );
             str = append_ld_run_path_to_rpath( str );
+            if ( compiler )
+            {
+                str += " " SCOREP_LDFLAGS;
+            }
             if ( cuda )
             {
                 str = " -Xlinker " + prepare_string( str );
