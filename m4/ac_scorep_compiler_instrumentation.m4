@@ -38,13 +38,7 @@ AS_IF([test "x${ac_scorep_compiler_gnu}" = "xyes" || test "x${ac_scorep_compiler
        AM_CONDITIONAL(HAVE_LIBBFD, [test 1 -eq 0])
        AS_IF([test "x${ac_scorep_compiler_sun}" = "xyes"],
              [result="partially, studio compiler supports just Fortran"],
-
-             [test "x${ac_scorep_compiler_cray}" = "xyes"],
-             [result="no, not yet implemented"
-              have_compiler_instrumentation="no"]
-
              [result="yes"])])
-
 
 AC_SCOREP_SUMMARY([compiler instrumentation], [${result}])
 
