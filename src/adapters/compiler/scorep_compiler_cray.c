@@ -27,7 +27,7 @@
 #include <config.h>
 
 void
-__cyg_profile_func_entry( void* func,
+__cyg_profile_func_enter( void* func,
                           void* callsite );
 
 void
@@ -48,7 +48,7 @@ void
 __pat_tp_func_entry( void* func,
                      void* callsite )
 {
-    __cyg_profile_func_entry( func, callsite );
+    __cyg_profile_func_enter( func, callsite );
 }
 
 /**
@@ -58,8 +58,8 @@ __pat_tp_func_entry( void* func,
  * @param callsice  The call site of the current function.
  */
 void
-__pat_tp_func_exit( void* func,
-                    void* callsite )
+__pat_tp_func_return( void* func,
+                      void* callsite )
 {
     __cyg_profile_func_exit( func, callsite );
 }
