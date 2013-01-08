@@ -1204,6 +1204,8 @@ SCOREP_DefineMPICartesianCoords(
     }
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_DEFINITIONS, "\n" );
 #endif
+
+    SCOREP_Definitions_Unlock();
 }
 
 
