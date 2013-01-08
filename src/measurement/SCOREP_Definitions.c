@@ -1176,10 +1176,9 @@ SCOREP_DefineMPICartesianTopology( const char*                       topologyNam
  * referenced by @a cartesianTopologyHandle.
  */
 void
-SCOREP_DefineMPICartesianCoords(
-    SCOREP_MPICartesianTopologyHandle cartesianTopologyHandle,
-    uint32_t                          nCoords,
-    const uint32_t                    coordsOfCurrentRank[] )
+SCOREP_DefineMPICartesianCoords( SCOREP_MPICartesianTopologyHandle cartesianTopologyHandle,
+                                 uint32_t                          nCoords,
+                                 const uint32_t                    coordsOfCurrentRank[] )
 {
     UTILS_DEBUG_ENTRY();
 
