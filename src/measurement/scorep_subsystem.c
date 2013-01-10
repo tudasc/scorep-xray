@@ -57,15 +57,15 @@ scorep_subsystems_get_number( void )
 void
 scorep_subsystems_register( void )
 {
-    SCOREP_ErrorCode error;
     /* call register functions for all subsystems */
     for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
     {
-        if ( scorep_subsystems[ i ]->subsystem_register )
+        if ( !scorep_subsystems[ i ]->subsystem_register )
         {
-            error = scorep_subsystems[ i ]->subsystem_register( i );
+            continue;
         }
 
+        SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_register( i );
         if ( SCOREP_SUCCESS != error )
         {
             UTILS_ERROR( error, "Can't register %s subsystem",
@@ -79,15 +79,15 @@ scorep_subsystems_register( void )
 void
 scorep_subsystems_initialize( void )
 {
-    SCOREP_ErrorCode error;
     /* call initialization functions for all subsystems */
     for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
     {
-        if ( scorep_subsystems[ i ]->subsystem_init )
+        if ( !scorep_subsystems[ i ]->subsystem_init )
         {
-            error = scorep_subsystems[ i ]->subsystem_init();
+            continue;
         }
 
+        SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_init();
         if ( SCOREP_SUCCESS != error )
         {
             UTILS_ERROR( error, "Can't initialize %s subsystem",
@@ -109,17 +109,17 @@ scorep_subsystems_initialize( void )
 void
 scorep_subsystems_initialize_location( SCOREP_Location* locationData )
 {
-    SCOREP_ErrorCode error;
     /* create location */
 
     /* call initialization functions for all subsystems */
     for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
     {
-        if ( scorep_subsystems[ i ]->subsystem_init_location )
+        if ( !scorep_subsystems[ i ]->subsystem_init_location )
         {
-            error = scorep_subsystems[ i ]->subsystem_init_location( locationData );
+            continue;
         }
 
+        SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_init_location( locationData );
         if ( SCOREP_SUCCESS != error )
         {
             UTILS_ERROR( error, "Can't initialize location for %s subsystem",
@@ -140,10 +140,12 @@ scorep_subsystems_finalize_location( SCOREP_Location* locationData )
 {
     for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
     {
-        if ( scorep_subsystems[ i ]->subsystem_finalize_location )
+        if ( !scorep_subsystems[ i ]->subsystem_finalize_location )
         {
-            scorep_subsystems[ i ]->subsystem_finalize_location( locationData );
+            continue;
         }
+
+        scorep_subsystems[ i ]->subsystem_finalize_location( locationData );
 
         if ( SCOREP_Env_RunVerbose() )
         {
@@ -160,10 +162,12 @@ scorep_subsystems_finalize( void )
     /* call finalization functions for all subsystems */
     for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
     {
-        if ( scorep_subsystems[ i ]->subsystem_finalize )
+        if ( !scorep_subsystems[ i ]->subsystem_finalize )
         {
-            scorep_subsystems[ i ]->subsystem_finalize();
+            continue;
         }
+
+        scorep_subsystems[ i ]->subsystem_finalize();
 
         if ( SCOREP_Env_RunVerbose() )
         {
@@ -180,10 +184,12 @@ scorep_subsystems_deregister( void )
     /* call de-register functions for all subsystems */
     for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
     {
-        if ( scorep_subsystems[ i ]->subsystem_deregister )
+        if ( !scorep_subsystems[ i ]->subsystem_deregister )
         {
-            scorep_subsystems[ i ]->subsystem_deregister();
+            continue;
         }
+
+        scorep_subsystems[ i ]->subsystem_deregister();
 
         if ( SCOREP_Env_RunVerbose() )
         {
