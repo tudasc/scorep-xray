@@ -68,7 +68,9 @@ scorep_platform_system_tree_create_element( const char* node_class,
                                             va_list     vl )
 {
     SCOREP_Platform_SystemTreePathElement* new_element;
-    size_t                                 total_size, name_offset, class_offset;
+    size_t                                 total_size;
+    size_t                                 name_offset;
+    size_t                                 class_offset;
     size_t                                 class_len;
 
     if ( !node_class || !node_name_fmt )
@@ -106,7 +108,7 @@ scorep_platform_system_tree_create_element( const char* node_class,
     }
     else
     {
-        /* The caller proviede a fixed string */
+        /* The caller provided a fixed string */
         memcpy( new_element->node_name, node_name_fmt, node_name_len );
     }
 
