@@ -90,12 +90,6 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
 {
     scorep_parse_mode_t mode = scorep_parse_mode_param;
 
-    /* We must read the config file when the wrapper tool specific options
-       are parsed, before the command options are parsed. Thus we must detect
-       the point where the mode has changed to scorep_parse_mode_command.
-     */
-    bool is_config_file_read = false;
-
     for ( int i = 1; i < argc; i++ )
     {
         switch ( mode )
