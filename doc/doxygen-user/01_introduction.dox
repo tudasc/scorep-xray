@@ -67,9 +67,7 @@ process to be analyzed and the number of cores to be used.
 
 @scorep supports the programming paradigms @emph{serial},
 @emph{OpenMP}, @emph{MPI}, and @emph{hybrid} (MPI combined with
-OpenMP).
-
-
+OpenMP). 
 
 @section about_doc About this Document
 @seclabel{about_doc}
@@ -84,7 +82,64 @@ and @secref{measurement}, the
 reader can find more detailed information about the components of
 @scorep. 
 
+@section getting_help Getting Help and Support 
+@seclabel{getting_help}
+The @scorep project uses various mailing lists to coordinate the development and to provide support to the user community. An overview of the available mailing lists can be found in @tabref{mailinglists}.
 
+You can subscribe to the news@score-p.org and users@score-p.org by ...
+
+\if LATEX 
+\latexonly
+   \begin{table}[!h]
+	\caption{Score-P mailing lists}
+	\label{tab:mailinglists}
+    	\begin{tabular}{ | p{3.3cm} | p{2.0cm} | p{1.7cm} | p{6.0cm} |}
+	    \hline
+	    \bf List Address & \bf Subscription & \bf Posting & \bf Usage \\ \hline
+news@score-p.org & open & core team & Important news regarding the Score-P software, e.g. announcements of new releases. \\ \hline
+users@score-p.org  & open & subscribers & Anything related to the Score-P project: usage, problems, feature requests, etc. \\ \hline
+support@score-p.org & closed & anyone & Bug reports and general user support for the Score-P software. \\ \hline
+info@score-p.org & closed & anyone & General information about the Score-P consortium and collaboration requests.   \\ \hline 
+    	\end{tabular}
+    \end{table}
+\endlatexonly
+
+\else
+  <table border=1 cellspacing=0>
+    <caption>@scorep mailing lists</caption>
+    <tr>
+      <th align="center" valign="middle" style="width:8em;">List Address</th>
+      <th align="center" valign="middle" style="width:8em;">Subscription</th>
+      <th align="center" valign="middle" style="width:8em;">Posting</th>
+      <th align="center" valign="middle" style="width:8em;">Usage</th>
+    </tr>
+    <tr>
+      <td align="left" valign="middle">news@score-p.org</td>
+      <td align="center" valign="middle">open</td>
+      <td align="center" valign="middle">core team</td>
+      <td align="left" valign="middle">Important news regarding the Score-P software, e.g. announcements of new releases.</td>
+    </tr>
+    <tr>
+      <td align="left" valign="middle">users@score-p.org</td>
+      <td align="center" valign="middle">open</td>
+      <td align="center" valign="middle">subscribers</td>
+      <td align="left" valign="middle">Anything related to the Score-P project: usage, problems, feature requests, etc.</td>
+    </tr>
+    <tr>
+      <td align="left" valign="middle">support@score-p.org</td>
+      <td align="center" valign="middle">closed</td>
+      <td align="center" valign="middle">anyone</td>
+      <td align="left" valign="middle">Bug reports and general user support for the Score-P software.</td>
+    </tr>
+    <tr>
+      <td align="left" valign="middle">info@score-p.org</td>
+      <td align="center" valign="middle">closed</td>
+      <td align="center" valign="middle">anyone</td>
+      <td align="left" valign="middle">General information about the Score-P consortium and collaboration requests.</td>
+    </tr>
+
+  </table>
+\endif
 
 @section basic_idea Basics of Performance Optimization 
 @seclabel{basic_idea}

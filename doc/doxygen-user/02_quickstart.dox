@@ -343,18 +343,16 @@ its run time, i.e. (in contrast to the approaches mentioned above)
 
 As a specific example, we look at a short C code for the solution of a
 Poisson equation in a hybrid (@mpi and OpenMP) environment. The
-corresponding source code is listed in Appendix \secref{jacobi}; it
-also comes as part of the @scorep distribution in this and various
-other versions (not only hybrid but also for a pure MPI
+corresponding source code comes as part of the @scorep distribution under the \emph{scorep/test/jacobi/} folder. 
+Various other versions are also available - not only hybrid but also for a pure MPI
 parallelization, a pure OpenMP approach, and in a non-parallel way;
-and, in each case, not only in C but also in C++ and Fortran).
+and, in each case, not only in C but also in C++ and Fortran.
 
 As indicated above, the standard call sequence:
 @code
   mpicc -std=c99 -g -O2 -fopenmp -c jacobi.c
   mpicc -std=c99 -g -O2 -fopenmp -c main.c
-  mpicc -std=c99 -g -O2 -fopenmp -o jacobi jacobi.o \
-    main.o -lm
+  mpicc -std=c99 -g -O2 -fopenmp -o jacobi jacobi.o main.o -lm
 @endcode
 that would first compile the two C source files and then link
 everything to form the final executable needs to be modified by
@@ -363,8 +361,7 @@ i.e. we now have to write:
 @code
   scorep mpicc -std=c99 -g -O2 -fopenmp -c jacobi.c
   scorep mpicc -std=c99 -g -O2 -fopenmp -c main.c
-  scorep mpicc -std=c99 -g -O2 -fopenmp -o jacobi.o \ 
-    main.o -lm
+  scorep mpicc -std=c99 -g -O2 -fopenmp -o jacobi jacobi.o main.o -lm
 @endcode
 
 This call sequence will create a number of auxiliary C source files
@@ -376,12 +373,12 @@ desired executable named <tt>jacobi</tt>.
 
 The actual measurement process is then initiated, e.g.,  by the call:
 @code
-  mpiexec --n 2 ./jacobi
+  mpiexec -n 2 ./jacobi
 @endcode
-As indicated above, the output data of this process will be stored in
+The output data of this process will be stored in
 a newly created experiment directory <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt> 
 whose name is built up from the date and time when the measurement was started
-and an additional identification number. 
+and an identification number. 
 
 As we had not explicitly set any @scorep related environment variables, the
 profiling mode was active by default. We obtain a file called
@@ -397,5 +394,4 @@ data is written in Open Trace Format 2 (OTF2) format. OTF2 is the joint
 successor of the classical formats OTF (used, e.\ g., by Vampir) and Epilog
 (used by Scalasca). A tool like Vampir can then be used to give a visual
 representation of the information contained in these files.
-
 */
