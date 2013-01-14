@@ -695,8 +695,12 @@ write_system_tree( cube_t*                   my_cube,
         else if ( ( strcmp( "node", class ) == 0 ) ||
                   ( strcmp( "nodecard", class ) == 0 ) )
         {
+            char* label = calloc( 11 + strlen( name ), 1 );
+            strcat( label, "Node card " );
+            strcat( label, name );
+
             system_tree[ pos ].my_cube_node =
-                cube_def_node( my_cube, name, get_cube_machine( &system_tree[ pos ] ) );
+                cube_def_node( my_cube,  label, get_cube_machine( &system_tree[ pos ] ) );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();

@@ -90,28 +90,28 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
 
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      "rack",
-                                                     ( strlen( "Rack " ) + max_uint_digits ), "Rack %u", rack );
+                                                     max_uint_digits, "%u", rack );
     if ( !node )
     {
         goto fail;
     }
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      "midplane",
-                                                     ( strlen( "Midplane " ) + max_uint_digits ), "Midplane %u", midplane );
+                                                     max_uint_digits, "%u", midplane );
     if ( !node )
     {
         goto fail;
     }
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      "nodeboard",
-                                                     ( strlen( "Node board " ) + max_uint_digits ), "Node board %u", nodeboard );
+                                                     max_uint_digits, "%u", nodeboard );
     if ( !node )
     {
         goto fail;
     }
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      "nodecard",
-                                                     ( strlen( "Compute card " ) + max_uint_digits ), "Compute card %u", nodecard );
+                                                     max_uint_digits, "%u", nodecard );
     if ( !node )
     {
         goto fail;
