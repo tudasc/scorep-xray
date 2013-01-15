@@ -42,26 +42,33 @@
 void
 print_help();
 
+
 /* ****************************************************************************
    Compiler specific defines
 ******************************************************************************/
-#ifdef SCOREP_COMPILER_INTEL
-#define OPARI_MANGLING_SCHEME "intel"
+#if SCOREP_BACKEND_COMPILER_CRAY
+#define SCOREP_OPARI_MANGLING_SCHEME "cray"
+#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS "--nosrc "
 
-#elif SCOREP_COMPILER_SUN
-#define OPARI_MANGLING_SCHEME "sun"
+#elif SCOREP_BACKEND_COMPILER_GNU
+#define SCOREP_OPARI_MANGLING_SCHEME "gnu"
+#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
 
-#elif SCOREP_COMPILER_IBM
-#define OPARI_MANGLING_SCHEME "ibm"
+#elif SCOREP_BACKEND_COMPILER_IBM
+#define SCOREP_OPARI_MANGLING_SCHEME "ibm"
+#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
 
-#elif SCOREP_COMPILER_PGI
-#define OPARI_MANGLING_SCHEME "pgi"
+#elif SCOREP_BACKEND_COMPILER_INTEL
+#define SCOREP_OPARI_MANGLING_SCHEME "intel"
+#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
 
-#elif SCOREP_COMPILER_GNU
-#define OPARI_MANGLING_SCHEME "gnu"
+#elif SCOREP_BACKEND_COMPILER_PGI
+#define SCOREP_OPARI_MANGLING_SCHEME "pgi"
+#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
 
-#elif SCOREP_COMPILER_CRAY
-#define OPARI_MANGLING_SCHEME "cray"
+#elif SCOREP_BACKEND_COMPILER_STUDIO
+#define SCOREP_OPARI_MANGLING_SCHEME "sun"
+#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
 
 #endif
 
@@ -327,7 +334,7 @@ SCOREP_Instrumenter::prepare_compiler( void )
        files are not instrumented. To avoid user confusion, the instrumenter
        aborts in case a C/C++ file should be compiler instrumented.
      */
-#ifdef SCOREP_COMPILER_SUN
+#if SCOREP_BACKEND_COMPILER_STUDIO
     if ( m_command_line.isCompiling() )
     {
         std::string current_file = "";
@@ -354,7 +361,7 @@ SCOREP_Instrumenter::prepare_compiler( void )
             old_pos = cur_pos + 1;
         }
     }
-#endif      // SCOREP_COMPILER_SUN
+#endif // SCOREP_BACKEND_COMPILER_STUDIO
 }
 
 void
@@ -362,13 +369,8 @@ SCOREP_Instrumenter::invoke_opari( std::string input_file,
                                    std::string output_file )
 {
     std::string command = m_install_data.getOpari() + " --tpd "
-#ifdef SCOREP_COMPILER_CRAY
-                          "--nosrc "
-#endif
-#ifdef OPARI_MANGLING_SCHEME
-                          "--tpd-mangling=" OPARI_MANGLING_SCHEME " "
-#endif
-    ;
+                          SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
+                          "--tpd-mangling=" SCOREP_OPARI_MANGLING_SCHEME " ";
     if ( m_command_line.isPdtInstrumenting() && is_fortran_file( input_file ) )
     {
         command += "--nosrc ";
