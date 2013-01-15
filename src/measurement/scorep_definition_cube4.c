@@ -88,7 +88,7 @@ find_system_node( scorep_cube_system_node* system_tree, uint32_t size,
 }
 
 /**
-   Seaches the ancestors of @a node for the machine definition.
+   Searches the ancestors of @a node for the machine definition.
    @param node Pointer to the mapping system tree for that the machine is seached.
    @returns A pointer to the Cube definition. If no machine exists in the ancestors of
             @a node, it returns NULL.
@@ -112,7 +112,7 @@ get_cube_machine( scorep_cube_system_node* node )
 }
 
 /**
-   If the system tree implementation does not provide a node defintion, we must create
+   If the system tree implementation does not provide a node definition, we must create
    a default node.
    @param my_cube Pointer to the Cube instance.
    @param node    An arbitrary node from the system tree. Best choice for perfromance is
@@ -643,7 +643,7 @@ write_callpath_definitions( cube_t*                       my_cube,
 
 /**
    Writes the inner nodes of the Score-P system tree definitions to Cube.
-   Because Cube assumes a fixed hierarchy the system tree is comressed in the two Cube
+   Because Cube assumes a fixed hierarchy, the system tree is compressed in the two Cube
    levels machine and node. In order to have a mapping between Cube and Score-P
    definitions a tree is constructed where each node contains the respective definitions.
    The tree's nodes are stored in a newly created array, which is returned from the
