@@ -53,11 +53,11 @@ AS_IF([test "x${ac_scorep_platform}" = "xbgp" || \
       [ac_scorep_have_online_access="no"], 
       [])
       
-dnlcase ${build_os} in
-dnl            aix*)
-dnl                ac_scorep_have_online_access="no"
-dnl            ;;
-dnlesac
+dnl case ${build_os} in
+dnl             aix*)
+dnl                 ac_scorep_have_online_access="no"
+dnl             ;;
+dnl esac
 
 AC_SCOREP_COND_HAVE([ONLINE_ACCESS],
                     [test "x${ac_scorep_have_online_access}" = "xyes" ],
