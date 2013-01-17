@@ -152,6 +152,13 @@ expand_thread_start( SCOREP_Profile_LocationData* location,
     UTILS_ASSERT( thread_root->node_type == scorep_profile_node_thread_root );
 
     creation_point = scorep_profile_type_get_fork_node( thread_start->type_specific_data );
+    /* If the creation point happend at another thread start node, follow the
+       chain until we find a node that is not a thread start */
+    while ( ( creation_point != NULL ) &&
+            ( creation_point->node_type == scorep_profile_node_thread_start ) )
+    {
+        creation_point = scorep_profile_type_get_fork_node( creation_point->type_specific_data );
+    }
 
     /* Separate the thread_start node from the profile */
     scorep_profile_remove_node( thread_start );
