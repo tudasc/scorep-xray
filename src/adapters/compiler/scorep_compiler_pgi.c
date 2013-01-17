@@ -46,6 +46,11 @@
  ***************************************************************************************/
 
 /**
+ * Marks a filtered region
+ */
+#define SCOREP_FILTERED_REGION  ( ( SCOREP_RegionHandle ) - 1 )
+
+/**
  * @brief Data structures to be used by the PGI compiler.
  * Container structure to map profiling informations, like function names
  * and region handles.
@@ -160,7 +165,7 @@ extern size_t scorep_compiler_subsystem_id;
 /**
     Defines the maximum size of a callstack.
  */
-#define CALLSTACK_MAX 30
+#define CALLSTACK_MAX 128
 
 /**
    Contains the callstack data for each location.
@@ -371,7 +376,7 @@ pgi_enter_region( SCOREP_RegionHandle* region,
             }
             else
             {
-                *region = SCOREP_INVALID_REGION;
+                *region = SCOREP_FILTERED_REGION;
             }
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
@@ -385,7 +390,7 @@ pgi_enter_region( SCOREP_RegionHandle* region,
         pgi_data->callstack_top++;
 
         /* Enter event */
-        if ( *region != SCOREP_INVALID_REGION )
+        if ( *region != SCOREP_FILTERED_REGION )
         {
             SCOREP_EnterRegion( *region );
         }
@@ -470,7 +475,7 @@ ___rouret( void )
         /* Check whether the top element of the callstack has a valid region handle.
            If the region is filtered the top pointer is SCOREP_INVALID_REGION.
          */
-        if ( region_handle != SCOREP_INVALID_REGION )
+        if ( region_handle != SCOREP_FILTERED_REGION )
         {
             SCOREP_ExitRegion( region_handle );
         }
