@@ -180,6 +180,12 @@ scorep_profile_get_clustered_region( void );
 bool
 scorep_profile_do_clustering( void );
 
+/**
+   Returns the configuration value for SCORE_PROFILE_ENABLE_CORE_FILES.
+ */
+bool
+scorep_profile_do_core_files( void );
+
 
 /**
    Returns the number of locations stored in the profile.
@@ -188,11 +194,6 @@ scorep_profile_do_clustering( void );
 uint64_t
 scorep_profile_get_number_of_threads( void );
 
-/**
-   Dumps the tree structure to the screen.
- */
-void
-scorep_profile_dump( void );
 
 SCOREP_ParameterHandle scorep_profile_param_instance;
 

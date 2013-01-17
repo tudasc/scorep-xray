@@ -59,6 +59,8 @@ libscorep_profile_la_SOURCES =                                           \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_location.c       \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_table.h     \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_table.c     \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_debug.h          \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_debug.c          \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_process.h        \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_expand.c         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_collapse.c       \

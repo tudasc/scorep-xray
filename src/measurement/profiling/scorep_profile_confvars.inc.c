@@ -65,6 +65,12 @@ char* scorep_profile_clustered_region;
 bool scorep_profile_enable_clustering;
 
 /**
+   Stores whether the profile shall write profile.core files on errors
+ */
+bool scorep_profile_enable_core_files;
+
+
+/**
    Bitset table for output format string configuration.
  */
 static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
@@ -174,6 +180,18 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
         "which is exited first. If another region should be clustered instead "
         "you can specify the region name in this variable. If the variable is "
         "unset or empty, the first exited dynamic region is clustered."
+    },
+    {
+        "enable_core_files",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_profile_enable_core_files,
+        NULL,
+        "false",
+        "Write .core files if an error occured.",
+        "If an error occures inside the profiling system, the profiling is disabled. "
+        "For dubugging reasons, it might be feasable to get the state of the local "
+        "local at these points. It is not recommended to enable this feature for "
+        "large scale measurements."
     },
     SCOREP_CONFIG_TERMINATOR
 };

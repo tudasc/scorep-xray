@@ -363,14 +363,14 @@ print_region_definitions
 (
 );
 
-/** Prints call-tree profile
- */
-extern void
-scorep_profile_dump_subtree
-(
+/*
+   extern void
+   scorep_profile_dump_subtree
+   (
     scorep_profile_node* node,
     uint32_t             level
-);
+   );
+ */
 
 /** Prints registered metric definitions
  */

@@ -35,6 +35,7 @@
 
 #include <scorep_profile_definition.h>
 #include <scorep_profile_location.h>
+#include <scorep_profile_debug.h>
 
 #include <stdlib.h>
 
