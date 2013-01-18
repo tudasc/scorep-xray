@@ -89,7 +89,7 @@ scorep_profile_enter( SCOREP_Profile_LocationData* location,
     {
         UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                      "Failed to create location. Disable profiling" );
-        SCOREP_PROFILE_STOP;
+        SCOREP_PROFILE_STOP( location );
         return NULL;
     }
 
@@ -129,7 +129,7 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
     {
         UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                      "Exit event occured in a thread which never entered a region" );
-        SCOREP_PROFILE_STOP;
+        SCOREP_PROFILE_STOP( location );
         return NULL;
     }
 
@@ -183,7 +183,7 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
     if ( ( node->node_type == scorep_profile_node_regular_region ) &&
          ( scorep_profile_type_get_region_handle( node->type_specific_data ) != region ) )
     {
-        SCOREP_PROFILE_STOP;
+        SCOREP_PROFILE_STOP( location );
         UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                      "Exit event for other than current region occured at "
                      "location %u: Expected exit for region %s. "

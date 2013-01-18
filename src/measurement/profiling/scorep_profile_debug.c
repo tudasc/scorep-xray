@@ -31,6 +31,7 @@
 
 #include <scorep_mpi.h>
 #include <scorep_runtime_management.h>
+#include <scorep_openmp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -76,6 +77,7 @@ scorep_dump_stack( FILE* file, SCOREP_Profile_LocationData* location )
     {
         return;
     }
+    fprintf( file, "Current stack of failing thread:\n" );
     uint32_t i = 0;
     fprintf( file, "\n" );
     for ( scorep_profile_node* current = location->current_task_node;
@@ -119,10 +121,22 @@ scorep_dump_subtree(  FILE*                file,
 }
 
 void
-scorep_profile_dump( FILE* file )
+scorep_profile_dump( FILE* file, SCOREP_Profile_LocationData* location )
 {
     fprintf( file, "\n" );
-    scorep_dump_subtree( file, scorep_profile.first_root_node, 0 );
+    if ( SCOREP_Omp_InParallel() )
+    {
+        if ( location != NULL && location->root_node != NULL )
+        {
+            fprintf( file, "Current status of failing profile:\n" );
+            scorep_dump_subtree( file, location->root_node->first_child, 0 );
+        }
+    }
+    else
+    {
+        fprintf( file, "Current state of the profile of all threads:\n" );
+        scorep_dump_subtree( file, scorep_profile.first_root_node, 0 );
+    }
     fprintf( file, "\n" );
 }
 
@@ -133,40 +147,49 @@ scorep_profile_dump( FILE* file )
 void
 scorep_profile_on_error( SCOREP_Profile_LocationData* location )
 {
-    if ( !scorep_profile_do_core_files() )
+    /* Diable further profiling */
+    scorep_profile.is_initialized = false;
+
+    /* If core files are enabled, write a core file */
+    if ( scorep_profile_do_core_files() &&
+         ( !SCOREP_Omp_InParallel() || location != NULL ) )
     {
-        return;
+        uint32_t    thread   = 0;
+        const char* dirname  = SCOREP_GetExperimentDirName();
+        const char* basename = scorep_profile_get_basename();
+        char*       filename = NULL;
+
+        filename = ( char* )malloc( strlen( dirname ) + /* Directory      */
+                                    strlen( basename )  /* basename       */
+                                    + 32 );             /* constant stuff */
+
+        if ( filename == NULL )
+        {
+            return;
+        }
+
+        if ( location != NULL )
+        {
+            thread = SCOREP_Location_GetId( location->location_data );
+        }
+
+        sprintf( filename, "%s/%s.%d.%u.core", dirname, basename,
+                 SCOREP_Mpi_GetRank(), thread );
+
+        FILE* file = fopen( filename, "a" );
+        free( filename );
+
+        if ( file == NULL )
+        {
+            return;
+        }
+
+        fprintf( file, "ERROR on rank %d, thread %u\n\n",
+                 SCOREP_Mpi_GetRank(), thread );
+
+        scorep_dump_stack( file, location );
+        scorep_profile_dump( file, location );
+
+        fclose( file );
     }
-
-    static int  file_counter = 0;
-    const char* dirname      = SCOREP_GetExperimentDirName();
-    const char* basename     = scorep_profile_get_basename();
-    char*       filename     = NULL;
-
-    filename = ( char* )malloc( strlen( dirname ) + /* Directory      */
-                                strlen( basename )  /* basename       */
-                                + 32 );             /* constant stuff */
-
-    if ( filename == NULL )
-    {
-        return;
-    }
-
-    sprintf( filename, "%s/%s.%d.%d.core", dirname, basename,
-             SCOREP_Mpi_GetRank(), file_counter++ );
-
-    FILE* file = fopen( filename, "w" );
-    free( filename );
-
-    if ( file == NULL )
-    {
-        return;
-    }
-
-    fprintf( file, "ERROR %d on rank %d\n\n", file_counter, SCOREP_Mpi_GetRank() );
-
-    scorep_dump_stack( file, location );
-    scorep_profile_dump( file );
-
-    fclose( file );
 }

@@ -81,7 +81,7 @@ insert_task( SCOREP_Profile_LocationData* location,
     {
         UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                      "Failed to allocate memory for task instance tracking." );
-        SCOREP_PROFILE_STOP;
+        SCOREP_PROFILE_STOP( location );
         return NULL;
     }
 
@@ -245,7 +245,7 @@ scorep_profile_store_task( SCOREP_Profile_LocationData* location )
 
     if ( current_task == NULL )
     {
-        SCOREP_PROFILE_STOP;
+        SCOREP_PROFILE_STOP( location );
         UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                      "Encountered unknown task ID" );
         return;
@@ -269,7 +269,7 @@ scorep_profile_restore_task( SCOREP_Profile_LocationData* location )
 
     if ( current_task == NULL )
     {
-        SCOREP_PROFILE_STOP;
+        SCOREP_PROFILE_STOP( location );
         UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                      "Encountered unknown task ID" );
         return;

@@ -31,4 +31,4 @@
 void
 scorep_profile_on_error( SCOREP_Profile_LocationData* location );
 
-#endif
+#endif // SCOREP_PROFILE_DEBUG_H

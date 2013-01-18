@@ -27,7 +27,8 @@
 
 #include <stdint.h>
 
-#include "scorep_profile_node.h"
+#include <scorep_profile_node.h>
+#include <scorep_profile_debug.h>
 
 /* **************************************************************************************
    Defines
@@ -43,7 +44,11 @@
    @def SCOREP_PROFILE_STOP
    Disables further construction of the profile.
  */
-#define SCOREP_PROFILE_STOP scorep_profile.is_initialized = false;
+#define SCOREP_PROFILE_STOP( location )       \
+    do {                                       \
+        scorep_profile.is_initialized = false; \
+        scorep_profile_on_error( location );   \
+    } while ( 0 );
 
 /* **************************************************************************************
    Typedefs
