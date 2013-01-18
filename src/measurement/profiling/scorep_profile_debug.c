@@ -58,6 +58,12 @@ scorep_dump_node( FILE* file, scorep_profile_node* node )
         return;
     }
 
+    if ( node->node_type >= sizeof( type_name_map ) / sizeof( char* ) )
+    {
+        fprintf( file, "unknown type: %d", node->node_type );
+        return;
+    }
+
     fprintf( file, "type: %s\t", type_name_map[ node->node_type ] );
     if ( node->node_type == scorep_profile_node_regular_region )
     {

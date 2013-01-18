@@ -120,11 +120,13 @@ assign_callpath( scorep_profile_node* current, void* param )
                              "Try to assign a callpath to a thread activation node. "
                              "This means that this is not the master thread and the worker "
                              "threads were not expanded before." );
+                scorep_profile_on_error( NULL );
                 break;
             default:
                 UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                              "Callpath assignedment to node type %d not supported.",
                              current->node_type );
+                scorep_profile_on_error( NULL );
         }
     }
 }
