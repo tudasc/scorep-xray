@@ -312,7 +312,7 @@ typedef enum SCOREP_MetricScope
 /**
  * Types used to define type of profiling.
  */
-typedef enum SCCOREP_MetricProfilingType
+typedef enum SCOREP_MetricProfilingType
 {
     /** Exclusive values (excludes values from subordinated items) */
     SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE = 0,
