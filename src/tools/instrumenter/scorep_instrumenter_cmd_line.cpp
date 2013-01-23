@@ -460,6 +460,18 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
         m_mpi_instrumentation = disabled;
         return scorep_parse_mode_param;
     }
+#if HAVE( CUDA )
+    else if ( arg == "--cuda" )
+    {
+        m_is_cuda_application = enabled;
+        return scorep_parse_mode_param;
+    }
+    else if ( arg == "--nocuda" )
+    {
+        m_is_cuda_application = disabled;
+        return scorep_parse_mode_param;
+    }
+#endif
 #ifdef HAVE_PDT
     else if ( arg.substr( 0, 5 ) == "--pdt" )
     {
@@ -622,6 +634,10 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
             m_is_cuda_application = enabled;
         }
         return scorep_parse_mode_command;
+    }
+    else if ( arg.substr( 0, 6 ) == "-lcuda" )
+    {
+        m_is_cuda_application = enabled;
     }
     else if ( arg.substr( 0, 5 ) == "-lmpi" )
     {
@@ -852,6 +868,19 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
         }
     }
 
+    /* Evaluate whether we have a cuda application */
+    if ( m_is_cuda_application == detect )
+    {
+        if ( m_compiler_name.substr( 0, 2 ) == "nv" )
+        {
+            m_is_cuda_application = enabled;
+        }
+        else
+        {
+            m_is_cuda_application = disabled;
+        }
+    }
+
     /* If this is a dry run, enable printing out commands, if it is not already */
     if ( m_is_dry_run && m_verbosity < 1 )
     {
@@ -909,6 +938,11 @@ SCOREP_Instrumenter_CmdLine::parse_library( std::string arg )
             m_is_mpi_application = enabled;
         }
     }
+    if ( arg.substr( 0, 4 ) == "cuda" )
+    {
+        m_is_cuda_application = enabled;
+    }
+
     *m_current_flags += " -l" + arg;
     return scorep_parse_mode_command;
 }
