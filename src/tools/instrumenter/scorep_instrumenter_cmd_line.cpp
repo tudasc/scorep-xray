@@ -460,7 +460,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
         m_mpi_instrumentation = disabled;
         return scorep_parse_mode_param;
     }
-#if HAVE( CUDA )
+#if HAVE_BACKEND( CUDA )
     else if ( arg == "--cuda" )
     {
         m_is_cuda_application = enabled;
