@@ -414,8 +414,8 @@ SCOREP_Instrumenter::compile_source_file( std::string input_file,
 {
     /* Construct command */
     std::string command = m_command_line.getCompilerName()
-                          + " " + m_command_line.getFlagsBeforeLmpi()
                           + " " + m_compiler_flags
+                          + " " + m_command_line.getFlagsBeforeLmpi()
                           + " " + m_command_line.getFlagsAfterLmpi()
                           + " -c " + input_file
                           + " -o " + output_file;
