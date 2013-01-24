@@ -102,6 +102,12 @@
 
 * Score-P misc.
 
+  - There might be a performance impact when instrumenting code without
+    explicitly given optimization flags. The instrumenter adds compiler
+    flags to enable additional debugging information. Depending on the
+    compiler this may turn off optimization unless optimization flags
+    are explicitly specified.
+
   - Applications using an autotools-based buildsystem should add the
     option "--disable-option-checking" to the usual configure
     call. Score-P is added only at make time like "make CC="scorep
