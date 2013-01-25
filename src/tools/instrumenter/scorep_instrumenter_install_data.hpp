@@ -191,6 +191,12 @@ public:
     bool
     isArgForFixedform( std::string );
 
+    /**
+       Returns envaronment variables needed by the compiler.
+     */
+    std::string
+    getCompilerEnvironmentVars( void );
+
     /* ***************************************************** Private methods */
 private:
     /**

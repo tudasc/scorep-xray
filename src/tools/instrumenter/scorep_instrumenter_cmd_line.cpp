@@ -915,12 +915,6 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
                   << "MPI applications." << std::endl;
         exit( EXIT_FAILURE );
     }
-
-    /* To avoid remarks from the compiler about VT_ROOT' environment variable not set
-       we set those variables to harmless values when using intel compilers. */
-    #ifdef SCOREP_BACKEND_COMPILER_INTEL
-    m_compiler_name = "VT_LIB_DIR=. VT_ROOT=. VT_ADD_LIBS=\"\" " + m_compiler_name;
-    #endif
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t

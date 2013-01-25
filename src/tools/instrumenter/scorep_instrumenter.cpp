@@ -413,7 +413,8 @@ SCOREP_Instrumenter::compile_source_file( std::string input_file,
                                           std::string output_file )
 {
     /* Construct command */
-    std::string command = m_command_line.getCompilerName()
+    std::string command = m_install_data.getCompilerEnvironmentVars()
+                          + " " + m_command_line.getCompilerName()
                           + " " + m_compiler_flags
                           + " " + m_command_line.getFlagsBeforeLmpi()
                           + " " + m_command_line.getFlagsAfterLmpi()

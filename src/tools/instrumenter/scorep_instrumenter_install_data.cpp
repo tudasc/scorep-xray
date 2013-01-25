@@ -251,6 +251,12 @@ SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
     return arg == "-ffixed";
 }
 
+std::string
+SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
+{
+    return "";
+}
+
 /* *************************************** GNU */
 #elif SCOREP_BACKEND_COMPILER_GNU
 bool
@@ -275,6 +281,12 @@ bool
 SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
 {
     return arg == "-ffixed-form";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
+{
+    return "";
 }
 
 /* *************************************** IBM */
@@ -303,6 +315,12 @@ SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
     return arg == "-qfixed";
 }
 
+std::string
+SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
+{
+    return "";
+}
+
 /* *************************************** INTEL */
 #elif SCOREP_BACKEND_COMPILER_INTEL
 bool
@@ -327,6 +345,12 @@ bool
 SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
 {
     return arg == "-nofree";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
+{
+    return "VT_LIB_DIR=. VT_ROOT=. VT_ADD_LIBS=\"\"";
 }
 
 /* *************************************** PGI */
@@ -355,6 +379,12 @@ SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
     return arg == "-Mnofree" || arg == "-Mnofreeform";
 }
 
+std::string
+SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
+{
+    return "";
+}
+
 /* *************************************** STUDIO */
 #elif SCOREP_BACKEND_COMPILER_STUDIO
 bool
@@ -380,8 +410,14 @@ SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
 {
     return arg == "-fixed";
 }
-#endif
 
+std::string
+SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
+{
+    return "";
+}
+
+#endif
 
 /* ****************************************************************************
    Private methods
