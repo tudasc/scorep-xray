@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -39,7 +39,7 @@
 
 
 #include <scorep_environment.h>
-#include <scorep_mpi.h>
+#include <scorep_status.h>
 #include <tracing/SCOREP_Tracing.h>
 #include <tracing/scorep_tracing_internal.h>
 #include <SCOREP_RuntimeManagement.h>
@@ -55,11 +55,11 @@ scorep_sion_open( void*          userData,
                   FILE**         filePointer )
 {
     assert( scorep_tracing_nlocations_per_sion_file > 0 );
-    int         number_of_sion_files = SCOREP_Mpi_GetCommWorldSize() / scorep_tracing_nlocations_per_sion_file;
+    int         number_of_sion_files = SCOREP_Status_GetSize() / scorep_tracing_nlocations_per_sion_file;
     const char* file_mode            = "bw";
     char*       new_file_name        = NULL;
     MPI_Comm    comm_world           = MPI_COMM_WORLD;
-    int         global_rank          = SCOREP_Mpi_GetRank();
+    int         global_rank          = SCOREP_Status_GetRank();
     SCOREP_MPI_EVENT_GEN_OFF();
 
     #if defined( __bgp__ )

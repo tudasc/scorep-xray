@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -31,7 +31,7 @@
 #include <scorep_openmp.h>
 #include <SCOREP_Memory.h>
 #include "scorep_status.h"
-#include "scorep_mpi.h"
+#include "scorep_ipc.h"
 #include "scorep_definition_structs.h"
 #include "scorep_definition_macros.h"
 #include <SCOREP_Location.h>
@@ -71,7 +71,7 @@ SCOREP_GetExperimentDirName()
 void
 SCOREP_CreateExperimentDir()
 {
-    if ( SCOREP_IsExperimentDirCreated() )
+    if ( SCOREP_Status_IsExperimentDirCreated() )
     {
         return;
     }
@@ -226,13 +226,13 @@ scorep_create_directory( void )
 void
 SCOREP_RenameExperimentDir()
 {
-    SCOREP_Mpi_GlobalBarrier();
-    if ( SCOREP_Mpi_GetRank() > 0 )
+    SCOREP_Ipc_Barrier();
+    if ( SCOREP_Status_GetRank() > 0 )
     {
         return;
     }
 
-    if ( !SCOREP_IsExperimentDirCreated() )
+    if ( !SCOREP_Status_IsExperimentDirCreated() )
     {
         return;
     }

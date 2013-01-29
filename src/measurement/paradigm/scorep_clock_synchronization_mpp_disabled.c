@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/scorep_clock_synchronization_mpi_disabled.c
+ * @file       src/measurement/paradigm/scorep_clock_synchronization_mpp_disabled.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha

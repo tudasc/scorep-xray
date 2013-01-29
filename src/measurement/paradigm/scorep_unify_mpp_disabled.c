@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -17,7 +17,7 @@
 
 
 /**
- * @file       scorep_unify_mpi_disabled.c
+ * @file       src/measurement/paradigm/scorep_unify_mpp_disabled.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -33,7 +33,7 @@
 
 
 void
-SCOREP_Mpi_Unify()
+SCOREP_Unify_Mpp()
 {
-    UTILS_BUG( "SCOREP_Mpi_Unify() called in non-mpi build" );
+    UTILS_FATAL( "SCOREP_Unify_Mpp() called in non-mpi build" );
 }

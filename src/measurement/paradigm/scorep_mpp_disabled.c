@@ -14,48 +14,48 @@
  *
  */
 
-#ifndef SCOREP_INTERNAL_UNIFY_H
-#define SCOREP_INTERNAL_UNIFY_H
-
-
 
 /**
- * @file       src/measurement/scorep_unify.h
+ * @file       src/measurement/paradigm/scorep_mpp_disabled.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
  *
+ *
  */
 
 
-#include "scorep_definitions.h"
+#include <config.h>
+
+
+#include <UTILS_Error.h>
+
+
+#include <UTILS_Debug.h>
+
+
+#include "scorep_ipc.h"
+
+#include <scorep_definitions.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
+
+bool
+SCOREP_Status_IsMpp()
+{
+    return false;
+}
+
+
+bool
+scorep_create_experiment_dir( void ( * createDir )( void ) )
+{
+    createDir();
+    return true;
+}
 
 void
-SCOREP_Unify( void );
-
-
-void
-SCOREP_Unify_Locally( void );
-
-
-void
-SCOREP_Unify_Mpp( void );
-
-
-void
-SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManager );
-
-
-void
-SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager );
-
-
-void
-SCOREP_AssignDefinitionMappingsFromUnified( SCOREP_DefinitionManager* definitionManager );
-
-
-void
-SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager );
-
-
-#endif /* SCOREP_INTERNAL_UNIFY_H */
+scorep_timing_reduce_runtime_management_timings( void )
+{
+}

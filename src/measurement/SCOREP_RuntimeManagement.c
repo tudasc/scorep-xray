@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -63,7 +63,7 @@
 #include "scorep_definitions.h"
 #include "scorep_environment.h"
 #include "scorep_status.h"
-#include "scorep_mpi.h"
+#include "scorep_ipc.h"
 #include "scorep_thread.h"
 #include "scorep_location.h"
 #include "scorep_runtime_management.h"
@@ -191,7 +191,7 @@ SCOREP_InitMeasurement( void )
     SCOREP_TIME( SCOREP_Thread_Initialize, ( ) );
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
 
-    if ( !SCOREP_Mpi_HasMpi() )
+    if ( !SCOREP_Status_IsMpp() )
     {
         scorep_set_otf2_archive_master_slave();
     }
@@ -203,13 +203,13 @@ SCOREP_InitMeasurement( void )
 
     SCOREP_TIME( scorep_properties_initialize, ( ) );
 
-    /* Register finalization handler, also called in SCOREP_InitMeasurementMPI() and
-     * SCOREP_FinalizeMeasurementMPI(). We need to make sure that our handler is
+    /* Register finalization handler, also called in SCOREP_InitMppMeasurement() and
+     * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is
      * called before the MPI one. */
     atexit( scorep_finalize );
 
     SCOREP_TIME( SCOREP_BeginEpoch, ( ) );
-    if ( !SCOREP_Mpi_HasMpi() )
+    if ( !SCOREP_Status_IsMpp() )
     {
         SCOREP_SynchronizeClocks();
     }
@@ -286,7 +286,7 @@ scorep_set_otf2_archive_master_slave( void )
 {
     if ( SCOREP_IsTracingEnabled() )
     {
-        SCOREP_Tracing_SetIsMaster( SCOREP_Mpi_GetRank() == 0 );
+        SCOREP_Tracing_SetIsMaster( SCOREP_Status_GetRank() == 0 );
     }
 }
 
@@ -299,7 +299,6 @@ SCOREP_FinalizeMeasurement( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    SCOREP_FinalizeMeasurementMPI();
     scorep_finalize();
 }
 
@@ -308,11 +307,11 @@ SCOREP_FinalizeMeasurement( void )
  * Special initialization of the measurement system when using MPI.
  */
 void
-SCOREP_InitMeasurementMPI( int rank )
+SCOREP_InitMppMeasurement( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    SCOREP_TIME_START_TIMING( SCOREP_InitMeasurementMPI );
+    SCOREP_TIME_START_TIMING( SCOREP_InitMppMeasurement );
 
     if ( SCOREP_Omp_InParallel() )
     {
@@ -320,14 +319,14 @@ SCOREP_InitMeasurementMPI( int rank )
         _Exit( EXIT_FAILURE );
     }
 
-    if ( SCOREP_Otf2_HasFlushed() )
+    if ( SCOREP_Status_HasOtf2Flushed() )
     {
         fprintf( stderr, "ERROR: Switching to MPI mode after the first flush.\n" );
         fprintf( stderr, "       Consider to increase buffer size to prevent this.\n" );
         _Exit( EXIT_FAILURE );
     }
 
-    SCOREP_Mpi_SetRankTo( rank );
+    SCOREP_Status_OnMppInit();
     SCOREP_CreateExperimentDir();
     SCOREP_Location_CloseDeferredDefinitions();
     SCOREP_SynchronizeClocks();
@@ -336,11 +335,11 @@ SCOREP_InitMeasurementMPI( int rank )
     SCOREP_Profile_InitializeMpi();
 
     /* Register finalization handler, also called in SCOREP_InitMeasurement() and
-     * SCOREP_FinalizeMeasurementMPI(). We need to make sure that our handler is
+     * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is
      * called before the MPI one. */
     atexit( scorep_finalize );
 
-    SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurementMPI );
+    SCOREP_TIME_STOP_TIMING( SCOREP_InitMppMeasurement );
 }
 
 void
@@ -351,22 +350,9 @@ SCOREP_RegisterExitHandler( void )
 
 
 void
-SCOREP_FinalizeMeasurementMPI( void )
+SCOREP_FinalizeMppMeasurement( void )
 {
-    /* Register finalization handler, also called in SCOREP_InitMeasurement() and
-     * SCOREP_InitMeasurementMPI(). We need to make sure that our handler is
-     * called before the MPI one. */
-    atexit( scorep_finalize );
-    /*
-        // What Scalasca does here:
-        // mark start of finalization
-        // 2. clock synchronization if necessary
-            // measure offset
-            // write OFFSET record
-        // mark end of finalization
-        // emergency exit for cases where atexit not handled
-            // close on finalize
-     */
+    SCOREP_Status_OnMppFinalize();
 }
 
 
@@ -462,7 +448,7 @@ scorep_finalize( void )
     // MPICH1 creates some extra processes that are not properly SCOREP
     // initialized and don't execute normal user code. We need to prevent SCOREP
     // finalization of these processes. See otf2:ticket:154.
-    if ( SCOREP_Mpi_HasMpi() && !SCOREP_Mpi_IsInitialized() )
+    if ( SCOREP_Status_IsMpp() && !SCOREP_Status_IsMppInitialized() )
     {
         return;
     }
@@ -551,7 +537,7 @@ scorep_dump_config( void )
     const char* experiment_dir = SCOREP_GetExperimentDirName();
     char*       dump_file_name;
 
-    if ( SCOREP_Mpi_HasMpi() && SCOREP_Mpi_GetRank() != 0 )
+    if ( SCOREP_Status_IsMpp() && SCOREP_Status_GetRank() != 0 )
     {
         return;
     }

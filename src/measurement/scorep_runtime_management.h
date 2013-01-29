@@ -35,7 +35,7 @@
  * Toplevel relative experiment directory. In the non MPI case a valid name is
  * available after the first call to SCOREP_CreateExperimentDir(). In the MPI
  * case a valid and unique name is available on all processes after the call
- * to SCOREP_CreateExperimentDir() from within SCOREP_InitMeasurementMPI().
+ * to SCOREP_CreateExperimentDir() from within SCOREP_InitMppMeasurement().
  *
  * @note The name is a temporary name used during measurement. At
  * scorep_finalize() we rename the temporary directory to something like

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -40,7 +40,7 @@
 #include "scorep_profile_metric.h"
 #include "scorep_definitions.h"
 #include "scorep_oa_request.h"
-#include "scorep_mpi.h"
+#include "scorep_ipc.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -345,7 +345,7 @@ scorep_oa_consumer_initialize_index
 
     assert( shared_index );
 
-    shared_index->rank                     = ( uint64_t )SCOREP_Mpi_GetRank();
+    shared_index->rank                     = ( uint64_t )SCOREP_Ipc_GetRank();
     shared_index->num_static_measurements  = 0;
     shared_index->num_def_regions_merged   = 0;
     shared_index->merged_regions_def_table = SCOREP_Hashtab_CreateSize( 11, &SCOREP_Hashtab_HashOAKeys,

@@ -29,7 +29,7 @@
 #include <scorep_profile_definition.h>
 #include <scorep_profile_location.h>
 
-#include <scorep_mpi.h>
+#include <scorep_ipc.h>
 #include <scorep_runtime_management.h>
 #include <scorep_openmp.h>
 #include <stdio.h>
@@ -180,7 +180,7 @@ scorep_profile_on_error( SCOREP_Profile_LocationData* location )
         }
 
         sprintf( filename, "%s/%s.%d.%u.core", dirname, basename,
-                 SCOREP_Mpi_GetRank(), thread );
+                 SCOREP_Ipc_GetRank(), thread );
 
         FILE* file = fopen( filename, "a" );
         free( filename );
@@ -191,7 +191,7 @@ scorep_profile_on_error( SCOREP_Profile_LocationData* location )
         }
 
         fprintf( file, "ERROR on rank %d, thread %u\n\n",
-                 SCOREP_Mpi_GetRank(), thread );
+                 SCOREP_Ipc_GetRank(), thread );
 
         scorep_dump_stack( file, location );
         scorep_profile_dump( file, location );
