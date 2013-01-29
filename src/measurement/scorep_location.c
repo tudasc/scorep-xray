@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -34,6 +34,7 @@
 #include <SCOREP_Mutex.h>
 #include "scorep_subsystem.h"
 #include "scorep_status.h"
+#include <scorep_mpi.h>
 #include <SCOREP_Omp.h>
 #include <scorep_definitions.h>
 
@@ -226,7 +227,7 @@ scorep_location_call_externals_on_new_location( SCOREP_Location* locationData,
     SCOREP_Profile_OnLocationCreation( locationData, parent );
     SCOREP_Tracing_OnLocationCreation( locationData, parent );
 
-    if ( !SCOREP_Status_IsMppInitialized() )
+    if ( !SCOREP_Mpi_IsInitialized() )
     {
         locationData->location_handle = SCOREP_DefineLocation(
             INVALID_LOCATION_DEFINITION_ID,
@@ -315,10 +316,10 @@ SCOREP_Location_GetTracingData( SCOREP_Location* locationData )
 uint64_t
 SCOREP_Location_GetGlobalId( SCOREP_Location* locationData )
 {
-    assert( SCOREP_Status_IsMppInitialized() );
+    assert( SCOREP_Mpi_IsInitialized() );
 
     uint64_t local_location_id = locationData->local_id;
-    uint64_t rank              = SCOREP_Status_GetRank();
+    uint64_t rank              = SCOREP_Mpi_GetRank();
 
     assert( rank >> 32 == 0 );
     assert( local_location_id >> 32 == 0 );

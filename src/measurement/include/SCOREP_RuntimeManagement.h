@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2011,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -82,7 +82,7 @@ SCOREP_IsInitialized( void );
  * Each arising error leads to a fatal abortion of the program.
  *
  * @note The MPI adapter needs special treatment, see
- * SCOREP_InitMppMeasurement().
+ * SCOREP_InitMeasurementMPI().
  *
  * @see SCOREP_FinalizeMeasurement()
  */
@@ -110,7 +110,7 @@ SCOREP_FinalizeMeasurement( void );
  *
  */
 void
-SCOREP_InitMppMeasurement( void );
+SCOREP_InitMeasurementMPI( int rank );
 
 /**
  * Registers an exit handler. The OpenMP implementation on JUMP uses
@@ -124,12 +124,30 @@ void
 SCOREP_RegisterExitHandler( void );
 
 /**
+ * Special initialization of the measurement system when using MPI. This
+ * function must be called directly after a successful call to PMPI_Init().
+ *
+ */
+void
+SCOREP_OnPMPI_Init( void );
+
+
+/**
  * Special finalization of the measurement system when using MPI. This
  * function must be called before the actual PMPI_Finalize() call.
  *
  */
 void
-SCOREP_FinalizeMppMeasurement( void );
+SCOREP_FinalizeMeasurementMPI( void );
+
+
+/**
+ * Special finalization of the measurement system when using MPI. This
+ * function must be called directly after the actual PMPI_Finalize() call.
+ *
+ */
+void
+SCOREP_OnPMPI_Finalize( void );
 
 
 /**

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -108,11 +108,16 @@ MPI_Init( int* argc, char*** argv )
 
     if ( ( PMPI_Finalized( &fflag ) == MPI_SUCCESS ) && ( fflag == 0 ) )
     {
+        SCOREP_OnPMPI_Init();
+
         /* initialize communicator management and register MPI_COMM_WORLD*/
         scorep_mpi_comm_init();
 
+        /* Obtain rank */
+        PMPI_Comm_rank( MPI_COMM_WORLD, &rank );
+
         /* complete initialization of measurement core and MPI event handling */
-        SCOREP_InitMppMeasurement();
+        SCOREP_InitMeasurementMPI( rank );
     #if !defined( SCOREP_MPI_NO_HOOKS )
         scorep_mpiprofile_init();
     #endif
@@ -184,11 +189,16 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
 
     if ( ( PMPI_Finalized( &fflag ) == MPI_SUCCESS ) && ( fflag == 0 ) )
     {
+        SCOREP_OnPMPI_Init();
+
         /* initialize communicator management and register MPI_COMM_WORLD */
         scorep_mpi_comm_init();
 
+        /* Obtain rank */
+        PMPI_Comm_rank( MPI_COMM_WORLD, &rank );
+
         /* complete initialization of measurement core and MPI event handling */
-        SCOREP_InitMppMeasurement();
+        SCOREP_InitMeasurementMPI( rank );
     #if !defined( SCOREP_MPI_NO_HOOKS )
         scorep_mpiprofile_init();
     #endif
@@ -232,8 +242,7 @@ MPI_Finalize()
     scorep_mpi_comm_set_name( MPI_COMM_WORLD, "MPI_COMM_WORLD" );
 
     /* finalize MPI event handling */
-    /* We need to make sure that our exit handler is called before the MPI one. */
-    SCOREP_RegisterExitHandler();
+    SCOREP_FinalizeMeasurementMPI();
   #if !defined( SCOREP_MPI_NO_HOOKS )
     scorep_mpiprofile_finalize();
   #endif

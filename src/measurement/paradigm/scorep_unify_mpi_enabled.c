@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -17,7 +17,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/scorep_unify_mpp_enabled.c
+ * @file       scorep_unify_mpi_enabled.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -33,7 +33,9 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-#include <scorep_ipc.h>
+#include <mpi.h>
+
+#include <scorep_mpi.h>
 #include <scorep_unify.h>
 #include <scorep_environment.h>
 #include <scorep_definitions.h>
@@ -45,25 +47,25 @@
 
 
 static void
-unify_mpp_sequential( void );
+scorep_unify_mpi_sequential( void );
 static void
-unify_mpp_hierarchical( void );
+scorep_unify_mpi_hierarchical( void );
 static void
-unify_mpp_mpi_communicators( void );
+scorep_unify_mpi_communicators( void );
 static void
 apply_mappings_to_local_manager( void );
 
 void
-SCOREP_Unify_Mpp( void )
+SCOREP_Mpi_Unify( void )
 {
     extern bool scorep_mpi_hierarchical_unify;
     if ( scorep_mpi_hierarchical_unify )
     {
-        unify_mpp_hierarchical();
+        scorep_unify_mpi_hierarchical();
     }
     else
     {
-        unify_mpp_sequential();
+        scorep_unify_mpi_sequential();
     }
 
     /*
@@ -73,7 +75,7 @@ SCOREP_Unify_Mpp( void )
     apply_mappings_to_local_manager();
 
     /* Unify the MPI communicators separately. */
-    unify_mpp_mpi_communicators();
+    scorep_unify_mpi_communicators();
 }
 
 
@@ -82,9 +84,9 @@ extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
 
 static void
-unify_mpp_master( void );
+scorep_unify_mpi_master( void );
 static void
-unify_mpp_servant( void );
+scorep_unify_mpi_servant( void );
 
 static void
 receive_mappings( int rank );
@@ -93,20 +95,20 @@ send_mappings( int                       rank,
                SCOREP_DefinitionManager* remote_definition_manager );
 
 void
-unify_mpp_sequential( void )
+scorep_unify_mpi_sequential( void )
 {
-    if ( SCOREP_Ipc_GetRank() == 0 )
+    if ( SCOREP_Mpi_GetRank() == 0 )
     {
-        unify_mpp_master();
+        scorep_unify_mpi_master();
     }
     else
     {
-        unify_mpp_servant();
+        scorep_unify_mpi_servant();
     }
 }
 
 static void
-unify_mpp_master( void )
+scorep_unify_mpi_master( void )
 {
     SCOREP_DefinitionManager* remote_definition_manager =
         calloc( 1, sizeof( *remote_definition_manager ) );
@@ -116,13 +118,14 @@ unify_mpp_master( void )
     uint32_t* moved_page_ids      = NULL;
     uint32_t* moved_page_fills    = NULL;
     uint32_t  max_number_of_pages = 0;
-    for ( int rank = 1; rank < SCOREP_Ipc_GetSize(); ++rank )
+    for ( int rank = 1; rank < SCOREP_Mpi_GetCommWorldSize(); ++rank )
     {
         // 1) receive the remote definition manager
-        SCOREP_Ipc_Recv( remote_definition_manager,
+        SCOREP_Mpi_Recv( remote_definition_manager,
                          sizeof( *remote_definition_manager ),
-                         SCOREP_IPC_BYTE,
-                         rank );
+                         SCOREP_MPI_UNSIGNED_CHAR,
+                         rank,
+                         SCOREP_MPI_STATUS_IGNORE );
 
         // 2) create and receive page manager infos
 
@@ -130,10 +133,11 @@ unify_mpp_master( void )
         remote_definition_manager->page_manager = remote_page_manager;
 
         uint32_t number_of_pages;
-        SCOREP_Ipc_Recv( &number_of_pages,
+        SCOREP_Mpi_Recv( &number_of_pages,
                          1,
-                         SCOREP_IPC_UINT32,
-                         rank );
+                         SCOREP_MPI_UNSIGNED,
+                         rank,
+                         SCOREP_MPI_STATUS_IGNORE );
 
         if ( number_of_pages > max_number_of_pages )
         {
@@ -148,15 +152,17 @@ unify_mpp_master( void )
             max_number_of_pages = number_of_pages;
         }
 
-        SCOREP_Ipc_Recv( moved_page_ids,
+        SCOREP_Mpi_Recv( moved_page_ids,
                          number_of_pages,
-                         SCOREP_IPC_UINT32,
-                         rank );
+                         SCOREP_MPI_UNSIGNED,
+                         rank,
+                         SCOREP_MPI_STATUS_IGNORE );
 
-        SCOREP_Ipc_Recv( moved_page_fills,
+        SCOREP_Mpi_Recv( moved_page_fills,
                          number_of_pages,
-                         SCOREP_IPC_UINT32,
-                         rank );
+                         SCOREP_MPI_UNSIGNED,
+                         rank,
+                         SCOREP_MPI_STATUS_IGNORE );
 
         // 3) receive all pages from rank
         for ( uint32_t page = 0; page < number_of_pages; page++ )
@@ -171,10 +177,11 @@ unify_mpp_master( void )
                 SCOREP_Memory_HandleOutOfMemory();
             }
 
-            SCOREP_Ipc_Recv( page_memory,
+            SCOREP_Mpi_Recv( page_memory,
                              moved_page_fills[ page ],
-                             SCOREP_IPC_BYTE,
-                             rank );
+                             SCOREP_MPI_UNSIGNED_CHAR,
+                             rank,
+                             SCOREP_MPI_STATUS_IGNORE );
         }
 
         /**
@@ -200,12 +207,12 @@ unify_mpp_master( void )
 
 
 static void
-unify_mpp_servant( void )
+scorep_unify_mpi_servant( void )
 {
     // 1) send my local definition manager to root
-    SCOREP_Ipc_Send( scorep_unified_definition_manager,
+    SCOREP_Mpi_Send( scorep_unified_definition_manager,
                      sizeof( *scorep_unified_definition_manager ),
-                     SCOREP_IPC_BYTE,
+                     SCOREP_MPI_UNSIGNED_CHAR,
                      0 );
 
     // 2) send the page manager infos to root
@@ -226,21 +233,21 @@ unify_mpp_servant( void )
                                    moved_page_fills,
                                    moved_page_starts );
 
-    SCOREP_Ipc_Send( &number_of_used_pages,
-                     1, SCOREP_IPC_UINT32, 0 );
-    SCOREP_Ipc_Send( moved_page_ids,
+    SCOREP_Mpi_Send( &number_of_used_pages,
+                     1, SCOREP_MPI_UNSIGNED, 0 );
+    SCOREP_Mpi_Send( moved_page_ids,
                      number_of_used_pages,
-                     SCOREP_IPC_UINT32, 0 );
-    SCOREP_Ipc_Send( moved_page_fills,
+                     SCOREP_MPI_UNSIGNED, 0 );
+    SCOREP_Mpi_Send( moved_page_fills,
                      number_of_used_pages,
-                     SCOREP_IPC_UINT32, 0 );
+                     SCOREP_MPI_UNSIGNED, 0 );
 
     // 3) send all pages to root
     for ( uint32_t page = 0; page < number_of_used_pages; page++ )
     {
-        SCOREP_Ipc_Send( moved_page_starts[ page ],
+        SCOREP_Mpi_Send( moved_page_starts[ page ],
                          moved_page_fills[ page ],
-                         SCOREP_IPC_BYTE, 0 );
+                         SCOREP_MPI_UNSIGNED_CHAR, 0 );
     }
 
     // 4) receive all mappings from root
@@ -282,12 +289,12 @@ apply_and_send_mappings( int                       rank,
  *         definitions down from my parent to all my children.
  */
 void
-unify_mpp_hierarchical( void )
+scorep_unify_mpi_hierarchical( void )
 {
     int  num_children;
     int  child;
     int  parent;
-    int  me       = SCOREP_Ipc_GetRank();
+    int  me       = SCOREP_Mpi_GetRank();
     int* children = NULL;
 
     num_children = calculate_comm_partners( &parent, &children );
@@ -378,8 +385,8 @@ int
 calculate_comm_partners( int*  parent,
                          int** children )
 {
-    unsigned int size     = SCOREP_Ipc_GetSize();
-    unsigned int me       = SCOREP_Ipc_GetRank();
+    unsigned int size     = SCOREP_Mpi_GetCommWorldSize();
+    unsigned int me       = SCOREP_Mpi_GetRank();
     unsigned int size_pot = npot( size );
 
     unsigned int d;
@@ -439,10 +446,11 @@ receive_and_unify_remote_definitions( int                           rank,
                                       uint32_t*                     max_number_of_pages )
 {
     // 1) Receive the remote definition manager
-    SCOREP_Ipc_Recv( remote_definition_manager,
+    SCOREP_Mpi_Recv( remote_definition_manager,
                      sizeof( *remote_definition_manager ),
-                     SCOREP_IPC_BYTE,
-                     rank );
+                     SCOREP_MPI_UNSIGNED_CHAR,
+                     rank,
+                     SCOREP_MPI_STATUS_IGNORE );
 
     // 2) Create and receive page manager infos
 
@@ -451,10 +459,11 @@ receive_and_unify_remote_definitions( int                           rank,
 
     // 3) Get the number of pages we get.
     uint32_t number_of_pages;
-    SCOREP_Ipc_Recv( &number_of_pages,
+    SCOREP_Mpi_Recv( &number_of_pages,
                      1,
-                     SCOREP_IPC_UINT32,
-                     rank );
+                     SCOREP_MPI_UNSIGNED,
+                     rank,
+                     SCOREP_MPI_STATUS_IGNORE );
 
     /* Resize receive buffers if needed */
     if ( number_of_pages > *max_number_of_pages )
@@ -471,16 +480,18 @@ receive_and_unify_remote_definitions( int                           rank,
     }
 
     // 4a) Get the remote page ids
-    SCOREP_Ipc_Recv( *moved_page_ids,
+    SCOREP_Mpi_Recv( *moved_page_ids,
                      number_of_pages,
-                     SCOREP_IPC_UINT32,
-                     rank );
+                     SCOREP_MPI_UNSIGNED,
+                     rank,
+                     SCOREP_MPI_STATUS_IGNORE );
 
     // 4b) Get page fill of remote pages
-    SCOREP_Ipc_Recv( *moved_page_fills,
+    SCOREP_Mpi_Recv( *moved_page_fills,
                      number_of_pages,
-                     SCOREP_IPC_UINT32,
-                     rank );
+                     SCOREP_MPI_UNSIGNED,
+                     rank,
+                     SCOREP_MPI_STATUS_IGNORE );
 
     // 5) Receive all remote pages from rank
     for ( uint32_t page = 0; page < number_of_pages; page++ )
@@ -496,10 +507,11 @@ receive_and_unify_remote_definitions( int                           rank,
             SCOREP_Memory_HandleOutOfMemory();
         }
 
-        SCOREP_Ipc_Recv( page_memory,
+        SCOREP_Mpi_Recv( page_memory,
                          ( *moved_page_fills )[ page ],
-                         SCOREP_IPC_BYTE,
-                         rank );
+                         SCOREP_MPI_UNSIGNED_CHAR,
+                         rank,
+                         SCOREP_MPI_STATUS_IGNORE );
     }
 
     // 6) Unify received remote definitions to our one
@@ -519,9 +531,9 @@ send_local_unified_definitions_to_parent( int        parent,
                                           uint32_t*  max_number_of_pages )
 {
     // 1) Send my local unified definition manager to my parent
-    SCOREP_Ipc_Send( scorep_unified_definition_manager,
+    SCOREP_Mpi_Send( scorep_unified_definition_manager,
                      sizeof( *scorep_unified_definition_manager ),
-                     SCOREP_IPC_BYTE,
+                     SCOREP_MPI_UNSIGNED_CHAR,
                      parent );
 
     // 2) Send the page manager infos to my parent
@@ -551,21 +563,21 @@ send_local_unified_definitions_to_parent( int        parent,
         *moved_page_fills,
         moved_page_starts );
 
-    SCOREP_Ipc_Send( &number_of_used_pages,
-                     1, SCOREP_IPC_UINT32, parent );
-    SCOREP_Ipc_Send( *moved_page_ids,
+    SCOREP_Mpi_Send( &number_of_used_pages,
+                     1, SCOREP_MPI_UNSIGNED, parent );
+    SCOREP_Mpi_Send( *moved_page_ids,
                      number_of_used_pages,
-                     SCOREP_IPC_UINT32, parent );
-    SCOREP_Ipc_Send( *moved_page_fills,
+                     SCOREP_MPI_UNSIGNED, parent );
+    SCOREP_Mpi_Send( *moved_page_fills,
                      number_of_used_pages,
-                     SCOREP_IPC_UINT32, parent );
+                     SCOREP_MPI_UNSIGNED, parent );
 
     // 3) Send all pages to my parent
     for ( uint32_t page = 0; page < number_of_used_pages; page++ )
     {
-        SCOREP_Ipc_Send( moved_page_starts[ page ],
+        SCOREP_Mpi_Send( moved_page_starts[ page ],
                          ( *moved_page_fills )[ page ],
-                         SCOREP_IPC_BYTE, parent );
+                         SCOREP_MPI_UNSIGNED_CHAR, parent );
     }
 
     // 4) Prepare manager to receive my parents mappings
@@ -581,11 +593,12 @@ receive_mappings( int rank )
     #define DEF_WITH_MAPPING( Type, type ) \
     if ( scorep_unified_definition_manager->type ## _definition_counter > 0 ) \
     { \
-        SCOREP_Ipc_Recv( \
+        SCOREP_Mpi_Recv( \
             scorep_unified_definition_manager->mappings->type ## _mappings, \
             scorep_unified_definition_manager->type ## _definition_counter, \
-            SCOREP_IPC_UINT32, \
-            rank ); \
+            SCOREP_MPI_UNSIGNED, \
+            rank, \
+            SCOREP_MPI_STATUS_IGNORE ); \
     }
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
     #undef DEF_WITH_MAPPING
@@ -599,10 +612,10 @@ send_mappings( int                       rank,
     #define DEF_WITH_MAPPING( Type, type ) \
     if ( remote_definition_manager->type ## _definition_counter > 0 ) \
     { \
-        SCOREP_Ipc_Send( \
+        SCOREP_Mpi_Send( \
             remote_definition_manager->mappings->type ## _mappings, \
             remote_definition_manager->type ## _definition_counter, \
-            SCOREP_IPC_UINT32, \
+            SCOREP_MPI_UNSIGNED, \
             rank ); \
     }
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
@@ -650,10 +663,10 @@ apply_and_send_mappings( int                       rank,
                         remote_definition_manager->mappings->type ## _mappings[ i ] ]; \
             } \
         } \
-        SCOREP_Ipc_Send( \
+        SCOREP_Mpi_Send( \
             remote_definition_manager->mappings->type ## _mappings, \
             remote_definition_manager->type ## _definition_counter, \
-            SCOREP_IPC_UINT32, \
+            SCOREP_MPI_UNSIGNED, \
             rank ); \
     }
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
@@ -661,17 +674,17 @@ apply_and_send_mappings( int                       rank,
 }
 
 static uint32_t
-unify_mpp_mpi_communicators_create_local_mapping( uint32_t comm_world_size,
+scorep_unify_mpi_communicators_create_local_mapping( uint32_t comm_world_size,
+                                                     uint32_t rank );
+
+static void
+scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
+                                             uint32_t rank,
+                                             uint32_t total_number_of_root_comms );
+
+static void
+scorep_unify_mpi_communicators_define_self_likes( uint32_t comm_world_size,
                                                   uint32_t rank );
-
-static void
-unify_mpp_mpi_communicators_define_comms( uint32_t comm_world_size,
-                                          uint32_t rank,
-                                          uint32_t total_number_of_root_comms );
-
-static void
-unify_mpp_mpi_communicators_define_self_likes( uint32_t comm_world_size,
-                                               uint32_t rank );
 
 /**
  * Unifies the communicator ids. The (root, local_id) pair is already unique.
@@ -681,39 +694,40 @@ unify_mpp_mpi_communicators_define_self_likes( uint32_t comm_world_size,
  * Self-communicators are appended to this list.
  */
 static void
-unify_mpp_mpi_communicators( void )
+scorep_unify_mpi_communicators( void )
 {
-    uint32_t comm_world_size = SCOREP_Ipc_GetSize();
-    uint32_t rank            = SCOREP_Ipc_GetRank();
+    uint32_t comm_world_size = SCOREP_Mpi_GetCommWorldSize();
+    uint32_t rank            = SCOREP_Mpi_GetRank();
     uint32_t total_number_of_root_comms;
 
     /* 1) Generate mapping from local to global communicators */
     total_number_of_root_comms =
-        unify_mpp_mpi_communicators_create_local_mapping( comm_world_size,
-                                                          rank );
+        scorep_unify_mpi_communicators_create_local_mapping( comm_world_size,
+                                                             rank );
 
     /* 2) Generate definitions for MPI groups and non-self-like communicators */
-    unify_mpp_mpi_communicators_define_comms( comm_world_size,
-                                              rank,
-                                              total_number_of_root_comms );
+    scorep_unify_mpi_communicators_define_comms( comm_world_size,
+                                                 rank,
+                                                 total_number_of_root_comms );
 
     /* 3) Append information about self communicators */
-    unify_mpp_mpi_communicators_define_self_likes( comm_world_size,
-                                                   rank );
+    scorep_unify_mpi_communicators_define_self_likes( comm_world_size,
+                                                      rank );
 }
 
 uint32_t
-unify_mpp_mpi_communicators_create_local_mapping( uint32_t comm_world_size,
-                                                  uint32_t rank )
+scorep_unify_mpi_communicators_create_local_mapping( uint32_t comm_world_size,
+                                                     uint32_t rank )
 {
     /* Allocate memory for offsets */
     uint32_t* offsets = calloc( comm_world_size, sizeof( *offsets ) );
     assert( offsets );
 
     /* Gather communicator counts from all ranks */
-    SCOREP_Ipc_Allgather( &scorep_number_of_root_comms,
+    SCOREP_Mpi_Allgather( &scorep_number_of_root_comms,
+                          1, SCOREP_MPI_UNSIGNED,
                           offsets,
-                          1, SCOREP_IPC_UINT32 );
+                          1, SCOREP_MPI_UNSIGNED );
 
     /*
      * Calculate the total number of communicators, which is also the id of
@@ -779,8 +793,8 @@ unify_mpp_mpi_communicators_create_local_mapping( uint32_t comm_world_size,
  *         this communicator.
  */
 static int
-unify_mpp_mpi_is_this_rank_in_communicator( uint32_t global_comm_id,
-                                            int32_t* global_aux_ids )
+scorep_unify_mpi_is_this_rank_in_communicator( uint32_t global_comm_id,
+                                               int32_t* global_aux_ids )
 {
     uint32_t* string_mappings =
         scorep_local_definition_manager.mappings->string_mappings;
@@ -828,9 +842,9 @@ unify_mpp_mpi_is_this_rank_in_communicator( uint32_t global_comm_id,
 }
 
 void
-unify_mpp_mpi_communicators_define_comms( uint32_t comm_world_size,
-                                          uint32_t rank,
-                                          uint32_t total_number_of_root_comms )
+scorep_unify_mpi_communicators_define_comms( uint32_t comm_world_size,
+                                             uint32_t rank,
+                                             uint32_t total_number_of_root_comms )
 {
     int32_t* ranks_in_comm = NULL;   // Vector for the communicator belongings
                                      // (only significant in root)
@@ -888,13 +902,14 @@ unify_mpp_mpi_communicators_define_comms( uint32_t comm_world_size,
          */
         int32_t global_aux_ids[ 2 ] = { 0, -1 };
         int32_t my_rank_in_comm     =
-            unify_mpp_mpi_is_this_rank_in_communicator( global_comm_id,
-                                                        global_aux_ids );
+            scorep_unify_mpi_is_this_rank_in_communicator( global_comm_id,
+                                                           global_aux_ids );
 
         /* gather communicator information */
-        SCOREP_Ipc_Gather( &my_rank_in_comm,
+        SCOREP_Mpi_Gather( &my_rank_in_comm,
+                           1, SCOREP_MPI_INT,
                            ranks_in_comm,
-                           1, SCOREP_IPC_INT32,
+                           1, SCOREP_MPI_INT,
                            0 );
 
         if ( rank == 0 )
@@ -910,9 +925,9 @@ unify_mpp_mpi_communicators_define_comms( uint32_t comm_world_size,
                 {
                     if ( i > 0 && ranks_in_comm[ i ] == 0 )
                     {
-                        SCOREP_Ipc_Recv( global_aux_ids,
-                                         2, SCOREP_IPC_INT32,
-                                         i );
+                        SCOREP_Mpi_Recv( global_aux_ids,
+                                         2, SCOREP_MPI_INT,
+                                         i, SCOREP_MPI_STATUS_IGNORE );
                     }
 
                     ranks_in_group[ ranks_in_comm[ i ] ] = i;
@@ -933,8 +948,8 @@ unify_mpp_mpi_communicators_define_comms( uint32_t comm_world_size,
         }
         else if ( my_rank_in_comm == 0 )
         {
-            SCOREP_Ipc_Send( global_aux_ids,
-                             2, SCOREP_IPC_INT32, 0 );
+            SCOREP_Mpi_Send( global_aux_ids,
+                             2, SCOREP_MPI_UNSIGNED, 0 );
         }
     }
 
@@ -988,10 +1003,10 @@ unify_mpp_mpi_communicators_define_comms( uint32_t comm_world_size,
     }
 
     /* Broadcast the new global ids to all ranks */
-    SCOREP_Ipc_Bcast(
+    SCOREP_Mpi_Bcast(
         topo_comm_mapping,
         total_number_of_root_comms,
-        SCOREP_IPC_UINT32,
+        SCOREP_MPI_UNSIGNED,
         0 );
 
     /* Apply new ids to all communicators */
@@ -1018,19 +1033,19 @@ unify_mpp_mpi_communicators_define_comms( uint32_t comm_world_size,
 }
 
 void
-unify_mpp_mpi_communicators_define_self_likes( uint32_t comm_world_size,
-                                               uint32_t rank )
+scorep_unify_mpi_communicators_define_self_likes( uint32_t comm_world_size,
+                                                  uint32_t rank )
 {
     /*
      * Get the maximum number of different MPI_COMM_SELF references
      * on a single process
      */
     uint32_t max_number_of_self_ids = 0;
-    SCOREP_Ipc_Reduce( &scorep_number_of_self_comms,
+    SCOREP_Mpi_Reduce( &scorep_number_of_self_comms,
                        &max_number_of_self_ids,
                        1,
-                       SCOREP_IPC_UINT32,
-                       SCOREP_IPC_MAX,
+                       SCOREP_MPI_UNSIGNED,
+                       SCOREP_MPI_MAX,
                        0 );
 
     if ( rank == 0 )

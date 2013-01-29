@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2011,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -14,13 +14,13 @@
  *
  */
 
-#ifndef SCOREP_INTERNAL_UNIFY_H
-#define SCOREP_INTERNAL_UNIFY_H
+#ifndef SCOREP_UNIFY_H_
+#define SCOREP_UNIFY_H_
 
 
 
 /**
- * @file       src/measurement/scorep_unify.h
+ * @file       scorep_unify.h
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -39,7 +39,7 @@ SCOREP_Unify_Locally( void );
 
 
 void
-SCOREP_Unify_Mpp( void );
+SCOREP_Mpi_Unify( void );
 
 
 void
@@ -58,4 +58,4 @@ void
 SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager );
 
 
-#endif /* SCOREP_INTERNAL_UNIFY_H */
+#endif /* SCOREP_UNIFY_H_ */

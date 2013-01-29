@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -51,6 +51,7 @@
 #include <SCOREP_Timing.h>
 #include <scorep_definitions.h>
 #include <scorep_definition_structs.h>
+#include <scorep_mpi.h>
 #include <SCOREP_Mutex.h>
 
 
@@ -112,7 +113,7 @@ scorep_on_trace_pre_flush( void*         userData,
                            void*         callerData,
                            bool          final )
 {
-    if ( !SCOREP_Status_IsMppInitialized() )
+    if ( !SCOREP_Mpi_IsInitialized() )
     {
         // flush before MPI_Init, we are lost.
         UTILS_FATAL( "Trace buffer flush before MPI was initialized." );
@@ -120,7 +121,7 @@ scorep_on_trace_pre_flush( void*         userData,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_TRACING,
                         "[%d]: %s flush on %s#%" PRIu64 "\n",
-                        SCOREP_Status_GetRank(),
+                        SCOREP_Mpi_GetRank(),
                         final ? "final" : "intermediate",
                         fileType == OTF2_FILETYPE_ANCHOR ? "Anchor" :
                         fileType == OTF2_FILETYPE_GLOBAL_DEFS ? "GlobalDef" :
@@ -141,7 +142,7 @@ scorep_on_trace_pre_flush( void*         userData,
 
         fprintf( stderr,
                  "[Score-P] Trace buffer flush on rank %d.\n",
-                 SCOREP_Status_GetRank() );
+                 SCOREP_Mpi_GetRank() );
         fprintf( stderr,
                  "[Score-P] Increase SCOREP_TOTAL_MEMORY and try again.\n" );
     }
@@ -176,7 +177,7 @@ scorep_on_trace_post_flush( void*         userData,
     /* remember that we have flushed the first time
      * after this point, we can't switch into MPI mode anymore
      */
-    SCOREP_Status_OnOtf2Flush();
+    SCOREP_Otf2_OnFlush();
 
     return SCOREP_GetClockTicks();
 }
@@ -448,7 +449,7 @@ SCOREP_Tracing_WriteDefinitions( void )
     uint64_t epoch_begin;
     uint64_t epoch_end;
     SCOREP_GetGlobalEpoch( &epoch_begin, &epoch_end );
-    if ( SCOREP_Status_GetRank() == 0 )
+    if ( SCOREP_Mpi_GetRank() == 0 )
     {
         OTF2_GlobalDefWriter* global_definition_writer =
             OTF2_Archive_GetGlobalDefWriter( scorep_otf2_archive );

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2011,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -17,7 +17,7 @@
 
 
 /**
- * @file       src/measurement/scorep_unify.c
+ * @file       scorep_unify.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -30,7 +30,7 @@
 
 #include <SCOREP_Config.h>
 #include "scorep_environment.h"
-#include "scorep_status.h"
+#include "scorep_mpi.h"
 #include "scorep_definitions.h"
 #include <assert.h>
 #include <stdlib.h>
@@ -65,9 +65,9 @@ void
 SCOREP_Unify( void )
 {
     SCOREP_Unify_Locally();
-    if ( SCOREP_Status_IsMpp() )
+    if ( SCOREP_Mpi_HasMpi() )
     {
-        SCOREP_Unify_Mpp();
+        SCOREP_Mpi_Unify();
     }
 }
 

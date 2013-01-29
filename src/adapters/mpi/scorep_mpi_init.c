@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -272,8 +272,13 @@ scorep_mpi_deregister( void )
         PMPI_Finalized( &res );
         if ( !res )
         {
-            SCOREP_FinalizeMppMeasurement();
+            extern void
+            scorep_timing_reduce_runtime_management_timings();
+
+            scorep_timing_reduce_runtime_management_timings();
+
             PMPI_Finalize();
+            SCOREP_OnPMPI_Finalize();
         }
     }
 }

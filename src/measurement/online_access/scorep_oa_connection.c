@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2011,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -28,8 +28,7 @@
 
 #include "scorep_oa_connection.h"
 #include "scorep_oa_sockets.h"
-#include "scorep_status.h"
-#include "scorep_ipc.h"
+#include "scorep_mpi.h"
 
 #include <stdio.h>
 
@@ -50,9 +49,9 @@ scorep_oa_connection_connect
     {
         return SCOREP_SUCCESS;
     }
-    if ( SCOREP_Status_IsMpp() )
+    if ( SCOREP_Mpi_HasMpi() )
     {
-        silc_oa_port = silc_oa_port + SCOREP_Status_GetRank();
+        silc_oa_port = silc_oa_port + SCOREP_Mpi_GetRank();
     }
     scorep_oa_socket = scorep_oa_sockets_server_startup_retry( &silc_oa_port, 10, 1 );
     if ( scorep_oa_socket == -1 )

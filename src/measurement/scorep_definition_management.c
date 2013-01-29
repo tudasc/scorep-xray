@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -41,7 +41,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include "scorep_ipc.h"
+#include "scorep_mpi.h"
 #include "scorep_status.h"
 #include <jenkins_hash.h>
 #include <tracing/SCOREP_Tracing.h>

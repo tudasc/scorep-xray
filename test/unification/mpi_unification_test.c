@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -17,7 +17,7 @@
 
 
 /**
- * @file       test/unification/mpi_unification_test.c
+ * @file       mpi_unification_test.c
  * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
  *
  * @status alpha
@@ -51,21 +51,19 @@ SCOREP_RegisterAllConfigVariables( void );
 void
 scorep_mpi_register_regions( void );
 void
-SCOREP_Status_OnMppInit( void );
-void
-SCOREP_Status_OnMppFinalize( void );
-void
 SCOREP_Unify_Locally( void );
 void
-SCOREP_Unify_Mpp( void );
+SCOREP_Mpi_Unify( void );
 void
-SCOREP_Definitions_Initialize( void );
+SCOREP_Definitions_Initialize();
 void
 scorep_mpi_setup_world( void );
-int
-SCOREP_Ipc_GetRank( void );
 void
-SCOREP_Ipc_Barrier( void );
+SCOREP_Mpi_SetRankTo( int rank );
+int
+SCOREP_Mpi_GetRank( void );
+void
+SCOREP_Mpi_GlobalBarrier( void );
 uint64_t
 SCOREP_Env_GetTotalMemory();
 uint64_t
@@ -127,7 +125,7 @@ main( int argc, char* argv[] )
 
     PMPI_Init( &argc, &argv );
 
-    SCOREP_Status_OnMppInit();
+    SCOREP_OnPMPI_Init();
     scorep_mpi_setup_world();
 
     int size;
@@ -135,6 +133,8 @@ main( int argc, char* argv[] )
 
     int rank;
     PMPI_Comm_rank( MPI_COMM_WORLD, &rank );
+
+    SCOREP_Mpi_SetRankTo( rank );
 
     char rank_buffer[ 32 ];
     sprintf( rank_buffer, "Rank %d", rank );
@@ -176,7 +176,7 @@ main( int argc, char* argv[] )
 
     double timing = SCOREP_GetClockTicks();
     SCOREP_Unify_Locally();
-    SCOREP_Unify_Mpp();
+    SCOREP_Mpi_Unify();
     timing = ( SCOREP_GetClockTicks() - timing ) / SCOREP_GetClockResolution();
 
     char result_name[ 64 ];
@@ -239,7 +239,7 @@ main( int argc, char* argv[] )
 
         fclose( result );
     }
-    SCOREP_Ipc_Barrier();
+    SCOREP_Mpi_GlobalBarrier();
 
     if ( scorep_test_mpi_unify_verbose >= 2 )
     {
@@ -288,13 +288,13 @@ main( int argc, char* argv[] )
                 fclose( result );
             }
 
-            SCOREP_Ipc_Barrier();
+            SCOREP_Mpi_GlobalBarrier();
         }
     }
 
-    SCOREP_Status_OnMppFinalize();
-
     PMPI_Finalize();
+
+    SCOREP_OnPMPI_Finalize();
 
     return 0;
 }

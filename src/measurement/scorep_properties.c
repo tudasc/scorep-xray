@@ -42,6 +42,7 @@
 #include "scorep_definitions.h"
 #include "scorep_types.h"
 #include "scorep_status.h"
+#include "scorep_mpi.h"
 
 #include <tracing/SCOREP_Tracing.h>
 
@@ -84,7 +85,7 @@ scorep_properties_initialize( void )
 void
 scorep_properties_write( void )
 {
-    if ( SCOREP_Status_GetRank() != 0 )
+    if ( SCOREP_Mpi_GetRank() != 0 )
     {
         return;
     }

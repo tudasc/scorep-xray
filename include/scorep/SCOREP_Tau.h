@@ -55,7 +55,7 @@ extern "C" {
  * Each arising error leads to a fatal abortion of the program.
  *
  * @note The MPI adapter needs special treatment, see
- * SCOREP_InitMppMeasurement().
+ * SCOREP_InitMeasurementMPI().
  *
  * @see SCOREP_FinalizeMeasurement()
  */
