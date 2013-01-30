@@ -140,3 +140,22 @@ BUILT_SOURCES += \
 
 src/utils/include/SCOREP_ErrorCodes.h: $(srcdir)/share/scorep.errors
 src/utils/include/scorep_error_decls.gen.h: $(srcdir)/share/scorep.errors
+
+
+## bitten targets, intended to be used from bitten only
+
+# Copy installcheck binaries to a persistent directory
+# $(INSTALLCHECKS_PERSIST_DIR) (to be executed later on).
+# Requires lockfile-progs
+bitten-persist-installchecks:
+	@lockfile-check $(INSTALLCHECKS_PERSIST_DIR); \
+	if test $$? -eq 0; then exit 0; fi; \
+	lockfile-create $(INSTALLCHECKS_PERSIST_DIR) || exit 1; \
+	lockfile-touch $(INSTALLCHECKS_PERSIST_DIR) &  \
+	lockfile_touch_pid="$$!"; \
+	rm -rf $(INSTALLCHECKS_PERSIST_DIR); \
+	mkdir $(INSTALLCHECKS_PERSIST_DIR) || exit 1; \
+	cp installcheck/bin/* $(INSTALLCHECKS_PERSIST_DIR)/ || exit 1; \
+	echo $(REVISION) > $(INSTALLCHECKS_PERSIST_DIR)/REVISION || exit 1; \
+	kill "$${lockfile_touch_pid}"; \
+	lockfile-remove $(INSTALLCHECKS_PERSIST_DIR) || exit 1
