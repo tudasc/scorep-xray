@@ -154,7 +154,7 @@ bitten-persist-installchecks:
 	lockfile-touch $(INSTALLCHECKS_PERSIST_DIR) &  \
 	lockfile_touch_pid="$$!"; \
 	rm -rf $(INSTALLCHECKS_PERSIST_DIR); \
-	mkdir $(INSTALLCHECKS_PERSIST_DIR) || exit 1; \
+	$(MKDIR_P) $(INSTALLCHECKS_PERSIST_DIR) || exit 1; \
 	cp installcheck/bin/* $(INSTALLCHECKS_PERSIST_DIR)/ || exit 1; \
 	echo $(REVISION) > $(INSTALLCHECKS_PERSIST_DIR)/REVISION || exit 1; \
 	kill "$${lockfile_touch_pid}"; \
