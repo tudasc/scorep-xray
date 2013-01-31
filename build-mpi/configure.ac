@@ -30,7 +30,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
     # on power6 systems with poe, e.g. JUMP, we cannot execute a MPI
     # program on the login node. By setting cross_compiling temporarily
     # to "yes", we allow configure to succeed. Wrap all macros that might
-    # execute a program in a cross_compiling=yes block, e.g. AC_CHECK_SIZEOF
+    # execute a program in a cross_compiling=yes block, e.g. AC_SCOREP_CHECK_SIZEOF
 #fi
 
 AC_SCOREP_PRECIOUS_VARS_MPI
@@ -55,7 +55,7 @@ AC_SCOREP_CONVERT_MPI_FLAGS([LIBS])
 
 AC_LANG_PUSH([C])
 AC_SCOREP_MPI_WORKING([scorep_mpi_c_supported="yes"],[scorep_mpi_c_supported="no"])
-AC_CHECK_SIZEOF([void *])
+AC_SCOREP_CHECK_SIZEOF([void *])
 AC_LANG_POP([C])
 cross_compiling=${ac_scorep_cross_compiling}
 AC_SCOREP_SUMMARY([MPI support for C], [$scorep_mpi_c_supported])

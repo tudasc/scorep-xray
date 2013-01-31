@@ -113,8 +113,8 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
       [backend_suffix="/backend"])
 AC_SUBST([backend_suffix])
 
-AC_CHECK_SIZEOF([void *])
-AC_CHECK_SIZEOF([int64_t])
+AC_SCOREP_CHECK_SIZEOF([void *])
+AC_SCOREP_CHECK_SIZEOF([int64_t])
 if (( ac_cv_sizeof_void_p > ac_cv_sizeof_int64_t )); then
     AC_MSG_ERROR([sizeof(void*) > sizeof(int64_t): internal thread handling will not work.])
 fi
