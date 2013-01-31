@@ -265,6 +265,39 @@ in Table @tabref{Clustering modes}.
   </table>
 \endif
 
+@subsection profile_debug_output Enabling additional debug output on inconsistent profiles
+@seclabel{clustering}
+
+If the @scorep profiling system detects inconsistencies during measurement, it stops
+recording the profile and prints an error message. Examples for reasons of an 
+inconsistent profile are, if the nesting order of function entries and exits is 
+broken, or events appear for an uninitialized thread. This might indicate an bug
+of the profile, but typically the cause is an erroneous instrumentation. E.g. if
+manual instrumentation is applied, but not all possible exit points of a function
+are instrumented. 
+
+In order to support debugging of manual instrumentation, or during the development
+of own automatic instrumentation techniques, the profile can write additional 
+information about its current state in a textual form into a file. This output
+may contain the following information:
+<ul>
+ <li> The current call stack of the failing thread </li>
+ <li> The profile structure of the failing thread </li>
+ <li> The complete profile structure </li>
+</ul>
+None of the three entries is guaranteed to appear in the output, it depends on 
+the current state of the profile. It might not be possible to provide any 
+output at all. Furthermore, the online representation of the profile structure may
+differ from the final profile structure.
+
+You can enable this additional output by setting the environment variable
+<tt>SCOREP_PROFILING_ENABLE_CORE_FILES</tt> to <tt>true</tt>. If the
+profile detects an inconsistency, it will write a core file into
+your measurement directory. Then, if an inconstant profiles is detected on multiple
+locations, every location will write a core file. Thus, it is not recommended,
+to enable this feature for large scale runs.
+
+
 @section tracing Tracing
 @seclabel{tracing}
 
