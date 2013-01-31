@@ -835,6 +835,10 @@ yes/DEFAULT/1 = "runtime,kernel"
 no = disable CUDA measurement (same as unset SCOREP_CUDA_ENABLE)
 @endcode
 
+CUPTI uses an extra buffer to store its activity records.
+If the size of this buffer is too small, @scorep will print a warning about the current buffer size and the number of dropped records.
+To avoid dropping of records increase the buffer size via the environment variable \confvar{SCOREP_CUDA_BUFFER}.
+
 @note @scorep supports CUDA monitoring since CUDA toolkit version 4.1. Make sure that the @scorep installation has configured CUDA support. The configure summary should contain the line: 
 <pre>CUDA support: yes</pre>
 If not, for most systems it is sufficient to specify the CUDA toolkit directory at @scorep configuration time: 
