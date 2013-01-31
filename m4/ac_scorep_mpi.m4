@@ -258,7 +258,7 @@ ac_scorep_mpi_int32_datatype=none
 AC_SCOREP_MPI_CHECK_DATATYPE([MPI_INT32_T], [
     ac_scorep_mpi_int32_datatype=MPI_INT32_T
 ])
-AC_CHECK_SIZEOF([signed int])
+AC_SCOREP_CHECK_SIZEOF([signed int])
 AS_IF([test "x$ac_scorep_mpi_int32_datatype" = "xnone" &&
        test $ac_cv_sizeof_signed_int -eq 4], [
     AC_SCOREP_MPI_CHECK_DATATYPE([MPI_INT], [
@@ -281,7 +281,7 @@ ac_scorep_mpi_uint32_datatype=none
 AC_SCOREP_MPI_CHECK_DATATYPE([MPI_UINT32_T], [
     ac_scorep_mpi_uint32_datatype=MPI_UINT32_T
 ])
-AC_CHECK_SIZEOF([unsigned int])
+AC_SCOREP_CHECK_SIZEOF([unsigned int])
 AS_IF([test "x$ac_scorep_mpi_uint32_datatype" = "xnone" &&
        test $ac_cv_sizeof_unsigned_int -eq 4], [
     AC_SCOREP_MPI_CHECK_DATATYPE([MPI_UNSIGNED], [
@@ -304,7 +304,7 @@ ac_scorep_mpi_int64_datatype=none
 AC_SCOREP_MPI_CHECK_DATATYPE([MPI_INT64_T], [
     ac_scorep_mpi_int64_datatype=MPI_INT64_T
 ])
-AC_CHECK_SIZEOF([long])
+AC_SCOREP_CHECK_SIZEOF([long])
 AS_IF([test "x$ac_scorep_mpi_int64_datatype" = "xnone" &&
        test $ac_cv_sizeof_long -eq 8], [
     AC_SCOREP_MPI_CHECK_DATATYPE([MPI_LONG], [
@@ -316,7 +316,7 @@ AS_IF([test "x$ac_scorep_mpi_int64_datatype" = "xnone" &&
     ])
 ])
 
-AC_CHECK_SIZEOF([long long])
+AC_SCOREP_CHECK_SIZEOF([long long])
 AS_IF([test "x$ac_scorep_mpi_int64_datatype" = "xnone" &&
        test $ac_cv_sizeof_long_long -eq 8], [
     AC_SCOREP_MPI_CHECK_DATATYPE([MPI_LONG_LONG], [
@@ -343,14 +343,14 @@ ac_scorep_mpi_uint64_datatype=none
 AC_SCOREP_MPI_CHECK_DATATYPE([MPI_UINT64_T], [
     ac_scorep_mpi_uint64_datatype=MPI_UINT64_T
 ])
-AC_CHECK_SIZEOF([unsigned long])
+AC_SCOREP_CHECK_SIZEOF([unsigned long])
 AS_IF([test "x$ac_scorep_mpi_uint64_datatype" = "xnone" &&
        test $ac_cv_sizeof_unsigned_long -eq 8], [
     AC_SCOREP_MPI_CHECK_DATATYPE([MPI_UNSIGNED_LONG], [
         ac_scorep_mpi_uint64_datatype=MPI_UNSIGNED_LONG
     ])
 ])
-AC_CHECK_SIZEOF([unsigned long long])
+AC_SCOREP_CHECK_SIZEOF([unsigned long long])
 AS_IF([test "x$ac_scorep_mpi_uint64_datatype" = "xnone" &&
        test $ac_cv_sizeof_unsigned_long_long -eq 8], [
     AC_SCOREP_MPI_CHECK_DATATYPE([MPI_UNSIGNED_LONG_LONG], [

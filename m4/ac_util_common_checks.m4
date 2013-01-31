@@ -94,8 +94,8 @@ AC_SEARCH_LIBS([trunc], [m])
 
 AC_REQUIRE([AC_PROG_RANLIB])
 
-AC_CHECK_SIZEOF([void *])
-AC_CHECK_SIZEOF([double])
+AC_SCOREP_CHECK_SIZEOF([void *])
+AC_SCOREP_CHECK_SIZEOF([double])
 if (( ac_cv_sizeof_void_p > ac_cv_sizeof_double )); then
     AC_DEFINE_UNQUOTED(
         [SCOREP_ALLOCATOR_ALIGNMENT], 
