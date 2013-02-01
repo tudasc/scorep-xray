@@ -1,3 +1,4 @@
+
 /** @page measurement Application Measurement
 \seclabel{measurement}
 
@@ -266,7 +267,7 @@ in Table @tabref{Clustering modes}.
 \endif
 
 @subsection profile_debug_output Enabling additional debug output on inconsistent profiles
-@seclabel{clustering}
+@seclabel{profile_debug_output}
 
 If the @scorep profiling system detects inconsistencies during measurement, it stops
 recording the profile and prints an error message. Examples for reasons of an 
@@ -291,11 +292,11 @@ output at all. Furthermore, the online representation of the profile structure m
 differ from the final profile structure.
 
 You can enable this additional output by setting the environment variable
-<tt>SCOREP_PROFILING_ENABLE_CORE_FILES</tt> to <tt>true</tt>. If the
+<tt>SCOREP_PROFILING_ENABLE_CORE_FILES</tt> to <tt>true</tt>. Then, if the
 profile detects an inconsistency, it will write a core file into
-your measurement directory. Then, if an inconstant profiles is detected on multiple
-locations, every location will write a core file. Thus, it is not recommended,
-to enable this feature for large scale runs.
+your measurement directory. If an inconstant profiles is detected on multiple
+locations, every location where an inconsistency is detected will write a 
+core file. Thus, it is not recommended, to enable this feature for large scale runs.
 
 
 @section tracing Tracing
