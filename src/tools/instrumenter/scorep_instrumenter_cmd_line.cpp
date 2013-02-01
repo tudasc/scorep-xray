@@ -635,10 +635,6 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
         }
         return scorep_parse_mode_command;
     }
-    else if ( arg.substr( 0, 6 ) == "-lcuda" )
-    {
-        m_is_cuda_application = enabled;
-    }
     else if ( arg.substr( 0, 5 ) == "-lmpi" )
     {
         m_lmpi_set      = true;
@@ -931,10 +927,6 @@ SCOREP_Instrumenter_CmdLine::parse_library( std::string arg )
         {
             m_is_mpi_application = enabled;
         }
-    }
-    if ( arg.substr( 0, 4 ) == "cuda" )
-    {
-        m_is_cuda_application = enabled;
     }
 
     *m_current_flags += " -l" + arg;
