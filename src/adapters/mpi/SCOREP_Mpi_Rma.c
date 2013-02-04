@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -263,9 +263,7 @@ MPI_Win_create( void*    base,
 
     if ( event_gen_active )
     {
-/* One-sided communication not handled in first version
-    esd_mpi_wincollexit(scorep_mpi_regid[SCOREP__MPI_WIN_CREATE], scorep_mpi_win_rank_id(*win));
- */
+        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_WIN_CREATE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
 
@@ -309,10 +307,7 @@ MPI_Win_free( MPI_Win* win )
 
     if ( event_gen_active )
     {
-/* One-sided communication not handled in first version
-    esd_mpi_wincollexit(scorep_mpi_regid[SCOREP__MPI_WIN_FREE], win_handle);
- */
-
+        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_WIN_FREE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
 
@@ -348,11 +343,7 @@ MPI_Win_complete( MPI_Win win )
 
         return_val = PMPI_Win_complete( win );
 
-/* One-sided communication not handled in first version
-    esd_mpi_winexit(scorep_mpi_regid[SCOREP__MPI_WIN_COMPLETE],
-                    scorep_mpi_win_rank_id(win), scorep_mpi_winacc_get_gid(win, 1), 1);
-    scorep_mpi_winacc_end(win, 1);
- */
+        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_WIN_COMPLETE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -387,9 +378,8 @@ MPI_Win_fence( int     assert,
 
         return_val = PMPI_Win_fence( assert, win );
 
-/* One-sided communication not handled in first version
-    esd_mpi_wincollexit(scorep_mpi_regid[SCOREP__MPI_WIN_FENCE], scorep_mpi_win_rank_id(win));
- */
+        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_WIN_FENCE ] );
+
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -470,10 +460,8 @@ MPI_Win_post( MPI_Group group,
  */
         return_val = PMPI_Win_post( group, assert, win );
 
-/* One-sided communication not handled in first version
-    esd_mpi_winexit(scorep_mpi_regid[SCOREP__MPI_WIN_POST],
-                    scorep_mpi_win_rank_id(win), scorep_mpi_winacc_get_gid(win, 0), 0);
- */
+        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_WIN_POST ] );
+
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -512,10 +500,8 @@ MPI_Win_start( MPI_Group group,
  */
         return_val = PMPI_Win_start( group, assert, win );
 
-/* One-sided communication not handled in first version
-    esd_mpi_winexit(scorep_mpi_regid[SCOREP__MPI_WIN_START],
-                    scorep_mpi_win_rank_id(win), scorep_mpi_winacc_get_gid(win, 1), 0);
- */
+        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_WIN_START ] );
+
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -563,6 +549,8 @@ MPI_Win_test( MPI_Win win,
                       scorep_mpi_win_rank_id(win), scorep_mpi_winacc_get_gid(win, 0), 0);
     }
  */
+        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_WIN_TEST ] );
+
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -640,6 +628,8 @@ MPI_Win_wait( MPI_Win win )
                     scorep_mpi_win_rank_id(win), scorep_mpi_winacc_get_gid(win, 0), 1);
     scorep_mpi_winacc_end(win, 0);
  */
+
+        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_WIN_WAIT ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
