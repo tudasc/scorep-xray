@@ -105,7 +105,7 @@ required 24 bytes per process and used 0 s execution time. The
 regions are sorted by their buffer requirements.
 
 @section scorep_filter Defining and testing a filter
-
+@seclabel{scorep_filter}
 For defining a filter, it is recommended to exclude short frequently called
 functions from measurement, because they require a lot of
 buffer space (represented by a high value under @verb{max_tbc}) but incur a high
@@ -178,9 +178,4 @@ scorep-score profile.cubex -c 3
 would mean that @verb{scorep-score} estimates the disk and memory requirements
 for the case that you record 3 additional metrics.
 
-@latexonly
-\appendices
-\renewcommand\chaptername{Appendix}
-
-@endlatexonly
 */

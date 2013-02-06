@@ -1,4 +1,3 @@
-
 /** @page measurement Application Measurement
 \seclabel{measurement}
 
@@ -100,9 +99,9 @@ with the names phase1 and phase2 are not of type
 <tt>SCOREP_USER_REGION_TYPE_PHASE</tt> on the left side and the forest if they are of 
 type <tt>SCOREP_USER_REGION_TYPE_PHASE</tt> on the right side.
 
-@img{phase_profiling.png,PhaseProfiling,Call-tree changes when using phases. The left 
+@img{phase_profiling,PhaseProfiling,Call-tree changes when using phases. The left 
 side shows the calltree if no region is of type phase. The right side shows the 
-call-tree forest with phases., width=0.9\textwidth}
+call-tree forest with phases., width=0.9\textwidth} 
 
 If the phase consists of multiple partitions, and thus can not be enclosed by a single
 code region, all code-regions that form the phase must have the same region handle.

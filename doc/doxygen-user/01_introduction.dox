@@ -80,7 +80,8 @@ the basic steps and commands required to initiate a performance
 analysis of a parallel application. In the Chapters @secref{instrumentation}
 and @secref{measurement}, the
 reader can find more detailed information about the components of
-@scorep. 
+@scorep. Chapter @secref{workflow} provides a typical workflow of
+performance analysis with @scorep and detailed instructions.
 
 @section getting_help Getting Help and Support 
 @seclabel{getting_help}
@@ -148,8 +149,8 @@ Performance optimization is a process that is usually executed in a
 work cycle consisting of a number of individual steps as indicated
 in Figure @figref{perf-opt-cycle}.
 
-@img{perf-opt-cycle.png,perf-opt-cycle, The performance optimization cycle,
-width=0.85\textwidth} 
+@img{perf-opt-cycle,perf-opt-cycle, The performance optimization cycle,width=0.85\textwidth}
+
 
 Thus, the process always begins with the original application in its
 unoptimized state. This application needs to be instrumented, i.\ e.\ it
@@ -225,7 +226,9 @@ graphical overview of this structure is given in Fig.\ @figref{score-p-overview}
 We shall now briefly introduce the elements of this structure; more
 details will be given in the later chapters of this document.
 
-@img{score-p-overview.png,score-p-overview, Overview of the @scorep measurement system architecture and the tools interface., width=0.9\textwidth}
+
+@img{score-p-overview,score-p-overview, Overview of the @scorep measurement system architecture and the tools interface., width=0.9\textwidth}
+
 
 In order to instrument an application, the user needs to recompile the
 application using the @scorep instrumentation command, which is added
@@ -237,7 +240,9 @@ instrumentation. These are currently:
  <li> compiler instrumentation, </li>
  <li> MPI library interposition, </li>
  <li> source code instrumentation via the TAU instrumentor, </li>
- <li> and OpenMP source code instrumentation using Opari2. </li>
+ <li> OpenMP source code instrumentation using Opari2. </li>
+ <li> binary instrumentation using Cobi
+ <li> CUDA instrumentation</li>
 </ul>
 
 While the first three of these methods are based on using tools
@@ -262,10 +267,10 @@ In order to reflect the above-mentioned extensions, this interface also
 had to be replaced by an enhanced version, POMP2.
  
 Additionally, the user may instrument the code manually with convenient 
-macros provided by @scorep. Future extensions of @scorep are likely to
-include the option for instrumentation of executables using binary 
-rewriting. A sampling functionality that may provide an alternative to 
-direct instrumentation is another extension to be added to @scorep later.
+macros provided by @scorep. @scorep also includes the option for 
+instrumentation of executables using binary rewriting. 
+Later @scorep may be extended with sampling functionality 
+that provides an alternative to direct instrumentation.
 
 During measurement, the system records several performance metrics
 including execution time, communication metrics, and optionally
