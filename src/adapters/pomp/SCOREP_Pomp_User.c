@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -294,17 +294,16 @@ POMP2_Assign_handle( POMP2_Region_handle* pomp_handle,
  ***************************************************************************************/
 
 void
-POMP2_Begin( POMP2_Region_handle* pomp_handle )
+POMP2_Begin( POMP2_Region_handle* pomp_handle,
+             const char           ctc_string[] )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Begin" );
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
+        SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        if ( region->innerBlock != SCOREP_INVALID_REGION )
-        {
-            SCOREP_EnterRegion( region->innerBlock );
-        }
+        SCOREP_EnterRegion( region->innerBlock );
     }
 }
 
@@ -316,10 +315,7 @@ POMP2_End( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        if ( region->innerBlock != SCOREP_INVALID_REGION )
-        {
-            SCOREP_ExitRegion( region->innerBlock );
-        }
+        SCOREP_ExitRegion( region->innerBlock );
     }
 }
 

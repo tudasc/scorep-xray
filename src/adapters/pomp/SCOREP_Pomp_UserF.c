@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -70,11 +70,12 @@ void FSUB(POMP2_On)( void )
   scorep_pomp_is_tracing_on = 1;
 }
 
-void FSUB(POMP2_Begin)(POMP2_Region_handle_fortran* regionHandle)
+void FSUB(POMP2_Begin)(POMP2_Region_handle_fortran* regionHandle,
+		       const char*                  ctc_string )
 {
     if ( scorep_pomp_is_tracing_on )
     {
-        POMP2_Begin(SCOREP_POMP_F2C_REGION( regionHandle ));
+      POMP2_Begin(SCOREP_POMP_F2C_REGION( regionHandle ), ctc_string );
     }
 }
 

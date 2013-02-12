@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -37,12 +37,12 @@
  */
 /* *INDENT-OFF*  */
 void FSUB(POMP2_Atomic_enter)( POMP2_Region_handle_fortran* region_handle,
-                               char*                        ctc_string )
+                               const char*                        ctc_string )
 {
     if ( scorep_pomp_is_tracing_on )
     {
       POMP2_Atomic_enter( SCOREP_POMP_F2C_REGION( region_handle ),\
-                          NULL );
+                          ctc_string);
     }
 }
 
@@ -56,13 +56,13 @@ void FSUB(POMP2_Atomic_exit)( POMP2_Region_handle_fortran* region_handle )
 
 void FSUB(POMP2_Barrier_enter)( POMP2_Region_handle_fortran* region_handle,
                                 POMP2_Task_handle_fortran*   pomp_old_task,
-                                char*                        ctc_string )
+                                const char*                        ctc_string )
 {
     if ( scorep_pomp_is_tracing_on )
     {
       POMP2_Barrier_enter( SCOREP_POMP_F2C_REGION( region_handle ),
                            SCOREP_POMP_F2C_TASK( pomp_old_task ),
-                           NULL );
+                           ctc_string);
     }
 }
 
@@ -97,12 +97,12 @@ void FSUB(POMP2_Implicit_barrier_exit)( POMP2_Region_handle_fortran* region_hand
 }
 
 void FSUB(POMP2_Flush_enter)( POMP2_Region_handle_fortran* region_handle,
-                              char*                        ctc_string )
+                              const char*                        ctc_string )
 {
     if ( scorep_pomp_is_tracing_on )
     {
       POMP2_Flush_enter( SCOREP_POMP_F2C_REGION( region_handle ),
-                         NULL );
+                         ctc_string);
     }
 }
 
@@ -136,7 +136,7 @@ void FSUB(POMP2_Critical_enter)( POMP2_Region_handle_fortran* region_handle,
     if ( scorep_pomp_is_tracing_on )
     {
       POMP2_Critical_enter( SCOREP_POMP_F2C_REGION( region_handle ),
-                            NULL );
+                            ctc_string);
     }
 }
 
@@ -154,7 +154,7 @@ void FSUB(POMP2_Do_enter)( POMP2_Region_handle_fortran* region_handle,
     if ( scorep_pomp_is_tracing_on )
     {
       POMP2_For_enter( SCOREP_POMP_F2C_REGION( region_handle ),
-                       NULL );
+                       ctc_string);
     }
 }
 
@@ -172,7 +172,7 @@ void FSUB(POMP2_Master_begin)( POMP2_Region_handle_fortran* region_handle,
     if ( scorep_pomp_is_tracing_on )
     {
       POMP2_Master_begin( SCOREP_POMP_F2C_REGION( region_handle ),
-                          NULL );
+                          ctc_string);
     }
 }
 
@@ -204,7 +204,7 @@ void FSUB(POMP2_Parallel_fork)( POMP2_Region_handle_fortran* region_handle,
                                 int*                         if_clause,
                                 int*                         num_threads,
                                 POMP2_Task_handle_fortran*   pomp_old_task,
-                                char*                        ctc_string )
+                                const char*                        ctc_string )
 {
     if ( scorep_pomp_is_tracing_on )
       {
@@ -212,7 +212,7 @@ void FSUB(POMP2_Parallel_fork)( POMP2_Region_handle_fortran* region_handle,
                              *if_clause,
                              *num_threads,
                              SCOREP_POMP_F2C_TASK( pomp_old_task ),
-                             NULL );
+                             ctc_string);
       }
 }
 
@@ -227,12 +227,12 @@ void FSUB(POMP2_Parallel_join)( POMP2_Region_handle_fortran* region_handle,
 }
 
 void FSUB(POMP2_Section_begin)( POMP2_Region_handle_fortran* region_handle,
-                                char*                        ctc_string)
+                                const char*                        ctc_string)
 {
     if ( scorep_pomp_is_tracing_on )
     {
       POMP2_Section_begin( SCOREP_POMP_F2C_REGION( region_handle ),
-                           NULL );
+                           ctc_string);
     }
 }
 
@@ -245,12 +245,12 @@ void FSUB(POMP2_Section_end)( POMP2_Region_handle_fortran* region_handle )
 }
 
 void FSUB(POMP2_Sections_enter)( POMP2_Region_handle_fortran* region_handle,
-                                 char*                        ctc_string )
+                                 const char*                        ctc_string )
 {
     if ( scorep_pomp_is_tracing_on )
     {
       POMP2_Sections_enter(SCOREP_POMP_F2C_REGION( region_handle ),
-                           NULL );
+                           ctc_string);
     }
 }
 
@@ -279,12 +279,12 @@ void FSUB(POMP2_Single_end)( POMP2_Region_handle_fortran* region_handle )
 }
 
 void FSUB(POMP2_Single_enter)( POMP2_Region_handle_fortran* region_handle,
-                               char*                        ctc_string )
+                               const char*                        ctc_string )
 {
     if ( scorep_pomp_is_tracing_on )
     {
       POMP2_Single_enter(SCOREP_POMP_F2C_REGION( region_handle ),
-                         NULL );
+                         ctc_string);
     }
 }
 
@@ -300,7 +300,7 @@ void FSUB(POMP2_Task_create_begin)( POMP2_Region_handle_fortran* region_handle,
                                     POMP2_Task_handle_fortran*   pomp2_new_task,
                                     POMP2_Task_handle_fortran*   pomp2_old_task,
                                     int*                         pomp2_if,
-                                    char*                        ctc_string )
+                                    const char*                        ctc_string )
 {
   POMP2_Task_create_begin( SCOREP_POMP_F2C_REGION( region_handle ),
                            SCOREP_POMP_F2C_TASK( pomp2_new_task ),
@@ -332,13 +332,13 @@ void FSUB(POMP2_Untied_task_create_begin)( POMP2_Region_handle_fortran* region_h
                                            POMP2_Task_handle_fortran*   pomp2_new_task,
                                            POMP2_Task_handle_fortran*   pomp2_old_task,
                                            int*                         pomp2_if,
-                                           char*                        ctc_string )
+                                           const char*                        ctc_string )
 {
   POMP2_Task_create_begin( SCOREP_POMP_F2C_REGION( region_handle ),
                            SCOREP_POMP_F2C_TASK( pomp2_new_task ),
                            SCOREP_POMP_F2C_TASK( pomp2_old_task ),
                            *pomp2_if,
-                           NULL );
+                           ctc_string);
 }
 
 void FSUB(POMP2_Untied_task_create_end)( POMP2_Region_handle_fortran* region_handle,
@@ -362,11 +362,11 @@ void FSUB(POMP2_Untied_task_end)( POMP2_Region_handle_fortran* region_handle )
 
 void FSUB(POMP2_Taskwait_begin)( POMP2_Region_handle_fortran* region_handle,
                                  POMP2_Task_handle_fortran*   pomp2_old_task,
-                                 char*                        ctc_string[] )
+                                 const char*                  ctc_string )
 {
   POMP2_Taskwait_begin( SCOREP_POMP_F2C_REGION( region_handle ),
                         SCOREP_POMP_F2C_TASK( pomp2_old_task ),
-                        NULL );
+                        ctc_string);
 }
 
 void FSUB(POMP2_Taskwait_end)( POMP2_Region_handle_fortran* region_handle,
@@ -377,12 +377,12 @@ void FSUB(POMP2_Taskwait_end)( POMP2_Region_handle_fortran* region_handle,
 }
 
 void FSUB(POMP2_Workshare_enter)( POMP2_Region_handle_fortran* region_handle,
-                                  char*                        ctc_string )
+                                  const char*                        ctc_string )
 {
     if ( scorep_pomp_is_tracing_on )
     {
       POMP2_Workshare_enter(SCOREP_POMP_F2C_REGION( region_handle ),
-                            NULL );
+                            ctc_string);
     }
 }
 
