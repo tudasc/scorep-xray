@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "jacobi.h"
+#include <opari2/pomp2_lib.h>
 
 #define U( j, i ) afU[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define F( j, i ) afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
@@ -50,6 +51,14 @@ Jacobi( struct JacobiData* data )
         b        = -2.0 * ( ax + ay ) - data->fAlpha; /* Central coeff */
         residual = 10.0 * data->fTolerance;
 
+        /* POMP2 user instrumentation
+           Not inserted as pragma to test on-the-fly registration.
+           With Pragmas, the instrumenter would create initialization time
+           initialization.
+         */
+        POMP2_Region_handle pomp_user_region_handle = NULL;
+        POMP2_Begin( &pomp_user_region_handle,
+                     "82*regionType=region*sscl=jacobi.c:63:63*escl=jacobi.c:102:102*userRegionName=loop**" );
         while ( data->iIterCount < data->iIterMax && residual > data->fTolerance )
         {
             residual = 0.0;
@@ -90,6 +99,8 @@ Jacobi( struct JacobiData* data )
             ( data->iIterCount )++;
             residual = sqrt( residual ) / ( data->iCols * data->iRows );
         } /* while */
+
+        POMP2_End( &pomp_user_region_handle );
 
         data->fResidual = residual;
         free( uold );

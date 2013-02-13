@@ -28,6 +28,7 @@
  */
 
 #include <scorep/SCOREP_PublicTypes.h>
+#include <SCOREP_Mutex.h>
 #include <stdbool.h>
 
 /** @ingroup POMP2
@@ -59,6 +60,11 @@ extern bool scorep_pomp_is_initialized;
 extern bool scorep_pomp_is_finalized;
 
 /**
+   Lock to protect on-the-fly assignments.
+ */
+extern SCOREP_Mutex scorep_pomp_assign_lock;
+
+/**
    @def SCOREP_POMP2_ENSURE_INITIALIZED
    Checks whether pomp adapter is initialized and if not initializes the measurement
    system.
@@ -76,9 +82,14 @@ extern bool scorep_pomp_is_finalized;
    @param ctc_string  A string that contains the initialization information.
  */
 #define SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( handle, ctc_string ) \
-    if ( handle == NULL )                                            \
+    if ( *handle == NULL )                                           \
     {                                                                \
-        POMP2_Assign_handle( handle, ctc_string );                  \
+        SCOREP_MutexLock( scorep_pomp_assign_lock );                 \
+        if ( *handle == NULL )                                       \
+        {                                                            \
+            POMP2_Assign_handle( handle, ctc_string );               \
+        }                                                            \
+        SCOREP_MutexUnlock( scorep_pomp_assign_lock );               \
     }
 
 

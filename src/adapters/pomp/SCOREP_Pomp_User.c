@@ -39,6 +39,7 @@
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include "SCOREP_Pomp_Variables.h"
+#include <SCOREP_Memory.h>
 
 /** @ingroup POMP2
     @{
@@ -63,9 +64,33 @@ bool scorep_pomp_is_initialized = false;
 /** Flag to indicate wether the adapter is finalized */
 bool scorep_pomp_is_finalized = false;
 
+/** Lock to protect on-the-fly assignments.*/
+SCOREP_Mutex scorep_pomp_assign_lock;
+
+/** List elements of regions that are registered on the fly */
+typedef struct scorep_stack_node scorep_stack_node;
+
+struct scorep_stack_node
+{
+    scorep_stack_node* next;
+    SCOREP_Pomp_Region region;
+};
+
+/** List of regions that are registered on the fly */
+static scorep_stack_node* scorep_region_list_top = NULL;
+
 /* **************************************************************************************
                                                                        Internal functions
 ****************************************************************************************/
+
+static SCOREP_Pomp_Region*
+scorep_pomp_allocate_region_on_the_fly()
+{
+    scorep_stack_node* node = malloc( sizeof( scorep_stack_node ) );
+    node->next             = scorep_region_list_top;
+    scorep_region_list_top = node;
+    return &node->region;
+}
 
 /** Frees allocated memory and sets the pointer to 0. Used to free members of a
     SCOREP_Pomp_Region instance.
@@ -158,6 +183,8 @@ scorep_pomp_init( void )
         scorep_pomp_register_lock_regions();
 #endif  // _OPENMP
 
+        SCOREP_MutexCreate( &scorep_pomp_assign_lock );
+
         /* Register regions inserted by Opari */
         POMP2_Init_regions();
     }
@@ -201,6 +228,8 @@ scorep_pomp_finalize( void )
     scorep_pomp_is_finalized  = true;
     scorep_pomp_is_tracing_on = false;
 
+    SCOREP_MutexDestroy( &scorep_pomp_assign_lock );
+
     if ( scorep_pomp_regions )
     {
         for ( i = 0; i < nRegions; ++i )
@@ -209,6 +238,12 @@ scorep_pomp_finalize( void )
         }
         free( scorep_pomp_regions );
         scorep_pomp_regions = 0;
+    }
+    while ( scorep_region_list_top != NULL )
+    {
+        scorep_stack_node* next = scorep_region_list_top->next;
+        free( scorep_region_list_top );
+        scorep_region_list_top = next;
     }
 }
 
@@ -275,18 +310,24 @@ POMP2_Assign_handle( POMP2_Region_handle* pomp_handle,
                      const char           init_string[] )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Assign_handle" );
+
     /* Index counter */
     static size_t count = 0;
 
+    /* If we have on-the-fly registration, we might need to increase the
+       buffer for our regions */
+    SCOREP_Pomp_Region* new_handle = ( count < POMP2_Get_num_regions() ?
+                                       &scorep_pomp_regions[ count ] :
+                                       scorep_pomp_allocate_region_on_the_fly() );
+
     /* Initialize new region struct */
-    SCOREP_Pomp_ParseInitString( init_string, &scorep_pomp_regions[ count ] );
+    SCOREP_Pomp_ParseInitString( init_string, new_handle );
 
     /* Set return value */
-    *pomp_handle = &scorep_pomp_regions[ count ];
+    *pomp_handle = new_handle;
 
     /* Increase array index */
     ++count;
-    UTILS_ASSERT( count <= POMP2_Get_num_regions() );
 }
 
 /* **************************************************************************************

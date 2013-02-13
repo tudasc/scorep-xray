@@ -34,6 +34,9 @@ module JacobiMod
          
         !.. Local Arrays .. 
         double precision, allocatable :: uold(:,:)
+
+        !.. Pomp user region handle to test on the fly registration
+        integer( kind=8 ) :: pomp_user_region_handle = 0;
          
         !.. Intrinsic Functions .. 
         intrinsic DBLE, SQRT
@@ -49,6 +52,12 @@ module JacobiMod
             b = -2.0d0 * (ax + ay) - myData%fAlpha      ! Central coeff  
             residual = 10.0d0 * myData%fTolerance
         
+            ! POMP2 user instrumentation
+            ! Not inserted as pragma to test on-the-fly registration.
+            ! With Pragmas, the instrumenter would create initialization time
+            ! initialization.
+	    call POMP2_Begin( pomp_user_region_handle, &
+	      "90*regionType=region*sscl=jacobi.F90:63:63*escl=jacobi.F90:102:102*userRegionName=userloop**" )
             do while (myData%iIterCount < myData%iIterMax .and. residual > myData%fTolerance)
                 residual = 0.0d0
         
@@ -86,6 +95,7 @@ module JacobiMod
              
             ! End iteration loop 
             end do
+	    call POMP2_End( pomp_user_region_handle );
             myData%fResidual = residual
             deallocate(uold)
         else
