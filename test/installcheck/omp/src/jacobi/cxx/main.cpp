@@ -84,16 +84,6 @@ Finish( JacobiData &data )
     return;
 }
 
-//routine to update the residuals, this function call
-//is needed for tests and it must be in this source
-//file to avoid inlining
-void
-update_residual( double &residual, double fLRes )
-{
-    residual += fLRes * fLRes;
-    return;
-}
-
 // print result summary
 void
 PrintResults( const JacobiData &data )

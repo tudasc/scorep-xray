@@ -28,6 +28,7 @@
 #define F( j, i ) afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define UOLD( j, i ) uold[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 
+
 void
 Jacobi( struct JacobiData* data )
 {
@@ -80,7 +81,7 @@ Jacobi( struct JacobiData* data )
                         U( j, i ) = UOLD( j, i ) - data->fRelax * fLRes;
 
                         /* accumulate residual error */
-                        update_residual( &residual, fLRes );
+                        residual += fLRes * fLRes;
                     }
                 }
             } /* end omp parallel */

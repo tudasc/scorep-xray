@@ -89,18 +89,6 @@ Finish( struct JacobiData* data )
     return;
 }
 
-
-/*
- * function to update the residual, for tests
- * it is in this source file to avoid inlining
- */
-void
-update_residual( double* residual, double fLRes )
-{
-    *residual += fLRes * fLRes;
-    return;
-}
-
 /*
  * print result summary
  */

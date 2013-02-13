@@ -46,11 +46,4 @@ Jacobi( struct JacobiData* data );
 void
 Finish( struct JacobiData* data );
 
-// routine to update the residual
-// needed to have a function call
-// in the parallel region for tests
-void
-update_residual( double* residual,
-                 double  fLRes );
-
 #endif
