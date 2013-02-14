@@ -55,11 +55,9 @@ SCOREP_Instrumenter_InstallData::SCOREP_Instrumenter_InstallData( void )
     m_c_compiler      = SCOREP_CC;
     m_openmp_cflags   = SCOREP_OPENMP_CFLAGS;
     m_nm              = "`" OPARI_CONFIG " --nm`";
-    m_awk             =  "`" OPARI_CONFIG " --awk-cmd`";
     m_opari           = OPARI;
-    m_opari_script    = "`" OPARI_CONFIG " --awk-script`";
+    m_opari_script    = "`" OPARI_CONFIG " --region-initialization`";
     m_opari_config    = OPARI_CONFIG;
-    m_grep            =  "`" OPARI_CONFIG " --egrep`";
     m_cobi            = SCOREP_COBI_PATH;
     m_cobi_config_dir = COBI_CONFIG_DIR;
     m_pdt_bin_path    = PDT;
@@ -91,12 +89,6 @@ SCOREP_Instrumenter_InstallData::getNm( void )
 }
 
 std::string
-SCOREP_Instrumenter_InstallData::getAwk( void )
-{
-    return m_awk;
-}
-
-std::string
 SCOREP_Instrumenter_InstallData::getOpari( void )
 {
     return m_opari + " " + m_opari_params;
@@ -112,12 +104,6 @@ std::string
 SCOREP_Instrumenter_InstallData::getOpariConfig( void )
 {
     return m_opari_config;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getGrep( void )
-{
-    return m_grep;
 }
 
 std::string
@@ -177,9 +163,7 @@ SCOREP_Instrumenter_InstallData::setBuildCheck( void )
     m_opari = simplify_path( BUILD_DIR "/../vendor/opari2/build-frontend/opari2" );
     #endif
     m_nm              = "`" + m_opari_config +  " --nm`";
-    m_awk             = "`" + m_opari_config +  " --awk-cmd`";
-    m_opari_script    = "`" + m_opari_config + " --awk-script`";
-    m_grep            = "`" + m_opari_config + " --egrep`";
+    m_opari_script    = "`" + m_opari_config + " --region-initialization`";
     m_cobi_config_dir = simplify_path( BUILD_DIR "/../share" );
     m_pdt_config_file = simplify_path( BUILD_PDT_CONFIG );
 }
@@ -427,17 +411,10 @@ void
 SCOREP_Instrumenter_InstallData::set_value( std::string key,
                                             std::string value )
 {
-    if ( key == "EGREP" && value != "" )
-    {
-        m_grep = value;
-    }
-
-    else if ( key == "OPARI_CONFIG" && value != "" )
+    if ( key == "OPARI_CONFIG" && value != "" )
     {
         m_nm           = "`" + value + " --nm`";
-        m_awk          = "`" + value + " --awk-cmd`";
-        m_opari_script = "`" + value + " --awk-script`";
-        m_grep         = "`" + value + " --egrep`";
+        m_opari_script = "`" + value + " --region-initialization`";
         m_opari_config = value;
     }
     else if ( key == "PDT" && value != "" )

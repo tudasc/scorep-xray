@@ -72,12 +72,6 @@ public:
     getNm( void );
 
     /**
-       The awk command
-     */
-    std::string
-    getAwk( void );
-
-    /**
        The opari2 executable
      */
     std::string
@@ -95,12 +89,6 @@ public:
      */
     std::string
     getOpariConfig( void );
-
-    /**
-       The grep command
-     */
-    std::string
-    getGrep( void );
 
     /**
        The cobi executable
@@ -253,11 +241,6 @@ private:
     std::string m_nm;
 
     /**
-       The awk command
-     */
-    std::string m_awk;
-
-    /**
        The opari2 executable
      */
     std::string m_opari;
@@ -272,11 +255,6 @@ private:
        The opari2-config tool
      */
     std::string m_opari_config;
-
-    /**
-       The grep command
-     */
-    std::string m_grep;
 
     /**
        The cobi executable
