@@ -33,8 +33,7 @@ if PLATFORM_BGQ
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_bgq.c
 libscorep_platform_la_LDFLAGS = $(AM_LDFLAGS)    \
      -L/bgsys/drivers/ppcfloor/comm/sys-fast/lib \
-     -L/bgsys/drivers/V1R1M2/ppc64/spi/lib       \
-     -L/bgsys/drivers/V1R2M0/ppc64/spi/lib
+     -L/bgsys/drivers/ppcfloor/spi/lib
 
 libscorep_platform_la_LIBADD = -lpami -lstdc++ -lSPI -lSPI_cnk -lrt
 
