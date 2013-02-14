@@ -49,12 +49,12 @@ for paradigm in serial omp mpi mpi_omp; do
 done
 
 # create possible configurations, one file per paradigm
-for user_arg in user nouser; do
-@SCOREP_COMPILER_SUN_FALSE@@HAVE_COMPILER_INSTRUMENTATION_TRUE@    for comp_arg in compiler nocompiler; do
-@SCOREP_COMPILER_SUN_TRUE@@HAVE_COMPILER_INSTRUMENTATION_TRUE@    for comp_arg in nocompiler; do
+@SCOREP_COMPILER_SUN_FALSE@@HAVE_COMPILER_INSTRUMENTATION_TRUE@for comp_arg in compiler nocompiler; do
+@SCOREP_COMPILER_SUN_TRUE@@HAVE_COMPILER_INSTRUMENTATION_TRUE@for comp_arg in nocompiler; do
 
-        for pomp_user_arg in pomp nopomp; do
-@HAVE_PDT_TRUE@            for pdt_arg in pdt nopdt; do
+    for pomp_user_arg in pomp nopomp; do
+@HAVE_PDT_TRUE@        for pdt_arg in pdt nopdt; do
+@HAVE_PDT_FALSE@        for user_arg in user nouser; do
 
 @HAVE_COBI_TRUE@                for cobi_arg in cobi nocobi; do
 
@@ -89,10 +89,10 @@ for user_arg in user nouser; do
                     # --- output per paradigm ends --- #
 
 @HAVE_COBI_TRUE@                done
-@HAVE_PDT_TRUE@            done
-        done
-@HAVE_COMPILER_INSTRUMENTATION_TRUE@    done
-done
+@HAVE_PDT_FALSE@        done
+@HAVE_PDT_TRUE@        done
+    done
+@HAVE_COMPILER_INSTRUMENTATION_TRUE@done
 
 # Notify about created files
 echo "  GEN    ${file_prefix}serial"

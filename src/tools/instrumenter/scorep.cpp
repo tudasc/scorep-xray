@@ -113,6 +113,16 @@ print_help( void )
     << "                  does not correctly identify your application as OpenMP\n"
     << "                  program.\n"
     << "  --noopenmp      Disables OpenMP support.\n"
+#if HAVE_BACKEND( CUDA )
+    << "  --cuda          Enables CUDA support. By default the instrumenter\n"
+    << "                  tries to identify CUDA applications automatically.\n"
+    << "                  However, in cases where the auto-detedion fails,\n"
+    << "                  you can enforce CUDA support with this option.\n"
+    << "  --nocuda        Disables CUDA support. By default the instrumenter\n"
+    << "                  tries to identify CUDA applications automatically.\n"
+    << "                  However, in cases where the auto-detedion fails,\n"
+    << "                  you can disable CUDA support manually.\n"
+#endif
 #if defined( SCOREP_SHARED_BUILD ) && defined ( SCOREP_STATIC_BUILD )
 #if HAVE_LINK_FLAG_BSTATIC
     << "  --static        Enforce static linking of the Score-P libraries.\n"
