@@ -112,7 +112,7 @@ path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
 
 AC_ARG_WITH([nocross-compiler-suite],
             [AS_HELP_STRING([--with-nocross-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)], 
-                            [The compiler suite to build this package in non cross-compiling environments with. Needs to be in $PATH [gcc].])],
+                            [The compiler suite used to build this package in non cross-compiling environments. Needs to be in $PATH [gcc].])],
             [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"], 
                    [AS_CASE([$withval],
                             ["gcc"],       [ac_scorep_compilers_backend="${path_to_compiler_files}compiler-nocross-gcc"],
@@ -142,7 +142,7 @@ dnl             [])
 
 AC_ARG_WITH([frontend-compiler-suite],
             [AS_HELP_STRING([--with-frontend-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)], 
-                            [The compiler suite to build the frontend parts of this package in cross-compiling environments with. Needs to be in $PATH [gcc].])],
+                            [The compiler suite used to build the frontend parts of this package in cross-compiling environments. Needs to be in $PATH [gcc].])],
             [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"], 
                    [AS_CASE([$withval],
                             ["gcc"],       [ac_scorep_compilers_frontend="${path_to_compiler_files}compiler-frontend-gcc"],
@@ -173,7 +173,7 @@ path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
 
 AC_ARG_WITH([compiler-suite],
             [AS_HELP_STRING([--with-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)], 
-                            [The compiler suite to build this package with. Needs to be in $PATH [gcc].])],
+                            [The compiler suite used to build this package. Needs to be in $PATH [gcc].])],
             [AS_CASE([$withval],
                      ["gcc"],       [ac_scorep_compilers_frontend="${path_to_compiler_files}compiler-nocross-gcc"],
                      ["ibm"],       [ac_scorep_compilers_frontend="${path_to_compiler_files}compiler-nocross-ibm"],
@@ -193,7 +193,7 @@ path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
 
 AC_ARG_WITH([mpi],
             [AS_HELP_STRING([--with-mpi=(mpich2|impi|openmpi)], 
-                            [The mpi compiler suite to build this package with. Needs to be in $PATH [mpich2].])],
+                            [The MPI suite used to build this package. Needs to be in $PATH [mpich2].])],
             [AS_CASE([$withval],
                      ["mpich2"],      [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-mpich2"],
                      ["impi"],        [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-impi"],
