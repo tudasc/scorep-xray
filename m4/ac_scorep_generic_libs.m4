@@ -39,12 +39,12 @@ AC_ARG_VAR($1_NAME[]_INCLUDE, [Path to $1 headers.])
 AC_ARG_VAR($1_NAME[]_LIB, [Path to $1 libraries.])
 
 AC_ARG_WITH([$1], 
-            [AS_HELP_STRING([--with-$1=<Path to $1 installation>], 
+            [AS_HELP_STRING([--with-$1=(yes|no|<Path to $1 installation>)],
                             [If you want to build scorep with $1 but
-                             do not have a frontend $1 in a standard
-                             location then you need to explicitly
-                             specify the directory where it is
-                             installed (--with-$1=<$1-install-dir>)
+                             do not have a (frontend) $1 in a standard
+                             location, you need to explicitly specify
+                             the directory where it is installed
+                             (--with-$1=<$1-install-dir>)
                              [yes]. This is a shorthand for
                              --with-$1-include=<Path/include> and
                              --with-$1-lib=<Path/lib>. If these
@@ -101,15 +101,15 @@ AC_ARG_VAR($1_NAME[]_LIB, [Path to $1 libraries.])
 ])
 
 AC_ARG_WITH([$1], 
-            [m4_ifblank($5, [AS_HELP_STRING([--with-$1=<Path to $1 installation>], 
+            [m4_ifblank($5, [AS_HELP_STRING([--with-$1=(yes|no|<Path to $1 installation>)],
                                             [If you want to build scorep with $1 but
-                                             do not have a $1 in a standard location
-                                             then you need to explicitly specify the
+                                             do not have a $1 in a standard location,
+                                             you need to explicitly specify the
                                              directory where it is installed. On
                                              non-cross-compile systems we search the
                                              system include and lib paths per default
-                                             [yes], on cross-compile systems
-                                             however,you have to specify a path
+                                             [yes]; on cross-compile systems,
+                                             however, you have to specify a path
                                              [no]. --with-$1 is a shorthand for
                                              --with-$1-include=<Path/include> and
                                              --with-$1-lib=<Path/lib>. If these
