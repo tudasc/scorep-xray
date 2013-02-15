@@ -97,7 +97,7 @@ AC_DEFUN([AC_SCOREP_DETECT_PLATFORMS],
     fi
 
     AC_ARG_WITH([platform],
-                [AS_HELP_STRING([--with-platform=(auto,disabled,<platform>)],
+                [AS_HELP_STRING([--with-platform=(auto|disabled|<platform>)],
                                 [autodetect platform [auto], disabled or select one from:
                                  altix, aix, arm, bgl, bgp, bgq, crayxt, linux, solaris, mac, necsx.])],
                 [AS_CASE([$withval],
