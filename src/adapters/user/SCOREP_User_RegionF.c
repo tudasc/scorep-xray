@@ -135,7 +135,10 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* regionHandle,
         SCOREP_RegionType region_type = scorep_user_to_scorep_region_type( *regionType );
 
         /* Check for filters */
-        if ( SCOREP_Filter_Match( file_name, region_name, NULL ) )
+        if ( SCOREP_Filter_Match( file_name, region_name, NULL ) ||
+             ( strncmp( region_name, "POMP", 4 ) == 0 ) ||
+             ( strncmp( region_name, "Pomp", 4 ) == 0 ) ||
+             ( strncmp( region_name, "pomp", 4 ) == 0 ) )
         {
             region = SCOREP_FILTERED_USER_REGION;
             scorep_user_add_region( region, region_name );
