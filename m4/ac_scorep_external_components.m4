@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2013, 
 ##    RWTH Aachen, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       ac_scorep_external_components.m4
+## file       build-config/m4/ac_scorep_external_components.m4
 ## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
@@ -35,8 +35,7 @@ AC_DEFUN([AC_SCOREP_HAVE_CONFIG_TOOL], [
 AC_ARG_WITH([$1], 
             [AS_HELP_STRING([--with-$1=(yes|<$1-bindir>)], [Use an already installed $1. Provide path to $1-config if not already in $PATH.])], 
             [with_$1="${with_$1%/}"], 
-            [with_$1="no"
-             AC_SCOREP_SUMMARY([$1 support], [yes, using internal])])
+            [with_$1="no"])
 
 AS_UNSET([scorep_have_$1_config])
 AS_UNSET([scorep_$1_config_bin])
@@ -77,5 +76,6 @@ AS_IF([test "x${with_$1}" != "xno"],
              [AS_IF([test "x${with_$1}" = "xyes"],
                     [AC_MSG_ERROR([cannot detect $1-config although it was requested via --with-$1.])],
                     [AC_MSG_ERROR([cannot detect $1-config in ${with_$1} and ${with_$1}/bin.])])])],
-      [scorep_have_$1_config="no"])
+      [scorep_have_$1_config="no"
+       AC_SCOREP_SUMMARY([$1 support], [yes, using internal])])
 ])
