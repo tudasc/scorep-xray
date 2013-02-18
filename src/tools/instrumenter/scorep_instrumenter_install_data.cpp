@@ -358,8 +358,8 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 bool
 SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 {
-    return ( arg.subst( 0, 16 ) == "-offload-option," ) ||
-           ( arg.subst( 0, 26 ) == "-offload-attribute-target=" );
+    return ( arg.substr( 0, 16 ) == "-offload-option," ) ||
+           ( arg.substr( 0, 26 ) == "-offload-attribute-target=" );
 }
 
 /* *************************************** PGI */
