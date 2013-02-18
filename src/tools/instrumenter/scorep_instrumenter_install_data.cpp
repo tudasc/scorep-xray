@@ -241,6 +241,12 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
     return "";
 }
 
+bool
+SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+{
+    return false;
+}
+
 /* *************************************** GNU */
 #elif SCOREP_BACKEND_COMPILER_GNU
 bool
@@ -271,6 +277,12 @@ std::string
 SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 {
     return "";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+{
+    return false;
 }
 
 /* *************************************** IBM */
@@ -305,6 +317,12 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
     return "";
 }
 
+bool
+SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+{
+    return false;
+}
+
 /* *************************************** INTEL */
 #elif SCOREP_BACKEND_COMPILER_INTEL
 bool
@@ -335,6 +353,13 @@ std::string
 SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 {
     return "VT_LIB_DIR=. VT_ROOT=. VT_ADD_LIBS=\"\"";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+{
+    return ( arg.subst( 0, 16 ) == "-offload-option," ) ||
+           ( arg.subst( 0, 26 ) == "-offload-attribute-target=" );
 }
 
 /* *************************************** PGI */
@@ -369,6 +394,12 @@ SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
     return "";
 }
 
+bool
+SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+{
+    return false;
+}
+
 /* *************************************** STUDIO */
 #elif SCOREP_BACKEND_COMPILER_STUDIO
 bool
@@ -399,6 +430,12 @@ std::string
 SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 {
     return "";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+{
+    return false;
 }
 
 #endif

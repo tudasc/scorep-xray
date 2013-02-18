@@ -177,13 +177,20 @@ public:
        @param arg the argument that is considered
      */
     bool
-    isArgForFixedform( std::string );
+    isArgForFixedform( std::string arg );
 
     /**
        Returns envaronment variables needed by the compiler.
      */
     std::string
     getCompilerEnvironmentVars( void );
+
+    /**
+       Checks whether an argument that starts with -o is an argument that does not
+       specify an output file name.
+     */
+    bool
+    isArgWithO( std::string arg );
 
     /* ***************************************************** Private methods */
 private:

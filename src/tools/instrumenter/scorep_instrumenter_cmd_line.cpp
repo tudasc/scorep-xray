@@ -714,6 +714,13 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
             m_opari_instrumentation = enabled;
         }
     }
+    /* Some stupid compilers have options starting with -o that do not
+       specify an output filename */
+    else if ( m_install_data.isArgWithO( arg ) )
+    {
+        *m_current_flags += " " + arg;
+        return scorep_parse_mode_command;
+    }
 
     /* Check whether free form or fixed form is explicitly enabled. */
     else if ( m_install_data.isArgForFreeform( arg ) )
