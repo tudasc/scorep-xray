@@ -37,7 +37,7 @@
 
 #define SCOREP_CUDA_DRIVER_CALL( _err ) \
     if ( _err != CUDA_SUCCESS ) { \
-        UTILS_WARNING( "[CUDA] Error %d in %s:%lu", __FILE__, __LINE__, _err ); \
+        UTILS_WARNING( "[CUDA] Call to %s failed.", #_err ); \
     }
 
 #define SCOREP_CUPTI_CALL( _err ) \
