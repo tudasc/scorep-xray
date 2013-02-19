@@ -746,6 +746,7 @@ recorded if the communicator has only one member.
 If @scorep has been built with performance metric support it is capable of recording performance counter information.
 To request the measurement of certain counters, the user is required to set individual environment variables. 
 The user can leave these environment variables unset to indicate that no counters are requested.
+Requested counters will be recorded with every enter/exit event.
 
 @subsection papi_counters PAPI Hardware Performance Counters
 @seclabel{papi_counters}
@@ -769,7 +770,7 @@ The PAPI utility programs <tt>papi_avail</tt> and <tt>papi_native_avail</tt> rep
 If you want to change the separator used in the list of PAPI counter names, set the environment variable \confvar{SCOREP_METRIC_PAPI_SEP} to the desired character.
 
 @note
-In addition it is possible to specify metrics that will be recorded per-process. Please use \confvar{SCOREP_METRIC_PAPI_PER_PROCESS} for that reason.
+In addition it is possible to specify metrics that will be recorded only by the initial thread of a process. Please use \confvar{SCOREP_METRIC_PAPI_PER_PROCESS} for that reason.
 
 @subsection rusage_counters Resource Usage Counters
 @seclabel{rusage_counters}
@@ -814,7 +815,7 @@ SCOREP_METRIC_RUSAGE_SEP=:
 This indicates that counter names in the list are separated by colons.
 
 @note
-In addition it is possible to specify metrics that will be recorded per-process. Please use \confvar{SCOREP_METRIC_RUSAGE_PER_PROCESS} for that reason.
+In addition it is possible to specify metrics that will be recorded only by the initial thread of a process. Please use \confvar{SCOREP_METRIC_RUSAGE_PER_PROCESS} for that reason.
 
 @section cuda_adapter CUDA Performance Measurement
 @seclabel{cuda_adapter}
