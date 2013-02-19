@@ -35,27 +35,21 @@
 
 #define SCOREP_CUDA_NO_ID      0xFFFFFFFF
 
-#define SCOREP_CUDA_DRIVER_CALL( _err ) \
-    if ( _err != CUDA_SUCCESS ) { \
-        UTILS_WARNING( "[CUDA] Call to %s failed.", #_err ); \
+#define SCOREP_CUDA_DRIVER_CALL( fct ) \
+    if ( fct != CUDA_SUCCESS ) { \
+        UTILS_WARNING( "[CUDA] Call to '%s' failed.", #fct ); \
     }
 
-#define SCOREP_CUPTI_CALL( _err ) \
-    if ( _err != CUPTI_SUCCESS ) { \
-        scorep_cuda_handle_cupti_error( _err, __FILE__, __LINE__ ); \
+#define SCOREP_CUPTI_CALL( fct )                                        \
+    {                                                                   \
+        CUptiResult status = fct;                                       \
+        if ( status != CUPTI_SUCCESS )                                  \
+        {                                                               \
+            const char* msg;                                            \
+            cuptiGetResultString( status, &msg );                       \
+            UTILS_WARNING( "[CUPTI] Call to '%s' failed with message: '%s'",  #fct, msg ); \
+        }                                                               \
     }
-
-/*
- * Handles errors returned from CUPTI function calls.
- *
- * @param err the CUDA driver API error code
- * @param file the corresponding ScoreP file
- * @param line the line the error occurred
- */
-extern void
-scorep_cuda_handle_cupti_error( CUptiResult err,
-                                const char* file,
-                                const int   line );
 
 
 #endif  /* SCOREP_CUPTI_H */

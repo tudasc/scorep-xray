@@ -296,7 +296,6 @@ scorep_cupti_set_callback( CUpti_CallbackFunc   callback,
                            CUpti_CallbackDomain domain,
                            CUpti_CallbackId     callbackId )
 {
-    CUptiResult    cupti_error;
     static uint8_t initflag = 1;
 
     if ( initflag )
@@ -306,8 +305,7 @@ scorep_cupti_set_callback( CUpti_CallbackFunc   callback,
         SCOREP_CUDA_DRIVER_CALL( cuInit( 0 ) );
 
         /* only one subscriber allowed at a time */
-        cupti_error = cuptiSubscribe( &scorep_cupti_callbacks_subscriber, callback, NULL );
-        SCOREP_CUPTI_CALL( cupti_error );
+        SCOREP_CUPTI_CALL( cuptiSubscribe( &scorep_cupti_callbacks_subscriber, callback, NULL ) );
     }
 
     if ( CUPTI_CB_DOMAIN_INVALID == domain )
@@ -319,13 +317,11 @@ scorep_cupti_set_callback( CUpti_CallbackFunc   callback,
         if ( ( callbackId == CUPTI_RUNTIME_TRACE_CBID_INVALID ) ||
              ( callbackId == CUPTI_DRIVER_TRACE_CBID_INVALID ) )
         {
-            cupti_error = cuptiEnableDomain( 1, scorep_cupti_callbacks_subscriber, domain );
-            SCOREP_CUPTI_CALL( cupti_error );
+            SCOREP_CUPTI_CALL( cuptiEnableDomain( 1, scorep_cupti_callbacks_subscriber, domain ) );
         }
         else
         {
-            cupti_error = cuptiEnableCallback( 1, scorep_cupti_callbacks_subscriber, domain, callbackId );
-            SCOREP_CUPTI_CALL( cupti_error );
+            SCOREP_CUPTI_CALL( cuptiEnableCallback( 1, scorep_cupti_callbacks_subscriber, domain, callbackId ) );
         }
     }
 }

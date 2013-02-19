@@ -36,15 +36,3 @@ uint8_t scorep_cuda_record_kernels = 0;
 bool scorep_cuda_record_idle = false;
 
 bool scorep_cuda_record_memcpy = false;
-
-void
-scorep_cuda_handle_cupti_error( CUptiResult err,
-                                const char* file,
-                                const int   line )
-{
-    const char* errstr;
-
-    cuptiGetResultString( err, &errstr );
-
-    UTILS_WARNING( "[CUPTI] %s:%d:'%s'", file, line, errstr );
-}

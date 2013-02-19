@@ -416,7 +416,9 @@ scorep_cupti_activity_flush_context_activities( CUcontext cudaContext )
         }
         else
         {
-            SCOREP_CUPTI_CALL( status );
+            const char* msg;
+            cuptiGetResultString( status, &msg );
+            UTILS_WARNING( "[CUPTI] Call to '%s' failed with message: '%s'",  "cuptiActivityGetNextRecord( buffer, buffer_size, &record )", msg );
         }
     }
     while ( 1 );
