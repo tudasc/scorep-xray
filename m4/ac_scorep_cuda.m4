@@ -42,13 +42,16 @@ scorep_have_cuda="no"
 
 AC_SCOREP_BACKEND_LIB([libcudart], [cuda.h cuda_runtime_api.h])
 
+AS_UNSET([cupti_root])
 AS_IF([test "x${with_libcudart_lib}" = "xyes"],
       [for path in ${sys_lib_search_path_spec}; do 
            AS_IF([test -e ${path}/libcudart.a || test -e ${path}/libcudart.so || test -e ${path}/libcudart.dylib], 
                  [break])
        done
        cupti_root="${path}"],
-      [cupti_root="${with_libcudart}/extras/CUPTI"])
+      [AS_IF([test "x${with_libcudart}" != "xnot_set"], 
+             [cupti_root="${with_libcudart}/extras/CUPTI"])])
+
 AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcudart_cppflags}], [${cupti_root}])
 
 AC_SCOREP_BACKEND_LIB([libcuda])
