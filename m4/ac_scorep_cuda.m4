@@ -40,7 +40,19 @@ dnl installation.
 AC_DEFUN([AC_SCOREP_CUDA], [
 scorep_have_cuda="no"
 
-AC_SCOREP_BACKEND_LIB([libcudart], [cuda.h cuda_runtime_api.h])
+ac_scorep_cuda_safe_CPPFLAGS=$CPPFLAGS
+ac_scorep_cuda_safe_LDFLAGS=$LDFLAGS
+ac_scorep_cuda_safe_LIBS=$LIBS
+
+AC_SCOREP_BACKEND_LIB([libcuda], [cuda.h])
+CPPFLAGS="$CPPFLAGS ${with_libcuda_cppflags}"
+LDFLAGS="$LDFLAGS ${with_libcuda_ldflags}"
+LIBS="$LIBS ${with_libcuda_libs}"
+
+AC_SCOREP_BACKEND_LIB([libcudart], [cuda_runtime_api.h])
+CPPFLAGS="$CPPFLAGS ${with_libcudart_cppflags}"
+LDFLAGS="$LDFLAGS ${with_libcuda_ldflags} ${with_libcudart_ldflags}"
+LIBS="$LIBS ${with_libcuda_libs} ${with_libcudart_libs}"
 
 AS_UNSET([cupti_root])
 AS_IF([test "x${with_libcudart_lib}" = "xyes"],
@@ -54,7 +66,9 @@ AS_IF([test "x${with_libcudart_lib}" = "xyes"],
 
 AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcudart_cppflags}], [${cupti_root}])
 
-AC_SCOREP_BACKEND_LIB([libcuda])
+CPPFLAGS=$ac_scorep_cuda_safe_CPPFLAGS
+LDFLAGS=$ac_scorep_cuda_safe_LDFLAGS
+LIBS=$ac_scorep_cuda_safe_LIBS
 
 AC_SCOREP_COND_HAVE([CUDA],
                     [test "x${scorep_have_libcudart}" = "xyes" && test "x${scorep_have_libcupti}"  = "xyes" && test "x${scorep_have_libcuda}"   = "xyes"],
@@ -168,8 +182,6 @@ AS_IF([test "x$scorep_cuda_error" = "xno"],
                        scorep_cuda_error="yes" ])])
 
 dnl check the version of the CUDA Driver API
-cpp_flags_save="${CPPFLAGS}"
-CPPFLAGS="${CPPFLAGS} ${with_libcudart_cppflags}"
 AS_IF([test "x$scorep_cuda_error" = "xno"],
       [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cuda.h"]],
         [[
@@ -183,7 +195,6 @@ AS_IF([test "x$scorep_cuda_error" = "xno"],
         [AC_MSG_NOTICE([CUDA driver API version could not be determined and/or is
                         incompatible (< 4.1). See 'config.log' for more details.])
          scorep_cuda_error="yes" ])])
-CPPFLAGS="${cpp_flags_save}"
 
 dnl final check for errors
 if test "x${scorep_cuda_error}" = "xno"; then
