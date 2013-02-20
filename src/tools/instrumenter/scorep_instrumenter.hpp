@@ -218,5 +218,10 @@ private:
        Additional linker flags added by the instrumenter
      */
     std::string m_linker_flags;
+
+    /**
+       Additional flags for the PDT instrumenter
+     */
+    std::string m_pdt_flags;
 };
 #endif /*SCOREP_INSTRUMENTER_H_*/

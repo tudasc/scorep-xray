@@ -174,6 +174,7 @@ SCOREP_Instrumenter::Run( void )
                        files may be included
                      */
                     m_compiler_flags += " -I" + extract_path( current_file );
+                    m_pdt_flags      += " -I" + extract_path( current_file );
 
                     // If compiling and linking is performed in one step.
                     // The compiler leave no object file.
@@ -320,10 +321,16 @@ SCOREP_Instrumenter::prepare_config_tool_calls( std::string input_file )
     m_compiler_flags = "`" + scorep_config + mode + " --cflags` ";
     m_linker_flags   = "`" + scorep_config + mode + " --ldflags` `" +
                        scorep_config + mode + " --libs` ";
+    m_pdt_flags = "`" + scorep_config + mode
+                  + ( m_command_line.isCompilerInstrumenting() ? " --nocompiler" : "" )
+                  + " --cflags` ";
+
     if ( m_command_line.isOpariInstrumenting() )
     {
         m_compiler_flags += "`" + m_install_data.getOpariConfig()
                             + " --cflags` ";
+        m_pdt_flags += "`" + m_install_data.getOpariConfig()
+                       + " --cflags` ";
     }
 }
 
@@ -472,7 +479,7 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
     }
     command << " " << m_command_line.getDefineFlags()
             << " " << m_command_line.getIncludeFlags()
-            << " " << m_compiler_flags;
+            << " " << m_pdt_flags;
 #ifdef _OPENMP
     if ( m_command_line.isOpenmpApplication() )
     {
@@ -495,7 +502,7 @@ SCOREP_Instrumenter::instrument_pdt( std::string source_file )
             << " " << source_file
             << " " << m_command_line.getIncludeFlags()
             << " " << m_command_line.getDefineFlags()
-            << " " << m_compiler_flags;
+            << " " << m_pdt_flags;
 #ifdef _OPENMP
     if ( m_command_line.isOpenmpApplication() )
     {
