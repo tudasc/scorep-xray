@@ -67,6 +67,7 @@ AC_ARG_WITH([sionconfig],
 # macro-internal variables
 scorep_sion_cppflags=""
 scorep_sion_ldflags=""
+scorep_sion_rpathflags=""
 scorep_sion_libs=""
 scorep_have_sion="no"
 
@@ -108,7 +109,11 @@ if test "x${scorep_with_sionconfig}" != "xno"; then
 
         if test "x${scorep_have_sion}" = "xyes"; then
             scorep_sion_ldflags=`$SIONCONFIG ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
-                                 awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-L") == 1){ldflags = ldflags " " $i; sub(/^-L/, "", $i); ldflags = ldflags " -R" $i}}}END{print ldflags}'`
+                                 awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-L") == 1){ldflags = ldflags " " $i}}}END{print ldflags}'`
+
+            scorep_sion_rpathflags=`$SIONCONFIG ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
+                                 awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-L") == 1){sub(/^-L/, "", $i); rpathflags = rpathflags " -R" $i}}}END{print rpathflags}'`
+
             scorep_sion_libs=`$SIONCONFIG ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
                               awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-l") == 1){libs = libs " " $i}}}END{print libs}'`
 
@@ -132,7 +137,7 @@ sion_fwrite(NULL,42,42,42);
 sion_fwrite(NULL,42,42,42);
 ]])],
                            [],
-                           [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""])
+                           [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_rpathflags=""; scorep_sion_libs=""])
 
 
             # paradigm specific libsion checks
@@ -150,10 +155,10 @@ sion_close(42);
 sion_get_locations(42,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 ]])],
                                   [],
-                                  [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""])],
+                                  [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_rpathflags=""; scorep_sion_libs=""])],
 
 [OMP],
-[scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""],
+[scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_rpathflags=""; scorep_sion_libs=""],
 
 [MPI],
 [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
@@ -168,10 +173,10 @@ sion_paropen_mpi(NULL,NULL,NULL,foo,&foo,NULL,NULL,NULL,NULL,NULL);
 sion_parclose_mpi(42);
 ]])],
                                   [],
-                                  [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""])],
+                                  [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_rpathflags=""; scorep_sion_libs=""])],
 
 [MPI_OMP],
-[scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_libs=""])
+[scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_rpathflags=""; scorep_sion_libs=""])
 
 
             AC_MSG_RESULT([$scorep_have_sion])
@@ -190,7 +195,7 @@ fi
 
 # The output of this macro
 AC_SUBST([SCOREP_SION_$1_CPPFLAGS], [$scorep_sion_cppflags])
-AC_SUBST([SCOREP_SION_$1_LDFLAGS],  [$scorep_sion_ldflags])
+AC_SUBST([SCOREP_SION_$1_LDFLAGS],  ["$scorep_sion_ldflags $scorep_sion_rpathflags"])
 AC_SUBST([SCOREP_SION_$1_LIBS],     [$scorep_sion_libs])
 AS_IF([test "x${scorep_have_sion}" = "xyes"],
     [AC_DEFINE([HAVE_SION_$1], [1], [Defined if libsion $1 is available.])])
