@@ -44,15 +44,15 @@ ac_scorep_cuda_safe_CPPFLAGS=$CPPFLAGS
 ac_scorep_cuda_safe_LDFLAGS=$LDFLAGS
 ac_scorep_cuda_safe_LIBS=$LIBS
 
-AC_SCOREP_BACKEND_LIB([libcuda], [cuda.h])
-CPPFLAGS="$CPPFLAGS ${with_libcuda_cppflags}"
-LDFLAGS="$LDFLAGS ${with_libcuda_ldflags}"
-LIBS="$LIBS ${with_libcuda_libs}"
-
-AC_SCOREP_BACKEND_LIB([libcudart], [cuda_runtime_api.h])
+AC_SCOREP_BACKEND_LIB([libcudart], [cuda.h cuda_runtime_api.h])
 CPPFLAGS="$CPPFLAGS ${with_libcudart_cppflags}"
 LDFLAGS="$LDFLAGS ${with_libcuda_ldflags} ${with_libcudart_ldflags}"
 LIBS="$LIBS ${with_libcuda_libs} ${with_libcudart_libs}"
+
+AC_SCOREP_BACKEND_LIB([libcuda])
+CPPFLAGS="$CPPFLAGS ${with_libcuda_cppflags}"
+LDFLAGS="$LDFLAGS ${with_libcuda_ldflags}"
+LIBS="$LIBS ${with_libcuda_libs}"
 
 AS_UNSET([cupti_root])
 AS_IF([test "x${with_libcudart_lib}" = "xyes"],
