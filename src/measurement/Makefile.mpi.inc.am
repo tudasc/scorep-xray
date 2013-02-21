@@ -48,6 +48,7 @@ libscorep_sion_mpi_la_CPPFLAGS = \
     $(SCOREP_SION_MPI_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
+    -I$(PUBLIC_INC_DIR) \
     $(UTILS_CPPFLAGS) \
     @OTF2_CPPFLAGS@
 libscorep_sion_mpi_la_LDFLAGS  = \
