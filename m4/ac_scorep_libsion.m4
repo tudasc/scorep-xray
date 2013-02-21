@@ -108,7 +108,7 @@ if test "x${scorep_with_sionconfig}" != "xno"; then
 
         if test "x${scorep_have_sion}" = "xyes"; then
             scorep_sion_ldflags=`$SIONCONFIG ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
-                                 awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-L") == 1){ldflags = ldflags " " $i; sub(/^-L/, "", $i); ldflags = ldflags " -R" $i}}}END{print ldflags}'`
+                                 awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-L") == 1){ldflags = ldflags " " $i}}}END{print ldflags}'`
             scorep_sion_libs=`$SIONCONFIG ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
                               awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-l") == 1){libs = libs " " $i}}}END{print libs}'`
 
