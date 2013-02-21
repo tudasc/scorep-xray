@@ -27,7 +27,7 @@ error_code()
 
 case "$ERRORS"
 in
-    (*/*) : except ;;
+    (*/*) : accept ;;
     (*) : make it relative
         ERRORS="./$ERRORS"
     ;;
