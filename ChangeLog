@@ -73,5 +73,4 @@
 
 - configure will not fail if -q or --silent is passed.
 
-
 ------------------- Released version 1.0 -----------------------------
