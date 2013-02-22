@@ -97,6 +97,7 @@ if test "x${scorep_with_sionconfig}" != "xno"; then
                 [i?86],   [sionconfig_architecture_flags="--32"],
                 [x86_64], [sionconfig_architecture_flags="--64"],
                 [sionconfig_architecture_flags=""])
+        AS_IF([test "x${ac_scorep_platform}" = "xbgq"], [sionconfig_architecture_flags="--64"])
 
         m4_case([$1], [SERIAL],  [sionconfig_paradigm_flag="--ser"],
                       [OMP],     [sionconfig_paradigm_flag="--ser"],
