@@ -426,8 +426,8 @@ SCOREP_Score_Estimator::DumpEventSizes()
 uint32_t
 SCOREP_Score_Estimator::get_compressed_size( uint64_t max_value )
 {
-    return ( uint32_t )1 +                       // Number of leading zeros
-           ceil( log10( ( double )max_value ) ); // Number
+    return ( uint32_t )1 +                                    // Number of leading zeros
+           ceil( log( ( double )max_value ) / log( 256.0 ) ); // Number
 }
 
 void
