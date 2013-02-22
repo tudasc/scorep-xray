@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -426,8 +426,8 @@ SCOREP_Score_Estimator::DumpEventSizes()
 uint32_t
 SCOREP_Score_Estimator::get_compressed_size( uint64_t max_value )
 {
-    return ( uint32_t )1 +                  // Number of leading zeros
-           ceil( log10( max_value ) );      // Number
+    return ( uint32_t )1 +                       // Number of leading zeros
+           ceil( log10( ( double )max_value ) ); // Number
 }
 
 void
