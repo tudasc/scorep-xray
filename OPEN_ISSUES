@@ -125,7 +125,7 @@
     parallel region) Score-P will crash. We are considering to make
     the usage more secure in future versions of Score-P. This might
     result in a change of the instrumenter option or the option may
-    vanish completely.  However, there are some use-cases where
+    vanish completely. However, there are some use-cases where
     disabling OPARI2 instrumentation is helpful.
 
   - Due to a bug in PDT 3.18 and earlier versions, PDT support is
