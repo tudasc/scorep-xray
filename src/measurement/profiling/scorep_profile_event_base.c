@@ -186,7 +186,7 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
         SCOREP_PROFILE_STOP( location );
         UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                      "Exit event for other than current region occured at "
-                     "location %u: Expected exit for region %s. "
+                     "location %" PRIu64 ": Expected exit for region %s. "
                      "Exited region %s",
                      scorep_profile_type_get_int_value( location->root_node->type_specific_data ),
                      SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ),

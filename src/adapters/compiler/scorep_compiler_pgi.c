@@ -364,6 +364,7 @@ pgi_enter_region( SCOREP_RegionHandle* region,
             if ( ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
                  ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
                  ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
+                 ( strstr( region_name, "SCOREP_User_RegionClass" ) == NULL ) &&
                  ( !SCOREP_Filter_Match( file_name, region_name, NULL ) ) )
             {
                 *region = SCOREP_DefineRegion( region_name,

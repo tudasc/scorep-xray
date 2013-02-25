@@ -484,7 +484,7 @@ scorep_profile_set_fork_node( scorep_profile_node* node,
 
 
 /* ***************************************************************************************
-   Getter / Setter functions fro type dependent data
+   Getter / Setter functions for type dependent data
 *****************************************************************************************/
 
 /**
