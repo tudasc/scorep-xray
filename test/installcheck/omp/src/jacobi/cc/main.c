@@ -110,6 +110,28 @@ PrintResults( const struct JacobiData* data )
 }
 
 /*
+ * Initializes the j^th row of the matrix.
+ */
+void
+InitializeRow( struct JacobiData* data,
+               int                j )
+{
+    int i, xx, xx2, yy, yy2;
+    for ( i = 0; i < data->iCols; i++ )
+    {
+        xx = ( int )( -1.0 + data->fDx * i );
+        yy = ( int )( -1.0 + data->fDy * j );
+
+        xx2 = xx * xx;
+        yy2 = yy * yy;
+
+        U( j, i ) = 0.0;
+        F( j, i ) = -data->fAlpha * ( 1.0 - xx2 ) * ( 1.0 - yy2 )
+                    + 2.0 * ( -2.0 + xx2 + yy2 );
+    }
+}
+
+/*
  * Initializes matrix
  * Assumes exact solution is u(x,y) = (1-x^2)*(1-y^2)
  */
@@ -121,19 +143,7 @@ InitializeMatrix( struct JacobiData* data )
 #pragma omp parallel for private(i, j, xx, yy, xx2, yy2)
     for ( j = data->iRowFirst; j <= data->iRowLast; j++ )
     {
-        for ( i = 0; i < data->iCols; i++ )
-        {
-            /* TODO: check if this values have to be ints or doubles */
-            xx = ( int )( -1.0 + data->fDx * i );
-            yy = ( int )( -1.0 + data->fDy * j );
-
-            xx2 = xx * xx;
-            yy2 = yy * yy;
-
-            U( j, i ) = 0.0;
-            F( j, i ) = -data->fAlpha * ( 1.0 - xx2 ) * ( 1.0 - yy2 )
-                        + 2.0 * ( -2.0 + xx2 + yy2 );
-        }
+        InitializeRow( data, j );
     }
 }
 

@@ -101,6 +101,25 @@ PrintResults( const JacobiData &data )
     return;
 }
 
+void
+InitializeRow( JacobiData &data,
+               int         j )
+
+{
+    for ( int i = 0; i < data.iCols; i++ )
+    {
+        int xx = ( int )( -1.0 + data.fDx * i );
+        int yy = ( int )( -1.0 + data.fDy * j );
+
+        int xx2 = xx * xx;
+        int yy2 = yy * yy;
+
+        U( j, i ) = 0.0;
+        F( j, i ) = -data.fAlpha * ( 1.0 - xx2 ) * ( 1.0 - yy2 )
+                    + 2.0 * ( -2.0 + xx2 + yy2 );
+    }
+}
+
 // Initializes matrix
 // Assumes exact solution is u(x,y) = (1-x^2)*(1-y^2)
 void
@@ -110,19 +129,7 @@ InitializeMatrix( JacobiData &data )
 #pragma omp parallel for
     for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
     {
-        for ( int i = 0; i < data.iCols; i++ )
-        {
-            // TODO: check if this values have to be ints or doubles
-            int xx = ( int )( -1.0 + data.fDx * i );
-            int yy = ( int )( -1.0 + data.fDy * j );
-
-            int xx2 = xx * xx;
-            int yy2 = yy * yy;
-
-            U( j, i ) = 0.0;
-            F( j, i ) = -data.fAlpha * ( 1.0 - xx2 ) * ( 1.0 - yy2 )
-                        + 2.0 * ( -2.0 + xx2 + yy2 );
-        }
+        InitializeRow( data, j );
     }
 }
 

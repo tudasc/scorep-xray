@@ -126,6 +126,23 @@ subroutine Init (myData)
 
 end subroutine Init
 
+subroutine InitializeRow (myData, j)
+    use VariableDef
+    implicit none
+    type(JacobiData), intent(inout) :: myData
+    integer, intent(in) :: j
+    integer :: xx,yy,i
+    xx=0
+    do i = 0, myData%iCols -1
+        xx = INT(-1.0 + myData%fDx*DBLE(i)) ! -1 < x < 1
+        yy = INT(-1.0 + myData%fDy*DBLE(j)) ! -1 < y < 1
+        myData%afU(i, j) = 0.0d0
+        myData%afF(i, j) = - myData%fAlpha * (1.0d0 - DBLE(xx*xx))  &
+            * (1.0d0 - DBLE(yy*yy)) - 2.0d0 * (1.0d0 - DBLE(xx*xx)) &
+            - 2.0d0 * (1.0d0 - DBLE(yy*yy))
+    end do
+end subroutine
+
 subroutine InitializeMatrix (myData)
     !*********************************************************************
     ! Initializes data                                                   *
@@ -137,7 +154,7 @@ subroutine InitializeMatrix (myData)
 
     type(JacobiData), intent(inout) :: myData 
     !.. Local Scalars .. 
-    integer :: i, j, xx, yy
+    integer :: j
     !.. Intrinsic Functions .. 
     intrinsic DBLE
    
@@ -146,18 +163,11 @@ subroutine InitializeMatrix (myData)
     ! Workaround for  PDT instrumentation, PDT fails to recognize OpenMP
     ! directives as commands and thus inserts declarations at the wrong
     ! location. Put a statement before solves the issue.
-    xx=0
+
   
-!$omp parallel do private (j, i, xx, yy)
+!$omp parallel do private (j)
     do j = myData%iRowFirst, myData%iRowLast
-        do i = 0, myData%iCols -1
-            xx = INT(-1.0 + myData%fDx*DBLE(i)) ! -1 < x < 1
-            yy = INT(-1.0 + myData%fDy*DBLE(j)) ! -1 < y < 1
-            myData%afU(i, j) = 0.0d0
-            myData%afF(i, j) = - myData%fAlpha * (1.0d0 - DBLE(xx*xx))  &
-                * (1.0d0 - DBLE(yy*yy)) - 2.0d0 * (1.0d0 - DBLE(xx*xx)) &
-                - 2.0d0 * (1.0d0 - DBLE(yy*yy))
-        end do
+        call InitializeRow(myData, j)
     end do
 !$omp end parallel do
 end subroutine InitializeMatrix
