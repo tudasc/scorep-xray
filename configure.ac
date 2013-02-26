@@ -68,7 +68,7 @@ AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
 
 AC_SCOREP_HAVE_CONFIG_TOOL([otf2],   [2], [0])
 AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [1], [0])
-AC_SCOREP_HAVE_CONFIG_TOOL([cube],   [1], [0])
+AC_SCOREP_HAVE_CONFIG_TOOL([cube],   [4], [1])
 
 # handle external package's subdir configures
 AS_IF([test "x${scorep_have_opari2_config}" = "xno"],
