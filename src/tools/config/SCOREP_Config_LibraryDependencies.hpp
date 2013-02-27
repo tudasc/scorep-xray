@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -50,7 +50,7 @@ public:
          * Empty contructor. Needed to allow copies of STL containers containing this
          * class
          */
-        la_object();
+        la_object( void );
 
         /**
          * Copy constructor.
@@ -60,13 +60,13 @@ public:
         /**
          * Regular constructor.
          */
-        la_object( std::string             lib_name,
-                   std::string             build_dir,
-                   std::string             install_dir,
-                   std::deque<std::string> libs,
-                   std::deque<std::string> ldflags,
-                   std::deque<std::string> rpaths,
-                   std::deque<std::string> dependency_las );
+        la_object( const std::string&             lib_name,
+                   const std::string&             build_dir,
+                   const std::string&             install_dir,
+                   const std::deque<std::string>& libs,
+                   const std::deque<std::string>& ldflags,
+                   const std::deque<std::string>& rpaths,
+                   const std::deque<std::string>& dependency_las );
 
         /**
          * Destructor.
@@ -89,7 +89,7 @@ public:
     /**
      * Constructs the library dependecies
      */
-    SCOREP_Config_LibraryDependencies();
+    SCOREP_Config_LibraryDependencies( void );
 
     /**
      * Destructor
@@ -102,7 +102,7 @@ public:
      * @param input_libs  A list of libraries, that should be linked.
      */
     std::string
-    GetLibraries( const std::deque<std::string> input_libs );
+    GetLibraries( const std::deque<std::string>& input_libs );
 
     /**
      * Returns the string containing the library path flags for the @a input_libs and
@@ -112,8 +112,8 @@ public:
      *                build path are used.
      */
     std::string
-    GetLDFlags( const std::deque<std::string> libs,
-                bool                          install );
+    GetLDFlags( const std::deque<std::string>& libs,
+                bool                           install );
 
     /**
      * Returns the string containing the rpath flags for the @a input_libs and
@@ -128,11 +128,11 @@ public:
      * @param delimiter A string that separates the pathes.
      */
     std::string
-    GetRpathFlags( const std::deque<std::string> libs,
-                   bool                          install,
-                   const std::string             head,
-                   const std::string             delimiter,
-                   const std::string             tail );
+    GetRpathFlags( const std::deque<std::string>& libs,
+                   bool                           install,
+                   const std::string&             head,
+                   const std::string&             delimiter,
+                   const std::string&             tail );
 
     // ------------------------------------- Protected functions
 protected:
@@ -141,11 +141,11 @@ protected:
      * @param libs  A list of library names.
      */
     std::deque<std::string>
-    get_dependencies( const std::deque<std::string> libs );
+    get_dependencies( const std::deque<std::string>& libs );
 
     // ------------------------------------- Public members
 private:
-    std::map< std::string, la_object> la_objects;
+    std::map< std::string, la_object> m_backend_objects;
 };
 
 #endif

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -36,7 +36,7 @@ using namespace std;
 ****************************************************************************************/
 
 static inline string
-strip_leading_whitespace( string input )
+strip_leading_whitespace( const string& input )
 {
     const char* pos = input.c_str();
     while ( ( *pos != '\0' ) && ( ( *pos == ' ' ) || ( *pos == '\t' ) ) )
@@ -50,7 +50,9 @@ strip_leading_whitespace( string input )
  * Strips the head and leading demiliter from a input string. Ignores leading whitespaces.
  */
 static string
-strip_head( string input, string head, string delimiter )
+strip_head( const string& input,
+            string        head,
+            string        delimiter )
 {
     string output = strip_leading_whitespace( input );
     head      = strip_leading_whitespace( head );
@@ -73,7 +75,7 @@ strip_head( string input, string head, string delimiter )
  * Checks whether @a input contains @a item.
  */
 static bool
-has_item( const deque<string> input, string item )
+has_item( const deque<string>& input, const string& item )
 {
     deque<string>::const_iterator i;
     for ( i = input.begin(); i != input.end(); i++ )
@@ -91,7 +93,7 @@ has_item( const deque<string> input, string item )
  * last occurence of each entry. This ensures that the dependencies are maintained.
  */
 static deque<string>
-remove_double_entries( const deque<string> input )
+remove_double_entries( const deque<string>& input )
 {
     deque<string>                         output;
     deque<string>::const_reverse_iterator i;
@@ -110,10 +112,10 @@ remove_double_entries( const deque<string> input )
  * Converts deque of strings into a string where all entries are space separated.
  */
 static string
-deque_to_string( const deque<string> input,
-                 const string        head,
-                 const string        delimiter,
-                 const string        tail )
+deque_to_string( const deque<string>& input,
+                 const string&        head,
+                 const string&        delimiter,
+                 const string&        tail )
 {
     string                        output = head;
     deque<string>::const_iterator i;
@@ -129,7 +131,7 @@ deque_to_string( const deque<string> input,
                                                                           class la_object
 ****************************************************************************************/
 
-SCOREP_Config_LibraryDependencies::la_object::la_object()
+SCOREP_Config_LibraryDependencies::la_object::la_object( void )
 {
 }
 
@@ -145,13 +147,13 @@ SCOREP_Config_LibraryDependencies::la_object::la_object( const la_object &source
 }
 
 
-SCOREP_Config_LibraryDependencies::la_object::la_object( string        lib_name,
-                                                         string        build_dir,
-                                                         string        install_dir,
-                                                         deque<string> libs,
-                                                         deque<string> ldflags,
-                                                         deque<string> rpath,
-                                                         deque<string> dependency_las )
+SCOREP_Config_LibraryDependencies::la_object::la_object( const string&        lib_name,
+                                                         const string&        build_dir,
+                                                         const string&        install_dir,
+                                                         const deque<string>& libs,
+                                                         const deque<string>& ldflags,
+                                                         const deque<string>& rpath,
+                                                         const deque<string>& dependency_las )
 {
     m_lib_name       = lib_name;
     m_build_dir      = build_dir;
@@ -170,12 +172,13 @@ SCOREP_Config_LibraryDependencies::la_object::~la_object()
                                                   class SCOREP_Config_LibraryDependencies
 ****************************************************************************************/
 
-SCOREP_Config_LibraryDependencies::SCOREP_Config_LibraryDependencies()
+SCOREP_Config_LibraryDependencies::SCOREP_Config_LibraryDependencies( void )
 {
-    deque<string> libs;
-    deque<string> ldflags;
-    deque<string> rpaths;
-    deque<string> dependency_las;
+    deque<string>                      libs;
+    deque<string>                      ldflags;
+    deque<string>                      rpaths;
+    deque<string>                      dependency_las;
+    std::map< std::string, la_object>* la_objects = &m_backend_objects;
 
     /* scorep_library_dependencies.cpp is generated by
        vendor/common/build-config/generate-libaray-dependency.sh */
@@ -187,7 +190,7 @@ SCOREP_Config_LibraryDependencies::~SCOREP_Config_LibraryDependencies()
 }
 
 string
-SCOREP_Config_LibraryDependencies::GetLibraries( const deque<string> input_libs )
+SCOREP_Config_LibraryDependencies::GetLibraries( const deque<string>& input_libs )
 {
     /* Traversing backwards will add the -l flags from the scorep_* lib last.
        this makes the system more robust against broken dependencies in installed
@@ -199,7 +202,7 @@ SCOREP_Config_LibraryDependencies::GetLibraries( const deque<string> input_libs 
     deque<string>::reverse_iterator i;
     for ( i = deps.rbegin(); i != deps.rend(); i++ )
     {
-        la_object obj = la_objects[ *i ];
+        la_object obj = m_backend_objects[ *i ];
         libs.push_front( "-l" + obj.m_lib_name.substr( 3 ) );
         libs.insert( libs.end(),
                      obj.m_libs.begin(),
@@ -211,14 +214,14 @@ SCOREP_Config_LibraryDependencies::GetLibraries( const deque<string> input_libs 
 }
 
 string
-SCOREP_Config_LibraryDependencies::GetLDFlags( const deque<string> libs, bool install )
+SCOREP_Config_LibraryDependencies::GetLDFlags( const deque<string>& libs, bool install )
 {
     deque<string>           deps = get_dependencies( libs );
     deque<string>           flags;
     deque<string>::iterator i;
     for ( i = deps.begin(); i != deps.end(); i++ )
     {
-        la_object obj = la_objects[ *i ];
+        la_object obj = m_backend_objects[ *i ];
         if ( install )
         {
             flags.push_back( "-L" + obj.m_install_dir );
@@ -237,7 +240,11 @@ SCOREP_Config_LibraryDependencies::GetLDFlags( const deque<string> libs, bool in
 }
 
 string
-SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool install, const string head, const string delimiter, const string tail )
+SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string>& libs,
+                                                  bool                 install,
+                                                  const string&        head,
+                                                  const string&        delimiter,
+                                                  const string&        tail )
 {
     deque<string>           deps = get_dependencies( libs );
     deque<string>           flags;
@@ -245,7 +252,7 @@ SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool
     deque<string>::iterator j;
     for ( i = deps.begin(); i != deps.end(); i++ )
     {
-        la_object obj = la_objects[ *i ];
+        la_object obj = m_backend_objects[ *i ];
         if ( install )
         {
             flags.push_back( obj.m_install_dir );
@@ -272,17 +279,17 @@ SCOREP_Config_LibraryDependencies::GetRpathFlags( const deque<string> libs, bool
 }
 
 deque<string>
-SCOREP_Config_LibraryDependencies::get_dependencies( const deque<string> libs )
+SCOREP_Config_LibraryDependencies::get_dependencies( const deque<string>& libs )
 {
     deque<string> deps = libs;
     for ( int i = 0; i < deps.size(); i++ )
     {
-        if ( la_objects.find( deps[ i ] ) == la_objects.end() )
+        if ( m_backend_objects.find( deps[ i ] ) == m_backend_objects.end() )
         {
             cerr << "ERROR: Can not resolve dependency \"" << deps[ i ] << "\"" << endl;
             exit( EXIT_FAILURE );
         }
-        la_object obj = la_objects[ deps[ i ] ];
+        la_object obj = m_backend_objects[ deps[ i ] ];
 
         deps.insert( deps.end(),
                      obj.m_dependency_las.begin(),
