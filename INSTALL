@@ -109,6 +109,9 @@ possible to use existing installations instead:
 Options to further specify which features and external packages should
 be used to build Score-P are as follows:
 
+  --enable-debug          activate internal debug output [no]
+  --enable-shared[=PKGS]  build shared libraries [default=no]
+  --enable-static[=PKGS]  build static libraries [default=yes]
   --enable-backend-test-runs
                           Run tests at make check [no]. If disabled, tests are
                           still build at make check. Additionally, scripts
