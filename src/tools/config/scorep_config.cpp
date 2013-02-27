@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -102,9 +102,9 @@ std::string
 remove_multiple_whitespaces( std::string str );
 
 std::string
-replace_all( std::string pattern,
-             std::string replacement,
-             std::string original );
+replace_all( const std::string& pattern,
+             const std::string& replacement,
+             std::string        original );
 
 std::string
 append_ld_run_path_to_rpath( std::string rpath );
@@ -505,9 +505,9 @@ remove_multiple_whitespaces( std::string str )
  *          replaced by @ replacement.
  */
 std::string
-replace_all( std::string pattern,
-             std::string replacement,
-             std::string original )
+replace_all( const std::string& pattern,
+             const std::string& replacement,
+             std::string        original )
 {
     std::string::size_type pos            = original.find( pattern, 0 );
     int                    pattern_length = pattern.length();

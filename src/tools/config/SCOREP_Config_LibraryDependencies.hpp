@@ -126,6 +126,7 @@ public:
      *                  build path are used.
      * @param head      A string that appears once at the beginning
      * @param delimiter A string that separates the pathes.
+     * @param tail      A string that is appended after the last rpath flag.
      */
     std::string
     GetRpathFlags( const std::deque<std::string>& libs,
