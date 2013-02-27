@@ -196,10 +196,7 @@ fi
 
 # The output of this macro
 AC_SUBST([SCOREP_SION_$1_CPPFLAGS], [$scorep_sion_cppflags])
-dnl add  $scorep_sion_rpathflags to SCOREP_SION_$1_LDFLAGS not before 
-dnl otf2-config's library dependencies are evaluated via 
-dnl build-config/generate-library-dependencies.sh.in 
-AC_SUBST([SCOREP_SION_$1_LDFLAGS],  ["$scorep_sion_ldflags"])
+AC_SUBST([SCOREP_SION_$1_LDFLAGS],  ["$scorep_sion_ldflags $scorep_sion_rpathflags"])
 AC_SUBST([SCOREP_SION_$1_LIBS],     [$scorep_sion_libs])
 AS_IF([test "x${scorep_have_sion}" = "xyes"],
     [AC_DEFINE([HAVE_SION_$1], [1], [Defined if libsion $1 is available.])])
