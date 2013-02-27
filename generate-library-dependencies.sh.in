@@ -131,19 +131,19 @@ parse_la ()
     for i in ${dependency_la}; do
         dependency_la_name=`basename ${i}`
         dependency_la_name=${dependency_la_name%.la}
-        echo "    dependency_las.push_back( \"${dependency_la_name}\" );"     >> ${output_file}
+        echo "    dependency_las.push_back( \"${dependency_la_name}\" );"      >> ${output_file}
     done
 
-    echo "    if ( la_objects.find( \"${lib_name}\" ) == la_objects.end() ) " >> ${output_file}
-    echo "    {"                                                              >> ${output_file}
-    echo "        la_objects[ \"${lib_name}\" ] ="                            >> ${output_file}
-    echo "            la_object( \"${lib_name}\","                            >> ${output_file}
-    echo "                       \"${build_dir}\","                           >> ${output_file}
-    echo "                       \"${install_dir}\","                         >> ${output_file}
-    echo "                       libs,"                                       >> ${output_file}
-    echo "                       ldflags,"                                    >> ${output_file}
-    echo "                       rpaths,"                                     >> ${output_file}
-    echo "                       dependency_las );"                           >> ${output_file}
+    echo "    if ( la_objects->find( \"${lib_name}\" ) == la_objects->end() )" >> ${output_file}
+    echo "    {"                                                               >> ${output_file}
+    echo "        (*la_objects)[ \"${lib_name}\" ] ="                          >> ${output_file}
+    echo "            la_object( \"${lib_name}\","                             >> ${output_file}
+    echo "                       \"${build_dir}\","                            >> ${output_file}
+    echo "                       \"${install_dir}\","                          >> ${output_file}
+    echo "                       libs,"                                        >> ${output_file}
+    echo "                       ldflags,"                                     >> ${output_file}
+    echo "                       rpaths,"                                      >> ${output_file}
+    echo "                       dependency_las );"                            >> ${output_file}
     echo "    }" >> ${output_file}
     echo  >> ${output_file}
 
