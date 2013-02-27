@@ -30,7 +30,15 @@
                            POMP2_Get_opari2_version
                            POMP2_Get_required_pomp2_library_version_age
                            POMP2_Get_required_pomp2_library_version_current
-                           POMP2_Get_required_pomp2_library_version_revision</functionnames>
+                           POMP2_Get_required_pomp2_library_version_revision
+                           _start</functionnames>
+            <modulenames>crtstuff.c
+                         elf-init.c
+                         initfini.c</modulenames>
+            <and>
+                  <modulenames>DEFAULT_MODULE</modulenames>
+                  <functionnames match="prefix">targ</functionnames>
+            </and>
 	</or>
 </adapterfilter>
 
