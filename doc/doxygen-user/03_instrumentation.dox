@@ -666,6 +666,42 @@ C/C++:
       region instrumentation for @openmp applications, pass 
       <tt>--nopomp</tt> to the instrumenter.
 
+By default, the source code is preprocessed before @pomp2 instrumentation happens.
+For more information on the preprocessing, see Section \ref{sec:opari2_preprocessing}.
+
+@section opari2_preprocessing Preprocessing before @pomp2 and @openmp instrumentation
+@seclabel{opari2_preprocessing}
+
+By default, source files are preprocessed before the semi-automatic @pomp2 instrumentation
+or the OpenMP construct instrumentation with @opari2 happens. This ensures, that all
+constructs and regions that might be contained in header files, templates, or macros
+are properly instrumented. Furthermore, conditional compilation directives take 
+effect, too. The necessary steps are performed by the @scorep instrumenter tool. 
+
+Some Fortran compilers do not regard information about the original 
+source location that the preprocessing leaves in
+the preprocessed code. This causes wrong source code information for
+regions from compiler instrumentation, and manual source code 
+instrumentation. However, these compilers also
+disregard the source code information left by @opari2. Thus, 
+for these compilers the source location information is incorrect anyway.
+
+However, if the preprocessing is not desired, you can disable it
+with the <tt>--nopreprocess</tt> flag. In this case the instrumentation is performed
+before the preprocessing happens. In this case constructs and regions in header 
+files, macros, or templates are not instrumented. Conditional compilation directives
+around constructs may also lead to broken instrumentation.
+
+@note If a parallel region is not instrumented, the application will 
+      crash during runtime.
+
+The preprocessing does not work in combination with PDT source
+code instrumentation. Thus, if PDT instrumentation is enabled, it changes
+the default to not preprocess a source file. If you manually specify
+preprocessing and PDT source code instrumentation, the instrumenter will
+abort with an error.
+
+
 @section tau_instrumentation Source-Code Instrumentation Using PDT
 @seclabel{tau_instrumentation}
 

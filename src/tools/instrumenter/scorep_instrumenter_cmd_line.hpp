@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -165,6 +165,8 @@ public:
     enforceStaticLinking( void );
     bool
     enforceDynamicLinking( void );
+    bool
+    isPreprocess( void );
 
     /**
        Returns true if the link target is a shared library.
@@ -195,7 +197,7 @@ private:
        @returns the parsing mode for the next parameter.
      */
     scorep_parse_mode_t
-    parse_output( std::string arg );
+    parse_output( const std::string& arg );
 
     /**
        Evaluates one parameter when in command mode.
@@ -203,7 +205,7 @@ private:
        @returns the parsing mode for the next parameter.
      */
     scorep_parse_mode_t
-    parse_command( std::string arg );
+    parse_command( const std::string& arg );
 
     /**
        Evaluates one parameter when in option_part mode.
@@ -211,7 +213,7 @@ private:
        @returns the parsing mode for the next parameter.
      */
     scorep_parse_mode_t
-    parse_option_part( std::string arg );
+    parse_option_part( const std::string& arg );
 
     /**
        Evaluates one parameter when in parameter mode.
@@ -219,7 +221,7 @@ private:
        @returns the parsing mode for the next parameter.
      */
     scorep_parse_mode_t
-    parse_parameter( std::string arg );
+    parse_parameter( const std::string& arg );
 
     /**
        Evaluates one parameter when in libray mode.
@@ -227,7 +229,7 @@ private:
        @returns the parsing mode for the next parameter.
      */
     scorep_parse_mode_t
-    parse_library( std::string arg );
+    parse_library( const std::string& arg );
 
     /**
        Evaluates one parameter when in define mode.
@@ -235,7 +237,7 @@ private:
        @returns the parsing mode for the next parameter.
      */
     scorep_parse_mode_t
-    parse_define( std::string arg );
+    parse_define( const std::string& arg );
 
     /**
        Evaluates one parameter when in incdir mode.
@@ -243,7 +245,7 @@ private:
        @returns the parsing mode for the next parameter.
      */
     scorep_parse_mode_t
-    parse_incdir( std::string arg );
+    parse_incdir( const std::string& arg );
 
     /**
        Evaluates one parameter when in libdir mode.
@@ -251,7 +253,7 @@ private:
        @returns the parsing mode for the next parameter.
      */
     scorep_parse_mode_t
-    parse_libdir( std::string arg );
+    parse_libdir( const std::string& arg );
 
     /**
        Evaluates one parameter when in fortran_form mode.
@@ -261,7 +263,7 @@ private:
        @returns the parsing mode for the next parameter.
      */
     scorep_parse_mode_t
-    parse_fortran_form( std::string arg );
+    parse_fortran_form( const std::string& arg );
 
     /**
        Processes a define parameter.
@@ -277,8 +279,8 @@ private:
        @param pos  The length of the tool argument, e.g., length of --opari.
      */
     std::string
-    get_tool_params( std::string arg,
-                     size_t      pos );
+    get_tool_params( const std::string& arg,
+                     size_t             pos );
 
 
     /* ***************************************************** Private members */
@@ -329,6 +331,12 @@ private:
        Specifies if binary instrumentation with Cobi is enabled.
      */
     instrumentation_usage_t m_cobi_instrumentation;
+
+    /**
+       Specifies whether the source file should be preprocessed before instrumented
+       with OPARI2
+     */
+    instrumentation_usage_t m_preprocess;
 
     /* --------------------------------------------
        Flags for application type

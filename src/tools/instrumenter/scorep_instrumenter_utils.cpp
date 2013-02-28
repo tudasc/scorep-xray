@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -58,9 +58,9 @@ remove_multiple_whitespaces( std::string str )
 }
 
 std::string
-replace_all( std::string pattern,
-             std::string replacement,
-             std::string original )
+replace_all( const std::string& pattern,
+             const std::string& replacement,
+             std::string        original )
 {
     std::string::size_type pos            = original.find( pattern, 0 );
     int                    pattern_length = pattern.length();
@@ -79,7 +79,7 @@ replace_all( std::string pattern,
 ******************************************************************************/
 
 std::string
-extract_path( std::string filename )
+extract_path( const std::string& filename )
 {
     size_t pos = filename.find_last_of( '/' );
     if ( pos == 0 )
@@ -94,7 +94,7 @@ extract_path( std::string filename )
 }
 
 std::string
-remove_path( std::string full_path )
+remove_path( const std::string& full_path )
 {
     size_t pos = full_path.rfind( "/" );
     if ( pos == std::string::npos )
@@ -108,7 +108,7 @@ remove_path( std::string full_path )
 }
 
 std::string
-get_extension( std::string filename )
+get_extension( const std::string& filename )
 {
     int pos = filename.rfind( "." );
     if ( pos == std::string::npos )
@@ -119,7 +119,7 @@ get_extension( std::string filename )
 }
 
 std::string
-remove_extension( std::string filename )
+remove_extension( const std::string& filename )
 {
     int pos = filename.rfind( "." );
     if ( pos == std::string::npos )
@@ -130,7 +130,7 @@ remove_extension( std::string filename )
 }
 
 bool
-is_fortran_file( std::string filename )
+is_fortran_file( const std::string& filename )
 {
     std::string extension = get_extension( filename );
     if ( extension == "" )
@@ -159,7 +159,7 @@ is_fortran_file( std::string filename )
 }
 
 bool
-is_c_file( std::string filename )
+is_c_file( const std::string& filename )
 {
     std::string extension = get_extension( filename );
     if ( extension == "" )
@@ -174,7 +174,7 @@ is_c_file( std::string filename )
 }
 
 bool
-is_cpp_file( std::string filename )
+is_cpp_file( const std::string& filename )
 {
     std::string extension = get_extension( filename );
     if ( extension == "" )
@@ -193,7 +193,7 @@ is_cpp_file( std::string filename )
 }
 
 bool
-is_cuda_file( std::string filename )
+is_cuda_file( const std::string& filename )
 {
     std::string extension = get_extension( filename );
     if ( extension == "" )
@@ -208,7 +208,7 @@ is_cuda_file( std::string filename )
 }
 
 bool
-is_source_file( std::string filename )
+is_source_file( const std::string& filename )
 {
     return is_c_file( filename ) ||
            is_cpp_file( filename ) ||
@@ -217,7 +217,7 @@ is_source_file( std::string filename )
 }
 
 bool
-is_object_file( std::string filename )
+is_object_file( const std::string& filename )
 {
     std::string extension = get_extension( filename );
     if ( extension == "" )
@@ -232,7 +232,7 @@ is_object_file( std::string filename )
 }
 
 bool
-is_library( std::string filename )
+is_library( const std::string& filename )
 {
     std::string extension = get_extension( filename );
     if ( extension == "" )
@@ -259,14 +259,16 @@ is_library( std::string filename )
 }
 
 bool
-exists_file( std::string filename )
+exists_file( const std::string& filename )
 {
     std::ifstream ifile( filename.c_str() );
     return ifile;
 }
 
 std::string
-find_library( std::string library, std::string path_list, std::string delimiter )
+find_library( std::string        library,
+              const std::string& path_list,
+              const std::string& delimiter )
 {
     size_t      cur_pos = 0;
     size_t      old_pos = 0;
@@ -299,4 +301,24 @@ find_library( std::string library, std::string path_list, std::string delimiter 
         old_pos = cur_pos + 1;
     }
     return "";
+}
+
+std::string
+scorep_tolower( std::string str )
+{
+    for ( size_t i = 0; i < str.length(); i++ )
+    {
+        str[ i ] = tolower( str[ i ] );
+    }
+    return str;
+}
+
+std::string
+scorep_toupper( std::string str )
+{
+    for ( size_t i = 0; i < str.length(); i++ )
+    {
+        str[ i ] = toupper( str[ i ] );
+    }
+    return str;
 }

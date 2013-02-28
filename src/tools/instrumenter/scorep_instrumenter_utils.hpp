@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -34,7 +34,7 @@
             (no dot appears in the filename) an empty string is returned.
  */
 std::string
-get_extension( std::string filename );
+get_extension( const std::string& filename );
 
 /**
    Removes the extension including the last dot from a filename.
@@ -43,7 +43,7 @@ get_extension( std::string filename );
            (no dot appears in the filename) the whole filename is returned.
  */
 std::string
-remove_extension( std::string filename );
+remove_extension( const std::string& filename );
 
 /**
     Checks whether a file is a source file.
@@ -52,7 +52,7 @@ remove_extension( std::string filename );
              file.
  */
 bool
-is_source_file( std::string filename );
+is_source_file( const std::string& filename );
 
 /**
     Checks whether a file is a Fortran source file.
@@ -60,7 +60,7 @@ is_source_file( std::string filename );
     @returns true if the file extension indicates Fortran source file.
  */
 bool
-is_fortran_file( std::string filename );
+is_fortran_file( const std::string& filename );
 
 /**
     Checks whether a file is a C source file.
@@ -68,7 +68,7 @@ is_fortran_file( std::string filename );
     @returns true if the file extension indicates C source file.
  */
 bool
-is_c_file( std::string filename );
+is_c_file( const std::string& filename );
 
 /**
     Checks whether a file is a C++ source file.
@@ -76,7 +76,7 @@ is_c_file( std::string filename );
     @returns true if the file extension indicates C++ source file.
  */
 bool
-is_cpp_file( std::string filename );
+is_cpp_file( const std::string& filename );
 
 /**
     Checks whether a file is a CUDA source file.
@@ -84,7 +84,7 @@ is_cpp_file( std::string filename );
     @returns true if the file extension indicates CUDA source file.
  */
 bool
-is_cuda_file( std::string filename );
+is_cuda_file( const std::string& filename );
 
 /**
     Checks whether a file is an object file.
@@ -92,7 +92,7 @@ is_cuda_file( std::string filename );
     @returns true if the file extension indicates an object file.
  */
 bool
-is_object_file( std::string filename );
+is_object_file( const std::string& filename );
 
 /**
     Checks whether a file is a library.
@@ -100,7 +100,7 @@ is_object_file( std::string filename );
     @returns true if the file extension indicates an object file.
  */
 bool
-is_library( std::string filename );
+is_library( const std::string& filename );
 
 /**
    Removes everything before the first slash from @a full_path.
@@ -108,14 +108,14 @@ is_library( std::string filename );
    @returns The filename without its path.
  */
 std::string
-remove_path( std::string full_path );
+remove_path( const std::string& full_path );
 
 /**
    Returns the path contained in @ filename
    @param filename a file name with a full path
  */
 std::string
-extract_path( std::string filename );
+extract_path( const std::string& filename );
 
 /**
     Trim  and replace multiple white-spaces in @ str by a single one.
@@ -136,9 +136,9 @@ remove_multiple_whitespaces( std::string str );
             replaced by @ replacement.
  */
 std::string
-replace_all( std::string pattern,
-             std::string replacement,
-             std::string original );
+replace_all( const std::string& pattern,
+             const std::string& replacement,
+             std::string        original );
 
 /**
    Tests whether a given file exists.
@@ -146,7 +146,7 @@ replace_all( std::string pattern,
    @return true, if the file exists
  */
 bool
-exists_file( std::string filename );
+exists_file( const std::string& filename );
 
 /**
    Searches for a library in a list of path.
@@ -158,10 +158,24 @@ exists_file( std::string filename );
            library was found. Otherwise it return an empty string.
  */
 std::string
-find_library( std::string library,
-              std::string path_list,
-              std::string delimiter );
+find_library( std::string        library,
+              const std::string& path_list,
+              const std::string& delimiter );
 
+/**
+   Converts a string to lower case
+   @param str  The string that shall be converted to lower case.
+   @returns the string in lower case.
+ */
+std::string
+scorep_tolower( std::string str );
 
+/**
+   Converts a string to upper case
+   @param str  The string that shall be converted to upper case.
+   @returns the string in upper case.
+ */
+std::string
+scorep_toupper( std::string str );
 
 #endif // SCOREP_INSTRUMENTER_UTILS_HPP

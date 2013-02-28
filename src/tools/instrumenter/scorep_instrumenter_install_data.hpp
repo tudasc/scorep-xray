@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -66,6 +66,18 @@ public:
     getCC( void );
 
     /**
+       C++ compiler command
+     */
+    std::string
+    getCXX( void );
+
+    /**
+       Fortran compiler command
+     */
+    std::string
+    getFC( void );
+
+    /**
        The nm command
      */
     std::string
@@ -118,7 +130,7 @@ public:
        Reads configuration data from a config file
      */
     SCOREP_ErrorCode
-    readConfigFile( std::string arg0 );
+    readConfigFile( const std::string& arg0 );
 
     /**
        Perfroms the changes on the install data retrieval if it is a build
@@ -133,14 +145,14 @@ public:
        @param params The Opari2 parameters
      */
     void
-    setOpariParams( std::string params );
+    setOpariParams( const std::string& params );
 
     /**
        Sets user specified Cobi flags.
        @param params The Cobi parameters
      */
     void
-    setCobiParams( std::string params );
+    setCobiParams( const std::string& params );
 
     /**
        Sets OPARI2 parameters to explicitly specify fixed or free form fortran.
@@ -156,28 +168,40 @@ public:
        @param arg the argument that is considered
      */
     bool
-    isArgForShared( std::string arg );
+    isArgForShared( const std::string& arg );
 
     /**
        Checks whether @a arg is the compiler option to use OpenMP.
        @param arg the argument that is considered
      */
     bool
-    isArgForOpenmp( std::string arg );
+    isArgForOpenmp( const std::string& arg );
 
     /**
        Checks whether @a arg is the compiler option to enable free form Fortran
        @param arg the argument that is considered
      */
     bool
-    isArgForFreeform( std::string arg );
+    isArgForFreeform( const std::string& arg );
 
     /**
        Checks whether @a arg is the compiler option to enable fixed form Fortran
        @param arg the argument that is considered
      */
     bool
-    isArgForFixedform( std::string arg );
+    isArgForFixedform( const std::string& arg );
+
+    std::string
+    getCPreprocessingFlags( const std::string& input_file,
+                            const std::string& output_file );
+
+    std::string
+    getCxxPreprocessingFlags( const std::string& input_file,
+                              const std::string& output_file );
+
+    std::string
+    getFortranPreprocessingFlags( const std::string& input_file,
+                                  const std::string& output_file );
 
     /**
        Returns envaronment variables needed by the compiler.
@@ -201,8 +225,8 @@ private:
        @param value The value
      */
     void
-    set_value( std::string key,
-               std::string value );
+    set_value( const std::string& key,
+               const std::string& value );
 
 
     /**
@@ -211,7 +235,7 @@ private:
        installation.
      */
     void
-    set_pdt_path( std::string pdt );
+    set_pdt_path( const std::string& pdt );
 
     /**
        Extracts parameter from configuration file
@@ -236,6 +260,16 @@ private:
        C compiler command
      */
     std::string m_c_compiler;
+
+    /**
+       C++ compiler command
+     */
+    std::string m_cxx_compiler;
+
+    /**
+       Fortran compiler command
+     */
+    std::string m_fortran_compiler;
 
     /**
        Stores C compiler OpenMP flags

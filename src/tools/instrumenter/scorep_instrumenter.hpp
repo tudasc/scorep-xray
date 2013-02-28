@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -84,7 +84,7 @@ private:
        @returns the file name of the instrumented source file.
      */
     std::string
-    instrument_pdt( std::string source_file );
+    instrument_pdt( const std::string& source_file );
 
     /**
        Instruments @a source_file with Opari.
@@ -92,7 +92,7 @@ private:
        @returns the file name of the instrumented source file.
      */
     std::string
-    instrument_opari( std::string source_file );
+    instrument_opari( const std::string& source_file );
 
     /**
        Returns the list of full filenames for all libraries specified via -l flags.
@@ -113,7 +113,7 @@ private:
        @param input_file The input file for which the calls are generated.
      */
     void
-    prepare_config_tool_calls( std::string input_file );
+    prepare_config_tool_calls( const std::string& input_file );
 
     /**
        Invokes the opari tool to instrument a source file.
@@ -121,8 +121,8 @@ private:
        @param output_file Filename for the instrumented source file
      */
     void
-    invoke_opari( std::string input_file,
-                  std::string output_file );
+    invoke_opari( const std::string& input_file,
+                  const std::string& output_file );
 
     /**
        Runs a script on a list of object files to generate the Pomp_Init
@@ -131,8 +131,8 @@ private:
        @param output_file  Filename for the generated source file.
      */
     void
-    invoke_awk_script( std::string object_files,
-                       std::string output_file );
+    invoke_awk_script( const std::string& object_files,
+                       const std::string& output_file );
 
     /**
        Compiles the generated source file.
@@ -140,9 +140,8 @@ private:
        @param output_file Filename for the obejct file.
      */
     void
-    compile_init_file( std::string input_file,
-                       std::string
-                       output_file );
+    compile_init_file( const std::string& input_file,
+                       const std::string& output_file );
 
     /**
        Compiles a users source file. If the original command compile and
@@ -154,9 +153,8 @@ private:
        @param output_file Filename for the obejct file.
      */
     void
-    compile_source_file( std::string input_file,
-                         std::string
-                         output_file );
+    compile_source_file( const std::string& input_file,
+                         const std::string& output_file );
 
     /**
        Invoke the binary instrumenter Cobi. Instruments the binary
@@ -166,8 +164,8 @@ private:
        @return The return value of the cobi execution.
      */
     int
-    invoke_cobi( std::string orig_name,
-                 std::string output_name );
+    invoke_cobi( const std::string& orig_name,
+                 const std::string& output_name );
 
     /**
        Removes temorarily created files.
@@ -180,7 +178,15 @@ private:
        and whether it is a dry run.
      */
     void
-    execute_command( std::string command );
+    execute_command( const std::string& command );
+
+    /**
+       Preprocess a source file
+       @param input_file  Source file which is preprocessed.
+       @returns Filename for the preprocessed source file.
+     */
+    std::string
+    preprocess_opari( const std::string& input_file );
 
     /* ***************************************************** Private members */
 private:

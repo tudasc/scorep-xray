@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -36,7 +36,7 @@
    Helper functions
 ******************************************************************************/
 static inline std::string
-simplify_path( std::string path )
+simplify_path( const std::string& path )
 {
     char* buffer = UTILS_CStr_dup( path.c_str() );
     UTILS_IO_SimplifyPath( buffer );
@@ -51,19 +51,21 @@ simplify_path( std::string path )
 
 SCOREP_Instrumenter_InstallData::SCOREP_Instrumenter_InstallData( void )
 {
-    m_scorep_config   = SCOREP_PREFIX "/bin/scorep-config";
-    m_c_compiler      = SCOREP_CC;
-    m_openmp_cflags   = SCOREP_OPENMP_CFLAGS;
-    m_nm              = "`" OPARI_CONFIG " --nm`";
-    m_opari           = OPARI;
-    m_opari_script    = "`" OPARI_CONFIG " --region-initialization`";
-    m_opari_config    = OPARI_CONFIG;
-    m_cobi            = SCOREP_COBI_PATH;
-    m_cobi_config_dir = COBI_CONFIG_DIR;
-    m_pdt_bin_path    = PDT;
-    m_pdt_config_file = PDT_CONFIG;
-    m_opari_params    = "";
-    m_cobi_params     = "";
+    m_scorep_config    = SCOREP_PREFIX "/bin/scorep-config";
+    m_c_compiler       = SCOREP_CC;
+    m_cxx_compiler     = SCOREP_CXX;
+    m_fortran_compiler = SCOREP_FC;
+    m_openmp_cflags    = SCOREP_OPENMP_CFLAGS;
+    m_nm               = "`" OPARI_CONFIG " --nm`";
+    m_opari            = OPARI;
+    m_opari_script     = "`" OPARI_CONFIG " --region-initialization`";
+    m_opari_config     = OPARI_CONFIG;
+    m_cobi             = SCOREP_COBI_PATH;
+    m_cobi_config_dir  = COBI_CONFIG_DIR;
+    m_pdt_bin_path     = PDT;
+    m_pdt_config_file  = PDT_CONFIG;
+    m_opari_params     = "";
+    m_cobi_params      = "";
 }
 
 SCOREP_Instrumenter_InstallData::~SCOREP_Instrumenter_InstallData()
@@ -80,6 +82,18 @@ std::string
 SCOREP_Instrumenter_InstallData::getCC( void )
 {
     return m_c_compiler;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCXX( void )
+{
+    return m_cxx_compiler;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFC( void )
+{
+    return m_fortran_compiler;
 }
 
 std::string
@@ -131,7 +145,7 @@ SCOREP_Instrumenter_InstallData::getPdtConfigFile( void )
 }
 
 SCOREP_ErrorCode
-SCOREP_Instrumenter_InstallData::readConfigFile( std::string arg0 )
+SCOREP_Instrumenter_InstallData::readConfigFile( const std::string& arg0 )
 {
     std::ifstream in_file;
     in_file.open( arg0.c_str() );
@@ -169,13 +183,13 @@ SCOREP_Instrumenter_InstallData::setBuildCheck( void )
 }
 
 void
-SCOREP_Instrumenter_InstallData::setOpariParams( std::string params )
+SCOREP_Instrumenter_InstallData::setOpariParams( const std::string& params )
 {
     m_opari_params += " " + params;
 }
 
 void
-SCOREP_Instrumenter_InstallData::setCobiParams( std::string params )
+SCOREP_Instrumenter_InstallData::setCobiParams( const std::string& params )
 {
     m_cobi_params = params;
 }
@@ -212,27 +226,50 @@ SCOREP_Instrumenter_InstallData::setOpariFortranForm( bool is_free )
 /* *************************************** CRAY */
 #if SCOREP_BACKEND_COMPILER_CRAY
 bool
-SCOREP_Instrumenter_InstallData::isArgForOpenmp( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
 {
     return arg == m_openmp_cflags;
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForShared( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
     return arg == "-dynamic";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
 {
     return arg == "-ffree";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
 {
     return arg == "-ffixed";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
+                                                         const std::string& output_file )
+{
+    return "-E > " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
+                                                           const std::string& output_file )
+{
+    return "-E > " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    return "-eP && mv "
+           + remove_extension( remove_path( input_file ) ) + ".i "
+           + output_file;
 }
 
 std::string
@@ -250,27 +287,48 @@ SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 /* *************************************** GNU */
 #elif SCOREP_BACKEND_COMPILER_GNU
 bool
-SCOREP_Instrumenter_InstallData::isArgForOpenmp( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
 {
     return arg == m_openmp_cflags;
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForShared( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
     return arg == "-shared";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
 {
     return arg == "-ffree-form";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
 {
     return arg == "-ffixed-form";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
+                                                         const std::string& output_file )
+{
+    return "-E -o " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
+                                                           const std::string& output_file )
+{
+    return "-E -o " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    return "-cpp -E -o " + output_file;
 }
 
 std::string
@@ -288,27 +346,51 @@ SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 /* *************************************** IBM */
 #elif SCOREP_BACKEND_COMPILER_IBM
 bool
-SCOREP_Instrumenter_InstallData::isArgForOpenmp( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
 {
     return arg == m_openmp_cflags;
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForShared( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
     return arg == "-qmkshrobj";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
 {
     return arg == "-qfree";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
 {
     return arg == "-qfixed";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
+                                                         const std::string& output_file )
+{
+    return "-E > " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
+                                                           const std::string& output_file )
+{
+    return "-E > " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    return "-d -qnoobject && mv F"
+           + remove_extension( remove_path( input_file ) )
+           + scorep_tolower( get_extension( input_file ) )
+           + " " + output_file;
 }
 
 std::string
@@ -326,27 +408,48 @@ SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 /* *************************************** INTEL */
 #elif SCOREP_BACKEND_COMPILER_INTEL
 bool
-SCOREP_Instrumenter_InstallData::isArgForOpenmp( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
 {
     return ( arg == m_openmp_cflags ) || ( arg == "-openmp" );
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForShared( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
     return ( arg == "-shared" ) || ( arg == "-dynamiclib" );
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
 {
     return arg == "-free";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
 {
     return arg == "-nofree";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
+                                                         const std::string& output_file )
+{
+    return "-E -o " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
+                                                           const std::string& output_file )
+{
+    return "-E -o " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    return "-E > " + output_file;
 }
 
 std::string
@@ -365,27 +468,48 @@ SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 /* *************************************** PGI */
 #elif SCOREP_BACKEND_COMPILER_PGI
 bool
-SCOREP_Instrumenter_InstallData::isArgForOpenmp( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
 {
     return arg == m_openmp_cflags;
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForShared( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
     return arg == "-shared";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
 {
     return arg == "-Mfree" || arg == "-Mfreeform";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
 {
     return arg == "-Mnofree" || arg == "-Mnofreeform";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
+                                                         const std::string& output_file )
+{
+    return "-E > " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
+                                                           const std::string& output_file )
+{
+    return "-E -o " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    return "-E > " + output_file;
 }
 
 std::string
@@ -403,27 +527,78 @@ SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 /* *************************************** STUDIO */
 #elif SCOREP_BACKEND_COMPILER_STUDIO
 bool
-SCOREP_Instrumenter_InstallData::isArgForOpenmp( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
 {
     return arg == m_openmp_cflags;
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForShared( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
     return arg == "-G";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFreeform( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
 {
     return arg == "-free";
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( std::string arg )
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
 {
     return arg == "-fixed";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
+                                                         const std::string& output_file )
+{
+    return "-E -o " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
+                                                           const std::string& output_file )
+{
+    /* The sed statements remove every line directive if the following line
+       starts with a closing bracket */
+    if ( get_extension( output_file ) == ".i" )
+    {
+        return "-E | sed 'N;s/\\n)/)/;P;D;' | sed 's/#[0-9]*)/)/g' > "
+               + output_file;
+    }
+    else
+    {
+        return "-E | sed 'N;s/\\n)/)/;P;D;' | sed 's/#[0-9]*)/)/g' > "
+               + remove_extension( remove_path( output_file ) ) + ".i && mv "
+               + remove_extension( remove_path( output_file ) ) + ".i "
+               + output_file;
+    }
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    std::string basename = remove_extension( remove_path( output_file ) );
+
+    if ( get_extension( output_file ) == ".f90" )
+    {
+        return "-fpp -F -o " + basename
+               + ".i && grep -v \\# "
+               + basename + ".i > "
+               + output_file;
+    }
+    else
+    {
+        return "-fpp -F -o " + basename
+               + ".f90 && grep -v \\# "
+               + basename + ".f90 > "
+               + output_file
+               + " && rm -f "
+               + basename + ".f90";
+    }
 }
 
 std::string
@@ -445,8 +620,8 @@ SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 ******************************************************************************/
 
 void
-SCOREP_Instrumenter_InstallData::set_value( std::string key,
-                                            std::string value )
+SCOREP_Instrumenter_InstallData::set_value( const std::string& key,
+                                            const std::string& value )
 {
     if ( key == "OPARI_CONFIG" && value != "" )
     {
@@ -485,7 +660,7 @@ SCOREP_Instrumenter_InstallData::set_value( std::string key,
 }
 
 void
-SCOREP_Instrumenter_InstallData::set_pdt_path( std::string pdt )
+SCOREP_Instrumenter_InstallData::set_pdt_path( const std::string& pdt )
 {
     if ( pdt == "yes" )
     {

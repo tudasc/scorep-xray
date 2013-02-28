@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -187,6 +187,10 @@ SCOREP_Instrumenter::Run( void )
                     // Perform Opari instrumentation
                     if ( m_command_line.isOpariInstrumenting() )
                     {
+                        if ( m_command_line.isPreprocess() )
+                        {
+                            current_file = preprocess_opari( current_file );
+                        }
                         current_file = instrument_opari( current_file );
                     }
 
@@ -279,10 +283,80 @@ SCOREP_Instrumenter::clean_temp_files( void )
 
 
 /* ****************************************************************************
+   Preprocessing
+******************************************************************************/
+std::string
+SCOREP_Instrumenter::preprocess_opari( const std::string& orig_file )
+{
+    std::string orig_ext   = get_extension( orig_file );
+    std::string input_file = orig_file;
+    std::string command;
+
+    // Prepare file for preprocessing
+    if ( !is_fortran_file( orig_file ) )
+    {
+        input_file = remove_extension( remove_path( orig_file ) )
+                     + ".input"
+                     + orig_ext;
+
+        command = "echo \"#include <opari2/pomp2_lib.h>\n"
+                  "___POMP2_INCLUDE___\n"
+                  "#line 1 \\\"" + orig_file + "\\\"\" > " + input_file;
+        execute_command( command );
+
+        command = "cat " + orig_file + " >> " + input_file;
+        execute_command( command );
+        m_temp_files += " " + input_file;
+    }
+    // Some Fortran compiler preprocess only if extension is in upper case
+    else if ( orig_ext != scorep_toupper( orig_ext ) )
+    {
+        input_file = remove_extension( remove_path( orig_file ) )
+                     + ".input"
+                     + scorep_toupper( orig_ext );
+        execute_command( "cp " + orig_file + " " + input_file );
+        m_temp_files += " " + input_file;
+    }
+
+    // Preprocess file
+    command = m_command_line.getCompilerName()
+              + " " + m_command_line.getFlagsBeforeLmpi()
+              + " " + m_compiler_flags
+              + " " + m_command_line.getFlagsAfterLmpi()
+              + " " + input_file;
+
+    std::string output_file = remove_extension( remove_path( orig_file ) )
+                              + ".prep"
+                              + orig_ext;
+
+    if ( is_c_file( orig_file ) )
+    {
+        command += " " + m_install_data.getCPreprocessingFlags( input_file,
+                                                                output_file );
+    }
+    else if ( is_cpp_file( orig_file ) )
+    {
+        command += " " + m_install_data.getCxxPreprocessingFlags( input_file,
+                                                                  output_file );
+    }
+
+    else if ( is_fortran_file( orig_file ) )
+    {
+        command += " " + m_install_data.getFortranPreprocessingFlags( input_file,
+                                                                      output_file );
+    }
+
+    execute_command( command );
+    m_temp_files += " " + output_file;
+
+    return output_file;
+}
+
+/* ****************************************************************************
    Compilation
 ******************************************************************************/
 void
-SCOREP_Instrumenter::prepare_config_tool_calls( std::string input_file )
+SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
 {
     std::string mode          = " --seq";
     std::string scorep_config = m_install_data.getScorepConfig();
@@ -372,8 +446,8 @@ SCOREP_Instrumenter::prepare_compiler( void )
 }
 
 void
-SCOREP_Instrumenter::invoke_opari( std::string input_file,
-                                   std::string output_file )
+SCOREP_Instrumenter::invoke_opari( const std::string& input_file,
+                                   const std::string& output_file )
 {
     std::string command = m_install_data.getOpari() + " --tpd "
                           SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
@@ -382,14 +456,18 @@ SCOREP_Instrumenter::invoke_opari( std::string input_file,
     {
         command += "--nosrc ";
     }
+    if (  m_command_line.isPreprocess() )
+    {
+        command += "--preprocessed ";
+    }
     command += input_file + " " + output_file;
 
     execute_command( command );
 }
 
 void
-SCOREP_Instrumenter::invoke_awk_script( std::string object_files,
-                                        std::string output_file )
+SCOREP_Instrumenter::invoke_awk_script( const std::string& object_files,
+                                        const std::string& output_file )
 {
     std::string command = m_install_data.getNm() + " " +  object_files
                           + " | " + m_install_data.getOpariScript()
@@ -400,8 +478,8 @@ SCOREP_Instrumenter::invoke_awk_script( std::string object_files,
 }
 
 void
-SCOREP_Instrumenter::compile_init_file( std::string input_file,
-                                        std::string output_file )
+SCOREP_Instrumenter::compile_init_file( const std::string& input_file,
+                                        const std::string& output_file )
 {
     std::string command = m_install_data.getCC()
                           + " -c " + input_file
@@ -415,8 +493,8 @@ SCOREP_Instrumenter::compile_init_file( std::string input_file,
 }
 
 void
-SCOREP_Instrumenter::compile_source_file( std::string input_file,
-                                          std::string output_file )
+SCOREP_Instrumenter::compile_source_file( const std::string& input_file,
+                                          const std::string& output_file )
 {
     /* Construct command */
     std::string command = m_install_data.getCompilerEnvironmentVars()
@@ -430,7 +508,7 @@ SCOREP_Instrumenter::compile_source_file( std::string input_file,
 }
 
 std::string
-SCOREP_Instrumenter::instrument_opari( std::string source_file )
+SCOREP_Instrumenter::instrument_opari( const std::string& source_file )
 {
     /* For Fortran source files, the extension must be in upper case to use the
        C-Preporcessor */
@@ -451,7 +529,7 @@ SCOREP_Instrumenter::instrument_opari( std::string source_file )
 }
 
 std::string
-SCOREP_Instrumenter::instrument_pdt( std::string source_file )
+SCOREP_Instrumenter::instrument_pdt( const std::string& source_file )
 {
     std::string extension = get_extension( source_file );
     if ( is_fortran_file( source_file ) )
@@ -620,8 +698,8 @@ SCOREP_Instrumenter::link_step( void )
 }
 
 int
-SCOREP_Instrumenter::invoke_cobi( std::string orig_name,
-                                  std::string output_name )
+SCOREP_Instrumenter::invoke_cobi( const std::string& orig_name,
+                                  const std::string& output_name )
 {
     std::string adapter = m_install_data.getCobiConfigDir()
                           + "/SCOREP_Cobi_Adapter";
@@ -657,16 +735,11 @@ SCOREP_Instrumenter::invoke_cobi( std::string orig_name,
 }
 
 void
-SCOREP_Instrumenter::execute_command( std::string command )
+SCOREP_Instrumenter::execute_command( const std::string& command )
 {
     if ( m_command_line.getVerbosity() >= 1 )
     {
-        std::string echo_command( "echo " + command );
-        int         return_value = system( echo_command.c_str() );
-        if ( return_value != 0 )
-        {
-            exit( EXIT_FAILURE );
-        }
+        std::cout << command << std::endl;
     }
     if ( !m_command_line.isDryRun() )
     {

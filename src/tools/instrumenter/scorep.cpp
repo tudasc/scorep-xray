@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -90,6 +90,15 @@ print_help( void )
               << "  --nopomp        Disables semi-automatic pomp user instrumentation.\n"
               << "                  By default, it is enabled if OPARI2 instrumentation is\n"
               << "                  enabled.\n"
+              << "  --preprocess    Enables preprocessing before the source file is\n"
+              << "                  instrumented with OPARI2. This is the default.\n"
+              << "                  It can not be combined with PDT instrumentation.\n"
+              << "                  Thus, by default, PDT instrumentation disables \n"
+              << "                  preprocessing."
+              << "  --nopreprocess  Disables preprocessing before instrumentation with\n"
+              << "                  OPARI2. Thus, OPARI2 will instrument the unprocessed\n"
+              << "                  source file. By default, files are preprocessed before\n"
+              << "                  they are instrumented with OPARI2\n"
               << "  --user          Enables manual user instrumentation.\n"
               << "  --nouser        Disables manual user instrumentation. Is disabled by default.\n"
 #ifdef HAVE_PDT
@@ -99,6 +108,8 @@ print_help( void )
               << "                  and disable compiler instrumentation.\n"
               << "                  You may specify additional parameters that are passed\n"
               << "                  to the TAU instrumentor.\n"
+              << "                  PDT instrumentation can not be combined with preprocessing.\n"
+              << "                  Thus, by default, it disables preprocessing.\n"
               << "  --nopdt         Disables the source code instrumentation with PDT.\n"
               << "                  It is disabled by default.\n"
 #endif

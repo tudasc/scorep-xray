@@ -53,30 +53,36 @@ done
 @SCOREP_COMPILER_SUN_TRUE@@HAVE_COMPILER_INSTRUMENTATION_TRUE@for comp_arg in nocompiler; do
 
     for pomp_user_arg in pomp nopomp; do
-@HAVE_PDT_TRUE@        for pdt_arg in pdt nopdt; do
 @HAVE_PDT_FALSE@        for user_arg in user nouser; do
+@HAVE_PDT_TRUE@        for pdt_arg in pdt nopdt; do
+@HAVE_PDT_TRUE@		if [ $pdt_arg = pdt ]; then
+@HAVE_PDT_TRUE@		    prepocessargs="nopreprocess"
+@HAVE_PDT_TRUE@		else
+		    prepocessargs="preprocess nopreprocess"
+@HAVE_PDT_TRUE@                fi
+	        for preprocess_user_arg in $prepocessargs; do
 
 @HAVE_COBI_TRUE@                for cobi_arg in cobi nocobi; do
 
                     # --- output per paradigm begins --- #
 
                     # serial ----------------------------#
-                    echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg" >> ${file_prefix}serial
+                    echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg" >> ${file_prefix}serial
 
                     # omp -------------------------------#
 @HAVE_OPENMP_SUPPORT_TRUE@                    for omp_args in openmp; do # add noopenmp when multilibs are ready, see above comment
-@HAVE_OPENMP_SUPPORT_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg $omp_arg" >> ${file_prefix}omp
+@HAVE_OPENMP_SUPPORT_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $omp_arg" >> ${file_prefix}omp
 @HAVE_OPENMP_SUPPORT_TRUE@                    done
 
                     # mpi -------------------------------#
 @HAVE_MPI_SUPPORT_TRUE@                    for mpi_args in mpi; do # add nompi when multilibs are ready, see above comment
-@HAVE_MPI_SUPPORT_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg $mpi_arg" >> ${file_prefix}mpi
+@HAVE_MPI_SUPPORT_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpi_arg" >> ${file_prefix}mpi
 @HAVE_MPI_SUPPORT_TRUE@                    done
 
                     # mpi_omp ---------------------------#
 @HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    for mpi_args in mpi; do # add nompi when multilibs are ready, see above comment
 @HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_args in openmp; do # add noopenmp when multilibs are ready, see above comment
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $pdt_arg $cobi_arg $mpi_arg $omp_arg" >> ${file_prefix}mpi_omp
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpi_arg $omp_arg" >> ${file_prefix}mpi_omp
 @HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        done
 @HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    done
 
@@ -89,8 +95,9 @@ done
                     # --- output per paradigm ends --- #
 
 @HAVE_COBI_TRUE@                done
-@HAVE_PDT_FALSE@        done
+                done
 @HAVE_PDT_TRUE@        done
+@HAVE_PDT_FALSE@        done
     done
 @HAVE_COMPILER_INSTRUMENTATION_TRUE@done
 

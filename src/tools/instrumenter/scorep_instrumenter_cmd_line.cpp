@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -46,6 +46,7 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_mpi_instrumentation      = detect;
     m_pdt_instrumentation      = disabled;
     m_cobi_instrumentation     = disabled;
+    m_preprocess               = detect;
 
     /* Appplication types */
     m_is_mpi_application    = detect;
@@ -78,6 +79,7 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_keep_files     = false;
     m_verbosity      = 0;
     m_is_build_check = false;
+    m_preprocess     = detect;
 }
 
 SCOREP_Instrumenter_CmdLine::~SCOREP_Instrumenter_CmdLine()
@@ -311,6 +313,12 @@ SCOREP_Instrumenter_CmdLine::isTargetSharedLib( void )
     return m_target_is_shared_lib;
 }
 
+bool
+SCOREP_Instrumenter_CmdLine::isPreprocess( void )
+{
+    return ( m_preprocess == enabled ) && !( m_pdt_instrumentation == enabled );
+}
+
 /* ****************************************************************************
    private methods
 ******************************************************************************/
@@ -376,7 +384,7 @@ SCOREP_Instrumenter_CmdLine::print_parameter( void )
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
-SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
+SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
 {
     if ( arg[ 0 ] != '-' )
     {
@@ -436,6 +444,16 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
     else if ( arg == "--nopomp" )
     {
         m_pomp_instrumentation = disabled;
+        return scorep_parse_mode_param;
+    }
+    else if ( arg == "--preprocess" )
+    {
+        m_preprocess = enabled;
+        return scorep_parse_mode_param;
+    }
+    else if ( arg == "--nopreprocess" )
+    {
+        m_preprocess = disabled;
         return scorep_parse_mode_param;
     }
     else if ( arg == "--user" )
@@ -631,7 +649,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( std::string arg )
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
-SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
+SCOREP_Instrumenter_CmdLine::parse_command( const std::string& arg )
 {
     if ( ( arg[ 0 ] != '-' ) && is_library( arg ) )
     {
@@ -766,7 +784,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( std::string arg )
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
-SCOREP_Instrumenter_CmdLine::parse_option_part( std::string arg )
+SCOREP_Instrumenter_CmdLine::parse_option_part( const std::string& arg )
 {
     *m_current_flags += " " + arg;
     return scorep_parse_mode_command;
@@ -798,7 +816,7 @@ SCOREP_Instrumenter_CmdLine::add_define( std::string arg )
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
-SCOREP_Instrumenter_CmdLine::parse_output( std::string arg )
+SCOREP_Instrumenter_CmdLine::parse_output( const std::string& arg )
 {
     m_output_name = arg;
     return scorep_parse_mode_command;
@@ -877,6 +895,20 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
         m_user_instrumentation = enabled;      // Needed to activate the inserted macros.
     }
 
+    /* Check mutual exclusion of preprocessing and PDT */
+    if ( ( m_pdt_instrumentation == enabled ) && ( m_preprocess == enabled ) )
+    {
+        std::cerr << "ERROR: Source code preprocessing and PDT instrumentation\n"
+                  << "       can not be combined." << std::endl;
+        exit( EXIT_FAILURE );
+    }
+
+    /* Check preprocessing defaults */
+    if ( m_preprocess == detect )
+    {
+        m_preprocess = ( m_pdt_instrumentation == enabled ? disabled : enabled );
+    }
+
     /* Evaluate the default user instrumentation */
     if ( m_user_instrumentation == detect )
     {
@@ -949,7 +981,7 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
-SCOREP_Instrumenter_CmdLine::parse_library( std::string arg )
+SCOREP_Instrumenter_CmdLine::parse_library( const std::string& arg )
 {
     m_libraries += " -l" + arg;
     if ( arg.substr( 0, 3 )  == "mpi" )
@@ -969,14 +1001,14 @@ SCOREP_Instrumenter_CmdLine::parse_library( std::string arg )
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
-SCOREP_Instrumenter_CmdLine::parse_define( std::string arg )
+SCOREP_Instrumenter_CmdLine::parse_define( const std::string& arg )
 {
     add_define( "-D" + arg );
     return scorep_parse_mode_command;
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
-SCOREP_Instrumenter_CmdLine::parse_incdir( std::string arg )
+SCOREP_Instrumenter_CmdLine::parse_incdir( const std::string& arg )
 {
     m_include_flags  += " -I" + arg;
     *m_current_flags += " -I" + arg;
@@ -984,7 +1016,7 @@ SCOREP_Instrumenter_CmdLine::parse_incdir( std::string arg )
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
-SCOREP_Instrumenter_CmdLine::parse_libdir( std::string arg )
+SCOREP_Instrumenter_CmdLine::parse_libdir( const std::string& arg )
 {
     *m_current_flags += " -L" + arg;
     m_libdirs        += " " + arg;
@@ -992,7 +1024,7 @@ SCOREP_Instrumenter_CmdLine::parse_libdir( std::string arg )
 }
 
 std::string
-SCOREP_Instrumenter_CmdLine::get_tool_params( std::string arg, size_t pos )
+SCOREP_Instrumenter_CmdLine::get_tool_params( const std::string& arg, size_t pos )
 {
     if ( arg.length() <= pos + 1 )
     {
@@ -1010,7 +1042,7 @@ SCOREP_Instrumenter_CmdLine::get_tool_params( std::string arg, size_t pos )
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
-SCOREP_Instrumenter_CmdLine::parse_fortran_form( std::string arg )
+SCOREP_Instrumenter_CmdLine::parse_fortran_form( const std::string& arg )
 {
     if ( m_install_data.isArgForFreeform( "-f" + arg ) )
     {
