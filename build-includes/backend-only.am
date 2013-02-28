@@ -18,6 +18,7 @@ include ../src/services/timer/Makefile.inc.am
 include ../vendor/common/hash/Makefile.inc.am
 include ../include/scorep/Makefile.inc.am
 include ../src/tools/instrumenter/Makefile-backend.inc.am
+include ../src/tools/config/Makefile.backend-only.inc.am
 include ../src/tools/backend-info/Makefile.inc.am
 include ../src/measurement/online_access/Makefile.inc.am
 include ../src/utils/bitstring/Makefile.inc.am
