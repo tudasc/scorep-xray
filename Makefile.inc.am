@@ -24,7 +24,8 @@ CLEANFILES =
 DISTCLEANFILES =
 
 # Testing framework
-EXTRA_DIST += $(srcdir)/vendor/common/cutest/CuTest.c \
+EXTRA_DIST += $(srcdir)/vendor/common/build-config/generate-library-dependencies.sh \
+              $(srcdir)/vendor/common/cutest/CuTest.c \
               $(srcdir)/vendor/common/cutest/CuTest.h
 
 DISTCLEANFILES += $(builddir)/config.summary
