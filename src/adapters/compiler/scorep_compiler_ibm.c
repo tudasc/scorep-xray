@@ -21,7 +21,7 @@
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Support for XL IBM-Compiler
- * Will be triggered by the frunctrion trace option by the xl
+ * Will be triggered by the function trace option by the xl
  * compiler.
  */
 
@@ -86,7 +86,9 @@ get_region_handle( char* region_name,
            These functions are called at a stage, where locks do not yet work. Thus,
            make sure that in case of race conditions, functions can only get filtered.
          */
+#if __IBMC__ <= 1100
         SCOREP_MutexLock( scorep_compiler_region_mutex );
+#endif
         if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) == 0 )
         {
             char* file = UTILS_CStr_dup( file_name );
@@ -129,7 +131,9 @@ get_region_handle( char* region_name,
             }
             free( file );
         }
+#if __IBMC__ <= 1100
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
+#endif
     }
     return hash_node->region_handle;
 }
@@ -165,15 +169,20 @@ __func_trace_enter( char*                region_name,
      */
     if ( *handle == 0 )
     {
-        SCOREP_RegionHandle region = get_region_handle( region_name, file_name, line_no );
-        if ( region == SCOREP_INVALID_REGION )
+        SCOREP_MutexLock( scorep_compiler_region_mutex );
+        if ( *handle == 0 )
         {
-            *handle = SCOREP_FILTER_REGION;
+            SCOREP_RegionHandle region = get_region_handle( region_name, file_name, line_no );
+            if ( region == SCOREP_INVALID_REGION )
+            {
+                *handle = SCOREP_FILTER_REGION;
+            }
+            else
+            {
+                *handle = region;
+            }
         }
-        else
-        {
-            *handle = region;
-        }
+        SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
     if ( *handle != SCOREP_FILTER_REGION )
     {
@@ -265,7 +274,7 @@ scorep_compiler_init_adapter( void )
         /* Initialize hash table */
         scorep_compiler_hash_init();
 
-        /* Sez flag */
+        /* Set flag */
         scorep_compiler_initialize = 0;
     }
     return SCOREP_SUCCESS;
