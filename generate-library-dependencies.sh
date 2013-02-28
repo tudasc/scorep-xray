@@ -19,8 +19,7 @@
 ##      Parse all *.la files in the current working directory and
 ##      recursively the *.la files listed in dependency_libs. Generate
 ##      a C++ representation of the library dependencies and write it
-##      to scorep_library_dependencies.cpp in the current working
-##      directory. To be used with the <component>-config tools.
+##      to stdout. To be used with the <component>-config tools.
 ##
 ##      Assumes that teh client provide std::vector<std::string> libs,
 ##      ldflags, rpaths, dependency_las and a std::map<std::string,
@@ -61,7 +60,6 @@ set -e
 parse_la () 
 {
     la_file="$1"
-    output_file="$2"
 
     lib_name=`basename $la_file`
     lib_name=${lib_name%.la}
@@ -108,58 +106,55 @@ parse_la ()
     IFS="${save_ifs}"
 
     # generate output
-    echo "    libs.clear();"           >> ${output_file}
-    echo "    ldflags.clear();"        >> ${output_file}
-    echo "    rpaths.clear();"         >> ${output_file}
-    echo "    dependency_las.clear();" >> ${output_file}
+    echo "    libs.clear();"
+    echo "    ldflags.clear();"
+    echo "    rpaths.clear();"
+    echo "    dependency_las.clear();"
 
     save_ifs="${IFS}"
     IFS=":"
 
     for i in ${libs}; do
-        echo "    libs.push_back( \"${i}\" );"    >> ${output_file}
+        printf '    libs.push_back( "%s" );\n' "${i}"
     done
 
     for i in ${ldflags}; do
-        echo "    ldflags.push_back( \"${i}\" );" >> ${output_file}
+        printf '    ldflags.push_back( "%s" );\n' "${i}"
     done
 
     for i in ${rpath}; do
-        echo "    rpaths.push_back( \"${i}\" );"  >> ${output_file}
+        printf '    rpaths.push_back( "%s" );\n' "${i}"
     done
 
     for i in ${dependency_la}; do
         dependency_la_name=`basename ${i}`
         dependency_la_name=${dependency_la_name%.la}
-        echo "    dependency_las.push_back( \"${dependency_la_name}\" );"      >> ${output_file}
+        printf '    dependency_las.push_back( "%s" );\n' "${dependency_la_name}"
     done
 
-    echo "    if ( la_objects->find( \"${lib_name}\" ) == la_objects->end() )" >> ${output_file}
-    echo "    {"                                                               >> ${output_file}
-    echo "        (*la_objects)[ \"${lib_name}\" ] ="                          >> ${output_file}
-    echo "            la_object( \"${lib_name}\","                             >> ${output_file}
-    echo "                       \"${build_dir}\","                            >> ${output_file}
-    echo "                       \"${install_dir}\","                          >> ${output_file}
-    echo "                       libs,"                                        >> ${output_file}
-    echo "                       ldflags,"                                     >> ${output_file}
-    echo "                       rpaths,"                                      >> ${output_file}
-    echo "                       dependency_las );"                            >> ${output_file}
-    echo "    }" >> ${output_file}
-    echo  >> ${output_file}
+    printf '    if ( la_objects->find( "%s" ) == la_objects->end() )\n' "${lib_name}"
+    echo   "    {"
+    printf '        (*la_objects)[ "%s" ] =\n' "${lib_name}"
+    printf '            la_object( "%s",\n' "${lib_name}"
+    printf '                       "%s",\n' "${build_dir}"
+    printf '                       "%s",\n' "${install_dir}"
+    echo   "                       libs,"
+    echo   "                       ldflags,"
+    echo   "                       rpaths,"
+    echo   "                       dependency_las );"
+    echo   "    }"
+    echo
 
-    # call dependency_las recursively
+    # call parse_la recursively on all libs in $dependency_la
     for i in ${dependency_la}; do
-         parse_la ${i} $2
+         parse_la ${i}
     done
 
     IFS="${save_ifs}"
     cd "${old_pwd}"
 }
 
-
 awk_ifs="${IFS}"
-start_wd=`pwd`
-rm -f ${start_wd}/scorep_library_dependencies.cpp
-for i in *.la; do
-    parse_la ${start_wd}/${i} ${start_wd}/scorep_library_dependencies.cpp
+for i; do
+    parse_la ${i}
 done
