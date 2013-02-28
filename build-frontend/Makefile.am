@@ -41,6 +41,3 @@ include ../build-includes/front-and-backend.am
 
 check-serial: check-run-serial
 check-omp:    check-run-omp
-
-scorep_library_dependencies.cpp:
-	@$(am__cd) ../build-backend && $(MAKE) $(AM_MAKEFLAGS) scorep_library_dependencies.cpp

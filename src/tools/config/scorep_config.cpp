@@ -35,7 +35,7 @@
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 //#include <scorep_config.hpp>
-#include <SCOREP_Config_LibraryDependencies.hpp>
+#include "SCOREP_Config_LibraryDependencies.hpp"
 
 #define MODE_SEQ 0
 #define MODE_OMP 1

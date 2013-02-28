@@ -28,9 +28,24 @@ scorep_config_CXXFLAGS = -DCXX=\""$(CXX)"\"
 
 scorep_config_CPPFLAGS = $(AM_CPPFLAGS)    \
                          $(UTILS_CPPFLAGS) \
-                         -I$(INC_ROOT)src/tools/config \
-                         -I../build-backend \
                          -D"BUILD_DIR=\"`pwd`\""
+
+BUILT_SOURCES += ../src/scorep_config_library_dependencies_inc.hpp
+
+CLEANFILES += ../src/scorep_config_library_dependencies_inc.hpp
+
+if CROSS_BUILD
+
+../src/scorep_config_library_dependencies_inc.hpp:
+	@$(am__cd) ../build-backend && $(MAKE) $(AM_MAKEFLAGS) $@
+
+else
+
+../src/scorep_config_library_dependencies_inc.hpp: $(lib_LTLIBRARIES)
+	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-library-dependencies.sh $^ >$@ || \
+            $(RM) $@
+
+endif
 
 if HAVE_PDT
 scorep_config_CPPFLAGS += -DHAVE_PDT=1
@@ -65,5 +80,3 @@ scorep_config_CPPFLAGS += -DSCOREP_COMPILER_CRAY=1
 endif
 
 scorep_config_LDADD = libutils.la
-
-BUILT_SOURCES += scorep_library_dependencies.cpp

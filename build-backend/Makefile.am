@@ -94,7 +94,6 @@ clean-local-scorep-config-tests:
 distclean-local:
 	rm -rf ../test/jacobi/serial
 	rm -rf ../test/jacobi/OpenMP
-	rm -f scorep_library_dependencies.cpp
 
 install-data-local: $(INSTALL_DATA_LOCAL_TARGETS)
 
@@ -129,9 +128,6 @@ scorep-config-tool-install:
 	sed 's!libscorep_mpi.so!$(libdir)/libscorep_omp.so!g'     $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Cobi_AdapterOmp.xml
 	sed 's!libscorep_mpi.so!$(libdir)/libscorep_mpi.so!g'     $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Cobi_AdapterMpi.xml
 	sed 's!libscorep_mpi.so!$(libdir)/libscorep_mpi_omp.so!g' $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Cobi_AdapterMpiOmp.xml
-
-clean-local-scorep-config-tool:
-	rm -f scorep_library_dependencies.cpp
 
 create-cobi-config-local:
 	@$(MKDIR_P) $(SCOREP_SHARE_LOCAL_DIR)
@@ -179,7 +175,3 @@ clean-local-instrumenter-checks:
             rm -f ../installcheck/bin/*-$${paradigm}-*; \
             rm -rf ../installcheck/$$paradigm/build; \
         done
-
-
-scorep_library_dependencies.cpp: $(lib_LTLIBRARIES)
-	../vendor/common/build-config/generate-library-dependencies.sh
