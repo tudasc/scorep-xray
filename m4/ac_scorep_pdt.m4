@@ -39,17 +39,18 @@ for pdt_prog in cparse cxxparse gfparse tau_instrumentor; do
     AS_UNSET([ac_cv_path_have_pdt])
 done
 
-## Temporarily disable PDT on BlueGene systems until PDT bug is fixed,
-## see scorep:ticket:508
-AS_IF([(test "x${ac_scorep_platform}" = "xbgp") || (test "x${ac_scorep_platform}" = "xbgq") || (test "x${ac_scorep_platform}" = "xbgl")], 
-      [have_pdt="no"
-       AC_MSG_WARN([PDT on BlueGene platforms currently not supported.])
-       AC_SCOREP_SUMMARY([PDT support], [on BlueGene platforms currently not available.])])
+AS_IF([test -n "${real_pdt_path}"],
+      [have_pdt="yes, using binaries in ${real_pdt_path}"],
+      [have_pdt=no
+       ## Temporarily disable PDT on Blue Gene systems until PDT bug is fixed,
+       ## see scorep:ticket:508
+       AS_IF([(test "x${ac_scorep_platform}" = "xbgp") || (test "x${ac_scorep_platform}" = "xbgq") || (test "x${ac_scorep_platform}" = "xbgl")], 
+             [AS_UNSET([real_pdt_path])
+              have_pdt="no, currently not available on Blue Gene platforms"
+              AC_MSG_WARN([PDT on Blue Gene platforms currently not supported.])])])
 
 ## Create output
 AC_SUBST([PDT_PATH], ["${real_pdt_path}"])
-AM_CONDITIONAL([HAVE_PDT], [test "x${have_pdt}" != "xno"])
-AS_IF([test "x${have_pdt}" != "xno"],
-      [AC_SCOREP_SUMMARY([PDT support], [yes, using binaries in ${real_pdt_path}])],
-      [AC_SCOREP_SUMMARY([PDT support], [no])])
+AM_CONDITIONAL([HAVE_PDT], [test -n "${real_pdt_path}"])
+AC_SCOREP_SUMMARY([PDT support], [$have_pdt])
 ])
