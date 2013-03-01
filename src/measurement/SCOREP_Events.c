@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -36,10 +36,8 @@
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 
-#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Properties.h>
-#include <SCOREP_Timing.h>
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Profile_Tasking.h>
@@ -47,30 +45,13 @@
 #include <SCOREP_Metric_Management.h>
 #include <scorep_openmp.h>
 
+#include "scorep_events_common.h"
 #include "scorep_runtime_management.h"
 #include "scorep_types.h"
 #include "scorep_handles.h"
 #include "scorep_thread.h"
-#include "scorep_status.h"
 #include "scorep_definition_structs.h"
 #include "scorep_definitions.h"
-
-static uint64_t
-scorep_get_timestamp( SCOREP_Location* location )
-{
-    uint64_t timestamp = SCOREP_GetClockTicks();
-    SCOREP_Location_SetLastTimestamp( location, timestamp );
-    return timestamp;
-}
-
-
-
-/** Use this predicate to decide, whether to record an event in the trace. */
-static inline bool
-scorep_tracing_consume_event( void )
-{
-    return SCOREP_IsTracingEnabled() && SCOREP_RecordingEnabled();
-}
 
 
 /**
@@ -123,6 +104,7 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
 
     scorep_enter_region( timestamp, regionHandle, metric_values, location );
 }
+
 
 /*
  * NOTE: If dense metrics are used in the profile,
@@ -200,6 +182,7 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
 
     scorep_exit_region( timestamp, regionHandle, metric_values, location );
 }
+
 
 void
 SCOREP_Location_ExitRegion( SCOREP_Location*    location,
@@ -395,10 +378,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
         SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        /* No action necessary */
-    }
+    /* Nothing to do for profiling. */
 
     return timestamp;
 }
@@ -468,10 +448,7 @@ SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
                                          requestId );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        /* No action necessary */
-    }
+    /* Nothing to do for profiling. */
 }
 
 void
@@ -493,10 +470,7 @@ SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
         SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        /* No action necessary */
-    }
+    /* Nothing to do for profiling. */
 }
 
 void
@@ -518,10 +492,7 @@ SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
         SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        /* No action necessary */
-    }
+    /* Nothing to do for profiling. */
 }
 
 void
@@ -543,10 +514,7 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
         SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        /* No action necessary */
-    }
+    /* Nothing to do for profiling. */
 }
 
 void
@@ -629,191 +597,107 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
     }
 }
 
-/**
- * Process an OpenMP fork event in the measurement system.
- */
+
 void
-SCOREP_OmpFork( uint32_t nRequestedThreads )
+SCOREP_ThreadAcquireLock( uint32_t           lockId,
+                          uint32_t           acquisitionOrder,
+                          SCOREP_ThreadModel model )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp = scorep_get_timestamp( location );
-
-    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
-                      )
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    /* use the timestamp from the associated enter */
+    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
     if ( scorep_tracing_consume_event() )
     {
-        SCOREP_Tracing_OmpFork( location, timestamp, nRequestedThreads );
+        SCOREP_Tracing_ThreadAcquireLock( location,
+                                          timestamp,
+                                          lockId,
+                                          acquisitionOrder,
+                                          model );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        if ( model == SCOREP_THREAD_MODEL_OPENMP )
+        {
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        }
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_OnFork( location, nRequestedThreads, scorep_thread_get_nesting_level() );
-    }
-
-    // Fork last as it modifies TPD state in the OpenMP thread implementation
-    // that affects subsequent calls to SCOREP_Location_GetCurrentCPU.
-    SCOREP_Thread_OnThreadFork( nRequestedThreads );
+    /* Nothing to do for profiling. */
 }
 
 
-/**
- * Process an OpenMP join event in the measurement system.
- */
 void
-SCOREP_OmpJoin( void )
+SCOREP_ThreadReleaseLock( uint32_t           lockId,
+                          uint32_t           acquisitionOrder,
+                          SCOREP_ThreadModel model )
 {
-    // Join first as it modifies TPD in the OpenMP thread implementation,
-    // should not affect calls to SCOREP_Location_GetCurrentCPU though
-    // as master thread's location data is reused.
-    SCOREP_Thread_OnThreadJoin();
-
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp = scorep_get_timestamp( location );
-
-    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
-                      )
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_OmpJoin( location,
-                                timestamp );
-        UTILS_DEBUG_PRINTF( 0, "Only partially implemented." );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
-    }
-
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_OnJoin( location );
-    }
-
-    /*
-     * The OpenMP implementation on JUMP uses
-     * its own exit handler. This exit handler is registered after our
-     * Score-P exit handler in the test cases. Causing segmentation faults
-     * during finalization, due to invalid TPD variables. Thus, we register
-     * an exit handler in the join event, which ensures that the Score-P
-     * finalization can access threadprivate variables.
-     */
-    static bool is_exit_handler_registered = false;
-    if ( !is_exit_handler_registered && !SCOREP_Omp_InParallel() )
-    {
-        is_exit_handler_registered = true;
-        SCOREP_RegisterExitHandler();
-    }
-}
-
-
-/**
- * Process an OpenMP acquire lock event in the measurement system.
- */
-void
-SCOREP_OmpAcquireLock( uint32_t lockId,
-                       uint32_t acquisitionOrder )
-{
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp = SCOREP_Location_GetLastTimestamp( location );            // use the timestamp from the associated enter
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    /* use the timestamp from the associated enter */
+    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
     if ( scorep_tracing_consume_event() )
     {
-        SCOREP_Tracing_OmpAcquireLock( location,
-                                       timestamp,
-                                       lockId,
-                                       acquisitionOrder );
+        SCOREP_Tracing_ThreadReleaseLock( location,
+                                          timestamp,
+                                          lockId,
+                                          acquisitionOrder,
+                                          model );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        if ( model == SCOREP_THREAD_MODEL_OPENMP )
+        {
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        }
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        /* No action necessary */
-    }
+    /* Nothing to do for profiling. */
 }
 
 
-/**
- * Process an OpenMP release lock event in the measurement system.
- */
 void
-SCOREP_OmpReleaseLock( uint32_t lockId,
-                       uint32_t acquisitionOrder )
+SCOREP_ThreadTaskCreate( uint64_t taskId, SCOREP_ThreadModel model )
 {
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp = SCOREP_Location_GetLastTimestamp( location );            // use the timestamp from the associated enter
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    /* use the timestamp from the associated enter */
+    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
     if ( scorep_tracing_consume_event() )
     {
-        SCOREP_Tracing_OmpReleaseLock( location,
-                                       timestamp,
-                                       lockId,
-                                       acquisitionOrder );
+        SCOREP_Tracing_ThreadTaskCreate( location, timestamp, taskId, model );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        if ( model == SCOREP_THREAD_MODEL_OPENMP )
+        {
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        }
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        /* No action necessary */
-    }
+    /* Nothing to do for profiling. */
 }
 
-void
-SCOREP_OmpTaskCreate( uint64_t taskId )
-{
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp = SCOREP_Location_GetLastTimestamp( location );
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_OmpTaskCreate( location,
-                                      timestamp,
-                                      taskId );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
-    }
-
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_TaskCreate( location, timestamp, taskId );
-    }
-}
 
 void
-SCOREP_OmpTaskSwitch( uint64_t taskId )
+SCOREP_ThreadTaskSwitch( uint64_t taskId, SCOREP_ThreadModel model )
 {
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     if ( scorep_tracing_consume_event() )
     {
-        SCOREP_Tracing_OmpTaskSwitch( location,
-                                      timestamp,
-                                      taskId );
+        SCOREP_Tracing_ThreadTaskSwitch( location, timestamp, taskId, model );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        if ( model == SCOREP_THREAD_MODEL_OPENMP )
+        {
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        }
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -825,8 +709,9 @@ SCOREP_OmpTaskSwitch( uint64_t taskId )
 
 
 void
-SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
-                     uint64_t            taskId )
+SCOREP_ThreadTaskBegin( SCOREP_RegionHandle regionHandle,
+                        uint64_t            taskId,
+                        SCOREP_ThreadModel  model )
 {
     SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
@@ -834,7 +719,7 @@ SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
 
     if ( scorep_tracing_consume_event() )
     {
-        SCOREP_Tracing_OmpTaskSwitch( location, timestamp, taskId );
+        SCOREP_Tracing_ThreadTaskSwitch( location, timestamp, taskId, model );
 
         if ( metric_values )
         {
@@ -848,7 +733,10 @@ SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        if ( model == SCOREP_THREAD_MODEL_OPENMP )
+        {
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        }
     }
 
     if ( SCOREP_IsProfilingEnabled() )
@@ -861,9 +749,11 @@ SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
     }
 }
 
+
 void
-SCOREP_OmpTaskEnd( SCOREP_RegionHandle regionHandle,
-                   uint64_t            taskId )
+SCOREP_ThreadTaskEnd( SCOREP_RegionHandle regionHandle,
+                      uint64_t            taskId,
+                      SCOREP_ThreadModel  model )
 {
     SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp     = scorep_get_timestamp( location );
@@ -880,11 +770,14 @@ SCOREP_OmpTaskEnd( SCOREP_RegionHandle regionHandle,
         }
 
         SCOREP_Tracing_Leave( location, timestamp, regionHandle );
-        SCOREP_Tracing_OmpTaskComplete( location, timestamp, taskId );
+        SCOREP_Tracing_ThreadTaskComplete( location, timestamp, taskId, model );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        if ( model == SCOREP_THREAD_MODEL_OPENMP )
+        {
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        }
     }
 
     if ( SCOREP_IsProfilingEnabled() )

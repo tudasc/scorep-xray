@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -47,6 +47,9 @@ void
 SCOREP_Location_Finalize();
 
 
+/** @param  deferNewLocationNotication tpd-based thread implementations must notify,
+ * i.e. call SCOREP_Location_CallSubstratesOnNewLocation(), not before the tpd update
+ * to ensure that tpd is in a valid state. */
 SCOREP_Location*
 SCOREP_Location_CreateCPULocation( SCOREP_Location* parent,
                                    const char*      name,
@@ -75,9 +78,20 @@ SCOREP_Location_CloseDeferredDefinitions();
 
 
 void
-scorep_location_call_externals_on_new_location( SCOREP_Location* locationData,
-                                                const char*      name,
-                                                SCOREP_Location* parent );
+SCOREP_Location_CallSubstratesOnNewLocation( SCOREP_Location* locationData,
+                                             const char*      name,
+                                             SCOREP_Location* parent );
+
+
+void
+SCOREP_Location_CallSubstratesOnActivation( SCOREP_Location* current,
+                                            SCOREP_Location* parent,
+                                            uint32_t         forkSequenceCount );
+
+
+void
+SCOREP_Location_CallSubstratesOnDeactivation( SCOREP_Location* current,
+                                              SCOREP_Location* parent );
 
 
 #endif /* SCOREP_INTERNAL_LOCATION_H */

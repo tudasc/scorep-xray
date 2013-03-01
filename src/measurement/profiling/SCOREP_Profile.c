@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -609,7 +609,7 @@ SCOREP_Profile_OnThreadCreation( SCOREP_Location* locationData,
 void
 SCOREP_Profile_OnLocationActivation( SCOREP_Location* locationData,
                                      SCOREP_Location* parentLocationData,
-                                     uint32_t         nestingLevel )
+                                     uint32_t         forkSequenceCount )
 {
     SCOREP_Profile_LocationData* thread_data    = NULL;
     SCOREP_Profile_LocationData* parent_data    = NULL;
@@ -646,8 +646,8 @@ SCOREP_Profile_OnLocationActivation( SCOREP_Location* locationData,
         parent_data = SCOREP_Location_GetProfileData( parentLocationData );
         if ( parent_data != NULL )
         {
-            creation_point             = scorep_profile_get_fork_node( parent_data, nestingLevel );
-            thread_data->current_depth = scorep_profile_get_fork_depth( parent_data, nestingLevel );
+            creation_point             = scorep_profile_get_fork_node( parent_data, forkSequenceCount );
+            thread_data->current_depth = scorep_profile_get_fork_depth( parent_data, forkSequenceCount );
         }
     }
 
@@ -781,9 +781,9 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
 }
 
 void
-SCOREP_Profile_OnFork( SCOREP_Location* threadData,
-                       size_t           maxChildThreads,
-                       uint32_t         nestingLevel )
+SCOREP_Profile_ThreadFork( SCOREP_Location* threadData,
+                           size_t           maxChildThreads,
+                           uint32_t         forkSequenceCount )
 {
     scorep_profile_node*         fork_node = NULL;
     SCOREP_Profile_LocationData* location  = NULL;
@@ -804,11 +804,11 @@ SCOREP_Profile_OnFork( SCOREP_Location* threadData,
 
     /* Store current fork node */
     scorep_profile_set_fork_node( fork_node, true );
-    scorep_profile_add_fork_node( location, fork_node, location->current_depth, nestingLevel );
+    scorep_profile_add_fork_node( location, fork_node, location->current_depth, forkSequenceCount );
 }
 
 void
-SCOREP_Profile_OnJoin( SCOREP_Location* locationData )
+SCOREP_Profile_ThreadJoin( SCOREP_Location* locationData )
 {
     SCOREP_Profile_LocationData* location =
         SCOREP_Location_GetProfileData( locationData );

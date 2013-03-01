@@ -16,40 +16,38 @@
 
 
 /**
- * @file       src/measurement/scorep_thread_serial.c
+ * @file       src/measurement/scorep_thread_generic_create_wait.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
  *
  */
 
+
 #include <config.h>
 #include "scorep_thread.h"
 
-#include "scorep_location.h"
 #include <UTILS_Error.h>
 
 
-static SCOREP_Location* scorep_thread_sole_cpu_location;
+/* *INDENT-OFF* */
+/* *INDENT-ON*  */
 
 
-void
-SCOREP_Thread_Initialize()
+uint32_t
+SCOREP_ThreadCreate( SCOREP_ThreadModel model )
 {
-    UTILS_ASSERT( scorep_thread_sole_cpu_location == 0 );
-    scorep_thread_sole_cpu_location = SCOREP_Location_CreateCPULocation( NULL, "",  /* deferNewLocationNotication = */ false );
-    UTILS_ASSERT( scorep_thread_sole_cpu_location );
+    UTILS_NOT_YET_IMPLEMENTED();
 }
 
 
 void
-SCOREP_Thread_Finalize()
+SCOREP_ThreadWait( uint32_t           forkSequenceCount,
+                   SCOREP_ThreadModel model )
 {
-}
-
-
-SCOREP_Location*
-SCOREP_Location_GetCurrentCPULocation()
-{
-    return scorep_thread_sole_cpu_location;
+    UTILS_NOT_YET_IMPLEMENTED();
+//    if ( forkSequenceCount == SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT )
+//    {
+//        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_UNIQUE_FORK_SEQUENCE_COUNTS );
+//    }
 }

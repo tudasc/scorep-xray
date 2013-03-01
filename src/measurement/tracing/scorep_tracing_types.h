@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -363,6 +363,7 @@ scorep_tracing_property_to_otf2( SCOREP_Property scorep_property )
 
         case_return( MPI_COMMUNICATION_COMPLETE );
         case_return( OPENMP_EVENT_COMPLETE );
+        case_return( THREAD_UNIQUE_FORK_SEQUENCE_COUNTS );
 
         default:
             UTILS_BUG( "Invalid property enum value" );

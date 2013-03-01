@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -143,7 +143,7 @@ scorep_location_create_location( SCOREP_Location*    parent,
 
     if ( !deferNewLocationNotication )
     {
-        scorep_location_call_externals_on_new_location( new_location, name, parent );
+        SCOREP_Location_CallSubstratesOnNewLocation( new_location, name, parent );
     }
 
     return new_location;
@@ -216,9 +216,9 @@ SCOREP_Location_GetLocationHandle( SCOREP_Location* locationData )
 
 
 void
-scorep_location_call_externals_on_new_location( SCOREP_Location* locationData,
-                                                const char*      name,
-                                                SCOREP_Location* parent )
+SCOREP_Location_CallSubstratesOnNewLocation( SCOREP_Location* locationData,
+                                             const char*      name,
+                                             SCOREP_Location* parent )
 {
     // Where to do the locking? Well, at the moment we do the locking
     // in SCOREP_Profile_OnLocationCreation, SCOREP_Tracing_OnLocationCreation
@@ -252,6 +252,31 @@ scorep_location_call_externals_on_new_location( SCOREP_Location* locationData,
     {
         scorep_subsystems_initialize_location( locationData );
     }
+}
+
+
+void
+SCOREP_Location_CallSubstratesOnActivation( SCOREP_Location* current,
+                                            SCOREP_Location* parent,
+                                            uint32_t         forkSequenceCount )
+{
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+        SCOREP_Profile_OnLocationActivation( current, parent, forkSequenceCount );
+    }
+    SCOREP_Tracing_OnLocationActivation( current, parent );
+}
+
+
+void
+SCOREP_Location_CallSubstratesOnDeactivation( SCOREP_Location* current,
+                                              SCOREP_Location* parent )
+{
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+        SCOREP_Profile_OnLocationDeactivation( current, parent );
+    }
+    SCOREP_Tracing_OnLocationDeactivation( current, parent );
 }
 
 

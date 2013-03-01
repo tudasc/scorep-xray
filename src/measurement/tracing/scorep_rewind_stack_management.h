@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -28,11 +28,23 @@
  *
  */
 
-#include "scorep_types.h"
 
 #include <stdbool.h>
+#include <stdlib.h>
 
 #include <SCOREP_Location.h>
+
+
+/**
+ * List of known rewind-related paradigms.
+ */
+typedef enum
+{
+    SCOREP_REWIND_PARADIGM_MPI,
+    SCOREP_REWIND_PARADIGM_OPENMP,
+    SCOREP_REWIND_PARADIGM_MAX
+} SCOREP_Rewind_Paradigm;
+
 
 typedef struct scorep_rewind_stack scorep_rewind_stack;
 
@@ -44,7 +56,7 @@ struct scorep_rewind_stack
     scorep_rewind_stack* prev;
 
     /** paradigm event occurred in rewind region */
-    bool paradigm_affected[ SCOREP_PARADIGM_MAX ];
+    bool paradigm_affected[ SCOREP_REWIND_PARADIGM_MAX ];
 };
 
 
@@ -91,7 +103,7 @@ void
 scorep_rewind_stack_pop( SCOREP_Location * location,
                          uint32_t *       id,
                          uint64_t *       entertimestamp,
-                         bool paradigm_affected[ SCOREP_PARADIGM_MAX ] );
+                         bool paradigm_affected[ SCOREP_REWIND_PARADIGM_MAX ] );
 
 
 /**
@@ -113,7 +125,7 @@ scorep_rewind_stack_delete( SCOREP_Location* location );
  *
  */
 void
-scorep_rewind_set_affected_paradigm( SCOREP_Location* location,
-                                     SCOREP_Paradigm  paradigm );
+scorep_rewind_set_affected_paradigm( SCOREP_Location*       location,
+                                     SCOREP_Rewind_Paradigm paradigm );
 
 #endif /* SCOREP_INTERNAL_REWIND_STACK_MANAGEMENT_H */

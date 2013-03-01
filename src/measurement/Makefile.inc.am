@@ -2,7 +2,7 @@
 
 # This file is part of the Score-P software (http://www.score-p.org)
 #
-# Copyright (c) 2009-2012,
+# Copyright (c) 2009-2013,
 #    RWTH Aachen University, Germany
 #    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 #    Technische Universitaet Dresden, Germany
@@ -87,6 +87,8 @@ libscorep_paradigm_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 # Sources include SCOREP_Omp.h that conditionally compiles on _OPENMP
 libscorep_paradigm_omp_la_SOURCES  =                       \
     $(SRC_ROOT)src/measurement/scorep_thread_omp_tpd.c     \
+    $(SRC_ROOT)src/measurement/scorep_thread_generic.c     \
+    $(SRC_ROOT)src/measurement/scorep_thread_generic_fork_join.c \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.c    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c 

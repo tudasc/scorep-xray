@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -358,33 +358,174 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
 
 
 /**
- * Process an OpenMP fork event in the measurement system.
+ * Notify the measurement system about the creation of a fork-join
+ * parallel execution with at max @a nRequestedThreads new
+ * threads. This function needs to be triggered for every thread
+ * creation in a fork-join model, e.g., #pragma omp parallel in OpenMP
+ * (for create-wait models see SCOREP_ThreadCreate()).
+ * SCOREP_ThreadFork() needs to be called outside the parallel
+ * execution from the thread creating the parallel region.
  *
- * @param regionHandle The previous defined region handle which identifies the
- *                     the region into which this event forks.
- * @param nRequestedThreads An upper bound for the number of threads created by
-                            this event.
+ * @param nRequestedThreads Upper bound of threads that comprise the
+ * parallel region to be created.
  *
- * @see SCOREP_DefineRegion()
+ * @param model One of the predefined threading models.
+ *
+ * @return The process-global forkSequenceCount (starting at 0) that
+ * needs to be provided in the corresponding SCOREP_ThreadTeamBegin(),
+ * SCOREP_ThreadEnd() and SCOREP_ThreadJoin(), if providing by the
+ * adapter is possible. You can ignore the return value and pass
+ * SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT to the mentioned
+ * functions if the model implementation takes care of maintaining the
+ * sequence count.
+ *
+ * @note All threads in the following parallel region including the
+ * master/creator need to call SCOREP_ThreadTeamBegin() and
+ * SCOREP_ThreadEnd().
+ *
+ * @note After execution of the parallel region the master/creator
+ * needs to call SCOREP_ThreadJoin().
+ *
+ * @see SCOREP_ThreadCreate()
  */
-void
-SCOREP_OmpFork( uint32_t nRequestedThreads );
+uint32_t
+SCOREP_ThreadFork( uint32_t           nRequestedThreads,
+                   SCOREP_ThreadModel model );
 
 
 /**
- * Process an OpenMP join event in the measurement system.
+ * Notify the measurement system about the completion of a fork-join
+ * parallel execution. The parallel execution was started by a call to
+ * SCOREP_ThreadFork() that returned the @a forkSequenceCount that
+ * needs to be provided to this function.
  *
- * @param regionHandle The previous defined region handle which identifies the
- *                     the region from which this event joins.
+ * @param forkSequenceCount The fork sequence count returned by the
+ * corresponding SCOREP_ThreadFork() or
+ * SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT. If you pass the latter,
+ * the forkSequenceCount should be maintained in the model-specific
+ * implementation, see e.g., the OpenMP implementation of
+ * SCOREP_Thread_OnJoin().
  *
- * @see SCOREP_DefineRegion()
+ * @param model One of the predefined threading models.
+ *
+ * @note See the notes to SCOREP_ThreadFork().
  */
 void
-SCOREP_OmpJoin( void );
+SCOREP_ThreadJoin( uint32_t           forkSequenceCount,
+                   SCOREP_ThreadModel model );
 
 
 /**
- * Process an OpenMP acquire lock event in the measurement system.
+ * Notify the measurement system about the creation of a create-wait
+ * parallel execution with one new thread. This function needs to be
+ * triggered for every thread creation in a create-wait model, e.g.,
+ * pthread_create() in Pthreads (for fork-join models see
+ * SCOREP_ThreadFork()).
+ *
+ * @param model One of the predefined threading models.
+ *
+ * @return The process-global forkSequenceCount (starting at 0) that
+ * needs to be provided in the corresponding SCOREP_ThreadTeamBegin(),
+ * SCOREP_ThreadEnd() and SCOREP_ThreadWait(), if providing by the
+ * adapter is possible. You can ignore the return value and pass
+ * SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT to the mentioned
+ * functions if the model implementation takes care of maintaining the
+ * sequence count.
+ *
+ * @note Only the created thread must call SCOREP_ThreadTeamBegin() and
+ * SCOREP_ThreadEnd().
+ *
+ * @note Usually some other thread waits for the completion of the
+ * created one (e.g., pthread_join()). This thread needs to call
+ * SCOREP_ThreadWait() providing the unique fork_sequence_count
+ * returned from this function. For Pthreads this is always possible
+ * even if the thread is terminated using pthread_exit() or
+ * pthread_cancel().
+ *
+ * @see SCOREP_ThreadFork()
+ */
+uint32_t
+SCOREP_ThreadCreate( SCOREP_ThreadModel model );
+
+
+/**
+ * Notify the measurement system about the completion of a create-wait
+ * parallel execution. The parallel execution was started by a call to
+ * SCOREP_ThreadCreate() that returned the @a forkSequenceCount that
+ * needs to be provided to this function.
+ *
+ * @param forkSequenceCount The fork sequence count returned by the
+ * corresponding SCOREP_ThreadCreate() or
+ * SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT. If you pass the latter,
+ * the forkSequenceCount should be maintained in the model-specific
+ * implementation.
+ *
+ * @param model One of the predefined threading models.
+ */
+void
+SCOREP_ThreadWait( uint32_t           forkSequenceCount,
+                   SCOREP_ThreadModel model );
+
+
+/**
+ * Notify the measurement system about the begin of a parallel
+ * execution on a thread created by either SCOREP_ThreadFork() or
+ * SCOREP_ThreadCreate(). In case of SCOREP_ThreadFork() all created
+ * threads including the master must call SCOREP_ThreadTeamBegin().
+ *
+ * @param forkSequenceCount The forkSequenceCount returned by the
+ * corresponding SCOREP_ThreadFork() or SCOREP_ThreadCreate() call
+ * or SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT. If you pass the
+ * latter, the forkSequenceCount should be maintained in the
+ * model-specific implementation.
+ *
+ * @threadId Id within the team of threads that constitute the
+ * parallel region.
+ *
+ * @param model One of the predefined threading models.
+ *
+ * @note The end of the parallel execution will be signalled by a call
+ * to SCOREP_ThreadEnd().
+ *
+ * @note Per convention and as there is no parallelism for the initial
+ * thread we don't call SCOREP_ThreadTeamBegin() and SCOREP_ThreadEnd()
+ * for the initial thread.
+ */
+void
+SCOREP_ThreadTeamBegin( uint32_t           forkSequenceCount,
+                        uint32_t           threadId,
+                        SCOREP_ThreadModel model );
+
+
+/**
+ * Notify the measurement system about the end of a parallel execution
+ * on a thread created by either SCOREP_ThreadFork() or
+ * SCOREP_ThreadCreate(). Every thread that started a parallel
+ * execution via SCOREP_ThreadTeamBegin() needs to end via
+ * SCOREP_ThreadEnd().
+ *
+ * @param forkSequenceCount The forkSequenceCount returned by the
+ * corresponding SCOREP_ThreadFork() or SCOREP_ThreadCreate() call
+ * or SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT. If you pass the
+ * latter, the forkSequenceCount should be maintained in the
+ * model-specific implementation.
+ *
+ * @param model One of the predefined threading models.
+ *
+ * @note The begin of the parallel execution was signalled by a call
+ * to SCOREP_ThreadTeamBegin().
+ *
+ * @note Per convention and as there is no parallelism for the initial
+ * thread we don't call SCOREP_ThreadTeamBegin() and SCOREP_ThreadEnd()
+ * for the initial thread.
+ */
+void
+SCOREP_ThreadEnd( uint32_t           forkSequenceCount,
+                  SCOREP_ThreadModel model );
+
+
+/**
+ * Process a thread acquire lock event in the measurement system.
  *
  * @param lockId A unique ID to identify the lock. Needs to be maintained by
  *               the caller.
@@ -393,12 +534,13 @@ SCOREP_OmpJoin( void );
  *                         acquire-release events.
  */
 void
-SCOREP_OmpAcquireLock( uint32_t lockId,
-                       uint32_t acquisitionOrder );
+SCOREP_ThreadAcquireLock( uint32_t           lockId,
+                          uint32_t           acquisitionOrder,
+                          SCOREP_ThreadModel model );
 
 
 /**
- * Process an OpenMP release lock event in the measurement system.
+ * Process a thread release lock event in the measurement system.
  *
  * @param lockId A unique ID to identify the lock. Needs to be maintained by
  *               the caller.
@@ -407,8 +549,9 @@ SCOREP_OmpAcquireLock( uint32_t lockId,
  *                         acquire-release events.
  */
 void
-SCOREP_OmpReleaseLock( uint32_t lockId,
-                       uint32_t acquisitionOrder );
+SCOREP_ThreadReleaseLock( uint32_t           lockId,
+                          uint32_t           acquisitionOrder,
+                          SCOREP_ThreadModel model );
 
 
 /**
@@ -426,42 +569,46 @@ SCOREP_ExitRegionOnException
 
 
 /**
- * Process an OpenMP task create event in the measurement system.
+ * Process a task create event in the measurement system.
  *
  * @param taskId Id of the created task.
  */
 void
-SCOREP_OmpTaskCreate( uint64_t taskId );
+SCOREP_ThreadTaskCreate( uint64_t           taskId,
+                         SCOREP_ThreadModel model );
 
 
 /**
- * Process an OpenMP task switch event in the measurement system.
+ * Process a task switch event in the measurement system.
  *
  * @param taskId Id of the task the runtime switched to.
  */
 void
-SCOREP_OmpTaskSwitch( uint64_t taskId );
+SCOREP_ThreadTaskSwitch( uint64_t           taskId,
+                         SCOREP_ThreadModel model );
 
 
 /**
- * Process an OpenMP task begin event in the measurement system.
+ * Process a task begin event in the measurement system.
  *
  * @param regionHandle region handle of the task region.
  * @param taskId Id of the starting task.
  */
 void
-SCOREP_OmpTaskBegin( SCOREP_RegionHandle regionHandle,
-                     uint64_t            taskId );
+SCOREP_ThreadTaskBegin( SCOREP_RegionHandle regionHandle,
+                        uint64_t            taskId,
+                        SCOREP_ThreadModel  model );
 
 /**
- * Process an OpenMP task end event in the measurement system.
+ * Process a task end event in the measurement system.
  *
  * @param regionHandle region handle of the task region.
  * @param taskId Id of the completed task.
  */
 void
-SCOREP_OmpTaskEnd( SCOREP_RegionHandle regionHandle,
-                   uint64_t            taskId );
+SCOREP_ThreadTaskEnd( SCOREP_RegionHandle regionHandle,
+                      uint64_t            taskId,
+                      SCOREP_ThreadModel  model );
 
 
 /**

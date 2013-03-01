@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -144,7 +144,7 @@ SCOREP_Tracing_MpiSend( SCOREP_Location*                  location,
                             tag,
                             bytesSent );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
 }
 
 
@@ -166,7 +166,7 @@ SCOREP_Tracing_MpiRecv( SCOREP_Location*                  location,
                             tag,
                             bytesSent );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
 }
 
 
@@ -179,7 +179,7 @@ SCOREP_Tracing_MpiCollectiveBegin( SCOREP_Location* location,
     OTF2_EvtWriter_MpiCollectiveBegin( evt_writer,
                                        NULL,
                                        timestamp );
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
 }
 
 
@@ -213,7 +213,7 @@ SCOREP_Tracing_MpiCollectiveEnd( SCOREP_Location*                  location,
                                      bytesSent,
                                      bytesReceived );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
 }
 
 
@@ -229,7 +229,7 @@ SCOREP_Tracing_MpiIsendComplete( SCOREP_Location*    location,
                                      timestamp,
                                      requestId );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
 }
 
 
@@ -244,7 +244,7 @@ SCOREP_Tracing_MpiIrecvRequest( SCOREP_Location*    location,
                                     NULL,
                                     timestamp,
                                     requestId );
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
 }
 
 
@@ -259,7 +259,7 @@ SCOREP_Tracing_MpiRequestTested( SCOREP_Location*    location,
                                    NULL,
                                    timestamp,
                                    requestId );
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
 }
 
 
@@ -274,7 +274,7 @@ SCOREP_Tracing_MpiRequestCancelled( SCOREP_Location*    location,
                                         NULL,
                                         timestamp,
                                         requestId );
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
 }
 
 
@@ -298,7 +298,7 @@ SCOREP_Tracing_MpiIsend(  SCOREP_Location*                  location,
                              bytesSent,
                              requestId );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
 }
 
 
@@ -322,14 +322,35 @@ SCOREP_Tracing_MpiIrecv( SCOREP_Location*                  location,
                              bytesReceived,
                              requestId );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_MPI );
+    scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_MPI );
+}
+
+
+static void
+set_rewind_affected_thread_paradigm( SCOREP_Location* location, SCOREP_ThreadModel model )
+{
+    switch ( model )
+    {
+#define case_break( thread_model, rewind_paradigm ) \
+    case SCOREP_THREAD_MODEL_ ## thread_model: \
+        scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_ ## rewind_paradigm ); \
+        break;
+
+        case_break( OPENMP, OPENMP );
+
+#undef case_break
+        default:
+            UTILS_BUG( "Invalid threading model." );
+    }
 }
 
 
 void
-SCOREP_Tracing_OmpFork( SCOREP_Location* location,
-                        uint64_t         timestamp,
-                        uint32_t         nRequestedThreads )
+SCOREP_Tracing_ThreadFork( SCOREP_Location*   location,
+                           uint64_t           timestamp,
+                           uint32_t           nRequestedThreads,
+                           uint32_t           forkSequenceCount,
+                           SCOREP_ThreadModel model )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -338,13 +359,15 @@ SCOREP_Tracing_OmpFork( SCOREP_Location* location,
                             timestamp,
                             nRequestedThreads );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
+    set_rewind_affected_thread_paradigm( location, model );
 }
 
 
 void
-SCOREP_Tracing_OmpJoin( SCOREP_Location* location,
-                        uint64_t         timestamp )
+SCOREP_Tracing_ThreadJoin( SCOREP_Location*   location,
+                           uint64_t           timestamp,
+                           uint32_t           forkSequenceCount,
+                           SCOREP_ThreadModel model )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -352,15 +375,16 @@ SCOREP_Tracing_OmpJoin( SCOREP_Location* location,
                             NULL,
                             timestamp );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
+    set_rewind_affected_thread_paradigm( location, model );
 }
 
 
 void
-SCOREP_Tracing_OmpAcquireLock( SCOREP_Location* location,
-                               uint64_t         timestamp,
-                               uint32_t         lockId,
-                               uint32_t         acquisitionOrder )
+SCOREP_Tracing_ThreadAcquireLock( SCOREP_Location*   location,
+                                  uint64_t           timestamp,
+                                  uint32_t           lockId,
+                                  uint32_t           acquisitionOrder,
+                                  SCOREP_ThreadModel model )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -370,15 +394,16 @@ SCOREP_Tracing_OmpAcquireLock( SCOREP_Location* location,
                                    lockId,
                                    acquisitionOrder );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
+    set_rewind_affected_thread_paradigm( location, model );
 }
 
 
 void
-SCOREP_Tracing_OmpReleaseLock( SCOREP_Location* location,
-                               uint64_t         timestamp,
-                               uint32_t         lockId,
-                               uint32_t         acquisitionOrder )
+SCOREP_Tracing_ThreadReleaseLock( SCOREP_Location*   location,
+                                  uint64_t           timestamp,
+                                  uint32_t           lockId,
+                                  uint32_t           acquisitionOrder,
+                                  SCOREP_ThreadModel model )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -388,14 +413,15 @@ SCOREP_Tracing_OmpReleaseLock( SCOREP_Location* location,
                                    lockId,
                                    acquisitionOrder );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
+    set_rewind_affected_thread_paradigm( location, model );
 }
 
 
 void
-SCOREP_Tracing_OmpTaskCreate( SCOREP_Location* location,
-                              uint64_t         timestamp,
-                              uint64_t         taskId )
+SCOREP_Tracing_ThreadTaskCreate( SCOREP_Location*   location,
+                                 uint64_t           timestamp,
+                                 uint64_t           taskId,
+                                 SCOREP_ThreadModel model )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -404,13 +430,14 @@ SCOREP_Tracing_OmpTaskCreate( SCOREP_Location* location,
                                   timestamp,
                                   taskId );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
+    set_rewind_affected_thread_paradigm( location, model );
 }
 
 void
-SCOREP_Tracing_OmpTaskSwitch( SCOREP_Location* location,
-                              uint64_t         timestamp,
-                              uint64_t         taskId )
+SCOREP_Tracing_ThreadTaskSwitch( SCOREP_Location*   location,
+                                 uint64_t           timestamp,
+                                 uint64_t           taskId,
+                                 SCOREP_ThreadModel model )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -419,13 +446,14 @@ SCOREP_Tracing_OmpTaskSwitch( SCOREP_Location* location,
                                   timestamp,
                                   taskId );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
+    set_rewind_affected_thread_paradigm( location, model );
 }
 
 void
-SCOREP_Tracing_OmpTaskComplete( SCOREP_Location* location,
-                                uint64_t         timestamp,
-                                uint64_t         taskId )
+SCOREP_Tracing_ThreadTaskComplete( SCOREP_Location*   location,
+                                   uint64_t           timestamp,
+                                   uint64_t           taskId,
+                                   SCOREP_ThreadModel model )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -434,7 +462,7 @@ SCOREP_Tracing_OmpTaskComplete( SCOREP_Location* location,
                                     timestamp,
                                     taskId );
 
-    scorep_rewind_set_affected_paradigm( location, SCOREP_PARADIGM_OPENMP );
+    set_rewind_affected_thread_paradigm( location, model );
 }
 
 
@@ -528,7 +556,7 @@ SCOREP_Tracing_ExitRewindRegion( SCOREP_Location*    location,
     uint64_t entertimestamp = 0;
     uint32_t id             = 0;
     uint32_t id_pop         = 0;
-    bool     paradigm_affected[ SCOREP_PARADIGM_MAX ];
+    bool     paradigm_affected[ SCOREP_REWIND_PARADIGM_MAX ];
 
 
     id = SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region );
@@ -571,12 +599,12 @@ SCOREP_Tracing_ExitRewindRegion( SCOREP_Location*    location,
         SCOREP_Tracing_MeasurementOnOff( location, leavetimestamp, true );
 
         /* Did it affect MPI events? */
-        if ( paradigm_affected[ SCOREP_PARADIGM_MPI ] )
+        if ( paradigm_affected[ SCOREP_REWIND_PARADIGM_MPI ] )
         {
             SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
         }
         /* Did it affect OMP events? */
-        if ( paradigm_affected[ SCOREP_PARADIGM_OPENMP ] )
+        if ( paradigm_affected[ SCOREP_REWIND_PARADIGM_OPENMP ] )
         {
             SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
         }

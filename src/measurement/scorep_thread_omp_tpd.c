@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -13,7 +13,6 @@
  * See the COPYING file in the package base directory for details.
  *
  */
-
 
 
 /**
@@ -28,364 +27,368 @@
 #include <config.h>
 #include "scorep_thread.h"
 
-#include <assert.h>
-#include <inttypes.h>
-#include <stdlib.h>
-
-#include "scorep_location.h"
 #include <SCOREP_Omp.h>
-#include "scorep_status.h"
+#include <SCOREP_Memory.h>
 #include <SCOREP_Timing.h>
+#include "scorep_location.h"
+#include <SCOREP_RuntimeManagement.h>
 
 #include <UTILS_Error.h>
 
+#include <string.h>
+#include <inttypes.h>
+#include <stdlib.h>
 
+
+/* Take care of name mangling the Fortran compiler might perform. */
 #define POMP_TPD_MANGLED FORTRAN_MANGLED( pomp_tpd )
 
-
-// The thread private variable that points to a
-// SCOREP_Thread_ThreadPrivateData object. It needs to be a 64bit integer
-// to smoothly work with OPARI2 instrumented Fortran code. It will be
-// casted to SCOREP_Thread_ThreadPrivateData* before usage, see the macro
-// TPD. Dependent on the compiler it will be pomp_tdp or pomp_tpd_, see
-// config.h.
+/* The thread private variable that points to a
+ * scorep_thread_private_data object. It needs to be a 64bit integer
+ * to smoothly work with OPARI2 instrumented Fortran code. It will be
+ * casted to scorep_thread_private_data* before usage, see the macro
+ * TPD. Dependent on the compiler it will be pomp_tdp or pomp_tpd_,
+ * see config.h and the FORTRAN_MANGLED macro. */
 int64_t FORTRAN_ALIGNED POMP_TPD_MANGLED = 0;
 
+/* We want to write #pragma omp threadprivate(POMP_TPD_MANGLED) here
+ * but as POMP_TPD_MANGLED is a macro itself, we need to do some
+ * preprocessor magic to be portable. */
+SCOREP_PRAGMA_OMP( threadprivate( POMP_TPD_MANGLED ) )
 
-// Easy access to the thread private variable. TPD stands for ThreadPrivateData
+
+/* Use TPD for easy access to the scorep_thread_private_data object. */
 #if SIZEOF_VOID_P == 8
-#define TPD ( ( SCOREP_Thread_ThreadPrivateData* )POMP_TPD_MANGLED )
+#define TPD ( ( scorep_thread_private_data* )POMP_TPD_MANGLED )
 #elif SIZEOF_VOID_P == 4
-#define TPD ( ( SCOREP_Thread_ThreadPrivateData* )( uint32_t )POMP_TPD_MANGLED )
+#define TPD ( ( scorep_thread_private_data* )( uint32_t )POMP_TPD_MANGLED )
 #else
 #error Unsupported architecture. Only 32 bit and 64 bit architectures are supported.
 #endif
 
-// We want to write #pragma omp threadprivate(POMP_TPD_MANGLED) but as
-// POMP_TPD_MANGLED is a macro itself, we need to do some preprocessor
-// magic to be on the safe side.
-SCOREP_PRAGMA_OMP( threadprivate( POMP_TPD_MANGLED ) )
+
+/* *INDENT-OFF* */
+static void set_tpd_to( scorep_thread_private_data* newTpd );
+/* *INDENT-ON* */
 
 
-typedef struct SCOREP_Thread_ThreadPrivateData SCOREP_Thread_ThreadPrivateData;
-
-struct SCOREP_Thread_ThreadPrivateData
+typedef struct scorep_thread_private_data_omp_tpd scorep_thread_private_data_omp_tpd;
+struct scorep_thread_private_data_omp_tpd
 {
-    SCOREP_Thread_ThreadPrivateData*  parent;
-    SCOREP_Thread_ThreadPrivateData** children;
-    uint32_t                          n_children;
-    bool                              is_active;
-    uint32_t                          n_reusages;
-    uint32_t                          nesting_level; // starting at 1, but SCOREP_Thread_Initialize passes 0 to profiling
-    SCOREP_Location*                  location_data;
+    scorep_thread_private_data** children;   /**< Children array, gets created/reallocated in subsequent
+                                              * fork event. Children objects are created in
+                                              * SCOREP_Thread_Begin(). */
+    uint32_t n_children;                     /**< Size of the children array, initially 0. */
+    uint32_t fork_sequence_count;            /**< Fork sequence count that corresponds to the
+                                              * creation or re-usage of this thread.  The value
+                                              * changes in each ThreadBegin if there is
+                                              * additional parallelism, otherwise the
+                                              * fork_sequence_counts stack is used. */
+    uint32_t  parent_reuse_count;            /**< Helps us to find the correct fork sequence count in join if we had
+                                              * previous parallel regions without additional parallelism. */
+    uint32_t* fork_sequence_counts;          /**< Array to hold a stack of sequence counts in case where a
+                                              * parallel region does not contribute to additional parallelism.  */
+    uint32_t  fork_sequence_counts_capacity; /**< current capacity of fork_sequence_counts */
+    uint32_t  tmp_fork_sequence_count;       /**< Used to transfer the sequence count from SCOREP_Thread_Fork()
+                                              * to SCOREP_Thread_Begin(). */
 };
 
-static SCOREP_Thread_ThreadPrivateData* scorep_thread_initial_thread;
+
+size_t
+scorep_thread_get_sizeof_model_data()
+{
+    return sizeof( scorep_thread_private_data_omp_tpd );
+}
+
+
+void
+scorep_thread_on_create_private_data( scorep_thread_private_data* tpd,
+                                      void*                       modelData,
+                                      uint32_t                    forkSequenceCount )
+{
+    ( ( scorep_thread_private_data_omp_tpd* )modelData )->fork_sequence_count = forkSequenceCount;
+}
+
+
+void
+scorep_thread_on_initialize( scorep_thread_private_data* initialTpd )
+{
+    UTILS_BUG_ON( omp_in_parallel() );
+    UTILS_BUG_ON( initialTpd == 0 );
+    UTILS_BUG_ON( scorep_thread_get_model_data( initialTpd ) == 0 );
+
+    set_tpd_to( initialTpd );
+    /* From here on it is save to call SCOREP_Location_GetCurrentCPULocation(). */
+}
+
+
+static void
+set_tpd_to( scorep_thread_private_data* newTpd )
+{
+#if SIZEOF_VOID_P == 8
+    POMP_TPD_MANGLED = ( uint64_t )newTpd;
+#elif SIZEOF_VOID_P == 4
+    POMP_TPD_MANGLED = ( uint32_t )newTpd;
+#else
+#error Unsupported architecture. Only 32 bit and 64 bit architectures are supported.
+#endif
+}
+
+
+void
+scorep_thread_on_finalize( scorep_thread_private_data* tpd )
+{
+    scorep_thread_private_data_omp_tpd* model_data = scorep_thread_get_model_data( tpd );
+    UTILS_BUG_ON( model_data->parent_reuse_count != 0 );
+    UTILS_BUG_ON( model_data->fork_sequence_count != 0 );
+}
+
+
+void
+scorep_thread_on_fork( uint32_t           nRequestedThreads,
+                       uint32_t           forkSequenceCount,
+                       SCOREP_ThreadModel model,
+                       void*              modelData,
+                       SCOREP_Location*   location )
+{
+    UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP );
+    scorep_thread_private_data_omp_tpd* model_data = ( scorep_thread_private_data_omp_tpd* )modelData;
+
+    /* Create or realloc children array. */
+    if ( model_data->children == 0 || model_data->n_children < nRequestedThreads )
+    {
+        /* @todo If we restrict OpenMP nesting levels
+         * (e.g. OMP_NUM_THREADS=m,n,l (3.1 syntax)) then we might assert on the
+         * n_children < nRequestedThreads condition. */
+
+        /* Realloc children array, old memory is lost. */
+        scorep_thread_private_data** tmp_children = model_data->children;
+        model_data->children =
+            SCOREP_Location_AllocForMisc( location, nRequestedThreads * sizeof( scorep_thread_private_data* ) );
+        memcpy( model_data->children,
+                tmp_children,
+                model_data->n_children * sizeof( scorep_thread_private_data* ) );
+        memset( &( model_data->children[ model_data->n_children ] ),
+                0,
+                ( nRequestedThreads - model_data->n_children ) * sizeof( scorep_thread_private_data* ) );
+
+        model_data->n_children = nRequestedThreads;
+    }
+    model_data->tmp_fork_sequence_count = forkSequenceCount;
+}
 
 
 /* *INDENT-OFF* */
-static SCOREP_Location* scorep_thread_create_location_data_for(SCOREP_Thread_ThreadPrivateData* tpd);
-static SCOREP_Thread_ThreadPrivateData* scorep_thread_create_thread_private_data();
-static void scorep_thread_call_externals_on_location_activation(SCOREP_Location* locationData, SCOREP_Location* parent, uint32_t nestingLevel);
-static void scorep_thread_call_externals_on_location_deactivation(SCOREP_Location* locationData, SCOREP_Location* parent);
-static void scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivateData* tpd );
-static void scorep_thread_init_children_to_null(SCOREP_Thread_ThreadPrivateData** children, size_t startIndex, size_t endIndex);
-static void scorep_thread_update_tpd(SCOREP_Thread_ThreadPrivateData* newTPD);
+#define SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( location ) \
+    do \
+    { \
+        uint64_t current_timestamp = SCOREP_GetClockTicks(); \
+        UTILS_BUG_ON( SCOREP_Location_GetLastTimestamp( location ) > current_timestamp, \
+                      "Wrong timestamp order: %" PRIu64 " (last recorded) > %" PRIu64 " (current).", \
+                      SCOREP_Location_GetLastTimestamp( location ), current_timestamp ); \
+    } \
+    while ( 0 )
 /* *INDENT-ON* */
 
 
 void
-SCOREP_Thread_Initialize()
+scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
+                             scorep_thread_private_data** currentTpd,
+                             char*                        currentName,
+                             uint32_t*                    forkSequenceCount,
+                             SCOREP_ThreadModel           model,
+                             bool*                        locationIsCreated /* defaults to false */ )
 {
-    assert( !omp_in_parallel() );
-    assert( scorep_thread_initial_thread == 0 );
-    assert( POMP_TPD_MANGLED == 0 );
-
-    scorep_thread_initial_thread         = scorep_thread_create_thread_private_data();
-    scorep_thread_initial_thread->parent = 0;
-
-    scorep_thread_create_location_data_for( scorep_thread_initial_thread );
-
-    assert( POMP_TPD_MANGLED );
-    assert( TPD );
-    assert( TPD->is_active );
-    assert( TPD->location_data );
-
-    scorep_thread_call_externals_on_location_activation( TPD->location_data, 0, 0 /* nesting level */ );
-}
-
-
-void
-scorep_thread_update_tpd( SCOREP_Thread_ThreadPrivateData* newTPD )
-{
-#if SIZEOF_VOID_P == 8
-    POMP_TPD_MANGLED = ( uint64_t )newTPD;
-#elif SIZEOF_VOID_P == 4
-    POMP_TPD_MANGLED = ( uint32_t )newTPD;
-#else
-#error Unsupported architecture. Only 32 bit and 64 bit architectures are supported.
-#endif
-}
-
-
-void
-scorep_thread_call_externals_on_location_activation( SCOREP_Location* locationData,
-                                                     SCOREP_Location* parent,
-                                                     uint32_t         nestingLevel )
-{
-    if ( SCOREP_IsProfilingEnabled() )
+    /* Begin of portability-hack:
+     * OpenMP implementations on XL/AIX use the at_exit mechanism to
+     * shut-down the OpenMP runtime. The at_exit handler is registered
+     * during the first usage of OpenMP, usually after the Score-P at_exit
+     * handler. I.e. the OpenMP runtime is shut down *before* the Score-P
+     * finalization, preventing Score-P from accessing e.g. OpenMP
+     * threadprivate variables. To solve this issue we re-register the
+     * Score-P at_exit handler so that it is executed *before* the OpenMP
+     * runtime is shut down. */
+    static bool exit_handler_re_registered = false;
+    if ( !exit_handler_re_registered && scorep_thread_is_initial_thread( TPD ) )
     {
-        SCOREP_Profile_OnLocationActivation( locationData, parent, nestingLevel );
+        exit_handler_re_registered = true;
+        SCOREP_RegisterExitHandler();
     }
-    SCOREP_Tracing_OnLocationActivation( locationData, parent );
-}
+    /* End of portability-hack */
 
+    UTILS_BUG_ON( TPD == 0 );
+    UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP );
+    UTILS_BUG_ON( *forkSequenceCount != SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT );
+    UTILS_ASSERT( *locationIsCreated == false );
 
-SCOREP_Location*
-scorep_thread_create_location_data_for( SCOREP_Thread_ThreadPrivateData* tpd )
-{
-    char*            name   = "";
-    SCOREP_Location* parent = NULL;
-    if ( tpd->parent )
+    *parentTpd = TPD;
+    scorep_thread_private_data_omp_tpd* parent_model_data = scorep_thread_get_model_data( *parentTpd );
+    *forkSequenceCount = parent_model_data->tmp_fork_sequence_count;
+
+    if ( omp_get_num_threads() == 1 )
     {
-        parent = tpd->parent->location_data;
-    }
-    /* the tpd-based thread implementation must notify not before the tpd update. */
-    SCOREP_Location* new_location = SCOREP_Location_CreateCPULocation( parent, name, true /* defer_new_location_notication */ );
+        /* There is no additional parallelism in this parallel
+         * region. Reuse the parent tpd (to gracefully handle recursion e.g.).
+         * We need to track the fork sequence count manually using a stack. */
+        const uint32_t reuse_count = ++( parent_model_data->parent_reuse_count );
+        uint32_t*      capacity    = &( parent_model_data->fork_sequence_counts_capacity );
+        if ( reuse_count == 1 )
+        {
+            /* Start with a stack of 4 and ... */
+            *capacity                               = 4;
+            parent_model_data->fork_sequence_counts = SCOREP_Location_AllocForMisc(
+                scorep_thread_get_location( *parentTpd ),  ( *capacity ) * sizeof( uint32_t ) );
+        }
+        else if ( *capacity < reuse_count )
+        {
+            /* ... realloc by doubling capacity, old memory is lost. */
+            *capacity                              *= 2;
+            parent_model_data->fork_sequence_counts = SCOREP_Location_AllocForMisc(
+                scorep_thread_get_location( *parentTpd ),  ( *capacity ) * sizeof( uint32_t ) );
+            uint32_t* tmp_sequence_counts = parent_model_data->fork_sequence_counts;
+            memcpy( parent_model_data->fork_sequence_counts,
+                    tmp_sequence_counts,
+                    ( reuse_count - 1 ) * sizeof( uint32_t ) );
+        }
+        UTILS_ASSERT( reuse_count <= *capacity );
+        parent_model_data->fork_sequence_counts[ reuse_count - 1 ] = *forkSequenceCount;
 
-    assert( tpd->location_data == 0 );
-    tpd->location_data = new_location;
-    scorep_thread_update_tpd( tpd );
-
-    scorep_location_call_externals_on_new_location( new_location, name, parent );
-
-    return new_location;
-}
-
-
-SCOREP_Thread_ThreadPrivateData*
-scorep_thread_create_thread_private_data()
-{
-    // need synchronized malloc here
-    SCOREP_Thread_ThreadPrivateData* new_tpd;
-    new_tpd            = calloc( 1, sizeof( SCOREP_Thread_ThreadPrivateData ) );
-    new_tpd->parent    = TPD;
-    new_tpd->is_active = true;
-    if ( TPD )
-    {
-        new_tpd->nesting_level = TPD->nesting_level + 1;
+        *currentTpd = *parentTpd;
     }
     else
     {
-        new_tpd->nesting_level = 1;
-    }
+        /* Set TPD to a child of itself, create new one if necessary */
+        const int current_thread_id = omp_get_thread_num();
+        UTILS_BUG_ON( current_thread_id >= parent_model_data->n_children );
 
-    return new_tpd;
-}
+        *currentTpd = parent_model_data->children[ current_thread_id ];
 
-
-void
-SCOREP_Thread_Finalize()
-{
-    assert( !omp_in_parallel() );
-    assert( scorep_thread_initial_thread != 0 );
-    assert( POMP_TPD_MANGLED != 0 );
-
-    scorep_thread_delete_thread_private_data_recursively( scorep_thread_initial_thread );
-
-    scorep_thread_initial_thread = 0;
-}
-
-
-void
-scorep_thread_delete_thread_private_data_recursively( SCOREP_Thread_ThreadPrivateData* tpd )
-{
-    assert( tpd );
-    bool have_unused_child = false;
-    for ( uint32_t i = 0; i < tpd->n_children; ++i )
-    {
-        if ( tpd->children[ i ] )
+        if ( *currentTpd != 0 )
         {
-            assert( have_unused_child == false ); // no used child after first unused allowed
-            assert( !tpd->children[ i ]->is_active );
-            scorep_thread_delete_thread_private_data_recursively( tpd->children[ i ] );
+            /* Previously been in this thread. */
+            scorep_thread_private_data_omp_tpd* current_model_data = scorep_thread_get_model_data( *currentTpd );
+            UTILS_BUG_ON( current_model_data->fork_sequence_count >= *forkSequenceCount );
+            current_model_data->fork_sequence_count = *forkSequenceCount;
+            SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( scorep_thread_get_location( *currentTpd ) );
         }
         else
         {
-            if ( have_unused_child == false )
+            /* Never been here before. */
+            *currentTpd = scorep_thread_create_private_data( *parentTpd, *forkSequenceCount );
+
+            parent_model_data->children[ current_thread_id ] = *currentTpd;
+
+            if ( current_thread_id == 0 )
             {
-                have_unused_child = true;
-                continue;
+                /* for the master, reuse parents location data. */
+                scorep_thread_set_location( *currentTpd, scorep_thread_get_location( *parentTpd ) );
+
+                SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( scorep_thread_get_location( *currentTpd ) );
+            }
+            else
+            {
+                scorep_thread_set_location( *currentTpd,
+                                            SCOREP_Location_CreateCPULocation( scorep_thread_get_location( *parentTpd ),
+                                                                               currentName,
+                                                                               /* deferNewLocationNotication = */ true ) );
+                *locationIsCreated = true;
+
+                SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( scorep_thread_get_location( *currentTpd ) );
             }
         }
-    }
-    free( tpd->children ); /// @todo remove if SCOREP_Memory is used for child allocation
-    free( tpd );
-}
-
-
-void
-SCOREP_Thread_OnThreadFork( size_t nRequestedThreads )
-{
-    assert( TPD->is_active );
-    TPD->is_active = false;
-
-    /// @todo replace malloc/realloc with SCOREPs memory management to get rid of
-    ///  locking. we have access to TPD->location_data->page_managers.
-    if ( !TPD->children || TPD->n_children < nRequestedThreads )
-    {
-        TPD->children = realloc( TPD->children, nRequestedThreads *
-                                 sizeof( SCOREP_Thread_ThreadPrivateData* ) );
-        scorep_thread_init_children_to_null( TPD->children, TPD->n_children, nRequestedThreads - 1 );
-        TPD->n_children = nRequestedThreads;
+        set_tpd_to( *currentTpd );
     }
 }
 
 
-void
-scorep_thread_init_children_to_null( SCOREP_Thread_ThreadPrivateData** children,
-                                     size_t                            firstIndex,
-                                     size_t                            lastIndex )
+scorep_thread_private_data*
+scorep_thread_get_private_data()
 {
-    assert( firstIndex <= lastIndex );
-    for ( size_t i = firstIndex; i <= lastIndex; ++i )
-    {
-        children[ i ] = 0;
-    }
+    return TPD;
 }
 
 
 void
-SCOREP_Thread_OnThreadJoin()
+scorep_thread_on_end( scorep_thread_private_data*  currentTpd,
+                      scorep_thread_private_data** parentTpd,
+                      uint32_t*                    forkSequenceCount,
+                      SCOREP_ThreadModel           model )
 {
-    // We are still referencing the TPD object of the previous parallel
-    // regions's master thread.
+    UTILS_BUG_ON( currentTpd != TPD );
+    UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP );
 
-    if ( TPD->n_reusages == 0 )
+    scorep_thread_private_data_omp_tpd* model_data = scorep_thread_get_model_data( currentTpd );
+
+    if ( omp_get_num_threads() == 1 )
     {
-        assert( TPD->parent );
-        scorep_thread_update_tpd( TPD->parent );
+        /* There was no additional parallelism in this parallel
+         * region. We reused the parent tpd. */
+        *parentTpd = currentTpd;
+        UTILS_BUG_ON( model_data->parent_reuse_count == 0 );
+        *forkSequenceCount = model_data->fork_sequence_counts[ model_data->parent_reuse_count - 1 ];
     }
     else
     {
-        assert( TPD->is_active );
-        // There was no parallelism in the previous parallel region
-        // so we must not update TPD.
-    }
-
-    if ( !TPD->is_active )
-    {
-        // last parallel region used by more than one thread
-        for ( size_t i = 0; i < TPD->n_children; ++i )
-        {
-            if ( TPD->children[ i ]->is_active )
-            {
-                scorep_thread_call_externals_on_location_deactivation(
-                    TPD->children[ i ]->location_data, TPD->location_data );
-                TPD->children[ i ]->is_active = false;
-            }
-        }
-        uint64_t current_timestamp = SCOREP_GetClockTicks();
-        UTILS_BUG_ON( SCOREP_Location_GetLastTimestamp( TPD->location_data ) > current_timestamp,
-                      "Wrong timestamp order [0]: %" PRIu64 " (last recorded) > %" PRIu64 " (current).",
-                      SCOREP_Location_GetLastTimestamp( TPD->location_data ), current_timestamp );
-        TPD->is_active = true;
-        // need activation here?
-    }
-    else
-    {
-        assert( TPD->n_reusages > 0 );
-        TPD->n_reusages--;
-        // no parallelism in last parallel region, parent == child
-        scorep_thread_call_externals_on_location_deactivation( TPD->location_data,
-                                                               TPD->location_data );
+        *parentTpd = scorep_thread_get_parent( currentTpd );
+        UTILS_BUG_ON( model_data->parent_reuse_count != 0 );
+        *forkSequenceCount = model_data->fork_sequence_count;
     }
 }
 
 
 void
-scorep_thread_call_externals_on_location_deactivation( SCOREP_Location* locationData,
-                                                       SCOREP_Location* parent )
+scorep_thread_on_join( scorep_thread_private_data*  currentTpd,
+                       scorep_thread_private_data*  parentTpd,
+                       scorep_thread_private_data** tpdFromNowOn,
+                       uint32_t*                    forkSequenceCount,
+                       SCOREP_ThreadModel           model )
 {
-    if ( SCOREP_IsProfilingEnabled() )
+    UTILS_BUG_ON( currentTpd != TPD );
+    UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP );
+
+    scorep_thread_private_data_omp_tpd* model_data = scorep_thread_get_model_data( currentTpd );
+
+    if ( model_data->parent_reuse_count != 0 )
     {
-        SCOREP_Profile_OnLocationDeactivation( locationData, parent );
+        /* There was no additional parallelism in the previous
+         * parallel region. We reused the parent tpd. */
+        *forkSequenceCount = model_data->fork_sequence_counts[ model_data->parent_reuse_count - 1 ];
+        model_data->parent_reuse_count--;
+        *tpdFromNowOn = currentTpd;
     }
-    SCOREP_Tracing_OnLocationDeactivation( locationData, parent );
+    else
+    {
+        *forkSequenceCount = model_data->fork_sequence_count;
+        UTILS_BUG_ON( parentTpd == 0 );
+        set_tpd_to( parentTpd );
+        *tpdFromNowOn = parentTpd;
+    }
 }
 
 
 SCOREP_Location*
 SCOREP_Location_GetCurrentCPULocation()
 {
-    if ( TPD->is_active )
-    {
-        return TPD->location_data;
-    }
-
-    // entered parallel region. thread will be activated, maybe created. TPD
-    // is the parent
-    if ( omp_get_num_threads() == 1 )
-    {
-        // there is no additional parallelism in this parallel region. don't
-        // update TPD with a child but reuse the parent.
-        TPD->is_active = true;
-        TPD->n_reusages++;
-        scorep_thread_call_externals_on_location_activation( TPD->location_data,
-                                                             TPD->location_data,
-                                                             TPD->nesting_level ); // use same nesting level as in fork
-    }
-    else
-    {
-        // set TPD to a child of itself, create new one if neccessary
-        size_t my_thread_id = omp_get_thread_num();
-        assert( my_thread_id < TPD->n_children );
-        SCOREP_Thread_ThreadPrivateData** my_tpd = &( TPD->children[ my_thread_id ] );
-        if ( *my_tpd )
-        {
-            // already been in this thread
-            assert( !( *my_tpd )->is_active );
-            ( *my_tpd )->is_active = true;
-            scorep_thread_update_tpd( *my_tpd );
-            uint64_t current_timestamp = SCOREP_GetClockTicks();
-            UTILS_BUG_ON( SCOREP_Location_GetLastTimestamp( TPD->location_data ) > current_timestamp,
-                          "Wrong timestamp order [1]: %" PRIu64 " (last recorded) > %" PRIu64 " (current).",
-                          SCOREP_Location_GetLastTimestamp( TPD->location_data ), current_timestamp );
-        }
-        else
-        {
-            // never been here before
-            *my_tpd = scorep_thread_create_thread_private_data();
-            if ( my_thread_id == 0 )
-            {
-                // reuse parents location data
-                ( *my_tpd )->location_data = TPD->location_data;
-                scorep_thread_update_tpd( *my_tpd );
-                uint64_t current_timestamp = SCOREP_GetClockTicks();
-                UTILS_BUG_ON( SCOREP_Location_GetLastTimestamp( TPD->location_data ) > current_timestamp,
-                              "Wrong timestamp order [2]: %" PRIu64 " (last recorded) > %" PRIu64 " (current).",
-                              SCOREP_Location_GetLastTimestamp( TPD->location_data ), current_timestamp );
-            }
-            else
-            {
-                scorep_thread_create_location_data_for( *my_tpd );
-                uint64_t current_timestamp = SCOREP_GetClockTicks();
-                UTILS_BUG_ON( SCOREP_Location_GetLastTimestamp( TPD->location_data ) > current_timestamp,
-                              "Wrong timestamp order [3]: %" PRIu64 " (last recorded) > %" PRIu64 " (current).",
-                              SCOREP_Location_GetLastTimestamp( TPD->location_data ), current_timestamp );
-            }
-        }
-        scorep_thread_call_externals_on_location_activation( TPD->location_data,
-                                                             TPD->parent->location_data,
-                                                             TPD->parent->nesting_level ); // use same nesting level as in fork
-    }
-
-    return TPD->location_data;
+    UTILS_BUG_ON( TPD == 0 );
+    SCOREP_Location* location = scorep_thread_get_location( TPD );
+    UTILS_BUG_ON( location == 0 );
+    return location;
 }
 
 
-uint32_t
-scorep_thread_get_nesting_level()
+void
+scorep_thread_delete_private_data( scorep_thread_private_data* tpd )
 {
-    return TPD->nesting_level;
+    UTILS_ASSERT( tpd != 0 );
+
+    scorep_thread_private_data_omp_tpd* model_data = scorep_thread_get_model_data( tpd );
+
+    for ( uint32_t i = 0; i < model_data->n_children; ++i )
+    {
+        if ( model_data->children[ i ] != 0 )
+        {
+            scorep_thread_delete_private_data( model_data->children[ i ] );
+        }
+    }
+    free( tpd );
 }

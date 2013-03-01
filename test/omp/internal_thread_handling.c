@@ -73,8 +73,10 @@ main()
     printf( "thread %d after fork.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
     SCOREP_PRAGMA_OMP( parallel POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( FORTRAN_MANGLED( pomp_tpd ) ) )
     {
+        POMP2_Parallel_begin( &pomp_region_1 );
         printf( "thread %d before foo.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
         foo();
+        POMP2_Parallel_end( &pomp_region_1 );
     }
     printf( "thread %d before join. pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
     POMP2_Parallel_join( &pomp_region_1, 0 );

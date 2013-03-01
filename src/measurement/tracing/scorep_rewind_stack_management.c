@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -33,6 +33,8 @@
 
 #include <otf2/otf2.h>
 #include "scorep_tracing_internal.h"
+
+#include <UTILS_Error.h>
 
 
 /**
@@ -98,7 +100,7 @@ scorep_rewind_stack_push( SCOREP_Location* location,
         stack_item                 = ( scorep_rewind_stack* )malloc( sizeof( scorep_rewind_stack ) );
         stack_item->id             = id;
         stack_item->entertimestamp = entertimestamp;
-        for ( int i = 0; i < SCOREP_PARADIGM_MAX; i++ )
+        for ( int i = 0; i < SCOREP_REWIND_PARADIGM_MAX; i++ )
         {
             stack_item->paradigm_affected[ i ] = false;
         }
@@ -119,7 +121,7 @@ void
 scorep_rewind_stack_pop( SCOREP_Location* location,
                          uint32_t*        id,
                          uint64_t*        entertimestamp,
-                         bool             paradigm_affected[ SCOREP_PARADIGM_MAX ] )
+                         bool             paradigm_affected[ SCOREP_REWIND_PARADIGM_MAX ] )
 {
     scorep_rewind_stack* stack_head = SCOREP_Location_GetTracingData( location )->rewind_stack;
     scorep_rewind_stack* stack_item = NULL;
@@ -129,7 +131,7 @@ scorep_rewind_stack_pop( SCOREP_Location* location,
         *id             = stack_head->id;
         *entertimestamp = stack_head->entertimestamp;
         memcpy( paradigm_affected, stack_head->paradigm_affected,
-                sizeof( bool ) * SCOREP_PARADIGM_MAX );
+                sizeof( bool ) * SCOREP_REWIND_PARADIGM_MAX );
 
         stack_item = stack_head;
         stack_head = stack_head->prev;
@@ -165,8 +167,9 @@ scorep_rewind_stack_delete( SCOREP_Location* location )
  * Set paradigm event flag for all current rewind regions.
  */
 void
-scorep_rewind_set_affected_paradigm( SCOREP_Location* location, SCOREP_Paradigm paradigm )
+scorep_rewind_set_affected_paradigm( SCOREP_Location* location, SCOREP_Rewind_Paradigm paradigm )
 {
+    UTILS_ASSERT( paradigm < SCOREP_REWIND_PARADIGM_MAX );
     scorep_rewind_stack* stack_item = SCOREP_Location_GetTracingData( location )->rewind_stack;
 
     while ( stack_item )

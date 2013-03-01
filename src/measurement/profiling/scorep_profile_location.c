@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -30,7 +30,7 @@
 struct scorep_profile_fork_list_node
 {
     scorep_profile_node*           fork_node;
-    uint32_t                       nesting_level;
+    uint32_t                       fork_sequence_count;
     uint32_t                       profile_depth;
     scorep_profile_fork_list_node* prev;
     scorep_profile_fork_list_node* next;
@@ -156,7 +156,7 @@ void
 scorep_profile_add_fork_node( SCOREP_Profile_LocationData* location,
                               scorep_profile_node*         fork_node,
                               uint32_t                     profile_depth,
-                              uint32_t                     nesting_level )
+                              uint32_t                     forkSequenceCount )
 {
     /* Create or reuse new list item */
     scorep_profile_fork_list_node* new_list_item = NULL;
@@ -190,9 +190,9 @@ scorep_profile_add_fork_node( SCOREP_Profile_LocationData* location,
     UTILS_ASSERT( new_list_item );
 
     /* Initialize entry */
-    new_list_item->fork_node     = fork_node;
-    new_list_item->nesting_level = nesting_level;
-    new_list_item->profile_depth = profile_depth;
+    new_list_item->fork_node           = fork_node;
+    new_list_item->fork_sequence_count = forkSequenceCount;
+    new_list_item->profile_depth       = profile_depth;
 
     location->fork_list_tail = new_list_item;
 }
@@ -214,13 +214,13 @@ scorep_profile_remove_fork_node( SCOREP_Profile_LocationData* location )
 
 scorep_profile_node*
 scorep_profile_get_fork_node( SCOREP_Profile_LocationData* location,
-                              uint32_t                     nesting_level )
+                              uint32_t                     forkSequenceCount )
 {
     /* We assume that the fork node is never removed before this child thread
        is completed. And the list is sorted.  Thus the searched part is save
        to read. */
     scorep_profile_fork_list_node* current = location->fork_list_tail;
-    while ( ( current != NULL ) && ( current->nesting_level > nesting_level ) )
+    while ( ( current != NULL ) && ( current->fork_sequence_count > forkSequenceCount ) )
     {
         current = current->prev;
     }
@@ -228,19 +228,19 @@ scorep_profile_get_fork_node( SCOREP_Profile_LocationData* location,
     {
         return NULL;
     }
-    //UTILS_ASSERT( current->nesting_level == nesting_level );
+    //UTILS_ASSERT( current->fork_sequence_count == forkSequenceCount );
     return current->fork_node;
 }
 
 uint32_t
 scorep_profile_get_fork_depth( SCOREP_Profile_LocationData* location,
-                               uint32_t                     nesting_level )
+                               uint32_t                     forkSequenceCount )
 {
     /* We assume that the fork node is never removed before this child thread
        is completed. And the list is sorted.  Thus the searched part is save
        to read. */
     scorep_profile_fork_list_node* current = location->fork_list_tail;
-    while ( ( current != NULL ) && ( current->nesting_level > nesting_level ) )
+    while ( ( current != NULL ) && ( current->fork_sequence_count > forkSequenceCount ) )
     {
         current = current->prev;
     }
@@ -248,6 +248,6 @@ scorep_profile_get_fork_depth( SCOREP_Profile_LocationData* location,
     {
         return 0;
     }
-    //UTILS_ASSERT( current->nesting_level == nesting_level );
+    //UTILS_ASSERT( current->fork_sequence_count == forkSequenceCount );
     return current->profile_depth;
 }

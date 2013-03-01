@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -62,6 +62,11 @@ scorep_properties[ SCOREP_PROPERTY_MAX ] =
         .initialValue = true
     },
     // SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE
+    {
+        .condition    = SCOREP_PROPERTY_CONDITION_ANY,
+        .initialValue = true
+    },
+    // SCOREP_PROPERTY_THREAD_UNIQUE_FORK_SEQUENCE_COUNTS
     {
         .condition    = SCOREP_PROPERTY_CONDITION_ANY,
         .initialValue = true

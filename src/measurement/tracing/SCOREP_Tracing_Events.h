@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -136,46 +136,55 @@ SCOREP_Tracing_MpiIrecv( SCOREP_Location*                  location,
 
 
 void
-SCOREP_Tracing_OmpFork( SCOREP_Location* location,
-                        uint64_t         timestamp,
-                        uint32_t         nRequestedThreads );
+SCOREP_Tracing_ThreadFork( SCOREP_Location*   location,
+                           uint64_t           timestamp,
+                           uint32_t           nRequestedThreads,
+                           uint32_t           forkSequenceCount,
+                           SCOREP_ThreadModel model );
 
 
 void
-SCOREP_Tracing_OmpJoin( SCOREP_Location* location,
-                        uint64_t         timestamp );
+SCOREP_Tracing_ThreadJoin( SCOREP_Location*   location,
+                           uint64_t           timestamp,
+                           uint32_t           forkSequenceCount,
+                           SCOREP_ThreadModel model );
 
 
 void
-SCOREP_Tracing_OmpAcquireLock( SCOREP_Location* location,
-                               uint64_t         timestamp,
-                               uint32_t         lockId,
-                               uint32_t         acquisitionOrder );
+SCOREP_Tracing_ThreadAcquireLock( SCOREP_Location*   location,
+                                  uint64_t           timestamp,
+                                  uint32_t           lockId,
+                                  uint32_t           acquisitionOrder,
+                                  SCOREP_ThreadModel model );
 
 
 void
-SCOREP_Tracing_OmpReleaseLock( SCOREP_Location* location,
-                               uint64_t         timestamp,
-                               uint32_t         lockId,
-                               uint32_t         acquisitionOrder );
+SCOREP_Tracing_ThreadReleaseLock( SCOREP_Location*   location,
+                                  uint64_t           timestamp,
+                                  uint32_t           lockId,
+                                  uint32_t           acquisitionOrder,
+                                  SCOREP_ThreadModel model );
 
 
 void
-SCOREP_Tracing_OmpTaskCreate( SCOREP_Location* location,
-                              uint64_t         timestamp,
-                              uint64_t         taskId );
+SCOREP_Tracing_ThreadTaskCreate( SCOREP_Location*   location,
+                                 uint64_t           timestamp,
+                                 uint64_t           taskId,
+                                 SCOREP_ThreadModel model );
 
 
 void
-SCOREP_Tracing_OmpTaskSwitch( SCOREP_Location* location,
-                              uint64_t         timestamp,
-                              uint64_t         taskId );
+SCOREP_Tracing_ThreadTaskSwitch( SCOREP_Location*   location,
+                                 uint64_t           timestamp,
+                                 uint64_t           taskId,
+                                 SCOREP_ThreadModel model );
 
 
 void
-SCOREP_Tracing_OmpTaskComplete( SCOREP_Location* location,
-                                uint64_t         timestamp,
-                                uint64_t         taskId );
+SCOREP_Tracing_ThreadTaskComplete( SCOREP_Location*   location,
+                                   uint64_t           timestamp,
+                                   uint64_t           taskId,
+                                   SCOREP_ThreadModel model );
 
 
 void
