@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -280,9 +280,9 @@ scorep_compiler_get_sym_tab( void )
     for ( i = 0; i < nr_all_syms; ++i )
     {
         long         addr;
-        const char*  filename;
+        const char*  filename = NULL;
         const char*  funcname;
-        unsigned int lno;
+        unsigned int lno = SCOREP_INVALID_LINE_NO;
 
         /* Process only symbols of type function */
         if ( !( canonic_symbols[ i ]->flags & BSF_FUNCTION ) )
@@ -306,6 +306,7 @@ scorep_compiler_get_sym_tab( void )
         /* calculate function address */
         addr = canonic_symbols[ i ]->section->vma + canonic_symbols[ i ]->value;
 
+#ifndef INTEL_COMPILER
         /* get the source info for every function in case of gnu by default */
         /* calls BFD_SEND */
         bfd_find_nearest_line( bfd_image,
@@ -315,25 +316,8 @@ scorep_compiler_get_sym_tab( void )
                                &filename,
                                &funcname,
                                &lno );
-
-#ifndef INTEL_COMPILER
-        /* The debug information has often undecorated function names,
-           thus, they are nicer to use.
-           If no debugging symbols are found and thus funcname is NULL,
-           set it from the always present canonic symbols.
-           However, to have the trace comparable to Scalasca and Vampir, we use
-           always canonical symbols */
-
-        //if ( funcname == NULL )
-        {
-            funcname = canonic_symbols[ i ]->name;
-        }
-#else
-        /* However, because the intel compiler provides a fortran mangled
-           function name to __VT_Entry for fortran routines. We use the
-           non-debug name */
+#endif
         funcname = canonic_symbols[ i ]->name;
-#endif  /* INTEL_COMPILER */
 
         scorep_compiler_process_symbol( addr, funcname, filename, lno );
     }

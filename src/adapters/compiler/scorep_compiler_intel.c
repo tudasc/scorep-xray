@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -100,20 +100,22 @@ __VT_IntelEntry( char*     str,
     if ( *id == 0 )
     {
         SCOREP_MutexLock( scorep_compiler_region_mutex );
-
-        hash_node = scorep_compiler_hash_get( str );
-        if ( hash_node )
+        if ( *id == 0 )
         {
-            if ( hash_node->region_handle == SCOREP_INVALID_REGION )
+            hash_node = scorep_compiler_hash_get( str );
+            if ( hash_node )
             {
-                /* -- region entered the first time, register region -- */
-                scorep_compiler_register_region( hash_node );
+                if ( hash_node->region_handle == SCOREP_INVALID_REGION )
+                {
+                    /* -- region entered the first time, register region -- */
+                    scorep_compiler_register_region( hash_node );
+                }
+                *id = hash_node->region_handle;
             }
-            *id = hash_node->region_handle;
-        }
-        else
-        {
-            *id = SCOREP_COMPILER_FILTER_ID;
+            else
+            {
+                *id = SCOREP_COMPILER_FILTER_ID;
+            }
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }

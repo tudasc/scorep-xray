@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -149,23 +149,23 @@ scorep_compiler_hash_init( void )
 
 /* Get hash table entry for given name. */
 scorep_compiler_hash_node*
-scorep_compiler_hash_get( char* region_name )
+scorep_compiler_hash_get( char* str )
 {
-    char* name;
+    char* name = str;
+    char* file = str;
     /* The intel compiler prepends the filename to the function name.
        -> Need to remove the file name. */
-    name = region_name;
     while ( *name != '\0' )
     {
         if ( *name == ':' )
         {
-            region_name = name + 1;
+            name++;
             break;
         }
         name++;
     }
 
-    uint64_t hash_code = SCOREP_Hashtab_HashString( region_name ) % SCOREP_COMPILER_REGION_SLOTS;
+    uint64_t hash_code = SCOREP_Hashtab_HashString( name ) % SCOREP_COMPILER_REGION_SLOTS;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld", hash_code );
 
@@ -176,8 +176,16 @@ scorep_compiler_hash_get( char* region_name )
      */
     while ( curr )
     {
-        if ( strcmp( curr->region_name_mangled, region_name )  == 0 )
+        if ( strcmp( curr->region_name_mangled, name )  == 0 )
         {
+            if ( curr->file_name == NULL )
+            {
+                /* Extract file name */
+                uint64_t len = name - file;
+                curr->file_name = malloc( len );
+                strncpy( curr->file_name, file, len - 1 );
+                curr->file_name[ len - 1 ] = '\0';
+            }
             return curr;
         }
         curr = curr->next;
@@ -187,7 +195,7 @@ scorep_compiler_hash_get( char* region_name )
 
 /* Stores function name under hash code */
 scorep_compiler_hash_node*
-scorep_compiler_hash_put( uint64_t      key,
+scorep_compiler_hash_put( uint64_t      addr,
                           const char*   region_name_mangled,
                           const char*   region_name_demangled,
                           const char*   file_name,
@@ -225,11 +233,10 @@ scorep_compiler_hash_put( uint64_t      key,
     uint64_t                   hash_code = SCOREP_Hashtab_HashString( name ) % SCOREP_COMPILER_REGION_SLOTS;
     scorep_compiler_hash_node* add       = ( scorep_compiler_hash_node* )
                                            malloc( sizeof( scorep_compiler_hash_node ) );
-    add->key                   = key;
     add->region_name_mangled   = UTILS_CStr_dup( name );
     add->region_name_demangled = UTILS_CStr_dup( region_name_demangled );
-    add->file_name             = UTILS_CStr_dup( file_name );
-    add->line_no_begin         = line_no_begin;
+    add->file_name             = NULL;
+    add->line_no_begin         = SCOREP_INVALID_LINE_NO;
     add->line_no_end           = SCOREP_INVALID_LINE_NO;
     add->region_handle         = SCOREP_INVALID_REGION;
     /* Inserting elements at the head allows parallel calls to
@@ -291,8 +298,8 @@ scorep_compiler_register_region( scorep_compiler_hash_node* node )
     node->region_handle = SCOREP_DefineRegion( node->region_name_demangled,
                                                node->region_name_mangled,
                                                file_handle,
-                                               node->line_no_begin,
-                                               node->line_no_end,
+                                               SCOREP_INVALID_LINE_NO,
+                                               SCOREP_INVALID_LINE_NO,
                                                SCOREP_ADAPTER_COMPILER,
                                                SCOREP_REGION_FUNCTION );
 
