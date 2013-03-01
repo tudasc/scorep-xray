@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -191,9 +191,9 @@ SCOREP_Filter_FreeRules( void )
 ****************************************************************************************/
 
 static bool
-scorep_filter_match_file( const char*           with_path,
-                          scorep_filter_rule_t* rule,
-                          SCOREP_ErrorCode*     error_code )
+scorep_filter_match_file_rule( const char*           with_path,
+                               scorep_filter_rule_t* rule,
+                               SCOREP_ErrorCode*     error_code )
 {
     int error_value = fnmatch( rule->pattern, with_path, 0 );
 
@@ -216,10 +216,10 @@ scorep_filter_match_file( const char*           with_path,
 }
 
 static bool
-scorep_filter_match_function( const char*           function_name,
-                              const char*           mangled_name,
-                              scorep_filter_rule_t* rule,
-                              SCOREP_ErrorCode*     error_code )
+scorep_filter_match_function_rule( const char*           function_name,
+                                   const char*           mangled_name,
+                                   scorep_filter_rule_t* rule,
+                                   SCOREP_ErrorCode*     error_code )
 {
     int error_value = 0;
     if ( rule->is_mangled && ( mangled_name != NULL ) )
@@ -248,20 +248,12 @@ scorep_filter_match_function( const char*           function_name,
     return false;
 }
 
-bool
-SCOREP_Filter_Match( const char* file_name,
-                     const char* function_name,
-                     const char* mangled_name )
+static inline bool
+scorep_filter_match_file( const char* file_name )
 {
     scorep_filter_rule_t* current_rule = scorep_filter_file_rules_head;
     bool                  excluded     = false; /* Start with all included */
-    int                   error_value;
-    SCOREP_ErrorCode      error_code = SCOREP_SUCCESS;
-
-    if ( !SCOREP_Filter_IsEnabled() )
-    {
-        return false;
-    }
+    SCOREP_ErrorCode      error_code   = SCOREP_SUCCESS;
 
     if ( file_name != NULL )
     {
@@ -270,9 +262,9 @@ SCOREP_Filter_Match( const char* file_name,
             /* If included so far and we have an exclude rule */
             if ( ( !excluded ) && current_rule->is_exclude )
             {
-                excluded = scorep_filter_match_file( file_name,
-                                                     current_rule,
-                                                     &error_code );
+                excluded = scorep_filter_match_file_rule( file_name,
+                                                          current_rule,
+                                                          &error_code );
                 if ( error_code != SCOREP_SUCCESS )
                 {
                     return false;
@@ -281,9 +273,9 @@ SCOREP_Filter_Match( const char* file_name,
             /* If excluded so far and we have an include rule */
             else if ( excluded && ( !current_rule->is_exclude ) )
             {
-                excluded = !scorep_filter_match_file( file_name,
-                                                      current_rule,
-                                                      &error_code );
+                excluded = !scorep_filter_match_file_rule( file_name,
+                                                           current_rule,
+                                                           &error_code );
 
                 if ( error_code != SCOREP_SUCCESS )
                 {
@@ -295,16 +287,23 @@ SCOREP_Filter_Match( const char* file_name,
         }
     }
 
-    /* If file is excluded, function can no longer be included. Thus, return. */
     if ( excluded )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_FILTERING,
                             "Filtered file %s\n", file_name );
-        return true;
     }
 
-    excluded     = false; /* Start with all functions included */
-    current_rule = scorep_filter_function_rules_head;
+    return excluded;
+}
+
+static inline bool
+scorep_filter_match_function(  const char* function_name,
+                               const char* mangled_name )
+{
+    scorep_filter_rule_t* current_rule = scorep_filter_function_rules_head;
+    bool                  excluded     = false; /* Start with all included */
+    SCOREP_ErrorCode      error_code   = SCOREP_SUCCESS;
+
     if ( function_name != NULL )
     {
         while ( current_rule != NULL )
@@ -312,10 +311,10 @@ SCOREP_Filter_Match( const char* file_name,
             /* If included so far and we have an exclude rule */
             if ( ( !excluded ) && current_rule->is_exclude )
             {
-                excluded = scorep_filter_match_function( function_name,
-                                                         mangled_name,
-                                                         current_rule,
-                                                         &error_code );
+                excluded = scorep_filter_match_function_rule( function_name,
+                                                              mangled_name,
+                                                              current_rule,
+                                                              &error_code );
 
                 if ( error_code != SCOREP_SUCCESS )
                 {
@@ -325,10 +324,10 @@ SCOREP_Filter_Match( const char* file_name,
             /* If excluded so far and we have an include rule */
             else if ( excluded && ( !current_rule->is_exclude ) )
             {
-                excluded = !scorep_filter_match_function( function_name,
-                                                          mangled_name,
-                                                          current_rule,
-                                                          &error_code );
+                excluded = !scorep_filter_match_function_rule( function_name,
+                                                               mangled_name,
+                                                               current_rule,
+                                                               &error_code );
 
                 if ( error_code != SCOREP_SUCCESS )
                 {
@@ -347,4 +346,46 @@ SCOREP_Filter_Match( const char* file_name,
     }
 
     return excluded;
+}
+
+bool
+SCOREP_Filter_MatchFile( const char* file_name )
+{
+    if ( !SCOREP_Filter_IsEnabled() )
+    {
+        return false;
+    }
+
+    return scorep_filter_match_file( file_name );
+}
+bool
+SCOREP_Filter_MatchFunction( const char* function_name,
+                             const char* mangled_name )
+{
+    if ( !SCOREP_Filter_IsEnabled() )
+    {
+        return false;
+    }
+
+    return scorep_filter_match_function( function_name,
+                                         mangled_name );
+}
+bool
+SCOREP_Filter_Match( const char* file_name,
+                     const char* function_name,
+                     const char* mangled_name )
+{
+    if ( !SCOREP_Filter_IsEnabled() )
+    {
+        return false;
+    }
+
+    /* If file is excluded, function can no longer be included. Thus, return. */
+    if ( scorep_filter_match_file( file_name ) )
+    {
+        return true;
+    }
+
+    return scorep_filter_match_function( function_name,
+                                         mangled_name );
 }

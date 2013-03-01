@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -44,6 +44,11 @@
    @def SCOREP_COMPILER_FILE_SLOTS The number of slots in the file hash table.
  */
 #define SCOREP_COMPILER_FILE_SLOTS 15
+
+/**
+    @def SCOREP_COMPILER_FILTER_HANDLE defines the id for an filtered region.
+ */
+#define SCOREP_COMPILER_FILTER_HANDLE -1
 
 /**
  * @brief Hash table to map function addresses to region identifier

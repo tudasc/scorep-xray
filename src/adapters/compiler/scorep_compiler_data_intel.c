@@ -113,7 +113,14 @@ scorep_compiler_get_file( const char* file )
 
         /* Register file to measurement system */
         SCOREP_SourceFileHandle* handle = malloc( sizeof( SCOREP_SourceFileHandle ) );
-        *handle = SCOREP_DefineSourceFile( file_name );
+        if ( SCOREP_Filter_MatchFile( file_name ) )
+        {
+            *handle = SCOREP_INVALID_SOURCE_FILE;
+        }
+        else
+        {
+            *handle = SCOREP_DefineSourceFile( file_name );
+        }
 
         /* Store handle in hashtable */
         SCOREP_Hashtab_Insert( scorep_compiler_file_table, ( void* )file_name,
@@ -292,6 +299,11 @@ void
 scorep_compiler_register_region( scorep_compiler_hash_node* node )
 {
     SCOREP_SourceFileHandle file_handle = scorep_compiler_get_file( node->file_name );
+    if ( file_handle == SCOREP_INVALID_SOURCE_FILE )
+    {
+        node->region_handle = SCOREP_COMPILER_FILTER_HANDLE;
+        return;
+    }
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s", node->region_name_demangled );
 

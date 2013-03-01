@@ -42,11 +42,6 @@
 #include <scorep_compiler_symbol_table.h>
 
 /**
-    @def SCOREP_COMPILER_FILTER_ID defines the id for an filtered region.
- */
-#define SCOREP_COMPILER_FILTER_ID -1
-
-/**
  * static variable to control initialize status of the compiler adapter.
  * If it is 0 it is initialized.
  */
@@ -114,14 +109,14 @@ __VT_IntelEntry( char*     str,
             }
             else
             {
-                *id = SCOREP_COMPILER_FILTER_ID;
+                *id = SCOREP_COMPILER_FILTER_HANDLE;
             }
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
 
     /* Enter event */
-    if ( *id != SCOREP_COMPILER_FILTER_ID )
+    if ( *id != SCOREP_COMPILER_FILTER_HANDLE )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                             "enter the region with id %u ", *id );
@@ -154,7 +149,7 @@ __VT_IntelExit( uint32_t* id2 )
     }
 
     /* Check if function is filtered */
-    if ( *id2 == SCOREP_COMPILER_FILTER_ID )
+    if ( *id2 == SCOREP_COMPILER_FILTER_HANDLE )
     {
         return;
     }
@@ -182,7 +177,7 @@ __VT_IntelCatch( uint32_t* id2 )
     }
 
     /* Check if function is filtered */
-    if ( *id2 == SCOREP_COMPILER_FILTER_ID )
+    if ( *id2 == SCOREP_COMPILER_FILTER_HANDLE )
     {
         return;
     }
@@ -206,7 +201,7 @@ __VT_IntelCheck( uint32_t* id2 )
     }
 
     /* Check if function is filtered */
-    if ( *id2 == SCOREP_COMPILER_FILTER_ID )
+    if ( *id2 == SCOREP_COMPILER_FILTER_HANDLE )
     {
         return;
     }
