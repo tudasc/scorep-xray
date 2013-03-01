@@ -23,6 +23,7 @@ noinst_LTLIBRARIES += libscorep_measurement.la
 libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/SCOREP_RuntimeManagement.c         \
     $(SRC_ROOT)src/measurement/SCOREP_Events.c                    \
+    $(SRC_ROOT)src/measurement/scorep_events_common.h             \
     $(SRC_ROOT)src/measurement/SCOREP_Config.c                    \
     $(SRC_ROOT)src/measurement/SCOREP_Definitions.c               \
     $(SRC_ROOT)src/measurement/SCOREP_Memory.c                    \
