@@ -380,12 +380,7 @@ SCOREP_Filter_Match( const char* file_name,
         return false;
     }
 
-    /* If file is excluded, function can no longer be included. Thus, return. */
-    if ( scorep_filter_match_file( file_name ) )
-    {
-        return true;
-    }
-
-    return scorep_filter_match_function( function_name,
-                                         mangled_name );
+    /* If file is excluded, function can no longer be included. */
+    return scorep_filter_match_file( file_name ) ||
+           scorep_filter_match_function( function_name, mangled_name );
 }

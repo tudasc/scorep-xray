@@ -31,6 +31,7 @@
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include <SCOREP_Hashtab.h>
+#include <SCOREP_Filter.h>
 
 #include <scorep_compiler_data_intel.h>
 
