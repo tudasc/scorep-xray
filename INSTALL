@@ -26,7 +26,7 @@ Installation Instructions" section below; then return here.
 Quick start
 ===========
 
-In a nutshell, configuring, building, and installing Scalasca can be as simple
+In a nutshell, configuring, building, and installing Score-P can be as simple
 as executing the shell commands
 
     ./configure --prefix=<installdir>
@@ -57,7 +57,7 @@ On Linux clusters, it is currently recommended to explicitly provide both the
 MPI suite and compiler suite.  Also, the user currently has to ensure that the
 compilers used by the MPI compiler wrappers match the selected compiler suite.
 (This is a temporary deficiency; the MPI detection will be improved in a
-future version of Scalasca.)
+future version of Score-P.)
 
   --with-nocross-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)
                           The compiler suite used to build this package in
@@ -344,10 +344,10 @@ variables:
 Building & Installing
 =====================
 
-Before building Scalasca v2, carefully check whether the configuration summary
+Before building Score-P, carefully check whether the configuration summary
 printed by the configure script matches your expectations (i.e., whether MPI
 and/or OpenMP support is correctly enabled/disabled, external libraries are
-used, etc). If everything is OK, Scalasca can be built and installed using
+used, etc). If everything is OK, Score-P can be built and installed using
 
         make
         make install
