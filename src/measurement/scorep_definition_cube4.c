@@ -59,8 +59,7 @@ typedef struct scorep_cube_system_node
 {
     struct scorep_cube_system_node* parent;          /**< Pointer to the parent node */
     SCOREP_SystemTreeNodeHandle     scorep_node;     /**< The Score-P handle */
-    cube_machine*                   my_cube_machine; /**< The Cube machine definition */
-    cube_node*                      my_cube_node;    /**< The Cube node definition */
+    cube_system_tree_node*          cube_node;       /**< The Cube handle */
 } scorep_cube_system_node;
 
 /**
@@ -88,50 +87,6 @@ find_system_node( scorep_cube_system_node* system_tree, uint32_t size,
 }
 
 /**
-   Searches the ancestors of @a node for the machine definition.
-   @param node Pointer to the mapping system tree for that the machine is seached.
-   @returns A pointer to the Cube definition. If no machine exists in the ancestors of
-            @a node, it returns NULL.
- */
-static cube_machine*
-get_cube_machine( scorep_cube_system_node* node )
-{
-    assert( node );
-
-    /* Found machine */
-    if ( node->my_cube_machine != NULL )
-    {
-        return node->my_cube_machine;
-    }
-
-    if ( node->parent == NULL )
-    {
-        return NULL;
-    }
-    return get_cube_machine( node->parent );
-}
-
-/**
-   If the system tree implementation does not provide a node definition, we must create
-   a default node.
-   @param my_cube Pointer to the Cube instance.
-   @param node    An arbitrary node from the system tree. Best choice for perfromance is
-                  the machine node.
- */
-static cube_node*
-get_default_node( cube_t*                  my_cube,
-                  scorep_cube_system_node* node )
-{
-    static cube_node* default_node = NULL;
-    if ( default_node == NULL )
-    {
-        default_node = cube_def_node( my_cube, "default node",
-                                      get_cube_machine( node ) );
-    }
-    return default_node;
-}
-
-/**
    Lookup the cube node definition for a Score-P system tree handle.
    In cases the Score-P system tree does not provide a node definition, a default node
    is defined to Cube and returned.
@@ -143,7 +98,7 @@ get_default_node( cube_t*                  my_cube,
                       handle
    @returns A pointer to the Cube node definition.
  */
-static cube_node*
+static cube_system_tree_node*
 get_cube_node(  cube_t* my_cube,
                 scorep_cube_system_node* system_tree,
                 SCOREP_SystemTreeNodeHandle node, uint32_t size )
@@ -151,12 +106,9 @@ get_cube_node(  cube_t* my_cube,
     /* Lookup the cube node  */
     scorep_cube_system_node* scorep_node = find_system_node( system_tree, size, node );
     assert( scorep_node );
+    assert( scorep_node->cube_node );
 
-    if ( scorep_node->my_cube_node == NULL )
-    {
-        return get_default_node( my_cube, system_tree );
-    }
-    return scorep_node->my_cube_node;
+    return scorep_node->cube_node;
 }
 
 
@@ -676,32 +628,19 @@ write_system_tree( cube_t*                   my_cube,
                                                         String )->string_data;
 
         assert( pos < nodes );
-        system_tree[ pos ].scorep_node     = handle;
-        system_tree[ pos ].my_cube_machine = NULL;
-        system_tree[ pos ].my_cube_node    = NULL;
-        system_tree[ pos ].parent          = NULL;
+        cube_system_tree_node* parent = NULL;
+        system_tree[ pos ].scorep_node = handle;
+        system_tree[ pos ].cube_node   = NULL;
+        system_tree[ pos ].parent      = NULL;
         if ( definition->parent_handle != SCOREP_INVALID_SYSTEM_TREE_NODE )
         {
             system_tree[ pos ].parent = find_system_node( system_tree, nodes,
                                                           definition->parent_handle );
+            parent = system_tree[ pos ].parent->cube_node;
         }
 
-        /* Register nodes to cube on machine and node level, because Cube has still
-           a fixed system tree hiarachy */
-        if ( strcmp( "machine", class ) == 0 )
-        {
-            system_tree[ pos ].my_cube_machine = cube_def_mach( my_cube, name, "" );
-        }
-        else if ( ( strcmp( "node", class ) == 0 ) ||
-                  ( strcmp( "nodecard", class ) == 0 ) )
-        {
-            char* label = calloc( 11 + strlen( name ), 1 );
-            strcat( label, "Node card " );
-            strcat( label, name );
-
-            system_tree[ pos ].my_cube_node =
-                cube_def_node( my_cube,  label, get_cube_machine( &system_tree[ pos ] ) );
-        }
+        system_tree[ pos ].cube_node =
+            cube_def_system_tree_node( my_cube, name, "", class, parent );
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
     return system_tree;
