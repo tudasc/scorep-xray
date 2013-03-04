@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2013, 
 ##    RWTH Aachen, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -39,7 +39,7 @@ AC_ARG_WITH([papi-header],
 # bug in papi 4.1.2.1. It might be compiler dependent.
 dc99_fix="-DC99"
 AS_IF([test "x$ac_scorep_papi_inc_dir" != "x"], [
-    ac_scorep_papi_cppflags=-"I$ac_scorep_papi_inc_dir $dc99_fix"
+    ac_scorep_papi_cppflags="-I$ac_scorep_papi_inc_dir $dc99_fix"
 ], [
     ac_scorep_papi_cppflags="$dc99_fix"
 ])
@@ -62,9 +62,15 @@ AC_ARG_WITH([papi-lib],
             [ac_scorep_papi_lib_dir="${withval}"],  # action-if-given
             [ac_scorep_papi_lib_dir="${PAPI_LIB-}"] # action-if-not-given
 )
+AS_IF([test "x$ac_scorep_papi_lib_dir" != "x"], [
+    ac_scorep_papi_ldflags="-L$ac_scorep_papi_lib_dir"
+], [
+    ac_scorep_papi_ldflags=""
+])
+
 AC_LANG_PUSH([C])
 ldflags_save="$LDFLAGS"
-LDFLAGS="-L$ac_scorep_papi_lib_dir $LDFLAGS"
+LDFLAGS="$ac_scorep_papi_lib_dir $LDFLAGS"
 # To use PAPI on IBM systems you have to link to
 # their performance monitor library (-lpmapi)
 if test "x${ac_scorep_platform}" = "xaix"; then
