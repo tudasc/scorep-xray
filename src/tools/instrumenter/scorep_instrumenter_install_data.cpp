@@ -387,12 +387,15 @@ std::string
 SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
                                                                const std::string& output_file )
 {
-    std::string basename  = remove_extension( remove_path( input_file ) );
-    std::string prep_file = "F" + basename + ".f";
-
-    if ( !UTILS_DoesFileExist( prep_file.c_str() ) )
+    std::string basename = remove_extension( remove_path( input_file ) );
+    std::string prep_file;
+    if ( LIBDIR_AIX_LIBPATH == "" )
     {
         prep_file = "F" + basename + scorep_tolower( get_extension( input_file ) );
+    }
+    else
+    {
+        prep_file = "F" + basename + ".f";
     }
 
     return "-d -qnoobject && mv " + prep_file + " " + output_file;
