@@ -407,19 +407,15 @@ get_rpath_struct_data( void )
     index = rpath_flag.find( "$libdir", 0 );
     rpath_flag.erase( index );
 
-    bool is_aix = ( "" != LIBDIR_AIX_LIBPATH );
-    if ( is_aix )
-    {
-        m_rpath_head      = " " + rpath_flag;
-        m_rpath_delimiter = ":";
-        m_rpath_tail      = ":" LIBDIR_AIX_LIBPATH;
-    }
-    else
-    {
-        m_rpath_head      = "";
-        m_rpath_delimiter = " " + rpath_flag;
-        m_rpath_tail      = "";
-    }
+#if HAVE( PLATFORM_AIX )
+    m_rpath_head      = " " + rpath_flag;
+    m_rpath_delimiter = ":";
+    m_rpath_tail      = ":" LIBDIR_AIX_LIBPATH;
+#else
+    m_rpath_head      = "";
+    m_rpath_delimiter = " " + rpath_flag;
+    m_rpath_tail      = "";
+#endif
 }
 
 /**
@@ -534,17 +530,16 @@ append_ld_run_path_to_rpath( std::string rpath )
         return rpath;
     }
 
+#if HAVE( PLATFORM_AIX )
     /* On AIX ist just a colon separated list, after a head */
-    if ( "" != LIBDIR_AIX_LIBPATH )
+    if ( rpath == "" )
     {
-        if ( rpath == "" )
-        {
-            return m_rpath_head + ld_run_path;
-        }
-        return rpath + m_rpath_delimiter + ld_run_path;
+        return m_rpath_head + ld_run_path;
     }
-
+    return rpath + m_rpath_delimiter + ld_run_path;
+#else
     /* Otherwise replace all colons by the rpath flags */
     rpath += m_rpath_delimiter + replace_all( ":", m_rpath_delimiter, ld_run_path );
     return rpath;
+#endif
 }

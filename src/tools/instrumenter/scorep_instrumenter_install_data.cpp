@@ -389,14 +389,12 @@ SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string
 {
     std::string basename = remove_extension( remove_path( input_file ) );
     std::string prep_file;
-    if ( LIBDIR_AIX_LIBPATH == "" )
-    {
-        prep_file = "F" + basename + scorep_tolower( get_extension( input_file ) );
-    }
-    else
-    {
-        prep_file = "F" + basename + ".f";
-    }
+
+#if HAVE( PLATFORM_AIX )
+    prep_file = "F" + basename + ".f";
+#else
+    prep_file = "F" + basename + scorep_tolower( get_extension( input_file ) );
+#endif
 
     return "-d -qnoobject && mv " + prep_file + " " + output_file;
 }
