@@ -723,6 +723,17 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
         return;
     }
 
+    SCOREP_LocalMPICommunicatorHandle parent_handle = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
+    int                               inter;
+    PMPI_Comm_test_inter( comm, &inter );
+    if ( !inter && parent_comm != MPI_COMM_NULL )
+    {
+        /* SCOREP_MPI_COMM_HANDLE() also takes the scorep_mpi_communicator_mutex
+         * mutex, thus resolve parent_comm outside of the comm mutex
+         */
+        parent_handle = SCOREP_MPI_COMM_HANDLE( parent_comm );
+    }
+
     /* Lock communicator definition */
     SCOREP_MutexLock( scorep_mpi_communicator_mutex );
 
@@ -742,14 +753,6 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
 
     /* determine id and root for communicator definition */
     scorep_mpi_comm_create_id( comm, size, local_rank, &root, &id );
-
-    SCOREP_LocalMPICommunicatorHandle parent_handle = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
-    int                               inter;
-    PMPI_Comm_test_inter( comm, &inter );
-    if ( !inter && parent_comm != MPI_COMM_NULL )
-    {
-        parent_handle = SCOREP_MPI_COMM_HANDLE( parent_comm );
-    }
 
     /* create definition in measurement system */
     handle = SCOREP_DefineLocalMPICommunicator( size,
