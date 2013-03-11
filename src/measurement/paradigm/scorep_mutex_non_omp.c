@@ -41,8 +41,17 @@
 #include <UTILS_Error.h>
 
 
-/** Magic number to identify an initialized lock */
-#define SCOREP_MUTEXT_MARKER ( void* )0x10C88c01
+typedef struct scorep_mutex
+{
+    int state;
+} scorep_mutex;
+
+
+enum
+{
+    SCOREP_MUTEXT_MARKER_UNLOCKED,
+    SCOREP_MUTEXT_MARKER_LOCKED
+};
 
 
 /**
@@ -58,8 +67,15 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
                             "Invalid mutex handle given." );
     }
 
+    scorep_mutex** mutex = ( scorep_mutex** )scorepMutex;
+    *mutex = malloc( sizeof( **mutex ) );
+    if ( !mutex )
+    {
+        return UTILS_ERROR_POSIX( "Can't allocate lock object" );
+    }
+
     /* mark this lock initialized */
-    *scorepMutex = SCOREP_MUTEXT_MARKER;
+    ( *mutex )->state = SCOREP_MUTEXT_MARKER_UNLOCKED;
 
     return SCOREP_SUCCESS;
 }
@@ -78,17 +94,20 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
                             "Invalid mutex handle given." );
     }
 
-    if ( *scorepMutex == NULL )
+    scorep_mutex** mutex = ( scorep_mutex** )scorepMutex;
+    if ( !*mutex )
     {
+        /* NULL pointers are allowed. */
         return SCOREP_SUCCESS;
     }
 
-    if ( *scorepMutex != SCOREP_MUTEXT_MARKER )
+    if ( ( *mutex )->state != SCOREP_MUTEXT_MARKER_UNLOCKED )
     {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Invalid lock" );
+        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Trying to destroy an locked mutex." );
     }
 
-    *scorepMutex = NULL;
+    free( *mutex );
+    *mutex = NULL;
 
     return SCOREP_SUCCESS;
 }
@@ -107,10 +126,12 @@ SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
                             "Invalid mutex handle given." );
     }
 
-    if ( scorepMutex != SCOREP_MUTEXT_MARKER )
-    {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Invalid lock" );
-    }
+    scorep_mutex* mutex = ( scorep_mutex* )scorepMutex;
+
+    UTILS_BUG_ON( mutex->state == SCOREP_MUTEXT_MARKER_LOCKED,
+                  "Trying to lock an already locked mutex." );
+
+    mutex->state = SCOREP_MUTEXT_MARKER_LOCKED;
 
     return SCOREP_SUCCESS;
 }
@@ -129,10 +150,12 @@ SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
                             "Invalid mutex handle given." );
     }
 
-    if ( scorepMutex != SCOREP_MUTEXT_MARKER )
-    {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Invalid lock" );
-    }
+    scorep_mutex* mutex = ( scorep_mutex* )scorepMutex;
+
+    UTILS_BUG_ON( mutex->state == SCOREP_MUTEXT_MARKER_UNLOCKED,
+                  "Trying to unlock an non-locked mutex." );
+
+    mutex->state = SCOREP_MUTEXT_MARKER_UNLOCKED;
 
     return SCOREP_SUCCESS;
 }
