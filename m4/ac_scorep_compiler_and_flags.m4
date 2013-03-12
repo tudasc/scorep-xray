@@ -121,7 +121,7 @@ AC_ARG_WITH([nocross-compiler-suite],
                             ["pathscale"], [ac_scorep_compilers_backend="${path_to_compiler_files}compiler-nocross-pathscale"],
                             ["pgi"],       [ac_scorep_compilers_backend="${path_to_compiler_files}compiler-nocross-pgi"],
                             ["studio"],    [ac_scorep_compilers_backend="${path_to_compiler_files}compiler-nocross-studio"],
-                            [AC_MSG_WARN([Compiler suite "${withval}" not supported by --with-nocross-compiler-suite, ignoring.])])],
+                            [AC_MSG_ERROR([Compiler suite "${withval}" not supported by --with-nocross-compiler-suite.])])],
                    [AC_MSG_ERROR([Option --with-nocross-compiler-suite not supported in cross-compiling mode. Please use --with-backend-compiler-suite and --with-frontend-compiler-suite instead.])])],
             [])
 
@@ -151,7 +151,7 @@ AC_ARG_WITH([frontend-compiler-suite],
                             ["pathscale"], [ac_scorep_compilers_frontend="${path_to_compiler_files}compiler-frontend-pathscale"],
                             ["pgi"],       [ac_scorep_compilers_frontend="${path_to_compiler_files}compiler-frontend-pgi"],
                             ["studio"],    [ac_scorep_compilers_frontend="${path_to_compiler_files}compiler-frontend-studio"],
-                            [AC_MSG_WARN([Compiler suite "${withval}" not supported by --with-frontend-compiler-suite, ignoring.])])],
+                            [AC_MSG_ERROR([Compiler suite "${withval}" not supported by --with-frontend-compiler-suite.])])],
                    [AC_MSG_ERROR([Option --with-frontend-compiler-suite not supported in non cross-compiling mode. Please use --with-nocross-compiler-suite instead.])])],
             [])
 ])
@@ -181,7 +181,7 @@ AC_ARG_WITH([compiler-suite],
                      ["pathscale"], [ac_scorep_compilers_frontend="${path_to_compiler_files}compiler-nocross-pathscale"],
                      ["pgi"],       [ac_scorep_compilers_frontend="${path_to_compiler_files}compiler-nocross-pgi"],
                      ["studio"],    [ac_scorep_compilers_frontend="${path_to_compiler_files}compiler-nocross-studio"],
-                     [AC_MSG_WARN([Compiler suite "${withval}" not supported by --with-compiler-suite, ignoring.])])],
+                     [AC_MSG_ERROR([Compiler suite "${withval}" not supported by --with-compiler-suite.])])],
             [])
 ])
 
@@ -199,7 +199,7 @@ AC_ARG_WITH([mpi],
                      ["impi"],        [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-impi"],
                      ["openmpi"],     [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-openmpi"],
                      ["no"],          [], # suppress warning for '--without-mpi'
-                     [AC_MSG_WARN([MPI compiler suite "${withval}" not supported by --with-mpi, ignoring.])])],
+                     [AC_MSG_ERROR([MPI compiler suite "${withval}" not supported by --with-mpi.])])],
             [])
 
 # use mpi_compiler_suite as input for process_arguments.awk
