@@ -70,7 +70,7 @@ AS_IF([test "x$ac_scorep_papi_lib_dir" != "x"], [
 
 AC_LANG_PUSH([C])
 ldflags_save="$LDFLAGS"
-LDFLAGS="$ac_scorep_papi_lib_dir $LDFLAGS"
+LDFLAGS="$ac_scorep_papi_ldflags $LDFLAGS"
 # To use PAPI on IBM systems you have to link to
 # their performance monitor library (-lpmapi)
 if test "x${ac_scorep_platform}" = "xaix"; then
