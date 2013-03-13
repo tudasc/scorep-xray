@@ -237,18 +237,20 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
             /* Start with a stack of 4 and ... */
             *capacity                               = 4;
             parent_model_data->fork_sequence_counts = SCOREP_Location_AllocForMisc(
-                scorep_thread_get_location( *parentTpd ),  ( *capacity ) * sizeof( uint32_t ) );
+                scorep_thread_get_location( *parentTpd ),
+                ( *capacity ) * sizeof( uint32_t ) );
         }
         else if ( *capacity < reuse_count )
         {
             /* ... realloc by doubling capacity, old memory is lost. */
-            *capacity                              *= 2;
-            parent_model_data->fork_sequence_counts = SCOREP_Location_AllocForMisc(
-                scorep_thread_get_location( *parentTpd ),  ( *capacity ) * sizeof( uint32_t ) );
-            uint32_t* tmp_sequence_counts = parent_model_data->fork_sequence_counts;
-            memcpy( parent_model_data->fork_sequence_counts,
-                    tmp_sequence_counts,
+            *capacity *= 2;
+            uint32_t* tmp_sequence_counts = SCOREP_Location_AllocForMisc(
+                scorep_thread_get_location( *parentTpd ),
+                ( *capacity ) * sizeof( uint32_t ) );
+            memcpy( tmp_sequence_counts,
+                    parent_model_data->fork_sequence_counts,
                     ( reuse_count - 1 ) * sizeof( uint32_t ) );
+            parent_model_data->fork_sequence_counts = tmp_sequence_counts;
         }
         UTILS_ASSERT( reuse_count <= *capacity );
         parent_model_data->fork_sequence_counts[ reuse_count - 1 ] = *forkSequenceCount;
