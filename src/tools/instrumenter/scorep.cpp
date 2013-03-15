@@ -94,7 +94,7 @@ print_help( void )
               << "                  instrumented with OPARI2. This is the default.\n"
               << "                  It can not be combined with PDT instrumentation.\n"
               << "                  Thus, by default, PDT instrumentation disables \n"
-              << "                  preprocessing."
+              << "                  preprocessing.\n"
               << "  --nopreprocess  Disables preprocessing before instrumentation with\n"
               << "                  OPARI2. Thus, OPARI2 will instrument the unprocessed\n"
               << "                  source file. By default, files are preprocessed before\n"
