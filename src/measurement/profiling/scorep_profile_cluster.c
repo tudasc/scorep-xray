@@ -1891,18 +1891,12 @@ scorep_cluster_write_line( scorep_cube_writing_data* write_data,
         abort();
     }
 
+    const char* sep = "";
     for ( uint32_t it = 0; it < entry_count; it++ )
     {
-        sprintf( current_pos, "%" PRIu32 ",", entries[ it ] );
-        for (; *current_pos != '\0'; current_pos++ )
-        {
-            ;
-        }
+        current_pos += sprintf( current_pos, "%s%" PRIu32, sep, entries[ it ] );
+        sep          = ",";
     }
-
-    /* Substitute last comma by a zero */
-    current_pos--;
-    sprintf( current_pos, "\0" );
 
     /* Create key string */
     char key[ 32 ];
