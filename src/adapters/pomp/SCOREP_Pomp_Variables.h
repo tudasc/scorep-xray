@@ -40,11 +40,6 @@
 ****************************************************************************************/
 
 /**
-   Contains the region handle for all implicit barriers
- */
-extern SCOREP_RegionHandle scorep_pomp_implicit_barrier_region;
-
-/**
     Flag to indicate, wether POMP tracing is enable/disabled
  */
 extern bool scorep_pomp_is_tracing_on;
