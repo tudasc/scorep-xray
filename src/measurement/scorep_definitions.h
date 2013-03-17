@@ -101,6 +101,7 @@ struct SCOREP_DefinitionManager
      */
     SCOREP_DefinitionMappings* mappings;
 };
+
 /* *INDENT-ON* */
 
 /**
@@ -266,15 +267,6 @@ SCOREP_CopyCallpathDefinitionToUnified( SCOREP_Callpath_Definition*   definition
 
 
 uint32_t
-SCOREP_GetNumberOfRegionDefinitions();
-
-uint32_t
 SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle );
-
-uint32_t
-SCOREP_CallPathHandleToRegionID( SCOREP_CallpathHandle handle );
-
-uint32_t
-SCOREP_GetHandleToID( SCOREP_RegionHandle handle );
 
 #endif /* SCOREP_INTERNAL_DEFINITIONS_H */

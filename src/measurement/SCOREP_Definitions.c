@@ -2691,26 +2691,12 @@ SCOREP_Callpath_GetNumberOfUnifiedDefinitions( void )
 }
 
 uint32_t
-SCOREP_GetNumberOfRegionDefinitions( void )
-{
-    assert( !SCOREP_Omp_InParallel() );
-    return scorep_local_definition_manager.region_definition_counter;
-}
-
-uint32_t
 SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle )
 {
     assert( !SCOREP_Omp_InParallel() );
     return SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
 }
 
-uint32_t
-SCOREP_CallPathHandleToRegionID( SCOREP_CallpathHandle handle )
-{
-    SCOREP_Callpath_Definition* callpath = SCOREP_LOCAL_HANDLE_DEREF( handle, Callpath );
-
-    return SCOREP_GetRegionHandleToID( callpath->callpath_argument.region_handle );
-}
 
 /**
  * Returns the sequence number of the unified definitions for a local metric handle from
