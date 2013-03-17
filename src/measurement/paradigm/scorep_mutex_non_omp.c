@@ -17,7 +17,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/scorep_lock_non_omp.c
+ * @file       src/measurement/paradigm/scorep_mutex_non_omp.c
  * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
  *
  * @status alpha
