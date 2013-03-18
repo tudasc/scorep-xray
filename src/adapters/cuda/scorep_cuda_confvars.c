@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -62,11 +62,13 @@ scorep_cuda_register( size_t subsystem_id )
 
 SCOREP_Subsystem SCOREP_Cuda_Adapter =
 {
-    "CUDA (config variables only)",
-    &scorep_cuda_register,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    .subsystem_name              = "CUDA (config variables only)",
+    .subsystem_register          = &scorep_cuda_register,
+    .subsystem_init              = NULL,
+    .subsystem_init_location     = NULL,
+    .subsystem_finalize_location = NULL,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = NULL,
+    .subsystem_finalize          = NULL,
+    .subsystem_deregister        = NULL
 };

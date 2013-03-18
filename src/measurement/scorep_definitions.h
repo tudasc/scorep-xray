@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -104,17 +104,8 @@ struct SCOREP_DefinitionManager
 
 /* *INDENT-ON* */
 
-/**
-   Counts the number of communicators at this process which are equal to
-   MPI_COMM_SELF.
- */
-extern uint32_t scorep_number_of_self_comms;
-
-/**
-   Counts the number of communicators which have this rank as root and
-   are not equal to MPI_COMM_SELF
- */
-extern uint32_t scorep_number_of_root_comms;
+extern SCOREP_DefinitionManager scorep_local_definition_manager;
+extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
 void
 SCOREP_Definitions_Initialize();

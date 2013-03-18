@@ -59,7 +59,7 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_status.h                    \
     $(SRC_ROOT)src/measurement/scorep_properties.c                \
     $(SRC_ROOT)src/measurement/scorep_properties.h                \
-    $(SRC_ROOT)src/measurement/scorep_mpi.h                       \
+    $(SRC_ROOT)src/measurement/scorep_ipc.h                       \
     $(SRC_ROOT)src/measurement/scorep_environment.c               \
     $(SRC_ROOT)src/measurement/scorep_environment.h               \
     $(SRC_ROOT)src/measurement/scorep_unify.c                     \
@@ -112,9 +112,10 @@ libscorep_paradigm_non_omp_la_CPPFLAGS = \
 
 noinst_LTLIBRARIES                  += libscorep_paradigm_non_mpi.la
 libscorep_paradigm_non_mpi_la_SOURCES  =                            \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_mpi_disabled.c       \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_disabled.c \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpi_disabled.c     
+    $(SRC_ROOT)src/measurement/paradigm/scorep_mpp_disabled.c       \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_ipc_mpp_disabled.c   \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpp_disabled.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpp_disabled.c
 libscorep_paradigm_non_mpi_la_CPPFLAGS = \
     $(common_libscorep_cppflags)
 
@@ -165,3 +166,13 @@ libscorep_sion_omp_la_CPPFLAGS = \
     $(UTILS_CPPFLAGS) \
     @OTF2_CPPFLAGS@
 #endif
+
+## cuda paradigm
+
+if HAVE_CUDA
+noinst_LTLIBRARIES                  += libscorep_paradigm_cuda.la
+libscorep_paradigm_cuda_la_SOURCES  = \
+    $(SRC_ROOT)src/measurement/paradigm/cuda/scorep_cuda_unify.c
+libscorep_paradigm_cuda_la_CPPFLAGS = \
+    $(common_libscorep_cppflags)
+endif

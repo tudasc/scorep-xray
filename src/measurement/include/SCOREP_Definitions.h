@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -28,6 +28,7 @@
  */
 
 
+#include <stdlib.h>
 #include "SCOREP_DefinitionHandles.h"
 #include "SCOREP_Types.h"
 #include <scorep/SCOREP_PublicTypes.h>
@@ -180,37 +181,46 @@ SCOREP_DefineMPIGroup( const int32_t  numberOfRanks,
                        const int32_t* ranks );
 
 SCOREP_GroupHandle
+SCOREP_DefineUnifiedGroup( SCOREP_GroupType type,
+                           const char*      name,
+                           uint32_t         numberOfMembers,
+                           const uint64_t*  members );
+
+SCOREP_GroupHandle
 SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
                               int32_t          numberOfRanks,
                               int32_t*         ranks );
 
-void
-SCOREP_DefineMPILocations( int32_t        numberOfRanks,
-                           const int32_t* locations );
-
-
 /**
  * Associate a MPI communicator with a process unique communicator handle.
  *
- * @param numberOfRanks The number of entries on the @ranks vector.
- *
- * @param localRank The rank of this process in the new communicator.
- *
- * @param globalRootRank The global rank the rank 0 in the new communicator.
- *
- * @param id unique identifier of the root rank for the new communicator.
+ * @param parentComm    A possible parent communicator.
+ * @param adapterType   The adapter which defines this communicator.
+ * @param sizeOfPayload The size of the payload which the adapter requests
+ *                      for this communicator.
+ * @param[out] payload  Will be set to the memory location of the payload.
  *
  * @return A process unique communicator handle to be used in calls to other
  * SCOREP_DefineMPI* functions.
  *
  */
 SCOREP_LocalMPICommunicatorHandle
-SCOREP_DefineLocalMPICommunicator( uint32_t                          numberOfRanks,
-                                   uint32_t                          localRank,
-                                   uint32_t                          globalRootRank,
-                                   uint32_t                          id,
-                                   SCOREP_LocalMPICommunicatorHandle parentComm );
+SCOREP_DefineLocalMPICommunicator( SCOREP_LocalMPICommunicatorHandle parentComm,
+                                   SCOREP_AdapterType                adapterType,
+                                   size_t                            sizeOfPayload,
+                                   void**                            payload );
 
+
+/**
+ * Get access to the payload from a communicator definition.
+ */
+void*
+SCOREP_LocalMPICommunicatorGetPayload( SCOREP_LocalMPICommunicatorHandle handle );
+
+
+/**
+ * Set the name of the communicator to @a name, but only if it wasn't done before.
+ */
 void
 SCOREP_LocalMPICommunicatorSetName( SCOREP_LocalMPICommunicatorHandle localMPICommHandle,
                                     const char*                       name );
@@ -218,7 +228,7 @@ SCOREP_LocalMPICommunicatorSetName( SCOREP_LocalMPICommunicatorHandle localMPICo
 
 SCOREP_MPICommunicatorHandle
 SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle           group_handle,
-                                     uint32_t                     name_id,
+                                     uint32_t                     unified_name_id,
                                      SCOREP_MPICommunicatorHandle unified_parent_handle );
 
 

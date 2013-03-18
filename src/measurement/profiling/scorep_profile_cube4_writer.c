@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -39,15 +39,13 @@
 #include <scorep_profile_definition.h>
 #include <scorep_profile_location.h>
 #include <scorep_definitions.h>
-#include <scorep_mpi.h>
+#include <scorep_ipc.h>
 #include <scorep_runtime_management.h>
 #include <scorep_location.h>
 
 #define SCOREP_PROFILE_DENSE_METRIC ( ( SCOREP_MetricHandle )UINT32_MAX - 1 )
 
-extern SCOREP_DefinitionManager  scorep_local_definition_manager;
-extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
-extern SCOREP_MetricHandle       scorep_profile_active_task_metric;
+extern SCOREP_MetricHandle scorep_profile_active_task_metric;
 
 extern void
 scorep_cluster_write_cube4( scorep_cube_writing_data* write_data );
@@ -375,9 +373,9 @@ set_bitstring_for_metric(
         }
     }
 
-    SCOREP_Mpi_Allreduce( bits, write_set->bit_vector,
+    SCOREP_Ipc_Allreduce( bits, write_set->bit_vector,
                           ( write_set->callpath_number + 7 ) / 8,
-                          SCOREP_MPI_UNSIGNED_CHAR, SCOREP_MPI_BOR );
+                          SCOREP_IPC_UNSIGNED_CHAR, SCOREP_IPC_BOR );
     free( bits );
 }
 
@@ -394,9 +392,9 @@ set_bitstring_for_unknown_metric( scorep_cube_writing_data* write_set )
     UTILS_ASSERT( bits );
     SCOREP_Bitstring_Clear( bits, write_set->callpath_number );
 
-    SCOREP_Mpi_Allreduce( bits, write_set->bit_vector,
+    SCOREP_Ipc_Allreduce( bits, write_set->bit_vector,
                           ( write_set->callpath_number + 7 ) / 8,
-                          SCOREP_MPI_UNSIGNED_CHAR, SCOREP_MPI_BOR );
+                          SCOREP_IPC_UNSIGNED_CHAR, SCOREP_IPC_BOR );
     free( bits );
 }
 
@@ -419,7 +417,7 @@ write_cube_##cube_type(                                                         
     cube_cnode*          cnode         = NULL;                                          \
     type *               local_values  = NULL;                                          \
     type *               global_values = NULL;                                          \
-    int                  my_rank       = SCOREP_Mpi_GetRank();                          \
+    int                  my_rank       = SCOREP_Ipc_GetRank();                          \
     if ( write_set->callpath_number == 0 ) return;                                      \
                                                                                         \
     local_values = ( type * )malloc( write_set->local_threads * sizeof( type ) );       \
@@ -458,21 +456,19 @@ write_cube_##cube_type(                                                         
         }                                                                               \
                                                                                         \
         /* Collect data from all processes */                                           \
-        SCOREP_Mpi_Barrier();                                                           \
+        SCOREP_Ipc_Barrier();                                                           \
         if ( write_set->same_thread_num )                                               \
         {                                                                               \
-            SCOREP_Mpi_Gather ( local_values, write_set->local_threads,                 \
-                                SCOREP_MPI_ ## TYPE,                                    \
-                                global_values, write_set->local_threads,                \
-                                SCOREP_MPI_ ## TYPE, 0 );                               \
+            SCOREP_Ipc_Gather( local_values, global_values,                             \
+                               write_set->local_threads,                                \
+                               SCOREP_IPC_ ## TYPE, 0 );                               \
         }                                                                               \
         else                                                                            \
         {                                                                               \
-            SCOREP_Mpi_Gatherv ( local_values, write_set->local_threads,                \
-                                 SCOREP_MPI_ ## TYPE,                                   \
-                                 global_values, write_set->threads_per_rank,            \
-                                 write_set->offsets_per_rank,                           \
-                                 SCOREP_MPI_ ## TYPE, 0 );                              \
+            SCOREP_Ipc_Gatherv( local_values, write_set->local_threads,                \
+                                global_values, write_set->threads_per_rank,            \
+                                write_set->offsets_per_rank,                           \
+                                SCOREP_IPC_ ## TYPE, 0 );                              \
         }                                                                               \
                                                                                         \
         /* Write data for one callpath */                                               \
@@ -500,7 +496,7 @@ write_cube_##cube_type(                                                         
                           profile node.
    @param func_data       Pointer to data that is passed to the @a get_value function
  */
-SCOREP_PROFILE_WRITE_CUBE_METRIC( uint64_t, LONG_LONG, uint64 )
+SCOREP_PROFILE_WRITE_CUBE_METRIC( uint64_t, UINT64, uint64 )
 
 /**
    @function write_cube_double
@@ -583,32 +579,32 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
     /* ------------------------------------ Start initializing */
 
     /* Get basic MPI data */
-    write_set->my_rank       = SCOREP_Mpi_GetRank();
+    write_set->my_rank       = SCOREP_Ipc_GetRank();
     write_set->local_threads = scorep_profile_get_number_of_threads();
-    write_set->ranks_number  = SCOREP_Mpi_GetCommWorldSize();
+    write_set->ranks_number  = SCOREP_Ipc_GetSize();
 
     /* Get the number of unified callpath definitions to all ranks */
     if ( write_set->my_rank == 0 )
     {
         write_set->callpath_number = SCOREP_Callpath_GetNumberOfUnifiedDefinitions();
     }
-    SCOREP_Mpi_Bcast( &write_set->callpath_number, 1, SCOREP_MPI_UNSIGNED, 0 );
+    SCOREP_Ipc_Bcast( &write_set->callpath_number, 1, SCOREP_IPC_UINT32, 0 );
     if ( write_set->callpath_number == 0 )
     {
         return false;
     }
 
     /* Calculate the global number of locations */
-    SCOREP_Mpi_Reduce( &write_set->local_threads, &write_set->global_threads,
-                       1, SCOREP_MPI_UNSIGNED, SCOREP_MPI_SUM, 0 );
+    SCOREP_Ipc_Reduce( &write_set->local_threads, &write_set->global_threads,
+                       1, SCOREP_IPC_UINT32, SCOREP_IPC_SUM, 0 );
 
 
     /* Calculate the offset of this thread in the value vector
        Normally, I need MPI_Exscan, but since it is not available in MPI 1.0 it is
        emulated with MPI_Scan.
      */
-    SCOREP_Mpi_Scan( &write_set->local_threads, &write_set->offset, 1,
-                     SCOREP_MPI_UNSIGNED, SCOREP_MPI_SUM );
+    SCOREP_Ipc_Scan( &write_set->local_threads, &write_set->offset, 1,
+                     SCOREP_IPC_UINT32, SCOREP_IPC_SUM );
     write_set->offset -= write_set->local_threads;
 
 
@@ -619,10 +615,12 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
         write_set->threads_per_rank = ( int* )malloc( buffer_size );
         write_set->offsets_per_rank = ( int* )malloc( buffer_size );
     }
-    SCOREP_Mpi_Gather( &write_set->local_threads, 1, SCOREP_MPI_UNSIGNED,
-                       write_set->threads_per_rank, 1, SCOREP_MPI_INT, 0 );
-    SCOREP_Mpi_Gather( &write_set->offset, 1, SCOREP_MPI_UNSIGNED,
-                       write_set->offsets_per_rank, 1, SCOREP_MPI_INT, 0 );
+    SCOREP_Ipc_Gather( &write_set->local_threads,
+                       write_set->threads_per_rank,
+                       1, SCOREP_IPC_UINT32, 0 );
+    SCOREP_Ipc_Gather( &write_set->offset,
+                       write_set->offsets_per_rank,
+                       1, SCOREP_IPC_UINT32, 0 );
 
     /* Determine whether all ranks have the same number of threads */
     int32_t same_thread_num = 1;
@@ -631,18 +629,18 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
     {
         same_thread_num = 0;
     }
-    SCOREP_Mpi_Allreduce( &same_thread_num,
+    SCOREP_Ipc_Allreduce( &same_thread_num,
                           &write_set->same_thread_num,
                           1,
-                          SCOREP_MPI_INT,
-                          SCOREP_MPI_BAND );
+                          SCOREP_IPC_INT32,
+                          SCOREP_IPC_BAND );
 
     /* Get number of unified metrics to every rank */
     if ( write_set->my_rank == 0 )
     {
         write_set->num_unified = SCOREP_Metric_GetNumberOfUnifiedDefinitions();
     }
-    SCOREP_Mpi_Bcast( &write_set->num_unified, 1, SCOREP_MPI_UNSIGNED, 0 );
+    SCOREP_Ipc_Bcast( &write_set->num_unified, 1, SCOREP_IPC_UINT32, 0 );
 
     /* Create the mappings from cube to Score-P handles and vice versa */
     write_set->map = scorep_cube4_create_definitions_map();
@@ -698,11 +696,11 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
     /* Check whether tasks has been used somewhere */
     int32_t has_tasks = scorep_profile_has_tasks();
     write_set->has_tasks = 0;
-    SCOREP_Mpi_Allreduce( &has_tasks,
+    SCOREP_Ipc_Allreduce( &has_tasks,
                           &write_set->has_tasks,
                           1,
-                          SCOREP_MPI_INT,
-                          SCOREP_MPI_BOR );
+                          SCOREP_IPC_INT32,
+                          SCOREP_IPC_BOR );
 
     return true;
 }

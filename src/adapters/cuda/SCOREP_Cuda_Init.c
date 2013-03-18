@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -102,6 +102,15 @@ scorep_cuda_final_location( SCOREP_Location* location )
 }
 
 /** Finalizes the CUDA adapter. */
+static SCOREP_ErrorCode
+scorep_cuda_post_unify( void )
+{
+    scorep_cuda_define_cuda_group();
+
+    return SCOREP_SUCCESS;
+}
+
+/** Finalizes the CUDA adapter. */
 static void
 scorep_cuda_finalize( void )
 {
@@ -113,11 +122,13 @@ scorep_cuda_finalize( void )
 
 SCOREP_Subsystem SCOREP_Cuda_Adapter =
 {
-    "CUDA",
-    &scorep_cuda_register,
-    &scorep_cuda_init,
-    &scorep_cuda_init_location,
-    &scorep_cuda_final_location,
-    &scorep_cuda_finalize,
-    &scorep_cuda_deregister
+    .subsystem_name              = "CUDA",
+    .subsystem_register          = &scorep_cuda_register,
+    .subsystem_init              = &scorep_cuda_init,
+    .subsystem_init_location     = &scorep_cuda_init_location,
+    .subsystem_finalize_location = &scorep_cuda_final_location,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = &scorep_cuda_post_unify,
+    .subsystem_finalize          = &scorep_cuda_finalize,
+    .subsystem_deregister        = &scorep_cuda_deregister
 };

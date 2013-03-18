@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -151,6 +151,55 @@ scorep_subsystems_finalize_location( SCOREP_Location* locationData )
         {
             fprintf( stderr, "[Score-P] finalized %s subsystem location\n",
                      scorep_subsystems[ i ]->subsystem_name );
+        }
+    }
+}
+
+
+/**
+ * Called before the unification process starts.
+ */
+void
+scorep_subsystems_pre_unify( void )
+{
+    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
+    {
+        if ( !scorep_subsystems[ i ]->subsystem_pre_unify )
+        {
+            continue;
+        }
+
+        SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_pre_unify();
+        if ( SCOREP_SUCCESS != error )
+        {
+            UTILS_ERROR( error, "pre-unify hook failed for %s subsystem",
+                         scorep_subsystems[ i ]->subsystem_name );
+            _Exit( EXIT_FAILURE );
+        }
+    }
+}
+
+
+/**
+ * Called before the unification process starts.
+ */
+void
+scorep_subsystems_post_unify( void )
+{
+    /* ?reverse order? */
+    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
+    {
+        if ( !scorep_subsystems[ i ]->subsystem_post_unify )
+        {
+            continue;
+        }
+
+        SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_post_unify();
+        if ( SCOREP_SUCCESS != error )
+        {
+            UTILS_ERROR( error, "post-unify hook failed for %s subsystem",
+                         scorep_subsystems[ i ]->subsystem_name );
+            _Exit( EXIT_FAILURE );
         }
     }
 }

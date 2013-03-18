@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -130,12 +130,9 @@ SCOREP_DEFINE_DEFINITION_TYPE( LocalMPICommunicator )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( LocalMPICommunicator );
 
-    bool                              is_self_like;
-    uint32_t                          local_rank;
-    uint32_t                          global_root_rank;
-    uint32_t                          root_id;
     SCOREP_StringHandle               name_handle;
     SCOREP_LocalMPICommunicatorHandle parent_handle;
+    SCOREP_AdapterType                adapter_type;
 };
 
 SCOREP_DEFINE_DEFINITION_TYPE( MPICommunicator )

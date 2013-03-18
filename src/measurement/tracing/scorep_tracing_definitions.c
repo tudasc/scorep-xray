@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -46,7 +46,7 @@
 #include <scorep/SCOREP_PublicTypes.h>
 #include <scorep_runtime_management.h>
 #include <scorep_environment.h>
-#include <scorep_mpi.h>
+#include <scorep_status.h>
 #include <scorep_clock_synchronization.h>
 #include <SCOREP_Memory.h>
 #include <scorep_definitions.h>
@@ -56,10 +56,6 @@
 #include <UTILS_Error.h>
 
 #include "scorep_tracing_types.h"
-
-
-extern SCOREP_DefinitionManager  scorep_local_definition_manager;
-extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
 
 static void
@@ -766,7 +762,7 @@ scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( string, STRING, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( region, REGION, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( group, GROUP, localDefinitionWriter );
-    if ( SCOREP_Mpi_HasMpi() )
+    if ( SCOREP_Status_IsMpp() )
     {
         SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( local_mpi_communicator,
                                                  MPI_COMM,
@@ -828,7 +824,7 @@ scorep_tracing_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
 void
 scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition_writer )
 {
-    UTILS_ASSERT( SCOREP_Mpi_GetRank() == 0 );
+    UTILS_ASSERT( SCOREP_Status_GetRank() == 0 );
     UTILS_ASSERT( scorep_unified_definition_manager );
 
     scorep_write_string_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );

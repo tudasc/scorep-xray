@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2013,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -30,11 +30,14 @@ include ../src/measurement/Makefile.common.inc.am
 if HAVE_MPI_SUPPORT
 noinst_LTLIBRARIES += libscorep_paradigm_mpi.la
 libscorep_paradigm_mpi_la_SOURCES =                                 \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_mpi_enabled.c        \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpi_enabled.c  \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpi_enabled.c
+    $(SRC_ROOT)src/measurement/paradigm/scorep_mpp_enabled.c        \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpp_enabled.c  \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpp_enabled.c \
+    $(SRC_ROOT)src/measurement/paradigm/mpi/scorep_mpi_ipc.c        \
+    $(SRC_ROOT)src/measurement/paradigm/mpi/scorep_mpi_unify_communicators.c
 libscorep_paradigm_mpi_la_CPPFLAGS = \
-    $(common_libscorep_cppflags)
+    $(common_libscorep_cppflags) \
+    -I$(INC_ROOT)src/adapters/mpi
 
 
 ## sion-mpi

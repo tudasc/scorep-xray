@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -39,9 +39,6 @@
 #include <scorep_definition_macros.h>
 
 /* *INDENT-OFF* */
-extern SCOREP_DefinitionManager* scorep_remote_definition_manager;
-extern SCOREP_DefinitionManager  scorep_local_definition_manager;
-extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 void init_definition_manager(CuTest* tc, SCOREP_DefinitionManager** manager, bool allocHashTables);
 /* *INDENT-ON*  */
 
@@ -59,8 +56,9 @@ void init_definition_manager(CuTest* tc, SCOREP_DefinitionManager** manager, boo
 void
 test_1( CuTest* tc )
 {
-    init_definition_manager( tc, &scorep_remote_definition_manager, false );
-    assert( scorep_remote_definition_manager );
+    SCOREP_DefinitionManager* remote_manager = NULL;
+    init_definition_manager( tc, &remote_manager, false );
+    assert( remote_manager );
     init_definition_manager( tc, &scorep_unified_definition_manager, true );
     assert( scorep_unified_definition_manager );
 
@@ -73,16 +71,6 @@ test_1( CuTest* tc )
               SCOREP_LOCAL_HANDLE_DEREF( local_handle1, String )->unified ==
               SCOREP_MOVABLE_NULL );
     CuAssertIntEquals( tc, 3, scorep_local_definition_manager.string_definition_counter - old_count );
-
-    // fill scorep_remote_definition_manager
-    CuAssertIntEquals( tc, 0, scorep_remote_definition_manager->string_definition_counter );
-    SCOREP_StringHandle remote_handle1 = scorep_string_definition_define( scorep_remote_definition_manager, "main_" );
-    SCOREP_StringHandle remote_handle2 = scorep_string_definition_define( scorep_remote_definition_manager, "bar" );
-    SCOREP_StringHandle remote_handle3 = scorep_string_definition_define( scorep_remote_definition_manager, "foo" );
-    SCOREP_StringHandle remote_handle4 = scorep_string_definition_define( scorep_remote_definition_manager, "baz" );
-    SCOREP_StringHandle remote_handle5 = scorep_string_definition_define( scorep_remote_definition_manager, "bar" );
-    CuAssertIntEquals( tc, 4, scorep_remote_definition_manager->string_definition_counter );
-    CuAssert( tc, "duplicate string definition", remote_handle5 == remote_handle2 );
 
     // copy local definitions to unified manager
     CuAssertIntEquals( tc, 0, scorep_unified_definition_manager->string_definition_counter );
@@ -97,6 +85,16 @@ test_1( CuTest* tc )
     SCOREP_CopyStringDefinitionToUnified( SCOREP_LOCAL_HANDLE_DEREF( local_handle2, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
     SCOREP_CopyStringDefinitionToUnified( SCOREP_LOCAL_HANDLE_DEREF( local_handle3, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
     CuAssertIntEquals( tc, 3, scorep_unified_definition_manager->string_definition_counter );
+
+    // fill remote_manager
+    CuAssertIntEquals( tc, 0, remote_manager->string_definition_counter );
+    SCOREP_StringHandle remote_handle1 = scorep_string_definition_define( remote_manager, "main_" );
+    SCOREP_StringHandle remote_handle2 = scorep_string_definition_define( remote_manager, "bar" );
+    SCOREP_StringHandle remote_handle3 = scorep_string_definition_define( remote_manager, "foo" );
+    SCOREP_StringHandle remote_handle4 = scorep_string_definition_define( remote_manager, "baz" );
+    SCOREP_StringHandle remote_handle5 = scorep_string_definition_define( remote_manager, "bar" );
+    CuAssertIntEquals( tc, 4, remote_manager->string_definition_counter );
+    CuAssert( tc, "duplicate string definition", remote_handle5 == remote_handle2 );
 
     // copy remote definitions to unified manager
     SCOREP_CopyStringDefinitionToUnified( SCOREP_LOCAL_HANDLE_DEREF( remote_handle1, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );

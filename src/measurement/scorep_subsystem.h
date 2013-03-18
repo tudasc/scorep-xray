@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -40,13 +40,7 @@ void
 scorep_subsystems_register( void );
 
 void
-scorep_subsystems_deregister( void );
-
-void
 scorep_subsystems_initialize( void );
-
-void
-scorep_subsystems_finalize( void );
 
 void
 scorep_subsystems_initialize_location( SCOREP_Location* locationData );
@@ -54,5 +48,16 @@ scorep_subsystems_initialize_location( SCOREP_Location* locationData );
 void
 scorep_subsystems_finalize_location( SCOREP_Location* locationData );
 
+void
+scorep_subsystems_pre_unify( void );
+
+void
+scorep_subsystems_post_unify( void );
+
+void
+scorep_subsystems_finalize( void );
+
+void
+scorep_subsystems_deregister( void );
 
 #endif /* SCOREP_INTERNAL_SUBSYSTEM_H */

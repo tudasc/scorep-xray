@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -61,11 +61,13 @@ scorep_user_register( size_t subsystem_id )
 /* The initialization struct for the MPI adapter */
 const SCOREP_Subsystem SCOREP_User_Adapter =
 {
-    "USER (config variables only)",
-    &scorep_user_register,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    .subsystem_name              = "USER (config variables only)",
+    .subsystem_register          = &scorep_user_register,
+    .subsystem_init              = NULL,
+    .subsystem_init_location     = NULL,
+    .subsystem_finalize_location = NULL,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = NULL,
+    .subsystem_finalize          = NULL,
+    .subsystem_deregister        = NULL
 };

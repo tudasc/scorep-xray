@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -40,7 +40,7 @@
 #include <UTILS_Debug.h>
 #include <scorep_runtime_management.h> /* SCOREP_GetExperimentDirName() */
 #include <scorep_environment.h>
-#include <scorep_mpi.h>
+#include <scorep_ipc.h>
 #include <scorep_openmp.h>
 #include <math.h>                      /* sqrt() and log10() */
 #include <float.h>                     /* DBL_MAX */
@@ -2066,10 +2066,10 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
     /* Write flag whether clustering happened */
     int32_t has_cluster_local  = ( scorep_clusterer == NULL ? 0 : 1 );
     int32_t has_cluster_global = 0;
-    SCOREP_Mpi_Allreduce( &has_cluster_local,
+    SCOREP_Ipc_Allreduce( &has_cluster_local,
                           &has_cluster_global,
-                          1, SCOREP_MPI_INT,
-                          SCOREP_MPI_SUM );
+                          1, SCOREP_IPC_INT32,
+                          SCOREP_IPC_SUM );
     if ( has_cluster_global == 0 )
     {
         if ( write_data->my_rank == 0 )
@@ -2120,10 +2120,10 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
 
     /* Determine maximum number of iterations */
     uint32_t global_it_count = 0;
-    SCOREP_Mpi_Allreduce( &scorep_clusterer->cl_it_count,
+    SCOREP_Ipc_Allreduce( &scorep_clusterer->cl_it_count,
                           &global_it_count,
-                          1, SCOREP_MPI_INT,
-                          SCOREP_MPI_MAX );
+                          1, SCOREP_IPC_UINT32,
+                          SCOREP_IPC_MAX );
 
     if ( write_data->my_rank == 0 )
     {
@@ -2153,10 +2153,10 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
 
     for ( uint32_t i = 0; i < global_it_count; i++ )
     {
-        SCOREP_Mpi_Gather( &it_map[ i ], 1, SCOREP_MPI_INT,
-                           line, 1, SCOREP_MPI_INT,
+        SCOREP_Ipc_Gather( &it_map[ i ], line,
+                           1, SCOREP_IPC_UINT32,
                            0 );
-        SCOREP_Mpi_Barrier();
+        SCOREP_Ipc_Barrier();
 
         if ( write_data->my_rank == 0 )
         {

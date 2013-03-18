@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -47,11 +47,13 @@
 /* Implementation of the compiler adapter initialization/finalization struct */
 const SCOREP_Subsystem SCOREP_Compiler_Adapter =
 {
-    "COMPILER (config variables only)",
-    &scorep_compiler_register,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    &scorep_compiler_deregister
+    .subsystem_name              = "COMPILER (config variables only)",
+    .subsystem_register          = &scorep_compiler_register,
+    .subsystem_init              = NULL,
+    .subsystem_init_location     = NULL,
+    .subsystem_finalize_location = NULL,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = NULL,
+    .subsystem_finalize          = NULL,
+    .subsystem_deregister        = &scorep_compiler_deregister
 };

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -70,5 +70,8 @@ extern bool scorep_cuda_record_memcpy;
  * The default buffer size for the CUPTI activity buffer.
  */
 extern uint64_t scorep_cupti_activity_buffer_size;
+
+void
+scorep_cuda_define_cuda_group( void );
 
 #endif  /* SCOREP_CUDA_H */

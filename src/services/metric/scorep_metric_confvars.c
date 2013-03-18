@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -63,11 +63,13 @@ scorep_metric_register( size_t subsystem_id )
  */
 const SCOREP_Subsystem SCOREP_Metric_Service =
 {
-    "METRIC (config variables only)",
-    &scorep_metric_register,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    .subsystem_name              = "METRIC (config variables only)",
+    .subsystem_register          = &scorep_metric_register,
+    .subsystem_init              = NULL,
+    .subsystem_init_location     = NULL,
+    .subsystem_finalize_location = NULL,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = NULL,
+    .subsystem_finalize          = NULL,
+    .subsystem_deregister        = NULL
 };

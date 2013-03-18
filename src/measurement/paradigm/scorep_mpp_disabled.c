@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -15,25 +15,47 @@
  */
 
 
-
 /**
- * @file       scorep_unify_mpi_disabled.c
+ * @file       src/measurement/paradigm/scorep_mpp_disabled.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
+ *
  *
  */
 
 
 #include <config.h>
-#include <stdlib.h>
-#include <scorep_unify.h>
-#include <UTILS_Debug.h>
+
+
 #include <UTILS_Error.h>
 
 
-void
-SCOREP_Mpi_Unify()
+#include <UTILS_Debug.h>
+
+
+#include "scorep_ipc.h"
+
+#include <scorep_definitions.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
+
+bool
+SCOREP_Status_IsMpp( void )
 {
-    UTILS_BUG( "SCOREP_Mpi_Unify() called in non-mpi build" );
+    return false;
+}
+
+
+bool
+scorep_create_experiment_dir( void ( * createDir )( void ) )
+{
+    createDir();
+    return true;
+}
+
+void
+scorep_timing_reduce_runtime_management_timings( void )
+{
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -994,11 +994,13 @@ SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( SCOREP_Location* location )
  */
 const SCOREP_Subsystem SCOREP_Metric_Service =
 {
-    "METRIC",
-    &scorep_metric_register,
-    &scorep_metric_initialize_service,
-    &scorep_metric_initialize_location,
-    &scorep_metric_finalize_location,
-    &scorep_metric_finalize_service,
-    &scorep_metric_deregister
+    .subsystem_name              = "METRIC",
+    .subsystem_register          = &scorep_metric_register,
+    .subsystem_init              = &scorep_metric_initialize_service,
+    .subsystem_init_location     = &scorep_metric_initialize_location,
+    .subsystem_finalize_location = &scorep_metric_finalize_location,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = NULL,
+    .subsystem_finalize          = &scorep_metric_finalize_service,
+    .subsystem_deregister        = &scorep_metric_deregister
 };

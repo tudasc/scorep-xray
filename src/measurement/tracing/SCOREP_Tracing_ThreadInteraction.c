@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -39,7 +39,6 @@
 #include <scorep_definitions.h>
 #include <scorep_location.h>
 #include <scorep_status.h>
-#include <scorep_mpi.h>
 
 
 #include "scorep_tracing_internal.h"
@@ -112,10 +111,10 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
     }
     SCOREP_Tracing_UnlockArchive();
 
-    if ( !SCOREP_Mpi_IsInitialized() )
+    if ( !SCOREP_Status_IsMppInitialized() )
     {
         // Global location id unknown because rank not accessible.
-        // Deferred processing will take place in SCOREP_InitMeasurementMPI()
+        // Deferred processing will take place in SCOREP_InitMppMeasurement()
     }
     else
     {

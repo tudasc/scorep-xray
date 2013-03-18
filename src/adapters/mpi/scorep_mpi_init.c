@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -37,6 +37,8 @@
 #include <SCOREP_Config.h>
 #include <SCOREP_Mpi.h>
 #include <SCOREP_RuntimeManagement.h>
+
+#include "scorep_mpi_communicator.h"
 
 #include <stdio.h>
 
@@ -230,6 +232,34 @@ scorep_mpi_finalize_location( SCOREP_Location* locationData )
 }
 
 /**
+   Define the group of all MPI locations.
+ */
+static SCOREP_ErrorCode
+scorep_mpi_pre_unify( void )
+{
+    UTILS_DEBUG_ENTRY();
+
+    /* Define the group of all MPI locations. */
+    scorep_mpi_unify_define_mpi_locations();
+
+    return SCOREP_SUCCESS;
+}
+
+/**
+   Unify the MPI communicators.
+ */
+static SCOREP_ErrorCode
+scorep_mpi_post_unify( void )
+{
+    UTILS_DEBUG_ENTRY();
+
+    /* Unify the MPI communicators. */
+    scorep_mpi_unify_communicators();
+
+    return SCOREP_SUCCESS;
+}
+
+/**
    Implementation of the adapter_finalize function of the @ref SCOREP_Subsystem struct
    for the initialization process of the MPI adapter.
  */
@@ -272,13 +302,8 @@ scorep_mpi_deregister( void )
         PMPI_Finalized( &res );
         if ( !res )
         {
-            extern void
-            scorep_timing_reduce_runtime_management_timings();
-
-            scorep_timing_reduce_runtime_management_timings();
-
+            SCOREP_FinalizeMppMeasurement();
             PMPI_Finalize();
-            SCOREP_OnPMPI_Finalize();
         }
     }
 }
@@ -286,13 +311,15 @@ scorep_mpi_deregister( void )
 /* The initialization struct for the MPI adapter */
 const SCOREP_Subsystem SCOREP_Mpi_Adapter =
 {
-    "MPI",
-    &scorep_mpi_register,
-    &scorep_mpi_init_adapter,
-    &scorep_mpi_init_location,
-    &scorep_mpi_finalize_location,
-    &scorep_mpi_finalize,
-    &scorep_mpi_deregister
+    .subsystem_name              = "MPI",
+    .subsystem_register          = &scorep_mpi_register,
+    .subsystem_init              = &scorep_mpi_init_adapter,
+    .subsystem_init_location     = &scorep_mpi_init_location,
+    .subsystem_finalize_location = &scorep_mpi_finalize_location,
+    .subsystem_pre_unify         = &scorep_mpi_pre_unify,
+    .subsystem_post_unify        = &scorep_mpi_post_unify,
+    .subsystem_finalize          = &scorep_mpi_finalize,
+    .subsystem_deregister        = &scorep_mpi_deregister
 };
 
 /**

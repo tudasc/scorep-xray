@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -41,7 +41,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include "scorep_mpi.h"
+#include "scorep_ipc.h"
 #include "scorep_status.h"
 #include <jenkins_hash.h>
 #include <tracing/SCOREP_Tracing.h>
@@ -49,7 +49,6 @@
 
 SCOREP_DefinitionManager  scorep_local_definition_manager;
 SCOREP_DefinitionManager* scorep_unified_definition_manager = 0;
-SCOREP_DefinitionManager* scorep_remote_definition_manager  = 0;
 static bool               scorep_definitions_initialized    = false;
 SCOREP_ClockOffset*       scorep_clock_offset_head          = NULL;
 SCOREP_ClockOffset**      scorep_clock_offset_tail          =
@@ -134,7 +133,6 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( callpath, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( property, *definitionManager );
 
-
     if ( allocHashTables )
     {
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( system_tree_node, *definitionManager );
@@ -189,11 +187,6 @@ SCOREP_Definitions_Finalize()
         free( scorep_unified_definition_manager->callpath_definition_hash_table );
     }
     free( scorep_unified_definition_manager );
-    if ( scorep_remote_definition_manager )
-    {
-        free( scorep_remote_definition_manager->string_definition_hash_table );
-    }
-    free( scorep_remote_definition_manager );
     // the contents of the definition managers is allocated using
     // SCOREP_Memory_AllocForDefinitions, so we don't need to free it
     // explicitly.

@@ -260,13 +260,15 @@ scorep_pomp_deregister( void )
  */
 const SCOREP_Subsystem SCOREP_Pomp_Adapter =
 {
-    "POMP2 Adapter / Version 1.0",
-    &scorep_pomp_register,
-    &scorep_pomp_init,
-    &scorep_pomp_init_location,
-    &scorep_pomp_finalize_location,
-    &scorep_pomp_finalize,
-    &scorep_pomp_deregister
+    .subsystem_name              = "POMP2 Adapter / Version 1.0",
+    .subsystem_register          = &scorep_pomp_register,
+    .subsystem_init              = &scorep_pomp_init,
+    .subsystem_init_location     = &scorep_pomp_init_location,
+    .subsystem_finalize_location = &scorep_pomp_finalize_location,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = NULL,
+    .subsystem_finalize          = &scorep_pomp_finalize,
+    .subsystem_deregister        = &scorep_pomp_deregister
 };
 
 /* **************************************************************************************

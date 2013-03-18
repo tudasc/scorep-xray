@@ -102,8 +102,6 @@ int32_t phase_request_oa_index           = 0;
  */
 MetricRequest* execution_time_request    = NULL;
 
-extern SCOREP_DefinitionManager scorep_local_definition_manager;
-
 /** Prints call-tree profile
  */
 extern void

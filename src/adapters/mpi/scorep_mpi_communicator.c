@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -216,15 +216,10 @@ static MPI_Datatype scorep_mpi_id_root_type = MPI_DATATYPE_NULL;
 static int scorep_mpi_my_global_rank = SCOREP_INVALID_ROOT_RANK;
 
 /**
-   local communicator id counter
+   Local communicator counters
  */
-static SCOREP_CommunicatorId scorep_mpi_current_comm_id = 0;
-
-/**
-    local comm-self id counter
- */
-static SCOREP_CommunicatorId scorep_mpi_current_self_id = 0;
-
+uint32_t scorep_mpi_number_of_self_comms = 0;
+uint32_t scorep_mpi_number_of_root_comms = 0;
 
 /* ------------------------------------------------ Definition for one sided operations */
 #ifndef SCOREP_MPI_NO_RMA
@@ -531,37 +526,27 @@ scorep_mpi_setup_world( void )
     /* initialize global rank variable */
     PMPI_Comm_rank( MPI_COMM_WORLD, &scorep_mpi_my_global_rank );
 
-    /*
-     * Define the list of locations which are MPI ranks.
-     *
-     * If we support MPI_THREADED_FUNNELED, this needs to be the
-     * location, wich has called MPI_Init/MPI_Thread_init.
-     * For the moment, the location and rank ids match.
-     *
-     * This needs to be called early, so that the resulting definition
-     * is before any other group definition of type SCOREP_GROUP_MPI_GROUP.
-     *
-     * Called by all ranks, so that the definition do not asserts for the
-     * non-0 ranks.
-     */
-    SCOREP_DefineMPILocations( scorep_mpi_world.size,
-                               scorep_mpi_world.ranks );
-
     /* initialize MPI_COMM_WORLD */
+    scorep_mpi_comm_definition_payload* comm_payload;
     scorep_mpi_world.handle =
-        SCOREP_DefineLocalMPICommunicator( scorep_mpi_world.size,
-                                           scorep_mpi_my_global_rank,
-                                           0, 0,
-                                           SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR );
+        SCOREP_DefineLocalMPICommunicator( SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR,
+                                           SCOREP_ADAPTER_MPI,
+                                           sizeof( *comm_payload ),
+                                           ( void** )&comm_payload );
+    comm_payload->is_self_like     = scorep_mpi_world.size == 1;
+    comm_payload->local_rank       = scorep_mpi_my_global_rank;
+    comm_payload->global_root_rank = 0;
+    comm_payload->root_id          = 0;
+
     if ( scorep_mpi_my_global_rank == 0 )
     {
         if ( scorep_mpi_world.size > 1 )
         {
-            scorep_mpi_current_comm_id++;
+            scorep_mpi_number_of_root_comms++;
         }
         else
         {
-            scorep_mpi_current_self_id++;
+            scorep_mpi_number_of_self_comms++;
         }
     }
 }
@@ -671,12 +656,12 @@ scorep_mpi_comm_create_id( MPI_Comm               comm,
 
     if ( size == 1 )
     {
-        *id   = scorep_mpi_current_self_id++;
+        *id   = scorep_mpi_number_of_self_comms++;
         *root = scorep_mpi_my_global_rank;
     }
     else
     {
-        pair.id   = scorep_mpi_current_comm_id;
+        pair.id   = scorep_mpi_number_of_root_comms;
         pair.root = scorep_mpi_my_global_rank;
 
         /* root determines the id used by all processes */
@@ -688,7 +673,7 @@ scorep_mpi_comm_create_id( MPI_Comm               comm,
          * process is root in the new communicator */
         if ( local_rank == 0 )
         {
-            ++scorep_mpi_current_comm_id;
+            ++scorep_mpi_number_of_root_comms;
         }
     }
 }
@@ -755,11 +740,15 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
     scorep_mpi_comm_create_id( comm, size, local_rank, &root, &id );
 
     /* create definition in measurement system */
-    handle = SCOREP_DefineLocalMPICommunicator( size,
-                                                local_rank,
-                                                root,
-                                                id,
-                                                parent_handle );
+    scorep_mpi_comm_definition_payload* comm_payload;
+    handle =  SCOREP_DefineLocalMPICommunicator( parent_handle,
+                                                 SCOREP_ADAPTER_MPI,
+                                                 sizeof( *comm_payload ),
+                                                 ( void** )&comm_payload );
+    comm_payload->is_self_like     = size == 1;
+    comm_payload->local_rank       = local_rank;
+    comm_payload->global_root_rank = root;
+    comm_payload->root_id          = id;
 
     /* enter comm in scorep_mpi_comms[] array */
     scorep_mpi_comms[ scorep_mpi_last_comm ].comm = comm;
@@ -867,15 +856,30 @@ scorep_mpi_comm_handle( MPI_Comm comm )
 void
 scorep_mpi_comm_set_name( MPI_Comm comm, const char* name )
 {
-    if ( name )
+    if ( !name )
+    {
+        return;
+    }
+
+    SCOREP_LocalMPICommunicatorHandle   comm_handle  = SCOREP_MPI_COMM_HANDLE( comm );
+    scorep_mpi_comm_definition_payload* comm_payload =
+        SCOREP_LocalMPICommunicatorGetPayload( comm_handle );
+
+    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
+
+    /*
+     * Set the name only for the root rank in the communicator and
+     * for non-SELF-like communicators
+     */
+    if ( 0 == comm_payload->local_rank && !comm_payload->is_self_like )
     {
         /*
-         * Does set the name only the first time,
-         * only on rank zero in the communicator and
-         * only on non-SELF-like communicators
+         * Does set the name only the first time
          */
-        SCOREP_LocalMPICommunicatorSetName( SCOREP_MPI_COMM_HANDLE( comm ), name );
+        SCOREP_LocalMPICommunicatorSetName( comm_handle, name );
     }
+
+    SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
 }
 
 /*
@@ -1038,6 +1042,29 @@ scorep_mpi_group_search( MPI_Group group )
         SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
         return -1;
     }
+}
+
+void
+scorep_mpi_unify_define_mpi_locations( void )
+{
+    if ( scorep_mpi_my_global_rank != 0 )
+    {
+        return;
+    }
+
+    /*
+     * Define the list of locations which are MPI ranks.
+     *
+     * If we support MPI_THREADED_FUNNELED, this needs to be the
+     * location, wich has called MPI_Init/MPI_Thread_init.
+     * For the moment, the location and rank ids match.
+     *
+     * This needs to be called early, so that the resulting definition
+     * is before any other group definition of type SCOREP_GROUP_MPI_GROUP.
+     */
+    SCOREP_DefineUnifiedMPIGroup( SCOREP_GROUP_MPI_LOCATIONS,
+                                  scorep_mpi_world.size,
+                                  scorep_mpi_world.ranks );
 }
 
 /*

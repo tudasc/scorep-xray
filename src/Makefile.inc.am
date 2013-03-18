@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2013,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -43,6 +43,7 @@ common_libadd = libscorep_measurement.la              \
 
 if HAVE_CUDA
 common_libadd += libscorep_adapter_cuda.la
+common_libadd += libscorep_paradigm_cuda.la
 endif
 
 common_cppflags = $(AM_CPPFLAGS)                       \

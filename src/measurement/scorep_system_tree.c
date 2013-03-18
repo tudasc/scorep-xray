@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -16,7 +16,7 @@
 
 /**
  * @status      alpha
- * @file        scorep_system_tree.c
+ * @file        src/measurement/scorep_system_tree.c
  * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief   Implements the system tree creation.
@@ -29,11 +29,10 @@
 #include <SCOREP_Platform.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <scorep_definitions.h>
-#include <scorep_mpi.h>
+#include <scorep_status.h>
 #include <stdio.h>
 #include <string.h>
 
-extern SCOREP_DefinitionManager scorep_local_definition_manager;
 
 SCOREP_Platform_SystemTreePathElement*
 SCOREP_BuildSystemTree()
@@ -84,9 +83,9 @@ SCOREP_FinalizeLocationGroup()
 
     char     name[ 32 ];
     uint32_t location_group_id = 0;
-    if ( SCOREP_Mpi_HasMpi() )
+    if ( SCOREP_Status_IsMpp() )
     {
-        int rank = SCOREP_Mpi_GetRank();
+        int rank = SCOREP_Status_GetRank();
         sprintf( name, "MPI Rank %d", rank );
         location_group_id = rank;
     }

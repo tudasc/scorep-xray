@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -53,10 +53,6 @@
 #include <scorep_definitions.h>
 #include <scorep_types.h>
 #include <tracing/SCOREP_Tracing_Events.h>
-
-
-extern SCOREP_DefinitionManager  scorep_local_definition_manager;
-extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -736,72 +732,58 @@ scorep_region_definitions_equal( const SCOREP_Region_Definition* existingDefinit
 // CommunicatorDefinitions //////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-uint32_t scorep_number_of_self_comms = 0;
-uint32_t scorep_number_of_root_comms = 0;
-
 static SCOREP_LocalMPICommunicatorHandle
 scorep_local_mpi_communicator_definitions_define( SCOREP_DefinitionManager*         definition_manager,
-                                                  bool                              isSelfLike,
-                                                  uint32_t                          localRank,
-                                                  uint32_t                          globalRootRank,
-                                                  uint32_t                          id,
-                                                  SCOREP_LocalMPICommunicatorHandle parentComm );
+                                                  SCOREP_LocalMPICommunicatorHandle parentComm,
+                                                  SCOREP_AdapterType                adapterType,
+                                                  size_t                            sizeOfPayload,
+                                                  void**                            payload );
 
 static bool
 scorep_local_mpi_communicator_definitions_equal( const SCOREP_LocalMPICommunicator_Definition* existingDefinition,
                                                  const SCOREP_LocalMPICommunicator_Definition* newDefinition );
 
+static size_t
+local_comm_static_size()
+{
+    return SCOREP_Allocator_RoundupToAlignment(
+               sizeof( SCOREP_LocalMPICommunicator_Definition ) );
+}
+
 /**
  * Associate a MPI communicator with a process unique communicator handle.
  */
 SCOREP_LocalMPICommunicatorHandle
-SCOREP_DefineLocalMPICommunicator( uint32_t                          numberOfRanks,
-                                   uint32_t                          localRank,
-                                   uint32_t                          globalRootRank,
-                                   uint32_t                          id,
-                                   SCOREP_LocalMPICommunicatorHandle parentComm )
+SCOREP_DefineLocalMPICommunicator( SCOREP_LocalMPICommunicatorHandle parentComm,
+                                   SCOREP_AdapterType                adapterType,
+                                   size_t                            sizeOfPayload,
+                                   void**                            payload )
 {
     SCOREP_LocalMPICommunicatorHandle new_handle = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
 
-    UTILS_DEBUG_ENTRY( "#%" PRIu32 ", "
-                       "local rank %" PRIu32 ", "
-                       "root: %" PRIu32 ", "
-                       "id: %" PRIu32,
-                       numberOfRanks,
-                       localRank,
-                       globalRootRank,
-                       id );
+    UTILS_DEBUG_ENTRY();
 
     SCOREP_Definitions_Lock();
 
     new_handle = scorep_local_mpi_communicator_definitions_define(
         &scorep_local_definition_manager,
-        numberOfRanks == 1,
-        localRank,
-        globalRootRank,
-        id,
-        parentComm );
-
-    /*
-     * Count the number of comm self instances and communicators where this
-     * process is rank 0.
-     */
-    if ( localRank == 0 )
-    {
-        if ( numberOfRanks > 1 )
-        {
-            scorep_number_of_root_comms++;
-        }
-        else
-        {
-            scorep_number_of_self_comms++;
-        }
-    }
+        parentComm,
+        adapterType,
+        sizeOfPayload,
+        payload );
 
     SCOREP_Definitions_Unlock();
 
     return new_handle;
 }
+
+void*
+SCOREP_LocalMPICommunicatorGetPayload( SCOREP_LocalMPICommunicatorHandle handle )
+{
+    return ( char* )SCOREP_LOCAL_HANDLE_DEREF( handle,
+                                               LocalMPICommunicator ) + local_comm_static_size();
+}
+
 
 void
 SCOREP_LocalMPICommunicatorSetName( SCOREP_LocalMPICommunicatorHandle localMPICommHandle,
@@ -812,14 +794,11 @@ SCOREP_LocalMPICommunicatorSetName( SCOREP_LocalMPICommunicatorHandle localMPICo
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_LocalMPICommunicator_Definition* definition = SCOREP_HANDLE_DEREF(
+    SCOREP_LocalMPICommunicator_Definition* definition = SCOREP_LOCAL_HANDLE_DEREF(
         localMPICommHandle,
-        LocalMPICommunicator,
-        scorep_local_definition_manager.page_manager );
+        LocalMPICommunicator );
 
-    if ( definition->name_handle == SCOREP_INVALID_STRING
-         && definition->local_rank == 0
-         && !definition->is_self_like )
+    if ( definition->name_handle == SCOREP_INVALID_STRING )
     {
         definition->name_handle = scorep_string_definition_define(
             &scorep_local_definition_manager,
@@ -832,28 +811,33 @@ SCOREP_LocalMPICommunicatorSetName( SCOREP_LocalMPICommunicatorHandle localMPICo
 
 static SCOREP_LocalMPICommunicatorHandle
 scorep_local_mpi_communicator_definitions_define( SCOREP_DefinitionManager*         definition_manager,
-                                                  bool                              isSelfLike,
-                                                  uint32_t                          localRank,
-                                                  uint32_t                          globalRootRank,
-                                                  uint32_t                          id,
-                                                  SCOREP_LocalMPICommunicatorHandle parentComm )
+                                                  SCOREP_LocalMPICommunicatorHandle parentComm,
+                                                  SCOREP_AdapterType                adapterType,
+                                                  size_t                            sizeOfPayload,
+                                                  void**                            payload )
 {
     SCOREP_LocalMPICommunicator_Definition* new_definition = NULL;
     SCOREP_LocalMPICommunicatorHandle       new_handle     = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
 
-    SCOREP_DEFINITION_ALLOC( LocalMPICommunicator );
+    size_t payload_offset = local_comm_static_size();
+    size_t total_size     = payload_offset + sizeOfPayload;
+    SCOREP_DEFINITION_ALLOC_SIZE( LocalMPICommunicator, total_size );
 
     // Init new_definition
-    new_definition->is_self_like     = isSelfLike;
-    new_definition->local_rank       = localRank;
-    new_definition->global_root_rank = globalRootRank;
-    new_definition->root_id          = id;
-    new_definition->name_handle      = SCOREP_INVALID_STRING;
-    new_definition->parent_handle    = parentComm;
+    new_definition->name_handle   = SCOREP_INVALID_STRING;
+    new_definition->parent_handle = parentComm;
+    new_definition->adapter_type  = adapterType;
 
-    /* Does return if it is a duplicate */
+    UTILS_BUG_ON( definition_manager->local_mpi_communicator_definition_hash_table,
+                  "local communicator definitions shouldn't have a hash table" );
+    /* Does never return, because they will never be automatically unified */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( LocalMPICommunicator,
                                               local_mpi_communicator );
+
+    if ( sizeOfPayload && payload )
+    {
+        *payload = ( char* )new_definition + payload_offset;
+    }
 
     return new_handle;
 }
@@ -925,10 +909,6 @@ scorep_group_definitions_equal( const SCOREP_Group_Definition* existingDefinitio
                                 const SCOREP_Group_Definition* newDefinition );
 
 
-/* Used to protect defining a MPI group before the list of MPI locations */
-static bool scorep_mpi_locations_defined;
-
-
 /**
  * Associate a MPI group with a process unique group handle.
  */
@@ -937,10 +917,6 @@ SCOREP_DefineMPIGroup( int32_t        numberOfRanks,
                        const int32_t* ranks )
 {
     SCOREP_Definitions_Lock();
-
-    /* we should also be called only once */
-    UTILS_BUG_ON( scorep_mpi_locations_defined == false,
-                  "Called before SCOREP_DefineMPILocations" );
 
     SCOREP_GroupHandle new_handle = scorep_group_definition_define(
         &scorep_local_definition_manager,
@@ -959,37 +935,6 @@ SCOREP_DefineMPIGroup( int32_t        numberOfRanks,
 
 
 /**
- * Define the MPI locations
- *
- * needs only be called by rank 0
- */
-void
-SCOREP_DefineMPILocations( int32_t        numberOfRanks,
-                           const int32_t* locations )
-{
-    SCOREP_Definitions_Lock();
-
-    UTILS_BUG_ON( scorep_mpi_locations_defined == true,
-                  "We should be called only once" );
-
-    SCOREP_GroupHandle new_handle = scorep_group_definition_define(
-        &scorep_local_definition_manager,
-        SCOREP_GROUP_MPI_LOCATIONS,
-        numberOfRanks,
-        ( const uint64_t* )locations,
-        scorep_string_definition_define(
-            &scorep_local_definition_manager,
-            "" ),
-        true /* need to be converted from uint32_t */ );
-
-    /* Its now semantically correct to define MPI groups */
-    scorep_mpi_locations_defined = true;
-
-    SCOREP_Definitions_Unlock();
-}
-
-
-/**
  * Associate a MPI group with a process unique group handle.
  * Used to add groups from the communicator unifiaction after
  * group unification was done.
@@ -1002,17 +947,39 @@ SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
     assert( !SCOREP_Omp_InParallel() );
     assert( scorep_unified_definition_manager );
 
-    SCOREP_GroupHandle new_handle = scorep_group_definition_define(
-        scorep_unified_definition_manager,
-        type,
-        numberOfRanks,
-        ( const uint64_t* )ranks,
-        scorep_string_definition_define(
-            scorep_unified_definition_manager,
-            "" ),
-        true /* need to be converted from uint32_t */ );
+    return scorep_group_definition_define(
+               scorep_unified_definition_manager,
+               type,
+               numberOfRanks,
+               ( const uint64_t* )ranks,
+               scorep_string_definition_define(
+                   scorep_unified_definition_manager,
+                   "" ),
+               true /* need to be converted from uint32_t */ );
+}
 
-    return new_handle;
+/**
+ * Define a group in the unified definitions should only be called by the root
+ * rank.
+ */
+SCOREP_GroupHandle
+SCOREP_DefineUnifiedGroup( SCOREP_GroupType type,
+                           const char*      name,
+                           uint32_t         numberOfMembers,
+                           const uint64_t*  members )
+{
+    assert( !SCOREP_Omp_InParallel() );
+    assert( scorep_unified_definition_manager );
+
+    return scorep_group_definition_define(
+               scorep_unified_definition_manager,
+               type,
+               numberOfMembers,
+               ( const uint64_t* )members,
+               scorep_string_definition_define(
+                   scorep_unified_definition_manager,
+                   name ),
+               false /* no need to converted from uint32_t */ );
 }
 
 void

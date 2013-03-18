@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -49,11 +49,13 @@
  */
 const SCOREP_Subsystem SCOREP_Pomp_Adapter =
 {
-    "POMP2 Adapter / Version 1.0 (config variables only)",
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL
+    .subsystem_name              = "POMP2 Adapter / Version 1.0 (config variables only)",
+    .subsystem_register          = NULL,
+    .subsystem_init              = NULL,
+    .subsystem_init_location     = NULL,
+    .subsystem_finalize_location = NULL,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = NULL,
+    .subsystem_finalize          = NULL,
+    .subsystem_deregister        = NULL
 };

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -107,11 +107,13 @@ scorep_user_deregister( void )
 
 const SCOREP_Subsystem SCOREP_User_Adapter =
 {
-    "user",
-    &scorep_user_register,
-    &scorep_user_init,
-    &scorep_user_init_location,
-    &scorep_user_finalize_location,
-    &scorep_user_finalize,
-    &scorep_user_deregister
+    .subsystem_name              = "USER",
+    .subsystem_register          = &scorep_user_register,
+    .subsystem_init              = &scorep_user_init,
+    .subsystem_init_location     = &scorep_user_init_location,
+    .subsystem_finalize_location = &scorep_user_finalize_location,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = NULL,
+    .subsystem_finalize          = &scorep_user_finalize,
+    .subsystem_deregister        = &scorep_user_deregister
 };

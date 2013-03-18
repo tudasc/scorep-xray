@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -35,6 +35,8 @@
  *
  * -----------------------------------------------------------------------------
  */
+
+#include <stdbool.h>
 
 #include <SCOREP_Types.h>
 #include <SCOREP_DefinitionHandles.h>
@@ -131,6 +133,13 @@ extern int32_t
 scorep_mpi_group_search( MPI_Group group );
 
 /**
+ * @internal
+ * @brief  Defines the group of MPI locations.
+ */
+extern void
+scorep_mpi_unify_define_mpi_locations( void );
+
+/**
  * Initializes the window handling specific data structures.
  */
 extern void
@@ -221,6 +230,31 @@ scorep_mpi_winacc_get_gid( MPI_Win          win,
 
 /**
  * @internal
+ * Counts the number of communicators which have this rank as root and
+ * are not equal to \a MPI_COMM_SELF
+ */
+extern uint32_t scorep_mpi_number_of_root_comms;
+
+/**
+ * @internal
+ * Counts the number of communicators at this process which are equal to
+ * \a MPI_COMM_SELF.
+ */
+extern uint32_t scorep_mpi_number_of_self_comms;
+
+/**
+ * @internal
+ * Unifies the MPI communicators.
+ *
+ * This function lives under measurement/paradigm to have access to the
+ * definition internals.
+ */
+extern void
+scorep_mpi_unify_communicators( void );
+
+
+/**
+ * @internal
  * @brief Start tracking of a given MPI communicator.
  * makes the definition of the given communicator to the measurement system.
  * @param comm MPI communicator handle.
@@ -280,6 +314,14 @@ struct scorep_mpi_world_type
     SCOREP_MpiRank*                   ranks;    /** Array which contains the rank numbers */
     SCOREP_LocalMPICommunicatorHandle handle;   /** SCOREP handle */
 };
+
+typedef struct scorep_mpi_comm_definition_payload
+{
+    bool     is_self_like;
+    uint32_t local_rank;
+    uint32_t global_root_rank;
+    uint32_t root_id;
+} scorep_mpi_comm_definition_payload;
 
 /**
  * Contains the data of the MPI_COMM_WORLD definition.

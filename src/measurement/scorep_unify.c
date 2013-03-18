@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -17,7 +17,7 @@
 
 
 /**
- * @file       scorep_unify.c
+ * @file       src/measurement/scorep_unify.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -30,45 +30,38 @@
 
 #include <SCOREP_Config.h>
 #include "scorep_environment.h"
-#include "scorep_mpi.h"
+#include "scorep_status.h"
 #include "scorep_definitions.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <inttypes.h>
+#include "scorep_subsystem.h"
 
 #include <UTILS_Debug.h>
-
-/* *INDENT-OFF* */
-/* *INDENT-ON*  */
-
-
-extern SCOREP_DefinitionManager  scorep_local_definition_manager;
-extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
-extern SCOREP_DefinitionManager* scorep_remote_definition_manager;
-
-
-//typedef struct scorep_unify_string_definition scorep_unify_string_definition;
-//struct scorep_unify_string_definition
-//{
-//    SCOREP_String_Definition*       definition;
-//    scorep_unify_string_definition* next;
-//};
-
-
-/* *INDENT-OFF* */
-/* *INDENT-ON* */
 
 
 void
 SCOREP_Unify( void )
 {
+    /* This prepares the unified definition manager */
+    SCOREP_Unify_CreateUnifiedDefinitionManager();
+
+    /* Let the subsystems do some stuff */
+    scorep_subsystems_pre_unify();
+
+    /* Unify the local definitions */
     SCOREP_Unify_Locally();
-    if ( SCOREP_Mpi_HasMpi() )
+
+    if ( SCOREP_Status_IsMpp() )
     {
-        SCOREP_Mpi_Unify();
+        /* unify the definitions with all processes. */
+        SCOREP_Unify_Mpp();
     }
+
+    /* Let the subsystems do some stuff */
+    scorep_subsystems_post_unify();
 }
 
 
@@ -104,6 +97,9 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     SCOREP_ALLOC_MAPPINGS_ARRAY( type,  definitionManager );
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
     #undef DEF_WITH_MAPPING
+
+    SCOREP_ALLOC_MAPPINGS_ARRAY( local_mpi_communicator,
+                                 &scorep_local_definition_manager );
 }
 
 
@@ -131,7 +127,6 @@ SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
     #undef DEF_WITH_MAPPING
 
-    // was probably allocated in the MPI unify code, but never freed there
     SCOREP_FREE_MAPPINGS_ARRAY( local_mpi_communicator,
                                 definitionManager );
 
@@ -141,7 +136,7 @@ SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
 
 
 void
-SCOREP_Unify_Locally( void )
+SCOREP_Unify_CreateUnifiedDefinitionManager( void )
 {
     assert( scorep_unified_definition_manager == 0 );
 
@@ -151,6 +146,11 @@ SCOREP_Unify_Locally( void )
                                         alloc_hash_tables );
     // define empty string
     scorep_string_definition_define( scorep_unified_definition_manager, "" );
+}
+
+void
+SCOREP_Unify_Locally( void )
+{
     SCOREP_CopyDefinitionsToUnified( &scorep_local_definition_manager );
     // The unified definitions might differ from the local ones if there were
     // duplicates in the local ones. By creating mappings we are on the save side.

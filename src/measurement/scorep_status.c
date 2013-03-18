@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -17,7 +17,7 @@
 
 
 /**
- * @file       scorep_status.c
+ * @file       src/measurement/scorep_status.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -28,9 +28,10 @@
 #include <config.h>
 
 #include "scorep_status.h"
-#include "scorep_mpi.h"
+#include "scorep_ipc.h"
 #include <SCOREP_Config.h>
 #include "scorep_environment.h"
+#include "scorep_runtime_management_timings.h"
 
 #include <limits.h>
 #include <assert.h>
@@ -43,11 +44,11 @@
 typedef struct scorep_status scorep_status;
 struct scorep_status
 {
-    int  mpi_rank;
-    bool mpi_rank_is_set;
-    bool mpi_is_initialized;
-    bool mpi_is_finalized;
-    int  mpi_comm_world_size;
+    int  mpp_rank;
+    bool mpp_rank_is_set;
+    bool mpp_is_initialized;
+    bool mpp_is_finalized;
+    int  mpp_comm_world_size;
     bool is_experiment_dir_created;
     bool is_profiling_enabled;
     bool is_tracing_enabled;
@@ -57,156 +58,148 @@ struct scorep_status
 
 
 static scorep_status scorep_process_local_status = {
-    INT_MAX,                              // mpi_rank
-    false,                                // mpi_rank_is_set
-    false,                                // mpi_is_initialized
-    false,                                // mpi_is_finalized
-    0,                                    // mpi_comm_world_size
-    false,                                // is_experiment_dir_created
-    true,                                 // is_profiling_enabled
-    true,                                 // is_tracing_enabled
-    true,                                 // is_oa_enabled
-    false                                 // otf2_has_flushed
+    .mpp_rank                  = INT_MAX,
+    .mpp_rank_is_set           = false,
+    .mpp_is_initialized        = false,
+    .mpp_is_finalized          = false,
+    .mpp_comm_world_size       = 0,
+    .is_experiment_dir_created = false,
+    .is_profiling_enabled      = true,
+    .is_tracing_enabled        = true,
+    .is_oa_enabled             = true,
+    .otf2_has_flushed          = false
 };
 
 
 void
-scorep_status_initialize_common()
+SCOREP_Status_Initialize( void )
 {
-    // environment variables already processed. can we check this somehow?
-
-    // These two variables may become public in future due to performance reasons.
     scorep_process_local_status.is_profiling_enabled = SCOREP_Env_DoProfiling();
     scorep_process_local_status.is_tracing_enabled   = SCOREP_Env_DoTracing();
+
+    // Lets see if we have an IPC, ie multi program paradigm
+    if ( !SCOREP_Status_IsMpp() )
+    {
+        scorep_process_local_status.mpp_rank            = 0;
+        scorep_process_local_status.mpp_rank_is_set     = true;
+        scorep_process_local_status.mpp_is_initialized  = true;
+        scorep_process_local_status.mpp_is_finalized    = true;
+        scorep_process_local_status.mpp_comm_world_size = 1;
+    }
 }
 
 
 void
-scorep_status_initialize_mpi()
+SCOREP_Status_Finalize()
 {
-    // nothing to to here
+    SCOREP_Ipc_Finalize();
 }
 
 
 void
-scorep_status_initialize_non_mpi()
+SCOREP_Status_OnMppInit( void )
 {
-    scorep_process_local_status.mpi_rank            = 0;
-    scorep_process_local_status.mpi_rank_is_set     = true;
-    scorep_process_local_status.mpi_is_initialized  = true;
-    scorep_process_local_status.mpi_is_finalized    = true;
-    scorep_process_local_status.mpi_comm_world_size = 1;
+    assert( !scorep_process_local_status.mpp_is_initialized );
+    assert( !scorep_process_local_status.mpp_is_finalized );
+    scorep_process_local_status.mpp_is_initialized = true;
+
+    SCOREP_Ipc_Init();
+
+    assert( scorep_process_local_status.mpp_comm_world_size == 0 );
+    scorep_process_local_status.mpp_comm_world_size = SCOREP_Ipc_GetSize();
+    assert( scorep_process_local_status.mpp_comm_world_size > 0 );
+
+    assert( !scorep_process_local_status.mpp_rank_is_set );
+    scorep_process_local_status.mpp_rank = SCOREP_Ipc_GetRank();
+    assert( scorep_process_local_status.mpp_rank >= 0 );
+    assert( scorep_process_local_status.mpp_rank < scorep_process_local_status.mpp_comm_world_size );
+    scorep_process_local_status.mpp_rank_is_set = true;
 }
 
 
 void
-SCOREP_OnPMPI_Init()
+SCOREP_Status_OnMppFinalize( void )
 {
-    assert( !scorep_process_local_status.mpi_is_initialized );
-    assert( !scorep_process_local_status.mpi_is_finalized );
-    scorep_process_local_status.mpi_is_initialized = true;
+    scorep_timing_reduce_runtime_management_timings();
 
-    SCOREP_Mpi_DuplicateCommWorld(); // call before SCOREP_Mpi_CalculateCommWorldSize()
-
-    assert( scorep_process_local_status.mpi_comm_world_size == 0 );
-    scorep_process_local_status.mpi_comm_world_size = SCOREP_Mpi_CalculateCommWorldSize();
-    assert( scorep_process_local_status.mpi_comm_world_size > 0 );
-}
-
-
-void
-SCOREP_OnPMPI_Finalize()
-{
-    assert( scorep_process_local_status.mpi_is_initialized );
-    assert( !scorep_process_local_status.mpi_is_finalized );
-    scorep_process_local_status.mpi_is_finalized = true;
-}
-
-
-void
-SCOREP_Mpi_SetRankTo( int rank )
-{
-    assert( !scorep_process_local_status.mpi_rank_is_set );
-    assert( scorep_process_local_status.mpi_is_initialized );
-    assert( !scorep_process_local_status.mpi_is_finalized );
-    assert( rank >= 0 );
-    scorep_process_local_status.mpi_rank        = rank;
-    scorep_process_local_status.mpi_rank_is_set = true;
+    assert( scorep_process_local_status.mpp_is_initialized );
+    assert( !scorep_process_local_status.mpp_is_finalized );
+    scorep_process_local_status.mpp_is_finalized = true;
 }
 
 
 int
-SCOREP_Mpi_GetRank()
+SCOREP_Status_GetSize( void )
 {
-    assert( scorep_process_local_status.mpi_rank_is_set );
-    return scorep_process_local_status.mpi_rank;
-}
-
-
-bool
-SCOREP_Mpi_IsInitialized()
-{
-    return scorep_process_local_status.mpi_is_initialized;
-}
-
-
-bool
-SCOREP_Mpi_IsFinalized()
-{
-    return scorep_process_local_status.mpi_is_finalized;
+    assert( scorep_process_local_status.mpp_is_initialized );
+    return scorep_process_local_status.mpp_comm_world_size;
 }
 
 
 int
-SCOREP_Mpi_GetCommWorldSize()
+SCOREP_Status_GetRank( void )
 {
-    assert( scorep_process_local_status.mpi_is_initialized );
-    return scorep_process_local_status.mpi_comm_world_size;
+    assert( scorep_process_local_status.mpp_rank_is_set );
+    return scorep_process_local_status.mpp_rank;
 }
 
 
 bool
-SCOREP_IsTracingEnabled()
+SCOREP_Status_IsMppInitialized( void )
+{
+    return scorep_process_local_status.mpp_is_initialized;
+}
+
+
+bool
+SCOREP_Status_IsMppFinalized( void )
+{
+    return scorep_process_local_status.mpp_is_finalized;
+}
+
+
+bool
+SCOREP_IsTracingEnabled( void )
 {
     return scorep_process_local_status.is_tracing_enabled;
 }
 
 
 bool
-SCOREP_IsProfilingEnabled()
+SCOREP_IsProfilingEnabled( void )
 {
     return scorep_process_local_status.is_profiling_enabled;
 }
 
 bool
-SCOREP_IsOAEnabled()
+SCOREP_IsOAEnabled( void )
 {
     return scorep_process_local_status.is_oa_enabled;
 }
 
 void
-SCOREP_Otf2_OnFlush()
+SCOREP_Status_OnOtf2Flush( void )
 {
     scorep_process_local_status.otf2_has_flushed = true;
 }
 
 
 bool
-SCOREP_Otf2_HasFlushed()
+SCOREP_Status_HasOtf2Flushed( void )
 {
     return scorep_process_local_status.otf2_has_flushed;
 }
 
 
 bool
-SCOREP_IsExperimentDirCreated()
+SCOREP_Status_IsExperimentDirCreated( void )
 {
     return scorep_process_local_status.is_experiment_dir_created;
 }
 
 
 void
-SCOREP_OnExperimentDirCreation()
+SCOREP_OnExperimentDirCreation( void )
 {
     assert( !scorep_process_local_status.is_experiment_dir_created );
     scorep_process_local_status.is_experiment_dir_created = true;

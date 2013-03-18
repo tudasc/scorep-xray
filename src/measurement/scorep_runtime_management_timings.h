@@ -4,7 +4,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -37,7 +37,7 @@
 #if HAVE( SCOREP_RUNTIME_MANAGEMENT_TIMINGS )
 
 #include <stdint.h>
-#include "scorep_mpi.h"
+#include "scorep_ipc.h"
 
 #define SCOREP_TIMING_FUNCTIONS                                         \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_ConfigInit )                     \
@@ -57,7 +57,7 @@
     SCOREP_TIMING_TRANSFORM_OP( scorep_properties_initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_BeginEpoch )                     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMeasurement )                \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMeasurementMPI )             \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMppMeasurement )             \
     SCOREP_TIMING_TRANSFORM_OP( MeasurementDuration  )                  \
     SCOREP_TIMING_TRANSFORM_OP( scorep_trigger_exit_callbacks )         \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_SynchronizeClocks )              \
@@ -122,10 +122,10 @@ extern double      scorep_timing_recvbuf_durations_min[ scorep_timing_num_entrie
 
 
 #define SCOREP_TIME_PRINT_TIMINGS() \
-    if ( SCOREP_Mpi_GetRank() == 0 ) \
+    if ( SCOREP_Status_GetRank() == 0 ) \
     { \
         double clock_resolution = SCOREP_GetClockResolution(); \
-        if ( SCOREP_Mpi_HasMpi() ) \
+        if ( SCOREP_Status_IsMpp() ) \
         { \
             printf( "[Score-P] Score-P runtime-management timings: function              min[s]         mean[s]          max[s]\n" ); \
         } \
@@ -135,7 +135,7 @@ extern double      scorep_timing_recvbuf_durations_min[ scorep_timing_num_entrie
         } \
         for ( int i = 0; i < scorep_timing_num_entries; ++i ) \
         { \
-            if ( SCOREP_Mpi_HasMpi() ) \
+            if ( SCOREP_Status_IsMpp() ) \
             { \
                 /* special handling for times that are measured only */ \
                 /* after PMPI_Finalize, i.e. they don't take part in */ \
@@ -172,6 +172,9 @@ extern double      scorep_timing_recvbuf_durations_min[ scorep_timing_num_entrie
 #define SCOREP_TIME_PRINT_TIMINGS()          do { } while ( 0 )
 
 #endif
+
+extern void
+scorep_timing_reduce_runtime_management_timings( void );
 
 
 #endif /* SCOREP_TIMING_INTERNAL_H */

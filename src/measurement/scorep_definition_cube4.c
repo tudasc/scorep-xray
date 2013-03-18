@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -30,16 +30,13 @@
 
 #include <SCOREP_Memory.h>
 
-#include "scorep_mpi.h"
+#include "scorep_ipc.h"
 #include "scorep_types.h"
 #include "scorep_definitions.h"
 #include <cubew_services.h>
 
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
-
-extern SCOREP_DefinitionManager  scorep_local_definition_manager;
-extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
 /* ****************************************************************************
  * Internal system tree representation
@@ -742,10 +739,10 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
 {
     /* The unification is always processed, even in serial case. Thus, we have
        always access to the unified definitions on rank 0.
-       In non-mpi case SCOREP_Mpi_GetRank() returns always 0. Thus, we need only
+       In non-mpi case SCOREP_Ipc_GetRank() returns always 0. Thus, we need only
        to test for the rank. */
     SCOREP_DefinitionManager* manager = scorep_unified_definition_manager;
-    if ( SCOREP_Mpi_GetRank() != 0 )
+    if ( SCOREP_Ipc_GetRank() != 0 )
     {
         return;
     }

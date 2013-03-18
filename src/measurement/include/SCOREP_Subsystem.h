@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -99,6 +99,18 @@ typedef struct SCOREP_Subsystem
      *
      */
     void ( * subsystem_finalize_location )( struct SCOREP_Location* );
+
+    /**
+     * Called before the unification starts.
+     *
+     */
+    SCOREP_ErrorCode ( * subsystem_pre_unify )( void );
+
+    /**
+     * Called after the unification.
+     *
+     */
+    SCOREP_ErrorCode ( * subsystem_post_unify )( void );
 
     /**
      * Finalizes the subsystem for measurement.

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -41,12 +41,11 @@
 
 #include <scorep_profile_definition.h>
 #include <scorep_definitions.h>
-#include <scorep_mpi.h>
+#include <scorep_ipc.h>
 #include <scorep_runtime_management.h>
 #include <scorep_profile_metric.h>
 #include <scorep_profile_location.h>
 
-extern SCOREP_DefinitionManager* scorep_unified_definition_manager;
 
 /* Forward declaration */
 static void
@@ -773,10 +772,10 @@ write_thread_tau( SCOREP_Profile_LocationData* location,
     fprintf( file,
              "<thread id=\"%d.0.%" PRIu64 ".0\" node=\"%d"
              "\" context=\"0\" thread=\"%" PRIu64 "\">\n",
-             SCOREP_Mpi_GetRank(), threadnum, SCOREP_Mpi_GetRank(), threadnum );
+             SCOREP_Ipc_GetRank(), threadnum, SCOREP_Ipc_GetRank(), threadnum );
     fprintf( file, "</thread>\n\n" );
     fprintf( file, "<definitions thread=\"%d.0.%" PRIu64 ".0\">\n",
-             SCOREP_Mpi_GetRank(), threadnum );
+             SCOREP_Ipc_GetRank(), threadnum );
     fprintf( file, "<metric id=\"0\"><name>TIME</name>\n" );
     fprintf( file, "<units>ms</units>\n" );
     fprintf( file, "</metric>\n" );
@@ -787,14 +786,14 @@ write_thread_tau( SCOREP_Profile_LocationData* location,
     scorep_profile_node* child = node->first_child;
 
     fprintf( file, "<definitions thread=\"%d.0.%" PRIu64 ".0\">\n",
-             SCOREP_Mpi_GetRank(), threadnum );
+             SCOREP_Ipc_GetRank(), threadnum );
     write_userevent_data_tau( location, child, threadnum, file,  manager );
 
     fprintf( file, "</definitions>\n\n" );
 
     /* Write callpath definition */
     fprintf( file, "<definitions thread=\"%d.0.%" PRIu64 ".0\">\n",
-             SCOREP_Mpi_GetRank(), threadnum );
+             SCOREP_Ipc_GetRank(), threadnum );
     callpath_counter = 0;
 
     while ( child != NULL )
@@ -807,7 +806,7 @@ write_thread_tau( SCOREP_Profile_LocationData* location,
 
     /* Write metrics data */
     fprintf( file, "<profile thread=\"%d.0.%" PRIu64 ".0\">\n",
-             SCOREP_Mpi_GetRank(), threadnum );
+             SCOREP_Ipc_GetRank(), threadnum );
     fprintf( file, "<name>final</name>\n" );
     fprintf( file, "<interval_data metrics=\"0" );
     for ( int i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
@@ -962,10 +961,10 @@ scorep_profile_write_tau_snapshot( SCOREP_Profile_LocationData* location )
 
     /* The unification is always processed, even in serial case. Thus, we have
         always access to the unified definitions on rank 0.
-        In non-mpi case SCOREP_Mpi_GetRank() returns always 0. Thus, we need only
+        In non-mpi case SCOREP_Ipc_GetRank() returns always 0. Thus, we need only
         to test for the rank. */
     SCOREP_DefinitionManager* manager = scorep_unified_definition_manager;
-    if ( SCOREP_Mpi_GetRank() == 0 )
+    if ( SCOREP_Ipc_GetRank() == 0 )
     {
         assert( scorep_unified_definition_manager );
     }
@@ -982,7 +981,7 @@ scorep_profile_write_tau_snapshot( SCOREP_Profile_LocationData* location )
     }
 
     /* Open file */
-    sprintf( filename, "%s/snapshot.%d.0.0", dirname, SCOREP_Mpi_GetRank() );
+    sprintf( filename, "%s/snapshot.%d.0.0", dirname, SCOREP_Ipc_GetRank() );
     file = fopen( filename, "w" );
     if ( !file )
     {
