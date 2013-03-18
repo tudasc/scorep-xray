@@ -55,6 +55,8 @@ SCOREP_Status_OnMppInit( void );
 void
 SCOREP_Status_OnMppFinalize( void );
 void
+SCOREP_Unify_CreateUnifiedDefinitionManager( void );
+void
 SCOREP_Unify_Locally( void );
 void
 SCOREP_Unify_Mpp( void );
@@ -173,6 +175,7 @@ main( int argc, char* argv[] )
     }
 
     double timing = SCOREP_GetClockTicks();
+    SCOREP_Unify_CreateUnifiedDefinitionManager();
     SCOREP_Unify_Locally();
     SCOREP_Unify_Mpp();
     timing = ( SCOREP_GetClockTicks() - timing ) / SCOREP_GetClockResolution();
