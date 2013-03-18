@@ -72,7 +72,7 @@ AS_IF([test "x${with_$1}" = "xnot_set"],
       # else (--with-$1 set, i.e. (no|yes|path))
       [_AC_SCOREP_GENERIC_LIB_TOPLEVEL_GIVEN([$1], [])])
 
-#echo "with_$1_include = ${with_[$1]_include}"
+#echo "with_$1_include = ${with_$1_include}"
 #echo "with_$1_lib     = ${with_$1_lib}"
 
 _AC_SCOREP_GENERIC_HEADER_AND_LIB_CHECK([$1], [$2], [$3])
@@ -158,7 +158,7 @@ AS_IF([test "x${with_$1}" = "xnot_set"],
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes" && test "x${with_$1_include}" = "xno" && test "x${with_$1_lib}"  = "xno"],
       [AC_MSG_WARN([In cross-compile mode, you need to provide a path to --with-$1 (or --with-$1-include and --with-$1-lib, respectively) in order to activate $1 support.])])
 
-#echo "with_$1_include = ${with_[$1]_include}"
+#echo "with_$1_include = ${with_$1_include}"
 #echo "with_$1_lib     = ${with_$1_lib}"
 
 _AC_SCOREP_GENERIC_HEADER_AND_LIB_CHECK([$1], [$2], [$3])
@@ -247,17 +247,17 @@ dnl - with_$1_lib
 dnl sets:
 dnl - with_$1_include_checks_successful
 dnl - with_$1_cppflags
-dnl - with_$1_lib_checks_successful="unknown"
+dnl - with_$1_lib_checks_successful
 dnl - with_$1_ldflags=""
-dnl - with_$1_lib
+dnl - with_$1_libs
 dnl - HAVE_[]$1_NAME automake conditional 
 dnl - HAVE_[]$1_NAME preprocessor define
 dnl - $1_NAME[]_CPPFLAGS ac_subst
 dnl - $1_NAME[]_LDFLAGS ac_subst
 dnl - $1_NAME[]_LIBS ac_subst
-dnl does LIB save and reset automatically
+dnl does save and reset CPPFLAGS, LDFLAGS, and LIBS automatically
 
-#echo "with_$1_include = ${with_[$1]_include}"
+#echo "with_$1_include = ${with_$1_include}"
 #echo "with_$1_lib     = ${with_$1_lib}"
 
 $1_dirs_exist="yes"
