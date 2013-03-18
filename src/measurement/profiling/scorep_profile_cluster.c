@@ -1105,8 +1105,8 @@ scorep_post_process_derived_metrics( scorep_cluster_t* cluster )
           + cluster->mets_sum.dense_metrics[ met_mpi_coll_comm_time ];
 
     cluster->mets_sum.dense_metrics[ met_mpi_time ]
-        += cluster->mets_sum.dense_metrics[ met_mpi_comm_time ];
-    +cluster->mets_sum.dense_metrics[ met_mpi_coll_sync_time ];
+        += cluster->mets_sum.dense_metrics[ met_mpi_comm_time ]
+           + cluster->mets_sum.dense_metrics[ met_mpi_coll_sync_time ];
 
     cluster->mets_sum.dense_metrics[ met_p2p_bytes ]
         = cluster->mets_sum.dense_metrics[ met_send_bytes ]
