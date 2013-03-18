@@ -157,7 +157,6 @@ scorep_thread_private_data*
 scorep_thread_get_parent( scorep_thread_private_data* tpd )
 {
     UTILS_ASSERT( tpd );
-    UTILS_ASSERT( tpd->parent );
     return tpd->parent;
 }
 
