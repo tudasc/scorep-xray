@@ -36,6 +36,8 @@
 #include <limits.h>
 #include <assert.h>
 
+#define SCOREP_DEBUG_MODULE_NAME CORE
+#include <UTILS_Debug.h>
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
@@ -92,7 +94,7 @@ SCOREP_Status_Initialize( void )
 void
 SCOREP_Status_Finalize()
 {
-    SCOREP_Ipc_Finalize();
+    UTILS_DEBUG_ENTRY();
 }
 
 
@@ -103,6 +105,7 @@ SCOREP_Status_OnMppInit( void )
     assert( !scorep_process_local_status.mpp_is_finalized );
     scorep_process_local_status.mpp_is_initialized = true;
 
+    UTILS_DEBUG_ENTRY();
     SCOREP_Ipc_Init();
 
     assert( scorep_process_local_status.mpp_comm_world_size == 0 );
@@ -120,7 +123,11 @@ SCOREP_Status_OnMppInit( void )
 void
 SCOREP_Status_OnMppFinalize( void )
 {
+    UTILS_DEBUG_ENTRY();
+
     scorep_timing_reduce_runtime_management_timings();
+
+    SCOREP_Ipc_Finalize();
 
     assert( scorep_process_local_status.mpp_is_initialized );
     assert( !scorep_process_local_status.mpp_is_finalized );

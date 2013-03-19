@@ -489,7 +489,7 @@ scorep_finalize( void )
     SCOREP_TIME( SCOREP_ConfigFini, ( ) );
 
     SCOREP_TIME( SCOREP_RenameExperimentDir, ( ) );   // needs MPI
-    SCOREP_TIME( SCOREP_Status_Finalize, ( ) );       // Cleans up some measurement core MPI data
+    SCOREP_TIME( SCOREP_Status_Finalize, ( ) );
 
     SCOREP_TIME( scorep_subsystems_deregister, ( ) ); // here PMPI_Finalize is called
 
