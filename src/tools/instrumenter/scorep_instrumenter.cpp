@@ -99,6 +99,25 @@ SCOREP_Instrumenter::Run( void )
     std::string object_files = "";
     m_input_files = m_command_line.getInputFiles();
 
+    /* Of only preprocessing happens, execute the unmodified command */
+    if ( m_command_line.onlyPreprocess() )
+    {
+        /* Construct command */
+        std::string command = m_command_line.getCompilerName()
+                              + " " + m_command_line.getFlagsBeforeLmpi()
+                              + " " + m_command_line.getFlagsAfterLmpi()
+                              + " " + m_command_line.getInputFiles();
+
+        std::string output_name =  m_command_line.getOutputName();
+        if ( output_name != "" )
+        {
+            command += " -o " + output_name;
+        }
+        execute_command( command );
+
+        return EXIT_SUCCESS;
+    }
+
     if ( m_command_line.isCompiling() )
     {
         /* Because Opari and PDT perform source code modifications, and store

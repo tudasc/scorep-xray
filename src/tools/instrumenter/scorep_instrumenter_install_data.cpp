@@ -284,6 +284,12 @@ SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
     return false;
 }
 
+bool
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+{
+    return ( arg == "-E" ) || ( arg == "-eP" );
+}
+
 /* *************************************** GNU */
 #elif SCOREP_BACKEND_COMPILER_GNU
 bool
@@ -341,6 +347,12 @@ bool
 SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 {
     return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+{
+    return arg == "-E";
 }
 
 /* *************************************** IBM */
@@ -411,6 +423,12 @@ SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
     return false;
 }
 
+bool
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+{
+    return ( arg == "-E" ) || ( arg == "-qnoobject" );
+}
+
 /* *************************************** INTEL */
 #elif SCOREP_BACKEND_COMPILER_INTEL
 bool
@@ -471,6 +489,12 @@ SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
            ( arg.substr( 0, 26 ) == "-offload-attribute-target=" );
 }
 
+bool
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+{
+    return arg == "-E";
+}
+
 /* *************************************** PGI */
 #elif SCOREP_BACKEND_COMPILER_PGI
 bool
@@ -528,6 +552,12 @@ bool
 SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 {
     return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+{
+    return arg == "-E";
 }
 
 /* *************************************** STUDIO */
@@ -617,6 +647,12 @@ bool
 SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 {
     return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+{
+    return ( arg == "-E" ) || ( arg == "-F" );
 }
 
 #endif

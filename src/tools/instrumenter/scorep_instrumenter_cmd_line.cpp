@@ -55,9 +55,10 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_target_is_shared_lib  = false;
 
     /* Execution modes */
-    m_is_compiling = true; // Opposite recognized if no source files in input
-    m_is_linking   = true; // Opposite recognized on existence of -c flag
-    m_link_static  = detect;
+    m_is_compiling    = true; // Opposite recognized if no source files in input
+    m_is_linking      = true; // Opposite recognized on existence of -c or -E flag
+    m_only_preprocess = false;
+    m_link_static     = detect;
 
     /* Input command elements */
     m_compiler_name     = "";
@@ -197,6 +198,12 @@ bool
 SCOREP_Instrumenter_CmdLine::isLinking( void )
 {
     return m_is_linking;
+}
+
+bool
+SCOREP_Instrumenter_CmdLine::onlyPreprocess( void )
+{
+    return m_only_preprocess;
 }
 
 std::string
@@ -686,6 +693,12 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& arg )
         /* Do not add -c to the compiler options, because the instrumenter
            will add a -c during the compile step, anyway. */
         return scorep_parse_mode_command;
+    }
+    else if ( m_install_data.isPreprocessFlag( arg ) )
+    {
+        m_only_preprocess = true;
+        m_is_linking      = false;
+        m_is_compiling    = false;
     }
     else if ( arg == "-l" )
     {

@@ -216,6 +216,12 @@ public:
     bool
     isArgWithO( std::string arg );
 
+    /**
+       Checks whether an argument instructs the compiler to only preprocess.
+     */
+    bool
+    isPreprocessFlag( std::string arg );
+
     /* ***************************************************** Private methods */
 private:
     /**
