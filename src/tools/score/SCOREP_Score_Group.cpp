@@ -24,7 +24,7 @@
  */
 
 #include <config.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <iostream>
 #include <iomanip>
 #include <SCOREP_Score_Group.hpp>
