@@ -38,6 +38,8 @@ If you don't specify --prefix, /opt/scorep will be used.
 Depending on your system configuration and specific needs, the build
 process can be customized as described below.
 
+Note Score-P requires a case sensitive file system to build correctly.
+
 
 Configuration
 =============
