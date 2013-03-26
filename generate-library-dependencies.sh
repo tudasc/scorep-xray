@@ -147,7 +147,7 @@ parse_la ()
 
     # call parse_la recursively on all libs in $dependency_la
     for i in ${dependency_la}; do
-         parse_la ${i}
+         (parse_la ${i})
     done
 
     IFS="${save_ifs}"
@@ -156,5 +156,5 @@ parse_la ()
 
 awk_ifs="${IFS}"
 for i; do
-    parse_la ${i}
+    (parse_la ${i})
 done
