@@ -184,6 +184,40 @@ void FSUB(POMP2_Master_end)( POMP2_Region_handle_fortran* region_handle )
     }
 }
 
+void FSUB(POMP2_Ordered_enter)( POMP2_Region_handle_fortran* region_handle,
+                                const char*                  ctc_string )
+{
+    if ( scorep_pomp_is_tracing_on )
+    {
+      POMP2_Ordered_enter( SCOREP_POMP_F2C_REGION( region_handle ),
+                           ctc_string);
+    }
+}
+
+void FSUB(POMP2_Ordered_exit)( POMP2_Region_handle_fortran* region_handle )
+{
+    if ( scorep_pomp_is_tracing_on )
+    {
+        POMP2_Ordered_exit( SCOREP_POMP_F2C_REGION( region_handle ));
+    }
+}
+
+void FSUB(POMP2_Ordered_begin)( POMP2_Region_handle_fortran* region_handle )
+{
+    if ( scorep_pomp_is_tracing_on )
+    {
+      POMP2_Ordered_begin( SCOREP_POMP_F2C_REGION( region_handle ) );
+    }
+}
+
+void FSUB(POMP2_Ordered_end)( POMP2_Region_handle_fortran* region_handle )
+{
+    if ( scorep_pomp_is_tracing_on )
+    {
+        POMP2_Ordered_end( SCOREP_POMP_F2C_REGION( region_handle ));
+    }
+}
+
 void FSUB(POMP2_Parallel_begin)( POMP2_Region_handle_fortran* region_handle )
 {
     if ( scorep_pomp_is_tracing_on )
