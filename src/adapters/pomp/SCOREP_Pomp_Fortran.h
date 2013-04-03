@@ -61,6 +61,10 @@ typedef int64_t  POMP2_Task_handle_fortran;
 #define POMP2_Do_exit_U          POMP2_DO_EXIT
 #define POMP2_Master_begin_U     POMP2_MASTER_BEGIN
 #define POMP2_Master_end_U       POMP2_MASTER_END
+#define POMP2_Ordered_enter_U    POMP2_ORDERED_ENTER
+#define POMP2_Ordered_exit_U     POMP2_ORDERED_EXIT
+#define POMP2_Ordered_begin_U    POMP2_ORDERED_BEGIN
+#define POMP2_Ordered_end_U      POMP2_ORDERED_END
 #define POMP2_Parallel_begin_U   POMP2_PARALLEL_BEGIN
 #define POMP2_Parallel_end_U     POMP2_PARALLEL_END
 #define POMP2_Parallel_fork_U    POMP2_PARALLEL_FORK
@@ -126,6 +130,10 @@ typedef int64_t  POMP2_Task_handle_fortran;
 #define POMP2_Do_exit_L          pomp2_do_exit
 #define POMP2_Master_begin_L     pomp2_master_begin
 #define POMP2_Master_end_L       pomp2_master_end
+#define POMP2_Ordered_enter_L    pomp2_ordered_enter
+#define POMP2_Ordered_exit_L     pomp2_ordered_exit
+#define POMP2_Ordered_begin_L    pomp2_ordered_begin
+#define POMP2_Ordered_end_L      pomp2_ordered_end
 #define POMP2_Parallel_begin_L   pomp2_parallel_begin
 #define POMP2_Parallel_end_L     pomp2_parallel_end
 #define POMP2_Parallel_fork_L    pomp2_parallel_fork
