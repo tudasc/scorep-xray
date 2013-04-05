@@ -767,28 +767,31 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& arg )
         *m_current_flags += " " + arg;
         return scorep_parse_mode_fortran_form;
     }
-
-    /* Check standard parameters */
-    else if ( arg[ 1 ] == 'o' )
+    else if ( arg[ 0 ] == '-' )
     {
-        m_output_name = arg.substr( 2, std::string::npos );
-    }
-    else if ( arg[ 1 ] == 'I' )
-    {
-        m_include_flags += " " + arg;
-    }
-    else if ( arg[ 1 ] == 'D' )
-    {
-        add_define( arg );
-        return scorep_parse_mode_command;
-    }
-    else if ( arg[ 1 ] == 'L' )
-    {
-        m_libdirs += " " + arg.substr( 2, std::string::npos );
-    }
-    else if ( arg[ 1 ] == 'l' )
-    {
-        m_libraries += " " + arg;
+        /* Check standard parameters */
+        if ( arg[ 1 ] == 'o' )
+        {
+            m_output_name = arg.substr( 2, std::string::npos );
+            return scorep_parse_mode_command;
+        }
+        else if ( arg[ 1 ] == 'I' )
+        {
+            m_include_flags += " " + arg;
+        }
+        else if ( arg[ 1 ] == 'D' )
+        {
+            add_define( arg );
+            return scorep_parse_mode_command;
+        }
+        else if ( arg[ 1 ] == 'L' )
+        {
+            m_libdirs += " " + arg.substr( 2, std::string::npos );
+        }
+        else if ( arg[ 1 ] == 'l' )
+        {
+            m_libraries += " " + arg;
+        }
     }
 
     /* In any case that not yet returned, save the flag */
