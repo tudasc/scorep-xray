@@ -76,9 +76,10 @@ static int scorep_mpi_parallel_entered = 0;
 int
 MPI_Init( int* argc, char*** argv )
 {
-    int event_gen_active = 0;          /* init is deferred to later */
+    int event_gen_active = 0; /* init is deferred to later */
     int return_val;
     int fflag;
+    int iflag;
 
     if ( !SCOREP_IsInitialized() )
     {
@@ -106,7 +107,8 @@ MPI_Init( int* argc, char*** argv )
 
     /* XXXX should only continue if MPI initialised OK! */
 
-    if ( ( PMPI_Finalized( &fflag ) == MPI_SUCCESS ) && ( fflag == 0 ) )
+    if ( ( PMPI_Initialized( &iflag ) == MPI_SUCCESS ) && ( iflag != 0 ) &&
+         ( PMPI_Finalized( &fflag ) == MPI_SUCCESS ) && ( fflag == 0 ) )
     {
         /* initialize communicator management and register MPI_COMM_WORLD*/
         scorep_mpi_comm_init();
@@ -150,6 +152,7 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
     int event_gen_active = 0;
     int return_val;
     int fflag;
+    int iflag;
 
     if ( !SCOREP_IsInitialized() )
     {
@@ -182,7 +185,8 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
         /* XXXX continue even though not supported by analysis */
     }
 
-    if ( ( PMPI_Finalized( &fflag ) == MPI_SUCCESS ) && ( fflag == 0 ) )
+    if ( ( PMPI_Initialized( &iflag ) == MPI_SUCCESS ) && ( iflag != 0 ) &&
+         ( PMPI_Finalized( &fflag ) == MPI_SUCCESS ) && ( fflag == 0 ) )
     {
         /* initialize communicator management and register MPI_COMM_WORLD */
         scorep_mpi_comm_init();
