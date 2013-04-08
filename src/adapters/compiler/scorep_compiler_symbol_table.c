@@ -371,13 +371,6 @@ scorep_compiler_create_nm_file( char* nmfile,
 void
 scorep_compiler_get_sym_tab( void )
 {
-#ifdef INTEL_COMPILER
-    /* Counter for the last assigned region id.
-       When using the Intel VT_ instrumentation, the functions provide a 32 bit storage.
-       Thus, addresses may not fit, thus, we provide an other id as key.
-     */
-    int32_t region_counter = 1;
-#endif /* INTEL_COMPILER */
     FILE* nmfile;
     char  line[ 1024 ];
     char  path[ SCOREP_COMPILER_BUFFER_LEN ] = { 0 };
