@@ -710,7 +710,8 @@ SCOREP_Instrumenter::link_step( void )
 
     if ( m_command_line.getOutputName() != "" )
     {
-        command += " -o" + m_command_line.getOutputName();
+        /* nvcc requires a space between -o and the output name. */
+        command += " -o " + m_command_line.getOutputName();
     }
 
     execute_command( command );
