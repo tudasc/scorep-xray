@@ -663,6 +663,77 @@ typedef enum SCOREP_ThreadModel
 } SCOREP_ThreadModel;
 
 
+/**
+ * Type of direct RMA synchronization call.
+ */
+typedef enum SCOREP_RmaSyncType
+{
+    /** Synchronize memory copy. */
+    SCOREP_RMA_SYNC_TYPE_MEMORY,
+    /** Incoming remote notification. */
+    SCOREP_RMA_SYNC_TYPE_NOTIFY_IN,
+    /** Outgoing remote notification. */
+    SCOREP_RMA_SYNC_TYPE_NOTIFY_OUT,
+
+    SCOREP_INVALID_RMA_SYNC_TYPE /**< For internal use only. */
+} SCOREP_RmaSyncType;
+
+
+/**
+ * Types to be used by RMA records to be passed
+ * to SCOREP_Rma*() functions.
+ */
+typedef enum SCOREP_RmaSyncLevel
+{
+    /** @brief No process synchronization or access completion (e.g., MPI_Win_post,
+     *  MPI_Win_start).
+     */
+    SCOREP_RMA_SYNC_LEVEL_NONE    = 0,
+    /** @brief Synchronize processes (e.g., MPI_Win_create/free).
+     */
+    SCOREP_RMA_SYNC_LEVEL_PROCESS = ( 1 << 0 ),
+    /** @brief Complete memory accesses (e.g., MPI_Win_complete, MPI_Win_wait).
+     */
+    SCOREP_RMA_SYNC_LEVEL_MEMORY  = ( 1 << 1 )
+} SCOREP_RmaSyncLevel;
+
+
+/**
+ * General Lock Type.
+ */
+typedef enum SCOREP_LockType
+{
+    /** Exclusive lock. No other lock will be granted.
+     */
+    SCOREP_LOCK_EXCLUSIVE,
+    /** Shared lock. Other shared locks will be granted, but no exclusive
+     *  locks.
+     */
+    SCOREP_LOCK_SHARED,
+
+    SCOREP_INVALID_LOCK_TYPE /**< For internal use only. */
+} SCOREP_LockType;
+
+
+/**
+ * RMA Atomic Operation Type.
+ */
+typedef enum SCOREP_RmaAtomicType
+{
+    SCOREP_RMA_ATOMIC_TYPE_ACCUMULATE,
+    SCOREP_RMA_ATOMIC_TYPE_INCREMENT,
+    SCOREP_RMA_ATOMIC_TYPE_TEST_AND_SET,
+    SCOREP_RMA_ATOMIC_TYPE_COMPARE_AND_SWAP,
+
+    SCOREP_INVALID_RMA_ATOMIC_TYPE
+} SCOREP_RmaAtomicType;
+
+
+/**
+ * Type used to indicate a reference to a Group definition
+ */
+typedef uint32_t SCOREP_GroupRef;
+
 /*@}*/
 
 

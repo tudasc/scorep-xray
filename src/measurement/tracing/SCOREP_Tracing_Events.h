@@ -136,6 +136,148 @@ SCOREP_Tracing_MpiIrecv( SCOREP_Location*                  location,
 
 
 void
+SCOREP_Tracing_RmaWinCreate( SCOREP_Location* location,
+                             uint64_t         timestamp,
+                             uint32_t         win );
+
+
+void
+SCOREP_Tracing_RmaWinDestroy( SCOREP_Location* location,
+                              uint64_t         timestamp,
+                              uint32_t         win );
+
+
+void
+SCOREP_Tracing_RmaCollectiveBegin( SCOREP_Location* location,
+                                   uint64_t         timestamp );
+
+
+void
+SCOREP_Tracing_RmaCollectiveEnd( SCOREP_Location*         location,
+                                 uint64_t                 timestamp,
+                                 SCOREP_RmaSyncLevel      syncLevel,
+                                 uint32_t                 win,
+                                 SCOREP_MpiCollectiveType collectiveOp,
+                                 uint32_t                 root,
+                                 uint64_t                 bytesSent,
+                                 uint64_t                 bytesReceived );
+
+
+void
+SCOREP_Tracing_RmaGroupSync( SCOREP_Location*    location,
+                             uint64_t            timestamp,
+                             SCOREP_RmaSyncLevel syncLevel,
+                             uint32_t            win,
+                             SCOREP_GroupRef     group );
+
+
+void
+SCOREP_Tracing_RmaRequestLock( SCOREP_Location* location,
+                               uint64_t         timestamp,
+                               uint32_t         win,
+                               uint32_t         remote,
+                               uint64_t         lockId,
+                               SCOREP_LockType  lockType );
+
+
+void
+SCOREP_Tracing_RmaAcquireLock( SCOREP_Location* location,
+                               uint64_t         timestamp,
+                               uint32_t         win,
+                               uint32_t         remote,
+                               uint64_t         lockId,
+                               SCOREP_LockType  lockType );
+
+
+void
+SCOREP_Tracing_RmaTryLock( SCOREP_Location* location,
+                           uint64_t         timestamp,
+                           uint32_t         win,
+                           uint32_t         remote,
+                           uint64_t         lockId,
+                           SCOREP_LockType  lockType );
+
+
+void
+SCOREP_Tracing_RmaReleaseLock( SCOREP_Location* location,
+                               uint64_t         timestamp,
+                               uint32_t         win,
+                               uint32_t         remote,
+                               uint64_t         lockId );
+
+
+void
+SCOREP_Tracing_RmaSync( SCOREP_Location*   location,
+                        uint64_t           timestamp,
+                        uint32_t           win,
+                        uint32_t           remote,
+                        SCOREP_RmaSyncType syncType );
+
+
+void
+SCOREP_Tracing_RmaWaitChange( SCOREP_Location* location,
+                              uint64_t         timestamp,
+                              uint32_t         win );
+
+
+void
+SCOREP_Tracing_RmaPut( SCOREP_Location* location,
+                       uint64_t         timestamp,
+                       uint32_t         win,
+                       uint32_t         remote,
+                       uint64_t         bytes,
+                       uint64_t         matchingId );
+
+
+void
+SCOREP_Tracing_RmaGet( SCOREP_Location* location,
+                       uint64_t         timestamp,
+                       uint32_t         win,
+                       uint32_t         remote,
+                       uint64_t         bytes,
+                       uint64_t         matchingId );
+
+
+void
+SCOREP_Tracing_RmaAtomic( SCOREP_Location*     location,
+                          uint64_t             timestamp,
+                          uint32_t             win,
+                          uint32_t             remote,
+                          SCOREP_RmaAtomicType type,
+                          uint64_t             bytesSent,
+                          uint64_t             bytesReceived,
+                          uint64_t             matchingId );
+
+
+void
+SCOREP_Tracing_RmaOpCompleteBlocking( SCOREP_Location* location,
+                                      uint64_t         timestamp,
+                                      uint32_t         win,
+                                      uint64_t         matchingId );
+
+
+void
+SCOREP_Tracing_RmaOpCompleteNonBlocking( SCOREP_Location* location,
+                                         uint64_t         timestamp,
+                                         uint32_t         win,
+                                         uint64_t         matchingId );
+
+
+void
+SCOREP_Tracing_RmaOpTest( SCOREP_Location* location,
+                          uint64_t         timestamp,
+                          uint32_t         win,
+                          uint64_t         matchingId );
+
+
+void
+SCOREP_Tracing_RmaOpCompleteRemote( SCOREP_Location* location,
+                                    uint64_t         timestamp,
+                                    uint32_t         win,
+                                    uint64_t         matchingId );
+
+
+void
 SCOREP_Tracing_ThreadFork( SCOREP_Location*   location,
                            uint64_t           timestamp,
                            uint32_t           nRequestedThreads,

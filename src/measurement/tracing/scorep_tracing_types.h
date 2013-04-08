@@ -374,4 +374,96 @@ scorep_tracing_property_to_otf2( SCOREP_Property scorep_property )
 }
 
 
+static inline OTF2_RmaSyncLevel
+scorep_tracing_rma_sync_level_to_otf2( SCOREP_RmaSyncLevel scorep_level )
+{
+    switch ( scorep_level )
+    {
+#define case_return( name ) \
+    case SCOREP_RMA_SYNC_LEVEL_ ## name: \
+        return OTF2_RMA_SYNC_LEVEL_ ## name
+
+        case_return( NONE );
+        case_return( PROCESS );
+        case_return( MEMORY );
+
+        default:
+            UTILS_BUG( "Invalid RMA sync level" );
+
+#undef case_return
+    }
+
+    return OTF2_UNDEFINED_UINT32;
+}
+
+
+static inline OTF2_RmaSyncType
+scorep_tracing_rma_sync_type_to_otf2( SCOREP_RmaSyncType scorep_type )
+{
+    switch ( scorep_type )
+    {
+#define case_return( name ) \
+    case SCOREP_RMA_SYNC_TYPE_ ## name: \
+        return OTF2_RMA_SYNC_TYPE_ ## name
+
+        case_return( MEMORY );
+        case_return( NOTIFY_IN );
+        case_return( NOTIFY_OUT );
+
+        default:
+            UTILS_BUG( "Invalid RMA sync type" );
+
+#undef case_return
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+
+static inline OTF2_LockType
+scorep_tracing_lock_type_to_otf2( SCOREP_LockType scorep_type )
+{
+    switch ( scorep_type )
+    {
+#define case_return( name ) \
+    case SCOREP_LOCK_ ## name: \
+        return OTF2_LOCK_ ## name
+
+        case_return( EXCLUSIVE );
+        case_return( SHARED );
+
+        default:
+            UTILS_BUG( "Invalid lock type" );
+
+#undef case_return
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+
+static inline OTF2_RmaAtomicType
+scorep_tracing_rma_atomic_type_to_otf2( SCOREP_RmaAtomicType scorep_type )
+{
+    switch ( scorep_type )
+    {
+#define case_return( name ) \
+    case SCOREP_RMA_ATOMIC_TYPE_ ## name: \
+        return OTF2_RMA_ATOMIC_TYPE_ ## name
+
+        case_return( ACCUMULATE );
+        case_return( INCREMENT );
+        case_return( TEST_AND_SET );
+        case_return( COMPARE_AND_SWAP );
+
+        default:
+            UTILS_BUG( "Invalid RMA atomic type" );
+
+#undef case_return
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+
 #endif /* SCOREP_TRACING_INTERNAL_TYPES_H */
