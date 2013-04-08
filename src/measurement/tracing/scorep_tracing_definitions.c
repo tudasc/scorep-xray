@@ -476,6 +476,8 @@ scorep_write_group_definitions( void*                     writerHandle,
                                                      OTF2_GroupRef,
                                                      OTF2_StringRef,
                                                      OTF2_GroupType,
+                                                     OTF2_Paradigm,
+                                                     OTF2_GroupFlag,
                                                      uint32_t,
                                                      const uint64_t* );
 
@@ -488,11 +490,25 @@ scorep_write_group_definitions( void*                     writerHandle,
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, Group, group )
     {
+        OTF2_GroupType group_type
+            = scorep_tracing_group_type_to_otf2( definition->group_type );
+        OTF2_Paradigm  paradigm    = OTF2_PARADIGM_UNKNOWN;
+        OTF2_GroupType group_flags = OTF2_GROUP_FLAG_NONE;
+        switch ( definition->group_type )
+        {
+            case SCOREP_GROUP_COMM_SELF:
+            case SCOREP_GROUP_MPI_GROUP:
+            case SCOREP_GROUP_MPI_LOCATIONS:
+                paradigm = OTF2_PARADIGM_MPI;
+        }
+
         OTF2_ErrorCode status = defGroup(
             writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
-            scorep_tracing_group_type_to_otf2( definition->group_type ),
+            group_type,
+            paradigm,
+            group_flags,
             definition->number_of_members,
             definition->members );
 

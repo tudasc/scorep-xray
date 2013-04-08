@@ -137,9 +137,9 @@ scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
         case_return( LOCATIONS,     LOCATIONS );
         case_return( REGIONS,       REGIONS );
         case_return( METRIC,        METRIC );
-        case_return( COMM_SELF,     MPI_COMM_SELF );
-        case_return( MPI_GROUP,     MPI_GROUP );
-        case_return( MPI_LOCATIONS, MPI_LOCATIONS );
+        case_return( COMM_SELF,     COMM_SELF );
+        case_return( MPI_GROUP,     COMM_GROUP );
+        case_return( MPI_LOCATIONS, COMM_LOCATIONS );
 
 #undef case_return
         default:
@@ -315,14 +315,14 @@ scorep_tracing_parameter_type_to_otf2( SCOREP_ParameterType scorepType )
 }
 
 
-static inline OTF2_MpiCollectiveType
+static inline OTF2_CollectiveOp
 scorep_tracing_collective_type_to_otf2( SCOREP_MpiCollectiveType scorep_type )
 {
     switch ( scorep_type )
     {
 #define case_return( name ) \
     case SCOREP_COLLECTIVE_MPI_ ## name: \
-        return OTF2_MPI_ ## name
+        return OTF2_COLLECTIVE_OP_ ## name
 
         case_return( BARRIER );
         case_return( BCAST );
