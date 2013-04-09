@@ -198,31 +198,7 @@ scorep_compiler_hash_get( char* str )
         }
         curr = curr->next;
     }
-
-    /* If we encounter a region that is not yet in the hash table, put it in the hash table */
-    curr = scorep_compiler_hash_put( hash_code, name, name, NULL, SCOREP_INVALID_LINE_NO );
-
-    /* Add file name */
-    uint64_t len = name - file;
-    curr->file_name = malloc( len );
-    strncpy( curr->file_name, file, len - 1 );
-    curr->file_name[ len - 1 ] = '\0';
-
-    /* Apply filter */
-    if ( ( strncmp( name, "POMP", 4 ) == 0 ) ||
-         ( strncmp( name, "Pomp", 4 ) == 0 ) ||
-         ( strncmp( name, "pomp", 4 ) == 0 ) ||
-         ( strncmp( name, "SCOREP_", 7 ) == 0 ) ||
-         ( strncmp( name, "scorep_", 7 ) == 0 ) ||
-         ( strncmp( name, "OTF2_", 5 ) == 0 ) ||
-         ( strncmp( name, "otf2_", 5 ) == 0 ) ||
-         ( strncmp( name, "cube_", 5 ) == 0 ) ||
-         ( SCOREP_Filter_Match( curr->file_name, name, NULL ) ) )
-    {
-        curr->region_handle = SCOREP_FILTERED_REGION;
-    }
-
-    return curr;
+    return NULL;
 }
 
 /* Stores function name under hash code */
