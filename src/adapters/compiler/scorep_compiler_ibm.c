@@ -42,10 +42,6 @@
 #include <SCOREP_Compiler_Init.h>
 #include <scorep_compiler_data.h>
 
-#if __IBMC__ > 1100
-#define SCOREP_FILTER_REGION ( SCOREP_INVALID_REGION - 1 )
-#endif
-
 /**
  * static variable to control initialize status of compiler adapter.
  */
@@ -175,7 +171,7 @@ __func_trace_enter( char*                region_name,
             SCOREP_RegionHandle region = get_region_handle( region_name, file_name, line_no );
             if ( region == SCOREP_INVALID_REGION )
             {
-                *handle = SCOREP_FILTER_REGION;
+                *handle = SCOREP_FILTERED_REGION;
             }
             else
             {
@@ -184,7 +180,7 @@ __func_trace_enter( char*                region_name,
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
-    if ( *handle != SCOREP_FILTER_REGION )
+    if ( *handle != SCOREP_FILTERED_REGION )
     {
         SCOREP_EnterRegion( *handle );
     }
@@ -231,7 +227,7 @@ __func_trace_exit( char*                region_name,
     {
         return;
     }
-    if ( *handle != SCOREP_FILTER_REGION )
+    if ( *handle != SCOREP_FILTERED_REGION )
     {
         SCOREP_ExitRegion( *handle );
     }

@@ -46,7 +46,6 @@ scorep_ftrace_getname( void );
 extern int
 scorep_ftrace_getname_len( void );
 
-#define SCOREP_FILTERED_REGION ( SCOREP_INVALID_REGION - 1 )
 
 static uint32_t scorep_compiler_initialize = 1;
 

@@ -171,7 +171,10 @@ typedef uint32_t SCOREP_LineNo;
  */
 #define SCOREP_INVALID_SYSTEM_TREE_NODE SCOREP_MOVABLE_NULL
 
-
+/**
+ * Symbolic constant representing a filtered region
+ */
+#define SCOREP_FILTERED_REGION ( ( SCOREP_RegionHandle ) - 1 )
 
 
 /**

@@ -46,11 +46,6 @@
  ***************************************************************************************/
 
 /**
- * Marks a filtered region
- */
-#define SCOREP_FILTERED_REGION  ( ( SCOREP_RegionHandle ) - 1 )
-
-/**
  * @brief Data structures to be used by the PGI compiler.
  * Container structure to map profiling informations, like function names
  * and region handles.

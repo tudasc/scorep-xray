@@ -42,23 +42,6 @@ static int on_scorep_finalize( void );
 /* *INDENT-ON* */
 
 /**
- * @def SCOREP_SUN_INVALID_REGION
- * Defines the value with which the compiler pre-initializes the pointer to the id
- */
-#define SCOREP_SUN_INVALID_REGION -1
-
-/**
- * @def SCOREP_FILTERED_REGION
- * Constant id to mark filtered functions
- */
-#define SCOREP_FILTERED_REGION SCOREP_INVALID_REGION
-
-/* Check that we can distinguish filtered functions from uninitialized functions */
-#if SCOREP_FILTERED_REGION == SCOREP_SUN_INVALID_REGION
-#error "SCOREP_FILTERED_REGION must not equal SCOREP_SUN_INVALID_REGION"
-#endif
-
-/**
  * Flag that indicates that the compiler is finalized.
  */
 static int scorep_compiler_finalized = 0;
@@ -118,11 +101,11 @@ phat_enter( char* name,
         SCOREP_InitMeasurement();
     }
 
-    if ( *id == SCOREP_SUN_INVALID_REGION )
+    if ( *id == SCOREP_INVALID_REGION )
     {
         /* region entered the first time, register region */
         SCOREP_MutexLock( scorep_compiler_hash_lock );
-        if ( *id == SCOREP_SUN_INVALID_REGION )
+        if ( *id == SCOREP_INVALID_REGION )
         {
             *id = scorep_compiler_register_region( name );
         }
@@ -149,7 +132,7 @@ phat_exit( char* name,
         return;
     }
 
-    if ( ( *id != SCOREP_SUN_INVALID_REGION ) && ( *id != SCOREP_FILTERED_REGION ) )
+    if ( ( *id != SCOREP_INVALID_REGION ) && ( *id != SCOREP_FILTERED_REGION ) )
     {
         SCOREP_ExitRegion( *id );
     }
