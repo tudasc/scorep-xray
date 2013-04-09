@@ -212,7 +212,7 @@ scorep_compiler_hash_put( uint64_t      addr,
     /* ifort constructs function names like <module>_mp_<function>,
      * while __VT_Entry gets something like <module>.<function>
      * => replace _mp_ with a dot. */
-    char* name = UTILS_CStr_dup( region_name_mangled );
+    char* name = UTILS_CStr_dup( region_name_demangled );
     for ( int i = 1; i + 5 < strlen( name ); i++ )
     {
         if ( strncmp( &name[ i ], "_mp_", 4 ) == 0 )
