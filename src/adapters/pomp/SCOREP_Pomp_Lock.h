@@ -27,6 +27,7 @@
  */
 
 #include <scorep/SCOREP_PublicTypes.h>
+#include <SCOREP_Mutex.h>
 #include <stdint.h>
 
 /** Definition of the type of the lock handle */
@@ -66,7 +67,11 @@ struct SCOREP_PompLock
 /** List of handles for omp regions. The handles must be stored in the same order as
     the corresponding SCOREP_Pomp_Region_Index.
  */
-SCOREP_RegionHandle scorep_pomp_regid[ SCOREP_POMP_REGION_NUM ];
+extern SCOREP_RegionHandle scorep_pomp_regid[ SCOREP_POMP_REGION_NUM ];
+
+/** Mutex to ensure exclusive access to pomp lock data structure.
+ */
+extern SCOREP_Mutex scorep_pomp_lock_lock;
 
 /** Initializes a new lock handle.
     @param lock The OMP lock which should be initialized

@@ -47,6 +47,10 @@ static int                            scorep_pomp_last_index      = SCOREP_POMP_
 
 static SCOREP_Pomp_LockHandleType scorep_pomp_current_lock_handle = 0;
 
+SCOREP_Mutex scorep_pomp_lock_lock;
+
+SCOREP_RegionHandle scorep_pomp_regid[ SCOREP_POMP_REGION_NUM ];
+
 /** List of registered omp function names. They must be in the same order as the
     corresponding SCOREP_Pomp_Region_Index.
  */
@@ -78,6 +82,8 @@ scorep_pomp_register_lock_regions( void )
                                                       SCOREP_ADAPTER_POMP,
                                                       SCOREP_REGION_WRAPPER );
     }
+
+    SCOREP_MutexCreate( &scorep_pomp_lock_lock );
 }
 
 void
@@ -93,6 +99,8 @@ scorep_pomp_lock_close( void )
         scorep_pomp_lock_head_block = scorep_pomp_lock_head_block->next;
         free( block );
     }
+
+    SCOREP_MutexDestroy( &scorep_pomp_lock_lock );
 }
 
 SCOREP_PompLock*
@@ -100,6 +108,7 @@ scorep_pomp_lock_init( const void* lock )
 {
     struct scorep_pomp_lock_block* new_block;
 
+    SCOREP_MutexLock( scorep_pomp_lock_lock );
     scorep_pomp_last_index++;
     if ( scorep_pomp_last_index >= SCOREP_POMP_LOCKBLOCK_SIZE )
     {
@@ -141,6 +150,8 @@ scorep_pomp_lock_init( const void* lock )
     scorep_pomp_last_lock->handle            = scorep_pomp_current_lock_handle++;
     scorep_pomp_last_lock->acquisition_order = 0;
     scorep_pomp_last_lock->nest_level        = 0;
+
+    SCOREP_MutexUnlock( scorep_pomp_lock_lock );
     return scorep_pomp_last_lock;
 }
 

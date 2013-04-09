@@ -778,8 +778,12 @@ POMP2_Set_lock( omp_lock_t* s )
     {
         SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_SET_LOCK ] );
         omp_set_lock( s );
+
+        SCOREP_MutexLock( scorep_pomp_lock_lock );
         SCOREP_PompLock* lock = SCOREP_Pomp_GetAcquireLock( s );
         SCOREP_ThreadAcquireLock( lock->handle, lock->acquisition_order, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_MutexUnlock( scorep_pomp_lock_lock );
+
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_SET_LOCK ] );
     }
     else
@@ -795,8 +799,12 @@ POMP2_Unset_lock( omp_lock_t* s )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_LOCK ] );
+
+        SCOREP_MutexLock( scorep_pomp_lock_lock );
         SCOREP_PompLock* lock = SCOREP_Pomp_GetReleaseLock( s );
         SCOREP_ThreadReleaseLock( lock->handle, lock->acquisition_order, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_MutexUnlock( scorep_pomp_lock_lock );
+
         omp_unset_lock( s );
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_LOCK ] );
     }
@@ -818,8 +826,10 @@ POMP2_Test_lock( omp_lock_t* s )
         result = omp_test_lock( s );
         if ( result )
         {
+            SCOREP_MutexLock( scorep_pomp_lock_lock );
             SCOREP_PompLock* lock = SCOREP_Pomp_GetAcquireLock( s );
             SCOREP_ThreadAcquireLock( lock->handle, lock->acquisition_order, SCOREP_THREAD_MODEL_OPENMP );
+            SCOREP_MutexUnlock( scorep_pomp_lock_lock );
         }
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_TEST_LOCK ] );
         return result;
@@ -884,8 +894,10 @@ POMP2_Set_nest_lock( omp_nest_lock_t* s )
     {
         SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_SET_NEST_LOCK ] );
         omp_set_nest_lock( s );
+        SCOREP_MutexLock( scorep_pomp_lock_lock );
         SCOREP_PompLock* lock = SCOREP_Pomp_GetAcquireNestLock( s );
         SCOREP_ThreadAcquireLock( lock->handle, lock->acquisition_order, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_MutexUnlock( scorep_pomp_lock_lock );
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_SET_NEST_LOCK ] );
     }
     else
@@ -901,8 +913,10 @@ POMP2_Unset_nest_lock( omp_nest_lock_t* s )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_NEST_LOCK ] );
+        SCOREP_MutexLock( scorep_pomp_lock_lock );
         SCOREP_PompLock* lock = SCOREP_Pomp_GetReleaseNestLock( s );
         SCOREP_ThreadReleaseLock( lock->handle, lock->acquisition_order, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_MutexUnlock( scorep_pomp_lock_lock );
         omp_unset_nest_lock( s );
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_NEST_LOCK ] );
     }
@@ -924,8 +938,10 @@ POMP2_Test_nest_lock( omp_nest_lock_t* s )
         result = omp_test_nest_lock( s );
         if ( result )
         {
+            SCOREP_MutexLock( scorep_pomp_lock_lock );
             SCOREP_PompLock* lock = SCOREP_Pomp_GetAcquireNestLock( s );
             SCOREP_ThreadAcquireLock( lock->handle, lock->acquisition_order, SCOREP_THREAD_MODEL_OPENMP );
+            SCOREP_MutexUnlock( scorep_pomp_lock_lock );
         }
 
         SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_TEST_NEST_LOCK ] );
