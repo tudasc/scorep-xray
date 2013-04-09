@@ -184,7 +184,7 @@ scorep_compiler_hash_get( char* str )
      */
     while ( curr )
     {
-        if ( strcmp( curr->region_name_mangled, name )  == 0 )
+        if ( strcmp( curr->region_name_demangled, name )  == 0 )
         {
             if ( curr->file_name == NULL )
             {
@@ -198,7 +198,31 @@ scorep_compiler_hash_get( char* str )
         }
         curr = curr->next;
     }
-    return NULL;
+
+    /* If we encounter a region that is not yet in the hash table, put it in the hash table */
+    curr = scorep_compiler_hash_put( hash_code, name, name, NULL, SCOREP_INVALID_LINE_NO );
+
+    /* Add file name */
+    uint64_t len = name - file;
+    curr->file_name = malloc( len );
+    strncpy( curr->file_name, file, len - 1 );
+    curr->file_name[ len - 1 ] = '\0';
+
+    /* Apply filter */
+    if ( ( strncmp( name, "POMP", 4 ) == 0 ) ||
+         ( strncmp( name, "Pomp", 4 ) == 0 ) ||
+         ( strncmp( name, "pomp", 4 ) == 0 ) ||
+         ( strncmp( name, "SCOREP_", 7 ) == 0 ) ||
+         ( strncmp( name, "scorep_", 7 ) == 0 ) ||
+         ( strncmp( name, "OTF2_", 5 ) == 0 ) ||
+         ( strncmp( name, "otf2_", 5 ) == 0 ) ||
+         ( strncmp( name, "cube_", 5 ) == 0 ) ||
+         ( SCOREP_Filter_Match( curr->file_name, name, NULL ) ) )
+    {
+        curr->region_handle = SCOREP_FILTERED_REGION;
+    }
+
+    return curr;
 }
 
 /* Stores function name under hash code */
@@ -241,8 +265,8 @@ scorep_compiler_hash_put( uint64_t      addr,
     uint64_t                   hash_code = SCOREP_Hashtab_HashString( name ) % SCOREP_COMPILER_REGION_SLOTS;
     scorep_compiler_hash_node* add       = ( scorep_compiler_hash_node* )
                                            malloc( sizeof( scorep_compiler_hash_node ) );
-    add->region_name_mangled   = UTILS_CStr_dup( name );
-    add->region_name_demangled = UTILS_CStr_dup( region_name_demangled );
+    add->region_name_mangled   = UTILS_CStr_dup( region_name_mangled );
+    add->region_name_demangled = UTILS_CStr_dup( name );
     add->file_name             = NULL;
     add->line_no_begin         = SCOREP_INVALID_LINE_NO;
     add->line_no_end           = SCOREP_INVALID_LINE_NO;

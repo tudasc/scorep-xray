@@ -189,17 +189,20 @@ scorep_compiler_process_symbol( long         addr,
     }
 #endif  /* GNU_DEMANGLE */
 
-    if ( ( strncmp( funcname_demangled, "POMP", 4 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "Pomp", 4 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "pomp", 4 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "SCOREP_", 7 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "scorep_", 7 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "OTF2_", 5 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "otf2_", 5 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "cube_", 5 ) != 0 ) &&
-         ( !SCOREP_Filter_Match( filename, funcname_demangled, funcname ) ) )
-    {
+    scorep_compiler_hash_node* new_node =
         scorep_compiler_hash_put( addr, funcname, funcname_demangled, filename, lno );
+
+    if ( ( strncmp( funcname_demangled, "POMP", 4 ) == 0 ) ||
+         ( strncmp( funcname_demangled, "Pomp", 4 ) == 0 ) ||
+         ( strncmp( funcname_demangled, "pomp", 4 ) == 0 ) ||
+         ( strncmp( funcname_demangled, "SCOREP_", 7 ) == 0 ) ||
+         ( strncmp( funcname_demangled, "scorep_", 7 ) == 0 ) ||
+         ( strncmp( funcname_demangled, "OTF2_", 5 ) == 0 ) ||
+         ( strncmp( funcname_demangled, "otf2_", 5 ) == 0 ) ||
+         ( strncmp( funcname_demangled, "cube_", 5 ) == 0 ) ||
+         ( SCOREP_Filter_Match( filename, funcname_demangled, funcname ) ) )
+    {
+        new_node->region_handle = SCOREP_FILTERED_REGION;
     }
 }
 
