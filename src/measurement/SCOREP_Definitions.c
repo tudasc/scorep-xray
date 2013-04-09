@@ -1712,6 +1712,96 @@ scorep_sampling_set_definitions_equal( const SCOREP_SamplingSet_Definition* exis
 
 
 /////////////////////////////////////////////////////////////////////////////
+// RMAWindowDefinitions ////////////////////////////////// //////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+
+static SCOREP_RMAWindowHandle
+scorep_rma_window_definition_define( SCOREP_DefinitionManager*         definition_manager,
+                                     SCOREP_StringHandle               nameHandle,
+                                     SCOREP_LocalMPICommunicatorHandle communicatorHandle );
+
+static void
+scorep_rma_window_definition_initialize( SCOREP_RMAWindow_Definition*      definition,
+                                         SCOREP_DefinitionManager*         definition_manager,
+                                         SCOREP_StringHandle               nameHandle,
+                                         SCOREP_LocalMPICommunicatorHandle communicatorHandle  );
+
+
+bool
+scorep_rma_window_definitions_equal( const SCOREP_RMAWindow_Definition* existingDefinition,
+                                     const SCOREP_RMAWindow_Definition* newDefinition );
+
+
+/**
+ * Associate the parameter tuple with a process unique RMA window handle.
+ */
+SCOREP_RMAWindowHandle
+SCOREP_DefineRMAWindow( const char*                       name,
+                        SCOREP_LocalMPICommunicatorHandle communicatorHandle )
+{
+    UTILS_DEBUG_ENTRY( "%s", name );
+
+    SCOREP_Definitions_Lock();
+
+    SCOREP_RMAWindow_Definition* new_definition = NULL;
+    SCOREP_RMAWindowHandle       new_handle     = scorep_rma_window_definition_define(
+        &scorep_local_definition_manager,
+        scorep_string_definition_define( &scorep_local_definition_manager,
+                                         name ? name : "<unknown RMA window>" ),
+        communicatorHandle );
+
+    SCOREP_Definitions_Unlock();
+
+    return new_handle;
+}
+
+
+static SCOREP_RMAWindowHandle
+scorep_rma_window_definition_define( SCOREP_DefinitionManager*         definition_manager,
+                                     SCOREP_StringHandle               nameHandle,
+                                     SCOREP_LocalMPICommunicatorHandle communicatorHandle )
+{
+    assert( definition_manager );
+
+    SCOREP_RMAWindow_Definition* new_definition = NULL;
+    SCOREP_RMAWindowHandle       new_handle     = SCOREP_INVALID_RMA_WINDOW;
+
+    SCOREP_DEFINITION_ALLOC( RMAWindow );
+    scorep_rma_window_definition_initialize( new_definition,
+                                             definition_manager,
+                                             nameHandle,
+                                             communicatorHandle );
+
+    /* Does return if it is a duplicate */
+    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( RMAWindow, rma_window );
+
+    return new_handle;
+}
+
+static void
+scorep_rma_window_definition_initialize( SCOREP_RMAWindow_Definition*      definition,
+                                         SCOREP_DefinitionManager*         definition_manager,
+                                         SCOREP_StringHandle               nameHandle,
+                                         SCOREP_LocalMPICommunicatorHandle communicatorHandle  )
+{
+    definition->name_handle = nameHandle;
+    HASH_ADD_HANDLE( definition, name_handle, String );
+
+    definition->communicator_handle = communicatorHandle;
+    HASH_ADD_HANDLE( definition, communicator_handle, LocalMPICommunicator );
+}
+
+
+bool
+scorep_rma_window_definitions_equal( const SCOREP_RMAWindow_Definition* existingDefinition,
+                                     const SCOREP_RMAWindow_Definition* newDefinition )
+{
+    return false;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
 // IOFileGroupDefinitions ///////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 

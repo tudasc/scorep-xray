@@ -84,4 +84,7 @@ typedef SCOREP_AnyHandle SCOREP_CallpathHandle;
 typedef SCOREP_AnyHandle SCOREP_PropertyHandle;
 
 
+typedef SCOREP_AnyHandle SCOREP_RMAWindowHandle;
+
+
 #endif /* SCOREP_DEFINITIONHANDLES_H */

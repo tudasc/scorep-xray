@@ -523,6 +523,23 @@ SCOREP_Metric_GetName( SCOREP_MetricHandle handle );
 SCOREP_MetricProfilingType
 SCOREP_Metric_GetProfilingType( SCOREP_MetricHandle handle );
 
+
+
+/**
+ * Associate the parameter tuple with a process unique RMA window handle.
+ *
+ * @param name A meaningful name for the RMA window, e.g. 'MPI window'
+ * or 'Gfx Card 1'. The string will be copied.
+ *
+ * @param communicatorHandle Underlying communicator
+ *
+ * @return A process unique RMA window handle to be used in calls to other
+ * SCOREP_RMA* functions.
+ */
+SCOREP_RMAWindowHandle
+SCOREP_DefineRMAWindow( const char*                       name,
+                        SCOREP_LocalMPICommunicatorHandle communicatorHandle );
+
 /*@}*/
 
 

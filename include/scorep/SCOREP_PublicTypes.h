@@ -92,6 +92,18 @@ typedef SCOREP_AnyHandle SCOREP_RegionHandle;
 #define SCOREP_INVALID_REGION SCOREP_MOVABLE_NULL
 
 
+/**
+ * Type of a opaque handle to a RMA window definition.
+ * @see SCOREP_DefineRMAWindow()
+ */
+typedef SCOREP_AnyHandle SCOREP_RMAWindowHandle;
+
+/**
+ * Symbolic constant representing an invalid or unknown RMA window definition.
+ */
+#define SCOREP_INVALID_RMA_WINDOW SCOREP_MOVABLE_NULL
+
+
 /**@}*/
 
 #endif // SCOREP_PUBLICTYPES_H

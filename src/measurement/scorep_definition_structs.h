@@ -300,6 +300,15 @@ SCOREP_DEFINE_DEFINITION_TYPE( Property )
     bool                     invalidated;
 };
 
+SCOREP_DEFINE_DEFINITION_TYPE( RMAWindow )
+{
+    SCOREP_DEFINE_DEFINITION_HEADER( RMAWindow );
+
+    // Add SCOREP_RMAWindow stuff from here on.
+    SCOREP_StringHandle               name_handle;
+    SCOREP_LocalMPICommunicatorHandle communicator_handle;
+};
+
 
 /* Not really a definition, but we need to store them somewhere */
 typedef struct SCOREP_ClockOffset SCOREP_ClockOffset;
