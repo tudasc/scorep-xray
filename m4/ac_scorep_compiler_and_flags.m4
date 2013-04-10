@@ -225,12 +225,12 @@ if test "x${MPICXX}" = "x"; then
 fi
 
 if test "x${MPIF77}" = "x"; then
-    AC_CHECK_PROGS(MPIF77, mpif77 hf77 mpxlf_r mpxlf mpf77 cmpifc mpiifort, $F77)
+    AC_CHECK_PROGS(MPIF77, mpif77 hf77 mpxlf_r mpxlf mpfort mpf77 cmpifc mpiifort, $F77)
     echo "MPIF77=${MPIF77}" >> mpi_compiler_suite
 fi
 
 if test "x${MPIFC}" = "x"; then
-    AC_CHECK_PROGS(MPIFC, mpif90 mpxlf95_r mpxlf90_r mpxlf95 mpxlf90 mpf90 cmpif90c mpiifort, $FC)
+    AC_CHECK_PROGS(MPIFC, mpif90 mpxlf95_r mpxlf90_r mpxlf95 mpxlf90 mpfort mpf90 cmpif90c mpiifort, $FC)
     echo "MPIFC=${MPIFC}"   >> mpi_compiler_suite
 fi
 
