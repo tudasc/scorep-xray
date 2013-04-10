@@ -144,10 +144,12 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
 
   /* XXXX should only continue if MPI initialised OK! */
 
-  if ((return_val == MPI_SUCCESS) && (*provided > MPI_THREAD_FUNNELED))
+  if ((return_val == MPI_SUCCESS) && (required > MPI_THREAD_FUNNELED) && (*provided > MPI_THREAD_FUNNELED))
   {
-    UTILS_WARNING("MPI environment initialized with level exceeding MPI_THREAD_FUNNELED!");
-    /* XXXX continue even though not supported by analysis */
+    UTILS_WARNING("MPI environment initialization request and provided level exceed MPI_THREAD_FUNNELED!");
+    /* XXXX continue even though not supported by analysis. We assume
+     * that if the user requests <= MPI_THREAD_FUNNELED, the user code
+     * will behave accordingly. */
   }
 
   if ( ( PMPI_Initialized( &iflag ) == MPI_SUCCESS ) && ( iflag != 0 ) &&
