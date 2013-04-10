@@ -333,7 +333,7 @@ SCOREP_Instrumenter::preprocess_opari( const std::string& orig_file )
         input_file = remove_extension( remove_path( orig_file ) )
                      + ".input"
                      + scorep_toupper( orig_ext );
-        execute_command( "cp " + orig_file + " " + input_file );
+        execute_command( "cat " + orig_file + " > " + input_file );
         m_temp_files += " " + input_file;
     }
 
