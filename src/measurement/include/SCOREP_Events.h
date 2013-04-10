@@ -358,6 +358,335 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
 
 
 /**
+ * Mark the creation of the window on all participating processes/threads
+ * and thus enclose all operations related to this window. See also
+ * @ SCOREP_RmaWinDestroy.
+ *
+ * @param window Memory window.
+ */
+void
+SCOREP_RmaWinCreate( uint32_t win );
+
+
+/**
+ * Mark the destruction of the window on all participating processes/threads
+ * and thus enclose all operations related to this window. See also
+ * @ SCOREP_RmaWinCreate.
+ *
+ * @param window Memory window.
+ */
+void
+SCOREP_RmaWinDestroy( uint32_t win );
+
+
+/**
+ * The following event records for collective RMA operations must be
+ * generated on all participating members of the communicator that is
+ * referenced from the memory window. On all locations, a
+ * @ SCOREP_RmaCollectiveBegin event record must be followed by a
+ * @ SCOREP_RmaCollectiveEnd event record with all details. It is
+ * invalid to intermix or nest begin and end records of different
+ * collective operations, but local or remote completion records may be
+ * placed in between.
+ *
+ * @{
+ */
+void
+SCOREP_RmaCollectiveBegin();
+
+
+/**
+ * @param syncLevel Synchronization level.
+ *
+ * @param win Memory window.
+ *
+ * @param collectiveOp Determines type of collective operation.
+ *
+ * @param root Root process/rank if there is one.
+ *
+ * @param bytesSent Number of bytes sent.
+ *
+ * @param bytesReceived Number of bytes received.
+ */
+void
+SCOREP_RmaCollectiveEnd( SCOREP_RmaSyncLevel      syncLevel,
+                         uint32_t                 win,
+                         SCOREP_MpiCollectiveType collectiveOp,
+                         uint32_t                 root,
+                         uint64_t                 bytesSent,
+                         uint64_t                 bytesReceived );
+
+/** @} */
+
+
+/**
+ * An attempt to acquire a lock which turns out negative can be marked
+ * with SCOREP_RmaTryLock. In this case, no release record may follow.
+ * With this a series of unsuccessful locking attempts can be identified.
+ * If an lock attempt is successful, it is marked with
+ * @ SCOREP_RmaAquireLock right away instead of a pair of
+ * @ SCOREP_RmaTryLock and @ SCOREP_RmaAquireLock.
+ *
+ * @param win Memory window.
+ *
+ * @param remote Rank of target in context of window.
+ *
+ * @param lockId Lock id in context of window.
+ *
+ * @param lockType Type of lock (shared vs. exclusive).
+ */
+void
+SCOREP_RmaTryLock( uint32_t        win,
+                   uint32_t        remote,
+                   uint64_t        lockId,
+                   SCOREP_LockType lockType );
+
+
+/**
+ * Marks the time that a lock is granted. This is the typical situation.
+ * It has to be followed by a matching @ SCOREP_RmaReleaseLock record
+ * later on.
+ *
+ * @param win Memory window.
+ *
+ * @param remote Rank of target in context of window.
+ *
+ * @param lockId Lock id in context of window.
+ *
+ * @param lockType Type of lock (shared vs. exclusive).
+ */
+void
+SCOREP_RmaAcquireLock( uint32_t        win,
+                       uint32_t        remote,
+                       uint64_t        lockId,
+                       SCOREP_LockType lockType );
+
+
+/**
+ * This record marks the time that a request for a lock is issued where
+ * the RMA model ensures that the lock is granted eventually without
+ * further notification. As of now this is specific for MPI. In this case,
+ * the @ SCOREP_RmaAquireLock event is not present.
+ *
+ * @param win Memory window.
+ *
+ * @param remote Rank of target in context of window.
+ *
+ * @param lockId Lock id in context of window.
+ *
+ * @param lockType Type of lock (shared vs. exclusive).
+ */
+void
+SCOREP_RmaRequestLock( uint32_t        win,
+                       uint32_t        remote,
+                       uint64_t        lockId,
+                       SCOREP_LockType lockType );
+
+
+/**
+ * Marks the time the lock is freed. It contains all fields that are
+ * necessary to match it to either an earlier @ SCOREP_AquireLock or
+ * @ SCOREP_RequestLock event and is required to follow either of the
+ * two.
+ *
+ * @param win Memory window.
+ *
+ * @param remote Rank of target in context of window.
+ *
+ * @param lockId Lock id in context of window.
+ *
+ * @param lockType Type of lock (shared vs. exclusive).
+ */
+void
+SCOREP_RmaReleaseLock( uint32_t win,
+                       uint32_t remote,
+                       uint64_t lockId );
+
+
+/**
+ * This record marks a simple pairwise synchronization.
+ *
+ * @param win Memory window.
+ *
+ * @param remote Rank of target in context of window.
+ *
+ * @param syncType Synchronization level (e.g. SCOREP_RMA_SYNC_LEVEL_NONE,
+ * SCOREP_RMA_SYNC_LEVEL_PROCESS, SCOREP_RMA_SYNC_LEVEL_MEMORY).
+ */
+void
+SCOREP_RmaSync( uint32_t           win,
+                uint32_t           remote,
+                SCOREP_RmaSyncType syncType );
+
+
+/**
+ * This record marks the synchronization of a sub-group of the locations
+ * associated with the given memory window. It needs to be recorded for
+ * all participants.
+ *
+ * @param syncLevel Synchronization level.
+ *
+ * @param win Memory window.
+ *
+ * @param group Group of participating processes or threads.
+ */
+void
+SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel syncLevel,
+                     uint32_t            win,
+                     SCOREP_GroupRef     group );
+
+
+/**
+ * The SCOREP_RmaWaitChange event marks a synchronization point that
+ * blocks until a remote operation modifies a given memory field. This
+ * event marks the beginning of the waiting period. The memory field in
+ * question is part of the specified window.
+ *
+ * @param win Memory window.
+ */
+void
+SCOREP_RmaWaitChange( uint32_t win );
+
+
+/**
+ * The get and put operations access remote memory addresses. The
+ * corresponding get and put records mark when they are issued. The
+ * actual start and the completion may happen later.
+ *
+ * @param win Memory window.
+ *
+ * @param remote Rank of target in context of window.
+ *
+ * @param bytes Number of bytes transferred.
+ *
+ * @param matchingId Matching number.
+ *
+ * @note The matching number allows to reference the point of completion
+ * of the operation. It will reappear in a completion record on the same
+ * location.
+ *
+ */
+void
+SCOREP_RmaPut( uint32_t win,
+               uint32_t remote,
+               uint64_t bytes,
+               uint64_t matchingId );
+
+
+/**
+ * The get and put operations access remote memory addresses. The
+ * corresponding get and put records mark when they are issued. The
+ * actual start and the completion may happen later.
+ *
+ * @param win Memory window.
+ *
+ * @param remote Rank of target in context of window.
+ *
+ * @param bytes Number of bytes transferred.
+ *
+ * @param matchingId Matching number.
+ *
+ * @note The matching number allows to reference the point of completion
+ * of the operation. It will reappear in a completion record on the same
+ * location.
+ *
+ */
+void
+SCOREP_RmaGet( uint32_t win,
+               uint32_t remote,
+               uint64_t bytes,
+               uint64_t matchingId );
+
+
+/**
+ * The atomic RMA operations are similar to the get and put operations.
+ * As an additional field they provide the type of operation. Depending
+ * on the type, data may be received, sent, or both, therefore, the
+ * sizes are specified separately. Matching the local and optionally
+ * remote completion works the same way as for get and put operations.
+ *
+ * @param win Window.
+ *
+ * @param remote Rank of target in context of window.
+ *
+ * @param type Type of atomic operation (see @ SCOREP_RmaAtomicType).
+ *
+ * @param bytesSent Number of bytes transferred to rmeote target.
+ *
+ * @param bytesReceived Number of bytes transferred from remote target.
+ *
+ * @param matchingId Matching number.
+ *
+ */
+void
+SCOREP_RmaAtomic( uint32_t             win,
+                  uint32_t             remote,
+                  SCOREP_RmaAtomicType type,
+                  uint64_t             bytesSent,
+                  uint64_t             bytesReceived,
+                  uint64_t             matchingId );
+
+
+/**
+ * The completion records mark the end of RMA operations. Local
+ * completion for every RMA operation (get, put, or atomic operation)
+ * always has to be marked with either @ SCOREP_RmaOpCompleteBlocking or
+ * @ SCOREP_RmaOpNonCompleteBlocking using the same matching number as
+ * the RMA operation record. An RMA operation is blocking when the
+ * operation completes locally before leaving the call, for non-blocking
+ * operations local completion has to be ensured by a subsequent call.
+ *
+ * @param win Memory window.
+ *
+ * @param matchingId Matching number.
+ *
+ * @{
+ */
+void
+SCOREP_RmaOpCompleteBlocking( uint32_t win,
+                              uint64_t matchingId );
+
+
+void
+SCOREP_RmaOpCompleteNonBlocking( uint32_t win,
+                                 uint64_t matchingId );
+
+/** @} */
+
+
+/**
+ * This record indicates a test for completion. It is only useful for
+ * non-blocking RMA calls where the API supports such a test. The test
+ * record stands for a negative outcome, otherwise a completion record
+ * is written (see @ SCOREP_RmaOpCompleteRemote).
+ *
+ * @param win Memory window.
+ *
+ * @param matchingId Matching number.
+ */
+void
+SCOREP_RmaOpTest( uint32_t win,
+                  uint64_t matchingId );
+
+
+/**
+ * An optional remote completion point can be specified with
+ * SCOREP_RmaOpCompleteRemote. It is recorded on the same location as
+ * the RMA operation itself. Again, multiple RMA operations may map to
+ * the same SCOREP_RmaOpCompleteRemote. The target locations are not
+ * explicitly specified but implicitly as all those that were referenced
+ * in matching RMA operations.
+ *
+ * @param win Memory window.
+ *
+ * @param matchingId Matching number.
+ */
+void
+SCOREP_RmaOpCompleteRemote( uint32_t win,
+                            uint64_t matchingId );
+
+
+/**
  * Notify the measurement system about the creation of a fork-join
  * parallel execution with at max @a nRequestedThreads new
  * threads. This function needs to be triggered for every thread
