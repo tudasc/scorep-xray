@@ -261,12 +261,12 @@ scorep_filter_process_token( const char* token, scorep_filter_parse_modes* mode 
                 scorep_filter_add_file_rule( token, false );
                 break;
             case SCOREP_FILTER_PARSE_REGIONS_EXCLUDE:
-                scorep_filter_add_function_rule( token, true,
-                                                 SCOREP_FILTER_MODE_IS_MANGLED( *mode ) );
+                SCOREP_Filter_AddFunctionRule( token, true,
+                                               SCOREP_FILTER_MODE_IS_MANGLED( *mode ) );
                 break;
             case SCOREP_FILTER_PARSE_REGIONS_INCLUDE:
-                scorep_filter_add_function_rule( token, false,
-                                                 SCOREP_FILTER_MODE_IS_MANGLED( *mode ) );
+                SCOREP_Filter_AddFunctionRule( token, false,
+                                               SCOREP_FILTER_MODE_IS_MANGLED( *mode ) );
                 break;
             default:
                 UTILS_ERROR( SCOREP_ERROR_PARSE_SYNTAX,
@@ -306,6 +306,11 @@ SCOREP_Filter_ParseFile( const char* file_name )
         UTILS_ERROR_POSIX(  "Unable to open filter specification file" );
         return SCOREP_ERROR_FILE_CAN_NOT_OPEN;
     }
+
+    /* Make sure that user functions are inserted before system filter */
+    scorep_filter_rule_t* function_rule_head;
+    scorep_filter_rule_t* function_rule_tail;
+    scorep_filter_start_user_rules( &function_rule_head, &function_rule_tail );
 
     /* Read file line by line */
     while ( !feof( filter_file ) )
@@ -383,6 +388,9 @@ cleanup:
         fclose( filter_file );
     }
     free( buffer );
+
+    scorep_filter_end_user_rules( function_rule_head, function_rule_tail );
+
     return err;
 }
 

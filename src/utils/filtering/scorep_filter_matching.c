@@ -48,11 +48,6 @@
 ****************************************************************************************/
 
 /**
- * Type which is used to store the filter rules.
- */
-typedef struct scorep_filter_rule_struct scorep_filter_rule_t;
-
-/**
  * The struct definition for the rule list. Each record contains one rule.
  * The @ref scorep_filter_rule_t defines a type for this struct.
  */
@@ -87,6 +82,37 @@ static scorep_filter_rule_t* scorep_filter_function_rules_tail = NULL;
 /* **************************************************************************************
    Rule representation manipulation functions
 ****************************************************************************************/
+
+void
+scorep_filter_start_user_rules( scorep_filter_rule_t** function_rule_head,
+                                scorep_filter_rule_t** function_rule_tail )
+{
+    *function_rule_head               = scorep_filter_function_rules_head;
+    *function_rule_tail               = scorep_filter_function_rules_tail;
+    scorep_filter_function_rules_head = NULL;
+    scorep_filter_function_rules_tail = NULL;
+}
+
+void
+scorep_filter_end_user_rules( scorep_filter_rule_t* function_rule_head,
+                              scorep_filter_rule_t* function_rule_tail )
+{
+    if ( function_rule_tail == NULL )
+    {
+        return;
+    }
+
+    /* Append list */
+    if ( scorep_filter_function_rules_tail == NULL )  /* First entry */
+    {
+        scorep_filter_function_rules_head = function_rule_head;
+    }
+    else
+    {
+        scorep_filter_function_rules_tail->next = function_rule_head;
+    }
+    scorep_filter_function_rules_tail = function_rule_tail;
+}
 
 SCOREP_ErrorCode
 scorep_filter_add_file_rule( const char* rule, bool is_exclude )
@@ -124,9 +150,8 @@ scorep_filter_add_file_rule( const char* rule, bool is_exclude )
     return SCOREP_SUCCESS;
 }
 
-
 SCOREP_ErrorCode
-scorep_filter_add_function_rule( const char* rule, bool is_exclude, bool is_mangled )
+SCOREP_Filter_AddFunctionRule( const char* rule, bool is_exclude, bool is_mangled )
 {
     assert( rule );
     assert( *rule != '\0' );
@@ -185,6 +210,8 @@ SCOREP_Filter_FreeRules( void )
     }
     scorep_filter_file_rules_tail = NULL;
 }
+
+
 
 /* **************************************************************************************
    Matching requests

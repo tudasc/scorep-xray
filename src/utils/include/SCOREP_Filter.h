@@ -107,6 +107,22 @@ bool
 SCOREP_Filter_MatchFunction( const char* function_name,
                              const char* mangled_name );
 
+/**
+ * Adds a filter rule to the function filter rule list. Because some adapters apply
+ * filter restrictions during initilization, the rules should be added during
+ * subsystem registration.
+ * @param rule       The rule's string pattern.
+ * @param is_exclude True if it is an exclude rule, false if it is an include rule.
+ * @param is_mangled True if the mangled name should be used instead of the displayed
+ *                   name. If a match request does not provide a mangled name, the
+ *                   rule is matched against the displayed name. If you pass false,
+ *                   Then it uses always the displayed name.
+ */
+SCOREP_ErrorCode
+SCOREP_Filter_AddFunctionRule( const char* rule,
+                               bool        is_exclude,
+                               bool        is_mangled );
+
 
 UTILS_END_C_DECLS
 
