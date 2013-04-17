@@ -58,7 +58,7 @@ AC_DEFUN([AC_SCOREP_DOXYGEN_CONFIG_FILES],
 [
 AC_REQUIRE([AC_SCOREP_SVN_CONTROLLED])
 if test "x${ac_scorep_svn_controlled}" = "xyes"; then
-   AC_CONFIG_FILES([doc/doxygen-user-common.cfg:vendor/common/build_related/doxygen/doxygen-user-common.cfg.in])
+   AC_CONFIG_FILES([doc/doxygen-user-common.cfg:vendor/common/doxygen/doxygen-user-common.cfg.in])
    AC_CONFIG_FILES([doc/doxygen-user-component.cfg:doc/doxygen-user/doxygen-user-component.cfg.in])
    AC_CONFIG_FILES([doc/doxygen-dev.cfg:doc/doxygen-dev/doxygen-dev.cfg.in])
 fi
