@@ -60,10 +60,21 @@ public:
     /**
        Creates a function parameter object with full set of attributes
      */
-    Funcparam( const std::string &type,
+    Funcparam( const std::string &modifier,
+               const std::string &type,
                const std::string &name,
                const std::string &suffix,
                char               atype );
+
+    /**
+       Returns the type modifier (e.g. 'const') of the parameter as a string.
+     */
+    std::string
+    get_type_modifier
+        ()   const
+    {
+        return m_type_modifier;
+    }
 
     /**
        Returns the type of the parameter as a string. The type includes pointer (*) and
@@ -123,6 +134,7 @@ public:
     }
 
 private:
+    std::string m_type_modifier;  // Modifier like 'const'
     std::string m_type;           // Type; includes pointer (*) and reference (&) types
     std::string m_name;
     std::string m_suffix;         // Type suffix; typically array specifications

@@ -30,12 +30,12 @@
  * @li define coordinates
  * @li exit region 'MPI_Cart_create'
  */
-int MPI_Cart_create(MPI_Comm  comm_old,
-                    int       ndims,
-                    int*      dims,
-                    int*      periodv,
-                    int       reorder,
-                    MPI_Comm* comm_cart)
+int MPI_Cart_create( MPI_Comm                   comm_old,
+                     int                        ndims,
+                     SCOREP_MPI_CONST_DECL int* dims,
+                     SCOREP_MPI_CONST_DECL int* periodv,
+                     int                        reorder,
+                     MPI_Comm*                  comm_cart)
 {
   const int32_t event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_TOPO);
   int32_t       return_val;

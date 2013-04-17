@@ -59,7 +59,7 @@
  * It wraps the MPI_Pack call with enter and exit events.
  */
 int
-MPI_Pack( void* inbuf, int incount, MPI_Datatype datatype, void* outbuf, int outsize, int* position, MPI_Comm comm )
+MPI_Pack( SCOREP_MPI_CONST_DECL void* inbuf, int incount, MPI_Datatype datatype, void* outbuf, int outsize, int* position, MPI_Comm comm )
 {
     int return_val;
 
@@ -93,7 +93,7 @@ MPI_Pack( void* inbuf, int incount, MPI_Datatype datatype, void* outbuf, int out
  * It wraps the MPI_Pack_external call with enter and exit events.
  */
 int
-MPI_Pack_external( char* datarep, void* inbuf, int incount, MPI_Datatype datatype, void* outbuf, MPI_Aint outsize, MPI_Aint* position )
+MPI_Pack_external( SCOREP_MPI_CONST_DECL char* datarep, SCOREP_MPI_CONST_DECL void* inbuf, int incount, MPI_Datatype datatype, void* outbuf, MPI_Aint outsize, MPI_Aint* position )
 {
     int return_val;
 
@@ -127,7 +127,7 @@ MPI_Pack_external( char* datarep, void* inbuf, int incount, MPI_Datatype datatyp
  * It wraps the MPI_Pack_external_size call with enter and exit events.
  */
 int
-MPI_Pack_external_size( char* datarep, int incount, MPI_Datatype datatype, MPI_Aint* size )
+MPI_Pack_external_size( SCOREP_MPI_CONST_DECL char* datarep, int incount, MPI_Datatype datatype, MPI_Aint* size )
 {
     int return_val;
 
@@ -297,7 +297,7 @@ MPI_Type_contiguous( int count, MPI_Datatype oldtype, MPI_Datatype* newtype )
  * It wraps the MPI_Type_create_darray call with enter and exit events.
  */
 int
-MPI_Type_create_darray( int size, int rank, int ndims, int array_of_gsizes[], int array_of_distribs[], int array_of_dargs[], int array_of_psizes[], int order, MPI_Datatype oldtype, MPI_Datatype* newtype )
+MPI_Type_create_darray( int size, int rank, int ndims, SCOREP_MPI_CONST_DECL int array_of_gsizes[], SCOREP_MPI_CONST_DECL int array_of_distribs[], SCOREP_MPI_CONST_DECL int array_of_dargs[], SCOREP_MPI_CONST_DECL int array_of_psizes[], int order, MPI_Datatype oldtype, MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -331,7 +331,7 @@ MPI_Type_create_darray( int size, int rank, int ndims, int array_of_gsizes[], in
  * It wraps the MPI_Type_create_hindexed call with enter and exit events.
  */
 int
-MPI_Type_create_hindexed( int count, int array_of_blocklengths[], MPI_Aint array_of_displacements[], MPI_Datatype oldtype, MPI_Datatype* newtype )
+MPI_Type_create_hindexed( int count, SCOREP_MPI_CONST_DECL int array_of_blocklengths[], SCOREP_MPI_CONST_DECL MPI_Aint array_of_displacements[], MPI_Datatype oldtype, MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -399,7 +399,7 @@ MPI_Type_create_hvector( int count, int blocklength, MPI_Aint stride, MPI_Dataty
  * It wraps the MPI_Type_create_indexed_block call with enter and exit events.
  */
 int
-MPI_Type_create_indexed_block( int count, int blocklength, int array_of_displacements[], MPI_Datatype oldtype, MPI_Datatype* newtype )
+MPI_Type_create_indexed_block( int count, int blocklength, SCOREP_MPI_CONST_DECL int array_of_displacements[], MPI_Datatype oldtype, MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -467,7 +467,7 @@ MPI_Type_create_resized( MPI_Datatype oldtype, MPI_Aint lb, MPI_Aint extent, MPI
  * It wraps the MPI_Type_create_struct call with enter and exit events.
  */
 int
-MPI_Type_create_struct( int count, int array_of_blocklengths[], MPI_Aint array_of_displacements[], MPI_Datatype array_of_types[], MPI_Datatype* newtype )
+MPI_Type_create_struct( int count, SCOREP_MPI_CONST_DECL int array_of_blocklengths[], SCOREP_MPI_CONST_DECL MPI_Aint array_of_displacements[], SCOREP_MPI_CONST_DECL MPI_Datatype array_of_types[], MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -501,7 +501,7 @@ MPI_Type_create_struct( int count, int array_of_blocklengths[], MPI_Aint array_o
  * It wraps the MPI_Type_create_subarray call with enter and exit events.
  */
 int
-MPI_Type_create_subarray( int ndims, int array_of_sizes[], int array_of_subsizes[], int array_of_starts[], int order, MPI_Datatype oldtype, MPI_Datatype* newtype )
+MPI_Type_create_subarray( int ndims, SCOREP_MPI_CONST_DECL int array_of_sizes[], SCOREP_MPI_CONST_DECL int array_of_subsizes[], SCOREP_MPI_CONST_DECL int array_of_starts[], int order, MPI_Datatype oldtype, MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -773,7 +773,7 @@ MPI_Type_get_true_extent( MPI_Datatype datatype, MPI_Aint* true_lb, MPI_Aint* tr
  * It wraps the MPI_Type_hindexed call with enter and exit events.
  */
 int
-MPI_Type_hindexed( int count, int* array_of_blocklengths, MPI_Aint* array_of_displacements, MPI_Datatype oldtype, MPI_Datatype* newtype )
+MPI_Type_hindexed( int count, SCOREP_MPI_CONST_DECL int* array_of_blocklengths, SCOREP_MPI_CONST_DECL MPI_Aint* array_of_displacements, MPI_Datatype oldtype, MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -841,7 +841,7 @@ MPI_Type_hvector( int count, int blocklength, MPI_Aint stride, MPI_Datatype oldt
  * It wraps the MPI_Type_indexed call with enter and exit events.
  */
 int
-MPI_Type_indexed( int count, int* array_of_blocklengths, int* array_of_displacements, MPI_Datatype oldtype, MPI_Datatype* newtype )
+MPI_Type_indexed( int count, SCOREP_MPI_CONST_DECL int* array_of_blocklengths, SCOREP_MPI_CONST_DECL int* array_of_displacements, MPI_Datatype oldtype, MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -977,7 +977,7 @@ MPI_Type_size( MPI_Datatype datatype, int* size )
  * It wraps the MPI_Type_struct call with enter and exit events.
  */
 int
-MPI_Type_struct( int count, int* array_of_blocklengths, MPI_Aint* array_of_displacements, MPI_Datatype* array_of_types, MPI_Datatype* newtype )
+MPI_Type_struct( int count, SCOREP_MPI_CONST_DECL int* array_of_blocklengths, SCOREP_MPI_CONST_DECL MPI_Aint* array_of_displacements, SCOREP_MPI_CONST_DECL MPI_Datatype* array_of_types, MPI_Datatype* newtype )
 {
     int return_val;
 
@@ -1079,7 +1079,7 @@ MPI_Type_vector( int count, int blocklength, int stride, MPI_Datatype oldtype, M
  * It wraps the MPI_Unpack call with enter and exit events.
  */
 int
-MPI_Unpack( void* inbuf, int insize, int* position, void* outbuf, int outcount, MPI_Datatype datatype, MPI_Comm comm )
+MPI_Unpack( SCOREP_MPI_CONST_DECL void* inbuf, int insize, int* position, void* outbuf, int outcount, MPI_Datatype datatype, MPI_Comm comm )
 {
     int return_val;
 
@@ -1113,7 +1113,7 @@ MPI_Unpack( void* inbuf, int insize, int* position, void* outbuf, int outcount, 
  * It wraps the MPI_Unpack_external call with enter and exit events.
  */
 int
-MPI_Unpack_external( char* datarep, void* inbuf, MPI_Aint insize, MPI_Aint* position, void* outbuf, int outcount, MPI_Datatype datatype )
+MPI_Unpack_external( SCOREP_MPI_CONST_DECL char* datarep, SCOREP_MPI_CONST_DECL void* inbuf, MPI_Aint insize, MPI_Aint* position, void* outbuf, int outcount, MPI_Datatype datatype )
 {
     int return_val;
 
@@ -1467,7 +1467,7 @@ MPI_Type_set_attr( MPI_Datatype type, int type_keyval, void* attribute_val )
  * It wraps the MPI_Type_set_name call with enter and exit events.
  */
 int
-MPI_Type_set_name( MPI_Datatype type, char* type_name )
+MPI_Type_set_name( MPI_Datatype type, SCOREP_MPI_CONST_DECL char* type_name )
 {
     int return_val;
 

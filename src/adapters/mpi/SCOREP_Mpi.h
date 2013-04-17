@@ -155,6 +155,11 @@ scorep_mpiprofile_reinit_metrics( void );
  */
 #define SCOREP_MPI_HOOKS_OFF scorep_mpi_hooks_on = false
 
+#if MPI_VERSION >= 3
+#define SCOREP_MPI_CONST_DECL const
+#else
+#define SCOREP_MPI_CONST_DECL
+#endif
 
 
 /** @} */

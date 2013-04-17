@@ -64,12 +64,12 @@
  * @li exit region 'MPI_Cart_create'
  */
 int
-MPI_Cart_create( MPI_Comm  comm_old,
-                 int       ndims,
-                 int*      dims,
-                 int*      periodv,
-                 int       reorder,
-                 MPI_Comm* comm_cart )
+MPI_Cart_create( MPI_Comm                   comm_old,
+                 int                        ndims,
+                 SCOREP_MPI_CONST_DECL int* dims,
+                 SCOREP_MPI_CONST_DECL int* periodv,
+                 int                        reorder,
+                 MPI_Comm*                  comm_cart )
 {
     const int32_t event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int32_t       return_val;
@@ -174,7 +174,7 @@ MPI_Cart_create( MPI_Comm  comm_old,
  * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
-MPI_Cart_sub( MPI_Comm comm, int* remain_dims, MPI_Comm* newcomm )
+MPI_Cart_sub( MPI_Comm comm, SCOREP_MPI_CONST_DECL int* remain_dims, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int       return_val;
@@ -211,7 +211,7 @@ MPI_Cart_sub( MPI_Comm comm, int* remain_dims, MPI_Comm* newcomm )
  * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
-MPI_Graph_create( MPI_Comm comm_old, int nnodes, int* index, int* edges, int reorder, MPI_Comm* newcomm )
+MPI_Graph_create( MPI_Comm comm_old, int nnodes, SCOREP_MPI_CONST_DECL int* index, SCOREP_MPI_CONST_DECL int* edges, int reorder, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int       return_val;
@@ -249,7 +249,7 @@ MPI_Graph_create( MPI_Comm comm_old, int nnodes, int* index, int* edges, int reo
  * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
-MPI_Dist_graph_create( MPI_Comm comm_old, int n, int sources[], int degrees[], int destinations[], int weights[], MPI_Info info, int reorder, MPI_Comm* newcomm )
+MPI_Dist_graph_create( MPI_Comm comm_old, int n, SCOREP_MPI_CONST_DECL int sources[], SCOREP_MPI_CONST_DECL int degrees[], SCOREP_MPI_CONST_DECL int destinations[], SCOREP_MPI_CONST_DECL int weights[], MPI_Info info, int reorder, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int       return_val;
@@ -286,7 +286,7 @@ MPI_Dist_graph_create( MPI_Comm comm_old, int n, int sources[], int degrees[], i
  * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
-MPI_Dist_graph_create_adjacent( MPI_Comm comm_old, int indegree, int sources[], int sourceweights[], int outdegree, int destinations[], int destweights[], MPI_Info info, int reorder, MPI_Comm* newcomm )
+MPI_Dist_graph_create_adjacent( MPI_Comm comm_old, int indegree, SCOREP_MPI_CONST_DECL int sources[], SCOREP_MPI_CONST_DECL int sourceweights[], int outdegree, SCOREP_MPI_CONST_DECL int destinations[], SCOREP_MPI_CONST_DECL int destweights[], MPI_Info info, int reorder, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int       return_val;
@@ -392,7 +392,7 @@ MPI_Cart_get( MPI_Comm comm, int maxdims, int* dims, int* periods, int* coords )
  * It wraps the MPI_Cart_map call with enter and exit events.
  */
 int
-MPI_Cart_map( MPI_Comm comm, int ndims, int* dims, int* periods, int* newrank )
+MPI_Cart_map( MPI_Comm comm, int ndims, SCOREP_MPI_CONST_DECL int* dims, SCOREP_MPI_CONST_DECL int* periods, int* newrank )
 {
     int return_val;
 
@@ -426,7 +426,7 @@ MPI_Cart_map( MPI_Comm comm, int ndims, int* dims, int* periods, int* newrank )
  * It wraps the MPI_Cart_rank call with enter and exit events.
  */
 int
-MPI_Cart_rank( MPI_Comm comm, int* coords, int* rank )
+MPI_Cart_rank( MPI_Comm comm, SCOREP_MPI_CONST_DECL int* coords, int* rank )
 {
     int return_val;
 
@@ -630,7 +630,7 @@ MPI_Graph_get( MPI_Comm comm, int maxindex, int maxedges, int* index, int* edges
  * It wraps the MPI_Graph_map call with enter and exit events.
  */
 int
-MPI_Graph_map( MPI_Comm comm, int nnodes, int* index, int* edges, int* newrank )
+MPI_Graph_map( MPI_Comm comm, int nnodes, SCOREP_MPI_CONST_DECL int* index, SCOREP_MPI_CONST_DECL int* edges, int* newrank )
 {
     int return_val;
 

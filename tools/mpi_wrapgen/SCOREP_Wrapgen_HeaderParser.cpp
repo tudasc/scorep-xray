@@ -127,10 +127,10 @@ void
 processParams( Func*  func,
                string plist )
 {
-    string param, name, type, suffix;
+    string param, name, type_modifier, type, suffix;
     int    pos;
 
-    // Separate last paramter and work recusrively on the beginning
+    // Separate last parameter and work recursively on the beginning
     pos = plist.rfind( ',' );
     if ( pos != string::npos )
     {
@@ -161,11 +161,12 @@ processParams( Func*  func,
         name = param;
         printf( "Can not separate type and name\n" );
     }
-    type = trim( param.substr( 0, pos + 1 ) );
-    name = trim( param.substr( pos + 1 ) );
+    type_modifier = "";
+    type          = trim( param.substr( 0, pos + 1 ) );
+    name          = trim( param.substr( pos + 1 ) );
 
     // Add to function
-    func->add_param( type, name, suffix );
+    func->add_param( type_modifier, type, name, suffix );
 }
 
 /** Evaluates one function prototype

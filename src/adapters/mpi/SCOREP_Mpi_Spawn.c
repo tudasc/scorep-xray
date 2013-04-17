@@ -60,7 +60,7 @@
  * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
-MPI_Comm_accept( char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm )
+MPI_Comm_accept( SCOREP_MPI_CONST_DECL char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
     int       return_val;
@@ -97,7 +97,7 @@ MPI_Comm_accept( char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Co
  * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
-MPI_Comm_connect( char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm )
+MPI_Comm_connect( SCOREP_MPI_CONST_DECL char* port_name, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
     int       return_val;
@@ -171,7 +171,7 @@ MPI_Comm_join( int fd, MPI_Comm* newcomm )
  * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
-MPI_Comm_spawn( char* command, char* argv[], int maxprocs, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm, int array_of_errcodes[] )
+MPI_Comm_spawn( SCOREP_MPI_CONST_DECL char* command, char* argv[], int maxprocs, MPI_Info info, int root, MPI_Comm comm, MPI_Comm* newcomm, int array_of_errcodes[] )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
     int       return_val;
@@ -208,7 +208,7 @@ MPI_Comm_spawn( char* command, char* argv[], int maxprocs, MPI_Info info, int ro
  * event, @ref SCOREP_DefineLocalMPICommunicator is called.
  */
 int
-MPI_Comm_spawn_multiple( int count, char* array_of_commands[], char** array_of_argv[], int array_of_maxprocs[], MPI_Info array_of_info[], int root, MPI_Comm comm, MPI_Comm* newcomm, int array_of_errcodes[] )
+MPI_Comm_spawn_multiple( int count, char* array_of_commands[], char** array_of_argv[], SCOREP_MPI_CONST_DECL int array_of_maxprocs[], SCOREP_MPI_CONST_DECL MPI_Info array_of_info[], int root, MPI_Comm comm, MPI_Comm* newcomm, int array_of_errcodes[] )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_SPAWN );
     int       return_val;
@@ -315,7 +315,7 @@ MPI_Comm_get_parent( MPI_Comm* parent )
  * It wraps the MPI_Lookup_name call with enter and exit events.
  */
 int
-MPI_Lookup_name( char* service_name, MPI_Info info, char* port_name )
+MPI_Lookup_name( SCOREP_MPI_CONST_DECL char* service_name, MPI_Info info, char* port_name )
 {
     int return_val;
 
@@ -349,7 +349,7 @@ MPI_Lookup_name( char* service_name, MPI_Info info, char* port_name )
  * It wraps the MPI_Publish_name call with enter and exit events.
  */
 int
-MPI_Publish_name( char* service_name, MPI_Info info, char* port_name )
+MPI_Publish_name( SCOREP_MPI_CONST_DECL char* service_name, MPI_Info info, SCOREP_MPI_CONST_DECL char* port_name )
 {
     int return_val;
 
@@ -383,7 +383,7 @@ MPI_Publish_name( char* service_name, MPI_Info info, char* port_name )
  * It wraps the MPI_Unpublish_name call with enter and exit events.
  */
 int
-MPI_Unpublish_name( char* service_name, MPI_Info info, char* port_name )
+MPI_Unpublish_name( SCOREP_MPI_CONST_DECL char* service_name, MPI_Info info, SCOREP_MPI_CONST_DECL char* port_name )
 {
     int return_val;
 
@@ -418,7 +418,7 @@ MPI_Unpublish_name( char* service_name, MPI_Info info, char* port_name )
  * It wraps the MPI_Close_port call with enter and exit events.
  */
 int
-MPI_Close_port( char* port_name )
+MPI_Close_port( SCOREP_MPI_CONST_DECL char* port_name )
 {
     int return_val;
 

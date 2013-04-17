@@ -46,11 +46,12 @@ using std::string;
 #include "SCOREP_Wrapgen_Funcparam.h"
 using namespace SCOREP::Wrapgen;
 
-SCOREP::Wrapgen::Funcparam::Funcparam( const string& type,
+SCOREP::Wrapgen::Funcparam::Funcparam( const string& type_modifier,
+                                       const string& type,
                                        const string& name,
                                        const string& suffix,
                                        char          atype ) :
-    m_type( type ), m_name( name ), m_suffix( suffix )
+    m_type_modifier( type_modifier ), m_type( type ), m_name( name ), m_suffix( suffix )
 {
     switch ( atype )
     {

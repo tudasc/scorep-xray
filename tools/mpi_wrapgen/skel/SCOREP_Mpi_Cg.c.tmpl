@@ -137,7 +137,7 @@ int MPI_Group_free(MPI_Group* group)
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_set_name( MPI_Comm comm, char* comm_name )
+MPI_Comm_set_name( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* comm_name )
 {
     int return_val;
 

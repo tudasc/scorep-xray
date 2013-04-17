@@ -60,7 +60,7 @@
  * It wraps the MPI_Address call with enter and exit events.
  */
 int
-MPI_Address( void* location, MPI_Aint* address )
+MPI_Address( SCOREP_MPI_CONST_DECL void* location, MPI_Aint* address )
 {
     int return_val;
 
@@ -162,7 +162,7 @@ MPI_Free_mem( void* base )
  * It wraps the MPI_Get_address call with enter and exit events.
  */
 int
-MPI_Get_address( void* location, MPI_Aint* address )
+MPI_Get_address( SCOREP_MPI_CONST_DECL void* location, MPI_Aint* address )
 {
     int return_val;
 

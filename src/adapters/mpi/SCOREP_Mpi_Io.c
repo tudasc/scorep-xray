@@ -93,7 +93,7 @@ MPI_File_close( MPI_File* fh )
  * It wraps the MPI_File_delete call with enter and exit events.
  */
 int
-MPI_File_delete( char* filename, MPI_Info info )
+MPI_File_delete( SCOREP_MPI_CONST_DECL char* filename, MPI_Info info )
 {
     int return_val;
 
@@ -467,7 +467,7 @@ MPI_File_get_view( MPI_File fh, MPI_Offset* disp, MPI_Datatype* etype, MPI_Datat
  * It wraps the MPI_File_open call with enter and exit events.
  */
 int
-MPI_File_open( MPI_Comm comm, char* filename, int amode, MPI_Info info, MPI_File* fh )
+MPI_File_open( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* filename, int amode, MPI_Info info, MPI_File* fh )
 {
     int return_val;
 
@@ -671,7 +671,7 @@ MPI_File_set_size( MPI_File fh, MPI_Offset size )
  * It wraps the MPI_File_set_view call with enter and exit events.
  */
 int
-MPI_File_set_view( MPI_File fh, MPI_Offset disp, MPI_Datatype etype, MPI_Datatype filetype, char* datarep, MPI_Info info )
+MPI_File_set_view( MPI_File fh, MPI_Offset disp, MPI_Datatype etype, MPI_Datatype filetype, SCOREP_MPI_CONST_DECL char* datarep, MPI_Info info )
 {
     int return_val;
 
@@ -739,7 +739,7 @@ MPI_File_sync( MPI_File fh )
  * It wraps the MPI_Register_datarep call with enter and exit events.
  */
 int
-MPI_Register_datarep( char* datarep, MPI_Datarep_conversion_function* read_conversion_fn, MPI_Datarep_conversion_function* write_conversion_fn, MPI_Datarep_extent_function* dtype_file_extent_fn, void* extra_state )
+MPI_Register_datarep( SCOREP_MPI_CONST_DECL char* datarep, MPI_Datarep_conversion_function* read_conversion_fn, MPI_Datarep_conversion_function* write_conversion_fn, MPI_Datarep_extent_function* dtype_file_extent_fn, void* extra_state )
 {
     int return_val;
 
@@ -890,7 +890,7 @@ MPI_File_iread_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype,
  * It wraps the MPI_File_iwrite call with enter and exit events.
  */
 int
-MPI_File_iwrite( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Request* request )
+MPI_File_iwrite( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, MPI_Request* request )
 {
     int return_val;
 
@@ -924,7 +924,7 @@ MPI_File_iwrite( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_R
  * It wraps the MPI_File_iwrite_at call with enter and exit events.
  */
 int
-MPI_File_iwrite_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype, MPI_Request* request )
+MPI_File_iwrite_at( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, MPI_Request* request )
 {
     int return_val;
 
@@ -958,7 +958,7 @@ MPI_File_iwrite_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Da
  * It wraps the MPI_File_iwrite_shared call with enter and exit events.
  */
 int
-MPI_File_iwrite_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Request* request )
+MPI_File_iwrite_shared( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, MPI_Request* request )
 {
     int return_val;
 
@@ -1403,7 +1403,7 @@ MPI_File_read_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype, 
  * It wraps the MPI_File_write call with enter and exit events.
  */
 int
-MPI_File_write( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
+MPI_File_write( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
 {
     int return_val;
 
@@ -1437,7 +1437,7 @@ MPI_File_write( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_St
  * It wraps the MPI_File_write_all call with enter and exit events.
  */
 int
-MPI_File_write_all( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
+MPI_File_write_all( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
 {
     int return_val;
 
@@ -1471,7 +1471,7 @@ MPI_File_write_all( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MP
  * It wraps the MPI_File_write_all_begin call with enter and exit events.
  */
 int
-MPI_File_write_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatype )
+MPI_File_write_all_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype )
 {
     int return_val;
 
@@ -1505,7 +1505,7 @@ MPI_File_write_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype dataty
  * It wraps the MPI_File_write_all_end call with enter and exit events.
  */
 int
-MPI_File_write_all_end( MPI_File fh, void* buf, MPI_Status* status )
+MPI_File_write_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Status* status )
 {
     int return_val;
 
@@ -1539,7 +1539,7 @@ MPI_File_write_all_end( MPI_File fh, void* buf, MPI_Status* status )
  * It wraps the MPI_File_write_at call with enter and exit events.
  */
 int
-MPI_File_write_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
+MPI_File_write_at( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
 {
     int return_val;
 
@@ -1573,7 +1573,7 @@ MPI_File_write_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Dat
  * It wraps the MPI_File_write_at_all call with enter and exit events.
  */
 int
-MPI_File_write_at_all( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
+MPI_File_write_at_all( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
 {
     int return_val;
 
@@ -1607,7 +1607,7 @@ MPI_File_write_at_all( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI
  * It wraps the MPI_File_write_at_all_begin call with enter and exit events.
  */
 int
-MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Datatype datatype )
+MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype )
 {
     int return_val;
 
@@ -1641,7 +1641,7 @@ MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int coun
  * It wraps the MPI_File_write_at_all_end call with enter and exit events.
  */
 int
-MPI_File_write_at_all_end( MPI_File fh, void* buf, MPI_Status* status )
+MPI_File_write_at_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Status* status )
 {
     int return_val;
 
@@ -1675,7 +1675,7 @@ MPI_File_write_at_all_end( MPI_File fh, void* buf, MPI_Status* status )
  * It wraps the MPI_File_write_ordered call with enter and exit events.
  */
 int
-MPI_File_write_ordered( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
+MPI_File_write_ordered( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
 {
     int return_val;
 
@@ -1709,7 +1709,7 @@ MPI_File_write_ordered( MPI_File fh, void* buf, int count, MPI_Datatype datatype
  * It wraps the MPI_File_write_ordered_begin call with enter and exit events.
  */
 int
-MPI_File_write_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatype )
+MPI_File_write_ordered_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype )
 {
     int return_val;
 
@@ -1743,7 +1743,7 @@ MPI_File_write_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype da
  * It wraps the MPI_File_write_ordered_end call with enter and exit events.
  */
 int
-MPI_File_write_ordered_end( MPI_File fh, void* buf, MPI_Status* status )
+MPI_File_write_ordered_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Status* status )
 {
     int return_val;
 
@@ -1777,7 +1777,7 @@ MPI_File_write_ordered_end( MPI_File fh, void* buf, MPI_Status* status )
  * It wraps the MPI_File_write_shared call with enter and exit events.
  */
 int
-MPI_File_write_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
+MPI_File_write_shared( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, MPI_Status* status )
 {
     int return_val;
 

@@ -65,7 +65,7 @@ static int scorep_rma_id = 0;
  * Triggers an enter and exit event.
  */
 int
-MPI_Accumulate( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Op op, MPI_Win win )
+MPI_Accumulate( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Op op, MPI_Win win )
 {
     int return_val;
 
@@ -179,7 +179,7 @@ MPI_Get( void*        origin_addr,
  * Triggers an enter and exit event.
  */
 int
-MPI_Put( void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Win win )
+MPI_Put( SCOREP_MPI_CONST_DECL void* origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Win win )
 {
     int return_val;
 
@@ -1042,7 +1042,7 @@ MPI_Win_set_attr( MPI_Win win, int win_keyval, void* attribute_val )
  * It wraps the MPI_Win_set_name call with enter and exit events.
  */
 int
-MPI_Win_set_name( MPI_Win win, char* win_name )
+MPI_Win_set_name( MPI_Win win, SCOREP_MPI_CONST_DECL char* win_name )
 {
     int return_val;
 

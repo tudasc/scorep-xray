@@ -59,7 +59,7 @@
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Allgather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm )
+MPI_Allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm )
 {
     int return_val;
 
@@ -131,7 +131,7 @@ MPI_Allgather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbu
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Allgatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype recvtype, MPI_Comm comm )
+MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, SCOREP_MPI_CONST_DECL int* recvcounts, SCOREP_MPI_CONST_DECL int* displs, MPI_Datatype recvtype, MPI_Comm comm )
 {
     int return_val;
 
@@ -217,7 +217,7 @@ MPI_Allgatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Allreduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
+MPI_Allreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
     int return_val;
 
@@ -285,7 +285,7 @@ MPI_Allreduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, M
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Alltoall( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm )
+MPI_Alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm )
 {
     int return_val;
 
@@ -352,7 +352,7 @@ MPI_Alltoall( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Alltoallv( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype sendtype, void* recvbuf, int* recvcounts, int* rdispls, MPI_Datatype recvtype, MPI_Comm comm )
+MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* sendcounts, SCOREP_MPI_CONST_DECL int* sdispls, MPI_Datatype sendtype, void* recvbuf, SCOREP_MPI_CONST_DECL int* recvcounts, SCOREP_MPI_CONST_DECL int* rdispls, MPI_Datatype recvtype, MPI_Comm comm )
 {
     int return_val;
 
@@ -435,7 +435,7 @@ MPI_Alltoallv( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype sendty
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Alltoallw( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype sendtypes[], void* recvbuf, int recvcounts[], int rdispls[], MPI_Datatype recvtypes[], MPI_Comm comm )
+MPI_Alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int sendcounts[], SCOREP_MPI_CONST_DECL int sdispls[], SCOREP_MPI_CONST_DECL MPI_Datatype sendtypes[], void* recvbuf, SCOREP_MPI_CONST_DECL int recvcounts[], SCOREP_MPI_CONST_DECL int rdispls[], SCOREP_MPI_CONST_DECL MPI_Datatype recvtypes[], MPI_Comm comm )
 {
     int return_val;
 
@@ -640,7 +640,7 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Exscan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
+MPI_Exscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
     int return_val;
 
@@ -701,7 +701,7 @@ MPI_Exscan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Gather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm )
+MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm )
 {
     int return_val;
 
@@ -778,7 +778,7 @@ MPI_Gather( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, 
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Gatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype recvtype, int root, MPI_Comm comm )
+MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, SCOREP_MPI_CONST_DECL int* recvcounts, SCOREP_MPI_CONST_DECL int* displs, MPI_Datatype recvtype, int root, MPI_Comm comm )
 {
     int return_val;
 
@@ -860,7 +860,7 @@ MPI_Gatherv( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Reduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm )
+MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm )
 {
     int return_val;
 
@@ -936,7 +936,7 @@ MPI_Reduce( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Reduce_scatter( void* sendbuf, void* recvbuf, int* recvcounts, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
+MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_MPI_CONST_DECL int* recvcounts, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
     int return_val;
 
@@ -1012,7 +1012,7 @@ MPI_Reduce_scatter( void* sendbuf, void* recvbuf, int* recvcounts, MPI_Datatype 
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Reduce_scatter_block( void* sendbuf, void* recvbuf, int recvcount, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
+MPI_Reduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int recvcount, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
     int return_val;
 
@@ -1079,7 +1079,7 @@ MPI_Reduce_scatter_block( void* sendbuf, void* recvbuf, int recvcount, MPI_Datat
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Scan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
+MPI_Scan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
     int return_val;
 
@@ -1150,7 +1150,7 @@ MPI_Scan( void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Scatter( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm )
+MPI_Scatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm )
 {
     int return_val;
 
@@ -1230,7 +1230,7 @@ MPI_Scatter( void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf,
  * event is generated in between the enter and exit event after the PMPI call.
  */
 int
-MPI_Scatterv( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm )
+MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* sendcounts, SCOREP_MPI_CONST_DECL int* displs, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm )
 {
     int return_val;
 
@@ -1314,7 +1314,7 @@ MPI_Scatterv( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype sendtype
  * It wraps the MPI_Reduce_local call with enter and exit events.
  */
 int
-MPI_Reduce_local( void* inbuf, void* inoutbuf, int count, MPI_Datatype datatype, MPI_Op op )
+MPI_Reduce_local( SCOREP_MPI_CONST_DECL void* inbuf, void* inoutbuf, int count, MPI_Datatype datatype, MPI_Op op )
 {
     int return_val;
 

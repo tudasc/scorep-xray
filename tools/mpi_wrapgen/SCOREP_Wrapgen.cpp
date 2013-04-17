@@ -218,12 +218,13 @@ SCOREP::Wrapgen::read_prototypes
         // initialize function parameter storage first, then read them
         for ( int a = 0; a < numParam; ++a )
         {
-            string arg_type, arg_name, arg_suffix;
+            string arg_modifier, arg_type, arg_name, arg_suffix;
+            getline( proto, arg_modifier );
             getline( proto, arg_type );
             getline( proto, arg_name );
             getline( proto, arg_suffix );
-            Funcparam arg = Funcparam( arg_type, arg_name, arg_suffix,
-                                       atype[ a ] );
+            Funcparam arg = Funcparam( arg_modifier, arg_type, arg_name,
+                                       arg_suffix, atype[ a ] );
             params.push_back( arg );
         }
 
@@ -302,18 +303,19 @@ SCOREP::Wrapgen::read_xml_prototypes
                             if ( xmlStrcmp( el->name, ( const xmlChar* )
                                             "param" ) == 0 )
                             {
-                                string         pname, type, suffix, special;
+                                string         pname, type_modifier, type, suffix, special;
                                 char           access;
                                 vector<string> special_tags;
 
+                                XML_GET_STR_ATTR( el, "type_modifier", type_modifier );
                                 XML_GET_STR_ATTR( el, "type", type );
                                 XML_GET_STR_ATTR( el, "name", pname );
                                 XML_GET_CHAR_ATTR( el, "access", access );
                                 XML_GET_STR_ATTR( el, "suffix", suffix );
                                 XML_GET_STR_ATTR( el, "special", special );
 
-                                params.push_back( Funcparam( type, pname,
-                                                             suffix, access ) );
+                                params.push_back( Funcparam( type_modifier, type,
+                                                             pname, suffix, access ) );
                                 tokenize( special, ",", special_tags );
                                 for ( vector<string>::const_iterator tag = special_tags.begin();
                                       tag != special_tags.end(); ++tag )
@@ -426,7 +428,7 @@ SCOREP::Wrapgen::write_xml_prototypes
 {
     map<string, MPIFunc>::iterator it;
     ofstream
-                                   pconf
+    pconf
     (
         filename
     );
@@ -508,7 +510,7 @@ SCOREP::Wrapgen::handle_file_template
         {
             string scope, cmd, wrapper_tmpl;
             istringstream
-                   line_stream
+            line_stream
             (
                 src_line.substr( pos + 15 )
             );

@@ -454,6 +454,7 @@ public:
     );
 
     /** add a parameter to function prototype
+     * @param type_modifier modifier of parameter type (e.g. 'const')
      * @param type parameter type
      * @param name parameter name
      * @param suffix parameter suffix, like [] for arrays, etc.
@@ -461,6 +462,7 @@ public:
     void
     add_param
     (
+        const std::string& type_modifier,
         const std::string& type,
         const std::string& name,
         const std::string& suffix
@@ -511,17 +513,17 @@ protected:
 
 private:
     /** unique function id */
-    std::string                        m_id;
+    std::string m_id;
     /** return type of function */
-    std::string                        m_rtype;
+    std::string m_rtype;
     /** name of function */
-    std::string                        m_name;
+    std::string m_name;
     /** functional group */
-    std::string                        m_group;
+    std::string m_group;
     /** guard name that is used to decide whether this wrapper is built */
-    std::string                        m_guard;
+    std::string m_guard;
     /** family of prototype */
-    std::string                        m_family;
+    std::string m_family;
     /** special declaration block */
     std::map<std::string, std::string> m_decl_block;
     /** special initialization block */
@@ -531,7 +533,7 @@ private:
     /** special cleanup block */
     std::map<std::string, std::string> m_cleanup_block;
     /** vector of function parameters */
-    paramlist_t                        m_params;
+    paramlist_t m_params;
 
     /** number of created function objects */
     static int num_func;

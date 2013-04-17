@@ -108,7 +108,7 @@ scorep_mpi_get_status_array( int size )
  * @li exit region 'MPI_Bsend'
  */
 int
-MPI_Bsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
+MPI_Bsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
     int return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -168,7 +168,7 @@ MPI_Bsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_C
  * @li exit region 'MPI_Rsend'
  */
 int
-MPI_Rsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
+MPI_Rsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
     int return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -228,7 +228,7 @@ MPI_Rsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_C
  * @li exit region 'MPI_Send'
  */
 int
-MPI_Send( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
+MPI_Send( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
     int return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -288,7 +288,7 @@ MPI_Send( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Co
  * @li exit region 'MPI_Ssend'
  */
 int
-MPI_Ssend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
+MPI_Ssend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
     int return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -459,7 +459,7 @@ MPI_Probe( int source, int tag, MPI_Comm comm, MPI_Status* status )
  * @li exit region 'MPI_Sendrecv'
  */
 int
-MPI_Sendrecv( void* sendbuf, int sendcount, MPI_Datatype sendtype, int dest, int sendtag, void* recvbuf, int recvcount, MPI_Datatype recvtype, int source, int recvtag, MPI_Comm comm, MPI_Status* status )
+MPI_Sendrecv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, int dest, int sendtag, void* recvbuf, int recvcount, MPI_Datatype recvtype, int source, int recvtag, MPI_Comm comm, MPI_Status* status )
 {
     int return_val;
 
@@ -574,7 +574,7 @@ MPI_Sendrecv_replace( void* buf, int count, MPI_Datatype datatype, int dest, int
  * @ingroup p2p
  */
 int
-MPI_Ibsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
+MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
     int return_val;
 
@@ -645,7 +645,7 @@ MPI_Ibsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_
  * @ingroup p2p
  */
 int
-MPI_Irsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
+MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
     int return_val;
 
@@ -716,7 +716,7 @@ MPI_Irsend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_
  * @ingroup p2p
  */
 int
-MPI_Isend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
+MPI_Isend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
     int return_val;
 
@@ -787,7 +787,7 @@ MPI_Isend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_C
  * @ingroup p2p
  */
 int
-MPI_Issend( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
+MPI_Issend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
     int return_val;
 
@@ -1675,7 +1675,7 @@ MPI_Testsome( int          incount,
  * @li exit region 'MPI_Bsend_init'
  */
 int
-MPI_Bsend_init( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
+MPI_Bsend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val, sz;
@@ -1716,7 +1716,7 @@ MPI_Bsend_init( void* buf, int count, MPI_Datatype datatype, int dest, int tag, 
  * @li exit region 'MPI_Rsend_init'
  */
 int
-MPI_Rsend_init( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
+MPI_Rsend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val, sz;
@@ -1757,7 +1757,7 @@ MPI_Rsend_init( void* buf, int count, MPI_Datatype datatype, int dest, int tag, 
  * @li exit region 'MPI_Send_init'
  */
 int
-MPI_Send_init( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
+MPI_Send_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val, sz;
@@ -1798,7 +1798,7 @@ MPI_Send_init( void* buf, int count, MPI_Datatype datatype, int dest, int tag, M
  * @li exit region 'MPI_Ssend_init'
  */
 int
-MPI_Ssend_init( void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
+MPI_Ssend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val, sz;
@@ -2194,7 +2194,7 @@ MPI_Cancel( MPI_Request* request )
  * It wraps the MPI_Test_cancelled call with enter and exit events.
  */
 int
-MPI_Test_cancelled( MPI_Status* status, int* flag )
+MPI_Test_cancelled( SCOREP_MPI_CONST_DECL MPI_Status* status, int* flag )
 {
     int return_val;
 

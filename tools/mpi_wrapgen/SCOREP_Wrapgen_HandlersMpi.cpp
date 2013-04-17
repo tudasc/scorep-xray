@@ -947,6 +947,17 @@ SCOREP::Wrapgen::handler::mpi::proto_c
         }
 
         const Funcparam& arg = func.get_param( i );
+
+        const string& type_modififier_as_string = arg.get_type_modifier();
+        str += type_modififier_as_string;
+        if ( type_modififier_as_string.length() == 0 )
+        {
+            str += "";
+        }
+        else
+        {
+            str += " ";
+        }
         str += arg.get_type() + " " + arg.get_name() + arg.get_suffix();
     }
     str += ")";

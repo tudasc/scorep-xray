@@ -2,21 +2,21 @@
 <prototypes count="311" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="errorcode" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="errorcode" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Accumulate" rtype="int" group="rma" guard="rma" >
-    <param access="i" type="void*" name="origin_addr" />
-    <param access="i" type="int" name="origin_count" />
-    <param access="i" type="MPI_Datatype" name="origin_datatype" />
-    <param access="i" type="int" name="target_rank" />
-    <param access="i" type="MPI_Aint" name="target_disp" />
-    <param access="i" type="int" name="target_count" />
-    <param access="i" type="MPI_Datatype" name="target_datatype" />
-    <param access="i" type="MPI_Op" name="op" />
-    <param access="i" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
+    <param access="i" type_modifier="" type="int" name="origin_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
+    <param access="i" type_modifier="" type="int" name="target_rank" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="target_disp" />
+    <param access="i" type_modifier="" type="int" name="target_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="target_datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
     <xblock><![CDATA[
       dpid = scorep_mpi_win_rank_to_pe( target_rank, win );
@@ -44,36 +44,36 @@
 </prototype>
 
 <prototype name="MPI_Add_error_class" rtype="int" group="err" guard="extra,err" >
-    <param access="o" type="int*" name="errorclass" />
+    <param access="o" type_modifier="" type="int*" name="errorclass" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Add_error_code" rtype="int" group="err" guard="extra,err" >
-    <param access="i" type="int" name="errorclass" />
-    <param access="o" type="int*" name="errorcode" />
+    <param access="i" type_modifier="" type="int" name="errorclass" />
+    <param access="o" type_modifier="" type="int*" name="errorcode" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Add_error_string" rtype="int" group="err" guard="extra,err" >
-    <param access="i" type="int" name="errorcode" />
-    <param access="i" type="char*" name="string" />
+    <param access="i" type_modifier="" type="int" name="errorcode" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="string" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Address" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type="void*" name="location" />
-    <param access="o" type="MPI_Aint*" name="address" special="noaint" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="location" />
+    <param access="o" type_modifier="" type="MPI_Aint*" name="address" special="noaint" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Allgather" rtype="int" group="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="i" type="int" name="sendcount" />
-    <param access="i" type="MPI_Datatype" name="sendtype" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int" name="recvcount" />
-    <param access="i" type="MPI_Datatype" name="recvtype" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -143,14 +143,14 @@
 </prototype>
 
 <prototype name="MPI_Allgatherv" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="i" type="int" name="sendcount" />
-    <param access="i" type="MPI_Datatype" name="sendtype" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int*" name="recvcounts" />
-    <param access="i" type="int*" name="displs" />
-    <param access="i" type="MPI_Datatype" name="recvtype" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="displs" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -230,19 +230,19 @@
 </prototype>
 
 <prototype name="MPI_Alloc_mem" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type="MPI_Aint" name="size" />
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="o" type="void*" name="baseptr" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="size" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="void*" name="baseptr" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Allreduce" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="MPI_Op" name="op" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -308,13 +308,13 @@
 </prototype>
 
 <prototype name="MPI_Alltoall" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="i" type="int" name="sendcount" />
-    <param access="i" type="MPI_Datatype" name="sendtype" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int" name="recvcount" />
-    <param access="i" type="MPI_Datatype" name="recvtype" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -377,15 +377,15 @@
 </prototype>
 
 <prototype name="MPI_Alltoallv" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="i" type="int*" name="sendcounts" />
-    <param access="i" type="int*" name="sdispls" />
-    <param access="i" type="MPI_Datatype" name="sendtype" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int*" name="recvcounts" />
-    <param access="i" type="int*" name="rdispls" />
-    <param access="i" type="MPI_Datatype" name="recvtype" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sendcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sdispls" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="rdispls" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -464,15 +464,15 @@
 </prototype>
 
 <prototype name="MPI_Alltoallw" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="i" type="int" name="sendcounts" suffix="[]" />
-    <param access="i" type="int" name="sdispls" suffix="[]" />
-    <param access="i" type="MPI_Datatype" name="sendtypes" suffix="[]" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int" name="recvcounts" suffix="[]" />
-    <param access="i" type="int" name="rdispls" suffix="[]" />
-    <param access="i" type="MPI_Datatype" name="recvtypes" suffix="[]" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sendcounts" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sdispls" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Datatype" name="sendtypes" suffix="[]" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="recvcounts" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="rdispls" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Datatype" name="recvtypes" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="2.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -557,38 +557,38 @@
 </prototype>
 
 <prototype name="MPI_Attr_delete" rtype="int" group="cg_ext" guard="extra,cg,ext" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="keyval" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="keyval" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Attr_get" rtype="int" group="cg_ext" guard="extra,cg,ext" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="keyval" />
-    <param access="o" type="void*" name="attribute_val" />
-    <param access="o" type="int*" name="flag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="keyval" />
+    <param access="o" type_modifier="" type="void*" name="attribute_val" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Attr_put" rtype="int" group="cg_ext" guard="extra,cg,ext" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="keyval" />
-    <param access="i" type="void*" name="attribute_val" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="keyval" />
+    <param access="i" type_modifier="" type="void*" name="attribute_val" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Barrier" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <decl>SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;</decl>
 </prototype>
 
 <prototype name="MPI_Bcast" rtype="int" group="coll" guard="coll" >
-    <param access="b" type="void*" name="buffer" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="b" type_modifier="" type="void*" name="buffer" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -626,12 +626,12 @@
 </prototype>
 
 <prototype name="MPI_Bsend" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -652,329 +652,329 @@
 </prototype>
 
 <prototype name="MPI_Bsend_init" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Buffer_attach" rtype="int" group="p2p" guard="extra,p2p" >
-    <param access="i" type="void*" name="buffer" />
-    <param access="i" type="int" name="size" />
+    <param access="i" type_modifier="" type="void*" name="buffer" />
+    <param access="i" type_modifier="" type="int" name="size" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Buffer_detach" rtype="int" group="p2p" guard="extra,p2p" >
-    <param access="o" type="void*" name="buffer" />
-    <param access="o" type="int*" name="size" />
+    <param access="o" type_modifier="" type="void*" name="buffer" />
+    <param access="o" type_modifier="" type="int*" name="size" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Cancel" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="MPI_Request*" name="request" />
+    <param access="i" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Cart_coords" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="rank" />
-    <param access="i" type="int" name="maxdims" />
-    <param access="o" type="int*" name="coords" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="rank" />
+    <param access="i" type_modifier="" type="int" name="maxdims" />
+    <param access="o" type_modifier="" type="int*" name="coords" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Cart_create" rtype="int" group="topo" >
-    <param access="i" type="MPI_Comm" name="comm_old" />
-    <param access="i" type="int" name="ndims" />
-    <param access="i" type="int*" name="dims" />
-    <param access="i" type="int*" name="periods" />
-    <param access="i" type="int" name="reorder" />
-    <param access="o" type="MPI_Comm*" name="comm_cart" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm_old" />
+    <param access="i" type_modifier="" type="int" name="ndims" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="dims" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="periods" />
+    <param access="i" type_modifier="" type="int" name="reorder" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="comm_cart" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Cart_get" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="maxdims" />
-    <param access="o" type="int*" name="dims" />
-    <param access="o" type="int*" name="periods" />
-    <param access="o" type="int*" name="coords" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="maxdims" />
+    <param access="o" type_modifier="" type="int*" name="dims" />
+    <param access="o" type_modifier="" type="int*" name="periods" />
+    <param access="o" type_modifier="" type="int*" name="coords" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Cart_map" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="ndims" />
-    <param access="i" type="int*" name="dims" />
-    <param access="i" type="int*" name="periods" />
-    <param access="o" type="int*" name="newrank" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="ndims" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="dims" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="periods" />
+    <param access="o" type_modifier="" type="int*" name="newrank" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Cart_rank" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int*" name="coords" />
-    <param access="o" type="int*" name="rank" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="coords" />
+    <param access="o" type_modifier="" type="int*" name="rank" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Cart_shift" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="direction" />
-    <param access="i" type="int" name="disp" />
-    <param access="o" type="int*" name="rank_source" />
-    <param access="o" type="int*" name="rank_dest" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="direction" />
+    <param access="i" type_modifier="" type="int" name="disp" />
+    <param access="o" type_modifier="" type="int*" name="rank_source" />
+    <param access="o" type_modifier="" type="int*" name="rank_dest" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Cart_sub" rtype="int" group="topo" >
-    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
-    <param access="i" type="int*" name="remain_dims" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="remain_dims" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Cartdim_get" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="int*" name="ndims" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="int*" name="ndims" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Close_port" rtype="int" group="spawn" guard="spawn,extra" >
-    <param access="i" type="char*" name="port_name" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="port_name" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_accept" rtype="int" group="spawn" guard="spawn,extra" >
-    <param access="i" type="char*" name="port_name" />
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="port_name" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_c2f" rtype="MPI_Fint" group="cg_misc" guard="extra,cg,misc" >
-    <param access="o" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_call_errhandler" rtype="int" group="cg_err" guard="extra,,cg,err" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="errorcode" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="errorcode" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_compare" rtype="int" group="cg" guard="extra,cg" >
-    <param access="i" type="MPI_Comm" name="comm1" />
-    <param access="i" type="MPI_Comm" name="comm2" />
-    <param access="o" type="int*" name="result" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm1" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm2" />
+    <param access="o" type_modifier="" type="int*" name="result" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Comm_connect" rtype="int" group="spawn" guard="spawn,extra" >
-    <param access="i" type="char*" name="port_name" />
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="port_name" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_create" rtype="int" group="cg" >
-    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
-    <param access="i" type="MPI_Group" name="group" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Comm_create_errhandler" rtype="int" group="cg_err" guard="extra,cg,err" >
-    <param access="i" type="MPI_Comm_errhandler_fn*" name="function" />
-    <param access="o" type="MPI_Errhandler*" name="errhandler" />
+    <param access="i" type_modifier="" type="MPI_Comm_errhandler_fn*" name="function" />
+    <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_create_keyval" rtype="int" group="cg_ext" guard="extra,cg,ext" >
-    <param access="i" type="MPI_Comm_copy_attr_function*" name="comm_copy_attr_fn" />
-    <param access="i" type="MPI_Comm_delete_attr_function*" name="comm_delete_attr_fn" />
-    <param access="o" type="int*" name="comm_keyval" />
-    <param access="i" type="void*" name="extra_state" />
+    <param access="i" type_modifier="" type="MPI_Comm_copy_attr_function*" name="comm_copy_attr_fn" />
+    <param access="i" type_modifier="" type="MPI_Comm_delete_attr_function*" name="comm_delete_attr_fn" />
+    <param access="o" type_modifier="" type="int*" name="comm_keyval" />
+    <param access="i" type_modifier="" type="void*" name="extra_state" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_delete_attr" rtype="int" group="cg_ext" guard="extra,cg,ext" >
-    <param access="b" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="comm_keyval" />
+    <param access="b" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="comm_keyval" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_disconnect" rtype="int" group="spawn" guard="spawn,extra" >
-    <param access="b" type="MPI_Comm*" name="comm" />
+    <param access="b" type_modifier="" type="MPI_Comm*" name="comm" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_dup" rtype="int" group="cg" >
-    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Comm_f2c" rtype="MPI_Comm" group="cg_misc" guard="extra,cg,misc" >
-    <param access="o" type="MPI_Fint" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Fint" name="comm" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_free" rtype="int" group="cg" >
-    <param access="b" type="MPI_Comm*" name="comm" />
+    <param access="b" type_modifier="" type="MPI_Comm*" name="comm" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Comm_free_keyval" rtype="int" group="cg_ext" guard="extra,cg,ext" >
-    <param access="b" type="int*" name="comm_keyval" />
+    <param access="b" type_modifier="" type="int*" name="comm_keyval" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_get_attr" rtype="int" group="cg_ext" guard="extra,cg,ext" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="comm_keyval" />
-    <param access="o" type="void*" name="attribute_val" />
-    <param access="o" type="int*" name="flag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="comm_keyval" />
+    <param access="o" type_modifier="" type="void*" name="attribute_val" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_get_errhandler" rtype="int" group="cg_err" guard="extra,cg,err" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Errhandler*" name="errhandler" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_get_name" rtype="int" group="cg_ext" guard="extra,cg,ext" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="char*" name="comm_name" />
-    <param access="o" type="int*" name="resultlen" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="char*" name="comm_name" />
+    <param access="o" type_modifier="" type="int*" name="resultlen" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_get_parent" rtype="int" group="spawn" guard="spawn,extra" >
-    <param access="o" type="MPI_Comm*" name="parent" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="parent" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_group" rtype="int" group="cg" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Group*" name="group" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="group" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Comm_join" rtype="int" group="spawn" guard="spawn,extra" >
-    <param access="i" type="int" name="fd" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="i" type_modifier="" type="int" name="fd" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_rank" rtype="int" group="cg" guard="extra,mini,cg" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="int*" name="rank" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="int*" name="rank" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Comm_remote_group" rtype="int" group="cg" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Group*" name="group" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="group" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Comm_remote_size" rtype="int" group="cg" guard="extra,mini,cg" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="int*" name="size" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="int*" name="size" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Comm_set_attr" rtype="int" group="cg_ext" guard="extra,cg,ext" >
-    <param access="b" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="comm_keyval" />
-    <param access="i" type="void*" name="attribute_val" />
+    <param access="b" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="comm_keyval" />
+    <param access="i" type_modifier="" type="void*" name="attribute_val" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_set_errhandler" rtype="int" group="cg_err" guard="extra,cg,err" >
-    <param access="b" type="MPI_Comm" name="comm" />
-    <param access="i" type="MPI_Errhandler" name="errhandler" />
+    <param access="b" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_set_name" rtype="int" group="cg_ext" guard="extra,cg,ext" >
-    <param access="b" type="MPI_Comm" name="comm" />
-    <param access="i" type="char*" name="comm_name" />
+    <param access="b" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="comm_name" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_size" rtype="int" group="cg" guard="extra,mini,cg" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="int*" name="size" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="int*" name="size" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Comm_spawn" rtype="int" group="spawn" guard="spawn,extra" >
-    <param access="i" type="char*" name="command" />
-    <param access="i" type="char*" name="argv" suffix="[]" />
-    <param access="i" type="int" name="maxprocs" />
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
-    <param access="o" type="int" name="array_of_errcodes" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="command" />
+    <param access="i" type_modifier="" type="char*" name="argv" suffix="[]" />
+    <param access="i" type_modifier="" type="int" name="maxprocs" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="o" type_modifier="" type="int" name="array_of_errcodes" suffix="[]" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_spawn_multiple" rtype="int" group="spawn" guard="spawn,extra" >
-    <param access="i" type="int" name="count" />
-    <param access="i" type="char*" name="array_of_commands" suffix="[]" />
-    <param access="i" type="char**" name="array_of_argv" suffix="[]" />
-    <param access="i" type="int" name="array_of_maxprocs" suffix="[]" />
-    <param access="i" type="MPI_Info" name="array_of_info" suffix="[]" />
-    <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
-    <param access="o" type="int" name="array_of_errcodes" suffix="[]" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="char*" name="array_of_commands" suffix="[]" />
+    <param access="i" type_modifier="" type="char**" name="array_of_argv" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="array_of_maxprocs" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Info" name="array_of_info" suffix="[]" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="o" type_modifier="" type="int" name="array_of_errcodes" suffix="[]" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Comm_split" rtype="int" group="cg" >
-    <param access="i" type="MPI_Comm" name="comm" special="commparent" />
-    <param access="i" type="int" name="color" />
-    <param access="i" type="int" name="key" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="i" type_modifier="" type="int" name="color" />
+    <param access="i" type_modifier="" type="int" name="key" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Comm_test_inter" rtype="int" group="cg" guard="extra,cg" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="int*" name="flag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Dims_create" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="int" name="nnodes" />
-    <param access="i" type="int" name="ndims" />
-    <param access="b" type="int*" name="dims" />
+    <param access="i" type_modifier="" type="int" name="nnodes" />
+    <param access="i" type_modifier="" type="int" name="ndims" />
+    <param access="b" type_modifier="" type="int*" name="dims" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Dist_graph_create" rtype="int" group="topo" guard="topo" >
-    <param access="i" type="MPI_Comm" name="comm_old" special="commparent" />
-    <param access="i" type="int" name="n" />
-    <param access="i" type="int" name="sources" suffix="[]" />
-    <param access="i" type="int" name="degrees" suffix="[]" />
-    <param access="i" type="int" name="destinations" suffix="[]" />
-    <param access="i" type="int" name="weights" suffix="[]" />
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="i" type="int" name="reorder" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm_old" special="commparent" />
+    <param access="i" type_modifier="" type="int" name="n" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sources" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="degrees" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="destinations" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="weights" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="int" name="reorder" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="2.2" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_UNWEIGHTED)
@@ -995,16 +995,16 @@
 </prototype>
 
 <prototype name="MPI_Dist_graph_create_adjacent" rtype="int" group="topo" guard="topo" >
-    <param access="i" type="MPI_Comm" name="comm_old" special="commparent" />
-    <param access="i" type="int" name="indegree" />
-    <param access="i" type="int" name="sources" suffix="[]" />
-    <param access="i" type="int" name="sourceweights" suffix="[]" />
-    <param access="i" type="int" name="outdegree" />
-    <param access="i" type="int" name="destinations" suffix="[]" />
-    <param access="i" type="int" name="destweights" suffix="[]" />
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="i" type="int" name="reorder" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm_old" special="commparent" />
+    <param access="i" type_modifier="" type="int" name="indegree" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sources" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sourceweights" suffix="[]" />
+    <param access="i" type_modifier="" type="int" name="outdegree" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="destinations" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="destweights" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="int" name="reorder" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="2.2" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_UNWEIGHTED)
@@ -1037,13 +1037,13 @@
 </prototype>
 
 <prototype name="MPI_Dist_graph_neighbors" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="maxindegree" />
-    <param access="o" type="int" name="sources" suffix="[]" />
-    <param access="b" type="int" name="sourceweights" suffix="[]" />
-    <param access="i" type="int" name="maxoutdegree" />
-    <param access="o" type="int" name="destinations" suffix="[]" />
-    <param access="b" type="int" name="destweights" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="maxindegree" />
+    <param access="o" type_modifier="" type="int" name="sources" suffix="[]" />
+    <param access="b" type_modifier="" type="int" name="sourceweights" suffix="[]" />
+    <param access="i" type_modifier="" type="int" name="maxoutdegree" />
+    <param access="o" type_modifier="" type="int" name="destinations" suffix="[]" />
+    <param access="b" type_modifier="" type="int" name="destweights" suffix="[]" />
     <version id="2.2" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_UNWEIGHTED)
@@ -1104,56 +1104,56 @@
 </prototype>
 
 <prototype name="MPI_Dist_graph_neighbors_count" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="int*" name="indegree" />
-    <param access="o" type="int*" name="outdegree" />
-    <param access="o" type="int*" name="weighted" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="int*" name="indegree" />
+    <param access="o" type_modifier="" type="int*" name="outdegree" />
+    <param access="o" type_modifier="" type="int*" name="weighted" />
     <version id="2.2" />
 </prototype>
 
 <prototype name="MPI_Errhandler_create" rtype="int" group="err" guard="extra,err" >
-    <param access="i" type="MPI_Handler_function*" name="function" />
-    <param access="o" type="MPI_Errhandler*" name="errhandler" />
+    <param access="i" type_modifier="" type="MPI_Handler_function*" name="function" />
+    <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Errhandler_free" rtype="int" group="err" guard="extra,err" >
-    <param access="i" type="MPI_Errhandler*" name="errhandler" />
+    <param access="i" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Errhandler_get" rtype="int" group="err" guard="extra,err" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Errhandler*" name="errhandler" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Errhandler_set" rtype="int" group="err" guard="extra,err" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="MPI_Errhandler" name="errhandler" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Error_class" rtype="int" group="err" guard="extra,err" >
-    <param access="i" type="int" name="errorcode" />
-    <param access="o" type="int*" name="errorclass" />
+    <param access="i" type_modifier="" type="int" name="errorcode" />
+    <param access="o" type_modifier="" type="int*" name="errorclass" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Error_string" rtype="int" group="err" guard="extra,err" >
-    <param access="i" type="int" name="errorcode" />
-    <param access="o" type="char*" name="string" />
-    <param access="o" type="int*" name="resultlen" />
+    <param access="i" type_modifier="" type="int" name="errorcode" />
+    <param access="o" type_modifier="" type="char*" name="string" />
+    <param access="o" type_modifier="" type="int*" name="resultlen" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Exscan" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="MPI_Op" name="op" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="2.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -1212,115 +1212,115 @@
 </prototype>
 
 <prototype name="MPI_File_c2f" rtype="MPI_Fint" group="io_misc" guard="io,extra,misc" >
-    <param access="i" type="MPI_File" name="file" />
+    <param access="i" type_modifier="" type="MPI_File" name="file" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_call_errhandler" rtype="int" group="io_err" guard="io,extra,err" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="i" type="int" name="errorcode" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="int" name="errorcode" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_close" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File*" name="fh" />
+    <param access="b" type_modifier="" type="MPI_File*" name="fh" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_create_errhandler" rtype="int" group="io_err" guard="io,extra,err" >
-    <param access="i" type="MPI_File_errhandler_fn*" name="function" />
-    <param access="o" type="MPI_Errhandler*" name="errhandler" />
+    <param access="i" type_modifier="" type="MPI_File_errhandler_fn*" name="function" />
+    <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_delete" rtype="int" group="io" guard="io" >
-    <param access="i" type="char*" name="filename" />
-    <param access="i" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="filename" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_f2c" rtype="MPI_File" group="io_misc" guard="io,extra,misc" >
-    <param access="o" type="MPI_Fint" name="file" />
+    <param access="o" type_modifier="" type="MPI_Fint" name="file" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_get_amode" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="o" type="int*" name="amode" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="int*" name="amode" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_get_atomicity" rtype="int" group="io" guard="io">
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="o" type="int*" name="flag" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_get_byte_offset" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="offset" />
-    <param access="o" type="MPI_Offset*" name="disp" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="o" type_modifier="" type="MPI_Offset*" name="disp" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_get_errhandler" rtype="int" group="io_err" guard="io,extra,err" >
-    <param access="i" type="MPI_File" name="file" />
-    <param access="o" type="MPI_Errhandler*" name="errhandler" />
+    <param access="i" type_modifier="" type="MPI_File" name="file" />
+    <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_get_group" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="o" type="MPI_Group*" name="group" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="group" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_get_info" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="o" type="MPI_Info*" name="info_used" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="MPI_Info*" name="info_used" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_get_position" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="o" type="MPI_Offset*" name="offset" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="MPI_Offset*" name="offset" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_get_position_shared" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="o" type="MPI_Offset*" name="offset" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="MPI_Offset*" name="offset" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_get_size" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="o" type="MPI_Offset*" name="size" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="MPI_Offset*" name="size" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_get_type_extent" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Aint*" name="extent" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Aint*" name="extent" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_get_view" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="o" type="MPI_Offset*" name="disp" />
-    <param access="o" type="MPI_Datatype*" name="etype" />
-    <param access="o" type="MPI_Datatype*" name="filetype" />
-    <param access="o" type="char*" name="datarep" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="MPI_Offset*" name="disp" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="etype" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="filetype" />
+    <param access="o" type_modifier="" type="char*" name="datarep" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_iread" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -1341,12 +1341,12 @@
 </prototype>
 
 <prototype name="MPI_File_iread_at" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="offset" />
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -1367,11 +1367,11 @@
 </prototype>
 
 <prototype name="MPI_File_iread_shared" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -1392,11 +1392,11 @@
 </prototype>
 
 <prototype name="MPI_File_iwrite" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -1417,12 +1417,12 @@
 </prototype>
 
 <prototype name="MPI_File_iwrite_at" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="offset" />
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -1443,11 +1443,11 @@
 </prototype>
 
 <prototype name="MPI_File_iwrite_shared" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -1468,26 +1468,26 @@
 </prototype>
 
 <prototype name="MPI_File_open" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="char*" name="filename" />
-    <param access="i" type="int" name="amode" />
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="o" type="MPI_File*" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="filename" />
+    <param access="i" type_modifier="" type="int" name="amode" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_File*" name="fh" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_preallocate" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="size" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="size" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_read" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUS_IGNORE)
@@ -1521,11 +1521,11 @@
 </prototype>
 
 <prototype name="MPI_File_read_all" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUS_IGNORE)
@@ -1559,10 +1559,10 @@
 </prototype>
 
 <prototype name="MPI_File_read_all_begin" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -1583,9 +1583,9 @@
 </prototype>
 
 <prototype name="MPI_File_read_all_end" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="o" type="void*" name="buf" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUS_IGNORE)
@@ -1619,12 +1619,12 @@
 </prototype>
 
 <prototype name="MPI_File_read_at" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="offset" />
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUS_IGNORE)
@@ -1658,12 +1658,12 @@
 </prototype>
 
 <prototype name="MPI_File_read_at_all" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="offset" />
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUS_IGNORE)
@@ -1697,11 +1697,11 @@
 </prototype>
 
 <prototype name="MPI_File_read_at_all_begin" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="offset" />
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -1722,9 +1722,9 @@
 </prototype>
 
 <prototype name="MPI_File_read_at_all_end" rtype="int" group="io" guard="io" >
-    <param access="i" type="MPI_File" name="fh" />
-    <param access="o" type="void*" name="buf" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -1758,11 +1758,11 @@
 </prototype>
 
 <prototype name="MPI_File_read_ordered" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -1796,10 +1796,10 @@
 </prototype>
 
 <prototype name="MPI_File_read_ordered_begin" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -1820,9 +1820,9 @@
 </prototype>
 
 <prototype name="MPI_File_read_ordered_end" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="o" type="void*" name="buf" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -1856,11 +1856,11 @@
 </prototype>
 
 <prototype name="MPI_File_read_shared" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -1894,64 +1894,64 @@
 </prototype>
 
 <prototype name="MPI_File_seek" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="offset" />
-    <param access="i" type="int" name="whence" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="i" type_modifier="" type="int" name="whence" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_seek_shared" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="offset" />
-    <param access="i" type="int" name="whence" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="i" type_modifier="" type="int" name="whence" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_set_atomicity" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="int" name="flag" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="int" name="flag" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_set_errhandler" rtype="int" group="io_err" guard="io,extra,err" >
-    <param access="b" type="MPI_File" name="file" />
-    <param access="i" type="MPI_Errhandler" name="errhandler" />
+    <param access="b" type_modifier="" type="MPI_File" name="file" />
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_set_info" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Info" name="info" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_set_size" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="size" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="size" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_set_view" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="disp" />
-    <param access="i" type="MPI_Datatype" name="etype" />
-    <param access="i" type="MPI_Datatype" name="filetype" />
-    <param access="i" type="char*" name="datarep" />
-    <param access="i" type="MPI_Info" name="info" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="disp" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="etype" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="filetype" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="datarep" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_sync" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_File_write" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -1985,11 +1985,11 @@
 </prototype>
 
 <prototype name="MPI_File_write_all" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -2023,10 +2023,10 @@
 </prototype>
 
 <prototype name="MPI_File_write_all_begin" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -2047,9 +2047,9 @@
 </prototype>
 
 <prototype name="MPI_File_write_all_end" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="void*" name="buf" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -2083,12 +2083,12 @@
 </prototype>
 
 <prototype name="MPI_File_write_at" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="offset" />
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -2122,12 +2122,12 @@
 </prototype>
 
 <prototype name="MPI_File_write_at_all" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="offset" />
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -2161,11 +2161,11 @@
 </prototype>
 
 <prototype name="MPI_File_write_at_all_begin" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="MPI_Offset" name="offset" />
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -2185,9 +2185,9 @@
 ]]></xblock>
 </prototype>
 <prototype name="MPI_File_write_at_all_end" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="void*" name="buf" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -2220,11 +2220,11 @@
 ]]></xblock>
 </prototype>
 <prototype name="MPI_File_write_ordered" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -2257,10 +2257,10 @@
 ]]></xblock>
 </prototype>
 <prototype name="MPI_File_write_ordered_begin" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -2280,9 +2280,9 @@
 ]]></xblock>
 </prototype>
 <prototype name="MPI_File_write_ordered_end" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="void*" name="buf" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -2315,11 +2315,11 @@
 ]]></xblock>
 </prototype>
 <prototype name="MPI_File_write_shared" rtype="int" group="io" guard="io" >
-    <param access="b" type="MPI_File" name="fh" />
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -2357,24 +2357,24 @@
 </prototype>
 
 <prototype name="MPI_Finalized" rtype="int" group="env" guard="extra,env" >
-    <param access="o" type="int*" name="flag" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Free_mem" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type="void*" name="base" />
+    <param access="i" type_modifier="" type="void*" name="base" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Gather" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="i" type="int" name="sendcount" />
-    <param access="i" type="MPI_Datatype" name="sendtype" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int" name="recvcount" />
-    <param access="i" type="MPI_Datatype" name="recvtype" />
-    <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -2446,15 +2446,15 @@
 </prototype>
 
 <prototype name="MPI_Gatherv" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="i" type="int" name="sendcount" />
-    <param access="i" type="MPI_Datatype" name="sendtype" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int*" name="recvcounts" />
-    <param access="i" type="int*" name="displs" />
-    <param access="i" type="MPI_Datatype" name="recvtype" />
-    <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="displs" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -2529,14 +2529,14 @@
 </prototype>
 
 <prototype name="MPI_Get" rtype="int" group="rma" guard="rma" >
-    <param access="o" type="void*" name="origin_addr" />
-    <param access="i" type="int" name="origin_count" />
-    <param access="i" type="MPI_Datatype" name="origin_datatype" />
-    <param access="i" type="int" name="target_rank" />
-    <param access="i" type="MPI_Aint" name="target_disp" />
-    <param access="i" type="int" name="target_count" />
-    <param access="i" type="MPI_Datatype" name="target_datatype" />
-    <param access="i" type="MPI_Win" name="win" />
+    <param access="o" type_modifier="" type="void*" name="origin_addr" />
+    <param access="i" type_modifier="" type="int" name="origin_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
+    <param access="i" type_modifier="" type="int" name="target_rank" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="target_disp" />
+    <param access="i" type_modifier="" type="int" name="target_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="target_datatype" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -2557,205 +2557,205 @@
 </prototype>
 
 <prototype name="MPI_Get_address" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type="void*" name="location" />
-    <param access="o" type="MPI_Aint*" name="address" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="location" />
+    <param access="o" type_modifier="" type="MPI_Aint*" name="address" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Get_count" rtype="int" group="ext" guard="extra,ext" >
-    <param access="i" type="MPI_Status*" name="status" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="int*" name="count" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="int*" name="count" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Get_elements" rtype="int" group="ext" guard="extra,ext" >
-    <param access="i" type="MPI_Status*" name="status" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="int*" name="count" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="int*" name="count" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Get_processor_name" rtype="int" group="ext" guard="extra,ext" >
-    <param access="o" type="char*" name="name" />
-    <param access="o" type="int*" name="resultlen" />
+    <param access="o" type_modifier="" type="char*" name="name" />
+    <param access="o" type_modifier="" type="int*" name="resultlen" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Get_version" rtype="int" group="misc" guard="extra,misc" >
-    <param access="o" type="int*" name="version" />
-    <param access="o" type="int*" name="subversion" />
+    <param access="o" type_modifier="" type="int*" name="version" />
+    <param access="o" type_modifier="" type="int*" name="subversion" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Graph_create" rtype="int" group="topo" >
-    <param access="i" type="MPI_Comm" name="comm_old" special="commparent" />
-    <param access="i" type="int" name="nnodes" />
-    <param access="i" type="int*" name="index" />
-    <param access="i" type="int*" name="edges" />
-    <param access="i" type="int" name="reorder" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm_old" special="commparent" />
+    <param access="i" type_modifier="" type="int" name="nnodes" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="index" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="edges" />
+    <param access="i" type_modifier="" type="int" name="reorder" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Graph_get" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="maxindex" />
-    <param access="i" type="int" name="maxedges" />
-    <param access="o" type="int*" name="index" />
-    <param access="o" type="int*" name="edges" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="maxindex" />
+    <param access="i" type_modifier="" type="int" name="maxedges" />
+    <param access="o" type_modifier="" type="int*" name="index" />
+    <param access="o" type_modifier="" type="int*" name="edges" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Graph_map" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="nnodes" />
-    <param access="i" type="int*" name="index" />
-    <param access="i" type="int*" name="edges" />
-    <param access="o" type="int*" name="newrank" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="nnodes" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="index" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="edges" />
+    <param access="o" type_modifier="" type="int*" name="newrank" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Graph_neighbors" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="rank" />
-    <param access="i" type="int" name="maxneighbors" />
-    <param access="o" type="int*" name="neighbors" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="rank" />
+    <param access="i" type_modifier="" type="int" name="maxneighbors" />
+    <param access="o" type_modifier="" type="int*" name="neighbors" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Graph_neighbors_count" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="i" type="int" name="rank" />
-    <param access="o" type="int*" name="nneighbors" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="int" name="rank" />
+    <param access="o" type_modifier="" type="int*" name="nneighbors" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Graphdims_get" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="int*" name="nnodes" />
-    <param access="o" type="int*" name="nedges" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="int*" name="nnodes" />
+    <param access="o" type_modifier="" type="int*" name="nedges" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Grequest_complete" rtype="int" group="ext" guard="extra,ext" >
-    <param access="b" type="MPI_Request" name="request" />
+    <param access="b" type_modifier="" type="MPI_Request" name="request" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Grequest_start" rtype="int" group="ext" guard="extra,ext" >
-    <param access="i" type="MPI_Grequest_query_function*" name="query_fn" />
-    <param access="i" type="MPI_Grequest_free_function*" name="free_fn" />
-    <param access="i" type="MPI_Grequest_cancel_function*" name="cancel_fn" />
-    <param access="i" type="void*" name="extra_state" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="i" type_modifier="" type="MPI_Grequest_query_function*" name="query_fn" />
+    <param access="i" type_modifier="" type="MPI_Grequest_free_function*" name="free_fn" />
+    <param access="i" type_modifier="" type="MPI_Grequest_cancel_function*" name="cancel_fn" />
+    <param access="i" type_modifier="" type="void*" name="extra_state" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Group_c2f" rtype="MPI_Fint" group="cg_misc" guard="extra,cg,misc" >
-    <param access="o" type="MPI_Group" name="group" />
+    <param access="o" type_modifier="" type="MPI_Group" name="group" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Group_compare" rtype="int" group="cg" guard="extra,cg" >
-    <param access="i" type="MPI_Group" name="group1" />
-    <param access="i" type="MPI_Group" name="group2" />
-    <param access="o" type="int*" name="result" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group1" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group2" />
+    <param access="o" type_modifier="" type="int*" name="result" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Group_difference" rtype="int" group="cg" guard="cg" >
-    <param access="i" type="MPI_Group" name="group1" />
-    <param access="i" type="MPI_Group" name="group2" />
-    <param access="o" type="MPI_Group*" name="newgroup" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group1" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group2" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Group_excl" rtype="int" group="cg" guard="cg" >
-    <param access="i" type="MPI_Group" name="group" />
-    <param access="i" type="int" name="n" />
-    <param access="i" type="int*" name="ranks" />
-    <param access="o" type="MPI_Group*" name="newgroup" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
+    <param access="i" type_modifier="" type="int" name="n" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="ranks" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Group_f2c" rtype="MPI_Group" group="cg_misc" guard="extra,cg,misc" >
-    <param access="o" type="MPI_Fint" name="group" />
+    <param access="o" type_modifier="" type="MPI_Fint" name="group" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Group_free" rtype="int" group="cg" guard="cg" >
-    <param access="b" type="MPI_Group*" name="group" />
+    <param access="b" type_modifier="" type="MPI_Group*" name="group" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Group_incl" rtype="int" group="cg" guard="cg" >
-    <param access="i" type="MPI_Group" name="group" />
-    <param access="i" type="int" name="n" />
-    <param access="i" type="int*" name="ranks" />
-    <param access="o" type="MPI_Group*" name="newgroup" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
+    <param access="i" type_modifier="" type="int" name="n" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="ranks" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Group_intersection" rtype="int" group="cg" guard="cg" >
-    <param access="i" type="MPI_Group" name="group1" />
-    <param access="i" type="MPI_Group" name="group2" />
-    <param access="o" type="MPI_Group*" name="newgroup" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group1" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group2" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Group_range_excl" rtype="int" group="cg" guard="cg" >
-    <param access="i" type="MPI_Group" name="group" />
-    <param access="i" type="int" name="n" />
-    <param access="i" type="int" name="ranges" suffix="[][3]" />
-    <param access="o" type="MPI_Group*" name="newgroup" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
+    <param access="i" type_modifier="" type="int" name="n" />
+    <param access="i" type_modifier="" type="int" name="ranges" suffix="[][3]" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Group_range_incl" rtype="int" group="cg" guard="cg" >
-    <param access="i" type="MPI_Group" name="group" />
-    <param access="i" type="int" name="n" />
-    <param access="i" type="int" name="ranges" suffix="[][3]" />
-    <param access="o" type="MPI_Group*" name="newgroup" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
+    <param access="i" type_modifier="" type="int" name="n" />
+    <param access="i" type_modifier="" type="int" name="ranges" suffix="[][3]" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Group_rank" rtype="int" group="cg" guard="extra,cg" >
-    <param access="i" type="MPI_Group" name="group" />
-    <param access="o" type="int*" name="rank" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
+    <param access="o" type_modifier="" type="int*" name="rank" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Group_size" rtype="int" group="cg" guard="extra,cg" >
-    <param access="i" type="MPI_Group" name="group" />
-    <param access="o" type="int*" name="size" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
+    <param access="o" type_modifier="" type="int*" name="size" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Group_translate_ranks" rtype="int" group="cg" guard="extra,cg" >
-    <param access="i" type="MPI_Group" name="group1" />
-    <param access="i" type="int" name="n" />
-    <param access="i" type="int*" name="ranks1" />
-    <param access="i" type="MPI_Group" name="group2" />
-    <param access="o" type="int*" name="ranks2" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group1" />
+    <param access="i" type_modifier="" type="int" name="n" />
+    <param access="i" type_modifier="" type="int*" name="ranks1" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group2" />
+    <param access="o" type_modifier="" type="int*" name="ranks2" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Group_union" rtype="int" group="cg" guard="cg" >
-    <param access="i" type="MPI_Group" name="group1" />
-    <param access="i" type="MPI_Group" name="group2" />
-    <param access="o" type="MPI_Group*" name="newgroup" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group1" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group2" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="newgroup" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Ibsend" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -2776,116 +2776,116 @@
 </prototype>
 
 <prototype name="MPI_Info_c2f" rtype="MPI_Fint" group="misc" guard="extra,misc" >
-    <param access="o" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Info" name="info" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Info_create" rtype="int" group="misc" guard="extra,misc" >
-    <param access="o" type="MPI_Info*" name="info" />
+    <param access="o" type_modifier="" type="MPI_Info*" name="info" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Info_delete" rtype="int" group="misc" guard="extra,misc" >
-    <param access="b" type="MPI_Info" name="info" />
-    <param access="i" type="char*" name="key" />
+    <param access="b" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="char*" name="key" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Info_dup" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="o" type="MPI_Info*" name="newinfo" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Info*" name="newinfo" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Info_f2c" rtype="MPI_Info" group="misc" guard="extra,misc" >
-    <param access="o" type="MPI_Fint" name="info" />
+    <param access="o" type_modifier="" type="MPI_Fint" name="info" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Info_free" rtype="int" group="misc" guard="extra,misc" >
-    <param access="b" type="MPI_Info*" name="info" />
+    <param access="b" type_modifier="" type="MPI_Info*" name="info" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Info_get" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="i" type="char*" name="key" />
-    <param access="i" type="int" name="valuelen" />
-    <param access="o" type="char*" name="value" />
-    <param access="o" type="int*" name="flag" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="char*" name="key" />
+    <param access="i" type_modifier="" type="int" name="valuelen" />
+    <param access="o" type_modifier="" type="char*" name="value" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Info_get_nkeys" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="o" type="int*" name="nkeys" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="int*" name="nkeys" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Info_get_nthkey" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="i" type="int" name="n" />
-    <param access="o" type="char*" name="key" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="int" name="n" />
+    <param access="o" type_modifier="" type="char*" name="key" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Info_get_valuelen" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="i" type="char*" name="key" />
-    <param access="o" type="int*" name="valuelen" />
-    <param access="o" type="int*" name="flag" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="char*" name="key" />
+    <param access="o" type_modifier="" type="int*" name="valuelen" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Info_set" rtype="int" group="misc" guard="extra,misc" >
-    <param access="b" type="MPI_Info" name="info" />
-    <param access="i" type="char*" name="key" />
-    <param access="i" type="char*" name="value" />
+    <param access="b" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="char*" name="key" />
+    <param access="i" type_modifier="" type="char*" name="value" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Init" rtype="int" group="env" >
-    <param access="o" type="int*" name="argc" />
-    <param access="o" type="char***" name="argv" />
+    <param access="o" type_modifier="" type="int*" name="argc" />
+    <param access="o" type_modifier="" type="char***" name="argv" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Init_thread" rtype="int" group="env" >
-    <param access="i" type="int*" name="argc" />
-    <param access="i" type="char***" name="argv" />
-    <param access="i" type="int" name="required" />
-    <param access="o" type="int*" name="provided" />
+    <param access="i" type_modifier="" type="int*" name="argc" />
+    <param access="i" type_modifier="" type="char***" name="argv" />
+    <param access="i" type_modifier="" type="int" name="required" />
+    <param access="o" type_modifier="" type="int*" name="provided" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Initialized" rtype="int" group="env" guard="extra,env" >
-    <param access="o" type="int*" name="flag" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Intercomm_create" rtype="int" group="cg" >
-    <param access="i" type="MPI_Comm" name="local_comm" />
-    <param access="i" type="int" name="local_leader" />
-    <param access="i" type="MPI_Comm" name="peer_comm" />
-    <param access="i" type="int" name="remote_leader" />
-    <param access="i" type="int" name="tag" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="local_comm" />
+    <param access="i" type_modifier="" type="int" name="local_leader" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="peer_comm" />
+    <param access="i" type_modifier="" type="int" name="remote_leader" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Intercomm_merge" rtype="int" group="cg" >
-    <param access="i" type="MPI_Comm" name="intercomm" />
-    <param access="i" type="int" name="high" />
-    <param access="o" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="intercomm" />
+    <param access="i" type_modifier="" type="int" name="high" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Iprobe" rtype="int" group="p2p" guard="extra,p2p" >
-    <param access="i" type="int" name="source" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="int*" name="flag" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -2907,13 +2907,13 @@
 </prototype>
 
 <prototype name="MPI_Irecv" rtype="int" group="p2p" guard="p2p" >
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="source" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -2934,13 +2934,13 @@
 </prototype>
 
 <prototype name="MPI_Irsend" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -2961,18 +2961,18 @@
 </prototype>
 
 <prototype name="MPI_Is_thread_main" rtype="int" group="env" guard="extra,env" >
-    <param access="o" type="int*" name="flag" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Isend" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -2993,13 +2993,13 @@
 </prototype>
 
 <prototype name="MPI_Issend" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -3020,67 +3020,67 @@
 </prototype>
 
 <prototype name="MPI_Keyval_create" rtype="int" group="cg_ext" guard="extra,cg,ext" >
-    <param access="i" type="MPI_Copy_function*" name="copy_fn" />
-    <param access="i" type="MPI_Delete_function*" name="delete_fn" />
-    <param access="o" type="int*" name="keyval" />
-    <param access="i" type="void*" name="extra_state" />
+    <param access="i" type_modifier="" type="MPI_Copy_function*" name="copy_fn" />
+    <param access="i" type_modifier="" type="MPI_Delete_function*" name="delete_fn" />
+    <param access="o" type_modifier="" type="int*" name="keyval" />
+    <param access="i" type_modifier="" type="void*" name="extra_state" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Keyval_free" rtype="int" group="cg_ext" guard="extra,cg,ext" >
-    <param access="b" type="int*" name="keyval" />
+    <param access="b" type_modifier="" type="int*" name="keyval" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Lookup_name" rtype="int" group="spawn" guard="spawn,extra" >
-    <param access="i" type="char*" name="service_name" />
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="o" type="char*" name="port_name" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="service_name" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="char*" name="port_name" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Op_c2f" rtype="MPI_Fint" group="misc" guard="extra,misc" >
-    <param access="i" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Op_commutative" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type="MPI_Op" name="op" />
-    <param access="o" type="int*" name="commute" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="o" type_modifier="" type="int*" name="commute" />
     <version id="2.2" />
 </prototype>
 
 <prototype name="MPI_Op_create" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type="MPI_User_function*" name="function" />
-    <param access="i" type="int" name="commute" />
-    <param access="o" type="MPI_Op*" name="op" />
+    <param access="i" type_modifier="" type="MPI_User_function*" name="function" />
+    <param access="i" type_modifier="" type="int" name="commute" />
+    <param access="o" type_modifier="" type="MPI_Op*" name="op" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Op_f2c" rtype="MPI_Op" group="misc" guard="extra,misc" >
-    <param access="i" type="MPI_Fint" name="op" />
+    <param access="i" type_modifier="" type="MPI_Fint" name="op" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Op_free" rtype="int" group="misc" guard="extra,misc" >
-    <param access="b" type="MPI_Op*" name="op" />
+    <param access="b" type_modifier="" type="MPI_Op*" name="op" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Open_port" rtype="int" group="spawn" guard="spawn,extra" >
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="o" type="char*" name="port_name" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="char*" name="port_name" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Pack" rtype="int" group="type" guard="extra" >
-    <param access="i" type="void*" name="inbuf" />
-    <param access="i" type="int" name="incount" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="void*" name="outbuf" />
-    <param access="i" type="int" name="outsize" />
-    <param access="b" type="int*" name="position" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="inbuf" />
+    <param access="i" type_modifier="" type="int" name="incount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="void*" name="outbuf" />
+    <param access="i" type_modifier="" type="int" name="outsize" />
+    <param access="b" type_modifier="" type="int*" name="position" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -3101,13 +3101,13 @@
 </prototype>
 
 <prototype name="MPI_Pack_external" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="char*" name="datarep" />
-    <param access="i" type="void*" name="inbuf" />
-    <param access="i" type="int" name="incount" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="void*" name="outbuf" />
-    <param access="i" type="MPI_Aint" name="outsize" />
-    <param access="b" type="MPI_Aint*" name="position" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="datarep" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="inbuf" />
+    <param access="i" type_modifier="" type="int" name="incount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="void*" name="outbuf" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="outsize" />
+    <param access="b" type_modifier="" type="MPI_Aint*" name="position" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -3128,32 +3128,32 @@
 </prototype>
 
 <prototype name="MPI_Pack_external_size" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="char*" name="datarep" />
-    <param access="i" type="int" name="incount" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Aint*" name="size" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="datarep" />
+    <param access="i" type_modifier="" type="int" name="incount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Aint*" name="size" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Pack_size" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="incount" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="int*" name="size" />
+    <param access="i" type_modifier="" type="int" name="incount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="int*" name="size" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Pcontrol" rtype="int" group="perf" guard="perf,extra" >
-    <param access="i" type="const int" name="level" />
-    <param access="i" type="..." name="" />
+    <param access="i" type_modifier="" type="const int" name="level" />
+    <param access="i" type_modifier="" type="..." name="" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Probe" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="int" name="source" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_STATUS_IGNORE)
@@ -3175,21 +3175,21 @@
 </prototype>
 
 <prototype name="MPI_Publish_name" rtype="int" group="spawn" guard="spawn,extra" >
-    <param access="i" type="char*" name="service_name" />
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="i" type="char*" name="port_name" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="service_name" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="port_name" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Put" rtype="int" group="rma" guard="rma" >
-    <param access="i" type="void*" name="origin_addr" />
-    <param access="i" type="int" name="origin_count" />
-    <param access="i" type="MPI_Datatype" name="origin_datatype" />
-    <param access="i" type="int" name="target_rank" />
-    <param access="i" type="MPI_Aint" name="target_disp" />
-    <param access="i" type="int" name="target_count" />
-    <param access="i" type="MPI_Datatype" name="target_datatype" />
-    <param access="i" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
+    <param access="i" type_modifier="" type="int" name="origin_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
+    <param access="i" type_modifier="" type="int" name="target_rank" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="target_disp" />
+    <param access="i" type_modifier="" type="int" name="target_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="target_datatype" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
     <xblock><![CDATA[
       dpid = scorep_win_rank_to_pe( target_rank, win );
@@ -3217,18 +3217,18 @@
 </prototype>
 
 <prototype name="MPI_Query_thread" rtype="int" group="env" guard="extra,env" >
-    <param access="o" type="int*" name="provided" />
+    <param access="o" type_modifier="" type="int*" name="provided" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Recv" rtype="int" group="p2p" guard="p2p" >
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="source" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUS_IGNORE)
@@ -3262,13 +3262,13 @@
 </prototype>
 
 <prototype name="MPI_Recv_init" rtype="int" group="p2p" guard="p2p" >
-    <param access="o" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="source" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -3289,13 +3289,13 @@
 </prototype>
 
 <prototype name="MPI_Reduce" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="MPI_Op" name="op" />
-    <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -3367,22 +3367,22 @@
 </prototype>
 
 <prototype name="MPI_Reduce_local" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="inbuf" />
-    <param access="b" type="void*" name="inoutbuf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="inbuf" />
+    <param access="b" type_modifier="" type="void*" name="inoutbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
     <version id="2.2" />
     <countrules send="0" recv="0" />
 </prototype>
 
 <prototype name="MPI_Reduce_scatter" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int*" name="recvcounts" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="MPI_Op" name="op" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -3453,12 +3453,12 @@
 </prototype>
 
 <prototype name="MPI_Reduce_scatter_block" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int" name="recvcount" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="MPI_Op" name="op" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="2.2" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -3521,33 +3521,33 @@
 </prototype>
 
 <prototype name="MPI_Register_datarep" rtype="int" group="io" guard="io,extra" >
-    <param access="i" type="char*" name="datarep" />
-    <param access="i" type="MPI_Datarep_conversion_function*" name="read_conversion_fn" />
-    <param access="i" type="MPI_Datarep_conversion_function*" name="write_conversion_fn" />
-    <param access="i" type="MPI_Datarep_extent_function*" name="dtype_file_extent_fn" />
-    <param access="i" type="void*" name="extra_state" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="datarep" />
+    <param access="i" type_modifier="" type="MPI_Datarep_conversion_function*" name="read_conversion_fn" />
+    <param access="i" type_modifier="" type="MPI_Datarep_conversion_function*" name="write_conversion_fn" />
+    <param access="i" type_modifier="" type="MPI_Datarep_extent_function*" name="dtype_file_extent_fn" />
+    <param access="i" type_modifier="" type="void*" name="extra_state" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Request_c2f" rtype="MPI_Fint" group="misc" guard="extra,misc" >
-    <param access="o" type="MPI_Request" name="request" />
+    <param access="o" type_modifier="" type="MPI_Request" name="request" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Request_f2c" rtype="MPI_Request" group="misc" guard="extra,misc" >
-    <param access="o" type="MPI_Fint" name="request" />
+    <param access="o" type_modifier="" type="MPI_Fint" name="request" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Request_free" rtype="int" group="p2p" guard="p2p" >
-    <param access="b" type="MPI_Request*" name="request" />
+    <param access="b" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Request_get_status" rtype="int" group="misc" guard="extra,misc" >
-    <param access="i" type="MPI_Request" name="request" />
-    <param access="o" type="int*" name="flag" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="MPI_Request" name="request" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="2.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUS_IGNORE)
@@ -3569,12 +3569,12 @@
 </prototype>
 
 <prototype name="MPI_Rsend" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -3595,13 +3595,13 @@
 </prototype>
 
 <prototype name="MPI_Rsend_init" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -3622,12 +3622,12 @@
 </prototype>
 
 <prototype name="MPI_Scan" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="MPI_Op" name="op" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -3696,14 +3696,14 @@
 </prototype>
 
 <prototype name="MPI_Scatter" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="i" type="int" name="sendcount" />
-    <param access="i" type="MPI_Datatype" name="sendtype" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int" name="recvcount" />
-    <param access="i" type="MPI_Datatype" name="recvtype" />
-    <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -3781,15 +3781,15 @@
 </prototype>
 
 <prototype name="MPI_Scatterv" rtype="int" group="coll" guard="coll" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="i" type="int*" name="sendcounts" />
-    <param access="i" type="int*" name="displs" />
-    <param access="i" type="MPI_Datatype" name="sendtype" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int" name="recvcount" />
-    <param access="i" type="MPI_Datatype" name="recvtype" />
-    <param access="i" type="int" name="root" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sendcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="displs" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
     <countrules send="sendbytes" recv="recvbytes" />
 <decl><![CDATA[
@@ -3865,12 +3865,12 @@
 </prototype>
 
 <prototype name="MPI_Send" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -3891,13 +3891,13 @@
 </prototype>
 
 <prototype name="MPI_Send_init" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -3918,18 +3918,18 @@
 </prototype>
 
 <prototype name="MPI_Sendrecv" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="sendbuf" />
-    <param access="i" type="int" name="sendcount" />
-    <param access="i" type="MPI_Datatype" name="sendtype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="sendtag" />
-    <param access="o" type="void*" name="recvbuf" />
-    <param access="i" type="int" name="recvcount" />
-    <param access="i" type="MPI_Datatype" name="recvtype" />
-    <param access="i" type="int" name="source" />
-    <param access="i" type="int" name="recvtag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="sendtag" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="recvtag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="1.0" />
     <countrules send="sendcount*sendsz" recv="recvcount*recvsz" />
 <xblock id="fortran"><![CDATA[
@@ -3976,15 +3976,15 @@
 </prototype>
 
 <prototype name="MPI_Sendrecv_replace" rtype="int" group="p2p" guard="p2p" >
-    <param access="b" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="sendtag" />
-    <param access="i" type="int" name="source" />
-    <param access="i" type="int" name="recvtag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="sendtag" />
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="recvtag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="1.0" />
     <countrules send="sendcount*sendsz" recv="recvcount*sendsz" />
     <decl>int sendcount = count, recvcount = count;
@@ -4021,18 +4021,18 @@
 </prototype>
 
 <prototype name="MPI_Sizeof" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="MPI_Datatype" name="x" />
-    <param access="o" type="int" name="size" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="x" />
+    <param access="o" type_modifier="" type="int" name="size" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Ssend" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -4053,13 +4053,13 @@
 </prototype>
 
 <prototype name="MPI_Ssend_init" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="void*" name="buf" />
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="dest" />
-    <param access="i" type="int" name="tag" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Request*" name="request" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="dest" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -4080,45 +4080,45 @@
 </prototype>
 
 <prototype name="MPI_Start" rtype="int" group="p2p" guard="p2p" >
-    <param access="b" type="MPI_Request*" name="request" />
+    <param access="b" type_modifier="" type="MPI_Request*" name="request" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Startall" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="int" name="count" />
-    <param access="b" type="MPI_Request*" name="array_of_requests" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Status_c2f" rtype="int" group="misc" guard="extra,misc" >
-    <param access="o" type="MPI_Status*" name="c_status" />
-    <param access="o" type="MPI_Fint*" name="f_status" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="c_status" />
+    <param access="o" type_modifier="" type="MPI_Fint*" name="f_status" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Status_f2c" rtype="int" group="misc" guard="extra,misc" >
-    <param access="o" type="MPI_Fint*" name="f_status" />
-    <param access="o" type="MPI_Status*" name="c_status" />
+    <param access="o" type_modifier="" type="MPI_Fint*" name="f_status" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="c_status" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Status_set_cancelled" rtype="int" group="ext" guard="extra,ext" >
-    <param access="b" type="MPI_Status*" name="status" />
-    <param access="i" type="int" name="flag" />
+    <param access="b" type_modifier="" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="int" name="flag" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Status_set_elements" rtype="int" group="ext" guard="extra,ext" >
-    <param access="b" type="MPI_Status*" name="status" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="count" />
+    <param access="b" type_modifier="" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="count" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Test" rtype="int" group="p2p" guard="p2p" >
-    <param access="b" type="MPI_Request*" name="request" />
-    <param access="o" type="int*" name="flag" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_Request*" name="request" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUS_IGNORE)
@@ -4140,16 +4140,16 @@
 </prototype>
 
 <prototype name="MPI_Test_cancelled" rtype="int" group="p2p" guard="extra,p2p" >
-    <param access="i" type="MPI_Status*" name="status" />
-    <param access="o" type="int*" name="flag" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Status*" name="status" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Testall" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="int" name="count" />
-    <param access="b" type="MPI_Request*" name="array_of_requests" />
-    <param access="o" type="int*" name="flag" />
-    <param access="o" type="MPI_Status*" name="array_of_statuses" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="array_of_statuses" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUSES_IGNORE)
@@ -4171,11 +4171,11 @@
 </prototype>
 
 <prototype name="MPI_Testany" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="int" name="count" />
-    <param access="b" type="MPI_Request*" name="array_of_requests" />
-    <param access="o" type="int*" name="index" />
-    <param access="o" type="int*" name="flag" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
+    <param access="o" type_modifier="" type="int*" name="index" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUS_IGNORE)
@@ -4197,11 +4197,11 @@
 </prototype>
 
 <prototype name="MPI_Testsome" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="int" name="incount" />
-    <param access="b" type="MPI_Request*" name="array_of_requests" />
-    <param access="o" type="int*" name="outcount" />
-    <param access="o" type="int*" name="array_of_indices" />
-    <param access="o" type="MPI_Status*" name="array_of_statuses" />
+    <param access="i" type_modifier="" type="int" name="incount" />
+    <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
+    <param access="o" type_modifier="" type="int*" name="outcount" />
+    <param access="o" type_modifier="" type="int*" name="array_of_indices" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="array_of_statuses" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUSES_IGNORE)
@@ -4223,272 +4223,272 @@
 </prototype>
 
 <prototype name="MPI_Topo_test" rtype="int" group="topo" guard="extra,topo" >
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="int*" name="status" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="int*" name="status" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Type_c2f" rtype="MPI_Fint" group="type_misc" guard="extra,type,misc" >
-    <param access="o" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_commit" rtype="int" group="type" guard="extra,type" >
-    <param access="b" type="MPI_Datatype*" name="datatype" />
+    <param access="b" type_modifier="" type="MPI_Datatype*" name="datatype" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Type_contiguous" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="count" />
-    <param access="i" type="MPI_Datatype" name="oldtype" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="oldtype" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Type_create_darray" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="size" />
-    <param access="i" type="int" name="rank" />
-    <param access="i" type="int" name="ndims" />
-    <param access="i" type="int" name="array_of_gsizes" suffix="[]" />
-    <param access="i" type="int" name="array_of_distribs" suffix="[]" />
-    <param access="i" type="int" name="array_of_dargs" suffix="[]" />
-    <param access="i" type="int" name="array_of_psizes" suffix="[]" />
-    <param access="i" type="int" name="order" />
-    <param access="i" type="MPI_Datatype" name="oldtype" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="size" />
+    <param access="i" type_modifier="" type="int" name="rank" />
+    <param access="i" type_modifier="" type="int" name="ndims" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="array_of_gsizes" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="array_of_distribs" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="array_of_dargs" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="array_of_psizes" suffix="[]" />
+    <param access="i" type_modifier="" type="int" name="order" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="oldtype" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_create_f90_complex" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="p" />
-    <param access="i" type="int" name="r" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="p" />
+    <param access="i" type_modifier="" type="int" name="r" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_create_f90_integer" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="r" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="r" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_create_f90_real" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="p" />
-    <param access="i" type="int" name="r" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="p" />
+    <param access="i" type_modifier="" type="int" name="r" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_create_hindexed" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="count" />
-    <param access="i" type="int" name="array_of_blocklengths" suffix="[]" />
-    <param access="i" type="MPI_Aint" name="array_of_displacements" suffix="[]" />
-    <param access="i" type="MPI_Datatype" name="oldtype" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="array_of_blocklengths" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Aint" name="array_of_displacements" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="oldtype" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_create_hvector" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="count" />
-    <param access="i" type="int" name="blocklength" />
-    <param access="i" type="MPI_Aint" name="stride" />
-    <param access="i" type="MPI_Datatype" name="oldtype" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="int" name="blocklength" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="stride" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="oldtype" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_create_indexed_block" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="count" />
-    <param access="i" type="int" name="blocklength" />
-    <param access="i" type="int" name="array_of_displacements" suffix="[]" />
-    <param access="i" type="MPI_Datatype" name="oldtype" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="int" name="blocklength" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="array_of_displacements" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="oldtype" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_create_keyval" rtype="int" group="type_ext" guard="extra,type,ext" >
-    <param access="i" type="MPI_Type_copy_attr_function*" name="type_copy_attr_fn" />
-    <param access="i" type="MPI_Type_delete_attr_function*" name="type_delete_attr_fn" />
-    <param access="o" type="int*" name="type_keyval" />
-    <param access="i" type="void*" name="extra_state" />
+    <param access="i" type_modifier="" type="MPI_Type_copy_attr_function*" name="type_copy_attr_fn" />
+    <param access="i" type_modifier="" type="MPI_Type_delete_attr_function*" name="type_delete_attr_fn" />
+    <param access="o" type_modifier="" type="int*" name="type_keyval" />
+    <param access="i" type_modifier="" type="void*" name="extra_state" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_create_resized" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="MPI_Datatype" name="oldtype" />
-    <param access="i" type="MPI_Aint" name="lb" />
-    <param access="i" type="MPI_Aint" name="extent" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="oldtype" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="lb" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="extent" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_create_struct" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="count" />
-    <param access="i" type="int" name="array_of_blocklengths" suffix="[]" />
-    <param access="i" type="MPI_Aint" name="array_of_displacements" suffix="[]" />
-    <param access="i" type="MPI_Datatype" name="array_of_types" suffix="[]" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="array_of_blocklengths" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Aint" name="array_of_displacements" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Datatype" name="array_of_types" suffix="[]" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_create_subarray" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="ndims" />
-    <param access="i" type="int" name="array_of_sizes" suffix="[]" />
-    <param access="i" type="int" name="array_of_subsizes" suffix="[]" />
-    <param access="i" type="int" name="array_of_starts" suffix="[]" />
-    <param access="i" type="int" name="order" />
-    <param access="i" type="MPI_Datatype" name="oldtype" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="ndims" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="array_of_sizes" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="array_of_subsizes" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="array_of_starts" suffix="[]" />
+    <param access="i" type_modifier="" type="int" name="order" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="oldtype" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_delete_attr" rtype="int" group="type_ext" guard="extra,type,ext" >
-    <param access="b" type="MPI_Datatype" name="type" />
-    <param access="i" type="int" name="type_keyval" />
+    <param access="b" type_modifier="" type="MPI_Datatype" name="type" />
+    <param access="i" type_modifier="" type="int" name="type_keyval" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_dup" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="MPI_Datatype" name="type" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="type" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_extent" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Aint*" name="extent" special="noaint" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Aint*" name="extent" special="noaint" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Type_f2c" rtype="MPI_Datatype" group="type_misc" guard="extra,type,misc" >
-    <param access="o" type="MPI_Fint" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Fint" name="datatype" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_free" rtype="int" group="type" guard="extra,type" >
-    <param access="b" type="MPI_Datatype*" name="datatype" />
+    <param access="b" type_modifier="" type="MPI_Datatype*" name="datatype" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Type_free_keyval" rtype="int" group="type_ext" guard="extra,type,ext" >
-    <param access="b" type="int*" name="type_keyval" />
+    <param access="b" type_modifier="" type="int*" name="type_keyval" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_get_attr" rtype="int" group="type_ext" guard="extra,type,ext" >
-    <param access="i" type="MPI_Datatype" name="type" />
-    <param access="i" type="int" name="type_keyval" />
-    <param access="o" type="void*" name="attribute_val" />
-    <param access="o" type="int*" name="flag" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="type" />
+    <param access="i" type_modifier="" type="int" name="type_keyval" />
+    <param access="o" type_modifier="" type="void*" name="attribute_val" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_get_contents" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="int" name="max_integers" />
-    <param access="i" type="int" name="max_addresses" />
-    <param access="i" type="int" name="max_datatypes" />
-    <param access="o" type="int" name="array_of_integers" suffix="[]" />
-    <param access="o" type="MPI_Aint" name="array_of_addresses" suffix="[]" />
-    <param access="o" type="MPI_Datatype" name="array_of_datatypes" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="max_integers" />
+    <param access="i" type_modifier="" type="int" name="max_addresses" />
+    <param access="i" type_modifier="" type="int" name="max_datatypes" />
+    <param access="o" type_modifier="" type="int" name="array_of_integers" suffix="[]" />
+    <param access="o" type_modifier="" type="MPI_Aint" name="array_of_addresses" suffix="[]" />
+    <param access="o" type_modifier="" type="MPI_Datatype" name="array_of_datatypes" suffix="[]" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_get_envelope" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="int*" name="num_integers" />
-    <param access="o" type="int*" name="num_addresses" />
-    <param access="o" type="int*" name="num_datatypes" />
-    <param access="o" type="int*" name="combiner" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="int*" name="num_integers" />
+    <param access="o" type_modifier="" type="int*" name="num_addresses" />
+    <param access="o" type_modifier="" type="int*" name="num_datatypes" />
+    <param access="o" type_modifier="" type="int*" name="combiner" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_get_extent" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Aint*" name="lb" />
-    <param access="o" type="MPI_Aint*" name="extent" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Aint*" name="lb" />
+    <param access="o" type_modifier="" type="MPI_Aint*" name="extent" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_get_name" rtype="int" group="type_ext" guard="extra,type,ext" >
-    <param access="i" type="MPI_Datatype" name="type" />
-    <param access="o" type="char*" name="type_name" />
-    <param access="o" type="int*" name="resultlen" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="type" />
+    <param access="o" type_modifier="" type="char*" name="type_name" />
+    <param access="o" type_modifier="" type="int*" name="resultlen" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_get_true_extent" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Aint*" name="true_lb" />
-    <param access="o" type="MPI_Aint*" name="true_extent" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Aint*" name="true_lb" />
+    <param access="o" type_modifier="" type="MPI_Aint*" name="true_extent" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_hindexed" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="count" />
-    <param access="i" type="int*" name="array_of_blocklengths" />
-    <param access="i" type="MPI_Aint*" name="array_of_displacements" special="noaint" />
-    <param access="i" type="MPI_Datatype" name="oldtype" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="array_of_blocklengths" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Aint*" name="array_of_displacements" special="noaint" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="oldtype" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Type_hvector" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="count" />
-    <param access="i" type="int" name="blocklength" />
-    <param access="i" type="MPI_Aint" name="stride" special="noaint" />
-    <param access="i" type="MPI_Datatype" name="oldtype" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="int" name="blocklength" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="stride" special="noaint" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="oldtype" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Type_indexed" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="count" />
-    <param access="i" type="int*" name="array_of_blocklengths" />
-    <param access="i" type="int*" name="array_of_displacements" />
-    <param access="i" type="MPI_Datatype" name="oldtype" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="array_of_blocklengths" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="array_of_displacements" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="oldtype" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Type_lb" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Aint*" name="displacement" special="noaint" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Aint*" name="displacement" special="noaint" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Type_match_size" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="typeclass" />
-    <param access="i" type="int" name="size" />
-    <param access="o" type="MPI_Datatype*" name="type" />
+    <param access="i" type_modifier="" type="int" name="typeclass" />
+    <param access="i" type_modifier="" type="int" name="size" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="type" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_set_attr" rtype="int" group="type_ext" guard="extra,type,ext" >
-    <param access="b" type="MPI_Datatype" name="type" />
-    <param access="i" type="int" name="type_keyval" />
-    <param access="i" type="void*" name="attribute_val" />
+    <param access="b" type_modifier="" type="MPI_Datatype" name="type" />
+    <param access="i" type_modifier="" type="int" name="type_keyval" />
+    <param access="i" type_modifier="" type="void*" name="attribute_val" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_set_name" rtype="int" group="type_ext" guard="extra,type,ext" >
-    <param access="b" type="MPI_Datatype" name="type" />
-    <param access="i" type="char*" name="type_name" />
+    <param access="b" type_modifier="" type="MPI_Datatype" name="type" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="type_name" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Type_size" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="int*" name="size" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="int*" name="size" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Type_struct" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="count" />
-    <param access="i" type="int*" name="array_of_blocklengths" />
-    <param access="i" type="MPI_Aint*" name="array_of_displacements" special="noaint" />
-    <param access="i" type="MPI_Datatype*" name="array_of_types" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="array_of_blocklengths" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Aint*" name="array_of_displacements" special="noaint" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Datatype*" name="array_of_types" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="1.0" />
 <decl id="f2c_c2f"><![CDATA[
   MPI_Datatype* c_array_of_types;
@@ -4514,28 +4514,28 @@
 </prototype>
 
 <prototype name="MPI_Type_ub" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="o" type="MPI_Aint*" name="displacement" special="noaint" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Aint*" name="displacement" special="noaint" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Type_vector" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="int" name="count" />
-    <param access="i" type="int" name="blocklength" />
-    <param access="i" type="int" name="stride" />
-    <param access="i" type="MPI_Datatype" name="oldtype" />
-    <param access="o" type="MPI_Datatype*" name="newtype" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="int" name="blocklength" />
+    <param access="i" type_modifier="" type="int" name="stride" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="oldtype" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Unpack" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="void*" name="inbuf" />
-    <param access="i" type="int" name="insize" />
-    <param access="b" type="int*" name="position" />
-    <param access="o" type="void*" name="outbuf" />
-    <param access="i" type="int" name="outcount" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
-    <param access="i" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="inbuf" />
+    <param access="i" type_modifier="" type="int" name="insize" />
+    <param access="b" type_modifier="" type="int*" name="position" />
+    <param access="o" type_modifier="" type="void*" name="outbuf" />
+    <param access="i" type_modifier="" type="int" name="outcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <version id="1.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -4556,13 +4556,13 @@
 </prototype>
 
 <prototype name="MPI_Unpack_external" rtype="int" group="type" guard="extra,type" >
-    <param access="i" type="char*" name="datarep" />
-    <param access="i" type="void*" name="inbuf" />
-    <param access="i" type="MPI_Aint" name="insize" />
-    <param access="b" type="MPI_Aint*" name="position" />
-    <param access="o" type="void*" name="outbuf" />
-    <param access="i" type="int" name="outcount" />
-    <param access="i" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="datarep" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="inbuf" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="insize" />
+    <param access="b" type_modifier="" type="MPI_Aint*" name="position" />
+    <param access="o" type_modifier="" type="void*" name="outbuf" />
+    <param access="i" type_modifier="" type="int" name="outcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <version id="2.0" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
@@ -4583,15 +4583,15 @@
 </prototype>
 
 <prototype name="MPI_Unpublish_name" rtype="int" group="spawn" guard="spawn,extra" >
-    <param access="i" type="char*" name="service_name" />
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="i" type="char*" name="port_name" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="service_name" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="port_name" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Wait" rtype="int" group="p2p" guard="p2p" >
-    <param access="b" type="MPI_Request*" name="request" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="b" type_modifier="" type="MPI_Request*" name="request" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUS_IGNORE)
@@ -4613,9 +4613,9 @@
 </prototype>
 
 <prototype name="MPI_Waitall" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="int" name="count" />
-    <param access="b" type="MPI_Request*" name="array_of_requests" />
-    <param access="o" type="MPI_Status*" name="array_of_statuses" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="array_of_statuses" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUSES_IGNORE)
@@ -4637,10 +4637,10 @@
 </prototype>
 
 <prototype name="MPI_Waitany" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="int" name="count" />
-    <param access="b" type="MPI_Request*" name="array_of_requests" />
-    <param access="o" type="int*" name="index" />
-    <param access="o" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
+    <param access="o" type_modifier="" type="int*" name="index" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
     <version id="1.0" />
     <xblock id="fortran"><![CDATA[ 
     #if HAVE(MPI_STATUS_IGNORE)
@@ -4662,161 +4662,161 @@
 </prototype>
 
 <prototype name="MPI_Waitsome" rtype="int" group="p2p" guard="p2p" >
-    <param access="i" type="int" name="incount" />
-    <param access="b" type="MPI_Request*" name="array_of_requests" />
-    <param access="o" type="int*" name="outcount" />
-    <param access="o" type="int*" name="array_of_indices" />
-    <param access="o" type="MPI_Status*" name="array_of_statuses" />
+    <param access="i" type_modifier="" type="int" name="incount" />
+    <param access="b" type_modifier="" type="MPI_Request*" name="array_of_requests" />
+    <param access="o" type_modifier="" type="int*" name="outcount" />
+    <param access="o" type_modifier="" type="int*" name="array_of_indices" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="array_of_statuses" />
     <version id="1.0" />
 </prototype>
 
 <prototype name="MPI_Win_c2f" rtype="MPI_Fint" group="rma_misc" guard="rma,misc,extra" >
-    <param access="i" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_call_errhandler" rtype="int" group="rma_err" guard="rma,extra,err" >
-    <param access="i" type="MPI_Win" name="win" />
-    <param access="i" type="int" name="errorcode" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="int" name="errorcode" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_complete" rtype="int" group="rma" guard="rma" >
-    <param access="i" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_create" rtype="int" group="rma" guard="rma" >
-    <param access="i" type="void*" name="base" />
-    <param access="i" type="MPI_Aint" name="size" />
-    <param access="i" type="int" name="disp_unit" />
-    <param access="i" type="MPI_Info" name="info" />
-    <param access="i" type="MPI_Comm" name="comm" />
-    <param access="o" type="MPI_Win*" name="win" />
+    <param access="i" type_modifier="" type="void*" name="base" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="size" />
+    <param access="i" type_modifier="" type="int" name="disp_unit" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Win*" name="win" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_create_errhandler" rtype="int" group="rma_err" guard="rma,extra,err" >
-    <param access="i" type="MPI_Win_errhandler_fn*" name="function" />
-    <param access="o" type="MPI_Errhandler*" name="errhandler" />
+    <param access="i" type_modifier="" type="MPI_Win_errhandler_fn*" name="function" />
+    <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_create_keyval" rtype="int" group="rma_ext" guard="rma,ext,extra" >
-    <param access="i" type="MPI_Win_copy_attr_function*" name="win_copy_attr_fn" />
-    <param access="i" type="MPI_Win_delete_attr_function*" name="win_delete_attr_fn" />
-    <param access="o" type="int*" name="win_keyval" />
-    <param access="i" type="void*" name="extra_state" />
+    <param access="i" type_modifier="" type="MPI_Win_copy_attr_function*" name="win_copy_attr_fn" />
+    <param access="i" type_modifier="" type="MPI_Win_delete_attr_function*" name="win_delete_attr_fn" />
+    <param access="o" type_modifier="" type="int*" name="win_keyval" />
+    <param access="i" type_modifier="" type="void*" name="extra_state" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_delete_attr" rtype="int" group="rma_ext" guard="rma,ext,extra" >
-    <param access="b" type="MPI_Win" name="win" />
-    <param access="i" type="int" name="win_keyval" />
+    <param access="b" type_modifier="" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="int" name="win_keyval" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_f2c" rtype="MPI_Win" group="rma_misc" guard="rma,misc,extra" >
-    <param access="o" type="MPI_Fint" name="win" />
+    <param access="o" type_modifier="" type="MPI_Fint" name="win" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_fence" rtype="int" group="rma" guard="rma" >
-    <param access="i" type="int" name="assert" />
-    <param access="i" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="int" name="assert" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_free" rtype="int" group="rma" guard="rma" >
-    <param access="b" type="MPI_Win*" name="win" />
+    <param access="b" type_modifier="" type="MPI_Win*" name="win" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_free_keyval" rtype="int" group="rma_ext" guard="rma,ext,extra" >
-    <param access="b" type="int*" name="win_keyval" />
+    <param access="b" type_modifier="" type="int*" name="win_keyval" />
     <version id="2.0" />
 </prototype>
 <prototype name="MPI_Win_get_attr" rtype="int" group="rma_ext" guard="rma,ext,extra" >
-    <param access="i" type="MPI_Win" name="win" />
-    <param access="i" type="int" name="win_keyval" />
-    <param access="o" type="void*" name="attribute_val" />
-    <param access="o" type="int*" name="flag" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="int" name="win_keyval" />
+    <param access="o" type_modifier="" type="void*" name="attribute_val" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="2.0" />
 </prototype>
 <prototype name="MPI_Win_get_errhandler" rtype="int" group="rma_err" guard="rma,extra,err" >
-    <param access="i" type="MPI_Win" name="win" />
-    <param access="o" type="MPI_Errhandler*" name="errhandler" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_get_group" rtype="int" group="rma" guard="rma,extra" >
-    <param access="i" type="MPI_Win" name="win" />
-    <param access="o" type="MPI_Group*" name="group" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="o" type_modifier="" type="MPI_Group*" name="group" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_get_name" rtype="int" group="rma_ext" guard="rma,extra" >
-    <param access="i" type="MPI_Win" name="win" />
-    <param access="o" type="char*" name="win_name" />
-    <param access="o" type="int*" name="resultlen" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="o" type_modifier="" type="char*" name="win_name" />
+    <param access="o" type_modifier="" type="int*" name="resultlen" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_lock" rtype="int" group="rma" guard="rma" >
-    <param access="i" type="int" name="lock_type" />
-    <param access="i" type="int" name="rank" />
-    <param access="i" type="int" name="assert" />
-    <param access="i" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="int" name="lock_type" />
+    <param access="i" type_modifier="" type="int" name="rank" />
+    <param access="i" type_modifier="" type="int" name="assert" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_post" rtype="int" group="rma" guard="rma" >
-    <param access="i" type="MPI_Group" name="group" />
-    <param access="i" type="int" name="assert" />
-    <param access="i" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
+    <param access="i" type_modifier="" type="int" name="assert" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_set_attr" rtype="int" group="rma_ext" guard="rma,extra,ext" >
-    <param access="b" type="MPI_Win" name="win" />
-    <param access="i" type="int" name="win_keyval" />
-    <param access="i" type="void*" name="attribute_val" />
+    <param access="b" type_modifier="" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="int" name="win_keyval" />
+    <param access="i" type_modifier="" type="void*" name="attribute_val" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_set_errhandler" rtype="int" group="rma_err" guard="rma,extra,err" >
-    <param access="b" type="MPI_Win" name="win" />
-    <param access="i" type="MPI_Errhandler" name="errhandler" />
+    <param access="b" type_modifier="" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_set_name" rtype="int" group="rma_ext" guard="rma,ext,extra" >
-    <param access="b" type="MPI_Win" name="win" />
-    <param access="i" type="char*" name="win_name" />
+    <param access="b" type_modifier="" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="win_name" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_start" rtype="int" group="rma" guard="rma" >
-    <param access="i" type="MPI_Group" name="group" />
-    <param access="i" type="int" name="assert" />
-    <param access="i" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
+    <param access="i" type_modifier="" type="int" name="assert" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_test" rtype="int" group="rma" guard="rma" >
-    <param access="i" type="MPI_Win" name="win" />
-    <param access="o" type="int*" name="flag" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_unlock" rtype="int" group="rma" guard="rma" >
-    <param access="i" type="int" name="rank" />
-    <param access="i" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="int" name="rank" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Win_wait" rtype="int" group="rma" guard="rma" >
-    <param access="i" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
 </prototype>
 

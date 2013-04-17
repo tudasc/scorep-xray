@@ -131,7 +131,7 @@ MPI_Grequest_complete( MPI_Request request )
  * It wraps the MPI_Get_count call with enter and exit events.
  */
 int
-MPI_Get_count( MPI_Status* status, MPI_Datatype datatype, int* count )
+MPI_Get_count( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datatype, int* count )
 {
     int return_val;
 
@@ -165,7 +165,7 @@ MPI_Get_count( MPI_Status* status, MPI_Datatype datatype, int* count )
  * It wraps the MPI_Get_elements call with enter and exit events.
  */
 int
-MPI_Get_elements( MPI_Status* status, MPI_Datatype datatype, int* count )
+MPI_Get_elements( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datatype, int* count )
 {
     int return_val;
 

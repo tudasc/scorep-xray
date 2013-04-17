@@ -127,7 +127,7 @@ MPI_Add_error_code( int errorclass, int* errorcode )
  * It wraps the MPI_Add_error_string call with enter and exit events.
  */
 int
-MPI_Add_error_string( int errorcode, char* string )
+MPI_Add_error_string( int errorcode, SCOREP_MPI_CONST_DECL char* string )
 {
     int return_val;
 

@@ -115,10 +115,11 @@ int SCOREP::Wrapgen::Func::num_func = 0;
 void
 SCOREP::Wrapgen::Func::add_param
 (
+    const string& type_modifier,
     const string& type,
     const string& name,
     const string& suffix
 )
 {
-    m_params.push_back( Funcparam( type, name, suffix, 'i' ) );
+    m_params.push_back( Funcparam( type_modifier, type, name, suffix, 'i' ) );
 }

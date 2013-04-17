@@ -329,7 +329,7 @@ MPI_Group_difference( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup )
  * event is called between enter and exit.
  */
 int
-MPI_Group_excl( MPI_Group group, int n, int* ranks, MPI_Group* newgroup )
+MPI_Group_excl( MPI_Group group, int n, SCOREP_MPI_CONST_DECL int* ranks, MPI_Group* newgroup )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -366,7 +366,7 @@ MPI_Group_excl( MPI_Group group, int n, int* ranks, MPI_Group* newgroup )
  * event is called between enter and exit.
  */
 int
-MPI_Group_incl( MPI_Group group, int n, int* ranks, MPI_Group* newgroup )
+MPI_Group_incl( MPI_Group group, int n, SCOREP_MPI_CONST_DECL int* ranks, MPI_Group* newgroup )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
@@ -1059,7 +1059,7 @@ MPI_Comm_set_errhandler( MPI_Comm comm, MPI_Errhandler errhandler )
  * It wraps the me) call with enter and exit events.
  */
 int
-MPI_Comm_set_name( MPI_Comm comm, char* comm_name )
+MPI_Comm_set_name( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* comm_name )
 {
     int return_val;
 
