@@ -2735,7 +2735,7 @@
 <prototype name="MPI_Group_translate_ranks" rtype="int" group="cg" guard="extra,cg" >
     <param access="i" type_modifier="" type="MPI_Group" name="group1" />
     <param access="i" type_modifier="" type="int" name="n" />
-    <param access="i" type_modifier="" type="int*" name="ranks1" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="ranks1" />
     <param access="i" type_modifier="" type="MPI_Group" name="group2" />
     <param access="o" type_modifier="" type="int*" name="ranks2" />
     <version id="1.0" />
@@ -2787,7 +2787,7 @@
 
 <prototype name="MPI_Info_delete" rtype="int" group="misc" guard="extra,misc" >
     <param access="b" type_modifier="" type="MPI_Info" name="info" />
-    <param access="i" type_modifier="" type="char*" name="key" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="key" />
     <version id="2.0" />
 </prototype>
 
@@ -2809,7 +2809,7 @@
 
 <prototype name="MPI_Info_get" rtype="int" group="misc" guard="extra,misc" >
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
-    <param access="i" type_modifier="" type="char*" name="key" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="key" />
     <param access="i" type_modifier="" type="int" name="valuelen" />
     <param access="o" type_modifier="" type="char*" name="value" />
     <param access="o" type_modifier="" type="int*" name="flag" />
@@ -2831,7 +2831,7 @@
 
 <prototype name="MPI_Info_get_valuelen" rtype="int" group="misc" guard="extra,misc" >
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
-    <param access="i" type_modifier="" type="char*" name="key" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="key" />
     <param access="o" type_modifier="" type="int*" name="valuelen" />
     <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="2.0" />
@@ -2839,8 +2839,8 @@
 
 <prototype name="MPI_Info_set" rtype="int" group="misc" guard="extra,misc" >
     <param access="b" type_modifier="" type="MPI_Info" name="info" />
-    <param access="i" type_modifier="" type="char*" name="key" />
-    <param access="i" type_modifier="" type="char*" name="value" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="key" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="value" />
     <version id="2.0" />
 </prototype>
 
@@ -4091,13 +4091,13 @@
 </prototype>
 
 <prototype name="MPI_Status_c2f" rtype="int" group="misc" guard="extra,misc" >
-    <param access="o" type_modifier="" type="MPI_Status*" name="c_status" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Status*" name="c_status" />
     <param access="o" type_modifier="" type="MPI_Fint*" name="f_status" />
     <version id="2.0" />
 </prototype>
 
 <prototype name="MPI_Status_f2c" rtype="int" group="misc" guard="extra,misc" >
-    <param access="o" type_modifier="" type="MPI_Fint*" name="f_status" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Fint*" name="f_status" />
     <param access="o" type_modifier="" type="MPI_Status*" name="c_status" />
     <version id="2.0" />
 </prototype>

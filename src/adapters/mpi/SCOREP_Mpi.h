@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -37,13 +37,19 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_DefinitionHandles.h>
 
-#if !defined( SCOREP_MPI_NO_HOOKS )
-#include <scorep_mpi_oa_hooks.h>
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
+
+#if MPI_VERSION >= 3
+#define SCOREP_MPI_CONST_DECL const
+#else
+#define SCOREP_MPI_CONST_DECL
+#endif
+
+#if !defined( SCOREP_MPI_NO_HOOKS )
+#include <scorep_mpi_oa_hooks.h>
+#endif
 
 /** @defgroup MPI_Wrapper SCOREP MPI wrapper library
    The MPI wrapper provides an implementation of the MPI functions which use the
@@ -154,12 +160,6 @@ scorep_mpiprofile_reinit_metrics( void );
     Turn off MPI Profiling hooks inside MPI adapter.
  */
 #define SCOREP_MPI_HOOKS_OFF scorep_mpi_hooks_on = false
-
-#if MPI_VERSION >= 3
-#define SCOREP_MPI_CONST_DECL const
-#else
-#define SCOREP_MPI_CONST_DECL
-#endif
 
 
 /** @} */

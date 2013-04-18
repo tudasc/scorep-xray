@@ -539,7 +539,7 @@ MPI_Info_free( MPI_Info* info )
  * It wraps the MPI_Info_delete call with enter and exit events.
  */
 int
-MPI_Info_delete( MPI_Info info, char* key )
+MPI_Info_delete( MPI_Info info, SCOREP_MPI_CONST_DECL char* key )
 {
     int return_val;
 
@@ -575,7 +575,7 @@ MPI_Info_delete( MPI_Info info, char* key )
  * It wraps the MPI_Info_get call with enter and exit events.
  */
 int
-MPI_Info_get( MPI_Info info, char* key, int valuelen, char* value, int* flag )
+MPI_Info_get( MPI_Info info, SCOREP_MPI_CONST_DECL char* key, int valuelen, char* value, int* flag )
 {
     int return_val;
 
@@ -611,7 +611,7 @@ MPI_Info_get( MPI_Info info, char* key, int valuelen, char* value, int* flag )
  * It wraps the MPI_Info_get_valuelen call with enter and exit events.
  */
 int
-MPI_Info_get_valuelen( MPI_Info info, char* key, int* valuelen, int* flag )
+MPI_Info_get_valuelen( MPI_Info info, SCOREP_MPI_CONST_DECL char* key, int* valuelen, int* flag )
 {
     int return_val;
 
@@ -647,7 +647,7 @@ MPI_Info_get_valuelen( MPI_Info info, char* key, int* valuelen, int* flag )
  * It wraps the MPI_Info_set call with enter and exit events.
  */
 int
-MPI_Info_set( MPI_Info info, char* key, char* value )
+MPI_Info_set( MPI_Info info, SCOREP_MPI_CONST_DECL char* key, SCOREP_MPI_CONST_DECL char* value )
 {
     int return_val;
 

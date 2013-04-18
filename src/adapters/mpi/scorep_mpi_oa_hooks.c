@@ -46,16 +46,13 @@
  * Pre-communication hook for MPI_Send
  */
 void
-SCOREP_Hooks_Pre_MPI_Send
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp
-)
+SCOREP_Hooks_Pre_MPI_Send( SCOREP_MPI_CONST_DECL void* buf,
+                           int                         count,
+                           MPI_Datatype                datatype,
+                           int                         dest,
+                           int                         tag,
+                           MPI_Comm                    comm,
+                           uint64_t                    start_time_stamp )
 {
 }
 
@@ -63,17 +60,14 @@ SCOREP_Hooks_Pre_MPI_Send
  * Post-communication hook for MPI_Send
  */
 void
-SCOREP_Hooks_Post_MPI_Send
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_value
-)
+SCOREP_Hooks_Post_MPI_Send( SCOREP_MPI_CONST_DECL void* buf,
+                            int                         count,
+                            MPI_Datatype                datatype,
+                            int                         dest,
+                            int                         tag,
+                            MPI_Comm                    comm,
+                            uint64_t                    start_time_stamp,
+                            int                         return_value )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void*       localTimePack;
@@ -107,17 +101,14 @@ SCOREP_Hooks_Post_MPI_Send
 }
 
 void
-SCOREP_Hooks_Post_MPI_Bsend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Bsend( SCOREP_MPI_CONST_DECL void* buf,
+                             int                         count,
+                             MPI_Datatype                datatype,
+                             int                         dest,
+                             int                         tag,
+                             MPI_Comm                    comm,
+                             uint64_t                    start_time_stamp,
+                             int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void*       localTimePack;
@@ -151,17 +142,14 @@ SCOREP_Hooks_Post_MPI_Bsend
 }
 
 void
-SCOREP_Hooks_Post_MPI_Ssend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Ssend( SCOREP_MPI_CONST_DECL void* buf,
+                             int                         count,
+                             MPI_Datatype                datatype,
+                             int                         dest,
+                             int                         tag,
+                             MPI_Comm                    comm,
+                             uint64_t                    start_time_stamp,
+                             int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void*       localTimePack;
@@ -195,17 +183,14 @@ SCOREP_Hooks_Post_MPI_Ssend
 }
 
 void
-SCOREP_Hooks_Post_MPI_Rsend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Rsend( SCOREP_MPI_CONST_DECL void* buf,
+                             int                         count,
+                             MPI_Datatype                datatype,
+                             int                         dest,
+                             int                         tag,
+                             MPI_Comm                    comm,
+                             uint64_t                    start_time_stamp,
+                             int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void*       localTimePack;
@@ -242,17 +227,14 @@ SCOREP_Hooks_Post_MPI_Rsend
  * Pre-communication hook for MPI_Recv
  */
 void
-SCOREP_Hooks_Pre_MPI_Recv
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          source,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Status*  status,
-    uint64_t     start_time_stamp
-)
+SCOREP_Hooks_Pre_MPI_Recv( void*        buf,
+                           int          count,
+                           MPI_Datatype datatype,
+                           int          source,
+                           int          tag,
+                           MPI_Comm     comm,
+                           MPI_Status*  status,
+                           uint64_t     start_time_stamp )
 {
 }
 
@@ -260,18 +242,15 @@ SCOREP_Hooks_Pre_MPI_Recv
  * Post-communication hook for MPI_Recv
  */
 void
-SCOREP_Hooks_Post_MPI_Recv
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          source,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Status*  status,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Recv( void*        buf,
+                            int          count,
+                            MPI_Datatype datatype,
+                            int          source,
+                            int          tag,
+                            MPI_Comm     comm,
+                            MPI_Status*  status,
+                            uint64_t     start_time_stamp,
+                            int          return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
@@ -294,18 +273,15 @@ SCOREP_Hooks_Post_MPI_Recv
 }
 
 void
-SCOREP_Hooks_Post_MPI_Isend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request,
-    int64_t      start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Isend( SCOREP_MPI_CONST_DECL void* buf,
+                             int                         count,
+                             MPI_Datatype                datatype,
+                             int                         dest,
+                             int                         tag,
+                             MPI_Comm                    comm,
+                             MPI_Request*                request,
+                             int64_t                     start_time_stamp,
+                             int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void*       localTimePack;
@@ -360,18 +336,15 @@ SCOREP_Hooks_Post_MPI_Isend
 }
 
 void
-SCOREP_Hooks_Post_MPI_Issend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request,
-    int64_t      start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Issend( SCOREP_MPI_CONST_DECL void* buf,
+                              int                         count,
+                              MPI_Datatype                datatype,
+                              int                         dest,
+                              int                         tag,
+                              MPI_Comm                    comm,
+                              MPI_Request*                request,
+                              int64_t                     start_time_stamp,
+                              int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void*       localTimePack;
@@ -426,18 +399,15 @@ SCOREP_Hooks_Post_MPI_Issend
 }
 
 void
-SCOREP_Hooks_Post_MPI_Ibsend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request,
-    int64_t      start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf,
+                              int                         count,
+                              MPI_Datatype                datatype,
+                              int                         dest,
+                              int                         tag,
+                              MPI_Comm                    comm,
+                              MPI_Request*                request,
+                              int64_t                     start_time_stamp,
+                              int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void*       localTimePack;
@@ -492,18 +462,15 @@ SCOREP_Hooks_Post_MPI_Ibsend
 }
 
 void
-SCOREP_Hooks_Post_MPI_Irsend
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request,
-    int64_t      start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf,
+                              int                         count,
+                              MPI_Datatype                datatype,
+                              int                         dest,
+                              int                         tag,
+                              MPI_Comm                    comm,
+                              MPI_Request*                request,
+                              int64_t                     start_time_stamp,
+                              int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void*       localTimePack;
@@ -558,18 +525,15 @@ SCOREP_Hooks_Post_MPI_Irsend
 }
 
 void
-SCOREP_Hooks_Post_MPI_Irecv
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          source,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request,
-    int64_t      start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Irecv( void*        buf,
+                             int          count,
+                             MPI_Datatype datatype,
+                             int          source,
+                             int          tag,
+                             MPI_Comm     comm,
+                             MPI_Request* request,
+                             int64_t      start_time_stamp,
+                             int          return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     MPI_Group group         = MPI_GROUP_NULL;
@@ -634,18 +598,15 @@ SCOREP_Hooks_Post_MPI_Irecv
 }
 
 void
-SCOREP_Hooks_Post_MPI_Send_init
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request,
-    int64_t      start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Send_init( SCOREP_MPI_CONST_DECL void* buf,
+                                 int                         count,
+                                 MPI_Datatype                datatype,
+                                 int                         dest,
+                                 int                         tag,
+                                 MPI_Comm                    comm,
+                                 MPI_Request*                request,
+                                 int64_t                     start_time_stamp,
+                                 int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void*       localTimePack;
@@ -675,18 +636,15 @@ SCOREP_Hooks_Post_MPI_Send_init
 }
 
 void
-SCOREP_Hooks_Post_MPI_Ssend_init
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request,
-    int64_t      start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Ssend_init( SCOREP_MPI_CONST_DECL void* buf,
+                                  int                         count,
+                                  MPI_Datatype                datatype,
+                                  int                         dest,
+                                  int                         tag,
+                                  MPI_Comm                    comm,
+                                  MPI_Request*                request,
+                                  int64_t                     start_time_stamp,
+                                  int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void*       localTimePack;
@@ -716,18 +674,15 @@ SCOREP_Hooks_Post_MPI_Ssend_init
 }
 
 void
-SCOREP_Hooks_Post_MPI_Rsend_init
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request,
-    int64_t      start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Rsend_init( SCOREP_MPI_CONST_DECL void* buf,
+                                  int                         count,
+                                  MPI_Datatype                datatype,
+                                  int                         dest,
+                                  int                         tag,
+                                  MPI_Comm                    comm,
+                                  MPI_Request*                request,
+                                  int64_t                     start_time_stamp,
+                                  int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void*       localTimePack;
@@ -757,18 +712,15 @@ SCOREP_Hooks_Post_MPI_Rsend_init
 }
 
 void
-SCOREP_Hooks_Post_MPI_Bsend_init
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          dest,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request,
-    int64_t      start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Bsend_init( SCOREP_MPI_CONST_DECL void* buf,
+                                  int                         count,
+                                  MPI_Datatype                datatype,
+                                  int                         dest,
+                                  int                         tag,
+                                  MPI_Comm                    comm,
+                                  MPI_Request*                request,
+                                  int64_t                     start_time_stamp,
+                                  int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void*       localTimePack;
@@ -798,18 +750,15 @@ SCOREP_Hooks_Post_MPI_Bsend_init
 }
 
 void
-SCOREP_Hooks_Post_MPI_Recv_init
-(
-    void*        buf,
-    int          count,
-    MPI_Datatype datatype,
-    int          source,
-    int          tag,
-    MPI_Comm     comm,
-    MPI_Request* request,
-    int64_t      start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Recv_init( void*        buf,
+                                 int          count,
+                                 MPI_Datatype datatype,
+                                 int          source,
+                                 int          tag,
+                                 MPI_Comm     comm,
+                                 MPI_Request* request,
+                                 int64_t      start_time_stamp,
+                                 int          return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
 
@@ -1198,80 +1147,65 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking
 }
 
 void
-SCOREP_Hooks_Post_MPI_Exscan
-(
-    void*        sendbuf,
-    void*        recvbuf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Op       op,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Exscan( SCOREP_MPI_CONST_DECL void* sendbuf,
+                              void*                       recvbuf,
+                              int                         count,
+                              MPI_Datatype                datatype,
+                              MPI_Op                      op,
+                              MPI_Comm                    comm,
+                              uint64_t                    start_time_stamp,
+                              int                         return_val )
 {
 }
 
 void
-SCOREP_Hooks_Post_MPI_Alltoallw
-(
-    void*        sendbuf,
-    int          sendcounts[],
-    int          sdispls[],
-    MPI_Datatype sendtypes[],
-    void*        recvbuf,
-    int          recvcounts[],
-    int          rdispls[],
-    MPI_Datatype recvtypes[],
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Alltoallw( SCOREP_MPI_CONST_DECL void*        sendbuf,
+                                 SCOREP_MPI_CONST_DECL int          sendcounts[],
+                                 SCOREP_MPI_CONST_DECL int          sdispls[],
+                                 SCOREP_MPI_CONST_DECL MPI_Datatype sendtypes[],
+                                 void*                              recvbuf,
+                                 SCOREP_MPI_CONST_DECL int          recvcounts[],
+                                 SCOREP_MPI_CONST_DECL int          rdispls[],
+                                 SCOREP_MPI_CONST_DECL MPI_Datatype recvtypes[],
+                                 MPI_Comm                           comm,
+                                 uint64_t                           start_time_stamp,
+                                 int                                return_val )
 {
 }
 
 void
-SCOREP_Hooks_Post_MPI_Reduce_scatter
-(
-    void*        sendbuf,
-    void*        recvbuf,
-    int*         recvcounts,
-    MPI_Datatype datatype,
-    MPI_Op       op,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf,
+                                      void*                       recvbuf,
+                                      SCOREP_MPI_CONST_DECL int*  recvcounts,
+                                      MPI_Datatype                datatype,
+                                      MPI_Op                      op,
+                                      MPI_Comm                    comm,
+                                      uint64_t                    start_time_stamp,
+                                      int                         return_val )
 {
 }
 
 void
-SCOREP_Hooks_Post_MPI_Reduce_scatter_block
-(
-    void*        sendbuf,
-    void*        recvbuf,
-    int          recvcount,
-    MPI_Datatype datatype,
-    MPI_Op       op,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Reduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf,
+                                            void*                       recvbuf,
+                                            int                         recvcount,
+                                            MPI_Datatype                datatype,
+                                            MPI_Op                      op,
+                                            MPI_Comm                    comm,
+                                            uint64_t                    start_time_stamp,
+                                            int                         return_val )
 {
 }
 
 void
-SCOREP_Hooks_Post_MPI_Scan
-(
-    void*        sendbuf,
-    void*        recvbuf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Op       op,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Scan( SCOREP_MPI_CONST_DECL void* sendbuf,
+                            void*                       recvbuf,
+                            int                         count,
+                            MPI_Datatype                datatype,
+                            MPI_Op                      op,
+                            MPI_Comm                    comm,
+                            uint64_t                    start_time_stamp,
+                            int                         return_val )
 {
 }
 
@@ -1280,18 +1214,15 @@ SCOREP_Hooks_Post_MPI_Scan
    -----------------------------------------------*/
 
 void
-SCOREP_Hooks_Post_MPI_Alltoall
-(
-    void*        sendbuf,
-    int          sendcount,
-    MPI_Datatype sendtype,
-    void*        recvbuf,
-    int          recvcount,
-    MPI_Datatype recvtype,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Alltoall( SCOREP_MPI_CONST_DECL void* sendbuf,
+                                int                         sendcount,
+                                MPI_Datatype                sendtype,
+                                void*                       recvbuf,
+                                int                         recvcount,
+                                MPI_Datatype                recvtype,
+                                MPI_Comm                    comm,
+                                uint64_t                    start_time_stamp,
+                                int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
@@ -1315,20 +1246,17 @@ SCOREP_Hooks_Post_MPI_Alltoall
 }
 
 void
-SCOREP_Hooks_Post_MPI_Alltoallv
-(
-    void*        sendbuf,
-    int*         sendcounts,
-    int*         sdispls,
-    MPI_Datatype sendtype,
-    void*        recvbuf,
-    int*         recvcounts,
-    int*         rdispls,
-    MPI_Datatype recvtype,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf,
+                                 SCOREP_MPI_CONST_DECL int*  sendcounts,
+                                 SCOREP_MPI_CONST_DECL int*  sdispls,
+                                 MPI_Datatype                sendtype,
+                                 void*                       recvbuf,
+                                 SCOREP_MPI_CONST_DECL int*  recvcounts,
+                                 SCOREP_MPI_CONST_DECL int*  rdispls,
+                                 MPI_Datatype                recvtype,
+                                 MPI_Comm                    comm,
+                                 uint64_t                    start_time_stamp,
+                                 int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
@@ -1387,19 +1315,16 @@ SCOREP_Hooks_Post_MPI_Barrier
  * Post-communication hook for MPI_Recv
  */
 void
-SCOREP_Hooks_Post_MPI_Gather
-(
-    void*        sendbuf,
-    int          sendcount,
-    MPI_Datatype sendtype,
-    void*        recvbuf,
-    int          recvcount,
-    MPI_Datatype recvtype,
-    int          root,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf,
+                              int                         sendcount,
+                              MPI_Datatype                sendtype,
+                              void*                       recvbuf,
+                              int                         recvcount,
+                              MPI_Datatype                recvtype,
+                              int                         root,
+                              MPI_Comm                    comm,
+                              uint64_t                    start_time_stamp,
+                              int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
@@ -1429,20 +1354,17 @@ SCOREP_Hooks_Post_MPI_Gather
 }
 
 void
-SCOREP_Hooks_Post_MPI_Gatherv
-(
-    void*        sendbuf,
-    int          sendcount,
-    MPI_Datatype sendtype,
-    void*        recvbuf,
-    int*         recvcounts,
-    int*         displs,
-    MPI_Datatype recvtype,
-    int          root,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf,
+                               int                         sendcount,
+                               MPI_Datatype                sendtype,
+                               void*                       recvbuf,
+                               SCOREP_MPI_CONST_DECL int*  recvcounts,
+                               SCOREP_MPI_CONST_DECL int*  displs,
+                               MPI_Datatype                recvtype,
+                               int                         root,
+                               MPI_Comm                    comm,
+                               uint64_t                    start_time_stamp,
+                               int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
@@ -1472,18 +1394,15 @@ SCOREP_Hooks_Post_MPI_Gatherv
 }
 
 void
-SCOREP_Hooks_Post_MPI_Reduce
-(
-    void*        sendbuf,
-    void*        recvbuf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Op       op,
-    int          root,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf,
+                              void*                       recvbuf,
+                              int                         count,
+                              MPI_Datatype                datatype,
+                              MPI_Op                      op,
+                              int                         root,
+                              MPI_Comm                    comm,
+                              uint64_t                    start_time_stamp,
+                              int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
@@ -1511,17 +1430,14 @@ SCOREP_Hooks_Post_MPI_Reduce
 }
 
 void
-SCOREP_Hooks_Post_MPI_Allreduce
-(
-    void*        sendbuf,
-    void*        recvbuf,
-    int          count,
-    MPI_Datatype datatype,
-    MPI_Op       op,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Allreduce( SCOREP_MPI_CONST_DECL void* sendbuf,
+                                 void*                       recvbuf,
+                                 int                         count,
+                                 MPI_Datatype                datatype,
+                                 MPI_Op                      op,
+                                 MPI_Comm                    comm,
+                                 uint64_t                    start_time_stamp,
+                                 int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
@@ -1548,18 +1464,15 @@ SCOREP_Hooks_Post_MPI_Allreduce
 }
 
 void
-SCOREP_Hooks_Post_MPI_Allgather
-(
-    void*        sendbuf,
-    int          sendcount,
-    MPI_Datatype sendtype,
-    void*        recvbuf,
-    int          recvcount,
-    MPI_Datatype recvtype,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Allgather( SCOREP_MPI_CONST_DECL void* sendbuf,
+                                 int                         sendcount,
+                                 MPI_Datatype                sendtype,
+                                 void*                       recvbuf,
+                                 int                         recvcount,
+                                 MPI_Datatype                recvtype,
+                                 MPI_Comm                    comm,
+                                 uint64_t                    start_time_stamp,
+                                 int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
@@ -1586,19 +1499,16 @@ SCOREP_Hooks_Post_MPI_Allgather
 }
 
 void
-SCOREP_Hooks_Post_MPI_Allgatherv
-(
-    void*        sendbuf,
-    int          sendcount,
-    MPI_Datatype sendtype,
-    void*        recvbuf,
-    int*         recvcounts,
-    int*         displs,
-    MPI_Datatype recvtype,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf,
+                                  int                         sendcount,
+                                  MPI_Datatype                sendtype,
+                                  void*                       recvbuf,
+                                  SCOREP_MPI_CONST_DECL int*  recvcounts,
+                                  SCOREP_MPI_CONST_DECL int*  displs,
+                                  MPI_Datatype                recvtype,
+                                  MPI_Comm                    comm,
+                                  uint64_t                    start_time_stamp,
+                                  int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
@@ -1662,19 +1572,16 @@ SCOREP_Hooks_Post_MPI_Bcast
 }
 
 void
-SCOREP_Hooks_Post_MPI_Scatter
-(
-    void*        sendbuf,
-    int          sendcount,
-    MPI_Datatype sendtype,
-    void*        recvbuf,
-    int          recvcount,
-    MPI_Datatype recvtype,
-    int          root,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Scatter( SCOREP_MPI_CONST_DECL void* sendbuf,
+                               int                         sendcount,
+                               MPI_Datatype                sendtype,
+                               void*                       recvbuf,
+                               int                         recvcount,
+                               MPI_Datatype                recvtype,
+                               int                         root,
+                               MPI_Comm                    comm,
+                               uint64_t                    start_time_stamp,
+                               int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
@@ -1697,21 +1604,17 @@ SCOREP_Hooks_Post_MPI_Scatter
     scorep_mpiprofile_release_local_time_pack( localTimePack );
 }
 void
-SCOREP_Hooks_Post_MPI_Scatterv
-(
-    void*        sendbuf,
-    int*         sendcounts,
-    int*         displs,
-    MPI_Datatype sendtype,
-    void*        recvbuf,
-    int          recvcount,
-    MPI_Datatype recvtype,
-    int          root,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-
-)
+SCOREP_Hooks_Post_MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf,
+                                SCOREP_MPI_CONST_DECL int*  sendcounts,
+                                SCOREP_MPI_CONST_DECL int*  displs,
+                                MPI_Datatype                sendtype,
+                                void*                       recvbuf,
+                                int                         recvcount,
+                                MPI_Datatype                recvtype,
+                                int                         root,
+                                MPI_Comm                    comm,
+                                uint64_t                    start_time_stamp,
+                                int                         return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
