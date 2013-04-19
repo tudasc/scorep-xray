@@ -271,26 +271,20 @@ scorep_write_region_definitions( void*                     writerHandle,
         }
 
         OTF2_Paradigm paradigm;
+
+       #define SCOREP_ADAPTER( NAME, name_str, OTF2_NAME ) \
+    case SCOREP_ADAPTER_ ## NAME:                     \
+        paradigm = OTF2_PARADIGM_ ## OTF2_NAME;      \
+        break;
+
         switch ( definition->adapter_type )
         {
-            case SCOREP_ADAPTER_COMPILER:
-                paradigm = OTF2_PARADIGM_COMPILER;
-                break;
-            case SCOREP_ADAPTER_CUDA:
-                paradigm = OTF2_PARADIGM_CUDA;
-                break;
-            case SCOREP_ADAPTER_MPI:
-                paradigm = OTF2_PARADIGM_MPI;
-                break;
-            case SCOREP_ADAPTER_POMP:
-                paradigm = OTF2_PARADIGM_OPENMP;
-                break;
-            case SCOREP_ADAPTER_USER:
-                paradigm = OTF2_PARADIGM_USER;
-                break;
+            SCOREP_ADAPTERS
+
             default:
                 paradigm = OTF2_PARADIGM_UNKNOWN;
         }
+        #undef SCOREP_ADAPTER
 
         OTF2_RegionRole region_role;
         OTF2_RegionFlag region_flags = OTF2_REGION_FLAG_NONE;

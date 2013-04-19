@@ -183,19 +183,24 @@ typedef uint32_t SCOREP_LineNo;
  * his type.
  *
  */
+#define SCOREP_ADAPTERS                            \
+    SCOREP_ADAPTER( USER, "user", USER )             \
+    SCOREP_ADAPTER( COMPILER, "compiler", COMPILER ) \
+    SCOREP_ADAPTER( MPI, "mpi", MPI )                \
+    SCOREP_ADAPTER( POMP, "pomp", OPENMP )           \
+    SCOREP_ADAPTER( CUDA, "cuda", CUDA )
+
+#define SCOREP_ADAPTER( NAME, name_str, OTF2_NAME ) \
+    SCOREP_ADAPTER_ ## NAME,
+
 typedef enum SCOREP_AdapterType
 {
-    SCOREP_ADAPTER_USER,
-    SCOREP_ADAPTER_COMPILER,
-    SCOREP_ADAPTER_MPI,
-    SCOREP_ADAPTER_POMP,
-    SCOREP_ADAPTER_PTHREAD,
-    SCOREP_ADAPTER_CUDA,
+    SCOREP_ADAPTERS
 
-    SCOREP_INVALID_ADAPTER_TYPE /**< For internal use only. */
+        SCOREP_INVALID_ADAPTER_TYPE /**< For internal use only. */
 } SCOREP_AdapterType;
 
-
+#undef SCOREP_ADAPTER
 
 /**
  * Metric sources to be used in defining a metric member (SCOREP_DefineMetric()).

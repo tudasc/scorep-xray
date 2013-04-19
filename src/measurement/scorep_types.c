@@ -35,21 +35,18 @@
 const char*
 scorep_adapter_type_to_string( SCOREP_AdapterType adapterType )
 {
+    #define SCOREP_ADAPTER( NAME, name_str, OTF2_NAME )  \
+    case SCOREP_ADAPTER_ ## NAME:                    \
+        return name_str;
+
     switch ( adapterType )
     {
-        case SCOREP_ADAPTER_USER:
-            return "user";
-        case SCOREP_ADAPTER_COMPILER:
-            return "compiler";
-        case SCOREP_ADAPTER_MPI:
-            return "mpi";
-        case SCOREP_ADAPTER_POMP:
-            return "pomp";
-        case SCOREP_ADAPTER_PTHREAD:
-            return "pthread";
+        SCOREP_ADAPTERS
+
         default:
             return "unknown";
     }
+    #undef SCOREP_ADAPTER
 }
 
 
@@ -117,18 +114,18 @@ scorep_region_type_to_string( SCOREP_RegionType regionType )
             return "critical sblock";
         case SCOREP_REGION_SINGLE_SBLOCK:
             return "single sblock";
+        case SCOREP_REGION_WRAPPER:
+            return "wrapper";
         case SCOREP_REGION_TASK:
             return "task";
+        case SCOREP_REGION_TASKWAIT:
+            return "taskwait";
         case SCOREP_REGION_TASK_CREATE:
             return "task create";
         case SCOREP_REGION_ORDERED:
             return "ordered";
         case SCOREP_REGION_ORDERED_SBLOCK:
             return "ordered sblock";
-        case SCOREP_REGION_WRAPPER:
-            return "wrapper";
-        case SCOREP_REGION_TASKWAIT:
-            return "taskwait";
         default:
             return "unknown";
     }
