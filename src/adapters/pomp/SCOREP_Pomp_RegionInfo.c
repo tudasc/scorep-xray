@@ -135,7 +135,7 @@ static const scorep_pomp_region_type_map_entry scorep_pomp_region_type_map[] =
   { "sections",          "sections",    "section",         false, true,  SCOREP_Pomp_Sections          , SCOREP_REGION_SECTIONS,    SCOREP_REGION_SECTION         },
   { "single",            "single",      "single sblock",   false, true,  SCOREP_Pomp_Single            , SCOREP_REGION_SINGLE,      SCOREP_REGION_SINGLE_SBLOCK,  },
   { "task",              "create task", "task",            false, false, SCOREP_Pomp_Task              , SCOREP_REGION_TASK_CREATE, SCOREP_REGION_TASK            },
-  { "taskwait",          "taskwait",    "",                false, false, SCOREP_Pomp_Taskwait          , SCOREP_REGION_TASKWAIT,    SCOREP_REGION_UNKNOWN         },
+  { "taskwait",          "taskwait",    "",                false, false, SCOREP_Pomp_Taskwait          , SCOREP_REGION_TASK_WAIT,   SCOREP_REGION_UNKNOWN         },
   { "workshare",         "workshare",   "",                false, true,  SCOREP_Pomp_Workshare         , SCOREP_REGION_WORKSHARE,   SCOREP_REGION_UNKNOWN         }
 };
 /* *INDENT-ON* */

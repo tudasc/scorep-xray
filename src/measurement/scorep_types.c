@@ -56,6 +56,10 @@ scorep_adapter_type_to_string( SCOREP_AdapterType adapterType )
 const char*
 scorep_region_type_to_string( SCOREP_RegionType regionType )
 {
+    #define SCOREP_REGION_TYPE( NAME, name_str )  \
+    case SCOREP_REGION_ ## NAME:                  \
+        return name_str;
+
     switch ( regionType )
     {
         case SCOREP_REGION_FUNCTION:
@@ -78,57 +82,13 @@ scorep_region_type_to_string( SCOREP_RegionType regionType )
             return "dynamix function";
         case SCOREP_REGION_DYNAMIC_LOOP_PHASE:
             return "dynamix loop phase";
-        case SCOREP_REGION_COLL_ONE2ALL:
-            return "one2all";
-        case SCOREP_REGION_COLL_ALL2ONE:
-            return "all2one";
-        case SCOREP_REGION_COLL_ALL2ALL:
-            return "all2all";
-        case SCOREP_REGION_COLL_OTHER:
-            return "other collective";
-        case SCOREP_REGION_POINT2POINT:
-            return "point2point";
-        case SCOREP_REGION_PARALLEL:
-            return "parallel";
-        case SCOREP_REGION_SECTIONS:
-            return "secions";
-        case SCOREP_REGION_SECTION:
-            return "section";
-        case SCOREP_REGION_WORKSHARE:
-            return "workshare";
-        case SCOREP_REGION_SINGLE:
-            return "single";
-        case SCOREP_REGION_MASTER:
-            return "master";
-        case SCOREP_REGION_CRITICAL:
-            return "critical";
-        case SCOREP_REGION_ATOMIC:
-            return "atomic";
-        case SCOREP_REGION_BARRIER:
-            return "barrier";
-        case SCOREP_REGION_IMPLICIT_BARRIER:
-            return "implicit barrier";
-        case SCOREP_REGION_FLUSH:
-            return "flush";
-        case SCOREP_REGION_CRITICAL_SBLOCK:
-            return "critical sblock";
-        case SCOREP_REGION_SINGLE_SBLOCK:
-            return "single sblock";
-        case SCOREP_REGION_WRAPPER:
-            return "wrapper";
-        case SCOREP_REGION_TASK:
-            return "task";
-        case SCOREP_REGION_TASKWAIT:
-            return "taskwait";
-        case SCOREP_REGION_TASK_CREATE:
-            return "task create";
-        case SCOREP_REGION_ORDERED:
-            return "ordered";
-        case SCOREP_REGION_ORDERED_SBLOCK:
-            return "ordered sblock";
+
+            SCOREP_REGION_TYPES
+
         default:
             return "unknown";
     }
+    #undef SCOREP_REGION_TYPE
 }
 
 

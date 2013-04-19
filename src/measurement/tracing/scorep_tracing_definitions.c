@@ -272,22 +272,22 @@ scorep_write_region_definitions( void*                     writerHandle,
 
         OTF2_Paradigm paradigm;
 
-       #define SCOREP_ADAPTER( NAME, name_str, OTF2_NAME ) \
+        switch ( definition->adapter_type )
+        {
+        #define SCOREP_ADAPTER( NAME, name_str, OTF2_NAME ) \
     case SCOREP_ADAPTER_ ## NAME:                     \
         paradigm = OTF2_PARADIGM_ ## OTF2_NAME;      \
         break;
-
-        switch ( definition->adapter_type )
-        {
             SCOREP_ADAPTERS
+        #undef SCOREP_ADAPTER
 
             default:
                 paradigm = OTF2_PARADIGM_UNKNOWN;
         }
-        #undef SCOREP_ADAPTER
 
         OTF2_RegionRole region_role;
         OTF2_RegionFlag region_flags = OTF2_REGION_FLAG_NONE;
+
         switch ( definition->region_type )
         {
             case SCOREP_REGION_PHASE:
@@ -328,79 +328,13 @@ scorep_write_region_definitions( void*                     writerHandle,
                 region_role = OTF2_REGION_ROLE_CODE;
                 break;
 
-            case SCOREP_REGION_COLL_ALL2ALL:
-                region_role = OTF2_REGION_ROLE_COLL_ALL2ALL;
-                break;
-            case SCOREP_REGION_COLL_ALL2ONE:
-                region_role = OTF2_REGION_ROLE_COLL_ALL2ONE;
-                break;
-            case SCOREP_REGION_COLL_ONE2ALL:
-                region_role = OTF2_REGION_ROLE_COLL_ONE2ALL;
-                break;
-            case SCOREP_REGION_COLL_OTHER:
-                region_role = OTF2_REGION_ROLE_COLL_OTHER;
-                break;
-            case SCOREP_REGION_POINT2POINT:
-                region_role = OTF2_REGION_ROLE_POINT2POINT;
-                break;
+            #define SCOREP_REGION_TYPE( NAME, name_str ) \
+    case SCOREP_REGION_ ## NAME:                     \
+        region_role = OTF2_REGION_ROLE_ ## NAME;     \
+        break;
 
-            case SCOREP_REGION_ATOMIC:
-                region_role = OTF2_REGION_ROLE_ATOMIC;
-                break;
-            case SCOREP_REGION_BARRIER:
-                region_role = OTF2_REGION_ROLE_BARRIER;
-                break;
-            case SCOREP_REGION_CRITICAL:
-                region_role = OTF2_REGION_ROLE_CRITICAL;
-                break;
-            case SCOREP_REGION_CRITICAL_SBLOCK:
-                region_role = OTF2_REGION_ROLE_CRITICAL_SBLOCK;
-                break;
-            case SCOREP_REGION_FLUSH:
-                region_role = OTF2_REGION_ROLE_FLUSH;
-                break;
-            case SCOREP_REGION_IMPLICIT_BARRIER:
-                region_role = OTF2_REGION_ROLE_IMPLICIT_BARRIER;
-                break;
-            case SCOREP_REGION_MASTER:
-                region_role = OTF2_REGION_ROLE_MASTER;
-                break;
-            case SCOREP_REGION_ORDERED:
-                region_role = OTF2_REGION_ROLE_ORDERED;
-                break;
-            case SCOREP_REGION_ORDERED_SBLOCK:
-                region_role = OTF2_REGION_ROLE_ORDERED_SBLOCK;
-                break;
-            case SCOREP_REGION_PARALLEL:
-                region_role = OTF2_REGION_ROLE_PARALLEL;
-                break;
-            case SCOREP_REGION_SECTION:
-                region_role = OTF2_REGION_ROLE_SECTION;
-                break;
-            case SCOREP_REGION_SECTIONS:
-                region_role = OTF2_REGION_ROLE_SECTIONS;
-                break;
-            case SCOREP_REGION_SINGLE:
-                region_role = OTF2_REGION_ROLE_SINGLE;
-                break;
-            case SCOREP_REGION_SINGLE_SBLOCK:
-                region_role = OTF2_REGION_ROLE_SINGLE_SBLOCK;
-                break;
-            case SCOREP_REGION_TASK:
-                region_role = OTF2_REGION_ROLE_TASK;
-                break;
-            case SCOREP_REGION_TASKWAIT:
-                region_role = OTF2_REGION_ROLE_TASK_WAIT;
-                break;
-            case SCOREP_REGION_TASK_CREATE:
-                region_role = OTF2_REGION_ROLE_TASK_CREATE;
-                break;
-            case SCOREP_REGION_WORKSHARE:
-                region_role = OTF2_REGION_ROLE_WORKSHARE;
-                break;
-            case SCOREP_REGION_WRAPPER:
-                region_role = OTF2_REGION_ROLE_WRAPPER;
-                break;
+                SCOREP_REGION_TYPES
+            #undef SCOREP_REGION_TYPE
 
             default:
                 region_role = OTF2_REGION_ROLE_UNKNOWN;
@@ -486,7 +420,7 @@ scorep_write_group_definitions( void*                     writerHandle,
     {
         OTF2_GroupType group_type
             = scorep_tracing_group_type_to_otf2( definition->group_type );
-        OTF2_Paradigm  paradigm    = OTF2_PARADIGM_UNKNOWN;
+        OTF2_Paradigm paradigm     = OTF2_PARADIGM_UNKNOWN;
         OTF2_GroupType group_flags = OTF2_GROUP_FLAG_NONE;
         switch ( definition->group_type )
         {
