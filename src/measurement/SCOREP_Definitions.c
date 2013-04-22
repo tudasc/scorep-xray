@@ -853,29 +853,103 @@ static bool
 scorep_communicator_definitions_equal( const SCOREP_Communicator_Definition* existingDefinition,
                                        const SCOREP_Communicator_Definition* newDefinition );
 
+
+static SCOREP_CommunicatorHandle
+scorep_communicator_definitions_define(
+    SCOREP_DefinitionManager* definition_manager,
+    SCOREP_GroupHandle        group_handle,
+    SCOREP_StringHandle       name_handle,
+    SCOREP_CommunicatorHandle parent_handle );
+
+
+/**
+ * Associate a MPI communicator with a process unique communicator handle.
+ */
+SCOREP_CommunicatorHandle
+SCOREP_DefineCommunicator( SCOREP_GroupHandle        group_handle,
+                           const char*               name,
+                           SCOREP_CommunicatorHandle parent_handle )
+{
+    UTILS_DEBUG_ENTRY();
+
+    SCOREP_Definitions_Lock();
+
+    SCOREP_CommunicatorHandle new_handle = scorep_communicator_definitions_define(
+        &scorep_local_definition_manager,
+        group_handle,
+        scorep_string_definition_define(
+            &scorep_local_definition_manager,
+            name ? name : "<unnamed communicator>" ),
+        parent_handle );
+
+    SCOREP_Definitions_Unlock();
+
+    return new_handle;
+}
+
 /**
  * Associate a MPI communicator with a process unique communicator handle.
  */
 SCOREP_CommunicatorHandle
 SCOREP_DefineUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
-                                  uint32_t                  unified_name_id,
-                                  SCOREP_CommunicatorHandle unified_parent_handle )
+                                  const char*               name,
+                                  SCOREP_CommunicatorHandle parent_handle )
 {
     UTILS_DEBUG_ENTRY();
 
-    SCOREP_Communicator_Definition* new_definition     = NULL;
-    SCOREP_CommunicatorHandle       new_handle         = SCOREP_INVALID_COMMUNICATOR;
-    SCOREP_DefinitionManager*       definition_manager = scorep_unified_definition_manager;
-
     UTILS_ASSERT( !SCOREP_Omp_InParallel() );
     UTILS_ASSERT( scorep_unified_definition_manager );
+
+    return scorep_communicator_definitions_define(
+               scorep_unified_definition_manager,
+               group_handle,
+               scorep_string_definition_define(
+                   scorep_unified_definition_manager,
+                   name ? name : "<unnamed communicator>" ),
+               parent_handle );
+}
+
+void
+SCOREP_CopyCommunicatorDefinitionToUnified( SCOREP_Communicator_Definition* definition,
+                                            SCOREP_Allocator_PageManager*   handlesPageManager )
+{
+    assert( !SCOREP_Omp_InParallel() );
+    assert( definition );
+    assert( handlesPageManager );
+
+    SCOREP_CommunicatorHandle unified_parent_handle = SCOREP_INVALID_COMMUNICATOR;
+    if ( definition->parent_handle != SCOREP_INVALID_COMMUNICATOR )
+    {
+        unified_parent_handle = SCOREP_HANDLE_GET_UNIFIED(
+            definition->parent_handle,
+            Communicator,
+            handlesPageManager );
+        assert( unified_parent_handle != SCOREP_MOVABLE_NULL );
+    }
+
+    definition->unified = scorep_communicator_definitions_define(
+        scorep_unified_definition_manager,
+        SCOREP_HANDLE_GET_UNIFIED( definition->group_handle, Group, handlesPageManager ),
+        SCOREP_HANDLE_GET_UNIFIED( definition->name_handle, String, handlesPageManager ),
+        unified_parent_handle );
+}
+
+
+SCOREP_CommunicatorHandle
+scorep_communicator_definitions_define( SCOREP_DefinitionManager* definition_manager,
+                                        SCOREP_GroupHandle        group_handle,
+                                        SCOREP_StringHandle       name_handle,
+                                        SCOREP_CommunicatorHandle parent_handle )
+{
+    SCOREP_Communicator_Definition* new_definition = NULL;
+    SCOREP_CommunicatorHandle       new_handle     = SCOREP_INVALID_COMMUNICATOR;
 
     SCOREP_DEFINITION_ALLOC( Communicator );
 
     // Init new_definition
     new_definition->group_handle  = group_handle;
-    new_definition->name_id       = unified_name_id;
-    new_definition->parent_handle = unified_parent_handle;
+    new_definition->name_handle   = name_handle;
+    new_definition->parent_handle = parent_handle;
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Communicator,
@@ -883,6 +957,7 @@ SCOREP_DefineUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
 
     return new_handle;
 }
+
 
 bool
 scorep_communicator_definitions_equal( const SCOREP_Communicator_Definition* existingDefinition,

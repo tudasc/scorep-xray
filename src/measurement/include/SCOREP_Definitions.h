@@ -230,9 +230,15 @@ SCOREP_InterimCommunicatorSetName( SCOREP_InterimCommunicatorHandle localMPIComm
 
 
 SCOREP_CommunicatorHandle
+SCOREP_DefineCommunicator( SCOREP_GroupHandle        group_handle,
+                           const char*               name,
+                           SCOREP_CommunicatorHandle parent_handle );
+
+
+SCOREP_CommunicatorHandle
 SCOREP_DefineUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
-                                  uint32_t                  unified_name_id,
-                                  SCOREP_CommunicatorHandle unified_parent_handle );
+                                  const char*               name,
+                                  SCOREP_CommunicatorHandle parent_handle );
 
 
 /**

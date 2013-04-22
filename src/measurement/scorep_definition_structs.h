@@ -141,7 +141,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Communicator )
     SCOREP_DEFINE_DEFINITION_HEADER( Communicator );
 
     SCOREP_GroupHandle        group_handle;
-    uint32_t                  name_id;
+    SCOREP_StringHandle       name_handle;
     SCOREP_CommunicatorHandle parent_handle;
 };
 

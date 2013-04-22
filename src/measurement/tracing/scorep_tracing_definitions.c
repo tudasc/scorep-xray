@@ -369,6 +369,14 @@ scorep_write_communicator_definitions( void*                     writerHandle,
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, Communicator, communicator )
     {
+        uint32_t comm_name_id = OTF2_UNDEFINED_STRING;
+        if ( definition->name_handle != SCOREP_INVALID_STRING )
+        {
+            comm_name_id = SCOREP_HANDLE_TO_ID( definition->name_handle,
+                                                Communicator,
+                                                definitionManager->page_manager );
+        }
+
         uint32_t comm_parent_id = OTF2_UNDEFINED_MPI_COMM;
         if ( definition->parent_handle != SCOREP_INVALID_COMMUNICATOR )
         {
@@ -380,7 +388,7 @@ scorep_write_communicator_definitions( void*                     writerHandle,
         OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteMpiComm(
             writerHandle,
             definition->sequence_number,
-            definition->name_id, /* already the global ID */
+            comm_name_id,
             SCOREP_HANDLE_TO_ID( definition->group_handle, Group, definitionManager->page_manager ),
             comm_parent_id );
         if ( status != OTF2_SUCCESS )
@@ -807,12 +815,12 @@ scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition
     scorep_write_location_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_region_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_group_definitions(                  global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_communicator_definitions(           global_definition_writer, scorep_unified_definition_manager );
+    scorep_write_rma_window_definitions(             global_definition_writer, scorep_unified_definition_manager );
     scorep_write_metric_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_sampling_set_definitions(           global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_parameter_definitions(              global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_callpath_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_communicator_definitions(           global_definition_writer, scorep_unified_definition_manager );
-    scorep_write_rma_window_definitions(             global_definition_writer, scorep_unified_definition_manager );
 }
 
 void

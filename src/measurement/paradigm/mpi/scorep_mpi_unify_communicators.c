@@ -257,11 +257,13 @@ define_comms( uint32_t comm_world_size,
     {
         SCOREP_CommunicatorHandle handle;
         SCOREP_GroupHandle        group;
-        uint32_t                  comm_name;
+        const char*               name;
         uint32_t                  comm_parent;
     }* comm_definitions = NULL;
 
     uint32_t* topo_comm_mapping = NULL;
+
+    const char** unified_strings = NULL;
 
     if ( rank == 0 )
     {
@@ -275,6 +277,18 @@ define_comms( uint32_t comm_world_size,
 
         comm_definitions = calloc( total_number_of_root_comms, sizeof( *comm_definitions ) );
         assert( comm_definitions );
+
+        /* Create a map from global ids to unified handles of string definitions */
+        unified_strings = calloc( scorep_unified_definition_manager->string_definition_counter,
+                                  sizeof( *unified_strings ) );
+        assert( unified_strings );
+        SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager,
+                                      String,
+                                      string )
+        {
+            unified_strings[ definition->sequence_number ] = definition->string_data;
+        }
+        SCOREP_DEFINITION_FOREACH_WHILE();
     }
 
     topo_comm_mapping = calloc( total_number_of_root_comms + 1, sizeof( *topo_comm_mapping ) );
@@ -344,7 +358,7 @@ define_comms( uint32_t comm_world_size,
                                                  size,
                                                  ranks_in_group );
 
-            comm_definitions[ global_comm_id ].comm_name   = global_aux_ids[ 0 ];
+            comm_definitions[ global_comm_id ].name        = unified_strings[ global_aux_ids[ 0 ] ];
             comm_definitions[ global_comm_id ].comm_parent = global_aux_ids[ 1 ];
         }
         else if ( my_rank_in_comm == 0 )
@@ -393,7 +407,7 @@ define_comms( uint32_t comm_world_size,
                 /* Define the global MPI communicator with this group */
                 comm_definitions[ i ].handle = SCOREP_DefineUnifiedCommunicator(
                     comm_definitions[ i ].group,
-                    comm_definitions[ i ].comm_name,
+                    comm_definitions[ i ].name,
                     comm_parent_handle );
                 assert( SCOREP_UNIFIED_HANDLE_TO_ID(
                             comm_definitions[ i ].handle, Communicator ) ==
@@ -457,6 +471,7 @@ define_comms( uint32_t comm_world_size,
     free( ranks_in_group );
     free( ranks_in_comm );
     free( comm_definitions );
+    free( unified_strings );
     free( topo_comm_mapping );
 }
 
@@ -492,7 +507,7 @@ define_self_likes( uint32_t rank )
             SCOREP_CommunicatorHandle handle =
                 SCOREP_DefineUnifiedCommunicator(
                     self,
-                    0,
+                    "",
                     SCOREP_INVALID_COMMUNICATOR );
             assert( SCOREP_UNIFIED_HANDLE_TO_ID( handle, Communicator ) ==
                     number_of_comms + i );

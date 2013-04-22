@@ -52,6 +52,7 @@ scorep_handle_to_id( SCOREP_AnyHandle handle )
     DEF_WITH_MAPPING( String, string ) \
     DEF_WITH_MAPPING( Region, region ) \
     DEF_WITH_MAPPING( Group, group ) \
+    DEF_WITH_MAPPING( Communicator, communicator ) \
     DEF_WITH_MAPPING( Metric, metric ) \
     DEF_WITH_MAPPING( SamplingSet, sampling_set ) \
     DEF_WITH_MAPPING( Parameter, parameter ) \
@@ -237,6 +238,11 @@ SCOREP_CopySystemTreeNodeDefinitionToUnified( SCOREP_SystemTreeNode_Definition* 
 void
 SCOREP_CopyGroupDefinitionToUnified( SCOREP_Group_Definition*      definition,
                                      SCOREP_Allocator_PageManager* handlesPageManager );
+
+
+void
+SCOREP_CopyCommunicatorDefinitionToUnified( SCOREP_Communicator_Definition* definition,
+                                            SCOREP_Allocator_PageManager*   handlesPageManager );
 
 
 void
