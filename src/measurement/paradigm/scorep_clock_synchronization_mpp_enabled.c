@@ -30,7 +30,6 @@
 #include <SCOREP_Timing.h>
 #include <scorep_ipc.h>
 
-#include <mpi.h>
 #include <stddef.h>
 #include <assert.h>
 
