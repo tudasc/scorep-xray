@@ -54,7 +54,7 @@ typedef SCOREP_AnyHandle SCOREP_LocalMPICommunicatorHandle;
 typedef SCOREP_AnyHandle SCOREP_MPICommunicatorHandle;
 
 
-typedef SCOREP_AnyHandle SCOREP_MPIWindowHandle;
+typedef SCOREP_AnyHandle SCOREP_RmaWindowHandle;
 
 
 typedef SCOREP_AnyHandle SCOREP_MPICartesianTopologyHandle;
@@ -82,9 +82,6 @@ typedef SCOREP_AnyHandle SCOREP_CallpathHandle;
 
 
 typedef SCOREP_AnyHandle SCOREP_PropertyHandle;
-
-
-typedef SCOREP_AnyHandle SCOREP_RMAWindowHandle;
 
 
 #endif /* SCOREP_DEFINITIONHANDLES_H */

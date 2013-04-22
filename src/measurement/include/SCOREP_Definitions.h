@@ -233,19 +233,19 @@ SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle           group_handle,
 
 
 /**
- * Associate a MPI window with a process unique window handle.
+ * Associate the parameter tuple with a process unique RMA window handle.
  *
- * @param communicatorHandle A handle to the associated communicator,
- * previously defined by DefineMPICommunicator().
+ * @param name A meaningful name for the RMA window, e.g. 'MPI window'
+ * or 'Gfx Card 1'. The string will be copied.
  *
- * @todo Do we need a return type here, i.e. is the
- * returned handle used somewhere?
+ * @param communicatorHandle Underlying communicator
  *
- * @planned To be implemented in milestone 2 (belongs to RMA)
- *
+ * @return A process unique RMA window handle to be used in calls to other
+ * SCOREP_RMA* functions.
  */
-SCOREP_MPIWindowHandle
-SCOREP_DefineMPIWindow( SCOREP_LocalMPICommunicatorHandle communicatorHandle );
+SCOREP_RmaWindowHandle
+SCOREP_DefineRmaWindow( const char*                       name,
+                        SCOREP_LocalMPICommunicatorHandle communicatorHandle );
 
 
 /**
@@ -524,21 +524,6 @@ SCOREP_MetricProfilingType
 SCOREP_Metric_GetProfilingType( SCOREP_MetricHandle handle );
 
 
-
-/**
- * Associate the parameter tuple with a process unique RMA window handle.
- *
- * @param name A meaningful name for the RMA window, e.g. 'MPI window'
- * or 'Gfx Card 1'. The string will be copied.
- *
- * @param communicatorHandle Underlying communicator
- *
- * @return A process unique RMA window handle to be used in calls to other
- * SCOREP_RMA* functions.
- */
-SCOREP_RMAWindowHandle
-SCOREP_DefineRMAWindow( const char*                       name,
-                        SCOREP_LocalMPICommunicatorHandle communicatorHandle );
 
 /*@}*/
 

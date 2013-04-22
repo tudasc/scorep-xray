@@ -166,9 +166,9 @@ scorep_comm_to_string( char*                             stringBuffer,
 
 
 /**
- * Converts a SCOREP_MPIWindowHandle into a string.
+ * Converts a SCOREP_RmaWindowHandle into a string.
  *
- * If @a lineNo equals to @ref SCOREP_INVALID_MPI_WINDOW "invalid" will be
+ * If @a lineNo equals to @ref SCOREP_INVALID_RMA_WINDOW "invalid" will be
  * returned, else a formated representation of the value.
 
  * @param stringBuffer      A string buffer that holds at least @a
@@ -186,10 +186,10 @@ scorep_comm_to_string( char*                             stringBuffer,
  */
 
 extern const char*
-scorep_window_to_string( char*                  stringBuffer,
-                         size_t                 stringBufferSize,
-                         const char*            format,
-                         SCOREP_MPIWindowHandle windowHandle );
+scorep_rma_window_to_string( char*                  stringBuffer,
+                             size_t                 stringBufferSize,
+                             const char*            format,
+                             SCOREP_RmaWindowHandle windowHandle );
 
 
 #endif /* SCOREP_INTERNAL_TYPES_H */

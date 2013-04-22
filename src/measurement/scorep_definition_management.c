@@ -120,7 +120,7 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( group, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( local_mpi_communicator, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_communicator, *definitionManager );
-    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_window, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( rma_window, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_coords, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_topology, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( metric, *definitionManager );
@@ -139,7 +139,6 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( source_file, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( region, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( group, *definitionManager );
-        SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_window, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_cartesian_topology, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( mpi_cartesian_coords, *definitionManager );
         SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( metric, *definitionManager );
@@ -174,7 +173,7 @@ SCOREP_Definitions_Finalize()
         free( scorep_unified_definition_manager->group_definition_hash_table );
         free( scorep_unified_definition_manager->local_mpi_communicator_definition_hash_table );
         free( scorep_unified_definition_manager->mpi_communicator_definition_hash_table );
-        free( scorep_unified_definition_manager->mpi_window_definition_hash_table );
+        free( scorep_unified_definition_manager->rma_window_definition_hash_table );
         free( scorep_unified_definition_manager->mpi_cartesian_topology_definition_hash_table );
         free( scorep_unified_definition_manager->mpi_cartesian_coords_definition_hash_table );
         free( scorep_unified_definition_manager->metric_definition_hash_table );

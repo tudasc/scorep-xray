@@ -92,13 +92,6 @@ typedef SCOREP_AnyHandle SCOREP_RegionHandle;
 #define SCOREP_INVALID_REGION SCOREP_MOVABLE_NULL
 
 
-
-/**
- * Symbolic constant representing an invalid or unknown RMA window definition.
- */
-#define SCOREP_INVALID_RMA_WINDOW SCOREP_MOVABLE_NULL
-
-
 /**@}*/
 
 #endif // SCOREP_PUBLICTYPES_H

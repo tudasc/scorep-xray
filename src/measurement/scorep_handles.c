@@ -154,19 +154,19 @@ scorep_comm_to_string( char*                             stringBuffer,
 
 
 /**
- * Converts a SCOREP_MPIWindowHandle into a string.
+ * Converts a SCOREP_RmaWindowHandle into a string.
  */
 extern const char*
-scorep_window_to_string( char*                  stringBuffer,
-                         size_t                 stringBufferSize,
-                         const char*            format,
-                         SCOREP_MPIWindowHandle windowHandle )
+scorep_rma_window_to_string( char*                  stringBuffer,
+                             size_t                 stringBufferSize,
+                             const char*            format,
+                             SCOREP_RmaWindowHandle windowHandle )
 {
     return scorep_any_handle_to_string( stringBuffer,
                                         stringBufferSize,
                                         format,
                                         windowHandle,
-                                        SCOREP_INVALID_MPI_WINDOW );
+                                        SCOREP_INVALID_RMA_WINDOW );
 }
 
 /**

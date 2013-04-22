@@ -618,13 +618,13 @@ scorep_write_rma_window_definitions( void*                     writerHandle,
 {
     UTILS_ASSERT( writerHandle );
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, RMAWindow, rma_window )
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, RmaWindow, rma_window )
     {
         uint32_t comm_id = OTF2_UNDEFINED_MPI_COMM;
-        if ( definition->communicator_handle != SCOREP_INVALID_CALLPATH )
+        if ( definition->communicator_handle != SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR )
         {
             comm_id = SCOREP_HANDLE_TO_ID( definition->communicator_handle,
-                                           MPICommunicator,
+                                           LocalMPICommunicator,
                                            definitionManager->page_manager );
         }
 
@@ -635,7 +635,7 @@ scorep_write_rma_window_definitions( void*                     writerHandle,
             comm_id );
         if ( status != OTF2_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "RMAWindow" );
+            scorep_handle_definition_writing_error( status, "RmaWindow" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
