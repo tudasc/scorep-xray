@@ -367,13 +367,13 @@ scorep_write_communicator_definitions( void*                     writerHandle,
 {
     UTILS_ASSERT( writerHandle );
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, Communicator, communicator )
     {
         uint32_t comm_parent_id = OTF2_UNDEFINED_MPI_COMM;
-        if ( definition->parent_handle != SCOREP_INVALID_MPI_COMMUNICATOR )
+        if ( definition->parent_handle != SCOREP_INVALID_COMMUNICATOR )
         {
             comm_parent_id = SCOREP_HANDLE_TO_ID( definition->parent_handle,
-                                                  MPICommunicator,
+                                                  Communicator,
                                                   definitionManager->page_manager );
         }
 
@@ -385,7 +385,7 @@ scorep_write_communicator_definitions( void*                     writerHandle,
             comm_parent_id );
         if ( status != OTF2_SUCCESS )
         {
-            scorep_handle_definition_writing_error( status, "MPICommunicator" );
+            scorep_handle_definition_writing_error( status, "Communicator" );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -621,10 +621,10 @@ scorep_write_rma_window_definitions( void*                     writerHandle,
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, RmaWindow, rma_window )
     {
         uint32_t comm_id = OTF2_UNDEFINED_MPI_COMM;
-        if ( definition->communicator_handle != SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR )
+        if ( definition->communicator_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
         {
             comm_id = SCOREP_HANDLE_TO_ID( definition->communicator_handle,
-                                           LocalMPICommunicator,
+                                           InterimCommunicator,
                                            definitionManager->page_manager );
         }
 
@@ -736,7 +736,7 @@ scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( string, STRING, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( region, REGION, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( group, GROUP, localDefinitionWriter );
-    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( local_mpi_communicator,
+    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( interim_communicator,
                                              MPI_COMM,
                                              localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( rma_window,

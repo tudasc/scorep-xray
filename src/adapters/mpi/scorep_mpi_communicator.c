@@ -136,8 +136,8 @@ typedef uint32_t SCOREP_CommunicatorId;
  */
 struct scorep_mpi_communicator_type
 {
-    MPI_Comm                          comm; /**< MPI Communicator handle */
-    SCOREP_LocalMPICommunicatorHandle cid;  /**< Internal SCOREP Communicator handle */
+    MPI_Comm                         comm; /**< MPI Communicator handle */
+    SCOREP_InterimCommunicatorHandle cid;  /**< Internal SCOREP Communicator handle */
 };
 
 /**
@@ -531,10 +531,10 @@ scorep_mpi_setup_world( void )
     /* initialize MPI_COMM_WORLD */
     scorep_mpi_comm_definition_payload* comm_payload;
     scorep_mpi_world.handle =
-        SCOREP_DefineLocalMPICommunicator( SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR,
-                                           SCOREP_ADAPTER_MPI,
-                                           sizeof( *comm_payload ),
-                                           ( void** )&comm_payload );
+        SCOREP_DefineInterimCommunicator( SCOREP_INVALID_INTERIM_COMMUNICATOR,
+                                          SCOREP_ADAPTER_MPI,
+                                          sizeof( *comm_payload ),
+                                          ( void** )&comm_payload );
     comm_payload->is_self_like     = scorep_mpi_world.size == 1;
     comm_payload->local_rank       = scorep_mpi_my_global_rank;
     comm_payload->global_root_rank = 0;
@@ -683,11 +683,11 @@ scorep_mpi_comm_create_id( MPI_Comm               comm,
 void
 scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
 {
-    SCOREP_CommunicatorId             id;         /* identifier unique to root */
-    SCOREP_MpiRank                    root;       /* global rank of rank 0 */
-    int                               local_rank; /* local rank in this communicator */
-    int                               size;       /* size of communicator */
-    SCOREP_LocalMPICommunicatorHandle handle;     /* Score-P handle for the communicator */
+    SCOREP_CommunicatorId            id;         /* identifier unique to root */
+    SCOREP_MpiRank                   root;       /* global rank of rank 0 */
+    int                              local_rank; /* local rank in this communicator */
+    int                              size;       /* size of communicator */
+    SCOREP_InterimCommunicatorHandle handle;     /* Score-P handle for the communicator */
 
     /* Check if communicator handling has been initialized.
      * Prevents crashes with broken MPI implementations (e.g. mvapich-0.9.x)
@@ -710,8 +710,8 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
         return;
     }
 
-    SCOREP_LocalMPICommunicatorHandle parent_handle = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
-    int                               inter;
+    SCOREP_InterimCommunicatorHandle parent_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
+    int                              inter;
     PMPI_Comm_test_inter( comm, &inter );
     if ( !inter && parent_comm != MPI_COMM_NULL )
     {
@@ -743,10 +743,10 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
 
     /* create definition in measurement system */
     scorep_mpi_comm_definition_payload* comm_payload;
-    handle =  SCOREP_DefineLocalMPICommunicator( parent_handle,
-                                                 SCOREP_ADAPTER_MPI,
-                                                 sizeof( *comm_payload ),
-                                                 ( void** )&comm_payload );
+    handle =  SCOREP_DefineInterimCommunicator( parent_handle,
+                                                SCOREP_ADAPTER_MPI,
+                                                sizeof( *comm_payload ),
+                                                ( void** )&comm_payload );
     comm_payload->is_self_like     = size == 1;
     comm_payload->local_rank       = local_rank;
     comm_payload->global_root_rank = root;
@@ -815,7 +815,7 @@ scorep_mpi_comm_free( MPI_Comm comm )
     SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
 }
 
-SCOREP_LocalMPICommunicatorHandle
+SCOREP_InterimCommunicatorHandle
 scorep_mpi_comm_handle( MPI_Comm comm )
 {
     int i = 0;
@@ -850,7 +850,7 @@ scorep_mpi_comm_handle( MPI_Comm comm )
             UTILS_ERROR( SCOREP_ERROR_MPI_NO_COMM,
                          "You are using a communicator that was "
                          "not tracked. Please contact the Score-P support team." );
-            return SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
+            return SCOREP_INVALID_INTERIM_COMMUNICATOR;
         }
     }
 }
@@ -863,9 +863,9 @@ scorep_mpi_comm_set_name( MPI_Comm comm, const char* name )
         return;
     }
 
-    SCOREP_LocalMPICommunicatorHandle   comm_handle  = SCOREP_MPI_COMM_HANDLE( comm );
+    SCOREP_InterimCommunicatorHandle    comm_handle  = SCOREP_MPI_COMM_HANDLE( comm );
     scorep_mpi_comm_definition_payload* comm_payload =
-        SCOREP_LocalMPICommunicatorGetPayload( comm_handle );
+        SCOREP_InterimCommunicatorGetPayload( comm_handle );
 
     SCOREP_MutexLock( scorep_mpi_communicator_mutex );
 
@@ -878,7 +878,7 @@ scorep_mpi_comm_set_name( MPI_Comm comm, const char* name )
         /*
          * Does set the name only the first time
          */
-        SCOREP_LocalMPICommunicatorSetName( comm_handle, name );
+        SCOREP_InterimCommunicatorSetName( comm_handle, name );
     }
 
     SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );

@@ -127,12 +127,12 @@ SCOREP_Tracing_Leave( SCOREP_Location*    location,
 
 
 void
-SCOREP_Tracing_MpiSend( SCOREP_Location*                  location,
-                        uint64_t                          timestamp,
-                        SCOREP_MpiRank                    destinationRank,
-                        SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                        uint32_t                          tag,
-                        uint64_t                          bytesSent )
+SCOREP_Tracing_MpiSend( SCOREP_Location*                 location,
+                        uint64_t                         timestamp,
+                        SCOREP_MpiRank                   destinationRank,
+                        SCOREP_InterimCommunicatorHandle communicatorHandle,
+                        uint32_t                         tag,
+                        uint64_t                         bytesSent )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -140,7 +140,7 @@ SCOREP_Tracing_MpiSend( SCOREP_Location*                  location,
                             NULL,
                             timestamp,
                             destinationRank,
-                            SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
+                            SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, InterimCommunicator ),
                             tag,
                             bytesSent );
 
@@ -149,12 +149,12 @@ SCOREP_Tracing_MpiSend( SCOREP_Location*                  location,
 
 
 void
-SCOREP_Tracing_MpiRecv( SCOREP_Location*                  location,
-                        uint64_t                          timestamp,
-                        SCOREP_MpiRank                    sourceRank,
-                        SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                        uint32_t                          tag,
-                        uint64_t                          bytesSent )
+SCOREP_Tracing_MpiRecv( SCOREP_Location*                 location,
+                        uint64_t                         timestamp,
+                        SCOREP_MpiRank                   sourceRank,
+                        SCOREP_InterimCommunicatorHandle communicatorHandle,
+                        uint32_t                         tag,
+                        uint64_t                         bytesSent )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -162,7 +162,7 @@ SCOREP_Tracing_MpiRecv( SCOREP_Location*                  location,
                             NULL,
                             timestamp,
                             sourceRank,
-                            SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
+                            SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, InterimCommunicator ),
                             tag,
                             bytesSent );
 
@@ -184,13 +184,13 @@ SCOREP_Tracing_MpiCollectiveBegin( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_MpiCollectiveEnd( SCOREP_Location*                  location,
-                                 uint64_t                          timestamp,
-                                 SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                                 SCOREP_MpiRank                    rootRank,
-                                 SCOREP_MpiCollectiveType          collectiveType,
-                                 uint64_t                          bytesSent,
-                                 uint64_t                          bytesReceived )
+SCOREP_Tracing_MpiCollectiveEnd( SCOREP_Location*                 location,
+                                 uint64_t                         timestamp,
+                                 SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                 SCOREP_MpiRank                   rootRank,
+                                 SCOREP_MpiCollectiveType         collectiveType,
+                                 uint64_t                         bytesSent,
+                                 uint64_t                         bytesReceived )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -208,7 +208,7 @@ SCOREP_Tracing_MpiCollectiveEnd( SCOREP_Location*                  location,
                                      NULL,
                                      timestamp,
                                      scorep_tracing_collective_type_to_otf2( collectiveType ),
-                                     SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
+                                     SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, InterimCommunicator ),
                                      root_rank,
                                      bytesSent,
                                      bytesReceived );
@@ -279,13 +279,13 @@ SCOREP_Tracing_MpiRequestCancelled( SCOREP_Location*    location,
 
 
 void
-SCOREP_Tracing_MpiIsend(  SCOREP_Location*                  location,
-                          uint64_t                          timestamp,
-                          SCOREP_MpiRank                    destinationRank,
-                          SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                          uint32_t                          tag,
-                          uint64_t                          bytesSent,
-                          SCOREP_MpiRequestId               requestId )
+SCOREP_Tracing_MpiIsend(  SCOREP_Location*                 location,
+                          uint64_t                         timestamp,
+                          SCOREP_MpiRank                   destinationRank,
+                          SCOREP_InterimCommunicatorHandle communicatorHandle,
+                          uint32_t                         tag,
+                          uint64_t                         bytesSent,
+                          SCOREP_MpiRequestId              requestId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -293,7 +293,7 @@ SCOREP_Tracing_MpiIsend(  SCOREP_Location*                  location,
                              NULL,
                              timestamp,
                              destinationRank,
-                             SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
+                             SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, InterimCommunicator ),
                              tag,
                              bytesSent,
                              requestId );
@@ -303,13 +303,13 @@ SCOREP_Tracing_MpiIsend(  SCOREP_Location*                  location,
 
 
 void
-SCOREP_Tracing_MpiIrecv( SCOREP_Location*                  location,
-                         uint64_t                          timestamp,
-                         SCOREP_MpiRank                    sourceRank,
-                         SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                         uint32_t                          tag,
-                         uint64_t                          bytesReceived,
-                         SCOREP_MpiRequestId               requestId )
+SCOREP_Tracing_MpiIrecv( SCOREP_Location*                 location,
+                         uint64_t                         timestamp,
+                         SCOREP_MpiRank                   sourceRank,
+                         SCOREP_InterimCommunicatorHandle communicatorHandle,
+                         uint32_t                         tag,
+                         uint64_t                         bytesReceived,
+                         SCOREP_MpiRequestId              requestId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -317,7 +317,7 @@ SCOREP_Tracing_MpiIrecv( SCOREP_Location*                  location,
                              NULL,
                              timestamp,
                              sourceRank,
-                             SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, LocalMPICommunicator ),
+                             SCOREP_LOCAL_HANDLE_TO_ID( communicatorHandle, InterimCommunicator ),
                              tag,
                              bytesReceived,
                              requestId );

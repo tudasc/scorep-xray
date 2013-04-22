@@ -56,7 +56,7 @@
  * @note Introduced with MPI-1
  * @ingroup cg
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineLocalMPICommunicator is called.
+ * event, @ref SCOREP_DefineInterimCommunicator is called.
  */
 int
 MPI_Comm_create( MPI_Comm comm, MPI_Group group, MPI_Comm* newcomm )
@@ -93,7 +93,7 @@ MPI_Comm_create( MPI_Comm comm, MPI_Group group, MPI_Comm* newcomm )
  * @note Introduced with MPI-1
  * @ingroup cg
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineLocalMPICommunicator is called.
+ * event, @ref SCOREP_DefineInterimCommunicator is called.
  */
 int
 MPI_Comm_dup( MPI_Comm comm, MPI_Comm* newcomm )
@@ -130,7 +130,7 @@ MPI_Comm_dup( MPI_Comm comm, MPI_Comm* newcomm )
  * @note Introduced with MPI-1
  * @ingroup cg
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineLocalMPICommunicator is called.
+ * event, @ref SCOREP_DefineInterimCommunicator is called.
  */
 int
 MPI_Comm_split( MPI_Comm comm, int color, int key, MPI_Comm* newcomm )
@@ -167,7 +167,7 @@ MPI_Comm_split( MPI_Comm comm, int color, int key, MPI_Comm* newcomm )
  * @note Introduced with MPI-1
  * @ingroup cg
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineLocalMPICommunicator is called.
+ * event, @ref SCOREP_DefineInterimCommunicator is called.
  */
 int
 MPI_Intercomm_create( MPI_Comm local_comm, int local_leader, MPI_Comm peer_comm, int remote_leader, int tag, MPI_Comm* newcomm )
@@ -204,7 +204,7 @@ MPI_Intercomm_create( MPI_Comm local_comm, int local_leader, MPI_Comm peer_comm,
  * @note Introduced with MPI-1
  * @ingroup cg
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineLocalMPICommunicator is called.
+ * event, @ref SCOREP_DefineInterimCommunicator is called.
  */
 int
 MPI_Intercomm_merge( MPI_Comm intercomm, int high, MPI_Comm* newcomm )

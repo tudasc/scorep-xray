@@ -109,14 +109,14 @@ typedef uint32_t SCOREP_LineNo;
  * Symbolic constant representing an invalid or unknown local MPI communicator
  * definition.
  */
-#define SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR SCOREP_MOVABLE_NULL
+#define SCOREP_INVALID_INTERIM_COMMUNICATOR SCOREP_MOVABLE_NULL
 
 
 /**
  * Symbolic constant representing an invalid or unknown MPI communicator
  * definition.
  */
-#define SCOREP_INVALID_MPI_COMMUNICATOR SCOREP_MOVABLE_NULL
+#define SCOREP_INVALID_COMMUNICATOR SCOREP_MOVABLE_NULL
 
 
 /**

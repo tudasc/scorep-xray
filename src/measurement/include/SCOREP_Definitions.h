@@ -207,32 +207,32 @@ SCOREP_DefineUnifiedGroupFrom32( SCOREP_GroupType type,
  * SCOREP_DefineMPI* functions.
  *
  */
-SCOREP_LocalMPICommunicatorHandle
-SCOREP_DefineLocalMPICommunicator( SCOREP_LocalMPICommunicatorHandle parentComm,
-                                   SCOREP_AdapterType                adapterType,
-                                   size_t                            sizeOfPayload,
-                                   void**                            payload );
+SCOREP_InterimCommunicatorHandle
+SCOREP_DefineInterimCommunicator( SCOREP_InterimCommunicatorHandle parentComm,
+                                  SCOREP_AdapterType               adapterType,
+                                  size_t                           sizeOfPayload,
+                                  void**                           payload );
 
 
 /**
  * Get access to the payload from a communicator definition.
  */
 void*
-SCOREP_LocalMPICommunicatorGetPayload( SCOREP_LocalMPICommunicatorHandle handle );
+SCOREP_InterimCommunicatorGetPayload( SCOREP_InterimCommunicatorHandle handle );
 
 
 /**
  * Set the name of the communicator to @a name, but only if it wasn't done before.
  */
 void
-SCOREP_LocalMPICommunicatorSetName( SCOREP_LocalMPICommunicatorHandle localMPICommHandle,
-                                    const char*                       name );
+SCOREP_InterimCommunicatorSetName( SCOREP_InterimCommunicatorHandle localMPICommHandle,
+                                   const char*                      name );
 
 
-SCOREP_MPICommunicatorHandle
-SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle           group_handle,
-                                     uint32_t                     unified_name_id,
-                                     SCOREP_MPICommunicatorHandle unified_parent_handle );
+SCOREP_CommunicatorHandle
+SCOREP_DefineUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
+                                  uint32_t                  unified_name_id,
+                                  SCOREP_CommunicatorHandle unified_parent_handle );
 
 
 /**
@@ -247,8 +247,8 @@ SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle           group_handle,
  * SCOREP_RMA* functions.
  */
 SCOREP_RmaWindowHandle
-SCOREP_DefineRmaWindow( const char*                       name,
-                        SCOREP_LocalMPICommunicatorHandle communicatorHandle );
+SCOREP_DefineRmaWindow( const char*                      name,
+                        SCOREP_InterimCommunicatorHandle communicatorHandle );
 
 
 /**
@@ -258,7 +258,7 @@ SCOREP_DefineRmaWindow( const char*                       name,
  * copied.
  *
  * @param communicatorHandle A handle to the associated communicator,
- * previously defined by DefineLocalMPICommunicator().
+ * previously defined by DefineInterimCommunicator().
  *
  * @param nDimensions Number of dimensions of the cartesian topology.
  *
@@ -276,11 +276,11 @@ SCOREP_DefineRmaWindow( const char*                       name,
  *
  */
 SCOREP_MPICartesianTopologyHandle
-SCOREP_DefineMPICartesianTopology( const char*                       topologyName,
-                                   SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                                   uint32_t                          nDimensions,
-                                   const uint32_t                    nProcessesPerDimension[],
-                                   const uint8_t                     periodicityPerDimension[] );
+SCOREP_DefineMPICartesianTopology( const char*                      topologyName,
+                                   SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                   uint32_t                         nDimensions,
+                                   const uint32_t                   nProcessesPerDimension[],
+                                   const uint8_t                    periodicityPerDimension[] );
 
 
 /**

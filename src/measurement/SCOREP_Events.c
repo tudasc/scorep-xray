@@ -236,10 +236,10 @@ SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle, bool do_rewind )
  * Process an mpi send event in the measurement system.
  */
 void
-SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
-                SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                uint32_t                          tag,
-                uint64_t                          bytesSent )
+SCOREP_MpiSend( SCOREP_MpiRank                   destinationRank,
+                SCOREP_InterimCommunicatorHandle communicatorHandle,
+                uint32_t                         tag,
+                uint64_t                         bytesSent )
 {
     UTILS_BUG_ON( destinationRank < 0, "Invalid rank passed to SCOREP_MpiSend" );
 
@@ -282,10 +282,10 @@ SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
  * Process an mpi recv event in the measurement system.
  */
 void
-SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
-                SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                uint32_t                          tag,
-                uint64_t                          bytesReceived )
+SCOREP_MpiRecv( SCOREP_MpiRank                   sourceRank,
+                SCOREP_InterimCommunicatorHandle communicatorHandle,
+                uint32_t                         tag,
+                uint64_t                         bytesReceived )
 {
     UTILS_BUG_ON( sourceRank < 0, "Invalid rank passed to SCOREP_MpiRecv" );
 
@@ -356,12 +356,12 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
  * Process an mpi collective end event in the measurement system.
  */
 void
-SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
-                         SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                         SCOREP_MpiRank                    rootRank,
-                         SCOREP_MpiCollectiveType          collectiveType,
-                         uint64_t                          bytesSent,
-                         uint64_t                          bytesReceived )
+SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle              regionHandle,
+                         SCOREP_InterimCommunicatorHandle communicatorHandle,
+                         SCOREP_MpiRank                   rootRank,
+                         SCOREP_MpiCollectiveType         collectiveType,
+                         uint64_t                         bytesSent,
+                         uint64_t                         bytesReceived )
 {
     UTILS_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
                   "Invalid rank passed to SCOREP_MpiCollectiveEnd\n" );
@@ -487,11 +487,11 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
 }
 
 void
-SCOREP_MpiIsend(  SCOREP_MpiRank                    destinationRank,
-                  SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                  uint32_t                          tag,
-                  uint64_t                          bytesSent,
-                  SCOREP_MpiRequestId               requestId )
+SCOREP_MpiIsend(  SCOREP_MpiRank                   destinationRank,
+                  SCOREP_InterimCommunicatorHandle communicatorHandle,
+                  uint32_t                         tag,
+                  uint64_t                         bytesSent,
+                  SCOREP_MpiRequestId              requestId )
 {
     UTILS_BUG_ON( destinationRank < 0, "Invalid rank passed to SCOREP_MpiIsend\n" );
 
@@ -527,11 +527,11 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                    destinationRank,
 }
 
 void
-SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
-                 SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                 uint32_t                          tag,
-                 uint64_t                          bytesReceived,
-                 SCOREP_MpiRequestId               requestId )
+SCOREP_MpiIrecv( SCOREP_MpiRank                   sourceRank,
+                 SCOREP_InterimCommunicatorHandle communicatorHandle,
+                 uint32_t                         tag,
+                 uint64_t                         bytesReceived,
+                 SCOREP_MpiRequestId              requestId )
 {
     UTILS_BUG_ON( sourceRank < 0,  "Invalid rank passed to SCOREP_MpiIrecv\n" );
 

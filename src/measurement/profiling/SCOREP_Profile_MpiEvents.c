@@ -60,33 +60,33 @@ SCOREP_Profile_InitializeMpi( void )
 }
 
 void
-SCOREP_Profile_MpiSend( SCOREP_Location*                  location,
-                        SCOREP_MpiRank                    destinationRank,
-                        SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                        uint32_t                          tag,
-                        uint64_t                          bytesSent )
+SCOREP_Profile_MpiSend( SCOREP_Location*                 location,
+                        SCOREP_MpiRank                   destinationRank,
+                        SCOREP_InterimCommunicatorHandle communicatorHandle,
+                        uint32_t                         tag,
+                        uint64_t                         bytesSent )
 {
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_send_metric, bytesSent );
 }
 
 void
-SCOREP_Profile_MpiRecv( SCOREP_Location*                  location,
-                        SCOREP_MpiRank                    sourceRank,
-                        SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                        uint32_t                          tag,
-                        uint64_t                          bytesReceived )
+SCOREP_Profile_MpiRecv( SCOREP_Location*                 location,
+                        SCOREP_MpiRank                   sourceRank,
+                        SCOREP_InterimCommunicatorHandle communicatorHandle,
+                        uint32_t                         tag,
+                        uint64_t                         bytesReceived )
 {
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_recv_metric, bytesReceived );
 }
 
 
 void
-SCOREP_Profile_CollectiveEnd( SCOREP_Location*                  location,
-                              SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                              SCOREP_MpiRank                    rootRank,
-                              SCOREP_MpiCollectiveType          collectiveType,
-                              uint64_t                          bytesSent,
-                              uint64_t                          bytesReceived )
+SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
+                              SCOREP_InterimCommunicatorHandle communicatorHandle,
+                              SCOREP_MpiRank                   rootRank,
+                              SCOREP_MpiCollectiveType         collectiveType,
+                              uint64_t                         bytesSent,
+                              uint64_t                         bytesReceived )
 {
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_send_metric, bytesSent );
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_recv_metric, bytesReceived );

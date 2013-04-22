@@ -98,7 +98,7 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
     #undef DEF_WITH_MAPPING
 
-    SCOREP_ALLOC_MAPPINGS_ARRAY( local_mpi_communicator,
+    SCOREP_ALLOC_MAPPINGS_ARRAY( interim_communicator,
                                  &scorep_local_definition_manager );
 
     SCOREP_ALLOC_MAPPINGS_ARRAY( rma_window,
@@ -130,7 +130,7 @@ SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
     #undef DEF_WITH_MAPPING
 
-    SCOREP_FREE_MAPPINGS_ARRAY( local_mpi_communicator,
+    SCOREP_FREE_MAPPINGS_ARRAY( interim_communicator,
                                 definitionManager );
 
     SCOREP_FREE_MAPPINGS_ARRAY( rma_window,

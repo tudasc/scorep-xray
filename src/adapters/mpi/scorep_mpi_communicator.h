@@ -278,7 +278,7 @@ scorep_mpi_comm_free( MPI_Comm comm );
  * @param  comm MPI communicator
  * @return Internal SCOREP handle of MPI communicator %comm
  */
-extern SCOREP_LocalMPICommunicatorHandle
+extern SCOREP_InterimCommunicatorHandle
 scorep_mpi_comm_handle( MPI_Comm comm );
 
 /**
@@ -309,10 +309,10 @@ scorep_mpi_rank_to_pe( SCOREP_MpiRank rank,
  */
 struct scorep_mpi_world_type
 {
-    MPI_Group                         group;    /** Associated MPI group */
-    int                               size;     /** Number of ranks */
-    SCOREP_MpiRank*                   ranks;    /** Array which contains the rank numbers */
-    SCOREP_LocalMPICommunicatorHandle handle;   /** SCOREP handle */
+    MPI_Group                        group;    /** Associated MPI group */
+    int                              size;     /** Number of ranks */
+    SCOREP_MpiRank*                  ranks;    /** Array which contains the rank numbers */
+    SCOREP_InterimCommunicatorHandle handle;   /** SCOREP handle */
 };
 
 typedef struct scorep_mpi_comm_definition_payload

@@ -732,40 +732,40 @@ scorep_region_definitions_equal( const SCOREP_Region_Definition* existingDefinit
 // CommunicatorDefinitions //////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-static SCOREP_LocalMPICommunicatorHandle
-scorep_local_mpi_communicator_definitions_define( SCOREP_DefinitionManager*         definition_manager,
-                                                  SCOREP_LocalMPICommunicatorHandle parentComm,
-                                                  SCOREP_AdapterType                adapterType,
-                                                  size_t                            sizeOfPayload,
-                                                  void**                            payload );
+static SCOREP_InterimCommunicatorHandle
+scorep_interim_communicator_definitions_define( SCOREP_DefinitionManager*        definition_manager,
+                                                SCOREP_InterimCommunicatorHandle parentComm,
+                                                SCOREP_AdapterType               adapterType,
+                                                size_t                           sizeOfPayload,
+                                                void**                           payload );
 
 static bool
-scorep_local_mpi_communicator_definitions_equal( const SCOREP_LocalMPICommunicator_Definition* existingDefinition,
-                                                 const SCOREP_LocalMPICommunicator_Definition* newDefinition );
+scorep_interim_communicator_definitions_equal( const SCOREP_InterimCommunicator_Definition* existingDefinition,
+                                               const SCOREP_InterimCommunicator_Definition* newDefinition );
 
 static size_t
 local_comm_static_size()
 {
     return SCOREP_Allocator_RoundupToAlignment(
-               sizeof( SCOREP_LocalMPICommunicator_Definition ) );
+               sizeof( SCOREP_InterimCommunicator_Definition ) );
 }
 
 /**
  * Associate a MPI communicator with a process unique communicator handle.
  */
-SCOREP_LocalMPICommunicatorHandle
-SCOREP_DefineLocalMPICommunicator( SCOREP_LocalMPICommunicatorHandle parentComm,
-                                   SCOREP_AdapterType                adapterType,
-                                   size_t                            sizeOfPayload,
-                                   void**                            payload )
+SCOREP_InterimCommunicatorHandle
+SCOREP_DefineInterimCommunicator( SCOREP_InterimCommunicatorHandle parentComm,
+                                  SCOREP_AdapterType               adapterType,
+                                  size_t                           sizeOfPayload,
+                                  void**                           payload )
 {
-    SCOREP_LocalMPICommunicatorHandle new_handle = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
+    SCOREP_InterimCommunicatorHandle new_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
 
     UTILS_DEBUG_ENTRY();
 
     SCOREP_Definitions_Lock();
 
-    new_handle = scorep_local_mpi_communicator_definitions_define(
+    new_handle = scorep_interim_communicator_definitions_define(
         &scorep_local_definition_manager,
         parentComm,
         adapterType,
@@ -778,25 +778,25 @@ SCOREP_DefineLocalMPICommunicator( SCOREP_LocalMPICommunicatorHandle parentComm,
 }
 
 void*
-SCOREP_LocalMPICommunicatorGetPayload( SCOREP_LocalMPICommunicatorHandle handle )
+SCOREP_InterimCommunicatorGetPayload( SCOREP_InterimCommunicatorHandle handle )
 {
     return ( char* )SCOREP_LOCAL_HANDLE_DEREF( handle,
-                                               LocalMPICommunicator ) + local_comm_static_size();
+                                               InterimCommunicator ) + local_comm_static_size();
 }
 
 
 void
-SCOREP_LocalMPICommunicatorSetName( SCOREP_LocalMPICommunicatorHandle localMPICommHandle,
-                                    const char*                       name )
+SCOREP_InterimCommunicatorSetName( SCOREP_InterimCommunicatorHandle localMPICommHandle,
+                                   const char*                      name )
 {
-    UTILS_BUG_ON( localMPICommHandle == SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR,
+    UTILS_BUG_ON( localMPICommHandle == SCOREP_INVALID_INTERIM_COMMUNICATOR,
                   "Invalid MPI_Comm handle as argument" );
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_LocalMPICommunicator_Definition* definition = SCOREP_LOCAL_HANDLE_DEREF(
+    SCOREP_InterimCommunicator_Definition* definition = SCOREP_LOCAL_HANDLE_DEREF(
         localMPICommHandle,
-        LocalMPICommunicator );
+        InterimCommunicator );
 
     if ( definition->name_handle == SCOREP_INVALID_STRING )
     {
@@ -809,30 +809,30 @@ SCOREP_LocalMPICommunicatorSetName( SCOREP_LocalMPICommunicatorHandle localMPICo
 }
 
 
-static SCOREP_LocalMPICommunicatorHandle
-scorep_local_mpi_communicator_definitions_define( SCOREP_DefinitionManager*         definition_manager,
-                                                  SCOREP_LocalMPICommunicatorHandle parentComm,
-                                                  SCOREP_AdapterType                adapterType,
-                                                  size_t                            sizeOfPayload,
-                                                  void**                            payload )
+static SCOREP_InterimCommunicatorHandle
+scorep_interim_communicator_definitions_define( SCOREP_DefinitionManager*        definition_manager,
+                                                SCOREP_InterimCommunicatorHandle parentComm,
+                                                SCOREP_AdapterType               adapterType,
+                                                size_t                           sizeOfPayload,
+                                                void**                           payload )
 {
-    SCOREP_LocalMPICommunicator_Definition* new_definition = NULL;
-    SCOREP_LocalMPICommunicatorHandle       new_handle     = SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR;
+    SCOREP_InterimCommunicator_Definition* new_definition = NULL;
+    SCOREP_InterimCommunicatorHandle       new_handle     = SCOREP_INVALID_INTERIM_COMMUNICATOR;
 
     size_t payload_offset = local_comm_static_size();
     size_t total_size     = payload_offset + sizeOfPayload;
-    SCOREP_DEFINITION_ALLOC_SIZE( LocalMPICommunicator, total_size );
+    SCOREP_DEFINITION_ALLOC_SIZE( InterimCommunicator, total_size );
 
     // Init new_definition
     new_definition->name_handle   = SCOREP_INVALID_STRING;
     new_definition->parent_handle = parentComm;
     new_definition->adapter_type  = adapterType;
 
-    UTILS_BUG_ON( definition_manager->local_mpi_communicator_definition_hash_table,
+    UTILS_BUG_ON( definition_manager->interim_communicator_definition_hash_table,
                   "local communicator definitions shouldn't have a hash table" );
     /* Does never return, because they will never be automatically unified */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( LocalMPICommunicator,
-                                              local_mpi_communicator );
+    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( InterimCommunicator,
+                                              interim_communicator );
 
     if ( sizeOfPayload && payload )
     {
@@ -843,34 +843,34 @@ scorep_local_mpi_communicator_definitions_define( SCOREP_DefinitionManager*     
 }
 
 bool
-scorep_local_mpi_communicator_definitions_equal( const SCOREP_LocalMPICommunicator_Definition* existingDefinition,
-                                                 const SCOREP_LocalMPICommunicator_Definition* newDefinition )
+scorep_interim_communicator_definitions_equal( const SCOREP_InterimCommunicator_Definition* existingDefinition,
+                                               const SCOREP_InterimCommunicator_Definition* newDefinition )
 {
     return false;
 }
 
 static bool
-scorep_mpi_communicator_definitions_equal( const SCOREP_MPICommunicator_Definition* existingDefinition,
-                                           const SCOREP_MPICommunicator_Definition* newDefinition );
+scorep_communicator_definitions_equal( const SCOREP_Communicator_Definition* existingDefinition,
+                                       const SCOREP_Communicator_Definition* newDefinition );
 
 /**
  * Associate a MPI communicator with a process unique communicator handle.
  */
-SCOREP_MPICommunicatorHandle
-SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle           group_handle,
-                                     uint32_t                     unified_name_id,
-                                     SCOREP_MPICommunicatorHandle unified_parent_handle )
+SCOREP_CommunicatorHandle
+SCOREP_DefineUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
+                                  uint32_t                  unified_name_id,
+                                  SCOREP_CommunicatorHandle unified_parent_handle )
 {
     UTILS_DEBUG_ENTRY();
 
-    SCOREP_MPICommunicator_Definition* new_definition     = NULL;
-    SCOREP_MPICommunicatorHandle       new_handle         = SCOREP_INVALID_MPI_COMMUNICATOR;
-    SCOREP_DefinitionManager*          definition_manager = scorep_unified_definition_manager;
+    SCOREP_Communicator_Definition* new_definition     = NULL;
+    SCOREP_CommunicatorHandle       new_handle         = SCOREP_INVALID_COMMUNICATOR;
+    SCOREP_DefinitionManager*       definition_manager = scorep_unified_definition_manager;
 
     UTILS_ASSERT( !SCOREP_Omp_InParallel() );
     UTILS_ASSERT( scorep_unified_definition_manager );
 
-    SCOREP_DEFINITION_ALLOC( MPICommunicator );
+    SCOREP_DEFINITION_ALLOC( Communicator );
 
     // Init new_definition
     new_definition->group_handle  = group_handle;
@@ -878,15 +878,15 @@ SCOREP_DefineUnifiedMPICommunicator( SCOREP_GroupHandle           group_handle,
     new_definition->parent_handle = unified_parent_handle;
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( MPICommunicator,
-                                              mpi_communicator );
+    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Communicator,
+                                              communicator );
 
     return new_handle;
 }
 
 bool
-scorep_mpi_communicator_definitions_equal( const SCOREP_MPICommunicator_Definition* existingDefinition,
-                                           const SCOREP_MPICommunicator_Definition* newDefinition )
+scorep_communicator_definitions_equal( const SCOREP_Communicator_Definition* existingDefinition,
+                                       const SCOREP_Communicator_Definition* newDefinition )
 {
     return false;
 }
@@ -1070,15 +1070,15 @@ scorep_group_definitions_equal( const SCOREP_Group_Definition* existingDefinitio
 
 
 static SCOREP_RmaWindowHandle
-scorep_rma_window_definition_define( SCOREP_DefinitionManager*         definition_manager,
-                                     SCOREP_StringHandle               nameHandle,
-                                     SCOREP_LocalMPICommunicatorHandle communicatorHandle );
+scorep_rma_window_definition_define( SCOREP_DefinitionManager*        definition_manager,
+                                     SCOREP_StringHandle              nameHandle,
+                                     SCOREP_InterimCommunicatorHandle communicatorHandle );
 
 static void
-scorep_rma_window_definition_initialize( SCOREP_RmaWindow_Definition*      definition,
-                                         SCOREP_DefinitionManager*         definition_manager,
-                                         SCOREP_StringHandle               nameHandle,
-                                         SCOREP_LocalMPICommunicatorHandle communicatorHandle  );
+scorep_rma_window_definition_initialize( SCOREP_RmaWindow_Definition*     definition,
+                                         SCOREP_DefinitionManager*        definition_manager,
+                                         SCOREP_StringHandle              nameHandle,
+                                         SCOREP_InterimCommunicatorHandle communicatorHandle  );
 
 
 bool
@@ -1090,8 +1090,8 @@ scorep_rma_window_definitions_equal( const SCOREP_RmaWindow_Definition* existing
  * Associate the parameter tuple with a process unique RMA window handle.
  */
 SCOREP_RmaWindowHandle
-SCOREP_DefineRmaWindow( const char*                       name,
-                        SCOREP_LocalMPICommunicatorHandle communicatorHandle )
+SCOREP_DefineRmaWindow( const char*                      name,
+                        SCOREP_InterimCommunicatorHandle communicatorHandle )
 {
     UTILS_DEBUG_ENTRY( "%s", name );
 
@@ -1111,9 +1111,9 @@ SCOREP_DefineRmaWindow( const char*                       name,
 
 
 static SCOREP_RmaWindowHandle
-scorep_rma_window_definition_define( SCOREP_DefinitionManager*         definition_manager,
-                                     SCOREP_StringHandle               nameHandle,
-                                     SCOREP_LocalMPICommunicatorHandle communicatorHandle )
+scorep_rma_window_definition_define( SCOREP_DefinitionManager*        definition_manager,
+                                     SCOREP_StringHandle              nameHandle,
+                                     SCOREP_InterimCommunicatorHandle communicatorHandle )
 {
     assert( definition_manager );
 
@@ -1133,16 +1133,16 @@ scorep_rma_window_definition_define( SCOREP_DefinitionManager*         definitio
 }
 
 static void
-scorep_rma_window_definition_initialize( SCOREP_RmaWindow_Definition*      definition,
-                                         SCOREP_DefinitionManager*         definition_manager,
-                                         SCOREP_StringHandle               nameHandle,
-                                         SCOREP_LocalMPICommunicatorHandle communicatorHandle  )
+scorep_rma_window_definition_initialize( SCOREP_RmaWindow_Definition*     definition,
+                                         SCOREP_DefinitionManager*        definition_manager,
+                                         SCOREP_StringHandle              nameHandle,
+                                         SCOREP_InterimCommunicatorHandle communicatorHandle  )
 {
     definition->name_handle = nameHandle;
     HASH_ADD_HANDLE( definition, name_handle, String );
 
     definition->communicator_handle = communicatorHandle;
-    HASH_ADD_HANDLE( definition, communicator_handle, LocalMPICommunicator );
+    HASH_ADD_HANDLE( definition, communicator_handle, InterimCommunicator );
 }
 
 
@@ -1163,11 +1163,11 @@ scorep_rma_window_definitions_equal( const SCOREP_RmaWindow_Definition* existing
  * Associate a MPI cartesian topology with a process unique topology handle.
  */
 SCOREP_MPICartesianTopologyHandle
-SCOREP_DefineMPICartesianTopology( const char*                       topologyName,
-                                   SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                                   uint32_t                          nDimensions,
-                                   const uint32_t                    nProcessesPerDimension[],
-                                   const uint8_t                     periodicityPerDimension[] )
+SCOREP_DefineMPICartesianTopology( const char*                      topologyName,
+                                   SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                   uint32_t                         nDimensions,
+                                   const uint32_t                   nProcessesPerDimension[],
+                                   const uint8_t                    periodicityPerDimension[] )
 {
     UTILS_DEBUG_ENTRY( "%s", topologyName );
 

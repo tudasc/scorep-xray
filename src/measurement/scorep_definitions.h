@@ -68,7 +68,7 @@ struct SCOREP_DefinitionMappings
     #undef DEF_WITH_MAPPING
 
     /* handled special in the unifier code */
-    uint32_t* local_mpi_communicator_mappings;
+    uint32_t* interim_communicator_mappings;
     uint32_t* rma_window_mappings;
 };
 /* *INDENT-ON* */
@@ -91,8 +91,8 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( SourceFile, source_file )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Region, region )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Group, group )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( LocalMPICommunicator, local_mpi_communicator )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICommunicator, mpi_communicator )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( InterimCommunicator, interim_communicator )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Communicator, communicator )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( RmaWindow, rma_window )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianTopology, mpi_cartesian_topology )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianCoords, mpi_cartesian_coords )

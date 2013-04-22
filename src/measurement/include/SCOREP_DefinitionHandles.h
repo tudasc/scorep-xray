@@ -48,10 +48,10 @@ typedef SCOREP_AnyHandle SCOREP_LocationHandle;
 typedef SCOREP_AnyHandle SCOREP_GroupHandle;
 
 
-typedef SCOREP_AnyHandle SCOREP_LocalMPICommunicatorHandle;
+typedef SCOREP_AnyHandle SCOREP_InterimCommunicatorHandle;
 
 
-typedef SCOREP_AnyHandle SCOREP_MPICommunicatorHandle;
+typedef SCOREP_AnyHandle SCOREP_CommunicatorHandle;
 
 
 typedef SCOREP_AnyHandle SCOREP_RmaWindowHandle;

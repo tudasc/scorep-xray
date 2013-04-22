@@ -185,13 +185,13 @@ SCOREP_Location_EnterRegion
  * rank specification. Querying the global rank is quite expensive
  * if you are not in MPI_COMM_WORLD.
  *
- * @see SCOREP_DefineLocalMPICommunicator()
+ * @see SCOREP_DefineInterimCommunicator()
  */
 void
-SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
-                SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                uint32_t                          tag,
-                uint64_t                          bytesSent );
+SCOREP_MpiSend( SCOREP_MpiRank                   destinationRank,
+                SCOREP_InterimCommunicatorHandle communicatorHandle,
+                uint32_t                         tag,
+                uint64_t                         bytesSent );
 
 
 /**
@@ -216,10 +216,10 @@ SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
  * scale.
  */
 void
-SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
-                SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                uint32_t                          tag,
-                uint64_t                          bytesReceived );
+SCOREP_MpiRecv( SCOREP_MpiRank                   sourceRank,
+                SCOREP_InterimCommunicatorHandle communicatorHandle,
+                uint32_t                         tag,
+                uint64_t                         bytesReceived );
 
 
 /**
@@ -258,12 +258,12 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle );
  *
  */
 void
-SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle               regionHandle,
-                         SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                         SCOREP_MpiRank                    rootRank,
-                         SCOREP_MpiCollectiveType          collectiveType,
-                         uint64_t                          bytesSent,
-                         uint64_t                          bytesReceived );
+SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle              regionHandle,
+                         SCOREP_InterimCommunicatorHandle communicatorHandle,
+                         SCOREP_MpiRank                   rootRank,
+                         SCOREP_MpiCollectiveType         collectiveType,
+                         uint64_t                         bytesSent,
+                         uint64_t                         bytesReceived );
 
 /**
  * Processs a MPI send complete event in the measurement system.
@@ -318,14 +318,14 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId );
  * rank specification. Querying the global rank is quite expensive
  * if you are not in MPI_COMM_WORLD.
  *
- * @see SCOREP_DefineLocalMPICommunicator()
+ * @see SCOREP_DefineInterimCommunicator()
  */
 void
-SCOREP_MpiIsend( SCOREP_MpiRank                    destinationRank,
-                 SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                 uint32_t                          tag,
-                 uint64_t                          bytesSent,
-                 SCOREP_MpiRequestId               requestId );
+SCOREP_MpiIsend( SCOREP_MpiRank                   destinationRank,
+                 SCOREP_InterimCommunicatorHandle communicatorHandle,
+                 uint32_t                         tag,
+                 uint64_t                         bytesSent,
+                 SCOREP_MpiRequestId              requestId );
 
 
 /**
@@ -350,11 +350,11 @@ SCOREP_MpiIsend( SCOREP_MpiRank                    destinationRank,
  * if you are not in MPI_COMM_WORLD.
  */
 void
-SCOREP_MpiIrecv( SCOREP_MpiRank                    sourceRank,
-                 SCOREP_LocalMPICommunicatorHandle communicatorHandle,
-                 uint32_t                          tag,
-                 uint64_t                          bytesReceived,
-                 SCOREP_MpiRequestId               requestId );
+SCOREP_MpiIrecv( SCOREP_MpiRank                   sourceRank,
+                 SCOREP_InterimCommunicatorHandle communicatorHandle,
+                 uint32_t                         tag,
+                 uint64_t                         bytesReceived,
+                 SCOREP_MpiRequestId              requestId );
 
 
 /**

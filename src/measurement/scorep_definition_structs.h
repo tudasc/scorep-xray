@@ -126,23 +126,23 @@ SCOREP_DEFINE_DEFINITION_TYPE( Group )
 };
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( LocalMPICommunicator )
+SCOREP_DEFINE_DEFINITION_TYPE( InterimCommunicator )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( LocalMPICommunicator );
+    SCOREP_DEFINE_DEFINITION_HEADER( InterimCommunicator );
 
-    SCOREP_StringHandle               name_handle;
-    SCOREP_LocalMPICommunicatorHandle parent_handle;
-    SCOREP_AdapterType                adapter_type;
+    SCOREP_StringHandle              name_handle;
+    SCOREP_InterimCommunicatorHandle parent_handle;
+    SCOREP_AdapterType               adapter_type;
 };
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( MPICommunicator )
+SCOREP_DEFINE_DEFINITION_TYPE( Communicator )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( MPICommunicator );
+    SCOREP_DEFINE_DEFINITION_HEADER( Communicator );
 
-    SCOREP_GroupHandle           group_handle;
-    uint32_t                     name_id;
-    SCOREP_MPICommunicatorHandle parent_handle;
+    SCOREP_GroupHandle        group_handle;
+    uint32_t                  name_id;
+    SCOREP_CommunicatorHandle parent_handle;
 };
 
 
@@ -151,8 +151,8 @@ SCOREP_DEFINE_DEFINITION_TYPE( RmaWindow )
     SCOREP_DEFINE_DEFINITION_HEADER( RmaWindow );
 
     // Add SCOREP_RmaWindow stuff from here on.
-    SCOREP_StringHandle               name_handle;
-    SCOREP_LocalMPICommunicatorHandle communicator_handle;
+    SCOREP_StringHandle              name_handle;
+    SCOREP_InterimCommunicatorHandle communicator_handle;
 };
 
 

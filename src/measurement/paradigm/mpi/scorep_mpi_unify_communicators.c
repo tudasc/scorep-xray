@@ -43,8 +43,6 @@
 
 #include <UTILS_Debug.h>
 
-#include "scorep_mpi_communicator.h"
-
 void
 scorep_mpi_unify_define_mpi_locations( void )
 {
@@ -139,18 +137,18 @@ create_local_mappings( uint32_t comm_world_size,
 
     /* Create mapping tables
        Every process calculates its own mappings from the offsets. */
-    uint32_t* local_mpi_communicator_mappings =
-        scorep_local_definition_manager.mappings->local_mpi_communicator_mappings;
+    uint32_t* interim_communicator_mappings =
+        scorep_local_definition_manager.mappings->interim_communicator_mappings;
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
-                                  LocalMPICommunicator,
-                                  local_mpi_communicator )
+                                  InterimCommunicator,
+                                  interim_communicator )
     {
         if ( definition->adapter_type != SCOREP_ADAPTER_MPI )
         {
             continue;
         }
         scorep_mpi_comm_definition_payload* comm_payload =
-            SCOREP_LocalMPICommunicatorGetPayload( handle );
+            SCOREP_InterimCommunicatorGetPayload( handle );
 
         uint32_t global_comm_id = comm_payload->root_id;
         if ( !comm_payload->is_self_like )
@@ -162,7 +160,7 @@ create_local_mappings( uint32_t comm_world_size,
             global_comm_id += total_number_of_root_comms;
             assert( comm_payload->global_root_rank == rank );
         }
-        local_mpi_communicator_mappings[ definition->sequence_number ]
+        interim_communicator_mappings[ definition->sequence_number ]
             = global_comm_id;
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
@@ -194,21 +192,21 @@ is_this_rank_in_communicator( uint32_t  global_comm_id,
 {
     uint32_t* string_mappings =
         scorep_local_definition_manager.mappings->string_mappings;
-    uint32_t* local_mpi_communicator_mappings =
-        scorep_local_definition_manager.mappings->local_mpi_communicator_mappings;
+    uint32_t* interim_communicator_mappings =
+        scorep_local_definition_manager.mappings->interim_communicator_mappings;
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
-                                  LocalMPICommunicator,
-                                  local_mpi_communicator )
+                                  InterimCommunicator,
+                                  interim_communicator )
     {
         if ( definition->adapter_type != SCOREP_ADAPTER_MPI )
         {
             continue;
         }
         scorep_mpi_comm_definition_payload* comm_payload =
-            SCOREP_LocalMPICommunicatorGetPayload( handle );
+            SCOREP_InterimCommunicatorGetPayload( handle );
 
         if ( global_comm_id ==
-             local_mpi_communicator_mappings[ definition->sequence_number ] )
+             interim_communicator_mappings[ definition->sequence_number ] )
         {
             if ( comm_payload->local_rank == 0 )
             {
@@ -226,14 +224,14 @@ is_this_rank_in_communicator( uint32_t  global_comm_id,
                         scorep_local_definition_manager.page_manager );
                     global_aux_ids[ 0 ] = string_mappings[ name_definition->sequence_number ];
                 }
-                if ( definition->parent_handle != SCOREP_INVALID_LOCAL_MPI_COMMUNICATOR )
+                if ( definition->parent_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
                 {
-                    SCOREP_LocalMPICommunicator_Definition* parent_definition = SCOREP_HANDLE_DEREF(
+                    SCOREP_InterimCommunicator_Definition* parent_definition = SCOREP_HANDLE_DEREF(
                         definition->parent_handle,
-                        LocalMPICommunicator,
+                        InterimCommunicator,
                         scorep_local_definition_manager.page_manager );
                     global_aux_ids[ 1 ] =
-                        local_mpi_communicator_mappings[ parent_definition->sequence_number ];
+                        interim_communicator_mappings[ parent_definition->sequence_number ];
                 }
             }
             return comm_payload->local_rank;
@@ -257,10 +255,10 @@ define_comms( uint32_t comm_world_size,
 
     struct comm_definition
     {
-        SCOREP_MPICommunicatorHandle handle;
-        SCOREP_GroupHandle           group;
-        uint32_t                     comm_name;
-        uint32_t                     comm_parent;
+        SCOREP_CommunicatorHandle handle;
+        SCOREP_GroupHandle        group;
+        uint32_t                  comm_name;
+        uint32_t                  comm_parent;
     }* comm_definitions = NULL;
 
     uint32_t* topo_comm_mapping = NULL;
@@ -338,7 +336,7 @@ define_comms( uint32_t comm_world_size,
 
             /* Define the MPI group */
             comm_definitions[ global_comm_id ].handle =
-                SCOREP_INVALID_MPI_COMMUNICATOR;
+                SCOREP_INVALID_COMMUNICATOR;
 
             comm_definitions[ global_comm_id ].group =
                 SCOREP_DefineUnifiedGroupFrom32( SCOREP_GROUP_MPI_GROUP,
@@ -364,12 +362,12 @@ define_comms( uint32_t comm_world_size,
     if ( rank == 0 )
     {
         uint32_t global_comm_id  = 0;
-        uint32_t number_of_comms = scorep_unified_definition_manager->mpi_communicator_definition_counter;
+        uint32_t number_of_comms = scorep_unified_definition_manager->communicator_definition_counter;
         while ( global_comm_id < total_number_of_root_comms )
         {
             for ( uint32_t i = 0; i < total_number_of_root_comms; i++ )
             {
-                if ( comm_definitions[ i ].handle != SCOREP_INVALID_MPI_COMMUNICATOR )
+                if ( comm_definitions[ i ].handle != SCOREP_INVALID_COMMUNICATOR )
                 {
                     // already defined
                     continue;
@@ -377,14 +375,14 @@ define_comms( uint32_t comm_world_size,
 
                 if ( comm_definitions[ i ].comm_parent != -1
                      && comm_definitions[ comm_definitions[ i ].comm_parent ].handle
-                     == SCOREP_INVALID_MPI_COMMUNICATOR )
+                     == SCOREP_INVALID_COMMUNICATOR )
                 {
                     // parent not defined
                     continue;
                 }
 
-                SCOREP_MPICommunicatorHandle comm_parent_handle =
-                    SCOREP_INVALID_MPI_COMMUNICATOR;
+                SCOREP_CommunicatorHandle comm_parent_handle =
+                    SCOREP_INVALID_COMMUNICATOR;
 
                 if ( comm_definitions[ i ].comm_parent != -1 )
                 {
@@ -393,12 +391,12 @@ define_comms( uint32_t comm_world_size,
                 }
 
                 /* Define the global MPI communicator with this group */
-                comm_definitions[ i ].handle = SCOREP_DefineUnifiedMPICommunicator(
+                comm_definitions[ i ].handle = SCOREP_DefineUnifiedCommunicator(
                     comm_definitions[ i ].group,
                     comm_definitions[ i ].comm_name,
                     comm_parent_handle );
                 assert( SCOREP_UNIFIED_HANDLE_TO_ID(
-                            comm_definitions[ i ].handle, MPICommunicator ) ==
+                            comm_definitions[ i ].handle, Communicator ) ==
                         number_of_comms + global_comm_id );
 
                 /*
@@ -424,24 +422,24 @@ define_comms( uint32_t comm_world_size,
         0 );
 
     /* Apply new ids to all communicators */
-    uint32_t* local_mpi_communicator_mappings =
-        scorep_local_definition_manager.mappings->local_mpi_communicator_mappings;
+    uint32_t* interim_communicator_mappings =
+        scorep_local_definition_manager.mappings->interim_communicator_mappings;
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
-                                  LocalMPICommunicator,
-                                  local_mpi_communicator )
+                                  InterimCommunicator,
+                                  interim_communicator )
     {
         if ( definition->adapter_type != SCOREP_ADAPTER_MPI )
         {
             continue;
         }
         scorep_mpi_comm_definition_payload* comm_payload =
-            SCOREP_LocalMPICommunicatorGetPayload( handle );
+            SCOREP_InterimCommunicatorGetPayload( handle );
 
         if ( !comm_payload->is_self_like )
         {
             uint32_t old_global_comm_id =
-                local_mpi_communicator_mappings[ definition->sequence_number ];
-            local_mpi_communicator_mappings[ definition->sequence_number ] =
+                interim_communicator_mappings[ definition->sequence_number ];
+            interim_communicator_mappings[ definition->sequence_number ] =
                 topo_comm_mapping[ old_global_comm_id ];
         }
         else
@@ -450,7 +448,7 @@ define_comms( uint32_t comm_world_size,
              * Shift the local mapping to the unififed definition with the
              * ammount of already defined unifided non-MPI communicators
              */
-            local_mpi_communicator_mappings[ definition->sequence_number ] +=
+            interim_communicator_mappings[ definition->sequence_number ] +=
                 topo_comm_mapping[ total_number_of_root_comms ];
         }
     }
@@ -480,7 +478,7 @@ define_self_likes( uint32_t rank )
     if ( rank == 0 )
     {
         uint32_t number_of_comms =
-            scorep_unified_definition_manager->mpi_communicator_definition_counter;
+            scorep_unified_definition_manager->communicator_definition_counter;
 
         /* Create group for comm self */
         SCOREP_GroupHandle self = SCOREP_DefineUnifiedGroupFrom32(
@@ -491,12 +489,12 @@ define_self_likes( uint32_t rank )
 
         for ( uint32_t i = 0; i < max_number_of_self_ids; i++ )
         {
-            SCOREP_MPICommunicatorHandle handle =
-                SCOREP_DefineUnifiedMPICommunicator(
+            SCOREP_CommunicatorHandle handle =
+                SCOREP_DefineUnifiedCommunicator(
                     self,
                     0,
-                    SCOREP_INVALID_MPI_COMMUNICATOR );
-            assert( SCOREP_UNIFIED_HANDLE_TO_ID( handle, MPICommunicator ) ==
+                    SCOREP_INVALID_COMMUNICATOR );
+            assert( SCOREP_UNIFIED_HANDLE_TO_ID( handle, Communicator ) ==
                     number_of_comms + i );
         }
     }

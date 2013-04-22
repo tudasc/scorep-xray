@@ -222,7 +222,7 @@ main( int argc, char* argv[] )
             SCOREP_DEFINITION_FOREACH_WHILE();
 
             SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager,
-                                          MPICommunicator, mpi_communicator )
+                                          Communicator, communicator )
             {
                 fprintf( result, "uc: %u ug:%u\n",
                          definition->sequence_number,
@@ -272,13 +272,13 @@ main( int argc, char* argv[] )
                 SCOREP_DEFINITION_FOREACH_WHILE();
 
                 SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
-                                              LocalMPICommunicator,
-                                              local_mpi_communicator )
+                                              InterimCommunicator,
+                                              interim_communicator )
                 {
                     fprintf( result, "%d:c: %u -> %u\n",
                              rank,
                              definition->sequence_number,
-                             scorep_local_definition_manager.mappings->local_mpi_communicator_mappings[ definition->sequence_number ] );
+                             scorep_local_definition_manager.mappings->interim_communicator_mappings[ definition->sequence_number ] );
                     fflush( result );
                 }
                 SCOREP_DEFINITION_FOREACH_WHILE();
