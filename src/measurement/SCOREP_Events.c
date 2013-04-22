@@ -48,7 +48,6 @@
 #include "scorep_events_common.h"
 #include "scorep_runtime_management.h"
 #include "scorep_types.h"
-#include "scorep_handles.h"
 #include "scorep_thread.h"
 #include "scorep_definition_structs.h"
 #include "scorep_definitions.h"
@@ -63,13 +62,8 @@ scorep_enter_region( uint64_t            timestamp,
                      uint64_t*           metricValues,
                      SCOREP_Location*    location )
 {
-    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
-                      )
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                        scorep_region_to_string( stringBuffer,
-                                                 sizeof( stringBuffer ),
-                                                 "%x", regionHandle ) );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%u",
+                        scorep_handle_to_id( regionHandle ) );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -140,13 +134,8 @@ scorep_exit_region( uint64_t            timestamp,
                     uint64_t*           metricValues,
                     SCOREP_Location*    location )
 {
-    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
-                      )
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                        scorep_region_to_string( stringBuffer,
-                                                 sizeof( stringBuffer ),
-                                                 "%x", regionHandle ) );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%u",
+                        scorep_handle_to_id( regionHandle ) );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -214,13 +203,8 @@ SCOREP_EnterRewindRegion( SCOREP_RegionHandle regionHandle )
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
-                      )
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%s",
-                        scorep_region_to_string( stringBuffer,
-                                                 sizeof( stringBuffer ),
-                                                 "%x", regionHandle ) );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%u",
+                        scorep_handle_to_id( regionHandle ) );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -238,13 +222,8 @@ SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle, bool do_rewind )
     SCOREP_Location* location       = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         leavetimestamp = scorep_get_timestamp( location );
 
-    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
-                      )
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%s",
-                        scorep_region_to_string( stringBuffer,
-                                                 sizeof( stringBuffer ),
-                                                 "%x", regionHandle ) );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%u",
+                        scorep_handle_to_id( regionHandle ) );
 
     if ( scorep_tracing_consume_event() )
     {
@@ -268,14 +247,9 @@ SCOREP_MpiSend( SCOREP_MpiRank                    destinationRank,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
-                      )
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Dst:%d Comm:%s Tag:%u Bytes:%llu",
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Dst:%d Comm:%u Tag:%u Bytes:%llu",
                         destinationRank,
-                        scorep_comm_to_string( stringBuffer,
-                                               sizeof( stringBuffer ),
-                                               "%x", communicatorHandle ),
+                        scorep_handle_to_id( communicatorHandle ),
                         tag,
                         ( unsigned long long )bytesSent );
 
@@ -319,14 +293,9 @@ SCOREP_MpiRecv( SCOREP_MpiRank                    sourceRank,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
-                      )
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Src:%u Comm:%s Tag:%u Bytes:%llu",
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Src:%u Comm:%u Tag:%u Bytes:%llu",
                         sourceRank,
-                        scorep_comm_to_string( stringBuffer,
-                                               sizeof( stringBuffer ),
-                                               "%x", communicatorHandle ),
+                        scorep_handle_to_id( communicatorHandle ),
                         tag,
                         ( unsigned long long )bytesReceived );
 
@@ -1192,13 +1161,9 @@ void
 SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    UTILS_DEBUG_ONLY( char stringBuffer[ 16 ];
-                      )
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%s",
-                        scorep_region_to_string( stringBuffer,
-                                                 sizeof( stringBuffer ),
-                                                 "%x", regionHandle ) );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%u",
+                        scorep_handle_to_id( regionHandle ) );
 
     /* DL: My proposal would be to call scorep_exit_region until we have
        a special event for exits on exceptions. However, for the profiling part

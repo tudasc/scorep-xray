@@ -34,6 +34,18 @@
 
 #include <jenkins_hash.h>
 
+static inline uint32_t
+scorep_handle_to_id( SCOREP_AnyHandle handle )
+{
+    if ( handle == SCOREP_MOVABLE_NULL )
+    {
+        return UINT32_MAX;
+    }
+
+    return SCOREP_LOCAL_HANDLE_TO_ID( handle, Any );
+}
+
+
 // the list of definitions for what we generate mappings to global
 // ids in the unifier
 #define SCOREP_LIST_OF_DEFS_WITH_MAPPINGS \

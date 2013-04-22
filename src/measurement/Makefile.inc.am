@@ -45,8 +45,6 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_subsystem.h                 \
     $(SRC_ROOT)src/measurement/scorep_types.c                     \
     $(SRC_ROOT)src/measurement/scorep_types.h                     \
-    $(SRC_ROOT)src/measurement/scorep_handles.c                   \
-    $(SRC_ROOT)src/measurement/scorep_handles.h                   \
     $(SRC_ROOT)src/measurement/scorep_thread.h                    \
     $(SRC_ROOT)src/measurement/scorep_location.h                  \
     $(SRC_ROOT)src/measurement/scorep_location.c                  \
