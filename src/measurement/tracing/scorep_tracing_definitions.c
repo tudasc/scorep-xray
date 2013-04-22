@@ -370,7 +370,7 @@ scorep_write_communicator_definitions( void*                     writerHandle,
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, MPICommunicator, mpi_communicator )
     {
         uint32_t comm_parent_id = OTF2_UNDEFINED_MPI_COMM;
-        if ( definition->parent_handle != SCOREP_INVALID_CALLPATH )
+        if ( definition->parent_handle != SCOREP_INVALID_MPI_COMMUNICATOR )
         {
             comm_parent_id = SCOREP_HANDLE_TO_ID( definition->parent_handle,
                                                   MPICommunicator,
