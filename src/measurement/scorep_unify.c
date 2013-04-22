@@ -100,6 +100,9 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
 
     SCOREP_ALLOC_MAPPINGS_ARRAY( local_mpi_communicator,
                                  &scorep_local_definition_manager );
+
+    SCOREP_ALLOC_MAPPINGS_ARRAY( rma_window,
+                                 &scorep_local_definition_manager );
 }
 
 
@@ -128,6 +131,9 @@ SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     #undef DEF_WITH_MAPPING
 
     SCOREP_FREE_MAPPINGS_ARRAY( local_mpi_communicator,
+                                definitionManager );
+
+    SCOREP_FREE_MAPPINGS_ARRAY( rma_window,
                                 definitionManager );
 
     free( definitionManager->mappings );

@@ -55,8 +55,9 @@ struct SCOREP_DefinitionMappings
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
     #undef DEF_WITH_MAPPING
 
-    /* handled special in the mpi communicator unifier code */
+    /* handled special in the unifier code */
     uint32_t* local_mpi_communicator_mappings;
+    uint32_t* rma_window_mappings;
 };
 /* *INDENT-ON* */
 

@@ -736,12 +736,12 @@ scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( string, STRING, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( region, REGION, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( group, GROUP, localDefinitionWriter );
-    if ( SCOREP_Status_IsMpp() )
-    {
-        SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( local_mpi_communicator,
-                                                 MPI_COMM,
-                                                 localDefinitionWriter );
-    }
+    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( local_mpi_communicator,
+                                             MPI_COMM,
+                                             localDefinitionWriter );
+    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( rma_window,
+                                             RMA_WIN,
+                                             localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( sampling_set, METRIC, localDefinitionWriter );
 
     // do we need Callpath and Parameter mappings for tracing?
