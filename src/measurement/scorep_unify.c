@@ -31,7 +31,7 @@
 #include <SCOREP_Config.h>
 #include "scorep_environment.h"
 #include "scorep_status.h"
-#include "scorep_definitions.h"
+#include <definitions/SCOREP_Definitions.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>

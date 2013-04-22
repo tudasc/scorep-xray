@@ -44,6 +44,7 @@
 
 #include <SCOREP_Memory.h>
 #include <SCOREP_Subsystem.h>
+#include <definitions/SCOREP_Definitions.h>
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Timing.h>
@@ -60,7 +61,6 @@
 #include "scorep_error_callback.h"
 #include "scorep_types.h"
 #include "scorep_subsystem.h"
-#include "scorep_definitions.h"
 #include "scorep_environment.h"
 #include "scorep_status.h"
 #include "scorep_ipc.h"

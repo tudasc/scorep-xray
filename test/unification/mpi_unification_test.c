@@ -43,7 +43,7 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
 
-#include <scorep_definitions.h>
+#include <definitions/SCOREP_Definitions.h>
 #include <scorep_subsystem.h>
 
 void

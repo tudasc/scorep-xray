@@ -33,7 +33,7 @@
 
 #include <SCOREP_Memory.h>
 
-#include <scorep_definitions.h>
+#include <definitions/SCOREP_Definitions.h>
 
 static void
 test_1( CuTest* tc )

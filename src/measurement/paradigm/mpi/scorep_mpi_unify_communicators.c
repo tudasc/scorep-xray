@@ -37,9 +37,8 @@
 #include <scorep_ipc.h>
 #include <SCOREP_Mpi.h>
 #include <scorep_mpi_communicator.h>
-#include <scorep_definitions.h>
-#include <scorep_definition_macros.h>
 #include <SCOREP_Definitions.h>
+#include <definitions/SCOREP_Definitions.h>
 
 #include <UTILS_Debug.h>
 

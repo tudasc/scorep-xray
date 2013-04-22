@@ -49,8 +49,7 @@
 #include <scorep_location.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Timing.h>
-#include <scorep_definitions.h>
-#include <scorep_definition_structs.h>
+#include <definitions/SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
 
 

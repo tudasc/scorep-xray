@@ -38,7 +38,7 @@
 
 #include <scorep_profile_definition.h>
 #include <scorep_profile_location.h>
-#include <scorep_definitions.h>
+#include <definitions/SCOREP_Definitions.h>
 #include <scorep_ipc.h>
 #include <scorep_runtime_management.h>
 #include <scorep_location.h>

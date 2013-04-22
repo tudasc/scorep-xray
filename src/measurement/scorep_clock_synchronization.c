@@ -26,7 +26,7 @@
 #include <config.h>
 #include "scorep_clock_synchronization.h"
 
-#include "scorep_definitions.h"
+#include <definitions/SCOREP_Definitions.h>
 #include <SCOREP_Timing.h>
 
 #include <assert.h>

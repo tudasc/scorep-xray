@@ -36,7 +36,6 @@
 
 #include "scorep_ipc.h"
 
-#include <scorep_definitions.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>

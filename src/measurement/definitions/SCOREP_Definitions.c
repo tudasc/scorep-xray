@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/scorep_definition_management.c
+ * @file       src/measurement/definitions/SCOREP_Definitions.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -27,14 +27,12 @@
 #include <config.h>
 
 
-#include "scorep_definitions.h"
+#include <definitions/SCOREP_Definitions.h>
+
 
 #include "scorep_environment.h"
-#include "scorep_definition_structs.h"
-#include "scorep_definition_macros.h"
 #include "scorep_runtime_management.h"
 #include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_Timing.h>
 #include <SCOREP_Mutex.h>
 #include <stdbool.h>
 #include <stdint.h>

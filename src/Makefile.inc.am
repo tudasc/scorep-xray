@@ -28,6 +28,7 @@ common_libadd = libscorep_measurement.la              \
                 @CUBE_WRITER_LIBS@                    \
                 libscorep_profile.la                  \
                 libscorep_tracing.la                  \
+                libscorep_definitions.la              \
                 libscorep_platform.la                 \
                 libscorep_bitstring.la                \
                 libscorep_filter.la                   \

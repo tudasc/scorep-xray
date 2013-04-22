@@ -33,7 +33,7 @@
 #include <SCOREP_Config.h>
 
 #include "scorep_profile_definition.h"
-#include "scorep_definitions.h"
+#include <definitions/SCOREP_Definitions.h>
 
 /*----------------------------------------------------------------------------------------
    External configuration variables

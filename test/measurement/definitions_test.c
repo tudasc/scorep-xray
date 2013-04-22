@@ -31,8 +31,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include <scorep_definitions.h>
-#include <scorep_definition_structs.h>
+#include <definitions/SCOREP_Definitions.h>
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */

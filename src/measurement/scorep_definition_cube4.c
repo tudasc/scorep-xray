@@ -32,7 +32,7 @@
 
 #include "scorep_ipc.h"
 #include "scorep_types.h"
-#include "scorep_definitions.h"
+#include <definitions/SCOREP_Definitions.h>
 #include <cubew_services.h>
 
 #include <UTILS_Debug.h>

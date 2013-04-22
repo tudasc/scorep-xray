@@ -42,7 +42,7 @@
 #include <UTILS_Error.h>
 
 #include <scorep_profile_definition.h>
-#include <scorep_definitions.h>
+#include <definitions/SCOREP_Definitions.h>
 #include <scorep_profile_location.h>
 
 static bool

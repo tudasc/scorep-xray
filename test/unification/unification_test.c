@@ -35,8 +35,7 @@
 
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
-#include <scorep_definitions.h>
-#include <scorep_definition_macros.h>
+#include <definitions/SCOREP_Definitions.h>
 
 /* *INDENT-OFF* */
 void init_definition_manager(CuTest* tc, SCOREP_DefinitionManager** manager, bool allocHashTables);

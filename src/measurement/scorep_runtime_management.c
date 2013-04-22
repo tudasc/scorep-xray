@@ -32,8 +32,7 @@
 #include <SCOREP_Memory.h>
 #include "scorep_status.h"
 #include "scorep_ipc.h"
-#include "scorep_definition_structs.h"
-#include "scorep_definition_macros.h"
+#include <definitions/SCOREP_Definitions.h>
 #include <SCOREP_Location.h>
 #include "scorep_environment.h"
 

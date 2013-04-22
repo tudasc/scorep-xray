@@ -35,7 +35,8 @@
 #include "scorep_subsystem.h"
 #include "scorep_status.h"
 #include <SCOREP_Omp.h>
-#include <scorep_definitions.h>
+#include <SCOREP_Definitions.h>
+#include <definitions/SCOREP_Definitions.h>
 
 #include <UTILS_Error.h>
 

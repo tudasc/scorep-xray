@@ -1,0 +1,121 @@
+/*
+ * This file is part of the Score-P software (http://www.score-p.org)
+ *
+ * Copyright (c) 2009-2013,
+ *    RWTH Aachen University, Germany
+ *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *    Technische Universitaet Dresden, Germany
+ *    University of Oregon, Eugene, USA
+ *    Forschungszentrum Juelich GmbH, Germany
+ *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *    Technische Universitaet Muenchen, Germany
+ *
+ * See the COPYING file in the package base directory for details.
+ *
+ */
+
+
+/**
+ * @status     alpha
+ * @file       src/measurement/definitions/scorep_definitions_rma_window.c
+ * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
+ *
+ * @brief Declaration of definition functions to be used by the adapter layer.
+ *
+ */
+
+
+#include <config.h>
+
+
+#include <definitions/SCOREP_Definitions.h>
+
+
+#include <assert.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
+#include <stdarg.h>
+#include <inttypes.h>
+
+
+#include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME DEFINITIONS
+#include <UTILS_Debug.h>
+
+
+#include <jenkins_hash.h>
+
+
+#include <SCOREP_DefinitionHandles.h>
+#include <scorep_types.h>
+#include <SCOREP_Mutex.h>
+#include <SCOREP_Memory.h>
+
+
+static SCOREP_RmaWindowHandle
+define_rma_window( SCOREP_DefinitionManager*        definition_manager,
+                   SCOREP_StringHandle              nameHandle,
+                   SCOREP_InterimCommunicatorHandle communicatorHandle );
+
+
+static bool
+equal_rma_window( const SCOREP_RmaWindow_Definition* existingDefinition,
+                  const SCOREP_RmaWindow_Definition* newDefinition );
+
+
+/**
+ * Associate the parameter tuple with a process unique RMA window handle.
+ */
+SCOREP_RmaWindowHandle
+SCOREP_DefineRmaWindow( const char*                      name,
+                        SCOREP_InterimCommunicatorHandle communicatorHandle )
+{
+    UTILS_DEBUG_ENTRY( "%s", name );
+
+    SCOREP_Definitions_Lock();
+
+    SCOREP_RmaWindow_Definition* new_definition = NULL;
+    SCOREP_RmaWindowHandle       new_handle     = define_rma_window(
+        &scorep_local_definition_manager,
+        scorep_string_definition_define(
+            &scorep_local_definition_manager,
+            name ? name : "<unknown RMA window>" ),
+        communicatorHandle );
+
+    SCOREP_Definitions_Unlock();
+
+    return new_handle;
+}
+
+
+SCOREP_RmaWindowHandle
+define_rma_window( SCOREP_DefinitionManager*        definition_manager,
+                   SCOREP_StringHandle              nameHandle,
+                   SCOREP_InterimCommunicatorHandle communicatorHandle )
+{
+    assert( definition_manager );
+
+    SCOREP_RmaWindow_Definition* new_definition = NULL;
+    SCOREP_RmaWindowHandle       new_handle     = SCOREP_INVALID_RMA_WINDOW;
+
+    SCOREP_DEFINITION_ALLOC( RmaWindow );
+
+    new_definition->name_handle         = nameHandle;
+    new_definition->communicator_handle = communicatorHandle;
+
+    /* Does return if it is a duplicate */
+    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( RmaWindow, rma_window );
+
+    return new_handle;
+}
+
+
+bool
+equal_rma_window( const SCOREP_RmaWindow_Definition* existingDefinition,
+                  const SCOREP_RmaWindow_Definition* newDefinition )
+{
+    return false;
+}

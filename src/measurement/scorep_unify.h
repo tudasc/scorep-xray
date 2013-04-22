@@ -28,7 +28,7 @@
  */
 
 
-#include "scorep_definitions.h"
+#include <definitions/SCOREP_Definitions.h>
 
 void
 SCOREP_Unify( void );

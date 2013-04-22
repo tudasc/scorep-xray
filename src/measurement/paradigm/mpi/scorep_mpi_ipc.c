@@ -31,7 +31,6 @@
 #include <UTILS_Error.h>
 
 #include <UTILS_Debug.h>
-#include <scorep_definitions.h>
 #include <mpi.h>
 #include <assert.h>
 #include <stdlib.h>

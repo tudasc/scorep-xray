@@ -31,7 +31,6 @@
 #include <UTILS_Error.h>
 
 #include <UTILS_Debug.h>
-#include <scorep_definitions.h>
 #include <scorep_runtime_management_timings.h>
 #include <assert.h>
 #include <stdlib.h>

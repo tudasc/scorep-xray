@@ -37,6 +37,7 @@
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Definitions.h>
+#include <definitions/SCOREP_Definitions.h>
 #include <SCOREP_Properties.h>
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Profile.h>
@@ -49,8 +50,6 @@
 #include "scorep_runtime_management.h"
 #include "scorep_types.h"
 #include "scorep_thread.h"
-#include "scorep_definition_structs.h"
-#include "scorep_definitions.h"
 
 
 /**

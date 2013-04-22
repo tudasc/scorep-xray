@@ -1,6 +1,3 @@
-#ifndef SCOREP_DEFINITION_MACROS_H_
-#define SCOREP_DEFINITION_MACROS_H_
-
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -19,11 +16,18 @@
 
 
 /**
- * @file       scorep_definition_macros.h
+ * @file       src/measurement/definitions/scorep_definitions_private.h
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  */
 
+
+#ifndef SCOREP_INTERNAL_DEFINITIONS_H
+#error "Do not include this header directly, use SCOREP_Definitions.h instead."
+#endif
+
+#ifndef SCOREP_PRIVATE_DEFINITIONS_H
+#define SCOREP_PRIVATE_DEFINITIONS_H
 
 #include <SCOREP_Memory.h>
 #include <stdint.h>
@@ -265,7 +269,7 @@
             { \
                 SCOREP_ ## Type ## _Definition * existing_definition = SCOREP_LOCAL_HANDLE_DEREF( \
                     hash_list_iterator, Type ); \
-                if ( scorep_ ## type ## _definitions_equal( existing_definition, new_definition ) ) \
+                if ( equal_ ## type( existing_definition, new_definition ) ) \
                 { \
                     SCOREP_Allocator_RollbackAllocMovable( \
                         SCOREP_Memory_GetLocalDefinitionPageManager(), \
@@ -560,4 +564,4 @@
     } \
     while ( 0 )
 
-#endif /* SCOREP_DEFINITION_MACROS_H_ */
+#endif /* SCOREP_PRIVATE_DEFINITIONS_H */

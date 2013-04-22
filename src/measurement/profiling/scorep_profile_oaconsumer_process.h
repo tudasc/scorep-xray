@@ -30,7 +30,8 @@
 
 #include "scorep_profile_node.h"
 #include "scorep_profile_definition.h"
-#include "scorep_definition_structs.h"
+#include <SCOREP_Definitions.h>
+#include <definitions/SCOREP_Definitions.h>
 
 /**Due to missing time metric definition, this will be created OA processing time and sotred in transmittion buffer.
  * The index of time metric will go below  OACONSUMER_METRIC_DEFINITION_OFFSET. All registered metrics will start after this offset.

@@ -1,0 +1,73 @@
+## -*- mode: makefile -*-
+
+# This file is part of the Score-P software (http://www.score-p.org)
+#
+# Copyright (c) 2009-2013,
+#    RWTH Aachen University, Germany
+#    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+#    Technische Universitaet Dresden, Germany
+#    University of Oregon, Eugene, USA
+#    Forschungszentrum Juelich GmbH, Germany
+#    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+#    Technische Universitaet Muenchen, Germany
+#
+# See the COPYING file in the package base directory for details.
+
+## file       src/measurement/definitions/Makefile.inc.am
+## maintainer Christian Roessel <c.roessel@fz-juelich.de>
+
+
+noinst_LTLIBRARIES += libscorep_definitions.la
+libscorep_definitions_la_SOURCES =                                \
+    $(SRC_ROOT)src/measurement/definitions/SCOREP_Definitions.c   \
+    $(SRC_ROOT)src/measurement/definitions/SCOREP_Definitions.h   \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_private.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_string.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_string.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_source_file.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_source_file.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location_group.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location_group.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_system_tree_node.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_system_tree_node.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_region.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_region.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_communicator.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_communicator.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_group.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_group.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_metric.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_metric.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_sampling_set.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_sampling_set.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_parameter.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_parameter.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_callpath.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_callpath.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_clock_offset.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_clock_offset.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_property.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_property.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_rma_window.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_rma_window.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_topology.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_topology.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_file_group.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_file_group.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_file.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_file.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker_group.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker_group.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker.h
+
+libscorep_definitions_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/measurement/profiling \
+    -I$(INC_DIR_COMMON_HASH)

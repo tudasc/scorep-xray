@@ -41,10 +41,8 @@
 
 #include <SCOREP_Types.h>
 #include <SCOREP_Definitions.h>
+#include <definitions/SCOREP_Definitions.h>
 #include <SCOREP_Properties.h>
-
-#include <scorep_definition_structs.h>
-#include <scorep_definitions.h>
 
 
 #include "scorep_tracing_internal.h"

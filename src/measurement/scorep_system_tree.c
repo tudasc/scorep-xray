@@ -28,7 +28,7 @@
 #include <UTILS_Error.h>
 #include <SCOREP_Platform.h>
 #include <SCOREP_RuntimeManagement.h>
-#include <scorep_definitions.h>
+#include <definitions/SCOREP_Definitions.h>
 #include <scorep_status.h>
 #include <stdio.h>
 #include <string.h>

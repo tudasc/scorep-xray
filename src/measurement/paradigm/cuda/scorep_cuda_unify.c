@@ -30,9 +30,7 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
-#include <scorep_definitions.h>
-#include <scorep_definition_macros.h>
-#include <scorep_definition_structs.h>
+#include <definitions/SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Config.h>
 #include <scorep_status.h>

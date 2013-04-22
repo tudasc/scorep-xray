@@ -48,7 +48,7 @@
 #include <tracing/SCOREP_Tracing_Events.h>
 
 
-#include "scorep_definitions.h"
+#include <definitions/SCOREP_Definitions.h>
 
 /* Include to implement metric service */
 #include "SCOREP_Metric.h"

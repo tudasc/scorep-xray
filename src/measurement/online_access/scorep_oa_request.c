@@ -33,9 +33,8 @@
 
 #include <scorep_oa_request.h>
 #include <scorep_status.h>
-#include <scorep_definition_structs.h>
 #include <scorep_profile_definition.h>
-#include "scorep_definitions.h"
+#include <definitions/SCOREP_Definitions.h>
 
 #include <UTILS_CStr.h>
 #include <SCOREP_Metric_Management.h>

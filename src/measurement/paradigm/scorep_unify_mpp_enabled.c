@@ -36,10 +36,8 @@
 #include <scorep_ipc.h>
 #include <scorep_unify.h>
 #include <scorep_environment.h>
-#include <scorep_definitions.h>
-#include <scorep_definition_macros.h>
-#include <scorep_definition_structs.h>
 #include <SCOREP_Definitions.h>
+#include <definitions/SCOREP_Definitions.h>
 
 #include <UTILS_Debug.h>
 
