@@ -424,7 +424,9 @@ scorep_mpi_win_create( MPI_Win  win,
     /* NOTE: MPI_COMM_WORLD is _not_ present in the internal structures,
      * and _must not_ be queried by scorep_mpi_comm_handle */
     handle = SCOREP_DefineRmaWindow( "",
-                                     comm == MPI_COMM_WORLD ? SCOREP_MPI_COMM_WORLD_HANDLE : scorep_mpi_comm_handle( comm ) );
+                                     comm == MPI_COMM_WORLD
+                                     ? SCOREP_MPI_COMM_WORLD_HANDLE
+                                     : scorep_mpi_comm_handle( comm ) );
 
     /* enter win in scorep_mpi_windows[] array */
     scorep_mpi_windows[ scorep_mpi_last_window ].win = win;
@@ -925,7 +927,11 @@ scorep_mpi_group_create( MPI_Group group )
         int32_t size = scorep_mpi_group_translate_ranks( group );
 
         /* register mpi group definition (as communicator) */
-        handle = SCOREP_DefineMPIGroup( size, scorep_mpi_ranks );
+        handle = SCOREP_DefineGroupFrom32(
+            SCOREP_GROUP_MPI_GROUP,
+            "",
+            size,
+            ( const uint32_t* )scorep_mpi_ranks );
 
         /* enter group in scorep_mpi_groups[] array */
         scorep_mpi_groups[ scorep_mpi_last_group ].group  = group;
@@ -1042,29 +1048,6 @@ scorep_mpi_group_search( MPI_Group group )
         SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
         return -1;
     }
-}
-
-void
-scorep_mpi_unify_define_mpi_locations( void )
-{
-    if ( scorep_mpi_my_global_rank != 0 )
-    {
-        return;
-    }
-
-    /*
-     * Define the list of locations which are MPI ranks.
-     *
-     * If we support MPI_THREADED_FUNNELED, this needs to be the
-     * location, wich has called MPI_Init/MPI_Thread_init.
-     * For the moment, the location and rank ids match.
-     *
-     * This needs to be called early, so that the resulting definition
-     * is before any other group definition of type SCOREP_GROUP_MPI_GROUP.
-     */
-    SCOREP_DefineUnifiedMPIGroup( SCOREP_GROUP_MPI_LOCATIONS,
-                                  scorep_mpi_world.size,
-                                  scorep_mpi_world.ranks );
 }
 
 /*

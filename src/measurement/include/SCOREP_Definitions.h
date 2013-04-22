@@ -177,8 +177,10 @@ SCOREP_ParameterType
 SCOREP_Parameter_GetType( SCOREP_ParameterHandle handle );
 
 SCOREP_GroupHandle
-SCOREP_DefineMPIGroup( const int32_t  numberOfRanks,
-                       const int32_t* ranks );
+SCOREP_DefineGroupFrom32( SCOREP_GroupType type,
+                          const char*      name,
+                          const uint32_t   numberOfRanks,
+                          const uint32_t*  ranks );
 
 SCOREP_GroupHandle
 SCOREP_DefineUnifiedGroup( SCOREP_GroupType type,
@@ -187,9 +189,10 @@ SCOREP_DefineUnifiedGroup( SCOREP_GroupType type,
                            const uint64_t*  members );
 
 SCOREP_GroupHandle
-SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
-                              int32_t          numberOfRanks,
-                              int32_t*         ranks );
+SCOREP_DefineUnifiedGroupFrom32( SCOREP_GroupType type,
+                                 const char*      name,
+                                 uint32_t         numberOfRanks,
+                                 const uint32_t*  ranks );
 
 /**
  * Associate a MPI communicator with a process unique communicator handle.

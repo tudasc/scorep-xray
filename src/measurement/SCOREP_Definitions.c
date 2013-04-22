@@ -913,19 +913,21 @@ scorep_group_definitions_equal( const SCOREP_Group_Definition* existingDefinitio
  * Associate a MPI group with a process unique group handle.
  */
 SCOREP_GroupHandle
-SCOREP_DefineMPIGroup( int32_t        numberOfRanks,
-                       const int32_t* ranks )
+SCOREP_DefineGroupFrom32( SCOREP_GroupType type,
+                          const char*      name,
+                          uint32_t         numberOfRanks,
+                          const uint32_t*  ranks )
 {
     SCOREP_Definitions_Lock();
 
     SCOREP_GroupHandle new_handle = scorep_group_definition_define(
         &scorep_local_definition_manager,
-        SCOREP_GROUP_MPI_GROUP,
+        type,
         numberOfRanks,
         ( const uint64_t* )ranks,
         scorep_string_definition_define(
             &scorep_local_definition_manager,
-            "" ),
+            name ? name : "" ),
         true /* need to be converted from uint32_t */ );
 
     SCOREP_Definitions_Unlock();
@@ -940,9 +942,10 @@ SCOREP_DefineMPIGroup( int32_t        numberOfRanks,
  * group unification was done.
  */
 SCOREP_GroupHandle
-SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
-                              int32_t          numberOfRanks,
-                              int32_t*         ranks )
+SCOREP_DefineUnifiedGroupFrom32( SCOREP_GroupType type,
+                                 const char*      name,
+                                 uint32_t         numberOfRanks,
+                                 const uint32_t*  ranks )
 {
     assert( !SCOREP_Omp_InParallel() );
     assert( scorep_unified_definition_manager );
@@ -954,7 +957,7 @@ SCOREP_DefineUnifiedMPIGroup( SCOREP_GroupType type,
                ( const uint64_t* )ranks,
                scorep_string_definition_define(
                    scorep_unified_definition_manager,
-                   "" ),
+                   name ? name : "" ),
                true /* need to be converted from uint32_t */ );
 }
 

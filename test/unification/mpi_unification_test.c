@@ -166,7 +166,10 @@ main( int argc, char* argv[] )
         {
             group_members[ i ] = i;
         }
-        SCOREP_DefineMPIGroup( size, group_members );
+        SCOREP_DefineGroupFrom32( SCOREP_GROUP_MPI_GROUP,
+                                  "",
+                                  size,
+                                  ( const uint32_t* )group_members );
         free( group_members );
     }
 
