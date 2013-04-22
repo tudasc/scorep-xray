@@ -86,6 +86,9 @@ SCOREP_Definitions_Initialize()
     SCOREP_InitializeDefinitionManager( &local_definition_manager,
                                         SCOREP_Memory_GetLocalDefinitionPageManager(),
                                         false );
+
+    /* ensure, that the empty string gets id 0 */
+    SCOREP_DefineString( "" );
 }
 
 

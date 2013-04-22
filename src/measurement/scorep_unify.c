@@ -150,8 +150,6 @@ SCOREP_Unify_CreateUnifiedDefinitionManager( void )
     SCOREP_InitializeDefinitionManager( &scorep_unified_definition_manager,
                                         SCOREP_Memory_GetLocalDefinitionPageManager(),
                                         alloc_hash_tables );
-    // define empty string
-    scorep_string_definition_define( scorep_unified_definition_manager, "" );
 }
 
 void
