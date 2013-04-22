@@ -37,7 +37,7 @@ void
 SCOREP_Thread_Initialize()
 {
     UTILS_ASSERT( scorep_thread_sole_cpu_location == 0 );
-    scorep_thread_sole_cpu_location = SCOREP_Location_CreateCPULocation( NULL, "",  /* deferNewLocationNotication = */ false );
+    scorep_thread_sole_cpu_location = SCOREP_Location_CreateCPULocation( NULL, "",  /* deferNewLocationNotification = */ false );
     UTILS_ASSERT( scorep_thread_sole_cpu_location );
 }
 

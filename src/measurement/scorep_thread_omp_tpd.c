@@ -292,7 +292,7 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
                 scorep_thread_set_location( *currentTpd,
                                             SCOREP_Location_CreateCPULocation( scorep_thread_get_location( *parentTpd ),
                                                                                currentName,
-                                                                               /* deferNewLocationNotication = */ true ) );
+                                                                               /* deferNewLocationNotification = */ true ) );
                 *locationIsCreated = true;
 
                 SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( scorep_thread_get_location( *currentTpd ) );

@@ -47,13 +47,13 @@ void
 SCOREP_Location_Finalize();
 
 
-/** @param  deferNewLocationNotication tpd-based thread implementations must notify,
+/** @param  deferNewLocationNotification tpd-based thread implementations must notify,
  * i.e. call SCOREP_Location_CallSubstratesOnNewLocation(), not before the tpd update
  * to ensure that tpd is in a valid state. */
 SCOREP_Location*
 SCOREP_Location_CreateCPULocation( SCOREP_Location* parent,
                                    const char*      name,
-                                   bool             deferNewLocationNotication );
+                                   bool             deferNewLocationNotification );
 
 
 SCOREP_Allocator_PageManager*

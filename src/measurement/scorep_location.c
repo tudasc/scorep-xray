@@ -102,7 +102,7 @@ SCOREP_Location*
 scorep_location_create_location( SCOREP_Location*    parent,
                                  SCOREP_LocationType type,
                                  const char*         name,
-                                 bool                deferNewLocationNotication )
+                                 bool                deferNewLocationNotification )
 {
     SCOREP_Location* new_location;
     size_t           total_memory = sizeof( *new_location )
@@ -140,7 +140,7 @@ scorep_location_create_location( SCOREP_Location*    parent,
     result = SCOREP_MutexUnlock( scorep_location_list_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS );
 
-    if ( !deferNewLocationNotication )
+    if ( !deferNewLocationNotification )
     {
         SCOREP_Location_CallSubstratesOnNewLocation( new_location, name, parent );
     }
@@ -157,7 +157,7 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
                   "SCOREP_CreateNonCPULocation() does not support creation of CPU locations." );
 
     SCOREP_Location* new_location = scorep_location_create_location( parent, type, name,
-                                                                     false /* defer_new_location_notication */ );
+                                                                     /* deferNewLocationNotification = */ false );
 
     return new_location;
 }
@@ -166,12 +166,12 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
 SCOREP_Location*
 SCOREP_Location_CreateCPULocation( SCOREP_Location* parent,
                                    const char*      name,
-                                   bool             deferNewLocationNotication )
+                                   bool             deferNewLocationNotification )
 {
     SCOREP_Location* new_location = scorep_location_create_location( parent,
                                                                      SCOREP_LOCATION_TYPE_CPU_THREAD,
                                                                      name,
-                                                                     deferNewLocationNotication );
+                                                                     deferNewLocationNotification );
     return new_location;
 }
 

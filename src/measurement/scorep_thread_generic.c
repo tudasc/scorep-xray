@@ -74,7 +74,7 @@ SCOREP_Thread_Initialize()
     scorep_thread_initial_tpd->location = SCOREP_Location_CreateCPULocation(
         0 /* parent_location */,
         "" /* name */,
-        true /* deferNewLocationNotication */ );
+        /* deferNewLocationNotification = */ true );
 
     scorep_thread_on_initialize( scorep_thread_initial_tpd );
 
