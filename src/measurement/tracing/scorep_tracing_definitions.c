@@ -754,21 +754,23 @@ scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( parameter, PARAMETER, localDefinitionWriter );
 }
 
+static void
+write_clock_offset_cb( SCOREP_ClockOffset* clockOffset,
+                       void*               userData )
+{
+    OTF2_DefWriter* writer = userData;
+    OTF2_ErrorCode status  = OTF2_DefWriter_WriteClockOffset(
+        writer,
+        clockOffset->time,
+        clockOffset->offset,
+        clockOffset->stddev );
+    UTILS_ASSERT( status == OTF2_SUCCESS );
+}
+
 void
 scorep_tracing_write_clock_offsets( OTF2_DefWriter* localDefinitionWriter )
 {
-    extern SCOREP_ClockOffset* scorep_clock_offset_head;
-    for ( SCOREP_ClockOffset* clock_offset = scorep_clock_offset_head;
-          clock_offset;
-          clock_offset = clock_offset->next )
-    {
-        OTF2_ErrorCode status = OTF2_DefWriter_WriteClockOffset(
-            localDefinitionWriter,
-            clock_offset->time,
-            clock_offset->offset,
-            clock_offset->stddev );
-        UTILS_ASSERT( status == OTF2_SUCCESS );
-    }
+    SCOREP_ForAllClockOffsets( write_clock_offset_cb, localDefinitionWriter );
 }
 
 #if HAVE( SCOREP_DEBUG )

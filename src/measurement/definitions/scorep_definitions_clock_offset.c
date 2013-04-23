@@ -55,6 +55,10 @@
 #include <SCOREP_Memory.h>
 
 
+static SCOREP_ClockOffset*  clock_offset_head = NULL;
+static SCOREP_ClockOffset** clock_offset_tail = &clock_offset_head;
+
+
 /**
  * Add a clock sync point into the local definitions
  */
@@ -63,8 +67,6 @@ SCOREP_AddClockOffset( uint64_t time,
                        int64_t  offset,
                        double   stddev )
 {
-    extern SCOREP_ClockOffset** scorep_clock_offset_tail;
-
     UTILS_DEBUG_ENTRY();
 
     SCOREP_Definitions_Lock();
@@ -79,8 +81,8 @@ SCOREP_AddClockOffset( uint64_t time,
     new_clock_offset->offset = offset;
     new_clock_offset->stddev = stddev;
 
-    *scorep_clock_offset_tail = new_clock_offset;
-    scorep_clock_offset_tail  = &new_clock_offset->next;
+    *clock_offset_tail = new_clock_offset;
+    clock_offset_tail  = &new_clock_offset->next;
 
     SCOREP_Definitions_Unlock();
 }
@@ -92,13 +94,12 @@ SCOREP_GetFirstClockSyncPair( int64_t*  offset1,
                               int64_t*  offset2,
                               uint64_t* timestamp2 )
 {
-    extern SCOREP_ClockOffset* scorep_clock_offset_head;
-    assert( scorep_clock_offset_head );
-    assert( scorep_clock_offset_head->next );
-    *offset1    = scorep_clock_offset_head->offset;
-    *timestamp1 = scorep_clock_offset_head->time;
-    *offset2    = scorep_clock_offset_head->next->offset;
-    *timestamp2 = scorep_clock_offset_head->next->time;
+    assert( clock_offset_head );
+    assert( clock_offset_head->next );
+    *offset1    = clock_offset_head->offset;
+    *timestamp1 = clock_offset_head->time;
+    *offset2    = clock_offset_head->next->offset;
+    *timestamp2 = clock_offset_head->next->time;
     assert( *timestamp2 > *timestamp1 );
 }
 
@@ -109,10 +110,9 @@ SCOREP_GetLastClockSyncPair( int64_t*  offset1,
                              int64_t*  offset2,
                              uint64_t* timestamp2 )
 {
-    extern SCOREP_ClockOffset* scorep_clock_offset_head;
-    assert( scorep_clock_offset_head );
-    assert( scorep_clock_offset_head->next );
-    SCOREP_ClockOffset* previous = scorep_clock_offset_head;
+    assert( clock_offset_head );
+    assert( clock_offset_head->next );
+    SCOREP_ClockOffset* previous = clock_offset_head;
     SCOREP_ClockOffset* current  = previous->next;
 
     while ( current->next )
@@ -126,4 +126,17 @@ SCOREP_GetLastClockSyncPair( int64_t*  offset1,
     *offset2    = current->offset;
     *timestamp2 = current->time;
     assert( *timestamp2 > *timestamp1 );
+}
+
+void
+SCOREP_ForAllClockOffsets( void  ( * cb )( SCOREP_ClockOffset*,
+                                           void* ),
+                           void* userData )
+{
+    for ( SCOREP_ClockOffset* clock_offset = clock_offset_head;
+          clock_offset;
+          clock_offset = clock_offset->next )
+    {
+        cb( clock_offset, userData );
+    }
 }

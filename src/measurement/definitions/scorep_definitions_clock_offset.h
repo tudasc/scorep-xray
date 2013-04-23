@@ -66,5 +66,11 @@ SCOREP_GetLastClockSyncPair( int64_t*  offset1,
                              int64_t*  offset2,
                              uint64_t* timestamp2 );
 
+/** Call cb for each clock offset */
+void
+SCOREP_ForAllClockOffsets( void ( * cb )( SCOREP_ClockOffset*,
+                                          void* ),
+                           void* userData );
+
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_CLOCK_OFFSET_H */

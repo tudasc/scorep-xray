@@ -48,9 +48,6 @@
 SCOREP_DefinitionManager  scorep_local_definition_manager;
 SCOREP_DefinitionManager* scorep_unified_definition_manager = 0;
 static bool               scorep_definitions_initialized    = false;
-SCOREP_ClockOffset*       scorep_clock_offset_head          = NULL;
-SCOREP_ClockOffset**      scorep_clock_offset_tail          =
-    &scorep_clock_offset_head;
 
 
 /* global definition lock */
