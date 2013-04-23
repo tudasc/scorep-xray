@@ -64,6 +64,7 @@ static scorep_deferred_location** scorep_deferred_locations_tail = &scorep_defer
 // multiple ones.
 struct SCOREP_Location
 {
+    uint32_t                      local_id;    // process local id, 0, 1, ...
     uint64_t                      last_timestamp;
     SCOREP_LocationType           type;
     SCOREP_Allocator_PageManager* page_managers[ SCOREP_NUMBER_OF_MEMORY_TYPES ];
@@ -80,12 +81,16 @@ struct SCOREP_Location
 static struct SCOREP_Location*  location_list_head;
 static struct SCOREP_Location** location_list_tail = &location_list_head;
 
+//static struct SCOREP_Location*                 initial_location;
+static uint32_t     location_counter;
 static SCOREP_Mutex scorep_location_list_mutex;
 static SCOREP_Mutex scorep_location_deferred_list_mutex;
 
 void
 SCOREP_Location_Initialize()
 {
+    //assert( initial_location == 0 );
+    assert( location_counter == 0 );
     SCOREP_ErrorCode result = SCOREP_MutexCreate( &scorep_location_list_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS );
 
@@ -128,9 +133,10 @@ scorep_location_create_location( SCOREP_Location*    parent,
     SCOREP_ErrorCode result = SCOREP_MutexLock( scorep_location_list_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS );
 
-    new_location->next  = NULL;
-    *location_list_tail = new_location;
-    location_list_tail  = &new_location->next;
+    new_location->local_id = location_counter++;
+    new_location->next     = NULL;
+    *location_list_tail    = new_location;
+    location_list_tail     = &new_location->next;
 
     result = SCOREP_MutexUnlock( scorep_location_list_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS );
@@ -174,10 +180,7 @@ SCOREP_Location_CreateCPULocation( SCOREP_Location* parent,
 uint32_t
 SCOREP_Location_GetId( SCOREP_Location* locationData )
 {
-    /*
-     * We use the definition sequence number as the local ID
-     */
-    return SCOREP_LOCAL_HANDLE_TO_ID( locationData->location_handle, Location );
+    return locationData->local_id;
 }
 
 SCOREP_LocationType
@@ -245,7 +248,7 @@ SCOREP_Location_CallSubstratesOnNewLocation( SCOREP_Location* locationData,
 
     /* For the main location (e.g. first thread ) we will initialize subsystem later on,
      * as we need an already initialized metric subsystem at this point. */
-    if ( location_list_head != locationData )
+    if ( locationData->local_id != 0 )
     {
         scorep_subsystems_initialize_location( locationData );
     }
@@ -281,6 +284,7 @@ void
 SCOREP_Location_Finalize()
 {
     assert( !omp_in_parallel() );
+    assert( location_counter > 0 );
 
     SCOREP_Location* location_data = location_list_head;
     while ( location_data )
@@ -294,7 +298,9 @@ SCOREP_Location_Finalize()
         free( location_data );
 
         location_data = tmp;
+        location_counter--;
     }
+    assert( location_counter == 0 );
     location_list_head = 0;
     location_list_tail = &location_list_head;
 
@@ -335,11 +341,13 @@ SCOREP_Location_GetTracingData( SCOREP_Location* locationData )
 uint64_t
 SCOREP_Location_GetGlobalId( SCOREP_Location* locationData )
 {
-    UTILS_BUG_ON( !SCOREP_Status_IsMppInitialized(),
-                  "Should only be called after the MPP was initialized." );
+    assert( SCOREP_Status_IsMppInitialized() );
 
-    uint64_t local_location_id = SCOREP_Location_GetId( locationData );
+    uint64_t local_location_id = locationData->local_id;
     uint64_t rank              = SCOREP_Status_GetRank();
+
+    assert( rank >> 32 == 0 );
+    assert( local_location_id >> 32 == 0 );
 
     return ( local_location_id << 32 ) | rank;
 }
