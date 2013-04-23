@@ -141,6 +141,7 @@ if test "${FORMAT}" = "doxygen"; then
     <table border=0 cellspacing=0 cellpadding=0>
 @endhtmlonly
 @latexonly
+    \\begin{sffamily}
     \\begin{tabularx}{\\linewidth}{@{}lX}
 @endlatexonly
 [[EOT]]
@@ -180,6 +181,10 @@ elif test "${FORMAT}" = "doxygen"; then
 @endlatexonly
 
 <b>All rights reserved.</b>
+
+@latexonly
+    \\vfill
+@endlatexonly
 [[EOT]]
 fi
 
@@ -244,7 +249,12 @@ cat <<[[EOT]]
 if test "${FORMAT}" = "text"; then
     echo
 elif test "${FORMAT}" = "doxygen"; then
-    echo "</li></ul>"
+    cat << [[EOT]]
+</li></ul>
+@latexonly
+    \\begin{sloppypar}
+@endlatexonly
+[[EOT]]
 fi
 cat <<[[EOT]]
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -261,7 +271,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 [[EOT]]
 
 if test "${FORMAT}" = "doxygen"; then
-    echo "*/"
+    cat << [[EOT]]
+@latexonly
+    \\end{sloppypar}
+    \\end{sffamily}
+@endlatexonly
+*/
+[[EOT]]
 fi
 
 exit 0
