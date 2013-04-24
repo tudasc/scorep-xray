@@ -74,10 +74,7 @@
  * @param regionHandle The corresponding region for the enter event.
  */
 void
-SCOREP_EnterRegion
-(
-    SCOREP_RegionHandle regionHandle
-);
+SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle );
 
 
 
@@ -89,10 +86,7 @@ SCOREP_EnterRegion
  * @param regionHandle The corresponding region for the exit event.
  */
 void
-SCOREP_ExitRegion
-(
-    SCOREP_RegionHandle regionHandle
-);
+SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle );
 
 
 
@@ -103,10 +97,7 @@ SCOREP_ExitRegion
  * @param regionHandle The corresponding rewind region for the enter event.
  */
 void
-SCOREP_EnterRewindRegion
-(
-    SCOREP_RegionHandle regionHandle
-);
+SCOREP_EnterRewindRegion( SCOREP_RegionHandle regionHandle );
 
 /**
  * Generate a rewind region exit event in the measurement system.
@@ -116,11 +107,8 @@ SCOREP_EnterRewindRegion
  *              rewinded (value = true) or not (value = false).
  */
 void
-SCOREP_ExitRewindRegion
-(
-    SCOREP_RegionHandle regionHandle,
-    bool                value
-);
+SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle,
+                         bool                value );
 
 
 /**
@@ -135,12 +123,9 @@ SCOREP_ExitRewindRegion
  * @param regionHandle The corresponding region for the exit event.
  */
 void
-SCOREP_Location_ExitRegion
-(
-    SCOREP_Location*    location,
-    uint64_t            timestamp,
-    SCOREP_RegionHandle regionHandle
-);
+SCOREP_Location_ExitRegion( SCOREP_Location*    location,
+                            uint64_t            timestamp,
+                            SCOREP_RegionHandle regionHandle );
 
 
 
@@ -157,12 +142,9 @@ SCOREP_Location_ExitRegion
  * @param regionHandle The corresponding region for the enter event
  */
 void
-SCOREP_Location_EnterRegion
-(
-    SCOREP_Location*    location,
-    uint64_t            timestamp,
-    SCOREP_RegionHandle regionHandle
-);
+SCOREP_Location_EnterRegion( SCOREP_Location*    location,
+                             uint64_t            timestamp,
+                             SCOREP_RegionHandle regionHandle );
 
 
 
@@ -891,10 +873,7 @@ SCOREP_ThreadReleaseLock( uint32_t           lockId,
  * @chistian Wasn't this planned to be removed?
  */
 void
-SCOREP_ExitRegionOnException
-(
-    SCOREP_RegionHandle regionHandle
-);
+SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle );
 
 
 /**
@@ -947,11 +926,8 @@ SCOREP_ThreadTaskEnd( SCOREP_RegionHandle regionHandle,
  * @param value
  */
 void
-SCOREP_TriggerCounterInt64
-(
-    SCOREP_SamplingSetHandle counterHandle,
-    int64_t                  value
-);
+SCOREP_TriggerCounterInt64( SCOREP_SamplingSetHandle counterHandle,
+                            int64_t                  value );
 
 
 /**
@@ -961,11 +937,8 @@ SCOREP_TriggerCounterInt64
  * @param value
  */
 void
-SCOREP_TriggerCounterUint64
-(
-    SCOREP_SamplingSetHandle counterHandle,
-    uint64_t                 value
-);
+SCOREP_TriggerCounterUint64( SCOREP_SamplingSetHandle counterHandle,
+                             uint64_t                 value );
 
 
 /**
@@ -975,11 +948,8 @@ SCOREP_TriggerCounterUint64
  * @param value
  */
 void
-SCOREP_TriggerCounterDouble
-(
-    SCOREP_SamplingSetHandle counterHandle,
-    double                   value
-);
+SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
+                             double                   value );
 
 
 /**
@@ -990,10 +960,7 @@ SCOREP_TriggerCounterDouble
  * @planned To be implemented in milestone 2
  */
 void
-SCOREP_TriggerMarker
-(
-    SCOREP_MarkerHandle markerHandle
-);
+SCOREP_TriggerMarker( SCOREP_MarkerHandle markerHandle );
 
 
 /**
@@ -1003,11 +970,8 @@ SCOREP_TriggerMarker
  * @param value
  */
 void
-SCOREP_TriggerParameterInt64
-(
-    SCOREP_ParameterHandle parameterHandle,
-    int64_t                value
-);
+SCOREP_TriggerParameterInt64( SCOREP_ParameterHandle parameterHandle,
+                              int64_t                value );
 
 
 /**
@@ -1017,11 +981,8 @@ SCOREP_TriggerParameterInt64
  * @param value
  */
 void
-SCOREP_TriggerParameterUint64
-(
-    SCOREP_ParameterHandle parameterHandle,
-    uint64_t               value
-);
+SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
+                               uint64_t               value );
 
 
 /**
@@ -1031,11 +992,8 @@ SCOREP_TriggerParameterUint64
  * @param value
  */
 void
-SCOREP_TriggerParameterString
-(
-    SCOREP_ParameterHandle parameterHandle,
-    const char*            value
-);
+SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
+                               const char*            value );
 
 
 /**
@@ -1043,9 +1001,7 @@ SCOREP_TriggerParameterString
  *
  */
 uint64_t
-SCOREP_GetLastTimeStamp
-(
-);
+SCOREP_GetLastTimeStamp( void );
 
 /*@}*/
 

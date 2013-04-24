@@ -1413,7 +1413,7 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
  *
  */
 uint64_t
-SCOREP_GetLastTimeStamp()
+SCOREP_GetLastTimeStamp( void )
 {
     return SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
 }
