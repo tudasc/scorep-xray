@@ -750,11 +750,6 @@ typedef enum SCOREP_RmaAtomicType
 } SCOREP_RmaAtomicType;
 
 
-/**
- * Type used to indicate a reference to a Group definition
- */
-typedef uint32_t SCOREP_GroupRef;
-
 /*@}*/
 
 

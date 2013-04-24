@@ -650,7 +650,7 @@ SCOREP_RmaCollectiveEnd( SCOREP_RmaSyncLevel           syncLevel,
 void
 SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel           syncLevel,
                      SCOREP_InterimRmaWindowHandle windowHandle,
-                     SCOREP_GroupRef               group )
+                     SCOREP_GroupHandle            groupHandle )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -662,7 +662,7 @@ SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel           syncLevel,
                                      timestamp,
                                      syncLevel,
                                      windowHandle,
-                                     group );
+                                     groupHandle );
     }
 
     /* Nothing to do for profiling. */

@@ -515,7 +515,7 @@ SCOREP_RmaSync( SCOREP_InterimRmaWindowHandle windowHandle,
 void
 SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel           syncLevel,
                      SCOREP_InterimRmaWindowHandle windowHandle,
-                     SCOREP_GroupRef               group );
+                     SCOREP_GroupHandle            groupHandle );
 
 
 /**

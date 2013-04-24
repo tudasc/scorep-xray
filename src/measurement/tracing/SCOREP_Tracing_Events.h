@@ -168,7 +168,7 @@ SCOREP_Tracing_RmaGroupSync( SCOREP_Location*              location,
                              uint64_t                      timestamp,
                              SCOREP_RmaSyncLevel           syncLevel,
                              SCOREP_InterimRmaWindowHandle windowHandle,
-                             SCOREP_GroupRef               group );
+                             SCOREP_GroupHandle            groupHandle );
 
 
 void

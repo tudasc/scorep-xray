@@ -409,7 +409,7 @@ SCOREP_Tracing_RmaGroupSync( SCOREP_Location*              location,
                              uint64_t                      timestamp,
                              SCOREP_RmaSyncLevel           syncLevel,
                              SCOREP_InterimRmaWindowHandle windowHandle,
-                             SCOREP_GroupRef               group )
+                             SCOREP_GroupHandle            groupHandle )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -418,7 +418,7 @@ SCOREP_Tracing_RmaGroupSync( SCOREP_Location*              location,
                                  timestamp,
                                  scorep_tracing_rma_sync_level_to_otf2( syncLevel ),
                                  SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
-                                 group );
+                                 SCOREP_LOCAL_HANDLE_TO_ID( groupHandle, Group ) );
 
     /*
      * scorep_rewind_set_affected_paradigm ?
