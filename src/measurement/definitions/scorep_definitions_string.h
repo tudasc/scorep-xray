@@ -50,7 +50,7 @@ SCOREP_DefineString( const char* str );
 
 
 void
-SCOREP_CopyStringDefinitionToUnified( SCOREP_String_Definition*     definition,
+SCOREP_CopyStringDefinitionToUnified( SCOREP_StringDef*             definition,
                                       SCOREP_Allocator_PageManager* handlesPageManager );
 
 

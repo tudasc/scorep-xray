@@ -89,7 +89,7 @@ SCOREP_DefineLocation( SCOREP_LocationType type,
 
 
 void
-SCOREP_CopyLocationDefinitionToUnified( SCOREP_Location_Definition*   definition,
+SCOREP_CopyLocationDefinitionToUnified( SCOREP_LocationDef*           definition,
                                         SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
@@ -109,8 +109,8 @@ SCOREP_CopyLocationDefinitionToUnified( SCOREP_Location_Definition*   definition
 
 
 static inline bool
-equal_location( const SCOREP_Location_Definition* existingDefinition,
-                const SCOREP_Location_Definition* newDefinition )
+equal_location( const SCOREP_LocationDef* existingDefinition,
+                const SCOREP_LocationDef* newDefinition )
 {
     return false;
 }
@@ -126,8 +126,8 @@ define_location( SCOREP_DefinitionManager* definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_Location_Definition* new_definition = NULL;
-    SCOREP_LocationHandle       new_handle     = SCOREP_INVALID_LOCATION;
+    SCOREP_LocationDef*   new_definition = NULL;
+    SCOREP_LocationHandle new_handle     = SCOREP_INVALID_LOCATION;
 
     SCOREP_DEFINITION_ALLOC( Location );
 

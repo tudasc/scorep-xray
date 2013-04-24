@@ -592,8 +592,8 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
         }
         else
         {
-            SCOREP_ScopedSamplingSet_Definition* scoped_definition
-                = ( SCOREP_ScopedSamplingSet_Definition* )definition;
+            SCOREP_ScopedSamplingSetDef* scoped_definition
+                = ( SCOREP_ScopedSamplingSetDef* )definition;
 
             uint64_t scope;
             switch ( scoped_definition->scope_type )

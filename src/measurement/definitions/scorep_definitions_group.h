@@ -67,7 +67,7 @@ SCOREP_DefineUnifiedGroupFrom32( SCOREP_GroupType type,
 
 
 void
-SCOREP_CopyGroupDefinitionToUnified( SCOREP_Group_Definition*      definition,
+SCOREP_CopyGroupDefinitionToUnified( SCOREP_GroupDef*              definition,
                                      SCOREP_Allocator_PageManager* handlesPageManager );
 
 

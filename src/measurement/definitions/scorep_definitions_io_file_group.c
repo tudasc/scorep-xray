@@ -65,8 +65,8 @@ SCOREP_DefineIOFileGroup( const char* name )
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_IOFileGroup_Definition* new_definition = NULL;
-    SCOREP_IOFileGroupHandle       new_handle     = SCOREP_INVALID_IOFILE_GROUP;
+    SCOREP_IOFileGroupDef*   new_definition = NULL;
+    SCOREP_IOFileGroupHandle new_handle     = SCOREP_INVALID_IOFILE_GROUP;
 
     // Init new_definition
     // see ticket:423

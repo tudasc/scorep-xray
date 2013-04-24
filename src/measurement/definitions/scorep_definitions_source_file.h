@@ -44,7 +44,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( SourceFile )
 
 
 void
-SCOREP_CopySourceFileDefinitionToUnified( SCOREP_SourceFile_Definition* definition,
+SCOREP_CopySourceFileDefinitionToUnified( SCOREP_SourceFileDef*         definition,
                                           SCOREP_Allocator_PageManager* handlesPageManager );
 
 

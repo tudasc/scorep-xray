@@ -891,7 +891,7 @@ SCOREP_Metric_GetAdditionalScopedMetricHandles( SCOREP_Location* location )
                 }
 
                 /* -> For each individual metric contained in this sampling set */
-                SCOREP_SamplingSet_Definition* sampling_set_definition = SCOREP_LOCAL_HANDLE_DEREF( sampling_set, SamplingSet );
+                SCOREP_SamplingSetDef* sampling_set_definition = SCOREP_LOCAL_HANDLE_DEREF( sampling_set, SamplingSet );
                 for ( uint32_t metric_index = 0; metric_index < sampling_set_definition->number_of_metrics; ++metric_index )
                 {
                     metric_handles[ index ] = sampling_set_definition->metric_handles[ metric_index ];

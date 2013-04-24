@@ -420,13 +420,13 @@ write_metric_definitions( cube_t*                       my_cube,
                                     "", "Maximum inclusive CPU allocation time",
                                     NULL, CUBE_METRIC_EXCLUSIVE );
 
-    SCOREP_Metric_Definition* metric_definition;
-    char*                     metric_name;
-    char*                     metric_unit;
-    char*                     metric_description;
-    char*                     data_type;
-    bool                      free_unit;
-    enum CubeMetricType       cube_metric_type;
+    SCOREP_MetricDef*   metric_definition;
+    char*               metric_name;
+    char*               metric_unit;
+    char*               metric_description;
+    char*               data_type;
+    bool                free_unit;
+    enum CubeMetricType cube_metric_type;
 
     //for ( uint8_t i = 0; i < num_metrics; i++ )
     SCOREP_DEFINITION_FOREACH_DO( manager, Metric, metric )

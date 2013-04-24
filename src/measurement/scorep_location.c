@@ -329,7 +329,7 @@ SCOREP_Location_GetLastTimestamp( SCOREP_Location* locationData )
 void
 SCOREP_Location_EnsureGlobalId( SCOREP_Location* location )
 {
-    SCOREP_Location_Definition* location_definition =
+    SCOREP_LocationDef* location_definition =
         SCOREP_LOCAL_HANDLE_DEREF( location->location_handle, Location );
     if ( location_definition->global_location_id == UINT64_MAX )
     {

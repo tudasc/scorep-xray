@@ -69,7 +69,7 @@ define_metric( SCOREP_DefinitionManager*  definition_manager,
 
 
 static void
-initialize_metric( SCOREP_Metric_Definition*  definition,
+initialize_metric( SCOREP_MetricDef*          definition,
                    SCOREP_DefinitionManager*  definition_manager,
                    SCOREP_StringHandle        metricNameHandle,
                    SCOREP_StringHandle        descriptionNameHandle,
@@ -83,8 +83,8 @@ initialize_metric( SCOREP_Metric_Definition*  definition,
 
 
 static bool
-equal_metric( const SCOREP_Metric_Definition* existingDefinition,
-              const SCOREP_Metric_Definition* newDefinition );
+equal_metric( const SCOREP_MetricDef* existingDefinition,
+              const SCOREP_MetricDef* newDefinition );
 
 
 /**
@@ -105,8 +105,8 @@ SCOREP_DefineMetric( const char*                name,
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_Metric_Definition* new_definition = NULL;
-    SCOREP_MetricHandle       new_handle     = define_metric(
+    SCOREP_MetricDef*   new_definition = NULL;
+    SCOREP_MetricHandle new_handle     = define_metric(
         &scorep_local_definition_manager,
         scorep_string_definition_define(
             &scorep_local_definition_manager,
@@ -131,7 +131,7 @@ SCOREP_DefineMetric( const char*                name,
 
 
 void
-SCOREP_CopyMetricDefinitionToUnified( SCOREP_Metric_Definition*     definition,
+SCOREP_CopyMetricDefinitionToUnified( SCOREP_MetricDef*             definition,
                                       SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
@@ -174,8 +174,8 @@ define_metric( SCOREP_DefinitionManager*  definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_Metric_Definition* new_definition = NULL;
-    SCOREP_MetricHandle       new_handle     = SCOREP_INVALID_METRIC;
+    SCOREP_MetricDef*   new_definition = NULL;
+    SCOREP_MetricHandle new_handle     = SCOREP_INVALID_METRIC;
 
     SCOREP_DEFINITION_ALLOC( Metric );
     initialize_metric( new_definition,
@@ -198,7 +198,7 @@ define_metric( SCOREP_DefinitionManager*  definition_manager,
 
 
 void
-initialize_metric( SCOREP_Metric_Definition*  definition,
+initialize_metric( SCOREP_MetricDef*          definition,
                    SCOREP_DefinitionManager*  definition_manager,
                    SCOREP_StringHandle        metricNameHandle,
                    SCOREP_StringHandle        descriptionNameHandle,
@@ -240,8 +240,8 @@ initialize_metric( SCOREP_Metric_Definition*  definition,
 
 
 bool
-equal_metric( const SCOREP_Metric_Definition* existingDefinition,
-              const SCOREP_Metric_Definition* newDefinition )
+equal_metric( const SCOREP_MetricDef* existingDefinition,
+              const SCOREP_MetricDef* newDefinition )
 {
     return existingDefinition->name_handle == newDefinition->name_handle
            && existingDefinition->description_handle == newDefinition->description_handle
@@ -306,7 +306,7 @@ SCOREP_Metric_GetValueType( SCOREP_MetricHandle handle )
 const char*
 SCOREP_Metric_GetName( SCOREP_MetricHandle handle )
 {
-    SCOREP_Metric_Definition* metric = SCOREP_LOCAL_HANDLE_DEREF( handle, Metric );
+    SCOREP_MetricDef* metric = SCOREP_LOCAL_HANDLE_DEREF( handle, Metric );
 
     return SCOREP_LOCAL_HANDLE_DEREF( metric->name_handle, String )->string_data;
 }

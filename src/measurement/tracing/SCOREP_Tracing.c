@@ -378,7 +378,7 @@ scorep_trace_finalize_event_writer_cb( SCOREP_Location* locationData,
 {
     SCOREP_LocationHandle location_handle =
         SCOREP_Location_GetLocationHandle( locationData );
-    SCOREP_Location_Definition* location_definition =
+    SCOREP_LocationDef* location_definition =
         SCOREP_LOCAL_HANDLE_DEREF( location_handle, Location );
 
     SCOREP_TracingData* tracing_data =

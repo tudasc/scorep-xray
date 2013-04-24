@@ -73,8 +73,8 @@ SCOREP_DEFINE_DEFINITION_TYPE( ScopedSamplingSet )
 
 
 void
-SCOREP_CopySamplingSetDefinitionToUnified( SCOREP_SamplingSet_Definition* definition,
-                                           SCOREP_Allocator_PageManager*  handlesPageManager );
+SCOREP_CopySamplingSetDefinitionToUnified( SCOREP_SamplingSetDef*        definition,
+                                           SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_SAMPLING_SET_H */

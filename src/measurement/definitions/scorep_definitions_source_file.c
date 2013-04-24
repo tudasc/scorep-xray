@@ -61,8 +61,8 @@ define_source_file( SCOREP_DefinitionManager* definition_manager,
 
 
 static bool
-equal_source_file( const SCOREP_SourceFile_Definition* existingDefinition,
-                   const SCOREP_SourceFile_Definition* newDefinition );
+equal_source_file( const SCOREP_SourceFileDef* existingDefinition,
+                   const SCOREP_SourceFileDef* newDefinition );
 
 
 /**
@@ -88,7 +88,7 @@ SCOREP_DefineSourceFile( const char* fileName )
 
 
 void
-SCOREP_CopySourceFileDefinitionToUnified( SCOREP_SourceFile_Definition* definition,
+SCOREP_CopySourceFileDefinitionToUnified( SCOREP_SourceFileDef*         definition,
                                           SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
@@ -109,8 +109,8 @@ define_source_file( SCOREP_DefinitionManager* definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_SourceFile_Definition* new_definition = NULL;
-    SCOREP_SourceFileHandle       new_handle     = SCOREP_INVALID_SOURCE_FILE;
+    SCOREP_SourceFileDef*   new_definition = NULL;
+    SCOREP_SourceFileHandle new_handle     = SCOREP_INVALID_SOURCE_FILE;
 
     SCOREP_DEFINITION_ALLOC( SourceFile );
 
@@ -125,8 +125,8 @@ define_source_file( SCOREP_DefinitionManager* definition_manager,
 
 
 bool
-equal_source_file( const SCOREP_SourceFile_Definition* existingDefinition,
-                   const SCOREP_SourceFile_Definition* newDefinition )
+equal_source_file( const SCOREP_SourceFileDef* existingDefinition,
+                   const SCOREP_SourceFileDef* newDefinition )
 {
     return existingDefinition->name_handle == newDefinition->name_handle;
 }
@@ -142,7 +142,7 @@ equal_source_file( const SCOREP_SourceFile_Definition* existingDefinition,
 const char*
 SCOREP_SourceFile_GetName( SCOREP_SourceFileHandle handle )
 {
-    SCOREP_SourceFile_Definition* source_file = SCOREP_LOCAL_HANDLE_DEREF( handle, SourceFile );
+    SCOREP_SourceFileDef* source_file = SCOREP_LOCAL_HANDLE_DEREF( handle, SourceFile );
 
     return SCOREP_LOCAL_HANDLE_DEREF( source_file->name_handle, String )->string_data;
 }

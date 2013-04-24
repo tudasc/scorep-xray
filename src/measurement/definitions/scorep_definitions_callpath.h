@@ -79,7 +79,7 @@ SCOREP_DefineCallpathParameterString( SCOREP_CallpathHandle  parent,
 
 
 void
-SCOREP_CopyCallpathDefinitionToUnified( SCOREP_Callpath_Definition*   definition,
+SCOREP_CopyCallpathDefinitionToUnified( SCOREP_CallpathDef*           definition,
                                         SCOREP_Allocator_PageManager* handlesPageManager );
 
 

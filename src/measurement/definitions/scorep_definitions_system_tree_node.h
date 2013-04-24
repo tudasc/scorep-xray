@@ -52,8 +52,8 @@ SCOREP_DefineSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
 
 
 void
-SCOREP_CopySystemTreeNodeDefinitionToUnified( SCOREP_SystemTreeNode_Definition* definition,
-                                              SCOREP_Allocator_PageManager*     handlesPageManager );
+SCOREP_CopySystemTreeNodeDefinitionToUnified( SCOREP_SystemTreeNodeDef*     definition,
+                                              SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_SYSTEM_TREE_NODE_H */

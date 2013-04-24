@@ -64,8 +64,8 @@ define_group( SCOREP_DefinitionManager* definition_manager,
               bool                      convertFromUint32 );
 
 static bool
-equal_group( const SCOREP_Group_Definition* existingDefinition,
-             const SCOREP_Group_Definition* newDefinition );
+equal_group( const SCOREP_GroupDef* existingDefinition,
+             const SCOREP_GroupDef* newDefinition );
 
 
 /**
@@ -171,7 +171,7 @@ SCOREP_DefineUnifiedGroupFrom32( SCOREP_GroupType type,
 
 
 void
-SCOREP_CopyGroupDefinitionToUnified( SCOREP_Group_Definition*      definition,
+SCOREP_CopyGroupDefinitionToUnified( SCOREP_GroupDef*              definition,
                                      SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
@@ -198,8 +198,8 @@ define_group( SCOREP_DefinitionManager* definition_manager,
               SCOREP_StringHandle       groupNameHandle,
               bool                      convertFromUint32 )
 {
-    SCOREP_Group_Definition* new_definition = NULL;
-    SCOREP_GroupHandle       new_handle     = SCOREP_INVALID_GROUP;
+    SCOREP_GroupDef*   new_definition = NULL;
+    SCOREP_GroupHandle new_handle     = SCOREP_INVALID_GROUP;
     SCOREP_DEFINITION_ALLOC_VARIABLE_ARRAY( Group,
                                             uint64_t,
                                             numberOfMembers );
@@ -239,8 +239,8 @@ define_group( SCOREP_DefinitionManager* definition_manager,
 
 
 bool
-equal_group( const SCOREP_Group_Definition* existingDefinition,
-             const SCOREP_Group_Definition* newDefinition )
+equal_group( const SCOREP_GroupDef* existingDefinition,
+             const SCOREP_GroupDef* newDefinition )
 {
     return existingDefinition->group_type == newDefinition->group_type
            && existingDefinition->name_handle == newDefinition->name_handle

@@ -71,7 +71,7 @@ SCOREP_DefineString( const char* str )
 
 
 void
-SCOREP_CopyStringDefinitionToUnified( SCOREP_String_Definition*     definition,
+SCOREP_CopyStringDefinitionToUnified( SCOREP_StringDef*             definition,
                                       SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
@@ -83,8 +83,8 @@ SCOREP_CopyStringDefinitionToUnified( SCOREP_String_Definition*     definition,
 
 
 bool
-equal_string( const SCOREP_String_Definition* existingDefinition,
-              const SCOREP_String_Definition* newDefinition )
+equal_string( const SCOREP_StringDef* existingDefinition,
+              const SCOREP_StringDef* newDefinition )
 {
     return existingDefinition->string_length == newDefinition->string_length
            && 0 == memcmp( existingDefinition->string_data,
@@ -99,8 +99,8 @@ scorep_string_definition_define( SCOREP_DefinitionManager* definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_String_Definition* new_definition = NULL;
-    SCOREP_StringHandle       new_handle     = SCOREP_INVALID_STRING;
+    SCOREP_StringDef*   new_definition = NULL;
+    SCOREP_StringHandle new_handle     = SCOREP_INVALID_STRING;
 
     /* 1) Get storage for new definition */
     size_t string_length = strlen( str );
@@ -132,7 +132,7 @@ scorep_string_definition_define( SCOREP_DefinitionManager* definition_manager,
 const char*
 SCOREP_String_Get( SCOREP_StringHandle handle )
 {
-    SCOREP_String_Definition* str = SCOREP_LOCAL_HANDLE_DEREF( handle, String );
+    SCOREP_StringDef* str = SCOREP_LOCAL_HANDLE_DEREF( handle, String );
 
     return str->string_data;
 }

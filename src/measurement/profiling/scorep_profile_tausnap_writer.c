@@ -427,11 +427,11 @@ write_metrics_tau( scorep_profile_node*      node,
                    FILE*                     file,
                    SCOREP_DefinitionManager* manager )
 {
-    SCOREP_Metric_Definition* metric_definition;
-    char*                     metric_name;
-    char*                     metric_unit;
-    char*                     metric_description;
-    int                       i = 1;
+    SCOREP_MetricDef* metric_definition;
+    char*             metric_name;
+    char*             metric_unit;
+    char*             metric_description;
+    int               i = 1;
 
     SCOREP_DEFINITION_FOREACH_DO( manager, Metric, metric )
     {
@@ -631,8 +631,8 @@ write_userevent_data_metric_tau( SCOREP_Profile_LocationData* location,
             tail = new;
 
 
-            SCOREP_Metric_Definition* metric_definition;
-            char*                     metric_name;
+            SCOREP_MetricDef* metric_definition;
+            char*             metric_name;
             metric_definition = SCOREP_LOCAL_HANDLE_DEREF( metric->metric, Metric );
             metric_name       = SCOREP_UNIFIED_HANDLE_DEREF( metric_definition->name_handle,
                                                              String )->string_data;

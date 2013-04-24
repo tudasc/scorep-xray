@@ -63,14 +63,14 @@ define_interim_communicator( SCOREP_DefinitionManager*        definition_manager
                              void**                           payload );
 
 static bool
-equal_interim_communicator( const SCOREP_InterimCommunicator_Definition* existingDefinition,
-                            const SCOREP_InterimCommunicator_Definition* newDefinition );
+equal_interim_communicator( const SCOREP_InterimCommunicatorDef* existingDefinition,
+                            const SCOREP_InterimCommunicatorDef* newDefinition );
 
 static size_t
 local_comm_static_size()
 {
     return SCOREP_Allocator_RoundupToAlignment(
-               sizeof( SCOREP_InterimCommunicator_Definition ) );
+               sizeof( SCOREP_InterimCommunicatorDef ) );
 }
 
 /**
@@ -117,7 +117,7 @@ SCOREP_InterimCommunicatorSetName( SCOREP_InterimCommunicatorHandle localMPIComm
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_InterimCommunicator_Definition* definition = SCOREP_LOCAL_HANDLE_DEREF(
+    SCOREP_InterimCommunicatorDef* definition = SCOREP_LOCAL_HANDLE_DEREF(
         localMPICommHandle,
         InterimCommunicator );
 
@@ -139,8 +139,8 @@ define_interim_communicator( SCOREP_DefinitionManager*        definition_manager
                              size_t                           sizeOfPayload,
                              void**                           payload )
 {
-    SCOREP_InterimCommunicator_Definition* new_definition = NULL;
-    SCOREP_InterimCommunicatorHandle       new_handle     = SCOREP_INVALID_INTERIM_COMMUNICATOR;
+    SCOREP_InterimCommunicatorDef*   new_definition = NULL;
+    SCOREP_InterimCommunicatorHandle new_handle     = SCOREP_INVALID_INTERIM_COMMUNICATOR;
 
     size_t payload_offset = local_comm_static_size();
     size_t total_size     = payload_offset + sizeOfPayload;
@@ -166,15 +166,15 @@ define_interim_communicator( SCOREP_DefinitionManager*        definition_manager
 }
 
 bool
-equal_interim_communicator( const SCOREP_InterimCommunicator_Definition* existingDefinition,
-                            const SCOREP_InterimCommunicator_Definition* newDefinition )
+equal_interim_communicator( const SCOREP_InterimCommunicatorDef* existingDefinition,
+                            const SCOREP_InterimCommunicatorDef* newDefinition )
 {
     return false;
 }
 
 static bool
-equal_communicator( const SCOREP_Communicator_Definition* existingDefinition,
-                    const SCOREP_Communicator_Definition* newDefinition );
+equal_communicator( const SCOREP_CommunicatorDef* existingDefinition,
+                    const SCOREP_CommunicatorDef* newDefinition );
 
 
 static SCOREP_CommunicatorHandle
@@ -231,8 +231,8 @@ SCOREP_DefineUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
 }
 
 void
-SCOREP_CopyCommunicatorDefinitionToUnified( SCOREP_Communicator_Definition* definition,
-                                            SCOREP_Allocator_PageManager*   handlesPageManager )
+SCOREP_CopyCommunicatorDefinitionToUnified( SCOREP_CommunicatorDef*       definition,
+                                            SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );
@@ -261,8 +261,8 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
                      SCOREP_StringHandle       name_handle,
                      SCOREP_CommunicatorHandle parent_handle )
 {
-    SCOREP_Communicator_Definition* new_definition = NULL;
-    SCOREP_CommunicatorHandle       new_handle     = SCOREP_INVALID_COMMUNICATOR;
+    SCOREP_CommunicatorDef*   new_definition = NULL;
+    SCOREP_CommunicatorHandle new_handle     = SCOREP_INVALID_COMMUNICATOR;
 
     SCOREP_DEFINITION_ALLOC( Communicator );
 
@@ -280,8 +280,8 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
 
 
 bool
-equal_communicator( const SCOREP_Communicator_Definition* existingDefinition,
-                    const SCOREP_Communicator_Definition* newDefinition )
+equal_communicator( const SCOREP_CommunicatorDef* existingDefinition,
+                    const SCOREP_CommunicatorDef* newDefinition )
 {
     return false;
 }

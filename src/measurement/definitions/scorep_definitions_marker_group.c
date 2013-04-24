@@ -65,8 +65,8 @@ SCOREP_DefineMarkerGroup( const char* name )
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_MarkerGroup_Definition* new_definition = NULL;
-    SCOREP_MarkerGroupHandle       new_handle     = SCOREP_INVALID_MARKER_GROUP;
+    SCOREP_MarkerGroupDef*   new_definition = NULL;
+    SCOREP_MarkerGroupHandle new_handle     = SCOREP_INVALID_MARKER_GROUP;
 
     // Init new_definition
     // see ticket:423

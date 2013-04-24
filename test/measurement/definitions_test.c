@@ -77,10 +77,10 @@ static test_definition_manager definition_manager;
     do { \
         new_handle = SCOREP_Allocator_AllocMovable( \
                 page_manager, \
-                sizeof( SCOREP_ ## Type ## _Definition ) ); \
+                sizeof( SCOREP_ ## Type ## Def ) ); \
         new_definition = \
             TEST_MEMORY_DEREF_MOVABLE( new_handle, \
-                                       SCOREP_ ## Type ## _Definition* ); \
+                                       SCOREP_ ## Type ## Def* ); \
         new_definition->next = SCOREP_MOVABLE_NULL; \
         *definition_manager.type ## _definition_tail_pointer = \
             new_handle; \
@@ -98,11 +98,11 @@ static test_definition_manager definition_manager;
     do { \
         new_handle = SCOREP_Allocator_AllocMovable( \
                 page_manager, \
-                sizeof( SCOREP_ ## Type ## _Definition ) + \
+                sizeof( SCOREP_ ## Type ## Def ) + \
                 ( ( number_of_members ) - 1 ) * sizeof( array_type ) ); \
         new_definition = \
             TEST_MEMORY_DEREF_MOVABLE( new_handle, \
-                                       SCOREP_ ## Type ## _Definition* ); \
+                                       SCOREP_ ## Type ## Def* ); \
         new_definition->next = SCOREP_MOVABLE_NULL; \
         *definition_manager.type ## _definition_tail_pointer = \
             new_handle; \
@@ -114,14 +114,14 @@ static test_definition_manager definition_manager;
 
 #define TEST_DEFINITION_FOREACH_DO( manager_pointer, Type, type ) \
     do { \
-        SCOREP_ ## Type ## _Definition* definition; \
+        SCOREP_ ## Type ## Def* definition; \
         SCOREP_ ## Type ## Handle handle; \
         for ( handle = ( manager_pointer )->type ## _definition_head; \
               handle != SCOREP_MOVABLE_NULL; \
               handle = definition->next ) \
         { \
             definition = TEST_MEMORY_DEREF_MOVABLE( \
-                handle, SCOREP_ ## Type ## _Definition* ); \
+                handle, SCOREP_ ## Type ## Def* ); \
             {
 
 
@@ -188,8 +188,8 @@ static SCOREP_StringHandle
 test_define_string( CuTest*     tc,
                     const char* str )
 {
-    SCOREP_String_Definition* new_definition = NULL;
-    SCOREP_StringHandle       new_handle     = SCOREP_INVALID_STRING;
+    SCOREP_StringDef*   new_definition = NULL;
+    SCOREP_StringHandle new_handle     = SCOREP_INVALID_STRING;
 
     uint32_t string_length = strlen( str );
     TEST_ALLOC_NEW_DEFINITION_VARIABLE_ARRAY( String,

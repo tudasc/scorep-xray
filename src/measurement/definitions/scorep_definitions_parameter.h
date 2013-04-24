@@ -46,7 +46,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Parameter )
 
 
 void
-SCOREP_CopyParameterDefinitionToUnified( SCOREP_Parameter_Definition*  definition,
+SCOREP_CopyParameterDefinitionToUnified( SCOREP_ParameterDef*          definition,
                                          SCOREP_Allocator_PageManager* handlesPageManager );
 
 

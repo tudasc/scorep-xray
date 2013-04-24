@@ -73,7 +73,7 @@ test_1( CuTest* tc )
 
     // copy local definitions to unified manager
     CuAssertIntEquals( tc, 0, scorep_unified_definition_manager->string_definition_counter );
-    SCOREP_String_Definition* local_string1 = SCOREP_LOCAL_HANDLE_DEREF( local_handle1, String );
+    SCOREP_StringDef* local_string1 = SCOREP_LOCAL_HANDLE_DEREF( local_handle1, String );
     SCOREP_CopyStringDefinitionToUnified( local_string1, SCOREP_Memory_GetLocalDefinitionPageManager() );
     CuAssert( tc, "unified handle equals local handle",
               SCOREP_UNIFIED_HANDLE_DEREF( local_string1->unified, String ) !=

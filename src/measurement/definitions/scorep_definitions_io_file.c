@@ -66,8 +66,8 @@ SCOREP_DefineIOFile( const char*              name,
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_IOFile_Definition* new_definition = NULL;
-    SCOREP_IOFileHandle       new_handle     = SCOREP_INVALID_IOFILE;
+    SCOREP_IOFileDef*   new_definition = NULL;
+    SCOREP_IOFileHandle new_handle     = SCOREP_INVALID_IOFILE;
 
     // Init new_definition
     // see ticket:423

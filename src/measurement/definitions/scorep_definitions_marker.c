@@ -66,8 +66,8 @@ SCOREP_DefineMarker( const char*              name,
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_Marker_Definition* new_definition = NULL;
-    SCOREP_MarkerHandle       new_handle     = SCOREP_INVALID_MARKER;
+    SCOREP_MarkerDef*   new_definition = NULL;
+    SCOREP_MarkerHandle new_handle     = SCOREP_INVALID_MARKER;
 
     // Init new_definition
     // see ticket:423

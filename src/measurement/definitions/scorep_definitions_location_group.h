@@ -55,8 +55,8 @@ SCOREP_DefineLocationGroup( SCOREP_SystemTreeNodeHandle parent );
 
 
 void
-SCOREP_CopyLocationGroupDefinitionToUnified( SCOREP_LocationGroup_Definition* definition,
-                                             SCOREP_Allocator_PageManager*    handlesPageManager );
+SCOREP_CopyLocationGroupDefinitionToUnified( SCOREP_LocationGroupDef*      definition,
+                                             SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_LOCATION_GROUP_H */

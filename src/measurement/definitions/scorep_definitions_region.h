@@ -53,7 +53,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Region )
 
 
 void
-SCOREP_CopyRegionDefinitionToUnified( SCOREP_Region_Definition*     definition,
+SCOREP_CopyRegionDefinitionToUnified( SCOREP_RegionDef*             definition,
                                       SCOREP_Allocator_PageManager* handlesPageManager );
 
 

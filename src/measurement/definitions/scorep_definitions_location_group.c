@@ -87,8 +87,8 @@ SCOREP_DefineLocationGroup( SCOREP_SystemTreeNodeHandle parent )
 }
 
 void
-SCOREP_CopyLocationGroupDefinitionToUnified( SCOREP_LocationGroup_Definition* definition,
-                                             SCOREP_Allocator_PageManager*    handlesPageManager )
+SCOREP_CopyLocationGroupDefinitionToUnified( SCOREP_LocationGroupDef*      definition,
+                                             SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );
@@ -115,8 +115,8 @@ SCOREP_CopyLocationGroupDefinitionToUnified( SCOREP_LocationGroup_Definition* de
 }
 
 static inline bool
-equal_location_group( const SCOREP_LocationGroup_Definition* existingDefinition,
-                      const SCOREP_LocationGroup_Definition* newDefinition )
+equal_location_group( const SCOREP_LocationGroupDef* existingDefinition,
+                      const SCOREP_LocationGroupDef* newDefinition )
 {
     return false;
 }
@@ -131,8 +131,8 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_LocationGroup_Definition* new_definition = NULL;
-    SCOREP_LocationGroupHandle       new_handle     = SCOREP_INVALID_LOCATION_GROUP;
+    SCOREP_LocationGroupDef*   new_definition = NULL;
+    SCOREP_LocationGroupHandle new_handle     = SCOREP_INVALID_LOCATION_GROUP;
 
     SCOREP_DEFINITION_ALLOC( LocationGroup );
 

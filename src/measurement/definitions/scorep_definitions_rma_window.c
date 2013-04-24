@@ -62,8 +62,8 @@ define_interim_rma_window( SCOREP_DefinitionManager*        definition_manager,
 
 
 static bool
-equal_interim_rma_window( const SCOREP_InterimRmaWindow_Definition* existingDefinition,
-                          const SCOREP_InterimRmaWindow_Definition* newDefinition );
+equal_interim_rma_window( const SCOREP_InterimRmaWindowDef* existingDefinition,
+                          const SCOREP_InterimRmaWindowDef* newDefinition );
 
 
 /**
@@ -77,8 +77,8 @@ SCOREP_DefineInterimRmaWindow( const char*                      name,
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_InterimRmaWindow_Definition* new_definition = NULL;
-    SCOREP_InterimRmaWindowHandle       new_handle     = define_interim_rma_window(
+    SCOREP_InterimRmaWindowDef*   new_definition = NULL;
+    SCOREP_InterimRmaWindowHandle new_handle     = define_interim_rma_window(
         &scorep_local_definition_manager,
         scorep_string_definition_define(
             &scorep_local_definition_manager,
@@ -98,8 +98,8 @@ define_interim_rma_window( SCOREP_DefinitionManager*        definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_InterimRmaWindow_Definition* new_definition = NULL;
-    SCOREP_InterimRmaWindowHandle       new_handle     = SCOREP_INVALID_INTERIM_RMA_WINDOW;
+    SCOREP_InterimRmaWindowDef*   new_definition = NULL;
+    SCOREP_InterimRmaWindowHandle new_handle     = SCOREP_INVALID_INTERIM_RMA_WINDOW;
 
     SCOREP_DEFINITION_ALLOC( InterimRmaWindow );
 
@@ -114,8 +114,8 @@ define_interim_rma_window( SCOREP_DefinitionManager*        definition_manager,
 
 
 bool
-equal_interim_rma_window( const SCOREP_InterimRmaWindow_Definition* existingDefinition,
-                          const SCOREP_InterimRmaWindow_Definition* newDefinition )
+equal_interim_rma_window( const SCOREP_InterimRmaWindowDef* existingDefinition,
+                          const SCOREP_InterimRmaWindowDef* newDefinition )
 {
     return false;
 }
@@ -128,8 +128,8 @@ define_rma_window( SCOREP_DefinitionManager*        definition_manager,
 
 
 static bool
-equal_rma_window( const SCOREP_RmaWindow_Definition* existingDefinition,
-                  const SCOREP_RmaWindow_Definition* newDefinition );
+equal_rma_window( const SCOREP_RmaWindowDef* existingDefinition,
+                  const SCOREP_RmaWindowDef* newDefinition );
 
 
 /**
@@ -172,7 +172,7 @@ SCOREP_DefineUnifiedRmaWindow( const char*               name,
 
 
 void
-SCOREP_CopyRmaWindowDefinitionToUnified( SCOREP_RmaWindow_Definition*  definition,
+SCOREP_CopyRmaWindowDefinitionToUnified( SCOREP_RmaWindowDef*          definition,
                                          SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
@@ -198,8 +198,8 @@ define_rma_window( SCOREP_DefinitionManager* definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_RmaWindow_Definition* new_definition = NULL;
-    SCOREP_RmaWindowHandle       new_handle     = SCOREP_INVALID_RMA_WINDOW;
+    SCOREP_RmaWindowDef*   new_definition = NULL;
+    SCOREP_RmaWindowHandle new_handle     = SCOREP_INVALID_RMA_WINDOW;
 
     SCOREP_DEFINITION_ALLOC( RmaWindow );
 
@@ -214,8 +214,8 @@ define_rma_window( SCOREP_DefinitionManager* definition_manager,
 
 
 bool
-equal_rma_window( const SCOREP_RmaWindow_Definition* existingDefinition,
-                  const SCOREP_RmaWindow_Definition* newDefinition )
+equal_rma_window( const SCOREP_RmaWindowDef* existingDefinition,
+                  const SCOREP_RmaWindowDef* newDefinition )
 {
     return false;
 }

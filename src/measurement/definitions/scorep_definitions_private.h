@@ -59,7 +59,7 @@
 #define SCOREP_HANDLE_DEREF( handle, Type, movablePageManager ) \
     SCOREP_MEMORY_DEREF_MOVABLE( handle, \
                                  movablePageManager, \
-                                 SCOREP_ ## Type ## _Definition* )
+                                 SCOREP_ ## Type ## Def* )
 
 #define SCOREP_LOCAL_HANDLE_DEREF( handle, Type ) \
     SCOREP_HANDLE_DEREF( handle, \
@@ -88,8 +88,8 @@
  * @see SCOREP_DEFINE_DEFINITION_HEADER
  */
 #define SCOREP_DEFINE_DEFINITION_TYPE( Type ) \
-    typedef struct SCOREP_ ## Type ## _Definition SCOREP_ ## Type ## _Definition; \
-    struct SCOREP_ ## Type ## _Definition
+    typedef struct SCOREP_ ## Type ## Def SCOREP_ ## Type ## Def; \
+    struct SCOREP_ ## Type ## Def
 
 /**
  * Provides a stub for the definition struct header.
@@ -181,7 +181,7 @@
     do \
     { \
         new_handle = SCOREP_Memory_AllocForDefinitions( \
-            sizeof( SCOREP_ ## Type ## _Definition ) ); \
+            sizeof( SCOREP_ ## Type ## Def ) ); \
         new_definition = SCOREP_LOCAL_HANDLE_DEREF( new_handle, Type ); \
         SCOREP_INIT_DEFINITION_HEADER( new_definition ); \
     } \
@@ -205,7 +205,7 @@
     do \
     { \
         new_handle = SCOREP_Memory_AllocForDefinitions( \
-            sizeof( SCOREP_ ## Type ## _Definition ) + \
+            sizeof( SCOREP_ ## Type ## Def ) + \
             ( ( number_of_members ) * sizeof( array_type ) ) ); \
         new_definition = SCOREP_LOCAL_HANDLE_DEREF( new_handle, Type ); \
         SCOREP_INIT_DEFINITION_HEADER( new_definition ); \
@@ -267,7 +267,7 @@
             SCOREP_ ## Type ## Handle hash_list_iterator = *hash_table_bucket; \
             while ( hash_list_iterator != SCOREP_MOVABLE_NULL ) \
             { \
-                SCOREP_ ## Type ## _Definition * existing_definition = SCOREP_LOCAL_HANDLE_DEREF( \
+                SCOREP_ ## Type ## Def * existing_definition = SCOREP_LOCAL_HANDLE_DEREF( \
                     hash_list_iterator, Type ); \
                 if ( equal_ ## type( existing_definition, new_definition ) ) \
                 { \
@@ -372,7 +372,7 @@
 #define SCOREP_DEFINITION_FOREACH_DO( definition_manager, Type, type ) \
     do \
     { \
-        SCOREP_ ## Type ## _Definition* definition; \
+        SCOREP_ ## Type ## Def* definition; \
         SCOREP_ ## Type ## Handle handle; \
         for ( handle = ( definition_manager )->type ## _definition_head; \
               handle != SCOREP_MOVABLE_NULL; \

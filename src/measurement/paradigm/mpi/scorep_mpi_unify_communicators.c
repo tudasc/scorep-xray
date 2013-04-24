@@ -217,7 +217,7 @@ is_this_rank_in_communicator( uint32_t  global_comm_id,
                  */
                 if ( definition->name_handle != SCOREP_INVALID_STRING )
                 {
-                    SCOREP_String_Definition* name_definition = SCOREP_HANDLE_DEREF(
+                    SCOREP_StringDef* name_definition = SCOREP_HANDLE_DEREF(
                         definition->name_handle,
                         String,
                         scorep_local_definition_manager.page_manager );
@@ -225,7 +225,7 @@ is_this_rank_in_communicator( uint32_t  global_comm_id,
                 }
                 if ( definition->parent_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
                 {
-                    SCOREP_InterimCommunicator_Definition* parent_definition = SCOREP_HANDLE_DEREF(
+                    SCOREP_InterimCommunicatorDef* parent_definition = SCOREP_HANDLE_DEREF(
                         definition->parent_handle,
                         InterimCommunicator,
                         scorep_local_definition_manager.page_manager );

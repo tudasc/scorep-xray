@@ -102,7 +102,7 @@ void
 SCOREP_InvalidateProperty( SCOREP_Property property )
 {
     UTILS_ASSERT( property < SCOREP_PROPERTY_MAX );
-    SCOREP_Property_Definition* property_definition = SCOREP_LOCAL_HANDLE_DEREF(
+    SCOREP_PropertyDef* property_definition = SCOREP_LOCAL_HANDLE_DEREF(
         scorep_properties[ property ].handle,
         Property );
     property_definition->invalidated = true;

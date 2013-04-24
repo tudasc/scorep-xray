@@ -54,7 +54,7 @@ SCOREP_DefineLocation( SCOREP_LocationType type,
 
 
 void
-SCOREP_CopyLocationDefinitionToUnified( SCOREP_Location_Definition*   definition,
+SCOREP_CopyLocationDefinitionToUnified( SCOREP_LocationDef*           definition,
                                         SCOREP_Allocator_PageManager* handlesPageManager );
 
 

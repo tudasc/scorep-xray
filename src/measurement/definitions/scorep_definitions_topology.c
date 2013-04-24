@@ -69,8 +69,8 @@ SCOREP_DefineMPICartesianTopology( const char*                      topologyName
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_MPICartesianTopology_Definition* new_definition = NULL;
-    SCOREP_MPICartesianTopologyHandle       new_handle     = SCOREP_INVALID_CART_TOPOLOGY;
+    SCOREP_MPICartesianTopologyDef*   new_definition = NULL;
+    SCOREP_MPICartesianTopologyHandle new_handle     = SCOREP_INVALID_CART_TOPOLOGY;
 
     // Init new_definition
     // see ticket:423
@@ -112,8 +112,8 @@ SCOREP_DefineMPICartesianCoords( SCOREP_MPICartesianTopologyHandle cartesianTopo
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_MPICartesianCoords_Definition* new_definition = NULL;
-    SCOREP_MPICartesianCoordsHandle       new_handle     = SCOREP_INVALID_CART_COORDS;
+    SCOREP_MPICartesianCoordsDef*   new_definition = NULL;
+    SCOREP_MPICartesianCoordsHandle new_handle     = SCOREP_INVALID_CART_COORDS;
 
     // Init new_definition
     // see ticket:423

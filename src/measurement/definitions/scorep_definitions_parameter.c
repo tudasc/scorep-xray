@@ -62,8 +62,8 @@ define_parameter( SCOREP_DefinitionManager* definition_manager,
 
 
 static bool
-equal_parameter( const SCOREP_Parameter_Definition* existingDefinition,
-                 const SCOREP_Parameter_Definition* newDefinition );
+equal_parameter( const SCOREP_ParameterDef* existingDefinition,
+                 const SCOREP_ParameterDef* newDefinition );
 
 
 /**
@@ -91,7 +91,7 @@ SCOREP_DefineParameter( const char*          name,
 
 
 void
-SCOREP_CopyParameterDefinitionToUnified( SCOREP_Parameter_Definition*  definition,
+SCOREP_CopyParameterDefinitionToUnified( SCOREP_ParameterDef*          definition,
                                          SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
@@ -114,8 +114,8 @@ define_parameter( SCOREP_DefinitionManager* definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_Parameter_Definition* new_definition = NULL;
-    SCOREP_ParameterHandle       new_handle     = SCOREP_INVALID_PARAMETER;
+    SCOREP_ParameterDef*   new_definition = NULL;
+    SCOREP_ParameterHandle new_handle     = SCOREP_INVALID_PARAMETER;
 
     SCOREP_DEFINITION_ALLOC( Parameter );
     new_definition->name_handle = nameHandle;
@@ -131,8 +131,8 @@ define_parameter( SCOREP_DefinitionManager* definition_manager,
 
 
 bool
-equal_parameter( const SCOREP_Parameter_Definition* existingDefinition,
-                 const SCOREP_Parameter_Definition* newDefinition )
+equal_parameter( const SCOREP_ParameterDef* existingDefinition,
+                 const SCOREP_ParameterDef* newDefinition )
 {
     return existingDefinition->name_handle == newDefinition->name_handle
            && existingDefinition->parameter_type == newDefinition->parameter_type;
@@ -149,7 +149,7 @@ equal_parameter( const SCOREP_Parameter_Definition* existingDefinition,
 const char*
 SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle )
 {
-    SCOREP_Parameter_Definition* param = SCOREP_LOCAL_HANDLE_DEREF( handle, Parameter );
+    SCOREP_ParameterDef* param = SCOREP_LOCAL_HANDLE_DEREF( handle, Parameter );
 
     return SCOREP_LOCAL_HANDLE_DEREF( param->name_handle, String )->string_data;
 }

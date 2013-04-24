@@ -1193,7 +1193,7 @@ SCOREP_TriggerCounterInt64( SCOREP_SamplingSetHandle counterHandle,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    SCOREP_SamplingSet_Definition* sampling_set
+    SCOREP_SamplingSetDef* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
     UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
                   "User sampling set with more than one metric" );
@@ -1234,7 +1234,7 @@ SCOREP_TriggerCounterUint64( SCOREP_SamplingSetHandle counterHandle,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    SCOREP_SamplingSet_Definition* sampling_set
+    SCOREP_SamplingSetDef* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
     UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
                   "User sampling set with more than one metric" );
@@ -1268,7 +1268,7 @@ SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    SCOREP_SamplingSet_Definition* sampling_set
+    SCOREP_SamplingSetDef* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
     UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
                   "User sampling set with more than one metric" );

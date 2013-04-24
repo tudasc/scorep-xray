@@ -66,7 +66,7 @@ SCOREP_DefineUnifiedRmaWindow( const char*               name,
 
 
 void
-SCOREP_CopyRmaWindowDefinitionToUnified( SCOREP_RmaWindow_Definition*  definition,
+SCOREP_CopyRmaWindowDefinitionToUnified( SCOREP_RmaWindowDef*          definition,
                                          SCOREP_Allocator_PageManager* handlesPageManager );
 
 

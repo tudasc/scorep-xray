@@ -67,19 +67,19 @@ define_callpath( SCOREP_DefinitionManager* definition_manager,
 
 
 static void
-initialize_callpath( SCOREP_Callpath_Definition* definition,
-                     SCOREP_DefinitionManager*   definition_manager,
-                     SCOREP_CallpathHandle       parentCallpath,
-                     bool                        withParameter,
-                     SCOREP_RegionHandle         regionHandle,
-                     SCOREP_ParameterHandle      parameterHandle,
-                     int64_t                     integerValue,
-                     SCOREP_StringHandle         stringHandle );
+initialize_callpath( SCOREP_CallpathDef*       definition,
+                     SCOREP_DefinitionManager* definition_manager,
+                     SCOREP_CallpathHandle     parentCallpath,
+                     bool                      withParameter,
+                     SCOREP_RegionHandle       regionHandle,
+                     SCOREP_ParameterHandle    parameterHandle,
+                     int64_t                   integerValue,
+                     SCOREP_StringHandle       stringHandle );
 
 
 static bool
-equal_callpath( const SCOREP_Callpath_Definition* existingDefinition,
-                const SCOREP_Callpath_Definition* newDefinition );
+equal_callpath( const SCOREP_CallpathDef* existingDefinition,
+                const SCOREP_CallpathDef* newDefinition );
 
 
 SCOREP_CallpathHandle
@@ -154,7 +154,7 @@ SCOREP_DefineCallpathParameterString( SCOREP_CallpathHandle  parentCallpath,
 
 
 void
-SCOREP_CopyCallpathDefinitionToUnified( SCOREP_Callpath_Definition*   definition,
+SCOREP_CopyCallpathDefinitionToUnified( SCOREP_CallpathDef*           definition,
                                         SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
@@ -191,7 +191,7 @@ SCOREP_CopyCallpathDefinitionToUnified( SCOREP_Callpath_Definition*   definition
         if ( definition->callpath_argument.parameter_handle
              != SCOREP_INVALID_PARAMETER )
         {
-            SCOREP_Parameter_Definition* parameter = SCOREP_HANDLE_DEREF(
+            SCOREP_ParameterDef* parameter = SCOREP_HANDLE_DEREF(
                 definition->callpath_argument.parameter_handle,
                 Parameter,
                 handlesPageManager );
@@ -244,8 +244,8 @@ define_callpath( SCOREP_DefinitionManager* definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_Callpath_Definition* new_definition = NULL;
-    SCOREP_CallpathHandle       new_handle     = SCOREP_INVALID_CALLPATH;
+    SCOREP_CallpathDef*   new_definition = NULL;
+    SCOREP_CallpathHandle new_handle     = SCOREP_INVALID_CALLPATH;
     SCOREP_DEFINITION_ALLOC( Callpath );
     initialize_callpath( new_definition,
                          definition_manager,
@@ -264,14 +264,14 @@ define_callpath( SCOREP_DefinitionManager* definition_manager,
 
 
 void
-initialize_callpath( SCOREP_Callpath_Definition* definition,
-                     SCOREP_DefinitionManager*   definition_manager,
-                     SCOREP_CallpathHandle       parentCallpathHandle,
-                     bool                        withParameter,
-                     SCOREP_RegionHandle         regionHandle,
-                     SCOREP_ParameterHandle      parameterHandle,
-                     int64_t                     integerValue,
-                     SCOREP_StringHandle         stringHandle )
+initialize_callpath( SCOREP_CallpathDef*       definition,
+                     SCOREP_DefinitionManager* definition_manager,
+                     SCOREP_CallpathHandle     parentCallpathHandle,
+                     bool                      withParameter,
+                     SCOREP_RegionHandle       regionHandle,
+                     SCOREP_ParameterHandle    parameterHandle,
+                     int64_t                   integerValue,
+                     SCOREP_StringHandle       stringHandle )
 {
     definition->parent_callpath_handle = parentCallpathHandle;
     if ( definition->parent_callpath_handle != SCOREP_INVALID_CALLPATH )
@@ -299,7 +299,7 @@ initialize_callpath( SCOREP_Callpath_Definition* definition,
         {
             HASH_ADD_HANDLE( definition, callpath_argument.parameter_handle, Parameter );
 
-            SCOREP_Parameter_Definition* parameter = SCOREP_HANDLE_DEREF(
+            SCOREP_ParameterDef* parameter = SCOREP_HANDLE_DEREF(
                 definition->callpath_argument.parameter_handle,
                 Parameter,
                 definition_manager->page_manager );
@@ -331,8 +331,8 @@ initialize_callpath( SCOREP_Callpath_Definition* definition,
 
 
 bool
-equal_callpath( const SCOREP_Callpath_Definition* existingDefinition,
-                const SCOREP_Callpath_Definition* newDefinition )
+equal_callpath( const SCOREP_CallpathDef* existingDefinition,
+                const SCOREP_CallpathDef* newDefinition )
 {
     if ( existingDefinition->parent_callpath_handle != newDefinition->parent_callpath_handle
          || existingDefinition->with_parameter != newDefinition->with_parameter )

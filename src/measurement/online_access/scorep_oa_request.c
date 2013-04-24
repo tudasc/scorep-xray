@@ -285,7 +285,7 @@ SCOREP_OA_RequestsSubmit
         SCOREP_SamplingSetHandle sampling_set_handle = SCOREP_Metric_GetSamplingSet();
         if ( sampling_set_handle != SCOREP_INVALID_SAMPLING_SET )
         {
-            SCOREP_SamplingSet_Definition* sampling_set
+            SCOREP_SamplingSetDef* sampling_set
                               = SCOREP_LOCAL_HANDLE_DEREF( sampling_set_handle, SamplingSet );
             number_of_metrics = sampling_set->number_of_metrics;
             metrics           = sampling_set->metric_handles;

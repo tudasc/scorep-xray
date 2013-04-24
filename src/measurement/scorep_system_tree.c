@@ -93,7 +93,7 @@ SCOREP_FinalizeLocationGroup()
     {
         strcpy( name, "Process" );
     }
-    SCOREP_LocationGroup_Definition* location_group
+    SCOREP_LocationGroupDef* location_group
         = SCOREP_LOCAL_HANDLE_DEREF( SCOREP_GetLocationGroup(), LocationGroup );
 
     /* In early stage 'global location group ID' and 'name' are set to invalid dummies.

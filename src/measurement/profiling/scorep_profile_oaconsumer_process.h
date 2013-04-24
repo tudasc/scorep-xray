@@ -84,7 +84,7 @@ typedef struct
     SCOREP_OA_CallPathRegionDef*      merged_region_def_buffer;
     SCOREP_OA_FlatProfileMeasurement* static_measurement_buffer;
     SCOREP_OA_CallPathCounterDef*     counter_definition_buffer;
-    SCOREP_SamplingSet_Definition*    dense_metrics_sampling_set;
+    SCOREP_SamplingSetDef*            dense_metrics_sampling_set;
 } shared_index_type;
 
 /**

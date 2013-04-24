@@ -63,8 +63,8 @@ define_system_tree_node( SCOREP_DefinitionManager*   definition_manager,
 
 
 static bool
-equal_system_tree_node( const SCOREP_SystemTreeNode_Definition* existingDefinition,
-                        const SCOREP_SystemTreeNode_Definition* newDefinition );
+equal_system_tree_node( const SCOREP_SystemTreeNodeDef* existingDefinition,
+                        const SCOREP_SystemTreeNodeDef* newDefinition );
 
 
 SCOREP_SystemTreeNodeHandle
@@ -93,8 +93,8 @@ SCOREP_DefineSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
 
 
 void
-SCOREP_CopySystemTreeNodeDefinitionToUnified( SCOREP_SystemTreeNode_Definition* definition,
-                                              SCOREP_Allocator_PageManager*     handlesPageManager )
+SCOREP_CopySystemTreeNodeDefinitionToUnified( SCOREP_SystemTreeNodeDef*     definition,
+                                              SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );
@@ -124,8 +124,8 @@ SCOREP_CopySystemTreeNodeDefinitionToUnified( SCOREP_SystemTreeNode_Definition* 
 
 
 bool
-equal_system_tree_node( const SCOREP_SystemTreeNode_Definition* existingDefinition,
-                        const SCOREP_SystemTreeNode_Definition* newDefinition )
+equal_system_tree_node( const SCOREP_SystemTreeNodeDef* existingDefinition,
+                        const SCOREP_SystemTreeNodeDef* newDefinition )
 {
     return existingDefinition->parent_handle == newDefinition->parent_handle &&
            existingDefinition->class_handle  == newDefinition->class_handle &&
@@ -141,8 +141,8 @@ define_system_tree_node( SCOREP_DefinitionManager*   definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_SystemTreeNode_Definition* new_definition = NULL;
-    SCOREP_SystemTreeNodeHandle       new_handle     = SCOREP_INVALID_SYSTEM_TREE_NODE;
+    SCOREP_SystemTreeNodeDef*   new_definition = NULL;
+    SCOREP_SystemTreeNodeHandle new_handle     = SCOREP_INVALID_SYSTEM_TREE_NODE;
 
     SCOREP_DEFINITION_ALLOC( SystemTreeNode );
 

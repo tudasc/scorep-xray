@@ -65,12 +65,12 @@ define_sampling_set( SCOREP_DefinitionManager*     definition_manager,
 
 
 static void
-initialize_sampling_set( SCOREP_SamplingSet_Definition* definition,
-                         SCOREP_DefinitionManager*      definition_manager,
-                         uint8_t                        numberOfMetrics,
-                         const SCOREP_MetricHandle*     metrics,
-                         SCOREP_MetricOccurrence        occurrence,
-                         SCOREP_Allocator_PageManager*  handlesPageManager );
+initialize_sampling_set( SCOREP_SamplingSetDef*        definition,
+                         SCOREP_DefinitionManager*     definition_manager,
+                         uint8_t                       numberOfMetrics,
+                         const SCOREP_MetricHandle*    metrics,
+                         SCOREP_MetricOccurrence       occurrence,
+                         SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 static SCOREP_SamplingSetHandle
@@ -82,17 +82,17 @@ define_scoped_sampling_set( SCOREP_DefinitionManager* definition_manager,
 
 
 static void
-initialize_scoped_sampling_set( SCOREP_ScopedSamplingSet_Definition* definition,
-                                SCOREP_DefinitionManager*            definition_manager,
-                                SCOREP_SamplingSetHandle             samplingSet,
-                                SCOREP_LocationHandle                recorderHandle,
-                                SCOREP_MetricScope                   scopeType,
-                                SCOREP_AnyHandle                     scopeHandle );
+initialize_scoped_sampling_set( SCOREP_ScopedSamplingSetDef* definition,
+                                SCOREP_DefinitionManager*    definition_manager,
+                                SCOREP_SamplingSetHandle     samplingSet,
+                                SCOREP_LocationHandle        recorderHandle,
+                                SCOREP_MetricScope           scopeType,
+                                SCOREP_AnyHandle             scopeHandle );
 
 
 static bool
-equal_sampling_set( const SCOREP_SamplingSet_Definition* existingDefinition,
-                    const SCOREP_SamplingSet_Definition* newDefinition );
+equal_sampling_set( const SCOREP_SamplingSetDef* existingDefinition,
+                    const SCOREP_SamplingSetDef* newDefinition );
 
 
 SCOREP_SamplingSetHandle
@@ -143,13 +143,13 @@ SCOREP_DefineScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
 SCOREP_SamplingSetHandle
 SCOREP_GetSamplingSet( SCOREP_SamplingSetHandle samplingSet )
 {
-    SCOREP_SamplingSet_Definition* sampling_set
+    SCOREP_SamplingSetDef* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, SamplingSet );
 
     if ( sampling_set->is_scoped )
     {
-        SCOREP_ScopedSamplingSet_Definition* scoped_sampling_set
-            = ( SCOREP_ScopedSamplingSet_Definition* )sampling_set;
+        SCOREP_ScopedSamplingSetDef* scoped_sampling_set
+            = ( SCOREP_ScopedSamplingSetDef* )sampling_set;
 
         return scoped_sampling_set->sampling_set_handle;
     }
@@ -159,16 +159,16 @@ SCOREP_GetSamplingSet( SCOREP_SamplingSetHandle samplingSet )
 
 
 void
-SCOREP_CopySamplingSetDefinitionToUnified( SCOREP_SamplingSet_Definition* definition,
-                                           SCOREP_Allocator_PageManager*  handlesPageManager )
+SCOREP_CopySamplingSetDefinitionToUnified( SCOREP_SamplingSetDef*        definition,
+                                           SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );
 
     if ( definition->is_scoped )
     {
-        SCOREP_ScopedSamplingSet_Definition* scoped_definition
-            = ( SCOREP_ScopedSamplingSet_Definition* )definition;
+        SCOREP_ScopedSamplingSetDef* scoped_definition
+            = ( SCOREP_ScopedSamplingSetDef* )definition;
 
         assert( scoped_definition->sampling_set_handle != SCOREP_INVALID_SAMPLING_SET );
         assert( scoped_definition->recorder_handle != SCOREP_INVALID_LOCATION );
@@ -211,11 +211,11 @@ define_sampling_set( SCOREP_DefinitionManager*     definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_SamplingSet_Definition* new_definition = NULL;
-    SCOREP_SamplingSetHandle       new_handle     = SCOREP_INVALID_SAMPLING_SET;
+    SCOREP_SamplingSetDef*   new_definition = NULL;
+    SCOREP_SamplingSetHandle new_handle     = SCOREP_INVALID_SAMPLING_SET;
 
     size_t size_for_sampling_set = SCOREP_Allocator_RoundupToAlignment(
-        sizeof( SCOREP_SamplingSet_Definition ) +
+        sizeof( SCOREP_SamplingSetDef ) +
         ( ( numberOfMetrics ) * sizeof( SCOREP_MetricHandle ) ) );
     if ( !handlesPageManager )
     {
@@ -246,12 +246,12 @@ define_sampling_set( SCOREP_DefinitionManager*     definition_manager,
 
 
 void
-initialize_sampling_set( SCOREP_SamplingSet_Definition* definition,
-                         SCOREP_DefinitionManager*      definition_manager,
-                         uint8_t                        numberOfMetrics,
-                         const SCOREP_MetricHandle*     metrics,
-                         SCOREP_MetricOccurrence        occurrence,
-                         SCOREP_Allocator_PageManager*  handlesPageManager )
+initialize_sampling_set( SCOREP_SamplingSetDef*        definition,
+                         SCOREP_DefinitionManager*     definition_manager,
+                         uint8_t                       numberOfMetrics,
+                         const SCOREP_MetricHandle*    metrics,
+                         SCOREP_MetricOccurrence       occurrence,
+                         SCOREP_Allocator_PageManager* handlesPageManager )
 {
     definition->is_scoped = false;
     HASH_ADD_POD( definition, is_scoped );
@@ -301,8 +301,8 @@ define_scoped_sampling_set( SCOREP_DefinitionManager* definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_ScopedSamplingSet_Definition* new_definition = NULL;
-    SCOREP_SamplingSetHandle             new_handle     = SCOREP_INVALID_SAMPLING_SET;
+    SCOREP_ScopedSamplingSetDef* new_definition = NULL;
+    SCOREP_SamplingSetHandle     new_handle     = SCOREP_INVALID_SAMPLING_SET;
 
     SCOREP_DEFINITION_ALLOC( ScopedSamplingSet );
     initialize_scoped_sampling_set( new_definition,
@@ -312,13 +312,13 @@ define_scoped_sampling_set( SCOREP_DefinitionManager* definition_manager,
                                     scopeType,
                                     scopeHandle );
 
-    SCOREP_ScopedSamplingSet_Definition* scoped_definition = new_definition;
-    SCOREP_SamplingSetHandle             scoped_handle     = new_handle;
+    SCOREP_ScopedSamplingSetDef* scoped_definition = new_definition;
+    SCOREP_SamplingSetHandle     scoped_handle     = new_handle;
 
     /* ScopedSamplingSet overloads SamplingSet */
     {
-        SCOREP_SamplingSet_Definition* new_definition
-            = ( SCOREP_SamplingSet_Definition* )scoped_definition;
+        SCOREP_SamplingSetDef* new_definition
+            = ( SCOREP_SamplingSetDef* )scoped_definition;
         SCOREP_SamplingSetHandle new_handle = scoped_handle;
 
         /* Does return if it is a duplicate */
@@ -331,12 +331,12 @@ define_scoped_sampling_set( SCOREP_DefinitionManager* definition_manager,
 
 
 void
-initialize_scoped_sampling_set( SCOREP_ScopedSamplingSet_Definition* definition,
-                                SCOREP_DefinitionManager*            definition_manager,
-                                SCOREP_SamplingSetHandle             samplingSet,
-                                SCOREP_LocationHandle                recorderHandle,
-                                SCOREP_MetricScope                   scopeType,
-                                SCOREP_AnyHandle                     scopeHandle )
+initialize_scoped_sampling_set( SCOREP_ScopedSamplingSetDef* definition,
+                                SCOREP_DefinitionManager*    definition_manager,
+                                SCOREP_SamplingSetHandle     samplingSet,
+                                SCOREP_LocationHandle        recorderHandle,
+                                SCOREP_MetricScope           scopeType,
+                                SCOREP_AnyHandle             scopeHandle )
 {
     definition->is_scoped = true;
     HASH_ADD_POD( definition, is_scoped );
@@ -356,8 +356,8 @@ initialize_scoped_sampling_set( SCOREP_ScopedSamplingSet_Definition* definition,
 
 
 bool
-equal_sampling_set( const SCOREP_SamplingSet_Definition* existingDefinition,
-                    const SCOREP_SamplingSet_Definition* newDefinition )
+equal_sampling_set( const SCOREP_SamplingSetDef* existingDefinition,
+                    const SCOREP_SamplingSetDef* newDefinition )
 {
     if ( existingDefinition->is_scoped != newDefinition->is_scoped )
     {
@@ -366,10 +366,10 @@ equal_sampling_set( const SCOREP_SamplingSet_Definition* existingDefinition,
 
     if ( existingDefinition->is_scoped )
     {
-        SCOREP_ScopedSamplingSet_Definition* existing_scoped_definition
-            = ( SCOREP_ScopedSamplingSet_Definition* )existingDefinition;
-        SCOREP_ScopedSamplingSet_Definition* new_scoped_definition
-            = ( SCOREP_ScopedSamplingSet_Definition* )newDefinition;
+        SCOREP_ScopedSamplingSetDef* existing_scoped_definition
+            = ( SCOREP_ScopedSamplingSetDef* )existingDefinition;
+        SCOREP_ScopedSamplingSetDef* new_scoped_definition
+            = ( SCOREP_ScopedSamplingSetDef* )newDefinition;
         return existing_scoped_definition->sampling_set_handle
                == new_scoped_definition->sampling_set_handle
                && existing_scoped_definition->recorder_handle

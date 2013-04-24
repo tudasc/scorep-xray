@@ -68,7 +68,7 @@ define_region( SCOREP_DefinitionManager* definition_manager,
 
 
 static void
-initialize_region( SCOREP_Region_Definition* definition,
+initialize_region( SCOREP_RegionDef*         definition,
                    SCOREP_DefinitionManager* definition_manager,
                    SCOREP_StringHandle       regionNameHandle,
                    SCOREP_StringHandle       regionCanonicalNameHandle,
@@ -81,8 +81,8 @@ initialize_region( SCOREP_Region_Definition* definition,
 
 
 static bool
-equal_region( const SCOREP_Region_Definition* existingDefinition,
-              const SCOREP_Region_Definition* newDefinition );
+equal_region( const SCOREP_RegionDef* existingDefinition,
+              const SCOREP_RegionDef* newDefinition );
 
 
 SCOREP_RegionHandle
@@ -133,7 +133,7 @@ SCOREP_DefineRegion( const char*             regionName,
 
 
 void
-SCOREP_CopyRegionDefinitionToUnified( SCOREP_Region_Definition*     definition,
+SCOREP_CopyRegionDefinitionToUnified( SCOREP_RegionDef*             definition,
                                       SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
@@ -184,8 +184,8 @@ define_region( SCOREP_DefinitionManager* definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_Region_Definition* new_definition = NULL;
-    SCOREP_RegionHandle       new_handle     = SCOREP_INVALID_REGION;
+    SCOREP_RegionDef*   new_definition = NULL;
+    SCOREP_RegionHandle new_handle     = SCOREP_INVALID_REGION;
 
     SCOREP_DEFINITION_ALLOC( Region );
     initialize_region( new_definition,
@@ -207,7 +207,7 @@ define_region( SCOREP_DefinitionManager* definition_manager,
 
 
 void
-initialize_region( SCOREP_Region_Definition* definition,
+initialize_region( SCOREP_RegionDef*         definition,
                    SCOREP_DefinitionManager* definition_manager,
                    SCOREP_StringHandle       regionNameHandle,
                    SCOREP_StringHandle       regionCanonicalNameHandle,
@@ -246,8 +246,8 @@ initialize_region( SCOREP_Region_Definition* definition,
 
 
 bool
-equal_region( const SCOREP_Region_Definition* existingDefinition,
-              const SCOREP_Region_Definition* newDefinition )
+equal_region( const SCOREP_RegionDef* existingDefinition,
+              const SCOREP_RegionDef* newDefinition )
 {
     return existingDefinition->name_handle           == newDefinition->name_handle &&
            existingDefinition->canonical_name_handle == newDefinition->canonical_name_handle &&
@@ -277,7 +277,7 @@ SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle )
 const char*
 SCOREP_Region_GetName( SCOREP_RegionHandle handle )
 {
-    SCOREP_Region_Definition* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
+    SCOREP_RegionDef* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
 
     return SCOREP_LOCAL_HANDLE_DEREF( region->name_handle, String )->string_data;
 }
@@ -293,7 +293,7 @@ SCOREP_Region_GetName( SCOREP_RegionHandle handle )
 const char*
 SCOREP_Region_GetCanonicalName( SCOREP_RegionHandle handle )
 {
-    SCOREP_Region_Definition* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
+    SCOREP_RegionDef* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
 
     return SCOREP_LOCAL_HANDLE_DEREF( region->canonical_name_handle, String )->string_data;
 }
@@ -309,7 +309,7 @@ SCOREP_Region_GetCanonicalName( SCOREP_RegionHandle handle )
 const char*
 SCOREP_Region_GetFileName( SCOREP_RegionHandle handle )
 {
-    SCOREP_Region_Definition* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
+    SCOREP_RegionDef* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
 
     return SCOREP_LOCAL_HANDLE_DEREF( region->file_name_handle, String )->string_data;
 }

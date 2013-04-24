@@ -64,8 +64,8 @@ define_property( SCOREP_DefinitionManager* definition_manager,
 
 
 static bool
-equal_property( const SCOREP_Property_Definition* existingDefinition,
-                const SCOREP_Property_Definition* newDefinition );
+equal_property( const SCOREP_PropertyDef* existingDefinition,
+                const SCOREP_PropertyDef* newDefinition );
 
 
 /**
@@ -99,7 +99,7 @@ SCOREP_DefineProperty( SCOREP_Property          property,
 
 
 void
-SCOREP_CopyPropertyDefinitionToUnified( SCOREP_Property_Definition*   definition,
+SCOREP_CopyPropertyDefinitionToUnified( SCOREP_PropertyDef*           definition,
                                         SCOREP_Allocator_PageManager* handlesPageManager )
 {
     UTILS_ASSERT( definition );
@@ -123,8 +123,8 @@ define_property( SCOREP_DefinitionManager* definition_manager,
 {
     assert( definition_manager );
 
-    SCOREP_Property_Definition* new_definition = NULL;
-    SCOREP_PropertyHandle       new_handle     = SCOREP_INVALID_PARAMETER;
+    SCOREP_PropertyDef*   new_definition = NULL;
+    SCOREP_PropertyHandle new_handle     = SCOREP_INVALID_PARAMETER;
 
     SCOREP_DEFINITION_ALLOC( Property );
     new_definition->property = property;
@@ -148,7 +148,7 @@ define_property( SCOREP_DefinitionManager* definition_manager,
 
         while ( hash_list_iterator != SCOREP_MOVABLE_NULL )
         {
-            SCOREP_Property_Definition* existing_definition = SCOREP_LOCAL_HANDLE_DEREF(
+            SCOREP_PropertyDef* existing_definition = SCOREP_LOCAL_HANDLE_DEREF(
                 hash_list_iterator, Property );
             if ( equal_property( existing_definition, new_definition ) )
             {
@@ -191,8 +191,8 @@ define_property( SCOREP_DefinitionManager* definition_manager,
 
 
 bool
-equal_property( const SCOREP_Property_Definition* existingDefinition,
-                const SCOREP_Property_Definition* newDefinition )
+equal_property( const SCOREP_PropertyDef* existingDefinition,
+                const SCOREP_PropertyDef* newDefinition )
 {
     return existingDefinition->property == newDefinition->property;
 }
