@@ -56,13 +56,13 @@ SCOREP_DEFINE_DEFINITION_TYPE( RmaWindow )
 
 
 SCOREP_RmaWindowHandle
-SCOREP_DefineRmaWindow( const char*               name,
-                        SCOREP_CommunicatorHandle communicatorHandle );
+SCOREP_Definitions_NewRmaWindow( const char*               name,
+                                 SCOREP_CommunicatorHandle communicatorHandle );
 
 
 SCOREP_RmaWindowHandle
-SCOREP_DefineUnifiedRmaWindow( const char*               name,
-                               SCOREP_CommunicatorHandle communicatorHandle );
+SCOREP_Definitions_NewUnifiedRmaWindow( const char*               name,
+                                        SCOREP_CommunicatorHandle communicatorHandle );
 
 
 void

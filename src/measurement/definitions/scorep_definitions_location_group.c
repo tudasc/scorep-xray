@@ -68,7 +68,7 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
  * @in internal
  */
 SCOREP_LocationGroupHandle
-SCOREP_DefineLocationGroup( SCOREP_SystemTreeNodeHandle parent )
+SCOREP_Definitions_NewLocationGroup( SCOREP_SystemTreeNodeHandle parent )
 {
     SCOREP_Definitions_Lock();
 

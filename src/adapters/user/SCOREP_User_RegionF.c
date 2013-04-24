@@ -119,7 +119,7 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* regionHandle,
 
     /* Get source file handle.
        The definitions check for double double entries. */
-    file_handle = SCOREP_DefineSourceFile( file_name );
+    file_handle = SCOREP_Definitions_NewSourceFile( file_name );
 
     /* Lock region definition */
     SCOREP_MutexLock( scorep_user_region_mutex );
@@ -149,13 +149,13 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* regionHandle,
 
             if ( region != SCOREP_USER_INVALID_REGION )
             {
-                region->handle = SCOREP_DefineRegion( region_name,
-                                                      NULL,
-                                                      file_handle,
-                                                      *lineNo,
-                                                      SCOREP_INVALID_LINE_NO,
-                                                      SCOREP_ADAPTER_USER,
-                                                      region_type );
+                region->handle = SCOREP_Definitions_NewRegion( region_name,
+                                                               NULL,
+                                                               file_handle,
+                                                               *lineNo,
+                                                               SCOREP_INVALID_LINE_NO,
+                                                               SCOREP_ADAPTER_USER,
+                                                               region_type );
 
                 scorep_user_add_region( region, region_name );
             }

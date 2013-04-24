@@ -59,8 +59,8 @@
  * Associate a name and a group handle with a process unique marker handle.
  */
 SCOREP_MarkerHandle
-SCOREP_DefineMarker( const char*              name,
-                     SCOREP_MarkerGroupHandle markerGroup )
+SCOREP_Definitions_NewMarker( const char*              name,
+                              SCOREP_MarkerGroupHandle markerGroup )
 {
     UTILS_DEBUG_ENTRY( "%s", name );
 

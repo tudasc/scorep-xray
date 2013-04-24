@@ -78,7 +78,7 @@ scorep_properties_initialize( void )
     /* define properties */
     for ( int i = 0; i < SCOREP_PROPERTY_MAX; i++ )
     {
-        scorep_properties[ i ].handle = SCOREP_DefineProperty(
+        scorep_properties[ i ].handle = SCOREP_Definitions_NewProperty(
             i,
             scorep_properties[ i ].condition,
             scorep_properties[ i ].initialValue );

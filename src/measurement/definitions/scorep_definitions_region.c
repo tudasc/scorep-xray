@@ -86,13 +86,13 @@ equal_region( const SCOREP_RegionDef* existingDefinition,
 
 
 SCOREP_RegionHandle
-SCOREP_DefineRegion( const char*             regionName,
-                     const char*             regionCanonicalName,
-                     SCOREP_SourceFileHandle fileHandle,
-                     SCOREP_LineNo           beginLine,
-                     SCOREP_LineNo           endLine,
-                     SCOREP_AdapterType      adapter,
-                     SCOREP_RegionType       regionType )
+SCOREP_Definitions_NewRegion( const char*             regionName,
+                              const char*             regionCanonicalName,
+                              SCOREP_SourceFileHandle fileHandle,
+                              SCOREP_LineNo           beginLine,
+                              SCOREP_LineNo           endLine,
+                              SCOREP_AdapterType      adapter,
+                              SCOREP_RegionType       regionType )
 {
     UTILS_DEBUG_ENTRY( "%s", regionName );
 

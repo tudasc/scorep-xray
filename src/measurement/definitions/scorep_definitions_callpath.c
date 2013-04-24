@@ -83,8 +83,8 @@ equal_callpath( const SCOREP_CallpathDef* existingDefinition,
 
 
 SCOREP_CallpathHandle
-SCOREP_DefineCallpath( SCOREP_CallpathHandle parentCallpath,
-                       SCOREP_RegionHandle   region )
+SCOREP_Definitions_NewCallpath( SCOREP_CallpathHandle parentCallpath,
+                                SCOREP_RegionHandle   region )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -106,9 +106,9 @@ SCOREP_DefineCallpath( SCOREP_CallpathHandle parentCallpath,
 
 
 SCOREP_CallpathHandle
-SCOREP_DefineCallpathParameterInteger( SCOREP_CallpathHandle  parentCallpath,
-                                       SCOREP_ParameterHandle callpathParameter,
-                                       int64_t                integerValue )
+SCOREP_Definitions_NewCallpathParameterInteger( SCOREP_CallpathHandle  parentCallpath,
+                                                SCOREP_ParameterHandle callpathParameter,
+                                                int64_t                integerValue )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -130,9 +130,9 @@ SCOREP_DefineCallpathParameterInteger( SCOREP_CallpathHandle  parentCallpath,
 
 
 SCOREP_CallpathHandle
-SCOREP_DefineCallpathParameterString( SCOREP_CallpathHandle  parentCallpath,
-                                      SCOREP_ParameterHandle callpathParameter,
-                                      SCOREP_StringHandle    stringHandle )
+SCOREP_Definitions_NewCallpathParameterString( SCOREP_CallpathHandle  parentCallpath,
+                                               SCOREP_ParameterHandle callpathParameter,
+                                               SCOREP_StringHandle    stringHandle )
 {
     UTILS_DEBUG_ENTRY();
 

@@ -60,10 +60,10 @@ scorep_mpi_unify_define_mpi_locations( void )
      * This needs to be called early, so that the resulting definition
      * is before any other group definition of type SCOREP_GROUP_MPI_GROUP.
      */
-    SCOREP_DefineUnifiedGroupFrom32( SCOREP_GROUP_MPI_LOCATIONS,
-                                     "",
-                                     scorep_mpi_world.size,
-                                     ( const uint32_t* )scorep_mpi_world.ranks );
+    SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GROUP_MPI_LOCATIONS,
+                                              "",
+                                              scorep_mpi_world.size,
+                                              ( const uint32_t* )scorep_mpi_world.ranks );
 }
 
 static uint32_t
@@ -352,10 +352,10 @@ define_comms( uint32_t comm_world_size,
                 SCOREP_INVALID_COMMUNICATOR;
 
             comm_definitions[ global_comm_id ].group =
-                SCOREP_DefineUnifiedGroupFrom32( SCOREP_GROUP_MPI_GROUP,
-                                                 "",
-                                                 size,
-                                                 ranks_in_group );
+                SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GROUP_MPI_GROUP,
+                                                          "",
+                                                          size,
+                                                          ranks_in_group );
 
             comm_definitions[ global_comm_id ].name        = unified_strings[ global_aux_ids[ 0 ] ];
             comm_definitions[ global_comm_id ].comm_parent = global_aux_ids[ 1 ];
@@ -404,7 +404,7 @@ define_comms( uint32_t comm_world_size,
                 }
 
                 /* Define the global MPI communicator with this group */
-                comm_definitions[ i ].handle = SCOREP_DefineUnifiedCommunicator(
+                comm_definitions[ i ].handle = SCOREP_Definitions_NewUnifiedCommunicator(
                     comm_definitions[ i ].group,
                     comm_definitions[ i ].name,
                     comm_parent_handle );
@@ -495,7 +495,7 @@ define_self_likes( uint32_t rank )
             scorep_unified_definition_manager->communicator_definition_counter;
 
         /* Create group for comm self */
-        SCOREP_GroupHandle self = SCOREP_DefineUnifiedGroupFrom32(
+        SCOREP_GroupHandle self = SCOREP_Definitions_NewUnifiedGroupFrom32(
             SCOREP_GROUP_COMM_SELF,
             "",
             0,
@@ -504,7 +504,7 @@ define_self_likes( uint32_t rank )
         for ( uint32_t i = 0; i < max_number_of_self_ids; i++ )
         {
             SCOREP_CommunicatorHandle handle =
-                SCOREP_DefineUnifiedCommunicator(
+                SCOREP_Definitions_NewUnifiedCommunicator(
                     self,
                     "",
                     SCOREP_INVALID_COMMUNICATOR );

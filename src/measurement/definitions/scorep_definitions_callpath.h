@@ -62,20 +62,20 @@ SCOREP_DEFINE_DEFINITION_TYPE( Callpath )
 
 
 SCOREP_CallpathHandle
-SCOREP_DefineCallpath( SCOREP_CallpathHandle parent,
-                       SCOREP_RegionHandle   region );
+SCOREP_Definitions_NewCallpath( SCOREP_CallpathHandle parent,
+                                SCOREP_RegionHandle   region );
 
 
 SCOREP_CallpathHandle
-SCOREP_DefineCallpathParameterInteger( SCOREP_CallpathHandle  parent,
-                                       SCOREP_ParameterHandle param,
-                                       int64_t                value );
+SCOREP_Definitions_NewCallpathParameterInteger( SCOREP_CallpathHandle  parent,
+                                                SCOREP_ParameterHandle param,
+                                                int64_t                value );
 
 
 SCOREP_CallpathHandle
-SCOREP_DefineCallpathParameterString( SCOREP_CallpathHandle  parent,
-                                      SCOREP_ParameterHandle param,
-                                      SCOREP_StringHandle    value );
+SCOREP_Definitions_NewCallpathParameterString( SCOREP_CallpathHandle  parent,
+                                               SCOREP_ParameterHandle param,
+                                               SCOREP_StringHandle    value );
 
 
 void

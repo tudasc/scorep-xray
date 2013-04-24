@@ -50,12 +50,12 @@ main()
                      "scorep_region_type_to_string.\n", t );
             abort();
         }
-        SCOREP_DefineRegion( name,
-                             NULL,
-                             SCOREP_INVALID_SOURCE_FILE,
-                             0, 0,
-                             SCOREP_ADAPTER_USER,
-                             t );
+        SCOREP_Definitions_NewRegion( name,
+                                      NULL,
+                                      SCOREP_INVALID_SOURCE_FILE,
+                                      0, 0,
+                                      SCOREP_ADAPTER_USER,
+                                      t );
     }
     return 0;
 }

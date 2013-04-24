@@ -52,7 +52,7 @@ SCOREP_User_ParameterInt64
     /* Initialize parameter handle if necassary */
     if ( *handle == SCOREP_USER_INVALID_PARAMETER )
     {
-        *handle = SCOREP_PARAMETER_TO_USER( SCOREP_DefineParameter( name, SCOREP_PARAMETER_INT64 ) );
+        *handle = SCOREP_PARAMETER_TO_USER( SCOREP_Definitions_NewParameter( name, SCOREP_PARAMETER_INT64 ) );
     }
 
     /* Trigger event */
@@ -78,7 +78,7 @@ SCOREP_User_ParameterUint64
     /* Initialize parameter handle if necassary */
     if ( *handle == SCOREP_USER_INVALID_PARAMETER )
     {
-        *handle = SCOREP_PARAMETER_TO_USER( SCOREP_DefineParameter( name, SCOREP_PARAMETER_UINT64 ) );
+        *handle = SCOREP_PARAMETER_TO_USER( SCOREP_Definitions_NewParameter( name, SCOREP_PARAMETER_UINT64 ) );
     }
 
     /* Trigger event */
@@ -105,7 +105,7 @@ SCOREP_User_ParameterString
     /* Initialize parameter handle if necassary */
     if ( *handle == SCOREP_USER_INVALID_PARAMETER )
     {
-        *handle = SCOREP_PARAMETER_TO_USER( SCOREP_DefineParameter( name, SCOREP_PARAMETER_STRING ) );
+        *handle = SCOREP_PARAMETER_TO_USER( SCOREP_Definitions_NewParameter( name, SCOREP_PARAMETER_STRING ) );
     }
 
     /* Trigger event */

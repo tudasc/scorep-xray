@@ -37,26 +37,26 @@ void
 SCOREP_Profile_InitializeMpi( void )
 {
     scorep_bytes_send_metric =
-        SCOREP_DefineMetric( "bytes_sent",
-                             "Bytes sent",
-                             SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                             SCOREP_METRIC_MODE_ABSOLUTE_POINT,
-                             SCOREP_METRIC_VALUE_UINT64,
-                             SCOREP_METRIC_BASE_DECIMAL,
-                             0,
-                             "",
-                             SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+        SCOREP_Definitions_NewMetric( "bytes_sent",
+                                      "Bytes sent",
+                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                      SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                      SCOREP_METRIC_VALUE_UINT64,
+                                      SCOREP_METRIC_BASE_DECIMAL,
+                                      0,
+                                      "",
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
 
     scorep_bytes_recv_metric =
-        SCOREP_DefineMetric( "bytes_received",
-                             "Bytes received",
-                             SCOREP_METRIC_SOURCE_TYPE_OTHER,
-                             SCOREP_METRIC_MODE_ABSOLUTE_POINT,
-                             SCOREP_METRIC_VALUE_UINT64,
-                             SCOREP_METRIC_BASE_DECIMAL,
-                             0,
-                             "",
-                             SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+        SCOREP_Definitions_NewMetric( "bytes_received",
+                                      "Bytes received",
+                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                      SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                      SCOREP_METRIC_VALUE_UINT64,
+                                      SCOREP_METRIC_BASE_DECIMAL,
+                                      0,
+                                      "",
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
 }
 
 void

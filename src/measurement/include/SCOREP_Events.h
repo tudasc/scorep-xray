@@ -167,7 +167,7 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
  * rank specification. Querying the global rank is quite expensive
  * if you are not in MPI_COMM_WORLD.
  *
- * @see SCOREP_DefineInterimCommunicator()
+ * @see SCOREP_Definitions_NewInterimCommunicator()
  */
 void
 SCOREP_MpiSend( SCOREP_MpiRank                   destinationRank,
@@ -300,7 +300,7 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId );
  * rank specification. Querying the global rank is quite expensive
  * if you are not in MPI_COMM_WORLD.
  *
- * @see SCOREP_DefineInterimCommunicator()
+ * @see SCOREP_Definitions_NewInterimCommunicator()
  */
 void
 SCOREP_MpiIsend( SCOREP_MpiRank                   destinationRank,

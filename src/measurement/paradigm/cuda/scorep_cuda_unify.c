@@ -79,8 +79,8 @@ scorep_cuda_define_cuda_group( void )
     SCOREP_DEFINITION_FOREACH_WHILE();
 
     /* define the group of locations for all CUDA locations */
-    SCOREP_DefineUnifiedGroup( SCOREP_GROUP_LOCATIONS,
-                               "CUDA_GROUP",
-                               total_number_of_cuda_locations,
-                               cuda_locations );
+    SCOREP_Definitions_NewUnifiedGroup( SCOREP_GROUP_LOCATIONS,
+                                        "CUDA_GROUP",
+                                        total_number_of_cuda_locations,
+                                        cuda_locations );
 }

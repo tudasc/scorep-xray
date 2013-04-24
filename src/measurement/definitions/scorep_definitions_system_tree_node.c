@@ -68,9 +68,9 @@ equal_system_tree_node( const SCOREP_SystemTreeNodeDef* existingDefinition,
 
 
 SCOREP_SystemTreeNodeHandle
-SCOREP_DefineSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
-                             const char*                 name,
-                             const char*                 class )
+SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
+                                      const char*                 name,
+                                      const char*                 class )
 {
     UTILS_DEBUG_ENTRY( "node %s, class %s", name, class );
 

@@ -69,7 +69,7 @@ equal_source_file( const SCOREP_SourceFileDef* existingDefinition,
  * Associate a file name with a process unique file handle.
  */
 SCOREP_SourceFileHandle
-SCOREP_DefineSourceFile( const char* fileName )
+SCOREP_Definitions_NewSourceFile( const char* fileName )
 {
     UTILS_DEBUG_ENTRY( "%s", fileName );
 

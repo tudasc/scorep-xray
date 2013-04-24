@@ -45,7 +45,7 @@ typedef SCOREP_Allocator_MovableMemory SCOREP_AnyHandle;
 
 /**
  * Type of a opaque handle to a source file definition.
- * @see SCOREP_DefineSourceFile()
+ * @see SCOREP_Definitions_NewSourceFile()
  */
 typedef SCOREP_AnyHandle SCOREP_SourceFileHandle;
 
@@ -57,7 +57,7 @@ typedef SCOREP_AnyHandle SCOREP_SourceFileHandle;
 
 /**
  * Type of a opaque handle to a metric definition.
- * @see SCOREP_DefineMetric()
+ * @see SCOREP_Definitions_NewMetric()
  */
 typedef SCOREP_AnyHandle SCOREP_MetricHandle;
 
@@ -70,7 +70,7 @@ typedef SCOREP_AnyHandle SCOREP_MetricHandle;
 
 /**
  * Type of a opaque handle to a sampling set definition.
- * @see SCOREP_DefineSamplingSet()
+ * @see SCOREP_Definitions_NewSamplingSet()
  */
 typedef SCOREP_AnyHandle SCOREP_SamplingSetHandle;
 
@@ -82,7 +82,7 @@ typedef SCOREP_AnyHandle SCOREP_SamplingSetHandle;
 
 /**
  * Type of a opaque handle to a region definition.
- * @see SCOREP_DefineRegion()
+ * @see SCOREP_Definitions_NewRegion()
  */
 typedef SCOREP_AnyHandle SCOREP_RegionHandle;
 

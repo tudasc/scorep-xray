@@ -95,14 +95,14 @@ SCOREP_RegionHandle scorep_mpi_regid[SCOREP__MPI_NUMFUNCS+1];
 void scorep_mpi_register_regions()
 {
   /* Define source file handle for MPI functions */
-  SCOREP_SourceFileHandle file_id = SCOREP_DefineSourceFile("MPI");
+  SCOREP_SourceFileHandle file_id = SCOREP_Definitions_NewSourceFile("MPI");
 
 #pragma wrapgen multiple restrict() skel/SCOREP_Mpi_RegC.w
 
   /* Artificial root for MPI-only experiments when no user-code
    * instrumenation is available */
   scorep_mpi_regid[SCOREP_PARALLEL__MPI] =
-      SCOREP_DefineRegion("PARALLEL", NULL, SCOREP_INVALID_SOURCE_FILE, SCOREP_INVALID_LINE_NO, 
+      SCOREP_Definitions_NewRegion("PARALLEL", NULL, SCOREP_INVALID_SOURCE_FILE, SCOREP_INVALID_LINE_NO, 
                         SCOREP_INVALID_LINE_NO, SCOREP_ADAPTER_MPI, SCOREP_REGION_UNKNOWN);
 }
 

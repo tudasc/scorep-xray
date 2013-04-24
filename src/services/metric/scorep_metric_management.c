@@ -461,24 +461,24 @@ initialize_location_metric_cb( SCOREP_Location* location,
                     SCOREP_Metric_Properties props = scorep_metric_sources[ i ]->metric_source_props( metric_data->event_set[ i ], j );
 
                     /* Write metric member definition */
-                    SCOREP_MetricHandle metric_handle = SCOREP_DefineMetric( props.name,
-                                                                             props.description,
-                                                                             props.source_type,
-                                                                             props.mode,
-                                                                             props.value_type,
-                                                                             props.base,
-                                                                             props.exponent,
-                                                                             props.unit,
-                                                                             props.profiling_type );
+                    SCOREP_MetricHandle metric_handle = SCOREP_Definitions_NewMetric( props.name,
+                                                                                      props.description,
+                                                                                      props.source_type,
+                                                                                      props.mode,
+                                                                                      props.value_type,
+                                                                                      props.base,
+                                                                                      props.exponent,
+                                                                                      props.unit,
+                                                                                      props.profiling_type );
                     synchronous_strict_metrics.metrics[ recent_metric_index ] = metric_handle;
                     recent_metric_index++;
                 }
             }
 
             /* Write definition of sampling set */
-            synchronous_strict_metrics.sampling_set = SCOREP_DefineSamplingSet( ( uint8_t )synchronous_strict_metrics.overall_number_of_metrics,
-                                                                                synchronous_strict_metrics.metrics,
-                                                                                SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS_STRICT );
+            synchronous_strict_metrics.sampling_set = SCOREP_Definitions_NewSamplingSet( ( uint8_t )synchronous_strict_metrics.overall_number_of_metrics,
+                                                                                         synchronous_strict_metrics.metrics,
+                                                                                         SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS_STRICT );
         }
 
 
@@ -548,24 +548,24 @@ initialize_location_metric_cb( SCOREP_Location* location,
                             scorep_metric_sources[ source_index ]->metric_source_props( event_set_collection[ source_index ][ metric_type ], metric_index );
 
                         /* Write metric member definition */
-                        SCOREP_MetricHandle metric_handle = SCOREP_DefineMetric( props.name,
-                                                                                 props.description,
-                                                                                 props.source_type,
-                                                                                 props.mode,
-                                                                                 props.value_type,
-                                                                                 props.base,
-                                                                                 props.exponent,
-                                                                                 props.unit,
-                                                                                 props.profiling_type );
+                        SCOREP_MetricHandle metric_handle = SCOREP_Definitions_NewMetric( props.name,
+                                                                                          props.description,
+                                                                                          props.source_type,
+                                                                                          props.mode,
+                                                                                          props.value_type,
+                                                                                          props.base,
+                                                                                          props.exponent,
+                                                                                          props.unit,
+                                                                                          props.profiling_type );
                         all_additional_metric_handles[ recent_metric_index++ ] = metric_handle;
                     }
                 }
 
                 /* Write definition of sampling set */
                 SCOREP_SamplingSetHandle current_sampling_set_handle = SCOREP_INVALID_SAMPLING_SET;
-                current_sampling_set_handle = SCOREP_DefineSamplingSet( ( uint8_t )current_overall_number_of_metrics,
-                                                                        all_additional_metric_handles,
-                                                                        SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS );
+                current_sampling_set_handle = SCOREP_Definitions_NewSamplingSet( ( uint8_t )current_overall_number_of_metrics,
+                                                                                 all_additional_metric_handles,
+                                                                                 SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS );
 
                 /* Get handle of current location as recorder */
                 SCOREP_LocationHandle    current_location_handle            = SCOREP_Location_GetLocationHandle( location );
@@ -584,10 +584,10 @@ initialize_location_metric_cb( SCOREP_Location* location,
                     }
                 }
 
-                current_location_metric_set->sampling_set = SCOREP_DefineScopedSamplingSet( current_sampling_set_handle,
-                                                                                            current_location_handle,
-                                                                                            scope,
-                                                                                            scope_handle );
+                current_location_metric_set->sampling_set = SCOREP_Definitions_NewScopedSamplingSet( current_sampling_set_handle,
+                                                                                                     current_location_handle,
+                                                                                                     scope,
+                                                                                                     scope_handle );
                 current_location_metric_set->next = previous_location_metric_set;
                 previous_location_metric_set      = current_location_metric_set;
 

@@ -113,7 +113,7 @@ SCOREP_Profile_Initialize( void )
     if ( !scorep_profile.reinitialize )
     {
         scorep_profile_param_instance =
-            SCOREP_DefineParameter( "instance", SCOREP_PARAMETER_INT64 );
+            SCOREP_Definitions_NewParameter( "instance", SCOREP_PARAMETER_INT64 );
     }
     else
     {

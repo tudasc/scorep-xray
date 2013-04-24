@@ -70,8 +70,8 @@ equal_parameter( const SCOREP_ParameterDef* existingDefinition,
  * Associate a name and a type with a process unique parameter handle.
  */
 SCOREP_ParameterHandle
-SCOREP_DefineParameter( const char*          name,
-                        SCOREP_ParameterType type )
+SCOREP_Definitions_NewParameter( const char*          name,
+                                 SCOREP_ParameterType type )
 {
     UTILS_DEBUG_ENTRY( "%s", name );
 

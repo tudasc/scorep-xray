@@ -59,7 +59,7 @@
  * Associate a name with a process unique I/O file group handle.
  */
 SCOREP_IOFileGroupHandle
-SCOREP_DefineIOFileGroup( const char* name )
+SCOREP_Definitions_NewIOFileGroup( const char* name )
 {
     UTILS_DEBUG_ENTRY( "%s", name );
 

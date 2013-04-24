@@ -423,10 +423,10 @@ scorep_mpi_win_create( MPI_Win  win,
     /* register mpi window definition */
     /* NOTE: MPI_COMM_WORLD is _not_ present in the internal structures,
      * and _must not_ be queried by scorep_mpi_comm_handle */
-    handle = SCOREP_DefineInterimRmaWindow( "",
-                                            comm == MPI_COMM_WORLD
-                                            ? SCOREP_MPI_COMM_WORLD_HANDLE
-                                            : scorep_mpi_comm_handle( comm ) );
+    handle = SCOREP_Definitions_NewInterimRmaWindow( "",
+                                                     comm == MPI_COMM_WORLD
+                                                     ? SCOREP_MPI_COMM_WORLD_HANDLE
+                                                     : scorep_mpi_comm_handle( comm ) );
 
     /* enter win in scorep_mpi_windows[] array */
     scorep_mpi_windows[ scorep_mpi_last_window ].win = win;
@@ -531,10 +531,10 @@ scorep_mpi_setup_world( void )
     /* initialize MPI_COMM_WORLD */
     scorep_mpi_comm_definition_payload* comm_payload;
     scorep_mpi_world.handle =
-        SCOREP_DefineInterimCommunicator( SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                          SCOREP_ADAPTER_MPI,
-                                          sizeof( *comm_payload ),
-                                          ( void** )&comm_payload );
+        SCOREP_Definitions_NewInterimCommunicator( SCOREP_INVALID_INTERIM_COMMUNICATOR,
+                                                   SCOREP_ADAPTER_MPI,
+                                                   sizeof( *comm_payload ),
+                                                   ( void** )&comm_payload );
     comm_payload->is_self_like     = scorep_mpi_world.size == 1;
     comm_payload->local_rank       = scorep_mpi_my_global_rank;
     comm_payload->global_root_rank = 0;
@@ -743,10 +743,10 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
 
     /* create definition in measurement system */
     scorep_mpi_comm_definition_payload* comm_payload;
-    handle =  SCOREP_DefineInterimCommunicator( parent_handle,
-                                                SCOREP_ADAPTER_MPI,
-                                                sizeof( *comm_payload ),
-                                                ( void** )&comm_payload );
+    handle =  SCOREP_Definitions_NewInterimCommunicator( parent_handle,
+                                                         SCOREP_ADAPTER_MPI,
+                                                         sizeof( *comm_payload ),
+                                                         ( void** )&comm_payload );
     comm_payload->is_self_like     = size == 1;
     comm_payload->local_rank       = local_rank;
     comm_payload->global_root_rank = root;
@@ -927,7 +927,7 @@ scorep_mpi_group_create( MPI_Group group )
         int32_t size = scorep_mpi_group_translate_ranks( group );
 
         /* register mpi group definition (as communicator) */
-        handle = SCOREP_DefineGroupFrom32(
+        handle = SCOREP_Definitions_NewGroupFrom32(
             SCOREP_GROUP_MPI_GROUP,
             "",
             size,

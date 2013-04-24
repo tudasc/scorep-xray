@@ -41,9 +41,9 @@ test_1( CuTest* tc )
     SCOREP_Memory_Initialize( 4 * 4096, 4096 );
     SCOREP_Definitions_Initialize();
 
-    SCOREP_StringHandle handle1 = SCOREP_DefineString( "foo" );
-    SCOREP_StringHandle handle2 = SCOREP_DefineString( "foo" );
-    SCOREP_StringHandle handle3 = SCOREP_DefineString( "foo" );
+    SCOREP_StringHandle handle1 = SCOREP_Definitions_NewString( "foo" );
+    SCOREP_StringHandle handle2 = SCOREP_Definitions_NewString( "foo" );
+    SCOREP_StringHandle handle3 = SCOREP_Definitions_NewString( "foo" );
 
     CuAssert( tc, "1st and 2nd call should return the same handle", handle1 == handle2 );
     CuAssert( tc, "2nd and 3rd call should return the same handle", handle2 == handle3 );
@@ -58,12 +58,12 @@ test_2( CuTest* tc )
     SCOREP_Memory_Initialize( 4 * 4096, 4096 );
     SCOREP_Definitions_Initialize();
 
-    SCOREP_StringHandle foo_handle1 = SCOREP_DefineString( "foo" );
-    SCOREP_StringHandle bar_handle1 = SCOREP_DefineString( "bar" );
-    SCOREP_StringHandle foo_handle2 = SCOREP_DefineString( "foo" );
-    SCOREP_StringHandle bar_handle2 = SCOREP_DefineString( "bar" );
-    SCOREP_StringHandle foo_handle3 = SCOREP_DefineString( "foo" );
-    SCOREP_StringHandle bar_handle3 = SCOREP_DefineString( "bar" );
+    SCOREP_StringHandle foo_handle1 = SCOREP_Definitions_NewString( "foo" );
+    SCOREP_StringHandle bar_handle1 = SCOREP_Definitions_NewString( "bar" );
+    SCOREP_StringHandle foo_handle2 = SCOREP_Definitions_NewString( "foo" );
+    SCOREP_StringHandle bar_handle2 = SCOREP_Definitions_NewString( "bar" );
+    SCOREP_StringHandle foo_handle3 = SCOREP_Definitions_NewString( "foo" );
+    SCOREP_StringHandle bar_handle3 = SCOREP_Definitions_NewString( "bar" );
 
     CuAssert( tc, "1st and 2nd call should return the same handle", foo_handle1 == foo_handle2 );
     CuAssert( tc, "2nd and 3rd call should return the same handle", foo_handle2 == foo_handle3 );

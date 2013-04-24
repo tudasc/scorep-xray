@@ -1390,7 +1390,7 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    SCOREP_StringHandle string_handle = SCOREP_DefineString( value );
+    SCOREP_StringHandle string_handle = SCOREP_Definitions_NewString( value );
 
     if ( scorep_tracing_consume_event() )
     {

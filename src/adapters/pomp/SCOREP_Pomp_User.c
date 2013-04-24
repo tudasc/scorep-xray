@@ -172,7 +172,7 @@ scorep_pomp_init( void )
         SCOREP_InitMeasurement();
 
         /* Initialize file handle for OpenMP API functions */
-        scorep_pomp_file_handle = SCOREP_DefineSourceFile( "OMP" );
+        scorep_pomp_file_handle = SCOREP_Definitions_NewSourceFile( "OMP" );
 
         /* Allocate memory for your POMP2_Get_num_regions() regions */
         scorep_pomp_regions = calloc( POMP2_Get_num_regions(),

@@ -80,7 +80,7 @@ typedef int ( *SCOREP_Tau_ExitCallback )( void );
 
 /**
  * Symbolic constant representing an invalid or unknown line number.
- * @see SCOREP_DefineRegion()
+ * @see SCOREP_Definitions_NewRegion()
  */
 #define SCOREP_INVALID_LINE_NO                    0
 #define SCOREP_TAU_INVALID_LINE_NO                SCOREP_INVALID_LINE_NO
@@ -88,7 +88,7 @@ typedef int ( *SCOREP_Tau_ExitCallback )( void );
 
 
 /**
- * Types to be used in defining a region (SCOREP_DefineRegion()). In order to
+ * Types to be used in defining a region (SCOREP_Definitions_NewRegion()). In order to
  * track the origin of a region definition, the adapter needs to provide @e
  * his type.
  *

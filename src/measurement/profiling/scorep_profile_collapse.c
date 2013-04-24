@@ -62,13 +62,13 @@ scorep_profile_process_collapse( void )
              "Reached callpath depth was %" PRIu64 "\n",
              scorep_profile.max_callpath_depth, scorep_profile.reached_depth );
 
-    scorep_profile_collapse_region = SCOREP_DefineRegion( "COLLAPSE",
-                                                          NULL,
-                                                          SCOREP_INVALID_SOURCE_FILE,
-                                                          0,
-                                                          0,
-                                                          SCOREP_ADAPTER_USER,
-                                                          SCOREP_REGION_UNKNOWN );
+    scorep_profile_collapse_region = SCOREP_Definitions_NewRegion( "COLLAPSE",
+                                                                   NULL,
+                                                                   SCOREP_INVALID_SOURCE_FILE,
+                                                                   0,
+                                                                   0,
+                                                                   SCOREP_ADAPTER_USER,
+                                                                   SCOREP_REGION_UNKNOWN );
 
     scorep_profile_for_all( scorep_profile.first_root_node,
                             &substitute_collapse,

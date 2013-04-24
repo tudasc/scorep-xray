@@ -91,15 +91,15 @@ equal_metric( const SCOREP_MetricDef* existingDefinition,
  * Associate the parameter tuple with a process unique counter handle.
  */
 SCOREP_MetricHandle
-SCOREP_DefineMetric( const char*                name,
-                     const char*                description,
-                     SCOREP_MetricSourceType    sourceType,
-                     SCOREP_MetricMode          mode,
-                     SCOREP_MetricValueType     valueType,
-                     SCOREP_MetricBase          base,
-                     int64_t                    exponent,
-                     const char*                unit,
-                     SCOREP_MetricProfilingType profilingType )
+SCOREP_Definitions_NewMetric( const char*                name,
+                              const char*                description,
+                              SCOREP_MetricSourceType    sourceType,
+                              SCOREP_MetricMode          mode,
+                              SCOREP_MetricValueType     valueType,
+                              SCOREP_MetricBase          base,
+                              int64_t                    exponent,
+                              const char*                unit,
+                              SCOREP_MetricProfilingType profilingType )
 {
     UTILS_DEBUG_ENTRY( "%s", name );
 

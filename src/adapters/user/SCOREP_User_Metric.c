@@ -95,19 +95,19 @@ SCOREP_User_InitMetric
 
         /* Define user metric */
         SCOREP_MetricHandle metric
-            = SCOREP_DefineMetric( name,
-                                   "",
-                                   SCOREP_METRIC_SOURCE_TYPE_USER,
-                                   SCOREP_METRIC_MODE_ABSOLUTE_POINT,
-                                   value_type,
-                                   SCOREP_METRIC_BASE_DECIMAL,
-                                   0,
-                                   unit,
-                                   SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+            = SCOREP_Definitions_NewMetric( name,
+                                            "",
+                                            SCOREP_METRIC_SOURCE_TYPE_USER,
+                                            SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                            value_type,
+                                            SCOREP_METRIC_BASE_DECIMAL,
+                                            0,
+                                            unit,
+                                            SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
 
         *metricHandle
-            = SCOREP_DefineSamplingSet( 1, &metric,
-                                        SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS );
+            = SCOREP_Definitions_NewSamplingSet( 1, &metric,
+                                                 SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS );
     }
 
 out:

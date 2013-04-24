@@ -362,13 +362,13 @@ pgi_enter_region( SCOREP_RegionHandle* region,
                  ( strstr( region_name, "SCOREP_User_RegionClass" ) == NULL ) &&
                  ( !SCOREP_Filter_Match( file_name, region_name, NULL ) ) )
             {
-                *region = SCOREP_DefineRegion( region_name,
-                                               NULL,
-                                               SCOREP_DefineSourceFile( file_name ),
-                                               lineno,
-                                               SCOREP_INVALID_LINE_NO,
-                                               SCOREP_ADAPTER_COMPILER,
-                                               SCOREP_REGION_FUNCTION );
+                *region = SCOREP_Definitions_NewRegion( region_name,
+                                                        NULL,
+                                                        SCOREP_Definitions_NewSourceFile( file_name ),
+                                                        lineno,
+                                                        SCOREP_INVALID_LINE_NO,
+                                                        SCOREP_ADAPTER_COMPILER,
+                                                        SCOREP_REGION_FUNCTION );
             }
             else
             {

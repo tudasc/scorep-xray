@@ -57,8 +57,8 @@
         <!-- Code executed once for every function at initialization.
              Assigns the region handle -->
 	<init>
-		regionid = SCOREP_DefineRegion(@ROUTINE@,0,
-						SCOREP_DefineSourceFile(@FILE@),
+		regionid = SCOREP_Definitions_NewRegion(@ROUTINE@,0,
+						SCOREP_Definitions_NewSourceFile(@FILE@),
 						@LINE@,@LINE@,1,1);
 	</init>
    

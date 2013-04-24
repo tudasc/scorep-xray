@@ -6,7 +6,7 @@ ${guard:start}
  * @note Introduced with MPI-${mpi:version}
  * @ingroup ${group|lowercase}
  * It triggers an enter and an exit event. Additionally, between enter event and exit
- * event, @ref SCOREP_DefineInterimCommunicator is called.
+ * event, @ref SCOREP_Definitions_NewInterimCommunicator is called.
  */
 ${proto:c}
 {

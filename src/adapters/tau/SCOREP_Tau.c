@@ -40,13 +40,13 @@ extern void
 SCOREP_RegisterExitCallback( SCOREP_Tau_ExitCallback );
 
 extern SCOREP_RegionHandle
-SCOREP_DefineRegion( const char*             regionName,
-                     const char*             regionCanonicalName,
-                     SCOREP_SourceFileHandle fileHandle,
-                     SCOREP_LineNo           beginLine,
-                     SCOREP_LineNo           endLine,
-                     SCOREP_AdapterType      adapter,
-                     SCOREP_RegionType       regionType );
+SCOREP_Definitions_NewRegion( const char*             regionName,
+                              const char*             regionCanonicalName,
+                              SCOREP_SourceFileHandle fileHandle,
+                              SCOREP_LineNo           beginLine,
+                              SCOREP_LineNo           endLine,
+                              SCOREP_AdapterType      adapter,
+                              SCOREP_RegionType       regionType );
 
 extern void
 SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle );
@@ -154,8 +154,8 @@ SCOREP_Tau_DefineRegion( const char*                 regionName,
                          SCOREP_Tau_AdapterType      adapter,
                          SCOREP_Tau_RegionType       regionType )
 {
-    return ( SCOREP_Tau_RegionHandle )SCOREP_DefineRegion( regionName, NULL, fileHandle,
-                                                           beginLine, endLine, adapter, regionType );
+    return ( SCOREP_Tau_RegionHandle )SCOREP_Definitions_NewRegion( regionName, NULL, fileHandle,
+                                                                    beginLine, endLine, adapter, regionType );
 }
 
 

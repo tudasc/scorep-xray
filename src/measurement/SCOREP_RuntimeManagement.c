@@ -181,7 +181,7 @@ SCOREP_InitMeasurement( void )
     SCOREP_TIME( SCOREP_Definitions_Initialize, ( ) );
 
     /* Get location group handle from system tree */
-    location_group_handle = SCOREP_DefineSystemTree( system_tree_path );
+    location_group_handle = SCOREP_Definitions_NewSystemTree( system_tree_path );
 
     /* Data structure containing path in system tree is not needed any longer */
     SCOREP_FreeSystemTree( system_tree_path );

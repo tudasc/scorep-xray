@@ -50,23 +50,23 @@ SCOREP_BuildSystemTree()
 }
 
 SCOREP_LocationGroupHandle
-SCOREP_DefineSystemTree( SCOREP_Platform_SystemTreePathElement* path )
+SCOREP_Definitions_NewSystemTree( SCOREP_Platform_SystemTreePathElement* path )
 {
     /* Create SystemTreeNode definitions */
     SCOREP_SystemTreeNodeHandle            parent = SCOREP_INVALID_SYSTEM_TREE_NODE;
     SCOREP_Platform_SystemTreePathElement* node;
     SCOREP_PLATFORM_SYSTEM_TREE_FORALL( path, node )
     {
-        parent = SCOREP_DefineSystemTreeNode( parent,
-                                              node->node_name,
-                                              node->node_class );
+        parent = SCOREP_Definitions_NewSystemTreeNode( parent,
+                                                       node->node_name,
+                                                       node->node_class );
     }
 
     /* Create Location Group definition
      *
      * In early stage 'global location group ID' and 'name' are set to invalid dummies.
      * Correct values must be set later on. */
-    return SCOREP_DefineLocationGroup( parent );
+    return SCOREP_Definitions_NewLocationGroup( parent );
 }
 
 void
@@ -98,7 +98,7 @@ SCOREP_FinalizeLocationGroup()
 
     /* In early stage 'global location group ID' and 'name' are set to invalid dummies.
      * Correct values must be set manually. */
-    location_group->name_handle              = SCOREP_DefineString( name );
+    location_group->name_handle              = SCOREP_Definitions_NewString( name );
     location_group->global_location_group_id = location_group_id;
 
 

@@ -77,10 +77,10 @@ local_comm_static_size()
  * Associate a MPI communicator with a process unique communicator handle.
  */
 SCOREP_InterimCommunicatorHandle
-SCOREP_DefineInterimCommunicator( SCOREP_InterimCommunicatorHandle parentComm,
-                                  SCOREP_AdapterType               adapterType,
-                                  size_t                           sizeOfPayload,
-                                  void**                           payload )
+SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle parentComm,
+                                           SCOREP_AdapterType               adapterType,
+                                           size_t                           sizeOfPayload,
+                                           void**                           payload )
 {
     SCOREP_InterimCommunicatorHandle new_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
 
@@ -188,9 +188,9 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
  * Associate a MPI communicator with a process unique communicator handle.
  */
 SCOREP_CommunicatorHandle
-SCOREP_DefineCommunicator( SCOREP_GroupHandle        group_handle,
-                           const char*               name,
-                           SCOREP_CommunicatorHandle parent_handle )
+SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group_handle,
+                                    const char*               name,
+                                    SCOREP_CommunicatorHandle parent_handle )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -213,9 +213,9 @@ SCOREP_DefineCommunicator( SCOREP_GroupHandle        group_handle,
  * Associate a MPI communicator with a process unique communicator handle.
  */
 SCOREP_CommunicatorHandle
-SCOREP_DefineUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
-                                  const char*               name,
-                                  SCOREP_CommunicatorHandle parent_handle )
+SCOREP_Definitions_NewUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
+                                           const char*               name,
+                                           SCOREP_CommunicatorHandle parent_handle )
 {
     UTILS_DEBUG_ENTRY();
 

@@ -109,7 +109,7 @@ scorep_user_get_file( const char*              file,
        In the definitions we want to have simplified file names. */
     char* file_name = UTILS_CStr_dup( file );
     UTILS_IO_SimplifyPath( file_name );
-    SCOREP_SourceFileHandle handle = SCOREP_DefineSourceFile( file_name );
+    SCOREP_SourceFileHandle handle = SCOREP_Definitions_NewSourceFile( file_name );
     free( file_name );
 
     /* Cache last used file information */
@@ -254,13 +254,13 @@ SCOREP_User_RegionInit( SCOREP_User_RegionHandle*    handle,
         if ( ( new_handle != SCOREP_USER_INVALID_REGION ) &&
              ( new_handle != SCOREP_FILTERED_USER_REGION ) )
         {
-            new_handle->handle = SCOREP_DefineRegion( name,
-                                                      NULL,
-                                                      file,
-                                                      lineNo,
-                                                      SCOREP_INVALID_LINE_NO,
-                                                      SCOREP_ADAPTER_USER,
-                                                      region_type );
+            new_handle->handle = SCOREP_Definitions_NewRegion( name,
+                                                               NULL,
+                                                               file,
+                                                               lineNo,
+                                                               SCOREP_INVALID_LINE_NO,
+                                                               SCOREP_ADAPTER_USER,
+                                                               region_type );
         }
         *handle = new_handle;
     }

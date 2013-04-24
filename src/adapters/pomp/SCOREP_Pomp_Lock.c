@@ -74,13 +74,13 @@ scorep_pomp_register_lock_regions( void )
     int i = 0;
     for ( i = 0; i < SCOREP_POMP_REGION_NUM; i++ )
     {
-        scorep_pomp_regid[ i ] = SCOREP_DefineRegion( scorep_pomp_region_names[ i ],
-                                                      NULL,
-                                                      scorep_pomp_file_handle,
-                                                      SCOREP_INVALID_LINE_NO,
-                                                      SCOREP_INVALID_LINE_NO,
-                                                      SCOREP_ADAPTER_POMP,
-                                                      SCOREP_REGION_WRAPPER );
+        scorep_pomp_regid[ i ] = SCOREP_Definitions_NewRegion( scorep_pomp_region_names[ i ],
+                                                               NULL,
+                                                               scorep_pomp_file_handle,
+                                                               SCOREP_INVALID_LINE_NO,
+                                                               SCOREP_INVALID_LINE_NO,
+                                                               SCOREP_ADAPTER_POMP,
+                                                               SCOREP_REGION_WRAPPER );
     }
 
     SCOREP_MutexCreate( &scorep_pomp_lock_lock );

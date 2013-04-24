@@ -53,17 +53,17 @@ SCOREP_DEFINE_DEFINITION_TYPE( Group )
 
 
 SCOREP_GroupHandle
-SCOREP_DefineUnifiedGroup( SCOREP_GroupType type,
-                           const char*      name,
-                           uint32_t         numberOfMembers,
-                           const uint64_t*  members );
+SCOREP_Definitions_NewUnifiedGroup( SCOREP_GroupType type,
+                                    const char*      name,
+                                    uint32_t         numberOfMembers,
+                                    const uint64_t*  members );
 
 
 SCOREP_GroupHandle
-SCOREP_DefineUnifiedGroupFrom32( SCOREP_GroupType type,
-                                 const char*      name,
-                                 uint32_t         numberOfMembers,
-                                 const uint32_t*  members );
+SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
+                                          const char*      name,
+                                          uint32_t         numberOfMembers,
+                                          const uint32_t*  members );
 
 
 void

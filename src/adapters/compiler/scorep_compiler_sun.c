@@ -73,13 +73,13 @@ scorep_compiler_register_region( char* region_name )
          ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
          ( !SCOREP_Filter_Match( NULL, region_name, NULL ) ) )
     {
-        handle = SCOREP_DefineRegion( region_name,
-                                      NULL,
-                                      SCOREP_INVALID_SOURCE_FILE,
-                                      SCOREP_INVALID_LINE_NO,
-                                      SCOREP_INVALID_LINE_NO,
-                                      SCOREP_ADAPTER_COMPILER,
-                                      SCOREP_REGION_FUNCTION );
+        handle = SCOREP_Definitions_NewRegion( region_name,
+                                               NULL,
+                                               SCOREP_INVALID_SOURCE_FILE,
+                                               SCOREP_INVALID_LINE_NO,
+                                               SCOREP_INVALID_LINE_NO,
+                                               SCOREP_ADAPTER_COMPILER,
+                                               SCOREP_REGION_FUNCTION );
     }
     return handle;
 }

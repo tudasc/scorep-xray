@@ -77,11 +77,11 @@
  * @param fileName A meaningful name for the source file.
  *
  * @return A process unique file handle to be used in calls to
- * SCOREP_DefineRegion().
+ * SCOREP_Definitions_NewRegion().
  *
  */
 SCOREP_SourceFileHandle
-SCOREP_DefineSourceFile( const char* fileName );
+SCOREP_Definitions_NewSourceFile( const char* fileName );
 
 
 
@@ -133,13 +133,13 @@ SCOREP_DefineSourceFile( const char* fileName );
  *
  */
 SCOREP_RegionHandle
-SCOREP_DefineRegion( const char*             regionName,
-                     const char*             regionCanonicalName,
-                     SCOREP_SourceFileHandle fileHandle,
-                     SCOREP_LineNo           beginLine,
-                     SCOREP_LineNo           endLine,
-                     SCOREP_AdapterType      adapter,
-                     SCOREP_RegionType       regionType );
+SCOREP_Definitions_NewRegion( const char*             regionName,
+                              const char*             regionCanonicalName,
+                              SCOREP_SourceFileHandle fileHandle,
+                              SCOREP_LineNo           beginLine,
+                              SCOREP_LineNo           endLine,
+                              SCOREP_AdapterType      adapter,
+                              SCOREP_RegionType       regionType );
 
 
 
@@ -180,22 +180,22 @@ SCOREP_ParameterType
 SCOREP_Parameter_GetType( SCOREP_ParameterHandle handle );
 
 SCOREP_GroupHandle
-SCOREP_DefineGroupFrom32( SCOREP_GroupType type,
-                          const char*      name,
-                          const uint32_t   numberOfRanks,
-                          const uint32_t*  ranks );
+SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
+                                   const char*      name,
+                                   const uint32_t   numberOfRanks,
+                                   const uint32_t*  ranks );
 
 SCOREP_GroupHandle
-SCOREP_DefineUnifiedGroup( SCOREP_GroupType type,
-                           const char*      name,
-                           uint32_t         numberOfMembers,
-                           const uint64_t*  members );
+SCOREP_Definitions_NewUnifiedGroup( SCOREP_GroupType type,
+                                    const char*      name,
+                                    uint32_t         numberOfMembers,
+                                    const uint64_t*  members );
 
 SCOREP_GroupHandle
-SCOREP_DefineUnifiedGroupFrom32( SCOREP_GroupType type,
-                                 const char*      name,
-                                 uint32_t         numberOfRanks,
-                                 const uint32_t*  ranks );
+SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
+                                          const char*      name,
+                                          uint32_t         numberOfRanks,
+                                          const uint32_t*  ranks );
 
 /**
  * Associate a MPI communicator with a process unique communicator handle.
@@ -207,14 +207,14 @@ SCOREP_DefineUnifiedGroupFrom32( SCOREP_GroupType type,
  * @param[out] payload  Will be set to the memory location of the payload.
  *
  * @return A process unique communicator handle to be used in calls to other
- * SCOREP_DefineMPI* functions.
+ * SCOREP_Definitions_NewMPI* functions.
  *
  */
 SCOREP_InterimCommunicatorHandle
-SCOREP_DefineInterimCommunicator( SCOREP_InterimCommunicatorHandle parentComm,
-                                  SCOREP_AdapterType               adapterType,
-                                  size_t                           sizeOfPayload,
-                                  void**                           payload );
+SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle parentComm,
+                                           SCOREP_AdapterType               adapterType,
+                                           size_t                           sizeOfPayload,
+                                           void**                           payload );
 
 
 /**
@@ -244,8 +244,8 @@ SCOREP_InterimCommunicatorSetName( SCOREP_InterimCommunicatorHandle localMPIComm
  * SCOREP_RMA* functions.
  */
 SCOREP_InterimRmaWindowHandle
-SCOREP_DefineInterimRmaWindow( const char*                      name,
-                               SCOREP_InterimCommunicatorHandle communicatorHandle );
+SCOREP_Definitions_NewInterimRmaWindow( const char*                      name,
+                                        SCOREP_InterimCommunicatorHandle communicatorHandle );
 
 
 /**
@@ -269,15 +269,15 @@ SCOREP_DefineInterimRmaWindow( const char*                      name,
  * responsibility to define unique topologies.
  *
  * @return A process unique topology handle to be used in calls to
- * SCOREP_DefineMPICartesianCoords().
+ * SCOREP_Definitions_NewMPICartesianCoords().
  *
  */
 SCOREP_MPICartesianTopologyHandle
-SCOREP_DefineMPICartesianTopology( const char*                      topologyName,
-                                   SCOREP_InterimCommunicatorHandle communicatorHandle,
-                                   uint32_t                         nDimensions,
-                                   const uint32_t                   nProcessesPerDimension[],
-                                   const uint8_t                    periodicityPerDimension[] );
+SCOREP_Definitions_NewMPICartesianTopology( const char*                      topologyName,
+                                            SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                            uint32_t                         nDimensions,
+                                            const uint32_t                   nProcessesPerDimension[],
+                                            const uint8_t                    periodicityPerDimension[] );
 
 
 /**
@@ -293,9 +293,9 @@ SCOREP_DefineMPICartesianTopology( const char*                      topologyName
  *
  */
 void
-SCOREP_DefineMPICartesianCoords( SCOREP_MPICartesianTopologyHandle cartesianTopologyHandle,
-                                 uint32_t                          nCoords,
-                                 const uint32_t                    coordsOfCurrentRank[] );
+SCOREP_Definitions_NewMPICartesianCoords( SCOREP_MPICartesianTopologyHandle cartesianTopologyHandle,
+                                          uint32_t                          nCoords,
+                                          const uint32_t                    coordsOfCurrentRank[] );
 
 
 /**
@@ -304,18 +304,18 @@ SCOREP_DefineMPICartesianCoords( SCOREP_MPICartesianTopologyHandle cartesianTopo
  * @param name A meaningful name of the metric member.
  *
  * @return A process unique metric member handle to be used in calls to
- * SCOREP_DefineSamplingSet().
+ * SCOREP_Definitions_NewSamplingSet().
  */
 SCOREP_MetricHandle
-SCOREP_DefineMetric( const char*                name,
-                     const char*                description,
-                     SCOREP_MetricSourceType    sourceType,
-                     SCOREP_MetricMode          mode,
-                     SCOREP_MetricValueType     valueType,
-                     SCOREP_MetricBase          base,
-                     int64_t                    exponent,
-                     const char*                unit,
-                     SCOREP_MetricProfilingType profilingType );
+SCOREP_Definitions_NewMetric( const char*                name,
+                              const char*                description,
+                              SCOREP_MetricSourceType    sourceType,
+                              SCOREP_MetricMode          mode,
+                              SCOREP_MetricValueType     valueType,
+                              SCOREP_MetricBase          base,
+                              int64_t                    exponent,
+                              const char*                unit,
+                              SCOREP_MetricProfilingType profilingType );
 
 /**
  * Define a new sampling set.
@@ -330,12 +330,12 @@ SCOREP_DefineMetric( const char*                name,
  *                        not related to region enter or leaves (SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS).
  *
  * @return A process unique sampling set handle to be used in calls to
- * SCOREP_DefineScopedSamplingSet().
+ * SCOREP_Definitions_NewScopedSamplingSet().
  */
 SCOREP_SamplingSetHandle
-SCOREP_DefineSamplingSet( uint8_t                    numberOfMetrics,
-                          const SCOREP_MetricHandle* metrics,
-                          SCOREP_MetricOccurrence    occurrence );
+SCOREP_Definitions_NewSamplingSet( uint8_t                    numberOfMetrics,
+                                   const SCOREP_MetricHandle* metrics,
+                                   SCOREP_MetricOccurrence    occurrence );
 
 /**
  * Define a new scoped sampling set. The scoped sampling set is recorded by
@@ -353,10 +353,10 @@ SCOREP_DefineSamplingSet( uint8_t                    numberOfMetrics,
  * @param scopeHandle    Handle of the sampling set scope according to @a scopeType.
  */
 SCOREP_SamplingSetHandle
-SCOREP_DefineScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
-                                SCOREP_LocationHandle    recorderHandle,
-                                SCOREP_MetricScope       scopeType,
-                                SCOREP_AnyHandle         scopeHandle );
+SCOREP_Definitions_NewScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
+                                         SCOREP_LocationHandle    recorderHandle,
+                                         SCOREP_MetricScope       scopeType,
+                                         SCOREP_AnyHandle         scopeHandle );
 
 /**
  * A SCOREP_SamplingSetHandle can refer to a normal sampling set or a scoped
@@ -379,12 +379,12 @@ SCOREP_GetSamplingSet( SCOREP_SamplingSetHandle samplingSet );
  * @param name A meaningfule name of the I/O file group.
  *
  * @return A process unique file I/O file group handle to be used in calls to
- * SCOREP_DefineIOFile().
+ * SCOREP_Definitions_NewIOFile().
  *
  * @planned To be implemented in milestone 2
  */
 SCOREP_IOFileGroupHandle
-SCOREP_DefineIOFileGroup( const char* name );
+SCOREP_Definitions_NewIOFileGroup( const char* name );
 
 
 /**
@@ -400,8 +400,8 @@ SCOREP_DefineIOFileGroup( const char* name );
  * @planned To be implemented in milestone 2
  */
 SCOREP_IOFileHandle
-SCOREP_DefineIOFile( const char*              name,
-                     SCOREP_IOFileGroupHandle ioFileGroup );
+SCOREP_Definitions_NewIOFile( const char*              name,
+                              SCOREP_IOFileGroupHandle ioFileGroup );
 
 
 /**
@@ -410,12 +410,12 @@ SCOREP_DefineIOFile( const char*              name,
  * @param name A meaningfule name of the marker group.
  *
  * @return A process unique marker group handle to be used in calls to
- * SCOREP_DefineMarker().
+ * SCOREP_Definitions_NewMarker().
  *
  * @planned To be implemented in milestone 2
  */
 SCOREP_MarkerGroupHandle
-SCOREP_DefineMarkerGroup( const char* name );
+SCOREP_Definitions_NewMarkerGroup( const char* name );
 
 
 /**
@@ -431,8 +431,8 @@ SCOREP_DefineMarkerGroup( const char* name );
  * @planned To be implemented in milestone 2
  */
 SCOREP_MarkerHandle
-SCOREP_DefineMarker( const char*              name,
-                     SCOREP_MarkerGroupHandle markerGroup );
+SCOREP_Definitions_NewMarker( const char*              name,
+                              SCOREP_MarkerGroupHandle markerGroup );
 
 
 /**
@@ -449,17 +449,17 @@ SCOREP_DefineMarker( const char*              name,
  *
  */
 SCOREP_ParameterHandle
-SCOREP_DefineParameter( const char*          name,
-                        SCOREP_ParameterType type );
+SCOREP_Definitions_NewParameter( const char*          name,
+                                 SCOREP_ParameterType type );
 
 
 /**
  * Define a property with its initial value.
  */
 SCOREP_PropertyHandle
-SCOREP_DefineProperty( SCOREP_Property          property,
-                       SCOREP_PropertyCondition condition,
-                       bool                     initialValue );
+SCOREP_Definitions_NewProperty( SCOREP_Property          property,
+                                SCOREP_PropertyCondition condition,
+                                bool                     initialValue );
 
 /**
  * Returns the sequence number of the unified definitions for a local callpath handle from

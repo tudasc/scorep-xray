@@ -203,16 +203,16 @@ scorep_profile_task_initialize( SCOREP_Location*             locationData,
     if ( scorep_profile_active_task_metric == SCOREP_INVALID_METRIC )
     {
         scorep_profile_active_task_metric =
-            SCOREP_DefineMetric( "max active tasks",
-                                 "Maximum number of tasks which have started execution "
-                                 "but are not yet done at the same point of time.",
-                                 SCOREP_METRIC_SOURCE_TYPE_TASK,
-                                 SCOREP_METRIC_MODE_ACCUMULATED_START,
-                                 SCOREP_METRIC_VALUE_DOUBLE,
-                                 SCOREP_METRIC_BASE_DECIMAL,
-                                 0,
-                                 "",
-                                 SCOREP_METRIC_PROFILING_TYPE_MAX );
+            SCOREP_Definitions_NewMetric( "max active tasks",
+                                          "Maximum number of tasks which have started execution "
+                                          "but are not yet done at the same point of time.",
+                                          SCOREP_METRIC_SOURCE_TYPE_TASK,
+                                          SCOREP_METRIC_MODE_ACCUMULATED_START,
+                                          SCOREP_METRIC_VALUE_DOUBLE,
+                                          SCOREP_METRIC_BASE_DECIMAL,
+                                          0,
+                                          "",
+                                          SCOREP_METRIC_PROFILING_TYPE_MAX );
     }
 }
 

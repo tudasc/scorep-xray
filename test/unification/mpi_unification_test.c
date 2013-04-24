@@ -135,21 +135,21 @@ main( int argc, char* argv[] )
     char rank_buffer[ 32 ];
     sprintf( rank_buffer, "Rank %d", rank );
 
-    SCOREP_DefineRegion( rank_buffer,
-                         NULL,
-                         0, //SCOREP_DefineSourceFile( __FILE__ ),
-                         51,
-                         80,
-                         SCOREP_ADAPTER_USER,
-                         SCOREP_REGION_FUNCTION );
+    SCOREP_Definitions_NewRegion( rank_buffer,
+                                  NULL,
+                                  0, //SCOREP_Definitions_NewSourceFile( __FILE__ ),
+                                  51,
+                                  80,
+                                  SCOREP_ADAPTER_USER,
+                                  SCOREP_REGION_FUNCTION );
 
-    SCOREP_DefineRegion( rank_buffer,
-                         NULL,
-                         0, //SCOREP_DefineSourceFile( __FILE__ ),
-                         51,
-                         80,
-                         SCOREP_ADAPTER_USER,
-                         SCOREP_REGION_FUNCTION );
+    SCOREP_Definitions_NewRegion( rank_buffer,
+                                  NULL,
+                                  0, //SCOREP_Definitions_NewSourceFile( __FILE__ ),
+                                  51,
+                                  80,
+                                  SCOREP_ADAPTER_USER,
+                                  SCOREP_REGION_FUNCTION );
 
     if ( scorep_test_mpi_unify_define_mpi_regions )
     {
@@ -166,10 +166,10 @@ main( int argc, char* argv[] )
         {
             group_members[ i ] = i;
         }
-        SCOREP_DefineGroupFrom32( SCOREP_GROUP_MPI_GROUP,
-                                  "",
-                                  size,
-                                  ( const uint32_t* )group_members );
+        SCOREP_Definitions_NewGroupFrom32( SCOREP_GROUP_MPI_GROUP,
+                                           "",
+                                           size,
+                                           ( const uint32_t* )group_members );
         free( group_members );
     }
 

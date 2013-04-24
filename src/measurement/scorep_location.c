@@ -105,7 +105,7 @@ scorep_location_create_location( SCOREP_Location*    parent,
     new_location->next = NULL;
 
     /* Trigger the definition for this new location */
-    new_location->location_handle = SCOREP_DefineLocation(
+    new_location->location_handle = SCOREP_Definitions_NewLocation(
         type,
         name );
 

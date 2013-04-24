@@ -96,9 +96,9 @@ equal_sampling_set( const SCOREP_SamplingSetDef* existingDefinition,
 
 
 SCOREP_SamplingSetHandle
-SCOREP_DefineSamplingSet( uint8_t                    numberOfMetrics,
-                          const SCOREP_MetricHandle* metrics,
-                          SCOREP_MetricOccurrence    occurrence )
+SCOREP_Definitions_NewSamplingSet( uint8_t                    numberOfMetrics,
+                                   const SCOREP_MetricHandle* metrics,
+                                   SCOREP_MetricOccurrence    occurrence )
 {
     UTILS_DEBUG_ENTRY( "#%hhu metrics", numberOfMetrics );
 
@@ -118,10 +118,10 @@ SCOREP_DefineSamplingSet( uint8_t                    numberOfMetrics,
 
 
 SCOREP_SamplingSetHandle
-SCOREP_DefineScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
-                                SCOREP_LocationHandle    recorderHandle,
-                                SCOREP_MetricScope       scopeType,
-                                SCOREP_AnyHandle         scopeHandle )
+SCOREP_Definitions_NewScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
+                                         SCOREP_LocationHandle    recorderHandle,
+                                         SCOREP_MetricScope       scopeType,
+                                         SCOREP_AnyHandle         scopeHandle )
 {
     UTILS_DEBUG_ENTRY();
 

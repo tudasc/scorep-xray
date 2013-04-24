@@ -58,15 +58,15 @@ SCOREP_DEFINE_DEFINITION_TYPE( Communicator )
 
 
 SCOREP_CommunicatorHandle
-SCOREP_DefineCommunicator( SCOREP_GroupHandle        group_handle,
-                           const char*               name,
-                           SCOREP_CommunicatorHandle parent_handle );
+SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group_handle,
+                                    const char*               name,
+                                    SCOREP_CommunicatorHandle parent_handle );
 
 
 SCOREP_CommunicatorHandle
-SCOREP_DefineUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
-                                  const char*               name,
-                                  SCOREP_CommunicatorHandle parent_handle );
+SCOREP_Definitions_NewUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
+                                           const char*               name,
+                                           SCOREP_CommunicatorHandle parent_handle );
 
 
 void

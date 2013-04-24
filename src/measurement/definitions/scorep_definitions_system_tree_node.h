@@ -46,9 +46,9 @@ SCOREP_DEFINE_DEFINITION_TYPE( SystemTreeNode )
 
 
 SCOREP_SystemTreeNodeHandle
-SCOREP_DefineSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
-                             const char*                 name,
-                             const char*                 klass );
+SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
+                                      const char*                 name,
+                                      const char*                 klass );
 
 
 void

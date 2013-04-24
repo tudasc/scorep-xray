@@ -51,7 +51,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( LocationGroup )
 
 
 SCOREP_LocationGroupHandle
-SCOREP_DefineLocationGroup( SCOREP_SystemTreeNodeHandle parent );
+SCOREP_Definitions_NewLocationGroup( SCOREP_SystemTreeNodeHandle parent );
 
 
 void

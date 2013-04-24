@@ -49,8 +49,8 @@ SCOREP_DEFINE_DEFINITION_TYPE( Location )
 
 
 SCOREP_LocationHandle
-SCOREP_DefineLocation( SCOREP_LocationType type,
-                       const char*         name );
+SCOREP_Definitions_NewLocation( SCOREP_LocationType type,
+                                const char*         name );
 
 
 void

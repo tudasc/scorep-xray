@@ -109,13 +109,13 @@ test_1( CuTest* tc )
 
 
 //SCOREP_StringHandle
-//SCOREP_DefineString( const char* str );
+//SCOREP_Definitions_NewString( const char* str );
 //
 //SCOREP_SourceFileHandle
-//SCOREP_DefineSourceFile(const char* fileName);
+//SCOREP_Definitions_NewSourceFile(const char* fileName);
 //
 //SCOREP_RegionHandle
-//SCOREP_DefineRegion
+//SCOREP_Definitions_NewRegion
 //(
 //    const char*             regionNameDemangled,
 //    const char*             regionNameMangled,

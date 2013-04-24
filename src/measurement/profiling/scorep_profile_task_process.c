@@ -57,17 +57,17 @@ visit_to_switches( scorep_profile_node* node,
 
     if ( switches_metric == SCOREP_INVALID_METRIC )
     {
-        switches_metric = SCOREP_DefineMetric( "number of switches",
-                                               "Number of switches to this type of tasks. "
-                                               "This includes the number of task begins and "
-                                               "the number of task resumes",
-                                               SCOREP_METRIC_SOURCE_TYPE_TASK,
-                                               SCOREP_METRIC_MODE_ACCUMULATED_START,
-                                               SCOREP_METRIC_VALUE_UINT64,
-                                               SCOREP_METRIC_BASE_DECIMAL,
-                                               0,
-                                               "",
-                                               SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+        switches_metric = SCOREP_Definitions_NewMetric( "number of switches",
+                                                        "Number of switches to this type of tasks. "
+                                                        "This includes the number of task begins and "
+                                                        "the number of task resumes",
+                                                        SCOREP_METRIC_SOURCE_TYPE_TASK,
+                                                        SCOREP_METRIC_MODE_ACCUMULATED_START,
+                                                        SCOREP_METRIC_VALUE_UINT64,
+                                                        SCOREP_METRIC_BASE_DECIMAL,
+                                                        0,
+                                                        "",
+                                                        SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
     }
 
     scorep_profile_trigger_int64( ( SCOREP_Profile_LocationData* )param,
@@ -86,13 +86,13 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
     static SCOREP_RegionHandle root_region = SCOREP_INVALID_REGION;
     if ( root_region == SCOREP_INVALID_REGION )
     {
-        root_region = SCOREP_DefineRegion( "task_root",
-                                           NULL,
-                                           SCOREP_INVALID_SOURCE_FILE,
-                                           SCOREP_INVALID_LINE_NO,
-                                           SCOREP_INVALID_LINE_NO,
-                                           SCOREP_ADAPTER_POMP,
-                                           SCOREP_REGION_TASK );
+        root_region = SCOREP_Definitions_NewRegion( "task_root",
+                                                    NULL,
+                                                    SCOREP_INVALID_SOURCE_FILE,
+                                                    SCOREP_INVALID_LINE_NO,
+                                                    SCOREP_INVALID_LINE_NO,
+                                                    SCOREP_ADAPTER_POMP,
+                                                    SCOREP_REGION_TASK );
     }
 
     /* Create root node for each new location */

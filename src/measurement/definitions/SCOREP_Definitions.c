@@ -83,7 +83,7 @@ SCOREP_Definitions_Initialize()
                                         false );
 
     /* ensure, that the empty string gets id 0 */
-    SCOREP_DefineString( "" );
+    SCOREP_Definitions_NewString( "" );
 }
 
 

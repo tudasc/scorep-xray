@@ -72,10 +72,10 @@ equal_group( const SCOREP_GroupDef* existingDefinition,
  * Associate a MPI group with a process unique group handle.
  */
 SCOREP_GroupHandle
-SCOREP_DefineGroup( SCOREP_GroupType type,
-                    const char*      name,
-                    uint32_t         numberOfMembers,
-                    const uint64_t*  members )
+SCOREP_Definitions_NewGroup( SCOREP_GroupType type,
+                             const char*      name,
+                             uint32_t         numberOfMembers,
+                             const uint64_t*  members )
 {
     SCOREP_Definitions_Lock();
 
@@ -99,10 +99,10 @@ SCOREP_DefineGroup( SCOREP_GroupType type,
  * Associate a MPI group with a process unique group handle.
  */
 SCOREP_GroupHandle
-SCOREP_DefineGroupFrom32( SCOREP_GroupType type,
-                          const char*      name,
-                          uint32_t         numberOfMembers,
-                          const uint32_t*  members )
+SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
+                                   const char*      name,
+                                   uint32_t         numberOfMembers,
+                                   const uint32_t*  members )
 {
     SCOREP_Definitions_Lock();
 
@@ -127,10 +127,10 @@ SCOREP_DefineGroupFrom32( SCOREP_GroupType type,
  * rank.
  */
 SCOREP_GroupHandle
-SCOREP_DefineUnifiedGroup( SCOREP_GroupType type,
-                           const char*      name,
-                           uint32_t         numberOfMembers,
-                           const uint64_t*  members )
+SCOREP_Definitions_NewUnifiedGroup( SCOREP_GroupType type,
+                                    const char*      name,
+                                    uint32_t         numberOfMembers,
+                                    const uint64_t*  members )
 {
     assert( scorep_unified_definition_manager );
 
@@ -151,10 +151,10 @@ SCOREP_DefineUnifiedGroup( SCOREP_GroupType type,
  * group unification was done.
  */
 SCOREP_GroupHandle
-SCOREP_DefineUnifiedGroupFrom32( SCOREP_GroupType type,
-                                 const char*      name,
-                                 uint32_t         numberOfMembers,
-                                 const uint32_t*  members )
+SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
+                                          const char*      name,
+                                          uint32_t         numberOfMembers,
+                                          const uint32_t*  members )
 {
     assert( scorep_unified_definition_manager );
 

@@ -72,9 +72,9 @@ equal_property( const SCOREP_PropertyDef* existingDefinition,
  * Associate a name with a process unique property handle.
  */
 SCOREP_PropertyHandle
-SCOREP_DefineProperty( SCOREP_Property          property,
-                       SCOREP_PropertyCondition condition,
-                       bool                     initialValue )
+SCOREP_Definitions_NewProperty( SCOREP_Property          property,
+                                SCOREP_PropertyCondition condition,
+                                bool                     initialValue )
 {
     UTILS_DEBUG_ENTRY( "%d, %d, %s",
                        property,

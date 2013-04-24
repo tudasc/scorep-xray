@@ -46,7 +46,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( String )
 
 
 SCOREP_StringHandle
-SCOREP_DefineString( const char* str );
+SCOREP_Definitions_NewString( const char* str );
 
 
 void

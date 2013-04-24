@@ -59,7 +59,7 @@
 
 /**
  * Type used in specifying line numbers.
- * @see SCOREP_DefineRegion()
+ * @see SCOREP_Definitions_NewRegion()
  */
 typedef uint32_t SCOREP_LineNo;
 
@@ -67,7 +67,7 @@ typedef uint32_t SCOREP_LineNo;
 
 /**
  * Symbolic constant representing an invalid or unknown line number.
- * @see SCOREP_DefineRegion()
+ * @see SCOREP_Definitions_NewRegion()
  */
 #define SCOREP_INVALID_LINE_NO 0
 
@@ -184,7 +184,7 @@ typedef uint32_t SCOREP_LineNo;
 
 
 /**
- * Types to be used in defining a region (SCOREP_DefineRegion()). In order to
+ * Types to be used in defining a region (SCOREP_Definitions_NewRegion()). In order to
  * track the origin of a region definition, the adapter needs to provide @e
  * his type.
  *
@@ -209,7 +209,7 @@ typedef enum SCOREP_AdapterType
 #undef SCOREP_ADAPTER
 
 /**
- * Metric sources to be used in defining a metric member (SCOREP_DefineMetric()).
+ * Metric sources to be used in defining a metric member (SCOREP_Definitions_NewMetric()).
  *
  */
 typedef enum SCOREP_MetricSourceType
@@ -229,7 +229,7 @@ typedef enum SCOREP_MetricSourceType
 } SCOREP_MetricSourceType;
 
 /**
- * Types to be used in defining type of metric values (SCOREP_DefineMetric()).
+ * Types to be used in defining type of metric values (SCOREP_Definitions_NewMetric()).
  *
  */
 typedef enum SCOREP_MetricValueType
@@ -242,7 +242,7 @@ typedef enum SCOREP_MetricValueType
 } SCOREP_MetricValueType;
 
 /**
- * Types to be used in defining metric mode (SCOREP_DefineMetric()).
+ * Types to be used in defining metric mode (SCOREP_Definitions_NewMetric()).
  *
  */
 typedef enum SCOREP_MetricMode
@@ -274,7 +274,7 @@ typedef enum SCOREP_MetricMode
 } SCOREP_MetricMode;
 
 /**
- * Types to be used in defining metric base (SCOREP_DefineMetric()).
+ * Types to be used in defining metric base (SCOREP_Definitions_NewMetric()).
  *
  */
 typedef enum SCOREP_MetricBase
@@ -343,7 +343,7 @@ typedef enum SCOREP_MetricProfilingType
 } SCOREP_MetricProfilingType;
 
 /**
- * Types to be used in defining a location (SCOREP_DefineLocation()).
+ * Types to be used in defining a location (SCOREP_Definitions_NewLocation()).
  *
  */
 typedef enum SCOREP_LocationType
@@ -356,7 +356,7 @@ typedef enum SCOREP_LocationType
 } SCOREP_LocationType;
 
 /**
- * Types to be used in defining a location group (SCOREP_DefineLocationGroup()).
+ * Types to be used in defining a location group (SCOREP_Definitions_NewLocationGroup()).
  *
  */
 typedef enum SCOREP_LocationGroupType
@@ -368,7 +368,7 @@ typedef enum SCOREP_LocationGroupType
 
 
 /**
- * Types to be used in defining a group (SCOREP_DefineGroup()).
+ * Types to be used in defining a group (SCOREP_Definitions_NewGroup()).
  *
  */
 typedef enum SCOREP_GroupType
@@ -387,7 +387,7 @@ typedef enum SCOREP_GroupType
 
 
 /**
- * Types to be used in defining a region (SCOREP_DefineRegion()). These types
+ * Types to be used in defining a region (SCOREP_Definitions_NewRegion()). These types
  * are currently not used inside the measurement system. This @e may change in
  * future if we are going to implement phases/dynamic regions etc. inside the
  * measurement system as opposed to inside the adapters or as a postprocessing
@@ -451,7 +451,7 @@ typedef enum SCOREP_RegionType
 
 /**
  * Types to be used in defining a parameter for parameter based profiling
- * (SCOREP_DefineParameter()).
+ * (SCOREP_Definitions_NewParameter()).
  *
  */
 typedef enum SCOREP_ParameterType

@@ -97,17 +97,17 @@ assign_callpath( scorep_profile_node* current, void* param )
             case scorep_profile_node_task_root:
             case scorep_profile_node_regular_region:
                 current->callpath_handle =
-                    SCOREP_DefineCallpath( parent_path,
-                                           scorep_profile_type_get_region_handle( current->type_specific_data ) );
+                    SCOREP_Definitions_NewCallpath( parent_path,
+                                                    scorep_profile_type_get_region_handle( current->type_specific_data ) );
                 break;
             case scorep_profile_node_parameter_string:
-                current->callpath_handle = SCOREP_DefineCallpathParameterString(
+                current->callpath_handle = SCOREP_Definitions_NewCallpathParameterString(
                     parent_path,
                     scorep_profile_type_get_parameter_handle( current->type_specific_data ),
                     scorep_profile_type_get_string_handle( current->type_specific_data ) );
                 break;
             case scorep_profile_node_parameter_integer:
-                current->callpath_handle = SCOREP_DefineCallpathParameterInteger(
+                current->callpath_handle = SCOREP_Definitions_NewCallpathParameterInteger(
                     parent_path,
                     scorep_profile_type_get_parameter_handle( current->type_specific_data ),
                     scorep_profile_type_get_int_value( current->type_specific_data ) );

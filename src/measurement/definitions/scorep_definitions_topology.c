@@ -59,11 +59,11 @@
  * Associate a MPI cartesian topology with a process unique topology handle.
  */
 SCOREP_MPICartesianTopologyHandle
-SCOREP_DefineMPICartesianTopology( const char*                      topologyName,
-                                   SCOREP_InterimCommunicatorHandle communicatorHandle,
-                                   uint32_t                         nDimensions,
-                                   const uint32_t                   nProcessesPerDimension[],
-                                   const uint8_t                    periodicityPerDimension[] )
+SCOREP_Definitions_NewMPICartesianTopology( const char*                      topologyName,
+                                            SCOREP_InterimCommunicatorHandle communicatorHandle,
+                                            uint32_t                         nDimensions,
+                                            const uint32_t                   nProcessesPerDimension[],
+                                            const uint8_t                    periodicityPerDimension[] )
 {
     UTILS_DEBUG_ENTRY( "%s", topologyName );
 
@@ -104,9 +104,9 @@ SCOREP_DefineMPICartesianTopology( const char*                      topologyName
  * referenced by @a cartesianTopologyHandle.
  */
 void
-SCOREP_DefineMPICartesianCoords( SCOREP_MPICartesianTopologyHandle cartesianTopologyHandle,
-                                 uint32_t                          nCoords,
-                                 const uint32_t                    coordsOfCurrentRank[] )
+SCOREP_Definitions_NewMPICartesianCoords( SCOREP_MPICartesianTopologyHandle cartesianTopologyHandle,
+                                          uint32_t                          nCoords,
+                                          const uint32_t                    coordsOfCurrentRank[] )
 {
     UTILS_DEBUG_ENTRY();
 

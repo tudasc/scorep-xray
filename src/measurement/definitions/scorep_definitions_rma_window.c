@@ -70,8 +70,8 @@ equal_interim_rma_window( const SCOREP_InterimRmaWindowDef* existingDefinition,
  * Associate the parameter tuple with a process unique RMA window handle.
  */
 SCOREP_InterimRmaWindowHandle
-SCOREP_DefineInterimRmaWindow( const char*                      name,
-                               SCOREP_InterimCommunicatorHandle communicatorHandle )
+SCOREP_Definitions_NewInterimRmaWindow( const char*                      name,
+                                        SCOREP_InterimCommunicatorHandle communicatorHandle )
 {
     UTILS_DEBUG_ENTRY( "%s", name );
 
@@ -136,8 +136,8 @@ equal_rma_window( const SCOREP_RmaWindowDef* existingDefinition,
  * Associate the parameter tuple with a process unique RMA window handle.
  */
 SCOREP_RmaWindowHandle
-SCOREP_DefineRmaWindow( const char*               name,
-                        SCOREP_CommunicatorHandle communicatorHandle )
+SCOREP_Definitions_NewRmaWindow( const char*               name,
+                                 SCOREP_CommunicatorHandle communicatorHandle )
 {
     UTILS_DEBUG_ENTRY( "%s", name );
 
@@ -157,8 +157,8 @@ SCOREP_DefineRmaWindow( const char*               name,
 
 
 SCOREP_RmaWindowHandle
-SCOREP_DefineUnifiedRmaWindow( const char*               name,
-                               SCOREP_CommunicatorHandle communicatorHandle )
+SCOREP_Definitions_NewUnifiedRmaWindow( const char*               name,
+                                        SCOREP_CommunicatorHandle communicatorHandle )
 {
     UTILS_DEBUG_ENTRY( "%s", name );
 

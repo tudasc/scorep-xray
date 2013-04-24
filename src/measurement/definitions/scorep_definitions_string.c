@@ -54,7 +54,7 @@
 
 
 SCOREP_StringHandle
-SCOREP_DefineString( const char* str )
+SCOREP_Definitions_NewString( const char* str )
 {
     UTILS_DEBUG_ENTRY( "%s", str );
 

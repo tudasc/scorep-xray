@@ -238,7 +238,7 @@ scorep_cupti_callbacks_init( void )
 
         if ( scorep_cupti_callbacks_record_cudart )
         {
-            cuda_runtime_file_handle = SCOREP_DefineSourceFile( "CUDART" );
+            cuda_runtime_file_handle = SCOREP_Definitions_NewSourceFile( "CUDART" );
 
             scorep_cupti_set_callback( scorep_cupti_callback_all_ptr,
                                        CUPTI_CB_DOMAIN_RUNTIME_API,
@@ -247,7 +247,7 @@ scorep_cupti_callbacks_init( void )
 
         if ( scorep_cupti_callbacks_record_cuda_driver )
         {
-            cuda_driver_file_handle = SCOREP_DefineSourceFile( "CUDRV" );
+            cuda_driver_file_handle = SCOREP_Definitions_NewSourceFile( "CUDRV" );
 
             scorep_cupti_set_callback( scorep_cupti_callback_all_ptr,
                                        CUPTI_CB_DOMAIN_DRIVER_API,
@@ -388,8 +388,8 @@ scorep_cupti_callback_cuda_runtime( CUpti_CallbackId          callbackId,
     }
     else
     {
-        region_handle = SCOREP_DefineRegion( callbackInfo->functionName, NULL, cuda_runtime_file_handle,
-                                             0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_WRAPPER );
+        region_handle = SCOREP_Definitions_NewRegion( callbackInfo->functionName, NULL, cuda_runtime_file_handle,
+                                                      0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_WRAPPER );
 
         cuda_api_function_put( CUPTI_CB_DOMAIN_RUNTIME_API, callbackId, region_handle );
     }
@@ -438,8 +438,8 @@ scorep_cupti_callback_driver_api( CUpti_CallbackId          callbackId,
     }
     else
     {
-        region_handle = SCOREP_DefineRegion( callbackInfo->functionName, NULL, cuda_driver_file_handle,
-                                             0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_WRAPPER );
+        region_handle = SCOREP_Definitions_NewRegion( callbackInfo->functionName, NULL, cuda_driver_file_handle,
+                                                      0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_WRAPPER );
 
         cuda_api_function_put( CUPTI_CB_DOMAIN_DRIVER_API, callbackId, region_handle );
     }

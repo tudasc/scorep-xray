@@ -87,7 +87,7 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
     }
           
     /* create the cartesian topology definition record */
-    topid = SCOREP_DefineMPICartesianTopology("", cid, ndims, udimv, uperiodv);
+    topid = SCOREP_Definitions_NewMPICartesianTopology("", cid, ndims, udimv, uperiodv);
 
      /* allocate space for coordv and ucoordv */
     coordv = calloc(ndims, sizeof(int));
@@ -112,7 +112,7 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
     }
   
     /* create the coordinates definition record */
-    SCOREP_DefineMPICartesianCoords(topid, ndims, ucoordv);               
+    SCOREP_Definitions_NewMPICartesianCoords(topid, ndims, ucoordv);               
 
     free(udimv);
     free(uperiodv);

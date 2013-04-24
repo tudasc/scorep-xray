@@ -33,7 +33,7 @@ SCOREP_Platform_SystemTreePathElement*
 SCOREP_BuildSystemTree();
 
 SCOREP_LocationGroupHandle
-SCOREP_DefineSystemTree( SCOREP_Platform_SystemTreePathElement* path );
+SCOREP_Definitions_NewSystemTree( SCOREP_Platform_SystemTreePathElement* path );
 
 void
 SCOREP_FreeSystemTree( SCOREP_Platform_SystemTreePathElement* path );

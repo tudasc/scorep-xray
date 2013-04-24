@@ -120,7 +120,7 @@ scorep_compiler_get_file( const char* file )
         }
         else
         {
-            *handle = SCOREP_DefineSourceFile( file_name );
+            *handle = SCOREP_Definitions_NewSourceFile( file_name );
         }
 
         /* Store handle in hashtable */
@@ -308,13 +308,13 @@ scorep_compiler_register_region( scorep_compiler_hash_node* node )
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s", node->region_name_demangled );
 
-    node->region_handle = SCOREP_DefineRegion( node->region_name_demangled,
-                                               node->region_name_mangled,
-                                               file_handle,
-                                               SCOREP_INVALID_LINE_NO,
-                                               SCOREP_INVALID_LINE_NO,
-                                               SCOREP_ADAPTER_COMPILER,
-                                               SCOREP_REGION_FUNCTION );
+    node->region_handle = SCOREP_Definitions_NewRegion( node->region_name_demangled,
+                                                        node->region_name_mangled,
+                                                        file_handle,
+                                                        SCOREP_INVALID_LINE_NO,
+                                                        SCOREP_INVALID_LINE_NO,
+                                                        SCOREP_ADAPTER_COMPILER,
+                                                        SCOREP_REGION_FUNCTION );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s done", node->region_name_demangled );
 }

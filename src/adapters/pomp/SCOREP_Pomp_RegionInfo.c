@@ -204,7 +204,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
          ( strcmp( last_file_name, region->startFileName ) != 0 ) )
     {
         last_file_name = region->startFileName;
-        last_file      = SCOREP_DefineSourceFile( last_file_name );
+        last_file      = SCOREP_Definitions_NewSourceFile( last_file_name );
     }
 
     /* Construct file:lno string */
@@ -234,13 +234,13 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
         char* parallel_name = ( char* )malloc( length );
         sprintf( parallel_name, "!$omp parallel %s", source_name );
 
-        region->innerParallel = SCOREP_DefineRegion( parallel_name,
-                                                     NULL,
-                                                     last_file,
-                                                     region->startLine1,
-                                                     region->endLine2,
-                                                     SCOREP_ADAPTER_POMP,
-                                                     SCOREP_REGION_PARALLEL );
+        region->innerParallel = SCOREP_Definitions_NewRegion( parallel_name,
+                                                              NULL,
+                                                              last_file,
+                                                              region->startLine1,
+                                                              region->endLine2,
+                                                              SCOREP_ADAPTER_POMP,
+                                                              SCOREP_REGION_PARALLEL );
         free( parallel_name );
     }
 
@@ -263,13 +263,13 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
             end   = region->endLine2;
         }
 
-        region->outerBlock = SCOREP_DefineRegion( region_name,
-                                                  NULL,
-                                                  last_file,
-                                                  start,
-                                                  end,
-                                                  SCOREP_ADAPTER_POMP,
-                                                  type_outer );
+        region->outerBlock = SCOREP_Definitions_NewRegion( region_name,
+                                                           NULL,
+                                                           last_file,
+                                                           start,
+                                                           end,
+                                                           SCOREP_ADAPTER_POMP,
+                                                           type_outer );
         free( region_name );
     }
 
@@ -289,13 +289,13 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
         region_name = ( char* )malloc( length );
         sprintf( region_name, "!$omp %s %s", type_name, source_name );
 
-        region->innerBlock = SCOREP_DefineRegion( region_name,
-                                                  NULL,
-                                                  last_file,
-                                                  region->startLine2,
-                                                  region->endLine1,
-                                                  SCOREP_ADAPTER_POMP,
-                                                  type_inner );
+        region->innerBlock = SCOREP_Definitions_NewRegion( region_name,
+                                                           NULL,
+                                                           last_file,
+                                                           region->startLine2,
+                                                           region->endLine1,
+                                                           SCOREP_ADAPTER_POMP,
+                                                           type_inner );
         free( region_name );
     }
 
@@ -306,13 +306,13 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
         char* barrier_name = ( char* )malloc( length );
         sprintf( barrier_name, "!$omp implicit barrier @%s:%" PRIu32, basename, region->endLine1 );
 
-        region->barrier = SCOREP_DefineRegion( barrier_name,
-                                               NULL,
-                                               last_file,
-                                               region->endLine1,
-                                               region->endLine2,
-                                               SCOREP_ADAPTER_POMP,
-                                               SCOREP_REGION_IMPLICIT_BARRIER );
+        region->barrier = SCOREP_Definitions_NewRegion( barrier_name,
+                                                        NULL,
+                                                        last_file,
+                                                        region->endLine1,
+                                                        region->endLine2,
+                                                        SCOREP_ADAPTER_POMP,
+                                                        SCOREP_REGION_IMPLICIT_BARRIER );
         free( barrier_name );
     }
 

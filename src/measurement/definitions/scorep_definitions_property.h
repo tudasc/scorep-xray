@@ -50,9 +50,9 @@ SCOREP_DEFINE_DEFINITION_TYPE( Property )
  * Define a property with its initial value.
  */
 SCOREP_PropertyHandle
-SCOREP_DefineProperty( SCOREP_Property          property,
-                       SCOREP_PropertyCondition condition,
-                       bool                     initialValue );
+SCOREP_Definitions_NewProperty( SCOREP_Property          property,
+                                SCOREP_PropertyCondition condition,
+                                bool                     initialValue );
 
 
 void

@@ -69,8 +69,8 @@ define_location( SCOREP_DefinitionManager* definition_manager,
  * @in internal
  */
 SCOREP_LocationHandle
-SCOREP_DefineLocation( SCOREP_LocationType type,
-                       const char*         name )
+SCOREP_Definitions_NewLocation( SCOREP_LocationType type,
+                                const char*         name )
 {
     SCOREP_Definitions_Lock();
 
