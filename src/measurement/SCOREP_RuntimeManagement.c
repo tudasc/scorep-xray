@@ -328,7 +328,6 @@ SCOREP_InitMppMeasurement( void )
 
     SCOREP_Status_OnMppInit();
     SCOREP_CreateExperimentDir();
-    SCOREP_Location_CloseDeferredDefinitions();
     SCOREP_SynchronizeClocks();
     scorep_set_otf2_archive_master_slave();
 
@@ -456,6 +455,7 @@ scorep_finalize( void )
     SCOREP_TIME( SCOREP_SynchronizeClocks, ( ) );
     SCOREP_TIME( SCOREP_EndEpoch, ( ) );
     SCOREP_TIME( SCOREP_Filter_Finalize, ( ) );
+    SCOREP_Location_FinalizeDefinitions();
 
     /* finalize and close all event writers */
     SCOREP_TIME( SCOREP_Tracing_FinalizeEventWriters, ( ) );

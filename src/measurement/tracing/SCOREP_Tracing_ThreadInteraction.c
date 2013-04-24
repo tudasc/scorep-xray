@@ -111,12 +111,7 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
     }
     SCOREP_Tracing_UnlockArchive();
 
-    if ( !SCOREP_Status_IsMppInitialized() )
-    {
-        // Global location id unknown because rank not accessible.
-        // Deferred processing will take place in SCOREP_InitMppMeasurement()
-    }
-    else
+    if ( SCOREP_Status_IsMppInitialized() )
     {
         SCOREP_Tracing_AssignLocationId( locationData );
     }

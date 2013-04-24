@@ -73,8 +73,16 @@ uint64_t
 SCOREP_Location_GetGlobalId( SCOREP_Location* locationData );
 
 
+/*
+ * The caller must ensure thread safety. Currently called at measurement
+ * time for the current location at flush time, and at finalization time.
+ */
 void
-SCOREP_Location_CloseDeferredDefinitions();
+SCOREP_Location_EnsureGlobalId( SCOREP_Location* location );
+
+
+void
+SCOREP_Location_FinalizeDefinitions( void );
 
 
 void

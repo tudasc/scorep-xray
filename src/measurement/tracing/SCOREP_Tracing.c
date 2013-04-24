@@ -114,7 +114,7 @@ scorep_on_trace_pre_flush( void*         userData,
     if ( !SCOREP_Status_IsMppInitialized() )
     {
         // flush before MPI_Init, we are lost.
-        UTILS_FATAL( "Trace buffer flush before MPI was initialized." );
+        UTILS_FATAL( "Trace buffer flush before MPP was initialized." );
     }
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_TRACING,
@@ -160,6 +160,7 @@ scorep_on_trace_pre_flush( void*         userData,
         SCOREP_Location_ForAll( scorep_trace_find_location_for_evt_writer_cb,
                                 &find_location_args );
         UTILS_ASSERT( location );
+        SCOREP_Location_EnsureGlobalId( location );
         scorep_rewind_stack_delete( location );
     }
 
