@@ -567,7 +567,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                   sourceRank,
 
 
 void
-SCOREP_RmaWinCreate( uint32_t win )
+SCOREP_RmaWinCreate( SCOREP_InterimRmaWindowHandle windowHandle )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -577,7 +577,7 @@ SCOREP_RmaWinCreate( uint32_t win )
     {
         SCOREP_Tracing_RmaWinCreate( location,
                                      timestamp,
-                                     win );
+                                     windowHandle );
     }
 
     /* Nothing to do for profiling. */
@@ -585,7 +585,7 @@ SCOREP_RmaWinCreate( uint32_t win )
 
 
 void
-SCOREP_RmaWinDestroy( uint32_t win )
+SCOREP_RmaWinDestroy( SCOREP_InterimRmaWindowHandle windowHandle )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -595,7 +595,7 @@ SCOREP_RmaWinDestroy( uint32_t win )
     {
         SCOREP_Tracing_RmaWinDestroy( location,
                                       timestamp,
-                                      win );
+                                      windowHandle );
     }
 
     /* Nothing to do for profiling. */
@@ -620,12 +620,12 @@ SCOREP_RmaCollectiveBegin()
 
 
 void
-SCOREP_RmaCollectiveEnd( SCOREP_RmaSyncLevel      syncLevel,
-                         uint32_t                 win,
-                         SCOREP_MpiCollectiveType collectiveOp,
-                         uint32_t                 root,
-                         uint64_t                 bytesSent,
-                         uint64_t                 bytesReceived )
+SCOREP_RmaCollectiveEnd( SCOREP_RmaSyncLevel           syncLevel,
+                         SCOREP_InterimRmaWindowHandle windowHandle,
+                         SCOREP_MpiCollectiveType      collectiveOp,
+                         uint32_t                      root,
+                         uint64_t                      bytesSent,
+                         uint64_t                      bytesReceived )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -636,7 +636,7 @@ SCOREP_RmaCollectiveEnd( SCOREP_RmaSyncLevel      syncLevel,
         SCOREP_Tracing_RmaCollectiveEnd( location,
                                          timestamp,
                                          syncLevel,
-                                         win,
+                                         windowHandle,
                                          collectiveOp,
                                          root,
                                          bytesSent,
@@ -648,9 +648,9 @@ SCOREP_RmaCollectiveEnd( SCOREP_RmaSyncLevel      syncLevel,
 
 
 void
-SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel syncLevel,
-                     uint32_t            win,
-                     SCOREP_GroupRef     group )
+SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel           syncLevel,
+                     SCOREP_InterimRmaWindowHandle windowHandle,
+                     SCOREP_GroupRef               group )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -661,7 +661,7 @@ SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel syncLevel,
         SCOREP_Tracing_RmaGroupSync( location,
                                      timestamp,
                                      syncLevel,
-                                     win,
+                                     windowHandle,
                                      group );
     }
 
@@ -670,10 +670,10 @@ SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel syncLevel,
 
 
 void
-SCOREP_RmaRequestLock( uint32_t        win,
-                       uint32_t        remote,
-                       uint64_t        lockId,
-                       SCOREP_LockType lockType )
+SCOREP_RmaRequestLock( SCOREP_InterimRmaWindowHandle windowHandle,
+                       uint32_t                      remote,
+                       uint64_t                      lockId,
+                       SCOREP_LockType               lockType )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -683,7 +683,7 @@ SCOREP_RmaRequestLock( uint32_t        win,
     {
         SCOREP_Tracing_RmaRequestLock( location,
                                        timestamp,
-                                       win,
+                                       windowHandle,
                                        remote,
                                        lockId,
                                        lockType );
@@ -694,10 +694,10 @@ SCOREP_RmaRequestLock( uint32_t        win,
 
 
 void
-SCOREP_RmaAcquireLock( uint32_t        win,
-                       uint32_t        remote,
-                       uint64_t        lockId,
-                       SCOREP_LockType lockType )
+SCOREP_RmaAcquireLock( SCOREP_InterimRmaWindowHandle windowHandle,
+                       uint32_t                      remote,
+                       uint64_t                      lockId,
+                       SCOREP_LockType               lockType )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -707,7 +707,7 @@ SCOREP_RmaAcquireLock( uint32_t        win,
     {
         SCOREP_Tracing_RmaAcquireLock( location,
                                        timestamp,
-                                       win,
+                                       windowHandle,
                                        remote,
                                        lockId,
                                        lockType );
@@ -718,10 +718,10 @@ SCOREP_RmaAcquireLock( uint32_t        win,
 
 
 void
-SCOREP_RmaTryLock( uint32_t        win,
-                   uint32_t        remote,
-                   uint64_t        lockId,
-                   SCOREP_LockType lockType )
+SCOREP_RmaTryLock( SCOREP_InterimRmaWindowHandle windowHandle,
+                   uint32_t                      remote,
+                   uint64_t                      lockId,
+                   SCOREP_LockType               lockType )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -731,7 +731,7 @@ SCOREP_RmaTryLock( uint32_t        win,
     {
         SCOREP_Tracing_RmaTryLock( location,
                                    timestamp,
-                                   win,
+                                   windowHandle,
                                    remote,
                                    lockId,
                                    lockType );
@@ -742,9 +742,9 @@ SCOREP_RmaTryLock( uint32_t        win,
 
 
 void
-SCOREP_RmaReleaseLock( uint32_t win,
-                       uint32_t remote,
-                       uint64_t lockId )
+SCOREP_RmaReleaseLock( SCOREP_InterimRmaWindowHandle windowHandle,
+                       uint32_t                      remote,
+                       uint64_t                      lockId )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -754,7 +754,7 @@ SCOREP_RmaReleaseLock( uint32_t win,
     {
         SCOREP_Tracing_RmaReleaseLock( location,
                                        timestamp,
-                                       win,
+                                       windowHandle,
                                        remote,
                                        lockId );
     }
@@ -764,9 +764,9 @@ SCOREP_RmaReleaseLock( uint32_t win,
 
 
 void
-SCOREP_RmaSync( uint32_t           win,
-                uint32_t           remote,
-                SCOREP_RmaSyncType syncType )
+SCOREP_RmaSync( SCOREP_InterimRmaWindowHandle windowHandle,
+                uint32_t                      remote,
+                SCOREP_RmaSyncType            syncType )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -776,7 +776,7 @@ SCOREP_RmaSync( uint32_t           win,
     {
         SCOREP_Tracing_RmaSync( location,
                                 timestamp,
-                                win,
+                                windowHandle,
                                 remote,
                                 syncType );
     }
@@ -786,18 +786,18 @@ SCOREP_RmaSync( uint32_t           win,
 
 
 void
-SCOREP_RmaWaitChange( uint32_t win )
+SCOREP_RmaWaitChange( SCOREP_InterimRmaWindowHandle windowHandle )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RMA window:%x", win );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RMA window:%x", windowHandle );
 
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_RmaWaitChange( location,
                                       timestamp,
-                                      win );
+                                      windowHandle );
     }
 
     /* Nothing to do for profiling. */
@@ -805,10 +805,10 @@ SCOREP_RmaWaitChange( uint32_t win )
 
 
 void
-SCOREP_RmaPut( uint32_t win,
-               uint32_t remote,
-               uint64_t bytes,
-               uint64_t matchingId )
+SCOREP_RmaPut( SCOREP_InterimRmaWindowHandle windowHandle,
+               uint32_t                      remote,
+               uint64_t                      bytes,
+               uint64_t                      matchingId )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -818,7 +818,7 @@ SCOREP_RmaPut( uint32_t win,
     {
         SCOREP_Tracing_RmaPut( location,
                                timestamp,
-                               win,
+                               windowHandle,
                                remote,
                                bytes,
                                matchingId );
@@ -829,10 +829,10 @@ SCOREP_RmaPut( uint32_t win,
 
 
 void
-SCOREP_RmaGet( uint32_t win,
-               uint32_t remote,
-               uint64_t bytes,
-               uint64_t matchingId )
+SCOREP_RmaGet( SCOREP_InterimRmaWindowHandle windowHandle,
+               uint32_t                      remote,
+               uint64_t                      bytes,
+               uint64_t                      matchingId )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -842,7 +842,7 @@ SCOREP_RmaGet( uint32_t win,
     {
         SCOREP_Tracing_RmaGet( location,
                                timestamp,
-                               win,
+                               windowHandle,
                                remote,
                                bytes,
                                matchingId );
@@ -853,12 +853,12 @@ SCOREP_RmaGet( uint32_t win,
 
 
 void
-SCOREP_RmaAtomic( uint32_t             win,
-                  uint32_t             remote,
-                  SCOREP_RmaAtomicType type,
-                  uint64_t             bytesSent,
-                  uint64_t             bytesReceived,
-                  uint64_t             matchingId )
+SCOREP_RmaAtomic( SCOREP_InterimRmaWindowHandle windowHandle,
+                  uint32_t                      remote,
+                  SCOREP_RmaAtomicType          type,
+                  uint64_t                      bytesSent,
+                  uint64_t                      bytesReceived,
+                  uint64_t                      matchingId )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -868,7 +868,7 @@ SCOREP_RmaAtomic( uint32_t             win,
     {
         SCOREP_Tracing_RmaAtomic( location,
                                   timestamp,
-                                  win,
+                                  windowHandle,
                                   remote,
                                   type,
                                   bytesSent,
@@ -881,8 +881,8 @@ SCOREP_RmaAtomic( uint32_t             win,
 
 
 void
-SCOREP_RmaOpCompleteBlocking( uint32_t win,
-                              uint64_t matchingId )
+SCOREP_RmaOpCompleteBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
+                              uint64_t                      matchingId )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -892,7 +892,7 @@ SCOREP_RmaOpCompleteBlocking( uint32_t win,
     {
         SCOREP_Tracing_RmaOpCompleteBlocking( location,
                                               timestamp,
-                                              win,
+                                              windowHandle,
                                               matchingId );
     }
 
@@ -901,8 +901,8 @@ SCOREP_RmaOpCompleteBlocking( uint32_t win,
 
 
 void
-SCOREP_RmaOpCompleteNonBlocking( uint32_t win,
-                                 uint64_t matchingId )
+SCOREP_RmaOpCompleteNonBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
+                                 uint64_t                      matchingId )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -912,7 +912,7 @@ SCOREP_RmaOpCompleteNonBlocking( uint32_t win,
     {
         SCOREP_Tracing_RmaOpCompleteNonBlocking( location,
                                                  timestamp,
-                                                 win,
+                                                 windowHandle,
                                                  matchingId );
     }
 
@@ -921,8 +921,8 @@ SCOREP_RmaOpCompleteNonBlocking( uint32_t win,
 
 
 void
-SCOREP_RmaOpTest( uint32_t win,
-                  uint64_t matchingId )
+SCOREP_RmaOpTest( SCOREP_InterimRmaWindowHandle windowHandle,
+                  uint64_t                      matchingId )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -932,7 +932,7 @@ SCOREP_RmaOpTest( uint32_t win,
     {
         SCOREP_Tracing_RmaOpTest( location,
                                   timestamp,
-                                  win,
+                                  windowHandle,
                                   matchingId );
     }
 
@@ -941,8 +941,8 @@ SCOREP_RmaOpTest( uint32_t win,
 
 
 void
-SCOREP_RmaOpCompleteRemote( uint32_t win,
-                            uint64_t matchingId )
+SCOREP_RmaOpCompleteRemote( SCOREP_InterimRmaWindowHandle windowHandle,
+                            uint64_t                      matchingId )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -952,7 +952,7 @@ SCOREP_RmaOpCompleteRemote( uint32_t win,
     {
         SCOREP_Tracing_RmaOpCompleteRemote( location,
                                             timestamp,
-                                            win,
+                                            windowHandle,
                                             matchingId );
     }
 

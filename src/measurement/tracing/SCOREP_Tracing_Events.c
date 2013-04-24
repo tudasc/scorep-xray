@@ -325,16 +325,16 @@ SCOREP_Tracing_MpiIrecv( SCOREP_Location*                 location,
 
 
 void
-SCOREP_Tracing_RmaWinCreate( SCOREP_Location* location,
-                             uint64_t         timestamp,
-                             uint32_t         win )
+SCOREP_Tracing_RmaWinCreate( SCOREP_Location*              location,
+                             uint64_t                      timestamp,
+                             SCOREP_InterimRmaWindowHandle windowHandle )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaWinCreate( evt_writer,
                                  NULL,
                                  timestamp,
-                                 win );
+                                 SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ) );
 
     /*
      * scorep_rewind_set_affected_paradigm ?
@@ -343,16 +343,16 @@ SCOREP_Tracing_RmaWinCreate( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_RmaWinDestroy( SCOREP_Location* location,
-                              uint64_t         timestamp,
-                              uint32_t         win )
+SCOREP_Tracing_RmaWinDestroy( SCOREP_Location*              location,
+                              uint64_t                      timestamp,
+                              SCOREP_InterimRmaWindowHandle windowHandle )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaWinDestroy( evt_writer,
                                   NULL,
                                   timestamp,
-                                  win );
+                                  SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ) );
 
     /*
      * scorep_rewind_set_affected_paradigm ?
@@ -377,14 +377,14 @@ SCOREP_Tracing_RmaCollectiveBegin( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_RmaCollectiveEnd( SCOREP_Location*         location,
-                                 uint64_t                 timestamp,
-                                 SCOREP_RmaSyncLevel      syncLevel,
-                                 uint32_t                 win,
-                                 SCOREP_MpiCollectiveType collectiveOp,
-                                 uint32_t                 root,
-                                 uint64_t                 bytesSent,
-                                 uint64_t                 bytesReceived )
+SCOREP_Tracing_RmaCollectiveEnd( SCOREP_Location*              location,
+                                 uint64_t                      timestamp,
+                                 SCOREP_RmaSyncLevel           syncLevel,
+                                 SCOREP_InterimRmaWindowHandle windowHandle,
+                                 SCOREP_MpiCollectiveType      collectiveOp,
+                                 uint32_t                      root,
+                                 uint64_t                      bytesSent,
+                                 uint64_t                      bytesReceived )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -392,7 +392,7 @@ SCOREP_Tracing_RmaCollectiveEnd( SCOREP_Location*         location,
                                      NULL,
                                      timestamp,
                                      scorep_tracing_rma_sync_level_to_otf2( syncLevel ),
-                                     win,
+                                     SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                                      scorep_tracing_collective_type_to_otf2( collectiveOp ),
                                      root,
                                      bytesSent,
@@ -405,11 +405,11 @@ SCOREP_Tracing_RmaCollectiveEnd( SCOREP_Location*         location,
 
 
 void
-SCOREP_Tracing_RmaGroupSync( SCOREP_Location*    location,
-                             uint64_t            timestamp,
-                             SCOREP_RmaSyncLevel syncLevel,
-                             uint32_t            win,
-                             SCOREP_GroupRef     group )
+SCOREP_Tracing_RmaGroupSync( SCOREP_Location*              location,
+                             uint64_t                      timestamp,
+                             SCOREP_RmaSyncLevel           syncLevel,
+                             SCOREP_InterimRmaWindowHandle windowHandle,
+                             SCOREP_GroupRef               group )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
@@ -417,7 +417,7 @@ SCOREP_Tracing_RmaGroupSync( SCOREP_Location*    location,
                                  NULL,
                                  timestamp,
                                  scorep_tracing_rma_sync_level_to_otf2( syncLevel ),
-                                 win,
+                                 SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                                  group );
 
     /*
@@ -427,19 +427,19 @@ SCOREP_Tracing_RmaGroupSync( SCOREP_Location*    location,
 
 
 void
-SCOREP_Tracing_RmaRequestLock( SCOREP_Location* location,
-                               uint64_t         timestamp,
-                               uint32_t         win,
-                               uint32_t         remote,
-                               uint64_t         lockId,
-                               SCOREP_LockType  lockType )
+SCOREP_Tracing_RmaRequestLock( SCOREP_Location*              location,
+                               uint64_t                      timestamp,
+                               SCOREP_InterimRmaWindowHandle windowHandle,
+                               uint32_t                      remote,
+                               uint64_t                      lockId,
+                               SCOREP_LockType               lockType )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaRequestLock( evt_writer,
                                    NULL,
                                    timestamp,
-                                   win,
+                                   SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                                    remote,
                                    lockId,
                                    scorep_tracing_lock_type_to_otf2( lockType ) );
@@ -451,19 +451,19 @@ SCOREP_Tracing_RmaRequestLock( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_RmaAcquireLock( SCOREP_Location* location,
-                               uint64_t         timestamp,
-                               uint32_t         win,
-                               uint32_t         remote,
-                               uint64_t         lockId,
-                               SCOREP_LockType  lockType )
+SCOREP_Tracing_RmaAcquireLock( SCOREP_Location*              location,
+                               uint64_t                      timestamp,
+                               SCOREP_InterimRmaWindowHandle windowHandle,
+                               uint32_t                      remote,
+                               uint64_t                      lockId,
+                               SCOREP_LockType               lockType )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaAcquireLock( evt_writer,
                                    NULL,
                                    timestamp,
-                                   win,
+                                   SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                                    remote,
                                    lockId,
                                    scorep_tracing_lock_type_to_otf2( lockType ) );
@@ -475,19 +475,19 @@ SCOREP_Tracing_RmaAcquireLock( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_RmaTryLock( SCOREP_Location* location,
-                           uint64_t         timestamp,
-                           uint32_t         win,
-                           uint32_t         remote,
-                           uint64_t         lockId,
-                           SCOREP_LockType  lockType )
+SCOREP_Tracing_RmaTryLock( SCOREP_Location*              location,
+                           uint64_t                      timestamp,
+                           SCOREP_InterimRmaWindowHandle windowHandle,
+                           uint32_t                      remote,
+                           uint64_t                      lockId,
+                           SCOREP_LockType               lockType )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaTryLock( evt_writer,
                                NULL,
                                timestamp,
-                               win,
+                               SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                                remote,
                                lockId,
                                scorep_tracing_lock_type_to_otf2( lockType ) );
@@ -499,18 +499,18 @@ SCOREP_Tracing_RmaTryLock( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_RmaReleaseLock( SCOREP_Location* location,
-                               uint64_t         timestamp,
-                               uint32_t         win,
-                               uint32_t         remote,
-                               uint64_t         lockId )
+SCOREP_Tracing_RmaReleaseLock( SCOREP_Location*              location,
+                               uint64_t                      timestamp,
+                               SCOREP_InterimRmaWindowHandle windowHandle,
+                               uint32_t                      remote,
+                               uint64_t                      lockId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaReleaseLock( evt_writer,
                                    NULL,
                                    timestamp,
-                                   win,
+                                   SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                                    remote,
                                    lockId );
 
@@ -521,18 +521,18 @@ SCOREP_Tracing_RmaReleaseLock( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_RmaSync( SCOREP_Location*   location,
-                        uint64_t           timestamp,
-                        uint32_t           win,
-                        uint32_t           remote,
-                        SCOREP_RmaSyncType syncType )
+SCOREP_Tracing_RmaSync( SCOREP_Location*              location,
+                        uint64_t                      timestamp,
+                        SCOREP_InterimRmaWindowHandle windowHandle,
+                        uint32_t                      remote,
+                        SCOREP_RmaSyncType            syncType )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaSync( evt_writer,
                             NULL,
                             timestamp,
-                            win,
+                            SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                             remote,
                             scorep_tracing_rma_sync_type_to_otf2( syncType ) );
 
@@ -543,16 +543,16 @@ SCOREP_Tracing_RmaSync( SCOREP_Location*   location,
 
 
 void
-SCOREP_Tracing_RmaWaitChange( SCOREP_Location* location,
-                              uint64_t         timestamp,
-                              uint32_t         win )
+SCOREP_Tracing_RmaWaitChange( SCOREP_Location*              location,
+                              uint64_t                      timestamp,
+                              SCOREP_InterimRmaWindowHandle windowHandle )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaWaitChange( evt_writer,
                                   NULL,
                                   timestamp,
-                                  win );
+                                  SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ) );
 
     /*
      * scorep_rewind_set_affected_paradigm ?
@@ -561,19 +561,19 @@ SCOREP_Tracing_RmaWaitChange( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_RmaPut( SCOREP_Location* location,
-                       uint64_t         timestamp,
-                       uint32_t         win,
-                       uint32_t         remote,
-                       uint64_t         bytes,
-                       uint64_t         matchingId )
+SCOREP_Tracing_RmaPut( SCOREP_Location*              location,
+                       uint64_t                      timestamp,
+                       SCOREP_InterimRmaWindowHandle windowHandle,
+                       uint32_t                      remote,
+                       uint64_t                      bytes,
+                       uint64_t                      matchingId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaPut( evt_writer,
                            NULL,
                            timestamp,
-                           win,
+                           SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                            remote,
                            bytes,
                            matchingId );
@@ -585,19 +585,19 @@ SCOREP_Tracing_RmaPut( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_RmaGet( SCOREP_Location* location,
-                       uint64_t         timestamp,
-                       uint32_t         win,
-                       uint32_t         remote,
-                       uint64_t         bytes,
-                       uint64_t         matchingId )
+SCOREP_Tracing_RmaGet( SCOREP_Location*              location,
+                       uint64_t                      timestamp,
+                       SCOREP_InterimRmaWindowHandle windowHandle,
+                       uint32_t                      remote,
+                       uint64_t                      bytes,
+                       uint64_t                      matchingId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaGet( evt_writer,
                            NULL,
                            timestamp,
-                           win,
+                           SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                            remote,
                            bytes,
                            matchingId );
@@ -609,21 +609,21 @@ SCOREP_Tracing_RmaGet( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_RmaAtomic( SCOREP_Location*     location,
-                          uint64_t             timestamp,
-                          uint32_t             win,
-                          uint32_t             remote,
-                          SCOREP_RmaAtomicType type,
-                          uint64_t             bytesSent,
-                          uint64_t             bytesReceived,
-                          uint64_t             matchingId )
+SCOREP_Tracing_RmaAtomic( SCOREP_Location*              location,
+                          uint64_t                      timestamp,
+                          SCOREP_InterimRmaWindowHandle windowHandle,
+                          uint32_t                      remote,
+                          SCOREP_RmaAtomicType          type,
+                          uint64_t                      bytesSent,
+                          uint64_t                      bytesReceived,
+                          uint64_t                      matchingId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaAtomic( evt_writer,
                               NULL,
                               timestamp,
-                              win,
+                              SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                               remote,
                               scorep_tracing_rma_atomic_type_to_otf2( type ),
                               bytesSent,
@@ -637,17 +637,17 @@ SCOREP_Tracing_RmaAtomic( SCOREP_Location*     location,
 
 
 void
-SCOREP_Tracing_RmaOpCompleteBlocking( SCOREP_Location* location,
-                                      uint64_t         timestamp,
-                                      uint32_t         win,
-                                      uint64_t         matchingId )
+SCOREP_Tracing_RmaOpCompleteBlocking( SCOREP_Location*              location,
+                                      uint64_t                      timestamp,
+                                      SCOREP_InterimRmaWindowHandle windowHandle,
+                                      uint64_t                      matchingId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaOpCompleteBlocking( evt_writer,
                                           NULL,
                                           timestamp,
-                                          win,
+                                          SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                                           matchingId );
 
     /*
@@ -657,17 +657,17 @@ SCOREP_Tracing_RmaOpCompleteBlocking( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_RmaOpCompleteNonBlocking( SCOREP_Location* location,
-                                         uint64_t         timestamp,
-                                         uint32_t         win,
-                                         uint64_t         matchingId )
+SCOREP_Tracing_RmaOpCompleteNonBlocking( SCOREP_Location*              location,
+                                         uint64_t                      timestamp,
+                                         SCOREP_InterimRmaWindowHandle windowHandle,
+                                         uint64_t                      matchingId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaOpCompleteNonBlocking( evt_writer,
                                              NULL,
                                              timestamp,
-                                             win,
+                                             SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                                              matchingId );
 
     /*
@@ -677,17 +677,17 @@ SCOREP_Tracing_RmaOpCompleteNonBlocking( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_RmaOpTest( SCOREP_Location* location,
-                          uint64_t         timestamp,
-                          uint32_t         win,
-                          uint64_t         matchingId )
+SCOREP_Tracing_RmaOpTest( SCOREP_Location*              location,
+                          uint64_t                      timestamp,
+                          SCOREP_InterimRmaWindowHandle windowHandle,
+                          uint64_t                      matchingId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaOpTest( evt_writer,
                               NULL,
                               timestamp,
-                              win,
+                              SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                               matchingId );
 
     /*
@@ -697,17 +697,17 @@ SCOREP_Tracing_RmaOpTest( SCOREP_Location* location,
 
 
 void
-SCOREP_Tracing_RmaOpCompleteRemote( SCOREP_Location* location,
-                                    uint64_t         timestamp,
-                                    uint32_t         win,
-                                    uint64_t         matchingId )
+SCOREP_Tracing_RmaOpCompleteRemote( SCOREP_Location*              location,
+                                    uint64_t                      timestamp,
+                                    SCOREP_InterimRmaWindowHandle windowHandle,
+                                    uint64_t                      matchingId )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_RmaOpCompleteRemote( evt_writer,
                                         NULL,
                                         timestamp,
-                                        win,
+                                        SCOREP_LOCAL_HANDLE_TO_ID( windowHandle, InterimRmaWindow ),
                                         matchingId );
 
     /*
