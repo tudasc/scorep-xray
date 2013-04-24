@@ -279,16 +279,6 @@ SCOREP_Metric_GetUnifiedHandle( SCOREP_MetricHandle handle )
 
 
 /**
- * Returns the number of unified metric definitions.
- */
-uint32_t
-SCOREP_Metric_GetNumberOfUnifiedDefinitions( void )
-{
-    return scorep_unified_definition_manager->metric_definition_counter;
-}
-
-
-/**
  * Returns the value type of a metric.
  * @param handle to local meric definition.
  */

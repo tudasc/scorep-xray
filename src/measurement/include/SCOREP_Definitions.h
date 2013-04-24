@@ -317,6 +317,16 @@ SCOREP_Definitions_NewMetric( const char*                name,
                               const char*                unit,
                               SCOREP_MetricProfilingType profilingType );
 
+
+/**
+ * Returns the number of unified metric definitions.
+ */
+uint32_t
+SCOREP_Definitions_GetNumberOfUnifiedMetricDefinitions( void );
+
+
+
+
 /**
  * Define a new sampling set.
  *

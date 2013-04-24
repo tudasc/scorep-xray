@@ -143,7 +143,7 @@ static SCOREP_MetricHandle*
 make_unified_mapping( void )
 {
     uint32_t             i             = 0;
-    uint32_t             metric_number = SCOREP_Metric_GetNumberOfUnifiedDefinitions();
+    uint32_t             metric_number = SCOREP_Definitions_GetNumberOfUnifiedMetricDefinitions();
     SCOREP_MetricHandle* map           = malloc( sizeof( SCOREP_MetricHandle ) * metric_number );
     if ( map == NULL )
     {
@@ -638,7 +638,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
     /* Get number of unified metrics to every rank */
     if ( write_set->my_rank == 0 )
     {
-        write_set->num_unified = SCOREP_Metric_GetNumberOfUnifiedDefinitions();
+        write_set->num_unified = SCOREP_Definitions_GetNumberOfUnifiedMetricDefinitions();
     }
     SCOREP_Ipc_Bcast( &write_set->num_unified, 1, SCOREP_IPC_UINT32, 0 );
 

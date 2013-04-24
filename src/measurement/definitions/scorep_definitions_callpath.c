@@ -384,13 +384,3 @@ SCOREP_Callpath_GetUnifiedHandle( SCOREP_CallpathHandle handle )
     return SCOREP_HANDLE_GET_UNIFIED( handle, Callpath,
                                       SCOREP_Memory_GetLocalDefinitionPageManager() );
 }
-
-
-/**
- * Returns the number of unified callpath definitions.
- */
-uint32_t
-SCOREP_Callpath_GetNumberOfUnifiedDefinitions( void )
-{
-    return scorep_unified_definition_manager->callpath_definition_counter;
-}

@@ -178,4 +178,11 @@ void
 SCOREP_Definitions_Write( void );
 
 
+/**
+ * Returns the number of unified callpath definitions.
+ */
+uint32_t
+SCOREP_Definitions_GetNumberOfUnifiedCallpathDefinitions( void );
+
+
 #endif /* SCOREP_INTERNAL_DEFINITIONS_H */

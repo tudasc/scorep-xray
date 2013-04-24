@@ -211,3 +211,23 @@ SCOREP_Definitions_Write()
 
     /// @todo Daniel, what to do here for profiling?
 }
+
+
+/**
+ * Returns the number of unified metric definitions.
+ */
+uint32_t
+SCOREP_Definitions_GetNumberOfUnifiedMetricDefinitions( void )
+{
+    return scorep_unified_definition_manager->metric_definition_counter;
+}
+
+
+/**
+ * Returns the number of unified callpath definitions.
+ */
+uint32_t
+SCOREP_Definitions_GetNumberOfUnifiedCallpathDefinitions( void )
+{
+    return scorep_unified_definition_manager->callpath_definition_counter;
+}

@@ -100,11 +100,4 @@ SCOREP_CallpathHandle
 SCOREP_Callpath_GetUnifiedHandle( SCOREP_CallpathHandle handle );
 
 
-/**
- * Returns the number of unified callpath definitions.
- */
-uint32_t
-SCOREP_Callpath_GetNumberOfUnifiedDefinitions( void );
-
-
 #endif /* SCOREP_PRIVATE_DEFINITIONS_CALLPATH_H */
