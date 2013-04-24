@@ -134,9 +134,9 @@ init_definition_manager( CuTest*                    tc,
 {
     assert( manager );
     CuAssertPtrEquals( tc, *manager, 0 );
-    SCOREP_InitializeDefinitionManager( manager,
-                                        SCOREP_Memory_GetLocalDefinitionPageManager(),
-                                        allocHashTables );
+    SCOREP_Definitions_InitializeDefinitionManager( manager,
+                                                    SCOREP_Memory_GetLocalDefinitionPageManager(),
+                                                    allocHashTables );
     CuAssertPtrNotNull( tc, *manager );
 }
 

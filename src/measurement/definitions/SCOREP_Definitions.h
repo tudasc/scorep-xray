@@ -169,9 +169,10 @@ void
 SCOREP_Definitions_Unlock( void );
 
 void
-SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    manager,
-                                    SCOREP_Allocator_PageManager* pageManager,
-                                    bool                          allocHashTables );
+SCOREP_Definitions_InitializeDefinitionManager(
+    SCOREP_DefinitionManager**    manager,
+    SCOREP_Allocator_PageManager* pageManager,
+    bool                          allocHashTables );
 
 
 void

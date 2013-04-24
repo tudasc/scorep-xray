@@ -149,9 +149,9 @@ SCOREP_Unify_CreateUnifiedDefinitionManager( void )
     assert( scorep_unified_definition_manager == 0 );
 
     bool alloc_hash_tables = true;
-    SCOREP_InitializeDefinitionManager( &scorep_unified_definition_manager,
-                                        SCOREP_Memory_GetLocalDefinitionPageManager(),
-                                        alloc_hash_tables );
+    SCOREP_Definitions_InitializeDefinitionManager( &scorep_unified_definition_manager,
+                                                    SCOREP_Memory_GetLocalDefinitionPageManager(),
+                                                    alloc_hash_tables );
 }
 
 void

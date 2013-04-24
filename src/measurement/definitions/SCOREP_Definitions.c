@@ -78,9 +78,9 @@ SCOREP_Definitions_Initialize()
 
     SCOREP_DefinitionManager* local_definition_manager = &scorep_local_definition_manager;
     assert( local_definition_manager );
-    SCOREP_InitializeDefinitionManager( &local_definition_manager,
-                                        SCOREP_Memory_GetLocalDefinitionPageManager(),
-                                        false );
+    SCOREP_Definitions_InitializeDefinitionManager( &local_definition_manager,
+                                                    SCOREP_Memory_GetLocalDefinitionPageManager(),
+                                                    false );
 
     /* ensure, that the empty string gets id 0 */
     SCOREP_Definitions_NewString( "" );
@@ -88,9 +88,9 @@ SCOREP_Definitions_Initialize()
 
 
 void
-SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionManager,
-                                    SCOREP_Allocator_PageManager* pageManager,
-                                    bool                          allocHashTables )
+SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionManager,
+                                                SCOREP_Allocator_PageManager* pageManager,
+                                                bool                          allocHashTables )
 {
     assert( definitionManager );
     assert( pageManager );
