@@ -232,18 +232,6 @@ SCOREP_InterimCommunicatorSetName( SCOREP_InterimCommunicatorHandle localMPIComm
                                    const char*                      name );
 
 
-SCOREP_CommunicatorHandle
-SCOREP_DefineCommunicator( SCOREP_GroupHandle        group_handle,
-                           const char*               name,
-                           SCOREP_CommunicatorHandle parent_handle );
-
-
-SCOREP_CommunicatorHandle
-SCOREP_DefineUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
-                                  const char*               name,
-                                  SCOREP_CommunicatorHandle parent_handle );
-
-
 /**
  * Associate the parameter tuple with a process unique RMA window handle.
  *
@@ -255,9 +243,9 @@ SCOREP_DefineUnifiedCommunicator( SCOREP_GroupHandle        group_handle,
  * @return A process unique RMA window handle to be used in calls to other
  * SCOREP_RMA* functions.
  */
-SCOREP_RmaWindowHandle
-SCOREP_DefineRmaWindow( const char*                      name,
-                        SCOREP_InterimCommunicatorHandle communicatorHandle );
+SCOREP_InterimRmaWindowHandle
+SCOREP_InterimDefineRmaWindow( const char*                      name,
+                               SCOREP_InterimCommunicatorHandle communicatorHandle );
 
 
 /**

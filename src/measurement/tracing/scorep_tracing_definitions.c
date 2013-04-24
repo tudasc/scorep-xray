@@ -399,6 +399,36 @@ scorep_write_communicator_definitions( void*                     writerHandle,
 
 
 static void
+scorep_write_rma_window_definitions( void*                     writerHandle,
+                                     SCOREP_DefinitionManager* definitionManager )
+{
+    UTILS_ASSERT( writerHandle );
+
+    SCOREP_DEFINITION_FOREACH_DO( definitionManager, RmaWindow, rma_window )
+    {
+        uint32_t comm_id = OTF2_UNDEFINED_MPI_COMM;
+        if ( definition->communicator_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+        {
+            comm_id = SCOREP_HANDLE_TO_ID( definition->communicator_handle,
+                                           InterimCommunicator,
+                                           definitionManager->page_manager );
+        }
+
+        OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteRmaWin(
+            writerHandle,
+            definition->sequence_number,
+            SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
+            comm_id );
+        if ( status != OTF2_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "RmaWindow" );
+        }
+    }
+    SCOREP_DEFINITION_FOREACH_WHILE();
+}
+
+
+static void
 scorep_write_group_definitions( void*                     writerHandle,
                                 SCOREP_DefinitionManager* definitionManager,
                                 bool                      isGlobal )
@@ -619,36 +649,6 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
 
 
 static void
-scorep_write_rma_window_definitions( void*                     writerHandle,
-                                     SCOREP_DefinitionManager* definitionManager )
-{
-    UTILS_ASSERT( writerHandle );
-
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, RmaWindow, rma_window )
-    {
-        uint32_t comm_id = OTF2_UNDEFINED_MPI_COMM;
-        if ( definition->communicator_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
-        {
-            comm_id = SCOREP_HANDLE_TO_ID( definition->communicator_handle,
-                                           InterimCommunicator,
-                                           definitionManager->page_manager );
-        }
-
-        OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteRmaWin(
-            writerHandle,
-            definition->sequence_number,
-            SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
-            comm_id );
-        if ( status != OTF2_SUCCESS )
-        {
-            scorep_handle_definition_writing_error( status, "RmaWindow" );
-        }
-    }
-    SCOREP_DEFINITION_FOREACH_WHILE();
-}
-
-
-static void
 scorep_write_parameter_definitions( void*                     writerHandle,
                                     SCOREP_DefinitionManager* definitionManager,
                                     bool                      isGlobal )
@@ -745,7 +745,7 @@ scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( interim_communicator,
                                              MPI_COMM,
                                              localDefinitionWriter );
-    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( rma_window,
+    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( interim_rma_window,
                                              RMA_WIN,
                                              localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( sampling_set, METRIC, localDefinitionWriter );

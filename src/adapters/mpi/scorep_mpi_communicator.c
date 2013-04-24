@@ -101,8 +101,8 @@ struct scorep_mpi_world_type scorep_mpi_world;
  */
 struct scorep_mpi_win_type
 {
-    MPI_Win                win; /** MPI window handle */
-    SCOREP_RmaWindowHandle wid; /** Internal SCOREP window handle */
+    MPI_Win                       win; /** MPI window handle */
+    SCOREP_InterimRmaWindowHandle wid; /** Internal SCOREP window handle */
 };
 
 /**
@@ -382,7 +382,7 @@ scorep_mpi_win_rank_to_pe( SCOREP_MpiRank rank,
     return global_rank;
 }
 
-SCOREP_RmaWindowHandle
+SCOREP_InterimRmaWindowHandle
 scorep_mpi_win_id( MPI_Win win )
 {
     int i = 0;
@@ -403,7 +403,7 @@ scorep_mpi_win_id( MPI_Win win )
         SCOREP_MutexUnlock( scorep_mpi_window_mutex );
         UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINDOW,
                      "Please tell me what you were trying to do!" );
-        return SCOREP_INVALID_RMA_WINDOW;
+        return SCOREP_INVALID_INTERIM_RMA_WINDOW;
     }
 }
 
@@ -411,7 +411,7 @@ void
 scorep_mpi_win_create( MPI_Win  win,
                        MPI_Comm comm )
 {
-    SCOREP_RmaWindowHandle handle = SCOREP_INVALID_RMA_WINDOW;
+    SCOREP_InterimRmaWindowHandle handle = SCOREP_INVALID_INTERIM_RMA_WINDOW;
 
     SCOREP_MutexLock( scorep_mpi_window_mutex );
     if ( scorep_mpi_last_window >= SCOREP_MPI_MAX_WIN )
@@ -423,10 +423,10 @@ scorep_mpi_win_create( MPI_Win  win,
     /* register mpi window definition */
     /* NOTE: MPI_COMM_WORLD is _not_ present in the internal structures,
      * and _must not_ be queried by scorep_mpi_comm_handle */
-    handle = SCOREP_DefineRmaWindow( "",
-                                     comm == MPI_COMM_WORLD
-                                     ? SCOREP_MPI_COMM_WORLD_HANDLE
-                                     : scorep_mpi_comm_handle( comm ) );
+    handle = SCOREP_DefineInterimRmaWindow( "",
+                                            comm == MPI_COMM_WORLD
+                                            ? SCOREP_MPI_COMM_WORLD_HANDLE
+                                            : scorep_mpi_comm_handle( comm ) );
 
     /* enter win in scorep_mpi_windows[] array */
     scorep_mpi_windows[ scorep_mpi_last_window ].win = win;

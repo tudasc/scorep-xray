@@ -122,6 +122,12 @@ typedef uint32_t SCOREP_LineNo;
 /**
  * Symbolic constant representing an invalid or unknown MPI window definition.
  */
+#define SCOREP_INVALID_INTERIM_RMA_WINDOW SCOREP_MOVABLE_NULL
+
+
+/**
+ * Symbolic constant representing an invalid or unknown MPI window definition.
+ */
 #define SCOREP_INVALID_RMA_WINDOW SCOREP_MOVABLE_NULL
 
 

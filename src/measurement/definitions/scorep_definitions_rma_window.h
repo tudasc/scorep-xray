@@ -37,15 +37,37 @@
 
 #include <jenkins_hash.h>
 
+SCOREP_DEFINE_DEFINITION_TYPE( InterimRmaWindow )
+{
+    SCOREP_DEFINE_DEFINITION_HEADER( InterimRmaWindow );
+
+    SCOREP_StringHandle              name_handle;
+    SCOREP_InterimCommunicatorHandle communicator_handle;
+};
+
 
 SCOREP_DEFINE_DEFINITION_TYPE( RmaWindow )
 {
     SCOREP_DEFINE_DEFINITION_HEADER( RmaWindow );
 
-    // Add SCOREP_RmaWindow stuff from here on.
-    SCOREP_StringHandle              name_handle;
-    SCOREP_InterimCommunicatorHandle communicator_handle;
+    SCOREP_StringHandle       name_handle;
+    SCOREP_CommunicatorHandle communicator_handle;
 };
+
+
+SCOREP_RmaWindowHandle
+SCOREP_DefineRmaWindow( const char*               name,
+                        SCOREP_CommunicatorHandle communicatorHandle );
+
+
+SCOREP_RmaWindowHandle
+SCOREP_DefineUnifiedRmaWindow( const char*               name,
+                               SCOREP_CommunicatorHandle communicatorHandle );
+
+
+void
+SCOREP_CopyRmaWindowDefinitionToUnified( SCOREP_RmaWindow_Definition*  definition,
+                                         SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_RMA_WINDOW_H */

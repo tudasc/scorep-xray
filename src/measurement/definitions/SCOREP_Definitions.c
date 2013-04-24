@@ -118,6 +118,7 @@ SCOREP_InitializeDefinitionManager( SCOREP_DefinitionManager**    definitionMana
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( group, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( interim_communicator, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( communicator, *definitionManager );
+    SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( interim_rma_window, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( rma_window, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_coords, *definitionManager );
     SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( mpi_cartesian_topology, *definitionManager );
@@ -171,6 +172,7 @@ SCOREP_Definitions_Finalize()
         free( scorep_unified_definition_manager->group_definition_hash_table );
         free( scorep_unified_definition_manager->interim_communicator_definition_hash_table );
         free( scorep_unified_definition_manager->communicator_definition_hash_table );
+        free( scorep_unified_definition_manager->interim_rma_window_definition_hash_table );
         free( scorep_unified_definition_manager->rma_window_definition_hash_table );
         free( scorep_unified_definition_manager->mpi_cartesian_topology_definition_hash_table );
         free( scorep_unified_definition_manager->mpi_cartesian_coords_definition_hash_table );

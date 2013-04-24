@@ -54,6 +54,9 @@ typedef SCOREP_AnyHandle SCOREP_InterimCommunicatorHandle;
 typedef SCOREP_AnyHandle SCOREP_CommunicatorHandle;
 
 
+typedef SCOREP_AnyHandle SCOREP_InterimRmaWindowHandle;
+
+
 typedef SCOREP_AnyHandle SCOREP_RmaWindowHandle;
 
 

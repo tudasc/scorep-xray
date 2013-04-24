@@ -172,7 +172,7 @@ scorep_mpi_win_rank_to_pe( SCOREP_MpiRank rank,
  * @param  win MPI window handle.
  * @return Internal SCOREP handle for the given window.
  */
-extern SCOREP_RmaWindowHandle
+extern SCOREP_InterimRmaWindowHandle
 scorep_mpi_win_id( MPI_Win win );
 
 /**

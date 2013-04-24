@@ -85,6 +85,7 @@ scorep_handle_to_id( SCOREP_AnyHandle handle )
     DEF_WITH_MAPPING( Region, region ) \
     DEF_WITH_MAPPING( Group, group ) \
     DEF_WITH_MAPPING( Communicator, communicator ) \
+    DEF_WITH_MAPPING( RmaWindow, rma_window ) \
     DEF_WITH_MAPPING( Metric, metric ) \
     DEF_WITH_MAPPING( SamplingSet, sampling_set ) \
     DEF_WITH_MAPPING( Parameter, parameter ) \
@@ -102,7 +103,7 @@ struct SCOREP_DefinitionMappings
 
     /* handled special in the unifier code */
     uint32_t* interim_communicator_mappings;
-    uint32_t* rma_window_mappings;
+    uint32_t* interim_rma_window_mappings;
 };
 /* *INDENT-ON* */
 
@@ -125,6 +126,7 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Group, group )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( InterimCommunicator, interim_communicator )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Communicator, communicator )
+    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( InterimRmaWindow, interim_rma_window )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( RmaWindow, rma_window )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianTopology, mpi_cartesian_topology )
     SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianCoords, mpi_cartesian_coords )

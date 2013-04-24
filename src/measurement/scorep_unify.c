@@ -77,6 +77,7 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
     SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Region, region );
     SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Group, group );
     SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Communicator, communicator );
+    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, RmaWindow, rma_window );
     SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Metric, metric );
     SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, SamplingSet, sampling_set );
     SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Parameter, parameter );
@@ -102,7 +103,7 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     SCOREP_ALLOC_MAPPINGS_ARRAY( interim_communicator,
                                  &scorep_local_definition_manager );
 
-    SCOREP_ALLOC_MAPPINGS_ARRAY( rma_window,
+    SCOREP_ALLOC_MAPPINGS_ARRAY( interim_rma_window,
                                  &scorep_local_definition_manager );
 }
 
@@ -134,7 +135,7 @@ SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     SCOREP_FREE_MAPPINGS_ARRAY( interim_communicator,
                                 definitionManager );
 
-    SCOREP_FREE_MAPPINGS_ARRAY( rma_window,
+    SCOREP_FREE_MAPPINGS_ARRAY( interim_rma_window,
                                 definitionManager );
 
     free( definitionManager->mappings );
