@@ -244,7 +244,7 @@ SCOREP_InterimCommunicatorSetName( SCOREP_InterimCommunicatorHandle localMPIComm
  * SCOREP_RMA* functions.
  */
 SCOREP_InterimRmaWindowHandle
-SCOREP_InterimDefineRmaWindow( const char*                      name,
+SCOREP_DefineInterimRmaWindow( const char*                      name,
                                SCOREP_InterimCommunicatorHandle communicatorHandle );
 
 
