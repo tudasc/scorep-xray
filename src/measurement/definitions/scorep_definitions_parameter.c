@@ -147,7 +147,7 @@ equal_parameter( const SCOREP_ParameterDef* existingDefinition,
  * @return parameter name.
  */
 const char*
-SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle )
+SCOREP_ParameterHandle_GetName( SCOREP_ParameterHandle handle )
 {
     SCOREP_ParameterDef* param = SCOREP_LOCAL_HANDLE_DEREF( handle, Parameter );
 
@@ -163,7 +163,7 @@ SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle )
  * @return parameter type.
  */
 SCOREP_ParameterType
-SCOREP_Parameter_GetType( SCOREP_ParameterHandle handle )
+SCOREP_ParameterHandle_GetType( SCOREP_ParameterHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, Parameter )->parameter_type;
 }

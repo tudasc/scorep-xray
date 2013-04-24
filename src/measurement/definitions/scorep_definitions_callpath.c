@@ -368,7 +368,7 @@ equal_callpath( const SCOREP_CallpathDef* existingDefinition,
  * @param handle handle to local callpath handle.
  */
 uint32_t
-SCOREP_Callpath_GetUnifiedSequenceNumber( SCOREP_CallpathHandle handle )
+SCOREP_CallpathHandle_GetUnifiedId( SCOREP_CallpathHandle handle )
 {
     uint32_t local_id = SCOREP_LOCAL_HANDLE_TO_ID( handle, Callpath );
     return scorep_local_definition_manager.mappings->callpath_mappings[ local_id ];
@@ -379,7 +379,7 @@ SCOREP_Callpath_GetUnifiedSequenceNumber( SCOREP_CallpathHandle handle )
  * Returns the unified handle from a local handle.
  */
 SCOREP_CallpathHandle
-SCOREP_Callpath_GetUnifiedHandle( SCOREP_CallpathHandle handle )
+SCOREP_CallpathHandle_GetUnified( SCOREP_CallpathHandle handle )
 {
     return SCOREP_HANDLE_GET_UNIFIED( handle, Callpath,
                                       SCOREP_Memory_GetLocalDefinitionPageManager() );

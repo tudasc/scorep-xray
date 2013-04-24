@@ -67,7 +67,7 @@ scorep_dump_node( FILE* file, scorep_profile_node* node )
     fprintf( file, "type: %s\t", type_name_map[ node->node_type ] );
     if ( node->node_type == scorep_profile_node_regular_region )
     {
-        fprintf( file, "name: %s", SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
+        fprintf( file, "name: %s", SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
     }
     else if ( node->node_type == scorep_profile_node_thread_start )
     {

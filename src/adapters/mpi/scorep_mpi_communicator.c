@@ -865,7 +865,7 @@ scorep_mpi_comm_set_name( MPI_Comm comm, const char* name )
 
     SCOREP_InterimCommunicatorHandle    comm_handle  = SCOREP_MPI_COMM_HANDLE( comm );
     scorep_mpi_comm_definition_payload* comm_payload =
-        SCOREP_InterimCommunicatorGetPayload( comm_handle );
+        SCOREP_InterimCommunicatorHandle_GetPayload( comm_handle );
 
     SCOREP_MutexLock( scorep_mpi_communicator_mutex );
 
@@ -878,7 +878,7 @@ scorep_mpi_comm_set_name( MPI_Comm comm, const char* name )
         /*
          * Does set the name only the first time
          */
-        SCOREP_InterimCommunicatorSetName( comm_handle, name );
+        SCOREP_InterimCommunicatorHandle_SetName( comm_handle, name );
     }
 
     SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );

@@ -261,7 +261,7 @@ equal_region( const SCOREP_RegionDef* existingDefinition,
 
 
 uint32_t
-SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle )
+SCOREP_RegionHandle_GetId( SCOREP_RegionHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
 }
@@ -275,7 +275,7 @@ SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle )
  * @return region name.
  */
 const char*
-SCOREP_Region_GetName( SCOREP_RegionHandle handle )
+SCOREP_RegionHandle_GetName( SCOREP_RegionHandle handle )
 {
     SCOREP_RegionDef* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
 
@@ -291,7 +291,7 @@ SCOREP_Region_GetName( SCOREP_RegionHandle handle )
  * @return region name.
  */
 const char*
-SCOREP_Region_GetCanonicalName( SCOREP_RegionHandle handle )
+SCOREP_RegionHandle_GetCanonicalName( SCOREP_RegionHandle handle )
 {
     SCOREP_RegionDef* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
 
@@ -307,7 +307,7 @@ SCOREP_Region_GetCanonicalName( SCOREP_RegionHandle handle )
  * @return region file name.
  */
 const char*
-SCOREP_Region_GetFileName( SCOREP_RegionHandle handle )
+SCOREP_RegionHandle_GetFileName( SCOREP_RegionHandle handle )
 {
     SCOREP_RegionDef* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
 
@@ -323,7 +323,7 @@ SCOREP_Region_GetFileName( SCOREP_RegionHandle handle )
  * @return region type.
  */
 SCOREP_RegionType
-SCOREP_Region_GetType( SCOREP_RegionHandle handle )
+SCOREP_RegionHandle_GetType( SCOREP_RegionHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->region_type;
 }
@@ -337,7 +337,7 @@ SCOREP_Region_GetType( SCOREP_RegionHandle handle )
  * @return regions adapter type.
  */
 SCOREP_AdapterType
-SCOREP_Region_GetAdapterType( SCOREP_RegionHandle handle )
+SCOREP_RegionHandle_GetAdapterType( SCOREP_RegionHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->adapter_type;
 }
@@ -351,7 +351,7 @@ SCOREP_Region_GetAdapterType( SCOREP_RegionHandle handle )
  * @return regions first line.
  */
 SCOREP_LineNo
-SCOREP_Region_GetBeginLine( SCOREP_RegionHandle handle )
+SCOREP_RegionHandle_GetBeginLine( SCOREP_RegionHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->begin_line;
 }
@@ -365,7 +365,7 @@ SCOREP_Region_GetBeginLine( SCOREP_RegionHandle handle )
  * @return regions end line.
  */
 SCOREP_LineNo
-SCOREP_Region_GetEndLine( SCOREP_RegionHandle handle )
+SCOREP_RegionHandle_GetEndLine( SCOREP_RegionHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->end_line;
 }

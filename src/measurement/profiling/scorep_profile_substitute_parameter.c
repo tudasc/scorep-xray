@@ -154,9 +154,9 @@ substitute_parameter_in_node( scorep_profile_node* node,
     /* process integer parameter nodes */
     if ( node->node_type == scorep_profile_node_parameter_integer )
     {
-        const char* name = SCOREP_Parameter_GetName( handle );
+        const char* name = SCOREP_ParameterHandle_GetName( handle );
 
-        SCOREP_ParameterType type = SCOREP_Parameter_GetType( handle );
+        SCOREP_ParameterType type = SCOREP_ParameterHandle_GetType( handle );
 
 
         /* Use malloc, because its in post-processing => not time critical
@@ -185,8 +185,8 @@ substitute_parameter_in_node( scorep_profile_node* node,
     /* process string parameter nodes */
     else if ( node->node_type == scorep_profile_node_parameter_string )
     {
-        const char* name  = SCOREP_Parameter_GetName( handle );
-        const char* value = SCOREP_String_Get( scorep_profile_type_get_string_handle( node->type_specific_data ) );
+        const char* name  = SCOREP_ParameterHandle_GetName( handle );
+        const char* value = SCOREP_StringHandle_Get( scorep_profile_type_get_string_handle( node->type_specific_data ) );
 
         /* Use malloc, because its in post-processing => not time critical
            and its immediately freed => saves memory */

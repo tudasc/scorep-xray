@@ -143,7 +143,7 @@ enter_task_pointer( SCOREP_Profile_LocationData* location,
     node = scorep_profile_enter( location,
                                  location->current_implicit_node,
                                  region,
-                                 SCOREP_Region_GetType( region ),
+                                 SCOREP_RegionHandle_GetType( region ),
                                  timestamp,
                                  metric_values );
 

@@ -80,7 +80,7 @@ is_phase( scorep_profile_node* node )
     }
 
     SCOREP_RegionHandle region = scorep_profile_type_get_region_handle( node->type_specific_data );
-    SCOREP_RegionType   type   = SCOREP_Region_GetType( region );
+    SCOREP_RegionType   type   = SCOREP_RegionHandle_GetType( region );
     if ( ( type == SCOREP_REGION_PHASE ) ||
          ( type == SCOREP_REGION_DYNAMIC_PHASE ) ||
          ( type == SCOREP_REGION_DYNAMIC_LOOP_PHASE ) )

@@ -82,7 +82,7 @@ scorep_enter_region( uint64_t            timestamp,
     if ( SCOREP_IsProfilingEnabled() )
     {
         SCOREP_Profile_Enter( location, regionHandle,
-                              SCOREP_Region_GetType( regionHandle ),
+                              SCOREP_RegionHandle_GetType( regionHandle ),
                               timestamp, metricValues );
     }
 }

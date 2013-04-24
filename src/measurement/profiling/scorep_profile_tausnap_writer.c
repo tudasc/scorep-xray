@@ -184,7 +184,7 @@ write_region_tau( SCOREP_Profile_LocationData* location,
                   uint64_t*                    callpath_counter )
 {
     /* Construct callpath name */
-    char* name   = xmlize_string( SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
+    char* name   = xmlize_string( SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
     int   length = strlen( name ) + 1;
     if ( parentpath )
     {
@@ -202,7 +202,7 @@ write_region_tau( SCOREP_Profile_LocationData* location,
     free( name );
 
     /* write definition */
-    if ( SCOREP_Region_GetType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) != SCOREP_REGION_DYNAMIC )
+    if ( SCOREP_RegionHandle_GetType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) != SCOREP_REGION_DYNAMIC )
     {
         write_tausnap_def( path, file, callpath_counter );
     }
@@ -241,12 +241,12 @@ write_paramstring_tau( SCOREP_Profile_LocationData* location,
 {
     /* Construct callpath name */
     char* path;
-    char* param_name  = xmlize_string( SCOREP_Parameter_GetName( node->type_specific_data.handle ) );
-    char* param_value = xmlize_string( SCOREP_String_Get( node->type_specific_data.value ) );
+    char* param_name  = xmlize_string( SCOREP_ParameterHandle_GetName( node->type_specific_data.handle ) );
+    char* param_value = xmlize_string( SCOREP_StringHandle_Get( node->type_specific_data.value ) );
 
     if ( parentpath == NULL )
     {
-        const char* parentname = SCOREP_Parameter_GetName( node->parent->type_specific_data.handle );
+        const char* parentname = SCOREP_ParameterHandle_GetName( node->parent->type_specific_data.handle );
         parentpath = UTILS_CStr_dup( parentname );
     }
     /* Length is "<path> (<name> = <value>)" plus terminating '\0' */
@@ -296,10 +296,10 @@ write_paramint_tau( SCOREP_Profile_LocationData* location,
     char*                  path;
     SCOREP_ParameterHandle param =
         scorep_profile_type_get_parameter_handle( node->type_specific_data );
-    char* param_name = xmlize_string( SCOREP_Parameter_GetName( param ) );
+    char* param_name = xmlize_string( SCOREP_ParameterHandle_GetName( param ) );
     if ( parentpath == NULL )
     {
-        const char* parentname = SCOREP_Parameter_GetName( node->parent->type_specific_data.handle );
+        const char* parentname = SCOREP_ParameterHandle_GetName( node->parent->type_specific_data.handle );
         parentpath = UTILS_CStr_dup( parentname );
     }
     if ( param == scorep_profile_param_instance )
@@ -314,9 +314,9 @@ write_paramint_tau( SCOREP_Profile_LocationData* location,
     {
         /* 12 digit max data length. */
         int length = strlen( parentpath ) +
-                     strlen( SCOREP_Parameter_GetName( param ) ) +
+                     strlen( SCOREP_ParameterHandle_GetName( param ) ) +
                      21 + 6 + 1;
-        SCOREP_ParameterType type = SCOREP_Parameter_GetType( param );
+        SCOREP_ParameterType type = SCOREP_ParameterHandle_GetType( param );
         path = ( char* )malloc( length );
 //![CDATA[int f2(int) [{simpleTau.cpp} {5,1}-{10,1}]   [ <y> = <2> ]]]
         if ( type == SCOREP_PARAMETER_INT64 )
@@ -487,7 +487,7 @@ write_data_tau( scorep_profile_node*      node,
     /* Write data in format:
        <callpath id> <number of calls> <child calls> <exclusive time> <inclusive time>
      */
-    if ( node->node_type != scorep_profile_node_regular_region || SCOREP_Region_GetType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) != SCOREP_REGION_DYNAMIC )
+    if ( node->node_type != scorep_profile_node_regular_region || SCOREP_RegionHandle_GetType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) != SCOREP_REGION_DYNAMIC )
     {
         fprintf( file,
                  "%" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64,
@@ -663,7 +663,7 @@ write_userevent_data_metric_tau( SCOREP_Profile_LocationData* location,
         if ( child != NULL )
         {
             /* Construct callpath name */
-            char* name   = xmlize_string( SCOREP_Region_GetName( scorep_profile_type_get_region_handle( child->type_specific_data ) ) );
+            char* name   = xmlize_string( SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( child->type_specific_data ) ) );
             int   length = strlen( name ) + 1;
             if ( parentpath )
             {
@@ -715,7 +715,7 @@ write_userevent_data_tau( SCOREP_Profile_LocationData* location,
         while ( child != NULL )
         {
             /* Construct callpath name */
-            char* name   = xmlize_string( SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
+            char* name   = xmlize_string( SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
             int   length = strlen( name ) + 1;
             if ( parentpath )
             {

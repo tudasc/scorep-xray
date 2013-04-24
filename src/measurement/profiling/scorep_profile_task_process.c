@@ -48,7 +48,7 @@ visit_to_switches( scorep_profile_node* node,
     }
 
     SCOREP_RegionHandle region = scorep_profile_type_get_region_handle( node->type_specific_data );
-    if ( SCOREP_Region_GetType( region ) != SCOREP_REGION_TASK )
+    if ( SCOREP_RegionHandle_GetType( region ) != SCOREP_REGION_TASK )
     {
         return;
     }

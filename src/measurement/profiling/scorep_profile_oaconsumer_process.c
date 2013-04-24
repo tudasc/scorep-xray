@@ -81,7 +81,7 @@ scorep_oaconsumer_get_phase_node
     if ( node->node_type == scorep_profile_node_regular_region )
     {
         SCOREP_RegionHandle region_handle     = scorep_profile_type_get_region_handle( node->type_specific_data );
-        uint32_t            current_region_id = SCOREP_GetRegionHandleToID( region_handle );
+        uint32_t            current_region_id = SCOREP_RegionHandle_GetId( region_handle );
         if ( current_region_id == phase_id )
         {
             phase_node = node;
@@ -368,7 +368,7 @@ scorep_oa_consumer_initialize_index
             private_index_pointer_array[ i ] = calloc( 1, sizeof( thread_private_index_type ) );
 
             //data_index[i]->phase_node=scorep_oaconsumer_get_phase_node( thread_root,
-            //															SCOREP_GetRegionHandleToID( phase_handle ) );
+            //															SCOREP_RegionHandle_GetId( phase_handle ) );
             assert( private_index_pointer_array[ i ] );
 
             private_index_pointer_array[ i ]->shared_index = shared_index;
@@ -568,13 +568,13 @@ check_region_definition_merge_needed
     SCOREP_RegionHandle parent_region_handle = scorep_profile_type_get_region_handle( parent_node->type_specific_data );
 
     /** Merging definition is required only in case of MPI and OMP regions which don't have file region first line number */
-    if (                 ( SCOREP_Region_GetAdapterType( region_handle ) != SCOREP_ADAPTER_MPI )
-                         &&      ( SCOREP_Region_GetAdapterType( region_handle ) != SCOREP_ADAPTER_POMP )  )
+    if (                 ( SCOREP_RegionHandle_GetAdapterType( region_handle ) != SCOREP_ADAPTER_MPI )
+                         &&      ( SCOREP_RegionHandle_GetAdapterType( region_handle ) != SCOREP_ADAPTER_POMP )  )
     {
         return 0;
     }
 
-    if ( SCOREP_Region_GetBeginLine( region_handle ) != 0 )
+    if ( SCOREP_RegionHandle_GetBeginLine( region_handle ) != 0 )
     {
         return 0;
     }
@@ -775,14 +775,14 @@ scorep_oaconsumer_copy_merged_region_definitions
 
         /** Copy data into the merged regions buffer*/
         shared_index->merged_region_def_buffer[ region_index ].region_id    = region_index;
-        shared_index->merged_region_def_buffer[ region_index ].rfl          = SCOREP_Region_GetBeginLine( parent_region_handle );
-        shared_index->merged_region_def_buffer[ region_index ].rel          = SCOREP_Region_GetEndLine( parent_region_handle );
-        shared_index->merged_region_def_buffer[ region_index ].adapter_type = ( uint32_t )SCOREP_Region_GetAdapterType( region_handle );
-        const char* name = SCOREP_Region_GetName( region_handle );
+        shared_index->merged_region_def_buffer[ region_index ].rfl          = SCOREP_RegionHandle_GetBeginLine( parent_region_handle );
+        shared_index->merged_region_def_buffer[ region_index ].rel          = SCOREP_RegionHandle_GetEndLine( parent_region_handle );
+        shared_index->merged_region_def_buffer[ region_index ].adapter_type = ( uint32_t )SCOREP_RegionHandle_GetAdapterType( region_handle );
+        const char* name = SCOREP_RegionHandle_GetName( region_handle );
         strncpy( shared_index->merged_region_def_buffer[ region_index ].name,
                  name,
                  MAX_REGION_NAME_LENGTH );
-        const char* file = UTILS_IO_GetWithoutPath( SCOREP_Region_GetFileName( parent_region_handle ) );
+        const char* file = UTILS_IO_GetWithoutPath( SCOREP_RegionHandle_GetFileName( parent_region_handle ) );
         strncpy( shared_index->merged_region_def_buffer[ region_index ].file,
                  file,
                  MAX_FILE_NAME_LENGTH );
@@ -803,7 +803,7 @@ scorep_oaconsumer_generate_region_key
 
     SCOREP_RegionHandle region_handle = scorep_profile_type_get_region_handle( node->type_specific_data );
 
-    uint32_t current_region_id = SCOREP_GetRegionHandleToID( region_handle );
+    uint32_t current_region_id = SCOREP_RegionHandle_GetId( region_handle );
     uint32_t parent_region_id  = 0;
 
     /** Check whether region file name and line numbers for this region definition have to be taken from parent region
@@ -811,8 +811,8 @@ scorep_oaconsumer_generate_region_key
     if ( check_region_definition_merge_needed( node ) )
     {
         scorep_profile_node* parent_node = node->parent;
-        parent_region_id = SCOREP_GetRegionHandleToID( scorep_profile_type_get_region_handle(
-                                                           parent_node->type_specific_data ) );
+        parent_region_id = SCOREP_RegionHandle_GetId( scorep_profile_type_get_region_handle(
+                                                          parent_node->type_specific_data ) );
     }
 
     new_key->parent_region_id = parent_region_id;
@@ -916,11 +916,11 @@ print_region_definitions
 
         if ( definition->name_handle != SCOREP_INVALID_STRING )
         {
-            printf( " name %s,", SCOREP_Region_GetName( handle ) );
+            printf( " name %s,", SCOREP_RegionHandle_GetName( handle ) );
         }
         if ( definition->file_name_handle != SCOREP_INVALID_STRING )
         {
-            printf( " file %s,", SCOREP_Region_GetFileName( handle ) );
+            printf( " file %s,", SCOREP_RegionHandle_GetFileName( handle ) );
         }
         uint32_t rfl          = definition->begin_line;
         uint32_t rel          = definition->end_line;
@@ -944,7 +944,7 @@ print_metric_definitions
 
         if ( definition->name_handle != SCOREP_INVALID_STRING )
         {
-            printf( " name %s\n", SCOREP_Metric_GetName( handle ) );
+            printf( " name %s\n", SCOREP_MetricHandle_GetName( handle ) );
         }
     }
     SCOREP_DEFINITION_FOREACH_WHILE();

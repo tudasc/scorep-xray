@@ -189,8 +189,8 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
                      "location %" PRIu64 ": Expected exit for region %s. "
                      "Exited region %s",
                      scorep_profile_type_get_int_value( location->root_node->type_specific_data ),
-                     SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ),
-                     SCOREP_Region_GetName( region ) );
+                     SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ),
+                     SCOREP_RegionHandle_GetName( region ) );
         return NULL;
     }
     return parent;

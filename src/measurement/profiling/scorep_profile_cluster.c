@@ -986,7 +986,7 @@ static inline bool
 is_mpi_node( scorep_profile_node* node )
 {
     return node->node_type == scorep_profile_node_regular_region &&
-           SCOREP_Region_GetAdapterType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) == SCOREP_ADAPTER_MPI;
+           SCOREP_RegionHandle_GetAdapterType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) == SCOREP_ADAPTER_MPI;
 }
 
 /**
@@ -1014,7 +1014,7 @@ scorep_calculate_derived_metrics( scorep_cluster_t*    cluster,
 
         uint64_t          visits         = path->count;
         uint64_t          execution_time = path->inclusive_time.sum;
-        SCOREP_RegionType region_type    = SCOREP_Region_GetType( scorep_profile_type_get_region_handle( path->type_specific_data ) );
+        SCOREP_RegionType region_type    = SCOREP_RegionHandle_GetType( scorep_profile_type_get_region_handle( path->type_specific_data ) );
 
         cluster->mets_sum.dense_metrics[ met_mpi_time ] += execution_time;
         switch ( region_type )
@@ -1589,7 +1589,7 @@ consider_visit_count( int cluster_mode, scorep_profile_node* node )
     {
         if ( node->node_type == scorep_profile_node_regular_region )
         {
-            const char* name = SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) );
+            const char* name = SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) );
             if ( ( 0 == strncmp( "MPI_Probe", name, 9 ) ) ||
                  ( 0 == strncmp( "MPI_Iprobe", name, 10 ) ) ||
                  ( 0 == strncmp( "MPI_Test", name, 8 ) ) )
@@ -1923,7 +1923,7 @@ scorep_cluster_on_enter_dynamic(  SCOREP_Profile_LocationData* location,
 
 
     const char* clustered_region = scorep_profile_get_clustered_region();
-    const char* current_region   = SCOREP_Region_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) );
+    const char* current_region   = SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) );
 
     /* If no region is specified, cluster the first dynamic region. */
     if ( strcmp( clustered_region, "" ) == 0 ||
@@ -2086,7 +2086,7 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
         /* Write cluster root */
         root = scorep_disjoint_set_get_root( scorep_clusterer->cl_it_head )->cluster->root->parent;
         SCOREP_CallpathHandle handle =
-            SCOREP_Callpath_GetUnifiedHandle( root->callpath_handle );
+            SCOREP_CallpathHandle_GetUnified( root->callpath_handle );
         uint32_t root_id =
             cube_cnode_get_id( scorep_get_cube4_callpath( write_data->map, handle ) );
         sprintf( value, "%" PRIu32, root_id );
@@ -2103,7 +2103,7 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
     if ( write_data->my_rank == 0 )
     {
         SCOREP_CallpathHandle handle =
-            SCOREP_Callpath_GetUnifiedHandle( root->callpath_handle );
+            SCOREP_CallpathHandle_GetUnified( root->callpath_handle );
         cube_cnode* root_cn     = scorep_get_cube4_callpath( write_data->map, handle );
         uint32_t    cluster_num = cube_cnode_num_children( root_cn );
         cluster_ids = ( int* )malloc( sizeof( int ) * cluster_num );

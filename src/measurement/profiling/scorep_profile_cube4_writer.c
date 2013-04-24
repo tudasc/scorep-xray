@@ -101,7 +101,7 @@ make_callpath_mapping( scorep_profile_node* node,
     }
 
     /* Use the sequence number of the unified definitions as index. */
-    uint64_t              index     = SCOREP_Callpath_GetUnifiedSequenceNumber( node->callpath_handle );
+    uint64_t              index     = SCOREP_CallpathHandle_GetUnifiedId( node->callpath_handle );
     scorep_profile_node** id_2_node = ( scorep_profile_node** )param;
 
     id_2_node[ index ] = node;
@@ -128,7 +128,7 @@ make_metric_mapping( uint32_t metric_number )
 
     SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Metric, metric )
     {
-        map[ SCOREP_Metric_GetUnifiedSequenceNumber( handle ) ] = handle;
+        map[ SCOREP_MetricHandle_GetUnifiedId( handle ) ] = handle;
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
 
@@ -272,7 +272,7 @@ get_sparse_uint64_value( scorep_profile_node* node, void* data )
     {
         if ( current->metric == metric )
         {
-            switch ( SCOREP_Metric_GetProfilingType( metric ) )
+            switch ( SCOREP_MetricHandle_GetProfilingType( metric ) )
             {
                 case SCOREP_METRIC_PROFILING_TYPE_MAX:
                     return current->max;
@@ -310,7 +310,7 @@ get_sparse_double_value( scorep_profile_node* node, void* data )
     {
         if ( current->metric == metric )
         {
-            switch ( SCOREP_Metric_GetProfilingType( metric ) )
+            switch ( SCOREP_MetricHandle_GetProfilingType( metric ) )
             {
                 case SCOREP_METRIC_PROFILING_TYPE_MAX:
                     return current->max;
@@ -337,7 +337,7 @@ static uint64_t
 has_sparse_double_value( scorep_profile_node* node, void* data )
 {
     SCOREP_MetricHandle metric = *( SCOREP_MetricHandle* )data;
-    if ( SCOREP_Metric_GetProfilingType( metric ) == SCOREP_METRIC_PROFILING_TYPE_MAX )
+    if ( SCOREP_MetricHandle_GetProfilingType( metric ) == SCOREP_METRIC_PROFILING_TYPE_MAX )
     {
         return 1;
     }
@@ -586,7 +586,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set )
     /* Get the number of unified callpath definitions to all ranks */
     if ( write_set->my_rank == 0 )
     {
-        write_set->callpath_number = SCOREP_Callpath_GetNumberOfUnifiedDefinitions();
+        write_set->callpath_number = SCOREP_Definitions_GetNumberOfUnifiedCallpathDefinitions();
     }
     SCOREP_Ipc_Bcast( &write_set->callpath_number, 1, SCOREP_IPC_UINT32, 0 );
     if ( write_set->callpath_number == 0 )
@@ -812,7 +812,7 @@ scorep_profile_write_cube4( SCOREP_Location* location_data )
         if ( write_set.my_rank == 0 )
         {
             metric = scorep_get_cube4_metric( write_set.map,
-                                              SCOREP_Metric_GetUnifiedHandle( metric_handle ) );
+                                              SCOREP_MetricHandle_GetUnified( metric_handle ) );
         }
 
         /* When writing sparse metrics, we skip the time metric handles.
@@ -821,7 +821,7 @@ scorep_profile_write_cube4( SCOREP_Location* location_data )
         if ( write_set.metric_map != NULL )
         {
             uint32_t current_number =
-                SCOREP_Metric_GetUnifiedSequenceNumber( metric_handle );
+                SCOREP_MetricHandle_GetUnifiedId( metric_handle );
             write_set.metric_map[ current_number ] = SCOREP_PROFILE_DENSE_METRIC;
         }
 
@@ -842,7 +842,7 @@ scorep_profile_write_cube4( SCOREP_Location* location_data )
         if ( write_set.my_rank == 0 )
         {
             metric = scorep_get_cube4_metric( write_set.map,
-                                              SCOREP_Metric_GetUnifiedHandle( additional_metrics[ i ] ) );
+                                              SCOREP_MetricHandle_GetUnified( additional_metrics[ i ] ) );
         }
 
         /* When writing sparse metrics, we skip the time metric handles.
@@ -851,7 +851,7 @@ scorep_profile_write_cube4( SCOREP_Location* location_data )
         if ( write_set.metric_map != NULL )
         {
             uint32_t current_number =
-                SCOREP_Metric_GetUnifiedSequenceNumber( additional_metrics[ i ] );
+                SCOREP_MetricHandle_GetUnifiedId( additional_metrics[ i ] );
             write_set.metric_map[ current_number ] = SCOREP_PROFILE_DENSE_METRIC;
         }
 
@@ -892,7 +892,7 @@ scorep_profile_write_cube4( SCOREP_Location* location_data )
                 continue;
             }
 
-            switch ( SCOREP_Metric_GetValueType( write_set.metric_map[ i ] ) )
+            switch ( SCOREP_MetricHandle_GetValueType( write_set.metric_map[ i ] ) )
             {
                 case SCOREP_METRIC_VALUE_INT64:
                 case SCOREP_METRIC_VALUE_UINT64:
@@ -918,8 +918,8 @@ scorep_profile_write_cube4( SCOREP_Location* location_data )
                 default:
                     UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
                                  "Metric %s has unknown value type %d",
-                                 SCOREP_Metric_GetName( write_set.metric_map[ i ] ),
-                                 SCOREP_Metric_GetValueType( write_set.metric_map[ i ] ) );
+                                 SCOREP_MetricHandle_GetName( write_set.metric_map[ i ] ),
+                                 SCOREP_MetricHandle_GetValueType( write_set.metric_map[ i ] ) );
             }
         }
     }

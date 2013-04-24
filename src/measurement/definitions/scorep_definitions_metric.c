@@ -260,7 +260,7 @@ equal_metric( const SCOREP_MetricDef* existingDefinition,
  * @param handle handle to local metric handle.
  */
 uint32_t
-SCOREP_Metric_GetUnifiedSequenceNumber( SCOREP_MetricHandle handle )
+SCOREP_MetricHandle_GetUnifiedId( SCOREP_MetricHandle handle )
 {
     uint32_t local_id = SCOREP_LOCAL_HANDLE_TO_ID( handle, Metric );
     return scorep_local_definition_manager.mappings->metric_mappings[ local_id ];
@@ -271,7 +271,7 @@ SCOREP_Metric_GetUnifiedSequenceNumber( SCOREP_MetricHandle handle )
  * Returns the unified handle from a local handle.
  */
 SCOREP_MetricHandle
-SCOREP_Metric_GetUnifiedHandle( SCOREP_MetricHandle handle )
+SCOREP_MetricHandle_GetUnified( SCOREP_MetricHandle handle )
 {
     return SCOREP_HANDLE_GET_UNIFIED( handle, Metric,
                                       SCOREP_Memory_GetLocalDefinitionPageManager() );
@@ -283,7 +283,7 @@ SCOREP_Metric_GetUnifiedHandle( SCOREP_MetricHandle handle )
  * @param handle to local meric definition.
  */
 SCOREP_MetricValueType
-SCOREP_Metric_GetValueType( SCOREP_MetricHandle handle )
+SCOREP_MetricHandle_GetValueType( SCOREP_MetricHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, Metric )->value_type;
 }
@@ -294,7 +294,7 @@ SCOREP_Metric_GetValueType( SCOREP_MetricHandle handle )
  * @param handle to local meric definition.
  */
 const char*
-SCOREP_Metric_GetName( SCOREP_MetricHandle handle )
+SCOREP_MetricHandle_GetName( SCOREP_MetricHandle handle )
 {
     SCOREP_MetricDef* metric = SCOREP_LOCAL_HANDLE_DEREF( handle, Metric );
 
@@ -303,7 +303,7 @@ SCOREP_Metric_GetName( SCOREP_MetricHandle handle )
 
 
 SCOREP_MetricProfilingType
-SCOREP_Metric_GetProfilingType( SCOREP_MetricHandle handle )
+SCOREP_MetricHandle_GetProfilingType( SCOREP_MetricHandle handle )
 {
     return SCOREP_LOCAL_HANDLE_DEREF( handle, Metric )->profiling_type;
 }

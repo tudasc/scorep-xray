@@ -141,7 +141,7 @@ SCOREP_Definitions_NewScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
 
 
 SCOREP_SamplingSetHandle
-SCOREP_GetSamplingSet( SCOREP_SamplingSetHandle samplingSet )
+SCOREP_SamplingSetHandle_GetSamplingSet( SCOREP_SamplingSetHandle samplingSet )
 {
     SCOREP_SamplingSetDef* sampling_set
         = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, SamplingSet );

@@ -57,44 +57,4 @@ SCOREP_CopyMetricDefinitionToUnified( SCOREP_MetricDef*             definition,
                                       SCOREP_Allocator_PageManager* handlesPageManager );
 
 
-/**
- * Returns the sequence number of the unified definitions for a local metric handle from
- * the mappings.
- * @param handle handle to local metric handle.
- */
-uint32_t
-SCOREP_Metric_GetUnifiedSequenceNumber( SCOREP_MetricHandle handle );
-
-
-/**
- * Returns the unified handle from a local handle.
- */
-SCOREP_MetricHandle
-SCOREP_Metric_GetUnifiedHandle( SCOREP_MetricHandle handle );
-
-
-/**
- * Returns the value type of a metric.
- * @param handle to local metric definition.
- */
-SCOREP_MetricValueType
-SCOREP_Metric_GetValueType( SCOREP_MetricHandle handle );
-
-
-/**
- * Returns the name of a metric.
- * @param handle to local metric definition.
- */
-const char*
-SCOREP_Metric_GetName( SCOREP_MetricHandle handle );
-
-
-/**
- * Returns the profiling type of a metric.
- * @param handle to local metric definition.
- */
-SCOREP_MetricProfilingType
-SCOREP_Metric_GetProfilingType( SCOREP_MetricHandle handle );
-
-
 #endif /* SCOREP_PRIVATE_DEFINITIONS_METRIC_H */

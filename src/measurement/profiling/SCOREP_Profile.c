@@ -253,7 +253,7 @@ SCOREP_Profile_Process( SCOREP_Location* location )
                 SCOREP_RegionHandle region =
                     scorep_profile_type_get_region_handle( node->type_specific_data );
                 fprintf( stderr, "Warning: Force exit for region %s\n",
-                         SCOREP_Region_GetName( region ) );
+                         SCOREP_RegionHandle_GetName( region ) );
                 SCOREP_Profile_Exit( location, region, exit_time, metrics );
             }
             else if ( node->node_type == scorep_profile_node_collapse )
@@ -334,7 +334,7 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
                       uint64_t            timestamp,
                       uint64_t*           metrics )
 {
-    //printf( "%u: Enter %s\n", SCOREP_Location_GetId( thread ), SCOREP_Region_GetName( region ) );
+    //printf( "%u: Enter %s\n", SCOREP_Location_GetId( thread ), SCOREP_RegionHandle_GetName( region ) );
     scorep_profile_node* node = NULL;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
@@ -387,12 +387,12 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
                      uint64_t            timestamp,
                      uint64_t*           metrics )
 {
-    //printf( "%u: Exit %s\n", SCOREP_Location_GetId( thread ), SCOREP_Region_GetName( region ) );
+    //printf( "%u: Exit %s\n", SCOREP_Location_GetId( thread ), SCOREP_RegionHandle_GetName( region ) );
     int                          i;
     scorep_profile_node*         node   = NULL;
     scorep_profile_node*         parent = NULL;
     SCOREP_Profile_LocationData* location;
-    SCOREP_RegionType            type = SCOREP_Region_GetType( region );
+    SCOREP_RegionType            type = SCOREP_RegionHandle_GetType( region );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE,
                         "Exit event of profiling system called" );

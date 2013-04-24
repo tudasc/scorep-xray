@@ -140,7 +140,7 @@ equal_source_file( const SCOREP_SourceFileDef* existingDefinition,
  * @return source file name.
  */
 const char*
-SCOREP_SourceFile_GetName( SCOREP_SourceFileHandle handle )
+SCOREP_SourceFileHandle_GetName( SCOREP_SourceFileHandle handle )
 {
     SCOREP_SourceFileDef* source_file = SCOREP_LOCAL_HANDLE_DEREF( handle, SourceFile );
 

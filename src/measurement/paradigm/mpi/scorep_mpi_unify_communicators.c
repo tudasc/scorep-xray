@@ -147,7 +147,7 @@ create_local_mappings( uint32_t comm_world_size,
             continue;
         }
         scorep_mpi_comm_definition_payload* comm_payload =
-            SCOREP_InterimCommunicatorGetPayload( handle );
+            SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
         uint32_t global_comm_id = comm_payload->root_id;
         if ( !comm_payload->is_self_like )
@@ -202,7 +202,7 @@ is_this_rank_in_communicator( uint32_t  global_comm_id,
             continue;
         }
         scorep_mpi_comm_definition_payload* comm_payload =
-            SCOREP_InterimCommunicatorGetPayload( handle );
+            SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
         if ( global_comm_id ==
              interim_communicator_mappings[ definition->sequence_number ] )
@@ -446,7 +446,7 @@ define_comms( uint32_t comm_world_size,
             continue;
         }
         scorep_mpi_comm_definition_payload* comm_payload =
-            SCOREP_InterimCommunicatorGetPayload( handle );
+            SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
         if ( !comm_payload->is_self_like )
         {

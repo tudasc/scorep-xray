@@ -881,10 +881,10 @@ SCOREP_Metric_GetAdditionalScopedMetricHandles( SCOREP_Location* location )
             /* -> For metric that is recorded by current source and scope level */
             for ( uint32_t j = 0; j < location_metric_set->metrics_counts[ metric_src ]; ++j )
             {
-                /* SCOREP_GetSamplingSet always returns a sampling
+                /* SCOREP_SamplingSetHandle_GetSamplingSet always returns a sampling
                  * set handle, no matter if the given metric handle
                  * is a normal or scoped one. */
-                SCOREP_SamplingSetHandle sampling_set = SCOREP_GetSamplingSet( location_metric_set->sampling_set );
+                SCOREP_SamplingSetHandle sampling_set = SCOREP_SamplingSetHandle_GetSamplingSet( location_metric_set->sampling_set );
                 if ( sampling_set == SCOREP_INVALID_SAMPLING_SET )
                 {
                     continue;

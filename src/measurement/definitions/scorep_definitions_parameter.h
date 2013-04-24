@@ -50,12 +50,4 @@ SCOREP_CopyParameterDefinitionToUnified( SCOREP_ParameterDef*          definitio
                                          SCOREP_Allocator_PageManager* handlesPageManager );
 
 
-const char*
-SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle );
-
-
-SCOREP_ParameterType
-SCOREP_Parameter_GetType( SCOREP_ParameterHandle handle );
-
-
 #endif /* SCOREP_PRIVATE_DEFINITIONS_PARAMETER_H */

@@ -130,7 +130,7 @@ scorep_string_definition_define( SCOREP_DefinitionManager* definition_manager,
 
 
 const char*
-SCOREP_String_Get( SCOREP_StringHandle handle )
+SCOREP_StringHandle_Get( SCOREP_StringHandle handle )
 {
     SCOREP_StringDef* str = SCOREP_LOCAL_HANDLE_DEREF( handle, String );
 

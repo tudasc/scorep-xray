@@ -311,7 +311,7 @@ SCOREP_OA_RequestsSubmit
     {
         if ( definition->name_handle != SCOREP_INVALID_STRING )
         {
-            const char* metric_name = SCOREP_Metric_GetName( handle );
+            const char* metric_name = SCOREP_MetricHandle_GetName( handle );
             uint32_t    metric_id   =  SCOREP_LOCAL_HANDLE_TO_ID( handle, Metric );
             scorep_oa_request_submit( metric_name, metric_id, definition->source_type );
         }

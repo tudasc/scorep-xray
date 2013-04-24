@@ -71,6 +71,10 @@
 /*@{*/
 
 
+const char*
+SCOREP_StringHandle_Get( SCOREP_StringHandle handle );
+
+
 /**
  * Associate a file name with a process unique file handle.
  *
@@ -83,6 +87,9 @@
 SCOREP_SourceFileHandle
 SCOREP_Definitions_NewSourceFile( const char* fileName );
 
+
+const char*
+SCOREP_SourceFileHandle_GetName( SCOREP_SourceFileHandle handle );
 
 
 /**
@@ -142,42 +149,37 @@ SCOREP_Definitions_NewRegion( const char*             regionName,
                               SCOREP_RegionType       regionType );
 
 
-
-const char*
-SCOREP_String_Get( SCOREP_StringHandle handle );
-
-const char*
-SCOREP_SourceFile_GetName( SCOREP_SourceFileHandle handle );
-
 uint32_t
-SCOREP_GetRegionHandleToID( SCOREP_RegionHandle handle );
+SCOREP_RegionHandle_GetId( SCOREP_RegionHandle handle );
+
 
 const char*
-SCOREP_Region_GetName( SCOREP_RegionHandle handle );
+SCOREP_RegionHandle_GetName( SCOREP_RegionHandle handle );
+
 
 const char*
-SCOREP_Region_GetCanonicalName( SCOREP_RegionHandle handle );
+SCOREP_RegionHandle_GetCanonicalName( SCOREP_RegionHandle handle );
+
 
 const char*
-SCOREP_Region_GetFileName( SCOREP_RegionHandle handle );
+SCOREP_RegionHandle_GetFileName( SCOREP_RegionHandle handle );
+
 
 SCOREP_RegionType
-SCOREP_Region_GetType( SCOREP_RegionHandle handle );
+SCOREP_RegionHandle_GetType( SCOREP_RegionHandle handle );
+
 
 SCOREP_AdapterType
-SCOREP_Region_GetAdapterType( SCOREP_RegionHandle handle );
+SCOREP_RegionHandle_GetAdapterType( SCOREP_RegionHandle handle );
+
 
 SCOREP_LineNo
-SCOREP_Region_GetBeginLine( SCOREP_RegionHandle handle );
+SCOREP_RegionHandle_GetBeginLine( SCOREP_RegionHandle handle );
+
 
 SCOREP_LineNo
-SCOREP_Region_GetEndLine( SCOREP_RegionHandle handle );
+SCOREP_RegionHandle_GetEndLine( SCOREP_RegionHandle handle );
 
-const char*
-SCOREP_Parameter_GetName( SCOREP_ParameterHandle handle );
-
-SCOREP_ParameterType
-SCOREP_Parameter_GetType( SCOREP_ParameterHandle handle );
 
 SCOREP_GroupHandle
 SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
@@ -185,17 +187,20 @@ SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
                                    const uint32_t   numberOfRanks,
                                    const uint32_t*  ranks );
 
+
 SCOREP_GroupHandle
 SCOREP_Definitions_NewUnifiedGroup( SCOREP_GroupType type,
                                     const char*      name,
                                     uint32_t         numberOfMembers,
                                     const uint64_t*  members );
 
+
 SCOREP_GroupHandle
 SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
                                           const char*      name,
                                           uint32_t         numberOfRanks,
                                           const uint32_t*  ranks );
+
 
 /**
  * Associate a MPI communicator with a process unique communicator handle.
@@ -221,15 +226,15 @@ SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle pare
  * Get access to the payload from a communicator definition.
  */
 void*
-SCOREP_InterimCommunicatorGetPayload( SCOREP_InterimCommunicatorHandle handle );
+SCOREP_InterimCommunicatorHandle_GetPayload( SCOREP_InterimCommunicatorHandle handle );
 
 
 /**
  * Set the name of the communicator to @a name, but only if it wasn't done before.
  */
 void
-SCOREP_InterimCommunicatorSetName( SCOREP_InterimCommunicatorHandle localMPICommHandle,
-                                   const char*                      name );
+SCOREP_InterimCommunicatorHandle_SetName( SCOREP_InterimCommunicatorHandle localMPICommHandle,
+                                          const char*                      name );
 
 
 /**
@@ -325,6 +330,44 @@ uint32_t
 SCOREP_Definitions_GetNumberOfUnifiedMetricDefinitions( void );
 
 
+/**
+ * Returns the sequence number of the unified definitions for a local metric handle from
+ * the mappings.
+ * @param handle handle to local metric handle.
+ */
+uint32_t
+SCOREP_MetricHandle_GetUnifiedId( SCOREP_MetricHandle handle );
+
+
+/**
+ * Returns the unified handle from a local handle.
+ */
+SCOREP_MetricHandle
+SCOREP_MetricHandle_GetUnified( SCOREP_MetricHandle handle );
+
+
+/**
+ * Returns the value type of a metric.
+ * @param handle to local metric definition.
+ */
+SCOREP_MetricValueType
+SCOREP_MetricHandle_GetValueType( SCOREP_MetricHandle handle );
+
+
+/**
+ * Returns the name of a metric.
+ * @param handle to local metric definition.
+ */
+const char*
+SCOREP_MetricHandle_GetName( SCOREP_MetricHandle handle );
+
+
+/**
+ * Returns the profiling type of a metric.
+ * @param handle to local metric definition.
+ */
+SCOREP_MetricProfilingType
+SCOREP_MetricHandle_GetProfilingType( SCOREP_MetricHandle handle );
 
 
 /**
@@ -347,6 +390,7 @@ SCOREP_Definitions_NewSamplingSet( uint8_t                    numberOfMetrics,
                                    const SCOREP_MetricHandle* metrics,
                                    SCOREP_MetricOccurrence    occurrence );
 
+
 /**
  * Define a new scoped sampling set. The scoped sampling set is recorded by
  * a location specified by @a recorderHandle. In contrast to a normal
@@ -368,6 +412,7 @@ SCOREP_Definitions_NewScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
                                          SCOREP_MetricScope       scopeType,
                                          SCOREP_AnyHandle         scopeHandle );
 
+
 /**
  * A SCOREP_SamplingSetHandle can refer to a normal sampling set or a scoped
  * one. A scoped sampling set contains a reference to the underlying sampling
@@ -381,7 +426,8 @@ SCOREP_Definitions_NewScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
  * @return Returns handle of a normal sampling set.
  */
 SCOREP_SamplingSetHandle
-SCOREP_GetSamplingSet( SCOREP_SamplingSetHandle samplingSet );
+SCOREP_SamplingSetHandle_GetSamplingSet( SCOREP_SamplingSetHandle samplingSet );
+
 
 /**
  * Associate a name with a process unique I/O file group handle.
@@ -463,6 +509,14 @@ SCOREP_Definitions_NewParameter( const char*          name,
                                  SCOREP_ParameterType type );
 
 
+const char*
+SCOREP_ParameterHandle_GetName( SCOREP_ParameterHandle handle );
+
+
+SCOREP_ParameterType
+SCOREP_ParameterHandle_GetType( SCOREP_ParameterHandle handle );
+
+
 /**
  * Define a property with its initial value.
  */
@@ -470,69 +524,6 @@ SCOREP_PropertyHandle
 SCOREP_Definitions_NewProperty( SCOREP_Property          property,
                                 SCOREP_PropertyCondition condition,
                                 bool                     initialValue );
-
-/**
- * Returns the sequence number of the unified definitions for a local callpath handle from
- * the mappings.
- * @param handle handle to local callpath handle.
- */
-uint32_t
-SCOREP_Callpath_GetUnifiedSequenceNumber( SCOREP_CallpathHandle handle );
-
-/**
- * Returns the unified handle from a local handle.
- * @param handle Handle of a local callpath.
- */
-SCOREP_CallpathHandle
-SCOREP_Callpath_GetUnifiedHandle( SCOREP_CallpathHandle handle );
-
-/**
- * Returns the number of unified callpath definitions.
- */
-uint32_t
-SCOREP_Callpath_GetNumberOfUnifiedDefinitions( void );
-
-/**
- * Returns the sequence number of the unified definitions for a local metric handle from
- * the mappings.
- * @param handle handle to local metric handle.
- */
-uint32_t
-SCOREP_Metric_GetUnifiedSequenceNumber( SCOREP_MetricHandle handle );
-
-/**
- * Returns the unified handle from a local handle.
- */
-SCOREP_MetricHandle
-SCOREP_Metric_GetUnifiedHandle( SCOREP_MetricHandle handle );
-
-/**
- * Returns the number of unified metric definitions.
- */
-uint32_t
-SCOREP_Metric_GetNumberOfUnifiedDefinitions( void );
-
-/**
- * Returns the value type of a metric.
- * @param handle to local metric definition.
- */
-SCOREP_MetricValueType
-SCOREP_Metric_GetValueType( SCOREP_MetricHandle handle );
-
-/**
- * Returns the name of a metric.
- * @param handle to local metric definition.
- */
-const char*
-SCOREP_Metric_GetName( SCOREP_MetricHandle handle );
-
-/**
- * Returns the profiling type of a metric.
- * @param handle to local metric definition.
- */
-SCOREP_MetricProfilingType
-SCOREP_Metric_GetProfilingType( SCOREP_MetricHandle handle );
-
 
 
 /*@}*/

@@ -101,7 +101,7 @@ SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle pare
 }
 
 void*
-SCOREP_InterimCommunicatorGetPayload( SCOREP_InterimCommunicatorHandle handle )
+SCOREP_InterimCommunicatorHandle_GetPayload( SCOREP_InterimCommunicatorHandle handle )
 {
     return ( char* )SCOREP_LOCAL_HANDLE_DEREF( handle,
                                                InterimCommunicator ) + local_comm_static_size();
@@ -109,8 +109,8 @@ SCOREP_InterimCommunicatorGetPayload( SCOREP_InterimCommunicatorHandle handle )
 
 
 void
-SCOREP_InterimCommunicatorSetName( SCOREP_InterimCommunicatorHandle localMPICommHandle,
-                                   const char*                      name )
+SCOREP_InterimCommunicatorHandle_SetName( SCOREP_InterimCommunicatorHandle localMPICommHandle,
+                                          const char*                      name )
 {
     UTILS_BUG_ON( localMPICommHandle == SCOREP_INVALID_INTERIM_COMMUNICATOR,
                   "Invalid MPI_Comm handle as argument" );

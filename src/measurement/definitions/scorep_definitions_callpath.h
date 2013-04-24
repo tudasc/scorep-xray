@@ -89,7 +89,7 @@ SCOREP_CopyCallpathDefinitionToUnified( SCOREP_CallpathDef*           definition
  * @param handle handle to local callpath handle.
  */
 uint32_t
-SCOREP_Callpath_GetUnifiedSequenceNumber( SCOREP_CallpathHandle handle );
+SCOREP_CallpathHandle_GetUnifiedId( SCOREP_CallpathHandle handle );
 
 
 /**
@@ -97,7 +97,7 @@ SCOREP_Callpath_GetUnifiedSequenceNumber( SCOREP_CallpathHandle handle );
  * @param handle Handle of a local callpath.
  */
 SCOREP_CallpathHandle
-SCOREP_Callpath_GetUnifiedHandle( SCOREP_CallpathHandle handle );
+SCOREP_CallpathHandle_GetUnified( SCOREP_CallpathHandle handle );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_CALLPATH_H */
