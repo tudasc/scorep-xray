@@ -55,8 +55,8 @@ SCOREP_CopyStringDefinitionToUnified( SCOREP_StringDef*             definition,
 
 
 SCOREP_StringHandle
-scorep_string_definition_define( SCOREP_DefinitionManager* definition_manager,
-                                 const char*               str );
+scorep_definitions_new_string( SCOREP_DefinitionManager* definition_manager,
+                               const char*               str );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_STRING_H */

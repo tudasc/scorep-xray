@@ -123,7 +123,7 @@ SCOREP_InterimCommunicatorHandle_SetName( SCOREP_InterimCommunicatorHandle local
 
     if ( definition->name_handle == SCOREP_INVALID_STRING )
     {
-        definition->name_handle = scorep_string_definition_define(
+        definition->name_handle = scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "" );
     }
@@ -199,7 +199,7 @@ SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group_handle,
     SCOREP_CommunicatorHandle new_handle = define_communicator(
         &scorep_local_definition_manager,
         group_handle,
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "<unnamed communicator>" ),
         parent_handle );
@@ -224,7 +224,7 @@ SCOREP_Definitions_NewUnifiedCommunicator( SCOREP_GroupHandle        group_handl
     return define_communicator(
                scorep_unified_definition_manager,
                group_handle,
-               scorep_string_definition_define(
+               scorep_definitions_new_string(
                    scorep_unified_definition_manager,
                    name ? name : "<unnamed communicator>" ),
                parent_handle );

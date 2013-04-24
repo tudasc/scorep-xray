@@ -84,7 +84,7 @@ SCOREP_Definitions_NewGroup( SCOREP_GroupType type,
         type,
         numberOfMembers,
         members,
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "" ),
         false /* no need to converted from uint32_t */ );
@@ -111,7 +111,7 @@ SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
         type,
         numberOfMembers,
         ( const uint64_t* )members,
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "" ),
         true /* need to be converted from uint32_t */ );
@@ -139,7 +139,7 @@ SCOREP_Definitions_NewUnifiedGroup( SCOREP_GroupType type,
                type,
                numberOfMembers,
                ( const uint64_t* )members,
-               scorep_string_definition_define(
+               scorep_definitions_new_string(
                    scorep_unified_definition_manager,
                    name ),
                false /* no need to converted from uint32_t */ );
@@ -163,7 +163,7 @@ SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
                type,
                numberOfMembers,
                ( const uint64_t* )members,
-               scorep_string_definition_define(
+               scorep_definitions_new_string(
                    scorep_unified_definition_manager,
                    name ? name : "" ),
                true /* need to be converted from uint32_t */ );

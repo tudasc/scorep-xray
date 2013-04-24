@@ -77,7 +77,7 @@ SCOREP_Definitions_NewSourceFile( const char* fileName )
 
     SCOREP_SourceFileHandle new_handle = define_source_file(
         &scorep_local_definition_manager,
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             fileName ? fileName : "<unknown source file>" ) );
 

@@ -79,10 +79,10 @@ SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
     SCOREP_SystemTreeNodeHandle new_handle = define_system_tree_node(
         &scorep_local_definition_manager,
         parent,
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "<unnamed system tree node>" ),
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             class ? class : "<unnamed system tree class>" ) );
 

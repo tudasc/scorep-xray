@@ -60,7 +60,7 @@ SCOREP_Definitions_NewString( const char* str )
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_StringHandle new_handle = scorep_string_definition_define(
+    SCOREP_StringHandle new_handle = scorep_definitions_new_string(
         &scorep_local_definition_manager,
         str );
 
@@ -76,7 +76,7 @@ SCOREP_CopyStringDefinitionToUnified( SCOREP_StringDef*             definition,
 {
     assert( definition );
     assert( handlesPageManager );
-    definition->unified = scorep_string_definition_define(
+    definition->unified = scorep_definitions_new_string(
         scorep_unified_definition_manager,
         definition->string_data );
 }
@@ -94,8 +94,8 @@ equal_string( const SCOREP_StringDef* existingDefinition,
 
 
 SCOREP_StringHandle
-scorep_string_definition_define( SCOREP_DefinitionManager* definition_manager,
-                                 const char*               str )
+scorep_definitions_new_string( SCOREP_DefinitionManager* definition_manager,
+                               const char*               str )
 {
     assert( definition_manager );
 

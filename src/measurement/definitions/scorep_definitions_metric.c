@@ -108,10 +108,10 @@ SCOREP_Definitions_NewMetric( const char*                name,
     SCOREP_MetricDef*   new_definition = NULL;
     SCOREP_MetricHandle new_handle     = define_metric(
         &scorep_local_definition_manager,
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "<unknown metric>" ),
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             description ? description : "" ),
         sourceType,
@@ -119,7 +119,7 @@ SCOREP_Definitions_NewMetric( const char*                name,
         valueType,
         base,
         exponent,
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             unit ? unit : "#" ),
         profilingType );

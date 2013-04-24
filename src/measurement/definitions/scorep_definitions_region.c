@@ -108,16 +108,16 @@ SCOREP_Definitions_NewRegion( const char*             regionName,
     SCOREP_RegionHandle new_handle = define_region(
         &scorep_local_definition_manager,
         /* region name (use it for demangled name) */
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             regionName ? regionName : "<unknown region>" ),
         /* canonical region name (use it for mangled name) */
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             regionCanonicalName ? regionCanonicalName :
             regionName ? regionName : "<unknown region>" ),
         /* description currently not used */
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             "" ),
         file_name_handle,

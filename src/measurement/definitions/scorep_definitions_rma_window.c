@@ -80,7 +80,7 @@ SCOREP_Definitions_NewInterimRmaWindow( const char*                      name,
     SCOREP_InterimRmaWindowDef*   new_definition = NULL;
     SCOREP_InterimRmaWindowHandle new_handle     = define_interim_rma_window(
         &scorep_local_definition_manager,
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "<unknown RMA window>" ),
         communicatorHandle );
@@ -145,7 +145,7 @@ SCOREP_Definitions_NewRmaWindow( const char*               name,
 
     SCOREP_RmaWindowHandle new_handle = define_rma_window(
         &scorep_local_definition_manager,
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "<unknown RMA window>" ),
         communicatorHandle );
@@ -164,7 +164,7 @@ SCOREP_Definitions_NewUnifiedRmaWindow( const char*               name,
 
     return define_rma_window(
                scorep_unified_definition_manager,
-               scorep_string_definition_define(
+               scorep_definitions_new_string(
                    scorep_unified_definition_manager,
                    name ? name : "<unknown RMA window>" ),
                communicatorHandle );

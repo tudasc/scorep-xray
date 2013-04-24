@@ -79,7 +79,7 @@ SCOREP_Definitions_NewParameter( const char*          name,
 
     SCOREP_ParameterHandle new_handle = define_parameter(
         &scorep_local_definition_manager,
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "<unknown parameter>" ),
         type );

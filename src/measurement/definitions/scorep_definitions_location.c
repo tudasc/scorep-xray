@@ -77,7 +77,7 @@ SCOREP_Definitions_NewLocation( SCOREP_LocationType type,
     SCOREP_LocationHandle new_handle = define_location(
         &scorep_local_definition_manager,
         UINT64_MAX,
-        scorep_string_definition_define(
+        scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "" ),
         type, 0, 0 );
