@@ -457,7 +457,7 @@ scorep_write_group_definitions( void*                     writerHandle,
         OTF2_GroupType group_type
             = scorep_tracing_group_type_to_otf2( definition->group_type );
         OTF2_Paradigm paradigm     = OTF2_PARADIGM_UNKNOWN;
-        OTF2_GroupType group_flags = OTF2_GROUP_FLAG_NONE;
+        OTF2_GroupFlag group_flags = OTF2_GROUP_FLAG_NONE;
         switch ( definition->group_type )
         {
             case SCOREP_GROUP_COMM_SELF:
