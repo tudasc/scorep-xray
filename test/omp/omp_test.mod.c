@@ -1,6 +1,7 @@
+/* *INDENT-OFF* */
 #include <config.h>
 #include "omp_test.c.opari.inc"
-#line 1 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp/omp_test.c"
+#line 1 "omp_test.c"
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -48,14 +49,14 @@ main()
 {
     printf( "in main\n" );
     {
-        int               pomp_num_threads = omp_get_max_threads();
-        int               pomp_if          = 1;
+        int               pomp2_num_threads = omp_get_max_threads();
+        int               pomp2_if          = 1;
         POMP2_Task_handle pomp2_old_task;
-        POMP2_Parallel_fork( &pomp2_region_1, pomp_if, pomp_num_threads, &pomp2_old_task, "189*regionType=parallel*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp/omp_test.c:49:49*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp/omp_test.c:0:0**" );
-#line 49 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp/omp_test.c"
-#pragma omp parallel POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
+        POMP2_Parallel_fork( &pomp2_region_1, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_1 );
+#line 49 "omp_test.c"
+#pragma omp parallel POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
         { POMP2_Parallel_begin( &pomp2_region_1 );
-#line 50 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp/omp_test.c"
+#line 50 "omp_test.c"
           {
               foo();
           }
@@ -68,7 +69,7 @@ main()
         }
         POMP2_Parallel_join( &pomp2_region_1, pomp2_old_task );
     }
-#line 53 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/omp/omp_test.c"
+#line 53 "omp_test.c"
 
     return 0;
 }

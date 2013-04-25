@@ -1,5 +1,7 @@
+/* *INDENT-OFF* */
+#include <config.h>
 #include "main.cpp.opari.inc"
-#line 1 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/C++/main.cpp"
+#line 1 "main.cpp"
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -16,8 +18,6 @@
  *
  */
 
-/* *INDENT-OFF* */
-//#include <config.h>
 
 #include <mpi.h>
 #include <cmath>
@@ -186,16 +186,16 @@ InitializeMatrix( JacobiData &data )
 {
     /* Initilize initial condition and RHS */
 {
-  int pomp_num_threads = omp_get_max_threads();
-  int pomp_if = 1;
+  int pomp2_num_threads = omp_get_max_threads();
+  int pomp2_if = 1;
   POMP2_Task_handle pomp2_old_task;
-  POMP2_Parallel_fork(&pomp2_region_1, pomp_if, pomp_num_threads, &pomp2_old_task, "218*regionType=parallelfor*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/C++/main.cpp:186:186*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/C++/main.cpp:0:0**" );
-#line 186 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/C++/main.cpp"
-#pragma omp parallel     POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
+  POMP2_Parallel_fork(&pomp2_region_1, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_1 );
+#line 187 "main.cpp"
+#pragma omp parallel     POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
 {   POMP2_Parallel_begin( &pomp2_region_1 );
-  POMP2_For_enter( &pomp2_region_1, "218*regionType=parallelfor*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/C++/main.cpp:186:186*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/C++/main.cpp:0:0**"  );
-#line 186 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/C++/main.cpp"
-#pragma omp          for nowait
+{   POMP2_For_enter( &pomp2_region_1, pomp2_ctc_1  );
+#line 187 "main.cpp"
+#pragma omp          for                   nowait
     for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
     {
         for ( int i = 0; i < data.iCols; i++ )
@@ -216,9 +216,10 @@ InitializeMatrix( JacobiData &data )
 #pragma omp barrier
   POMP2_Implicit_barrier_exit( &pomp2_region_1, pomp2_old_task ); }
   POMP2_For_exit( &pomp2_region_1 );
+ }
   POMP2_Parallel_end( &pomp2_region_1 ); }
   POMP2_Parallel_join( &pomp2_region_1, pomp2_old_task ); }
-#line 202 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/C++/main.cpp"
+#line 203 "main.cpp"
 }
 
 // Checks error between numerical and exact solution

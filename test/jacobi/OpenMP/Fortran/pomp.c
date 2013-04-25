@@ -7,15 +7,15 @@ extern "C"
 #include <stddef.h>
 
 extern void
-FORTRAN_MANGLED( pomp2_init_reg_1320070048701483_3 ) ();
+FORTRAN_MANGLED( pomp2_init_reg_8j6lstatlxpyf_3 ) ();
 extern void
-FORTRAN_MANGLED( pomp2_init_reg_1320070039548462_1 ) ();
+FORTRAN_MANGLED( pomp2_init_reg_5j6lstatla52g_1 ) ();
 
 void
 POMP2_Init_regions()
 {
-    FORTRAN_MANGLED( pomp2_init_reg_1320070048701483_3 ) ();
-    FORTRAN_MANGLED( pomp2_init_reg_1320070039548462_1 ) ();
+    FORTRAN_MANGLED( pomp2_init_reg_8j6lstatlxpyf_3 ) ();
+    FORTRAN_MANGLED( pomp2_init_reg_5j6lstatla52g_1 ) ();
 }
 
 size_t
@@ -27,7 +27,7 @@ POMP2_Get_num_regions()
 const char*
 POMP2_Get_opari2_version()
 {
-    return "0.9";
+    return "1.0.7";
 }
 
 #ifdef __cplusplus

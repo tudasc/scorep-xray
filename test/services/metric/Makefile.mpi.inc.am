@@ -71,7 +71,7 @@ if SCOREP_COMPILER_SUN
 jacobi_mpi_omp_c_metric_test_CPPFLAGS += -I$(INC_ROOT)test/jacobi/OpenMP/C
 endif
 
-jacobi_mpi_omp_c_metric_test_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi_omp.la libjacobi_mpi_pomp_c.la
+jacobi_mpi_omp_c_metric_test_LDADD    = $(LIB_DIR_SCOREP)libscorep_mpi_omp.la libjacobi_mpi_pomp_c_metric_test.la
 
 # for some unknown reason we need an extra -I for the SUN compiler in
 # OpenMP and hybrid mode.

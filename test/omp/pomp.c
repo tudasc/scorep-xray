@@ -3,14 +3,16 @@ extern "C"
 {
 #endif
 #include <stddef.h>
+#include <stdio.h>
 
 extern void
-POMP2_Init_reg_1320069835786106_1();
+POMP2_Init_reg_4k6lsdctlab37_1();
 
 void
 POMP2_Init_regions()
 {
-    POMP2_Init_reg_1320069835786106_1();
+    printf( "POMP2_Init_regions\n" );
+    POMP2_Init_reg_4k6lsdctlab37_1();
 }
 
 size_t
@@ -22,7 +24,7 @@ POMP2_Get_num_regions()
 const char*
 POMP2_Get_opari2_version()
 {
-    return "0.9";
+    return "1.0.7";
 }
 
 #ifdef __cplusplus

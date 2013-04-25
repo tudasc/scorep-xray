@@ -1,3 +1,4 @@
+/* *INDENT-OFF* */
 #include <config.h>
 #include "main.c.opari.inc"
 #line 1 "main.c"
@@ -139,45 +140,42 @@ InitializeMatrix( struct JacobiData* data )
 {
     int    i, j;
     double xx, yy, xx2, yy2;
-
     /* Initialize initial condition and RHS */
+{
+  int pomp2_num_threads = omp_get_max_threads();
+  int pomp2_if = 1;
+  POMP2_Task_handle pomp2_old_task;
+  POMP2_Parallel_fork(&pomp2_region_1, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_1 );
+#line 141 "main.c"
+#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
+{   POMP2_Parallel_begin( &pomp2_region_1 );
+{   POMP2_For_enter( &pomp2_region_1, pomp2_ctc_1  );
+#line 141 "main.c"
+#pragma omp          for                                                   nowait
+    for ( j = data->iRowFirst; j <= data->iRowLast; j++ )
     {
-        int               pomp_num_threads = omp_get_max_threads();
-        int               pomp_if          = 1;
-        POMP2_Task_handle pomp2_old_task;
-        POMP2_Parallel_fork( &pomp2_region_1, pomp_if, pomp_num_threads, &pomp2_old_task, "350*regionType=parallelfor*sscl=main.c:143:143*escl=main.c:0:0**" );
-#line 143 "main.c"
-#pragma omp parallel     private(i, j, xx, yy, xx2, yy2) POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
-        { POMP2_Parallel_begin( &pomp2_region_1 );
-          POMP2_For_enter( &pomp2_region_1, "350*regionType=parallelfor*sscl=main.c:143:143*escl=main.c:0:0**"  );
-#line 143 "main.c"
-#pragma omp          for                                 nowait
-          for ( j = data->iRowFirst; j <= data->iRowLast; j++ )
-          {
-              for ( i = 0; i < data->iCols; i++ )
-              {
-                  xx = ( -1.0 + data->fDx * i );
-                  yy = ( -1.0 + data->fDy * j );
+        for ( i = 0; i < data->iCols; i++ )
+        {
+            xx = ( -1.0 + data->fDx * i );
+            yy = ( -1.0 + data->fDy * j );
 
-                  xx2 = xx * xx;
-                  yy2 = yy * yy;
+            xx2 = xx * xx;
+            yy2 = yy * yy;
 
-                  U( j, i ) = 0.0;
-                  F( j, i ) = -data->fAlpha * ( 1.0 - xx2 ) * ( 1.0 - yy2 )
-                              + 2.0 * ( -2.0 + xx2 + yy2 );
-              }
-          }
-          { POMP2_Task_handle pomp2_old_task;
-            POMP2_Implicit_barrier_enter( &pomp2_region_1, &pomp2_old_task );
-#pragma omp barrier
-            POMP2_Implicit_barrier_exit( &pomp2_region_1, pomp2_old_task );
-          }
-          POMP2_For_exit( &pomp2_region_1 );
-          POMP2_Parallel_end( &pomp2_region_1 );
+            U( j, i ) = 0.0;
+            F( j, i ) = -data->fAlpha * ( 1.0 - xx2 ) * ( 1.0 - yy2 )
+                        + 2.0 * ( -2.0 + xx2 + yy2 );
         }
-        POMP2_Parallel_join( &pomp2_region_1, pomp2_old_task );
     }
-#line 159 "main.c"
+{ POMP2_Task_handle pomp2_old_task;
+  POMP2_Implicit_barrier_enter( &pomp2_region_1, &pomp2_old_task );
+#pragma omp barrier
+  POMP2_Implicit_barrier_exit( &pomp2_region_1, pomp2_old_task ); }
+  POMP2_For_exit( &pomp2_region_1 );
+ }
+  POMP2_Parallel_end( &pomp2_region_1 ); }
+  POMP2_Parallel_join( &pomp2_region_1, pomp2_old_task ); }
+#line 157 "main.c"
 }
 
 /*

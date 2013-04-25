@@ -1,6 +1,7 @@
+/* *INDENT-OFF* */
 #include <config.h>
 #include "main.cpp.opari.inc"
-#line 1 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/OpenMP/C++/main.cpp"
+#line 1 "main.cpp"
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -128,43 +129,41 @@ void
 InitializeMatrix( JacobiData &data )
 {
     /* Initilize initial condition and RHS */
+{
+  int pomp2_num_threads = omp_get_max_threads();
+  int pomp2_if = 1;
+  POMP2_Task_handle pomp2_old_task;
+  POMP2_Parallel_fork(&pomp2_region_1, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_1 );
+#line 130 "main.cpp"
+#pragma omp parallel     POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
+{   POMP2_Parallel_begin( &pomp2_region_1 );
+{   POMP2_For_enter( &pomp2_region_1, pomp2_ctc_1  );
+#line 130 "main.cpp"
+#pragma omp          for                   nowait
+    for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
     {
-        int               pomp_num_threads = omp_get_max_threads();
-        int               pomp_if          = 1;
-        POMP2_Task_handle pomp2_old_task;
-        POMP2_Parallel_fork( &pomp2_region_1, pomp_if, pomp_num_threads, &pomp2_old_task, "218*regionType=parallelfor*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/OpenMP/C++/main.cpp:130:130*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/OpenMP/C++/main.cpp:0:0**" );
-#line 130 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/OpenMP/C++/main.cpp"
-#pragma omp parallel     POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
-        { POMP2_Parallel_begin( &pomp2_region_1 );
-          POMP2_For_enter( &pomp2_region_1, "218*regionType=parallelfor*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/OpenMP/C++/main.cpp:130:130*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/OpenMP/C++/main.cpp:0:0**"  );
-#line 130 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/OpenMP/C++/main.cpp"
-#pragma omp          for nowait
-          for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
-          {
-              for ( int i = 0; i < data.iCols; i++ )
-              {
-                  double xx = ( -1.0 + data.fDx * i );
-                  double yy = ( -1.0 + data.fDy * j );
+        for ( int i = 0; i < data.iCols; i++ )
+        {
+            double xx = ( -1.0 + data.fDx * i );
+            double yy = ( -1.0 + data.fDy * j );
 
-                  double xx2 = xx * xx;
-                  double yy2 = yy * yy;
+            double xx2 = xx * xx;
+            double yy2 = yy * yy;
 
-                  U( j, i ) = 0.0;
-                  F( j, i ) = -data.fAlpha * ( 1.0 - xx2 ) * ( 1.0 - yy2 )
-                              + 2.0 * ( -2.0 + xx2 + yy2 );
-              }
-          }
-          { POMP2_Task_handle pomp2_old_task;
-            POMP2_Implicit_barrier_enter( &pomp2_region_1, &pomp2_old_task );
-#pragma omp barrier
-            POMP2_Implicit_barrier_exit( &pomp2_region_1, pomp2_old_task );
-          }
-          POMP2_For_exit( &pomp2_region_1 );
-          POMP2_Parallel_end( &pomp2_region_1 );
+            U( j, i ) = 0.0;
+            F( j, i ) = -data.fAlpha * ( 1.0 - xx2 ) * ( 1.0 - yy2 )
+                        + 2.0 * ( -2.0 + xx2 + yy2 );
         }
-        POMP2_Parallel_join( &pomp2_region_1, pomp2_old_task );
     }
-#line 146 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/OpenMP/C++/main.cpp"
+{ POMP2_Task_handle pomp2_old_task;
+  POMP2_Implicit_barrier_enter( &pomp2_region_1, &pomp2_old_task );
+#pragma omp barrier
+  POMP2_Implicit_barrier_exit( &pomp2_region_1, pomp2_old_task ); }
+  POMP2_For_exit( &pomp2_region_1 );
+ }
+  POMP2_Parallel_end( &pomp2_region_1 ); }
+  POMP2_Parallel_join( &pomp2_region_1, pomp2_old_task ); }
+#line 146 "main.cpp"
 }
 
 // Checks error between numerical and exact solution

@@ -5,15 +5,15 @@ extern "C"
 #include <stddef.h>
 
 extern void
-POMP2_Init_reg_1320064211885492_3();
+POMP2_Init_reg_4h6ldx9tlnr9d_3();
 extern void
-POMP2_Init_reg_1320063929619524_1();
+POMP2_Init_reg_1h6ldx9tlsrcd_1();
 
 void
 POMP2_Init_regions()
 {
-    POMP2_Init_reg_1320064211885492_3();
-    POMP2_Init_reg_1320063929619524_1();
+    POMP2_Init_reg_4h6ldx9tlnr9d_3();
+    POMP2_Init_reg_1h6ldx9tlsrcd_1();
 }
 
 size_t
@@ -25,7 +25,7 @@ POMP2_Get_num_regions()
 const char*
 POMP2_Get_opari2_version()
 {
-    return "0.9";
+    return "1.0.7";
 }
 
 #ifdef __cplusplus

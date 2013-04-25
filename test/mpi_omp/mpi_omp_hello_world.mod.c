@@ -1,6 +1,7 @@
+/* *INDENT-OFF* */
 #include <config.h>
 #include "mpi_omp_hello_world.c.opari.inc"
-#line 1 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/mpi_omp/mpi_omp_hello_world.c"
+#line 1 "mpi_omp_hello_world.c"
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -48,14 +49,14 @@ main( int    argc,
     MPI_Comm_size( MPI_COMM_WORLD, &size );
 
     {
-        int               pomp_num_threads = omp_get_max_threads();
-        int               pomp_if          = 1;
+        int               pomp2_num_threads = omp_get_max_threads();
+        int               pomp2_if          = 1;
         POMP2_Task_handle pomp2_old_task;
-        POMP2_Parallel_fork( &pomp2_region_1, pomp_if, pomp_num_threads, &pomp2_old_task, "219*regionType=parallel*sscl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/mpi_omp/mpi_omp_hello_world.c:49:49*escl=/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/mpi_omp/mpi_omp_hello_world.c:0:0**" );
-#line 49 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/mpi_omp/mpi_omp_hello_world.c"
-    #pragma omp parallel POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp_if) num_threads(pomp_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
+        POMP2_Parallel_fork( &pomp2_region_1, pomp2_if, pomp2_num_threads, &pomp2_old_task, pomp2_ctc_1 );
+#line 49 "mpi_omp_hello_world.c"
+    #pragma omp parallel POMP2_DLIST_00001 firstprivate(pomp2_old_task) if(pomp2_if) num_threads(pomp2_num_threads) copyin(FORTRAN_MANGLED(pomp_tpd))
         { POMP2_Parallel_begin( &pomp2_region_1 );
-#line 50 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/mpi_omp/mpi_omp_hello_world.c"
+#line 50 "mpi_omp_hello_world.c"
           {
               printf( "Hello world from process %d, thread %d of %d, %d\n",
                       rank, omp_get_thread_num(), size, omp_get_num_threads() );
@@ -69,7 +70,7 @@ main( int    argc,
         }
         POMP2_Parallel_join( &pomp2_region_1, pomp2_old_task );
     }
-#line 54 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/mpi_omp/mpi_omp_hello_world.c"
+#line 54 "mpi_omp_hello_world.c"
 
     MPI_Finalize();
 

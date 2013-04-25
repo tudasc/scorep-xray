@@ -45,10 +45,12 @@ SCOREP_PRAGMA_OMP( threadprivate( POMP_TPD_MANGLED ) )
 #define POMP_DLIST_00001 shared( pomp_region_1 )
 static POMP2_Region_handle pomp_region_1;
 
+#define pomp2_ctc "66*regionType=parallel*sscl=omp_test.c:45:45*escl=omp_test.c:48:48**"
+
 void
-POMP2_Init_reg_1320069835786106_1()
+POMP2_Init_reg_4k6lsdctlab37_1()
 {
-    POMP2_Assign_handle( &pomp_region_1, "66*regionType=parallel*sscl=omp_test.c:45:45*escl=omp_test.c:48:48**" );
+    POMP2_Assign_handle( &pomp_region_1, pomp2_ctc );
 }
 
 typedef struct SCOREP_Location SCOREP_Location;
@@ -67,11 +69,11 @@ int
 main()
 {
     printf( "thread %d in main.     pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
-    int     pomp_num_threads = omp_get_max_threads();
-    int64_t pomp2_old_task   = 0;
-    POMP2_Parallel_fork( &pomp_region_1, 1, pomp_num_threads, &pomp2_old_task, "" );
+    int               pomp_num_threads = omp_get_max_threads();
+    POMP2_Task_handle pomp2_old_task;
+    POMP2_Parallel_fork( &pomp_region_1, 1, pomp_num_threads, &pomp2_old_task,  pomp2_ctc );
     printf( "thread %d after fork.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
-    SCOREP_PRAGMA_OMP( parallel POMP_DLIST_00001 num_threads( pomp_num_threads ) copyin( FORTRAN_MANGLED( pomp_tpd ) ) )
+    SCOREP_PRAGMA_OMP( parallel POMP_DLIST_00001 firstprivate( pomp2_old_task ) num_threads( pomp_num_threads ) copyin( FORTRAN_MANGLED( pomp_tpd ) ) )
     {
         POMP2_Parallel_begin( &pomp_region_1 );
         printf( "thread %d before foo.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
@@ -79,7 +81,7 @@ main()
         POMP2_Parallel_end( &pomp_region_1 );
     }
     printf( "thread %d before join. pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
-    POMP2_Parallel_join( &pomp_region_1, 0 );
+    POMP2_Parallel_join( &pomp_region_1, pomp2_old_task );
     printf( "thread %d after join.  pomp_tpd = %" PRIu64 " \n", omp_get_thread_num(), FORTRAN_MANGLED( pomp_tpd ) );
 
     return 0;

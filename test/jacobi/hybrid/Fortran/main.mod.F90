@@ -1,5 +1,5 @@
 
-#line 1 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/main.F90"
+#line 1 "main.F90"
 program MAIN
     !***********************************************************************
     ! program to solve a finite difference                                 * 
@@ -29,9 +29,10 @@ program MAIN
     use VariableDef
     use JacobiMod
     implicit none
-      include 'main.F90.opari.inc'
     include 'mpif.h'
   
+      include 'main.F90.opari.inc'
+#line 32 "main.F90"
     TYPE(JacobiData) :: myData
 
 
@@ -71,8 +72,9 @@ end program MAIN
 subroutine Init (myData)
     use VariableDef
     implicit none
-      include 'main.F90.opari.inc'
     include 'mpif.h'
+      include 'main.F90.opari.inc'
+#line 72 "main.F90"
     type(JacobiData), intent(inout) :: myData
     character(len=8) :: env = ' '
     integer :: ITERATIONS = 5 
@@ -243,6 +245,7 @@ subroutine InitializeMatrix (myData)
     implicit none
 
       include 'main.F90.opari.inc'
+#line 241 "main.F90"
     type(JacobiData), intent(inout) :: myData 
     !.. Local Scalars .. 
     integer :: i, j
@@ -252,28 +255,19 @@ subroutine InitializeMatrix (myData)
    
     ! Initilize initial condition and RHS
   
-      pomp_num_threads = pomp_get_max_threads1320070368355742()
-      pomp_if = .true.
+      pomp2_num_threads = pomp2_lib_get_max_threads()
+      pomp2_if = .true.
       call POMP2_Parallel_fork(pomp2_region_1,&
-      pomp_if, pomp_num_threads, pomp2_old_task, &
-      "225*regionType=paralleldo*sscl=/rwthfs/rz/cluster/home/ds"//&
-      "534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/m"//&
-      "ain.F90:250:250*escl=/rwthfs/rz/cluster/home/ds534486/SI"//&
-      "LC/silc-root/trunk/test/jacobi/hybrid/Fortran/main.F90:0"//&
-      ":0**" )
-#line 250 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/main.F90"
-!$omp parallel    private (j, i, xx, yy)&
-  !$omp firstprivate(pomp2_old_task) private(pomp2_new_task)&
-  !$omp if(pomp_if) num_threads(pomp_num_threads) copyin(pomp_tpd)&
-  !$omp shared(/cb1320070368355742/)
+      pomp2_if, pomp2_num_threads, pomp2_old_task, &
+      pomp2_ctc_1 )
+#line 250 "main.F90"
+!$omp parallel    private (j, i, xx, yy) &
+  !$omp firstprivate(pomp2_old_task) private(pomp2_new_task) &
+  !$omp if(pomp2_if) num_threads(pomp2_num_threads) copyin(pomp_tpd)
       call POMP2_Parallel_begin(pomp2_region_1)
       call POMP2_Do_enter(pomp2_region_1, &
-     "225*regionType=paralleldo*sscl=/rwthfs/rz/cluster/home/ds"//&
-      "534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/m"//&
-      "ain.F90:250:250*escl=/rwthfs/rz/cluster/home/ds534486/SI"//&
-      "LC/silc-root/trunk/test/jacobi/hybrid/Fortran/main.F90:0"//&
-      ":0**" )
-#line 250 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/main.F90"
+     pomp2_ctc_1 )
+#line 250 "main.F90"
 !$omp          do                       
     do j = myData%iRowFirst, myData%iRowLast
         do i = 0, myData%iCols -1
@@ -285,15 +279,18 @@ subroutine InitializeMatrix (myData)
                 - 2.0d0 * (1.0d0 - DBLE(yy*yy))
         end do
     end do
+#line 261 "main.F90"
 !$omp end do nowait
-      call POMP2_Implicit_barrier_enter(pomp2_region_1, pomp2_old_task)
+      call POMP2_Implicit_barrier_enter(pomp2_region_1,&
+      pomp2_old_task)
 !$omp barrier
       call POMP2_Implicit_barrier_exit(pomp2_region_1, pomp2_old_task)
       call POMP2_Do_exit(pomp2_region_1)
       call POMP2_Parallel_end(pomp2_region_1)
+#line 261 "main.F90"
 !$omp end parallel
       call POMP2_Parallel_join(pomp2_region_1, pomp2_old_task)
-#line 262 "/rwthfs/rz/cluster/home/ds534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/main.F90"
+#line 262 "main.F90"
 end subroutine InitializeMatrix
 
 subroutine Finish(myData)
@@ -301,6 +298,7 @@ subroutine Finish(myData)
     implicit none
 
       include 'main.F90.opari.inc'
+#line 268 "main.F90"
     integer :: iErr
     type(JacobiData), intent(inout) :: myData
 
@@ -315,6 +313,7 @@ subroutine PrintResults(myData)
     implicit none
 
       include 'main.F90.opari.inc'
+#line 281 "main.F90"
     type(JacobiData), intent(inout) :: myData
 
     if (myData%iMyRank == 0) then
@@ -338,9 +337,10 @@ end subroutine PrintResults
 subroutine CheckError(myData)
     use VariableDef
     implicit none
-      include 'main.F90.opari.inc'
     include 'mpif.h'
     
+      include 'main.F90.opari.inc'
+#line 306 "main.F90"
     type(JacobiData), intent(inout) :: myData
     !.. Local Scalars .. 
     integer :: i, j, iErr
@@ -366,18 +366,8 @@ subroutine CheckError(myData)
    
 end subroutine CheckError
 
-      integer function pomp_get_max_threads1320070368355742()
-         integer omp_get_max_threads
-         pomp_get_max_threads1320070368355742=omp_get_max_threads()
-         return
-      end
-
-      subroutine POMP2_Init_reg_1320070368355742_1()
+      subroutine POMP2_Init_reg_hh6l759tl8jhi_1()
          include 'main.F90.opari.inc'
          call POMP2_Assign_handle( pomp2_region_1, &
-     "229*regionType=paralleldo*sscl=/rwthfs/rz/cluster/home/ds"//&
-      "534486/SILC/silc-root/trunk/test/jacobi/hybrid/Fortran/m"//&
-      "ain.F90:250:250*escl=/rwthfs/rz/cluster/home/ds534486/SI"//&
-      "LC/silc-root/trunk/test/jacobi/hybrid/Fortran/main.F90:2"//&
-      "61:261**" )
+         pomp2_ctc_1 )
       end
