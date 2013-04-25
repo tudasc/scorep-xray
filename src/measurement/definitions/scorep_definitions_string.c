@@ -71,8 +71,8 @@ SCOREP_Definitions_NewString( const char* str )
 
 
 void
-SCOREP_CopyStringDefinitionToUnified( SCOREP_StringDef*             definition,
-                                      SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_string( SCOREP_StringDef*             definition,
+                                 SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );

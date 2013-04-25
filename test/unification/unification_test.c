@@ -74,15 +74,15 @@ test_1( CuTest* tc )
     // copy local definitions to unified manager
     CuAssertIntEquals( tc, 0, scorep_unified_definition_manager->string_definition_counter );
     SCOREP_StringDef* local_string1 = SCOREP_LOCAL_HANDLE_DEREF( local_handle1, String );
-    SCOREP_CopyStringDefinitionToUnified( local_string1, SCOREP_Memory_GetLocalDefinitionPageManager() );
+    scorep_definitions_unify_string( local_string1, SCOREP_Memory_GetLocalDefinitionPageManager() );
     CuAssert( tc, "unified handle equals local handle",
               SCOREP_UNIFIED_HANDLE_DEREF( local_string1->unified, String ) !=
               local_string1 );
     CuAssert( tc, "member unified != SCOREP_MOVABLE_NULL",
               SCOREP_UNIFIED_HANDLE_DEREF( local_string1->unified, String )->unified ==
               SCOREP_MOVABLE_NULL );
-    SCOREP_CopyStringDefinitionToUnified( SCOREP_LOCAL_HANDLE_DEREF( local_handle2, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
-    SCOREP_CopyStringDefinitionToUnified( SCOREP_LOCAL_HANDLE_DEREF( local_handle3, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
+    scorep_definitions_unify_string( SCOREP_LOCAL_HANDLE_DEREF( local_handle2, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
+    scorep_definitions_unify_string( SCOREP_LOCAL_HANDLE_DEREF( local_handle3, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
     CuAssertIntEquals( tc, 3, scorep_unified_definition_manager->string_definition_counter );
 
     // fill remote_manager
@@ -96,11 +96,11 @@ test_1( CuTest* tc )
     CuAssert( tc, "duplicate string definition", remote_handle5 == remote_handle2 );
 
     // copy remote definitions to unified manager
-    SCOREP_CopyStringDefinitionToUnified( SCOREP_LOCAL_HANDLE_DEREF( remote_handle1, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
-    SCOREP_CopyStringDefinitionToUnified( SCOREP_LOCAL_HANDLE_DEREF( remote_handle2, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
-    SCOREP_CopyStringDefinitionToUnified( SCOREP_LOCAL_HANDLE_DEREF( remote_handle3, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
-    SCOREP_CopyStringDefinitionToUnified( SCOREP_LOCAL_HANDLE_DEREF( remote_handle4, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
-    SCOREP_CopyStringDefinitionToUnified( SCOREP_LOCAL_HANDLE_DEREF( remote_handle5, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
+    scorep_definitions_unify_string( SCOREP_LOCAL_HANDLE_DEREF( remote_handle1, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
+    scorep_definitions_unify_string( SCOREP_LOCAL_HANDLE_DEREF( remote_handle2, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
+    scorep_definitions_unify_string( SCOREP_LOCAL_HANDLE_DEREF( remote_handle3, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
+    scorep_definitions_unify_string( SCOREP_LOCAL_HANDLE_DEREF( remote_handle4, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
+    scorep_definitions_unify_string( SCOREP_LOCAL_HANDLE_DEREF( remote_handle5, String ), SCOREP_Memory_GetLocalDefinitionPageManager() );
     CuAssertIntEquals( tc, 4, scorep_unified_definition_manager->string_definition_counter );
 
     scorep_unified_definition_manager = 0; // memory leak

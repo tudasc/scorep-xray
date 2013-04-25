@@ -131,8 +131,8 @@ SCOREP_Definitions_NewMetric( const char*                name,
 
 
 void
-SCOREP_CopyMetricDefinitionToUnified( SCOREP_MetricDef*             definition,
-                                      SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_metric( SCOREP_MetricDef*             definition,
+                                 SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );

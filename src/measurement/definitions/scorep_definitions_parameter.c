@@ -91,8 +91,8 @@ SCOREP_Definitions_NewParameter( const char*          name,
 
 
 void
-SCOREP_CopyParameterDefinitionToUnified( SCOREP_ParameterDef*          definition,
-                                         SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_parameter( SCOREP_ParameterDef*          definition,
+                                    SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );

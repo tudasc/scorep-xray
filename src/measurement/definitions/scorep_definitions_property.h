@@ -56,8 +56,8 @@ SCOREP_Definitions_NewProperty( SCOREP_Property          property,
 
 
 void
-SCOREP_CopyPropertyDefinitionToUnified( SCOREP_PropertyDef*           definition,
-                                        SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_property( SCOREP_PropertyDef*           definition,
+                                   SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_PROPERTY_H */

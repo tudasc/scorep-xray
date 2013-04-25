@@ -231,8 +231,8 @@ SCOREP_Definitions_NewUnifiedCommunicator( SCOREP_GroupHandle        group_handl
 }
 
 void
-SCOREP_CopyCommunicatorDefinitionToUnified( SCOREP_CommunicatorDef*       definition,
-                                            SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*       definition,
+                                       SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );
@@ -249,8 +249,14 @@ SCOREP_CopyCommunicatorDefinitionToUnified( SCOREP_CommunicatorDef*       defini
 
     definition->unified = define_communicator(
         scorep_unified_definition_manager,
-        SCOREP_HANDLE_GET_UNIFIED( definition->group_handle, Group, handlesPageManager ),
-        SCOREP_HANDLE_GET_UNIFIED( definition->name_handle, String, handlesPageManager ),
+        SCOREP_HANDLE_GET_UNIFIED(
+            definition->group_handle,
+            Group,
+            handlesPageManager ),
+        SCOREP_HANDLE_GET_UNIFIED(
+            definition->name_handle,
+            String,
+            handlesPageManager ),
         unified_parent_handle );
 }
 

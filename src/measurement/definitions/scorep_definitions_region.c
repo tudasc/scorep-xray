@@ -133,8 +133,8 @@ SCOREP_Definitions_NewRegion( const char*             regionName,
 
 
 void
-SCOREP_CopyRegionDefinitionToUnified( SCOREP_RegionDef*             definition,
-                                      SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_region( SCOREP_RegionDef*             definition,
+                                 SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );

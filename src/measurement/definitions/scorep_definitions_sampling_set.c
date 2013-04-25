@@ -159,8 +159,8 @@ SCOREP_SamplingSetHandle_GetSamplingSet( SCOREP_SamplingSetHandle samplingSet )
 
 
 void
-SCOREP_CopySamplingSetDefinitionToUnified( SCOREP_SamplingSetDef*        definition,
-                                           SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_sampling_set( SCOREP_SamplingSetDef*        definition,
+                                       SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );

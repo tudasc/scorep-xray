@@ -70,8 +70,8 @@ SCOREP_Definitions_NewUnifiedCommunicator( SCOREP_GroupHandle        group_handl
 
 
 void
-SCOREP_CopyCommunicatorDefinitionToUnified( SCOREP_CommunicatorDef*       definition,
-                                            SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*       definition,
+                                       SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_COMMUNICATOR_H */

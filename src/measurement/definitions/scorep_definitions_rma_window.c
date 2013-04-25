@@ -172,8 +172,8 @@ SCOREP_Definitions_NewUnifiedRmaWindow( const char*               name,
 
 
 void
-SCOREP_CopyRmaWindowDefinitionToUnified( SCOREP_RmaWindowDef*          definition,
-                                         SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_rma_window( SCOREP_RmaWindowDef*          definition,
+                                     SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );

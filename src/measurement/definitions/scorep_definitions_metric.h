@@ -53,8 +53,8 @@ SCOREP_DEFINE_DEFINITION_TYPE( Metric )
 
 
 void
-SCOREP_CopyMetricDefinitionToUnified( SCOREP_MetricDef*             definition,
-                                      SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_metric( SCOREP_MetricDef*             definition,
+                                 SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_METRIC_H */

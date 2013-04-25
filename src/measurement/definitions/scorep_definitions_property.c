@@ -99,8 +99,8 @@ SCOREP_Definitions_NewProperty( SCOREP_Property          property,
 
 
 void
-SCOREP_CopyPropertyDefinitionToUnified( SCOREP_PropertyDef*           definition,
-                                        SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_property( SCOREP_PropertyDef*           definition,
+                                   SCOREP_Allocator_PageManager* handlesPageManager )
 {
     UTILS_ASSERT( definition );
     UTILS_ASSERT( handlesPageManager );

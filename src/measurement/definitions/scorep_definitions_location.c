@@ -89,8 +89,8 @@ SCOREP_Definitions_NewLocation( SCOREP_LocationType type,
 
 
 void
-SCOREP_CopyLocationDefinitionToUnified( SCOREP_LocationDef*           definition,
-                                        SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_location( SCOREP_LocationDef*           definition,
+                                   SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );

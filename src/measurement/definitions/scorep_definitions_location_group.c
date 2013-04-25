@@ -87,8 +87,8 @@ SCOREP_Definitions_NewLocationGroup( SCOREP_SystemTreeNodeHandle parent )
 }
 
 void
-SCOREP_CopyLocationGroupDefinitionToUnified( SCOREP_LocationGroupDef*      definition,
-                                             SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*      definition,
+                                         SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );

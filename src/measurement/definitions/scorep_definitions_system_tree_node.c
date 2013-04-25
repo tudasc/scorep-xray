@@ -93,8 +93,8 @@ SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
 
 
 void
-SCOREP_CopySystemTreeNodeDefinitionToUnified( SCOREP_SystemTreeNodeDef*     definition,
-                                              SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_system_tree_node( SCOREP_SystemTreeNodeDef*     definition,
+                                           SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );

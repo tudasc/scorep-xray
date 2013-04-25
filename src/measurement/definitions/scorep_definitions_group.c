@@ -171,8 +171,8 @@ SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
 
 
 void
-SCOREP_CopyGroupDefinitionToUnified( SCOREP_GroupDef*              definition,
-                                     SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_group( SCOREP_GroupDef*              definition,
+                                SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );

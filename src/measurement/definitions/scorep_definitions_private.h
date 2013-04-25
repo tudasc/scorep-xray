@@ -464,7 +464,7 @@
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Copying %s to unified", #type ); \
         SCOREP_DEFINITION_FOREACH_DO( definition_manager, Type, type ) \
         { \
-            SCOREP_Copy ## Type ## DefinitionToUnified( definition, ( definition_manager )->page_manager ); \
+            scorep_definitions_unify_ ## type( definition, ( definition_manager )->page_manager ); \
         } \
         SCOREP_DEFINITION_FOREACH_WHILE(); \
     } \

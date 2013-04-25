@@ -88,8 +88,8 @@ SCOREP_Definitions_NewSourceFile( const char* fileName )
 
 
 void
-SCOREP_CopySourceFileDefinitionToUnified( SCOREP_SourceFileDef*         definition,
-                                          SCOREP_Allocator_PageManager* handlesPageManager )
+scorep_definitions_unify_source_file( SCOREP_SourceFileDef*         definition,
+                                      SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition );
     assert( handlesPageManager );
