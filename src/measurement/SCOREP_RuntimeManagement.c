@@ -479,9 +479,9 @@ scorep_finalize( void )
     SCOREP_TIME( SCOREP_Definitions_Finalize, ( ) );
     SCOREP_TIME( scorep_otf2_finalize, ( ) );
 
-    SCOREP_TIME( SCOREP_Location_Finalize, ( ) );
-
     SCOREP_TIME( scorep_subsystems_finalize, ( ) );  // Disables all adapters
+
+    SCOREP_TIME( SCOREP_Location_Finalize, ( ) );
 
     /* dump config variables into experiment directory */
     SCOREP_TIME( scorep_dump_config, ( ) );
