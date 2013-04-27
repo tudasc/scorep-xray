@@ -130,7 +130,7 @@ SCOREP_Ipc_Bcast( void*               buf,
                   int                 root )
 {
     UTILS_BUG_ON( root != 0,
-                  "Invalid root given for broadcast in non-multiprogram run." );
+                  "Invalid root given for broadcast in single process run." );
 
     /* In non-mpi case there is no other rank to which we send something.
        Thus, nothing to do */
@@ -146,7 +146,7 @@ SCOREP_Ipc_Gather( void*               sendbuf,
                    int                 root )
 {
     UTILS_BUG_ON( root != 0,
-                  "Invalid root given for gather in non-multiprogram run." );
+                  "Invalid root given for gather in single process run." );
 
     if ( recvbuf != sendbuf )
     {
@@ -168,7 +168,7 @@ SCOREP_Ipc_Gatherv( void*               sendbuf,
                     int                 root )
 {
     UTILS_BUG_ON( root != 0,
-                  "Invalid root given for gather in non-multiprogram run." );
+                  "Invalid root given for gather in single process run." );
     UTILS_BUG_ON( sendcount != recvcnts[ 0 ],
                   "Non-matching send and recv count." );
 
@@ -207,7 +207,7 @@ SCOREP_Ipc_Reduce( void*                sendbuf,
                    int                  root )
 {
     UTILS_BUG_ON( root != 0,
-                  "Invalid root given for reduce in non-multiprogram run." );
+                  "Invalid root given for reduce in single process run." );
 
     if ( recvbuf != sendbuf )
     {
@@ -252,5 +252,22 @@ SCOREP_Ipc_Scan( void*                sendbuf,
         size_t num = get_datatype_size( datatype ) * count;
         memcpy( recvbuf, sendbuf, num );
     }
+    return 0;
+}
+
+int
+SCOREP_Ipc_Scatter( void*               sendbuf,
+                    void*               recvbuf,
+                    int                 count,
+                    SCOREP_Ipc_Datatype datatype,
+                    int                 root )
+{
+    UTILS_BUG_ON( root != 0,
+                  "Invalid root given for scatter in single process run." );
+
+    /* In non-mpi case, we have only rank zero. Thus copy sendbuf to recvbuf. */
+    size_t num = get_datatype_size( datatype ) * count;
+    memcpy( recvbuf, sendbuf, num );
+
     return 0;
 }

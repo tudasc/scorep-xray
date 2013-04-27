@@ -279,3 +279,20 @@ SCOREP_Ipc_Scan( void*                sendbuf,
                       get_mpi_operation( operation ),
                       comm_world_dup ) != MPI_SUCCESS;
 }
+
+int
+SCOREP_Ipc_Scatter( void*               sendbuf,
+                    void*               recvbuf,
+                    int                 count,
+                    SCOREP_Ipc_Datatype datatype,
+                    int                 root )
+{
+    return PMPI_Scatter( sendbuf,
+                         count,
+                         get_mpi_datatype( datatype ),
+                         recvbuf,
+                         count,
+                         get_mpi_datatype( datatype ),
+                         root,
+                         comm_world_dup ) != MPI_SUCCESS;
+}

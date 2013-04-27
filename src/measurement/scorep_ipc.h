@@ -175,4 +175,11 @@ SCOREP_Ipc_Scan( void*                sendbuf,
                  SCOREP_Ipc_Datatype  datatype,
                  SCOREP_Ipc_Operation operation );
 
+int
+SCOREP_Ipc_Scatter( void*               sendbuf,
+                    void*               recvbuf,
+                    int                 count,
+                    SCOREP_Ipc_Datatype datatype,
+                    int                 root );
+
 #endif /* SCOREP_INTERNAL_IPC_H */
