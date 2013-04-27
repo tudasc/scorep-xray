@@ -57,6 +57,8 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_environment.h               \
     $(SRC_ROOT)src/measurement/scorep_unify.c                     \
     $(SRC_ROOT)src/measurement/scorep_unify.h                     \
+    $(SRC_ROOT)src/measurement/scorep_unify_helpers.c             \
+    $(SRC_ROOT)src/measurement/scorep_unify_helpers.h             \
     $(SRC_ROOT)src/measurement/scorep_definition_cube4.h          \
     $(SRC_ROOT)src/measurement/scorep_definition_cube4.c          \
     $(SRC_ROOT)src/measurement/scorep_system_tree.h               \
