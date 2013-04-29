@@ -38,14 +38,16 @@ bool
 SCOREP_Ipc_Possible( void );
 
 /**
- *  Get the number of processes in this parallel program.
+ *  Initilizes the measurements own multi-process communication layer.
+ *  Must be called after the multi-process paradigm was initialized.
  */
 void
 SCOREP_Ipc_Init( void );
 
 
 /**
- *  Get the number of processes in this parallel program.
+ *  Finalizes the measurements own multi-process communication layer.
+ *  Must be called before the multi-process paradigm will be finalized.
  */
 void
 SCOREP_Ipc_Finalize( void );
