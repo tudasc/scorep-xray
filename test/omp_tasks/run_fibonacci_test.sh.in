@@ -108,13 +108,13 @@ if [ $? -ne 0 ]; then
 fi
 
 # execute full test
-SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}full \
-    SCOREP_ENABLE_PROFILING=true \
-    SCOREP_ENABLE_TRACING=false \
-    ./fib_full $FIB_NUM
+@SCOREP_COMPILER_PGI_FALSE@ SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}full \
+@SCOREP_COMPILER_PGI_FALSE@     SCOREP_ENABLE_PROFILING=true \
+@SCOREP_COMPILER_PGI_FALSE@     SCOREP_ENABLE_TRACING=false \
+@SCOREP_COMPILER_PGI_FALSE@     ./fib_full $FIB_NUM
 
-if [ $? -ne 0 ]; then
-    exit 1
-fi
+@SCOREP_COMPILER_PGI_FALSE@ if [ $? -ne 0 ]; then
+@SCOREP_COMPILER_PGI_FALSE@     exit 1
+@SCOREP_COMPILER_PGI_FALSE@ fi
 
 exit 0
