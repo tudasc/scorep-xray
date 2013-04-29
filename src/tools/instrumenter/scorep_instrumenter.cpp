@@ -318,7 +318,8 @@ SCOREP_Instrumenter::preprocess_opari( const std::string& orig_file )
                      + ".input"
                      + orig_ext;
 
-        command = "echo \"#include <opari2/pomp2_lib.h>\n"
+        command = "echo \"#include <stdint.h>\n"
+                  "#include <opari2/pomp2_lib.h>\n"
                   "___POMP2_INCLUDE___\n"
                   "#line 1 \\\"" + orig_file + "\\\"\" > " + input_file;
         execute_command( command );
