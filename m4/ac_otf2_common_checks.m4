@@ -103,38 +103,6 @@ AC_SEARCH_LIBS([rint], [m])
 AC_SCOREP_POSIX_FUNCTIONS
 AC_SCOREP_DEFINE_REVISIONS
 
-scorep_have_otf="no"
-AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" ||
-       test "x${ac_scorep_frontend}" = "xyes"], [
-AC_SCOREP_PATH_GENERIC([otf], [1.8.0], [
-    AC_LANG_PUSH([C])
-    scorep_save_cflags="$CFLAGS"
-    scorep_save_libs="$LIBS"
-    CFLAGS="$CFLAGS $OTF_CFLAGS"
-    LIBS="$LIBS $OTF_LIBS"
-
-    AC_MSG_CHECKING([for otf])
-    AC_LINK_IFELSE([
-        AC_LANG_PROGRAM([[
-#include <otf.h>
-            ]],
-            [[
-    OTF_Reader_open( "foo.otf", OTF_FileManager_open( 50 ) );
-        ]])],
-        [scorep_have_otf="yes"])
-    AC_MSG_RESULT([${scorep_have_otf}])
-
-    ## Clean up
-    CFLAGS=$scorep_save_cflags
-    LIBS=$scorep_save_libs
-    AC_LANG_POP([C])
-    ], [:], [otfconfig], [--includes], [--libs])
-AC_SCOREP_SUMMARY([OTF read support in otf2-compare], [${scorep_have_otf}])
-AC_SCOREP_SUMMARY_VERBOSE([OTF CFLAGS], [${OTF_CFLAGS}])
-AC_SCOREP_SUMMARY_VERBOSE([OTF LIBS],   [${OTF_LIBS}])
-])
-AM_CONDITIONAL([HAVE_OTF], [test "x$scorep_have_otf" = "xyes"])
-
 AM_CONDITIONAL([HAVE_ZLIB], [false])
 
 AC_CONFIG_FILES([
