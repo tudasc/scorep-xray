@@ -399,16 +399,11 @@ std::string
 SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
                                                                const std::string& output_file )
 {
-    std::string basename = remove_extension( remove_path( input_file ) );
-    std::string prep_file;
+    std::string basename      = remove_extension( remove_path( input_file ) );
+    std::string prep_file_v13 = "F" + basename + ".f";
+    std::string prep_file_v14 = "F" + basename + scorep_tolower( get_extension( input_file ) );
 
-#if HAVE( PLATFORM_AIX )
-    prep_file = "F" + basename + ".f";
-#else
-    prep_file = "F" + basename + scorep_tolower( get_extension( input_file ) );
-#endif
-
-    return "-d -qnoobject && mv " + prep_file + " " + output_file;
+    return "-d -qnoobject && if [ -e " + prep_file_v14 + " ]; then mv " + prep_file_v14 + " " + output_file + "; else mv " + prep_file_v13 + " " + output_file + "; fi";
 }
 
 std::string
