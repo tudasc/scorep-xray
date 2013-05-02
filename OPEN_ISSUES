@@ -1,33 +1,49 @@
 /* 
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012, 
- *    RWTH Aachen, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * Copyright (c) 2009-2013,
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2012,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
+ * 
  */
+
 
                         Score-P v1.2 OPEN ISSUES
                         ========================
 
 * Compiler instrumentation and tasking 
 
-  - On Exits, the PGI compiler instrumentation interface does not provide
-    information which function was exited. Thus, we reconstruct this information
-    from a call stack inside the compiler adapter. However, if the instrumented
-    application uses tasks, the enter/exit event sequence for a thread may
-    not be nested anymore, due to interleaved execution of tasks. This results
-    in incorrect region handles on exit events which may lead to errors in the
-    profiling algorithm or arror in analysis tools. Thus, we recommend to no use
-    PGI compiler instrumentation together with applications using tasks. You
-    may try PDT instrumentation instead.
+  - On Exits, the PGI compiler instrumentation interface does not
+    provide information which function was exited. Thus, we
+    reconstruct this information from a call stack inside the compiler
+    adapter. However, if the instrumented application uses tasks, the
+    enter/exit event sequence for a thread may not be nested anymore,
+    due to interleaved execution of tasks. This results in incorrect
+    region handles on exit events which may lead to errors in the
+    profiling algorithm or errors in analysis tools. Thus, we
+    recommend to no use PGI compiler instrumentation together with
+    applications using tasks. You may try PDT instrumentation instead.
 
 
 
