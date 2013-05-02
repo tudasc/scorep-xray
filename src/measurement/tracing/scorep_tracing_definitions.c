@@ -546,7 +546,8 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
                                                             OTF2_MetricRef,
                                                             uint8_t,
                                                             const uint32_t*,
-                                                            OTF2_MetricOccurrence );
+                                                            OTF2_MetricOccurrence,
+                                                            OTF2_RecorderKind );
     def_metric_class_pointer_t defMetricClass = ( def_metric_class_pointer_t )
                                                 OTF2_DefWriter_WriteMetricClass;
 
@@ -588,7 +589,8 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
                 definition->sequence_number,
                 definition->number_of_metrics,
                 metric_members,
-                scorep_tracing_metric_occurrence_to_otf2( definition->occurrence ) );
+                scorep_tracing_metric_occurrence_to_otf2( definition->occurrence ),
+                OTF2_RECORDER_KIND_UNKNOWN );
         }
         else
         {
