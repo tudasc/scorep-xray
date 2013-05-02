@@ -1,3 +1,3 @@
 METRIC_MEMBER 0  Name: "ru_utime" <id>, Descr.: "<string>" <id>, Type: RUSAGE, Mode: ACCUMULATED_START, Value Type: UINT64, Base: DECIMAL, Exponent: -6, Unit: "s" <id>
 METRIC_MEMBER 1  Name: "ru_stime" <id>, Descr.: "<string>" <id>, Type: RUSAGE, Mode: ACCUMULATED_START, Value Type: UINT64, Base: DECIMAL, Exponent: -6, Unit: "s" <id>
-METRIC_CLASS 0  Occurrence: SYNCHRONOUS_STRICT, 2 Members: "ru_utime" <0>, "ru_stime" <1>
+METRIC_CLASS 0  Occurrence: SYNCHRONOUS_STRICT, Kind: UNKNOWN, 2 Members: "ru_utime" <0>, "ru_stime" <1>

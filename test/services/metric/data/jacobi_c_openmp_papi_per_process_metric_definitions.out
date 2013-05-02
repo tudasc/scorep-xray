@@ -1,3 +1,3 @@
 METRIC_MEMBER 0  Name: "PAPI_TOT_CYC" <id>, Descr.: "<string>" <id>, Type: PAPI, Mode: ACCUMULATED_START, Value Type: UINT64, Base: DECIMAL, Exponent: 0, Unit: "#" <id>
-METRIC_CLASS 0  Occurrence: SYNCHRONOUS, 1 Members: "PAPI_TOT_CYC" <0>
+METRIC_CLASS 0  Occurrence: SYNCHRONOUS, Kind: UNKNOWN, 1 Members: "PAPI_TOT_CYC" <0>
 METRIC_INSTANCE 1  Class: 0, Recorder: "" <0>, Scope: LOCATION_GROUP "Process" <0>
