@@ -375,7 +375,7 @@ scorep_write_communicator_definitions( void*                     writerHandle,
                                                 definitionManager->page_manager );
         }
 
-        uint32_t comm_parent_id = OTF2_UNDEFINED_MPI_COMM;
+        uint32_t comm_parent_id = OTF2_UNDEFINED_COMM;
         if ( definition->parent_handle != SCOREP_INVALID_COMMUNICATOR )
         {
             comm_parent_id = SCOREP_HANDLE_TO_ID( definition->parent_handle,
@@ -383,7 +383,7 @@ scorep_write_communicator_definitions( void*                     writerHandle,
                                                   definitionManager->page_manager );
         }
 
-        OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteMpiComm(
+        OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteComm(
             writerHandle,
             definition->sequence_number,
             comm_name_id,
@@ -406,7 +406,7 @@ scorep_write_rma_window_definitions( void*                     writerHandle,
 
     SCOREP_DEFINITION_FOREACH_DO( definitionManager, RmaWindow, rma_window )
     {
-        uint32_t comm_id = OTF2_UNDEFINED_MPI_COMM;
+        uint32_t comm_id = OTF2_UNDEFINED_COMM;
         if ( definition->communicator_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
         {
             comm_id = SCOREP_HANDLE_TO_ID( definition->communicator_handle,
@@ -743,7 +743,7 @@ scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( region, REGION, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( group, GROUP, localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( interim_communicator,
-                                             MPI_COMM,
+                                             COMM,
                                              localDefinitionWriter );
     SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( interim_rma_window,
                                              RMA_WIN,
