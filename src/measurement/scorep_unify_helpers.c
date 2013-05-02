@@ -29,26 +29,11 @@
 #include "scorep_unify_helpers.h"
 
 #include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <inttypes.h>
 
 #include <UTILS_Error.h>
-#define SCOREP_DEBUG_MODULE_NAME UNIFY
-#include <UTILS_Debug.h>
 
-#include <SCOREP_Mutex.h>
-#include <SCOREP_Omp.h>
-
-#include <jenkins_hash.h>
-
-#include <scorep_subsystem.h>
-#include <scorep_status.h>
-#include <scorep_location.h>
 #include <SCOREP_Definitions.h>
-#include <definitions/SCOREP_Definitions.h>
 #include <scorep_ipc.h>
-#include <scorep_types.h>
 
 uint32_t
 scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,
