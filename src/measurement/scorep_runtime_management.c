@@ -48,9 +48,9 @@
 
 /* *INDENT-OFF* */
 extern bool scorep_create_experiment_dir(void (*createDir) (void) );
-static void scorep_create_directory();
-static void scorep_create_experiment_dir_name();
-static bool scorep_dir_name_is_created();
+static void scorep_create_directory( void );
+static void scorep_create_experiment_dir_name( void );
+static bool scorep_dir_name_is_created( void );
 /* *INDENT-ON* */
 
 
@@ -60,7 +60,7 @@ static bool scorep_experiment_dir_needs_rename;
 
 
 const char*
-SCOREP_GetExperimentDirName()
+SCOREP_GetExperimentDirName( void )
 {
     scorep_create_experiment_dir_name();
     return scorep_experiment_dir_name;
@@ -68,7 +68,7 @@ SCOREP_GetExperimentDirName()
 
 
 void
-SCOREP_CreateExperimentDir()
+SCOREP_CreateExperimentDir( void )
 {
     if ( SCOREP_Status_IsExperimentDirCreated() )
     {
@@ -84,7 +84,7 @@ SCOREP_CreateExperimentDir()
 
 
 void
-scorep_create_experiment_dir_name()
+scorep_create_experiment_dir_name( void )
 {
     if ( scorep_dir_name_is_created() )
     {
@@ -107,7 +107,7 @@ scorep_create_experiment_dir_name()
 
 
 bool
-scorep_dir_name_is_created()
+scorep_dir_name_is_created( void )
 {
     return scorep_experiment_dir_name && 0 < strlen( scorep_experiment_dir_name );
 }
@@ -223,7 +223,7 @@ scorep_create_directory( void )
 
 
 void
-SCOREP_RenameExperimentDir()
+SCOREP_RenameExperimentDir( void )
 {
     SCOREP_Ipc_Barrier();
     if ( SCOREP_Status_GetRank() > 0 )

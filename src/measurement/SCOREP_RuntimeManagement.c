@@ -99,13 +99,13 @@ bool scorep_recording_enabled = true;
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
 static void scorep_finalize( void );
-static void scorep_otf2_initialize();
-static void scorep_otf2_finalize();
-static void scorep_set_otf2_archive_master_slave();
-static void scorep_initialization_sanity_checks();
+static void scorep_otf2_initialize( void );
+static void scorep_otf2_finalize( void );
+static void scorep_set_otf2_archive_master_slave( void );
+static void scorep_initialization_sanity_checks( void );
 static void scorep_profile_initialize( SCOREP_Location* loaction );
 static void scorep_profile_finalize( SCOREP_Location* loaction );
-static void scorep_trigger_exit_callbacks();
+static void scorep_trigger_exit_callbacks( void );
 static void scorep_dump_config( void );
 //static void scorep_deregister_config_variables( SCOREP_ConfigVariable configVars[] ); needed?
 /* *INDENT-ON* */

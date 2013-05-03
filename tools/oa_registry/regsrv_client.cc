@@ -40,7 +40,7 @@ using std::string;
 
 int RegServClient::receive_and_handle_request()
 {
-	int i, ret;
+	int i;
 
 	printf("Registry service: listening for input...");
 

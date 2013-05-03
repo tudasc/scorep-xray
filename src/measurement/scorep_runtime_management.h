@@ -44,7 +44,7 @@
  * @todo rename directory in scorep_finalize().
  */
 const char*
-SCOREP_GetExperimentDirName();
+SCOREP_GetExperimentDirName( void );
 
 
 /**
@@ -55,11 +55,11 @@ SCOREP_GetExperimentDirName();
  *
  */
 void
-SCOREP_CreateExperimentDir();
+SCOREP_CreateExperimentDir( void );
 
 
 void
-SCOREP_RenameExperimentDir();
+SCOREP_RenameExperimentDir( void );
 
 
 #endif /* SCOREP_INTERNAL_RUNTIME_MANAGEMENT_H */
