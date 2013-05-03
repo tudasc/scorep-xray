@@ -25,8 +25,8 @@
 #ifndef SCOREP_SCORE_ESTIMATOR_H
 #define SCOREP_SCORE_ESTIMATOR_H
 
-#include <SCOREP_Score_Profile.hpp>
-#include <SCOREP_Score_Group.hpp>
+#include "SCOREP_Score_Profile.hpp"
+#include "SCOREP_Score_Group.hpp"
 
 class SCOREP_Score_Estimator
 {

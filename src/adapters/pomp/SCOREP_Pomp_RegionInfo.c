@@ -27,6 +27,8 @@
  */
 
 #include <config.h>
+#include "SCOREP_Pomp_RegionInfo.h"
+
 #include <assert.h>
 #include <ctype.h>
 #include <stddef.h>
@@ -35,7 +37,6 @@
 #include <string.h>
 #include <inttypes.h>
 
-#include <SCOREP_Pomp_RegionInfo.h>
 #include <UTILS_IO.h>
 #include <UTILS_Debug.h>
 #include <SCOREP_Definitions.h>
@@ -319,7 +320,6 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
 
     free( source_name );
 
-#ifdef _OPENMP
     /* Register locks for critical regions */
     if ( region->regionType == SCOREP_Pomp_Critical )
     {
@@ -329,7 +329,6 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
             region->lock = scorep_pomp_lock_init( region->name );
         }
     }
-#endif
 }
 
 /* **************************************************************************************

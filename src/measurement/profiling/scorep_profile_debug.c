@@ -31,7 +31,7 @@
 
 #include <scorep_ipc.h>
 #include <scorep_runtime_management.h>
-#include <scorep_openmp.h>
+#include <scorep_thread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -130,7 +130,7 @@ void
 scorep_profile_dump( FILE* file, SCOREP_Profile_LocationData* location )
 {
     fprintf( file, "\n" );
-    if ( SCOREP_Omp_InParallel() )
+    if ( SCOREP_Thread_InParallel() )
     {
         if ( location != NULL && location->root_node != NULL )
         {
@@ -158,7 +158,7 @@ scorep_profile_on_error( SCOREP_Profile_LocationData* location )
 
     /* If core files are enabled, write a core file */
     if ( scorep_profile_do_core_files() &&
-         ( !SCOREP_Omp_InParallel() || location != NULL ) )
+         ( !SCOREP_Thread_InParallel() || location != NULL ) )
     {
         uint32_t    thread   = 0;
         const char* dirname  = SCOREP_GetExperimentDirName();

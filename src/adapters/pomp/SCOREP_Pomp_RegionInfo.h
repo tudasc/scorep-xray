@@ -29,9 +29,7 @@
 
 #include <stdbool.h>
 #include "SCOREP_Types.h"
-#ifdef _OPENMP
 #include "SCOREP_Pomp_Lock.h"
-#endif
 
 /**
  * SCOREP_Pomp_RegionType
@@ -83,17 +81,15 @@ typedef struct
     SCOREP_RegionHandle barrier;              /* SCOREP handle for the (implicit barrier)    */
     SCOREP_RegionHandle outerBlock;           /* SCOREP handle for the enclosing region      */
     SCOREP_RegionHandle innerBlock;           /* SCOREP handle for the enclosed region       */
-#ifdef _OPENMP
     SCOREP_PompLock*    lock;
-#endif
 
-    char*   startFileName;                /* File containing opening statement         */
-    int32_t startLine1;                   /* First line of the opening statement       */
-    int32_t startLine2;                   /* Last line of the opening statement        */
+    char*               startFileName;    /* File containing opening statement         */
+    int32_t             startLine1;       /* First line of the opening statement       */
+    int32_t             startLine2;       /* Last line of the opening statement        */
 
-    char*   endFileName;                  /* File containing the closing statement     */
-    int32_t endLine1;                     /* First line of the closing statement       */
-    int32_t endLine2;                     /* Last line of the closing statement        */
+    char*               endFileName;      /* File containing the closing statement     */
+    int32_t             endLine1;         /* First line of the closing statement       */
+    int32_t             endLine2;         /* Last line of the closing statement        */
 } SCOREP_Pomp_Region;
 
 

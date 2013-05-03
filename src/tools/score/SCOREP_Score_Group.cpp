@@ -24,11 +24,10 @@
  */
 
 #include <config.h>
+#include "SCOREP_Score_Group.hpp"
 #include <stdlib.h>
 #include <iostream>
 #include <iomanip>
-#include <SCOREP_Score_Group.hpp>
-#include <SCOREP_Score_Types.hpp>
 
 using namespace std;
 

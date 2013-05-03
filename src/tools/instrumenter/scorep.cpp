@@ -21,7 +21,7 @@
  * .
  */
 #include <config.h>
-#include <scorep_instrumenter.hpp>
+#include "scorep_instrumenter.hpp"
 #include <scorep_config_tool_backend.h>
 
 #include <iostream>

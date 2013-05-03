@@ -24,8 +24,8 @@
 
 
 #include <config.h>
-#include <SCOREP_Score_Profile.hpp>
-#include <SCOREP_Score_Estimator.hpp>
+#include "SCOREP_Score_Profile.hpp"
+#include "SCOREP_Score_Estimator.hpp"
 
 using namespace std;
 

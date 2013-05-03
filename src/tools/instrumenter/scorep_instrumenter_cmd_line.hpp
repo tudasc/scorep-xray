@@ -27,7 +27,7 @@
 
 
 #include <string>
-#include <scorep_instrumenter_install_data.hpp>
+#include "scorep_instrumenter_install_data.hpp"
 
 /* ****************************************************************************
    class SCOREP_Instrumenter_CmdLine

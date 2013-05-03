@@ -18,7 +18,7 @@
 #define SCOREP_OA_REQUEST_H_
 
 /**
- * @file        scorep_oa_request.h
+ * @file        SCOREP_OA_Request.h
  * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief Functions for processing and storing of OA measurements requests

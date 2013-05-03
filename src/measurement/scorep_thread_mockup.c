@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/scorep_clock_synchronization_mpp_disabled.c
+ * @file       src/measurement/scorep_thread_mockup.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -24,26 +24,39 @@
  */
 
 #include <config.h>
-#include <scorep_clock_synchronization.h>
+#include "scorep_thread.h"
 
-#include <definitions/SCOREP_Definitions.h>
-#include <SCOREP_Timing.h>
+#include "scorep_location.h"
+#include <UTILS_Error.h>
 
 
-/* *INDENT-OFF* */
-extern void scorep_interpolate_epoch(uint64_t* epochBegin, uint64_t* epochEnd);
-/* *INDENT-ON*  */
+static SCOREP_Location* scorep_thread_sole_cpu_location;
+
 
 void
-SCOREP_SynchronizeClocks()
+SCOREP_Thread_Initialize()
 {
-    // We assume that all cores use the same clock.
-    SCOREP_AddClockOffset( SCOREP_GetClockTicks(), 0, 0 );
+    UTILS_ASSERT( scorep_thread_sole_cpu_location == 0 );
+    scorep_thread_sole_cpu_location = SCOREP_Location_CreateCPULocation( NULL, "",  /* deferNewLocationNotification = */ false );
+    UTILS_ASSERT( scorep_thread_sole_cpu_location );
 }
 
 
 void
-SCOREP_GetGlobalEpoch( uint64_t* globalEpochBegin, uint64_t* globalEpochEnd )
+SCOREP_Thread_Finalize()
 {
-    scorep_interpolate_epoch( globalEpochBegin, globalEpochEnd );
+}
+
+
+bool
+SCOREP_Thread_InParallel()
+{
+    return false;
+}
+
+
+SCOREP_Location*
+SCOREP_Location_GetCurrentCPULocation()
+{
+    return scorep_thread_sole_cpu_location;
 }

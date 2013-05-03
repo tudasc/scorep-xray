@@ -24,7 +24,7 @@
 
 #include <config.h>
 
-#include <scorep_selective_region.h>
+#include "scorep_selective_region.h"
 #include <UTILS_Error.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_RuntimeManagement.h>

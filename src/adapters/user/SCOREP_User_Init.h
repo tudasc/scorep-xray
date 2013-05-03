@@ -35,7 +35,7 @@
 
 /** The struct which contains the initialization functions for the user adapter.
  */
-extern const SCOREP_Subsystem SCOREP_User_Adapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
 
 /** @internal
     Flag to indicate whether the adapter was initialized. If it is set to zero it is not

@@ -28,7 +28,7 @@
 
 #include <SCOREP_Timing.h>
 #include <UTILS_Error.h>
-#include <scorep_openmp.h>
+#include "scorep_thread.h"
 #include <SCOREP_Memory.h>
 #include "scorep_status.h"
 #include "scorep_ipc.h"
@@ -117,7 +117,7 @@ scorep_dir_name_is_created( void )
 static const char*
 scorep_format_time( time_t* timestamp )
 {
-    assert( !SCOREP_Omp_InParallel() ); // localtime() not reentrant
+    assert( !SCOREP_Thread_InParallel() ); // localtime() not reentrant
     static char local_time_buf[ format_time_size ];
     time_t      now;
     struct tm*  local_time;

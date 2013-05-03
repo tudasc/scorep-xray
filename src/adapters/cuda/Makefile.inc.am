@@ -24,7 +24,7 @@ noinst_LTLIBRARIES += libscorep_adapter_cuda.la
 
 libscorep_adapter_cuda_la_SOURCES  = \
     $(SRC_ROOT)src/adapters/cuda/SCOREP_Cuda_Init.c \
-    $(SRC_ROOT)src/adapters/include/SCOREP_Cuda_Init.h \
+    $(SRC_ROOT)src/adapters/cuda/SCOREP_Cuda_Init.h \
     $(SRC_ROOT)src/adapters/cuda/scorep_cuda.c \
     $(SRC_ROOT)src/adapters/cuda/scorep_cuda.h \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti.h \
@@ -33,16 +33,14 @@ libscorep_adapter_cuda_la_SOURCES  = \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity.c \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity.h
 
-libscorep_adapter_cuda_la_CPPFLAGS = \
-    $(AM_CPPFLAGS)                \
-    @CUDA_CPPFLAGS@               \
-    -I$(PUBLIC_INC_DIR)           \
-    $(UTILS_CPPFLAGS)             \
+libscorep_adapter_cuda_la_CPPFLAGS =     \
+    $(AM_CPPFLAGS)                       \
+    -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_ROOT)src/adapters/include \
-    -I$(INC_ROOT)src/services/include
+    -I$(INC_ROOT)src/services/include    \
+    $(UTILS_CPPFLAGS)                    \
+    @CUDA_CPPFLAGS@
 
-#libscorep_adapter_cuda_la_LIBADD = @CUDA_LDFLAGS@ @CUDA_LIBS@
 libscorep_adapter_cuda_la_LIBADD = @CUDA_LIBS@
 
 endif

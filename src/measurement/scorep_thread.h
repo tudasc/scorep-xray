@@ -31,6 +31,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #include <SCOREP_Location.h>
 
@@ -63,6 +64,13 @@ SCOREP_Thread_Initialize( void );
 void
 SCOREP_Thread_Finalize( void );
 
+
+/**
+ * Predicate that returns true if more than one thread is active when
+ * this function is called. Needs a model-specific implementation.
+ */
+bool
+SCOREP_Thread_InParallel( void );
 
 /**
  * Returns a process-unique sequence count starting a 0 for the

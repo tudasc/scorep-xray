@@ -26,11 +26,11 @@
 #include <config.h>
 
 #include "SCOREP_Profile_OAConsumer.h"
-#include "SCOREP_Memory.h"
-#include "SCOREP_Config.h"
-#include "SCOREP_Definitions.h"
-#include "SCOREP_Metric_Management.h"
-#include "SCOREP_Location.h"
+#include <SCOREP_Memory.h>
+#include <SCOREP_Config.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Metric_Management.h>
+#include <SCOREP_Location.h>
 
 #include <UTILS_IO.h>
 #include "scorep_profile_oaconsumer_process.h"
@@ -39,8 +39,8 @@
 #include "scorep_profile_node.h"
 #include "scorep_profile_metric.h"
 #include <definitions/SCOREP_Definitions.h>
-#include "scorep_oa_request.h"
-#include "scorep_ipc.h"
+#include <SCOREP_OA_Request.h>
+#include <scorep_ipc.h>
 
 #include <stdio.h>
 #include <string.h>

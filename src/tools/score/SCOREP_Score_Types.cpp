@@ -23,7 +23,7 @@
  */
 
 #include <config.h>
-#include <SCOREP_Score_Types.hpp>
+#include "SCOREP_Score_Types.hpp"
 
 using namespace std;
 

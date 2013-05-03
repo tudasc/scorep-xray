@@ -39,8 +39,8 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Filter.h>
 
-#include <SCOREP_Compiler_Init.h>
-#include <scorep_compiler_data.h>
+#include "SCOREP_Compiler_Init.h"
+#include "scorep_compiler_data.h"
 
 /**
  * static variable to control initialize status of compiler adapter.

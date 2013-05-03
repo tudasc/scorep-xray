@@ -31,7 +31,7 @@
 #include <string.h>
 #include <inttypes.h>
 
-#include <scorep_oa_request.h>
+#include <SCOREP_OA_Request.h>
 #include <scorep_status.h>
 #include <scorep_profile_definition.h>
 #include <definitions/SCOREP_Definitions.h>

@@ -35,7 +35,7 @@
 #include <UTILS_CStr.h>
 #include <UTILS_Debug.h>
 #include <UTILS_IO.h>
-#include <scorep_selective_region.h>
+#include "scorep_selective_region.h"
 #include <UTILS_Error.h>
 
 /* **************************************************************************************

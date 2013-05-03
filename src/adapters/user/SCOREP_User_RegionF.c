@@ -29,7 +29,7 @@
 #include <stdlib.h>
 
 #include <scorep/SCOREP_User_Functions.h>
-#include <SCOREP_User_Init.h>
+#include "SCOREP_User_Init.h"
 #include <SCOREP_Types.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
@@ -39,7 +39,7 @@
 #include <UTILS_CStr.h>
 #include <UTILS_IO.h>
 #include <SCOREP_Fortran_Wrapper.h>
-#include <scorep_selective_region.h>
+#include "scorep_selective_region.h"
 
 #define SCOREP_F_Begin_U SCOREP_F_BEGIN
 #define SCOREP_F_RewindBegin_U SCOREP_F_REWINDBEGIN

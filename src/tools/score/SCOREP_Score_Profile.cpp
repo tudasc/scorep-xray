@@ -24,11 +24,11 @@
  */
 
 #include <config.h>
-#include <assert.h>
-#include <SCOREP_Score_Profile.hpp>
-#include <SCOREP_Score_EventList.hpp>
+#include "SCOREP_Score_Profile.hpp"
+#include "SCOREP_Score_EventList.hpp"
 #include <Cube.h>
 #include <CubeTypes.h>
+#include <assert.h>
 
 using namespace std;
 using namespace cube;

@@ -34,7 +34,7 @@
 #include <SCOREP_Mutex.h>
 #include "scorep_subsystem.h"
 #include "scorep_status.h"
-#include <SCOREP_Omp.h>
+#include "scorep_thread.h"
 #include <SCOREP_Definitions.h>
 #include <definitions/SCOREP_Definitions.h>
 
@@ -248,7 +248,7 @@ SCOREP_Location_CallSubstratesOnDeactivation( SCOREP_Location* current,
 void
 SCOREP_Location_Finalize()
 {
-    assert( !omp_in_parallel() );
+    assert( !SCOREP_Thread_InParallel() );
 
     SCOREP_Location* location_data = location_list_head;
     while ( location_data )

@@ -27,10 +27,11 @@
  */
 
 #include <config.h>
+#include "SCOREP_Compiler_Init.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "SCOREP_Compiler_Init.h"
 #include "SCOREP_Types.h"
 #include <SCOREP_Location.h>
 #include "SCOREP_Config.h"
@@ -69,7 +70,7 @@ extern void
 scorep_compiler_finalize( void );
 
 /* Implementation of the compiler adapter initialization/finalization struct */
-const SCOREP_Subsystem SCOREP_Compiler_Adapter =
+const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter =
 {
     .subsystem_name              = "COMPILER",
     .subsystem_register          = &scorep_compiler_register,

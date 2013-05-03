@@ -61,7 +61,7 @@ scorep_metric_register( size_t subsystem_id )
 /**
  * Implementation of the metric service initialization/finalization struct
  */
-const SCOREP_Subsystem SCOREP_Metric_Service =
+const SCOREP_Subsystem SCOREP_Subsystem_MetricService =
 {
     .subsystem_name              = "METRIC (config variables only)",
     .subsystem_register          = &scorep_metric_register,

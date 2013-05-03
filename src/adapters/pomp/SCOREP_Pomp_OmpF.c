@@ -29,7 +29,7 @@
 #include <string.h>
 #include <opari2/pomp2_lib.h>
 #include "SCOREP_Fortran_Wrapper.h"
-#include "SCOREP_Pomp_Variables.h"
+#include "SCOREP_Pomp_Common.h"
 #include "SCOREP_Pomp_Fortran.h"
 
 /*

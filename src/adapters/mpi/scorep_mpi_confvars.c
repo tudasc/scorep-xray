@@ -62,7 +62,7 @@ scorep_mpi_register( size_t subsystem_id )
 }
 
 /* The initialization struct for the MPI adapter */
-const SCOREP_Subsystem SCOREP_Mpi_Adapter =
+const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter =
 {
     .subsystem_name              = "MPI (config variables only)",
     .subsystem_register          = &scorep_mpi_register,

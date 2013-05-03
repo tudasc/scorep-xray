@@ -120,7 +120,7 @@ scorep_cuda_finalize( void )
     }
 }
 
-SCOREP_Subsystem SCOREP_Cuda_Adapter =
+SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter =
 {
     .subsystem_name              = "CUDA",
     .subsystem_register          = &scorep_cuda_register,

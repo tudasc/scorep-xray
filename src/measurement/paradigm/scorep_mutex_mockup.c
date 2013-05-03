@@ -17,7 +17,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/scorep_mutex_non_omp.c
+ * @file       src/measurement/paradigm/scorep_mutex_mockup.c
  * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
  *
  * @status alpha
@@ -30,13 +30,9 @@
 
 
 #include <config.h>
-
-
-#include <stdlib.h>
-
-
 #include <SCOREP_Mutex.h>
 
+#include <stdlib.h>
 
 #include <UTILS_Error.h>
 

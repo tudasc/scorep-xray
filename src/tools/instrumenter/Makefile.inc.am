@@ -14,7 +14,6 @@ scorep_SOURCES = \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_install_data.hpp
 
 scorep_CPPFLAGS = $(AM_CPPFLAGS) $(OPENMP_CFLAGS) \
-    -I$(INC_ROOT)src/tools/instrumenter \
     $(UTILS_CPPFLAGS) \
     -DBUILD_DIR=\"`pwd`\"
 

@@ -15,7 +15,7 @@
  */
 
 /**
- * @file SCOREP_OA_Init.c
+ * @file SCOREP_OA_RuntimeManagement.c
  * @maintainer Yury Oleynik <oleynik@in.tum.de>
  * @status alpha
  *
@@ -29,7 +29,7 @@
 #include <SCOREP_RuntimeManagement.h>
 
 #include "SCOREP_Types.h"
-#include "SCOREP_OA_Init.h"
+#include "SCOREP_OA_RuntimeManagement.h"
 
 
 #include "scorep_oa_connection.h"

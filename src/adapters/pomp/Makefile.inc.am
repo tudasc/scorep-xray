@@ -18,25 +18,100 @@
 ## file       Makefile.mpi.inc.am
 ## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
+# --------------------------------------------------------------------
+# common
 
-##<pomp_region_info>
-## Get pomp2_region_info.* from an installed Opari2 or from
-## vendor/opari2. Currently, we only support the latter; in future configure
-## will set SRC/INC_DIR_POMP2_REGION_INFO.
-SRC_DIR_POMP2_REGION_INFO = $(SRC_ROOT)vendor/opari2/src/pomp-lib-dummy
-INC_DIR_POMP2_REGION_INFO = $(INC_ROOT)vendor/opari2/src/pomp-lib-dummy
-noinst_LTLIBRARIES       += libscorep_adapter_pomp_region_info.la
-nodist_libscorep_adapter_pomp_region_info_la_SOURCES = \
-    $(SRC_DIR_POMP2_REGION_INFO)/pomp2_region_info.h   \
-    $(SRC_DIR_POMP2_REGION_INFO)/pomp2_region_info.c
-##</pomp_region_info>
+noinst_LTLIBRARIES += libscorep_adapter_pomp_common.la
+libscorep_adapter_pomp_common_la_SOURCES  =               \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Common.h     \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Common.c     \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_RegionInfo.c \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_RegionInfo.h \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Lock.c       \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Lock.h
+nodist_libscorep_adapter_pomp_common_la_SOURCES =         \
+    @POMP2_REGION_INFO_SRC_DIR@/pomp2_region_info.c       \
+    @POMP2_REGION_INFO_INC_DIR@/pomp2_region_info.h
+libscorep_adapter_pomp_common_la_CPPFLAGS =               \
+    $(AM_CPPFLAGS)                                        \
+    -I$(PUBLIC_INC_DIR)                                   \
+    -I$(INC_ROOT)src/measurement/include                  \
+    -I@POMP2_REGION_INFO_INC_DIR@                         \
+    $(UTILS_CPPFLAGS)                                     \
+    @OPARI2_CPPFLAGS@
+libscorep_adapter_pomp_common_la_LIBADD =                 \
+    libscorep_adapter_pomp_common_fortran_sub1.la         \
+    libscorep_adapter_pomp_common_fortran_sub2.la         \
+    libscorep_adapter_pomp_common_fortran_sub3.la         \
+    libscorep_adapter_pomp_common_fortran_sub4.la
 
+noinst_LTLIBRARIES +=                                     \
+    libscorep_adapter_pomp_common_fortran_sub1.la         \
+    libscorep_adapter_pomp_common_fortran_sub2.la         \
+    libscorep_adapter_pomp_common_fortran_sub3.la         \
+    libscorep_adapter_pomp_common_fortran_sub4.la
 
-SCOREP_POMP_USER_FORTRAN_SOURCES =                        \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_UserF.c      \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Variables.h  \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Fortran.h    \
-    $(SRC_ROOT)src/adapters/include/SCOREP_Fortran_Wrapper.h
+SCOREP_POMP_COMMON_FORTRAN_SOURCES =                      \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_CommonF.c    \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Common.h     \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Fortran.h
+
+SCOREP_POMP_COMMON_FORTRAN_FLAGS =                        \
+    $(AM_CPPFLAGS)                                        \
+    -I$(INC_ROOT)src/adapters/include                     \
+    -I$(INC_ROOT)src/measurement/include                  \
+    -I$(PUBLIC_INC_DIR)                                   \
+    @OPARI2_CPPFLAGS@                                     \
+    $(UTILS_CPPFLAGS)
+
+libscorep_adapter_pomp_common_fortran_sub1_la_SOURCES =   \
+    $(SCOREP_POMP_COMMON_FORTRAN_SOURCES)
+libscorep_adapter_pomp_common_fortran_sub2_la_SOURCES =   \
+    $(SCOREP_POMP_COMMON_FORTRAN_SOURCES)
+libscorep_adapter_pomp_common_fortran_sub3_la_SOURCES =   \
+    $(SCOREP_POMP_COMMON_FORTRAN_SOURCES)
+libscorep_adapter_pomp_common_fortran_sub4_la_SOURCES =   \
+    $(SCOREP_POMP_COMMON_FORTRAN_SOURCES)
+
+libscorep_adapter_pomp_common_fortran_sub1_la_CPPFLAGS =  \
+    -DFSUB=SCOREP_FORTRAN_SUB1                            \
+    $(SCOREP_POMP_COMMON_FORTRAN_FLAGS)
+libscorep_adapter_pomp_common_fortran_sub2_la_CPPFLAGS =  \
+    -DFSUB=SCOREP_FORTRAN_SUB2                            \
+    $(SCOREP_POMP_COMMON_FORTRAN_FLAGS)
+libscorep_adapter_pomp_common_fortran_sub3_la_CPPFLAGS =  \
+    -DFSUB=SCOREP_FORTRAN_SUB3                            \
+    $(SCOREP_POMP_COMMON_FORTRAN_FLAGS)
+libscorep_adapter_pomp_common_fortran_sub4_la_CPPFLAGS =  \
+    -DFSUB=SCOREP_FORTRAN_SUB4                            \
+    $(SCOREP_POMP_COMMON_FORTRAN_FLAGS)
+
+# --------------------------------------------------------------------
+# user
+
+noinst_LTLIBRARIES += libscorep_adapter_pomp_user.la
+libscorep_adapter_pomp_user_la_SOURCES  =                 \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_User.c
+
+libscorep_adapter_pomp_user_la_CPPFLAGS =                 \
+    $(AM_CPPFLAGS)                                        \
+    -I$(INC_ROOT)src/adapters/include                     \
+    -I$(INC_ROOT)src/utils/include                        \
+    -I$(INC_ROOT)src/measurement/include                  \
+    -I$(PUBLIC_INC_DIR)                                   \
+    @OPARI2_CPPFLAGS@                                     \
+    $(UTILS_CPPFLAGS)
+libscorep_adapter_pomp_user_la_LIBADD =                   \
+    libscorep_adapter_pomp_user_fortran_sub1.la           \
+    libscorep_adapter_pomp_user_fortran_sub2.la           \
+    libscorep_adapter_pomp_user_fortran_sub3.la           \
+    libscorep_adapter_pomp_user_fortran_sub4.la
+
+noinst_LTLIBRARIES +=                                     \
+    libscorep_adapter_pomp_user_fortran_sub1.la           \
+    libscorep_adapter_pomp_user_fortran_sub2.la           \
+    libscorep_adapter_pomp_user_fortran_sub3.la           \
+    libscorep_adapter_pomp_user_fortran_sub4.la
 
 SCOREP_POMP_USER_FORTRAN_FLAGS =                          \
     $(AM_CPPFLAGS)                                        \
@@ -46,45 +121,14 @@ SCOREP_POMP_USER_FORTRAN_FLAGS =                          \
     @OPARI2_CPPFLAGS@                                     \
     $(UTILS_CPPFLAGS)
 
-noinst_LTLIBRARIES +=                                     \
-    libscorep_adapter_pomp_user.la                        \
-    libscorep_adapter_pomp_user_fortran_sub1.la           \
-    libscorep_adapter_pomp_user_fortran_sub2.la           \
-    libscorep_adapter_pomp_user_fortran_sub3.la           \
-    libscorep_adapter_pomp_user_fortran_sub4.la
-
-libscorep_adapter_pomp_user_la_SOURCES  =                 \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_User.c       \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_RegionInfo.c \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_RegionInfo.h \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Dummy.c      \
-    $(SRC_ROOT)src/adapters/include/SCOREP_Pomp_Init.h
-libscorep_adapter_pomp_user_la_CPPFLAGS =                 \
-    $(AM_CPPFLAGS)                                        \
-    -I$(INC_ROOT)src/adapters/include                     \
-    -I$(INC_ROOT)src/adapters/pomp                        \
-    -I$(INC_ROOT)src/utils/include                        \
-    -I$(INC_ROOT)src/measurement/include                  \
-    -I$(INC_ROOT)src/measurement/filtering                \
-    -I$(PUBLIC_INC_DIR)                                   \
-    @OPARI2_CPPFLAGS@                                     \
-    -I$(INC_DIR_POMP2_REGION_INFO)                        \
-    $(UTILS_CPPFLAGS)
-libscorep_adapter_pomp_user_la_LIBADD =                   \
-    libscorep_adapter_pomp_user_fortran_sub1.la           \
-    libscorep_adapter_pomp_user_fortran_sub2.la           \
-    libscorep_adapter_pomp_user_fortran_sub3.la           \
-    libscorep_adapter_pomp_user_fortran_sub4.la           \
-    libscorep_adapter_pomp_region_info.la
-
 libscorep_adapter_pomp_user_fortran_sub1_la_SOURCES =     \
-    $(SCOREP_POMP_USER_FORTRAN_SOURCES)
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_UserF.c
 libscorep_adapter_pomp_user_fortran_sub2_la_SOURCES =     \
-    $(SCOREP_POMP_USER_FORTRAN_SOURCES)
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_UserF.c
 libscorep_adapter_pomp_user_fortran_sub3_la_SOURCES =     \
-    $(SCOREP_POMP_USER_FORTRAN_SOURCES)
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_UserF.c
 libscorep_adapter_pomp_user_fortran_sub4_la_SOURCES =     \
-    $(SCOREP_POMP_USER_FORTRAN_SOURCES)
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_UserF.c
 
 libscorep_adapter_pomp_user_fortran_sub1_la_CPPFLAGS =    \
     -DFSUB=SCOREP_FORTRAN_SUB1                            \
@@ -99,13 +143,35 @@ libscorep_adapter_pomp_user_fortran_sub4_la_CPPFLAGS =    \
     -DFSUB=SCOREP_FORTRAN_SUB4                            \
     $(SCOREP_POMP_USER_FORTRAN_FLAGS)
 
+# --------------------------------------------------------------------
+# omp
+
 if HAVE_OPENMP_SUPPORT
-SCOREP_POMP_OMP_FORTRAN_SOURCES =                         \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_UserF.c      \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_LibF.c       \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Variables.h  \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Fortran.h    \
-    $(SRC_ROOT)src/adapters/include/SCOREP_Fortran_Wrapper.h
+
+noinst_LTLIBRARIES += libscorep_adapter_pomp_omp.la
+libscorep_adapter_pomp_omp_la_SOURCES =                   \
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Omp.c
+libscorep_adapter_pomp_omp_la_CFLAGS   = \
+    $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_adapter_pomp_omp_la_CPPFLAGS =                  \
+    $(AM_CPPFLAGS)                                        \
+    -I$(INC_ROOT)src/adapters/include                     \
+    -I$(INC_ROOT)src/utils/include                        \
+    -I$(INC_ROOT)src/measurement/include                  \
+    -I$(PUBLIC_INC_DIR)                                   \
+    @OPARI2_CPPFLAGS@                                     \
+    $(UTILS_CPPFLAGS)
+libscorep_adapter_pomp_omp_la_LIBADD =                    \
+    libscorep_adapter_pomp_omp_fortran_sub1.la            \
+    libscorep_adapter_pomp_omp_fortran_sub2.la            \
+    libscorep_adapter_pomp_omp_fortran_sub3.la            \
+    libscorep_adapter_pomp_omp_fortran_sub4.la
+
+noinst_LTLIBRARIES +=                                     \
+    libscorep_adapter_pomp_omp_fortran_sub1.la            \
+    libscorep_adapter_pomp_omp_fortran_sub2.la            \
+    libscorep_adapter_pomp_omp_fortran_sub3.la            \
+    libscorep_adapter_pomp_omp_fortran_sub4.la
 
 SCOREP_POMP_OMP_FORTRAN_FLAGS =                           \
     $(AM_CPPFLAGS)                                        \
@@ -116,50 +182,14 @@ SCOREP_POMP_OMP_FORTRAN_FLAGS =                           \
     $(UTILS_CPPFLAGS)                                     \
     -D_OPENMP
 
-noinst_LTLIBRARIES +=                                     \
-    libscorep_adapter_pomp_omp.la                         \
-    libscorep_adapter_pomp_omp_fortran_sub1.la            \
-    libscorep_adapter_pomp_omp_fortran_sub2.la            \
-    libscorep_adapter_pomp_omp_fortran_sub3.la            \
-    libscorep_adapter_pomp_omp_fortran_sub4.la
-
-libscorep_adapter_pomp_omp_la_SOURCES =                   \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_User.c       \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_RegionInfo.c \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_RegionInfo.h \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Lib.c        \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Lock.c       \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Lock.h       \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Variables.h  \
-    $(SRC_ROOT)src/adapters/include/SCOREP_Pomp_Init.h
-
-libscorep_adapter_pomp_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-libscorep_adapter_pomp_omp_la_CPPFLAGS =                  \
-    $(AM_CPPFLAGS)                                        \
-    -I$(INC_ROOT)src/adapters/include                     \
-    -I$(INC_ROOT)src/adapters/pomp                        \
-    -I$(INC_ROOT)src/utils/include                        \
-    -I$(INC_ROOT)src/measurement/include                  \
-    -I$(INC_ROOT)src/measurement/filtering                \
-    -I$(PUBLIC_INC_DIR)                                   \
-    @OPARI2_CPPFLAGS@                                     \
-    -I$(INC_DIR_POMP2_REGION_INFO)                        \
-    $(UTILS_CPPFLAGS)
-libscorep_adapter_pomp_omp_la_LIBADD =                    \
-    libscorep_adapter_pomp_omp_fortran_sub1.la            \
-    libscorep_adapter_pomp_omp_fortran_sub2.la            \
-    libscorep_adapter_pomp_omp_fortran_sub3.la            \
-    libscorep_adapter_pomp_omp_fortran_sub4.la            \
-    libscorep_adapter_pomp_region_info.la
-
 libscorep_adapter_pomp_omp_fortran_sub1_la_SOURCES =      \
-    $(SCOREP_POMP_OMP_FORTRAN_SOURCES)
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_OmpF.c
 libscorep_adapter_pomp_omp_fortran_sub2_la_SOURCES =      \
-    $(SCOREP_POMP_OMP_FORTRAN_SOURCES)
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_OmpF.c
 libscorep_adapter_pomp_omp_fortran_sub3_la_SOURCES =      \
-    $(SCOREP_POMP_OMP_FORTRAN_SOURCES)
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_OmpF.c
 libscorep_adapter_pomp_omp_fortran_sub4_la_SOURCES =      \
-    $(SCOREP_POMP_OMP_FORTRAN_SOURCES)
+    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_OmpF.c
 
 libscorep_adapter_pomp_omp_fortran_sub1_la_CPPFLAGS =     \
     -DFSUB=SCOREP_FORTRAN_SUB1                            \
@@ -173,4 +203,5 @@ libscorep_adapter_pomp_omp_fortran_sub3_la_CPPFLAGS =     \
 libscorep_adapter_pomp_omp_fortran_sub4_la_CPPFLAGS =     \
     -DFSUB=SCOREP_FORTRAN_SUB4                            \
     $(SCOREP_POMP_OMP_FORTRAN_FLAGS)
+
 endif

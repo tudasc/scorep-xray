@@ -27,7 +27,7 @@
 #include <SCOREP_Fortran_Wrapper.h>
 #include <stdio.h>
 
-#include "SCOREP_OA_Init.h"
+#include "SCOREP_OA_RuntimeManagement.h"
 #include "scorep_oa_phase.h"
 #include "scorep_status.h"
 #include "scorep_profile_definition.h"

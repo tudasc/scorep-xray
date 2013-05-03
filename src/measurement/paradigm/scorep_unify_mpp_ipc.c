@@ -17,7 +17,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/scorep_unify_mpp_enabled.c
+ * @file       src/measurement/paradigm/scorep_unify_mpp_ipc.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha

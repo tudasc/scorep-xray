@@ -42,7 +42,7 @@
 #include <scorep_runtime_management.h> /* SCOREP_GetExperimentDirName() */
 #include <scorep_environment.h>
 #include <scorep_ipc.h>
-#include <scorep_openmp.h>
+#include <scorep_thread.h>
 #include <math.h>                      /* sqrt() and log10() */
 #include <float.h>                     /* DBL_MAX */
 #include <string.h>                    /* strlen() */
@@ -1931,7 +1931,7 @@ scorep_cluster_on_enter_dynamic(  SCOREP_Profile_LocationData* location,
          strcmp( clustered_region, current_region ) == 0 )
     {
         /* Can not cluster regions inside parallel regions. */
-        if ( SCOREP_Omp_InParallel() )
+        if ( SCOREP_Thread_InParallel() )
         {
             UTILS_WARNING( "Can not cluster regions that appear inside "
                            "of parallel regions. Clustering disabled." );

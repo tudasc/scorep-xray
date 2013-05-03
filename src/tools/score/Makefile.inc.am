@@ -20,9 +20,7 @@ scorep_score_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
     @CUBE_READER_CPPFLAGS@ \
-    -I$(INC_ROOT)src/tools/score \
-    -I$(INC_ROOT)src/utils/include \
-    -I$(INC_ROOT)src/utils/filtering
+    -I$(INC_ROOT)src/utils/include
 
 scorep_score_LDFLAGS = @CUBE_READER_LDFLAGS@
 scorep_score_LDADD = @CUBE_READER_LIBS@ \

@@ -45,7 +45,7 @@
 
 
 /* Implementation of the compiler adapter initialization/finalization struct */
-const SCOREP_Subsystem SCOREP_Compiler_Adapter =
+const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter =
 {
     .subsystem_name              = "COMPILER (config variables only)",
     .subsystem_register          = &scorep_compiler_register,

@@ -23,19 +23,20 @@
  */
 
 #include <config.h>
+#include <scorep/SCOREP_OA_Functions.h>
+
 #include <SCOREP_RuntimeManagement.h>
 #include <stdio.h>
 
-#include "scorep/SCOREP_User_Functions.h"
-#include "SCOREP_OA_Functions.h"
-#include "scorep_profile_definition.h"
-#include "SCOREP_OA_Init.h"
+#include <scorep/SCOREP_User_Functions.h>
+#include <scorep_profile_definition.h>
+#include "SCOREP_OA_RuntimeManagement.h"
 #include "SCOREP_Types.h"
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
 
 #include "scorep_oa_phase.h"
-#include "scorep_status.h"
+#include <scorep_status.h>
 
 void
 SCOREP_OA_PhaseBegin

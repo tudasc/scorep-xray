@@ -37,9 +37,9 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Mutex.h>
 
-#include <SCOREP_Compiler_Init.h>
-#include <scorep_compiler_data_intel.h>
-#include <scorep_compiler_symbol_table.h>
+#include "SCOREP_Compiler_Init.h"
+#include "scorep_compiler_data_intel.h"
+#include "scorep_compiler_symbol_table.h"
 
 /**
  * static variable to control initialize status of the compiler adapter.

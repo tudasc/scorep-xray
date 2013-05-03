@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -14,20 +14,23 @@
  *
  */
 
-#ifndef SCOREP_MPI_INIT_H
-#define SCOREP_MPI_INIT_H
+#ifndef SCOREP_CUDA_INIT_H
+#define SCOREP_CUDA_INIT_H
 
-/** @file SCOREP_Mpi_Init.h
-    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-    @status     ALPHA
-    @ingroup    MPI_Wrapper
-
-    @brief Contains the initialization function definitions for the measurement system.
+/**
+ * @file       SCOREP_Cuda_Init.h
+ * @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
+ * @status     ALPHA
+ * @ingroup    CUDA
+ *
+ * @brief Declares the initialization structure of the CUDA adapter
  */
 
 #include "SCOREP_Subsystem.h"
 
-/** The struct which contain the init functions */
-extern const SCOREP_Subsystem SCOREP_Mpi_Adapter;
+/**
+   The CUDA adapter structure
+ */
+extern struct SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
 
-#endif // SCOREP_MPI_INIT_H
+#endif /* SCOREP_CUDA_INIT_H */

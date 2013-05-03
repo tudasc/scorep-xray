@@ -24,10 +24,10 @@
  */
 
 #include <config.h>
-#include <math.h>
-#include <SCOREP_Score_Estimator.hpp>
-#include <SCOREP_Score_Types.hpp>
+#include "SCOREP_Score_Estimator.hpp"
+#include "SCOREP_Score_Types.hpp"
 #include <SCOREP_Filter.h>
+#include <math.h>
 
 using namespace std;
 

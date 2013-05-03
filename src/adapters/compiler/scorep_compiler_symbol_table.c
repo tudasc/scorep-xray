@@ -37,6 +37,8 @@
  */
 
 #include <config.h>
+#include "scorep_compiler_symbol_table.h"
+
 #include <stdio.h>
 #include <limits.h>
 #include <unistd.h>
@@ -58,8 +60,8 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Filter.h>
 
-#include <SCOREP_Compiler_Init.h>
-#include <scorep_compiler_data.h>
+#include "SCOREP_Compiler_Init.h"
+#include "scorep_compiler_data.h"
 
 #define SCOREP_COMPILER_BUFFER_LEN 512
 

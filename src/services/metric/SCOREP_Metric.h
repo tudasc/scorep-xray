@@ -32,6 +32,6 @@
 
 /** The adapter initialization and finalization function structure for the
  *  metric adapter. */
-extern const struct SCOREP_Subsystem SCOREP_Metric_Service;
+extern const struct SCOREP_Subsystem SCOREP_Subsystem_MetricService;
 
 #endif /* SCOREP_METRIC_H_ */

@@ -47,7 +47,7 @@
 /** Struct which contains the adapter iniitialization and finalization functions for the
     POMP2 adapter.
  */
-const SCOREP_Subsystem SCOREP_Pomp_Adapter =
+const SCOREP_Subsystem SCOREP_Subsystem_PompAdapter =
 {
     .subsystem_name              = "POMP2 Adapter / Version 1.0 (config variables only)",
     .subsystem_register          = NULL,

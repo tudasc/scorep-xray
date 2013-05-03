@@ -28,7 +28,7 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_User_Init.h>
+#include "SCOREP_User_Init.h"
 #include <SCOREP_Types.h>
 #include <SCOREP_Fortran_Wrapper.h>
 

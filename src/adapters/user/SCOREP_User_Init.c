@@ -105,7 +105,7 @@ scorep_user_deregister( void )
 {
 }
 
-const SCOREP_Subsystem SCOREP_User_Adapter =
+const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter =
 {
     .subsystem_name              = "USER",
     .subsystem_register          = &scorep_user_register,

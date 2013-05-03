@@ -37,7 +37,7 @@
 #include <SCOREP_Config.h>
 #include <SCOREP_Profile.h>
 #include <tracing/SCOREP_Tracing.h>
-#include <SCOREP_OA_Init.h>
+#include <SCOREP_OA_RuntimeManagement.h>
 #include <SCOREP_Filter_Init.h>
 #include "scorep_subsystem.h"
 

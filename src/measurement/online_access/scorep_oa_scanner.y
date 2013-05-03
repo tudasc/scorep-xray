@@ -33,9 +33,9 @@
 
 #include <config.h>
 #include "scorep_oa_mri_control.h"
-#include "scorep_oa_request.h"
+#include "SCOREP_OA_Request.h"
 #include "scorep_oa_connection.h"
-#include "SCOREP_OA_Init.h"
+#include "SCOREP_OA_RuntimeManagement.h"
 #include <UTILS_Debug.h>
 #include <UTILS_CStr.h>
 #include <stdio.h>

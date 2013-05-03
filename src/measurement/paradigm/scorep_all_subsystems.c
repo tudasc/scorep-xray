@@ -29,23 +29,23 @@
 
 #include <scorep_subsystem.h>
 
-#include <SCOREP_Metric.h>
-#include <SCOREP_Compiler_Init.h>
-#include <SCOREP_User_Init.h>
-#include <SCOREP_Pomp_Init.h>
-#include <SCOREP_Mpi_Init.h>
-#include <SCOREP_Cuda_Init.h>
+extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_PompAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_MetricService;
 
 /**
  * List of subsystems.
  */
 const SCOREP_Subsystem* scorep_subsystems[] = {
-    &SCOREP_Metric_Service,
-    &SCOREP_Compiler_Adapter,
-    &SCOREP_User_Adapter,
-    &SCOREP_Pomp_Adapter,
-    &SCOREP_Mpi_Adapter,
-    &SCOREP_Cuda_Adapter,
+    &SCOREP_Subsystem_MetricService,
+    &SCOREP_Subsystem_CompilerAdapter,
+    &SCOREP_Subsystem_UserAdapter,
+    &SCOREP_Subsystem_PompAdapter,
+    &SCOREP_Subsystem_MpiAdapter,
+    &SCOREP_Subsystem_CudaAdapter,
 };
 
 const size_t scorep_number_of_subsystems = sizeof( scorep_subsystems ) /

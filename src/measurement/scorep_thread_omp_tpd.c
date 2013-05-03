@@ -27,7 +27,7 @@
 #include <config.h>
 #include "scorep_thread.h"
 
-#include <SCOREP_Omp.h>
+#include <omp.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Timing.h>
 #include "scorep_location.h"
@@ -39,6 +39,11 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
+
+/* The following define is needed to please the PGI compiler */
+#define PRAGMA_OP( x ) _Pragma( x )
+#define SCOREP_PRAGMA( pragma ) PRAGMA_OP( UTILS_STRINGIFY( pragma ) )
+#define SCOREP_PRAGMA_OMP( omp_pragma ) SCOREP_PRAGMA( omp omp_pragma )
 
 /* Take care of name mangling the Fortran compiler might perform. */
 #define POMP_TPD_MANGLED FORTRAN_MANGLED( pomp_tpd )
@@ -393,4 +398,11 @@ scorep_thread_delete_private_data( scorep_thread_private_data* tpd )
         }
     }
     free( tpd );
+}
+
+
+bool
+SCOREP_Thread_InParallel()
+{
+    return omp_in_parallel();
 }

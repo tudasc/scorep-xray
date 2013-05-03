@@ -21,8 +21,8 @@
  */
 
 #include <config.h>
-#include <scorep_instrumenter_install_data.hpp>
-#include <scorep_instrumenter_utils.hpp>
+#include "scorep_instrumenter_install_data.hpp"
+#include "scorep_instrumenter_utils.hpp"
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 #include <UTILS_IO.h>

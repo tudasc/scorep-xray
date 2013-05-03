@@ -36,7 +36,7 @@ EXTRA_DIST += $(srcdir)/src/config.h                                      \
               $(srcdir)/doc/doxygen-user/main_6.dox.in                    \
               $(srcdir)/doc/doxygen-user/main_7.dox.in                    \
               $(srcdir)/doc/profile/scorep_metrics.html                   \
-              $(srcdir)/src/utils/include/SCOREP_Omp.h                    \
+              $(srcdir)/src/adapters/include/SCOREP_Fortran_Wrapper.h     \
               $(srcdir)/share/scorep.errors
 
 

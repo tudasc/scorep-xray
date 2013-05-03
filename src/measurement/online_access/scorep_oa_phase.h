@@ -26,7 +26,7 @@
  * @status alpha
  */
 
-#include "SCOREP_User_Types.h"
+#include <scorep/SCOREP_User_Types.h>
 
 void
 scorep_oa_phase_enter

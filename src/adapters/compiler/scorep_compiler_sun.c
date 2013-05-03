@@ -33,7 +33,7 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_Compiler_Init.h>
+#include "SCOREP_Compiler_Init.h"
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Filter.h>
 

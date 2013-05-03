@@ -48,15 +48,13 @@
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Timing.h>
-#include <scorep_openmp.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Profile_MpiEvents.h>
 #include <tracing/SCOREP_Tracing.h>
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Filter_Init.h>
 #include <scorep_unify.h>
-#include <scorep_openmp.h>
-#include <SCOREP_OA_Init.h>
+#include <SCOREP_OA_RuntimeManagement.h>
 
 #include "scorep_error_callback.h"
 #include "scorep_types.h"
@@ -234,7 +232,7 @@ scorep_initialization_sanity_checks( void )
         _Exit( EXIT_FAILURE );
     }
 
-    if ( SCOREP_Omp_InParallel() )
+    if ( SCOREP_Thread_InParallel() )
     {
         UTILS_ERROR( SCOREP_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
         _Exit( EXIT_FAILURE );
@@ -313,7 +311,7 @@ SCOREP_InitMppMeasurement( void )
 
     SCOREP_TIME_START_TIMING( SCOREP_InitMppMeasurement );
 
-    if ( SCOREP_Omp_InParallel() )
+    if ( SCOREP_Thread_InParallel() )
     {
         UTILS_ERROR( SCOREP_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
         _Exit( EXIT_FAILURE );
@@ -365,7 +363,7 @@ SCOREP_EnableRecording( void )
 
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
 
-    if ( !SCOREP_Omp_InParallel() )
+    if ( !SCOREP_Thread_InParallel() )
     {
         scorep_recording_enabled = true;
         if ( SCOREP_IsTracingEnabled() )
@@ -395,7 +393,7 @@ SCOREP_DisableRecording( void )
 
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
 
-    if ( !SCOREP_Omp_InParallel() )
+    if ( !SCOREP_Thread_InParallel() )
     {
         scorep_recording_enabled = false;
         if ( SCOREP_IsTracingEnabled() )

@@ -24,7 +24,7 @@
 #ifndef SCOREP_INSTRUMENTER_H_
 #define SCOREP_INSTRUMENTER_H_
 
-#include <scorep_instrumenter_cmd_line.hpp>
+#include "scorep_instrumenter_cmd_line.hpp"
 
 #include <iostream>
 #include <string>

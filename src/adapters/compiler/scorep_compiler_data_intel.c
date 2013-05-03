@@ -23,6 +23,8 @@
  */
 
 #include <config.h>
+#include "scorep_compiler_data_intel.h"
+
 #include <string.h>
 #include <unistd.h>
 
@@ -32,8 +34,6 @@
 #include <UTILS_Debug.h>
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_Filter.h>
-
-#include <scorep_compiler_data_intel.h>
 
 /**
    A hash table which stores information about regions under their name as

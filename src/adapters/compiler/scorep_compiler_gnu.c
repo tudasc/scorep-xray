@@ -36,9 +36,9 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Mutex.h>
 
-#include <SCOREP_Compiler_Init.h>
-#include <scorep_compiler_data.h>
-#include <scorep_compiler_symbol_table.h>
+#include "SCOREP_Compiler_Init.h"
+#include "scorep_compiler_data.h"
+#include "scorep_compiler_symbol_table.h"
 
 
 /**

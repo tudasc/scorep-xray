@@ -27,7 +27,7 @@
 
 #include <string>
 #include <Cube.h>
-#include <SCOREP_Score_Types.hpp>
+#include "SCOREP_Score_Types.hpp"
 
 class SCOREP_Score_Profile
 {

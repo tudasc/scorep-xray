@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/mpi/scorep_mpi_unify_communicators.c
+ * @file       src/measurement/paradigm/mpi/scorep_ipc_mpi_unify_communicators.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha

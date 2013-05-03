@@ -44,7 +44,6 @@
 #include <SCOREP_Profile_Tasking.h>
 #include <SCOREP_Profile_MpiEvents.h>
 #include <SCOREP_Metric_Management.h>
-#include <scorep_openmp.h>
 
 #include "scorep_events_common.h"
 #include "scorep_runtime_management.h"

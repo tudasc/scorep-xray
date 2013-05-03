@@ -14,11 +14,11 @@
  *
  */
 
-#ifndef SCOREP_POMP_VARIABLES_H
-#define SCOREP_POMP_VARIABLES_H
+#ifndef SCOREP_POMP_COMMON_H
+#define SCOREP_POMP_COMMON_H
 
 /**
- * @file       SCOREP_Pomp_Variables.h
+ * @file       SCOREP_Pomp_Common.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     alpha
  * @ingroup    POMP2
@@ -90,4 +90,4 @@ extern SCOREP_Mutex scorep_pomp_assign_lock;
 
 /** @} */
 
-#endif // SCOREP_POMP_VARIABLES_H
+#endif // SCOREP_POMP_COMMON_H

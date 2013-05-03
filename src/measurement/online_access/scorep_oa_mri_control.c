@@ -44,7 +44,7 @@
 #include "scorep_oa_connection.h"
 #include "scorep_profile_node.h"
 #include "scorep_profile_definition.h"
-#include "scorep_oa_request.h"
+#include "SCOREP_OA_Request.h"
 
 
 /**

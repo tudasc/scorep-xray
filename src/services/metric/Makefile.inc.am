@@ -17,6 +17,8 @@
 
 # Common settings
 
+noinst_LTLIBRARIES += libscorep_metric.la
+
 scorep_metric_common_cppflags = $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS)                          \
     -I$(PUBLIC_INC_DIR)                        \
@@ -28,12 +30,9 @@ scorep_metric_common_cppflags = $(AM_CPPFLAGS) \
 
 libscorep_metric_la_CPPFLAGS = $(scorep_metric_common_cppflags)
 
-noinst_LTLIBRARIES += libscorep_metric.la
-
-
 libscorep_metric_la_SOURCES = \
-	$(SRC_ROOT)src/services/include/SCOREP_Metric.h            \
-	$(SRC_ROOT)src/services/include/SCOREP_Metric_Management.h \
+    $(SRC_ROOT)src/services/metric/SCOREP_Metric.h             \
+    $(SRC_ROOT)src/services/include/SCOREP_Metric_Management.h \
     $(SRC_ROOT)src/services/metric/SCOREP_Metric_Source.h      \
     $(SRC_ROOT)src/services/metric/scorep_metric_management.c
 
@@ -45,7 +44,8 @@ libscorep_metric_la_LDFLAGS =
 if HAVE_GETRUSAGE
 noinst_LTLIBRARIES += libscorep_metric_rusage.la
 
-libscorep_metric_rusage_la_CPPFLAGS = $(scorep_metric_common_cppflags) \
+libscorep_metric_rusage_la_CPPFLAGS = \
+    $(scorep_metric_common_cppflags)  \
     @SCOREP_RUSAGE_CPPFLAGS@
 libscorep_metric_rusage_la_SOURCES = \
     $(SRC_ROOT)src/services/metric/scorep_metric_rusage.c \
@@ -59,7 +59,8 @@ endif
 if HAVE_PAPI
 noinst_LTLIBRARIES += libscorep_metric_papi.la
 
-libscorep_metric_papi_la_CPPFLAGS = $(scorep_metric_common_cppflags) \
+libscorep_metric_papi_la_CPPFLAGS =  \
+    $(scorep_metric_common_cppflags) \
     @SCOREP_PAPI_CPPFLAGS@
 libscorep_metric_papi_la_SOURCES = \
     $(SRC_ROOT)src/services/metric/scorep_metric_papi.c \

@@ -47,8 +47,6 @@ AC_SCOREP_COMPILER_INSTRUMENTATION_FLAGS
 AC_SCOREP_BACKEND_TEST_RUNS
 AC_SCOREP_ATTRIBUTE_ALIGNMENT
 AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE
-AC_SCOREP_LIBSION([SERIAL])
-AC_SCOREP_LIBSION([OMP])
 AC_SCOREP_LIBPAPI
 AC_SCOREP_RUSAGE
 AC_SCOREP_SAMPLING
@@ -71,12 +69,16 @@ AS_IF([test -n "${scorep_opari2_bindir}"],
        AC_SUBST([OPARI2_MAKE_CHECK_BINDIR], ["${scorep_opari2_bindir}"])
        AC_SUBST([OPARI2_CPPFLAGS],          ["`${scorep_opari2_bindir}/opari2-config --cflags`"])
        AC_SUBST([HAVE_EXTERNAL_OPARI2],     [1])
+       AC_SUBST([POMP2_REGION_INFO_SRC_DIR],["${scorep_opari2_bindir}/../share/opari2/devel"])
+       AC_SUBST([POMP2_REGION_INFO_INC_DIR],["${scorep_opari2_bindir}/../share/opari2/devel"])
        ${scorep_opari2_bindir}/opari2-config --fix-form > /dev/null 2>&1
        AS_IF([test $? -ne 0], [opari_fix_and_free_form_options=0])],
       [AC_SUBST([OPARI2_BINDIR],            ["${prefix}/bin"])
        AC_SUBST([OPARI2_MAKE_CHECK_BINDIR], ["../vendor/opari2/build-frontend"])
        AC_SUBST([OPARI2_CPPFLAGS],          ['-I$(srcdir)/../vendor/opari2/include'])
-       AC_SUBST([HAVE_EXTERNAL_OPARI2],     [0])])
+       AC_SUBST([HAVE_EXTERNAL_OPARI2],     [0])
+       AC_SUBST([POMP2_REGION_INFO_SRC_DIR],["../vendor/opari2/src/pomp-lib-dummy"])
+       AC_SUBST([POMP2_REGION_INFO_INC_DIR],['$(srcdir)/../vendor/opari2/src/pomp-lib-dummy'])])
 AC_SUBST([HAVE_OPARI2_FIX_AND_FREE_FORM_OPTIONS], [${opari2_fix_and_free_form_options}])
 
 AS_IF([test -n "${scorep_cube_bindir}"],

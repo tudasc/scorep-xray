@@ -25,7 +25,7 @@
 #ifndef SCOREP_SCORE_GROUP_H
 #define SCOREP_SCORE_GROUP_H
 
-#include <SCOREP_Score_Types.hpp>
+#include "SCOREP_Score_Types.hpp"
 #include <string>
 #include <stdint.h>
 

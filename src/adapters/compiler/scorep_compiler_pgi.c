@@ -34,8 +34,8 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_RuntimeManagement.h>
-#include <scorep_compiler_data.h>
-#include <SCOREP_Compiler_Init.h>
+#include "scorep_compiler_data.h"
+#include "SCOREP_Compiler_Init.h"
 #include <SCOREP_Filter.h>
 #include <SCOREP_Memory.h>
 

@@ -28,20 +28,13 @@
 
 
 #include <config.h>
-
+#include <SCOREP_Mutex.h>
 
 #include <stdlib.h>
 
-
 #include <omp.h>
 
-
 #include <UTILS_Error.h>
-
-
-#include <SCOREP_Mutex.h>
-#include <SCOREP_RuntimeManagement.h>
-
 
 /**
  * Allocates and initializes a new OpenMP lock.

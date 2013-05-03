@@ -992,7 +992,7 @@ SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( SCOREP_Location* location )
 /**
  * Implementation of the metric service initialization/finalization struct
  */
-const SCOREP_Subsystem SCOREP_Metric_Service =
+const SCOREP_Subsystem SCOREP_Subsystem_MetricService =
 {
     .subsystem_name              = "METRIC",
     .subsystem_register          = &scorep_metric_register,

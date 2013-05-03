@@ -309,7 +309,7 @@ scorep_mpi_deregister( void )
 }
 
 /* The initialization struct for the MPI adapter */
-const SCOREP_Subsystem SCOREP_Mpi_Adapter =
+const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter =
 {
     .subsystem_name              = "MPI",
     .subsystem_register          = &scorep_mpi_register,

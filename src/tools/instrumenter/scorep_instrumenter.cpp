@@ -34,10 +34,10 @@
 #include <UTILS_Error.h>
 #include <UTILS_IO.h>
 
-#include <scorep_instrumenter.hpp>
+#include "scorep_instrumenter.hpp"
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
-#include <scorep_instrumenter_utils.hpp>
+#include "scorep_instrumenter_utils.hpp"
 
 void
 print_help();

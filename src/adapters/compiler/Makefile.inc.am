@@ -17,47 +17,46 @@
 
 # Common settings
 
-libscorep_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)      \
-    -I$(PUBLIC_INC_DIR)                                      \
-    $(UTILS_CPPFLAGS)                                        \
-    -I$(INC_ROOT)src/adapters/compiler                       \
-    -I$(INC_ROOT)src/adapters/include                        \
-    -I$(INC_ROOT)src/utils/include                           \
-    -I$(INC_ROOT)src/measurement/include
-
 noinst_LTLIBRARIES += libscorep_adapter_compiler.la
 
 libscorep_adapter_compiler_la_SOURCES = \
         $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c \
-	$(SRC_ROOT)src/adapters/include/SCOREP_Compiler_Init.h
+        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.h
+libscorep_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)      \
+        -I$(PUBLIC_INC_DIR)                                  \
+        $(UTILS_CPPFLAGS)                                    \
+        -I$(INC_ROOT)src/utils/include                       \
+        -I$(INC_ROOT)src/measurement/include
 
 # intel specific settings
 
 if SCOREP_COMPILER_INTEL
-if HAVE_LIBBFD
-libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
-endif
-if HAVE_DEMANGLE
-libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
-endif
-libscorep_adapter_compiler_la_CPPFLAGS += -DINTEL_COMPILER
-
-if HAVE_NM_AS_BFD_REPLACEMENT
-libscorep_adapter_compiler_la_CPPFLAGS += \
-	-I$(INC_ROOT)src/services/include \
-        -DHAVE_NM
-
-libscorep_adapter_compiler_la_SOURCES  += \
-	$(SRC_ROOT)src/services/include/SCOREP_Timing.h
-endif
-
 libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.c   \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.h   \
-	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c
+libscorep_adapter_compiler_la_CPPFLAGS += -DINTEL_COMPILER
+
+if HAVE_LIBBFD
+libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
+endif
+
+if HAVE_DEMANGLE
+libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
+endif
+
+if HAVE_NM_AS_BFD_REPLACEMENT
+# the SCOREP_Timing.h dependency is used to generate unique
+# filenames. This should be done differently, see #692
+libscorep_adapter_compiler_la_SOURCES  += \
+        $(SRC_ROOT)src/services/include/SCOREP_Timing.h
+libscorep_adapter_compiler_la_CPPFLAGS += \
+        -I$(INC_ROOT)src/services/include -DHAVE_NM
+endif
 endif 
+
 
 #ibm specific settings
 
@@ -68,6 +67,7 @@ libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm.c
 endif
 
+
 # pgi specific settings
 
 if SCOREP_COMPILER_PGI
@@ -77,60 +77,63 @@ libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c
 endif
 
+
 # gnu specific settings
 
 if SCOREP_COMPILER_GNU
-if HAVE_LIBBFD
-libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
-endif
-if HAVE_DEMANGLE
-libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
-endif 
-
-if HAVE_NM_AS_BFD_REPLACEMENT
-libscorep_adapter_compiler_la_CPPFLAGS += \
-	-I$(INC_ROOT)src/services/include \
-        -DHAVE_NM
-
-libscorep_adapter_compiler_la_SOURCES  += \
-	$(SRC_ROOT)src/services/include/SCOREP_Timing.h
-endif
-
 libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c         \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h         \
-	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
+
+if HAVE_LIBBFD
+libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
 endif
+
+if HAVE_DEMANGLE
+libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
+endif 
+
+if HAVE_NM_AS_BFD_REPLACEMENT
+# the SCOREP_Timing.h dependency is used to generate unique
+# filenames. This should be done differently, see #692
+libscorep_adapter_compiler_la_SOURCES  += \
+        $(SRC_ROOT)src/services/include/SCOREP_Timing.h
+libscorep_adapter_compiler_la_CPPFLAGS += \
+        -I$(INC_ROOT)src/services/include -DHAVE_NM
+endif
+endif
+
 
 # cray specific settings
 
 if SCOREP_COMPILER_CRAY
-if HAVE_LIBBFD
-libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
-endif
-if HAVE_DEMANGLE
-libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
-endif 
-
-if HAVE_NM_AS_BFD_REPLACEMENT
-libscorep_adapter_compiler_la_CPPFLAGS += \
-	-I$(INC_ROOT)src/services/include \
-        -DHAVE_NM
-
-libscorep_adapter_compiler_la_SOURCES  += \
-	$(SRC_ROOT)src/services/include/SCOREP_Timing.h
-endif
-
 libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c         \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h         \
-	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c          \
-	$(SRC_ROOT)src/adapters/compiler/scorep_compiler_cray.c
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c          \
+        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_cray.c
+
+if HAVE_LIBBFD
+libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
 endif
+
+if HAVE_DEMANGLE
+libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
+endif 
+
+if HAVE_NM_AS_BFD_REPLACEMENT
+libscorep_adapter_compiler_la_SOURCES  += \
+        $(SRC_ROOT)src/services/include/SCOREP_Timing.h
+libscorep_adapter_compiler_la_CPPFLAGS += \
+        -I$(INC_ROOT)src/services/include -DHAVE_NM
+endif
+endif
+
 
 # sx specific settings
 
@@ -142,57 +145,12 @@ libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace_1.s
 endif
 
+
 # sun specific settings
 
 if SCOREP_COMPILER_SUN
- libscorep_adapter_compiler_la_SOURCES += \
+libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c
 endif
-
-# hp specific settings
-
-#if SCOREP_COMPILER_HP
-# libscorep_adapter_compiler_la_SOURCES += \
-#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_hp.c
-#endif
-
-# If no compiler adapter is available
-if !SCOREP_COMPILER_CRAY
-if !SCOREP_COMPILER_INTEL
-if !SCOREP_COMPILER_IBM
-if !SCOREP_COMPILER_PGI
-if !SCOREP_COMPILER_GNU
-if !SCOREP_COMPILER_SX
-if !SCOREP_COMPILER_SUN
-libscorep_adapter_compiler_la_SOURCES += \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_empty.c
-endif
-endif
-endif
-endif
-endif
-endif
-endif
-
-#noinst_LTLIBRARIES += libscorep_adapter_compiler_all.la
-#
-#libscorep_adapter_compiler_all_la_CPPFLAGS = \
-#    $(AM_CPPFLAGS)                                           \
-#    -I$(PUBLIC_INC_DIR)                                      \
-#    $(UTILS_CPPFLAGS)                                        \
-#    -I$(INC_ROOT)src/adapters/compiler                       \
-#    -I$(INC_ROOT)src/adapters/include                        \
-#    -I$(INC_ROOT)src/utils/include                           \
-#    -I$(INC_ROOT)src/measurement/include
-#
-#libscorep_adapter_compiler_all_la_SOURCES = \
-#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_cray.c \
-#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c \
-#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm.c \
-#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c \
-#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c \
-#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c \
-#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace.c \
-#    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_empty.c

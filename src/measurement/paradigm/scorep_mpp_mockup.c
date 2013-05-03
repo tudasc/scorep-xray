@@ -15,25 +15,46 @@
  */
 
 
-
 /**
- * @file       src/measurement/paradigm/scorep_unify_mpp_disabled.c
+ * @file       src/measurement/paradigm/scorep_mpp_mockup.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
+ *
  *
  */
 
 
 #include <config.h>
-#include <stdlib.h>
-#include <scorep_unify.h>
-#include <UTILS_Debug.h>
+
+
 #include <UTILS_Error.h>
 
 
-void
-SCOREP_Unify_Mpp( void )
+#include <UTILS_Debug.h>
+
+
+#include "scorep_ipc.h"
+
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
+
+bool
+SCOREP_Status_IsMpp( void )
 {
-    UTILS_FATAL( "SCOREP_Unify_Mpp() called in non-mpi build" );
+    return false;
+}
+
+
+bool
+scorep_create_experiment_dir( void ( * createDir )( void ) )
+{
+    createDir();
+    return true;
+}
+
+void
+scorep_timing_reduce_runtime_management_timings( void )
+{
 }

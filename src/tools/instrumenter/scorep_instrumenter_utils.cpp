@@ -21,7 +21,7 @@
  */
 
 #include <config.h>
-#include <scorep_instrumenter_utils.hpp>
+#include "scorep_instrumenter_utils.hpp"
 #include <string>
 #include <fstream>
 

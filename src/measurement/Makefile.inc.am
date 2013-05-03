@@ -19,8 +19,8 @@
 
 include ../src/measurement/Makefile.common.inc.am
 
-noinst_LTLIBRARIES += libscorep_measurement.la
-libscorep_measurement_la_SOURCES =                                \
+noinst_LTLIBRARIES += libscorep_measurement_core.la
+libscorep_measurement_core_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/SCOREP_RuntimeManagement.c         \
     $(SRC_ROOT)src/measurement/SCOREP_Events.c                    \
     $(SRC_ROOT)src/measurement/scorep_events_common.h             \
@@ -70,104 +70,139 @@ libscorep_measurement_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/scorep_error_callback.h \
     $(SRC_ROOT)src/measurement/scorep_error_callback.c
 
-libscorep_measurement_la_CPPFLAGS = \
+libscorep_measurement_core_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
     -I$(INC_ROOT)src/services/include \
     @CUBE_WRITER_CPPFLAGS@
 
-## paradigm omp
+## paradigm thread
 
 if HAVE_OPENMP_SUPPORT
-noinst_LTLIBRARIES              += libscorep_paradigm_omp.la
-libscorep_paradigm_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-# Sources include SCOREP_Omp.h that conditionally compiles on _OPENMP
-libscorep_paradigm_omp_la_SOURCES  =                       \
-    $(SRC_ROOT)src/measurement/scorep_thread_omp_tpd.c     \
-    $(SRC_ROOT)src/measurement/scorep_thread_generic.c     \
-    $(SRC_ROOT)src/measurement/scorep_thread_generic_fork_join.c \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.c    \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
+
+noinst_LTLIBRARIES += libscorep_mutex_omp.la
+libscorep_mutex_omp_la_SOURCES = \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c 
-libscorep_paradigm_omp_la_CPPFLAGS = \
-    $(common_libscorep_cppflags)
+libscorep_mutex_omp_la_CFLAGS = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_mutex_omp_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/include \
+    $(UTILS_CPPFLAGS)
+
+
+noinst_LTLIBRARIES += libscorep_thread_omp_tpd.la
+libscorep_thread_omp_tpd_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_thread_omp_tpd_la_SOURCES  =                       \
+    $(SRC_ROOT)src/measurement/scorep_thread_omp_tpd.c
+libscorep_thread_omp_tpd_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/services/include \
+    -I$(INC_ROOT)src/measurement/profiling \
+    -I$(INC_ROOT)src/measurement
+
 endif
 
-##paradigm non omp
+##paradigm non thread
 
-noinst_LTLIBRARIES                  += libscorep_paradigm_non_omp.la
-libscorep_paradigm_non_omp_la_SOURCES  =                   \
-    $(SRC_ROOT)src/measurement/scorep_thread_serial.c      \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.c    \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_openmp.h    \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_non_omp.c 
-libscorep_paradigm_non_omp_la_CPPFLAGS = \
-    $(common_libscorep_cppflags)
+noinst_LTLIBRARIES += libscorep_thread_generic.la
+libscorep_thread_generic_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/scorep_thread_generic.c \
+    $(SRC_ROOT)src/measurement/scorep_thread_generic_fork_join.c
+libscorep_thread_generic_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/profiling \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/services/include
 
-## paradigm non mpi
 
-noinst_LTLIBRARIES                  += libscorep_paradigm_non_mpi.la
-libscorep_paradigm_non_mpi_la_SOURCES  =                            \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_mpp_disabled.c       \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_ipc_mpp_disabled.c   \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpp_disabled.c \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpp_disabled.c
-libscorep_paradigm_non_mpi_la_CPPFLAGS = \
-    $(common_libscorep_cppflags)
+noinst_LTLIBRARIES += libscorep_mutex_mockup.la
+libscorep_mutex_mockup_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_mockup.c 
+libscorep_mutex_mockup_la_CFLAGS = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_mutex_mockup_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/include \
+    $(UTILS_CPPFLAGS)
+
+
+noinst_LTLIBRARIES += libscorep_thread_mockup.la
+libscorep_thread_mockup_la_SOURCES  =                   \
+    $(SRC_ROOT)src/measurement/scorep_thread_mockup.c
+libscorep_thread_mockup_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/profiling \
+    -I$(INC_ROOT)src/measurement
+
+
+## paradigm non mpp
+
+noinst_LTLIBRARIES += libscorep_mpp_mockup.la
+libscorep_mpp_mockup_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_mpp_mockup.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_ipc_mockup.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpp_mockup.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpp_mockup.c
+libscorep_mpp_mockup_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_COMMON_HASH) \
+    -I$(INC_ROOT)src/services/include
+
+
+## paradigm mpp
+
+noinst_LTLIBRARIES += libscorep_mpp_ipc.la
+# libscorep_mpp_ipc.la needs a real ipc implementation. Currently we
+# provide just an MPI implementation, see libscorep_ipc_mpi.la.
+libscorep_mpp_ipc_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_mpp_ipc.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpp_ipc.c \
+    $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpp_ipc.c
+libscorep_mpp_ipc_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_DIR_COMMON_HASH) \
+    -I$(INC_ROOT)src/services/include
+
 
 ## sion-serial
 
-noinst_LTLIBRARIES += libscorep_sion_serial.la
-#if HAVE_SION_SERIAL
-#libscorep_sion_serial_la_SOURCES  = \
-#    $(SRC_ROOT)src/measurement/paradigm/scorep_sion_serial.c
-#libscorep_sion_serial_la_CPPFLAGS = \
-#    $(AM_CPPFLAGS) \
-#    -I$(INC_ROOT)src/measurement \
-#    $(UTILS_CPPFLAGS) \
-#    @OTF2_CPPFLAGS@
-#else
-libscorep_sion_serial_la_SOURCES  = \
+noinst_LTLIBRARIES += libscorep_sion_mockup.la
+libscorep_sion_mockup_la_SOURCES  = \
     $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
-libscorep_sion_serial_la_CPPFLAGS = \
+libscorep_sion_mockup_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement \
     $(UTILS_CPPFLAGS) \
     @OTF2_CPPFLAGS@
-#endif
 
-
-## sion-omp
-
-noinst_LTLIBRARIES += libscorep_sion_omp.la
-#if HAVE_SION_OMP
-#libscorep_sion_omp_la_SOURCES = \
-#    $(SRC_ROOT)src/measurement/paradigm/scorep_sion_omp.c
-#libscorep_sion_omp_la_CPPFLAGS = \
-#    $(AM_CPPFLAGS) \
-#    $(SCOREP_SION_OMP_CPPFLAGS) \
-#    -I$(INC_ROOT)src/measurement \
-#    $(UTILS_CPPFLAGS) \
-#    @OTF2_CPPFLAGS@
-#libscorep_sion_omp_la_LDFLAGS  = \
-#    $(SCOREP_SION_OMP_LDFLAGS)
-#libscorep_sion_omp_la_LIBADD = \
-#    $(SCOREP_SION_OMP_LIBS)
-#else
-libscorep_sion_omp_la_SOURCES  = \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
-libscorep_sion_omp_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    -I$(INC_ROOT)src/measurement \
-    $(UTILS_CPPFLAGS) \
-    @OTF2_CPPFLAGS@
-#endif
 
 ## cuda paradigm
 
 if HAVE_CUDA
-noinst_LTLIBRARIES                  += libscorep_paradigm_cuda.la
-libscorep_paradigm_cuda_la_SOURCES  = \
+noinst_LTLIBRARIES += libscorep_cuda.la
+libscorep_cuda_la_SOURCES  = \
     $(SRC_ROOT)src/measurement/paradigm/cuda/scorep_cuda_unify.c
-libscorep_paradigm_cuda_la_CPPFLAGS = \
-    $(common_libscorep_cppflags)
+libscorep_cuda_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_DIR_COMMON_HASH)
+libscorep_cuda_la_LIBADD = libscorep_adapter_cuda.la
 endif

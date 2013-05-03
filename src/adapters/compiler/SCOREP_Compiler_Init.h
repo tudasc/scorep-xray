@@ -14,23 +14,26 @@
  *
  */
 
-#ifndef SCOREP_POMP_INIT_H
-#define SCOREP_POMP_INIT_H
+
+#ifndef SCOREP_COMPILER_INIT_H_
+#define SCOREP_COMPILER_INIT_H_
+
 
 /**
- * @file       SCOREP_Pomp_Init.h
+ * @ file      SCOREP_Compiler_Init.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
- * @ingroup    POMP
  *
- * @brief Declares the intialization struct of the POMP adapter
+ * @brief Compiler adapter initialization and finalization function definition
+ *        object.
  */
 
 #include "SCOREP_Subsystem.h"
 
 /**
-   The POMP adapter struct
+   The adapter initialization and finalization function structure for the
+   compiler adapter.
  */
-extern const SCOREP_Subsystem SCOREP_Pomp_Adapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
 
-#endif // SCOREP_POMP_INIT_H
+
+#endif /* SCOREP_COMPILER_INIT_H_ */

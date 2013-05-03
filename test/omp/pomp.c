@@ -11,7 +11,6 @@ POMP2_Init_reg_4k6lsdctlab37_1();
 void
 POMP2_Init_regions()
 {
-    printf( "POMP2_Init_regions\n" );
     POMP2_Init_reg_4k6lsdctlab37_1();
 }
 

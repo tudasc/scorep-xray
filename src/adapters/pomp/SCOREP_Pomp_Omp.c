@@ -23,20 +23,18 @@
  * @brief Implementation of the POMP2 OpenMP adapter functions.
  */
 
-
 #include <config.h>
-#include <SCOREP_Events.h>
-#include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_Pomp_Init.h>
-#include <opari2/pomp2_lib.h>
+
+#include "SCOREP_Pomp_Common.h"
 #include "SCOREP_Pomp_RegionInfo.h"
+
+#include <SCOREP_Events.h>
+
+#define SCOREP_DEBUG_MODULE_NAME OPENMP
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
-#include "SCOREP_Pomp_Variables.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "SCOREP_Pomp_Lock.h"
+
+#include <opari2/pomp2_lib.h>
 
 
 /** Id of the currently executing task*/
