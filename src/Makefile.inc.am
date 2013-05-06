@@ -36,18 +36,20 @@ libscorep_measurement_la_LIBADD = \
     libscorep_vector.la       \
     libscorep_hashtab.la      \
     libutils.la               \
-    libjenkins_hash.la        \
+    libjenkins_hash.la
+
+if HAVE_CUDA
+libscorep_measurement_la_LIBADD += libscorep_cuda.la
+endif
+
+external_libadd = \
     @OTF2_LIBS@               \
     @LIBBFD_LIBS@             \
     @SCOREP_PAPI_LIBS@        \
     @CUBE_WRITER_LIBS@        \
     @TIMER_LIB@
 
-if HAVE_CUDA
-libscorep_measurement_la_LIBADD += libscorep_cuda.la
-endif
-
-libscorep_measurement_la_LDFLAGS = \
+external_ldflags = \
     @OTF2_LDFLAGS@        \
     @LIBBFD_LDFLAGS@      \
     @SCOREP_PAPI_LDFLAGS@ \
@@ -68,7 +70,7 @@ common_cppflags = $(AM_CPPFLAGS)                       \
                   -I$(PUBLIC_INC_DIR)                  \
                   $(UTILS_CPPFLAGS)
 
-library_api_version_ldflags  = -version-info @LIBRARY_INTERFACE_VERSION@
+library_api_version_ldflags = -version-info @LIBRARY_INTERFACE_VERSION@
 
 ## MPI
 
@@ -96,6 +98,7 @@ libscorep_mpi_la_SOURCES              = $(SRC_ROOT)src/measurement/paradigm/scor
 nodist_EXTRA_libscorep_mpi_la_SOURCES = force_link_with_F77LD.f
 libscorep_mpi_la_CPPFLAGS             = $(common_cppflags)
 libscorep_mpi_la_LIBADD               = $(common_libadd)                               \
+                                        $(external_libadd)                             \
                                         $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi.la  \
                                         $(LIB_DIR_SCOREP_MPI)libscorep_ipc_mpi.la      \
                                         $(LIB_DIR_SCOREP_MPI)libscorep_sion_mpp_mpi.la \
@@ -104,7 +107,8 @@ libscorep_mpi_la_LIBADD               = $(common_libadd)                        
                                         libscorep_thread_mockup.la                     \
                                         libscorep_mutex_mockup.la                      \
                                         libscorep_mpp_ipc.la
-libscorep_mpi_la_LDFLAGS              = $(library_api_version_ldflags)
+libscorep_mpi_la_LDFLAGS              = $(library_api_version_ldflags) \
+                                        $(external_ldflags)
 
 endif              		
 
@@ -118,13 +122,15 @@ libscorep_serial_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_adapte
 # POMP2_Get_opari2_version() by the instrumenter's nm-step
 libscorep_serial_la_CPPFLAGS = $(common_cppflags)
 libscorep_serial_la_LIBADD   = $(common_libadd)               \
+                               $(external_libadd)             \
                                libscorep_adapter_pomp_user.la \
                                libscorep_mpp_mockup.la        \
                                libscorep_thread_mockup.la     \
                                libscorep_mutex_mockup.la      \
                                libscorep_sion_mockup.la       \
                                libscorep_online_access_spp.la
-libscorep_serial_la_LDFLAGS  = $(library_api_version_ldflags)
+libscorep_serial_la_LDFLAGS  = $(library_api_version_ldflags) \
+                               $(external_ldflags)
 
 ## OpenMP
 
@@ -134,6 +140,7 @@ libscorep_omp_la_SOURCES  = $(SRC_ROOT)src/measurement/paradigm/scorep_adapter_l
 libscorep_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libscorep_omp_la_CPPFLAGS = $(common_cppflags)
 libscorep_omp_la_LIBADD   = $(common_libadd)              \
+                            $(external_libadd)            \
                             libscorep_adapter_pomp_user.la \
                             libscorep_adapter_pomp_omp.la \
                             libscorep_mpp_mockup.la       \
@@ -142,7 +149,8 @@ libscorep_omp_la_LIBADD   = $(common_libadd)              \
                             libscorep_mutex_omp.la        \
                             libscorep_sion_mockup.la      \
                             libscorep_online_access_spp.la
-libscorep_omp_la_LDFLAGS  = $(library_api_version_ldflags)
+libscorep_omp_la_LDFLAGS  = $(library_api_version_ldflags) \
+                            $(external_ldflags)
 
 endif
 
@@ -157,6 +165,7 @@ nodist_EXTRA_libscorep_mpi_omp_la_SOURCES = force_link_with_F77LD.f
 libscorep_mpi_omp_la_CFLAGS               = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libscorep_mpi_omp_la_CPPFLAGS             = $(common_cppflags)
 libscorep_mpi_omp_la_LIBADD               = $(common_libadd)                               \
+                                            $(external_libadd)                             \
                                             $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi.la  \
                                             $(LIB_DIR_SCOREP_MPI)libscorep_ipc_mpi.la      \
                                             $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
@@ -167,7 +176,8 @@ libscorep_mpi_omp_la_LIBADD               = $(common_libadd)                    
                                             libscorep_mutex_omp.la                         \
                                             libscorep_mpp_ipc.la                           \
                                             libscorep_sion_mockup.la
-libscorep_mpi_omp_la_LDFLAGS              = $(library_api_version_ldflags)
+libscorep_mpi_omp_la_LDFLAGS              = $(library_api_version_ldflags) \
+                                            $(external_ldflags)
 
 endif
 endif
