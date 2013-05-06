@@ -124,16 +124,6 @@ scorep_mpi_group_id( MPI_Group group );
 
 /**
  * @internal
- * @brief  Search internal data structures for the entry of a given MPI
- *         group handle.
- * @param  group  MPI group handle
- * @return Index of entry or -1 if entry could not be found.
- */
-extern int32_t
-scorep_mpi_group_search( MPI_Group group );
-
-/**
- * @internal
  * @brief  Defines the group of MPI locations.
  */
 extern void

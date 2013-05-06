@@ -892,6 +892,16 @@ scorep_mpi_comm_set_name( MPI_Comm comm, const char* name )
  * -----------------------------------------------------------------------------
  */
 
+/**
+ * @internal
+ * @brief  Search internal data structures for the entry of a given MPI
+ *         group handle.
+ * @param  group  MPI group handle
+ * @return Index of entry or -1 if entry could not be found.
+ */
+static int32_t
+scorep_mpi_group_search( MPI_Group group );
+
 void
 scorep_mpi_group_create( MPI_Group group )
 {
@@ -913,16 +923,17 @@ scorep_mpi_group_create( MPI_Group group )
     /* Lock communicator definition */
     SCOREP_MutexLock( scorep_mpi_communicator_mutex );
 
-    if ( scorep_mpi_last_group >= SCOREP_MPI_MAX_GROUP )
-    {
-        UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_GROUPS,
-                     "Hint: Increase SCOREP_MPI_MAX_GROUPS configuration variable." );
-        return;
-    }
-
     /* check if group already exists */
     if ( ( i = scorep_mpi_group_search( group ) ) == -1 )
     {
+        if ( scorep_mpi_last_group >= SCOREP_MPI_MAX_GROUP )
+        {
+            UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_GROUPS,
+                         "Hint: Increase SCOREP_MPI_MAX_GROUPS configuration variable." );
+            SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
+            return;
+        }
+
         /* create group entry in scorep_mpi_ranks */
         int32_t size = scorep_mpi_group_translate_ranks( group );
 
@@ -1032,7 +1043,6 @@ scorep_mpi_group_search( MPI_Group group )
 {
     int32_t i = 0;
 
-    SCOREP_MutexLock( scorep_mpi_communicator_mutex );
     while ( ( i < scorep_mpi_last_group ) && ( scorep_mpi_groups[ i ].group != group ) )
     {
         i++;
@@ -1040,12 +1050,10 @@ scorep_mpi_group_search( MPI_Group group )
 
     if ( i != scorep_mpi_last_group )
     {
-        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
         return i;
     }
     else
     {
-        SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
         return -1;
     }
 }
