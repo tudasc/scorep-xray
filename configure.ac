@@ -66,7 +66,7 @@ AC_SCOREP_DEBUG_OPTION
 # used for EXTRA_DIST in Makefile.am
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
 
-AC_SCOREP_HAVE_CONFIG_TOOL([otf2],   [2], [0])
+AC_SCOREP_HAVE_CONFIG_TOOL([otf2],   [3], [0])
 AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [1], [0])
 AC_SCOREP_HAVE_CONFIG_TOOL([cube],   [4], [2])
 
