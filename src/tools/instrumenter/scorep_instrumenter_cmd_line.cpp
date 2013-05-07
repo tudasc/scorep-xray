@@ -48,7 +48,7 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_cobi_instrumentation     = disabled;
     m_preprocess               = detect;
 
-    /* Appplication types */
+    /* Application types */
     m_is_mpi_application    = detect;
     m_is_openmp_application = detect;
     m_is_cuda_application   = detect;
@@ -80,7 +80,6 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_keep_files     = false;
     m_verbosity      = 0;
     m_is_build_check = false;
-    m_preprocess     = detect;
 }
 
 SCOREP_Instrumenter_CmdLine::~SCOREP_Instrumenter_CmdLine()
