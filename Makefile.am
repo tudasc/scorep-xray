@@ -146,7 +146,9 @@ src/utils/include/scorep_error_decls.gen.h: $(srcdir)/share/scorep.errors
 
 # Copy installcheck binaries to a persistent directory
 # $(INSTALLCHECKS_PERSIST_DIR) (to be executed later on).
-# Requires lockfile-progs
+if HAVE_LOCKFILE_PROGS
+# Save version, user can lock $(INSTALLCHECKS_PERSIST_DIR) to execute
+# installchecks, new installchecks will not overwrite existing ones.
 bitten-persist-installchecks:
 	@lockfile-check $(INSTALLCHECKS_PERSIST_DIR); \
 	if test $$? -eq 0; then exit 0; fi; \
@@ -159,3 +161,13 @@ bitten-persist-installchecks:
 	echo $(REVISION) > $(INSTALLCHECKS_PERSIST_DIR)/REVISION || exit 1; \
 	kill "$${lockfile_touch_pid}"; \
 	lockfile-remove $(INSTALLCHECKS_PERSIST_DIR) || exit 1
+else !HAVE_LOCKFILE_PROGS
+# Unsafe version, user has to take care that no bitten-slave will
+# override $(INSTALLCHECKS_PERSIST_DIR) while processing inside
+# $(INSTALLCHECKS_PERSIST_DIR).
+bitten-persist-installchecks:
+	rm -rf $(INSTALLCHECKS_PERSIST_DIR); \
+	$(MKDIR_P) $(INSTALLCHECKS_PERSIST_DIR) || exit 1; \
+	cp installcheck/bin/* $(INSTALLCHECKS_PERSIST_DIR)/ || exit 1; \
+	echo $(REVISION) > $(INSTALLCHECKS_PERSIST_DIR)/REVISION || exit 1
+endif !HAVE_LOCKFILE_PROGS

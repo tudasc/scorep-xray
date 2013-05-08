@@ -57,6 +57,11 @@ AC_SCOREP_DOXYGEN_CONFIG_FILES
 
 AC_SCOREP_DEBUG_OPTION
 
+# Assume that all lockfile-progs are available if lockfile-create is.
+AC_CHECK_PROG([ac_scorep_have_lockfile_progs], [lockfile-create], [yes], [no])
+AM_CONDITIONAL([HAVE_LOCKFILE_PROGS],
+               [test "x${ac_scorep_have_lockfile_progs}" = "xyes"])
+
 ## Autoconf supports changing the names of programs when installing them. In
 ## order to use these transformations, configure.ac must call the macro
 ## AC_ARG_PROGRAM.
