@@ -288,16 +288,27 @@ debug_init( void )
             int ret = parse_debug_level( debug_level_string, &debug_level );
             if ( ret )
             {
-                fprintf( stderr, "[%s] invalid debug level value: %s\n",
-                         PACKAGE_NAME, debug_level_string );
+                fprintf( stderr, "[%s] Invalid value for %s: %s\n",
+                         PACKAGE_NAME, env_name, debug_level_string );
             }
         }
 
         debug_level &= ~( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT );
         if ( debug_level )
         {
-            fprintf( stderr, "[%s] debug level %" PRIu64 "\n",
-                     PACKAGE_NAME, debug_level );
+            fprintf( stderr, "[%s] Active debug module(s):", PACKAGE_NAME );
+            uint64_t     level_mod   = 1;
+            const char** module_name = debug_module_names;
+            while ( module_name )
+            {
+                if ( debug_level & level_mod )
+                {
+                    fprintf( stderr, "%s", *module_name );
+                }
+                level_mod <<= 1;
+                module_name++;
+            }
+            fprintf( stderr, "\n" );
         }
     }
 }
