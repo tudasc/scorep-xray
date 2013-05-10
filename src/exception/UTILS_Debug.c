@@ -299,11 +299,11 @@ debug_init( void )
             fprintf( stderr, "[%s] Active debug module(s):", PACKAGE_NAME );
             uint64_t     level_mod   = 1;
             const char** module_name = debug_module_names;
-            while ( module_name )
+            while ( *module_name )
             {
                 if ( debug_level & level_mod )
                 {
-                    fprintf( stderr, "%s", *module_name );
+                    fprintf( stderr, " %s", *module_name );
                 }
                 level_mod <<= 1;
                 module_name++;
