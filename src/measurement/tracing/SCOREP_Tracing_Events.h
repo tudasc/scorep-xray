@@ -155,9 +155,9 @@ SCOREP_Tracing_RmaCollectiveBegin( SCOREP_Location* location,
 void
 SCOREP_Tracing_RmaCollectiveEnd( SCOREP_Location*              location,
                                  uint64_t                      timestamp,
+                                 SCOREP_MpiCollectiveType      collectiveOp,
                                  SCOREP_RmaSyncLevel           syncLevel,
                                  SCOREP_InterimRmaWindowHandle windowHandle,
-                                 SCOREP_MpiCollectiveType      collectiveOp,
                                  uint32_t                      root,
                                  uint64_t                      bytesSent,
                                  uint64_t                      bytesReceived );

@@ -619,9 +619,9 @@ SCOREP_RmaCollectiveBegin()
 
 
 void
-SCOREP_RmaCollectiveEnd( SCOREP_RmaSyncLevel           syncLevel,
+SCOREP_RmaCollectiveEnd( SCOREP_MpiCollectiveType      collectiveOp,
+                         SCOREP_RmaSyncLevel           syncLevel,
                          SCOREP_InterimRmaWindowHandle windowHandle,
-                         SCOREP_MpiCollectiveType      collectiveOp,
                          uint32_t                      root,
                          uint64_t                      bytesSent,
                          uint64_t                      bytesReceived )
@@ -634,9 +634,9 @@ SCOREP_RmaCollectiveEnd( SCOREP_RmaSyncLevel           syncLevel,
     {
         SCOREP_Tracing_RmaCollectiveEnd( location,
                                          timestamp,
+                                         collectiveOp,
                                          syncLevel,
                                          windowHandle,
-                                         collectiveOp,
                                          root,
                                          bytesSent,
                                          bytesReceived );

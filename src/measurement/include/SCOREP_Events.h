@@ -391,9 +391,9 @@ SCOREP_RmaCollectiveBegin();
  * @param bytesReceived Number of bytes received.
  */
 void
-SCOREP_RmaCollectiveEnd( SCOREP_RmaSyncLevel           syncLevel,
+SCOREP_RmaCollectiveEnd( SCOREP_MpiCollectiveType      collectiveOp,
+                         SCOREP_RmaSyncLevel           syncLevel,
                          SCOREP_InterimRmaWindowHandle windowHandle,
-                         SCOREP_MpiCollectiveType      collectiveOp,
                          uint32_t                      root,
                          uint64_t                      bytesSent,
                          uint64_t                      bytesReceived );

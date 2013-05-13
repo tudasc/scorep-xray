@@ -341,6 +341,12 @@ scorep_tracing_collective_type_to_otf2( SCOREP_MpiCollectiveType scorepType )
         case_return( REDUCE_SCATTER_BLOCK );
         case_return( SCAN );
         case_return( EXSCAN );
+        case_return( CREATE_HANDLE );
+        case_return( DESTROY_HANDLE );
+        case_return( ALLOCATE );
+        case_return( DEALLOCATE );
+        case_return( CREATE_HANDLE_AND_ALLOCATE );
+        case_return( DESTROY_HANDLE_AND_DEALLOCATE );
 
         default:
             UTILS_BUG( "Invalid collective type" );
