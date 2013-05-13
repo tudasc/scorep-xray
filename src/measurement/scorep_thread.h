@@ -66,13 +66,6 @@ SCOREP_Thread_Finalize( void );
 
 
 /**
- * Predicate that returns true if more than one thread is active when
- * this function is called. Needs a model-specific implementation.
- */
-bool
-SCOREP_Thread_InParallel( void );
-
-/**
  * Returns a process-unique sequence count starting a 0 for the
  * initial thread and being incremented thereafter. Values >= 1
  * identify a parallel execution started by either
@@ -146,6 +139,14 @@ scorep_thread_set_location( scorep_thread_private_data* tpd,
  * counterpart that is called by SCOREP_Thread_<Foo>.
  */
 /**@{*/
+
+
+/**
+ * Predicate that returns true if more than one thread is active when
+ * this function is called. Needs a model-specific implementation.
+ */
+bool
+SCOREP_Thread_InParallel( void );
 
 
 /**
