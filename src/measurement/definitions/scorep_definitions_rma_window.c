@@ -77,8 +77,7 @@ SCOREP_Definitions_NewInterimRmaWindow( const char*                      name,
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_InterimRmaWindowDef*   new_definition = NULL;
-    SCOREP_InterimRmaWindowHandle new_handle     = define_interim_rma_window(
+    SCOREP_InterimRmaWindowHandle new_handle = define_interim_rma_window(
         &scorep_local_definition_manager,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,

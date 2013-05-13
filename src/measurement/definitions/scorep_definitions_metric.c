@@ -105,8 +105,7 @@ SCOREP_Definitions_NewMetric( const char*                name,
 
     SCOREP_Definitions_Lock();
 
-    SCOREP_MetricDef*   new_definition = NULL;
-    SCOREP_MetricHandle new_handle     = define_metric(
+    SCOREP_MetricHandle new_handle = define_metric(
         &scorep_local_definition_manager,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
