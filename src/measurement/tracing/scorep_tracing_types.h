@@ -316,9 +316,9 @@ scorep_tracing_parameter_type_to_otf2( SCOREP_ParameterType scorepType )
 
 
 static inline OTF2_CollectiveOp
-scorep_tracing_collective_type_to_otf2( SCOREP_MpiCollectiveType scorep_type )
+scorep_tracing_collective_type_to_otf2( SCOREP_MpiCollectiveType scorepType )
 {
-    switch ( scorep_type )
+    switch ( scorepType )
     {
 #define case_return( name ) \
     case SCOREP_COLLECTIVE_MPI_ ## name: \
@@ -353,9 +353,9 @@ scorep_tracing_collective_type_to_otf2( SCOREP_MpiCollectiveType scorep_type )
 
 
 static inline char*
-scorep_tracing_property_to_otf2( SCOREP_Property scorep_property )
+scorep_tracing_property_to_otf2( SCOREP_Property scorepProperty )
 {
-    switch ( scorep_property )
+    switch ( scorepProperty )
     {
 #define case_return( name ) \
     case SCOREP_PROPERTY_## name: \
@@ -375,32 +375,36 @@ scorep_tracing_property_to_otf2( SCOREP_Property scorep_property )
 
 
 static inline OTF2_RmaSyncLevel
-scorep_tracing_rma_sync_level_to_otf2( SCOREP_RmaSyncLevel scorep_level )
+scorep_tracing_rma_sync_level_to_otf2( SCOREP_RmaSyncLevel scorepLevel )
 {
-    switch ( scorep_level )
-    {
-#define case_return( name ) \
-    case SCOREP_RMA_SYNC_LEVEL_ ## name: \
-        return OTF2_RMA_SYNC_LEVEL_ ## name
+    OTF2_RmaSyncLevel sync_level = OTF2_RMA_SYNC_LEVEL_NONE;
 
-        case_return( NONE );
-        case_return( PROCESS );
-        case_return( MEMORY );
+#define if_flag( name ) \
+    do { \
+        if ( scorepLevel & SCOREP_RMA_SYNC_LEVEL_ ## name ) \
+        { \
+            sync_level  |= OTF2_RMA_SYNC_LEVEL_ ## name; \
+            scorepLevel &= ~SCOREP_RMA_SYNC_LEVEL_ ## name; \
+        } \
+    } \
+    while ( 0 )
 
-        default:
-            UTILS_BUG( "Invalid RMA sync level" );
+    if_flag( PROCESS );
+    if_flag( MEMORY );
 
-#undef case_return
-    }
+#undef if_flag
 
-    return OTF2_UNDEFINED_UINT32;
+    UTILS_BUG_ON( scorepLevel != SCOREP_RMA_SYNC_LEVEL_NONE,
+                  "Unhandled RMA sync level flag" );
+
+    return sync_level;
 }
 
 
 static inline OTF2_RmaSyncType
-scorep_tracing_rma_sync_type_to_otf2( SCOREP_RmaSyncType scorep_type )
+scorep_tracing_rma_sync_type_to_otf2( SCOREP_RmaSyncType scorepType )
 {
-    switch ( scorep_type )
+    switch ( scorepType )
     {
 #define case_return( name ) \
     case SCOREP_RMA_SYNC_TYPE_ ## name: \
@@ -421,9 +425,9 @@ scorep_tracing_rma_sync_type_to_otf2( SCOREP_RmaSyncType scorep_type )
 
 
 static inline OTF2_LockType
-scorep_tracing_lock_type_to_otf2( SCOREP_LockType scorep_type )
+scorep_tracing_lock_type_to_otf2( SCOREP_LockType scorepType )
 {
-    switch ( scorep_type )
+    switch ( scorepType )
     {
 #define case_return( name ) \
     case SCOREP_LOCK_ ## name: \
@@ -443,9 +447,9 @@ scorep_tracing_lock_type_to_otf2( SCOREP_LockType scorep_type )
 
 
 static inline OTF2_RmaAtomicType
-scorep_tracing_rma_atomic_type_to_otf2( SCOREP_RmaAtomicType scorep_type )
+scorep_tracing_rma_atomic_type_to_otf2( SCOREP_RmaAtomicType scorepType )
 {
-    switch ( scorep_type )
+    switch ( scorepType )
     {
 #define case_return( name ) \
     case SCOREP_RMA_ATOMIC_TYPE_ ## name: \
