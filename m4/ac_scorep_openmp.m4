@@ -3,21 +3,34 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## Copyright (c) 2009-2011,
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2011,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2011,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2011, 2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2011,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+## 
 
+## file build-config/m4/ac_scorep_openmp.m4
 
-## file       ac_scorep_openmp.m4
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 AC_DEFUN([AC_SCOREP_OPENMP],
 [
@@ -45,12 +58,18 @@ else
 fi
 
 
-AC_LANG_PUSH([C++])
-scorep_cxxflags_save=${CXXFLAGS}
-CXXFLAGS=""
-AC_OPENMP
-CXXFLAGS=${scorep_cxxflags_save}
-AC_LANG_POP([C++])
+# On Hermit/CRAYXT, the C++ OpenMP check fails because 
+# of a broken CC. Set OPENMP_CXXFLAGS manually. See 
+# also silc:#687.
+AS_IF([(test "x${ac_scorep_platform}" = "xcrayxt" && \
+       test "x${ac_scorep_compiler_pgi}"   = "xyes")],
+      [AC_SUBST([OPENMP_CXXFLAGS], [-mp])],
+      [AC_LANG_PUSH([C++])
+       scorep_cxxflags_save=${CXXFLAGS}
+       CXXFLAGS=""
+       AC_OPENMP
+       CXXFLAGS=${scorep_cxxflags_save}
+       AC_LANG_POP([C++])])
 
 AC_LANG_PUSH([Fortran 77])
 scorep_fflags_save=${FFLAGS}
