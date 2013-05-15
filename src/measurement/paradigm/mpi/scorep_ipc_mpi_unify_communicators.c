@@ -32,10 +32,7 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-#include <mpi.h>
-
 #include <scorep_ipc.h>
-#include <SCOREP_Mpi.h>
 #include <scorep_mpi_communicator.h>
 #include <SCOREP_Definitions.h>
 #include <definitions/SCOREP_Definitions.h>
