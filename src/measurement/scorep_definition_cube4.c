@@ -616,7 +616,8 @@ write_system_tree( cube_t*                   my_cube,
         return NULL;
     }
 
-    char* display_name = 0;
+    char*  display_name          = 0;
+    size_t display_name_capacity = 0;
     SCOREP_DEFINITION_FOREACH_DO( manager, SystemTreeNode, system_tree_node )
     {
         const uint32_t pos   = definition->sequence_number;
@@ -628,21 +629,19 @@ write_system_tree( cube_t*                   my_cube,
         size_t class_length        = strlen( class );
         size_t name_length         = strlen( name );
         size_t display_name_length = class_length + name_length + 2;
-        if ( !display_name || display_name_length > strlen( display_name ) )
+        if ( display_name_length > display_name_capacity )
         {
-            display_name = realloc( display_name, display_name_length );
+            display_name          = realloc( display_name, display_name_length );
+            display_name_capacity = display_name_length;
             if ( !display_name )
             {
-                UTILS_ERROR_POSIX( "Failed to allocate memory for system tree display name generation." );
+                UTILS_FATAL( "Failed to allocate memory for system tree display name generation." );
             }
         }
-        if ( display_name )
-        {
-            strncpy( display_name, class, class_length );
-            display_name[ class_length ] = ' ';
-            strncpy( display_name + class_length + 1, name, name_length );
-            display_name[ class_length + 1 + name_length ] = '\0';
-        }
+        strncpy( display_name, class, class_length );
+        display_name[ class_length ] = ' ';
+        strncpy( display_name + class_length + 1, name, name_length );
+        display_name[ class_length + 1 + name_length ] = '\0';
 
         assert( pos < nodes );
         cube_system_tree_node* parent = NULL;
