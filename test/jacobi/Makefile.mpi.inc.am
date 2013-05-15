@@ -204,6 +204,6 @@ endif
 # if HAVE_MPIFC
 
 endif
-# if MPI_SUPPOERTED
+# if MPI_SUPPORTED
 
 CLEANFILES += variabledef.mod jacobimod.mod

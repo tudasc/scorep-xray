@@ -93,4 +93,4 @@ CLEANFILES += work.mod calibrate.mod type_convert.mod mpi_util.mod mpi_pattern.m
 # if HAVE_MPIFC
 
 endif
-# if MPI_SUPPOERTED
+# if MPI_SUPPORTED
