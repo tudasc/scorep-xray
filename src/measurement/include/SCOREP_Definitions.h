@@ -182,24 +182,17 @@ SCOREP_RegionHandle_GetEndLine( SCOREP_RegionHandle handle );
 
 
 SCOREP_GroupHandle
+SCOREP_Definitions_NewGroup( SCOREP_GroupType type,
+                             const char*      name,
+                             uint32_t         numberOfMembers,
+                             const uint64_t*  members );
+
+
+SCOREP_GroupHandle
 SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
                                    const char*      name,
                                    const uint32_t   numberOfRanks,
                                    const uint32_t*  ranks );
-
-
-SCOREP_GroupHandle
-SCOREP_Definitions_NewUnifiedGroup( SCOREP_GroupType type,
-                                    const char*      name,
-                                    uint32_t         numberOfMembers,
-                                    const uint64_t*  members );
-
-
-SCOREP_GroupHandle
-SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
-                                          const char*      name,
-                                          uint32_t         numberOfRanks,
-                                          const uint32_t*  ranks );
 
 
 /**
