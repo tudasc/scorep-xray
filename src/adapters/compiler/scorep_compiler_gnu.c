@@ -44,12 +44,12 @@
 /**
  * static variable to control initialize status of GNU
  */
-static int scorep_compiler_initialize = 1;
+static bool scorep_compiler_initialized = false;
 
 /**
  * flag that indicates whether the GNU compiler adapter was finalized
  */
-static int scorep_compiler_finalized = 0;
+static bool scorep_compiler_finalized = false;
 
 /**
  * Mutex for exclusive access to the region hash table.
@@ -79,7 +79,7 @@ __cyg_profile_func_enter( void* func,
      * to calculate function addresses if measurement was not initialized
      */
 
-    if ( scorep_compiler_initialize )
+    if ( !scorep_compiler_initialized )
     {
         if ( scorep_compiler_finalized )
         {
@@ -158,7 +158,7 @@ __cyg_profile_func_exit( void* func,
 SCOREP_ErrorCode
 scorep_compiler_init_adapter( void )
 {
-    if ( scorep_compiler_initialize )
+    if ( !scorep_compiler_initialized )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " inititialize GNU compiler adapter." );
 
@@ -172,7 +172,7 @@ scorep_compiler_init_adapter( void )
         scorep_compiler_get_sym_tab();
 
         /* Sez flag */
-        scorep_compiler_initialize = 0;
+        scorep_compiler_initialized = true;
 
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                             " inititialization of GNU compiler adapter done." );
@@ -200,14 +200,14 @@ void
 scorep_compiler_finalize( void )
 {
     /* call only, if previously initialized */
-    if ( !scorep_compiler_initialize )
+    if ( scorep_compiler_initialized )
     {
         /* Delete hash table */
         scorep_compiler_hash_free();
 
         /* Set initialization flag */
-        scorep_compiler_initialize = 1;
-        scorep_compiler_finalized  = 1;
+        scorep_compiler_initialized = false;
+        scorep_compiler_finalized   = true;
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize GNU compiler adapter." );
 
         /* Delete region mutex */
