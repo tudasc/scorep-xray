@@ -57,7 +57,7 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     /* Execution modes */
     m_is_compiling    = true; // Opposite recognized if no source files in input
     m_is_linking      = true; // Opposite recognized on existence of -c or -E flag
-    m_only_preprocess = false;
+    m_no_compile_link = false;
     m_link_static     = detect;
 
     /* Input command elements */
@@ -200,9 +200,9 @@ SCOREP_Instrumenter_CmdLine::isLinking( void )
 }
 
 bool
-SCOREP_Instrumenter_CmdLine::onlyPreprocess( void )
+SCOREP_Instrumenter_CmdLine::noCompileLink( void )
 {
-    return m_only_preprocess;
+    return m_no_compile_link;
 }
 
 std::string
@@ -695,7 +695,13 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& arg )
     }
     else if ( m_install_data.isPreprocessFlag( arg ) )
     {
-        m_only_preprocess = true;
+        m_no_compile_link = true;
+        m_is_linking      = false;
+        m_is_compiling    = false;
+    }
+    else if ( arg == "-M" ) /* Generate dependencies */
+    {
+        m_no_compile_link = true;
         m_is_linking      = false;
         m_is_compiling    = false;
     }

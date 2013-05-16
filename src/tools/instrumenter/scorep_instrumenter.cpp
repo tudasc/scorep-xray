@@ -99,8 +99,9 @@ SCOREP_Instrumenter::Run( void )
     std::string object_files = "";
     m_input_files = m_command_line.getInputFiles();
 
-    /* Of only preprocessing happens, execute the unmodified command */
-    if ( m_command_line.onlyPreprocess() )
+    /* If no compiling or linking happens, e.g., because the command does only
+       perform preprocesing or dependency generation, execute the unmodified command */
+    if ( m_command_line.noCompileLink() )
     {
         /* Construct command */
         std::string command = m_command_line.getCompilerName()

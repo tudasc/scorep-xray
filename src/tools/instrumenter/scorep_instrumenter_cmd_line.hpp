@@ -130,7 +130,7 @@ public:
     bool
     isLinking( void );
     bool
-    onlyPreprocess( void );
+    noCompileLink( void );
     std::string
     getCompilerName( void );
     std::string
@@ -377,9 +377,10 @@ private:
     bool m_is_linking;
 
     /**
-       True if the command is preprocessing only.
+       True if the command should not be modified, e.g., because the command
+       does only preprocessing or dependency generation
      */
-    bool m_only_preprocess;
+    bool m_no_compile_link;
 
     /**
        Specification of static or dynamic linking of Score-P libraries into the
