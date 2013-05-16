@@ -271,7 +271,7 @@ scorep_compiler_init_adapter( void )
         scorep_compiler_hash_init();
 
         /* Set flag */
-        scorep_compiler_initialize = true;
+        scorep_compiler_initialized = true;
     }
     return SCOREP_SUCCESS;
 }
