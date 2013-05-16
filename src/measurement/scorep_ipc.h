@@ -32,12 +32,6 @@
 #include <stdint.h>
 
 /**
- *  Is a multi program paradigm possible at all.
- */
-bool
-SCOREP_Ipc_Possible( void );
-
-/**
  *  Initilizes the measurements own multi-process communication layer.
  *  Must be called after the multi-process paradigm was initialized.
  */

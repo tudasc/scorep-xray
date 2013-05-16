@@ -41,12 +41,6 @@ static MPI_Comm comm_world_dup;
 static MPI_Datatype mpi_datatypes[ SCOREP_IPC_NUMBER_OF_DATATYPES ];
 
 
-bool
-SCOREP_Ipc_Possible( void )
-{
-    return true;
-}
-
 void
 SCOREP_Ipc_Init( void )
 {
