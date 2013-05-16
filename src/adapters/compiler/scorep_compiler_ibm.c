@@ -45,12 +45,12 @@
 /**
  * static variable to control initialize status of compiler adapter.
  */
-static int scorep_compiler_initialize = 1;
+static bool scorep_compiler_initialized = false;
 
 /**
  * flag that indicates whether the compiler adapter is finalized
  */
-static int scorep_compiler_finalized = 0;
+static bool scorep_compiler_finalized = false;
 
 /**
  * Mutex for exclusive access to the region hash table.
@@ -149,7 +149,7 @@ __func_trace_enter( char*                region_name,
                     int                  line_no,
                     SCOREP_RegionHandle* handle )
 {
-    if ( scorep_compiler_initialize )
+    if ( !scorep_compiler_initialized )
     {
         if ( scorep_compiler_finalized )
         {
@@ -191,7 +191,7 @@ __func_trace_enter( char* region_name,
                     char* file_name,
                     int   line_no )
 {
-    if ( scorep_compiler_initialize )
+    if ( !scorep_compiler_initialized )
     {
         if ( scorep_compiler_finalized )
         {
@@ -259,7 +259,7 @@ __func_trace_exit( char* region_name,
 SCOREP_ErrorCode
 scorep_compiler_init_adapter( void )
 {
-    if ( scorep_compiler_initialize )
+    if ( !scorep_compiler_initialized )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                             " inititialize IBM xl compiler adapter!" );
@@ -271,7 +271,7 @@ scorep_compiler_init_adapter( void )
         scorep_compiler_hash_init();
 
         /* Set flag */
-        scorep_compiler_initialize = 0;
+        scorep_compiler_initialize = true;
     }
     return SCOREP_SUCCESS;
 }
@@ -295,7 +295,7 @@ void
 scorep_compiler_finalize( void )
 {
     /* call only, if previously initialized */
-    if ( !scorep_compiler_initialize )
+    if ( scorep_compiler_initialized )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize IBM xl compiler adapter!" );
 
@@ -303,8 +303,8 @@ scorep_compiler_finalize( void )
         scorep_compiler_hash_free();
 
         /* Set flag to not initialized */
-        scorep_compiler_initialize = 1;
-        scorep_compiler_finalized  = 1;
+        scorep_compiler_initialized = false;
+        scorep_compiler_finalized   = true;
 
         /* Delete region mutex */
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );

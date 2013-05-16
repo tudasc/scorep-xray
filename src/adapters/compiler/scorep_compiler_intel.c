@@ -45,12 +45,12 @@
  * static variable to control initialize status of the compiler adapter.
  * If it is 0 it is initialized.
  */
-static int scorep_compiler_initialize = 1;
+static bool scorep_compiler_initialized = false;
 
 /**
  * flag that indicates whether the intel compiler adapter is finalized.
  */
-static int scorep_compiler_finalized = 0;
+static bool scorep_compiler_finalized = false;
 
 /**
  * Mutex for exclusive access to the region hash table.
@@ -78,7 +78,7 @@ __VT_IntelEntry( char*     str,
      * to calculate function addresses if measurement was not initialized
      */
 
-    if ( scorep_compiler_initialize )
+    if ( !scorep_compiler_initialized )
     {
         if ( scorep_compiler_finalized )
         {
@@ -224,7 +224,7 @@ VT_IntelCheck( uint32_t* id2 )
 SCOREP_ErrorCode
 scorep_compiler_init_adapter( void )
 {
-    if ( scorep_compiler_initialize )
+    if ( !scorep_compiler_initialized )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " initialize intel compiler adapter." );
 
@@ -238,7 +238,7 @@ scorep_compiler_init_adapter( void )
         scorep_compiler_get_sym_tab();
 
         /* Set flag */
-        scorep_compiler_initialize = 0;
+        scorep_compiler_initialized = true;
 
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                             " initialization of intel compiler adapter done." );
@@ -266,14 +266,14 @@ void
 scorep_compiler_finalize( void )
 {
     /* call only, if previously initialized */
-    if ( !scorep_compiler_initialize )
+    if ( scorep_compiler_initialized )
     {
         /* Delete hash table */
         scorep_compiler_hash_free();
 
         /* Set initialization flag */
-        scorep_compiler_initialize = 1;
-        scorep_compiler_finalized  = 1;
+        scorep_compiler_initialized = false;
+        scorep_compiler_finalized   = true;
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize intel compiler adapter." );
 
         /* Delete region mutex */

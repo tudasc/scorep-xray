@@ -186,12 +186,12 @@ typedef struct
 /**
  * static variable to control initialize status of adapter
  */
-static int scorep_compiler_initialize = 1;
+static bool scorep_compiler_initialized = false;
 
 /**
  * static variable that indicates whether the adapter is already finalized.
  */
-static int scorep_compiler_finalized = 0;
+static bool scorep_compiler_finalized = false;
 
 /**
  * Mutex for exclusive access to the region hash table.
@@ -247,7 +247,7 @@ scorep_compiler_finalize_location( SCOREP_Location* locationData )
 SCOREP_ErrorCode
 scorep_compiler_init_adapter( void )
 {
-    if ( scorep_compiler_initialize )
+    if ( !scorep_compiler_initialized )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " inititialize PGI compiler adapter!" );
 
@@ -258,7 +258,7 @@ scorep_compiler_init_adapter( void )
         scorep_compiler_init_file_table();
 
         /* Set flag */
-        scorep_compiler_initialize = 0;
+        scorep_compiler_initialized = true;
     }
 
     return SCOREP_SUCCESS;
@@ -269,7 +269,7 @@ void
 scorep_compiler_finalize( void )
 {
     /* call only, if previously initialized */
-    if ( !scorep_compiler_initialize )
+    if ( scorep_compiler_initialized )
     {
         /* Finalize file table */
         scorep_compiler_finalize_file_table();
@@ -277,8 +277,8 @@ scorep_compiler_finalize( void )
         /* Delete region mutex */
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
 
-        scorep_compiler_initialize = 1;
-        scorep_compiler_finalized  = 1;
+        scorep_compiler_initialized = false;
+        scorep_compiler_finalized   = true;
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize PGI compiler adapter!" );
     }
 }
@@ -296,7 +296,7 @@ __rouinit( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI init routine" );
 
-    if ( scorep_compiler_initialize )
+    if ( !scorep_compiler_initialized )
     {
         /* Check whether adapter is already finalized */
         if ( scorep_compiler_finalized )
@@ -328,7 +328,7 @@ pgi_enter_region( SCOREP_RegionHandle* region,
                   int                  lineno )
 {
     /* Ensure the compiler adapter is initialized */
-    if ( scorep_compiler_initialize )
+    if ( !scorep_compiler_initialized )
     {
         /* Check whether adapter is already finalized */
         if ( scorep_compiler_finalized )

@@ -44,7 +44,7 @@ static int on_scorep_finalize( void );
 /**
  * Flag that indicates that the compiler is finalized.
  */
-static int scorep_compiler_finalized = 0;
+static bool scorep_compiler_finalized = false;
 
 /**
  * Handle for the main region, which is not instrumented by the compiler.
@@ -187,5 +187,5 @@ void
 scorep_compiler_finalize( void )
 {
     SCOREP_MutexDestroy( &scorep_compiler_hash_lock );
-    scorep_compiler_finalized = 1;
+    scorep_compiler_finalized = true;
 }
