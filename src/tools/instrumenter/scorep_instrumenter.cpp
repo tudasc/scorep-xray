@@ -100,7 +100,7 @@ SCOREP_Instrumenter::Run( void )
     m_input_files = m_command_line.getInputFiles();
 
     /* If no compiling or linking happens, e.g., because the command does only
-       perform preprocesing or dependency generation, execute the unmodified command */
+       perform preprocessing or dependency generation, execute the unmodified command */
     if ( m_command_line.noCompileLink() )
     {
         /* Construct command */
@@ -156,9 +156,9 @@ SCOREP_Instrumenter::Run( void )
                 {
                     /* Make sure, it has full path => Some compilers and
                        user instrumentation use the file name given to the compiler.
-                       Thus, if we make all file names have full pathes, we get a
+                       Thus, if we make all file names have full paths, we get a
                        consistent input.
-                       However, temporary files are without pathes. Thus, if a source
+                       However, temporary files are without paths. Thus, if a source
                        code instrumenter does not insert line directives, the result
                        may not contain path information anymore.
                      */
@@ -532,7 +532,7 @@ std::string
 SCOREP_Instrumenter::instrument_opari( const std::string& source_file )
 {
     /* For Fortran source files, the extension must be in upper case to use the
-       C-Preporcessor */
+       C-Preprocessor */
     std::string extension = get_extension( source_file );
     if ( is_fortran_file( source_file ) )
     {
