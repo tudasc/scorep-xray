@@ -397,10 +397,10 @@ cache files.
 
    If you need to do unusual things to compile the package, please try
 to figure out how `configure' could check whether to do them, and mail
-diffs or instructions to scorep-bugs@groups.tu-dresden.de so they can be
-considered for the next release.  If you are using the cache, and at
-some point `config.cache' contains results you don't want to keep, you
-may remove or edit it.
+diffs or instructions to support@score-p.org so they can be considered
+for the next release.  If you are using the cache, and at some point
+`config.cache' contains results you don't want to keep, you may remove
+or edit it.
 
    The file `configure.ac' (or `configure.in') is used to create
 `configure' by a program called `autoconf'.  You need `configure.ac' if
