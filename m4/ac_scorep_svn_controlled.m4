@@ -18,12 +18,10 @@
 
 AC_DEFUN([AC_SCOREP_SVN_CONTROLLED],
 [
-    ac_scorep_svn_controlled="no"
-    if test -d $srcdir/.svn; then
-        ac_scorep_svn_controlled="yes"
-        AC_DEFINE([SCOREP_IN_DEVELOPEMENT], [], [Defined if we are working from svn.])
-    else
-        AC_DEFINE([SCOREP_IN_PRODUCTION], [], [Defined if we are working from a make dist generated tarball.])
-    fi
-    AM_CONDITIONAL(SVN_CONTROLLED, test "x${ac_scorep_svn_controlled}" = xyes)  
+ac_scorep_svn_controlled="no"
+AS_IF([test -d $srcdir/.svn],
+      [ac_scorep_svn_controlled="yes"
+       AC_DEFINE([SCOREP_IN_DEVELOPEMENT], [], [Defined if we are working from svn.])],
+      [AC_DEFINE([SCOREP_IN_PRODUCTION], [], [Defined if we are working from a make dist generated tarball.])])
+AM_CONDITIONAL([SVN_CONTROLLED], [test "x${ac_scorep_svn_controlled}" = xyes])  
 ])
