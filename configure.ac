@@ -98,7 +98,7 @@ AS_IF([test "x${scorep_have_cube_config}" = "xyes"],
        AS_IF([test "x${FRONTEND_CXX}" != "x${CUBE_READER_CXX}"],
              [AC_CONFIG_SUBDIR_CUSTOM([build-score], [CXX="${CUBE_READER_CXX}" ${scorep_cube_config_arg}])
               scorep_have_score_build="scorep_have_score_build=yes"])],
-      [AS_IF([test "x${ac_scorep_svn_controlled}" = "xno"],
+      [AS_IF([test "x${ac_scorep_svn_controlled}" = "xno" && test "x${triggered_by_make_distcheck}" != "xyes"],
              [AC_MSG_ERROR([cube installation required but not found. Please reconfigure using the --with-cube option or make sure that cube-config is in PATH.])],
              [AC_MSG_WARN([cube installation required but not found. scorep-score wont be build. Please reconfigure using the --with-cube option or make sure that cube-config is in PATH.])])])
 AM_CONDITIONAL([HAVE_SCORE_BUILD], [test "x${scorep_have_score_build}" = "xscorep_have_score_build=yes"])

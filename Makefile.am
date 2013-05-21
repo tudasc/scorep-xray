@@ -171,3 +171,8 @@ bitten-persist-installchecks:
 	cp installcheck/bin/* $(INSTALLCHECKS_PERSIST_DIR)/ || exit 1; \
 	echo $(REVISION) > $(INSTALLCHECKS_PERSIST_DIR)/REVISION || exit 1
 endif !HAVE_LOCKFILE_PROGS
+
+
+# Temporary fix for make distcheck failure introduced by r4404, see
+# also configure.ac. Obsolete once #741 is completed.
+DISTCHECK_CONFIGURE_FLAGS = triggered_by_make_distcheck=yes
