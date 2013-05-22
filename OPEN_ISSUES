@@ -32,7 +32,7 @@
                         Score-P v1.2 OPEN ISSUES
                         ========================
 
-* Compiler instrumentation and tasking 
+* Compiler instrumentation and tasking
 
   - On Exits, the PGI compiler instrumentation interface does not
     provide information which function was exited. Thus, we
