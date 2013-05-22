@@ -866,17 +866,6 @@ SCOREP_ThreadReleaseLock( uint32_t           lockId,
 
 
 /**
- *
- *
- * @param regionHandle
- *
- * @chistian Wasn't this planned to be removed?
- */
-void
-SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle );
-
-
-/**
  * Process a task create event in the measurement system.
  *
  * @param taskId Id of the created task.

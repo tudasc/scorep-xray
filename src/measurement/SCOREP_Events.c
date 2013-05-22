@@ -1156,34 +1156,6 @@ SCOREP_ThreadTaskEnd( SCOREP_RegionHandle regionHandle,
  *
  */
 void
-SCOREP_ExitRegionOnException( SCOREP_RegionHandle regionHandle )
-{
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%u",
-                        scorep_handle_to_id( regionHandle ) );
-
-    /* DL: My proposal would be to call scorep_exit_region until we have
-       a special event for exits on exceptions. However, for the profiling part
-       no special event is planned, but I do not know about OTF2.
-     */
-    UTILS_NOT_YET_IMPLEMENTED();
-
-    if ( scorep_tracing_consume_event() )
-    {
-    }
-
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        /* TODO: The same like for the regular exit */
-    }
-}
-
-
-/**
- *
- */
-void
 SCOREP_TriggerCounterInt64( SCOREP_SamplingSetHandle counterHandle,
                             int64_t                  value )
 {
