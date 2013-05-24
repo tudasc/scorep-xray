@@ -72,15 +72,12 @@ ac_scorep_timer_clock_gettime_clock=""
 ac_scorep_timer_save_LIBS="$LIBS"
 AC_SEARCH_LIBS([clock_gettime], [rt],
                [AS_IF([test "x${ac_cv_search_clock_gettime}" != "xnone required"],
-                      [ac_scorep_timer_have_librt="yes"])])
+                      [ac_scorep_timer_librt="$ac_cv_search_clock_gettime"])])
 
-AS_IF([test "x${ac_scorep_timer_have_librt}" = "xyes"],
-      [ac_scorep_timer_librt="$ac_cv_search_clock_gettime"
-
-       m4_foreach([clock], 
-                  [[CLOCK_REALTIME], [CLOCK_MONOTONIC], [CLOCK_MONOTONIC_RAW]], 
-                  [AC_MSG_CHECKING([for clock])
-                   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+m4_foreach([clock],
+          [[CLOCK_REALTIME], [CLOCK_MONOTONIC], [CLOCK_MONOTONIC_RAW]],
+          [AC_MSG_CHECKING([for clock])
+           AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
 #ifdef _POSIX_C_SOURCE
 #  if _POSIX_C_SOURCE < 199309L
 #    undef _POSIX_C_SOURCE
@@ -100,19 +97,32 @@ AS_IF([test "x${ac_scorep_timer_have_librt}" = "xyes"],
                                       AC_MSG_RESULT([yes])], 
                                      [AC_MSG_RESULT([no])])
 ])dnl
-      ])
 
-LIBS="$ac_scorep_timer_save_LIBS"
-
+# perform a final link test
 AS_IF([test "x${ac_scorep_timer_clock_gettime_clock}" != "x"],
-      [ac_scorep_timer_clock_gettime_available="yes"
+      [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#ifdef _POSIX_C_SOURCE
+#  if _POSIX_C_SOURCE < 199309L
+#    undef _POSIX_C_SOURCE
+#    define _POSIX_C_SOURCE 199309L
+#  endif
+#else
+#  define _POSIX_C_SOURCE 199309L
+#endif
+#include <time.h>]], [[
+    struct timespec tp;
+    clock_getres( $ac_scorep_timer_clock_gettime_clock , &tp );
+    clock_gettime( $ac_scorep_timer_clock_gettime_clock, &tp );
+]])], [ac_scorep_timer_clock_gettime_available="yes"
        AC_DEFINE([HAVE_CLOCK_GETTIME], [1], 
                  [Defined to 1 if the clock_gettime() function is available.])
        AC_DEFINE_UNQUOTED([SCOREP_CLOCK_GETTIME_CLOCK], 
                           [${ac_scorep_timer_clock_gettime_clock}],
-                          [The clock used in clock_gettime calls.])])
+                          [The clock used in clock_gettime calls.])])])
 AC_MSG_CHECKING([for clock_gettime timer])
 AC_MSG_RESULT([$ac_scorep_timer_clock_gettime_available])
+
+LIBS="$ac_scorep_timer_save_LIBS"
 
 ])
 
@@ -522,7 +532,7 @@ ac_scorep_timer_summary="${ac_scorep_timer}"
 ac_scorep_timer_lib=""
 AS_IF([test "x${ac_scorep_timer_clock_gettime}"    = "xyes"], 
           [ac_scorep_timer_lib=${ac_scorep_timer_librt}
-           ac_scorep_timer_summary="${ac_scorep_timer_summary}, using ${ac_scorep_timer_clock_gettime_clock} and ${ac_scorep_timer_librt}"],
+           ac_scorep_timer_summary="${ac_scorep_timer_summary}, using ${ac_scorep_timer_clock_gettime_clock} ${ac_scorep_timer_librt}"],
       [test "x${ac_scorep_timer_ibm_switch_clock}" = "xyes"], 
           [ac_scorep_timer_lib=${ac_scorep_timer_libswclock}
            ac_scorep_timer_summary="${ac_scorep_timer_summary}, using ${ac_scorep_timer_libswclock}"],
