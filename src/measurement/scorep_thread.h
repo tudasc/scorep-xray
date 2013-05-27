@@ -275,9 +275,6 @@ scorep_thread_on_wait();
  *
  * @param currentTpd This thread's SCOREP_Thread_PrivateData object.
  *
- * @param currentName Optionally provide a name to a newly generated
- * location.
- *
  * @param forkSequenceCount The forkSequenceCount from the
  * corresponding SCOREP_Thread_OnBegin() call. Leave unchanged if
  * provided by the model's adapter, otherwise set it to the correct
@@ -292,7 +289,6 @@ scorep_thread_on_wait();
 void
 scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
                              scorep_thread_private_data** currentTpd,
-                             char*                        currentName,
                              uint32_t*                    forkSequenceCount,
                              SCOREP_ThreadModel           model,
                              bool*                        locationIsCreated );

@@ -73,7 +73,7 @@ SCOREP_Thread_Initialize()
         0 /* fork_sequence_count */ );
     scorep_thread_initial_tpd->location = SCOREP_Location_CreateCPULocation(
         0 /* parent_location */,
-        "" /* name */,
+        "Master thread",
         /* deferNewLocationNotification = */ true );
 
     scorep_thread_on_initialize( scorep_thread_initial_tpd );
@@ -183,12 +183,10 @@ SCOREP_ThreadTeamBegin( uint32_t forkSequenceCount, uint32_t threadId, SCOREP_Th
     UTILS_ASSERT( model < SCOREP_INVALID_THREAD_MODEL );
     scorep_thread_private_data* parent_tpd          = 0;
     scorep_thread_private_data* current_tpd         = 0;
-    char*                       current_name        = 0;
     bool                        location_is_created = false;
 
     scorep_thread_on_team_begin( &parent_tpd,
                                  &current_tpd,
-                                 current_name,
                                  &forkSequenceCount,
                                  model,
                                  &location_is_created );
@@ -206,7 +204,7 @@ SCOREP_ThreadTeamBegin( uint32_t forkSequenceCount, uint32_t threadId, SCOREP_Th
     if ( location_is_created )
     {
         SCOREP_Location_CallSubstratesOnNewLocation( current_location,
-                                                     current_name,
+                                                     0, /* name not used */
                                                      parent_location );
     }
     SCOREP_Location_CallSubstratesOnActivation( current_location,

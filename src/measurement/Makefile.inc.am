@@ -100,7 +100,8 @@ libscorep_thread_omp_tpd_la_CPPFLAGS = \
     $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/measurement/profiling \
-    -I$(INC_ROOT)src/measurement
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_DIR_COMMON_HASH)
 
 endif
 

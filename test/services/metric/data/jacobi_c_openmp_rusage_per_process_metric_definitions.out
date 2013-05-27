@@ -3,4 +3,4 @@ METRIC_MEMBER 1  Name: "ru_stime" <id>, Descr.: "<string>" <id>, Type: RUSAGE, M
 METRIC_MEMBER 2  Name: "ru_maxrss" <id>, Descr.: "<string>" <id>, Type: RUSAGE, Mode: ABSOLUTE_NEXT, Value Type: UINT64, Base: BINARY, Exponent: 10, Unit: "Bytes" <id>
 METRIC_CLASS 0  Occurrence: SYNCHRONOUS_STRICT, Kind: UNKNOWN, 1 Members: "ru_utime" <0>
 METRIC_CLASS 1  Occurrence: SYNCHRONOUS, Kind: UNKNOWN, 2 Members: "ru_stime" <1>, "ru_maxrss" <2>
-METRIC_INSTANCE 2  Class: 1, Recorder: "" <0>, Scope: LOCATION_GROUP "Process" <0>
+METRIC_INSTANCE 2  Class: 1, Recorder: "Master thread" <0>, Scope: LOCATION_GROUP "Process" <0>
