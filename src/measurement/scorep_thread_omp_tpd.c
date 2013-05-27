@@ -334,7 +334,8 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
                 }
                 else
                 {
-                    /* For nested, create locations on a first comes, first served basis. */
+                    /* For nested or when a fork created more threads than the first fork,
+                     * create locations on a first comes, first served basis. */
                     char location_name[ 80 ];
                     create_location_name( location_name, 80, current_thread_id, *parentTpd );
                     scorep_thread_set_location( *currentTpd,
