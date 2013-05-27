@@ -47,11 +47,14 @@ EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_omp_tasks.sh
 TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks_profile.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_omp_tasks_profile.sh
 
+if !SCOREP_COMPILER_PGI
 TESTS_OMP += ./../test/omp_tasks/run_fibonacci_test.sh
+endif
 EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_fibonacci_test.sh.in \
 	            $(SRC_ROOT)test/omp_tasks/task_fibonacci.c
-
+if !SCOREP_COMPILER_PGI
 TESTS_OMP += ./../test/omp_tasks/run_single_loop_test.sh
+endif
 EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_single_loop_test.sh.in \
 	            $(SRC_ROOT)test/omp_tasks/task_single_loop.c
 
