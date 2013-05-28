@@ -287,17 +287,20 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
 
         if ( *forkSequenceCount == 1 )
         {
-            #pragma omp single
+            #pragma omp critical ( first_fork_locations )
             {
-                uint32_t thread_team_size = omp_get_num_threads();
-                first_fork_locations = malloc( sizeof( SCOREP_Location* ) * ( thread_team_size - 1 ) );
-                char location_name[ 80 ];
-                for ( int i = 0; i < thread_team_size - 1; ++i )
+                if ( !first_fork_locations )
                 {
-                    create_location_name( location_name, 80, i + 1, *parentTpd );
-                    first_fork_locations[ i ] = SCOREP_Location_CreateCPULocation( scorep_thread_get_location( *parentTpd ),
-                                                                                   location_name,
-                                                                                   /* deferNewLocationNotification = */ true );
+                    uint32_t thread_team_size = omp_get_num_threads();
+                    first_fork_locations = malloc( sizeof( SCOREP_Location* ) * ( thread_team_size - 1 ) );
+                    char location_name[ 80 ];
+                    for ( int i = 0; i < thread_team_size - 1; ++i )
+                    {
+                        create_location_name( location_name, 80, i + 1, *parentTpd );
+                        first_fork_locations[ i ] = SCOREP_Location_CreateCPULocation( scorep_thread_get_location( *parentTpd ),
+                                                                                       location_name,
+                                                                                       /* deferNewLocationNotification = */ true );
+                    }
                 }
             }
         }
@@ -344,7 +347,6 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
                                                                                    /* deferNewLocationNotification = */ true ) );
                 }
                 *locationIsCreated = true;
-
                 SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( scorep_thread_get_location( *currentTpd ) );
             }
         }

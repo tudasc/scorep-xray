@@ -123,7 +123,6 @@ scorep_location_create_location( SCOREP_Location*    parent,
         SCOREP_Location_CallSubstratesOnNewLocation( new_location, name, parent );
     }
 
-    UTILS_ASSERT( new_location->last_timestamp == 0 );
     return new_location;
 }
 
