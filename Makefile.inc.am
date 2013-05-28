@@ -108,7 +108,7 @@ doxygen-user-clean:
 
 if HAVE_DOXYGEN #-----------------------------------------------------
 
-doxygen-user: doxygen-project-number doc/doxygen-user/main.dox doc/doxygen-user-component.cfg
+doxygen-user: doxygen-project-number doc/doxygen-user/main.dox doc/doxygen-user-common.cfg doc/doxygen-user-component.cfg
 	$(MKDIR_P) "$(USER_DOC_DIR)/tags"
 	echo "OUTPUT_DIRECTORY = $(USER_DOC_DIR)" > doc/doxygen-user-at-make-time.cfg
 	echo "GENERATE_TAGFILE = $(USER_DOC_DIR)/tags/@PACKAGE@.tag" >> doc/doxygen-user-at-make-time.cfg
