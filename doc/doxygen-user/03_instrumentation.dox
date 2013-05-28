@@ -491,11 +491,11 @@ name and the value.
 The @scorep user API also provides several macros for measurement control
 that can be incorporated in source files and activated during
 instrumentation. The macro <tt>SCOREP_RECORDING_OFF</tt> can be used to
-(temporarily) pause recording of trace data until a subsequent
+(temporarily) pause recording until a subsequent
 <tt>SCOREP_RECORDING_ON</tt>. Just like the already covered user-defined annotated
 regions, <tt>SCOREP_RECORDING_ON</tt> and corresponding <tt>SCOREP_RECORDING_OFF</tt> 
-must be correctly nested. Finally, with <tt>SCOREP_RECORDING_IS_ON</tt> you can test
-whether recording is switched on. 
+must be correctly nested with other enter/exit events. Finally, 
+with <tt>SCOREP_RECORDING_IS_ON</tt> you can test whether recording is switched on. 
 
 Events are not recorded when recording is switched off (though associated
 definitions are), resulting in smaller measurement overhead.  In particular,
@@ -505,7 +505,7 @@ the recording switch is process-local, and effects all threads on the process,
 it can only be initiated outside of OpenMP parallel regions.  Switching recording
 on/off is done independently on each MPI process without synchronization.
 
-@note Switching recording on/off may result in inconsistent traces,
+@note Switching recording on/off may result in inconsistent traces or profiles,
       if not applied with care. In particular, if communication is recorded incomplete
       (e.g. if the send is missing but the corresponding receive event is recorded)
       it may result in errors during execution or analysis. Furthermore, it is not

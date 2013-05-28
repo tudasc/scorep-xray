@@ -87,6 +87,9 @@ static SCOREP_Platform_SystemTreePathElement* system_tree_path = NULL;
 static SCOREP_ExitCallback scorep_exit_callbacks[ scorep_max_exit_callbacks ];
 static int                 scorep_n_exit_callbacks = 0;
 
+/** @brief Region handle to collect data for when measurment is diabled. */
+SCOREP_RegionHandle scorep_record_off_region = SCOREP_INVALID_REGION;
+
 /** Temporally disable trace event consumption.
  *
  * Controlled by the SCOREP_EnableRecording() and SCOREP_DisableRecording()
@@ -361,17 +364,24 @@ SCOREP_EnableRecording( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = SCOREP_GetClockTicks();
 
     if ( !SCOREP_Thread_InParallel() )
     {
-        scorep_recording_enabled = true;
         if ( SCOREP_IsTracingEnabled() )
         {
             SCOREP_Tracing_MeasurementOnOff( location,
-                                             SCOREP_GetClockTicks(),
+                                             timestamp,
                                              true );
         }
+        if ( SCOREP_IsProfilingEnabled() && !scorep_recording_enabled  )
+        {
+            uint64_t* metric_values = SCOREP_Metric_Read( location );
+            SCOREP_Profile_Exit( location, scorep_record_off_region,
+                                 timestamp, metric_values );
+        }
+        scorep_recording_enabled = true;
     }
     else
     {
@@ -391,17 +401,36 @@ SCOREP_DisableRecording( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = SCOREP_GetClockTicks();
 
     if ( !SCOREP_Thread_InParallel() )
     {
-        scorep_recording_enabled = false;
         if ( SCOREP_IsTracingEnabled() )
         {
             SCOREP_Tracing_MeasurementOnOff( location,
-                                             SCOREP_GetClockTicks(),
+                                             timestamp,
                                              false );
         }
+        if ( SCOREP_IsProfilingEnabled() && scorep_recording_enabled )
+        {
+            if ( scorep_record_off_region == SCOREP_INVALID_REGION )
+            {
+                scorep_record_off_region =
+                    SCOREP_Definitions_NewRegion( "MEASUREMENT OFF", NULL,
+                                                  SCOREP_INVALID_SOURCE_FILE,
+                                                  SCOREP_INVALID_LINE_NO,
+                                                  SCOREP_INVALID_LINE_NO,
+                                                  SCOREP_ADAPTER_USER,
+                                                  SCOREP_REGION_ARTIFICIAL );
+            }
+
+            uint64_t* metric_values = SCOREP_Metric_Read( location );
+            SCOREP_Profile_Enter( location, scorep_record_off_region,
+                                  SCOREP_REGION_ARTIFICIAL,
+                                  timestamp, metric_values );
+        }
+        scorep_recording_enabled = false;
     }
     else
     {

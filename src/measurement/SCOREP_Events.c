@@ -51,6 +51,12 @@
 #include "scorep_thread.h"
 
 
+static inline bool
+scorep_profiling_consume_event( void )
+{
+    return SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled();
+}
+
 /**
  * Process a region enter event in the measurement system.
  */
@@ -78,7 +84,7 @@ scorep_enter_region( uint64_t            timestamp,
                               regionHandle );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_Enter( location, regionHandle,
                               SCOREP_RegionHandle_GetType( regionHandle ),
@@ -150,7 +156,7 @@ scorep_exit_region( uint64_t            timestamp,
                               regionHandle );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_Exit( location,
                              regionHandle,
@@ -265,7 +271,7 @@ SCOREP_MpiSend( SCOREP_MpiRank                   destinationRank,
         SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_MpiSend( location,
                                 destinationRank,
@@ -311,7 +317,7 @@ SCOREP_MpiRecv( SCOREP_MpiRank                   sourceRank,
         SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_MpiRecv( location,
                                 sourceRank,
@@ -387,7 +393,7 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle              regionHandle,
         SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_CollectiveEnd( location,
                                       communicatorHandle,
@@ -514,7 +520,7 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                   destinationRank,
         SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_MpiSend( location,
                                 destinationRank,
@@ -554,7 +560,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                   sourceRank,
         SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_MpiRecv( location,
                                 sourceRank,
@@ -1061,7 +1067,7 @@ SCOREP_ThreadTaskSwitch( uint64_t taskId, SCOREP_ThreadModel model )
         }
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         uint64_t* metric_values = SCOREP_Metric_Read( location );
         SCOREP_Profile_TaskSwitch( location, taskId, timestamp, metric_values );
@@ -1100,7 +1106,7 @@ SCOREP_ThreadTaskBegin( SCOREP_RegionHandle regionHandle,
         }
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_TaskBegin( location,
                                   regionHandle,
@@ -1141,7 +1147,7 @@ SCOREP_ThreadTaskEnd( SCOREP_RegionHandle regionHandle,
         }
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_TaskEnd( location,
                                 regionHandle,
@@ -1184,7 +1190,7 @@ SCOREP_TriggerCounterInt64( SCOREP_SamplingSetHandle counterHandle,
                                &union_value.uint64 );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_TriggerInteger( location,
                                        sampling_set->metric_handles[ 0 ],
@@ -1218,7 +1224,7 @@ SCOREP_TriggerCounterUint64( SCOREP_SamplingSetHandle counterHandle,
                                &value );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_TriggerInteger( location,
                                        sampling_set->metric_handles[ 0 ],
@@ -1259,7 +1265,7 @@ SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
                                &union_value.uint64 );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_TriggerDouble( location,
                                       sampling_set->metric_handles[ 0 ],
@@ -1283,7 +1289,7 @@ SCOREP_TriggerMarker( SCOREP_MarkerHandle markerHandle )
     {
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         /* No action necessary */
     }
@@ -1310,7 +1316,7 @@ SCOREP_TriggerParameterInt64( SCOREP_ParameterHandle parameterHandle,
                                        value );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_ParameterInteger( location,
                                          parameterHandle,
@@ -1339,7 +1345,7 @@ SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
                                         value );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         /* The SCOREP_Profile_ParameterInteger handles unsigned and signed integers */
         SCOREP_Profile_ParameterInteger( location,
@@ -1371,7 +1377,7 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
                                         string_handle );
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         SCOREP_Profile_ParameterString( location,
                                         parameterHandle,

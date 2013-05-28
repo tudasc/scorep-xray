@@ -504,8 +504,8 @@ selective tracing.
 
 Switching recording on or off, can result in inconsistent traces or profiles, if not
 applied with care. Especially, switching recording on/off manually via the SCOREP user
-instrumentation macros <tt>SCOREP_USER_RECORDING_ON</tt> and 
-<tt>SCOREP_USER_RECORDING_OFF</tt> is not recommended. Inconsistent traces may result in
+instrumentation macros <tt>SCOREP_RECORDING_ON</tt> and 
+<tt>SCOREP_RECORDING_OFF</tt> is not recommended. Inconsistent traces may result in
 errors or deadlocks during analysis, or show unusable data. The consistency is endangered
 if:
 <ul>
@@ -524,8 +524,7 @@ How recording can be controlled through @scorep macros which are inserted in the
 application's source code, is explained in 
 Section @secref{manual_instrumentation}. Thus, this section focuses on first
 possibility, where the user specify traced regions via a configuration file.
-Currently, selective tracing is restricted to trace recording. In profiling
-is enabled, the profile will always summarize the whole execution.
+Selective tracing affects tracing and profiling.
 
 For selective tracing, you can specify one or multiple traced regions. The 
 recording is enabled when a traced region is entered. If the region is exited,

@@ -420,7 +420,8 @@ typedef enum SCOREP_GroupType
     SCOREP_REGION_TYPE( TASK_WAIT,    "taskwait" ) \
     SCOREP_REGION_TYPE( TASK_CREATE,  "task create" ) \
     SCOREP_REGION_TYPE( ORDERED,      "ordered" ) \
-    SCOREP_REGION_TYPE( ORDERED_SBLOCK, "ordered sblock" )
+    SCOREP_REGION_TYPE( ORDERED_SBLOCK, "ordered sblock" ) \
+    SCOREP_REGION_TYPE( ARTIFICIAL,   "artificial" )
 
 
 #define SCOREP_REGION_TYPE( NAME, name_str ) \
