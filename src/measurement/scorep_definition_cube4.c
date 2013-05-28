@@ -719,27 +719,15 @@ write_location_definitions( cube_t*                   my_cube,
 
     /* Location group (processes) Mapping of sequence numbers to cube defintions */
     cube_process** processes = write_location_group_definitions( my_cube, manager, ranks );
-    /* Buffer to construct the name of the locations */
-    char generic_name[ 256 ];
 
     SCOREP_DEFINITION_FOREACH_DO( manager, Location, location )
     {
-        uint32_t    parent_id = definition->location_group_id;
-        uint32_t    index     = offsets[ parent_id ] + threads[ parent_id ];
-        const char* name      = generic_name;
+        uint32_t parent_id = definition->location_group_id;
+        uint32_t index     = offsets[ parent_id ] + threads[ parent_id ];
         threads[ parent_id ]++;
+        const char* name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
+                                                        String )->string_data;
 
-        if ( definition->location_type == SCOREP_LOCATION_TYPE_CPU_THREAD )
-        {
-            sprintf( generic_name, "%s %" PRIu64,
-                     scorep_location_type_to_string( definition->location_type ),
-                     definition->global_location_id >> 32 );
-        }
-        else
-        {
-            name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
-                                                String )->string_data;
-        }
         cube_def_thrd( my_cube, name, index, processes[ parent_id ] );
     }
     SCOREP_DEFINITION_FOREACH_WHILE();
