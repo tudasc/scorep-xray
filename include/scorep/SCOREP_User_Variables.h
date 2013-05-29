@@ -30,8 +30,8 @@
     Thus, these variables are declared in every file that uses the user interface.
     Becuase static variables are only visible inside the source file where there are
     declared, it is possible to have source file specific variables. This is
-    used to store and distinguish the source file related date from the SCOREP measurement
-    system and access them efficiently.
+    used to store and distinguish the source file related date from the Score-P
+    measurement system and access them efficiently.
  */
 
 #include <stddef.h>

@@ -41,7 +41,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**
-    @defgroup SCOREP_User_External External visisble functions of the SCOREP user adapter
+    @defgroup SCOREP_User_External External visisble functions of the Score-P user adapter
     @ingroup SCOREP_User
 
     This module contains all external visible items of the user adapter except the

@@ -503,7 +503,7 @@ selective tracing.
 </ul>
 
 Switching recording on or off, can result in inconsistent traces or profiles, if not
-applied with care. Especially, switching recording on/off manually via the SCOREP user
+applied with care. Especially, switching recording on/off manually via the Score-P user
 instrumentation macros <tt>SCOREP_RECORDING_ON</tt> and 
 <tt>SCOREP_RECORDING_OFF</tt> is not recommended. Inconsistent traces may result in
 errors or deadlocks during analysis, or show unusable data. The consistency is endangered

@@ -262,7 +262,7 @@ SCOREP_Tau_ExitRegion(
 
 /**
  * Register a function that can close the callstack. This is invoked by
- * the SCOREP routine that is called by atexit. Before flushing the data to
+ * the Score-P routine that is called by atexit. Before flushing the data to
  * disk, all the open timers are closed by invoking the function callback.
  *
  * @param: callback, a function pointer. It points to the routine

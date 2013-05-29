@@ -34,7 +34,7 @@
 #endif
 
 /**
-    @defgroup SCOREP_User SCOREP User Adapter
+    @defgroup SCOREP_User Score-P User Adapter
 
     The user adapter provides a set of macros for user manual instrumentation. The macros
     are inserted in the source code and call functions of the Score-P runtime system.
