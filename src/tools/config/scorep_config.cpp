@@ -374,6 +374,11 @@ main( int    argc,
 void
 get_rpath_struct_data( void )
 {
+    if ( !USE_LIBDIR_FLAG )
+    {
+        return;
+    }
+
     // Replace ${wl} by LIBDIR_FLAG_WL and erase everything from
     // $libdir on in order to create m_rpath_head and
     // m_rpath_delimiter. This will work for most and for the relevant

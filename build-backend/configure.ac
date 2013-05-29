@@ -234,6 +234,11 @@ AC_SCOREP_COND_HAVE([MPI_SUPPORT],
 
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION([../])
 
+dnl Predicate to use HARDCODE_LIBDIR_FLAG_* only if linker needs it. 
+AS_IF([test "x${hardcode_into_libs}" = "xyes"], 
+      [ac_scorep_hardcode_into_libs=1],
+      [ac_scorep_hardcode_into_libs=0])
+AC_SUBST([HARDCODE_INTO_LIBS], [${ac_scorep_hardcode_into_libs}])
 dnl Flag to hardcode libdir into a binary during linking, C version.
 AC_SUBST([HARDCODE_LIBDIR_FLAG_CC], [${hardcode_libdir_flag_spec}])
 dnl Flag to hardcode libdir into a binary during linking, C++ version.
