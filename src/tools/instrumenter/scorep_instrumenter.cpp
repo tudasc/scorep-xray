@@ -211,7 +211,7 @@ SCOREP_Instrumenter::Run( void )
                         {
                             current_file = preprocess_opari( current_file );
                         }
-                        #if HAVE( BACKEND_COMPILER_CRAY )
+                        #if SCOREP_BACKEND_COMPILER_CRAY
                         else if ( m_command_line.getCompilerName().find( "ftn" ) != std::string::npos )
                         {
                             m_compiler_flags += " -I.";
