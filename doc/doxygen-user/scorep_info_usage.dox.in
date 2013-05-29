@@ -1,6 +1,6 @@
-This is the Score-P info tool.
 Usage: scorep-info <info command> <command options>
        scorep-info --help
+This is the Score-P info tool.
 
 Available info commands:
 

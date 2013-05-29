@@ -1,35 +1,32 @@
+Usage: scorep-config <command> [<options>]
 
-Usage:
-scorep-config <command> [<options>]
-  Commands:
-   --cflags  prints additional compiler flags. They already contain the
-             include flags.
-   --inc     prints the include flags. They are already contained in the
-             output of the --cflags command
-   --libs    prints the required linker flags
-   --cc      prints the C compiler name
-   --cxx     prints the C++ compiler name
-   --fc      prints the Fortran compiler name
-   --help    prints this usage information
-   --version prints the version number of the scorep package
+Commands:
+  --cflags  prints additional compiler flags. They already contain the
+            include flags.
+  --inc     prints the include flags. They are already contained in the
+            output of the --cflags command
+  --libs    prints the required linker flags
+  --cc      prints the C compiler name
+  --cxx     prints the C++ compiler name
+  --fc      prints the Fortran compiler name
+  --help    prints this usage information
+  --version prints the version number of the scorep package
 
-  Options:
-   --seq|--omp|--mpi|--hyb
+Options:
+  --seq|--omp|--mpi|--hyb
             specifys the mode: seqential, OpenMP, MPI, or hybrid (MPI + OpenMP)
             Takes effect only for the --libs command. The default mode is MPI.
 
-   --config=<config_file>
+  --config=<config_file>
             Allows to specify a configuration file which overrides the data
             specified at build time of the tool.
 
-   --user|--nouser
+  --user|--nouser
             Specifies whether manual user instrumentation is used. On default
             user instrumentation is disabled.
 
-   --compiler|--nocompiler
+  --compiler|--nocompiler
             Specifies whether compiler instrumentation is used. On default
             compiler instrumentation is enabled.
 
-   --fortran   Specifies that the required flags are for the Fortran compiler.
-
-
+  --fortran Specifies that the required flags are for the Fortran compiler.

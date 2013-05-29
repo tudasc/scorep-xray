@@ -1,12 +1,12 @@
-
-This is the SCOREP user tool. The usage is:
-scorep <options> <orginal command>
+Usage: scorep <options> <orginal command>
+This is the Score-P user tool.
 
 Common options are:
   --help, -h      Show help output. Does not execute any other command.
   --config=<file> Specifies file for the instrumentation configuration.
-  -v, --verbose[=<value>] Specifies the verbosity level. The following
-                  levels are available:
+  -v, --verbose[=<value>]
+                  Specifies the verbosity level. The following levels are
+                  available:
                   0 = No output
                   1 = Executed commands are displayed (default if no
                       value is specified)
@@ -23,8 +23,9 @@ Common options are:
                   mpi program.
   --nompi         Disables mpi wrappers. They are disabled by default if
                   it is no mpi program.
-  --opari[="<parameter-list>"] Enables Opari2 instrumentation. Is enabled by default
-                  if it is an OpenMP program.
+  --opari[="<parameter-list>"]
+                  Enables Opari2 instrumentation. Is enabled by default if it
+                  is an OpenMP program.
                   You may specify additional parameters that are passed to Opari2.
   --pomp          Enables semi-automatic pomp user instrumentation.
                   By default, it is enabled if OPARI2 instrumentation is
@@ -34,15 +35,17 @@ Common options are:
                   enabled.
   --user          Enables manual user instrumentation.
   --nouser        Disables manual user instrumentation. Is disabled by default.
-  --pdt[="<parameter-list>"] Enables source code instrumentation with PDT using
-                  the TAU instrumentor.
+  --pdt[="<parameter-list>"]
+                  Enables source code instrumentation with PDT using the TAU
+                  instrumentor.
                   It will automatically enable the user instrumentation
                   and disable compiler instrumentation.
                   You may specify additional parameters that are passed
                   to the TAU instrumentor.
   --nopdt         Disables the source code instrumentation with PDT.
                   It is disabled by default.
-  --cobi[=\"<parameter-list>\"] Enables binary instrumentation with Cobi.
+  --cobi[=\"<parameter-list>\"]
+                  Enables binary instrumentation with Cobi.
                   Disables compiler instrumentation.
                   You may specify additional parameters that are passed to Cobi.
   --nocobi        Disables the binary instrumentation with Cobi.
@@ -53,4 +56,3 @@ Common options are:
   --noopenmp      Disables OpenMP support.
   --static        Enforce static linking of the Score-P libraries.
   --dynamic       Enforce dynamic linking of the Score-P libraries.
-
