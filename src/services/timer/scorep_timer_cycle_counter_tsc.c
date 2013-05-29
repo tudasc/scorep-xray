@@ -36,6 +36,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if defined( _CRAYC )
+#include <intrinsics.h>
+#endif
+
 #if HAVE( GETTIMEOFDAY ) && HAVE( USLEEP )
 #include <sys/time.h>
 #include <unistd.h>
@@ -216,6 +220,10 @@ SCOREP_GetClockTicks( void )
     while ( highb != higha );
 
     clock_value = ( ( uint64_t )higha << 32 ) | ( uint64_t )low;
+
+# elif defined( _CRAYC )
+
+    clock_value = ( uint64_t )_rtc();
 
 # else
 
