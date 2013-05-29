@@ -262,11 +262,14 @@ main( int    argc,
         case ACTION_LDFLAGS:
             get_rpath_struct_data();
             std::cout << deps.GetLDFlags( libs, install );
-            str = deps.GetRpathFlags( libs, install,
-                                      m_rpath_head,
-                                      m_rpath_delimiter,
-                                      m_rpath_tail );
-            str = append_ld_run_path_to_rpath( str );
+            if ( USE_LIBDIR_FLAG )
+            {
+                str = deps.GetRpathFlags( libs, install,
+                                          m_rpath_head,
+                                          m_rpath_delimiter,
+                                          m_rpath_tail );
+                str = append_ld_run_path_to_rpath( str );
+            }
             if ( compiler )
             {
                 str += " " SCOREP_LDFLAGS;
@@ -374,11 +377,6 @@ main( int    argc,
 void
 get_rpath_struct_data( void )
 {
-    if ( !USE_LIBDIR_FLAG )
-    {
-        return;
-    }
-
     // Replace ${wl} by LIBDIR_FLAG_WL and erase everything from
     // $libdir on in order to create m_rpath_head and
     // m_rpath_delimiter. This will work for most and for the relevant
