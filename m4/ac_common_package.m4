@@ -58,7 +58,7 @@ AC_DEFINE(HAVE_BACKEND_[]$1, [$2], [$3])
 
 # AC_SCOREP_COND_HAVE(VARIABLE, CONDITION[, DESCRIPTION[, COND_TRUE[, COND_FALSE]]])
 # --------------------------------------------------
-# Convinience macro to define a AM_CONDITIONAL and always a
+# Convenience macro to define a AM_CONDITIONAL and always a
 # AC_SCOREP_DEFINE_HAVE at once. VARIABLE will be prefixed with HAVE_
 #
 AC_DEFUN([AC_SCOREP_COND_HAVE], [
