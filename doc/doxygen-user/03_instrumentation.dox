@@ -120,7 +120,7 @@ source routines and arbitrary regions, in addition to fully-automatic
 	    Compiler, Sec. \ref{sec:compiler_instrumentation} & {\ttfamily -\/-\/compiler/ \newline -\/-\/nocompiler} & enabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    PDT,\newline Sec. \ref{sec:tau_instrumentation} & {\ttfamily -\/-\/pdt/ \newline -\/-\/nopdt} & disabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    POMP2 user regions, Sec. \ref{sec:pomp_instrumentation} & {\ttfamily -\/-\/pomp/ \newline -\/-\/nopomp} & depends on OpenMP usage &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}  \\ \hline
-	    Manual, Sec. \ref{sec:manual_instrumentation} & {\ttfamily -\/-\/user/ \newline -\/-\/nouser} & disabled &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}, and selective tracing, Sec. \ref{sec:selective_tracing}\\ \hline
+	    Manual, Sec. \ref{sec:manual_instrumentation} & {\ttfamily -\/-\/user/ \newline -\/-\/nouser} & disabled &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}, and selective recording, Sec. \ref{sec:selective_recording}\\ \hline
     	\end{tabular}
     \end{table}
 \endlatexonly
@@ -175,7 +175,7 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="center" valign="middle"> --user/--nouser </td>
       <td align="center" valign="middle"> disabled </td>
       <td align="center" valign="middle"> manually annotated </td>
-      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering )<br> and<br> selective tracing (see Sec. @ref selective_tracing ) </td> 
+      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering )<br> and<br> selective recording (see Sec. @ref selective_recording ) </td> 
     </tr>
   </table>
 \endif
@@ -510,9 +510,9 @@ on/off is done independently on each MPI process without synchronization.
       (e.g. if the send is missing but the corresponding receive event is recorded)
       it may result in errors during execution or analysis. Furthermore, it is not
       possible to switch recording on/off from within parallel OpenMP regions. We
-      recommend to use the selective tracing interface, instead of the manual on/off
+      recommend to use the selective recording interface, instead of the manual on/off
       switch whenever possible. Special care is required in combination with 
-      selective tracing (see Section @secref{selective_tracing}, which also 
+      selective recording (see Section @secref{selective_recording}, which also 
       switches recording on/off.
 
 @section online_access Source-Code Instrumentation Enabling Online Access

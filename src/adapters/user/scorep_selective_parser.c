@@ -19,7 +19,7 @@
  *  @file       scorep_selective_parser.c
  *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- *  This file contains the implementation of the parser for selective tracing
+ *  This file contains the implementation of the parser for selective recording
  *  configuration file.
  */
 
@@ -47,7 +47,7 @@
 
 
 /**
-   The list of traced regions. The regions are alphabetically sorted after their
+   The list of recorded regions. The regions are alphabetically sorted after their
    region name.
  */
 static SCOREP_Vector* scorep_selected_regions = NULL;
@@ -99,7 +99,7 @@ scorep_selective_compare_regions( const void* value,
 }
 
 /**
-   Initializes the traced region list
+   Initializes the recorded region list
  */
 static SCOREP_ErrorCode
 scorep_selective_init_region_list( void )
@@ -116,7 +116,7 @@ scorep_selective_init_region_list( void )
 }
 
 /**
-   Adds an addtional interval to an existing traced region. It checks whether the new
+   Adds an addtional interval to an existing recorded region. It checks whether the new
    region overlaps and concatenates to an existing region. In this case regions are
    merged.
    @param region Pointer to the regio instance to which a new interval is added.
@@ -144,8 +144,8 @@ scorep_selective_add_interval( scorep_selected_region* region,
 }
 
 /**
-   Create a new new entry for the traced region list.
-   @param region The region name of the new traced region.
+   Create a new new entry for the recorded region list.
+   @param region The region name of the new recorded region.
    @param first  The first instance number of the initial instance interval.
    @param last   The last instance numbe of the initial instance interval.
    @param index  Index in the list where the new entry is inserted.
@@ -189,10 +189,10 @@ scorep_selective_insert_new_region( const char* region,
 }
 
 /**
-   Adds an traced region to the list of traced regions.
-   @param name    The region name of the traced region.
-   @param first   The first instance number of the traced interval of instances.
-   @param last    The last instance number of the traced interval of instances.
+   Adds an recorded region to the list of recorded regions.
+   @param name    The region name of the recorded region.
+   @param first   The first instance number of the recorded interval of instances.
+   @param last    The last instance number of the recorded interval of instances.
  */
 static void
 scorep_selective_add( const char* name,
@@ -200,7 +200,7 @@ scorep_selective_add( const char* name,
                       int         last )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                        "Add traced region %s %d:%d\n", name, first, last );
+                        "Add recorded region %s %d:%d\n", name, first, last );
     assert( scorep_selected_regions != NULL );
 
     size_t                  index      = 0;
@@ -234,8 +234,8 @@ scorep_selective_add( const char* name,
 }
 
 /**
-   Parses a configuration file for selective tracing. It expected format is:
-   One traced region per line followed by one or more comma separated instance numbers or
+   Parses a configuration file for selective recording. It expected format is:
+   One recorded region per line followed by one or more comma separated instance numbers or
    instance intervals:
    <region_name> [<first_instance>[:<last_instance>][,....]]
    @param file An open file handle for the configuration file with its reading pointer set
@@ -292,7 +292,7 @@ scorep_selective_parse_file( FILE* file )
                 if ( pos < strlen( interval ) )
                 {
                     UTILS_ERROR( SCOREP_ERROR_PARSE_INVALID_VALUE,
-                                 "Invalid interval in selective tracing configuration "
+                                 "Invalid interval in selective recording configuration "
                                  "file for region %s: '%s'. Ignore interval.",
                                  region_name, interval );
                 }
@@ -348,11 +348,11 @@ scorep_selective_get_region( const char* name )
 }
 
 /* **************************************************************************************
-   Initialization of selective tracing
+   Initialization of selective recording
 ****************************************************************************************/
 
 /**
-   Initializes the selective tracing.
+   Initializes the selective recording.
  */
 void
 scorep_selective_init( void )
@@ -360,13 +360,13 @@ scorep_selective_init( void )
     FILE* config_file = NULL;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                        "Initialize selective tracing" );
+                        "Initialize selective recording" );
 
     /* Initialize data structures */
     if ( scorep_selective_init_region_list() != SCOREP_SUCCESS )
     {
         UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                     "Failed to create traced region list" );
+                     "Failed to create recorded region list" );
         return;
     }
 
@@ -374,8 +374,8 @@ scorep_selective_init( void )
     if ( scorep_selective_file_name == NULL || *scorep_selective_file_name == '\0' )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                            "No configuration file for selective tracing specified.\n"
-                            "Disable selective tracing." );
+                            "No configuration file for selective recording specified.\n"
+                            "Disable selective recording." );
         return;
     }
 
@@ -384,22 +384,22 @@ scorep_selective_init( void )
     if ( config_file == NULL )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                            "Unable to open configuration file for selective tracing.\n"
-                            "Disable selective tracing." );
+                            "Unable to open configuration file for selective recording.\n"
+                            "Disable selective recording." );
         return;
     }
 
     /* Parse configuration file */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                        "Reading selective tracing file %s.",
+                        "Reading selective recording file %s.",
                         scorep_selective_file_name );
 
     SCOREP_ErrorCode err = scorep_selective_parse_file( config_file );
     if ( err != SCOREP_SUCCESS )
     {
         UTILS_ERROR( err,
-                     "Unable to read configration file for selective tracing.\n"
-                     "Disable selective tracing." );
+                     "Unable to read configration file for selective recording.\n"
+                     "Disable selective recording." );
         fclose( config_file );
         return;
     }
@@ -412,13 +412,13 @@ scorep_selective_init( void )
 }
 
 /**
-   Registers the config variables for selective tracing.
+   Registers the config variables for selective recording.
  */
 SCOREP_ErrorCode
 scorep_selective_register( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
-                        "Register config variables for selective tracing" );
+                        "Register config variables for selective recording" );
     return SCOREP_ConfigRegister( "selective", scorep_selective_configs );
 }
 

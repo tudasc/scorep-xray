@@ -19,12 +19,12 @@
  *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *  @status     alpha
  *
- *  This file containes the declaration of types and functions for selective tracing.
- *  If selective tracing is enabled, the measurement system records those only parts
+ *  This file containes the declaration of types and functions for selective recording.
+ *  If selective recording is enabled, the measurement system records those only parts
  *  of the whole execution, that are executed within a user specifed region. Only
  *  regions defined in the user adapter are selectable.
- *  For specifying the traced regions, the user must provide a configuration file, where
- *  every line starts with the name of the traced regions, optionally followed by
+ *  For specifying the recorded regions, the user must provide a configuration file, where
+ *  every line starts with the name of the recorded regions, optionally followed by
  *  a list of instance intervals which are recorded. Example:
  *  <code> my_region 1, 23:100, 110:120, 130 </code>
  *  This line would configure to trace form a region named 'my_region' the instances

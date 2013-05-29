@@ -19,7 +19,7 @@
  *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *  @status     alpha
  *
- *  This file containes the implementation of functions for selective tracing.
+ *  This file containes the implementation of functions for selective recording.
  */
 
 #include <config.h>

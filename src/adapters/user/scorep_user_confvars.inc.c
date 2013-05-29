@@ -24,14 +24,14 @@
  */
 
 /**
-   Contains the file name for the selective tracing configuration file. This filename
-   is filled out by the configration system. In oartcular it is set by the environment
+   Contains the file name for the selective recording configuration file. This filename
+   is filled out by the configration system. In particular, it is set by the environment
    variable 'SCOREP_SELECTIVE_CONFIG_FILE'.
  */
 static char* scorep_selective_file_name;
 
 /**
-   Array of configuration variables for the selecetive tracing.
+   Array of configuration variables for the selective recording.
  */
 SCOREP_ConfigVariable scorep_selective_configs[] = {
     {
@@ -40,7 +40,7 @@ SCOREP_ConfigVariable scorep_selective_configs[] = {
         &scorep_selective_file_name,
         NULL,
         "",
-        "A file name which configures selective tracing",
+        "A file name which configures selective recording",
         ""
     },
     SCOREP_CONFIG_TERMINATOR
