@@ -175,10 +175,7 @@ AS_IF([test "x${ac_scorep_compiler_cray}" = "xyes"],
       [F77="${F77} -hnoomp -O2"]
       [FC="${FC} -hnoomp -O2"]
        AC_DEFINE([FORTRAN_MANGLED(var)], [var ## _], 
-                 [Name of var after mangled by the Fortran compiler.])
-      m4_ifdef([AC_SCOREP_BACKEND],
-               [AC_DEFINE([HAVE_BACKEND_COMPILER_CRAY], [1], 
-                          [Backend compiler is a CRAY compiler.])]))
+                 [Name of var after mangled by the Fortran compiler.]))
 ])
 
 ##
