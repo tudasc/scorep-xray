@@ -7,7 +7,7 @@
              We have 4 versions of this script linking 4 different libraries, one
              script for each programming paradigm: scorep_serial.so, scorep_omp.so
              scorep_mpi.so, scorep_mpi_omp.so -->
-	<library name="libscorep_mpi.so" />
+	<library name="libscorep_measurement.so" />
 </dependencies>
 
 <adaptersettings>

@@ -25,8 +25,7 @@ nobase_include_HEADERS +=                      \
     $(PUBLIC_INC_SRC)SCOREP_User_Functions.h   \
     $(PUBLIC_INC_SRC)SCOREP_User_Types.h       \
     $(PUBLIC_INC_SRC)SCOREP_User_Variables.h   \
-    $(PUBLIC_INC_SRC)SCOREP_Tau.h              \
-    $(PUBLIC_INC_SRC)SCOREP_OA_Functions.h
+    $(PUBLIC_INC_SRC)SCOREP_Tau.h
 
 if SCOREP_COMPILER_PGI
 nobase_include_HEADERS += $(PUBLIC_INC_SRC)SCOREP_User_Pgi.inc

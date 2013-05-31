@@ -204,6 +204,24 @@ void
 SCOREP_User_RewindRegionEnter( const SCOREP_User_RegionHandle handle );
 
 /* **************************************************************************************
+ * Online access phases
+ * *************************************************************************************/
+
+void
+SCOREP_User_OaPhaseBegin( SCOREP_User_RegionHandle*    handle,
+                          const char**                 lastFileName,
+                          SCOREP_SourceFileHandle*     lastFile,
+                          const char*                  name,
+                          const SCOREP_User_RegionType regionType,
+                          const char*                  fileName,
+                          const uint32_t               lineNo );
+
+void
+SCOREP_User_OaPhaseEnd( const SCOREP_User_RegionHandle handle );
+
+
+
+/* **************************************************************************************
  * Parameter functions
  * *************************************************************************************/
 

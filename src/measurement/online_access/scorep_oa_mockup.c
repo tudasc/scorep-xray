@@ -32,13 +32,7 @@
 void
 SCOREP_OA_PhaseBegin
 (
-    SCOREP_User_RegionHandle*    handle,
-    const char**                 lastFileName,
-    SCOREP_SourceFileHandle*     lastFile,
-    const char*                  name,
-    const SCOREP_User_RegionType regionType,
-    const char*                  fileName,
-    const uint32_t               lineNo
+    const SCOREP_RegionHandle handle
 )
 {
     printf( "Dummy %s\n", __func__ );
@@ -47,7 +41,7 @@ SCOREP_OA_PhaseBegin
 void
 SCOREP_OA_PhaseEnd
 (
-    const SCOREP_User_RegionHandle handle
+    const SCOREP_RegionHandle handle
 )
 {
     printf( "Dummy %s\n", __func__ );

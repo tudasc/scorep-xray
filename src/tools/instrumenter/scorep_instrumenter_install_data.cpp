@@ -23,6 +23,7 @@
 #include <config.h>
 #include "scorep_instrumenter_install_data.hpp"
 #include "scorep_instrumenter_utils.hpp"
+#include "scorep_instrumenter_adapter.hpp"
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 #include <UTILS_IO.h>
@@ -31,19 +32,6 @@
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
-
-/* ****************************************************************************
-   Helper functions
-******************************************************************************/
-static inline std::string
-simplify_path( const std::string& path )
-{
-    char* buffer = UTILS_CStr_dup( path.c_str() );
-    UTILS_IO_SimplifyPath( buffer );
-    std::string simple_path = buffer;
-    free( buffer );
-    return simple_path;
-}
 
 /* ****************************************************************************
    Main interface
@@ -56,16 +44,6 @@ SCOREP_Instrumenter_InstallData::SCOREP_Instrumenter_InstallData( void )
     m_cxx_compiler     = SCOREP_CXX;
     m_fortran_compiler = SCOREP_FC;
     m_openmp_cflags    = SCOREP_OPENMP_CFLAGS;
-    m_nm               = "`" OPARI_CONFIG " --nm`";
-    m_opari            = OPARI;
-    m_opari_script     = "`" OPARI_CONFIG " --region-initialization`";
-    m_opari_config     = OPARI_CONFIG;
-    m_cobi             = SCOREP_COBI_PATH;
-    m_cobi_config_dir  = COBI_CONFIG_DIR;
-    m_pdt_bin_path     = PDT;
-    m_pdt_config_file  = PDT_CONFIG;
-    m_opari_params     = "";
-    m_cobi_params      = "";
 }
 
 SCOREP_Instrumenter_InstallData::~SCOREP_Instrumenter_InstallData()
@@ -96,54 +74,6 @@ SCOREP_Instrumenter_InstallData::getFC( void )
     return m_fortran_compiler;
 }
 
-std::string
-SCOREP_Instrumenter_InstallData::getNm( void )
-{
-    return m_nm;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getOpari( void )
-{
-    return m_opari + " " + m_opari_params;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getOpariScript( void )
-{
-    return m_opari_script;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getOpariConfig( void )
-{
-    return m_opari_config;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCobi( void )
-{
-    return m_cobi + " " + m_cobi_params;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getCobiConfigDir( void )
-{
-    return m_cobi_config_dir;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getPdtBinPath( void )
-{
-    return m_pdt_bin_path;
-}
-
-std::string
-SCOREP_Instrumenter_InstallData::getPdtConfigFile( void )
-{
-    return m_pdt_config_file;
-}
-
 SCOREP_ErrorCode
 SCOREP_Instrumenter_InstallData::readConfigFile( const std::string& arg0 )
 {
@@ -171,53 +101,7 @@ SCOREP_Instrumenter_InstallData::setBuildCheck( void )
 {
     m_scorep_config = simplify_path( BUILD_DIR "/scorep-config" )
                       + " --build-check";
-    #if !HAVE( EXTERNAL_OPARI2 )
-    m_opari_config = simplify_path( BUILD_DIR "/../vendor/opari2/build-frontend/opari2-config" )
-                     + " --build-check";
-    m_opari = simplify_path( BUILD_DIR "/../vendor/opari2/build-frontend/opari2" );
-    #endif
-    m_nm              = "`" + m_opari_config +  " --nm`";
-    m_opari_script    = "`" + m_opari_config + " --region-initialization`";
-    m_cobi_config_dir = simplify_path( BUILD_DIR "/../share" );
-    m_pdt_config_file = simplify_path( BUILD_PDT_CONFIG );
 }
-
-void
-SCOREP_Instrumenter_InstallData::setOpariParams( const std::string& params )
-{
-    m_opari_params += " " + params;
-}
-
-void
-SCOREP_Instrumenter_InstallData::setCobiParams( const std::string& params )
-{
-    m_cobi_params = params;
-}
-
-void
-SCOREP_Instrumenter_InstallData::setOpariFortranForm( bool is_free )
-{
-#if HAVE( OPARI2_FIX_AND_FREE_FORM_OPTIONS )
-    if ( is_free )
-    {
-        setOpariParams( "--free-form" );
-    }
-    else
-    {
-        setOpariParams( "--fix-form" );
-    }
-#else
-    if ( is_free )
-    {
-        setOpariParams( "--f90" );
-    }
-    else
-    {
-        setOpariParams( "--f77" );
-    }
-#endif
-}
-
 
 /* ****************************************************************************
    Compiler dependent implementations
@@ -660,66 +544,21 @@ void
 SCOREP_Instrumenter_InstallData::set_value( const std::string& key,
                                             const std::string& value )
 {
-    if ( key == "OPARI_CONFIG" && value != "" )
-    {
-        m_nm           = "`" + value + " --nm`";
-        m_opari_script = "`" + value + " --region-initialization`";
-        m_opari_config = value;
-    }
-    else if ( key == "PDT" && value != "" )
-    {
-        set_pdt_path( value );
-    }
-    else if ( key == "OPENMP_CFLAGS" && value != "" )
+    if ( key == "OPENMP_CFLAGS" && value != "" )
     {
         m_openmp_cflags = value;
-    }
-    else if ( key == "OPARI" && value != "" )
-    {
-        m_opari = value;
     }
     else if ( key == "CC"  && value != "" )
     {
         m_c_compiler = value;
     }
-    else if ( key == "PDT_CONFIG" && value != "" )
-    {
-        m_pdt_config_file = value;
-    }
     else if ( key == "SCOREP_CONFIG" && value != "" )
     {
         m_scorep_config = value;
     }
-    else if ( key == "COBI_CONFIG_DIR" && value != "" )
-    {
-        m_cobi_config_dir = value;
-    }
-}
-
-void
-SCOREP_Instrumenter_InstallData::set_pdt_path( const std::string& pdt )
-{
-    if ( pdt == "yes" )
-    {
-        char* path = UTILS_GetExecutablePath( "tau_instrumentor" );
-        if ( path != NULL )
-        {
-            m_pdt_bin_path = path;
-            free( path );
-        }
-        else
-        {
-            std::cout << "ERROR: Unable to find PDT binaries.\n";
-            exit( EXIT_FAILURE );
-        }
-    }
-    else if ( pdt == "no" )
-    {
-        return;
-    }
     else
     {
-        m_pdt_bin_path = pdt;
+        SCOREP_Instrumenter_Adapter::setAllConfigValue( key, value );
     }
 }
 

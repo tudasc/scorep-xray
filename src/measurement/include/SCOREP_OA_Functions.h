@@ -29,7 +29,7 @@
  */
 
 
-#include <scorep/SCOREP_User_Types.h>
+#include <SCOREP_Types.h>
 
 /**
  * This function is called at the beginning of phase. It first checks whether OA module is configured
@@ -42,16 +42,7 @@
  */
 
 void
-SCOREP_OA_PhaseBegin
-(
-    SCOREP_User_RegionHandle*    handle,
-    const char**                 lastFileName,
-    SCOREP_SourceFileHandle*     lastFile,
-    const char*                  name,
-    const SCOREP_User_RegionType regionType,
-    const char*                  fileName,
-    const uint32_t               lineNo
-);
+SCOREP_OA_PhaseBegin( const SCOREP_RegionHandle handle );
 
 /**
  * This function is called at the end of phase. It checks whether OA module is configured to suspend
@@ -63,10 +54,7 @@ SCOREP_OA_PhaseBegin
  */
 
 void
-SCOREP_OA_PhaseEnd
-(
-    const SCOREP_User_RegionHandle handle
-);
+SCOREP_OA_PhaseEnd( const SCOREP_RegionHandle handle );
 
 
 #endif /* SCOREP_OA_FUNCTIONS_H */

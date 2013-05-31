@@ -69,13 +69,7 @@ private:
     {
         scorep_parse_mode_param,
         scorep_parse_mode_command,
-        scorep_parse_mode_option_part,
-        scorep_parse_mode_output,
-        scorep_parse_mode_library,
-        scorep_parse_mode_define,
-        scorep_parse_mode_libdir,
-        scorep_parse_mode_incdir,
-        scorep_parse_mode_fortran_form
+        scorep_parse_mode_option_part
     } scorep_parse_mode_t;
 
     /* ****************************************************** Public methods */
@@ -107,18 +101,6 @@ public:
     ParseCmdLine( int    argc,
                   char** argv );
 
-    bool
-    isCompilerInstrumenting( void );
-    bool
-    isOpariInstrumenting( void );
-    bool
-    isUserInstrumenting( void );
-    bool
-    isMpiInstrumenting( void );
-    bool
-    isPdtInstrumenting( void );
-    bool
-    isCobiInstrumenting( void );
     bool
     isMpiApplication( void );
     bool
@@ -167,14 +149,18 @@ public:
     enforceStaticLinking( void );
     bool
     enforceDynamicLinking( void );
-    bool
-    isPreprocess( void );
 
     /**
        Returns true if the link target is a shared library.
      */
     bool
     isTargetSharedLib( void );
+
+    /**
+       Returns the list of full filenames for all libraries specified via -l flags.
+     */
+    std::string
+    getLibraryFiles( void );
 
     /* ***************************************************** Private methods */
 private:
@@ -203,19 +189,17 @@ private:
 
     /**
        Evaluates one parameter when in command mode.
-       @param arg The current argument
-       @returns the parsing mode for the next parameter.
+       @param current  The current argument
+       @param next     The next argument
+       @returns the parsing mode for the next parameter. If it is
+                scorep_parse_mode_command the next parameter is
+                regularly handled. If it is scorep_parse_mode_option_part
+                the next parameter was a value specification for the current
+                and is already processed.
      */
     scorep_parse_mode_t
-    parse_command( const std::string& arg );
-
-    /**
-       Evaluates one parameter when in option_part mode.
-       @param arg The current argument
-       @returns the parsing mode for the next parameter.
-     */
-    scorep_parse_mode_t
-    parse_option_part( const std::string& arg );
+    parse_command( const std::string& current,
+                   const std::string& next );
 
     /**
        Evaluates one parameter when in parameter mode.
@@ -226,64 +210,11 @@ private:
     parse_parameter( const std::string& arg );
 
     /**
-       Evaluates one parameter when in libray mode.
-       @param arg The current argument
-       @returns the parsing mode for the next parameter.
-     */
-    scorep_parse_mode_t
-    parse_library( const std::string& arg );
-
-    /**
-       Evaluates one parameter when in define mode.
-       @param arg The current argument
-       @returns the parsing mode for the next parameter.
-     */
-    scorep_parse_mode_t
-    parse_define( const std::string& arg );
-
-    /**
-       Evaluates one parameter when in incdir mode.
-       @param arg The current argument
-       @returns the parsing mode for the next parameter.
-     */
-    scorep_parse_mode_t
-    parse_incdir( const std::string& arg );
-
-    /**
-       Evaluates one parameter when in libdir mode.
-       @param arg The current argument
-       @returns the parsing mode for the next parameter.
-     */
-    scorep_parse_mode_t
-    parse_libdir( const std::string& arg );
-
-    /**
-       Evaluates one parameter when in fortran_form mode.
-       It can occur with Cray compilers if the -f and the
-       free or fixed argument are separated by a whitespace.
-       @param arg The current argument
-       @returns the parsing mode for the next parameter.
-     */
-    scorep_parse_mode_t
-    parse_fortran_form( const std::string& arg );
-
-    /**
        Processes a define parameter.
        @param arg The define argument.
      */
     void
     add_define( std::string arg );
-
-    /**
-       Extracts the paramter list out of @a arg. It assumes that it has
-       a structure like, e.g., "--opari=paramater"
-       @param arg  The full current argument.
-       @param pos  The length of the tool argument, e.g., length of --opari.
-     */
-    std::string
-    get_tool_params( const std::string& arg,
-                     size_t             pos );
-
 
     /* ***************************************************** Private members */
 private:
@@ -291,54 +222,6 @@ private:
        Pointer to the associated installation configration data
      */
     SCOREP_Instrumenter_InstallData& m_install_data;
-
-
-    /* --------------------------------------------
-       Flags for used adapters
-       ------------------------------------------*/
-    /**
-       Specifies if compiler instrumentation is enabled. Default is enabled
-     */
-    instrumentation_usage_t m_compiler_instrumentation;
-
-    /**
-       Specifies if OPARI2 instrumentation is enabled. Default detect.
-     */
-    instrumentation_usage_t m_opari_instrumentation;
-
-    /**
-       Specifies if POMP2 user instrumentation is enabled. Default detect
-       which means it is enabled if opari is enabled.
-     */
-    instrumentation_usage_t m_pomp_instrumentation;
-
-    /**
-        Specifies if user instrumentation is enabled. Default is disabled.
-     */
-    instrumentation_usage_t m_user_instrumentation;
-
-    /**
-       Specifies if mpi wrappers are enabled. Default detect.
-     */
-    instrumentation_usage_t m_mpi_instrumentation;
-
-    /**
-       Specifies if pdt instrumentation enabled. Default disabled. If it is
-       enabled, it will automatically enable the user adapter and disable
-       the compiler instrumentation.
-     */
-    instrumentation_usage_t m_pdt_instrumentation;
-
-    /**
-       Specifies if binary instrumentation with Cobi is enabled.
-     */
-    instrumentation_usage_t m_cobi_instrumentation;
-
-    /**
-       Specifies whether the source file should be preprocessed before instrumented
-       with OPARI2
-     */
-    instrumentation_usage_t m_preprocess;
 
     /* --------------------------------------------
        Flags for application type

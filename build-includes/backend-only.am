@@ -10,6 +10,7 @@ include ../src/measurement/tracing/Makefile.inc.am
 include ../src/measurement/definitions/Makefile.inc.am
 include ../src/adapters/user/Makefile.inc.am
 include ../src/adapters/compiler/Makefile.inc.am
+include ../src/adapters/mpi/Makefile.inc.am
 include ../src/adapters/pomp/Makefile.inc.am
 include ../src/adapters/tau/Makefile.inc.am
 include ../src/adapters/cuda/Makefile.inc.am

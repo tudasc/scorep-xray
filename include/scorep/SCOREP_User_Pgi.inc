@@ -58,10 +58,10 @@
         SCOREP_USER_REGION_HANDLE handle        
 
 #define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type ) \
-		call SCOREP_F_OA_PhaseBegin(handle,name,type,"",__LINE__) 
+		call SCOREP_F_OaBegin(handle,name,type,"",__LINE__) 
 
 #define SCOREP_USER_OA_PHASE_END( handle ) \
-		call SCOREP_F_OA_PhaseEnd( handle )
+		call SCOREP_F_OaEnd( handle )
 
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )\
         call SCOREP_F_Begin(handle,name,type,"",__LINE__)

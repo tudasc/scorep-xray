@@ -23,12 +23,11 @@
  */
 
 #include <config.h>
-#include <scorep/SCOREP_OA_Functions.h>
+#include <SCOREP_OA_Functions.h>
 
 #include <SCOREP_RuntimeManagement.h>
 #include <stdio.h>
 
-#include <scorep/SCOREP_User_Functions.h>
 #include <scorep_profile_definition.h>
 #include "SCOREP_OA_RuntimeManagement.h"
 #include "SCOREP_Types.h"
@@ -39,16 +38,7 @@
 #include <scorep_status.h>
 
 void
-SCOREP_OA_PhaseBegin
-(
-    SCOREP_User_RegionHandle*    handle,
-    const char**                 lastFileName,
-    SCOREP_SourceFileHandle*     lastFile,
-    const char*                  name,
-    const SCOREP_User_RegionType regionType,
-    const char*                  fileName,
-    const uint32_t               lineNo
-)
+SCOREP_OA_PhaseBegin( const SCOREP_RegionHandle handle )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA, "" );
 
@@ -74,21 +64,12 @@ SCOREP_OA_PhaseBegin
         SCOREP_OA_Init();
     }
 
-    SCOREP_User_RegionInit( \
-        handle, lastFileName, lastFile, name, \
-        regionType, fileName, lineNo );
-
-    scorep_oa_phase_enter( *handle );
-
-    SCOREP_User_RegionEnter( *handle );
+    scorep_oa_phase_enter( handle );
 }
 
 
 void
-SCOREP_OA_PhaseEnd
-(
-    const SCOREP_User_RegionHandle handle
-)
+SCOREP_OA_PhaseEnd( const SCOREP_RegionHandle handle )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __func__ );
 
@@ -108,8 +89,6 @@ SCOREP_OA_PhaseEnd
     {
         return;
     }
-
-    SCOREP_User_RegionEnd( handle );
 
     scorep_oa_phase_exit( handle );
 }

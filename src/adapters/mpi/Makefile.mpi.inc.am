@@ -1,10 +1,29 @@
 ## -*- mode: makefile -*-
 
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2013, 
+## RWTH Aachen University, Germany
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+## Technische Universitaet Dresden, Germany
+## University of Oregon, Eugene, USA
+## Forschungszentrum Juelich GmbH, Germany
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file src/adapters/mpi/Makefile.mpi.inc.am
+
 if HAVE_MPI_SUPPORT
 
-noinst_LTLIBRARIES += libscorep_adapter_mpi.la
-libscorep_adapter_mpi_la_SOURCES =
-libscorep_adapter_mpi_la_LIBADD =                         \
+noinst_LTLIBRARIES += libscorep_adapter_mpi_wrapper.la
+libscorep_adapter_mpi_wrapper_la_SOURCES =
+libscorep_adapter_mpi_wrapper_la_LIBADD =                 \
     libscorep_adapter_mpi_c_wrapper.la                    \
     libscorep_adapter_mpi_fortran_wrapper_sub1.la         \
     libscorep_adapter_mpi_fortran_wrapper_sub2.la         \

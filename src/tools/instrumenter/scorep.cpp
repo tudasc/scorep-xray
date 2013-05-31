@@ -22,11 +22,13 @@
  */
 #include <config.h>
 #include "scorep_instrumenter.hpp"
+#include "scorep_instrumenter_adapter.hpp"
 #include <scorep_config_tool_backend.h>
 
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <deque>
 
 /**
    Contains the name of the tool for help output
@@ -71,78 +73,25 @@ print_help( void )
               << "                  instrumentation. By default, temporary files are deleted\n"
               << "                  if no error occures during instrumentation.\n"
               << "  --version       Prints the Score-P version and exits.\n"
-              << "  --compiler      Enables compiler instrumentation. Is enabled by default.\n"
-              << "  --nocompiler    Disables compiler instrumentation.\n"
               << "  --mpi           Enables mpi wrapper. They are enabled by default if it is an\n"
               << "                  mpi program.\n"
               << "  --nompi         Disables mpi wrappers. They are disabled by default if\n"
               << "                  it is no mpi program.\n"
-              << "  --opari[=\"<parameter-list>\"] Enables Opari2 instrumentation. Is enabled by default\n"
-              << "                  if it is an OpenMP program.\n"
-              << "                  You may specify additional parameters that are passed to Opari2.\n"
-    /*
-            << "  --noopari       Disables Opari2 instrumentation. Is disabled by default\n"
-            << "                  if it is no OpenMP program.\n"
-     */
-              << "  --pomp          Enables semi-automatic pomp user instrumentation.\n"
-              << "                  By default, it is enabled if OPARI2 instrumentation is\n"
-              << "                  enabled.\n"
-              << "  --nopomp        Disables semi-automatic pomp user instrumentation.\n"
-              << "                  By default, it is enabled if OPARI2 instrumentation is\n"
-              << "                  enabled.\n"
-              << "  --preprocess    Enables preprocessing before the source file is\n"
-              << "                  instrumented with OPARI2. This is the default.\n"
-              << "                  It can not be combined with PDT instrumentation.\n"
-              << "                  Thus, by default, PDT instrumentation disables \n"
-              << "                  preprocessing.\n"
-              << "  --nopreprocess  Disables preprocessing before instrumentation with\n"
-              << "                  OPARI2. Thus, OPARI2 will instrument the unprocessed\n"
-              << "                  source file. By default, files are preprocessed before\n"
-              << "                  they are instrumented with OPARI2\n"
-              << "  --user          Enables manual user instrumentation.\n"
-              << "  --nouser        Disables manual user instrumentation. Is disabled by default.\n"
-#ifdef HAVE_PDT
-              << "  --pdt[=\"<parameter-list>\"] Enables source code instrumentation with PDT using\n"
-              << "                  the TAU instrumentor.\n"
-              << "                  It will automatically enable the user instrumentation\n"
-              << "                  and disable compiler instrumentation.\n"
-              << "                  You may specify additional parameters that are passed\n"
-              << "                  to the TAU instrumentor.\n"
-              << "                  PDT instrumentation can not be combined with preprocessing.\n"
-              << "                  Thus, by default, it disables preprocessing.\n"
-              << "  --nopdt         Disables the source code instrumentation with PDT.\n"
-              << "                  It is disabled by default.\n"
-#endif
-#if HAVE( COBI )
-    << "  --cobi[=\"<parameter-list>\"] Enables binary instrumentation with Cobi.\n"
-    << "                  Disables compiler instrumentation.\n"
-    << "                  You may specify additional parameters that are passed to Cobi.\n"
-    << "  --nocobi        Disables the binary instrumentation with Cobi.\n"
-    << "                  It is disabled by default.\n"
-#endif
-    << "  --openmp        Enables OpenMP support. Needed if the instrumentation\n"
-    << "                  does not correctly identify your application as OpenMP\n"
-    << "                  program.\n"
-    << "  --noopenmp      Disables OpenMP support.\n"
-#if HAVE_BACKEND( CUDA )
-    << "  --cuda          Enables CUDA support. By default the instrumenter\n"
-    << "                  tries to identify CUDA applications automatically.\n"
-    << "                  However, in cases where the auto-detedion fails,\n"
-    << "                  you can enforce CUDA support with this option.\n"
-    << "  --nocuda        Disables CUDA support. By default the instrumenter\n"
-    << "                  tries to identify CUDA applications automatically.\n"
-    << "                  However, in cases where the auto-detedion fails,\n"
-    << "                  you can disable CUDA support manually.\n"
-#endif
+              << "  --openmp        Enables OpenMP support. Needed if the instrumentation\n"
+              << "                  does not correctly identify your application as OpenMP\n"
+              << "                  program.\n"
+              << "  --noopenmp      Disables OpenMP support.\n"
 #if defined( SCOREP_SHARED_BUILD ) && defined ( SCOREP_STATIC_BUILD )
 #if HAVE_LINK_FLAG_BSTATIC
     << "  --static        Enforce static linking of the Score-P libraries.\n"
 #endif
 #if HAVE_LINK_FLAG_BDYNAMIC
-    << "  --dynamic       Enforce dynamic linking of the Score-P libraries.\n"
+    << "  --dynamic       Enforce dynamic linking of the Score-P libraries."
 #endif
 #endif
     << std::endl;
+    SCOREP_Instrumenter_Adapter::printAll();
+    std::cout << std::endl;
 }
 
 /**
@@ -156,22 +105,16 @@ int
 main( int   argc,
       char* argv[] )
 {
-    if ( argc > 1 )
-    {
-        SCOREP_Instrumenter_InstallData install_data;
-        SCOREP_Instrumenter_CmdLine     command_line( install_data );
-        command_line.ParseCmdLine( argc, argv );
-
-        SCOREP_Instrumenter app( install_data, command_line );
-        if ( app.Run() == EXIT_SUCCESS )
-        {
-            return EXIT_SUCCESS;
-        }
-        return EXIT_FAILURE;
-    }
-    else
+    if ( argc < 2 )
     {
         print_short_usage();
+        return EXIT_FAILURE;
     }
-    return EXIT_FAILURE;
+
+    SCOREP_Instrumenter_InstallData install_data;
+    SCOREP_Instrumenter_CmdLine     command_line( install_data );
+    SCOREP_Instrumenter             app( install_data, command_line );
+
+    command_line.ParseCmdLine( argc, argv );
+    return app.Run();
 }

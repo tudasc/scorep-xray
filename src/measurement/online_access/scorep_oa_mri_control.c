@@ -2,13 +2,25 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
  *
@@ -158,28 +170,6 @@ scorep_oa_mri_noop
 )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
-}
-
-void
-scorep_oa_mri_set_mpiprofiling
-(
-    int value
-)
-{
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
-#ifdef WITH_MPI
-    if ( value )
-    {
-        SCOREP_MPI_HOOKS_ON;
-        scorep_mpiprofile_reinit_metrics();
-    }
-    else
-    {
-        SCOREP_MPI_HOOKS_OFF;
-    }
-#else
-    scorep_oa_connection_send_string( connection, "this is serial version of Score-P, no MPI available\n" );
-#endif
 }
 
 void

@@ -30,7 +30,6 @@
 #ifdef SCOREP_USER_ENABLE
 #include <scorep/SCOREP_User_Variables.h>
 #include <scorep/SCOREP_User_Functions.h>
-#include <scorep/SCOREP_OA_Functions.h>
 #endif
 
 /**
@@ -622,12 +621,12 @@
 
 #ifdef SCOREP_USER_ENABLE
 
-#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type  ) SCOREP_OA_PhaseBegin( \
+#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type  ) SCOREP_User_OaPhaseBegin( \
         &handle, &SCOREP_User_LastFileName, &SCOREP_User_LastFileHandle, name, \
         type, __FILE__, __LINE__ );
 
 #define SCOREP_USER_OA_PHASE_END( handle ) \
-    SCOREP_OA_PhaseEnd( handle );
+    SCOREP_User_OaPhaseEnd( handle );
 
 #define SCOREP_USER_REGION_DEFINE( handle ) \
     static SCOREP_User_RegionHandle handle = SCOREP_USER_INVALID_REGION;

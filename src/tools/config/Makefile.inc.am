@@ -20,9 +20,18 @@
 
 bin_PROGRAMS += scorep-config
 
-scorep_config_SOURCES = $(SRC_ROOT)src/tools/config/scorep_config.cpp  \
-                      $(SRC_ROOT)src/tools/config/SCOREP_Config_LibraryDependencies.cpp \
-                      $(SRC_ROOT)src/tools/config/SCOREP_Config_LibraryDependencies.hpp
+scorep_config_SOURCES = \
+    $(SRC_ROOT)src/tools/config/scorep_config.cpp \
+    $(SRC_ROOT)src/tools/config/scorep_config_adapter.cpp \
+    $(SRC_ROOT)src/tools/config/scorep_config_adapter.hpp \
+    $(SRC_ROOT)src/tools/config/scorep_config_mpp.cpp \
+    $(SRC_ROOT)src/tools/config/scorep_config_mpp.hpp \
+    $(SRC_ROOT)src/tools/config/scorep_config_thread.cpp \
+    $(SRC_ROOT)src/tools/config/scorep_config_thread.hpp \
+    $(SRC_ROOT)src/tools/config/scorep_config_utils.cpp \
+    $(SRC_ROOT)src/tools/config/scorep_config_utils.hpp \
+    $(SRC_ROOT)src/tools/config/SCOREP_Config_LibraryDependencies.cpp \
+    $(SRC_ROOT)src/tools/config/SCOREP_Config_LibraryDependencies.hpp
 
 scorep_config_CXXFLAGS = -DCXX=\""$(CXX)"\"
 
@@ -31,7 +40,6 @@ scorep_config_CPPFLAGS = $(AM_CPPFLAGS)    \
                          -D"BUILD_DIR=\"`pwd`\""
 
 BUILT_SOURCES += ../src/scorep_config_library_dependencies_inc.hpp
-
 CLEANFILES += ../src/scorep_config_library_dependencies_inc.hpp
 
 if CROSS_BUILD
@@ -43,6 +51,16 @@ if CROSS_BUILD
 	@$(am__cd) ../build-backend && $(MAKE) $(AM_MAKEFLAGS) $@
 
 endif
+
+BUILT_SOURCES += ../src/scorep_config_library_dependencies_mpi_inc.hpp
+CLEANFILES +=../src/scorep_config_library_dependencies_mpi_inc.hpp
+
+# The library dependencies are needed for the frontend tool. However, the
+# backend information is in the backend Makefile. Thus, invoke the backend
+# Makefile.
+../src/scorep_config_library_dependencies_mpi_inc.hpp:
+	@$(am__cd) ../build-mpi && $(MAKE) $(AM_MAKEFLAGS) $@
+
 
 if HAVE_PDT
 scorep_config_CPPFLAGS += -DHAVE_PDT=1

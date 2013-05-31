@@ -110,10 +110,7 @@ uninstall-local: $(UNINSTALL_LOCAL_TARGETS)
 	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat \
               $(SCOREP_PDT_CONFIG_INSTALL_TARGET) 
 	if [ -e $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_Adapter.xml.in ]; then \
-	  rm -f  $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterSerial.xml \
-	         $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterOmp.xml \
-	         $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterMpi.xml \
-	         $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterMpiOmp.xml; \
+	  rm -f  $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_Adapter.xml; \
 	else \
 	  rm -rf $(SCOREP_SHARE_LOCAL_DIR); \
 	fi
@@ -124,17 +121,13 @@ scorep-config-tool-install:
 	$(MKDIR_P) $(SCOREP_SHARE_INSTALL_DIR)
 	$(INSTALL_DATA) $(INC_ROOT)share/SCOREP_Pdt_Instrumentation.conf $(SCOREP_PDT_CONFIG_INSTALL_TARGET)
 	$(INSTALL_DATA) $(INC_ROOT)share/SCOREP_Cobi_Filter.xml          $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Cobi_Filter.xml
-	sed 's!libscorep_mpi.so!$(libdir)/libscorep_serial.so!g'  $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Cobi_AdapterSerial.xml
-	sed 's!libscorep_mpi.so!$(libdir)/libscorep_omp.so!g'     $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Cobi_AdapterOmp.xml
-	sed 's!libscorep_mpi.so!$(libdir)/libscorep_mpi.so!g'     $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Cobi_AdapterMpi.xml
-	sed 's!libscorep_mpi.so!$(libdir)/libscorep_mpi_omp.so!g' $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Cobi_AdapterMpiOmp.xml
+	$(INSTALL_DATA) $(INC_ROOT)share/SCOREP_Cobi_Adapter.xml.in      $(SCOREP_SHARE_INSTALL_DIR)/SCOREP_Cobi_Adapter.xml
 
 create-cobi-config-local:
 	@$(MKDIR_P) $(SCOREP_SHARE_LOCAL_DIR)
-	@sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_serial.so!g'  $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterSerial.xml
-	@sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_omp.so!g'     $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterOmp.xml
-	@sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_mpi.so!g'     $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterMpi.xml
-	@sed 's!libscorep_mpi.so!$(PWD)/.libs/libscorep_mpi_omp.so!g' $(SCOREP_COBI_CONFIG_IN) > $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_AdapterMpiOmp.xml
+	@if [ ! -e $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_Adapter.xml ]; then \
+         cp $(SCOREP_COBI_CONFIG_IN) $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_Adapter.xml; \
+	fi
 	@if [ ! -e $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_Filter.xml ]; then \
 	 cp $(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Cobi_Filter.xml $(SCOREP_SHARE_LOCAL_DIR)/; \
 	fi

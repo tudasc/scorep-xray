@@ -16,12 +16,11 @@
 
 /**
  * @status     alpha
- * @file       SCOREP_Instrumenter.cpp
+ * @file       scorep_instrumenter.cpp
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  */
 
 #include <config.h>
-#include <algorithm>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -35,67 +34,58 @@
 #include <UTILS_IO.h>
 
 #include "scorep_instrumenter.hpp"
+#include "scorep_instrumenter_cobi.hpp"
+#include "scorep_instrumenter_compiler.hpp"
+#include "scorep_instrumenter_cuda.hpp"
+#include "scorep_instrumenter_opari.hpp"
+#include "scorep_instrumenter_preprocess.hpp"
+#include "scorep_instrumenter_pdt.hpp"
+#include "scorep_instrumenter_user.hpp"
+#include "scorep_instrumenter_utils.hpp"
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
-#include "scorep_instrumenter_utils.hpp"
 
 void
 print_help();
 
-
 /* ****************************************************************************
-   Compiler specific defines
-******************************************************************************/
-#if SCOREP_BACKEND_COMPILER_CRAY
-#define SCOREP_OPARI_MANGLING_SCHEME "cray"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS "--nosrc "
-
-#elif SCOREP_BACKEND_COMPILER_GNU
-#define SCOREP_OPARI_MANGLING_SCHEME "gnu"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-#elif SCOREP_BACKEND_COMPILER_IBM
-#define SCOREP_OPARI_MANGLING_SCHEME "ibm"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-#elif SCOREP_BACKEND_COMPILER_INTEL
-#define SCOREP_OPARI_MANGLING_SCHEME "intel"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-#elif SCOREP_BACKEND_COMPILER_PGI
-#define SCOREP_OPARI_MANGLING_SCHEME "pgi"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-#elif SCOREP_BACKEND_COMPILER_STUDIO
-#define SCOREP_OPARI_MANGLING_SCHEME "sun"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-
-#endif
-
-/* ****************************************************************************
-   Main interface
-******************************************************************************/
+                                                                 public methods
+ * ***************************************************************************/
 SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& install_data,
                                           SCOREP_Instrumenter_CmdLine&     command_line )
     : m_install_data( install_data ),
       m_command_line( command_line )
 {
+    /* Create adapters */
+    m_cobi_adapter       = new SCOREP_Instrumenter_CobiAdapter();
+    m_compiler_adapter   = new SCOREP_Instrumenter_CompilerAdapter();
+    m_cuda_adapter       = new SCOREP_Instrumenter_CudaAdapter();
+    m_opari_adapter      = new SCOREP_Instrumenter_OpariAdapter();
+    m_preprocess_adapter = new SCOREP_Instrumenter_PreprocessAdapter();
+    m_pdt_adapter        = new SCOREP_Instrumenter_PdtAdapter();
+    m_user_adapter       = new SCOREP_Instrumenter_UserAdapter();
+
+    /* pre-compile adapter order */
+    m_precompile_adapters.push_back( m_compiler_adapter );
+    m_precompile_adapters.push_back( m_preprocess_adapter );
+    m_precompile_adapters.push_back( m_opari_adapter );
+    m_precompile_adapters.push_back( m_pdt_adapter );
+
+    /* pre-link adapter order */
+    m_prelink_adapters.push_back( m_opari_adapter );
+
+    /* post-link adapter order */
+    m_postlink_adapters.push_back( m_cobi_adapter );
 }
 
 SCOREP_Instrumenter::~SCOREP_Instrumenter ()
 {
+    SCOREP_Instrumenter_Adapter::destroyAll();
 }
 
 int
 SCOREP_Instrumenter::Run( void )
 {
-    /* Because the sun compiler can only instrument Fortran files, check
-       whether all source files can be instrumented */
-    if ( m_command_line.isCompilerInstrumenting() )
-    {
-        prepare_compiler();
-    }
-
     std::string object_files = "";
     m_input_files = m_command_line.getInputFiles();
 
@@ -114,7 +104,7 @@ SCOREP_Instrumenter::Run( void )
         {
             command += " -o " + output_name;
         }
-        execute_command( command );
+        executeCommand( command );
 
         return EXIT_SUCCESS;
     }
@@ -194,39 +184,18 @@ SCOREP_Instrumenter::Run( void )
                        files may be included
                      */
                     m_compiler_flags += " -I" + extract_path( current_file );
-                    m_pdt_flags      += " -I" + extract_path( current_file );
 
-                    // If compiling and linking is performed in one step.
-                    // The compiler leave no object file.
-                    // Thus, we delete the object file, too.
+                    /* If compiling and linking is performed in one step.
+                       The compiler leave no object file.
+                       Thus, we delete the object file, too.
+                     */
                     if ( m_command_line.isLinking() )
                     {
                         m_temp_files += " " + object_file;
                     }
 
-                    // Perform Opari instrumentation
-                    if ( m_command_line.isOpariInstrumenting() )
-                    {
-                        if ( m_command_line.isPreprocess() )
-                        {
-                            current_file = preprocess_opari( current_file );
-                        }
-                        #if SCOREP_BACKEND_COMPILER_CRAY
-                        else if ( m_command_line.getCompilerName().find( "ftn" ) != std::string::npos )
-                        {
-                            m_compiler_flags += " -I.";
-                        }
-                        #endif
-                        current_file = instrument_opari( current_file );
-                    }
-
-                    // Perform PDT instrumentation
-                    #ifdef HAVE_PDT
-                    if ( m_command_line.isPdtInstrumenting() )
-                    {
-                        current_file = instrument_pdt( current_file );
-                    }
-                    #endif
+                    // Perform instrumentation
+                    current_file = precompile( current_file );
 
                     // Compile instrumented file
                     compile_source_file( current_file, object_file );
@@ -251,42 +220,17 @@ SCOREP_Instrumenter::Run( void )
 
     if ( m_command_line.isLinking() )
     {
+        // Create the config tool calls for linking
         prepare_config_tool_calls( "" );
 
-        // Perform Opari instrumentation
-        if ( ( m_command_line.isOpariInstrumenting() ||
-               m_command_line.isOpenmpApplication() ) &&
-             !m_command_line.isTargetSharedLib() )
-        {
-            prepare_opari_linking();
-        }
+        // Perform pre-link instrumentation actions
+        prelink();
 
-        // ----------------------- Link step
+        // Perform linking
         link_step();
 
-        #if HAVE( COBI )
-        if ( m_command_line.isCobiInstrumenting() )
-        {
-            std::string output_name = m_command_line.getOutputName();
-            std::string orig_name   = output_name + ".orig";
-            if ( m_command_line.getVerbosity() >= 1 )
-            {
-                std::cout << "mv "
-                          << output_name
-                          << " " << orig_name << std::endl;
-            }
-            if ( !m_command_line.isDryRun() )
-            {
-                if ( rename( output_name.c_str(), orig_name.c_str() ) != 0 )
-                {
-                    UTILS_ERROR_POSIX( "Failed to rename binary" );
-                    return EXIT_FAILURE;
-                }
-            }
-
-            return invoke_cobi( orig_name, output_name );
-        }
-        #endif
+        // Perform post-link instrumentation actions
+        postlink();
     }
 
     clean_temp_files();
@@ -294,124 +238,67 @@ SCOREP_Instrumenter::Run( void )
     return EXIT_SUCCESS;
 }
 
+std::string
+SCOREP_Instrumenter::getCompilerFlags( void )
+{
+    return m_compiler_flags;
+}
+
+std::string
+SCOREP_Instrumenter::getInputFiles( void )
+{
+    return m_input_files;
+}
+
+void
+SCOREP_Instrumenter::prependInputFile( std::string filename )
+{
+    m_input_files = filename + " " + m_input_files;
+}
+
+std::string
+SCOREP_Instrumenter::getConfigBaseCall( void )
+{
+    return m_config_base;
+}
+
 /* ****************************************************************************
-   Cleanup
-******************************************************************************/
+ *                                                              private methods
+ * ***************************************************************************/
+void
+SCOREP_Instrumenter::addTempFile( const std::string& filename )
+{
+    m_temp_files += " " + filename;
+}
+
 void
 SCOREP_Instrumenter::clean_temp_files( void )
 {
     if ( ( !m_command_line.hasKeepFiles() ) && ( m_temp_files != "" ) )
     {
         m_temp_files = "rm" + m_temp_files;
-        execute_command( m_temp_files );
+        executeCommand( m_temp_files );
     }
 }
 
-
-/* ****************************************************************************
-   Preprocessing
-******************************************************************************/
-std::string
-SCOREP_Instrumenter::preprocess_opari( const std::string& orig_file )
-{
-    std::string orig_ext   = get_extension( orig_file );
-    std::string input_file = orig_file;
-    std::string command;
-
-    // Prepare file for preprocessing
-    if ( !is_fortran_file( orig_file ) )
-    {
-        input_file = remove_extension( remove_path( orig_file ) )
-                     + ".input"
-                     + orig_ext;
-
-        command = "echo \"#include <stdint.h>\n"
-                  "#include <opari2/pomp2_lib.h>\n"
-                  "___POMP2_INCLUDE___\n"
-                  "#line 1 \\\"" + orig_file + "\\\"\" > " + input_file;
-        execute_command( command );
-
-        command = "cat " + orig_file + " >> " + input_file;
-        execute_command( command );
-        m_temp_files += " " + input_file;
-    }
-    // Some Fortran compiler preprocess only if extension is in upper case
-    else if ( orig_ext != scorep_toupper( orig_ext ) )
-    {
-        input_file = remove_extension( remove_path( orig_file ) )
-                     + ".input"
-                     + scorep_toupper( orig_ext );
-        execute_command( "cat " + orig_file + " > " + input_file );
-        m_temp_files += " " + input_file;
-    }
-
-    // Preprocess file
-    command = m_command_line.getCompilerName()
-              + " " + m_command_line.getFlagsBeforeLmpi()
-              + " " + m_compiler_flags
-              + " " + m_command_line.getFlagsAfterLmpi()
-              + " " + input_file;
-
-    std::string output_file = remove_extension( remove_path( orig_file ) )
-                              + ".prep"
-                              + orig_ext;
-
-    if ( is_c_file( orig_file ) )
-    {
-        command += " " + m_install_data.getCPreprocessingFlags( input_file,
-                                                                output_file );
-    }
-    else if ( is_cpp_file( orig_file ) )
-    {
-        command += " " + m_install_data.getCxxPreprocessingFlags( input_file,
-                                                                  output_file );
-    }
-
-    else if ( is_fortran_file( orig_file ) )
-    {
-        command += " " + m_install_data.getFortranPreprocessingFlags( input_file,
-                                                                      output_file );
-    }
-
-    execute_command( command );
-    m_temp_files += " " + output_file;
-
-    return output_file;
-}
-
-/* ****************************************************************************
-   Compilation
-******************************************************************************/
 void
 SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
 {
-    std::string mode          = " --seq";
+    std::string mode          = "";
     std::string scorep_config = m_install_data.getScorepConfig();
 
     // Determine mode parameter
-    if ( m_command_line.isMpiApplication() )
+    if ( !m_command_line.isMpiApplication() )
     {
-        mode = ( m_command_line.isOpenmpApplication() ? " --hyb" : " --mpi" );
-    }
-    else if ( m_command_line.isOpenmpApplication() )
-    {
-        mode = " --omp";
+        mode = " --mpp=none";
     }
 
-    if ( m_command_line.isCudaApplication() )
+    if ( m_command_line.isOpenmpApplication() )
     {
-        mode += " --cuda";
+        mode += " --thread=omp";
     }
 
-    if ( !m_command_line.isCompilerInstrumenting() )
-    {
-        mode += " --nocompiler";
-    }
-
-    if ( m_command_line.isUserInstrumenting() )
-    {
-        mode += " --user";
-    }
+    mode += SCOREP_Instrumenter_Adapter::getAllConfigToolFlags();
 
     if ( is_fortran_file( input_file ) )
     {
@@ -419,104 +306,9 @@ SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
     }
 
     // Generate calls
-    m_compiler_flags = "`" + scorep_config + mode + " --cflags` ";
-    m_linker_flags   = "`" + scorep_config + mode + " --ldflags` `" +
-                       scorep_config + mode + " --libs` ";
-    m_pdt_flags = "`" + scorep_config + mode
-                  + ( m_command_line.isCompilerInstrumenting() ? " --nocompiler" : "" )
-                  + " --cflags` ";
-
-    if ( m_command_line.isOpariInstrumenting() )
-    {
-        m_compiler_flags += "`" + m_install_data.getOpariConfig()
-                            + " --cflags` ";
-        m_pdt_flags += "`" + m_install_data.getOpariConfig()
-                       + " --cflags` ";
-    }
-}
-
-void
-SCOREP_Instrumenter::prepare_compiler( void )
-{
-    /* The sun compiler can only instrument Fortran files. Thus, any C/C++
-       files are not instrumented. To avoid user confusion, the instrumenter
-       aborts in case a C/C++ file should be compiler instrumented.
-     */
-#if SCOREP_BACKEND_COMPILER_STUDIO
-    if ( m_command_line.isCompiling() )
-    {
-        std::string current_file = "";
-        std::string extension    = "";
-        size_t      old_pos      = 0;
-        size_t      cur_pos      = 0;
-        while ( cur_pos != std::string::npos )
-        {
-            cur_pos = m_input_files.find( " ", old_pos );
-            if ( old_pos < cur_pos ) // Discard a blank
-            {
-                current_file = m_input_files.substr( old_pos, cur_pos - old_pos );
-                if ( !is_fortran_file( current_file ) )
-                {
-                    std::cerr << "Compiler instrumentation with the Sun compiler is "
-                              << "only possible for Fortran files. If you want to "
-                              << "switch off compiler instrumentation, please use the "
-                              << "--nocompiler option."
-                              << std::endl;
-                    exit( EXIT_FAILURE );
-                }
-            }
-            // Setup for next file
-            old_pos = cur_pos + 1;
-        }
-    }
-#endif // SCOREP_BACKEND_COMPILER_STUDIO
-}
-
-void
-SCOREP_Instrumenter::invoke_opari( const std::string& input_file,
-                                   const std::string& output_file )
-{
-    std::string command = m_install_data.getOpari() + " --tpd "
-                          SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-                          "--tpd-mangling=" SCOREP_OPARI_MANGLING_SCHEME " ";
-    if ( m_command_line.isPdtInstrumenting() && is_fortran_file( input_file ) )
-    {
-        command += "--nosrc ";
-    }
-    if (  m_command_line.isPreprocess() )
-    {
-        command += "--preprocessed ";
-    }
-    command += input_file + " " + output_file;
-
-    execute_command( command );
-}
-
-void
-SCOREP_Instrumenter::invoke_awk_script( const std::string& object_files,
-                                        const std::string& output_file )
-{
-    std::string command = m_install_data.getNm() + " " +  object_files
-                          + " | " + m_install_data.getOpariScript()
-                          + " > " + output_file;
-    execute_command( command );
-
-    m_temp_files += " " + output_file;
-}
-
-void
-SCOREP_Instrumenter::compile_init_file( const std::string& input_file,
-                                        const std::string& output_file )
-{
-    std::string command = m_install_data.getCC()
-                          + " -c " + input_file
-                          + " `" + m_install_data.getOpariConfig()
-                          + " --cflags` "
-                          + " -o " + output_file;
-
-    execute_command( command );
-
-    m_temp_files += " " + output_file;
+    m_config_base  = scorep_config + mode;
+    m_linker_flags = "`" + scorep_config + mode + " --ldflags` `" +
+                     scorep_config + mode + " --libs` ";
 }
 
 void
@@ -524,178 +316,63 @@ SCOREP_Instrumenter::compile_source_file( const std::string& input_file,
                                           const std::string& output_file )
 {
     /* Construct command */
-    std::string command = m_install_data.getCompilerEnvironmentVars()
-                          + " " + m_command_line.getCompilerName()
-                          + " " + m_compiler_flags
-                          + " " + m_command_line.getFlagsBeforeLmpi()
-                          + " " + m_command_line.getFlagsAfterLmpi()
-                          + " -c " + input_file
-                          + " -o " + output_file;
-    execute_command( command );
-}
-
-std::string
-SCOREP_Instrumenter::instrument_opari( const std::string& source_file )
-{
-    /* For Fortran source files, the extension must be in upper case to use the
-       C-Preprocessor */
-    std::string extension = get_extension( source_file );
-    if ( is_fortran_file( source_file ) )
-    {
-        std::transform( extension.begin(), extension.end(), extension.begin(), ::toupper );
-    }
-
-    std::string modified_file = remove_path( remove_extension( source_file )
-                                             + ".opari"
-                                             + extension );
-
-    invoke_opari( source_file, modified_file );
-    m_temp_files += " " + modified_file
-                    + " " + remove_path( source_file + ".opari.inc" );
-    return modified_file;
-}
-
-std::string
-SCOREP_Instrumenter::instrument_pdt( const std::string& source_file )
-{
-    std::string extension = get_extension( source_file );
-    if ( is_fortran_file( source_file ) )
-    {
-        std::transform( extension.begin(), extension.end(), extension.begin(), ::toupper );
-    }
-    std::string modified_file = remove_path( remove_extension( source_file ) +
-                                             "_pdt" + extension );
-    std::string       pdb_file = remove_path( remove_extension( source_file ) + ".pdb" );
     std::stringstream command;
-    std::string       pdt_bin_path = m_install_data.getPdtBinPath();
-
-    // Create database file
-    if ( is_c_file( source_file ) )
-    {
-        command << pdt_bin_path << "/cparse " << source_file;
-    }
-    else if ( is_fortran_file( source_file ) )
-    {
-        command << pdt_bin_path << "/gfparse " << source_file;
-    }
-    else
-    {
-        command << pdt_bin_path << "/cxxparse " << source_file;
-    }
-    command << " " << m_command_line.getDefineFlags()
-            << " " << m_command_line.getIncludeFlags()
-            << " " << m_pdt_flags;
-#ifdef _OPENMP
-    if ( m_command_line.isOpenmpApplication() )
-    {
-        command << " -D_OPENMP=";
-        command << _OPENMP;
-    }
-#endif
-
-    if ( m_command_line.isMpiApplication() )
-    {
-        command << " -I" SCOREP_MPI_INCLUDE;
-    }
-
-    execute_command( command.str() );
-
-    // instrument source
-    command.str( "" );
-    command << pdt_bin_path << "/tau_instrumentor "
-            << pdb_file
-            << " " << source_file
-            << " " << m_command_line.getIncludeFlags()
-            << " " << m_command_line.getDefineFlags()
-            << " " << m_pdt_flags;
-#ifdef _OPENMP
-    if ( m_command_line.isOpenmpApplication() )
-    {
-        command << " -D_OPENMP=";
-        command <<  _OPENMP;
-    }
-#endif
-    command << " -o " << modified_file
-            << " -spec " << m_install_data.getPdtConfigFile();
-    command << " " << m_command_line.getPdtParams();
-
-    if ( m_command_line.isMpiApplication() )
-    {
-        command << " -I" SCOREP_MPI_INCLUDE;
-    }
-
-    execute_command( command.str() );
-
-    m_temp_files += " " + modified_file + " " + pdb_file;
-
-    return modified_file;
+    command << SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars();
+    command << " " << m_command_line.getCompilerName();
+    command << " `" << m_config_base << " --cflags` " << m_compiler_flags;
+    command << " " << m_command_line.getFlagsBeforeLmpi();
+    command << " " << m_command_line.getFlagsAfterLmpi();
+    command << " -c " << input_file;
+    command << " -o " << output_file;
+    executeCommand( command.str() );
 }
 
-/* ****************************************************************************
-   Linking
-******************************************************************************/
-
 std::string
-SCOREP_Instrumenter::get_library_files( void )
+SCOREP_Instrumenter::precompile( std::string current_file )
 {
-    std::string libraries   = m_command_line.getLibraries();
-    std::string libdirs     = m_command_line.getLibDirs();
-    std::string current_lib = "";
-    std::string lib_files   = "";
-    size_t      old_pos     = 0;
-    size_t      cur_pos     = 0;
-
-    while ( cur_pos != std::string::npos )
+    std::deque<SCOREP_Instrumenter_Adapter*>::iterator adapter;
+    for ( adapter = m_precompile_adapters.begin();
+          adapter != m_precompile_adapters.end();
+          adapter++ )
     {
-        cur_pos = libraries.find( " ", old_pos );
-        if ( old_pos < cur_pos ) // Discard a blank
+        if ( ( *adapter )->isEnabled() )
         {
-            current_lib = libraries.substr( old_pos, cur_pos - old_pos );
-            lib_files  += " " + find_library( current_lib, libdirs, " " );
+            current_file = ( *adapter )->precompile( *this,
+                                                     m_command_line,
+                                                     current_file );
         }
-        // Setup for next file
-        old_pos = cur_pos + 1;
     }
-    return lib_files;
+    return current_file;
 }
 
 void
-SCOREP_Instrumenter::prepare_opari_linking( void )
+SCOREP_Instrumenter::prelink( void )
 {
-    std::string output_name  = m_command_line.getOutputName();
-    std::string current_file = "";
-    std::string object_files = "";
-    std::string init_source  = output_name + ".pomp_init.c";
-    std::string init_object  = output_name + ".pomp_init.o";
-    size_t      old_pos      = 0;
-    size_t      cur_pos      = 0;
-
-    // Compile list of library and object files
-    while ( cur_pos != std::string::npos )
+    std::deque<SCOREP_Instrumenter_Adapter*>::iterator adapter;
+    for ( adapter = m_prelink_adapters.begin();
+          adapter != m_prelink_adapters.end();
+          adapter++ )
     {
-        cur_pos = m_input_files.find( " ", old_pos );
-        if ( old_pos < cur_pos ) // Discard a blank
+        if ( ( *adapter )->isEnabled() )
         {
-            current_file = m_input_files.substr( old_pos, cur_pos - old_pos );
-            if ( is_object_file( current_file ) || is_library( current_file ) )
-            {
-                object_files += " " + current_file;
-            }
+            ( *adapter )->prelink( *this, m_command_line );
         }
-        // Setup for next file
-        old_pos = cur_pos + 1;
     }
-    object_files += get_library_files();
+}
 
-    // Create and compile the POMP2 init file.
-    invoke_awk_script( object_files, init_source );
-    compile_init_file( init_source, init_object );
-
-    /* Add the object file for POMP2 initialization to the input files for linking.
-       Prepend it to the front of input symbols, because some compilers do not
-       find the POMP_Init_<ID> symbols (in libraries) if it is appended.
-       See  ticket #627. */
-    m_input_files = init_object + " " + m_input_files;
+void
+SCOREP_Instrumenter::postlink( void )
+{
+    std::deque<SCOREP_Instrumenter_Adapter*>::iterator adapter;
+    for ( adapter = m_postlink_adapters.begin();
+          adapter != m_postlink_adapters.end();
+          adapter++ )
+    {
+        if ( ( *adapter )->isEnabled() )
+        {
+            ( *adapter )->postlink( *this, m_command_line );
+        }
+    }
 }
 
 void
@@ -710,60 +387,24 @@ SCOREP_Instrumenter::link_step( void )
         m_linker_flags = "-Bdynamic " + m_linker_flags;
     }
 
-    std::string command = m_command_line.getCompilerName()
-                          + " " + m_input_files
-                          + " " + m_command_line.getFlagsBeforeLmpi()
-                          + " " + m_linker_flags
-                          + " " + m_command_line.getFlagsAfterLmpi();
+    std::stringstream command;
+    command << m_command_line.getCompilerName();
+    command << " " << m_input_files;
+    command << " " << m_command_line.getFlagsBeforeLmpi();
+    command << " " << m_linker_flags;
+    command << " " << m_command_line.getFlagsAfterLmpi();
 
     if ( m_command_line.getOutputName() != "" )
     {
         /* nvcc requires a space between -o and the output name. */
-        command += " -o " + m_command_line.getOutputName();
+        command << " -o " << m_command_line.getOutputName();
     }
 
-    execute_command( command );
-}
-
-int
-SCOREP_Instrumenter::invoke_cobi( const std::string& orig_name,
-                                  const std::string& output_name )
-{
-    std::string adapter = m_install_data.getCobiConfigDir()
-                          + "/SCOREP_Cobi_Adapter";
-    std::string command;
-
-    /* Define adapter definition file */
-    if ( m_command_line.isMpiApplication() )
-    {
-        adapter += "Mpi";
-    }
-    if ( m_command_line.isOpenmpApplication() )
-    {
-        adapter += "Omp";
-    }
-    if ( !m_command_line.isMpiApplication() &&
-         !m_command_line.isOpenmpApplication() )
-    {
-        adapter += "Serial";
-    }
-    adapter += ".xml";
-
-    command = m_install_data.getCobi()
-              + " -a " + adapter
-              + " -b " + orig_name
-              + " -f " + m_install_data.getCobiConfigDir() + "/SCOREP_Cobi_Filter.xml"
-              + " -o " + output_name;
-
-    execute_command( command );
-
-    m_temp_files += " " + orig_name;
-
-    return EXIT_SUCCESS;
+    executeCommand( command.str() );
 }
 
 void
-SCOREP_Instrumenter::execute_command( const std::string& command )
+SCOREP_Instrumenter::executeCommand( const std::string& command )
 {
     if ( m_command_line.getVerbosity() >= 1 )
     {

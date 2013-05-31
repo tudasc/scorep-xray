@@ -6,14 +6,30 @@ scorep_SOURCES = \
     $(SRC_ROOT)src/tools/instrumenter/scorep.cpp                           \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter.cpp              \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter.hpp              \
-    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_utils.cpp        \
-    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_utils.hpp        \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_adapter.cpp      \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_adapter.hpp      \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cmd_line.cpp     \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cmd_line.hpp     \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cobi.cpp         \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cobi.hpp         \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_compiler.cpp     \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_compiler.hpp     \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cuda.cpp         \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cuda.hpp         \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_install_data.cpp \
-    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_install_data.hpp
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_install_data.hpp \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_opari.cpp        \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_opari.hpp        \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_pdt.cpp          \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_pdt.hpp          \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_preprocess.cpp   \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_preprocess.hpp   \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_user.cpp         \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_user.hpp         \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_utils.cpp        \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_utils.hpp
 
-scorep_CPPFLAGS = $(AM_CPPFLAGS) $(OPENMP_CFLAGS) \
+scorep_CPPFLAGS = $(AM_CPPFLAGS) $(OPENMP_CFLAGS) -g \
     $(UTILS_CPPFLAGS) \
     -DBUILD_DIR=\"`pwd`\"
 

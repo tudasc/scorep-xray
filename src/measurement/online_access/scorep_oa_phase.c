@@ -38,15 +38,13 @@
 void
 scorep_oa_phase_enter
 (
-    const SCOREP_User_RegionHandle handle
+    const SCOREP_RegionHandle ms_handle
 )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __func__ );
 
-    assert( handle != SCOREP_USER_INVALID_REGION );
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "OA phase enter: region handle %ld\n", handle->handle );
-
-    SCOREP_RegionHandle ms_handle = handle->handle;
+    assert( ms_handle != SCOREP_INVALID_REGION );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "OA phase enter: region handle %ld\n", ms_handle );
 
     if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_STATUS_RUNNING_TO_BEGINNING )
     {
@@ -61,15 +59,13 @@ scorep_oa_phase_enter
 void
 scorep_oa_phase_exit
 (
-    const SCOREP_User_RegionHandle handle
+    const SCOREP_RegionHandle ms_handle
 )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __func__ );
 
-    assert( handle != SCOREP_USER_INVALID_REGION );
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "OA phase exit: region handle %ld\n", handle->handle );
-
-    SCOREP_RegionHandle ms_handle = handle->handle;
+    assert( ms_handle != SCOREP_INVALID_REGION );
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "OA phase exit: region handle %ld\n", ms_handle );
 
     if ( scorep_oa_mri_get_appl_control() == SCOREP_OA_MRI_STATUS_RUNNING_TO_END )
     {

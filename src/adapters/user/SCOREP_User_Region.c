@@ -34,6 +34,7 @@
 #include <SCOREP_Hashtab.h>
 #include <UTILS_CStr.h>
 #include <UTILS_IO.h>
+#include <SCOREP_OA_Functions.h>
 #include "scorep_selective_region.h"
 
 #include <stdlib.h>
@@ -338,4 +339,44 @@ SCOREP_User_RewindRegionEnter
     /* Generate rewind point and enter event for this region */
     scorep_selective_check_enter( handle );
     SCOREP_EnterRewindRegion( handle->handle );
+}
+
+void
+SCOREP_User_OaPhaseBegin
+(
+    SCOREP_User_RegionHandle*    handle,
+    const char**                 lastFileName,
+    SCOREP_SourceFileHandle*     lastFile,
+    const char*                  name,
+    const SCOREP_User_RegionType regionType,
+    const char*                  fileName,
+    const uint32_t               lineNo
+)
+{
+    SCOREP_USER_ASSERT_NOT_FINALIZED;
+
+    /* Make sure that the region is initialized */
+    if ( *handle == SCOREP_USER_INVALID_REGION )
+    {
+        SCOREP_User_RegionInit( handle, lastFileName, lastFile, name,
+                                regionType, fileName, lineNo );
+    }
+
+    SCOREP_OA_PhaseBegin( ( *handle )->handle );
+
+    SCOREP_User_RegionEnter( *handle );
+}
+
+void
+SCOREP_User_OaPhaseEnd
+(
+    const SCOREP_User_RegionHandle handle
+)
+{
+    /* Check for intialization */
+    SCOREP_USER_ASSERT_INITIALIZED;
+
+    SCOREP_User_RegionEnd( handle );
+
+    SCOREP_OA_PhaseEnd( handle->handle );
 }

@@ -69,7 +69,6 @@ SCOREP_Env_GetTotalMemory();
 uint64_t
 SCOREP_Env_GetPageSize();
 
-extern bool scorep_mpi_hierarchical_unify;
 
 static uint64_t              scorep_test_mpi_unify_verbose;
 static bool                  scorep_test_mpi_unify_define_mpi_group;
@@ -178,9 +177,7 @@ main( int argc, char* argv[] )
     timing = ( SCOREP_GetClockTicks() - timing ) / SCOREP_GetClockResolution();
 
     char result_name[ 64 ];
-    sprintf( result_name, "mpi_unification_test.%s.%d.result",
-             scorep_mpi_hierarchical_unify ? "hierarchical" : "sequential",
-             size );
+    sprintf( result_name, "mpi_unification_test.%d.result", size );
 
     if ( rank == 0 )
     {

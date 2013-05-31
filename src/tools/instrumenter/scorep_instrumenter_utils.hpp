@@ -103,6 +103,14 @@ bool
 is_library( const std::string& filename );
 
 /**
+   Simpifies a path.
+   @param path The path that is simplified.
+   @returns the simplified path.
+ */
+std::string
+simplify_path( const std::string& path );
+
+/**
    Removes everything before the first slash from @a full_path.
    @param a file with its full path.
    @returns The filename without its path.

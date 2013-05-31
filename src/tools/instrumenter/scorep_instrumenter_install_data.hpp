@@ -78,55 +78,6 @@ public:
     getFC( void );
 
     /**
-       The nm command
-     */
-    std::string
-    getNm( void );
-
-    /**
-       The opari2 executable
-     */
-    std::string
-    getOpari( void );
-
-    /**
-       The awk script used to generate functions for initialization of Opari2
-       instrumented regions.
-     */
-    std::string
-    getOpariScript( void );
-
-    /**
-       The opari2-config tool
-     */
-    std::string
-    getOpariConfig( void );
-
-    /**
-       The cobi executable
-     */
-    std::string
-    getCobi( void );
-
-    /**
-        Directory of the Cobi configuration files
-     */
-    std::string
-    getCobiConfigDir( void );
-
-    /**
-        Path to PDT binaries.
-     */
-    std::string
-    getPdtBinPath( void );
-
-    /**
-        PDT instrumentation specificaion file.
-     */
-    std::string
-    getPdtConfigFile( void );
-
-    /**
        Reads configuration data from a config file
      */
     SCOREP_ErrorCode
@@ -140,34 +91,13 @@ public:
     void
     setBuildCheck( void );
 
-    /**
-       Sets user specified Opari2 flags.
-       @param params The Opari2 parameters
-     */
-    void
-    setOpariParams( const std::string& params );
-
-    /**
-       Sets user specified Cobi flags.
-       @param params The Cobi parameters
-     */
-    void
-    setCobiParams( const std::string& params );
-
-    /**
-       Sets OPARI2 parameters to explicitly specify fixed or free form fortran.
-       @param is_free  True if free form is specifed. False specifies fixed form.
-     */
-    void
-    setOpariFortranForm( bool is_free );
-
     /* ************************************** Compiler dependent implemented */
 
     /**
        Checks whether @a arg is the compiler option to build a shared library.
        @param arg the argument that is considered
      */
-    bool
+    static bool
     isArgForShared( const std::string& arg );
 
     /**
@@ -181,45 +111,45 @@ public:
        Checks whether @a arg is the compiler option to enable free form Fortran
        @param arg the argument that is considered
      */
-    bool
+    static bool
     isArgForFreeform( const std::string& arg );
 
     /**
        Checks whether @a arg is the compiler option to enable fixed form Fortran
        @param arg the argument that is considered
      */
-    bool
+    static bool
     isArgForFixedform( const std::string& arg );
 
-    std::string
+    static std::string
     getCPreprocessingFlags( const std::string& input_file,
                             const std::string& output_file );
 
-    std::string
+    static std::string
     getCxxPreprocessingFlags( const std::string& input_file,
                               const std::string& output_file );
 
-    std::string
+    static std::string
     getFortranPreprocessingFlags( const std::string& input_file,
                                   const std::string& output_file );
 
     /**
        Returns envaronment variables needed by the compiler.
      */
-    std::string
+    static std::string
     getCompilerEnvironmentVars( void );
 
     /**
        Checks whether an argument that starts with -o is an argument that does not
        specify an output file name.
      */
-    bool
+    static bool
     isArgWithO( std::string arg );
 
     /**
        Checks whether an argument instructs the compiler to only preprocess.
      */
-    bool
+    static bool
     isPreprocessFlag( std::string arg );
 
     /* ***************************************************** Private methods */
@@ -281,62 +211,6 @@ private:
        Stores C compiler OpenMP flags
      */
     std::string m_openmp_cflags;
-
-    /**
-       The nm command
-     */
-    std::string m_nm;
-
-    /**
-       The opari2 executable
-     */
-    std::string m_opari;
-
-    /**
-       The awk script used to generate functions for initialization of Opari2
-       instrumented regions.
-     */
-    std::string m_opari_script;
-
-    /**
-       The opari2-config tool
-     */
-    std::string m_opari_config;
-
-    /**
-       The cobi executable
-     */
-    std::string m_cobi;
-
-    /**
-        Directory of the Cobi configuration files
-     */
-    std::string m_cobi_config_dir;
-
-    /**
-        Path to PDT binaries.
-     */
-    std::string m_pdt_bin_path;
-
-    /**
-        PDT instrumentation specificaion file.
-     */
-    std::string m_pdt_config_file;
-
-    /**
-       Extra parameter for opari.
-     */
-    std::string m_opari_params;
-
-    /**
-       Extra parameters for the tau_instrumenter
-     */
-    std::string m_pdt_params;
-
-    /**
-       Extra parameter for the Cobi instrumenter
-     */
-    std::string m_cobi_params;
 };
 
 #endif

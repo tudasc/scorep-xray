@@ -26,18 +26,18 @@
  * @status alpha
  */
 
-#include <scorep/SCOREP_User_Types.h>
+#include <SCOREP_Types.h>
 
 void
 scorep_oa_phase_enter
 (
-    const SCOREP_User_RegionHandle handle
+    const SCOREP_RegionHandle handle
 );
 
 void
 scorep_oa_phase_exit
 (
-    const SCOREP_User_RegionHandle handle
+    const SCOREP_RegionHandle handle
 );
 
 #endif /* SCOREP_OA_PHASE_H_ */

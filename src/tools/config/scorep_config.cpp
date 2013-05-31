@@ -29,29 +29,29 @@
 #include <string.h>
 #include <string>
 #include <iostream>
+#include <fstream>
 
 #include <UTILS_IO.h>
 
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
-//#include <scorep_config.hpp>
 #include "SCOREP_Config_LibraryDependencies.hpp"
+#include "scorep_config_adapter.hpp"
+#include "scorep_config_mpp.hpp"
+#include "scorep_config_thread.hpp"
+#include "scorep_config_utils.hpp"
 
-#define MODE_SEQ 0
-#define MODE_OMP 1
-#define MODE_MPI 2
-#define MODE_HYB 3
-
-#define ACTION_LIBS    1
-#define ACTION_CFLAGS  2
-#define ACTION_INCDIR  3
-#define ACTION_LDFLAGS 4
-#define ACTION_CC      5
-#define ACTION_CXX     6
-#define ACTION_FC      7
-#define ACTION_MPICC   8
-#define ACTION_MPICXX  9
-#define ACTION_MPIFC  10
+#define ACTION_LIBS           1
+#define ACTION_CFLAGS         2
+#define ACTION_INCDIR         3
+#define ACTION_LDFLAGS        4
+#define ACTION_CC             5
+#define ACTION_CXX            6
+#define ACTION_FC             7
+#define ACTION_MPICC          8
+#define ACTION_MPICXX         9
+#define ACTION_MPIFC         10
+#define ACTION_COBI_DEPS     11
 
 #define SHORT_HELP \
     "\nUsage:\nscorep-config <command> [<options>]\n\n" \
@@ -62,57 +62,75 @@
 #define HELPTEXT \
     "\nUsage:\nscorep-config <command> [<options>]\n" \
     "  Commands:\n" \
-    "   --cflags   prints additional compiler flags. They already contain the\n" \
-    "              include flags.\n" \
-    "   --cppflags prints the include flags. They are already contained in the\n" \
-    "              output of the --cflags command\n" \
-    "   --ldflags  prints the library path flags for the linker\n" \
-    "   --libs     prints the required linker flags\n" \
-    "   --cc       prints the C compiler name\n" \
-    "   --cxx      prints the C++ compiler name\n" \
-    "   --fc       prints the Fortran compiler name\n" \
-    "   --mpicc    prints the MPI C compiler name\n" \
-    "   --mpicxx   prints the MPI C++ compiler name\n" \
-    "   --mpifc    prints the MPI Fortran compiler name\n" \
-    "   --help     prints this usage information\n" \
-    "   --version  prints the version number of the scorep package\n" \
+    "   --cflags    prints additional compiler flags. They already contain the\n" \
+    "               include flags.\n" \
+    "   --cppflags  prints the include flags. They are already contained in the\n" \
+    "               output of the --cflags command\n" \
+    "   --ldflags   prints the library path flags for the linker\n" \
+    "   --libs      prints the required linker flags\n" \
+    "   --cc        prints the C compiler name\n" \
+    "   --cxx       prints the C++ compiler name\n" \
+    "   --fc        prints the Fortran compiler name\n" \
+    "   --mpicc     prints the MPI C compiler name\n" \
+    "   --mpicxx    prints the MPI C++ compiler name\n" \
+    "   --mpifc     prints the MPI Fortran compiler name\n" \
+    "   --cobi-deps prints the dependency library part for the Cobi adapter file\n" \
+    "   --help      prints this usage information\n" \
+    "   --version   prints the version number of the scorep package\n" \
     "   --scorep-revision prints the revision number of the scorep package\n" \
-    "   --common-revision prints the revision number of the common package\n\n" \
+    "   --common-revision prints the revision number of the common package\n" \
     "  Options:\n" \
-    "   --seq|--omp|--mpi|--hyb\n" \
-    "            specifys the mode: seqential, OpenMP, MPI, or hybrid (MPI + OpenMP)\n" \
-    "            Takes effect only for the --libs command. The default mode is MPI.\n\n" \
-    "   --user|--nouser\n" \
-    "            Specifies whether manual user instrumentation is used. On default\n" \
-    "            user instrumentation is disabled.\n\n" \
-    "   --compiler|--nocompiler\n" \
-    "            Specifies whether compiler instrumentation is used. On default\n" \
-    "            compiler instrumentation is enabled.\n\n" \
-    "   --fortran   Specifies that the required flags are for the Fortran compiler.\n\n" \
-    "   --cuda   Specifies that the required flags are for the CUDA compiler.\n\n"
-
-
-void
-get_rpath_struct_data( void );
-
-std::string
-prepare_string( std::string str );
-
-std::string
-remove_multiple_whitespaces( std::string str );
-
-std::string
-replace_all( const std::string& pattern,
-             const std::string& replacement,
-             std::string        original );
-
-std::string
-append_ld_run_path_to_rpath( std::string rpath );
-
+    "   --fortran   Specifies that the required flags are for the Fortran compiler.\n"
 
 std::string m_rpath_head      = "";
 std::string m_rpath_delimiter = "";
 std::string m_rpath_tail      = "";
+
+static void
+print_help( void )
+{
+    std::cout << HELPTEXT;
+    for ( std::deque<SCOREP_Config_Adapter*>::iterator i = scorep_adapters.begin();
+          i != scorep_adapters.end(); i++ )
+    {
+        ( *i )->printHelp();
+    }
+    std::cout << "   --thread=<threading system>[:<variant>]\n"
+              << "            Available threading systems are:\n";
+    for ( std::deque<SCOREP_Config_ThreadSystem*>::iterator i = scorep_thread_systems.begin();
+          i != scorep_thread_systems.end(); i++ )
+    {
+        ( *i )->printHelp();
+    }
+    std::cout << "            If no variant is specified the first matching\n"
+              << "            threading system is used.\n";
+    std::cout << "   --mpp=<multi-process paradigm>\n"
+              << "            Available multi-process paradigms are:\n";
+    for ( std::deque<SCOREP_Config_MppSystem*>::iterator i = scorep_mpp_systems.begin();
+          i != scorep_mpp_systems.end(); i++ )
+    {
+        ( *i )->printHelp();
+    }
+}
+
+static void
+get_rpath_struct_data( void );
+
+static std::string
+append_ld_run_path_to_rpath( std::string rpath );
+
+static void
+write_cobi_deps( SCOREP_Config_LibraryDependencies& deps,
+                 const std::deque<std::string>&     libs,
+                 bool                               install );
+
+static inline void
+clean_up()
+{
+    scorep_config_final_thread_systems();
+    scorep_config_final_mpp_systems();
+    scorep_config_final_adapters();
+}
 
 int
 main( int    argc,
@@ -120,28 +138,27 @@ main( int    argc,
 {
     int i;
     /* set default mode to mpi */
-    int  mode     = MODE_MPI;
-    int  action   = 0;
-    int  ret      = EXIT_SUCCESS;
-    bool user     = false;
-    bool compiler = true;
-    bool fortran  = false;
-    bool cuda     = false;
-    bool install  = true;
+    int  action  = 0;
+    int  ret     = EXIT_SUCCESS;
+    bool fortran = false;
+    bool install = true;
 
-    const std::string scorep_libs[ 4 ] = { "scorep_serial",
-                                           "scorep_omp",
-                                           "scorep_mpi",
-                                           "scorep_mpi_omp" };
+    SCOREP_Config_LibraryDependencies                 deps;
+    std::deque<SCOREP_Config_Adapter*>::iterator      adapter;
+    std::deque<SCOREP_Config_MppSystem*>::iterator    mpp;
+    std::deque<SCOREP_Config_ThreadSystem*>::iterator ts;
 
-    SCOREP_Config_LibraryDependencies deps;
+    scorep_config_init_adapters();
+    scorep_config_init_mpp_systems();
+    scorep_config_init_thread_systems();
 
     /* parsing the command line */
     for ( i = 1; i < argc; i++ )
     {
         if ( strcmp( argv[ i ], "--help" ) == 0 || strcmp( argv[ i ], "-h" ) == 0 )
         {
-            std::cout << HELPTEXT << std::endl;
+            print_help();
+            clean_up();
             return EXIT_SUCCESS;
         }
         else if ( strcmp( argv[ i ], "--version" ) == 0 )
@@ -159,22 +176,6 @@ main( int    argc,
         {
             std::cout << SCOREP_COMMON_REVISION << std::endl;
             exit( EXIT_SUCCESS );
-        }
-        else if ( strcmp( argv[ i ], "--seq" ) == 0 )
-        {
-            mode = MODE_SEQ;
-        }
-        else if ( strcmp( argv[ i ], "--omp" ) == 0 )
-        {
-            mode = MODE_OMP;
-        }
-        else if ( strcmp( argv[ i ], "--mpi" ) == 0 )
-        {
-            mode = MODE_MPI;
-        }
-        else if ( strcmp( argv[ i ], "--hyb" ) == 0 )
-        {
-            mode = MODE_HYB;
         }
         else if ( strcmp( argv[ i ], "--libs" ) == 0 )
         {
@@ -217,103 +218,126 @@ main( int    argc,
         {
             action = ACTION_MPIFC;
         }
-        else if ( strcmp( argv[ i ], "--user" ) == 0 )
-        {
-            user = true;
-        }
-        else if ( strcmp( argv[ i ], "--nouser" ) == 0 )
-        {
-            user = false;
-        }
-        else if ( strcmp( argv[ i ], "--compiler" ) == 0 )
-        {
-            compiler = true;
-        }
-        else if ( strcmp( argv[ i ], "--nocompiler" ) == 0 )
-        {
-            compiler = false;
-        }
         else if ( strcmp( argv[ i ], "--fortran" ) == 0 )
         {
             fortran = true;
-        }
-        else if ( strcmp( argv[ i ], "--cuda" ) == 0 )
-        {
-            cuda = true;
         }
         else if ( strcmp( argv[ i ], "--build-check" ) == 0 )
         {
             install = false;
         }
-
+        else if ( strcmp( argv[ i ], "--cobi-deps" ) == 0 )
+        {
+            action = ACTION_COBI_DEPS;
+        }
+        else if ( strncmp( argv[ i ], "--thread=", 9 ) == 0 )
+        {
+            bool known_arg = false;
+            for ( ts = scorep_thread_systems.begin();
+                  ts != scorep_thread_systems.end(); ts++ )
+            {
+                known_arg = ( *ts )->checkArgument( &argv[ i ][ 9 ] );
+                if ( known_arg )
+                {
+                    break;
+                }
+            }
+            if ( !known_arg )
+            {
+                std::cerr << "\nUnknown threading system " << &argv[ i ][ 9 ]
+                          << ". Abort.\n" << std::endl;
+                clean_up();
+                exit( EXIT_FAILURE );
+            }
+        }
+        else if ( strncmp( argv[ i ], "--mpp=", 6 ) == 0 )
+        {
+            bool known_arg = false;
+            for ( mpp = scorep_mpp_systems.begin();
+                  mpp != scorep_mpp_systems.end(); mpp++ )
+            {
+                known_arg = ( *mpp )->checkArgument( &argv[ i ][ 6 ] );
+                if ( known_arg )
+                {
+                    break;
+                }
+            }
+            if ( !known_arg )
+            {
+                std::cerr << "\nUnknown multi-process paradigm " << &argv[ i ][ 6 ]
+                          << ". Abort.\n" << std::endl;
+                clean_up();
+                exit( EXIT_FAILURE );
+            }
+        }
         else
         {
-            std::cerr << "\nUnknown option " << argv[ i ] << ". Abort.\n" << std::endl;
-            exit( EXIT_FAILURE );
+            bool known_arg = false;
+            for ( adapter = scorep_adapters.begin();
+                  adapter != scorep_adapters.end(); adapter++ )
+            {
+                known_arg = ( *adapter )->checkArgument( argv[ i ] );
+                if ( known_arg )
+                {
+                    break;
+                }
+            }
+            if ( !known_arg )
+            {
+                std::cerr << "\nUnknown option " << argv[ i ]
+                          << ". Abort.\n" << std::endl;
+                clean_up();
+                exit( EXIT_FAILURE );
+            }
         }
     }
 
     std::deque<std::string> libs;
-    libs.push_back( "lib" + scorep_libs[ mode ] );
-    std::string str;
+    std::string             str;
+
+    for ( adapter = scorep_adapters.begin(); adapter != scorep_adapters.end(); adapter++ )
+    {
+        ( *adapter )->addLibs( libs, deps );
+    }
+    SCOREP_Config_MppSystem::current->addLibs( libs, deps );
+    SCOREP_Config_ThreadSystem::current->addLibs( libs, deps );
 
     switch ( action )
     {
         case ACTION_LDFLAGS:
             get_rpath_struct_data();
-            std::cout << deps.GetLDFlags( libs, install );
+            std::cout << deque_to_string( deps.getLDFlags( libs, install ),
+                                          " ", " ", "" );
             if ( USE_LIBDIR_FLAG )
             {
-                str = deps.GetRpathFlags( libs, install,
-                                          m_rpath_head,
-                                          m_rpath_delimiter,
-                                          m_rpath_tail );
+                str = deque_to_string( deps.getRpathFlags( libs, install ),
+                                       m_rpath_head + m_rpath_delimiter,
+                                       m_rpath_delimiter,
+                                       m_rpath_tail );
                 str = append_ld_run_path_to_rpath( str );
             }
-            if ( compiler )
+            for ( adapter = scorep_adapters.begin();
+                  adapter != scorep_adapters.end(); adapter++ )
             {
-                str += " " SCOREP_LDFLAGS;
-            }
-            if ( cuda )
-            {
-                str = " -Xlinker " + prepare_string( str );
+                ( *adapter )->addLdFlags( str );
             }
             std::cout << str;
             std::cout.flush();
             break;
 
         case ACTION_LIBS:
-            std::cout << deps.GetLibraries( libs );
+            std::cout << deque_to_string( deps.getLibraries( libs ),
+                                          " ", " ", "" );
             std::cout.flush();
             break;
 
         case ACTION_CFLAGS:
-            if ( compiler )
+            for ( adapter = scorep_adapters.begin();
+                  adapter != scorep_adapters.end(); adapter++ )
             {
-                str += "-g " SCOREP_CFLAGS " ";
+                ( *adapter )->addCFlags( str, fortran );
             }
-            if ( user )
-            {
-                if ( fortran )
-                {
-                       #ifdef SCOREP_COMPILER_IBM
-                    str += "-WF,-DSCOREP_USER_ENABLE ";
-                       #else
-                    str += "-DSCOREP_USER_ENABLE ";
-                       #endif // SCOREP_COMPILER_IBM
-                }
-                else
-                {
-                    str += "-DSCOREP_USER_ENABLE ";
-                }
-            }
-
-                #ifdef SCOREP_COMPILER_IBM
-            if ( fortran && ( ( mode == MODE_OMP ) || ( mode == MODE_HYB ) ) )
-            {
-                str += "-d -WF,-qlanglvl=classic ";
-            }
-                #endif
+            SCOREP_Config_ThreadSystem::current->addCFlags( str, fortran );
 
         // Append the include directories, too
         case ACTION_INCDIR:
@@ -325,10 +349,12 @@ main( int    argc,
             {
                 str += "-I" BUILD_SCOREP_PREFIX "/include -I" BUILD_SCOREP_PREFIX "/include/scorep ";
             }
-            if ( cuda )
+            for ( adapter = scorep_adapters.begin();
+                  adapter != scorep_adapters.end(); adapter++ )
             {
-                str = " -Xcompiler " + prepare_string( str );
+                ( *adapter )->addIncFlags( str, !install );
             }
+            SCOREP_Config_ThreadSystem::current->addIncFlags( str, !install );
 
             std::cout << str;
             std::cout.flush();
@@ -364,11 +390,20 @@ main( int    argc,
             std::cout.flush();
             break;
 
+        case ACTION_COBI_DEPS:
+            if ( libs.empty() )
+            {
+                libs.push_back( "libscorep_measurement" );
+            }
+            write_cobi_deps( deps, libs, install );
+            break;
+
         default:
             std::cout << SHORT_HELP << std::endl;
             break;
     }
 
+    clean_up();
     return ret;
 }
 
@@ -422,108 +457,9 @@ get_rpath_struct_data( void )
 }
 
 /**
- *  Make string with compiler or linker flags compatible to CUDA
- *  compiler requirements.
- *
- *  @param str              String to be processed.
- *
- *  @return Returns string with compiler or linker flags that can be
- *          passes to CUDA compiler.
- */
-std::string
-prepare_string( std::string str )
-{
-    std::string pattern1 = " ";
-    std::string replace1 = ",";
-    std::string pattern2 = LIBDIR_FLAG_WL;
-    std::string replace2 = "";
-
-    str = remove_multiple_whitespaces( str );
-    /* Replace all white-spaces by comma */
-    str = replace_all( pattern1, replace1, str );
-    /* Replace flag for passing arguments to linker through compiler
-     * (flags not needed because we use '-Xlinker' to specify linker
-     * flags when using CUDA compiler */
-    if ( pattern2.length() != 0 )
-    {
-        str = replace_all( pattern2, replace2, str );
-    }
-
-    return str;
-}
-
-/**
- *  Trim  and replace multiple white-spaces in @ str by a single one.
- *
- *  @param str              String to be processed.
- *
- *  @return Returns string where all multiple white-spaces are replaced
- *          by a single one.
- */
-std::string
-remove_multiple_whitespaces( std::string str )
-{
-    std::string            search = "  "; // this string contains 2 spaces
-    std::string::size_type pos;
-
-    /* Trim */
-    pos = str.find_last_not_of( ' ' );
-    if ( pos != std::string::npos )
-    {
-        str.erase( pos + 1 );
-        pos = str.find_first_not_of( ' ' );
-        if ( pos != std::string::npos )
-        {
-            str.erase( 0, pos );
-        }
-    }
-    else
-    {
-        str.erase( str.begin(), str.end() );
-    }
-
-    /* Remove multiple white-spaces */
-    while ( ( pos = str.find( search ) ) != std::string::npos )
-    {
-        /* remove 1 character from the string at index */
-        str.erase( pos, 1 );
-    }
-
-    return str;
-}
-
-/**
- *  Replace all occurrences of @ pattern in string @ original by
- *  @ replacement.
- *
- *  @param pattern          String that should be replaced.
- *  @param replacement      Replacement for @ pattern.
- *  @param original         Input string.
- *
- *  @return Returns a string where all occurrences of @ pattern are
- *          replaced by @ replacement.
- */
-std::string
-replace_all( const std::string& pattern,
-             const std::string& replacement,
-             std::string        original )
-{
-    std::string::size_type pos            = original.find( pattern, 0 );
-    int                    pattern_length = pattern.length();
-
-    while ( pos != std::string::npos )
-    {
-        original.replace( pos, pattern_length, replacement );
-        pos = original.find( pattern, 0 );
-    }
-
-    return original;
-}
-
-/**
  * Add content of the environment variable LD_RUN_PATH as -rpath argument
  */
-std::string
+static std::string
 append_ld_run_path_to_rpath( std::string rpath )
 {
     /* Get variable values */
@@ -545,4 +481,79 @@ append_ld_run_path_to_rpath( std::string rpath )
     rpath += m_rpath_delimiter + replace_all( ":", m_rpath_delimiter, ld_run_path );
     return rpath;
 #endif
+}
+
+/**
+ * Checks whether a file with @a filename exists.
+ * @param file The filename of the file,
+ * @returns true if a file with @a filename exists.
+ */
+static bool
+exists_file( const std::string& filename )
+{
+    std::ifstream ifile( filename.c_str() );
+    return ifile;
+}
+
+static std::string
+find_library( std::string                    library,
+              const std::deque<std::string>& path_list,
+              bool                           allow_static,
+              bool                           allow_shared )
+{
+    std::string current_path;
+
+    if ( library.substr( 0, 2 ) == "-l" )
+    {
+        library.replace( 0, 2, "lib" );
+    }
+    for ( std::deque<std::string>::const_iterator path = path_list.begin();
+          path != path_list.end(); path++ )
+    {
+        current_path = *path + "/" + library;
+        if ( allow_shared && exists_file( current_path + ".so" ) )
+        {
+            return current_path + ".so";
+        }
+        if ( allow_static && exists_file( current_path + ".a" ) )
+        {
+            return current_path + ".a";
+        }
+    }
+
+    return "";
+}
+
+static std::deque<std::string>
+get_full_library_names( const std::deque<std::string>& library_list,
+                        const std::deque<std::string>& path_list,
+                        bool                           allow_static,
+                        bool                           allow_shared )
+{
+    std::deque<std::string> full_names;
+    for ( std::deque<std::string>::const_iterator lib = library_list.begin();
+          lib != library_list.end(); lib++ )
+    {
+        std::string name = find_library( *lib, path_list, allow_static, allow_shared );
+        if ( name != "" )
+        {
+            full_names.push_back( name );
+        }
+    }
+    return full_names;
+}
+
+static void
+write_cobi_deps( SCOREP_Config_LibraryDependencies& deps,
+                 const std::deque<std::string>&     libs,
+                 bool                               install )
+{
+    std::deque<std::string> library_list = deps.getLibraries( libs );
+    std::deque<std::string> path_list    = deps.getRpathFlags( libs, install );
+    std::cout << deque_to_string( get_full_library_names( library_list,
+                                                          path_list,
+                                                          false, true ),
+                                  "\t<library name=\"",
+                                  "\" />\n\t<library name=\"",
+                                  "\" />\n" );
 }

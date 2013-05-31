@@ -22,8 +22,12 @@
 
 #include <config.h>
 #include "scorep_instrumenter_utils.hpp"
+#include <UTILS_IO.h>
+#include <UTILS_CStr.h>
+
 #include <string>
 #include <fstream>
+#include <stdlib.h>
 
 std::string
 remove_multiple_whitespaces( std::string str )
@@ -77,6 +81,16 @@ replace_all( const std::string& pattern,
 /* ****************************************************************************
    Helper functions for file name manipulation and analysis
 ******************************************************************************/
+
+std::string
+simplify_path( const std::string& path )
+{
+    char* buffer = UTILS_CStr_dup( path.c_str() );
+    UTILS_IO_SimplifyPath( buffer );
+    std::string simple_path = buffer;
+    free( buffer );
+    return simple_path;
+}
 
 std::string
 extract_path( const std::string& filename )

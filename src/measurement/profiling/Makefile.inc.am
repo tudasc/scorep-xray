@@ -75,11 +75,3 @@ libscorep_profile_la_SOURCES =                                           \
 
 libscorep_profile_la_CPPFLAGS = $(PROFILE_FLAGS) -DDOCDIR='"$(docdir)"'
 
-# include Online Access only when Online Access is possible
-if HAVE_ONLINE_ACCESS
-libscorep_profile_la_SOURCES +=                                      \
-    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_OAConsumer.h \
-    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_OAConsumer.c \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_oaconsumer_process.h \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_oaconsumer_process.c
-endif

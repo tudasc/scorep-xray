@@ -38,9 +38,6 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_Mpi.h>
 
-#define SCOREP_USER_ENABLE
-#include <scorep/SCOREP_User.h>
-
 #include <scorep_mpi_oa_profile.h>
 
 
@@ -67,8 +64,8 @@ static int          scorep_mpiprofiling_timepack_pool_size = 0;
 
 scorep_mpiprofile_world_comm_dup scorep_mpiprofiling_world_comm_dup;
 
-SCOREP_USER_METRIC_LOCAL( scorep_mpiprofiling_lateSend )
-SCOREP_USER_METRIC_LOCAL( scorep_mpiprofiling_lateRecv )
+SCOREP_MetricHandle scorep_mpiprofiling_lateSend = SCOREP_INVALID_METRIC;
+SCOREP_MetricHandle scorep_mpiprofiling_lateRecv = SCOREP_INVALID_METRIC;
 
 
 #define _WITH_PREALLOCATION_OF_TIME_PACKS
@@ -128,10 +125,25 @@ scorep_mpiprofile_init_metrics( void )
     }
     /* -- initialize late metrics -- */
     scorep_mpiprofiling_lateThreshold = 0.001;
-    SCOREP_USER_METRIC_INIT( scorep_mpiprofiling_lateSend, "late_send", "s", SCOREP_USER_METRIC_TYPE_INT64,
-                             SCOREP_USER_METRIC_CONTEXT_CALLPATH );
-    SCOREP_USER_METRIC_INIT( scorep_mpiprofiling_lateRecv, "late_receive", "s", SCOREP_USER_METRIC_TYPE_INT64,
-                             SCOREP_USER_METRIC_CONTEXT_CALLPATH );
+
+    scorep_mpiprofiling_lateSend =
+        SCOREP_Definitions_NewMetric( "late_send", "",
+                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                      SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                      SCOREP_METRIC_VALUE_INT64,
+                                      SCOREP_METRIC_BASE_DECIMAL, 0,
+                                      "s",
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+
+    scorep_mpiprofiling_lateRecv =
+        SCOREP_Definitions_NewMetric( "late_receive", "",
+                                      SCOREP_METRIC_SOURCE_TYPE_OTHER,
+                                      SCOREP_METRIC_MODE_ABSOLUTE_POINT,
+                                      SCOREP_METRIC_VALUE_INT64,
+                                      SCOREP_METRIC_BASE_DECIMAL, 0,
+                                      "s",
+                                      SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+
     scorep_mpiprofiling_metrics_initialized = 1;
 }
 
@@ -730,14 +742,14 @@ scorep_mpiprofile_eval_time_stamps
     if ( delta > mpiprofiling_get_late_threshold() )
     {
         //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "LATE RECEIVE: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld", myrank, src, dst, delta, recvTime, sendTime );
-        //SCOREP_USER_METRIC_INT64( scorep_mpiprofiling_lateRecv, delta );
+        SCOREP_TriggerCounterInt64( scorep_mpiprofiling_lateRecv, delta );
         ///receive process is late: store EARLY_SEND/LATE_RECEIVE=delta value for the remote side, currently not supported
         ///trigger user metric here
     }
     else if ( delta < -mpiprofiling_get_late_threshold() )
     {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "LATE SENDER: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld", scorep_mpiprofiling_myrank, src, dst, delta, recvTime, sendTime );
-        SCOREP_USER_METRIC_INT64( scorep_mpiprofiling_lateSend, -delta );
+        ///UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "LATE SENDER: myrank=%d, src/dst = (%d/%d) Delta = %ld = %ld-%ld", scorep_mpiprofiling_myrank, src, dst, delta, recvTime, sendTime );
+        SCOREP_TriggerCounterInt64( scorep_mpiprofiling_lateSend, -delta );
         ///sending process is late: store LATE_SEND/EARLY_RECEIVE=-delta value on the current process
         ///trigger user metric here
     }
@@ -757,10 +769,22 @@ mpiprofiling_get_late_threshold( void )
 }
 
 void
-mpiprofiling_set_late_threshold
-(
-    int64_t newThreshold
-)
+mpiprofiling_set_late_threshold( int64_t newThreshold )
 {
     scorep_mpiprofiling_lateThreshold = newThreshold;
+}
+
+void
+scorep_oa_mri_set_mpiprofiling( int value )
+{
+    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
+    if ( value )
+    {
+        SCOREP_MPI_HOOKS_ON;
+        scorep_mpiprofile_reinit_metrics();
+    }
+    else
+    {
+        SCOREP_MPI_HOOKS_OFF;
+    }
 }

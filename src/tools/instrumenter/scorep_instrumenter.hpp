@@ -28,6 +28,16 @@
 
 #include <iostream>
 #include <string>
+#include <deque>
+
+class SCOREP_Instrumenter_Adapter;
+class SCOREP_Instrumenter_CobiAdapter;
+class SCOREP_Instrumenter_CompilerAdapter;
+class SCOREP_Instrumenter_CudaAdapter;
+class SCOREP_Instrumenter_OpariAdapter;
+class SCOREP_Instrumenter_PreprocessAdapter;
+class SCOREP_Instrumenter_PdtAdapter;
+class SCOREP_Instrumenter_UserAdapter;
 
 /* ****************************************************************************
    Class SCOREP_Instrumenter
@@ -62,6 +72,28 @@ public:
     virtual int
     Run( void );
 
+    /**
+       Executes the command specified by @ command. It checks verbosity level
+       and whether it is a dry run.
+     */
+    void
+    executeCommand( const std::string& command );
+
+    void
+    addTempFile( const std::string& filename );
+
+    std::string
+    getCompilerFlags( void );
+
+    std::string
+    getInputFiles( void );
+
+    void
+    prependInputFile( std::string filename );
+
+    std::string
+    getConfigBaseCall( void );
+
     /* ***************************************************** Private methods */
 private:
 
@@ -72,76 +104,11 @@ private:
     link_step( void );
 
     /**
-       Performs necessary modifications to the command for enabling
-       compiler instrumentation.
-     */
-    void
-    prepare_compiler( void );
-
-    /**
-       Instruments @a source_file with the Tau instrumentor.
-       @param source_file File name of the source file, that is instrumented.
-       @returns the file name of the instrumented source file.
-     */
-    std::string
-    instrument_pdt( const std::string& source_file );
-
-    /**
-       Instruments @a source_file with Opari.
-       @param source_file File name of the source file, that is instrumented.
-       @returns the file name of the instrumented source file.
-     */
-    std::string
-    instrument_opari( const std::string& source_file );
-
-    /**
-       Returns the list of full filenames for all libraries specified via -l flags.
-     */
-    std::string
-    get_library_files( void );
-
-    /**
-       Performs the necessary actions for linking Opari instrumented object
-       files and libraries. Thus, it runs the awk script on the objects,
-       creates the POMP2_Init Function, and compiles it.
-     */
-    void
-    prepare_opari_linking( void );
-
-    /**
        Constructs calls to the config tools.
        @param input_file The input file for which the calls are generated.
      */
     void
     prepare_config_tool_calls( const std::string& input_file );
-
-    /**
-       Invokes the opari tool to instrument a source file.
-       @param input_file  Source file which is instrumented.
-       @param output_file Filename for the instrumented source file
-     */
-    void
-    invoke_opari( const std::string& input_file,
-                  const std::string& output_file );
-
-    /**
-       Runs a script on a list of object files to generate the Pomp_Init
-       function.
-       @param object_files A list of space separated object file names.
-       @param output_file  Filename for the generated source file.
-     */
-    void
-    invoke_awk_script( const std::string& object_files,
-                       const std::string& output_file );
-
-    /**
-       Compiles the generated source file.
-       @param input_file  Source file which is compiled.
-       @param output_file Filename for the obejct file.
-     */
-    void
-    compile_init_file( const std::string& input_file,
-                       const std::string& output_file );
 
     /**
        Compiles a users source file. If the original command compile and
@@ -157,36 +124,30 @@ private:
                          const std::string& output_file );
 
     /**
-       Invoke the binary instrumenter Cobi. Instruments the binary
-       @a orig_name. The instrumented file will be named @a output_name.
-       @param orig_name   The name of the uninstrumented exectable
-       @param output_name The name of the instrumented executable
-       @return The return value of the cobi execution.
-     */
-    int
-    invoke_cobi( const std::string& orig_name,
-                 const std::string& output_name );
-
-    /**
        Removes temorarily created files.
      */
     void
     clean_temp_files( void );
 
     /**
-       Executes the command specified by @ command. It checks verbosity level
-       and whether it is a dry run.
-     */
-    void
-    execute_command( const std::string& command );
-
-    /**
-       Preprocess a source file
-       @param input_file  Source file which is preprocessed.
-       @returns Filename for the preprocessed source file.
+       Invokes the adapters' precompile step on the current file.
+       @param current_file The currently processed file.
+       @returns The filename of the source file that should be compiled.
      */
     std::string
-    preprocess_opari( const std::string& input_file );
+    precompile( std::string current_file );
+
+    /**
+       Invokes the adapters' precompile step.
+     */
+    void
+    prelink( void );
+
+    /**
+       Invokes the adapters' postcompile step.
+     */
+    void
+    postlink( void );
 
     /* ***************************************************** Private members */
 private:
@@ -216,6 +177,11 @@ private:
     std::string m_temp_files;
 
     /**
+       The base config call without action parameter.
+     */
+    std::string m_config_base;
+
+    /**
        Additional compiler flgas added by the instrumenter
      */
     std::string m_compiler_flags;
@@ -225,9 +191,16 @@ private:
      */
     std::string m_linker_flags;
 
-    /**
-       Additional flags for the PDT instrumenter
-     */
-    std::string m_pdt_flags;
+    SCOREP_Instrumenter_CobiAdapter*       m_cobi_adapter;
+    SCOREP_Instrumenter_CompilerAdapter*   m_compiler_adapter;
+    SCOREP_Instrumenter_CudaAdapter*       m_cuda_adapter;
+    SCOREP_Instrumenter_OpariAdapter*      m_opari_adapter;
+    SCOREP_Instrumenter_PreprocessAdapter* m_preprocess_adapter;
+    SCOREP_Instrumenter_PdtAdapter*        m_pdt_adapter;
+    SCOREP_Instrumenter_UserAdapter*       m_user_adapter;
+
+    std::deque<SCOREP_Instrumenter_Adapter*> m_precompile_adapters;
+    std::deque<SCOREP_Instrumenter_Adapter*> m_prelink_adapters;
+    std::deque<SCOREP_Instrumenter_Adapter*> m_postlink_adapters;
 };
 #endif /*SCOREP_INSTRUMENTER_H_*/

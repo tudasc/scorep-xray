@@ -17,7 +17,7 @@
 
 # Common settings
 
-noinst_LTLIBRARIES += libscorep_adapter_compiler.la
+lib_LTLIBRARIES += libscorep_adapter_compiler.la
 
 libscorep_adapter_compiler_la_SOURCES = \
         $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c \
@@ -27,6 +27,8 @@ libscorep_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)      \
         $(UTILS_CPPFLAGS)                                    \
         -I$(INC_ROOT)src/utils/include                       \
         -I$(INC_ROOT)src/measurement/include
+
+libscorep_adapter_compiler_la_LIBADD = libscorep_measurement.la
 
 # intel specific settings
 
@@ -41,6 +43,8 @@ libscorep_adapter_compiler_la_CPPFLAGS += -DINTEL_COMPILER
 
 if HAVE_LIBBFD
 libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
+libscorep_adapter_compiler_la_LIBADD += @LIBBFD_LIBS@
+libscorep_adapter_compiler_la_LDFLAGS = @LIBBFD_LDFLAGS@
 endif
 
 if HAVE_DEMANGLE
@@ -90,6 +94,8 @@ libscorep_adapter_compiler_la_SOURCES += \
 
 if HAVE_LIBBFD
 libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
+libscorep_adapter_compiler_la_LIBADD += @LIBBFD_LIBS@
+libscorep_adapter_compiler_la_LDFLAGS = @LIBBFD_LDFLAGS@
 endif
 
 if HAVE_DEMANGLE
@@ -120,6 +126,8 @@ libscorep_adapter_compiler_la_SOURCES += \
 
 if HAVE_LIBBFD
 libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
+libscorep_adapter_compiler_la_LIBADD += @LIBBFD_LIBS@
+libscorep_adapter_compiler_la_LDFLAGS = @LIBBFD_LDFLAGS@
 endif
 
 if HAVE_DEMANGLE
@@ -154,3 +162,17 @@ libscorep_adapter_compiler_la_SOURCES += \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h \
         $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c
 endif
+
+# mockup library for the adapter
+
+noinst_LTLIBRARIES += libscorep_adapter_compiler_mockup.la
+
+libscorep_adapter_compiler_mockup_la_SOURCES = \
+	$(SRC_ROOT)src/adapters/SCOREP_AdapterMockup.c
+
+libscorep_adapter_compiler_mockup_la_CPPFLAGS = $(AM_CPPFLAGS) \
+        -I$(INC_ROOT)src/measurement/include                   \
+        -I$(PUBLIC_INC_DIR)                                    \
+        $(UTILS_CPPFLAGS)                                      \
+        -I$(INC_ROOT)src/utils/include                         \
+	-DADAPTER=Compiler

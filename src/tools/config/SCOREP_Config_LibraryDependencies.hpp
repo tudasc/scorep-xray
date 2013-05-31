@@ -98,42 +98,47 @@ public:
     ~SCOREP_Config_LibraryDependencies();
 
     /**
-     * Returns the string containing the @a input_libs and its dependencies.
+     * Returns a list of libraries containing the @a input_libs and its dependencies.
      * @param input_libs  A list of libraries, that should be linked.
      */
-    std::string
-    GetLibraries( const std::deque<std::string>& input_libs );
+    std::deque<std::string>
+    getLibraries( const std::deque<std::string>& input_libs );
 
     /**
-     * Returns the string containing the library path flags for the @a input_libs and
+     * Returns a list of library path flags for the @a input_libs and
      * its dependencies.
      * @param libs    A list of library names.
      * @param install If true the install paths are used. If false the
      *                build path are used.
      */
-    std::string
-    GetLDFlags( const std::deque<std::string>& libs,
+    std::deque<std::string>
+    getLDFlags( const std::deque<std::string>& libs,
                 bool                           install );
 
     /**
-     * Returns the string containing the rpath flags for the @a input_libs and
-     * its dependencies. The string that is constructed can be customized for
-     * the use on different systems. E.g. specify an empty string as head and
-     * " -Wl,-rpath," as delimiter on most Linuy machines. On AIX, specify
-     * " -Wl,-lbibpath" and head and ":" as delimiter.
+     * Returns a list of paths in which the executable should look atruntime
+     * to find the libraries. It can be used to construct the rpath flags for
+     * the @a input_libs and its dependencies.
      * @param libs      A list of library names.
      * @param install   If true the install paths are used. If false the
      *                  build path are used.
-     * @param head      A string that appears once at the beginning
-     * @param delimiter A string that separates the pathes.
-     * @param tail      A string that is appended after the last rpath flag.
      */
-    std::string
-    GetRpathFlags( const std::deque<std::string>& libs,
-                   bool                           install,
-                   const std::string&             head,
-                   const std::string&             delimiter,
-                   const std::string&             tail );
+    std::deque<std::string>
+    getRpathFlags( const std::deque<std::string>& libs,
+                   bool                           install );
+
+    /**
+     * This function adds a dependency to a library. For both libraries the .la
+     * must be available. It is used to add the selected version of modules,
+     * for which Score-P provides more than one implementation, e.g. threading
+     * system, mutex.
+     * @param dependent_lib The library which depends on @a dependency.
+     * @param dependency    The library which is added to the dependencies of
+     *                      @a dependent_lib.
+     */
+    void
+    addDependency( const std::string& dependent_lib,
+                   const std::string& dependency );
 
     // ------------------------------------- Protected functions
 protected:

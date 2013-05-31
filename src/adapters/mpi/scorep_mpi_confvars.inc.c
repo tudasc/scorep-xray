@@ -54,13 +54,6 @@ static const SCOREP_ConfigType_SetEntry scorep_mpi_enable_groups[] = {
 
 /**
    @internal
-   Configuration variable that determined whether hierarchical unify is used.
-   It can be set via environment variable SCOREP_MPI_HIERARCHICAL_UNIFY.
- */
-bool scorep_mpi_hierarchical_unify;
-
-/**
-   @internal
    Configuration variable for the size of the communicator tracking array.
    Determines the number of cuncurrently trackable communicators per process.
    Can be defined via environment variable SCOREP_MPI_MAX_COMMUNICATORS.
@@ -107,15 +100,6 @@ bool scorep_mpi_hooks_on = false;
    initialization function is called.
  */
 SCOREP_ConfigVariable scorep_mpi_configs[] = {
-    {
-        "hierarchical_unify",
-        SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_mpi_hierarchical_unify,
-        NULL,
-        "true",
-        "Use the hierarchical MPI unify algorithm",
-        ""
-    },
     {
         "max_communicators",
         SCOREP_CONFIG_TYPE_NUMBER,

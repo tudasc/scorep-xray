@@ -73,7 +73,7 @@ libscorep_adapter_user_fortran_sub4_la_CPPFLAGS = \
     $(SCOREP_USER_FORTRAN_FLAGS)
 
 
-noinst_LTLIBRARIES += libscorep_adapter_user.la
+lib_LTLIBRARIES += libscorep_adapter_user.la
 
 libscorep_adapter_user_la_SOURCES =                        \
     $(SRC_ROOT)src/adapters/user/SCOREP_User_Init.c        \
@@ -99,5 +99,19 @@ libscorep_adapter_user_la_LIBADD =                \
     libscorep_adapter_user_fortran_sub2.la        \
     libscorep_adapter_user_fortran_sub3.la        \
     libscorep_adapter_user_fortran_sub4.la        \
-    libscorep_adapter_tau.la
+    libscorep_adapter_tau.la                      \
+    libscorep_measurement.la
 
+# mockup library for the adapter
+
+noinst_LTLIBRARIES += libscorep_adapter_user_mockup.la
+
+libscorep_adapter_user_mockup_la_SOURCES = \
+	$(SRC_ROOT)src/adapters/SCOREP_AdapterMockup.c
+
+libscorep_adapter_user_mockup_la_CPPFLAGS = $(AM_CPPFLAGS) \
+        -I$(INC_ROOT)src/measurement/include                   \
+        -I$(PUBLIC_INC_DIR)                                    \
+        $(UTILS_CPPFLAGS)                                      \
+        -I$(INC_ROOT)src/utils/include                         \
+	-DADAPTER=User

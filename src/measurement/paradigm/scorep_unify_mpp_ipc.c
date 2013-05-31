@@ -43,8 +43,6 @@
 
 
 static void
-unify_mpp_sequential( void );
-static void
 unify_mpp_hierarchical( void );
 static void
 apply_mappings_to_local_manager( void );
@@ -52,15 +50,7 @@ apply_mappings_to_local_manager( void );
 void
 SCOREP_Unify_Mpp( void )
 {
-    extern bool scorep_mpi_hierarchical_unify;
-    if ( scorep_mpi_hierarchical_unify )
-    {
-        unify_mpp_hierarchical();
-    }
-    else
-    {
-        unify_mpp_sequential();
-    }
+    unify_mpp_hierarchical();
 
     /*
      * Now apply the mappings from the final unified definitions
@@ -69,177 +59,8 @@ SCOREP_Unify_Mpp( void )
     apply_mappings_to_local_manager();
 }
 
-
-static void
-unify_mpp_master( void );
-static void
-unify_mpp_servant( void );
-
 static void
 receive_mappings( int rank );
-static void
-send_mappings( int                       rank,
-               SCOREP_DefinitionManager* remote_definition_manager );
-
-void
-unify_mpp_sequential( void )
-{
-    if ( SCOREP_Ipc_GetRank() == 0 )
-    {
-        unify_mpp_master();
-    }
-    else
-    {
-        unify_mpp_servant();
-    }
-}
-
-static void
-unify_mpp_master( void )
-{
-    SCOREP_DefinitionManager* remote_definition_manager =
-        calloc( 1, sizeof( *remote_definition_manager ) );
-    SCOREP_Allocator_PageManager* remote_page_manager =
-        SCOREP_Memory_CreateMovedPagedMemory();
-    assert( remote_definition_manager );
-    uint32_t* moved_page_ids      = NULL;
-    uint32_t* moved_page_fills    = NULL;
-    uint32_t  max_number_of_pages = 0;
-    for ( int rank = 1; rank < SCOREP_Ipc_GetSize(); ++rank )
-    {
-        // 1) receive the remote definition manager
-        SCOREP_Ipc_Recv( remote_definition_manager,
-                         sizeof( *remote_definition_manager ),
-                         SCOREP_IPC_BYTE,
-                         rank );
-
-        // 2) create and receive page manager infos
-
-        // page_manager member was overwritten by recv
-        remote_definition_manager->page_manager = remote_page_manager;
-
-        uint32_t number_of_pages;
-        SCOREP_Ipc_Recv( &number_of_pages,
-                         1,
-                         SCOREP_IPC_UINT32,
-                         rank );
-
-        if ( number_of_pages > max_number_of_pages )
-        {
-            moved_page_ids = realloc( moved_page_ids,
-                                      number_of_pages
-                                      * sizeof( *moved_page_ids ) );
-            assert( moved_page_ids );
-            moved_page_fills = realloc( moved_page_fills,
-                                        number_of_pages
-                                        * sizeof( *moved_page_fills ) );
-            assert( moved_page_fills );
-            max_number_of_pages = number_of_pages;
-        }
-
-        SCOREP_Ipc_Recv( moved_page_ids,
-                         number_of_pages,
-                         SCOREP_IPC_UINT32,
-                         rank );
-
-        SCOREP_Ipc_Recv( moved_page_fills,
-                         number_of_pages,
-                         SCOREP_IPC_UINT32,
-                         rank );
-
-        // 3) receive all pages from rank
-        for ( uint32_t page = 0; page < number_of_pages; page++ )
-        {
-            void* page_memory = SCOREP_Allocator_AllocMovedPage(
-                remote_page_manager,
-                moved_page_ids[ page ],
-                moved_page_fills[ page ] );
-            if ( !page_memory )
-            {
-                // aborts
-                SCOREP_Memory_HandleOutOfMemory();
-            }
-
-            SCOREP_Ipc_Recv( page_memory,
-                             moved_page_fills[ page ],
-                             SCOREP_IPC_BYTE,
-                             rank );
-        }
-
-        /**
-         * receive remote definitions from rank and store them in
-         * remote_definition_manager
-         */
-        SCOREP_CopyDefinitionsToUnified( remote_definition_manager );
-        SCOREP_CreateDefinitionMappings( remote_definition_manager );
-        SCOREP_AssignDefinitionMappingsFromUnified( remote_definition_manager );
-
-        send_mappings( rank, remote_definition_manager );
-
-        SCOREP_DestroyDefinitionMappings( remote_definition_manager );
-
-        SCOREP_Allocator_Free( remote_page_manager );
-    }
-    free( moved_page_ids );
-    free( moved_page_fills );
-
-    SCOREP_Allocator_DeletePageManager( remote_page_manager );
-    free( remote_definition_manager );
-}
-
-
-static void
-unify_mpp_servant( void )
-{
-    // 1) send my local definition manager to root
-    SCOREP_Ipc_Send( scorep_unified_definition_manager,
-                     sizeof( *scorep_unified_definition_manager ),
-                     SCOREP_IPC_BYTE,
-                     0 );
-
-    // 2) send the page manager infos to root
-    uint32_t number_of_used_pages = SCOREP_Allocator_GetNumberOfUsedPages(
-        scorep_unified_definition_manager->page_manager );
-
-    uint32_t* moved_page_ids = calloc( number_of_used_pages,
-                                       sizeof( *moved_page_ids ) );
-    assert( moved_page_ids );
-    uint32_t* moved_page_fills = calloc( number_of_used_pages,
-                                         sizeof( *moved_page_fills ) );
-    assert( moved_page_fills );
-    void** moved_page_starts = calloc( number_of_used_pages,
-                                       sizeof( *moved_page_starts ) );
-    assert( moved_page_starts );
-    SCOREP_Allocator_GetPageInfos( scorep_unified_definition_manager->page_manager,
-                                   moved_page_ids,
-                                   moved_page_fills,
-                                   moved_page_starts );
-
-    SCOREP_Ipc_Send( &number_of_used_pages,
-                     1, SCOREP_IPC_UINT32, 0 );
-    SCOREP_Ipc_Send( moved_page_ids,
-                     number_of_used_pages,
-                     SCOREP_IPC_UINT32, 0 );
-    SCOREP_Ipc_Send( moved_page_fills,
-                     number_of_used_pages,
-                     SCOREP_IPC_UINT32, 0 );
-
-    // 3) send all pages to root
-    for ( uint32_t page = 0; page < number_of_used_pages; page++ )
-    {
-        SCOREP_Ipc_Send( moved_page_starts[ page ],
-                         moved_page_fills[ page ],
-                         SCOREP_IPC_BYTE, 0 );
-    }
-
-    // 4) receive all mappings from root
-    SCOREP_CreateDefinitionMappings( scorep_unified_definition_manager );
-    receive_mappings( 0 );
-
-    free( moved_page_ids );
-    free( moved_page_fills );
-    free( moved_page_starts );
-}
 
 static int
 calculate_comm_partners( int*  parent,
@@ -579,25 +400,6 @@ receive_mappings( int rank )
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
     #undef DEF_WITH_MAPPING
 }
-
-
-void
-send_mappings( int                       rank,
-               SCOREP_DefinitionManager* remote_definition_manager )
-{
-    #define DEF_WITH_MAPPING( Type, type ) \
-    if ( remote_definition_manager->type ## _definition_counter > 0 ) \
-    { \
-        SCOREP_Ipc_Send( \
-            remote_definition_manager->mappings->type ## _mappings, \
-            remote_definition_manager->type ## _definition_counter, \
-            SCOREP_IPC_UINT32, \
-            rank ); \
-    }
-    SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
-    #undef DEF_WITH_MAPPING
-}
-
 
 void
 apply_mappings_to_local_manager( void )

@@ -45,7 +45,7 @@ libscorep_ipc_mpi_la_CPPFLAGS = \
 
 ## sion-mpi
 
-noinst_LTLIBRARIES += libscorep_sion_mpp_mpi.la
+lib_LTLIBRARIES += libscorep_sion_mpp_mpi.la
 if HAVE_SION_MPI
 libscorep_sion_mpp_mpi_la_SOURCES  = \
     $(SRC_ROOT)src/measurement/paradigm/scorep_sion_mpi.c
