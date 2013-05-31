@@ -40,7 +40,7 @@ main()
             "The following error test will print error messages in order\n"
             "to test whether the error system works correctly. If we suppress\n"
             "this messages we would no longer see, if a segmentation fault\n"
-            "occures.\n"
+            "occurs.\n"
             "================================================================\n"
             );
     errno = 0;
@@ -59,7 +59,7 @@ main()
                  UTILS_STRINGIFY( PACKAGE_ERROR_END_OF_FUNCTION ) );
     UTILS_ERROR( PACKAGE_ERROR_END_OF_FUNCTION, "Just a test of the error system." );
     UTILS_ERROR( 1024,
-                 "This error message is no real error: error invlid positive code" );
+                 "This error message is no real error: error invalid positive code" );
     UTILS_ERROR( -1024,
                  "This error message is no real error: error invalid negative code" );
 
