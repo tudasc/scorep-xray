@@ -27,7 +27,7 @@ SRC_ROOT=@abs_top_srcdir@/..
 
 echo "/* Dummy */" > config.h
 
-./scorep --build-check nvcc $SRC_ROOT/test/adapters/cuda/cuda_test.cu -o cuda_test -I.
+./scorep -v --build-check nvcc $SRC_ROOT/test/adapters/cuda/cuda_test.cu -o cuda_test -I.
 
 SCOREP_CUDA_ENABLE=runtime,kernel,idle \
 SCOREP_EXPERIMENT_DIRECTORY=scorep-serial-cuda \
