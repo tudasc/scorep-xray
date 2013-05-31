@@ -412,18 +412,19 @@ SCOREP_Instrumenter::link_step( void )
 }
 
 void
-SCOREP_Instrumenter::executeCommand( const std::string& command )
+SCOREP_Instrumenter::executeCommand( const std::string& orig_command )
 {
+    std::string command( orig_command );
     if ( m_command_line.getVerbosity() >= 1 )
     {
-        std::cout << command << std::endl;
+        command = "PS4='Executing: '; set -x; " + command;
     }
     if ( !m_command_line.isDryRun() )
     {
         int return_value = system( command.c_str() );
         if ( return_value != 0 )
         {
-            std::cerr << "Error executing: " << command << std::endl;
+            std::cerr << "Error executing: " << orig_command << std::endl;
             exit( EXIT_FAILURE );
         }
     }
