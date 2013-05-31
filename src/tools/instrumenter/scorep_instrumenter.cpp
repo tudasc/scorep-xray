@@ -198,10 +198,10 @@ SCOREP_Instrumenter::Run( void )
                     current_file = precompile( current_file );
 
                     #if SCOREP_BACKEND_COMPILER_CRAY
-                    if ( m_opari_adapter.isEnabled() &&
-                         cmdLine.getCompilerName().find( "ftn" ) != std::string::npos )
+                    if ( m_opari_adapter->isEnabled() &&
+                         m_command_line.getCompilerName().find( "ftn" ) != std::string::npos )
                     {
-                        additional_flags += " -I.";
+                        m_compiler_flags += " -I.";
                     }
                     #endif
 
