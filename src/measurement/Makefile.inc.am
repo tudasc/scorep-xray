@@ -38,7 +38,6 @@ libscorep_measurement_core_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/include/SCOREP_Mutex.h             \
     $(SRC_ROOT)src/measurement/include/SCOREP_Filter_Init.h       \
     $(SRC_ROOT)src/measurement/include/SCOREP_Properties.h        \
-    $(SRC_ROOT)src/measurement/include/SCOREP_OA_Functions.h      \
     $(SRC_ROOT)src/measurement/filtering/SCOREP_Filter_Init.c     \
     $(SRC_ROOT)src/measurement/paradigm/scorep_all_subsystems.c   \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.c        \

@@ -79,16 +79,13 @@ public:
 private:
     /**
      * Invokes the opari tool to instrument a source file.
-     * @param input_file       Source file which is instrumented.
-     * @param output_file      Filename for the instrumented source file
-     * @param additional_flags Additional flags passing to the command, if
-     *                         not empty it must be terminated with a space
+     * @param input_file   Source file which is instrumented.
+     * @param output_file  Filename for the instrumented source file
      */
     void
     invoke_opari( SCOREP_Instrumenter& instrumenter,
                   const std::string&   input_file,
-                  const std::string&   output_file,
-                  const std::string&   additional_flags );
+                  const std::string&   output_file );
 
     /**
      * Runs a script on a list of object files to generate the Pomp_Init

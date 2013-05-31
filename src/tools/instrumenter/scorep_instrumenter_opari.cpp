@@ -153,14 +153,6 @@ SCOREP_Instrumenter_OpariAdapter::precompile( SCOREP_Instrumenter&         instr
                                               SCOREP_Instrumenter_CmdLine& cmdLine,
                                               const std::string&           source_file )
 {
-    std::string additional_flags;
-    #if SCOREP_BACKEND_COMPILER_CRAY
-    if ( cmdLine.getCompilerName().find( "ftn" ) != std::string::npos )
-    {
-        additional_flags += "-I. ";
-    }
-    #endif
-
     /* For Fortran source files, the extension must be in upper case to use the
        C-Preporcessor */
     std::string extension = get_extension( source_file );
@@ -176,7 +168,7 @@ SCOREP_Instrumenter_OpariAdapter::precompile( SCOREP_Instrumenter&         instr
                                              + ".opari"
                                              + extension );
 
-    invoke_opari( instrumenter, source_file, modified_file, additional_flags );
+    invoke_opari( instrumenter, source_file, modified_file );
     instrumenter.addTempFile( modified_file );
     instrumenter.addTempFile( remove_path( source_file + ".opari.inc" ) );
     return modified_file;
@@ -274,13 +266,11 @@ SCOREP_Instrumenter_OpariAdapter::checkCommand( const std::string& current,
 void
 SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumenter,
                                                 const std::string&   input_file,
-                                                const std::string&   output_file,
-                                                const std::string&   additional_flags )
+                                                const std::string&   output_file )
 {
     std::string command = m_opari + m_params + " --tpd "
                           SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-                          "--tpd-mangling=" SCOREP_OPARI_MANGLING_SCHEME " "
-                          + additional_flags;
+                          "--tpd-mangling=" SCOREP_OPARI_MANGLING_SCHEME " ";
 
     SCOREP_Instrumenter_Adapter* adapter = getAdapter( SCOREP_INSTRUMENTER_ADAPTER_PDT );
     if ( ( adapter != NULL ) && adapter->isEnabled() && is_fortran_file( input_file ) )

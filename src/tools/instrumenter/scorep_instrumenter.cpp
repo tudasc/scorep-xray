@@ -197,6 +197,14 @@ SCOREP_Instrumenter::Run( void )
                     // Perform instrumentation
                     current_file = precompile( current_file );
 
+                    #if SCOREP_BACKEND_COMPILER_CRAY
+                    if ( m_opari_adapter.isEnabled() &&
+                         cmdLine.getCompilerName().find( "ftn" ) != std::string::npos )
+                    {
+                        additional_flags += " -I.";
+                    }
+                    #endif
+
                     // Compile instrumented file
                     compile_source_file( current_file, object_file );
 
