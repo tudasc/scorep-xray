@@ -67,6 +67,9 @@
 #define UTILS_JOIN_SYMS_( x, y )   x ## y
 #define UTILS_JOIN_SYMS( x, y )    UTILS_JOIN_SYMS_( x, y )
 
+#define UTILS_JOIN_3SYMS_( x, y, z )  x ## y ## z
+#define UTILS_JOIN_3SYMS( x, y, z )   UTILS_JOIN_3SYMS_( x, y, z )
+
 #define PACKAGE_MANGLE_NAME( sym )      UTILS_JOIN_SYMS( PACKAGE_SYM, _ ## sym )
 #define PACKAGE_MANGLE_NAME_CAPS( sym ) UTILS_JOIN_SYMS( PACKAGE_SYM_CAPS, _ ## sym )
 
