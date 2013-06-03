@@ -29,6 +29,7 @@ TIMEOUT=60
 RETURN_VALUE=0;
 MPIRUN_COMMAND="mpirun -np 2"
 SCENARIO_FILE=scenario_mpi
+EXPERIMENT_DIR=scorep_oa_mpi_test
 
 #cleanup the background processes when timeout happens
 cleanup()
@@ -62,7 +63,8 @@ dummy=
 #clean experimental folder
 clean_scorep()
 {
-	rm -f config.h	
+	rm -f config.h
+	rm -rf $EXPERIMENT_DIR
 }
 
 #clean experiment folder in case of failure
@@ -115,7 +117,7 @@ REGSRV_PID=$!
 
 #start online access test
 #start online access test
-SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ENABLE_TRACING=false SCOREP_ENABLE_PROFILING=true SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST $MPIRUN_COMMAND ./$TEST_NAME & 
+SCOREP_EXPERIMENT_DIRECTORY=$EXPERIMENT_DIR SCOREP_ONLINEACCESS_ENABLE=1 SCOREP_ENABLE_TRACING=false SCOREP_ENABLE_PROFILING=true SCOREP_ONLINEACCESS_BASE_PORT=$BASE_PORT SCOREP_ONLINEACCESS_REG_PORT=$REG_PORT SCOREP_ONLINEACCESS_REG_HOST=$REG_HOST $MPIRUN_COMMAND ./$TEST_NAME & 
 TEST_PID=$!
 
 echo Test started: periscope \($REGSRV_PID\), application \($TEST_PID\), watchdog timer \($TIMER_PID\)
