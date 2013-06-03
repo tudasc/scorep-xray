@@ -50,6 +50,27 @@
  * @{
  */
 
+/**
+ * This type defines predefined commands for adapter control.
+ */
+typedef enum
+{
+    /**
+     * Enables event recording in an adapter.
+     */
+    SCOREP_SUBSYSTEM_COMMAND_ENABLE,
+
+    /**
+     * Disables event recording in an adapter.
+     */
+    SCOREP_SUBSYSTEM_COMMAND_DISABLE,
+
+    /**
+     * Offset for adapter specific commands.
+     */
+    SCOREP_SUBSYSTEM_COMMAND_CUSTOM_BASE
+} SCOREP_Subsystem_Command;
+
 
 /**
  * A subsystem can provide numerous callbacks for the measurement system.
@@ -123,6 +144,11 @@ typedef struct SCOREP_Subsystem
      *
      */
     void ( * subsystem_deregister )( void );
+
+    /**
+     * Allows measurment control over the adapter.
+     */
+    void ( * subsystem_control )( SCOREP_Subsystem_Command command );
 } SCOREP_Subsystem;
 
 

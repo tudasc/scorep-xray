@@ -130,5 +130,6 @@ SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter =
     .subsystem_pre_unify         = NULL,
     .subsystem_post_unify        = &scorep_cuda_post_unify,
     .subsystem_finalize          = &scorep_cuda_finalize,
-    .subsystem_deregister        = &scorep_cuda_deregister
+    .subsystem_deregister        = &scorep_cuda_deregister,
+    .subsystem_control           = NULL
 };

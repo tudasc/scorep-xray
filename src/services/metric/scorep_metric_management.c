@@ -1002,5 +1002,6 @@ const SCOREP_Subsystem SCOREP_Subsystem_MetricService =
     .subsystem_pre_unify         = NULL,
     .subsystem_post_unify        = NULL,
     .subsystem_finalize          = &scorep_metric_finalize_service,
-    .subsystem_deregister        = &scorep_metric_deregister
+    .subsystem_deregister        = &scorep_metric_deregister,
+    .subsystem_control           = NULL
 };

@@ -26,23 +26,27 @@
 
 #include <config.h>
 
-
 #include <stdio.h>
 #include <assert.h>
-
-
 #include <mpi.h>
 #include <sion.h>
 
-
 #include <otf2/otf2.h>
-
 
 #include <scorep_environment.h>
 #include <scorep_status.h>
 #include <tracing/SCOREP_Tracing.h>
 #include <tracing/scorep_tracing_internal.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Subsystem.h>
+
+extern SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter;
+
+#define SCOREP_MPI_EVENT_GEN_ON() do { if ( SCOREP_Subsystem_MpiAdapter.subsystem_control != NULL ) { \
+                                           SCOREP_Subsystem_MpiAdapter.subsystem_control( SCOREP_SUBSYSTEM_COMMAND_ENABLE ); } } while ( 0 )
+
+#define SCOREP_MPI_EVENT_GEN_OFF() do { if ( SCOREP_Subsystem_MpiAdapter.subsystem_control != NULL ) { \
+                                            SCOREP_Subsystem_MpiAdapter.subsystem_control( SCOREP_SUBSYSTEM_COMMAND_DISABLE ); } } while ( 0 )
 
 static int
 scorep_sion_open( void*          userData,

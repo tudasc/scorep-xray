@@ -55,5 +55,6 @@ const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter =
     .subsystem_pre_unify         = NULL,
     .subsystem_post_unify        = NULL,
     .subsystem_finalize          = NULL,
-    .subsystem_deregister        = &scorep_compiler_deregister
+    .subsystem_deregister        = &scorep_compiler_deregister,
+    .subsystem_control           = NULL
 };

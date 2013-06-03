@@ -264,7 +264,8 @@ const SCOREP_Subsystem SCOREP_Subsystem_PompAdapter =
     .subsystem_pre_unify         = NULL,
     .subsystem_post_unify        = NULL,
     .subsystem_finalize          = &scorep_pomp_finalize,
-    .subsystem_deregister        = &scorep_pomp_deregister
+    .subsystem_deregister        = &scorep_pomp_deregister,
+    .subsystem_control           = NULL
 };
 
 /* ***********************************************************************

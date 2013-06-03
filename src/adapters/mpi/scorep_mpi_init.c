@@ -308,6 +308,20 @@ scorep_mpi_deregister( void )
     }
 }
 
+static void
+scorep_mpi_control( SCOREP_Subsystem_Command command )
+{
+    switch ( command )
+    {
+        case SCOREP_SUBSYSTEM_COMMAND_ENABLE:
+            scorep_mpi_generate_events = true;
+            break;
+        case SCOREP_SUBSYSTEM_COMMAND_DISABLE:
+            scorep_mpi_generate_events = false;
+            break;
+    }
+}
+
 /* The initialization struct for the MPI adapter */
 const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter =
 {
@@ -319,7 +333,8 @@ const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter =
     .subsystem_pre_unify         = &scorep_mpi_pre_unify,
     .subsystem_post_unify        = &scorep_mpi_post_unify,
     .subsystem_finalize          = &scorep_mpi_finalize,
-    .subsystem_deregister        = &scorep_mpi_deregister
+    .subsystem_deregister        = &scorep_mpi_deregister,
+    .subsystem_control           = &scorep_mpi_control
 };
 
 /**

@@ -115,5 +115,6 @@ const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter =
     .subsystem_pre_unify         = NULL,
     .subsystem_post_unify        = NULL,
     .subsystem_finalize          = &scorep_user_finalize,
-    .subsystem_deregister        = &scorep_user_deregister
+    .subsystem_deregister        = &scorep_user_deregister,
+    .subsystem_control           = NULL
 };

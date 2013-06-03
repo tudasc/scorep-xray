@@ -132,6 +132,30 @@ scorep_mpiprofile_init( void );
 extern void
 scorep_mpiprofile_reinit_metrics( void );
 
+/**
+ * Flag which indicates whether event generation is turned on/off.
+ */
+extern bool scorep_mpi_generate_events;
+
+/** @def SCOREP_MPI_IS_EVENT_GEN_ON
+    Check whether event generation is turned on.
+ */
+#define SCOREP_MPI_IS_EVENT_GEN_ON ( scorep_mpi_generate_events )
+
+/** @def SCOREP_MPI_EVENT_GEN_OFF
+    Turn off event generation for MPI adapter. It is used inside the
+    wrappers and the measurement core to avoid events from MPI
+    function calls, e.g., MPI calls internal to MPI itself or SIONlibs
+    paropen/close.
+ */
+#define SCOREP_MPI_EVENT_GEN_OFF() scorep_mpi_generate_events = false
+
+/** SCOREP_MPI_EVENT_GEN_ON
+    Turn on event generation for MPI wrappers. See
+    SCOREP_MPI_EVENT_GEN_OFF().
+ */
+#define SCOREP_MPI_EVENT_GEN_ON()  scorep_mpi_generate_events = true
+
 /** @def SCOREP_MPI_IS_EVENT_GEN_ON_FOR
     Check whether event generation is turned on for a specific group.
  */
