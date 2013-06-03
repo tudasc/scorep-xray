@@ -23,7 +23,7 @@ oa_c_test_mpi_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 EXTRA_DIST       += \
     $(SRC_ROOT)/test/OA/MPI/C/run_oa_c_test_mpi.sh.in
 
-TESTS += ./../test/OA/MPI/C/run_oa_c_test_mpi.sh
+TESTS_MPI += ./../test/OA/MPI/C/run_oa_c_test_mpi.sh
 
 endif #if HAVE_ONLINE_ACCESS
 endif #if HAVE_MPI_SUPPORT

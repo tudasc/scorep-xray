@@ -88,7 +88,14 @@ string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
                                -I$(PUBLIC_INC_DIR) \
                                $(UTILS_CPPFLAGS) \
                                -I$(INC_DIR_COMMON_HASH)
-string_duplicates_c_LDADD    = libscorep_serial.la
+string_duplicates_c_LDADD = libscorep_measurement.la    \
+                            libscorep_adapter_mockup.la \
+                            libscorep_mpp_mockup.la     \
+                            libscorep_thread_mockup.la  \
+                            libscorep_mutex_mockup.la   \
+                            libscorep_sion_mockup.la    \
+                            libscorep_online_access_mockup.la
+
 string_duplicates_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 
 TESTS_SERIAL += string_duplicates_c
