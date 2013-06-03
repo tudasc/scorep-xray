@@ -207,7 +207,17 @@ SCOREP_Config_CudaAdapter::SCOREP_Config_CudaAdapter()
 void
 SCOREP_Config_CudaAdapter::addIncFlags( std::string &incflags, bool build_check )
 {
-    addLdFlags( incflags );
+    if ( m_is_enabled )
+    {
+        std::string pattern1 = " ";
+        std::string replace1 = ",";
+
+        incflags = remove_multiple_whitespaces( incflags );
+        /* Replace all white-spaces by comma */
+        incflags = replace_all( pattern1, replace1, incflags );
+
+        incflags = " -Xcompiler " + incflags;
+    }
 }
 
 void
@@ -231,7 +241,7 @@ SCOREP_Config_CudaAdapter::addLdFlags( std::string &ldflags )
             ldflags = replace_all( pattern2, replace2, ldflags );
         }
 
-        ldflags = " -Xcompiler " + ldflags;
+        ldflags = " -Xlinker " + ldflags;
     }
 }
 
