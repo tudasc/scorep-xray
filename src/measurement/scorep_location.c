@@ -246,7 +246,7 @@ SCOREP_Location_CallSubstratesOnDeactivation( SCOREP_Location* current,
 
 
 void
-SCOREP_Location_Finalize()
+SCOREP_Location_FinalizeLocations( void )
 {
     assert( !SCOREP_Thread_InParallel() );
 
@@ -259,6 +259,21 @@ SCOREP_Location_Finalize()
         SCOREP_Tracing_DeleteLocationData( location_data->tracing_data );
         SCOREP_Profile_DeleteLocationData( location_data->profile_data );
         SCOREP_Memory_DeletePageManagers( location_data->page_managers );
+        location_data = tmp;
+    }
+}
+
+
+void
+SCOREP_Location_Finalize( void )
+{
+    assert( !SCOREP_Thread_InParallel() );
+
+    SCOREP_Location* location_data = location_list_head;
+    while ( location_data )
+    {
+        SCOREP_Location* tmp = location_data->next;
+
         free( location_data );
 
         location_data = tmp;
@@ -270,7 +285,6 @@ SCOREP_Location_Finalize()
     UTILS_ASSERT( result == SCOREP_SUCCESS );
     scorep_location_list_mutex = 0;
 }
-
 
 
 SCOREP_Allocator_PageManager*

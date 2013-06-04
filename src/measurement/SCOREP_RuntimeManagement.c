@@ -482,7 +482,7 @@ scorep_finalize( void )
     SCOREP_TIME( SCOREP_SynchronizeClocks, ( ) );
     SCOREP_TIME( SCOREP_EndEpoch, ( ) );
     SCOREP_TIME( SCOREP_Filter_Finalize, ( ) );
-    SCOREP_Location_FinalizeDefinitions();
+    SCOREP_TIME( SCOREP_Location_FinalizeDefinitions, ( ) );
 
     /* finalize and close all event writers */
     SCOREP_TIME( SCOREP_Tracing_FinalizeEventWriters, ( ) );
@@ -506,8 +506,13 @@ scorep_finalize( void )
     SCOREP_TIME( SCOREP_Definitions_Finalize, ( ) );
     SCOREP_TIME( scorep_otf2_finalize, ( ) );
 
-    SCOREP_TIME( scorep_subsystems_finalize, ( ) );  // Disables all adapters
+    /* call finalize_location for all locations */
+    SCOREP_TIME( SCOREP_Location_FinalizeLocations, ( ) );
 
+    /* finalize all subsystems */
+    SCOREP_TIME( scorep_subsystems_finalize, ( ) );
+
+    /* destroy all struct SCOREP_Location */
     SCOREP_TIME( SCOREP_Location_Finalize, ( ) );
 
     /* dump config variables into experiment directory */

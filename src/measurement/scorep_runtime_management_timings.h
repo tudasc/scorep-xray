@@ -63,6 +63,7 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_SynchronizeClocks )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_EndEpoch )                       \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filter_Finalize )                \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_FinalizeDefinitions )   \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Tracing_FinalizeEventWriters )   \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Profile_Process )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_FinalizeLocationGroup )          \
@@ -72,8 +73,9 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Write )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Finalize )           \
     SCOREP_TIMING_TRANSFORM_OP( scorep_otf2_finalize )                  \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_Finalize )              \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_FinalizeLocations )     \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_finalize )            \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_Finalize )              \
     SCOREP_TIMING_TRANSFORM_OP( scorep_dump_config )                    \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_ConfigFini )                     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_RenameExperimentDir )            \

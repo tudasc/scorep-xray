@@ -34,7 +34,7 @@
 #include <tracing/SCOREP_Tracing_ThreadInteraction.h>
 
 void
-SCOREP_Location_Initialize();
+SCOREP_Location_Initialize( void );
 
 
 /**
@@ -44,7 +44,7 @@ SCOREP_Location_Initialize();
  * Must be called before SCOREP_Thread_Finalize().
  */
 void
-SCOREP_Location_Finalize();
+SCOREP_Location_Finalize( void );
 
 
 /** @param  deferNewLocationNotification tpd-based thread implementations must notify,
@@ -83,6 +83,10 @@ SCOREP_Location_EnsureGlobalId( SCOREP_Location* location );
 
 void
 SCOREP_Location_FinalizeDefinitions( void );
+
+
+void
+SCOREP_Location_FinalizeLocations( void );
 
 
 void
