@@ -133,15 +133,25 @@ create-cobi-config-local:
 	fi
 
 
+INSTALLCHECK_SUBDIRS  = ../test/jacobi/serial/C
 if HAVE_OPENMP_SUPPORT
-installcheck-local: instrumenter-checks
-	@$(am__cd) ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)
-	@$(am__cd) ../test/jacobi/OpenMP/C && $(MAKE) $(AM_MAKEFLAGS)
+INSTALLCHECK_SUBDIRS += ../test/jacobi/serial/C
 else
-installcheck-local: instrumenter-checks
-	@$(am__cd) ../test/jacobi/serial/C && $(MAKE) $(AM_MAKEFLAGS)
 endif
 
+installcheck-local: instrumenter-checks
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	list='$(INSTALLCHECK_SUBDIRS)'; for subdir in $$list; do \
+	  echo "Making in $$subdir"; \
+	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS)) \
+	  || eval $$failcom; \
+	done; test -z "$$fail"
 
 PARADIGMS = serial
 

@@ -72,19 +72,27 @@ distclean-local:
 	rm -rf ../test/jacobi/hybrid
 
 
+INSTALLCHECK_SUBDIRS  =
 if HAVE_MPI_SUPPORT
+INSTALLCHECK_SUBDIRS += ../test/jacobi/MPI/C
 if HAVE_OPENMP_SUPPORT
-installcheck-local: instrumenter-checks
-	@$(am__cd) ../test/jacobi/MPI/C    && $(MAKE) $(AM_MAKEFLAGS)
-	@$(am__cd) ../test/jacobi/hybrid/C && $(MAKE) $(AM_MAKEFLAGS)
-else
-installcheck-local: instrumenter-checks
-	@$(am__cd) ../test/jacobi/MPI/C    && $(MAKE) $(AM_MAKEFLAGS)
+INSTALLCHECK_SUBDIRS += ../test/jacobi/hybrid/C
 endif
-else
-installcheck-local:
 endif
 
+installcheck-local: instrumenter-checks
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	list='$(INSTALLCHECK_SUBDIRS)'; for subdir in $$list; do \
+	  echo "Making in $$subdir"; \
+	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS)) \
+	  || eval $$failcom; \
+	done; test -z "$$fail"
 
 if HAVE_MPI_SUPPORT
 PARADIGMS = mpi

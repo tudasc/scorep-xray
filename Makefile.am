@@ -115,20 +115,36 @@ endif
 
 
 if CROSS_BUILD
-check-local:
-	@$(am__cd) build-frontend && $(MAKE) $(AM_MAKEFLAGS) check-serial
-	@$(am__cd) build-frontend && $(MAKE) $(AM_MAKEFLAGS) check-omp
-	@$(am__cd) build-backend  && $(MAKE) $(AM_MAKEFLAGS) check-serial
-	@$(am__cd) build-backend  && $(MAKE) $(AM_MAKEFLAGS) check-omp
-	@$(am__cd) build-mpi      && $(MAKE) $(AM_MAKEFLAGS) check-mpi
-	@$(am__cd) build-mpi      && $(MAKE) $(AM_MAKEFLAGS) check-mpi-omp
+CHECK_TARGETS = \
+    build-frontend:check-serial \
+    build-frontend:check-omp \
+    build-backend:check-serial \
+    build-backend:check-omp \
+    build-mpi:check-mpi \
+    build-mpi:check-mpi-omp
 else !CROSS_BUILD
-check-local:
-	@$(am__cd) build-backend && $(MAKE) $(AM_MAKEFLAGS) check-serial
-	@$(am__cd) build-backend && $(MAKE) $(AM_MAKEFLAGS) check-omp
-	@$(am__cd) build-mpi     && $(MAKE) $(AM_MAKEFLAGS) check-mpi
-	@$(am__cd) build-mpi     && $(MAKE) $(AM_MAKEFLAGS) check-mpi-omp
+CHECK_TARGETS = \
+    build-backend:check-serial \
+    build-backend:check-omp \
+    build-mpi:check-mpi \
+    build-mpi:check-mpi-omp
 endif !CROSS_BUILD
+
+check-local:
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	list='$(CHECK_TARGETS)'; for subcheck in $$list; do \
+	  subdir=$${subcheck%:*}; \
+	  target=$${subcheck#*:}; \
+	  echo "Making $$target in $$subdir"; \
+	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$target) \
+	  || eval $$failcom; \
+	done; test -z "$$fail"
 
 DISTCLEANFILES += \
     src/utils/include/SCOREP_ErrorCodes.h \
