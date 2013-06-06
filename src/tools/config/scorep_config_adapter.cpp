@@ -67,7 +67,12 @@ add_opari_cflags( bool build_check )
 #endif
 
         std::string opari_config = OPARI_CONFIG " --cflags";
-        system( opari_config.c_str() );
+        int         return_value = system( opari_config.c_str() );
+        if ( return_value != 0 )
+        {
+            std::cerr << "Error executing: " << opari_config.c_str() << std::endl;
+            exit( EXIT_FAILURE );
+        }
         std::cout << " ";
         std::cout.flush();
     }
