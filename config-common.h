@@ -74,4 +74,32 @@
 #define PACKAGE_MANGLE_NAME_CAPS( sym ) UTILS_JOIN_SYMS( PACKAGE_SYM_CAPS, _ ## sym )
 
 
+/**
+ * Macros to fool the linker, so that the named compilation unit will always be
+ * linked into the library/binary
+ * @ingroup fool_linker @{
+ */
+
+/** Use this macro in the top level scope of the compilation unit, which
+ *  should always be linked into the library/binary.
+ *  @param name A unique name of this compilation unit, must be a valid C symbol.
+ */
+#define UTILS_FOOL_LINKER_DECLARE( name ) \
+    bool name ## _fool_linker = false
+
+/** Use this macro in a function from a compilation unit, which is guaranteed
+ *  to be always linked into an library/binary, so that the named compilation
+ *  unit is also always linked into the library/binary.
+ *
+ *  @param name The unique name of the compilation unit, must be a valid C symbol.
+ */
+#define UTILS_FOOL_LINKER( name ) \
+    extern bool name ## _fool_linker; \
+    name ## _fool_linker = true
+
+/**
+ * @}
+ */
+
+
 #endif /* CONFIG_COMMON_H */
