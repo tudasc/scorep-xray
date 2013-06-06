@@ -45,11 +45,28 @@
 #include "scorep_pomp_confvars.inc.c"
 
 /** Struct which contains the adapter iniitialization and finalization functions for the
-    POMP2 adapter.
+    POMP2 User adapter.
  */
-const SCOREP_Subsystem SCOREP_Subsystem_PompAdapter =
+const SCOREP_Subsystem SCOREP_Subsystem_PompUserAdapter =
 {
-    .subsystem_name              = "POMP2 Adapter / Version 1.0 (config variables only)",
+    .subsystem_name              = "POMP2 User Adapter / Version 1.0 (config variables only)",
+    .subsystem_register          = NULL,
+    .subsystem_init              = NULL,
+    .subsystem_init_location     = NULL,
+    .subsystem_finalize_location = NULL,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = NULL,
+    .subsystem_finalize          = NULL,
+    .subsystem_deregister        = NULL,
+    .subsystem_control           = NULL
+};
+
+/** Struct which contains the adapter iniitialization and finalization functions for the
+    POMP2 OpenMP adapter.
+ */
+const SCOREP_Subsystem SCOREP_Subsystem_PompOmpAdapter =
+{
+    .subsystem_name              = "POMP2 OpenMP Adapter / Version 1.0 (config variables only)",
     .subsystem_register          = NULL,
     .subsystem_init              = NULL,
     .subsystem_init_location     = NULL,

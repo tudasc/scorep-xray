@@ -40,7 +40,8 @@
 
 
 uint32_t
-SCOREP_ThreadFork( uint32_t nRequestedThreads, SCOREP_ThreadModel model )
+SCOREP_ThreadFork( SCOREP_ThreadModel model,
+                   uint32_t           nRequestedThreads )
 {
     UTILS_ASSERT( model < SCOREP_INVALID_THREAD_MODEL );
     scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
@@ -57,7 +58,11 @@ SCOREP_ThreadFork( uint32_t nRequestedThreads, SCOREP_ThreadModel model )
 
     if ( scorep_tracing_consume_event() )
     {
-        SCOREP_Tracing_ThreadFork( location, timestamp, nRequestedThreads, fork_sequence_count, model );
+        SCOREP_Tracing_ThreadFork( location,
+                                   timestamp,
+                                   model,
+                                   nRequestedThreads,
+                                   fork_sequence_count );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
@@ -77,7 +82,8 @@ SCOREP_ThreadFork( uint32_t nRequestedThreads, SCOREP_ThreadModel model )
 
 
 void
-SCOREP_ThreadJoin( uint32_t forkSequenceCount, SCOREP_ThreadModel model )
+SCOREP_ThreadJoin( SCOREP_ThreadModel model,
+                   uint32_t           forkSequenceCount )
 {
     UTILS_ASSERT( model < SCOREP_INVALID_THREAD_MODEL );
     scorep_thread_private_data* tpd             = scorep_thread_get_private_data();
@@ -90,17 +96,16 @@ SCOREP_ThreadJoin( uint32_t forkSequenceCount, SCOREP_ThreadModel model )
                            model );
     UTILS_BUG_ON( tpd_from_now_on == 0 );
     UTILS_ASSERT( tpd_from_now_on == scorep_thread_get_private_data() );
-    if ( forkSequenceCount == SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_UNIQUE_FORK_SEQUENCE_COUNTS );
-    }
 
     SCOREP_Location* location  = scorep_thread_get_location( tpd_from_now_on );
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     if ( scorep_tracing_consume_event() )
     {
-        SCOREP_Tracing_ThreadJoin( location, timestamp, forkSequenceCount, model );
+        SCOREP_Tracing_ThreadJoin( location,
+                                   timestamp,
+                                   model,
+                                   forkSequenceCount );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {

@@ -159,7 +159,7 @@ define_system_tree_node( SCOREP_DefinitionManager*   definition_manager,
     HASH_ADD_HANDLE( new_definition, class_handle, String );
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( SystemTreeNode, system_tree_node );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( SystemTreeNode, system_tree_node );
 
     return new_handle;
 }

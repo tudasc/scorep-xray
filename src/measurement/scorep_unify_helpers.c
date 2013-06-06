@@ -90,6 +90,7 @@ scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,
                                 sizeof( *all_locations ) );
         UTILS_ASSERT( all_locations );
     }
+
     SCOREP_Ipc_Gatherv( ( void* )localMembers,
                         number_of_members,
                         all_locations,
@@ -101,12 +102,19 @@ scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,
 
     if ( 0 == rank )
     {
-        SCOREP_Definitions_NewUnifiedGroup( type,
-                                            name,
-                                            total_number_of_locations,
-                                            all_locations );
+        /*
+         * Don't define this in the unified manager, it distrurbs greatly
+         * the string mapping
+         */
+        SCOREP_Definitions_NewGroup( type,
+                                     name,
+                                     total_number_of_locations,
+                                     all_locations );
         free( all_locations );
     }
 
     return offset_to_global;
 }
+
+/* fool linker, so that this unit is always linked into the library/binary. */
+UTILS_FOOL_LINKER_DECLARE( scorep_unify_helpers );

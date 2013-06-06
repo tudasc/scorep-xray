@@ -207,7 +207,7 @@ SCOREP_MpiRecv( SCOREP_MpiRank                   sourceRank,
 /**
  * Process an mpi collective begin event in the measurement system.
  *
- * Records also an enter event into the region @regionHandle.
+ * Records also an enter event into the region @a regionHandle.
  *
  * @param regionHandle The region handle corresponding to the MPI function
  * that triggers this event.
@@ -220,7 +220,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle );
 /**
  * Process an mpi collective event in the measurement system.
  *
- * Records also an leave event out of the region @regionHandle.
+ * Records also an leave event out of the region @a regionHandle.
  *
  * @param regionHandle The region handle corresponding to the MPI function
  * that triggers this event.
@@ -342,7 +342,7 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                   sourceRank,
 /**
  * Mark the creation of the window on all participating processes/threads
  * and thus enclose all operations related to this window. See also
- * @ SCOREP_RmaWinDestroy.
+ * @a SCOREP_RmaWinDestroy.
  *
  * @param window Memory window.
  */
@@ -353,7 +353,7 @@ SCOREP_RmaWinCreate( SCOREP_InterimRmaWindowHandle windowHandle );
 /**
  * Mark the destruction of the window on all participating processes/threads
  * and thus enclose all operations related to this window. See also
- * @ SCOREP_RmaWinCreate.
+ * @a SCOREP_RmaWinCreate.
  *
  * @param window Memory window.
  */
@@ -365,8 +365,8 @@ SCOREP_RmaWinDestroy( SCOREP_InterimRmaWindowHandle windowHandle );
  * The following event records for collective RMA operations must be
  * generated on all participating members of the communicator that is
  * referenced from the memory window. On all locations, a
- * @ SCOREP_RmaCollectiveBegin event record must be followed by a
- * @ SCOREP_RmaCollectiveEnd event record with all details. It is
+ * @a SCOREP_RmaCollectiveBegin event record must be followed by a
+ * @a SCOREP_RmaCollectiveEnd event record with all details. It is
  * invalid to intermix or nest begin and end records of different
  * collective operations, but local or remote completion records may be
  * placed in between.
@@ -406,8 +406,8 @@ SCOREP_RmaCollectiveEnd( SCOREP_MpiCollectiveType      collectiveOp,
  * with SCOREP_RmaTryLock. In this case, no release record may follow.
  * With this a series of unsuccessful locking attempts can be identified.
  * If an lock attempt is successful, it is marked with
- * @ SCOREP_RmaAquireLock right away instead of a pair of
- * @ SCOREP_RmaTryLock and @ SCOREP_RmaAquireLock.
+ * @a SCOREP_RmaAquireLock right away instead of a pair of
+ * @a SCOREP_RmaTryLock and @ SCOREP_RmaAquireLock.
  *
  * @param win Memory window.
  *
@@ -426,7 +426,7 @@ SCOREP_RmaTryLock( SCOREP_InterimRmaWindowHandle windowHandle,
 
 /**
  * Marks the time that a lock is granted. This is the typical situation.
- * It has to be followed by a matching @ SCOREP_RmaReleaseLock record
+ * It has to be followed by a matching @a SCOREP_RmaReleaseLock record
  * later on.
  *
  * @param win Memory window.
@@ -448,7 +448,7 @@ SCOREP_RmaAcquireLock( SCOREP_InterimRmaWindowHandle windowHandle,
  * This record marks the time that a request for a lock is issued where
  * the RMA model ensures that the lock is granted eventually without
  * further notification. As of now this is specific for MPI. In this case,
- * the @ SCOREP_RmaAquireLock event is not present.
+ * the @a SCOREP_RmaAquireLock event is not present.
  *
  * @param win Memory window.
  *
@@ -467,8 +467,8 @@ SCOREP_RmaRequestLock( SCOREP_InterimRmaWindowHandle windowHandle,
 
 /**
  * Marks the time the lock is freed. It contains all fields that are
- * necessary to match it to either an earlier @ SCOREP_AquireLock or
- * @ SCOREP_RequestLock event and is required to follow either of the
+ * necessary to match it to either an earlier @a SCOREP_AquireLock or
+ * @a SCOREP_RequestLock event and is required to follow either of the
  * two.
  *
  * @param win Memory window.
@@ -591,7 +591,7 @@ SCOREP_RmaGet( SCOREP_InterimRmaWindowHandle windowHandle,
  *
  * @param remote Rank of target in context of window.
  *
- * @param type Type of atomic operation (see @ SCOREP_RmaAtomicType).
+ * @param type Type of atomic operation (see @a SCOREP_RmaAtomicType).
  *
  * @param bytesSent Number of bytes transferred to rmeote target.
  *
@@ -612,8 +612,8 @@ SCOREP_RmaAtomic( SCOREP_InterimRmaWindowHandle windowHandle,
 /**
  * The completion records mark the end of RMA operations. Local
  * completion for every RMA operation (get, put, or atomic operation)
- * always has to be marked with either @ SCOREP_RmaOpCompleteBlocking or
- * @ SCOREP_RmaOpNonCompleteBlocking using the same matching number as
+ * always has to be marked with either @a SCOREP_RmaOpCompleteBlocking or
+ * @a SCOREP_RmaOpNonCompleteBlocking using the same matching number as
  * the RMA operation record. An RMA operation is blocking when the
  * operation completes locally before leaving the call, for non-blocking
  * operations local completion has to be ensured by a subsequent call.
@@ -640,7 +640,7 @@ SCOREP_RmaOpCompleteNonBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
  * This record indicates a test for completion. It is only useful for
  * non-blocking RMA calls where the API supports such a test. The test
  * record stands for a negative outcome, otherwise a completion record
- * is written (see @ SCOREP_RmaOpCompleteRemote).
+ * is written (see @a SCOREP_RmaOpCompleteRemote).
  *
  * @param win Memory window.
  *
@@ -677,10 +677,10 @@ SCOREP_RmaOpCompleteRemote( SCOREP_InterimRmaWindowHandle windowHandle,
  * SCOREP_ThreadFork() needs to be called outside the parallel
  * execution from the thread creating the parallel region.
  *
+ * @param model One of the predefined threading models.
+ *
  * @param nRequestedThreads Upper bound of threads that comprise the
  * parallel region to be created.
- *
- * @param model One of the predefined threading models.
  *
  * @return The process-global forkSequenceCount (starting at 0) that
  * needs to be provided in the corresponding SCOREP_ThreadTeamBegin(),
@@ -700,8 +700,8 @@ SCOREP_RmaOpCompleteRemote( SCOREP_InterimRmaWindowHandle windowHandle,
  * @see SCOREP_ThreadCreate()
  */
 uint32_t
-SCOREP_ThreadFork( uint32_t           nRequestedThreads,
-                   SCOREP_ThreadModel model );
+SCOREP_ThreadFork( SCOREP_ThreadModel model,
+                   uint32_t           nRequestedThreads );
 
 
 /**
@@ -710,6 +710,8 @@ SCOREP_ThreadFork( uint32_t           nRequestedThreads,
  * SCOREP_ThreadFork() that returned the @a forkSequenceCount that
  * needs to be provided to this function.
  *
+ * @param model One of the predefined threading models.
+ *
  * @param forkSequenceCount The fork sequence count returned by the
  * corresponding SCOREP_ThreadFork() or
  * SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT. If you pass the latter,
@@ -717,13 +719,11 @@ SCOREP_ThreadFork( uint32_t           nRequestedThreads,
  * implementation, see e.g., the OpenMP implementation of
  * SCOREP_Thread_OnJoin().
  *
- * @param model One of the predefined threading models.
- *
  * @note See the notes to SCOREP_ThreadFork().
  */
 void
-SCOREP_ThreadJoin( uint32_t           forkSequenceCount,
-                   SCOREP_ThreadModel model );
+SCOREP_ThreadJoin( SCOREP_ThreadModel model,
+                   uint32_t           forkSequenceCount );
 
 
 /**
@@ -765,17 +765,17 @@ SCOREP_ThreadCreate( SCOREP_ThreadModel model );
  * SCOREP_ThreadCreate() that returned the @a forkSequenceCount that
  * needs to be provided to this function.
  *
+ * @param model One of the predefined threading models.
+ *
  * @param forkSequenceCount The fork sequence count returned by the
  * corresponding SCOREP_ThreadCreate() or
  * SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT. If you pass the latter,
  * the forkSequenceCount should be maintained in the model-specific
  * implementation.
- *
- * @param model One of the predefined threading models.
  */
 void
-SCOREP_ThreadWait( uint32_t           forkSequenceCount,
-                   SCOREP_ThreadModel model );
+SCOREP_ThreadWait( SCOREP_ThreadModel model,
+                   uint32_t           forkSequenceCount );
 
 
 /**
@@ -784,16 +784,16 @@ SCOREP_ThreadWait( uint32_t           forkSequenceCount,
  * SCOREP_ThreadCreate(). In case of SCOREP_ThreadFork() all created
  * threads including the master must call SCOREP_ThreadTeamBegin().
  *
+ * @param model One of the predefined threading models.
+ *
  * @param forkSequenceCount The forkSequenceCount returned by the
  * corresponding SCOREP_ThreadFork() or SCOREP_ThreadCreate() call
  * or SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT. If you pass the
  * latter, the forkSequenceCount should be maintained in the
  * model-specific implementation.
  *
- * @threadId Id within the team of threads that constitute the
+ * @param threadId Id within the team of threads that constitute the
  * parallel region.
- *
- * @param model One of the predefined threading models.
  *
  * @note The end of the parallel execution will be signalled by a call
  * to SCOREP_ThreadEnd().
@@ -803,9 +803,9 @@ SCOREP_ThreadWait( uint32_t           forkSequenceCount,
  * for the initial thread.
  */
 void
-SCOREP_ThreadTeamBegin( uint32_t           forkSequenceCount,
-                        uint32_t           threadId,
-                        SCOREP_ThreadModel model );
+SCOREP_ThreadTeamBegin( SCOREP_ThreadModel model,
+                        uint32_t           forkSequenceCount,
+                        uint32_t           threadId );
 
 
 /**
@@ -831,8 +831,8 @@ SCOREP_ThreadTeamBegin( uint32_t           forkSequenceCount,
  * for the initial thread.
  */
 void
-SCOREP_ThreadEnd( uint32_t           forkSequenceCount,
-                  SCOREP_ThreadModel model );
+SCOREP_ThreadEnd( SCOREP_ThreadModel model,
+                  uint32_t           forkSequenceCount );
 
 
 /**
@@ -845,9 +845,9 @@ SCOREP_ThreadEnd( uint32_t           forkSequenceCount,
  *                         acquire-release events.
  */
 void
-SCOREP_ThreadAcquireLock( uint32_t           lockId,
-                          uint32_t           acquisitionOrder,
-                          SCOREP_ThreadModel model );
+SCOREP_ThreadAcquireLock( SCOREP_ThreadModel model,
+                          uint32_t           lockId,
+                          uint32_t           acquisitionOrder );
 
 
 /**
@@ -860,52 +860,83 @@ SCOREP_ThreadAcquireLock( uint32_t           lockId,
  *                         acquire-release events.
  */
 void
-SCOREP_ThreadReleaseLock( uint32_t           lockId,
-                          uint32_t           acquisitionOrder,
-                          SCOREP_ThreadModel model );
+SCOREP_ThreadReleaseLock( SCOREP_ThreadModel model,
+                          uint32_t           lockId,
+                          uint32_t           acquisitionOrder );
 
 
 /**
  * Process a task create event in the measurement system.
  *
- * @param taskId Id of the created task.
+ * @param model            One of the predefined threading models.
+ * @param threadId         Id of the this thread within the team of
+ *                         threads that constitute the parallel region.
+ * @param generationNumber The sequence number for this task. Each task
+ *                         gets a thread private generation number of the
+ *                         creating thread attached. Combined with the
+ *                         @a threadId, this constitutes a unique task ID
+ *                         inside the parallel region.
  */
 void
-SCOREP_ThreadTaskCreate( uint64_t           taskId,
-                         SCOREP_ThreadModel model );
+SCOREP_ThreadTaskCreate( SCOREP_ThreadModel model,
+                         uint32_t           threadId,
+                         uint32_t           generationNumber );
 
 
 /**
  * Process a task switch event in the measurement system.
  *
- * @param taskId Id of the task the runtime switched to.
+ * @param model            One of the predefined threading models.
+ * @param threadId         Id of the this thread within the team of
+ *                         threads that constitute the parallel region.
+ * @param generationNumber The sequence number for this task. Each task
+ *                         gets a thread private generation number of the
+ *                         creating thread attached. Combined with the
+ *                         @a threadId, this constitutes a unique task ID
+ *                         inside the parallel region.
  */
 void
-SCOREP_ThreadTaskSwitch( uint64_t           taskId,
-                         SCOREP_ThreadModel model );
+SCOREP_ThreadTaskSwitch( SCOREP_ThreadModel model,
+                         uint32_t           threadId,
+                         uint32_t           generationNumber );
 
 
 /**
  * Process a task begin event in the measurement system.
  *
- * @param regionHandle region handle of the task region.
- * @param taskId Id of the starting task.
+ * @param model            One of the predefined threading models.
+ * @param regionHandle     Region handle of the task region.
+ * @param threadId         Id of the this thread within the team of
+ *                         threads that constitute the parallel region.
+ * @param generationNumber The sequence number for this task. Each task created
+ *                         gets a thread private generation number attached.
+ *                         Combined with the @a threadId, this constitutes a
+ *                         unique task ID inside the parallel region.
  */
 void
-SCOREP_ThreadTaskBegin( SCOREP_RegionHandle regionHandle,
-                        uint64_t            taskId,
-                        SCOREP_ThreadModel  model );
+SCOREP_ThreadTaskBegin( SCOREP_ThreadModel  model,
+                        SCOREP_RegionHandle regionHandle,
+                        uint32_t            threadId,
+                        uint32_t            generationNumber );
 
 /**
  * Process a task end event in the measurement system.
  *
- * @param regionHandle region handle of the task region.
- * @param taskId Id of the completed task.
+ * @param model            One of the predefined threading models.
+ * @param regionHandle     Region handle of the task region.
+ * @param threadId         Id of the this thread within the team of
+ *                         threads that constitute the parallel region.
+ * @param generationNumber The sequence number for this task. Each task
+ *                         gets a thread private generation number of the
+ *                         creating thread attached. Combined with the
+ *                         @a threadId, this constitutes a unique task ID
+ *                         inside the parallel region.
  */
 void
-SCOREP_ThreadTaskEnd( SCOREP_RegionHandle regionHandle,
-                      uint64_t            taskId,
-                      SCOREP_ThreadModel  model );
+SCOREP_ThreadTaskEnd( SCOREP_ThreadModel  model,
+                      SCOREP_RegionHandle regionHandle,
+                      uint32_t            threadId,
+                      uint32_t            generationNumber );
 
 
 /**

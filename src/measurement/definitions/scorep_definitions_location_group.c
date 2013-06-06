@@ -143,7 +143,7 @@ define_location_group( SCOREP_DefinitionManager*   definition_manager,
     new_definition->location_group_type      = locationGroupType;
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( LocationGroup, location_group );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( LocationGroup, location_group );
 
     return new_handle;
 }

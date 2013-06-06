@@ -49,10 +49,6 @@ SCOREP_Pomp_Region* scorep_pomp_regions;
 /** Flag to indicate, wether POMP2 traceing is enable/disabled */
 bool scorep_pomp_is_tracing_on = true;
 
-/** Source file handle for pomp wrapper functions and implicit barrier
- * region. */
-SCOREP_SourceFileHandle scorep_pomp_file_handle = SCOREP_INVALID_SOURCE_FILE;
-
 /** Flag to indicate wether the adapter is initialized */
 bool scorep_pomp_is_initialized = false;
 
@@ -136,25 +132,10 @@ scorep_pomp_assign_string( char**      destination,
                                                        Initialization
  ************************************************************************/
 
-static size_t scorep_pomp_subsystem_id;
-
-/** Adapter initialization function to allow registering configuration
-    variables. No variables are regstered.
- */
-static SCOREP_ErrorCode
-scorep_pomp_register( size_t subsystem_id )
-{
-    UTILS_DEBUG_ENTRY();
-
-    scorep_pomp_subsystem_id = subsystem_id;
-
-    return SCOREP_SUCCESS;
-}
-
 /** Adapter initialization function.
  */
-static SCOREP_ErrorCode
-scorep_pomp_init( void )
+SCOREP_ErrorCode
+scorep_pomp_adapter_init( void )
 {
     UTILS_DEBUG_ENTRY();
     /* Initialize the adapter */
@@ -163,21 +144,13 @@ scorep_pomp_init( void )
         /* Set flag */
         scorep_pomp_is_initialized = true;
 
-        /* If initialized from user instrumentation initialize
-         * measurement before. */
-        SCOREP_InitMeasurement();
-
-        /* Initialize file handle for OpenMP API functions */
-        scorep_pomp_file_handle = SCOREP_Definitions_NewSourceFile( "OMP" );
-
         /* Allocate memory for your POMP2_Get_num_regions() regions */
         scorep_pomp_regions = calloc( POMP2_Get_num_regions(),
                                       sizeof( SCOREP_Pomp_Region ) );
 
-        /* Register regions for locking functions */
-        scorep_pomp_register_lock_regions();
-
         SCOREP_MutexCreate( &scorep_pomp_assign_lock );
+
+        scorep_pomp_lock_initialize();
 
         /* Register regions inserted by Opari */
         POMP2_Init_regions();
@@ -188,28 +161,10 @@ scorep_pomp_init( void )
     return SCOREP_SUCCESS;
 }
 
-/** Allows initialization of location specific data. Nothing done
- * inside this funcion. */
-static SCOREP_ErrorCode
-scorep_pomp_init_location( SCOREP_Location* locationData )
-{
-    UTILS_DEBUG_ENTRY();
-    return SCOREP_SUCCESS;
-}
-
-/** Allows finaltialization of location specific data. Nothing done
- * inside this funcion.
- */
-static void
-scorep_pomp_finalize_location( SCOREP_Location* locationData )
-{
-    UTILS_DEBUG_ENTRY();
-}
-
 /** Adapter finalialization function.
  */
-static void
-scorep_pomp_finalize( void )
+void
+scorep_pomp_adapter_finalize( void )
 {
     size_t       i;
     const size_t nRegions = POMP2_Get_num_regions();
@@ -242,31 +197,6 @@ scorep_pomp_finalize( void )
         scorep_region_list_top = next;
     }
 }
-
-/** Called when the adapter is derigistered. Nothing done inside the function
- */
-static void
-scorep_pomp_deregister( void )
-{
-    UTILS_DEBUG_ENTRY();
-}
-
-/** Struct which contains the adapter iniitialization and finalization
-    functions for the POMP2 adapter.
- */
-const SCOREP_Subsystem SCOREP_Subsystem_PompAdapter =
-{
-    .subsystem_name              = "POMP2 Adapter / Version 1.0",
-    .subsystem_register          = &scorep_pomp_register,
-    .subsystem_init              = &scorep_pomp_init,
-    .subsystem_init_location     = &scorep_pomp_init_location,
-    .subsystem_finalize_location = &scorep_pomp_finalize_location,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &scorep_pomp_finalize,
-    .subsystem_deregister        = &scorep_pomp_deregister,
-    .subsystem_control           = NULL
-};
 
 /* ***********************************************************************
  *                                           C pomp function library

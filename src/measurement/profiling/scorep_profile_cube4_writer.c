@@ -126,11 +126,11 @@ make_metric_mapping( uint32_t metric_number )
         map[ i ] = SCOREP_INVALID_METRIC;
     }
 
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Metric, metric )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, Metric, metric )
     {
         map[ SCOREP_MetricHandle_GetUnifiedId( handle ) ] = handle;
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
     return map;
 }
@@ -150,12 +150,12 @@ make_unified_mapping( void )
         return NULL;
     }
 
-    SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager, Metric, metric )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager, Metric, metric )
     {
         map[ i ] = handle;
         i++;
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
     return map;
 }

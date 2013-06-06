@@ -123,7 +123,7 @@ scorep_definitions_new_string( SCOREP_DefinitionManager* definition_manager,
      *    - if not, link new one into the hash chain and into definition list
      */
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( String, string );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( String, string );
 
     return new_handle;
 }

@@ -51,8 +51,37 @@
 
 #include <SCOREP_DefinitionHandles.h>
 #include <scorep_types.h>
+#include <scorep_location.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
+
+
+static SCOREP_Mutex interim_communicator_definition_counter_lock;
+
+
+void
+scorep_definitions_create_interim_communicator_counter_lock( void )
+{
+    SCOREP_MutexCreate( &interim_communicator_definition_counter_lock );
+}
+
+
+void
+scorep_definitions_destroy_interim_communicator_counter_lock( void )
+{
+    SCOREP_MutexDestroy( &interim_communicator_definition_counter_lock );
+}
+
+
+static uint32_t
+get_new_interim_communicator_id( void )
+{
+    uint32_t new_id;
+    SCOREP_MutexLock( interim_communicator_definition_counter_lock );
+    new_id = scorep_local_definition_manager.interim_communicator.counter++;
+    SCOREP_MutexUnlock( interim_communicator_definition_counter_lock );
+    return new_id;
+}
 
 
 static SCOREP_InterimCommunicatorHandle
@@ -61,11 +90,6 @@ define_interim_communicator( SCOREP_DefinitionManager*        definition_manager
                              SCOREP_AdapterType               adapterType,
                              size_t                           sizeOfPayload,
                              void**                           payload );
-
-
-static bool
-equal_interim_communicator( const SCOREP_InterimCommunicatorDef* existingDefinition,
-                            const SCOREP_InterimCommunicatorDef* newDefinition );
 
 
 static size_t
@@ -133,6 +157,124 @@ SCOREP_InterimCommunicatorHandle_SetName( SCOREP_InterimCommunicatorHandle commH
 }
 
 
+SCOREP_InterimCommunicatorHandle
+SCOREP_InterimCommunicatorHandle_GetParent( SCOREP_InterimCommunicatorHandle commHandle )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF( commHandle, InterimCommunicator )->parent_handle;
+}
+
+
+/**
+ * Associate a MPI communicator with a process unique communicator handle.
+ */
+SCOREP_InterimCommunicatorHandle
+SCOREP_Definitions_NewInterimCommunicatorInLocation(
+    SCOREP_Location*                     location,
+    SCOREP_InterimCommunicatorHandle     parentComm,
+    SCOREP_AdapterType                   adapterType,
+    scorep_definitions_init_payload_fn   init_payload_fn,
+    scorep_definitions_equal_payloads_fn equal_payloads_fn,
+    scorep_definitions_manager_entry*    manager_entry,
+    size_t                               sizeOfPayload,
+    void**                               payloadOut,
+    ... )
+{
+    SCOREP_InterimCommunicatorDef*   new_definition = NULL;
+    SCOREP_InterimCommunicatorHandle new_handle     = SCOREP_INVALID_INTERIM_COMMUNICATOR;
+
+    size_t payload_offset = interim_comm_static_size();
+    size_t total_size     = payload_offset + sizeOfPayload;
+
+    SCOREP_Allocator_PageManager* page_manager =
+        SCOREP_Location_GetMemoryPageManager( location,
+                                              SCOREP_MEMORY_TYPE_DEFINITIONS );
+    new_handle = SCOREP_Allocator_AllocMovable( page_manager, total_size );
+    if ( new_handle == SCOREP_MOVABLE_NULL )
+    {
+        /* aborts */
+        SCOREP_Memory_HandleOutOfMemory();
+    }
+    new_definition = SCOREP_Allocator_GetAddressFromMovableMemory(
+        page_manager,
+        new_handle );
+    SCOREP_INIT_DEFINITION_HEADER( new_definition );
+
+    // Init new_definition
+    new_definition->name_handle = SCOREP_INVALID_STRING;
+
+    new_definition->parent_handle = parentComm;
+    if ( parentComm != SCOREP_INVALID_INTERIM_COMMUNICATOR )
+    {
+        SCOREP_InterimCommunicatorDef* parent_definition =
+            SCOREP_Allocator_GetAddressFromMovableMemory(
+                page_manager,
+                parentComm );
+        new_definition->hash_value = jenkins_hashword(
+            &parent_definition->hash_value,
+            1,
+            new_definition->hash_value );
+    }
+
+    new_definition->adapter_type = adapterType;
+    HASH_ADD_POD( new_definition, adapter_type );
+
+    void* payload = ( char* )new_definition + payload_offset;
+    if ( payloadOut )
+    {
+        /* indicates that the definition already existsed */
+        *payloadOut = NULL;
+    }
+
+    if ( init_payload_fn )
+    {
+        va_list va;
+        va_start( va, payloadOut );
+        new_definition->hash_value =
+            init_payload_fn( payload, new_definition->hash_value, va );
+        va_end( va );
+    }
+
+    if ( manager_entry->hash_table && equal_payloads_fn )
+    {
+        SCOREP_InterimCommunicatorHandle* hash_table_bucket = &manager_entry->hash_table[
+            new_definition->hash_value & manager_entry->hash_table_mask ];
+        SCOREP_InterimCommunicatorHandle hash_list_iterator = *hash_table_bucket;
+        while ( hash_list_iterator != SCOREP_MOVABLE_NULL )
+        {
+            SCOREP_InterimCommunicatorDef* existing_definition =
+                SCOREP_Allocator_GetAddressFromMovableMemory(
+                    page_manager,
+                    hash_list_iterator );
+            void* existing_payload = ( char* )existing_definition + interim_comm_static_size();
+            if ( existing_definition->hash_value       == new_definition->hash_value
+                 && existing_definition->name_handle   == new_definition->name_handle
+                 && existing_definition->parent_handle == new_definition->parent_handle
+                 && existing_definition->adapter_type  == new_definition->adapter_type
+                 && equal_payloads_fn( existing_payload, payload ) )
+            {
+                SCOREP_Allocator_RollbackAllocMovable(
+                    page_manager,
+                    new_handle );
+                return hash_list_iterator;
+            }
+            hash_list_iterator = existing_definition->hash_next;
+        }
+        new_definition->hash_next = *hash_table_bucket;
+        *hash_table_bucket        = new_handle;
+    }
+    *manager_entry->tail            = new_handle;
+    manager_entry->tail             = &new_definition->next;
+    new_definition->sequence_number = get_new_interim_communicator_id();
+
+    if ( sizeOfPayload && payloadOut )
+    {
+        *payloadOut = payload;
+    }
+
+    return new_handle;
+}
+
+
 static SCOREP_InterimCommunicatorHandle
 define_interim_communicator( SCOREP_DefinitionManager*        definition_manager,
                              SCOREP_InterimCommunicatorHandle parentComm,
@@ -152,11 +294,13 @@ define_interim_communicator( SCOREP_DefinitionManager*        definition_manager
     new_definition->parent_handle = parentComm;
     new_definition->adapter_type  = adapterType;
 
-    UTILS_BUG_ON( definition_manager->interim_communicator_definition_hash_table,
+    UTILS_BUG_ON( definition_manager->interim_communicator.hash_table,
                   "interim communicator definitions shouldn't have a hash table" );
-    /* Does never return, because they will never be automatically unified */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( InterimCommunicator,
-                                              interim_communicator );
+
+    *definition_manager->interim_communicator.tail =
+        new_handle;
+    definition_manager->interim_communicator.tail = &new_definition->next;
+    new_definition->sequence_number               = get_new_interim_communicator_id();
 
     if ( sizeOfPayload && payload )
     {
@@ -164,14 +308,6 @@ define_interim_communicator( SCOREP_DefinitionManager*        definition_manager
     }
 
     return new_handle;
-}
-
-
-bool
-equal_interim_communicator( const SCOREP_InterimCommunicatorDef* existingDefinition,
-                            const SCOREP_InterimCommunicatorDef* newDefinition )
-{
-    return false;
 }
 
 
@@ -277,8 +413,8 @@ define_communicator( SCOREP_DefinitionManager* definition_manager,
     new_definition->parent_handle = parent_handle;
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Communicator,
-                                              communicator );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Communicator,
+                                               communicator );
 
     return new_handle;
 }

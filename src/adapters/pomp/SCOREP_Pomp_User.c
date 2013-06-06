@@ -29,6 +29,7 @@
 #include "SCOREP_Pomp_RegionInfo.h"
 
 #include <SCOREP_Events.h>
+#include <SCOREP_Subsystem.h>
 
 #define SCOREP_DEBUG_MODULE_NAME OPENMP
 #include <UTILS_Debug.h>
@@ -70,3 +71,66 @@ POMP2_End( POMP2_Region_handle* pomp_handle )
 }
 
 /** @} */
+
+/* *****************************************************************************
+ *                                                         POMP User subsystem *
+ ******************************************************************************/
+
+static size_t scorep_pomp_user_subsystem_id;
+
+/** Adapter initialization function to allow registering configuration
+    variables. No variables are regstered.
+ */
+static SCOREP_ErrorCode
+scorep_pomp_user_register( size_t subsystem_id )
+{
+    UTILS_DEBUG_ENTRY();
+
+    scorep_pomp_user_subsystem_id = subsystem_id;
+
+    return SCOREP_SUCCESS;
+}
+
+/** Adapter initialization function.
+ */
+static SCOREP_ErrorCode
+scorep_pomp_user_init( void )
+{
+    UTILS_DEBUG_ENTRY();
+
+    /* Initialize the common POMP adapter */
+    scorep_pomp_adapter_init();
+
+    UTILS_DEBUG_EXIT();
+
+    return SCOREP_SUCCESS;
+}
+
+/** Adapter finalialization function.
+ */
+static void
+scorep_pomp_user_finalize( void )
+{
+    UTILS_DEBUG_ENTRY();
+
+    scorep_pomp_adapter_finalize();
+
+    UTILS_DEBUG_ENTRY();
+}
+
+/** Struct which contains the adapter iniitialization and finalization
+    functions for the POMP2 adapter.
+ */
+const SCOREP_Subsystem SCOREP_Subsystem_PompUserAdapter =
+{
+    .subsystem_name              = "POMP2 User Adapter / Version 1.0",
+    .subsystem_register          = &scorep_pomp_user_register,
+    .subsystem_init              = &scorep_pomp_user_init,
+    .subsystem_init_location     = NULL,
+    .subsystem_finalize_location = NULL,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = NULL,
+    .subsystem_finalize          = &scorep_pomp_user_finalize,
+    .subsystem_deregister        = NULL,
+    .subsystem_control           = NULL
+};

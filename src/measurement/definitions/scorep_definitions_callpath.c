@@ -257,7 +257,7 @@ define_callpath( SCOREP_DefinitionManager* definition_manager,
                          stringHandle );
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Callpath, callpath );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Callpath, callpath );
 
     return new_handle;
 }
@@ -371,7 +371,7 @@ uint32_t
 SCOREP_CallpathHandle_GetUnifiedId( SCOREP_CallpathHandle handle )
 {
     uint32_t local_id = SCOREP_LOCAL_HANDLE_TO_ID( handle, Callpath );
-    return scorep_local_definition_manager.mappings->callpath_mappings[ local_id ];
+    return scorep_local_definition_manager.callpath.mapping[ local_id ];
 }
 
 

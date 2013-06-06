@@ -140,6 +140,11 @@ SCOREP_Profile_Initialize( void )
             current = current->next_sibling;
         }
     }
+
+    /* fool linker, so that the SCOREP_Profile_Tasking.c unit is always linked
+     * into the library/binary. */
+    UTILS_FOOL_LINKER( SCOREP_Profile_Tasking );
+
     UTILS_ASSERT( scorep_profile_param_instance );
 }
 

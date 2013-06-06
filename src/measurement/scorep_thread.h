@@ -282,16 +282,12 @@ scorep_thread_on_wait();
  *
  * @param model  One of the predefined threading models. Allows for
  * consitency checks.
- *
- * @param locationIsCreated Set to true if this function creates a new
- * location.
  */
 void
 scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
                              scorep_thread_private_data** currentTpd,
                              uint32_t*                    forkSequenceCount,
-                             SCOREP_ThreadModel           model,
-                             bool*                        locationIsCreated );
+                             SCOREP_ThreadModel           model );
 
 
 /**
@@ -316,6 +312,10 @@ scorep_thread_on_end( scorep_thread_private_data*  currentTpd,
                       scorep_thread_private_data** parentTpd,
                       uint32_t*                    forkSequenceCount,
                       SCOREP_ThreadModel           model );
+
+
+SCOREP_InterimCommunicatorHandle
+scorep_thread_get_thread_team( scorep_thread_private_data* tpd );
 
 
 /**

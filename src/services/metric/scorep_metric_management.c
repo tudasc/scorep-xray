@@ -286,11 +286,11 @@ static size_t scorep_metric_subsystem_id;
  * Function prototypes
  **********************************************************************/
 
-static void
+static bool
 initialize_location_metric_cb( SCOREP_Location* location,
                                void*            data );
 
-static void
+static bool
 finalize_location_metric_cb( SCOREP_Location* location,
                              void*            data );
 
@@ -408,7 +408,7 @@ scorep_metric_finalize_service( void )
  *  @param location             Location data.
  *  @param data                 Additional user-defined data (not used yet).
  */
-static void
+static bool
 initialize_location_metric_cb( SCOREP_Location* location,
                                void*            data )
 {
@@ -610,6 +610,8 @@ initialize_location_metric_cb( SCOREP_Location* location,
 
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric management has initialized location." );
     }
+
+    return false;
 }
 
 /** @brief  Location specific initialization function for metric services.
@@ -649,7 +651,7 @@ scorep_metric_initialize_location( SCOREP_Location* location )
  *  @param location             Location data.
  *  @param data                 Additional user-defined data (not used yet).
  */
-static void
+static bool
 finalize_location_metric_cb( SCOREP_Location* location,
                              void*            data )
 {
@@ -695,6 +697,8 @@ finalize_location_metric_cb( SCOREP_Location* location,
 
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " metric management has finalized location." );
     }
+
+    return false;
 }
 
 /** @brief Location specific finalization function for metric services.

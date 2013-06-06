@@ -226,22 +226,31 @@ task_switch( SCOREP_Profile_LocationData* location,
    Task interface functions
 ****************************************************************************************/
 
+#define create_task_id( threadId, generationNumber ) \
+    ( ( ( uint64_t )( threadId ) << 32 ) | ( generationNumber ) )
+
 void
-SCOREP_Profile_TaskCreate( SCOREP_Location* location,
+SCOREP_Profile_TaskCreate( SCOREP_Location* thread,
                            uint64_t         timestamp,
-                           uint64_t         taskId )
+                           uint32_t         threadId,
+                           uint32_t         generationNumber )
 {
 }
 
 
 void
 SCOREP_Profile_TaskBegin( SCOREP_Location*    thread,
-                          SCOREP_RegionHandle regionHandle,
-                          uint64_t            taskId,
                           uint64_t            timestamp,
-                          uint64_t*           metric_values )
+                          uint64_t*           metricValues,
+                          SCOREP_RegionHandle regionHandle,
+                          uint32_t            threadId,
+                          uint32_t            generationNumber )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
+
+    /* Generate a unique task id out of the task-creating threads ID and the
+       geneartion number */
+    uint64_t task_id = create_task_id( threadId, generationNumber );
 
     /* Create new task entry */
     SCOREP_Profile_LocationData* location =
@@ -252,44 +261,54 @@ SCOREP_Profile_TaskBegin( SCOREP_Location*    thread,
 
     scorep_profile_node* task_root =
         create_task_root( location, regionHandle,
-                          timestamp, metric_values );
+                          timestamp, metricValues );
 
-    scorep_profile_task* task = scorep_profile_create_task( location, taskId, task_root );
+    scorep_profile_task* task = scorep_profile_create_task( location, task_id, task_root );
     if ( task == NULL )
     {
         return;
     }
 
     /* Perform activation */
-    task_switch( location, task, timestamp, metric_values );
+    task_switch( location, task, timestamp, metricValues );
 }
 
 
 void
 SCOREP_Profile_TaskSwitch( SCOREP_Location* thread,
-                           uint64_t         taskId,
                            uint64_t         timestamp,
-                           uint64_t*        metric_values )
+                           uint64_t*        metricValues,
+                           uint32_t         threadId,
+                           uint32_t         generationNumber )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
+
+    /* Generate a unique task id out of the task-creating threads ID and the
+       geneartion number */
+    uint64_t task_id = create_task_id( threadId, generationNumber );
 
     SCOREP_Profile_LocationData* location =
         SCOREP_Location_GetProfileData( thread );
 
-    scorep_profile_task* task = scorep_profile_task_find( location, taskId );
+    scorep_profile_task* task = scorep_profile_task_find( location, task_id );
 
-    task_switch( location, task, timestamp, metric_values );
+    task_switch( location, task, timestamp, metricValues );
 }
 
 
 void
 SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
-                        SCOREP_RegionHandle regionHandle,
-                        uint64_t            taskId,
                         uint64_t            timestamp,
-                        uint64_t*           metric_values )
+                        uint64_t*           metricValues,
+                        SCOREP_RegionHandle regionHandle,
+                        uint32_t            threadId,
+                        uint32_t            generationNumber )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
+
+    /* Generate a unique task id out of the task-creating threads ID and the
+       geneartion number */
+    uint64_t task_id = create_task_id( threadId, generationNumber );
 
     SCOREP_Profile_LocationData* location =
         SCOREP_Location_GetProfileData( thread );
@@ -301,11 +320,11 @@ SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
 
     /* Exit task region and switch control to implicit task to ensure that the
        current task is always valid */
-    SCOREP_Profile_Exit( thread, regionHandle, timestamp, metric_values );
+    SCOREP_Profile_Exit( thread, regionHandle, timestamp, metricValues );
     task_switch( location,
                  SCOREP_PROFILE_IMPLICIT_TASK,
                  timestamp,
-                 metric_values );
+                 metricValues );
 
     /* Merge subtree and release unnecessary node records */
     scorep_profile_node* match = scorep_profile_find_child( root_node, task->root_node );
@@ -320,5 +339,9 @@ SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
     }
 
     /* Delete task entry from hastable */
-    scorep_profile_remove_task( location, taskId );
+    scorep_profile_remove_task( location, task_id );
 }
+
+/* used to fool the linker, so that this unit is always linked into the
+ * library/binary. */
+UTILS_FOOL_LINKER_DECLARE( SCOREP_Profile_Tasking );

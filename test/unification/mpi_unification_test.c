@@ -186,18 +186,18 @@ main( int argc, char* argv[] )
 
         fprintf( result, "t: %f\n", timing );
 
-        //assert( scorep_unified_definition_manager->region_definition_counter == ( uint32_t )size );
+        //assert( scorep_unified_definition_manager->region.counter == ( uint32_t )size );
         if ( scorep_test_mpi_unify_verbose >= 1 )
         {
-            SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager,
-                                          Region, region )
+            SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
+                                                                 Region, region )
             {
                 fprintf( result, "ur: %u (%s)\n",
                          definition->sequence_number,
                          SCOREP_HANDLE_DEREF( definition->name_handle, String, scorep_unified_definition_manager->page_manager )->string_data );
                 fflush( result );
             }
-            SCOREP_DEFINITION_FOREACH_WHILE();
+            SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
         }
 
         /*
@@ -207,8 +207,8 @@ main( int argc, char* argv[] )
          */
         if ( scorep_test_mpi_unify_verbose >= 2 )
         {
-            SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager,
-                                          Group, group )
+            SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
+                                                                 Group, group )
             {
                 fprintf( result, "ug: %u %u #%" PRIu64 "\n",
                          definition->sequence_number,
@@ -216,10 +216,10 @@ main( int argc, char* argv[] )
                          definition->number_of_members );
                 fflush( result );
             }
-            SCOREP_DEFINITION_FOREACH_WHILE();
+            SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
-            SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager,
-                                          Communicator, communicator )
+            SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
+                                                                 Communicator, communicator )
             {
                 fprintf( result, "uc: %u ug:%u\n",
                          definition->sequence_number,
@@ -228,9 +228,9 @@ main( int argc, char* argv[] )
                                               scorep_unified_definition_manager->page_manager ) );
                 fflush( result );
             }
-            SCOREP_DEFINITION_FOREACH_WHILE();
+            SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
         }
-        assert( 3 == scorep_unified_definition_manager->group_definition_counter );
+        assert( 3 == scorep_unified_definition_manager->group.counter );
 
         fclose( result );
     }
@@ -245,40 +245,40 @@ main( int argc, char* argv[] )
                 FILE* result = fopen( result_name, "a" );
                 assert( result );
 
-                SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
-                                              Region, region )
+                SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager,
+                                                                     Region, region )
                 {
-                    //assert( ( uint64_t )rank == scorep_local_definition_manager.mappings->region_mappings[ definition->sequence_number ] );
+                    //assert( ( uint64_t )rank == scorep_local_definition_manager.region.mapping[ definition->sequence_number ] );
                     fprintf( result, "%d:r: %u -> %u\n",
                              rank,
                              definition->sequence_number,
-                             scorep_local_definition_manager.mappings->region_mappings[ definition->sequence_number ] );
+                             scorep_local_definition_manager.region.mapping[ definition->sequence_number ] );
                     fflush( result );
                 }
-                SCOREP_DEFINITION_FOREACH_WHILE();
+                SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
-                SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
-                                              Group, group )
+                SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager,
+                                                                     Group, group )
                 {
                     fprintf( result, "%d:g: %u -> %u\n",
                              rank,
                              definition->sequence_number,
-                             scorep_local_definition_manager.mappings->group_mappings[ definition->sequence_number ] );
+                             scorep_local_definition_manager.group.mapping[ definition->sequence_number ] );
                     fflush( result );
                 }
-                SCOREP_DEFINITION_FOREACH_WHILE();
+                SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
-                SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager,
-                                              InterimCommunicator,
-                                              interim_communicator )
+                SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager,
+                                                                     InterimCommunicator,
+                                                                     interim_communicator )
                 {
                     fprintf( result, "%d:c: %u -> %u\n",
                              rank,
                              definition->sequence_number,
-                             scorep_local_definition_manager.mappings->interim_communicator_mappings[ definition->sequence_number ] );
+                             scorep_local_definition_manager.interim_communicator.mapping[ definition->sequence_number ] );
                     fflush( result );
                 }
-                SCOREP_DEFINITION_FOREACH_WHILE();
+                SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
                 fclose( result );
             }

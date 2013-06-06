@@ -307,7 +307,7 @@ SCOREP_OA_RequestsSubmit
      * Go over defined metrics, check if the metric was requested and if so, store it in the
      * hash table by the metric definition id for later use
      */
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Metric, metric )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, Metric, metric )
     {
         if ( definition->name_handle != SCOREP_INVALID_STRING )
         {
@@ -321,7 +321,7 @@ SCOREP_OA_RequestsSubmit
             max_definition_id_this_phase = ( int32_t )SCOREP_LOCAL_HANDLE_TO_ID( handle, Metric );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
     max_definition_id_previous_phase = max_definition_id_this_phase;
 

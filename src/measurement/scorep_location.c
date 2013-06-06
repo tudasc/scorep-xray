@@ -366,7 +366,7 @@ SCOREP_Location_FinalizeDefinitions( void )
 }
 
 void
-SCOREP_Location_ForAll( void  ( * cb )( SCOREP_Location*,
+SCOREP_Location_ForAll( bool  ( * cb )( SCOREP_Location*,
                                         void* ),
                         void* data )
 {
@@ -376,6 +376,9 @@ SCOREP_Location_ForAll( void  ( * cb )( SCOREP_Location*,
           location_data;
           location_data = location_data->next )
     {
-        cb( location_data, data );
+        if ( cb( location_data, data ) )
+        {
+            break;
+        }
     }
 }

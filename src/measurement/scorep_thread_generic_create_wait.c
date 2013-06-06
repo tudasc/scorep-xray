@@ -42,12 +42,8 @@ SCOREP_ThreadCreate( SCOREP_ThreadModel model )
 
 
 void
-SCOREP_ThreadWait( uint32_t           forkSequenceCount,
-                   SCOREP_ThreadModel model )
+SCOREP_ThreadWait( SCOREP_ThreadModel model,
+                   uint32_t           forkSequenceCount )
 {
     UTILS_NOT_YET_IMPLEMENTED();
-//    if ( forkSequenceCount == SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT )
-//    {
-//        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_UNIQUE_FORK_SEQUENCE_COUNTS );
-//    }
 }

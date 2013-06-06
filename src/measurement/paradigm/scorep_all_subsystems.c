@@ -32,7 +32,8 @@
 extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter;
-extern const SCOREP_Subsystem SCOREP_Subsystem_PompAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_PompUserAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_PompOmpAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MetricService;
 
@@ -43,9 +44,10 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_MetricService,
     &SCOREP_Subsystem_CompilerAdapter,
     &SCOREP_Subsystem_UserAdapter,
-    &SCOREP_Subsystem_PompAdapter,
+    &SCOREP_Subsystem_PompUserAdapter,
+    &SCOREP_Subsystem_PompOmpAdapter,
     &SCOREP_Subsystem_MpiAdapter,
-    &SCOREP_Subsystem_CudaAdapter,
+    &SCOREP_Subsystem_CudaAdapter
 };
 
 const size_t scorep_number_of_subsystems = sizeof( scorep_subsystems ) /

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -32,6 +32,9 @@
 #include <SCOREP_Memory.h>
 #include <stdint.h>
 
+#include <UTILS_Error.h>
+
+#include <jenkins_hash.h>
 
 /**
  * Just a convenience macro to access the @e real memory a
@@ -180,7 +183,7 @@
 #define SCOREP_DEFINITION_ALLOC( Type ) \
     do \
     { \
-        new_handle = SCOREP_Memory_AllocForDefinitions( \
+        new_handle = SCOREP_Memory_AllocForDefinitions( NULL, \
             sizeof( SCOREP_ ## Type ## Def ) ); \
         new_definition = SCOREP_LOCAL_HANDLE_DEREF( new_handle, Type ); \
         SCOREP_INIT_DEFINITION_HEADER( new_definition ); \
@@ -204,7 +207,7 @@
                                                 number_of_members ) \
     do \
     { \
-        new_handle = SCOREP_Memory_AllocForDefinitions( \
+        new_handle = SCOREP_Memory_AllocForDefinitions( NULL, \
             sizeof( SCOREP_ ## Type ## Def ) + \
             ( ( number_of_members ) * sizeof( array_type ) ) ); \
         new_definition = SCOREP_LOCAL_HANDLE_DEREF( new_handle, Type ); \
@@ -225,9 +228,171 @@
 #define SCOREP_DEFINITION_ALLOC_SIZE( Type, size ) \
     do \
     { \
-        new_handle = SCOREP_Memory_AllocForDefinitions( size ); \
+        new_handle = SCOREP_Memory_AllocForDefinitions( NULL, size ); \
         new_definition = SCOREP_LOCAL_HANDLE_DEREF( new_handle, Type ); \
         SCOREP_INIT_DEFINITION_HEADER( new_definition ); \
+    } \
+    while ( 0 )
+/* *INDENT-ON* */
+
+
+#define SCOREP_DEFINITIONS_DEFAULT_HASH_TABLE_POWER ( 8 )
+
+
+/**
+ * Defines a new type of definition for use in @a SCOREP_DefinitionManager.
+ */
+typedef struct scorep_definitions_manager_entry
+{
+    SCOREP_AnyHandle  head;
+    SCOREP_AnyHandle* tail;
+    SCOREP_AnyHandle* hash_table;
+    uint32_t          hash_table_mask;
+    uint32_t          counter;
+    uint32_t*         mapping;
+} scorep_definitions_manager_entry;
+
+
+/**
+ * Declares a definition manager entry of type @a type.
+ */
+#define SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( type ) \
+    scorep_definitions_manager_entry type
+
+
+/**
+ * Initialize a definition type in a @a SCOREP_DefinitionManager @a
+ * definition_manager.
+ *
+ */
+static inline void
+scorep_definitions_manager_init_entry( scorep_definitions_manager_entry* entry )
+{
+    entry->head            = SCOREP_MOVABLE_NULL;
+    entry->tail            = &entry->head;
+    entry->hash_table      = 0;
+    entry->hash_table_mask = 0;
+    entry->counter         = 0;
+    entry->mapping         = 0;
+}
+
+
+/**
+ * Initializes a manager entry named @a type in the definition manager @a
+ * definition_manager.
+ */
+#define SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( definition_manager, type ) \
+    scorep_definitions_manager_init_entry( &( definition_manager )->type )
+
+
+/**
+ * Allocate memory for a definition type's hash_table in a @a
+ * SCOREP_DefinitionManager @a definition_manager.
+ *
+ * @note Will be called at init-time.
+ */
+static inline void
+scorep_definitions_manager_entry_alloc_hash_table( scorep_definitions_manager_entry* entry,
+                                                   uint32_t                          hash_table_power )
+{
+    UTILS_BUG_ON( hash_table_power > 15, "Hash table too big." );
+    entry->hash_table_mask = hashmask( hash_table_power );
+    entry->hash_table      = calloc( hashsize( hash_table_power ), sizeof( *entry->hash_table ) );
+    UTILS_BUG_ON( entry->hash_table == 0, "Allocation failed." );
+}
+
+
+/**
+ * Allocates the hash table for type @a type in the given definition manager
+ * with the default hash table size of @a SCOREP_DEFINITIONS_DEFAULT_HASH_TABLE_POWER.
+ */
+#define SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( definition_manager, type ) \
+    scorep_definitions_manager_entry_alloc_hash_table( &( definition_manager )->type, \
+                                                       SCOREP_DEFINITIONS_DEFAULT_HASH_TABLE_POWER )
+
+
+/**
+ * Allocates the array member @a type_mappings of struct SCOREP_DefinitionMappings that lives
+ * in @a definition_manager. The size of the array equals @a type_definition_counter.
+ *
+ */
+static inline void
+scorep_definitions_manager_entry_alloc_mapping( scorep_definitions_manager_entry* entry )
+{
+    entry->mapping = NULL;
+    if ( entry->counter > 0 )
+    {
+        entry->mapping = malloc( entry->counter * sizeof( *entry->mapping ) );
+        UTILS_BUG_ON( entry->mapping == 0, "Allocation failed." );
+    }
+}
+
+
+/**
+ * Frees the array member @a type_mappings of struct SCOREP_DefinitionMappings that lives
+ * in @a definition_manager. The size of the array equals @a type_definition_counter.
+ *
+ */
+static inline void
+scorep_definitions_manager_entry_free_mapping( scorep_definitions_manager_entry* entry )
+{
+    free( entry->mapping );
+    entry->mapping = NULL;
+}
+
+
+/**
+ * Search for the definition @a new_definition in the definition manager @a
+ * definition_manager, if the manager has a hash table allocated.
+ *
+ * If its found, discard the definition allocation done for @a new_allocation.
+ *
+ * If not, chain @a new_definition into the hash table and the definition
+ * manager definitions list and assign the sequence number.
+ *
+ * @return Let return the calling function with the found definition's handle
+ *         or the new definition as return value.
+ *
+ * @note This returns the calling function!
+ *
+ */
+/* *INDENT-OFF* */
+#define SCOREP_DEFINITIONS_MANAGER_ENTRY_ADD_DEFINITION( entry, \
+                                                         Type, \
+                                                         type, \
+                                                         page_manager, \
+                                                         new_definition, \
+                                                         new_handle ) \
+    do \
+    { \
+        if ( ( entry )->hash_table ) \
+        { \
+            SCOREP_AnyHandle* hash_table_bucket = \
+                &( entry )->hash_table[ \
+                    new_definition->hash_value & ( entry )->hash_table_mask ]; \
+            SCOREP_AnyHandle hash_list_iterator = *hash_table_bucket; \
+            while ( hash_list_iterator != SCOREP_MOVABLE_NULL ) \
+            { \
+                SCOREP_ ## Type ## Def * existing_definition = \
+                    SCOREP_Allocator_GetAddressFromMovableMemory( \
+                        page_manager, \
+                        hash_list_iterator ); \
+                if ( existing_definition->hash_value == new_definition->hash_value \
+                     && equal_ ## type( existing_definition, new_definition ) ) \
+                { \
+                    SCOREP_Allocator_RollbackAllocMovable( \
+                        page_manager, \
+                        new_handle ); \
+                    return hash_list_iterator; \
+                } \
+                hash_list_iterator = existing_definition->hash_next; \
+            } \
+            new_definition->hash_next = *hash_table_bucket; \
+            *hash_table_bucket        = new_handle; \
+        } \
+        *( entry )->tail = new_handle; \
+        ( entry )->tail  = &new_definition->next; \
+        new_definition->sequence_number = ( entry )->counter++; \
     } \
     while ( 0 )
 /* *INDENT-ON* */
@@ -238,7 +403,6 @@
  * definition_manager, if the manager has a hash table allocated.
  *
  * If its found, discard the definition allocation done for @a new_allocation.
- *
  * If not, chain @a new_definition into the hash table and the definition
  * manager definitions list and assign the sequence number.
  *
@@ -256,93 +420,14 @@
  * @note Only usable for local objects (ie. uses the local page manager).
  */
 /* *INDENT-OFF* */
-#define SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Type, type ) \
-    do \
-    { \
-        SCOREP_ ## Type ## Handle* hash_table_bucket = 0; \
-        if ( definition_manager->type ## _definition_hash_table ) \
-        { \
-            hash_table_bucket = &definition_manager->type ## _definition_hash_table[ \
-                new_definition->hash_value & SCOREP_DEFINITION_HASH_TABLE_MASK ]; \
-            SCOREP_ ## Type ## Handle hash_list_iterator = *hash_table_bucket; \
-            while ( hash_list_iterator != SCOREP_MOVABLE_NULL ) \
-            { \
-                SCOREP_ ## Type ## Def * existing_definition = SCOREP_LOCAL_HANDLE_DEREF( \
-                    hash_list_iterator, Type ); \
-                if ( equal_ ## type( existing_definition, new_definition ) ) \
-                { \
-                    SCOREP_Allocator_RollbackAllocMovable( \
-                        SCOREP_Memory_GetLocalDefinitionPageManager(), \
-                        new_handle ); \
-                    return hash_list_iterator; \
-                } \
-                hash_list_iterator = existing_definition->hash_next; \
-            } \
-            new_definition->hash_next = *hash_table_bucket; \
-            *hash_table_bucket        = new_handle; \
-        } \
-        *( definition_manager->type ## _definition_tail_pointer ) = \
-            new_handle; \
-        definition_manager->type ## _definition_tail_pointer = \
-            &new_definition->next; \
-        new_definition->sequence_number = \
-            definition_manager->type ## _definition_counter++; \
-    } \
-    while ( 0 )
+#define SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Type, type ) \
+    SCOREP_DEFINITIONS_MANAGER_ENTRY_ADD_DEFINITION( &( definition_manager )->type, \
+                                                     Type, \
+                                                     type, \
+                                                     definition_manager->page_manager, \
+                                                     new_definition, \
+                                                     new_handle )
 /* *INDENT-ON* */
-
-
-/* this size is temporary */
-#define SCOREP_DEFINITION_HASH_TABLE_SIZE hashsize( 8 )
-#define SCOREP_DEFINITION_HASH_TABLE_MASK hashmask( 8 )
-
-
-/**
- * Defines a new type of definition for use in @a SCOREP_DefinitionManager.
- *
- * @note No ';'
- */
-#define SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Type, type ) \
-    SCOREP_ ## Type ## Handle type ## _definition_head; \
-    SCOREP_ ## Type ## Handle * type ## _definition_tail_pointer; \
-    SCOREP_ ## Type ## Handle * type ## _definition_hash_table; \
-    uint32_t type ## _definition_counter;
-
-
-/**
- * Initialize a definition type in a @a SCOREP_DefinitionManager @a
- * definition_manager.
- *
- * @note Only lower-case type needed
- */
-#define SCOREP_INIT_DEFINITION_MANAGER_MEMBERS( type, definition_manager ) \
-    do \
-    { \
-        ( definition_manager )->type ## _definition_head = \
-            SCOREP_MOVABLE_NULL; \
-        ( definition_manager )->type ## _definition_tail_pointer = \
-            &( ( definition_manager )->type ## _definition_head ); \
-        ( definition_manager )->type ## _definition_hash_table = 0; \
-        ( definition_manager )->type ## _definition_counter    = 0; \
-    } \
-    while ( 0 )
-
-
-/**
- * Allocate memory for a definition type's hash_table in a @a
- * SCOREP_DefinitionManager @a definition_manager.
- *
- * @note Will be called at init-time.
- */
-#define SCOREP_ALLOC_DEFINITION_MANAGER_HASH_TABLE( type, definition_manager ) \
-    do \
-    { \
-        ( definition_manager )->type ## _definition_hash_table = \
-            calloc( SCOREP_DEFINITION_HASH_TABLE_SIZE, \
-                    sizeof( *( ( definition_manager )->type ## _definition_hash_table ) ) ); \
-        assert( ( definition_manager )->type ## _definition_hash_table ); \
-    } \
-    while ( 0 )
 
 
 /**
@@ -355,13 +440,13 @@
  *
  * Example:
  * @code
- *  SCOREP_DEFINITION_FOREACH_DO( &scorep_definition_manager, String, string )
+ *  SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_definition_manager, String, string )
  *  {
  *      :
  *      definition->member = ...
  *      :
  *  }
- *  SCOREP_DEFINITION_FOREACH_WHILE();
+ *  SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
  * @endcode
  *
  * You can still use break and continue statements.
@@ -369,21 +454,29 @@
  * @declares Variable with name @a definition of definition type @a Type*.
  */
 /* *INDENT-OFF* */
-#define SCOREP_DEFINITION_FOREACH_DO( definition_manager, Type, type ) \
+#define SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_BEGIN( entry, Type, page_manager ) \
     do \
     { \
-        SCOREP_ ## Type ## Def* definition; \
+        SCOREP_ ## Type ## Def*   definition; \
         SCOREP_ ## Type ## Handle handle; \
-        for ( handle = ( definition_manager )->type ## _definition_head; \
+        for ( handle = ( entry )->head; \
               handle != SCOREP_MOVABLE_NULL; \
               handle = definition->next ) \
         { \
-            definition = SCOREP_HANDLE_DEREF( handle, Type, ( definition_manager )->page_manager ); \
+            definition = SCOREP_HANDLE_DEREF( handle, Type, page_manager ); \
 
-#define SCOREP_DEFINITION_FOREACH_WHILE() \
+#define SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_END() \
         } \
     } \
     while ( 0 )
+
+#define SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definition_manager, Type, type ) \
+    SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_BEGIN( &( definition_manager )->type, \
+                                                               Type, \
+                                                               ( definition_manager )->page_manager )
+
+#define SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END() \
+        SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_END()
 /* *INDENT-ON* */
 /** @} */
 
@@ -451,117 +544,5 @@
  * @}
  */
 
-
-/**
- * Copies all definitions of type @a type to the unified definition manager.
- *
- * @needs Variable named @a definition_manager of type @a SCOREP_DefinitionManager*.
- *        The definitions to be copied live here.
- */
-#define SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( definition_manager, Type, type ) \
-    do \
-    { \
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Copying %s to unified", #type ); \
-        SCOREP_DEFINITION_FOREACH_DO( definition_manager, Type, type ) \
-        { \
-            scorep_definitions_unify_ ## type( definition, ( definition_manager )->page_manager ); \
-        } \
-        SCOREP_DEFINITION_FOREACH_WHILE(); \
-    } \
-    while ( 0 )
-
-
-/**
- * Allocates the array member @a type_mappings of struct SCOREP_DefinitionMappings that lives
- * in @a definition_manager. The size of the array equals @a type_definition_counter.
- *
- */
-#define SCOREP_ALLOC_MAPPINGS_ARRAY( type, definition_manager ) \
-    do \
-    { \
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Alloc mappings for %s", #type ); \
-        ( definition_manager )->mappings->type ## _mappings = NULL; \
-        if ( ( definition_manager )->type ## _definition_counter > 0 ) \
-        { \
-            ( definition_manager )->mappings->type ## _mappings = \
-                calloc( sizeof( uint32_t ), ( definition_manager )->type ## _definition_counter ); \
-            assert( ( definition_manager )->mappings->type ## _mappings ); \
-        } \
-    } \
-    while ( 0 )
-
-
-/**
- * Frees the array member @a type_mappings of struct SCOREP_DefinitionMappings that lives
- * in @a definition_manager. The size of the array equals @a type_definition_counter.
- *
- */
-#define SCOREP_FREE_MAPPINGS_ARRAY( type, definition_manager ) \
-    do \
-    { \
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Free mappings for %s", #type ); \
-        free( ( definition_manager )->mappings->type ## _mappings ); \
-        ( definition_manager )->mappings->type ## _mappings = NULL; \
-    } \
-    while ( 0 )
-
-
-/**
- * Fill the mapping array member @a type_mappings @a SCOREP_DefinitionMappings with the
- * corresponding sequence numbers of the unified definition.
- *
- * @see SCOREP_ALLOC_MAPPINGS_ARRAY()
- */
-#define SCOREP_ASSIGN_MAPPINGS( definition_manager, Type, type ) \
-    do \
-    { \
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Assign mappings for %s", #Type ); \
-        if ( ( definition_manager )->type ## _definition_counter > 0 ) \
-        { \
-            uint32_t type ## _sequence_number = 0; \
-            SCOREP_DEFINITION_FOREACH_DO( definition_manager, Type, type ) \
-            { \
-                assert( type ## _sequence_number == definition->sequence_number ); \
-                ( definition_manager )->mappings->type ## _mappings[ type ## _sequence_number ] = \
-                    SCOREP_UNIFIED_HANDLE_DEREF( definition->unified, Type )->sequence_number; \
-                ++type ## _sequence_number; \
-            } \
-            SCOREP_DEFINITION_FOREACH_WHILE(); \
-        } \
-    } \
-    while ( 0 )
-
-
-/**
- * Generate and write the id mapping for definition type @a type into the
- * OTF2 local definition writer @a definition_writer.
- *
- * @note @a TYPE denotes the all-caps OTF2 name of the definition type.
- */
-#define SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( type, TYPE, definition_writer ) \
-    do \
-    { \
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Write mappings to OTF2 for %s", #type ); \
-        if ( scorep_local_definition_manager.mappings && \
-             scorep_local_definition_manager.mappings->type ## _mappings && \
-             scorep_local_definition_manager.type ## _definition_counter > 0 ) \
-        { \
-            OTF2_IdMap* map = OTF2_IdMap_CreateFromUint32Array( \
-                scorep_local_definition_manager.type ## _definition_counter, \
-                scorep_local_definition_manager.mappings->type ## _mappings, \
-                true ); \
-            /* map can be NULL if the mapping is the identity */ \
-            if ( map ) \
-            { \
-                OTF2_ErrorCode status = OTF2_DefWriter_WriteMappingTable( \
-                    definition_writer, \
-                    OTF2_MAPPING_ ## TYPE, \
-                    map ); \
-                UTILS_ASSERT( status == OTF2_SUCCESS ); \
-                OTF2_IdMap_Free( map ); \
-            } \
-        } \
-    } \
-    while ( 0 )
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_H */

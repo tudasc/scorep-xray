@@ -738,16 +738,51 @@ set_rewind_affected_thread_paradigm( SCOREP_Location* location, SCOREP_ThreadMod
 void
 SCOREP_Tracing_ThreadFork( SCOREP_Location*   location,
                            uint64_t           timestamp,
+                           SCOREP_ThreadModel model,
                            uint32_t           nRequestedThreads,
-                           uint32_t           forkSequenceCount,
-                           SCOREP_ThreadModel model )
+                           uint32_t           forkSequenceCount )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
-    OTF2_EvtWriter_OmpFork( evt_writer,
-                            NULL,
-                            timestamp,
-                            nRequestedThreads );
+    OTF2_EvtWriter_ThreadFork( evt_writer,
+                               NULL,
+                               timestamp,
+                               scorep_tracing_thread_model( model ),
+                               nRequestedThreads );
+
+    set_rewind_affected_thread_paradigm( location, model );
+}
+
+
+void
+SCOREP_Tracing_ThreadTeamBegin( SCOREP_Location*                 location,
+                                uint64_t                         timestamp,
+                                SCOREP_ThreadModel               model,
+                                SCOREP_InterimCommunicatorHandle threadTeam )
+{
+    OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
+
+    OTF2_EvtWriter_ThreadTeamBegin( evt_writer,
+                                    NULL,
+                                    timestamp,
+                                    SCOREP_LOCAL_HANDLE_TO_ID( threadTeam, InterimCommunicator ) );
+
+    set_rewind_affected_thread_paradigm( location, model );
+}
+
+
+void
+SCOREP_Tracing_ThreadTeamEnd( SCOREP_Location*                 location,
+                              uint64_t                         timestamp,
+                              SCOREP_ThreadModel               model,
+                              SCOREP_InterimCommunicatorHandle threadTeam )
+{
+    OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
+
+    OTF2_EvtWriter_ThreadTeamEnd( evt_writer,
+                                  NULL,
+                                  timestamp,
+                                  SCOREP_LOCAL_HANDLE_TO_ID( threadTeam, InterimCommunicator ) );
 
     set_rewind_affected_thread_paradigm( location, model );
 }
@@ -756,14 +791,15 @@ SCOREP_Tracing_ThreadFork( SCOREP_Location*   location,
 void
 SCOREP_Tracing_ThreadJoin( SCOREP_Location*   location,
                            uint64_t           timestamp,
-                           uint32_t           forkSequenceCount,
-                           SCOREP_ThreadModel model )
+                           SCOREP_ThreadModel model,
+                           uint32_t           forkSequenceCount )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
-    OTF2_EvtWriter_OmpJoin( evt_writer,
-                            NULL,
-                            timestamp );
+    OTF2_EvtWriter_ThreadJoin( evt_writer,
+                               NULL,
+                               timestamp,
+                               scorep_tracing_thread_model( model ) );
 
     set_rewind_affected_thread_paradigm( location, model );
 }
@@ -772,17 +808,18 @@ SCOREP_Tracing_ThreadJoin( SCOREP_Location*   location,
 void
 SCOREP_Tracing_ThreadAcquireLock( SCOREP_Location*   location,
                                   uint64_t           timestamp,
+                                  SCOREP_ThreadModel model,
                                   uint32_t           lockId,
-                                  uint32_t           acquisitionOrder,
-                                  SCOREP_ThreadModel model )
+                                  uint32_t           acquisitionOrder )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
-    OTF2_EvtWriter_OmpAcquireLock( evt_writer,
-                                   NULL,
-                                   timestamp,
-                                   lockId,
-                                   acquisitionOrder );
+    OTF2_EvtWriter_ThreadAcquireLock( evt_writer,
+                                      NULL,
+                                      timestamp,
+                                      scorep_tracing_thread_model( model ),
+                                      lockId,
+                                      acquisitionOrder );
 
     set_rewind_affected_thread_paradigm( location, model );
 }
@@ -791,66 +828,79 @@ SCOREP_Tracing_ThreadAcquireLock( SCOREP_Location*   location,
 void
 SCOREP_Tracing_ThreadReleaseLock( SCOREP_Location*   location,
                                   uint64_t           timestamp,
+                                  SCOREP_ThreadModel model,
                                   uint32_t           lockId,
-                                  uint32_t           acquisitionOrder,
-                                  SCOREP_ThreadModel model )
+                                  uint32_t           acquisitionOrder )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
-    OTF2_EvtWriter_OmpReleaseLock( evt_writer,
-                                   NULL,
-                                   timestamp,
-                                   lockId,
-                                   acquisitionOrder );
+    OTF2_EvtWriter_ThreadReleaseLock( evt_writer,
+                                      NULL,
+                                      timestamp,
+                                      scorep_tracing_thread_model( model ),
+                                      lockId,
+                                      acquisitionOrder );
 
     set_rewind_affected_thread_paradigm( location, model );
 }
 
 
 void
-SCOREP_Tracing_ThreadTaskCreate( SCOREP_Location*   location,
-                                 uint64_t           timestamp,
-                                 uint64_t           taskId,
-                                 SCOREP_ThreadModel model )
+SCOREP_Tracing_ThreadTaskCreate( SCOREP_Location*                 location,
+                                 uint64_t                         timestamp,
+                                 SCOREP_ThreadModel               model,
+                                 SCOREP_InterimCommunicatorHandle threadTeam,
+                                 uint32_t                         threadId,
+                                 uint32_t                         generationNumber )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
-    OTF2_EvtWriter_OmpTaskCreate( evt_writer,
-                                  NULL,
-                                  timestamp,
-                                  taskId );
+    OTF2_EvtWriter_ThreadTaskCreate( evt_writer,
+                                     NULL,
+                                     timestamp,
+                                     SCOREP_LOCAL_HANDLE_TO_ID( threadTeam, InterimCommunicator ),
+                                     threadId,
+                                     generationNumber );
 
     set_rewind_affected_thread_paradigm( location, model );
 }
 
 void
-SCOREP_Tracing_ThreadTaskSwitch( SCOREP_Location*   location,
-                                 uint64_t           timestamp,
-                                 uint64_t           taskId,
-                                 SCOREP_ThreadModel model )
+SCOREP_Tracing_ThreadTaskSwitch( SCOREP_Location*                 location,
+                                 uint64_t                         timestamp,
+                                 SCOREP_ThreadModel               model,
+                                 SCOREP_InterimCommunicatorHandle threadTeam,
+                                 uint32_t                         threadId,
+                                 uint32_t                         generationNumber )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
-    OTF2_EvtWriter_OmpTaskSwitch( evt_writer,
-                                  NULL,
-                                  timestamp,
-                                  taskId );
+    OTF2_EvtWriter_ThreadTaskSwitch( evt_writer,
+                                     NULL,
+                                     timestamp,
+                                     SCOREP_LOCAL_HANDLE_TO_ID( threadTeam, InterimCommunicator ),
+                                     threadId,
+                                     generationNumber );
 
     set_rewind_affected_thread_paradigm( location, model );
 }
 
 void
-SCOREP_Tracing_ThreadTaskComplete( SCOREP_Location*   location,
-                                   uint64_t           timestamp,
-                                   uint64_t           taskId,
-                                   SCOREP_ThreadModel model )
+SCOREP_Tracing_ThreadTaskComplete( SCOREP_Location*                 location,
+                                   uint64_t                         timestamp,
+                                   SCOREP_ThreadModel               model,
+                                   SCOREP_InterimCommunicatorHandle threadTeam,
+                                   uint32_t                         threadId,
+                                   uint32_t                         generationNumber )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
-    OTF2_EvtWriter_OmpTaskComplete( evt_writer,
-                                    NULL,
-                                    timestamp,
-                                    taskId );
+    OTF2_EvtWriter_ThreadTaskComplete( evt_writer,
+                                       NULL,
+                                       timestamp,
+                                       SCOREP_LOCAL_HANDLE_TO_ID( threadTeam, InterimCommunicator ),
+                                       threadId,
+                                       generationNumber );
 
     set_rewind_affected_thread_paradigm( location, model );
 }

@@ -64,11 +64,6 @@ scorep_properties[ SCOREP_PROPERTY_MAX ] =
         .condition    = SCOREP_PROPERTY_CONDITION_ANY,
         .initialValue = true
     },
-    // SCOREP_PROPERTY_THREAD_UNIQUE_FORK_SEQUENCE_COUNTS
-    {
-        .condition    = SCOREP_PROPERTY_CONDITION_ANY,
-        .initialValue = true
-    },
 };
 
 

@@ -81,7 +81,7 @@ if HAVE_OPENMP_SUPPORT
 
 lib_LTLIBRARIES += libscorep_mutex_omp.la
 libscorep_mutex_omp_la_SOURCES = \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c 
+    $(SRC_ROOT)src/measurement/paradigm/scorep_mutex_omp.c
 libscorep_mutex_omp_la_CFLAGS = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libscorep_mutex_omp_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
@@ -92,12 +92,16 @@ libscorep_mutex_omp_la_CPPFLAGS = \
 lib_LTLIBRARIES += libscorep_thread_omp_tpd.la
 libscorep_thread_omp_tpd_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libscorep_thread_omp_tpd_la_SOURCES  =                       \
-    $(SRC_ROOT)src/measurement/scorep_thread_omp_tpd.c
+    $(SRC_ROOT)src/measurement/scorep_thread_omp_tpd.c \
+    $(SRC_ROOT)src/measurement/paradigm/omp/scorep_omp_thread_teams.c \
+    $(SRC_ROOT)src/measurement/paradigm/omp/scorep_omp_thread_teams.h \
+    $(SRC_ROOT)src/measurement/paradigm/omp/scorep_omp_unify.c
 libscorep_thread_omp_tpd_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR) \
     $(UTILS_CPPFLAGS) \
+    -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/measurement/profiling \
     -I$(INC_ROOT)src/measurement \

@@ -190,7 +190,7 @@ define_metric( SCOREP_DefinitionManager*  definition_manager,
                        profilingType );
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Metric, metric );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Metric, metric );
 
     return new_handle;
 }
@@ -262,7 +262,7 @@ uint32_t
 SCOREP_MetricHandle_GetUnifiedId( SCOREP_MetricHandle handle )
 {
     uint32_t local_id = SCOREP_LOCAL_HANDLE_TO_ID( handle, Metric );
-    return scorep_local_definition_manager.mappings->metric_mappings[ local_id ];
+    return scorep_local_definition_manager.metric.mapping[ local_id ];
 }
 
 

@@ -133,13 +133,19 @@ scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
     case SCOREP_GROUP_ ## SCOREP: \
         return OTF2_GROUP_TYPE_ ## OTF2
 
-        case_return( UNKNOWN,       UNKNOWN );
-        case_return( LOCATIONS,     LOCATIONS );
-        case_return( REGIONS,       REGIONS );
-        case_return( METRIC,        METRIC );
-        case_return( COMM_SELF,     COMM_SELF );
-        case_return( MPI_GROUP,     COMM_GROUP );
-        case_return( MPI_LOCATIONS, COMM_LOCATIONS );
+        case_return( UNKNOWN,         UNKNOWN );
+        case_return( LOCATIONS,       LOCATIONS );
+        case_return( REGIONS,         REGIONS );
+        case_return( METRIC,          METRIC );
+
+        // MPI
+        case_return( MPI_LOCATIONS,   COMM_LOCATIONS );
+        case_return( MPI_GROUP,       COMM_GROUP );
+        case_return( MPI_SELF,        COMM_SELF );
+
+        // OpenMP
+        case_return( OPENMP_LOCATIONS,   COMM_LOCATIONS );
+        case_return( OPENMP_THREAD_TEAM, COMM_GROUP );
 
 #undef case_return
         default:
@@ -369,7 +375,6 @@ scorep_tracing_property_to_otf2( SCOREP_Property scorepProperty )
 
         case_return( MPI_COMMUNICATION_COMPLETE );
         case_return( OPENMP_EVENT_COMPLETE );
-        case_return( THREAD_UNIQUE_FORK_SEQUENCE_COUNTS );
 
         default:
             UTILS_BUG( "Invalid property enum value" );
@@ -468,6 +473,35 @@ scorep_tracing_rma_atomic_type_to_otf2( SCOREP_RmaAtomicType scorepType )
 
         default:
             UTILS_BUG( "Invalid RMA atomic type" );
+
+#undef case_return
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+
+static inline OTF2_Paradigm
+scorep_tracing_thread_model( SCOREP_ThreadModel model )
+{
+    switch ( model )
+    {
+/* For now unknown thread models */
+#define OTF2_PARADIGM_PTHREAD  OTF2_PARADIGM_UNKNOWN
+#define OTF2_PARADIGM_OMPSS    OTF2_PARADIGM_UNKNOWN
+#define OTF2_PARADIGM_EXTERNAL OTF2_PARADIGM_UNKNOWN
+
+#define case_return( name ) \
+    case SCOREP_THREAD_MODEL_ ## name: \
+        return OTF2_PARADIGM_ ## name
+
+        case_return( OPENMP );
+        case_return( PTHREAD );
+        case_return( OMPSS );
+        case_return( EXTERNAL );
+
+        default:
+            UTILS_BUG( "Invalid thread model" );
 
 #undef case_return
     }

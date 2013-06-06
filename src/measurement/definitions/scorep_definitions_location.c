@@ -139,7 +139,7 @@ define_location( SCOREP_DefinitionManager* definition_manager,
     new_definition->location_group_id  = locationGroupId;
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Location, location );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Location, location );
 
     return new_handle;
 }

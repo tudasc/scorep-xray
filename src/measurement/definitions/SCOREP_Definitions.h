@@ -92,22 +92,6 @@ scorep_handle_to_id( SCOREP_AnyHandle handle )
     DEF_WITH_MAPPING( Callpath, callpath )
 
 
-/* *INDENT-OFF* */
-typedef struct SCOREP_DefinitionMappings SCOREP_DefinitionMappings;
-struct SCOREP_DefinitionMappings
-{
-    #define DEF_WITH_MAPPING( Type, type ) \
-    uint32_t* type ## _mappings;
-    SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
-    #undef DEF_WITH_MAPPING
-
-    /* handled special in the unifier code */
-    uint32_t* interim_communicator_mappings;
-    uint32_t* interim_rma_window_mappings;
-};
-/* *INDENT-ON* */
-
-
 /**
  * Holds all definitions.
  *
@@ -117,36 +101,31 @@ struct SCOREP_DefinitionMappings
 /* *INDENT-OFF* */
 struct SCOREP_DefinitionManager
 {
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( String, string )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( SystemTreeNode, system_tree_node )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( LocationGroup, location_group )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Location, location )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( SourceFile, source_file )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Region, region )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Group, group )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( InterimCommunicator, interim_communicator )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Communicator, communicator )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( InterimRmaWindow, interim_rma_window )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( RmaWindow, rma_window )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianTopology, mpi_cartesian_topology )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MPICartesianCoords, mpi_cartesian_coords )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Metric, metric )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( SamplingSet, sampling_set )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( IOFileGroup, io_file_group )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( IOFile, io_file )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( MarkerGroup, marker_group )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Marker, marker )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Parameter, parameter )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Callpath, callpath )
-    SCOREP_DEFINE_DEFINITION_MANAGER_MEMBERS( Property, property )
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( string );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( system_tree_node );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( location_group );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( location );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( source_file );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( region );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( group );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( interim_communicator );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( communicator );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( interim_rma_window );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( rma_window );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( mpi_cartesian_topology );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( mpi_cartesian_coords );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( metric );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( sampling_set );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( io_file_group );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( io_file );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( marker_group );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( marker );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( parameter );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( callpath );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( property );
 
     /** The pager manager where all definition objects resides */
     SCOREP_Allocator_PageManager* page_manager;
-
-    /** Mappings for local definition ids to global ids.
-     * Used only in local definition instance.
-     */
-    SCOREP_DefinitionMappings* mappings;
 };
 
 /* *INDENT-ON* */

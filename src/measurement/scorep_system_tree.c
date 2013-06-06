@@ -103,9 +103,9 @@ SCOREP_FinalizeLocationGroup()
 
 
     /* Set location group in all locations */
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Location, location )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, Location, location )
     {
         definition->location_group_id = location_group_id;
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }

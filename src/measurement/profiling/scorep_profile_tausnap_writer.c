@@ -433,7 +433,7 @@ write_metrics_tau( scorep_profile_node*      node,
     char*             metric_description;
     int               i = 1;
 
-    SCOREP_DEFINITION_FOREACH_DO( manager, Metric, metric )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Metric, metric )
     {
         /* Only want to write dense metrics here*/
         if ( definition->source_type == SCOREP_METRIC_SOURCE_TYPE_PAPI )
@@ -458,7 +458,7 @@ write_metrics_tau( scorep_profile_node*      node,
             free( metric_description );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 

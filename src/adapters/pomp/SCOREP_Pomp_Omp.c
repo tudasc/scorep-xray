@@ -27,6 +27,8 @@
 
 #include "SCOREP_Pomp_Common.h"
 #include "SCOREP_Pomp_RegionInfo.h"
+#include <SCOREP_Location.h>
+#include <SCOREP_Subsystem.h>
 
 #include <SCOREP_Events.h>
 
@@ -62,6 +64,54 @@ POMP2_Get_current_task( void )
 {
     return pomp_current_task;
 }
+
+#define pomp2_decode_task_handle( task ) \
+    ( ( uint32_t )( ( task ) >> 32 ) ), \
+    ( ( uint32_t )( ( task ) & 0xFFFFFFFFu ) )
+
+/* ***************************************************************************
+*                                                         POMP lock regions *
+*****************************************************************************/
+
+
+/** Indexes for omp lock region handles in scorep_pomp_lock_region_handles. */
+enum SCOREP_Pomp_LockRegion_Index
+{
+    SCOREP_POMP_INIT_LOCK = 0,
+    SCOREP_POMP_DESTROY_LOCK,
+    SCOREP_POMP_SET_LOCK,
+    SCOREP_POMP_UNSET_LOCK,
+    SCOREP_POMP_TEST_LOCK,
+    SCOREP_POMP_INIT_NEST_LOCK,
+    SCOREP_POMP_DESTROY_NEST_LOCK,
+    SCOREP_POMP_SET_NEST_LOCK,
+    SCOREP_POMP_UNSET_NEST_LOCK,
+    SCOREP_POMP_TEST_NEST_LOCK,
+
+    SCOREP_POMP_REGION_LOCK_NUM
+};
+
+/** List of registered omp function names. They must be in the same order as the
+    corresponding SCOREP_Pomp_LockRegion_Index.
+ */
+static char* scorep_pomp_lock_region_names[] =
+{
+    "omp_init_lock",
+    "omp_destroy_lock",
+    "omp_set_lock",
+    "omp_unset_lock",
+    "omp_test_lock",
+    "omp_init_nest_lock",
+    "omp_destroy_nest_lock",
+    "omp_set_nest_lock",
+    "omp_unset_nest_lock",
+    "omp_test_nest_lock"
+};
+
+/** List of handles for omp regions. The handles must be stored in the same order as
+    the corresponding SCOREP_Pomp_LockRegion_Index.
+ */
+static SCOREP_RegionHandle scorep_pomp_lock_region_handles[ SCOREP_POMP_REGION_LOCK_NUM ];
 
 /** @ingroup POMP2
     @{
@@ -125,7 +175,8 @@ POMP2_Barrier_exit( POMP2_Region_handle* pomp_handle,
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         if ( pomp_current_task != pomp_old_task )
         {
-            SCOREP_ThreadTaskSwitch( pomp_current_task, SCOREP_THREAD_MODEL_OPENMP );
+            SCOREP_ThreadTaskSwitch( SCOREP_THREAD_MODEL_OPENMP,
+                                     pomp2_decode_task_handle( pomp_current_task ) );
         }
         SCOREP_ExitRegion( region->outerBlock );
     }
@@ -158,7 +209,8 @@ POMP2_Implicit_barrier_exit( POMP2_Region_handle* pomp_handle,
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         if ( pomp_current_task != pomp_old_task )
         {
-            SCOREP_ThreadTaskSwitch( pomp_current_task, SCOREP_THREAD_MODEL_OPENMP );
+            SCOREP_ThreadTaskSwitch( SCOREP_THREAD_MODEL_OPENMP,
+                                     pomp2_decode_task_handle( pomp_current_task ) );
         }
         SCOREP_ExitRegion( region->barrier );
     }
@@ -197,9 +249,9 @@ POMP2_Critical_begin( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_ThreadAcquireLock( region->lock->handle,
-                                  region->lock->acquisition_order,
-                                  SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_ThreadAcquireLock( SCOREP_THREAD_MODEL_OPENMP,
+                                  region->lock->handle,
+                                  region->lock->acquisition_order );
         SCOREP_EnterRegion( region->innerBlock );
     }
 }
@@ -212,9 +264,9 @@ POMP2_Critical_end( POMP2_Region_handle* pomp_handle )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_ExitRegion( region->innerBlock );
-        SCOREP_ThreadReleaseLock( region->lock->handle,
-                                  region->lock->acquisition_order,
-                                  SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_ThreadReleaseLock( SCOREP_THREAD_MODEL_OPENMP,
+                                  region->lock->handle,
+                                  region->lock->acquisition_order );
     }
 }
 
@@ -304,9 +356,9 @@ POMP2_Parallel_begin( POMP2_Region_handle* pomp_handle )
 
     if ( !scorep_pomp_is_finalized )
     {
-        SCOREP_ThreadTeamBegin( SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT,
-                                omp_get_thread_num(),
-                                SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_ThreadTeamBegin( SCOREP_THREAD_MODEL_OPENMP,
+                                SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT,
+                                omp_get_thread_num() );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->innerParallel );
     }
@@ -320,7 +372,8 @@ POMP2_Parallel_end( POMP2_Region_handle* pomp_handle )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_ExitRegion( region->innerParallel );
-        SCOREP_ThreadEnd( SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_ThreadEnd( SCOREP_THREAD_MODEL_OPENMP,
+                          SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT );
     }
 }
 
@@ -341,7 +394,8 @@ POMP2_Parallel_fork( POMP2_Region_handle* pomp_handle,
         SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         UTILS_ASSERT( region != NULL );
-        SCOREP_ThreadFork( num_threads, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_ThreadFork( SCOREP_THREAD_MODEL_OPENMP,
+                           num_threads );
     }
 }
 
@@ -355,7 +409,8 @@ POMP2_Parallel_join( POMP2_Region_handle* pomp_handle,
     if ( !scorep_pomp_is_finalized )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_ThreadJoin( SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_ThreadJoin( SCOREP_THREAD_MODEL_OPENMP,
+                           SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT );
     }
 }
 
@@ -530,7 +585,8 @@ POMP2_Task_create_begin( POMP2_Region_handle* pomp_handle,
         SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
-        SCOREP_ThreadTaskCreate( *pomp_new_task, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_ThreadTaskCreate( SCOREP_THREAD_MODEL_OPENMP,
+                                 pomp2_decode_task_handle( *pomp_new_task ) );
     }
 }
 
@@ -545,7 +601,8 @@ POMP2_Task_create_end( POMP2_Region_handle* pomp_handle,
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         if ( pomp_current_task != pomp_old_task )
         {
-            SCOREP_ThreadTaskSwitch( pomp_old_task, SCOREP_THREAD_MODEL_OPENMP );
+            SCOREP_ThreadTaskSwitch( SCOREP_THREAD_MODEL_OPENMP,
+                                     pomp2_decode_task_handle( pomp_old_task ) );
         }
         SCOREP_ExitRegion( region->outerBlock );
     }
@@ -564,7 +621,9 @@ POMP2_Task_begin( POMP2_Region_handle* pomp_handle,
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_ThreadTaskBegin( region->innerBlock, pomp_current_task, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_ThreadTaskBegin( SCOREP_THREAD_MODEL_OPENMP,
+                                region->innerBlock,
+                                pomp2_decode_task_handle( pomp_current_task ) );
     }
 }
 
@@ -575,7 +634,9 @@ POMP2_Task_end( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_ThreadTaskEnd( region->innerBlock, pomp_current_task, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_ThreadTaskEnd( SCOREP_THREAD_MODEL_OPENMP,
+                              region->innerBlock,
+                              pomp2_decode_task_handle( pomp_current_task ) );
     }
 }
 
@@ -596,7 +657,8 @@ POMP2_Untied_task_create_begin( POMP2_Region_handle* pomp_handle,
         SCOREP_POMP2_HANDLE_UNITIALIZED_REGION( pomp_handle, ctc_string );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->outerBlock );
-        SCOREP_ThreadTaskCreate( *pomp_new_task, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_ThreadTaskCreate( SCOREP_THREAD_MODEL_OPENMP,
+                                 pomp2_decode_task_handle( *pomp_new_task ) );
     }
 }
 
@@ -611,7 +673,8 @@ POMP2_Untied_task_create_end( POMP2_Region_handle* pomp_handle,
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         if ( pomp_current_task != pomp_old_task )
         {
-            SCOREP_ThreadTaskSwitch( pomp_old_task, SCOREP_THREAD_MODEL_OPENMP );
+            SCOREP_ThreadTaskSwitch( SCOREP_THREAD_MODEL_OPENMP,
+                                     pomp2_decode_task_handle( pomp_old_task ) );
         }
         SCOREP_ExitRegion( region->outerBlock );
     }
@@ -630,7 +693,9 @@ POMP2_Untied_task_begin( POMP2_Region_handle* pomp_handle,
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_ThreadTaskBegin( region->innerBlock, pomp_current_task, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_ThreadTaskBegin( SCOREP_THREAD_MODEL_OPENMP,
+                                region->innerBlock,
+                                pomp2_decode_task_handle( pomp_current_task ) );
     }
 }
 
@@ -641,7 +706,9 @@ POMP2_Untied_task_end( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_ThreadTaskEnd( region->innerBlock, pomp_current_task, SCOREP_THREAD_MODEL_OPENMP );
+        SCOREP_ThreadTaskEnd( SCOREP_THREAD_MODEL_OPENMP,
+                              region->innerBlock,
+                              pomp2_decode_task_handle( pomp_current_task ) );
     }
 }
 
@@ -673,7 +740,8 @@ POMP2_Taskwait_end( POMP2_Region_handle* pomp_handle,
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         if ( pomp_current_task != pomp_old_task )
         {
-            SCOREP_ThreadTaskSwitch( pomp_old_task, SCOREP_THREAD_MODEL_OPENMP );
+            SCOREP_ThreadTaskSwitch( SCOREP_THREAD_MODEL_OPENMP,
+                                     pomp2_decode_task_handle( pomp_old_task ) );
         }
         SCOREP_ExitRegion( region->outerBlock );
     }
@@ -734,10 +802,10 @@ POMP2_Init_lock( omp_lock_t* s )
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
-        SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_INIT_LOCK ] );
+        SCOREP_EnterRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_INIT_LOCK ] );
         omp_init_lock( s );
         scorep_pomp_lock_init( s );
-        SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_INIT_LOCK ] );
+        SCOREP_ExitRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_INIT_LOCK ] );
     }
     else
     {
@@ -756,10 +824,10 @@ POMP2_Destroy_lock( omp_lock_t* s )
     }
     else if ( scorep_pomp_is_tracing_on )
     {
-        SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_DESTROY_LOCK ] );
+        SCOREP_EnterRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_DESTROY_LOCK ] );
         omp_destroy_lock( s );
         scorep_pomp_lock_destroy( s );
-        SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_DESTROY_LOCK ] );
+        SCOREP_ExitRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_DESTROY_LOCK ] );
     }
     else
     {
@@ -774,7 +842,7 @@ POMP2_Set_lock( omp_lock_t* s )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Set_lock" );
     if ( scorep_pomp_is_tracing_on )
     {
-        SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_SET_LOCK ] );
+        SCOREP_EnterRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_SET_LOCK ] );
         omp_set_lock( s );
 
         SCOREP_MutexLock( scorep_pomp_lock_lock );
@@ -782,7 +850,7 @@ POMP2_Set_lock( omp_lock_t* s )
         SCOREP_ThreadAcquireLock( lock->handle, lock->acquisition_order, SCOREP_THREAD_MODEL_OPENMP );
         SCOREP_MutexUnlock( scorep_pomp_lock_lock );
 
-        SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_SET_LOCK ] );
+        SCOREP_ExitRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_SET_LOCK ] );
     }
     else
     {
@@ -796,7 +864,7 @@ POMP2_Unset_lock( omp_lock_t* s )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Unset_lock" );
     if ( scorep_pomp_is_tracing_on )
     {
-        SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_LOCK ] );
+        SCOREP_EnterRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_UNSET_LOCK ] );
 
         SCOREP_MutexLock( scorep_pomp_lock_lock );
         SCOREP_PompLock* lock = SCOREP_Pomp_GetReleaseLock( s );
@@ -804,7 +872,7 @@ POMP2_Unset_lock( omp_lock_t* s )
         SCOREP_MutexUnlock( scorep_pomp_lock_lock );
 
         omp_unset_lock( s );
-        SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_LOCK ] );
+        SCOREP_ExitRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_UNSET_LOCK ] );
     }
     else
     {
@@ -820,7 +888,7 @@ POMP2_Test_lock( omp_lock_t* s )
     {
         int result;
 
-        SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_TEST_LOCK ] );
+        SCOREP_EnterRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_TEST_LOCK ] );
         result = omp_test_lock( s );
         if ( result )
         {
@@ -829,7 +897,7 @@ POMP2_Test_lock( omp_lock_t* s )
             SCOREP_ThreadAcquireLock( lock->handle, lock->acquisition_order, SCOREP_THREAD_MODEL_OPENMP );
             SCOREP_MutexUnlock( scorep_pomp_lock_lock );
         }
-        SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_TEST_LOCK ] );
+        SCOREP_ExitRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_TEST_LOCK ] );
         return result;
     }
     else
@@ -850,10 +918,10 @@ POMP2_Init_nest_lock( omp_nest_lock_t* s )
     SCOREP_POMP2_ENSURE_INITIALIZED;
     if ( scorep_pomp_is_tracing_on )
     {
-        SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_INIT_NEST_LOCK ] );
+        SCOREP_EnterRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_INIT_NEST_LOCK ] );
         omp_init_nest_lock( s );
         scorep_pomp_lock_init( s );
-        SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_INIT_NEST_LOCK ] );
+        SCOREP_ExitRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_INIT_NEST_LOCK ] );
     }
     else
     {
@@ -872,10 +940,10 @@ POMP2_Destroy_nest_lock( omp_nest_lock_t* s )
     }
     else if ( scorep_pomp_is_tracing_on )
     {
-        SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_DESTROY_NEST_LOCK ] );
+        SCOREP_EnterRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_DESTROY_NEST_LOCK ] );
         omp_destroy_nest_lock( s );
         scorep_pomp_lock_destroy( s );
-        SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_DESTROY_NEST_LOCK ] );
+        SCOREP_ExitRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_DESTROY_NEST_LOCK ] );
     }
     else
     {
@@ -890,13 +958,13 @@ POMP2_Set_nest_lock( omp_nest_lock_t* s )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Set_nest_lock" );
     if ( scorep_pomp_is_tracing_on )
     {
-        SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_SET_NEST_LOCK ] );
+        SCOREP_EnterRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_SET_NEST_LOCK ] );
         omp_set_nest_lock( s );
         SCOREP_MutexLock( scorep_pomp_lock_lock );
         SCOREP_PompLock* lock = SCOREP_Pomp_GetAcquireNestLock( s );
         SCOREP_ThreadAcquireLock( lock->handle, lock->acquisition_order, SCOREP_THREAD_MODEL_OPENMP );
         SCOREP_MutexUnlock( scorep_pomp_lock_lock );
-        SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_SET_NEST_LOCK ] );
+        SCOREP_ExitRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_SET_NEST_LOCK ] );
     }
     else
     {
@@ -910,13 +978,13 @@ POMP2_Unset_nest_lock( omp_nest_lock_t* s )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Unset_nest_lock" );
     if ( scorep_pomp_is_tracing_on )
     {
-        SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_NEST_LOCK ] );
+        SCOREP_EnterRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_UNSET_NEST_LOCK ] );
         SCOREP_MutexLock( scorep_pomp_lock_lock );
         SCOREP_PompLock* lock = SCOREP_Pomp_GetReleaseNestLock( s );
         SCOREP_ThreadReleaseLock( lock->handle, lock->acquisition_order, SCOREP_THREAD_MODEL_OPENMP );
         SCOREP_MutexUnlock( scorep_pomp_lock_lock );
         omp_unset_nest_lock( s );
-        SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_UNSET_NEST_LOCK ] );
+        SCOREP_ExitRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_UNSET_NEST_LOCK ] );
     }
     else
     {
@@ -932,7 +1000,7 @@ POMP2_Test_nest_lock( omp_nest_lock_t* s )
     {
         int result;
 
-        SCOREP_EnterRegion( scorep_pomp_regid[ SCOREP_POMP_TEST_NEST_LOCK ] );
+        SCOREP_EnterRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_TEST_NEST_LOCK ] );
         result = omp_test_nest_lock( s );
         if ( result )
         {
@@ -942,7 +1010,7 @@ POMP2_Test_nest_lock( omp_nest_lock_t* s )
             SCOREP_MutexUnlock( scorep_pomp_lock_lock );
         }
 
-        SCOREP_ExitRegion( scorep_pomp_regid[ SCOREP_POMP_TEST_NEST_LOCK ] );
+        SCOREP_ExitRegion( scorep_pomp_lock_region_handles[ SCOREP_POMP_TEST_NEST_LOCK ] );
         return result;
     }
     else
@@ -954,3 +1022,124 @@ POMP2_Test_nest_lock( omp_nest_lock_t* s )
 #endif // _OPENMP
 
 /** @} */
+
+
+/* *****************************************************************************
+ *                                                       POMP OpenMP subsystem *
+ ******************************************************************************/
+
+extern SCOREP_ErrorCode
+scorep_omp_create_location_data( SCOREP_Location* location );
+extern void
+scorep_omp_destroy_location_data( SCOREP_Location* location );
+extern void
+scorep_omp_unify_thread_teams( void );
+extern void
+scorep_omp_unify_thread_teams_finalize( void );
+
+size_t scorep_pomp_omp_subsystem_id;
+
+static SCOREP_ErrorCode
+scorep_pomp_omp_register( size_t subsystem_id )
+{
+    UTILS_DEBUG_ENTRY();
+
+    scorep_pomp_omp_subsystem_id = subsystem_id;
+
+    return SCOREP_SUCCESS;
+}
+
+static SCOREP_ErrorCode
+scorep_pomp_omp_init( void )
+{
+    UTILS_DEBUG_ENTRY();
+
+    /* Initialize the common POMP adapter */
+    scorep_pomp_adapter_init();
+
+    SCOREP_SourceFileHandle scorep_pomp_file_handle
+        = SCOREP_Definitions_NewSourceFile( "OMP" );
+
+    int i = 0;
+    for ( i = 0; i < SCOREP_POMP_REGION_LOCK_NUM; i++ )
+    {
+        scorep_pomp_lock_region_handles[ i ] =
+            SCOREP_Definitions_NewRegion( scorep_pomp_lock_region_names[ i ],
+                                          NULL,
+                                          scorep_pomp_file_handle,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_ADAPTER_POMP,
+                                          SCOREP_REGION_WRAPPER );
+    }
+
+    UTILS_DEBUG_EXIT();
+
+    return SCOREP_SUCCESS;
+}
+
+static SCOREP_ErrorCode
+scorep_pomp_omp_init_location( SCOREP_Location* locationData )
+{
+    UTILS_DEBUG_ENTRY();
+    if ( SCOREP_LOCATION_TYPE_CPU_THREAD == SCOREP_Location_GetType( locationData ) )
+    {
+        return scorep_omp_create_location_data( locationData );
+    }
+    return SCOREP_SUCCESS;
+}
+
+static void
+scorep_pomp_omp_finalize_location( SCOREP_Location* locationData )
+{
+    UTILS_DEBUG_ENTRY();
+    if ( SCOREP_LOCATION_TYPE_CPU_THREAD == SCOREP_Location_GetType( locationData ) )
+    {
+        scorep_omp_destroy_location_data( locationData );
+    }
+}
+
+static SCOREP_ErrorCode
+scorep_pomp_omp_pre_unify( void )
+{
+    scorep_omp_unify_thread_teams();
+
+    return SCOREP_SUCCESS;
+}
+
+static SCOREP_ErrorCode
+scorep_pomp_omp_post_unify( void )
+{
+    scorep_omp_unify_thread_teams_finalize();
+
+    return SCOREP_SUCCESS;
+}
+
+static void
+scorep_pomp_omp_finalize( void )
+{
+    UTILS_DEBUG_ENTRY();
+}
+
+static void
+scorep_pomp_omp_deregister( void )
+{
+    UTILS_DEBUG_ENTRY();
+}
+
+/** Struct which contains the adapter iniitialization and finalization
+    functions for the POMP2 adapter.
+ */
+const SCOREP_Subsystem SCOREP_Subsystem_PompOmpAdapter =
+{
+    .subsystem_name              = "POMP2 OpenMP Adapter / Version 1.0",
+    .subsystem_register          = &scorep_pomp_omp_register,
+    .subsystem_init              = &scorep_pomp_omp_init,
+    .subsystem_init_location     = &scorep_pomp_omp_init_location,
+    .subsystem_finalize_location = &scorep_pomp_omp_finalize_location,
+    .subsystem_pre_unify         = &scorep_pomp_omp_pre_unify,
+    .subsystem_post_unify        = &scorep_pomp_omp_post_unify,
+    .subsystem_finalize          = &scorep_pomp_omp_finalize,
+    .subsystem_deregister        = &scorep_pomp_omp_deregister,
+    .subsystem_control           = NULL
+};

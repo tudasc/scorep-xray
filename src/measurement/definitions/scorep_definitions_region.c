@@ -200,7 +200,7 @@ define_region( SCOREP_DefinitionManager* definition_manager,
                        regionType );
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Region, region );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Region, region );
 
     return new_handle;
 }

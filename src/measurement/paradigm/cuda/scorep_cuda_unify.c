@@ -45,9 +45,9 @@ scorep_cuda_define_cuda_group( void )
 
     /* Count the number of CUDA locations */
     uint32_t total_number_of_cuda_locations = 0;
-    SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager,
-                                  Location,
-                                  location )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
+                                                         Location,
+                                                         location )
     {
         if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU )
         {
@@ -55,7 +55,7 @@ scorep_cuda_define_cuda_group( void )
         }
         total_number_of_cuda_locations++;
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
     if ( 0 == total_number_of_cuda_locations )
     {
@@ -65,9 +65,9 @@ scorep_cuda_define_cuda_group( void )
     /* collect the global location ids for the CUDA locations */
     uint64_t cuda_locations[ total_number_of_cuda_locations ];
     total_number_of_cuda_locations = 0;
-    SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager,
-                                  Location,
-                                  location )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
+                                                         Location,
+                                                         location )
     {
         if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU )
         {
@@ -76,7 +76,7 @@ scorep_cuda_define_cuda_group( void )
         cuda_locations[ total_number_of_cuda_locations++ ]
             = definition->global_location_id;
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
     /* define the group of locations for all CUDA locations */
     SCOREP_Definitions_NewUnifiedGroup( SCOREP_GROUP_LOCATIONS,

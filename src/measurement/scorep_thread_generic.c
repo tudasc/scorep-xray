@@ -29,6 +29,10 @@
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Properties.h>
 
+#include <tracing/SCOREP_Tracing_Events.h>
+#include <profiling/SCOREP_Profile_Tasking.h>
+#include <SCOREP_Metric_Management.h>
+
 #include "scorep_location.h"
 #include "scorep_events_common.h"
 
@@ -178,42 +182,37 @@ scorep_thread_set_location( scorep_thread_private_data* tpd, SCOREP_Location* lo
 
 
 void
-SCOREP_ThreadTeamBegin( uint32_t forkSequenceCount, uint32_t threadId, SCOREP_ThreadModel model )
+SCOREP_ThreadTeamBegin( SCOREP_ThreadModel model,
+                        uint32_t           forkSequenceCount,
+                        uint32_t           threadId )
 {
     UTILS_ASSERT( model < SCOREP_INVALID_THREAD_MODEL );
-    scorep_thread_private_data* parent_tpd          = 0;
-    scorep_thread_private_data* current_tpd         = 0;
-    bool                        location_is_created = false;
+    scorep_thread_private_data* parent_tpd  = 0;
+    scorep_thread_private_data* current_tpd = 0;
 
     scorep_thread_on_team_begin( &parent_tpd,
                                  &current_tpd,
                                  &forkSequenceCount,
-                                 model,
-                                 &location_is_created );
+                                 model );
+
     UTILS_ASSERT( parent_tpd );
     UTILS_ASSERT( current_tpd );
-    if ( forkSequenceCount == SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_UNIQUE_FORK_SEQUENCE_COUNTS );
-    }
 
-    SCOREP_Location* parent_location  = scorep_thread_get_location( parent_tpd );
-    SCOREP_Location* current_location = scorep_thread_get_location( current_tpd );
-    uint64_t         timestamp        = scorep_get_timestamp( current_location );
+    SCOREP_Location*                 parent_location  = scorep_thread_get_location( parent_tpd );
+    SCOREP_Location*                 current_location = scorep_thread_get_location( current_tpd );
+    uint64_t                         timestamp        = scorep_get_timestamp( current_location );
+    SCOREP_InterimCommunicatorHandle thread_team      = scorep_thread_get_thread_team( current_tpd );
 
-    if ( location_is_created )
-    {
-        SCOREP_Location_CallSubstratesOnNewLocation( current_location,
-                                                     0, /* name not used */
-                                                     parent_location );
-    }
     SCOREP_Location_CallSubstratesOnActivation( current_location,
                                                 parent_location,
                                                 forkSequenceCount );
 
     if ( scorep_tracing_consume_event() )
     {
-        //SCOREP_Tracing_ThreadTeamBegin( current_location, timestamp, forkSequenceCount, threadId, model );
+        SCOREP_Tracing_ThreadTeamBegin( current_location,
+                                        timestamp,
+                                        model,
+                                        thread_team );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
@@ -223,7 +222,7 @@ SCOREP_ThreadTeamBegin( uint32_t forkSequenceCount, uint32_t threadId, SCOREP_Th
         }
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
         //SCOREP_Profiling_ThreadTeamBegin( current_location, timestamp, forkSequenceCount, threadId, model );
     }
@@ -231,28 +230,30 @@ SCOREP_ThreadTeamBegin( uint32_t forkSequenceCount, uint32_t threadId, SCOREP_Th
 
 
 void
-SCOREP_ThreadEnd( uint32_t forkSequenceCount, SCOREP_ThreadModel model )
+SCOREP_ThreadEnd( SCOREP_ThreadModel model,
+                  uint32_t           forkSequenceCount )
 {
     UTILS_ASSERT( model < SCOREP_INVALID_THREAD_MODEL );
-    scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
-    scorep_thread_private_data* parent    = 0;
-    SCOREP_Location*            location  = scorep_thread_get_location( tpd );
-    uint64_t                    timestamp = scorep_get_timestamp( location );
+    scorep_thread_private_data*      tpd         = scorep_thread_get_private_data();
+    scorep_thread_private_data*      parent      = 0;
+    SCOREP_Location*                 location    = scorep_thread_get_location( tpd );
+    uint64_t                         timestamp   = scorep_get_timestamp( location );
+    SCOREP_InterimCommunicatorHandle thread_team = scorep_thread_get_thread_team( tpd );
 
     scorep_thread_on_end( tpd, &parent, &forkSequenceCount, model );
     UTILS_ASSERT( parent );
-    if ( forkSequenceCount == SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_UNIQUE_FORK_SEQUENCE_COUNTS );
-    }
 
     SCOREP_Location_CallSubstratesOnDeactivation(
         location,
         scorep_thread_get_location( parent ) );
 
+
     if ( scorep_tracing_consume_event() )
     {
-        //SCOREP_Tracing_ThreadEnd( location, timestamp, forkSequenceCount, model );
+        SCOREP_Tracing_ThreadTeamEnd( location,
+                                      timestamp,
+                                      model,
+                                      thread_team );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
@@ -262,8 +263,178 @@ SCOREP_ThreadEnd( uint32_t forkSequenceCount, SCOREP_ThreadModel model )
         }
     }
 
-    if ( SCOREP_IsProfilingEnabled() )
+    if ( scorep_profiling_consume_event() )
     {
-        //SCOREP_Profiling_ThreadEnd( location, timestamp, forkSequenceCount, model );
+    }
+}
+
+void
+SCOREP_ThreadTaskCreate( SCOREP_ThreadModel model,
+                         uint32_t           threadId,
+                         uint32_t           generationNumber )
+{
+    scorep_thread_private_data* tpd      = scorep_thread_get_private_data();
+    SCOREP_Location*            location = scorep_thread_get_location( tpd );
+    /* use the timestamp from the associated enter */
+    uint64_t                         timestamp   = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_InterimCommunicatorHandle thread_team = scorep_thread_get_thread_team( tpd );
+
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Tracing_ThreadTaskCreate( location,
+                                         timestamp,
+                                         model,
+                                         thread_team,
+                                         threadId,
+                                         generationNumber );
+    }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        if ( model == SCOREP_THREAD_MODEL_OPENMP )
+        {
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        }
+    }
+
+    /* Nothing to do for profiling. */
+}
+
+
+void
+SCOREP_ThreadTaskSwitch( SCOREP_ThreadModel model,
+                         uint32_t           threadId,
+                         uint32_t           generationNumber )
+{
+    scorep_thread_private_data*      tpd         = scorep_thread_get_private_data();
+    SCOREP_Location*                 location    = scorep_thread_get_location( tpd );
+    uint64_t                         timestamp   = scorep_get_timestamp( location );
+    SCOREP_InterimCommunicatorHandle thread_team = scorep_thread_get_thread_team( tpd );
+
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Tracing_ThreadTaskSwitch( location,
+                                         timestamp,
+                                         model,
+                                         thread_team,
+                                         threadId,
+                                         generationNumber );
+    }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        if ( model == SCOREP_THREAD_MODEL_OPENMP )
+        {
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        }
+    }
+
+    if ( scorep_profiling_consume_event() )
+    {
+        uint64_t* metric_values = SCOREP_Metric_Read( location );
+        SCOREP_Profile_TaskSwitch( location,
+                                   timestamp,
+                                   metric_values,
+                                   threadId,
+                                   generationNumber );
+    }
+}
+
+
+void
+SCOREP_ThreadTaskBegin( SCOREP_ThreadModel  model,
+                        SCOREP_RegionHandle regionHandle,
+                        uint32_t            threadId,
+                        uint32_t            generationNumber )
+{
+    scorep_thread_private_data*      tpd           = scorep_thread_get_private_data();
+    SCOREP_Location*                 location      = scorep_thread_get_location( tpd );
+    uint64_t                         timestamp     = scorep_get_timestamp( location );
+    uint64_t*                        metric_values = SCOREP_Metric_Read( location );
+    SCOREP_InterimCommunicatorHandle thread_team   = scorep_thread_get_thread_team( tpd );
+
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Tracing_ThreadTaskSwitch( location,
+                                         timestamp,
+                                         model,
+                                         thread_team,
+                                         threadId,
+                                         generationNumber );
+
+        if ( metric_values )
+        {
+            /* @todo: Writing metrics to trace file will be improved in the near future */
+
+            SCOREP_Metric_WriteToTrace( location,
+                                        timestamp );
+        }
+
+        SCOREP_Tracing_Enter( location, timestamp, regionHandle );
+    }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        if ( model == SCOREP_THREAD_MODEL_OPENMP )
+        {
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        }
+    }
+
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_TaskBegin( location,
+                                  timestamp,
+                                  metric_values,
+                                  regionHandle,
+                                  threadId,
+                                  generationNumber );
+    }
+}
+
+
+void
+SCOREP_ThreadTaskEnd( SCOREP_ThreadModel  model,
+                      SCOREP_RegionHandle regionHandle,
+                      uint32_t            threadId,
+                      uint32_t            generationNumber )
+{
+    scorep_thread_private_data*      tpd           = scorep_thread_get_private_data();
+    SCOREP_Location*                 location      = scorep_thread_get_location( tpd );
+    uint64_t                         timestamp     = scorep_get_timestamp( location );
+    uint64_t*                        metric_values = SCOREP_Metric_Read( location );
+    SCOREP_InterimCommunicatorHandle thread_team   = scorep_thread_get_thread_team( tpd );
+
+    if ( scorep_tracing_consume_event() )
+    {
+        if ( metric_values )
+        {
+            /* @todo: Writing metrics to trace file will be improved in the near future */
+
+            SCOREP_Metric_WriteToTrace( location,
+                                        timestamp );
+        }
+
+        SCOREP_Tracing_Leave( location, timestamp, regionHandle );
+        SCOREP_Tracing_ThreadTaskComplete( location,
+                                           timestamp,
+                                           model,
+                                           thread_team,
+                                           threadId,
+                                           generationNumber );
+    }
+    else if ( !SCOREP_RecordingEnabled() )
+    {
+        if ( model == SCOREP_THREAD_MODEL_OPENMP )
+        {
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+        }
+    }
+
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_TaskEnd( location,
+                                timestamp,
+                                metric_values,
+                                regionHandle,
+                                threadId,
+                                generationNumber );
     }
 }

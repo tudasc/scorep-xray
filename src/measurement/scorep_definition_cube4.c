@@ -429,7 +429,7 @@ write_metric_definitions( cube_t*                       my_cube,
     enum CubeMetricType cube_metric_type;
 
     //for ( uint8_t i = 0; i < num_metrics; i++ )
-    SCOREP_DEFINITION_FOREACH_DO( manager, Metric, metric )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Metric, metric )
     {
         /* Collect necessary data */
         metric_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
@@ -508,7 +508,7 @@ write_metric_definitions( cube_t*                       my_cube,
             free( metric_unit );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 /**
@@ -523,7 +523,7 @@ write_region_definitions( cube_t*                       my_cube,
                           SCOREP_DefinitionManager*     manager,
                           scorep_cube4_definitions_map* map )
 {
-    SCOREP_DEFINITION_FOREACH_DO( manager, Region, region )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Region, region )
     {
         /* Collect necessary data */
         const char* region_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
@@ -548,7 +548,7 @@ write_region_definitions( cube_t*                       my_cube,
         /* Create entry in mapping table */
         add_region_mapping( map, cube_handle, handle );
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 /**
@@ -573,7 +573,7 @@ write_callpath_definitions( cube_t*                       my_cube,
        unified definitions go from 0 to n-1. The unified definitions on rank zero
        are in the correct order.
      */
-    SCOREP_DEFINITION_FOREACH_DO( manager, Callpath, callpath )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Callpath, callpath )
     {
         /* Collect necessary data */
         scorep_region   = definition->callpath_argument.region_handle;
@@ -587,7 +587,7 @@ write_callpath_definitions( cube_t*                       my_cube,
         /* Create entry in mapping table */
         add_callpath_mapping( map, cnode, handle );
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 /**
@@ -606,7 +606,7 @@ static scorep_cube_system_node*
 write_system_tree( cube_t*                   my_cube,
                    SCOREP_DefinitionManager* manager )
 {
-    uint32_t                 nodes       = manager->system_tree_node_definition_counter;
+    uint32_t                 nodes       = manager->system_tree_node.counter;
     scorep_cube_system_node* system_tree = ( scorep_cube_system_node* )
                                            calloc( nodes, sizeof( scorep_cube_system_node ) );
 
@@ -618,7 +618,7 @@ write_system_tree( cube_t*                   my_cube,
 
     char*  display_name          = 0;
     size_t display_name_capacity = 0;
-    SCOREP_DEFINITION_FOREACH_DO( manager, SystemTreeNode, system_tree_node )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, SystemTreeNode, system_tree_node )
     {
         const uint32_t pos   = definition->sequence_number;
         const char*    class = SCOREP_UNIFIED_HANDLE_DEREF( definition->class_handle,
@@ -658,7 +658,7 @@ write_system_tree( cube_t*                   my_cube,
         system_tree[ pos ].cube_node =
             cube_def_system_tree_node( my_cube, display_name, "", class, parent );
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
     free( display_name );
     return system_tree;
 }
@@ -683,18 +683,18 @@ write_location_group_definitions( cube_t*                   my_cube,
     scorep_cube_system_node* system_tree = write_system_tree( my_cube, manager );
     assert( system_tree );
 
-    SCOREP_DEFINITION_FOREACH_DO( manager, LocationGroup, location_group )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, LocationGroup, location_group )
     {
         uint32_t   rank = definition->global_location_group_id;
         cube_node* node = get_cube_node( my_cube, system_tree, definition->parent,
-                                         manager->system_tree_node_definition_counter );
+                                         manager->system_tree_node.counter );
 
         const char* name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
                                                         String )->string_data;
 
         processes[ rank ] = cube_def_proc( my_cube, name, rank, node );
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
     free( system_tree );
     return processes;
 }
@@ -720,7 +720,7 @@ write_location_definitions( cube_t*                   my_cube,
     /* Location group (processes) Mapping of sequence numbers to cube defintions */
     cube_process** processes = write_location_group_definitions( my_cube, manager, ranks );
 
-    SCOREP_DEFINITION_FOREACH_DO( manager, Location, location )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Location, location )
     {
         uint32_t parent_id = definition->location_group_id;
         uint32_t index     = offsets[ parent_id ] + threads[ parent_id ];
@@ -730,7 +730,7 @@ write_location_definitions( cube_t*                   my_cube,
 
         cube_def_thrd( my_cube, name, index, processes[ parent_id ] );
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
     free( threads );
     free( processes );
 }

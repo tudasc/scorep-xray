@@ -232,7 +232,7 @@ define_group( SCOREP_DefinitionManager* definition_manager,
     HASH_ADD_ARRAY( new_definition, members, number_of_members );
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Group, group );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Group, group );
 
     return new_handle;
 }

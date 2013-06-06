@@ -165,7 +165,7 @@ libscorep_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libscorep_omp_la_CPPFLAGS = $(common_cppflags)
 libscorep_omp_la_LIBADD   = libscorep_adapter_pomp_omp.la  \
                             libscorep_adapter_pomp_user.la \
-                           $(common_libadd)                \
+                            $(common_libadd)               \
                             $(external_libadd)             \
                             libscorep_mpp_mockup.la        \
                             libscorep_thread_omp_tpd.la    \

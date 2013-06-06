@@ -62,84 +62,148 @@ SCOREP_Unify( void )
 
     /* Let the subsystems do some stuff */
     scorep_subsystems_post_unify();
+
+    /* fool linker, so that the scorep_unify_helpers.c unit is always linked
+       into the library/binary. */
+    UTILS_FOOL_LINKER( scorep_unify_helpers );
 }
+
+
+/**
+ * Copies all definitions of type @a type to the unified definition manager.
+ *
+ * @needs Variable named @a definition_manager of type @a SCOREP_DefinitionManager*.
+ *        The definitions to be copied live here.
+ */
+#define UNIFY_DEFINITION( definition_manager, Type, type ) \
+    do \
+    { \
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Copying %s to unified", #type ); \
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definition_manager, Type, type ) \
+        { \
+            scorep_definitions_unify_ ## type( definition, ( definition_manager )->page_manager ); \
+        } \
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END(); \
+    } \
+    while ( 0 )
 
 
 void
 SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManager )
 {
     assert( sourceDefinitionManager );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, String, string );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, SystemTreeNode, system_tree_node );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, LocationGroup, location_group );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Location, location );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, SourceFile, source_file );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Region, region );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Group, group );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Communicator, communicator );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, RmaWindow, rma_window );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Metric, metric );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, SamplingSet, sampling_set );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Parameter, parameter );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Callpath, callpath );
-    SCOREP_COPY_DEFINITIONS_TO_UNIFIED_DEFINITION_MANAGER( sourceDefinitionManager, Property, property );
+    UNIFY_DEFINITION( sourceDefinitionManager, String, string );
+    UNIFY_DEFINITION( sourceDefinitionManager, SystemTreeNode, system_tree_node );
+    UNIFY_DEFINITION( sourceDefinitionManager, LocationGroup, location_group );
+    UNIFY_DEFINITION( sourceDefinitionManager, Location, location );
+    UNIFY_DEFINITION( sourceDefinitionManager, SourceFile, source_file );
+    UNIFY_DEFINITION( sourceDefinitionManager, Region, region );
+    UNIFY_DEFINITION( sourceDefinitionManager, Group, group );
+    UNIFY_DEFINITION( sourceDefinitionManager, Communicator, communicator );
+    UNIFY_DEFINITION( sourceDefinitionManager, RmaWindow, rma_window );
+    UNIFY_DEFINITION( sourceDefinitionManager, Metric, metric );
+    UNIFY_DEFINITION( sourceDefinitionManager, SamplingSet, sampling_set );
+    UNIFY_DEFINITION( sourceDefinitionManager, Parameter, parameter );
+    UNIFY_DEFINITION( sourceDefinitionManager, Callpath, callpath );
+    UNIFY_DEFINITION( sourceDefinitionManager, Property, property );
 }
+
+
+/**
+ * Allocates the array member @a type_mappings of struct SCOREP_DefinitionMappings that lives
+ * in @a definition_manager. The size of the array equals @a type_definition_counter.
+ *
+ */
+#define ALLOC_MAPPINGS( definition_manager, type ) \
+    do \
+    { \
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Alloc mappings for %s", #type ); \
+        scorep_definitions_manager_entry_alloc_mapping( &( definition_manager )->type ); \
+    } \
+    while ( 0 )
 
 
 void
 SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
 {
     assert( definitionManager );
-    assert( !definitionManager->mappings );
-
-    definitionManager->mappings = calloc( 1, sizeof( *definitionManager->mappings ) );
-    assert( definitionManager->mappings );
 
     #define DEF_WITH_MAPPING( Type, type ) \
-    SCOREP_ALLOC_MAPPINGS_ARRAY( type,  definitionManager );
+    ALLOC_MAPPINGS( definitionManager, type );
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
     #undef DEF_WITH_MAPPING
 
-    SCOREP_ALLOC_MAPPINGS_ARRAY( interim_communicator,
-                                 &scorep_local_definition_manager );
+    ALLOC_MAPPINGS( &scorep_local_definition_manager,
+                    interim_communicator );
 
-    SCOREP_ALLOC_MAPPINGS_ARRAY( interim_rma_window,
-                                 &scorep_local_definition_manager );
+    ALLOC_MAPPINGS( &scorep_local_definition_manager, interim_rma_window );
 }
+
+
+/**
+ * Fill the mapping array member @a type_mappings @a SCOREP_DefinitionMappings with the
+ * corresponding sequence numbers of the unified definition.
+ */
+#define ASSIGN_MAPPING( definition_manager, Type, type ) \
+    do \
+    { \
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Assign mapping for %s", #Type ); \
+        if ( ( definition_manager )->type.counter > 0 ) \
+        { \
+            uint32_t type ## _sequence_number = 0; \
+            SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definition_manager, Type, type ) \
+            { \
+                assert( type ## _sequence_number == definition->sequence_number ); \
+                ( definition_manager )->type.mapping[ type ## _sequence_number ] = \
+                    SCOREP_UNIFIED_HANDLE_DEREF( definition->unified, Type )->sequence_number; \
+                ++type ## _sequence_number; \
+            } \
+            SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END(); \
+        } \
+    } \
+    while ( 0 )
 
 
 void
 SCOREP_AssignDefinitionMappingsFromUnified( SCOREP_DefinitionManager* definitionManager )
 {
     assert( definitionManager );
-    assert( definitionManager->mappings );
 
     #define DEF_WITH_MAPPING( Type, type ) \
-    SCOREP_ASSIGN_MAPPINGS( definitionManager, Type, type );
+    ASSIGN_MAPPING( definitionManager, Type, type );
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
     #undef DEF_WITH_MAPPING
 }
+
+
+/**
+ * Frees the array member @a type_mappings of struct SCOREP_DefinitionMappings that lives
+ * in @a definition_manager. The size of the array equals @a type_definition_counter.
+ *
+ */
+#define FREE_MAPPING( definition_manager, type ) \
+    do \
+    { \
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Free mappings for %s", #type ); \
+        scorep_definitions_manager_entry_free_mapping( &( definition_manager )->type ); \
+    } \
+    while ( 0 )
 
 
 void
 SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
 {
     assert( definitionManager );
-    assert( definitionManager->mappings );
 
     #define DEF_WITH_MAPPING( Type, type ) \
-    SCOREP_FREE_MAPPINGS_ARRAY( type, definitionManager );
+    FREE_MAPPING( definitionManager, type );
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
     #undef DEF_WITH_MAPPING
 
-    SCOREP_FREE_MAPPINGS_ARRAY( interim_communicator,
-                                definitionManager );
+    FREE_MAPPING( definitionManager,
+                  interim_communicator );
 
-    SCOREP_FREE_MAPPINGS_ARRAY( interim_rma_window,
-                                definitionManager );
-
-    free( definitionManager->mappings );
-    definitionManager->mappings = NULL;
+    FREE_MAPPING( definitionManager, interim_rma_window );
 }
 
 

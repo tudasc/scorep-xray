@@ -42,6 +42,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "paradigm/omp/scorep_omp_thread_teams.h"
 
 /* The following define is needed to please the PGI compiler */
 #define PRAGMA_OP( x ) _Pragma( x )
@@ -103,6 +104,9 @@ struct scorep_thread_private_data_omp_tpd
     uint32_t  fork_sequence_counts_capacity; /**< current capacity of fork_sequence_counts */
     uint32_t  tmp_fork_sequence_count;       /**< Used to transfer the sequence count from SCOREP_Thread_Fork()
                                               * to SCOREP_Thread_Begin(). */
+
+    /** Holdes the reference to the current thread team */
+    SCOREP_InterimCommunicatorHandle thread_team;
 };
 
 
@@ -216,8 +220,7 @@ void
 scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
                              scorep_thread_private_data** currentTpd,
                              uint32_t*                    forkSequenceCount,
-                             SCOREP_ThreadModel           model,
-                             bool*                        locationIsCreated /* defaults to false */ )
+                             SCOREP_ThreadModel           model )
 {
     /* Begin of portability-hack:
      * OpenMP implementations on XL/AIX use the at_exit mechanism to
@@ -239,13 +242,16 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
     UTILS_BUG_ON( TPD == 0 );
     UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP );
     UTILS_BUG_ON( *forkSequenceCount != SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT );
-    UTILS_ASSERT( *locationIsCreated == false );
 
     *parentTpd = TPD;
-    scorep_thread_private_data_omp_tpd* parent_model_data = scorep_thread_get_model_data( *parentTpd );
+    scorep_thread_private_data_omp_tpd* parent_model_data =
+        scorep_thread_get_model_data( *parentTpd );
+    scorep_thread_private_data_omp_tpd* current_model_data = NULL;
     *forkSequenceCount = parent_model_data->tmp_fork_sequence_count;
 
-    if ( omp_get_num_threads() == 1 )
+    int num_threads = omp_get_num_threads();
+    int thread_num  = omp_get_thread_num();
+    if ( num_threads == 1 )
     {
         /* There is no additional parallelism in this parallel
          * region. Reuse the parent tpd (to gracefully handle recursion e.g.).
@@ -275,15 +281,16 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
         UTILS_ASSERT( reuse_count <= *capacity );
         parent_model_data->fork_sequence_counts[ reuse_count - 1 ] = *forkSequenceCount;
 
-        *currentTpd = *parentTpd;
+        *currentTpd        = *parentTpd;
+        current_model_data = parent_model_data;
     }
     else
     {
+        bool location_is_created = false;
         /* Set TPD to a child of itself, create new one if necessary */
-        const int current_thread_id = omp_get_thread_num();
-        UTILS_BUG_ON( current_thread_id >= parent_model_data->n_children );
+        UTILS_BUG_ON( thread_num >= parent_model_data->n_children );
 
-        *currentTpd = parent_model_data->children[ current_thread_id ];
+        *currentTpd = parent_model_data->children[ thread_num ];
 
         if ( *forkSequenceCount == 1 )
         {
@@ -308,7 +315,7 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
         if ( *currentTpd != 0 )
         {
             /* Previously been in this thread. */
-            scorep_thread_private_data_omp_tpd* current_model_data = scorep_thread_get_model_data( *currentTpd );
+            current_model_data = scorep_thread_get_model_data( *currentTpd );
             UTILS_BUG_ON( current_model_data->fork_sequence_count >= *forkSequenceCount );
             current_model_data->fork_sequence_count = *forkSequenceCount;
             SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( scorep_thread_get_location( *currentTpd ) );
@@ -316,11 +323,13 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
         else
         {
             /* Never been here before. */
-            *currentTpd = scorep_thread_create_private_data( *parentTpd, *forkSequenceCount );
+            *currentTpd =
+                scorep_thread_create_private_data( *parentTpd, *forkSequenceCount );
+            parent_model_data->children[ thread_num ] = *currentTpd;
+            current_model_data                        =
+                scorep_thread_get_model_data( *currentTpd );
 
-            parent_model_data->children[ current_thread_id ] = *currentTpd;
-
-            if ( current_thread_id == 0 )
+            if ( thread_num == 0 )
             {
                 /* for the master, reuse parents location data. */
                 scorep_thread_set_location( *currentTpd, scorep_thread_get_location( *parentTpd ) );
@@ -332,26 +341,54 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
                 if ( *forkSequenceCount == 1 )
                 {
                     /* For the first fork, use locations created in order corresponding to threadId. */
-                    UTILS_ASSERT( first_fork_locations[ current_thread_id - 1 ] );
-                    scorep_thread_set_location( *currentTpd, first_fork_locations[ current_thread_id - 1 ] );
+                    UTILS_ASSERT( first_fork_locations[ thread_num - 1 ] );
+                    scorep_thread_set_location( *currentTpd, first_fork_locations[ thread_num - 1 ] );
                 }
                 else
                 {
                     /* For nested or when a fork created more threads than the first fork,
                      * create locations on a first comes, first served basis. */
                     char location_name[ 80 ];
-                    create_location_name( location_name, 80, current_thread_id, *parentTpd );
+                    create_location_name( location_name, 80, thread_num, *parentTpd );
                     scorep_thread_set_location( *currentTpd,
                                                 SCOREP_Location_CreateCPULocation( scorep_thread_get_location( *parentTpd ),
                                                                                    location_name,
                                                                                    /* deferNewLocationNotification = */ true ) );
                 }
-                *locationIsCreated = true;
+                /* We need to assign *currentTpd to the TPD first, before we
+                 * can notify about the new location. */
+                location_is_created = true;
+
                 SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( scorep_thread_get_location( *currentTpd ) );
             }
         }
+
         set_tpd_to( *currentTpd );
+
+        if ( location_is_created )
+        {
+            SCOREP_Location_CallSubstratesOnNewLocation(
+                scorep_thread_get_location( *currentTpd ),
+                0,
+                scorep_thread_get_location( *parentTpd ) );
+        }
     }
+
+    /* handles recursion into the same singleton thread-team */
+    current_model_data->thread_team = scorep_omp_get_thread_team_handle(
+        scorep_thread_get_location( *currentTpd ),
+        parent_model_data->thread_team,
+        num_threads,
+        thread_num );
+}
+
+
+SCOREP_InterimCommunicatorHandle
+scorep_thread_get_thread_team( scorep_thread_private_data* tpd )
+{
+    scorep_thread_private_data_omp_tpd* model_data =
+        scorep_thread_get_model_data( tpd );
+    return model_data->thread_team;
 }
 
 
@@ -452,6 +489,7 @@ scorep_thread_on_join( scorep_thread_private_data*  currentTpd,
     UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP );
 
     scorep_thread_private_data_omp_tpd* model_data = scorep_thread_get_model_data( currentTpd );
+    scorep_thread_private_data_omp_tpd* than_active_model_data;
 
     if ( model_data->parent_reuse_count != 0 )
     {
@@ -459,15 +497,19 @@ scorep_thread_on_join( scorep_thread_private_data*  currentTpd,
          * parallel region. We reused the parent tpd. */
         *forkSequenceCount = model_data->fork_sequence_counts[ model_data->parent_reuse_count - 1 ];
         model_data->parent_reuse_count--;
-        *tpdFromNowOn = currentTpd;
+        *tpdFromNowOn          = currentTpd;
+        than_active_model_data = model_data;
     }
     else
     {
         *forkSequenceCount = model_data->fork_sequence_count;
         UTILS_BUG_ON( parentTpd == 0 );
         set_tpd_to( parentTpd );
-        *tpdFromNowOn = parentTpd;
+        *tpdFromNowOn          = parentTpd;
+        than_active_model_data = scorep_thread_get_model_data( parentTpd );
     }
+    than_active_model_data->thread_team =
+        scorep_omp_get_parent_thread_team_handle( model_data->thread_team );
 }
 
 

@@ -232,12 +232,13 @@ SCOREP_Memory_AllocForMisc( size_t size )
                                          size );
 }
 
-static void
+static bool
 free_memory_type_for_location( SCOREP_Location* location,
                                void*            arg )
 {
     SCOREP_MemoryType type = *( SCOREP_MemoryType* )arg;
     SCOREP_Allocator_Free( SCOREP_Location_GetMemoryPageManager( location, type ) );
+    return false;
 }
 
 void
@@ -281,7 +282,8 @@ SCOREP_Memory_FreeProfileMem()
 
 
 SCOREP_Allocator_MovableMemory
-SCOREP_Memory_AllocForDefinitions( size_t size )
+SCOREP_Memory_AllocForDefinitions( SCOREP_Location* location,
+                                   size_t           size )
 {
     // collect statistics
     if ( size == 0 )
@@ -289,8 +291,16 @@ SCOREP_Memory_AllocForDefinitions( size_t size )
         return SCOREP_MOVABLE_NULL;
     }
 
+    SCOREP_Allocator_PageManager* page_manager = scorep_definitions_page_manager;
+    if ( location )
+    {
+        page_manager = SCOREP_Location_GetMemoryPageManager(
+            location,
+            SCOREP_MEMORY_TYPE_DEFINITIONS );
+    }
+
     SCOREP_Allocator_MovableMemory mem =
-        SCOREP_Allocator_AllocMovable( scorep_definitions_page_manager, size );
+        SCOREP_Allocator_AllocMovable( page_manager, size );
     if ( mem == SCOREP_MOVABLE_NULL )
     {
         /* aborts */

@@ -232,7 +232,7 @@ define_sampling_set( SCOREP_DefinitionManager*     definition_manager,
                              handlesPageManager );
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( SamplingSet, sampling_set );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( SamplingSet, sampling_set );
 
     if ( !handlesPageManager )
     {
@@ -322,8 +322,8 @@ define_scoped_sampling_set( SCOREP_DefinitionManager* definition_manager,
         SCOREP_SamplingSetHandle new_handle = scoped_handle;
 
         /* Does return if it is a duplicate */
-        SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( SamplingSet,
-                                                  sampling_set );
+        SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( SamplingSet,
+                                                   sampling_set );
 
         return new_handle;
     }

@@ -124,7 +124,7 @@ define_parameter( SCOREP_DefinitionManager* definition_manager,
     HASH_ADD_POD( new_definition, parameter_type );
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( Parameter, parameter );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Parameter, parameter );
 
     return new_handle;
 }

@@ -49,4 +49,11 @@ scorep_tracing_consume_event( void )
 }
 
 
+static inline bool
+scorep_profiling_consume_event( void )
+{
+    return SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled();
+}
+
+
 #endif /* SCOREP_EVENTS_COMMON_H_ */

@@ -41,8 +41,10 @@
  * declare its communication group when it is used in an multi process
  * paradigm. Each rank has its own list of locations, which will be
  * collected at the root rank, where the group definition is triggered
- * into the unified definition manager. It returns the offset of this rank
- * into the collated list of locations.
+ * into the definition manager by rank 0. It returns the offset of this rank
+ * into the collated list of locations. This function is best called in a
+ * pre_unify subsystem hook and not later. The paradigm must ensure that
+ * no previous Group definition is triggered before this call.
  */
 uint32_t
 scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,

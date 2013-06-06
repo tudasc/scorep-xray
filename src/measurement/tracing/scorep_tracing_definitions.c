@@ -85,7 +85,7 @@ scorep_write_string_definitions( void*                     writerHandle,
                     OTF2_GlobalDefWriter_WriteString;
     }
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, String, string )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, String, string )
     {
         OTF2_ErrorCode status = defString(
             writerHandle,
@@ -97,7 +97,7 @@ scorep_write_string_definitions( void*                     writerHandle,
             scorep_handle_definition_writing_error( status, "String" );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 
@@ -123,7 +123,7 @@ scorep_write_location_definitions(
                       OTF2_GlobalDefWriter_WriteLocation;
     }
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, Location, location )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, Location, location )
     {
         OTF2_ErrorCode status = defLocation(
             writerHandle,
@@ -138,7 +138,7 @@ scorep_write_location_definitions(
             scorep_handle_definition_writing_error( status, "Location" );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 static void
@@ -161,7 +161,7 @@ scorep_write_location_group_definitions(
                            OTF2_GlobalDefWriter_WriteLocationGroup;
     }
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, LocationGroup, location_group )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, LocationGroup, location_group )
     {
         uint32_t system_tree_parent = OTF2_UNDEFINED_SYSTEM_TREE_NODE;
         if ( definition->parent != SCOREP_INVALID_SYSTEM_TREE_NODE )
@@ -183,7 +183,7 @@ scorep_write_location_group_definitions(
             scorep_handle_definition_writing_error( status, "LocationGroup" );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 static void
@@ -207,7 +207,7 @@ scorep_write_system_tree_node_definitions(
     }
 
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, SystemTreeNode, system_tree_node )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, SystemTreeNode, system_tree_node )
     {
         /* Determine parent id savely */
         uint32_t parent = OTF2_UNDEFINED_SYSTEM_TREE_NODE;
@@ -228,7 +228,7 @@ scorep_write_system_tree_node_definitions(
             scorep_handle_definition_writing_error( status, "SystemTreeNode" );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 
@@ -257,7 +257,7 @@ scorep_write_region_definitions( void*                     writerHandle,
         defRegion = ( def_region_pointer_t )OTF2_GlobalDefWriter_WriteRegion;
     }
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, Region, region )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, Region, region )
     {
         uint32_t source_file_id = OTF2_UNDEFINED_STRING;
         if ( definition->file_name_handle != SCOREP_INVALID_STRING )
@@ -356,7 +356,7 @@ scorep_write_region_definitions( void*                     writerHandle,
             scorep_handle_definition_writing_error( status, "Region" );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 static void
@@ -365,7 +365,7 @@ scorep_write_communicator_definitions( void*                     writerHandle,
 {
     UTILS_ASSERT( writerHandle );
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, Communicator, communicator )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, Communicator, communicator )
     {
         uint32_t comm_name_id = OTF2_UNDEFINED_STRING;
         if ( definition->name_handle != SCOREP_INVALID_STRING )
@@ -394,7 +394,7 @@ scorep_write_communicator_definitions( void*                     writerHandle,
             scorep_handle_definition_writing_error( status, "Communicator" );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 
@@ -404,7 +404,7 @@ scorep_write_rma_window_definitions( void*                     writerHandle,
 {
     UTILS_ASSERT( writerHandle );
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, RmaWindow, rma_window )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, RmaWindow, rma_window )
     {
         uint32_t comm_id = OTF2_UNDEFINED_COMM;
         if ( definition->communicator_handle != SCOREP_INVALID_INTERIM_COMMUNICATOR )
@@ -424,7 +424,7 @@ scorep_write_rma_window_definitions( void*                     writerHandle,
             scorep_handle_definition_writing_error( status, "RmaWindow" );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 
@@ -452,7 +452,7 @@ scorep_write_group_definitions( void*                     writerHandle,
         defGroup = ( def_group_pointer_t )OTF2_GlobalDefWriter_WriteGroup;
     }
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager, Group, group )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, Group, group )
     {
         OTF2_GroupType group_type
             = scorep_tracing_group_type_to_otf2( definition->group_type );
@@ -460,10 +460,16 @@ scorep_write_group_definitions( void*                     writerHandle,
         OTF2_GroupFlag group_flags = OTF2_GROUP_FLAG_NONE;
         switch ( definition->group_type )
         {
-            case SCOREP_GROUP_COMM_SELF:
-            case SCOREP_GROUP_MPI_GROUP:
             case SCOREP_GROUP_MPI_LOCATIONS:
+            case SCOREP_GROUP_MPI_GROUP:
+            case SCOREP_GROUP_MPI_SELF:
                 paradigm = OTF2_PARADIGM_MPI;
+                break;
+
+            case SCOREP_GROUP_OPENMP_LOCATIONS:
+            case SCOREP_GROUP_OPENMP_THREAD_TEAM:
+                paradigm = OTF2_PARADIGM_OPENMP;
+                break;
         }
 
         OTF2_ErrorCode status = defGroup(
@@ -481,7 +487,7 @@ scorep_write_group_definitions( void*                     writerHandle,
             scorep_handle_definition_writing_error( status, "Group" );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 
@@ -510,9 +516,9 @@ scorep_write_metric_definitions( void*                     writerHandle,
                           OTF2_GlobalDefWriter_WriteMetricMember;
     }
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
-                                  Metric,
-                                  metric )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager,
+                                                         Metric,
+                                                         metric )
     {
         OTF2_ErrorCode status = defMetricMember(
             writerHandle,
@@ -531,7 +537,7 @@ scorep_write_metric_definitions( void*                     writerHandle,
             scorep_handle_definition_writing_error( status, "Metric" );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 
@@ -567,9 +573,9 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
                             OTF2_GlobalDefWriter_WriteMetricInstance;
     }
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
-                                  SamplingSet,
-                                  sampling_set )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager,
+                                                         SamplingSet,
+                                                         sampling_set )
     {
         OTF2_ErrorCode status;
 
@@ -646,7 +652,7 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
             scorep_handle_definition_writing_error( status, "SamplingSet" );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 
@@ -669,9 +675,9 @@ scorep_write_parameter_definitions( void*                     writerHandle,
                        OTF2_GlobalDefWriter_WriteParameter;
     }
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
-                                  Parameter,
-                                  parameter )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager,
+                                                         Parameter,
+                                                         parameter )
     {
         OTF2_ErrorCode status = defParameter(
             writerHandle,
@@ -684,7 +690,7 @@ scorep_write_parameter_definitions( void*                     writerHandle,
             scorep_handle_definition_writing_error( status, "Parameter" );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 
@@ -707,9 +713,9 @@ scorep_write_callpath_definitions( void*                     writerHandle,
                       OTF2_GlobalDefWriter_WriteCallpath;
     }
 
-    SCOREP_DEFINITION_FOREACH_DO( definitionManager,
-                                  Callpath,
-                                  callpath )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager,
+                                                         Callpath,
+                                                         callpath )
     {
         if ( !definition->with_parameter )
         {
@@ -734,26 +740,54 @@ scorep_write_callpath_definitions( void*                     writerHandle,
             }
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
+
+
+/**
+ * Generate and write the id mapping for definition type @a type into the
+ * OTF2 local definition writer @a definition_writer.
+ *
+ * @note @a TYPE denotes the all-caps OTF2 name of the definition type.
+ */
+#define WRITE_MAPPING( definition_writer, type, OTF2_TYPE ) \
+    do \
+    { \
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Write mappings to OTF2 for %s", #type ); \
+        if ( scorep_local_definition_manager.type.mapping && \
+             scorep_local_definition_manager.type.counter > 0 ) \
+        { \
+            OTF2_IdMap* map = OTF2_IdMap_CreateFromUint32Array( \
+                scorep_local_definition_manager.type.counter, \
+                scorep_local_definition_manager.type.mapping, \
+                true ); \
+            /* map can be NULL if the mapping is the identity */ \
+            if ( map ) \
+            { \
+                OTF2_ErrorCode status = OTF2_DefWriter_WriteMappingTable( \
+                    definition_writer, \
+                    OTF2_MAPPING_ ## OTF2_TYPE, \
+                    map ); \
+                UTILS_ASSERT( status == OTF2_SUCCESS ); \
+                OTF2_IdMap_Free( map ); \
+            } \
+        } \
+    } \
+    while ( 0 )
 
 
 void
 scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
 {
-    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( string, STRING, localDefinitionWriter );
-    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( region, REGION, localDefinitionWriter );
-    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( group, GROUP, localDefinitionWriter );
-    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( interim_communicator,
-                                             COMM,
-                                             localDefinitionWriter );
-    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( interim_rma_window,
-                                             RMA_WIN,
-                                             localDefinitionWriter );
-    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( sampling_set, METRIC, localDefinitionWriter );
+    WRITE_MAPPING( localDefinitionWriter, string, STRING );
+    WRITE_MAPPING( localDefinitionWriter, region, REGION );
+    WRITE_MAPPING( localDefinitionWriter, group, GROUP );
+    WRITE_MAPPING( localDefinitionWriter, interim_communicator, COMM );
+    WRITE_MAPPING( localDefinitionWriter, interim_rma_window, RMA_WIN );
+    WRITE_MAPPING( localDefinitionWriter, sampling_set, METRIC );
 
     // do we need Callpath and Parameter mappings for tracing?
-    SCOREP_WRITE_DEFINITION_MAPPING_TO_OTF2( parameter, PARAMETER, localDefinitionWriter );
+    WRITE_MAPPING( localDefinitionWriter, parameter, PARAMETER );
 }
 
 static void
@@ -832,9 +866,9 @@ scorep_tracing_set_properties( OTF2_Archive* scorep_otf2_archive )
 
     /* set all defined properties*/
 
-    SCOREP_DEFINITION_FOREACH_DO( scorep_unified_definition_manager,
-                                  Property,
-                                  property )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
+                                                         Property,
+                                                         property )
     {
         /* convert scorep property enum value to otf2 string */
 
@@ -849,5 +883,5 @@ scorep_tracing_set_properties( OTF2_Archive* scorep_otf2_archive )
                                       : definition->initialValue,
                                       false );
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }

@@ -217,12 +217,37 @@ endif
 noinst_LTLIBRARIES += libscorep_adapter_pomp_mockup.la
 
 libscorep_adapter_pomp_mockup_la_SOURCES = \
-        $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Dummy.c \
-	$(SRC_ROOT)src/adapters/SCOREP_AdapterMockup.c
+        $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Dummy.c
+libscorep_adapter_pomp_mockup_la_LIBADD = \
+        libscorep_adapter_pomp_user_mockup.la \
+        libscorep_adapter_pomp_omp_mockup.la
 
 libscorep_adapter_pomp_mockup_la_CPPFLAGS = $(AM_CPPFLAGS) \
-        -I$(INC_ROOT)src/measurement/include                   \
-        -I$(PUBLIC_INC_DIR)                                    \
-        $(UTILS_CPPFLAGS)                                      \
-        -I$(INC_ROOT)src/utils/include                         \
-	-DADAPTER=Pomp
+        -I$(INC_ROOT)src/measurement/include               \
+        -I$(PUBLIC_INC_DIR)                                \
+        $(UTILS_CPPFLAGS)                                  \
+        -I$(INC_ROOT)src/utils/include
+
+noinst_LTLIBRARIES += libscorep_adapter_pomp_user_mockup.la
+
+libscorep_adapter_pomp_user_mockup_la_SOURCES = \
+        $(SRC_ROOT)src/adapters/SCOREP_AdapterMockup.c
+
+libscorep_adapter_pomp_user_mockup_la_CPPFLAGS = $(AM_CPPFLAGS) \
+        -I$(INC_ROOT)src/measurement/include                    \
+        -I$(PUBLIC_INC_DIR)                                     \
+        $(UTILS_CPPFLAGS)                                       \
+        -I$(INC_ROOT)src/utils/include                          \
+        -DADAPTER=PompUser
+
+noinst_LTLIBRARIES += libscorep_adapter_pomp_omp_mockup.la
+
+libscorep_adapter_pomp_omp_mockup_la_SOURCES = \
+        $(SRC_ROOT)src/adapters/SCOREP_AdapterMockup.c
+
+libscorep_adapter_pomp_omp_mockup_la_CPPFLAGS = $(AM_CPPFLAGS) \
+        -I$(INC_ROOT)src/measurement/include                    \
+        -I$(PUBLIC_INC_DIR)                                     \
+        $(UTILS_CPPFLAGS)                                       \
+        -I$(INC_ROOT)src/utils/include                          \
+        -DADAPTER=PompOmp

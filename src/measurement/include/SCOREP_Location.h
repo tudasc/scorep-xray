@@ -20,6 +20,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "SCOREP_Types.h"
 #include "SCOREP_Definitions.h"
@@ -90,7 +91,7 @@ SCOREP_Location_SetSubsystemData( SCOREP_Location* locationData,
 
 
 void
-SCOREP_Location_ForAll( void ( * cb )( SCOREP_Location*,
+SCOREP_Location_ForAll( bool ( * cb )( SCOREP_Location*,
                                        void* ),
                         void* data );
 

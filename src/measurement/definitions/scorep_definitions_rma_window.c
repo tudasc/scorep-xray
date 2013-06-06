@@ -106,7 +106,7 @@ define_interim_rma_window( SCOREP_DefinitionManager*        definition_manager,
     new_definition->communicator_handle = communicatorHandle;
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( InterimRmaWindow, interim_rma_window );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( InterimRmaWindow, interim_rma_window );
 
     return new_handle;
 }
@@ -206,7 +206,7 @@ define_rma_window( SCOREP_DefinitionManager* definition_manager,
     new_definition->communicator_handle = communicatorHandle;
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( RmaWindow, rma_window );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( RmaWindow, rma_window );
 
     return new_handle;
 }

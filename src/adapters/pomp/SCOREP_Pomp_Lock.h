@@ -36,24 +36,6 @@ typedef uint32_t SCOREP_Pomp_LockHandleType;
 /** Defines an invalid value for locks */
 #define SCOREP_POMP_INVALID_LOCK -1
 
-/** Number of omp regions */
-#define SCOREP_POMP_REGION_NUM 10
-
-/** Indexes for omp region handles in scorep_pomp_regid. */
-enum SCOREP_Pomp_Region_Index
-{
-    SCOREP_POMP_INIT_LOCK = 0,
-    SCOREP_POMP_DESTROY_LOCK,
-    SCOREP_POMP_SET_LOCK,
-    SCOREP_POMP_UNSET_LOCK,
-    SCOREP_POMP_TEST_LOCK,
-    SCOREP_POMP_INIT_NEST_LOCK,
-    SCOREP_POMP_DESTROY_NEST_LOCK,
-    SCOREP_POMP_SET_NEST_LOCK,
-    SCOREP_POMP_UNSET_NEST_LOCK,
-    SCOREP_POMP_TEST_NEST_LOCK
-};
-
 typedef struct SCOREP_PompLock SCOREP_PompLock;
 
 struct SCOREP_PompLock
@@ -63,11 +45,6 @@ struct SCOREP_PompLock
     uint32_t                   acquisition_order;
     uint32_t                   nest_level; // only used for nested locks
 };
-
-/** List of handles for omp regions. The handles must be stored in the same order as
-    the corresponding SCOREP_Pomp_Region_Index.
- */
-extern SCOREP_RegionHandle scorep_pomp_regid[ SCOREP_POMP_REGION_NUM ];
 
 /** Mutex to ensure exclusive access to pomp lock data structure.
  */
@@ -115,6 +92,6 @@ scorep_pomp_lock_close( void );
 
 /** Registers omp lock regions ot the measurement system */
 void
-scorep_pomp_register_lock_regions( void );
+scorep_pomp_lock_initialize( void );
 
 #endif // SCOREP_POMP_LOCK_H

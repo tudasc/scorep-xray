@@ -238,7 +238,7 @@ get_metric_definitions
     }
 
     /**Copy Score-P requested counter definitions*/
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Metric, metric )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, Metric, metric )
     {
         MetricRequest* metric_request = SCOREP_OA_RequestGet( SCOREP_LOCAL_HANDLE_TO_ID( handle, Metric ) );
 
@@ -260,7 +260,7 @@ get_metric_definitions
             }
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
     if ( do_print_out )
     {
         printf( "Metric definition buffer:\n" );
@@ -909,7 +909,7 @@ print_region_definitions
 (
 )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Region, region )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, Region, region )
     {
         int index = SCOREP_LOCAL_HANDLE_TO_ID( handle, Region );
         printf( "region definition index=%d,", index );
@@ -929,7 +929,7 @@ print_region_definitions
                 rfl,
                 adapter_type );
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
 void
@@ -937,7 +937,7 @@ print_metric_definitions
 (
 )
 {
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Metric, metric )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, Metric, metric )
     {
         int index = SCOREP_LOCAL_HANDLE_TO_ID( handle, Metric );
         printf( "Metric definition index=%d,", index );
@@ -947,5 +947,5 @@ print_metric_definitions
             printf( " name %s\n", SCOREP_MetricHandle_GetName( handle ) );
         }
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }

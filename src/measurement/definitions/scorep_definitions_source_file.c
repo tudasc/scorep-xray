@@ -118,7 +118,7 @@ define_source_file( SCOREP_DefinitionManager* definition_manager,
     new_definition->hash_value  = SCOREP_GET_HASH_OF_LOCAL_HANDLE( new_definition->name_handle, String );
 
     /* Does return if it is a duplicate */
-    SCOREP_DEFINITION_MANAGER_ADD_DEFINITION( SourceFile, source_file );
+    SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( SourceFile, source_file );
 
     return new_handle;
 }

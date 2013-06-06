@@ -86,7 +86,7 @@ scorep_tracing_get_compression()
     }
 }
 
-static void
+static bool
 scorep_trace_find_location_for_evt_writer_cb( SCOREP_Location* locationData,
                                               void*            userData )
 {
@@ -100,7 +100,9 @@ scorep_trace_find_location_for_evt_writer_cb( SCOREP_Location* locationData,
     if ( evt_writer == tracing_data->otf_writer )
     {
         *found_location = locationData;
+        return true;
     }
+    return false;
 }
 
 
@@ -372,7 +374,7 @@ SCOREP_Tracing_GetEventWriter( void )
     return evt_writer;
 }
 
-static void
+static bool
 scorep_trace_finalize_event_writer_cb( SCOREP_Location* locationData,
                                        void*            userData )
 {
@@ -397,6 +399,7 @@ scorep_trace_finalize_event_writer_cb( SCOREP_Location* locationData,
     OTF2_Archive_CloseEvtWriter( scorep_otf2_archive,
                                  tracing_data->otf_writer );
     tracing_data->otf_writer = NULL;
+    return false;
 }
 
 
@@ -422,7 +425,7 @@ SCOREP_Tracing_WriteDefinitions( void )
 
     /* Write for all local locations the same local definition file */
     SCOREP_CreateExperimentDir();
-    SCOREP_DEFINITION_FOREACH_DO( &scorep_local_definition_manager, Location, location )
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, Location, location )
     {
         OTF2_DefWriter* local_definition_writer = OTF2_Archive_GetDefWriter(
             scorep_otf2_archive,
@@ -440,7 +443,7 @@ SCOREP_Tracing_WriteDefinitions( void )
         OTF2_Archive_CloseDefWriter( scorep_otf2_archive,
                                      local_definition_writer );
     }
-    SCOREP_DEFINITION_FOREACH_WHILE();
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
 
     uint64_t epoch_begin;

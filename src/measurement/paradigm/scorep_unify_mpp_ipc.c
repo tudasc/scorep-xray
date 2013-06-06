@@ -389,11 +389,11 @@ void
 receive_mappings( int rank )
 {
     #define DEF_WITH_MAPPING( Type, type ) \
-    if ( scorep_unified_definition_manager->type ## _definition_counter > 0 ) \
+    if ( scorep_unified_definition_manager->type.counter > 0 ) \
     { \
         SCOREP_Ipc_Recv( \
-            scorep_unified_definition_manager->mappings->type ## _mappings, \
-            scorep_unified_definition_manager->type ## _definition_counter, \
+            scorep_unified_definition_manager->type.mapping, \
+            scorep_unified_definition_manager->type.counter, \
             SCOREP_IPC_UINT32, \
             rank ); \
     }
@@ -405,18 +405,16 @@ void
 apply_mappings_to_local_manager( void )
 {
     #define DEF_WITH_MAPPING( Type, type ) \
-    if ( scorep_local_definition_manager.type ## _definition_counter > 0 ) \
+    if ( scorep_local_definition_manager.type.counter > 0 \
+         && scorep_unified_definition_manager->type.mapping ) \
     { \
-        if ( scorep_unified_definition_manager->mappings ) \
+        for ( uint32_t i = 0; \
+              i < scorep_local_definition_manager.type.counter; \
+              i++ ) \
         { \
-            for ( uint32_t i = 0; \
-                  i < scorep_local_definition_manager.type ## _definition_counter; \
-                  i++ ) \
-            { \
-                scorep_local_definition_manager.mappings->type ## _mappings[ i ] = \
-                    scorep_unified_definition_manager->mappings->type ## _mappings[ \
-                        scorep_local_definition_manager.mappings->type ## _mappings[ i ] ]; \
-            } \
+            scorep_local_definition_manager.type.mapping[ i ] = \
+                scorep_unified_definition_manager->type.mapping[ \
+                    scorep_local_definition_manager.type.mapping[ i ] ]; \
         } \
     }
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
@@ -428,22 +426,22 @@ apply_and_send_mappings( int                       rank,
                          SCOREP_DefinitionManager* remote_definition_manager )
 {
     #define DEF_WITH_MAPPING( Type, type ) \
-    if ( remote_definition_manager->type ## _definition_counter > 0 ) \
+    if ( remote_definition_manager->type.counter > 0 ) \
     { \
-        if ( scorep_unified_definition_manager->mappings ) \
+        if ( scorep_unified_definition_manager->type.mapping ) \
         { \
             for ( uint32_t i = 0; \
-                  i < remote_definition_manager->type ## _definition_counter; \
+                  i < remote_definition_manager->type.counter; \
                   i++ ) \
             { \
-                remote_definition_manager->mappings->type ## _mappings[ i ] = \
-                    scorep_unified_definition_manager->mappings->type ## _mappings[ \
-                        remote_definition_manager->mappings->type ## _mappings[ i ] ]; \
+                remote_definition_manager->type.mapping[ i ] = \
+                    scorep_unified_definition_manager->type.mapping[ \
+                        remote_definition_manager->type.mapping[ i ] ]; \
             } \
         } \
         SCOREP_Ipc_Send( \
-            remote_definition_manager->mappings->type ## _mappings, \
-            remote_definition_manager->type ## _definition_counter, \
+            remote_definition_manager->type.mapping, \
+            remote_definition_manager->type.counter, \
             SCOREP_IPC_UINT32, \
             rank ); \
     }

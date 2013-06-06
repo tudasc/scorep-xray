@@ -47,6 +47,9 @@ typedef enum SCOREP_MemoryType
 {
     SCOREP_MEMORY_TYPE_MISC = 0,
 
+    /* For per-location definitions */
+    SCOREP_MEMORY_TYPE_DEFINITIONS,
+
     /** separate because we might clear them for periscope from time to time */
     SCOREP_MEMORY_TYPE_PROFILING,
 
@@ -204,6 +207,9 @@ SCOREP_Memory_FreeProfileMem( void );
  * block whose size in bytes it at least @a size. The contents of the memory
  * block is undetermined.
  *
+ * @param location When not NULL, allocate memory from the definition memory
+ *        pool of that location.
+ *
  * @param size The size of the requested memory block in bytes. @a size == 0
  * leads to undefined behaviour.
  *
@@ -216,7 +222,8 @@ SCOREP_Memory_FreeProfileMem( void );
  * @see SCOREP_Memory_FreeDefinitionMem()
  */
 SCOREP_Allocator_MovableMemory
-SCOREP_Memory_AllocForDefinitions( size_t size );
+SCOREP_Memory_AllocForDefinitions( SCOREP_Location* location,
+                                   size_t           size );
 
 /**
  * Release the entire allocated definition memory.

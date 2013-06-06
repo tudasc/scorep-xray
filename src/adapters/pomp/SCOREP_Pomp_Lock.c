@@ -29,8 +29,6 @@
 #include "SCOREP_Pomp_Lock.h"
 #include "SCOREP_Definitions.h"
 
-extern SCOREP_SourceFileHandle scorep_pomp_file_handle;
-
 #define SCOREP_POMP_LOCKBLOCK_SIZE 100
 
 struct scorep_pomp_lock_block
@@ -49,40 +47,9 @@ static SCOREP_Pomp_LockHandleType scorep_pomp_current_lock_handle = 0;
 
 SCOREP_Mutex scorep_pomp_lock_lock;
 
-SCOREP_RegionHandle scorep_pomp_regid[ SCOREP_POMP_REGION_NUM ];
-
-/** List of registered omp function names. They must be in the same order as the
-    corresponding SCOREP_Pomp_Region_Index.
- */
-char* scorep_pomp_region_names[] =
-{
-    "omp_init_lock",
-    "omp_destroy_lock",
-    "omp_set_lock",
-    "omp_unset_lock",
-    "omp_test_lock",
-    "omp_init_nest_lock",
-    "omp_destroy_nest_lock",
-    "omp_set_nest_lock",
-    "omp_unset_nest_lock",
-    "omp_test_nest_lock"
-};
-
 void
-scorep_pomp_register_lock_regions( void )
+scorep_pomp_lock_initialize( void )
 {
-    int i = 0;
-    for ( i = 0; i < SCOREP_POMP_REGION_NUM; i++ )
-    {
-        scorep_pomp_regid[ i ] = SCOREP_Definitions_NewRegion( scorep_pomp_region_names[ i ],
-                                                               NULL,
-                                                               scorep_pomp_file_handle,
-                                                               SCOREP_INVALID_LINE_NO,
-                                                               SCOREP_INVALID_LINE_NO,
-                                                               SCOREP_ADAPTER_POMP,
-                                                               SCOREP_REGION_WRAPPER );
-    }
-
     SCOREP_MutexCreate( &scorep_pomp_lock_lock );
 }
 

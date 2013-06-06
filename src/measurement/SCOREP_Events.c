@@ -51,12 +51,6 @@
 #include "scorep_thread.h"
 
 
-static inline bool
-scorep_profiling_consume_event( void )
-{
-    return SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled();
-}
-
 /**
  * Process a region enter event in the measurement system.
  */
@@ -966,9 +960,9 @@ SCOREP_RmaOpCompleteRemote( SCOREP_InterimRmaWindowHandle windowHandle,
 
 
 void
-SCOREP_ThreadAcquireLock( uint32_t           lockId,
-                          uint32_t           acquisitionOrder,
-                          SCOREP_ThreadModel model )
+SCOREP_ThreadAcquireLock( SCOREP_ThreadModel model,
+                          uint32_t           lockId,
+                          uint32_t           acquisitionOrder )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -979,9 +973,9 @@ SCOREP_ThreadAcquireLock( uint32_t           lockId,
     {
         SCOREP_Tracing_ThreadAcquireLock( location,
                                           timestamp,
+                                          model,
                                           lockId,
-                                          acquisitionOrder,
-                                          model );
+                                          acquisitionOrder );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
@@ -996,9 +990,9 @@ SCOREP_ThreadAcquireLock( uint32_t           lockId,
 
 
 void
-SCOREP_ThreadReleaseLock( uint32_t           lockId,
-                          uint32_t           acquisitionOrder,
-                          SCOREP_ThreadModel model )
+SCOREP_ThreadReleaseLock( SCOREP_ThreadModel model,
+                          uint32_t           lockId,
+                          uint32_t           acquisitionOrder )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -1010,9 +1004,9 @@ SCOREP_ThreadReleaseLock( uint32_t           lockId,
     {
         SCOREP_Tracing_ThreadReleaseLock( location,
                                           timestamp,
+                                          model,
                                           lockId,
-                                          acquisitionOrder,
-                                          model );
+                                          acquisitionOrder );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
@@ -1023,138 +1017,6 @@ SCOREP_ThreadReleaseLock( uint32_t           lockId,
     }
 
     /* Nothing to do for profiling. */
-}
-
-
-void
-SCOREP_ThreadTaskCreate( uint64_t taskId, SCOREP_ThreadModel model )
-{
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadTaskCreate( location, timestamp, taskId, model );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        if ( model == SCOREP_THREAD_MODEL_OPENMP )
-        {
-            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
-        }
-    }
-
-    /* Nothing to do for profiling. */
-}
-
-
-void
-SCOREP_ThreadTaskSwitch( uint64_t taskId, SCOREP_ThreadModel model )
-{
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp = scorep_get_timestamp( location );
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadTaskSwitch( location, timestamp, taskId, model );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        if ( model == SCOREP_THREAD_MODEL_OPENMP )
-        {
-            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
-        }
-    }
-
-    if ( scorep_profiling_consume_event() )
-    {
-        uint64_t* metric_values = SCOREP_Metric_Read( location );
-        SCOREP_Profile_TaskSwitch( location, taskId, timestamp, metric_values );
-    }
-}
-
-
-void
-SCOREP_ThreadTaskBegin( SCOREP_RegionHandle regionHandle,
-                        uint64_t            taskId,
-                        SCOREP_ThreadModel  model )
-{
-    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp     = scorep_get_timestamp( location );
-    uint64_t*        metric_values = SCOREP_Metric_Read( location );
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadTaskSwitch( location, timestamp, taskId, model );
-
-        if ( metric_values )
-        {
-            /* @todo: Writing metrics to trace file will be improved in the near future */
-
-            SCOREP_Metric_WriteToTrace( location,
-                                        timestamp );
-        }
-
-        SCOREP_Tracing_Enter( location, timestamp, regionHandle );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        if ( model == SCOREP_THREAD_MODEL_OPENMP )
-        {
-            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
-        }
-    }
-
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_TaskBegin( location,
-                                  regionHandle,
-                                  taskId,
-                                  timestamp,
-                                  metric_values );
-    }
-}
-
-
-void
-SCOREP_ThreadTaskEnd( SCOREP_RegionHandle regionHandle,
-                      uint64_t            taskId,
-                      SCOREP_ThreadModel  model )
-{
-    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp     = scorep_get_timestamp( location );
-    uint64_t*        metric_values = SCOREP_Metric_Read( location );
-
-    if ( scorep_tracing_consume_event() )
-    {
-        if ( metric_values )
-        {
-            /* @todo: Writing metrics to trace file will be improved in the near future */
-
-            SCOREP_Metric_WriteToTrace( location,
-                                        timestamp );
-        }
-
-        SCOREP_Tracing_Leave( location, timestamp, regionHandle );
-        SCOREP_Tracing_ThreadTaskComplete( location, timestamp, taskId, model );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        if ( model == SCOREP_THREAD_MODEL_OPENMP )
-        {
-            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
-        }
-    }
-
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_TaskEnd( location,
-                                regionHandle,
-                                taskId,
-                                timestamp,
-                                metric_values );
-    }
 }
 
 

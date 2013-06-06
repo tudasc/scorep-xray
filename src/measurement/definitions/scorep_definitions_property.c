@@ -136,14 +136,14 @@ define_property( SCOREP_DefinitionManager* definition_manager,
     new_definition->invalidated = invalidated;
     // no hashing, can be modified
 
-    // modified SCOREP_DEFINITION_MANAGER_ADD_DEFINITION macro:
+    // modified SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION macro:
 
     SCOREP_PropertyHandle* hash_table_bucket = 0;
 
-    if ( definition_manager->property_definition_hash_table )
+    if ( definition_manager->property.hash_table )
     {
-        hash_table_bucket = &definition_manager->property_definition_hash_table[
-            new_definition->hash_value & SCOREP_DEFINITION_HASH_TABLE_MASK ];
+        hash_table_bucket = &definition_manager->property.hash_table[
+            new_definition->hash_value & definition_manager->property.hash_table_mask ];
         SCOREP_PropertyHandle hash_list_iterator = *hash_table_bucket;
 
         while ( hash_list_iterator != SCOREP_MOVABLE_NULL )
@@ -179,12 +179,9 @@ define_property( SCOREP_DefinitionManager* definition_manager,
         *hash_table_bucket        = new_handle;
     }
 
-    *definition_manager->property_definition_tail_pointer =
-        new_handle;
-    definition_manager->property_definition_tail_pointer =
-        &new_definition->next;
-    new_definition->sequence_number =
-        definition_manager->property_definition_counter++;
+    *definition_manager->property.tail = new_handle;
+    definition_manager->property.tail  = &new_definition->next;
+    new_definition->sequence_number    = definition_manager->property.counter++;
 
     return new_handle;
 }

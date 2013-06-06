@@ -87,6 +87,15 @@ extern SCOREP_Mutex scorep_pomp_assign_lock;
         SCOREP_MutexUnlock( scorep_pomp_assign_lock );               \
     }
 
+/** Adapter initialization function.
+ */
+SCOREP_ErrorCode
+scorep_pomp_adapter_init( void );
+
+/** Adapter finalialization function.
+ */
+void
+scorep_pomp_adapter_finalize( void );
 
 /** @} */
 
