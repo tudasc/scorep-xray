@@ -54,17 +54,17 @@ fi
 
 
 # build with only main instrumented
-./scorep --user \
-         --noopari \
-         --nocompiler \
-         -v \
-         --build-check \
-         @CC@ -I. -o task_loop_main task_single_loop.c @OPENMP_CFLAGS@
-
-export LD_LIBRARY_PATH=@SCOREP_PAPI_LIBDIR@:$LD_LIBRARY_PATH
-if [ ! -e task_loop_main ]; then
-    exit 1
-fi
+#./scorep --user \
+#         --noopari \
+#         --nocompiler \
+#         -v \
+#         --build-check \
+#         @CC@ -I. -o task_loop_main task_single_loop.c @OPENMP_CFLAGS@
+#
+#export LD_LIBRARY_PATH=@SCOREP_PAPI_LIBDIR@:$LD_LIBRARY_PATH
+#if [ ! -e task_loop_main ]; then
+#    exit 1
+#fi
 
 # build with main and pomp instrumentation
 ./scorep --user \
@@ -88,16 +88,16 @@ if [ ! -e task_loop_full ]; then
 fi
 
 # execute main test
-SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}main \
-    SCOREP_PROFILING_ENABLE_CORE_FILES=true \
-    SCOREP_ENABLE_PROFILING=true \
-    SCOREP_ENABLE_TRACING=false \
-    ./task_loop_main $LOOP_NUM
-
-if [ $? -ne 0 ]; then
-    cat scorep-measurement-tmp/*.core
-    exit 1
-fi
+#SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}main \
+#    SCOREP_PROFILING_ENABLE_CORE_FILES=true \
+#    SCOREP_ENABLE_PROFILING=true \
+#    SCOREP_ENABLE_TRACING=false \
+#    ./task_loop_main $LOOP_NUM
+#
+#if [ $? -ne 0 ]; then
+#    cat scorep-measurement-tmp/*.core
+#    exit 1
+#fi
 
 # execute pomp test
 SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp \
