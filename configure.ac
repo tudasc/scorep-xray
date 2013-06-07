@@ -35,7 +35,7 @@ if test ! -n "$ac_scorep_platform_data_provided" -o "x${ac_scorep_platform_data_
     AC_SCOREP_WITH_COMPILER_SUITE
     AC_SCOREP_WITH_MPI_COMPILER_SUITE
     # determine arguments for subdir configures
-    args="`$AWK -f $srcdir/vendor/common/build-config/process_arguments.awk \
+    args="`${AWK} -f $srcdir/vendor/common/build-config/process_arguments.awk \
            mpi_compiler_suite                                               \
            $ac_scorep_compilers_frontend                                    \
            $ac_scorep_compilers_backend                                     \
@@ -44,7 +44,7 @@ else
     AC_MSG_NOTICE([platform data provided by toplevel configure.])
     AC_SCOREP_SUMMARY([Platform], [$ac_scorep_platform (provided)])
     # determine arguments for subdir configures
-    args="`$AWK -f $srcdir/vendor/common/build-config/process_arguments.awk \
+    args="`${AWK} -f $srcdir/vendor/common/build-config/process_arguments.awk \
            user_provided_configure_args`"
 fi
 
@@ -85,16 +85,16 @@ AS_IF([test "x${scorep_have_otf2_config}" = "xno"],
 # handle own package's subdir configures
 scorep_have_score_build="scorep_have_score_build=no"
 AS_IF([test "x${scorep_have_cube_config}" = "xyes"],
-      [CUBE_READER_CXX="`${scorep_cube_config_bin} --reader-cxx | awk '{printf $1}'`"
+      [CUBE_READER_CXX="`${scorep_cube_config_bin} --reader-cxx | ${AWK} '{print $1}'`"
        # Source files to get CXX and CXX_FOR_BUILD. Fragile, does not
        # consider user-provided arguments. We can't get CXX from the
        # backend because the following conditional is evaluated before
        # the backend configure is run.
+       AC_CHECK_PROG([GREP], [grep], [`which grep`])
        AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-             [. ${ac_scorep_compilers_frontend}
-              FRONTEND_CXX="`echo ${CXX_FOR_BUILD} | awk '{printf $1}'`"],
-             [. ${ac_scorep_compilers_backend}
-              FRONTEND_CXX="`echo ${CXX}           | awk '{printf $1}'`"])
+             [frontend_compilers=${ac_scorep_compilers_frontend}],
+             [frontend_compilers=${ac_scorep_compilers_backend}])
+       FRONTEND_CXX=`${GREP} CXX_FOR_BUILD ${frontend_compilers} | ${AWK} -F "=" '{print $2}' | ${AWK} '{print $1}'`
        AS_IF([test "x${FRONTEND_CXX}" != "x${CUBE_READER_CXX}"],
              [AC_CONFIG_SUBDIR_CUSTOM([build-score], [CXX="${CUBE_READER_CXX}" ${scorep_cube_config_arg}])
               scorep_have_score_build="scorep_have_score_build=yes"])],
