@@ -32,6 +32,8 @@ libscorep_definitions_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_system_tree_node.c \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_system_tree_node.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_system_tree_node_property.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_system_tree_node_property.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_region.c \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_region.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_communicator.c \
@@ -42,6 +44,8 @@ libscorep_definitions_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_metric.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_sampling_set.c \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_sampling_set.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_sampling_set_recorder.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_sampling_set_recorder.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_parameter.c \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_parameter.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_callpath.c \

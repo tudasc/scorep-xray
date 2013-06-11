@@ -131,14 +131,6 @@ SCOREP_Profile_SetCalltreeConfiguration( uint32_t maxCallpathDepth,
                                          uint32_t maxCallpathNum );
 
 
-/**
-   Sets number of additional metrics (specific for this location) and
-   initializes corresponding data structures.
- */
-void
-SCOREP_Profile_AddLocationSpecificMetrics( SCOREP_Location* location,
-                                           uint32_t         numLocationSpecificMetrics );
-
 /* -------------------------------------------------------------------- Callpath Events */
 
 /**

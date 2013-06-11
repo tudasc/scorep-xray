@@ -279,17 +279,6 @@ SCOREP_OA_RequestsSubmit
     // Initialize profile
     if ( !scorep_profile.is_initialized && scorep_profile.reinitialize )
     {
-        uint32_t             number_of_metrics = 0;
-        SCOREP_MetricHandle* metrics           = NULL;
-
-        SCOREP_SamplingSetHandle sampling_set_handle = SCOREP_Metric_GetSamplingSet();
-        if ( sampling_set_handle != SCOREP_INVALID_SAMPLING_SET )
-        {
-            SCOREP_SamplingSetDef* sampling_set
-                              = SCOREP_LOCAL_HANDLE_DEREF( sampling_set_handle, SamplingSet );
-            number_of_metrics = sampling_set->number_of_metrics;
-            metrics           = sampling_set->metric_handles;
-        }
         SCOREP_Profile_Initialize( /* number_of_metrics, metrics */ );
     }
 

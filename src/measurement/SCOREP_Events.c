@@ -83,6 +83,8 @@ scorep_enter_region( uint64_t            timestamp,
         SCOREP_Profile_Enter( location, regionHandle,
                               SCOREP_RegionHandle_GetType( regionHandle ),
                               timestamp, metricValues );
+
+        SCOREP_Metric_WriteToProfile( location );
     }
 }
 
@@ -152,6 +154,8 @@ scorep_exit_region( uint64_t            timestamp,
 
     if ( scorep_profiling_consume_event() )
     {
+        SCOREP_Metric_WriteToProfile( location );
+
         SCOREP_Profile_Exit( location,
                              regionHandle,
                              timestamp,

@@ -815,6 +815,32 @@ This indicates that counter names in the list are separated by colons.
 @note
 In addition it is possible to specify metrics that will be recorded only by the initial thread of a process. Please use \confvar{SCOREP_METRIC_RUSAGE_PER_PROCESS} for that reason.
 
+@subsection metric_plugins Metric Plugins
+
+Metric plugins extend the functionality of @scorep by providing additional counter as external libraries.
+The libraries are loaded when tracing or profiling your application.
+So there is no need to recompile your application or instrument it manually.
+
+The small example of a synchronous metric plugin  can be found in Appendix @secref{metricpluginexample}.
+The commands to build the corresponding library of this plugin might look like:
+
+@code
+gcc -c -fPIC hello_world.c -o libHelloWorld.so.o -I<path-to-scorep-include-dir>
+gcc -shared -Wl,-soname,libHelloWorld.so -o libHelloWorld.so libHelloWorld.so.o
+@endcode
+
+To enable a metric plugin, set the environment variable \confvar{SCOREP_METRIC_PLUGIN}.
+In the following example we want to use a plugin named <tt>HelloWorld</tt>.
+The corresponding was built as <tt>libHelloWorld.so</tt>.
+Furthermore, we select two counters <tt>metric1</tt> and <tt>metric2</tt> from the plugin.
+Make sure that the metric plugin library is placed in a directory which is part of <tt>LD_LIBRARY_PATH</tt>.
+
+<pre>
+SCOREP_METRIC_PLUGIN=HelloWorld
+SCOREP_METRIC_HELLOWORLD=metric1,metric2
+</pre>
+
+
 @section cuda_adapter CUDA Performance Measurement
 @seclabel{cuda_adapter}
 

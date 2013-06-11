@@ -81,7 +81,7 @@ setup_start_from_parent( scorep_profile_node* node )
     {
         /* If no enclosing region is present, no dense metric valuies can be associated */
         node->inclusive_time.start_value = parent->inclusive_time.start_value;
-        for ( i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
+        for ( i = 0; i < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
         {
             node->dense_metrics[ i ].start_value = parent->dense_metrics[ i ].start_value;
         }
@@ -118,7 +118,7 @@ SCOREP_Profile_Initialize( void )
     else
     {
         /* Reallocate space for dense metrics on root nodes */
-        uint32_t num_dense_metrics = SCOREP_Metric_GetNumberOfSynchronousStrictMetrics();
+        uint32_t num_dense_metrics = SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics();
 
         uint32_t size = num_dense_metrics * sizeof( scorep_profile_dense_metric );
 
@@ -146,19 +146,6 @@ SCOREP_Profile_Initialize( void )
     UTILS_FOOL_LINKER( SCOREP_Profile_Tasking );
 
     UTILS_ASSERT( scorep_profile_param_instance );
-}
-
-void
-SCOREP_Profile_AddLocationSpecificMetrics( SCOREP_Location* location,
-                                           uint32_t         numLocationSpecificMetrics )
-{
-    SCOREP_Profile_LocationData* thread_data =
-        SCOREP_Location_GetProfileData( location );
-
-    scorep_profile_set_num_location_metrics( thread_data,
-                                             numLocationSpecificMetrics );
-
-    scorep_profile_test_location_metrics_of_root_node( thread_data );
 }
 
 void

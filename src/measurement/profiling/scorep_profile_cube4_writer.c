@@ -228,27 +228,6 @@ get_metrics_value_from_array( scorep_profile_node* node, void* index )
     return node->dense_metrics[ *( uint8_t* )index ].sum;
 }
 
-
-/**
-   Returns the values of location-specific metrics for @a node.
-   This functions are given to scorep_profile_write_cube_metric.
-   @param node  Pointer to a node which should return the metric value.
-   @param index Pointer to a uint8_t value that contains the index of the metric in the
-                additional metric vector.
-   @returns metric value of @a node.
- */
-static uint64_t
-get_additional_metrics_value_from_array( scorep_profile_node* node,
-                                         void*                index )
-{
-    if ( node->location_specific_metrics != NULL )
-    {
-        return node->location_specific_metrics[ *( uint8_t* )index ].start_value;
-    }
-
-    return 0;
-}
-
 /**
    Returns the sparse uint64_t metric value in @a node.
    This functions are given to scorep_profile_write_cube_metric.
@@ -804,10 +783,10 @@ scorep_profile_write_cube4( SCOREP_Location* location_data )
 
     /* Write additional dense metrics (e.g. hardware counters) */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing dense metrics" );
-    for ( uint8_t i = 0; i  < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
+    for ( uint8_t i = 0; i  < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
     {
         cube_metric*        metric        = NULL; /* Only used on rank 0 */
-        SCOREP_MetricHandle metric_handle = SCOREP_Metric_GetSynchronousStrictMetricHandle( i );
+        SCOREP_MetricHandle metric_handle = SCOREP_Metric_GetStrictlySynchronousMetricHandle( i );
 
         if ( write_set.my_rank == 0 )
         {
@@ -827,36 +806,6 @@ scorep_profile_write_cube4( SCOREP_Location* location_data )
 
         write_cube_uint64( &write_set, metric,
                            &get_metrics_value_from_array, &i );
-    }
-
-    /* Write additional location-specific metrics */
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing location-specific metrics" );
-    SCOREP_Profile_LocationData* profile_location_data = SCOREP_Location_GetProfileData( location_data );
-    SCOREP_MetricHandle*         additional_metrics    = SCOREP_Metric_GetAdditionalScopedMetricHandles( location_data );
-
-    /* Work during finalization is done by main thread, so this location was responsible to record per-process metrics */
-    for ( uint8_t i = 0; i  < profile_location_data->num_location_specific_metrics; i++ )
-    {
-        cube_metric* metric = NULL; /* Only used on rank 0 */
-
-        if ( write_set.my_rank == 0 )
-        {
-            metric = scorep_get_cube4_metric( write_set.map,
-                                              SCOREP_MetricHandle_GetUnified( additional_metrics[ i ] ) );
-        }
-
-        /* When writing sparse metrics, we skip the time metric handles.
-           Thus, invalidate these entries to avoid
-           writing them twice. */
-        if ( write_set.metric_map != NULL )
-        {
-            uint32_t current_number =
-                SCOREP_MetricHandle_GetUnifiedId( additional_metrics[ i ] );
-            write_set.metric_map[ current_number ] = SCOREP_PROFILE_DENSE_METRIC;
-        }
-
-        write_cube_uint64( &write_set, metric,
-                           &get_additional_metrics_value_from_array, &i );
     }
 
     /* -------------------------------- sparse metrics */

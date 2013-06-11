@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -38,6 +38,8 @@
 #include "SCOREP_Types.h"
 #include "SCOREP_Location.h"
 
+#include <scorep/SCOREP_MetricTypes.h>
+
 /** @defgroup SCOREP_Metric
  *
  * Metric sources provide the capability of recording additional information as part
@@ -49,19 +51,6 @@
  * more information about relevant environment variables.
  */
 
-
-/** Array index where data of global 'synchronous strict' metrics is expected */
-#define SYNCHRONOUS_STRICT_METRICS_INDEX 0
-
-/** Array index where data of per-process metrics is expected */
-#define PER_PROCESS_METRICS_INDEX 1
-
-/** Number of metrics with special handling (at the moment: global
- *  'synchronous strict' and per-process metrics). This value can be
- *  used as first index to store data of per-system-tree-class metrics
- *  in arrays. */
-#define NUMBER_OF_RESERVED_METRICS 2
-
 /* *********************************************************************
  * Type definitions
  **********************************************************************/
@@ -72,20 +61,6 @@
  *  as an incomplete type at this point. The full definition is then contained
  *  in the actual implementation file. */
 typedef struct SCOREP_Metric_EventSet SCOREP_Metric_EventSet;
-
-/** This type encodes the properties of a metric. */
-typedef struct SCOREP_Metric_Properties
-{
-    const char*                name;
-    const char*                description;
-    SCOREP_MetricSourceType    source_type;
-    SCOREP_MetricMode          mode;
-    SCOREP_MetricValueType     value_type;
-    SCOREP_MetricBase          base;
-    int64_t                    exponent;
-    const char*                unit;
-    SCOREP_MetricProfilingType profiling_type;
-} SCOREP_Metric_Properties;
 
 
 /* *********************************************************************
@@ -124,7 +99,9 @@ typedef struct SCOREP_MetricSource
     /**
      * Callback to register a location to the metric source.
      */
-    SCOREP_Metric_EventSet** ( *metric_source_initialize_location )( SCOREP_Location* );
+    SCOREP_Metric_EventSet* ( *metric_source_initialize_location )( SCOREP_Location *           location,
+                                                                    SCOREP_MetricSynchronicity metric_synchronicity,
+                                                                    SCOREP_MetricPer metric_type );
 
     /**
      * Frees memory associated to requested metric event set.
@@ -151,14 +128,84 @@ typedef struct SCOREP_MetricSource
     void ( * metric_source_deregister )( void );
 
     /**
+     * There are three different functions used for reading metric values:
+     * @ metric_source_strictly_synchronous_read, @ metric_source_synchronous_read,
+     * and @ metric_source_asynchronous_read.
+     *
+     * @ metric_source_strictly_synchronous_read is used to read values
+     * of strictly synchronous metrics. Strictly synchronous metrics are
+     * recorded at every function enter/exit event and have to provide
+     * a metric value. This function gets an array as argument to which
+     * values are written. Each metric of the requested event set
+     * @ eventSet must write exactely one value at its corresponding
+     * position within the value array (e.g. metric i writes its value
+     * in @ values[i]).
+     *
+     * @ metric_source_synchronous_read is used tio read values of
+     * synchronous metrics (note the missing 'strictly'). In contrast
+     * to @ metric_source_strictly_synchronous_read it is allowed to
+     * skip writting of specific metric values. Therefore, @ is_updated
+     * is used to indicate whether a value was written for a metric or
+     * not. For example, if a new value of metric i should be written,
+     * its value is stored in @ values[i] and @ is_updated[i] is set to
+     * true. Otherwise @ is_updated[i] is set to false and @ value[i] do
+     * not have to be touched.
+     *
+     * @ metric_source_asynchronous_read is used to read values
+     * of asynchronous metrics. Asynchronous metrics can be measured at
+     * function enter/leave events but also at arbitrary points in time.
+     * Each time a asynchronous metric is called to write its values,
+     * the has to provide an arbitrary count of timestamp-value-pairs.
+     * For example, mettic i of event set @ eventSet write its
+     * timestamp-values-pairs in @ timevalue_pointer[i]. In addition,
+     * metric i has to store the number of written timestamp-values-
+     * pairs in @ num-pairs[i].
+     */
+
+    /**
      * Reads values of counters relative to the time of @ref metric_source_register().
+     * For all metrics values must be written!
      *
      *  @param eventSet An event set, that contains the definition of the counters
      *                  that should be measured.
      *  @param values   An array, to which the counter values are written.
      */
-    void ( * metric_source_read )( SCOREP_Metric_EventSet*,
-                                   uint64_t* );
+    void ( * metric_source_strictly_synchronous_read )( SCOREP_Metric_EventSet* eventSet,
+                                                        uint64_t*               values );
+
+    /**
+     * Reads values of counters relative to the time of @ref metric_source_register().
+     * It is allowed that specific metrics of @eventSet are not updated (no values are
+     * written).
+     *
+     *  @param eventSet[in]     An event set, that contains the definition of the counters
+     *                          that should be measured.
+     *  @param values[out]      Reference to array that will be filled with values from
+     *                          active metrics.
+     *  @param is_updated[out]  An array which indicates whether a new value of a specfic
+     *                          metric was written (@ is_updated[i] == true ) or not
+     *                          (@ is_updated[i] == false ).
+     *  @param force_update[in] Update of all metric value in this event set is enforced.
+     */
+    void ( * metric_source_synchronous_read )( SCOREP_Metric_EventSet* eventSet,
+                                               uint64_t*               values,
+                                               bool*                   is_updated,
+                                               bool                    force_update );
+
+    /**
+     * Read values of counters relative to the time of @ref metric_source_register() asynchronously.
+     *
+     *  @param eventSet[in]             An event set, that contains the definition of the counters
+     *                                  that should be measured.
+     *  @param timevalue_pointer[out]   An array, to which the counter values are written.
+     *  @param num_pairs[out]           Number of pairs (timestamp + value) written for each
+     *                                  individual metric.
+     *  @param force_update[in]         Update of all metric value in this event set is enforced.
+     */
+    void ( * metric_source_asynchronous_read )( SCOREP_Metric_EventSet*      eventSet,
+                                                SCOREP_MetricTimeValuePair** timevalue_pointer,
+                                                uint64_t**                   num_pairs,
+                                                bool                         force_update );
 
     /**
      * Returns number of metrics.

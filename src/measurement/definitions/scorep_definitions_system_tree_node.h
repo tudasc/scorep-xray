@@ -40,15 +40,21 @@ SCOREP_DEFINE_DEFINITION_TYPE( SystemTreeNode )
     SCOREP_DEFINE_DEFINITION_HEADER( SystemTreeNode );
 
     SCOREP_SystemTreeNodeHandle parent_handle;
+    SCOREP_SystemTreeDomain     domains;
     SCOREP_StringHandle         name_handle;
     SCOREP_StringHandle         class_handle;
+
+    /* Chain of all properties for this node. */
+    SCOREP_SystemTreeNodePropertyHandle  properties;
+    SCOREP_SystemTreeNodePropertyHandle* properties_tail;
 };
 
 
 SCOREP_SystemTreeNodeHandle
 SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
-                                      const char*                 name,
-                                      const char*                 klass );
+                                      SCOREP_SystemTreeDomain     domains,
+                                      const char*                 klass,
+                                      const char*                 name );
 
 
 void

@@ -1,0 +1,138 @@
+/** 
+@page metricpluginexample  @scorep Metric Plugin Example
+@seclabel{metricpluginexample}
+
+@code
+#include <scorep/SCOREP_MetricPlugins.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+/* Use mutex to make ID generation thread safe */
+#include <pthread.h>
+
+
+/* Maximum number of metrics */
+#define NUMBER_RANDOM_METRICS 5
+
+/* Guard for metric ID generation */
+static pthread_mutex_t add_metric_mutex;
+
+/* Number of individual metrics */
+static int32_t num_metrics = 0;
+
+/**
+ * The initializing function should check, whether counting of this plugin is generally
+ * available for the current system, whether the user has the right to count, whether
+ * an external database is available, and so on. Also it should initialize most of the
+ * data structures used from now on.
+ *
+ * @return Whether the plugin could be initialized correctly (0) or not (!= 0)
+ */
+int32_t
+init()
+{
+    return 0;
+}
+
+/**
+ * The add counter function is used to add counters, which may be called per
+ * thread, per process, per host or only once. This depends on the run per variable
+ * defined in the info struct. However, this should initialize the counting procedure,
+ * but not start it. The returned counter ID is eminent for the further measurement
+ * process, since Score-P will use this ID from now on to get results, en- and
+ * disable the counting and so on. The plugin has to be aware of this counter and
+ * the related counting facility structure.
+ * 
+ * @param event_name            Name of the selected metric (provided by @ get_event_info)
+ *
+ * @return A unique ID (unique within the plugin) or -1 if adding the counter failed.
+ */
+int32_t
+add_counter( char * event_name )
+{
+    /* ID generation has to be thread save */
+    int id;
+
+    pthread_mutex_lock( &add_metric_mutex );
+    id = num_metrics;
+    num_metrics++;
+    pthread_mutex_unlock( &add_metric_mutex );
+
+    return id;
+}
+
+SCOREP_Metric_Plugin_MetricProperties*
+get_event_info( char * event_name )
+{
+    SCOREP_Metric_Plugin_MetricProperties *return_values;
+    char name_buffer[255];
+    int i;
+
+    /* If wildcard, add some random counters */
+    if ( strcmp( event_name, "*" ) == 0 )
+    {
+        return_values = malloc( ( NUMBER_RANDOM_METRICS + 1 ) * sizeof( SCOREP_Metric_Plugin_MetricProperties ) );
+        for ( i = 0; i < NUMBER_RANDOM_METRICS; i++ )
+        {
+            sprintf( name_buffer, "random strictly sync counter #%i", i );
+            return_values[ i ].name        = strdup( name_buffer );
+            return_values[ i ].description = NULL;
+            return_values[ i ].unit        = NULL;
+            return_values[ i ].mode        = SCOREP_METRIC_MODE_ABSOLUTE_LAST;
+            return_values[ i ].value_type  = SCOREP_METRIC_VALUE_UINT64;
+            return_values[ i ].base        = SCOREP_METRIC_BASE_DECIMAL;
+            return_values[ i ].exponent    = 0;
+        }
+        return_values[ NUMBER_RANDOM_METRICS ].name = NULL;
+    }
+    else
+    {
+        /* If no wildcard is given create one random counter with the passed name */
+        return_values = malloc( 2 * sizeof( SCOREP_Metric_Plugin_MetricProperties ) );
+        sprintf( name_buffer, "random strictly sync counter #%s", event_name );
+        return_values[ 0 ].name        = strdup( name_buffer );
+        return_values[ 0 ].description = NULL;
+        return_values[ 0 ].unit        = NULL;
+        return_values[ 0 ].mode        = SCOREP_METRIC_MODE_ABSOLUTE_LAST;
+        return_values[ 0 ].value_type  = SCOREP_METRIC_VALUE_UINT64;
+        return_values[ 0 ].base        = SCOREP_METRIC_BASE_DECIMAL;
+        return_values[ 0 ].exponent    = 0;
+        return_values[ 1 ].name       = NULL;
+    }
+    return return_values;
+}
+
+uint64_t
+get_value( int32_t counterIndex )
+{
+    return counterIndex;
+}
+
+void fini()
+{
+    pthread_mutex_destroy( &add_metric_mutex );
+}
+
+SCOREP_Metric_Plugin_Info
+get_info()
+{
+    /* Initialize info data (with zero) */
+    SCOREP_Metric_Plugin_Info info;
+    memset( &info, 0, sizeof( SCOREP_Metric_Plugin_Info ) );
+
+    /* Set up */
+    info.scorep_metric_plugin_version = SCOREP_METRIC_PLUGIN_VERSION;
+    info.run_per                      = SCOREP_METRIC_PER_THREAD;
+    info.sync                         = SCOREP_METRIC_STRICTLY_SYNC;
+    info.initialize                   = init;
+    info.finalize                     = fini;
+    info.get_event_info               = get_event_info;
+    info.add_counter                  = add_counter;
+    info.get_current_value            = get_value;
+
+    return info;
+}
+@endcode
+
+*/

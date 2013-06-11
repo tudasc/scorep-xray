@@ -30,13 +30,19 @@
 #include <SCOREP_Platform.h>
 
 SCOREP_Platform_SystemTreePathElement*
-SCOREP_BuildSystemTree();
+SCOREP_BuildSystemTree( void );
 
 SCOREP_LocationGroupHandle
 SCOREP_Definitions_NewSystemTree( SCOREP_Platform_SystemTreePathElement* path );
 
 void
 SCOREP_FreeSystemTree( SCOREP_Platform_SystemTreePathElement* path );
+
+SCOREP_SystemTreeNodeHandle
+SCOREP_GetSystemTreeRootNodeHandle( void );
+
+SCOREP_SystemTreeNodeHandle
+SCOREP_GetSystemTreeNodeHandleForSharedMemory( void );
 
 void
 SCOREP_FinalizeLocationGroup();

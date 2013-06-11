@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2013,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -36,4 +36,5 @@ libscorep_confvars_la_LIBADD += libscorep_metric_confvars.la
 
 EXTRA_DIST += \
     $(SRC_ROOT)src/services/metric/scorep_metric_papi_confvars.inc.c \
-    $(SRC_ROOT)src/services/metric/scorep_metric_rusage_confvars.inc.c
+    $(SRC_ROOT)src/services/metric/scorep_metric_rusage_confvars.inc.c \
+    $(SRC_ROOT)src/services/metric/scorep_metric_plugins_confvars.inc.c

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -36,7 +36,7 @@ static char* scorep_metrics_papi_separator = NULL;
 /**
  *  List of configuration variables for the PAPI metric adapter.
  *
- *  This list contains variables to specify 'synchronous strict' and
+ *  This list contains variables to specify 'strictly synchronous' and
  *  per-process metrics. Furthermore, a variable for the character
  *  that separates single metric names is defined.
  *

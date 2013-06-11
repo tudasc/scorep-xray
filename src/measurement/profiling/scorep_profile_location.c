@@ -50,19 +50,6 @@ scorep_profile_set_current_node( SCOREP_Profile_LocationData* location,
 }
 
 void
-scorep_profile_set_num_location_metrics( SCOREP_Profile_LocationData* location,
-                                         uint32_t                     numLocationSpecificMetrics )
-{
-    location->num_location_specific_metrics = numLocationSpecificMetrics;
-}
-
-uint32_t
-scorep_profile_get_num_location_metrics( SCOREP_Profile_LocationData* location )
-{
-    return location->num_location_specific_metrics;
-}
-
-void
 scorep_profile_reinitialize_location( SCOREP_Profile_LocationData* location )
 {
     /* Initialize locations task instance table */
@@ -97,20 +84,19 @@ scorep_profile_create_location_data( SCOREP_Location* locationData )
         = SCOREP_Location_AllocForMisc( locationData, sizeof( *location ) );
 
     /* Set default values. */
-    location->current_implicit_node         = NULL;
-    location->root_node                     = NULL;
-    location->fork_list_head                = NULL;
-    location->fork_list_tail                = NULL;
-    location->creation_node                 = NULL;
-    location->current_depth                 = 0;
-    location->implicit_depth                = 0;
-    location->num_location_specific_metrics = 0;
-    location->free_nodes                    = NULL;
-    location->free_int_metrics              = NULL;
-    location->free_double_metrics           = NULL;
-    location->current_task_node             = NULL;
-    location->current_task                  = SCOREP_PROFILE_IMPLICIT_TASK;
-    location->location_data                 = locationData;
+    location->current_implicit_node = NULL;
+    location->root_node             = NULL;
+    location->fork_list_head        = NULL;
+    location->fork_list_tail        = NULL;
+    location->creation_node         = NULL;
+    location->current_depth         = 0;
+    location->implicit_depth        = 0;
+    location->free_nodes            = NULL;
+    location->free_int_metrics      = NULL;
+    location->free_double_metrics   = NULL;
+    location->current_task_node     = NULL;
+    location->current_task          = SCOREP_PROFILE_IMPLICIT_TASK;
+    location->location_data         = locationData;
 
     /* Initialize locations task instance table */
     scorep_profile_task_initialize( locationData, location );

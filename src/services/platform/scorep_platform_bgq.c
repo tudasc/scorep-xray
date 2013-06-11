@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -30,6 +30,8 @@
 #include <limits.h>
 #include <string.h>
 #include <pami.h>
+#include <firmware/include/personality.h>
+#include <hwi/include/common/uci.h>
 
 #include <UTILS_Error.h>
 #include <SCOREP_Platform.h>
@@ -79,16 +81,28 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
     SCOREP_Platform_SystemTreePathElement*  node;
 
     node = scorep_platform_system_tree_top_down_add( &tail,
+                                                     SCOREP_SYSTEM_TREE_DOMAIN_MACHINE,
                                                      "machine",
-                                                     0, "Blue Gene/Q" );
+                                                     0, "JuQueen" );
     if ( !node )
     {
         goto fail;
     }
+
+    SCOREP_Platform_SystemTreeProperty* property =
+        scorep_platform_system_tree_add_property( node,
+                                                  "type",
+                                                  0, "Blue Gene/Q" );
+    if ( !property )
+    {
+        goto fail;
+    }
+
     // Maximum unsigned string's length
     size_t max_uint_digits = floor( log10( ( double )UINT_MAX ) ) + 1;
 
     node = scorep_platform_system_tree_top_down_add( &tail,
+                                                     SCOREP_SYSTEM_TREE_DOMAIN_NONE,
                                                      "rack",
                                                      max_uint_digits, "%u", rack );
     if ( !node )
@@ -96,6 +110,7 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
         goto fail;
     }
     node = scorep_platform_system_tree_top_down_add( &tail,
+                                                     SCOREP_SYSTEM_TREE_DOMAIN_NONE,
                                                      "midplane",
                                                      max_uint_digits, "%u", midplane );
     if ( !node )
@@ -103,6 +118,7 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
         goto fail;
     }
     node = scorep_platform_system_tree_top_down_add( &tail,
+                                                     SCOREP_SYSTEM_TREE_DOMAIN_NONE,
                                                      "nodeboard",
                                                      max_uint_digits, "%u", nodeboard );
     if ( !node )
@@ -110,6 +126,7 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
         goto fail;
     }
     node = scorep_platform_system_tree_top_down_add( &tail,
+                                                     SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY,
                                                      "nodecard",
                                                      max_uint_digits, "%u", nodecard );
     if ( !node )
@@ -124,4 +141,29 @@ fail:
 
     return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
                         "Failed to build system tree path" );
+}
+
+SCOREP_ErrorCode
+SCOREP_Platform_DefineNodeTree( SCOREP_SystemTreeNodeHandle parent )
+{
+    /* No further information available */
+    return SCOREP_SUCCESS;
+}
+
+
+int32_t
+SCOREP_Platform_GetHostId( void )
+{
+    uint32_t                        return_value;
+    Personality_t                   mybgq;
+    BG_UniversalComponentIdentifier uci;
+
+    Kernel_GetPersonality( &mybgq, sizeof( Personality_t ) );
+    uci = mybgq.Kernel_Config.UCI;
+
+    /*
+     * Use upper part of UCI (26 bit, up to NodeCard, ignore lower 38 bits).
+     * However, use only the 20 bits (FFFFF) that describe row, col, mp, nb, and cc.
+     */
+    return ( uci >> 38 ) & 0xFFFFF;
 }

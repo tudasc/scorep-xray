@@ -44,6 +44,7 @@
 #include <definitions/SCOREP_Definitions.h>
 #include <SCOREP_Properties.h>
 
+#include <scorep_status.h>
 
 #include "scorep_tracing_internal.h"
 #include "scorep_tracing_types.h"
@@ -1057,23 +1058,30 @@ SCOREP_Tracing_ExitRewindRegion( SCOREP_Location*    location,
 size_t
 SCOREP_Tracing_GetSamplingSetCacheSize( uint32_t numberOfMetrics )
 {
-    return numberOfMetrics * sizeof( OTF2_Type );
+    if ( SCOREP_IsTracingEnabled() )
+    {
+        return numberOfMetrics * sizeof( OTF2_Type );
+    }
+    return 0;
 }
 
 void
 SCOREP_Tracing_CacheSamplingSet( SCOREP_SamplingSetHandle samplingSet )
 {
-    SCOREP_SamplingSetDef* sampling_set
-        = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, SamplingSet );
-
-    OTF2_Type* value_types = ( OTF2_Type* )(
-        ( char* )sampling_set + sampling_set->tracing_cache_offset );
-    for ( uint8_t i = 0; i < sampling_set->number_of_metrics; i++ )
+    if ( SCOREP_IsTracingEnabled() )
     {
-        SCOREP_MetricHandle metric_handle = sampling_set->metric_handles[ i ];
-        SCOREP_MetricDef*   metric        =
-            SCOREP_LOCAL_HANDLE_DEREF( metric_handle, Metric );
-        value_types[ i ]
-            = scorep_tracing_metric_value_type_to_otf2( metric->value_type );
+        SCOREP_SamplingSetDef* sampling_set
+            = SCOREP_LOCAL_HANDLE_DEREF( samplingSet, SamplingSet );
+
+        OTF2_Type* value_types = ( OTF2_Type* )(
+            ( char* )sampling_set + sampling_set->tracing_cache_offset );
+        for ( uint8_t i = 0; i < sampling_set->number_of_metrics; i++ )
+        {
+            SCOREP_MetricHandle metric_handle = sampling_set->metric_handles[ i ];
+            SCOREP_MetricDef*   metric        =
+                SCOREP_LOCAL_HANDLE_DEREF( metric_handle, Metric );
+            value_types[ i ]
+                = scorep_tracing_metric_value_type_to_otf2( metric->value_type );
+        }
     }
 }

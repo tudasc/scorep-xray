@@ -311,7 +311,7 @@ scorep_oaconsumer_initialize_metric_def
 
     shared_index->num_counter_definitions = metric_count;
 
-    SCOREP_SamplingSetHandle sampling_set_handle = SCOREP_Metric_GetSamplingSet();
+    SCOREP_SamplingSetHandle sampling_set_handle = SCOREP_Metric_GetStrictlySynchronousSamplingSet();
     if ( sampling_set_handle != SCOREP_INVALID_SAMPLING_SET )
     {
         shared_index->dense_metrics_sampling_set = SCOREP_LOCAL_HANDLE_DEREF( sampling_set_handle, SamplingSet );

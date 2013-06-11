@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -82,7 +82,7 @@ main( int   argc,
             print_help();
             return EXIT_SUCCESS;
         }
-
+/*
         if ( info_command == "system-tree" )
         {
             SCOREP_Platform_SystemTreePathElement* path;
@@ -100,7 +100,7 @@ main( int   argc,
             SCOREP_Platform_FreePath( path );
             return EXIT_SUCCESS;
         }
-
+ */
 
         if ( info_command == "config-vars" )
         {

@@ -111,6 +111,7 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, string );
 
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, system_tree_node );
+    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, system_tree_node_property );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, location_group );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, location );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, source_file );
@@ -124,6 +125,7 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, mpi_cartesian_topology );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, metric );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, sampling_set );
+    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, sampling_set_recorder );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, io_file_group );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, io_file );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, marker_group );
@@ -135,6 +137,7 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     if ( allocHashTables )
     {
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, system_tree_node );
+        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, system_tree_node_property );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, source_file );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, region );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, group );
@@ -142,6 +145,7 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, mpi_cartesian_coords );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, metric );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, sampling_set );
+        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, sampling_set_recorder );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, io_file_group );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, io_file );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, marker_group );
@@ -167,6 +171,7 @@ SCOREP_Definitions_Finalize()
         free( scorep_unified_definition_manager->location.hash_table );
         free( scorep_unified_definition_manager->location_group.hash_table );
         free( scorep_unified_definition_manager->system_tree_node.hash_table );
+        free( scorep_unified_definition_manager->system_tree_node_property.hash_table );
         free( scorep_unified_definition_manager->source_file.hash_table );
         free( scorep_unified_definition_manager->region.hash_table );
         free( scorep_unified_definition_manager->group.hash_table );
@@ -178,6 +183,7 @@ SCOREP_Definitions_Finalize()
         free( scorep_unified_definition_manager->mpi_cartesian_coords.hash_table );
         free( scorep_unified_definition_manager->metric.hash_table );
         free( scorep_unified_definition_manager->sampling_set.hash_table );
+        free( scorep_unified_definition_manager->sampling_set_recorder.hash_table );
         free( scorep_unified_definition_manager->io_file_group.hash_table );
         free( scorep_unified_definition_manager->io_file.hash_table );
         free( scorep_unified_definition_manager->marker_group.hash_table );

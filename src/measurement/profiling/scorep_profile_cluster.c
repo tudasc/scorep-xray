@@ -1129,14 +1129,10 @@ scorep_post_process_derived_metrics( scorep_cluster_t* cluster )
           + cluster->mets_sum.dense_metrics[ met_coll_comm ];
 
     /* Dense metrics */
-    uint32_t dense_end = met_dense_start + SCOREP_Metric_GetNumberOfSynchronousStrictMetrics();
+    uint32_t dense_end = met_dense_start + SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics();
     for ( uint32_t mr = met_dense_start; mr < dense_end; mr++ )
     {
         cluster->mets_sum.dense_metrics[ mr ] = path->dense_metrics[ mr - met_dense_start ].sum;
-    }
-    for ( uint32_t mr = dense_end; mr < scorep_cluster_metric_number; mr++ )
-    {
-        cluster->mets_sum.dense_metrics[ mr ] = path->location_specific_metrics[ mr - dense_end ].sum;
     }
 
     /* Set avg data based on sum data. This function is only
@@ -1969,8 +1965,7 @@ scorep_cluster_if_necessary( SCOREP_Profile_LocationData* location,
     {
         /* Initialize also the number of dense metrics */
         scorep_cluster_metric_number = met_dense_start
-                                       + SCOREP_Metric_GetNumberOfSynchronousStrictMetrics()
-                                       + SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( location->location_data );
+                                       + SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics();
 
         /* Create clusterer */
         scorep_clusterer = scorep_new_clusterer( location->location_data,

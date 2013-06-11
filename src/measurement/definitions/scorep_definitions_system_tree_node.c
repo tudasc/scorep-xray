@@ -58,6 +58,7 @@
 SCOREP_SystemTreeNodeHandle
 define_system_tree_node( SCOREP_DefinitionManager*   definition_manager,
                          SCOREP_SystemTreeNodeHandle parent,
+                         SCOREP_SystemTreeDomain     domains,
                          SCOREP_StringHandle         name,
                          SCOREP_StringHandle         class );
 
@@ -69,6 +70,7 @@ equal_system_tree_node( const SCOREP_SystemTreeNodeDef* existingDefinition,
 
 SCOREP_SystemTreeNodeHandle
 SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
+                                      SCOREP_SystemTreeDomain     domains,
                                       const char*                 name,
                                       const char*                 class )
 {
@@ -79,6 +81,7 @@ SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
     SCOREP_SystemTreeNodeHandle new_handle = define_system_tree_node(
         &scorep_local_definition_manager,
         parent,
+        domains,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "<unnamed system tree node>" ),
@@ -112,6 +115,7 @@ scorep_definitions_unify_system_tree_node( SCOREP_SystemTreeNodeDef*     definit
     definition->unified = define_system_tree_node(
         scorep_unified_definition_manager,
         unified_parent_handle,
+        definition->domains,
         SCOREP_HANDLE_GET_UNIFIED(
             definition->name_handle,
             String,
@@ -128,6 +132,7 @@ equal_system_tree_node( const SCOREP_SystemTreeNodeDef* existingDefinition,
                         const SCOREP_SystemTreeNodeDef* newDefinition )
 {
     return existingDefinition->parent_handle == newDefinition->parent_handle &&
+           existingDefinition->domains       == newDefinition->domains &&
            existingDefinition->class_handle  == newDefinition->class_handle &&
            existingDefinition->name_handle   == newDefinition->name_handle;
 }
@@ -136,6 +141,7 @@ equal_system_tree_node( const SCOREP_SystemTreeNodeDef* existingDefinition,
 SCOREP_SystemTreeNodeHandle
 define_system_tree_node( SCOREP_DefinitionManager*   definition_manager,
                          SCOREP_SystemTreeNodeHandle parent,
+                         SCOREP_SystemTreeDomain     domains,
                          SCOREP_StringHandle         name,
                          SCOREP_StringHandle         class )
 {
@@ -152,11 +158,17 @@ define_system_tree_node( SCOREP_DefinitionManager*   definition_manager,
         HASH_ADD_HANDLE( new_definition, parent_handle, SystemTreeNode );
     }
 
+    new_definition->domains = domains;
+    HASH_ADD_POD( new_definition, domains );
+
     new_definition->name_handle = name;
     HASH_ADD_HANDLE( new_definition, name_handle, String );
 
     new_definition->class_handle = class;
     HASH_ADD_HANDLE( new_definition, class_handle, String );
+
+    new_definition->properties      = SCOREP_INVALID_SYSTEM_TREE_NODE_PROPERTY;
+    new_definition->properties_tail = &new_definition->properties;
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( SystemTreeNode, system_tree_node );

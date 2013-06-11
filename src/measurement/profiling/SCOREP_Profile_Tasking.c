@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -62,7 +62,7 @@ update_on_suspend( scorep_profile_node* node,
     while ( node != NULL )
     {
         update_dense_on_suspend( &node->inclusive_time, timestamp );
-        for ( uint32_t i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
+        for ( uint32_t i = 0; i < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
         {
             update_dense_on_suspend( &node->dense_metrics[ i ],
                                      metric_values[ i ] );
@@ -79,7 +79,7 @@ update_on_resume( scorep_profile_node* node,
     while ( node != NULL )
     {
         update_dense_on_resume( &node->inclusive_time, timestamp );
-        for ( uint32_t i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
+        for ( uint32_t i = 0; i < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
         {
             update_dense_on_resume( &node->dense_metrics[ i ],
                                     metric_values[ i ] );

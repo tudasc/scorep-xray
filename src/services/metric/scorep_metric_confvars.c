@@ -45,6 +45,8 @@
 
 #include "scorep_metric_rusage_confvars.inc.c"
 
+#include "scorep_metric_plugins_confvars.inc.c"
+
 static SCOREP_ErrorCode
 scorep_metric_register( size_t subsystem_id )
 {
@@ -54,6 +56,9 @@ scorep_metric_register( size_t subsystem_id )
     SCOREP_ConfigRegisterCond( "metric",
                                scorep_metric_rusage_configs,
                                HAVE_BACKEND_GETRUSAGE );
+    SCOREP_ConfigRegisterCond( "metric",
+                               scorep_metric_plugins_configs,
+                               HAVE_BACKEND_METRIC_PLUGINS );
 
     return SCOREP_SUCCESS;
 }

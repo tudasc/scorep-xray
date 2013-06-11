@@ -107,7 +107,8 @@ SCOREP_User_InitMetric
 
         *metricHandle
             = SCOREP_Definitions_NewSamplingSet( 1, &metric,
-                                                 SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS );
+                                                 SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS,
+                                                 SCOREP_SAMPLING_SET_CPU );
     }
 
 out:

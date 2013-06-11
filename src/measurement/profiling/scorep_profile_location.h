@@ -57,8 +57,6 @@ struct SCOREP_Profile_LocationData
     scorep_profile_node*                 current_task_node;             /**< Callpath node of the current task */
     scorep_profile_task_table*           tasks;                         /**< Hashtable to track task instances */
     scorep_profile_task*                 current_task;                  /**< Current task instance */
-    uint32_t                             num_location_specific_metrics; /**< Number of scoped metrics recorded by this location
-                                                                             (in addition to dense metrics recorded by all locations) */
     SCOREP_Location*                     location_data;                 /**< Pointer to the Score-P location */
     scorep_profile_fork_list_node*       fork_list_head;                /**< Pointer to the list head of fork points */
     scorep_profile_fork_list_node*       fork_list_tail;                /**< Pointer to the list tail of fork points */

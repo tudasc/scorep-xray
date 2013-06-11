@@ -57,6 +57,7 @@ struct scorep_config_variable
 {
     SCOREP_ConfigVariable          data;
     char                           env_var_name[ ENV_NAME_LEN_MAX ];
+    bool                           is_evaluated;
     struct scorep_config_variable* next;
 };
 
@@ -365,10 +366,6 @@ SCOREP_ConfigApplyEnv( void )
 {
     UTILS_ASSERT( name_spaces );
 
-    static bool once_run;
-    UTILS_BUG_ON( once_run, "SCOREP_ConfigApplyEnv() can only be called once." );
-    once_run = true;
-
     UTILS_DEBUG( "Apply environment to config variables" );
 
     for ( struct scorep_config_name_space* name_space = name_spaces_head;
@@ -379,8 +376,16 @@ SCOREP_ConfigApplyEnv( void )
               variable;
               variable = variable->next )
         {
+            if ( variable->is_evaluated )
+            {
+                /* Environment was already applied to this variable, skip it */
+                continue;
+            }
+
             const char* environment_variable_value =
                 getenv( variable->env_var_name );
+
+            variable->is_evaluated = true;
 
             UTILS_DEBUG( "Variable:      '%s::%s'",
                          name_space->name,

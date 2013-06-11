@@ -199,8 +199,8 @@ SCOREP_InitMeasurement( void )
 
     SCOREP_TIME( SCOREP_Filter_Initialize, ( ) );
     SCOREP_TIME( scorep_subsystems_initialize, ( ) );
-    SCOREP_TIME( scorep_subsystems_initialize_location, ( location ) );
     SCOREP_TIME( scorep_profile_initialize, ( location ) );
+    SCOREP_TIME( scorep_subsystems_initialize_location, ( location ) );
 
     SCOREP_TIME( scorep_properties_initialize, ( ) );
 
@@ -273,10 +273,7 @@ scorep_profile_initialize( SCOREP_Location* location )
 
     SCOREP_Profile_Initialize();
 
-    SCOREP_Profile_OnLocationCreation( location, NULL ); // called also from scorep_thread_call_externals_on_new_location
-
-    SCOREP_Profile_AddLocationSpecificMetrics( location,
-                                               SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( location ) );
+    SCOREP_Profile_OnLocationCreation( location, NULL );      // called also from scorep_thread_call_externals_on_new_location
 
     SCOREP_Profile_OnLocationActivation( location, NULL, 0 ); // called also from scorep_thread_call_externals_on_thread_activation
 }
@@ -328,6 +325,10 @@ SCOREP_InitMppMeasurement( void )
     }
 
     SCOREP_Status_OnMppInit();
+
+    /* RonnyT: move this function call to SCOREP_Status_OnMppInit ?? */
+    SCOREP_Metric_InitializeMpp();
+
     SCOREP_CreateExperimentDir();
     SCOREP_SynchronizeClocks();
     scorep_set_otf2_archive_master_slave();

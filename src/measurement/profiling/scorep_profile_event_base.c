@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -96,19 +96,10 @@ scorep_profile_enter( SCOREP_Profile_LocationData* location,
     /* Store start values for dense metrics */
     node->count++;
     node->inclusive_time.start_value = timestamp;
-    uint32_t number_of_synchronus_strict_metrics = SCOREP_Metric_GetNumberOfSynchronousStrictMetrics();
+    uint32_t number_of_synchronus_strict_metrics = SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics();
     for ( uint32_t i = 0; i < number_of_synchronus_strict_metrics; i++ )
     {
         node->dense_metrics[ i ].start_value = metrics[ i ];
-    }
-
-    /* Store start values for additional metrics */
-    uint32_t number_of_additional_metrics = SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( location->location_data );
-    uint32_t j                            = 0;
-    for ( uint32_t i = number_of_synchronus_strict_metrics; i < number_of_synchronus_strict_metrics + number_of_additional_metrics; i++ )
-    {
-        node->location_specific_metrics[ j ].start_value = metrics[ i ];
-        j++;
     }
 
     return node;
@@ -147,8 +138,7 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
        parent. */
     parent = node;
 
-    uint32_t number_of_synchronus_strict_metrics = SCOREP_Metric_GetNumberOfSynchronousStrictMetrics();
-    uint32_t number_of_additional_metrics        = SCOREP_Metric_GetNumberOfAdditionalScopedMetrics( location->location_data );
+    uint32_t number_of_synchronus_strict_metrics = SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics();
     do
     {
         location->current_depth--;
@@ -157,19 +147,9 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
         /* Update metrics */
         node->last_exit_time = timestamp;
         scorep_profile_update_dense_metric( &node->inclusive_time, timestamp );
-        for ( uint32_t i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
+        for ( uint32_t i = 0; i < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
         {
             scorep_profile_update_dense_metric( &node->dense_metrics[ i ], metrics[ i ] );
-        }
-
-        /* Update additional metrics */
-        uint32_t j = 0;
-        for ( uint32_t i = number_of_synchronus_strict_metrics;
-              i < number_of_synchronus_strict_metrics + number_of_additional_metrics; i++ )
-        {
-            scorep_profile_update_dense_metric( &node->location_specific_metrics[ j ],
-                                                metrics[ i ] );
-            j++;
         }
 
 

@@ -111,4 +111,11 @@ bool
 SCOREP_Status_IsMppFinalized( void );
 
 
+/**
+ * Indicates whether current process is master on this host.
+ */
+bool
+SCOREP_Status_IsProcessMasterOnHost( void );
+
+
 #endif /* SCOREP_STATUS_H */

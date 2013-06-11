@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -68,6 +68,10 @@
 
 /** @def SCOREP_METRIC_MAXNUM Maximum number of PAPI metrics concurrently used by a process */
 #define SCOREP_METRIC_MAXNUM 20
+
+#define STRICTLY_SYNCHRONOUS_METRIC 0
+#define PER_PROCESS_METRIC 1
+#define MAX_METRIC_INDEX 2
 
 /** @defgroup SCOREP_Metric_PAPI SCOREP PAPI Metric Source
  *  @ingroup SCOREP_Metric
@@ -183,9 +187,9 @@ scorep_metric_papi_error( int   errcode,
  **********************************************************************/
 
 /**
- * Definition data of metrics (synchronous strict and per-process metrics).
+ * Definition data of metrics (e.g. synchronous strict, per-process metrics).
  */
-static scorep_metric_definition_data* metric_defs[ NUMBER_OF_RESERVED_METRICS ];
+static scorep_metric_definition_data* metric_defs[ MAX_METRIC_INDEX ];
 
 /**
  * Static variable to control initialization status of the metric adapter.
@@ -299,6 +303,13 @@ scorep_metric_papi_open( const char* listOfMetricNames,
     retval = PAPI_library_init( PAPI_VER_CURRENT );
     UTILS_ASSERT( retval == PAPI_VER_CURRENT );
 
+    /* Initialize PAPI thread support */
+    retval = PAPI_thread_init( &scorep_metric_get_location_id );
+    if ( retval != PAPI_OK )
+    {
+        scorep_metric_papi_error( retval, "PAPI_thread_init" );
+    }
+
     /* PAPI code of recent metric */
     int code;
     /* Metric name */
@@ -364,7 +375,7 @@ scorep_metric_papi_close( void )
     /* PAPI_shutdown() should be called only if there were PAPI metrics */
     bool shutdown_papi = false;
 
-    for ( uint32_t metric_index = 0; metric_index < NUMBER_OF_RESERVED_METRICS; metric_index++ )
+    for ( uint32_t metric_index = 0; metric_index < MAX_METRIC_INDEX; metric_index++ )
     {
         if ( metric_defs[ metric_index ] == NULL
              || metric_defs[ metric_index ]->number_of_metrics == 0 )
@@ -849,11 +860,11 @@ scorep_metric_papi_initialize_source( void )
         /* FIRST: Read specification of global synchronous strict metrics from respective environment variable. */
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] global synchronous strict metrics = %s", scorep_metrics_papi );
 
-        metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] =
+        metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ] =
             scorep_metric_papi_open( scorep_metrics_papi, scorep_metrics_papi_separator );
-        if ( metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] != NULL )
+        if ( metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ] != NULL )
         {
-            metric_counts = metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ]->number_of_metrics;
+            metric_counts = metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ]->number_of_metrics;
         }
 
         /*
@@ -863,7 +874,7 @@ scorep_metric_papi_initialize_source( void )
         /* SECOND: Read specification of per-process metrics from respective environment variable. */
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] per-process metrics = %s", scorep_metrics_papi_per_process );
 
-        metric_defs[ PER_PROCESS_METRICS_INDEX ] =
+        metric_defs[ PER_PROCESS_METRIC ] =
             scorep_metric_papi_open( scorep_metrics_papi_per_process, scorep_metrics_papi_separator );
 
         /* Set flag */
@@ -893,37 +904,22 @@ scorep_metric_papi_finalize_source( void )
 
 /** @brief  Location specific initialization function for metric adapters.
  *
- *  @return It returns the event set used by this location.
+ *  @param location             Location data.
+ *  @param event_sets           Event sets of all metrics.
  */
-static SCOREP_Metric_EventSet**
-scorep_metric_papi_initialize_location( SCOREP_Location* locationData )
+static SCOREP_Metric_EventSet*
+scorep_metric_papi_initialize_location( SCOREP_Location*           locationData,
+                                        SCOREP_MetricSynchronicity sync_type,
+                                        SCOREP_MetricPer           metric_type )
 {
-    /* Set to true after PAPI_thread_init() was called for this location */
-    bool is_papi_thread_initialized = false;
-
-    /* Return value of calls to PAPI functions */
-    int retval;
-
-    /* Collection of event sets for each metric scope
-     * (synchronous strict, per-process) */
-    // @todo Remove alloc by array decl
-    SCOREP_Metric_EventSet** event_set_collection;
-    event_set_collection = calloc( NUMBER_OF_RESERVED_METRICS, sizeof( SCOREP_Metric_EventSet* ) );
-    UTILS_ASSERT( event_set_collection );
-
     /*
-     * First: Check whether this location has to record global synchronous strict metrics
+     * Check whether this location has to record global strictly synchronous metrics
      */
-    if ( metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] != NULL )
+    if ( sync_type == SCOREP_METRIC_STRICTLY_SYNC
+         && metric_type == SCOREP_METRIC_PER_THREAD
+         && metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ] != NULL )
     {
-        retval = PAPI_thread_init( &scorep_metric_get_location_id );
-        if ( retval != PAPI_OK )
-        {
-            scorep_metric_papi_error( retval, "PAPI_thread_init" );
-        }
-        is_papi_thread_initialized = true;
-
-        event_set_collection[ SYNCHRONOUS_STRICT_METRICS_INDEX ] = scorep_metric_papi_create_event_set( metric_defs[ SYNCHRONOUS_STRICT_METRICS_INDEX ] );
+        return scorep_metric_papi_create_event_set( metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ] );
     }
 
     /*
@@ -931,28 +927,18 @@ scorep_metric_papi_initialize_location( SCOREP_Location* locationData )
      *
      * Second: Check whether this location has to record per-process metrics
      */
-    if ( metric_defs[ PER_PROCESS_METRICS_INDEX ] != NULL       // user has defined per-process metrics
-         && SCOREP_Location_GetId( locationData ) == 0 )        // this location is responsible to record per-process metrics (e.g. first thread of process)
+    if ( sync_type == SCOREP_METRIC_SYNC                  // synchronous metrics are requested
+         && metric_type == SCOREP_METRIC_PER_PROCESS      // per-process metrics are requested
+         && metric_defs[ PER_PROCESS_METRIC ] != NULL )   // user has defined per-process metrics
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] This location will record per-process metrics." );
 
-        /* Call PAPI_thread_init() once only */
-        if ( !is_papi_thread_initialized )
-        {
-            retval = PAPI_thread_init( &scorep_metric_get_location_id );
-            if ( retval != PAPI_OK )
-            {
-                scorep_metric_papi_error( retval, "PAPI_thread_init" );
-            }
-            is_papi_thread_initialized = true;
-        }
-
-        event_set_collection[ PER_PROCESS_METRICS_INDEX ] = scorep_metric_papi_create_event_set( metric_defs[ PER_PROCESS_METRICS_INDEX ] );
+        return scorep_metric_papi_create_event_set( metric_defs[ PER_PROCESS_METRIC ] );
     }
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "PAPI thread support initialized" );
 
-    return event_set_collection;
+    return NULL;
 }
 
 /** @brief Location specific finalization function for metric adapters.
@@ -976,14 +962,15 @@ scorep_metric_papi_finalize_location( SCOREP_Metric_EventSet* eventSet )
 }
 
 /** @brief Reads values of counters relative to the time of scorep_metric_papi_open().
+ *         This function is used to write values of strictly synchronous metrics.
  *
  *  @param eventSet An event set, that contains the definition of the counters
  *                  that should be measured.
  *  @param values   An array, to which the counter values are written.
  */
 static void
-scorep_metric_papi_read( SCOREP_Metric_EventSet* eventSet,
-                         uint64_t*               values )
+scorep_metric_papi_strictly_synchronous_read( SCOREP_Metric_EventSet* eventSet,
+                                              uint64_t*               values )
 {
     UTILS_ASSERT( eventSet );
     UTILS_ASSERT( values );
@@ -1012,6 +999,63 @@ scorep_metric_papi_read( SCOREP_Metric_EventSet* eventSet,
     for ( uint32_t i = 0; i < eventSet->definitions->number_of_metrics; i++ )
     {
         values[ i ] = ( uint64_t )*eventSet->values[ i ];
+    }
+
+    /*
+     * The issue of PAPI and IO tracing was explained above:
+     * At this point we can resume IO tracing. Therefore a function or
+     * macro like SCOREP_RESUME_IO_TRACING( CURRENT_THREAD ) would be
+     * required.
+     */
+}
+
+/** @brief Reads values of counters relative to the time of scorep_metric_papi_open().
+ *         This function is used to write values of synchronous metrics.
+ *
+ *  @param eventSet[in]     An event set, that contains the definition of the counters
+ *                          that should be measured.
+ *  @param values[out]      Reference to array that will be filled with values from
+ *                          active metrics.
+ *  @param is_updated[out]  An array which indicates whether a new value of a specfic
+ *                          metric was written (@ is_updated[i] == true ) or not
+ *                          (@ is_updated[i] == false ).
+ *  @param force_update[in] Update of all metric value in this event set is enforced.
+ */
+static void
+scorep_metric_papi_synchronous_read( SCOREP_Metric_EventSet* eventSet,
+                                     uint64_t*               values,
+                                     bool*                   is_updated,
+                                     bool                    force_update )
+{
+    UTILS_ASSERT( eventSet );
+    UTILS_ASSERT( values );
+    UTILS_ASSERT( is_updated );
+
+    int retval;
+    int i;
+
+    /*
+     * WARNING: PAPI may access prof file system while reading counters.
+     * If Score-P provides feature like IO tracing, we must suspend
+     * tracing of IO events at this point to avoid recording of events
+     * caused by PAPI. Therefore we will need a function (or macro) like
+     * SCOREP_SUSPEND_IO_TRACING( CURRENT_THREAD ).
+     */
+
+    /* For each used eventset */
+    for ( uint32_t i = 0; i < SCOREP_METRIC_MAXNUM && eventSet->event_map[ i ] != NULL; i++ )
+    {
+        retval = PAPI_read( eventSet->event_map[ i ]->event_id, eventSet->event_map[ i ]->values );
+        if ( retval != PAPI_OK )
+        {
+            scorep_metric_papi_error( retval, "PAPI_read" );
+        }
+    }
+
+    for ( uint32_t i = 0; i < eventSet->definitions->number_of_metrics; i++ )
+    {
+        values[ i ]     = ( uint64_t )*eventSet->values[ i ];
+        is_updated[ i ] = true;
     }
 
     /*
@@ -1205,7 +1249,9 @@ const SCOREP_MetricSource SCOREP_Metric_Papi =
     &scorep_metric_papi_finalize_location,
     &scorep_metric_papi_finalize_source,
     &scorep_metric_papi_deregister,
-    &scorep_metric_papi_read,
+    &scorep_metric_papi_strictly_synchronous_read,
+    &scorep_metric_papi_synchronous_read,
+    NULL,                                         // no asynchronous read function needed
     &scorep_metric_papi_get_number_of_metrics,
     &scorep_metric_papi_get_metric_name,
     &scorep_metric_papi_get_metric_description,

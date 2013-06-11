@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_platform_dummy.c
+ * @file       scorep_platform_system_tree_generic.c
  * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
@@ -54,6 +54,7 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
     /* Get hostname */
     SCOREP_Platform_SystemTreePathElement* node =
         scorep_platform_system_tree_bottom_up_add( root,
+                                                   SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY,
                                                    "node",
                                                    256, "" );
     if ( !node )
@@ -71,8 +72,9 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
 
     /* Set machine */
     node = scorep_platform_system_tree_bottom_up_add( root,
+                                                      SCOREP_SYSTEM_TREE_DOMAIN_MACHINE,
                                                       "machine",
-                                                      0, "generic cluster" );
+                                                      0, "" );
     if ( !node )
     {
         SCOREP_Platform_FreePath( *root );
@@ -80,5 +82,23 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
                             "Failed to build system tree path" );
     }
 
+    SCOREP_Platform_SystemTreeProperty* property =
+        scorep_platform_system_tree_add_property( *root,
+                                                  "type",
+                                                  0, "generic cluster" );
+    if ( !property )
+    {
+        SCOREP_Platform_FreePath( *root );
+        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                            "Failed to build system tree path" );
+    }
+
+    return SCOREP_SUCCESS;
+}
+
+SCOREP_ErrorCode
+SCOREP_Platform_DefineNodeTree( SCOREP_SystemTreeNodeHandle parent )
+{
+    /* No further information available */
     return SCOREP_SUCCESS;
 }

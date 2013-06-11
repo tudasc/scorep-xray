@@ -49,6 +49,14 @@ SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreePathElement* path )
     {
         SCOREP_Platform_SystemTreePathElement* next = path->next;
 
+        while ( path->properties )
+        {
+            SCOREP_Platform_SystemTreeProperty* next_property =
+                path->properties->next;
+            free( path->properties );
+            path->properties = next_property;
+        }
+
         free( path );
 
         path = next;
@@ -62,17 +70,12 @@ SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreePathElement* path )
  * @param node_name_len Total space alloacted for the node_name, including trailing NUL.
  */
 static SCOREP_Platform_SystemTreePathElement*
-scorep_platform_system_tree_create_element( const char* node_class,
-                                            size_t      node_name_len,
-                                            const char* node_name_fmt,
-                                            va_list     vl )
+scorep_platform_system_tree_create_element( SCOREP_SystemTreeDomain domains,
+                                            const char*             node_class,
+                                            size_t                  node_name_len,
+                                            const char*             node_name_fmt,
+                                            va_list                 vl )
 {
-    SCOREP_Platform_SystemTreePathElement* new_element;
-    size_t                                 total_size;
-    size_t                                 name_offset;
-    size_t                                 class_offset;
-    size_t                                 class_len;
-
     if ( !node_class || !node_name_fmt )
     {
         return NULL;
@@ -85,10 +88,11 @@ scorep_platform_system_tree_create_element( const char* node_class,
         use_vl        = false;
     }
 
-    name_offset  = sizeof( *new_element );
-    class_offset = name_offset + node_name_len;
-    class_len    = strlen( node_class ) + 1;
-    total_size   = class_offset + class_len;
+    SCOREP_Platform_SystemTreePathElement* new_element;
+    size_t                                 node_class_offset = sizeof( *new_element );
+    size_t                                 node_class_len    = strlen( node_class ) + 1;
+    size_t                                 node_name_offset  = node_class_offset + node_class_len;
+    size_t                                 total_size        = node_name_offset + node_name_len;
 
     new_element = malloc( total_size );
     if ( !new_element )
@@ -97,8 +101,12 @@ scorep_platform_system_tree_create_element( const char* node_class,
     }
 
     new_element->next       = NULL;
-    new_element->node_name  = ( char* )new_element + name_offset;
-    new_element->node_class = ( char* )new_element + class_offset;
+    new_element->domains    = domains;
+    new_element->node_class = ( char* )new_element + node_class_offset;
+    new_element->node_name  = ( char* )new_element + node_name_offset;
+
+    /* set class name */
+    memcpy( new_element->node_class, node_class, node_class_len );
 
     /* set node name */
     if ( use_vl )
@@ -112,8 +120,8 @@ scorep_platform_system_tree_create_element( const char* node_class,
         memcpy( new_element->node_name, node_name_fmt, node_name_len );
     }
 
-    /* set class name */
-    memcpy( new_element->node_class, node_class, class_len );
+    new_element->properties      = NULL;
+    new_element->properties_tail = &new_element->properties;
 
     return new_element;
 }
@@ -122,6 +130,7 @@ scorep_platform_system_tree_create_element( const char* node_class,
 SCOREP_Platform_SystemTreePathElement*
 scorep_platform_system_tree_top_down_add(
     SCOREP_Platform_SystemTreePathElement*** tail,
+    SCOREP_SystemTreeDomain                  domains,
     const char*                              node_class,
     size_t                                   node_name_len,
     const char*                              node_name_fmt,
@@ -136,7 +145,8 @@ scorep_platform_system_tree_top_down_add(
     va_start( vl, node_name_fmt );
 
     SCOREP_Platform_SystemTreePathElement* new_element =
-        scorep_platform_system_tree_create_element( node_class,
+        scorep_platform_system_tree_create_element( domains,
+                                                    node_class,
                                                     node_name_len,
                                                     node_name_fmt,
                                                     vl );
@@ -158,6 +168,7 @@ scorep_platform_system_tree_top_down_add(
 SCOREP_Platform_SystemTreePathElement*
 scorep_platform_system_tree_bottom_up_add(
     SCOREP_Platform_SystemTreePathElement** head,
+    SCOREP_SystemTreeDomain                 domains,
     const char*                             node_class,
     size_t                                  node_name_len,
     const char*                             node_name_fmt,
@@ -172,7 +183,8 @@ scorep_platform_system_tree_bottom_up_add(
     va_start( vl, node_name_fmt );
 
     SCOREP_Platform_SystemTreePathElement* new_element =
-        scorep_platform_system_tree_create_element( node_class,
+        scorep_platform_system_tree_create_element( domains,
+                                                    node_class,
                                                     node_name_len,
                                                     node_name_fmt,
                                                     vl );
@@ -189,4 +201,68 @@ scorep_platform_system_tree_bottom_up_add(
     *head             = new_element;
 
     return new_element;
+}
+
+SCOREP_Platform_SystemTreeProperty*
+scorep_platform_system_tree_add_property(
+    SCOREP_Platform_SystemTreePathElement* node,
+    const char*                            property_name,
+    size_t                                 property_value_len,
+    const char*                            property_value_fmt,
+    ... )
+{
+    if ( !node || !property_name || !property_value_fmt )
+    {
+        return NULL;
+    }
+
+    bool use_vl = true;
+    if ( property_value_len == 0 )
+    {
+        property_value_len = strlen( property_value_fmt ) + 1;
+        use_vl             = false;
+    }
+
+    SCOREP_Platform_SystemTreeProperty* new_property;
+    size_t                              property_name_offset  = sizeof( *new_property );
+    size_t                              property_name_len     = strlen( property_name ) + 1;
+    size_t                              property_value_offset = property_name_offset + property_name_len;
+    size_t                              total_size            = property_value_offset + property_value_len;
+
+    new_property = malloc( total_size );
+    if ( !new_property )
+    {
+        return NULL;
+    }
+
+    new_property->next           = NULL;
+    new_property->property_name  = ( char* )new_property + property_name_offset;
+    new_property->property_value = ( char* )new_property + property_value_offset;
+
+    /* set class name */
+    memcpy( new_property->property_name, property_name, property_name_len );
+
+    /* set node name */
+    if ( use_vl )
+    {
+        va_list vl;
+        va_start( vl, property_value_fmt );
+
+        /* The caller provided a format string suitable for snprintf */
+        vsnprintf( new_property->property_value, property_value_len, property_value_fmt, vl );
+
+        va_end( vl );
+    }
+    else
+    {
+        /* The caller provided a fixed string */
+        memcpy( new_property->property_value, property_value_fmt, property_value_len );
+    }
+
+    /* chain into property list of node */
+    new_property->next     = NULL;
+    *node->properties_tail = new_property;
+    node->properties_tail  = &new_property->next;
+
+    return new_property;
 }

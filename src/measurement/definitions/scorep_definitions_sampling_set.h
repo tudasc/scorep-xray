@@ -46,8 +46,14 @@ SCOREP_DEFINE_DEFINITION_TYPE( SamplingSet )
     size_t tracing_cache_offset;
 
     SCOREP_MetricOccurrence occurrence;
-    uint8_t                 number_of_metrics;
-    SCOREP_MetricHandle     metric_handles[];
+    SCOREP_SamplingSetClass klass;
+
+    /* List of SamplingSetRecorderHandles for this sampling set. */
+    SCOREP_SamplingSetRecorderHandle  recorders;
+    SCOREP_SamplingSetRecorderHandle* recorders_tail;
+
+    uint8_t             number_of_metrics;
+    SCOREP_MetricHandle metric_handles[];
 };
 
 

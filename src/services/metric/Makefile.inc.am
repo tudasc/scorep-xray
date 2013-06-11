@@ -3,7 +3,7 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2013, 
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -33,8 +33,21 @@ libscorep_metric_la_CPPFLAGS = $(scorep_metric_common_cppflags)
 libscorep_metric_la_SOURCES = \
     $(SRC_ROOT)src/services/metric/SCOREP_Metric.h             \
     $(SRC_ROOT)src/services/include/SCOREP_Metric_Management.h \
-    $(SRC_ROOT)src/services/metric/SCOREP_Metric_Source.h      \
-    $(SRC_ROOT)src/services/metric/scorep_metric_management.c
+    $(SRC_ROOT)src/services/metric/SCOREP_Metric_Source.h
+
+if ! HAVE_PAPI
+if ! HAVE_GETRUSAGE
+if ! HAVE_METRIC_PLUGINS
+libscorep_metric_la_SOURCES += $(SRC_ROOT)src/services/metric/scorep_metric_management_without_sources.c
+else
+libscorep_metric_la_SOURCES += $(SRC_ROOT)src/services/metric/scorep_metric_management.c
+endif
+else
+libscorep_metric_la_SOURCES += $(SRC_ROOT)src/services/metric/scorep_metric_management.c
+endif
+else
+libscorep_metric_la_SOURCES += $(SRC_ROOT)src/services/metric/scorep_metric_management.c
+endif
 
 libscorep_metric_la_LIBADD =
 libscorep_metric_la_LDFLAGS =
@@ -67,4 +80,17 @@ libscorep_metric_papi_la_SOURCES = \
     $(SRC_ROOT)src/services/metric/scorep_metric_papi.h
 
 libscorep_metric_la_LIBADD += libscorep_metric_papi.la
+endif
+
+# Plugins source specific settings
+
+if HAVE_METRIC_PLUGINS
+noinst_LTLIBRARIES += libscorep_metric_plugins.la
+
+libscorep_metric_plugins_la_CPPFLAGS = $(scorep_metric_common_cppflags)
+libscorep_metric_plugins_la_SOURCES = \
+    $(SRC_ROOT)src/services/metric/scorep_metric_plugins.c \
+    $(SRC_ROOT)src/services/metric/scorep_metric_plugins.h
+
+libscorep_metric_la_LIBADD += libscorep_metric_plugins.la
 endif

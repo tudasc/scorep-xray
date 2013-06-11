@@ -61,6 +61,7 @@ define_sampling_set( SCOREP_DefinitionManager*     definition_manager,
                      uint8_t                       numberOfMetrics,
                      const SCOREP_MetricHandle*    metrics,
                      SCOREP_MetricOccurrence       occurrence,
+                     SCOREP_SamplingSetClass       klass,
                      SCOREP_Allocator_PageManager* handlesPageManager );
 
 
@@ -70,6 +71,7 @@ initialize_sampling_set( SCOREP_SamplingSetDef*        definition,
                          uint8_t                       numberOfMetrics,
                          const SCOREP_MetricHandle*    metrics,
                          SCOREP_MetricOccurrence       occurrence,
+                         SCOREP_SamplingSetClass       klass,
                          SCOREP_Allocator_PageManager* handlesPageManager );
 
 
@@ -98,7 +100,8 @@ equal_sampling_set( const SCOREP_SamplingSetDef* existingDefinition,
 SCOREP_SamplingSetHandle
 SCOREP_Definitions_NewSamplingSet( uint8_t                    numberOfMetrics,
                                    const SCOREP_MetricHandle* metrics,
-                                   SCOREP_MetricOccurrence    occurrence )
+                                   SCOREP_MetricOccurrence    occurrence,
+                                   SCOREP_SamplingSetClass    klass )
 {
     UTILS_DEBUG_ENTRY( "#%hhu metrics", numberOfMetrics );
 
@@ -109,6 +112,7 @@ SCOREP_Definitions_NewSamplingSet( uint8_t                    numberOfMetrics,
         numberOfMetrics,
         metrics,
         occurrence,
+        klass,
         NULL /* take the metric handles as is */ );
 
     SCOREP_Definitions_Unlock();
@@ -197,6 +201,7 @@ scorep_definitions_unify_sampling_set( SCOREP_SamplingSetDef*        definition,
             definition->number_of_metrics,
             definition->metric_handles,
             definition->occurrence,
+            definition->klass,
             handlesPageManager /* take the unified handles from the metrics */ );
     }
 }
@@ -207,6 +212,7 @@ define_sampling_set( SCOREP_DefinitionManager*     definition_manager,
                      uint8_t                       numberOfMetrics,
                      const SCOREP_MetricHandle*    metrics,
                      SCOREP_MetricOccurrence       occurrence,
+                     SCOREP_SamplingSetClass       klass,
                      SCOREP_Allocator_PageManager* handlesPageManager )
 {
     assert( definition_manager );
@@ -229,6 +235,7 @@ define_sampling_set( SCOREP_DefinitionManager*     definition_manager,
                              numberOfMetrics,
                              metrics,
                              occurrence,
+                             klass,
                              handlesPageManager );
 
     /* Does return if it is a duplicate */
@@ -251,6 +258,7 @@ initialize_sampling_set( SCOREP_SamplingSetDef*        definition,
                          uint8_t                       numberOfMetrics,
                          const SCOREP_MetricHandle*    metrics,
                          SCOREP_MetricOccurrence       occurrence,
+                         SCOREP_SamplingSetClass       klass,
                          SCOREP_Allocator_PageManager* handlesPageManager )
 {
     definition->is_scoped = false;
@@ -289,6 +297,12 @@ initialize_sampling_set( SCOREP_SamplingSetDef*        definition,
 
     definition->occurrence = occurrence;
     HASH_ADD_POD( definition, occurrence );
+
+    definition->klass = klass;
+    HASH_ADD_POD( definition, klass );
+
+    definition->recorders      = SCOREP_INVALID_SAMPLING_SET_RECORDER;
+    definition->recorders_tail = &definition->recorders;
 }
 
 

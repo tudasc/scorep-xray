@@ -32,6 +32,7 @@
 #include "SCOREP_DefinitionHandles.h"
 #include "SCOREP_Types.h"
 #include <scorep/SCOREP_PublicTypes.h>
+#include <scorep/SCOREP_MetricTypes.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -91,6 +92,35 @@ SCOREP_Definitions_NewSourceFile( const char* fileName );
 const char*
 SCOREP_SourceFileHandle_GetName( SCOREP_SourceFileHandle handle );
 
+
+/**
+ * Associate a system tree node with a process unique system tree node handle.
+ *
+ * @param parent Parent node in system tree.
+ *
+ * @param domains Bit set of domains this node spans.
+ *
+ * @param klass Class of the system tree node.
+ *
+ * @param name A meaningful name for the system tree node.
+ *
+ * @return A process unique system tree node handle.
+ *
+ */
+SCOREP_SystemTreeNodeHandle
+SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
+                                      SCOREP_SystemTreeDomain     domains,
+                                      const char*                 klass,
+                                      const char*                 name );
+
+
+/**
+ * Adds a property to the an already existing sytem tree node.
+ */
+void
+SCOREP_Defininitions_AddSystemTreeNodeProperty( SCOREP_SystemTreeNodeHandle systemTreeNodeHandle,
+                                                const char*                 propertyName,
+                                                const char*                 propertyValue );
 
 /**
  * Associate a code region with a process unique file handle.
@@ -381,7 +411,8 @@ SCOREP_MetricHandle_GetProfilingType( SCOREP_MetricHandle handle );
 SCOREP_SamplingSetHandle
 SCOREP_Definitions_NewSamplingSet( uint8_t                    numberOfMetrics,
                                    const SCOREP_MetricHandle* metrics,
-                                   SCOREP_MetricOccurrence    occurrence );
+                                   SCOREP_MetricOccurrence    occurrence,
+                                   SCOREP_SamplingSetClass    klass );
 
 
 /**
@@ -405,6 +436,16 @@ SCOREP_Definitions_NewScopedSamplingSet( SCOREP_SamplingSetHandle samplingSet,
                                          SCOREP_MetricScope       scopeType,
                                          SCOREP_AnyHandle         scopeHandle );
 
+
+/**
+ * Adds a recorder to a sampling set.
+ *
+ * The class of the sampling set must be in {CPU, GPU} and the type of the
+ * location must match this class.
+ */
+void
+SCOREP_SamplingSet_AddRecorder( SCOREP_SamplingSetHandle samplingSetHandle,
+                                SCOREP_LocationHandle    recorderHandle );
 
 /**
  * A SCOREP_SamplingSetHandle can refer to a normal sampling set or a scoped

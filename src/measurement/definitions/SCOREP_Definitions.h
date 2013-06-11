@@ -43,11 +43,13 @@ typedef struct SCOREP_DefinitionManager SCOREP_DefinitionManager;
 #include "scorep_definitions_location_group.h"
 #include "scorep_definitions_location.h"
 #include "scorep_definitions_system_tree_node.h"
+#include "scorep_definitions_system_tree_node_property.h"
 #include "scorep_definitions_region.h"
 #include "scorep_definitions_communicator.h"
 #include "scorep_definitions_group.h"
 #include "scorep_definitions_metric.h"
 #include "scorep_definitions_sampling_set.h"
+#include "scorep_definitions_sampling_set_recorder.h"
 #include "scorep_definitions_parameter.h"
 #include "scorep_definitions_callpath.h"
 #include "scorep_definitions_clock_offset.h"
@@ -103,6 +105,7 @@ struct SCOREP_DefinitionManager
 {
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( string );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( system_tree_node );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( system_tree_node_property );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( location_group );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( location );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( source_file );
@@ -116,6 +119,7 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( mpi_cartesian_coords );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( metric );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( sampling_set );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( sampling_set_recorder );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( io_file_group );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( io_file );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( marker_group );

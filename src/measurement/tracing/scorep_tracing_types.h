@@ -170,6 +170,8 @@ scorep_tracing_metric_source_type_to_otf2( SCOREP_MetricSourceType sourceType )
         case_return( USER,   USER );
         case_return( OTHER,  OTHER );
         case_return( TASK,   OTHER );
+        /* RonnyT: @ todo Introduce own PLUGIN type in OTF2 ??? */
+        case_return( PLUGIN, OTHER );
 
 #undef case_return
         default:
@@ -384,6 +386,50 @@ scorep_tracing_property_to_otf2( SCOREP_Property scorepProperty )
     }
 }
 
+static inline OTF2_RecorderKind
+scorep_tracing_sampling_set_class_to_otf2( SCOREP_SamplingSetClass samplingSetClass )
+{
+    switch ( samplingSetClass )
+    {
+#define case_return( name ) \
+    case SCOREP_SAMPLING_SET_ ## name: \
+        return OTF2_RECORDER_KIND_ ## name
+
+        case_return( ABSTRACT );
+        case_return( CPU );
+        case_return( GPU );
+
+        default:
+            UTILS_BUG( "Invalid sampling set class" );
+
+#undef case_return
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+static inline OTF2_SystemTreeDomain
+scorep_tracing_domain_to_otf2( SCOREP_SystemTreeDomain* domains )
+{
+#define flag_return( domain ) \
+    if ( *domains & SCOREP_SYSTEM_TREE_DOMAIN_ ## domain ) \
+    { \
+        *domains &= ~SCOREP_SYSTEM_TREE_DOMAIN_ ## domain; \
+        return OTF2_SYSTEM_TREE_DOMAIN_ ## domain; \
+    }
+
+    flag_return( MACHINE )
+    flag_return( SHARED_MEMORY )
+    flag_return( NUMA )
+    flag_return( SOCKET )
+    flag_return( CACHE )
+    flag_return( CORE )
+    flag_return( PU )
+
+#undef flag_return
+
+    return OTF2_UNDEFINED_TYPE;
+}
 
 static inline OTF2_RmaSyncLevel
 scorep_tracing_rma_sync_level_to_otf2( SCOREP_RmaSyncLevel scorepLevel )

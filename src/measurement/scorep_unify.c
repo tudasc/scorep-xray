@@ -94,6 +94,7 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
     assert( sourceDefinitionManager );
     UNIFY_DEFINITION( sourceDefinitionManager, String, string );
     UNIFY_DEFINITION( sourceDefinitionManager, SystemTreeNode, system_tree_node );
+    UNIFY_DEFINITION( sourceDefinitionManager, SystemTreeNodeProperty, system_tree_node_property );
     UNIFY_DEFINITION( sourceDefinitionManager, LocationGroup, location_group );
     UNIFY_DEFINITION( sourceDefinitionManager, Location, location );
     UNIFY_DEFINITION( sourceDefinitionManager, SourceFile, source_file );
@@ -103,6 +104,7 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
     UNIFY_DEFINITION( sourceDefinitionManager, RmaWindow, rma_window );
     UNIFY_DEFINITION( sourceDefinitionManager, Metric, metric );
     UNIFY_DEFINITION( sourceDefinitionManager, SamplingSet, sampling_set );
+    UNIFY_DEFINITION( sourceDefinitionManager, SamplingSetRecorder, sampling_set_recorder );
     UNIFY_DEFINITION( sourceDefinitionManager, Parameter, parameter );
     UNIFY_DEFINITION( sourceDefinitionManager, Callpath, callpath );
     UNIFY_DEFINITION( sourceDefinitionManager, Property, property );

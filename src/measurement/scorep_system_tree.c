@@ -26,6 +26,7 @@
 
 #include <config.h>
 #include <UTILS_Error.h>
+#include <UTILS_IO.h>
 #include <SCOREP_Platform.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <definitions/SCOREP_Definitions.h>
@@ -34,8 +35,14 @@
 #include <string.h>
 
 
+/** Root of system tree */
+static SCOREP_SystemTreeNodeHandle system_tree_root_node_handle = SCOREP_INVALID_SYSTEM_TREE_NODE;
+
+/** Root of shared memory domain */
+static SCOREP_SystemTreeNodeHandle system_tree_shared_memory_node_handle = SCOREP_INVALID_SYSTEM_TREE_NODE;
+
 SCOREP_Platform_SystemTreePathElement*
-SCOREP_BuildSystemTree()
+SCOREP_BuildSystemTree( void )
 {
     /* Obtain system tree information from platform dependent implementation */
 
@@ -58,8 +65,34 @@ SCOREP_Definitions_NewSystemTree( SCOREP_Platform_SystemTreePathElement* path )
     SCOREP_PLATFORM_SYSTEM_TREE_FORALL( path, node )
     {
         parent = SCOREP_Definitions_NewSystemTreeNode( parent,
-                                                       node->node_name,
-                                                       node->node_class );
+                                                       node->domains,
+                                                       node->node_class,
+                                                       node->node_name );
+        if ( system_tree_root_node_handle == SCOREP_INVALID_SYSTEM_TREE_NODE )
+        {
+            system_tree_root_node_handle = parent;
+        }
+        if ( node->domains & SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY )
+        {
+            system_tree_shared_memory_node_handle = parent;
+        }
+
+        SCOREP_Platform_SystemTreeProperty* property;
+        SCOREP_PLATFORM_SYSTEM_TREE_PROPERTY_FORALL( node, property )
+        {
+            SCOREP_SystemTreeNodeHandle_AddProperty( parent,
+                                                     property->property_name,
+                                                     property->property_value );
+        }
+    }
+
+    /* Create node tree */
+    SCOREP_ErrorCode status;
+    status = SCOREP_Platform_DefineNodeTree( parent );
+    if ( status != SCOREP_SUCCESS )
+    {
+        UTILS_ERROR( status, "Can't get system tree of node." );
+        return SCOREP_INVALID_LOCATION_GROUP;
     }
 
     /* Create Location Group definition
@@ -76,8 +109,20 @@ SCOREP_FreeSystemTree( SCOREP_Platform_SystemTreePathElement* path )
     SCOREP_Platform_FreePath( path );
 }
 
+SCOREP_SystemTreeNodeHandle
+SCOREP_GetSystemTreeRootNodeHandle( void )
+{
+    return system_tree_root_node_handle;
+}
+
+SCOREP_SystemTreeNodeHandle
+SCOREP_GetSystemTreeNodeHandleForSharedMemory( void )
+{
+    return system_tree_shared_memory_node_handle;
+}
+
 void
-SCOREP_FinalizeLocationGroup()
+SCOREP_FinalizeLocationGroup( void )
 {
     /* Update location group ID and name */
 

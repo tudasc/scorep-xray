@@ -39,6 +39,12 @@ typedef SCOREP_AnyHandle SCOREP_StringHandle;
 typedef SCOREP_AnyHandle SCOREP_SystemTreeNodeHandle;
 
 
+typedef SCOREP_AnyHandle SCOREP_SystemTreeNodePropertyHandle;
+
+
+typedef SCOREP_AnyHandle SCOREP_SystemTreeNodeDomainHandle;
+
+
 typedef SCOREP_AnyHandle SCOREP_LocationGroupHandle;
 
 
@@ -85,6 +91,9 @@ typedef SCOREP_AnyHandle SCOREP_CallpathHandle;
 
 
 typedef SCOREP_AnyHandle SCOREP_PropertyHandle;
+
+
+typedef SCOREP_AnyHandle SCOREP_SamplingSetRecorderHandle;
 
 
 #endif /* SCOREP_DEFINITIONHANDLES_H */

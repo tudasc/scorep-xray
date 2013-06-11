@@ -48,6 +48,7 @@
 SCOREP_Platform_SystemTreePathElement*
 scorep_platform_system_tree_top_down_add(
     SCOREP_Platform_SystemTreePathElement*** tail,
+    SCOREP_SystemTreeDomain                  domains,
     const char*                              node_class,
     size_t                                   node_name_len,
     const char*                              node_name_fmt,
@@ -72,9 +73,36 @@ scorep_platform_system_tree_top_down_add(
 SCOREP_Platform_SystemTreePathElement*
 scorep_platform_system_tree_bottom_up_add(
     SCOREP_Platform_SystemTreePathElement** head,
+    SCOREP_SystemTreeDomain                 domains,
     const char*                             node_class,
     size_t                                  node_name_len,
     const char*                             node_name_fmt,
+    ... );
+
+
+/**
+ * Adds a property to a system tree node.
+ *
+ * @param node               The node in question.
+ * @param property_name      Name of the property.
+ * @param property_value_len Strict upper bound for the length of the property
+ *                           value for this property, including the trailing NUL.
+ *                           As a special case, if @a property_value_len is zero,
+ *                           than @a property_value_fmt should not have format
+ *                           specifiers and the length is taken from the @a
+ *                           property_value_fmt.
+ * @param property_value_fmt A @a printf-like format string which forms the
+ *                           value of the proerty.
+ * @param ...                Arguments for use in @a property_value_fmt.
+ *
+ * @return The newly created property or NULL in case of error.
+ */
+SCOREP_Platform_SystemTreeProperty*
+scorep_platform_system_tree_add_property(
+    SCOREP_Platform_SystemTreePathElement* node,
+    const char*                            property_name,
+    size_t                                 property_value_len,
+    const char*                            property_value_fmt,
     ... );
 
 

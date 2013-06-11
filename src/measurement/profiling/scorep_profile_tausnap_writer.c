@@ -413,7 +413,7 @@ write_metric_data_tau( scorep_profile_node*      node,
                        FILE*                     file,
                        SCOREP_DefinitionManager* manager )
 {
-    for ( int i = 0; i  < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
+    for ( int i = 0; i  < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
     {
         fprintf( file,
                  " %" PRIu64 " %" PRIu64,
@@ -809,7 +809,7 @@ write_thread_tau( SCOREP_Profile_LocationData* location,
              SCOREP_Ipc_GetRank(), threadnum );
     fprintf( file, "<name>final</name>\n" );
     fprintf( file, "<interval_data metrics=\"0" );
-    for ( int i = 0; i < SCOREP_Metric_GetNumberOfSynchronousStrictMetrics(); i++ )
+    for ( int i = 0; i < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
     {
         fprintf( file, " %d", i + 1 );
     }
