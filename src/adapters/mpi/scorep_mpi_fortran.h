@@ -17,6 +17,15 @@
 #ifndef SCOERP_FORTRAN_H
 #define SCOERP_FORTRAN_H
 
+/**
+ * @file       scorep_mpi_fortran.h
+ * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
+ * @status     ALPHA
+ * @ingroup    MPI_Wrapper
+ *
+ * @brief Helper functions to convert fortran and C data types.
+ */
+
 #include <stdint.h>
 
 /**
