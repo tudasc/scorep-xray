@@ -136,16 +136,16 @@
 #define SCOREP_USER_REGION_INIT( handle, name, type )
 #define SCOREP_USER_REGION_END( handle )
 #define SCOREP_USER_REGION_ENTER( handle )
-#define SCOREP_USER_FUNC_DEFINE
+#define SCOREP_USER_FUNC_DEFINE()
 #define SCOREP_USER_FUNC_BEGIN( name )
-#define SCOREP_USER_FUNC_END
+#define SCOREP_USER_FUNC_END()
 #define SCOREP_USER_METRIC_LOCAL( metricHandle )
 #define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context )
 #define SCOREP_USER_METRIC_INT64( metricHandle, value )
 #define SCOREP_USER_METRIC_UINT64( metricHandle, value )
 #define SCOREP_USER_METRIC_DOUBLE( metricHandle, value )
-#define SCOREP_RECORDING_ON
-#define SCOREP_RECORDING_OFF
+#define SCOREP_RECORDING_ON()
+#define SCOREP_RECORDING_OFF()
 #define SCOREP_RECORDING_IS_ON( isOn )
 
 #endif

@@ -140,9 +140,9 @@
 #define SCOREP_USER_REWIND_CHECK( handle, value )
 #define SCOREP_USER_REGION_ENTER( handle )
 #define SCOREP_GLOBAL_REGION_EXTERNAL( handle )
-#define SCOREP_USER_FUNC_DEFINE
+#define SCOREP_USER_FUNC_DEFINE()
 #define SCOREP_USER_FUNC_BEGIN( name )
-#define SCOREP_USER_FUNC_END
+#define SCOREP_USER_FUNC_END()
 #define SCOREP_USER_METRIC_GLOBAL( metricHandle )
 #define SCOREP_USER_METRIC_EXTERNAL( metricHandle )
 #define SCOREP_USER_METRIC_LOCAL( metricHandle )
@@ -150,8 +150,8 @@
 #define SCOREP_USER_METRIC_INT64( metricHandle, value )
 #define SCOREP_USER_METRIC_UINT64( metricHandle, value )
 #define SCOREP_USER_METRIC_DOUBLE( metricHandle, value )
-#define SCOREP_RECORDING_ON
-#define SCOREP_RECORDING_OFF
+#define SCOREP_RECORDING_ON()
+#define SCOREP_RECORDING_OFF()
 #define SCOREP_RECORDING_IS_ON( isOn )
 
 #endif
