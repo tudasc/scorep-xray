@@ -412,19 +412,21 @@ SCOREP_Instrumenter::link_step( void )
 }
 
 void
-SCOREP_Instrumenter::executeCommand( const std::string& orig_command )
+SCOREP_Instrumenter::executeCommand( const std::string& command )
 {
-    std::string command( orig_command );
     if ( m_command_line.getVerbosity() >= 1 )
     {
-        command = "PS4='Executing: '; set -x; " + command;
+        /* I know some of you guys want that the scorep-config calls are resolved
+           already. However, sometimes we also want to check whether the
+           scorep-config call itself contains the right arguments. */
+        std::cout << command << std::endl;
     }
     if ( !m_command_line.isDryRun() )
     {
         int return_value = system( command.c_str() );
         if ( return_value != 0 )
         {
-            std::cerr << "Error executing: " << orig_command << std::endl;
+            std::cerr << "Error executing: " << command << std::endl;
             exit( EXIT_FAILURE );
         }
     }
