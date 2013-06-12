@@ -714,13 +714,7 @@ void
 FSUB( MPI_File_delete )( char* filename, MPI_Info* info, int* ierr, int filename_len )
 {
     char* c_filename = NULL;
-    c_filename = ( char* )malloc( ( filename_len + 1 ) * sizeof( char ) );
-    if ( !c_filename )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_filename, filename, filename_len );
-    c_filename[ filename_len ] = '\0';
+    c_filename = scorep_f2c_string( filename, filename_len );
 
 
 
@@ -897,13 +891,7 @@ void
 FSUB( MPI_File_open )( MPI_Comm* comm, char* filename, int* amode, MPI_Info* info, MPI_File* fh, int* ierr, int filename_len )
 {
     char* c_filename = NULL;
-    c_filename = ( char* )malloc( ( filename_len + 1 ) * sizeof( char ) );
-    if ( !c_filename )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_filename, filename, filename_len );
-    c_filename[ filename_len ] = '\0';
+    c_filename = scorep_f2c_string( filename, filename_len );
 
 
 
@@ -1008,13 +996,7 @@ void
 FSUB( MPI_File_set_view )( MPI_File* fh, MPI_Offset* disp, MPI_Datatype* etype, MPI_Datatype* filetype, char* datarep, MPI_Info* info, int* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
-    c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
-    if ( !c_datarep )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_datarep, datarep, datarep_len );
-    c_datarep[ datarep_len ] = '\0';
+    c_datarep = scorep_f2c_string( datarep, datarep_len );
 
 
 
@@ -1049,13 +1031,7 @@ void
 FSUB( MPI_Register_datarep )( char* datarep, MPI_Datarep_conversion_function* read_conversion_fn, MPI_Datarep_conversion_function* write_conversion_fn, MPI_Datarep_extent_function* dtype_file_extent_fn, void* extra_state, int* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
-    c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
-    if ( !c_datarep )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_datarep, datarep, datarep_len );
-    c_datarep[ datarep_len ] = '\0';
+    c_datarep = scorep_f2c_string( datarep, datarep_len );
 
 
 
@@ -1955,13 +1931,7 @@ void
 FSUB( MPI_File_delete )( char* filename, MPI_Fint* info, MPI_Fint* ierr, int filename_len )
 {
     char* c_filename = NULL;
-    c_filename = ( char* )malloc( ( filename_len + 1 ) * sizeof( char ) );
-    if ( !c_filename )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_filename, filename, filename_len );
-    c_filename[ filename_len ] = '\0';
+    c_filename = scorep_f2c_string( filename, filename_len );
 
 
 
@@ -2164,13 +2134,7 @@ FSUB( MPI_File_open )( MPI_Fint* comm, char* filename, MPI_Fint* amode, MPI_Fint
 {
     char*    c_filename = NULL;
     MPI_File c_fh;
-    c_filename = ( char* )malloc( ( filename_len + 1 ) * sizeof( char ) );
-    if ( !c_filename )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_filename, filename, filename_len );
-    c_filename[ filename_len ] = '\0';
+    c_filename = scorep_f2c_string( filename, filename_len );
 
 
 
@@ -2314,13 +2278,7 @@ FSUB( MPI_File_set_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_
 {
     MPI_File c_fh      = PMPI_File_f2c( *fh );
     char*    c_datarep = NULL;
-    c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
-    if ( !c_datarep )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_datarep, datarep, datarep_len );
-    c_datarep[ datarep_len ] = '\0';
+    c_datarep = scorep_f2c_string( datarep, datarep_len );
 
 
 
@@ -2363,13 +2321,7 @@ void
 FSUB( MPI_Register_datarep )( char* datarep, void* read_conversion_fn, void* write_conversion_fn, void* dtype_file_extent_fn, void* extra_state, MPI_Fint* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
-    c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
-    if ( !c_datarep )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_datarep, datarep, datarep_len );
-    c_datarep[ datarep_len ] = '\0';
+    c_datarep = scorep_f2c_string( datarep, datarep_len );
 
 
 

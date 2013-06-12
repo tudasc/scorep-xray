@@ -502,13 +502,7 @@ void
 FSUB( MPI_Close_port )( char* port_name, int* ierr, int port_name_len )
 {
     char* c_port_name = NULL;
-    c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
-    if ( !c_port_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
+    c_port_name = scorep_f2c_string( port_name, port_name_len );
 
 
 
@@ -529,13 +523,7 @@ void
 FSUB( MPI_Comm_accept )( char* port_name, MPI_Info* info, int* root, MPI_Comm* comm, MPI_Comm* newcomm, int* ierr, int port_name_len )
 {
     char* c_port_name = NULL;
-    c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
-    if ( !c_port_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
+    c_port_name = scorep_f2c_string( port_name, port_name_len );
 
 
 
@@ -556,13 +544,7 @@ void
 FSUB( MPI_Comm_connect )( char* port_name, MPI_Info* info, int* root, MPI_Comm* comm, MPI_Comm* newcomm, int* ierr, int port_name_len )
 {
     char* c_port_name = NULL;
-    c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
-    if ( !c_port_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
+    c_port_name = scorep_f2c_string( port_name, port_name_len );
 
 
 
@@ -627,13 +609,7 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Info* info, char* port_name, in
     char* c_service_name  = NULL;
     char* c_port_name     = NULL;
     int   c_port_name_len = 0;
-    c_service_name = ( char* )malloc( ( service_name_len + 1 ) * sizeof( char ) );
-    if ( !c_service_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_service_name, service_name, service_name_len );
-    c_service_name[ service_name_len ] = '\0';
+    c_service_name = scorep_f2c_string( service_name, service_name_len );
 
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
     if ( !c_port_name )
@@ -696,21 +672,9 @@ FSUB( MPI_Publish_name )( char* service_name, MPI_Info* info, char* port_name, i
 {
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
-    c_service_name = ( char* )malloc( ( service_name_len + 1 ) * sizeof( char ) );
-    if ( !c_service_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_service_name, service_name, service_name_len );
-    c_service_name[ service_name_len ] = '\0';
+    c_service_name = scorep_f2c_string( service_name, service_name_len );
 
-    c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
-    if ( !c_port_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
+    c_port_name = scorep_f2c_string( port_name, port_name_len );
 
 
 
@@ -733,21 +697,9 @@ FSUB( MPI_Unpublish_name )( char* service_name, MPI_Info* info, char* port_name,
 {
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
-    c_service_name = ( char* )malloc( ( service_name_len + 1 ) * sizeof( char ) );
-    if ( !c_service_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_service_name, service_name, service_name_len );
-    c_service_name[ service_name_len ] = '\0';
+    c_service_name = scorep_f2c_string( service_name, service_name_len );
 
-    c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
-    if ( !c_port_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
+    c_port_name = scorep_f2c_string( port_name, port_name_len );
 
 
 
@@ -1081,13 +1033,7 @@ void
 FSUB( MPI_Close_port )( char* port_name, MPI_Fint* ierr, int port_name_len )
 {
     char* c_port_name = NULL;
-    c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
-    if ( !c_port_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
+    c_port_name = scorep_f2c_string( port_name, port_name_len );
 
 
 
@@ -1110,13 +1056,7 @@ FSUB( MPI_Comm_accept )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fi
 {
     char*    c_port_name = NULL;
     MPI_Comm c_newcomm;
-    c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
-    if ( !c_port_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
+    c_port_name = scorep_f2c_string( port_name, port_name_len );
 
 
 
@@ -1140,13 +1080,7 @@ FSUB( MPI_Comm_connect )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_F
 {
     char*    c_port_name = NULL;
     MPI_Comm c_newcomm;
-    c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
-    if ( !c_port_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
+    c_port_name = scorep_f2c_string( port_name, port_name_len );
 
 
 
@@ -1231,13 +1165,7 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Fint* info, char* port_name, MP
     char* c_service_name  = NULL;
     char* c_port_name     = NULL;
     int   c_port_name_len = 0;
-    c_service_name = ( char* )malloc( ( service_name_len + 1 ) * sizeof( char ) );
-    if ( !c_service_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_service_name, service_name, service_name_len );
-    c_service_name[ service_name_len ] = '\0';
+    c_service_name = scorep_f2c_string( service_name, service_name_len );
 
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
     if ( !c_port_name )
@@ -1302,21 +1230,9 @@ FSUB( MPI_Publish_name )( char* service_name, MPI_Fint* info, char* port_name, M
 {
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
-    c_service_name = ( char* )malloc( ( service_name_len + 1 ) * sizeof( char ) );
-    if ( !c_service_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_service_name, service_name, service_name_len );
-    c_service_name[ service_name_len ] = '\0';
+    c_service_name = scorep_f2c_string( service_name, service_name_len );
 
-    c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
-    if ( !c_port_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
+    c_port_name = scorep_f2c_string( port_name, port_name_len );
 
 
 
@@ -1340,21 +1256,9 @@ FSUB( MPI_Unpublish_name )( char* service_name, MPI_Fint* info, char* port_name,
 {
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
-    c_service_name = ( char* )malloc( ( service_name_len + 1 ) * sizeof( char ) );
-    if ( !c_service_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_service_name, service_name, service_name_len );
-    c_service_name[ service_name_len ] = '\0';
+    c_service_name = scorep_f2c_string( service_name, service_name_len );
 
-    c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
-    if ( !c_port_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_port_name, port_name, port_name_len );
-    c_port_name[ port_name_len ] = '\0';
+    c_port_name = scorep_f2c_string( port_name, port_name_len );
 
 
 

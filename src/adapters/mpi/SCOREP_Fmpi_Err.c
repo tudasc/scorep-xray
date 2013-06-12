@@ -206,13 +206,7 @@ void
 FSUB( MPI_Add_error_string )( int* errorcode, char* string, int* ierr, int string_len )
 {
     char* c_string = NULL;
-    c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );
-    if ( !c_string )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_string, string, string_len );
-    c_string[ string_len ] = '\0';
+    c_string = scorep_f2c_string( string, string_len );
 
 
 
@@ -367,13 +361,7 @@ void
 FSUB( MPI_Add_error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* ierr, int string_len )
 {
     char* c_string = NULL;
-    c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );
-    if ( !c_string )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_string, string, string_len );
-    c_string[ string_len ] = '\0';
+    c_string = scorep_f2c_string( string, string_len );
 
 
 

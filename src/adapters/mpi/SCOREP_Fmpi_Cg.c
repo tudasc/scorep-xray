@@ -1165,13 +1165,7 @@ void
 FSUB( MPI_Comm_set_name )( MPI_Comm* comm, char* comm_name, int* ierr, int comm_name_len )
 {
     char* c_comm_name = NULL;
-    c_comm_name = ( char* )malloc( ( comm_name_len + 1 ) * sizeof( char ) );
-    if ( !c_comm_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_comm_name, comm_name, comm_name_len );
-    c_comm_name[ comm_name_len ] = '\0';
+    c_comm_name = scorep_f2c_string( comm_name, comm_name_len );
 
 
 
@@ -1961,13 +1955,7 @@ FSUB( MPI_Comm_set_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* ierr, int 
 {
     MPI_Comm c_comm      = PMPI_Comm_f2c( *comm );
     char*    c_comm_name = NULL;
-    c_comm_name = ( char* )malloc( ( comm_name_len + 1 ) * sizeof( char ) );
-    if ( !c_comm_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_comm_name, comm_name, comm_name_len );
-    c_comm_name[ comm_name_len ] = '\0';
+    c_comm_name = scorep_f2c_string( comm_name, comm_name_len );
 
 
 

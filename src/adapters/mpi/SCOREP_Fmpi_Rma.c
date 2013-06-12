@@ -777,13 +777,7 @@ void
 FSUB( MPI_Win_set_name )( MPI_Win* win, char* win_name, int* ierr, int win_name_len )
 {
     char* c_win_name = NULL;
-    c_win_name = ( char* )malloc( ( win_name_len + 1 ) * sizeof( char ) );
-    if ( !c_win_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_win_name, win_name, win_name_len );
-    c_win_name[ win_name_len ] = '\0';
+    c_win_name = scorep_f2c_string( win_name, win_name_len );
 
 
 
@@ -1269,13 +1263,7 @@ FSUB( MPI_Win_set_name )( MPI_Fint* win, char* win_name, MPI_Fint* ierr, int win
 {
     MPI_Win c_win      = PMPI_Win_f2c( *win );
     char*   c_win_name = NULL;
-    c_win_name = ( char* )malloc( ( win_name_len + 1 ) * sizeof( char ) );
-    if ( !c_win_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_win_name, win_name, win_name_len );
-    c_win_name[ win_name_len ] = '\0';
+    c_win_name = scorep_f2c_string( win_name, win_name_len );
 
 
 

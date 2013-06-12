@@ -603,13 +603,7 @@ void
 FSUB( MPI_Pack_external )( char* datarep, void* inbuf, int* incount, MPI_Datatype* datatype, void* outbuf, MPI_Aint* outsize, MPI_Aint* position, int* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
-    c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
-    if ( !c_datarep )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_datarep, datarep, datarep_len );
-    c_datarep[ datarep_len ] = '\0';
+    c_datarep = scorep_f2c_string( datarep, datarep_len );
 
 
 
@@ -638,13 +632,7 @@ void
 FSUB( MPI_Pack_external_size )( char* datarep, int* incount, MPI_Datatype* datatype, MPI_Aint* size, int* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
-    c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
-    if ( !c_datarep )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_datarep, datarep, datarep_len );
-    c_datarep[ datarep_len ] = '\0';
+    c_datarep = scorep_f2c_string( datarep, datarep_len );
 
 
 
@@ -1123,13 +1111,7 @@ void
 FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_Aint* position, void* outbuf, int* outcount, MPI_Datatype* datatype, int* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
-    c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
-    if ( !c_datarep )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_datarep, datarep, datarep_len );
-    c_datarep[ datarep_len ] = '\0';
+    c_datarep = scorep_f2c_string( datarep, datarep_len );
 
 
 
@@ -1317,13 +1299,7 @@ void
 FSUB( MPI_Type_set_name )( MPI_Datatype* type, char* type_name, int* ierr, int type_name_len )
 {
     char* c_type_name = NULL;
-    c_type_name = ( char* )malloc( ( type_name_len + 1 ) * sizeof( char ) );
-    if ( !c_type_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_type_name, type_name, type_name_len );
-    c_type_name[ type_name_len ] = '\0';
+    c_type_name = scorep_f2c_string( type_name, type_name_len );
 
 
 
@@ -1477,13 +1453,7 @@ void
 FSUB( MPI_Pack_external )( char* datarep, void* inbuf, MPI_Fint* incount, MPI_Fint* datatype, void* outbuf, MPI_Aint* outsize, MPI_Aint* position, MPI_Fint* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
-    c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
-    if ( !c_datarep )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_datarep, datarep, datarep_len );
-    c_datarep[ datarep_len ] = '\0';
+    c_datarep = scorep_f2c_string( datarep, datarep_len );
 
 
 
@@ -1513,13 +1483,7 @@ void
 FSUB( MPI_Pack_external_size )( char* datarep, MPI_Fint* incount, MPI_Fint* datatype, MPI_Aint* size, MPI_Fint* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
-    c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
-    if ( !c_datarep )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_datarep, datarep, datarep_len );
-    c_datarep[ datarep_len ] = '\0';
+    c_datarep = scorep_f2c_string( datarep, datarep_len );
 
 
 
@@ -2086,13 +2050,7 @@ void
 FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_Aint* position, void* outbuf, MPI_Fint* outcount, MPI_Fint* datatype, MPI_Fint* ierr, int datarep_len )
 {
     char* c_datarep = NULL;
-    c_datarep = ( char* )malloc( ( datarep_len + 1 ) * sizeof( char ) );
-    if ( !c_datarep )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_datarep, datarep, datarep_len );
-    c_datarep[ datarep_len ] = '\0';
+    c_datarep = scorep_f2c_string( datarep, datarep_len );
 
 
 
@@ -2313,13 +2271,7 @@ FSUB( MPI_Type_set_name )( MPI_Fint* type, char* type_name, MPI_Fint* ierr, int 
 {
     MPI_Datatype c_type      = PMPI_Type_f2c( *type );
     char*        c_type_name = NULL;
-    c_type_name = ( char* )malloc( ( type_name_len + 1 ) * sizeof( char ) );
-    if ( !c_type_name )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_type_name, type_name, type_name_len );
-    c_type_name[ type_name_len ] = '\0';
+    c_type_name = scorep_f2c_string( type_name, type_name_len );
 
 
 

@@ -384,13 +384,7 @@ void
 FSUB( MPI_Info_delete )( MPI_Info* info, char* key, int* ierr, int key_len )
 {
     char* c_key = NULL;
-    c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
-    if ( !c_key )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_key, key, key_len );
-    c_key[ key_len ] = '\0';
+    c_key = scorep_f2c_string( key, key_len );
 
 
 
@@ -441,13 +435,7 @@ FSUB( MPI_Info_get )( MPI_Info* info, char* key, int* valuelen, char* value, int
     char* c_key       = NULL;
     char* c_value     = NULL;
     int   c_value_len = 0;
-    c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
-    if ( !c_key )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_key, key, key_len );
-    c_key[ key_len ] = '\0';
+    c_key = scorep_f2c_string( key, key_len );
 
     c_value = ( char* )malloc( ( value_len + 1 ) * sizeof( char ) );
     if ( !c_value )
@@ -523,13 +511,7 @@ void
 FSUB( MPI_Info_get_valuelen )( MPI_Info* info, char* key, int* valuelen, int* flag, int* ierr, int key_len )
 {
     char* c_key = NULL;
-    c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
-    if ( !c_key )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_key, key, key_len );
-    c_key[ key_len ] = '\0';
+    c_key = scorep_f2c_string( key, key_len );
 
 
 
@@ -551,21 +533,9 @@ FSUB( MPI_Info_set )( MPI_Info* info, char* key, char* value, int* ierr, int key
 {
     char* c_key   = NULL;
     char* c_value = NULL;
-    c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
-    if ( !c_key )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_key, key, key_len );
-    c_key[ key_len ] = '\0';
+    c_key = scorep_f2c_string( key, key_len );
 
-    c_value = ( char* )malloc( ( value_len + 1 ) * sizeof( char ) );
-    if ( !c_value )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_value, value, value_len );
-    c_value[ value_len ] = '\0';
+    c_value = scorep_f2c_string( value, value_len );
 
 
 
@@ -760,13 +730,7 @@ FSUB( MPI_Info_delete )( MPI_Fint* info, char* key, MPI_Fint* ierr, int key_len 
 {
     MPI_Info c_info = PMPI_Info_f2c( *info );
     char*    c_key  = NULL;
-    c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
-    if ( !c_key )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_key, key, key_len );
-    c_key[ key_len ] = '\0';
+    c_key = scorep_f2c_string( key, key_len );
 
 
 
@@ -831,13 +795,7 @@ FSUB( MPI_Info_get )( MPI_Fint* info, char* key, MPI_Fint* valuelen, char* value
     char* c_key       = NULL;
     char* c_value     = NULL;
     int   c_value_len = 0;
-    c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
-    if ( !c_key )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_key, key, key_len );
-    c_key[ key_len ] = '\0';
+    c_key = scorep_f2c_string( key, key_len );
 
     c_value = ( char* )malloc( ( value_len + 1 ) * sizeof( char ) );
     if ( !c_value )
@@ -916,13 +874,7 @@ void
 FSUB( MPI_Info_get_valuelen )( MPI_Fint* info, char* key, MPI_Fint* valuelen, MPI_Fint* flag, MPI_Fint* ierr, int key_len )
 {
     char* c_key = NULL;
-    c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
-    if ( !c_key )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_key, key, key_len );
-    c_key[ key_len ] = '\0';
+    c_key = scorep_f2c_string( key, key_len );
 
 
 
@@ -946,21 +898,9 @@ FSUB( MPI_Info_set )( MPI_Fint* info, char* key, char* value, MPI_Fint* ierr, in
     MPI_Info c_info  = PMPI_Info_f2c( *info );
     char*    c_key   = NULL;
     char*    c_value = NULL;
-    c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
-    if ( !c_key )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_key, key, key_len );
-    c_key[ key_len ] = '\0';
+    c_key = scorep_f2c_string( key, key_len );
 
-    c_value = ( char* )malloc( ( value_len + 1 ) * sizeof( char ) );
-    if ( !c_value )
-    {
-        exit( EXIT_FAILURE );
-    }
-    strncpy( c_value, value, value_len );
-    c_value[ value_len ] = '\0';
+    c_value = scorep_f2c_string( value, value_len );
 
 
 

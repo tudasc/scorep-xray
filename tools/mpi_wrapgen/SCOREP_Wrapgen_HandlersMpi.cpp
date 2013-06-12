@@ -846,14 +846,18 @@ SCOREP::Wrapgen::handler::mpi::init_f2c_c2f
             {
                 str += "\n    ";
             }
-            // char* need allocation and strncpy
-            str += "c_" + arg_name + " = (char*) malloc((" + arg_name + "_len + 1) * sizeof(char));\n  " +
-                   "if (!c_" + arg_name + ") exit(EXIT_FAILURE);\n  ";
-            // Input parameters need to be copied and null-terminated
             if ( datatype::is_input_param( arg ) )
             {
-                str += "strncpy(c_" + arg_name + ", " + arg_name + ", " + arg_name + "_len);\n  " +
-                       "c_" + arg_name + "[" + arg_name + "_len] = '\\0';\n";
+                // char* with input need copy and trim
+                str += "c_" + arg_name + " = scorep_f2c_string( " + arg_name
+                       + ", " + arg_name + "_len );\n    ";
+            }
+            else
+            {
+                // char* need allocation
+                str += "c_" + arg_name + " = (char*) malloc((" + arg_name
+                       + "_len + 1) * sizeof(char));\n  "
+                       + "if (!c_" + arg_name + ") exit(EXIT_FAILURE);\n  ";
             }
         }
 
@@ -895,14 +899,18 @@ SCOREP::Wrapgen::handler::mpi::init_fortran
             {
                 str += "\n    ";
             }
-            // char* need allocation and strncpy
-            str += "c_" + arg_name + " = (char*) malloc((" + arg_name + "_len + 1) * sizeof(char));\n  " +
-                   "if (!c_" + arg_name + ") exit(EXIT_FAILURE);\n  ";
-            // Input parameters need to be copied and null-terminated
             if ( datatype::is_input_param( arg ) )
             {
-                str += "strncpy(c_" + arg_name + ", " + arg_name + ", " + arg_name + "_len);\n  " +
-                       "c_" + arg_name + "[" + arg_name + "_len] = '\\0';\n";
+                // char* with input need copy and trim
+                str += "c_" + arg_name + " = scorep_f2c_string( " + arg_name
+                       + ", " + arg_name + "_len );\n    ";
+            }
+            else
+            {
+                // char* need allocation
+                str += "c_" + arg_name + " = (char*) malloc((" + arg_name
+                       + "_len + 1) * sizeof(char));\n  "
+                       + "if (!c_" + arg_name + ") exit(EXIT_FAILURE);\n  ";
             }
         }
 

@@ -46,6 +46,7 @@
  */
 
 #include "SCOREP_Fortran_Wrapper.h"
+#include "scorep_mpi_fortran.h"
 #include <stdlib.h>
 #include <string.h>
 #include <mpi.h>
