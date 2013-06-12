@@ -34,7 +34,7 @@ scorep_config_init_adapters( void )
     scorep_adapters.push_back( new SCOREP_Config_CompilerAdapter() );
     scorep_adapters.push_back( new SCOREP_Config_UserAdapter() );
     scorep_adapters.push_back( new SCOREP_Config_PompAdapter() );
-#if HAVE( CUDA )
+#if HAVE_BACKEND( CUDA )
     scorep_adapters.push_back( new SCOREP_Config_CudaAdapter() );
 #endif
 }
