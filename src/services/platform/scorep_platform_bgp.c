@@ -79,7 +79,7 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
     node = scorep_platform_system_tree_top_down_add( &tail,
                                                      SCOREP_SYSTEM_TREE_DOMAIN_MACHINE,
                                                      "machine",
-                                                     0, "JuGene" );
+                                                     0, "Blue Gene/P" );
     if ( !node )
     {
         goto fail;
