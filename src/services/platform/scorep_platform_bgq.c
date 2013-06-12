@@ -167,7 +167,7 @@ SCOREP_Platform_GetHostId( void )
      * 0               5            9          10     18
      */
 
-    /* initialize the client */
+    /* Initialize the client */
     char*         clientname = "";
     pami_client_t client;
     pami_result_t result = PAMI_Client_create( clientname, &client, NULL, 0 );
@@ -192,6 +192,10 @@ SCOREP_Platform_GetHostId( void )
             &task, &total_tasks,
             &acoord, &bcoord, &ccoord, &dcoord, &ecoord, &tcoord,
             &rack, &midplane, &nodeboard, &nodecard );
+
+    /* Finalize the client */
+    result = PAMI_Client_destroy( &client );
+    UTILS_ASSERT( result == PAMI_SUCCESS );
 
     int32_t host_id = 0x0;
     host_id |=   ( ( rack      & 0x00FF /* 8 bit */ ) << 10 )
