@@ -115,12 +115,12 @@ scorep_on_trace_pre_flush( void*         userData,
                            void*         callerData,
                            bool          final )
 {
-    if ( SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled() )
+    if ( SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled() && !final )
     {
         if ( scorep_flush_region == SCOREP_INVALID_REGION )
         {
             scorep_flush_region =
-                SCOREP_Definitions_NewRegion( "OTF2 BUFFER FLUSH", NULL,
+                SCOREP_Definitions_NewRegion( "TRACE BUFFER FLUSH", NULL,
                                               SCOREP_INVALID_SOURCE_FILE,
                                               SCOREP_INVALID_LINE_NO,
                                               SCOREP_INVALID_LINE_NO,
