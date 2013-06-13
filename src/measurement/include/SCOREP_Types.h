@@ -199,12 +199,13 @@ typedef uint32_t SCOREP_LineNo;
  * his type.
  *
  */
-#define SCOREP_ADAPTERS                            \
+#define SCOREP_ADAPTERS                              \
     SCOREP_ADAPTER( USER, "user", USER )             \
     SCOREP_ADAPTER( COMPILER, "compiler", COMPILER ) \
     SCOREP_ADAPTER( MPI, "mpi", MPI )                \
     SCOREP_ADAPTER( POMP, "pomp", OPENMP )           \
-    SCOREP_ADAPTER( CUDA, "cuda", CUDA )
+    SCOREP_ADAPTER( CUDA, "cuda", CUDA )             \
+    SCOREP_ADAPTER( MEASUREMENT, "measurement", MEASUREMENT_SYSTEM )
 
 #define SCOREP_ADAPTER( NAME, name_str, OTF2_NAME ) \
     SCOREP_ADAPTER_ ## NAME,

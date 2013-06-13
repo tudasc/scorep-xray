@@ -40,7 +40,9 @@
 #define SCOREP_DEBUG_MODULE_NAME TRACING
 #include <UTILS_Debug.h>
 
-
+#include <SCOREP_Profile.h>
+#include <SCOREP_Metric_Management.h>
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Config.h>
 #include <scorep_status.h>
 #include <scorep_environment.h>
@@ -59,9 +61,9 @@
 #include "scorep_tracing_definitions.h"
 #include "scorep_tracing_file_substrate.h"
 
-static OTF2_Archive* scorep_otf2_archive;
-static SCOREP_Mutex  scorep_otf2_archive_lock;
-
+static OTF2_Archive*       scorep_otf2_archive;
+static SCOREP_Mutex        scorep_otf2_archive_lock;
+static SCOREP_RegionHandle scorep_flush_region = SCOREP_INVALID_REGION;
 
 /** @todo croessel in OTF2_Archive_Open we need to specify an event
     chunk-size and a definition chunk size. the chnunk size need to be
@@ -113,6 +115,27 @@ scorep_on_trace_pre_flush( void*         userData,
                            void*         callerData,
                            bool          final )
 {
+    if ( SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled() )
+    {
+        if ( scorep_flush_region == SCOREP_INVALID_REGION )
+        {
+            scorep_flush_region =
+                SCOREP_Definitions_NewRegion( "OTF2 BUFFER FLUSH", NULL,
+                                              SCOREP_INVALID_SOURCE_FILE,
+                                              SCOREP_INVALID_LINE_NO,
+                                              SCOREP_INVALID_LINE_NO,
+                                              SCOREP_ADAPTER_MEASUREMENT,
+                                              SCOREP_REGION_ARTIFICIAL );
+        }
+        SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+
+        SCOREP_Profile_Enter( location,
+                              scorep_flush_region,
+                              SCOREP_REGION_ARTIFICIAL,
+                              SCOREP_GetClockTicks(),
+                              SCOREP_Metric_Read( location ) );
+    }
+
     if ( !SCOREP_Status_IsMppInitialized() )
     {
         // flush before MPI_Init, we are lost.
@@ -180,7 +203,18 @@ scorep_on_trace_post_flush( void*         userData,
      */
     SCOREP_Status_OnOtf2Flush();
 
-    return SCOREP_GetClockTicks();
+    uint64_t timestamp = SCOREP_GetClockTicks();
+
+    if ( SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled() )
+    {
+        SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+        SCOREP_Profile_Exit( location,
+                             scorep_flush_region,
+                             timestamp,
+                             SCOREP_Metric_Read( location ) );
+    }
+
+    return timestamp;
 }
 
 
