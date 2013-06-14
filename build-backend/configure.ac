@@ -70,6 +70,8 @@ AS_IF([test -n "${scorep_opari2_bindir}"],
       [AC_SUBST([OPARI2_BINDIR],            ["${scorep_opari2_bindir}"])
        AC_SUBST([OPARI2_MAKE_CHECK_BINDIR], ["${scorep_opari2_bindir}"])
        AC_SUBST([OPARI2_CPPFLAGS],          ["`${scorep_opari2_bindir}/opari2-config --cflags`"])
+       AC_DEFINE([HAVE_BACKEND_OPARI2_REVISION], ["`${scorep_opari2_bindir}/opari2-config --opari2-revision`"], 
+                 [OPARI2 revision used for version-dependent feature activation.])
        AC_SUBST([HAVE_EXTERNAL_OPARI2],     [1])
        AC_SUBST([POMP2_REGION_INFO_SRC_DIR],["${scorep_opari2_bindir}/../share/opari2/devel"])
        AC_SUBST([POMP2_REGION_INFO_INC_DIR],["${scorep_opari2_bindir}/../share/opari2/devel"])
