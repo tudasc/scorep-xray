@@ -38,32 +38,26 @@
 #if SCOREP_BACKEND_COMPILER_CRAY
 #define SCOREP_OPARI_MANGLING_SCHEME "cray"
 #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS "--nosrc "
-#define SCOREP_OPARI_CFLAGS "--cflags"
 
 #elif SCOREP_BACKEND_COMPILER_GNU
 #define SCOREP_OPARI_MANGLING_SCHEME "gnu"
 #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-#define SCOREP_OPARI_CFLAGS "--cflags=gnu"
 
 #elif SCOREP_BACKEND_COMPILER_IBM
 #define SCOREP_OPARI_MANGLING_SCHEME "ibm"
 #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-#define SCOREP_OPARI_CFLAGS "--cflags"
 
 #elif SCOREP_BACKEND_COMPILER_INTEL
 #define SCOREP_OPARI_MANGLING_SCHEME "intel"
 #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-#define SCOREP_OPARI_CFLAGS "--cflags"
 
 #elif SCOREP_BACKEND_COMPILER_PGI
 #define SCOREP_OPARI_MANGLING_SCHEME "pgi"
 #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-#define SCOREP_OPARI_CFLAGS "--cflags"
 
 #elif SCOREP_BACKEND_COMPILER_STUDIO
 #define SCOREP_OPARI_MANGLING_SCHEME "sun"
 #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-#define SCOREP_OPARI_CFLAGS "--cflags"
 
 #endif
 
@@ -324,8 +318,7 @@ SCOREP_Instrumenter_OpariAdapter::compile_init_file( SCOREP_Instrumenter& instru
 {
     std::string command = m_c_compiler
                           + " -c " + input_file
-                          + " `" + m_opari_config
-                          + " " SCOREP_OPARI_CFLAGS "` "
+                          + " `" + m_opari_config + " --cflags` "
                           + " -o " + output_file;
 
     instrumenter.executeCommand( command );

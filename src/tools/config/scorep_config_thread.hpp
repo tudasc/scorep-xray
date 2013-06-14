@@ -102,13 +102,15 @@ public:
     /**
      * Overwrite this function if you want to do threading system specific modifications
      * to the compiler flags.
-     * @param cflgas  The compiler flags to which you may modify or add new flags.
-     *                This flags do not contain the include directories. For the
-     *                include flags use addIncFlags.
-     * @param fortran True if the source file is a fortran file.
+     * @param cflags      The compiler flags to which you may modify or add new flags.
+     *                    This flags do not contain the include directories. For the
+     *                    include flags use addIncFlags.
+     * @param build_check Specifies whether --build-check was set.
+     * @param fortran     True if the source file is a fortran file.
      */
     virtual void
     addCFlags( std::string &cflags,
+               bool         build_check,
                bool         fortran );
 
     /**
@@ -199,6 +201,7 @@ public:
              SCOREP_Config_LibraryDependencies &deps );
     virtual void
     addCFlags( std::string &cflags,
+               bool         build_check,
                bool         fortran );
 
     virtual void

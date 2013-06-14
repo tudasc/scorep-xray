@@ -107,7 +107,9 @@ SCOREP_Config_ThreadSystem::addLibs( std::deque<std::string> &          libs,
 }
 
 void
-SCOREP_Config_ThreadSystem::addCFlags( std::string &cflags, bool fortran )
+SCOREP_Config_ThreadSystem::addCFlags( std::string &cflags,
+                                       bool         build_check,
+                                       bool         fortran )
 {
 }
 
@@ -144,8 +146,11 @@ SCOREP_Config_PompTpdThreadSystem::addLibs( std::deque<std::string> &          l
 
 void
 SCOREP_Config_PompTpdThreadSystem::addCFlags( std::string &cflags,
+                                              bool         build_check,
                                               bool         fortran )
 {
+    add_opari_cflags( build_check, true, fortran );
+
 #if SCOREP_BACKEND_COMPILER_IBM
     if ( fortran )
     {
@@ -157,5 +162,5 @@ SCOREP_Config_PompTpdThreadSystem::addCFlags( std::string &cflags,
 void
 SCOREP_Config_PompTpdThreadSystem::addIncFlags( std::string &incflags, bool build_check )
 {
-    add_opari_cflags( build_check );
+    add_opari_cflags( build_check, false, false );
 }

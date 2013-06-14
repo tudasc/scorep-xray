@@ -335,9 +335,9 @@ main( int    argc,
             for ( adapter = scorep_adapters.begin();
                   adapter != scorep_adapters.end(); adapter++ )
             {
-                ( *adapter )->addCFlags( str, fortran );
+                ( *adapter )->addCFlags( str, !install, fortran );
             }
-            SCOREP_Config_ThreadSystem::current->addCFlags( str, fortran );
+            SCOREP_Config_ThreadSystem::current->addCFlags( str, !install, fortran );
 
         // Append the include directories, too
         case ACTION_INCDIR:

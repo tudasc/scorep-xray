@@ -26,6 +26,34 @@
 #include <iostream>
 #include <stdlib.h>
 
+/* ****************************************************************************
+   Compiler specific defines
+******************************************************************************/
+
+#if SCOREP_BACKEND_COMPILER_CRAY
+#define SCOREP_COMPILER_TYPE "cray"
+
+#elif SCOREP_BACKEND_COMPILER_GNU
+#define SCOREP_COMPILER_TYPE "gnu"
+
+#elif SCOREP_BACKEND_COMPILER_IBM
+#define SCOREP_COMPILER_TYPE "ibm"
+
+#elif SCOREP_BACKEND_COMPILER_INTEL
+#define SCOREP_COMPILER_TYPE "intel"
+
+#elif SCOREP_BACKEND_COMPILER_PGI
+#define SCOREP_COMPILER_TYPE "pgi"
+
+#elif SCOREP_BACKEND_COMPILER_STUDIO
+#define SCOREP_COMPILER_TYPE "sun"
+
+#endif
+
+/* **************************************************************************************
+ * functions and variables
+ * *************************************************************************************/
+
 std::deque<SCOREP_Config_Adapter*> scorep_adapters;
 
 void
@@ -50,7 +78,7 @@ scorep_config_final_adapters( void )
 }
 
 void
-add_opari_cflags( bool build_check )
+add_opari_cflags( bool build_check, bool with_cflags, bool is_fortran )
 {
     static bool printed_once = false;
     if ( !printed_once )
@@ -67,7 +95,19 @@ add_opari_cflags( bool build_check )
 #endif
 
         std::string opari_config = OPARI_CONFIG " --cflags";
-        int         return_value = system( opari_config.c_str() );
+#if ( !defined HAVE_BACKEND_OPARI2_REVISION ) || ( HAVE_BACKEND_OPARI2_REVISION < 1068 )
+        if ( with_cflags )
+        {
+            opari_config += "=" SCOREP_COMPILER_TYPE;
+
+            if ( is_fortran )
+            {
+                opari_config += " --fortran";
+            }
+        }
+#endif
+
+        int return_value = system( opari_config.c_str() );
         if ( return_value != 0 )
         {
             std::cerr << "Error executing: " << opari_config.c_str() << std::endl;
@@ -132,7 +172,9 @@ SCOREP_Config_Adapter::addLibs( std::deque<std::string> &          libs,
 }
 
 void
-SCOREP_Config_Adapter::addCFlags( std::string &cflags, bool fortran )
+SCOREP_Config_Adapter::addCFlags( std::string &cflags,
+                                  bool         build_check,
+                                  bool         fortran )
 {
 }
 
@@ -156,7 +198,9 @@ SCOREP_Config_CompilerAdapter::SCOREP_Config_CompilerAdapter()
 }
 
 void
-SCOREP_Config_CompilerAdapter::addCFlags( std::string &cflags, bool fortran )
+SCOREP_Config_CompilerAdapter::addCFlags( std::string &cflags,
+                                          bool         build_check,
+                                          bool         fortran )
 {
     if ( m_is_enabled )
     {
@@ -182,7 +226,9 @@ SCOREP_Config_UserAdapter::SCOREP_Config_UserAdapter()
 }
 
 void
-SCOREP_Config_UserAdapter::addCFlags( std::string &cflags, bool fortran )
+SCOREP_Config_UserAdapter::addCFlags( std::string &cflags,
+                                      bool         build_check,
+                                      bool         fortran )
 {
     if ( m_is_enabled )
     {
@@ -263,6 +309,17 @@ SCOREP_Config_PompAdapter::addIncFlags( std::string &incflags, bool build_check 
 {
     if ( m_is_enabled )
     {
-        add_opari_cflags( build_check );
+        add_opari_cflags( build_check, false, false );
+    }
+}
+
+void
+SCOREP_Config_PompAdapter::addCFlags( std::string &cflags,
+                                      bool         build_check,
+                                      bool         fortran )
+{
+    if ( m_is_enabled )
+    {
+        add_opari_cflags( build_check, true, fortran );
     }
 }
