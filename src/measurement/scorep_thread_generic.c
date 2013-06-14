@@ -247,6 +247,7 @@ SCOREP_ThreadEnd( SCOREP_ThreadModel model,
         location,
         scorep_thread_get_location( parent ) );
 
+    /* Nothing to do for profiling. */
 
     if ( scorep_tracing_consume_event() )
     {
@@ -262,10 +263,6 @@ SCOREP_ThreadEnd( SCOREP_ThreadModel model,
             SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
         }
     }
-
-    if ( scorep_profiling_consume_event() )
-    {
-    }
 }
 
 void
@@ -278,6 +275,8 @@ SCOREP_ThreadTaskCreate( SCOREP_ThreadModel model,
     /* use the timestamp from the associated enter */
     uint64_t                         timestamp   = SCOREP_Location_GetLastTimestamp( location );
     SCOREP_InterimCommunicatorHandle thread_team = scorep_thread_get_thread_team( tpd );
+
+    /* Nothing to do for profiling. */
 
     if ( scorep_tracing_consume_event() )
     {
@@ -295,8 +294,6 @@ SCOREP_ThreadTaskCreate( SCOREP_ThreadModel model,
             SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
         }
     }
-
-    /* Nothing to do for profiling. */
 }
 
 
@@ -309,6 +306,16 @@ SCOREP_ThreadTaskSwitch( SCOREP_ThreadModel model,
     SCOREP_Location*                 location    = scorep_thread_get_location( tpd );
     uint64_t                         timestamp   = scorep_get_timestamp( location );
     SCOREP_InterimCommunicatorHandle thread_team = scorep_thread_get_thread_team( tpd );
+
+    if ( scorep_profiling_consume_event() )
+    {
+        uint64_t* metric_values = SCOREP_Metric_Read( location );
+        SCOREP_Profile_TaskSwitch( location,
+                                   timestamp,
+                                   metric_values,
+                                   threadId,
+                                   generationNumber );
+    }
 
     if ( scorep_tracing_consume_event() )
     {
@@ -326,16 +333,6 @@ SCOREP_ThreadTaskSwitch( SCOREP_ThreadModel model,
             SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
         }
     }
-
-    if ( scorep_profiling_consume_event() )
-    {
-        uint64_t* metric_values = SCOREP_Metric_Read( location );
-        SCOREP_Profile_TaskSwitch( location,
-                                   timestamp,
-                                   metric_values,
-                                   threadId,
-                                   generationNumber );
-    }
 }
 
 
@@ -350,6 +347,16 @@ SCOREP_ThreadTaskBegin( SCOREP_ThreadModel  model,
     uint64_t                         timestamp     = scorep_get_timestamp( location );
     uint64_t*                        metric_values = SCOREP_Metric_Read( location );
     SCOREP_InterimCommunicatorHandle thread_team   = scorep_thread_get_thread_team( tpd );
+
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_TaskBegin( location,
+                                  timestamp,
+                                  metric_values,
+                                  regionHandle,
+                                  threadId,
+                                  generationNumber );
+    }
 
     if ( scorep_tracing_consume_event() )
     {
@@ -377,16 +384,6 @@ SCOREP_ThreadTaskBegin( SCOREP_ThreadModel  model,
             SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
         }
     }
-
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_TaskBegin( location,
-                                  timestamp,
-                                  metric_values,
-                                  regionHandle,
-                                  threadId,
-                                  generationNumber );
-    }
 }
 
 
@@ -401,6 +398,16 @@ SCOREP_ThreadTaskEnd( SCOREP_ThreadModel  model,
     uint64_t                         timestamp     = scorep_get_timestamp( location );
     uint64_t*                        metric_values = SCOREP_Metric_Read( location );
     SCOREP_InterimCommunicatorHandle thread_team   = scorep_thread_get_thread_team( tpd );
+
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_TaskEnd( location,
+                                timestamp,
+                                metric_values,
+                                regionHandle,
+                                threadId,
+                                generationNumber );
+    }
 
     if ( scorep_tracing_consume_event() )
     {
@@ -426,15 +433,5 @@ SCOREP_ThreadTaskEnd( SCOREP_ThreadModel  model,
         {
             SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
         }
-    }
-
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_TaskEnd( location,
-                                timestamp,
-                                metric_values,
-                                regionHandle,
-                                threadId,
-                                generationNumber );
     }
 }

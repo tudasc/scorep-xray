@@ -56,6 +56,11 @@ SCOREP_ThreadFork( SCOREP_ThreadModel model,
                            scorep_thread_get_model_data( tpd ),
                            location );
 
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+        SCOREP_Profile_ThreadFork( location, nRequestedThreads, fork_sequence_count );
+    }
+
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_ThreadFork( location,
@@ -70,11 +75,6 @@ SCOREP_ThreadFork( SCOREP_ThreadModel model,
         {
             SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
         }
-    }
-
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_ThreadFork( location, nRequestedThreads, fork_sequence_count );
     }
 
     return fork_sequence_count;
@@ -100,6 +100,11 @@ SCOREP_ThreadJoin( SCOREP_ThreadModel model,
     SCOREP_Location* location  = scorep_thread_get_location( tpd_from_now_on );
     uint64_t         timestamp = scorep_get_timestamp( location );
 
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+        SCOREP_Profile_ThreadJoin( location );
+    }
+
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_ThreadJoin( location,
@@ -113,10 +118,5 @@ SCOREP_ThreadJoin( SCOREP_ThreadModel model,
         {
             SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
         }
-    }
-
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_ThreadJoin( location );
     }
 }
