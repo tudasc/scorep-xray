@@ -43,6 +43,9 @@ libscorep_adapter_cuda_la_CPPFLAGS =     \
 
 libscorep_adapter_cuda_la_LIBADD = @CUDA_LIBS@ \
     libscorep_measurement.la
+
+libscorep_adapter_cuda_la_LDFLAGS = $(library_api_version_ldflags)
+
 endif
 
 # mockup library for the adapter

@@ -87,7 +87,7 @@ libscorep_mutex_omp_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement/include \
     $(UTILS_CPPFLAGS)
-
+libscorep_mutex_omp_la_LDFLAGS = $(library_api_version_ldflags)
 
 lib_LTLIBRARIES += libscorep_thread_omp_tpd.la
 libscorep_thread_omp_tpd_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
@@ -108,6 +108,7 @@ libscorep_thread_omp_tpd_la_CPPFLAGS = \
     -I$(INC_DIR_COMMON_HASH)
 libscorep_thread_omp_tpd_la_LIBADD = \
     libscorep_thread_generic.la
+libscorep_thread_omp_tpd_la_LDFLAGS = $(library_api_version_ldflags)
 
 endif
 
@@ -135,7 +136,7 @@ libscorep_mutex_mockup_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement/include \
     $(UTILS_CPPFLAGS)
-
+libscorep_mutex_mockup_la_LDFLAGS = $(library_api_version_ldflags)
 
 lib_LTLIBRARIES += libscorep_thread_mockup.la
 libscorep_thread_mockup_la_SOURCES  =                   \
@@ -147,7 +148,7 @@ libscorep_thread_mockup_la_CPPFLAGS = \
     $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement/profiling \
     -I$(INC_ROOT)src/measurement
-
+libscorep_thread_mockup_la_LDFLAGS = $(library_api_version_ldflags)
 
 ## paradigm non mpp
 
@@ -167,7 +168,7 @@ libscorep_mpp_mockup_la_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_ROOT)src/services/include
-
+libscorep_mpp_mockup_la_LDFLAGS = $(library_api_version_ldflags)
 
 ## paradigm mpp
 
@@ -189,7 +190,6 @@ libscorep_mpp_ipc_la_CPPFLAGS = \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_ROOT)src/services/include
 
-
 ## sion-serial
 
 lib_LTLIBRARIES += libscorep_sion_mockup.la
@@ -200,7 +200,7 @@ libscorep_sion_mockup_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement \
     $(UTILS_CPPFLAGS) \
     @OTF2_CPPFLAGS@
-
+libscorep_sion_mockup_la_LDFLAGS = $(library_api_version_ldflags)
 
 ## cuda paradigm
 

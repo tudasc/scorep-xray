@@ -102,6 +102,9 @@ libscorep_adapter_user_la_LIBADD =                \
     libscorep_adapter_tau.la                      \
     libscorep_measurement.la
 
+libscorep_adapter_user_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
 # mockup library for the adapter
 
 noinst_LTLIBRARIES += libscorep_adapter_user_mockup.la

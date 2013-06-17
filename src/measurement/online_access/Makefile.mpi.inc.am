@@ -74,8 +74,11 @@ if ! PLATFORM_AIX
 libscorep_online_access_mpp_mpi_la_CPPFLAGS += -D_POSIX_SOURCE
 endif 
 
-libscorep_online_access_mpp_mpi_la_LIBADD =     \
+libscorep_online_access_mpp_mpi_la_LIBADD = \
     libscorep_online_access_mpi_mockup.la
+
+libscorep_online_access_mpp_mpi_la_LDFLAGS = \
+    $(library_api_version_ldflags)
 
 endif #if HAVE_MPI_SUPPORT
 

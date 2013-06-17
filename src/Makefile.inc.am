@@ -27,6 +27,8 @@ libscorep_adapter_mockup_la_LIBADD =     \
     libscorep_adapter_mpi_mockup.la      \
     libscorep_adapter_pomp_mockup.la     \
     libscorep_adapter_user_mockup.la
+libscorep_adapter_mockup_la_LDFLAGS = \
+    $(library_api_version_ldflags)
 
 lib_LTLIBRARIES += libscorep_measurement.la
 libscorep_measurement_la_SOURCES = 
@@ -62,15 +64,16 @@ libscorep_measurement_la_LDFLAGS = \
     @LIBBFD_LDFLAGS@      \
     @SCOREP_PAPI_LDFLAGS@ \
     @CUBE_WRITER_LDFLAGS@ \
-    @CUDA_LDFLAGS@
-
+    @CUDA_LDFLAGS@        \
+    $(library_api_version_ldflags)
 
 lib_LTLIBRARIES += libscorep_adapter_mpi.la
 libscorep_adapter_mpi_la_SOURCES =
 libscorep_adapter_mpi_la_LIBADD = \
     $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_wrapper.la \
     libscorep_measurement.la
-
+libscorep_adapter_mpi_la_LDFLAGS = \
+    $(library_api_version_ldflags)
 
 external_libadd = \
     @OTF2_LIBS@                   \
@@ -123,7 +126,8 @@ lib_LTLIBRARIES += libscorep_mpp_mpi.la
 libscorep_mpp_mpi_la_SOURCES =
 libscorep_mpp_mpi_la_LIBADD  = $(LIB_DIR_SCOREP_MPI)libscorep_ipc_mpi.la \
                                libscorep_mpp_ipc.la
-
+libscorep_mpp_mpi_la_LDFLAGS = \
+    $(library_api_version_ldflags)
 
 noinst_LTLIBRARIES                      += libscorep_mpi.la
 libscorep_mpi_la_SOURCES              = 
@@ -133,7 +137,7 @@ libscorep_mpi_la_LIBADD               = libscorep_adapter_mpi.la                
 					$(common_libadd)                               \
                                         libscorep_mpp_mpi.la                           \
                                         $(LIB_DIR_SCOREP_MPI)libscorep_sion_mpp_mpi.la \
-                                        $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la             \
+                                        $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
                                         $(external_libadd)                             \
                                         libscorep_thread_mockup.la                     \
                                         libscorep_mutex_mockup.la

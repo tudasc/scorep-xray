@@ -63,8 +63,11 @@ if ! PLATFORM_AIX
 libscorep_online_access_spp_la_CPPFLAGS += -D_POSIX_SOURCE
 endif 
 
-libscorep_online_access_spp_la_LIBADD =         \
+libscorep_online_access_spp_la_LIBADD = \
     libscorep_profile.la
+
+libscorep_online_access_spp_la_LDFLAGS = \
+    $(library_api_version_ldflags)
 
 endif #if HAVE_ONLINE_ACCESS
 
@@ -75,5 +78,7 @@ libscorep_online_access_mockup_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/measurement/include
+libscorep_online_access_mockup_la_LDFLAGS = \
+    $(library_api_version_ldflags)
 
 

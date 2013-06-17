@@ -18,7 +18,6 @@
 # Common settings
 
 lib_LTLIBRARIES += libscorep_adapter_compiler.la
-
 libscorep_adapter_compiler_la_SOURCES = \
         $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c \
         $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.h
@@ -29,6 +28,7 @@ libscorep_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)      \
         -I$(INC_ROOT)src/measurement/include
 
 libscorep_adapter_compiler_la_LIBADD = libscorep_measurement.la
+libscorep_adapter_compiler_la_LDFLAGS = $(library_api_version_ldflags)
 
 # intel specific settings
 
@@ -44,7 +44,7 @@ libscorep_adapter_compiler_la_CPPFLAGS += -DINTEL_COMPILER
 if HAVE_LIBBFD
 libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
 libscorep_adapter_compiler_la_LIBADD += @LIBBFD_LIBS@
-libscorep_adapter_compiler_la_LDFLAGS = @LIBBFD_LDFLAGS@
+libscorep_adapter_compiler_la_LDFLAGS += @LIBBFD_LDFLAGS@
 endif
 
 if HAVE_DEMANGLE
@@ -95,7 +95,7 @@ libscorep_adapter_compiler_la_SOURCES += \
 if HAVE_LIBBFD
 libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
 libscorep_adapter_compiler_la_LIBADD += @LIBBFD_LIBS@
-libscorep_adapter_compiler_la_LDFLAGS = @LIBBFD_LDFLAGS@
+libscorep_adapter_compiler_la_LDFLAGS += @LIBBFD_LDFLAGS@
 endif
 
 if HAVE_DEMANGLE
@@ -127,7 +127,7 @@ libscorep_adapter_compiler_la_SOURCES += \
 if HAVE_LIBBFD
 libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
 libscorep_adapter_compiler_la_LIBADD += @LIBBFD_LIBS@
-libscorep_adapter_compiler_la_LDFLAGS = @LIBBFD_LDFLAGS@
+libscorep_adapter_compiler_la_LDFLAGS += @LIBBFD_LDFLAGS@
 endif
 
 if HAVE_DEMANGLE
