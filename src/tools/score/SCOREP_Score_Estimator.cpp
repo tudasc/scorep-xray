@@ -251,72 +251,77 @@ SCOREP_Score_Estimator::Calculate( bool showRegions )
             }
 
             // Calculate sizes of additional events
-            if ( m_profile->HasParameter(  region ) )
+            if ( m_profile->HasParameter( region ) )
             {
                 tbc += m_parameter;
             }
 
-            if ( m_profile->HasSend(  region ) )
+            if ( m_profile->HasSend( region ) )
             {
                 tbc += m_send;
             }
 
-            if ( m_profile->HasIsend(  region ) )
+            if ( m_profile->HasIsend( region ) )
             {
                 tbc += m_isend;
             }
 
-            if ( m_profile->HasIsendComplete(  region ) )
+            if ( m_profile->HasIsendComplete( region ) )
             {
                 tbc += m_isend_complete;
             }
 
-            if ( m_profile->HasIrecvRequest(  region ) )
+            if ( m_profile->HasIrecvRequest( region ) )
             {
                 tbc += m_irecv_request;
             }
 
-            if ( m_profile->HasRecv(  region ) )
+            if ( m_profile->HasRecv( region ) )
             {
                 tbc += m_recv;
             }
 
-            if ( m_profile->HasIrecv(  region ) )
+            if ( m_profile->HasIrecv( region ) )
             {
                 tbc += m_irecv;
             }
 
-            if ( m_profile->HasCollective(  region ) )
+            if ( m_profile->HasCollective( region ) )
             {
                 tbc += m_collective;
             }
 
-            if ( m_profile->HasFork(  region ) )
+            if ( m_profile->HasFork( region ) )
             {
                 tbc += m_fork;
             }
 
-            if ( m_profile->HasJoin(  region ) )
+            if ( m_profile->HasJoin( region ) )
             {
                 tbc += m_join;
             }
 
-            if ( m_profile->HasAcquireLock(  region ) )
+            if ( m_profile->HasThreadTeam( region ) )
+            {
+                tbc += m_thread_team;
+            }
+
+            if ( m_profile->HasAcquireLock( region ) )
             {
                 tbc += m_acquire_lock;
             }
 
-            if ( m_profile->HasReleaseLock(  region ) )
+            if ( m_profile->HasReleaseLock( region ) )
             {
                 tbc += m_release_lock;
             }
 
-            if ( m_profile->HasTaskCreateComplete(  region ) )
+            if ( m_profile->HasTaskCreateComplete( region ) )
             {
                 tbc += m_task_create + m_task_complete;
             }
 
-            if ( m_profile->HasTaskSwitch(  region ) )
+            if ( m_profile->HasTaskSwitch( region ) )
             {
                 tbc += m_task_switch;
             }
@@ -486,21 +491,30 @@ SCOREP_Score_Estimator::calculate_event_sizes()
                    8 +                                    // received bytes
                    1;                                     // collective begin
 
-    m_fork = 4;                                           // number of requested threads
+    m_fork = 4 +                                          // number of requested threads
+             1;                                           // model
 
-    m_join = 1;                                           // only message type
+    m_join = 1 +                                          // only message type
+             1;                                           // model
 
-    m_acquire_lock = 4 +                                  // lock id
+    m_thread_team = 4 +                                   // thread team begin
+                    4;                                    // thread team end
+
+    m_acquire_lock = 1 +                                  // model
+                     4 +                                  // lock id
                      4;                                   // acquisition order
 
     m_release_lock = m_acquire_lock;
 
-    m_task_create   = 8; // task id
-    m_task_switch   = 8; // task id
-    m_task_complete = 8; // task id
+    m_task_create = 4 +   // thread team
+                    4 +   // creator thread
+                    4;    // generation number
+
+    m_task_switch   = m_task_create;
+    m_task_complete = m_task_create;
 
     m_parameter = 4 +    // parameter id
-                  8;     //value
+                  8;     // value
 
     add_header_size( &m_send );
     add_header_size( &m_isend );
@@ -510,6 +524,8 @@ SCOREP_Score_Estimator::calculate_event_sizes()
     add_header_size( &m_irecv );
     add_header_size( &m_collective );
     add_header_size( &m_fork );
+    add_header_size( &m_thread_team );
+    add_header_size( &m_thread_team ); // Two times for begin & end
     add_header_size( &m_acquire_lock );
     add_header_size( &m_release_lock );
     add_header_size( &m_task_create );

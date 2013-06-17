@@ -97,6 +97,7 @@ private:
     uint32_t m_collective;
     uint32_t m_fork;
     uint32_t m_join;
+    uint32_t m_thread_team;
     uint32_t m_acquire_lock;
     uint32_t m_release_lock;
     uint32_t m_task_create;

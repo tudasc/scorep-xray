@@ -327,6 +327,13 @@ SCOREP_Score_Profile::HasJoin( uint64_t region )
 }
 
 bool
+SCOREP_Score_Profile::HasThreadTeam( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_THREAD_TEAM
+    return false;
+}
+
+bool
 SCOREP_Score_Profile::HasTaskCreateComplete( uint64_t region )
 {
     SCOREP_SCORE_EVENT_TASK_CREATE

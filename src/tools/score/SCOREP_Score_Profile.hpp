@@ -108,6 +108,9 @@ public:
     HasJoin( uint64_t region );
 
     bool
+    HasThreadTeam( uint64_t region );
+
+    bool
     HasAcquireLock( uint64_t region );
 
     bool

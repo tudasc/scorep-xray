@@ -91,6 +91,9 @@
 #define SCOREP_SCORE_EVENT_JOIN \
     SCOREP_SCORE_EVENT( "!$omp parallel" )
 
+#define SCOREP_SCORE_EVENT_THREAD_TEAM \
+    SCOREP_SCORE_EVENT( "!$omp parallel" )
+
 #define SCOREP_SCORE_EVENT_TASK_CREATE \
     SCOREP_SCORE_EVENT( "!$omp task " )
 
