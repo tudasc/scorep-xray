@@ -212,6 +212,7 @@ libscorep_cuda_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/adapters/cuda \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_DIR_COMMON_HASH)

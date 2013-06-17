@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -19,11 +19,13 @@
  *  @file       scorep_cupti_activity.h
  *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
- *  Propagation of the CUPTI activities control functions.
+ *  Propagation of the CUPTI activity control functions.
  */
 
 #ifndef SCOREP_CUPTI_ACTIVITY_H
 #define SCOREP_CUPTI_ACTIVITY_H
+
+#include "scorep_cupti.h"    /* CUPTI common structures, functions, etc. */
 
 /**
  * Initialize the Score-P CUPTI Activity implementation.
@@ -37,18 +39,44 @@ scorep_cupti_activity_init( void );
 extern void
 scorep_cupti_activity_finalize( void );
 
-/**
- * Create and add a new context to list of contexts.
+/*
+ * Enable/Disable recording of CUPTI activities. Use CUPTI mutex to lock this
+ * function.
  *
- * @param cudaContext       CUDA context specifying the queue.
- * @param cudaDevice        CUDA device handle.
+ * @param enable 1 to enable recording of activities, 0 to disable
  */
 extern void
-scorep_cupti_activity_add_context( CUcontext cudaContext,
-                                   CUdevice  cudaDevice );
+scorep_cupti_activity_enable( bool enable );
 
-/**
- * Handle activities buffered by CUPTI.
+/*
+ * Finalize the Score-P CUPTI activity context.
+ *
+ * @param context the Score-P CUPTI context, which contains the activities
+ */
+extern void
+scorep_cupti_activity_context_finalize( scorep_cupti_context_t* context );
+
+/*
+ * Setup a the Score-P CUPTI activity context. Trigger initialization and
+ * enqueuing of the CUPTI activity buffer for the given context.
+ *
+ * @param context the Score-P CUPTI context
+ */
+extern void
+scorep_cupti_activity_context_setup( scorep_cupti_context_t* context );
+
+/*
+ * Check for empty activity buffer.
+ *
+ * @param cudaContext CUDA context
+ *
+ * @return 1 for empty, 0 for non-empty buffer
+ */
+extern uint8_t
+scorep_cupti_activity_is_buffer_empty( CUcontext cudaContext );
+
+/*
+ * Handle activities buffered by CUPTI. Lock a call to this routine!!!
  *
  * NVIDIA:
  * "Global Queue: The global queue collects all activity records that
@@ -66,9 +94,22 @@ scorep_cupti_activity_add_context( CUcontext cudaContext,
  * activity records associated with the stream. A buffer is enqueued
  * in a stream queue by specifying a context and a non-zero stream ID."
  *
- * @param cudaContext       CUDA context, NULL to handle globally buffered activities
+ * @param context Score-P CUPTI context, NULL to handle globally buffered
+ * activities
  */
 extern void
-scorep_cupti_activity_flush_context_activities( CUcontext cudaContext );
+scorep_cupti_activity_context_flush( scorep_cupti_context_t* context );
+
+#if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 3 ) )
+/*
+ * Enable tracing of concurrent kernels. Disable normal kernel tracing, if
+ * necessary.
+ *
+ * @param context pointer to the VampirTrace CUPTI context.
+ */
+extern void
+scorep_cupti_activity_enable_concurrent_kernel( scorep_cupti_context_t* context );
+
+#endif
 
 #endif  /* SCOREP_CUPTI_ACTIVITY_H */

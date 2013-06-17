@@ -530,6 +530,11 @@ scorep_write_group_definitions( void*                     writerHandle,
             case SCOREP_GROUP_OPENMP_THREAD_TEAM:
                 paradigm = OTF2_PARADIGM_OPENMP;
                 break;
+
+            case SCOREP_GROUP_CUDA_LOCATIONS:
+            case SCOREP_GROUP_CUDA_GROUP:
+                paradigm = OTF2_PARADIGM_CUDA;
+                break;
         }
 
         OTF2_ErrorCode status = defGroup(

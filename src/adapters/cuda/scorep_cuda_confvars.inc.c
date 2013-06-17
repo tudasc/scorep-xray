@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -26,7 +26,7 @@
 
 
 uint64_t scorep_cuda_features;
-uint64_t scorep_cupti_activity_buffer_size;
+size_t   scorep_cupti_activity_buffer_size;
 
 
 /*
@@ -34,17 +34,24 @@ uint64_t scorep_cupti_activity_buffer_size;
  * (bit mask).
  */
 static const SCOREP_ConfigType_SetEntry scorep_cuda_enable_groups[] = {
-    { "runtime", SCOREP_CUDA_RECORD_RUNTIME_API                            },
-    { "driver",  SCOREP_CUDA_RECORD_DRIVER_API                             },
-    { "kernel",  SCOREP_CUDA_RECORD_KERNEL                                 },
-    { "memcpy",  SCOREP_CUDA_RECORD_MEMCPY                                 },
-    { "gpu",     SCOREP_CUDA_RECORD_KERNEL | SCOREP_CUDA_RECORD_MEMCPY     },
-    { "idle",    SCOREP_CUDA_RECORD_IDLE                                   },
-    { "DEFAULT", SCOREP_CUDA_RECORD_DEFAULT                                },
-    { "1",       SCOREP_CUDA_RECORD_DEFAULT                                },
-    { "yes",     SCOREP_CUDA_RECORD_DEFAULT                                },
-    { "no",      0                                                         },
-    { NULL,      0                                                         }
+    { "runtime",        SCOREP_CUDA_FEATURE_RUNTIME_API                                    },
+    { "driver",         SCOREP_CUDA_FEATURE_DRIVER_API                                     },
+    { "kernel",         SCOREP_CUDA_FEATURE_KERNEL                                         },
+    { "kernel_counter", SCOREP_CUDA_FEATURE_KERNEL_COUNTER                                 },
+    { "concurrent",     SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL                              },
+    { "memcpy",         SCOREP_CUDA_FEATURE_MEMCPY                                         },
+    { "sync",           SCOREP_CUDA_FEATURE_SYNC                                           },
+    { "gpu",            SCOREP_CUDA_FEATURE_KERNEL | SCOREP_CUDA_FEATURE_MEMCPY            },
+    { "idle",           SCOREP_CUDA_FEATURE_IDLE                                           },
+    { "pure_idle",      SCOREP_CUDA_FEATURE_PURE_IDLE                                      },
+    { "device_reuse",   SCOREP_CUDA_FEATURE_DEVICE_REUSE                                   },
+    { "stream_reuse",   SCOREP_CUDA_FEATURE_STREAM_REUSE                                   },
+    { "gpumemusage",    SCOREP_CUDA_FEATURE_GPUMEMUSAGE                                    },
+    { "DEFAULT",        SCOREP_CUDA_FEATURES_DEFAULT                                       },
+    { "1",              SCOREP_CUDA_FEATURES_DEFAULT                                       },
+    { "yes",            SCOREP_CUDA_FEATURES_DEFAULT                                       },
+    { "no",             0                                                                  },
+    { NULL,             0                                                                  }
 };
 
 
@@ -65,7 +72,12 @@ static SCOREP_ConfigVariable scorep_cuda_configs[] = {
         "  gpu:           GPU activities\n"
         "  kernel:        CUDA kernels\n"
         "  idle:          GPU compute idle time\n"
+        "  pure_idle:     GPU idle time (memory copies are not idle)\n"
         "  memcpy:        CUDA memory copies (not available yet)\n"
+        "  sync:          Record implicit and explicit CUDA synchronization\n"
+        "  gpumemusage:   Record CUDA memory (de)allocations as a counter\n"
+        "  stream_reuse:  Reuse destroyed/closed CUDA streams\n"
+        "  device_reuse:  Reuse destroyed/closed CUDA devices\n"
         "  default/yes/1: CUDA runtime API and GPU activities\n"
         "  no:            disable CUDA measurement\n"
     },

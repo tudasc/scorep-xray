@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -37,5 +37,13 @@ scorep_cupti_callbacks_init( void );
  */
 extern void
 scorep_cupti_callbacks_finalize( void );
+
+/**
+ * Enable CUPTI callback domains depending on the requested GPU features.
+ *
+ * @param enable 'true' to enable CUPTI callbacks, 'false' to disable callbacks
+ */
+extern void
+scorep_cupti_callbacks_enable( bool enable );
 
 #endif  /* SCOREP_CUPTI_CALLBACKS_H */

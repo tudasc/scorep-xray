@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -11,15 +11,17 @@
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
- *
+ * 
  */
 
 
 /**
- * @file      cuda_test.c
+ * @file       cuda_test.cu
  * @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
- * @brief Test program for the CUDA adapter.
+ * @brief Test program for the CUDA adapter. Several parts of this program have 
+ * been extracted from the NVIDIA computing samples 'simpleStreams' and 
+ * 'concurrentKernels'
  */
 
 #include <config.h>
@@ -45,6 +47,8 @@ static void __checkCUDACall(cudaError_t ecode, const char* msg,
 
 static void runCopyComputeOverlap(int nstreams);
 
+static void runConcurrentKernels(int nstreams);
+
 static void show_help(void);
 
 static char getopt(char *argument);
@@ -58,6 +62,20 @@ __global__ void init_array(int *g_data, int *factor, int num_iterations)
 
   for(int i=0;i<num_iterations;i++)
     g_data[idx] += *factor; // non-coalesced on purpose, to burn time
+}
+
+// This is a kernel that does no real work but runs at least for a specified number of clocks
+__global__ void clock_block(clock_t* d_o, clock_t clock_count)
+{ 
+	clock_t start_clock = clock();
+	
+	clock_t clock_offset = 0;
+
+	while( clock_offset < clock_count ) {
+		clock_offset = clock() - start_clock;
+	}
+
+	d_o[0] = clock_offset;
 }
 
 int main(int argc, char **argv)
@@ -82,6 +100,8 @@ int main(int argc, char **argv)
   }*/
 
   runCopyComputeOverlap(nstreams);
+  
+  runConcurrentKernels(nstreams);
 }
 
 static void runCopyComputeOverlap(int nstreams)
@@ -147,6 +167,57 @@ static void runCopyComputeOverlap(int nstreams)
 	cudaFreeHost(h_a);
 	cudaFree(d_a);
 	cudaFree(d_c);
+}
+
+static void runConcurrentKernels(int nstreams)
+{
+	float kernel_time = 10; // time the kernel should run in ms
+	cudaDeviceProp deviceProp;
+	clock_t *a = NULL;               // pointer to the array data in host memory
+	int nbytes = nstreams * sizeof(clock_t);   // number of data bytes
+	int cuda_device = 0;
+	
+	CUDART_CALL(cudaGetDevice(&cuda_device), "cudaGetDevice");
+	
+	CUDART_CALL(cudaGetDeviceProperties(&deviceProp, cuda_device), "cudaGetDeviceProperties");
+	if( (deviceProp.concurrentKernels == 0 )) {
+		printf("> GPU does not support concurrent kernel execution\n");
+		printf("  CUDA kernel runs will be serialized\n");
+	}
+	
+	// allocate host memory
+	CUDART_CALL(cudaMallocHost((void**)&a, nbytes), "cudaMallocHost"); 
+
+	// allocate device memory
+	clock_t *d_ac = 0;             // pointers to data and init value in the device memory
+	CUDART_CALL(cudaMalloc((void**)&d_ac, nbytes), "cudaMalloc");
+	
+	// allocate and initialize an array of stream handles
+	cudaStream_t *streams = (cudaStream_t*) malloc(nstreams * sizeof(cudaStream_t));
+	for(int i = 0; i < nstreams; i++) {
+		CUDART_CALL( cudaStreamCreate(&(streams[i])), "cudaStreamCreate");
+	}
+	
+	// time execution with nkernels streams
+  clock_t total_clocks = 0;
+  clock_t time_clocks = kernel_time * deviceProp.clockRate;
+	printf("\nStarting concurrent kernel test\n");
+	
+  // queue nkernels in separate streams and record when they are done
+	for( int i=0; i<nstreams; ++i) {
+		clock_block<<<1,1,0,streams[i]>>>(&d_ac[i], time_clocks);
+		total_clocks += time_clocks;
+	}
+	
+	CUDART_CALL(cudaDeviceSynchronize(), "cudaDeviceSynchronize");
+	
+	// release resources
+	for(int i = 0; i < nstreams; i++) {
+		cudaStreamDestroy(streams[i]); 
+	}
+	free(streams);
+	cudaFreeHost(a);
+	cudaFree(d_ac);
 }
 
 /* 

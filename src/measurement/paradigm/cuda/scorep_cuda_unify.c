@@ -17,7 +17,7 @@
 /**
  *  @status     alpha
  *  @file       src/measurement/paradigm/cuda/scorep_cuda_unify.c
- *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
+ *  @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
  *
  */
 
@@ -34,6 +34,48 @@
 #include <SCOREP_Events.h>
 #include <SCOREP_Config.h>
 #include <scorep_status.h>
+
+#include "scorep_unify_helpers.h"
+
+#include <scorep_cuda.h>
+
+void
+scorep_cuda_define_cuda_locations( void )
+{
+    size_t   i      = 0;
+    uint32_t offset = scorep_unify_helper_define_comm_locations(
+        SCOREP_GROUP_CUDA_LOCATIONS,
+        "CUDA", scorep_cuda_global_location_number,
+        scorep_cuda_global_location_ids );
+
+    /* add the offset */
+    for ( i = 0; i < scorep_cuda_global_location_number; i++ )
+    {
+        scorep_cuda_global_location_ids[ i ] = i + offset;
+    }
+
+    SCOREP_GroupHandle group_handle = SCOREP_Definitions_NewGroup(
+        SCOREP_GROUP_CUDA_GROUP,
+        "CUDA_GROUP",
+        scorep_cuda_global_location_number,
+        scorep_cuda_global_location_ids );
+
+    SCOREP_CommunicatorHandle communicator_handle =
+        SCOREP_Definitions_NewCommunicator(
+            group_handle,
+            "",
+            SCOREP_INVALID_COMMUNICATOR );
+
+    SCOREP_RmaWindowHandle window_handle = SCOREP_Definitions_NewRmaWindow(
+        "",
+        communicator_handle );
+
+    SCOREP_LOCAL_HANDLE_DEREF( scorep_cuda_interim_communicator_handle, InterimCommunicator )->unified =
+        communicator_handle;
+
+    SCOREP_LOCAL_HANDLE_DEREF( scorep_cuda_interim_window_handle, InterimRmaWindow )->unified =
+        window_handle;
+}
 
 void
 scorep_cuda_define_cuda_group( void )
@@ -83,4 +125,24 @@ scorep_cuda_define_cuda_group( void )
                                         "CUDA_GROUP",
                                         total_number_of_cuda_locations,
                                         cuda_locations );
+
+    if ( scorep_cuda_record_memcpy )
+    {
+        scorep_local_definition_manager.interim_communicator.mapping[
+            SCOREP_LOCAL_HANDLE_DEREF( scorep_cuda_interim_communicator_handle,
+                                       InterimCommunicator )->sequence_number ] =
+            scorep_local_definition_manager.communicator.mapping[
+                SCOREP_LOCAL_HANDLE_DEREF( SCOREP_LOCAL_HANDLE_DEREF(
+                                               scorep_cuda_interim_communicator_handle,
+                                               InterimCommunicator )->unified,
+                                           Communicator )->sequence_number ];
+
+        scorep_local_definition_manager.interim_rma_window.mapping[
+            SCOREP_LOCAL_HANDLE_DEREF( scorep_cuda_interim_window_handle,
+                                       InterimRmaWindow )->sequence_number ] =
+            scorep_local_definition_manager.rma_window.mapping[
+                SCOREP_LOCAL_HANDLE_DEREF( SCOREP_LOCAL_HANDLE_DEREF(
+                                               scorep_cuda_interim_window_handle,
+                                               InterimRmaWindow )->unified, RmaWindow )->sequence_number ];
+    }
 }

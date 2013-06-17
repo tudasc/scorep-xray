@@ -668,6 +668,130 @@ SCOREP_RmaOpCompleteRemote( SCOREP_InterimRmaWindowHandle windowHandle,
                             uint64_t                      matchingId );
 
 
+
+/**
+ * Mark the creation of the window on all participating processes/threads
+ * and thus enclose all operations related to this window. See also
+ * @ SCOREP_RmaWinDestroy.
+ *
+ * @param location     A LocationData handle that specifies where this event is recorded.
+ *                     May be NULL to record event for current location.
+ * @param timestamp    Time that this event happened at.
+ *                     Needs to be monotonic increasing for each location.
+ * @param window Memory window.
+ */
+void
+SCOREP_Location_RmaWinCreate( SCOREP_Location*              location,
+                              uint64_t                      timestamp,
+                              SCOREP_InterimRmaWindowHandle windowHandle );
+
+
+/**
+ * Mark the destruction of the window on all participating processes/threads
+ * and thus enclose all operations related to this window. See also
+ * @ SCOREP_RmaWinCreate.
+ *
+ * @param location     A LocationData handle that specifies where this event is recorded.
+ *                     May be NULL to record event for current location.
+ * @param timestamp    Time that this event happened at.
+ *                     Needs to be monotonic increasing for each location.
+ * @param window Memory window.
+ */
+void
+SCOREP_Location_RmaWinDestroy( SCOREP_Location*              location,
+                               uint64_t                      timestamp,
+                               SCOREP_InterimRmaWindowHandle windowHandle );
+
+
+/**
+ * The get and put operations access remote memory addresses. The
+ * corresponding get and put records mark when they are issued. The
+ * actual start and the completion may happen later.
+ *
+ * @param location     A LocationData handle that specifies where this event is recorded.
+ *                     May be NULL to record event for current location.
+ * @param timestamp    Time that this event happened at.
+ *                     Needs to be monotonic increasing for each location.
+ * @param win Memory window.
+ *
+ * @param remote Rank of target in context of window.
+ *
+ * @param bytes Number of bytes transferred.
+ *
+ * @param matchingId Matching number.
+ *
+ * @note The matching number allows to reference the point of completion
+ * of the operation. It will reappear in a completion record on the same
+ * location.
+ *
+ */
+void
+SCOREP_Location_RmaPut( SCOREP_Location*              location,
+                        uint64_t                      timestamp,
+                        SCOREP_InterimRmaWindowHandle windowHandle,
+                        uint32_t                      remote,
+                        uint64_t                      bytes,
+                        uint64_t                      matchingId );
+
+
+/**
+ * The get and put operations access remote memory addresses. The
+ * corresponding get and put records mark when they are issued. The
+ * actual start and the completion may happen later.
+ *
+ * @param location     A LocationData handle that specifies where this event is recorded.
+ *                     May be NULL to record event for current location.
+ * @param timestamp    Time that this event happened at.
+ *                     Needs to be monotonic increasing for each location.
+ * @param win Memory window.
+ *
+ * @param remote Rank of target in context of window.
+ *
+ * @param bytes Number of bytes transferred.
+ *
+ * @param matchingId Matching number.
+ *
+ * @note The matching number allows to reference the point of completion
+ * of the operation. It will reappear in a completion record on the same
+ * location.
+ *
+ */
+void
+SCOREP_Location_RmaGet( SCOREP_Location*              location,
+                        uint64_t                      timestamp,
+                        SCOREP_InterimRmaWindowHandle windowHandle,
+                        uint32_t                      remote,
+                        uint64_t                      bytes,
+                        uint64_t                      matchingId );
+
+
+/**
+ * The completion records mark the end of RMA operations. Local
+ * completion for every RMA operation (get, put, or atomic operation)
+ * always has to be marked with either @ SCOREP_RmaOpCompleteBlocking or
+ * @ SCOREP_RmaOpNonCompleteBlocking using the same matching number as
+ * the RMA operation record. An RMA operation is blocking when the
+ * operation completes locally before leaving the call, for non-blocking
+ * operations local completion has to be ensured by a subsequent call.
+ *
+ * @param location     A LocationData handle that specifies where this event is recorded.
+ *                     May be NULL to record event for current location.
+ * @param timestamp    Time that this event happened at.
+ *                     Needs to be monotonic increasing for each location.
+ * @param win Memory window.
+ *
+ * @param matchingId Matching number.
+ *
+ * @{
+ */
+void
+SCOREP_Location_RmaOpCompleteBlocking( SCOREP_Location*              location,
+                                       uint64_t                      timestamp,
+                                       SCOREP_InterimRmaWindowHandle windowHandle,
+                                       uint64_t                      matchingId );
+
+
+
 /**
  * Notify the measurement system about the creation of a fork-join
  * parallel execution with at max @a nRequestedThreads new
@@ -970,6 +1094,24 @@ SCOREP_TriggerCounterUint64( SCOREP_SamplingSetHandle counterHandle,
 void
 SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
                              double                   value );
+
+
+/**
+ *
+ * Special version that allows to supply a specific context instead
+ * of using the current CPU thread/time/metrics
+ *
+ * @param location     A LocationData handle that specifies where this event is recorded.
+ *                     May be NULL to record event for current location.
+ * @param timestamp    Time that this event happened at.
+ * @param counterHandle
+ * @param value
+ */
+void
+SCOREP_Location_TriggerCounterUint64( SCOREP_Location*         location,
+                                      uint64_t                 timestamp,
+                                      SCOREP_SamplingSetHandle counterHandle,
+                                      uint64_t                 value );
 
 
 /**

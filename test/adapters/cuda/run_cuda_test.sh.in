@@ -29,14 +29,77 @@ echo "/* Dummy */" > config.h
 
 ./scorep -v --build-check nvcc $SRC_ROOT/test/adapters/cuda/cuda_test.cu -o cuda_test -I.
 
-SCOREP_CUDA_ENABLE=runtime,kernel,idle \
-SCOREP_EXPERIMENT_DIRECTORY=scorep-serial-cuda \
-./cuda_test
+### Check various combinations of CUDA runtime features ###
+features=""
+for cudaapi in "" "runtime" "driver"
+do
 
-if [ $? -ne 0 ]; then
-    rm -rf scorep-measurement-tmp
-    exit 1
-fi
+  for kernel in "" ",kernel"
+  do
+
+    for idle in "" ",idle" ",pure_idle"
+    do
+
+      if [ "$idle" = ",idle" -a "x$kernel" = "x" ]; then
+        continue
+      fi
+
+      for mcpy in "" ",memcpy"
+      do
+
+        if [ "$idle" = ",pure_idle" -a "x$mcpy" = "x" ]; then
+          continue
+        fi
+
+          for synchr in "" ",sync"
+          do
+
+          # continue if neither kernel nor memory copy is enabled
+          if [ "$synchr" = ",sync" -a "x$kernel" = "x" -a "x$mcpy" = "x" ]; then
+            continue
+          fi
+
+          for streamreuse in "" ",stream_reuse"
+          do
+
+            # if stream reuse is enabled, but no GPU activities enabled continue
+            if [ "$streamreuse" = ",stream_reuse" -a "x$kernel" = "x" -a "x$mcpy" = "x" ]; then
+              continue
+            fi
+
+            for memusage in "" ",gpumemusage"
+            do
+
+              features=${cudaapi}
+
+              if [ "x$features" = "x" -a "$kernel" = ",kernel" ]; then
+                kernel="kernel"
+              fi
+              features="${features}${kernel}"
+
+              if [ "x$features" = "x" -a "${mcpy}" = ",memcpy" ]; then
+                mcpy="memcpy"
+              fi
+              features="${features}${mcpy}${synchr}${idle}${streamreuse}${memusage}"
+
+              SCOREP_CUDA_ENABLE=${features} \
+              SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY=true \
+              SCOREP_EXPERIMENT_DIRECTORY=scorep-serial-cuda \
+              ./cuda_test
+
+              if [ $? -ne 0 ]; then
+                  rm -rf scorep-measurement-tmp
+                  exit 1
+              fi
+
+            done #memusage
+          done #streamreuse
+        done #sync
+      done #memcpy
+    done #idle
+  done #kernel
+done #cudaapi
+
 
 rm -f config.h
 echo "====================================="

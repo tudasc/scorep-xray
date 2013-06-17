@@ -592,12 +592,44 @@ SCOREP_RmaWinCreate( SCOREP_InterimRmaWindowHandle windowHandle )
 
 
 void
+SCOREP_Location_RmaWinCreate( SCOREP_Location*              location,
+                              uint64_t                      timestamp,
+                              SCOREP_InterimRmaWindowHandle windowHandle )
+{
+    /* Nothing to do for profiling. */
+
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Tracing_RmaWinCreate( location,
+                                     timestamp,
+                                     windowHandle );
+    }
+}
+
+
+void
 SCOREP_RmaWinDestroy( SCOREP_InterimRmaWindowHandle windowHandle )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
+    /* Nothing to do for profiling. */
+
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Tracing_RmaWinDestroy( location,
+                                      timestamp,
+                                      windowHandle );
+    }
+}
+
+
+void
+SCOREP_Location_RmaWinDestroy( SCOREP_Location*              location,
+                               uint64_t                      timestamp,
+                               SCOREP_InterimRmaWindowHandle windowHandle )
+{
     /* Nothing to do for profiling. */
 
     if ( scorep_tracing_consume_event() )
@@ -836,6 +868,28 @@ SCOREP_RmaPut( SCOREP_InterimRmaWindowHandle windowHandle,
 
 
 void
+SCOREP_Location_RmaPut( SCOREP_Location*              location,
+                        uint64_t                      timestamp,
+                        SCOREP_InterimRmaWindowHandle windowHandle,
+                        uint32_t                      remote,
+                        uint64_t                      bytes,
+                        uint64_t                      matchingId )
+{
+    /* Nothing to do for profiling. */
+
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Tracing_RmaPut( location,
+                               timestamp,
+                               windowHandle,
+                               remote,
+                               bytes,
+                               matchingId );
+    }
+}
+
+
+void
 SCOREP_RmaGet( SCOREP_InterimRmaWindowHandle windowHandle,
                uint32_t                      remote,
                uint64_t                      bytes,
@@ -845,6 +899,29 @@ SCOREP_RmaGet( SCOREP_InterimRmaWindowHandle windowHandle,
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
+    /* Nothing to do for profiling. */
+
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Tracing_RmaGet( location,
+                               timestamp,
+                               windowHandle,
+                               remote,
+                               bytes,
+                               matchingId );
+    }
+}
+
+
+
+void
+SCOREP_Location_RmaGet( SCOREP_Location*              location,
+                        uint64_t                      timestamp,
+                        SCOREP_InterimRmaWindowHandle windowHandle,
+                        uint32_t                      remote,
+                        uint64_t                      bytes,
+                        uint64_t                      matchingId )
+{
     /* Nothing to do for profiling. */
 
     if ( scorep_tracing_consume_event() )
@@ -895,6 +972,24 @@ SCOREP_RmaOpCompleteBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
+    /* Nothing to do for profiling. */
+
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Tracing_RmaOpCompleteBlocking( location,
+                                              timestamp,
+                                              windowHandle,
+                                              matchingId );
+    }
+}
+
+
+void
+SCOREP_Location_RmaOpCompleteBlocking( SCOREP_Location*              location,
+                                       uint64_t                      timestamp,
+                                       SCOREP_InterimRmaWindowHandle windowHandle,
+                                       uint64_t                      matchingId )
+{
     /* Nothing to do for profiling. */
 
     if ( scorep_tracing_consume_event() )
@@ -1079,6 +1174,39 @@ SCOREP_TriggerCounterUint64( SCOREP_SamplingSetHandle counterHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    SCOREP_SamplingSetDef* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
+    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
+                  "User sampling set with more than one metric" );
+
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_TriggerInteger( location,
+                                       sampling_set->metric_handles[ 0 ],
+                                       value );
+    }
+
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Tracing_Metric( location,
+                               timestamp,
+                               counterHandle,
+                               &value );
+    }
+}
+
+
+/**
+ *
+ */
+void
+SCOREP_Location_TriggerCounterUint64( SCOREP_Location*         location,
+                                      uint64_t                 timestamp,
+                                      SCOREP_SamplingSetHandle counterHandle,
+                                      uint64_t                 value )
+{
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
     SCOREP_SamplingSetDef* sampling_set

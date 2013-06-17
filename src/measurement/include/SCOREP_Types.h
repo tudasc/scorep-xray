@@ -299,6 +299,9 @@ typedef enum SCOREP_GroupType
     SCOREP_GROUP_OPENMP_LOCATIONS   = 7,
     SCOREP_GROUP_OPENMP_THREAD_TEAM = 8,
 
+    SCOREP_GROUP_CUDA_LOCATIONS     = 9,
+    SCOREP_GROUP_CUDA_GROUP         = 10,
+
     SCOREP_INVALID_GROUP_TYPE /**< For internal use only. */
 } SCOREP_GroupType;
 

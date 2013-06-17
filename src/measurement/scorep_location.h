@@ -69,10 +69,6 @@ SCOREP_TracingData*
 SCOREP_Location_GetTracingData( SCOREP_Location* locationData );
 
 
-uint64_t
-SCOREP_Location_GetGlobalId( SCOREP_Location* locationData );
-
-
 /*
  * The caller must ensure thread safety. Currently called at measurement
  * time for the current location at flush time, and at finalization time.

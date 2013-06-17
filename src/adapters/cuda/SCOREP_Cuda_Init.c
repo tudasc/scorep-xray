@@ -101,11 +101,27 @@ scorep_cuda_final_location( SCOREP_Location* location )
 {
 }
 
+/** Collect locations involved in CUDA communication. */
+static SCOREP_ErrorCode
+scorep_cuda_pre_unify( void )
+{
+    /* only if CUDA communication is enabled for recording */
+    if ( scorep_cuda_record_memcpy )
+    {
+        scorep_cuda_define_cuda_locations();
+    }
+
+    return SCOREP_SUCCESS;
+}
+
 /** Finalizes the CUDA adapter. */
 static SCOREP_ErrorCode
 scorep_cuda_post_unify( void )
 {
-    scorep_cuda_define_cuda_group();
+    if ( scorep_cuda_features > 0 )
+    {
+        scorep_cuda_define_cuda_group();
+    }
 
     return SCOREP_SUCCESS;
 }
@@ -127,7 +143,7 @@ SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter =
     .subsystem_init              = &scorep_cuda_init,
     .subsystem_init_location     = &scorep_cuda_init_location,
     .subsystem_finalize_location = &scorep_cuda_final_location,
-    .subsystem_pre_unify         = NULL,
+    .subsystem_pre_unify         = &scorep_cuda_pre_unify,
     .subsystem_post_unify        = &scorep_cuda_post_unify,
     .subsystem_finalize          = &scorep_cuda_finalize,
     .subsystem_deregister        = &scorep_cuda_deregister,

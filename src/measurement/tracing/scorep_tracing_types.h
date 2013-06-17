@@ -147,6 +147,11 @@ scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
         case_return( OPENMP_LOCATIONS,   COMM_LOCATIONS );
         case_return( OPENMP_THREAD_TEAM, COMM_GROUP );
 
+        // CUDA
+        case_return( CUDA_LOCATIONS, COMM_LOCATIONS );
+        case_return( CUDA_GROUP, COMM_GROUP );
+
+
 #undef case_return
         default:
             UTILS_BUG( "Invalid group type" );
