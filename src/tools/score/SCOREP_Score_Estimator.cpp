@@ -530,20 +530,20 @@ SCOREP_Score_Estimator::calculate_event_sizes()
     m_task_switch   = m_task_create;
     m_task_complete = m_task_create;
 
-    m_parameter = 4 +                             // parameter id
-                  8;                              // value
+    m_parameter = 4 +      // parameter id
+                  8;       // value
 
-    m_rma_win_create  = get_compressed_size( 4 ); // window reference
+    m_rma_win_create  = 4; // window reference
     m_rma_win_destroy = m_rma_win_create;
 
-    m_rma_get = get_compressed_size( 4 ) +                // window reference
-                get_compressed_size( 4 ) +                // remote,
-                get_compressed_size( 8 ) +                // bytes,
-                get_compressed_size( 8 );                 // matching id
+    m_rma_get = 4 +        // window reference
+                4 +        // remote,
+                8 +        // bytes,
+                8;         // matching id
     m_rma_put = m_rma_get;
 
-    m_rma_op_complete_blocking = get_compressed_size( 4 ) +  // window reference
-                                 get_compressed_size( 8 );   // matching id
+    m_rma_op_complete_blocking = 4 +  // window reference
+                                 8;   // matching id
 
     add_header_size( &m_send );
     add_header_size( &m_isend );
