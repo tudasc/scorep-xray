@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -16,7 +16,7 @@
 
 /**
  * @status     alpha
- * @file       SCOREP_Score_Profile.cxx
+ * @file       SCOREP_Score_Profile.cpp
  * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
  * @brief      Implements a class which represents a flat profile in the
@@ -344,5 +344,19 @@ bool
 SCOREP_Score_Profile::HasTaskSwitch( uint64_t region )
 {
     SCOREP_SCORE_EVENT_TASK_SWITCH
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasCudaMemcpy( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_CUDAMEMCPY
+    return false;
+}
+
+bool
+SCOREP_Score_Profile::HasCudaStreamCreate( uint64_t region )
+{
+    SCOREP_SCORE_EVENT_CUDASTREAMCREATE
     return false;
 }

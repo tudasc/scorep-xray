@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -84,6 +84,37 @@
     SCOREP_SCORE_EVENT( "MPI_Scatter" )              \
     SCOREP_SCORE_EVENT( "MPI_Scatterv" )
 
+#define SCOREP_SCORE_EVENT_CUDASTREAMCREATE \
+    SCOREP_SCORE_EVENT( "cuStreamCreate" )    \
+    SCOREP_SCORE_EVENT( "cudaStreamCreate" )  \
+
+#define SCOREP_SCORE_EVENT_CUDAMEMCPY      \
+    SCOREP_SCORE_EVENT( "cuMemcpy" )         \
+    SCOREP_SCORE_EVENT( "cudaMemcpy" )       \
+
+/*
+ * Currently handled RMA events
+ *  RmaWinCreate
+ *  RmaWinDestroy
+ *  RmaGet
+ *  RmaOpCompleteBlocking
+ *  RmaPut
+ *
+ * RMA events which are not handled yet
+ *  RmaGroupSync
+ *  RmaOpCompleteNonBlocking
+ *  RmaOpCompleteRemote
+ *  RmaOpTest
+ *  RmaAcquireLock
+ *  RmaAtomic
+ *  RmaCollectiveBegin
+ *  RmaCollectiveEnd
+ *  RmaReleaseLock
+ *  RmaRequestLock
+ *  RmaSync
+ *  RmaTryLock
+ *  RmaWaitChange
+ */
 
 #define SCOREP_SCORE_EVENT_FORK \
     SCOREP_SCORE_EVENT( "!$omp parallel" )

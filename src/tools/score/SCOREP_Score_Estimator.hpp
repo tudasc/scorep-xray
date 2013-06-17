@@ -95,6 +95,35 @@ private:
     uint32_t m_recv;
     uint32_t m_irecv;
     uint32_t m_collective;
+
+/*
+ * Currently handled RMA records
+ */
+    uint32_t m_rma_win_create;
+    uint32_t m_rma_win_destroy;
+    uint32_t m_rma_put;
+    uint32_t m_rma_get;
+    uint32_t m_rma_op_complete_blocking;
+
+/*
+ * RMA events not handled yet:
+ *
+ *  uint32_t m_rma_acquire_lock;
+ *  uint32_t m_rma_atomic;
+ *  uint32_t m_rma_collective_begin;
+ *  uint32_t m_rma_collective_end;
+ *  uint32_t m_rma_get;
+ *  uint32_t m_rma_group_sync;
+ *  uint32_t m_rma_op_complete_non_blocking;
+ *  uint32_t m_rma_op_complete_remote;
+ *  uint32_t m_rma_op_test;
+ *  uint32_t m_rma_release_lock;
+ *  uint32_t m_rma_request_lock;
+ *  uint32_t m_rma_sync;
+ *  uint32_t m_rma_try_lock;
+ *  uint32_t m_rma_wait_change;
+ */
+
     uint32_t m_fork;
     uint32_t m_join;
     uint32_t m_thread_team;

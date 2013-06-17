@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -121,6 +121,12 @@ public:
 
     bool
     HasTaskSwitch( uint64_t region );
+
+    bool
+    HasCudaMemcpy( uint64_t region );
+
+    bool
+    HasCudaStreamCreate( uint64_t region );
 
 private:
     bool
