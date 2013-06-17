@@ -105,13 +105,28 @@ fi
 #--- Main program ------------------------------------------------------------
 
 # Generate license text
+if test "${FORMAT}" = "doxygen"; then
+    cat <<[[EOT]]
+${DOX_HEADER}
+
+
+/**
+@page license ${PROJECT_NAME} License Agreement
+
+[[EOT]]
+fi
+
+cat <<[[EOT]]
+The entire code of ${PROJECT_NAME} is licensed under the BSD-style license
+agreement given below, except for the third-party code distributed in the
+'vendor/' subdirectory.  See the corresponding COPYING files in 'vendor/*'
+of the distribution tarball for details.
+
+[[EOT]]
+
+# Generate license text
 if test "${FORMAT}" = "text"; then
     cat <<[[EOT]]
-The entire code of ${PROJECT_NAME} is licensed under the BSD-style license
-agreement given below, except for the code distributed in the 'vendor/'
-subdirectory.  See the corresponding COPYING files in 'vendor/*' for
-details.
-
 
 -----------------------------------------------------------------------------
 
@@ -126,22 +141,20 @@ details.
     echo
 elif test "${FORMAT}" = "doxygen"; then
     cat <<[[EOT]]
-${DOX_HEADER}
-
-
-/**
-@page license ${PROJECT_NAME} License Agreement
-
-[[EOT]]
-fi
-
-if test "${FORMAT}" = "doxygen"; then
-    cat <<[[EOT]]
 @htmlonly
+    <hr/>
+    <p/>
     <table border=0 cellspacing=0 cellpadding=0>
 @endhtmlonly
 @latexonly
+    \\hrulefill
+
     \\begin{sffamily}
+    \\begin{center}
+        \\bfseries
+        \\Large
+        ${PROJECT_NAME} License Agreement
+    \\end{center}
     \\begin{tabularx}{\\linewidth}{@{}lX}
 @endlatexonly
 [[EOT]]
@@ -182,9 +195,6 @@ elif test "${FORMAT}" = "doxygen"; then
 
 <b>All rights reserved.</b>
 
-@latexonly
-    \\vfill
-@endlatexonly
 [[EOT]]
 fi
 
