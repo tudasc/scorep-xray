@@ -15,9 +15,7 @@
  * @{*/
 #pragma wrapgen multiple restrict(gcg)      skel/SCOREP_Fmpi_DefineU.w
 
-#pragma wrapgen multiple restrict(gcg_err)  skel/SCOREP_Fmpi_DefineU.w
-
-#pragma wrapgen multiple restrict(gcg_ext)  skel/SCOREP_Fmpi_DefineU.w
+#pragma wrapgen multiple restrict(gcg_ext+!nAttr)  skel/SCOREP_Fmpi_DefineU.w
 
 #pragma wrapgen multiple restrict(gcg_misc+!n_c2f+!n_f2c) skel/SCOREP_Fmpi_DefineU.w
 
@@ -28,9 +26,7 @@
  */
 #pragma wrapgen multiple restrict(gcg)      skel/SCOREP_Fmpi_DefineL.w
 
-#pragma wrapgen multiple restrict(gcg_err)  skel/SCOREP_Fmpi_DefineL.w
-
-#pragma wrapgen multiple restrict(gcg_ext)  skel/SCOREP_Fmpi_DefineL.w
+#pragma wrapgen multiple restrict(gcg_ext+!nAttr)  skel/SCOREP_Fmpi_DefineL.w
 
 #pragma wrapgen multiple restrict(gcg_misc+!n_c2f+!n_f2c) skel/SCOREP_Fmpi_DefineL.w
 
@@ -86,8 +82,7 @@
  * @name Fortran wrappers for error handling functions
  * @{
  */
-
-#pragma wrapgen multiple restrict(gcg_err) skel/SCOREP_Fmpi_Std.w
+/* Do not wrap group cg_err */
 
 /**
  * @}
@@ -95,7 +90,7 @@
  * @{
  */
 
-#pragma wrapgen multiple restrict(gcg_ext) skel/SCOREP_Fmpi_Std.w
+#pragma wrapgen multiple restrict(gcg_ext+!nAttr) skel/SCOREP_Fmpi_Std.w
 
 /**
  * @}
@@ -153,8 +148,7 @@
  * @name Fortran wrappers for error handling functions
  * @{
  */
-
-#pragma wrapgen multiple restrict(gcg_err) skel/SCOREP_Mpi_F2c_C2f.w
+/* Do not wrap error handling functions */
 
 /**
  * @}
@@ -162,7 +156,7 @@
  * @{
  */
 
-#pragma wrapgen multiple restrict(gcg_ext) skel/SCOREP_Mpi_F2c_C2f.w
+#pragma wrapgen multiple restrict(gcg_ext+!nAttr) skel/SCOREP_Mpi_F2c_C2f.w
 
 /**
  * @}
