@@ -50,11 +50,12 @@ endif !CROSS_BUILD
 
 # src/config-backend-for-frontend.h dependencies
 if CROSS_BUILD
-
-BUILT_SOURCES += ../src/config-backend-for-frontend.h
+if SVN_CONTROLLED
 
 $(srcdir)/../src/config-backend-for-frontend.h.in: $(srcdir)/../src/config-backend.h.in
 	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-config-backend-for-frontend.sh $< >$@
+
+endif SVN_CONTROLLED
 endif CROSS_BUILD
 
 
