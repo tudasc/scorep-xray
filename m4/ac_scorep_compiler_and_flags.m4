@@ -173,6 +173,10 @@ AC_ARG_WITH([frontend-compiler-suite],
 dnl dont' use together with AC_SCOREP_WITH_COMPILER_SUITE, intended to be used by OPARI only
 AC_DEFUN([AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE],
 [
+path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
+ac_scorep_compilers_frontend="${path_to_compiler_files}platform-frontend-${ac_scorep_platform}"
+ac_scorep_compilers_backend="${path_to_compiler_files}platform-backend-${ac_scorep_platform}"
+
 m4_pattern_allow([AC_SCOREP_WITH_COMPILER_SUITE])
 m4_pattern_allow([AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE])
 if test "x${ac_scorep_compiler_suite_called}" != "x"; then
@@ -181,8 +185,6 @@ if test "x${ac_scorep_compiler_suite_called}" != "x"; then
 else
     ac_scorep_compiler_suite_called="yes"
 fi
-
-path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
 
 AC_ARG_WITH([compiler-suite],
             [AS_HELP_STRING([--with-compiler-suite=(gcc|ibm|intel|pgi|studio)], 
