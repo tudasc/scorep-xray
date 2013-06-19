@@ -26,16 +26,28 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-gcc  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-ibm  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-intel  \
-              $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-pathscale  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-pgi  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-frontend-studio  \
-              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-impi  \
-              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-mpich2  \
-              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-openmpi  \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-bullxmpi \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-hp \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-ibmpoe \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-intel \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-intel2 \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-intelpoe \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-lam \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-mpibull2 \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-mpich \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-mpich2 \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-mpich3 \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-openmpi \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-platform \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-scali \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-sgimpt \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-sun \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-without \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-gcc  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-ibm  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-intel  \
-              $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-pathscale  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-pgi  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-studio  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-altix  \
