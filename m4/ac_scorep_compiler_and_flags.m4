@@ -239,7 +239,7 @@ AC_ARG_WITH([mpi],
           ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-${afs_compiler_mpi}"])
     ])
 
-AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes" || test "x${ac_scorep_platform}" = "xaix"],
     [ac_scorep_compilers_mpi="${path_to_compiler_files}platform-mpi-${ac_scorep_platform}"])
 
 # sanity checks missing
