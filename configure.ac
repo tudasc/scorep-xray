@@ -46,8 +46,7 @@ AS_IF([test ! -n "$ac_scorep_platform_data_provided" || \
               ${ac_scorep_compilers_mpi}                                       \
               ${ac_scorep_compilers_frontend}                                  \
               ${ac_scorep_compilers_backend}                                   \
-              ./user_provided_configure_args`"
-      echo $args ],
+              ./user_provided_configure_args`"],
       [AC_MSG_NOTICE([platform data provided by toplevel configure.])
        AC_SCOREP_SUMMARY([Platform], [$ac_scorep_platform (provided)])
        # determine arguments for subdir configures
