@@ -227,7 +227,7 @@ AC_ARG_WITH([mpi],
               ["scali"], [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-scali"],
               ["sgimpt"], [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-sgimpt"],
               ["sun"], [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-sun"],
-              ["no"], [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-without],
+              ["no"], [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-without"],
               [AC_MSG_ERROR([MPI compiler suite "${withval}" not supported by --with-mpi.])])
          ])
      # omit check "if in PATH" for now. Will fail in build-mpi configure. 
