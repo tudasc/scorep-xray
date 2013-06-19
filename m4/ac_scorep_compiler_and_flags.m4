@@ -209,7 +209,7 @@ path_to_compiler_files="$srcdir/vendor/common/build-config/platforms/"
 AC_ARG_WITH([mpi],
     [AS_HELP_STRING([--with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|openmpi|platform|scali|sgimpt|sun)], 
          [The MPI compiler suite to build this package in non cross-compiling mode. Usually autodetected. Needs to be in $PATH.])],
-    [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
+    [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
          [AS_CASE([$withval],
               ["bullxmpi"], [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-bullxmpi"],
               ["hp"], [ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-hp"],
@@ -234,7 +234,7 @@ AC_ARG_WITH([mpi],
          ])
      # omit check "if in PATH" for now. Will fail in build-mpi configure. 
     ],
-    [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
+    [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
          [AFS_COMPILER_MPI
           ac_scorep_compilers_mpi="${path_to_compiler_files}compiler-mpi-${afs_compiler_mpi}"])
     ])
