@@ -153,5 +153,9 @@
 #define SCOREP_RECORDING_ON()
 #define SCOREP_RECORDING_OFF()
 #define SCOREP_RECORDING_IS_ON( isOn )
+#define SCOREP_PARAMETER_DEFINE( handle )
+#define SCOREP_PARAMETER_INT64( handle, name, value )
+#define SCOREP_PARAMETER_UINT64( handle, name, value )
+#define SCOREP_PARAMETER_STRING( handle, name, value )
 
 #endif

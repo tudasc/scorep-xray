@@ -130,11 +130,14 @@
 #else
 
 #define SCOREP_USER_REGION_DEFINE( handle )
+#define SCOREP_USER_REWIND_DEFINE( handle )
 #define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type  )
 #define SCOREP_USER_OA_PHASE_END( handle )
+#define SCOREP_USER_REWIND_POINT( handle, name )
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )
 #define SCOREP_USER_REGION_INIT( handle, name, type )
 #define SCOREP_USER_REGION_END( handle )
+#define SCOREP_USER_REWIND_CHECK( handle, value )
 #define SCOREP_USER_REGION_ENTER( handle )
 #define SCOREP_USER_FUNC_DEFINE()
 #define SCOREP_USER_FUNC_BEGIN( name )
@@ -147,5 +150,9 @@
 #define SCOREP_RECORDING_ON()
 #define SCOREP_RECORDING_OFF()
 #define SCOREP_RECORDING_IS_ON( isOn )
+#define SCOREP_PARAMETER_DEFINE( handle )
+#define SCOREP_PARAMETER_INT64( handle, name, value )
+#define SCOREP_PARAMETER_UINT64( handle, name, value )
+#define SCOREP_PARAMETER_STRING( handle, name, value )
 
 #endif
