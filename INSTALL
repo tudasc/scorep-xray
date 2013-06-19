@@ -1,17 +1,31 @@
-** 
-** This file is part of the Score-P software (http://www.score-p.org)
-**
-** Copyright (c) 2009-2013, 
-**    RWTH Aachen, Germany
-**    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-**    Technische Universitaet Dresden, Germany
-**    University of Oregon, Eugene, USA
-**    Forschungszentrum Juelich GmbH, Germany
-**    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-**    Technische Universitaet Muenchen, Germany
-**
-** See the COPYING file in the package base directory for details.
-**
+ * 
+ * This file is part of the Score-P software (http://www.score-p.org)
+ *
+ * Copyright (c) 2009-2013,
+ * RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
+ *
 
 
                          Score-P INSTALL GUIDE
@@ -26,8 +40,8 @@ Installation Instructions" section below; then return here.
 Quick start
 ===========
 
-In a nutshell, configuring, building, and installing Score-P can be as simple
-as executing the shell commands
+In a nutshell, configuring, building, and installing Score-P can be as
+simple as executing the shell commands
 
     ./configure --prefix=<installdir>
     make
@@ -44,69 +58,83 @@ Note Score-P requires a case sensitive file system to build correctly.
 Configuration
 =============
 
-The configure script in this package tries to automatically determine the
-platform for which Score-P will be compiled.  To override the outcome
-(e.g., if the frontend of a cross-compiling environment is accidentally
-identified as plain 'linux'), the following option can be used:
+The configure script in this package tries to automatically determine
+the platform for which Score-P will be compiled in order to provide
+reasonable defaults for backend (i.e. compute-node) compilers,
+MPI-compilers, and, in case of cross-compiling environments, frontend
+(i.e. login-node) compilers.
 
-  --with-platform=(auto|<platform>)
-                          autodetect platform or select one from:
-                          altix, aix, arm, bgl, bgp, bgq, crayxt, linux,
-                          solaris, mac.
-                          [Default: auto]
+Dependning on the environment it is possible to override the platform
+defaults by using following configure options:
 
-On Linux clusters, it is currently recommended to explicitly provide both the
-MPI suite and compiler suite.  Also, the user currently has to ensure that the
-compilers used by the MPI compiler wrappers match the selected compiler suite.
-(This is a temporary deficiency; the MPI detection will be improved in a
-future version of Score-P.)
+In non-cross-compiling environments, the compiler suite used to build
+the backend parts can be specified explicitly if desired. On Linux
+clusters it is currently recommended to use this option to select a
+compiler suite other than GCC.
 
-  --with-nocross-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)
-                          The compiler suite used to build this package in
-                          non-cross-compiling environments. Needs to be in
-                          $PATH.
-                          [Default: gcc]
-  --with-mpi=(mpich2|impi|openmpi)
-                          The MPI suite used to build this package. Needs to
-                          be in $PATH.
-                          [Default: mpich2]
+  --with-nocross-compiler-suite=(gcc|ibm|intel|pgi|studio)
+               The compiler suite used to build this package in
+               non-cross-compiling environments. Needs to be in $PATH.
+               [Default: gcc]
 
-Other MPI libraries are often derived from either MPICH2 (e.g., MVAPICH, SGI
-MPT, ParaStation MPI, IBM POE/x86) or Open MPI (e.g., bullx MPI, Oracle MPT).
-That is, selecting the "ancestor" library typically works fine. 
+In cross-compiling environments, the compiler suite used to build the
+frontend parts can be specified explicitly if desired.
 
-In cross-compiling environments, the compiler suite used to build the frontend
-parts can be specified explicitly if desired.
+  --with-frontend-compiler-suite=(gcc|ibm|intel|pgi|studio)
+               The compiler suite used to build the frontend parts of
+               this package in cross-compiling environments.  Needs to
+               be in $PATH.  
+               [Default: gcc]
 
-  --with-frontend-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)
-                          The compiler suite used to build the frontend parts
-                          of this package in cross-compiling environments.
-                          Needs to be in $PATH.
-                          [Default: platform specific]
+The MPI compiler, if in $PATH, is usually autodetected. If there are
+several MPI compilers in $PATH the user is requested to select one
+using the configure option:
 
-The default frontend compiler is IBM XL for the Blue Gene series and GCC on
-all other platforms.  The backend compilers will either be automatically
-selected by the platform detection (IBM Blue Gene series) or by the currently
-loaded environment modules (Cray XT series).
+  --with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intelpoe|lam|mpibull2| \
+              mpich|mpich2|mpich3|openmpi|platform|scali|sgimpt|sun)
+               The MPI compiler suite to build this package in non
+               cross-compiling mode. Usually autodetected. Needs to be
+               in $PATH.
+
+Note that there is currently no consistency check if backend and MPI
+compiler are from the same vendor. If they are not, linking problems
+(undefined references) might occur.
+
+If a particular system requires to use compilers different to those
+Score-P currently supports, please edit the three files
+vendor/common/build-config/platforms/platform-*-user-provided to your
+needs and use the following configure option:
+
+  --with-custom-compilers
+               Customize compiler settings by editing the three files
+               vendor/common/build-config/platforms/platform-*-user-provided
+               before calling configure. You are entering unsupported
+               terrain. Namaste, and good luck!
+
+On cross-compile systems the default frontend compiler is IBM XL for
+the Blue Gene series and GCC on all other platforms.  The backend
+compilers will either be automatically selected by the platform
+detection (IBM Blue Gene series) or by the currently loaded
+environment modules (Cray XT series). If you want to customize these
+settings please use the configure option '--with-custom-compilers' as
+described above.
 
 Although this package comes with recent versions of the OTF2 and CUBE4
 writer libraries as well as the OPARI2 instrumenter included, it is
 possible to use existing installations instead:
 
-  --with-otf2=(yes|<otf2-bindir>)
-                          Use an already installed OTF2 library (v1.1 or
-                          newer). Provide path to otf2-config if not already
-                          in $PATH.
-
-  --with-cube=(yes|<cube-bindir>)
-                          Use an already installed CUBE4 library (v4.1 or
-                          newer). Provide path to cube-config if not already
-                          in $PATH.
-
-  --with-opari2=(yes|<opari2-bindir>)
-                          Use an already installed OPARI2 (v.1.0 or
-                          newer). Provide path to opari2-config if not
-                          already in $PATH.
+  --with-otf2[=<otf2-bindir>]
+               Use an already installed and compatible OTF2 library
+               (v1.2 or newer). Provide path to otf2-config if not
+               already in $PATH.
+  --with-cube[=<cube-bindir>] 
+               Use an already installed and compatible CUBE4 library
+               (v4.2 or newer). Provide path to cube-config if not
+               already in $PATH.
+  --with-opari2[=<opari2-bindir>]
+               Use an already installed and compatible OPARI2 (v.1.1
+               or newer). Provide path to opari2-config if not already
+               in $PATH.
 
 Options to further specify which features and external packages should
 be used to build Score-P are as follows:
@@ -115,134 +143,99 @@ be used to build Score-P are as follows:
   --enable-shared[=PKGS]  build shared libraries [default=no]
   --enable-static[=PKGS]  build static libraries [default=yes]
   --enable-backend-test-runs
-                          Run tests at make check [no]. If disabled, tests are
-                          still build at make check. Additionally, scripts
-                          (scorep_*tests.sh) containing the tests are
-                          generated in <builddir>/build-backend.
+               Run tests at make check [no]. If disabled, tests are
+               still build at make check. Additionally, scripts
+               (scorep_*tests.sh) containing the tests are generated
+               in <builddir>/build-backend.
   --enable-timer-bgl_rts_get_timebase
-                          enable bgl_rts_get_timebase timer if available
-                          instead of platform default
-  --enable-timer-bgq_mftb enable bgq_mftb timer if available instead of
-                          platform default
+               enable bgl_rts_get_timebase timer if available instead
+               of platform default
+  --enable-timer-bgq_mftb 
+               enable bgq_mftb timer if available instead of platform
+               default
   --enable-timer-bgp_get_timebase
-                          enable bgp_get_timebase timer if available instead
-                          of platform default
+               enable bgp_get_timebase timer if available instead of
+               platform default
   --enable-timer-clock_gettime
-                          enable clock_gettime timer if available instead of
-                          platform default
-  --enable-timer-cray_dclock
-                          enable cray_dclock timer if available instead of
-                          platform default
-  --enable-timer-cray_rtc enable cray_rtc timer if available instead of
-                          platform default
-  --enable-timer-cray_rtclock
-                          enable cray_rtclock timer if available instead of
-                          platform default
-  --enable-timer-cycle_counter_itc
-                          enable cycle_counter_itc timer if available instead
-                          of platform default
+               enable clock_gettime timer if available
+               [Default on Linux platforms]
   --enable-timer-cycle_counter_tsc
-                          enable cycle_counter_tsc timer if available instead
-                          of platform default
+               enable cycle_counter_tsc timer if available instead of
+               platform default
   --enable-timer-gettimeofday
-                          enable gettimeofday timer if available instead of
-                          platform default
+               enable gettimeofday timer if available instead of
+               platform default
   --enable-timer-ibm_realtime
-                          enable ibm_realtime timer if available instead of
-                          platform default
-  --enable-timer-ibm_switch_clock
-                          enable ibm_switch_clock timer if available instead
-                          of platform default
+               enable ibm_realtime timer if available instead of
+               platform default
   --enable-timer-intel_mmtimer
-                          enable intel_mmtimer timer if available instead of
-                          platform default
-  --enable-timer-nec_syssx_hgtime
-                          enable nec_syssx_hgtime timer if available instead
-                          of platform default
+               enable intel_mmtimer timer if available instead of
+               platform default
   --enable-timer-papi_real_cyc
-                          enable papi_real_cyc timer if available instead of
-                          platform default
+               enable papi_real_cyc timer if available instead of
+               platform default
   --enable-timer-papi_real_usec
-                          enable papi_real_usec timer if available instead of
-                          platform default
-  --enable-timer-sun_gethrtime
-                          enable sun_gethrtime timer if available instead of
-                          platform default
-
+               enable papi_real_usec timer if available instead of
+               platform default
   --with-pdt=<path-to-binaries>
-                          Specifies the path to the program database toolkit
-                          (PDT) binaries, e.g., cparse.
-  --with-cobi=(yes|no|<path-to-cobi-binary>)
-                          Whether to build with cobi binary instrumentation
-                          support. "yes" assumes it is in PATH [no].
+               Specifies the path to the program database toolkit
+               (PDT) binaries, e.g., cparse.
+  --with-cobi[=<path-to-cobi-binary>]
+               Whether to build with cobi binary instrumentation
+               support. "yes" assumes it is in PATH [no].
   --with-extra-instrumentation-flags=flags
-                          Add additional instrumentation flags.
-  --with-sionconfig=(yes|no|<path-to-sionconfig>)
-                          Whether to use sionconfig and where to find it.
-                          "yes" assumes it is in PATH [no].
+               Add additional instrumentation flags.
+  --with-sionconfig[=<path-to-sionconfig>]
+               Whether to use sionconfig and where to find it. "yes"
+               assumes it is in PATH [no].
   --with-papi-header=<path-to-papi.h>
-                          If papi.h is not installed in the default location,
-                          specify the dirname where it can be found.
+               If papi.h is not installed in the default location,
+               specify the dirname where it can be found.
   --with-papi-lib=<path-to-libpapi.*>
-                          If libpapi.* is not installed in the default
-                          location, specify the dirname where it can be found.
+               If libpapi.* is not installed in the default location,
+               specify the dirname where it can be found.
   --with-libcudart=<Path to libcudart installation>
-                          If you want to build scorep with libcudart but do
-                          not have a libcudart in a standard location then you
-                          need to explicitly specify the directory where it is
-                          installed. On non-cross-compile systems we search
-                          the system include and lib paths per default [yes],
-                          on cross-compile systems however,you have to specify
-                          a path [no]. --with-libcudart is a shorthand for
-                          --with-libcudart-include=<Path/include> and
-                          --with-libcudart-lib=<Path/lib>. If these shorthand
-                          assumptions are not correct, you can use the
-                          explicit include and lib options directly.
+               If you want to build scorep with libcudart but do not
+               have a libcudart in a standard location then you need
+               to explicitly specify the directory where it is
+               installed. On non-cross-compile systems we search the
+               system include and lib paths per default [yes], on
+               cross-compile systems however,you have to specify a
+               path [no]. --with-libcudart is a shorthand for
+               --with-libcudart-include=<Path/include> and
+               --with-libcudart-lib=<Path/lib>. If these shorthand
+               assumptions are not correct, you can use the explicit
+               include and lib options directly.
   --with-libcudart-include=<Path to libcudart headers>
   --with-libcudart-lib=<Path to libcudart libraries>
-  --with-libcupti=<Path to libcupti installation>
-                          If you want to build scorep with libcupti but do not
-                          have a libcupti in a standard location then you need
-                          to explicitly specify the directory where it is
-                          installed. On non-cross-compile systems we search
-                          the system include and lib paths per default [yes],
-                          on cross-compile systems however,you have to specify
-                          a path [no]. --with-libcupti is a shorthand for
-                          --with-libcupti-include=<Path/include> and
-                          --with-libcupti-lib=<Path/lib>. If these shorthand
-                          assumptions are not correct, you can use the
-                          explicit include and lib options directly.
-                          NOTE: If libcupti is installed in its default location
-                          <Path to libcudart installation>/extras/CUPTI this
-                          option is not required.                          
-  --with-libcupti-include=<Path to libcupti headers>
-  --with-libcupti-lib=<Path to libcupti libraries>
   --with-libcuda=<Path to libcuda installation>
-                          If you want to build scorep with libcuda but do not
-                          have a libcuda in a standard location then you need
-                          to explicitly specify the directory where it is
-                          installed. On non-cross-compile systems we search
-                          the system include and lib paths per default [yes],
-                          on cross-compile systems however,you have to specify
-                          a path [no]. --with-libcuda is a shorthand for
-                          --with-libcuda-include=<Path/include> and
-                          --with-libcuda-lib=<Path/lib>. If these shorthand
-                          assumptions are not correct, you can use the
-                          explicit include and lib options directly.
+               Usually not needed, specifying --with-libcudart should
+               be fine!
+               If you want to build scorep with libcuda but do not
+               have a libcuda in a standard location then you need to
+               explicitly specify the directory where it is
+               installed. On non-cross-compile systems we search the
+               system include and lib paths per default [yes], on
+               cross-compile systems however,you have to specify a
+               path [no]. --with-libcuda is a shorthand for
+               --with-libcuda-include=<Path/include> and
+               --with-libcuda-lib=<Path/lib>. If these shorthand
+               assumptions are not correct, you can use the explicit
+               include and lib options directly.
   --with-libcuda-include=<Path to libcuda headers>
   --with-libcuda-lib=<Path to libcuda libraries>
   --with-libbfd=<Path to libbfd installation>
-                          If you want to build scorep with libbfd but do not
-                          have a libbfd in a standard location then you need
-                          to explicitly specify the directory where it is
-                          installed. On non-cross-compile systems we search
-                          the system include and lib paths per default [yes],
-                          on cross-compile systems however,you have to specify
-                          a path [no]. --with-libbfd is a shorthand for
-                          --with-libbfd-include=<Path/include> and
-                          --with-libbfd-lib=<Path/lib>. If these shorthand
-                          assumptions are not correct, you can use the
-                          explicit include and lib options directly.
+               If you want to build scorep with libbfd but do not have
+               a libbfd in a standard location then you need to
+               explicitly specify the directory where it is
+               installed. On non-cross-compile systems we search the
+               system include and lib paths per default [yes], on
+               cross-compile systems however,you have to specify a
+               path [no]. --with-libbfd is a shorthand for
+               --with-libbfd-include=<Path/include> and
+               --with-libbfd-lib=<Path/lib>. If these shorthand
+               assumptions are not correct, you can use the explicit
+               include and lib options directly.
   --with-libbfd-include=<Path to libbfd headers>
   --with-libbfd-lib=<Path to libbfd libraries>
 
@@ -332,10 +325,6 @@ variables:
               Path to libcudart headers.
   LIBCUDART_LIB
               Path to libcudart libraries.
-  LIBCUPTI_INCLUDE
-              Path to libcupti headers.
-  LIBCUPTI_LIB
-              Path to libcupti libraries.
   LIBCUDA_INCLUDE
               Path to libcuda headers.
   LIBCUDA_LIB Path to libcuda libraries.

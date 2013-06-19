@@ -29,24 +29,31 @@ AM_SILENT_RULES([yes])
 AC_SCOREP_COMMON_PACKAGE([scorep], [subst-only])
 
 # don't detect and load defaults in nested configures (e.g. otf2)
-if test ! -n "$ac_scorep_platform_data_provided" -o "x${ac_scorep_platform_data_provided}" = "xno"; then
-    # $ac_scorep_cross_compiling, $ac_scorep_platform are set here
-    AC_SCOREP_DETECT_PLATFORMS
-    AC_SCOREP_WITH_COMPILER_SUITE
-    AC_SCOREP_WITH_MPI_COMPILER_SUITE
-    # determine arguments for subdir configures
-    args="`${AWK} -f $srcdir/vendor/common/build-config/process_arguments.awk \
-           mpi_compiler_suite                                               \
-           $ac_scorep_compilers_frontend                                    \
-           $ac_scorep_compilers_backend                                     \
-           user_provided_configure_args`"
-else
-    AC_MSG_NOTICE([platform data provided by toplevel configure.])
-    AC_SCOREP_SUMMARY([Platform], [$ac_scorep_platform (provided)])
-    # determine arguments for subdir configures
-    args="`${AWK} -f $srcdir/vendor/common/build-config/process_arguments.awk \
-           user_provided_configure_args`"
-fi
+AS_IF([test ! -n "$ac_scorep_platform_data_provided" || \
+       test "x${ac_scorep_platform_data_provided}" = "xno"],
+      [# $ac_scorep_cross_compiling, $ac_scorep_platform are set here
+       AC_SCOREP_DETECT_PLATFORMS
+       AS_IF([test "x${ac_scorep_platform}" = "xmac"],
+             [AC_MSG_ERROR([have no suitable defaults to build Score-P on Mac yet. Please use --with-custom-compilers and provide settings to <AC_PACKAGE_BUGREPORT> on success. Thanks.])],
+             [test "x${ac_scorep_platform}" = "xunknown"],
+             [AC_MSG_ERROR([cannot detect platform to set suitable defaults. Please use --with-custom-compilers and provide settings and platform to <AC_PACKAGE_BUGREPORT> on success. Thanks.])])  
+
+       dnl AFS_COMPILER_BACKEND([CC, CXX, F77, FC])
+       AC_SCOREP_WITH_COMPILER_SUITE
+       AC_SCOREP_WITH_MPI_COMPILER_SUITE
+       # determine arguments for subdir configures
+       args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk \
+              ${ac_scorep_compilers_mpi}                                       \
+              ${ac_scorep_compilers_frontend}                                  \
+              ${ac_scorep_compilers_backend}                                   \
+              ./user_provided_configure_args`"
+      echo $args ],
+      [AC_MSG_NOTICE([platform data provided by toplevel configure.])
+       AC_SCOREP_SUMMARY([Platform], [$ac_scorep_platform (provided)])
+       # determine arguments for subdir configures
+       args="`${AWK} -f $srcdir/vendor/common/build-config/process_arguments.awk \
+              ./user_provided_configure_args`"])
+
 
 AC_SCOREP_SVN_CONTROLLED
 
@@ -90,7 +97,7 @@ AS_IF([test "x${scorep_have_cube_config}" = "xyes"],
        # consider user-provided arguments. We can't get CXX from the
        # backend because the following conditional is evaluated before
        # the backend configure is run.
-       AC_CHECK_PROG([GREP], [grep], [`which grep`])
+       AC_REQUIRE([AC_PROG_GREP])
        AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
              [frontend_compilers=${ac_scorep_compilers_frontend}],
              [frontend_compilers=${ac_scorep_compilers_backend}])
