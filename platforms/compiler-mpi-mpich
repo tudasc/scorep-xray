@@ -1,6 +1,6 @@
 MPICC=mpicc -cc={CC}
 #MPI_CFLAGS
-MPICXX=mpicxx -cxx={CXX}
+MPICXX=mpicxx -CC={CXX}
 #MPI_CXXFLAGS=
 MPIF77=mpif77 -f77={F77}
 #MPI_FFLAGS=
@@ -12,7 +12,7 @@ MPIFC=mpif90 -f90={FC}
 
 # # Scalasca1 settings
 # MPILIB    = -lmpich
-# PMPILIB   = 
+# PMPILIB   = -lpmpich
 # FMPILIB   = -lfmpich
 # FMPIOBJ   =
-# MPIEXTRA  = -DMPICH_IGNORE_CXX_SEEK -DHAS_MPI2_1SIDED 
+# MPIEXTRA  = -DMPICH_IGNORE_CXX_SEEK

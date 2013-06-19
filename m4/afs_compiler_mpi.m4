@@ -18,6 +18,7 @@ AC_DEFUN([AFS_COMPILER_MPI],
 [
 AC_CHECK_PROG([NM], [nm], [`which nm`])
 AC_REQUIRE([AC_PROG_GREP])
+AC_REQUIRE([AC_PROG_AWK])
 
 NMPIS=0
 MPIS=""
@@ -32,8 +33,8 @@ AS_IF([test -n "${MPIICC}"],
      MBINDIR=`dirname ${MPIICC}`
      MINCDIR=`echo ${MBINDIR} | sed -e 's/bin/include/'`
      AS_IF([test -f ${MINCDIR}/mpi.h],
-         [IMPIVER=`grep ^# ${MINCDIR}/mpi.h 2> /dev/null | \
-                   grep MPI_VERSION | awk '{print $NF}'`
+         [IMPIVER=`${GREP} ^# ${MINCDIR}/mpi.h 2> /dev/null | \
+                   ${GREP} MPI_VERSION | ${AWK} '{print $NF}'`
           AS_IF([test -z "${IMPIVER}"], 
               [IMPIVER=-42])
           AS_IF([test ${IMPIVER} -eq 1], 
@@ -44,7 +45,8 @@ AS_IF([test -n "${MPIICC}"],
               [NMPIS=`expr ${NMPIS} + 1`
                MPI=intel2
                AC_MSG_RESULT([Intel MPI 2 ${MPIICC}])],
-              [AC_MSG_ERROR([cannot determine Intel MPI version. Please select MPI using --with-mpi=intel|intel2])
+              [AC_MSG_RESULT([yes])
+               AC_MSG_ERROR([cannot determine Intel MPI version. Please select MPI using --with-mpi=intel|intel2])
               ])
          ])
      AS_IF([test -z "${MPIS}"], 
@@ -95,15 +97,14 @@ AS_IF([(test -f /etc/sgi-release && test -n "${MPIRC}")],
 AC_MSG_CHECKING([for mpicc])
 MPICC=`which mpicc 2> /dev/null`
 AS_IF([test -n "${MPICC}"],
-    [FMPI=""
-     R_MPICC=`readlink -f ${MPICC}`
+    [R_MPICC=`readlink -f ${MPICC}`
      AS_IF([test -n "${R_MPICC}"], 
          [MPICC=${R_MPICC}])
      MBINDIR=`dirname ${MPICC}`
      MPIROOTDIR1=`dirname ${MBINDIR}`
    
      echo "#include <mpi.h>" > conftest.c
-     mpicc -E conftest.c | grep '/mpi.h"' | head -1 > mpiconf.txt
+     mpicc -E conftest.c | ${GREP} '/mpi.h"' | head -1 > mpiconf.txt
      MINCDIR=`cat mpiconf.txt | sed -e 's#^.* "##' -e 's#/mpi.h".*##'`
      AS_IF([test -n "${MINCDIR}"],
          [MPIROOTDIR2=`dirname ${MINCDIR}`
@@ -115,6 +116,7 @@ AS_IF([test -n "${MPICC}"],
               [MPIROOTDIR2=""])
          ])
 
+     FMPI=""
      for mr in ${MPIROOTDIR1} ${MPIROOTDIR2}
      do
          MLIBDIR="${mr}/lib"
@@ -127,8 +129,8 @@ AS_IF([test -n "${MPICC}"],
                    FMPI=mpibull2
                    AC_MSG_RESULT([Bull MPICH2 ${MPICC}])],
                   [test -f ${MBINDIR}/mpichversion],
-                  [MPICHVER=`grep ^# ${MINCDIR}/mpi.h 2> /dev/null | \
-                             grep MPI_VERSION | awk '{print $NF}'`
+                  [MPICHVER=`${GREP} ^# ${MINCDIR}/mpi.h 2> /dev/null | \
+                             ${GREP} MPI_VERSION | ${AWK} '{print $NF}'`
                    AS_IF([test -z "${MPICHVER}"],
                        [MPICHVER=-42])
                    AS_IF([test ${MPICHVER} -eq 3],
@@ -203,6 +205,8 @@ AS_IF([test -n "${MPICC}"],
               MPI="${FMPI}"
               break])
      done
+     AS_IF([test -z "${FMPI}"],
+         [AC_MSG_RESULT([no])])
     ],
     [AC_MSG_RESULT([no])
     ])
@@ -213,10 +217,11 @@ dnl echo MPI $MPI
 
 AS_IF([test "${NMPIS}" -eq 0],
     [AS_IF([test -n "${MPICC}"],
-         [AC_MSG_ERROR([mpicc found but cannot determine MPI library. Select MPI using --with-mpi=mpich|mpich2|mpibull2|lam|openmpi|bullxmpi|intel2|hp|scali])],
+         [AC_MSG_ERROR([mpicc found but cannot determine MPI library. Select MPI using --with-mpi=bullxmpi|hp|lam|mpibull2|mpich|mpich2|mpich3|openmpi|platform|scali])],
          [AC_MSG_ERROR([cannot detect MPI library. Make sure mpicc, mpcc or mpiicc is in your PATH and rerun configure.])])],
     [test "${NMPIS}" -gt 1],
-    [AC_MSG_ERROR([found ${NMPIS} MPI installations. Select one using --with-mpi=${MPIS}])
+    [AC_MSG_ERROR([found ${NMPIS} MPI installations. Select one using --with-mpi=${MPIS}])],
+    [afs_compiler_mpi=${MPI}
+     AC_MSG_NOTICE([using '${afs_compiler_mpi}' MPI implementation.])
     ])
-
 ])# AFS_COMPILER_MPI
