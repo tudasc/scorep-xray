@@ -38,7 +38,7 @@ libscorep_metric_la_SOURCES = \
 if ! HAVE_PAPI
 if ! HAVE_GETRUSAGE
 if ! HAVE_METRIC_PLUGINS
-libscorep_metric_la_SOURCES += $(SRC_ROOT)src/services/metric/scorep_metric_management_without_sources.c
+libscorep_metric_la_SOURCES += $(SRC_ROOT)src/services/metric/scorep_metric_management_mockup.c
 else
 libscorep_metric_la_SOURCES += $(SRC_ROOT)src/services/metric/scorep_metric_management.c
 endif
