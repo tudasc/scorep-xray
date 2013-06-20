@@ -23,7 +23,7 @@
  * @brief Compiler adapter interface support to the measurement system.
  *
  * This file contains an empty init structure that can be compiled into
- * a mockup adapter for every adapter by definiting the adapter name.
+ * a mockup adapter for every adapter by defining the adapter name.
  */
 
 #include <config.h>
