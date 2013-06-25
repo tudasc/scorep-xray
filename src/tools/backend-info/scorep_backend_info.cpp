@@ -29,6 +29,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <vector>
 
 #include <UTILS_Error.h>
 
@@ -40,26 +41,26 @@
 /**
    Contains the name of the tool for help output
  */
-const std::string toolname = "scorep-backend-info";
+static const std::string toolname = "scorep-backend-info";
 
 /**
     Prints a short usage message.
  */
-void
-print_short_usage()
+static void
+print_short_usage( std::ostream& out )
 {
-    std::cout << "Usage: " << toolname << " <info command> <command options>" << std::endl;
-    std::cout << "       " << toolname << " --help" << std::endl;
-    std::cout << "This is the " << PACKAGE_NAME << " backend info tool." << std::endl;
+    out << "Usage: " << toolname << " <info command> <command options>" << std::endl;
+    out << "       " << toolname << " --help" << std::endl;
+    out << "This is the " << PACKAGE_NAME << " backend info tool." << std::endl;
 }
 
 /**
    Prints the long help text.
  */
-void
-print_help()
+static void
+print_help( void )
 {
-    print_short_usage();
+    print_short_usage( std::cout );
     std::cout << std::endl;
     std::cout << "Available info commands:" << std::endl;
     std::cout << std::endl;
@@ -82,14 +83,25 @@ main( int   argc,
             print_help();
             return EXIT_SUCCESS;
         }
+
+        std::vector< std::string > args( argv + 2,  argv + argc );
+
 /*
         if ( info_command == "system-tree" )
         {
+            if ( args.length() != 0 )
+            {
+                std::cerr << "Invalid number of options for info command "
+                          << info_command << std::endl;
+                print_short_usage( std::cerr );
+                return EXIT_FAILURE;
+            }
+
             SCOREP_Platform_SystemTreePathElement* path;
-            SCOREP_ErrorCode                       err = SCOREP_Platform_GetPathInSystemTree( &path );
+            SCOREP_ErrorCode                       err = SCOREP_Platform_GetPathInSystemTree( "", &path );
             if ( err != SCOREP_SUCCESS )
             {
-                std::cout << "Can't get system tree information." << std::endl;
+                std::cerr << "Can't get system tree information." << std::endl;
                 return EXIT_FAILURE;
             }
             SCOREP_Platform_SystemTreePathElement* node;
@@ -104,6 +116,14 @@ main( int   argc,
 
         if ( info_command == "config-vars" )
         {
+            if ( args.size() != 0 )
+            {
+                std::cerr << "Invalid number of options for info command "
+                          << info_command << std::endl;
+                print_short_usage( std::cerr );
+                return EXIT_FAILURE;
+            }
+
             SCOREP_ConfigInit();
             SCOREP_RegisterAllConfigVariables();
             SCOREP_ConfigApplyEnv();
@@ -113,13 +133,13 @@ main( int   argc,
         }
 
 
-        std::cout << "Invalid info command: " << argv[ 1 ] << std::endl;
-        print_short_usage();
+        std::cerr << "Invalid info command: " << info_command << std::endl;
+        print_short_usage( std::cerr );
         return EXIT_FAILURE;
     }
     else
     {
-        print_short_usage();
+        print_short_usage( std::cout );
     }
     return EXIT_SUCCESS;
 }

@@ -29,6 +29,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <vector>
 
 #include <UTILS_Error.h>
 
@@ -40,26 +41,26 @@
 /**
    Contains the name of the tool for help output
  */
-const std::string toolname = "scorep-info";
+static const std::string toolname = "scorep-info";
 
 /**
     Prints a short usage message.
  */
-void
-print_short_usage()
+static void
+print_short_usage( std::ostream& out )
 {
-    std::cout << "Usage: " << toolname << " <info command> <command options>" << std::endl;
-    std::cout << "       " << toolname << " --help" << std::endl;
-    std::cout << "This is the " << PACKAGE_NAME << " info tool." << std::endl;
+    out << "Usage: " << toolname << " <info command> <command options>" << std::endl;
+    out << "       " << toolname << " --help" << std::endl;
+    out << "This is the " << PACKAGE_NAME << " info tool." << std::endl;
 }
 
 /**
    Prints the long help text.
  */
-void
-print_help()
+static void
+print_help( void )
 {
-    print_short_usage();
+    print_short_usage( std::cout );
     std::cout << std::endl;
     std::cout << "Available info commands:" << std::endl;
     std::cout << std::endl;
@@ -91,12 +92,21 @@ main( int   argc,
             return EXIT_SUCCESS;
         }
 
+        std::vector< std::string > args( argv + 2,  argv + argc );
 
         if ( info_command == "config-vars" )
         {
+            if ( args.size() > 1 )
+            {
+                std::cerr << "Invalid number of options for info command "
+                          << info_command << std::endl;
+                print_short_usage( std::cerr );
+                return EXIT_FAILURE;
+            }
+
             SCOREP_ConfigInit();
 
-            std::string mode( argc > 2 ? argv[ 2 ] : "" );
+            std::string mode( args.size() == 1 ? args[ 0 ] : "" );
             bool        values = false;
             bool        full   = false;
             bool        html   = false;
@@ -105,7 +115,7 @@ main( int   argc,
                 // @todo print warning again
                 values = true;
             }
-            if ( mode == "--full" )
+            else if ( mode == "--full" )
             {
                 full = true;
             }
@@ -117,9 +127,9 @@ main( int   argc,
             }
             else if ( mode != "" )
             {
-                std::cout << "Invalid option for info command "
+                std::cerr << "Invalid option for info command "
                           << info_command << ": " << mode << std::endl;
-                print_short_usage();
+                print_short_usage( std::cerr );
                 SCOREP_ConfigFini();
                 return EXIT_FAILURE;
             }
@@ -143,6 +153,14 @@ main( int   argc,
 
         if ( info_command == "config-summary" )
         {
+            if ( args.size() != 0 )
+            {
+                std::cerr << "Invalid number of options for info command "
+                          << info_command << std::endl;
+                print_short_usage( std::cerr );
+                return EXIT_FAILURE;
+            }
+
             std::string summary_command( "cat " CONFIG_SUMMARY_FILE );
             int         return_value = system( summary_command.c_str() );
             if ( return_value != 0 )
@@ -154,13 +172,13 @@ main( int   argc,
         }
 
 
-        std::cout << "Invalid info command: " << argv[ 1 ] << std::endl;
-        print_short_usage();
+        std::cerr << "Invalid info command: " << info_command << std::endl;
+        print_short_usage( std::cerr );
         return EXIT_FAILURE;
     }
     else
     {
-        print_short_usage();
+        print_short_usage( std::cout );
     }
     return EXIT_SUCCESS;
 }
