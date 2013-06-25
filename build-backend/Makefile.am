@@ -155,7 +155,6 @@ installcheck-local: instrumenter-checks
 	done; test -z "$$fail"
 
 PARADIGMS = serial
-
 # component separation will provide the HAVE_OPARI2 conditional
 #if HAVE_OPARI2
 if HAVE_OPENMP_SUPPORT
@@ -164,13 +163,22 @@ endif
 #endif
 
 instrumenter-checks: $(instrumenter_configuration_files)
-	@for paradigm in $(PARADIGMS); do \
-            $(MAKE) -C ../installcheck/$$paradigm instrument-configurations || exit 1; \
-        done
+	@fail= failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	list='$(PARADIGMS)'; for paradigm in $$list; do \
+	  echo "Making instrument-configurations in ../installcheck/$$paradigm"; \
+	  ($(am__cd) ../installcheck/$$paradigm && $(MAKE) $(AM_MAKEFLAGS) instrument-configurations) \
+	  || eval $$failcom; \
+	done; test -z "$$fail"
 
 instrumenter_configuration_files = ../installcheck/configurations_serial ../installcheck/configurations_omp
 
-$(instrumenter_configuration_files):
+$(instrumenter_configuration_files): ../installcheck/instrumenter-configurations.sh
 	@../installcheck/instrumenter-configurations.sh
 
 clean-local-instrumenter-checks:
