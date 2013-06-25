@@ -548,13 +548,13 @@ SCOREP_ConfigHelp( bool full, bool html )
                     variable->data.shortHelp,
                     html ? "<br>" : "" );
             printf( "%sType:%s%s%s\n",
-                    html ? "  <dl>\n   <dt>" : "    ",
-                    html ? "</dt><dd>" : "        ",
+                    html ? "  <dl>\n   <dt>" : "         ",
+                    html ? "</dt><dd>" : " ",
                     config_type_as_string( variable->data.type ),
                     html ? "</dd>" : "" );
             printf( "%sDefault:%s%s%s\n",
-                    html ? "   <dt>" : "  ",
-                    html ? "</dt><dd>" : "        ",
+                    html ? "   <dt>" : "      ",
+                    html ? "</dt><dd>" : " ",
                     variable->data.defaultValue,
                     html ? "</dd>\n  </dl>" : "" );
 
