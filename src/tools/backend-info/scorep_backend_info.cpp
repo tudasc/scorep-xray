@@ -84,7 +84,7 @@ main( int   argc,
             return EXIT_SUCCESS;
         }
 
-        std::vector< std::string > args( argv + 2,  argv + argc );
+        std::vector< char* > args( argv + 2,  argv + argc );
 
 /*
         if ( info_command == "system-tree" )
