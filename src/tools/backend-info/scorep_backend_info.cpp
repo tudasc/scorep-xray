@@ -48,9 +48,9 @@ const std::string toolname = "scorep-backend-info";
 void
 print_short_usage()
 {
-    std::cout << "This is the " << PACKAGE_NAME << " backend info tool." << std::endl;
     std::cout << "Usage: " << toolname << " <info command> <command options>" << std::endl;
     std::cout << "       " << toolname << " --help" << std::endl;
+    std::cout << "This is the " << PACKAGE_NAME << " backend info tool." << std::endl;
 }
 
 /**
