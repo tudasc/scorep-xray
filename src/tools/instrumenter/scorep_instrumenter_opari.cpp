@@ -178,6 +178,12 @@ void
 SCOREP_Instrumenter_OpariAdapter::prelink( SCOREP_Instrumenter&         instrumenter,
                                            SCOREP_Instrumenter_CmdLine& cmdLine )
 {
+    // When linking a shared library, it must not contain a pomp init file
+    if ( cmdLine.isTargetSharedLib() )
+    {
+        return;
+    }
+
     std::string output_name  = cmdLine.getOutputName();
     std::string input_files  = instrumenter.getInputFiles();
     std::string current_file = "";
