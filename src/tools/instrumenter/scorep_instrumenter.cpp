@@ -326,7 +326,7 @@ SCOREP_Instrumenter::compile_source_file( const std::string& input_file,
     /* Construct command */
     std::stringstream command;
     command << SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars();
-    command << " " << m_command_line.getCompilerName();
+    command << m_command_line.getCompilerName();
     command << " `" << m_config_base << " --cflags` " << m_compiler_flags;
     command << " " << m_command_line.getFlagsBeforeLmpi();
     command << " " << m_command_line.getFlagsAfterLmpi();
@@ -412,22 +412,27 @@ SCOREP_Instrumenter::link_step( void )
 }
 
 void
-SCOREP_Instrumenter::executeCommand( const std::string& command )
+SCOREP_Instrumenter::executeCommand( const std::string& orig_command )
 {
+    std::string command( orig_command );
     if ( m_command_line.getVerbosity() >= 1 )
     {
-        /* I know some of you guys want that the scorep-config calls are resolved
-           already. However, sometimes we also want to check whether the
-           scorep-config call itself contains the right arguments. */
-        std::cout << command << std::endl;
-    }
-    if ( !m_command_line.isDryRun() )
-    {
-        int return_value = system( command.c_str() );
-        if ( return_value != 0 )
+        std::cout << orig_command << std::endl;
+
+        /* --dry-run implies --verbose */
+        if ( m_command_line.isDryRun() )
         {
-            std::cerr << "Error executing: " << command << std::endl;
-            exit( EXIT_FAILURE );
+            return;
         }
+
+        /* Let the shell do its job and show us all executed commands. */
+        command = "PS4='Executing: '; set -x; " + command;
+    }
+
+    int return_value = system( command.c_str() );
+    if ( return_value != 0 )
+    {
+        std::cerr << "Error executing: " << orig_command << std::endl;
+        exit( EXIT_FAILURE );
     }
 }

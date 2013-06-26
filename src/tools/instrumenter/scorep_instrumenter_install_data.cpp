@@ -358,7 +358,8 @@ SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string
 std::string
 SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
 {
-    return "VT_LIB_DIR=. VT_ROOT=. VT_ADD_LIBS=\"\"";
+    /* We are responsible for the final space charachter. */
+    return "VT_LIB_DIR=. VT_ROOT=. VT_ADD_LIBS=\"\" ";
 }
 
 bool

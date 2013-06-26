@@ -135,6 +135,7 @@ public:
 
     /**
        Returns envaronment variables needed by the compiler.
+       If the string is non empty, it must include a final space character.
      */
     static std::string
     getCompilerEnvironmentVars( void );
