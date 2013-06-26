@@ -246,14 +246,6 @@ public:
     checkCommand( const std::string& current,
                   const std::string& next );
 
-    /**
-     * This function is called if the selected paradigm enables this instrumentation
-     * approach by default. It checks whether the user has made a different selection
-     * and if not, enables this adapter and checks its dependencies.
-     */
-    virtual void
-    onDefault( void );
-
 protected:
     /**
      * If the instrumentation approach represented by this adapter is not
@@ -382,14 +374,6 @@ public:
     getAllConfigToolFlags( void );
 
     /**
-     * Returns the adaper, specified by the @a id. This function may not
-     * work during the adapter construction.
-     * @param id The identifier of the adapter you want to get.
-     */
-    static SCOREP_Instrumenter_Adapter*
-    getAdapter( SCOREP_Instrumenter_AdapterId id );
-
-    /**
      * Call the setBuildCheck function in all adapters.
      */
     static void
@@ -413,6 +397,54 @@ public:
     static bool
     checkAllCommand( const std::string& current,
                      const std::string& next );
+
+    /**
+     * Returns the adapter, specified by the @a id. This function may not
+     * work during the adapter construction.
+     * @param id The identifier of the adapter you want to get.
+     */
+    static SCOREP_Instrumenter_Adapter*
+    getAdapter( SCOREP_Instrumenter_AdapterId id );
+
+    /**
+     * Checks whether adapter enableing violated earlier settings and
+     * enables it. If earlier settings are vialoted, it terminates with an error.
+     * @caller name of the adapter or paradigm that requires this adapter. The name
+     *         is only used in error messages.
+     * @param  id The identifier of the adapter you require.
+     */
+    static void
+    require( std::string                   caller,
+             SCOREP_Instrumenter_AdapterId id );
+
+    /**
+     * Checks whether adapter enableing violated earlier settings and
+     * disables it. If earlier settings are vialoted, it terminates with an error.
+     * @caller name of the adapter or paradigm that requires this adapter. The name
+     *         is only used in error messages.
+     * @param  id The identifier of the adapter you require.
+     */
+    static void
+    conflict( std::string                   caller,
+              SCOREP_Instrumenter_AdapterId id );
+
+    /**
+     * This function is called if the selected paradigm enables this instrumentation
+     * approach by default. It checks whether the user has made a different selection
+     * and if not, enables this adapter and checks its dependencies.
+     * @param id The identifier of the adapter you require.
+     */
+    static void
+    defaultOn( SCOREP_Instrumenter_AdapterId id );
+
+    /**
+     * This function is called if the selected paradigm enables this instrumentation
+     * approach by default. It checks whether the user has made a different selection
+     * and if not, enables this adapter and checks its dependencies.
+     * @param id The identifier of the adapter you require.
+     */
+    static void
+    defaultOff( SCOREP_Instrumenter_AdapterId id );
 
 private:
     /**

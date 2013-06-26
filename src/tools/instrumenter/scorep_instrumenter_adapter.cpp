@@ -66,44 +66,15 @@ void
 SCOREP_Instrumenter_Adapter::checkDependencies( void )
 {
     SCOREP_Instrumenter_DependencyList::iterator i;
-    SCOREP_Instrumenter_AdapterList::iterator    adapter;
 
     for ( i = m_conflicts.begin(); i != m_conflicts.end(); i++ )
     {
-        adapter = m_adapter_list.find( *i );
-        if ( adapter == m_adapter_list.end() )
-        {
-            continue;
-        }
-        if ( adapter->second->m_usage == enabled )
-        {
-            std::cerr << "ERROR: " << adapter->second->m_name << " conflicts with "
-                      << m_name << " and must not be enabled. Abort." << std::endl;
-            exit( EXIT_FAILURE );
-        }
-        adapter->second->m_usage = disabled;
+        conflict( m_name, *i );
     }
 
     for ( i = m_requires.begin(); i != m_requires.end(); i++ )
     {
-        adapter = m_adapter_list.find( *i );
-        if ( adapter == m_adapter_list.end() )
-        {
-            std::cerr << "ERROR: Required adapters for " << m_name
-                      << "are not available. Abort." << std::endl;
-            exit( EXIT_FAILURE );
-        }
-        if ( adapter->second->m_usage == disabled )
-        {
-            std::cerr << "ERROR: " << adapter->second->m_name << " is required by "
-                      << m_name << " and must not be disabled. Abort." << std::endl;
-            exit( EXIT_FAILURE );
-        }
-        if ( adapter->second->m_usage == detect )
-        {
-            adapter->second->m_usage = enabled;
-            adapter->second->checkDependencies();
-        }
+        require( m_name, *i );
     }
 }
 
@@ -112,28 +83,15 @@ void
 SCOREP_Instrumenter_Adapter::checkDefaults( void )
 {
     SCOREP_Instrumenter_DependencyList::iterator i;
-    SCOREP_Instrumenter_AdapterList::iterator    adapter;
 
     for ( i = m_default_off.begin(); i != m_default_off.end(); i++ )
     {
-        adapter = m_adapter_list.find( *i );
-        if ( ( adapter != m_adapter_list.end() ) &&
-             ( adapter->second->m_usage == detect ) )
-        {
-            adapter->second->m_usage = disabled;
-        }
+        defaultOff( *i );
     }
 
     for ( i = m_default_on.begin(); i != m_default_on.end(); i++ )
     {
-        adapter = m_adapter_list.find( *i );
-        if ( ( adapter != m_adapter_list.end() ) &&
-             ( adapter->second->m_usage == detect ) )
-        {
-            adapter->second->m_usage = enabled;
-            adapter->second->checkDependencies();
-            adapter->second->checkDefaults();
-        }
+        defaultOn( *i );
     }
 }
 
@@ -141,16 +99,6 @@ bool
 SCOREP_Instrumenter_Adapter::isEnabled( void )
 {
     return m_usage == enabled;
-}
-
-void
-SCOREP_Instrumenter_Adapter::onDefault( void )
-{
-    if ( m_usage == detect )
-    {
-        m_usage = enabled;
-        checkDependencies();
-    }
 }
 
 void
@@ -451,4 +399,78 @@ SCOREP_Instrumenter_Adapter::checkAllCommand(  const std::string& current,
         }
     }
     return false;
+}
+
+void
+SCOREP_Instrumenter_Adapter::require( std::string                   caller,
+                                      SCOREP_Instrumenter_AdapterId id )
+{
+    SCOREP_Instrumenter_AdapterList::iterator adapter;
+
+    adapter = m_adapter_list.find( id );
+    if ( adapter == m_adapter_list.end() )
+    {
+        std::cerr << "ERROR: Required adapter for " << caller <<
+        " is not available. Abort." << std::endl;
+        exit( EXIT_FAILURE );
+    }
+    if ( adapter->second->m_usage == disabled )
+    {
+        std::cerr << "ERROR: " << adapter->second->m_name << " is required by "
+                  << caller << " and must not be disabled. Abort." << std::endl;
+        exit( EXIT_FAILURE );
+    }
+    if ( adapter->second->m_usage == detect )
+    {
+        adapter->second->m_usage = enabled;
+        adapter->second->checkDependencies();
+    }
+}
+
+void
+SCOREP_Instrumenter_Adapter::conflict( std::string                   caller,
+                                       SCOREP_Instrumenter_AdapterId id )
+{
+    SCOREP_Instrumenter_AdapterList::iterator adapter;
+
+    adapter = m_adapter_list.find( id );
+    if ( adapter == m_adapter_list.end() )
+    {
+        return;
+    }
+    if ( adapter->second->m_usage == enabled )
+    {
+        std::cerr << "ERROR: " << adapter->second->m_name << " conflicts with "
+                  << caller << " and must not be enabled. Abort." << std::endl;
+        exit( EXIT_FAILURE );
+    }
+    adapter->second->m_usage = disabled;
+}
+
+void
+SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_Instrumenter_AdapterId id )
+{
+    SCOREP_Instrumenter_AdapterList::iterator adapter;
+
+    adapter = m_adapter_list.find( id );
+    if ( ( adapter != m_adapter_list.end() ) &&
+         ( adapter->second->m_usage == detect ) )
+    {
+        adapter->second->m_usage = enabled;
+        adapter->second->checkDependencies();
+        adapter->second->checkDefaults();
+    }
+}
+
+void
+SCOREP_Instrumenter_Adapter::defaultOff( SCOREP_Instrumenter_AdapterId id )
+{
+    SCOREP_Instrumenter_AdapterList::iterator adapter;
+
+    adapter = m_adapter_list.find( id );
+    if ( ( adapter != m_adapter_list.end() ) &&
+         ( adapter->second->m_usage == detect ) )
+    {
+        adapter->second->m_usage = disabled;
+    }
 }

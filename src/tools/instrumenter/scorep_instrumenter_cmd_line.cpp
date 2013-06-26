@@ -718,13 +718,13 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
     }
 
     /* Set mpi and opari instrumenatation if not done manually by the user */
-    SCOREP_Instrumenter_Adapter* adapter
-        = SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
     if ( m_is_openmp_application == enabled )
     {
-        adapter->onDefault();
+        SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
     }
 
+    SCOREP_Instrumenter_Adapter* adapter;
+    adapter = SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
     if ( !adapter->isEnabled() && m_is_openmp_application == enabled )
     {
         std::cerr << "\n"
@@ -748,13 +748,11 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
     }
     if ( m_is_cuda_application == enabled )
     {
-        adapter = SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_CUDA );
-        adapter->onDefault();
+        SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_INSTRUMENTER_ADAPTER_CUDA );
     }
 
     /* Default compiler adapter on */
-    adapter = SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_COMPILER );
-    adapter->onDefault();
+    SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_INSTRUMENTER_ADAPTER_COMPILER );
 
     /* Check default relations */
     SCOREP_Instrumenter_Adapter::checkAllDefaults();
