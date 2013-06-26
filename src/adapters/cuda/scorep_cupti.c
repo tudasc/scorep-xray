@@ -82,7 +82,7 @@ scorep_cupti_init()
         SCOREP_CUPTI_LOCK();
         if ( !scorep_cupti_initialized )
         {
-            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI] Initializing ...\n" );
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI] Initializing ..." );
 
             /* GPU idle time */
             if ( scorep_cuda_record_idle )
@@ -94,7 +94,7 @@ scorep_cupti_init()
                         SCOREP_Definitions_NewSourceFile( "CUDA_IDLE" );
                     scorep_cupti_idle_region_handle = SCOREP_Definitions_NewRegion(
                         "gpu_idle", NULL, file_handle,
-                        0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_WRAPPER );
+                        0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_ARTIFICIAL );
                 }
                 else if ( scorep_cuda_record_kernels )
                 {
@@ -102,7 +102,7 @@ scorep_cupti_init()
                         SCOREP_Definitions_NewSourceFile( "CUDA_IDLE" );
                     scorep_cupti_idle_region_handle = SCOREP_Definitions_NewRegion(
                         "compute_idle", NULL, file_handle,
-                        0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_WRAPPER );
+                        0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_ARTIFICIAL );
                 }
                 else
                 {
@@ -147,7 +147,7 @@ scorep_cupti_finalize()
         SCOREP_CUPTI_LOCK();
         if ( !scorep_cupti_finalized && scorep_cupti_initialized )
         {
-            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI] Finalizing ...\n" );
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI] Finalizing ..." );
 
             /* free Score-P CUPTI context structures */
             while ( scorep_cupti_context_list != NULL )
@@ -390,9 +390,9 @@ scorep_cupti_stream_get_create( scorep_cupti_context_t* context,
     /* reuse a destroyed stream, if there is any available */
     if ( scorep_cuda_stream_reuse && reusable_stream )
     {
-        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                "[CUPTI] Reusing CUDA stream %d with stream %d",
-                                reusable_stream->stream_id, streamId );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                            "[CUPTI] Reusing CUDA stream %d with stream %d",
+                            reusable_stream->stream_id, streamId );
 
         reusable_stream->destroyed   = 0;
         reusable_stream->stream_id   = streamId;
@@ -602,9 +602,9 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
     context->events = NULL;
 #endif
 
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                            "[CUPTI] Created context for CUcontext %d, CUdevice %d",
-                            cudaContext, cudaDevice );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                        "[CUPTI] Created context for CUcontext %d, CUdevice %d",
+                        cudaContext, cudaDevice );
 
     return context;
 }
@@ -665,9 +665,9 @@ scorep_cupti_context_get( CUcontext cudaContext )
     /* reuse a destroyed stream, if there is any available */
     if ( scorep_cuda_device_reuse && reusable_context )
     {
-        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                "[CUPTI] Reusing CUDA context %d with context %d",
-                                reusable_context->cuda_context, cudaContext );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                            "[CUPTI] Reusing CUDA context %d with context %d",
+                            reusable_context->cuda_context, cudaContext );
         reusable_context->destroyed    = 0;
         reusable_context->cuda_context = cudaContext;
 
@@ -719,9 +719,9 @@ scorep_cupti_context_get_nolock( CUcontext cudaContext )
     /* reuse a destroyed stream, if there is any available */
     if ( scorep_cuda_device_reuse && reusableCtx )
     {
-        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                "[CUPTI] Reusing CUDA context %d with context %d",
-                                reusableCtx->cuda_context, cudaContext );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                            "[CUPTI] Reusing CUDA context %d with context %d",
+                            reusableCtx->cuda_context, cudaContext );
         reusableCtx->destroyed    = 0;
         reusableCtx->cuda_context = cudaContext;
 
@@ -790,8 +790,8 @@ scorep_cupti_context_remove( CUcontext cudaContext )
     }
     SCOREP_CUPTI_UNLOCK();
 
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                            "[CUPTI] Could not remove context (CUDA Context not found)!" );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                        "[CUPTI] Could not remove context (CUDA Context not found)!" );
 
     return NULL;
 }
@@ -831,8 +831,8 @@ scorep_cupti_context_set_destroyed( scorep_cupti_context_t* context )
 
         if ( scorep_cuda_record_gpumemusage == SCOREP_CUDA_GPUMEMUSAGE_AND_MISSING_FREES )
         {
-            printf( "[CUPTI] Free of %d bytes GPU memory missing!",
-                    gpumem->size );
+            UTILS_WARNING( "[CUPTI] Free of %zd bytes GPU memory missing!",
+                           gpumem->size );
         }
 
         context->cuda_mallocs = gpumem->next;

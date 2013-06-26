@@ -103,8 +103,8 @@ scorep_cupti_activity_init()
 {
     if ( !scorep_cupti_activity_initialized )
     {
-        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                "[CUPTI Activity] Initializing ... " );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                            "[CUPTI Activity] Initializing ... " );
 
         /* no buffer size < 1024 bytes allowed (see CUPTI documentation) */
         if ( scorep_cupti_activity_buffer_size < 1024 )
@@ -193,14 +193,14 @@ scorep_cupti_activity_init()
         /* create the CUPTI activity buffer flush region handle */
         {
             SCOREP_SourceFileHandle cupti_buffer_flush_file_handle =
-                SCOREP_Definitions_NewSourceFile( "SCOREP_CUDA" );
+                SCOREP_Definitions_NewSourceFile( "CUDA_FLUSH" );
 
             cupti_buffer_flush_region_handle =
                 SCOREP_Definitions_NewRegion( "flush_cupti_activity_buffer",
                                               NULL,
                                               cupti_buffer_flush_file_handle,
                                               0, 0, SCOREP_ADAPTER_CUDA,
-                                              SCOREP_REGION_FUNCTION );
+                                              SCOREP_REGION_ARTIFICIAL );
         }
 
         /*** enable the activities ***/
@@ -220,8 +220,8 @@ scorep_cupti_activity_finalize()
         {
             scorep_cupti_context_t* context = scorep_cupti_context_list;
 
-            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                    "[CUPTI Activity] Finalizing ... " );
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                                "[CUPTI Activity] Finalizing ... " );
 
             while ( context != NULL )
             {
@@ -407,7 +407,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context_t* context )
     /* expose Score-P CUPTI activity flush as measurement overhead */
     SCOREP_EnterRegion( cupti_buffer_flush_region_handle );
 
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] Handle context %d activities", context->cuda_context );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] Handle context %d activities", context->cuda_context );
 
     /* dump the contents of the global queue */
     SCOREP_CUPTI_CALL( cuptiActivityDequeueBuffer( context->cuda_context, 0, &buffer,
@@ -841,7 +841,7 @@ scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy*   memcpy,
     }
 
     /* remember this CUDA stream is doing CUDA communication */
-    if ( kind != cudaMemcpyDeviceToDevice &&
+    if ( kind != SCOREP_CUPTI_DEV2DEV &&
          context->location_id == SCOREP_CUPTI_NO_ID )
     {
         context->location_id = scorep_cupti_location_counter++;
@@ -997,8 +997,8 @@ scorep_cupti_activity_enable_concurrent_kernel( scorep_cupti_context_t* context 
     /*if((scorep_cuda_features & SCOREP_CUDA_RECORD_CONCURRENT_KERNEL)
            != SCOREP_CUDA_RECORD_CONCURRENT_KERNEL){*/
 
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                            "[CUPTI Activity] Enable concurrent kernel tracing." );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                        "[CUPTI Activity] Enable concurrent kernel tracing." );
 
     /*
      * Disable normal (lower overhead) kernel tracing.

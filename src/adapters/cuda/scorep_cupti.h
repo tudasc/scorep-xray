@@ -57,11 +57,11 @@
 
 #define SCOREP_CUPTI_CALL( fct )                                        \
     {                                                                   \
-        CUptiResult status = fct;                                       \
-        if ( status != CUPTI_SUCCESS )                                  \
+        CUptiResult _status = fct;                                      \
+        if ( _status != CUPTI_SUCCESS )                                 \
         {                                                               \
             const char* msg;                                            \
-            cuptiGetResultString( status, &msg );                       \
+            cuptiGetResultString( _status, &msg );                      \
             UTILS_WARNING( "[CUPTI] Call to '%s' failed with message: '%s'",  #fct, msg ); \
         }                                                               \
     }

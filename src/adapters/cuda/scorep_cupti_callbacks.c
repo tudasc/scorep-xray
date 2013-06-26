@@ -232,7 +232,7 @@ cuda_api_function_hash( CUpti_CallbackDomain domain,
         index = offset + ( uint32_t )callbackId;
 
         if ( ( domain == CUPTI_CB_DOMAIN_RUNTIME_API ) &&
-             ( index >= CUPTI_CALLBACKS_CUDA_API_FUNC_MAX - offset ) )
+             ( index >= ( uint32_t )( CUPTI_CALLBACKS_CUDA_API_FUNC_MAX - offset ) ) )
         {
             index = 0;
 
@@ -450,15 +450,11 @@ scorep_cupticb_create_callbacks_context(
 static void
 scorep_cupti_callbacks_finalize_context( scorep_cupti_context_t* context )
 {
-    scorep_cupti_kernel_t* kernel_data = NULL;
-
     if ( context == NULL || context->callbacks == NULL ||
          context->callbacks->kernel_data == NULL )
     {
         return;
     }
-
-    kernel_data = context->callbacks->kernel_data;
 
     if ( context->callbacks->kernel_data->down != NULL )
     {
@@ -1691,9 +1687,9 @@ scorep_cupti_callbacks_sync( CUpti_CallbackId             cbid,
 {
     if ( CUPTI_CBID_SYNCHRONIZE_CONTEXT_SYNCHRONIZED == cbid )
     {
-        UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                "[CUPTI Callbacks] Synchronize called for CUDA context %d",
-                                syncData->context );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                            "[CUPTI Callbacks] Synchronize called for CUDA context %d",
+                            syncData->context );
 
 #if defined( SCOREP_CUPTI_ACTIVITY )
 #if defined( SCOREP_CUPTI_EVENTS )
@@ -1753,9 +1749,9 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
 
         case CUPTI_CBID_RESOURCE_CONTEXT_DESTROY_STARTING:
         {
-            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                    "[CUPTI Callbacks] Destroying context %d ...",
-                                    resourceData->context );
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                                "[CUPTI Callbacks] Destroying context %d ...",
+                                resourceData->context );
 
 #if defined( SCOREP_CUPTI_EVENTS )
             if ( !scorep_cupti_events_enabled )
@@ -1796,9 +1792,9 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
                 {
                     context->callbacks->streams_created++;
 
-                    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                            "[CUPTI Callbacks] Creating stream %d (context %d)",
-                                            context->callbacks->streams_created, resourceData->context );
+                    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                                        "[CUPTI Callbacks] Creating stream %d (context %d)",
+                                        context->callbacks->streams_created, resourceData->context );
 
                     if (
 #if defined( SCOREP_CUPTI_EVENTS )
@@ -1859,9 +1855,9 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
                     scorep_cupti_stream_set_destroyed( resourceData->context, strmID );
                 }
 
-                UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                        "[CUPTI Callbacks] Destroying stream %d (context %d)",
-                                        strmID, resourceData->context );
+                UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                                    "[CUPTI Callbacks] Destroying stream %d (context %d)",
+                                    strmID, resourceData->context );
             }
 
             break;
@@ -3048,6 +3044,7 @@ handle_cuda_runtime_memcpy_async( const CUpti_CallbackData* cbInfo,
             SCOREP_RmaWinCreate( scorep_cuda_interim_window_handle );
         }
 
+        time = SCOREP_GetClockTicks();
         if ( SCOREP_CUPTI_NO_ID == stream->location_id )
         {
             stream->location_id = scorep_cupti_location_counter++;
@@ -3124,8 +3121,8 @@ scorep_cupti_callbacks_init()
         SCOREP_CUPTI_LOCK();
         if ( !scorep_cupti_callbacks_initialized )
         {
-            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                    "[CUPTI Callbacks] Initializing ... " );
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                                "[CUPTI Callbacks] Initializing ... " );
 
             /* check the CUDA APIs to be traced */
             record_driver_api  = false;
@@ -3244,7 +3241,7 @@ scorep_cupti_callbacks_init()
                         SCOREP_Definitions_NewSourceFile( "CUDA_SYNC" );
                     cuda_sync_region_handle = SCOREP_Definitions_NewRegion(
                         "cudaSynchronize", NULL, scorep_cuda_sync_file_handle,
-                        0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_WRAPPER );
+                        0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_IMPLICIT_BARRIER );
                 }
 
 
@@ -3283,8 +3280,8 @@ scorep_cupti_callbacks_finalize()
         SCOREP_CUPTI_LOCK();
         if ( !scorep_cupti_callbacks_finalized && scorep_cupti_callbacks_initialized )
         {
-            UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_CUDA,
-                                    "[CUPTI Callbacks] Finalizing ... " );
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                                "[CUPTI Callbacks] Finalizing ... " );
 
             /* create the global CUDA communication group before the structures
                are destroyed */
