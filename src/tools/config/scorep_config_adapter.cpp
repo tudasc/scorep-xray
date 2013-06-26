@@ -256,6 +256,13 @@ SCOREP_Config_CudaAdapter::SCOREP_Config_CudaAdapter()
 }
 
 void
+SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string> &          libs,
+                                    SCOREP_Config_LibraryDependencies& deps )
+{
+    libs.push_back( "lib" + m_library );
+}
+
+void
 SCOREP_Config_CudaAdapter::addIncFlags( std::string &incflags, bool build_check )
 {
     if ( m_is_enabled )

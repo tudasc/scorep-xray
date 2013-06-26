@@ -214,6 +214,9 @@ public:
     virtual void
     addIncFlags( std::string &incflags,
                  bool         build_check );
+    virtual void
+    addLibs( std::deque<std::string> &          libs,
+             SCOREP_Config_LibraryDependencies& deps );
 };
 
 /* **************************************************************************************
