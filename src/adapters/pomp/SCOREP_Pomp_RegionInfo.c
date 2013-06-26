@@ -179,10 +179,11 @@ scorep_pomp_init_region( SCOREP_Pomp_Region* region )
 void
 scorep_pomp_register_region( SCOREP_Pomp_Region* region )
 {
-    char*             region_name = 0;
-    SCOREP_RegionType type_outer  = SCOREP_REGION_UNKNOWN;
-    SCOREP_RegionType type_inner  = SCOREP_REGION_UNKNOWN;
-    int32_t           start, end;
+    char*              region_name = 0;
+    SCOREP_RegionType  type_outer  = SCOREP_REGION_UNKNOWN;
+    SCOREP_RegionType  type_inner  = SCOREP_REGION_UNKNOWN;
+    SCOREP_AdapterType paradigm    = SCOREP_ADAPTER_POMP;
+    int32_t            start, end;
 
     /* Assume that all regions from one file are registered in a row.
        Thus, remember the last file handle and reuse it if the next region stems
@@ -198,6 +199,12 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
                      "Region type %d not found in region type table.",
                      region->regionType );
         exit( EXIT_FAILURE );
+    }
+
+    /* Check paradigm */
+    if ( region->regionType == SCOREP_Pomp_UserRegion )
+    {
+        paradigm = SCOREP_ADAPTER_USER;
     }
 
     /* Evtl. register new source file */
@@ -269,7 +276,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
                                                            last_file,
                                                            start,
                                                            end,
-                                                           SCOREP_ADAPTER_POMP,
+                                                           paradigm,
                                                            type_outer );
         free( region_name );
     }
@@ -295,7 +302,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
                                                            last_file,
                                                            region->startLine2,
                                                            region->endLine1,
-                                                           SCOREP_ADAPTER_POMP,
+                                                           paradigm,
                                                            type_inner );
         free( region_name );
     }
