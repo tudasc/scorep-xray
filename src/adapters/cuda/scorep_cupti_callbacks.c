@@ -106,6 +106,9 @@ static bool scorep_cupti_callbacks_finalized   = false;
 /* flag: Are CUPTI callbacks enabled? */
 static bool scorep_cupti_callbacks_enabled = false;
 
+/* flag: Are CUPTI callbacks driver API domain enabled? */
+static bool is_driver_domain_enabled = false;
+
 /* flag: tracing of CUDA runtime API enabled? */
 static bool record_runtime_api = false;
 
@@ -345,6 +348,7 @@ scorep_cupti_callbacks_enable( bool enable )
                 SCOREP_CUPTI_CALL( cuptiEnableDomain( 1, scorep_cupti_callbacks_subscriber,
                                                       CUPTI_CB_DOMAIN_DRIVER_API ) );
 
+                is_driver_domain_enabled       = true;
                 scorep_cupti_callbacks_enabled = true;
             }
 
@@ -370,6 +374,7 @@ scorep_cupti_callbacks_enable( bool enable )
     {
         SCOREP_CUPTI_CALL( cuptiEnableAllDomains( 0, scorep_cupti_callbacks_subscriber ) );
 
+        is_driver_domain_enabled       = false;
         scorep_cupti_callbacks_enabled = false;
     }
 
@@ -1882,7 +1887,7 @@ scorep_cupticb_synchronize_context( SCOREP_Location* location )
 {
     uint64_t time;
 
-    if ( record_driver_api )
+    if ( is_driver_domain_enabled )
     {
         SCOREP_CUDA_DRIVER_CALL( cuCtxSynchronize() );
         time = SCOREP_GetClockTicks();
@@ -2106,7 +2111,8 @@ handle_cuda_kernel( const CUpti_CallbackData* cbInfo,
         if ( scorep_cupti_events_enabled && !scorep_cupti_activity_is_buffer_empty( context->cuda_context ) )
         {
             /* write the event records */
-            time = scorep_cupticb_synchronize_context( context->ptid );
+
+            time = scorep_cupticb_synchronize_context( context->scorep_host_location );
         }
         else
 #endif
@@ -2212,7 +2218,7 @@ handle_cuda_kernel( const CUpti_CallbackData* cbInfo,
                 {
                     /* synchronize context before
                        (assume that the given context is the current one) */
-                    time = scorep_cupticb_synchronize_context( context->ptid );
+                    time = scorep_cupticb_synchronize_context( context->scorep_host_location );
                 }
 
                 // TODO: set counter to zero
@@ -2597,8 +2603,8 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
             {
                 context->location_id = scorep_cupti_location_counter++;
 
-                /* create window on every location, where it is used */
-                SCOREP_RmaWinCreate( scorep_cuda_interim_window_handle );
+                /* create window on every location, where it is used
+                   SCOREP_RmaWinCreate( scorep_cuda_interim_window_handle );*/
             }
 
             if ( SCOREP_CUPTI_NO_ID == stream->location_id )
@@ -2933,8 +2939,6 @@ handle_cuda_memcpy_default( const CUpti_CallbackData* cbInfo,
                            cuDstDevPtr );
 
     ENABLE_CUDRV_CALLBACKS();
-    /* reset time, due to tracing of cuPointerGetAttribute()
-       time = scorep_pform_wtime();*/
 
     /* get memory copy direction */
     kind = get_cuda_memcpy_kind( srcMemType, dstMemType );
@@ -3040,8 +3044,8 @@ handle_cuda_runtime_memcpy_async( const CUpti_CallbackData* cbInfo,
         {
             context->location_id = scorep_cupti_location_counter++;
 
-            /* create window on every location, where it is used */
-            SCOREP_RmaWinCreate( scorep_cuda_interim_window_handle );
+            /* create window on every location, where it is used
+               SCOREP_RmaWinCreate( scorep_cuda_interim_window_handle );*/
         }
 
         time = SCOREP_GetClockTicks();

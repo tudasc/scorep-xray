@@ -903,7 +903,7 @@ scorep_cupti_context_finalize( scorep_cupti_context_t* context )
 
         if ( scorep_cuda_record_gpumemusage == SCOREP_CUDA_GPUMEMUSAGE_AND_MISSING_FREES )
         {
-            printf( "[CUPTI] Free of %d bytes GPU memory missing!", scorepMem->size );
+            UTILS_WARNING( "[CUPTI] Free of %d bytes GPU memory missing!", scorepMem->size );
         }
 
         context->cuda_mallocs = scorepMem->next;
