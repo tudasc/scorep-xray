@@ -77,9 +77,9 @@ AM_CONDITIONAL([HAVE_LOCKFILE_PROGS],
 # used for EXTRA_DIST in Makefile.am
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
 
-AC_SCOREP_HAVE_CONFIG_TOOL([otf2],   [3], [0])
-AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [1], [0])
-AC_SCOREP_HAVE_CONFIG_TOOL([cube],   [4], [2])
+AC_SCOREP_HAVE_CONFIG_TOOL([otf2],   [3])
+AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [2])
+AC_SCOREP_HAVE_CONFIG_TOOL([cube],   [4])
 
 # handle external package's subdir configures
 AS_IF([test "x${scorep_have_opari2_config}" = "xno"],
