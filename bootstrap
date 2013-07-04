@@ -6,17 +6,21 @@
 AUTORECONF      = autoreconf
 AUTORECONFFLAGS = -Wall --no-recursive
 
-CONFIGURES = configure \
+LOCAL_CONFIGURES = \
+	configure \
 	build-backend/configure \
 	build-frontend/configure \
 	build-mpi/configure \
-	build-score/configure \
+	build-score/configure
+
+SUB_CONFIGURES = \
 	vendor/opari2/configure \
 	vendor/otf2/configure
 
-.PHONY: all $(CONFIGURES) clean clean-local
-all: $(CONFIGURES)
-$(CONFIGURES): clean-local
+.PHONY: all local $(LOCAL_CONFIGURES) $(SUB_CONFIGURES) clean clean-local
+all: local $(SUB_CONFIGURES)
+local: $(LOCAL_CONFIGURES)
+$(LOCAL_CONFIGURES): clean-local
 
 vendor/opari2/configure:
 	@$(MAKE) -C vendor/opari2 -f bootstrap AUTORECONF=$(AUTORECONF)
