@@ -65,7 +65,7 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
 
     scorep_mutex** mutex = ( scorep_mutex** )scorepMutex;
     *mutex = malloc( sizeof( **mutex ) );
-    if ( !mutex )
+    if ( !*mutex )
     {
         return UTILS_ERROR_POSIX( "Can't allocate lock object" );
     }
@@ -97,10 +97,8 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
         return SCOREP_SUCCESS;
     }
 
-    if ( ( *mutex )->state != SCOREP_MUTEXT_MARKER_UNLOCKED )
-    {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT, "Trying to destroy an locked mutex." );
-    }
+    UTILS_BUG_ON( ( *mutex )->state == SCOREP_MUTEXT_MARKER_LOCKED,
+                  "Trying to destroy an locked mutex." );
 
     free( *mutex );
     *mutex = NULL;
