@@ -47,7 +47,7 @@ fi
 ])
 
 
-AC_DEFUN_ONCE([AC_SCOREP_ON_DEBUG_OPTION], [
+AC_DEFUN([AC_SCOREP_ON_DEBUG_OPTION], [
     AS_IF([test  "x${ac_scorep_enable_debug}" = "xyes"], [
         AC_DEFINE([HAVE_]AFS_PACKAGE_SYM_CAPS[_DEBUG], [1],
             [Define to 1 to enable internal debug messages (like NDEBUG).])
