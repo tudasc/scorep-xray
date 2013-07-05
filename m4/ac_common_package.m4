@@ -96,11 +96,14 @@ AC_SUBST([PACKAGE_SYM_CAPS], AFS_PACKAGE_SYM_CAPS)
 # AC_SCOREP_DEFINE_HAVE(VARIABLE, VALUE[, DESCRIPTION])
 # ------------------------------------------------------
 # Like AC_DEFINE, but prepends the HAVE_ prefix and also defines the
-# HAVE_BACKEND_ variant, if in cross mode.
+# HAVE_'PACKAGE_BUILD'_ variant, if in a sub configure by utilizing the
+# AFS_PACKAGE_BUILD macro.
 #
 AC_DEFUN([AC_SCOREP_DEFINE_HAVE], [
-AC_DEFINE(HAVE_[]$1,         [$2], [$3])
-AC_DEFINE(HAVE_BACKEND_[]$1, [$2], [$3])
+AC_DEFINE([HAVE_]$1, [$2], [$3])
+m4_ifdef([AFS_PACKAGE_BUILD], [
+    AC_DEFINE([HAVE_]AFS_PACKAGE_BUILD[_]$1, [$2], [$3])
+])
 ])
 
 # AC_SCOREP_COND_HAVE(VARIABLE, CONDITION[, DESCRIPTION[, COND_TRUE[, COND_FALSE]]])
