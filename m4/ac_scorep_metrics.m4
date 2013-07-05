@@ -108,7 +108,7 @@ AC_MSG_RESULT([$ac_scorep_have_papi])
 AC_SCOREP_COND_HAVE([PAPI],
                     [test "x${ac_scorep_have_papi}" = "xyes"],
                     [Defined if libpapi is available.],
-                    [AS_IF([test -n ${ac_scorep_papi_lib_dir}],
+                    [AS_IF([test "x${ac_scorep_papi_lib_dir}" != "x"],
                          [AC_SUBST([SCOREP_PAPI_LDFLAGS], ["-L${ac_scorep_papi_lib_dir} -R${ac_scorep_papi_lib_dir}"])],
                          [AC_SUBST([SCOREP_PAPI_LDFLAGS], [""])])
                      AC_SUBST([SCOREP_PAPI_LIBS],    ["-l${ac_scorep_papi_lib_name} ${ac_scorep_papi_additional_libs}"])],
