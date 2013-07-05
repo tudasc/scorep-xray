@@ -26,7 +26,7 @@ AC_PREFIX_DEFAULT([/opt/scorep])
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
-AC_SCOREP_COMMON_PACKAGE([scorep], [subst-only])
+AFS_PACKAGE_INIT
 
 # don't detect and load defaults in nested configures (e.g. otf2)
 AS_IF([test ! -n "$ac_scorep_platform_data_provided" || \

@@ -98,7 +98,7 @@ AC_SCOREP_SVN_CONTROLLED
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
-AC_SCOREP_COMMON_PACKAGE([scorep])
+AFS_PACKAGE_INIT([MPI backend])
 
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])

@@ -14,7 +14,7 @@ AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
 
 AC_SCOREP_SVN_CONTROLLED
 
-AC_SCOREP_COMMON_PACKAGE([scorep])
+AFS_PACKAGE_INIT([score])
 
 # CXX given, find corresponding CC for utilities/filter                                                             
 # Do this before calls to AC_PROG_*                                                                                 

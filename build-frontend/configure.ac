@@ -49,7 +49,7 @@ AS_IF([test "x${scorep_have_score_build}" = "xno"],
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
-AC_SCOREP_COMMON_PACKAGE([scorep])
+AFS_PACKAGE_INIT([frontend])
 
 AM_CONDITIONAL([BUILD_TESTS], [true])
 AM_CONDITIONAL([CROSS_BUILD], [true])
