@@ -1,49 +1,96 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2012,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2012,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2012,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2012,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
-AC_DEFUN([AC_SCOREP_COMMON_PACKAGE], [
+## file       ac_common_package.m4
+## maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
+
+# AFS_PACKAGE_INIT([BUILD-NAME])
+# ------------------------------------------------------
+# Common AC_DEFINE's and AC_SUBST's for the package based on its name.
+#
+# List of defined autoconf macros:
+#  `AFS_PACKAGE_SYM`::        The tarname of the package in lower case
+#  `AFS_PACKAGE_SYM_CAPS`::   The tarname of the package in upper case
+# List of provided automake substitutions:
+#  `PACKAGE_SYM`::            The value of AFS_PACKAGE_SYM
+#  `PACKAGE_SYM_CAPS`::       The value of AFS_PACKAGE_SYM_CAPS
+#
+# BUILD-NAME should be non-blank for sub-configures. In this case there will
+# also be the following definitions:
+#
+# List of defined autoconf macros:
+#  `AFS_PACKAGE_BUILD_NAME`:: The normalized name of the build (e.g. 'backend',
+#                             'MPI backend')
+#  `AFS_PACKAGE_BUILD`::      The build name usable as a symbol in upper case
+#                             (e.g. BACKEND, MPI_BACKEND)
+# List of provided config header defines:
+#  `PACKAGE_BUILD_NAME`::     The value of AFS_PACKAGE_BUILD_NAME as a string
+#                             constant
+#  `PACKAGE_BUILD`::          The value of AFS_PACKAGE_BUILD
+#  `PACKAGE_SRCDIR`::         The absolute path of the source directory as
+#                             string constant
+#  `PACKAGE_BUILDDIR`::       The absolute path of the build directory as string
+#                             constant
+#  `PACKAGE_SYM`::            The value of AFS_PACKAGE_SYM
+#  `PACKAGE_SYM_CAPS`::       The value of AFS_PACKAGE_SYM_CAPS
+#
+AC_DEFUN_ONCE([AFS_PACKAGE_INIT], [
 AC_REQUIRE([AM_INIT_AUTOMAKE])
 
-m4_define([$1_UP], [m4_toupper($1)])
-m4_define([$1_DOWN], [m4_tolower($1)])
+m4_define([AFS_PACKAGE_SYM],      m4_tolower(AC_PACKAGE_TARNAME))dnl
+m4_define([AFS_PACKAGE_SYM_CAPS], m4_toupper(AC_PACKAGE_TARNAME))dnl
 
-m4_ifval([$2], [], [
+m4_ifnblank([$1], [
+    m4_define([AFS_PACKAGE_BUILD_NAME], m4_normalize($1))dnl
+    AC_DEFINE_UNQUOTED([PACKAGE_BUILD_NAME], "AFS_PACKAGE_BUILD_NAME",
+        [Name of the sub-build.])
+
+    m4_define([AFS_PACKAGE_BUILD],
+        m4_bpatsubst(m4_toupper(m4_normalize($1)), [[^A-Z0-9]+], [_]))
+    AC_DEFINE_UNQUOTED([PACKAGE_BUILD], AFS_PACKAGE_BUILD,
+        [Symbol name of the sub-build.])
+
     _AC_SRCDIRS([.])
     AC_DEFINE_UNQUOTED([PACKAGE_SRCDIR],   ["$ac_abs_srcdir/.."], [Source dir])
     AC_DEFINE_UNQUOTED([PACKAGE_BUILDDIR], ["$ac_abs_builddir"],  [Build dir])
 
-    AC_DEFINE_UNQUOTED(
-        [PACKAGE_SYM],
-        $1_DOWN,
+    AC_DEFINE_UNQUOTED([PACKAGE_SYM], AFS_PACKAGE_SYM,
         [The package name usable as a symbol.])
 
-    AC_DEFINE_UNQUOTED(
-        [PACKAGE_SYM_CAPS],
-        $1_UP,
+    AC_DEFINE_UNQUOTED([PACKAGE_SYM_CAPS], AFS_PACKAGE_SYM_CAPS,
         [The package name usable as a symbol in all caps.])
 ])
 
-AC_SUBST([PACKAGE_SYM],      $1_DOWN)
-AC_SUBST([PACKAGE_SYM_CAPS], $1_UP)
-
-AH_TEMPLATE([HAVE_]$1_UP[_DEBUG],
-            [Define to 1 to enable internal debug messages (like NDEBUG).])
-AH_TEMPLATE([HAVE_]$1_UP[_NO_ASSERT],
-            [Define to 1 to disable assertions (like NDEBUG).])
+AC_SUBST([PACKAGE_SYM],      AFS_PACKAGE_SYM)
+AC_SUBST([PACKAGE_SYM_CAPS], AFS_PACKAGE_SYM_CAPS)
 ])
 
 # AC_SCOREP_DEFINE_HAVE(VARIABLE, VALUE[, DESCRIPTION])
