@@ -36,7 +36,7 @@ SCOREP_USER_METRIC_EXTERNAL( scorep_globalMetric );
 void
 Jacobi( struct JacobiData* data )
 {
-    SCOREP_USER_FUNC_BEGIN();
+    //SCOREP_USER_FUNC_BEGIN();
     /*use local pointers for performance reasons*/
     double* afU, * afF;
     int     i, j;
@@ -127,5 +127,5 @@ Jacobi( struct JacobiData* data )
         Finish( data );
         exit( 1 );
     }
-    SCOREP_USER_FUNC_END();
+    //SCOREP_USER_FUNC_END();
 }
