@@ -100,20 +100,6 @@
    @{
  */
 
-/** internal array of statuses */
-extern MPI_Status* scorep_my_status_array;
-
-/** size of internal status array */
-extern int32_t scorep_my_status_array_size;
-
-/**
- * Get a pointer to a status array of at least 'size' statuses
- * @param  size minimal requested size
- * @return pointer to status array
- */
-extern MPI_Status*
-scorep_get_status_array( int32_t size );
-
 /** Flag to indicate whether MPI Profiling hooks are turned on or off.
  */
 extern bool scorep_mpi_hooks_on;
