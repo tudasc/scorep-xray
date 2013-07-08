@@ -29,9 +29,9 @@
  */
 
 
-#include <SCOREP_Location.h>
 #include <SCOREP_Subsystem.h>
 
+typedef struct SCOREP_Location SCOREP_Location;
 
 size_t
 scorep_subsystems_get_number( void );

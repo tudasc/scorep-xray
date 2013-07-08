@@ -31,7 +31,11 @@
 
 #include <SCOREP_ErrorCodes.h>
 #include <SCOREP_Types.h>
-#include <SCOREP_Location.h>
+
+#include <stddef.h>
+
+typedef struct SCOREP_Location SCOREP_Location;
+
 
 /**
  * @defgroup SCOREP_Subsystem SCOREP Subsystem Management
@@ -113,13 +117,13 @@ typedef struct SCOREP_Subsystem
      * Callback to register a location to the subsystem.
      *
      */
-    SCOREP_ErrorCode ( * subsystem_init_location )( struct SCOREP_Location* );
+    SCOREP_ErrorCode ( * subsystem_init_location )( SCOREP_Location* );
 
     /**
      * Finalizes the per-location data from this subsystem.
      *
      */
-    void ( * subsystem_finalize_location )( struct SCOREP_Location* );
+    void ( * subsystem_finalize_location )( SCOREP_Location* );
 
     /**
      * Called before the unification starts.

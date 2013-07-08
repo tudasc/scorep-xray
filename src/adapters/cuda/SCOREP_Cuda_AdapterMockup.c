@@ -27,7 +27,11 @@
  */
 
 #include <config.h>
+
 #include <SCOREP_Subsystem.h>
+#include <SCOREP_DefinitionHandles.h>
+
+#include <stdbool.h>
 
 const
 SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter =

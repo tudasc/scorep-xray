@@ -26,19 +26,14 @@
 
 
 #include <config.h>
-
+#include "scorep_subsystem.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 
-
 #include <UTILS_Error.h>
 
-
 #include <SCOREP_Location.h>
-
-
-#include "scorep_subsystem.h"
 #include "scorep_environment.h"
 
 
