@@ -9,8 +9,13 @@
 #endif
 #include "jacobi.h"
 
+#include <scorep/SCOREP_User.h>
+
 #define U( j, i ) data->afU[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define F( j, i ) data->afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
+
+SCOREP_GLOBAL_REGION_DEFINE( scorep_region2 );
+SCOREP_USER_METRIC_GLOBAL( scorep_globalMetric );
 
 /*
  * setting values, init mpi, omp etc
@@ -199,6 +204,13 @@ main( int argc, char** argv )
 
     struct JacobiData myData;
 
+    SCOREP_USER_METRIC_LOCAL( scorep_localMetric );
+
+    SCOREP_USER_METRIC_INIT( scorep_globalMetric, "GLOBAL_METRIC", "s", SCOREP_USER_METRIC_TYPE_INT64,
+                             SCOREP_USER_METRIC_CONTEXT_CALLPATH );
+    SCOREP_USER_METRIC_INIT( scorep_localMetric, "LOCAL_METRIC", "s", SCOREP_USER_METRIC_TYPE_DOUBLE,
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL );
+    SCOREP_USER_METRIC_DOUBLE( scorep_localMetric, 3.0 );
 
     /* sets default values or reads from stdin
      * inits MPI and OpenMP if needed

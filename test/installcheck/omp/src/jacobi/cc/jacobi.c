@@ -25,14 +25,19 @@
 #include "jacobi.h"
 #include <opari2/pomp2_lib.h>
 
+#include <scorep/SCOREP_User.h>
+
 #define U( j, i ) afU[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define F( j, i ) afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define UOLD( j, i ) uold[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 
+SCOREP_GLOBAL_REGION_EXTERNAL( scorep_region2 );
+SCOREP_USER_METRIC_EXTERNAL( scorep_globalMetric );
 
 void
 Jacobi( struct JacobiData* data )
 {
+    SCOREP_USER_FUNC_BEGIN();
     /*use local pointers for performance reasons*/
     double* afU, * afF;
     int     i, j;
@@ -44,12 +49,21 @@ Jacobi( struct JacobiData* data )
     afU = data->afU;
     afF = data->afF;
 
+    SCOREP_USER_REGION_DEFINE( scorep_iteration );
+    SCOREP_USER_METRIC_LOCAL( scorep_localMetric );
+    SCOREP_USER_METRIC_INIT( scorep_localMetric, "LOCAL_METRIC_PARALLEL", "s", SCOREP_USER_METRIC_TYPE_DOUBLE,
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL );
+    SCOREP_USER_METRIC_INT64( scorep_globalMetric, 1 );
+
     if ( uold )
     {
         ax       = 1.0 / ( data->fDx * data->fDx );   /* X-direction coef */
         ay       = 1.0 / ( data->fDy * data->fDy );   /* Y_direction coef */
         b        = -2.0 * ( ax + ay ) - data->fAlpha; /* Central coeff */
         residual = 10.0 * data->fTolerance;
+
+        SCOREP_USER_REGION_BEGIN( scorep_region2, "PHASE",
+                                  SCOREP_USER_REGION_TYPE_PHASE );
 
         /* POMP2 user instrumentation
            Not inserted as pragma to test on-the-fly registration.
@@ -59,13 +73,23 @@ Jacobi( struct JacobiData* data )
         POMP2_Region_handle pomp_user_region_handle = NULL;
         POMP2_Begin( &pomp_user_region_handle,
                      "82*regionType=region*sscl=jacobi.c:63:63*escl=jacobi.c:102:102*userRegionName=loop**" );
-        while ( data->iIterCount < data->iIterMax && residual > data->fTolerance )
+        while ( data->iIterCount < data->iIterMax&& residual > data->fTolerance )
         {
+            SCOREP_USER_REGION_BEGIN( scorep_iteration, "ITERATION",
+                                      SCOREP_USER_REGION_TYPE_DYNAMIC );
             residual = 0.0;
 
             /* copy new solution into old */
 #pragma omp parallel
             {
+                SCOREP_USER_REGION_DEFINE( scorep_region1 );
+                SCOREP_USER_REGION_BEGIN( scorep_region1, "REGION1",
+                                          SCOREP_USER_REGION_TYPE_COMMON );
+                SCOREP_USER_PARAMETER_INT64( "INT_PARAM", -1 );
+                SCOREP_USER_PARAMETER_UINT64( "UINT_PARAM", 3 );
+                SCOREP_USER_PARAMETER_STRING( "STRING_PARAM", "test" );
+                SCOREP_USER_METRIC_DOUBLE( scorep_localMetric, 3.0 );
+
 #pragma omp for private(j, i)
                 for ( j = 1; j < data->iRows - 1; j++ )
                 {
@@ -75,6 +99,7 @@ Jacobi( struct JacobiData* data )
                     }
                 }
 
+                SCOREP_USER_REGION_END( scorep_region1 );
 
                 /* compute stencil, residual and update */
 #pragma omp for private(j, i, fLRes) reduction(+:residual)
@@ -98,9 +123,13 @@ Jacobi( struct JacobiData* data )
             /* error check */
             ( data->iIterCount )++;
             residual = sqrt( residual ) / ( data->iCols * data->iRows );
+
+            SCOREP_USER_REGION_END( scorep_iteration );
         } /* while */
 
         POMP2_End( &pomp_user_region_handle );
+
+        SCOREP_USER_REGION_END( scorep_region2 );
 
         data->fResidual = residual;
         free( uold );
@@ -111,4 +140,5 @@ Jacobi( struct JacobiData* data )
         Finish( data );
         exit( 1 );
     }
+    SCOREP_USER_FUNC_END();
 }

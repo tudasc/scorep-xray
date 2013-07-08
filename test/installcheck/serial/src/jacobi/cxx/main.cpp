@@ -6,15 +6,19 @@
 #include <sys/time.h>
 #include "jacobi.h"
 
+#include <scorep/SCOREP_User.h>
 
 #define U( j, i ) data.afU[ ( ( j ) - data.iRowFirst ) * data.iCols + ( i ) ]
 #define F( j, i ) data.afF[ ( ( j ) - data.iRowFirst ) * data.iCols + ( i ) ]
 
 using namespace std;
 
+SCOREP_GLOBAL_REGION_DEFINE( scorep_region2 );
+SCOREP_USER_METRIC_GLOBAL( scorep_globalMetric );
+
 // setting values, init mpi, omp etc
 void
-Init( JacobiData &data, int &argc, char** argv )
+Init( JacobiData& data, int& argc, char** argv )
 {
     int   ITERATIONS = 1000;
     char* env        = getenv( "ITERATIONS" );
@@ -68,7 +72,7 @@ Init( JacobiData &data, int &argc, char** argv )
 
 // final cleanup routines
 void
-Finish( JacobiData &data )
+Finish( JacobiData& data )
 {
     delete[] data.afU;
     delete[] data.afF;
@@ -78,7 +82,7 @@ Finish( JacobiData &data )
 
 // print result summary
 void
-PrintResults( const JacobiData &data )
+PrintResults( const JacobiData& data )
 {
     if ( data.iMyRank == 0 )
     {
@@ -96,7 +100,7 @@ PrintResults( const JacobiData &data )
 // Initializes matrix
 // Assumes exact solution is u(x,y) = (1-x^2)*(1-y^2)
 void
-InitializeMatrix( JacobiData &data )
+InitializeMatrix( JacobiData& data )
 {
     /* Initilize initial condition and RHS */
     for ( int j = data.iRowFirst; j <= data.iRowLast; j++ )
@@ -119,7 +123,7 @@ InitializeMatrix( JacobiData &data )
 
 // Checks error between numerical and exact solution
 void
-CheckError( JacobiData &data )
+CheckError( JacobiData& data )
 {
     double error = 0.0;
 
@@ -159,6 +163,13 @@ main( int argc, char** argv )
 
     JacobiData myData;
 
+    SCOREP_USER_METRIC_LOCAL( scorep_localMetric );
+
+    SCOREP_USER_METRIC_INIT( scorep_globalMetric, "GLOBAL_METRIC", "s", SCOREP_USER_METRIC_TYPE_INT64,
+                             SCOREP_USER_METRIC_CONTEXT_CALLPATH );
+    SCOREP_USER_METRIC_INIT( scorep_localMetric, "LOCAL_METRIC", "s", SCOREP_USER_METRIC_TYPE_DOUBLE,
+                             SCOREP_USER_METRIC_CONTEXT_GLOBAL );
+    SCOREP_USER_METRIC_DOUBLE( scorep_localMetric, 3.0 );
 
     // sets default values or reads from stdin
     // inits MPI and OpenMP if needed

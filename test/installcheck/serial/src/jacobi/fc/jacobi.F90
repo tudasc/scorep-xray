@@ -1,3 +1,8 @@
+#ifndef SCOREP_COMPILER_PGI
+#include "scorep/SCOREP_User.inc"
+#else
+#include <scorep/SCOREP_User_Pgi.inc>
+#endif
 module JacobiMod
     use VariableDef
     implicit none 
@@ -30,13 +35,27 @@ module JacobiMod
          
         !.. Local Scalars .. 
         integer :: i, j, iErr
-        double precision :: ax, ay, b, residual, fLRes, tmpResd
+        integer * 8 :: scorep_metric_int_val
+        double precision :: ax, ay, b, residual, fLRes, tmpResd, scorep_metric_double_val
          
         !.. Local Arrays .. 
         double precision, allocatable :: uold(:,:)
          
         !.. Intrinsic Functions .. 
         intrinsic DBLE, SQRT
+
+		SCOREP_USER_REGION_DEFINE(region1)
+		SCOREP_USER_REGION_DEFINE(region2)
+		SCOREP_USER_REGION_DEFINE(region3)
+		SCOREP_USER_FUNC_DEFINE()
+		SCOREP_USER_METRIC_LOCAL(local2)
+		SCOREP_USER_METRIC_LOCAL(local3)
+		SCOREP_PARAMETER_DEFINE(iparam)
+		SCOREP_PARAMETER_DEFINE(uparam)
+		SCOREP_PARAMETER_DEFINE(sparam)
+		
+		scorep_metric_double_val=3.0;
+		scorep_metric_int_val=-1;
 
         allocate(uold (0 : myData%iCols -1, 0 : myData%iRows -1))
 
@@ -48,16 +67,33 @@ module JacobiMod
             ay = 1.0d0 / (myData%fDx * myData%fDx)      ! Y-direction coef
             b = -2.0d0 * (ax + ay) - myData%fAlpha      ! Central coeff  
             residual = 10.0d0 * myData%fTolerance
-        
+
+			SCOREP_USER_METRIC_INIT(local2,"local2","s",SCOREP_USER_METRIC_TYPE_INT64,SCOREP_USER_METRIC_CONTEXT_GLOBAL)
+      		SCOREP_USER_METRIC_INIT(local3,"local3","s",SCOREP_USER_METRIC_TYPE_DOUBLE,SCOREP_USER_METRIC_CONTEXT_GLOBAL)
+			SCOREP_USER_FUNC_BEGIN("ScorepTest")
+			SCOREP_USER_REGION_INIT(region2,"Region2",SCOREP_USER_REGION_TYPE_COMMON)
+			SCOREP_USER_REGION_ENTER(region2)
+        	SCOREP_PARAMETER_INT64(iparam,"iparam",scorep_metric_int_val)
+      		SCOREP_PARAMETER_STRING(sparam,"sparam","hello")
+        	
+        	SCOREP_USER_METRIC_INT64(local2, scorep_metric_int_val)
+      		SCOREP_USER_METRIC_DOUBLE(local3, scorep_metric_double_val)
+        	    	
             do while (myData%iIterCount < myData%iIterMax .and. residual > myData%fTolerance)
-                residual = 0.0d0
+            
+        		SCOREP_USER_REGION_BEGIN(region3,"Iteration",SCOREP_USER_REGION_TYPE_DYNAMIC)
         
+                residual = 0.0d0
+                
+        			SCOREP_USER_REGION_BEGIN(region1,"Region1",SCOREP_USER_REGION_TYPE_PHASE)
             ! Copy new solution into old
                    do j = 1, myData%iRows - 2
                        do i = 1, myData%iCols - 2
                            uold(i, j) = myData%afU(i, j)
                        end do
                    end do
+                   SCOREP_USER_REGION_END(region1)
+                   
                   ! Compute stencil, residual, & update
                    do j = myData%iRowFirst + 1, myData%iRowLast - 1
                        do i = 1, myData%iCols - 2
@@ -77,9 +113,14 @@ module JacobiMod
                  ! Error check 
                  myData%iIterCount = myData%iIterCount + 1      
                  residual = SQRT(residual) / DBLE(myData%iCols * myData%iRows)
-             
+            
+				SCOREP_USER_REGION_END(region3) 
             ! End iteration loop 
             end do
+            
+            SCOREP_USER_REGION_END(region2)
+            SCOREP_USER_FUNC_END()
+            
             myData%fResidual = residual
             deallocate(uold)
         else
