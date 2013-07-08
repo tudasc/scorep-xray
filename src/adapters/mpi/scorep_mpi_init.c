@@ -20,27 +20,18 @@
  * @status     alpha
  * @ingroup    MPI_Wrapper
  *
- * @brief Contains the initialization function implementations for the measurement system.
+ * @brief Contains the initialization function implementations for the
+ * measurement system.
  */
 
 #include <config.h>
 
-#include <stdbool.h>
-
-#include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME MPI
 #include <UTILS_Debug.h>
 
-#include <SCOREP_Location.h>
-#include <SCOREP_Mpi_Init.h>
-#include <SCOREP_Mpi_Reg.h>
+#include "SCOREP_Mpi_Init.h"
 #include <SCOREP_Config.h>
-#include <SCOREP_Mpi.h>
-#include <SCOREP_RuntimeManagement.h>
-
-#include "scorep_mpi_communicator.h"
-
-#include <stdio.h>
+#include "SCOREP_Mpi.h"
 
 
 /**
@@ -124,9 +115,11 @@ void* scorep_mpi_fortran_unweighted = NULL;
 
 
 /**
-   External fortran function to retrieve the constant value MPI_STATUS_SIZE defined
-   in Fortran MPI. It is used for Fortran-C conversions.
-   @param mpi_status_size Address of a variable where the value is to be stored.
+   External fortran function to retrieve the constant value
+   MPI_STATUS_SIZE defined in Fortran MPI. It is used for Fortran-C
+   conversions.
+   @param mpi_status_size Address of a variable where the value is to
+   be stored.
  */
 extern void
 SCOREP_FORTRAN_GET_MPI_STATUS_SIZE( int* status_size );
@@ -150,13 +143,15 @@ extern void
 SCOREP_FORTRAN_GET_MPI_STATUS_IGNORE( void );
 
 /**
-   External fortran function to trigger a callback which sets MPI_STATUSES_IGNORE.
+   External fortran function to trigger a callback which sets
+   MPI_STATUSES_IGNORE.
  */
 extern void
 SCOREP_FORTRAN_GET_MPI_STATUSES_IGNORE( void );
 
 /**
-   External fortran function to trigger a callback which sets MPI_STATUSES_IGNORE.
+   External fortran function to trigger a callback which sets
+   MPI_STATUSES_IGNORE.
  */
 extern void
 SCOREP_FORTRAN_GET_MPI_UNWEIGHTED( void );
@@ -166,8 +161,9 @@ SCOREP_FORTRAN_GET_MPI_UNWEIGHTED( void );
 static size_t scorep_mpi_subsystem_id;
 
 /**
-   Implementation of the adapter_register function of the @ref SCOREP_Subsystem struct
-   for the initialization process of the MPI adapter.
+   Implementation of the adapter_register function of the @ref
+   SCOREP_Subsystem struct for the initialization process of the MPI
+   adapter.
  */
 static SCOREP_ErrorCode
 scorep_mpi_register( size_t subsystem_id )
@@ -178,9 +174,11 @@ scorep_mpi_register( size_t subsystem_id )
 
     return SCOREP_ConfigRegister( "mpi", scorep_mpi_configs );
 }
+
 /**
-   Implementation of the subsystem_init function of the @ref SCOREP_Subsystem struct
-   for the initialization process of the MPI adapter.
+   Implementation of the subsystem_init function of the @ref
+   SCOREP_Subsystem struct for the initialization process of the MPI
+   adapter.
  */
 static SCOREP_ErrorCode
 scorep_mpi_init_adapter( void )
@@ -211,8 +209,9 @@ scorep_mpi_init_adapter( void )
 }
 
 /**
-   Implementation of the subsystem_init_location function of the @ref SCOREP_Subsystem struct
-   for the initialization process of the MPI adapter.
+   Implementation of the subsystem_init_location function of the @ref
+   SCOREP_Subsystem struct for the initialization process of the MPI
+   adapter.
  */
 static SCOREP_ErrorCode
 scorep_mpi_init_location( SCOREP_Location* locationData )
@@ -222,8 +221,9 @@ scorep_mpi_init_location( SCOREP_Location* locationData )
 }
 
 /**
-   Implementation of the adapter_finalize_location function of the @ref SCOREP_Subsystem
-   struct for the initialization process of the MPI adapter.
+   Implementation of the adapter_finalize_location function of the
+   @ref SCOREP_Subsystem struct for the initialization process of the
+   MPI adapter.
  */
 static void
 scorep_mpi_finalize_location( SCOREP_Location* locationData )
@@ -260,8 +260,9 @@ scorep_mpi_post_unify( void )
 }
 
 /**
-   Implementation of the adapter_finalize function of the @ref SCOREP_Subsystem struct
-   for the initialization process of the MPI adapter.
+   Implementation of the adapter_finalize function of the @ref
+   SCOREP_Subsystem struct for the initialization process of the MPI
+   adapter.
  */
 static void
 scorep_mpi_finalize( void )
@@ -281,8 +282,9 @@ scorep_mpi_finalize( void )
 }
 
 /**
-   Implementation of the adapter_deregister function of the @ref SCOREP_Subsystem struct
-   for the initialization process of the MPI adapter.
+   Implementation of the adapter_deregister function of the @ref
+   SCOREP_Subsystem struct for the initialization process of the MPI
+   adapter.
  */
 static void
 scorep_mpi_deregister( void )
@@ -292,9 +294,10 @@ scorep_mpi_deregister( void )
     UTILS_DEBUG_ENTRY();
 
     /* Finalize MPI.
-       MPICH somehow creates some extra processes/threads. If PMPI_Finalize is called
-       from the exit handler of SCOREP, these processes also try to execute MPI_Finalize.
-       This causes errors, thus, we test if the call to PMPI_Finalize is save.
+       MPICH somehow creates some extra processes/threads. If
+       PMPI_Finalize is called from the exit handler of SCOREP, these
+       processes also try to execute MPI_Finalize.  This causes
+       errors, thus, we test if the call to PMPI_Finalize is save.
      */
     PMPI_Initialized( &res );
     if ( res )

@@ -27,18 +27,12 @@
           Declarations common to all MPI wrappers.
  */
 
-#include <SCOREP_ErrorCodes.h>
-#include <scorep_mpi_communicator.h>
-#include <SCOREP_Mpi_Reg.h>
-#include <scorep_mpi_request.h>
+#include "scorep_mpi_communicator.h"
+#include "SCOREP_Mpi_Reg.h"
 
-#include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_DefinitionHandles.h>
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <mpi.h>
 
 #if MPI_VERSION >= 3
@@ -48,7 +42,7 @@
 #endif
 
 #if !defined( SCOREP_MPI_NO_HOOKS )
-#include <scorep_mpi_oa_hooks.h>
+#include "scorep_mpi_oa_hooks.h"
 #endif
 
 /** @defgroup MPI_Wrapper SCOREP MPI wrapper library

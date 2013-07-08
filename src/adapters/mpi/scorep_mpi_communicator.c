@@ -307,19 +307,19 @@ scorep_mpi_win_init( void )
     {
         if ( SCOREP_MPI_MAX_WIN == 0 )
         {
-            fprintf( stderr, "Environment variable SCOREP_MPI_MAX_WINDOWS was set to 0, "
-                     "thus, one-sided communication can not be recorded and is disabled. "
-                     "To avoid this warning you can disable one sided communications, "
-                     "by disabling RMA via SCOREP_MPI_ENABLE_GROUPS." );
+            UTILS_WARN_ONCE( "Environment variable SCOREP_MPI_MAX_WINDOWS was set to 0, "
+                             "thus, one-sided communication can not be recorded and is disabled. "
+                             "To avoid this warning you can disable one sided communications, "
+                             "by disabling RMA via SCOREP_MPI_ENABLE_GROUPS." );
             SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
         }
 
         if ( SCOREP_MPI_MAX_WINACC == 0 )
         {
-            fprintf( stderr, "Environment variable SCOREP_MPI_MAX_ACCESS_EPOCHS was set "
-                     "to 0, thus, one-sided communication can not be recorded and is "
-                     "disabled. To avoid this warning you can disable one sided "
-                     "communications, by disabling RMA via SCOREP_MPI_ENABLE_GROUPS." );
+            UTILS_WARN_ONCE( "Environment variable SCOREP_MPI_MAX_ACCESS_EPOCHS was set "
+                             "to 0, thus, one-sided communication can not be recorded and is "
+                             "disabled. To avoid this warning you can disable one sided "
+                             "communications, by disabling RMA via SCOREP_MPI_ENABLE_GROUPS." );
             SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
         }
 
