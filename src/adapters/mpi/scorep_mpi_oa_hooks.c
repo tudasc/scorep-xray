@@ -27,10 +27,10 @@
 
 #include <config.h>
 
-#include <SCOREP_Mpi.h>
-#include <scorep_mpi_oa_hooks.h>
+#include "SCOREP_Mpi.h"
+#include "scorep_mpi_oa_hooks.h"
 #include <UTILS_Debug.h>
-#include <scorep_mpi_oa_profile.h>
+#include "scorep_mpi_oa_profile.h"
 
 #include <stdlib.h>
 #include <stdio.h>

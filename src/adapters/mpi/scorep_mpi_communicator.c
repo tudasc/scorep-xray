@@ -24,11 +24,11 @@
  */
 
 #include <config.h>
-#include <scorep_mpi_communicator.h>
+#include "scorep_mpi_communicator.h"
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
-#include <SCOREP_Mpi.h>
+#include "SCOREP_Mpi.h"
 
 #include <UTILS_Error.h>
 

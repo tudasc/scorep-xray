@@ -26,7 +26,7 @@
 #include <config.h>
 #include <string.h>
 
-#include <SCOREP_Mpi.h>
+#include "SCOREP_Mpi.h"
 
 #include <UTILS_Error.h>
 

@@ -36,9 +36,9 @@
 
 #include <SCOREP_Config.h>
 #include <SCOREP_Types.h>
-#include <SCOREP_Mpi.h>
+#include "SCOREP_Mpi.h"
 
-#include <scorep_mpi_oa_profile.h>
+#include "scorep_mpi_oa_profile.h"
 
 
 static int64_t scorep_mpiprofiling_lateThreshold;
