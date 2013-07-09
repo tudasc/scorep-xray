@@ -34,8 +34,6 @@
 
 #include <stddef.h>
 
-typedef struct SCOREP_Location SCOREP_Location;
-
 
 /**
  * @defgroup SCOREP_Subsystem SCOREP Subsystem Management
@@ -47,7 +45,7 @@ typedef struct SCOREP_Location SCOREP_Location;
  * Each subsystem exports these callbacks in a object of type @ref SCOREP_Subsystem
    wich is describted in this module.
 
- * All @ref SCOREP_Subsystem objects are referenced by an array inside the
+ * @ref SCOREP_Subsystem objects are referenced by an array inside the
    measurement system, so the measurement system does not need to know
    explicitly which subsystems are included at compile time.
 
@@ -75,6 +73,8 @@ typedef enum
     SCOREP_SUBSYSTEM_COMMAND_CUSTOM_BASE
 } SCOREP_Subsystem_Command;
 
+
+struct SCOREP_Location;
 
 /**
  * A subsystem can provide numerous callbacks for the measurement system.
@@ -117,13 +117,13 @@ typedef struct SCOREP_Subsystem
      * Callback to register a location to the subsystem.
      *
      */
-    SCOREP_ErrorCode ( * subsystem_init_location )( SCOREP_Location* );
+    SCOREP_ErrorCode ( * subsystem_init_location )( struct SCOREP_Location* );
 
     /**
      * Finalizes the per-location data from this subsystem.
      *
      */
-    void ( * subsystem_finalize_location )( SCOREP_Location* );
+    void ( * subsystem_finalize_location )( struct SCOREP_Location* );
 
     /**
      * Called before the unification starts.

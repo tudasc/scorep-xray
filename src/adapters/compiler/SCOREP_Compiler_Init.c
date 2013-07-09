@@ -50,13 +50,13 @@ scorep_compiler_init_adapter( void );
    compiler adapter implementation.
  */
 extern SCOREP_ErrorCode
-scorep_compiler_init_location( SCOREP_Location* location );
+scorep_compiler_init_location( struct SCOREP_Location* location );
 
 /**
    The location finalize function.
  */
 static void
-scorep_compiler_finalize_location( SCOREP_Location* location );
+scorep_compiler_finalize_location( struct SCOREP_Location* location );
 
 /**
    The adapter finalize function is compiler specific. Thus it is contained in each
@@ -82,7 +82,7 @@ const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter =
 
 /* Location finalization */
 static void
-scorep_compiler_finalize_location( SCOREP_Location* locationData )
+scorep_compiler_finalize_location( struct SCOREP_Location* locationData )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "compiler adapter finalize location!" );
 }

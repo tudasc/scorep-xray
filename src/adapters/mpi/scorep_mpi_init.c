@@ -215,7 +215,7 @@ scorep_mpi_init_adapter( void )
    adapter.
  */
 static SCOREP_ErrorCode
-scorep_mpi_init_location( SCOREP_Location* locationData )
+scorep_mpi_init_location( struct SCOREP_Location* locationData )
 {
     UTILS_DEBUG_ENTRY();
     return SCOREP_SUCCESS;
@@ -227,7 +227,7 @@ scorep_mpi_init_location( SCOREP_Location* locationData )
    MPI adapter.
  */
 static void
-scorep_mpi_finalize_location( SCOREP_Location* locationData )
+scorep_mpi_finalize_location( struct SCOREP_Location* locationData )
 {
     UTILS_DEBUG_ENTRY();
 }
