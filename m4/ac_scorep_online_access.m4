@@ -24,10 +24,21 @@ ac_scorep_have_online_access="no"
 ac_scorep_have_online_access_flex="no"
 ac_scorep_have_online_access_yacc="no"
 ac_scorep_have_online_access_headers="yes"
+ac_scorep_have_online_access_getaddrinfo="no"
 
 AC_CHECK_HEADERS([stdio.h strings.h ctype.h netdb.h sys/types.h sys/socket.h arpa/inet.h netinet/in.h unistd.h string.h], 
                  [], 
                  [ac_scorep_have_online_access_headers="no"])
+
+AC_CHECK_DECL([getaddrinfo], 
+                     [ac_scorep_have_online_access_getaddrinfo="yes"], 
+                     [ac_scorep_have_online_access_getaddrinfo="no"], 
+                     [[
+#define _POSIX_SOURCE
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+                     ]])
 
 AM_PROG_LEX
 AC_MSG_CHECKING([for a suitable version of flex])
@@ -44,6 +55,7 @@ AS_IF([test "${YACC}" != "yacc"],
 
 AS_IF([test "x${ac_scorep_have_online_access_headers}" = "xyes" && \
        test "x${ac_scorep_have_online_access_flex}" = "xyes" && \
+       test "x${ac_scorep_have_online_access_getaddrinfo}" = "xyes" && \
        test "x${ac_scorep_have_online_access_yacc}" = "xyes"],
       [ac_scorep_have_online_access="yes"],
       [])
