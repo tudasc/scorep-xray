@@ -64,8 +64,8 @@ static int          scorep_mpiprofiling_timepack_pool_size = 0;
 
 scorep_mpiprofile_world_comm_dup scorep_mpiprofiling_world_comm_dup;
 
-SCOREP_MetricHandle scorep_mpiprofiling_lateSend = SCOREP_INVALID_METRIC;
-SCOREP_MetricHandle scorep_mpiprofiling_lateRecv = SCOREP_INVALID_METRIC;
+SCOREP_SamplingSetHandle scorep_mpiprofiling_lateSend = SCOREP_INVALID_METRIC;
+SCOREP_SamplingSetHandle scorep_mpiprofiling_lateRecv = SCOREP_INVALID_METRIC;
 
 
 #define _WITH_PREALLOCATION_OF_TIME_PACKS
@@ -126,7 +126,7 @@ scorep_mpiprofile_init_metrics( void )
     /* -- initialize late metrics -- */
     scorep_mpiprofiling_lateThreshold = 0.001;
 
-    scorep_mpiprofiling_lateSend =
+    SCOREP_MetricHandle lateSend_metric =
         SCOREP_Definitions_NewMetric( "late_send", "",
                                       SCOREP_METRIC_SOURCE_TYPE_OTHER,
                                       SCOREP_METRIC_MODE_ABSOLUTE_POINT,
@@ -135,7 +135,12 @@ scorep_mpiprofile_init_metrics( void )
                                       "s",
                                       SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
 
-    scorep_mpiprofiling_lateRecv =
+    scorep_mpiprofiling_lateSend = SCOREP_Definitions_NewSamplingSet( 1, &lateSend_metric,
+                                                                      SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS,
+                                                                      SCOREP_SAMPLING_SET_CPU );
+
+
+    SCOREP_MetricHandle lateRecv_metric =
         SCOREP_Definitions_NewMetric( "late_receive", "",
                                       SCOREP_METRIC_SOURCE_TYPE_OTHER,
                                       SCOREP_METRIC_MODE_ABSOLUTE_POINT,
@@ -143,6 +148,10 @@ scorep_mpiprofile_init_metrics( void )
                                       SCOREP_METRIC_BASE_DECIMAL, 0,
                                       "s",
                                       SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
+
+    scorep_mpiprofiling_lateRecv = SCOREP_Definitions_NewSamplingSet( 1, &lateRecv_metric,
+                                                                      SCOREP_METRIC_OCCURRENCE_ASYNCHRONOUS,
+                                                                      SCOREP_SAMPLING_SET_CPU );
 
     scorep_mpiprofiling_metrics_initialized = 1;
 }
