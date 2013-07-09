@@ -27,9 +27,10 @@
  */
 
 #include <config.h>
+#include "scorep_mpi_oa_profile.h"
+
 #include <stdlib.h>
 #include <stdio.h>
-#include <mpi.h>
 
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
@@ -37,8 +38,8 @@
 #include <SCOREP_Config.h>
 #include <SCOREP_Types.h>
 #include "SCOREP_Mpi.h"
-
-#include "scorep_mpi_oa_profile.h"
+#include <SCOREP_Events.h>
+#include "scorep_mpi_communicator.h"
 
 
 static int64_t scorep_mpiprofiling_lateThreshold;

@@ -32,7 +32,7 @@
 
 #include "SCOREP_Mpi.h"
 
-#include "SCOREP_Types.h"
+#include <SCOREP_Types.h>
 #include "scorep_mpi_request.h"
 
 void

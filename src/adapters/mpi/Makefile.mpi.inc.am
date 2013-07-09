@@ -48,7 +48,6 @@ libscorep_adapter_mpi_c_wrapper_la_SOURCES =                  \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Type.c             \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi.h                  \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h              \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Init.h             \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_init.c             \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator.c     \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator.h     \

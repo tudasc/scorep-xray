@@ -27,6 +27,8 @@
 #include <string.h>
 
 #include "SCOREP_Mpi.h"
+#include "scorep_mpi_communicator.h"
+#include <SCOREP_Events.h>
 
 #include <UTILS_Error.h>
 

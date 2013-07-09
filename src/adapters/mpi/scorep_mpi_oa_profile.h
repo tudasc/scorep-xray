@@ -29,6 +29,7 @@
  */
 
 
+#include <mpi.h>
 #include <SCOREP_Types.h>
 
 #define MPIPROFILER_TIMEPACK_BUFSIZE ( sizeof( long long ) + 1 * sizeof( int ) )

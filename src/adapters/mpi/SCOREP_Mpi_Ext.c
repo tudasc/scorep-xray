@@ -43,6 +43,7 @@
 #include <config.h>
 #include "SCOREP_Mpi.h"
 #include <UTILS_Error.h>
+#include <SCOREP_Events.h>
 
 /**
  * @name C wrappers

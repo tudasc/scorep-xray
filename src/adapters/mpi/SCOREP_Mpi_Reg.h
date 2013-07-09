@@ -46,7 +46,7 @@
 #ifndef _SCOREP_MPIWRAP_REG_H
 #define _SCOREP_MPIWRAP_REG_H
 
-#include "SCOREP_Definitions.h"
+#include <SCOREP_Definitions.h>
 
 /*
  * -----------------------------------------------------------------------------

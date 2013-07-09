@@ -42,8 +42,10 @@
 
 #include <config.h>
 #include "SCOREP_Mpi.h"
+#include "scorep_mpi_communicator.h"
 #include <UTILS_Error.h>
-
+#include <SCOREP_Events.h>
+#include <SCOREP_RuntimeManagement.h>
 
 /** Flag set if the measurement sysem was already opened by another adapter.
     If the measurement system is not already initilized, it is assumed that

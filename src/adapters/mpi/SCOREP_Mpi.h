@@ -27,13 +27,10 @@
           Declarations common to all MPI wrappers.
  */
 
-#include "scorep_mpi_communicator.h"
 #include "SCOREP_Mpi_Reg.h"
 
-#include <SCOREP_Events.h>
-#include <SCOREP_RuntimeManagement.h>
-
 #include <mpi.h>
+#include <stdbool.h>
 
 #if MPI_VERSION >= 3
 #define SCOREP_MPI_CONST_DECL const

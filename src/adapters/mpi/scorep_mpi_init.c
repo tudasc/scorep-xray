@@ -29,10 +29,11 @@
 #define SCOREP_DEBUG_MODULE_NAME MPI
 #include <UTILS_Debug.h>
 
-#include "SCOREP_Mpi_Init.h"
 #include <SCOREP_Config.h>
+#include <SCOREP_Subsystem.h>
+#include <SCOREP_RuntimeManagement.h>
 #include "SCOREP_Mpi.h"
-
+#include "scorep_mpi_communicator.h"
 
 /**
  * @def SCOREP_FORTRAN_GET_MPI_STATUS_SIZE

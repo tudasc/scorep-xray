@@ -27,6 +27,7 @@
  */
 
 #include <SCOREP_Types.h>
+#include <SCOREP_DefinitionHandles.h>
 
 enum scorep_mpi_requests_flags
 {
