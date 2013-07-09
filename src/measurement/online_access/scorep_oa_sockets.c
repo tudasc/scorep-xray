@@ -26,6 +26,7 @@
 #include <config.h>
 
 #include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 #include <UTILS_CStr.h>
 #include <UTILS_IO.h>
 #include "scorep_oa_sockets.h"
@@ -290,53 +291,62 @@ scorep_oa_sockets_client_connect_retry
     int   retries
 )
 {
-    int                sock;
-    struct sockaddr_in pin;
-    struct hostent*    hp;
-    int                success, i;
+    struct addrinfo  hints;
+    struct addrinfo* result;
+    int              s, sock;
+    int              success, i;
+
+    if ( port >= 999999 )
+    {
+        UTILS_WARNING( "Port number %d is too big", port );
+        return -1;
+    }
+
+    char* port_s = ( char* )malloc( 6 * sizeof( char ) );
+    sprintf( port_s, "%d", port );
 
     success = -1;
     for ( i = 0; i < retries && success == -1; i++ )
     {
         sleep( 4 );
         success = 0;
-        if ( ( hp = gethostbyname( hostname ) ) == 0 )
+
+        memset( &hints, 0, sizeof( struct addrinfo ) );
+        hints.ai_family   = AF_INET;
+        hints.ai_socktype = SOCK_STREAM;
+        hints.ai_flags    = 0;
+        hints.ai_protocol = 0;              /* Any protocol */
+
+        s = getaddrinfo( hostname, port_s, &hints, &result );
+        if ( s != 0 )
         {
             if ( i == retries - 1 )
             {
-                perror( "socket_client_connect::gethostbyname()" );
+                UTILS_WARNING( "Could not get address info for %s:%d", hostname, port );
             }
             success = -1;
+            continue;
         }
-        else
-        {
-            /* fill in the socket structure with host information */
-            memset( &pin, 0, sizeof( pin ) );
-            pin.sin_family      = AF_INET;
-            pin.sin_addr.s_addr = ( ( struct in_addr* )( hp->h_addr_list[ 0 ] ) )->s_addr;
-            pin.sin_port        = htons( port );
 
-            /* grab an Internet domain socket */
-            if ( ( sock = socket( AF_INET, SOCK_STREAM, 0 ) ) == -1 )
+        sock = socket( result->ai_family, result->ai_socktype, result->ai_protocol );
+        if ( sock == -1 )
+        {
+            if ( i == retries - 1 )
             {
-                if ( i == retries - 1 )
-                {
-                    perror( "socket_client_connect::socket()" );
-                }
-                success = -1;
+                UTILS_WARNING( "Could not create socket %s:%d", hostname, port );
             }
-            else
+            success = -1;
+            continue;
+        }
+
+        if ( connect( sock, result->ai_addr, result->ai_addrlen ) == -1 )
+        {
+            if ( i == retries - 1 )
             {
-                /* connect to PORT on HOST */
-                if ( connect( sock, ( struct sockaddr* )&pin, sizeof( pin ) ) == -1 )
-                {
-                    if ( i == retries - 1 )
-                    {
-                        perror( "socket_client_connect::connect()" );
-                    }
-                    success = -1;
-                }
+                UTILS_WARNING( "Could not connect to %s:%d", hostname, port );
             }
+            success = -1;
+            continue;
         }
     }
     if ( success == -1 )
@@ -345,7 +355,6 @@ scorep_oa_sockets_client_connect_retry
     }
     return sock;
 }
-
 
 
 

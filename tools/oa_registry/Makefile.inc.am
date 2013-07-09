@@ -20,7 +20,11 @@ online_access_registry_SOURCES = \
 online_access_registry_CPPFLAGS = $(AM_CPPFLAGS)      \
     $(UTILS_CPPFLAGS)							\
     -D__STDC_FORMAT_MACROS
-    
+
+if ! PLATFORM_AIX
+online_access_registry_CPPFLAGS += -D_POSIX_SOURCE
+endif 
+
 online_access_registry_LDADD = $(LIB_ROOT)libutils.la
     
 EXTRA_DIST += $(SRC_ROOT)/tools/oa_registry/scenario_mpi
