@@ -24,6 +24,7 @@
 
 #include <config.h>
 
+#include <strings.h>
 #include <string>
 #include <stdlib.h>
 #include <cstdio>

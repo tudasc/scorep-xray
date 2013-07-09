@@ -29,7 +29,7 @@
 #include <vector>
 #include <list>
 #include <map>
-
+#include <UTILS_CStr.h>
 #include <string.h>
 
 #define REGSRV_MODE_LISTEN              0
@@ -68,7 +68,7 @@ public:
                  "comp=\"%s\" "
                  "tag=\"%s\"\n", app.c_str(), site.c_str(), mach.c_str(),
                  node.c_str(),  pid, comp.c_str(), tag.c_str() );
-        return strdup( buf );
+        return UTILS_CStr_dup( buf );
     }
 
     int
