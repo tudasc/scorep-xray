@@ -47,7 +47,7 @@ module JacobiMod
 		SCOREP_USER_REGION_DEFINE(region1)
 		SCOREP_USER_REGION_DEFINE(region2)
 		SCOREP_USER_REGION_DEFINE(region3)
-		!SCOREP_USER_FUNC_DEFINE()
+		SCOREP_USER_FUNC_DEFINE()
 		SCOREP_USER_METRIC_LOCAL(local2)
 		SCOREP_USER_METRIC_LOCAL(local3)
 		SCOREP_PARAMETER_DEFINE(iparam)
@@ -70,7 +70,7 @@ module JacobiMod
 
 			SCOREP_USER_METRIC_INIT(local2,"local2","s",SCOREP_USER_METRIC_TYPE_INT64,SCOREP_USER_METRIC_CONTEXT_GLOBAL)
       		SCOREP_USER_METRIC_INIT(local3,"local3","s",SCOREP_USER_METRIC_TYPE_DOUBLE,SCOREP_USER_METRIC_CONTEXT_GLOBAL)
-			!SCOREP_USER_FUNC_BEGIN("ScorepTest")
+			SCOREP_USER_FUNC_BEGIN("ScorepTest")
 			SCOREP_USER_REGION_INIT(region2,"Region2",SCOREP_USER_REGION_TYPE_COMMON)
 			SCOREP_USER_REGION_ENTER(region2)
         	SCOREP_PARAMETER_INT64(iparam,"iparam",scorep_metric_int_val)
@@ -119,7 +119,7 @@ module JacobiMod
             end do
             
             SCOREP_USER_REGION_END(region2)
-            !SCOREP_USER_FUNC_END()
+            SCOREP_USER_FUNC_END()
             
             myData%fResidual = residual
             deallocate(uold)
