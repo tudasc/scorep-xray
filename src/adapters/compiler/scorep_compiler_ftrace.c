@@ -47,9 +47,9 @@ extern int
 scorep_ftrace_getname_len( void );
 
 
-static uint32_t scorep_compiler_initialize = 1;
+static bool scorep_compiler_initialized = false;
 
-static uint32_t scorep_compiler_finalized = 0;
+static bool scorep_compiler_finalized = false;
 
 /**
  * Mutex for exclusive access to the region hash table.
@@ -77,7 +77,7 @@ _ftrace_enter2_( void )
 
     scorep_compiler_hash_node* hash_node = scorep_compiler_hash_get( ( long )region_name );
 
-    if ( scorep_compiler_initialize )
+    if ( !scorep_compiler_initialized )
     {
         if ( scorep_compiler_finalized )
         {
@@ -174,7 +174,7 @@ _ftrace_stop2_( void )
 SCOREP_ErrorCode
 scorep_compiler_init_adapter( void )
 {
-    if ( scorep_compiler_initialize )
+    if ( !scorep_compiler_initialized )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                             " inititialize ftrace compiler adapter!" );
@@ -186,7 +186,7 @@ scorep_compiler_init_adapter( void )
         scorep_compiler_hash_init();
 
         /* Set flag */
-        scorep_compiler_initialize = 0;
+        scorep_compiler_initialized = true;
     }
 
     return SCOREP_SUCCESS;
@@ -199,24 +199,17 @@ scorep_compiler_init_location( SCOREP_Location* locationData )
     return SCOREP_SUCCESS;
 }
 
-/* Location finalization */
-void
-scorep_compiler_finalize_location( SCOREP_Location* locationData )
-{
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "ftrace compiler adapter finalize location!" );
-}
-
 void
 scorep_compiler_finalize( void )
 {
     /* call only, if previously initialized */
-    if ( !scorep_compiler_initialize )
+    if ( scorep_compiler_initialized )
     {
         /* Delete hash table */
         scorep_compiler_hash_free();
 
-        scorep_compiler_initialize = 1;
-        scorep_compiler_finalized  = 1;
+        scorep_compiler_initialized = false;
+        scorep_compiler_finalized   = true;
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize ftrace compiler adapter!" );
 
         /* Delete region mutex */

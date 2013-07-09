@@ -42,6 +42,11 @@ static int on_scorep_finalize( void );
 /* *INDENT-ON* */
 
 /**
+ * static variable to control initialize status of adapter
+ */
+static bool scorep_compiler_initialized = false;
+
+/**
  * Flag that indicates that the compiler is finalized.
  */
 static bool scorep_compiler_finalized = false;
@@ -54,7 +59,7 @@ static SCOREP_RegionHandle scorep_compiler_main_handle = SCOREP_INVALID_REGION;
 /**
  * Lock used for function registration
  */
-static SCOREP_Mutex scorep_compiler_hash_lock;
+static SCOREP_Mutex scorep_compiler_region_mutex;
 
 /**
  * Register new region with Score-P system
@@ -92,7 +97,7 @@ void
 phat_enter( char* name,
             int*  id )
 {
-    if ( !SCOREP_IsInitialized() )
+    if ( !scorep_compiler_initialized )
     {
         if ( scorep_compiler_finalized )
         {
@@ -104,12 +109,12 @@ phat_enter( char* name,
     if ( *id == SCOREP_INVALID_REGION )
     {
         /* region entered the first time, register region */
-        SCOREP_MutexLock( scorep_compiler_hash_lock );
+        SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( *id == SCOREP_INVALID_REGION )
         {
             *id = scorep_compiler_register_region( name );
         }
-        SCOREP_MutexUnlock( scorep_compiler_hash_lock );
+        SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
 
     if ( *id != SCOREP_FILTERED_REGION )
@@ -141,9 +146,19 @@ phat_exit( char* name,
 SCOREP_ErrorCode
 scorep_compiler_init_adapter( void )
 {
-    SCOREP_MutexCreate( &scorep_compiler_hash_lock  );
-    scorep_compiler_main_handle = scorep_compiler_register_region( "main" );
-    SCOREP_RegisterExitCallback( &on_scorep_finalize );
+    if ( !scorep_compiler_initialized )
+    {
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
+                            " inititialize studio compiler adapter!" );
+
+        SCOREP_MutexCreate( &scorep_compiler_region_mutex  );
+        scorep_compiler_main_handle = scorep_compiler_register_region( "main" );
+        SCOREP_RegisterExitCallback( &on_scorep_finalize );
+
+        /* Set flag */
+        scorep_compiler_initialized = true;
+    }
+
     return SCOREP_SUCCESS;
 }
 
@@ -165,13 +180,6 @@ scorep_compiler_init_location( SCOREP_Location* locationData )
     return SCOREP_SUCCESS;
 }
 
-/* Location finalization */
-void
-scorep_compiler_finalize_location( SCOREP_Location* locationData )
-{
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter finalize location!" );
-}
-
 int
 on_scorep_finalize( void )
 {
@@ -186,6 +194,13 @@ on_scorep_finalize( void )
 void
 scorep_compiler_finalize( void )
 {
-    SCOREP_MutexDestroy( &scorep_compiler_hash_lock );
-    scorep_compiler_finalized = true;
+    /* call only, if previously initialized */
+    if ( scorep_compiler_initialized )
+    {
+        scorep_compiler_initialized = false;
+        scorep_compiler_finalized   = true;
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize studio compiler adapter!" );
+
+        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
+    }
 }

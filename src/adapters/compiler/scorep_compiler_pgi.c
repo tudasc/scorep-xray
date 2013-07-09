@@ -236,13 +236,6 @@ scorep_compiler_init_location( SCOREP_Location* locationData )
     return SCOREP_SUCCESS;
 }
 
-/* Location finalization */
-void
-scorep_compiler_finalize_location( SCOREP_Location* locationData )
-{
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter finalize location!" );
-}
-
 /* Adapter initialization */
 SCOREP_ErrorCode
 scorep_compiler_init_adapter( void )
