@@ -783,17 +783,4 @@ extern SCOREP_RegionHandle scorep_mpi_regid[ SCOREP__MPI_NUMFUNCS + 1 ];
 void
 scorep_mpi_register_regions();
 
-uint8_t
-scorep_is_mpi_collective( const char* str );
-uint8_t
-scorep_is_mpi_point2point( const char* str );
-uint8_t
-scorep_mpi_eventtype( const char* str );
-
-/**
- * Enable measurement for specific subgroups of MPI functions
- */
-void
-scorep_mpi_enable_init();
-
 #endif
