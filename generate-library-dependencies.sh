@@ -21,10 +21,10 @@
 ##      a C++ representation of the library dependencies and write it
 ##      to stdout. To be used with the <component>-config tools.
 ##
-##      Assumes that teh client provide std::vector<std::string> libs,
+##      Assumes that the client provide std::vector<std::string> libs,
 ##      ldflags, rpaths, dependency_las and a std::map<std::string,
 ##      la_object> la_objects. The vectors are temporary, the map will
-##      contain the entire information indexed by the library name.The
+##      contain the entire information indexed by the library name. The
 ##      la_object ctor signature is
 ##      la_object(std::string lib_name,
 ##                std::string build_dir,
@@ -69,17 +69,17 @@ parse_la ()
     build_dir=`dirname $la_file`
     cd "${build_dir}"
 
-    # extract information form .la"s libdir (=install_dir)
+    # extract information from .la"s libdir (=install_dir)
     # later, use @EGREP@
     eval `grep -E "^libdir=" "${la_file}"`
     install_dir="${libdir}"
 
-    # ignore conveniece libraries
+    # ignore convenience libraries
     if test "x${libdir}" = "x"; then
         return
     fi
 
-    # extract information form .la"s dependency_libs
+    # extract information from .la"s dependency_libs
     eval `grep -E "^dependency_libs=" "${la_file}"`
     # use @AWK@
     save_ifs="${IFS}"
