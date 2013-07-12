@@ -29,10 +29,6 @@ AM_SILENT_RULES([yes])
 AFS_PACKAGE_INIT
 
 AC_SCOREP_DETECT_PLATFORMS
-AS_IF([test "x${ac_scorep_platform}" = "xmac"],
-      [AC_MSG_ERROR([have no suitable defaults to build Score-P on Mac yet. Please use --with-custom-compilers and provide settings to <AC_PACKAGE_BUGREPORT> on success. Thanks.])],
-      [test "x${ac_scorep_platform}" = "xunknown"],
-      [AC_MSG_ERROR([cannot detect platform to set suitable defaults. Please use --with-custom-compilers and provide settings and platform to <AC_PACKAGE_BUGREPORT> on success. Thanks.])])
 AFS_CROSSCOMPILING
 AFS_SCOREP_MACHINE_NAME
 AFS_SCOREP_PLATFORM_NAME
@@ -42,6 +38,13 @@ AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
        test "${ac_scorep_platform_data_provided}" = "no"],
       [dnl AFS_COMPILER_BACKEND([CC, CXX, F77, FC])
        AC_SCOREP_WITH_COMPILER_SUITE
+       AS_IF([test "x${afs_custom_compilers_given}" = "xno"],
+           [AS_IF([test "x${ac_scorep_platform}" = "xmac"],
+               [AC_MSG_ERROR([have no suitable defaults to build Score-P on Mac yet. Please use --with-custom-compilers and provide settings to <AC_PACKAGE_BUGREPORT> on success. Thanks.])],
+               [test "x${ac_scorep_platform}" = "xunknown" ],
+               [AC_MSG_ERROR([cannot detect platform to set suitable defaults. Please use --with-custom-compilers and provide settings and platform to <AC_PACKAGE_BUGREPORT> on success. Thanks.])
+               ])
+           ])       
        AC_SCOREP_WITH_MPI_COMPILER_SUITE
        # determine arguments for subdir configures
        args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk \
