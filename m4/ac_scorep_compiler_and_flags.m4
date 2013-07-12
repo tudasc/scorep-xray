@@ -145,12 +145,16 @@ AC_ARG_WITH([nocross-compiler-suite],
 AC_ARG_WITH([custom-compilers],
     [AS_HELP_STRING([--with-custom-compilers],
          [Customize compiler settings by editing the three files vendor/common/build-config/platforms/platform-*-user-provided before calling configure. You are entering unsupported terrain. Namaste, and good luck!])
-    ],OB
-    [AS_CASE([${withval}],
+    ],
+    [afs_custom_compilers_given="yes"
+     AS_CASE([${withval}],
          ["yes"], [ac_scorep_compilers_backend="${path_to_compiler_files}platform-backend-user-provided"
                    ac_scorep_compilers_frontend="${path_to_compiler_files}platform-frontend-user-provided"
                    ac_scorep_compilers_mpi="${path_to_compiler_files}platform-mpi-user-provided"],
-         [AC_MSG_ERROR(['${withval}' not supported by --with-custom-compilers.])])])
+         [AC_MSG_ERROR(['${withval}' not supported by --with-custom-compilers.])])
+    ],
+    [afs_custom_compilers_given="no"
+    ])
 
 
 AC_ARG_WITH([frontend-compiler-suite],
