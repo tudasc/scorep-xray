@@ -103,13 +103,13 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "x"],
          [necsx],   [ac_scorep_cross_compiling="yes"],
          [unknown], [ac_scorep_cross_compiling="no"],
          [AC_MSG_ERROR([provided platform '${ac_scorep_platform}' unknown.])])
-     AC_SCOREP_SUMMARY([Cross compiling (auto detected)], [$ac_scorep_cross_compiling])
+     AC_SCOREP_SUMMARY([Cross compiling], [$ac_scorep_cross_compiling (auto detected)])
     ],
     [# honor ac_scorep_cross_compiling from the commandline
      AS_IF([test ${ac_scorep_cross_compiling} != "yes" && \
             test ${ac_scorep_cross_compiling} != "no" ],
          [AC_MSG_ERROR([invalid value '${ac_scorep_cross_compiling}' for provided 'ac_scorep_cross_compiling'])])
-     AC_SCOREP_SUMMARY([Cross compiling (provided)], [$ac_scorep_cross_compiling])
+     AC_SCOREP_SUMMARY([Cross compiling], [$ac_scorep_cross_compiling (provided)])
     ])
 
 AC_MSG_CHECKING([for cross compilation])
