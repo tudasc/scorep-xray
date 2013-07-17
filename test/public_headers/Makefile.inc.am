@@ -22,6 +22,10 @@
 
 check_PROGRAMS +=                                    \
 self_contained_public_header_pomp_lib_c              \
+self_contained_public_header_SCOREP_MetricPlugins_c    \
+self_contained_public_header_SCOREP_MetricPlugins_cpp  \
+self_contained_public_header_SCOREP_MetricTypes_c      \
+self_contained_public_header_SCOREP_MetricTypes_cpp    \
 self_contained_public_header_SCOREP_PublicTypes_c      \
 self_contained_public_header_SCOREP_PublicTypes_cpp    \
 self_contained_public_header_SCOREP_User_Functions_c   \
@@ -40,6 +44,18 @@ self_contained_public_headers_cppflags = $(AM_CPPFLAGS) -I$(PUBLIC_INC_DIR) $(UT
 
 self_contained_public_header_pomp_lib_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_pomp_lib.c
 self_contained_public_header_pomp_lib_c_CPPFLAGS = $(self_contained_public_headers_cppflags) @OPARI2_CPPFLAGS@
+
+self_contained_public_header_SCOREP_MetricPlugins_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_MetricPlugins.c
+self_contained_public_header_SCOREP_MetricPlugins_c_CPPFLAGS = $(self_contained_public_headers_cppflags)
+
+self_contained_public_header_SCOREP_MetricPlugins_cpp_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_MetricPlugins.cpp
+self_contained_public_header_SCOREP_MetricPlugins_cpp_CPPFLAGS = $(self_contained_public_headers_cppflags)
+
+self_contained_public_header_SCOREP_MetricTypes_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_MetricTypes.c
+self_contained_public_header_SCOREP_MetricTypes_c_CPPFLAGS = $(self_contained_public_headers_cppflags)
+
+self_contained_public_header_SCOREP_MetricTypes_cpp_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_MetricTypes.cpp
+self_contained_public_header_SCOREP_MetricTypes_cpp_CPPFLAGS = $(self_contained_public_headers_cppflags)
 
 self_contained_public_header_SCOREP_PublicTypes_c_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_PublicTypes.c
 self_contained_public_header_SCOREP_PublicTypes_c_CPPFLAGS = $(self_contained_public_headers_cppflags)
