@@ -25,7 +25,6 @@
 #include <config.h>
 #include <stdio.h>
 
-#include "scorep/SCOREP_User_Functions.h"
 #include "SCOREP_Types.h"
 
 

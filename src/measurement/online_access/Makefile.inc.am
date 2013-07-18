@@ -18,12 +18,12 @@
 ## file       src/measurement/online_access/Makefile.inc.am
 ## maintainer Yury Oleynik <oleynik@in.tum.de>
 
+lib_LTLIBRARIES += libscorep_online_access_spp.la
 
 if HAVE_ONLINE_ACCESS
 
 BUILT_SOURCES += scorep_oa_scanner.h
 
-lib_LTLIBRARIES += libscorep_online_access_spp.la
 libscorep_online_access_spp_la_SOURCES =                                   \
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_scanner.y           \
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_parser.l            \
@@ -69,7 +69,7 @@ libscorep_online_access_spp_la_LIBADD = \
 libscorep_online_access_spp_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
-endif #if HAVE_ONLINE_ACCESS
+else
 
 lib_LTLIBRARIES += libscorep_online_access_mockup.la
 libscorep_online_access_mockup_la_SOURCES = \
@@ -81,4 +81,10 @@ libscorep_online_access_mockup_la_CPPFLAGS = \
 libscorep_online_access_mockup_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
+libscorep_online_access_spp_la_LIBADD = \
+    libscorep_online_access_mockup.la
 
+libscorep_online_access_spp_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+endif #if HAVE_ONLINE_ACCESS
