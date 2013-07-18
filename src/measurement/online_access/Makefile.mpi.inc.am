@@ -21,6 +21,18 @@
 
 if HAVE_MPI_SUPPORT
 
+lib_LTLIBRARIES += libscorep_online_access_mpi_mockup.la
+libscorep_online_access_mpi_mockup_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control_mockup.c \
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mockup.c	\
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.h
+libscorep_online_access_mpi_mockup_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/measurement/include \
+    -DWITH_MPI
+
 lib_LTLIBRARIES += libscorep_online_access_mpp_mpi.la
 
 if HAVE_ONLINE_ACCESS
@@ -48,7 +60,7 @@ libscorep_online_access_mpp_mpi_la_SOURCES =                               \
     $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_OAConsumer.h       \
     $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_OAConsumer.c       \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_oaconsumer_process.h \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_oaconsumer_process.c
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_oaconsumer_process.c 
 
 libscorep_online_access_mpp_mpi_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
@@ -70,17 +82,6 @@ endif
 
 else #if HAVE_ONLINE_ACCESS
 
-lib_LTLIBRARIES += libscorep_online_access_mpi_mockup.la
-libscorep_online_access_mpi_mockup_la_SOURCES = \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control_mockup.c \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mockup.c	\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.h
-libscorep_online_access_mpi_mockup_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    $(UTILS_CPPFLAGS) \
-    -I$(PUBLIC_INC_DIR) \
-    -I$(INC_ROOT)src/measurement/include \
-    -DWITH_MPI
 
 libscorep_online_access_mpp_mpi_la_LIBADD = \
     libscorep_online_access_mpi_mockup.la
