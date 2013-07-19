@@ -101,10 +101,10 @@ extern void
 SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreePathElement* path );
 
 /**
- * Returns the host identifier.
+ * Returns a unique node identifier.
  */
 extern int32_t
-SCOREP_Platform_GetHostId( void );
+SCOREP_Platform_GetNodeId( void );
 
 /**
  * Used to iterate over a system tree path starting at the root.

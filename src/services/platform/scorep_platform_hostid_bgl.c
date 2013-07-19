@@ -31,7 +31,7 @@
 
 
 int32_t
-SCOREP_Platform_GetHostId( void )
+SCOREP_Platform_GetNodeId( void )
 {
     BGLPersonality mybgl;
     rts_get_personality( &mybgl, sizeof( BGLPersonality ) );

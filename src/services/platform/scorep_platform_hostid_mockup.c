@@ -28,9 +28,9 @@
 #include <SCOREP_Platform.h>
 
 int32_t
-SCOREP_Platform_GetHostId( void )
+SCOREP_Platform_GetNodeId( void )
 {
-    UTILS_WARNING( "Could not determine host ID." );
+    UTILS_WARNING( "Could not determine node ID." );
 
     return 0;
 }

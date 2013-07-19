@@ -31,7 +31,7 @@
 #define MIB_LEN 2
 
 int32_t
-SCOREP_Platform_GetHostId( void )
+SCOREP_Platform_GetNodeId( void )
 {
     /* MIB (management information base) array */
     int mib[ MIB_LEN ];

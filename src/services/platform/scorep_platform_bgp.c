@@ -157,7 +157,7 @@ SCOREP_Platform_DefineNodeTree( SCOREP_SystemTreeNodeHandle parent )
 
 
 int32_t
-SCOREP_Platform_GetHostId( void )
+SCOREP_Platform_GetNodeId( void )
 {
     initialize_bqp_personality();
 

@@ -43,7 +43,7 @@ static int32_t host_id = 0;
 
 
 int32_t
-SCOREP_Platform_GetHostId( void )
+SCOREP_Platform_GetNodeId( void )
 {
     uint32_t hostid_retries = 0;
 

@@ -53,7 +53,7 @@ struct scorep_status
     bool mpp_is_initialized;
     bool mpp_is_finalized;
     int  mpp_comm_world_size;
-    bool is_process_master_on_host;
+    bool is_process_master_on_node;
     bool is_experiment_dir_created;
     bool is_profiling_enabled;
     bool is_tracing_enabled;
@@ -68,7 +68,7 @@ static scorep_status scorep_process_local_status = {
     .mpp_is_initialized        = false,
     .mpp_is_finalized          = false,
     .mpp_comm_world_size       = 0,
-    .is_process_master_on_host = false,
+    .is_process_master_on_node = false,
     .is_experiment_dir_created = false,
     .is_profiling_enabled      = true,
     .is_tracing_enabled        = true,
@@ -91,7 +91,7 @@ SCOREP_Status_Initialize( void )
         scorep_process_local_status.mpp_is_initialized        = true;
         scorep_process_local_status.mpp_is_finalized          = true;
         scorep_process_local_status.mpp_comm_world_size       = 1;
-        scorep_process_local_status.is_process_master_on_host = true;
+        scorep_process_local_status.is_process_master_on_node = true;
     }
 }
 
@@ -123,27 +123,27 @@ SCOREP_Status_OnMppInit( void )
     assert( scorep_process_local_status.mpp_rank < scorep_process_local_status.mpp_comm_world_size );
     scorep_process_local_status.mpp_rank_is_set = true;
 
-    /* Get host ID */
-    uint32_t host_id = SCOREP_Platform_GetHostId();
+    /* Get node ID */
+    uint32_t node_id = SCOREP_Platform_GetNodeId();
 
-    /* Gather host IDs of all processes */
+    /* Gather node IDs of all processes */
     uint32_t* recvbuf = malloc( scorep_process_local_status.mpp_comm_world_size * sizeof( uint32_t ) );
     assert( recvbuf );
-    SCOREP_Ipc_Allgather( &host_id,             /* send buffer */
+    SCOREP_Ipc_Allgather( &node_id,             /* send buffer */
                           recvbuf,              /* receive buffer */
                           1,                    /* count */
                           SCOREP_IPC_UINT32 );  /* data type */
 
-    /* Assume we are master for this host */
-    scorep_process_local_status.is_process_master_on_host = true;
+    /* Assume we are master for this node */
+    scorep_process_local_status.is_process_master_on_node = true;
     /* Check whether this assumption is correct */
     for ( uint32_t i = scorep_process_local_status.mpp_rank; i-- > 0; )
     {
-        if ( recvbuf[ i ] == host_id )
+        if ( recvbuf[ i ] == node_id )
         {
-            /* There is a process with a lower rank on the same host.
-             * This means we are not the master on this host. */
-            scorep_process_local_status.is_process_master_on_host = false;
+            /* There is a process with a lower rank on the same node.
+             * This means we are not the master on this node. */
+            scorep_process_local_status.is_process_master_on_node = false;
             break;
         }
     }
@@ -197,10 +197,10 @@ SCOREP_Status_IsMppFinalized( void )
 
 
 bool
-SCOREP_Status_IsProcessMasterOnHost( void )
+SCOREP_Status_IsProcessMasterOnNode( void )
 {
     assert( scorep_process_local_status.mpp_is_initialized );
-    return scorep_process_local_status.is_process_master_on_host;
+    return scorep_process_local_status.is_process_master_on_node;
 }
 
 
