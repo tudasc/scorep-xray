@@ -1,17 +1,35 @@
 ## -*- mode: makefile-automake -*-
 
-# This file is part of the Score-P software (http://www.score-p.org)
-#
-# Copyright (c) 2009-2013,
-#    RWTH Aachen University, Germany
-#    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-#    Technische Universitaet Dresden, Germany
-#    University of Oregon, Eugene, USA
-#    Forschungszentrum Juelich GmbH, Germany
-#    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-#    Technische Universitaet Muenchen, Germany
-#
-# See the COPYING file in the package base directory for details.
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2013,
+## RWTH Aachen University, Germany
+##
+## Copyright (c) 2009-2013,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2013,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2013,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file src/services/platform/Makefile.inc.am
 
 
 noinst_LTLIBRARIES += libscorep_platform.la
@@ -29,7 +47,7 @@ libscorep_platform_la_SOURCES += \
 if PLATFORM_BGP
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_bgp.c
 libscorep_platform_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor/arch/include
-endif
+endif PLATFORM_BGP
 
 if PLATFORM_BGQ
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_bgq.c
@@ -41,86 +59,71 @@ libscorep_platform_la_LIBADD = -lpami -lstdc++ -lSPI -lSPI_cnk -lrt
 
 libscorep_platform_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor/comm/sys/include      \
                                   -I/bgsys/drivers/ppcfloor/comm/sys-fast/include
-
-endif
+endif PLATFORM_BGQ
 
 # for any platform not handled above, use generic platform
 
 if PLATFORM_ALTIX
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c
 if HAVE_GETHOSTID
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_hostid_gethostid.c
-else
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_hostid_mockup.c
-endif
-# if HAVE_GETHOSTID
-endif
-# if PLATFORM_ALTIX
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_gethostid.c
+else !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
+endif !HAVE_GETHOSTID
+endif PLATFORM_ALTIX
 
 if PLATFORM_AIX
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c
 if HAVE_GETHOSTID
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_hostid_gethostid.c
-else
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_hostid_mockup.c
-endif
-# if HAVE_GETHOSTID
-endif
-# if PLATFORM_AIX
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_gethostid.c
+else !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
+endif !HAVE_GETHOSTID
+endif PLATFORM_AIX
 
 if PLATFORM_BGL
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c \
-                                 $(SRC_ROOT)src/services/platform/scorep_platform_hostid_bgl.c
-endif
-# if PLATFORM_BGL
+                                 $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_bgl.c
+endif PLATFORM_BGL
 
 if PLATFORM_CRAYXT
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c \
-                                 $(SRC_ROOT)src/services/platform/scorep_platform_hostid_crayxt.c
-endif
-# if PLATFORM_CRAYXT
+                                 $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_crayxt.c
+endif PLATFORM_CRAYXT
 
 if PLATFORM_LINUX
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c
 if HAVE_GETHOSTID
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_hostid_gethostid.c
-else
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_hostid_mockup.c
-endif
-# if HAVE_GETHOSTID
-endif
-# if PLATFORM_LINUX
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_gethostid.c
+else !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
+endif !HAVE_GETHOSTID
+endif PLATFORM_LINUX
 
 if PLATFORM_SOLARIS
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c \
-                                 $(SRC_ROOT)src/services/platform/scorep_platform_hostid_mockup.c
-endif
-# if PLATFORM_SOLARIS
+                                 $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
+endif PLATFORM_SOLARIS
 
 if PLATFORM_MAC
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c \
-                                 $(SRC_ROOT)src/services/platform/scorep_platform_hostid_macos.c
-endif
-# if PLATFORM_MAC
+                                 $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_macos.c
+endif PLATFORM_MAC
 
 if PLATFORM_NECSX
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c
 if HAVE_GETHOSTID
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_hostid_gethostid.c
-else
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_hostid_mockup.c
-endif
-# if HAVE_GETHOSTID
-endif
-# if PLATFORM_NECSX
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_gethostid.c
+else !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
+endif !HAVE_GETHOSTID
+endif PLATFORM_NECSX
 
 if PLATFORM_ARM
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c
 if HAVE_GETHOSTID
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_hostid_gethostid.c
-else
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_hostid_mockup.c
-endif
-# if HAVE_GETHOSTID
-endif
-# if PLATFORM_ARM
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_gethostid.c
+else !HAVE_GETHOSTID
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_mockup.c
+endif !HAVE_GETHOSTID
+endif PLATFORM_ARM

@@ -1254,7 +1254,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                     switch ( metric_type )
                     {
                         case SCOREP_METRIC_PER_HOST:
-                            if ( !SCOREP_Status_IsProcessMasterOnHost()
+                            if ( !SCOREP_Status_IsProcessMasterOnNode()
                                  || SCOREP_Location_GetId( location ) != 0 )
                             {
                                 continue;
