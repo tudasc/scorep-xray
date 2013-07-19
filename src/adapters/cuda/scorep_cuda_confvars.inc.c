@@ -73,13 +73,13 @@ static SCOREP_ConfigVariable scorep_cuda_configs[] = {
         "  kernel:        CUDA kernels\n"
         "  idle:          GPU compute idle time\n"
         "  pure_idle:     GPU idle time (memory copies are not idle)\n"
-        "  memcpy:        CUDA memory copies (not available yet)\n"
+        "  memcpy:        CUDA memory copies\n"
         "  sync:          Record implicit and explicit CUDA synchronization\n"
         "  gpumemusage:   Record CUDA memory (de)allocations as a counter\n"
         "  stream_reuse:  Reuse destroyed/closed CUDA streams\n"
         "  device_reuse:  Reuse destroyed/closed CUDA devices\n"
         "  default/yes/1: CUDA runtime API and GPU activities\n"
-        "  no:            disable CUDA measurement\n"
+        "  no:            Disable CUDA measurement\n"
     },
     {
         "buffer",

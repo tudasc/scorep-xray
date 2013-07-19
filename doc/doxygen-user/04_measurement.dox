@@ -852,12 +852,19 @@ Setting the environment variable \confvar{SCOREP_CUDA_ENABLE} to <b><tt>yes</tt>
 To enable a particular composition of CUDA measurement features the variable should contain a comma-separated list of the following CUDA measurement options:
 
 @code
-runtime = CUDA runtime API
-driver  = CUDA driver API
-kernel  = CUDA kernels
-idle    = GPU compute idle time
-yes/DEFAULT/1 = "runtime,kernel"
-no = disable CUDA measurement (same as unset SCOREP_CUDA_ENABLE)
+runtime        = CUDA runtime API
+driver         = CUDA driver API
+gpu            = GPU activities ("kernel, memcpy")
+kernel         = CUDA kernels
+idle           = GPU compute idle time
+pure_idle      = GPU idle time (memory copies are not idle)
+memcpy         = CUDA memory copies
+sync           = Record implicit and explicit CUDA synchronization
+gpumemusage    = Record CUDA memory (de)allocations as a counter
+stream_reuse   = Reuse destroyed/closed CUDA streams
+device_reuse   = Reuse destroyed/closed CUDA devices
+yes/DEFAULT/1  = "runtime, kernel, concurrent, memcpy"
+no             = Disable CUDA measurement (same as unset SCOREP_CUDA_ENABLE)
 @endcode
 
 CUPTI uses an extra buffer to store its activity records.
