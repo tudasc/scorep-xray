@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_platform_hostid_bgl.c
+ * @file
  * @maintainer Ronny Tschueter <ronny.tschueter@tu-dresden.de>
  *
  * @status alpha
