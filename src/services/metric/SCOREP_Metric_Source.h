@@ -260,13 +260,6 @@ typedef struct SCOREP_MetricSource
      */
     SCOREP_Metric_Properties ( * metric_source_props )( SCOREP_Metric_EventSet* eventSet,
                                                         uint32_t                i );
-
-    /**
-     * Returns the clock rate.
-     *
-     * @return It returns the clock rate determined by implemented metric source.
-     */
-    uint64_t ( * metric_source_clock_rate )( void );
 } SCOREP_MetricSource;
 
 #endif // SCOREP_METRIC_SOURCE_H

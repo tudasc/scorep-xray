@@ -964,17 +964,6 @@ scorep_metric_plugins_get_metric_properties( SCOREP_Metric_EventSet* eventSet,
     return props;
 }
 
-/** @brief  Determines clock rate with the help of PAPI.
- *
- *  @return Returns recent clock rate.
- */
-static uint64_t
-scorep_metric_plugins_clock_rate( void )
-{
-    // Resource usage counters don't provide a clock source.
-    return 0;
-}
-
 /** Implementation of the metric source initialization/finalization struct */
 const SCOREP_MetricSource SCOREP_Metric_Plugins =
 {
@@ -993,8 +982,7 @@ const SCOREP_MetricSource SCOREP_Metric_Plugins =
     &scorep_metric_plugins_get_metric_name,
     &scorep_metric_plugins_get_metric_description,
     &scorep_metric_plugins_get_metric_unit,
-    &scorep_metric_plugins_get_metric_properties,
-    &scorep_metric_plugins_clock_rate
+    &scorep_metric_plugins_get_metric_properties
 };
 
 

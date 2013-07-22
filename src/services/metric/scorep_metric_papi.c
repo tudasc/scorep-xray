@@ -1199,43 +1199,6 @@ scorep_metric_papi_get_metric_properties( SCOREP_Metric_EventSet* eventSet,
 }
 
 
-/** @brief  Returns the clock rate.
- *
- *  @return It returns the clock rate.
- */
-static uint64_t
-scorep_metric_papi_clock_rate( void )
-{
-    double hertz = 0;
-
-    #if TIMER == TIMER_PAPI_REAL_CYC
-    const PAPI_hw_info_t* hwinfo = NULL;
-
-    if ( !PAPI_is_initialized() )
-    {
-        /* Initialize PAPI, since it hasn't already been initialized */
-        int retval = PAPI_library_init( PAPI_VER_CURRENT );
-        if ( retval != PAPI_VER_CURRENT )
-        {
-            scorep_metric_papi_error( retval, "PAPI_library_init" );
-        }
-    }
-
-    hwinfo = PAPI_get_hardware_info();
-    if ( hwinfo == NULL )
-    {
-        UTILS_ERROR( SCOREP_ERROR_PAPI_INIT, "Failed to access PAPI hardware info\n" );
-    }
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Clock rate: %f MHz", hwinfo->mhz );
-
-    hertz = hwinfo->mhz * 1000000.0;
-    #endif /* TIMER */
-
-    return ( uint64_t )hertz;
-}
-
-
 /**
  * Implementation of the metric source initialization/finalization data structure
  */
@@ -1256,6 +1219,5 @@ const SCOREP_MetricSource SCOREP_Metric_Papi =
     &scorep_metric_papi_get_metric_name,
     &scorep_metric_papi_get_metric_description,
     &scorep_metric_papi_get_metric_unit,
-    &scorep_metric_papi_get_metric_properties,
-    &scorep_metric_papi_clock_rate
+    &scorep_metric_papi_get_metric_properties
 };
