@@ -854,8 +854,9 @@ To enable a particular composition of CUDA measurement features the variable sho
 @code
 runtime        = CUDA runtime API
 driver         = CUDA driver API
-gpu            = GPU activities ("kernel, memcpy")
 kernel         = CUDA kernels
+kernel_counter = Fixed CUDA kernel metrics
+concurrent     = Concurrent kernel recording
 idle           = GPU compute idle time
 pure_idle      = GPU idle time (memory copies are not idle)
 memcpy         = CUDA memory copies
