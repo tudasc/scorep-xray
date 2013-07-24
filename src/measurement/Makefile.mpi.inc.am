@@ -71,7 +71,7 @@ libscorep_sion_mpp_mpi_la_CPPFLAGS = \
     @OTF2_CPPFLAGS@
 endif
 
-
+if ! HAVE_SCOREP_EXTERNAL_OTF2
 ## build some otf2 code from here as it requires MPI
 check_PROGRAMS += otf2_speed_test
 otf2_speed_test_SOURCES = \
@@ -85,5 +85,6 @@ otf2_speed_test_LDFLAGS = \
 otf2_speed_test_LDADD = \
     $(MPILIBS) \
     @OTF2_LIBS@
+endif
 
 endif
