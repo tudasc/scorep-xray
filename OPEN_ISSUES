@@ -32,20 +32,26 @@
                         Score-P v1.2 OPEN ISSUES
                         ========================
 
-* Compiler instrumentation and tasking
+* Compiler instrumentation
 
-  - On Exits, the PGI compiler instrumentation interface does not
-    provide information which function was exited. Thus, we
-    reconstruct this information from a call stack inside the compiler
-    adapter. However, if the instrumented application uses tasks, the
-    enter/exit event sequence for a thread may not be nested anymore,
-    due to interleaved execution of tasks. This results in incorrect
-    region handles on exit events which may lead to errors in the
-    profiling algorithm or errors in analysis tools. Thus, we
-    recommend to no use PGI compiler instrumentation together with
-    applications using tasks. You may try PDT instrumentation instead.
+  - OpenMP tasking: On Exits, the PGI compiler instrumentation
+    interface does not provide information which function was
+    exited. Thus, we reconstruct this information from a call stack
+    inside the compiler adapter. However, if the instrumented
+    application uses tasks, the enter/exit event sequence for a thread
+    may not be nested anymore, due to interleaved execution of
+    tasks. This results in incorrect region handles on exit events
+    which may lead to errors in the profiling algorithm or errors in
+    analysis tools. Thus, we recommend to no use PGI compiler
+    instrumentation together with applications using tasks. You may
+    try PDT instrumentation instead.
 
-
+  - On systems where libiberty is build without -fPIC, one cannot use
+    libbdfd for compiler instrumentation's region naming (GNU, Intel,
+    Cray) in --enable-shared builds of Score-P. Either provide a
+    libbdfd that comes with a proper libiberty (--with-libbfd) or
+    disable libbfd region naming (--without-libbfd). In the latter
+    case, region names will be provided by nm.
 
 
                         Score-P v1.1 OPEN ISSUES
