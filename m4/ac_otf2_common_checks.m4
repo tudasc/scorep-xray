@@ -103,18 +103,22 @@ AC_SEARCH_LIBS([rint], [m])
 AC_SCOREP_POSIX_FUNCTIONS
 AC_SCOREP_DEFINE_REVISIONS
 
+AC_CHECK_HEADERS([io.h])
 AC_MSG_CHECKING([whether mkdir has the mode_t argument])
 AC_COMPILE_IFELSE([
     AC_LANG_SOURCE([
 #include <sys/types.h>
 #include <sys/stat.h>
+#if HAVE_IO_H
+#include <io.h>
+#endif
 int mkdir(const char* path, mode_t mode)
 {
     return 0;
 }])],
     [AC_MSG_RESULT(yes)],
     [AC_MSG_RESULT(no)
-     AC_DEFINE([mkdir( path, mode )], [mkdir( path )], [mkdir does not have the mode_t argument])]
+     AC_DEFINE([HAVE_MKDIR_WITHOUT_MODE], [1], [mkdir does not have the mode_t argument])]
 ) # AC_COMPILE_IF_ELSE
 
 AM_CONDITIONAL([HAVE_ZLIB], [false])
