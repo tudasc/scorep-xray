@@ -106,12 +106,12 @@ AC_SCOREP_DEFINE_REVISIONS
 AC_MSG_CHECKING([whether mkdir has the mode_t argument])
 AC_COMPILE_IFELSE([
     AC_LANG_SOURCE([
-        #include <sys/stat.h>
-        int mkdir(const char* path, mode_t mode)
-        {
-            return 0;
-        }
-        ])],
+#include <sys/types.h>
+#include <sys/stat.h>
+int mkdir(const char* path, mode_t mode)
+{
+    return 0;
+}])],
     [AC_MSG_RESULT(yes)],
     [AC_MSG_RESULT(no)
      AC_DEFINE([mkdir( path, mode )], [mkdir( path )], [mkdir does not have the mode_t argument])]
