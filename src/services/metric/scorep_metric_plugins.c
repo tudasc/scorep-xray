@@ -154,7 +154,8 @@ scorep_metric_plugins_register( void )
     status = SCOREP_ConfigRegister( "metric", scorep_metric_plugins_configs );
     if ( status != SCOREP_SUCCESS )
     {
-        UTILS_ERROR( SCOREP_ERROR_PAPI_INIT, "Registration of plugins configure variables failed." );
+        UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                     "Registration of plugins configure variables failed." );
     }
 
     return status;
