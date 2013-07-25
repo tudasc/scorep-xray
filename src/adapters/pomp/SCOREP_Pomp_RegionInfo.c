@@ -293,9 +293,16 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
         {
             type_name = region->name;
         }
-        int length = strlen( type_name ) + 7 + strlen( source_name ) + 1;
+        int length = strlen( type_name ) + 8 + strlen( source_name ) + 1;
         region_name = ( char* )malloc( length );
-        sprintf( region_name, "!$omp %s %s", type_name, source_name );
+        if ( region->regionType == SCOREP_Pomp_UserRegion )
+        {
+            sprintf( region_name, "!$pomp %s %s", type_name, source_name );
+        }
+        else
+        {
+            sprintf( region_name, "!$omp %s %s", type_name, source_name );
+        }
 
         region->innerBlock = SCOREP_Definitions_NewRegion( region_name,
                                                            NULL,
