@@ -197,7 +197,11 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
         [AC_DEFINE([HAVE_PLATFORM_NECSX], [1], [Set if we are building for the NEC SX platform])])
     AM_COND_IF([PLATFORM_ARM],
         [AC_DEFINE([HAVE_PLATFORM_ARM], [1], [Set if we are building for the ARM platform])])
+])
 
+# Provides the platform and machine names as defines in the config header
+AC_DEFUN([AC_SCOREP_PLATFORM_AND_MACHINE_NAMES],
+[
     AC_DEFINE_UNQUOTED([SCOREP_PLATFORM_NAME],
                        ["${afs_scorep_platform_name}"],
                        [Name of the platform Score-P was built on.])
