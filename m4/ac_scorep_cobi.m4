@@ -19,28 +19,28 @@
 AC_DEFUN([AC_SCOREP_COBI], 
 [
 
-AC_ARG_WITH([cobi], 
-            [AS_HELP_STRING([--with-cobi=(yes|no|<path-to-cobi-binary>)], 
-                            [Whether to build with cobi binary instrumentation support. "yes" assumes it is in PATH [no].])],
-            # action-if-given
-            [AS_CASE([$withval],
-                     ["yes"], [scorep_with_cobi="yes"],
-                     ["no"],  [scorep_with_cobi="no"],
-                     [scorep_with_cobi="$withval"])],
-            # action-if-not-given
-            [scorep_with_cobi="no"])
+dnl AC_ARG_WITH([cobi], 
+dnl             [AS_HELP_STRING([--with-cobi=(yes|no|<path-to-cobi-binary>)], 
+dnl                             [Whether to build with cobi binary instrumentation support. "yes" assumes it is in PATH [no].])],
+dnl             # action-if-given
+dnl             [AS_CASE([$withval],
+dnl                      ["yes"], [scorep_with_cobi="yes"],
+dnl                      ["no"],  [scorep_with_cobi="no"],
+dnl                      [scorep_with_cobi="$withval"])],
+dnl             # action-if-not-given
+dnl             [scorep_with_cobi="no"])
 
 have_cobi="no"
-AS_IF([test "x${scorep_with_cobi}" != "xno"],
-      [AS_IF([test "x${enable_shared}" = "xno"],
-             [AC_MSG_CHECKING([for cobi])
-              AC_MSG_RESULT([prerequisites missing])
-              AC_MSG_ERROR([Cobi support requires building shared libraries. Use --enable-shared to build shared libraries or omit the --with-cobi option.])])
+dnl AS_IF([test "x${scorep_with_cobi}" != "xno"],
+dnl       [AS_IF([test "x${enable_shared}" = "xno"],
+dnl              [AC_MSG_CHECKING([for cobi])
+dnl               AC_MSG_RESULT([prerequisites missing])
+dnl               AC_MSG_ERROR([Cobi support requires building shared libraries. Use --enable-shared to build shared libraries or omit the --with-cobi option.])])
 
-       AS_IF([test "x${scorep_with_cobi}" = "xyes"],
-             [AC_CHECK_PROG([COBI], [cobi], [`which cobi`], ["no"])],
-             [AC_CHECK_PROG([COBI], [cobi], [${scorep_with_cobi}/cobi], ["no"], [${scorep_with_cobi}])])
-       have_cobi="${COBI}"])
+dnl        AS_IF([test "x${scorep_with_cobi}" = "xyes"],
+dnl              [AC_CHECK_PROG([COBI], [cobi], [`which cobi`], ["no"])],
+dnl              [AC_CHECK_PROG([COBI], [cobi], [${scorep_with_cobi}/cobi], ["no"], [${scorep_with_cobi}])])
+dnl        have_cobi="${COBI}"])
 
 # The output of this macro
 AM_CONDITIONAL([HAVE_COBI], [test "x${have_cobi}" != "xno"])
