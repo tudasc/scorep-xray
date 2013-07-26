@@ -80,51 +80,49 @@ scorep_cuda_define_cuda_locations( void )
 void
 scorep_cuda_define_cuda_group( void )
 {
-    if ( 0 != SCOREP_Status_GetRank() )
+    if ( 0 == SCOREP_Status_GetRank() )
     {
-        return;
-    }
-
-    /* Count the number of CUDA locations */
-    uint32_t total_number_of_cuda_locations = 0;
-    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
-                                                         Location,
-                                                         location )
-    {
-        if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU )
+        /* Count the number of CUDA locations */
+        uint32_t total_number_of_cuda_locations = 0;
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
+                                                             Location,
+                                                             location )
         {
-            continue;
+            if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU )
+            {
+                continue;
+            }
+            total_number_of_cuda_locations++;
         }
-        total_number_of_cuda_locations++;
-    }
-    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
-    if ( 0 == total_number_of_cuda_locations )
-    {
-        return;
-    }
-
-    /* collect the global location ids for the CUDA locations */
-    uint64_t cuda_locations[ total_number_of_cuda_locations ];
-    total_number_of_cuda_locations = 0;
-    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
-                                                         Location,
-                                                         location )
-    {
-        if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU )
+        if ( 0 == total_number_of_cuda_locations )
         {
-            continue;
+            return;
         }
-        cuda_locations[ total_number_of_cuda_locations++ ]
-            = definition->global_location_id;
-    }
-    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
-    /* define the group of locations for all CUDA locations */
-    SCOREP_Definitions_NewUnifiedGroup( SCOREP_GROUP_LOCATIONS,
-                                        "CUDA_GROUP",
-                                        total_number_of_cuda_locations,
-                                        cuda_locations );
+        /* collect the global location ids for the CUDA locations */
+        uint64_t cuda_locations[ total_number_of_cuda_locations ];
+        total_number_of_cuda_locations = 0;
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
+                                                             Location,
+                                                             location )
+        {
+            if ( definition->location_type != SCOREP_LOCATION_TYPE_GPU )
+            {
+                continue;
+            }
+            cuda_locations[ total_number_of_cuda_locations++ ]
+                = definition->global_location_id;
+        }
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+
+        /* define the group of locations for all CUDA locations */
+        SCOREP_Definitions_NewUnifiedGroup( SCOREP_GROUP_LOCATIONS,
+                                            "CUDA_GROUP",
+                                            total_number_of_cuda_locations,
+                                            cuda_locations );
+    }
 
     if ( scorep_cuda_record_memcpy )
     {
