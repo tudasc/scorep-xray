@@ -180,9 +180,6 @@ be used to build Score-P are as follows:
   --with-pdt=<path-to-binaries>
                Specifies the path to the program database toolkit
                (PDT) binaries, e.g., cparse.
-  --with-cobi[=<path-to-cobi-binary>]
-               Whether to build with cobi binary instrumentation
-               support. "yes" assumes it is in PATH [no].
   --with-extra-instrumentation-flags=flags
                Add additional instrumentation flags.
   --with-sionconfig[=<path-to-sionconfig>]
