@@ -3,19 +3,33 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## Copyright (c) 2009-2011,
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2011,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2011,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2011,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
-## file       Makefile.inc.am
+## file       src/tools/config/Makefile.inc.am
 ## maintainer Johannes Spazier <johannes.spazier@tu-dresden.de>
 
 bin_PROGRAMS += scorep-config
@@ -56,8 +70,7 @@ BUILT_SOURCES += ../src/scorep_config_library_dependencies_mpi_inc.hpp
 CLEANFILES +=../src/scorep_config_library_dependencies_mpi_inc.hpp
 
 # The library dependencies are needed for the frontend tool. However, the
-# backend information is in the backend Makefile. Thus, invoke the backend
-# Makefile.
+# backend information is in the MPI Makefile. Thus, invoke the MPI Makefile.
 ../src/scorep_config_library_dependencies_mpi_inc.hpp:
 	@$(am__cd) ../build-mpi && $(MAKE) $(AM_MAKEFLAGS) $@
 

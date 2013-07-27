@@ -2,21 +2,34 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2013,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  */
 
 /**
  *  @status     alpha
- *  @file       SCOREP_User_Init.c
+ *  @file       src/adapters/user/SCOREP_User_Init.c
  *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  *  This file contains the implmentation of the initialization functions of the user
@@ -118,3 +131,66 @@ const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter =
     .subsystem_deregister        = &scorep_user_deregister,
     .subsystem_control           = NULL
 };
+
+
+/**
+   Mutex to avoid parallel assignments to the same user metric.
+ */
+SCOREP_Mutex scorep_user_metric_mutex;
+
+
+void
+scorep_user_init_metrics( void )
+{
+    SCOREP_MutexCreate( &scorep_user_metric_mutex );
+}
+
+void
+scorep_user_finalize_metrics( void )
+{
+    SCOREP_MutexDestroy( &scorep_user_metric_mutex );
+}
+
+
+/**
+   Mutex for @ref scorep_user_file_table.
+ */
+SCOREP_Mutex scorep_user_file_table_mutex;
+
+/**
+   Mutex to avoid parallel assignement of region handles to the same region.
+ */
+SCOREP_Mutex scorep_user_region_mutex;
+
+/**
+    @internal
+    Hash table for mapping regions names to the User adapter region structs.
+    Needed for the fortran regions which can not be initialized in declaration. We can
+    not determine by the handle value whether we initialized the region already. Thus, we need
+    to lookup the name in an extra data structure.
+ */
+SCOREP_Hashtab* scorep_user_region_table = NULL;
+
+
+void
+scorep_user_init_regions( void )
+{
+    SCOREP_MutexCreate( &scorep_user_region_mutex );
+    SCOREP_MutexCreate( &scorep_user_file_table_mutex );
+    scorep_user_region_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
+                                                          &SCOREP_Hashtab_CompareStrings );
+}
+
+void
+scorep_user_finalize_regions( void )
+{
+    /* the value entry is stored in a structure that is allocated with the scorep
+       memory management system. Thus, it must not free the value. */
+    SCOREP_Hashtab_FreeAll( scorep_user_region_table,
+                            &SCOREP_Hashtab_DeleteFree,
+                            &SCOREP_Hashtab_DeleteNone );
+
+    scorep_user_region_table = NULL;
+    SCOREP_MutexDestroy( &scorep_user_file_table_mutex );
+    SCOREP_MutexDestroy( &scorep_user_region_mutex );
+}

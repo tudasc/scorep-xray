@@ -2,22 +2,35 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2013,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
 
 /**
  * @file       src/measurement/paradigm/mpi/scorep_ipc_mpi_unify_communicators.c
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @status alpha
  *
@@ -33,7 +46,7 @@
 #include <inttypes.h>
 
 #include <scorep_ipc.h>
-#include <scorep_mpi_communicator.h>
+#include <scorep_mpi_communicator_mgmt.h>
 #include <SCOREP_Definitions.h>
 #include <definitions/SCOREP_Definitions.h>
 
@@ -101,7 +114,7 @@ scorep_mpi_unify_communicators( void )
     define_self_likes( rank );
 }
 
-uint32_t
+static uint32_t
 create_local_mappings( uint32_t comm_world_size,
                        uint32_t rank )
 {
@@ -239,7 +252,7 @@ is_this_rank_in_communicator( uint32_t  global_comm_id,
 }
 
 
-void
+static void
 define_comms( uint32_t comm_world_size,
               uint32_t rank,
               uint32_t total_number_of_root_comms )
@@ -471,7 +484,7 @@ define_comms( uint32_t comm_world_size,
     free( topo_comm_mapping );
 }
 
-void
+static void
 define_self_likes( uint32_t rank )
 {
     /*

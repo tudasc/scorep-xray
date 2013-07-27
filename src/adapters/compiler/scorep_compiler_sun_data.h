@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -14,23 +14,34 @@
  *
  */
 
-#ifndef SCOREP_POMP_INIT_H
-#define SCOREP_POMP_INIT_H
-
 /**
- * @file       SCOREP_Pomp_Init.h
+ * @file       scorep_compiler_sun_data.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
- * @ingroup    POMP
  *
- * @brief Declares the intialization struct of the POMP adapter
+ * @status     ALPHA
+ *
+ * Contains helper data structures which are used by the Sun/Oracle Studio
+ * compiler adapter.
  */
 
-#include "SCOREP_Subsystem.h"
+
+#ifndef SCOREP_COMPILER_SUN_DATA_
+#define SCOREP_COMPILER_SUN_DATA_
+
+#include <SCOREP_Definitions.h>
+
 
 /**
-   The POMP adapter struct
+ * Handle for the main region, which is not instrumented by the compiler.
  */
-extern const SCOREP_Subsystem SCOREP_Subsystem_PompAdapter;
+extern SCOREP_RegionHandle scorep_compiler_main_handle;
 
-#endif // SCOREP_POMP_INIT_H
+/**
+ * Register new region with Score-P system
+ * 'ragion_name' is passed in from SUN compiler
+ */
+extern SCOREP_RegionHandle
+scorep_compiler_register_region( char* region_name );
+
+
+#endif /* SCOREP_COMPILER_SUN_DATA_ */

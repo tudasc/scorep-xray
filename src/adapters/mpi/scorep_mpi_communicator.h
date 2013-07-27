@@ -2,20 +2,34 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2013,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
 /**
- * @file       scorep_mpi_communicator.h
+ * @file       src/adapters/mpi/scorep_mpi_communicator.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     ALPHA
  * @ingroup    MPI_Wrapper
@@ -36,22 +50,10 @@
  * -----------------------------------------------------------------------------
  */
 
-#include <stdbool.h>
 
-#include <SCOREP_Types.h>
+#include "scorep_mpi_communicator_mgmt.h"
 #include <SCOREP_DefinitionHandles.h>
 #include <mpi.h>
-
-/**
- * Type of internal SCOREP group handles.
- */
-typedef SCOREP_GroupHandle SCOREP_Mpi_GroupHandle;
-
-/**
- * Type of the different colors for MPI epochs. Its a boolean flag which can have
- * the values scorep_mpi_exp_epoch or scorep_mpi_acc_epoch.
- */
-typedef uint8_t SCOREP_Mpi_Color;
 
 
 /* Check MPI version. Disable RMA if MPI version 1 */
@@ -75,24 +77,6 @@ extern void
 scorep_mpi_comm_init( void );
 
 /**
- * @internal
- * @brief Cleanup communicator management.
- */
-extern void
-scorep_mpi_comm_finalize( void );
-
-/**
- *  @internal
- * Translates ranks in the MPI Group @group into MPI_COMM_WORLD ranks.
- *
- * @param  group MPI group handle
- *
- * @return the size of group @group
- */
-extern int32_t
-scorep_mpi_group_translate_ranks( MPI_Group group );
-
-/**
  *  @internal
  * Create an internal handle for an MPI group.
  *
@@ -112,34 +96,6 @@ scorep_mpi_group_create( MPI_Group group );
  */
 extern void
 scorep_mpi_group_free( MPI_Group group );
-
-/**
- * @internal
- * @brief Retrieve the internal SCOREP handle for a given MPI group handle.
- * @param  group MPI group handle.
- * @return Internal SCOREP handle for the given MPI group handle.
- */
-extern SCOREP_Mpi_GroupHandle
-scorep_mpi_group_id( MPI_Group group );
-
-/**
- * @internal
- * @brief  Defines the group of MPI locations.
- */
-extern void
-scorep_mpi_unify_define_mpi_locations( void );
-
-/**
- * Initializes the window handling specific data structures.
- */
-extern void
-scorep_mpi_win_init( void );
-
-/**
- * Finalizes the window handling specific data structures.
- */
-extern void
-scorep_mpi_win_finalize( void );
 
 #ifndef SCOREP_MPI_NO_RMA
 
@@ -164,24 +120,6 @@ scorep_mpi_win_rank_to_pe( SCOREP_MpiRank rank,
  */
 extern SCOREP_InterimRmaWindowHandle
 scorep_mpi_win_id( MPI_Win win );
-
-/**
- * @internal
- * Create definition record and internal tracking handle.
- * @param win MPI window handle of the window to be tracked.
- * @param comm MPI communication handle the window is defined on.
- */
-extern void
-scorep_mpi_win_create( MPI_Win  win,
-                       MPI_Comm comm );
-
-/**
- * @internal
- * Free definition record and internal tracking handle.
- * @param win MPI window handle of the window to be freed.
- */
-extern void
-scorep_mpi_win_free( MPI_Win win );
 
 /**
  * @internal
@@ -220,31 +158,6 @@ scorep_mpi_winacc_get_gid( MPI_Win          win,
 
 /**
  * @internal
- * Counts the number of communicators which have this rank as root and
- * are not equal to \a MPI_COMM_SELF
- */
-extern uint32_t scorep_mpi_number_of_root_comms;
-
-/**
- * @internal
- * Counts the number of communicators at this process which are equal to
- * \a MPI_COMM_SELF.
- */
-extern uint32_t scorep_mpi_number_of_self_comms;
-
-/**
- * @internal
- * Unifies the MPI communicators.
- *
- * This function lives under measurement/paradigm to have access to the
- * definition internals.
- */
-extern void
-scorep_mpi_unify_communicators( void );
-
-
-/**
- * @internal
  * @brief Start tracking of a given MPI communicator.
  * makes the definition of the given communicator to the measurement system.
  * @param comm MPI communicator handle.
@@ -280,48 +193,6 @@ scorep_mpi_comm_handle( MPI_Comm comm );
 extern void
 scorep_mpi_comm_set_name( MPI_Comm    comm,
                           const char* name );
-
-/**
- * @internal
- * Translate a rank within a given communicator to its global rank in
- * \a MPI_COMM_WORLD.
- * @param  rank Local rank to be translated.
- * @param  comm Local communicator the rank refers to.
- * @return Global rank.
- */
-extern SCOREP_MpiRank
-scorep_mpi_rank_to_pe( SCOREP_MpiRank rank,
-                       MPI_Comm       comm );
-
-/**
- * @internal
- * Structure to hold the \a MPI_COMM_WORLD definition.
- */
-struct scorep_mpi_world_type
-{
-    MPI_Group                        group;    /** Associated MPI group */
-    int                              size;     /** Number of ranks */
-    SCOREP_MpiRank*                  ranks;    /** Array which contains the rank numbers */
-    SCOREP_InterimCommunicatorHandle handle;   /** SCOREP handle */
-};
-
-typedef struct scorep_mpi_comm_definition_payload
-{
-    bool     is_self_like;
-    uint32_t local_rank;
-    uint32_t global_root_rank;
-    uint32_t root_id;
-} scorep_mpi_comm_definition_payload;
-
-/**
- * Contains the data of the MPI_COMM_WORLD definition.
- */
-extern struct scorep_mpi_world_type scorep_mpi_world;
-
-/**
- * Flag that indicates whether comm/rank is determined for events
- */
-//extern int8_t scorep_mpi_comm_determination;
 
 /**
  * @def SCOREP_MPI_COMM_WORLD_HANDLE

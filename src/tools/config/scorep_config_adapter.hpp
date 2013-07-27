@@ -28,7 +28,8 @@
 void
 add_opari_cflags( bool build_check,
                   bool with_cflags,
-                  bool is_fortran );
+                  bool is_fortran,
+                  bool nvcc );
 
 /* **************************************************************************************
  * class SCOREP_Config_Adapter
@@ -87,7 +88,7 @@ public:
      * @param deps The library dependency class.
      */
     virtual void
-    addLibs( std::deque<std::string> &          libs,
+    addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );
 
     /**
@@ -98,11 +99,13 @@ public:
      *                     include flags use addIncFlags.
      * @param build_check  True '--build-check' was specified.
      * @param fortran      True if the source file is a fortran file.
+     * @param nvcc         True if compiler is nvcc.
      */
     virtual void
-    addCFlags( std::string &cflags,
+    addCFlags( std::string& cflags,
                bool         build_check,
-               bool         fortran );
+               bool         fortran,
+               bool         nvcc );
 
     /**
      * Overwrite this function if you want to do adapter specific modifications
@@ -110,7 +113,7 @@ public:
      * @param ldflgas  the linker flags to which you may modify or add new flags.
      */
     virtual void
-    addLdFlags( std::string &ldflags );
+    addLdFlags( std::string& ldflags );
 
     /**
      * Overwrite this function if you want to do adapter specific modifications
@@ -119,10 +122,12 @@ public:
      *                  This flags contain only the include directories. For other
      *                  compiler flags use addCFlags.
      * @param build_check  True '--build-check' was specified.
+     * @param nvcc         True if compiler is nvcc.
      */
     virtual void
-    addIncFlags( std::string &incflags,
-                 bool         build_check );
+    addIncFlags( std::string& incflags,
+                 bool         build_check,
+                 bool         nvcc );
 
 protected:
     /**
@@ -174,11 +179,11 @@ class SCOREP_Config_CompilerAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_CompilerAdapter();
     virtual void
-    addCFlags( std::string &cflags,
+    addCFlags( std::string& cflags,
                bool         build_check,
                bool         fortran );
     virtual void
-    addLdFlags( std::string &ldflags );
+    addLdFlags( std::string& ldflags );
 };
 
 /* **************************************************************************************
@@ -193,7 +198,7 @@ class SCOREP_Config_UserAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_UserAdapter();
     virtual void
-    addCFlags( std::string &cflags,
+    addCFlags( std::string& cflags,
                bool         build_check,
                bool         fortran );
 };
@@ -209,13 +214,10 @@ class SCOREP_Config_CudaAdapter : public SCOREP_Config_Adapter
 {
 public:
     SCOREP_Config_CudaAdapter();
+    virtual bool
+    checkArgument( std::string arg );
     virtual void
-    addLdFlags( std::string &ldflags );
-    virtual void
-    addIncFlags( std::string &incflags,
-                 bool         build_check );
-    virtual void
-    addLibs( std::deque<std::string> &          libs,
+    addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );
 };
 
@@ -227,12 +229,14 @@ class SCOREP_Config_PompAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_PompAdapter();
     virtual void
-    addIncFlags( std::string &incflags,
-                 bool         build_check );
+    addIncFlags( std::string& incflags,
+                 bool         build_check,
+                 bool         nvcc );
     virtual void
-    addCFlags( std::string &cflags,
+    addCFlags( std::string& cflags,
                bool         build_check,
-               bool         fortran );
+               bool         fortran,
+               bool         nvcc );
 };
 
 #endif

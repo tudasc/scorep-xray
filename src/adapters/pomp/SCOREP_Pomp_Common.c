@@ -20,7 +20,6 @@
 #include "SCOREP_Pomp_Common.h"
 
 #include "SCOREP_Pomp_RegionInfo.h"
-#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Subsystem.h>
@@ -46,13 +45,13 @@
 /** Pointer to an array of all pomp regions */
 SCOREP_Pomp_Region* scorep_pomp_regions;
 
-/** Flag to indicate, wether POMP2 traceing is enable/disabled */
+/** Flag to indicate, whether POMP2 traceing is enable/disabled */
 bool scorep_pomp_is_tracing_on = true;
 
-/** Flag to indicate wether the adapter is initialized */
+/** Flag to indicate whether the adapter is initialized */
 bool scorep_pomp_is_initialized = false;
 
-/** Flag to indicate wether the adapter is finalized */
+/** Flag to indicate whether the adapter is finalized */
 bool scorep_pomp_is_finalized = false;
 
 /** Lock to protect on-the-fly assignments.*/
@@ -86,7 +85,7 @@ scorep_pomp_allocate_region_on_the_fly()
 /** Frees allocated memory and sets the pointer to 0. Used to free
     members of a SCOREP_Pomp_Region instance.
     @param member Pointer to the pointer which should be freed. If
-                  member is 0 nothing happens.
+                  member is 0, nothing happens.
  */
 static void
 scorep_pomp_free_region_member( char** member )
@@ -161,7 +160,7 @@ scorep_pomp_adapter_init( void )
     return SCOREP_SUCCESS;
 }
 
-/** Adapter finalialization function.
+/** Adapter finalization function.
  */
 void
 scorep_pomp_adapter_finalize( void )
@@ -202,37 +201,6 @@ scorep_pomp_adapter_finalize( void )
  *                                           C pomp function library
  ************************************************************************/
 
-
-
-void
-POMP2_Finalize( void )
-{
-    UTILS_DEBUG_ENTRY();
-}
-
-void
-POMP2_Init( void )
-{
-    UTILS_DEBUG_ENTRY();
-
-    /* If adapter is not initialized, it means that the measurement
-       system is not initialized. */
-    SCOREP_InitMeasurement();
-}
-
-void
-POMP2_Off( void )
-{
-    SCOREP_POMP2_ENSURE_INITIALIZED;
-    scorep_pomp_is_tracing_on = false;
-}
-
-void
-POMP2_On( void )
-{
-    SCOREP_POMP2_ENSURE_INITIALIZED;
-    scorep_pomp_is_tracing_on = true;
-}
 
 void
 POMP2_Assign_handle( POMP2_Region_handle* pomp_handle,

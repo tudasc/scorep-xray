@@ -2,20 +2,33 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2013,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  */
 
 /**
- * @file SCOREP_Config_LibraryDependecies.cpp
+ * @file src/tools/config/SCOREP_Config_LibraryDependecies.cpp
  * @status alpha
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
@@ -41,7 +54,7 @@ SCOREP_Config_LibraryDependencies::la_object::la_object( void )
 {
 }
 
-SCOREP_Config_LibraryDependencies::la_object::la_object( const la_object &source )
+SCOREP_Config_LibraryDependencies::la_object::la_object( const la_object& source )
 {
     m_lib_name       = source.m_lib_name;
     m_build_dir      = source.m_build_dir;
@@ -115,6 +128,7 @@ SCOREP_Config_LibraryDependencies::getLibraries( const deque<string>& input_libs
                      obj.m_libs.begin(),
                      obj.m_libs.end() );
     }
+
     return remove_double_entries( libs );
 }
 

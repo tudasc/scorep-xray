@@ -28,10 +28,7 @@ std::deque<SCOREP_Config_ThreadSystem*> scorep_thread_systems;
 void
 scorep_config_init_thread_systems( void )
 {
-    scorep_thread_systems.push_back( new SCOREP_Config_ThreadSystem( "none", "",
-                                                                     "scorep_thread_mockup",
-                                                                     "scorep_mutex_mockup",
-                                                                     SCOREP_CONFIG_THREAD_SYSTEM_ID_NONE ) );
+    scorep_thread_systems.push_back( new SCOREP_Config_MockupThreadSystem() );
     scorep_thread_systems.push_back( new SCOREP_Config_PompTpdThreadSystem() );
     SCOREP_Config_ThreadSystem::current = scorep_thread_systems.front();
 }
@@ -99,22 +96,23 @@ SCOREP_Config_ThreadSystem::checkArgument( std::string system )
 }
 
 void
-SCOREP_Config_ThreadSystem::addLibs( std::deque<std::string> &          libs,
-                                     SCOREP_Config_LibraryDependencies &deps )
+SCOREP_Config_ThreadSystem::addLibs( std::deque<std::string>&           libs,
+                                     SCOREP_Config_LibraryDependencies& deps )
 {
     deps.addDependency( "libscorep_measurement", "lib" + m_library );
     deps.addDependency( "libscorep_measurement", "lib" + m_mutexlib );
 }
 
 void
-SCOREP_Config_ThreadSystem::addCFlags( std::string &cflags,
+SCOREP_Config_ThreadSystem::addCFlags( std::string& cflags,
                                        bool         build_check,
-                                       bool         fortran )
+                                       bool         fortran,
+                                       bool         nvcc )
 {
 }
 
 void
-SCOREP_Config_ThreadSystem::addIncFlags( std::string &incflags, bool build_check )
+SCOREP_Config_ThreadSystem::addIncFlags( std::string& incflags, bool build_check, bool nvcc )
 {
 }
 
@@ -122,6 +120,24 @@ SCOREP_Config_ThreadSystemId
 SCOREP_Config_ThreadSystem::getId( void )
 {
     return m_id;
+}
+
+/* **************************************************************************************
+ * class SCOREP_Config_MockupThreadSystem
+ * *************************************************************************************/
+
+SCOREP_Config_MockupThreadSystem::SCOREP_Config_MockupThreadSystem()
+    : SCOREP_Config_ThreadSystem( "none", "", "scorep_thread_mockup",
+                                  "scorep_mutex_mockup", SCOREP_CONFIG_THREAD_SYSTEM_ID_NONE )
+{
+}
+
+void
+SCOREP_Config_MockupThreadSystem::addLibs( std::deque<std::string>&           libs,
+                                           SCOREP_Config_LibraryDependencies& deps )
+{
+    SCOREP_Config_ThreadSystem::addLibs( libs, deps );
+    deps.addDependency( "libscorep_measurement", "libscorep_adapter_pomp_omp_mgmt_mockup" );
 }
 
 /* **************************************************************************************
@@ -135,21 +151,22 @@ SCOREP_Config_PompTpdThreadSystem::SCOREP_Config_PompTpdThreadSystem()
 }
 
 void
-SCOREP_Config_PompTpdThreadSystem::addLibs( std::deque<std::string> &          libs,
-                                            SCOREP_Config_LibraryDependencies &deps )
+SCOREP_Config_PompTpdThreadSystem::addLibs( std::deque<std::string>&           libs,
+                                            SCOREP_Config_LibraryDependencies& deps )
 {
-    libs.push_back( "libscorep_adapter_pomp_omp" );
-    libs.push_back( "libscorep_adapter_pomp_user" );
+    libs.push_back( "libscorep_adapter_pomp_omp_event" );
+    deps.addDependency( "libscorep_measurement", "libscorep_adapter_pomp_omp_mgmt" );
     deps.addDependency( "libscorep_measurement", "libscorep_thread_omp_tpd" );
     deps.addDependency( "libscorep_thread_omp_tpd", "libscorep_mutex_omp" );
 }
 
 void
-SCOREP_Config_PompTpdThreadSystem::addCFlags( std::string &cflags,
+SCOREP_Config_PompTpdThreadSystem::addCFlags( std::string& cflags,
                                               bool         build_check,
-                                              bool         fortran )
+                                              bool         fortran,
+                                              bool         nvcc )
 {
-    add_opari_cflags( build_check, true, fortran );
+    add_opari_cflags( build_check, true, fortran, nvcc );
 
 #if SCOREP_BACKEND_COMPILER_IBM
     if ( fortran )
@@ -160,7 +177,7 @@ SCOREP_Config_PompTpdThreadSystem::addCFlags( std::string &cflags,
 }
 
 void
-SCOREP_Config_PompTpdThreadSystem::addIncFlags( std::string &incflags, bool build_check )
+SCOREP_Config_PompTpdThreadSystem::addIncFlags( std::string& incflags, bool build_check, bool nvcc )
 {
-    add_opari_cflags( build_check, false, false );
+    add_opari_cflags( build_check, false, false, nvcc );
 }

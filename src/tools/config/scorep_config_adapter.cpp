@@ -62,9 +62,7 @@ scorep_config_init_adapters( void )
     scorep_adapters.push_back( new SCOREP_Config_CompilerAdapter() );
     scorep_adapters.push_back( new SCOREP_Config_UserAdapter() );
     scorep_adapters.push_back( new SCOREP_Config_PompAdapter() );
-#if HAVE_BACKEND( CUDA )
     scorep_adapters.push_back( new SCOREP_Config_CudaAdapter() );
-#endif
 }
 
 void
@@ -78,7 +76,7 @@ scorep_config_final_adapters( void )
 }
 
 void
-add_opari_cflags( bool build_check, bool with_cflags, bool is_fortran )
+add_opari_cflags( bool build_check, bool with_cflags, bool is_fortran, bool nvcc )
 {
     static bool printed_once = false;
     if ( !printed_once )
@@ -94,7 +92,7 @@ add_opari_cflags( bool build_check, bool with_cflags, bool is_fortran )
         }
 #endif
 
-        std::string opari_config = OPARI_CONFIG " --cflags";
+        std::string opari_config = "`" OPARI_CONFIG " --cflags";
 #if ( !defined HAVE_BACKEND_OPARI2_REVISION ) || ( HAVE_BACKEND_OPARI2_REVISION < 1068 )
         if ( with_cflags )
         {
@@ -106,6 +104,16 @@ add_opari_cflags( bool build_check, bool with_cflags, bool is_fortran )
             }
         }
 #endif
+        opari_config += "` ";
+
+        if ( nvcc )
+        {
+            opari_config = "printf -- \"-Xcompiler %s \" " + opari_config;
+        }
+        else
+        {
+            opari_config = "printf -- \"%s \" " + opari_config;
+        }
 
         int return_value = system( opari_config.c_str() );
         if ( return_value != 0 )
@@ -162,29 +170,35 @@ SCOREP_Config_Adapter::checkArgument( std::string arg )
 }
 
 void
-SCOREP_Config_Adapter::addLibs( std::deque<std::string> &          libs,
+SCOREP_Config_Adapter::addLibs( std::deque<std::string>&           libs,
                                 SCOREP_Config_LibraryDependencies& deps )
 {
     if ( m_is_enabled )
     {
-        libs.push_back( "lib" + m_library );
+        libs.push_back( "lib" + m_library + "_event" );
+        deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
+    }
+    else
+    {
+        deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt_mockup" );
     }
 }
 
 void
-SCOREP_Config_Adapter::addCFlags( std::string &cflags,
+SCOREP_Config_Adapter::addCFlags( std::string& cflags,
                                   bool         build_check,
-                                  bool         fortran )
+                                  bool         fortran,
+                                  bool         nvcc )
 {
 }
 
 void
-SCOREP_Config_Adapter::addLdFlags( std::string &ldflags )
+SCOREP_Config_Adapter::addLdFlags( std::string& ldflags )
 {
 }
 
 void
-SCOREP_Config_Adapter::addIncFlags( std::string &incflags, bool build_check )
+SCOREP_Config_Adapter::addIncFlags( std::string& incflags, bool build_check, bool nvcc )
 {
 }
 
@@ -198,7 +212,7 @@ SCOREP_Config_CompilerAdapter::SCOREP_Config_CompilerAdapter()
 }
 
 void
-SCOREP_Config_CompilerAdapter::addCFlags( std::string &cflags,
+SCOREP_Config_CompilerAdapter::addCFlags( std::string& cflags,
                                           bool         build_check,
                                           bool         fortran )
 {
@@ -209,7 +223,7 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string &cflags,
 }
 
 void
-SCOREP_Config_CompilerAdapter::addLdFlags( std::string &ldflags )
+SCOREP_Config_CompilerAdapter::addLdFlags( std::string& ldflags )
 {
     if ( m_is_enabled )
     {
@@ -226,7 +240,7 @@ SCOREP_Config_UserAdapter::SCOREP_Config_UserAdapter()
 }
 
 void
-SCOREP_Config_UserAdapter::addCFlags( std::string &cflags,
+SCOREP_Config_UserAdapter::addCFlags( std::string& cflags,
                                       bool         build_check,
                                       bool         fortran )
 {
@@ -251,57 +265,43 @@ SCOREP_Config_UserAdapter::addCFlags( std::string &cflags,
  * Cuda adapter
  * *************************************************************************************/
 SCOREP_Config_CudaAdapter::SCOREP_Config_CudaAdapter()
-    : SCOREP_Config_Adapter( "cuda", "scorep_adapter_cuda", false )
+    : SCOREP_Config_Adapter( "cuda", "scorep_adapter_cuda", true )
 {
 }
 
+bool
+SCOREP_Config_CudaAdapter::checkArgument( std::string arg )
+{
+#if HAVE_BACKEND( CUDA )
+    if ( arg == "--" + m_name )
+    {
+        m_is_enabled = true;
+        return true;
+    }
+#endif
+    if ( arg == "--no" + m_name )
+    {
+        m_is_enabled = false;
+        return true;
+    }
+    return false;
+}
+
 void
-SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string> &          libs,
+SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
                                     SCOREP_Config_LibraryDependencies& deps )
 {
-    libs.push_back( "lib" + m_library );
-}
-
-void
-SCOREP_Config_CudaAdapter::addIncFlags( std::string &incflags, bool build_check )
-{
-    if ( m_is_enabled )
+    if ( HAVE_BACKEND_CUDA && m_is_enabled )
     {
-        std::string pattern1 = " ";
-        std::string replace1 = ",";
-
-        incflags = remove_multiple_whitespaces( incflags );
-        /* Replace all white-spaces by comma */
-        incflags = replace_all( pattern1, replace1, incflags );
-
-        incflags = " -Xcompiler " + incflags;
+        libs.push_back( "lib" + m_library + "_event" );
+        deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
+    }
+    else
+    {
+        deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt_mockup" );
     }
 }
 
-void
-SCOREP_Config_CudaAdapter::addLdFlags( std::string &ldflags )
-{
-    if ( m_is_enabled )
-    {
-        std::string pattern1 = " ";
-        std::string replace1 = ",";
-        std::string pattern2 = LIBDIR_FLAG_WL;
-        std::string replace2 = "";
-
-        ldflags = remove_multiple_whitespaces( ldflags );
-        /* Replace all white-spaces by comma */
-        ldflags = replace_all( pattern1, replace1, ldflags );
-        /* Replace flag for passing arguments to linker through compiler
-         * (flags not needed because we use '-Xlinker' to specify linker
-         * flags when using CUDA compiler */
-        if ( pattern2.length() != 0 )
-        {
-            ldflags = replace_all( pattern2, replace2, ldflags );
-        }
-
-        ldflags = " -Xlinker " + ldflags;
-    }
-}
 
 /* **************************************************************************************
  * Pomp adapter
@@ -312,21 +312,22 @@ SCOREP_Config_PompAdapter::SCOREP_Config_PompAdapter()
 }
 
 void
-SCOREP_Config_PompAdapter::addIncFlags( std::string &incflags, bool build_check )
+SCOREP_Config_PompAdapter::addIncFlags( std::string& incflags, bool build_check, bool nvcc )
 {
     if ( m_is_enabled )
     {
-        add_opari_cflags( build_check, false, false );
+        add_opari_cflags( build_check, false, false, nvcc );
     }
 }
 
 void
-SCOREP_Config_PompAdapter::addCFlags( std::string &cflags,
+SCOREP_Config_PompAdapter::addCFlags( std::string& cflags,
                                       bool         build_check,
-                                      bool         fortran )
+                                      bool         fortran,
+                                      bool         nvcc )
 {
     if ( m_is_enabled )
     {
-        add_opari_cflags( build_check, true, fortran );
+        add_opari_cflags( build_check, true, fortran, nvcc );
     }
 }

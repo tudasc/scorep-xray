@@ -4,175 +4,288 @@
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2012,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2012,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2012,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
-# Common settings
+## file src/adapters/compiler/Makefile.inc.am
 
-lib_LTLIBRARIES += libscorep_adapter_compiler.la
-libscorep_adapter_compiler_la_SOURCES = \
-        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c \
-        $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.h
-libscorep_adapter_compiler_la_CPPFLAGS = $(AM_CPPFLAGS)      \
-        -I$(PUBLIC_INC_DIR)                                  \
-        $(UTILS_CPPFLAGS)                                    \
-        -I$(INC_ROOT)src/utils/include                       \
-        -I$(INC_ROOT)src/measurement/include
+# --------------------------------------------------------------------
+# runtime management library for the compiler adapter
 
-libscorep_adapter_compiler_la_LIBADD = libscorep_measurement.la
-libscorep_adapter_compiler_la_LDFLAGS = $(library_api_version_ldflags)
+lib_LTLIBRARIES += libscorep_adapter_compiler_mgmt.la
 
-# intel specific settings
+libscorep_adapter_compiler_mgmt_la_SOURCES =                \
+    $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.c \
+    $(SRC_ROOT)src/adapters/compiler/SCOREP_Compiler_Init.h
 
-if SCOREP_COMPILER_INTEL
-libscorep_adapter_compiler_la_SOURCES += \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.c   \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.h   \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c
-libscorep_adapter_compiler_la_CPPFLAGS += -DINTEL_COMPILER
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                            \
+    -I$(INC_ROOT)src/measurement/include      \
+    -I$(PUBLIC_INC_DIR)                       \
+    $(UTILS_CPPFLAGS)
 
-if HAVE_LIBBFD
-libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
-libscorep_adapter_compiler_la_LIBADD += @LIBBFD_LIBS@
-libscorep_adapter_compiler_la_LDFLAGS += @LIBBFD_LDFLAGS@
-endif
+libscorep_adapter_compiler_mgmt_la_LIBADD =
 
-if HAVE_DEMANGLE
-libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
-endif
-
-if HAVE_NM_AS_BFD_REPLACEMENT
-# the SCOREP_Timing.h dependency is used to generate unique
-# filenames. This should be done differently, see #692
-libscorep_adapter_compiler_la_SOURCES  += \
-        $(SRC_ROOT)src/services/include/SCOREP_Timing.h
-libscorep_adapter_compiler_la_CPPFLAGS += \
-        -I$(INC_ROOT)src/services/include -DHAVE_NM
-endif
-endif 
+libscorep_adapter_compiler_mgmt_la_LDFLAGS = \
+    $(library_api_version_ldflags)
 
 
-#ibm specific settings
-
-if SCOREP_COMPILER_IBM
-libscorep_adapter_compiler_la_SOURCES += \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm.c
-endif
-
-
-# pgi specific settings
-
-if SCOREP_COMPILER_PGI
-libscorep_adapter_compiler_la_SOURCES += \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c
-endif
-
-
-# gnu specific settings
-
-if SCOREP_COMPILER_GNU
-libscorep_adapter_compiler_la_SOURCES += \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c         \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h         \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
-
-if HAVE_LIBBFD
-libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
-libscorep_adapter_compiler_la_LIBADD += @LIBBFD_LIBS@
-libscorep_adapter_compiler_la_LDFLAGS += @LIBBFD_LDFLAGS@
-endif
-
-if HAVE_DEMANGLE
-libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
-endif 
-
-if HAVE_NM_AS_BFD_REPLACEMENT
-# the SCOREP_Timing.h dependency is used to generate unique
-# filenames. This should be done differently, see #692
-libscorep_adapter_compiler_la_SOURCES  += \
-        $(SRC_ROOT)src/services/include/SCOREP_Timing.h
-libscorep_adapter_compiler_la_CPPFLAGS += \
-        -I$(INC_ROOT)src/services/include -DHAVE_NM
-endif
-endif
-
-
-# cray specific settings
-
+#--- Cray specific settings
 if SCOREP_COMPILER_CRAY
-libscorep_adapter_compiler_la_SOURCES += \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c         \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h         \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c          \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_cray.c
+libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c     \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c         \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
 
 if HAVE_LIBBFD
-libscorep_adapter_compiler_la_CPPFLAGS += -DHAVE_LIBBFD @LIBBFD_CPPFLAGS@
-libscorep_adapter_compiler_la_LIBADD += @LIBBFD_LIBS@
-libscorep_adapter_compiler_la_LDFLAGS += @LIBBFD_LDFLAGS@
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -DHAVE_LIBBFD                              \
+    @LIBBFD_CPPFLAGS@
+
+libscorep_adapter_compiler_mgmt_la_LIBADD += \
+    @LIBBFD_LIBS@
+
+libscorep_adapter_compiler_mgmt_la_LDFLAGS += \
+    @LIBBFD_LDFLAGS@
 endif
 
 if HAVE_DEMANGLE
-libscorep_adapter_compiler_la_CPPFLAGS += -DGNU_DEMANGLE
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -DGNU_DEMANGLE
 endif 
 
 if HAVE_NM_AS_BFD_REPLACEMENT
-libscorep_adapter_compiler_la_SOURCES  += \
-        $(SRC_ROOT)src/services/include/SCOREP_Timing.h
-libscorep_adapter_compiler_la_CPPFLAGS += \
-        -I$(INC_ROOT)src/services/include -DHAVE_NM
+# the SCOREP_Timing.h dependency is used to generate unique
+# filenames. This should be done differently, see #692
+libscorep_adapter_compiler_mgmt_la_SOURCES  += \
+    $(SRC_ROOT)src/services/include/SCOREP_Timing.h
+
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -I$(INC_ROOT)src/services/include          \
+    -DHAVE_NM
 endif
 endif
 
 
-# sx specific settings
+#--- GNU specific settings
+if SCOREP_COMPILER_GNU
+libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c     \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c         \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
 
+if HAVE_LIBBFD
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -DHAVE_LIBBFD                              \
+    @LIBBFD_CPPFLAGS@
+
+libscorep_adapter_compiler_mgmt_la_LIBADD += \
+    @LIBBFD_LIBS@
+
+libscorep_adapter_compiler_mgmt_la_LDFLAGS += \
+    @LIBBFD_LDFLAGS@
+endif
+
+if HAVE_DEMANGLE
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -DGNU_DEMANGLE
+endif 
+
+if HAVE_NM_AS_BFD_REPLACEMENT
+# the SCOREP_Timing.h dependency is used to generate unique
+# filenames. This should be done differently, see #692
+libscorep_adapter_compiler_mgmt_la_SOURCES  += \
+    $(SRC_ROOT)src/services/include/SCOREP_Timing.h
+
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -I$(INC_ROOT)src/services/include          \
+    -DHAVE_NM
+endif
+endif
+
+
+#--- IBM specific settings
+if SCOREP_COMPILER_IBM
+libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm_init.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c     \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
+endif
+
+
+#--- Intel specific settings
+if SCOREP_COMPILER_INTEL
+libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel_init.c   \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.c   \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.h
+
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -DINTEL_COMPILER
+
+if HAVE_LIBBFD
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -DHAVE_LIBBFD                              \
+    @LIBBFD_CPPFLAGS@
+
+libscorep_adapter_compiler_mgmt_la_LIBADD += \
+    @LIBBFD_LIBS@
+
+libscorep_adapter_compiler_mgmt_la_LDFLAGS += \
+    @LIBBFD_LDFLAGS@
+endif
+
+if HAVE_DEMANGLE
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -DGNU_DEMANGLE
+endif 
+
+if HAVE_NM_AS_BFD_REPLACEMENT
+# the SCOREP_Timing.h dependency is used to generate unique
+# filenames. This should be done differently, see #692
+libscorep_adapter_compiler_mgmt_la_SOURCES  += \
+    $(SRC_ROOT)src/services/include/SCOREP_Timing.h
+
+libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
+    -I$(INC_ROOT)src/services/include          \
+    -DHAVE_NM
+endif
+endif
+
+
+#--- NEC SX specific settings
 if SCOREP_COMPILER_SX
-libscorep_adapter_compiler_la_SOURCES += \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c   \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h   \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace.c \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace_1.s
+libscorep_adapter_compiler_mgmt_la_SOURCES +=                      \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace_init.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c        \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
 endif
 
 
-# sun specific settings
+#--- PGI specific settings
+if SCOREP_COMPILER_PGI
+libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi_init.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c     \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h     \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi_data.h
+endif
 
+
+#--- Oracle Studio specific settings
 if SCOREP_COMPILER_SUN
-libscorep_adapter_compiler_la_SOURCES += \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h \
-        $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c
+libscorep_adapter_compiler_mgmt_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun_init.c
 endif
 
-# mockup library for the adapter
 
-noinst_LTLIBRARIES += libscorep_adapter_compiler_mockup.la
+# --------------------------------------------------------------------
+# event library for the compiler adapter
 
-libscorep_adapter_compiler_mockup_la_SOURCES = \
-	$(SRC_ROOT)src/adapters/SCOREP_AdapterMockup.c
+lib_LTLIBRARIES += libscorep_adapter_compiler_event.la
 
-libscorep_adapter_compiler_mockup_la_CPPFLAGS = $(AM_CPPFLAGS) \
-        -I$(INC_ROOT)src/measurement/include                   \
-        -I$(PUBLIC_INC_DIR)                                    \
-        $(UTILS_CPPFLAGS)                                      \
-        -I$(INC_ROOT)src/utils/include                         \
-	-DADAPTER=Compiler
+libscorep_adapter_compiler_event_la_SOURCES =
+
+libscorep_adapter_compiler_event_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                             \
+    -I$(INC_ROOT)src/measurement/include       \
+    -I$(PUBLIC_INC_DIR)                        \
+    $(UTILS_CPPFLAGS)
+
+libscorep_adapter_compiler_event_la_LIBADD = \
+    libscorep_measurement.la
+
+libscorep_adapter_compiler_event_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+
+#--- Cray specific settings
+if SCOREP_COMPILER_CRAY
+libscorep_adapter_compiler_event_la_SOURCES +=              \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_cray.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
+endif
+
+#--- GNU specific settings
+if SCOREP_COMPILER_GNU
+libscorep_adapter_compiler_event_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
+endif
+
+#--- IBM specific settings
+if SCOREP_COMPILER_IBM
+libscorep_adapter_compiler_event_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm.c
+endif
+
+#--- Intel specific settings
+if SCOREP_COMPILER_INTEL
+libscorep_adapter_compiler_event_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c
+endif
+
+#--- NEC SX specific settings
+if SCOREP_COMPILER_SX
+libscorep_adapter_compiler_event_la_SOURCES +=                \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace_1.s
+endif
+
+#--- PGI specific settings
+if SCOREP_COMPILER_PGI
+libscorep_adapter_compiler_event_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c
+endif
+
+#--- Oracle Studio specific settings
+if SCOREP_COMPILER_SUN
+libscorep_adapter_compiler_event_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c
+endif
+
+
+# --------------------------------------------------------------------
+# runtime management mockup library for the compiler adapter
+
+lib_LTLIBRARIES += libscorep_adapter_compiler_mgmt_mockup.la
+
+libscorep_adapter_compiler_mgmt_mockup_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/SCOREP_AdapterMockup.c
+
+libscorep_adapter_compiler_mgmt_mockup_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                                   \
+    -I$(INC_ROOT)src/measurement/include             \
+    -I$(PUBLIC_INC_DIR)                              \
+    $(UTILS_CPPFLAGS)                                \
+    -DADAPTER=Compiler
+
+libscorep_adapter_compiler_mgmt_mockup_la_LDFLAGS = \
+    $(library_api_version_ldflags)

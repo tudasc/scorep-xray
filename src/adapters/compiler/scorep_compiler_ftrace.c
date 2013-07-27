@@ -2,22 +2,35 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2012,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2012,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
+ * Copyright (c) 2009-2012,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  */
 
 
 /**
  * @status     alpha
- * @file       scorep_compiler_ftrace.c
+ * @file       src/adapters/compiler/scorep_compiler_ftrace.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Compiler adapter version for NEC SX compiler
@@ -45,16 +58,6 @@ extern void*
 scorep_ftrace_getname( void );
 extern int
 scorep_ftrace_getname_len( void );
-
-
-static bool scorep_compiler_initialized = false;
-
-static bool scorep_compiler_finalized = false;
-
-/**
- * Mutex for exclusive access to the region hash table.
- */
-static SCOREP_Mutex scorep_compiler_region_mutex;
 
 
 void
@@ -169,50 +172,4 @@ void
 _ftrace_stop2_( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace stop 2" );
-}
-
-SCOREP_ErrorCode
-scorep_compiler_init_adapter( void )
-{
-    if ( !scorep_compiler_initialized )
-    {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                            " inititialize ftrace compiler adapter!" );
-
-        /* Initialize region mutex */
-        SCOREP_MutexCreate( &scorep_compiler_region_mutex );
-
-        /* Initialize hash table */
-        scorep_compiler_hash_init();
-
-        /* Set flag */
-        scorep_compiler_initialized = true;
-    }
-
-    return SCOREP_SUCCESS;
-}
-
-SCOREP_ErrorCode
-scorep_compiler_init_location( SCOREP_Location* locationData )
-{
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "ftrace Compiler adapter init location!" );
-    return SCOREP_SUCCESS;
-}
-
-void
-scorep_compiler_finalize( void )
-{
-    /* call only, if previously initialized */
-    if ( scorep_compiler_initialized )
-    {
-        /* Delete hash table */
-        scorep_compiler_hash_free();
-
-        scorep_compiler_initialized = false;
-        scorep_compiler_finalized   = true;
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize ftrace compiler adapter!" );
-
-        /* Delete region mutex */
-        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
-    }
 }

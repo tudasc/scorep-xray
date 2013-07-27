@@ -96,8 +96,8 @@ public:
      * @param deps The library dependencies information structure.
      */
     virtual void
-    addLibs( std::deque<std::string> &          libs,
-             SCOREP_Config_LibraryDependencies &deps );
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
 
     /**
      * Overwrite this function if you want to do threading system specific modifications
@@ -107,21 +107,25 @@ public:
      *                    include flags use addIncFlags.
      * @param build_check Specifies whether --build-check was set.
      * @param fortran     True if the source file is a fortran file.
+     * @param nvcc        True if compiler is nvcc.
      */
     virtual void
-    addCFlags( std::string &cflags,
+    addCFlags( std::string& cflags,
                bool         build_check,
-               bool         fortran );
+               bool         fortran,
+               bool         nvcc );
 
     /**
      * Overwrite this function if you want to do threading system specific modifications
      * to the include flags.
      * @param incflags    The compiler flags to which you may modify or add new flags.
      * @param build_check Specifies whether --build-check was set.
+     * @param nvcc        True if compiler is nvcc.
      */
     virtual void
-    addIncFlags( std::string &incflags,
-                 bool         build_check );
+    addIncFlags( std::string& incflags,
+                 bool         build_check,
+                 bool         nvcc );
 
     /**
      * Returns the threading system identifier.
@@ -184,6 +188,24 @@ scorep_config_init_thread_systems( void );
 void
 scorep_config_final_thread_systems( void );
 
+
+/* **************************************************************************************
+ * class SCOREP_Config_MockupThreadSystem
+ * *************************************************************************************/
+
+/**
+ * This class represents a mockup thread system, used for single-threaded
+ * applications.
+ */
+class SCOREP_Config_MockupThreadSystem : public SCOREP_Config_ThreadSystem
+{
+public:
+    SCOREP_Config_MockupThreadSystem();
+    virtual void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
+};
+
 /* **************************************************************************************
  * class SCOREP_Config_PompTpdThreadSystem
  * *************************************************************************************/
@@ -197,16 +219,18 @@ class SCOREP_Config_PompTpdThreadSystem : public SCOREP_Config_ThreadSystem
 public:
     SCOREP_Config_PompTpdThreadSystem();
     virtual void
-    addLibs( std::deque<std::string> &          libs,
-             SCOREP_Config_LibraryDependencies &deps );
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
     virtual void
-    addCFlags( std::string &cflags,
+    addCFlags( std::string& cflags,
                bool         build_check,
-               bool         fortran );
+               bool         fortran,
+               bool         nvcc );
 
     virtual void
-    addIncFlags( std::string &incflags,
-                 bool         build_check );
+    addIncFlags( std::string& incflags,
+                 bool         build_check,
+                 bool         nvcc );
 };
 
 #endif

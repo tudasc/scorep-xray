@@ -2,25 +2,38 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2013,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  */
 
 /**
- * @file       SCOREP_Pomp_User.c
+ * @file       src/adapters/pomp/SCOREP_Pomp_User.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     alpha
  * @ingroup    POMP2
  *
- * @brief Implementation of the POMP2 user adapter functions and initialization.
+ * @brief Implementation of the POMP2 user adapter functions.
  */
 
 #include <config.h>
@@ -29,7 +42,7 @@
 #include "SCOREP_Pomp_RegionInfo.h"
 
 #include <SCOREP_Events.h>
-#include <SCOREP_Subsystem.h>
+#include <SCOREP_RuntimeManagement.h>
 
 #define SCOREP_DEBUG_MODULE_NAME OPENMP
 #include <UTILS_Debug.h>
@@ -70,67 +83,37 @@ POMP2_End( POMP2_Region_handle* pomp_handle )
     }
 }
 
-/** @} */
-
-/* *****************************************************************************
- *                                                         POMP User subsystem *
- ******************************************************************************/
-
-static size_t scorep_pomp_user_subsystem_id;
-
-/** Adapter initialization function to allow registering configuration
-    variables. No variables are regstered.
- */
-static SCOREP_ErrorCode
-scorep_pomp_user_register( size_t subsystem_id )
+void
+POMP2_Init( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    scorep_pomp_user_subsystem_id = subsystem_id;
-
-    return SCOREP_SUCCESS;
-}
-
-/** Adapter initialization function.
- */
-static SCOREP_ErrorCode
-scorep_pomp_user_init( void )
-{
-    UTILS_DEBUG_ENTRY();
-
-    /* Initialize the common POMP adapter */
-    scorep_pomp_adapter_init();
+    /* If adapter is not initialized, it means that the measurement
+       system is not initialized. */
+    SCOREP_InitMeasurement();
 
     UTILS_DEBUG_EXIT();
-
-    return SCOREP_SUCCESS;
 }
 
-/** Adapter finalialization function.
- */
-static void
-scorep_pomp_user_finalize( void )
+void
+POMP2_Finalize( void )
 {
     UTILS_DEBUG_ENTRY();
-
-    scorep_pomp_adapter_finalize();
-
-    UTILS_DEBUG_ENTRY();
+    UTILS_DEBUG_EXIT();
 }
 
-/** Struct which contains the adapter iniitialization and finalization
-    functions for the POMP2 adapter.
- */
-const SCOREP_Subsystem SCOREP_Subsystem_PompUserAdapter =
+void
+POMP2_On( void )
 {
-    .subsystem_name              = "POMP2 User Adapter / Version 1.0",
-    .subsystem_register          = &scorep_pomp_user_register,
-    .subsystem_init              = &scorep_pomp_user_init,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &scorep_pomp_user_finalize,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
-};
+    SCOREP_POMP2_ENSURE_INITIALIZED;
+    scorep_pomp_is_tracing_on = true;
+}
+
+void
+POMP2_Off( void )
+{
+    SCOREP_POMP2_ENSURE_INITIALIZED;
+    scorep_pomp_is_tracing_on = false;
+}
+
+/** @} */

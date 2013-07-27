@@ -70,24 +70,26 @@ module JacobiMod
             ay = 1.0d0 / (myData%fDx * myData%fDx)      ! Y-direction coef
             b = -2.0d0 * (ax + ay) - myData%fAlpha      ! Central coeff  
             residual = 10.0d0 * myData%fTolerance
-        
-			SCOREP_USER_METRIC_INIT(local2,"local2","s",SCOREP_USER_METRIC_TYPE_INT64,SCOREP_USER_METRIC_CONTEXT_GLOBAL)
-      		SCOREP_USER_METRIC_INIT(local3,"local3","s",SCOREP_USER_METRIC_TYPE_DOUBLE,SCOREP_USER_METRIC_CONTEXT_GLOBAL)
-			SCOREP_USER_FUNC_BEGIN("ScorepTest")
-			SCOREP_USER_REGION_INIT(region2,"Region2",SCOREP_USER_REGION_TYPE_COMMON)
-			SCOREP_USER_REGION_ENTER(region2)
-        	SCOREP_PARAMETER_INT64(iparam,"iparam",scorep_metric_int_val)
-      		SCOREP_PARAMETER_STRING(sparam,"sparam","hello")
-        	
-        	SCOREP_USER_METRIC_INT64(local2, scorep_metric_int_val)
-      		SCOREP_USER_METRIC_DOUBLE(local3, scorep_metric_double_val)        
-        
+
+            SCOREP_USER_METRIC_INIT(local2,"local2","s",SCOREP_USER_METRIC_TYPE_INT64,SCOREP_USER_METRIC_CONTEXT_GLOBAL)
+            SCOREP_USER_METRIC_INIT(local3,"local3","s",SCOREP_USER_METRIC_TYPE_DOUBLE,SCOREP_USER_METRIC_CONTEXT_GLOBAL)
+            SCOREP_USER_FUNC_BEGIN("ScorepTest")
+            SCOREP_USER_REGION_INIT(region2,"Region2",SCOREP_USER_REGION_TYPE_COMMON)
+            SCOREP_USER_REGION_ENTER(region2)
+            SCOREP_PARAMETER_INT64(iparam,"iparam",scorep_metric_int_val)
+            SCOREP_PARAMETER_STRING(sparam,"sparam","hello")
+
+            SCOREP_USER_METRIC_INT64(local2, scorep_metric_int_val)
+            SCOREP_USER_METRIC_DOUBLE(local3, scorep_metric_double_val)
+
+#ifdef SCOREP_POMP_USER       
             ! POMP2 user instrumentation
             ! Not inserted as pragma to test on-the-fly registration.
             ! With Pragmas, the instrumenter would create initialization time
             ! initialization.
 	    call POMP2_Begin( pomp_user_region_handle, &
 	      "90*regionType=region*sscl=jacobi.F90:63:63*escl=jacobi.F90:102:102*userRegionName=userloop**" )
+#endif
             do while (myData%iIterCount < myData%iIterMax .and. residual > myData%fTolerance)
                 
                 SCOREP_USER_REGION_BEGIN(region3,"Iteration",SCOREP_USER_REGION_TYPE_DYNAMIC)
@@ -140,9 +142,11 @@ module JacobiMod
              
             ! End iteration loop 
             end do
+#ifdef SCOREP_POMP_USER
 	    call POMP2_End( pomp_user_region_handle );
-	    
-	    	SCOREP_USER_REGION_END(region2)
+#endif
+
+            SCOREP_USER_REGION_END(region2)
             SCOREP_USER_FUNC_END()
 	    
             myData%fResidual = residual

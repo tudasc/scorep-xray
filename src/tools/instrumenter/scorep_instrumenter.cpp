@@ -313,10 +313,25 @@ SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
         mode += " --fortran";
     }
 
+    if ( m_command_line.isNvccCompiler() )
+    {
+        mode += " --nvcc";
+    }
+
     // Generate calls
     m_config_base  = scorep_config + mode;
-    m_linker_flags = "`" + scorep_config + mode + " --ldflags` `" +
-                     scorep_config + mode + " --libs` ";
+    m_linker_flags = "`" + scorep_config + mode + " --ldflags` " +
+                     "`" + scorep_config + mode + " --libs` ";
+#if defined( SCOREP_SHARED_BUILD )
+    /* temporary, see ticket:385 */
+    if ( m_command_line.getNoAsNeeded() )
+    {
+        m_linker_flags = "`" + scorep_config + mode + " --ldflags` " +
+                         LIBDIR_FLAG_WL "--no-as-needed " +
+                         "`" + scorep_config + mode + " --libs` "
+                         LIBDIR_FLAG_WL "--as-needed ";
+    }
+#endif
 }
 
 void

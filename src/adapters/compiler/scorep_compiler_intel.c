@@ -2,24 +2,37 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2013,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  */
 
 /**
  * @status     alpha
- * @file       SCOREP_compiler_intel.c
+ * @file       src/adapters/compiler/SCOREP_compiler_intel.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @brief Support for GNU-Compiler
+ * @brief Support for Intel Compiler
  * Will be triggered by the '-fcollect' flag of the intel
  * compiler.
  */
@@ -28,34 +41,16 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include <SCOREP_Types.h>
-#include <SCOREP_Location.h>
-#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
+
+#include <SCOREP_Types.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Mutex.h>
 
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data_intel.h"
-#include "scorep_compiler_symbol_table.h"
 
-/**
- * static variable to control initialize status of the compiler adapter.
- * If it is 0 it is initialized.
- */
-static bool scorep_compiler_initialized = false;
-
-/**
- * flag that indicates whether the intel compiler adapter is finalized.
- */
-static bool scorep_compiler_finalized = false;
-
-/**
- * Mutex for exclusive access to the region hash table.
- */
-static SCOREP_Mutex scorep_compiler_region_mutex;
 
 /* ***************************************************************************************
    Implementation of functions called by compiler instrumentation
@@ -214,62 +209,4 @@ void
 VT_IntelCheck( uint32_t* id2 )
 {
     __VT_IntelCheck( id2 );
-}
-
-
-/* ***************************************************************************************
-   Adapter management
-*****************************************************************************************/
-
-SCOREP_ErrorCode
-scorep_compiler_init_adapter( void )
-{
-    if ( !scorep_compiler_initialized )
-    {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " initialize intel compiler adapter." );
-
-        /* Initialize region mutex */
-        SCOREP_MutexCreate( &scorep_compiler_region_mutex );
-
-        /* Initialize hash tables */
-        scorep_compiler_hash_init();
-
-        /* call function to calculate symbol table */
-        scorep_compiler_get_sym_tab();
-
-        /* Set flag */
-        scorep_compiler_initialized = true;
-
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                            " initialization of intel compiler adapter done." );
-    }
-
-    return SCOREP_SUCCESS;
-}
-
-SCOREP_ErrorCode
-scorep_compiler_init_location( SCOREP_Location* location )
-{
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "intel compiler adapter init location!" );
-    return SCOREP_SUCCESS;
-}
-
-/* Adapter finalization */
-void
-scorep_compiler_finalize( void )
-{
-    /* call only, if previously initialized */
-    if ( scorep_compiler_initialized )
-    {
-        /* Delete hash table */
-        scorep_compiler_hash_free();
-
-        /* Set initialization flag */
-        scorep_compiler_initialized = false;
-        scorep_compiler_finalized   = true;
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize intel compiler adapter." );
-
-        /* Delete region mutex */
-        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
-    }
 }

@@ -86,10 +86,16 @@ print_help( void )
     << "  --static        Enforce static linking of the Score-P libraries.\n"
 #endif
 #if HAVE_LINK_FLAG_BDYNAMIC
-    << "  --dynamic       Enforce dynamic linking of the Score-P libraries."
+    << "  --dynamic       Enforce dynamic linking of the Score-P libraries.\n"
 #endif
 #endif
-    << std::endl;
+#if defined( SCOREP_SHARED_BUILD )
+    << "  --no-as-needed  Adds a GNU ld linker flag to fix undefined references\n"
+    "                  when using shared scorep libraries. This happens on\n"
+    "                  systems using --as-needed as linker default. It will\n"
+    "                  be handled transparently in future releases of scorep.\n"
+#endif
+    ;
     SCOREP_Instrumenter_Adapter::printAll();
     std::cout << std::endl;
 }

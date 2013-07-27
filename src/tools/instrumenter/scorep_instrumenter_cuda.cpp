@@ -44,3 +44,14 @@ SCOREP_Instrumenter_CudaAdapter::SCOREP_Instrumenter_CudaAdapter( void )
     unsupported();
 #endif
 }
+
+std::string
+SCOREP_Instrumenter_CudaAdapter::getConfigToolFlag( void )
+{
+    // Per default, the scorep-config returns cuda libs.
+    if ( !isEnabled() )
+    {
+        return " --no" + m_name;
+    }
+    return "";
+}

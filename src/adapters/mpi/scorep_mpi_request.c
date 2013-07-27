@@ -2,21 +2,34 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2011,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  */
 
 /**
  * @status     alpha
- * @file       scorep_mpi_request.c
+ * @file       src/adapters/mpi/scorep_mpi_request.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @ingroup    MPI_Wrapper
  *
@@ -31,305 +44,6 @@
 #include <SCOREP_Events.h>
 
 #include <UTILS_Error.h>
-
-/**
- * @internal
- * size of element list behind a hash entry
- */
-#define SCOREP_MPI_REQUEST_BLOCK_SIZE 16
-
-/**
- * @internal
- * size of hash table
- */
-#define SCOREP_MPI_REQUEST_TABLE_SIZE 256
-
-/**
- * @internal
- * Block of linked list of request blocks
- */
-struct scorep_mpi_request_block
-{
-    scorep_mpi_request               req[ SCOREP_MPI_REQUEST_BLOCK_SIZE ];
-    struct scorep_mpi_request_block* next;
-    struct scorep_mpi_request_block* prev;
-};
-
-/**
- * @internal
- * Hash access structure
- */
-struct scorep_mpi_request_hash
-{
-    struct scorep_mpi_request_block* head_block;
-    struct scorep_mpi_request_block* last_block;
-    scorep_mpi_request*              lastreq;
-    int                              lastidx;
-};
-
-/**
- * @internal
- * Data structure to store request info for effective request tracking
- */
-static struct scorep_mpi_request_hash
-    scorep_mpi_request_table[ SCOREP_MPI_REQUEST_TABLE_SIZE ] = {
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */ /* 128 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  32 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   2 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   4 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   6 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*   8 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  10 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  12 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  14 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  16 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  18 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  20 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  22 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  24 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  26 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  28 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE }, /*  30 */
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE },
-    { 0, 0, 0, SCOREP_MPI_REQUEST_BLOCK_SIZE } /*  32 */ /* 256 */
-};
 
 /**
  * @internal
@@ -365,28 +79,10 @@ scorep_mpi_get_request_hash_entry( MPI_Request req )
      */
 
     h ^= cptr[ sizeof( MPI_Request ) - 1 ];
-
+    extern struct scorep_mpi_request_hash scorep_mpi_request_table[ SCOREP_MPI_REQUEST_TABLE_SIZE ];
     return &scorep_mpi_request_table[ h ];
 }
 
-void
-scorep_mpi_request_finalize( void )
-{
-    struct scorep_mpi_request_block* block;
-    int                              i;
-
-    /* free request blocks */
-
-    for ( i = 0; i < SCOREP_MPI_REQUEST_TABLE_SIZE; ++i )
-    {
-        while ( scorep_mpi_request_table[ i ].head_block )
-        {
-            block                                    = scorep_mpi_request_table[ i ].head_block;
-            scorep_mpi_request_table[ i ].head_block = scorep_mpi_request_table[ i ].head_block->next;
-            free( block );
-        }
-    }
-}
 
 SCOREP_MpiRequestId
 scorep_mpi_get_request_id( void )

@@ -200,7 +200,7 @@ public:
      * Returns the config tool flags. This flag must contain a leading space if it
      * is not empty. This function is called no matter whether the adapter is
      * enabled or not.
-     * The default implementation returns the name of the adapzer preceded by a
+     * The default implementation returns the name of the adapter preceded by a
      * space and two dash (' --'). Overwrite this function, if you want to change
      * this behavior, e.g., if you do not pass anything at all.
      */

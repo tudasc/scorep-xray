@@ -42,7 +42,6 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     /* Application types */
     m_is_mpi_application    = detect;
     m_is_openmp_application = detect;
-    m_is_cuda_application   = detect;
     m_target_is_shared_lib  = false;
 
     /* Execution modes */
@@ -70,6 +69,10 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_keep_files     = false;
     m_verbosity      = 0;
     m_is_build_check = false;
+
+#if defined( SCOREP_SHARED_BUILD )
+    m_no_as_needed = false;
+#endif
 }
 
 SCOREP_Instrumenter_CmdLine::~SCOREP_Instrumenter_CmdLine()
@@ -121,12 +124,6 @@ SCOREP_Instrumenter_CmdLine::isOpenmpApplication( void )
 }
 
 bool
-SCOREP_Instrumenter_CmdLine::isCudaApplication( void )
-{
-    return m_is_cuda_application == enabled;
-}
-
-bool
 SCOREP_Instrumenter_CmdLine::isCompiling( void )
 {
     return m_is_compiling;
@@ -142,6 +139,12 @@ bool
 SCOREP_Instrumenter_CmdLine::noCompileLink( void )
 {
     return m_no_compile_link;
+}
+
+bool
+SCOREP_Instrumenter_CmdLine::isNvccCompiler( void )
+{
+    return m_compiler_name == "nvcc";
 }
 
 std::string
@@ -275,6 +278,13 @@ SCOREP_Instrumenter_CmdLine::getLibraryFiles( void )
     return lib_files;
 }
 
+#if defined( SCOREP_SHARED_BUILD )
+bool
+SCOREP_Instrumenter_CmdLine::getNoAsNeeded( void )
+{
+    return m_no_as_needed;
+}
+#endif
 
 /* ****************************************************************************
    private methods
@@ -471,6 +481,12 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         m_verbosity = 1;
         return scorep_parse_mode_param;
     }
+#if defined( SCOREP_SHARED_BUILD )
+    else if ( arg == "--no-as-needed" )
+    {
+        m_no_as_needed = true;
+    }
+#endif
     else
     {
         std::cerr << "ERROR: Unknown parameter: "
@@ -500,10 +516,6 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     {
         m_input_files += " " + current;
         m_input_file_number++;
-        if ( is_cuda_file( current ) )
-        {
-            m_is_cuda_application = enabled;
-        }
         return scorep_parse_mode_command;
     }
 
@@ -734,22 +746,7 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
                   << std::endl;
     }
 
-    /* Evaluate whether we have a cuda application */
-    if ( m_is_cuda_application == detect )
-    {
-        if ( m_compiler_name.substr( 0, 2 ) == "nv" )
-        {
-            m_is_cuda_application = enabled;
-        }
-        else
-        {
-            m_is_cuda_application = disabled;
-        }
-    }
-    if ( m_is_cuda_application == enabled )
-    {
-        SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_INSTRUMENTER_ADAPTER_CUDA );
-    }
+    SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_INSTRUMENTER_ADAPTER_CUDA );
 
     /* Default compiler adapter on */
     SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_INSTRUMENTER_ADAPTER_COMPILER );

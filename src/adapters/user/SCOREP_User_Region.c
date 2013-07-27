@@ -2,24 +2,37 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2012,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2012,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
+ * Copyright (c) 2009-2012,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  */
 
 /**
- *  @file       SCOREP_User_Region.c
+ *  @file       src/adapters/user/SCOREP_User_Region.c
  *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *  @status     alpha
  *
- *  This file containes the implementation of user adapter functions concerning
+ *  This file contains the implementation of user adapter functions concerning
  *  regions.
  */
 
@@ -31,7 +44,6 @@
 #include "SCOREP_User_Init.h"
 #include <SCOREP_Types.h>
 #include <SCOREP_Filter.h>
-#include <SCOREP_Hashtab.h>
 #include <UTILS_CStr.h>
 #include <UTILS_IO.h>
 #include <SCOREP_OA_Functions.h>
@@ -41,54 +53,14 @@
 
 #define SCOREP_FILTERED_USER_REGION ( ( void* )-1 )
 
-/**
-   Mutex for @ref scorep_user_file_table.
- */
-SCOREP_Mutex scorep_user_file_table_mutex;
 
-/**
-   Mutex to avoid parallel assignement of region handles to the same region.
- */
-SCOREP_Mutex scorep_user_region_mutex;
-
-/**
-    @internal
-    Hash table for mapping regions names to the User adapte region structs.
-    Needed for the fortran regions which can not be initialized in declaration. We can
-    not determine by the handle value whether we initialized the region already. Thus, we need
-    to lookup the name in a extra datastructure.
- */
-SCOREP_Hashtab* scorep_user_region_table = NULL;
-
-void
-scorep_user_init_regions( void )
-{
-    SCOREP_MutexCreate( &scorep_user_region_mutex );
-    SCOREP_MutexCreate( &scorep_user_file_table_mutex );
-    scorep_user_region_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
-                                                          &SCOREP_Hashtab_CompareStrings );
-}
-
-void
-scorep_user_finalize_regions( void )
-{
-    /* the value entry is stored in a structure that is allocated with the scorep
-       memory management system. Thus, it must not free the value. */
-    SCOREP_Hashtab_FreeAll( scorep_user_region_table,
-                            &SCOREP_Hashtab_DeleteFree,
-                            &SCOREP_Hashtab_DeleteNone );
-
-    scorep_user_region_table = NULL;
-    SCOREP_MutexDestroy( &scorep_user_file_table_mutex );
-    SCOREP_MutexDestroy( &scorep_user_region_mutex );
-}
 
 static SCOREP_SourceFileHandle
 scorep_user_get_file( const char*              file,
                       const char**             lastFileName,
                       SCOREP_SourceFileHandle* lastFile )
 {
-    /* Hashtable access must be emutual exclusive */
+    /* Hashtable access must be mutual exclusive */
     SCOREP_MutexLock( scorep_user_file_table_mutex );
 
     /* In most cases, it is expected that no regions are in included

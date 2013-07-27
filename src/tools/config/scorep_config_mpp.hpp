@@ -12,7 +12,7 @@
 #define SCOREP_CONFIG_MPP_HPP
 
 /**
- * @file scorep_config_mpp.hpp
+ * @file src/tools/config/scorep_config_mpp.hpp
  * @status alpha
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
@@ -23,9 +23,9 @@
 #include <deque>
 #include "SCOREP_Config_LibraryDependencies.hpp"
 
-/* **************************************************************************************
- * class SCOREP_Config_MppSystem
- * *************************************************************************************/
+/* ***************************************************************************
+* class SCOREP_Config_MppSystem
+* ***************************************************************************/
 
 /**
  * The class SCOREP_Config_MppSystem represents a multi process parodigm inside the
@@ -72,8 +72,8 @@ public:
      * @param deps The library dependencies information structure.
      */
     virtual void
-    addLibs( std::deque<std::string> &          libs,
-             SCOREP_Config_LibraryDependencies &deps );
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
 
 protected:
     /**
@@ -88,9 +88,9 @@ public:
     static SCOREP_Config_MppSystem* current;
 };
 
-/* **************************************************************************************
- * Threading system list
- * *************************************************************************************/
+/* ***************************************************************************
+* Threading system list
+* ***************************************************************************/
 
 /**
  * List of available threading systems.
@@ -109,36 +109,36 @@ scorep_config_init_mpp_systems( void );
 void
 scorep_config_final_mpp_systems( void );
 
-/* **************************************************************************************
- * class SCOREP_Config_MppNone
- * *************************************************************************************/
+/* ***************************************************************************
+* class SCOREP_Config_MockupMppSystem
+* ***************************************************************************/
 
 /**
- * This class is a place holder when using no multi process paradigm.
+ * This class is a place holder when using single process paradigm.
  */
-class SCOREP_Config_MppNone : public SCOREP_Config_MppSystem
+class SCOREP_Config_MockupMppSystem : public SCOREP_Config_MppSystem
 {
 public:
-    SCOREP_Config_MppNone();
+    SCOREP_Config_MockupMppSystem();
     virtual void
-    addLibs( std::deque<std::string> &          libs,
-             SCOREP_Config_LibraryDependencies &deps );
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
 };
 
-/* **************************************************************************************
- * class SCOREP_Config_MppMpi
- * *************************************************************************************/
+/* ***************************************************************************
+* class SCOREP_Config_MpiMppSystem
+* ***************************************************************************/
 
 /**
- * This class represents MPI.
+ * This class represents the MPI implementation of the multi process paradigm.
  */
-class SCOREP_Config_MppMpi : public SCOREP_Config_MppSystem
+class SCOREP_Config_MpiMppSystem : public SCOREP_Config_MppSystem
 {
 public:
-    SCOREP_Config_MppMpi();
+    SCOREP_Config_MpiMppSystem();
     virtual void
-    addLibs( std::deque<std::string> &          libs,
-             SCOREP_Config_LibraryDependencies &deps );
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
 };
 
 #endif

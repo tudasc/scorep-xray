@@ -3,16 +3,30 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2013, 
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## Copyright (c) 2009-2013,
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2013,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2013,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2013,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
 ## file       /scorep/src/adapters/cuda/Makefile.inc.am
@@ -20,9 +34,11 @@
 
 if HAVE_CUDA
 
-lib_LTLIBRARIES += libscorep_adapter_cuda.la
+# runtime management library for the cuda adapter
 
-libscorep_adapter_cuda_la_SOURCES  = \
+lib_LTLIBRARIES += libscorep_adapter_cuda_mgmt.la
+
+libscorep_adapter_cuda_mgmt_la_SOURCES  = \
     $(SRC_ROOT)src/adapters/cuda/SCOREP_Cuda_Init.c \
     $(SRC_ROOT)src/adapters/cuda/SCOREP_Cuda_Init.h \
     $(SRC_ROOT)src/adapters/cuda/scorep_cuda.c \
@@ -32,34 +48,49 @@ libscorep_adapter_cuda_la_SOURCES  = \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_callbacks.c \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_callbacks.h \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity.c \
-    $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity.h
+    $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity.h \
+    $(SRC_ROOT)src/measurement/paradigm/cuda/scorep_cuda_unify.c
 
-libscorep_adapter_cuda_la_CPPFLAGS =     \
-    $(AM_CPPFLAGS)                       \
-    -I$(PUBLIC_INC_DIR)                  \
-    -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_ROOT)src/services/include    \
-    $(UTILS_CPPFLAGS)                    \
-    @CUDA_CPPFLAGS@
+libscorep_adapter_cuda_mgmt_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                        \
+    -I$(PUBLIC_INC_DIR)                   \
+    -I$(INC_ROOT)src/measurement/include  \
+    -I$(INC_ROOT)src/services/include     \
+    $(UTILS_CPPFLAGS)                     \
+    @CUDA_CPPFLAGS@                       \
+    -I$(INC_ROOT)src/measurement          \
+    -I$(INC_DIR_COMMON_HASH)              \
+    -I$(INC_ROOT)src/adapters/cuda
 
-libscorep_adapter_cuda_la_LIBADD = @CUDA_LIBS@ \
-    libscorep_measurement.la
+libscorep_adapter_cuda_mgmt_la_LIBADD = \
+    @CUDA_LIBS@
 
-libscorep_adapter_cuda_la_LDFLAGS = $(library_api_version_ldflags)
+libscorep_adapter_cuda_mgmt_la_LDFLAGS = \
+    @CUDA_LDFLAGS@                       \
+    $(library_api_version_ldflags)
+
+# event library for the cuda adapter
+
+lib_LTLIBRARIES += libscorep_adapter_cuda_event.la
+libscorep_adapter_cuda_event_la_SOURCES =
+libscorep_adapter_cuda_event_la_LDFLAGS = \
+    $(library_api_version_ldflags)
 
 endif
 
-# mockup library for the adapter
+# mockup runtime management library for the cuda adapter
 
-noinst_LTLIBRARIES += libscorep_adapter_cuda_mockup.la
+lib_LTLIBRARIES += libscorep_adapter_cuda_mgmt_mockup.la
 
-libscorep_adapter_cuda_mockup_la_SOURCES = \
-	$(SRC_ROOT)src/adapters/cuda/SCOREP_Cuda_AdapterMockup.c
+libscorep_adapter_cuda_mgmt_mockup_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/SCOREP_AdapterMockup.c
 
-libscorep_adapter_cuda_mockup_la_CPPFLAGS = $(AM_CPPFLAGS) \
-        -I$(INC_ROOT)src/measurement/include               \
-        -I$(PUBLIC_INC_DIR)                                \
-        $(UTILS_CPPFLAGS)                                  \
-        -I$(INC_ROOT)src/utils/include                     \
-	-DADAPTER=Cuda
+libscorep_adapter_cuda_mgmt_mockup_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                          \
+    -I$(INC_ROOT)src/measurement/include    \
+    -I$(PUBLIC_INC_DIR)                     \
+    $(UTILS_CPPFLAGS)                       \
+    -DADAPTER=Cuda
 
+libscorep_adapter_cuda_mgmt_mockup_la_LDFLAGS = \
+    $(library_api_version_ldflags)

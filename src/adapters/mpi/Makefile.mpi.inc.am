@@ -3,13 +3,25 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2013, 
+## Copyright (c) 2009-2013,
 ## RWTH Aachen University, Germany
+##
+## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2013,
 ## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
 ## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2013,
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2013,
 ## Technische Universitaet Muenchen, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -21,46 +33,127 @@
 
 if HAVE_MPI_SUPPORT
 
-noinst_LTLIBRARIES += libscorep_adapter_mpi_wrapper.la
-libscorep_adapter_mpi_wrapper_la_SOURCES =
-libscorep_adapter_mpi_wrapper_la_LIBADD =                 \
-    libscorep_adapter_mpi_c_wrapper.la                    \
-    libscorep_adapter_mpi_fortran_wrapper_sub1.la         \
-    libscorep_adapter_mpi_fortran_wrapper_sub2.la         \
-    libscorep_adapter_mpi_fortran_wrapper_sub3.la         \
-    libscorep_adapter_mpi_fortran_wrapper_sub4.la         \
-    libscorep_adapter_mpi_fortran_conv.la
+# runtime management library for the MPI adapter
 
-noinst_LTLIBRARIES += libscorep_adapter_mpi_c_wrapper.la
-libscorep_adapter_mpi_c_wrapper_la_SOURCES =                  \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Cg.c               \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Coll.c             \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Env.c              \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Err.c              \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Ext.c              \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Io.c               \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Misc.c             \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_P2p.c              \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.c              \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Rma.c              \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Spawn.c            \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Topo.c             \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Type.c             \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi.h                  \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h              \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_init.c             \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator.c     \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator.h     \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_fortran.c          \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_fortran.h          \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_request.c          \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_request.h          \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_hooks.c         \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_hooks.h         \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile.c       \
+lib_LTLIBRARIES += libscorep_adapter_mpi_mgmt.la
+libscorep_adapter_mpi_mgmt_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_init.c              \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator_mgmt.c \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator_mgmt.h \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.c               \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Reg.h
+nodist_EXTRA_libscorep_adapter_mpi_mgmt_la_SOURCES = force_link_with_F77LD.f
+libscorep_adapter_mpi_mgmt_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                       \
+    $(UTILS_CPPFLAGS)                    \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR)
+libscorep_adapter_mpi_mgmt_la_LIBADD = \
+    libscorep_adapter_mpi_mgmt_fortran_sub1.la \
+    libscorep_adapter_mpi_mgmt_fortran_sub2.la \
+    libscorep_adapter_mpi_mgmt_fortran_sub3.la \
+    libscorep_adapter_mpi_mgmt_fortran_sub4.la \
+    libscorep_adapter_mpi_fortran_conv.la
+libscorep_adapter_mpi_mgmt_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+noinst_LTLIBRARIES += \
+    libscorep_adapter_mpi_mgmt_fortran_sub1.la \
+    libscorep_adapter_mpi_mgmt_fortran_sub2.la \
+    libscorep_adapter_mpi_mgmt_fortran_sub3.la \
+    libscorep_adapter_mpi_mgmt_fortran_sub4.la
+
+SCOREP_MPI_MGMT_FORTRAN_SOURCES = \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Env.c
+
+SCOREP_MPI_MGMT_FORTRAN_CPPFLAGS = \
+    $(AM_CPPFLAGS)                    \
+    -I$(INC_ROOT)src/adapters/include \
+    $(UTILS_CPPFLAGS)
+
+libscorep_adapter_mpi_mgmt_fortran_sub1_la_SOURCES = \
+    $(SCOREP_MPI_MGMT_FORTRAN_SOURCES)
+libscorep_adapter_mpi_mgmt_fortran_sub1_la_CPPFLAGS = \
+    $(SCOREP_MPI_MGMT_FORTRAN_CPPFLAGS)               \
+    -DFSUB=SCOREP_FORTRAN_SUB1
+
+libscorep_adapter_mpi_mgmt_fortran_sub2_la_SOURCES = \
+    $(SCOREP_MPI_MGMT_FORTRAN_SOURCES)
+libscorep_adapter_mpi_mgmt_fortran_sub2_la_CPPFLAGS = \
+    $(SCOREP_MPI_MGMT_FORTRAN_CPPFLAGS)               \
+    -DFSUB=SCOREP_FORTRAN_SUB2
+
+libscorep_adapter_mpi_mgmt_fortran_sub3_la_SOURCES = \
+    $(SCOREP_MPI_MGMT_FORTRAN_SOURCES)
+libscorep_adapter_mpi_mgmt_fortran_sub3_la_CPPFLAGS = \
+    $(SCOREP_MPI_MGMT_FORTRAN_CPPFLAGS)               \
+    -DFSUB=SCOREP_FORTRAN_SUB3
+
+libscorep_adapter_mpi_mgmt_fortran_sub4_la_SOURCES = \
+    $(SCOREP_MPI_MGMT_FORTRAN_SOURCES)
+libscorep_adapter_mpi_mgmt_fortran_sub4_la_CPPFLAGS = \
+    $(SCOREP_MPI_MGMT_FORTRAN_CPPFLAGS)               \
+    -DFSUB=SCOREP_FORTRAN_SUB4
+
+
+noinst_LTLIBRARIES += libscorep_adapter_mpi_fortran_conv.la
+libscorep_adapter_mpi_fortran_conv_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Init.f
+
+if SCOREP_COMPILER_PGI
+# due to the external declaration of MPI_WTIME, MPI_WTICK , PMPI_WTICK, and
+# PMPI_WTIME in openmpi's mpif.h we get four undeclared symbols when linking
+# applications to pgi-build libscorep_mpi[_omp].so. The language option
+# noref_externals prevents this.
+libscorep_adapter_mpi_fortran_conv_la_FFLAGS = $(AM_FFLAGS) -Mnoref_externals
+endif
+
+
+# runtime management mockup library for the MPI adapter, see
+# src/adapters/mpi/Makefile.inc.am
+
+# event library for the MPI adapter
+
+lib_LTLIBRARIES += libscorep_adapter_mpi_event.la
+libscorep_adapter_mpi_event_la_SOURCES =
+nodist_EXTRA_libscorep_adapter_mpi_event_la_SOURCES = force_link_with_F77LD.f
+libscorep_adapter_mpi_event_la_LIBADD = \
+    libscorep_adapter_mpi_c_event.la            \
+    libscorep_adapter_mpi_event_fortran_sub1.la \
+    libscorep_adapter_mpi_event_fortran_sub2.la \
+    libscorep_adapter_mpi_event_fortran_sub3.la \
+    libscorep_adapter_mpi_event_fortran_sub4.la \
+    $(LIB_DIR_SCOREP)libscorep_measurement.la
+libscorep_adapter_mpi_event_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+noinst_LTLIBRARIES += libscorep_adapter_mpi_c_event.la
+libscorep_adapter_mpi_c_event_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Cg.c           \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Coll.c         \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Env.c          \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Err.c          \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Ext.c          \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Io.c           \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Misc.c         \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_P2p.c          \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Rma.c          \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Spawn.c        \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Topo.c         \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi_Type.c         \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Mpi.h              \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator.c \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_communicator.h \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_fortran.c      \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_fortran.h      \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_request.c      \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_request.h      \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_hooks.c     \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_hooks.h     \
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile.c   \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile.h 
 
-libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS =  \
+libscorep_adapter_mpi_c_event_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                             \
     $(UTILS_CPPFLAGS)                          \
     -I$(INC_ROOT)src/adapters/include          \
@@ -69,71 +162,63 @@ libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS =  \
     -I$(PUBLIC_INC_DIR)
 
 ## Disable mpi profiling hooks
-##libscorep_adapter_mpi_c_wrapper_la_CPPFLAGS += -DSCOREP_MPI_NO_HOOKS 
+##libscorep_adapter_mpi_c_event_la_CPPFLAGS += -DSCOREP_MPI_NO_HOOKS 
 
 
-noinst_LTLIBRARIES +=                             \
-    libscorep_adapter_mpi_fortran_wrapper_sub1.la \
-    libscorep_adapter_mpi_fortran_wrapper_sub2.la \
-    libscorep_adapter_mpi_fortran_wrapper_sub3.la \
-    libscorep_adapter_mpi_fortran_wrapper_sub4.la
+noinst_LTLIBRARIES += \
+    libscorep_adapter_mpi_event_fortran_sub1.la \
+    libscorep_adapter_mpi_event_fortran_sub2.la \
+    libscorep_adapter_mpi_event_fortran_sub3.la \
+    libscorep_adapter_mpi_event_fortran_sub4.la
 
-SCOREP_MPI_FORTRAN_SOURCES =                                 \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Cg.c             \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Coll.c           \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Env.c            \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Err.c            \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Ext.c            \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Io.c             \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Misc.c           \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_P2p.c            \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Rma.c            \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Spawn.c          \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Topo.c           \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Type.c           \
+SCOREP_MPI_EVENT_FORTRAN_SOURCES = \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Cg.c    \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Coll.c  \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Err.c   \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Ext.c   \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Io.c    \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Misc.c  \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_P2p.c   \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Rma.c   \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Spawn.c \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Topo.c  \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Type.c  \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi.h
 
-SCOREP_MPI_FORTRAN_CPPFLAGS =                           \
-    $(AM_CPPFLAGS)                                      \
-    -I$(INC_ROOT)src/adapters/include                   \
-    -I$(INC_ROOT)src/measurement/online_access          \
-    -I$(PUBLIC_INC_DIR)                                 \
+SCOREP_MPI_EVENT_FORTRAN_CPPFLAGS = \
+    $(AM_CPPFLAGS)                             \
+    -I$(INC_ROOT)src/adapters/include          \
+    -I$(INC_ROOT)src/measurement/online_access \
+    -I$(PUBLIC_INC_DIR)                        \
     $(UTILS_CPPFLAGS)
 
-libscorep_adapter_mpi_fortran_wrapper_sub1_la_SOURCES =   \
-    $(SCOREP_MPI_FORTRAN_SOURCES)
-libscorep_adapter_mpi_fortran_wrapper_sub1_la_CPPFLAGS =  \
-    $(SCOREP_MPI_FORTRAN_CPPFLAGS)                        \
+libscorep_adapter_mpi_event_fortran_sub1_la_SOURCES = \
+    $(SCOREP_MPI_EVENT_FORTRAN_SOURCES)
+libscorep_adapter_mpi_event_fortran_sub1_la_CPPFLAGS = \
+    $(SCOREP_MPI_EVENT_FORTRAN_CPPFLAGS)               \
     -DFSUB=SCOREP_FORTRAN_SUB1
 
-libscorep_adapter_mpi_fortran_wrapper_sub2_la_SOURCES =   \
-    $(SCOREP_MPI_FORTRAN_SOURCES)
-libscorep_adapter_mpi_fortran_wrapper_sub2_la_CPPFLAGS =  \
-    $(SCOREP_MPI_FORTRAN_CPPFLAGS)                        \
+libscorep_adapter_mpi_event_fortran_sub2_la_SOURCES = \
+    $(SCOREP_MPI_EVENT_FORTRAN_SOURCES)
+libscorep_adapter_mpi_event_fortran_sub2_la_CPPFLAGS = \
+    $(SCOREP_MPI_EVENT_FORTRAN_CPPFLAGS)               \
     -DFSUB=SCOREP_FORTRAN_SUB2
 
-libscorep_adapter_mpi_fortran_wrapper_sub3_la_SOURCES =   \
-    $(SCOREP_MPI_FORTRAN_SOURCES)
-libscorep_adapter_mpi_fortran_wrapper_sub3_la_CPPFLAGS =  \
-    $(SCOREP_MPI_FORTRAN_CPPFLAGS)                        \
+libscorep_adapter_mpi_event_fortran_sub3_la_SOURCES = \
+    $(SCOREP_MPI_EVENT_FORTRAN_SOURCES)
+libscorep_adapter_mpi_event_fortran_sub3_la_CPPFLAGS = \
+    $(SCOREP_MPI_EVENT_FORTRAN_CPPFLAGS)               \
     -DFSUB=SCOREP_FORTRAN_SUB3
 
-libscorep_adapter_mpi_fortran_wrapper_sub4_la_SOURCES =   \
-    $(SCOREP_MPI_FORTRAN_SOURCES)
-libscorep_adapter_mpi_fortran_wrapper_sub4_la_CPPFLAGS =  \
-    $(SCOREP_MPI_FORTRAN_CPPFLAGS)                        \
+libscorep_adapter_mpi_event_fortran_sub4_la_SOURCES = \
+    $(SCOREP_MPI_EVENT_FORTRAN_SOURCES)
+libscorep_adapter_mpi_event_fortran_sub4_la_CPPFLAGS = \
+    $(SCOREP_MPI_EVENT_FORTRAN_CPPFLAGS)               \
     -DFSUB=SCOREP_FORTRAN_SUB4
 
 
-noinst_LTLIBRARIES += libscorep_adapter_mpi_fortran_conv.la
-libscorep_adapter_mpi_fortran_conv_la_SOURCES =           \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Init.f
-if SCOREP_COMPILER_PGI
-# due to the external declaration of MPI_WTIME, MPI_WTICK , PMPI_WTICK, and
-# PMPI_WTIME in openmpi's mpif.h we get four undeclared symbols when linking
-# applications to pgi-build libscorep_mpi[_omp].so. The language option
-# noref_externals prevents this.
-libscorep_adapter_mpi_fortran_conv_la_FFLAGS = $(AM_FFLAGS) -Mnoref_externals
-endif
+$(LIB_DIR_SCOREP)libscorep_measurement.la:
+	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_measurement.la
+
 
 endif

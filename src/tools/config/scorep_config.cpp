@@ -80,7 +80,8 @@
     "   --scorep-revision prints the revision number of the scorep package\n" \
     "   --common-revision prints the revision number of the common package\n" \
     "  Options:\n" \
-    "   --fortran   Specifies that the required flags are for the Fortran compiler.\n"
+    "   --fortran   Specifies that the required flags are for the Fortran compiler.\n" \
+    "   --nvcc      Convert flags to be suitable for the nvcc compiler.\n"
 
 std::string m_rpath_head      = "";
 std::string m_rpath_delimiter = "";
@@ -124,6 +125,12 @@ write_cobi_deps( SCOREP_Config_LibraryDependencies& deps,
                  const std::deque<std::string>&     libs,
                  bool                               install );
 
+static void
+treat_linker_flags_for_nvcc( std::string& flags );
+
+static void
+treat_compiler_flags_for_nvcc( std::string& flags );
+
 static inline void
 clean_up()
 {
@@ -141,6 +148,7 @@ main( int    argc,
     int  action  = 0;
     int  ret     = EXIT_SUCCESS;
     bool fortran = false;
+    bool nvcc    = false;
     bool install = true;
 
     SCOREP_Config_LibraryDependencies                 deps;
@@ -221,6 +229,10 @@ main( int    argc,
         else if ( strcmp( argv[ i ], "--fortran" ) == 0 )
         {
             fortran = true;
+        }
+        else if ( strcmp( argv[ i ], "--nvcc" ) == 0 )
+        {
+            nvcc = true;
         }
         else if ( strcmp( argv[ i ], "--build-check" ) == 0 )
         {
@@ -321,6 +333,11 @@ main( int    argc,
             {
                 ( *adapter )->addLdFlags( str );
             }
+
+            if ( nvcc )
+            {
+                treat_linker_flags_for_nvcc( str );
+            }
             std::cout << str;
             std::cout.flush();
             break;
@@ -335,9 +352,9 @@ main( int    argc,
             for ( adapter = scorep_adapters.begin();
                   adapter != scorep_adapters.end(); adapter++ )
             {
-                ( *adapter )->addCFlags( str, !install, fortran );
+                ( *adapter )->addCFlags( str, !install, fortran, nvcc );
             }
-            SCOREP_Config_ThreadSystem::current->addCFlags( str, !install, fortran );
+            SCOREP_Config_ThreadSystem::current->addCFlags( str, !install, fortran, nvcc );
 
         // Append the include directories, too
         case ACTION_INCDIR:
@@ -352,10 +369,14 @@ main( int    argc,
             for ( adapter = scorep_adapters.begin();
                   adapter != scorep_adapters.end(); adapter++ )
             {
-                ( *adapter )->addIncFlags( str, !install );
+                ( *adapter )->addIncFlags( str, !install, nvcc );
             }
-            SCOREP_Config_ThreadSystem::current->addIncFlags( str, !install );
+            SCOREP_Config_ThreadSystem::current->addIncFlags( str, !install, nvcc );
 
+            if ( nvcc )
+            {
+                treat_compiler_flags_for_nvcc( str );
+            }
             std::cout << str;
             std::cout.flush();
             break;
@@ -556,4 +577,41 @@ write_cobi_deps( SCOREP_Config_LibraryDependencies& deps,
                                   "\t<library name=\"",
                                   "\" />\n\t<library name=\"",
                                   "\" />\n" );
+}
+
+
+static void
+treat_linker_flags_for_nvcc( std::string& flags )
+{
+    std::string pattern1 = " ";
+    std::string replace1 = ",";
+    std::string pattern2 = LIBDIR_FLAG_WL;
+    std::string replace2 = "";
+
+    flags = remove_multiple_whitespaces( flags );
+    /* Replace all white-spaces by comma */
+    flags = replace_all( pattern1, replace1, flags );
+    /* Replace flag for passing arguments to linker through compiler
+     * (flags not needed because we use '-Xlinker' to specify linker
+     * flags when using CUDA compiler */
+    if ( pattern2.length() != 0 )
+    {
+        flags = replace_all( pattern2, replace2, flags );
+    }
+
+    flags = " -Xlinker " + flags;
+}
+
+
+static void
+treat_compiler_flags_for_nvcc( std::string& flags )
+{
+    std::string pattern1 = " ";
+    std::string replace1 = ",";
+
+    flags = remove_multiple_whitespaces( flags );
+    /* Replace all white-spaces by comma */
+    flags = replace_all( pattern1, replace1, flags );
+
+    flags = " -Xcompiler " + flags;
 }

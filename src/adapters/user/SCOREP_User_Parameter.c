@@ -2,24 +2,37 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2011,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  */
 
 /**
- *  @file       SCOREP_User_Parameter.c
+ *  @file       src/adapters/user/SCOREP_User_Parameter.c
  *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *  @status     alpha
  *
- *  This file containes the implementation of user adapter functions concerning
+ *  This file contains the implementation of user adapter functions concerning
  *  parameters.
  */
 
@@ -41,7 +54,7 @@ SCOREP_User_ParameterInt64
     int64_t                      value
 )
 {
-    /* Check for intialization */
+    /* Check for initialization */
     SCOREP_USER_ASSERT_INITIALIZED;
 
     if ( handle == NULL )
@@ -49,7 +62,7 @@ SCOREP_User_ParameterInt64
         return;
     }
 
-    /* Initialize parameter handle if necassary */
+    /* Initialize parameter handle if necessary */
     if ( *handle == SCOREP_USER_INVALID_PARAMETER )
     {
         *handle = SCOREP_PARAMETER_TO_USER( SCOREP_Definitions_NewParameter( name, SCOREP_PARAMETER_INT64 ) );
@@ -67,7 +80,7 @@ SCOREP_User_ParameterUint64
     uint64_t                     value
 )
 {
-    /* Check for intialization */
+    /* Check for initialization */
     SCOREP_USER_ASSERT_INITIALIZED;
 
     if ( handle == NULL )
@@ -75,7 +88,7 @@ SCOREP_User_ParameterUint64
         return;
     }
 
-    /* Initialize parameter handle if necassary */
+    /* Initialize parameter handle if necessary */
     if ( *handle == SCOREP_USER_INVALID_PARAMETER )
     {
         *handle = SCOREP_PARAMETER_TO_USER( SCOREP_Definitions_NewParameter( name, SCOREP_PARAMETER_UINT64 ) );
@@ -94,7 +107,7 @@ SCOREP_User_ParameterString
     char*                        value
 )
 {
-    /* Check for intialization */
+    /* Check for initialization */
     SCOREP_USER_ASSERT_INITIALIZED;
 
     if ( handle == NULL )
@@ -102,7 +115,7 @@ SCOREP_User_ParameterString
         return;
     }
 
-    /* Initialize parameter handle if necassary */
+    /* Initialize parameter handle if necessary */
     if ( *handle == SCOREP_USER_INVALID_PARAMETER )
     {
         *handle = SCOREP_PARAMETER_TO_USER( SCOREP_Definitions_NewParameter( name, SCOREP_PARAMETER_STRING ) );

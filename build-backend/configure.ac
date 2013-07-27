@@ -60,11 +60,13 @@ AS_IF([test -n "${scorep_otf2_bindir}"],
       [AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cppflags ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_LIBS],     ["`${scorep_otf2_bindir}/otf2-config --libs ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_LDFLAGS],  ["`${scorep_otf2_bindir}/otf2-config --ldflags ${scorep_otf2_config_backend_arg}`"])
-       AC_SUBST([OTF2_BINDIR],   ["${scorep_otf2_bindir}"])],
+       AC_SUBST([OTF2_BINDIR],   ["${scorep_otf2_bindir}"])
+       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_OTF2], [test 1 -eq 1])],
       [AC_SUBST([OTF2_CPPFLAGS], ['-I../vendor/otf2/include -I$(srcdir)/../vendor/otf2/include'])
        AC_SUBST([OTF2_LIBS],     [../vendor/otf2/build-backend/libotf2.la])
        AC_SUBST([OTF2_LDFLAGS],  [])
-       AC_SUBST([OTF2_BINDIR],   [../vendor/otf2/build-backend])])
+       AC_SUBST([OTF2_BINDIR],   [../vendor/otf2/build-backend])
+       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_OTF2], [test 1 -eq 0])])
 
 opari2_fix_and_free_form_options=1
 AS_IF([test -n "${scorep_opari2_bindir}"],
@@ -90,12 +92,12 @@ AS_IF([test -n "${scorep_cube_bindir}"],
       [AC_SUBST([CUBE_WRITER_CPPFLAGS],      ["`${scorep_cube_bindir}/cube-config --writer-cppflags`"])
        AC_SUBST([CUBE_WRITER_LIBS],          ["`${scorep_cube_bindir}/cube-config --writer-libs`"])
        AC_SUBST([CUBE_WRITER_LDFLAGS],       ["`${scorep_cube_bindir}/cube-config --writer-ldflags ${scorep_cube_config_backend_arg}`"])
-       AM_CONDITIONAL([HAVE_EXTERNAL_CUBE_WRITER], [test 1 -eq 1])
+       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE_WRITER], [test 1 -eq 1])
       ],
       [AC_SUBST([CUBE_WRITER_CPPFLAGS],      ['-I$(srcdir)/../src/measurement/cube_writer'])
        AC_SUBST([CUBE_WRITER_LIBS],          [libscorep_cube_writer.la])
        AC_SUBST([CUBE_WRITER_LDFLAGS],       [])
-       AM_CONDITIONAL([HAVE_EXTERNAL_CUBE_WRITER], [test 1 -eq 0])
+       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE_WRITER], [test 1 -eq 0])
       ])
 
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${scorep_have_score_build}" = "xno"], 

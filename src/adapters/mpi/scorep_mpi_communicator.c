@@ -2,20 +2,34 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2013,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
 /**
- * @file       scorep_mpi_communicator.c
+ * @file       src/adapters/mpi/scorep_mpi_communicator.c
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     alpha
  * @ingroup    MPI_Wrapper
@@ -25,6 +39,7 @@
 
 #include <config.h>
 #include "scorep_mpi_communicator.h"
+#include "scorep_mpi_communicator_mgmt.h"
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 #include "SCOREP_Mpi.h"
@@ -45,8 +60,6 @@
  * ----------------------------------------------------------------------------
  */
 extern uint64_t scorep_mpi_max_communicators;
-extern uint64_t scorep_mpi_max_windows;
-extern uint64_t scorep_mpi_max_access_epochs;
 extern uint64_t scorep_mpi_max_groups;
 
 /*
@@ -71,38 +84,8 @@ extern uint64_t scorep_mpi_max_groups;
  */
 #define SCOREP_MPI_MAX_GROUP   scorep_mpi_max_groups
 
-/**
- *  @def SCOREP_MPI_MAX_WIN
- *  @internal
- *  Maximum amount of concurrently defined windows per process
- */
-#define SCOREP_MPI_MAX_WIN    scorep_mpi_max_windows
-
-/**
- *  @def SCOREP_MPI_MAX_WINACC
- *  @internal
- *  Maximum amount of concurrently active access or exposure epochs per
- *  process.
- */
-#define SCOREP_MPI_MAX_WINACC  scorep_mpi_max_access_epochs
-
-/**
- *  Contains the data of the MPI_COMM_WORLD definition.
- */
-struct scorep_mpi_world_type scorep_mpi_world;
-
 /* ------------------------------------------------ Definitions for MPI Window handling */
 #ifndef SCOREP_MPI_NO_RMA
-
-/**
- *  @internal
- *  Structure to translate MPI window handles to internal SCOREP IDs.
- */
-struct scorep_mpi_win_type
-{
-    MPI_Win                       win; /** MPI window handle */
-    SCOREP_InterimRmaWindowHandle wid; /** Internal SCOREP window handle */
-};
 
 /**
  *  @internal
@@ -113,15 +96,9 @@ static int32_t scorep_mpi_last_window = 0;
 
 /**
  *  @internal
- *  Window tracking array
- */
-static struct scorep_mpi_win_type* scorep_mpi_windows = NULL;
-
-/**
- *  @internal
  *  Mutex for mpi window definitions.
  */
-static SCOREP_Mutex scorep_mpi_window_mutex;
+extern SCOREP_Mutex scorep_mpi_window_mutex;
 
 #endif // SCOREP_MPI_NO_RMA
 
@@ -187,7 +164,7 @@ static struct scorep_mpi_group_type* scorep_mpi_groups = NULL;
  *  @internal
  *  Internal array used for rank translation.
  */
-static SCOREP_MpiRank* scorep_mpi_ranks;
+extern SCOREP_MpiRank* scorep_mpi_ranks;
 
 /**
  *  @internal
@@ -195,30 +172,24 @@ static SCOREP_MpiRank* scorep_mpi_ranks;
  *  communicator management is initialized. This happens when the function
  *  scorep_mpi_comm_init() is called.
  */
-static int scorep_mpi_comm_initialized = 0;
-static int scorep_mpi_comm_finalized   = 0;
+extern int scorep_mpi_comm_initialized;
+extern int scorep_mpi_comm_finalized;
 
 /**
  *  @internal
  *  Mutex for communicator definition.
  */
-static SCOREP_Mutex scorep_mpi_communicator_mutex;
+SCOREP_Mutex scorep_mpi_communicator_mutex;
 
 /**
    MPI datatype for ID-ROOT exchange
  */
-static MPI_Datatype scorep_mpi_id_root_type = MPI_DATATYPE_NULL;
+extern MPI_Datatype scorep_mpi_id_root_type;
 
 /**
    Rank of local process in esd_comm_world
  */
 static int scorep_mpi_my_global_rank = SCOREP_INVALID_ROOT_RANK;
-
-/**
-   Local communicator counters
- */
-uint32_t scorep_mpi_number_of_self_comms = 0;
-uint32_t scorep_mpi_number_of_root_comms = 0;
 
 /* ------------------------------------------------ Definition for one sided operations */
 #ifndef SCOREP_MPI_NO_RMA
@@ -234,21 +205,10 @@ const SCOREP_Mpi_Color scorep_mpi_exp_epoch = 0;
 const SCOREP_Mpi_Color scorep_mpi_acc_epoch = 1;
 
 /**
- * @internal
- *  Entry data structure to track GATS epochs
- */
-struct scorep_mpi_winacc_type
-{
-    MPI_Win                win;   /* MPI window identifier */
-    SCOREP_Mpi_GroupHandle gid;   /* SCOREP MPI group handle */
-    SCOREP_Mpi_Color       color; /* byte to help distinguish accesses on same window */
-};
-
-/**
  *  @internal
  *  Data structure to track active GATS epochs.
  */
-static struct scorep_mpi_winacc_type* scorep_mpi_winaccs = NULL;
+extern struct scorep_mpi_winacc_type* scorep_mpi_winaccs;
 
 /**
  *  @internal
@@ -266,101 +226,7 @@ static int scorep_mpi_last_winacc = 0;
  * -----------------------------------------------------------------------------
  */
 
-/* -- rank translation -- */
-
-SCOREP_MpiRank
-scorep_mpi_rank_to_pe( SCOREP_MpiRank rank,
-                       MPI_Comm       comm )
-{
-    MPI_Group      group;
-    SCOREP_MpiRank global_rank;
-    int32_t        inter;
-
-    /* inter-communicators need different call than intra-communicators */
-    PMPI_Comm_test_inter( comm, &inter );
-    if ( inter )
-    {
-        PMPI_Comm_remote_group( comm, &group );
-    }
-    else
-    {
-        PMPI_Comm_group( comm, &group );
-    }
-
-    /* translate rank with respect to \a MPI_COMM_WORLD */
-    PMPI_Group_translate_ranks( group, 1, &rank, scorep_mpi_world.group, &global_rank );
-    /* free internal group of input communicator */
-    PMPI_Group_free( &group );
-
-    return global_rank;
-}
-
 /* -------------------------------------------------------------------- window handling */
-void
-scorep_mpi_win_init( void )
-{
-#ifndef SCOREP_MPI_NO_RMA
-    SCOREP_MutexCreate( &scorep_mpi_window_mutex );
-
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_RMA ) )
-    {
-        if ( SCOREP_MPI_MAX_WIN == 0 )
-        {
-            UTILS_WARN_ONCE( "Environment variable SCOREP_MPI_MAX_WINDOWS was set to 0, "
-                             "thus, one-sided communication can not be recorded and is disabled. "
-                             "To avoid this warning you can disable one sided communications, "
-                             "by disabling RMA via SCOREP_MPI_ENABLE_GROUPS." );
-            SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
-        }
-
-        if ( SCOREP_MPI_MAX_WINACC == 0 )
-        {
-            UTILS_WARN_ONCE( "Environment variable SCOREP_MPI_MAX_ACCESS_EPOCHS was set "
-                             "to 0, thus, one-sided communication can not be recorded and is "
-                             "disabled. To avoid this warning you can disable one sided "
-                             "communications, by disabling RMA via SCOREP_MPI_ENABLE_GROUPS." );
-            SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
-        }
-
-
-        scorep_mpi_windows = ( struct scorep_mpi_win_type* )SCOREP_Memory_AllocForMisc
-                                 ( sizeof( struct scorep_mpi_win_type ) * SCOREP_MPI_MAX_WIN );
-        if ( scorep_mpi_windows == NULL )
-        {
-            UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                         "Failed to allocate memory for MPI window tracking.\n"
-                         "One-sided communication can not be recoreded.\n"
-                         "Space for %" PRIu64 " windows was requested.\n"
-                         "You can change this number via the environment variable "
-                         "SCOREP_MPI_MAX_WINDOWS.", SCOREP_MPI_MAX_WIN );
-            SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
-        }
-
-        scorep_mpi_winaccs = ( struct scorep_mpi_winacc_type* )SCOREP_Memory_AllocForMisc
-                                 ( sizeof( struct scorep_mpi_winacc_type ) * SCOREP_MPI_MAX_WINACC );
-
-        if ( scorep_mpi_winaccs == NULL )
-        {
-            UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
-                         "Failed to allocate memory for access epoch tracking.\n"
-                         "One-sided communication can not be recoreded.\n"
-                         "Space for %" PRIu64 " access epochs was requested.\n"
-                         "You can change this number via environment variable "
-                         "SCOREP_MPI_MAX_ACCESS_EPOCHS.",
-                         SCOREP_MPI_MAX_WINACC );
-            SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
-        }
-    }
-#endif
-}
-
-void
-scorep_mpi_win_finalize( void )
-{
-#ifndef SCOREP_MPI_NO_RMA
-    SCOREP_MutexDestroy( &scorep_mpi_window_mutex );
-#endif
-}
 
 #ifndef SCOREP_MPI_NO_RMA
 
@@ -384,7 +250,8 @@ scorep_mpi_win_rank_to_pe( SCOREP_MpiRank rank,
 SCOREP_InterimRmaWindowHandle
 scorep_mpi_win_id( MPI_Win win )
 {
-    int i = 0;
+    int                                i = 0;
+    extern struct scorep_mpi_win_type* scorep_mpi_windows;
 
     SCOREP_MutexLock( scorep_mpi_window_mutex );
     while ( i < scorep_mpi_last_window && scorep_mpi_windows[ i ].win != win )
@@ -406,67 +273,6 @@ scorep_mpi_win_id( MPI_Win win )
     }
 }
 
-void
-scorep_mpi_win_create( MPI_Win  win,
-                       MPI_Comm comm )
-{
-    SCOREP_InterimRmaWindowHandle handle = SCOREP_INVALID_INTERIM_RMA_WINDOW;
-
-    SCOREP_MutexLock( scorep_mpi_window_mutex );
-    if ( scorep_mpi_last_window >= SCOREP_MPI_MAX_WIN )
-    {
-        UTILS_ERROR( SCOREP_ERROR_MPI_TOO_MANY_WINDOWS,
-                     "Hint: Increase SCOREP_MPI_MAX_WINDOWS configuration variable." );
-    }
-
-    /* register mpi window definition */
-    /* NOTE: MPI_COMM_WORLD is _not_ present in the internal structures,
-     * and _must not_ be queried by scorep_mpi_comm_handle */
-    handle = SCOREP_Definitions_NewInterimRmaWindow( "",
-                                                     comm == MPI_COMM_WORLD
-                                                     ? SCOREP_MPI_COMM_WORLD_HANDLE
-                                                     : scorep_mpi_comm_handle( comm ) );
-
-    /* enter win in scorep_mpi_windows[] array */
-    scorep_mpi_windows[ scorep_mpi_last_window ].win = win;
-    scorep_mpi_windows[ scorep_mpi_last_window ].wid = handle;
-
-    scorep_mpi_last_window++;
-    SCOREP_MutexUnlock( scorep_mpi_window_mutex );
-}
-
-void
-scorep_mpi_win_free( MPI_Win win )
-{
-    SCOREP_MutexLock( scorep_mpi_window_mutex );
-    if ( scorep_mpi_last_window == 1 && scorep_mpi_windows[ 0 ].win == win )
-    {
-        scorep_mpi_last_window = 0;
-    }
-    else if ( scorep_mpi_last_window > 1 )
-    {
-        int i = 0;
-
-        while ( i < scorep_mpi_last_window && scorep_mpi_windows[ i ].win != win )
-        {
-            i++;
-        }
-
-        if ( i < scorep_mpi_last_window-- )
-        {
-            scorep_mpi_windows[ i ] = scorep_mpi_windows[ scorep_mpi_last_window ];
-        }
-        else
-        {
-            UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINDOW, "" );
-        }
-    }
-    else
-    {
-        UTILS_ERROR( SCOREP_ERROR_MPI_NO_WINDOW, "" );
-    }
-    SCOREP_MutexUnlock( scorep_mpi_window_mutex );
-}
 #endif
 
 /* -------------------------------------------------------------- communicator handling */
@@ -598,28 +404,15 @@ scorep_mpi_comm_init( void )
     }
 }
 
-void
-scorep_mpi_comm_finalize( void )
-{
-    /* reset initialization flag
-     * (needed to prevent crashes with broken MPI implementations) */
-    scorep_mpi_comm_initialized = 0;
-    scorep_mpi_comm_finalized   = 1;
-
-    /* free MPI group held internally */
-    PMPI_Group_free( &scorep_mpi_world.group );
-
-    /* free local translation buffers */
-    free( scorep_mpi_world.ranks );
-    free( scorep_mpi_ranks );
-
-    /* free created MPI data types */
-    PMPI_Type_free( &scorep_mpi_id_root_type );
-
-    SCOREP_MutexDestroy( &scorep_mpi_communicator_mutex );
-}
-
-int32_t
+/**
+ *  @internal
+ * Translates ranks in the MPI Group @group into MPI_COMM_WORLD ranks.
+ *
+ * @param  group MPI group handle
+ *
+ * @return the size of group @group
+ */
+static int32_t
 scorep_mpi_group_translate_ranks( MPI_Group group )
 {
     int32_t size;
@@ -1013,7 +806,7 @@ scorep_mpi_group_free( MPI_Group group )
     SCOREP_MutexUnlock( scorep_mpi_communicator_mutex );
 }
 
-SCOREP_Mpi_GroupHandle
+static SCOREP_Mpi_GroupHandle
 scorep_mpi_group_id( MPI_Group group )
 {
     int32_t i = 0;
@@ -1037,7 +830,7 @@ scorep_mpi_group_id( MPI_Group group )
     }
 }
 
-int32_t
+static int32_t
 scorep_mpi_group_search( MPI_Group group )
 {
     int32_t i = 0;

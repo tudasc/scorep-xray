@@ -106,7 +106,7 @@ public:
     bool
     isOpenmpApplication( void );
     bool
-    isCudaApplication( void );
+    isNvccCompiler( void );
     bool
     isCompiling( void );
     bool
@@ -161,6 +161,17 @@ public:
      */
     std::string
     getLibraryFiles( void );
+
+#if defined( SCOREP_SHARED_BUILD )
+    /**
+     * Returns true if the user provided --no-as-needed on the command
+     * line. Temporary feature to work around linking failures on
+     * systems that have --as-needed as linker default. See ticket:385
+     */
+    bool
+    getNoAsNeeded( void );
+
+#endif
 
     /* ***************************************************** Private methods */
 private:
@@ -235,11 +246,6 @@ private:
        Specifies whether it is an OpenMP application.
      */
     instrumentation_usage_t m_is_openmp_application;
-
-    /**
-       Specifies whether it is an CUDA application.
-     */
-    instrumentation_usage_t m_is_cuda_application;
 
     /**
        True is the link target is a shared library.
@@ -383,6 +389,13 @@ private:
        Extra parameters for the tau_instrumenter
      */
     std::string m_pdt_params;
+
+#if defined( SCOREP_SHARED_BUILD )
+    /**
+     * True if the user provided --no-as-needed on the command line.
+     */
+    bool m_no_as_needed;
+#endif
 };
 
 #endif

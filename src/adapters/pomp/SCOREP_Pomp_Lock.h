@@ -2,23 +2,36 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2011,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  */
 
 #ifndef SCOREP_POMP_LOCK_H
 #define SCOREP_POMP_LOCK_H
 
 /**
- * @file       SCOREP_Pomp_Lock.h
+ * @file       src/adapters/pomp/SCOREP_Pomp_Lock.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     alpha
  * @ingroup    POMP
@@ -35,6 +48,25 @@ typedef uint32_t SCOREP_Pomp_LockHandleType;
 
 /** Defines an invalid value for locks */
 #define SCOREP_POMP_INVALID_LOCK -1
+
+/** Indexes for omp lock region handles in scorep_pomp_lock_region_handles. */
+enum SCOREP_Pomp_LockRegion_Index
+{
+    SCOREP_POMP_INIT_LOCK = 0,
+    SCOREP_POMP_DESTROY_LOCK,
+    SCOREP_POMP_SET_LOCK,
+    SCOREP_POMP_UNSET_LOCK,
+    SCOREP_POMP_TEST_LOCK,
+    SCOREP_POMP_INIT_NEST_LOCK,
+    SCOREP_POMP_DESTROY_NEST_LOCK,
+    SCOREP_POMP_SET_NEST_LOCK,
+    SCOREP_POMP_UNSET_NEST_LOCK,
+    SCOREP_POMP_TEST_NEST_LOCK,
+
+    SCOREP_POMP_REGION_LOCK_NUM
+};
+
+extern SCOREP_RegionHandle scorep_pomp_lock_region_handles[ SCOREP_POMP_REGION_LOCK_NUM ];
 
 typedef struct SCOREP_PompLock SCOREP_PompLock;
 

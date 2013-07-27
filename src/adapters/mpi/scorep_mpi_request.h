@@ -2,23 +2,36 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2011,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  */
 
 #ifndef SCOREP_MPI_REQUEST_H
 #define SCOREP_MPI_REQUEST_H
 
 /**
-   @file       scorep_mpi_request.h
+   @file       src/adapters/mpi/scorep_mpi_request.h
    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
    @status     ALPHA
    @ingroup    MPI_Wrapper
@@ -55,11 +68,6 @@ typedef struct
     void*                            online_analysis_pod;
 } scorep_mpi_request;
 
-/**
- * @brief Clean up request tracking infrastructure
- */
-void
-scorep_mpi_request_finalize( void );
 
 /**
  * @brief Return a new request id
@@ -111,6 +119,40 @@ scorep_mpi_save_request_array( MPI_Request* arr_req,
 scorep_mpi_request*
 scorep_mpi_saved_request_get( int i );
 
+/**
+ * @internal
+ * size of hash table
+ */
+#define SCOREP_MPI_REQUEST_TABLE_SIZE 256
+
+/**
+ * @internal
+ * Hash access structure
+ */
+struct scorep_mpi_request_hash
+{
+    struct scorep_mpi_request_block* head_block;
+    struct scorep_mpi_request_block* last_block;
+    scorep_mpi_request*              lastreq;
+    int                              lastidx;
+};
+
+/**
+ * @internal
+ * size of element list behind a hash entry
+ */
+#define SCOREP_MPI_REQUEST_BLOCK_SIZE 16
+
+/**
+ * @internal
+ * Block of linked list of request blocks
+ */
+struct scorep_mpi_request_block
+{
+    scorep_mpi_request               req[ SCOREP_MPI_REQUEST_BLOCK_SIZE ];
+    struct scorep_mpi_request_block* next;
+    struct scorep_mpi_request_block* prev;
+};
 
 
 #endif // SCOREP_MPI_REQUEST_H

@@ -2,23 +2,36 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2011,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  */
 
 #ifndef SCOREP_POMP_COMMON_H
 #define SCOREP_POMP_COMMON_H
 
 /**
- * @file       SCOREP_Pomp_Common.h
+ * @file       src/adapters/pomp/SCOREP_Pomp_Common.h
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @status     alpha
  * @ingroup    POMP2
@@ -29,6 +42,7 @@
 
 #include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_Mutex.h>
+#include <SCOREP_RuntimeManagement.h>
 #include <stdbool.h>
 
 /** @ingroup POMP2
@@ -40,7 +54,7 @@
 ****************************************************************************************/
 
 /**
-    Flag to indicate, wether POMP tracing is enable/disabled
+    Flag to indicate, whether POMP tracing is enable/disabled
  */
 extern bool scorep_pomp_is_tracing_on;
 
@@ -50,7 +64,7 @@ extern bool scorep_pomp_is_tracing_on;
 extern bool scorep_pomp_is_initialized;
 
 /**
-    Flag that indicates wether the POMP2 adapter is finalized
+    Flag that indicates whether the POMP2 adapter is finalized
  */
 extern bool scorep_pomp_is_finalized;
 
@@ -67,7 +81,7 @@ extern SCOREP_Mutex scorep_pomp_assign_lock;
 #define SCOREP_POMP2_ENSURE_INITIALIZED      \
     if ( !scorep_pomp_is_initialized )       \
     {                                        \
-        POMP2_Init();                        \
+        SCOREP_InitMeasurement();                        \
     }
 
 /**
@@ -92,7 +106,7 @@ extern SCOREP_Mutex scorep_pomp_assign_lock;
 SCOREP_ErrorCode
 scorep_pomp_adapter_init( void );
 
-/** Adapter finalialization function.
+/** Adapter finalization function.
  */
 void
 scorep_pomp_adapter_finalize( void );

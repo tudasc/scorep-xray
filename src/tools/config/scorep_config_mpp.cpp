@@ -9,7 +9,7 @@
  */
 
 /**
- * @file scorep_config_mpp.cpp
+ * @file src/tools/config/scorep_config_mpp.cpp
  * @status alpha
  * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
@@ -27,8 +27,8 @@ std::deque<SCOREP_Config_MppSystem*> scorep_mpp_systems;
 void
 scorep_config_init_mpp_systems( void )
 {
-    scorep_mpp_systems.push_back( new SCOREP_Config_MppMpi() );
-    scorep_mpp_systems.push_back( new SCOREP_Config_MppNone() );
+    scorep_mpp_systems.push_back( new SCOREP_Config_MpiMppSystem() );
+    scorep_mpp_systems.push_back( new SCOREP_Config_MockupMppSystem() );
     SCOREP_Config_MppSystem::current = scorep_mpp_systems.front();
 }
 
@@ -81,41 +81,43 @@ SCOREP_Config_MppSystem::checkArgument( std::string system )
 }
 
 void
-SCOREP_Config_MppSystem::addLibs( std::deque<std::string> &          libs,
-                                  SCOREP_Config_LibraryDependencies &deps )
+SCOREP_Config_MppSystem::addLibs( std::deque<std::string>&           libs,
+                                  SCOREP_Config_LibraryDependencies& deps )
 {
 }
 
 /* **************************************************************************************
- * class SCOREP_Config_MppNone
+ * class SCOREP_Config_MockupMppSystem
  * *************************************************************************************/
 
-SCOREP_Config_MppNone::SCOREP_Config_MppNone() : SCOREP_Config_MppSystem( "none" )
+SCOREP_Config_MockupMppSystem::SCOREP_Config_MockupMppSystem() : SCOREP_Config_MppSystem( "none" )
 {
 }
 
 void
-SCOREP_Config_MppNone::addLibs( std::deque<std::string> &          libs,
-                                SCOREP_Config_LibraryDependencies &deps )
+SCOREP_Config_MockupMppSystem::addLibs( std::deque<std::string>&           libs,
+                                        SCOREP_Config_LibraryDependencies& deps )
 {
+    deps.addDependency( "libscorep_measurement", "libscorep_adapter_mpi_mgmt_mockup" );
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_mockup" );
     deps.addDependency( "libscorep_measurement", "libscorep_sion_mockup" );
     deps.addDependency( "libscorep_measurement", "libscorep_online_access_spp" );
 }
 
 /* **************************************************************************************
- * class SCOREP_Config_MppMpi
+ * class SCOREP_Config_MpiMppSystem
  * *************************************************************************************/
 
-SCOREP_Config_MppMpi::SCOREP_Config_MppMpi() : SCOREP_Config_MppSystem( "mpi" )
+SCOREP_Config_MpiMppSystem::SCOREP_Config_MpiMppSystem() : SCOREP_Config_MppSystem( "mpi" )
 {
 }
 
 void
-SCOREP_Config_MppMpi::addLibs( std::deque<std::string> &          libs,
-                               SCOREP_Config_LibraryDependencies &deps )
+SCOREP_Config_MpiMppSystem::addLibs( std::deque<std::string>&           libs,
+                                     SCOREP_Config_LibraryDependencies& deps )
 {
-    libs.push_back( "libscorep_adapter_mpi" );
+    libs.push_back( "libscorep_adapter_mpi_event" );
+    deps.addDependency( "libscorep_measurement", "libscorep_adapter_mpi_mgmt" );
     deps.addDependency( "libscorep_measurement", "libscorep_sion_mpp_mpi" );
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_mpi" );
     deps.addDependency( "libscorep_measurement", "libscorep_online_access_mpp_mpi" );

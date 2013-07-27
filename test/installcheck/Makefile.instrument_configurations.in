@@ -5,20 +5,33 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012, 
-##    RWTH Aachen, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## Copyright (c) 2009-2012,
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2012,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2012,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2012,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
 ## file       test/installcheck/Makefile.common.in
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 all:
 
@@ -33,6 +46,9 @@ PREPS_FILE      = @abs_top_builddir@/../installcheck/configurations_$(PARADIGM)
 
 @SCOREP_COMPILER_SUN_TRUE@SKIP_DEFAULT = yes
 @SCOREP_COMPILER_SUN_FALSE@SKIP_DEFAULT = no
+
+@SCOREP_COMPILER_IBM_TRUE@FD_FLAG="-WF,"
+@SCOREP_COMPILER_IBM_FALSE@FD_FLAG=""
 
 SCOREP_INSTRUMENTER_CHECKS_VERBOSE = $(V)
 
@@ -94,6 +110,10 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                         else \
                             echo "  GEN     $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
                         fi; \
+                        unset POMP_FLAGS; \
+                        if test -n "`echo $$line | grep 'pomp' | grep -v 'nopomp'`"; then \
+                            POMP_FLAGS="-DSCOREP_POMP_USER"; \
+                        fi; \
                         $(MAKE) -C $$obj_dir $(AM_MAKEFLAGS) \
                             PREP="$$prep" \
                             SUFFIX="$$suffix" \
@@ -108,10 +128,10 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             CXX="$(CXX)" \
                             F77="$(F77)" \
                             FC="$(FC)" \
-                            CFLAGS="$(CFLAGS)" \
+                            CFLAGS="$(CFLAGS) $$POMP_FLAGS" \
                             CXXFLAGS="$(CXXFLAGS)" \
-                            F77FLAGS="$(FFLAGS)" \
-                            FCFLAGS="$(FCFLAGS)" \
+                            F77FLAGS="$(FFLAGS) $(FD_FLAG)$$POMP_FLAGS" \
+                            FCFLAGS="$(FCFLAGS) $(FD_FLAG)$$POMP_FLAGS" \
                             $$code || exit 1; \
                         set +x; \
                     done < $(PREPS_FILE); \

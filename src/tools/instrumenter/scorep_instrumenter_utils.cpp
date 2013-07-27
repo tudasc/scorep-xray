@@ -206,7 +206,12 @@ is_cpp_file( const std::string& filename )
     return false;
 }
 
-bool
+/**
+    Checks whether a file is a CUDA source file.
+    @param filename A file name.
+    @returns true if the file extension indicates CUDA source file.
+ */
+static bool
 is_cuda_file( const std::string& filename )
 {
     std::string extension = get_extension( filename );
