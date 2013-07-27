@@ -1,12 +1,12 @@
-Usage: scorep <options> <orginal command>
-This is the Score-P user tool.
+
+This is the SCOREP instrumentation tool. The usage is:
+scorep <options> <orginal command>
 
 Common options are:
   --help, -h      Show help output. Does not execute any other command.
   --config=<file> Specifies file for the instrumentation configuration.
-  -v, --verbose[=<value>]
-                  Specifies the verbosity level. The following levels are
-                  available:
+  -v, --verbose[=<value>] Specifies the verbosity level. The following
+                  levels are available:
                   0 = No output
                   1 = Executed commands are displayed (default if no
                       value is specified)
@@ -17,42 +17,43 @@ Common options are:
                   instrumentation. By default, temporary files are deleted
                   if no error occures during instrumentation.
   --version       Prints the Score-P version and exits.
-  --compiler      Enables compiler instrumentation. Is enabled by default.
-  --nocompiler    Disables compiler instrumentation.
   --mpi           Enables mpi wrapper. They are enabled by default if it is an
                   mpi program.
   --nompi         Disables mpi wrappers. They are disabled by default if
                   it is no mpi program.
-  --opari[="<parameter-list>"]
-                  Enables Opari2 instrumentation. Is enabled by default if it
-                  is an OpenMP program.
-                  You may specify additional parameters that are passed to Opari2.
-  --pomp          Enables semi-automatic pomp user instrumentation.
-                  By default, it is enabled if OPARI2 instrumentation is
-                  enabled.
-  --nopomp        Disables semi-automatic pomp user instrumentation.
-                  By default, it is enabled if OPARI2 instrumentation is
-                  enabled.
-  --user          Enables manual user instrumentation.
-  --nouser        Disables manual user instrumentation. Is disabled by default.
-  --pdt[="<parameter-list>"]
-                  Enables source code instrumentation with PDT using the TAU
-                  instrumentor.
-                  It will automatically enable the user instrumentation
-                  and disable compiler instrumentation.
-                  You may specify additional parameters that are passed
-                  to the TAU instrumentor.
-  --nopdt         Disables the source code instrumentation with PDT.
-                  It is disabled by default.
-  --cobi[=\"<parameter-list>\"]
-                  Enables binary instrumentation with Cobi.
-                  Disables compiler instrumentation.
-                  You may specify additional parameters that are passed to Cobi.
-  --nocobi        Disables the binary instrumentation with Cobi.
-                  It is disabled by default.
   --openmp        Enables OpenMP support. Needed if the instrumentation
                   does not correctly identify your application as OpenMP
                   program.
   --noopenmp      Disables OpenMP support.
-  --static        Enforce static linking of the Score-P libraries.
-  --dynamic       Enforce dynamic linking of the Score-P libraries.
+  --no-as-needed  Adds a GNU ld linker flag to fix undefined references
+                  when using shared scorep libraries. This happens on
+                  systems using --as-needed as linker default. It will
+                  be handled transparently in future releases of scorep.
+  --nocobi        Disables cobi instrumentation.
+  --compiler      Enables compiler instrumentation.
+                  By default, it disables cobi and pdt instrumentation.
+  --nocompiler    Disables compiler instrumentation.
+  --nocuda        Disables cuda instrumentation.
+  --pomp[=<paramter-list>]
+                  Enables pomp user instrumentation.
+                  You may add additional parameters that are passed to OPARI2.
+                  By default, it enables also preprocessing
+  --nopomp        Disables pomp user instrumentation.
+  --opari[=<paramter-list>]
+                  Enables OPARI2 instrumentation of OpenMP regions.
+                  You may add additional parameters that are passed to OPARI2
+                  By default, it enables also preprocessing and
+                  pomp user instrumentation.
+  --pdt[=<paramter-list>]
+                  Enables pdt instrumentation.
+                  You may add additional parameters that are passed to pdt.
+                  It requires and, thus, automatically enables user instrumentation.
+                  It conflicts and, thus, automatically disables preprocess instrumentation.
+                  By default, it disables cobi and compiler instrumentation.
+  --nopdt         Disables pdt instrumentation.
+  --preprocess    Enables preprocess instrumentation.
+                  It conflicts and, thus, automatically disables pdt instrumentation.
+  --nopreprocess  Disables preprocess instrumentation.
+  --user          Enables user instrumentation.
+  --nouser        Disables user instrumentation.
+
