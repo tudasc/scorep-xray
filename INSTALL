@@ -314,10 +314,6 @@ variables:
   SIONCONFIG  Absolute path to sionconfig, including "sionconfig".
   PAPI_INC    Include path to the papi.h header.
   PAPI_LIB    Library path to the papi library.
-  LIBUNWIND_INCLUDE
-              Path to libunwind headers.
-  LIBUNWIND_LIB
-              Path to libunwind libraries.
   LIBCUDART_INCLUDE
               Path to libcudart headers.
   LIBCUDART_LIB
