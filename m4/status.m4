@@ -1122,10 +1122,12 @@ AC_DEFUN([AC_CONFIG_SUBDIR_CUSTOM],
                                  m4_bpatsubst(m4_defn([_AC_Sub]), [:.*]))])]dnl
 
 # build a list of (directory,arguments) tuples that will be processed in _AC_OUTPUT_SUBDIRS
+_ac_sub_configure_args=
+_AC_SUB_CONFIGURE_ARGS(m4_normalize([$2]), [_ac_sub_configure_args])
 [if test -z "$custom_subdirs"; then
-  custom_subdirs="custom_sub_configure_dir=\"m4_normalize([$1])\";custom_sub_configure_args=\"m4_normalize([$2])\""
+  custom_subdirs="custom_sub_configure_dir=\"m4_normalize([$1])\";custom_sub_configure_args=\"${_ac_sub_configure_args}\""
 else
-  custom_subdirs="$custom_subdirs|custom_sub_configure_dir=\"m4_normalize([$1])\";custom_sub_configure_args=\"m4_normalize([$2])\""
+  custom_subdirs="$custom_subdirs|custom_sub_configure_dir=\"m4_normalize([$1])\";custom_sub_configure_args=\"${_ac_sub_configure_args}\""
 fi]
 
 # per default, enable --help=recursive in directory $1.
