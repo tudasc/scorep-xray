@@ -104,7 +104,6 @@ installcheck_public_header_CXXCOMPILE=$(CXX) $(installcheck_public_header_cflags
 installcheck_public_header_CXXLINK=$(CXX) $(installcheck_public_header_ldflags) $(installcheck_public_header_libs) $^ -o $@
 
 installcheck_public_headers = \
-    installcheck_public_header_pomp_lib_c$(EXEEXT)                \
     installcheck_public_header_SCOREP_MetricPlugins_c$(EXEEXT)    \
     installcheck_public_header_SCOREP_MetricPlugins_cpp$(EXEEXT)  \
     installcheck_public_header_SCOREP_MetricTypes_c$(EXEEXT)      \
@@ -121,6 +120,11 @@ installcheck_public_headers = \
     installcheck_public_header_SCOREP_User_Variables_cpp$(EXEEXT) \
     installcheck_public_header_SCOREP_Tau_c$(EXEEXT)              \
     installcheck_public_header_SCOREP_Tau_cpp$(EXEEXT)
+
+if ! HAVE_SCOREP_EXTERNAL_OPARI2
+installcheck_public_headers += \
+    installcheck_public_header_pomp_lib_c$(EXEEXT)
+endif
 
 installcheck-public-headers: $(installcheck_public_headers)
 
