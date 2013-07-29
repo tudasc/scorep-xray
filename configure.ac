@@ -33,6 +33,16 @@ AFS_CROSSCOMPILING
 AFS_SCOREP_MACHINE_NAME
 AFS_SCOREP_PLATFORM_NAME
 
+# quote $afs_scorep_platform_name and $afs_scorep_default_machine_name for use as arguments to sub-configures
+afs_scorep_default_machine_name_sq=$afs_scorep_default_machine_name
+case $afs_scorep_default_machine_name_sq in
+*\'*) afs_scorep_default_machine_name_sq="`AS_ECHO(["$afs_scorep_default_machine_name_sq"]) | sed "s/'/'\\\\\\\\''/g"`" ;;
+esac
+afs_scorep_platform_name_sq=$afs_scorep_platform_name
+case $afs_scorep_platform_name_sq in
+*\'*) afs_scorep_platform_name_sq="`AS_ECHO(["$afs_scorep_platform_name_sq"]) | sed "s/'/'\\\\\\\\''/g"`" ;;
+esac
+
 # don't detect and load defaults in nested configures (e.g. otf2)
 AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
        test "${ac_scorep_platform_data_provided}" = "no"],
@@ -112,11 +122,11 @@ AS_IF([test "x${scorep_have_cube_config}" = "xyes"],
              [AC_MSG_WARN([cube installation required but not found. scorep-score wont be build. Please reconfigure using the --with-cube option or make sure that cube-config is in PATH.])])])
 AM_CONDITIONAL([HAVE_SCORE_BUILD], [test "x${scorep_have_score_build}" = "xscorep_have_score_build=yes"])
 
-AC_CONFIG_SUBDIR_CUSTOM([build-mpi],     [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name="${afs_scorep_platform_name}" afs_scorep_default_machine_name="${afs_scorep_default_machine_name}" ${scorep_otf2_config_arg}])
-AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name="${afs_scorep_platform_name}" afs_scorep_default_machine_name="${afs_scorep_default_machine_name}" ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cube_config_arg} ${scorep_have_score_build}])
+AC_CONFIG_SUBDIR_CUSTOM([build-mpi],     [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg}])
+AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cube_config_arg} ${scorep_have_score_build}])
 
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then
-    AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} afs_scorep_platform_name="${afs_scorep_platform_name}" afs_scorep_default_machine_name="${afs_scorep_default_machine_name}" ${scorep_opari2_config_arg} ${scorep_cube_config_arg}  ${scorep_have_score_build}])
+    AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_opari2_config_arg} ${scorep_cube_config_arg}  ${scorep_have_score_build}])
 fi
 
 AC_CONFIG_FILES([
