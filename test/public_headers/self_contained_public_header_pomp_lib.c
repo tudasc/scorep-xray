@@ -26,8 +26,6 @@
  */
 
 
-#include <config.h>
-
 #include <opari2/pomp2_lib.h>
 
 

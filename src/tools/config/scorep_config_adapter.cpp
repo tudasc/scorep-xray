@@ -214,7 +214,8 @@ SCOREP_Config_CompilerAdapter::SCOREP_Config_CompilerAdapter()
 void
 SCOREP_Config_CompilerAdapter::addCFlags( std::string& cflags,
                                           bool         build_check,
-                                          bool         fortran )
+                                          bool         fortran,
+                                          bool /* nvcc */ )
 {
     if ( m_is_enabled )
     {
@@ -242,7 +243,8 @@ SCOREP_Config_UserAdapter::SCOREP_Config_UserAdapter()
 void
 SCOREP_Config_UserAdapter::addCFlags( std::string& cflags,
                                       bool         build_check,
-                                      bool         fortran )
+                                      bool         fortran,
+                                      bool /* nvcc */ )
 {
     if ( m_is_enabled )
     {

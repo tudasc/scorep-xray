@@ -140,7 +140,7 @@ INSTALLCHECK_SUBDIRS += ../test/jacobi/OpenMP/C
 else
 endif
 
-installcheck-local: instrumenter-checks
+installcheck-local: instrumenter-checks installcheck-public-headers
 	@fail= failcom='exit 1'; \
 	for f in x $$MAKEFLAGS; do \
 	  case $$f in \

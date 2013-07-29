@@ -181,7 +181,8 @@ public:
     virtual void
     addCFlags( std::string& cflags,
                bool         build_check,
-               bool         fortran );
+               bool         fortran,
+               bool         nvcc );
     virtual void
     addLdFlags( std::string& ldflags );
 };
@@ -200,7 +201,8 @@ public:
     virtual void
     addCFlags( std::string& cflags,
                bool         build_check,
-               bool         fortran );
+               bool         fortran,
+               bool         nvcc );
 };
 
 /* **************************************************************************************
