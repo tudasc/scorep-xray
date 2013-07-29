@@ -53,6 +53,8 @@
     disable libbfd region naming (--without-libbfd). In the latter
     case, region names will be provided by nm.
 
+* OpenMP instrumentation is broken in combination with Cray compilers.
+
 * COBI binary instrumentation is currently disabled due to changes in
   Score-P's linking process that now passes more libraries to
   COBI/Dyninst than Dyninst can handle at the moment. This issue will
