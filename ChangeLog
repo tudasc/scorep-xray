@@ -1,3 +1,8 @@
+------------------- Upcoming version 1.2 -----------------------------
+
+- Full support to track the incurred OpenMP thread teams and utilizing
+  the new generic threading records of OTF2.
+
 ------------------- Released version 1.1 -----------------------------
 
 - Rewind, a new event-trace recording mode for long-running
