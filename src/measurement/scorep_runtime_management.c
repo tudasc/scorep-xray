@@ -91,7 +91,7 @@ scorep_create_experiment_dir_name( void )
         return;
     }
 
-    scorep_experiment_dir_name = SCOREP_Env_ExperimentDirectory();
+    scorep_experiment_dir_name = SCOREP_Env_GetExperimentDirectory();
 
     /* if the user does not specified an experiment name,
      * use scorep-measurement-tmp and rename it to a timestamp based
@@ -176,7 +176,7 @@ scorep_create_directory( void )
              * fail if this experiment directory exists and the user
              * commands us to do so
              */
-            if ( !SCOREP_Env_OverwriteExperimentDirectory() )
+            if ( !SCOREP_Env_DoOverwriteExperimentDirectory() )
             {
                 UTILS_ERROR( SCOREP_ERROR_EEXIST,
                              "Experiment directory \"%s\" exists and overwriting is disabled.",

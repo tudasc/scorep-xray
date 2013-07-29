@@ -31,6 +31,7 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <definitions/SCOREP_Definitions.h>
 #include <scorep_status.h>
+#include <scorep_environment.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -46,18 +47,22 @@ SCOREP_BuildSystemTree( void )
 {
     /* Obtain system tree information from platform dependent implementation */
 
-    SCOREP_Platform_SystemTreePathElement* path = 0;
-    SCOREP_ErrorCode                       err  = SCOREP_Platform_GetPathInSystemTree( &path );
+    SCOREP_Platform_SystemTreePathElement* path = NULL;
+    SCOREP_ErrorCode                       err  =
+        SCOREP_Platform_GetPathInSystemTree( &path,
+                                             SCOREP_Env_GetMachineName(),
+                                             SCOREP_PLATFORM_NAME );
     if ( err != SCOREP_SUCCESS )
     {
         UTILS_ERROR( err, "Failed to obtain system tree information." );
+        return NULL;
     }
 
     return path;
 }
 
 SCOREP_LocationGroupHandle
-SCOREP_Definitions_NewSystemTree( SCOREP_Platform_SystemTreePathElement* path )
+SCOREP_DefineSystemTree( SCOREP_Platform_SystemTreePathElement* path )
 {
     /* Create SystemTreeNode definitions */
     SCOREP_SystemTreeNodeHandle            parent = SCOREP_INVALID_SYSTEM_TREE_NODE;
@@ -84,15 +89,6 @@ SCOREP_Definitions_NewSystemTree( SCOREP_Platform_SystemTreePathElement* path )
                                                      property->property_name,
                                                      property->property_value );
         }
-    }
-
-    /* Create node tree */
-    SCOREP_ErrorCode status;
-    status = SCOREP_Platform_DefineNodeTree( parent );
-    if ( status != SCOREP_SUCCESS )
-    {
-        UTILS_ERROR( status, "Can't get system tree of node." );
-        return SCOREP_INVALID_LOCATION_GROUP;
     }
 
     /* Create Location Group definition

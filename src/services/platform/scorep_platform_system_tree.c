@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -41,6 +41,46 @@
 
 #include "scorep_platform_system_tree.h"
 
+
+SCOREP_ErrorCode
+SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root,
+                                     const char*                             machineName,
+                                     const char*                             platformName )
+{
+    UTILS_ASSERT( root );
+    *root = NULL;
+    /* Create toplevel machine node machine */
+    scorep_platform_system_tree_bottom_up_add( root,
+                                               SCOREP_SYSTEM_TREE_DOMAIN_MACHINE,
+                                               "machine",
+                                               0, machineName );
+    if ( !*root )
+    {
+        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                            "Failed to build system tree root" );
+    }
+
+    SCOREP_Platform_SystemTreeProperty* property =
+        scorep_platform_system_tree_add_property( *root,
+                                                  "platform",
+                                                  0, platformName );
+    if ( !property )
+    {
+        SCOREP_Platform_FreePath( *root );
+        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                            "Failed to build system tree path" );
+    }
+
+    /* Obtain system tree information from platform dependent implementation */
+    SCOREP_ErrorCode err = scorep_platform_get_path_in_system_tree( *root );
+    if ( err != SCOREP_SUCCESS )
+    {
+        /* scorep_platform_get_path_in_system_tree already dropped the path */
+        return UTILS_ERROR( err, "Failed to obtain system tree information." );
+    }
+
+    return SCOREP_SUCCESS;
+}
 
 void
 SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreePathElement* path )

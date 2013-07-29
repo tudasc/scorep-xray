@@ -61,38 +61,13 @@ initialize_bqp_personality( void )
 
 
 SCOREP_ErrorCode
-SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root )
+scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* root )
 {
-    if ( !root )
-    {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
-                            "Invalid system tree root reference given." );
-    }
-    *root = NULL;
-    SCOREP_Platform_SystemTreePathElement** tail = root;
+    UTILS_ASSERT( root );
+    SCOREP_Platform_SystemTreePathElement** tail = &root->next;
     SCOREP_Platform_SystemTreePathElement*  node;
 
-
     initialize_bqp_personality();
-
-
-    node = scorep_platform_system_tree_top_down_add( &tail,
-                                                     SCOREP_SYSTEM_TREE_DOMAIN_MACHINE,
-                                                     "machine",
-                                                     0, "Blue Gene/P" );
-    if ( !node )
-    {
-        goto fail;
-    }
-
-    SCOREP_Platform_SystemTreeProperty* property =
-        scorep_platform_system_tree_add_property( node,
-                                                  "type",
-                                                  0, "Blue Gene/P" );
-    if ( !property )
-    {
-        goto fail;
-    }
 
     if ( ( uci.ComputeCard.Component == _BGP_UCI_Component_ComputeCard ) ||
          ( uci.IOCard.Component == _BGP_UCI_Component_IOCard ) )
@@ -142,19 +117,11 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
     return SCOREP_SUCCESS;
 
 fail:
-    SCOREP_Platform_FreePath( *root );
+    SCOREP_Platform_FreePath( root );
 
     return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
                         "Failed to build system tree path" );
 }
-
-SCOREP_ErrorCode
-SCOREP_Platform_DefineNodeTree( SCOREP_SystemTreeNodeHandle parent )
-{
-    /* No further information available */
-    return SCOREP_SUCCESS;
-}
-
 
 int32_t
 SCOREP_Platform_GetNodeId( void )

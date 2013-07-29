@@ -54,6 +54,7 @@ static uint64_t scorep_env_total_memory;
 static uint64_t scorep_env_page_size;
 static char*    scorep_env_experiment_directory;
 static bool     scorep_env_overwrite_experiment_directory;
+static char*    scorep_env_machine_name;
 
 /** @brief Measurement system configure variables */
 static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
@@ -125,6 +126,17 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         "is already given, you can force overwriting it with this flag.\n"
         "The previous experiment directory will be renamed."
     },
+    {
+        "machine_name",
+        SCOREP_CONFIG_TYPE_STRING,
+        &scorep_env_machine_name,
+        NULL,
+        SCOREP_DEFAULT_MACHINE_NAME, /* configure-provided default */
+        "The machine name used in profile and trace output.",
+        "We suggest using a unique name, e.g., the fully qualified domain name.\n"
+        "The default machine name was set at configure time (see the INSTALL\n"
+        "file for customization options)."
+    },
     SCOREP_CONFIG_TERMINATOR
 };
 
@@ -147,7 +159,7 @@ SCOREP_ConfigVariable scorep_debug_environment_variables[] = {
 
 
 bool
-SCOREP_Env_RunVerbose()
+SCOREP_Env_RunVerbose( void )
 {
     assert( scorep_env_core_environment_variables_initialized );
     return scorep_env_verbose;
@@ -155,7 +167,7 @@ SCOREP_Env_RunVerbose()
 
 
 bool
-SCOREP_Env_DoTracing()
+SCOREP_Env_DoTracing( void )
 {
     assert( scorep_env_core_environment_variables_initialized );
     return scorep_env_tracing;
@@ -163,7 +175,7 @@ SCOREP_Env_DoTracing()
 
 
 bool
-SCOREP_Env_DoProfiling()
+SCOREP_Env_DoProfiling( void )
 {
     assert( scorep_env_core_environment_variables_initialized );
     return scorep_env_profiling;
@@ -171,7 +183,7 @@ SCOREP_Env_DoProfiling()
 
 
 uint64_t
-SCOREP_Env_GetTotalMemory()
+SCOREP_Env_GetTotalMemory( void )
 {
     assert( scorep_env_core_environment_variables_initialized );
     assert( scorep_env_total_memory > scorep_env_page_size );
@@ -180,7 +192,7 @@ SCOREP_Env_GetTotalMemory()
 
 
 uint64_t
-SCOREP_Env_GetPageSize()
+SCOREP_Env_GetPageSize( void )
 {
     assert( scorep_env_core_environment_variables_initialized );
     assert( scorep_env_total_memory > scorep_env_page_size );
@@ -188,17 +200,24 @@ SCOREP_Env_GetPageSize()
 }
 
 const char*
-SCOREP_Env_ExperimentDirectory()
+SCOREP_Env_GetExperimentDirectory( void )
 {
     assert( scorep_env_core_environment_variables_initialized );
     return scorep_env_experiment_directory;
 }
 
 bool
-SCOREP_Env_OverwriteExperimentDirectory()
+SCOREP_Env_DoOverwriteExperimentDirectory( void )
 {
     assert( scorep_env_core_environment_variables_initialized );
     return scorep_env_overwrite_experiment_directory;
+}
+
+const char*
+SCOREP_Env_GetMachineName( void )
+{
+    assert( scorep_env_core_environment_variables_initialized );
+    return scorep_env_machine_name;
 }
 
 void

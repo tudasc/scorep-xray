@@ -2,6 +2,10 @@
 
 - Full support to track the incurred OpenMP thread teams and utilizing
   the new generic threading records of OTF2.
+- The machine name used in the profile and trace output is now
+  configurable at built-time with the --with-machine-name flag or at
+  run-time with the SCOREP_MACHINE_NAME measurement configuration
+  variable.
 
 ------------------- Released version 1.1 -----------------------------
 

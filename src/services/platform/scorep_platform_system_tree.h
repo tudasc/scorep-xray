@@ -31,6 +31,16 @@
 
 
 /**
+ * Platform dependent function to built-up the path from the given root node
+ * (this is the machine node) down to the shared memory node.
+ *
+ * @param root The machine node, ie. the root node.
+ */
+SCOREP_ErrorCode
+scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* root );
+
+
+/**
  * Use this function if you build the path top-down, ie. the first one added is
  * the root.
  *

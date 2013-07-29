@@ -39,32 +39,35 @@ SCOREP_RegisterAllConfigVariables( void );
 
 
 //bool
-//SCOREP_Env_CoreEnvironmentVariablesInitialized();
+//SCOREP_Env_CoreEnvironmentVariablesInitialized( void );
 
 
 bool
-SCOREP_Env_RunVerbose();
+SCOREP_Env_RunVerbose( void );
 
 
 bool
-SCOREP_Env_DoTracing();
+SCOREP_Env_DoTracing( void );
 
 
 bool
-SCOREP_Env_DoProfiling();
+SCOREP_Env_DoProfiling( void );
 
 uint64_t
-SCOREP_Env_GetTotalMemory();
+SCOREP_Env_GetTotalMemory( void );
 
 uint64_t
-SCOREP_Env_GetPageSize();
+SCOREP_Env_GetPageSize( void );
 
 const char*
-SCOREP_Env_ExperimentDirectory();
+SCOREP_Env_GetExperimentDirectory( void );
 
 bool
-SCOREP_Env_OverwriteExperimentDirectory();
+SCOREP_Env_DoOverwriteExperimentDirectory( void );
 
+
+const char*
+SCOREP_Env_GetMachineName( void );
 
 UTILS_END_C_DECLS
 

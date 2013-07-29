@@ -81,7 +81,7 @@ static bool scorep_finalized = false;
 static SCOREP_LocationGroupHandle location_group_handle = SCOREP_INVALID_LOCATION_GROUP;
 
 /** @brief System tree path */
-static SCOREP_Platform_SystemTreePathElement* system_tree_path = NULL;
+static SCOREP_Platform_SystemTreePathElement* system_tree_path;
 
 #define scorep_max_exit_callbacks 8
 static SCOREP_ExitCallback scorep_exit_callbacks[ scorep_max_exit_callbacks ];
@@ -149,16 +149,16 @@ SCOREP_InitMeasurement( void )
     /* initialize the config system */
     SCOREP_TIME( SCOREP_ConfigInit, ( ) );
 
-    /* Build system tree at an early time, because it will be used by
-     * metric service to determine additional metrics (e.g. per-process
-     * metrcis). */
-    system_tree_path = SCOREP_BuildSystemTree();
-
     /* Register all config variables */
     SCOREP_TIME( SCOREP_RegisterAllConfigVariables, ( ) );
 
     /* Parse the environment */
     SCOREP_TIME( SCOREP_ConfigApplyEnv, ( ) );
+
+    /* Build system tree at an early time, because it will be used by
+     * metric service to determine additional metrics (e.g. per-process
+     * metrcis). */
+    system_tree_path = SCOREP_BuildSystemTree();
 
     if ( SCOREP_Env_RunVerbose() )
     {
@@ -182,7 +182,7 @@ SCOREP_InitMeasurement( void )
     SCOREP_TIME( SCOREP_Definitions_Initialize, ( ) );
 
     /* Get location group handle from system tree */
-    location_group_handle = SCOREP_Definitions_NewSystemTree( system_tree_path );
+    location_group_handle = SCOREP_DefineSystemTree( system_tree_path );
 
     /* Data structure containing path in system tree is not needed any longer */
     SCOREP_FreeSystemTree( system_tree_path );

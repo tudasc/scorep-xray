@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *    Technische Universitaet Dresden, Germany
@@ -33,7 +33,7 @@ SCOREP_Platform_SystemTreePathElement*
 SCOREP_BuildSystemTree( void );
 
 SCOREP_LocationGroupHandle
-SCOREP_Definitions_NewSystemTree( SCOREP_Platform_SystemTreePathElement* path );
+SCOREP_DefineSystemTree( SCOREP_Platform_SystemTreePathElement* path );
 
 void
 SCOREP_FreeSystemTree( SCOREP_Platform_SystemTreePathElement* path );
@@ -45,6 +45,6 @@ SCOREP_SystemTreeNodeHandle
 SCOREP_GetSystemTreeNodeHandleForSharedMemory( void );
 
 void
-SCOREP_FinalizeLocationGroup();
+SCOREP_FinalizeLocationGroup( void );
 
 #endif // SCOREP_SYSTEM_TREE_H

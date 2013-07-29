@@ -44,14 +44,9 @@ static node_id = 0;
 
 
 SCOREP_ErrorCode
-SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root )
+scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* root )
 {
-    if ( !root )
-    {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
-                            "Invalid system tree root reference given." );
-    }
-    *root = NULL;
+    UTILS_ASSERT( root );
 
     /* initialize the client */
     char*         clientname = "";
@@ -83,26 +78,8 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
     result = PAMI_Client_destroy( &client );
     UTILS_ASSERT( result == PAMI_SUCCESS );
 
-    SCOREP_Platform_SystemTreePathElement** tail = root;
+    SCOREP_Platform_SystemTreePathElement** tail = &root->next;
     SCOREP_Platform_SystemTreePathElement*  node;
-
-    node = scorep_platform_system_tree_top_down_add( &tail,
-                                                     SCOREP_SYSTEM_TREE_DOMAIN_MACHINE,
-                                                     "machine",
-                                                     0, "Blue Gene/Q" );
-    if ( !node )
-    {
-        goto fail;
-    }
-
-    SCOREP_Platform_SystemTreeProperty* property =
-        scorep_platform_system_tree_add_property( node,
-                                                  "type",
-                                                  0, "Blue Gene/Q" );
-    if ( !property )
-    {
-        goto fail;
-    }
 
     // Maximum unsigned string's length
     size_t max_uint_digits = floor( log10( ( double )UINT_MAX ) ) + 1;
@@ -160,19 +137,11 @@ SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** roo
     return SCOREP_SUCCESS;
 
 fail:
-    SCOREP_Platform_FreePath( *root );
+    SCOREP_Platform_FreePath( root );
 
     return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
                         "Failed to build system tree path" );
 }
-
-SCOREP_ErrorCode
-SCOREP_Platform_DefineNodeTree( SCOREP_SystemTreeNodeHandle parent )
-{
-    /* No further information available */
-    return SCOREP_SUCCESS;
-}
-
 
 int32_t
 SCOREP_Platform_GetNodeId( void )

@@ -30,7 +30,6 @@
 #include <unistd.h>
 
 #include <SCOREP_Types.h>
-#include <SCOREP_DefinitionHandles.h>
 #include <UTILS_Error.h>
 
 UTILS_BEGIN_C_DECLS
@@ -71,25 +70,19 @@ typedef struct SCOREP_Platform_SystemTreePathElement
  * The path should be freed with @a SCOREP_Platform_FreePath().
  *
  * @param root A pointer to a @a SCOREP_Platform_SystemTreePathElement* element
- *             which represents the root of the system tree and the start
- *             of the path for this process in the system tree.
+ *             which represents the already existing root node of the system tree
+ *             machine domain and the start of the path for this process in the
+ *             system tree.
+ * @param machineName  The machine name used for the root node.
+ * @param platformName The platform name used for the root node.
  *
  * @return SCOREP_SUCCESS on success else an appropriate error code.
  */
 extern SCOREP_ErrorCode
-SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root );
+SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root,
+                                     const char*                             machineName,
+                                     const char*                             platformName );
 
-/**
- * Defines a more detailed system topology at node level if available.
- *
- * @param parent A handle to a System Tree Node element which represents
- *               the node level and is used as start point of the topology
- *               information at node level.
- *
- * @return SCOREP_SUCCESS on success else an appropriate error code.
- */
-extern SCOREP_ErrorCode
-SCOREP_Platform_DefineNodeTree( SCOREP_SystemTreeNodeHandle parent );
 
 /**
  * Deletes the path returned from @a SCOREP_Platform_GetPathInSystemTree().
@@ -99,6 +92,7 @@ SCOREP_Platform_DefineNodeTree( SCOREP_SystemTreeNodeHandle parent );
  */
 extern void
 SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreePathElement* path );
+
 
 /**
  * Returns a unique node identifier.

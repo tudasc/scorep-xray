@@ -41,64 +41,30 @@
 
 
 SCOREP_ErrorCode
-SCOREP_Platform_GetPathInSystemTree( SCOREP_Platform_SystemTreePathElement** root )
+scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* root )
 {
-    /* Initialize */
-    if ( !root )
-    {
-        return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
-                            "Invalid system tree root reference given." );
-    }
-    *root = NULL;
-
     /* Get hostname */
-    SCOREP_Platform_SystemTreePathElement* node =
-        scorep_platform_system_tree_bottom_up_add( root,
-                                                   SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY,
-                                                   "node",
-                                                   256, "" );
+    SCOREP_Platform_SystemTreePathElement* node = NULL;
+    node = scorep_platform_system_tree_bottom_up_add( &node,
+                                                      SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY,
+                                                      "node",
+                                                      256, "" );
     if ( !node )
     {
+        SCOREP_Platform_FreePath( root );
         return UTILS_ERROR( SCOREP_ERROR_MEM_FAULT, "Failed to add hostname node" );
     }
+
+    /* Hook this path up to the root node */
+    root->next = node;
 
     if ( UTILS_IO_GetHostname( node->node_name, 256 ) != 0 )
     {
         int errno_safed = errno;
-        SCOREP_Platform_FreePath( *root );
+        SCOREP_Platform_FreePath( root );
         errno = errno_safed;
         return UTILS_ERROR_POSIX( "UTILS_IO_GetHostname() failed." );
     }
 
-    /* Set machine */
-    node = scorep_platform_system_tree_bottom_up_add( root,
-                                                      SCOREP_SYSTEM_TREE_DOMAIN_MACHINE,
-                                                      "machine",
-                                                      0, "" );
-    if ( !node )
-    {
-        SCOREP_Platform_FreePath( *root );
-        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                            "Failed to build system tree path" );
-    }
-
-    SCOREP_Platform_SystemTreeProperty* property =
-        scorep_platform_system_tree_add_property( *root,
-                                                  "type",
-                                                  0, "generic cluster" );
-    if ( !property )
-    {
-        SCOREP_Platform_FreePath( *root );
-        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
-                            "Failed to build system tree path" );
-    }
-
-    return SCOREP_SUCCESS;
-}
-
-SCOREP_ErrorCode
-SCOREP_Platform_DefineNodeTree( SCOREP_SystemTreeNodeHandle parent )
-{
-    /* No further information available */
     return SCOREP_SUCCESS;
 }
