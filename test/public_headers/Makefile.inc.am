@@ -93,9 +93,9 @@ self_contained_public_header_SCOREP_Tau_c_CPPFLAGS = $(self_contained_public_hea
 self_contained_public_header_SCOREP_Tau_cpp_SOURCES = $(SRC_ROOT)test/public_headers/self_contained_public_header_SCOREP_Tau.cpp
 self_contained_public_header_SCOREP_Tau_cpp_CPPFLAGS = $(self_contained_public_headers_cppflags)
 
-installcheck_public_header_cflags=`$(DESTDIR)$(bindir)/scorep-config --user --nocompiler --mpp=none --thread=none --cflags`
-installcheck_public_header_ldflags=`$(DESTDIR)$(bindir)/scorep-config --user --nocompiler --mpp=none --thread=none --ldflags`
-installcheck_public_header_libs=`$(DESTDIR)$(bindir)/scorep-config --user --nocompiler --mpp=none --thread=none --libs`
+installcheck_public_header_cflags=`$(DESTDIR)$(frontend_bindir)/scorep-config --user --nocompiler --mpp=none --thread=none --cflags`
+installcheck_public_header_ldflags=`$(DESTDIR)$(frontend_bindir)/scorep-config --user --nocompiler --mpp=none --thread=none --ldflags`
+installcheck_public_header_libs=`$(DESTDIR)$(frontend_bindir)/scorep-config --user --nocompiler --mpp=none --thread=none --libs`
 
 installcheck_public_header_COMPILE=$(CC) $(installcheck_public_header_cflags) -c -o $@ $<
 installcheck_public_header_LINK=$(CC) $(installcheck_public_header_ldflags) $(installcheck_public_header_libs) $^ -o $@
