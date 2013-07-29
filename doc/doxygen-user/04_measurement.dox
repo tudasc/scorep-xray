@@ -825,7 +825,7 @@ The small example of a synchronous metric plugin  can be found in Appendix @secr
 The commands to build the corresponding library of this plugin might look like:
 
 @code
-gcc -c -fPIC hello_world.c -o libHelloWorld.so.o -I<path-to-scorep-include-dir>
+gcc -c -fPIC hello_world.c -o libHelloWorld.so.o `scorep-config --cppflags`
 gcc -shared -Wl,-soname,libHelloWorld.so -o libHelloWorld.so libHelloWorld.so.o
 @endcode
 
