@@ -124,6 +124,8 @@ installcheck_public_headers = \
 
 installcheck-public-headers: $(installcheck_public_headers)
 
+DISTCLEANFILES += $(installcheck_public_headers)
+
 installcheck_public_header_pomp_lib_c.$(OBJEXT): $(SRC_ROOT)test/public_headers/self_contained_public_header_pomp_lib.c
 	$(AM_V_CC)$(installcheck_public_header_COMPILE)
 installcheck_public_header_pomp_lib_c$(EXEEXT): installcheck_public_header_pomp_lib_c.$(OBJEXT)
