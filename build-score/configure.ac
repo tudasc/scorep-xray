@@ -14,6 +14,9 @@ AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
 
 AC_SCOREP_SVN_CONTROLLED
 
+AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
+AM_SILENT_RULES([yes])
+
 AFS_PACKAGE_INIT([score])
 
 # CXX given, find corresponding CC for utilities/filter                                                             
@@ -30,9 +33,6 @@ AS_CASE([${CXX_STRIPPED}],
 AC_PROG_CC
 AC_SCOREP_PROG_CC_C99
 AC_PROG_CXX
-
-AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
-AM_SILENT_RULES([yes])
 
 LT_PREREQ([2.4])
 LT_INIT([disable-shared])

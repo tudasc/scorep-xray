@@ -22,6 +22,8 @@ AC_CONFIG_MACRO_DIR([vendor/common/build-config/m4])
 ## Set the default installation prefix to /opt/scorep instead of /usr/local
 AC_PREFIX_DEFAULT([/opt/scorep])
 
+AC_SCOREP_SVN_CONTROLLED
+
 ## Call not before AC_CONFIG_MACRO_DIR
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
@@ -66,8 +68,6 @@ AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
        # determine arguments for subdir configures
        args="`${AWK} -f $srcdir/vendor/common/build-config/process_arguments.awk \
               user_provided_configure_args`"])
-
-AC_SCOREP_SVN_CONTROLLED
 
 AC_SCOREP_UNCRUSTIFY
 

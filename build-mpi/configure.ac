@@ -16,14 +16,7 @@ AC_SCOREP_SUMMARY_INIT([MPI backend])
 if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
 fi
-
 cross_compiling=${ac_scorep_cross_compiling}
-
-ac_scorep_backend=yes
-AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-      [ac_scorep_frontend="no"
-       scorep_otf2_config_backend_arg="--backend"],
-      [ac_scorep_frontend="yes"])
 
 #if test "x${ac_scorep_platform}" = "xaix"; then
     cross_compiling=yes
@@ -32,6 +25,12 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
     # to "yes", we allow configure to succeed. Wrap all macros that might
     # execute a program in a cross_compiling=yes block, e.g. AC_SCOREP_CHECK_SIZEOF
 #fi
+
+ac_scorep_backend=yes
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+      [ac_scorep_frontend="no"
+       scorep_otf2_config_backend_arg="--backend"],
+      [ac_scorep_frontend="yes"])
 
 AC_SCOREP_PRECIOUS_VARS_MPI
 
@@ -52,6 +51,18 @@ AC_SCOREP_CONVERT_MPI_FLAGS([FFLAGS])
 AC_SCOREP_CONVERT_MPI_FLAGS([FCFLAGS])
 AC_SCOREP_CONVERT_MPI_FLAGS([LDFLAGS])
 AC_SCOREP_CONVERT_MPI_FLAGS([LIBS])
+
+AC_SCOREP_SVN_CONTROLLED
+
+AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
+AM_SILENT_RULES([yes])
+
+AFS_PACKAGE_INIT([MPI backend])
+
+AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
+AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
+AC_SCOREP_PLATFORM_SETTINGS
+AC_SCOREP_PLATFORM_AND_MACHINE_NAMES
 
 AC_LANG_PUSH([C])
 AC_SCOREP_MPI_WORKING([scorep_mpi_c_supported="yes"],[scorep_mpi_c_supported="no"])
@@ -92,18 +103,6 @@ AS_IF([test "x$scorep_mpi_c_supported$scorep_mpi_cxx_supported$scorep_mpi_f77_su
     AC_SCOREP_SUMMARY([Library used for MPI], [$MPILIBS])
 ])
 
-
-AC_SCOREP_SVN_CONTROLLED
-
-AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
-AM_SILENT_RULES([yes])
-
-AFS_PACKAGE_INIT([MPI backend])
-
-AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
-AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
-AC_SCOREP_PLATFORM_SETTINGS   
-AC_SCOREP_PLATFORM_AND_MACHINE_NAMES
 
 AC_SCOREP_COMMON_CHECKS
 AC_SCOREP_COMPILER_INSTRUMENTATION_FLAGS
