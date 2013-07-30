@@ -8,8 +8,6 @@ AC_CONFIG_HEADERS([../src/config-score.h])
 
 AC_DEFUN([AC_SCOREP_SCORE], [])
 
-AC_SCOREP_SUMMARY_INIT([score])
-
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
 
 AC_SCOREP_SVN_CONTROLLED
@@ -18,6 +16,7 @@ AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
 AFS_PACKAGE_INIT([score])
+AFS_SUMMARY_INIT
 
 # CXX given, find corresponding CC for utilities/filter                                                             
 # Do this before calls to AC_PROG_*                                                                                 

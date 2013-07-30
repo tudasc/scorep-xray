@@ -10,8 +10,6 @@ AC_CONFIG_HEADERS([../src/config-backend-mpi.h])
 
 AC_DEFUN([AC_SCOREP_BACKEND_MPI], [])
 
-AC_SCOREP_SUMMARY_INIT([MPI backend])
-
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
@@ -58,6 +56,7 @@ AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
 AFS_PACKAGE_INIT([MPI backend])
+AFS_SUMMARY_INIT
 
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
@@ -69,38 +68,38 @@ AC_SCOREP_MPI_WORKING([scorep_mpi_c_supported="yes"],[scorep_mpi_c_supported="no
 AC_SCOREP_CHECK_SIZEOF([void *])
 AC_LANG_POP([C])
 cross_compiling=${ac_scorep_cross_compiling}
-AC_SCOREP_SUMMARY([MPI support for C], [$scorep_mpi_c_supported])
+AFS_SUMMARY([MPI support for C], [$scorep_mpi_c_supported])
 AS_IF([test "x$scorep_mpi_c_supported" = "xyes"], [
-    AC_SCOREP_SUMMARY([C compiler used for MPI], [$CC])
+    AFS_SUMMARY([C compiler used for MPI], [$CC])
 ])
 
 # C++ MPI is needed for the jacobi C++ tests only.
 AC_LANG_PUSH([C++])
 AC_SCOREP_MPI_WORKING([scorep_mpi_cxx_supported="yes"],[scorep_mpi_cxx_supported="no"])
 AC_LANG_POP([C++])
-AC_SCOREP_SUMMARY([MPI support C++], [$scorep_mpi_cxx_supported])
+AFS_SUMMARY([MPI support C++], [$scorep_mpi_cxx_supported])
 AS_IF([test "x$scorep_mpi_cxx_supported" = "xyes"], [
-    AC_SCOREP_SUMMARY([C++ compiler used for MPI], [$CXX])
+    AFS_SUMMARY([C++ compiler used for MPI], [$CXX])
 ])
 
 AC_LANG_PUSH([Fortran 77])
 AC_SCOREP_MPI_WORKING([scorep_mpi_f77_supported="yes"],[scorep_mpi_f77_supported="no"])
 AC_LANG_POP([Fortran 77])
-AC_SCOREP_SUMMARY([MPI support F77], [$scorep_mpi_f77_supported])
+AFS_SUMMARY([MPI support F77], [$scorep_mpi_f77_supported])
 AS_IF([test "x$scorep_mpi_f77_supported" = "xyes"], [
-    AC_SCOREP_SUMMARY([F77 compiler used for MPI], [$F77])
+    AFS_SUMMARY([F77 compiler used for MPI], [$F77])
 ])
 
 AC_LANG_PUSH([Fortran])
 AC_SCOREP_MPI_WORKING([scorep_mpi_f90_supported="yes"],[scorep_mpi_f90_supported="no"])
 AC_LANG_POP([Fortran])
-AC_SCOREP_SUMMARY([MPI support F90], [$scorep_mpi_f90_supported])
+AFS_SUMMARY([MPI support F90], [$scorep_mpi_f90_supported])
 AS_IF([test "x$scorep_mpi_f90_supported" = "xyes"], [
-    AC_SCOREP_SUMMARY([F90 compiler used for MPI], [$F90])
+    AFS_SUMMARY([F90 compiler used for MPI], [$F90])
 ])
 
 AS_IF([test "x$scorep_mpi_c_supported$scorep_mpi_cxx_supported$scorep_mpi_f77_supported$scorep_mpi_f90_supported" != "xnononono"], [
-    AC_SCOREP_SUMMARY([Library used for MPI], [$MPILIBS])
+    AFS_SUMMARY([Library used for MPI], [$MPILIBS])
 ])
 
 

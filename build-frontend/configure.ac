@@ -10,8 +10,6 @@ AC_CONFIG_HEADERS([../src/config-frontend.h])
 
 AC_DEFUN([AC_SCOREP_FRONTEND], [])
 
-AC_SCOREP_SUMMARY_INIT([frontend])
-
 ac_scorep_frontend="yes"
 ac_scorep_backend="no"
 
@@ -41,6 +39,7 @@ AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
 AFS_PACKAGE_INIT([frontend])
+AFS_SUMMARY_INIT
 
 AM_CONDITIONAL([BUILD_TESTS], [true])
 AM_CONDITIONAL([CROSS_BUILD], [true])

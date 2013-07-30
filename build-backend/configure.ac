@@ -12,8 +12,6 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
 
 AC_DEFUN([AC_SCOREP_BACKEND], [])
 
-AC_SCOREP_SUMMARY_INIT([backend])
-
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 if test "x${ac_scorep_cross_compiling}" != "xyes" -a "x${ac_scorep_cross_compiling}" != "xno"; then
     AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])
@@ -38,6 +36,7 @@ AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
 AFS_PACKAGE_INIT([backend])
+AFS_SUMMARY_INIT
 
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
