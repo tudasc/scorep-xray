@@ -85,5 +85,5 @@ AC_MSG_RESULT([no])
 AC_LANG_POP([C])
 
 AS_IF([test -z "${ac_otf2_entropy_sources}"], [ac_otf2_entropy_sources=none])
-AC_SCOREP_SUMMARY([Entropy sources], [${ac_otf2_entropy_sources}])
+AFS_SUMMARY([Entropy sources], [${ac_otf2_entropy_sources}])
 ])

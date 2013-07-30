@@ -541,5 +541,5 @@ AS_IF([test "x${ac_scorep_timer_clock_gettime}"    = "xyes"],
            ac_scorep_timer_summary="${ac_scorep_timer_summary}, using -lSPI.cna -lrt"])
 AC_SUBST([TIMER_LIB], ["$ac_scorep_timer_lib"])
 
-AC_SCOREP_SUMMARY([Clock used for measurement], [${ac_scorep_timer_summary}])
+AFS_SUMMARY([Clock used for measurement], [${ac_scorep_timer_summary}])
 ])

@@ -201,7 +201,7 @@ AC_SUBST([SCOREP_SION_$1_LIBS],     [$scorep_sion_libs])
 AS_IF([test "x${scorep_have_sion}" = "xyes"],
     [AC_DEFINE([HAVE_SION_$1], [1], [Defined if libsion $1 is available.])])
 AM_CONDITIONAL([HAVE_SION_$1], [test "x${scorep_have_sion}" = "xyes"])
-AC_SCOREP_SUMMARY([SION $1 support], [${scorep_have_sion}])
+AFS_SUMMARY([SION $1 support], [${scorep_have_sion}])
 ])
 
 

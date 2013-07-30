@@ -112,5 +112,5 @@ AS_IF([   test "x${has_sampling_headers}" = "xyes"              \
 
 AM_CONDITIONAL([HAVE_SAMPLING], [test "x${has_sampling}" = "xyes"])
 
-AC_SCOREP_SUMMARY([sampling support], [${sampling_summary}])
+AFS_SUMMARY([sampling support], [${sampling_summary}])
 ])

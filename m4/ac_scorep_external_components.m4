@@ -78,13 +78,13 @@ AS_IF([test "x${with_$1}" != "xno"],
               AS_IF([test ${$1_max_provided_interface_version} -eq 0 && test ${$1_provided_age} -eq 0],
                   [# by convention, trunk is 0:0:0
                    AC_MSG_WARN([external $1 built from trunk, version checks disabled, might produce compile and link errors.])
-                   AC_SCOREP_SUMMARY([$1 support], [yes, using external via ${scorep_$1_config_bin} (built from trunk, version checks disabled, might produce compile and link errors.)])],
+                   AFS_SUMMARY([$1 support], [yes, using external via ${scorep_$1_config_bin} (built from trunk, version checks disabled, might produce compile and link errors.)])],
                   [# calc 'current - age'
                    AS_VAR_ARITH([$1_min_provided_interface_version], [${$1_max_provided_interface_version} - ${$1_provided_age}])
                    # this is the version check:
                    AS_IF([test ${$1_max_provided_interface_version} -ge $2 && \
                           test $2 -ge ${$1_min_provided_interface_version}],
-                       [AC_SCOREP_SUMMARY([$1 support], [yes, using external via ${scorep_$1_config_bin}])],
+                       [AFS_SUMMARY([$1 support], [yes, using external via ${scorep_$1_config_bin}])],
                        [AS_IF([test ${$1_provided_age} -eq 0],
                            [AC_MSG_ERROR([provided interface version '${$1_max_provided_interface_version}' of $1 not sufficient for AC_PACKAGE_NAME, provide '$2' or compatible.])],
                            [AC_MSG_ERROR([provided interface versions [[${$1_min_provided_interface_version},${$1_max_provided_interface_version}]] of $1 not sufficient for AC_PACKAGE_NAME, provide '$2' or compatible.])
@@ -97,5 +97,5 @@ AS_IF([test "x${with_$1}" != "xno"],
              [AC_MSG_ERROR([cannot detect $1-config in ${with_$1} and ${with_$1}/bin.])])])
     ],
     [scorep_have_$1_config="no"
-     AC_SCOREP_SUMMARY([$1 support], [yes, using internal])])
+     AFS_SUMMARY([$1 support], [yes, using internal])])
 ])

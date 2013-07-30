@@ -61,5 +61,5 @@ AC_SCOREP_COND_HAVE([METRIC_PLUGINS],
                     [AC_SUBST([SCOREP_METRIC_PLUGINS_LIBS], ["-l${ac_scorep_with_metric_plugins_libs}"])],
                     [AC_SUBST([SCOREP_METRIC_PLUGINS_LIBS], [""])])
 
-AC_SCOREP_SUMMARY([metric plugins support], [${metric_plugins_summary}])
+AFS_SUMMARY([metric plugins support], [${metric_plugins_summary}])
 ])

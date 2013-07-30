@@ -52,5 +52,5 @@ AS_IF([test -n "${real_pdt_path}"],
 ## Create output
 AC_SUBST([PDT_PATH], ["${real_pdt_path}"])
 AM_CONDITIONAL([HAVE_PDT], [test -n "${real_pdt_path}"])
-AC_SCOREP_SUMMARY([PDT support], [$have_pdt])
+AFS_SUMMARY([PDT support], [$have_pdt])
 ])

@@ -356,5 +356,5 @@ AS_IF([test "x${with_$1_include_checks_successful}" = "xyes" && \
 
 AC_MSG_CHECKING([for $1])
 AC_MSG_RESULT([${$1_result}])
-AC_SCOREP_SUMMARY([$1 support], [${$1_result}])
+AFS_SUMMARY([$1 support], [${$1_result}])
 ])

@@ -653,8 +653,8 @@ AC_REQUIRE([_AC_SCOREP_MPI_INCLUDE])
 
 AS_IF([test "x${ac_scorep_have_mpi_include}" = "xyes"],
       [AC_SUBST([SCOREP_HAVE_PDT_MPI_INSTRUMENTATION], [1])
-       AC_SCOREP_SUMMARY([PDT MPI instrumentation], [yes])],
+       AFS_SUMMARY([PDT MPI instrumentation], [yes])],
       [AC_SUBST([SCOREP_HAVE_PDT_MPI_INSTRUMENTATION], [0])
        AC_MSG_WARN([cannot determine mpi.h include path. PDT MPI instrumentation will be disabled.])
-       AC_SCOREP_SUMMARY([PDT MPI instrumentation], [no, mpi.h include path could not be determined.])])
+       AFS_SUMMARY([PDT MPI instrumentation], [no, mpi.h include path could not be determined.])])
 ])

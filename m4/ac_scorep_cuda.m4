@@ -81,7 +81,7 @@ AC_SCOREP_COND_HAVE([CUDA],
                      AC_SUBST(CUDA_LDFLAGS,  [""])
                      AC_SUBST(CUDA_LIBS,     [""])])
 
-AC_SCOREP_SUMMARY([cuda support], [${scorep_have_cuda}, see also libcudart, libcuda, and libcupti support])
+AFS_SUMMARY([cuda support], [${scorep_have_cuda}, see also libcudart, libcuda, and libcupti support])
 ])
 
 dnl ----------------------------------------------------------------------------

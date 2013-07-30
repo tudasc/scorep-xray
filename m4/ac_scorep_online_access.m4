@@ -89,5 +89,5 @@ AC_SCOREP_COND_HAVE([ONLINE_ACCESS],
                     [Defined if online access is possible.])
 AC_MSG_CHECKING([for online access possible])
 AC_MSG_RESULT([${ac_scorep_have_online_access}])
-AC_SCOREP_SUMMARY([Online access support], [${ac_scorep_have_online_access}])
+AFS_SUMMARY([Online access support], [${ac_scorep_have_online_access}])
 ]) 

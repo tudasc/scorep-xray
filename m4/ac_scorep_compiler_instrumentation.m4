@@ -40,7 +40,7 @@ AS_IF([test "x${ac_scorep_compiler_gnu}" = "xyes" || test "x${ac_scorep_compiler
              [result="partially, studio compiler supports just Fortran"],
              [result="yes"])])
 
-AC_SCOREP_SUMMARY([compiler instrumentation], [${result}])
+AFS_SUMMARY([compiler instrumentation], [${result}])
 
 # setting output variables/defines, also set:
 #  - automake conditional HAVE_LIBBFD

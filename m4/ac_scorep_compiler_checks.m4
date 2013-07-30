@@ -299,8 +299,8 @@ AC_SUBST([COMPILER_INSTRUMENTATION_CPPFLAGS], ["${ac_scorep_compiler_instrumenta
 AC_SUBST([COMPILER_INSTRUMENTATION_LDFLAGS], ["${ac_scorep_compiler_instrumentation_ldflags}"])
 
 AC_MSG_NOTICE([using instrumentation cppflags: ${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
-AC_SCOREP_SUMMARY_VERBOSE([instrumentation cppflags: ${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
+AFS_SUMMARY_VERBOSE([instrumentation cppflags], [${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
 ])
 AC_MSG_NOTICE([using instrumentation ldflags: ${ac_scorep_compiler_instrumentation_ldflags}])
-AC_SCOREP_SUMMARY_VERBOSE([instrumentation ldflags: ${ac_scorep_compiler_instrumentation_ldflags}])
+AFS_SUMMARY_VERBOSE([instrumentation ldflags], [${ac_scorep_compiler_instrumentation_ldflags}])
 ])

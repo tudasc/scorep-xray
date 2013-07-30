@@ -76,10 +76,10 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
      AS_IF([test "x${ac_scorep_platform}" = "xunknown"],
          [AC_MSG_RESULT([$ac_scorep_platform, please contact <AC_PACKAGE_BUGREPORT> if you encounter any problems.])],
          [AC_MSG_RESULT([$ac_scorep_platform (auto detected)])
-          AC_SCOREP_SUMMARY([Platform], [$ac_scorep_platform (auto detected)])])
+          AFS_SUMMARY([Platform], [$ac_scorep_platform (auto detected)])])
     ],
     [AC_MSG_RESULT([$ac_scorep_platform (provided)])
-     AC_SCOREP_SUMMARY([Platform], [$ac_scorep_platform (provided)])])
+     AFS_SUMMARY([Platform], [$ac_scorep_platform (provided)])])
 ])# AC_SCOREP_DETECT_PLATFORMS
 
 
@@ -103,13 +103,13 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "x"],
          [necsx],   [ac_scorep_cross_compiling="yes"],
          [unknown], [ac_scorep_cross_compiling="no"],
          [AC_MSG_ERROR([provided platform '${ac_scorep_platform}' unknown.])])
-     AC_SCOREP_SUMMARY([Cross compiling], [$ac_scorep_cross_compiling (auto detected)])
+     AFS_SUMMARY([Cross compiling], [$ac_scorep_cross_compiling (auto detected)])
     ],
     [# honor ac_scorep_cross_compiling from the commandline
      AS_IF([test ${ac_scorep_cross_compiling} != "yes" && \
             test ${ac_scorep_cross_compiling} != "no" ],
          [AC_MSG_ERROR([invalid value '${ac_scorep_cross_compiling}' for provided 'ac_scorep_cross_compiling'])])
-     AC_SCOREP_SUMMARY([Cross compiling], [$ac_scorep_cross_compiling (provided)])
+     AFS_SUMMARY([Cross compiling], [$ac_scorep_cross_compiling (provided)])
     ])
 
 AC_MSG_CHECKING([for cross compilation])
@@ -154,7 +154,7 @@ AC_ARG_WITH([machine-name],
      # action-if-not-given
      [afs_scorep_default_machine_name="${afs_scorep_platform_name}"])
 
-AC_SCOREP_SUMMARY([Machine name], [${afs_scorep_default_machine_name}])
+AFS_SUMMARY([Machine name], [${afs_scorep_default_machine_name}])
 ])# AFS_SCOREP_MACHINE_NAME
 
 

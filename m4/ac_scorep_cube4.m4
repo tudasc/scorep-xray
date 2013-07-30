@@ -75,10 +75,10 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <Cube.h>]],
 AC_MSG_CHECKING([for cube reader library])
 AS_IF([test "x${has_cube_reader_header}" = "xyes" && test "x${has_cube_reader_lib}" = "xyes"],
       [AC_MSG_RESULT([yes])
-       AC_SCOREP_SUMMARY([cube reader support], [yes, using ${CUBE_READER_CPPFLAGS} ${CUBE_READER_LDFLAGS} ${CUBE_READER_LIBS}])
+       AFS_SUMMARY([cube reader support], [yes, using ${CUBE_READER_CPPFLAGS} ${CUBE_READER_LDFLAGS} ${CUBE_READER_LIBS}])
        AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 1])],
       [AC_MSG_RESULT([no])
-       AC_SCOREP_SUMMARY([cube reader support], [no])
+       AFS_SUMMARY([cube reader support], [no])
        AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 0])])
 
 ## Clean up

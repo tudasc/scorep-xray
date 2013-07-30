@@ -116,11 +116,11 @@ AC_SCOREP_COND_HAVE([PAPI],
                      AC_SUBST([SCOREP_PAPI_LIBS],    [""])])
 AC_SUBST([SCOREP_PAPI_CPPFLAGS],    [$ac_scorep_papi_cppflags])
 AC_SUBST([SCOREP_PAPI_LIBDIR],      [$ac_scorep_papi_lib_dir])
-AC_SCOREP_SUMMARY([PAPI support],   [${ac_scorep_have_papi}])
+AFS_SUMMARY([PAPI support],   [${ac_scorep_have_papi}])
 AS_IF([test "x${ac_scorep_have_papi}" = "xyes"], [
-    AC_SCOREP_SUMMARY_VERBOSE([PAPI include directory], [$ac_scorep_papi_inc_dir])
-    AC_SCOREP_SUMMARY_VERBOSE([PAPI library directory], [$ac_scorep_papi_lib_dir])
-    AC_SCOREP_SUMMARY_VERBOSE([PAPI libraries],         [-l${ac_scorep_papi_lib_name} ${ac_scorep_papi_additional_libs}])
+    AFS_SUMMARY_VERBOSE([PAPI include directory], [$ac_scorep_papi_inc_dir])
+    AFS_SUMMARY_VERBOSE([PAPI library directory], [$ac_scorep_papi_lib_dir])
+    AFS_SUMMARY_VERBOSE([PAPI libraries],         [-l${ac_scorep_papi_lib_name} ${ac_scorep_papi_additional_libs}])
 ])
 ])
 
@@ -178,8 +178,8 @@ AS_IF([test "x${ac_scorep_rusage_thread}" = "xyes"],
        AC_DEFINE([SCOREP_RUSAGE_SCOPE], [RUSAGE_THREAD], [Defined to RUSAGE_THREAD, if it is available, else to RUSAGE_SELF.])],
       [AC_DEFINE([SCOREP_RUSAGE_SCOPE], [RUSAGE_SELF],   [Defined to RUSAGE_THREAD, if it is available, else to RUSAGE_SELF.])])
 AC_SUBST([SCOREP_RUSAGE_CPPFLAGS], [$ac_scorep_rusage_cppflags])
-AC_SCOREP_SUMMARY([getrusage support], [${ac_scorep_getrusage}])
+AFS_SUMMARY([getrusage support], [${ac_scorep_getrusage}])
 AS_IF([test "x${ac_scorep_rusage_thread}" = "xyes"],
-      [AC_SCOREP_SUMMARY([RUSAGE_THREAD support], [${ac_scorep_rusage_thread}, using ${ac_scorep_rusage_cppflags}])],
-      [AC_SCOREP_SUMMARY([RUSAGE_THREAD support], [${ac_scorep_rusage_thread}])])
+      [AFS_SUMMARY([RUSAGE_THREAD support], [${ac_scorep_rusage_thread}, using ${ac_scorep_rusage_cppflags}])],
+      [AFS_SUMMARY([RUSAGE_THREAD support], [${ac_scorep_rusage_thread}])])
 ])
