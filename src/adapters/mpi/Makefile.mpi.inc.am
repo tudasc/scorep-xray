@@ -64,7 +64,7 @@ noinst_LTLIBRARIES += \
     libscorep_adapter_mpi_mgmt_fortran_sub4.la
 
 SCOREP_MPI_MGMT_FORTRAN_SOURCES = \
-    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Env.c
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Mgmt.c
 
 SCOREP_MPI_MGMT_FORTRAN_CPPFLAGS = \
     $(AM_CPPFLAGS)                    \
@@ -172,6 +172,7 @@ noinst_LTLIBRARIES += \
     libscorep_adapter_mpi_event_fortran_sub4.la
 
 SCOREP_MPI_EVENT_FORTRAN_SOURCES = \
+    $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Env.c   \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Cg.c    \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Coll.c  \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Err.c   \
