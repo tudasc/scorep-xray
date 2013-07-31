@@ -1122,7 +1122,6 @@ AC_DEFUN([AC_CONFIG_SUBDIR_CUSTOM],
                                  m4_bpatsubst(m4_defn([_AC_Sub]), [:.*]))])]dnl
 
 # build a list of (directory,arguments) tuples that will be processed in _AC_OUTPUT_SUBDIRS
-_ac_sub_configure_args=
 _AC_SUB_CONFIGURE_ARGS(m4_normalize([$2]), [_ac_sub_configure_args])
 [if test -z "$custom_subdirs"; then
   custom_subdirs="custom_sub_configure_dir=\"m4_normalize([$1])\";custom_sub_configure_args=\"${_ac_sub_configure_args}\""
@@ -1163,7 +1162,6 @@ if test "$no_recursion" != yes; then
     IFS=$OIFS
     eval $dir_and_args
     if test "x$custom_sub_configure_dir" = x; then continue; fi
-    ac_custom_sub_configure_args=
     _AC_SUB_CONFIGURE_ARGS([$custom_sub_configure_args], 
                            [ac_custom_sub_configure_args])
     _AC_SUB_CONFIGURE([$custom_sub_configure_dir], 
@@ -1174,8 +1172,7 @@ if test "$no_recursion" != yes; then
   IFS=$OIFS  
 
   # call configures in $subdirs with fixed arguments.
-  ac_sub_configure_args=
-  _AC_SUB_CONFIGURE_ARGS([$ac_configure_args], 
+  _AC_SUB_CONFIGURE_ARGS([$ac_configure_args],
                          [ac_sub_configure_args])
   for ac_dir in : $subdirs; do test "x$ac_dir" = x: && continue
      echo "ac_dir(inside): $ac_dir"
@@ -1194,7 +1191,7 @@ m4_define([_AC_SUB_CONFIGURE_ARGS],
 [
   # Remove --cache-file, --srcdir, and --disable-option-checking arguments
   # so they do not pile up.
-  ac_sub_configure_args=
+  $2=
   ac_prev=
   eval "set x $1"
   shift
