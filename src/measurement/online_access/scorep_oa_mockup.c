@@ -49,9 +49,11 @@ SCOREP_OA_PhaseEnd
 void
 SCOREP_OA_Register()
 {
+    printf( "Dummy %s\n", __func__ );
 }
 
 void
 SCOREP_OA_Finalize()
 {
+    printf( "Dummy %s\n", __func__ );
 }

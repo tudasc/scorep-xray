@@ -310,7 +310,10 @@ const char*
 SCOREP_RegionHandle_GetFileName( SCOREP_RegionHandle handle )
 {
     SCOREP_RegionDef* region = SCOREP_LOCAL_HANDLE_DEREF( handle, Region );
-
+    if ( region->file_name_handle == SCOREP_INVALID_STRING )
+    {
+        return NULL;
+    }
     return SCOREP_LOCAL_HANDLE_DEREF( region->file_name_handle, String )->string_data;
 }
 

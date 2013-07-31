@@ -33,6 +33,7 @@
 #include <SCOREP_Location.h>
 
 #include <UTILS_IO.h>
+#include <UTILS_Debug.h>
 #include "scorep_profile_oaconsumer_process.h"
 #include "scorep_profile_definition.h"
 #include "scorep_profile_location.h"
@@ -782,11 +783,19 @@ scorep_oaconsumer_copy_merged_region_definitions
         strncpy( shared_index->merged_region_def_buffer[ region_index ].name,
                  name,
                  MAX_REGION_NAME_LENGTH );
-        const char* file = UTILS_IO_GetWithoutPath( SCOREP_RegionHandle_GetFileName( parent_region_handle ) );
-        strncpy( shared_index->merged_region_def_buffer[ region_index ].file,
-                 file,
-                 MAX_FILE_NAME_LENGTH );
 
+        const char* file_full_path = SCOREP_RegionHandle_GetFileName( parent_region_handle );
+        if ( file_full_path == NULL )
+        {
+            sprintf( shared_index->merged_region_def_buffer[ region_index ].file, "unknown" );
+        }
+        else
+        {
+            const char* file = UTILS_IO_GetWithoutPath( file_full_path );
+            strncpy( shared_index->merged_region_def_buffer[ region_index ].file,
+                     file,
+                     MAX_FILE_NAME_LENGTH );
+        }
         free( region_key );
     }
 }
