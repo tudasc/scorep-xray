@@ -29,29 +29,28 @@ ac_scorep_have_online_access_getaddrinfo="no"
 AC_CHECK_HEADERS([stdio.h strings.h ctype.h netdb.h sys/types.h sys/socket.h arpa/inet.h netinet/in.h unistd.h string.h], 
                  [], 
                  [ac_scorep_have_online_access_headers="no"])
-                 
-case ${build_os} in 
-	aix*)
-		AC_CHECK_DECL([getaddrinfo], 
+AS_CASE([${build_os}],
+         [aix*],
+         [AC_CHECK_DECL([getaddrinfo], 
 	                     [ac_scorep_have_online_access_getaddrinfo="yes"], 
 	                     [ac_scorep_have_online_access_getaddrinfo="no"], 
 	                     [[
 		#include <sys/types.h>
 		#include <sys/socket.h>
 		#include <netdb.h>
-	                     ]])
-	;;
-	*)
-		AC_CHECK_DECL([getaddrinfo], 
+	                     ]])],
+	                     
+         [AC_CHECK_DECL([getaddrinfo], 
 	                     [ac_scorep_have_online_access_getaddrinfo="yes"], 
 	                     [ac_scorep_have_online_access_getaddrinfo="no"], 
 	                     [[
-		#define _POSIX_SOURCE
+	    #define _POSIX_SOURCE
 		#include <sys/types.h>
 		#include <sys/socket.h>
 		#include <netdb.h>
-		              	 ]])
-esac
+		              	 ]])]
+	   )               
+
 
 AM_PROG_LEX
 AC_MSG_CHECKING([for a suitable version of flex])
