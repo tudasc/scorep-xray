@@ -75,7 +75,7 @@ AC_DEFUN([AFS_SUMMARY_COLLECT], [
     prefix="  $as_myself "
     printf "%-32s" "$prefix"
     padding="                                "
-    AS_IF([test `expr length "$prefix"` -gt 32], [
+    AS_IF([test ${#prefix} -gt 32], [
         sep="\\$as_nl$padding"
     ], [
         sep=""
