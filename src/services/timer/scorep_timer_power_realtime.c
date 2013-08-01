@@ -31,6 +31,7 @@
 
 #include <assert.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <sys/time.h>
 #include <sys/systemcfg.h>
 
@@ -47,14 +48,14 @@ SCOREP_GetClockTicks( void )
     timebasestruct_t t;
     read_real_time( &t, TIMEBASE_SZ );
     time_base_to_time( &t, TIMEBASE_SZ );
-    return t.tb_high * 1e9 + t.tb_low;
+    return ( uint64_t )t.tb_high * UINT64_C( 1000000000 ) + ( uint64_t )t.tb_low;
 }
 
 
 uint64_t
 SCOREP_GetClockResolution( void )
 {
-    return 1e9;
+    return UINT64_C( 1000000000 );
 }
 
 
