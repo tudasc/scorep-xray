@@ -441,7 +441,7 @@ SCOREP_Instrumenter::executeCommand( const std::string& orig_command )
         }
 
         /* Let the shell do its job and show us all executed commands. */
-        command = "PS4='Executing: '; set -x; " + command;
+        command = "PS4=' Executing: '; set -x; " + command;
     }
 
     int return_value = system( command.c_str() );
