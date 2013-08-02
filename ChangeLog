@@ -39,8 +39,12 @@
 - The Score-P internals were significantly refactored in order to
   increase flexibility to adapt to new programming paradigms and event
   sources.
-- Please not that the feature 'selective tracing' was renamed to
+- Please note that the feature 'selective tracing' was renamed to
   'selective recording' as it also applies to profiling.
+- Please note that CUBE is a hard requirement when build Score-P from
+  a tarball. This is due to the fact that we want to provide the user
+  with 'scorep-score', that can't be build without the CUBE reader
+  library available.
 
 ------------------- Released version 1.1 -----------------------------
 
