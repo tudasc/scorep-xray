@@ -5,7 +5,8 @@
 - Simplified MPI compiler detection, passing '--with-mpi' to configure
   is usually not necessary if your MPI compiler is in PATH.
 - Support for Cray systems. PrgEnv-(cray|gnu|intel|pgi) are supported
-  in static mode (static is the default).
+  in static mode (static is the default). Please note that OpenMP
+  instrumentation is currently broken for PrgEnv-cray.
 - Compilation units getting processed by OPARI2 are now being
   preprocessed by the C/C++ preprocessor. This way it is possible to
   instrument OpenMP directives in header files. It also solves
