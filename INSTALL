@@ -133,16 +133,16 @@ possible to use existing installations instead:
 
   --with-otf2[=<otf2-bindir>]
                Use an already installed and compatible OTF2 library
-               (v1.2 or newer). Provide path to otf2-config if not
-               already in $PATH.
+               (v1.2 or newer). Provide path to otf2-config. 
+               Auto-detected if already in $PATH.
   --with-cube[=<cube-bindir>] 
                Use an already installed and compatible CUBE4 library
-               (v4.2 or newer). Provide path to cube-config if not
-               already in $PATH.
+               (v4.2 or newer). Provide path to cube-config.
+               Auto-detected if already in $PATH.
   --with-opari2[=<opari2-bindir>]
                Use an already installed and compatible OPARI2 (v.1.1
-               or newer). Provide path to opari2-config if not already
-               in $PATH.
+               or newer). Provide path to opari2-config.
+               Auto-detected if already in $PATH.
 
 Options to further specify which features and external packages should
 be used to build Score-P are as follows:
