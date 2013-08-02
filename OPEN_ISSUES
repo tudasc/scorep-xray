@@ -29,8 +29,14 @@
  */
 
 
+                        Score-P new OPEN ISSUES
+                        ========================
+
+
+
                         Score-P v1.2 OPEN ISSUES
                         ========================
+                                                           Status: Aug 2013
 
 * Compiler instrumentation
 
@@ -59,6 +65,11 @@
   Score-P's linking process that now passes more libraries to
   COBI/Dyninst than Dyninst can handle at the moment. This issue will
   be addressed in a future release of Score-P and/or Dyninst.
+
+* Currently, Score-P can't handle MPI_Finalize() calls that occur
+  after the end of main(), e.g., via a destructor of a static C++
+  object. Please call MPI_Finalize() before the end of main(). The
+  issue will be resolved in a future version of Score-P.
 
 
                         Score-P v1.1 OPEN ISSUES

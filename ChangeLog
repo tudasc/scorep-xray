@@ -1,11 +1,45 @@
-------------------- Upcoming version 1.2 -----------------------------
+------------------- Upcoming version 1.3 -----------------------------
 
-- Full support to track the incurred OpenMP thread teams and utilizing
-  the new generic threading records of OTF2.
+------------------- Released version 1.2 -----------------------------
+
+- Simplified MPI compiler detection, passing '--with-mpi' to configure
+  is usually not necessary if your MPI compiler is in PATH.
+- Support for Cray systems. PrgEnv-(cray|gnu|intel|pgi) are supported
+  in static mode (static is the default).
+- Compilation units getting processed by OPARI2 are now being
+  preprocessed by the C/C++ preprocessor. This way it is possible to
+  instrument OpenMP directives in header files. It also solves
+  instrumentation problems cause by OpenMP pragmas within preprocessor
+  defines. Preprocessing is the default but can be deactivated using
+  --nopreprocess. When using PDT instrumentation, preprocessing is
+  deactivated.
+- To reduce the memory demands of dynamic regions in profiling mode,
+  this version provides a lossy compression mechanism called
+  'clustering'; similar subtrees of a dynamic region are clustered
+  into one. This feature is enabled by default. There are three new
+  environment variables for customization, please see the documentation
+  for details.
+- The new keyword 'MANGLED' was added to the filter file format to
+  deal with cases where the displayed name and mangled name are
+  different.
+- External metric sources can be utilized via a a plug-in mechanism. 
+  This feature is controlled via the SCOREP_METRIC_PLUGIN environment
+  variable. Please see the documentation for details and an example.
+- The CUDA adapter got refactored and extended to provide much more
+  useful metrics. There are several new values to the environment
+  variable SCOREP_CUDA_ENABLE. Please see the documentation for
+  details.
 - The machine name used in the profile and trace output is now
   configurable at built-time with the --with-machine-name flag or at
   run-time with the SCOREP_MACHINE_NAME measurement configuration
   variable.
+- Full support to track the incurred OpenMP thread teams and utilizing
+  the new generic threading records of OTF2.
+- The Score-P internals were significantly refactored in order to
+  increase flexibility to adapt to new programming paradigms and event
+  sources.
+- Please not that the feature 'selective tracing' was renamed to
+  'selective recording' as it also applies to profiling.
 
 ------------------- Released version 1.1 -----------------------------
 
