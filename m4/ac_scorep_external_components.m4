@@ -46,26 +46,28 @@ AC_DEFUN([AC_SCOREP_HAVE_CONFIG_TOOL], [
 
 AC_ARG_WITH([$1], 
     [AS_HELP_STRING([--with-$1[[=<$1-bindir>]]], 
-        [Use an already installed $1. Provide path to $1-config if not already in $PATH.])], 
-    [with_$1="${with_$1%/}"], 
-    [with_$1="no"])
+        [Use an already installed $1. Provide path to $1-config. Autodected if already in $PATH.])], 
+    [with_$1="${with_$1%/}"], dnl yes, no, or <path>
+    [with_$1="not_given"])
 
 AS_UNSET([scorep_have_$1_config])
 AS_UNSET([scorep_$1_config_bin])
 AS_UNSET([scorep_$1_config_arg])
 AS_IF([test "x${with_$1}" != "xno"], 
-    [AS_IF([test "x${with_$1}" = "xyes"], 
+    [AS_IF([test "x${with_$1}" = "xyes" || test "x${with_$1}" = "xnot_given"], 
         [AC_CHECK_PROG([scorep_have_$1_config], [$1-config], ["yes"], ["no"])
          AS_IF([test "x${scorep_have_$1_config}" = "xyes"],
              [scorep_$1_config_bin="`which $1-config`"])],
-             [AC_CHECK_PROG([scorep_have_$1_config], [$1-config], ["yes"], ["no"], [${with_$1}])
+        [# --with-$1=<path>
+         AC_CHECK_PROG([scorep_have_$1_config], [$1-config], ["yes"], ["no"], [${with_$1}])
+         AS_IF([test "x${scorep_have_$1_config}" = "xyes"],
+             [scorep_$1_config_bin="${with_$1}/$1-config"],
+             [AS_UNSET([ac_cv_prog_scorep_have_$1_config])
+              AS_UNSET([scorep_have_$1_config])
+              AC_CHECK_PROG([scorep_have_$1_config], [$1-config], ["yes"], ["no"], ["${with_$1}/bin"])
               AS_IF([test "x${scorep_have_$1_config}" = "xyes"],
-                  [scorep_$1_config_bin="${with_$1}/$1-config"],
-                  [AS_UNSET([ac_cv_prog_scorep_have_$1_config])
-                   AS_UNSET([scorep_have_$1_config])
-                   AC_CHECK_PROG([scorep_have_$1_config], [$1-config], ["yes"], ["no"], ["${with_$1}/bin"])
-                   AS_IF([test "x${scorep_have_$1_config}" = "xyes"],
-                       [scorep_$1_config_bin="${with_$1}/bin/$1-config"])])])
+                  [scorep_$1_config_bin="${with_$1}/bin/$1-config"])])
+        ])
      AS_IF([test "x${scorep_have_$1_config}" = "xyes"], 
          [scorep_$1_config_arg="scorep_$1_bindir=`dirname ${scorep_$1_config_bin}`"
           # version checking, see http://www.gnu.org/software/libtool/manual/libtool.html#Versioning
@@ -92,9 +94,14 @@ AS_IF([test "x${with_$1}" != "xno"],
               ],
               [AC_MSG_ERROR([required option --interface-version not supported by $1-config.])])
          ],
-         [AS_IF([test "x${with_$1}" = "xyes"],
-             [AC_MSG_ERROR([cannot detect $1-config although it was requested via --with-$1.])],
-             [AC_MSG_ERROR([cannot detect $1-config in ${with_$1} and ${with_$1}/bin.])])])
+         [# scorep_have_$1_config = no
+          AS_IF([test "x${with_$1}" = "xnot_given"],
+              [AFS_SUMMARY([$1 support], [yes, using internal])],
+              [test "x${with_$1}" = "xyes"],
+              [AC_MSG_ERROR([cannot detect $1-config although it was requested via --with-$1.])],
+              [AC_MSG_ERROR([cannot detect $1-config in ${with_$1} and ${with_$1}/bin.])
+              ])
+         ])
     ],
     [scorep_have_$1_config="no"
      AFS_SUMMARY([$1 support], [yes, using internal])])
