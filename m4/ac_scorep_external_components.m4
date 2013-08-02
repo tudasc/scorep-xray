@@ -46,7 +46,7 @@ AC_DEFUN([AC_SCOREP_HAVE_CONFIG_TOOL], [
 
 AC_ARG_WITH([$1], 
     [AS_HELP_STRING([--with-$1[[=<$1-bindir>]]], 
-        [Use an already installed $1. Provide path to $1-config. Autodected if already in $PATH.])], 
+        [Use an already installed $1. Provide path to $1-config. Auto-detected if already in $PATH.])], 
     [with_$1="${with_$1%/}"], dnl yes, no, or <path>
     [with_$1="not_given"])
 
