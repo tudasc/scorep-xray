@@ -278,6 +278,7 @@ define_comms( uint32_t comm_world_size,
     {
         /* Allocate memory for the arrays. */
 
+        assert( comm_world_size );
         ranks_in_comm = calloc( comm_world_size, sizeof( *ranks_in_comm ) );
         assert( ranks_in_comm );
 
@@ -285,7 +286,7 @@ define_comms( uint32_t comm_world_size,
         assert( ranks_in_group );
 
         comm_definitions = calloc( total_number_of_root_comms, sizeof( *comm_definitions ) );
-        assert( comm_definitions );
+        assert( total_number_of_root_comms != 0 && comm_definitions );
 
         /* Create a map from global ids to unified handles of string definitions */
         unified_strings = calloc( scorep_unified_definition_manager->string.counter,
