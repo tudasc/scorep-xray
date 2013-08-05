@@ -8,7 +8,7 @@ library interface version:
     http://sourceware.org/autobook/autobook/autobook_91.html#SEC91
 
 package.major=1
-package.minor=2
+package.minor=3
 package.bugfix=0
 package.suffix=trunk
 
