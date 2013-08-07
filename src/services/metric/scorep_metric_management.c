@@ -705,6 +705,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
                                 UTILS_WARNING( "Can not get handle for location group." );
                             }
 
+                            UTILS_ASSERT( scope_handle != SCOREP_MOVABLE_NULL );
                             current_location_metric_set->sampling_sets[ recent_sampling_set_index++ ]
                                 = SCOREP_Definitions_NewScopedSamplingSet( current_sampling_set_handle,
                                                                            current_location_handle,
@@ -869,6 +870,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
                                                  "Unknown metric synchronicity %u", metric_type );
                             }
 
+                            UTILS_ASSERT( scope_handle != SCOREP_MOVABLE_NULL );
                             SCOREP_LocationHandle recorder_location_handle
                                 = SCOREP_Location_GetLocationHandle( current_location_metric_set->additional_locations[ recent_metric_index ] );
                             current_location_metric_set->sampling_sets[ recent_metric_index ]
@@ -1402,8 +1404,8 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
 
                         /* Get handle of current location as recorder */
                         SCOREP_LocationHandle current_location_handle = SCOREP_Location_GetLocationHandle( location );
-                        SCOREP_MetricScope    scope;
-                        SCOREP_AnyHandle      scope_handle;
+                        SCOREP_MetricScope    scope                   = SCOREP_INVALID_METRIC_SCOPE;
+                        SCOREP_AnyHandle      scope_handle            = SCOREP_MOVABLE_NULL;
 
                         /* Determine scope and corresponding handle */
                         switch ( metric_type )
@@ -1415,14 +1417,13 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                 {
                                     UTILS_WARNING( "Can not get handle for system tree root node." );
                                 }
-
                                 break;
                             case SCOREP_METRIC_ONCE:
                                 scope        = SCOREP_METRIC_SCOPE_SYSTEM_TREE_NODE;
                                 scope_handle = SCOREP_GetSystemTreeRootNodeHandle();
                                 if ( scope_handle == SCOREP_INVALID_SYSTEM_TREE_NODE )
                                 {
-                                    UTILS_WARNING( "Can not get handle for system tree root node." );
+                                    UTILS_WARNING( "Can not get handle for system tree node of shared memory domain." );
                                 }
                                 break;
                             default:
@@ -1430,6 +1431,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                              "Unknown metric synchronicity %u", metric_type );
                         }
 
+                        UTILS_ASSERT( scope_handle != SCOREP_MOVABLE_NULL );
                         current_location_metric_set->sampling_sets[ recent_sampling_set_index++ ]
                             = SCOREP_Definitions_NewScopedSamplingSet( current_sampling_set_handle,
                                                                        current_location_handle,
@@ -1558,13 +1560,17 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                              * these metrics always need a definition of a scoped sampling set */
 
                             /* Determine scope and corresponding handle */
-                            SCOREP_MetricScope scope;
-                            SCOREP_AnyHandle   scope_handle;
+                            SCOREP_MetricScope scope        = SCOREP_INVALID_METRIC_SCOPE;
+                            SCOREP_AnyHandle   scope_handle = SCOREP_MOVABLE_NULL;
                             switch ( metric_type )
                             {
                                 case SCOREP_METRIC_PER_HOST:
-                                    UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
-                                                 "Metrics of synchronicity 'per-host' is not implemented yet" );
+                                    scope        = SCOREP_METRIC_SCOPE_SYSTEM_TREE_NODE;
+                                    scope_handle = SCOREP_GetSystemTreeNodeHandleForSharedMemory();
+                                    if ( scope_handle == SCOREP_INVALID_SYSTEM_TREE_NODE )
+                                    {
+                                        UTILS_WARNING( "Can not get handle for system tree node of shared memory domain." );
+                                    }
                                     break;
                                 case SCOREP_METRIC_ONCE:
                                     scope        = SCOREP_METRIC_SCOPE_SYSTEM_TREE_NODE;
@@ -1579,6 +1585,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                                  "Unknown metric synchronicity %u", metric_type );
                             }
 
+                            UTILS_ASSERT( scope_handle != SCOREP_MOVABLE_NULL );
                             SCOREP_LocationHandle recorder_location_handle
                                 = SCOREP_Location_GetLocationHandle( current_location_metric_set->additional_locations[ recent_metric_index ] );
                             current_location_metric_set->sampling_sets[ recent_metric_index ]
