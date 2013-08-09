@@ -70,7 +70,7 @@ CPPFLAGS=$ac_scorep_cuda_safe_CPPFLAGS
 LDFLAGS=$ac_scorep_cuda_safe_LDFLAGS
 LIBS=$ac_scorep_cuda_safe_LIBS
 
-AC_SCOREP_COND_HAVE([CUDA],
+AC_SCOREP_COND_HAVE([CUDA_SUPPORT],
                     [test "x${scorep_have_libcudart}" = "xyes" && test "x${scorep_have_libcupti}"  = "xyes" && test "x${scorep_have_libcuda}"   = "xyes"],
                     [Defined if cuda is available.],
                     [scorep_have_cuda="yes"
