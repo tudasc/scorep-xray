@@ -95,8 +95,9 @@ AS_IF([test "x$scorep_cudart_error" = "xno"],
       [AC_SEARCH_LIBS([cudaRuntimeGetVersion],
                       [$scorep_cudart_lib_name],
                       [],
-                      [AC_MSG_NOTICE([no libcudart found; check path to CUDA runtime library ...])
-                       scorep_cudart_error="yes" ])])
+                      [AS_IF([test "x${with_libcudart}" != xnot_set || test "x${with_libcudart_lib}" != xnot_set],
+                             [AC_MSG_NOTICE([no libcudart found; check path to CUDA runtime library ...])])
+                       scorep_cudart_error="yes"])])
 
 dnl check the version of the CUDA runtime API
 AS_IF([test x"$scorep_cudart_error" = "xno"],
@@ -137,8 +138,9 @@ AS_IF([test "x$scorep_cupti_error" = "xno"],
       [AC_CHECK_LIB([$scorep_cupti_lib_name],
                     [cuptiGetVersion],
                     [],
-                    [AC_MSG_NOTICE([no libcupti found; check path to CUPTI library ...])
-                     scorep_cupti_error="yes" ])])
+                    [AS_IF([test "x${with_libcupti}" != xnot_set || test "x${with_libcupti_lib}" != xnot_set],
+                           [AC_MSG_NOTICE([no libcupti found; check path to CUPTI library ...])])
+                     scorep_cupti_error="yes"])])
 LDFLAGS="${ldflags_save}"
                      
 dnl check the version of CUPTI
@@ -178,8 +180,9 @@ AS_IF([test "x$scorep_cuda_error" = "xno"],
       [AC_SEARCH_LIBS([cuInit],
                       [$scorep_cuda_lib_name],
                       [],
-                      [AC_MSG_NOTICE([no libcuda found; check path to CUDA library ...])
-                       scorep_cuda_error="yes" ])])
+                      [AS_IF([test "x${with_libcuda}" != xnot_set || test "x${with_libcuda_lib}" != xnot_set],
+                             [AC_MSG_NOTICE([no libcuda found; check path to CUDA library ...])])
+                       scorep_cuda_error="yes"])])
 
 dnl check the version of the CUDA Driver API
 AS_IF([test "x$scorep_cuda_error" = "xno"],
