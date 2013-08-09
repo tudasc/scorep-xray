@@ -145,7 +145,6 @@ LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
 
 AC_SCOREP_BUILD_MODE
-AC_SCOREP_CUDA
 
 # On crosscompile machines, install backend stuff into $(bin|lid)dir/backend.
 backend_suffix=""
