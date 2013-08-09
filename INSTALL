@@ -155,6 +155,9 @@ be used to build Score-P are as follows:
                still build at make check. Additionally, scripts
                (scorep_*tests.sh) containing the tests are generated
                in <builddir>/build-backend.
+  --enable-cuda
+               Enable or disable support for CUDA. Fail if support
+               can't be satisfied but was requested.
   --enable-timer-bgl_rts_get_timebase
                enable bgl_rts_get_timebase timer if available instead
                of platform default
