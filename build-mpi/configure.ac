@@ -23,6 +23,8 @@ cross_compiling=${ac_scorep_cross_compiling}
     # to "yes", we allow configure to succeed. Wrap all macros that might
     # execute a program in a cross_compiling=yes block, e.g. AC_SCOREP_CHECK_SIZEOF
 #fi
+# suppress warnings about 'using cross tools not prefixed with host triplet'
+ac_tool_warned=yes
 
 ac_scorep_backend=yes
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
