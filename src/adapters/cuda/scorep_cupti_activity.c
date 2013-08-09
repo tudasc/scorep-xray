@@ -362,7 +362,9 @@ scorep_cupti_activity_context_finalize( scorep_cupti_context_t* context )
         return;
     }
 
-    scorep_cupti_activity_context_flush( context );
+    /* CUPTI buffer flush is only allowed in cudaDeviceReset and
+       cudaDeviceSynchronize */
+    /*scorep_cupti_activity_context_flush( context );*/
 
     /* free activity buffer */
     if ( context_activity->buffer != NULL )
@@ -530,7 +532,8 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
     scorep_cuda_kernel_hash_node* hashNode        = NULL;
 
     /* get Score-P thread ID for the kernel's stream */
-    stream          = scorep_cupti_stream_get_create( context, SCOREP_CUPTI_NO_STREAM, kernel->streamId );
+    stream = scorep_cupti_stream_get_create( context,
+                                             SCOREP_CUPTI_NO_STREAM, kernel->streamId );
     stream_location = stream->scorep_location;
 
     /* get the Score-P region ID for the kernel */
@@ -553,8 +556,9 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
             }
         }
 
-        regionHandle = SCOREP_Definitions_NewRegion( knName, NULL, scorep_cupti_kernel_file_handle,
-                                                     0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
+        regionHandle = SCOREP_Definitions_NewRegion( knName, NULL,
+                                                     scorep_cupti_kernel_file_handle, 0, 0,
+                                                     SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
 
         hashNode = scorep_cupti_kernel_hash_put( kernel->name, regionHandle );
     }
@@ -562,8 +566,10 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
     /* write events */
     {
         uint64_t start = contextActivity->sync.host_start
-                         + ( kernel->start - contextActivity->sync.gpu_start ) * contextActivity->sync.factor;
-        uint64_t stop = start + ( kernel->end - kernel->start ) * contextActivity->sync.factor;
+                         + ( kernel->start - contextActivity->sync.gpu_start )
+                         * contextActivity->sync.factor;
+        uint64_t stop = start + ( kernel->end - kernel->start )
+                        * contextActivity->sync.factor;
 
         /* if current activity's start time is before last written timestamp */
         if ( start < stream->scorep_last_timestamp )
@@ -883,6 +889,44 @@ scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy*   memcpy,
     }
 }
 
+static void
+synchronize_context_list( void )
+{
+    CUcontext               old_context = NULL;
+    scorep_cupti_context_t* context     = scorep_cupti_context_list;
+
+    if ( context == NULL )
+    {
+        return;
+    }
+
+    /* save the current CUDA context */
+    SCOREP_CUDA_DRIVER_CALL( cuCtxGetCurrent( &old_context ) );
+    while ( NULL != context )
+    {
+        /* set the context to be synchronized */
+        if ( context->cuda_context != old_context )
+        {
+            SCOREP_CUDA_DRIVER_CALL( cuCtxPushCurrent( context->cuda_context ) );
+        }
+
+        SCOREP_CUPTI_UNLOCK();
+        SCOREP_CUDA_DRIVER_CALL( cuCtxSynchronize() );
+        SCOREP_CUPTI_LOCK();
+
+        /* pop the context from context stack */
+        if ( context->cuda_context != old_context )
+        {
+            SCOREP_CUDA_DRIVER_CALL( cuCtxPopCurrent( &( context->cuda_context ) ) );
+        }
+
+        SCOREP_CUPTI_CALL( cuptiGetTimestamp( &( context->activity->sync.gpu_start ) ) );
+        context->activity->sync.host_start = SCOREP_GetClockTicks();
+
+        context = context->next;
+    }
+}
+
 /*
  * Enable/Disable recording of CUPTI activities. Use CUPTI mutex to lock this
  * function.
@@ -896,7 +940,7 @@ scorep_cupti_activity_enable( bool enable )
     {
         if ( !scorep_cupti_activity_enabled )
         {
-            /* enable kernel tracing */
+            /* enable kernel recording */
             if ( scorep_cuda_record_kernels )
             {
   #if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 3 ) )
@@ -925,21 +969,13 @@ scorep_cupti_activity_enable( bool enable )
             /* create new synchronization points */
             if ( scorep_cupti_activity_enabled )
             {
-                scorep_cupti_context_t* context = scorep_cupti_context_list;
-                while ( NULL != context )
-                {
-                    scorep_cupti_activity_context_flush( context );
-
-                    SCOREP_CUPTI_CALL( cuptiGetTimestamp( &( context->activity->sync.gpu_start ) ) );
-                    context->activity->sync.host_start = SCOREP_GetClockTicks();
-
-                    context = context->next;
-                }
+                synchronize_context_list();
             }
         }
     }
     else if ( scorep_cupti_activity_enabled ) /* disable activities */
-    {                                         /* disable kernel recording */
+    {
+        /* disable kernel recording */
         if ( scorep_cuda_record_kernels )
         {
 #if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 3 ) )
@@ -968,12 +1004,7 @@ scorep_cupti_activity_enable( bool enable )
         /* flush activities */
         if ( !scorep_cupti_activity_enabled )
         {
-            scorep_cupti_context_t* context = scorep_cupti_context_list;
-            while ( NULL != context )
-            {
-                scorep_cupti_activity_context_flush( context );
-                context = context->next;
-            }
+            synchronize_context_list();
         }
     }
 }

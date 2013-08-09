@@ -324,6 +324,8 @@ scorep_cupti_callbacks_enable( bool enable )
 {
     SCOREP_CUPTI_LOCK();
 
+    scorep_cupti_activity_enable( enable );
+
     if ( enable )
     {
         if ( !scorep_cupti_callbacks_enabled )
@@ -377,8 +379,6 @@ scorep_cupti_callbacks_enable( bool enable )
         is_driver_domain_enabled       = false;
         scorep_cupti_callbacks_enabled = false;
     }
-
-    scorep_cupti_activity_enable( enable );
 
     SCOREP_CUPTI_UNLOCK();
 }
@@ -1702,7 +1702,8 @@ scorep_cupti_callbacks_sync( CUpti_CallbackId             cbid,
 #endif
         {
             SCOREP_CUPTI_LOCK();
-            scorep_cupti_activity_context_flush( scorep_cupti_context_get_nolock( syncData->context ) );
+            scorep_cupti_activity_context_flush(
+                scorep_cupti_context_get_nolock( syncData->context ) );
             SCOREP_CUPTI_UNLOCK();
         }
 #endif
@@ -1843,7 +1844,8 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
 #endif
                 {
                     SCOREP_CUPTI_LOCK();
-                    scorep_cupti_activity_context_flush( scorep_cupti_context_get_nolock( resourceData->context ) );
+                    scorep_cupti_activity_context_flush(
+                        scorep_cupti_context_get_nolock( resourceData->context ) );
                     SCOREP_CUPTI_UNLOCK();
                 }
 #endif

@@ -963,6 +963,7 @@ scorep_cupti_create_cuda_comm_group( uint64_t** globalLocationIds )
     while ( context != NULL )
     {
         scorep_cupti_stream_t* stream = context->streams;
+
         while ( NULL != stream )
         {
             if ( SCOREP_CUPTI_NO_ID != stream->location_id )
@@ -974,12 +975,17 @@ scorep_cupti_create_cuda_comm_group( uint64_t** globalLocationIds )
         }
 
         /* get an array element for the context location */
-        if ( SCOREP_CUPTI_NO_ID != context->location_id )
+        if ( scorep_cuda_record_memcpy )
         {
             count++;
         }
 
         context = context->next;
+    }
+
+    if ( count == 0 )
+    {
+        return count;
     }
 
     /* allocate the CUDA communication group array */
