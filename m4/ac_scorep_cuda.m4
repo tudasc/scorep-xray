@@ -70,11 +70,24 @@ CPPFLAGS=$ac_scorep_cuda_safe_CPPFLAGS
 LDFLAGS=$ac_scorep_cuda_safe_LDFLAGS
 LIBS=$ac_scorep_cuda_safe_LIBS
 
+AS_IF([test "x${scorep_have_libcudart}" = "xyes" && test "x${scorep_have_libcupti}"  = "xyes" && test "x${scorep_have_libcuda}"   = "xyes"],
+      [scorep_have_cuda=yes])
+AC_ARG_ENABLE([cuda],
+              [AS_HELP_STRING([--enable-cuda],
+                              [Enable or disable support for CUDA. Fail if support can't be satisfied but was requested.])],
+              [AS_CASE([$enableval,$scorep_have_cuda],
+                       [yes,no],
+                       [AC_MSG_ERROR([couldn't fulfill requested support for CUDA.])],
+                       [no,yes],
+                       [scorep_have_cuda="no (disabled by request)"],
+                       [yes,yes|no,no],
+                       [:],
+                       [AC_MSG_ERROR([Invalid argument for --enable-cuda: $enableval])])])
+
 AC_SCOREP_COND_HAVE([CUDA_SUPPORT],
-                    [test "x${scorep_have_libcudart}" = "xyes" && test "x${scorep_have_libcupti}"  = "xyes" && test "x${scorep_have_libcuda}"   = "xyes"],
+                    [test "x${scorep_have_cuda}" = "xyes"],
                     [Defined if cuda is available.],
-                    [scorep_have_cuda="yes"
-                     AC_SUBST(CUDA_CPPFLAGS, ["${with_libcudart_cppflags} ${with_libcupti_cppflags}"])
+                    [AC_SUBST(CUDA_CPPFLAGS, ["${with_libcudart_cppflags} ${with_libcupti_cppflags}"])
                      AC_SUBST(CUDA_LDFLAGS,  ["${with_libcuda_ldflags} ${with_libcudart_ldflags} ${with_libcupti_ldflags} ${with_libcuda_rpathflag} ${with_libcudart_rpathflag} ${with_libcupti_rpathflag}"])
                      AC_SUBST(CUDA_LIBS,     ["${with_libcuda_libs} ${with_libcudart_libs} ${with_libcupti_libs}"])],
                     [AC_SUBST(CUDA_CPPFLAGS, [""])
