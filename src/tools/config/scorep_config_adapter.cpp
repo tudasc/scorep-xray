@@ -274,7 +274,7 @@ SCOREP_Config_CudaAdapter::SCOREP_Config_CudaAdapter()
 bool
 SCOREP_Config_CudaAdapter::checkArgument( std::string arg )
 {
-#if HAVE_BACKEND( CUDA )
+#if HAVE_BACKEND( CUDA_SUPPORT )
     if ( arg == "--" + m_name )
     {
         m_is_enabled = true;
@@ -293,7 +293,7 @@ void
 SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
                                     SCOREP_Config_LibraryDependencies& deps )
 {
-    if ( HAVE_BACKEND_CUDA && m_is_enabled )
+    if ( HAVE_BACKEND_CUDA_SUPPORT && m_is_enabled )
     {
         libs.push_back( "lib" + m_library + "_event" );
         deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );

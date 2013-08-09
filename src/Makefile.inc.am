@@ -116,7 +116,7 @@ common_libadd =                          \
     libscorep_adapter_user_mgmt.la       \
     libscorep_adapter_pomp_user_mgmt.la
 
-if HAVE_CUDA
+if HAVE_CUDA_SUPPORT
 common_libadd += libscorep_adapter_cuda_mgmt.la
 else
 common_libadd += libscorep_adapter_cuda_mgmt_mockup.la

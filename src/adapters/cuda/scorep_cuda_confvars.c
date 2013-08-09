@@ -57,7 +57,7 @@ scorep_cuda_register( size_t subsystem_id )
 
     return SCOREP_ConfigRegisterCond( "cuda",
                                       scorep_cuda_configs,
-                                      HAVE_BACKEND_CUDA );
+                                      HAVE_BACKEND_CUDA_SUPPORT );
 }
 
 SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter =

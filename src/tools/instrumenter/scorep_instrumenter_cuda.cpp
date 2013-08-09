@@ -40,7 +40,7 @@
 SCOREP_Instrumenter_CudaAdapter::SCOREP_Instrumenter_CudaAdapter( void )
     : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_CUDA, "cuda" )
 {
-#if !HAVE_BACKEND( CUDA )
+#if !HAVE_BACKEND( CUDA_SUPPORT )
     unsupported();
 #endif
 }

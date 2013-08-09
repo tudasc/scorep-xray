@@ -2,7 +2,7 @@ EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/cuda/run_cuda_test.sh.in \
     $(SRC_ROOT)test/adapters/cuda/cuda_test.cu 
 
-if HAVE_CUDA
+if HAVE_CUDA_SUPPORT
 
 #check_PROGRAMS += cuda_test
 

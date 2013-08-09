@@ -32,7 +32,7 @@
 ## file       /scorep/src/adapters/cuda/Makefile.inc.am
 ## maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
 
-if HAVE_CUDA
+if HAVE_CUDA_SUPPORT
 
 # runtime management library for the cuda adapter
 
