@@ -58,10 +58,10 @@ AS_UNSET([cupti_root])
 AS_IF([test "x${with_libcudart_lib}" = "xyes"],
       [for path in ${sys_lib_search_path_spec}; do 
            AS_IF([test -e ${path}/libcudart.a || test -e ${path}/libcudart.so || test -e ${path}/libcudart.dylib], 
-                 [break])
-       done
-       cupti_root="${path}"],
-      [AS_IF([test "x${with_libcudart}" != "xnot_set"], 
+                 [cupti_root="${path}"
+                  break])
+       done],
+      [AS_IF([test "x${with_libcudart}" != "xnot_set"],
              [cupti_root="${with_libcudart}/extras/CUPTI"])])
 
 AC_SCOREP_BACKEND_LIB([libcupti], [cupti.h], [${with_libcudart_cppflags}], [${cupti_root}])
