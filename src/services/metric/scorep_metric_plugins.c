@@ -65,7 +65,7 @@ typedef struct scorep_metric_plugin_struct
     /** Index of additional environment variable in @ additional_environment_variables array */
     uint32_t                               additional_event_environment_variable_index;
     /** Number of selected event_names */
-    int                                    num_selected_events;
+    uint32_t                               num_selected_events;
     /** Selected event_names */
     char**                                 selected_events;
     /** Meta data about metrics (e.g. metric name, units) */
@@ -689,6 +689,9 @@ scorep_metric_plugins_initialize_location( SCOREP_Location*           location,
                     /* Asynchronous plugins have to implement 'getAllValues' function */
                     current[ *current_size ].getAllValues = current_plugin->info.get_all_values;
                     break;
+
+                default:
+                    UTILS_WARNING( "Unknown metric synchronicity type." );
             }
 
             /* Next metric */

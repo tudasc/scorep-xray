@@ -193,7 +193,7 @@ struct scorep_metric_definition_data
     /** Vector of active resource usage counters */
     scorep_rusage_metric* active_metrics[ SCOREP_RUSAGE_CNTR_MAXNUM ];
     /** Number of active resource usage counters */
-    int8_t                number_of_metrics;
+    uint8_t               number_of_metrics;
 };
 
 /** Metric data structure */
@@ -585,6 +585,9 @@ scorep_metric_rusage_strictly_synchronous_read( SCOREP_Metric_EventSet* eventSet
             case RU_NIVCSW:
                 values[ i ] = ( uint64_t )eventSet->ru.ru_nivcsw;
                 break;
+
+            default:
+                UTILS_WARNING( "Unknown RUSAGE metric requested." );
         }
     }
 }
@@ -688,6 +691,9 @@ scorep_metric_rusage_synchronous_read( SCOREP_Metric_EventSet* eventSet,
             case RU_NIVCSW:
                 values[ i ] = ( uint64_t )eventSet->ru.ru_nivcsw;
                 break;
+
+            default:
+                UTILS_WARNING( "Unknown RUSAGE metric requested." );
         }
         is_updated[ i ] = true;
     }

@@ -123,7 +123,7 @@ typedef struct scorep_metric_definition_data
     /** Vector of active resource usage counters */
     scorep_papi_metric* active_metrics[ SCOREP_METRIC_MAXNUM ];
     /** Number of active resource usage counters */
-    int8_t              number_of_metrics;
+    uint8_t             number_of_metrics;
 } scorep_metric_definition_data;
 
 /**
@@ -406,7 +406,7 @@ scorep_metric_papi_close( void )
  *
  *  @return It returns the new event set.
  */
-SCOREP_Metric_EventSet*
+static SCOREP_Metric_EventSet*
 scorep_metric_papi_create_event_set( scorep_metric_definition_data* definitions )
 {
     SCOREP_Metric_EventSet* event_set;
@@ -498,7 +498,7 @@ scorep_metric_papi_create_event_set( scorep_metric_definition_data* definitions 
  *  @param eventSet The event set that defines the measured counters
  *                  which should be freed.
  */
-void
+static void
 scorep_metric_papi_free( SCOREP_Metric_EventSet* eventSet )
 {
     int       retval;
@@ -976,7 +976,6 @@ scorep_metric_papi_strictly_synchronous_read( SCOREP_Metric_EventSet* eventSet,
     UTILS_ASSERT( values );
 
     int retval;
-    int i;
 
     /*
      * WARNING: PAPI may access prof file system while reading counters.
@@ -1032,7 +1031,6 @@ scorep_metric_papi_synchronous_read( SCOREP_Metric_EventSet* eventSet,
     UTILS_ASSERT( is_updated );
 
     int retval;
-    int i;
 
     /*
      * WARNING: PAPI may access prof file system while reading counters.
