@@ -51,14 +51,11 @@ endif PLATFORM_BGP
 
 if PLATFORM_BGQ
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_bgq.c
-libscorep_platform_la_LDFLAGS = $(AM_LDFLAGS)    \
-     -L/bgsys/drivers/ppcfloor/comm/sys-fast/lib \
-     -L/bgsys/drivers/ppcfloor/spi/lib
-
-libscorep_platform_la_LIBADD = -lpami -lstdc++ -lSPI -lSPI_cnk -lrt
-
-libscorep_platform_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor/comm/sys/include      \
-                                  -I/bgsys/drivers/ppcfloor/comm/sys-fast/include
+libscorep_platform_la_LDFLAGS = \
+    $(AM_LDFLAGS)               \
+    @SCOREP_PAMI_LDFLAGS@
+libscorep_platform_la_LIBADD = @SCOREP_PAMI_LIBS@
+libscorep_platform_la_CPPFLAGS += @SCOREP_PAMI_CPPFLAGS@
 endif PLATFORM_BGQ
 
 # for any platform not handled above, use generic platform

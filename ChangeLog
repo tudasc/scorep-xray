@@ -4,6 +4,9 @@
 
 - Allow configuration without support for the MPI programming model by
   specifying --without-mpi on the configure line.
+- On Blue Gene/Q, detect PAMI library at configure time. The loaction and
+  names of the PAMI files changes during a system upgrade. Search all known
+  directories and library names.
 
 ------------------- Released version 1.2 -----------------------------
 
