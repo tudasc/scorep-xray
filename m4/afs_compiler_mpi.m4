@@ -218,7 +218,7 @@ dnl echo MPI $MPI
 AS_IF([test "${NMPIS}" -eq 0],
     [AS_IF([test -n "${MPICC}"],
          [AC_MSG_ERROR([mpicc found but cannot determine MPI library. Select MPI using --with-mpi=bullxmpi|hp|lam|mpibull2|mpich|mpich2|mpich3|openmpi|platform|scali])],
-         [AC_MSG_ERROR([cannot detect MPI library. Make sure mpicc, mpcc or mpiicc is in your PATH and rerun configure.])])],
+         [AC_MSG_ERROR([cannot detect MPI library. Make sure mpicc, mpcc or mpiicc is in your PATH and rerun configure. Please specify --without-mpi if you intend to build Score-P without MPI support.])])],
     [test "${NMPIS}" -gt 1],
     [AC_MSG_ERROR([found ${NMPIS} MPI installations. Select one using --with-mpi=${MPIS}])],
     [afs_compiler_mpi=${MPI}

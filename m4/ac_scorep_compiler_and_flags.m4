@@ -222,6 +222,7 @@ AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
 path_to_common_compiler_files="$srcdir/vendor/common/build-config/platforms/"
 path_to_package_compiler_files="$srcdir/build-config/platforms/"
 
+scorep_mpi_user_disabled="no"
 AC_ARG_WITH([mpi],
     [AS_HELP_STRING([--with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|openmpi|platform|scali|sgimpt|sun)], 
          [The MPI compiler suite to build this package in non cross-compiling mode. Usually autodetected. Needs to be in $PATH.])],
@@ -245,7 +246,8 @@ AC_ARG_WITH([mpi],
               ["scali"], [ac_scorep_compilers_mpi="compiler-mpi-scali"],
               ["sgimpt"], [ac_scorep_compilers_mpi="compiler-mpi-sgimpt"],
               ["sun"], [ac_scorep_compilers_mpi="compiler-mpi-sun"],
-              ["no"], [ac_scorep_compilers_mpi="compiler-mpi-without"],
+              ["no"], [ac_scorep_compilers_mpi="compiler-mpi-without"
+                       scorep_mpi_user_disabled="yes"],
               [AC_MSG_ERROR([MPI compiler suite "${withval}" not supported by --with-mpi.])])
          ])
      # omit check "if in PATH" for now. Will fail in build-mpi configure. 
