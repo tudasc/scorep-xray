@@ -43,7 +43,7 @@ AC_REQUIRE([AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION])
 
 component_revision="invalid"
 common_revision="invalid"
-which svnversion > /dev/null
+which svnversion 2>&1 >/dev/null
 AS_IF([test $? -eq 0],
       [component_revision=`svnversion -c $srcdir | cut -d ':' -f 2`
        common_revision=`svnversion -c $srcdir/vendor/common | cut -d ':' -f 2`
