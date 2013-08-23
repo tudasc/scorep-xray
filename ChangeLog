@@ -1,5 +1,10 @@
 ------------------- Upcoming version 1.3 -----------------------------
 
+------------------- Upcoming version 1.2.1 ---------------------------
+
+- Allow configuration without support for the MPI programming model by
+  specifying --without-mpi on the configure line.
+
 ------------------- Released version 1.2 -----------------------------
 
 - Simplified MPI compiler detection, passing '--with-mpi' to configure

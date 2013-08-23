@@ -151,7 +151,13 @@ AS_IF([test "x${scorep_have_cube_config}" = "xyes"],
              [AC_MSG_WARN([cube installation required but not found. scorep-score wont be build. Please reconfigure using the --with-cube option or make sure that cube-config is in PATH.])])])
 AM_CONDITIONAL([HAVE_SCORE_BUILD], [test "x${scorep_have_score_build}" = "xscorep_have_score_build=yes"])
 
-AC_CONFIG_SUBDIR_CUSTOM([build-mpi],     [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg}])
+AM_CONDITIONAL([HAVE_SCOREP_MPI], [test "x${scorep_mpi_user_disabled}" != "xyes"])
+AS_IF([test "x${scorep_mpi_user_disabled}" != "xyes"],
+    [AC_CONFIG_SUBDIR_CUSTOM([build-mpi],     [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg}])
+    ],
+    [AFS_SUMMARY([MPI support], [no, explicitly disabled via --without-mpi])
+     AC_CONFIG_FILES([src/scorep_config_tool_mpi.h:src/tools/config/scorep_config_tool_without_mpi.h.in])
+    ])
 AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cube_config_arg} ${scorep_have_score_build}])
 
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then
