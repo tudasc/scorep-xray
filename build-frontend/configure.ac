@@ -1,10 +1,40 @@
+dnl 
+dnl This file is part of the Score-P software (http://www.score-p.org)
+dnl
+dnl Copyright (c) 2009-2013,
+dnl RWTH Aachen University, Germany
+dnl
+dnl Copyright (c) 2009-2013,
+dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+dnl
+dnl Copyright (c) 2009-2013,
+dnl Technische Universitaet Dresden, Germany
+dnl
+dnl Copyright (c) 2009-2013,
+dnl University of Oregon, Eugene, USA
+dnl
+dnl Copyright (c) 2009-2013,
+dnl Forschungszentrum Juelich GmbH, Germany
+dnl
+dnl Copyright (c) 2009-2013,
+dnl German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+dnl
+dnl Copyright (c) 2009-2013,
+dnl Technische Universitaet Muenchen, Germany
+dnl
+dnl This software may be modified and distributed under the terms of
+dnl a BSD-style license.  See the COPYING file in the package base
+dnl directory for details.
+dnl
+
 AC_PREREQ([2.68])
 AC_INIT([Score-P], m4_esyscmd([../vendor/common/build-config/generate-package-version.sh ../build-config/VERSION]), [support@score-p.org], [scorep])
 
 AC_SUBST([LIBRARY_INTERFACE_VERSION], m4_esyscmd([../vendor/common/build-config/generate-library-version.sh ../build-config/VERSION]))
 
 AC_CONFIG_AUX_DIR([../build-config])
-AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4])
+AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4
+                     ../build-config/m4])
 
 AC_CONFIG_HEADERS([../src/config-frontend.h])
 
