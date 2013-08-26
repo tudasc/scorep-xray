@@ -536,10 +536,7 @@ fi
 AM_CONDITIONAL([HAVE_MPI_SUPPORT], [test "x${scorep_mpi_supported}" = "xyes"])
 AM_CONDITIONAL([HAVE_MPIFC], [test "x${scorep_mpi_f90_supported}" = "xyes"])
 
-rm -f mpi_supported
 if test "x${scorep_mpi_supported}" = "xyes"; then
-
-  touch mpi_supported
 
   AC_COMPILE_IFELSE(
       [AC_LANG_PROGRAM(
