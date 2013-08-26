@@ -80,7 +80,6 @@ clean-local: clean-local-instrumenter-checks
 	rm -f scorep_mpi_omp_tests  scorep_mpi_tests lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 
 distclean-local:
-	rm -f mpi_supported
 	rm -rf ../test/jacobi/MPI
 	rm -rf ../test/jacobi/hybrid
 

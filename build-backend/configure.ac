@@ -310,7 +310,7 @@ AC_SCOREP_POSIX_FUNCTIONS
 
 # assuming that mpi configure already ran
 AC_SCOREP_COND_HAVE([MPI_SUPPORT],
-                    [test -f ../build-mpi/mpi_supported],
+                    [test -f ../build-mpi/Makefile],
                     [Defined if MPI support is available.])
 
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION([../])

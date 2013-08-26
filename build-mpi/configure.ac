@@ -96,7 +96,9 @@ AC_SCOREP_PLATFORM_SETTINGS
 AC_SCOREP_PLATFORM_AND_MACHINE_NAMES
 
 AC_LANG_PUSH([C])
-AC_SCOREP_MPI_WORKING([scorep_mpi_c_supported="yes"],[scorep_mpi_c_supported="no"])
+AC_SCOREP_MPI_WORKING(
+    [scorep_mpi_c_supported="yes"],
+    [AC_MSG_FAILURE([MPI C compiler does not work. If you intended to build Score-P without support for the MPI programming model, please reconfigure using --without-mpi.])])
 AC_SCOREP_CHECK_SIZEOF([void *])
 AC_LANG_POP([C])
 cross_compiling=${ac_scorep_cross_compiling}
