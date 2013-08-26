@@ -1159,7 +1159,7 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
 
 
 /**
- * Returns the time stamp of the last triggered event
+ * Returns the time stamp of the last triggered event on the current location.
  *
  */
 uint64_t
