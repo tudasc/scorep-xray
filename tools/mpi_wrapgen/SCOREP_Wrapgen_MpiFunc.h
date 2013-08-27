@@ -3,14 +3,28 @@
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2011,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2011,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2011,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2011,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2011,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2011,
  *    Technische Universitaet Muenchen, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
@@ -62,12 +76,12 @@ namespace Wrapgen
 class MPIFunc : public Func
 {
 public:
-    MPIFunc( const string &     rtype,
-             const string &     name,
-             const string &     group,
-             const string &     guard,
-             const string &     version,
-             const paramlist_t &params );
+    MPIFunc( const string&      rtype,
+             const string&      name,
+             const string&      group,
+             const string&      guard,
+             const string&      version,
+             const paramlist_t& params );
 
     /** get string representing the send count calculation rule
      * @return string representing the send count calculation rule */
@@ -128,7 +142,7 @@ private:
     /** initial declarations special to this function */
     string m_init;
     /** major version of MPI where this function was introduced */
-    int    m_version;
+    int m_version;
 };
 }   // namespace Wrapgen
 }   // namespace SCOREP

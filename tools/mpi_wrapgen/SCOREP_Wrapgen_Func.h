@@ -3,14 +3,28 @@
  *
  * Copyright (c) 2009-2011,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2011,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2011,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2011,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2011,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2011,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2011,
  *    Technische Universitaet Muenchen, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
@@ -66,20 +80,20 @@ public:
      * @brief Constructor for creating an object without yet knowing about the
      *        function call parameters.
      */
-    Func( const std::string &rtype,
-          const std::string &name,
-          const std::string &group,
-          const std::string &guard );
+    Func( const std::string& rtype,
+          const std::string& name,
+          const std::string& group,
+          const std::string& guard );
 
     /**
      * @brief Construtor for creating an object with the knowledge of
      *        the function call parameters.
      */
-    Func( const std::string & rtype,
-          const std::string & name,
-          const std::string & group,
-          const std::string & guard,
-          const paramlist_t & params );
+    Func( const std::string& rtype,
+          const std::string& name,
+          const std::string& group,
+          const std::string& guard,
+          const paramlist_t& params );
 
     virtual
     ~
