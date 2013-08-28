@@ -17,7 +17,6 @@
 
 
 ## file       ac_scorep_mpi.m4
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 # The macros AC_SCOREP_MPI_COMPILER and AC_SCOREP_MPI_WORKING are based on
 # AX_MPI http://www.nongnu.org/autoconf-archive/ax_mpi.html by Steven G. Johnson

@@ -30,7 +30,6 @@
 ##
 
 ## file       ac_scorep_debug.m4
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 AC_DEFUN([AC_SCOREP_DEBUG_OPTION],

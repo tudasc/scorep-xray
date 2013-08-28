@@ -16,7 +16,6 @@
 ##
 
 ## file       ac_scorep_sampling.m4
-## maintainer Ronny Tschueter <ronny.tschueter@tu-dresden.de>
 
 
 AC_DEFUN([AC_SCOREP_METRIC_PLUGINS], [

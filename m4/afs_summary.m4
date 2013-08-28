@@ -30,7 +30,6 @@
 ##
 
 ## file       afs_summary.m4
-## maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
 
 # AFS_SUMMARY_INIT
 # ----------------

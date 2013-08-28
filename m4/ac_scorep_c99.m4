@@ -30,7 +30,6 @@
 ##
 ##            Please find the autoconf licence below.
 ##
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 ##
 
 

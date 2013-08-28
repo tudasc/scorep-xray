@@ -16,7 +16,6 @@
 ##
 
 ## file       ac_scorep_timings.m4
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 AC_DEFUN([AC_SCOREP_RUNTIME_MANAGEMENT_TIMINGS], [

@@ -16,7 +16,6 @@
 ##
 
 ## file       ac_scorep_sampling.m4
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 AC_DEFUN([AC_SCOREP_LIBUNWIND], [

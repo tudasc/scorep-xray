@@ -17,7 +17,6 @@
 
 
 ## file       ac_scorep_backend_test_runs.m4
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 AC_DEFUN([AC_SCOREP_BACKEND_TEST_RUNS], [
 AC_ARG_ENABLE([backend-test-runs],

@@ -16,7 +16,6 @@
 ##
 
 ## file       ac_scorep_libsion.m4
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 # output of sionconfig on jugene:
 # sionconfig --be --ser --cflags

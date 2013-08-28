@@ -17,7 +17,6 @@
 
 
 ## file       ac_scorep_fortran_checks.m4
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 AC_DEFUN([AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE],[
 AC_LANG_PUSH(Fortran)

@@ -19,7 +19,6 @@
 ##       Intended to be included by the component's
 ##       build-includes/common.am. Defines "common" entities that all
 ##       components rely on.
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 ## AM_CPPFLAGS: The contents of this variable are passed to every compilation 

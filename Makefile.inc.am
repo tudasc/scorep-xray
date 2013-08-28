@@ -16,7 +16,6 @@
 ##
 
 ## file       vendor/common/build-config/Makefile.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 EXTRA_DIST =
 BUILT_SOURCES =

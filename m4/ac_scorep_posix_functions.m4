@@ -17,7 +17,6 @@
 
 
 ## file       ac_scorep_posix_functions.m4
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
 

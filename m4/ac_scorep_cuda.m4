@@ -16,8 +16,6 @@
 ##
 
 ## file       ac_scorep_cuda.m4
-## maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 dnl ----------------------------------------------------------------------------
 

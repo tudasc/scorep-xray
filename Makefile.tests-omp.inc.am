@@ -20,7 +20,6 @@
 ##       build-(front|back|mpi)end/Makefile.am. Defines targets and
 ##       variablec for OpenMP tests.
 ##
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 ## Specify the number of OpenMP threads to be used for the TESTS. The

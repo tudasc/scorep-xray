@@ -17,7 +17,6 @@
 
 
 ## file       ac_scorep_types.m4
-## maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
 
 # AC_SCOREP_CHECK_SIZEOF(TYPE, [INCLUDES = DEFAULT-INCLUDES])
 # -----------------------------------------------------------

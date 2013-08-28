@@ -17,7 +17,6 @@
 ##
 
 ## file       ac_scorep_generic_libs.m4
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 dnl ------------------------------------------------------------------

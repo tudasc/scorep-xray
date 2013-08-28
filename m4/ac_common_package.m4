@@ -30,7 +30,6 @@
 ##
 
 ## file       ac_common_package.m4
-## maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
 
 # AFS_PACKAGE_INIT([BUILD-NAME])
 # ------------------------------------------------------

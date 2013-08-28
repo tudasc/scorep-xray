@@ -16,7 +16,6 @@ dnl See the COPYING file in the package base directory for details.
 dnl
 
 dnl file       build-config/m4/ac_scorep_online_access.m4
-dnl maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 AC_DEFUN([AC_SCOREP_ONLINE_ACCESS],
 [
