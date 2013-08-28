@@ -26,8 +26,6 @@ extern "C"
 
 /**
  * @file            UTILS_CStr.h
- * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status          ALPHA
  *
  * @brief           Declare helper functions for string handling
  */

@@ -15,9 +15,7 @@
  */
 
 /**
- * @status     alpha
  * @file       UTILS_IO_Tools.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Functions for file parsing in C.
  */

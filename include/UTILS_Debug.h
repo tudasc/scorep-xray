@@ -19,13 +19,10 @@
 
 /**
  * @file            UTILS_Debug.h
- * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status          REVIEW
  * @ingroup         UTILS_Exception_module
  *
  * @brief           Module for debug output handling in UTILS
  *
- * @author          Dominic Eschweiler <d.eschweiler@fz-juelich.de>
  */
 
 #include <stdint.h>

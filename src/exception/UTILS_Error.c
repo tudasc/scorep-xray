@@ -16,9 +16,7 @@
 
 
 /**
- * @status          alpha
  * @file            UTILS_Error.c
- * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @ingroup         UTILS_Exception_module
  *
  * @brief           Module for error handling in PACKAGE

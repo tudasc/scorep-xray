@@ -16,14 +16,11 @@
 
 
 /**
- * @status          alpha
  * @file            UTILS_Debug.c
- * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @ingroup         UTILS_Exception_module
  *
  * @brief           Implementation of debug output handling in SCOREP.
  *
- * @author          Dominic Eschweiler <d.eschweiler@fz-juelich.de>
  * @created         2009-05-08
  */
 

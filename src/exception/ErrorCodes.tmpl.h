@@ -20,13 +20,10 @@
 
 /**
  * @file            @PACKAGE_SYM_CAPS@_ErrorCodes.h
- * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status          ALPHA
  * @ingroup         @PACKAGE_SYM_CAPS@_Exception_module
  *
  * @brief           Error codes and error handling.
  *
- * @author          Dominic Eschweiler <d.eschweiler@fz-juelich.de>
  */
 
 #include <errno.h>

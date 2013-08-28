@@ -21,9 +21,7 @@
 
 /**
  * @file       exception/normalize_file.h
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

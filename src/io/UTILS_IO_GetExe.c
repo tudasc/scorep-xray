@@ -15,9 +15,7 @@
  */
 
 /**
- * @status          alpha
  * @file            UTILS_GetExe.c
- * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief           Provides functions to get executable and executable path.
  */

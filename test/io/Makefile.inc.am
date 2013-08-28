@@ -16,7 +16,6 @@
 ##
 
 ## file       Makefile.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 check_PROGRAMS += io_test
 io_test_SOURCES = $(SRC_ROOT)vendor/common/test/utils/io/utils_io_test.c \

@@ -15,9 +15,7 @@
  */
 
 /**
- * @status          alpha
  * @file            UTILS_CStr.c
- * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @ingroup         UTILS_CStr_module
  *
  * @brief           Helper functions for string handling

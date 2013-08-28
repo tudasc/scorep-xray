@@ -19,8 +19,6 @@
 
 /**
  * @file            utils_package.h
- * @maintainer      Bert Wesarg <bert.wesarg@tu-dresden.de>
- * @status          REVIEW
  * @ingroup         UTILS_Exception_module
  *
  * @brief           Module for error handling in SCOREP.
