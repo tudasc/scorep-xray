@@ -79,13 +79,12 @@ AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
        test "${ac_scorep_platform_data_provided}" = "no"],
       [dnl AFS_COMPILER_BACKEND([CC, CXX, F77, FC])
        AC_SCOREP_WITH_COMPILER_SUITE
-       AS_IF([test "x${afs_custom_compilers_given}" = "xno"],
-           [AS_IF([test "x${ac_scorep_platform}" = "xmac"],
-               [AC_MSG_ERROR([have no suitable defaults to build Score-P on Mac yet. Please use --with-custom-compilers and provide settings to <AC_PACKAGE_BUGREPORT> on success. Thanks.])],
-               [test "x${ac_scorep_platform}" = "xunknown" ],
+       AS_CASE([${afs_custom_compilers_given},${ac_scorep_platform}],
+           [no,mac|no,mingw],
+               [AC_MSG_ERROR([have no suitable defaults to build Score-P on $afs_scorep_platform_name yet. Please use --with-custom-compilers and provide settings to <AC_PACKAGE_BUGREPORT> on success. Thanks.])],
+           [no,unknown],
                [AC_MSG_ERROR([cannot detect platform to set suitable defaults. Please use --with-custom-compilers and provide settings and platform to <AC_PACKAGE_BUGREPORT> on success. Thanks.])
-               ])
-           ])       
+           ])
        AC_SCOREP_WITH_MPI_COMPILER_SUITE
        # determine arguments for subdir configures
        args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk \
