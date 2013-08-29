@@ -1,6 +1,6 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2013
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -71,6 +71,8 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
               [ac_scorep_platform="aix"],
          [superux*],
               [ac_scorep_platform="necsx"],
+         [mingw*],
+              [ac_scorep_platform="mingw"],
          [ac_scorep_platform="unknown"])
      
      AS_IF([test "x${ac_scorep_platform}" = "xunknown"],
@@ -99,6 +101,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "x"],
          [linux],   [ac_scorep_cross_compiling="no"],
          [solaris], [ac_scorep_cross_compiling="no"],
          [mac],     [ac_scorep_cross_compiling="no"],
+         [mingw],   [ac_scorep_cross_compiling="no"],
          [aix],     [ac_scorep_cross_compiling="no"],
          [necsx],   [ac_scorep_cross_compiling="yes"],
          [unknown], [ac_scorep_cross_compiling="no"],
@@ -132,6 +135,7 @@ AS_CASE([${ac_scorep_platform}],
     [linux],   [afs_scorep_platform_name="Linux"],
     [solaris], [afs_scorep_platform_name="Solaris"],
     [mac],     [afs_scorep_platform_name="Mac OS X"],
+    [mingw],   [afs_scorep_platform_name="MinGW"],
     [aix],     [afs_scorep_platform_name="AIX"],
     [necsx],   [afs_scorep_platform_name="NEC SX"],
     [unknown], [afs_scorep_platform_name="Unknown"],
