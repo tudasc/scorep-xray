@@ -244,7 +244,7 @@ SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
 bool
 SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
 {
-    return arg == m_openmp_cflags;
+    return arg.substr( 0, m_openmp_cflags.length() ) == m_openmp_cflags;
 }
 
 bool
