@@ -173,6 +173,9 @@ public:
 
 #endif
 
+    SCOREP_Instrumenter_InstallData*
+    getInstallData();
+
     /* ***************************************************** Private methods */
 private:
 

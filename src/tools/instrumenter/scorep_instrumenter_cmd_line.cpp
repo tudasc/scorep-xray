@@ -286,6 +286,12 @@ SCOREP_Instrumenter_CmdLine::getNoAsNeeded( void )
 }
 #endif
 
+SCOREP_Instrumenter_InstallData*
+SCOREP_Instrumenter_CmdLine::getInstallData()
+{
+    return &m_install_data;
+}
+
 /* ****************************************************************************
    private methods
 ******************************************************************************/
