@@ -5,14 +5,28 @@
 ##
 ## Copyright (c) 2009-2013,
 ##    RWTH Aachen University, Germany
+##
+## Copyright (c) 2009-2013,
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2013,
 ##    Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2013,
 ##    University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
 ##    Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2013,
 ##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2013,
 ##    Technische Universitaet Muenchen, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
 
@@ -380,7 +394,12 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
     AC_COMPILE_IFELSE([
         AC_LANG_SOURCE([
             #include<mpi.h>
-            int MPI_Info_delete(MPI_Info info, char *c)
+            #if MPI_VERSION >= 3
+            #define SCOREP_MPI_CONST_DECL const
+            #else
+            #define SCOREP_MPI_CONST_DECL
+            #endif
+            int MPI_Info_delete(MPI_Info info, SCOREP_MPI_CONST_DECL char *c)
             {
                 return 0;
             }
@@ -394,7 +413,12 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
     AC_COMPILE_IFELSE([
         AC_LANG_SOURCE([
             #include<mpi.h>
-            int MPI_Info_get(MPI_Info info, char *c1, int i1, char *c2, int *i2)
+            #if MPI_VERSION >= 3
+            #define SCOREP_MPI_CONST_DECL const
+            #else
+            #define SCOREP_MPI_CONST_DECL
+            #endif
+            int MPI_Info_get(MPI_Info info, SCOREP_MPI_CONST_DECL char *c1, int i1, char *c2, int *i2)
             {
                 return 0;
             }
@@ -408,7 +432,12 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
     AC_COMPILE_IFELSE([
         AC_LANG_SOURCE([
             #include<mpi.h>
-            int MPI_Info_get_valuelen(MPI_Info info, char *c, int *i1, int *i2)
+            #if MPI_VERSION >= 3
+            #define SCOREP_MPI_CONST_DECL const
+            #else
+            #define SCOREP_MPI_CONST_DECL
+            #endif
+            int MPI_Info_get_valuelen(MPI_Info info, SCOREP_MPI_CONST_DECL char *c, int *i1, int *i2)
             {
                 return 0;
             }
@@ -422,7 +451,12 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
     AC_COMPILE_IFELSE([
         AC_LANG_SOURCE([
             #include<mpi.h>
-            int MPI_Info_set(MPI_Info info, char *c1, char *c2)
+            #if MPI_VERSION >= 3
+            #define SCOREP_MPI_CONST_DECL const
+            #else
+            #define SCOREP_MPI_CONST_DECL
+            #endif
+            int MPI_Info_set(MPI_Info info, SCOREP_MPI_CONST_DECL char *c1, SCOREP_MPI_CONST_DECL char *c2)
             {
                 return 0;
             }
