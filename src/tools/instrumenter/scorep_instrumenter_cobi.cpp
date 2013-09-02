@@ -10,8 +10,6 @@
 
 /**
  * @file scorep_instrumenter_cobi.cpp
- * @status alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Implements the class for cobi instrumentation.
  */

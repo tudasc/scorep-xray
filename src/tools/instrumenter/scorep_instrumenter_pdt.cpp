@@ -10,8 +10,6 @@
 
 /**
  * @file scorep_instrumenter_pdt.cpp
- * @status alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Implements the class for PDT instrumentation.
  */
@@ -61,9 +59,9 @@ SCOREP_Instrumenter_PdtAdapter::getConfigToolFlag( void )
 }
 
 std::string
-SCOREP_Instrumenter_PdtAdapter::precompile( SCOREP_Instrumenter &         instrumenter,
-                                            SCOREP_Instrumenter_CmdLine & cmdLine,
-                                            const std::string &           source_file )
+SCOREP_Instrumenter_PdtAdapter::precompile( SCOREP_Instrumenter&         instrumenter,
+                                            SCOREP_Instrumenter_CmdLine& cmdLine,
+                                            const std::string&           source_file )
 {
     std::string extension = get_extension( source_file );
     if ( is_fortran_file( source_file ) )

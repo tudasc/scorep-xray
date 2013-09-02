@@ -15,9 +15,7 @@
  */
 
 /**
- * @status     alpha
  * @file       scorep_instrumenter.cpp
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  */
 
 #include <config.h>

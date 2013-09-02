@@ -19,8 +19,6 @@
 
 /**
  * @file scorep_config_utils.cpp
- * @status alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Utility functions for the config tool.
  */

@@ -29,8 +29,6 @@
 
 /**
  * @file src/tools/config/SCOREP_Config_LibraryDependecies.cpp
- * @status alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Implements the representation and analysis of library dependencies
  */

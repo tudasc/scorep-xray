@@ -10,8 +10,6 @@
 
 /**
  * @file scorep_config_thread.cpp
- * @status alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Collects information about available thread systems
  */

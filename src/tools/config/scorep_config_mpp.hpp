@@ -13,8 +13,6 @@
 
 /**
  * @file src/tools/config/scorep_config_mpp.hpp
- * @status alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Collects information about available multiprocess paradigms
  */

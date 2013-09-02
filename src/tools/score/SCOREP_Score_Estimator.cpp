@@ -15,9 +15,7 @@
  */
 
 /**
- * @status     alpha
  * @file       SCOREP_Score_Estimator.cpp
- * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
  * @brief      Implements a class which performs calculations for trace
  *             size estimation.

@@ -15,9 +15,7 @@
  */
 
 /**
- * @status     alpha
  * @file       scorep_vt_dummy.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * When linking applications with icc and the -tcollect flag for compiler
  * instrumentation, icc tries to link a libVT. To avoid linking problems,

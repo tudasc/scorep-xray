@@ -10,8 +10,6 @@
 
 /**
  * @file scorep_instrumenter_adapter.cpp
- * @status alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Implements the base class for an instrumentation method.
  */

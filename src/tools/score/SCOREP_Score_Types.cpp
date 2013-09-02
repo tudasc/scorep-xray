@@ -15,9 +15,7 @@
  */
 
 /**
- * @status     alpha
  * @file       SCOREP_Score_Types.hpp
- * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
  * @brief      Implements conversion for types for the score tool.
  */

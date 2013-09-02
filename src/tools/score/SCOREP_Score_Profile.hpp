@@ -16,7 +16,6 @@
 
 /**
  * @file       SCOREP_Score_Profile.hpp
- * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
  * @brief      Defines a class which represents a flat profile in the
  *             scorep-score tool.

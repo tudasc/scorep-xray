@@ -15,9 +15,7 @@
  */
 
 /**
- * @status     alpha
  * @file       SCOREP_Score_Profile.cpp
- * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
  * @brief      Implements a class which represents a flat profile in the
  *             scorep-score tool.

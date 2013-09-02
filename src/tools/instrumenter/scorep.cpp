@@ -15,8 +15,6 @@
  */
 
 /**
- * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
- * @status alpha
  * The instrumentation tool of Score-P: scorep.
  * .
  */

@@ -10,8 +10,6 @@
 
 /**
  * @file scorep_instrumenter_preprocess.cpp
- * @status alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Implements the class for preprocessing.
  */

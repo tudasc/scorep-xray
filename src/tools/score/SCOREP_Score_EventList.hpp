@@ -16,7 +16,6 @@
 
 /**
  * @file       SCOREP_Score_EventList.hpp
- * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
  * @brief      Defines name lists for determine which events are created by which region.
  */

@@ -16,7 +16,6 @@
 
 /**
  * @file       SCOREP_Score_Types.hpp
- * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
  * @brief      Defines types for the score tool.
  */

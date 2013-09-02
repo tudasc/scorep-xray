@@ -17,8 +17,6 @@
 /**
  * @file       src/tools/backend-info/scorep_backend_info.cpp
  *
- * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
- * @status     alpha
  *
  * The info tool of Score-P: scorep-backend-info.
  *

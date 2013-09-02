@@ -13,8 +13,6 @@
 
 /**
  * @file scorep_instrumenter_pdt.hpp
- * @status alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Defines the class for PDT instrumentation.
  */

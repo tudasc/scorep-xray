@@ -16,7 +16,6 @@
 
 /**
  * @file       SCOREP_Score_Group.hpp
- * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
  * @brief      Defines a class which represents a group in the
  *             scorep-score tool.

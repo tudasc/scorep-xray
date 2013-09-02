@@ -16,7 +16,6 @@
 
 /**
  * @file       scorep_instrumenter_install_config.hpp
- * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
  * @brief      Declares a class which represent the install configuration of
  *             this Score-P installation.

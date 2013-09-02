@@ -19,8 +19,6 @@
 
 /**
  * @file       scorep_instrumenter_utils.hpp
- * @status     alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief      Declares helper functions for the instrumenter
  */

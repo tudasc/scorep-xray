@@ -10,8 +10,6 @@
 
 /**
  * @file src/tools/config/scorep_config_mpp.cpp
- * @status alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Collects information about available multi process systems.
  */

@@ -15,9 +15,7 @@
  */
 
 /**
- * @status alpha
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @autors     Johannes Spazier <johannes.spazier@tu-dresden.de>
  * @autors     Daniel Lorenz <d.lorenz@fz-juelich.de>
  *

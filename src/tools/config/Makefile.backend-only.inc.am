@@ -16,7 +16,6 @@
 ##
 
 ## file       src/tools/config/Makefile.backend-only.inc.am
-## maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
 
 ../src/scorep_config_library_dependencies_inc.hpp: $(lib_LTLIBRARIES)
 	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-library-dependencies.sh $^ >$@ || \

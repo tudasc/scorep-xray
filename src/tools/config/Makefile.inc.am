@@ -30,7 +30,6 @@
 ##
 
 ## file       src/tools/config/Makefile.inc.am
-## maintainer Johannes Spazier <johannes.spazier@tu-dresden.de>
 
 bin_PROGRAMS += scorep-config
 

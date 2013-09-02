@@ -15,9 +15,7 @@
  */
 
 /**
- * @status     alpha
  * @file       score.cxx
- * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
  * @brief      Implements the main function of the scorep-score tool.
  */

@@ -15,9 +15,7 @@
  */
 
 /**
- * @status     alpha
  * @file       SCOREP_Score_Group.cpp
- * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
  * @brief      Implements a class which represents a group in the
  *             scorep-score tool.

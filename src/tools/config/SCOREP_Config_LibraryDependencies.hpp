@@ -16,8 +16,6 @@
 
 /**
  * @file SCOREP_Config_LibraryDependecies.hpp
- * @status alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Declares classes for the representation and analysis of library dependencies
  */

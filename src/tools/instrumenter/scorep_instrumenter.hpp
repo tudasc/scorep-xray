@@ -16,7 +16,6 @@
 
 /**
  * @file       SCOREP_Instrumenter.hpp
- * @maintainer Daniel Lorenz  <d.lorenz@fz-juelich.de>
  *
  * @brief      Class to steer the instrumentation of the user code.
  */

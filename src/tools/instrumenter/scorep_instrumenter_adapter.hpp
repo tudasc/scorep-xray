@@ -13,8 +13,6 @@
 
 /**
  * @file scorep_instrumenter_adapter.hpp
- * @status alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Defines the base class for an instrumentation method.
  */
