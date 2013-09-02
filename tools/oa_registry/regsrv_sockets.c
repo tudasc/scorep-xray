@@ -16,8 +16,6 @@
 
 /**
  * @file regsrv_sockets.c
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
- * @status alpha
  *
  * This file contains implementation of sockets communication functions
  */

@@ -49,8 +49,6 @@
 
 /**
  * @file       SCOREP_Wrapgen_Handlers.h
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
  * @ingroup    Wrapgen_module
  *
  * @brief Output handlers for template variables

@@ -16,8 +16,6 @@
 
 /**
  * @file regsrv_client.cc
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
- * @status alpha
  *
  * This file implements registry service client class
  */

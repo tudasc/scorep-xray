@@ -49,8 +49,6 @@
 
 /**
  * @file       SCOREP_Wrapgen_Help.h
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
  * @ingroup    Wrapgen_module
  *
  * @brief Usage output for the wrapper generator.

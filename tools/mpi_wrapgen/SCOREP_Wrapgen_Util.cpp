@@ -46,8 +46,6 @@
 
 /**
  * @file       SCOREP_Wrapgen_Util.cpp
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
  * @ingroup    Wrapgen_module
  *
  * @brief String processing functions.

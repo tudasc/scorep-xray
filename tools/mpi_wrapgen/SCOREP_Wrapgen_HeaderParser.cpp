@@ -46,8 +46,6 @@
 
 /**
  * @file       SCOREP_Wrapgen_HeaderParser.cpp
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
  * @ingroup    Wrapgen_module
  *
  * @brief Generates a prototype xml file from a header file.

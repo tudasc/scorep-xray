@@ -46,8 +46,6 @@
 
 /**
  * @file       SCOREP_Wrapgen_HandlersMpi.cpp
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
  * @ingroup    Wrapgen_module
  *
  * @brief Output handlers for template variables in MPI wrappers.

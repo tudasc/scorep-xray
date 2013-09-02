@@ -46,8 +46,6 @@
 
 /**
  * @file       SCOREP_Wrapgen.cpp
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
  * @ingroup    Wrapgen_module
  *
  * @brief Wrapper generator for automatic creation of MPI wrappers

@@ -16,8 +16,6 @@
 
 /**
  * @file strutil.h
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
- * @status alpha
  *
  * Strings utility functions
  */

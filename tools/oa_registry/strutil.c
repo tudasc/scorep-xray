@@ -16,8 +16,6 @@
 
 /**
  * @file strutil.c
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
- * @status alpha
  *
  * This file contains implementation of strings utility functions
  */
@@ -91,10 +89,10 @@ size_t
 make_key_value_pairs( const char* str,
                       kv_pair**   kv )
 {
-    size_t       len;
-    size_t       pos;
+    size_t len;
+    size_t pos;
 
-    char*        key, * val;
+    char* key, * val;
 
     const size_t kv_initial  = 10;
     const size_t kv_increase = 10;
