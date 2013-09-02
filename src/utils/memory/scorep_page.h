@@ -21,9 +21,7 @@
 
 /**
  * @file       src/memory/scorep_page.h
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

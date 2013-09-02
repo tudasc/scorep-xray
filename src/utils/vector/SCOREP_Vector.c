@@ -15,9 +15,7 @@
  */
 
 /**
- * @status          alpha
  * @file            SCOREP_Vector.c
- * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @ingroup         SCOREP_Vector_module
  *
  * @brief           Implementation of a STL-like vector.

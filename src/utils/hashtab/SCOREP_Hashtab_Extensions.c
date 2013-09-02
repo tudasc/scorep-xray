@@ -15,9 +15,7 @@
  */
 
 /**
- * @status          alpha
  * @file            SCOREP_Hashtab.c
- * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
  * @ingroup         SCOREP_Hashtab_module
  *
  * @brief           Extensions to the hashtable.

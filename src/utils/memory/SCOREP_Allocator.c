@@ -18,9 +18,7 @@
 /**
  * @file SCOREP_Allocator.c Implementation of the paged memory allocator.
  *
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  *
  */

@@ -17,9 +17,7 @@
 /**
  * @file SCOREP_Bitstring.c
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  * Implementation of functions for manipulation of bitstrings.
  */
 

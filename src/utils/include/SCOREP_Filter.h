@@ -19,9 +19,7 @@
 
 /**
  * @file       SCOREP_Filter.h
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  * The interface to the filtering system.  The file that contains the filter
  * definitions can be set via the envirionment variable

@@ -17,9 +17,7 @@
 
 /**
  * @file       scorep_filter_parser.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  * Parses the filter file and creates a filter.
  */

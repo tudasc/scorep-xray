@@ -16,7 +16,6 @@
 ##
 
 ## file       src/utils/vector/Makefile.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 noinst_LTLIBRARIES += libscorep_vector.la
 libscorep_vector_la_SOURCES = \

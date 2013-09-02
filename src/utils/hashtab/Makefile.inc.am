@@ -16,7 +16,6 @@
 ##
 
 ## file       src/utils/hashtab/Makefile.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 noinst_LTLIBRARIES += libscorep_hashtab.la
 libscorep_hashtab_la_SOURCES = \

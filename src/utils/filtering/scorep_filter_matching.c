@@ -17,9 +17,7 @@
 
 /**
  * @file       scorep_filter_matching.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  * Maintains the internal filter rules and performs the pattern machcing requests.
  * We maintain two rule lists: One for the function name rules and one for the

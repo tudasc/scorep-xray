@@ -20,8 +20,6 @@
 /*--- Header file documentation -------------------------------------------*/
 /**
  * @file            SCOREP_Hashtab.h
- * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status          ALPHA
  * @ingroup         SCOREP_Hashtab_module
  *
  * @brief           This file provides the function header and type definiions for

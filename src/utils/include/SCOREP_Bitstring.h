@@ -20,9 +20,7 @@
 /**
  * @file SCOREP_Bitstring.h
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  * Declaration of functions for manipulation of bitstrings.
  */
 

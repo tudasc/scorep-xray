@@ -21,9 +21,7 @@
 
 /**
  * @file       src/memory/scorep_bitset.h
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

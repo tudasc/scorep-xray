@@ -20,8 +20,6 @@
 /*--- Header file documentation -------------------------------------------*/
 /**
  * @file            SCOREP_Vector.h
- * @maintainer      Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status          ALPHA
  * @ingroup         SCOREP_Vector_module
  *
  * @brief           A STL-like C-implementation of a vector.

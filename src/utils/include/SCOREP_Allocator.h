@@ -23,9 +23,7 @@
  * @file SCOREP_Allocator.h Scorep-public types (for user-public types see
  * SCOREP_Allocator_PublicTypes.h) and functions needed in other headers that
  * declare memory management functionality.
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

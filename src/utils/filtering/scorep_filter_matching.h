@@ -19,9 +19,7 @@
 
 /**
  * @file       scorep_filter_matching.h
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  * Defines the types for the internal representation of the filter rules and its
  * manipulation functions.
