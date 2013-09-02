@@ -32,12 +32,9 @@
 #define SCOREP_METRIC_MANAGEMENT_H
 
 /**
- *  @status     alpha
  *
  *  @file       SCOREP_Metric_Management.h
  *
- *  @author     Ronny Tschueter (ronny.tschueter@zih.tu-dresden.de)
- *  @maintainer Ronny Tschueter (ronny.tschueter@zih.tu-dresden.de)
  */
 
 #include <SCOREP_ErrorCodes.h>

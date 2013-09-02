@@ -31,9 +31,7 @@
 
 /**
  * @file       src/services/metric/scorep_metric_confvars.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

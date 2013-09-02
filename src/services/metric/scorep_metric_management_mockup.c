@@ -29,12 +29,9 @@
  */
 
 /**
- *  @status     alpha
  *
  *  @file       scorep_metric_management_mockup.c
  *
- *  @author     Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
- *  @maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *
  *  @brief On systems without support for any metric source this module
  *         provides a basic implementation of metric handling.

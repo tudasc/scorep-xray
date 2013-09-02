@@ -29,12 +29,9 @@
  */
 
 /**
- *  @status     alpha
  *
  *  @file       scorep_metric_rusage.c
  *
- *  @author     Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
- *  @maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *
  *  @brief This module implements support for resource usage counters.
  */

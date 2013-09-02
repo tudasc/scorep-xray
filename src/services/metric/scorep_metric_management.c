@@ -29,12 +29,9 @@
  */
 
 /**
- *  @status     alpha
  *
  *  @file       scorep_metric_management.c
  *
- *  @author     Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
- *  @maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *
  *  @brief This module handles implementations of different metric sources.
  *

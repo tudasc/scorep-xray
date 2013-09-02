@@ -19,7 +19,6 @@
 
 /**
  * @file        SCOREP_Timing.h
- * @maintainer  Christian Roessel <c.roessel@fz-juelich.de>
  *
  * @brief       Provide platform independant timing functionality.
  */

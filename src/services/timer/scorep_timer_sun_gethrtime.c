@@ -16,10 +16,7 @@
 
 /**
  * @file       scorep_timer_sun_gethrtime.c
- * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  * This is the implementation of the SCOREP_Timing.h interface that uses the
  * sun_gethrtime timer.

@@ -16,9 +16,7 @@
 
 /**
  * @file        scorep_platform_bgq.c
- * @maintainer  Alexandre Strube <a.strube@fz-juelich.de>
  *
- * @status alpha
  *
  * Implementation to obtain the system tree information from a Blue Gene/Q
  * system.

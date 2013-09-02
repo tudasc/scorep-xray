@@ -16,10 +16,7 @@
 
 /**
  * @file       scorep_timer_rts_get_timebase.c
- * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  * This is the implementation of the SCOREP_Timing.h interface that uses the
  * rts_get_timebase timer.

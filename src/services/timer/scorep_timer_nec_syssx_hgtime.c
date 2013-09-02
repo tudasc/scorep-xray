@@ -16,10 +16,7 @@
 
 /**
  * @file       scorep_timer_nec_syssx_hgtime.c
- * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  * This is the implementation of the SCOREP_Timing.h interface that uses the
  * nec_syssx_hgtime timer.

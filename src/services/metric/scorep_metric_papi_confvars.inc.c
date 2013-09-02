@@ -31,9 +31,7 @@
 
 /**
  * @file       src/services/metric/scorep_metric_papi_confvars.inc.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

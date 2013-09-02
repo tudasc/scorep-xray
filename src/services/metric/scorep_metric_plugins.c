@@ -29,12 +29,9 @@
  */
 
 /**
- *  @status     alpha
  *
  *  @file       scorep_metric_plugins.c
  *
- *  @author     Ronny Tschueter <ronny.tschueter@tu-dresden.de>
- *  @maintainer Ronny Tschueter <ronny.tschueter@tu-dresden.de>
  *
  *  @brief This module implements support for metric plugins.
  */

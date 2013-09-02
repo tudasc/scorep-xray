@@ -29,12 +29,9 @@
  */
 
 /**
- *  @status     alpha
  *
  *  @file       SCOREP_Metric_Source.h
  *
- *  @author     Ronny Tschueter (ronny.tschueter@zih.tu-dresden.de)
- *  @maintainer Ronny Tschueter (ronny.tschueter@zih.tu-dresden.de)
  *
  *  This file contains the interface for the hardware counter access. This module can
  *  be build with different implementations supporting different hardware counter

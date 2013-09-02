@@ -20,9 +20,7 @@
 
 /**
  * @file        src/services/scorep_platform_system_tree.h
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

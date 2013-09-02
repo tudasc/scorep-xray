@@ -35,7 +35,6 @@
 
 /**
  * @file       scorep_metric_papi.h
- * @maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *
  * @brief PAPI metric source definition object.
  */

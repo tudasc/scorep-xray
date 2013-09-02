@@ -16,9 +16,7 @@
 
 /**
  * @file        scorep_platform_bgp.c
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  * Implementation to obtain the system tree information from a Blue Gene/P
  * system.

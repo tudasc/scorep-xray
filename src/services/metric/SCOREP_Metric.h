@@ -35,7 +35,6 @@
 
 /**
  * @ file      SCOREP_Metric.h
- * @maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *
  * @brief Metric adapter initialization and finalization function definition.
  */

@@ -30,7 +30,6 @@
 ##
 
 ## file       src/services/metric/Makefile.confvars.inc.am
-## maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
 
 noinst_LTLIBRARIES += libscorep_metric_confvars.la
 

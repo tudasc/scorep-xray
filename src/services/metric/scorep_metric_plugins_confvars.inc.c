@@ -31,9 +31,7 @@
 
 /**
  * @file       src/services/metric/scorep_metric_plugins_confvars.inc.c
- * @maintainer Ronny Tschueter <ronny.tschueter@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

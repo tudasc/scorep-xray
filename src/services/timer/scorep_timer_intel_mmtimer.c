@@ -16,11 +16,7 @@
 
 /**
  * @file       scorep_timer_intel_mmtimer.c
- * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @author     Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  * This is the implementation of the SCOREP_Timing.h interface that uses the
  * intel_mmtimer timer.

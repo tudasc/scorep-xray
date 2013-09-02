@@ -35,7 +35,6 @@
 
 /**
  * @file       scorep_metric_rusage.h.h
- * @maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *
  * @brief Resource usage metric source definition object.
  */

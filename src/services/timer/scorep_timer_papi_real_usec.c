@@ -16,10 +16,7 @@
 
 /**
  * @file       scorep_timer_papi_real_usec.c
- * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  * This is the implementation of the SCOREP_Timing.h interface that uses the
  * papi_real_usec timer.

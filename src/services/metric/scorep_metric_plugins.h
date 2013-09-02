@@ -35,7 +35,6 @@
 
 /**
  * @file       scorep_metric_plugins.h
- * @maintainer Ronny Tschueter <ronny.tschueter@tu-dresden.de>
  *
  * @brief Metric plugins source definition object.
  */

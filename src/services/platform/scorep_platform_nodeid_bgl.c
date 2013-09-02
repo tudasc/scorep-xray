@@ -16,9 +16,7 @@
 
 /**
  * @file
- * @maintainer Ronny Tschueter <ronny.tschueter@tu-dresden.de>
  *
- * @status alpha
  *
  */
 
