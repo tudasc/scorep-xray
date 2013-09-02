@@ -45,8 +45,8 @@ struct SCOREP_Location
 {
     uint64_t                      last_timestamp;
     SCOREP_LocationType           type;
-    SCOREP_Allocator_PageManager* page_managers[ SCOREP_NUMBER_OF_MEMORY_TYPES ];
     SCOREP_LocationHandle         location_handle;
+    SCOREP_Allocator_PageManager* page_managers[ SCOREP_NUMBER_OF_MEMORY_TYPES ];
 
     SCOREP_Profile_LocationData*  profile_data;
     SCOREP_TracingData*           tracing_data;
