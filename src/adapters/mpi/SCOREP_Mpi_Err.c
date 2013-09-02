@@ -129,6 +129,7 @@ MPI_Add_error_code( int errorclass, int* errorcode )
 }
 #endif
 
+#if HAVE( MPI_ADD_ERROR_STRING_COMPLIANT )
 #if HAVE( DECL_PMPI_ADD_ERROR_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Add_error_string )
 /**
  * Measurement wrapper for MPI_Add_error_string
@@ -161,6 +162,7 @@ MPI_Add_error_string( int errorcode, SCOREP_MPI_CONST_DECL char* string )
 
     return return_val;
 }
+#endif
 #endif
 
 #if HAVE( DECL_PMPI_ERRHANDLER_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Errhandler_create )
