@@ -15,9 +15,7 @@
  */
 
 /**
- * @status     alpha
  * @file       scorep_compiler_ftrace_init.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Initialization of the NEC SX compiler adapter.
  */

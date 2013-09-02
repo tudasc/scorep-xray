@@ -17,8 +17,6 @@
 
 /**
  * @file       src/adapters/pomp/scorep_pomp_confvars.inc.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */

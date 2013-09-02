@@ -15,9 +15,7 @@
  */
 
 /**
- *  @status     alpha
  *  @file       scorep_cupti.c
- *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
  *  Implementation of common functionality between CUPTI activity, callbacks
  *  and events.

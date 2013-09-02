@@ -15,9 +15,7 @@
  */
 
 /**
- *  @status     alpha
  *  @file       SCOREP_Cuda_Init.c
- *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
  *  This file contains the implementation of the initialization functions of the
  *  CUDA adapter.

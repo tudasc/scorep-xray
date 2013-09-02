@@ -18,8 +18,6 @@
 
 /**
  * @file       /scorep/src/adapters/tau/SCOREP_Tau.c
- * @maintainer  Suzanne Millstein <smillst@cs.uoregon.edu>
- * @status alpha
  * @ingroup    TAU
  *
  * @brief Implementation of the TAU adapter functions.

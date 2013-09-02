@@ -19,7 +19,6 @@
 
 /**
  * @file       scorep_compiler_symbol_table.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Symbol table analysis functions declaration.
  * Contains functions that read the symbol table of a executable and add all functions

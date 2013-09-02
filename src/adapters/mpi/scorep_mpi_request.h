@@ -32,8 +32,6 @@
 
 /**
    @file       src/adapters/mpi/scorep_mpi_request.h
-   @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-   @status     ALPHA
    @ingroup    MPI_Wrapper
 
    @brief Contains the declarations for the handling of MPI Reqests.

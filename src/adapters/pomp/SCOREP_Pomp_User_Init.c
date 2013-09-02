@@ -10,8 +10,6 @@
 
 /**
  * @file       SCOREP_Pomp_User_Init.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    POMP2
  *
  * @brief Implementation of the POMP2 user adapter initialization.

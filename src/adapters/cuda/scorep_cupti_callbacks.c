@@ -15,9 +15,7 @@
  */
 
 /**
- *  @status     alpha
  *  @file       scorep_cupti_callbacks.c
- *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
  *  Implementation of the CUDA runtime and driver API event logging via
  *  CUPTI callbacks.

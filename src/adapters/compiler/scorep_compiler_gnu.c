@@ -28,9 +28,7 @@
  */
 
 /**
- * @status     alpha
  * @file       src/adapters/compiler/scorep_compiler_gnu.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Support for GNU Compiler
  * Will be triggered by the '-finstrument-functions' flag of the GNU

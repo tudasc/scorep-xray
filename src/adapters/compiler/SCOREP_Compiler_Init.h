@@ -34,7 +34,6 @@
 
 /**
  * @ file      src/adapters/compiler/SCOREP_Compiler_Init.h
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Compiler adapter initialization and finalization function definition
  *        object.

@@ -29,9 +29,7 @@
 
 
 /**
- * @status     alpha
  * @file       src/adapters/compiler/SCOREP_compiler_pgi.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Support for PGI Compiler
  *

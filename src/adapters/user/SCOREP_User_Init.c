@@ -28,9 +28,7 @@
  */
 
 /**
- *  @status     alpha
  *  @file       src/adapters/user/SCOREP_User_Init.c
- *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  *  This file contains the implmentation of the initialization functions of the user
  *  adapter.

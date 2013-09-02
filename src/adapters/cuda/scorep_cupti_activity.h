@@ -15,9 +15,7 @@
  */
 
 /**
- *  @status     alpha
  *  @file       scorep_cupti_activity.h
- *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
  *  Propagation of the CUPTI activity control functions.
  */

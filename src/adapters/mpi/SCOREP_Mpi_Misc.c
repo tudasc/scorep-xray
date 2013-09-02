@@ -47,8 +47,6 @@
 
 /**
  * @file       SCOREP_Mpi_Misc.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for miscelaneous and handler conversion

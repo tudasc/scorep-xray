@@ -30,8 +30,6 @@
 
 /**
  * @file       src/adapters/mpi/scorep_mpi_communicator.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Internal functions for communicator, group and window management.

@@ -29,8 +29,6 @@
 
 /**
  *  @file       src/adapters/user/SCOREP_User_Control.c
- *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- *  @status     alpha
  *
  *  @brief Contains the implementation of the control functions for C.
  */

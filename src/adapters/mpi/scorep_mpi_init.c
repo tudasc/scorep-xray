@@ -29,8 +29,6 @@
 
 /**
  * @file       src/adapters/mpi/scorep_mpi_init.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Contains the initialization function implementations for the

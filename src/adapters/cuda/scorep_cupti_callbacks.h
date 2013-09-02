@@ -15,9 +15,7 @@
  */
 
 /**
- *  @status     alpha
  *  @file       scorep_cupti_callbacks.h
- *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
  *  Propagation of the CUPTI callbacks implementation's initialize and finalize
  *  functions.

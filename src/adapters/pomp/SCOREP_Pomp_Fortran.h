@@ -19,8 +19,6 @@
 
 /**
  * @file       SCOREP_Pomp_Fortran.h
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    POMP2
  *
  * @brief Provides defines for function name decoration for POMP2 Fortran wrappers.

@@ -15,9 +15,7 @@
  */
 
 /**
- * @status     alpha
  * @file       scorep_compiler_cray.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Support for CCE-Compiler.
  * Because the CCE compiler calls functions with the same signature like

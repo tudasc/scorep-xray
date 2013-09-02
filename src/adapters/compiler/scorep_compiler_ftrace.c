@@ -29,9 +29,7 @@
 
 
 /**
- * @status     alpha
  * @file       src/adapters/compiler/scorep_compiler_ftrace.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Compiler adapter version for NEC SX compiler
  */

@@ -15,9 +15,7 @@
  */
 
 /**
- *  @status     alpha
  *  @file       scorep_cuda.c
- *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
  *  Implementation of commonly used functionality within the CUDA adapter.
  */

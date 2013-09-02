@@ -15,9 +15,7 @@
  */
 
 /**
- * @status     alpha
  * @file       scorep_compiler_pgi_init.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Initialization of the PGI compiler adapter.
  */

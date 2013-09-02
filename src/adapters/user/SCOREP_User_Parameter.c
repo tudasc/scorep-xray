@@ -29,8 +29,6 @@
 
 /**
  *  @file       src/adapters/user/SCOREP_User_Parameter.c
- *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- *  @status     alpha
  *
  *  This file contains the implementation of user adapter functions concerning
  *  parameters.

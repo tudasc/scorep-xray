@@ -30,8 +30,6 @@
 
 /**
  * @file       src/adapters/mpi/scorep_mpi_communicator.h
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     ALPHA
  * @ingroup    MPI_Wrapper
  *
  * @brief Communicator, group and window management

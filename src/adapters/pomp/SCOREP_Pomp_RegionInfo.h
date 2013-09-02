@@ -19,9 +19,6 @@
 
 /**
  * @file       SCOREP_Pomp_RegionInfo.h
- * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    POMP
  *
  * @brief Declares functionality for interpretation of pomp region strings.

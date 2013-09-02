@@ -17,11 +17,9 @@
 
 /**
  * @file        scorep_mpi_oa_hooks.c
- * @maintainer  Yury Olenyik <oleynik@in.tum.de>
  *
  * @brief   mpi hooks functions to be used by MPI profiling
  *
- * @status alpha
  *
  */
 

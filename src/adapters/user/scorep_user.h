@@ -16,8 +16,6 @@
 
 /**
  *  @file       src/adapters/users/scorep_user.h
- *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- *  @status     alpha
  *
  */
 

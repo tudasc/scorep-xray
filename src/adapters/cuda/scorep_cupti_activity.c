@@ -15,9 +15,7 @@
  */
 
 /**
- *  @status     alpha
  *  @file       scorep_cupti_activity.c
- *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
  *  Implementation of GPU activity (kernel execution and memory copies)
  *  capturing with CUPTI activities.

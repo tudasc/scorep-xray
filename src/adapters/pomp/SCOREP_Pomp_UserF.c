@@ -29,8 +29,6 @@
 
 /**
  * @file       src/adapters/pomp/SCOREP_Pomp_UserF.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    POMP2
  *
  * @brief Implementation of the POMP2 fortran user adapter functions.

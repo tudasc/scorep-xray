@@ -29,9 +29,7 @@
 
 
 /**
- * @status     alpha
  * @file       src/adapters/compiler/SCOREP_Compiler_Init.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Compiler adapter interface support to the measurement system.
  *

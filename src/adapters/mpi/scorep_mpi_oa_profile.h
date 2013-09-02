@@ -21,11 +21,9 @@
 
 /**
  * @file        scorep_mpi_oa_profile.h
- * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief   Declaration of mpi profiling functions
  *
- * @status ALPHA
  */
 
 

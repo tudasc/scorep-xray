@@ -19,8 +19,6 @@
 
 /**
    @file       SCOREP_Mpi.h
-   @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-   @status     ALPHA
    @ingroup    MPI_Wrapper
 
    @brief It includes all source files for the MPI wrappers. Macros and

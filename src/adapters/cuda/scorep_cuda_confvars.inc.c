@@ -17,9 +17,7 @@
 
 /**
  * @file       src/adapters/cuda/scorep_cuda_confvars.inc.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

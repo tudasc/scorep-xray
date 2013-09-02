@@ -31,8 +31,6 @@
 #define SCOREP_USER_INIT_H
 
 /** @file src/adapters/user/SCOREP_User_Init.h
-    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-    @status     ALPHA
 
     This file contains the declaration of the initialization struct of the user
     adapter.

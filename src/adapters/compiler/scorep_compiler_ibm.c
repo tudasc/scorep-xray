@@ -29,9 +29,7 @@
 
 
 /**
- * @status     alpha
  * @file       src/adapters/compiler/scorep_compiler_ibm.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Support for XL IBM-Compiler
  * Will be triggered by the function trace option by the xl

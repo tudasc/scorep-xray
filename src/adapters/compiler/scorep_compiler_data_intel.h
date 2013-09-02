@@ -16,9 +16,7 @@
 
 /**
  * @file       scorep_compiler_data_intel.h
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status     ALPHA
  *
  * Defines helper functions for managing region data.
  */

@@ -28,9 +28,7 @@
  */
 
 /**
- * @status     alpha
  * @file       src/adapters/compiler/SCOREP_compiler_intel.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Support for Intel Compiler
  * Will be triggered by the '-fcollect' flag of the intel

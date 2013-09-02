@@ -15,9 +15,7 @@
  */
 
 /**
- *  @status     alpha
  *  @file       scorep_selective_parser.c
- *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  *  This file contains the implementation of the parser for selective recording
  *  configuration file.

@@ -16,9 +16,7 @@
 
 /**
  * @file       scorep_compiler_sun_data.h
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status     ALPHA
  *
  * Contains helper data structures which are used by the Sun/Oracle Studio
  * compiler adapter.

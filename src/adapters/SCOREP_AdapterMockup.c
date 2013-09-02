@@ -16,9 +16,7 @@
 
 
 /**
- * @status     alpha
  * @file       SCOREP_Adapter_Mockup.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Compiler adapter interface support to the measurement system.
  *

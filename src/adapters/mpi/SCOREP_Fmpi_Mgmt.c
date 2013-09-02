@@ -33,8 +33,6 @@
 
 /**
  * @file  SCOREP_Fmpi_Env.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for environmental management

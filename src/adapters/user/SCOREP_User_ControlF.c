@@ -16,8 +16,6 @@
 
 /**
  *  @file SCOREP_User_Control.c
- *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- *  @status     alpha
  *  @ingroup    SCOREP_User_External
  *
  *  @brief Contain the implementation of the control functions for Fortran.

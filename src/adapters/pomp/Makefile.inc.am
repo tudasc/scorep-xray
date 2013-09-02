@@ -30,7 +30,6 @@
 ##
 
 ## file       src/adapters/pomp/Makefile.inc.am
-## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
 # --------------------------------------------------------------------
 # Fortran binding for the common runtime management library for the

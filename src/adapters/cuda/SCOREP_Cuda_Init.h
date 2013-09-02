@@ -19,8 +19,6 @@
 
 /**
  * @file       SCOREP_Cuda_Init.h
- * @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
- * @status     ALPHA
  * @ingroup    CUDA
  *
  * @brief Declares the initialization structure of the CUDA adapter

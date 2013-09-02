@@ -16,8 +16,6 @@
 
 /**
  *  @file       scorep_selective_region.h
- *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- *  @status     alpha
  *
  *  This file containes the declaration of types and functions for selective recording.
  *  If selective recording is enabled, the measurement system records those only parts

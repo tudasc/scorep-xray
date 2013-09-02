@@ -47,8 +47,6 @@
 
 /**
  * @file  SCOREP_Fmpi_Err.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for error handling

@@ -16,8 +16,6 @@
 
 /**
  *  @file       SCOREP_User_MetricF.c
- *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- *  @status     alpha
  *
  *  This file containes the implementation of user adapter functions concerning
  *  user metrics for Fortran macros.

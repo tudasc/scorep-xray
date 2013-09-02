@@ -17,9 +17,7 @@
 
 /**
  * @file       src/adapters/compiler/scorep_compiler_confvars.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

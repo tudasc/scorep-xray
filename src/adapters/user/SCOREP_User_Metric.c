@@ -29,8 +29,6 @@
 
 /**
  *  @file       src/adapters/user/SCOREP_User_Metric.c
- *  @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- *  @status     alpha
  *
  *  This file containes the implementation of user adapter functions concerning
  *  user metrics.

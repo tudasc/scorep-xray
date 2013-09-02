@@ -47,8 +47,6 @@
 
 /**
  * @file SCOREP_Mpi_Reg.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Registration of MPI regions

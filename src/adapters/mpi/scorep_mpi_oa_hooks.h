@@ -21,11 +21,9 @@
 
 /**
  * @file        scorep_mpi_oa_hooks.h
- * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief   Declaration of MPI pre and post communication hooks
  *
- * @status ALPHA
  */
 
 #include <mpi.h>

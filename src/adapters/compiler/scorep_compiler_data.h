@@ -16,9 +16,7 @@
 
 /**
  * @file       scorep_compiler_data.h
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status     ALPHA
  *
  * Contains helper functions which are common for all compiler adapters.
  */

@@ -16,8 +16,6 @@
 
 /**
  * @file       SCOREP_Pomp_Lock.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    POMP
  *
  * @brief Implementation of internal functins for lock management.

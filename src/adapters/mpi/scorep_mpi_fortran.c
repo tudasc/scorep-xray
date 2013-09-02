@@ -10,8 +10,6 @@
 
 /**
  * @file       scorep_mpi_fortran.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    MPI_Wrapper
  *
  * @brief Implements Fortran <-> C data converter functions.

@@ -16,7 +16,6 @@
 ##
 
 ## file       /scorep/src/adapters/tau/Makefile.inc.am
-## maintainer TAU group (please put in a name and an email address)
 
 
 noinst_LTLIBRARIES += libscorep_adapter_tau.la

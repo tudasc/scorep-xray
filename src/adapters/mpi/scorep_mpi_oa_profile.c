@@ -16,9 +16,7 @@
 
 
 /**
- * @status      alpha
  * @file        scorep_mpi_oa_profile.c
- * @maintainer  Yury Olenyik <oleynik@in.tum.de>
  *
  * @brief   Declaration of MPI profiling functions
  *

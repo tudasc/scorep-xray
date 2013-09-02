@@ -32,8 +32,6 @@
 
 /**
  * @file       src/adapters/pomp/SCOREP_Pomp_Common.h
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status     alpha
  * @ingroup    POMP2
  *
  * @brief Declaration of global variables, used in several source files of the

@@ -21,8 +21,6 @@
 
 /**
      @file SCOREP_Fortran_Wrapper.h
-    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-    @status     ALPHA
 
     This file provides macros to generate decoration for function names for C-functions
     called from Fortran. Furthermore, conversion types and constantsa are defined.

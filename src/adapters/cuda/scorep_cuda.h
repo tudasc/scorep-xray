@@ -15,9 +15,7 @@
  */
 
 /**
- *  @status     alpha
  *  @file       src/adapters/cuda/scorep_cuda.h
- *  @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
  *  This file provides commonly used definitions and functionality in the CUDA
  *  adapter.
