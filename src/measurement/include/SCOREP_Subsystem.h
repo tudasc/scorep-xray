@@ -21,10 +21,8 @@
 
 /**
  * @file    src/measurement/include/SCOREP_Subsystem.h
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief Subsystem management of the measurement system.
- * @status alpha
  *
  */
 

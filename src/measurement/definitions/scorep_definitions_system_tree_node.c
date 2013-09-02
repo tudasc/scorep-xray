@@ -16,9 +16,7 @@
 
 
 /**
- * @status     alpha
  * @file       src/measurement/definitions/scorep_definitions_system_tree_node.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief Declaration of definition functions to be used by the adapter layer.
  *

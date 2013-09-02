@@ -30,9 +30,7 @@
 
 /**
  * @file        src/measurement/paradigm/scorep_all_subsystems.c
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status      alpha
  *
  * @brief       Holds the list of adapters linked into the measurement system.
  */

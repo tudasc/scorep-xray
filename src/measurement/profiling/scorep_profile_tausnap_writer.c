@@ -17,9 +17,7 @@
 /**
  * @file scorep_profile_tausnap_writer.c
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  * Implements a profile writer in TAU snapshot format.
  */
 

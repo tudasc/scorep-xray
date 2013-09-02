@@ -19,7 +19,6 @@
 
 /**
  * @file        scorep_profile_metric.h
- * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Metric handling in the profile.
  *

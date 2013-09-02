@@ -17,9 +17,7 @@
 
 /**
  * @file       src/measurement/tracing/SCOREP_Tracing_ThreadInteraction.c
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  *
  */

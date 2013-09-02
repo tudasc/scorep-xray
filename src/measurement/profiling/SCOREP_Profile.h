@@ -19,7 +19,6 @@
 
 /**
  * @file        SCOREP_Profile.h
- * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Interface called by the measurement core to construct the profile.
  *

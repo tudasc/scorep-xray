@@ -21,7 +21,6 @@
 
 /**
  * @file       src/measurement/tracing/scorep_tracing_interal.h
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  */
 

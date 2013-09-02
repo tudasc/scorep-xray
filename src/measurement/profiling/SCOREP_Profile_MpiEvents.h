@@ -18,9 +18,7 @@
 #define SCOREP_PROFILE_MPIEVENTS_H
 
 /**
- * @status      alpha
  * @file        SCOREP_Profile_MpiEvents.h
- * @maintainer  Daniel Lorenz<d.lorenz@fz-juelich.de>
  *
  * @brief   Declaration of MPI profiling events.
  *

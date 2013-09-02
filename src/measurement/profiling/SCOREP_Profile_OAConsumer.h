@@ -19,7 +19,6 @@
 
 /**
  * @file        SCOREP_Profile_OAConsumer.h
- * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief Interface called by the OA module to get the profile measurements.
  *

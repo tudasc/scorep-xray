@@ -19,9 +19,7 @@
 
 
 /**
- * @status      alpha
  * @file        src/measurement/tracing/scorep_tracing_definitions.h
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief   Handles tracing specific definitions tasks.
  *

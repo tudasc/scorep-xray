@@ -28,8 +28,6 @@
 
 /**
  * @file scorep_oa_mri_control.c
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
- * @status alpha
  *
  * This file contains implementation of OA measurement configuration and application execution control functions
  */

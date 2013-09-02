@@ -16,7 +16,6 @@
 ##
 
 ## file       src/measurement/online_access/Makefile.inc.am
-## maintainer Yury Oleynik <oleynik@in.tum.de>
 
 
 lib_LTLIBRARIES += libscorep_online_access_mockup.la

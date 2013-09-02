@@ -20,9 +20,7 @@
 /**
  * @file scorep_profile_writer.h
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  * Declares profile writer functions. This header provides a list of top level
  * profile writers. Thus, we avoid to include a special file per format. Only
  * those formats are declared, which are available on the platform.

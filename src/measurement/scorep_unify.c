@@ -18,9 +18,7 @@
 
 /**
  * @file       src/measurement/scorep_unify.c
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 
@@ -135,8 +133,8 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
     #undef DEF_WITH_MAPPING
 
-    ALLOC_MAPPINGS( &scorep_local_definition_manager,
-                    interim_communicator );
+    ALLOC_MAPPINGS(& scorep_local_definition_manager,
+                   interim_communicator );
 
     ALLOC_MAPPINGS( &scorep_local_definition_manager, interim_rma_window );
 }

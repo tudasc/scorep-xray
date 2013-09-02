@@ -18,9 +18,7 @@
  * @file SCOREP_Profile.c Implementation of functions to construct/destruct the
  * profile tree.
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

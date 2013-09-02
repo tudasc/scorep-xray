@@ -16,9 +16,7 @@
 
 
 /**
- * @status     alpha
  * @file       src/measurement/definitions/scorep_definitions_location_group.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief Declaration of definition functions to be used by the adapter layer.
  *

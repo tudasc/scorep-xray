@@ -19,11 +19,9 @@
 
 /**
  * @file        scorep_oa_phase.h
- * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief   Declarations of Online Access phase enter and exit functions.
  *
- * @status alpha
  */
 
 #include <SCOREP_Types.h>

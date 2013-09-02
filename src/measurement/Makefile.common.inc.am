@@ -16,7 +16,6 @@
 ##
 
 ## file       src/measurement/Makefile.common.inc.am
-## maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
 
 common_libscorep_cppflags = \
     $(AM_CPPFLAGS) \

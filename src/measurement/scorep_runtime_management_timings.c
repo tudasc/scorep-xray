@@ -17,9 +17,7 @@
 
 /**
  * @file       src/measurement/scorep_runtime_management_timings.c
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

@@ -15,8 +15,6 @@
  */
 
 /** @file scorep_oa_connection.c
- *  @maintainer Yury Oleynik <oleynik@in.tum.de>
- *  @status alpha
  *
  *  This file contains the implementation of communication layer functions
  */

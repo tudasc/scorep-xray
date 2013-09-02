@@ -20,9 +20,7 @@
 /**
  * @file scorep_profile_event_base.h
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  * Declaration of the base event functions for enter, exit, trigger metric, ...
  */

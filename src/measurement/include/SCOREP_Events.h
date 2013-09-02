@@ -21,7 +21,6 @@
 
 /**
  * @file        SCOREP_Events.h
- * @maintainer  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @brief   Declaration of event recording functions to be used by the
  *          adapter layer.

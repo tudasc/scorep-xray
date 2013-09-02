@@ -21,11 +21,9 @@
 
 /**
  * @file        SCOREP_OA_Functions.h
- * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief   Declarations of Online Access module user interface.
  *
- * @status ALPHA
  */
 
 

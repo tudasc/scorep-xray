@@ -16,7 +16,6 @@
 ##
 
 ## file       src/measurement/online_access/Makefile.confvars.inc.am
-## maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
 
 noinst_LTLIBRARIES += libscorep_oa_confvars.la
 

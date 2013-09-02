@@ -21,7 +21,6 @@
 
 /**
  * @file       src/measurement/tracing/SCOREP_Tracing.h
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  */
 

@@ -19,7 +19,6 @@
 
 /**
  * @file        scorep_profile_node.h
- * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Provides functionality for extended debug information on errors in the
  *        profile.

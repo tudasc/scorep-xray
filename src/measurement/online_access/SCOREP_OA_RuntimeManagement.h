@@ -21,11 +21,9 @@
 
 /**
  * @file        SCOREP_OA_RuntimeManagement.h
- * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief   Declaration of OA initialization and finalization functions
  *
- * @status alpha
  */
 
 #include <stdint.h>

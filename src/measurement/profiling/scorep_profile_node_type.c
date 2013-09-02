@@ -18,9 +18,7 @@
  * @file scorep_profile_node_type.c
  * Implementation for node type specific data handling.
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

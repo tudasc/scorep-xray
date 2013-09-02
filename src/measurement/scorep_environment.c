@@ -18,9 +18,7 @@
 
 /**
  * @file       src/measurement/scorep_environment.c
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

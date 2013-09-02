@@ -17,9 +17,7 @@
 
 /**
  * @file       src/measurement/scorep_unify_helpers.c
- * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

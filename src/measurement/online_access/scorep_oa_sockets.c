@@ -16,8 +16,6 @@
 
 /**
  * @file scorep_oa_sockets.c
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
- * @status alpha
  *
  * This file contains implementation of sockets communication between SCOREP OA and EA
  */

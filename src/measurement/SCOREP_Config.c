@@ -16,9 +16,7 @@
 
 /**
  * @file        SCOREP_Config.c
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status      alpha
  *
  * @brief Runtime configuration subsystem.
  *

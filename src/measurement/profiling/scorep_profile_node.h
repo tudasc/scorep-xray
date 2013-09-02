@@ -19,7 +19,6 @@
 
 /**
  * @file        scorep_profile_node.h
- * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Node handling for the profile tree
  *

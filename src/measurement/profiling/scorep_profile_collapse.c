@@ -17,9 +17,7 @@
 /**
  * @file scorep_profile_collapse.c
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  * Processes collapse nodes in order to prepare them to be written in any format.
  * For this, it registers a region named "COLLAPSE" and substitutes all collapse

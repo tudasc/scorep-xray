@@ -16,9 +16,7 @@
 
 
 /**
- * @status      alpha
  * @file        scorep_profile_task_table.c
- * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief   Implementation of the tasking internal data structure to manage task
  *          instances.

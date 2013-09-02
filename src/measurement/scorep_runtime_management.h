@@ -21,9 +21,7 @@
 
 /**
  * @file       scorep_runtime_management.h
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

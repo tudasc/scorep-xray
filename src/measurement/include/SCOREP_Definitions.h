@@ -21,7 +21,6 @@
 
 /**
  * @file       SCOREP_Definitions.h
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @brief Declaration of definition functions to be used by the adapter layer.
  *

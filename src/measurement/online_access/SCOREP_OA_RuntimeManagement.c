@@ -16,8 +16,6 @@
 
 /**
  * @file SCOREP_OA_RuntimeManagement.c
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
- * @status alpha
  *
  * This file contains the implementation of Online Access initialization and finalization functions
  */

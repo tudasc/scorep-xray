@@ -18,9 +18,7 @@
  * @file scorep_profile_phase.c
  * Implementation for postprocessing of phases.
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

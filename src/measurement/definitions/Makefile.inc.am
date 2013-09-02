@@ -14,7 +14,6 @@
 # See the COPYING file in the package base directory for details.
 
 ## file       src/measurement/definitions/Makefile.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 noinst_LTLIBRARIES += libscorep_definitions.la

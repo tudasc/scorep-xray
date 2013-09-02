@@ -16,9 +16,7 @@
 
 
 /**
- * @status      alpha
  * @file        SCOREP_Profile_MpiEvents.c
- * @maintainer  Daniel Lorenz<d.lorenz@fz-juelich.de>
  *
  * @brief   Implmentation of MPI profiling events.
  *

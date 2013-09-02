@@ -21,9 +21,7 @@
  * @file scorep_profile_process.h
  * @brief Contains the declaration of functions for post-processing a profile.
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

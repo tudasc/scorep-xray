@@ -17,9 +17,7 @@
 
 /**
  * @file       src/measurement/tracing/scorep_tracing_confvars.inc.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

@@ -21,9 +21,7 @@
 
 /**
  * @file        scorep_subsystem.h
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status      alpha
  *
  * @brief       Exports the subsystems array for the measurement system.
  */

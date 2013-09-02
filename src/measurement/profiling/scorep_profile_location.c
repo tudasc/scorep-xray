@@ -16,8 +16,6 @@
 
 /**
  * @file        scorep_profile_location.c
- * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
- * @status      alpha
  * @brief Contains implmentation for profile location data
  *
  */

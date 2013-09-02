@@ -18,9 +18,7 @@
 
 /**
  * @file       scorep_cluster.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  *
  */

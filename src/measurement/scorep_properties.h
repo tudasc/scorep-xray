@@ -19,9 +19,7 @@
 
 /**
  * @file       src/measurement/scorep_properties.h
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

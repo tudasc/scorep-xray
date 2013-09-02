@@ -16,8 +16,6 @@
 
 /**
  * @file scorep_oa_registry_protocol.h
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
- * @status alpha
  *
  * This file contains protocol definitions of communication with Periscope registry service
  */

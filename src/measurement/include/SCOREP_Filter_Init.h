@@ -19,9 +19,7 @@
 
 /**
  * @file       SCOREP_Filter_Init.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  * Implements the filter initialization interface for the filtering system.
  */

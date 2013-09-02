@@ -17,7 +17,6 @@
 
 /**
  * @file       src/measurement/tracing/scorep_tracing_types.h
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @brief Holds functions for converting Score-P types to OTF2.
  */

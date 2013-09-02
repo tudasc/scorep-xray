@@ -16,8 +16,6 @@
 
 /**
  * @file SCOREP_OA_Functions.c
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
- * @status alpha
  *
  * This file contains the implementation of Online Access Phase functions
  */

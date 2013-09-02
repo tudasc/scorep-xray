@@ -17,9 +17,7 @@
 /**
  * @file scorep_profile_substitute_parameter.c
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  * Contains a post-processing algorithm to substitute parameter nodes by
  * regular region nodes which have a regions name like '<parameter name>=<value>'

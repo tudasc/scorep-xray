@@ -16,9 +16,7 @@
 
 
 /**
- * @status      alpha
  * @file        SCOREP_Events.c
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief   Declaration of event recording functions to be used by the
  *          adapter layer.

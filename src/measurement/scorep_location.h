@@ -16,9 +16,7 @@
 
 /**
  * @file       src/measurement/scorep_location.h
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

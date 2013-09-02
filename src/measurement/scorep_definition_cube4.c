@@ -17,9 +17,7 @@
 /**
  * @file scorep_definition_cube4.c
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  * Writes the definitions to Cube 4.
  */
 

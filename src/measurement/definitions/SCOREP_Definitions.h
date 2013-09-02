@@ -20,9 +20,7 @@
 
 /**
  * @file       src/measurement/definitions/SCOREP_Definitions.h
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

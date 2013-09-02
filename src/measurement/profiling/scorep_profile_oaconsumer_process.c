@@ -17,9 +17,7 @@
 /**
  * @file scorep_profile_oaconsumer_process.c Implementation of functions to process profile data before transfering over OA module.
  *
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
  *
- * @status alpha
  *
  */
 

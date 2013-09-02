@@ -19,7 +19,6 @@
 
 /**
  * @file        scorep_profile_definition.h
- * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief The global profile definition struct and functions
  *

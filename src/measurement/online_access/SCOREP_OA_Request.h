@@ -19,7 +19,6 @@
 
 /**
  * @file        SCOREP_OA_Request.h
- * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief Functions for processing and storing of OA measurements requests
  *

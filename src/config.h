@@ -19,9 +19,6 @@
 
 /**
  * @file       config.h
- * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @status     alpha
  *
  * @brief      Provide a single config.h that hides the frontend/backend
  *             issues from the developer

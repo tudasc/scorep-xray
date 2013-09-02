@@ -15,9 +15,7 @@
  */
 
 /**
- *  @status     alpha
  *  @file       src/measurement/paradigm/cuda/scorep_cuda_unify.c
- *  @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
  *
  */
 

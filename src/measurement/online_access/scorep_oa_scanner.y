@@ -15,12 +15,9 @@
  */
  
  /**
- * @file        src/measurement/online_access/scorep_oa_scanner.y
- * @maintainer  Yury Olenyik <oleynik@in.tum.de>
+ * @file    src/measurement/online_access/scorep_oa_scanner.y
  *
  * @brief   automatically generated file for the MRI string parser
- *
- * @status alpha
  *
  */
 

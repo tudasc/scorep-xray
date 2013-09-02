@@ -17,9 +17,7 @@
 /**
  * @file scorep_oa_requests.c Implementation of functions to process measurements requests over OA module.
  *
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
  *
- * @status alpha
  *
  */
 

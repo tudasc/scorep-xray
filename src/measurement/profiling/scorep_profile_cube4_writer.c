@@ -17,9 +17,7 @@
 /**
  * @file scorep_profile_cube4_writer.c
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  * Implements a profile writer in Cube 4 format.
  */
 

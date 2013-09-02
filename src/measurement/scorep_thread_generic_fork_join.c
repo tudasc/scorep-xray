@@ -17,9 +17,7 @@
 
 /**
  * @file       src/measurement/scorep_thread_generic_fork_join.c
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

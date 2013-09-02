@@ -17,9 +17,7 @@
 
 /**
  * @file       src/measurement/scorep_clock_synchronization.c
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

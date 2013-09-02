@@ -19,7 +19,6 @@
 
 /**
  * @file        scorep_profile_location.h
- * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Contains type definition and functions for profile location data.
  *

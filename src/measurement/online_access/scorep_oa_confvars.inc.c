@@ -17,9 +17,7 @@
 
 /**
  * @file       src/measurement/online_access/scorep_oa_confvars.inc.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

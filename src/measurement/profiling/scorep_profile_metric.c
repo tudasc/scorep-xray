@@ -18,9 +18,7 @@
  * @file scorep_profile_metric.c Implementation of functions for metric manipulation in the
  * profile tree.
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

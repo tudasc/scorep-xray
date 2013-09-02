@@ -18,9 +18,7 @@
 #define SCOREP_PROFILE_TASK_TABLE_H
 
 /**
- * @status      alpha
  * @file        scorep_profile_task_table.h
- * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief   Implementation of the Tasking functions of the profile interface
  *

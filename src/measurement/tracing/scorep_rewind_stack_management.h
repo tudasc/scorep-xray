@@ -21,9 +21,7 @@
 
 /**
  * @file       scorep_rewind_stack_management.h
- * @maintainer Jens Domke <jens.domke@tu-dresden.de>
  *
- * @status alpha
  *
  *
  */

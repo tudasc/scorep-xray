@@ -24,9 +24,7 @@
 
 /**
  * @file       src/measurement/definitions/scorep_definitions_source_file.h
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

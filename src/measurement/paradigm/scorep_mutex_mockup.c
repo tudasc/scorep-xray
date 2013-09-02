@@ -18,9 +18,7 @@
 
 /**
  * @file       src/measurement/paradigm/scorep_mutex_mockup.c
- * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  * Provides a lock implemention for non-OpenMP programs.
  * I.e no locking at all.

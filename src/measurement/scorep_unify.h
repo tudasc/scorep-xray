@@ -21,9 +21,7 @@
 
 /**
  * @file       src/measurement/scorep_unify.h
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

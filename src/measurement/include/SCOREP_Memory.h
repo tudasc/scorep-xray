@@ -24,9 +24,7 @@
  * @file SCOREP_Memory.h Memory management interface for measurement and
  * adapters.
  *
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  * @todo add comments about synchronization needs
  */

@@ -20,7 +20,6 @@
 
 /**
  * @file        src/measurement/include/SCOREP_Config.h
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief Runtime configuration subsystem.
  *

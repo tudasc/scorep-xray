@@ -17,7 +17,6 @@
 
 /**
  * @file       src/measurement/definitions/scorep_definitions_private.h
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  */
 

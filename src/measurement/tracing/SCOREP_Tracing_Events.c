@@ -16,9 +16,7 @@
 
 
 /**
- * @status      alpha
  * @file        src/measurement/tracing/SCOREP_Tracing_Events.c
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief Event consumption functions for tracing.
  */

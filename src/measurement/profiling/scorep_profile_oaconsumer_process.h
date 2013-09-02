@@ -19,7 +19,6 @@
 
 /**
  * @file        scorep_profile_oa_consumer_process.h
- * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief Helper functions for processing and transformation of profile for the needs of OA
  *

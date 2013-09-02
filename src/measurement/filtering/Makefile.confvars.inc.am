@@ -16,7 +16,6 @@
 ##
 
 ## file       src/measurement/filtering/Makefile.confvars.inc.am
-## maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
 
 noinst_LTLIBRARIES += libscorep_filter_confvars.la
 

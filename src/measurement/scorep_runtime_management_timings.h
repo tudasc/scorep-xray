@@ -27,9 +27,7 @@
  * macros. @see SCOREP_RuntimeManagement.c, scorep_mpi_enabled, and
  * SCOREP_Mpi_Init.c.
  *
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

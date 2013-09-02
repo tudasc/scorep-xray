@@ -24,9 +24,7 @@
 
 /**
  * @file        src/measurement/scorep_types.h
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status      alpha
  *
  * @brief Functions to convert types from @ref SCOREP_Types.h into strings.
  */

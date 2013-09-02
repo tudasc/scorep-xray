@@ -18,9 +18,7 @@
 
 /**
  * @file       src/measurement/paradigm/scorep_mutex_omp.c
- * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  * Provides a lock implemention for OpenMP programs.
  *

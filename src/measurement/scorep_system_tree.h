@@ -18,9 +18,7 @@
 #define SCOREP_SYSTEM_TREE_H
 
 /**
- * @status      alpha
  * @file        scorep_system_tree.h
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief   Declaration of the system tree creation function.
  *

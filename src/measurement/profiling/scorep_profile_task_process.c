@@ -17,9 +17,7 @@
 /**
  * @file scorep_profile_task_process.c
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  * Contains implmentation for post-processing operations for task structires and
  * task related metrics.

@@ -17,9 +17,7 @@
 
 /**
  * @file       src/measurement/paradigm/scorep_sion_not_supported.c
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

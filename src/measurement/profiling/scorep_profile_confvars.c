@@ -17,9 +17,7 @@
 
 /**
  * @file       src/measurement/profiling/scorep_profile_confvars.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

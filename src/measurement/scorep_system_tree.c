@@ -15,9 +15,7 @@
  */
 
 /**
- * @status      alpha
  * @file        src/measurement/scorep_system_tree.c
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief   Implements the system tree creation.
  *

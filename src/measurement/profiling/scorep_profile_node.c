@@ -18,9 +18,7 @@
  * @file scorep_profile_node.c
  * Implementation for managing profile node trees.
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

@@ -17,9 +17,7 @@
 /**
  * @file scorep_profile_expand.c
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  * Contains implmentation for post-processing operations to expand thread start nodes.
  * In this first prost-processing step the nodes of type

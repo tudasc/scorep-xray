@@ -22,9 +22,7 @@
 
 /**
  * @file       src/measurement/include/SCOREP_Mutex.h
- * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  * Abstract locking object.
  *

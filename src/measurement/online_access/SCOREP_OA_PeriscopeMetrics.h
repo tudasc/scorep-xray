@@ -19,11 +19,9 @@
 
 /**
  * @file        SCOREP_OA_PeriscopeMetrics.h
- * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief   Persciope metrics
  *
- * @status alpha
  */
 
 /* *INDENT-OFF* */

@@ -17,9 +17,7 @@
 /**
  * @file SCOREP_Profile_OAConsumer.c Implementation of functions to access profile data used by OA module.
  *
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
  *
- * @status alpha
  *
  */
 

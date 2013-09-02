@@ -30,7 +30,6 @@
 ##
 
 ## file       src/measurement/online_access/Makefile.mpi.inc.am
-## maintainer Yury Oleynik <oleynik@in.tum.de>
 
 
 if HAVE_MPI_SUPPORT

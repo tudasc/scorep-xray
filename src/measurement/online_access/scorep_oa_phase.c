@@ -16,8 +16,6 @@
 
 /**
  * @file scorep_oa_phases.c
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
- * @status alpha
  *
  * This file contains the implementation of Online Access phase enter and exit functions
  */

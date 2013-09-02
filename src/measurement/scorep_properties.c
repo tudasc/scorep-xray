@@ -15,9 +15,7 @@
  */
 
 /**
- * @status     alpha
  * @file       src/measurement/scorep_properties.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief Propertiy handling.
  *

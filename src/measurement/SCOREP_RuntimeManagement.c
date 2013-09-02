@@ -15,9 +15,7 @@
  */
 
 /**
- * @status      alpha
  * @file        SCOREP_RuntimeManagement.c
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief   Definition of runtime management functions to be used by the
  *          subsystem layer.

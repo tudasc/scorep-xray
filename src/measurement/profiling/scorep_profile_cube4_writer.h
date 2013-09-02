@@ -20,9 +20,7 @@
 /**
  * @file scorep_profile_cube4_writer.h
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  */
 
 #include <SCOREP_DefinitionHandles.h>

@@ -21,11 +21,9 @@
 
 /**
  * @file        scorep_oa_connection.h
- * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief   Declaration of OA communication infrastructure functions and data types
  *
- * @status alpha
  */
 
 #include <SCOREP_ErrorCodes.h>

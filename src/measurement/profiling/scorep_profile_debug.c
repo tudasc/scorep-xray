@@ -18,9 +18,7 @@
  * @file scorep_profile_debug.c
  * Provides extended output on errors in the profile.
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

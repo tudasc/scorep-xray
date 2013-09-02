@@ -21,7 +21,6 @@
 
 /**
  * @file        scorep_platform.h
- * @maintainer  Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
  * @brief Platform dependent functionality.
  *

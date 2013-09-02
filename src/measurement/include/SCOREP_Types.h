@@ -21,7 +21,6 @@
 
 /**
  * @file        SCOREP_Types.h
- * @maintainer  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @brief Types needed by SCOREP_* API functions.
  *

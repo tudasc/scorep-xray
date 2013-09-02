@@ -18,9 +18,7 @@
  * @file scorep_profile_definition.c
  * Implementation of the profile definition.
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

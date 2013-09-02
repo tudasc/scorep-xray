@@ -18,7 +18,6 @@
 #define SCOREP_PROFILING_TASKING
 
 /**
- * @status      alpha
  * @file        SCOREP_Profile_Tasking.h
  *
  * @brief   Declaration of the profile interface for tasking support.

@@ -17,9 +17,7 @@
 /**
  * @file scorep_profile_callpath.c
  *
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  * Contains algorithms to assign callpathes to each node during post-processing.
  * Therefore we assume that the first root node of the forest is the master thread.

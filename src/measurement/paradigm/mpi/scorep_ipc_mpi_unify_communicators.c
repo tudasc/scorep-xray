@@ -32,7 +32,6 @@
 /**
  * @file       src/measurement/paradigm/mpi/scorep_ipc_mpi_unify_communicators.c
  *
- * @status alpha
  *
  */
 

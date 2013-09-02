@@ -18,9 +18,7 @@
 #define SCOREP_PROFILE_MPI_EVENTS_H
 
 /**
- * @status      alpha
  * @file        scorep_profile_mpi_events.h
- * @maintainer  Daniel Lorenz<d.lorenz@fz-juelich.de>
  *
  */
 

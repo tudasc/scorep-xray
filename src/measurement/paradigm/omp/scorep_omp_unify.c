@@ -17,9 +17,7 @@
 
 /**
  * @file       src/measurement/paradigm/omp/scorep_omp_unify.c
- * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

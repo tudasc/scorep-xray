@@ -16,8 +16,6 @@
 
 /**
  * @file SCOREP_OA_Dummy.c
- * @maintainer Yury Oleynik <oleynik@in.tum.de>
- * @status alpha
  *
  * This file contains dummy implementation of Online Access Phase functions
  */

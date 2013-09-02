@@ -20,8 +20,6 @@
 
 /**
  * @file       src/measurement/paradigm/omp/scorep_omp_thread_teams.h
- * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
- * @status     alpha
  */
 
 

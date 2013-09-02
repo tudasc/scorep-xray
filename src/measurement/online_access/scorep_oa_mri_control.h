@@ -21,11 +21,9 @@
 
 /**
  * @file        scorep_oa_mri_control.h
- * @maintainer  Yury Oleynik <oleynik@in.tum.de>
  *
  * @brief   Declaration of OA measurement configuration and application control functionality
  *
- * @status alpha
  */
 
 

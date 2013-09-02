@@ -17,9 +17,7 @@
 
 /**
  * @file       src/adapters/mpi/scorep_mpi_confvars.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

@@ -21,7 +21,6 @@
 
 /**
  * @file        SCOREP_RuntimeManagement.h
- * @maintainer  Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
  * @brief   Declaration of runtime management functions to be used by the
  *          adapter layer.
