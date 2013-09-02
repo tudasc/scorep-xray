@@ -313,7 +313,7 @@ AC_SCOREP_COND_HAVE([MPI_SUPPORT],
                     [test -f ../build-mpi/Makefile],
                     [Defined if MPI support is available.])
 
-AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION([../])
+AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION
 
 dnl Predicate to use HARDCODE_LIBDIR_FLAG_* only if linker needs it. 
 AS_IF([test "x${hardcode_into_libs}" = "xyes"], 
