@@ -30,7 +30,6 @@
 
 /**
  * @file       SCOREP_MetricTypes.h
- * @maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *
  * @brief Types used by metric service.
  */

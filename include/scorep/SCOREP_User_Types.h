@@ -33,8 +33,6 @@
 
 /**
    @file       SCOREP_User_Types.h
-   @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-   @status     ALPHA
    @ingroup    SCOREP_User
    @brief      This file contains type definitions for manual user instrumentation.
  */

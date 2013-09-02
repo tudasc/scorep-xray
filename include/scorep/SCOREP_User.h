@@ -33,8 +33,6 @@
 
 /**
     @file       SCOREP_User.h
-    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-    @status     ALPHA
     @ingroup    SCOREP_User
 
     @brief This file contains the interface for the manual user instrumentation.

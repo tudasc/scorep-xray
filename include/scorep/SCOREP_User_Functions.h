@@ -33,8 +33,6 @@
 
 /**
     @file       SCOREP_User_Functions.h
-    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-    @status     ALPHA
     @ingroup    SCOREP_User_External
 
     This File contains the function definitions which are called from the user manual

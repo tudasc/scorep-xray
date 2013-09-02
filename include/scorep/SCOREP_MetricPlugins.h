@@ -30,7 +30,6 @@
 
 /**
  * @file       SCOREP_MetricPlugins.h
- * @maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
  *
  * @brief Metric plugin definitions.
  */

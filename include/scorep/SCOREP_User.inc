@@ -28,12 +28,9 @@
 !
 
 !> @file       SCOREP_User.inc
-!! @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-!! @status     BETA
 !! @ingroup    SCOREP_User_Interface
 !!
 !! @brief User interface for manual instrumantation of Fortran files.
-!! @author Daniel Lorenz
 !<
 
 #ifdef SCOREP_USER_ENABLE

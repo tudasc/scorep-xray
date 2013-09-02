@@ -30,8 +30,6 @@
 ##
 
 ## file       Makefile.inc.am
-## author     Christian Roessel <c.roessel@fz-juelich.de>
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 nobase_include_HEADERS +=                      \
     $(PUBLIC_INC_SRC)SCOREP_MetricPlugins.h    \

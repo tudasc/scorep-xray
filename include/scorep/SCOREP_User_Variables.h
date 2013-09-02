@@ -33,8 +33,6 @@
 
 /**
     @file       SCOREP_User_Variables.h
-    @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
-    @status     ALPHA
     @ingroup    SCOREP_User_External
 
     @brief Automatically, declares variables needed in the application's source files.
