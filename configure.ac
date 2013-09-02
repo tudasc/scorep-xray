@@ -30,6 +30,9 @@ dnl
 AC_PREREQ([2.68])
 AC_INIT([Score-P], m4_esyscmd([vendor/common/build-config/generate-package-version.sh build-config/VERSION]), [support@score-p.org], [scorep])
 
+AFS_PACKAGE_INIT
+AFS_SUMMARY_INIT
+
 AC_SCOREP_REVISION
 
 AC_SCOREP_TOPLEVEL_ARGS
@@ -55,9 +58,6 @@ AC_SCOREP_SVN_CONTROLLED
 ## Call not before AC_CONFIG_MACRO_DIR
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
-
-AFS_PACKAGE_INIT
-AFS_SUMMARY_INIT
 
 AC_SCOREP_DETECT_PLATFORMS
 AFS_CROSSCOMPILING
