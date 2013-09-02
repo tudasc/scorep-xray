@@ -14,13 +14,6 @@
  *
  */
 
-/**
- *
- * @autors     Johannes Spazier <johannes.spazier@tu-dresden.de>
- * @autors     Daniel Lorenz <d.lorenz@fz-juelich.de>
- *
- */
-
 #include <config.h>
 
 #include <stdlib.h>
