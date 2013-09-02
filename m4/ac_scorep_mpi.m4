@@ -390,6 +390,25 @@ dnl ----------------------------------------------------------------------------
 AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
     AC_LANG_PUSH(C)
 
+    AC_MSG_CHECKING([whether MPI_Add_error_string is standard compliant])
+    AC_COMPILE_IFELSE([
+        AC_LANG_SOURCE([
+            #include<mpi.h>
+            #if MPI_VERSION >= 3
+            #define SCOREP_MPI_CONST_DECL const
+            #else
+            #define SCOREP_MPI_CONST_DECL
+            #endif
+            int MPI_Add_error_string(int i, SCOREP_MPI_CONST_DECL char *c)
+            {
+                return 0;
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_MPI_ADD_ERROR_STRING_COMPLIANT, 1, [MPI_Add_error_string is standard compliant])], 
+        [AC_MSG_RESULT(no)]
+    ) # AC_COMPILE_IF_ELSE
+
     AC_MSG_CHECKING([whether MPI_Info_delete is standard compliant])
     AC_COMPILE_IFELSE([
         AC_LANG_SOURCE([
