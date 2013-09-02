@@ -35,11 +35,12 @@ normalize_file( const char* file )
     UTILS_IO_SimplifyPath( srcdir );
     size_t srcdir_len = strlen( srcdir );
 
-    if ( strncmp( normalized_file, srcdir, srcdir_len ) == 0
-         && normalized_file[ srcdir_len ] == '/' )
+    /* srcdir is guaranteed to have an trailing slash, so no need to test for it
+       in the file */
+    if ( strncmp( normalized_file, srcdir, srcdir_len ) == 0 )
     {
         char* to   = normalized_file;
-        char* from = normalized_file + srcdir_len + 1;
+        char* from = normalized_file + srcdir_len;
         while ( *from )
         {
             *to++ = *from++;
