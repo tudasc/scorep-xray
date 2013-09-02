@@ -16,7 +16,6 @@
 ##
 
 ## file       test/rewind/Makefile.inc.am
-## author     Andre Groetzsch <andre.groetzsch@tu-dresden.de>
 
 check_PROGRAMS += rewind_test
 

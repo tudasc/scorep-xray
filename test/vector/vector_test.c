@@ -15,8 +15,6 @@
  */
 
 /**
- * @status       alpha
- * @maintainer   Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * Test for the vector.
  */

@@ -16,7 +16,6 @@
 ##
 
 ## file       test/measurement/config/test_framework.sh
-## maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
 
 if [ -n "$TEST_VERBOSE" ]; then
     error_out=/dev/stderr

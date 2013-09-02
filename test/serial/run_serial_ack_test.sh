@@ -16,7 +16,6 @@
 ##
 
 ## file       run_serial_ack_test.sh
-## maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
 
 SCOREP_EXPERIMENT_DIRECTORY=scorep-test_serial_ack
 export SCOREP_EXPERIMENT_DIRECTORY

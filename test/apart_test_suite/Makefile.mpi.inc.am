@@ -16,8 +16,6 @@
 ##
 
 ## file       Makefile.mpi.inc.am
-## author     Yury Oleynik <oleynik@in.tum.de>
-## maintainer Yury Oleynik <oleynik@in.tum.de>
 
 if HAVE_MPI_SUPPORT
 

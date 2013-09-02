@@ -18,9 +18,7 @@
 
 /**
  * @file       task_fibonacci.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

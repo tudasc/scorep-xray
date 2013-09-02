@@ -16,7 +16,6 @@
 ##
 
 ## file       run_oa_f_test.sh
-## maintainer Yury Oleynik <oleynik@in.tum.de>
 
 SRC_ROOT=@abs_top_srcdir@/..
 REGSRV_PID=

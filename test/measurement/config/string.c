@@ -18,9 +18,7 @@
 
 /**
  * @file       test/measurement/config/string.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

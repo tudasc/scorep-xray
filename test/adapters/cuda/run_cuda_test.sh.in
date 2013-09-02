@@ -16,7 +16,6 @@
 ##
 
 ## file       run_cuda_test.sh
-## maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
 
 echo "===== CUDA Compile and Run Test ====="
 

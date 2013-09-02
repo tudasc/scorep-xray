@@ -18,9 +18,7 @@
 
 /**
  * @file       task_single_loop.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

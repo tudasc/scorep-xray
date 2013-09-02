@@ -16,7 +16,6 @@
 
 /**
  * @ file      user_test.cxx
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Tests C++ user instrumentation and instrumentation of static constructors
  *        and destructors.

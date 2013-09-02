@@ -22,9 +22,7 @@
 
 /**
  * @file       test/measurement/config/error_callback.h
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

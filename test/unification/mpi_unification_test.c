@@ -18,9 +18,7 @@
 
 /**
  * @file       test/unification/mpi_unification_test.c
- * @maintainer Bert Wesarg <bert.wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

@@ -16,8 +16,6 @@
 
 /**
  * Test for the hash table.
- * @status     alpha
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  */
 
 #include <config.h>

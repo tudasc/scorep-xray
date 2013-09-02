@@ -16,7 +16,6 @@
 ##
 
 ## file       Makefile.mpi.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 if HAVE_MPI_SUPPORT
 if HAVE_OPENMP_SUPPORT

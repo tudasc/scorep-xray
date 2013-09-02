@@ -18,9 +18,7 @@
 
 /**
  * @file       test/measurement/config/bool.c
- * @maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
  *
- * @status alpha
  *
  */
 

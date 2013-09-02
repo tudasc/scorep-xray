@@ -17,9 +17,7 @@
 
 /**
  * @file       self_contained_scorep_public_types.c
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  *
  */

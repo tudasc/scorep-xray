@@ -17,10 +17,7 @@
 
 /**
  * @file       self_contained_public_header_SCOREP_MetricPlugins.c
- * @author     Ronny Tschueter <ronny.tschueter@tu-dresden.de>
- * @maintainer Ronny Tschueter <ronny.tschueter@tu-dresden.de>
  *
- * @status alpha
  *
  *
  */

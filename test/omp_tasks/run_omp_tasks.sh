@@ -16,7 +16,6 @@
 ##
 
 ## file       run_omp_tasks.sh
-## maintainer Dirk Schmidl <schmidl@rz.rwth-aachen.de>
 
 
 SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true ./omp_tasks

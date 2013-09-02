@@ -16,7 +16,6 @@
 ##
 
 ## file       run_profile_depth_limit_test.sh
-## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
 RESULT_DIR=scorep-profile-depth-limit-test-dir
 rm -rf $RESULT_DIR

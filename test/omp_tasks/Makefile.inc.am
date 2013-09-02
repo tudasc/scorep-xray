@@ -16,8 +16,6 @@
 ##
 
 ## file       Makefile.inc.am
-## author     Dirk Schmidl <schmidl@rz.rwth-aachen.de>
-## maintainer Dirk Schmidl <schmidl@rz.rwth-aachen.de>
 
 
 if HAVE_OPENMP_SUPPORT

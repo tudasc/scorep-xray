@@ -16,7 +16,6 @@
 ##
 
 ## file       test/measurement/config/config_test_number.sh
-## maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
 
 . "${0%/*}/test-framework.sh"
 

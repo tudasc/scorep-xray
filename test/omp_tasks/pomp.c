@@ -18,9 +18,7 @@
 
 /**
  * @file       pomp.c
- * @maintainer Dirk Schmidl <schmidl@rz.rwth-aachen.de>
  *
- * @status alpha
  *
  */
 

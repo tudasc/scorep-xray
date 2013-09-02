@@ -16,7 +16,6 @@
 ##
 
 ## file       Makefile.inc.am
-## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
 check_PROGRAMS += filter_test
 

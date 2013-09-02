@@ -18,7 +18,6 @@
 ##
 
 ## file       test/installcheck/serial/mpi/Makefile.in
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 CC  = @MPICC@
 CXX = @MPICXX@

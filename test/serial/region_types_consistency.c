@@ -16,8 +16,6 @@
 
 /**
  * @file        region_types_consistency.c
- * @status       alpha
- * @maintainer  Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Checks whether all Score-P region types are usable.
  *

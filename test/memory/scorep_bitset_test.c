@@ -18,9 +18,7 @@
 
 /**
  * @file       scorep_allocator_test.c
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

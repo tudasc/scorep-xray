@@ -16,7 +16,6 @@
 ##
 
 ## file       test/rewind/run_rewind_test.sh
-## author     Andre Groetzsch <andre.groetzsch@tu-dresden.de>
 
 OTF2_PRINT=@OTF2_BINDIR@/otf2-print
 

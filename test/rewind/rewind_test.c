@@ -17,7 +17,6 @@
 /**
  * @file       test/rewind/rewind_test.c
  *
- * @author     Andre Groetzsch <andre.groetzsch@tu-dresden.de>
  *
  * @brief      testing the functionality of the rewind feature
  *

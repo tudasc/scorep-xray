@@ -20,7 +20,6 @@
 ##
 
 ## file       test/installcheck/instrumenter-configurations.sh.in
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 comp_arg=""
 pomp_user_arg=""

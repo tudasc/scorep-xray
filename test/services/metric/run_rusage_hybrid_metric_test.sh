@@ -16,7 +16,6 @@
 ##
 
 ## file       run_rusage_hybrid_metric_test.sh
-## maintainer Ronny Tschueter <ronny.tschueter@zih.tu-dresden.de>
 
 ## At the moment there is no appropriate make target that allows executing
 ## shell scripts in MPI tests. Therefore run this script manually from

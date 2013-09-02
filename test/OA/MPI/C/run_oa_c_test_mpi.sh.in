@@ -16,7 +16,6 @@
 ##
 
 ## file       run_apart_test_suite_with_oa_test.sh
-## maintainer Yury Oleynik <oleynik@in.tum.de>
 
 SRC_ROOT=@abs_top_srcdir@/..
 

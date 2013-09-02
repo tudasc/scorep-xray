@@ -16,7 +16,6 @@
 ##
 
 ## file       run_phase_test.sh
-## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
 cleanup()
 {

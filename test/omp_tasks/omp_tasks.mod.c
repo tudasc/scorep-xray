@@ -22,9 +22,7 @@
 
 /**
  * @file       omp_tasks.c
- * @maintainer Dirk Schmidl <schmidl@rz.rwth-aachen.de>
  *
- * @status alpha
  *
  */
 

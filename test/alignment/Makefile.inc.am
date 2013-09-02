@@ -16,7 +16,6 @@
 ##
 
 ## file       Makefile.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 noinst_LTLIBRARIES               += libfortran_c_alignment.la

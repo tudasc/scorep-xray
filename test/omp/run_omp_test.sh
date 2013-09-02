@@ -16,7 +16,6 @@
 ##
 
 ## file       run_omp_test.sh
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true ./omp_test

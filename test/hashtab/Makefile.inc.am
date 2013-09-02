@@ -16,7 +16,6 @@
 ##
 
 ## file       test/hashtab/Makefile.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 check_PROGRAMS += hashtab_test
 hashtab_test_SOURCES = \

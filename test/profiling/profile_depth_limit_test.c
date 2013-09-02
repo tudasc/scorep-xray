@@ -16,7 +16,6 @@
 
 /**
  * @ file      profile_depth_limit_test.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
  * @brief Tests profile depth limitations.
  */

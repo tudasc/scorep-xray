@@ -16,7 +16,6 @@
 ##
 
 ## file       test/vector/Makefile.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 check_PROGRAMS += vector_test
 vector_test_SOURCES = \

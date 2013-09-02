@@ -16,7 +16,6 @@
 ##
 
 ## file       run_serial_test.sh
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 SCOREP_ENABLE_PROFILING=true SCOREP_ENABLE_TRACING=false ./serial_test

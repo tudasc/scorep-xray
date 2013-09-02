@@ -16,7 +16,6 @@
 ##
 
 ## file       test/measurement/config/Makefile.inc.am
-## maintainer Bert Wesarg <Bert.Wesarg@tu-dresden.de>
 
 
 check_PROGRAMS += test_scorep_config_bool \

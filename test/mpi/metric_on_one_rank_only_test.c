@@ -18,9 +18,7 @@
 
 /**
  * @file       metric_on_one_rank_only_test.c
- * @maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
  *
- * @status alpha
  *
  */
 

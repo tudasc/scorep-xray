@@ -17,10 +17,7 @@
 
 /**
  * @file       self_contained_public_header_SCOREP_User.cpp
- * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  *
  */

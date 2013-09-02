@@ -17,7 +17,6 @@
 /**
  * @file       mpi_omp_metric_collection_test.c
  *
- * @status alpha
  *
  */
 

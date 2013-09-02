@@ -17,7 +17,6 @@
 
 /**
  * @file       cuda_test.cu
- * @maintainer Robert Dietrich <robert.dietrich@zih.tu-dresden.de>
  *
  * @brief Test program for the CUDA adapter. Several parts of this program have 
  * been extracted from the NVIDIA computing samples 'simpleStreams' and 

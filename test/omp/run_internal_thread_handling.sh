@@ -16,7 +16,6 @@
 ##
 
 ## file       run_omp_test.sh
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 ./internal_thread_handling

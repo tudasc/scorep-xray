@@ -16,7 +16,6 @@
 ##
 
 ## file       run_region_types_consistency_check.sh
-## maintainer Daniel Lorenz <d.lorenz@fz-juelich.de>
 
 SCOREP_ENABLE_TRACING=true ./region_types_consistency_check
 

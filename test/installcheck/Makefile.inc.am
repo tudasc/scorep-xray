@@ -16,7 +16,6 @@
 ##
 
 ## file       test/installcheck/Makefile.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 INSTALLCHECK_DIR = $(SRC_ROOT)test/installcheck
 

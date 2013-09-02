@@ -16,8 +16,6 @@
 ##
 
 ## file       Makefile.inc.am
-## author     Christian Roessel <c.roessel@fz-juelich.de>
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 if HAVE_OPENMP_SUPPORT
 

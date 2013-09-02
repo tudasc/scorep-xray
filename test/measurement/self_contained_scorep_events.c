@@ -17,10 +17,7 @@
 
 /**
  * @file       self_contained_scorep_events.c
- * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  *
  */

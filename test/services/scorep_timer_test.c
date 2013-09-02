@@ -16,10 +16,7 @@
 
 /**
  * @file       scorep_timer_gettimeofday_test.c
- * @author     Christian R&ouml;ssel <c.roessel@fz-juelich.de>
- * @maintainer Christian R&ouml;ssel <c.roessel@fz-juelich.de>
  *
- * @status alpha
  *
  * Test of the implementation of the SCOREP_Timing.h interface that uses the
  * gettimeofday timer.

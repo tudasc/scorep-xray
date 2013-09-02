@@ -16,7 +16,6 @@
 ##
 
 ## file       Makefile.inc.am
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 check_PROGRAMS += allocator_test
 allocator_test_SOURCES = $(SRC_ROOT)test/memory/scorep_allocator_test.c \

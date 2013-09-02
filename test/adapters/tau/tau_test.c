@@ -17,7 +17,6 @@
 
 /**
  * @ file      tau_test.c
- * @maintainer Scott Biersdorff <scottb@cs.uoregon.edu>
  *
  * @brief Test program for the TAU adapter.
  *
