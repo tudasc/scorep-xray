@@ -88,9 +88,13 @@ various Score-P components.
   - PGI    : tested with version 10.1
   - Oracle : only works for Fortran (not C/C++), tested with version 12.2
   - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and 
-             higher and corresponding bgxl compilers on BlueGene systems
+             higher and corresponding bgxl compilers on BlueGene systems.
   - Intel  : only works with Intel icc/ifort version 10 and higher compilers
   - Cray   : tested with version 8.1.8
+
+  - Because the compiler instrumentation interface of the XL compiler series 
+    changed with xlc 11.1/xlf 13.1. You need a separate installations
+    for older versions than xlc 11.1/xlf 13.1 and newer versions.
 
   - Measurement filtering can only be applied to functions
     instrumented by the IBM, GNU, Intel, PGI, or Oracle compilers as
@@ -196,7 +200,7 @@ various Score-P components.
 
   - COBI binary instrumentation is currently disabled due to changes
     in Score-P's linking process that now passes more libraries to
-    COBI/Dyninst than Dyninst can handle at the moment. This issue
+    COBI/Dyninst than it can handle at the moment. This issue
     will be addressed in a future release of Score-P and/or Dyninst.
 
   - OpenMP instrumentation is broken in combination with Cray
