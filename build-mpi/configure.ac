@@ -33,6 +33,14 @@ AC_INIT([Score-P], m4_esyscmd([../vendor/common/build-config/generate-package-ve
 AFS_PACKAGE_INIT([MPI backend])
 AFS_SUMMARY_INIT
 
+# Not all MPIs support executing MPI programs without a startup
+# command like mpiexec. Therefore prevent executing configure
+# generated programs.
+cross_compiling=yes
+# suppress warnings about 'using cross tools not prefixed with host
+# triplet'
+ac_tool_warned=yes
+
 AC_SUBST([LIBRARY_INTERFACE_VERSION], m4_esyscmd([../vendor/common/build-config/generate-library-version.sh ../build-config/VERSION]))
 
 AC_CONFIG_AUX_DIR([../build-config])
@@ -103,24 +111,11 @@ AC_CONFIG_HEADERS([../src/config-backend-mpi.h])
 AS_IF([test "x${ac_scorep_cross_compiling}" != "xyes" && \
        test "x${ac_scorep_cross_compiling}" != "xno"],
     [AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])])
-cross_compiling=${ac_scorep_cross_compiling}
-
-#if test "x${ac_scorep_platform}" = "xaix"; then
-    cross_compiling=yes
-    # on power6 systems with poe, e.g. JUMP, we cannot execute a MPI
-    # program on the login node. By setting cross_compiling temporarily
-    # to "yes", we allow configure to succeed. Wrap all macros that might
-    # execute a program in a cross_compiling=yes block, e.g. AC_SCOREP_CHECK_SIZEOF
-#fi
-# suppress warnings about 'using cross tools not prefixed with host triplet'
-ac_tool_warned=yes
 
 ac_scorep_backend=yes
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-      [ac_scorep_frontend="no"
-       scorep_otf2_config_backend_arg="--backend"],
+      [ac_scorep_frontend="no"],
       [ac_scorep_frontend="yes"])
-
 
 AC_SCOREP_SVN_CONTROLLED
 
@@ -215,7 +210,9 @@ AC_SCOREP_RUSAGE
 AC_SCOREP_METRIC_PLUGINS
 
 AS_IF([test -n "${scorep_otf2_bindir}"],
-      [AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cppflags ${scorep_otf2_config_backend_arg}`"])
+      [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+           [scorep_otf2_config_backend_arg="--backend"])
+       AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cppflags ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_LIBS],     ["`${scorep_otf2_bindir}/otf2-config --libs ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_LDFLAGS],  ["`${scorep_otf2_bindir}/otf2-config --ldflags ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_BINDIR],   ["${scorep_otf2_bindir}"])
