@@ -43,13 +43,8 @@ AC_DEFUN([AC_SCOREP_SCORE], [])
 
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
 
-AC_SCOREP_SVN_CONTROLLED
-
-AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
-AM_SILENT_RULES([yes])
-
-# CXX given, find corresponding CC for utilities/filter                                                             
-# Do this before calls to AC_PROG_*                                                                                 
+# CXX given, find corresponding CC for utilities/filter
+# Do this before calls to AC_PROG_*
 CXX_STRIPPED="`echo ${CXX} | awk '{printf $1}'`"
 AS_CASE([${CXX_STRIPPED}],
         [g++],         [CC=gcc],   # gnu
@@ -59,13 +54,19 @@ AS_CASE([${CXX_STRIPPED}],
         [pgCC],        [CC=pgcc],  # pgi
         [AC_MSG_ERROR([invalid value of CXX (${CXX_STRIPPED}), cannot determine corresponding CC])])
 
-AC_PROG_CC
-AC_SCOREP_PROG_CC_C99
-AC_PROG_CXX
+AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
+AM_SILENT_RULES([yes])
 
 LT_PREREQ([2.4])
 LT_INIT([disable-shared])
 AC_SUBST([LIBTOOL_DEPS])
+
+AC_PROG_CC
+AC_SCOREP_PROG_CC_C99
+
+AC_PROG_CXX
+
+AC_SCOREP_SVN_CONTROLLED
 
 AC_SCOREP_CUBE_READER
 

@@ -39,12 +39,7 @@ AC_CONFIG_AUX_DIR([../build-config])
 AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4
                      ../build-config/m4])
 
-AC_CONFIG_HEADERS([../src/config-frontend.h])
-
 AC_DEFUN([AC_SCOREP_FRONTEND], [])
-
-ac_scorep_frontend="yes"
-ac_scorep_backend="no"
 
 AC_SCOREP_PRECIOUS_VARS_FOR_BUILD
 
@@ -66,10 +61,27 @@ AC_SCOREP_CONVERT_FOR_BUILD_COMPILER([CXX])
 AC_SCOREP_CONVERT_FOR_BUILD_COMPILER([F77])
 AC_SCOREP_CONVERT_FOR_BUILD_COMPILER([FC])
 
-AC_SCOREP_SVN_CONTROLLED
-
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
 AM_SILENT_RULES([yes])
+
+LT_PREREQ([2.4])
+LT_INIT([disable-shared])
+AC_SUBST([LIBTOOL_DEPS])
+
+AC_PROG_CC
+AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
+AFS_SUMMARY([C99 compiler used], [$CC])
+AM_PROG_CC_C_O
+
+AC_PROG_CXX
+
+AC_CONFIG_HEADERS([../src/config-frontend.h])
+
+
+ac_scorep_frontend="yes"
+ac_scorep_backend="no"
+
+AC_SCOREP_SVN_CONTROLLED
 
 AM_CONDITIONAL([BUILD_TESTS], [true])
 AM_CONDITIONAL([CROSS_BUILD], [true])
@@ -77,15 +89,7 @@ AC_SCOREP_PLATFORM_SETTINGS
 AC_SCOREP_PLATFORM_AND_MACHINE_NAMES
 
 # <AC_SCOREP_COMMON_CHECKS>
-AC_PROG_CC
 AC_SCOREP_COMPILER_CHECKS
-
-AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
-AFS_SUMMARY([C99 compiler used], [$CC])
-
-AC_PROG_CXX
-
-AM_PROG_CC_C_O
 
 AC_C_BIGENDIAN
 
@@ -128,10 +132,6 @@ AS_IF([test "x${scorep_have_score_build}" = "xno"],
       [AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 0])])
 
 AC_CHECK_FUNCS_ONCE([readlink])
-
-LT_PREREQ([2.4])
-LT_INIT([disable-shared])
-AC_SUBST([LIBTOOL_DEPS])
 
 AC_SCOREP_BUILD_MODE
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION
