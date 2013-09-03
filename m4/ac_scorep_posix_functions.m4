@@ -149,4 +149,50 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     AM_CONDITIONAL([HAVE_FSEEKO64], [test "x${has_fseeko64_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_GETCWD], [test "x${has_getcwd_func}" = "xyes"])
 
+
+    ##
+    ## CXX
+    ##
+
+    ##
+    ## check function declarations
+    ##
+
+    AC_LANG_PUSH(C++)
+
+    ## check whether functions are declared and set HAVE_DECL_* appropriately
+    AC_CHECK_DECLS([gethostid, gethostname, fseeko, fseeko64, getcwd], [], [], [[
+      #include <stdio.h>
+    ]])
+
+    ##
+    ## try to link
+    ##
+
+    has_popen_func="yes"
+    AC_MSG_CHECKING([for popen and pclose])
+    AC_LINK_IFELSE([
+        AC_LANG_SOURCE([
+            #include <stdio.h>
+
+            int main()
+            {
+	        FILE *fh = popen( "echo test", "r" );
+                pclose( fh );
+                return 0;
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_POPEN, 1, [Can link against popen and pclose])],
+        [AC_MSG_RESULT(no)
+         has_popen_func="no"]
+    ) # AC_LINK_IF_ELSE
+
+    AC_LANG_POP(C++)
+
+    ##
+    ## result
+    ##
+
+    AM_CONDITIONAL([HAVE_POPEN], [test "x${has_popen_func}" = "xyes"])
 ])
