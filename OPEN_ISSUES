@@ -38,7 +38,81 @@
                         ========================
                                                            Status: Aug 2013
 
-* Compiler instrumentation
+This file lists known limitations and unimplemented features of
+various Score-P components.
+
+--------------------------------------------------------------------------------
+
+* Platform support
+
+  - Score-P has been tested on the following platforms:
+    + IBM Blue Gene/Q, only static libraries supported
+    + IBM SP & BladeCenter clusters, only static libraries supported
+    + Cray XE, XK, XC, only static libraries supported
+    + SGI Altix/ICE
+    + various Linux/Intel (x86/x64) clusters
+    The provided configure options (see INSTALL) may provide a good
+    basis for building and testing the toolset on other systems.
+
+  - The following platforms have not been tested recently:
+    + IBM Blue Gene/P
+    + Cray XT
+    + Sun Solaris/SPARC-based clusters
+    However the supplied buildsystem might still work on these
+    systems.
+
+  - The following platforms have not been tested:
+    + NEC SX-9
+    + IBM Blue Gene/L
+    + SiCortex systems
+    + other NEC SX systems
+
+  - Each toolset installation can only support one MPI implementation
+    (because MPI is only source-code but not binary compatible). If
+    your systems support more than one MPI implementation (e.g. Linux
+    clusters often do), separate builds for each MPI implementation
+    have to be installed.
+
+  - The same is true if your system features more than one compiler
+    supporting automatic function instrumentation.
+
+  - To build Score-P it is required to have Fortran compilers and
+    highly recommended to have MPI compilers.
+
+--------------------------------------------------------------------------------
+
+* Automatic compiler instrumentation via "scorep" based on (often
+  undocumented) compiler switches
+
+  - GNU    : tested with GCC 4 and higher
+  - PGI    : tested with version 10.1
+  - Oracle : only works for Fortran (not C/C++), tested with version 12.2
+  - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and 
+             higher and corresponding bgxl compilers on BlueGene systems
+  - Intel  : only works with Intel icc/ifort version 10 and higher compilers
+  - Cray   : tested with version 8.1.8
+
+  - Measurement filtering can only be applied to functions
+    instrumented by the IBM, GNU, Intel, PGI, or Oracle compilers as
+    well as functions instrumented by PDT and user
+    functions. (Filtering of MPI functions, OpenMP is always
+    ineffective.)
+
+  - Function instrumentation based on using the GNU and Intel
+    interface has the limitation that instrumented functions in
+    dynamically loaded (shared) libraries are not measured (i.e.,
+    implicitly filtered).
+
+  - The GNU Fortran compiler versions 4.6.0 and 4.6.1 have a bug which
+    leads to an internal compiler error when using automatic function
+    instrumentation.  It is therefore recommended to either use an
+    older/newer version of the compiler or to work around this issue
+    by using manual instrumentation or automatic source-code
+    instrumentation based on PDToolkit.
+
+  - Function instrumentation using the Intel compiler version 11.1 for
+    codes using OpenMP tasking is erroneous. You might try PDT
+    instrumentation instead.
 
   - OpenMP tasking: On Exits, the PGI compiler instrumentation
     interface does not provide information which function was
@@ -59,90 +133,6 @@
     disable libbfd region naming (--without-libbfd). In the latter
     case, region names will be provided by nm.
 
-* OpenMP instrumentation is broken in combination with Cray compilers.
-
-* COBI binary instrumentation is currently disabled due to changes in
-  Score-P's linking process that now passes more libraries to
-  COBI/Dyninst than Dyninst can handle at the moment. This issue will
-  be addressed in a future release of Score-P and/or Dyninst.
-
-* Currently, Score-P can't handle MPI_Finalize() calls that occur
-  after the end of main(), e.g., via a destructor of a static C++
-  object. Please call MPI_Finalize() before the end of main(). The
-  issue will be resolved in a future version of Score-P.
-
-
-                        Score-P v1.1 OPEN ISSUES
-                        ========================
-                                                           Status: Oct 2012
-
-* Platform support
-
-  - Score-P has been tested on the following platforms:
-    + IBM Blue Gene/Q, only static libraries supported
-    + IBM SP & BladeCenter clusters, only static libraries supported
-    + SGI Altix/ICE
-    + various Linux/Intel (x86/x64) clusters
-    The provided configure options (see INSTALL) may provide a good
-    basis for building and testing the toolset on other systems.
-
-  - The following platforms have not been tested recently:
-    + IBM Blue Gene/P
-    + Cray XE6/XK6
-    + Sun Solaris/SPARC-based clusters
-    However the supplied buildsystem might still work on these
-    systems.
-
-  - The following platforms have not been tested:
-    + Cray XT3/4, XT5/6
-    + NEC SX-9
-    + IBM Blue Gene/L
-    + SiCortex systems
-    + other NEC SX systems
-
-  - Each toolset installation can only support one MPI implementation
-    (because MPI is only source-code but not binary compatible). If
-    your systems support more than one MPI implementation (e.g. Linux
-    clusters often do), separate builds for each MPI implementation
-    have to be installed.
-
-  - The same is true if your system features more than one compiler
-    supporting automatic function instrumentation.
-
-  - To build Score-P it is required to have MPI and Fortran compilers.
-
---------------------------------------------------------------------------------
-
-* Automatic instrumentation via "scorep" based on (often undocumented)
-  compiler switches
-
-  - GNU    : tested with GCC 4 and higher
-  - PGI    : tested with version 10.1
-  - Oracle : only works for Fortran (not C/C++), tested with version 12.2
-  - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and 
-             higher and corresponding bgxl compilers on BlueGene systems
-  - Intel  : only works with Intel icc/ifort version 10 and higher compilers
-
-  Measurement filtering can only be applied to functions instrumented
-  by the IBM, GNU, Intel, PGI, or Oracle compilers as well as
-  functions instrumented by PDT and user functions. (Filtering of MPI
-  functions, OpenMP is always ineffective.)
-
-  Function instrumentation based on using the GNU and Intel interface
-  has the limitation that instrumented functions in dynamically loaded
-  (shared) libraries are not measured (i.e., implicitly filtered).
-
-  The GNU Fortran compiler versions 4.6.0 and 4.6.1 have a bug which
-  leads to an internal compiler error when using automatic function
-  instrumentation.  It is therefore recommended to either use an
-  older/newer version of the compiler or to work around this issue by
-  using manual instrumentation or automatic source-code
-  instrumentation based on PDToolkit.
-
-  Function instrumentation using the Intel compiler version 11.1 for
-  codes using OpenMP tasking is erroneous. You might try PDT
-  instrumentation instead.
-
 --------------------------------------------------------------------------------
 
 * MPI support
@@ -155,6 +145,11 @@
   - Online detection of MPI wait states might produce wrong results
     when messages sent within different communicators overtake each
     other.
+
+  - Currently, Score-P can't handle MPI_Finalize() calls that occur
+    after the end of main(), e.g., via a destructor of a static C++
+    object. Please call MPI_Finalize() before the end of main(). The
+    issue will be resolved in a future version of Score-P.
 
 --------------------------------------------------------------------------------
 
@@ -191,9 +186,21 @@
 
   - Rusage-based metrics are not supported on BlueGene systems.
 
-  - In order to use CUDA/CUPTI support you need to add the directories
-    hosting libcuda, libcudart, and libcupti to your LD_LIBRARY_PATH
-    environment variable.
+  - Using scorep as a compiler/linker preposition is sometimes not
+    supported by application build systems, e.g., CMake.  In such
+    cases, it may be appropriate to create scripts which invoke the
+    compiler/linker with the scorep preposition defined.  For example,
+    specify scorep_ftn as the compiler and linker during application
+    configuration, where this is a script executing your Fortran
+    compiler as "scorep ftn $*".
+
+  - COBI binary instrumentation is currently disabled due to changes
+    in Score-P's linking process that now passes more libraries to
+    COBI/Dyninst than Dyninst can handle at the moment. This issue
+    will be addressed in a future release of Score-P and/or Dyninst.
+
+  - OpenMP instrumentation is broken in combination with Cray
+    compilers.
 
 --------------------------------------------------------------------------------
 
