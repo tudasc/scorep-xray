@@ -162,7 +162,7 @@ AS_IF([test "x$scorep_mpi_f90_supported" = "xyes"], [
 ])
 
 AS_IF([test "x$scorep_mpi_c_supported$scorep_mpi_cxx_supported$scorep_mpi_f77_supported$scorep_mpi_f90_supported" != "xnononono"], [
-    AFS_SUMMARY([Library used for MPI], [$MPILIBS])
+    AFS_SUMMARY([Library used for MPI], [$MPI_LIBS])
 ])
 
 # <AC_SCOREP_COMMON_CHECKS>
