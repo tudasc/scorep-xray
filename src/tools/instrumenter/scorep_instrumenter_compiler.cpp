@@ -34,7 +34,7 @@
 #include <UTILS_Error.h>
 #include <UTILS_IO.h>
 
-
+#if HAVE( POPEN )
 static void
 scorep_get_ibm_compiler_version( std::string compiler, int& major, int& minor )
 {
@@ -68,6 +68,7 @@ scorep_get_ibm_compiler_version( std::string compiler, int& major, int& minor )
     }
     minor = atoi( token );
 }
+#endif
 
 /* **************************************************************************************
  * class SCOREP_Instrumenter_CompilerAdapter
@@ -139,7 +140,7 @@ SCOREP_Instrumenter_CompilerAdapter::precompile
 
     /* For the XL compiler we have two interfaces. Check whether the version
        of the compilers match the used interface. */
-#if SCOREP_BACKEND_COMPILER_IBM
+#if SCOREP_BACKEND_COMPILER_IBM && HAVE( POPEN )
     int major, minor, scorep_version, app_version;
     scorep_get_ibm_compiler_version( cmdLine.getInstallData()->getCC(), major, minor );
     scorep_version = major * 100 + minor;
