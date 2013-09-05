@@ -188,6 +188,7 @@ path_to_common_compiler_files="$srcdir/vendor/common/build-config/platforms/"
 path_to_package_compiler_files="$srcdir/build-config/platforms/"
 
 ac_scorep_compilers_frontend="platform-frontend-${ac_scorep_platform}"
+ac_scorep_compilers_backend="platform-backend-${ac_scorep_platform}"
 
 m4_pattern_allow([AC_SCOREP_WITH_COMPILER_SUITE])
 m4_pattern_allow([AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE])
@@ -212,6 +213,9 @@ AC_ARG_WITH([compiler-suite],
 AS_IF([test -f "${path_to_package_compiler_files}${ac_scorep_compilers_frontend}"],
       [ac_scorep_compilers_frontend="${path_to_package_compiler_files}${ac_scorep_compilers_frontend}"],
       [ac_scorep_compilers_frontend="${path_to_common_compiler_files}${ac_scorep_compilers_frontend}"])
+AS_IF([test -f "${path_to_package_compiler_files}${ac_scorep_compilers_backend}"],
+      [ac_scorep_compilers_backend="${path_to_package_compiler_files}${ac_scorep_compilers_backend}"],
+      [ac_scorep_compilers_backend="${path_to_common_compiler_files}${ac_scorep_compilers_backend}"])
 ])#AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE
 
 
