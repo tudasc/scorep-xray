@@ -385,11 +385,20 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
     }
 
     /* Check for application type settings */
+#if HAVE( BACKEND_MPI )
     else if ( arg == "--mpi" )
     {
         m_is_mpi_application = enabled;
         return scorep_parse_mode_param;
     }
+#else
+    else if ( arg == "--mpi" )
+    {
+        std::cerr << "ERROR: This Score-P installation does not support MPI.\n"
+                  << std::endl;
+        exit( EXIT_FAILURE );
+    }
+#endif
     else if ( arg == "--nompi" )
     {
         m_is_mpi_application = disabled;
@@ -547,7 +556,11 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
          */
         if ( m_is_mpi_application != disabled )
         {
+#if HAVE( BACKEND_MPI )
             m_is_mpi_application = enabled;
+#else
+            std::cerr << "ERROR: This installation does not support MPI." << std::endl;
+#endif
         }
         m_libraries += " " + current;
     }
@@ -572,7 +585,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     }
     else if ( current == "-l" )
     {
-        if ( next == "mpi" )
+        if ( ( next == "mpi" ) || ( next == "mpich.rts" ) )
         {
             m_lmpi_set      = true;
             m_current_flags = &m_flags_after_lmpi;
@@ -669,6 +682,23 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         }
         else if ( current[ 1 ] == 'l' )
         {
+            if ( ( current == "-lmpi" ) || ( current == "-lmpich.rts" ) )
+            {
+                m_lmpi_set      = true;
+                m_current_flags = &m_flags_after_lmpi;
+                /* is_mpi_application can only be disabled, if --nompi was specified.
+                   In this case do not enable mpi wrappers.
+                 */
+                if ( m_is_mpi_application != disabled )
+                {
+#if HAVE( BACKEND_MPI )
+                    m_is_mpi_application = enabled;
+#else
+                    std::cerr << "ERROR: This installation does not support MPI."
+                              << std::endl;
+#endif
+                }
+            }
             m_libraries += " " + current;
         }
     }
@@ -732,7 +762,12 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
     {
         if ( m_compiler_name.substr( 0, 2 ) == "mp" )
         {
+#if HAVE( BACKEND_MPI )
             m_is_mpi_application = enabled;
+#else
+            std::cerr << "ERROR: This installation does not support MPI."
+                      << std::endl;
+#endif
         }
         else
         {

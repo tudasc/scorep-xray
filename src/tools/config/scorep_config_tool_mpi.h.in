@@ -13,6 +13,8 @@
  * 
  */
 
+#define HAVE_BACKEND_MPI 1
+
 /* @configure_input@ */
 
 #define SCOREP_MPICC                        "@CC@"
