@@ -241,6 +241,54 @@ m4_define([_AFS_READ_VAR_FROM_FILE],
 
 dnl ----------------------------------------------------------------------------
 
+# AFS_CUSTOM_COMPILERS
+# --------------------
+# Provide --with-custom-compiler configure option; if given sets
+#   ac_scorep_compilers_backend
+#   ac_scorep_compilers_frontend
+#   ac_scorep_compilers_mpi
+# to AFS_COMPILER_FILES/platform-*-user-provided files.
+# Provides afs_custom_compilers_given=(yes|no) to be used by other
+# macros setting ac_scorep_compilers_*.
+AC_DEFUN([AFS_CUSTOM_COMPILERS],
+[
+    AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
+
+    AC_ARG_WITH([custom-compilers],
+        [AS_HELP_STRING([--with-custom-compilers],
+             [Customize compiler settings by 1. copying the three files <srcdir>/vendor/common/build-config/platforms/platform-*-user-provided to the directory where you run configure <builddir>, 2. editing those files to your needs, and 3. running configure. Alternatively, edit the files under <srcdir> directly. Files in <builddir> take precedence. You are entering unsupported terrain. Namaste, and good luck!])
+        ],
+        [afs_custom_compilers_given="yes"
+         AS_CASE([${withval}],
+             ["yes"], [AS_IF([test -f ./platform-backend-user-provided && \
+                              test -f ./platform-frontend-user-provided && \
+                              test -f ./platform-mpi-user-provided],
+                           [AC_MSG_NOTICE([Using compiler specification from ./platform-*-user-provided files.])
+                            ac_scorep_compilers_backend="./platform-backend-user-provided"
+                            ac_scorep_compilers_frontend="./platform-frontend-user-provided"
+                            ac_scorep_compilers_mpi="./platform-mpi-user-provided"],
+                           [AC_MSG_NOTICE([Using compiler specification from AFS_COMPILER_FILES/platform-*-user-provided files.])
+                            ac_scorep_compilers_backend="AFS_COMPILER_FILES/platform-backend-user-provided"
+                            ac_scorep_compilers_frontend="AFS_COMPILER_FILES/platform-frontend-user-provided"
+                            ac_scorep_compilers_mpi="AFS_COMPILER_FILES/platform-mpi-user-provided"])
+                      ],
+             [AC_MSG_ERROR(['${withval}' not supported by --with-custom-compilers.])])
+        ],
+        [afs_custom_compilers_given="no"
+        ])    
+])
+
+dnl ----------------------------------------------------------------------------
+
+# AFS_COMPILER_FILES_(COMMON|PACKAGE)
+# -----------------------------------
+# Use AFS_COMPILER_FILES_* as alias for $srcdir/[vendor/common/]build-config/platforms
+# for setting paths to compiler files.
+m4_define([AFS_COMPILER_FILES_COMMON], [$srcdir/vendor/common/build-config/platforms])
+m4_define([AFS_COMPILER_FILES_PACKAGE], [$srcdir/build-config/platforms])
+
+dnl ----------------------------------------------------------------------------
+
 # Following two macros copied from
 # <autotools-prefix>/share/aclocal/libtool.m4. I don't wont to call
 # LT_INIT from the toplevel configure but want to use

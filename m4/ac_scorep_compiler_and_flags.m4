@@ -114,9 +114,6 @@ AC_DEFUN([AC_SCOREP_WITH_COMPILER_SUITE],
 [
 AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
 
-path_to_common_compiler_files="$srcdir/vendor/common/build-config/platforms/"
-path_to_package_compiler_files="$srcdir/build-config/platforms/"
-
 ac_scorep_compilers_frontend="platform-frontend-${ac_scorep_platform}"
 ac_scorep_compilers_backend="platform-backend-${ac_scorep_platform}"
 # ac_scorep_compilers_mpi set in AC_SCOREP_WITH_MPI_COMPILER_SUITE
@@ -141,24 +138,9 @@ AC_ARG_WITH([nocross-compiler-suite],
                             ["no"],        [AC_MSG_ERROR([option --without-nocross-compiler-suite makes no sense.])],
                             [AC_MSG_ERROR([compiler suite "${withval}" not supported by --with-nocross-compiler-suite.])])],
                    [AC_MSG_WARN([option --with-nocross-compiler-suite ignored in cross-compiling mode. You may use --with-frontend-compiler-suite to customize the frontend compiler.])])])
-AS_IF([test -f "${path_to_package_compiler_files}${ac_scorep_compilers_backend}"],
-      [ac_scorep_compilers_backend="${path_to_package_compiler_files}${ac_scorep_compilers_backend}"],
-      [ac_scorep_compilers_backend="${path_to_common_compiler_files}${ac_scorep_compilers_backend}"])
-
-
-AC_ARG_WITH([custom-compilers],
-    [AS_HELP_STRING([--with-custom-compilers],
-         [Customize compiler settings by editing the three files vendor/common/build-config/platforms/platform-*-user-provided before calling configure. You are entering unsupported terrain. Namaste, and good luck!])
-    ],
-    [afs_custom_compilers_given="yes"
-     AS_CASE([${withval}],
-         ["yes"], [ac_scorep_compilers_backend="${path_to_common_compiler_files}platform-backend-user-provided"
-                   ac_scorep_compilers_frontend="${path_to_common_compiler_files}platform-frontend-user-provided"
-                   ac_scorep_compilers_mpi="${path_to_common_compiler_files}platform-mpi-user-provided"],
-         [AC_MSG_ERROR(['${withval}' not supported by --with-custom-compilers.])])
-    ],
-    [afs_custom_compilers_given="no"
-    ])
+AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_backend}"],
+      [ac_scorep_compilers_backend="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_backend}"],
+      [ac_scorep_compilers_backend="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_backend}"])
 
 
 AC_ARG_WITH([frontend-compiler-suite],
@@ -175,18 +157,15 @@ AC_ARG_WITH([frontend-compiler-suite],
                             ["no"],        [AC_MSG_ERROR([option --without-frontend-compiler-suite makes no sense.])],
                             [AC_MSG_ERROR([compiler suite "${withval}" not supported by --with-frontend-compiler-suite.])])],
                    [AC_MSG_ERROR([Option --with-frontend-compiler-suite not supported in non cross-compiling mode. Please use --with-nocross-compiler-suite instead.])])])
-AS_IF([test -f "${path_to_package_compiler_files}${ac_scorep_compilers_frontend}"],
-      [ac_scorep_compilers_frontend="${path_to_package_compiler_files}${ac_scorep_compilers_frontend}"],
-      [ac_scorep_compilers_frontend="${path_to_common_compiler_files}${ac_scorep_compilers_frontend}"])
+AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_frontend}"],
+      [ac_scorep_compilers_frontend="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_frontend}"],
+      [ac_scorep_compilers_frontend="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_frontend}"])
 ])# AC_SCOREP_WITH_COMPILER_SUITE
 
 
 dnl dont' use together with AC_SCOREP_WITH_COMPILER_SUITE, intended to be used by OPARI only
 AC_DEFUN([AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE],
 [
-path_to_common_compiler_files="$srcdir/vendor/common/build-config/platforms/"
-path_to_package_compiler_files="$srcdir/build-config/platforms/"
-
 ac_scorep_compilers_frontend="platform-frontend-${ac_scorep_platform}"
 ac_scorep_compilers_backend="platform-backend-${ac_scorep_platform}"
 
@@ -210,12 +189,12 @@ AC_ARG_WITH([compiler-suite],
                      ["studio"],    [ac_scorep_compilers_frontend="compiler-nocross-studio"],
                      ["no"],        [AC_MSG_ERROR([option --without-compiler-suite makes no sense.])],
                      [AC_MSG_ERROR([compiler suite "${withval}" not supported by --with-compiler-suite.])])])
-AS_IF([test -f "${path_to_package_compiler_files}${ac_scorep_compilers_frontend}"],
-      [ac_scorep_compilers_frontend="${path_to_package_compiler_files}${ac_scorep_compilers_frontend}"],
-      [ac_scorep_compilers_frontend="${path_to_common_compiler_files}${ac_scorep_compilers_frontend}"])
-AS_IF([test -f "${path_to_package_compiler_files}${ac_scorep_compilers_backend}"],
-      [ac_scorep_compilers_backend="${path_to_package_compiler_files}${ac_scorep_compilers_backend}"],
-      [ac_scorep_compilers_backend="${path_to_common_compiler_files}${ac_scorep_compilers_backend}"])
+AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_frontend}"],
+      [ac_scorep_compilers_frontend="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_frontend}"],
+      [ac_scorep_compilers_frontend="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_frontend}"])
+AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_backend}"],
+      [ac_scorep_compilers_backend="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_backend}"],
+      [ac_scorep_compilers_backend="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_backend}"])
 ])#AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE
 
 
@@ -223,8 +202,6 @@ AS_IF([test -f "${path_to_package_compiler_files}${ac_scorep_compilers_backend}"
 AC_DEFUN([AC_SCOREP_WITH_MPI_COMPILER_SUITE],
 [
 AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
-path_to_common_compiler_files="$srcdir/vendor/common/build-config/platforms/"
-path_to_package_compiler_files="$srcdir/build-config/platforms/"
 
 scorep_mpi_user_disabled="no"
 AC_ARG_WITH([mpi],
@@ -264,9 +241,9 @@ AC_ARG_WITH([mpi],
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes" || test "x${ac_scorep_platform}" = "xaix"],
     [ac_scorep_compilers_mpi="platform-mpi-${ac_scorep_platform}"])
 
-AS_IF([test -f "${path_to_package_compiler_files}${ac_scorep_compilers_mpi}"],
-      [ac_scorep_compilers_mpi="${path_to_package_compiler_files}${ac_scorep_compilers_mpi}"],
-      [ac_scorep_compilers_mpi="${path_to_common_compiler_files}${ac_scorep_compilers_mpi}"])
+AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_mpi}"],
+      [ac_scorep_compilers_mpi="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_mpi}"],
+      [ac_scorep_compilers_mpi="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_mpi}"])
 # sanity checks missing
 ])# AC_SCOREP_WITH_MPI_COMPILER_SUITE
 
