@@ -92,6 +92,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             CXX="$(CXX)" \
                             F77="$(F77)" \
                             FC="$(FC)" \
+                            LIBS="$(LIBS)" \
                             CFLAGS="$(CFLAGS)" \
                             CXXFLAGS="$(CXXFLAGS)" \
                             F77FLAGS="$(FFLAGS)" \
@@ -128,6 +129,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             CXX="$(CXX)" \
                             F77="$(F77)" \
                             FC="$(FC)" \
+                            LIBS="$(LIBS)" \
                             CFLAGS="$(CFLAGS) $$POMP_FLAGS" \
                             CXXFLAGS="$(CXXFLAGS)" \
                             F77FLAGS="$(FFLAGS) $(FD_FLAG)$$POMP_FLAGS" \

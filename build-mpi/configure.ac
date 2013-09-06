@@ -258,8 +258,6 @@ sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&   /; t; s/_0 = @echo "  /&MPI/' \
 Makefile >Makefile.mpi && mv -f Makefile.mpi Makefile || rm -f Makefile.mpi
 ])
 AC_CONFIG_FILES([run_otf2_speed_test.sh \
-                 ../test/jacobi/MPI/C/Makefile \
-                 ../test/jacobi/hybrid/C/Makefile \
                  ../installcheck/mpi/Makefile:../test/installcheck/mpi/Makefile.in
                  ../installcheck/mpi_omp/Makefile:../test/installcheck/mpi_omp/Makefile.in
                  ../src/scorep_config_tool_mpi.h:../src/tools/config/scorep_config_tool_mpi.h.in])

@@ -149,9 +149,9 @@ create-cobi-config-local:
 	fi
 
 
-INSTALLCHECK_SUBDIRS  = ../test/jacobi/serial/C
+INSTALLCHECK_SUBDIRS  =
 if HAVE_OPENMP_SUPPORT
-INSTALLCHECK_SUBDIRS += ../test/jacobi/OpenMP/C
+INSTALLCHECK_SUBDIRS +=
 else
 endif
 

@@ -7,6 +7,9 @@
 - On Blue Gene/Q, detect PAMI library at configure time. The loaction and
   names of the PAMI files changes during a system upgrade. Search all known
   directories and library names.
+- On SGI MPT systems, or more genarally on systems that don't use
+  compiler wrappers for building MPI programs, improve the automatic
+  detection of the MPI programming paradigm during instrumentation.
 
 ------------------- Released version 1.2 -----------------------------
 

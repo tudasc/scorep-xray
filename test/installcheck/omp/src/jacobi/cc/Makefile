@@ -16,7 +16,6 @@
 ##
 
 ## file       test/installcheck/serial/src/jacobi/cc/Makefile
-## maintainer Christian Roessel <c.roessel@fz-juelich.de>
 
 
 #------------------------------------------------------------------------------
@@ -27,7 +26,7 @@ OBJECTS = \
 	$(OBJDIR)/jacobi.o \
 	$(OBJDIR)/main.o
 
-LIBS = -lm
+LIBS_INTERNAL = -lm
 
 all:
 
