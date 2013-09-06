@@ -301,7 +301,8 @@ SCOREP_Filter_ParseFile( const char* file_name )
     filter_file = fopen( file_name, "r" );
     if ( filter_file == NULL )
     {
-        UTILS_ERROR_POSIX(  "Unable to open filter specification file" );
+        UTILS_ERROR_POSIX(  "Unable to open filter specification file '%s'",
+                            file_name );
         return SCOREP_ERROR_FILE_CAN_NOT_OPEN;
     }
 
