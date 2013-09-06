@@ -77,21 +77,25 @@ esac
 # don't detect and load defaults in nested configures (e.g. otf2)
 AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
        test "${ac_scorep_platform_data_provided}" = "no"],
-      [dnl AFS_COMPILER_BACKEND([CC, CXX, F77, FC])
-       AC_SCOREP_WITH_COMPILER_SUITE
-       AS_CASE([${afs_custom_compilers_given},${ac_scorep_platform}],
-           [no,mac|no,mingw],
-               [AC_MSG_ERROR([have no suitable defaults to build Score-P on $afs_scorep_platform_name yet. Please use --with-custom-compilers and provide settings to <AC_PACKAGE_BUGREPORT> on success. Thanks.])],
-           [no,unknown],
-               [AC_MSG_ERROR([cannot detect platform to set suitable defaults. Please use --with-custom-compilers and provide settings and platform to <AC_PACKAGE_BUGREPORT> on success. Thanks.])
+      [AFS_CUSTOM_COMPILERS
+       AS_IF([test "x${afs_custom_compilers_given}" = "xno"],
+           [dnl AFS_COMPILER_BACKEND([CC, CXX, F77, FC])       
+            AC_SCOREP_WITH_COMPILER_SUITE
+            AS_CASE([${afs_custom_compilers_given},${ac_scorep_platform}],
+                [no,mac|no,mingw],
+                    [AC_MSG_ERROR([have no suitable defaults to build Score-P on $afs_scorep_platform_name yet. Please use --with-custom-compilers and provide settings to <AC_PACKAGE_BUGREPORT> on success. Thanks.])],
+                [no,unknown],
+                    [AC_MSG_ERROR([cannot detect platform to set suitable defaults. Please use --with-custom-compilers and provide settings and platform to <AC_PACKAGE_BUGREPORT> on success. Thanks.])
+                ])
+            AC_SCOREP_WITH_MPI_COMPILER_SUITE
            ])
-       AC_SCOREP_WITH_MPI_COMPILER_SUITE
        # determine arguments for subdir configures
        args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk \
               ${ac_scorep_compilers_mpi}                                       \
               ${ac_scorep_compilers_frontend}                                  \
               ${ac_scorep_compilers_backend}                                   \
-              user_provided_configure_args`"],
+              user_provided_configure_args`"
+      ],
       [AC_MSG_NOTICE([platform data provided by toplevel configure.])
        # determine arguments for subdir configures
        args="`${AWK} -f $srcdir/vendor/common/build-config/process_arguments.awk \
