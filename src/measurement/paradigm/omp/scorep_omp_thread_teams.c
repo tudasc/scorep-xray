@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -48,7 +60,7 @@ SCOREP_ErrorCode
 scorep_omp_create_location_data( SCOREP_Location* location )
 {
     UTILS_DEBUG_ENTRY();
-    struct scorep_omp_location_data* data = SCOREP_Location_AllocForMisc(
+    struct scorep_omp_thread_team_data* data = SCOREP_Location_AllocForMisc(
         location,
         sizeof( *data ) );
     scorep_definitions_manager_init_entry( &data->thread_team );
@@ -58,9 +70,8 @@ scorep_omp_create_location_data( SCOREP_Location* location )
         location,
         hashsize( THREAD_TEAM_HASH_POWER ) * sizeof( *data->thread_team.hash_table ) );
 
-    SCOREP_Location_SetSubsystemData( location,
-                                      scorep_pomp_omp_subsystem_id,
-                                      data );
+    SCOREP_Location_SetThreadTeamData( location,
+                                       data );
     return SCOREP_SUCCESS;
 }
 
@@ -70,9 +81,8 @@ scorep_omp_destroy_location_data( SCOREP_Location* location )
 {
     UTILS_DEBUG_ENTRY();
     /* data is allocated in the page manager, nothing to free */
-    SCOREP_Location_SetSubsystemData( location,
-                                      scorep_pomp_omp_subsystem_id,
-                                      NULL );
+    SCOREP_Location_SetThreadTeamData( location,
+                                       NULL );
 }
 
 
@@ -114,9 +124,8 @@ scorep_omp_get_thread_team_handle( SCOREP_Location*                 location,
                                    uint32_t                         numThreads,
                                    uint32_t                         threadNum )
 {
-    struct scorep_omp_location_data* data =
-        SCOREP_Location_GetSubsystemData( location,
-                                          scorep_pomp_omp_subsystem_id );
+    struct scorep_omp_thread_team_data* data =
+        SCOREP_Location_GetThreadTeamData( location );
 
     if ( parentThreadTeam != SCOREP_INVALID_INTERIM_COMMUNICATOR )
     {

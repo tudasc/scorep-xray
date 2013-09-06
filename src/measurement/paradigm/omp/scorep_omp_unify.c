@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -110,9 +122,8 @@ count_total_thread_teams( SCOREP_Location* location,
     {
         return false;
     }
-    struct scorep_omp_location_data* data =
-        SCOREP_Location_GetSubsystemData( location,
-                                          scorep_pomp_omp_subsystem_id );
+    struct scorep_omp_thread_team_data* data =
+        SCOREP_Location_GetThreadTeamData( location );
     *total_thread_teams += data->team_leader_counter;
     UTILS_DEBUG( "Location %u/%u on rank %u was in %u team(s) the leader:",
                  SCOREP_Location_GetId( location ),
@@ -164,9 +175,8 @@ find_next_thread_team( SCOREP_Location* location,
     {
         return false;
     }
-    struct scorep_omp_location_data* data =
-        SCOREP_Location_GetSubsystemData( location,
-                                          scorep_pomp_omp_subsystem_id );
+    struct scorep_omp_thread_team_data* data =
+        SCOREP_Location_GetThreadTeamData( location );
 
     /* Search in the definitions for a thread team canditate */
     SCOREP_Allocator_PageManager* page_manager =
@@ -261,9 +271,8 @@ find_thread_team_members( SCOREP_Location* location,
     {
         return false;
     }
-    struct scorep_omp_location_data* data =
-        SCOREP_Location_GetSubsystemData( location,
-                                          scorep_pomp_omp_subsystem_id );
+    struct scorep_omp_thread_team_data* data =
+        SCOREP_Location_GetThreadTeamData( location );
 
     SCOREP_AnyHandle* hash_table_bucket =
         &data->thread_team.hash_table[ team_leader->hash_value & data->thread_team.hash_table_mask ];
@@ -322,9 +331,8 @@ create_mapping( SCOREP_Location* location,
     {
         return false;
     }
-    struct scorep_omp_location_data* data =
-        SCOREP_Location_GetSubsystemData( location,
-                                          scorep_pomp_omp_subsystem_id );
+    struct scorep_omp_thread_team_data* data =
+        SCOREP_Location_GetThreadTeamData( location );
 
     SCOREP_Allocator_PageManager* page_manager =
         SCOREP_Location_GetMemoryPageManager( location,

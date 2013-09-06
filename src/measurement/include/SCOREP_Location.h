@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2012, 2013
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -86,6 +98,14 @@ void
 SCOREP_Location_SetSubsystemData( SCOREP_Location* locationData,
                                   size_t           subsystem_id,
                                   void*            subsystem_data );
+
+void*
+SCOREP_Location_GetThreadTeamData( SCOREP_Location* locationData );
+
+
+void
+SCOREP_Location_SetThreadTeamData( SCOREP_Location* locationData,
+                                   void*            thread_team_data );
 
 
 void

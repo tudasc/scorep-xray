@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -52,6 +64,9 @@ struct SCOREP_Location
     SCOREP_TracingData*           tracing_data;
 
     SCOREP_Location*              next;  // store location objects in list for easy cleanup
+
+    /** Data needed for thread team tracking*/
+    void* thread_team_data;
 
     /** Flexible array member with length scorep_subsystems_get_number() */
     void* per_subsystem_data[];
@@ -187,6 +202,20 @@ SCOREP_Location_SetSubsystemData( SCOREP_Location* locationData,
     assert( subsystem_id < scorep_subsystems_get_number() );
 
     locationData->per_subsystem_data[ subsystem_id ] = subsystem_data;
+}
+
+void*
+SCOREP_Location_GetThreadTeamData( SCOREP_Location* locationData )
+{
+    return locationData->thread_team_data;
+}
+
+
+void
+SCOREP_Location_SetThreadTeamData( SCOREP_Location* locationData,
+                                   void*            thread_team_data )
+{
+    locationData->thread_team_data = thread_team_data;
 }
 
 
