@@ -152,7 +152,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -165,7 +165,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -178,7 +178,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -191,7 +191,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -204,7 +204,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -217,7 +217,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -230,7 +230,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
@@ -243,7 +243,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
@@ -256,7 +256,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -269,7 +269,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
@@ -282,7 +282,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
@@ -295,7 +295,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
@@ -308,7 +308,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
@@ -321,7 +321,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -334,7 +334,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -347,7 +347,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -360,7 +360,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_BARRIER );
     }
 #endif
@@ -373,7 +373,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ONE2ALL );
     }
 #endif
@@ -386,7 +386,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -399,7 +399,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -412,7 +412,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -425,7 +425,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -438,7 +438,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -451,7 +451,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -464,7 +464,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -477,7 +477,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -490,7 +490,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -503,7 +503,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -516,7 +516,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -529,7 +529,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -542,7 +542,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -555,7 +555,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -568,7 +568,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -581,7 +581,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -594,7 +594,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -607,7 +607,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -620,7 +620,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -633,7 +633,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -646,7 +646,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -659,7 +659,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -672,7 +672,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -685,7 +685,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -698,7 +698,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -711,7 +711,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -724,7 +724,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -737,7 +737,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -750,7 +750,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -763,7 +763,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -776,7 +776,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -789,7 +789,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -802,7 +802,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -815,7 +815,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -828,7 +828,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -841,7 +841,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -854,7 +854,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -867,7 +867,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -880,7 +880,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -893,7 +893,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -906,7 +906,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -919,7 +919,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -932,7 +932,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -945,7 +945,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -958,7 +958,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -971,7 +971,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -984,7 +984,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -997,7 +997,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1010,7 +1010,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1023,7 +1023,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1036,7 +1036,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1049,7 +1049,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1062,7 +1062,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1075,7 +1075,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1088,7 +1088,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1101,7 +1101,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1114,7 +1114,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_OTHER );
     }
 #endif
@@ -1127,7 +1127,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1140,7 +1140,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1153,7 +1153,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1166,7 +1166,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1179,7 +1179,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1192,7 +1192,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1205,7 +1205,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1218,7 +1218,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1231,7 +1231,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1244,7 +1244,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1257,7 +1257,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1270,7 +1270,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1283,7 +1283,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1296,7 +1296,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1309,7 +1309,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1322,7 +1322,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1335,7 +1335,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1348,7 +1348,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1361,7 +1361,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1374,7 +1374,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1387,7 +1387,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1400,7 +1400,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1413,7 +1413,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1426,7 +1426,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1439,7 +1439,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1452,7 +1452,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1465,7 +1465,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1478,7 +1478,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1491,7 +1491,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1504,7 +1504,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1517,7 +1517,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1530,7 +1530,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1543,7 +1543,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1556,7 +1556,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1569,7 +1569,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1582,7 +1582,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1595,7 +1595,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1608,7 +1608,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1621,7 +1621,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1634,7 +1634,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1647,7 +1647,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1660,7 +1660,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1673,7 +1673,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1686,7 +1686,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1699,7 +1699,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1712,7 +1712,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1725,7 +1725,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1738,7 +1738,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1751,7 +1751,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1764,7 +1764,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1777,7 +1777,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1790,7 +1790,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1803,7 +1803,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1816,7 +1816,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1829,7 +1829,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1842,7 +1842,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1855,7 +1855,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1868,7 +1868,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1881,7 +1881,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1894,7 +1894,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1907,7 +1907,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ALL2ONE );
     }
 #endif
@@ -1920,7 +1920,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ALL2ONE );
     }
 #endif
@@ -1933,7 +1933,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1946,7 +1946,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1959,7 +1959,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1972,7 +1972,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1985,7 +1985,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -1998,7 +1998,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2011,7 +2011,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2024,7 +2024,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2037,7 +2037,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2050,7 +2050,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2063,7 +2063,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2076,7 +2076,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2089,7 +2089,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2102,7 +2102,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2115,7 +2115,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2128,7 +2128,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2141,7 +2141,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2154,7 +2154,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2167,7 +2167,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2180,7 +2180,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2193,7 +2193,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2206,7 +2206,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2219,7 +2219,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2232,7 +2232,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2245,7 +2245,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2258,7 +2258,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2271,7 +2271,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2284,7 +2284,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2297,7 +2297,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -2310,7 +2310,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2323,7 +2323,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2336,7 +2336,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2349,7 +2349,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2362,7 +2362,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2375,7 +2375,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2388,7 +2388,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2401,7 +2401,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2414,7 +2414,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2427,7 +2427,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2440,7 +2440,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2453,7 +2453,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2466,7 +2466,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2479,7 +2479,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2492,7 +2492,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2505,7 +2505,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2518,7 +2518,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2531,7 +2531,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2544,7 +2544,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -2557,7 +2557,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2570,7 +2570,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -2583,7 +2583,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -2596,7 +2596,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2609,7 +2609,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2622,7 +2622,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2635,7 +2635,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2648,7 +2648,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2661,7 +2661,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2674,7 +2674,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2687,7 +2687,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2700,7 +2700,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2713,7 +2713,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2726,7 +2726,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2739,7 +2739,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2752,7 +2752,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2765,7 +2765,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2778,7 +2778,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2791,7 +2791,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2804,7 +2804,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2817,7 +2817,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2830,7 +2830,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -2843,7 +2843,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2856,7 +2856,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ALL2ONE );
     }
 #endif
@@ -2869,7 +2869,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2882,7 +2882,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
@@ -2895,7 +2895,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ALL2ALL );
     }
 #endif
@@ -2908,7 +2908,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2921,7 +2921,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2934,7 +2934,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2947,7 +2947,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2960,7 +2960,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2973,7 +2973,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -2986,7 +2986,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -2999,7 +2999,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_OTHER );
     }
 #endif
@@ -3012,7 +3012,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ONE2ALL );
     }
 #endif
@@ -3025,7 +3025,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_COLL_ONE2ALL );
     }
 #endif
@@ -3038,7 +3038,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3051,7 +3051,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3064,7 +3064,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3077,7 +3077,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3090,7 +3090,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3103,7 +3103,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3116,7 +3116,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3129,7 +3129,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3142,7 +3142,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3155,7 +3155,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3168,7 +3168,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3181,7 +3181,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3194,7 +3194,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3207,7 +3207,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3220,7 +3220,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3233,7 +3233,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3246,7 +3246,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3259,7 +3259,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3272,7 +3272,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3285,7 +3285,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3298,7 +3298,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3311,7 +3311,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3324,7 +3324,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3337,7 +3337,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3350,7 +3350,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3363,7 +3363,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3376,7 +3376,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3389,7 +3389,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3402,7 +3402,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3415,7 +3415,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3428,7 +3428,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3441,7 +3441,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3454,7 +3454,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3467,7 +3467,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3480,7 +3480,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3493,7 +3493,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3506,7 +3506,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3519,7 +3519,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3532,7 +3532,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3545,7 +3545,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3558,7 +3558,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3571,7 +3571,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3584,7 +3584,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3597,7 +3597,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3610,7 +3610,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3623,7 +3623,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3636,7 +3636,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3649,7 +3649,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3662,7 +3662,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3675,7 +3675,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3688,7 +3688,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3701,7 +3701,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3714,7 +3714,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3727,7 +3727,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3740,7 +3740,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3753,7 +3753,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3766,7 +3766,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3779,7 +3779,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3792,7 +3792,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3805,7 +3805,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3818,7 +3818,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3831,7 +3831,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3844,7 +3844,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_POINT2POINT );
     }
 #endif
@@ -3857,7 +3857,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3870,7 +3870,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3883,7 +3883,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3896,7 +3896,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3909,7 +3909,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3922,7 +3922,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3935,7 +3935,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3948,7 +3948,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3961,7 +3961,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3974,7 +3974,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -3987,7 +3987,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4000,7 +4000,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4013,7 +4013,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4026,7 +4026,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4039,7 +4039,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4052,7 +4052,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4065,7 +4065,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4078,7 +4078,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4091,7 +4091,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4104,7 +4104,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4117,7 +4117,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4130,7 +4130,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4143,7 +4143,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4156,7 +4156,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4169,7 +4169,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4182,7 +4182,7 @@ scorep_mpi_register_regions()
                                           file_id,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_MPI,
+                                          SCOREP_PARADIGM_MPI,
                                           SCOREP_REGION_NONE );
     }
 #endif
@@ -4195,7 +4195,7 @@ scorep_mpi_register_regions()
                                       SCOREP_INVALID_SOURCE_FILE,
                                       SCOREP_INVALID_LINE_NO,
                                       SCOREP_INVALID_LINE_NO,
-                                      SCOREP_ADAPTER_MPI,
+                                      SCOREP_PARADIGM_MPI,
                                       SCOREP_REGION_ARTIFICIAL );
 }
 

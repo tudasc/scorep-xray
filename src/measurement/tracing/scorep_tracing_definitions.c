@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -329,14 +341,14 @@ scorep_write_region_definitions( void*                     writerHandle,
 
         OTF2_Paradigm paradigm;
 
-        switch ( definition->adapter_type )
+        switch ( definition->paradigm_type )
         {
-        #define SCOREP_ADAPTER( NAME, name_str, OTF2_NAME ) \
-    case SCOREP_ADAPTER_ ## NAME:                     \
+    #define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME, VALUE )  \
+    case SCOREP_PARADIGM_ ## NAME:                     \
         paradigm = OTF2_PARADIGM_ ## OTF2_NAME;      \
         break;
-            SCOREP_ADAPTERS
-        #undef SCOREP_ADAPTER
+            SCOREP_PARADIGMS
+        #undef SCOREP_PARADIGM
 
             default:
                 paradigm = OTF2_PARADIGM_UNKNOWN;

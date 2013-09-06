@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -526,7 +538,7 @@ write_region_definitions( cube_t*                       my_cube,
         /* Collect necessary data */
         const char* region_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
                                                                String )->string_data;
-        const char* adapter   = scorep_adapter_type_to_string( definition->adapter_type );
+        const char* paradigm  = scorep_paradigm_type_to_string( definition->paradigm_type );
         const char* file_name = "";
         if ( definition->file_name_handle != SCOREP_INVALID_STRING )
         {
@@ -540,7 +552,7 @@ write_region_definitions( cube_t*                       my_cube,
                                                     definition->begin_line,
                                                     definition->end_line,
                                                     "", /* URL */
-                                                    adapter,
+                                                    paradigm,
                                                     file_name );
 
         /* Create entry in mapping table */

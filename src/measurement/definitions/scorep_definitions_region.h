@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -46,7 +58,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Region )
     SCOREP_StringHandle file_name_handle;
     SCOREP_LineNo       begin_line;
     SCOREP_LineNo       end_line;
-    SCOREP_AdapterType  adapter_type;           // Used by Cube 4
+    SCOREP_ParadigmType paradigm_type;           // Used by Cube 4
 };
 
 

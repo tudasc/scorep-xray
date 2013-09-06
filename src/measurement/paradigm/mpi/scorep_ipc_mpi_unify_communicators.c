@@ -151,7 +151,7 @@ create_local_mappings( uint32_t comm_world_size,
                                                          InterimCommunicator,
                                                          interim_communicator )
     {
-        if ( definition->adapter_type != SCOREP_ADAPTER_MPI )
+        if ( definition->paradigm_type != SCOREP_PARADIGM_MPI )
         {
             continue;
         }
@@ -206,7 +206,7 @@ is_this_rank_in_communicator( uint32_t  global_comm_id,
                                                          InterimCommunicator,
                                                          interim_communicator )
     {
-        if ( definition->adapter_type != SCOREP_ADAPTER_MPI )
+        if ( definition->paradigm_type != SCOREP_PARADIGM_MPI )
         {
             continue;
         }
@@ -451,7 +451,7 @@ define_comms( uint32_t comm_world_size,
                                                          InterimCommunicator,
                                                          interim_communicator )
     {
-        if ( definition->adapter_type != SCOREP_ADAPTER_MPI )
+        if ( definition->paradigm_type != SCOREP_PARADIGM_MPI )
         {
             continue;
         }

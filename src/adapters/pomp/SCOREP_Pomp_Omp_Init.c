@@ -100,7 +100,7 @@ scorep_pomp_omp_init( void )
                                           scorep_pomp_file_handle,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
-                                          SCOREP_ADAPTER_POMP,
+                                          SCOREP_PARADIGM_OPENMP,
                                           SCOREP_REGION_WRAPPER );
     }
 

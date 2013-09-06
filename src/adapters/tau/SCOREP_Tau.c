@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2012, 2013
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -43,7 +55,7 @@ SCOREP_Definitions_NewRegion( const char*             regionName,
                               SCOREP_SourceFileHandle fileHandle,
                               SCOREP_LineNo           beginLine,
                               SCOREP_LineNo           endLine,
-                              SCOREP_AdapterType      adapter,
+                              SCOREP_ParadigmType     paradigm,
                               SCOREP_RegionType       regionType );
 
 extern void
@@ -120,7 +132,7 @@ SCOREP_Tau_RegisterExitCallback( SCOREP_Tau_ExitCallback callback )
  * @param endLine The file line number where the region ends or
  * SCOREP_INVALID_LINE_NO.
  *
- * @param adapter The type of adapter (SCOREP_AdapterType) that is calling.
+ * @param paradigm The paradigm of the adapter that is calling.
  *
  * @param regionType The type of the region. Until now, the @a regionType was
  * not used during the measurement but during analysis. This @e may change in
@@ -149,11 +161,11 @@ SCOREP_Tau_DefineRegion( const char*                 regionName,
                          SCOREP_Tau_SourceFileHandle fileHandle,
                          SCOREP_Tau_LineNo           beginLine,
                          SCOREP_Tau_LineNo           endLine,
-                         SCOREP_Tau_AdapterType      adapter,
+                         SCOREP_Tau_ParadigmType     paradigm,
                          SCOREP_Tau_RegionType       regionType )
 {
     return ( SCOREP_Tau_RegionHandle )SCOREP_Definitions_NewRegion( regionName, NULL, fileHandle,
-                                                                    beginLine, endLine, adapter, regionType );
+                                                                    beginLine, endLine, paradigm, regionType );
 }
 
 

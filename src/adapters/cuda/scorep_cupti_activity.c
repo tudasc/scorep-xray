@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -197,7 +209,7 @@ scorep_cupti_activity_init()
                 SCOREP_Definitions_NewRegion( "flush_cupti_activity_buffer",
                                               NULL,
                                               cupti_buffer_flush_file_handle,
-                                              0, 0, SCOREP_ADAPTER_CUDA,
+                                              0, 0, SCOREP_PARADIGM_CUDA,
                                               SCOREP_REGION_ARTIFICIAL );
         }
 
@@ -556,7 +568,7 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
 
         regionHandle = SCOREP_Definitions_NewRegion( knName, NULL,
                                                      scorep_cupti_kernel_file_handle, 0, 0,
-                                                     SCOREP_ADAPTER_CUDA, SCOREP_REGION_FUNCTION );
+                                                     SCOREP_PARADIGM_CUDA, SCOREP_REGION_FUNCTION );
 
         hashNode = scorep_cupti_kernel_hash_put( kernel->name, regionHandle );
     }

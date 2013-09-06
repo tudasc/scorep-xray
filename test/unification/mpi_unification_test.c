@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -137,7 +149,7 @@ main( int argc, char* argv[] )
                                   0, //SCOREP_Definitions_NewSourceFile( __FILE__ ),
                                   51,
                                   80,
-                                  SCOREP_ADAPTER_USER,
+                                  SCOREP_PARADIGM_USER,
                                   SCOREP_REGION_FUNCTION );
 
     SCOREP_Definitions_NewRegion( rank_buffer,
@@ -145,7 +157,7 @@ main( int argc, char* argv[] )
                                   0, //SCOREP_Definitions_NewSourceFile( __FILE__ ),
                                   51,
                                   80,
-                                  SCOREP_ADAPTER_USER,
+                                  SCOREP_PARADIGM_USER,
                                   SCOREP_REGION_FUNCTION );
 
     if ( scorep_test_mpi_unify_define_mpi_regions )

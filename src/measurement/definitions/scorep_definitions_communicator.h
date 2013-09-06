@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -41,7 +53,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( InterimCommunicator )
 
     SCOREP_StringHandle              name_handle;
     SCOREP_InterimCommunicatorHandle parent_handle;
-    SCOREP_AdapterType               adapter_type;
+    SCOREP_ParadigmType              paradigm_type;
 };
 
 
@@ -95,7 +107,7 @@ SCOREP_InterimCommunicatorHandle
 SCOREP_Definitions_NewInterimCommunicatorInLocation(
     SCOREP_Location*                     location,
     SCOREP_InterimCommunicatorHandle     parentComm,
-    SCOREP_AdapterType                   adapterType,
+    SCOREP_ParadigmType                  paradigmType,
     scorep_definitions_init_payload_fn   init_payload_fn,
     scorep_definitions_equal_payloads_fn equal_payloads_fn,
     scorep_definitions_manager_entry*    manager_entry,

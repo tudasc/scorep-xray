@@ -147,7 +147,7 @@ scorep_omp_get_thread_team_handle( SCOREP_Location*                 location,
         SCOREP_Definitions_NewInterimCommunicatorInLocation(
             location,
             parentThreadTeam,
-            SCOREP_ADAPTER_POMP,
+            SCOREP_PARADIGM_OPENMP,
             init_payload_fn,
             equal_payloads_fn,
             &data->thread_team,

@@ -268,7 +268,7 @@ pgi_enter_region( SCOREP_RegionHandle* region,
                                                         SCOREP_Definitions_NewSourceFile( file_name ),
                                                         lineno,
                                                         SCOREP_INVALID_LINE_NO,
-                                                        SCOREP_ADAPTER_COMPILER,
+                                                        SCOREP_PARADIGM_COMPILER,
                                                         SCOREP_REGION_FUNCTION );
             }
             else

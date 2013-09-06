@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -160,7 +172,6 @@ typedef uint32_t SCOREP_LineNo;
  * Symbolic constant representing an invalid or unknown string definition.
  */
 #define SCOREP_INVALID_STRING SCOREP_MOVABLE_NULL
-
 /**
  * Symbolic constant representing an invalid or unknown location definition.
  */
@@ -197,26 +208,43 @@ typedef uint32_t SCOREP_LineNo;
  * track the origin of a region definition, the adapter needs to provide @e
  * his type.
  *
+ * TODO: to finish the refactoring of SCOREP_ADAPTER_* to
+ *       SCOREP_PARADIGM_* the OTF2 names would also need to be
+ *       changed accordingly. For example, I (pphilippen) currently
+ *       gave all acclerator paradigms the OTF2 name CUDA, as this is
+ *       the only one defined in OTF2.
  */
-#define SCOREP_ADAPTERS                              \
-    SCOREP_ADAPTER( USER, "user", USER )             \
-    SCOREP_ADAPTER( COMPILER, "compiler", COMPILER ) \
-    SCOREP_ADAPTER( MPI, "mpi", MPI )                \
-    SCOREP_ADAPTER( POMP, "pomp", OPENMP )           \
-    SCOREP_ADAPTER( CUDA, "cuda", CUDA )             \
-    SCOREP_ADAPTER( MEASUREMENT, "measurement", MEASUREMENT_SYSTEM )
+#define SCOREP_BIT_WIDTH 4
 
-#define SCOREP_ADAPTER( NAME, name_str, OTF2_NAME ) \
-    SCOREP_ADAPTER_ ## NAME,
+#define SCOREP_ALL_BITS( POS ) \
+    ( ( 1 << SCOREP_BIT_WIDTH ) - 1 ) << ( SCOREP_BIT_WIDTH * POS )
 
-typedef enum SCOREP_AdapterType
+#define SCOREP_SUB_BITS( POS, ID ) \
+    ( ID << ( SCOREP_BIT_WIDTH * POS ) )
+
+#define SCOREP_PARADIGMS                                                                                 \
+    SCOREP_PARADIGM( USER,               "user",               USER,               SCOREP_ALL_BITS( 0 ) )    \
+    SCOREP_PARADIGM( COMPILER,           "compiler",           COMPILER,           SCOREP_ALL_BITS( 1 ) )    \
+    SCOREP_PARADIGM( MPP,                "mpp",                MPI,                SCOREP_ALL_BITS( 2 ) )    \
+    SCOREP_PARADIGM( MPI,                "mpi",                MPI,                SCOREP_SUB_BITS( 2, 1 ) ) \
+    SCOREP_PARADIGM( THREAD_FORK_JOIN,   "thread-fork-join",   OPENMP,             SCOREP_ALL_BITS( 3 ) )    \
+    SCOREP_PARADIGM( OPENMP,             "openmp",             OPENMP,             SCOREP_SUB_BITS( 3, 1 ) ) \
+    SCOREP_PARADIGM( THREAD_CREATE_WAIT, "thread-create-wait", OPENMP,             SCOREP_ALL_BITS( 4 ) )    \
+    SCOREP_PARADIGM( ACCELERATOR,        "accelerator",        CUDA,               SCOREP_ALL_BITS( 5 ) )    \
+    SCOREP_PARADIGM( CUDA,               "cuda",               CUDA,               SCOREP_SUB_BITS( 5, 1 ) ) \
+    SCOREP_PARADIGM( MEASUREMENT,        "measurement",        MEASUREMENT_SYSTEM, SCOREP_ALL_BITS( 6 ) )
+
+#define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME, VALUE )   \
+    SCOREP_PARADIGM_ ## NAME = VALUE,
+
+typedef enum SCOREP_ParadigmType
 {
-    SCOREP_ADAPTERS
+    SCOREP_PARADIGMS
 
-        SCOREP_INVALID_ADAPTER_TYPE /**< For internal use only. */
-} SCOREP_AdapterType;
+        SCOREP_INVALID_PARADIGM_TYPE /**< For internal use only. */
+} SCOREP_ParadigmType;
 
-#undef SCOREP_ADAPTER
+#undef SCOREP_PARADIGM
 
 
 /**

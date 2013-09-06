@@ -230,7 +230,7 @@ SCOREP_User_RegionInit( SCOREP_User_RegionHandle*    handle,
                                                                file,
                                                                lineNo,
                                                                SCOREP_INVALID_LINE_NO,
-                                                               SCOREP_ADAPTER_USER,
+                                                               SCOREP_PARADIGM_USER,
                                                                region_type );
         }
         *handle = new_handle;

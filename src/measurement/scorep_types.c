@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2012, 2013
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -28,23 +40,23 @@
 #include "scorep_types.h"
 
 /**
- * Converts a SCOREP_AdapterType into a string.
+ * Converts a SCOREP_ParadigmType into a string.
  */
 const char*
-scorep_adapter_type_to_string( SCOREP_AdapterType adapterType )
+scorep_paradigm_type_to_string( SCOREP_ParadigmType paradigmType )
 {
-    #define SCOREP_ADAPTER( NAME, name_str, OTF2_NAME )  \
-    case SCOREP_ADAPTER_ ## NAME:                    \
+    #define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME, VALUE ) \
+    case SCOREP_PARADIGM_ ## NAME:                    \
         return name_str;
 
-    switch ( adapterType )
+    switch ( paradigmType )
     {
-        SCOREP_ADAPTERS
+        SCOREP_PARADIGMS
 
         default:
             return "unknown";
     }
-    #undef SCOREP_ADAPTER
+    #undef SCOREP_PARADIGM
 }
 
 

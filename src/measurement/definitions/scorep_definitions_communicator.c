@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -85,7 +97,7 @@ get_new_interim_communicator_id( void )
 static SCOREP_InterimCommunicatorHandle
 define_interim_communicator( SCOREP_DefinitionManager*        definition_manager,
                              SCOREP_InterimCommunicatorHandle parentComm,
-                             SCOREP_AdapterType               adapterType,
+                             SCOREP_ParadigmType              paradigmType,
                              size_t                           sizeOfPayload,
                              void**                           payload );
 
@@ -100,7 +112,7 @@ interim_comm_static_size()
 
 SCOREP_InterimCommunicatorHandle
 SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle parentComm,
-                                           SCOREP_AdapterType               adapterType,
+                                           SCOREP_ParadigmType              paradigmType,
                                            size_t                           sizeOfPayload,
                                            void**                           payload )
 {
@@ -113,7 +125,7 @@ SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle pare
     new_handle = define_interim_communicator(
         &scorep_local_definition_manager,
         parentComm,
-        adapterType,
+        paradigmType,
         sizeOfPayload,
         payload );
 
@@ -169,7 +181,7 @@ SCOREP_InterimCommunicatorHandle
 SCOREP_Definitions_NewInterimCommunicatorInLocation(
     SCOREP_Location*                     location,
     SCOREP_InterimCommunicatorHandle     parentComm,
-    SCOREP_AdapterType                   adapterType,
+    SCOREP_ParadigmType                  paradigmType,
     scorep_definitions_init_payload_fn   init_payload_fn,
     scorep_definitions_equal_payloads_fn equal_payloads_fn,
     scorep_definitions_manager_entry*    manager_entry,
@@ -213,8 +225,8 @@ SCOREP_Definitions_NewInterimCommunicatorInLocation(
             new_definition->hash_value );
     }
 
-    new_definition->adapter_type = adapterType;
-    HASH_ADD_POD( new_definition, adapter_type );
+    new_definition->paradigm_type = paradigmType;
+    HASH_ADD_POD( new_definition, paradigm_type );
 
     void* payload = ( char* )new_definition + payload_offset;
     if ( payloadOut )
@@ -247,7 +259,7 @@ SCOREP_Definitions_NewInterimCommunicatorInLocation(
             if ( existing_definition->hash_value       == new_definition->hash_value
                  && existing_definition->name_handle   == new_definition->name_handle
                  && existing_definition->parent_handle == new_definition->parent_handle
-                 && existing_definition->adapter_type  == new_definition->adapter_type
+                 && existing_definition->paradigm_type  == new_definition->paradigm_type
                  && equal_payloads_fn( existing_payload, payload ) )
             {
                 SCOREP_Allocator_RollbackAllocMovable(
@@ -276,7 +288,7 @@ SCOREP_Definitions_NewInterimCommunicatorInLocation(
 static SCOREP_InterimCommunicatorHandle
 define_interim_communicator( SCOREP_DefinitionManager*        definition_manager,
                              SCOREP_InterimCommunicatorHandle parentComm,
-                             SCOREP_AdapterType               adapterType,
+                             SCOREP_ParadigmType              paradigmType,
                              size_t                           sizeOfPayload,
                              void**                           payload )
 {
@@ -290,7 +302,7 @@ define_interim_communicator( SCOREP_DefinitionManager*        definition_manager
     // Init new_definition
     new_definition->name_handle   = SCOREP_INVALID_STRING;
     new_definition->parent_handle = parentComm;
-    new_definition->adapter_type  = adapterType;
+    new_definition->paradigm_type = paradigmType;
 
     UTILS_BUG_ON( definition_manager->interim_communicator.hash_table,
                   "interim communicator definitions shouldn't have a hash table" );

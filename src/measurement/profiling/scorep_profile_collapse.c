@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2012, 2013
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -65,7 +77,7 @@ scorep_profile_process_collapse( void )
                                                                    SCOREP_INVALID_SOURCE_FILE,
                                                                    0,
                                                                    0,
-                                                                   SCOREP_ADAPTER_USER,
+                                                                   SCOREP_PARADIGM_USER,
                                                                    SCOREP_REGION_UNKNOWN );
 
     scorep_profile_for_all( scorep_profile.first_root_node,

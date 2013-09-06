@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2012, 2013
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -157,7 +169,7 @@ FSUB( SCOREP_F_Init )( SCOREP_Fortran_RegionHandle* regionHandle,
                                                                file_handle,
                                                                *lineNo,
                                                                SCOREP_INVALID_LINE_NO,
-                                                               SCOREP_ADAPTER_USER,
+                                                               SCOREP_PARADIGM_USER,
                                                                region_type );
 
                 scorep_user_add_region( region, region_name );

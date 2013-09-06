@@ -105,25 +105,25 @@ typedef int ( *SCOREP_Tau_ExitCallback )( void );
  * his type.
  *
  */
-#define SCOREP_Tau_AdapterType SCOREP_AdapterType
+#define SCOREP_Tau_ParadigmType SCOREP_ParadigmType
 
-typedef enum SCOREP_AdapterType
+typedef enum SCOREP_ParadigmType
 {
-    SCOREP_ADAPTER_USER,
-    SCOREP_ADAPTER_COMPILER,
-    SCOREP_ADAPTER_MPI,
-    SCOREP_ADAPTER_POMP,
-    SCOREP_ADAPTER_PTHREAD,
+    SCOREP_PARADIGM_USER,
+    SCOREP_PARADIGM_COMPILER,
+    SCOREP_PARADIGM_MPI,
+    SCOREP_PARADIGM_THREAD_FORK_JOIN,
+    SCOREP_PARADIGM_THREAD_CREATE,
 
     SCOREP_INVALID_ADAPTER_TYPE /**< For internal use only. */
-} SCOREP_AdapterType;
+} SCOREP_ParadigmType;
 
-#define SCOREP_TAU_ADAPTER_USER           SCOREP_ADAPTER_USER
-#define SCOREP_TAU_ADAPTER_COMPILER       SCOREP_ADAPTER_COMPILER
-#define SCOREP_TAU_ADAPTER_MPI            SCOREP_ADAPTER_MPI
-#define SCOREP_TAU_ADAPTER_POMP           SCOREP_ADAPTER_POMP
-#define SCOREP_TAU_ADAPTER_PTHREAD        SCOREP_ADAPTER_PTHREAD
-#define SCOREP_TAU_INVALID_ADAPTER_TYPE   SCOREP_INVALID_ADAPTER_TYPE
+#define SCOREP_TAU_ADAPTER_USER           SCOREP_PARADIGM_USER
+#define SCOREP_TAU_ADAPTER_COMPILER       SCOREP_PARADIGM_COMPILER
+#define SCOREP_TAU_ADAPTER_MPI            SCOREP_PARADIGM_MPI
+#define SCOREP_TAU_ADAPTER_POMP           SCOREP_PARADIGM_POMP
+#define SCOREP_TAU_ADAPTER_PTHREAD        SCOREP_PARADIGM_PTHREAD
+#define SCOREP_TAU_INVALID_ADAPTER_TYPE   SCOREP_INVALID_PARADIGM_TYPE
 
 typedef enum SCOREP_RegionType
 {
@@ -214,7 +214,7 @@ typedef enum SCOREP_RegionType
  * @param endLine The file line number where the region ends or
  * SCOREP_INVALID_LINE_NO.
  *
- * @param adapter The type of adapter (SCOREP_AdapterType) that is calling.
+ * @param adapter The type of adapter (SCOREP_ParadigmType) that is calling.
  *
  * @param regionType The type of the region. Until now, the @a regionType was
  * not used during the measurement but during analysis. This @e may change in
@@ -240,7 +240,7 @@ typedef enum SCOREP_RegionType
 
 #define SCOREP_Tau_RegionHandle           uint64_t
 #define SCOREP_Tau_SourceFileHandle       SCOREP_SourceFileHandle
-#define SCOREP_Tau_AdapterType            SCOREP_AdapterType
+#define SCOREP_Tau_ParadigmType           SCOREP_ParadigmType
 
 SCOREP_Tau_RegionHandle
 SCOREP_Tau_DefineRegion(
@@ -248,7 +248,7 @@ SCOREP_Tau_DefineRegion(
     SCOREP_Tau_SourceFileHandle fileHandle,
     SCOREP_Tau_LineNo           beginLine,
     SCOREP_Tau_LineNo           endLine,
-    SCOREP_Tau_AdapterType      adapter,
+    SCOREP_Tau_ParadigmType     paradigm,
     SCOREP_Tau_RegionType       regionType
     );
 

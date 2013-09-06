@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -61,7 +73,7 @@ define_region( SCOREP_DefinitionManager* definition_manager,
                SCOREP_StringHandle       fileNameHandle,
                SCOREP_LineNo             beginLine,
                SCOREP_LineNo             endLine,
-               SCOREP_AdapterType        adapter,
+               SCOREP_ParadigmType       paradigm,
                SCOREP_RegionType         regionType );
 
 
@@ -74,7 +86,7 @@ initialize_region( SCOREP_RegionDef*         definition,
                    SCOREP_StringHandle       fileNameHandle,
                    SCOREP_LineNo             beginLine,
                    SCOREP_LineNo             endLine,
-                   SCOREP_AdapterType        adapter,
+                   SCOREP_ParadigmType       paradigm,
                    SCOREP_RegionType         regionType );
 
 
@@ -89,7 +101,7 @@ SCOREP_Definitions_NewRegion( const char*             regionName,
                               SCOREP_SourceFileHandle fileHandle,
                               SCOREP_LineNo           beginLine,
                               SCOREP_LineNo           endLine,
-                              SCOREP_AdapterType      adapter,
+                              SCOREP_ParadigmType     paradigm,
                               SCOREP_RegionType       regionType )
 {
     UTILS_DEBUG_ENTRY( "%s", regionName );
@@ -121,7 +133,7 @@ SCOREP_Definitions_NewRegion( const char*             regionName,
         file_name_handle,
         beginLine,
         endLine,
-        adapter,
+        paradigm,
         regionType );
 
     SCOREP_Definitions_Unlock();
@@ -164,7 +176,7 @@ scorep_definitions_unify_region( SCOREP_RegionDef*             definition,
         unified_file_name_handle,
         definition->begin_line,
         definition->end_line,
-        definition->adapter_type,
+        definition->paradigm_type,
         definition->region_type );
 }
 
@@ -177,7 +189,7 @@ define_region( SCOREP_DefinitionManager* definition_manager,
                SCOREP_StringHandle       fileNameHandle,
                SCOREP_LineNo             beginLine,
                SCOREP_LineNo             endLine,
-               SCOREP_AdapterType        adapter,
+               SCOREP_ParadigmType       paradigm,
                SCOREP_RegionType         regionType )
 {
     assert( definition_manager );
@@ -194,7 +206,7 @@ define_region( SCOREP_DefinitionManager* definition_manager,
                        fileNameHandle,
                        beginLine,
                        endLine,
-                       adapter,
+                       paradigm,
                        regionType );
 
     /* Does return if it is a duplicate */
@@ -213,7 +225,7 @@ initialize_region( SCOREP_RegionDef*         definition,
                    SCOREP_StringHandle       fileNameHandle,
                    SCOREP_LineNo             beginLine,
                    SCOREP_LineNo             endLine,
-                   SCOREP_AdapterType        adapter,
+                   SCOREP_ParadigmType       paradigm,
                    SCOREP_RegionType         regionType )
 {
     definition->name_handle = regionNameHandle;
@@ -238,8 +250,8 @@ initialize_region( SCOREP_RegionDef*         definition,
     HASH_ADD_POD( definition, begin_line );
     definition->end_line = endLine;
     HASH_ADD_POD( definition, end_line );
-    definition->adapter_type = adapter;
-    HASH_ADD_POD( definition, adapter_type );
+    definition->paradigm_type = paradigm;
+    HASH_ADD_POD( definition, paradigm_type );
 }
 
 
@@ -254,7 +266,7 @@ equal_region( const SCOREP_RegionDef* existingDefinition,
            existingDefinition->file_name_handle      == newDefinition->file_name_handle &&
            existingDefinition->begin_line            == newDefinition->begin_line &&
            existingDefinition->end_line              == newDefinition->end_line &&
-           existingDefinition->adapter_type          == newDefinition->adapter_type;
+           existingDefinition->paradigm_type          == newDefinition->paradigm_type;
 }
 
 
@@ -331,16 +343,16 @@ SCOREP_RegionHandle_GetType( SCOREP_RegionHandle handle )
 
 
 /**
- * Gets the adapter type of the region.
+ * Gets the paradigm type of the region.
  *
  * @param handle A handle to the region.
  *
- * @return regions adapter type.
+ * @return regions paradigm type.
  */
-SCOREP_AdapterType
-SCOREP_RegionHandle_GetAdapterType( SCOREP_RegionHandle handle )
+SCOREP_ParadigmType
+SCOREP_RegionHandle_GetParadigmType( SCOREP_RegionHandle handle )
 {
-    return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->adapter_type;
+    return SCOREP_LOCAL_HANDLE_DEREF( handle, Region )->paradigm_type;
 }
 
 

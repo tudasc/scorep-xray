@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -187,13 +199,13 @@ get_merged_region_definitions
         int i;
         for ( i = 0; i < shared_index->num_def_regions_merged; i++ )
         {
-            printf( "DEFINITION %i\t| region_id %d\t| name %s\t| rfl %d\t| rel %d\t| adapter %d\t| file %s\t|\n",
+            printf( "DEFINITION %i\t| region_id %d\t| name %s\t| rfl %d\t| rel %d\t| paradigm %d\t| file %s\t|\n",
                     i,
                     shared_index->merged_region_def_buffer[ i ].region_id,
                     shared_index->merged_region_def_buffer[ i ].name,
                     shared_index->merged_region_def_buffer[ i ].rfl,
                     shared_index->merged_region_def_buffer[ i ].rel,
-                    shared_index->merged_region_def_buffer[ i ].adapter_type,
+                    shared_index->merged_region_def_buffer[ i ].paradigm_type,
                     shared_index->merged_region_def_buffer[ i ].file
                     );
         }
@@ -567,8 +579,8 @@ check_region_definition_merge_needed
     SCOREP_RegionHandle parent_region_handle = scorep_profile_type_get_region_handle( parent_node->type_specific_data );
 
     /** Merging definition is required only in case of MPI and OMP regions which don't have file region first line number */
-    if (                 ( SCOREP_RegionHandle_GetAdapterType( region_handle ) != SCOREP_ADAPTER_MPI )
-                         &&      ( SCOREP_RegionHandle_GetAdapterType( region_handle ) != SCOREP_ADAPTER_POMP )  )
+    if ( !( SCOREP_RegionHandle_GetParadigmType( region_handle ) & SCOREP_PARADIGM_MPI ) &&
+         !( SCOREP_RegionHandle_GetParadigmType( region_handle ) & SCOREP_PARADIGM_OPENMP ) )
     {
         return 0;
     }
@@ -773,10 +785,10 @@ scorep_oaconsumer_copy_merged_region_definitions
         }
 
         /** Copy data into the merged regions buffer*/
-        shared_index->merged_region_def_buffer[ region_index ].region_id    = region_index;
-        shared_index->merged_region_def_buffer[ region_index ].rfl          = SCOREP_RegionHandle_GetBeginLine( parent_region_handle );
-        shared_index->merged_region_def_buffer[ region_index ].rel          = SCOREP_RegionHandle_GetEndLine( parent_region_handle );
-        shared_index->merged_region_def_buffer[ region_index ].adapter_type = ( uint32_t )SCOREP_RegionHandle_GetAdapterType( region_handle );
+        shared_index->merged_region_def_buffer[ region_index ].region_id     = region_index;
+        shared_index->merged_region_def_buffer[ region_index ].rfl           = SCOREP_RegionHandle_GetBeginLine( parent_region_handle );
+        shared_index->merged_region_def_buffer[ region_index ].rel           = SCOREP_RegionHandle_GetEndLine( parent_region_handle );
+        shared_index->merged_region_def_buffer[ region_index ].paradigm_type = ( uint32_t )SCOREP_RegionHandle_GetParadigmType( region_handle );
         const char* name = SCOREP_RegionHandle_GetName( region_handle );
         strncpy( shared_index->merged_region_def_buffer[ region_index ].name,
                  name,
@@ -929,12 +941,12 @@ print_region_definitions
         {
             printf( " file %s,", SCOREP_RegionHandle_GetFileName( handle ) );
         }
-        uint32_t rfl          = definition->begin_line;
-        uint32_t rel          = definition->end_line;
-        uint32_t adapter_type = ( uint32_t )definition->adapter_type;
-        printf( " rfl=%d,adapter=%d\n",
+        uint32_t rfl           = definition->begin_line;
+        uint32_t rel           = definition->end_line;
+        uint32_t paradigm_type = ( uint32_t )definition->paradigm_type;
+        printf( " rfl=%d,paradigm=%d\n",
                 rfl,
-                adapter_type );
+                paradigm_type );
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }

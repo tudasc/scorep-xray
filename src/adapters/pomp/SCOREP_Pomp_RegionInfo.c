@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2012, 2013
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -177,11 +189,11 @@ scorep_pomp_init_region( SCOREP_Pomp_Region* region )
 void
 scorep_pomp_register_region( SCOREP_Pomp_Region* region )
 {
-    char*              region_name = 0;
-    SCOREP_RegionType  type_outer  = SCOREP_REGION_UNKNOWN;
-    SCOREP_RegionType  type_inner  = SCOREP_REGION_UNKNOWN;
-    SCOREP_AdapterType paradigm    = SCOREP_ADAPTER_POMP;
-    int32_t            start, end;
+    char*               region_name = 0;
+    SCOREP_RegionType   type_outer  = SCOREP_REGION_UNKNOWN;
+    SCOREP_RegionType   type_inner  = SCOREP_REGION_UNKNOWN;
+    SCOREP_ParadigmType paradigm    = SCOREP_PARADIGM_OPENMP;
+    int32_t             start, end;
 
     /* Assume that all regions from one file are registered in a row.
        Thus, remember the last file handle and reuse it if the next region stems
@@ -202,7 +214,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     /* Check paradigm */
     if ( region->regionType == SCOREP_Pomp_UserRegion )
     {
-        paradigm = SCOREP_ADAPTER_USER;
+        paradigm = SCOREP_PARADIGM_USER;
     }
 
     /* Evtl. register new source file */
@@ -245,7 +257,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
                                                               last_file,
                                                               region->startLine1,
                                                               region->endLine2,
-                                                              SCOREP_ADAPTER_POMP,
+                                                              SCOREP_PARADIGM_OPENMP,
                                                               SCOREP_REGION_PARALLEL );
         free( parallel_name );
     }
@@ -324,7 +336,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
                                                         last_file,
                                                         region->endLine1,
                                                         region->endLine2,
-                                                        SCOREP_ADAPTER_POMP,
+                                                        SCOREP_PARADIGM_OPENMP,
                                                         SCOREP_REGION_IMPLICIT_BARRIER );
         free( barrier_name );
     }

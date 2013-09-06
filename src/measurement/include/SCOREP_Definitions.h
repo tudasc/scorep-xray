@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2013,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2013,
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -127,9 +139,9 @@ SCOREP_Defininitions_AddSystemTreeNodeProperty( SCOREP_SystemTreeNodeHandle syst
  * @param regionName A meaningful name for the region, e.g. a function
  * name. The string will be copied.
  *
- * @param regionCanonicalName An canonical name for the region, e.g. a mangled
- * name. The string will be copied. If this parameter is @code{NULL},
- * content of @a regionName will be used.
+ * @param regionCanonicalName An canonical name for the region, e.g. a
+ * mangled name. The string will be copied. If this parameter is
+ * @code{NULL}, content of @a regionName will be used.
  *
  * @param fileHandle A previously defined SCOREP_SourceFileHandle or
  * SCOREP_INVALID_SOURCE_FILE.
@@ -140,7 +152,8 @@ SCOREP_Defininitions_AddSystemTreeNodeProperty( SCOREP_SystemTreeNodeHandle syst
  * @param endLine The file line number where the region ends or
  * SCOREP_INVALID_LINE_NO.
  *
- * @param adapter The type of adapter (SCOREP_AdapterType) that is calling.
+ * @param paradigm The paradigm type of adapter (SCOREP_ParadigmType)
+ * that is calling.
  *
  * @param regionType The type of the region. Until now, the @a regionType was
  * not used during the measurement but during analysis. This @e may change in
@@ -174,7 +187,7 @@ SCOREP_Definitions_NewRegion( const char*             regionName,
                               SCOREP_SourceFileHandle fileHandle,
                               SCOREP_LineNo           beginLine,
                               SCOREP_LineNo           endLine,
-                              SCOREP_AdapterType      adapter,
+                              SCOREP_ParadigmType     paradigm,
                               SCOREP_RegionType       regionType );
 
 
@@ -198,8 +211,8 @@ SCOREP_RegionType
 SCOREP_RegionHandle_GetType( SCOREP_RegionHandle handle );
 
 
-SCOREP_AdapterType
-SCOREP_RegionHandle_GetAdapterType( SCOREP_RegionHandle handle );
+SCOREP_ParadigmType
+SCOREP_RegionHandle_GetParadigmType( SCOREP_RegionHandle handle );
 
 
 SCOREP_LineNo
@@ -228,7 +241,8 @@ SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
  * Associate a MPI communicator with a process unique communicator handle.
  *
  * @param parentComm    A possible parent communicator.
- * @param adapterType   The adapter which defines this communicator.
+ * @param paradigmType  The paradigm of the adapter which defines this
+ *                      communicator.
  * @param sizeOfPayload The size of the payload which the adapter requests
  *                      for this communicator.
  * @param[out] payload  Will be set to the memory location of the payload.
@@ -239,7 +253,7 @@ SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
  */
 SCOREP_InterimCommunicatorHandle
 SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle parentComm,
-                                           SCOREP_AdapterType               adapterType,
+                                           SCOREP_ParadigmType              paradigmType,
                                            size_t                           sizeOfPayload,
                                            void**                           payload );
 

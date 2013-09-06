@@ -335,7 +335,7 @@ scorep_mpi_setup_world( void )
     scorep_mpi_comm_definition_payload* comm_payload;
     scorep_mpi_world.handle =
         SCOREP_Definitions_NewInterimCommunicator( SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                                                   SCOREP_ADAPTER_MPI,
+                                                   SCOREP_PARADIGM_MPI,
                                                    sizeof( *comm_payload ),
                                                    ( void** )&comm_payload );
     comm_payload->is_self_like     = scorep_mpi_world.size == 1;
@@ -534,7 +534,7 @@ scorep_mpi_comm_create( MPI_Comm comm, MPI_Comm parent_comm )
     /* create definition in measurement system */
     scorep_mpi_comm_definition_payload* comm_payload;
     handle =  SCOREP_Definitions_NewInterimCommunicator( parent_handle,
-                                                         SCOREP_ADAPTER_MPI,
+                                                         SCOREP_PARADIGM_MPI,
                                                          sizeof( *comm_payload ),
                                                          ( void** )&comm_payload );
     comm_payload->is_self_like     = size == 1;

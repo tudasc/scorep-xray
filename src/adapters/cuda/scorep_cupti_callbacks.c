@@ -3,11 +3,23 @@
  *
  * Copyright (c) 2009-2012,
  *    RWTH Aachen University, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2012, 2013
  *    Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
  *    Technische Universitaet Muenchen, Germany
  *
  * See the COPYING file in the package base directory for details.
@@ -551,7 +563,7 @@ scorep_cupti_callbacks_runtime_api( CUpti_CallbackId          callbackId,
     else
     {
         region_handle = SCOREP_Definitions_NewRegion( cbInfo->functionName, NULL, cuda_runtime_file_handle,
-                                                      0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_WRAPPER );
+                                                      0, 0, SCOREP_PARADIGM_CUDA, SCOREP_REGION_WRAPPER );
 
         cuda_api_function_put( CUPTI_CB_DOMAIN_RUNTIME_API, callbackId, region_handle );
     }
@@ -1144,7 +1156,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
         else
         {
             region_handle = SCOREP_Definitions_NewRegion( cbInfo->functionName, NULL, cuda_driver_file_handle,
-                                                          0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_WRAPPER );
+                                                          0, 0, SCOREP_PARADIGM_CUDA, SCOREP_REGION_WRAPPER );
 
             cuda_api_function_put( CUPTI_CB_DOMAIN_DRIVER_API, callbackId, region_handle );
         }
@@ -2032,7 +2044,7 @@ handle_cuda_kernel( const CUpti_CallbackData* cbInfo,
 
             SCOREP_CUPTI_LOCK();
             kernel_region = SCOREP_Definitions_NewRegion( knName, NULL,
-                                                          scorep_cupti_kernel_file_handle, 0, 0, SCOREP_ADAPTER_CUDA,
+                                                          scorep_cupti_kernel_file_handle, 0, 0, SCOREP_PARADIGM_CUDA,
                                                           SCOREP_REGION_FUNCTION );
             SCOREP_CUPTI_UNLOCK();
 
@@ -3175,7 +3187,7 @@ scorep_cupti_callbacks_init()
                     scorep_cuda_interim_communicator_handle =
                         SCOREP_Definitions_NewInterimCommunicator(
                             SCOREP_INVALID_INTERIM_COMMUNICATOR,
-                            SCOREP_ADAPTER_CUDA,
+                            SCOREP_PARADIGM_CUDA,
                             0,
                             NULL );
 
@@ -3245,7 +3257,7 @@ scorep_cupti_callbacks_init()
                         SCOREP_Definitions_NewSourceFile( "CUDA_SYNC" );
                     cuda_sync_region_handle = SCOREP_Definitions_NewRegion(
                         "cudaSynchronize", NULL, scorep_cuda_sync_file_handle,
-                        0, 0, SCOREP_ADAPTER_CUDA, SCOREP_REGION_IMPLICIT_BARRIER );
+                        0, 0, SCOREP_PARADIGM_CUDA, SCOREP_REGION_IMPLICIT_BARRIER );
                 }
 
 
