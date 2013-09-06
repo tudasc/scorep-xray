@@ -636,6 +636,13 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     }
     else if (  m_install_data.isArgForShared( current ) )
     {
+#ifndef SCOREP_SHARED_BUILD
+        std::cerr << "[Score-P] It is not possible to build instrumented shared "
+                  << "libraries with a statically build Score-P. "
+                  << "You need an Score-P installation that has "
+                  << "shared libraries." << std::endl;
+        exit( EXIT_FAILURE );
+#endif
         m_target_is_shared_lib = true;
     }
     else if ( m_install_data.isArgForOpenmp( current ) )
