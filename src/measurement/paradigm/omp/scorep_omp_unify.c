@@ -140,7 +140,7 @@ count_total_thread_teams( SCOREP_Location* location,
         InterimCommunicator,
         page_manager )
     {
-        if ( !( definition->paradigm_type & SCOREP_PARADIGM_OPENMP ) )
+        if ( !( definition->paradigm_type == SCOREP_PARADIGM_OPENMP ) )
         {
             /*
              * unlikely, but who knows, maybe we have one day a manager entry
@@ -187,7 +187,7 @@ find_next_thread_team( SCOREP_Location* location,
         InterimCommunicator,
         page_manager )
     {
-        if ( !( definition->paradigm_type & SCOREP_PARADIGM_OPENMP ) )
+        if ( !( definition->paradigm_type == SCOREP_PARADIGM_OPENMP ) )
         {
             /*
              * unlikely, but who knows, maybe we have one day a manager entry
@@ -344,7 +344,7 @@ create_mapping( SCOREP_Location* location,
         InterimCommunicator,
         page_manager )
     {
-        if ( !( definition->paradigm_type & SCOREP_PARADIGM_OPENMP ) )
+        if ( !( definition->paradigm_type == SCOREP_PARADIGM_OPENMP ) )
         {
             /*
              * unlikely, but who knows, maybe we have one day a manager entry

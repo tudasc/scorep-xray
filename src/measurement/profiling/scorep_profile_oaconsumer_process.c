@@ -579,8 +579,8 @@ check_region_definition_merge_needed
     SCOREP_RegionHandle parent_region_handle = scorep_profile_type_get_region_handle( parent_node->type_specific_data );
 
     /** Merging definition is required only in case of MPI and OMP regions which don't have file region first line number */
-    if ( !( SCOREP_RegionHandle_GetParadigmType( region_handle ) & SCOREP_PARADIGM_MPI ) &&
-         !( SCOREP_RegionHandle_GetParadigmType( region_handle ) & SCOREP_PARADIGM_OPENMP ) )
+    if ( !( SCOREP_RegionHandle_GetParadigmType( region_handle ) == SCOREP_PARADIGM_MPI ) &&
+         !( SCOREP_RegionHandle_GetParadigmType( region_handle ) == SCOREP_PARADIGM_OPENMP ) )
     {
         return 0;
     }
