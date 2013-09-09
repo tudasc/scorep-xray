@@ -122,7 +122,7 @@ scorep_compiler_register_region( char* region_name )
                                                SCOREP_INVALID_SOURCE_FILE,
                                                SCOREP_INVALID_LINE_NO,
                                                SCOREP_INVALID_LINE_NO,
-                                               SCOREP_ADAPTER_COMPILER,
+                                               SCOREP_PARADIGM_COMPILER,
                                                SCOREP_REGION_FUNCTION );
     }
     return handle;
