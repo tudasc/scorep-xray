@@ -203,8 +203,9 @@ various Score-P components.
     COBI/Dyninst than it can handle at the moment. This issue
     will be addressed in a future release of Score-P and/or Dyninst.
 
-  - OpenMP instrumentation is broken in combination with Cray
-    compilers.
+  - Due to a bug in the Cray compilers OpenMP instrumentation is
+    broken if an OpenMP parallel pragma is used in combination with
+    an if clause.
 
 --------------------------------------------------------------------------------
 
