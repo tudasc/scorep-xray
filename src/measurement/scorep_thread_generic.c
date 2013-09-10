@@ -28,7 +28,7 @@
 #include <SCOREP_Properties.h>
 
 #include <tracing/SCOREP_Tracing_Events.h>
-#include <profiling/SCOREP_Profile_Tasking.h>
+#include <SCOREP_Profile_Tasking.h>
 #include <SCOREP_Metric_Management.h>
 
 #include "scorep_location.h"

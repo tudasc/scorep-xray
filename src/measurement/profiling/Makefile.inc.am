@@ -20,56 +20,57 @@
 
 ## base
 
-PROFILE_FLAGS =                                 \
-    $(AM_CPPFLAGS)                              \
-    -I$(INC_ROOT)src/utils/include              \
-    -I$(INC_ROOT)src/measurement/profiling      \
-    -I$(INC_ROOT)src/measurement/include        \
-    -I$(INC_ROOT)src/measurement/paradigm       \
-    -I$(INC_ROOT)src/services/include           \
-    -I$(INC_ROOT)src/measurement                \
-    @CUBE_WRITER_CPPFLAGS@                      \
-    -I$(INC_ROOT)src/measurement/online_access  \
-    -I$(PUBLIC_INC_DIR)                         \
-    $(UTILS_CPPFLAGS)                           \
+PROFILE_FLAGS =                                    \
+    $(AM_CPPFLAGS)                                 \
+    -I$(INC_ROOT)src/utils/include                 \
+    -I$(INC_ROOT)src/measurement/profiling/include \
+    -I$(INC_ROOT)src/measurement/profiling         \
+    -I$(INC_ROOT)src/measurement/include           \
+    -I$(INC_ROOT)src/measurement/paradigm          \
+    -I$(INC_ROOT)src/services/include              \
+    -I$(INC_ROOT)src/measurement                   \
+    @CUBE_WRITER_CPPFLAGS@                         \
+    -I$(INC_ROOT)src/measurement/online_access     \
+    -I$(PUBLIC_INC_DIR)                            \
+    $(UTILS_CPPFLAGS)                              \
     -I$(INC_DIR_COMMON_HASH)
 
 noinst_LTLIBRARIES += libscorep_profile.la
-libscorep_profile_la_SOURCES =                                           \
-    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile.h                \
-    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile.c                \
-    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_Tasking.h        \
-    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_Tasking.c        \
-    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_MpiEvents.h      \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_mpi_events.h     \
-    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_MpiEvents.c      \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_metric.h         \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_metric.c         \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_node.h           \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_node.c           \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cluster.h        \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cluster.c        \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_event_base.h     \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_event_base.c     \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_node_type.c      \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_definition.h     \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_definition.c     \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_location.h       \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_location.c       \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_table.h     \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_table.c     \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_debug.h          \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_debug.c          \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_process.h        \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_expand.c         \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_collapse.c       \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_phase.c          \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_process.c   \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_tausnap_writer.c \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_writer.h         \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_callpath.c       \
+libscorep_profile_la_SOURCES =                                              \
+    $(SRC_ROOT)src/measurement/profiling/include/SCOREP_Profile.h           \
+    $(SRC_ROOT)src/measurement/profiling/include/SCOREP_Profile_Tasking.h   \
+    $(SRC_ROOT)src/measurement/profiling/include/SCOREP_Profile_MpiEvents.h \
+    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile.c                   \
+    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_Tasking.c           \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_mpi_events.h        \
+    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_MpiEvents.c         \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_metric.h            \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_metric.c            \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_node.h              \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_node.c              \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cluster.h           \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cluster.c           \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_event_base.h        \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_event_base.c        \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_node_type.c         \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_definition.h        \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_definition.c        \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_location.h          \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_location.c          \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_table.h        \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_table.c        \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_debug.h             \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_debug.c             \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_process.h           \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_expand.c            \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_collapse.c          \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_phase.c             \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_process.c      \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_tausnap_writer.c    \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_writer.h            \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_callpath.c          \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_substitute_parameter.c \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.c   \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.c      \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.h
 
 libscorep_profile_la_CPPFLAGS = $(PROFILE_FLAGS) -DDOCDIR='"$(docdir)"'

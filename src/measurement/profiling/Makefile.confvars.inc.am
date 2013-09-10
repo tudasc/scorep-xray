@@ -24,6 +24,7 @@ libscorep_profile_confvars_la_SOURCES = \
 
 libscorep_profile_confvars_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
     -I$(PUBLIC_INC_DIR) \

@@ -119,7 +119,7 @@ libscorep_thread_omp_tpd_la_CPPFLAGS = \
     $(UTILS_CPPFLAGS) \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_ROOT)src/services/include \
-    -I$(INC_ROOT)src/measurement/profiling \
+    -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_DIR_COMMON_HASH)
 libscorep_thread_omp_tpd_la_LIBADD = \
@@ -140,7 +140,7 @@ libscorep_thread_generic_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR) \
     $(UTILS_CPPFLAGS) \
-    -I$(INC_ROOT)src/measurement/profiling \
+    -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/services/include
 
@@ -164,7 +164,7 @@ libscorep_thread_mockup_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR) \
     $(UTILS_CPPFLAGS) \
-    -I$(INC_ROOT)src/measurement/profiling \
+    -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement
 libscorep_thread_mockup_la_LDFLAGS = \
     $(library_api_version_ldflags)

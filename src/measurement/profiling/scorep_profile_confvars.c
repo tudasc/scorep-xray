@@ -34,11 +34,8 @@
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 
-
 #include <SCOREP_Config.h>
-
-
-#include "SCOREP_Profile.h"
+#include <SCOREP_Profile.h>
 
 
 #include "scorep_profile_confvars.inc.c"

@@ -24,7 +24,7 @@ common_libscorep_cppflags = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/measurement/paradigm  \
-    -I$(INC_ROOT)src/measurement/profiling \
+    -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement/filtering \
     -I$(INC_ROOT)src/measurement/online_access \
     -I$(INC_ROOT)src/services/include \
