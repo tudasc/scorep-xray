@@ -53,7 +53,7 @@ libscorep_online_access_spp_la_SOURCES =                                   \
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.c             \
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_phase.h             \
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control_mockup.c \
-    $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_OAConsumer.h       \
+    $(SRC_ROOT)src/measurement/profiling/include/SCOREP_Profile_OAConsumer.h \
     $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_OAConsumer.c       \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_oaconsumer_process.h \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_oaconsumer_process.c
