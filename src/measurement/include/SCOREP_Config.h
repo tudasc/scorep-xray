@@ -19,7 +19,7 @@
 
 
 /**
- * @file        src/measurement/include/SCOREP_Config.h
+ * @file
  *
  * @brief Runtime configuration subsystem.
  *

@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/scorep_environment.h
+ * @file
  *
  *
  */

@@ -14,7 +14,7 @@
  *
  */
 
-/** @file scorep_oa_connection.c
+/** @file
  *
  *  This file contains the implementation of communication layer functions
  */

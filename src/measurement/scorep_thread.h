@@ -20,7 +20,7 @@
 
 
 /**
- * @file       scorep_thread.h
+ * @file
  *
  *
  *

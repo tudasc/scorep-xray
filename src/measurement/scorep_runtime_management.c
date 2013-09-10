@@ -16,7 +16,7 @@
 
 
 /**
- * @file       scorep_runtime_management.c
+ * @file
  *
  *
  */

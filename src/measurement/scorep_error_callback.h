@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/scorep_error_callback.h
+ * @file
  *
  *
  */

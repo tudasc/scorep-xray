@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/tracing/scorep_tracing_confvars.c
+ * @file
  *
  *
  */

@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/definitions/SCOREP_Definitions.c
+ * @file
  *
  *
  */

@@ -20,7 +20,7 @@
 
 
 /**
- * @file       src/measurement/tracing/SCOREP_Tracing_ThreadInteraction.h
+ * @file
  *
  */
 

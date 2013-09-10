@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_oa_registry_protocol.h
+ * @file
  *
  * This file contains protocol definitions of communication with Periscope registry service
  */

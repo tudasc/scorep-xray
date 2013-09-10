@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/scorep_thread_generic.c
+ * @file
  *
  *
  */

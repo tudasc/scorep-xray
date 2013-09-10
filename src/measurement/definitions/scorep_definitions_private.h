@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/definitions/scorep_definitions_private.h
+ * @file
  *
  */
 

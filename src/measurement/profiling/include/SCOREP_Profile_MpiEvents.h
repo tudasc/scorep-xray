@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_MPIEVENTS_H
 
 /**
- * @file        SCOREP_Profile_MpiEvents.h
+ * @file
  *
  * @brief   Declaration of MPI profiling events.
  *

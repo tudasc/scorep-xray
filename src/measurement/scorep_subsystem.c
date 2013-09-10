@@ -16,7 +16,7 @@
 
 
 /**
- * @file        src/measurement/scorep_subsystem.c
+ * @file
  *
  *
  * @brief       Exports the subsystems array for the measurement system.

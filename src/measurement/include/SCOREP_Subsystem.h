@@ -32,7 +32,7 @@
 
 
 /**
- * @file    src/measurement/include/SCOREP_Subsystem.h
+ * @file
  *
  * @brief Subsystem management of the measurement system.
  *

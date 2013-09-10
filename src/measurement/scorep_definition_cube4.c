@@ -27,7 +27,7 @@
  */
 
 /**
- * @file scorep_definition_cube4.c
+ * @file
  *
  *
  * Writes the definitions to Cube 4.

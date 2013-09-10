@@ -23,7 +23,7 @@
 
 
 /**
- * @file       src/measurement/definitions/scorep_definitions_sampling_set.h
+ * @file
  *
  *
  */

@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/scorep_ipc_mockup.c
+ * @file
  *
  *
  * Default IPC implementation for single program paradigms.

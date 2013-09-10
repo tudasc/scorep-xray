@@ -16,7 +16,7 @@
 
 
 /**
- * @file        src/measurement/tracing/SCOREP_Tracing_Events.c
+ * @file
  *
  * @brief Event consumption functions for tracing.
  */

@@ -18,7 +18,7 @@
 #define SCOREP_OA_REQUEST_H_
 
 /**
- * @file        SCOREP_OA_Request.h
+ * @file
  *
  * @brief Functions for processing and storing of OA measurements requests
  *

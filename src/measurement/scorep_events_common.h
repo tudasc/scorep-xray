@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       src/measurement/scorep_events_common.h
+ * @file
  *
  *
  */

@@ -15,7 +15,7 @@
  */
 
 /**
- * @file SCOREP_OA_Dummy.c
+ * @file
  *
  * This file contains dummy implementation of Online Access Phase functions
  */

@@ -18,7 +18,7 @@
 #define SCOREP_FILTER_INIT_H
 
 /**
- * @file       SCOREP_Filter_Init.c
+ * @file
  *
  *
  * Implements the filter initialization interface for the filtering system.

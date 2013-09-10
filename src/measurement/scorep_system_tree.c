@@ -15,7 +15,7 @@
  */
 
 /**
- * @file        src/measurement/scorep_system_tree.c
+ * @file
  *
  * @brief   Implements the system tree creation.
  *

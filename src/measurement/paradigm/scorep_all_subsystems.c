@@ -29,7 +29,7 @@
 
 
 /**
- * @file        src/measurement/paradigm/scorep_all_subsystems.c
+ * @file
  *
  *
  * @brief       Holds the list of adapters linked into the measurement system.

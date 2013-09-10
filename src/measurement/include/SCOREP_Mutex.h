@@ -21,7 +21,7 @@
 
 
 /**
- * @file       src/measurement/include/SCOREP_Mutex.h
+ * @file
  *
  *
  * Abstract locking object.

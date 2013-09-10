@@ -20,7 +20,7 @@
 
 
 /**
- * @file        SCOREP_RuntimeManagement.h
+ * @file
  *
  * @brief   Declaration of runtime management functions to be used by the
  *          adapter layer.

@@ -20,7 +20,7 @@
 
 
 /**
- * @file        SCOREP_OA_Functions.h
+ * @file
  *
  * @brief   Declarations of Online Access module user interface.
  *

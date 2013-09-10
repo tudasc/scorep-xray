@@ -18,7 +18,7 @@
 #define SCOREP_OA_PHASE_H_
 
 /**
- * @file        scorep_oa_phase.h
+ * @file
  *
  * @brief   Declarations of Online Access phase enter and exit functions.
  *

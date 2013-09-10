@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/filtering/scorep_filter_confvars.inc.c
+ * @file
  *
  *
  */

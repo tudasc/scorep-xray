@@ -19,7 +19,7 @@
 
 
 /**
- * @file       src/measurement/scorep_clock_synchronization.h
+ * @file
  *
  *
  */

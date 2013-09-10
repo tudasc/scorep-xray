@@ -20,7 +20,7 @@
 
 
 /**
- * @file        scorep_subsystem.h
+ * @file
  *
  *
  * @brief       Exports the subsystems array for the measurement system.

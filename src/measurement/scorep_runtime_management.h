@@ -20,7 +20,7 @@
 
 
 /**
- * @file       scorep_runtime_management.h
+ * @file
  *
  *
  */

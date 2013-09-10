@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       src/measurement/scorep_location.h
+ * @file
  *
  *
  */

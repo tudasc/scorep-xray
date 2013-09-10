@@ -20,7 +20,7 @@
 
 
 /**
- * @file       src/measurement/tracing/scorep_tracing_file_substrate.h
+ * @file
  *
  */
 

@@ -18,7 +18,7 @@
 #define SCOREP_DEFINITION_CUBE4_H
 
 /**
- * @file scorep_definition_cube4.h
+ * @file
  *
  *
  * Declares functions and types needed for writing definitions in Cube 4

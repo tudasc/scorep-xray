@@ -20,7 +20,7 @@
 
 
 /**
- * @file       scorep_rewind_stack_management.h
+ * @file
  *
  *
  *

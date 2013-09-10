@@ -16,7 +16,7 @@
 
 
 /**
- * @file        SCOREP_Events.c
+ * @file
  *
  * @brief   Declaration of event recording functions to be used by the
  *          adapter layer.

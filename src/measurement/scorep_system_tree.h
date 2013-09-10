@@ -18,7 +18,7 @@
 #define SCOREP_SYSTEM_TREE_H
 
 /**
- * @file        scorep_system_tree.h
+ * @file
  *
  * @brief   Declaration of the system tree creation function.
  *

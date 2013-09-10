@@ -19,7 +19,7 @@
 
 
 /**
- * @file       src/measurement/scorep_runtime_management_timings.h
+ * @file
  *
  * Provide timing macros, variables, and utilities for timing the Score-P
  * initialization and finalization functions. You need to have

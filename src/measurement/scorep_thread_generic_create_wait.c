@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/scorep_thread_generic_create_wait.c
+ * @file
  *
  *
  */

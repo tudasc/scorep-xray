@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/scorep_sion_mpi.c
+ * @file
  *
  *
  */

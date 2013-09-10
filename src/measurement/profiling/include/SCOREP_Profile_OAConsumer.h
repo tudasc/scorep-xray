@@ -30,7 +30,7 @@
 #define SCOREP_PROFILE_OACONSUMER_H
 
 /**
- * @file        SCOREP_Profile_OAConsumer.h
+ * @file
  *
  * @brief Interface called by the OA module to get the profile measurements.
  *

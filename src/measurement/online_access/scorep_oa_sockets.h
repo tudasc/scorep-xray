@@ -20,7 +20,7 @@
 
 
 /**
- * @file        scorep_oa_sockets.h
+ * @file
  *
  * @brief   Declaration of OA communication infrastructure functions and data types
  *

@@ -17,7 +17,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/scorep_unify_mpp_ipc.c
+ * @file
  *
  *
  */

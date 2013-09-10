@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/scorep_runtime_management_timings.c
+ * @file
  *
  *
  */

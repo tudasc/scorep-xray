@@ -18,7 +18,7 @@
 #define SCOREP_PROPERTIES_H
 
 /**
- * @file       src/measurement/include/SCOREP_Properties.h
+ * @file
  *
  *
  */

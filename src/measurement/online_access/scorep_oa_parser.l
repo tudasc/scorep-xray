@@ -15,7 +15,7 @@
  */
  
  /**
-  * @file    src/measurement/online_access/scorep_oa_parser.l
+  * @file
   *
   * @brief   automatically generated file for the MRI string parser
   *

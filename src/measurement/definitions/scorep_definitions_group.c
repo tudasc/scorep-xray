@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/definitions/scorep_definitions_group.c
+ * @file
  *
  * @brief Declaration of definition functions to be used by the adapter layer.
  *

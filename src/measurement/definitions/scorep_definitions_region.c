@@ -28,7 +28,7 @@
 
 
 /**
- * @file       src/measurement/definitions/scorep_definitions_region.c
+ * @file
  *
  * @brief Declaration of definition functions to be used by the adapter layer.
  *

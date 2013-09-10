@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_H
 
 /**
- * @file        SCOREP_Profile.h
+ * @file
  *
  * @brief Interface called by the measurement core to construct the profile.
  *

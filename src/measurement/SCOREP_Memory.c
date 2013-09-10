@@ -16,7 +16,7 @@
 
 
 /**
- * @file       SCOREP_Memory.c
+ * @file
  *
  *
  *

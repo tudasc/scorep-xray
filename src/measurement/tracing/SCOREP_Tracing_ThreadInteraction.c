@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/tracing/SCOREP_Tracing_ThreadInteraction.c
+ * @file
  *
  *
  *

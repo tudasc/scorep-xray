@@ -18,7 +18,7 @@
 #define SCOREP_OA_PERISCOPEMETRICS_H_
 
 /**
- * @file        SCOREP_OA_PeriscopeMetrics.h
+ * @file
  *
  * @brief   Persciope metrics
  *

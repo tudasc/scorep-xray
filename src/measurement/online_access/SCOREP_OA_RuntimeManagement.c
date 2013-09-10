@@ -15,7 +15,7 @@
  */
 
 /**
- * @file SCOREP_OA_RuntimeManagement.c
+ * @file
  *
  * This file contains the implementation of Online Access initialization and finalization functions
  */

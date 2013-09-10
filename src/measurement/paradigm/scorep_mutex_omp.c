@@ -17,7 +17,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/scorep_mutex_omp.c
+ * @file
  *
  *
  * Provides a lock implemention for OpenMP programs.

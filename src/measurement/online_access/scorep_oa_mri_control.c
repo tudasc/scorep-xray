@@ -27,7 +27,7 @@
  */
 
 /**
- * @file scorep_oa_mri_control.c
+ * @file
  *
  * This file contains implementation of OA measurement configuration and application execution control functions
  */

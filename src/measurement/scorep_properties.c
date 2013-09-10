@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       src/measurement/scorep_properties.c
+ * @file
  *
  * @brief Propertiy handling.
  *

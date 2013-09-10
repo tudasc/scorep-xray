@@ -20,7 +20,7 @@
 
 
 /**
- * @file        SCOREP_OA_RuntimeManagement.h
+ * @file
  *
  * @brief   Declaration of OA initialization and finalization functions
  *

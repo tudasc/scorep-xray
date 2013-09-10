@@ -20,7 +20,7 @@
 
 
 /**
- * @file       SCOREP_DefinitionHandles.h
+ * @file
  *
  *
  */

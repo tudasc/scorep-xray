@@ -27,7 +27,7 @@
  */
 
 /**
- * @file        SCOREP_RuntimeManagement.c
+ * @file
  *
  * @brief   Definition of runtime management functions to be used by the
  *          subsystem layer.

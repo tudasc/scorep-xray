@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/scorep_clock_synchronization_mpp_ipc.c
+ * @file
  *
  *
  */

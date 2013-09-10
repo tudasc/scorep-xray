@@ -20,7 +20,7 @@
 
 
 /**
- * @file       src/measurement/scorep_status.h
+ * @file
  *
  *
  */

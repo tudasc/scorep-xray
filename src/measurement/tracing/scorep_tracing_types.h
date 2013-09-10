@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/tracing/scorep_tracing_types.h
+ * @file
  *
  * @brief Holds functions for converting Score-P types to OTF2.
  */

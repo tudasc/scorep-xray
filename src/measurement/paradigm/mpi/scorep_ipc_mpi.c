@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/mpi/scorep_ipc_mpi.c
+ * @file
  *
  *
  *

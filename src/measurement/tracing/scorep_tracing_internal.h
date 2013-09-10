@@ -20,7 +20,7 @@
 
 
 /**
- * @file       src/measurement/tracing/scorep_tracing_interal.h
+ * @file
  *
  */
 

@@ -38,7 +38,7 @@
 #include "SCOREP_Definitions.h"
 
 /**
- * @file       SCOREP_Location.h
+ * @file
  *
  *
  *

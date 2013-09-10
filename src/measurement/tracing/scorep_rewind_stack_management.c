@@ -16,7 +16,7 @@
 
 
 /**
- * @file       scorep_rewind_stack_management.c
+ * @file
  *
  *
  *

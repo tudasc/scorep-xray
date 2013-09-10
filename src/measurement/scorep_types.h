@@ -35,7 +35,7 @@
 
 
 /**
- * @file        src/measurement/scorep_types.h
+ * @file
  *
  *
  * @brief Functions to convert types from @ref SCOREP_Types.h into strings.

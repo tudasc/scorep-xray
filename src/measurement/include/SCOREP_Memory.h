@@ -21,7 +21,7 @@
 
 
 /**
- * @file SCOREP_Memory.h Memory management interface for measurement and
+ * @file
  * adapters.
  *
  *

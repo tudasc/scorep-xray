@@ -23,7 +23,7 @@
 
 
 /**
- * @file       src/measurement/definitions/scorep_definitions_io_file.c
+ * @file
  *
  *
  */

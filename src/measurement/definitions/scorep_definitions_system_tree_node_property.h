@@ -23,7 +23,7 @@
 
 
 /**
- * @file       src/measurement/definitions/scorep_definitions_system_tree_node_property.h
+ * @file
  *
  *
  */

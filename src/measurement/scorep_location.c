@@ -30,7 +30,7 @@
 
 
 /**
- * @file       src/measurement/scorep_location.c
+ * @file
  *
  *
  */

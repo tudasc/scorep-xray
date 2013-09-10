@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_oa_sockets.c
+ * @file
  *
  * This file contains implementation of sockets communication between SCOREP OA and EA
  */

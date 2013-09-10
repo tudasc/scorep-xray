@@ -17,7 +17,7 @@
 
 
 /**
- * @file       src/measurement/scorep_status.c
+ * @file
  *
  *
  */

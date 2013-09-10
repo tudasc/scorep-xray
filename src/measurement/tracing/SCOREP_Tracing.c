@@ -28,7 +28,7 @@
 
 
 /**
- * @file       src/measurement/tracing/SCOREP_Tracing.c
+ * @file
  *
  *
  */

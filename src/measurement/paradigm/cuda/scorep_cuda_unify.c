@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       src/measurement/paradigm/cuda/scorep_cuda_unify.c
+ *  @file
  *
  */
 

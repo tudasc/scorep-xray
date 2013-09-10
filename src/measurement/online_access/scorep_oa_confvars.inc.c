@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/online_access/scorep_oa_confvars.inc.c
+ * @file
  *
  *
  */

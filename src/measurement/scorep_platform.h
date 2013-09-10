@@ -20,7 +20,7 @@
 
 
 /**
- * @file        scorep_platform.h
+ * @file
  *
  * @brief Platform dependent functionality.
  *

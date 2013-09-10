@@ -19,7 +19,7 @@
 
 
 /**
- * @file       src/measurement/definitions/SCOREP_Definitions.h
+ * @file
  *
  *
  */

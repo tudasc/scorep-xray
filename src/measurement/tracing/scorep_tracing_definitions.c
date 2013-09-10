@@ -28,7 +28,7 @@
 
 
 /**
- * @file        src/measurement/tracing/scorep_tracing_definitions.c
+ * @file
  *
  * @brief   Handles tracing specific definitions tasks.
  *

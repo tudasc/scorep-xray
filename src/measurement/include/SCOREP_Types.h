@@ -32,7 +32,7 @@
 
 
 /**
- * @file        SCOREP_Types.h
+ * @file
  *
  * @brief Types needed by SCOREP_* API functions.
  *

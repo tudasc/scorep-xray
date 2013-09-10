@@ -20,7 +20,7 @@
 
 
 /**
- * @file       src/measurement/tracing/SCOREP_Tracing.h
+ * @file
  *
  */
 

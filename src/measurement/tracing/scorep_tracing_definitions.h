@@ -19,7 +19,7 @@
 
 
 /**
- * @file        src/measurement/tracing/scorep_tracing_definitions.h
+ * @file
  *
  * @brief   Handles tracing specific definitions tasks.
  *

@@ -28,7 +28,7 @@
 
 
 /**
- * @file       src/measurement/paradigm/omp/scorep_omp_thread_teams.c
+ * @file
  *
  *
  */

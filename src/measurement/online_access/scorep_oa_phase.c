@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_oa_phases.c
+ * @file
  *
  * This file contains the implementation of Online Access phase enter and exit functions
  */

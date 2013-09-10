@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/scorep_thread_omp_tpd.c
+ * @file
  *
  *
  *

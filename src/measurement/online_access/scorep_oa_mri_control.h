@@ -20,7 +20,7 @@
 
 
 /**
- * @file        scorep_oa_mri_control.h
+ * @file
  *
  * @brief   Declaration of OA measurement configuration and application control functionality
  *

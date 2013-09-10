@@ -35,7 +35,7 @@
 
 
 /**
- * @file       src/measurement/definitions/scorep_definitions_region.h
+ * @file
  *
  *
  */

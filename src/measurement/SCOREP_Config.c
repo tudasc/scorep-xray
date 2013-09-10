@@ -15,7 +15,7 @@
  */
 
 /**
- * @file        SCOREP_Config.c
+ * @file
  *
  *
  * @brief Runtime configuration subsystem.

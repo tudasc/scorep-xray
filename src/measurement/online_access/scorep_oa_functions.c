@@ -15,7 +15,7 @@
  */
 
 /**
- * @file SCOREP_OA_Functions.c
+ * @file
  *
  * This file contains the implementation of Online Access Phase functions
  */
