@@ -46,7 +46,7 @@
 
 
 /**
- * @file  SCOREP_Mpi_P2p.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for point-to-point communication

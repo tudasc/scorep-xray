@@ -46,7 +46,7 @@
 
 
 /**
- * @file  SCOREP_Mpi_Coll.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for collective communication

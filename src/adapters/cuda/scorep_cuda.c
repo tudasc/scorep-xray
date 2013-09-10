@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       scorep_cuda.c
+ *  @file
  *
  *  Implementation of commonly used functionality within the CUDA adapter.
  */

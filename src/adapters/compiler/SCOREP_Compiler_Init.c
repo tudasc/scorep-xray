@@ -29,7 +29,7 @@
 
 
 /**
- * @file       src/adapters/compiler/SCOREP_Compiler_Init.c
+ * @file
  *
  * @brief Compiler adapter interface support to the measurement system.
  *

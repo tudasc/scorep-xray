@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       SCOREP_Pomp_UserF.c
+ * @file
  * @ingroup    POMP2
  *
  * @brief Implementation of the POMP2 fortran user adapter functions and initialization.

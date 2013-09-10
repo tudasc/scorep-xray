@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_compiler_ftrace_init.c
+ * @file
  *
  * @brief Initialization of the NEC SX compiler adapter.
  */

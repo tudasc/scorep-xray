@@ -12,7 +12,7 @@
 
 
 /**
- * @file src/adapters/mpi/scorep_mpi_communicator_mgmt.c
+ * @file
  * @ingroup MPI_Wrapper
  */
 

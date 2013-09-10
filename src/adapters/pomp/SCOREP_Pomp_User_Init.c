@@ -9,7 +9,7 @@
  */
 
 /**
- * @file       SCOREP_Pomp_User_Init.c
+ * @file
  * @ingroup    POMP2
  *
  * @brief Implementation of the POMP2 user adapter initialization.

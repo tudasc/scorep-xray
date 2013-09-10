@@ -29,7 +29,7 @@
 
 
 /**
- * @file       /scorep/src/adapters/tau/SCOREP_Tau.c
+ * @file
  * @ingroup    TAU
  *
  * @brief Implementation of the TAU adapter functions.

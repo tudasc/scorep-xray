@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/adapters/compiler/scorep_compiler_confvars.inc.c
+ * @file
  *
  *
  */

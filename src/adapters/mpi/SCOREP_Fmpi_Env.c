@@ -46,7 +46,7 @@
 
 
 /**
- * @file  SCOREP_Fmpi_Env.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for environmental management

@@ -28,7 +28,7 @@
  */
 
 /**
- *  @file       src/adapters/user/SCOREP_User_Region.c
+ *  @file
  *
  *  This file contains the implementation of user adapter functions concerning
  *  regions.

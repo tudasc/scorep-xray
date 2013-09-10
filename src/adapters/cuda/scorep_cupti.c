@@ -27,7 +27,7 @@
  */
 
 /**
- *  @file       scorep_cupti.c
+ *  @file
  *
  *  Implementation of common functionality between CUPTI activity, callbacks
  *  and events.

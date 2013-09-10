@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       SCOREP_Cuda_Init.c
+ *  @file
  *
  *  This file contains the implementation of the initialization functions of the
  *  CUDA adapter.

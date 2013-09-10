@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_compiler_sun_data.h
+ * @file
  *
  *
  * Contains helper data structures which are used by the Sun/Oracle Studio

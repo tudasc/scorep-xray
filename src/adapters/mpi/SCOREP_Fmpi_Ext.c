@@ -47,7 +47,7 @@
 
 
 /**
- * @file  SCOREP_Fmpi_Ext.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for external interface functions

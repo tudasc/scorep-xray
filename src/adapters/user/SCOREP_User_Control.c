@@ -28,7 +28,7 @@
  */
 
 /**
- *  @file       src/adapters/user/SCOREP_User_Control.c
+ *  @file
  *
  *  @brief Contains the implementation of the control functions for C.
  */

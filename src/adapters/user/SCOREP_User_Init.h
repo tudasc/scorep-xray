@@ -30,7 +30,7 @@
 #ifndef SCOREP_USER_INIT_H
 #define SCOREP_USER_INIT_H
 
-/** @file src/adapters/user/SCOREP_User_Init.h
+/** @file
 
     This file contains the declaration of the initialization struct of the user
     adapter.

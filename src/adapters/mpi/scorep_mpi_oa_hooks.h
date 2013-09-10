@@ -20,7 +20,7 @@
 
 
 /**
- * @file        scorep_mpi_oa_hooks.h
+ * @file
  *
  * @brief   Declaration of MPI pre and post communication hooks
  *

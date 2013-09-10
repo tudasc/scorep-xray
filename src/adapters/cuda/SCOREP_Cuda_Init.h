@@ -18,7 +18,7 @@
 #define SCOREP_CUDA_INIT_H
 
 /**
- * @file       SCOREP_Cuda_Init.h
+ * @file
  * @ingroup    CUDA
  *
  * @brief Declares the initialization structure of the CUDA adapter

@@ -12,7 +12,7 @@
 
 
 /**
- * @file src/adapters/pomp/SCOREP_Pomp_CommonF.c
+ * @file
  */
 
 

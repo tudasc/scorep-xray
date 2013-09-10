@@ -18,7 +18,7 @@
 #define SCOREP_MPI_H
 
 /**
-   @file       SCOREP_Mpi.h
+   @file
    @ingroup    MPI_Wrapper
 
    @brief It includes all source files for the MPI wrappers. Macros and

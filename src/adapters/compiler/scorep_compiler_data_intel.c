@@ -27,7 +27,7 @@
  */
 
 /**
- * @file       scorep_compiler_data_intel.c
+ * @file
  *
  * @brief Implementation of helper functions for managing region data.
  */

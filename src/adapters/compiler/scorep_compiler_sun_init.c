@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_compiler_sun_init.c
+ * @file
  *
  * @brief Initialization of the Sun/Oracle Studio compiler adapter.
  */

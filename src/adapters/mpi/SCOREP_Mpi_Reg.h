@@ -46,7 +46,7 @@
 
 
 /**
- * @file  SCOREP_Mpiwrap_Reg.h
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Registration of MPI functions

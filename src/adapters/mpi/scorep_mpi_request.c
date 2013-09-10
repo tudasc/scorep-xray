@@ -28,7 +28,7 @@
  */
 
 /**
- * @file       src/adapters/mpi/scorep_mpi_request.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Contains the implementation of MPI Reqests management

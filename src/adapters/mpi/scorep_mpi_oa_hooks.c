@@ -16,7 +16,7 @@
 
 
 /**
- * @file        scorep_mpi_oa_hooks.c
+ * @file
  *
  * @brief   mpi hooks functions to be used by MPI profiling
  *

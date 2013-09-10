@@ -18,7 +18,7 @@
 #define SCOREP_COMPILER_SYMBOL_TABLE_H
 
 /**
- * @file       scorep_compiler_symbol_table.c
+ * @file
  *
  * @brief Symbol table analysis functions declaration.
  * Contains functions that read the symbol table of a executable and add all functions

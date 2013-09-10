@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_compiler_data_intel.h
+ * @file
  *
  *
  * Defines helper functions for managing region data.

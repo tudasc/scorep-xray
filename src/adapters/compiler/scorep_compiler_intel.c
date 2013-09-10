@@ -28,7 +28,7 @@
  */
 
 /**
- * @file       src/adapters/compiler/SCOREP_compiler_intel.c
+ * @file
  *
  * @brief Support for Intel Compiler
  * Will be triggered by the '-fcollect' flag of the intel

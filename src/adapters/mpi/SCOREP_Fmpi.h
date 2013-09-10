@@ -30,7 +30,7 @@
 #ifndef SCOREP_FMPI_H
 #define SCOREP_FMPI_H
 
-/** @file  SCOREP_Fmpi.h
+/** @file
     @brief Main file for Fortran interface measurement wrappers.
 
     Includes all Fortran wrappers for MPI functions. Fortran compilers decorate the

@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       scorep_cupti_callbacks.h
+ *  @file
  *
  *  Propagation of the CUPTI callbacks implementation's initialize and finalize
  *  functions.

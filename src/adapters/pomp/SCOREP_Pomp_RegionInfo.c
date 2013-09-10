@@ -27,7 +27,7 @@
  */
 
 /**
- * @file       SCOREP_Pomp_RegionInfo.c
+ * @file
  * @ingroup    POMP
  *
  * @brief Implements functionality for interpretation of pomp region strings.

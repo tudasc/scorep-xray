@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       SCOREP_User_ParameterF.c
+ *  @file
  *
  *  This file containes the implementation of user adapter functions concerning
  *  parameters for Fortran.

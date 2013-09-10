@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_compiler_data.h
+ * @file
  *
  *
  * Contains helper functions which are common for all compiler adapters.

@@ -46,7 +46,7 @@
 
 
 /**
- * @file       SCOREP_Fmpi_Type.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for datatype functions

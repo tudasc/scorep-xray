@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_compiler_pgi_init.c
+ * @file
  *
  * @brief Initialization of the PGI compiler adapter.
  */

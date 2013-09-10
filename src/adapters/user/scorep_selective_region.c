@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       scorep_selective_region.c
+ *  @file
  *
  *  This file containes the implementation of functions for selective recording.
  */

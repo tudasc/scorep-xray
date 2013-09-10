@@ -20,7 +20,7 @@
 
 
 /**
- * @file        scorep_mpi_oa_profile.h
+ * @file
  *
  * @brief   Declaration of mpi profiling functions
  *

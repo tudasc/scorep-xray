@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       scorep_cupti_activity.h
+ *  @file
  *
  *  Propagation of the CUPTI activity control functions.
  */

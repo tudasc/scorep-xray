@@ -47,7 +47,7 @@
 
 
 /**
- * @file  SCOREP_Fmpi_Spawn.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for process creation and management

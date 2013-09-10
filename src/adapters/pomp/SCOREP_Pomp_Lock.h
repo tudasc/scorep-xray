@@ -31,7 +31,7 @@
 #define SCOREP_POMP_LOCK_H
 
 /**
- * @file       src/adapters/pomp/SCOREP_Pomp_Lock.h
+ * @file
  * @ingroup    POMP
  *
  * @brief Declaration of internal functins for lock management.

@@ -18,7 +18,7 @@
 #define SCOREP_POMP_REGION_INFO_H
 
 /**
- * @file       SCOREP_Pomp_RegionInfo.h
+ * @file
  * @ingroup    POMP
  *
  * @brief Declares functionality for interpretation of pomp region strings.

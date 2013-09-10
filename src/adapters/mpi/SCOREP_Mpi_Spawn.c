@@ -46,7 +46,7 @@
 
 
 /**
- * @file       SCOREP_Mpi_Spawn.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for process creation and management

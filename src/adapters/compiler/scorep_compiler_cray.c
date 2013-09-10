@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_compiler_cray.c
+ * @file
  *
  * @brief Support for CCE-Compiler.
  * Because the CCE compiler calls functions with the same signature like

@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/adapters/mpi/scorep_mpi_confvars.inc.c
+ * @file
  *
  *
  */

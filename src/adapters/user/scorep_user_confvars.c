@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/adapters/user/scorep_user_confvars.c
+ * @file
  *
  *
  */

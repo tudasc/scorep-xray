@@ -9,7 +9,7 @@
  */
 
 /**
- * @file       scorep_mpi_fortran.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Implements Fortran <-> C data converter functions.

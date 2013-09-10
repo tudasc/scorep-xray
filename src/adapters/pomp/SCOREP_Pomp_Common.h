@@ -31,7 +31,7 @@
 #define SCOREP_POMP_COMMON_H
 
 /**
- * @file       src/adapters/pomp/SCOREP_Pomp_Common.h
+ * @file
  * @ingroup    POMP2
  *
  * @brief Declaration of global variables, used in several source files of the

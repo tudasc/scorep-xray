@@ -29,7 +29,7 @@
 
 
 /**
- * @file       src/adapters/compiler/SCOREP_compiler_pgi.c
+ * @file
  *
  * @brief Support for PGI Compiler
  *

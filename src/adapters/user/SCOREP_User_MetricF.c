@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       SCOREP_User_MetricF.c
+ *  @file
  *
  *  This file containes the implementation of user adapter functions concerning
  *  user metrics for Fortran macros.

@@ -27,7 +27,7 @@
  */
 
 /**
- *  @file       scorep_cupti_activity.c
+ *  @file
  *
  *  Implementation of GPU activity (kernel execution and memory copies)
  *  capturing with CUPTI activities.

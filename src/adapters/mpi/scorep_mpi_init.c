@@ -28,7 +28,7 @@
  */
 
 /**
- * @file       src/adapters/mpi/scorep_mpi_init.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Contains the initialization function implementations for the

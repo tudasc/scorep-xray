@@ -18,7 +18,7 @@
 #define SCOERP_FORTRAN_H
 
 /**
- * @file       scorep_mpi_fortran.h
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Helper functions to convert fortran and C data types.

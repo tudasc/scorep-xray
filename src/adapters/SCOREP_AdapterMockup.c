@@ -16,7 +16,7 @@
 
 
 /**
- * @file       SCOREP_Adapter_Mockup.c
+ * @file
  *
  * @brief Compiler adapter interface support to the measurement system.
  *

@@ -15,7 +15,7 @@
 
 
 /**
- * @file src/adapters/mpi/scorep_mpi_communicator_mgmt.h
+ * @file
  */
 
 #include <SCOREP_DefinitionHandles.h>

@@ -46,7 +46,7 @@
 
 
 /**
- * @file  SCOREP_Mpi_Rma.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for one-sided communication

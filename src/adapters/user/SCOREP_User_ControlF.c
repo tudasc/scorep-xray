@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file SCOREP_User_Control.c
+ *  @file
  *  @ingroup    SCOREP_User_External
  *
  *  @brief Contain the implementation of the control functions for Fortran.

@@ -9,7 +9,7 @@
  */
 
 /**
- * @file       SCOREP_Pomp_Omp_Init.c
+ * @file
  * @ingroup    POMP2
  *
  * @brief Implementation of the POMP2 OpenMP adapter initialization.

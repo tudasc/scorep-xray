@@ -27,7 +27,7 @@
  */
 
 /**
- *  @file       SCOREP_User_RegionF.c
+ *  @file
  *
  *  This file containes the implementation of user adapter functions concerning
  *  regions.

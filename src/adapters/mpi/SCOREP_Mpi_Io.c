@@ -46,7 +46,7 @@
 
 
 /**
- * @file  SCOREP_Mpi_Io.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for parallel I/O

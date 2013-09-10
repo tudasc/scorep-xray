@@ -28,7 +28,7 @@
  */
 
 /**
- * @file       src/adapters/pomp/SCOREP_Pomp_Lib.c
+ * @file
  * @ingroup    POMP2
  *
  * @brief Implementation of the POMP2 OpenMP adapter functions.

@@ -14,7 +14,7 @@
 !
 
 !>
-!! @file       SCOREP_Fmpi_Init.f
+!! @file
 !! @brief      Fortran functions, called during the initialization of the mpi adapter to
 !!             obtain the value of MPI_STATUS_SIZE.
 !!

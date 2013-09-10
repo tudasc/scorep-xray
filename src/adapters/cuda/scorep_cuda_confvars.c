@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/adapters/cuda/scorep_cuda_confvars.c
+ * @file
  *
  *
  */

@@ -47,7 +47,7 @@
 
 
 /**
- * @file  SCOREP_Fmpi_P2p.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for point-to-point communication

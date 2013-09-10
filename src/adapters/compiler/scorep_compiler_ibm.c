@@ -29,7 +29,7 @@
 
 
 /**
- * @file       src/adapters/compiler/scorep_compiler_ibm.c
+ * @file
  *
  * @brief Support for XL IBM-Compiler
  * Will be triggered by the function trace option by the xl

@@ -46,7 +46,7 @@
 
 
 /**
- * @file       SCOREP_Fmpi_Topo.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for topologies

@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       src/adapters/cuda/scorep_cupti.h
+ *  @file
  *
  *  This file provides commonly used definitions and functionality for all CUPTI
  *  interface (events, callbacks and activity)

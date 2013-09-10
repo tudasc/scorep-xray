@@ -46,7 +46,7 @@
 
 
 /**
- * @file SCOREP_Mpi_Reg.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Registration of MPI regions

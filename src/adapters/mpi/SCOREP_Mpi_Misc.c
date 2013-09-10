@@ -46,7 +46,7 @@
 
 
 /**
- * @file       SCOREP_Mpi_Misc.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for miscelaneous and handler conversion

@@ -27,7 +27,7 @@
  */
 
 /**
- * @file       scorep_compiler_data.c
+ * @file
  *
  * @brief Implementation of helper functions which are common for all compiler
  *        adapters.

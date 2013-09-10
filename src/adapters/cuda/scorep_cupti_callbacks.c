@@ -27,7 +27,7 @@
  */
 
 /**
- *  @file       scorep_cupti_callbacks.c
+ *  @file
  *
  *  Implementation of the CUDA runtime and driver API event logging via
  *  CUPTI callbacks.

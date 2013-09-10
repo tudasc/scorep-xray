@@ -46,7 +46,7 @@
 
 
 /**
- * @file       SCOREP_Mpi_Cg.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for communicator and group functions

@@ -29,7 +29,7 @@
 
 
 /**
- * @file       src/adapters/compiler/scorep_compiler_ftrace.c
+ * @file
  *
  * @brief Compiler adapter version for NEC SX compiler
  */

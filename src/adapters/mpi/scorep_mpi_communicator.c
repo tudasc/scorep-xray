@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       src/adapters/mpi/scorep_mpi_communicator.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Internal functions for communicator, group and window management.

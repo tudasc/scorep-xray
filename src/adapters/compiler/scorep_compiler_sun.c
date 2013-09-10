@@ -28,7 +28,7 @@
  */
 
 /**
- * @file       src/adapters/compiler/scorep_compiler_sun.c
+ * @file
  *
  * @brief SUN f90 compiler PHAT interface.
  * Compiler adapter for the SUN F90 compiler.

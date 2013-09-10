@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       scorep_selective_region.h
+ *  @file
  *
  *  This file containes the declaration of types and functions for selective recording.
  *  If selective recording is enabled, the measurement system records those only parts

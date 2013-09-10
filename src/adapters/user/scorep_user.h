@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       src/adapters/users/scorep_user.h
+ *  @file
  *
  */
 

@@ -47,7 +47,7 @@
 
 
 /**
- * @file  SCOREP_Fmpi_Misc.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for miscelaneous and handler conversion

@@ -47,7 +47,7 @@
 
 
 /**
- * @file  SCOREP_Fmpi_Rma.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for one-sided communication

@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_compiler_gnu_init.c
+ * @file
  *
  * @brief Initialization of the IBM XL compiler adapter.
  */

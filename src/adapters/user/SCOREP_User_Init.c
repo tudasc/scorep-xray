@@ -28,7 +28,7 @@
  */
 
 /**
- *  @file       src/adapters/user/SCOREP_User_Init.c
+ *  @file
  *
  *  This file contains the implmentation of the initialization functions of the user
  *  adapter.

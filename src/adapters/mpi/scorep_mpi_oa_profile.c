@@ -16,7 +16,7 @@
 
 
 /**
- * @file        scorep_mpi_oa_profile.c
+ * @file
  *
  * @brief   Declaration of MPI profiling functions
  *

@@ -15,7 +15,7 @@
  */
 
 /**
- *  @file       src/adapters/cuda/scorep_cuda.h
+ *  @file
  *
  *  This file provides commonly used definitions and functionality in the CUDA
  *  adapter.

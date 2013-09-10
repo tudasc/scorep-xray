@@ -18,7 +18,7 @@
 #define SCOREP_POMP2_FORTRAN_H
 
 /**
- * @file       SCOREP_Pomp_Fortran.h
+ * @file
  * @ingroup    POMP2
  *
  * @brief Provides defines for function name decoration for POMP2 Fortran wrappers.

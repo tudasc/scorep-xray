@@ -28,7 +28,7 @@
  */
 
 /**
- * @file       src/adapters/compiler/scorep_compiler_gnu.c
+ * @file
  *
  * @brief Support for GNU Compiler
  * Will be triggered by the '-finstrument-functions' flag of the GNU

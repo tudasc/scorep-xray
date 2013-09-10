@@ -28,7 +28,7 @@
  */
 
 /**
- *  @file       src/adapters/user/SCOREP_User_Metric.c
+ *  @file
  *
  *  This file containes the implementation of user adapter functions concerning
  *  user metrics.

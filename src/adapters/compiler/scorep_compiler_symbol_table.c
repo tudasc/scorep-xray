@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_compiler_symbol_table.c
+ * @file
  *
  * @brief Symbol table analysis functions.
  * Contains functions that read the symbol table of a executable and add all functions

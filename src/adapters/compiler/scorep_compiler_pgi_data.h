@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_compiler_pgi_data.h
+ * @file
  *
  *
  * Contains helper data structures which are used by the PGI compiler adapter.

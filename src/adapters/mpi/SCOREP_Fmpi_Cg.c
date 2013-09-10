@@ -46,7 +46,7 @@
 
 
 /**
- * @file       SCOREP_Fmpi_Cg.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for communicator and group functions

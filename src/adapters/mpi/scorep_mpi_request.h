@@ -31,7 +31,7 @@
 #define SCOREP_MPI_REQUEST_H
 
 /**
-   @file       src/adapters/mpi/scorep_mpi_request.h
+   @file
    @ingroup    MPI_Wrapper
 
    @brief Contains the declarations for the handling of MPI Reqests.

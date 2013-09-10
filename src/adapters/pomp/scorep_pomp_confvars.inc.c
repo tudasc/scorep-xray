@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/adapters/pomp/scorep_pomp_confvars.inc.c
+ * @file
  *
  *
  */

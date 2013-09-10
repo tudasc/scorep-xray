@@ -47,7 +47,7 @@
 
 
 /**
- * @file  SCOREP_Fmpi_Io.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief Fortran interface wrappers for parallel I/O

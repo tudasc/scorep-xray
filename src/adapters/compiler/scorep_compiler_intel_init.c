@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       scorep_compiler_intel_init.c
+ * @file
  *
  * @brief Initialization of the Intel compiler adapter.
  */

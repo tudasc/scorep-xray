@@ -15,7 +15,7 @@
  */
 
 /**
- * @file       SCOREP_Pomp_Lock.c
+ * @file
  * @ingroup    POMP
  *
  * @brief Implementation of internal functins for lock management.
