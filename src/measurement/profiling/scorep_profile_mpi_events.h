@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_MPI_EVENTS_H
 
 /**
- * @file        scorep_profile_mpi_events.h
+ * @file
  *
  */
 

@@ -27,9 +27,8 @@
  */
 
 /**
- * @file scorep_profile_oaconsumer_process.c Implementation of functions to process profile data before transfering over OA module.
- *
- *
+ * @file
+ * Implementation of functions to process profile data before transfering over OA module.
  *
  */
 

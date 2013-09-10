@@ -16,7 +16,7 @@
 
 
 /**
- * @file        SCOREP_Profile_MpiEvents.c
+ * @file
  *
  * @brief   Implmentation of MPI profiling events.
  *

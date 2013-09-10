@@ -18,7 +18,7 @@
 #define SCOREP_OA_CONSUMER_PROCESS_H_
 
 /**
- * @file        scorep_profile_oa_consumer_process.h
+ * @file
  *
  * @brief Helper functions for processing and transformation of profile for the needs of OA
  *

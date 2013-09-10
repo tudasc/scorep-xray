@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_profile_debug.c
+ * @file
  * Provides extended output on errors in the profile.
  *
  *

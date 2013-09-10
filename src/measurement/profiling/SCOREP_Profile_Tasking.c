@@ -16,7 +16,7 @@
 
 
 /**
- * @file        SCOREP_Profile_Tasking.c
+ * @file
  *
  * @brief   Implementation of the Tasking functions of the profile interface
  *

@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_profile_node.c
+ * @file
  * Implementation for managing profile node trees.
  *
  *

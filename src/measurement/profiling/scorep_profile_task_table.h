@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_TASK_TABLE_H
 
 /**
- * @file        scorep_profile_task_table.h
+ * @file
  *
  * @brief   Implementation of the Tasking functions of the profile interface
  *

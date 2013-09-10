@@ -15,7 +15,7 @@
  */
 
 /**
- * @file SCOREP_Profile.c Implementation of functions to construct/destruct the
+ * @file
  * profile tree.
  *
  *

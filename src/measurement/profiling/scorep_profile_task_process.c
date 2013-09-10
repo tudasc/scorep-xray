@@ -27,7 +27,7 @@
  */
 
 /**
- * @file scorep_profile_task_process.c
+ * @file
  *
  *
  *

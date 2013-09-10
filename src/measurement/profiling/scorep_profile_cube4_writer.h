@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_CUBE4_WRITER_H
 
 /**
- * @file scorep_profile_cube4_writer.h
+ * @file
  *
  *
  */

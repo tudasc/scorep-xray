@@ -29,7 +29,7 @@
 
 
 /**
- * @file       scorep_cluster.c
+ * @file
  *
  *
  *

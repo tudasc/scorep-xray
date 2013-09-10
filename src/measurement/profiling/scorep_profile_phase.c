@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_profile_phase.c
+ * @file
  * Implementation for postprocessing of phases.
  *
  *

@@ -15,7 +15,7 @@
  */
 
 /**
- * @file SCOREP_Profile_OAConsumer.c Implementation of functions to access profile data used by OA module.
+ * @file
  *
  *
  *

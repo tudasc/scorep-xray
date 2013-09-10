@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_profile_node_type.c
+ * @file
  * Implementation for node type specific data handling.
  *
  *

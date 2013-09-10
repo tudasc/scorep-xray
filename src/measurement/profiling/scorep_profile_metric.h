@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_METRIC_H
 
 /**
- * @file        scorep_profile_metric.h
+ * @file
  *
  * @brief Metric handling in the profile.
  *

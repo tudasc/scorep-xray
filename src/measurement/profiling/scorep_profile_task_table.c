@@ -16,7 +16,7 @@
 
 
 /**
- * @file        scorep_profile_task_table.c
+ * @file
  *
  * @brief   Implementation of the tasking internal data structure to manage task
  *          instances.

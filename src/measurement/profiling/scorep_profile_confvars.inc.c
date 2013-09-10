@@ -16,7 +16,7 @@
 
 
 /**
- * @file       src/measurement/profiling/scorep_profile_confvars.inc.c
+ * @file
  *
  *
  */

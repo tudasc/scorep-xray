@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_DEFINITION_H
 
 /**
- * @file        scorep_profile_definition.h
+ * @file
  *
  * @brief The global profile definition struct and functions
  *

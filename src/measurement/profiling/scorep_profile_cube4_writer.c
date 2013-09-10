@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_profile_cube4_writer.c
+ * @file
  *
  *
  * Implements a profile writer in Cube 4 format.

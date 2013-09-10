@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_NODE_H
 
 /**
- * @file        scorep_profile_node.h
+ * @file
  *
  * @brief Node handling for the profile tree
  *

@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_WRITER_H
 
 /**
- * @file scorep_profile_writer.h
+ * @file
  *
  *
  * Declares profile writer functions. This header provides a list of top level

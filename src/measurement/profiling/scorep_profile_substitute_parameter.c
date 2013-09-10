@@ -27,7 +27,7 @@
  */
 
 /**
- * @file scorep_profile_substitute_parameter.c
+ * @file
  *
  *
  *

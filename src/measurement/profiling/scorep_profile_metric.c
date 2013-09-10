@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_profile_metric.c Implementation of functions for metric manipulation in the
+ * @file
  * profile tree.
  *
  *

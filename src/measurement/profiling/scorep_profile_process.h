@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_PROCESS_H
 
 /**
- * @file scorep_profile_process.h
+ * @file
  * @brief Contains the declaration of functions for post-processing a profile.
  *
  *

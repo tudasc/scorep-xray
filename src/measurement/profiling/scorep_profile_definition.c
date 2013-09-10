@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_profile_definition.c
+ * @file
  * Implementation of the profile definition.
  *
  *

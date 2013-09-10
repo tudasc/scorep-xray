@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_profile_tausnap_writer.c
+ * @file
  *
  *
  * Implements a profile writer in TAU snapshot format.

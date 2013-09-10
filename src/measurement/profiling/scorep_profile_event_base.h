@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_EVENT_BASE_H
 
 /**
- * @file scorep_profile_event_base.h
+ * @file
  *
  *
  *

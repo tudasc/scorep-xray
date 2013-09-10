@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_LOCATION_H
 
 /**
- * @file        scorep_profile_location.h
+ * @file
  *
  * @brief Contains type definition and functions for profile location data.
  *

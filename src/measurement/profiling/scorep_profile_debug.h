@@ -18,7 +18,7 @@
 #define SCOREP_PROFILE_DEBUG_H
 
 /**
- * @file        scorep_profile_node.h
+ * @file
  *
  * @brief Provides functionality for extended debug information on errors in the
  *        profile.

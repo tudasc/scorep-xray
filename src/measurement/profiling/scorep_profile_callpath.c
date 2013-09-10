@@ -15,7 +15,7 @@
  */
 
 /**
- * @file scorep_profile_callpath.c
+ * @file
  *
  *
  *

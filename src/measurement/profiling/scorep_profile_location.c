@@ -15,7 +15,7 @@
  */
 
 /**
- * @file        scorep_profile_location.c
+ * @file
  * @brief Contains implmentation for profile location data
  *
  */

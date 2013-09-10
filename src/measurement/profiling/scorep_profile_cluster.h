@@ -17,7 +17,7 @@
 
 
 /**
- * @file       scorep_cluster.h
+ * @file
  *
  *
  *
