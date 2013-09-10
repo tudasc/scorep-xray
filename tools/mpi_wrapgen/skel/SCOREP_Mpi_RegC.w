@@ -7,7 +7,7 @@ ${guard:start}
                           file_id,
                           SCOREP_INVALID_LINE_NO,
                           SCOREP_INVALID_LINE_NO,
-                          SCOREP_ADAPTER_MPI,
+                          SCOREP_PARADIGM_MPI,
                           SCOREP_REGION_${mpi:kind});
   }
 ${guard:end}

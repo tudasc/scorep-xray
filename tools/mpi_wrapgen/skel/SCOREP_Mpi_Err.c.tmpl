@@ -1,5 +1,5 @@
 /**
- * @file  SCOREP_Mpi_Err.c
+ * @file
  * @ingroup    MPI_Wrapper
  *
  * @brief C interface wrappers for error handling
@@ -14,7 +14,11 @@
  * @{
  */
 
-#pragma wrapgen multiple restrict(gerr) skel/SCOREP_Mpi_Std.w
+#pragma wrapgen multiple restrict(gerr+!nMPI_Add_error_string) skel/SCOREP_Mpi_Std.w
+
+#if HAVE( MPI_ADD_ERROR_STRING_COMPLIANT )
+#pragma wrapgen single MPI_Add_error_string skel/SCOREP_Mpi_Std.w
+#endif
 
 /**
  * @}
