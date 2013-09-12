@@ -71,7 +71,7 @@ parse_la ()
 
     # extract information from .la"s libdir (=install_dir)
     # later, use @EGREP@
-    eval `grep -E "^libdir=" "${la_file}"`
+    eval `GREP_OPTIONS= grep -E "^libdir=" "${la_file}"`
     install_dir="${libdir}"
 
     # ignore convenience libraries
@@ -80,7 +80,7 @@ parse_la ()
     fi
 
     # extract information from .la"s dependency_libs
-    eval `grep -E "^dependency_libs=" "${la_file}"`
+    eval `GREP_OPTIONS= grep -E "^dependency_libs=" "${la_file}"`
     # use @AWK@
     save_ifs="${IFS}"
     IFS=${awk_ifs}
