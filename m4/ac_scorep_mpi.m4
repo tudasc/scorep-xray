@@ -675,12 +675,13 @@ dnl ----------------------------------------------------------------------------
 
 
 AC_DEFUN([_AC_SCOREP_MPI_INCLUDE], [
+AC_REQUIRE([AC_PROG_GREP])
 ac_scorep_have_mpi_include="no"
 AC_LANG_PUSH([C])
 AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[#include <mpi.h>]], [])],
-                  [grep '/mpi.h"' conftest.i > conftest_mpi_includes
+                  [GREP_OPTIONS= ${GREP} '/mpi.h"' conftest.i > conftest_mpi_includes
                    AS_IF([test $? -eq 0], 
-                         [scorep_mpi_include=`cat conftest_mpi_includes | grep '/mpi.h"' | \
+                         [scorep_mpi_include=`cat conftest_mpi_includes | GREP_OPTIONS= ${GREP} '/mpi.h"' | \
                           head -1 | sed -e 's#^.* "##' -e 's#/mpi.h".*##'`
                           ac_scorep_have_mpi_include="yes"],
                          [])
