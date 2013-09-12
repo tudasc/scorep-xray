@@ -19,4 +19,4 @@
 
 ../src/scorep_config_library_dependencies_inc.hpp: $(lib_LTLIBRARIES)
 	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-library-dependencies.sh $^ >$@ || \
-            $(RM) $@
+            ($(RM) $@; exit 1)
