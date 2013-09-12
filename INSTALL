@@ -133,7 +133,9 @@ described above.
 
 Although this package comes with recent versions of the OTF2 and CUBE4
 writer libraries as well as the OPARI2 instrumenter included, it is
-possible to use existing installations instead:
+possible to use existing installations instead. Here, the --without
+option means 'without external installation', i.e., the component
+provided with the tarball will be used:
 
   --with-otf2[=<otf2-bindir>]
                Use an already installed and compatible OTF2 library
