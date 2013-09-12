@@ -107,6 +107,9 @@ SCOREP_Instrumenter_Selector::checkOption( std::string arg )
               << "       Type 'scorep --help' to get a list of supported paradigms."
               << std::endl;
     exit( EXIT_FAILURE );
+
+    /* To please IBM compiler */
+    return false;
 }
 
 std::string
