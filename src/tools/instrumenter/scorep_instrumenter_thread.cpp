@@ -72,7 +72,7 @@ SCOREP_Instrumenter_OmpTpd::checkCommand( const std::string& current,
 #endif
 #if SCOREP_BACKEND_COMPILER_IBM
     if ( ( current.length() > m_openmp_cflag.length() ) &&
-         ( current.substr( 0, m_openmp_cflags.length() ) == m_openmp_cflags ) )
+         ( current.substr( 0, m_openmp_cflag.length() ) == m_openmp_cflag ) )
     {
         m_selector->select( this, false );
     }
