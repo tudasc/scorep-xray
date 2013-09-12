@@ -240,15 +240,6 @@ pgi_enter_region( SCOREP_RegionHandle* region,
         SCOREP_InitMeasurement();
     }
 
-    SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
-    UTILS_ASSERT( data != NULL );
-    pgi_location_data* pgi_data = scorep_compiler_get_location_data( data );
-    if ( pgi_data == NULL )
-    {
-        scorep_compiler_init_location( data );
-        pgi_data = scorep_compiler_get_location_data( data );
-    }
-
     /* Register new regions */
     if ( !*region )
     {
@@ -277,6 +268,15 @@ pgi_enter_region( SCOREP_RegionHandle* region,
             }
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
+    }
+
+    SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
+    UTILS_ASSERT( data != NULL );
+    pgi_location_data* pgi_data = scorep_compiler_get_location_data( data );
+    if ( pgi_data == NULL )
+    {
+        scorep_compiler_init_location( data );
+        pgi_data = scorep_compiler_get_location_data( data );
     }
 
     /* Check callstack */
