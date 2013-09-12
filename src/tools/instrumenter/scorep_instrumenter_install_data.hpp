@@ -100,13 +100,6 @@ public:
     isArgForShared( const std::string& arg );
 
     /**
-       Checks whether @a arg is the compiler option to use OpenMP.
-       @param arg the argument that is considered
-     */
-    bool
-    isArgForOpenmp( const std::string& arg );
-
-    /**
        Checks whether @a arg is the compiler option to enable free form Fortran
        @param arg the argument that is considered
      */
@@ -206,11 +199,6 @@ private:
        Fortran compiler command
      */
     std::string m_fortran_compiler;
-
-    /**
-       Stores C compiler OpenMP flags
-     */
-    std::string m_openmp_cflags;
 };
 
 #endif

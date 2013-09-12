@@ -21,6 +21,7 @@
 #include <config.h>
 #include "scorep_instrumenter.hpp"
 #include "scorep_instrumenter_adapter.hpp"
+#include "scorep_instrumenter_selector.hpp"
 #include <scorep_config_tool_backend.h>
 
 #include <iostream>
@@ -71,14 +72,6 @@ print_help( void )
               << "                  instrumentation. By default, temporary files are deleted\n"
               << "                  if no error occures during instrumentation.\n"
               << "  --version       Prints the Score-P version and exits.\n"
-              << "  --mpi           Enables mpi wrapper. They are enabled by default if it is an\n"
-              << "                  mpi program.\n"
-              << "  --nompi         Disables mpi wrappers. They are disabled by default if\n"
-              << "                  it is no mpi program.\n"
-              << "  --openmp        Enables OpenMP support. Needed if the instrumentation\n"
-              << "                  does not correctly identify your application as OpenMP\n"
-              << "                  program.\n"
-              << "  --noopenmp      Disables OpenMP support.\n"
 #if defined( SCOREP_SHARED_BUILD ) && defined ( SCOREP_STATIC_BUILD )
 #if HAVE_LINK_FLAG_BSTATIC
     << "  --static        Enforce static linking of the Score-P libraries.\n"
@@ -94,6 +87,7 @@ print_help( void )
     "                  be handled transparently in future releases of scorep.\n"
 #endif
     ;
+    SCOREP_Instrumenter_Selector::printAll();
     SCOREP_Instrumenter_Adapter::printAll();
     std::cout << std::endl;
 }

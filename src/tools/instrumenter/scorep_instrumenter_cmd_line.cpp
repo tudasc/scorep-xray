@@ -35,6 +35,7 @@
 #include <config.h>
 #include "scorep_instrumenter_cmd_line.hpp"
 #include "scorep_instrumenter_adapter.hpp"
+#include "scorep_instrumenter_selector.hpp"
 #include "scorep_instrumenter_utils.hpp"
 #include <scorep_config_tool_mpi.h>
 #include <scorep_config_tool_backend.h>
@@ -51,16 +52,12 @@ print_help( void );
 SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_InstallData& install_data )
     : m_install_data( install_data )
 {
-    /* Application types */
-    m_is_mpi_application    = detect;
-    m_is_openmp_application = detect;
-    m_target_is_shared_lib  = false;
-
     /* Execution modes */
-    m_is_compiling    = true; // Opposite recognized if no source files in input
-    m_is_linking      = true; // Opposite recognized on existence of -c or -E flag
-    m_no_compile_link = false;
-    m_link_static     = detect;
+    m_target_is_shared_lib = false;
+    m_is_compiling         = true; // Opposite recognized if no source files in input
+    m_is_linking           = true; // Opposite recognized on existence of -c or -E flag
+    m_no_compile_link      = false;
+    m_link_static          = detect;
 
     /* Input command elements */
     m_compiler_name     = "";
@@ -121,18 +118,6 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
     {
         print_parameter();
     }
-}
-
-bool
-SCOREP_Instrumenter_CmdLine::isMpiApplication( void )
-{
-    return m_is_mpi_application == enabled;
-}
-
-bool
-SCOREP_Instrumenter_CmdLine::isOpenmpApplication( void )
-{
-    return m_is_openmp_application == enabled;
 }
 
 bool
@@ -315,29 +300,9 @@ SCOREP_Instrumenter_CmdLine::print_parameter( void )
     SCOREP_Instrumenter_Adapter::printEnabledAdapterList();
     std::cout << std::endl;
 
-    std::cout << std::endl << "Linked SCOREP library type: ";
-    if ( m_is_openmp_application == enabled )
-    {
-        if ( m_is_mpi_application == enabled )
-        {
-            std::cout << "hybrid" << std::endl;
-        }
-        else
-        {
-            std::cout << "OpenMP" << std::endl;
-        }
-    }
-    else
-    {
-        if ( m_is_mpi_application == enabled )
-        {
-            std::cout << "MPI" << std::endl;
-        }
-        else
-        {
-            std::cout << "serial" << std::endl;
-        }
-    }
+    std::cout << "Selected paradigms:\n";
+    SCOREP_Instrumenter_Selector::printSelectedParadigms();
+    std::cout << std::endl;
 
     std::cout << "\nCompiler name: " << m_compiler_name << std::endl;
     std::cout << "Flags before -lmpi: " << m_flags_before_lmpi << std::endl;
@@ -354,6 +319,8 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         /* Assume its the compiler/linker command. Maybe we want to add a
            validity check later */
         m_compiler_name = arg;
+        SCOREP_Instrumenter_Adapter::checkAllCompilerName( arg );
+        SCOREP_Instrumenter_Selector::checkAllCompilerName( arg );
         return scorep_parse_mode_command;
     }
 
@@ -378,43 +345,21 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         return scorep_parse_mode_param;
     }
 
-    /* Check for instrumentation methods */
+    else if ( arg == "--help" || arg == "-h" )
+    {
+        print_help();
+        exit( EXIT_SUCCESS );
+    }
+
+    /* Check for instrumentation and paradigms */
     else if ( SCOREP_Instrumenter_Adapter::checkAllOption( arg ) )
     {
         return scorep_parse_mode_param;
     }
 
-    /* Check for application type settings */
-    else if ( arg == "--mpi" )
+    else if ( SCOREP_Instrumenter_Selector::checkAllOption( arg ) )
     {
-#if HAVE_BACKEND( MPI_SUPPORT )
-        m_is_mpi_application = enabled;
         return scorep_parse_mode_param;
-#else
-        std::cerr << "ERROR: This Score-P installation does not support MPI."
-                  << std::endl;
-        exit( EXIT_FAILURE );
-#endif
-    }
-    else if ( arg == "--nompi" )
-    {
-        m_is_mpi_application = disabled;
-        return scorep_parse_mode_param;
-    }
-    else if ( arg == "--openmp" )
-    {
-        m_is_openmp_application = enabled;
-        return scorep_parse_mode_param;
-    }
-    else if ( arg == "--noopenmp" )
-    {
-        m_is_openmp_application = disabled;
-        return scorep_parse_mode_param;
-    }
-    else if ( arg == "--help" || arg == "-h" )
-    {
-        print_help();
-        exit( EXIT_SUCCESS );
     }
 
     /* Link options */
@@ -529,6 +474,14 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
                                             const std::string& next )
 {
     scorep_parse_mode_t ret_val = scorep_parse_mode_command;
+    if ( SCOREP_Instrumenter_Adapter::checkAllCommand( current, next ) )
+    {
+        ret_val = scorep_parse_mode_option_part;
+    }
+    if ( SCOREP_Instrumenter_Selector::checkAllCommand( current, next ) )
+    {
+        ret_val = scorep_parse_mode_option_part;
+    }
 
     /* Detect input files */
     if ( ( current[ 0 ] != '-' ) && is_library( current ) )
@@ -543,23 +496,11 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         return scorep_parse_mode_command;
     }
 
-    else if ( current.substr( 0, 5 ) == "-lmpi" )
+    else if ( is_mpi_library( current.substr( 2 ) ) )
     {
         m_lmpi_set      = true;
         m_current_flags = &m_flags_after_lmpi;
-
-        /* is_mpi_application can only be disabled, if --nompi was specified.
-           In this case do not enable mpi wrappers.
-         */
-        if ( m_is_mpi_application != disabled )
-        {
-#if HAVE_BACKEND( MPI_SUPPORT )
-            m_is_mpi_application = enabled;
-#else
-            std::cerr << "ERROR: This installation does not support MPI." << std::endl;
-#endif
-        }
-        m_libraries += " " + current;
+        m_libraries    += " " + current;
     }
     else if ( current == "-c" )
     {
@@ -582,17 +523,10 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     }
     else if ( current == "-l" )
     {
-        if ( ( next == "mpi" ) || ( next == "mpich.rts" ) )
+        if ( is_mpi_library( next ) )
         {
             m_lmpi_set      = true;
             m_current_flags = &m_flags_after_lmpi;
-            /* is_mpi_application can only be disabled, if --nompi was specified.
-               In this case do not enable mpi wrappers.
-             */
-            if ( m_is_mpi_application != disabled )
-            {
-                m_is_mpi_application = enabled;
-            }
         }
         m_libraries += " -l" + next;
         ret_val      = scorep_parse_mode_option_part;
@@ -642,13 +576,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
 #endif
         m_target_is_shared_lib = true;
     }
-    else if ( m_install_data.isArgForOpenmp( current ) )
-    {
-        if ( m_is_openmp_application == detect )
-        {
-            m_is_openmp_application = enabled;
-        }
-    }
+
     /* Some stupid compilers have options starting with -o that do not
        specify an output filename */
     else if ( m_install_data.isArgWithO( current ) )
@@ -686,29 +614,13 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         }
         else if ( current[ 1 ] == 'l' )
         {
-            if ( ( current == "-lmpi" ) || ( current == "-lmpich.rts" ) )
+            if ( is_mpi_library( current.substr( 2 ) ) )
             {
                 m_lmpi_set      = true;
                 m_current_flags = &m_flags_after_lmpi;
-                /* is_mpi_application can only be disabled, if --nompi was specified.
-                   In this case do not enable mpi wrappers.
-                 */
-                if ( m_is_mpi_application != disabled )
-                {
-#if HAVE_BACKEND( MPI_SUPPORT )
-                    m_is_mpi_application = enabled;
-#else
-                    std::cerr << "ERROR: This installation does not support MPI."
-                              << std::endl;
-#endif
-                }
             }
             m_libraries += " " + current;
         }
-    }
-    else if ( SCOREP_Instrumenter_Adapter::checkAllCommand( current, next ) )
-    {
-        ret_val = scorep_parse_mode_option_part;
     }
 
     /* In any case that not yet returned, save the flag */
@@ -758,59 +670,17 @@ SCOREP_Instrumenter_CmdLine::parse_output( const std::string& arg )
 void
 SCOREP_Instrumenter_CmdLine::check_parameter( void )
 {
+    /* Check dependencies */
+    SCOREP_Instrumenter_Selector::checkDependencies();
     SCOREP_Instrumenter_Adapter::checkAllDependencies();
 
-    /* If is_mpi_application not manually specified, try a guess from the
-       compiler name */
-    if ( m_is_mpi_application == detect )
-    {
-        if ( m_compiler_name.substr( 0, 2 ) == "mp" )
-        {
-#if HAVE_BACKEND( MPI_SUPPORT )
-            m_is_mpi_application = enabled;
-#else
-            std::cerr << "ERROR: This installation does not support MPI."
-                      << std::endl;
-#endif
-        }
-        else
-        {
-            m_is_mpi_application = disabled;
-        }
-    }
-
-    /* If openmp is not manuelly specified and no openmp flags found, it is
-       probably not an openmp application. */
-    if ( m_is_openmp_application == detect )
-    {
-        m_is_openmp_application = disabled;
-    }
-
-    /* Set mpi and opari instrumenatation if not done manually by the user */
-    if ( m_is_openmp_application == enabled )
-    {
-        SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
-    }
-
-    SCOREP_Instrumenter_Adapter* adapter;
-    adapter = SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
-    if ( !adapter->isEnabled() && m_is_openmp_application == enabled )
-    {
-        std::cerr << "\n"
-                  << "WARNING: You disabled OPARI2 instrumentation for an OpenMP\n"
-                  << "         enabled application. The application will crash at runtime\n"
-                  << "         if any event occurs inside a parallel region.\n"
-                  << std::endl;
-    }
-
-    SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_INSTRUMENTER_ADAPTER_CUDA );
-
-    /* Default compiler adapter on */
-    SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_INSTRUMENTER_ADAPTER_COMPILER );
-
     /* Check default relations */
+    SCOREP_Instrumenter_Selector::checkDefaults();
+    SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_INSTRUMENTER_ADAPTER_COMPILER );
     SCOREP_Instrumenter_Adapter::checkAllDefaults();
 
+    /* Check whether the selected paradigms are supported */
+    SCOREP_Instrumenter_Selector::checkAllSupported();
 
     /* If this is a dry run, enable printing out commands, if it is not already */
     if ( m_is_dry_run && m_verbosity < 1 )
@@ -827,18 +697,5 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
     if ( m_input_files == "" || m_input_file_number < 1 )
     {
         std::cerr << "WARNING: Found no input files." << std::endl;
-    }
-
-    /* If we want to instrument mpi applications with PDT we need to pass the
-       include path to mpi.h to PDT. Thus, we can onyl support this compbination
-       if we have this information. */
-    adapter = SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_PDT );
-    if ( ( adapter->isEnabled() ) &&
-         ( m_is_mpi_application == enabled ) &&
-         !SCOREP_HAVE_PDT_MPI_INSTRUMENTATION )
-    {
-        std::cerr << "Error: Your installation does not support PDT instrumentation for "
-                  << "MPI applications." << std::endl;
-        exit( EXIT_FAILURE );
     }
 }

@@ -18,6 +18,7 @@
 #include "scorep_instrumenter_pdt.hpp"
 #include "scorep_instrumenter_cmd_line.hpp"
 #include "scorep_instrumenter_install_data.hpp"
+#include "scorep_instrumenter_selector.hpp"
 #include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter.hpp"
 #include <scorep_config_tool_backend.h>
@@ -92,14 +93,14 @@ SCOREP_Instrumenter_PdtAdapter::precompile( SCOREP_Instrumenter&         instrum
             << " " << cmdLine.getIncludeFlags()
             << " " << cflags;
 #ifdef _OPENMP
-    if ( cmdLine.isOpenmpApplication() )
+    if ( SCOREP_Instrumenter_Selector::isParadigmSelected( "omp" ) )
     {
         command << " -D_OPENMP=";
         command << _OPENMP;
     }
 #endif
 
-    if ( cmdLine.isMpiApplication() )
+    if ( SCOREP_Instrumenter_Selector::isParadigmSelected( "mpi" ) )
     {
         command << " -I" SCOREP_MPI_INCLUDE;
     }
@@ -115,7 +116,7 @@ SCOREP_Instrumenter_PdtAdapter::precompile( SCOREP_Instrumenter&         instrum
             << " -spec " << m_pdt_config_file
             << " " << m_params;
 
-    if ( cmdLine.isMpiApplication() )
+    if ( SCOREP_Instrumenter_Selector::isParadigmSelected( "mpi" ) )
     {
         command << " -I" SCOREP_MPI_INCLUDE;
     }

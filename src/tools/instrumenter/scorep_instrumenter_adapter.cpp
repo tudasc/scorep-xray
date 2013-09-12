@@ -226,34 +226,12 @@ SCOREP_Instrumenter_Adapter::checkCommand( const std::string& current,
     return false;
 }
 
-/* ------------------------------------------------------------------------- protected */
-
 void
-SCOREP_Instrumenter_Adapter::printDepList( SCOREP_Instrumenter_DependencyList* list,
-                                           std::string                         entry )
+SCOREP_Instrumenter_Adapter::checkCompilerName( const std::string& compiler )
 {
-    SCOREP_Instrumenter_DependencyList::iterator i;
-    if ( !list->empty() )
-    {
-        std::cout << entry;
-        for ( i = list->begin(); i != list->end(); i++ )
-        {
-            if ( i != list->begin() )
-            {
-                if ( i + 1 == list->end() )
-                {
-                    std::cout << " and ";
-                }
-                else
-                {
-                    std::cout << ", ";
-                }
-            }
-            std::cout << getAdapter( *i )->m_name;
-        }
-        std::cout << " instrumentation.\n";
-    }
 }
+
+/* ------------------------------------------------------------------------- protected */
 
 void
 SCOREP_Instrumenter_Adapter::unsupported( void )
@@ -388,15 +366,23 @@ bool
 SCOREP_Instrumenter_Adapter::checkAllCommand(  const std::string& current,
                                                const std::string& next )
 {
+    bool                                      skip_next = false;
     SCOREP_Instrumenter_AdapterList::iterator adapter;
     for ( adapter = m_adapter_list.begin(); adapter != m_adapter_list.end(); adapter++ )
     {
-        if ( adapter->second->checkCommand( current, next ) )
-        {
-            return true;
-        }
+        skip_next |= adapter->second->checkCommand( current, next );
     }
-    return false;
+    return skip_next;
+}
+
+void
+SCOREP_Instrumenter_Adapter::checkAllCompilerName( const std::string& compiler )
+{
+    SCOREP_Instrumenter_AdapterList::iterator adapter;
+    for ( adapter = m_adapter_list.begin(); adapter != m_adapter_list.end(); adapter++ )
+    {
+        adapter->second->checkCompilerName( compiler );
+    }
 }
 
 void
@@ -470,5 +456,32 @@ SCOREP_Instrumenter_Adapter::defaultOff( SCOREP_Instrumenter_AdapterId id )
          ( adapter->second->m_usage == detect ) )
     {
         adapter->second->m_usage = disabled;
+    }
+}
+
+void
+SCOREP_Instrumenter_Adapter::printDepList( SCOREP_Instrumenter_DependencyList* list,
+                                           std::string                         entry )
+{
+    SCOREP_Instrumenter_DependencyList::iterator i;
+    if ( !list->empty() )
+    {
+        std::cout << entry;
+        for ( i = list->begin(); i != list->end(); i++ )
+        {
+            if ( i != list->begin() )
+            {
+                if ( i + 1 == list->end() )
+                {
+                    std::cout << " and ";
+                }
+                else
+                {
+                    std::cout << ", ";
+                }
+            }
+            std::cout << getAdapter( *i )->m_name;
+        }
+        std::cout << " instrumentation.\n";
     }
 }

@@ -35,9 +35,11 @@
 #include "scorep_instrumenter_cobi.hpp"
 #include "scorep_instrumenter_compiler.hpp"
 #include "scorep_instrumenter_cuda.hpp"
+#include "scorep_instrumenter_mpp.hpp"
 #include "scorep_instrumenter_opari.hpp"
 #include "scorep_instrumenter_preprocess.hpp"
 #include "scorep_instrumenter_pdt.hpp"
+#include "scorep_instrumenter_thread.hpp"
 #include "scorep_instrumenter_user.hpp"
 #include "scorep_instrumenter_utils.hpp"
 #include <scorep_config_tool_backend.h>
@@ -74,10 +76,15 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
 
     /* post-link adapter order */
     m_postlink_adapters.push_back( m_cobi_adapter );
+
+    /* Create paradigm groups */
+    m_thread = new SCOREP_Instrumenter_Thread();
+    m_mpp    = new SCOREP_Instrumenter_Mpp();
 }
 
 SCOREP_Instrumenter::~SCOREP_Instrumenter ()
 {
+    delete ( m_thread );
     SCOREP_Instrumenter_Adapter::destroyAll();
 }
 
@@ -293,17 +300,7 @@ SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
     std::string mode          = "";
     std::string scorep_config = m_install_data.getScorepConfig();
 
-    // Determine mode parameter
-    if ( !m_command_line.isMpiApplication() )
-    {
-        mode = " --mpp=none";
-    }
-
-    if ( m_command_line.isOpenmpApplication() )
-    {
-        mode += " --thread=omp";
-    }
-
+    mode += SCOREP_Instrumenter_Selector::getAllConfigToolFlags();
     mode += SCOREP_Instrumenter_Adapter::getAllConfigToolFlags();
 
     if ( is_fortran_file( input_file ) )

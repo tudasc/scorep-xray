@@ -209,7 +209,7 @@ is_cpp_file( const std::string& filename )
     @param filename A file name.
     @returns true if the file extension indicates CUDA source file.
  */
-static bool
+bool
 is_cuda_file( const std::string& filename )
 {
     std::string extension = get_extension( filename );
@@ -273,6 +273,12 @@ is_library( const std::string& filename )
         return true;
     }
     return false;
+}
+
+bool
+is_mpi_library( const std::string& library_name )
+{
+    return library_name.substr( 0, 3 ) == "mpi";
 }
 
 bool

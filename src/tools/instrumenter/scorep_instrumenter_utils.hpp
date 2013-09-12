@@ -77,6 +77,14 @@ bool
 is_cpp_file( const std::string& filename );
 
 /**
+    Checks whether a file is a Cuda source file.
+    @param filename A file name.
+    @returns true if the file extension indicates Cuda source file.
+ */
+bool
+is_cuda_file( const std::string& filename );
+
+/**
     Checks whether a file is an object file.
     @param filename A file name.
     @returns true if the file extension indicates an object file.
@@ -91,6 +99,13 @@ is_object_file( const std::string& filename );
  */
 bool
 is_library( const std::string& filename );
+
+/**
+   Checks whether the library name is an mpi library.
+   @param library_name  The name of the library.
+ */
+bool
+is_mpi_library( const std::string& library_name );
 
 /**
    Simpifies a path.

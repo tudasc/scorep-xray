@@ -77,11 +77,18 @@ When compiling without the @scorep instrumentor, the
 <tt>scorep-config</tt> command can be used to simplify determining the appropriate
 linker flags and libraries, or include paths:
 @verbatim
-    scorep-config [--seq|--omp|--mpi|--hyb] --libs [--fortran]
+    scorep-config [--mpp=none|--mpp=mpi|--thread=none|--thread=omp] --libs [--fortran]
 @endverbatim
 
-The @verb{--seq}, @verb{--omp}, @verb{--mpi}, or @verb{--hyb} switch selects whether @mpi,
-@openmp or hybrid @mpi/@openmp measurement support is desired. 
+The @verb--mpp=<paradigm> switch selects which message passing paradigm is used. 
+Currently, @scorep supports applications using MPI and applications without any 
+message passing paradigm. It is not possible to specify two message passing systems
+for the same application.
+The @verb--thread=<paradigm> switch selects which threading system is used in 
+Score-P. You may use OpenMP ( @verb--thread=omp ) or no threading system 
+( @verb--thread=none ). It is not possible to specify two threading systems
+for the same application. However, you may combine a message passing system with
+a threading system.
 
 @note
   A particular installation of @scorep may not offer all measurement
@@ -137,14 +144,14 @@ source routines and arbitrary regions, in addition to fully-automatic
     </tr>
     <tr>
       <td align="left" valign="middle"> MPI </td>
-      <td align="center" valign="middle"> --mpi/--nompi </td>
+      <td align="center" valign="middle"> --mpp=mpi </td>
       <td align="center" valign="middle"> (auto) </td>
       <td align="center" valign="middle"> configured by install </td>
       <td align="center" valign="middle"> (see Sec. @ref mpi_groups ) </td> 
     </tr>
     <tr>
       <td align="left" valign="middle"> OpenMP </td>
-      <td align="center" valign="middle"> --openmp/--noopenmp </td>
+      <td align="center" valign="middle"> --thread=omp </td>
       <td align="center" valign="middle"> (auto) </td>
       <td align="center" valign="middle"> all parallel constructs </td>
       <td align="center" valign="middle"> &mdash; </td> 
@@ -202,7 +209,7 @@ because it inserts @scorep user macros into the source code.
 Sometimes it is desirable to explicitly direct the @scorep instrumentor to
 do nothing except execute the associated compile/link command. For such cases 
 it is possible to disable default instrumentation with <tt>--nocompiler</tt>,
-<tt>--noopenmp</tt>, and/or <tt>--nompi</tt>. Although no instrumentation is
+<tt>--thread=none</tt>, and/or <tt>--mpp=none</tt>. Although no instrumentation is
 performed, this can help verify that the @scorep instrumentor correctly
 handles the compile/link commands. 
 

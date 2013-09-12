@@ -30,6 +30,11 @@ class SCOREP_Instrumenter_CudaAdapter : public SCOREP_Instrumenter_Adapter
 {
 public:
     SCOREP_Instrumenter_CudaAdapter( void );
+    virtual void
+    checkCompilerName( const std::string& compiler );
+    virtual bool
+    checkCommand( const std::string& current,
+                  const std::string& next );
     virtual std::string
     getConfigToolFlag( void );
 };

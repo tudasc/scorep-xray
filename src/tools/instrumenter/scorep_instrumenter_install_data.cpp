@@ -34,8 +34,9 @@
 
 #include <config.h>
 #include "scorep_instrumenter_install_data.hpp"
-#include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter_adapter.hpp"
+#include "scorep_instrumenter_selector.hpp"
+#include "scorep_instrumenter_utils.hpp"
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 #include <UTILS_IO.h>
@@ -55,7 +56,6 @@ SCOREP_Instrumenter_InstallData::SCOREP_Instrumenter_InstallData( void )
     m_c_compiler       = SCOREP_CC;
     m_cxx_compiler     = SCOREP_CXX;
     m_fortran_compiler = SCOREP_FC;
-    m_openmp_cflags    = SCOREP_OPENMP_CFLAGS;
 }
 
 SCOREP_Instrumenter_InstallData::~SCOREP_Instrumenter_InstallData()
@@ -122,12 +122,6 @@ SCOREP_Instrumenter_InstallData::setBuildCheck( void )
 /* *************************************** CRAY */
 #if SCOREP_BACKEND_COMPILER_CRAY
 bool
-SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
-{
-    return arg == m_openmp_cflags;
-}
-
-bool
 SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
     return arg == "-dynamic";
@@ -189,12 +183,6 @@ SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
 /* *************************************** GNU */
 #elif SCOREP_BACKEND_COMPILER_GNU
 bool
-SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
-{
-    return arg == m_openmp_cflags;
-}
-
-bool
 SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
     return arg == "-shared";
@@ -253,12 +241,6 @@ SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
 
 /* *************************************** IBM */
 #elif SCOREP_BACKEND_COMPILER_IBM
-bool
-SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
-{
-    return arg.substr( 0, m_openmp_cflags.length() ) == m_openmp_cflags;
-}
-
 bool
 SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
@@ -323,12 +305,6 @@ SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
 /* *************************************** INTEL */
 #elif SCOREP_BACKEND_COMPILER_INTEL
 bool
-SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
-{
-    return ( arg == m_openmp_cflags ) || ( arg == "-openmp" );
-}
-
-bool
 SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
     return ( arg == "-shared" ) || ( arg == "-dynamiclib" );
@@ -378,7 +354,8 @@ bool
 SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 {
     return ( arg.substr( 0, 16 ) == "-offload-option," ) ||
-           ( arg.substr( 0, 26 ) == "-offload-attribute-target=" );
+           ( arg.substr( 0, 26 ) == "-offload-attribute-target=" ) ||
+           ( arg == "-openmp" );
 }
 
 bool
@@ -389,12 +366,6 @@ SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
 
 /* *************************************** PGI */
 #elif SCOREP_BACKEND_COMPILER_PGI
-bool
-SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
-{
-    return arg == m_openmp_cflags;
-}
-
 bool
 SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
@@ -454,12 +425,6 @@ SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
 
 /* *************************************** STUDIO */
 #elif SCOREP_BACKEND_COMPILER_STUDIO
-bool
-SCOREP_Instrumenter_InstallData::isArgForOpenmp( const std::string& arg )
-{
-    return arg == m_openmp_cflags;
-}
-
 bool
 SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
@@ -557,11 +522,7 @@ void
 SCOREP_Instrumenter_InstallData::set_value( const std::string& key,
                                             const std::string& value )
 {
-    if ( key == "OPENMP_CFLAGS" && value != "" )
-    {
-        m_openmp_cflags = value;
-    }
-    else if ( key == "CC"  && value != "" )
+    if ( key == "CC"  && value != "" )
     {
         m_c_compiler = value;
     }
@@ -572,6 +533,7 @@ SCOREP_Instrumenter_InstallData::set_value( const std::string& key,
     else
     {
         SCOREP_Instrumenter_Adapter::setAllConfigValue( key, value );
+        SCOREP_Instrumenter_Selector::setAllConfigValue( key, value );
     }
 }
 

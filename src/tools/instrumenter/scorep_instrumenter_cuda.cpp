@@ -43,6 +43,29 @@ SCOREP_Instrumenter_CudaAdapter::SCOREP_Instrumenter_CudaAdapter( void )
 #endif
 }
 
+void
+SCOREP_Instrumenter_CudaAdapter::checkCompilerName( const std::string& compiler )
+{
+    if ( ( compiler.substr( 0, 2 ) == "nv" ) &&
+         ( m_usage == detect ) )
+    {
+        m_usage = enabled;
+    }
+}
+
+bool
+SCOREP_Instrumenter_CudaAdapter::checkCommand( const std::string& current,
+                                               const std::string& next )
+{
+    if ( ( current[ 0 ] != '-' ) &&
+         is_cuda_file( current ) &&
+         ( m_usage == detect ) )
+    {
+        m_usage = enabled;
+    }
+    return false;
+}
+
 std::string
 SCOREP_Instrumenter_CudaAdapter::getConfigToolFlag( void )
 {

@@ -244,6 +244,16 @@ public:
     checkCommand( const std::string& current,
                   const std::string& next );
 
+    /**
+     * Checks the compiler name, which might affect the automatic adapter selection
+     * or adapter configuration.
+     * The default implmentation does nothing. Overwrite this function, if your
+     * adapter is affected by the compiler name.
+     * @param compiler  The name of the compiler as it appears in the user command.
+     */
+    virtual void
+    checkCompilerName( const std::string& compiler );
+
 protected:
     /**
      * If the instrumentation approach represented by this adapter is not
@@ -261,15 +271,6 @@ protected:
      */
     void
     error_unsupported( void );
-
-    /**
-     * Prints help for one dependency list.
-     * @param list  Pointer to the list which we want to print.
-     * @param entry String that is prepended to the list if the list is not empty.
-     */
-    void
-    printDepList( SCOREP_Instrumenter_DependencyList* list,
-                  std::string                         entry );
 
     /* ----------------------------------------------------------------------- members */
 protected:
@@ -397,6 +398,13 @@ public:
                      const std::string& next );
 
     /**
+     * Let all adapters evaluate the compiler name.
+     * @param compiler  The name of the compiler as it appears in the user command.
+     */
+    static void
+    checkAllCompilerName( const std::string& compiler );
+
+    /**
      * Returns the adapter, specified by the @a id. This function may not
      * work during the adapter construction.
      * @param id The identifier of the adapter you want to get.
@@ -443,6 +451,15 @@ public:
      */
     static void
     defaultOff( SCOREP_Instrumenter_AdapterId id );
+
+    /**
+     * Prints help for one dependency list.
+     * @param list  Pointer to the list which we want to print.
+     * @param entry String that is prepended to the list if the list is not empty.
+     */
+    static void
+    printDepList( SCOREP_Instrumenter_DependencyList* list,
+                  std::string                         entry );
 
 private:
     /**

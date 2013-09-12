@@ -115,10 +115,6 @@ public:
                   char** argv );
 
     bool
-    isMpiApplication( void );
-    bool
-    isOpenmpApplication( void );
-    bool
     isNvccCompiler( void );
     bool
     isCompiling( void );
@@ -251,26 +247,13 @@ private:
     SCOREP_Instrumenter_InstallData& m_install_data;
 
     /* --------------------------------------------
-       Flags for application type
+       Work mode information
        ------------------------------------------*/
-    /**
-       Specifies whether it is a MPI application.
-     */
-    instrumentation_usage_t m_is_mpi_application;
-
-    /**
-       Specifies whether it is an OpenMP application.
-     */
-    instrumentation_usage_t m_is_openmp_application;
-
     /**
        True is the link target is a shared library.
      */
     bool m_target_is_shared_lib;
 
-    /* --------------------------------------------
-       Work mode information
-       ------------------------------------------*/
     /**
        True if compiling
      */
@@ -396,15 +379,6 @@ private:
        from an instrumented run, but from the build location.
      */
     bool m_is_build_check;
-
-
-    /* --------------------------------------------
-       Tools flags
-       ------------------------------------------*/
-    /**
-       Extra parameters for the tau_instrumenter
-     */
-    std::string m_pdt_params;
 
 #if defined( SCOREP_SHARED_BUILD )
     /**
