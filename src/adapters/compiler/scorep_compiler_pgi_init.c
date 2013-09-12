@@ -27,6 +27,8 @@
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data.h"
 #include "scorep_compiler_pgi_data.h"
+#include <SCOREP_Location.h>
+#include <SCOREP_Memory.h>
 
 
 extern size_t scorep_compiler_subsystem_id;
