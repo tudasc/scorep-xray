@@ -191,7 +191,7 @@ scorep_compiler_get_location_data( SCOREP_Location* locationData )
 /**
  * called during program initialization
  */
-#pragma save_used_gp_regs
+#pragma save_all_gp_regs
 void
 __rouinit( void )
 {
@@ -214,7 +214,7 @@ __rouinit( void )
  * called during program termination
  */
 
-#pragma save_used_gp_regs
+#pragma save_all_gp_regs
 void
 __rouexit( void )
 {
@@ -297,7 +297,7 @@ pgi_enter_region( SCOREP_RegionHandle* region,
 
 #if __i386__
 
-#pragma save_used_gp_regs
+#pragma save_all_gp_regs
 void
 ___rouent( struct PGI_PROFENT_32* profent )
 {
@@ -307,7 +307,7 @@ ___rouent( struct PGI_PROFENT_32* profent )
                       profent->lineno );
 }
 
-#pragma save_used_gp_regs
+#pragma save_all_gp_regs
 void
 ___rouent2( struct PGI_PROFENT_32* profent )
 {
@@ -325,7 +325,7 @@ ___rouent2( struct PGI_PROFENT_32* profent )
  * The profent is in register %r9, which is by the amd64 calling convention
  * the 6th argument
  */
-#pragma save_used_gp_regs
+#pragma save_all_gp_regs
 void
 ___rouent64( void*                  arg0,
              void*                  arg1,
@@ -345,7 +345,7 @@ ___rouent64( void*                  arg0,
 /**
  * called at the end of each instrumented routine
  */
-#pragma save_used_gp_regs
+#pragma save_all_gp_regs
 void
 ___rouret( void )
 {
@@ -379,21 +379,21 @@ ___rouret( void )
     }
 }
 
-#pragma save_used_gp_regs
+#pragma save_all_gp_regs
 void
 ___rouret2( void )
 {
     ___rouret();
 }
 
-#pragma save_used_gp_regs
+#pragma save_all_gp_regs
 void
 ___rouret64( void )
 {
     ___rouret();
 }
 
-#pragma save_used_gp_regs
+#pragma save_all_gp_regs
 void
 ___linent2( void )
 {
