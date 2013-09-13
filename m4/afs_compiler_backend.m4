@@ -247,7 +247,7 @@ dnl ----------------------------------------------------------------------------
 #   ac_scorep_compilers_backend
 #   ac_scorep_compilers_frontend
 #   ac_scorep_compilers_mpi
-# to AFS_COMPILER_FILES/platform-*-user-provided files.
+# to AFS_COMPILER_FILES_COMMON/platform-*-user-provided files.
 # Provides afs_custom_compilers_given=(yes|no) to be used by other
 # macros setting ac_scorep_compilers_*.
 AC_DEFUN([AFS_CUSTOM_COMPILERS],
@@ -267,10 +267,10 @@ AC_DEFUN([AFS_CUSTOM_COMPILERS],
                             ac_scorep_compilers_backend="./platform-backend-user-provided"
                             ac_scorep_compilers_frontend="./platform-frontend-user-provided"
                             ac_scorep_compilers_mpi="./platform-mpi-user-provided"],
-                           [AC_MSG_NOTICE([Using compiler specification from AFS_COMPILER_FILES/platform-*-user-provided files.])
-                            ac_scorep_compilers_backend="AFS_COMPILER_FILES/platform-backend-user-provided"
-                            ac_scorep_compilers_frontend="AFS_COMPILER_FILES/platform-frontend-user-provided"
-                            ac_scorep_compilers_mpi="AFS_COMPILER_FILES/platform-mpi-user-provided"])
+                           [AC_MSG_NOTICE([Using compiler specification from AFS_COMPILER_FILES_COMMON/platform-*-user-provided files.])
+                            ac_scorep_compilers_backend="AFS_COMPILER_FILES_COMMON/platform-backend-user-provided"
+                            ac_scorep_compilers_frontend="AFS_COMPILER_FILES_COMMON/platform-frontend-user-provided"
+                            ac_scorep_compilers_mpi="AFS_COMPILER_FILES_COMMON/platform-mpi-user-provided"])
                       ],
              [AC_MSG_ERROR(['${withval}' not supported by --with-custom-compilers.])])
         ],
