@@ -254,7 +254,7 @@ scorep_compiler_hash_put( uint64_t      addr,
     add->region_name_mangled   = UTILS_CStr_dup( region_name_mangled );
     add->region_name_demangled = UTILS_CStr_dup( name );
     add->file_name             = NULL;
-    add->line_no_begin         = SCOREP_INVALID_LINE_NO;
+    add->line_no_begin         = line_no_begin;
     add->line_no_end           = SCOREP_INVALID_LINE_NO;
     add->region_handle         = SCOREP_INVALID_REGION;
     /* Inserting elements at the head allows parallel calls to
@@ -321,7 +321,7 @@ scorep_compiler_register_region( scorep_compiler_hash_node* node )
     node->region_handle = SCOREP_Definitions_NewRegion( node->region_name_demangled,
                                                         node->region_name_mangled,
                                                         file_handle,
-                                                        SCOREP_INVALID_LINE_NO,
+                                                        node->line_no_begin,
                                                         SCOREP_INVALID_LINE_NO,
                                                         SCOREP_PARADIGM_COMPILER,
                                                         SCOREP_REGION_FUNCTION );
