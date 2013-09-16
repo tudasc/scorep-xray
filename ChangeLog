@@ -28,8 +28,8 @@
   should fix some failures with MPI programs that do not use a compiler
   wrapper, e.g., when using SGI MPT.
 - Fixed that the instrumenter fails to detect whether an application
-  uses OpenMP with the XL compiler if the user appends options to
-  '-qsmp=omp=<option>'
+  uses OpenMP with the XL compiler if the user specifies more than one
+  option to '-qsmp="
 
 
 ------------------- Released version 1.2 -----------------------------

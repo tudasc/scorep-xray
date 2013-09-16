@@ -72,9 +72,18 @@ SCOREP_Instrumenter_OmpTpd::checkCommand( const std::string& current,
 #endif
 #if SCOREP_BACKEND_COMPILER_IBM
     if ( ( current.length() > m_openmp_cflag.length() ) &&
-         ( current.substr( 0, m_openmp_cflag.length() ) == m_openmp_cflag ) )
+         ( current.substr( 0, 6 ) == "-qsmp=" ) )
     {
-        m_selector->select( this, false );
+        size_t end;
+        for ( size_t start = 5; start != std::string::npos; start = end )
+        {
+            end = current.find( ':', start + 1 );
+            std::cout << "SUBSTR: " << current.substr( start + 1, end - start - 1 ) << std::endl;
+            if ( current.substr( start + 1, end - start - 1 ) == "omp" )
+            {
+                m_selector->select( this, false );
+            }
+        }
     }
 #endif
     return false;
