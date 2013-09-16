@@ -20,6 +20,9 @@
 
 if HAVE_MPI_SUPPORT
 
+$(LIB_DIR_SCOREP)libscorep_mpi.la:
+	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpi.la
+
 ## MPI C
 
 check_PROGRAMS       += jacobi_mpi_c
@@ -41,6 +44,10 @@ TESTS_MPI += jacobi_mpi_c
 ## MPI + OpenMP C
 
 if HAVE_OPENMP_SUPPORT
+
+$(LIB_DIR_SCOREP)libscorep_mpi_omp.la:
+	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpi_omp.la
+
 noinst_LTLIBRARIES             += libjacobi_mpi_pomp_c.la
 libjacobi_mpi_pomp_c_la_SOURCES  = $(SRC_ROOT)test/jacobi/hybrid/C/pomp.c
 libjacobi_mpi_pomp_c_la_CPPFLAGS = $(AM_CPPFLAGS)

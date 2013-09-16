@@ -159,7 +159,7 @@ libscorep_mpp_mpi_la_LIBADD  = $(LIB_DIR_SCOREP_MPI)libscorep_ipc_mpi.la \
 libscorep_mpp_mpi_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
-noinst_LTLIBRARIES                   += libscorep_mpi.la
+check_LTLIBRARIES                   += libscorep_mpi.la
 libscorep_mpi_la_SOURCES              = 
 nodist_EXTRA_libscorep_mpi_la_SOURCES = force_link_with_F77LD.f
 libscorep_mpi_la_CPPFLAGS             = $(common_cppflags)
@@ -179,7 +179,7 @@ libscorep_mpi_la_LDFLAGS              = $(external_ldflags)
 endif              		
 
 ## Serial
-noinst_LTLIBRARIES          += libscorep_serial.la
+check_LTLIBRARIES          += libscorep_serial.la
 # multilib: remove SCOREP_Pomp_Dummy.c and provide  
 # POMP2_Init_regions(), POMP2_Get_num_regions(), and 
 # POMP2_Get_opari2_version() by the instrumenter's nm-step
@@ -199,7 +199,7 @@ libscorep_serial_la_LDFLAGS  = $(external_ldflags)
 ## OpenMP
 
 if HAVE_OPENMP_SUPPORT
-noinst_LTLIBRARIES       += libscorep_omp.la
+check_LTLIBRARIES       += libscorep_omp.la
 libscorep_omp_la_SOURCES  = 
 libscorep_omp_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libscorep_omp_la_CPPFLAGS = $(common_cppflags)
@@ -223,7 +223,7 @@ endif
 if HAVE_MPI_SUPPORT
 if HAVE_OPENMP_SUPPORT
 
-noinst_LTLIBRARIES                       += libscorep_mpi_omp.la
+check_LTLIBRARIES                       += libscorep_mpi_omp.la
 libscorep_mpi_omp_la_SOURCES              = 
 nodist_EXTRA_libscorep_mpi_omp_la_SOURCES = force_link_with_F77LD.f
 libscorep_mpi_omp_la_CFLAGS               = $(AM_CFLAGS) $(OPENMP_CFLAGS)
