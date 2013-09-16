@@ -11,6 +11,8 @@
 
 - Allow configuration without support for the MPI programming model by
   specifying --without-mpi on the configure line.
+- Abort during instrumentation with a meaningful error message if
+  a user requests MPI but the Score-P installation does not support MPI
 - On Blue Gene/Q, detect PAMI library at configure time. The location
   and names of the PAMI files changes during a system upgrade. Search
   all known directories and library names.
@@ -19,6 +21,16 @@
 - On SGI MPT systems, or more generally on systems that don't use
   compiler wrappers for building MPI programs, improve the automatic
   detection of the MPI programming paradigm during instrumentation.
+- Abort with an error message during instrumentation if the user wants
+  to build a shared library with static Score-P libraries.
+- Abort if the user specified a filter file which can not be opended.
+- Improved the auto-detection in the instrumenter for MPI libraries. This
+  should fix some failures with MPI programs that do not use a compiler
+  wrapper, e.g., when using SGI MPT.
+- Fixed that the instrumenter fails to detect whether an application
+  uses OpenMP with the XL compiler if the user appends options to
+  '-qsmp=omp=<option>'
+
 
 ------------------- Released version 1.2 -----------------------------
 
