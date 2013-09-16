@@ -78,7 +78,6 @@ SCOREP_Instrumenter_OmpTpd::checkCommand( const std::string& current,
         for ( size_t start = 5; start != std::string::npos; start = end )
         {
             end = current.find( ':', start + 1 );
-            std::cout << "SUBSTR: " << current.substr( start + 1, end - start - 1 ) << std::endl;
             if ( current.substr( start + 1, end - start - 1 ) == "omp" )
             {
                 m_selector->select( this, false );
