@@ -36,7 +36,7 @@
 
                         Score-P v1.2 OPEN ISSUES
                         ========================
-                                                           Status: Aug 2013
+                                                           Status: Sep 2013
 
 This file lists known limitations and unimplemented features of
 various Score-P components.
@@ -174,6 +174,13 @@ various Score-P components.
   - Due to a bug in the Cray compilers OpenMP instrumentation is
     broken if an OpenMP parallel pragma is used in combination with
     an if clause.
+
+ - OPARI2-instrumented Fortran OpenMP codes that use compiler options
+   to change the default name-mangling (XL compilers: -qextname, GNU:
+   -fno-underscoring' and '-fsecond-underscore') will likely crash. 
+   This is because a variable name used in the Score-P libraries does
+   not match the one instrumented by OPARI2. On AIX, a workaround is
+   to manusally rename it at link time (-brename:pomp_tpd_,pomp_tpd).
 
 --------------------------------------------------------------------------------
 
