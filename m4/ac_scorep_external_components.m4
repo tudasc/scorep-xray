@@ -103,6 +103,9 @@ AS_IF([test "x${with_$1}" != "xno"],
               ])
          ])
     ],
-    [scorep_have_$1_config="no"
+    [# --without-$1
+     AS_IF([test ! -d ${srcdir}/vendor/$1], 
+         [AC_MSG_ERROR([$1 is required. Opting out an external $1 via --without-$1 is only an option if an internal $1 is available, which isn't the case here. Please provide an external $1.])])
+     scorep_have_$1_config="no"
      AFS_SUMMARY([$1 support], [yes, using internal])])
 ])
