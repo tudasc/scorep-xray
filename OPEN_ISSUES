@@ -116,22 +116,6 @@ various Score-P components.
     by using manual instrumentation or automatic source-code
     instrumentation based on PDToolkit.
 
-  - Function instrumentation using the Intel compiler version 11.1 for
-    codes using OpenMP tasking is erroneous. You might try PDT
-    instrumentation instead.
-
-  - OpenMP tasking: On Exits, the PGI compiler instrumentation
-    interface does not provide information which function was
-    exited. Thus, we reconstruct this information from a call stack
-    inside the compiler adapter. However, if the instrumented
-    application uses tasks, the enter/exit event sequence for a thread
-    may not be nested anymore, due to interleaved execution of
-    tasks. This results in incorrect region handles on exit events
-    which may lead to errors in the profiling algorithm or errors in
-    analysis tools. Thus, we recommend to no use PGI compiler
-    instrumentation together with applications using tasks. You may
-    try PDT instrumentation instead.
-
   - On systems where libiberty is build without -fPIC, one cannot use
     libbdfd for compiler instrumentation's region naming (GNU, Intel,
     Cray) in --enable-shared builds of Score-P. Either provide a
@@ -159,6 +143,40 @@ various Score-P components.
 
 --------------------------------------------------------------------------------
 
+* OpenMP support
+
+  - Function instrumentation using the Intel compiler version 11.1 for
+    codes using OpenMP tasking is erroneous. You might try PDT
+    instrumentation instead.
+
+  - OpenMP tasking: On Exits, the PGI compiler instrumentation
+    interface does not provide information which function was
+    exited. Thus, we reconstruct this information from a call stack
+    inside the compiler adapter. However, if the instrumented
+    application uses tasks, the enter/exit event sequence for a thread
+    may not be nested anymore, due to interleaved execution of
+    tasks. This results in incorrect region handles on exit events
+    which may lead to errors in the profiling algorithm or errors in
+    analysis tools. Thus, we recommend to no use PGI compiler
+    instrumentation together with applications using tasks. You may
+    try PDT instrumentation instead.
+
+  - Currently, the instrumenter allows to switch off OPARI2
+    instrumentation for OpenMP programs. If OpenMP parallel regions
+    are not instrumented and an event occures inside a parallel region
+    (e.g., because an instrumented function is called inside of a
+    parallel region) Score-P will crash. We are considering to make
+    the usage more secure in future versions of Score-P. This might
+    result in a change of the instrumenter option or the option may
+    vanish completely. However, there are some use-cases where
+    disabling OPARI2 instrumentation is helpful.
+
+  - Due to a bug in the Cray compilers OpenMP instrumentation is
+    broken if an OpenMP parallel pragma is used in combination with
+    an if clause.
+
+--------------------------------------------------------------------------------
+
 * Score-P misc.
 
   - There might be a performance impact when instrumenting code without
@@ -177,16 +195,6 @@ various Score-P components.
     user pragmas) do not work as expected as OPARI2 changes the file 
     name (here to bt.opari.f)
 
-  - Currently, the instrumenter allows to switch off OPARI2
-    instrumentation for OpenMP programs. If OpenMP parallel regions
-    are not instrumented and an event occures inside a parallel region
-    (e.g., because an instrumented function is called inside of a
-    parallel region) Score-P will crash. We are considering to make
-    the usage more secure in future versions of Score-P. This might
-    result in a change of the instrumenter option or the option may
-    vanish completely. However, there are some use-cases where
-    disabling OPARI2 instrumentation is helpful.
-
   - Due to a bug in PDT 3.18 and earlier versions, PDT support is
     disabled on BlueGene systems.
 
@@ -204,10 +212,6 @@ various Score-P components.
     in Score-P's linking process that now passes more libraries to
     COBI/Dyninst than it can handle at the moment. This issue
     will be addressed in a future release of Score-P and/or Dyninst.
-
-  - Due to a bug in the Cray compilers OpenMP instrumentation is
-    broken if an OpenMP parallel pragma is used in combination with
-    an if clause.
 
 --------------------------------------------------------------------------------
 
