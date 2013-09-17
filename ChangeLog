@@ -30,7 +30,8 @@
 - Fixed that the instrumenter fails to detect whether an application
   uses OpenMP with the XL compiler if the user specifies more than one
   option to '-qsmp="
-
+- Abort configuration when the user specified --without-cube on the
+  commandline as cube is a required component.
 
 ------------------- Released version 1.2 -----------------------------
 
