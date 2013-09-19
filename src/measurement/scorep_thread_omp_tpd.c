@@ -141,12 +141,12 @@ scorep_thread_on_create_private_data( scorep_thread_private_data* tpd,
 void
 scorep_thread_on_initialize( scorep_thread_private_data* initialTpd )
 {
-    UTILS_BUG_ON( omp_in_parallel() );
-    UTILS_BUG_ON( initialTpd == 0 );
-    UTILS_BUG_ON( scorep_thread_get_model_data( initialTpd ) == 0 );
-    UTILS_BUG_ON( initial_tpd != 0 );
-    UTILS_BUG_ON( initial_location != 0 );
-    UTILS_BUG_ON( first_fork_locations != 0 );
+    UTILS_BUG_ON( omp_in_parallel(), "" );
+    UTILS_BUG_ON( initialTpd == 0, "" );
+    UTILS_BUG_ON( scorep_thread_get_model_data( initialTpd ) == 0, "" );
+    UTILS_BUG_ON( initial_tpd != 0, "" );
+    UTILS_BUG_ON( initial_location != 0, "" );
+    UTILS_BUG_ON( first_fork_locations != 0, "" );
 
     set_tpd_to( initialTpd );
     initial_tpd      = initialTpd;
@@ -172,8 +172,8 @@ void
 scorep_thread_on_finalize( scorep_thread_private_data* tpd )
 {
     scorep_thread_private_data_omp_tpd* model_data = scorep_thread_get_model_data( tpd );
-    UTILS_BUG_ON( model_data->parent_reuse_count != 0 );
-    UTILS_BUG_ON( model_data->fork_sequence_count != 0 );
+    UTILS_BUG_ON( model_data->parent_reuse_count != 0, "" );
+    UTILS_BUG_ON( model_data->fork_sequence_count != 0, "" );
     initial_tpd      = 0;
     initial_location = 0;
     free( first_fork_locations );
@@ -188,7 +188,7 @@ scorep_thread_on_fork( uint32_t           nRequestedThreads,
                        void*              modelData,
                        SCOREP_Location*   location )
 {
-    UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP );
+    UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP, "" );
     scorep_thread_private_data_omp_tpd* model_data = ( scorep_thread_private_data_omp_tpd* )modelData;
 
     /* Create or realloc children array. */
@@ -251,9 +251,9 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
     }
     /* End of portability-hack */
 
-    UTILS_BUG_ON( TPD == 0 );
-    UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP );
-    UTILS_BUG_ON( *forkSequenceCount != SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT );
+    UTILS_BUG_ON( TPD == 0, "" );
+    UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP, "" );
+    UTILS_BUG_ON( *forkSequenceCount != SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT, "" );
 
     *parentTpd = TPD;
     scorep_thread_private_data_omp_tpd* parent_model_data =
@@ -300,7 +300,7 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
     {
         bool location_is_created = false;
         /* Set TPD to a child of itself, create new one if necessary */
-        UTILS_BUG_ON( thread_num >= parent_model_data->n_children );
+        UTILS_BUG_ON( thread_num >= parent_model_data->n_children, "" );
 
         *currentTpd = parent_model_data->children[ thread_num ];
 
@@ -328,7 +328,7 @@ scorep_thread_on_team_begin( scorep_thread_private_data** parentTpd,
         {
             /* Previously been in this thread. */
             current_model_data = scorep_thread_get_model_data( *currentTpd );
-            UTILS_BUG_ON( current_model_data->fork_sequence_count >= *forkSequenceCount );
+            UTILS_BUG_ON( current_model_data->fork_sequence_count >= *forkSequenceCount, "" );
             current_model_data->fork_sequence_count = *forkSequenceCount;
             SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( scorep_thread_get_location( *currentTpd ) );
         }
@@ -468,8 +468,8 @@ scorep_thread_on_end( scorep_thread_private_data*  currentTpd,
                       uint32_t*                    forkSequenceCount,
                       SCOREP_ThreadModel           model )
 {
-    UTILS_BUG_ON( currentTpd != TPD );
-    UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP );
+    UTILS_BUG_ON( currentTpd != TPD, "" );
+    UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP, "" );
 
     scorep_thread_private_data_omp_tpd* model_data = scorep_thread_get_model_data( currentTpd );
 
@@ -478,13 +478,13 @@ scorep_thread_on_end( scorep_thread_private_data*  currentTpd,
         /* There was no additional parallelism in this parallel
          * region. We reused the parent tpd. */
         *parentTpd = currentTpd;
-        UTILS_BUG_ON( model_data->parent_reuse_count == 0 );
+        UTILS_BUG_ON( model_data->parent_reuse_count == 0, "" );
         *forkSequenceCount = model_data->fork_sequence_counts[ model_data->parent_reuse_count - 1 ];
     }
     else
     {
         *parentTpd = scorep_thread_get_parent( currentTpd );
-        UTILS_BUG_ON( model_data->parent_reuse_count != 0 );
+        UTILS_BUG_ON( model_data->parent_reuse_count != 0, "" );
         *forkSequenceCount = model_data->fork_sequence_count;
     }
 }
@@ -497,8 +497,8 @@ scorep_thread_on_join( scorep_thread_private_data*  currentTpd,
                        uint32_t*                    forkSequenceCount,
                        SCOREP_ThreadModel           model )
 {
-    UTILS_BUG_ON( currentTpd != TPD );
-    UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP );
+    UTILS_BUG_ON( currentTpd != TPD, "" );
+    UTILS_BUG_ON( model != SCOREP_THREAD_MODEL_OPENMP, "" );
 
     scorep_thread_private_data_omp_tpd* model_data = scorep_thread_get_model_data( currentTpd );
     scorep_thread_private_data_omp_tpd* than_active_model_data;
@@ -515,7 +515,7 @@ scorep_thread_on_join( scorep_thread_private_data*  currentTpd,
     else
     {
         *forkSequenceCount = model_data->fork_sequence_count;
-        UTILS_BUG_ON( parentTpd == 0 );
+        UTILS_BUG_ON( parentTpd == 0, "" );
         set_tpd_to( parentTpd );
         *tpdFromNowOn          = parentTpd;
         than_active_model_data = scorep_thread_get_model_data( parentTpd );
@@ -528,9 +528,9 @@ scorep_thread_on_join( scorep_thread_private_data*  currentTpd,
 SCOREP_Location*
 SCOREP_Location_GetCurrentCPULocation()
 {
-    UTILS_BUG_ON( TPD == 0 );
+    UTILS_BUG_ON( TPD == 0, "" );
     SCOREP_Location* location = scorep_thread_get_location( TPD );
-    UTILS_BUG_ON( location == 0 );
+    UTILS_BUG_ON( location == 0, "" );
     return location;
 }
 
