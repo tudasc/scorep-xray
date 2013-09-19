@@ -9,6 +9,9 @@
 
 ------------------- Upcoming version 1.2.2 ---------------------------
 
+- The Fortran Cray compiler instrumentation did not create an exit event.
+  Thus, we add an exit on Score-P finalization.
+
 ------------------- Released version 1.2.1 ---------------------------
 
 - Allow configuration without support for the MPI programming model by
