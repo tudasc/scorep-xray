@@ -396,7 +396,7 @@ define_comms( uint32_t comm_world_size,
                     continue;
                 }
 
-                if ( comm_definitions[ i ].comm_parent != -1
+                if ( comm_definitions[ i ].comm_parent != UINT32_MAX
                      && comm_definitions[ comm_definitions[ i ].comm_parent ].handle
                      == SCOREP_INVALID_COMMUNICATOR )
                 {
@@ -407,7 +407,7 @@ define_comms( uint32_t comm_world_size,
                 SCOREP_CommunicatorHandle comm_parent_handle =
                     SCOREP_INVALID_COMMUNICATOR;
 
-                if ( comm_definitions[ i ].comm_parent != -1 )
+                if ( comm_definitions[ i ].comm_parent != UINT32_MAX )
                 {
                     comm_parent_handle =
                         comm_definitions[ comm_definitions[ i ].comm_parent ].handle;
