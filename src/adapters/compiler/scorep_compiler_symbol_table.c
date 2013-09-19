@@ -56,6 +56,7 @@
 #include <unistd.h>
 #include <inttypes.h>
 #include <sys/stat.h>
+#include <string.h>
 
 #ifdef HAVE_LIBBFD
 #include <bfd.h>
@@ -183,9 +184,11 @@ scorep_compiler_process_symbol( long         addr,
                                 const char*  filename,
                                 unsigned int lno )
 {
+    char* path = NULL;
     if ( filename != NULL )
     {
-        UTILS_IO_SimplifyPath( ( char* )filename );
+        path = UTILS_CStr_dup( filename );
+        UTILS_IO_SimplifyPath( path );
     }
 
     const char* funcname_demangled = funcname;
@@ -211,9 +214,14 @@ scorep_compiler_process_symbol( long         addr,
          ( strncmp( funcname_demangled, "OTF2_", 5 ) != 0 ) &&
          ( strncmp( funcname_demangled, "otf2_", 5 ) != 0 ) &&
          ( strncmp( funcname_demangled, "cube_", 5 ) != 0 ) &&
-         ( !SCOREP_Filter_Match( filename, funcname_demangled, funcname ) ) )
+         ( !SCOREP_Filter_Match( path, funcname_demangled, funcname ) ) )
     {
-        scorep_compiler_hash_put( addr, funcname, funcname_demangled, filename, lno );
+        scorep_compiler_hash_put( addr, funcname, funcname_demangled, path, lno );
+    }
+
+    if ( path != NULL )
+    {
+        free( path );
     }
 }
 
