@@ -94,7 +94,8 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
     }
 
     // Preprocess file
-    command = cmdLine.getCompilerName()
+    command = SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars()
+              + cmdLine.getCompilerName()
               + " " + cmdLine.getFlagsBeforeLmpi()
               + " `" + instrumenter.getConfigBaseCall() + " --cflags`"
               + " " + instrumenter.getCompilerFlags()

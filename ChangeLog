@@ -11,6 +11,8 @@
 
 - The Fortran Cray compiler instrumentation did not create an exit event.
   Thus, we add an exit on Score-P finalization.
+- Removed remark of the intel compiler during instrumentation that VT_ROOT
+  is not set, if preprocessing was used.
 
 ------------------- Released version 1.2.1 ---------------------------
 
