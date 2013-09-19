@@ -7,7 +7,9 @@
   --mpi, --nompi, --openmp, --noopenmp are marked as deprecated and no
   longer documented.
 
-------------------- Upcoming version 1.2.1 ---------------------------
+------------------- Upcoming version 1.2.2 ---------------------------
+
+------------------- Released version 1.2.1 ---------------------------
 
 - Allow configuration without support for the MPI programming model by
   specifying --without-mpi on the configure line.
