@@ -16,6 +16,10 @@
 - Removed remark of the intel compiler during instrumentation that VT_ROOT
   is not set, if preprocessing was used.
 - MPI parallel measurements with just one process were fixed.
+- Fixed a race condition during initialization of the TRACE_BUFFER_FLUSH
+  region, that could lead to incomplete profiles if a user measures
+  a hybrid (MPI + OpenMP) applications and enables profiling and tracing
+  at the same time.
 
 ------------------- Released version 1.2.1 ---------------------------
 

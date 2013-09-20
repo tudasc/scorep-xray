@@ -129,16 +129,6 @@ scorep_on_trace_pre_flush( void*         userData,
 {
     if ( SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled() && !final )
     {
-        if ( scorep_flush_region == SCOREP_INVALID_REGION )
-        {
-            scorep_flush_region =
-                SCOREP_Definitions_NewRegion( "TRACE BUFFER FLUSH", NULL,
-                                              SCOREP_INVALID_SOURCE_FILE,
-                                              SCOREP_INVALID_LINE_NO,
-                                              SCOREP_INVALID_LINE_NO,
-                                              SCOREP_PARADIGM_MEASUREMENT,
-                                              SCOREP_REGION_ARTIFICIAL );
-        }
         SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
 
         SCOREP_Profile_Enter( location,
@@ -361,6 +351,14 @@ SCOREP_Tracing_Initialize( void )
     OTF2_Archive_SetCreator( scorep_otf2_archive, PACKAGE_STRING );
 
     SCOREP_MutexCreate( &scorep_otf2_archive_lock );
+
+    scorep_flush_region =
+        SCOREP_Definitions_NewRegion( "TRACE BUFFER FLUSH", NULL,
+                                      SCOREP_INVALID_SOURCE_FILE,
+                                      SCOREP_INVALID_LINE_NO,
+                                      SCOREP_INVALID_LINE_NO,
+                                      SCOREP_PARADIGM_MEASUREMENT,
+                                      SCOREP_REGION_ARTIFICIAL );
 }
 
 

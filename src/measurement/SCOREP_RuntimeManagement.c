@@ -185,13 +185,13 @@ SCOREP_InitMeasurement( void )
     SCOREP_TIME( SCOREP_Memory_Initialize,
                  ( SCOREP_Env_GetTotalMemory(), SCOREP_Env_GetPageSize() ) );
 
+    // initialize before scorep_otf2_initialize() because latter creates at least a
+    // location definition.
+    SCOREP_TIME( SCOREP_Definitions_Initialize, ( ) );
+
     // initialize before SCOREP_Thread_Initialize() because latter may create a
     // writer that needs the archive.
     SCOREP_TIME( scorep_otf2_initialize, ( ) );
-
-    // initialize before SCOREP_Thread_Initialize() because latter creates at least a
-    // location definition.
-    SCOREP_TIME( SCOREP_Definitions_Initialize, ( ) );
 
     /* Get location group handle from system tree */
     location_group_handle = SCOREP_DefineSystemTree( system_tree_path );
