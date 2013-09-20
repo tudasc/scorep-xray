@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013
+## Copyright (c) 2009-2013,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -46,6 +46,19 @@
 AC_DEFUN_ONCE([AC_SCOREP_DETECT_PLATFORMS], [
 AC_REQUIRE([AC_CANONICAL_BUILD])dnl
 
+# Notes about platform detection on Cray systems:
+# First, we check for x86-64 CPU type and an existing /opt/cray/pmi/default link.
+# This test should succeed for all supported Cray systems (Cray XT, XE, XK, XC).
+# In the second step we will classify the system depending on their network.
+# Therefore, we use the link /opt/cray/pmi/default. We determine the link target
+# and select the network. For example, /opt/cray/pmi/default points to
+# /opt/cray/pmi/4.0.1-1.0000.9421.73.3.gem. 'gem' signifies the Gemini network.
+# As a result we can classify the following systems:
+# ss  (SeaStar)  Cray XT
+# gem (Gemini)   Cray XE, XK
+# ari (Aries)    Cray XC
+# To distinguish Cray XE and XK systems we determine whether the system uses GPU
+# accelerators (Cray XK) or not (Cray XE).
 AC_MSG_CHECKING([for platform])
 AS_IF([test "x${ac_scorep_platform}" = "x"],
     [AS_CASE([${build_os}],
@@ -58,8 +71,15 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
                       [ac_scorep_platform="bgq"],
                   [test "x${build_cpu}" = "xpowerpc64" && test -d /bgsys],
                       [ac_scorep_platform="bgp"],
-                  [test "x${build_cpu}" = "xx86_64" && test -d /opt/cray/xt-asyncpe],
-                      [ac_scorep_platform="crayxt"],
+                  [test "x${build_cpu}" = "xx86_64"  && test -L /opt/cray/pmi/default],
+                      [AS_IF([test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ss && echo TRUE`" = "xTRUE"],
+                               [ac_scorep_platform="crayxt"],
+                           [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q gem && echo TRUE`" = "xTRUE" && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x1"],
+                               [ac_scorep_platform="crayxe"],
+                           [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q gem && echo TRUE`" = "xTRUE" && test "x`apstat -G | grep \"(none)\" | wc -l`" = "x0"],
+                               [ac_scorep_platform="crayxk"],
+                           [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ari && echo TRUE`" = "xTRUE"],
+                               [ac_scorep_platform="crayxc"])],
                   [test "x${build_cpu}" = "xarmv7l"],
                       [ac_scorep_platform="arm"],
                   [ac_scorep_platform=linux])],
@@ -97,6 +117,9 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "x"],
          [bgp],     [ac_scorep_cross_compiling="yes"],
          [bgq],     [ac_scorep_cross_compiling="yes"],
          [crayxt],  [ac_scorep_cross_compiling="yes"],
+         [crayxe],  [ac_scorep_cross_compiling="yes"],
+         [crayxk],  [ac_scorep_cross_compiling="yes"],
+         [crayxc],  [ac_scorep_cross_compiling="yes"],
          [arm],     [ac_scorep_cross_compiling="no"],
          [linux],   [ac_scorep_cross_compiling="no"],
          [solaris], [ac_scorep_cross_compiling="no"],
@@ -131,6 +154,9 @@ AS_CASE([${ac_scorep_platform}],
     [bgp],     [afs_scorep_platform_name="Blue Gene/P"],
     [bgq],     [afs_scorep_platform_name="Blue Gene/Q"],
     [crayxt],  [afs_scorep_platform_name="Cray XT"],
+    [crayxe],  [afs_scorep_platform_name="Cray XE"],
+    [crayxk],  [afs_scorep_platform_name="Cray XK"],
+    [crayxc],  [afs_scorep_platform_name="Cray XC"],
     [arm],     [afs_scorep_platform_name="ARM"],
     [linux],   [afs_scorep_platform_name="Linux"],
     [solaris], [afs_scorep_platform_name="Solaris"],
@@ -173,11 +199,19 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_BGP],     [test "x${ac_scorep_platform}" = "xbgp"])
     AM_CONDITIONAL([PLATFORM_BGQ],     [test "x${ac_scorep_platform}" = "xbgq"])
     AM_CONDITIONAL([PLATFORM_CRAYXT],  [test "x${ac_scorep_platform}" = "xcrayxt"])
+    AM_CONDITIONAL([PLATFORM_CRAYXE],  [test "x${ac_scorep_platform}" = "xcrayxe"])
+    AM_CONDITIONAL([PLATFORM_CRAYXK],  [test "x${ac_scorep_platform}" = "xcrayxk"])
+    AM_CONDITIONAL([PLATFORM_CRAYXC],  [test "x${ac_scorep_platform}" = "xcrayxc"])
     AM_CONDITIONAL([PLATFORM_LINUX],   [test "x${ac_scorep_platform}" = "xlinux"])
     AM_CONDITIONAL([PLATFORM_SOLARIS], [test "x${ac_scorep_platform}" = "xsolaris"])
     AM_CONDITIONAL([PLATFORM_MAC],     [test "x${ac_scorep_platform}" = "xmac"])
     AM_CONDITIONAL([PLATFORM_NECSX],   [test "x${ac_scorep_platform}" = "xnecsx"])
     AM_CONDITIONAL([PLATFORM_ARM],     [test "x${ac_scorep_platform}" = "xarm"])
+
+    AS_CASE([${ac_scorep_platform}],
+            [crayx*],     [afs_platform_cray="yes"],
+            [afs_platform_cray="no"])
+    AM_CONDITIONAL([PLATFORM_CRAY],[ test "x${afs_platform_cray}" = "xyes" ])
 
     AM_COND_IF([PLATFORM_ALTIX],
         [AC_DEFINE([HAVE_PLATFORM_ALTIX], [1], [Set if we are building for the ALTIX platform])])
@@ -189,8 +223,16 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
         [AC_DEFINE([HAVE_PLATFORM_BGP], [1], [Set if we are building for the BG/P platform])])
     AM_COND_IF([PLATFORM_BGQ],
         [AC_DEFINE([HAVE_PLATFORM_BGQ], [1], [Set if we are building for the BG/Q platform])])
+    AM_COND_IF([PLATFORM_CRAY],
+        [AC_DEFINE([HAVE_PLATFORM_CRAY], [1], [Set if we are building for the Cray platform])])
     AM_COND_IF([PLATFORM_CRAYXT],
         [AC_DEFINE([HAVE_PLATFORM_CRAYXT], [1], [Set if we are building for the Cray XT platform])])
+    AM_COND_IF([PLATFORM_CRAYXE],
+        [AC_DEFINE([HAVE_PLATFORM_CRAYXE], [1], [Set if we are building for the Cray XE platform])])
+    AM_COND_IF([PLATFORM_CRAYXK],
+        [AC_DEFINE([HAVE_PLATFORM_CRAYXK], [1], [Set if we are building for the Cray XK platform])])
+    AM_COND_IF([PLATFORM_CRAYXC],
+        [AC_DEFINE([HAVE_PLATFORM_CRAYXC], [1], [Set if we are building for the Cray XC platform])])
     AM_COND_IF([PLATFORM_LINUX],
         [AC_DEFINE([HAVE_PLATFORM_LINUX], [1], [Set if we are building for the Linux platform])])
     AM_COND_IF([PLATFORM_SOLARIS],

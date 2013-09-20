@@ -61,7 +61,7 @@ fi
 # On Hermit/CRAYXT, the C++ OpenMP check fails because 
 # of a broken CC. Set OPENMP_CXXFLAGS manually. See 
 # also silc:#687.
-AS_IF([(test "x${ac_scorep_platform}" = "xcrayxt" && \
+AS_IF([(test "x${afs_platform_cray}" = "xyes" && \
        test "x${ac_scorep_compiler_pgi}"   = "xyes")],
       [AC_SUBST([OPENMP_CXXFLAGS], [-mp])],
       [AC_LANG_PUSH([C++])

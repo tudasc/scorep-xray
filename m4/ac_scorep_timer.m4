@@ -3,16 +3,30 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012, 
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## Copyright (c) 2009-2012,
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2012,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2012,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2012,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2012,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
 
@@ -390,7 +404,7 @@ AS_IF([test "x${ac_scorep_user_timer_given}" = "xno"], [
             ["bgl"],      [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([bgl_rts_get_timebase]))],
             ["bgp"],      [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([bgp_get_timebase]))],
             ["bgq"],      [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([bgq_mftb]))],
-            ["crayxt"],   [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([cray_dclock]),
+            [crayx*],     [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([cray_dclock]),
                                  AC_SCOREP_TIMER_USE_IF_AVAILABLE([cycle_counter_itc]),
                                  AC_SCOREP_TIMER_USE_IF_AVAILABLE([clock_gettime]),
                                  AC_SCOREP_TIMER_USE_IF_AVAILABLE([gettimeofday]))],
