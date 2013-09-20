@@ -92,15 +92,15 @@ AC_PROG_F77_C_O
 # linker errors that can be fixed by removing "-ltcmalloc_minimal"
 # from FLIBS and FCLIBS BEFORE calling AC_F*_WRAPPERS macros.
 AC_F77_LIBRARY_LDFLAGS
-AS_IF([test "x${ac_scorep_platform}" = "xcrayxt"],
-    [FLIBS=`echo ${FLIBS} | sed -e 's/-ltcmalloc_minimal //g'`])
+AS_CASE([${ac_scorep_platform}],
+        [crayx*], [FLIBS=`echo ${FLIBS} | sed -e 's/-ltcmalloc_minimal //g'`])
 AC_F77_WRAPPERS
 
 AC_PROG_FC dnl needed for tests only
 AC_PROG_FC_C_O
 AC_FC_LIBRARY_LDFLAGS
-AS_IF([test "x${ac_scorep_platform}" = "xcrayxt"],
-    [FCLIBS=`echo ${FCLIBS} | sed -e 's/-ltcmalloc_minimal //g'`])
+AS_CASE([${ac_scorep_platform}],
+        [crayx*], [FCLIBS=`echo ${FCLIBS} | sed -e 's/-ltcmalloc_minimal //g'`])
 AC_FC_WRAPPERS
 
 AM_PROG_AS
@@ -237,6 +237,7 @@ AM_CONDITIONAL([SCOREP_MPI_OPENMPI], [test $? -eq 0])
 
 AC_SCOREP_BUILD_MODE
 AC_SCOREP_CUDA
+SCOREP_CRAY_PMI
 
 # On crosscompile machines, install backend stuff into $(bin|lid)dir/backend.
 backend_suffix=""

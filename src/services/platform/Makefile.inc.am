@@ -83,10 +83,17 @@ libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platfor
                                  $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_bgl.c
 endif PLATFORM_BGL
 
-if PLATFORM_CRAYXT
-libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c \
-                                 $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_crayxt.c
-endif PLATFORM_CRAYXT
+if PLATFORM_CRAY
+if HAVE_PMI
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_cray.c
+libscorep_platform_la_LIBADD = $(PMI_LIBS)
+libscorep_platform_la_LDFLAGS = $(AM_LDFLAGS) $(PMI_LDFLAGS)
+libscorep_platform_la_CPPFLAGS += $(PMI_CPPFLAGS)
+else !HAVE_PMI
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c
+endif !HAVE_PMI
+libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_nodeid_cray.c
+endif PLATFORM_CRAY
 
 if PLATFORM_LINUX
 libscorep_platform_la_SOURCES += $(SRC_ROOT)src/services/platform/scorep_platform_system_tree_generic.c

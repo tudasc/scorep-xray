@@ -20,6 +20,12 @@ scorep_backend_info_LDADD = \
     libscorep_hashtab.la \
     libutils.la
 
+## Blue Gene P
 if SCOREP_TIMER_BGP_GET_TIMEBASE
 scorep_backend_info_LDFLAGS = -L$(TIMER_LIBDIR)
-endif
+endif SCOREP_TIMER_BGP_GET_TIMEBASE
+
+## Cray systems
+if HAVE_PMI
+scorep_backend_info_LDFLAGS = $(PMI_LDFLAGS) $(PMI_LIBS)
+endif HAVE_PMI

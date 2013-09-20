@@ -22,16 +22,15 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
 
 /**
  * @file
- *
- *
  */
 
 
@@ -40,10 +39,16 @@
 #include <SCOREP_Platform.h>
 
 #ifndef __LIBCATAMOUNT__
+#  include <stdlib.h>
+#  include <unistd.h>
+#  include <string.h>
 #  include <sys/types.h>
 #  include <sys/stat.h>
 #  include <fcntl.h>
 #endif
+
+#include <UTILS_Error.h>
+
 
 int32_t
 SCOREP_Platform_GetNodeId( void )
@@ -52,25 +57,27 @@ SCOREP_Platform_GetNodeId( void )
 #ifdef __LIBCATAMOUNT__
     return ( int32_t )_my_pnid;
 #else
-    char    buf[ 256 ];
-    ssize_t bytes;
-    int     fd;
 
-    fd = open( "/proc/cray_xt/nid", O_RDONLY );
+    int fd = open( "/proc/cray_xt/nid", O_RDONLY );
     if ( fd < 0 )
     {
         UTILS_WARNING( "Can not open file /proc/cray_xt/nid: %s",
                        strerror( errno ) );
         return 0;
     }
-    bytes = read( fd, buf, 256 );
+
+    char    buffer[ 256 ];
+    size_t  buffer_size = sizeof( buffer ) - 1;
+    ssize_t bytes       = read( fd, buffer, buffer_size );
     if ( bytes <= 0 )
     {
         UTILS_WARNING( "Can not read file /proc/cray_xt/nid: %s",
                        strerror( errno ) );
         return 0;
     }
+    buffer[ bytes ] = '\0';
     close( fd );
-    return atol( buf );
+
+    return atol( buffer );
 #endif
 }
