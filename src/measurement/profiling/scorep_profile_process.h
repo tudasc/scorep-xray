@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -102,5 +102,11 @@ scorep_profile_substitute_parameter( void );
  */
 void
 scorep_profile_process_tasks( void );
+
+/**
+   Changes the visit count in all nodes from exclusive to inclusive.
+ */
+void
+scorep_profile_inclusify_visits( void );
 
 #endif // SCOREP_PROFILE_PROCESS_H

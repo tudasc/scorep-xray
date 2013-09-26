@@ -408,29 +408,40 @@ static void
 write_metric_definitions( cube_t*                       my_cube,
                           SCOREP_DefinitionManager*     manager,
                           scorep_cube4_definitions_map* map,
-                          bool                          write_task_metrics )
+                          bool                          write_task_metrics,
+                          bool                          write_tupels )
 {
     cube_metric* cube_handle;
 
     /* Add default profiling metrics for number of visits and implicit time */
-    visits_handle = cube_def_met( my_cube, "Visits", "visits", "UINT64", "occ", "",
-                                  "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#visits",
-                                  "Number of visits", NULL, CUBE_METRIC_EXCLUSIVE );
+    if ( write_tupels )
+    {
+        time_sum_handle = cube_def_met( my_cube, "Time", "time", "TAU_ATOMIC", "sec", "",
+                                        "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#time",
+                                        "Total CPU allocation time", NULL,
+                                        CUBE_METRIC_INCLUSIVE );
+    }
+    else
+    {
+        visits_handle = cube_def_met( my_cube, "Visits", "visits", "UINT64", "occ", "",
+                                      "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#visits",
+                                      "Number of visits", NULL, CUBE_METRIC_EXCLUSIVE );
 
-    time_sum_handle = cube_def_met( my_cube, "Time", "time", "DOUBLE", "sec", "",
-                                    "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#time",
-                                    "Total CPU allocation time", NULL,
-                                    CUBE_METRIC_INCLUSIVE );
+        time_sum_handle = cube_def_met( my_cube, "Time", "time", "DOUBLE", "sec", "",
+                                        "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#time",
+                                        "Total CPU allocation time", NULL,
+                                        CUBE_METRIC_INCLUSIVE );
 
-    time_min_handle = cube_def_met( my_cube, "Minimum Inclusive Time", "min_time",
-                                    "MINDOUBLE", "sec", "",
-                                    "", "Minimum inclusive CPU allocation time",
-                                    NULL, CUBE_METRIC_EXCLUSIVE );
+        time_min_handle = cube_def_met( my_cube, "Minimum Inclusive Time", "min_time",
+                                        "MINDOUBLE", "sec", "",
+                                        "", "Minimum inclusive CPU allocation time",
+                                        NULL, CUBE_METRIC_EXCLUSIVE );
 
-    time_max_handle = cube_def_met( my_cube, "Maximum Inclusive Time", "max_time",
-                                    "MAXDOUBLE", "sec", "",
-                                    "", "Maximum inclusive CPU allocation time",
-                                    NULL, CUBE_METRIC_EXCLUSIVE );
+        time_max_handle = cube_def_met( my_cube, "Maximum Inclusive Time", "max_time",
+                                        "MAXDOUBLE", "sec", "",
+                                        "", "Maximum inclusive CPU allocation time",
+                                        NULL, CUBE_METRIC_EXCLUSIVE );
+    }
 
     SCOREP_MetricDef*   metric_definition;
     char*               metric_name;
@@ -440,7 +451,6 @@ write_metric_definitions( cube_t*                       my_cube,
     bool                free_unit;
     enum CubeMetricType cube_metric_type;
 
-    //for ( uint8_t i = 0; i < num_metrics; i++ )
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Metric, metric )
     {
         /* Collect necessary data */
@@ -461,22 +471,29 @@ write_metric_definitions( cube_t*                       my_cube,
             metric_unit = unit;
         }
 
-        switch ( definition->value_type )
+        if ( write_tupels )
         {
-            case SCOREP_METRIC_VALUE_INT64:
-                data_type = "INT64";
-                break;
-            case SCOREP_METRIC_VALUE_UINT64:
-                data_type = "UINT64";
-                break;
-            case SCOREP_METRIC_VALUE_DOUBLE:
-                data_type = "DOUBLE";
-                break;
-            default:
-                UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
-                             "Metric '%s' has unknown value type.",
-                             metric_name );
-                continue;
+            data_type = "TAU_ATOMIC";
+        }
+        else
+        {
+            switch ( definition->value_type )
+            {
+                case SCOREP_METRIC_VALUE_INT64:
+                    data_type = "INT64";
+                    break;
+                case SCOREP_METRIC_VALUE_UINT64:
+                    data_type = "UINT64";
+                    break;
+                case SCOREP_METRIC_VALUE_DOUBLE:
+                    data_type = "DOUBLE";
+                    break;
+                default:
+                    UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
+                                 "Metric '%s' has unknown value type.",
+                                 metric_name );
+                    continue;
+            }
         }
 
         switch ( definition->profiling_type )
@@ -755,7 +772,8 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
                                    scorep_cube4_definitions_map* map,
                                    uint32_t                      ranks,
                                    int*                          offsets,
-                                   bool                          write_task_metrics )
+                                   bool                          write_task_metrics,
+                                   bool                          write_tupels )
 {
     /* The unification is always processed, even in serial case. Thus, we have
        always access to the unified definitions on rank 0.
@@ -768,7 +786,7 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
     }
     assert( scorep_unified_definition_manager );
 
-    write_metric_definitions( my_cube, manager, map, write_task_metrics );
+    write_metric_definitions( my_cube, manager, map, write_task_metrics, write_tupels );
     write_region_definitions( my_cube, manager, map );
     write_callpath_definitions( my_cube, manager, map );
     write_location_definitions( my_cube, manager, ranks, offsets );

@@ -59,7 +59,7 @@ typedef struct
     uint32_t                      offset;           /**< Offset for this rank */
     uint32_t                      my_rank;          /**< This rank */
     uint32_t                      ranks_number;     /**< Number of ranks in COMM_WORLD */
-    int*                          threads_per_rank; /**< List of elements per rank */
+    int*                          items_per_rank;   /**< List of data items per rank */
     int*                          offsets_per_rank; /**< List of offsets per rank */
     SCOREP_MetricHandle*          metric_map;       /**< map sequence no to handle */
     SCOREP_MetricHandle*          unified_map;      /**< map sequence to unified handle */

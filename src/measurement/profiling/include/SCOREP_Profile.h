@@ -76,9 +76,10 @@ typedef enum
     SCOREP_Profile_OutputNone        = 0,
     SCOREP_Profile_OutputTauSnapshot = 1,
     SCOREP_Profile_OutputCube4       = 2,
-#define SCOREP_Profile_OutputDefault SCOREP_Profile_OutputCube4
+    SCOREP_Profile_OutputCubeTupel   = 4,
 } SCOREP_Profile_OutputFormat;
 
+#define SCOREP_Profile_OutputDefault SCOREP_Profile_OutputCube4
 
 /* ----------------------------------------------------- Initialization / Finalization */
 

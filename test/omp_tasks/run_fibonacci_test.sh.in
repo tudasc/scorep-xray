@@ -106,6 +106,17 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# execute pomp test with tupel format
+SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp \
+    SCOREP_ENABLE_PROFILING=true \
+    SCOREP_ENABLE_TRACING=false \
+    SCOREP_PROFILING_FORMAT=CUBE_TUPEL \
+    ./fib_pomp $FIB_NUM
+
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
 # execute full test
 @SCOREP_COMPILER_PGI_FALSE@ SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}full \
 @SCOREP_COMPILER_PGI_FALSE@     SCOREP_ENABLE_PROFILING=true \

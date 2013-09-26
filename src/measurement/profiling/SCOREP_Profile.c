@@ -294,6 +294,12 @@ SCOREP_Profile_Process( SCOREP_Location* location )
     /* Make phases to the root of separate trees */
     scorep_profile_process_phases();
 
+    /* The tupel output requires inclusive metrics */
+    if ( scorep_profile_output_format == SCOREP_Profile_OutputCubeTupel )
+    {
+        scorep_profile_inclusify_visits();
+    }
+
     /* Register callpath and assign callpath handles to every node */
     scorep_profile_assign_callpath_to_master();
     scorep_profile_assign_callpath_to_workers();
@@ -308,11 +314,15 @@ SCOREP_Profile_Write( SCOREP_Location* location )
     }
     else if ( scorep_profile_output_format & SCOREP_Profile_OutputCube4 )
     {
-        scorep_profile_write_cube4( location );
+        scorep_profile_write_cube4( false );
     }
     else if ( scorep_profile_output_format & SCOREP_Profile_OutputTauSnapshot )
     {
         scorep_profile_write_tau_snapshot( SCOREP_Location_GetProfileData( location ) );
+    }
+    else if ( scorep_profile_output_format & SCOREP_Profile_OutputCubeTupel )
+    {
+        scorep_profile_write_cube4( true );
     }
     else
     {

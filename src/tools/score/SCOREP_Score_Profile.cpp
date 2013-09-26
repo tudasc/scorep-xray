@@ -50,8 +50,13 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( string cubeFile )
     m_cube = new Cube();
     m_cube->openCubeReport( cubeFile );
 
-    m_visits = m_cube->get_met( "visits" );
     m_time   = m_cube->get_met( "time" );
+    m_visits = m_cube->get_met( "visits" );
+    // if visits metric is not present, the cube used tau atomics
+    if ( m_visits == NULL )
+    {
+        m_visits = m_time;
+    }
 
     m_processes = m_cube->get_procv();
     m_regions   = m_cube->get_regv();
@@ -111,31 +116,87 @@ SCOREP_Score_Profile::calculate_calltree_types( const vector<Cnode*>* cnodes,
 double
 SCOREP_Score_Profile::GetTime( uint64_t region, uint64_t process )
 {
-    return m_cube->get_sev( m_time, CUBE_CALCULATE_EXCLUSIVE,
-                            m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
-                            m_processes[ process ], CUBE_CALCULATE_INCLUSIVE  );
+    Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_EXCLUSIVE,
+                                        m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
+                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE  );
+
+    if ( !value )
+    {
+        return 0.0;
+    }
+    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
+    {
+        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
+        return tau_value->getSum().getDouble();
+    }
+    else
+    {
+        return value->getDouble();
+    }
 }
 
 double
 SCOREP_Score_Profile::GetTotalTime( uint64_t region )
 {
-    return m_cube->get_sev( m_time, CUBE_CALCULATE_EXCLUSIVE,
-                            m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE );
+    Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_EXCLUSIVE,
+                                        m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE );
+
+    if ( !value )
+    {
+        return 0.0;
+    }
+    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
+    {
+        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
+        return tau_value->getSum().getDouble();
+    }
+    else
+    {
+        return value->getDouble();
+    }
 }
 
 uint64_t
 SCOREP_Score_Profile::GetVisits( uint64_t region, uint64_t process )
 {
-    return m_cube->get_sev( m_visits, CUBE_CALCULATE_EXCLUSIVE,
-                            m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
-                            m_processes[ process ], CUBE_CALCULATE_INCLUSIVE ) + 0.5;
+    Value* value = m_cube->get_sev_adv( m_visits, CUBE_CALCULATE_EXCLUSIVE,
+                                        m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
+                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
+
+    if ( !value )
+    {
+        return 0;
+    }
+    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
+    {
+        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
+        return tau_value->getN().getUnsignedLong();
+    }
+    else
+    {
+        return value->getUnsignedLong();
+    }
 }
 
 uint64_t
 SCOREP_Score_Profile::GetTotalVisits( uint64_t region )
 {
-    return m_cube->get_sev( m_visits, CUBE_CALCULATE_EXCLUSIVE,
-                            m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE ) + 0.5;
+    Value* value = m_cube->get_sev_adv( m_visits, CUBE_CALCULATE_EXCLUSIVE,
+                                        m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE );
+
+    if ( !value )
+    {
+        return 0;
+    }
+    if ( value && value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
+    {
+        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
+        return tau_value->getN().getUnsignedLong();
+    }
+    else
+    {
+        return value->getUnsignedLong();
+    }
 }
 
 uint64_t

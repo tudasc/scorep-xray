@@ -60,9 +60,18 @@ changed through the environment variable \confvar{SCOREP_PROFILING_BASE_NAME}. T
 extension <tt>.cubex</tt> will be appended to the base name you specify in the 
 environment variable \confvar{SCOREP_PROFILING_BASE_NAME}.
 
-If you want to record the profile in TAU snapshot format instead of the @cube4 format,
-set <tt>SCOREP_PROFILING_FORMAT=TAU_SNAPSHOT</tt>. Vice versa, you might set 
-<tt>SCOREP_PROFILING_FORMAT=CUBE4</tt> to get a @cube4 profile.
+By default, @scorep writes the profile in @cube4 base format. Hereby, for every metric 
+contains one value, usually only the sum. However, Score-P allows to store the profile 
+in two other formats. To change the default format, set the environment variable 
+<tt>SCOREP_PROFILING_FORMAT</tt>. The following formats are available:
+<ul>
+  <li> <b>CUBE4</b> is the default format. </li>
+  <li> <b>CUBE_TUPEL</b> is an extended @cube format. It provides a tupel of sum, 
+                         minimum, maximum, number of samples, sum of squares for
+                         every metric. </li>
+  <li> <b>TAU_SNAPSHOT</b> is a textual format used by TAU. It creates a file per 
+                         location and thus, may not scale to large machines. </li>
+</ul>
 
 @scorep records a call tree profile. The maximum call-path depth that is recorded 
 is limited to 30, by default. This avoids
