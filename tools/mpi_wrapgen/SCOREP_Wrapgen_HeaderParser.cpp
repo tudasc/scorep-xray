@@ -171,7 +171,7 @@ processParams( Func*  func,
     if ( pos == string::npos )
     {
         name = param;
-        printf( "Can not separate type and name\n" );
+        printf( "Cannot separate type and name\n" );
     }
     type_modifier = "";
     type          = trim( param.substr( 0, pos + 1 ) );
@@ -197,7 +197,7 @@ evalHeaderLine( string line )
     bracClose = line.rfind( ')' );
     if ( bracOpen == string::npos || bracClose == string::npos )
     {
-        printf( "Can not identify parameter section\n" );
+        printf( "Cannot identify parameter section\n" );
         return NULL;
     }
     name   = trim( line.substr( 0, bracOpen ) );
@@ -214,7 +214,7 @@ evalHeaderLine( string line )
     pos = name.find_last_of( " \t*&" );
     if ( pos == string::npos )
     {
-        printf( "Can not separate type and name\n" );
+        printf( "Cannot separate type and name\n" );
         return NULL;
     }
     type = trim( name.substr( 0, pos + 1 ) );

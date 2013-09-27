@@ -76,7 +76,7 @@
 
    The mpi functions are divided in groups. Each group can be excluded from being build,
    when compiling the mpi wrappers. Furthermore, each group can be filtered dynamically.
-   Essential function wrappers, e.g. the wrapper for MPI_Init, can not be excluded from
+   Essential function wrappers, e.g. the wrapper for MPI_Init, cannot be excluded from
    being build. To exclude a group of wrapper function from being build, a define must
    be set, which has the form SCOREP_MPI_NO_<GROUP_NAME>. This define should be set by the
    configure script and written to config.h.

@@ -540,7 +540,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     {
         /* The add_define function add the parameter to the parameter list,
            because, the value may need to be quoted and some characters
-           baskslashed. Thus, we can not add the value as it is. */
+           baskslashed. Thus, we cannot add the value as it is. */
         add_define( current + next );
         return scorep_parse_mode_option_part;
     }
@@ -604,7 +604,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         {
             /* The add_define function add the parameter to the parameter list,
                because, the value may need to be quoted and some characters
-               baskslashed. Thus, we can not add the value as it is. */
+               baskslashed. Thus, we cannot add the value as it is. */
             add_define( current );
             return scorep_parse_mode_command;
         }

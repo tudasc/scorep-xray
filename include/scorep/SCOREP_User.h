@@ -65,7 +65,7 @@
     with the Score-P user instrumentation header. For C/C++ programs,
     the header file is 'scorep/SCOREP_User.h', for Fortran files,
     'scorep/SCOREP_User.inc' must be included. Because the Fortran
-    compilers can not expand macros, the Fortran source code must be
+    compilers cannot expand macros, the Fortran source code must be
     preprocessed by a C or C++ preprocessor, to include the headers
     and expand the macros. Which Fortran files are passed to the
     preprocessor depends on the suffix.  Usually, suffixes .f and .f90

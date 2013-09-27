@@ -158,7 +158,7 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
     int fd = open( "/proc/cray_xt/cname", O_RDONLY );
     if ( fd < 0 )
     {
-        UTILS_WARNING( "Can not open file /proc/cray_xt/cname: %s",
+        UTILS_WARNING( "Cannot open file /proc/cray_xt/cname: %s",
                        strerror( errno ) );
         goto fail;
     }
@@ -168,7 +168,7 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
     ssize_t bytes       = read( fd, buffer, buffer_size );
     if ( bytes <= 0 )
     {
-        UTILS_WARNING( "Can not read file /proc/cray_xt/cname: %s",
+        UTILS_WARNING( "Cannot read file /proc/cray_xt/cname: %s",
                        strerror( errno ) );
         close( fd );
         goto fail;

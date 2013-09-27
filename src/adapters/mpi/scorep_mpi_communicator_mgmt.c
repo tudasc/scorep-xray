@@ -103,7 +103,7 @@ scorep_mpi_win_init( void )
         if ( SCOREP_MPI_MAX_WIN == 0 )
         {
             UTILS_WARN_ONCE( "Environment variable SCOREP_MPI_MAX_WINDOWS was set to 0, "
-                             "thus, one-sided communication can not be recorded and is disabled. "
+                             "thus, one-sided communication cannot be recorded and is disabled. "
                              "To avoid this warning you can disable one sided communications, "
                              "by disabling RMA via SCOREP_MPI_ENABLE_GROUPS." );
             SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
@@ -112,7 +112,7 @@ scorep_mpi_win_init( void )
         if ( SCOREP_MPI_MAX_WINACC == 0 )
         {
             UTILS_WARN_ONCE( "Environment variable SCOREP_MPI_MAX_ACCESS_EPOCHS was set "
-                             "to 0, thus, one-sided communication can not be recorded and is "
+                             "to 0, thus, one-sided communication cannot be recorded and is "
                              "disabled. To avoid this warning you can disable one sided "
                              "communications, by disabling RMA via SCOREP_MPI_ENABLE_GROUPS." );
             SCOREP_MPI_DISABLE_GROUP( SCOREP_MPI_ENABLED_RMA );
@@ -125,7 +125,7 @@ scorep_mpi_win_init( void )
         {
             UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
                          "Failed to allocate memory for MPI window tracking.\n"
-                         "One-sided communication can not be recoreded.\n"
+                         "One-sided communication cannot be recoreded.\n"
                          "Space for %" PRIu64 " windows was requested.\n"
                          "You can change this number via the environment variable "
                          "SCOREP_MPI_MAX_WINDOWS.", SCOREP_MPI_MAX_WIN );
@@ -139,7 +139,7 @@ scorep_mpi_win_init( void )
         {
             UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
                          "Failed to allocate memory for access epoch tracking.\n"
-                         "One-sided communication can not be recoreded.\n"
+                         "One-sided communication cannot be recoreded.\n"
                          "Space for %" PRIu64 " access epochs was requested.\n"
                          "You can change this number via environment variable "
                          "SCOREP_MPI_MAX_ACCESS_EPOCHS.",

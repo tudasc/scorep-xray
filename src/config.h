@@ -51,7 +51,7 @@
         #include <config-backend-mpi.h>
         #define HAVE_BACKEND( H ) ( defined( HAVE_ ## H ) && HAVE_ ## H )
     #else
-        #error "You can not use config.h without defining either FRONTEND_BUILD, BACKEND_BUILD_NOMPI or BACKEND_BUILD_MPI."
+        #error "You cannot use config.h without defining either FRONTEND_BUILD, BACKEND_BUILD_NOMPI or BACKEND_BUILD_MPI."
     #endif
 
 #elif defined NOCROSS_BUILD
@@ -60,7 +60,7 @@
     #elif defined BACKEND_BUILD_MPI
         #include <config-backend-mpi.h>
     #else
-        #error "You can not use config.h without defining either BACKEND_BUILD_NOMPI or BACKEND_BUILD_MPI."
+        #error "You cannot use config.h without defining either BACKEND_BUILD_NOMPI or BACKEND_BUILD_MPI."
     #endif
 
     #define HAVE_BACKEND( H ) ( defined( HAVE_ ## H ) && HAVE_ ## H )
@@ -69,7 +69,7 @@
     #include <config-score.h>
 
 #else
-    #error "You can not use config.h without defining either CROSS_BUILD or NOCROSS_BUILD."
+    #error "You cannot use config.h without defining either CROSS_BUILD or NOCROSS_BUILD."
 #endif
 
 #include <config-common.h>

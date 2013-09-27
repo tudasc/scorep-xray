@@ -713,7 +713,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
                             SCOREP_AnyHandle      scope_handle            = SCOREP_GetLocationGroup();
                             if ( scope_handle == SCOREP_INVALID_LOCATION_GROUP )
                             {
-                                UTILS_WARNING( "Can not get handle for location group." );
+                                UTILS_WARNING( "Cannot get handle for location group." );
                             }
 
                             UTILS_ASSERT( scope_handle != SCOREP_MOVABLE_NULL );
@@ -860,7 +860,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
                                     scope_handle = SCOREP_Location_GetLocationHandle( location );
                                     if ( scope_handle == SCOREP_INVALID_LOCATION )
                                     {
-                                        UTILS_WARNING( "Can not get handle for location." );
+                                        UTILS_WARNING( "Cannot get handle for location." );
                                     }
                                     break;
                                 case SCOREP_METRIC_PER_PROCESS:
@@ -868,13 +868,13 @@ initialize_location_metric_cb( SCOREP_Location* location,
                                     scope_handle = SCOREP_GetLocationGroup();
                                     if ( scope_handle == SCOREP_INVALID_LOCATION_GROUP )
                                     {
-                                        UTILS_WARNING( "Can not get handle for location group." );
+                                        UTILS_WARNING( "Cannot get handle for location group." );
                                     }
                                     break;
                                 case SCOREP_METRIC_PER_HOST:
                                 case SCOREP_METRIC_ONCE:
                                     UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
-                                                 "Metrics of synchronicity 'per-host' and 'once' can not be handled yet" );
+                                                 "Metrics of synchronicity 'per-host' and 'once' cannot be handled yet" );
                                     break;
                                 default:
                                     UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
@@ -1248,7 +1248,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
         for ( size_t source_index = 0; source_index < SCOREP_NUMBER_OF_METRIC_SOURCES; source_index++ )
         {
             /* Location's responsibility to record PER_HOST and/or ONCE metrics
-             * can not be decided before multi program paradigm (MPP) was initialized
+             * cannot be decided before multi program paradigm (MPP) was initialized
              * (e.g. MPI_Init() was called). Certainly, there are function calls
              * before MPP initialization. So, we've lost some enter/leave events
              * for reecording these metrics. That's why, PER_HOST resp. ONCE metrics
@@ -1426,7 +1426,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                 scope_handle = SCOREP_GetSystemTreeNodeHandleForSharedMemory();
                                 if ( scope_handle == SCOREP_INVALID_SYSTEM_TREE_NODE )
                                 {
-                                    UTILS_WARNING( "Can not get handle for system tree root node." );
+                                    UTILS_WARNING( "Cannot get handle for system tree root node." );
                                 }
                                 break;
                             case SCOREP_METRIC_ONCE:
@@ -1434,7 +1434,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                 scope_handle = SCOREP_GetSystemTreeRootNodeHandle();
                                 if ( scope_handle == SCOREP_INVALID_SYSTEM_TREE_NODE )
                                 {
-                                    UTILS_WARNING( "Can not get handle for system tree node of shared memory domain." );
+                                    UTILS_WARNING( "Cannot get handle for system tree node of shared memory domain." );
                                 }
                                 break;
                             default:
@@ -1580,7 +1580,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                     scope_handle = SCOREP_GetSystemTreeNodeHandleForSharedMemory();
                                     if ( scope_handle == SCOREP_INVALID_SYSTEM_TREE_NODE )
                                     {
-                                        UTILS_WARNING( "Can not get handle for system tree node of shared memory domain." );
+                                        UTILS_WARNING( "Cannot get handle for system tree node of shared memory domain." );
                                     }
                                     break;
                                 case SCOREP_METRIC_ONCE:
@@ -1588,7 +1588,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
                                     scope_handle = SCOREP_GetSystemTreeRootNodeHandle();
                                     if ( scope_handle == SCOREP_INVALID_SYSTEM_TREE_NODE )
                                     {
-                                        UTILS_WARNING( "Can not get handle for system tree root node." );
+                                        UTILS_WARNING( "Cannot get handle for system tree root node." );
                                     }
                                     break;
                                 default:

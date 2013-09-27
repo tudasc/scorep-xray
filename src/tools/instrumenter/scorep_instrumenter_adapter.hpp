@@ -261,7 +261,7 @@ protected:
      * If the instrumentation approach represented by this adapter is not
      * supported by this installation. This function should be called by the
      * constructor. It sets some variables to make sure that this adapter
-     * can not be enabled and prints meaning error message if it is.
+     * cannot be enabled and prints meaning error message if it is.
      * Furthermore, it modifies the help output.
      */
     void

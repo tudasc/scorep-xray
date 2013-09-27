@@ -134,7 +134,7 @@ main( int argc, char** argv )
     //-------------------------------------- Sanity checks
     if ( dense_num < 0 )
     {
-        cerr << "ERROR: The number of hardware counters can not be less than zero." << endl;
+        cerr << "ERROR: The number of hardware counters cannot be less than zero." << endl;
         print_help();
         exit( EXIT_FAILURE );
     }
@@ -149,7 +149,7 @@ main( int argc, char** argv )
     }
     catch ( ... )
     {
-        cerr << "ERROR: Can not open Cube report '" << file_name << "'" << endl;
+        cerr << "ERROR: Cannot open Cube report '" << file_name << "'" << endl;
         exit( EXIT_FAILURE );
     }
 

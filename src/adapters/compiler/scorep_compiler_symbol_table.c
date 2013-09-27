@@ -497,14 +497,14 @@ scorep_compiler_get_sym_tab( void )
    dummy implememtation of symbol table analysis
 *****************************************************************************************/
 
-#warning Neither BFD nor nm are available. Thus, the symbol table can not be analyzed.
+#warning Neither BFD nor nm are available. Thus, the symbol table cannot be analyzed.
 #warning The compiler adapter will be disabled.
 
 /**
    Dummy implementation of symbol table analysis for the case that neither BFD
    nor nm are available. It allows to compile without error, but the compiler adapter
    is will not generate events, though the compiler instrumented the code, because
-   it can not map the function pointers to names.
+   it cannot map the function pointers to names.
  */
 void
 scorep_compiler_get_sym_tab( void )

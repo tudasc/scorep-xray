@@ -40,7 +40,7 @@
   detection of the MPI programming paradigm during instrumentation.
 - Abort with an error message during instrumentation if the user wants
   to build a shared library with static Score-P libraries.
-- Abort if the user specified a filter file which can not be opended.
+- Abort if the user specified a filter file which cannot be opended.
 - Improved the auto-detection in the instrumenter for MPI libraries. This
   should fix some failures with MPI programs that do not use a compiler
   wrapper, e.g., when using SGI MPT.

@@ -139,7 +139,7 @@ typedef void ( *SCOREP_Hashtab_DeleteFunction )( void* item );
 /**
  * Creates and returns an instance of SCOREP_Hashtab. Besides the @a size of the
  * hash table, pointers to a hashing function as well as a key comparison
- * function have to be provided. If the memory allocation request can not be
+ * function have to be provided. If the memory allocation request cannot be
  * fulfilled, an error message is printed and the program is aborted.
  *
  * @param size     Size of the hash table
@@ -198,7 +198,7 @@ SCOREP_Hashtab_Empty( const SCOREP_Hashtab* instance );
  * (re-)calculated instead, @c NULL should be passed.
  *
  * This function also has to allocate memory for internal data structures. If
- * this memory allocation request can not be fulfilled, an error message is
+ * this memory allocation request cannot be fulfilled, an error message is
  * printed and the program is aborted.
  *
  * @param instance   Object in which the key/value pair should be inserted
@@ -286,7 +286,7 @@ SCOREP_Hashtab_Remove( const SCOREP_Hashtab*         instance,
 
 /**
  * Creates and returns an iterator for the given SCOREP_Hashtab @a instance. If
- * the memory allocation request can not be fulfilled, an error message is
+ * the memory allocation request cannot be fulfilled, an error message is
  * printed and the program is aborted.
  *
  * @return Pointer to new instance

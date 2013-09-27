@@ -347,7 +347,7 @@ SCOREP_Filter_ParseFile( const char* file_name )
         {
             pos += strcspn( &buffer[ pos ], "#" );
             if ( ( pos < length ) &&                                    // Whether '#' appears
-                 ( ( ( pos == 0 ) && ( *buffer == '#' ) ) ||            // Can not be escaped if first
+                 ( ( ( pos == 0 ) && ( *buffer == '#' ) ) ||            // Cannot be escaped if first
                    ( ( pos > 0 ) && ( buffer[ pos - 1 ] != '\\' ) ) ) ) // Check if '#' is escaped
             {
                 buffer[ pos ] = '\0';
@@ -376,7 +376,7 @@ SCOREP_Filter_ParseFile( const char* file_name )
             pos += strcspn( &buffer[ pos ], " \t\n\0" );
 
             if ( ( pos <= length ) &&                                   // Whether whitespace appears
-                 ( ( pos == 0 ) ||                                      // Can not be escaped if first
+                 ( ( pos == 0 ) ||                                      // Cannot be escaped if first
                    ( ( pos > 0 ) && ( buffer[ pos - 1 ] != '\\' ) ) ) ) // Check if whitespace is escaped
             {
                 buffer[ pos ] = '\0';

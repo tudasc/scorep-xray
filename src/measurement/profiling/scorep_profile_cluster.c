@@ -1938,10 +1938,10 @@ scorep_cluster_on_enter_dynamic(  SCOREP_Profile_LocationData* location,
     if ( strcmp( clustered_region, "" ) == 0 ||
          strcmp( clustered_region, current_region ) == 0 )
     {
-        /* Can not cluster regions inside parallel regions. */
+        /* Cannot cluster regions inside parallel regions. */
         if ( SCOREP_Thread_InParallel() )
         {
-            UTILS_WARNING( "Can not cluster regions that appear inside "
+            UTILS_WARNING( "Cannot cluster regions that appear inside "
                            "of parallel regions. Clustering disabled." );
             scorep_clustering_enabled = false;
             return;

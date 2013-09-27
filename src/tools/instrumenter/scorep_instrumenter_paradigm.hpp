@@ -144,7 +144,7 @@ protected:
     /**
      * If the paradigm is not supported by this installation. This function
      * should be called by the constructor. It sets some variables to make sure
-     * that this paradigm can not be selected and prints meaning error message if it is.
+     * that this paradigm cannot be selected and prints meaning error message if it is.
      * Furthermore, it modifies the help output.
      */
     void

@@ -112,7 +112,7 @@ type <tt>SCOREP_USER_REGION_TYPE_PHASE</tt> on the right side.
 side shows the calltree if no region is of type phase. The right side shows the 
 call-tree forest with phases., width=0.9\textwidth} 
 
-If the phase consists of multiple partitions, and thus can not be enclosed by a single
+If the phase consists of multiple partitions, and thus cannot be enclosed by a single
 code region, all code-regions that form the phase must have the same region handle.
 The possibility to define global region handles in C/C++ might be useful for the 
 definition of phases that are have multiple partitions  
@@ -352,7 +352,7 @@ The filter definition file can contain two blocks:
 </ul>
 
 When the filter rules are applied, the source file name filter is evaluated first. If
-a region is filtered because it appears in a filtered source file, it can not be included
+a region is filtered because it appears in a filtered source file, it cannot be included
 by the function name filter. If a region was defined in a not-filtered source file,
 the region name filter is evaluated. This means, events for a region are not recorded
 if they are filtered by the source file filter or the region name filter. Events for
@@ -416,7 +416,7 @@ sequential order. At the beginning, all regions are included. Regions that
 are excluded after all rules are evaluated, are filtered. 
 
 @note Regions that are defined in source files that are filtered, are excluded
-      due to the source file filter. They can not be included anymore by an
+      due to the source file filter. They cannot be included anymore by an
       include rule in the region filter block.
 
 An exclude rule starts with the keyword <tt>EXCLUDE</tt> followed by
@@ -567,7 +567,7 @@ This configuration file would record all executions of foo, the executions 23, 2
 To apply the selective recording configuration file to a measurement run of your 
 application, set the environment variable \confvar{SCOREP_SELECTIVE_CONFIG_FILE}
 to the configuration file and run your instrumented application. If 
-\confvar{SCOREP_SELECTIVE_CONFIG_FILE} is empty, or the given file can not be opened,
+\confvar{SCOREP_SELECTIVE_CONFIG_FILE} is empty, or the given file cannot be opened,
 the whole application run will be recorded (no selective recording will apply).
 
 

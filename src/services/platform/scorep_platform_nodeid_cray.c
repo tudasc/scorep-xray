@@ -61,7 +61,7 @@ SCOREP_Platform_GetNodeId( void )
     int fd = open( "/proc/cray_xt/nid", O_RDONLY );
     if ( fd < 0 )
     {
-        UTILS_WARNING( "Can not open file /proc/cray_xt/nid: %s",
+        UTILS_WARNING( "Cannot open file /proc/cray_xt/nid: %s",
                        strerror( errno ) );
         return 0;
     }
@@ -71,7 +71,7 @@ SCOREP_Platform_GetNodeId( void )
     ssize_t bytes       = read( fd, buffer, buffer_size );
     if ( bytes <= 0 )
     {
-        UTILS_WARNING( "Can not read file /proc/cray_xt/nid: %s",
+        UTILS_WARNING( "Cannot read file /proc/cray_xt/nid: %s",
                        strerror( errno ) );
         return 0;
     }

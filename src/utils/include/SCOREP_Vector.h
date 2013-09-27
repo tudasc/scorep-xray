@@ -105,7 +105,7 @@ typedef void ( *SCOREP_Vector_ProcessingFunc )( void* item );
 
 /**
  * Creates and returns an empty instance of SCOREP_Vector with an initial
- * capacity of zero elements. If the memory allocation request can not
+ * capacity of zero elements. If the memory allocation request cannot
  * be fulfilled, an error message is printed and NULL is returned.
  *
  * @return Pointer to new instance or NULL if the memory could not be allocated.
@@ -115,7 +115,7 @@ SCOREP_Vector_Create( void );
 
 /**
  * Creates and returns an instance of SCOREP_Vector with the given initial
- * @a capacity.  If the memory allocation request can not be fulfilled,
+ * @a capacity.  If the memory allocation request cannot be fulfilled,
  * an error message is printed and NULL is returned.
  *
  * @param capacity Initial capacity
@@ -175,7 +175,7 @@ SCOREP_Vector_Capacity( const SCOREP_Vector* instance );
 
 /**
  * Resizes the SCOREP_Vector @a instance to provide the given @a capacity. If
- * the memory reallocation request can not be fulfilled, an error message
+ * the memory reallocation request cannot be fulfilled, an error message
  * is printed.
  *
  * @note It is only possible to increase the size of an dynamic array.
@@ -195,7 +195,7 @@ SCOREP_Vector_Reserve( SCOREP_Vector* instance,
 /**
  * Resizes the SCOREP_Vector @a instance to provide the given @a size. Newly
  * created entries will be initialized with @c NULL. If the memory
- * reallocation request can not be fulfilled, an error message is printed.
+ * reallocation request cannot be fulfilled, an error message is printed.
  *
  * @note It is only possible to increase the size of an dynamic array.
  *       If the current size is equal to or larger than the requested
@@ -289,7 +289,7 @@ SCOREP_Vector_End( const SCOREP_Vector* instance );
  * Appends the given @a item (which can also be a @c NULL pointer) at the
  * end of the SCOREP_Vector @a instance. If the current capacity does not suffice,
  * the data structure is automatically resized. If this memory reallocation
- * request can not be fulfilled, an error message is printed.
+ * request cannot be fulfilled, an error message is printed.
  *
  * @param instance Object to which the item should be appended
  * @param item     Item to append
@@ -314,7 +314,7 @@ SCOREP_Vector_PopBack( SCOREP_Vector* instance );
  * Inserts the given @a item (which can also be a @c NULL pointer) at the
  * given position @a index in the SCOREP_Vector @a instance. If the current
  * capacity does not suffice, the data structure is automatically resized.
- * If this memory reallocation request can not be fulfilled, an error message
+ * If this memory reallocation request cannot be fulfilled, an error message
  * is printed and the program is aborted.
  *
  * @param instance Object to which the item should be inserted

@@ -74,7 +74,7 @@ extern SCOREP_Mutex scorep_user_region_mutex;
 /**
     @internal
     Hash table for mapping regions names to the User adapte region structs.
-    Needed for the fortran regions which can not be initialized in declaration. We can
+    Needed for the fortran regions which cannot be initialized in declaration. We can
     not determine by the handle value whether we initialized the region already. Thus, we need
     to lookup the name in a extra datastructure.
  */

@@ -1,7 +1,7 @@
 error_code END_OF_FUNCTION "Unintentional reached end of function"
 error_code INVALID_CALL "Function call not allowed in current state"
 error_code INVALID_ARGUMENT "Parameter value out of range"
-error_code INVALID_SIZE_GIVEN "The given size can not be used"
+error_code INVALID_SIZE_GIVEN "The given size cannot be used"
 error_code UNKNOWN_TYPE "The given type is not known"
 error_code INTEGRITY_FAULT "The structural integrity is not given"
 error_code MEM_FAULT "This could not be done with the given memory"

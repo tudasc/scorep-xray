@@ -850,7 +850,7 @@ scorep_metric_papi_deregister( void )
  *  locations, we known how many metrics of this specific type each
  *  location will record. This number is returned by this function.
  *
- *  For metrics of other types (e.g. per-process) we can not determine
+ *  For metrics of other types (e.g. per-process) we cannot determine
  *  whether this location will be responsible to record metrics of this
  *  type. Responsibility will be determine while initializing location.
  *  Therefore, within this function we don't known how many additional

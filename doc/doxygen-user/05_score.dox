@@ -113,7 +113,7 @@ measurement overhead. Furthermore, for communication analysis, functions
 that appear on a call path to MPI functions and OpenMP constructs (regions
 of type @verb{COM}) are usually of more interest than user functions of type @verb{USR}
 which do not appear on call path to communications. MPI functions and OpenMP
-constructs can not be filtered. Thus, it is usually a good approach to exclude
+constructs cannot be filtered. Thus, it is usually a good approach to exclude
 regions of type @verb{USR} starting at the top of the list until you reduced the trace
 to your needs. Section @secref{filtering} describes the format of a filter 
 specification file.

@@ -177,7 +177,7 @@ write_tausnap_def( char*     path,
 /**
    Helper function for the profile writer in TAU snapshot format.
    Writes callpath definition for a regular region.
-   @param node       Pointer to the current node. Can not be NULL because the
+   @param node       Pointer to the current node. Cannot be NULL because the
                      calling function would not be able to determine the type.
    @param parentpath String which contains the callpath for its parent node.
    @param file       Pointer to the file to which the data is written.
