@@ -121,7 +121,7 @@ CLEANFILES += doc/doxygen-user.cfg doc/doxygen-user-at-make-time.cfg doxygen.err
 else # i.e. ! HAVE_DOXYGEN -------------------------------------------
 
 doxygen-user:
-	echo "WARNING: doxygen not available. Can not generate documentation." >&2
+	echo "WARNING: doxygen not available. Cannot generate documentation." >&2
 
 endif # HAVE_DOXYGEN -------------------------------------------------
 
@@ -145,7 +145,7 @@ doxygen-user-pdf: doxygen-user
 else # i.e. ! HAVE_DOXYGEN_LATEX -------------------------------------
 
 doxygen-user-pdf: doxygen-user
-	echo "WARNING: pdflatex not available. Can not generate doxygen pdf documentation." >&2
+	echo "WARNING: pdflatex not available. Cannot generate doxygen pdf documentation." >&2
 	if test -d "$(USER_DOC_DIR)/pdf"; then rm -rf "$(USER_DOC_DIR)/pdf"; fi
 
 endif # HAVE_DOXYGEN_LATEX -------------------------------------------
