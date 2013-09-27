@@ -231,7 +231,7 @@ static const struct utils_error_decl error_decls[] =
     _e( ENODATA,         "No more data left in the queue" ),
     _e( ENODEV,          "This device does not support this function" ),
     _e( ENOENT,          "File or Directory does not exist" ),
-    _e( ENOEXEC,         "Can not execute binary" ),
+    _e( ENOEXEC,         "Cannot execute binary" ),
     _e( ENOLCK,          "Locking failed" ),
     _e( ENOLINK,         "Reserved" ),
     _e( ENOMEM,          "Not enough main memory available" ),

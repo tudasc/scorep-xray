@@ -138,7 +138,7 @@ typedef enum
     @PACKAGE_SYM_CAPS@_ERROR_ENODEV,
     /** File or Directory does not exist */
     @PACKAGE_SYM_CAPS@_ERROR_ENOENT,
-    /** Can not execute binary */
+    /** Cannot execute binary */
     @PACKAGE_SYM_CAPS@_ERROR_ENOEXEC,
     /** Locking failed */
     @PACKAGE_SYM_CAPS@_ERROR_ENOLCK,
