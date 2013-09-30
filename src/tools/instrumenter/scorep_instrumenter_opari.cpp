@@ -196,30 +196,24 @@ SCOREP_Instrumenter_OpariAdapter::prelink( SCOREP_Instrumenter&         instrume
         return;
     }
 
-    std::string output_name  = cmdLine.getOutputName();
-    std::string input_files  = instrumenter.getInputFiles();
-    std::string current_file = "";
-    std::string object_files = "";
-    std::string init_source  = output_name + ".pomp_init.c";
-    std::string init_object  = output_name + ".pomp_init.o";
-    size_t      old_pos      = 0;
-    size_t      cur_pos      = 0;
+    std::vector<std::string>* input_files  = instrumenter.getInputFiles();
+    std::string               output_name  = cmdLine.getOutputName();
+    std::string               current_file = "";
+    std::string               object_files = "";
+    std::string               init_source  = output_name + ".pomp_init.c";
+    std::string               init_object  = output_name + ".pomp_init.o";
 
     // Compile list of library and object files
-    while ( cur_pos != std::string::npos )
+    for ( std::vector<std::string>::iterator current_file = input_files->begin();
+          current_file != input_files->end();
+          current_file++ )
     {
-        cur_pos = input_files.find( " ", old_pos );
-        if ( old_pos < cur_pos ) // Discard a blank
+        if ( is_object_file( *current_file ) || is_library( *current_file ) )
         {
-            current_file = input_files.substr( old_pos, cur_pos - old_pos );
-            if ( is_object_file( current_file ) || is_library( current_file ) )
-            {
-                object_files += " " + current_file;
-            }
+            object_files += " \"" + *current_file + "\"";
         }
-        // Setup for next file
-        old_pos = cur_pos + 1;
     }
+
     object_files += cmdLine.getLibraryFiles();
 
     // Create and compile the POMP2 init file.
@@ -311,7 +305,7 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
         command += "--disable=omp ";
     }
 
-    command += input_file + " " + output_file;
+    command += "\"" + input_file + "\" \"" + output_file + "\"";
 
     instrumenter.executeCommand( command );
 }
@@ -321,9 +315,9 @@ SCOREP_Instrumenter_OpariAdapter::invoke_awk_script( SCOREP_Instrumenter& instru
                                                      const std::string&   object_files,
                                                      const std::string&   output_file )
 {
-    std::string command = m_nm + " " +  object_files
+    std::string command = m_nm + " " + object_files
                           + " | " + m_opari_script
-                          + " > " + output_file;
+                          + " > \"" + output_file + "\"";
     instrumenter.executeCommand( command );
 
     instrumenter.addTempFile( output_file );
@@ -335,9 +329,9 @@ SCOREP_Instrumenter_OpariAdapter::compile_init_file( SCOREP_Instrumenter& instru
                                                      const std::string&   output_file )
 {
     std::string command = m_c_compiler
-                          + " -c " + input_file
-                          + " `" + m_opari_config + " --cflags` "
-                          + " -o " + output_file;
+                          + " -c \"" + input_file
+                          + "\" `" + m_opari_config + " --cflags` "
+                          + " -o \"" + output_file + "\"";
 
     instrumenter.executeCommand( command );
 

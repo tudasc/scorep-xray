@@ -67,11 +67,10 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_include_flags     = "";
     m_define_flags      = "";
     m_output_name       = "";
-    m_input_file_number = 0;
-    m_input_files       = "";
-    m_libraries         = "";
-    m_libdirs           = "";
-    m_lmpi_set          = false;
+    //m_input_file_number = 0;
+    m_libraries = "";
+    m_libdirs   = "";
+    m_lmpi_set  = false;
 
     /* Instrumenter flags */
     m_is_dry_run     = false;
@@ -192,16 +191,16 @@ SCOREP_Instrumenter_CmdLine::getLibDirs( void )
     return m_libdirs;
 }
 
-std::string
+std::vector<std::string>*
 SCOREP_Instrumenter_CmdLine::getInputFiles( void )
 {
-    return m_input_files;
+    return &m_input_files;
 }
 
 int
 SCOREP_Instrumenter_CmdLine::getInputFileNumber( void )
 {
-    return m_input_file_number;
+    return m_input_files.size();
 }
 
 bool
@@ -255,10 +254,10 @@ SCOREP_Instrumenter_CmdLine::isTargetSharedLib( void )
 std::string
 SCOREP_Instrumenter_CmdLine::getLibraryFiles( void )
 {
+    std::string lib_files   = "";
     std::string libraries   = getLibraries();
     std::string libdirs     = getLibDirs();
     std::string current_lib = "";
-    std::string lib_files   = "";
     size_t      old_pos     = 0;
     size_t      cur_pos     = 0;
 
@@ -289,6 +288,13 @@ SCOREP_Instrumenter_CmdLine::getInstallData()
     return &m_install_data;
 }
 
+void
+SCOREP_Instrumenter_CmdLine::addInputFile( std::string input_file )
+{
+    m_input_files.push_back( input_file );
+}
+
+
 /* ****************************************************************************
    private methods
 ******************************************************************************/
@@ -308,7 +314,9 @@ SCOREP_Instrumenter_CmdLine::print_parameter( void )
     std::cout << "Flags before -lmpi: " << m_flags_before_lmpi << std::endl;
     std::cout << "Flags after -lmpi: " << m_flags_after_lmpi << std::endl;
     std::cout << "Output file: " << m_output_name << std::endl;
-    std::cout << "Input file(s): " << m_input_files << std::endl;
+    std::cout << "Input file(s): "
+              << scorep_vector_to_string( m_input_files, "", "", ", " )
+              << std::endl;
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
@@ -491,8 +499,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     else if ( ( current[ 0 ] != '-' ) &&
               ( is_source_file( current ) || is_object_file( current ) ) )
     {
-        m_input_files += " " + current;
-        m_input_file_number++;
+        addInputFile( current );
         return scorep_parse_mode_command;
     }
 
@@ -546,7 +553,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     }
     else if ( current == "-I" )
     {
-        m_include_flags += " -I" + current;
+        m_include_flags += " " + next;
         ret_val          = scorep_parse_mode_option_part;
     }
     else if ( current == "-o" )
@@ -694,7 +701,7 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
         exit( EXIT_FAILURE );
     }
 
-    if ( m_input_files == "" || m_input_file_number < 1 )
+    if ( getInputFileNumber() < 1 )
     {
         std::cerr << "WARNING: Found no input files." << std::endl;
     }

@@ -105,8 +105,7 @@ SCOREP_Instrumenter::~SCOREP_Instrumenter ()
 int
 SCOREP_Instrumenter::Run( void )
 {
-    std::string object_files = "";
-    m_input_files = m_command_line.getInputFiles();
+    m_input_files = *m_command_line.getInputFiles();
 
     /* If no compiling or linking happens, e.g., because the command does only
        perform preprocessing or dependency generation, execute the unmodified command */
@@ -116,12 +115,13 @@ SCOREP_Instrumenter::Run( void )
         std::string command = m_command_line.getCompilerName()
                               + " " + m_command_line.getFlagsBeforeLmpi()
                               + " " + m_command_line.getFlagsAfterLmpi()
-                              + " " + m_command_line.getInputFiles();
+                              + scorep_vector_to_string( m_input_files,
+                                                         " \"", "\"", "\" \"" );
 
         std::string output_name =  m_command_line.getOutputName();
         if ( output_name != "" )
         {
-            command += " -o " + output_name;
+            command += " -o \"" + output_name + "\"";
         }
         executeCommand( command );
 
@@ -135,12 +135,10 @@ SCOREP_Instrumenter::Run( void )
            with a different name. To avoid this, we need to compile every
            source file separately and explicitly specify the output file name.
          */
-        std::string current_file = "";
-        std::string object_file  = "";
-        size_t      old_pos      = 0;
-        size_t      cur_pos      = 0;
-        char*       cwd          = UTILS_IO_GetCwd( NULL, 0 );
-        char*       cwd_to_free  = cwd;
+        std::vector<std::string> object_files;
+        std::string              object_file = "";
+        char*                    cwd         = UTILS_IO_GetCwd( NULL, 0 );
+        char*                    cwd_to_free = cwd;
         if ( !cwd )
         {
             /* ensure that cwd is non-NULL */
@@ -155,89 +153,84 @@ SCOREP_Instrumenter::Run( void )
            the sources are modified and, thus, the object file ends up with
            a different name. In this case we do not execute the last step.
          */
-        while ( cur_pos != std::string::npos )
+        for ( std::vector<std::string>::iterator current_file = m_input_files.begin();
+              current_file != m_input_files.end();
+              current_file++ )
         {
-            cur_pos = m_input_files.find( " ", old_pos );
-            if ( old_pos < cur_pos ) // Discard a blank
+            if ( is_source_file( *current_file ) )
             {
-                current_file = m_input_files.substr( old_pos, cur_pos - old_pos );
-                if ( is_source_file( current_file ) )
+                /* Make sure, it has full path => Some compilers and
+                   user instrumentation use the file name given to the compiler.
+                   Thus, if we make all file names have full paths, we get a
+                   consistent input.
+                   However, temporary files are without paths. Thus, if a source
+                   code instrumenter does not insert line directives, the result
+                   may not contain path information anymore.
+                 */
+                char* simplified = UTILS_IO_JoinPath( 2, cwd, current_file->c_str() );
+                if ( simplified )
                 {
-                    /* Make sure, it has full path => Some compilers and
-                       user instrumentation use the file name given to the compiler.
-                       Thus, if we make all file names have full paths, we get a
-                       consistent input.
-                       However, temporary files are without paths. Thus, if a source
-                       code instrumenter does not insert line directives, the result
-                       may not contain path information anymore.
-                     */
-                    char* simplified = UTILS_IO_JoinPath( 2, cwd, current_file.c_str() );
-                    if ( simplified )
-                    {
-                        UTILS_IO_SimplifyPath( simplified );
-                        current_file = simplified;
-                        free( simplified );
-                    }
-
-                    // Determine object file name
-                    if ( ( !m_command_line.isLinking() ) &&
-                         ( m_command_line.getOutputName() != "" ) &&
-                         ( m_command_line.getInputFileNumber() == 1 ) )
-                    {
-                        object_file = m_command_line.getOutputName();
-                    }
-                    else
-                    {
-                        object_file = remove_extension(
-                            remove_path( current_file ) ) + ".o";
-                    }
-
-                    /* Setup the config tool calls for the new input file. This
-                       will already setup the compiler and user instrumentation
-                       if desired
-                     */
-                    prepare_config_tool_calls( current_file );
-
-                    /* If we create modified source, we must add the original
-                       source directory to the include dirs, because local
-                       files may be included
-                     */
-                    m_compiler_flags += " -I" + extract_path( current_file );
-
-                    /* If compiling and linking is performed in one step.
-                       The compiler leave no object file.
-                       Thus, we delete the object file, too.
-                     */
-                    if ( m_command_line.isLinking() )
-                    {
-                        m_temp_files += " " + object_file;
-                    }
-
-                    // Perform instrumentation
-                    current_file = precompile( current_file );
-
-                    #if SCOREP_BACKEND_COMPILER_CRAY
-                    if ( m_opari_adapter->isEnabled() &&
-                         m_command_line.getCompilerName().find( "ftn" ) != std::string::npos )
-                    {
-                        m_compiler_flags += " -I.";
-                    }
-                    #endif
-
-                    // Compile instrumented file
-                    compile_source_file( current_file, object_file );
-
-                    // Add object file to the input file list for the link command
-                    object_files += " " + object_file;
+                    UTILS_IO_SimplifyPath( simplified );
+                    *current_file = simplified;
+                    free( simplified );
                 }
-                // If it is no source file, leave the file in the input list
+
+                // Determine object file name
+                if ( ( !m_command_line.isLinking() ) &&
+                     ( m_command_line.getOutputName() != "" ) &&
+                     ( m_command_line.getInputFileNumber() == 1 ) )
+                {
+                    object_file = m_command_line.getOutputName();
+                }
                 else
                 {
-                    object_files += " " + current_file;
+                    object_file = remove_extension(
+                        remove_path( *current_file ) ) + ".o";
                 }
+
+                /* Setup the config tool calls for the new input file. This
+                   will already setup the compiler and user instrumentation
+                   if desired
+                 */
+                prepare_config_tool_calls( *current_file );
+
+                /* If we create modified source, we must add the original
+                   source directory to the include dirs, because local
+                   files may be included
+                 */
+                m_compiler_flags += " -I\"" + extract_path( *current_file ) + "\"";
+
+                /* If compiling and linking is performed in one step.
+                   The compiler leave no object file.
+                   Thus, we delete the object file, too.
+                 */
+                if ( m_command_line.isLinking() )
+                {
+                    addTempFile( object_file );
+                }
+
+                // Perform instrumentation
+                *current_file = precompile( *current_file );
+
+                    #if SCOREP_BACKEND_COMPILER_CRAY
+                if ( m_opari_adapter->isEnabled() &&
+                     m_command_line.getCompilerName().find( "ftn" ) != std::string::npos )
+                {
+                    m_compiler_flags += " -I.";
+                }
+                    #endif
+
+                // Compile instrumented file
+                compile_source_file( *current_file, object_file );
+
+                // Add object file to the input file list for the link command
+                object_files.push_back( object_file );
             }
-            // Setup for next file
-            old_pos = cur_pos + 1;
+            // If it is no source file, leave the file in the input list
+            else
+            {
+                object_files.push_back( *current_file );
+            }
         }
         free( cwd_to_free );
 
@@ -271,16 +264,16 @@ SCOREP_Instrumenter::getCompilerFlags( void )
     return m_compiler_flags;
 }
 
-std::string
+std::vector<std::string>*
 SCOREP_Instrumenter::getInputFiles( void )
 {
-    return m_input_files;
+    return &m_input_files;
 }
 
 void
 SCOREP_Instrumenter::prependInputFile( std::string filename )
 {
-    m_input_files = filename + " " + m_input_files;
+    m_input_files.insert( m_input_files.begin(), filename );
 }
 
 std::string
@@ -295,16 +288,15 @@ SCOREP_Instrumenter::getConfigBaseCall( void )
 void
 SCOREP_Instrumenter::addTempFile( const std::string& filename )
 {
-    m_temp_files += " " + filename;
+    m_temp_files.push_back( filename );
 }
 
 void
 SCOREP_Instrumenter::clean_temp_files( void )
 {
-    if ( ( !m_command_line.hasKeepFiles() ) && ( m_temp_files != "" ) )
+    if ( ( !m_command_line.hasKeepFiles() ) && ( !m_temp_files.empty() ) )
     {
-        m_temp_files = "rm" + m_temp_files;
-        executeCommand( m_temp_files );
+        executeCommand( scorep_vector_to_string( m_temp_files, "rm \"", "\"", "\" \"" ) );
     }
 }
 
@@ -354,8 +346,8 @@ SCOREP_Instrumenter::compile_source_file( const std::string& input_file,
     command << " `" << m_config_base << " --cflags` " << m_compiler_flags;
     command << " " << m_command_line.getFlagsBeforeLmpi();
     command << " " << m_command_line.getFlagsAfterLmpi();
-    command << " -c " << input_file;
-    command << " -o " << output_file;
+    command << " -c \"" << input_file << "\"";
+    command << " -o \"" << output_file << "\"";
     executeCommand( command.str() );
 }
 
@@ -421,7 +413,7 @@ SCOREP_Instrumenter::link_step( void )
 
     std::stringstream command;
     command << m_command_line.getCompilerName();
-    command << " " << m_input_files;
+    command << scorep_vector_to_string( m_input_files, " \"", "\"", "\" \"" );
     command << " " << m_command_line.getFlagsBeforeLmpi();
     command << " " << m_linker_flags;
     command << " " << m_command_line.getFlagsAfterLmpi();
@@ -429,7 +421,7 @@ SCOREP_Instrumenter::link_step( void )
     if ( m_command_line.getOutputName() != "" )
     {
         /* nvcc requires a space between -o and the output name. */
-        command << " -o " << m_command_line.getOutputName();
+        command << " -o \"" << m_command_line.getOutputName() << "\"";
     }
 
     executeCommand( command.str() );

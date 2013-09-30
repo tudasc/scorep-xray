@@ -38,6 +38,7 @@
  */
 
 #include <string>
+#include <vector>
 
 /**
     Retrieves the extension from a filename.
@@ -204,5 +205,19 @@ scorep_tolower( std::string str );
  */
 std::string
 scorep_toupper( std::string str );
+
+/**
+   Converts a vector of strings into a string. If the list is empty, an empty
+   string is returned.
+   @param list      The list of strings
+   @param head      A string that is prepended at the front.
+   @param tail      A string that is appended at the back.
+   @param delimiter A string that is inserted between each strings from the list.
+ */
+std::string
+scorep_vector_to_string( const std::vector<std::string>& list,
+                         const std::string&              head,
+                         const std::string&              tail,
+                         const std::string&              delimiter );
 
 #endif // SCOREP_INSTRUMENTER_UTILS_HPP

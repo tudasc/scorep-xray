@@ -37,8 +37,9 @@
 #include <UTILS_IO.h>
 #include <UTILS_CStr.h>
 
-#include <string>
+#include <iostream>
 #include <fstream>
+#include <sstream>
 #include <stdlib.h>
 
 std::string
@@ -358,4 +359,24 @@ scorep_toupper( std::string str )
         str[ i ] = toupper( str[ i ] );
     }
     return str;
+}
+
+std::string
+scorep_vector_to_string( const std::vector<std::string>& list,
+                         const std::string&              head,
+                         const std::string&              tail,
+                         const std::string&              delimiter )
+{
+    std::stringstream result;
+    if ( list.size() == 0 )
+    {
+        return "";
+    }
+    result << head << list[ 0 ];
+    for ( int i = 1; i < list.size(); i++ )
+    {
+        result << delimiter << list[ i ];
+    }
+    result << tail;
+    return result.str();
 }

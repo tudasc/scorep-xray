@@ -40,6 +40,7 @@
 
 
 #include <string>
+#include <vector>
 #include "scorep_instrumenter_install_data.hpp"
 
 /* ****************************************************************************
@@ -134,7 +135,8 @@ public:
     getDefineFlags( void );
     std::string
     getOutputName( void );
-    std::string
+
+    std::vector<std::string>*
     getInputFiles( void );
     std::string
     getLibraries( void );
@@ -239,6 +241,12 @@ private:
     void
     add_define( std::string arg );
 
+    /**
+       Adds a file name to the list of input files.
+     */
+    void
+    addInputFile( std::string input_file );
+
     /* ***************************************************** Private members */
 private:
     /**
@@ -331,17 +339,14 @@ private:
     std::string m_libdirs;
 
     /**
-       input file names. Need to be separated because OPARI may
-       perform source code modifications which take these as input and
-       the original command needs the result from the OPRI output. Thus,
-       they are then substituted by the OPRI output.
+       input file names
      */
-    std::string m_input_files;
+    std::vector<std::string> m_input_files;
 
     /**
        number of input file names.
      */
-    int m_input_file_number;
+    //int m_input_file_number;
 
     /**
        True, if -lmpi was specified.

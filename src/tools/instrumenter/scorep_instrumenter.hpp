@@ -42,6 +42,7 @@
 #include <iostream>
 #include <string>
 #include <deque>
+#include <vector>
 
 class SCOREP_Instrumenter_Adapter;
 class SCOREP_Instrumenter_CobiAdapter;
@@ -101,7 +102,7 @@ public:
     std::string
     getCompilerFlags( void );
 
-    std::string
+    std::vector<std::string>*
     getInputFiles( void );
 
     void
@@ -184,13 +185,13 @@ private:
        the original command needs the result from the OPRI output. Thus,
        they are then substituted by the OPRI output.
      */
-    std::string m_input_files;
+    std::vector<std::string> m_input_files;
 
     /**
        A list of temorarily created files that are deleted at the end of a
        successful execution, if @a keep_files is false.
      */
-    std::string m_temp_files;
+    std::vector<std::string> m_temp_files;
 
     /**
        The base config call without action parameter.
