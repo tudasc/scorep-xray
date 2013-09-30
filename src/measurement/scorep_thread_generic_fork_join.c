@@ -92,7 +92,7 @@ SCOREP_ThreadJoin( SCOREP_ThreadModel model,
                            &tpd_from_now_on,
                            &forkSequenceCount,
                            model );
-    UTILS_BUG_ON( tpd_from_now_on == 0 );
+    UTILS_BUG_ON( tpd_from_now_on == 0, "" );
     UTILS_ASSERT( tpd_from_now_on == scorep_thread_get_private_data() );
 
     SCOREP_Location* location  = scorep_thread_get_location( tpd_from_now_on );

@@ -67,9 +67,9 @@ void
 SCOREP_Thread_Initialize()
 {
     SCOREP_ErrorCode result = SCOREP_MutexCreate( &scorep_thread_fork_sequence_count_lock );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
 
-    UTILS_BUG_ON( scorep_thread_initial_tpd != 0 );
+    UTILS_BUG_ON( scorep_thread_initial_tpd != 0, "" );
     scorep_thread_initial_tpd = scorep_thread_create_private_data(
         0 /* parent_tpd */,
         0 /* fork_sequence_count */ );
@@ -109,8 +109,8 @@ scorep_thread_create_private_data( scorep_thread_private_data* parent,
 void
 SCOREP_Thread_Finalize( void )
 {
-    UTILS_BUG_ON( scorep_thread_initial_tpd == 0 );
-    UTILS_BUG_ON( scorep_thread_get_private_data() != scorep_thread_initial_tpd );
+    UTILS_BUG_ON( scorep_thread_initial_tpd == 0, "" );
+    UTILS_BUG_ON( scorep_thread_get_private_data() != scorep_thread_initial_tpd, "" );
 
     scorep_thread_on_finalize( scorep_thread_initial_tpd );
     scorep_thread_delete_private_data( scorep_thread_initial_tpd );

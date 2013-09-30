@@ -82,7 +82,7 @@ void
 SCOREP_Location_Initialize()
 {
     SCOREP_ErrorCode result = SCOREP_MutexCreate( &scorep_location_list_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
 }
 
 
@@ -125,13 +125,13 @@ scorep_location_create_location( SCOREP_Location*    parent,
         name );
 
     SCOREP_ErrorCode result = SCOREP_MutexLock( scorep_location_list_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
 
     *location_list_tail = new_location;
     location_list_tail  = &new_location->next;
 
     result = SCOREP_MutexUnlock( scorep_location_list_mutex );
-    UTILS_BUG_ON( result != SCOREP_SUCCESS );
+    UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
 
     if ( !deferNewLocationNotification )
     {
