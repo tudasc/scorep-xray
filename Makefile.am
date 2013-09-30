@@ -67,7 +67,8 @@ EXTRA_DIST += $(srcdir)/src/config.h                                      \
               $(srcdir)/doc/doxygen-user/main_7.dox.in                    \
               $(srcdir)/doc/profile/scorep_metrics.html                   \
               $(srcdir)/src/adapters/include/SCOREP_Fortran_Wrapper.h     \
-              $(srcdir)/share/scorep.errors
+              $(srcdir)/share/scorep.errors                               \
+              $(srcdir)/THANKS
 
 
 if ! CROSS_BUILD
