@@ -110,29 +110,22 @@ SCOREP_Instrumenter_CompilerAdapter::precompile
     }
     if ( !checked )
     {
-        std::string current_file = "";
-        std::string extension    = "";
-        std::string input_files  = cmdLine.getInputFiles();
-        size_t      old_pos      = 0;
-        size_t      cur_pos      = 0;
-        while ( cur_pos != std::string::npos )
+        std::string               current_file = "";
+        std::string               extension    = "";
+        std::vector<std::string>* input_files  = cmdLine.getInputFiles();
+        for ( std::vector<std::string>::iterator current_file = input_files->begin();
+              current_file != input_files->end();
+              current_file++ )
         {
-            cur_pos = input_files.find( " ", old_pos );
-            if ( old_pos < cur_pos ) // Discard a blank
+            if ( !is_fortran_file( *current_file ) )
             {
-                current_file = input_files.substr( old_pos, cur_pos - old_pos );
-                if ( !is_fortran_file( current_file ) )
-                {
-                    std::cerr << "Compiler instrumentation with the Sun compiler is "
-                              << "only possible for Fortran files. If you want to "
-                              << "switch off compiler instrumentation, please use the "
-                              << "--nocompiler option."
-                              << std::endl;
-                    exit( EXIT_FAILURE );
-                }
+                std::cerr << "Compiler instrumentation with the Sun compiler is "
+                          << "only possible for Fortran files. If you want to "
+                          << "switch off compiler instrumentation, please use the "
+                          << "--nocompiler option."
+                          << std::endl;
+                exit( EXIT_FAILURE );
             }
-            // Setup for next file
-            old_pos = cur_pos + 1;
         }
         checked = true;
     }
