@@ -116,12 +116,12 @@ SCOREP_Instrumenter::Run( void )
                               + " " + m_command_line.getFlagsBeforeLmpi()
                               + " " + m_command_line.getFlagsAfterLmpi()
                               + scorep_vector_to_string( m_input_files,
-                                                         " \"", "\"", "\" \"" );
+                                                         " ", "", " " );
 
         std::string output_name =  m_command_line.getOutputName();
         if ( output_name != "" )
         {
-            command += " -o \"" + output_name + "\"";
+            command += " -o " + output_name;
         }
         executeCommand( command );
 
@@ -137,13 +137,9 @@ SCOREP_Instrumenter::Run( void )
          */
         std::vector<std::string> object_files;
         std::string              object_file = "";
-        char*                    cwd         = UTILS_IO_GetCwd( NULL, 0 );
-        char*                    cwd_to_free = cwd;
-        if ( !cwd )
-        {
-            /* ensure that cwd is non-NULL */
-            cwd = ( char* )"";
-        }
+        char*                    cwd_to_free = UTILS_IO_GetCwd( NULL, 0 );
+        std::string              cwd         = ( cwd_to_free ? cwd_to_free : "" );
+        cwd = backslash_special_chars( cwd );
 
         /* If the original command compile and link in one step,
            we need to split compilation and linking, because for Opari
@@ -167,7 +163,8 @@ SCOREP_Instrumenter::Run( void )
                    code instrumenter does not insert line directives, the result
                    may not contain path information anymore.
                  */
-                char* simplified = UTILS_IO_JoinPath( 2, cwd, current_file->c_str() );
+                char* simplified = UTILS_IO_JoinPath( 2, cwd.c_str(),
+                                                      current_file->c_str() );
                 if ( simplified )
                 {
                     UTILS_IO_SimplifyPath( simplified );
@@ -198,7 +195,7 @@ SCOREP_Instrumenter::Run( void )
                    source directory to the include dirs, because local
                    files may be included
                  */
-                m_compiler_flags += " -I\"" + extract_path( *current_file ) + "\"";
+                m_compiler_flags += " -I" + extract_path( *current_file );
 
                 /* If compiling and linking is performed in one step.
                    The compiler leave no object file.
@@ -296,7 +293,7 @@ SCOREP_Instrumenter::clean_temp_files( void )
 {
     if ( ( !m_command_line.hasKeepFiles() ) && ( !m_temp_files.empty() ) )
     {
-        executeCommand( scorep_vector_to_string( m_temp_files, "rm \"", "\"", "\" \"" ) );
+        executeCommand( scorep_vector_to_string( m_temp_files, "rm ", "", " " ) );
     }
 }
 
@@ -346,8 +343,8 @@ SCOREP_Instrumenter::compile_source_file( const std::string& input_file,
     command << " `" << m_config_base << " --cflags` " << m_compiler_flags;
     command << " " << m_command_line.getFlagsBeforeLmpi();
     command << " " << m_command_line.getFlagsAfterLmpi();
-    command << " -c \"" << input_file << "\"";
-    command << " -o \"" << output_file << "\"";
+    command << " -c " << input_file;
+    command << " -o " << output_file;
     executeCommand( command.str() );
 }
 
@@ -413,7 +410,7 @@ SCOREP_Instrumenter::link_step( void )
 
     std::stringstream command;
     command << m_command_line.getCompilerName();
-    command << scorep_vector_to_string( m_input_files, " \"", "\"", "\" \"" );
+    command << scorep_vector_to_string( m_input_files, " ", "", " " );
     command << " " << m_command_line.getFlagsBeforeLmpi();
     command << " " << m_linker_flags;
     command << " " << m_command_line.getFlagsAfterLmpi();
@@ -421,7 +418,7 @@ SCOREP_Instrumenter::link_step( void )
     if ( m_command_line.getOutputName() != "" )
     {
         /* nvcc requires a space between -o and the output name. */
-        command << " -o \"" << m_command_line.getOutputName() << "\"";
+        command << " -o " << m_command_line.getOutputName();
     }
 
     executeCommand( command.str() );

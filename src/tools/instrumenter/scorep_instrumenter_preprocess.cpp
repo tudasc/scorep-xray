@@ -76,10 +76,10 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
         command = "echo \"#include <stdint.h>\n"
                   "#include <opari2/pomp2_lib.h>\n"
                   "___POMP2_INCLUDE___\n"
-                  "#line 1 \\\"" + source_file + "\\\"\" > \"" + input_file + "\"";
+                  "#line 1 \\\"" + source_file + "\\\"\" > " + input_file;
         instrumenter.executeCommand( command );
 
-        command = "cat \"" + source_file + "\" >> \"" + input_file + "\"";
+        command = "cat " + source_file + " >> " + input_file;
         instrumenter.executeCommand( command );
         instrumenter.addTempFile( input_file );
     }
@@ -89,7 +89,7 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
         input_file = remove_extension( remove_path( source_file ) )
                      + ".input"
                      + scorep_toupper( orig_ext );
-        instrumenter.executeCommand( "cat \"" + source_file + "\" > \"" + input_file + "\"" );
+        instrumenter.executeCommand( "cat " + source_file + " > " + input_file );
         instrumenter.addTempFile( input_file );
     }
 
@@ -100,7 +100,7 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
               + " `" + instrumenter.getConfigBaseCall() + " --cflags`"
               + " " + instrumenter.getCompilerFlags()
               + " " + cmdLine.getFlagsAfterLmpi()
-              + " \"" + input_file + "\"";
+              + " " + input_file;
 
     std::string output_file = remove_extension( remove_path( source_file ) )
                               + ".prep"

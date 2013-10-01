@@ -205,14 +205,6 @@ private:
     check_parameter( void );
 
     /**
-       Evaluates one parameter when in output mode.
-       @param arg The current argument
-       @returns the parsing mode for the next parameter.
-     */
-    scorep_parse_mode_t
-    parse_output( const std::string& arg );
-
-    /**
        Evaluates one parameter when in command mode.
        @param current  The current argument
        @param next     The next argument
@@ -243,9 +235,17 @@ private:
 
     /**
        Adds a file name to the list of input files.
+       @param input_file The filename of the input file.
      */
     void
-    addInputFile( std::string input_file );
+    add_input_file( std::string input_file );
+
+    /**
+       Sets the output file name.
+       @param output_file The filename of the output file.
+     */
+    void
+    set_output_file( std::string output_file );
 
     /* ***************************************************** Private members */
 private:

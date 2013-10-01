@@ -81,15 +81,15 @@ SCOREP_Instrumenter_PdtAdapter::precompile( SCOREP_Instrumenter&         instrum
     // Create database file
     if ( is_c_file( source_file ) )
     {
-        command << m_pdt_bin_path << "/cparse \"" << source_file << "\"";
+        command << m_pdt_bin_path << "/cparse " << source_file;
     }
     else if ( is_fortran_file( source_file ) )
     {
-        command << m_pdt_bin_path << "/gfparse \"" << source_file << "\"";
+        command << m_pdt_bin_path << "/gfparse " << source_file;
     }
     else
     {
-        command << m_pdt_bin_path << "/cxxparse \"" << source_file << "\"";
+        command << m_pdt_bin_path << "/cxxparse " << source_file;
     }
     command << " " << cmdLine.getDefineFlags()
             << " " << cmdLine.getIncludeFlags()
@@ -113,8 +113,8 @@ SCOREP_Instrumenter_PdtAdapter::precompile( SCOREP_Instrumenter&         instrum
     command.str( "" );
     command << m_pdt_bin_path << "/tau_instrumentor "
             << " " << pdb_file
-            << " \"" << source_file << "\""
-            << " -o \"" << modified_file << "\""
+            << " " << source_file
+            << " -o " << modified_file
             << " -spec " << m_pdt_config_file
             << " " << m_params;
 

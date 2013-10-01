@@ -43,6 +43,18 @@
 #include <stdlib.h>
 
 std::string
+backslash_special_chars( std::string str )
+{
+    str = replace_all( "\\", "\\\\", str );
+    str = replace_all( " ", "\\ ", str );
+    str = replace_all( "?", "\\?", str );
+    str = replace_all( "\"", "\\\"", str );
+    str = replace_all( ">", "\\>", str );
+    str = replace_all( "<", "\\<", str );
+    return str;
+}
+
+std::string
 remove_multiple_whitespaces( std::string str )
 {
     std::string            search = "  "; // this string contains 2 spaces
@@ -79,13 +91,13 @@ replace_all( const std::string& pattern,
              const std::string& replacement,
              std::string        original )
 {
-    std::string::size_type pos            = original.find( pattern, 0 );
+    std::string::size_type pos            = original.rfind( pattern, std::string::npos );
     int                    pattern_length = pattern.length();
 
     while ( pos != std::string::npos )
     {
         original.replace( pos, pattern_length, replacement );
-        pos = original.find( pattern, 0 );
+        pos = original.rfind( pattern, pos );
     }
 
     return original;

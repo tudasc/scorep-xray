@@ -288,13 +288,6 @@ SCOREP_Instrumenter_CmdLine::getInstallData()
     return &m_install_data;
 }
 
-void
-SCOREP_Instrumenter_CmdLine::addInputFile( std::string input_file )
-{
-    m_input_files.push_back( input_file );
-}
-
-
 /* ****************************************************************************
    private methods
 ******************************************************************************/
@@ -499,7 +492,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     else if ( ( current[ 0 ] != '-' ) &&
               ( is_source_file( current ) || is_object_file( current ) ) )
     {
-        addInputFile( current );
+        add_input_file( current );
         return scorep_parse_mode_command;
     }
 
@@ -561,7 +554,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         /* Do not add the output name to parameter list, because the intermediate
            files may have a different name and having then an -o paramter in
            the parameter list makes trouble. */
-        m_output_name = next;
+        set_output_file( next );
         return scorep_parse_mode_option_part;
     }
     else if ( current == "-MF" )
@@ -600,7 +593,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
             /* Do not add the output name to parameter list, because the intermediate
                files may have a different name and having then an -o paramter in
                the parameter list makes trouble. */
-            m_output_name = current.substr( 2, std::string::npos );
+            set_output_file( current.substr( 2, std::string::npos ) );
             return scorep_parse_mode_command;
         }
         else if ( current[ 1 ] == 'I' )
@@ -667,13 +660,6 @@ SCOREP_Instrumenter_CmdLine::add_define( std::string arg )
     m_define_flags   += " " + arg;
 }
 
-SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
-SCOREP_Instrumenter_CmdLine::parse_output( const std::string& arg )
-{
-    m_output_name = arg;
-    return scorep_parse_mode_command;
-}
-
 void
 SCOREP_Instrumenter_CmdLine::check_parameter( void )
 {
@@ -705,4 +691,16 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
     {
         std::cerr << "WARNING: Found no input files." << std::endl;
     }
+}
+
+void
+SCOREP_Instrumenter_CmdLine::add_input_file( std::string input_file )
+{
+    m_input_files.push_back( backslash_special_chars( input_file ) );
+}
+
+void
+SCOREP_Instrumenter_CmdLine::set_output_file( std::string output_file )
+{
+    m_output_name = backslash_special_chars( output_file );
 }

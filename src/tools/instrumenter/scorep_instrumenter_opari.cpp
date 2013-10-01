@@ -210,7 +210,7 @@ SCOREP_Instrumenter_OpariAdapter::prelink( SCOREP_Instrumenter&         instrume
     {
         if ( is_object_file( *current_file ) || is_library( *current_file ) )
         {
-            object_files += " \"" + *current_file + "\"";
+            object_files += " " + *current_file;
         }
     }
 
@@ -305,7 +305,7 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
         command += "--disable=omp ";
     }
 
-    command += "\"" + input_file + "\" \"" + output_file + "\"";
+    command += input_file + " " + output_file;
 
     instrumenter.executeCommand( command );
 }
@@ -317,7 +317,7 @@ SCOREP_Instrumenter_OpariAdapter::invoke_awk_script( SCOREP_Instrumenter& instru
 {
     std::string command = m_nm + " " + object_files
                           + " | " + m_opari_script
-                          + " > \"" + output_file + "\"";
+                          + " > " + output_file;
     instrumenter.executeCommand( command );
 
     instrumenter.addTempFile( output_file );
@@ -329,9 +329,9 @@ SCOREP_Instrumenter_OpariAdapter::compile_init_file( SCOREP_Instrumenter& instru
                                                      const std::string&   output_file )
 {
     std::string command = m_c_compiler
-                          + " -c \"" + input_file
-                          + "\" `" + m_opari_config + " --cflags` "
-                          + " -o \"" + output_file + "\"";
+                          + " -c " + input_file
+                          + " `" + m_opari_config + " --cflags` "
+                          + " -o " + output_file;
 
     instrumenter.executeCommand( command );
 

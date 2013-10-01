@@ -220,4 +220,14 @@ scorep_vector_to_string( const std::vector<std::string>& list,
                          const std::string&              tail,
                          const std::string&              delimiter );
 
+/**
+   Inserts a backsalsh before characters that a shell does not interpret as part of
+   a file/path name by default.
+   @param str  The string where we want to insert the backslashes.
+   @return the modified string.
+ */
+std::string
+backslash_special_chars( std::string str );
+
+
 #endif // SCOREP_INSTRUMENTER_UTILS_HPP

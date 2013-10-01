@@ -143,23 +143,23 @@ std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
 {
-    return "-E > \"" + output_file + "\"";
+    return "-E > " + output_file;
 }
 
 std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
 {
-    return "-E > \"" + output_file + "\"";
+    return "-E > " + output_file;
 }
 
 std::string
 SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
                                                                const std::string& output_file )
 {
-    return "-eP && mv \""
-           + remove_extension( remove_path( input_file ) ) + ".i\" \""
-           + output_file + "\"";
+    return "-eP && mv "
+           + remove_extension( remove_path( input_file ) ) + ".i "
+           + output_file;
 }
 
 std::string
@@ -204,21 +204,21 @@ std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
 {
-    return "-E -o \"" + output_file + "\"";
+    return "-E -o " + output_file;
 }
 
 std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
 {
-    return "-E -o \"" + output_file + "\"";
+    return "-E -o " + output_file;
 }
 
 std::string
 SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
                                                                const std::string& output_file )
 {
-    return "-cpp -E -o \"" + output_file + "\"";
+    return "-cpp -E -o " + output_file;
 }
 
 std::string
@@ -263,14 +263,14 @@ std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
 {
-    return "-E > \"" + output_file + "\"";
+    return "-E > " + output_file;
 }
 
 std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
 {
-    return "-E > \"" + output_file + "\"";
+    return "-E > " + output_file;
 }
 
 std::string
@@ -281,7 +281,7 @@ SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string
     std::string prep_file_v13 = "F" + basename + ".f";
     std::string prep_file_v14 = "F" + basename + scorep_tolower( get_extension( input_file ) );
 
-    return "-d -qnoobject && if [ -e \"" + prep_file_v14 + "\" ]; then mv \"" + prep_file_v14 + "\" \"" + output_file + "\"; else mv \"" + prep_file_v13 + "\" \"" + output_file + "\"; fi";
+    return "-d -qnoobject && if [ -e " + prep_file_v14 + " ]; then mv " + prep_file_v14 + " " + output_file + "; else mv " + prep_file_v13 + " " + output_file + "; fi";
 }
 
 std::string
@@ -326,21 +326,21 @@ std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
 {
-    return "-E -o \"" + output_file + "\"";
+    return "-E -o " + output_file;
 }
 
 std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
 {
-    return "-E -o \"" + output_file + "\"";
+    return "-E -o " + output_file;
 }
 
 std::string
 SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
                                                                const std::string& output_file )
 {
-    return "-E > \"" + output_file + "\"";
+    return "-E > " + output_file;
 }
 
 std::string
@@ -388,21 +388,21 @@ std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
 {
-    return "-E > \"" + output_file + "\"";
+    return "-E > " + output_file;
 }
 
 std::string
 SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
                                                            const std::string& output_file )
 {
-    return "-E -o \"" + output_file + "\"";
+    return "-E -o " + output_file;
 }
 
 std::string
 SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
                                                                const std::string& output_file )
 {
-    return "-E > \"" + output_file + "\"";
+    return "-E > " + output_file;
 }
 
 std::string
@@ -447,7 +447,7 @@ std::string
 SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
                                                          const std::string& output_file )
 {
-    return "-E -o \"" + output_file + "\"";
+    return "-E -o " + output_file;
 }
 
 std::string
@@ -458,15 +458,15 @@ SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& in
        starts with a closing bracket */
     if ( get_extension( output_file ) == ".i" )
     {
-        return "-E | sed 'N;s/\\n)/)/;P;D;' | sed 's/#[0-9]*)/)/g' > \""
-               + output_file + "\"";
+        return "-E | sed 'N;s/\\n)/)/;P;D;' | sed 's/#[0-9]*)/)/g' > "
+               + output_file;
     }
     else
     {
-        return "-E | sed 'N;s/\\n)/)/;P;D;' | sed 's/#[0-9]*)/)/g' > \""
-               + remove_extension( remove_path( output_file ) ) + ".i\" && mv \""
-               + remove_extension( remove_path( output_file ) ) + ".i\" \""
-               + output_file + "\"";
+        return "-E | sed 'N;s/\\n)/)/;P;D;' | sed 's/#[0-9]*)/)/g' > "
+               + remove_extension( remove_path( output_file ) ) + ".i && mv "
+               + remove_extension( remove_path( output_file ) ) + ".i "
+               + output_file;
     }
 }
 
@@ -478,19 +478,19 @@ SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string
 
     if ( get_extension( output_file ) == ".f90" )
     {
-        return "-fpp -F -o \"" + basename
-               + ".i\" && grep -v \\# \""
-               + basename + ".i\" > \""
-               + output_file + "\"";
+        return "-fpp -F -o " + basename
+               + ".i && grep -v \\# "
+               + basename + ".i > "
+               + output_file;
     }
     else
     {
-        return "-fpp -F -o \"" + basename
-               + ".f90\" && grep -v \\# \""
-               + basename + ".f90\" > \""
+        return "-fpp -F -o " + basename
+               + ".f90 && grep -v \\# "
+               + basename + ".f90 > "
                + output_file
-               + "\" && rm -f \""
-               + basename + ".f90\"";
+               + " && rm -f "
+               + basename + ".f90";
     }
 }
 
