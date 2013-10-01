@@ -138,10 +138,6 @@ public:
 
     std::vector<std::string>*
     getInputFiles( void );
-    std::string
-    getLibraries( void );
-    std::string
-    getLibDirs( void );
     int
     getInputFileNumber( void );
     bool
@@ -247,6 +243,27 @@ private:
     void
     set_output_file( std::string output_file );
 
+    /**
+       Adds a include path to the list of include paths.
+       @param include_path The new include path.
+     */
+    void
+    add_include_path( std::string inlcude_path );
+
+    /**
+       Adds a library path to the list of library paths.
+       @param library_path  The new library path.
+     */
+    void
+    add_library_path( std::string library_path );
+
+    /**
+       Adds a library to the list of libraries.
+       @param library  The new library.
+     */
+    void
+    add_library( std::string library );
+
     /* ***************************************************** Private members */
 private:
     /**
@@ -331,12 +348,12 @@ private:
     /**
        library names
      */
-    std::string m_libraries;
+    std::vector<std::string> m_libraries;
 
     /**
        libdirs
      */
-    std::string m_libdirs;
+    std::vector<std::string> m_libdirs;
 
     /**
        input file names

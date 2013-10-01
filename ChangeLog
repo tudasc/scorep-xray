@@ -11,6 +11,12 @@
 - Implemented the possibility to write CUBE profiles with the tupel
   values containing sum, minimum, maximum, number of samples, sum of
   squares.
+- Added handling for special characters, like space, in file names and
+  path names. However, there are still some limitation when using special
+  characters: The PDT parser can not deal with these characters
+  and, thus, fails if pdt instrumentation is enabled and special
+  characters appear. Furthermore, compilation fails when double quotes
+  appear in source file names and preprocessing is enabled.
 
 ------------------- Upcoming version 1.2.2 ---------------------------
 

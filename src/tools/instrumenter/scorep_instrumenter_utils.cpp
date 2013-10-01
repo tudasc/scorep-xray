@@ -330,14 +330,9 @@ exists_file( const std::string& filename )
 }
 
 std::string
-find_library( std::string        library,
-              const std::string& path_list,
-              const std::string& delimiter )
+find_library( std::string                     library,
+              const std::vector<std::string>& path_list )
 {
-    size_t      cur_pos = 0;
-    size_t      old_pos = 0;
-    std::string current_path;
-
     if ( library.substr( 0, 2 ) == "-l" )
     {
         library.replace( 0, 2, "lib" );
@@ -346,23 +341,19 @@ find_library( std::string        library,
     {
         return library;
     }
-    while ( cur_pos != std::string::npos )
+    for ( std::vector<std::string>::const_iterator current_libdir = path_list.begin();
+          current_libdir != path_list.end();
+          current_libdir++ )
     {
-        cur_pos = path_list.find( delimiter, old_pos );
-        if ( old_pos < cur_pos ) // Discard trailing delimiter
+        std::string current_path = *current_libdir + "/" + library;
+        if ( exists_file( current_path + ".so" ) )
         {
-            current_path  = path_list.substr( old_pos, cur_pos - old_pos );
-            current_path += "/" + library;
-            if ( exists_file( current_path + ".so" ) )
-            {
-                return current_path + ".so";
-            }
-            if ( exists_file( current_path + ".a" ) )
-            {
-                return current_path + ".a";
-            }
+            return current_path + ".so";
         }
-        old_pos = cur_pos + 1;
+        if ( exists_file( current_path + ".a" ) )
+        {
+            return current_path + ".a";
+        }
     }
     return "";
 }

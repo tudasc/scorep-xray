@@ -67,10 +67,7 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_include_flags     = "";
     m_define_flags      = "";
     m_output_name       = "";
-    //m_input_file_number = 0;
-    m_libraries = "";
-    m_libdirs   = "";
-    m_lmpi_set  = false;
+    m_lmpi_set          = false;
 
     /* Instrumenter flags */
     m_is_dry_run     = false;
@@ -179,18 +176,6 @@ SCOREP_Instrumenter_CmdLine::getOutputName( void )
     return m_output_name;
 }
 
-std::string
-SCOREP_Instrumenter_CmdLine::getLibraries( void )
-{
-    return m_libraries;
-}
-
-std::string
-SCOREP_Instrumenter_CmdLine::getLibDirs( void )
-{
-    return m_libdirs;
-}
-
 std::vector<std::string>*
 SCOREP_Instrumenter_CmdLine::getInputFiles( void )
 {
@@ -254,22 +239,13 @@ SCOREP_Instrumenter_CmdLine::isTargetSharedLib( void )
 std::string
 SCOREP_Instrumenter_CmdLine::getLibraryFiles( void )
 {
-    std::string lib_files   = "";
-    std::string libraries   = getLibraries();
-    std::string libdirs     = getLibDirs();
-    std::string current_lib = "";
-    size_t      old_pos     = 0;
-    size_t      cur_pos     = 0;
+    std::string lib_files = "";
 
-    while ( ( cur_pos = libraries.find( " ", old_pos ) ) != std::string::npos )
+    for ( std::vector<std::string>::iterator current_lib = m_libraries.begin();
+          current_lib != m_libraries.end();
+          current_lib++ )
     {
-        if ( old_pos < cur_pos ) // Discard a blank
-        {
-            current_lib = libraries.substr( old_pos, cur_pos - old_pos );
-            lib_files  += " " + find_library( current_lib, libdirs, " " );
-        }
-        // Setup for next file
-        old_pos = cur_pos + 1;
+        lib_files += " " + backslash_special_chars( find_library( *current_lib, m_libdirs ) );
     }
     return lib_files;
 }
@@ -487,7 +463,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     /* Detect input files */
     if ( ( current[ 0 ] != '-' ) && is_library( current ) )
     {
-        m_libraries += " " + current;
+        add_library( current );
     }
     else if ( ( current[ 0 ] != '-' ) &&
               ( is_source_file( current ) || is_object_file( current ) ) )
@@ -500,7 +476,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     {
         m_lmpi_set      = true;
         m_current_flags = &m_flags_after_lmpi;
-        m_libraries    += " " + current;
+        add_library( current );
     }
     else if ( current == "-c" )
     {
@@ -528,13 +504,13 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
             m_lmpi_set      = true;
             m_current_flags = &m_flags_after_lmpi;
         }
-        m_libraries += " -l" + next;
-        ret_val      = scorep_parse_mode_option_part;
+        add_library( "-l" + next );
+        ret_val = scorep_parse_mode_option_part;
     }
     else if ( current == "-L" )
     {
-        m_libdirs += " " + next;
-        ret_val    = scorep_parse_mode_option_part;
+        add_library_path( next );
+        ret_val = scorep_parse_mode_option_part;
     }
     else if ( current == "-D" )
     {
@@ -546,8 +522,8 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     }
     else if ( current == "-I" )
     {
-        m_include_flags += " " + next;
-        ret_val          = scorep_parse_mode_option_part;
+        add_include_path( next );
+        ret_val = scorep_parse_mode_option_part;
     }
     else if ( current == "-o" )
     {
@@ -598,7 +574,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         }
         else if ( current[ 1 ] == 'I' )
         {
-            m_include_flags += " " + current;
+            add_include_path( current.substr( 2, std::string::npos ) );
         }
         else if ( current[ 1 ] == 'D' )
         {
@@ -610,7 +586,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         }
         else if ( current[ 1 ] == 'L' )
         {
-            m_libdirs += " " + current.substr( 2, std::string::npos );
+            add_library_path( current.substr( 2, std::string::npos ) );
         }
         else if ( current[ 1 ] == 'l' )
         {
@@ -619,17 +595,17 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
                 m_lmpi_set      = true;
                 m_current_flags = &m_flags_after_lmpi;
             }
-            m_libraries += " " + current;
+            add_library( current );
         }
     }
 
     /* In any case that not yet returned, save the flag */
-    *m_current_flags += " " + current;
+    *m_current_flags += " " + backslash_special_chars( current );
 
     /* If we already processed both, save the second, too */
     if ( ret_val == scorep_parse_mode_option_part )
     {
-        *m_current_flags += " " + next;
+        *m_current_flags += " " + backslash_special_chars( next );
     }
 
     return ret_val;
@@ -703,4 +679,22 @@ void
 SCOREP_Instrumenter_CmdLine::set_output_file( std::string output_file )
 {
     m_output_name = backslash_special_chars( output_file );
+}
+
+void
+SCOREP_Instrumenter_CmdLine::add_include_path( std::string include_path )
+{
+    m_include_flags += " -I" + backslash_special_chars( include_path );
+}
+
+void
+SCOREP_Instrumenter_CmdLine::add_library_path( std::string library_path )
+{
+    m_libdirs.push_back( library_path );
+}
+
+void
+SCOREP_Instrumenter_CmdLine::add_library( std::string library )
+{
+    m_libraries.push_back( library );
 }

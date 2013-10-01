@@ -181,14 +181,12 @@ exists_file( const std::string& filename );
    @param library   The name of the library to search. If it starts with '-l', it is
                     replaced by 'lib'. A suffix is appended.
    @param path_list A list of possible library direcories.
-   @param delimiter A string that is used to separate the pathes from @a path_list.
    @return The full path of the library, including the library file name, if a matching
            library was found. Otherwise it return an empty string.
  */
 std::string
-find_library( std::string        library,
-              const std::string& path_list,
-              const std::string& delimiter );
+find_library( std::string                     library,
+              const std::vector<std::string>& path_list );
 
 /**
    Converts a string to lower case
