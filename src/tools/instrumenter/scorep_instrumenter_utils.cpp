@@ -43,14 +43,28 @@
 #include <stdlib.h>
 
 std::string
+undo_backslashing( std::string str )
+{
+    size_t pos = str.find( "\\" );
+    while ( pos != std::string::npos )
+    {
+        str.erase( pos, 1 );
+        pos = str.find( "\\", pos + 1 );
+    }
+    return str;
+}
+
+std::string
 backslash_special_chars( std::string str )
 {
-    str = replace_all( "\\", "\\\\", str );
-    str = replace_all( " ", "\\ ", str );
-    str = replace_all( "?", "\\?", str );
-    str = replace_all( "\"", "\\\"", str );
-    str = replace_all( ">", "\\>", str );
-    str = replace_all( "<", "\\<", str );
+    static const std::string char_list = "\\ ?\"<>|&;,`'$()\n\t#*";
+
+    size_t pos = str.find_last_of( char_list );
+    while ( pos != std::string::npos )
+    {
+        str.insert( pos, "\\" );
+        pos = str.find_last_of( char_list, pos - 1 );
+    }
     return str;
 }
 

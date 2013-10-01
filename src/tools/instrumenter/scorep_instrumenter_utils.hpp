@@ -229,5 +229,14 @@ scorep_vector_to_string( const std::vector<std::string>& list,
 std::string
 backslash_special_chars( std::string str );
 
+/**
+   Removes the backslashes of backslashed characters.
+   @param str The string which is modified.
+   @returns the resulting string.
+ */
+std::string
+undo_backslashing( std::string str );
+
+
 
 #endif // SCOREP_INSTRUMENTER_UTILS_HPP

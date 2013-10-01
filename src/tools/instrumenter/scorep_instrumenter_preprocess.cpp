@@ -76,7 +76,7 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
         command = "echo \"#include <stdint.h>\n"
                   "#include <opari2/pomp2_lib.h>\n"
                   "___POMP2_INCLUDE___\n"
-                  "#line 1 \\\"" + source_file + "\\\"\" > " + input_file;
+                  "#line 1 \\\"" + undo_backslashing( source_file ) + "\\\"\" > " + input_file;
         instrumenter.executeCommand( command );
 
         command = "cat " + source_file + " >> " + input_file;
