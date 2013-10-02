@@ -27,7 +27,9 @@ std::deque<SCOREP_Config_MppSystem*> scorep_mpp_systems;
 void
 scorep_config_init_mpp_systems( void )
 {
+#if HAVE_BACKEND( MPI_SUPPORT )
     scorep_mpp_systems.push_back( new SCOREP_Config_MpiMppSystem() );
+#endif
     scorep_mpp_systems.push_back( new SCOREP_Config_MockupMppSystem() );
     SCOREP_Config_MppSystem::current = scorep_mpp_systems.front();
 }
