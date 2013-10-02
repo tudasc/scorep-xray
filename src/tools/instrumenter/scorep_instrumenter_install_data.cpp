@@ -180,6 +180,32 @@ SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
     return ( arg == "-E" ) || ( arg == "-eP" );
 }
 
+bool
+SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
+                                                 std::string next )
+{
+    if ( ( current == "-A" ) ||
+         ( current == "-b" ) ||
+         ( current == "-d" ) ||
+         ( current == "-e" ) ||
+         ( current == "-h" ) ||
+         ( current == "-m" ) ||
+         ( current == "-M" ) ||
+         ( current == "-N" ) ||
+         ( current == "-O" ) ||
+         ( current == "-r" ) ||
+         ( current == "-R" ) ||
+         ( current == "-s" ) ||
+         ( current == "-x" ) ||
+         ( current == "-X" ) ||
+         ( current == "-Y" ) )
+    {
+        return true;
+    }
+
+    return false;
+}
+
 /* *************************************** GNU */
 #elif SCOREP_BACKEND_COMPILER_GNU
 bool
@@ -239,6 +265,17 @@ SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
     return arg == "-E";
 }
 
+bool
+SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
+                                                 std::string next )
+{
+    if ( current == "-x" )
+    {
+        return true;
+    }
+    return false;
+}
+
 /* *************************************** IBM */
 #elif SCOREP_BACKEND_COMPILER_IBM
 bool
@@ -254,7 +291,7 @@ SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
 }
 
 bool
-SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+qSCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
 {
     return arg == "-qfixed";
 }
@@ -300,6 +337,13 @@ bool
 SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
 {
     return ( arg == "-E" ) || ( arg == "-qnoobject" );
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
+                                                 std::string next )
+{
+    return false;
 }
 
 /* *************************************** INTEL */
@@ -364,6 +408,13 @@ SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
     return arg == "-E";
 }
 
+bool
+SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
+                                                 std::string next )
+{
+    return false;
+}
+
 /* *************************************** PGI */
 #elif SCOREP_BACKEND_COMPILER_PGI
 bool
@@ -421,6 +472,17 @@ bool
 SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
 {
     return arg == "-E";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
+                                                 std::string next )
+{
+    if ( current == "-tp" )
+    {
+        return true;
+    }
+    return false;
 }
 
 /* *************************************** STUDIO */
@@ -510,6 +572,18 @@ bool
 SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
 {
     return ( arg == "-E" ) || ( arg == "-F" );
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
+                                                 std::string next )
+{
+    if ( ( current == "-h" ) ||
+         ( current == "-xMF" ) )
+    {
+        return true;
+    }
+    return false;
 }
 
 #endif

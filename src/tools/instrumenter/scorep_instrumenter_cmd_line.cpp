@@ -599,6 +599,11 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         }
     }
 
+    if ( m_install_data.isCompositeArg( current, next ) )
+    {
+        ret_val = scorep_parse_mode_option_part;
+    }
+
     /* In any case that not yet returned, save the flag */
     *m_current_flags += " " + backslash_special_chars( current );
 

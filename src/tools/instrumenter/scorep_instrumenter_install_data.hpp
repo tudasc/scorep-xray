@@ -159,6 +159,16 @@ public:
     static bool
     isPreprocessFlag( std::string arg );
 
+    /**
+       Checks whether the @a current parameter expects an argument in the next
+       argument.
+       @param current  The current parameter.
+       @param next     The next parameter.
+     */
+    static bool
+    isCompositeArg( std::string current,
+                    std::string next );
+
     /* ***************************************************** Private methods */
 private:
     /**
