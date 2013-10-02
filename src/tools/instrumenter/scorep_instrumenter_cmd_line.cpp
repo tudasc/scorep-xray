@@ -395,14 +395,14 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         std::cout << PACKAGE_STRING << std::endl;
         exit( EXIT_SUCCESS );
     }
-    else if ( arg.substr( 0, 8 ) == "--config" )
+    else if ( ( arg.length() >= 8 ) && ( arg.substr( 0, 8 ) == "--config" ) )
     {
-        std::string config_file = arg.substr( 9, arg.length() - 9 );
-        if ( config_file == "" )
+        if ( arg.length() < 11 )
         {
             std::cerr << "ERROR: No config file specified." << std::endl;
             exit( EXIT_FAILURE );
         }
+        std::string config_file = arg.substr( 9, arg.length() - 9 );
         if ( m_install_data.readConfigFile( config_file ) != SCOREP_SUCCESS )
         {
             std::cerr << "ERROR: Failed to read config file." << std::endl;
@@ -410,7 +410,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         }
         return scorep_parse_mode_param;
     }
-    else if ( arg.substr( 0, 9 ) == "--verbose" )
+    else if ( ( arg.length() > 9 ) && ( arg.substr( 0, 9 ) == "--verbose" ) )
     {
         if ( arg.length() > 10 )
         {
@@ -422,7 +422,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         }
         return scorep_parse_mode_param;
     }
-    else if ( arg.substr( 0, 2 ) == "-v" )
+    else if ( ( arg.length() >= 2 ) && ( arg.substr( 0, 2 ) == "-v" ) )
     {
         m_verbosity = 1;
         return scorep_parse_mode_param;
@@ -472,7 +472,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         return scorep_parse_mode_command;
     }
 
-    else if ( is_mpi_library( current.substr( 2 ) ) )
+    else if ( ( current.length() >= 2 ) && ( is_mpi_library( current.substr( 2 ) ) ) )
     {
         m_lmpi_set      = true;
         m_current_flags = &m_flags_after_lmpi;
