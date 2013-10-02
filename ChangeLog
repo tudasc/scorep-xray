@@ -29,6 +29,8 @@
   region, that could lead to incomplete profiles if a user measures
   a hybrid (MPI + OpenMP) applications and enables profiling and tracing
   at the same time.
+- Fix error message when scorep-config is called without arguments in
+  a non-mpi installation.
 
 ------------------- Released version 1.2.1 ---------------------------
 
