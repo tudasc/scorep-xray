@@ -291,7 +291,7 @@ SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
 }
 
 bool
-qSCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
 {
     return arg == "-qfixed";
 }
