@@ -365,7 +365,7 @@ main( int    argc,
         case ACTION_INCDIR:
             if ( install )
             {
-                str += "-I" SCOREP_PREFIX "/include -I" SCOREP_PREFIX "/include/scorep ";
+                str += "-I" SCOREP_INCLUDEDIR " -I" SCOREP_INCLUDEDIR "/scorep ";
             }
             else
             {

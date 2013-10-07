@@ -99,6 +99,9 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
     [ac_scorep_frontend="no"],
     [ac_scorep_frontend="yes"])
 
+AC_SUBST(AFS_PACKAGE_SYM_CAPS[]_INCLUDEDIR, [`eval echo ${includedir}`])
+includedir="${includedir}/AFS_PACKAGE_SYM"
+
 AC_SCOREP_SVN_CONTROLLED
 
 AM_CONDITIONAL([BUILD_TESTS], [test "x${ac_scorep_cross_compiling}" = "xno"])
