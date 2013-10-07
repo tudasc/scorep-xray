@@ -269,6 +269,8 @@ AC_SUBST([HARDCODE_LIBDIR_AIX_LIBPATH], [${aix_libpath}])
 
 AC_SUBST([DATAROOTDIR_SCOREP], [`eval echo ${datarootdir}/${PACKAGE}`])
 
+AC_SUBST([SYS_LIB_DLSEARCH_PATH_SPEC], [${sys_lib_dlsearch_path_spec}]) 
+
 AC_CONFIG_FILES([Makefile], [[
 test "x${ac_scorep_cross_compiling}" = "xyes" && {
 sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&BE/' \
