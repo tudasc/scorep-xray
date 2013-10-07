@@ -54,6 +54,8 @@
 #                             'MPI backend')
 #  `AFS_PACKAGE_BUILD`::      The build name usable as a symbol in upper case
 #                             (e.g. BACKEND, MPI_BACKEND)
+# List of provided automake substitutions:
+#  'PACKAGE_BUILD'            The value of AFS_PACKAGE_BUILD
 # List of provided config header defines:
 #  `PACKAGE_BUILD_NAME`::     The value of AFS_PACKAGE_BUILD_NAME as a string
 #                             constant
@@ -83,6 +85,7 @@ m4_ifnblank([$1], [
         m4_bpatsubst(m4_toupper(m4_normalize($1)), [[^A-Z0-9]+], [_]))
     AC_DEFINE_UNQUOTED([PACKAGE_BUILD], AFS_PACKAGE_BUILD,
         [Symbol name of the sub-build.])
+    AC_SUBST([PACKAGE_BUILD], AFS_PACKAGE_BUILD)
 
     AC_DEFINE_UNQUOTED([PACKAGE_SRCDIR],
         ["$ac_pwd/$srcdir/]AFS_PACKAGE_TOP_BUILD["], [Source directory.])
