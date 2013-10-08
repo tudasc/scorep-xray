@@ -928,7 +928,7 @@ scorep_profile_write_cube4( bool write_tupels )
     /* Update offsets and items_per_rank if we write tupels */
     if ( ( write_set.my_rank == 0 ) && write_tupels )
     {
-        for ( uint64_t i = 0; i < write_set.global_threads; i++ )
+        for ( uint32_t i = 0; i < write_set.ranks_number; i++ )
         {
             write_set.items_per_rank[ i ]   *= sizeof( cube_type_tau_atomic );
             write_set.offsets_per_rank[ i ] *= sizeof( cube_type_tau_atomic );
