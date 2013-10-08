@@ -85,8 +85,7 @@ libscorep_profile_la_SOURCES =                                              \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_callpath.c          \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_substitute_parameter.c \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.c      \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.h      \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_inclusify_visits.c
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.h
 
 libscorep_profile_la_CPPFLAGS = $(PROFILE_FLAGS) -DDOCDIR='"$(docdir)"'
 

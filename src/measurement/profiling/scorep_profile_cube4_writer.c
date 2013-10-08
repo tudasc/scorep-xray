@@ -337,52 +337,6 @@ get_sparse_double_value( scorep_profile_node* node, void* data )
 }
 
 /**
-   Returns the inclusive time metric value in @a node as tupel.
-   This functions are given to scorep_profile_write_cube_metric.
-   @param node  Pointer to a node which should return the metric value.
-   @param data  Pointer to a metric handle specifying the desired metric.
-   @returns the value of the specified metric if it has an entry in the node.
-            Otherwise 0 is returned.
- */
-static cube_type_tau_atomic
-get_time_tupel_value( scorep_profile_node* node, void* data )
-{
-    cube_type_tau_atomic value;
-    double               resolution = SCOREP_GetClockResolution();
-
-    value.N    = node->count;
-    value.Min  = ( double )node->inclusive_time.min / resolution;
-    value.Max  = ( double )node->inclusive_time.max / resolution;
-    value.Sum  = ( double )node->inclusive_time.sum / resolution;
-    value.Sum2 = ( double )node->inclusive_time.squares / resolution;
-
-    return value;
-}
-
-/**
-   Returns a dense metric value in @a node as tupel.
-   This functions are given to scorep_profile_write_cube_metric.
-   @param node  Pointer to a node which should return the metric value.
-   @param data  Pointer to a metric handle specifying the desired metric.
-   @returns the value of the specified metric if it has an entry in the node.
-            Otherwise 0 is returned.
- */
-static cube_type_tau_atomic
-get_dense_tupel_value( scorep_profile_node* node, void* data )
-{
-    uint8_t              index = *( uint8_t* )data;
-    cube_type_tau_atomic value;
-
-    value.N    = node->count;
-    value.Min  = node->dense_metrics[ index ].min;
-    value.Max  = node->dense_metrics[ index ].max;
-    value.Sum  = node->dense_metrics[ index ].sum;
-    value.Sum2 = node->dense_metrics[ index ].squares;
-
-    return value;
-}
-
-/**
    Returns the sparse double metric value in @a node as tupel.
    This functions are given to scorep_profile_write_cube_metric.
    @param node  Pointer to a node which should return the metric value.
@@ -595,7 +549,7 @@ write_cube_##cube_type(                                                         
         else                                                                            \
         {                                                                               \
             SCOREP_Ipc_Gatherv( local_values, write_set->local_threads * NUMBER,        \
-                                global_values, write_set->items_per_rank,             \
+                                global_values, write_set->items_per_rank,               \
                                 write_set->offsets_per_rank,                            \
                                 SCOREP_IPC_ ## TYPE, 0 );                               \
         }                                                                               \
@@ -747,10 +701,6 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tupels )
     SCOREP_Ipc_Scan( &write_set->local_threads, &write_set->offset, 1,
                      SCOREP_IPC_UINT32, SCOREP_IPC_SUM );
     write_set->offset -= write_set->local_threads;
-    if ( write_tupels )
-    {
-        write_set->offset *= sizeof( cube_type_tau_atomic );
-    }
 
     /* Calculate the offsets of all ranks and the number of locations per rank */
     if ( write_set->my_rank == 0 )
@@ -759,11 +709,8 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tupels )
         write_set->items_per_rank   = ( int* )malloc( buffer_size );
         write_set->offsets_per_rank = ( int* )malloc( buffer_size );
     }
-    int local_items = ( write_tupels ?
-                        write_set->local_threads * sizeof( cube_type_tau_atomic ) :
-                        write_set->local_threads );
 
-    SCOREP_Ipc_Gather( &local_items,
+    SCOREP_Ipc_Gather( &write_set->local_threads,
                        write_set->items_per_rank,
                        1, SCOREP_IPC_UINT32, 0 );
     SCOREP_Ipc_Gather( &write_set->offset,
@@ -977,6 +924,16 @@ scorep_profile_write_cube4( bool write_tupels )
     }
 
     /* -------------------------------- sparse metrics */
+
+    /* Update offsets and items_per_rank if we write tupels */
+    if ( ( write_set.my_rank == 0 ) && write_tupels )
+    {
+        for ( uint64_t i = 0; i < write_set.global_threads; i++ )
+        {
+            write_set.items_per_rank[ i ]   *= sizeof( cube_type_tau_atomic );
+            write_set.offsets_per_rank[ i ] *= sizeof( cube_type_tau_atomic );
+        }
+    }
 
 
     /* Write sparse metrics (e.g. user metrics) */
