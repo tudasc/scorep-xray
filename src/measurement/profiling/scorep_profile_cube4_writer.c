@@ -337,7 +337,7 @@ get_sparse_double_value( scorep_profile_node* node, void* data )
 }
 
 /**
-   Returns the sparse double metric value in @a node as tupel.
+   Returns the sparse double metric value in @a node as tuple.
    This functions are given to scorep_profile_write_cube_metric.
    @param node  Pointer to a node which should return the metric value.
    @param data  Pointer to a metric handle specifying the desired metric.
@@ -345,7 +345,7 @@ get_sparse_double_value( scorep_profile_node* node, void* data )
             Otherwise 0 is returned.
  */
 static cube_type_tau_atomic
-get_sparse_tupel_value_from_double( scorep_profile_node* node, void* data )
+get_sparse_tuple_value_from_double( scorep_profile_node* node, void* data )
 {
     SCOREP_MetricHandle                  metric  = *( SCOREP_MetricHandle* )data;
     scorep_profile_sparse_metric_double* current = node->first_double_sparse;
@@ -373,7 +373,7 @@ get_sparse_tupel_value_from_double( scorep_profile_node* node, void* data )
 }
 
 /**
-   Returns the sparse int metric value in @a node as tupel.
+   Returns the sparse int metric value in @a node as tuple.
    This functions are given to scorep_profile_write_cube_metric.
    @param node  Pointer to a node which should return the metric value.
    @param data  Pointer to a metric handle specifying the desired metric.
@@ -381,7 +381,7 @@ get_sparse_tupel_value_from_double( scorep_profile_node* node, void* data )
             Otherwise 0 is returned.
  */
 static cube_type_tau_atomic
-get_sparse_tupel_value_from_uint64( scorep_profile_node* node, void* data )
+get_sparse_tuple_value_from_uint64( scorep_profile_node* node, void* data )
 {
     SCOREP_MetricHandle               metric  = *( SCOREP_MetricHandle* )data;
     scorep_profile_sparse_metric_int* current = node->first_int_sparse;
@@ -657,7 +657,7 @@ delete_cube_writing_data( scorep_cube_writing_data* write_set )
 }
 
 static bool
-init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tupels )
+init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tuples )
 {
     /* Set all pointers to zero.
        If an malloc fails, we know how many can bee freed */
@@ -830,7 +830,7 @@ add_mapping_to_cube_writing_data( scorep_cube_writing_data* write_set )
    Main writer function
 *******************************************************************************/
 void
-scorep_profile_write_cube4( bool write_tupels )
+scorep_profile_write_cube4( bool write_tuples )
 {
     /*-------------------------------- Variable definition */
 
@@ -847,7 +847,7 @@ scorep_profile_write_cube4( bool write_tupels )
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Prepare writing" );
 
-    if ( !init_cube_writing_data( &write_set, write_tupels ) )
+    if ( !init_cube_writing_data( &write_set, write_tuples ) )
     {
         return;
     }
@@ -867,7 +867,7 @@ scorep_profile_write_cube4( bool write_tupels )
                                            write_set.ranks_number,
                                            write_set.offsets_per_rank,
                                            write_set.has_tasks,
-                                           write_tupels );
+                                           write_tuples );
     }
 
     /* Build mapping from sequence number in unified callpath definitions to
@@ -925,8 +925,8 @@ scorep_profile_write_cube4( bool write_tupels )
 
     /* -------------------------------- sparse metrics */
 
-    /* Update offsets and items_per_rank if we write tupels */
-    if ( ( write_set.my_rank == 0 ) && write_tupels )
+    /* Update offsets and items_per_rank if we write tuples */
+    if ( ( write_set.my_rank == 0 ) && write_tuples )
     {
         for ( uint32_t i = 0; i < write_set.ranks_number; i++ )
         {
@@ -959,11 +959,11 @@ scorep_profile_write_cube4( bool write_tupels )
             if ( write_set.metric_map[ i ] == SCOREP_INVALID_METRIC )
             {
                 set_bitstring_for_unknown_metric( &write_set );
-                if ( write_tupels )
+                if ( write_tuples )
                 {
                     write_cube_cube_type_tau_atomic( &write_set,
                                                      metric,
-                                                     &get_sparse_tupel_value_from_double,
+                                                     &get_sparse_tuple_value_from_double,
                                                      &write_set.metric_map[ i ] );
                 }
                 else
@@ -983,11 +983,11 @@ scorep_profile_write_cube4( bool write_tupels )
                     set_bitstring_for_metric( &write_set,
                                               &get_sparse_uint64_value,
                                               &write_set.metric_map[ i ] );
-                    if ( write_tupels )
+                    if ( write_tuples )
                     {
                         write_cube_cube_type_tau_atomic( &write_set,
                                                          metric,
-                                                         &get_sparse_tupel_value_from_uint64,
+                                                         &get_sparse_tuple_value_from_uint64,
                                                          &write_set.metric_map[ i ] );
                     }
                     else
@@ -1003,11 +1003,11 @@ scorep_profile_write_cube4( bool write_tupels )
                     set_bitstring_for_metric( &write_set,
                                               &has_sparse_double_value,
                                               &write_set.metric_map[ i ] );
-                    if ( write_tupels )
+                    if ( write_tuples )
                     {
                         write_cube_cube_type_tau_atomic( &write_set,
                                                          metric,
-                                                         &get_sparse_tupel_value_from_double,
+                                                         &get_sparse_tuple_value_from_double,
                                                          &write_set.metric_map[ i ] );
                     }
                     else

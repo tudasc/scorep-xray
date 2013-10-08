@@ -39,10 +39,10 @@ clustering_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 
 TESTS_SERIAL += ./clustering_test
 
-TESTS_SERIAL += $(SRC_ROOT)test/profiling/run_tupel_format_serial_test.sh
-EXTRA_DIST += $(SRC_ROOT)test/profiling/run_tupel_format_serial_test.sh
+TESTS_SERIAL += $(SRC_ROOT)test/profiling/run_tuple_format_serial_test.sh
+EXTRA_DIST += $(SRC_ROOT)test/profiling/run_tuple_format_serial_test.sh
 
 if HAVE_OPENMP_SUPPORT
-TESTS_OMP += $(SRC_ROOT)test/profiling/run_tupel_format_omp_test.sh
-EXTRA_DIST += $(SRC_ROOT)test/profiling/run_tupel_format_omp_test.sh
+TESTS_OMP += $(SRC_ROOT)test/profiling/run_tuple_format_omp_test.sh
+EXTRA_DIST += $(SRC_ROOT)test/profiling/run_tuple_format_omp_test.sh
 endif

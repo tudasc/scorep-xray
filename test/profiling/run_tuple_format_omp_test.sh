@@ -11,4 +11,4 @@
 ## directory for details.
 ##
 
-SCOREP_PROFILING_FORMAT=CUBE_TUPEL ./jacobi_serial_c
+SCOREP_PROFILING_FORMAT=CUBE_TUPLE ./jacobi_omp_c

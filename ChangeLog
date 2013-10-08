@@ -8,7 +8,7 @@
   multi-process paradigm and the threading paradigm. The old options
   --mpi, --nompi, --openmp, --noopenmp are marked as deprecated and no
   longer documented.
-- Implemented the possibility to write CUBE profiles with the tupel
+- Implemented the possibility to write CUBE profiles with the tuple
   values containing sum, minimum, maximum, number of samples, sum of
   squares.
 - Added handling for special characters, like space, in file names and

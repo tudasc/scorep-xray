@@ -66,7 +66,7 @@ in two other formats. To change the default format, set the environment variable
 <tt>SCOREP_PROFILING_FORMAT</tt>. The following formats are available:
 <ul>
   <li> <b>CUBE4</b> is the default format. </li>
-  <li> <b>CUBE_TUPEL</b> is an extended @cube format. It provides a tupel of sum, 
+  <li> <b>CUBE_TUPLE</b> is an extended @cube format. It provides a tuple of sum, 
                          minimum, maximum, number of samples, sum of squares for
                          every metric. </li>
   <li> <b>TAU_SNAPSHOT</b> is a textual format used by TAU. It creates a file per 

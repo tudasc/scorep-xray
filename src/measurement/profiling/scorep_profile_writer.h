@@ -50,11 +50,11 @@ scorep_profile_write_tau_snapshot( SCOREP_Profile_LocationData* location );
 /**
    Writes the profile in Cube 4 format to disk. For each metric a separate
    file is created.
-   @param write_tupels True if it should write the whole tupel consisting of
+   @param write_tuples True if it should write the whole tuple consisting of
                        sum, min, max, number of samples, sum of squares to Cube.
                        False if it should write only the sum.
  */
 extern void
-scorep_profile_write_cube4( bool write_tupels );
+scorep_profile_write_cube4( bool write_tuples );
 
 #endif /* SCOREP_PROFILE_WRITER_H */

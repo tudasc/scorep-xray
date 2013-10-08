@@ -428,7 +428,7 @@ write_metric_definitions( cube_t*                       my_cube,
                           SCOREP_DefinitionManager*     manager,
                           scorep_cube4_definitions_map* map,
                           bool                          write_task_metrics,
-                          bool                          write_tupels )
+                          bool                          write_tuples )
 {
     cube_metric* cube_handle;
 
@@ -480,7 +480,7 @@ write_metric_definitions( cube_t*                       my_cube,
             metric_unit = unit;
         }
 
-        if ( write_tupels && !is_dense_metric( handle ) )
+        if ( write_tuples && !is_dense_metric( handle ) )
         {
             data_type = "TAU_ATOMIC";
         }
@@ -518,14 +518,14 @@ write_metric_definitions( cube_t*                       my_cube,
                 break;
             case SCOREP_METRIC_PROFILING_TYPE_MIN:
                 cube_metric_type = CUBE_METRIC_EXCLUSIVE;
-                if ( !write_tupels )
+                if ( !write_tuples )
                 {
                     data_type = "MINDOUBLE";
                 }
                 break;
             case SCOREP_METRIC_PROFILING_TYPE_MAX:
                 cube_metric_type = CUBE_METRIC_EXCLUSIVE;
-                if ( !write_tupels )
+                if ( !write_tuples )
                 {
                     data_type = "MAXDOUBLE";
                 }
@@ -788,7 +788,7 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
                                    uint32_t                      ranks,
                                    int*                          offsets,
                                    bool                          write_task_metrics,
-                                   bool                          write_tupels )
+                                   bool                          write_tuples )
 {
     /* The unification is always processed, even in serial case. Thus, we have
        always access to the unified definitions on rank 0.
@@ -801,7 +801,7 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
     }
     assert( scorep_unified_definition_manager );
 
-    write_metric_definitions( my_cube, manager, map, write_task_metrics, write_tupels );
+    write_metric_definitions( my_cube, manager, map, write_task_metrics, write_tuples );
     write_region_definitions( my_cube, manager, map );
     write_callpath_definitions( my_cube, manager, map );
     write_location_definitions( my_cube, manager, ranks, offsets );

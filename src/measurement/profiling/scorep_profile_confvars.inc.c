@@ -89,7 +89,7 @@ static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
     { "none",         SCOREP_Profile_OutputNone         },
     { "tau_snapshot", SCOREP_Profile_OutputTauSnapshot  },
     { "cube4",        SCOREP_Profile_OutputCube4        },
-    { "cube_tupel",   SCOREP_Profile_OutputCubeTupel    },
+    { "cube_tuple",   SCOREP_Profile_OutputCubeTuple    },
     { "default",      SCOREP_Profile_OutputDefault      },
     { NULL,           0                                 }
 };
@@ -151,7 +151,7 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
         "  none:         No profile output. This does not disable profile recording.\n"
         "  tau_snapshot: Tau snapshot format\n"
         "  cube4:        Stores the sum for every metric per callpath in Cube4 format.\n"
-        "  cube_tupel:   Stores an extended set of statistics in Cube4 format.\n"
+        "  cube_tuple:   Stores an extended set of statistics in Cube4 format.\n"
         "  default:      Default format. If Cube4 is supported, Cube4 is the default\n"
         "                else the Tau snapshot format is default"
     },

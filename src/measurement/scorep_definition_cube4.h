@@ -68,8 +68,11 @@ typedef struct
    the mapping table given by map.
    @param my_cube Pointer to the cube struct to which the data is written.
    @param map     Pointer to an already inititialized mapping structure.
+   @param ranks   Number of ranks.
+   @param offsets Offset for global thread enumeration.
    @param write_task_metrics Indicates whether task related metric defintions are
                   written to the Cube file.
+   @param write_tupels Indicates whether tuples are written.
  */
 void
 scorep_write_definitions_to_cube4( cube_t*                       my_cube,
@@ -77,7 +80,7 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
                                    uint32_t                      ranks,
                                    int*                          offsets,
                                    bool                          write_task_metrics,
-                                   bool                          write_tupels );
+                                   bool                          write_tuples );
 
 /**
    Creates an instance of @ref scorep_cube4_definitions_map.

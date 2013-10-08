@@ -314,7 +314,7 @@ SCOREP_Profile_Write( SCOREP_Location* location )
     {
         scorep_profile_write_tau_snapshot( SCOREP_Location_GetProfileData( location ) );
     }
-    else if ( scorep_profile_output_format & SCOREP_Profile_OutputCubeTupel )
+    else if ( scorep_profile_output_format & SCOREP_Profile_OutputCubeTuple )
     {
         scorep_profile_write_cube4( true );
     }
