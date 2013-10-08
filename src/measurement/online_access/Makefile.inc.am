@@ -37,6 +37,7 @@ libscorep_online_access_mockup_la_SOURCES = \
     $(SRC_ROOT)src/measurement/online_access/scorep_oa_mockup.c
 libscorep_online_access_mockup_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/measurement/include
 libscorep_online_access_mockup_la_LDFLAGS = \
