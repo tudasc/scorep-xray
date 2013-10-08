@@ -99,7 +99,8 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
     [ac_scorep_frontend="no"],
     [ac_scorep_frontend="yes"])
 
-AC_SUBST(INCLUDEDIR, [`eval echo ${includedir}`])
+adl_RECURSIVE_EVAL([${includedir}], [INCLUDEDIR])
+AC_SUBST([INCLUDEDIR])
 
 AC_SCOREP_SVN_CONTROLLED
 
