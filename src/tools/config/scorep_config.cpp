@@ -122,8 +122,8 @@ print_help( void )
 static void
 get_rpath_struct_data( void );
 
-static std::string
-append_ld_run_path_to_rpath( std::string rpath );
+static void
+append_ld_run_path_to_rpath( std::deque<std::string>& rpath );
 
 static void
 write_cobi_deps( SCOREP_Config_LibraryDependencies& deps,
@@ -135,6 +135,9 @@ treat_linker_flags_for_nvcc( std::string& flags );
 
 static void
 treat_compiler_flags_for_nvcc( std::string& flags );
+
+static std::deque<std::string>
+remove_system_path( const std::deque<std::string>& path_list );
 
 static inline void
 clean_up()
@@ -327,11 +330,13 @@ main( int    argc,
                                           " ", " ", "" );
             if ( USE_LIBDIR_FLAG )
             {
-                str = deque_to_string( deps.getRpathFlags( libs, install ),
-                                       m_rpath_head + m_rpath_delimiter,
-                                       m_rpath_delimiter,
-                                       m_rpath_tail );
-                str = append_ld_run_path_to_rpath( str );
+                std::deque<std::string> rpath = deps.getRpathFlags( libs, install );
+                append_ld_run_path_to_rpath( rpath );
+                rpath = remove_system_path( rpath );
+                str   = deque_to_string( rpath,
+                                         m_rpath_head + m_rpath_delimiter,
+                                         m_rpath_delimiter,
+                                         m_rpath_tail );
             }
             for ( adapter = scorep_adapters.begin();
                   adapter != scorep_adapters.end(); adapter++ )
@@ -483,30 +488,20 @@ get_rpath_struct_data( void )
 }
 
 /**
- * Add content of the environment variable LD_RUN_PATH as -rpath argument
+ * Add content of the environment variable LD_RUN_PATH to rpath
  */
-static std::string
-append_ld_run_path_to_rpath( std::string rpath )
+static void
+append_ld_run_path_to_rpath( std::deque<std::string>& rpath )
 {
     /* Get variable values */
     const char* ld_run_path = getenv( "LD_RUN_PATH" );
     if ( ld_run_path == NULL || *ld_run_path == '\0' )
     {
-        return rpath;
+        return;
     }
 
-#if HAVE( PLATFORM_AIX )
-    /* On AIX ist just a colon separated list, after a head */
-    if ( rpath == "" )
-    {
-        return m_rpath_head + ld_run_path;
-    }
-    return rpath + m_rpath_delimiter + ld_run_path;
-#else
-    /* Otherwise replace all colons by the rpath flags */
-    rpath += m_rpath_delimiter + replace_all( ":", m_rpath_delimiter, ld_run_path );
-    return rpath;
-#endif
+    std::deque<std::string> run_path = string_to_deque( ld_run_path, ":" );
+    rpath.insert( rpath.end(), run_path.begin(), run_path.end() );
 }
 
 /**
@@ -619,4 +614,34 @@ treat_compiler_flags_for_nvcc( std::string& flags )
     flags = replace_all( pattern1, replace1, flags );
 
     flags = " -Xcompiler " + flags;
+}
+
+
+static std::deque<std::string>
+remove_system_path( const std::deque<std::string>& path_list )
+{
+    std::string             dlsearch_path = SCOREP_BACKEND_SYS_LIB_DLSEARCH_PATH;
+    std::deque<std::string> system_paths  = string_to_deque( dlsearch_path, " " );
+    std::deque<std::string> result_paths;
+
+    std::deque<std::string>::iterator       sys_path;
+    std::deque<std::string>::const_iterator app_path;
+
+    for ( app_path = path_list.begin(); app_path != path_list.end(); app_path++ )
+    {
+        bool is_sys_path = false;
+        for ( sys_path = system_paths.begin();
+              sys_path != system_paths.end(); sys_path++ )
+        {
+            if ( *app_path == *sys_path )
+            {
+                is_sys_path = true;
+            }
+        }
+        if ( !is_sys_path )
+        {
+            result_paths.push_back( *app_path );
+        }
+    }
+    return result_paths;
 }

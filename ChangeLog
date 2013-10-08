@@ -31,6 +31,8 @@
   at the same time.
 - Fix error message when scorep-config is called without arguments in
   a non-mpi installation.
+- scorep-config provides does not contain system paths as rpath option. This
+  fixes some problems if Score-P is installed in standard locations.
 
 ------------------- Released version 1.2.1 ---------------------------
 

@@ -114,5 +114,15 @@ strip_head( const std::string& input,
             const std::string& head_orig,
             const std::string& delimiter_orig );
 
+/**
+ * Converts a string that contains multiple tokens separated by a certain string
+ * into a deque of strings.
+ * @param input     A string which contains multiple tokens, separated by @a delimiter
+ * @param delimiter A string which separates the different tokens in @a input.
+ * @returns a list of tokens found in @input.
+ */
+std::deque<std::string>
+string_to_deque( const std::string& input,
+                 const std::string& delimiter );
 
 #endif

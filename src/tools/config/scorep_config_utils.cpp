@@ -181,3 +181,24 @@ deque_to_string( const deque<string>& input,
     output += tail;
     return output;
 }
+
+deque<string>
+string_to_deque( const string& input, const string& delimiter )
+{
+    std::string             current_path = "";
+    size_t                  cur_pos      = 0;
+    size_t                  old_pos      = 0;
+    std::deque<std::string> path_list;
+
+    while ( cur_pos != std::string::npos )
+    {
+        cur_pos      = input.find( delimiter, old_pos );
+        current_path = input.substr( old_pos, cur_pos - old_pos );
+        if ( current_path != "" )
+        {
+            path_list.push_back( current_path );
+        }
+        old_pos = cur_pos + delimiter.length();
+    }
+    return path_list;
+}
