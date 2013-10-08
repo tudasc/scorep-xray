@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ##    University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2013,
 ##    Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -31,7 +31,8 @@
 
 ## file       Makefile.inc.am
 
-include_HEADERS +=                      \
+scorepincludedir = $(includedir)/scorep
+scorepinclude_HEADERS =                        \
     $(PUBLIC_INC_SRC)SCOREP_MetricPlugins.h    \
     $(PUBLIC_INC_SRC)SCOREP_MetricTypes.h      \
     $(PUBLIC_INC_SRC)SCOREP_PublicTypes.h      \
@@ -42,12 +43,12 @@ include_HEADERS +=                      \
     $(PUBLIC_INC_SRC)SCOREP_Tau.h
 
 if SCOREP_COMPILER_PGI
-include_HEADERS += $(PUBLIC_INC_SRC)SCOREP_User_Pgi.inc
+scorepinclude_HEADERS += $(PUBLIC_INC_SRC)SCOREP_User_Pgi.inc
 INSTALL_DATA_HOOK_TARGETS += rename_fortran_user_adapter_include
 rename_fortran_user_adapter_include:
 	mv $(DESTDIR)$(includedir)/SCOREP_User_Pgi.inc $(DESTDIR)$(includedir)/SCOREP_User.inc
 else
-include_HEADERS += $(PUBLIC_INC_SRC)SCOREP_User.inc
+scorepinclude_HEADERS += $(PUBLIC_INC_SRC)SCOREP_User.inc
 endif
 
 

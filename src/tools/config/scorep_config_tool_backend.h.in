@@ -4,7 +4,7 @@
 #define SCOREP_LDFLAGS       "@COMPILER_INSTRUMENTATION_LDFLAGS@"
 #define SCOREP_OPENMP_CFLAGS "@OPENMP_CFLAGS@"
 #define SCOREP_PREFIX        "@prefix@"
-#define SCOREP_INCLUDEDIR    "@SCOREP_INCLUDEDIR@"
+#define SCOREP_INCLUDEDIR    "@INCLUDEDIR@"
 #define SCOREP_CC            "@CC@"
 #define SCOREP_CXX           "@CXX@"
 #define SCOREP_FC            "@FC@"
