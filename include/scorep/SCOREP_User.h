@@ -878,9 +878,9 @@
 
     int main()
     {
-      SCOREP_USER:METRIC_INIT( my_global_metric, "My Global Metric", "seconds", \
-                             SCOREP_USER_METRIC_TYPE_UINT64, \
-                             SCOREP_USER_METRIC_CONTEXT_GLOBAL )
+      SCOREP_USER_METRIC_INIT( my_global_metric, "My Global Metric", "seconds", \
+                               SCOREP_USER_METRIC_TYPE_UINT64, \
+                               SCOREP_USER_METRIC_CONTEXT_GLOBAL )
       // do something
     }
 

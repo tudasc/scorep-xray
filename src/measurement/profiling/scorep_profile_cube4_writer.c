@@ -936,26 +936,18 @@ scorep_profile_write_cube4( bool write_tupels )
     /* Write implicit time and visits */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing runtime" );
 
-    if ( write_tupels )
-    {
-        write_cube_cube_type_tau_atomic( &write_set, scorep_get_sum_time_handle(),
-                                         &get_time_tupel_value, NULL );
-    }
-    else
-    {
-        write_cube_doubles( &write_set, scorep_get_sum_time_handle(),
-                            &get_sum_time_value, NULL );
+    write_cube_doubles( &write_set, scorep_get_sum_time_handle(),
+                        &get_sum_time_value, NULL );
 
 
-        write_cube_doubles( &write_set, scorep_get_max_time_handle(),
-                            &get_max_time_value, NULL );
+    write_cube_doubles( &write_set, scorep_get_max_time_handle(),
+                        &get_max_time_value, NULL );
 
-        write_cube_doubles( &write_set, scorep_get_min_time_handle(),
-                            &get_min_time_value, NULL );
+    write_cube_doubles( &write_set, scorep_get_min_time_handle(),
+                        &get_min_time_value, NULL );
 
-        write_cube_uint64( &write_set, scorep_get_visits_handle(),
-                           &get_visits_value, NULL );
-    }
+    write_cube_uint64( &write_set, scorep_get_visits_handle(),
+                       &get_visits_value, NULL );
 
     /* Write additional dense metrics (e.g. hardware counters) */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing dense metrics" );
@@ -980,16 +972,8 @@ scorep_profile_write_cube4( bool write_tupels )
             write_set.metric_map[ current_number ] = SCOREP_PROFILE_DENSE_METRIC;
         }
 
-        if ( write_tupels )
-        {
-            write_cube_cube_type_tau_atomic( &write_set, metric,
-                                             &get_dense_tupel_value, &i );
-        }
-        else
-        {
-            write_cube_uint64( &write_set, metric,
-                               &get_metrics_value_from_array, &i );
-        }
+        write_cube_uint64( &write_set, metric,
+                           &get_metrics_value_from_array, &i );
     }
 
     /* -------------------------------- sparse metrics */

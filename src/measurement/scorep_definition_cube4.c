@@ -41,6 +41,7 @@
 #include "scorep_definition_cube4.h"
 
 #include <SCOREP_Memory.h>
+#include <SCOREP_Metric_Management.h>
 
 #include "scorep_ipc.h"
 #include "scorep_types.h"
@@ -49,6 +50,24 @@
 
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
+
+/* ****************************************************************************
+ * Internal helper functions
+ *****************************************************************************/
+static bool
+is_dense_metric( SCOREP_MetricHandle metric )
+{
+    for ( uint64_t i = 0; i < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
+    {
+        SCOREP_MetricHandle strict
+            = SCOREP_Metric_GetStrictlySynchronousMetricHandle( i );
+        if ( SCOREP_MetricHandle_GetUnified( strict ) == metric )
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
 /* ****************************************************************************
  * Internal system tree representation
@@ -414,34 +433,24 @@ write_metric_definitions( cube_t*                       my_cube,
     cube_metric* cube_handle;
 
     /* Add default profiling metrics for number of visits and implicit time */
-    if ( write_tupels )
-    {
-        time_sum_handle = cube_def_met( my_cube, "Time", "time", "TAU_ATOMIC", "sec", "",
-                                        "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#time",
-                                        "Total CPU allocation time", NULL,
-                                        CUBE_METRIC_INCLUSIVE );
-    }
-    else
-    {
-        visits_handle = cube_def_met( my_cube, "Visits", "visits", "UINT64", "occ", "",
-                                      "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#visits",
-                                      "Number of visits", NULL, CUBE_METRIC_EXCLUSIVE );
+    visits_handle = cube_def_met( my_cube, "Visits", "visits", "UINT64", "occ", "",
+                                  "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#visits",
+                                  "Number of visits", NULL, CUBE_METRIC_EXCLUSIVE );
 
-        time_sum_handle = cube_def_met( my_cube, "Time", "time", "DOUBLE", "sec", "",
-                                        "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#time",
-                                        "Total CPU allocation time", NULL,
-                                        CUBE_METRIC_INCLUSIVE );
+    time_sum_handle = cube_def_met( my_cube, "Time", "time", "DOUBLE", "sec", "",
+                                    "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#time",
+                                    "Total CPU allocation time", NULL,
+                                    CUBE_METRIC_INCLUSIVE );
 
-        time_min_handle = cube_def_met( my_cube, "Minimum Inclusive Time", "min_time",
-                                        "MINDOUBLE", "sec", "",
-                                        "", "Minimum inclusive CPU allocation time",
-                                        NULL, CUBE_METRIC_EXCLUSIVE );
+    time_min_handle = cube_def_met( my_cube, "Minimum Inclusive Time", "min_time",
+                                    "MINDOUBLE", "sec", "",
+                                    "", "Minimum inclusive CPU allocation time",
+                                    NULL, CUBE_METRIC_EXCLUSIVE );
 
-        time_max_handle = cube_def_met( my_cube, "Maximum Inclusive Time", "max_time",
-                                        "MAXDOUBLE", "sec", "",
-                                        "", "Maximum inclusive CPU allocation time",
-                                        NULL, CUBE_METRIC_EXCLUSIVE );
-    }
+    time_max_handle = cube_def_met( my_cube, "Maximum Inclusive Time", "max_time",
+                                    "MAXDOUBLE", "sec", "",
+                                    "", "Maximum inclusive CPU allocation time",
+                                    NULL, CUBE_METRIC_EXCLUSIVE );
 
     SCOREP_MetricDef*   metric_definition;
     char*               metric_name;
@@ -471,7 +480,7 @@ write_metric_definitions( cube_t*                       my_cube,
             metric_unit = unit;
         }
 
-        if ( write_tupels )
+        if ( write_tupels && !is_dense_metric( handle ) )
         {
             data_type = "TAU_ATOMIC";
         }
