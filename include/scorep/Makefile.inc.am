@@ -46,7 +46,7 @@ if SCOREP_COMPILER_PGI
 scorepinclude_HEADERS += $(PUBLIC_INC_SRC)SCOREP_User_Pgi.inc
 INSTALL_DATA_HOOK_TARGETS += rename_fortran_user_adapter_include
 rename_fortran_user_adapter_include:
-	mv $(DESTDIR)$(includedir)/SCOREP_User_Pgi.inc $(DESTDIR)$(includedir)/SCOREP_User.inc
+	mv $(DESTDIR)$(scorepincludedir)/SCOREP_User_Pgi.inc $(DESTDIR)$(scorepincludedir)/SCOREP_User.inc
 else
 scorepinclude_HEADERS += $(PUBLIC_INC_SRC)SCOREP_User.inc
 endif
