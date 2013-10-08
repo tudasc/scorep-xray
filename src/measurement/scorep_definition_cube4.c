@@ -518,11 +518,17 @@ write_metric_definitions( cube_t*                       my_cube,
                 break;
             case SCOREP_METRIC_PROFILING_TYPE_MIN:
                 cube_metric_type = CUBE_METRIC_EXCLUSIVE;
-                data_type        = "MINDOUBLE";
+                if ( !write_tupels )
+                {
+                    data_type = "MINDOUBLE";
+                }
                 break;
             case SCOREP_METRIC_PROFILING_TYPE_MAX:
                 cube_metric_type = CUBE_METRIC_EXCLUSIVE;
-                data_type        = "MAXDOUBLE";
+                if ( !write_tupels )
+                {
+                    data_type = "MAXDOUBLE";
+                }
                 break;
             default:
                 UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
