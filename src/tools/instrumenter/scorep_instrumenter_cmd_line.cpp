@@ -410,7 +410,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         }
         return scorep_parse_mode_param;
     }
-    else if ( ( arg.length() > 9 ) && ( arg.substr( 0, 9 ) == "--verbose" ) )
+    else if ( ( arg.length() >= 9 ) && ( arg.substr( 0, 9 ) == "--verbose" ) )
     {
         if ( arg.length() > 10 )
         {
