@@ -44,7 +44,7 @@ if HAVE_OPENMP_SUPPORT
 # so achieve this, we put it in a noinst library and link against it
 noinst_LTLIBRARIES         += libjacobi_pomp_c.la
 libjacobi_pomp_c_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C/pomp.c
-libjacobi_pomp_c_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)/src
+libjacobi_pomp_c_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src
 
 check_PROGRAMS       += jacobi_omp_c
 jacobi_omp_c_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C/jacobi.mod.c       \

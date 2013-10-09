@@ -3,7 +3,7 @@ if HAVE_ONLINE_ACCESS
 check_PROGRAMS += oa_f_test
 
 oa_f_test_SOURCES =                                       \
-	$(SRC_ROOT)/test/OA/serial/Fortran/oa_test.F90
+	$(SRC_ROOT)test/OA/serial/Fortran/oa_test.F90
 
 oa_f_test_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@\
     -I../include                            \
@@ -26,7 +26,7 @@ oa_f_test_LDADD =                        \
 oa_f_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 EXTRA_DIST       += \
-    $(SRC_ROOT)/test/OA/serial/Fortran/run_oa_f_test.sh.in
+    $(SRC_ROOT)test/OA/serial/Fortran/run_oa_f_test.sh.in
 
 TESTS_SERIAL += ./../test/OA/serial/Fortran/run_oa_f_test.sh
 

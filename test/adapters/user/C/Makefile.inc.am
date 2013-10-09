@@ -3,9 +3,9 @@
 check_PROGRAMS += user_c_test
 
 user_c_test_SOURCES =                                       \
-	$(SRC_ROOT)/test/adapters/user/C/user_test.c        \
-	$(SRC_ROOT)/test/adapters/user/C/user_test_foo.c    \
-	$(SRC_ROOT)/test/adapters/user/C/user_test_baz.c.inc 
+	$(SRC_ROOT)test/adapters/user/C/user_test.c        \
+	$(SRC_ROOT)test/adapters/user/C/user_test_foo.c    \
+	$(SRC_ROOT)test/adapters/user/C/user_test_baz.c.inc 
 
 user_c_test_CPPFLAGS = $(AM_CPPFLAGS)       \
     -I$(INC_ROOT)src/adapters/include       \
@@ -27,7 +27,7 @@ TESTS_OMP += ./../test/adapters/user/C/run_phase_test.sh
 
 check_PROGRAMS += selective_test
 
-selective_test_SOURCES = $(SRC_ROOT)/test/adapters/user/C/selective_test.c
+selective_test_SOURCES = $(SRC_ROOT)test/adapters/user/C/selective_test.c
 
 selective_test_CPPFLAGS = $(AM_CPPFLAGS)    \
     -I$(PUBLIC_INC_DIR)                     \

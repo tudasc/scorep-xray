@@ -7,7 +7,7 @@ if HAVE_CUDA_SUPPORT
 #check_PROGRAMS += cuda_test
 
 #cuda_test_SOURCES = \
-#	$(SRC_ROOT)/test/adapters/cuda/cuda_test.cu 
+#	$(SRC_ROOT)test/adapters/cuda/cuda_test.cu 
 
 #cuda_test_CPPFLAGS = $(AM_CPPFLAGS) \
 #    -I$(SCOREP_LIBCUPTI_INCDIR)        \

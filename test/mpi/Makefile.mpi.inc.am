@@ -34,13 +34,13 @@
 if HAVE_MPI_SUPPORT
 
 check_PROGRAMS += mpitest
-mpitest_SOURCES =  $(SRC_ROOT)/test/mpi/mpitest.c
+mpitest_SOURCES =  $(SRC_ROOT)test/mpi/mpitest.c
 mpitest_LDADD = $(LIB_DIR_SCOREP)libscorep_mpi.la
 mpitest_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 
 
 check_PROGRAMS += test_link
-test_link_SOURCES =  $(SRC_ROOT)/test/mpi/test_link.c 
+test_link_SOURCES =  $(SRC_ROOT)test/mpi/test_link.c 
 test_link_CPPFLAGS = $(AM_CPPFLAGS)         \
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/measurement/include    \
@@ -52,19 +52,19 @@ test_link_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 
 
 check_PROGRAMS += mpi_hello_world
-mpi_hello_world_SOURCES =  $(SRC_ROOT)/test/mpi/mpi_hello_world.c 
+mpi_hello_world_SOURCES =  $(SRC_ROOT)test/mpi/mpi_hello_world.c 
 mpi_hello_world_LDADD = $(LIB_DIR_SCOREP)libscorep_mpi.la
 mpi_hello_world_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 TESTS_MPI += mpi_hello_world
 
 
 check_PROGRAMS += mpi_hello_world_uninstrumented
-mpi_hello_world_uninstrumented_SOURCES =  $(SRC_ROOT)/test/mpi/mpi_hello_world.c 
+mpi_hello_world_uninstrumented_SOURCES =  $(SRC_ROOT)test/mpi/mpi_hello_world.c 
 
 
 check_PROGRAMS += metric_on_one_rank_only_test
 metric_on_one_rank_only_test_SOURCES = \
-    $(SRC_ROOT)/test/mpi/metric_on_one_rank_only_test.c
+    $(SRC_ROOT)test/mpi/metric_on_one_rank_only_test.c
 metric_on_one_rank_only_test_CPPFLAGS = $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR)                     \
     -DSCOREP_USER_ENABLE

@@ -1,7 +1,7 @@
 check_PROGRAMS += tau_test
 
 tau_test_SOURCES = \
-	$(SRC_ROOT)/test/adapters/tau/tau_test.c 
+	$(SRC_ROOT)test/adapters/tau/tau_test.c 
 
 tau_test_CPPFLAGS = $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR)        \

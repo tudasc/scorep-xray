@@ -5,7 +5,7 @@ if HAVE_ONLINE_ACCESS
 check_PROGRAMS += oa_c_test_mpi
 
 oa_c_test_mpi_SOURCES =                                       \
-	$(SRC_ROOT)/test/OA/MPI/C/oa_test_mpi.c
+	$(SRC_ROOT)test/OA/MPI/C/oa_test_mpi.c
 
 oa_c_test_mpi_CPPFLAGS = $(AM_CPPFLAGS)       \
     -I$(INC_ROOT)src/adapters/include       \
@@ -21,7 +21,7 @@ oa_c_test_mpi_LDADD =                        \
 oa_c_test_mpi_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 
 EXTRA_DIST       += \
-    $(SRC_ROOT)/test/OA/MPI/C/run_oa_c_test_mpi.sh.in
+    $(SRC_ROOT)test/OA/MPI/C/run_oa_c_test_mpi.sh.in
 
 #TESTS_MPI += ./../test/OA/MPI/C/run_oa_c_test_mpi.sh
 

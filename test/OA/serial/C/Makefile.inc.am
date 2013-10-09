@@ -3,7 +3,7 @@ if HAVE_ONLINE_ACCESS
 check_PROGRAMS += oa_c_test
 
 oa_c_test_SOURCES =                                       \
-	$(SRC_ROOT)/test/OA/serial/C/oa_test.c
+	$(SRC_ROOT)test/OA/serial/C/oa_test.c
 
 oa_c_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@       \
     -I$(INC_ROOT)src/adapters/include       \
@@ -19,7 +19,7 @@ oa_c_test_LDADD =                        \
 oa_c_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 EXTRA_DIST       += \
-    $(SRC_ROOT)/test/OA/serial/C/run_oa_c_test.sh.in
+    $(SRC_ROOT)test/OA/serial/C/run_oa_c_test.sh.in
 
 TESTS_SERIAL += ./../test/OA/serial/C/run_oa_c_test.sh
 

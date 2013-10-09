@@ -19,7 +19,7 @@
 
 check_PROGRAMS += rewind_test
 
-rewind_test_SOURCES = $(SRC_ROOT)/test/rewind/rewind_test.c
+rewind_test_SOURCES = $(SRC_ROOT)test/rewind/rewind_test.c
 
 rewind_test_CPPFLAGS = $(AM_CPPFLAGS)    \
     -I$(PUBLIC_INC_DIR)                  \
