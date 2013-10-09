@@ -6,7 +6,7 @@ oa_f_test_SOURCES =                                       \
 	$(SRC_ROOT)/test/OA/serial/Fortran/oa_test.F90
 
 oa_f_test_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@\
-    -I$(PUBLIC_INC_DIR)                     \
+    -I../include                            \
     -I$(INC_ROOT)src/adapters/include       \
     $(UTILS_CPPFLAGS)
 

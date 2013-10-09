@@ -12,8 +12,8 @@
 ! See the COPYING file in the package base directory for details.
 !
 
-#ifndef SCOREP_COMPILER_PGI
 #include <scorep/SCOREP_User.inc>
+#ifndef SCOREP_COMPILER_PGI
 
       program ScorepTest
 
@@ -56,7 +56,6 @@
       SCOREP_USER_REGION_END(region1)
       end
 #else
-#include <scorep/SCOREP_User_Pgi.inc>
 
       program ScorepTest
 

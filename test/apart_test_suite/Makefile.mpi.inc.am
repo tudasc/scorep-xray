@@ -3,19 +3,33 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012, 
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## Copyright (c) 2009-2012,
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2012,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2012,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2012,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
-## file       Makefile.mpi.inc.am
+## file test/apart_test_suite/Makefile.mpi.inc.am
 
 if HAVE_MPI_SUPPORT
 
@@ -40,7 +54,7 @@ mpi_patt_all_test_f90_with_oa_SOURCES    = $(SRC_ROOT)test/apart_test_suite/fort
                                    $(SRC_ROOT)test/apart_test_suite/fortran/mpi_patt_all_test.F90
 
 mpi_patt_all_test_f90_with_oa_CPPFLAGS = \
-    -I$(PUBLIC_INC_DIR)                     \
+    -I../include                            \
     -I$(INC_ROOT)src/adapters/include       \
     $(UTILS_CPPFLAGS)
 
@@ -72,7 +86,7 @@ mpi_patt_all_test_f90_SOURCES    = $(SRC_ROOT)test/apart_test_suite/fortran/cali
                                    $(SRC_ROOT)test/apart_test_suite/fortran/mpi_patt_all_test.F90
 
 mpi_patt_all_test_f90_CPPFLAGS = \
-    -I$(PUBLIC_INC_DIR)                     \
+    -I../include                            \
     -I$(INC_ROOT)src/adapters/include       \
     $(UTILS_CPPFLAGS)
 
