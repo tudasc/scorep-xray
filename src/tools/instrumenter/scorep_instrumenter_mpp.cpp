@@ -66,7 +66,7 @@ SCOREP_Instrumenter_Mpi::SCOREP_Instrumenter_Mpi
 void
 SCOREP_Instrumenter_Mpi::checkCompilerName( const std::string& compiler )
 {
-    if ( compiler.substr( 0, 2 ) == "mp" )
+    if ( remove_path( compiler ).substr( 0, 2 ) == "mp" )
     {
         m_selector->select( this, false );
     }
