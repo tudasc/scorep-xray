@@ -94,6 +94,10 @@ AS_IF([test "x${ac_scorep_cross_compiling}" != "xyes" && \
     [AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])])
 cross_compiling=${ac_scorep_cross_compiling}
 
+m4_include(../build-includes/compute-node.m4)
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
+    [m4_include(../build-includes/login-node.m4)])
+
 ac_scorep_backend="yes"
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
     [ac_scorep_frontend="no"],

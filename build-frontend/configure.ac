@@ -81,6 +81,8 @@ AC_CONFIG_HEADERS([../src/config-frontend.h])
 ac_scorep_frontend="yes"
 ac_scorep_backend="no"
 
+m4_include(../build-includes/login-node.m4)
+
 AC_SCOREP_SVN_CONTROLLED
 
 AM_CONDITIONAL([BUILD_TESTS], [true])
