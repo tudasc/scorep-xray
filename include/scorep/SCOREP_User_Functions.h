@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2013,
  *    Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -277,7 +277,7 @@ SCOREP_User_ParameterUint64( SCOREP_User_ParameterHandle* handle,
 void
 SCOREP_User_ParameterString( SCOREP_User_ParameterHandle* handle,
                              const char*                  name,
-                             char*                        value );
+                             const char*                  value );
 
 /* **************************************************************************************
  * User metric functions

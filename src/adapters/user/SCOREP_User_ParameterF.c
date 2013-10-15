@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2013,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -117,7 +117,7 @@ FSUB( SCOREP_F_ParameterString )
 (
     SCOREP_User_ParameterHandle* handle,
     const char*                  name,
-    char*                        value,
+    const char*                  value,
     int                          name_len,
     int                          value_len
 )
