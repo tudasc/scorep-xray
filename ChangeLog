@@ -17,6 +17,11 @@
   and, thus, fails if pdt instrumentation is enabled and special
   characters appear. Furthermore, compilation fails when double quotes
   appear in source file names and preprocessing is enabled.
+- Unified naming of macros in the user adapter. In C/C++ the macros to
+  define global region handles (SCOREP_GLOBAL_REGION_DEFINE and
+  SCOREP_GLOBAL_REGION_EXTERNAL) and in Fortran the parameter macros
+  (SCOREP_PARAMETER_DEFINE, SCOREP_PARAMETER_INT64, SCOREP_PARAMETER_UINT64,
+  SCOREP_PARAMETER_STRING) got the prefix SCOREP_USER instead of only SCOREP.
 
 ------------------- Upcoming version 1.2.2 ---------------------------
 

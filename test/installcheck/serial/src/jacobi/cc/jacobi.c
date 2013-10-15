@@ -30,7 +30,7 @@
 #define F( j, i ) afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define UOLD( j, i ) uold[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 
-SCOREP_GLOBAL_REGION_EXTERNAL( scorep_region2 );
+SCOREP_USER_GLOBAL_REGION_EXTERNAL( scorep_region2 );
 SCOREP_USER_METRIC_EXTERNAL( scorep_globalMetric );
 
 void

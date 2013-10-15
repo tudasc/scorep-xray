@@ -53,9 +53,9 @@ module JacobiMod
 		SCOREP_USER_FUNC_DEFINE()
 		SCOREP_USER_METRIC_LOCAL(local2)
 		SCOREP_USER_METRIC_LOCAL(local3)
-		SCOREP_PARAMETER_DEFINE(iparam)
-		SCOREP_PARAMETER_DEFINE(uparam)
-		SCOREP_PARAMETER_DEFINE(sparam)
+		SCOREP_USER_PARAMETER_DEFINE(iparam)
+		SCOREP_USER_PARAMETER_DEFINE(uparam)
+		SCOREP_USER_PARAMETER_DEFINE(sparam)
 		
 		scorep_metric_double_val=3.0;
 		scorep_metric_int_val=-1;
@@ -76,8 +76,8 @@ module JacobiMod
             SCOREP_USER_FUNC_BEGIN("ScorepTest")
             SCOREP_USER_REGION_INIT(region2,"Region2",SCOREP_USER_REGION_TYPE_COMMON)
             SCOREP_USER_REGION_ENTER(region2)
-            SCOREP_PARAMETER_INT64(iparam,"iparam",scorep_metric_int_val)
-            SCOREP_PARAMETER_STRING(sparam,"sparam","hello")
+            SCOREP_USER_PARAMETER_INT64(iparam,"iparam",scorep_metric_int_val)
+            SCOREP_USER_PARAMETER_STRING(sparam,"sparam","hello")
 
             SCOREP_USER_METRIC_INT64(local2, scorep_metric_int_val)
             SCOREP_USER_METRIC_DOUBLE(local3, scorep_metric_double_val)
@@ -98,12 +98,11 @@ module JacobiMod
         
             ! Copy new solution into old
 !$omp parallel private(fLRes, tmpResd, i)
-				   SCOREP_USER_REGION_BEGIN(region1,"Region1",SCOREP_USER_REGION_TYPE_PHASE)
-
-					SCOREP_PARAMETER_INT64(iparam,"iparam",scorep_metric_int_val)
-      				SCOREP_PARAMETER_STRING(sparam,"sparam","hello")
-					SCOREP_USER_METRIC_INT64(local2, scorep_metric_int_val)
-      				SCOREP_USER_METRIC_DOUBLE(local3, scorep_metric_double_val)       
+                    SCOREP_USER_REGION_BEGIN(region1,"Region1",SCOREP_USER_REGION_TYPE_PHASE)
+                    SCOREP_USER_PARAMETER_INT64(iparam,"iparam",scorep_metric_int_val)
+                    SCOREP_USER_PARAMETER_STRING(sparam,"sparam","hello")
+                    SCOREP_USER_METRIC_INT64(local2, scorep_metric_int_val)
+                    SCOREP_USER_METRIC_DOUBLE(local3, scorep_metric_double_val)       
 
 !$omp do
                    do j = 1, myData%iRows - 2

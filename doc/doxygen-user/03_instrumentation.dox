@@ -385,15 +385,15 @@ C/C++:
 
 In some cases, it might be useful to have the possibility to define region
 handles with a global scope. In C/C++, a region handle can be defined at a
-global scope with <tt>SCOREP_GLOBAL_REGION_DEFINE</tt>. In this case, the 
+global scope with <tt>SCOREP_USER_GLOBAL_REGION_DEFINE</tt>. In this case, the 
 <tt>SCOREP_USER_REGION_DEFINE</tt> must be omitted. The 
-<tt>SCOREP_GLOBAL_REGION_DEFINE</tt> must only appear in one file. To use the same global
+<tt>SCOREP_USER_GLOBAL_REGION_DEFINE</tt> must only appear in one file. To use the same global
 variable in other files, too, declare the global region in other files with
-<tt>SCOREP_GLOBAL_REGION_EXTERNAL</tt>. 
+<tt>SCOREP_USER_GLOBAL_REGION_EXTERNAL</tt>. 
 
 File 1:
 @code
-    SCOREP_GLOBAL_REGION_DEFINE( global_handle )
+    SCOREP_USER_GLOBAL_REGION_DEFINE( global_handle )
 
     foo()
     {
@@ -406,7 +406,7 @@ File 1:
 
 File 2:
 @code
-    SCOREP_GLOBAL_REGION_EXTERNAL( global_handle )
+    SCOREP_USER_GLOBAL_REGION_EXTERNAL( global_handle )
 
     bar()
     {
@@ -455,8 +455,8 @@ Fortran:
         character (*) :: s
 
         SCOREP_USER_REGION_DEFINE( my_region_handle )
-        SCOREP_PARAMETER_DEFINE( int_param )
-        SCOREP_PARAMETER_DEFINE( string_param )
+        SCOREP_USER_PARAMETER_DEFINE( int_param )
+        SCOREP_USER_PARAMETER_DEFINE( string_param )
         SCOREP_USER_REGION_BEGIN( my_region_handle, "my_region",SCOREP_USER_REGION_TYPE_COMMON )
         SCOREP_USER_PARAMETER_INT64(int_param, "myint",i)
         SCOREP_USER_PARAMETER_UINT64(uint_param, "myuint",i)
@@ -487,7 +487,7 @@ C/C++:
 @endcode
 
 In C/C++, only a name for the parameter and the value needs to be provided. In Fortran, 
-the handle must be defined first with <tt>SCOREP_PARAMETER_DEFINE</tt>. The defined handle
+the handle must be defined first with <tt>SCOREP_USER_PARAMETER_DEFINE</tt>. The defined handle
 name must be unique in the current scope. The <tt>SCOREP_USER_PARAMETER_INT64</tt> and
 <tt>SCOREP_USER_PARAMETER_STRING</tt> need the handle as the first argument, followed by the
 name and the value.

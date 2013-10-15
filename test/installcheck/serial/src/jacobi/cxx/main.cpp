@@ -13,7 +13,7 @@
 
 using namespace std;
 
-SCOREP_GLOBAL_REGION_DEFINE( scorep_region2 );
+SCOREP_USER_GLOBAL_REGION_DEFINE( scorep_region2 );
 SCOREP_USER_METRIC_GLOBAL( scorep_globalMetric );
 
 // setting values, init mpi, omp etc

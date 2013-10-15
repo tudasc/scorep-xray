@@ -2,25 +2,25 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
+ * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2011,
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
  * Copyright (c) 2009-2011,
- *    Technische Universitaet Dresden, Germany
+ * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
- *    University of Oregon, Eugene, USA
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2011, 2013
+ * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
- *    Forschungszentrum Juelich GmbH, Germany
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *
- * Copyright (c) 2009-2011,
- *    Technische Universitaet Muenchen, Germany
+ * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
@@ -91,7 +91,7 @@
     recommended to mark the body of the application's main loop as a Online Access phase in order to utilize main loop
     iterations for iterative online analisys.
     @param handle  The handle of the associated user region, which will become a root of the profile call-tree.
-                                   This handle must be declared using SCOREP_USER_REGION_DEFINE or SCOREP_GLOBAL_REGION_DEFINE before.
+                                   This handle must be declared using SCOREP_USER_REGION_DEFINE or SCOREP_USER_GLOBAL_REGION_DEFINE before.
     @param name    A string containing the name of the new region. The name should be
                    unique.
     @param type    Specifies the type of the region. Possible values are
@@ -152,7 +152,7 @@
     recommended to mark the body of the application's main loop as a Online Access phase in order to utilize main loop
     iterations for iterative online analisys.
     @param handle  The handle of the associated user region, which will become a root of the profile call-tree.
-                                   This handle must be declared using SCOREP_USER_REGION_DEFINE or SCOREP_GLOBAL_REGION_DEFINE before.
+                                   This handle must be declared using SCOREP_USER_REGION_DEFINE or SCOREP_USER_GLOBAL_REGION_DEFINE before.
     C/C++ example:
     @code
     void main()
@@ -203,7 +203,7 @@
     This macro marks the start of a user defined region. The SCOREP_USER_REGION_BEGIN and
     SCOREP_USER_REGION_END calls of all regions must be correctly nested.
     @param handle  The handle of the region to be started. This handle must be declared
-                   using SCOREP_USER_REGION_DEFINE or SCOREP_GLOBAL_REGION_DEFINE before.
+                   using SCOREP_USER_REGION_DEFINE or SCOREP_USER_GLOBAL_REGION_DEFINE before.
     @param name    A string containing the name of the new region. The name should be
                    unique.
     @param type    Specifies the type of the region. Possible values are
@@ -247,7 +247,7 @@
     This macro initializes a user defined region. If the region handle is already
     inititialized, no operation is executed.
     @param handle  The handle of the region to be started. This handle must be declared
-                   using SCOREP_USER_REGION_DEFINE or SCOREP_GLOBAL_REGION_DEFINE before.
+                   using SCOREP_USER_REGION_DEFINE or SCOREP_USER_GLOBAL_REGION_DEFINE before.
     @param name    A string containing the name of the new region. The name should be
                    unique.
     @param type    Specifies the type of the region. Possible values are
@@ -519,12 +519,12 @@
  */
 
 /**
-    @def SCOREP_GLOBAL_REGION_DEFINE( handle )
+    @def SCOREP_USER_GLOBAL_REGION_DEFINE( handle )
     This macro defines a region handle in a global scope for usage in more than one code
     block. If a region is used in multiple source files, only one of them must contain
-    the definition using SCOREP_GLOBAL_REGION_DEFINE. All other files, in which the
+    the definition using SCOREP_USER_GLOBAL_REGION_DEFINE. All other files, in which the
     global handle is accessed, must only declare the global handle with
-    SCOREP_GLOBAL_REGION_EXTERNAL( handle ). It is possible to use the global handle in
+    SCOREP_USER_GLOBAL_REGION_EXTERNAL( handle ). It is possible to use the global handle in
     more than one code-block. However, code-blocks that share a handle, are handled as
     they were all the same region. Enter and exit events for global regions
     are created with SCOREP_USER_REGION_BEGIN and SCOREP_USER_REGION_END, respectively.
@@ -546,7 +546,7 @@
     C/C++ example:
     @code
     // In File1:
-    SCOREP_GLOBAL_REGION_DEFINE( my_global_handle )
+    SCOREP_USER_GLOBAL_REGION_DEFINE( my_global_handle )
 
     void myfunc()
     {
@@ -559,7 +559,7 @@
     @endcode
     @code
     // In File2:
-    SCOREP_GLOBAL_EXTERNAL( my_global_handle )
+    SCOREP_USER_GLOBAL_EXTERNAL( my_global_handle )
 
     void foo()
     {
@@ -573,12 +573,12 @@
  */
 
 /**
-    @def SCOREP_GLOBAL_REGION_EXTERNAL( handle )
+    @def SCOREP_USER_GLOBAL_REGION_EXTERNAL( handle )
     This macro declares an axternally defined global region.
     If a region is used in multiple source files, only one of them must contain
-    the definition using SCOREP_GLOBAL_REGION_DEFINE. All other files, in which the
+    the definition using SCOREP_USER_GLOBAL_REGION_DEFINE. All other files, in which the
     global handle is accessed, must only declare the global handle with
-    SCOREP_GLOBAL_REGION_EXTERNAL( handle ). It is possible to use the global handle in
+    SCOREP_USER_GLOBAL_REGION_EXTERNAL( handle ). It is possible to use the global handle in
     more than one code-block. However, code-blocks that share a handle, are handled as
     they were all the same region. Enter and exit events for global regions
     are created with SCOREP_USER_REGION_BEGIN and SCOREP_USER_REGION_END, respectively.
@@ -589,7 +589,7 @@
     This macro is not available in Fortran
 
     @param handle  A name for a variable must be provided. This variable name must be
-                   the same like for the corresponding SCOREP_GLOBAL_REGION_DEFINE
+                   the same like for the corresponding SCOREP_USER_GLOBAL_REGION_DEFINE
                    statement. The handle is used in the SCOREP_USER_REGION_BEGIN and
                    SCOREP_USER_REGION_END statements to specify which region is started,
                    or ended.
@@ -597,7 +597,7 @@
     C/C++ example:
     @code
     // In File 1
-    SCOREP_GLOBAL_REGION_DEFINE( my_global_handle )
+    SCOREP_USER_GLOBAL_REGION_DEFINE( my_global_handle )
 
     void myfunc()
     {
@@ -610,7 +610,7 @@
     @endcode
     @code
     // In File 2
-    SCOREP_GLOBAL_EXTERNAL( my_global_handle )
+    SCOREP_USER_GLOBAL_EXTERNAL( my_global_handle )
 
     void foo()
     {
@@ -674,10 +674,10 @@
 
 #define SCOREP_USER_FUNC_END() SCOREP_User_RegionEnd( scorep_user_func_handle );
 
-#define SCOREP_GLOBAL_REGION_DEFINE( handle ) \
+#define SCOREP_USER_GLOBAL_REGION_DEFINE( handle ) \
     SCOREP_User_RegionHandle handle = SCOREP_USER_INVALID_REGION;
 
-#define SCOREP_GLOBAL_REGION_EXTERNAL( handle ) \
+#define SCOREP_USER_GLOBAL_REGION_EXTERNAL( handle ) \
     extern SCOREP_User_RegionHandle handle;
 
 #endif // SCOREP_USER_ENABLE
@@ -1355,8 +1355,8 @@
 #define SCOREP_USER_REGION_ENTER( handle )
 #define SCOREP_USER_FUNC_BEGIN()
 #define SCOREP_USER_FUNC_END()
-#define SCOREP_GLOBAL_REGION_DEFINE( handle )
-#define SCOREP_GLOBAL_REGION_EXTERNAL( handle )
+#define SCOREP_USER_GLOBAL_REGION_DEFINE( handle )
+#define SCOREP_USER_GLOBAL_REGION_EXTERNAL( handle )
 #define SCOREP_USER_PARAMETER_INT64( name, value )
 #define SCOREP_USER_PARAMETER_UINT64( name, value )
 #define SCOREP_USER_PARAMETER_STRING( name, value )

@@ -10,7 +10,7 @@
 #define U( j, i ) data->afU[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define F( j, i ) data->afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 
-SCOREP_GLOBAL_REGION_DEFINE( scorep_region2 );
+SCOREP_USER_GLOBAL_REGION_DEFINE( scorep_region2 );
 SCOREP_USER_METRIC_GLOBAL( scorep_globalMetric );
 
 /*
