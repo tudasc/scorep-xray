@@ -41,6 +41,10 @@ AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4
 
 AC_DEFUN([AC_SCOREP_BACKEND], [])
 
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"], [
+    # suppress warnings about 'using cross tools not prefixed with host triplet'
+    ac_tool_warned=yes])
+
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CC])
 AC_SCOREP_CHECK_COMPILER_VAR_SET([CXX])
 AC_SCOREP_CHECK_COMPILER_VAR_SET([F77])
