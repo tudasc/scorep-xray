@@ -86,13 +86,8 @@ scorep_enter_region( uint64_t            timestamp,
 
     if ( scorep_tracing_consume_event() )
     {
-        if ( metricValues )
-        {
-            /* @todo: Writing metrics to trace file will be improved in the near future */
-
-            SCOREP_Metric_WriteToTrace( location,
-                                        timestamp );
-        }
+        SCOREP_Metric_WriteToTrace( location,
+                                    timestamp );
 
         SCOREP_Tracing_Enter( location,
                               timestamp,
