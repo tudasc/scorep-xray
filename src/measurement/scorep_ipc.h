@@ -190,4 +190,13 @@ SCOREP_Ipc_Scatter( void*               sendbuf,
                     SCOREP_Ipc_Datatype datatype,
                     int                 root );
 
+int
+SCOREP_Ipc_Scatterv( void*               sendbuf,
+                     int*                sendcounts,
+                     int*                displs,
+                     void*               recvbuf,
+                     int                 recvcount,
+                     SCOREP_Ipc_Datatype datatype,
+                     int                 root );
+
 #endif /* SCOREP_INTERNAL_IPC_H */

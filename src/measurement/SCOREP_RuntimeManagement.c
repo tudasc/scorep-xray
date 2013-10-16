@@ -114,7 +114,6 @@ bool scorep_recording_enabled = true;
 static void scorep_finalize( void );
 static void scorep_otf2_initialize( void );
 static void scorep_otf2_finalize( void );
-static void scorep_set_otf2_archive_master_slave( void );
 static void scorep_initialization_sanity_checks( void );
 static void scorep_profile_initialize( SCOREP_Location* loaction );
 static void scorep_profile_finalize( SCOREP_Location* loaction );
@@ -206,7 +205,7 @@ SCOREP_InitMeasurement( void )
 
     if ( !SCOREP_Status_IsMpp() )
     {
-        scorep_set_otf2_archive_master_slave();
+        SCOREP_Tracing_OnMppInit();
     }
 
     SCOREP_TIME( SCOREP_Filter_Initialize, ( ) );
@@ -291,16 +290,6 @@ scorep_profile_initialize( SCOREP_Location* location )
 }
 
 
-void
-scorep_set_otf2_archive_master_slave( void )
-{
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        SCOREP_Tracing_SetIsMaster( SCOREP_Status_GetRank() == 0 );
-    }
-}
-
-
 /**
  * Finalize the measurement system.
  */
@@ -343,8 +332,8 @@ SCOREP_InitMppMeasurement( void )
 
     SCOREP_CreateExperimentDir();
     SCOREP_SynchronizeClocks();
-    scorep_set_otf2_archive_master_slave();
 
+    SCOREP_Tracing_OnMppInit();
     SCOREP_Profile_InitializeMpi();
 
     /* Register finalization handler, also called in SCOREP_InitMeasurement() and

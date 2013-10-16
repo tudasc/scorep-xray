@@ -40,6 +40,8 @@
 
 #include <string.h>
 
+#include <UTILS_Error.h>
+
 #include "scorep_rewind_stack_management.h"
 #include <scorep_location.h>
 

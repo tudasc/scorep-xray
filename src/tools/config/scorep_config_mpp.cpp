@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2013,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -102,7 +105,6 @@ SCOREP_Config_MockupMppSystem::addLibs( std::deque<std::string>&           libs,
 {
     deps.addDependency( "libscorep_measurement", "libscorep_adapter_mpi_mgmt_mockup" );
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_mockup" );
-    deps.addDependency( "libscorep_measurement", "libscorep_sion_mockup" );
     deps.addDependency( "libscorep_measurement", "libscorep_online_access_spp" );
 }
 
@@ -120,7 +122,6 @@ SCOREP_Config_MpiMppSystem::addLibs( std::deque<std::string>&           libs,
 {
     libs.push_back( "libscorep_adapter_mpi_event" );
     deps.addDependency( "libscorep_measurement", "libscorep_adapter_mpi_mgmt" );
-    deps.addDependency( "libscorep_measurement", "libscorep_sion_mpp_mpi" );
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_mpi" );
     deps.addDependency( "libscorep_measurement", "libscorep_online_access_mpp_mpi" );
 }

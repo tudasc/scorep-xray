@@ -58,33 +58,6 @@ libscorep_ipc_mpi_la_CPPFLAGS = \
 
 ## sion-mpi
 
-lib_LTLIBRARIES += libscorep_sion_mpp_mpi.la
-if HAVE_SION_MPI
-libscorep_sion_mpp_mpi_la_SOURCES  = \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_sion_mpi.c
-libscorep_sion_mpp_mpi_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    $(SCOREP_SION_MPI_CPPFLAGS) \
-    -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_ROOT)src/measurement \
-    -I$(PUBLIC_INC_DIR) \
-    $(UTILS_CPPFLAGS) \
-    @OTF2_CPPFLAGS@
-libscorep_sion_mpp_mpi_la_LDFLAGS  = \
-    $(library_api_version_ldflags) \
-    $(SCOREP_SION_MPI_LDFLAGS)
-libscorep_sion_mpp_mpi_la_LIBADD   = \
-    $(SCOREP_SION_MPI_LIBS)
-else
-libscorep_sion_mpp_mpi_la_SOURCES  = \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_sion_not_supported.c
-libscorep_sion_mpp_mpi_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    -I$(INC_ROOT)src/measurement \
-    $(UTILS_CPPFLAGS) \
-    @OTF2_CPPFLAGS@
-endif
-
 if ! HAVE_SCOREP_EXTERNAL_OTF2
 ## build some otf2 code from here as it requires MPI
 check_PROGRAMS += otf2_speed_test

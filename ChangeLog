@@ -22,6 +22,10 @@
   SCOREP_GLOBAL_REGION_EXTERNAL) and in Fortran the parameter macros
   (SCOREP_PARAMETER_DEFINE, SCOREP_PARAMETER_INT64, SCOREP_PARAMETER_UINT64,
   SCOREP_PARAMETER_STRING) got the prefix SCOREP_USER instead of only SCOREP.
+- The new SIONlib integration of OTF2 extends the support of writing
+  SION traces to all multi-process paradigms, not only MPI. Though
+  only pure multi-process measurements are supported for now. No threads,
+  no CUDA, no non-CPU metrics.
 
 ------------------- Upcoming version 1.2.2 ---------------------------
 

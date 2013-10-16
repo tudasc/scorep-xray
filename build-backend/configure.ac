@@ -161,19 +161,45 @@ AC_SCOREP_RUSAGE
 AC_SCOREP_METRIC_PLUGINS
 AC_SCOREP_LINK_FLAGS_CHECK
 
+scorep_otf2_config=
+scorep_otf2_config_backend_arg=
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+      [scorep_otf2_config_backend_arg="--backend"])
 AS_IF([test -n "${scorep_otf2_bindir}"],
-      [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-           [scorep_otf2_config_backend_arg="--backend"])
-       AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cppflags ${scorep_otf2_config_backend_arg}`"])
+      [AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cppflags ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_LIBS],     ["`${scorep_otf2_bindir}/otf2-config --libs ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_LDFLAGS],  ["`${scorep_otf2_bindir}/otf2-config --ldflags ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_BINDIR],   ["${scorep_otf2_bindir}"])
-       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_OTF2], [test 1 -eq 1])],
+       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_OTF2], [test 1 -eq 1])
+       scorep_otf2_config=${scorep_otf2_bindir}/otf2-config],
       [AC_SUBST([OTF2_CPPFLAGS], ['-I../vendor/otf2/include -I$(srcdir)/../vendor/otf2/include'])
        AC_SUBST([OTF2_LIBS],     [../vendor/otf2/build-backend/libotf2.la])
        AC_SUBST([OTF2_LDFLAGS],  [])
        AC_SUBST([OTF2_BINDIR],   [../vendor/otf2/build-backend])
-       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_OTF2], [test 1 -eq 0])])
+       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_OTF2], [test 1 -eq 0])
+       scorep_otf2_config=../vendor/otf2/otf2-mini-config.sh])
+
+scorep_otf2_have_sion=no
+for substrate in `$scorep_otf2_config $scorep_otf2_config_backend_arg --features=substrates`
+do
+    AS_CASE([${substrate}],
+        [sion], [scorep_otf2_have_sion=yes])
+done
+AS_IF([test "x$scorep_otf2_have_sion" = "xyes"], [
+    AC_DEFINE([HAVE_OTF2_SUBSTRATE_SION], [1], [Define if the used OTF2 library has SIONlib support.])
+])
+AFS_SUMMARY([OTF2 with SIONlib support], [$scorep_otf2_have_sion])
+
+scorep_otf2_have_zlib=no
+for compression in `$scorep_otf2_config $scorep_otf2_config_backend_arg --features=compressions`
+do
+    AS_CASE([${compression}],
+        [zlib], [scorep_otf2_have_zlib=yes])
+done
+AS_IF([test "x$scorep_otf2_have_zlib" = "xyes"], [
+    AC_DEFINE([HAVE_OTF2_COMPRESSION_ZLIB], [1], [Define if the used OTF2 library has zlib compression support.])
+])
+AFS_SUMMARY([OTF2 with zlib support], [$scorep_otf2_have_zlib])
 
 opari2_fix_and_free_form_options=1
 AS_IF([test -n "${scorep_opari2_bindir}"],

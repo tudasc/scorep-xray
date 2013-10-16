@@ -71,7 +71,6 @@
 #include "SCOREP_Tracing.h"
 #include "SCOREP_Tracing_ThreadInteraction.h"
 #include "scorep_tracing_definitions.h"
-#include "scorep_tracing_file_substrate.h"
 
 static OTF2_Archive*       scorep_otf2_archive;
 static SCOREP_Mutex        scorep_otf2_archive_lock;
@@ -87,17 +86,30 @@ static SCOREP_RegionHandle scorep_flush_region = SCOREP_INVALID_REGION;
 
 #include "scorep_tracing_confvars.inc.c"
 
-static OTF2_Compression
-scorep_tracing_get_compression()
+static OTF2_FileSubstrate
+scorep_tracing_get_file_substrate( void )
 {
+#if HAVE( OTF2_SUBSTRATE_SION )
+    if ( scorep_tracing_use_sion )
+    {
+        return OTF2_SUBSTRATE_SION;
+    }
+#endif
+
+    return OTF2_SUBSTRATE_POSIX;
+}
+
+static OTF2_Compression
+scorep_tracing_get_compression( void )
+{
+#if HAVE( OTF2_COMPRESSION_ZLIB )
     if ( scorep_tracing_compress )
     {
         return OTF2_COMPRESSION_ZLIB;
     }
-    else
-    {
-        return OTF2_COMPRESSION_NONE;
-    }
+#endif
+
+    return OTF2_COMPRESSION_NONE;
 }
 
 static bool
@@ -333,7 +345,6 @@ SCOREP_Tracing_Initialize( void )
     /* @todo croessel step1: remove the "4 *" intoduced on Michael's request
      * when overflow checking for definitions is implemented.
      * step2: provide environment variables to adjust the chunck sizes.
-     * For the scorep_tracing_get_file_substrate() see paradigm/scorep_sion_*.c
      */
     scorep_otf2_archive = OTF2_Archive_Open( SCOREP_GetExperimentDirName(),
                                              "traces",
@@ -345,7 +356,6 @@ SCOREP_Tracing_Initialize( void )
     UTILS_BUG_ON( !scorep_otf2_archive, "Couldn't create OTF2 archive." );
 
     scorep_tracing_register_flush_callbacks( scorep_otf2_archive );
-    scorep_tracing_register_sion_callbacks( scorep_otf2_archive );
     scorep_tracing_register_memory_callbacks( scorep_otf2_archive );
 
     OTF2_Archive_SetCreator( scorep_otf2_archive, PACKAGE_STRING );
@@ -374,6 +384,21 @@ SCOREP_Tracing_Finalize( void )
     SCOREP_MutexDestroy( &scorep_otf2_archive_lock );
 }
 
+void
+SCOREP_Tracing_OnMppInit( void )
+{
+    if ( !SCOREP_IsTracingEnabled() )
+    {
+        return;
+    }
+
+    SCOREP_ErrorCode err =
+        scorep_tracing_set_collective_callbacks( scorep_otf2_archive );
+    UTILS_ASSERT( err == SCOREP_SUCCESS );
+
+    OTF2_ErrorCode otf2_err = OTF2_Archive_OpenEvtFiles( scorep_otf2_archive );
+    UTILS_ASSERT( otf2_err == OTF2_SUCCESS );
+}
 
 void
 SCOREP_Tracing_LockArchive( void )
@@ -388,20 +413,6 @@ SCOREP_Tracing_UnlockArchive( void )
     SCOREP_MutexUnlock( scorep_otf2_archive_lock );
 }
 
-
-void
-SCOREP_Tracing_SetIsMaster( bool isMaster )
-{
-    // call this function only once
-    static int master_mode_set;
-    UTILS_ASSERT( !master_mode_set );
-    master_mode_set = 1;
-
-    OTF2_ErrorCode err =
-        OTF2_Archive_SetMasterSlaveMode( scorep_otf2_archive,
-                                         isMaster ? OTF2_MASTER : OTF2_SLAVE );
-    UTILS_ASSERT( err == OTF2_SUCCESS );
-}
 
 OTF2_EvtWriter*
 SCOREP_Tracing_GetEventWriter( void )
@@ -459,6 +470,9 @@ SCOREP_Tracing_FinalizeEventWriters( void )
 
     SCOREP_Location_ForAll( scorep_trace_finalize_event_writer_cb,
                             NULL );
+
+    OTF2_ErrorCode err = OTF2_Archive_CloseEvtFiles( scorep_otf2_archive );
+    UTILS_ASSERT( OTF2_SUCCESS == err );
 }
 
 
@@ -468,7 +482,7 @@ SCOREP_Tracing_WriteDefinitions( void )
     UTILS_ASSERT( scorep_otf2_archive );
 
     /* Write for all local locations the same local definition file */
-    SCOREP_CreateExperimentDir();
+    OTF2_Archive_OpenDefFiles( scorep_otf2_archive );
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, Location, location )
     {
         OTF2_DefWriter* local_definition_writer = OTF2_Archive_GetDefWriter(
@@ -488,6 +502,7 @@ SCOREP_Tracing_WriteDefinitions( void )
                                      local_definition_writer );
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+    OTF2_Archive_CloseDefFiles( scorep_otf2_archive );
 
 
     uint64_t epoch_begin;
@@ -515,7 +530,7 @@ SCOREP_Tracing_WriteDefinitions( void )
 }
 
 void
-SCOREP_Tracing_WriteProperties()
+SCOREP_Tracing_WriteProperties( void )
 {
     UTILS_ASSERT( scorep_otf2_archive );
 

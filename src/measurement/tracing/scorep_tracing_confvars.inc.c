@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -36,8 +36,7 @@
  */
 
 
-bool        scorep_tracing_use_sion;
-uint64_t    scorep_tracing_nlocations_per_sion_file;
+static bool scorep_tracing_use_sion;
 static bool scorep_tracing_compress;
 
 
@@ -50,15 +49,6 @@ static SCOREP_ConfigVariable scorep_tracing_config_variables[] = {
         NULL,
         "false",
         "Whether or not to use libsion as OTF2 substrate",
-        ""
-    },
-    {
-        "nlocations_per_sion_file",
-        SCOREP_CONFIG_TYPE_NUMBER,
-        &scorep_tracing_nlocations_per_sion_file,
-        NULL,
-        "1024",
-        "Number of locations that share one sion file (must be > 0)",
         ""
     },
     {

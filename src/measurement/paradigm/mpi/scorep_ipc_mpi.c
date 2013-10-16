@@ -301,3 +301,23 @@ SCOREP_Ipc_Scatter( void*               sendbuf,
                          root,
                          comm_world_dup ) != MPI_SUCCESS;
 }
+
+int
+SCOREP_Ipc_Scatterv( void*               sendbuf,
+                     int*                sendcounts,
+                     int*                displs,
+                     void*               recvbuf,
+                     int                 recvcount,
+                     SCOREP_Ipc_Datatype datatype,
+                     int                 root )
+{
+    return PMPI_Scatterv( sendbuf,
+                          sendcounts,
+                          displs,
+                          get_mpi_datatype( datatype ),
+                          recvbuf,
+                          recvcount,
+                          get_mpi_datatype( datatype ),
+                          root,
+                          comm_world_dup ) != MPI_SUCCESS;
+}

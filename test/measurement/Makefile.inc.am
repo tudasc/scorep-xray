@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2013,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -111,7 +111,6 @@ string_duplicates_c_LDADD = libscorep_measurement.la                   \
                             libscorep_mpp_mockup.la                    \
                             libscorep_thread_mockup.la                 \
                             libscorep_mutex_mockup.la                  \
-                            libscorep_sion_mockup.la                   \
                             libscorep_online_access_mockup.la
 
 string_duplicates_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@

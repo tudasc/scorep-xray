@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -61,12 +61,8 @@ void
 SCOREP_Tracing_UnlockArchive( void );
 
 
-/**
- * Config variables to configure the SION substrate.
- *
- * Only used in the paradigm dependent tracing files.
- */
-extern bool     scorep_tracing_use_sion;
-extern uint64_t scorep_tracing_nlocations_per_sion_file;
+SCOREP_ErrorCode
+scorep_tracing_set_collective_callbacks( OTF2_Archive* archive );
+
 
 #endif /* SCOREP_INTERNAL_TRACING_H */

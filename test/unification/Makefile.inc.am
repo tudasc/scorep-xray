@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2013,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -54,7 +54,6 @@ unification_test_LDADD    =                               \
     $(LIB_ROOT)libscorep_thread_mockup.la                 \
     $(LIB_ROOT)libscorep_mutex_mockup.la                  \
     $(LIB_ROOT)libscorep_mpp_mockup.la                    \
-    $(LIB_ROOT)libscorep_sion_mockup.la                   \
     $(LIB_ROOT)libscorep_online_access_spp.la
 
 unification_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@

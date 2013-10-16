@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -57,10 +57,10 @@ SCOREP_Tracing_Finalize( void );
 
 
 /**
- * Signals, that this process is the master for the OTF2 archive.
+ * Called when the MPP was initialized.
  */
 void
-SCOREP_Tracing_SetIsMaster( bool isMaster );
+SCOREP_Tracing_OnMppInit( void );
 
 
 /**

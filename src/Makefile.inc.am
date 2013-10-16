@@ -146,9 +146,6 @@ $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_mgmt.la:
 $(LIB_DIR_SCOREP_MPI)libscorep_ipc_mpi.la:
 	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_ipc_mpi.la
 
-$(LIB_DIR_SCOREP_MPI)libscorep_sion_mpp_mpi.la:
-	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_sion_mpp_mpi.la
-
 $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la:
 	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_online_access_mpp_mpi.la
 
@@ -169,7 +166,6 @@ libscorep_mpi_la_LIBADD               = \
     $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_mgmt.la      \
     libscorep_adapter_pomp_omp_mgmt_mockup.la               \
     libscorep_mpp_mpi.la                                    \
-    $(LIB_DIR_SCOREP_MPI)libscorep_sion_mpp_mpi.la          \
     $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
     $(external_libadd)                                      \
     libscorep_thread_mockup.la                              \
@@ -192,7 +188,6 @@ libscorep_serial_la_LIBADD   = \
     libscorep_mpp_mockup.la                   \
     libscorep_thread_mockup.la                \
     libscorep_mutex_mockup.la                 \
-    libscorep_sion_mockup.la                  \
     libscorep_online_access_spp.la
 libscorep_serial_la_LDFLAGS  = $(external_ldflags)
 
@@ -212,7 +207,6 @@ libscorep_omp_la_LIBADD   = \
     libscorep_mpp_mockup.la              \
     libscorep_thread_omp_tpd.la          \
     libscorep_mutex_omp.la               \
-    libscorep_sion_mockup.la             \
     libscorep_online_access_spp.la
 libscorep_omp_la_LDFLAGS  = $(external_ldflags)
 
@@ -238,8 +232,7 @@ libscorep_mpi_omp_la_LIBADD               = \
     libscorep_mpp_mpi.la                                    \
     $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
     libscorep_thread_omp_tpd.la                             \
-    libscorep_mutex_omp.la                                  \
-    libscorep_sion_mockup.la
+    libscorep_mutex_omp.la
 libscorep_mpi_omp_la_LDFLAGS              = $(external_ldflags)
 
 endif

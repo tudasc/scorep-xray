@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2013,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -56,7 +56,7 @@ libscorep_tracing_la_SOURCES = \
     $(SRC_ROOT)src/measurement/tracing/SCOREP_Tracing_ThreadInteraction.h \
     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_definitions.c \
     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_definitions.h \
-    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_file_substrate.h \
     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_types.h \
+    $(SRC_ROOT)src/measurement/tracing/scorep_tracing_collectives.c \
     $(SRC_ROOT)src/measurement/tracing/scorep_rewind_stack_management.c \
     $(SRC_ROOT)src/measurement/tracing/scorep_rewind_stack_management.h

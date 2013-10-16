@@ -283,3 +283,26 @@ SCOREP_Ipc_Scatter( void*               sendbuf,
 
     return 0;
 }
+
+int
+SCOREP_Ipc_Scatterv( void*               sendbuf,
+                     int*                sendcounts,
+                     int*                displs,
+                     void*               recvbuf,
+                     int                 recvcount,
+                     SCOREP_Ipc_Datatype datatype,
+                     int                 root )
+{
+    UTILS_BUG_ON( root != 0,
+                  "Invalid root given for scatter in single process run." );
+
+    /* In non-mpi case, we have only rank zero. Thus copy sendbuf to recvbuf. */
+    if ( ( ( char* )recvbuf + displs[ 0 ] ) != sendbuf )
+    {
+        /* In non-mpi case, we have only rank zero. Thus copy sendbuf to recvbuf. */
+        size_t num = get_datatype_size( datatype ) * recvcount;
+        memcpy( ( char* )recvbuf + displs[ 0 ], sendbuf, num );
+    }
+
+    return 0;
+}
