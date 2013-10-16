@@ -19,13 +19,11 @@ scorep_score_SOURCES = \
 scorep_score_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
-    @OTF2_CPPFLAGS@ \
     @CUBE_READER_CPPFLAGS@ \
     -I$(INC_ROOT)src/utils/include
 
 scorep_score_LDFLAGS = @CUBE_READER_LDFLAGS@
 scorep_score_LDADD = @CUBE_READER_LIBS@ \
-    @OTF2_LIBS@ \
     libscorep_filter.la \
     libutils.la
 

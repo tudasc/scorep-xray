@@ -96,6 +96,7 @@ private:
     uint32_t m_dense_num;
 
     // Size of events
+    uint32_t m_timestamp;
     uint32_t m_dense;
     uint32_t m_enter;
     uint32_t m_exit;
@@ -107,15 +108,6 @@ private:
     uint32_t m_recv;
     uint32_t m_irecv;
     uint32_t m_collective;
-    uint32_t m_fork;
-    uint32_t m_join;
-    uint32_t m_thread_team;
-    uint32_t m_acquire_lock;
-    uint32_t m_release_lock;
-    uint32_t m_task_create;
-    uint32_t m_task_switch;
-    uint32_t m_task_complete;
-    uint32_t m_parameter;
 
 /*
  * Currently handled RMA records
@@ -127,27 +119,33 @@ private:
     uint32_t m_rma_op_complete_blocking;
 
 /*
- * events not handled yet:
+ * RMA events not handled yet:
+ *
+ *  uint32_t m_rma_acquire_lock;
+ *  uint32_t m_rma_atomic;
+ *  uint32_t m_rma_collective_begin;
+ *  uint32_t m_rma_collective_end;
+ *  uint32_t m_rma_get;
+ *  uint32_t m_rma_group_sync;
+ *  uint32_t m_rma_op_complete_non_blocking;
+ *  uint32_t m_rma_op_complete_remote;
+ *  uint32_t m_rma_op_test;
+ *  uint32_t m_rma_release_lock;
+ *  uint32_t m_rma_request_lock;
+ *  uint32_t m_rma_sync;
+ *  uint32_t m_rma_try_lock;
+ *  uint32_t m_rma_wait_change;
  */
-    uint32_t m_thread;
-    uint32_t m_thread_wait;
-    uint32_t m_rma_acquire_lock;
-    uint32_t m_rma_atomic;
-    uint32_t m_rma_collective_begin;
-    uint32_t m_rma_collective_end;
-    uint32_t m_rma_group_sync;
-    uint32_t m_rma_op_complete_non_blocking;
-    uint32_t m_rma_op_complete_remote;
-    uint32_t m_rma_op_test;
-    uint32_t m_rma_release_lock;
-    uint32_t m_rma_request_lock;
-    uint32_t m_rma_sync;
-    uint32_t m_rma_try_lock;
-    uint32_t m_rma_wait_change;
-    uint32_t m_request_test;
-    uint32_t m_request_cancel;
-    uint32_t m_rma_collective;
-    uint32_t m_rma_complete_blocking;
+
+    uint32_t m_fork;
+    uint32_t m_join;
+    uint32_t m_thread_team;
+    uint32_t m_acquire_lock;
+    uint32_t m_release_lock;
+    uint32_t m_task_create;
+    uint32_t m_task_switch;
+    uint32_t m_task_complete;
+    uint32_t m_parameter;
 };
 
 

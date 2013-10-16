@@ -72,23 +72,5 @@ AC_SCOREP_CUBE_READER
 
 AC_SCOREP_ERROR_CODES
 
-AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-    [ac_scorep_frontend="frontend"],
-    [ac_scorep_frontend="backend"])
-
-AS_IF([test -n "${scorep_otf2_bindir}"],
-      [AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cppflags`"])
-       AC_SUBST([OTF2_LIBS],     ["`${scorep_otf2_bindir}/otf2-config --libs`"])
-       AC_SUBST([OTF2_LDFLAGS],  ["`${scorep_otf2_bindir}/otf2-config --ldflags`"])
-       AC_SUBST([OTF2_BINDIR],   ["${scorep_otf2_bindir}"])
-       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_OTF2], [test 1 -eq 1])
-       scorep_otf2_config=${scorep_otf2_bindir}/otf2-config],
-      [AC_SUBST([OTF2_CPPFLAGS], ['-I../vendor/otf2/include -I$(srcdir)/../vendor/otf2/include'])
-       AC_SUBST([OTF2_LIBS],     [../vendor/otf2/build-${ac_scorep_frontend}/libotf2.la])
-       AC_SUBST([OTF2_LDFLAGS],  [])
-       AC_SUBST([OTF2_BINDIR],   [../vendor/otf2/build-${ac_scorep_frontend}])
-       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_OTF2], [test 1 -eq 0])
-       scorep_otf2_config=../vendor/otf2/otf2-mini-config.sh])
-
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
