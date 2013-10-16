@@ -47,7 +47,7 @@
 # AC_SCOREP_LIBSION(SERIAL|OMP|MPI|MPI_OMP)
 AC_DEFUN([AC_SCOREP_LIBSION],
 [
-m4_case([$1], [SERIAL], [], [OMP], [], [MPI], [], [MPI_OMP], [], [m4_fatal([parameter must be either SERIAL, OMP, MPI or MPI_OMP])])
+m4_case([$1], [GENERIC], [], [SERIAL], [], [OMP], [], [MPI], [], [MPI_OMP], [], [m4_fatal([parameter must be either SERIAL, OMP, MPI or MPI_OMP])])
 
 # make SIONCONFIG precious as we use it in AC_CHECK_PROG
 AC_ARG_VAR([SIONCONFIG], [Absolute path to sionconfig, including "sionconfig".])
@@ -101,7 +101,8 @@ if test "x${scorep_with_sionconfig}" != "xno"; then
         m4_case([$1], [SERIAL],  [sionconfig_paradigm_flag="--ser"],
                       [OMP],     [sionconfig_paradigm_flag="--ser"],
                       [MPI],     [sionconfig_paradigm_flag="--mpi"],
-                      [MPI_OMP], [sionconfig_paradigm_flag="--mpi"])
+                      [MPI_OMP], [sionconfig_paradigm_flag="--mpi"],
+                      [GENERIC], [sionconfig_paradigm_flag="--gen"])
 
         scorep_sion_cppflags=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_paradigm_flag --cflags`
         CPPFLAGS="$scorep_sion_cppflags $CPPFLAGS"
@@ -142,6 +143,19 @@ sion_fwrite(NULL,42,42,42);
 
             # paradigm specific libsion checks
             m4_case([$1],
+[GENERIC],
+[AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#include <stdio.h>
+#include <sion.h>
+#include <stddef.h>
+]],[[
+/* generic sion functions */
+sion_generic_paropen(NULL,NULL,NULL,NULL,NULL,NULL,  NULL,NULL,NULL, NULL,NULL,NULL,NULL,NULL);
+sion_generic_parclose(NULL);
+]])],
+                                  [],
+                                  [scorep_have_sion="no"; scorep_sion_ldflags=""; scorep_sion_rpathflags=""; scorep_sion_libs=""])],
+
 [SERIAL],
 [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #include <stdio.h>
@@ -197,18 +211,8 @@ fi
 AC_SUBST([SCOREP_SION_$1_CPPFLAGS], [$scorep_sion_cppflags])
 AC_SUBST([SCOREP_SION_$1_LDFLAGS],  ["$scorep_sion_ldflags $scorep_sion_rpathflags"])
 AC_SUBST([SCOREP_SION_$1_LIBS],     [$scorep_sion_libs])
-AS_IF([test "x${scorep_have_sion}" = "xyes"],
-    [AC_DEFINE([HAVE_SION_$1], [1], [Defined if libsion $1 is available.])])
-AM_CONDITIONAL([HAVE_SION_$1], [test "x${scorep_have_sion}" = "xyes"])
+AC_SCOREP_COND_HAVE([SION_]$1,
+                    [test "x${scorep_have_sion}" = "xyes"],
+                    [Defined if libsion $1 is available.])
 AFS_SUMMARY([SION $1 support], [${scorep_have_sion}])
 ])
-
-
-dnl add omp and hybrid tests when sionconfig supports it
-dnl # omp
-dnl #sion_paropen_omp(NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-dnl #sion_parclose_omp(42);
-
-dnl # mpi_omp
-dnl #sion_paropen_ompi(NULL,NULL,NULL,MPI_COMM_WORLD,&MPI_COMM_WOLRD,NULL,NULL,NULL,NULL,NULL)
-dnl #sion_parclose_ompi(42);

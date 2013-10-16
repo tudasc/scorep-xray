@@ -1,6 +1,6 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
@@ -24,7 +24,7 @@ AC_DEFUN([AC_OTF2_COMMON_CHECKS],
 ## Determine a C compiler to use. If CC is not already set in the environment,
 ## check for gcc and cc, then for other C compilers. Set output variable CC to
 ## the name of the compiler found.
-## 
+##
 ## This macro may, however, be invoked with an optional first argument which,
 ## if specified, must be a blank-separated list of C compilers to search
 ## for. This just gives the user an opportunity to specify an alternative
@@ -43,16 +43,17 @@ AC_SCOREP_COMPILER_CHECKS
 ## macro you can check whether the C compiler has been set to accept C99; if
 ## not, the shell variable ac_cv_prog_cc_c99 is set to `no'.
 AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
+AFS_SUMMARY([C99 compiler used], [$CC])
 
-## Determine a C++ compiler to use. Check whether the environment variable CXX 
-## or CCC (in that order) is set; if so, then set output variable CXX to its 
+## Determine a C++ compiler to use. Check whether the environment variable CXX
+## or CCC (in that order) is set; if so, then set output variable CXX to its
 ## value.
-## 
+##
 ## Otherwise, if the macro is invoked without an argument, then search for a
 ## C++ compiler under the likely names (first g++ and c++ then other
 ## names). If none of those checks succeed, then as a last resort set CXX to
 ## g++.
-## 
+##
 ## This macro may, however, be invoked with an optional first argument which,
 ## if specified, must be a blank-separated list of C++ compilers to search
 ## for.  This just gives the user an opportunity to specify an alternative
@@ -92,7 +93,7 @@ AC_REQUIRE([AC_C_BIGENDIAN])
 #AC_CXX_HAVE_SSTREAM
 #AC_CXX_HAVE_STRSTREAM
 
-AC_SCOREP_LIBSION([SERIAL])
+AC_SCOREP_LIBSION([GENERIC])
 
 AC_REQUIRE([AC_PROG_RANLIB])
 
@@ -136,6 +137,8 @@ AC_CONFIG_FILES([
 
 
 AC_OTF2_ENTROPY_SOURCES
+
+OTF2_PTHREAD
 
 AC_SUBST([PACKAGE_ERROR_CODES_INCDIR], [../include])
 AC_DEFINE_UNQUOTED(

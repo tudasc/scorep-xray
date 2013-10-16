@@ -52,9 +52,12 @@
 # List of defined autoconf macros:
 #  `AFS_PACKAGE_BUILD_NAME`:: The normalized name of the build (e.g. 'backend',
 #                             'MPI backend')
+#  `AFS_PACKAGE_build`::      The build name usable as a symbol in lower case
+#                             (e.g. backend, mpi_backend)
 #  `AFS_PACKAGE_BUILD`::      The build name usable as a symbol in upper case
 #                             (e.g. BACKEND, MPI_BACKEND)
 # List of provided automake substitutions:
+#  'PACKAGE_build'            The value of AFS_PACKAGE_build
 #  'PACKAGE_BUILD'            The value of AFS_PACKAGE_BUILD
 # List of provided config header defines:
 #  `PACKAGE_BUILD_NAME`::     The value of AFS_PACKAGE_BUILD_NAME as a string
@@ -81,8 +84,12 @@ m4_ifnblank([$1], [
     m4_if(m4_substr(AFS_PACKAGE_TOP_BUILD, decr(len(AFS_PACKAGE_TOP_BUILD))), [/],
         [], [m4_fatal([no trailing slash in second argument to AFS_PACKAGE_INIT: ]AFS_PACKAGE_TOP_BUILD)])
 
+    m4_define([AFS_PACKAGE_build],
+        m4_bpatsubst(m4_tolower(m4_normalize($1)), [[^a-z0-9]+], [_]))
+    AC_SUBST([PACKAGE_build], AFS_PACKAGE_build)
+
     m4_define([AFS_PACKAGE_BUILD],
-        m4_bpatsubst(m4_toupper(m4_normalize($1)), [[^A-Z0-9]+], [_]))
+        m4_toupper(AFS_PACKAGE_build))
     AC_DEFINE_UNQUOTED([PACKAGE_BUILD], AFS_PACKAGE_BUILD,
         [Symbol name of the sub-build.])
     AC_SUBST([PACKAGE_BUILD], AFS_PACKAGE_BUILD)
