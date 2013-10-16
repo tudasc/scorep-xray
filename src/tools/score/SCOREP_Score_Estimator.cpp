@@ -39,6 +39,7 @@
 #include "SCOREP_Score_Estimator.hpp"
 #include "SCOREP_Score_Types.hpp"
 #include <SCOREP_Filter.h>
+#include <otf2/OTF2_EventSizeEstimator.h>
 #include <math.h>
 
 using namespace std;
@@ -135,7 +136,6 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
     m_process_num = profile->GetNumberOfProcesses();
 
     m_has_filter = false;
-    m_timestamp  = 8;
     calculate_event_sizes();
 
     m_filtered = NULL;
@@ -174,7 +174,7 @@ SCOREP_Score_Estimator::delete_groups( SCOREP_Score_Group** groups, uint64_t num
 }
 
 void
-SCOREP_Score_Estimator::initialize_regions()
+SCOREP_Score_Estimator::initialize_regions( void )
 {
     m_regions = ( SCOREP_Score_Group** )malloc( m_region_num * sizeof( SCOREP_Score_Group* ) );
     for ( uint64_t region = 0; region < m_region_num; region++ )
@@ -390,7 +390,7 @@ SCOREP_Score_Estimator::Calculate( bool showRegions )
 }
 
 void
-SCOREP_Score_Estimator::PrintGroups()
+SCOREP_Score_Estimator::PrintGroups( void )
 {
     double   total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTime();
     uint64_t max_tbc;
@@ -437,7 +437,7 @@ SCOREP_Score_Estimator::PrintGroups()
 }
 
 void
-SCOREP_Score_Estimator::PrintRegions()
+SCOREP_Score_Estimator::PrintRegions( void )
 {
     quicksort( m_regions, m_region_num );
 
@@ -450,7 +450,7 @@ SCOREP_Score_Estimator::PrintRegions()
 }
 
 void
-SCOREP_Score_Estimator::DumpEventSizes()
+SCOREP_Score_Estimator::DumpEventSizes( void )
 {
     cout << "Dense metrics: " << m_dense << endl;
     cout << "Enter:         " << m_enter << endl;
@@ -471,127 +471,100 @@ SCOREP_Score_Estimator::add_header_size( uint32_t* size )
 }
 
 void
-SCOREP_Score_Estimator::calculate_event_sizes()
+SCOREP_Score_Estimator::calculate_event_sizes( void )
 {
-    if ( m_dense_num == 0 )
-    {
-        m_dense = 0;
-    }
-    else
-    {
-        m_dense = get_compressed_size( m_profile->GetNumberOfMetrics() +
-                                       m_dense_num ) // handle
-                  + 1                                // number
-                  + m_dense_num                      // type ids
-                  + m_dense_num * 8;                 // values
-    }
+    OTF2_EventSizeEstimator* estimator = OTF2_EventSizeEstimator_New();
+    OTF2_EventSizeEstimator_SetNumberOfRegionDefinitions( estimator, m_region_num );
 
-    m_enter = m_timestamp +                         // timestamp
-              get_compressed_size( m_region_num ) + // region handle
-              m_dense;                              // metrics
-    m_enter += get_compressed_size( m_enter );      // record length
+    size_t timestamp_size = OTF2_EventSizeEstimator_GetSizeOfTimestamp( estimator );
+    size_t dense          = OTF2_EventSizeEstimator_GetSizeOfMetricEvent( estimator, m_dense_num );
 
-    m_exit = m_timestamp +                          // timestamp
-             get_compressed_size( m_region_num ) +  // region handle
-             m_dense;                               // metrics
-    m_exit += get_compressed_size( m_exit );        // record length
+    m_enter = timestamp_size
+              + OTF2_EventSizeEstimator_GetSizeOfEnterEvent( estimator )
+              + dense;
 
+    m_exit = timestamp_size
+             + OTF2_EventSizeEstimator_GetSizeOfLeaveEvent( estimator )
+             + m_dense;
 
-    m_send = get_compressed_size( m_process_num ) +              // receiver
-             4 +                                                 // communicator
-             4 +                                                 // tag
-             8;                                                  // message length
-    m_send += get_compressed_size( m_send );                     // record length
+    m_send = OTF2_EventSizeEstimator_GetSizeOfMpiSendEvent( estimator );
 
-    m_isend = m_send + 8;                                        // additional request id
+    m_isend = OTF2_EventSizeEstimator_GetSizeOfMpiIsendEvent( estimator );
 
-    m_isend_complete  = 8;                                       // request id
-    m_isend_complete += get_compressed_size( m_isend_complete ); // record length
+    m_isend_complete = OTF2_EventSizeEstimator_GetSizeOfMpiIsendCompleteEvent( estimator );
+    m_irecv_request  = OTF2_EventSizeEstimator_GetSizeOfMpiIrecvRequestEvent( estimator );
 
-    m_irecv_request  = 8;                                        // request id
-    m_irecv_request += get_compressed_size( m_irecv_request );   // record length
+    m_recv = OTF2_EventSizeEstimator_GetSizeOfMpiRecvEvent( estimator );
 
-    m_recv = get_compressed_size( m_process_num ) +              // receiver
-             4 +                                                 // communicator
-             4 +                                                 // tag
-             8;                                                  // message length
-    m_recv += get_compressed_size( m_recv );                     // record length
+    m_irecv = OTF2_EventSizeEstimator_GetSizeOfMpiIrecvEvent( estimator );
 
-    m_irecv = m_recv + 8;                                        // additional request id
+    m_request_test = OTF2_EventSizeEstimator_GetSizeOfMpiRequestTestEvent( estimator );
 
-    m_collective = 4 +                                           // collective type
-                   4 +                                           // communicator
-                   get_compressed_size( m_process_num ) +        // root
-                   8 +                                           // sent bytes
-                   8 +                                           // received bytes
-                   1;                                            // collective begin
-    m_collective += get_compressed_size( m_collective );         // record length
+    m_request_cancel = OTF2_EventSizeEstimator_GetSizeOfMpiRequestCancelledEvent( estimator );
 
-    m_fork = 4 +                                                 // number of requested threads
-             1;                                                  // model
-    m_fork += get_compressed_size( m_fork );                     // record length
+    m_collective = OTF2_EventSizeEstimator_GetSizeOfMpiCollectiveBeginEvent( estimator )
+                   + OTF2_EventSizeEstimator_GetSizeOfMpiCollectiveEndEvent( estimator );
 
-    m_join = 1 +                                                 // only message type
-             1;                                                  // model
-    m_join += get_compressed_size( m_join );                     // record length
+    m_fork = OTF2_EventSizeEstimator_GetSizeOfThreadForkEvent( estimator );
 
-    m_thread_team = 4 +                                          // thread team begin
-                    4;                                           // thread team end
-    m_thread_team += get_compressed_size( m_thread_team );       // record length
+    m_join = OTF2_EventSizeEstimator_GetSizeOfThreadJoinEvent( estimator );
 
-    m_acquire_lock = 1 +                                         // model
-                     4 +                                         // lock id
-                     4;                                          // acquisition order
-    m_acquire_lock += get_compressed_size( m_acquire_lock );     // record length
+    m_thread_team = OTF2_EventSizeEstimator_GetSizeOfThreadTeamBeginEvent( estimator )
+                    + OTF2_EventSizeEstimator_GetSizeOfThreadTeamEndEvent( estimator );
 
-    m_release_lock = m_acquire_lock;
+    m_acquire_lock = OTF2_EventSizeEstimator_GetSizeOfThreadAcquireLockEvent( estimator );
 
-    m_task_create = 4 +                                    // thread team
-                    4 +                                    // creator thread
-                    4;                                     // generation number
-    m_task_create += get_compressed_size( m_task_create ); // record length
+    m_release_lock = OTF2_EventSizeEstimator_GetSizeOfThreadReleaseLockEvent( estimator );
 
-    m_task_switch   = m_task_create;
-    m_task_complete = m_task_create;
+    m_task_create = OTF2_EventSizeEstimator_GetSizeOfThreadTaskCreateEvent( estimator );
 
-    m_parameter = 4 +                                            // parameter id
-                  8;                                             // value
-    m_parameter += get_compressed_size( m_parameter );           // record length
+    m_task_switch = OTF2_EventSizeEstimator_GetSizeOfThreadTaskSwitchEvent( estimator );
 
-    m_rma_win_create  = 4;                                       // window reference
-    m_rma_win_create += get_compressed_size( m_rma_win_create ); // record length
-    m_rma_win_destroy = m_rma_win_create;
+    m_task_complete = OTF2_EventSizeEstimator_GetSizeOfThreadTaskCompleteEvent( estimator );
 
-    m_rma_get = 4 +                                // window reference
-                4 +                                // remote,
-                8 +                                // bytes,
-                8;                                 // matching id
-    m_rma_get += get_compressed_size( m_rma_get ); // record length
-    m_rma_put  = m_rma_get;
+    m_parameter = OTF2_EventSizeEstimator_GetSizeOfParameterIntEvent( estimator );
 
-    m_rma_op_complete_blocking = 4 +  // window reference
-                                 8;   // matching id
-    m_rma_op_complete_blocking += get_compressed_size( m_rma_op_complete_blocking );
+    m_rma_win_create = OTF2_EventSizeEstimator_GetSizeOfRmaWinCreateEvent( estimator );
 
-    add_header_size( &m_send );
-    add_header_size( &m_isend );
-    add_header_size( &m_isend_complete );
-    add_header_size( &m_irecv_request );
-    add_header_size( &m_recv );
-    add_header_size( &m_irecv );
-    add_header_size( &m_collective );
-    add_header_size( &m_fork );
-    add_header_size( &m_thread_team );
-    add_header_size( &m_thread_team ); // Two times for begin & end
-    add_header_size( &m_acquire_lock );
-    add_header_size( &m_release_lock );
-    add_header_size( &m_task_create );
-    add_header_size( &m_task_switch );
-    add_header_size( &m_task_complete );
-    add_header_size( &m_parameter );
-    add_header_size( &m_rma_win_create );
-    add_header_size( &m_rma_win_destroy );
-    add_header_size( &m_rma_get );
-    add_header_size( &m_rma_put );
-    add_header_size( &m_rma_op_complete_blocking );
+    m_rma_win_destroy = OTF2_EventSizeEstimator_GetSizeOfRmaWinDestroyEvent( estimator );
+
+    m_rma_collective = OTF2_EventSizeEstimator_GetSizeOfRmaCollectiveBeginEvent( estimator )
+                       + OTF2_EventSizeEstimator_GetSizeOfRmaCollectiveEndEvent( estimator );
+
+    m_rma_group_sync = OTF2_EventSizeEstimator_GetSizeOfRmaGroupSyncEvent( estimator );
+
+    m_rma_request_lock = OTF2_EventSizeEstimator_GetSizeOfRmaRequestLockEvent( estimator );
+
+    m_rma_acquire_lock = OTF2_EventSizeEstimator_GetSizeOfRmaAcquireLockEvent( estimator );
+
+    m_rma_try_lock = OTF2_EventSizeEstimator_GetSizeOfRmaTryLockEvent( estimator );
+
+    m_rma_release_lock = OTF2_EventSizeEstimator_GetSizeOfRmaReleaseLockEvent( estimator );
+
+    m_rma_sync = OTF2_EventSizeEstimator_GetSizeOfRmaSyncEvent( estimator );
+
+    m_rma_wait_change = OTF2_EventSizeEstimator_GetSizeOfRmaWaitChangeEvent( estimator );
+
+    m_rma_get = OTF2_EventSizeEstimator_GetSizeOfRmaGetEvent( estimator );
+
+    m_rma_put = OTF2_EventSizeEstimator_GetSizeOfRmaPutEvent( estimator );
+
+    m_rma_atomic = OTF2_EventSizeEstimator_GetSizeOfRmaAtomicEvent( estimator );
+
+    m_rma_op_complete_blocking = OTF2_EventSizeEstimator_GetSizeOfRmaOpCompleteBlockingEvent( estimator );
+
+    m_rma_complete_blocking = OTF2_EventSizeEstimator_GetSizeOfRmaOpCompleteBlockingEvent( estimator );
+
+    m_rma_op_complete_non_blocking = OTF2_EventSizeEstimator_GetSizeOfRmaOpCompleteNonBlockingEvent( estimator );
+
+    m_rma_op_test = OTF2_EventSizeEstimator_GetSizeOfRmaOpTestEvent( estimator );
+
+    m_rma_op_complete_remote = OTF2_EventSizeEstimator_GetSizeOfRmaOpCompleteRemoteEvent( estimator );
+
+    m_thread = OTF2_EventSizeEstimator_GetSizeOfThreadBeginEvent( estimator )
+               + OTF2_EventSizeEstimator_GetSizeOfThreadEndEvent( estimator );
+
+    m_thread_wait = OTF2_EventSizeEstimator_GetSizeOfThreadWaitEvent( estimator );
+
+    OTF2_EventSizeEstimator_Delete( estimator );
 }
