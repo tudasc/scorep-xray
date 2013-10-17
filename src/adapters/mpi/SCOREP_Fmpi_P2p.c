@@ -1783,7 +1783,7 @@ FSUB( MPI_Testsome )( MPI_Fint* incount,
         }
 
     #if HAVE( MPI_STATUSES_IGNORE )
-        if ( array_of_statuses != scorep_mpi_fortran_status_ignore )
+        if ( array_of_statuses != scorep_mpi_fortran_statuses_ignore )
     #endif
         {
             for ( i = 0; i < *outcount; i++ )
