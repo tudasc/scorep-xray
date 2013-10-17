@@ -139,7 +139,7 @@ unify_mpp_hierarchical( void )
      */
     if ( parent != me )
     {
-        /* Phase 1b: Send our local unififed definition manager to our parent. */
+        /* Phase 1b: Send our local unified definition manager to our parent. */
         send_local_unified_definitions_to_parent( parent,
                                                   &moved_page_ids,
                                                   &moved_page_fills,

@@ -468,7 +468,7 @@ define_comms( uint32_t comm_world_size,
         else
         {
             /*
-             * Shift the local mapping to the unififed definition with the
+             * Shift the local mapping to the unified definition with the
              * ammount of already defined unifided non-MPI communicators
              */
             interim_communicator_mapping[ definition->sequence_number ] +=
