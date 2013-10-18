@@ -339,7 +339,7 @@ UTILS_Debug_Printf( uint64_t    bitMask,
     if ( kind )
     {
         const char* kind_str = "Entering";
-        if ( bitMask & UTILS_DEBUG_FUNCTION_EXIT )
+        if ( kind & UTILS_DEBUG_FUNCTION_EXIT )
         {
             kind_str = "Leaving";
         }
