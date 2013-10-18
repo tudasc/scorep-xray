@@ -316,6 +316,15 @@ SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
         mode += " --nvcc";
     }
 
+    if ( m_command_line.enforceStaticLinking() )
+    {
+        mode += " --static";
+    }
+    else if ( m_command_line.enforceDynamicLinking() )
+    {
+        mode += " --dynamic";
+    }
+
     // Generate calls
     m_config_base  = scorep_config + mode;
     m_linker_flags = "`" + scorep_config + mode + " --ldflags` " +
@@ -399,15 +408,6 @@ SCOREP_Instrumenter::postlink( void )
 void
 SCOREP_Instrumenter::link_step( void )
 {
-    if ( m_command_line.enforceStaticLinking() )
-    {
-        m_linker_flags = "-Bstatic " + m_linker_flags;
-    }
-    else if ( m_command_line.enforceDynamicLinking() )
-    {
-        m_linker_flags = "-Bdynamic " + m_linker_flags;
-    }
-
     std::stringstream command;
     command << m_command_line.getCompilerName();
     command << scorep_vector_to_string( m_input_files, " ", "", " " );

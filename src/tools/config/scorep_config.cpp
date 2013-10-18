@@ -86,7 +86,9 @@
     "   --common-revision prints the revision number of the common package\n" \
     "  Options:\n" \
     "   --fortran   Specifies that the required flags are for the Fortran compiler.\n" \
-    "   --nvcc      Convert flags to be suitable for the nvcc compiler.\n"
+    "   --nvcc      Convert flags to be suitable for the nvcc compiler.\n" \
+    "   --static    Use only static Score-P libraries if possible.\n" \
+    "   --dynamic   Use only dynamic Score-P libraries if possible.\n"
 
 std::string m_rpath_head      = "";
 std::string m_rpath_delimiter = "";
@@ -139,6 +141,13 @@ treat_compiler_flags_for_nvcc( std::string& flags );
 static std::deque<std::string>
 remove_system_path( const std::deque<std::string>& path_list );
 
+static std::deque<std::string>
+get_full_library_names( const std::deque<std::string>& library_list,
+                        const std::deque<std::string>& path_list,
+                        bool                           allow_static,
+                        bool                           allow_dynamic,
+                        bool                           only_names );
+
 static inline void
 clean_up()
 {
@@ -153,11 +162,13 @@ main( int    argc,
 {
     int i;
     /* set default mode to mpi */
-    int  action  = 0;
-    int  ret     = EXIT_SUCCESS;
-    bool fortran = false;
-    bool nvcc    = false;
-    bool install = true;
+    int  action        = 0;
+    int  ret           = EXIT_SUCCESS;
+    bool fortran       = false;
+    bool nvcc          = false;
+    bool install       = true;
+    bool allow_dynamic = true;
+    bool allow_static  = true;
 
     SCOREP_Config_LibraryDependencies                 deps;
     std::deque<SCOREP_Config_Adapter*>::iterator      adapter;
@@ -249,6 +260,14 @@ main( int    argc,
         else if ( strcmp( argv[ i ], "--cobi-deps" ) == 0 )
         {
             action = ACTION_COBI_DEPS;
+        }
+        else if ( strcmp( argv[ i ], "--dynamic" ) == 0 )
+        {
+            allow_static = false;
+        }
+        else if ( strcmp( argv[ i ], "--static" ) == 0 )
+        {
+            allow_dynamic = false;
         }
         else if ( strncmp( argv[ i ], "--thread=", 9 ) == 0 )
         {
@@ -353,8 +372,19 @@ main( int    argc,
             break;
 
         case ACTION_LIBS:
-            std::cout << deque_to_string( deps.getLibraries( libs ),
-                                          " ", " ", "" );
+            if ( !allow_dynamic || !allow_static )
+            {
+                libs = get_full_library_names( deps.getLibraries( libs ),
+                                               deps.getRpathFlags( libs, install ),
+                                               allow_static,
+                                               allow_dynamic,
+                                               false );
+            }
+            else
+            {
+                libs = deps.getLibraries( libs );
+            }
+            std::cout << deque_to_string( libs, " ", " ", "" );
             std::cout.flush();
             break;
 
@@ -520,7 +550,7 @@ static std::string
 find_library( std::string                    library,
               const std::deque<std::string>& path_list,
               bool                           allow_static,
-              bool                           allow_shared )
+              bool                           allow_dynamic )
 {
     std::string current_path;
 
@@ -532,7 +562,7 @@ find_library( std::string                    library,
           path != path_list.end(); path++ )
     {
         current_path = *path + "/" + library;
-        if ( allow_shared && exists_file( current_path + ".so" ) )
+        if ( allow_dynamic && exists_file( current_path + ".so" ) )
         {
             return current_path + ".so";
         }
@@ -549,16 +579,21 @@ static std::deque<std::string>
 get_full_library_names( const std::deque<std::string>& library_list,
                         const std::deque<std::string>& path_list,
                         bool                           allow_static,
-                        bool                           allow_shared )
+                        bool                           allow_dynamic,
+                        bool                           only_names )
 {
     std::deque<std::string> full_names;
     for ( std::deque<std::string>::const_iterator lib = library_list.begin();
           lib != library_list.end(); lib++ )
     {
-        std::string name = find_library( *lib, path_list, allow_static, allow_shared );
+        std::string name = find_library( *lib, path_list, allow_static, allow_dynamic );
         if ( name != "" )
         {
             full_names.push_back( name );
+        }
+        else if ( !only_names )
+        {
+            full_names.push_back( *lib );
         }
     }
     return full_names;
@@ -573,7 +608,7 @@ write_cobi_deps( SCOREP_Config_LibraryDependencies& deps,
     std::deque<std::string> path_list    = deps.getRpathFlags( libs, install );
     std::cout << deque_to_string( get_full_library_names( library_list,
                                                           path_list,
-                                                          false, true ),
+                                                          false, true, true ),
                                   "\t<library name=\"",
                                   "\" />\n\t<library name=\"",
                                   "\" />\n" );

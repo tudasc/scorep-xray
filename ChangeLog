@@ -44,6 +44,9 @@
   fixes some problems if Score-P is installed in standard locations.
 - Fixed broken MPI detection in the instrumenter if the MPI compiler
   wrapper is specified with the full path.
+- If Score-P is build with static and dynamic libraries, the selection of
+  using static or dynamic libraries was improved. Using -Bstatic
+  or -Bshared had some side effects and was sometimes unreliable.
 
 ------------------- Released version 1.2.1 ---------------------------
 

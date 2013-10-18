@@ -343,25 +343,13 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
 #if defined( SCOREP_STATIC_BUILD ) && defined( SCOREP_SHARED_BUILD )
     else if ( arg == "--static" )
     {
-#if HAVE_LINK_FLAG_BSTATIC
         m_link_static = enabled;
         return scorep_parse_mode_param;
-#else   // HAVE_LINK_FLAG_BSTATIC
-        std::cerr << "The --static option is not supported with the used compiler."
-                  << std::endl;
-        exit( EXIT_FAILURE );
-#endif  // HAVE_LINK_FLAG_BSTATIC
     }
     else if ( arg == "--dynamic" )
     {
-#if HAVE_LINK_FLAG_BDYNAMIC
         m_link_static = disabled;
         return scorep_parse_mode_param;
-#else   // HAVE_LINK_FLAG_BDYNAMIC
-        std::cerr << "The --dynamic option is not supported with the used compiler."
-                  << std::endl;
-        exit( EXIT_FAILURE );
-#endif  // HAVE_LINK_FLAG_BDYNAMIC
     }
 #elif defined( SCOREP_STATIC_BUILD )
     else if ( arg == "--static" )
