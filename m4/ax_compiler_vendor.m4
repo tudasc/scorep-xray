@@ -53,6 +53,7 @@ AC_DEFUN([AX_COMPILER_VENDOR],
            ibm:       __xlc__,__xlC__,__IBMC__,__IBMCPP__
            pathscale: __PATHCC__,__PATHSCALE__
            clang:     __clang__
+           fujitsu:   __FUJITSU
            gnu:       __GNUC__
            sun:       __SUNPRO_C,__SUNPRO_CC
            hp:        __HP_cc,__HP_aCC
