@@ -56,7 +56,8 @@ otf2_pthread_barrier_support=no
 AS_IF([test "x$ac_scorep_frontend" = "xyes"], [
     AX_PTHREAD([
         otf2_pthread_support=yes
-        _OTF2_PTHREAD_BARRIER([otf2_pthread_barrier_support=yes])])])
+        _OTF2_PTHREAD_BARRIER([otf2_pthread_barrier_support=yes],
+                              [otf2_pthread_support=no])])])
 AM_CONDITIONAL([HAVE_PTHREAD], [test "x$otf2_pthread_support" = "xyes"])
 AM_CONDITIONAL([HAVE_PTHREAD_BARRIER], [test "x$otf2_pthread_barrier_support" = "xyes"])
 AS_IF([test "x${otf2_pthread_barrier_support}" = "xyes"], [
