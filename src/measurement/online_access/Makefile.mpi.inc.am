@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2013,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -36,9 +36,7 @@ if HAVE_MPI_SUPPORT
 
 lib_LTLIBRARIES += libscorep_online_access_mpi_mockup.la
 libscorep_online_access_mpi_mockup_la_SOURCES = \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control_mockup.c \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mockup.c	\
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_connection.h
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mockup.c
 libscorep_online_access_mpi_mockup_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS) \
