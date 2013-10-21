@@ -47,6 +47,9 @@
 - If Score-P is build with static and dynamic libraries, the selection of
   using static or dynamic libraries was improved. Using -Bstatic
   or -Bshared had some side effects and was sometimes unreliable.
+- Suppress failed assertion messages when initialzing compiler instrumentation
+  with intel compilers without libbfd. The measurement completes even
+  if these messages exist.
 
 ------------------- Released version 1.2.1 ---------------------------
 

@@ -364,19 +364,33 @@ static bool
 scorep_compiler_create_nm_file( char* nmfile,
                                 char* exefile )
 {
-    char command[ 1024 ];
+    char* errfile = malloc( strlen( nmfile ) + 5 );
+    UTILS_ASSERT( errfile );
+    sprintf( errfile, "%s_err", nmfile );
+
+    char* command = malloc( strlen( nmfile )  +
+                            strlen( errfile ) +
+                            strlen( exefile ) +
+                            strlen( SCOREP_BACKEND_NM ) + 15 );
+    UTILS_ASSERT( exefile );
+
 #ifdef GNU_DEMANGLE
-    sprintf( command, SCOREP_BACKEND_NM " -Aol %s > %s", exefile, nmfile );
+    sprintf( command, SCOREP_BACKEND_NM " -Aol %s 2> %s > %s", exefile, nmfile, nmfile );
 #else /* GNU_DEMANGLE */
-    sprintf( command, SCOREP_BACKEND_NM " -ol %s > %s", exefile, nmfile );
+    sprintf( command, SCOREP_BACKEND_NM " -ol %s 2> %s > %s", exefile, nmfile, nmfile );
 #endif /* GNU_DEMANGLE */
     if ( system( command ) != EXIT_SUCCESS )
     {
         UTILS_ERROR( SCOREP_ERROR_ON_SYSTEM_CALL,
                      "Failed to get symbol table output using following command: %s",
                      command );
+        free( errfile );
+        free( command );
         return false;
     }
+    remove( errfile );
+    free( errfile );
+    free( command );
     return true;
 }
 
@@ -396,7 +410,7 @@ scorep_compiler_get_sym_tab( void )
     FILE* nmfile;
     char  line[ 1024 ];
     char  path[ SCOREP_COMPILER_BUFFER_LEN ] = { 0 };
-    char  nmfilename[ 64 ];
+    char  nmfilename[ 1024 ];
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Read symbol table using nm" );
 
