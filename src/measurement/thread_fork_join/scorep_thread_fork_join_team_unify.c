@@ -37,28 +37,21 @@
 
 
 #include <config.h>
+#include <SCOREP_ThreadForkJoin_Mgmt.h>
+#include "scorep_thread_fork_join_team.h"
+#include <scorep_thread_fork_join_model_specific.h>
 
-#include "scorep_omp_thread_teams.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <inttypes.h>
+#include <scorep_location.h>
+#include <scorep_unify_helpers.h>
+#include <SCOREP_Subsystem.h>
 
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME UNIFY
 #include <UTILS_Debug.h>
 
-#include <scorep_location.h>
-#include <SCOREP_Definitions.h>
-#include <definitions/SCOREP_Definitions.h>
-#include <scorep_ipc.h>
-#include <scorep_types.h>
-
-#include <scorep_unify_helpers.h>
 
 static uint32_t
-define_omp_locations( uint32_t* local_to_thread_id )
+define_fork_join_locations( uint32_t* local_to_thread_id )
 {
     /* count the number of Open MP locations locally */
     uint32_t number_of_locations = 0;
@@ -95,10 +88,21 @@ define_omp_locations( uint32_t* local_to_thread_id )
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
-    /* collectivly define the group of the locations */
+    /* Collectively define the group of the locations */
+    SCOREP_GroupType group;
+    const char*      group_name;
+    switch ( scorep_thread_get_paradigm() )
+    {
+        case SCOREP_PARADIGM_OPENMP:
+            group      = SCOREP_GROUP_OPENMP_LOCATIONS;
+            group_name = "OpenMP";
+            break;
+        default:
+            UTILS_BUG( "Fork-join threading component provided invalid paradigm." );
+    }
     uint32_t offset_to_global = scorep_unify_helper_define_comm_locations(
-        SCOREP_GROUP_OPENMP_LOCATIONS,
-        "OpenMP",
+        group,
+        group_name,
         number_of_locations,
         my_locations );
 
@@ -124,8 +128,8 @@ count_total_thread_teams( SCOREP_Location* location,
     {
         return false;
     }
-    struct scorep_omp_thread_team_data* data =
-        SCOREP_Location_GetThreadTeamData( location );
+    struct scorep_thread_team_data* data =
+        SCOREP_Location_GetSubsystemData( location, scorep_thread_fork_join_subsystem_id );
     *total_thread_teams += data->team_leader_counter;
     UTILS_DEBUG( "Location %u/%u on rank %u was in %u team(s) the leader:",
                  SCOREP_Location_GetId( location ),
@@ -142,7 +146,7 @@ count_total_thread_teams( SCOREP_Location* location,
         InterimCommunicator,
         page_manager )
     {
-        if ( !( definition->paradigm_type == SCOREP_PARADIGM_OPENMP ) )
+        if ( !( definition->paradigm_type & SCOREP_PARADIGM_THREAD_FORK_JOIN ) )
         {
             /*
              * unlikely, but who knows, maybe we have one day a manager entry
@@ -151,7 +155,7 @@ count_total_thread_teams( SCOREP_Location* location,
             continue;
         }
 
-        struct scorep_omp_comm_payload* payload =
+        struct scorep_thread_team_comm_payload* payload =
             SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
         UTILS_DEBUG( " %u[%u, %u, %u, %u]",
@@ -177,8 +181,8 @@ find_next_thread_team( SCOREP_Location* location,
     {
         return false;
     }
-    struct scorep_omp_thread_team_data* data =
-        SCOREP_Location_GetThreadTeamData( location );
+    struct scorep_thread_team_data* data =
+        SCOREP_Location_GetSubsystemData( location, scorep_thread_fork_join_subsystem_id );
 
     /* Search in the definitions for a thread team canditate */
     SCOREP_Allocator_PageManager* page_manager =
@@ -189,7 +193,7 @@ find_next_thread_team( SCOREP_Location* location,
         InterimCommunicator,
         page_manager )
     {
-        if ( !( definition->paradigm_type == SCOREP_PARADIGM_OPENMP ) )
+        if ( !( definition->paradigm_type & SCOREP_PARADIGM_THREAD_FORK_JOIN ) )
         {
             /*
              * unlikely, but who knows, maybe we have one day a manager entry
@@ -198,7 +202,7 @@ find_next_thread_team( SCOREP_Location* location,
             continue;
         }
 
-        struct scorep_omp_comm_payload* payload =
+        struct scorep_thread_team_comm_payload* payload =
             SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
         /* Skip non-team-lader teams */
@@ -266,15 +270,15 @@ find_thread_team_members( SCOREP_Location* location,
         SCOREP_Allocator_GetAddressFromMovableMemory(
             page_manager,
             team_leader_handle );
-    struct scorep_omp_comm_payload* team_leader_payload =
+    struct scorep_thread_team_comm_payload* team_leader_payload =
         SCOREP_InterimCommunicatorHandle_GetPayload( team_leader_handle );
 
     if ( SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_CPU_THREAD )
     {
         return false;
     }
-    struct scorep_omp_thread_team_data* data =
-        SCOREP_Location_GetThreadTeamData( location );
+    struct scorep_thread_team_data* data =
+        SCOREP_Location_GetSubsystemData( location, scorep_thread_fork_join_subsystem_id );
 
     SCOREP_AnyHandle* hash_table_bucket =
         &data->thread_team.hash_table[ team_leader->hash_value & data->thread_team.hash_table_mask ];
@@ -285,7 +289,7 @@ find_thread_team_members( SCOREP_Location* location,
             SCOREP_Allocator_GetAddressFromMovableMemory(
                 page_manager,
                 thread_team_handle );
-        struct scorep_omp_comm_payload* thread_team_payload =
+        struct scorep_thread_team_comm_payload* thread_team_payload =
             SCOREP_InterimCommunicatorHandle_GetPayload( thread_team_handle );
 
         /*
@@ -333,8 +337,8 @@ create_mapping( SCOREP_Location* location,
     {
         return false;
     }
-    struct scorep_omp_thread_team_data* data =
-        SCOREP_Location_GetThreadTeamData( location );
+    struct scorep_thread_team_data* data =
+        SCOREP_Location_GetSubsystemData( location, scorep_thread_fork_join_subsystem_id );
 
     SCOREP_Allocator_PageManager* page_manager =
         SCOREP_Location_GetMemoryPageManager( location,
@@ -346,7 +350,7 @@ create_mapping( SCOREP_Location* location,
         InterimCommunicator,
         page_manager )
     {
-        if ( !( definition->paradigm_type == SCOREP_PARADIGM_OPENMP ) )
+        if ( !( definition->paradigm_type & SCOREP_PARADIGM_THREAD_FORK_JOIN ) )
         {
             /*
              * unlikely, but who knows, maybe we have one day a manager entry
@@ -355,7 +359,7 @@ create_mapping( SCOREP_Location* location,
             continue;
         }
 
-        struct scorep_omp_comm_payload* payload =
+        struct scorep_thread_team_comm_payload* payload =
             SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
         SCOREP_CommunicatorHandle collated_team_handle = definition->unified;
@@ -386,12 +390,12 @@ create_mapping( SCOREP_Location* location,
 }
 
 
-void
-scorep_omp_unify_thread_teams( void )
+static SCOREP_ErrorCode
+unify_teams_pre( void )
 {
     uint32_t local_to_thread_id[ scorep_local_definition_manager.location.counter ];
 
-    uint32_t max_number_of_threads = define_omp_locations( local_to_thread_id );
+    uint32_t max_number_of_threads = define_fork_join_locations( local_to_thread_id );
 
     uint64_t thread_team_members[ max_number_of_threads ];
 
@@ -415,7 +419,7 @@ scorep_omp_unify_thread_teams( void )
             SCOREP_LOCAL_HANDLE_DEREF(
                 current_team_leader_handle,
                 InterimCommunicator );
-        struct scorep_omp_comm_payload* current_team_leader_payload =
+        struct scorep_thread_team_comm_payload* current_team_leader_payload =
             SCOREP_InterimCommunicatorHandle_GetPayload( current_team_leader_handle );
 
         UTILS_DEBUG( "Next thread team %u{%u, %u, %u}",
@@ -438,9 +442,18 @@ scorep_omp_unify_thread_teams( void )
         SCOREP_Location_ForAll( find_thread_team_members, args );
 
         /* Now we can trigger the group definition */
+        SCOREP_GroupType group;
+        switch ( scorep_thread_get_paradigm() )
+        {
+            case SCOREP_PARADIGM_OPENMP:
+                group = SCOREP_GROUP_OPENMP_THREAD_TEAM;
+                break;
+            default:
+                UTILS_BUG( "Fork-join threading component provided invalid paradigm." );
+        }
         SCOREP_GroupHandle group_handle =
             SCOREP_Definitions_NewGroup(
-                SCOREP_GROUP_OPENMP_THREAD_TEAM,
+                group,
                 "",
                 current_team_leader_payload->num_threads,
                 thread_team_members );
@@ -460,7 +473,7 @@ scorep_omp_unify_thread_teams( void )
                     current_team_leader->parent_handle,
                     InterimCommunicator );
             parent_handle = parent_thread_team->unified;
-            struct scorep_omp_comm_payload* parent_thread_team_payload =
+            struct scorep_thread_team_comm_payload* parent_thread_team_payload =
                 SCOREP_InterimCommunicatorHandle_GetPayload( current_team_leader->parent_handle );
             if ( parent_thread_team_payload->thread_num != 0 )
             {
@@ -486,10 +499,45 @@ scorep_omp_unify_thread_teams( void )
 
         i++;
     }
+    return SCOREP_SUCCESS;
 }
 
-void
-scorep_omp_unify_thread_teams_finalize( void )
+static SCOREP_ErrorCode
+unify_teams_post( void )
 {
     SCOREP_Location_ForAll( create_mapping, NULL );
+    return SCOREP_SUCCESS;
 }
+
+
+static SCOREP_ErrorCode
+subsystem_register( size_t subsystem_id )
+{
+    scorep_thread_fork_join_subsystem_id = subsystem_id;
+    return SCOREP_SUCCESS;
+}
+
+
+static SCOREP_ErrorCode
+create_team_data( SCOREP_Location* location )
+{
+    SCOREP_Location_SetSubsystemData( location,
+                                      scorep_thread_fork_join_subsystem_id,
+                                      scorep_thread_fork_join_create_team_data( location ) );
+    return SCOREP_SUCCESS;
+}
+
+
+const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin =
+{
+    .subsystem_name              = "THREAD FORK JOIN",
+    .subsystem_register          = &subsystem_register,
+    .subsystem_init              = NULL,
+    .subsystem_init_location     = &create_team_data,
+    .subsystem_finalize_location = NULL,
+    .subsystem_pre_unify         = &unify_teams_pre,
+    .subsystem_post_unify        = &unify_teams_post,
+    .subsystem_finalize          = NULL,
+    .subsystem_deregister        = NULL,
+    .subsystem_control           = NULL
+};

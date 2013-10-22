@@ -60,7 +60,6 @@
 #include "scorep_events_common.h"
 #include "scorep_runtime_management.h"
 #include "scorep_types.h"
-#include "scorep_thread.h"
 
 
 /**
@@ -1070,9 +1069,9 @@ SCOREP_RmaOpCompleteRemote( SCOREP_InterimRmaWindowHandle windowHandle,
 
 
 void
-SCOREP_ThreadAcquireLock( SCOREP_ThreadModel model,
-                          uint32_t           lockId,
-                          uint32_t           acquisitionOrder )
+SCOREP_ThreadAcquireLock( SCOREP_ParadigmType paradigm,
+                          uint32_t            lockId,
+                          uint32_t            acquisitionOrder )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -1085,24 +1084,21 @@ SCOREP_ThreadAcquireLock( SCOREP_ThreadModel model,
     {
         SCOREP_Tracing_ThreadAcquireLock( location,
                                           timestamp,
-                                          model,
+                                          paradigm,
                                           lockId,
                                           acquisitionOrder );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
-        if ( model == SCOREP_THREAD_MODEL_OPENMP )
-        {
-            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
-        }
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_LOCK_EVENT_COMPLETE );
     }
 }
 
 
 void
-SCOREP_ThreadReleaseLock( SCOREP_ThreadModel model,
-                          uint32_t           lockId,
-                          uint32_t           acquisitionOrder )
+SCOREP_ThreadReleaseLock( SCOREP_ParadigmType paradigm,
+                          uint32_t            lockId,
+                          uint32_t            acquisitionOrder )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     /* use the timestamp from the associated enter */
@@ -1116,16 +1112,13 @@ SCOREP_ThreadReleaseLock( SCOREP_ThreadModel model,
     {
         SCOREP_Tracing_ThreadReleaseLock( location,
                                           timestamp,
-                                          model,
+                                          paradigm,
                                           lockId,
                                           acquisitionOrder );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
-        if ( model == SCOREP_THREAD_MODEL_OPENMP )
-        {
-            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
-        }
+        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_LOCK_EVENT_COMPLETE );
     }
 }
 

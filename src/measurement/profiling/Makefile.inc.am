@@ -87,5 +87,8 @@ libscorep_profile_la_SOURCES =                                              \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.c      \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.h
 
-libscorep_profile_la_CPPFLAGS = $(PROFILE_FLAGS) -DDOCDIR='"$(docdir)"'
+libscorep_profile_la_CPPFLAGS = \
+    $(PROFILE_FLAGS) \
+    -DDOCDIR='"$(docdir)"' \
+    -I$(INC_DIR_THREAD_FORK_JOIN)
 

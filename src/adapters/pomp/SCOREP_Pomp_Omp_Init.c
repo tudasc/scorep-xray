@@ -61,15 +61,6 @@ SCOREP_RegionHandle scorep_pomp_lock_region_handles[ SCOREP_POMP_REGION_LOCK_NUM
  *                                                       POMP OpenMP subsystem *
  ******************************************************************************/
 
-extern SCOREP_ErrorCode
-scorep_omp_create_location_data( SCOREP_Location* location );
-extern void
-scorep_omp_destroy_location_data( SCOREP_Location* location );
-extern void
-scorep_omp_unify_thread_teams( void );
-extern void
-scorep_omp_unify_thread_teams_finalize( void );
-
 size_t scorep_pomp_omp_subsystem_id;
 
 static SCOREP_ErrorCode
@@ -111,43 +102,6 @@ scorep_pomp_omp_init( void )
     return SCOREP_SUCCESS;
 }
 
-static SCOREP_ErrorCode
-scorep_pomp_omp_init_location( SCOREP_Location* locationData )
-{
-    UTILS_DEBUG_ENTRY();
-    if ( SCOREP_LOCATION_TYPE_CPU_THREAD == SCOREP_Location_GetType( locationData ) )
-    {
-        return scorep_omp_create_location_data( locationData );
-    }
-    return SCOREP_SUCCESS;
-}
-
-static void
-scorep_pomp_omp_finalize_location( SCOREP_Location* locationData )
-{
-    UTILS_DEBUG_ENTRY();
-    if ( SCOREP_LOCATION_TYPE_CPU_THREAD == SCOREP_Location_GetType( locationData ) )
-    {
-        scorep_omp_destroy_location_data( locationData );
-    }
-}
-
-static SCOREP_ErrorCode
-scorep_pomp_omp_pre_unify( void )
-{
-    scorep_omp_unify_thread_teams();
-
-    return SCOREP_SUCCESS;
-}
-
-static SCOREP_ErrorCode
-scorep_pomp_omp_post_unify( void )
-{
-    scorep_omp_unify_thread_teams_finalize();
-
-    return SCOREP_SUCCESS;
-}
-
 static void
 scorep_pomp_omp_finalize( void )
 {
@@ -168,10 +122,10 @@ const SCOREP_Subsystem SCOREP_Subsystem_PompOmpAdapter =
     .subsystem_name              = "POMP2 OpenMP Adapter / Version 1.0",
     .subsystem_register          = &scorep_pomp_omp_register,
     .subsystem_init              = &scorep_pomp_omp_init,
-    .subsystem_init_location     = &scorep_pomp_omp_init_location,
-    .subsystem_finalize_location = &scorep_pomp_omp_finalize_location,
-    .subsystem_pre_unify         = &scorep_pomp_omp_pre_unify,
-    .subsystem_post_unify        = &scorep_pomp_omp_post_unify,
+    .subsystem_init_location     = NULL,
+    .subsystem_finalize_location = NULL,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = NULL,
     .subsystem_finalize          = &scorep_pomp_omp_finalize,
     .subsystem_deregister        = &scorep_pomp_omp_deregister,
     .subsystem_control           = NULL

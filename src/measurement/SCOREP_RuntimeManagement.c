@@ -74,7 +74,7 @@
 #include "scorep_environment.h"
 #include "scorep_status.h"
 #include "scorep_ipc.h"
-#include "scorep_thread.h"
+#include <SCOREP_ThreadForkJoin_Mgmt.h>
 #include "scorep_location.h"
 #include "scorep_runtime_management.h"
 #include "scorep_system_tree.h"
@@ -200,7 +200,7 @@ SCOREP_InitMeasurement( void )
     system_tree_path = NULL;
 
     SCOREP_TIME( SCOREP_Location_Initialize, ( ) );
-    SCOREP_TIME( SCOREP_Thread_Initialize, ( ) );
+    SCOREP_TIME( SCOREP_ThreadForkJoin_Initialize, ( ) );
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
 
     if ( !SCOREP_Status_IsMpp() )
@@ -527,7 +527,7 @@ scorep_finalize( void )
 
     SCOREP_TIME( scorep_subsystems_deregister, ( ) ); // here PMPI_Finalize is called
 
-    SCOREP_TIME( SCOREP_Thread_Finalize, ( ) );
+    SCOREP_TIME( SCOREP_ThreadForkJoin_Finalize, ( ) );
     SCOREP_TIME( SCOREP_Memory_Finalize, ( ) );
 
     SCOREP_TIME_STOP_TIMING( scorep_finalize );

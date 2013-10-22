@@ -71,11 +71,21 @@ scorep_properties[ SCOREP_PROPERTY_MAX ] =
         .condition    = SCOREP_PROPERTY_CONDITION_ANY,
         .initialValue = true
     },
-    // SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE
+    // SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE
     {
         .condition    = SCOREP_PROPERTY_CONDITION_ANY,
         .initialValue = true
     },
+    // SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE
+    {
+        .condition    = SCOREP_PROPERTY_CONDITION_ANY,
+        .initialValue = true
+    },
+    // SCOREP_PROPERTY_THREAD_LOCK_EVENT_COMPLETE
+    {
+        .condition    = SCOREP_PROPERTY_CONDITION_ANY,
+        .initialValue = true
+    }
 };
 
 

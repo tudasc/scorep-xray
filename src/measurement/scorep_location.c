@@ -2,25 +2,25 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
- *    RWTH Aachen, Germany
+ * RWTH Aachen, Germany
  *
  * Copyright (c) 2009-2013,
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
  * Copyright (c) 2009-2013,
- *    Technische Universitaet Dresden, Germany
+ * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
- *    University of Oregon, Eugene, USA
+ * University of Oregon, Eugene, USA
  *
  * Copyright (c) 2009-2013,
- *    Forschungszentrum Juelich GmbH, Germany
+ * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
- *    Technische Universitaet Muenchen, Germany
+ * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
@@ -46,7 +46,7 @@
 #include <SCOREP_Mutex.h>
 #include "scorep_subsystem.h"
 #include "scorep_status.h"
-#include "scorep_thread.h"
+#include <SCOREP_ThreadForkJoin_Mgmt.h>
 #include <SCOREP_Definitions.h>
 #include <definitions/SCOREP_Definitions.h>
 
@@ -66,9 +66,6 @@ struct SCOREP_Location
     SCOREP_TracingData*           tracing_data;
 
     SCOREP_Location*              next;  // store location objects in list for easy cleanup
-
-    /** Data needed for thread team tracking*/
-    void* thread_team_data;
 
     /** Flexible array member with length scorep_subsystems_get_number() */
     void* per_subsystem_data[];
@@ -204,20 +201,6 @@ SCOREP_Location_SetSubsystemData( SCOREP_Location* locationData,
     assert( subsystem_id < scorep_subsystems_get_number() );
 
     locationData->per_subsystem_data[ subsystem_id ] = subsystem_data;
-}
-
-void*
-SCOREP_Location_GetThreadTeamData( SCOREP_Location* locationData )
-{
-    return locationData->thread_team_data;
-}
-
-
-void
-SCOREP_Location_SetThreadTeamData( SCOREP_Location* locationData,
-                                   void*            thread_team_data )
-{
-    locationData->thread_team_data = thread_team_data;
 }
 
 
@@ -410,4 +393,15 @@ SCOREP_Location_ForAll( bool  ( * cb )( SCOREP_Location*,
             break;
         }
     }
+}
+
+
+const char*
+SCOREP_Location_GetName( SCOREP_Location* locationData )
+{
+    return SCOREP_LOCAL_HANDLE_DEREF(
+               SCOREP_LOCAL_HANDLE_DEREF(
+                   locationData->location_handle,
+                   Location )->name_handle,
+               String )->string_data;
 }

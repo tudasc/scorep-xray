@@ -43,7 +43,7 @@
 
 #include <scorep_ipc.h>
 #include <scorep_runtime_management.h>
-#include <scorep_thread.h>
+#include <SCOREP_ThreadForkJoin_Mgmt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

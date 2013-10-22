@@ -61,7 +61,6 @@ libscorep_measurement_core_la_SOURCES =                           \
     $(SRC_ROOT)src/measurement/scorep_subsystem.h                 \
     $(SRC_ROOT)src/measurement/scorep_types.c                     \
     $(SRC_ROOT)src/measurement/scorep_types.h                     \
-    $(SRC_ROOT)src/measurement/scorep_thread.h                    \
     $(SRC_ROOT)src/measurement/scorep_location.h                  \
     $(SRC_ROOT)src/measurement/scorep_location.c                  \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.h        \
@@ -88,6 +87,7 @@ libscorep_measurement_core_la_SOURCES =                           \
 libscorep_measurement_core_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
     -I$(INC_ROOT)src/services/include \
+    -I$(INC_DIR_THREAD_FORK_JOIN) \
     @CUBE_WRITER_CPPFLAGS@
 
 ## paradigm thread
@@ -105,45 +105,9 @@ libscorep_mutex_omp_la_CPPFLAGS = \
 libscorep_mutex_omp_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
-lib_LTLIBRARIES += libscorep_thread_omp_tpd.la
-libscorep_thread_omp_tpd_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-libscorep_thread_omp_tpd_la_SOURCES  =                       \
-    $(SRC_ROOT)src/measurement/scorep_thread_omp_tpd.c \
-    $(SRC_ROOT)src/measurement/paradigm/omp/scorep_omp_thread_teams.c \
-    $(SRC_ROOT)src/measurement/paradigm/omp/scorep_omp_thread_teams.h \
-    $(SRC_ROOT)src/measurement/paradigm/omp/scorep_omp_unify.c
-libscorep_thread_omp_tpd_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    -I$(INC_ROOT)src/measurement/include \
-    -I$(PUBLIC_INC_DIR) \
-    $(UTILS_CPPFLAGS) \
-    -I$(INC_DIR_COMMON_HASH) \
-    -I$(INC_ROOT)src/services/include \
-    -I$(INC_ROOT)src/measurement/profiling/include \
-    -I$(INC_ROOT)src/measurement \
-    -I$(INC_DIR_COMMON_HASH)
-libscorep_thread_omp_tpd_la_LIBADD = \
-    libscorep_thread_generic.la
-libscorep_thread_omp_tpd_la_LDFLAGS = \
-    $(library_api_version_ldflags)
-
-endif
+endif HAVE_OPENMP_SUPPORT
 
 ##paradigm non thread
-
-noinst_LTLIBRARIES += libscorep_thread_generic.la
-libscorep_thread_generic_la_SOURCES = \
-    $(SRC_ROOT)src/measurement/scorep_thread_generic.c \
-    $(SRC_ROOT)src/measurement/scorep_thread_generic_fork_join.c
-libscorep_thread_generic_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    -I$(INC_ROOT)src/measurement/include \
-    -I$(PUBLIC_INC_DIR) \
-    $(UTILS_CPPFLAGS) \
-    -I$(INC_ROOT)src/measurement/profiling/include \
-    -I$(INC_ROOT)src/measurement \
-    -I$(INC_ROOT)src/services/include
-
 
 lib_LTLIBRARIES += libscorep_mutex_mockup.la
 libscorep_mutex_mockup_la_SOURCES = \
@@ -154,19 +118,6 @@ libscorep_mutex_mockup_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     $(UTILS_CPPFLAGS)
 libscorep_mutex_mockup_la_LDFLAGS = \
-    $(library_api_version_ldflags)
-
-lib_LTLIBRARIES += libscorep_thread_mockup.la
-libscorep_thread_mockup_la_SOURCES  =                   \
-    $(SRC_ROOT)src/measurement/scorep_thread_mockup.c
-libscorep_thread_mockup_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    -I$(INC_ROOT)src/measurement/include \
-    -I$(PUBLIC_INC_DIR) \
-    $(UTILS_CPPFLAGS) \
-    -I$(INC_ROOT)src/measurement/profiling/include \
-    -I$(INC_ROOT)src/measurement
-libscorep_thread_mockup_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
 ## paradigm non mpp

@@ -51,7 +51,7 @@ unification_test_LDADD    =                               \
     $(LIB_ROOT)libscorep_adapter_pomp_user_mgmt_mockup.la \
     $(LIB_ROOT)libscorep_adapter_mpi_mgmt_mockup.la       \
     $(LIB_ROOT)libscorep_adapter_cuda_mgmt_mockup.la      \
-    $(LIB_ROOT)libscorep_thread_mockup.la                 \
+    $(LIB_ROOT)libscorep_thread_fork_join_mockup.la                 \
     $(LIB_ROOT)libscorep_mutex_mockup.la                  \
     $(LIB_ROOT)libscorep_mpp_mockup.la                    \
     $(LIB_ROOT)libscorep_online_access_spp.la

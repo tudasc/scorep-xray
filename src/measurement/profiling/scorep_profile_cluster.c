@@ -54,7 +54,7 @@
 #include <scorep_runtime_management.h> /* SCOREP_GetExperimentDirName() */
 #include <scorep_environment.h>
 #include <scorep_ipc.h>
-#include <scorep_thread.h>
+#include <SCOREP_ThreadForkJoin_Mgmt.h>
 #include <math.h>                      /* sqrt() and log10() */
 #include <float.h>                     /* DBL_MAX */
 #include <string.h>                    /* strlen() */

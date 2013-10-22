@@ -109,7 +109,7 @@ string_duplicates_c_LDADD = libscorep_measurement.la                   \
                             libscorep_adapter_mpi_mgmt_mockup.la       \
                             libscorep_adapter_cuda_mgmt_mockup.la      \
                             libscorep_mpp_mockup.la                    \
-                            libscorep_thread_mockup.la                 \
+                            libscorep_thread_fork_join_mockup.la                 \
                             libscorep_mutex_mockup.la                  \
                             libscorep_online_access_mockup.la
 

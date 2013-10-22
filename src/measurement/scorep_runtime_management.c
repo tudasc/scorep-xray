@@ -40,7 +40,7 @@
 
 #include <SCOREP_Timing.h>
 #include <UTILS_Error.h>
-#include "scorep_thread.h"
+#include <SCOREP_ThreadForkJoin_Mgmt.h>
 #include <SCOREP_Memory.h>
 #include "scorep_status.h"
 #include "scorep_ipc.h"

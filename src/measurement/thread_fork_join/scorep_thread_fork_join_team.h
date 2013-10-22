@@ -37,20 +37,22 @@
  */
 
 
-#include <stdlib.h>
-
-
 #include <definitions/SCOREP_Definitions.h>
 
+#include <stdint.h>
+#include <stddef.h>
 
-struct scorep_omp_thread_team_data
+
+size_t scorep_thread_fork_join_subsystem_id;
+
+struct scorep_thread_team_data
 {
     scorep_definitions_manager_entry thread_team;
     uint32_t                         team_leader_counter;
 };
 
 
-struct scorep_omp_comm_payload
+struct scorep_thread_team_comm_payload
 {
     uint32_t num_threads;
     uint32_t thread_num;
@@ -58,15 +60,19 @@ struct scorep_omp_comm_payload
 };
 
 
-extern SCOREP_InterimCommunicatorHandle
-scorep_omp_get_thread_team_handle( SCOREP_Location*                 location,
-                                   SCOREP_InterimCommunicatorHandle parentThreadTeam,
-                                   uint32_t                         numThreads,
-                                   uint32_t                         threadNum );
+SCOREP_InterimCommunicatorHandle
+scorep_thread_get_team_handle( SCOREP_Location*                 location,
+                               SCOREP_InterimCommunicatorHandle parentThreadTeam,
+                               uint32_t                         numThreads,
+                               uint32_t                         threadNum );
 
 
-extern SCOREP_InterimCommunicatorHandle
-scorep_omp_get_parent_thread_team_handle( SCOREP_InterimCommunicatorHandle threadHandle );
+SCOREP_InterimCommunicatorHandle
+scorep_thread_get_parent_team_handle( SCOREP_InterimCommunicatorHandle threadHandle );
+
+
+struct scorep_thread_team_data*
+scorep_thread_fork_join_create_team_data( SCOREP_Location* location );
 
 
 #endif /* SCOREP_OMP_THREAD_TEAMS_H */

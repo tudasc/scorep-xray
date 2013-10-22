@@ -127,7 +127,7 @@ SCOREP_Config_ThreadSystem::getId( void )
  * *************************************************************************************/
 
 SCOREP_Config_MockupThreadSystem::SCOREP_Config_MockupThreadSystem()
-    : SCOREP_Config_ThreadSystem( "none", "", "scorep_thread_mockup",
+    : SCOREP_Config_ThreadSystem( "none", "", "scorep_thread_fork_join_mockup",
                                   "scorep_mutex_mockup", SCOREP_CONFIG_THREAD_SYSTEM_ID_NONE )
 {
 }
@@ -145,7 +145,7 @@ SCOREP_Config_MockupThreadSystem::addLibs( std::deque<std::string>&           li
  * *************************************************************************************/
 
 SCOREP_Config_PompTpdThreadSystem::SCOREP_Config_PompTpdThreadSystem()
-    : SCOREP_Config_ThreadSystem( "omp", "pomp_tpd", "scorep_thread_omp_tpd",
+    : SCOREP_Config_ThreadSystem( "omp", "pomp_tpd", "scorep_thread_fork_join_omp_tpd",
                                   "scorep_mutex_omp", SCOREP_CONFIG_THREAD_SYSTEM_ID_POMP_TPD )
 {
 }
@@ -156,8 +156,8 @@ SCOREP_Config_PompTpdThreadSystem::addLibs( std::deque<std::string>&           l
 {
     libs.push_back( "libscorep_adapter_pomp_omp_event" );
     deps.addDependency( "libscorep_measurement", "libscorep_adapter_pomp_omp_mgmt" );
-    deps.addDependency( "libscorep_measurement", "libscorep_thread_omp_tpd" );
-    deps.addDependency( "libscorep_thread_omp_tpd", "libscorep_mutex_omp" );
+    deps.addDependency( "libscorep_measurement", "libscorep_thread_fork_join_omp_tpd" );
+    deps.addDependency( "libscorep_thread_fork_join_omp_tpd", "libscorep_mutex_omp" );
 }
 
 void

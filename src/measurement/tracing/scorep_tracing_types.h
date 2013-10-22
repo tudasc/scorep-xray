@@ -385,16 +385,18 @@ scorep_tracing_collective_type_to_otf2( SCOREP_MpiCollectiveType scorepType )
 
 
 static inline char*
-scorep_tracing_property_to_otf2( SCOREP_Property scorepProperty )
+scorep_tracing_property_to_otf2( SCOREP_Property property )
 {
-    switch ( scorepProperty )
+    switch ( property )
     {
 #define case_return( name ) \
     case SCOREP_PROPERTY_## name: \
         return "OTF2::" #name
 
         case_return( MPI_COMMUNICATION_COMPLETE );
-        case_return( OPENMP_EVENT_COMPLETE );
+        case_return( THREAD_FORK_JOIN_EVENT_COMPLETE );
+        case_return( THREAD_CREATE_WAIT_EVENT_COMPLETE );
+        case_return( THREAD_LOCK_EVENT_COMPLETE );
 
         default:
             UTILS_BUG( "Invalid property enum value" );
@@ -546,23 +548,19 @@ scorep_tracing_rma_atomic_type_to_otf2( SCOREP_RmaAtomicType scorepType )
 
 
 static inline OTF2_Paradigm
-scorep_tracing_thread_model( SCOREP_ThreadModel model )
+scorep_tracing_get_otf2_paradigm( SCOREP_ParadigmType paradigm )
 {
-    switch ( model )
+    switch ( paradigm )
     {
 /* For now unknown thread models */
-#define OTF2_PARADIGM_PTHREAD  OTF2_PARADIGM_UNKNOWN
-#define OTF2_PARADIGM_OMPSS    OTF2_PARADIGM_UNKNOWN
-#define OTF2_PARADIGM_EXTERNAL OTF2_PARADIGM_UNKNOWN
+#define OTF2_PARADIGM_THREAD_FORK_JOIN OTF2_PARADIGM_UNKNOWN
 
 #define case_return( name ) \
-    case SCOREP_THREAD_MODEL_ ## name: \
+    case SCOREP_PARADIGM_ ## name: \
         return OTF2_PARADIGM_ ## name
 
+        case_return( THREAD_FORK_JOIN );
         case_return( OPENMP );
-        case_return( PTHREAD );
-        case_return( OMPSS );
-        case_return( EXTERNAL );
 
         default:
             UTILS_BUG( "Invalid thread model" );

@@ -352,7 +352,8 @@ libscorep_adapter_pomp_omp_event_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include       \
     -I$(PUBLIC_INC_DIR)                        \
     @OPARI2_CPPFLAGS@                          \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS)                          \
+    -I$(INC_DIR_THREAD_FORK_JOIN)
 
 libscorep_adapter_pomp_omp_event_la_LIBADD =   \
     libscorep_adapter_pomp_omp_fortran_sub1.la \

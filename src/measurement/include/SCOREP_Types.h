@@ -331,6 +331,9 @@ typedef enum SCOREP_GroupType
     SCOREP_GROUP_CUDA_LOCATIONS     = 9,
     SCOREP_GROUP_CUDA_GROUP         = 10,
 
+    SCOREP_GROUP_FORK_JOIN_LOCATIONS,
+    SCOREP_GROUP_FORK_JOIN_THREAD_TEAM,
+
     SCOREP_INVALID_GROUP_TYPE /**< For internal use only. */
 } SCOREP_GroupType;
 
@@ -599,7 +602,11 @@ typedef int32_t SCOREP_MpiRequestId;
 typedef enum
 {
     SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE,
-    SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE,
+
+    SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE,
+    SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE,
+    SCOREP_PROPERTY_THREAD_LOCK_EVENT_COMPLETE,
+
     SCOREP_PROPERTY_MAX
 } SCOREP_Property;
 
@@ -613,31 +620,6 @@ typedef enum
     /** Any process must invalidated the property */
     SCOREP_PROPERTY_CONDITION_ANY
 } SCOREP_PropertyCondition;
-
-
-/**
- * Symbolic constant denoting that the fork sequence count
- * can't be provided by the adapter (and will get maintained
- * by a threading-model specific implementation). To be used
- * in SCOREP_Thread_Begin(), SCOREP_Thread_End(), and
- * SCOREP_Thread_Join().
- */
-#define SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT UINT32_MAX
-
-
-/**
- * Types to be used by threading-model adapters to be passed
- * to SCOREP_Thread_*() functions.
- */
-typedef enum SCOREP_ThreadModel
-{
-    SCOREP_THREAD_MODEL_OPENMP,
-    SCOREP_THREAD_MODEL_PTHREAD,
-    SCOREP_THREAD_MODEL_OMPSS,
-    SCOREP_THREAD_MODEL_EXTERNAL,
-
-    SCOREP_INVALID_THREAD_MODEL /**< For internal use only. */
-} SCOREP_ThreadModel;
 
 
 /**

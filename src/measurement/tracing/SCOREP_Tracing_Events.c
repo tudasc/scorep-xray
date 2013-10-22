@@ -730,16 +730,17 @@ SCOREP_Tracing_RmaOpCompleteRemote( SCOREP_Location*              location,
 
 
 static void
-set_rewind_affected_thread_paradigm( SCOREP_Location* location, SCOREP_ThreadModel model )
+set_rewind_affected_thread_paradigm( SCOREP_Location* location, SCOREP_ParadigmType paradigm )
 {
-    switch ( model )
+    switch ( paradigm )
     {
 #define case_break( thread_model, rewind_paradigm ) \
-    case SCOREP_THREAD_MODEL_ ## thread_model: \
+    case SCOREP_PARADIGM_ ## thread_model: \
         scorep_rewind_set_affected_paradigm( location, SCOREP_REWIND_PARADIGM_ ## rewind_paradigm ); \
         break;
 
-        case_break( OPENMP, OPENMP );
+        case_break( OPENMP, THREAD_FORK_JOIN );
+        case_break( THREAD_FORK_JOIN, THREAD_FORK_JOIN );
 
 #undef case_break
         default:
@@ -749,28 +750,27 @@ set_rewind_affected_thread_paradigm( SCOREP_Location* location, SCOREP_ThreadMod
 
 
 void
-SCOREP_Tracing_ThreadFork( SCOREP_Location*   location,
-                           uint64_t           timestamp,
-                           SCOREP_ThreadModel model,
-                           uint32_t           nRequestedThreads,
-                           uint32_t           forkSequenceCount )
+SCOREP_Tracing_ThreadFork( SCOREP_Location*    location,
+                           uint64_t            timestamp,
+                           SCOREP_ParadigmType paradigm,
+                           uint32_t            nRequestedThreads )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_ThreadFork( evt_writer,
                                NULL,
                                timestamp,
-                               scorep_tracing_thread_model( model ),
+                               scorep_tracing_get_otf2_paradigm( paradigm ),
                                nRequestedThreads );
 
-    set_rewind_affected_thread_paradigm( location, model );
+    set_rewind_affected_thread_paradigm( location, paradigm );
 }
 
 
 void
 SCOREP_Tracing_ThreadTeamBegin( SCOREP_Location*                 location,
                                 uint64_t                         timestamp,
-                                SCOREP_ThreadModel               model,
+                                SCOREP_ParadigmType              paradigm,
                                 SCOREP_InterimCommunicatorHandle threadTeam )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
@@ -780,14 +780,14 @@ SCOREP_Tracing_ThreadTeamBegin( SCOREP_Location*                 location,
                                     timestamp,
                                     SCOREP_LOCAL_HANDLE_TO_ID( threadTeam, InterimCommunicator ) );
 
-    set_rewind_affected_thread_paradigm( location, model );
+    set_rewind_affected_thread_paradigm( location, paradigm );
 }
 
 
 void
 SCOREP_Tracing_ThreadTeamEnd( SCOREP_Location*                 location,
                               uint64_t                         timestamp,
-                              SCOREP_ThreadModel               model,
+                              SCOREP_ParadigmType              paradigm,
                               SCOREP_InterimCommunicatorHandle threadTeam )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
@@ -797,71 +797,70 @@ SCOREP_Tracing_ThreadTeamEnd( SCOREP_Location*                 location,
                                   timestamp,
                                   SCOREP_LOCAL_HANDLE_TO_ID( threadTeam, InterimCommunicator ) );
 
-    set_rewind_affected_thread_paradigm( location, model );
+    set_rewind_affected_thread_paradigm( location, paradigm );
 }
 
 
 void
-SCOREP_Tracing_ThreadJoin( SCOREP_Location*   location,
-                           uint64_t           timestamp,
-                           SCOREP_ThreadModel model,
-                           uint32_t           forkSequenceCount )
+SCOREP_Tracing_ThreadJoin( SCOREP_Location*    location,
+                           uint64_t            timestamp,
+                           SCOREP_ParadigmType paradigm )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_ThreadJoin( evt_writer,
                                NULL,
                                timestamp,
-                               scorep_tracing_thread_model( model ) );
+                               scorep_tracing_get_otf2_paradigm( paradigm ) );
 
-    set_rewind_affected_thread_paradigm( location, model );
+    set_rewind_affected_thread_paradigm( location, paradigm );
 }
 
 
 void
-SCOREP_Tracing_ThreadAcquireLock( SCOREP_Location*   location,
-                                  uint64_t           timestamp,
-                                  SCOREP_ThreadModel model,
-                                  uint32_t           lockId,
-                                  uint32_t           acquisitionOrder )
+SCOREP_Tracing_ThreadAcquireLock( SCOREP_Location*    location,
+                                  uint64_t            timestamp,
+                                  SCOREP_ParadigmType paradigm,
+                                  uint32_t            lockId,
+                                  uint32_t            acquisitionOrder )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_ThreadAcquireLock( evt_writer,
                                       NULL,
                                       timestamp,
-                                      scorep_tracing_thread_model( model ),
+                                      scorep_tracing_get_otf2_paradigm( paradigm ),
                                       lockId,
                                       acquisitionOrder );
 
-    set_rewind_affected_thread_paradigm( location, model );
+    set_rewind_affected_thread_paradigm( location, paradigm );
 }
 
 
 void
-SCOREP_Tracing_ThreadReleaseLock( SCOREP_Location*   location,
-                                  uint64_t           timestamp,
-                                  SCOREP_ThreadModel model,
-                                  uint32_t           lockId,
-                                  uint32_t           acquisitionOrder )
+SCOREP_Tracing_ThreadReleaseLock( SCOREP_Location*    location,
+                                  uint64_t            timestamp,
+                                  SCOREP_ParadigmType paradigm,
+                                  uint32_t            lockId,
+                                  uint32_t            acquisitionOrder )
 {
     OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
 
     OTF2_EvtWriter_ThreadReleaseLock( evt_writer,
                                       NULL,
                                       timestamp,
-                                      scorep_tracing_thread_model( model ),
+                                      scorep_tracing_get_otf2_paradigm( paradigm ),
                                       lockId,
                                       acquisitionOrder );
 
-    set_rewind_affected_thread_paradigm( location, model );
+    set_rewind_affected_thread_paradigm( location, paradigm );
 }
 
 
 void
 SCOREP_Tracing_ThreadTaskCreate( SCOREP_Location*                 location,
                                  uint64_t                         timestamp,
-                                 SCOREP_ThreadModel               model,
+                                 SCOREP_ParadigmType              paradigm,
                                  SCOREP_InterimCommunicatorHandle threadTeam,
                                  uint32_t                         threadId,
                                  uint32_t                         generationNumber )
@@ -875,13 +874,13 @@ SCOREP_Tracing_ThreadTaskCreate( SCOREP_Location*                 location,
                                      threadId,
                                      generationNumber );
 
-    set_rewind_affected_thread_paradigm( location, model );
+    set_rewind_affected_thread_paradigm( location, paradigm );
 }
 
 void
 SCOREP_Tracing_ThreadTaskSwitch( SCOREP_Location*                 location,
                                  uint64_t                         timestamp,
-                                 SCOREP_ThreadModel               model,
+                                 SCOREP_ParadigmType              paradigm,
                                  SCOREP_InterimCommunicatorHandle threadTeam,
                                  uint32_t                         threadId,
                                  uint32_t                         generationNumber )
@@ -895,13 +894,13 @@ SCOREP_Tracing_ThreadTaskSwitch( SCOREP_Location*                 location,
                                      threadId,
                                      generationNumber );
 
-    set_rewind_affected_thread_paradigm( location, model );
+    set_rewind_affected_thread_paradigm( location, paradigm );
 }
 
 void
 SCOREP_Tracing_ThreadTaskComplete( SCOREP_Location*                 location,
                                    uint64_t                         timestamp,
-                                   SCOREP_ThreadModel               model,
+                                   SCOREP_ParadigmType              paradigm,
                                    SCOREP_InterimCommunicatorHandle threadTeam,
                                    uint32_t                         threadId,
                                    uint32_t                         generationNumber )
@@ -915,7 +914,7 @@ SCOREP_Tracing_ThreadTaskComplete( SCOREP_Location*                 location,
                                        threadId,
                                        generationNumber );
 
-    set_rewind_affected_thread_paradigm( location, model );
+    set_rewind_affected_thread_paradigm( location, paradigm );
 }
 
 
@@ -1056,10 +1055,10 @@ SCOREP_Tracing_ExitRewindRegion( SCOREP_Location*    location,
         {
             SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
         }
-        /* Did it affect OMP events? */
-        if ( paradigm_affected[ SCOREP_REWIND_PARADIGM_OPENMP ] )
+        /* Did it affect thread-fork-join events? */
+        if ( paradigm_affected[ SCOREP_REWIND_PARADIGM_THREAD_FORK_JOIN ] )
         {
-            SCOREP_InvalidateProperty( SCOREP_PROPERTY_OPENMP_EVENT_COMPLETE );
+            SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
         }
     }
 

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2013
+ * Copyright (c) 2009-2013
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -101,14 +101,6 @@ SCOREP_Location_SetSubsystemData( SCOREP_Location* locationData,
                                   size_t           subsystem_id,
                                   void*            subsystem_data );
 
-void*
-SCOREP_Location_GetThreadTeamData( SCOREP_Location* locationData );
-
-
-void
-SCOREP_Location_SetThreadTeamData( SCOREP_Location* locationData,
-                                   void*            thread_team_data );
-
 
 void
 SCOREP_Location_ForAll( bool ( * cb )( SCOREP_Location*,
@@ -128,5 +120,8 @@ SCOREP_Location_GetLastTimestamp( SCOREP_Location* locationData );
 void
 SCOREP_Location_SetLastTimestamp( SCOREP_Location* locationData,
                                   int64_t          timestamp );
+
+const char*
+SCOREP_Location_GetName( SCOREP_Location* locationData );
 
 #endif /* SCOREP_LOCATION_H */

@@ -291,54 +291,52 @@ SCOREP_Tracing_RmaOpCompleteRemote( SCOREP_Location*              location,
 
 
 void
-SCOREP_Tracing_ThreadFork( SCOREP_Location*   location,
-                           uint64_t           timestamp,
-                           SCOREP_ThreadModel model,
-                           uint32_t           nRequestedThreads,
-                           uint32_t           forkSequenceCount );
+SCOREP_Tracing_ThreadFork( SCOREP_Location*    location,
+                           uint64_t            timestamp,
+                           SCOREP_ParadigmType paradigm,
+                           uint32_t            nRequestedThreads );
 
 
 void
 SCOREP_Tracing_ThreadTeamBegin( SCOREP_Location*                 location,
                                 uint64_t                         timestamp,
-                                SCOREP_ThreadModel               model,
+                                SCOREP_ParadigmType              paradigm,
                                 SCOREP_InterimCommunicatorHandle threadTeam );
 
 
 void
 SCOREP_Tracing_ThreadTeamEnd( SCOREP_Location*                 location,
                               uint64_t                         timestamp,
-                              SCOREP_ThreadModel               model,
+                              SCOREP_ParadigmType              paradigm,
                               SCOREP_InterimCommunicatorHandle threadTeam );
 
 
 void
-SCOREP_Tracing_ThreadJoin( SCOREP_Location*   location,
-                           uint64_t           timestamp,
-                           SCOREP_ThreadModel model,
-                           uint32_t           forkSequenceCount );
+SCOREP_Tracing_ThreadJoin( SCOREP_Location*    location,
+                           uint64_t            timestamp,
+                           SCOREP_ParadigmType paradigm );
 
 
 void
-SCOREP_Tracing_ThreadAcquireLock( SCOREP_Location*   location,
-                                  uint64_t           timestamp,
-                                  SCOREP_ThreadModel model,
-                                  uint32_t           lockId,
-                                  uint32_t           acquisitionOrder );
+SCOREP_Tracing_ThreadAcquireLock( SCOREP_Location*    location,
+                                  uint64_t            timestamp,
+                                  SCOREP_ParadigmType paradigm,
+                                  uint32_t            lockId,
+                                  uint32_t            acquisitionOrder );
 
 
 void
-SCOREP_Tracing_ThreadReleaseLock( SCOREP_Location*   location,
-                                  uint64_t           timestamp,
-                                  SCOREP_ThreadModel model,
-                                  uint32_t           lockId,
-                                  uint32_t           acquisitionOrder );
+SCOREP_Tracing_ThreadReleaseLock( SCOREP_Location*    location,
+                                  uint64_t            timestamp,
+                                  SCOREP_ParadigmType paradigm,
+                                  uint32_t            lockId,
+                                  uint32_t            acquisitionOrder );
 
 
 void
 SCOREP_Tracing_ThreadTaskCreate( SCOREP_Location*                 location,
                                  uint64_t                         timestamp,
-                                 SCOREP_ThreadModel               model,
+                                 SCOREP_ParadigmType              paradigm,
                                  SCOREP_InterimCommunicatorHandle threadTeam,
                                  uint32_t                         threadId,
                                  uint32_t                         generationNumber );
@@ -347,7 +345,7 @@ SCOREP_Tracing_ThreadTaskCreate( SCOREP_Location*                 location,
 void
 SCOREP_Tracing_ThreadTaskSwitch( SCOREP_Location*                 location,
                                  uint64_t                         timestamp,
-                                 SCOREP_ThreadModel               model,
+                                 SCOREP_ParadigmType              paradigm,
                                  SCOREP_InterimCommunicatorHandle threadTeam,
                                  uint32_t                         threadId,
                                  uint32_t                         generationNumber );
@@ -356,7 +354,7 @@ SCOREP_Tracing_ThreadTaskSwitch( SCOREP_Location*                 location,
 void
 SCOREP_Tracing_ThreadTaskComplete( SCOREP_Location*                 location,
                                    uint64_t                         timestamp,
-                                   SCOREP_ThreadModel               model,
+                                   SCOREP_ParadigmType              paradigm,
                                    SCOREP_InterimCommunicatorHandle threadTeam,
                                    uint32_t                         threadId,
                                    uint32_t                         generationNumber );

@@ -804,73 +804,14 @@ SCOREP_Location_RmaOpCompleteBlocking( SCOREP_Location*              location,
                                        uint64_t                      matchingId );
 
 
-
-/**
- * Notify the measurement system about the creation of a fork-join
- * parallel execution with at max @a nRequestedThreads new
- * threads. This function needs to be triggered for every thread
- * creation in a fork-join model, e.g., #pragma omp parallel in OpenMP
- * (for create-wait models see SCOREP_ThreadCreate()).
- * SCOREP_ThreadFork() needs to be called outside the parallel
- * execution from the thread creating the parallel region.
- *
- * @param model One of the predefined threading models.
- *
- * @param nRequestedThreads Upper bound of threads that comprise the
- * parallel region to be created.
- *
- * @return The process-global forkSequenceCount (starting at 0) that
- * needs to be provided in the corresponding SCOREP_ThreadTeamBegin(),
- * SCOREP_ThreadEnd() and SCOREP_ThreadJoin(), if providing by the
- * adapter is possible. You can ignore the return value and pass
- * SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT to the mentioned
- * functions if the model implementation takes care of maintaining the
- * sequence count.
- *
- * @note All threads in the following parallel region including the
- * master/creator need to call SCOREP_ThreadTeamBegin() and
- * SCOREP_ThreadEnd().
- *
- * @note After execution of the parallel region the master/creator
- * needs to call SCOREP_ThreadJoin().
- *
- * @see SCOREP_ThreadCreate()
- */
-uint32_t
-SCOREP_ThreadFork( SCOREP_ThreadModel model,
-                   uint32_t           nRequestedThreads );
-
-
-/**
- * Notify the measurement system about the completion of a fork-join
- * parallel execution. The parallel execution was started by a call to
- * SCOREP_ThreadFork() that returned the @a forkSequenceCount that
- * needs to be provided to this function.
- *
- * @param model One of the predefined threading models.
- *
- * @param forkSequenceCount The fork sequence count returned by the
- * corresponding SCOREP_ThreadFork() or
- * SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT. If you pass the latter,
- * the forkSequenceCount should be maintained in the model-specific
- * implementation, see e.g., the OpenMP implementation of
- * SCOREP_Thread_OnJoin().
- *
- * @note See the notes to SCOREP_ThreadFork().
- */
-void
-SCOREP_ThreadJoin( SCOREP_ThreadModel model,
-                   uint32_t           forkSequenceCount );
-
-
 /**
  * Notify the measurement system about the creation of a create-wait
  * parallel execution with one new thread. This function needs to be
  * triggered for every thread creation in a create-wait model, e.g.,
  * pthread_create() in Pthreads (for fork-join models see
- * SCOREP_ThreadFork()).
+ * SCOREP_ThreadForkJoin_Fork()).
  *
- * @param model One of the predefined threading models.
+ * @param paradigm One of the predefined threading models.
  *
  * @return The process-global forkSequenceCount (starting at 0) that
  * needs to be provided in the corresponding SCOREP_ThreadTeamBegin(),
@@ -890,10 +831,10 @@ SCOREP_ThreadJoin( SCOREP_ThreadModel model,
  * even if the thread is terminated using pthread_exit() or
  * pthread_cancel().
  *
- * @see SCOREP_ThreadFork()
+ * @see SCOREP_ThreadForkJoin_Fork()
  */
 uint32_t
-SCOREP_ThreadCreate( SCOREP_ThreadModel model );
+SCOREP_ThreadCreate( SCOREP_ParadigmType paradigm );
 
 
 /**
@@ -902,7 +843,7 @@ SCOREP_ThreadCreate( SCOREP_ThreadModel model );
  * SCOREP_ThreadCreate() that returned the @a forkSequenceCount that
  * needs to be provided to this function.
  *
- * @param model One of the predefined threading models.
+ * @param paradigm One of the predefined threading models.
  *
  * @param forkSequenceCount The fork sequence count returned by the
  * corresponding SCOREP_ThreadCreate() or
@@ -911,65 +852,8 @@ SCOREP_ThreadCreate( SCOREP_ThreadModel model );
  * implementation.
  */
 void
-SCOREP_ThreadWait( SCOREP_ThreadModel model,
-                   uint32_t           forkSequenceCount );
-
-
-/**
- * Notify the measurement system about the begin of a parallel
- * execution on a thread created by either SCOREP_ThreadFork() or
- * SCOREP_ThreadCreate(). In case of SCOREP_ThreadFork() all created
- * threads including the master must call SCOREP_ThreadTeamBegin().
- *
- * @param model One of the predefined threading models.
- *
- * @param forkSequenceCount The forkSequenceCount returned by the
- * corresponding SCOREP_ThreadFork() or SCOREP_ThreadCreate() call
- * or SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT. If you pass the
- * latter, the forkSequenceCount should be maintained in the
- * model-specific implementation.
- *
- * @param threadId Id within the team of threads that constitute the
- * parallel region.
- *
- * @note The end of the parallel execution will be signalled by a call
- * to SCOREP_ThreadEnd().
- *
- * @note Per convention and as there is no parallelism for the initial
- * thread we don't call SCOREP_ThreadTeamBegin() and SCOREP_ThreadEnd()
- * for the initial thread.
- */
-void
-SCOREP_ThreadTeamBegin( SCOREP_ThreadModel model,
-                        uint32_t           forkSequenceCount,
-                        uint32_t           threadId );
-
-
-/**
- * Notify the measurement system about the end of a parallel execution
- * on a thread created by either SCOREP_ThreadFork() or
- * SCOREP_ThreadCreate(). Every thread that started a parallel
- * execution via SCOREP_ThreadTeamBegin() needs to end via
- * SCOREP_ThreadEnd().
- *
- * @param forkSequenceCount The forkSequenceCount returned by the
- * corresponding SCOREP_ThreadFork() or SCOREP_ThreadCreate() call
- * or SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT. If you pass the
- * latter, the forkSequenceCount should be maintained in the
- * model-specific implementation.
- *
- * @param model One of the predefined threading models.
- *
- * @note The begin of the parallel execution was signalled by a call
- * to SCOREP_ThreadTeamBegin().
- *
- * @note Per convention and as there is no parallelism for the initial
- * thread we don't call SCOREP_ThreadTeamBegin() and SCOREP_ThreadEnd()
- * for the initial thread.
- */
-void
-SCOREP_ThreadEnd( SCOREP_ThreadModel model,
-                  uint32_t           forkSequenceCount );
+SCOREP_ThreadWait( SCOREP_ParadigmType paradigm,
+                   uint32_t            forkSequenceCount );
 
 
 /**
@@ -982,9 +866,9 @@ SCOREP_ThreadEnd( SCOREP_ThreadModel model,
  *                         acquire-release events.
  */
 void
-SCOREP_ThreadAcquireLock( SCOREP_ThreadModel model,
-                          uint32_t           lockId,
-                          uint32_t           acquisitionOrder );
+SCOREP_ThreadAcquireLock( SCOREP_ParadigmType paradigm,
+                          uint32_t            lockId,
+                          uint32_t            acquisitionOrder );
 
 
 /**
@@ -997,83 +881,9 @@ SCOREP_ThreadAcquireLock( SCOREP_ThreadModel model,
  *                         acquire-release events.
  */
 void
-SCOREP_ThreadReleaseLock( SCOREP_ThreadModel model,
-                          uint32_t           lockId,
-                          uint32_t           acquisitionOrder );
-
-
-/**
- * Process a task create event in the measurement system.
- *
- * @param model            One of the predefined threading models.
- * @param threadId         Id of the this thread within the team of
- *                         threads that constitute the parallel region.
- * @param generationNumber The sequence number for this task. Each task
- *                         gets a thread private generation number of the
- *                         creating thread attached. Combined with the
- *                         @a threadId, this constitutes a unique task ID
- *                         inside the parallel region.
- */
-void
-SCOREP_ThreadTaskCreate( SCOREP_ThreadModel model,
-                         uint32_t           threadId,
-                         uint32_t           generationNumber );
-
-
-/**
- * Process a task switch event in the measurement system.
- *
- * @param model            One of the predefined threading models.
- * @param threadId         Id of the this thread within the team of
- *                         threads that constitute the parallel region.
- * @param generationNumber The sequence number for this task. Each task
- *                         gets a thread private generation number of the
- *                         creating thread attached. Combined with the
- *                         @a threadId, this constitutes a unique task ID
- *                         inside the parallel region.
- */
-void
-SCOREP_ThreadTaskSwitch( SCOREP_ThreadModel model,
-                         uint32_t           threadId,
-                         uint32_t           generationNumber );
-
-
-/**
- * Process a task begin event in the measurement system.
- *
- * @param model            One of the predefined threading models.
- * @param regionHandle     Region handle of the task region.
- * @param threadId         Id of the this thread within the team of
- *                         threads that constitute the parallel region.
- * @param generationNumber The sequence number for this task. Each task created
- *                         gets a thread private generation number attached.
- *                         Combined with the @a threadId, this constitutes a
- *                         unique task ID inside the parallel region.
- */
-void
-SCOREP_ThreadTaskBegin( SCOREP_ThreadModel  model,
-                        SCOREP_RegionHandle regionHandle,
-                        uint32_t            threadId,
-                        uint32_t            generationNumber );
-
-/**
- * Process a task end event in the measurement system.
- *
- * @param model            One of the predefined threading models.
- * @param regionHandle     Region handle of the task region.
- * @param threadId         Id of the this thread within the team of
- *                         threads that constitute the parallel region.
- * @param generationNumber The sequence number for this task. Each task
- *                         gets a thread private generation number of the
- *                         creating thread attached. Combined with the
- *                         @a threadId, this constitutes a unique task ID
- *                         inside the parallel region.
- */
-void
-SCOREP_ThreadTaskEnd( SCOREP_ThreadModel  model,
-                      SCOREP_RegionHandle regionHandle,
-                      uint32_t            threadId,
-                      uint32_t            generationNumber );
+SCOREP_ThreadReleaseLock( SCOREP_ParadigmType paradigm,
+                          uint32_t            lockId,
+                          uint32_t            acquisitionOrder );
 
 
 /**

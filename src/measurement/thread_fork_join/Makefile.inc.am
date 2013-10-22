@@ -1,0 +1,80 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2013
+## Forschungszentrum Juelich GmbH, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file src/measurement/thread_fork_join/Makefile.inc.am
+
+INC_DIR_THREAD_FORK_JOIN = $(INC_ROOT)src/measurement/thread_fork_join/include_extern
+INC_DIR_THREAD_FORK_JOIN_INTERN = $(INC_ROOT)src/measurement/thread_fork_join/include_intern
+
+if HAVE_OPENMP_SUPPORT
+
+lib_LTLIBRARIES += libscorep_thread_fork_join_omp_tpd.la
+libscorep_thread_fork_join_omp_tpd_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_thread_fork_join_omp_tpd_la_SOURCES  = \
+    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_omp_tpd.c
+libscorep_thread_fork_join_omp_tpd_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_DIR_THREAD_FORK_JOIN_INTERN) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_DIR_COMMON_HASH) \
+    -I$(INC_ROOT)src/services/include \
+    -I$(INC_ROOT)src/measurement/profiling/include \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_DIR_COMMON_HASH)
+libscorep_thread_fork_join_omp_tpd_la_LIBADD = \
+    libscorep_thread_fork_join_generic.la
+libscorep_thread_fork_join_omp_tpd_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+endif HAVE_OPENMP_SUPPORT
+
+
+noinst_LTLIBRARIES += libscorep_thread_fork_join_generic.la
+libscorep_thread_fork_join_generic_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_generic.c                       \
+    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_team.c                          \
+    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_team.h                          \
+    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_team_unify.c                    \
+    $(SRC_ROOT)src/measurement/thread_fork_join/include_intern/scorep_thread_fork_join_generic.h        \
+    $(SRC_ROOT)src/measurement/thread_fork_join/include_intern/scorep_thread_fork_join_model_specific.h \
+    $(SRC_ROOT)src/measurement/thread_fork_join/include_extern/SCOREP_ThreadForkJoin_Event.h            \
+    $(SRC_ROOT)src/measurement/thread_fork_join/include_extern/SCOREP_ThreadForkJoin_Mgmt.h
+libscorep_thread_fork_join_generic_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_DIR_THREAD_FORK_JOIN_INTERN) \
+    -I$(INC_DIR_THREAD_FORK_JOIN) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/profiling/include \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/services/include \
+    -I$(INC_DIR_COMMON_HASH)
+
+
+lib_LTLIBRARIES += libscorep_thread_fork_join_mockup.la
+libscorep_thread_fork_join_mockup_la_SOURCES  =                   \
+    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_mockup.c
+libscorep_thread_fork_join_mockup_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_DIR_THREAD_FORK_JOIN_INTERN) \
+    -I$(INC_DIR_THREAD_FORK_JOIN) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/profiling/include \
+    -I$(INC_ROOT)src/measurement
+libscorep_thread_fork_join_mockup_la_LDFLAGS = \
+    $(library_api_version_ldflags)
