@@ -1,21 +1,35 @@
 ## -*- mode: autoconf -*-
 
-##
+## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
-##    RWTH Aachen, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2011,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2011,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2011,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
-## file       ac_scorep_libsion.m4
+## file build-config/m4/ac_scorep_libsion.m4
 
 # output of sionconfig on jugene:
 # sionconfig --be --ser --cflags
@@ -44,24 +58,86 @@
 # /usr/local/sionlib/v1.2p2
 
 
-# AC_SCOREP_LIBSION(SERIAL|OMP|MPI|MPI_OMP)
+# AC_SCOREP_LIBSION(GENERIC|SERIAL|OMP|MPI|MPI_OMP)
 AC_DEFUN([AC_SCOREP_LIBSION],
 [
 m4_case([$1], [GENERIC], [], [SERIAL], [], [OMP], [], [MPI], [], [MPI_OMP], [], [m4_fatal([parameter must be either SERIAL, OMP, MPI or MPI_OMP])])
 
-# make SIONCONFIG precious as we use it in AC_CHECK_PROG
-AC_ARG_VAR([SIONCONFIG], [Absolute path to sionconfig, including "sionconfig".])
+dnl <begin> Adaption from AC_SCOREP_HAVE_CONFIG_TOOL
+AC_ARG_WITH([sionlib], 
+    [AS_HELP_STRING([--with-sionlib[[=<sionlib-bindir>]]], 
+        [Use an already installed sionlib. Provide path to sionconfig. Auto-detected if already in $PATH.])], 
+    [with_sion="${with_sionlib%/}"], dnl yes, no, or <path>
+    [with_sion="not_given"])
 
-AC_ARG_WITH([sionconfig],
-            [AS_HELP_STRING([--with-sionconfig=(yes|no|<path-to-sionconfig>)],
-                            [Whether to use sionconfig and where to find it. "yes" assumes it is in PATH [no].])],
-            # action-if-given
-            [AS_CASE([$withval],
-                     ["yes"], [scorep_with_sionconfig="yes"],
-                     ["no"],  [scorep_with_sionconfig="no"],
-                     [scorep_with_sionconfig="$withval"])],
-            # action-if-not-given
-            [scorep_with_sionconfig="no"])
+AS_UNSET([scorep_have_sion_config])
+AS_UNSET([scorep_sion_config_bin])
+AS_UNSET([scorep_sion_config_arg])
+AS_IF([test "x${with_sion}" != "xno"], 
+    [AS_IF([test "x${with_sion}" = "xyes" || test "x${with_sion}" = "xnot_given"], 
+        [AC_CHECK_PROG([scorep_have_sion_config], [sionconfig], ["yes"], ["no"])
+         AS_IF([test "x${scorep_have_sion_config}" = "xyes"],
+             [scorep_sion_config_bin="`which sionconfig`"])],
+        [# --with-sionlib=<path>
+         AC_CHECK_PROG([scorep_have_sion_config], [sionconfig], ["yes"], ["no"], [${with_sion}])
+         AS_IF([test "x${scorep_have_sion_config}" = "xyes"],
+             [scorep_sion_config_bin="${with_sion}/sionconfig"],
+             [AS_UNSET([ac_cv_prog_scorep_have_sion_config])
+              AS_UNSET([scorep_have_sion_config])
+              AC_CHECK_PROG([scorep_have_sion_config], [sionconfig], ["yes"], ["no"], ["${with_sion}/bin"])
+              AS_IF([test "x${scorep_have_sion_config}" = "xyes"],
+                  [scorep_sion_config_bin="${with_sion}/bin/sionconfig"])])
+        ])
+     AS_IF([test "x${scorep_have_sion_config}" = "xyes"], 
+         [:
+dnl           Version checking via 'sionconfig --interface-version' not available yet. 
+dnl           scorep_sion_config_arg="scorep_sion_bindir=`dirname ${scorep_sion_config_bin}`"
+dnl           # version checking, see http://www.gnu.org/software/libtool/manual/libtool.html#Versioning
+dnl           interface_version=`${scorep_sion_config_bin} --interface-version 2> /dev/null`
+dnl           AS_IF([test $? -eq 0 && test "x${interface_version}" != "x"], 
+dnl               [# get 'current'
+dnl                sion_max_provided_interface_version=`echo ${interface_version} | awk -F ":" '{print $[]1}'`
+dnl                # get 'age'
+dnl                sion_provided_age=`echo ${interface_version} | awk -F ":" '{print $[]3}'`
+dnl               AS_IF([test ${sion_max_provided_interface_version} -eq 0 && test ${sion_provided_age} -eq 0],
+dnl                   [# by convention, trunk is 0:0:0
+dnl                    AC_MSG_WARN([external sionlib built from trunk, version checks disabled, might produce compile and link errors.])
+dnl                    AFS_SUMMARY([sionlib support], [yes, using external via ${scorep_sion_config_bin} (built from trunk, version checks disabled, might produce compile and link errors.)])],
+dnl                   [# calc 'current - age'
+dnl                    AS_VAR_ARITH([sion_min_provided_interface_version], [${sion_max_provided_interface_version} - ${sion_provided_age}])
+dnl                    # this is the version check:
+dnl                    AS_IF([test ${sion_max_provided_interface_version} -ge $2 && \
+dnl                           test $2 -ge ${sion_min_provided_interface_version}],
+dnl                        [AFS_SUMMARY([sionlib support], [yes, using external via ${scorep_sion_config_bin}])],
+dnl                        [AS_IF([test ${sion_provided_age} -eq 0],
+dnl                            [AC_MSG_ERROR([provided interface version '${sion_max_provided_interface_version}' of sionlib not sufficient for AC_PACKAGE_NAME, provide '$2' or compatible.])],
+dnl                            [AC_MSG_ERROR([provided interface versions [[${sion_min_provided_interface_version},${sion_max_provided_interface_version}]] of sionlib not sufficient for AC_PACKAGE_NAME, provide '$2' or compatible.])
+dnl ])])])
+dnl               ],
+dnl               [AC_MSG_ERROR([required option --interface-version not supported by sionconfig.])])
+         ],
+         [# scorep_have_sion_config = no
+          AS_IF([test "x${with_sion}" = "xnot_given"],
+              [:
+dnl                There is no internal sionlib yet.
+dnl                AFS_SUMMARY([sionlib support], [yes, using internal])
+              ],
+              [test "x${with_sion}" = "xyes"],
+              [AC_MSG_ERROR([cannot detect sionconfig although it was requested via --with-sionlib.])],
+              [AC_MSG_ERROR([cannot detect sionconfig in ${with_sion} and ${with_sion}/bin.])
+              ])
+         ])
+    ],
+    [# --without-sionlib
+     :
+     dnl There is no internal sionlib yet.
+     dnl AS_IF([test ! -d ${srcdir}/vendor/$1], 
+     dnl     [AC_MSG_ERROR([sionlib is required. Opting out an external sionlib via --without-sionlib is only an option if an internal sionlib is available, which isn't the case here. Please provide an external sionlib.])])
+     dnl scorep_have_sion_config="no"
+     dnl AFS_SUMMARY([sionlib support], [yes, using internal])
+    ]
+)
+dnl <end> Adaption from AC_SCOREP_HAVE_CONFIG_TOOL
 
 # macro-internal variables
 scorep_sion_cppflags=""
@@ -70,14 +146,8 @@ scorep_sion_rpathflags=""
 scorep_sion_libs=""
 scorep_have_sion="no"
 
-if test "x${scorep_with_sionconfig}" != "xno"; then
-    if test "x${scorep_with_sionconfig}" = "xyes"; then
-        AC_CHECK_PROG([SIONCONFIG], [sionconfig], [`which sionconfig`], ["no"])
-    else
-        AC_CHECK_PROG([SIONCONFIG], [sionconfig], [${scorep_with_sionconfig}/sionconfig], ["no"], [${scorep_with_sionconfig}])
-    fi
 
-    if test "x${SIONCONFIG}" != "xno"; then
+    if test "x${scorep_have_sion_config}" = "xyes"; then
         AC_LANG_PUSH([C])
         cppflags_save=$CPPFLAGS
         ldflags_save=$LDFLAGS
@@ -104,18 +174,18 @@ if test "x${scorep_with_sionconfig}" != "xno"; then
                       [MPI_OMP], [sionconfig_paradigm_flag="--mpi"],
                       [GENERIC], [sionconfig_paradigm_flag="--gen"])
 
-        scorep_sion_cppflags=`$SIONCONFIG $sionconfig_febe_flag $sionconfig_paradigm_flag --cflags`
+        scorep_sion_cppflags=`${scorep_sion_config_bin} $sionconfig_febe_flag $sionconfig_paradigm_flag --cflags`
         CPPFLAGS="$scorep_sion_cppflags $CPPFLAGS"
         AC_CHECK_HEADER([sion.h], [], [scorep_have_sion="no"; scorep_sion_cppflags=""])
 
         if test "x${scorep_have_sion}" = "xyes"; then
-            scorep_sion_ldflags=`$SIONCONFIG ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
+            scorep_sion_ldflags=`${scorep_sion_config_bin} ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
                                  awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-L") == 1){ldflags = ldflags " " $i}}}END{print ldflags}'`
 
-            scorep_sion_rpathflags=`$SIONCONFIG ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
+            scorep_sion_rpathflags=`${scorep_sion_config_bin} ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
                                  awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-L") == 1){sub(/^-L/, "", $i); rpathflags = rpathflags " -R" $i}}}END{print rpathflags}'`
 
-            scorep_sion_libs=`$SIONCONFIG ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
+            scorep_sion_libs=`${scorep_sion_config_bin} ${sionconfig_febe_flag} ${sionconfig_paradigm_flag} ${sionconfig_architecture_flags} --libs | \
                               awk '{for (i=1; i<=NF; i++) {if ([index]($i, "-l") == 1){libs = libs " " $i}}}END{print libs}'`
 
             AC_MSG_CHECKING([for libsion $1])
@@ -201,7 +271,6 @@ sion_parclose_mpi(42);
         LIBS=$libs_save
         AC_LANG_POP([C])
     fi
-fi
 
 #echo "debug: scorep_sion_cppflags=$scorep_sion_cppflags"
 #echo "debug: scorep_sion_ldflags=$scorep_sion_ldflags"
