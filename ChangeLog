@@ -24,8 +24,10 @@
   SCOREP_PARAMETER_STRING) got the prefix SCOREP_USER instead of only SCOREP.
 - The new SIONlib integration of OTF2 extends the support of writing
   SION traces to all multi-process paradigms, not only MPI. Though
-  only pure multi-process measurements are supported for now. No threads,
-  no CUDA, no non-CPU metrics.
+  only pure multi-process measurements are supported for now. No
+  threads, no CUDA, no non-CPU metrics. Score-P itself does not depend
+  on SIONlib any longer, but OTF2 does. The configure option
+  '--with-sionlib' (formerly '--with-sionconfig') is passed to OTF2.
 
 ------------------- Upcoming version 1.2.2 ---------------------------
 

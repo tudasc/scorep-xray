@@ -199,9 +199,11 @@ be used to build Score-P are as follows:
                (PDT) binaries, e.g., cparse.
   --with-extra-instrumentation-flags=flags
                Add additional instrumentation flags.
-  --with-sionconfig[=<path-to-sionconfig>]
-               Whether to use sionconfig and where to find it. "yes"
-               assumes it is in PATH [no].
+ --with-sionlib[=<sionlib-bindir>]
+               Use an already installed sionlib. Provide path to
+               sionconfig. Auto-detected if already in $PATH. This
+               option is not used by Score-P itself but passed to an
+               internal OTF2.
   --with-papi-header=<path-to-papi.h>
                If papi.h is not installed in the default location,
                specify the dirname where it can be found.
@@ -328,7 +330,6 @@ variables:
               Whether to activate time measurements for Score-P's
               SCOREP_InitMeasurement() and scorep_finalize() functions.
               Activation values are '1', 'yes', and 'true'. For developer use.
-  SIONCONFIG  Absolute path to sionconfig, including "sionconfig".
   PAPI_INC    Include path to the papi.h header.
   PAPI_LIB    Library path to the papi library.
   LIBCUDART_INCLUDE
