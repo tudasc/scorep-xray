@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2013,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -61,7 +64,7 @@ SCOREP_RegionHandle scorep_pomp_lock_region_handles[ SCOREP_POMP_REGION_LOCK_NUM
  *                                                       POMP OpenMP subsystem *
  ******************************************************************************/
 
-size_t scorep_pomp_omp_subsystem_id;
+static size_t scorep_pomp_omp_subsystem_id;
 
 static SCOREP_ErrorCode
 scorep_pomp_omp_register( size_t subsystem_id )
