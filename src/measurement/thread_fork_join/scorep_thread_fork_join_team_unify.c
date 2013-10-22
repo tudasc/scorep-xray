@@ -521,9 +521,12 @@ subsystem_register( size_t subsystem_id )
 static SCOREP_ErrorCode
 create_team_data( SCOREP_Location* location )
 {
-    SCOREP_Location_SetSubsystemData( location,
-                                      scorep_thread_fork_join_subsystem_id,
-                                      scorep_thread_fork_join_create_team_data( location ) );
+    if ( SCOREP_LOCATION_TYPE_CPU_THREAD == SCOREP_Location_GetType( location ) )
+    {
+        SCOREP_Location_SetSubsystemData( location,
+                                          scorep_thread_fork_join_subsystem_id,
+                                          scorep_thread_fork_join_create_team_data( location ) );
+    }
     return SCOREP_SUCCESS;
 }
 
