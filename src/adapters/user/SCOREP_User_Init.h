@@ -39,7 +39,7 @@
 
 #include "SCOREP_Subsystem.h"
 #include "SCOREP_RuntimeManagement.h"
-#include "SCOREP_Mutex.h"
+#include <SCOREP_Mutex.h>
 #include "SCOREP_Hashtab.h"
 
 /** @ingroup SCOREP_User_External

@@ -47,7 +47,8 @@ SCOREP_POMP_MGMT_FORTRAN_FLAGS =         \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR)                  \
     @OPARI2_CPPFLAGS@                    \
-    $(UTILS_CPPFLAGS)                          
+    $(UTILS_CPPFLAGS)                    \
+    -I$(INC_DIR_MUTEX)                    
 
 SCOREP_POMP_MGMT_FORTRAN_SOURCES =                     \
     $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_CommonF.c \
@@ -106,7 +107,8 @@ libscorep_adapter_pomp_mgmt_la_CPPFLAGS = \
     -I@POMP2_REGION_INFO_INC_DIR@         \
     -I$(PUBLIC_INC_DIR)                   \
     @OPARI2_CPPFLAGS@                     \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS)                     \
+    -I$(INC_DIR_MUTEX)
 
 libscorep_adapter_pomp_mgmt_la_LIBADD =         \
     libscorep_adapter_pomp_mgmt_fortran_sub1.la \
@@ -131,7 +133,8 @@ libscorep_adapter_pomp_user_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                             \
     -I$(INC_ROOT)src/measurement/include       \
     -I$(PUBLIC_INC_DIR)                        \
-    $(UTILS_CPPFLAGS)                          
+    $(UTILS_CPPFLAGS)                          \
+    -I$(INC_DIR_MUTEX)
 
 libscorep_adapter_pomp_user_mgmt_la_LIBADD = \
     libscorep_adapter_pomp_mgmt.la
@@ -155,7 +158,8 @@ SCOREP_POMP_USER_FORTRAN_FLAGS =         \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR)                  \
     @OPARI2_CPPFLAGS@                    \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS)                    \
+    -I$(INC_DIR_MUTEX)
 
 SCOREP_POMP_USER_FORTRAN_SOURCES =                    \
     $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_UserF.c  \
@@ -206,7 +210,8 @@ libscorep_adapter_pomp_user_event_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(PUBLIC_INC_DIR)                         \
     @OPARI2_CPPFLAGS@                           \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS)                           \
+    -I$(INC_DIR_MUTEX)
 
 libscorep_adapter_pomp_user_event_la_LIBADD = \
     libscorep_adapter_pomp_user_fortran_sub1.la \
@@ -251,7 +256,8 @@ libscorep_adapter_pomp_omp_mgmt_la_SOURCES =            \
 
 libscorep_adapter_pomp_omp_mgmt_la_CFLAGS = \
     $(AM_CFLAGS)                            \
-    $(OPENMP_CFLAGS)
+    $(OPENMP_CFLAGS)                        \
+    -I$(INC_DIR_MUTEX)
 
 libscorep_adapter_pomp_omp_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                            \
@@ -281,7 +287,8 @@ SCOREP_POMP_OMP_FORTRAN_FLAGS =          \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR)                  \
     @OPARI2_CPPFLAGS@                    \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS)                    \
+    -I$(INC_DIR_MUTEX)
 
 SCOREP_POMP_OMP_FORTRAN_SOURCES =                     \
     $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_OmpF.c   \
@@ -345,7 +352,8 @@ libscorep_adapter_pomp_omp_event_la_SOURCES =         \
 
 libscorep_adapter_pomp_omp_event_la_CFLAGS = \
     $(AM_CFLAGS)                             \
-    $(OPENMP_CFLAGS)
+    $(OPENMP_CFLAGS)                         \
+    -I$(INC_DIR_MUTEX)
 
 libscorep_adapter_pomp_omp_event_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                             \

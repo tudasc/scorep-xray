@@ -41,7 +41,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "SCOREP_Mutex.h"
+#include <SCOREP_Mutex.h>
 #include "SCOREP_Definitions.h"
 #include "SCOREP_Location.h"
 #include "SCOREP_Memory.h"

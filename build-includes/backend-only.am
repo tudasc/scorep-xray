@@ -9,6 +9,7 @@ include ../src/measurement/profiling/Makefile.inc.am
 include ../src/measurement/tracing/Makefile.inc.am
 include ../src/measurement/definitions/Makefile.inc.am
 include ../src/measurement/thread_fork_join/Makefile.inc.am
+include ../src/measurement/mutex/Makefile.inc.am
 include ../src/adapters/user/Makefile.inc.am
 include ../src/adapters/compiler/Makefile.inc.am
 include ../src/adapters/mpi/Makefile.inc.am

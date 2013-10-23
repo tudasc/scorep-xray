@@ -90,5 +90,6 @@ libscorep_profile_la_SOURCES =                                              \
 libscorep_profile_la_CPPFLAGS = \
     $(PROFILE_FLAGS) \
     -DDOCDIR='"$(docdir)"' \
-    -I$(INC_DIR_THREAD_FORK_JOIN)
+    -I$(INC_DIR_THREAD_FORK_JOIN) \
+    -I$(INC_DIR_MUTEX)
 

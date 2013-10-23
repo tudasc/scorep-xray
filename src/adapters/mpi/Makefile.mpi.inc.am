@@ -47,7 +47,8 @@ libscorep_adapter_mpi_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                       \
     $(UTILS_CPPFLAGS)                    \
     -I$(INC_ROOT)src/measurement/include \
-    -I$(PUBLIC_INC_DIR)
+    -I$(PUBLIC_INC_DIR)                  \
+    -I$(INC_DIR_MUTEX)
 libscorep_adapter_mpi_mgmt_la_LIBADD = \
     libscorep_adapter_mpi_mgmt_fortran_sub1.la \
     libscorep_adapter_mpi_mgmt_fortran_sub2.la \
@@ -159,7 +160,8 @@ libscorep_adapter_mpi_c_event_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include          \
     -I$(INC_ROOT)src/measurement/include       \
     -I$(INC_ROOT)src/measurement/online_access \
-    -I$(PUBLIC_INC_DIR)
+    -I$(PUBLIC_INC_DIR)                        \
+    -I$(INC_DIR_MUTEX)
 
 ## Disable mpi profiling hooks
 ##libscorep_adapter_mpi_c_event_la_CPPFLAGS += -DSCOREP_MPI_NO_HOOKS 

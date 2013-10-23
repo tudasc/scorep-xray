@@ -87,4 +87,5 @@ libscorep_definitions_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/measurement/profiling/include \
-    -I$(INC_DIR_COMMON_HASH)
+    -I$(INC_DIR_COMMON_HASH) \
+    -I$(INC_DIR_MUTEX)

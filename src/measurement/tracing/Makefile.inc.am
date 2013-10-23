@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2013,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -44,7 +44,8 @@ libscorep_tracing_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/measurement/profiling/include \
-    -I$(INC_ROOT)src/utils/include
+    -I$(INC_ROOT)src/utils/include \
+    -I$(INC_DIR_MUTEX)
 
 libscorep_tracing_la_SOURCES = \
     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_internal.h \

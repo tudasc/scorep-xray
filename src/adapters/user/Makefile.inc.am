@@ -48,7 +48,8 @@ libscorep_adapter_user_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                        \
     -I$(INC_ROOT)src/measurement/include  \
     -I$(PUBLIC_INC_DIR)                   \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS)                     \
+    -I$(INC_DIR_MUTEX)
 
 libscorep_adapter_user_mgmt_la_LIBADD = \
     libscorep_adapter_utils.la
@@ -76,7 +77,8 @@ SCOREP_USER_FORTRAN_FLAGS =                     \
     -I$(INC_ROOT)src/adapters/include           \
     -I$(INC_ROOT)src/measurement/include        \
     -I$(PUBLIC_INC_DIR)                         \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS)                           \
+    -I$(INC_DIR_MUTEX)
 
 if SCOREP_COMPILER_PGI
 SCOREP_USER_FORTRAN_FLAGS += -DSCOREP_COMPILER_PGI
@@ -125,7 +127,8 @@ libscorep_adapter_user_event_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                         \
     -I$(INC_ROOT)src/measurement/include   \
     -I$(PUBLIC_INC_DIR)                    \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS)                      \
+    -I$(INC_DIR_MUTEX)
 
 libscorep_adapter_user_event_la_LIBADD =   \
     libscorep_adapter_user_fortran_sub1.la \

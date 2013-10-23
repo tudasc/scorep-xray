@@ -61,7 +61,8 @@ libscorep_thread_fork_join_generic_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/services/include \
-    -I$(INC_DIR_COMMON_HASH)
+    -I$(INC_DIR_COMMON_HASH) \
+    -I$(INC_DIR_MUTEX)
 
 
 lib_LTLIBRARIES += libscorep_thread_fork_join_mockup.la
