@@ -99,7 +99,7 @@ static SCOREP_Platform_SystemTreePathElement* system_tree_path;
 static SCOREP_ExitCallback scorep_exit_callbacks[ scorep_max_exit_callbacks ];
 static int                 scorep_n_exit_callbacks = 0;
 
-/** @brief Region handle to collect data for when measurment is diabled. */
+/** @brief Region handle to collect data for when measurement is diabled. */
 SCOREP_RegionHandle scorep_record_off_region = SCOREP_INVALID_REGION;
 
 /** Temporally disable trace event consumption.

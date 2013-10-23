@@ -53,7 +53,7 @@ public:
     /**
      * Constructs a SCOREP_Config_ThreadSystem.
      * @param name     The name of the threading system.
-     * @param variant  The name of the measurment approach or threading system variant.
+     * @param variant  The name of the measurement approach or threading system variant.
      * @param library  The name of the Score-P threading library. Please omit
      *                 the leading 'lib' which is prefixed automatically if needed.
      * @param mutexlib The name of the Score-P mutex implementation library. Please omit

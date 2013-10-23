@@ -162,7 +162,7 @@ typedef struct SCOREP_Subsystem
     void ( * subsystem_deregister )( void );
 
     /**
-     * Allows measurment control over the adapter.
+     * Allows measurement control over the adapter.
      */
     void ( * subsystem_control )( SCOREP_Subsystem_Command command );
 } SCOREP_Subsystem;

@@ -248,7 +248,7 @@ scorep_compiler_hash_free( void )
     scorep_compiler_finalize_file_table();
 }
 
-/* Register a new region to the measuremnt system */
+/* Register a new region to the measurement system */
 void
 scorep_compiler_register_region( scorep_compiler_hash_node* node )
 {

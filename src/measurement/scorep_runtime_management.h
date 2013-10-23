@@ -61,7 +61,7 @@ SCOREP_GetExperimentDirName( void );
 
 /**
  * Create a directory with a temporary name (accessible via
- * SCOREP_GetExperimentDirName()) to store all measurment data inside.
+ * SCOREP_GetExperimentDirName()) to store all measurement data inside.
  *
  * @note There is a MPI implementation and a non-MPI implementation.
  *
