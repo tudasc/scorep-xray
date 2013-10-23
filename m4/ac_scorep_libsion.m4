@@ -172,7 +172,7 @@ scorep_have_sion="no"
                       [OMP],     [sionconfig_paradigm_flag="--ser"],
                       [MPI],     [sionconfig_paradigm_flag="--mpi"],
                       [MPI_OMP], [sionconfig_paradigm_flag="--mpi"],
-                      [GENERIC], [sionconfig_paradigm_flag="--gen"])
+                      [GENERIC], [sionconfig_paradigm_flag="--gen --threadsafe"])
 
         scorep_sion_cppflags=`${scorep_sion_config_bin} $sionconfig_febe_flag $sionconfig_paradigm_flag --cflags`
         CPPFLAGS="$scorep_sion_cppflags $CPPFLAGS"
