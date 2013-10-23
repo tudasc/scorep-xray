@@ -552,20 +552,14 @@ scorep_tracing_get_otf2_paradigm( SCOREP_ParadigmType paradigm )
 {
     switch ( paradigm )
     {
-/* For now unknown thread models */
-#define OTF2_PARADIGM_THREAD_FORK_JOIN OTF2_PARADIGM_UNKNOWN
-
-#define case_return( name ) \
-    case SCOREP_PARADIGM_ ## name: \
-        return OTF2_PARADIGM_ ## name
-
-        case_return( THREAD_FORK_JOIN );
-        case_return( OPENMP );
+#define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME, VALUE ) \
+    case SCOREP_PARADIGM_ ## NAME: \
+        return OTF2_PARADIGM_ ## OTF2_NAME;
+        SCOREP_PARADIGMS
+#undef SCOREP_PARADIGM
 
         default:
-            UTILS_BUG( "Invalid thread model" );
-
-#undef case_return
+            UTILS_BUG( "Invalid paradigm" );
     }
 
     return OTF2_UNDEFINED_TYPE;

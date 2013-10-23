@@ -341,20 +341,8 @@ scorep_write_region_definitions( void*                     writerHandle,
                 definitionManager->page_manager );
         }
 
-        OTF2_Paradigm paradigm;
-
-        switch ( definition->paradigm_type )
-        {
-    #define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME, VALUE )  \
-    case SCOREP_PARADIGM_ ## NAME:                     \
-        paradigm = OTF2_PARADIGM_ ## OTF2_NAME;      \
-        break;
-            SCOREP_PARADIGMS
-        #undef SCOREP_PARADIGM
-
-            default:
-                paradigm = OTF2_PARADIGM_UNKNOWN;
-        }
+        OTF2_Paradigm paradigm =
+            scorep_tracing_get_otf2_paradigm( definition->paradigm_type );
 
         OTF2_RegionRole region_role;
         OTF2_RegionFlag region_flags = OTF2_REGION_FLAG_NONE;
