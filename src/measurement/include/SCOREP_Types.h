@@ -331,9 +331,6 @@ typedef enum SCOREP_GroupType
     SCOREP_GROUP_CUDA_LOCATIONS     = 9,
     SCOREP_GROUP_CUDA_GROUP         = 10,
 
-    SCOREP_GROUP_FORK_JOIN_LOCATIONS,
-    SCOREP_GROUP_FORK_JOIN_THREAD_TEAM,
-
     SCOREP_INVALID_GROUP_TYPE /**< For internal use only. */
 } SCOREP_GroupType;
 
