@@ -65,7 +65,7 @@ AS_IF([test "x${otf2_pthread_barrier_support}" = "xyes"], [
     AC_DEFINE([HAVE_PTHREAD_BARRIER], [1], [Support for pthread_barrier_t.])
 ])
 AS_IF([test "x$ac_scorep_frontend" = "xyes"], [
-    AFS_SUMMARY([PThread support for tests], [${otf2_pthread_support}])
+    AFS_SUMMARY([Pthread support for tests], [${otf2_pthread_support}])
 ])
 
 ]) dnl OTF2_PTHREAD
