@@ -43,6 +43,7 @@
 
 #include <scorep_location.h>
 #include <scorep_unify_helpers.h>
+#include <scorep_ipc.h>
 #include <SCOREP_Subsystem.h>
 
 #include <UTILS_Error.h>
