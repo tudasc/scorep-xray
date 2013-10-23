@@ -276,16 +276,6 @@ sion_parclose_mpi(42);
 #echo "debug: scorep_sion_ldflags=$scorep_sion_ldflags"
 #echo "debug: scorep_sion_libs=$scorep_sion_libs"
 
-AC_ARG_WITH([sionlib-is-thread-safe],
-    [AS_HELP_STRING([--with-sionlib-is-thread-safe[[=(yes|no)]]],
-        [Assume that SIONlib was built thread-safe. Default no. Disables only tests if not.])],
-    [AS_CASE([${withval}],
-        [yes|no],
-        [scorep_sionlib_is_thread_safe="${withval}"],
-        [AC_MSG_ERROR([invalid value for --with-sionlib-thread-safe. Only yes and no allowed.])])],
-    [scorep_sionlib_is_thread_safe="no"])
-AM_CONDITIONAL([HAVE_SION_IS_THREAD_SAFE], [test "x$scorep_sionlib_is_thread_safe" = "xyes"])
-
 # The output of this macro
 AC_SUBST([SCOREP_SION_$1_CPPFLAGS], [$scorep_sion_cppflags])
 AC_SUBST([SCOREP_SION_$1_LDFLAGS],  ["$scorep_sion_ldflags $scorep_sion_rpathflags"])
@@ -294,5 +284,4 @@ AC_SCOREP_COND_HAVE([SION_]$1,
                     [test "x${scorep_have_sion}" = "xyes"],
                     [Defined if libsion $1 is available.])
 AFS_SUMMARY([SION $1 support], [${scorep_have_sion}])
-AFS_SUMMARY([SIONlib is assumed thread-safe], [${scorep_sionlib_is_thread_safe}])
 ])
