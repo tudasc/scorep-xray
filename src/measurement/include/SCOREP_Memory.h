@@ -148,7 +148,7 @@ SCOREP_Memory_DeletePageManagers( SCOREP_Allocator_PageManager** pageManagers );
  * contents of the memory block is undetermined.
  *
  * @note @a SCOREP_Location_AllocForMisc is not thread safe. This function is
- *       only useful when called in a init_location susbsytem callback.
+ *       only useful when called in a init_location subsystem callback.
  *
  * @param size The size of the requested memory block in bytes. @a size == 0
  * leads to undefined behaviour.
