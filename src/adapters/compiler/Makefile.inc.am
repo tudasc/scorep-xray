@@ -182,15 +182,6 @@ endif
 endif
 
 
-#--- NEC SX specific settings
-if SCOREP_COMPILER_SX
-libscorep_adapter_compiler_mgmt_la_SOURCES +=                      \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace_init.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c        \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
-endif
-
-
 #--- PGI specific settings
 if SCOREP_COMPILER_PGI
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
@@ -252,13 +243,6 @@ endif
 if SCOREP_COMPILER_INTEL
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c
-endif
-
-#--- NEC SX specific settings
-if SCOREP_COMPILER_SX
-libscorep_adapter_compiler_event_la_SOURCES +=                \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ftrace_1.s
 endif
 
 #--- PGI specific settings
