@@ -62,8 +62,8 @@ scorep_mpi_unify_define_mpi_locations( void )
     /*
      * Define the list of locations which are MPI ranks.
      *
-     * If we support MPI_THREADED_FUNNELED, this needs to be the
-     * location, wich has called MPI_Init/MPI_Thread_init.
+     * If we support MPI_THREAD_FUNNELED, this needs to be the
+     * location, which has called MPI_Init/MPI_Thread_init.
      * For the moment, the location and rank ids match.
      *
      * This needs to be called early, so that the resulting definition
@@ -186,7 +186,7 @@ create_local_mappings( uint32_t comm_world_size,
  * communicator specified by @a global_comm_id. If it is not, it returns -1.
  *
  * @param global_comm_id A unified communicator id.
- * @param global_aux_ids[out] Global ids of auxilary communicator information.
+ * @param global_aux_ids[out] Global ids of auxiliary communicator information.
  *                            Currently:
  *                            @li [0] Id of the communicator's name
  *                            @li [1] Id of the communicator's parent
@@ -219,7 +219,7 @@ is_this_rank_in_communicator( uint32_t  global_comm_id,
             if ( comm_payload->local_rank == 0 )
             {
                 /*
-                 * If this comm does still not have a name (Ie. its
+                 * If this comm does still not have a name (i.e. its
                  * SCOREP_INVALID_STRING), assign it the empty string,
                  * which has global id 0, and global_aux_ids[ 0 ] is already
                  * initialized with 0.
@@ -317,7 +317,7 @@ define_comms( uint32_t comm_world_size,
          * It's either my local rank in this communicator, or UINT32_MAX if I'm not
          * a member of this communicator.
          *
-         * If I'm the root in this communicator, store auxilary communicator
+         * If I'm the root in this communicator, store auxiliary communicator
          * properties in global_aux_ids, which I will than send to the global
          * root.
          * [0] is the communicator's name (default "" => 0)
@@ -431,7 +431,7 @@ define_comms( uint32_t comm_world_size,
         }
 
         /*
-         * Include the number of already unified non-MPI comunicators,
+         * Include the number of already unified non-MPI communicators,
          * so that all ranks can shift their self-like communicators.
          */
         topo_comm_mapping[ total_number_of_root_comms ] = number_of_comms;
@@ -469,7 +469,7 @@ define_comms( uint32_t comm_world_size,
         {
             /*
              * Shift the local mapping to the unified definition with the
-             * ammount of already defined unifided non-MPI communicators
+             * amount of already defined unified non-MPI communicators
              */
             interim_communicator_mapping[ definition->sequence_number ] +=
                 topo_comm_mapping[ total_number_of_root_comms ];
