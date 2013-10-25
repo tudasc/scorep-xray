@@ -102,7 +102,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                     fi; \
                     while read line; do \
                         prep=`echo $$line | awk '{for (i=1; i<= NF; i++) {options = options " --" $$i} } END{print "@prefix@/bin/scorep" options}'`; \
-                        suffix=`echo $$line | awk '{for (i=1; i<= NF; i++) {suffix = suffix "_" $$i} } END{print suffix}'`; \
+                        suffix=`echo $$line | awk '{for (i=1; i<= NF; i++) {gsub("=", "-"); suffix = suffix "_" $$i} } END{print suffix}'`; \
                         obj_dir="$$obj_dir_prefix/$$code/$$language/$$suffix"; \
                         mkdir -p "$$obj_dir"; \
                         cp $(PARADIGM_SRCDIR)/$$code/$$language/Makefile "$$obj_dir"/; \
