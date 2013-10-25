@@ -95,11 +95,14 @@ AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
               ${ac_scorep_compilers_frontend}                                  \
               ${ac_scorep_compilers_backend}                                   \
               user_provided_configure_args`"
+       AS_IF([test $? -ne 0], [AC_MSG_ERROR([cannot process provided and/or autodetected arguments. Please contact <AC_PACKAGE_BUGREPORT> and provide the above output. Thanks.])])
       ],
       [AC_MSG_NOTICE([platform data provided by toplevel configure.])
        # determine arguments for subdir configures
        args="`${AWK} -f $srcdir/vendor/common/build-config/process_arguments.awk \
-              user_provided_configure_args`"])
+              user_provided_configure_args`"
+       AS_IF([test $? -ne 0], [AC_MSG_ERROR([cannot process provided arguments. Please contact <AC_PACKAGE_BUGREPORT> and provide the above output. Thanks.])])
+      ])
 
 AC_SCOREP_UNCRUSTIFY
 
