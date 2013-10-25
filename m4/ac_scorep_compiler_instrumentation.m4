@@ -3,56 +3,81 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012, 
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## Copyright (c) 2009-2012,
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2012,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-
+## Copyright (c) 2009-2012,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2012,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2012,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
 
 AC_DEFUN([AC_SCOREP_COMPILER_INSTRUMENTATION], [
-AC_REQUIRE([AC_SCOREP_COMPILER_CHECKS])
+AC_REQUIRE([AX_COMPILER_VENDOR])dnl
+AC_REQUIRE([AC_SCOREP_COMPILER_INSTRUMENTATION_FLAGS])
 
-have_compiler_instrumentation="yes"
-scorep_have_demangle="no"
+have_compiler_instrumentation=yes
+AS_CASE([${ax_cv_c_compiler_vendor}],
+    [intel],    [],
+    [sun],      [],
+    [ibm],      [],
+    [portland], [],
+    [gnu],      [],
+    [cray],     [],
+    [have_compiler_instrumentation=no
+     result="no, compiler vendor '${ax_cv_c_compiler_vendor}' not supported."])dnl
 
-AS_IF([test "x${ac_scorep_compiler_gnu}" = "xyes" || test "x${ac_scorep_compiler_intel}" = "xyes" || test "x${ac_scorep_compiler_cray}" = "xyes" ],
-      [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])
-       AS_IF([test "x${scorep_have_libbfd}" = "xyes"],
+AS_IF([test "x${have_compiler_instrumentation}" = xyes],
+    [scorep_have_demangle="no"
+     AS_IF([test "x${ax_cv_c_compiler_vendor}" = xgnu || \
+            test "x${ax_cv_c_compiler_vendor}" = xintel || \
+            test "x${ax_cv_c_compiler_vendor}" = xcray ],
+         [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])
+          AS_IF([test "x${scorep_have_libbfd}" = "xyes"],
              [result=${libbfd_result}],
              [# search for nm if bfd is not usable
               AC_MSG_WARN([libbfd not available. Trying compiler instrumentation via nm.])
               AC_CHECK_PROG([scorep_have_nm], [nm], ["`which nm`"], ["no"])
               AS_IF([test "x${scorep_have_nm}" = "xno"],
-                    [have_compiler_instrumentation="no"
-                     AC_MSG_WARN([Neither libbfd nor nm are available. Compiler instrumentation will not work.])
-                     result="no, neither libbfd nor nm are available."],
-                    [result="yes, using nm"])])],
-      [# non-gnu, non-intel compilers
-       AM_CONDITIONAL(HAVE_LIBBFD, [test 1 -eq 0])
-       AS_IF([test "x${ac_scorep_compiler_sun}" = "xyes"],
-             [result="partially, studio compiler supports just Fortran"],
-             [result="yes"])])
-
+                  [have_compiler_instrumentation="no"
+                   AC_MSG_WARN([Neither libbfd nor nm are available. Compiler instrumentation will not work.])
+                   result="no, neither libbfd nor nm are available."],
+                  [result="yes, using nm."])])
+         ],
+         [# non-gnu, non-intel, non-cray compilers
+          AM_CONDITIONAL(HAVE_LIBBFD, [test 1 -eq 0])
+          AS_IF([test "x${ax_cv_c_compiler_vendor}" = xsun],
+              [result="partially, studio compiler supports Fortran only."],
+              [result="yes"])
+         ])
+    ])
 AFS_SUMMARY([compiler instrumentation], [${result}])
 
-# setting output variables/defines, also set:
-#  - automake conditional HAVE_LIBBFD
-#  - CPP define HAVE_LIBBFD
-#  - Makefile substitutions LIBBFD_(CPPFLAGS|LDFLAGS|LIBS)
+AM_CONDITIONAL([HAVE_COMPILER_INSTRUMENTATION], 
+               [test "x${have_compiler_instrumentation}" = xyes])
+
+# The following just deals with bfd, demangle, and nm
 AM_CONDITIONAL([HAVE_DEMANGLE],                 
                [test "x${scorep_have_demangle}" = "xyes"])
 AM_COND_IF([HAVE_DEMANGLE],
            [AC_DEFINE([HAVE_DEMANGLE], [1], [Define if cplus_demangle is available.])])
-
-AM_CONDITIONAL([HAVE_COMPILER_INSTRUMENTATION], 
-               [test "x${have_compiler_instrumentation}" = "xyes"])
 
 AS_IF([test "x${scorep_have_libbfd}" = "xno" && test "x${scorep_have_nm}" != "xno"],
       [AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -eq 1])
@@ -61,7 +86,6 @@ AS_IF([test "x${scorep_have_libbfd}" = "xno" && test "x${scorep_have_nm}" != "xn
        dnl wrong for NEC-SX, see opari2:ticket:54 and silc:ticket:620.
        AC_DEFINE_UNQUOTED([SCOREP_BACKEND_NM], ["${scorep_have_nm}"], [Backend nm as bfd replacement])],
       [AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -eq 0])])
-
 ])
 
 dnl ----------------------------------------------------------------------------
