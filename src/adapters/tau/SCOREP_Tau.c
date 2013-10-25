@@ -66,8 +66,9 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle );
 extern void
 SCOREP_ExitRegion( SCOREP_Tau_RegionHandle regionHandle );
 
-
-
+extern void
+SCOREP_AddLocationProperty( const char* name,
+                            const char* value );
 
 
 /** @ingroup TAU
@@ -226,6 +227,13 @@ SCOREP_Tau_Parameter_INT64( SCOREP_Tau_ParamHandle* paramHandle,
 {
     SCOREP_User_ParameterInt64( ( SCOREP_User_ParameterHandle* )paramHandle, name, value );
 }
+
+void
+SCOREP_Tau_AddLocationProperty( const char* name, const char* value )
+{
+    SCOREP_AddLocationProperty( name, value );
+}
+
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
 /** @} */

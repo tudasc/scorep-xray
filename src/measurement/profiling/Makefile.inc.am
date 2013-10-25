@@ -49,6 +49,10 @@ PROFILE_FLAGS =                                    \
     $(UTILS_CPPFLAGS)                              \
     -I$(INC_DIR_COMMON_HASH)
 
+if ! HAVE_SCOREP_EXTERNAL_CUBE_WRITER
+PROFILE_FLAGS += -DCUBE_AS_SVN_EXTERNAL
+endif # HAVE_SCOREP_EXTERNAL_CUBE_WRITER
+
 noinst_LTLIBRARIES += libscorep_profile.la
 libscorep_profile_la_SOURCES =                                              \
     $(SRC_ROOT)src/measurement/profiling/include/SCOREP_Profile.h           \

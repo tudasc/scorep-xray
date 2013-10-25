@@ -72,6 +72,7 @@ typedef struct SCOREP_DefinitionManager SCOREP_DefinitionManager;
 #include "scorep_definitions_io_file.h"
 #include "scorep_definitions_marker_group.h"
 #include "scorep_definitions_marker.h"
+#include "scorep_definitions_location_property.h"
 
 /* super object for all definitions */
 SCOREP_DEFINE_DEFINITION_TYPE( Any )
@@ -139,6 +140,7 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( parameter );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( callpath );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( property );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( location_property );
 
     /** The pager manager where all definition objects resides */
     SCOREP_Allocator_PageManager* page_manager;

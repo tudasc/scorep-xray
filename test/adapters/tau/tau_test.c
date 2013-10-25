@@ -47,4 +47,9 @@ main( int   argc,
 
     SCOREP_Tau_EnterRegion( FunctionId );
     SCOREP_Tau_ExitRegion( FunctionId );
+
+    SCOREP_Tau_AddLocationProperty( "key1", "value1" );
+    SCOREP_Tau_AddLocationProperty( "key2", "value2" );
+    SCOREP_Tau_AddLocationProperty( "key3", "value3" );
+    SCOREP_Tau_AddLocationProperty( "key4", "value4" );
 }

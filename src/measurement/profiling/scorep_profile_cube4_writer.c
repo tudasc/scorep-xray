@@ -865,6 +865,7 @@ scorep_profile_write_cube4( bool write_tuples )
         scorep_write_definitions_to_cube4( write_set.my_cube,
                                            write_set.map,
                                            write_set.ranks_number,
+                                           write_set.global_threads,
                                            write_set.offsets_per_rank,
                                            write_set.has_tasks,
                                            write_tuples );

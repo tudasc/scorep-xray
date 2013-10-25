@@ -988,6 +988,16 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
 uint64_t
 SCOREP_GetLastTimeStamp( void );
 
+/**
+ * Adds a location property to the current location. A property consists of a
+ * key/value pair.
+ * @param name   the key of the property.
+ * @param value  the property value.
+ */
+void
+SCOREP_AddLocationProperty( const char* name,
+                            const char* value );
+
 /*@}*/
 
 

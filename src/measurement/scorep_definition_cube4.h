@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2013
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -66,21 +66,23 @@ typedef struct
 /**
    Writes the definitions to the Cube 4 struct, given by @a my_cube. Fills
    the mapping table given by map.
-   @param my_cube Pointer to the cube struct to which the data is written.
-   @param map     Pointer to an already inititialized mapping structure.
-   @param ranks   Number of ranks.
-   @param offsets Offset for global thread enumeration.
-   @param write_task_metrics Indicates whether task related metric defintions are
-                  written to the Cube file.
-   @param write_tupels Indicates whether tuples are written.
+   @param myCube      Pointer to the cube struct to which the data is written.
+   @param map         Pointer to an already inititialized mapping structure.
+   @param nRanks      Number of ranks.
+   @param nLocations  Global number of locations.
+   @param offsets     Offset for global thread enumeration.
+   @param writeTaskMetrics Indicates whether task related metric defintions are
+                      written to the Cube file.
+   @param writeTupels Indicates whether tuples are written.
  */
 void
-scorep_write_definitions_to_cube4( cube_t*                       my_cube,
+scorep_write_definitions_to_cube4( cube_t*                       myCube,
                                    scorep_cube4_definitions_map* map,
-                                   uint32_t                      ranks,
+                                   uint32_t                      nRanks,
+                                   uint64_t                      nLocations,
                                    int*                          offsets,
-                                   bool                          write_task_metrics,
-                                   bool                          write_tuples );
+                                   bool                          writeTaskMetrics,
+                                   bool                          writeTuples );
 
 /**
    Creates an instance of @ref scorep_cube4_definitions_map.
@@ -101,39 +103,39 @@ scorep_cube4_delete_definitions_map( scorep_cube4_definitions_map* map );
 
 /**
    Adds a region definition pair to the mapping.
-   @param map         Pointer to the mapping structure, to which the mapping
-                      is added.
-   @param cube_handle Pointer to the cube region definition structure.
-   @param scorep_handle SCOREP handle for the region.
+   @param map          Pointer to the mapping structure, to which the mapping
+                       is added.
+   @param cubeHandle   Pointer to the cube region definition structure.
+   @param scorepHandle SCOREP handle for the region.
  */
 void
 scorep_cube4_add_region_mapping( scorep_cube4_definitions_map* map,
-                                 cube_region*                  cube_handle,
-                                 SCOREP_RegionHandle           scorep_handle );
+                                 cube_region*                  cubeHandle,
+                                 SCOREP_RegionHandle           scorepHandle );
 
 /**
    Adds a callpath definition pair to the mapping.
-   @param map         Pointer to the mapping structure, to which the mapping
-                      is added.
-   @param cube_handle Pointer to the cube cnode definition structure.
-   @param scorep_handle SCOREP handle for the callpath.
+   @param map          Pointer to the mapping structure, to which the mapping
+                       is added.
+   @param cubeHandle   Pointer to the cube cnode definition structure.
+   @param scorepHandle SCOREP handle for the callpath.
  */
 void
 scorep_cube4_add_callpath_mapping( scorep_cube4_definitions_map* map,
-                                   cube_cnode*                   cube_handle,
-                                   SCOREP_CallpathHandle         scorep_handle );
+                                   cube_cnode*                   cubeHandle,
+                                   SCOREP_CallpathHandle         scorepHandle );
 
 /**
    Adds a metric definition pair to the mapping.
-   @param map         Pointer to the mapping structure, to which the mapping
-                      is added.
-   @param cube_handle Pointer to the cube metric definition structure.
-   @param scorep_handle SCOREP handle for the metric.
+   @param map          Pointer to the mapping structure, to which the mapping
+                       is added.
+   @param cubeHandle   Pointer to the cube metric definition structure.
+   @param scorepHandle SCOREP handle for the metric.
  */
 void
 scorep_cube4_add_metric_mapping( scorep_cube4_definitions_map* map,
-                                 cube_metric*                  cube_handle,
-                                 SCOREP_MetricHandle           scorep_handle );
+                                 cube_metric*                  cubeHandle,
+                                 SCOREP_MetricHandle           scorepHandle );
 
 /**
    Returns the cube_region handle for a given scorep region handle.

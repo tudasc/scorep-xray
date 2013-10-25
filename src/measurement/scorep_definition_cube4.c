@@ -47,13 +47,24 @@
 #include "scorep_types.h"
 #include <definitions/SCOREP_Definitions.h>
 #include <cubew_services.h>
+#include <cubew_location.h>
 
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
 
+#ifndef CUBE_REVISION_NUMBER
+#define CUBE_REVISION_NUMBER 0
+#endif
+
 /* ****************************************************************************
  * Internal helper functions
  *****************************************************************************/
+
+/**
+ * Checks whether a @a metric is stored as dense metric.
+ * @param metric  The metric which is checked.
+ * @returns true if @a metric is stored as dense metric.
+ */
 static bool
 is_dense_metric( SCOREP_MetricHandle metric )
 {
@@ -67,6 +78,48 @@ is_dense_metric( SCOREP_MetricHandle metric )
         }
     }
     return false;
+}
+
+/**
+ * Returns the cube_location_type for a given SCOREP_LocationType.
+ */
+static cube_location_type
+convert_to_cube_location_type( SCOREP_LocationType location_type )
+{
+    switch ( location_type )
+    {
+        case SCOREP_LOCATION_TYPE_CPU_THREAD:
+            return CUBE_LOCATION_TYPE_CPU_THREAD;
+        case SCOREP_LOCATION_TYPE_GPU:
+            return CUBE_LOCATION_TYPE_GPU;
+        case SCOREP_LOCATION_TYPE_METRIC:
+            return CUBE_LOCATION_TYPE_METRIC;
+    }
+
+    UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
+                 "Can not convert location type to CUBE type." );
+
+    /* To make XL compiler happy */
+    return CUBE_LOCATION_TYPE_CPU_THREAD;
+}
+
+/**
+ * Returns the cube_location_group_type for a given SCOREP_LocationGroupType
+ */
+static cube_location_group_type
+convert_to_cube_location_group_type( SCOREP_LocationGroupType type )
+{
+    switch ( type )
+    {
+        case SCOREP_LOCATION_GROUP_TYPE_PROCESS:
+            return CUBE_LOCATION_GROUP_TYPE_PROCESS;
+    }
+
+    UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
+                 "Can not convert location group type to CUBE type." );
+
+    /* To make XL compiler happy */
+    return CUBE_LOCATION_TYPE_CPU_THREAD;
 }
 
 /* ****************************************************************************
@@ -717,12 +770,13 @@ write_system_tree( cube_t*                   my_cube,
                   the sum of all threads of lower ranks. The number of elements must equal
                   @a ranks.
  */
-static cube_process**
+static cube_location_group**
 write_location_group_definitions( cube_t*                   my_cube,
                                   SCOREP_DefinitionManager* manager,
                                   uint32_t                  ranks )
 {
-    cube_process** processes = ( cube_process** )calloc( ranks, sizeof( cube_process* ) );
+    cube_location_group** processes =
+        ( cube_location_group** )calloc( ranks, sizeof( cube_location_group* ) );
     assert( processes );
     scorep_cube_system_node* system_tree = write_system_tree( my_cube, manager );
     assert( system_tree );
@@ -735,8 +789,10 @@ write_location_group_definitions( cube_t*                   my_cube,
 
         const char* name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
                                                         String )->string_data;
+        cube_location_group_type type =
+            convert_to_cube_location_group_type( definition->location_group_type );
 
-        processes[ rank ] = cube_def_proc( my_cube, name, rank, node );
+        processes[ rank ] = cube_def_location_group( my_cube, name, rank, type, node );
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
     free( system_tree );
@@ -749,20 +805,30 @@ write_location_group_definitions( cube_t*                   my_cube,
    @param manager   Pointer to Score-P definition manager with unified definitions.
    @param ranks     The number of processes.
    @param offsets   Array of the offsets of threads in each rank. The ith entry contains
-                    the sum of all threads of lower ranks. The number of elements must equal
-                    @a ranks.
+                    the sum of all threads of lower ranks. The number of elements must
+                    equal @a ranks.
+   @retruns an array of cube_location pointers where the sequence number of the Score-P
+            definitions is the index to the cube location.
  */
-static void
+static cube_location**
 write_location_definitions( cube_t*                   my_cube,
                             SCOREP_DefinitionManager* manager,
                             uint32_t                  ranks,
+                            uint64_t                  number_of_threads,
                             int*                      offsets )
 {
     /* Counts the number of threads already registered for each rank */
     uint32_t* threads = calloc( ranks, sizeof( uint32_t ) );
+    assert( threads );
 
-    /* Location group (processes) Mapping of sequence numbers to cube defintions */
-    cube_process** processes = write_location_group_definitions( my_cube, manager, ranks );
+    /* Location group (processes) mapping of global ids to cube defintions */
+    cube_location_group** processes =
+        write_location_group_definitions( my_cube, manager, ranks );
+
+    /* Location mapping of global ids to cube defintion */
+    cube_location** locations = calloc( number_of_threads,
+                                        sizeof( cube_location* ) );
+    assert( locations );
 
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Location, location )
     {
@@ -771,24 +837,58 @@ write_location_definitions( cube_t*                   my_cube,
         threads[ parent_id ]++;
         const char* name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
                                                         String )->string_data;
+        cube_location_type type =
+            convert_to_cube_location_type( definition->location_type );
 
-        cube_def_thrd( my_cube, name, index, processes[ parent_id ] );
+        locations[ definition->sequence_number ] =
+            cube_def_location( my_cube, name, index, type, processes[ parent_id ] );
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
     free( threads );
     free( processes );
+    return locations;
+}
+
+static void
+scorep_write_cube_location_property( cube_t*                   my_cube,
+                                     SCOREP_DefinitionManager* manager,
+                                     cube_location**           location_map )
+{
+#if HAVE_SCOREP_EXTERNAL_CUBE_WRITER || CUBE_REVISION_NUMBER > 9946
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, LocationProperty, location_property )
+    {
+        const char* name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
+                                                        String )->string_data;
+        const char* value = SCOREP_UNIFIED_HANDLE_DEREF( definition->value_handle,
+                                                         String )->string_data;
+        uint64_t id = SCOREP_UNIFIED_HANDLE_DEREF( definition->location_handle,
+                                                   Location )->sequence_number;
+
+        cube_location_def_attr( location_map[ id ], name, value );
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+#else
+    if ( manager->location_property.counter > 0 )
+    {
+        UTILS_WARNING( "Can not write location properties to profile, because your "
+                       "CUBE4 installation does not support location properties. "
+                       "To enable location properties, you need to install a newer "
+                       "CUBE4 and rebuild Score-P." );
+    }
+#endif
 }
 
 /* ****************************************************************************
  * Main definition writer function
  *****************************************************************************/
 void
-scorep_write_definitions_to_cube4( cube_t*                       my_cube,
+scorep_write_definitions_to_cube4( cube_t*                       myCube,
                                    scorep_cube4_definitions_map* map,
-                                   uint32_t                      ranks,
+                                   uint32_t                      nRanks,
+                                   uint64_t                      nLocations,
                                    int*                          offsets,
-                                   bool                          write_task_metrics,
-                                   bool                          write_tuples )
+                                   bool                          writeTaskMetrics,
+                                   bool                          writeTuples )
 {
     /* The unification is always processed, even in serial case. Thus, we have
        always access to the unified definitions on rank 0.
@@ -801,8 +901,11 @@ scorep_write_definitions_to_cube4( cube_t*                       my_cube,
     }
     assert( scorep_unified_definition_manager );
 
-    write_metric_definitions( my_cube, manager, map, write_task_metrics, write_tuples );
-    write_region_definitions( my_cube, manager, map );
-    write_callpath_definitions( my_cube, manager, map );
-    write_location_definitions( my_cube, manager, ranks, offsets );
+    write_metric_definitions( myCube, manager, map, writeTaskMetrics, writeTuples );
+    write_region_definitions( myCube, manager, map );
+    write_callpath_definitions( myCube, manager, map );
+    cube_location** location_map =
+        write_location_definitions( myCube, manager, nRanks, nLocations, offsets );
+    scorep_write_cube_location_property( myCube, manager, location_map );
+    free( location_map );
 }

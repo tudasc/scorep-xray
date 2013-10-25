@@ -120,6 +120,7 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
     UNIFY_DEFINITION( sourceDefinitionManager, Parameter, parameter );
     UNIFY_DEFINITION( sourceDefinitionManager, Callpath, callpath );
     UNIFY_DEFINITION( sourceDefinitionManager, Property, property );
+    UNIFY_DEFINITION( sourceDefinitionManager, LocationProperty, location_property );
 }
 
 

@@ -574,7 +574,6 @@ SCOREP_Definitions_NewProperty( SCOREP_Property          property,
                                 SCOREP_PropertyCondition condition,
                                 bool                     initialValue );
 
-
 /*@}*/
 
 

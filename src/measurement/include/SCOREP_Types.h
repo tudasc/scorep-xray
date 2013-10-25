@@ -204,6 +204,11 @@ typedef uint32_t SCOREP_LineNo;
  */
 #define SCOREP_INVALID_SAMPLING_SET_RECORDER SCOREP_MOVABLE_NULL
 
+/**
+ * Symbolic constant representing an invalid or unknown meta data entry.
+ */
+#define SCOREP_INVALID_LOCATION_PROPERTY SCOREP_MOVABLE_NULL
+
 
 /**
  * Types to be used in defining a region (SCOREP_Definitions_NewRegion()). In order to

@@ -2,25 +2,25 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
+ * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2011,
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
  * Copyright (c) 2009-2011,
- *    Technische Universitaet Dresden, Germany
+ * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
- *    University of Oregon, Eugene, USA
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2011, 2013
+ * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
- *    Forschungszentrum Juelich GmbH, Germany
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *
- * Copyright (c) 2009-2011,
- *    Technische Universitaet Muenchen, Germany
+ * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
@@ -287,23 +287,22 @@ SCOREP_Tau_RegisterExitCallback(
 #define SCOREP_Tau_MetricHandle            SCOREP_SamplingSetHandle
 #define SCOREP_TAU_INIT_METRIC_HANDLE   SCOREP_INVALID_SAMPLING_SET
 
-
+/**
+ * Sets an invalid handle value.
+ * @param metricHandle  The handle that is invalidated.
+ */
 void
 SCOREP_Tau_Metric
 (
     SCOREP_Tau_MetricHandle* metricHandle
 );
 
-/*void
-   SCOREP_Tau_InitMetric
-   (
-    SCOREP_Tau_MetricHandle*     metricHandle,
-    const char*                  name,
-    const char*                  unit,
-    const SCOREP_User_MetricType metricType,
-    const int8_t                 context
-   );*/
-
+/**
+ * Defines a metric handle. Every metric must be initialized before first usage.
+ * @param metricHandle Handle of the metric to be initialized.
+ * @param name         Metric name.
+ * @param unit         A string containing the metric unit for display.
+ */
 void
 SCOREP_Tau_InitMetric
 (
@@ -311,6 +310,12 @@ SCOREP_Tau_InitMetric
     const char*              name,
     const char*              unit
 );
+
+/**
+ * Adds a metric sample.
+ * @param metricHandle Handle for the metric definition for which the value is given.
+ * @param value        The value of the current metric sample.
+ */
 void
 SCOREP_Tau_TriggerMetricDouble
 (
@@ -320,6 +325,14 @@ SCOREP_Tau_TriggerMetricDouble
 
 #define SCOREP_Tau_ParamHandle           SCOREP_User_ParameterHandle
 #define SCOREP_TAU_INIT_PARAM_HANDLE           SCOREP_USER_INVALID_PARAMETER
+
+/**
+ * Creates a parameter event for 64-bit integer values. If the handle is not
+ * initialized, it automatically initializes the handle.
+ * @param paramHandle Handle for the parameter definition.
+ * @param name        Name of the parameter.
+ * @param value       The parameter value.
+ */
 void
 SCOREP_Tau_Parameter_INT64(
     SCOREP_Tau_ParamHandle* paramHandle,
@@ -327,8 +340,16 @@ SCOREP_Tau_Parameter_INT64(
     int64_t                 value
     );
 
-//#define SCOREP_TAU_STATIC_PHASE   SCOREP_USER_REGION_TYPE_PHASE
-//#define SCOREP_TAU_DYNAMIC_PHASE  SCOREP_USER_REGION_TYPE_DYNAMIC
+/**
+ * Adds a property to the calling location. A property is a key/value pair.
+ * Every key can only exist once per location. If a key already exists on a
+ * location, the current value is discarded.
+ * @param name  The name of the key.
+ * @param value The value.
+ */
+void
+SCOREP_Tau_AddLocationProperty( const char* name,
+                                const char* value );
 
 
 #ifdef __cplusplus

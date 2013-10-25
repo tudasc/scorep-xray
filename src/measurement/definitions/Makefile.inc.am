@@ -78,7 +78,9 @@ libscorep_definitions_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker_group.c \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker_group.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker.h
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker.h \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location_property.c \
+    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location_property.h
 
 libscorep_definitions_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \

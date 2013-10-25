@@ -152,6 +152,42 @@ scorep_write_location_definitions(
 }
 
 static void
+scorep_write_location_property_definitions(
+    void*                     writerHandle,
+    SCOREP_DefinitionManager* definitionManager,
+    bool                      isGlobal )
+{
+    UTILS_ASSERT( writerHandle );
+    typedef OTF2_ErrorCode ( *def_location_property_pointer_t )( void*,
+                                                                 OTF2_LocationRef,
+                                                                 OTF2_StringRef,
+                                                                 OTF2_StringRef );
+    def_location_property_pointer_t defLocationProperty =
+        ( def_location_property_pointer_t )OTF2_DefWriter_WriteLocationProperty;
+
+    if ( isGlobal )
+    {
+        defLocationProperty = ( def_location_property_pointer_t )
+                              OTF2_GlobalDefWriter_WriteLocationProperty;
+    }
+
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, LocationProperty, location_property )
+    {
+        OTF2_ErrorCode status = defLocationProperty(
+            writerHandle,
+            SCOREP_HANDLE_DEREF( definition->location_handle, Location, definitionManager->page_manager )->global_location_id,
+            SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
+            SCOREP_HANDLE_TO_ID( definition->value_handle, String, definitionManager->page_manager ) );
+
+        if ( status != OTF2_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "LocationProperty" );
+        }
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+}
+
+static void
 scorep_write_location_group_definitions(
     void*                     writerHandle,
     SCOREP_DefinitionManager* definitionManager,
@@ -921,6 +957,7 @@ scorep_tracing_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
     scorep_write_system_tree_node_definitions(       localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_location_group_definitions(         localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_location_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_location_property_definitions(      localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_region_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_group_definitions(                  localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_metric_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
@@ -947,6 +984,7 @@ scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition
     scorep_write_system_tree_node_definitions(       global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_location_group_definitions(         global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_location_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_location_property_definitions(      global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_region_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_group_definitions(                  global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_communicator_definitions(           global_definition_writer, scorep_unified_definition_manager );
