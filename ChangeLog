@@ -28,6 +28,8 @@
   threads, no CUDA, no non-CPU metrics. Score-P itself does not depend
   on SIONlib any longer, but OTF2 does. The configure option
   '--with-sionlib' (formerly '--with-sionconfig') is passed to OTF2.
+- Extended the TAU adapter to allow input of location properties, which
+  are location specific meta data presented as key/value pair.
 
 ------------------- Upcoming version 1.2.2 ---------------------------
 
