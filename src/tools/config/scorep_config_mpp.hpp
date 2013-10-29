@@ -70,10 +70,12 @@ public:
      * a customized class.
      * @param libs The list of libs to which you may add other libs.
      * @param deps The library dependencies information structure.
+     * @param withOnlineAccess Sopecifies whether online access is enabled or not
      */
     virtual void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
+             SCOREP_Config_LibraryDependencies& deps,
+             bool                               withOnlineAccess );
 
 protected:
     /**
@@ -122,7 +124,8 @@ public:
     SCOREP_Config_MockupMppSystem();
     virtual void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
+             SCOREP_Config_LibraryDependencies& deps,
+             bool                               withOnlineAccess );
 };
 
 /* ***************************************************************************
@@ -138,7 +141,8 @@ public:
     SCOREP_Config_MpiMppSystem();
     virtual void
     addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
+             SCOREP_Config_LibraryDependencies& deps,
+             bool                               withOnlineAccess );
 };
 
 #endif

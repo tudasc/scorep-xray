@@ -87,7 +87,8 @@ SCOREP_Config_MppSystem::checkArgument( std::string system )
 
 void
 SCOREP_Config_MppSystem::addLibs( std::deque<std::string>&           libs,
-                                  SCOREP_Config_LibraryDependencies& deps )
+                                  SCOREP_Config_LibraryDependencies& deps,
+                                  bool                               withOnlineAccess )
 {
 }
 
@@ -101,11 +102,19 @@ SCOREP_Config_MockupMppSystem::SCOREP_Config_MockupMppSystem() : SCOREP_Config_M
 
 void
 SCOREP_Config_MockupMppSystem::addLibs( std::deque<std::string>&           libs,
-                                        SCOREP_Config_LibraryDependencies& deps )
+                                        SCOREP_Config_LibraryDependencies& deps,
+                                        bool                               withOnlineAccess )
 {
     deps.addDependency( "libscorep_measurement", "libscorep_adapter_mpi_mgmt_mockup" );
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_mockup" );
-    deps.addDependency( "libscorep_measurement", "libscorep_online_access_spp" );
+    if ( withOnlineAccess )
+    {
+        deps.addDependency( "libscorep_measurement", "libscorep_online_access_spp" );
+    }
+    else
+    {
+        deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
+    }
 }
 
 /* **************************************************************************************
@@ -118,10 +127,18 @@ SCOREP_Config_MpiMppSystem::SCOREP_Config_MpiMppSystem() : SCOREP_Config_MppSyst
 
 void
 SCOREP_Config_MpiMppSystem::addLibs( std::deque<std::string>&           libs,
-                                     SCOREP_Config_LibraryDependencies& deps )
+                                     SCOREP_Config_LibraryDependencies& deps,
+                                     bool                               withOnlineAccess )
 {
     libs.push_back( "libscorep_adapter_mpi_event" );
     deps.addDependency( "libscorep_measurement", "libscorep_adapter_mpi_mgmt" );
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_mpi" );
-    deps.addDependency( "libscorep_measurement", "libscorep_online_access_mpp_mpi" );
+    if ( withOnlineAccess )
+    {
+        deps.addDependency( "libscorep_measurement", "libscorep_online_access_mpp_mpi" );
+    }
+    else
+    {
+        deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
+    }
 }

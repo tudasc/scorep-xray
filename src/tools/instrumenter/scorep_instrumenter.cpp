@@ -50,6 +50,7 @@
 #include "scorep_instrumenter_compiler.hpp"
 #include "scorep_instrumenter_cuda.hpp"
 #include "scorep_instrumenter_mpp.hpp"
+#include "scorep_instrumenter_online_access.hpp"
 #include "scorep_instrumenter_opari.hpp"
 #include "scorep_instrumenter_preprocess.hpp"
 #include "scorep_instrumenter_pdt.hpp"
@@ -78,6 +79,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_preprocess_adapter = new SCOREP_Instrumenter_PreprocessAdapter();
     m_pdt_adapter        = new SCOREP_Instrumenter_PdtAdapter();
     m_user_adapter       = new SCOREP_Instrumenter_UserAdapter();
+    new SCOREP_Instrumenter_OnlineAccess();
 
     /* pre-compile adapter order */
     m_precompile_adapters.push_back( m_compiler_adapter );

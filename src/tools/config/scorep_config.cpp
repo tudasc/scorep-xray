@@ -88,7 +88,10 @@
     "   --fortran   Specifies that the required flags are for the Fortran compiler.\n" \
     "   --nvcc      Convert flags to be suitable for the nvcc compiler.\n" \
     "   --static    Use only static Score-P libraries if possible.\n" \
-    "   --dynamic   Use only dynamic Score-P libraries if possible.\n"
+    "   --dynamic   Use only dynamic Score-P libraries if possible.\n" \
+    "   --online-access|--noonline-access\n" \
+    "            Specifies whether online access (needed by Periscope) is enabled.\n" \
+    "            On default it is enabled.\n"
 
 std::string m_rpath_head      = "";
 std::string m_rpath_delimiter = "";
@@ -169,6 +172,7 @@ main( int    argc,
     bool install       = true;
     bool allow_dynamic = true;
     bool allow_static  = true;
+    bool online_access = true;
 
     SCOREP_Config_LibraryDependencies                 deps;
     std::deque<SCOREP_Config_Adapter*>::iterator      adapter;
@@ -269,6 +273,14 @@ main( int    argc,
         {
             allow_dynamic = false;
         }
+        else if ( strcmp( argv[ i ], "--online-access" ) == 0 )
+        {
+            online_access = true;
+        }
+        else if ( strcmp( argv[ i ], "--noonline-access" ) == 0 )
+        {
+            online_access = false;
+        }
         else if ( strncmp( argv[ i ], "--thread=", 9 ) == 0 )
         {
             bool known_arg = false;
@@ -338,7 +350,7 @@ main( int    argc,
     {
         ( *adapter )->addLibs( libs, deps );
     }
-    SCOREP_Config_MppSystem::current->addLibs( libs, deps );
+    SCOREP_Config_MppSystem::current->addLibs( libs, deps, online_access );
     SCOREP_Config_ThreadSystem::current->addLibs( libs, deps );
 
     switch ( action )

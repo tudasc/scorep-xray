@@ -54,6 +54,8 @@
 - Suppress failed assertion messages when initialzing compiler instrumentation
   with intel compilers without libbfd. The measurement completes even
   if these messages exist.
+- Added options to scorep-config and the scorep instrumenter to enable/disable
+  online access support.
 
 ------------------- Released version 1.2.1 ---------------------------
 
