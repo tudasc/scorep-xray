@@ -134,7 +134,7 @@ public:
      * By default, it enables the adapter if it encounters a parameter that matches
      * '--name' and disables the adapter if it encounters a parameter that matches
      * '--noname'. hereby you need to replace 'name' by the name of the adapter.
-     * If en '=' follows the '--name' parameter, the string after the '=' character
+     * If an '=' follows the '--name' parameter, the string after the '=' character
      * is stored in m_params.
      * Overwrite this function if you need to process different or more paramters.
      * @param arg  The option that is evaluated.
