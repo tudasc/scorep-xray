@@ -4,15 +4,29 @@
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012, 
-##    RWTH Aachen, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## RWTH Aachen, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2012,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2012,  
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2012,  
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2012,  
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2012,  
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
 ##
 
 ## file       ac_scorep_sampling.m4
@@ -52,7 +66,7 @@ AS_IF([   test "x${has_metric_plugins_headers}" = "xyes" \
       [has_metric_plugins="no"
        metric_plugins_summary="no"])
 
-AC_SUBST([SCOREP_PLUGIN_METRICS_LIBS], [$ac_scorep_rusage_cppflags])
+AC_SUBST([SCOREP_PLUGIN_METRICS_LIBS], [$ac_scorep_with_metric_plugins_libs])
 
 AC_SCOREP_COND_HAVE([METRIC_PLUGINS],
                     [test "x${has_metric_plugins}" = "xyes"],
