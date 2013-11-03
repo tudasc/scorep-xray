@@ -270,7 +270,7 @@ SCOREP_Instrumenter_Selector::checkAllSupported( void )
             std::cerr << "ERROR: This Score-P installation does not support "
                       << name << ".\n"
                       << "       To analyze an application with " << name << ",\n"
-                      << "       you need a Score-P installation with suport for "
+                      << "       you need a Score-P installation with support for "
                       << name << ".\n"
                       << "       However, you can override a wrong auto-detection with --"
                       << ( *selector )->m_name << "=<paradigm>.\n"
@@ -309,7 +309,7 @@ SCOREP_Instrumenter_Selector::select( SCOREP_Instrumenter_Paradigm* selection,
         {
             std::cerr << "ERROR: Unable to detect the correct paradigm for '--"
                       << m_name << "' automatically.\n"
-                      << "       Found conlicting options for "
+                      << "       Found conflicting options for "
                       << m_current_selection->getConfigName() << " and "
                       << selection->getConfigName() << "." << std::endl;
         }
