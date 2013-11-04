@@ -33,6 +33,10 @@ AC_INIT([Score-P], m4_esyscmd([../vendor/common/build-config/generate-package-ve
 AFS_PACKAGE_INIT([MPI backend])
 AFS_SUMMARY_INIT
 
+## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
+AS_IF([test "x${ac_scorep_cross_compiling}" != "xyes" && \
+       test "x${ac_scorep_cross_compiling}" != "xno"],
+    [AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])])
 # Not all MPIs support executing MPI programs without a startup
 # command like mpiexec. Therefore prevent executing configure
 # generated programs.
@@ -107,11 +111,6 @@ AM_PROG_AS
 
 AC_CONFIG_HEADERS([../src/config-backend-mpi.h])
 
-## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
-AS_IF([test "x${ac_scorep_cross_compiling}" != "xyes" && \
-       test "x${ac_scorep_cross_compiling}" != "xno"],
-    [AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])])
-
 ac_scorep_backend=yes
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
       [ac_scorep_frontend="no"],
@@ -132,7 +131,6 @@ AC_SCOREP_MPI_WORKING(
     [AC_MSG_FAILURE([MPI C compiler does not work. If you intended to build Score-P without support for the MPI programming model, please reconfigure using --without-mpi.])])
 AC_SCOREP_CHECK_SIZEOF([void *])
 AC_LANG_POP([C])
-cross_compiling=${ac_scorep_cross_compiling}
 AFS_SUMMARY([MPI support for C], [$scorep_mpi_c_supported])
 AS_IF([test "x$scorep_mpi_c_supported" = "xyes"], [
     AFS_SUMMARY([C compiler used for MPI], [$CC])

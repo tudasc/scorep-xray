@@ -41,6 +41,12 @@ AC_CONFIG_MACRO_DIR([../vendor/common/build-config/m4
 
 AC_DEFUN([AC_SCOREP_BACKEND], [])
 
+## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
+AS_IF([test "x${ac_scorep_cross_compiling}" != "xyes" && \
+       test "x${ac_scorep_cross_compiling}" != "xno"],
+    [AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])])
+cross_compiling=${ac_scorep_cross_compiling}
+
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"], [
     # suppress warnings about 'using cross tools not prefixed with host triplet'
     ac_tool_warned=yes])
@@ -92,20 +98,14 @@ AC_CONFIG_HEADERS([../src/config-backend.h])
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
     [AC_CONFIG_HEADERS([../src/config-backend-for-frontend.h])])
 
-## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
-AS_IF([test "x${ac_scorep_cross_compiling}" != "xyes" && \
-       test "x${ac_scorep_cross_compiling}" != "xno"],
-    [AC_MSG_ERROR([invalid value '$ac_scorep_cross_compiling' for variable \$ac_scorep_cross_compiling.], [1])])
-cross_compiling=${ac_scorep_cross_compiling}
-
-m4_include(../build-includes/compute-node.m4)
-AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
-    [m4_include(../build-includes/login-node.m4)])
-
 ac_scorep_backend="yes"
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
     [ac_scorep_frontend="no"],
     [ac_scorep_frontend="yes"])
+
+m4_include(../build-includes/compute-node.m4)
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
+    [m4_include(../build-includes/login-node.m4)])
 
 adl_RECURSIVE_EVAL([${includedir}], [INCLUDEDIR])
 AC_SUBST([INCLUDEDIR])
