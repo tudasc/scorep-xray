@@ -364,4 +364,11 @@ AS_IF([test "x${ax_cv_c_compiler_vendor}" = xportland],
     [scorep_user_inc="SCOREP_User_Pgi.inc.in"],
     [scorep_user_inc="SCOREP_User.inc.in"])
 AC_CONFIG_FILES([../include/scorep/SCOREP_User.inc:../include/scorep/${scorep_user_inc}])
+AS_IF([test "x${enable_shared}" = xno],
+    [AS_CASE([${ac_scorep_platform}],
+         [crayx*], [AC_CONFIG_COMMANDS([libtool-cray-fix],
+                        [sed -e '1,/prefer_static_libs=/ s/prefer_static_libs=.*$/prefer_static_libs=yes/' \
+                         libtool > libtool.fix && mv libtool.fix libtool])
+                   ])
+    ])
 AC_OUTPUT

@@ -266,5 +266,12 @@ AC_CONFIG_FILES([../test/mpi_omp/run_metric_collection_test.sh], \
                 [chmod +x ../test/mpi_omp/run_metric_collection_test.sh])
 AC_CONFIG_FILES([../test/OA/MPI/C/run_oa_c_test_mpi.sh], \
                 [chmod +x ../test/OA/MPI/C/run_oa_c_test_mpi.sh])
+AS_IF([test "x${enable_shared}" = xno],
+    [AS_CASE([${ac_scorep_platform}],
+         [crayx*], [AC_CONFIG_COMMANDS([libtool-cray-fix],
+                        [sed -e '1,/prefer_static_libs=/ s/prefer_static_libs=.*$/prefer_static_libs=yes/' \
+                         libtool > libtool.fix && mv libtool.fix libtool])
+                   ])
+    ])
 
 AC_OUTPUT
