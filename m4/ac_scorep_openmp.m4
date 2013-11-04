@@ -62,7 +62,7 @@ fi
 # of a broken CC. Set OPENMP_CXXFLAGS manually. See 
 # also silc:#687.
 AS_IF([(test "x${afs_platform_cray}" = "xyes" && \
-       test "x${ac_scorep_compiler_pgi}"   = "xyes")],
+       test "x${ax_cv_c_compiler_vendor}" = xportland)],
       [AC_SUBST([OPENMP_CXXFLAGS], [-mp])],
       [AC_LANG_PUSH([C++])
        scorep_cxxflags_save=${CXXFLAGS}
