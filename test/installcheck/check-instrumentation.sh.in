@@ -1,0 +1,228 @@
+#!/bin/sh
+
+## -*- mode: sh -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## This script verifies that the provided executable contains the expected
+## instrumentation, based on the defaults for the given paradigm as well as
+## the command-line options passed to the instrumenter. Where applicable,
+## this script mimics the tests performed by Scalasca's 'scan' tool used to
+## determine which version of the automatic trace analyzer should be started.
+
+
+# Variables set by configure
+GREP="@GREP@"
+NM="@NM@"
+LDD="ldd"
+
+# Unset some environment variables to avoid surprises...
+unset GREP_OPTIONS
+
+
+#--- Main program -----------------------------------------------------------
+
+# --- Validate arguments ---
+if test $# -lt 2; then
+    echo "Usage: check-instrumentation.sh <paradigm> <executable> [<options>]" >&2
+    echo >&2
+    echo "Valid <paradigm>s:" >&2
+    echo "   serial   -  Serial execution" >&2
+    echo "   omp      -  Pure OpenMP" >&2
+    echo "   mpi      -  Pure MPI" >&2
+    echo "   mpi_omp  -  Hybrid MPI + OpenMP" >&2
+    echo >&2
+    echo "Valid <options> are instrumenter command-line arguments affecting" >&2
+    echo "instrumentation." >&2
+    exit 1
+fi
+
+
+# --- Process arguments ---
+# Mandatory arguments
+PARADIGM=$1
+EXE=$2
+shift
+shift
+
+# Initialize defaults
+COMP=yes
+unset MPI
+unset OMP
+unset POMP
+unset USER
+unset VERBOSE
+case ${PARADIGM} in
+    serial)
+        # Compiler instrumentation only -- nothing to adjust
+        ;;
+
+    omp)
+        OMP=yes
+        ;;
+
+    mpi)
+        MPI=yes
+        ;;
+
+    mpi_omp)
+        OMP=yes
+        MPI=yes
+        ;;
+
+    *)        
+        echo "ERROR: Unknown paradigm '${PARADIGM}' encountered!" >&2
+        exit 1
+        ;;
+esac
+
+# Optional arguments
+while test $# -ne 0; do
+    case $1 in
+        --compiler)
+            COMP=yes
+            ;;
+        --nocompiler)
+            unset COMP
+            ;;
+
+        --mpp=mpi)
+            MPI=yes
+            ;;
+
+        --pdt)
+            USER=yes
+            ;;
+        --nopdt)
+            unset USER
+            ;;
+
+        --pomp)
+            POMP=yes
+            ;;
+        --nopomp)
+            unset POMP
+            ;;
+
+        --preprocess|--nopreprocess)
+            # These options have no effect on the inserted instrumentation
+            ;;
+
+        --thread=omp)
+            OMP=yes
+            ;;
+
+        --user)
+            USER=yes
+            ;;
+        --nouser)
+            unset USER
+            ;;
+
+        --verbose)
+            VERBOSE=yes
+            ;;
+
+        *)
+            echo "ERROR: Unknown option '$1' encountered!" >&2
+            exit 1
+    esac
+    shift
+done
+
+
+# --- Determine which kind of instrumentation is expected ---
+unset INST_EXPECTED
+if test -n "${COMP}${MPI}${OMP}${POMP}${USER}"; then
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }init"
+fi
+if test -n "${COMP}"; then
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }comp"
+fi
+if test -n "${MPI}"; then
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }mpi"
+fi
+if test -n "${OMP}"; then
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }omp"
+fi
+if test -n "${POMP}"; then
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }pomp"
+fi
+if test -n "${USER}"; then
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }user"
+fi
+
+
+# --- Control output ---
+if test -n "${VERBOSE}"; then
+    set -x
+else
+    echo "  CHECK   ${EXE}"
+fi
+
+
+# --- Determine instrumentation in binary ---
+unset INST_FOUND
+
+# Instrumented at all?     (Scalasca check)
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} SCOREP_InitMeasurement`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_`
+if test -n "${STATIC}${SHARED}"; then
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }init"
+fi
+
+# Compiler instrumentation?     (custom check)
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_compiler_region_mutex`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_compiler_event.so`
+if test -n "${STATIC}${SHARED}"; then
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }comp"
+fi
+
+# MPI instrumentation?     (Scalasca check)
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_mpi_status_size`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_mpi_event.so`
+if test -n "${STATIC}${SHARED}"; then
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }mpi"
+fi
+
+# OpenMP instrumentation?     (Scalasca check)
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} POMP2_Parallel_fork`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_pomp_omp_event.so`
+if test -n "${STATIC}${SHARED}"; then
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }omp"
+fi
+
+# POMP user instrumentation?     (custom check)
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} POMP2_Begin`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_pomp_user_event.so`
+if test -n "${STATIC}${SHARED}"; then
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }pomp"
+fi
+
+# User instrumentation?     (custom check)
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_user_region_mutex`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_user_event.so`
+if test -n "${STATIC}${SHARED}"; then
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }user"
+fi
+
+
+# --- Compare results ---
+if test "${INST_EXPECTED}" != "${INST_FOUND}"; then
+    echo "ERROR: Instrumentation differs from expected result!" >&2
+    echo "       Expected: ${INST_EXPECTED:-<none>}" >&2
+    echo "       Found   : ${INST_FOUND:-<none>}" >&2
+    exit 1
+fi
+
+# All OK
+exit 0

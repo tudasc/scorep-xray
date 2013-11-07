@@ -24,6 +24,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "jacobi.h"
+#ifdef SCOREP_POMP_USER
+#  include <opari2/pomp2_lib.h>
+#endif
+
 #include <SCOREP_User.h>
 
 #define U( j, i ) afU[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
@@ -56,7 +60,17 @@ Jacobi( struct JacobiData* data )
         b        = -2.0 * ( ax + ay ) - data->fAlpha; /* Central coeff */
         residual = 10.0 * data->fTolerance;
 
-        while ( data->iIterCount < data->iIterMax && residual > data->fTolerance )
+#ifdef SCOREP_POMP_USER
+        /* POMP2 user instrumentation
+           Not inserted as pragma to test on-the-fly registration.
+           With Pragmas, the instrumenter would create initialization time
+           initialization.
+         */
+        POMP2_Region_handle pomp_user_region_handle = NULL;
+        POMP2_Begin( &pomp_user_region_handle,
+                     "82*regionType=region*sscl=jacobi.c:63:63*escl=jacobi.c:102:102*userRegionName=loop**" );
+#endif
+        while ( data->iIterCount < data->iIterMax&& residual > data->fTolerance )
         {
             SCOREP_USER_REGION_DEFINE( main_loop );
             SCOREP_USER_REGION_BEGIN( main_loop, "main_loop", SCOREP_USER_REGION_TYPE_DYNAMIC );
@@ -93,6 +107,10 @@ Jacobi( struct JacobiData* data )
             residual = sqrt( residual ) / ( data->iCols * data->iRows );
             SCOREP_USER_REGION_END( main_loop );
         } /* while */
+
+#ifdef SCOREP_POMP_USER
+        POMP2_End( &pomp_user_region_handle );
+#endif
 
         data->fResidual = residual;
         free( uold );

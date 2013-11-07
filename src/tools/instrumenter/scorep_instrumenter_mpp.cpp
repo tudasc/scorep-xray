@@ -91,6 +91,31 @@ SCOREP_Instrumenter_Mpi::checkCommand( const std::string& current,
     return false;
 }
 
+void
+SCOREP_Instrumenter_Mpi::checkObjects( SCOREP_Instrumenter* instrumenter )
+{
+    if ( m_selector->getSelection() == this )
+    {
+        return;
+    }
+
+    std::vector<std::string>* object_list = instrumenter->getInputFiles();
+
+    for ( std::vector<std::string>::iterator current_file = object_list->begin();
+          current_file != object_list->end();
+          current_file++ )
+    {
+        std::string command = SCOREP_NM " " + *current_file + " | "
+                              SCOREP_EGREP " -l 'U (MPI|mpi)_' >/dev/null 2>&1";
+        int return_value = system( command.c_str() );
+        if ( return_value == 0 )
+        {
+            m_selector->select( this, false );
+            break;
+        }
+    }
+}
+
 /* **************************************************************************************
  * class SCOREP_Instrumenter_Mpp
  * *************************************************************************************/

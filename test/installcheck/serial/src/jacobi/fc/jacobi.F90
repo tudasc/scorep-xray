@@ -78,7 +78,10 @@ module JacobiMod
         	
             SCOREP_USER_METRIC_INT64(local2, scorep_metric_int_val)
             SCOREP_USER_METRIC_DOUBLE(local3, scorep_metric_double_val)
-        	    	
+
+#ifdef SCOREP_POMP_USER
+!POMP$ INST BEGIN(loop)
+#endif
             do while (myData%iIterCount < myData%iIterMax .and. residual > myData%fTolerance)
             
                 SCOREP_USER_REGION_BEGIN(region3,"Iteration",SCOREP_USER_REGION_TYPE_DYNAMIC)
@@ -117,7 +120,11 @@ module JacobiMod
 				SCOREP_USER_REGION_END(region3) 
             ! End iteration loop 
             end do
-            
+
+#ifdef SCOREP_POMP_USER
+!POMP$ INST END(loop)
+#endif
+
             SCOREP_USER_REGION_END(region2)
             SCOREP_USER_FUNC_END()
             

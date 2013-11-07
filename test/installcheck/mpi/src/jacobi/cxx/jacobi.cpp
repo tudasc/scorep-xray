@@ -34,13 +34,13 @@ using namespace std;
 #define UOLD( j, i ) uold[ ( ( j ) - data.iRowFirst ) * data.iCols + ( i ) ]
 
 inline void
-ExchangeJacobiMpiData( JacobiData & data,
+ExchangeJacobiMpiData( JacobiData&  data,
                        double*      uold,
                        MPI_Request* request,
                        MPI_Status*  status );
 
 void
-Jacobi( JacobiData &data )
+Jacobi( JacobiData& data )
 {
     /*use local pointers for performance reasons*/
     double* afU, * afF;
@@ -60,7 +60,10 @@ Jacobi( JacobiData &data )
         double b        = -2.0 * ( ax + ay ) - data.fAlpha; /* Central coeff */
         double residual = 10.0 * data.fTolerance;
 
-        while ( data.iIterCount < data.iIterMax && residual > data.fTolerance )
+#ifdef SCOREP_POMP_USER
+        #pragma pomp inst begin(loop)
+#endif
+        while ( data.iIterCount < data.iIterMax&& residual > data.fTolerance )
         {
             SCOREP_USER_REGION_BEGIN( scorep_iteration, "ITERATION",
                                       SCOREP_USER_REGION_TYPE_DYNAMIC );
@@ -98,6 +101,10 @@ Jacobi( JacobiData &data )
             SCOREP_USER_REGION_END( scorep_iteration );
         } /* while */
 
+#ifdef SCOREP_POMP_USER
+        #pragma pomp inst end(loop)
+#endif
+
         data.fResidual = residual;
         delete[] uold;
     }
@@ -110,7 +117,7 @@ Jacobi( JacobiData &data )
 }
 
 inline void
-ExchangeJacobiMpiData( JacobiData &data, double* uold,
+ExchangeJacobiMpiData( JacobiData& data, double* uold,
                        MPI_Request* request, MPI_Status* status )
 {
     double*   afU           = data.afU;

@@ -39,6 +39,10 @@ program MAIN
     call Init(mydata)
 
     if ( allocated(myData%afU) .and. allocated(myData%afF) ) then
+!#ifdef SCOREP_POMP_USER
+!!POMP$ INST BEGIN(calculate)
+!#endif
+
 !        /* matrix init */
         call InitializeMatrix(myData)
 
@@ -56,6 +60,10 @@ program MAIN
 
 !        /* print result summary */
         call PrintResults(myData)
+
+!#ifdef SCOREP_POMP_USER
+!!POMP$ INST END(calculate)
+!#endif
     else
         write (*,*) " Memory allocation failed ...\n"
     end if

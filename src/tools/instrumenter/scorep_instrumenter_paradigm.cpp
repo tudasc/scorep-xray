@@ -156,3 +156,8 @@ SCOREP_Instrumenter_Paradigm::unsupported( void )
 {
     m_unsupported = true;
 }
+
+void
+SCOREP_Instrumenter_Paradigm:: checkObjects( SCOREP_Instrumenter* instrumenter )
+{
+}

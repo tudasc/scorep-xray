@@ -65,6 +65,9 @@ Jacobi( struct JacobiData* data )
         SCOREP_USER_REGION_BEGIN( scorep_region2, "PHASE",
                                   SCOREP_USER_REGION_TYPE_PHASE );
 
+#ifdef SCOREP_POMP_USER
+        #pragma pomp inst begin(loop)
+#endif
         while ( data->iIterCount < data->iIterMax&& residual > data->fTolerance )
         {
             SCOREP_USER_REGION_BEGIN( scorep_iteration, "ITERATION",
@@ -115,6 +118,10 @@ Jacobi( struct JacobiData* data )
 
             SCOREP_USER_REGION_END( scorep_iteration );
         } /* while */
+
+#ifdef SCOREP_POMP_USER
+        #pragma pomp inst end(loop)
+#endif
 
         SCOREP_USER_REGION_END( scorep_region2 );
 

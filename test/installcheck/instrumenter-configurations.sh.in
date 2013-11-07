@@ -49,7 +49,7 @@ file_prefix="../installcheck/configurations_"
 # non-mpi sources.
 
 # noompenmp: if we model it like nompi, then we need to intercept just
-# the fork/join/thread_begin/therad_end. Everything else gets ignored.
+# the fork/join/thread_begin/thread_end. Everything else gets ignored.
 
 # pomp_user_arg: use HAVE_OPARI2_TRUE when it is implemented 
 

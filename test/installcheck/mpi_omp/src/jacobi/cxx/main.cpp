@@ -21,7 +21,7 @@ using namespace std;
 
 // setting values, init mpi, omp etc
 void
-Init( JacobiData &data, int &argc, char** argv )
+Init( JacobiData& data, int& argc, char** argv )
 {
     /* MPI Initialization */
     const int required = MPI_THREAD_FUNNELED;
@@ -131,7 +131,7 @@ Init( JacobiData &data, int &argc, char** argv )
 
 // final cleanup routines
 void
-Finish( JacobiData &data )
+Finish( JacobiData& data )
 {
     delete[] data.afU;
     delete[] data.afF;
@@ -142,7 +142,7 @@ Finish( JacobiData &data )
 
 // print result summary
 void
-PrintResults( const JacobiData &data )
+PrintResults( const JacobiData& data )
 {
     if ( data.iMyRank == 0 )
     {
@@ -160,7 +160,7 @@ PrintResults( const JacobiData &data )
 // Initializes matrix
 // Assumes exact solution is u(x,y) = (1-x^2)*(1-y^2)
 void
-InitializeMatrix( JacobiData &data )
+InitializeMatrix( JacobiData& data )
 {
     /* Initilize initial condition and RHS */
 #pragma omp parallel for
@@ -184,7 +184,7 @@ InitializeMatrix( JacobiData &data )
 
 // Checks error between numerical and exact solution
 void
-CheckError( JacobiData &data )
+CheckError( JacobiData& data )
 {
     double error = 0.0;
 
@@ -226,6 +226,10 @@ main( int argc, char** argv )
 
     if ( myData.afU && myData.afF )
     {
+#ifdef SCOREP_POMP_USER
+        #pragma pomp inst begin(calculate)
+#endif
+
         // matrix init
         InitializeMatrix( myData );
 
@@ -243,6 +247,10 @@ main( int argc, char** argv )
 
         // print result summary
         PrintResults( myData );
+
+#ifdef SCOREP_POMP_USER
+        #pragma pomp inst end(calculate)
+#endif
     }
     else
     {

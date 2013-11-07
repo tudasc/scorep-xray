@@ -334,6 +334,8 @@ AC_CONFIG_FILES([../test/omp_tasks/run_single_loop_test.sh], \
                 [chmod +x ../test/omp_tasks/run_single_loop_test.sh])
 AC_CONFIG_FILES([../installcheck/instrumenter-configurations.sh:../test/installcheck/instrumenter-configurations.sh.in],
                 [chmod +x ../installcheck/instrumenter-configurations.sh])
+AC_CONFIG_FILES([../installcheck/check-instrumentation.sh:../test/installcheck/check-instrumentation.sh.in],
+                [chmod +x ../installcheck/check-instrumentation.sh])
 AC_CONFIG_FILES([../test/filtering/run_filter_test.sh], \
                 [chmod +x ../test/filtering/run_filter_test.sh])
 AC_CONFIG_FILES([../test/filtering/run_filter_f_test.sh], \

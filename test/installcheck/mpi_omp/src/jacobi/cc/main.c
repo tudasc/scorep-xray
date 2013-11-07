@@ -241,6 +241,10 @@ main( int argc, char** argv )
 
     if ( myData.afU && myData.afF )
     {
+#ifdef SCOREP_POMP_USER
+        #pragma pomp inst begin(calculate)
+#endif
+
         /* matrix init */
         InitializeMatrix( &myData );
 
@@ -258,6 +262,10 @@ main( int argc, char** argv )
 
         /* print result summary */
         PrintResults( &myData );
+
+#ifdef SCOREP_POMP_USER
+        #pragma pomp inst end(calculate)
+#endif
     }
     else
     {

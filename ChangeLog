@@ -1,7 +1,9 @@
 ------------------- Upcoming version 1.3 -----------------------------
+
+- Improved automatic MPI detection in instrumenter (helpful on Cray,
+  as cc/CC/ftn is the compile command for both MPI and non-MPI).
 - Use Process Manager Interface (PMI) to get fine-granular information
   about the system topology on Cray machines.
-
 - Changed paradigm selection in the instrumenter to match the selection
   options in the config tool. Thus, introduced --mpp=<paradigm> and
   --thread=<paradigm> flags for the instrumenter to select the

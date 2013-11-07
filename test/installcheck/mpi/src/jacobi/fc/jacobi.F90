@@ -49,7 +49,10 @@ module JacobiMod
             ay = 1.0d0 / (myData%fDx * myData%fDx)      ! Y-direction coef
             b = -2.0d0 * (ax + ay) - myData%fAlpha      ! Central coeff  
             residual = 10.0d0 * myData%fTolerance
-        
+
+#ifdef SCOREP_POMP_USER
+!POMP$ INST BEGIN(loop)
+#endif
             do while (myData%iIterCount < myData%iIterMax .and. residual > myData%fTolerance)
                 residual = 0.0d0
         
@@ -80,6 +83,11 @@ module JacobiMod
              
             ! End iteration loop 
             end do
+
+#ifdef SCOREP_POMP_USER
+!POMP$ INST END(loop)
+#endif
+
             myData%fResidual = residual
             deallocate(uold)
         else

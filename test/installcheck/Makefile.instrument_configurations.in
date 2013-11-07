@@ -69,12 +69,14 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
             for language in $(LANGUAGES); do \
                 if test -e $(PARADIGM_SRCDIR)/$$code/$$language/Makefile; then \
                     if test "x$(SKIP_DEFAULT)" = "xno"; then \
+                        unset options; \
                         suffix="_default"; \
                         obj_dir="$$obj_dir_prefix/$$code/$$language/$$suffix"; \
                         mkdir -p "$$obj_dir"; \
                         cp $(PARADIGM_SRCDIR)/$$code/$$language/Makefile "$$obj_dir"/; \
                         if test "$(SCOREP_INSTRUMENTER_CHECKS_VERBOSE)" = "1"; then \
                             set -x; \
+                            options="--verbose"; \
                         else \
                             echo "  GEN     $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
                         fi; \
@@ -99,15 +101,18 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             FCFLAGS="$(FCFLAGS)" \
                             $$code || exit 1; \
                         set +x; \
+                        ${INCDIR}/check-instrumentation.sh $(PARADIGM) $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix} $$options || exit 1; \
                     fi; \
                     while read line; do \
-                        prep=`echo $$line | awk '{for (i=1; i<= NF; i++) {options = options " --" $$i} } END{print "@prefix@/bin/scorep" options}'`; \
+                        options=`echo $$line | awk '{for (i=1; i<= NF; i++) {options = options " --" $$i} } END{print options}'`; \
+                        prep="@prefix@/bin/scorep $$options"; \
                         suffix=`echo $$line | awk '{for (i=1; i<= NF; i++) {gsub("=", "-"); suffix = suffix "_" $$i} } END{print suffix}'`; \
                         obj_dir="$$obj_dir_prefix/$$code/$$language/$$suffix"; \
                         mkdir -p "$$obj_dir"; \
                         cp $(PARADIGM_SRCDIR)/$$code/$$language/Makefile "$$obj_dir"/; \
                         if test "$(SCOREP_INSTRUMENTER_CHECKS_VERBOSE)" = "1"; then \
                             set -x; \
+                            options="$$options --verbose"; \
                         else \
                             echo "  GEN     $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
                         fi; \
@@ -131,11 +136,12 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             FC="$(FC)" \
                             LIBS="$(LIBS)" \
                             CFLAGS="$(CFLAGS) $$POMP_FLAGS" \
-                            CXXFLAGS="$(CXXFLAGS)" \
+                            CXXFLAGS="$(CXXFLAGS) $$POMP_FLAGS" \
                             F77FLAGS="$(FFLAGS) $(FD_FLAG)$$POMP_FLAGS" \
                             FCFLAGS="$(FCFLAGS) $(FD_FLAG)$$POMP_FLAGS" \
                             $$code || exit 1; \
                         set +x; \
+                        ${INCDIR}/check-instrumentation.sh $(PARADIGM) $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix} $$options || exit 1; \
                     done < $(PREPS_FILE); \
                 fi; \
             done; \

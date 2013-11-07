@@ -23,6 +23,7 @@
 #include "scorep_instrumenter_paradigm.hpp"
 #include <deque>
 
+class SCOREP_Instrumenter;
 class SCOREP_Instrumenter_Selector;
 
 /* **************************************************************************************
@@ -136,6 +137,19 @@ public:
     select( SCOREP_Instrumenter_Paradigm* selection,
             bool                          is_user_selection );
 
+    /**
+     * Calls all paradigms to check for object based configurations.
+     * @param instrumenter The instrumenter instance.
+     */
+    virtual void
+    checkObjects( SCOREP_Instrumenter* instrumenter );
+
+    /**
+     * Returns a pointer to the currently selected paradigm.
+     */
+    virtual SCOREP_Instrumenter_Paradigm*
+    getSelection( void );
+
     /* ----------------------------------------------------------------------- members */
 protected:
     /**
@@ -237,6 +251,13 @@ public:
      */
     static void
     checkAllSupported( void );
+
+    /**
+     * Let all paradigms check the object files.
+     * @param instrumenter The instrumenter instance.
+     */
+    static void
+    checkAllObjects( SCOREP_Instrumenter* instrumenter );
 
     /* ---------------------------------------------------------------- static members */
 private:

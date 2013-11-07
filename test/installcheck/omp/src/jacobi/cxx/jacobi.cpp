@@ -23,6 +23,9 @@
 #include <cstdlib>
 #include <iostream>
 #include "jacobi.h"
+#ifdef SCOREP_POMP_USER
+#  include <opari2/pomp2_lib.h>
+#endif
 
 #include <scorep/SCOREP_User.h>
 
@@ -62,6 +65,16 @@ Jacobi( JacobiData& data )
         SCOREP_USER_REGION_BEGIN( scorep_region2, "PHASE",
                                   SCOREP_USER_REGION_TYPE_PHASE );
 
+#ifdef SCOREP_POMP_USER
+        /* POMP2 user instrumentation
+           Not inserted as pragma to test on-the-fly registration.
+           With Pragmas, the instrumenter would create initialization time
+           initialization.
+         */
+        POMP2_Region_handle pomp_user_region_handle = NULL;
+        POMP2_Begin( &pomp_user_region_handle,
+                     "82*regionType=region*sscl=jacobi.cpp:63:63*escl=jacobi.cpp:102:102*userRegionName=loop**" );
+#endif
         while ( data.iIterCount < data.iIterMax&& residual > data.fTolerance )
         {
             SCOREP_USER_REGION_BEGIN( scorep_iteration, "ITERATION",
@@ -118,6 +131,10 @@ Jacobi( JacobiData& data )
 
             SCOREP_USER_REGION_END( scorep_iteration );
         } /* while */
+
+#ifdef SCOREP_POMP_USER
+        POMP2_End( &pomp_user_region_handle );
+#endif
 
         SCOREP_USER_REGION_END( scorep_region2 );
 

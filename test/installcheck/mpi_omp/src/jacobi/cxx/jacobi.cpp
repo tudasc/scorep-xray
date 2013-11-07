@@ -24,6 +24,10 @@
 #include <cstdlib>
 #include <iostream>
 #include "jacobi.h"
+#ifdef SCOREP_POMP_USER
+#  include <opari2/pomp2_lib.h>
+#endif
+
 #include <SCOREP_User.h>
 
 using namespace std;
@@ -33,13 +37,13 @@ using namespace std;
 #define UOLD( j, i ) uold[ ( ( j ) - data.iRowFirst ) * data.iCols + ( i ) ]
 
 inline void
-ExchangeJacobiMpiData( JacobiData & data,
+ExchangeJacobiMpiData( JacobiData&  data,
                        double*      uold,
                        MPI_Request* request,
                        MPI_Status*  status );
 
 void
-Jacobi( JacobiData &data )
+Jacobi( JacobiData& data )
 {
     /*use local pointers for performance reasons*/
     double* afU, * afF;
@@ -57,7 +61,17 @@ Jacobi( JacobiData &data )
         double b        = -2.0 * ( ax + ay ) - data.fAlpha; /* Central coeff */
         double residual = 10.0 * data.fTolerance;
 
-        while ( data.iIterCount < data.iIterMax && residual > data.fTolerance )
+#ifdef SCOREP_POMP_USER
+        /* POMP2 user instrumentation
+           Not inserted as pragma to test on-the-fly registration.
+           With Pragmas, the instrumenter would create initialization time
+           initialization.
+         */
+        POMP2_Region_handle pomp_user_region_handle = NULL;
+        POMP2_Begin( &pomp_user_region_handle,
+                     "82*regionType=region*sscl=jacobi.cpp:63:63*escl=jacobi.cpp:102:102*userRegionName=loop**" );
+#endif
+        while ( data.iIterCount < data.iIterMax&& residual > data.fTolerance )
         {
             SCOREP_USER_REGION_DEFINE( main_loop );
             SCOREP_USER_REGION_BEGIN( main_loop, "main_loop", SCOREP_USER_REGION_TYPE_DYNAMIC );
@@ -98,6 +112,10 @@ Jacobi( JacobiData &data )
             SCOREP_USER_REGION_END( main_loop );
         } /* while */
 
+#ifdef SCOREP_POMP_USER
+        POMP2_End( &pomp_user_region_handle );
+#endif
+
         data.fResidual = residual;
         delete[] uold;
     }
@@ -110,7 +128,7 @@ Jacobi( JacobiData &data )
 }
 
 inline void
-ExchangeJacobiMpiData( JacobiData &data, double* uold,
+ExchangeJacobiMpiData( JacobiData& data, double* uold,
                        MPI_Request* request, MPI_Status* status )
 {
     double*   afU           = data.afU;

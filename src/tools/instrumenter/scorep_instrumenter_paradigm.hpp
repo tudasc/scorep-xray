@@ -24,6 +24,7 @@
 
 #include "scorep_instrumenter_adapter.hpp"
 
+class SCOREP_Instrumenter;
 class SCOREP_Instrumenter_Selector;
 
 /* **************************************************************************************
@@ -139,6 +140,14 @@ public:
      */
     bool
     isSupported( void );
+
+    /**
+     * Called before the link step in all paradigms to perform object file based
+     * checks.
+     * @param instrumenter  Pointer to the instrumenter instance.
+     */
+    virtual void
+    checkObjects( SCOREP_Instrumenter* instrumenter );
 
 protected:
     /**

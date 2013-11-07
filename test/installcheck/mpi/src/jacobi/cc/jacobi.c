@@ -55,7 +55,10 @@ Jacobi( struct JacobiData* data )
         b        = -2.0 * ( ax + ay ) - data->fAlpha; /* Central coeff */
         residual = 10.0 * data->fTolerance;
 
-        while ( data->iIterCount < data->iIterMax && residual > data->fTolerance )
+#ifdef SCOREP_POMP_USER
+        #pragma pomp inst begin(loop)
+#endif
+        while ( data->iIterCount < data->iIterMax&& residual > data->fTolerance )
         {
             residual = 0.0;
 
@@ -86,6 +89,10 @@ Jacobi( struct JacobiData* data )
             ( data->iIterCount )++;
             residual = sqrt( residual ) / ( data->iCols * data->iRows );
         } /* while */
+
+#ifdef SCOREP_POMP_USER
+        #pragma pomp inst end(loop)
+#endif
 
         data->fResidual = residual;
         free( uold );

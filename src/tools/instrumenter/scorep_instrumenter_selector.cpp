@@ -149,6 +149,24 @@ SCOREP_Instrumenter_Selector::checkCompilerName( const std::string& compiler )
     }
 }
 
+void
+SCOREP_Instrumenter_Selector::checkObjects( SCOREP_Instrumenter* instrumenter )
+{
+    SCOREP_Instrumenter_ParadigmList::iterator paradigm;
+    for ( paradigm = m_paradigm_list.begin();
+          paradigm != m_paradigm_list.end();
+          paradigm++ )
+    {
+        ( *paradigm )->checkObjects( instrumenter );
+    }
+}
+
+SCOREP_Instrumenter_Paradigm*
+SCOREP_Instrumenter_Selector::getSelection( void )
+{
+    return m_current_selection;
+}
+
 /* -------------------------------------------------------------------- static methods */
 
 void
@@ -396,4 +414,16 @@ SCOREP_Instrumenter_Selector::isParadigmSelected( std::string name )
         }
     }
     return false;
+}
+
+void
+SCOREP_Instrumenter_Selector::checkAllObjects( SCOREP_Instrumenter* instrumenter )
+{
+    SCOREP_Instrumenter_SelectorList::iterator selector;
+    for ( selector = m_selector_list.begin();
+          selector != m_selector_list.end();
+          selector++ )
+    {
+        ( *selector )->checkObjects( instrumenter );
+    }
 }
