@@ -46,13 +46,13 @@ get_ipc_type( OTF2_Type type )
         case OTF2_TYPE_UINT8:
             return SCOREP_IPC_UNSIGNED_CHAR;
         case OTF2_TYPE_INT32:
-            return SCOREP_IPC_INT32;
+            return SCOREP_IPC_INT32_T;
         case OTF2_TYPE_UINT32:
-            return SCOREP_IPC_UINT32;
+            return SCOREP_IPC_UINT32_T;
         case OTF2_TYPE_INT64:
-            return SCOREP_IPC_INT64;
+            return SCOREP_IPC_INT64_T;
         case OTF2_TYPE_UINT64:
-            return SCOREP_IPC_UINT64;
+            return SCOREP_IPC_UINT64_T;
         case OTF2_TYPE_DOUBLE:
             return SCOREP_IPC_DOUBLE;
 
@@ -153,7 +153,7 @@ scorep_tracing_otf2_collectives_gatherv( void*                   userData,
     SCOREP_Ipc_Gather( &numberElements,
                        recvcnts,
                        1,
-                       SCOREP_IPC_UINT32,
+                       SCOREP_IPC_UINT32_T,
                        root );
     if ( rank == root )
     {
@@ -224,7 +224,7 @@ scorep_tracing_otf2_collectives_scatterv( void*                   userData,
     SCOREP_Ipc_Gather( &numberElements,
                        sendcnts,
                        1,
-                       SCOREP_IPC_UINT32,
+                       SCOREP_IPC_UINT32_T,
                        root );
     if ( rank == root )
     {

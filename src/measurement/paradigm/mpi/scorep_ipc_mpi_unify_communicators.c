@@ -124,7 +124,7 @@ create_local_mappings( uint32_t comm_world_size,
     /* Gather communicator counts from all ranks */
     SCOREP_Ipc_Allgather( &scorep_mpi_number_of_root_comms,
                           offsets,
-                          1, SCOREP_IPC_UINT32 );
+                          1, SCOREP_IPC_UINT32_T );
 
     /*
      * Calculate the total number of communicators, which is also the id of
@@ -331,7 +331,7 @@ define_comms( uint32_t comm_world_size,
         /* gather communicator information */
         SCOREP_Ipc_Gather( &my_rank_in_comm,
                            ranks_in_comm,
-                           1, SCOREP_IPC_UINT32,
+                           1, SCOREP_IPC_UINT32_T,
                            0 );
 
         if ( rank == 0 )
@@ -348,7 +348,7 @@ define_comms( uint32_t comm_world_size,
                     if ( i > 0 && ranks_in_comm[ i ] == 0 )
                     {
                         SCOREP_Ipc_Recv( global_aux_ids,
-                                         2, SCOREP_IPC_UINT32,
+                                         2, SCOREP_IPC_UINT32_T,
                                          i );
                     }
 
@@ -373,7 +373,7 @@ define_comms( uint32_t comm_world_size,
         else if ( my_rank_in_comm == 0 )
         {
             SCOREP_Ipc_Send( global_aux_ids,
-                             2, SCOREP_IPC_UINT32, 0 );
+                             2, SCOREP_IPC_UINT32_T, 0 );
         }
     }
 
@@ -441,7 +441,7 @@ define_comms( uint32_t comm_world_size,
     SCOREP_Ipc_Bcast(
         topo_comm_mapping,
         total_number_of_root_comms + 1,
-        SCOREP_IPC_UINT32,
+        SCOREP_IPC_UINT32_T,
         0 );
 
     /* Apply new ids to all communicators */
@@ -495,7 +495,7 @@ define_self_likes( uint32_t rank )
     SCOREP_Ipc_Reduce( &scorep_mpi_number_of_self_comms,
                        &max_number_of_self_ids,
                        1,
-                       SCOREP_IPC_UINT32,
+                       SCOREP_IPC_UINT32_T,
                        SCOREP_IPC_MAX,
                        0 );
 

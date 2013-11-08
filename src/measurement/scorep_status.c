@@ -141,10 +141,10 @@ SCOREP_Status_OnMppInit( void )
     /* Gather node IDs of all processes */
     uint32_t* recvbuf = malloc( scorep_process_local_status.mpp_comm_world_size * sizeof( uint32_t ) );
     assert( recvbuf );
-    SCOREP_Ipc_Allgather( &node_id,             /* send buffer */
-                          recvbuf,              /* receive buffer */
-                          1,                    /* count */
-                          SCOREP_IPC_UINT32 );  /* data type */
+    SCOREP_Ipc_Allgather( &node_id,               /* send buffer */
+                          recvbuf,                /* receive buffer */
+                          1,                      /* count */
+                          SCOREP_IPC_UINT32_T );  /* data type */
 
     /* Assume we are master for this node */
     scorep_process_local_status.is_process_master_on_node = true;

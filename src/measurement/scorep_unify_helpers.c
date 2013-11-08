@@ -108,7 +108,7 @@ scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,
                         all_locations,
                         number_of_locations_per_rank,
                         offsets,
-                        SCOREP_IPC_UINT64,
+                        SCOREP_IPC_UINT64_T,
                         0 );
     free( number_of_locations_per_rank );
 

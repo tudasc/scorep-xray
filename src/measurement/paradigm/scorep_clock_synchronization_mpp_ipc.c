@@ -88,7 +88,7 @@ SCOREP_SynchronizeClocks()
             int      min_index;
             uint64_t sync_time = synchronize_with_worker( worker, &min_index );
 
-            SCOREP_Ipc_Send( &sync_time, 1, SCOREP_IPC_UINT64, worker );
+            SCOREP_Ipc_Send( &sync_time, 1, SCOREP_IPC_UINT64_T, worker );
             SCOREP_Ipc_Send( &min_index, 1, SCOREP_IPC_INT, worker );
         }
 
@@ -108,7 +108,7 @@ SCOREP_SynchronizeClocks()
 
         uint64_t sync_time;
         int      min_index;
-        SCOREP_Ipc_Recv( &sync_time, 1, SCOREP_IPC_UINT64, master );
+        SCOREP_Ipc_Recv( &sync_time, 1, SCOREP_IPC_UINT64_T, master );
         SCOREP_Ipc_Recv( &min_index, 1, SCOREP_IPC_INT, master );
 
         offset_time = worker_time[ min_index ];
@@ -130,14 +130,14 @@ SCOREP_GetGlobalEpoch( uint64_t* globalEpochBegin, uint64_t* globalEpochEnd )
     SCOREP_Ipc_Reduce( &local_epoch_begin,
                        globalEpochBegin,
                        1,
-                       SCOREP_IPC_UINT64,
+                       SCOREP_IPC_UINT64_T,
                        SCOREP_IPC_MIN,
                        0 );
 
     SCOREP_Ipc_Reduce( &local_epoch_end,
                        globalEpochEnd,
                        1,
-                       SCOREP_IPC_UINT64,
+                       SCOREP_IPC_UINT64_T,
                        SCOREP_IPC_MAX,
                        0 );
     if ( SCOREP_Ipc_GetRank() == 0 )

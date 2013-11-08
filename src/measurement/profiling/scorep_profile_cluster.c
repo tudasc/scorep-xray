@@ -2076,7 +2076,7 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
     int32_t has_cluster_global = 0;
     SCOREP_Ipc_Allreduce( &has_cluster_local,
                           &has_cluster_global,
-                          1, SCOREP_IPC_INT32,
+                          1, SCOREP_IPC_INT32_T,
                           SCOREP_IPC_SUM );
     if ( has_cluster_global == 0 )
     {
@@ -2130,7 +2130,7 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
     uint32_t global_it_count = 0;
     SCOREP_Ipc_Allreduce( &scorep_clusterer->cl_it_count,
                           &global_it_count,
-                          1, SCOREP_IPC_UINT32,
+                          1, SCOREP_IPC_UINT32_T,
                           SCOREP_IPC_MAX );
 
     if ( write_data->my_rank == 0 )
@@ -2162,7 +2162,7 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
     for ( uint32_t i = 0; i < global_it_count; i++ )
     {
         SCOREP_Ipc_Gather( &it_map[ i ], line,
-                           1, SCOREP_IPC_UINT32,
+                           1, SCOREP_IPC_UINT32_T,
                            0 );
         SCOREP_Ipc_Barrier();
 

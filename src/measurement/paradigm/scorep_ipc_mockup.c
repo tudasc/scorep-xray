@@ -93,10 +93,10 @@ static size_t ipc_datatype_sizes[] =
     1, /* SCOREP_IPC_UNSIGNED_CHAR */
     4, /* SCOREP_IPC_INT */
     4, /* SCOREP_IPC_UNSIGNED */
-    4, /* SCOREP_IPC_INT32 */
-    4, /* SCOREP_IPC_UINT32 */
-    8, /* SCOREP_IPC_INT64 */
-    8, /* SCOREP_IPC_UINT64 */
+    4, /* SCOREP_IPC_INT32_T */
+    4, /* SCOREP_IPC_UINT32_T */
+    8, /* SCOREP_IPC_INT64_T */
+    8, /* SCOREP_IPC_UINT64_T */
     8  /* SCOREP_IPC_DOUBLE */
 };
 

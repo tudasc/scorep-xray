@@ -579,7 +579,7 @@ write_cube_##cube_type(                                                         
                           profile node.
    @param func_data       Pointer to data that is passed to the @a get_value function
  */
-SCOREP_PROFILE_WRITE_CUBE_METRIC( uint64_t, UINT64, 1, uint64, 0 )
+SCOREP_PROFILE_WRITE_CUBE_METRIC( uint64_t, UINT64_T, 1, uint64, 0 )
 
 /**
    @function write_cube_double
@@ -683,7 +683,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tuples )
     {
         write_set->callpath_number = SCOREP_Definitions_GetNumberOfUnifiedCallpathDefinitions();
     }
-    SCOREP_Ipc_Bcast( &write_set->callpath_number, 1, SCOREP_IPC_UINT32, 0 );
+    SCOREP_Ipc_Bcast( &write_set->callpath_number, 1, SCOREP_IPC_UINT32_T, 0 );
     if ( write_set->callpath_number == 0 )
     {
         return false;
@@ -691,7 +691,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tuples )
 
     /* Calculate the global number of locations */
     SCOREP_Ipc_Reduce( &write_set->local_threads, &write_set->global_threads,
-                       1, SCOREP_IPC_UINT32, SCOREP_IPC_SUM, 0 );
+                       1, SCOREP_IPC_UINT32_T, SCOREP_IPC_SUM, 0 );
 
 
     /* Calculate the offset of this thread in the value vector
@@ -699,7 +699,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tuples )
        emulated with MPI_Scan.
      */
     SCOREP_Ipc_Scan( &write_set->local_threads, &write_set->offset, 1,
-                     SCOREP_IPC_UINT32, SCOREP_IPC_SUM );
+                     SCOREP_IPC_UINT32_T, SCOREP_IPC_SUM );
     write_set->offset -= write_set->local_threads;
 
     /* Calculate the offsets of all ranks and the number of locations per rank */
@@ -712,10 +712,10 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tuples )
 
     SCOREP_Ipc_Gather( &write_set->local_threads,
                        write_set->items_per_rank,
-                       1, SCOREP_IPC_UINT32, 0 );
+                       1, SCOREP_IPC_UINT32_T, 0 );
     SCOREP_Ipc_Gather( &write_set->offset,
                        write_set->offsets_per_rank,
-                       1, SCOREP_IPC_UINT32, 0 );
+                       1, SCOREP_IPC_UINT32_T, 0 );
 
     /* Determine whether all ranks have the same number of threads */
     int32_t same_thread_num = 1;
@@ -727,7 +727,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tuples )
     SCOREP_Ipc_Allreduce( &same_thread_num,
                           &write_set->same_thread_num,
                           1,
-                          SCOREP_IPC_INT32,
+                          SCOREP_IPC_INT32_T,
                           SCOREP_IPC_BAND );
 
     /* Get number of unified metrics to every rank */
@@ -735,7 +735,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tuples )
     {
         write_set->num_unified = SCOREP_Definitions_GetNumberOfUnifiedMetricDefinitions();
     }
-    SCOREP_Ipc_Bcast( &write_set->num_unified, 1, SCOREP_IPC_UINT32, 0 );
+    SCOREP_Ipc_Bcast( &write_set->num_unified, 1, SCOREP_IPC_UINT32_T, 0 );
 
     /* Create the mappings from cube to Score-P handles and vice versa */
     write_set->map = scorep_cube4_create_definitions_map();
@@ -794,7 +794,7 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tuples )
     SCOREP_Ipc_Allreduce( &has_tasks,
                           &write_set->has_tasks,
                           1,
-                          SCOREP_IPC_INT32,
+                          SCOREP_IPC_INT32_T,
                           SCOREP_IPC_BOR );
 
     return true;

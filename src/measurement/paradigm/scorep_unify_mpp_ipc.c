@@ -275,7 +275,7 @@ receive_and_unify_remote_definitions( int                           rank,
     uint32_t number_of_pages;
     SCOREP_Ipc_Recv( &number_of_pages,
                      1,
-                     SCOREP_IPC_UINT32,
+                     SCOREP_IPC_UINT32_T,
                      rank );
 
     /* Resize receive buffers if needed */
@@ -295,13 +295,13 @@ receive_and_unify_remote_definitions( int                           rank,
     // 4a) Get the remote page ids
     SCOREP_Ipc_Recv( *moved_page_ids,
                      number_of_pages,
-                     SCOREP_IPC_UINT32,
+                     SCOREP_IPC_UINT32_T,
                      rank );
 
     // 4b) Get page fill of remote pages
     SCOREP_Ipc_Recv( *moved_page_fills,
                      number_of_pages,
-                     SCOREP_IPC_UINT32,
+                     SCOREP_IPC_UINT32_T,
                      rank );
 
     // 5) Receive all remote pages from rank
@@ -374,13 +374,13 @@ send_local_unified_definitions_to_parent( int        parent,
         moved_page_starts );
 
     SCOREP_Ipc_Send( &number_of_used_pages,
-                     1, SCOREP_IPC_UINT32, parent );
+                     1, SCOREP_IPC_UINT32_T, parent );
     SCOREP_Ipc_Send( *moved_page_ids,
                      number_of_used_pages,
-                     SCOREP_IPC_UINT32, parent );
+                     SCOREP_IPC_UINT32_T, parent );
     SCOREP_Ipc_Send( *moved_page_fills,
                      number_of_used_pages,
-                     SCOREP_IPC_UINT32, parent );
+                     SCOREP_IPC_UINT32_T, parent );
 
     // 3) Send all pages to my parent
     for ( uint32_t page = 0; page < number_of_used_pages; page++ )
@@ -406,7 +406,7 @@ receive_mappings( int rank )
         SCOREP_Ipc_Recv( \
             scorep_unified_definition_manager->type.mapping, \
             scorep_unified_definition_manager->type.counter, \
-            SCOREP_IPC_UINT32, \
+            SCOREP_IPC_UINT32_T, \
             rank ); \
     }
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
@@ -454,7 +454,7 @@ apply_and_send_mappings( int                       rank,
         SCOREP_Ipc_Send( \
             remote_definition_manager->type.mapping, \
             remote_definition_manager->type.counter, \
-            SCOREP_IPC_UINT32, \
+            SCOREP_IPC_UINT32_T, \
             rank ); \
     }
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
