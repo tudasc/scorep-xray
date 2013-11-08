@@ -469,9 +469,11 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     else if ( current == "-c" )
     {
         m_is_linking = false;
-        /* Do not add -c to the compiler options, because the instrumenter
-           will add a -c during the compile step, anyway. */
-        return scorep_parse_mode_command;
+        /* Do add -c to the compiler options, even if the instrumenter
+           will add a -c during the compile step, anyway.
+           However, if we are generating dependencies or do only preprocessing
+           a missing -c do harm.
+         */
     }
     else if ( m_install_data.isPreprocessFlag( current ) )
     {

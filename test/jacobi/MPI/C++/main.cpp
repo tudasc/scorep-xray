@@ -93,7 +93,7 @@ Init( JacobiData &data,
         block_lengths[ i ] = 1;
     }
     MPI_Aint displacements[ 8 ] =
-    { ( MPI_Aint )offsetof( struct JacobiData,     iRows ),
+    { ( MPI_Aint )offsetof( struct JacobiData, iRows ),
       ( MPI_Aint )offsetof( struct JacobiData, iCols ),
       ( MPI_Aint )offsetof( struct JacobiData, iRowFirst ),
       ( MPI_Aint )offsetof( struct JacobiData, iRowLast ),
