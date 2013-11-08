@@ -234,153 +234,15 @@ AC_LANG_POP(Fortran)
 dnl ----------------------------------------------------------------------------
 
 
-# AC_SCOREP_MPI_CHECK_DATATYPE(MPI_DATATYPE, [ACTION-IF-FOUND, [ACTION-IF-NOT-FOUND]])
-# ------------------------------------------------------------------------------------
-# Check if the C MPI interface knows the MPI_Datatype MPI_DATATYPE.
-#
-AC_DEFUN([AC_SCOREP_MPI_CHECK_DATATYPE], [
+AC_DEFUN([AC_SCOREP_MPI_C_DATATYPES], [
 AC_LANG_PUSH([C])
-AC_MSG_CHECKING([for $1])
-AC_COMPILE_IFELSE([
-    AC_LANG_SOURCE([
-#include<mpi.h>
-int main()
-{
-    MPI_Datatype dt = $1;
 
-    return 0;
-}
-    ])
-], [ #action-if-found
-    AC_MSG_RESULT([yes])
-    AC_DEFINE([HAVE_[]$1], [1], [C MPI defines $1])
-    ifelse([$2], , :, [$2])
-], [ #action-if-not-found
-    AC_MSG_RESULT([no])
-    ifelse([$3], , :, [$3])
-]) # AC_COMPILE_IF_ELSE
+AFS_MPI_DATATYPE_INT32_T
+AFS_MPI_DATATYPE_UINT32_T
+AFS_MPI_DATATYPE_INT64_T
+AFS_MPI_DATATYPE_UINT64_T
 
 AC_LANG_POP([C])
-]) # AC_DEFUN([AC_SCOREP_MPI_CHECK_DATATYPE])
-
-
-AC_DEFUN([AC_SCOREP_MPI_C_DATATYPES], [
-
-ac_scorep_mpi_int32_datatype=none
-
-AC_SCOREP_MPI_CHECK_DATATYPE([MPI_INT32_T], [
-    ac_scorep_mpi_int32_datatype=MPI_INT32_T
-])
-AC_SCOREP_CHECK_SIZEOF([signed int])
-AS_IF([test "x$ac_scorep_mpi_int32_datatype" = "xnone" &&
-       test $ac_cv_sizeof_signed_int -eq 4], [
-    AC_SCOREP_MPI_CHECK_DATATYPE([MPI_INT], [
-        ac_scorep_mpi_int32_datatype=MPI_INT
-    ])
-])
-
-AC_MSG_CHECKING([for MPI Datatype suitable for int32_t])
-AC_MSG_RESULT([$ac_scorep_mpi_int32_datatype])
-AS_IF([test "x$ac_scorep_mpi_int32_datatype" != "xnone"], [
-    AC_DEFINE_UNQUOTED([SCOREP_MPI_INT32],
-                       [$ac_scorep_mpi_int32_datatype],
-                       [MPI datatype used for the int32_t])
-], [
-    AC_MSG_ERROR([No suitable MPI datatype found for int32_t.])
-])
-
-ac_scorep_mpi_uint32_datatype=none
-
-AC_SCOREP_MPI_CHECK_DATATYPE([MPI_UINT32_T], [
-    ac_scorep_mpi_uint32_datatype=MPI_UINT32_T
-])
-AC_SCOREP_CHECK_SIZEOF([unsigned int])
-AS_IF([test "x$ac_scorep_mpi_uint32_datatype" = "xnone" &&
-       test $ac_cv_sizeof_unsigned_int -eq 4], [
-    AC_SCOREP_MPI_CHECK_DATATYPE([MPI_UNSIGNED], [
-        ac_scorep_mpi_uint32_datatype=MPI_UNSIGNED
-    ])
-])
-
-AC_MSG_CHECKING([for MPI Datatype suitable for uint32_t])
-AC_MSG_RESULT([$ac_scorep_mpi_uint32_datatype])
-AS_IF([test "x$ac_scorep_mpi_uint32_datatype" != "xnone"], [
-    AC_DEFINE_UNQUOTED([SCOREP_MPI_UINT32],
-                       [$ac_scorep_mpi_uint32_datatype],
-                       [MPI datatype used for the uint32_t])
-], [
-    AC_MSG_ERROR([No suitable MPI datatype found for uint32_t.])
-])
-
-ac_scorep_mpi_int64_datatype=none
-
-AC_SCOREP_MPI_CHECK_DATATYPE([MPI_INT64_T], [
-    ac_scorep_mpi_int64_datatype=MPI_INT64_T
-])
-AC_SCOREP_CHECK_SIZEOF([long])
-AS_IF([test "x$ac_scorep_mpi_int64_datatype" = "xnone" &&
-       test $ac_cv_sizeof_long -eq 8], [
-    AC_SCOREP_MPI_CHECK_DATATYPE([MPI_LONG], [
-        ac_scorep_mpi_int64_datatype=MPI_LONG
-    ], [
-        AC_SCOREP_MPI_CHECK_DATATYPE([MPI_LONG_INT], [
-            ac_scorep_mpi_int64_datatype=MPI_LONG_INT
-        ])
-    ])
-])
-
-AC_SCOREP_CHECK_SIZEOF([long long])
-AS_IF([test "x$ac_scorep_mpi_int64_datatype" = "xnone" &&
-       test $ac_cv_sizeof_long_long -eq 8], [
-    AC_SCOREP_MPI_CHECK_DATATYPE([MPI_LONG_LONG], [
-        ac_scorep_mpi_int64_datatype=MPI_LONG_LONG
-    ], [
-        AC_SCOREP_MPI_CHECK_DATATYPE([MPI_LONG_LONG_INT], [
-            ac_scorep_mpi_int64_datatype=MPI_LONG_LONG_INT
-        ])
-    ])
-])
-
-AC_MSG_CHECKING([for MPI Datatype suitable for int64_t])
-AC_MSG_RESULT([$ac_scorep_mpi_int64_datatype])
-AS_IF([test "x$ac_scorep_mpi_int64_datatype" != "xnone"], [
-    AC_DEFINE_UNQUOTED([SCOREP_MPI_INT64],
-                       [$ac_scorep_mpi_int64_datatype],
-                       [MPI datatype used for the int64_t])
-], [
-    AC_MSG_ERROR([No suitable MPI datatype found for int64_t.])
-])
-
-ac_scorep_mpi_uint64_datatype=none
-
-AC_SCOREP_MPI_CHECK_DATATYPE([MPI_UINT64_T], [
-    ac_scorep_mpi_uint64_datatype=MPI_UINT64_T
-])
-AC_SCOREP_CHECK_SIZEOF([unsigned long])
-AS_IF([test "x$ac_scorep_mpi_uint64_datatype" = "xnone" &&
-       test $ac_cv_sizeof_unsigned_long -eq 8], [
-    AC_SCOREP_MPI_CHECK_DATATYPE([MPI_UNSIGNED_LONG], [
-        ac_scorep_mpi_uint64_datatype=MPI_UNSIGNED_LONG
-    ])
-])
-AC_SCOREP_CHECK_SIZEOF([unsigned long long])
-AS_IF([test "x$ac_scorep_mpi_uint64_datatype" = "xnone" &&
-       test $ac_cv_sizeof_unsigned_long_long -eq 8], [
-    AC_SCOREP_MPI_CHECK_DATATYPE([MPI_UNSIGNED_LONG_LONG], [
-        ac_scorep_mpi_uint64_datatype=MPI_UNSIGNED_LONG_LONG
-    ])
-])
-
-AC_MSG_CHECKING([for MPI Datatype suitable for uint64_t])
-AC_MSG_RESULT([$ac_scorep_mpi_uint64_datatype])
-AS_IF([test "x$ac_scorep_mpi_uint64_datatype" != "xnone"], [
-    AC_DEFINE_UNQUOTED([SCOREP_MPI_UINT64],
-                       [$ac_scorep_mpi_uint64_datatype],
-                       [MPI datatype used for the uint64_t])
-], [
-    AC_MSG_ERROR([No suitable MPI datatype found for uint64_t.])
-])
-
 ]) # AC_DEFUN([AC_SCOREP_MPI_C_CONSTANTS])
 
 
