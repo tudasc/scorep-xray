@@ -241,6 +241,7 @@ scorep_thread_on_team_begin( scorep_thread_private_data*  parentTpd,
     UTILS_ASSERT( parentTpd == TPD );
     scorep_thread_private_data_omp_tpd* parent_model_data =
         scorep_thread_get_model_data( parentTpd );
+    *threadId = omp_get_thread_num();
 
     if ( omp_get_num_threads() == 1 )
     {
@@ -252,7 +253,6 @@ scorep_thread_on_team_begin( scorep_thread_private_data*  parentTpd,
     else
     {
         *locationIsCreated = false;
-        *threadId          = omp_get_thread_num();
 
         /* Set TPD to a child of itself, create new one if necessary */
         UTILS_BUG_ON( *threadId >= parent_model_data->n_children, "" );

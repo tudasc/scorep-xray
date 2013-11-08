@@ -114,7 +114,7 @@ scorep_thread_get_team_handle( SCOREP_Location*                 location,
         {
             /*
              * The parent thread team definition is our own, thus it is
-             * thread safe to inrement singleton_counter here.
+             * thread safe to increment singleton_counter here.
              */
             payload->singleton_counter++;
             return parentThreadTeam;

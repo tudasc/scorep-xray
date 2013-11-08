@@ -301,7 +301,7 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
     uint32_t                    fork_sequence_count = parent_tpd->tmp_fork_sequence_count;
     UTILS_ASSERT( fork_sequence_count != SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT );
     uint32_t thread_team_size = scorep_thread_get_team_size();
-    if ( fork_sequence_count == 1 )
+    if ( fork_sequence_count == 1 && thread_team_size > 1 )
     {
         SCOREP_MutexLock( first_fork_locations_mutex );
         if ( !first_fork_locations[ 0 ] )
