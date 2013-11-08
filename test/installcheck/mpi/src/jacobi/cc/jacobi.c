@@ -58,7 +58,7 @@ Jacobi( struct JacobiData* data )
 #ifdef SCOREP_POMP_USER
         #pragma pomp inst begin(loop)
 #endif
-        while ( data->iIterCount < data->iIterMax&& residual > data->fTolerance )
+        while ( residual > data->fTolerance && data->iIterCount < data->iIterMax )
         {
             residual = 0.0;
 
