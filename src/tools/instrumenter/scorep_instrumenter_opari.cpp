@@ -49,7 +49,7 @@
 
 #if SCOREP_BACKEND_COMPILER_CRAY
 #define SCOREP_OPARI_MANGLING_SCHEME "cray"
-#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS "--nosrc "
+#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS " --nosrc "
 
 #elif SCOREP_BACKEND_COMPILER_GNU
 #define SCOREP_OPARI_MANGLING_SCHEME "gnu"
@@ -87,6 +87,7 @@ SCOREP_Instrumenter_OpariAdapter::SCOREP_Instrumenter_OpariAdapter( void )
     m_c_compiler   = SCOREP_CC;
     m_nm           = "`" OPARI_CONFIG " --nm`";
     m_pomp         = detect;
+    m_use_tpd      = true;
 }
 
 bool
@@ -274,15 +275,25 @@ SCOREP_Instrumenter_OpariAdapter::checkCommand( const std::string& current,
     return false;
 }
 
+void
+SCOREP_Instrumenter_OpariAdapter::setTpdMode( const bool use_tpd )
+{
+    m_use_tpd = use_tpd;
+}
+
 /* ------------------------------------------------------------------- private methods */
 void
 SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumenter,
                                                 const std::string&   input_file,
                                                 const std::string&   output_file )
 {
-    std::string command = m_opari + m_params + " --tpd "
-                          SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
-                          "--tpd-mangling=" SCOREP_OPARI_MANGLING_SCHEME " ";
+    std::string command = m_opari + m_params +
+                          SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS " ";
+
+    if ( m_use_tpd )
+    {
+        command += " --tpd --tpd-mangling=" SCOREP_OPARI_MANGLING_SCHEME " ";
+    }
 
     SCOREP_Instrumenter_Adapter* adapter = getAdapter( SCOREP_INSTRUMENTER_ADAPTER_PDT );
     if ( ( adapter != NULL ) && adapter->isEnabled() && is_fortran_file( input_file ) )

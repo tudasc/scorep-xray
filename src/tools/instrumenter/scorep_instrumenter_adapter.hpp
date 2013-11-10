@@ -416,7 +416,7 @@ public:
     getAdapter( SCOREP_Instrumenter_AdapterId id );
 
     /**
-     * Checks whether adapter enableing violated earlier settings and
+     * Checks whether adapter enabling violated earlier settings and
      * enables it. If earlier settings are vialoted, it terminates with an error.
      * @caller name of the adapter or paradigm that requires this adapter. The name
      *         is only used in error messages.
@@ -427,7 +427,7 @@ public:
              SCOREP_Instrumenter_AdapterId id );
 
     /**
-     * Checks whether adapter enableing violated earlier settings and
+     * Checks whether adapter enabling violated earlier settings and
      * disables it. If earlier settings are vialoted, it terminates with an error.
      * @caller name of the adapter or paradigm that requires this adapter. The name
      *         is only used in error messages.
@@ -447,7 +447,7 @@ public:
     defaultOn( SCOREP_Instrumenter_AdapterId id );
 
     /**
-     * This function is called if the selected paradigm enables this instrumentation
+     * This function is called if the selected paradigm disables this instrumentation
      * approach by default. It checks whether the user has made a different selection
      * and if not, enables this adapter and checks its dependencies.
      * @param id The identifier of the adapter you require.

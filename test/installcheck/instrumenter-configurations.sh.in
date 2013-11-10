@@ -53,6 +53,9 @@ file_prefix="../installcheck/configurations_"
 
 # pomp_user_arg: use HAVE_OPARI2_TRUE when it is implemented 
 
+omp_args="thread=omp:pomp_tpd "
+
+@HAVE_SCOREP_OMP_ANCESTRY_TRUE@omp_args="${omp_args} thread=omp:ancestry "
 
 cd @abs_top_builddir@
 
@@ -83,7 +86,7 @@ done
                     echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg" >> ${file_prefix}serial
 
                     # omp -------------------------------#
-@HAVE_OPENMP_SUPPORT_TRUE@                    for omp_arg in "thread=omp"; do # add noopenmp when multilibs are ready, see above comment
+@HAVE_OPENMP_SUPPORT_TRUE@                    for omp_arg in $omp_args; do # add noopenmp when multilibs are ready, see above comment
 @HAVE_OPENMP_SUPPORT_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $omp_arg" >> ${file_prefix}omp
 @HAVE_OPENMP_SUPPORT_TRUE@                    done
 
@@ -94,7 +97,7 @@ done
 
                     # mpi_omp ---------------------------#
 @HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    for mpi_arg in "mpp=mpi"; do # add nompi when multilibs are ready, see above comment
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_arg in "thread=omp"; do # add noopenmp when multilibs are ready, see above comment
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_arg in $omp_args; do # add noopenmp when multilibs are ready, see above comment
 @HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpi_arg $omp_arg" >> ${file_prefix}mpi_omp
 @HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        done
 @HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    done

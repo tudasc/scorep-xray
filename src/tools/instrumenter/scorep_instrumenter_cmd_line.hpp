@@ -52,9 +52,9 @@ class SCOREP_Instrumenter_CmdLine
     /* ******************************************************* Private Types */
 private:
     /**
-       Type for the three values a adapter or paradigm configuration can have.
-       Before a command can be executed, a decision must be made for all
-       adapter and paradigms which are in detect state.
+       Type for the three values an adapter or paradigm configuration
+       can have.  Before a command can be executed, a decision must be
+       made for all adapters and paradigms which are in detect state.
      */
     typedef enum
     {
@@ -64,20 +64,21 @@ private:
     } instrumentation_usage_t;
 
     /**
-       Type of the state of the command line parser. The parser starts in
-       state scorep_parse_mode_param which means that arguments are interpreted
-       as options of the wrapper tool. When the first argument is reached
-       which has no leading dash it assumes that this is the compiler or
-       linker command and changed to scorep_parse_mode_command. All further
-       arguments are interpreted as arguments for the compiler/linker.
-       The states scorep_parse_mode_output, and scorep_parse_mode_config are used
-       to deal with arguments which reguire a value in a successive argument.
-       Thus, if A user specifies a config file the state switches to
-       scorep_parse_mode_config. The next argument is interpreted as the
-       config file name. Then the state switches back to scorep_parse_mode_param.
-       If the user command contains a '-o' the following argument is
-       interpreted as the output file name and the state switches to
-       scorep_parse_mode_output.
+       Type of the state of the command line parser. The parser starts
+       in state scorep_parse_mode_param which means that arguments are
+       interpreted as options of the wrapper tool. When the first
+       argument is reached which has no leading dash it assumes that
+       this is the compiler or linker command and changes to
+       scorep_parse_mode_command. All further arguments are
+       interpreted as arguments for the compiler/linker. The states
+       scorep_parse_mode_output, and scorep_parse_mode_config are used
+       to deal with arguments which reguire a value in a successive
+       argument. Thus, if A user specifies a config file the state
+       switches to scorep_parse_mode_config. The next argument is
+       interpreted as the config file name. Then the state switches
+       back to scorep_parse_mode_param. If the user command contains a
+       '-o' the following argument is interpreted as the output file
+       name and the state switches to scorep_parse_mode_output.
      */
     typedef enum
     {
@@ -267,7 +268,7 @@ private:
     /* ***************************************************** Private members */
 private:
     /**
-       Pointer to the associated installation configration data
+       Reference to the associated installation configration data
      */
     SCOREP_Instrumenter_InstallData& m_install_data;
 
@@ -298,9 +299,9 @@ private:
     /**
        Specification of static or dynamic linking of Score-P libraries into the
        application.
-       Enabled means link static.
-       Detect means use compiler default.
-       Disabeld means link dynamic libraries if possible.
+       Enabled:  link static.
+       Detect:   use compiler default.
+       Disabled: link dynamic libraries if possible.
      */
     instrumentation_usage_t m_link_static;
 

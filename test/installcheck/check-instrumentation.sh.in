@@ -117,7 +117,7 @@ while test $# -ne 0; do
             # These options have no effect on the inserted instrumentation
             ;;
 
-        --thread=omp)
+        --thread=omp|--thread=omp:pomp_tpd|--thread=omp:ancestry)
             OMP=yes
             ;;
 

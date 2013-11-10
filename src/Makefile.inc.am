@@ -210,6 +210,24 @@ libscorep_omp_la_LIBADD   = \
     libscorep_online_access_spp.la
 libscorep_omp_la_LDFLAGS  = $(external_ldflags)
 
+if HAVE_SCOREP_OMP_ANCESTRY
+check_LTLIBRARIES       += libscorep_omp_ancestry.la
+libscorep_omp_ancestry_la_SOURCES  = 
+libscorep_omp_ancestry_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_omp_ancestry_la_CPPFLAGS = $(common_cppflags)
+libscorep_omp_ancestry_la_LIBADD   =           \
+    libscorep_adapter_pomp_omp_event.la        \
+    $(common_libadd)                           \
+    $(external_libadd)                         \
+    libscorep_adapter_pomp_omp_mgmt.la         \
+    libscorep_adapter_mpi_mgmt_mockup.la       \
+    libscorep_mpp_mockup.la                    \
+    libscorep_thread_fork_join_omp_ancestry.la \
+    libscorep_mutex_omp.la                     \
+    libscorep_online_access_spp.la
+libscorep_omp_ancestry_la_LDFLAGS  = $(external_ldflags)
+
+endif
 endif
 
 ## Hybrid

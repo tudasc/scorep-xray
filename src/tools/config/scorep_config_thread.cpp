@@ -30,6 +30,7 @@ scorep_config_init_thread_systems( void )
 {
     scorep_thread_systems.push_back( new SCOREP_Config_MockupThreadSystem() );
     scorep_thread_systems.push_back( new SCOREP_Config_PompTpdThreadSystem() );
+    scorep_thread_systems.push_back( new SCOREP_Config_OmpAncestryThreadSystem() );
     SCOREP_Config_ThreadSystem::current = scorep_thread_systems.front();
 }
 
@@ -178,6 +179,48 @@ SCOREP_Config_PompTpdThreadSystem::addCFlags( std::string& cflags,
 
 void
 SCOREP_Config_PompTpdThreadSystem::addIncFlags( std::string& incflags, bool build_check, bool nvcc )
+{
+    add_opari_cflags( build_check, false, false, nvcc );
+}
+
+/* **************************************************************************************
+ * class SCOREP_Config_OmpAncestryThreadSystem
+ * *************************************************************************************/
+
+SCOREP_Config_OmpAncestryThreadSystem::SCOREP_Config_OmpAncestryThreadSystem()
+    : SCOREP_Config_ThreadSystem( "omp", "ancestry", "scorep_thread_fork_join_omp_ancestry",
+                                  "scorep_mutex_omp", SCOREP_CONFIG_THREAD_SYSTEM_ID_OMP_ANCESTRY )
+{
+}
+
+void
+SCOREP_Config_OmpAncestryThreadSystem::addLibs( std::deque<std::string>&           libs,
+                                                SCOREP_Config_LibraryDependencies& deps )
+{
+    libs.push_back( "libscorep_adapter_pomp_omp_event" );
+    deps.addDependency( "libscorep_measurement", "libscorep_adapter_pomp_omp_mgmt" );
+    deps.addDependency( "libscorep_measurement", "libscorep_thread_fork_join_omp_ancestry" );
+    deps.addDependency( "libscorep_thread_fork_join_omp_ancestry", "libscorep_mutex_omp" );
+}
+
+void
+SCOREP_Config_OmpAncestryThreadSystem::addCFlags( std::string& cflags,
+                                                  bool         build_check,
+                                                  bool         fortran,
+                                                  bool         nvcc )
+{
+    add_opari_cflags( build_check, true, fortran, nvcc );
+
+#if SCOREP_BACKEND_COMPILER_IBM
+    if ( fortran )
+    {
+        cflags += "-d -WF,-qlanglvl=classic ";
+    }
+#endif
+}
+
+void
+SCOREP_Config_OmpAncestryThreadSystem::addIncFlags( std::string& incflags, bool build_check, bool nvcc )
 {
     add_opari_cflags( build_check, false, false, nvcc );
 }

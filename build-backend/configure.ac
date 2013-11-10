@@ -261,6 +261,7 @@ if (( ac_cv_sizeof_void_p > ac_cv_sizeof_int64_t )); then
 fi
 
 AC_SCOREP_OPENMP
+SCOREP_OPENMP_ANCESTRY
 AC_SCOREP_PDT
 AC_SCOREP_COBI
 

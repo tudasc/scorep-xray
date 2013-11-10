@@ -1,3 +1,4 @@
+
 ## -*- mode: makefile -*-
 
 ## 
@@ -37,6 +38,31 @@ libscorep_thread_fork_join_omp_tpd_la_LIBADD = \
     libscorep_thread_fork_join_generic.la
 libscorep_thread_fork_join_omp_tpd_la_LDFLAGS = \
     $(library_api_version_ldflags)
+
+if HAVE_SCOREP_OMP_ANCESTRY
+
+lib_LTLIBRARIES += libscorep_thread_fork_join_omp_ancestry.la
+libscorep_thread_fork_join_omp_ancestry_la_CFLAGS   = \
+    $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_thread_fork_join_omp_ancestry_la_SOURCES  = \
+    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_omp_ancestry.c
+libscorep_thread_fork_join_omp_ancestry_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_DIR_THREAD_FORK_JOIN_INTERN) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_DIR_COMMON_HASH) \
+    -I$(INC_ROOT)src/services/include \
+    -I$(INC_ROOT)src/measurement/profiling/include \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_DIR_COMMON_HASH) 
+libscorep_thread_fork_join_omp_ancestry_la_LIBADD = \
+    libscorep_thread_fork_join_generic.la
+libscorep_thread_fork_join_omp_ancestry_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+endif HAVE_SCOREP_OMP_ANCESTRY
 
 endif HAVE_OPENMP_SUPPORT
 

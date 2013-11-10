@@ -76,6 +76,9 @@ public:
     checkCommand( const std::string& current,
                   const std::string& next );
 
+    void
+    setTpdMode( const bool use_tpd );
+
 private:
     /**
      * Invokes the opari tool to instrument a source file.
@@ -145,6 +148,11 @@ private:
      * Specifies whether OpenMP pragma instrumentation is enabled.
      */
     instrumentation_usage_t m_pomp;
+
+    /**
+     * Specifies whether --tpd should be used.
+     */
+    bool m_use_tpd;
 };
 
 #endif

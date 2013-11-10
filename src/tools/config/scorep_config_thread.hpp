@@ -34,7 +34,8 @@
 typedef enum
 {
     SCOREP_CONFIG_THREAD_SYSTEM_ID_NONE,
-    SCOREP_CONFIG_THREAD_SYSTEM_ID_POMP_TPD
+    SCOREP_CONFIG_THREAD_SYSTEM_ID_POMP_TPD,
+    SCOREP_CONFIG_THREAD_SYSTEM_ID_OMP_ANCESTRY
 } SCOREP_Config_ThreadSystemId;
 
 /* **************************************************************************************
@@ -218,6 +219,33 @@ class SCOREP_Config_PompTpdThreadSystem : public SCOREP_Config_ThreadSystem
 {
 public:
     SCOREP_Config_PompTpdThreadSystem();
+    virtual void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
+    virtual void
+    addCFlags( std::string& cflags,
+               bool         build_check,
+               bool         fortran,
+               bool         nvcc );
+
+    virtual void
+    addIncFlags( std::string& incflags,
+                 bool         build_check,
+                 bool         nvcc );
+};
+
+/* **************************************************************************************
+ * class SCOREP_Config_OmpAncestryThreadSystem
+ * *************************************************************************************/
+
+/**
+ * This class represents the POMP2-based implementation for OpenMP threads which
+ * uses the copyin structure for the TPD variable.
+ */
+class SCOREP_Config_OmpAncestryThreadSystem : public SCOREP_Config_ThreadSystem
+{
+public:
+    SCOREP_Config_OmpAncestryThreadSystem();
     virtual void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );

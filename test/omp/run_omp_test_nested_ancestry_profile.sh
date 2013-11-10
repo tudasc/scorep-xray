@@ -32,7 +32,7 @@
 ## file       run_omp_test.sh
 
 
-SCOREP_ENABLE_PROFILING=true SCOREP_ENABLE_TRACING=false ./omp_test
+SCOREP_ENABLE_PROFILING=true SCOREP_ENABLE_TRACING=false ./omp_test_nested_ancestry
 if [ $? -ne 0 ]; then
     rm -rf scorep-measurement-tmp
     exit 1

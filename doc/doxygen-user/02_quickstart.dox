@@ -185,7 +185,7 @@ Most of these tools are focused on certain special aspects that are
 significant in the code optimization process, but none of them
 provides the full picture. In the traditional
 workflow, each tool used to have its own measurement system, and 
-hence its own instrumentor,
+hence its own instrumenter,
 so the user was forced to instrument his code more than once if more
 than one class of features of the application was to be investigated. 
 One of the key advantages of @scorep is that it provides an
@@ -205,7 +205,7 @@ use selective manual instrumentation and measurement instead.
 For the moment, we shall however start the procedure in an automatic
 way to keep things simple for novice users.
 
-To this end, we need to ask the @scorep instrumentor to take care of
+To this end, we need to ask the @scorep instrumenter to take care of
 all the necessary instrumentation of user and @mpi functions. This is
 done by using the <tt>scorep</tt> command that needs to be
 prefixed to all the compile and link commands usually employed to
@@ -223,16 +223,16 @@ will now be built by:
   scorep  mpif90 app1.f90 app2.f90 -o app
 @endcode
 
-using the @scorep instrumentor.
+using the @scorep instrumenter.
 
 In practice one will usually perform compilation and linking in
 separate steps, and it is not necessary to compile all source files at
 the same time (e.g., if makefiles are used). It is possible to use the
-@scorep instrumentor in such a case too, and this actually gives more
+@scorep instrumenter in such a case too, and this actually gives more
 flexibility to the user. Specifically, it is often sufficient to use
-the instrumentor not in all compilations but only in those that deal
+the instrumenter not in all compilations but only in those that deal
 with source files containing MPI code. However, when invoking the
-linker, the instrumentor must \emph{always} be used. 
+linker, the instrumenter must \emph{always} be used. 
 
 When makefiles are employed to build the application, it is convenient
 to define a placeholder variable to indicate whether a ``preparation''

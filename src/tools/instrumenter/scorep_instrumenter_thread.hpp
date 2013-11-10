@@ -51,6 +51,25 @@ private:
 };
 
 /* **************************************************************************************
+ * class SCOREP_Instrumenter_OmpAncestry
+ * *************************************************************************************/
+class SCOREP_Instrumenter_OmpAncestry : public SCOREP_Instrumenter_Paradigm
+{
+public:
+    SCOREP_Instrumenter_OmpAncestry( SCOREP_Instrumenter_Selector* selector );
+
+    virtual void
+    setConfigValue( const std::string& key,
+                    const std::string& value );
+
+    virtual void
+    checkDependencies( void );
+
+private:
+    std::string m_openmp_cflag;
+};
+
+/* **************************************************************************************
  * class SCOREP_Instrumenter_Thread
  * *************************************************************************************/
 class SCOREP_Instrumenter_Thread : public SCOREP_Instrumenter_Selector

@@ -9,7 +9,7 @@ provides manual instrumentation using the @scorep User API
 semi-automatic instrumentation using @pomp2 directives 
 (Section @secref{pomp_instrumentation}) and,
 if configured, automatic source-code instrumentation using the PDToolkit-based
-instrumentor (Section @secref{tau_instrumentation}). 
+instrumenter (Section @secref{tau_instrumentation}). 
 
 As well as user routines and specified source regions, @scorep currently supports the
 following kinds of events:
@@ -33,7 +33,7 @@ following kinds of events:
   </li>
 </ul>
 
-The @scorep instrumentor command <tt>scorep</tt> automatically takes
+The @scorep instrumenter command <tt>scorep</tt> automatically takes
 care of compilation and linking to produce an instrumented executable,
 and should be prefixed to compile and link commands.  Often this only
 requires prefixing definitions for @verb{CC} or @verb{MPICC} (and
@@ -73,7 +73,7 @@ argument:
 </ol>
 
 
-When compiling without the @scorep instrumentor, the
+When compiling without the @scorep instrumenter, the
 <tt>scorep-config</tt> command can be used to simplify determining the appropriate
 linker flags and libraries, or include paths:
 @verbatim
@@ -97,7 +97,7 @@ a threading system.
 The <tt>scorep-config</tt> command can also be used to determine the right compiler
 flags for specifying the include directory of the <tt>scorep/SCOREP_User.h</tt> or
 <tt>scorep/SCOREP_User.inc</tt> header files. When compiling without using the @scorep
-instrumentor, necessary defines and compiler instrumentation flags can be obtained by calling:
+instrumenter, necessary defines and compiler instrumentation flags can be obtained by calling:
 @verbatim
     scorep-config --cflags [--fortran] [--user] [--nocompiler]
 @endverbatim
@@ -116,14 +116,14 @@ source routines and arbitrary regions, in addition to fully-automatic
 \if LATEX 
 \latexonly
    \begin{table}
-	\caption{Score-P instrumentor option overview}
+	\caption{Score-P instrumenter option overview}
 	\label{tab:instopts}
-    	\begin{tabular}{ | p{1.5cm} | p{2.5cm} | p{1.6cm} | p{2.1cm} | p{2.1cm} |}
+    	\begin{tabular}{ | p{1.7cm} | p{3.0cm} | p{1.6cm} | p{2.1cm} | p{2.1cm} |}
 	    \hline
 	    \bf Type of\newline instrumen\-tation & \bf Instrumenter switch & \bf Default value & \bf Instrumented routines & \bf  Runtime measurement control \\ \hline
       
-	    MPI & {\ttfamily -\/-\/mpi/ \newline -\/-\/nompi} & (auto) &  configured by install & see Sec. \ref{sec:mpi_groups}  \\ \hline	    
-	    OpenMP & {\ttfamily -\/-\/openmp/ \newline -\/-\/noopenmp} & (auto) &  all parallel constricts &  --  \\ \hline
+	    MPI & {\ttfamily -\/-\/mpp=mpi/ \newline -\/-\/mpp=none} & (auto) &  configured by install & see Sec. \ref{sec:mpi_groups}  \\ \hline	    
+	    OpenMP & {\ttfamily -\/-\/thread=omp/ \newline -\/-\/thread=none} & (auto) &  all parallel constructs &  --  \\ \hline
 	    Compiler, Sec. \ref{sec:compiler_instrumentation} & {\ttfamily -\/-\/compiler/ \newline -\/-\/nocompiler} & enabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    PDT,\newline Sec. \ref{sec:tau_instrumentation} & {\ttfamily -\/-\/pdt/ \newline -\/-\/nopdt} & disabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    POMP2 user regions, Sec. \ref{sec:pomp_instrumentation} & {\ttfamily -\/-\/pomp/ \newline -\/-\/nopomp} & depends on OpenMP usage &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}  \\ \hline
@@ -134,7 +134,7 @@ source routines and arbitrary regions, in addition to fully-automatic
 
 \else
   <table border=1 cellspacing=0>
-    <caption>@scorep instrumentor option overview</caption>
+    <caption>@scorep instrumentr option overview</caption>
     <tr>
       <th align="center" valign="middle" style="width:8em;">Type of instrumentation</th>
       <th align="center" valign="middle" style="width:8em;">Instrumenter switch</th>
@@ -187,8 +187,8 @@ source routines and arbitrary regions, in addition to fully-automatic
   </table>
 \endif
 
-When the instrumentor determines that MPI or OpenMP are being used, it
-automatically enables MPI library instrumentation and OPARI2-based OpenMP
+When the instrumenter determines that MPI or OpenMP are being used, it
+automatically enables MPI library instrumentation or OPARI2-based OpenMP
 instrumentation, respectively.  The default set of instrumented MPI
 library functions is specified when @scorep is installed.  All OpenMP
 parallel constructs and API calls are instrumented by default.
@@ -206,11 +206,20 @@ result if all are used to instrument the same routines). Note that enabling
 PDToolkit instrumentation automatically enables @scorep user instrumentation,
 because it inserts @scorep user macros into the source code.
 
-Sometimes it is desirable to explicitly direct the @scorep instrumentor to
+@note There are two ways of internal data handling for measurements
+      involving the OpenMP threading model. The possible options are:
+      @n @verb{--thread=omp:pomp_tpd}
+      @n @verb{--thread=omp:ancestry} 
+      @n These options should be identical in behavior. If you specify
+      @verb{--thread=omp} or OpenMP is automatically detected, the default
+      is @verb{pomp_tpd}.
+
+
+Sometimes it is desirable to explicitly direct the @scorep instrumenter to
 do nothing except execute the associated compile/link command. For such cases 
 it is possible to disable default instrumentation with <tt>--nocompiler</tt>,
 <tt>--thread=none</tt>, and/or <tt>--mpp=none</tt>. Although no instrumentation is
-performed, this can help verify that the @scorep instrumentor correctly
+performed, this can help verify that the @scorep instrumenter correctly
 handles the compile/link commands. 
 
 @note Disabling @openmp in the instrumenter for @openmp applications will cause 
@@ -422,7 +431,7 @@ File 2:
 
 The source files instrumented with @scorep user macros have to be compiled with
 <tt>-DSCOREP_USER_ENABLE</tt> otherwise <tt>SCOREP_*</tt> calls expand to nothing and are
-ignored. If the @scorep instrumentor <tt>--user</tt> flag is used, the
+ignored. If the @scorep instrumenter <tt>--user</tt> flag is used, the
 <tt>SCOREP_USER_ENABLE</tt> symbol will be defined automatically. Also note, that Fortran
 source files instrumented this way have to be preprocessed with the C
 preprocessor (CPP).
@@ -590,7 +599,7 @@ C/C++:
 
 If you manually instrument the desired user functions and regions of your
 application source files using the @pomp2 <tt>INST</tt> directives described
-below, the @scorep instrumentor <tt>--pomp</tt> flag will generate
+below, the @scorep instrumenter <tt>--pomp</tt> flag will generate
 instrumentation for them. It is automatically enabled for @openmp applications,
 but can be disabled with <tt>--nopomp</tt>. @pomp2 instrumentation directives 
 are supported for Fortran and C/C++. The main advantages are that
@@ -732,7 +741,7 @@ if you you can enforce additional compiler instrumentation with
 @subsection tau_inst_limitations Limitations
 @seclabel{tau_inst_limitations}
 
-Currently the support for the PDT-based source-code instrumentor still has a number 
+Currently the support for the PDT-based source-code instrumenter still has a number 
 of limitations:
 <ul>
   <li>

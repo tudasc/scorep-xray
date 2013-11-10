@@ -51,7 +51,7 @@ each analysis tool had its own instrumentation system, so the user
 was commonly forced to repeat the instrumentation procedure if more
 than one tool was to be employed. 
 In this context, @scorep offers the user a maximum of convenience by
-providing the Opari2 instrumentor as a common infrastructure for a
+providing the Opari2 instrumenter as a common infrastructure for a
 number of analysis tools like
 @href{http://www.lrr.in.tum.de/periscope,Periscope}, 
 @href{http://www.scalasca.org,Scalasca},
@@ -239,17 +239,17 @@ instrumentation. These are currently:
 <ul>
  <li> compiler instrumentation, </li>
  <li> MPI library interposition, </li>
- <li> source code instrumentation via the TAU instrumentor, </li>
+ <li> source code instrumentation via the TAU instrumenter, </li>
  <li> OpenMP source code instrumentation using Opari2. </li>
  <li> binary instrumentation using Cobi
  <li> CUDA instrumentation</li>
 </ul>
 
 While the first three of these methods are based on using tools
-provided externally, the Opari2 instrumentor for OpenMP programs is a
+provided externally, the Opari2 instrumenter for OpenMP programs is a
 part of the @scorep infrastructure itself. It is an extension of the well
 known and frequently used 
-@href{http://www2.fz-juelich.de/jsc/kojak/opari/,OpenMP Pragma And Region Instrumentor} 
+@href{http://www2.fz-juelich.de/jsc/kojak/opari/,OpenMP Pragma And Region Instrumenter} 
 system (Opari) that has been successfully used
 in the past in combination with tools like Scalasca, VampirTrace and
 ompP. The fundamental concept of such a system is a 

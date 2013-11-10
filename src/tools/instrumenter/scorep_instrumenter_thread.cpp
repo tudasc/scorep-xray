@@ -19,6 +19,7 @@
 #include <config.h>
 #include "scorep_instrumenter_thread.hpp"
 #include "scorep_instrumenter_paradigm.hpp"
+#include "scorep_instrumenter_opari.hpp"
 #include "scorep_instrumenter_cmd_line.hpp"
 #include "scorep_instrumenter_install_data.hpp"
 #include "scorep_instrumenter_utils.hpp"
@@ -101,12 +102,50 @@ SCOREP_Instrumenter_OmpTpd::setConfigValue( const std::string& key,
 }
 
 /* **************************************************************************************
+ * class SCOREP_Instrumenter_OmpAncestry
+ * *************************************************************************************/
+SCOREP_Instrumenter_OmpAncestry::SCOREP_Instrumenter_OmpAncestry
+(
+    SCOREP_Instrumenter_Selector* selector
+) : SCOREP_Instrumenter_Paradigm( selector, "omp", "ancestry",
+                                  "OpenMP support using thread tracking with ancestry functions in OpenMP 3.0 and later" )
+{
+    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
+    m_openmp_cflag = SCOREP_OPENMP_CFLAGS;
+}
+
+void
+SCOREP_Instrumenter_OmpAncestry::checkDependencies( void )
+{
+    SCOREP_Instrumenter_Paradigm::checkDependencies();
+
+    SCOREP_Instrumenter_Adapter* adapter = SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
+    if ( ( adapter != NULL ) )
+    {
+        ( ( SCOREP_Instrumenter_OpariAdapter* )adapter )->setTpdMode( false );
+    }
+}
+
+void
+SCOREP_Instrumenter_OmpAncestry::setConfigValue( const std::string& key,
+                                                 const std::string& value )
+{
+    if ( key == "OPENMP_CFLAGS" && value != "" )
+    {
+        m_openmp_cflag = value;
+    }
+}
+
+/* **************************************************************************************
  * class SCOREP_Instrumenter_Thread
  * *************************************************************************************/
 SCOREP_Instrumenter_Thread::SCOREP_Instrumenter_Thread()
     : SCOREP_Instrumenter_Selector( "thread" )
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_SingleThreaded( this ) );
+#ifdef SCOREP_BACKEND_HAVE_OMP_ANCESTRY
+    m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpAncestry( this ) );
+#endif
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpTpd( this ) );
     m_current_selection = m_paradigm_list.front();
 }
