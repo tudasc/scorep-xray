@@ -58,6 +58,12 @@
   if these messages exist.
 - Added options to scorep-config and the scorep instrumenter to enable/disable
   online access support.
+- When using the intel compiler, we inspected the symbol table of the executable
+  and evaluated the filtering on all functions in the executable. Thus, compiler
+  instrumneted functions from shared libraries are automatically filtered, when
+  using the intel compiler. Now, the filters are evaluated when the functions
+  appear the first time. Thus, functions from shared libraries now appear in the
+  measurment output.
 
 ------------------- Released version 1.2.1 ---------------------------
 

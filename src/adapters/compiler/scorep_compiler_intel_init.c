@@ -40,7 +40,6 @@
 
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data_intel.h"
-#include "scorep_compiler_symbol_table.h"
 
 
 /* ***************************************************************************************
@@ -59,9 +58,6 @@ scorep_compiler_init_adapter( void )
 
         /* Initialize hash tables */
         scorep_compiler_hash_init();
-
-        /* call function to calculate symbol table */
-        scorep_compiler_get_sym_tab();
 
         /* Set flag */
         scorep_compiler_initialized = true;

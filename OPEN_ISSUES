@@ -123,6 +123,11 @@ various Score-P components.
     disable libbfd region naming (--without-libbfd). In the latter
     case, region names will be provided by nm.
 
+  - The GNU compiler instrumentation provides only functions pointers, which
+    we look up in the symbol table of the executable. Thus, functions from 
+    shared libraries, will not appear (are automatically filtered) in the
+    measurement output.
+
 --------------------------------------------------------------------------------
 
 * MPI support

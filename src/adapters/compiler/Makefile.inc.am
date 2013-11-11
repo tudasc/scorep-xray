@@ -144,42 +144,9 @@ endif
 if SCOREP_COMPILER_INTEL
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel_init.c   \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.h \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.c   \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.h
-
-libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
-    -DINTEL_COMPILER
-
-if HAVE_LIBBFD
-libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
-    -DHAVE_LIBBFD                              \
-    @LIBBFD_CPPFLAGS@
-
-libscorep_adapter_compiler_mgmt_la_LIBADD += \
-    @LIBBFD_LIBS@
-
-libscorep_adapter_compiler_mgmt_la_LDFLAGS += \
-    @LIBBFD_LDFLAGS@
-endif
-
-if HAVE_DEMANGLE
-libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
-    -DGNU_DEMANGLE
 endif 
-
-if HAVE_NM_AS_BFD_REPLACEMENT
-# the SCOREP_Timing.h dependency is used to generate unique
-# filenames. This should be done differently, see #692
-libscorep_adapter_compiler_mgmt_la_SOURCES  += \
-    $(SRC_ROOT)src/services/include/SCOREP_Timing.h
-
-libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
-    -I$(INC_ROOT)src/services/include          \
-    -DHAVE_NM
-endif
-endif
 
 
 #--- PGI specific settings

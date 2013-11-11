@@ -41,7 +41,6 @@
 
 #include <UTILS_Debug.h>
 
-#include <SCOREP_Types.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Mutex.h>
@@ -49,6 +48,20 @@
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data_intel.h"
 
+static const char*
+get_name_from_string( const char* str )
+{
+    while ( *str != '\0' )
+    {
+        if ( *str == ':' )
+        {
+            str++;
+            break;
+        }
+        str++;
+    }
+    return str;
+}
 
 /* ***************************************************************************************
    Implementation of functions called by compiler instrumentation
@@ -62,8 +75,6 @@ __VT_IntelEntry( char*     str,
                  uint32_t* id,
                  uint32_t* id2 )
 {
-    scorep_compiler_hash_node* hash_node = NULL;
-
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call at function enter." );
 
     /*
@@ -90,26 +101,18 @@ __VT_IntelEntry( char*     str,
         SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( *id == 0 )
         {
-            hash_node = scorep_compiler_hash_get( str );
-            if ( hash_node )
+            const char* region_name = get_name_from_string( str );
+            *id = scorep_compiler_hash_get( region_name );
+            if ( *id == SCOREP_INVALID_REGION )
             {
-                if ( hash_node->region_handle == SCOREP_INVALID_REGION )
-                {
-                    /* -- region entered the first time, register region -- */
-                    scorep_compiler_register_region( hash_node );
-                }
-                *id = hash_node->region_handle;
-            }
-            else
-            {
-                *id = SCOREP_COMPILER_FILTER_HANDLE;
+                *id = scorep_compiler_register_region( str, region_name );
             }
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
 
     /* Enter event */
-    if ( *id != SCOREP_COMPILER_FILTER_HANDLE )
+    if ( *id != SCOREP_FILTERED_REGION )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
                             "enter the region with id %u ", *id );
@@ -142,7 +145,7 @@ __VT_IntelExit( uint32_t* id2 )
     }
 
     /* Check if function is filtered */
-    if ( *id2 == SCOREP_COMPILER_FILTER_HANDLE )
+    if ( *id2 == SCOREP_FILTERED_REGION )
     {
         return;
     }
@@ -170,7 +173,7 @@ __VT_IntelCatch( uint32_t* id2 )
     }
 
     /* Check if function is filtered */
-    if ( *id2 == SCOREP_COMPILER_FILTER_HANDLE )
+    if ( *id2 == SCOREP_FILTERED_REGION )
     {
         return;
     }
@@ -194,7 +197,7 @@ __VT_IntelCheck( uint32_t* id2 )
     }
 
     /* Check if function is filtered */
-    if ( *id2 == SCOREP_COMPILER_FILTER_HANDLE )
+    if ( *id2 == SCOREP_FILTERED_REGION )
     {
         return;
     }

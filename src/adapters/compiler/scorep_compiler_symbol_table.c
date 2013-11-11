@@ -44,8 +44,6 @@
  * @li If HAVE_NM is defined, it uses a system call to nm to read the symbols. This
  *     option is only available if HAVE_LIBBFD is undefined, because of worse scaling.
  * @li If GNU_DEMANGLE is defined it uses cplus_demangle() to demangle function names.
- * @li If INTEL_COMPILER is defined, regions do not use the address as key, but get a
- *     32 bit integer id as key.
  */
 
 #include <config.h>
@@ -328,7 +326,6 @@ scorep_compiler_get_sym_tab( void )
         /* calculate function address */
         addr = canonic_symbols[ i ]->section->vma + canonic_symbols[ i ]->value;
 
-#ifndef INTEL_COMPILER
         /* get the source info for every function in case of gnu by default */
         /* calls BFD_SEND */
         bfd_find_nearest_line( bfd_image,
@@ -338,7 +335,6 @@ scorep_compiler_get_sym_tab( void )
                                &filename,
                                &funcname,
                                &lno );
-#endif
         funcname = canonic_symbols[ i ]->name;
 
         scorep_compiler_process_symbol( addr, funcname, filename, lno );

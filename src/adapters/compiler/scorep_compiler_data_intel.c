@@ -37,13 +37,40 @@
 
 #include <string.h>
 #include <unistd.h>
+#include <assert.h>
 
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Mutex.h>
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_Filter.h>
+
+/**
+   @def SCOREP_COMPILER_HASH_MAX The number of slots in the region hash table.
+ */
+#define SCOREP_COMPILER_REGION_SLOTS 1021
+
+/**
+   @def SCOREP_COMPILER_FILE_SLOTS The number of slots in the file hash table.
+ */
+#define SCOREP_COMPILER_FILE_SLOTS 15
+
+/**
+ * @brief Hash table to map function addresses to region identifier
+ * identifier is called region handle
+ *
+ * @param region_name       function name as it appears in the definitions
+ * @param file_name         file name
+ * @param region_handle     region identifier
+ * @param next              pointer to next element with the same hash value.
+ */
+typedef struct scorep_compiler_hash_node
+{
+    char*                             region_name;
+    char*                             file_name;
+    SCOREP_RegionHandle               region_handle;
+    struct scorep_compiler_hash_node* next;
+} scorep_compiler_hash_node;
 
 /**
    A hash table which stores information about regions under their name as
@@ -55,11 +82,6 @@ scorep_compiler_hash_node* region_hash_table[ SCOREP_COMPILER_REGION_SLOTS ];
    Hash table for mapping source file names to SCOREP file handles.
  */
 SCOREP_Hashtab* scorep_compiler_file_table = NULL;
-
-/**
-   Mutex for mutual exclusive access to @ref scorep_compiler_file_table.
- */
-SCOREP_Mutex scorep_compiler_file_table_mutex;
 
 /* ***************************************************************************************
    File hash table functions
@@ -79,27 +101,32 @@ scorep_compiler_delete_file_entry( SCOREP_Hashtab_Entry* entry )
 }
 
 /* Initialize the file table */
-void
+static void
 scorep_compiler_init_file_table( void )
 {
-    SCOREP_MutexCreate( &scorep_compiler_file_table_mutex );
     scorep_compiler_file_table = SCOREP_Hashtab_CreateSize( SCOREP_COMPILER_FILE_SLOTS,
                                                             &SCOREP_Hashtab_HashString,
                                                             &SCOREP_Hashtab_CompareStrings );
 }
 
 /* Finalize the file table */
-void
+static void
 scorep_compiler_final_file_table( void )
 {
     SCOREP_Hashtab_Foreach( scorep_compiler_file_table, &scorep_compiler_delete_file_entry );
     SCOREP_Hashtab_Free( scorep_compiler_file_table );
     scorep_compiler_file_table = NULL;
-    SCOREP_MutexDestroy( &scorep_compiler_file_table_mutex );
 }
 
-/* Returns the file handle for a given file name. */
-SCOREP_SourceFileHandle
+/**
+   Returns the file handle for a given file name. It searches in the hash table if the
+   requested name is already there and returns the stored value. If the file name is not
+   found in the hash table, it creates a new entry and registers the file to the SCOREP
+   measurement system.
+   @param file The file name for which the handle is returned.
+   @returns the handle for the @a file.
+ */
+static SCOREP_SourceFileHandle
 scorep_compiler_get_file( const char* file )
 {
     size_t                index;
@@ -109,8 +136,6 @@ scorep_compiler_get_file( const char* file )
     {
         return SCOREP_INVALID_SOURCE_FILE;
     }
-
-    SCOREP_MutexLock( scorep_compiler_file_table_mutex );
 
     entry = SCOREP_Hashtab_Find( scorep_compiler_file_table, file,
                                  &index );
@@ -137,11 +162,9 @@ scorep_compiler_get_file( const char* file )
         SCOREP_Hashtab_Insert( scorep_compiler_file_table, ( void* )file_name,
                                handle, &index );
 
-        SCOREP_MutexUnlock( scorep_compiler_file_table_mutex );
         return *handle;
     }
 
-    SCOREP_MutexUnlock( scorep_compiler_file_table_mutex );
     return *( SCOREP_SourceFileHandle* )entry->value;
 }
 
@@ -166,24 +189,10 @@ scorep_compiler_hash_init( void )
 }
 
 /* Get hash table entry for given name. */
-scorep_compiler_hash_node*
-scorep_compiler_hash_get( char* str )
+SCOREP_RegionHandle
+scorep_compiler_hash_get( const char* region_name )
 {
-    char* name = str;
-    char* file = str;
-    /* The intel compiler prepends the filename to the function name.
-       -> Need to remove the file name. */
-    while ( *name != '\0' )
-    {
-        if ( *name == ':' )
-        {
-            name++;
-            break;
-        }
-        name++;
-    }
-
-    uint64_t hash_code = SCOREP_Hashtab_HashString( name ) % SCOREP_COMPILER_REGION_SLOTS;
+    uint64_t hash_code = SCOREP_Hashtab_HashString( region_name ) % SCOREP_COMPILER_REGION_SLOTS;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld", hash_code );
 
@@ -194,77 +203,39 @@ scorep_compiler_hash_get( char* str )
      */
     while ( curr )
     {
-        if ( strcmp( curr->region_name_demangled, name )  == 0 )
+        if ( strcmp( curr->region_name, region_name )  == 0 )
         {
-            if ( curr->file_name == NULL )
-            {
-                /* Extract file name */
-                uint64_t len = name - file;
-                curr->file_name = malloc( len );
-                strncpy( curr->file_name, file, len - 1 );
-                curr->file_name[ len - 1 ] = '\0';
-            }
-            return curr;
+            return curr->region_handle;
         }
         curr = curr->next;
     }
-    return NULL;
+    return SCOREP_INVALID_REGION;
 }
 
-/* Stores function name under hash code */
-scorep_compiler_hash_node*
-scorep_compiler_hash_put( uint64_t      addr,
-                          const char*   region_name_mangled,
-                          const char*   region_name_demangled,
-                          const char*   file_name,
-                          SCOREP_LineNo line_no_begin )
+/**
+   Creates a new entry for the region hashtable with the given values.
+   @param region_name     The name of the region.
+   @param file_name       The name of the source file of the registered region.
+   @param region_handle   The region handle.
+   @returns a pointer to the newly created hash node.
+ */
+static void
+scorep_compiler_hash_put( const char*         region_name,
+                          const char*         file_name,
+                          SCOREP_RegionHandle region_handle )
 {
-    /* ifort constructs function names like <module>_mp_<function>,
-     * while __VT_Entry gets something like <module>.<function>
-     * => replace _mp_ with a dot. */
-    char* name = UTILS_CStr_dup( region_name_demangled );
-    for ( int i = 1; i + 5 < strlen( name ); i++ )
-    {
-        if ( strncmp( &name[ i ], "_mp_", 4 ) == 0 )
-        {
-            name[ i ] = '.';
-            for ( int j = i + 1; j <= strlen( name ) - 2; j++ )
-            {
-                name[ j ] = name[ j + 3 ];
-            }
-            break;
-        }
-    }
+    uint64_t hash_code = SCOREP_Hashtab_HashString( region_name ) % SCOREP_COMPILER_REGION_SLOTS;
 
-    /* icpc appends the signature of the function. Unfortunately,
-     * __VT_Entry gives a string without signature.
-     * => cut off signature  */
-    for ( int i = 1; i + 1 < strlen( name ); i++ )
-    {
-        if ( name[ i ] == '(' )
-        {
-            name[ i ] = '\0';
-            break;
-        }
-    }
-
-    uint64_t                   hash_code = SCOREP_Hashtab_HashString( name ) % SCOREP_COMPILER_REGION_SLOTS;
-    scorep_compiler_hash_node* add       = ( scorep_compiler_hash_node* )
-                                           malloc( sizeof( scorep_compiler_hash_node ) );
-    add->region_name_mangled   = UTILS_CStr_dup( region_name_mangled );
-    add->region_name_demangled = UTILS_CStr_dup( name );
-    add->file_name             = NULL;
-    add->line_no_begin         = line_no_begin;
-    add->line_no_end           = SCOREP_INVALID_LINE_NO;
-    add->region_handle         = SCOREP_INVALID_REGION;
+    scorep_compiler_hash_node* add = ( scorep_compiler_hash_node* )
+                                     malloc( sizeof( scorep_compiler_hash_node ) );
+    add->region_name   = UTILS_CStr_dup( region_name );
+    add->file_name     = UTILS_CStr_dup( file_name );
+    add->region_handle = region_handle;
     /* Inserting elements at the head allows parallel calls to
      * @ref scorep_compiler_hash_get
      */
     add->next                      = region_hash_table[ hash_code ];
     region_hash_table[ hash_code ] = add;
-
-    free( name );
-    return add;
 }
 
 
@@ -283,13 +254,9 @@ scorep_compiler_hash_free( void )
             while ( cur != NULL )
             {
                 next = cur->next;
-                if ( cur->region_name_mangled != NULL )
+                if ( cur->region_name != NULL )
                 {
-                    free( cur->region_name_mangled );
-                }
-                if ( cur->region_name_demangled != NULL )
-                {
-                    free( cur->region_name_demangled );
+                    free( cur->region_name );
                 }
                 if ( cur->file_name != NULL )
                 {
@@ -306,25 +273,40 @@ scorep_compiler_hash_free( void )
 }
 
 /* Register a new region to the measurement system */
-void
-scorep_compiler_register_region( scorep_compiler_hash_node* node )
+SCOREP_RegionHandle
+scorep_compiler_register_region( const char* str, const char* region_name )
 {
-    SCOREP_SourceFileHandle file_handle = scorep_compiler_get_file( node->file_name );
-    if ( file_handle == SCOREP_INVALID_SOURCE_FILE )
+    SCOREP_RegionHandle region_handle = SCOREP_FILTERED_REGION;
+
+    /* Get file name */
+    uint64_t len       = region_name - str;
+    char*    file_name = malloc( len );
+    assert( file_name );
+    strncpy( file_name, str, len - 1 );
+    file_name[ len - 1 ] = '\0';
+
+    /* Get file handle */
+    SCOREP_SourceFileHandle file_handle = scorep_compiler_get_file( file_name );
+
+    /* Register file */
+    if ( ( file_handle != SCOREP_INVALID_SOURCE_FILE ) &&
+         ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
+         ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
+         ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
+         ( !SCOREP_Filter_MatchFunction( region_name, NULL ) ) )
     {
-        node->region_handle = SCOREP_COMPILER_FILTER_HANDLE;
-        return;
+        region_handle = SCOREP_Definitions_NewRegion( region_name,
+                                                      NULL,
+                                                      file_handle,
+                                                      SCOREP_INVALID_LINE_NO,
+                                                      SCOREP_INVALID_LINE_NO,
+                                                      SCOREP_PARADIGM_COMPILER,
+                                                      SCOREP_REGION_FUNCTION );
     }
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s", node->region_name_demangled );
+    /* Add entry in hash table */
+    scorep_compiler_hash_put( region_name, file_name, region_handle );
 
-    node->region_handle = SCOREP_Definitions_NewRegion( node->region_name_demangled,
-                                                        node->region_name_mangled,
-                                                        file_handle,
-                                                        node->line_no_begin,
-                                                        SCOREP_INVALID_LINE_NO,
-                                                        SCOREP_PARADIGM_COMPILER,
-                                                        SCOREP_REGION_FUNCTION );
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s done", node->region_name_demangled );
+    free( file_name );
+    return region_handle;
 }
