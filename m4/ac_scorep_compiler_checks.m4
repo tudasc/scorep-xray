@@ -123,11 +123,11 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
                  ac_scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"],
     [])dnl
 
-AS_IF([test "x{ac_scorep_with_extra_instrumentation_cppflags}" != x || \
-       test "x{ac_scorep_compiler_instrumentation_cppflags}" != x],
+AS_IF([test "x${ac_scorep_with_extra_instrumentation_cppflags}" != x || \
+       test "x${ac_scorep_compiler_instrumentation_cppflags}" != x],
     [AC_MSG_NOTICE([using compiler instrumentation cppflags: ${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
      AFS_SUMMARY_VERBOSE([instrumentation cppflags], [${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
-     AS_IF([test "x${ac_scorep_compiler_instrumentation_ldflags}" = x],
+     AS_IF([test "x${ac_scorep_compiler_instrumentation_ldflags}" != x],
          [AC_MSG_NOTICE([using compiler instrumentation ldflags: ${ac_scorep_compiler_instrumentation_ldflags}])
           AFS_SUMMARY_VERBOSE([instrumentation ldflags], [${ac_scorep_compiler_instrumentation_ldflags}])
          ])
