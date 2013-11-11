@@ -233,6 +233,10 @@ typedef struct scorep_strictly_synchronous_metrics
 /** Flag indicating status of metric management */
 static bool scorep_metric_management_initialized = false;
 
+
+/** Flag indicating whether exit callback is registered or not */
+static bool scorep_metric_management_exit_callback_registered = false;
+
 /** 'strictly synchronous' metrics */
 static scorep_strictly_synchronous_metrics strictly_synchronous_metrics;
 
@@ -401,9 +405,13 @@ scorep_metric_initialize_service( void )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize metric management." );
 
-        /* Register callback of metric management service which will be
-         * called at the end of the measurement */
-        SCOREP_RegisterExitCallback( scorep_metric_finalize_callback );
+        if ( !scorep_metric_management_exit_callback_registered )
+        {
+            /* Register callback of metric management service which will be
+             * called at the end of the measurement */
+            SCOREP_RegisterExitCallback( scorep_metric_finalize_callback );
+            scorep_metric_management_exit_callback_registered = true;
+        }
 
         strictly_synchronous_metrics.overall_number_of_metrics = 0;
         strictly_synchronous_metrics.sampling_set              = SCOREP_INVALID_SAMPLING_SET;
