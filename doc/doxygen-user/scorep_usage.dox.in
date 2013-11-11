@@ -1,6 +1,6 @@
 
 This is the SCOREP instrumentation tool. The usage is:
-scorep <options> <orginal command>
+scorep <options> <original command>
 
 Common options are:
   --help, -h      Show help output. Does not execute any other command.

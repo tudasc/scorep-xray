@@ -55,7 +55,7 @@ void
 print_short_usage( void )
 {
     std::cout << "\nThis is the SCOREP instrumentation tool. The usage is:\n"
-              << toolname << " <options> <orginal command>\n\n"
+              << toolname << " <options> <original command>\n\n"
               << "To print out more detailed help information on available parameters, "
               << "type\n"
               << toolname << " --help\n"
@@ -69,7 +69,7 @@ void
 print_help( void )
 {
     std::cout << "\nThis is the SCOREP instrumentation tool. The usage is:\n"
-              << toolname << " <options> <orginal command>\n\n"
+              << toolname << " <options> <original command>\n\n"
               << "Common options are:\n"
               << "  --help, -h      Show help output. Does not execute any other command.\n"
               << "  --config=<file> Specifies file for the instrumentation configuration.\n"
