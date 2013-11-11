@@ -47,7 +47,6 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
 AS_IF([test "x${have_compiler_instrumentation}" = xyes],
     [scorep_have_demangle="no"
      AS_IF([test "x${ax_cv_c_compiler_vendor}" = xgnu || \
-            test "x${ax_cv_c_compiler_vendor}" = xintel || \
             test "x${ax_cv_c_compiler_vendor}" = xcray ],
          [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])
           AS_IF([test "x${scorep_have_libbfd}" = "xyes"],
@@ -61,7 +60,7 @@ AS_IF([test "x${have_compiler_instrumentation}" = xyes],
                    result="no, neither libbfd nor nm are available."],
                   [result="yes, using nm."])])
          ],
-         [# non-gnu, non-intel, non-cray compilers
+         [# non-gnu, non-cray compilers
           AM_CONDITIONAL(HAVE_LIBBFD, [test 1 -eq 0])
           AS_IF([test "x${ax_cv_c_compiler_vendor}" = xsun],
               [result="partially, studio compiler supports Fortran only."],
