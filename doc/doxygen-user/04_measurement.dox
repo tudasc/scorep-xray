@@ -838,14 +838,14 @@ gcc -c -fPIC hello_world.c -o libHelloWorld.so.o `scorep-config --cppflags`
 gcc -shared -Wl,-soname,libHelloWorld.so -o libHelloWorld.so libHelloWorld.so.o
 @endcode
 
-To enable a metric plugin, set the environment variable \confvar{SCOREP_METRIC_PLUGIN}.
+To enable a metric plugin, set the environment variable \confvar{SCOREP_METRIC_PLUGINS}.
 In the following example we want to use a plugin named <tt>HelloWorld</tt>.
 The corresponding was built as <tt>libHelloWorld.so</tt>.
 Furthermore, we select two counters <tt>metric1</tt> and <tt>metric2</tt> from the plugin.
 Make sure that the metric plugin library is placed in a directory which is part of <tt>LD_LIBRARY_PATH</tt>.
 
 <pre>
-SCOREP_METRIC_PLUGIN=HelloWorld
+SCOREP_METRIC_PLUGINS=HelloWorld
 SCOREP_METRIC_HELLOWORLD=metric1,metric2
 </pre>
 
