@@ -236,10 +236,10 @@ scorep_tracing_otf2_collectives_scatterv( void*                   userData,
         }
     }
 
-    SCOREP_Ipc_Scatterv( outData,
+    SCOREP_Ipc_Scatterv( inData,
                          sendcnts,
                          displs,
-                         inData,
+                         outData,
                          numberElements,
                          get_ipc_type( type ),
                          root );
