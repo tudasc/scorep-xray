@@ -304,6 +304,18 @@ scorep_compiler_get_sym_tab( void )
         const char*  funcname;
         unsigned int lno = SCOREP_INVALID_LINE_NO;
 
+        if ( !canonic_symbols[ i ] )
+        {
+            static bool only_once = false;
+            if ( !only_once )
+            {
+                UTILS_ERROR( SCOREP_ERROR_EADDRNOTAVAIL,
+                             "Failed to retrive symbol information from BFD.\n" );
+                only_once = true;
+            }
+            continue;
+        }
+
         /* Process only symbols of type function */
         if ( !( canonic_symbols[ i ]->flags & BSF_FUNCTION ) )
         {
