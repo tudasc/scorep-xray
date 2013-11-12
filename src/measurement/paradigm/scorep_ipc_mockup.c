@@ -174,8 +174,8 @@ int
 SCOREP_Ipc_Gatherv( void*               sendbuf,
                     int                 sendcount,
                     void*               recvbuf,
-                    int*                recvcnts,
-                    int*                displs,
+                    const int*          recvcnts,
+                    const int*          displs,
                     SCOREP_Ipc_Datatype datatype,
                     int                 root )
 {
@@ -286,8 +286,8 @@ SCOREP_Ipc_Scatter( void*               sendbuf,
 
 int
 SCOREP_Ipc_Scatterv( void*               sendbuf,
-                     int*                sendcounts,
-                     int*                displs,
+                     const int*          sendcounts,
+                     const int*          displs,
                      void*               recvbuf,
                      int                 recvcount,
                      SCOREP_Ipc_Datatype datatype,

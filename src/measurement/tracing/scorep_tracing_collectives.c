@@ -99,8 +99,8 @@ static OTF2_CallbackCode
 scorep_tracing_otf2_collectives_bcast( void*                   userData,
                                        OTF2_CollectiveContext* commContext,
                                        void*                   data,
-                                       OTF2_Type               type,
                                        uint32_t                numberElements,
+                                       OTF2_Type               type,
                                        uint32_t                root )
 {
     SCOREP_Ipc_Bcast( data,
@@ -117,8 +117,8 @@ scorep_tracing_otf2_collectives_gather( void*                   userData,
                                         OTF2_CollectiveContext* commContext,
                                         void*                   inData,
                                         void*                   outData,
-                                        OTF2_Type               type,
                                         uint32_t                numberElements,
+                                        OTF2_Type               type,
                                         uint32_t                root )
 {
     SCOREP_Ipc_Gather( inData,
@@ -135,49 +135,35 @@ static OTF2_CallbackCode
 scorep_tracing_otf2_collectives_gatherv( void*                   userData,
                                          OTF2_CollectiveContext* commContext,
                                          void*                   inData,
+                                         uint32_t                inElements,
                                          void*                   outData,
+                                         const uint32_t*         outElements,
                                          OTF2_Type               type,
-                                         uint32_t                numberElements,
                                          uint32_t                root )
 {
-    int* recvcnts = NULL;
-    int* displs   = NULL;
-    int  size     = SCOREP_Ipc_GetSize();
-    int  rank     = SCOREP_Ipc_GetRank();
+    int* displs = NULL;
+    int  size   = SCOREP_Ipc_GetSize();
+    int  rank   = SCOREP_Ipc_GetRank();
     if ( rank == root )
     {
-        recvcnts = calloc( size, sizeof( *recvcnts ) );
-        displs   = calloc( size, sizeof( *displs ) );
-    }
-
-    SCOREP_Ipc_Gather( &numberElements,
-                       recvcnts,
-                       1,
-                       SCOREP_IPC_UINT32_T,
-                       root );
-    if ( rank == root )
-    {
+        displs = calloc( size, sizeof( *displs ) );
         int displ = 0;
         for ( int i = 0; i < size; i++ )
         {
             displs[ i ] = displ;
-            displ      += recvcnts[ i ];
+            displ      += outElements[ i ];
         }
     }
 
     SCOREP_Ipc_Gatherv( inData,
-                        numberElements,
+                        inElements,
                         outData,
-                        recvcnts,
+                        ( const int* )outElements,
                         displs,
                         get_ipc_type( type ),
                         root );
 
-    if ( rank == root )
-    {
-        free( recvcnts );
-        free( displs );
-    }
+    free( displs );
 
     return OTF2_CALLBACK_SUCCESS;
 }
@@ -188,8 +174,8 @@ scorep_tracing_otf2_collectives_scatter( void*                   userData,
                                          OTF2_CollectiveContext* commContext,
                                          void*                   inData,
                                          void*                   outData,
-                                         OTF2_Type               type,
                                          uint32_t                numberElements,
+                                         OTF2_Type               type,
                                          uint32_t                root )
 {
     SCOREP_Ipc_Scatter( inData,
@@ -206,49 +192,35 @@ static OTF2_CallbackCode
 scorep_tracing_otf2_collectives_scatterv( void*                   userData,
                                           OTF2_CollectiveContext* commContext,
                                           void*                   inData,
+                                          const uint32_t*         inElements,
                                           void*                   outData,
+                                          uint32_t                outElements,
                                           OTF2_Type               type,
-                                          uint32_t                numberElements,
                                           uint32_t                root )
 {
-    int* sendcnts = NULL;
-    int* displs   = NULL;
-    int  size     = SCOREP_Ipc_GetSize();
-    int  rank     = SCOREP_Ipc_GetRank();
+    int* displs = NULL;
+    int  size   = SCOREP_Ipc_GetSize();
+    int  rank   = SCOREP_Ipc_GetRank();
     if ( rank == root )
     {
-        sendcnts = calloc( size, sizeof( *sendcnts ) );
-        displs   = calloc( size, sizeof( *displs ) );
-    }
-
-    SCOREP_Ipc_Gather( &numberElements,
-                       sendcnts,
-                       1,
-                       SCOREP_IPC_UINT32_T,
-                       root );
-    if ( rank == root )
-    {
+        displs = calloc( size, sizeof( *displs ) );
         int displ = 0;
         for ( int i = 0; i < size; i++ )
         {
             displs[ i ] = displ;
-            displ      += sendcnts[ i ];
+            displ      += inElements[ i ];
         }
     }
 
     SCOREP_Ipc_Scatterv( inData,
-                         sendcnts,
+                         ( const int* )inElements,
                          displs,
                          outData,
-                         numberElements,
+                         outElements,
                          get_ipc_type( type ),
                          root );
 
-    if ( rank == root )
-    {
-        free( sendcnts );
-        free( displs );
-    }
+    free( displs );
 
     return OTF2_CALLBACK_SUCCESS;
 }

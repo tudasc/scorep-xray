@@ -214,14 +214,17 @@ int
 SCOREP_Ipc_Gatherv( void*               sendbuf,
                     int                 sendcount,
                     void*               recvbuf,
-                    int*                recvcnts,
-                    int*                displs,
+                    const int*          recvcnts,
+                    const int*          displs,
                     SCOREP_Ipc_Datatype datatype,
                     int                 root )
 {
-    return PMPI_Gatherv( sendbuf, sendcount,
+    return PMPI_Gatherv( sendbuf,
+                         sendcount,
                          get_mpi_datatype( datatype ),
-                         recvbuf, recvcnts, displs,
+                         recvbuf,
+                         ( int* )recvcnts,
+                         ( int* )displs,
                          get_mpi_datatype( datatype ),
                          root,
                          comm_world_dup ) != MPI_SUCCESS;
@@ -304,16 +307,16 @@ SCOREP_Ipc_Scatter( void*               sendbuf,
 
 int
 SCOREP_Ipc_Scatterv( void*               sendbuf,
-                     int*                sendcounts,
-                     int*                displs,
+                     const int*          sendcounts,
+                     const int*          displs,
                      void*               recvbuf,
                      int                 recvcount,
                      SCOREP_Ipc_Datatype datatype,
                      int                 root )
 {
     return PMPI_Scatterv( sendbuf,
-                          sendcounts,
-                          displs,
+                          ( int* )sendcounts,
+                          ( int* )displs,
                           get_mpi_datatype( datatype ),
                           recvbuf,
                           recvcount,
