@@ -63,6 +63,10 @@ backslash_special_chars( std::string str )
     while ( pos != std::string::npos )
     {
         str.insert( pos, "\\" );
+        if ( pos == 0 )
+        {
+            break;
+        }
         pos = str.find_last_of( char_list, pos - 1 );
     }
     return str;
