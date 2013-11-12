@@ -322,16 +322,10 @@ SCOREP_Instrumenter_Selector::select( SCOREP_Instrumenter_Paradigm* selection,
             std::cerr << "ERROR: You can use '--" << m_name << "' only once.\n       "
                       << "It is not possible to select two paradigms from the same group"
                       << std::endl;
+            exit( EXIT_FAILURE );
         }
-        else
-        {
-            std::cerr << "ERROR: Unable to detect the correct paradigm for '--"
-                      << m_name << "' automatically.\n"
-                      << "       Found conflicting options for "
-                      << m_current_selection->getConfigName() << " and "
-                      << selection->getConfigName() << "." << std::endl;
-        }
-        exit( EXIT_FAILURE );
+        /* If we have multiple paradigms that can be applied, use the first one.
+           Thus, do nothing now. */
     }
 
     // Auto-selections are ignored, when user selection present.
