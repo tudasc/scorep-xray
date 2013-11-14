@@ -255,7 +255,7 @@ scorep_compiler_get_sym_tab( void )
     {
         return;
     }
-    bfd_image = bfd_openr( ( const char* )&path, 0 );
+    bfd_image = bfd_openr( path, 0 );
     if ( !bfd_image )
     {
         UTILS_ERROR( SCOREP_ERROR_ENOENT, "BFD image not present at path: %s \n", path );
