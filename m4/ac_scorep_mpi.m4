@@ -148,11 +148,14 @@ AC_LANG_PUSH(Fortran)
 
 AC_MSG_CHECKING([for MPI_BOTTOM])
 AC_COMPILE_IFELSE([
+      SUBROUTINE foo( i )
+      integer :: i
+      END SUBROUTINE foo
+
       PROGRAM test
       IMPLICIT NONE
       INCLUDE  'mpif.h'
-      integer :: i
-      i = MPI_BOTTOM
+      call foo( MPI_BOTTOM )
       END PROGRAM test
 ], [AC_MSG_RESULT(yes)
     AC_DEFINE(HAVE_MPI_BOTTOM, 1, [Fortran MPI defines MPI_BOTTOM])
@@ -161,11 +164,14 @@ AC_COMPILE_IFELSE([
 
 AC_MSG_CHECKING([for MPI_IN_PLACE])
 AC_COMPILE_IFELSE([
+      SUBROUTINE foo( i )
+      integer :: i
+      END SUBROUTINE foo
+
       PROGRAM test
       IMPLICIT NONE
       INCLUDE  'mpif.h'
-      integer :: i
-      i = MPI_IN_PLACE
+      call foo( MPI_IN_PLACE )
       END PROGRAM test
 ], [AC_MSG_RESULT(yes)
     AC_DEFINE(HAVE_MPI_IN_PLACE, 1, [Fortran MPI defines MPI_IN_PLACE])
@@ -174,11 +180,14 @@ AC_COMPILE_IFELSE([
 
 AC_MSG_CHECKING([for MPI_STATUS_IGNORE])
 AC_COMPILE_IFELSE([
+      SUBROUTINE foo( i )
+      integer :: i
+      END SUBROUTINE foo
+
       PROGRAM test
       IMPLICIT NONE
       INCLUDE  'mpif.h'
-      integer :: i
-      i = MPI_STATUS_IGNORE(1)
+      call foo( MPI_STATUS_IGNORE )
       END PROGRAM test
 ], [AC_MSG_RESULT(yes)
     AC_DEFINE(HAVE_MPI_STATUS_IGNORE, 1, [Fortran MPI defines MPI_STATUS_IGNORE])
@@ -188,21 +197,14 @@ AC_COMPILE_IFELSE([
 AC_MSG_CHECKING([for MPI_STATUSES_IGNORE])
 scorep_has_statuses_ignore="no"
 AC_COMPILE_IFELSE([
-      PROGRAM test
-      IMPLICIT NONE
-      INCLUDE  'mpif.h'
+      SUBROUTINE foo( i )
       integer :: i
-      i = MPI_STATUSES_IGNORE(1,1)
-      END PROGRAM test
-], [scorep_has_statuses_ignore="yes"], []
-) # AC_COMPILE_IF_ELSE
+      END SUBROUTINE foo
 
-AC_COMPILE_IFELSE([
       PROGRAM test
       IMPLICIT NONE
       INCLUDE  'mpif.h'
-      double precision :: i
-      i = MPI_STATUSES_IGNORE
+      call foo( MPI_STATUSES_IGNORE )
       END PROGRAM test
 ], [scorep_has_statuses_ignore="yes"], []
 ) # AC_COMPILE_IF_ELSE
@@ -216,11 +218,14 @@ fi
 
 AC_MSG_CHECKING([for MPI_UNWEIGHTED])
 AC_COMPILE_IFELSE([
+      SUBROUTINE foo( i )
+      integer :: i
+      END SUBROUTINE foo
+
       PROGRAM test
       IMPLICIT NONE
       INCLUDE  'mpif.h'
-      integer :: i
-      i = MPI_UNWEIGHTED
+      call foo( MPI_UNWEIGHTED )
       END PROGRAM test
 ], [AC_MSG_RESULT(yes);
     AC_DEFINE(HAVE_MPI_UNWEIGHTED, 1, [Fortran MPI defines MPI_UNWEIGHTED])
