@@ -94,8 +94,12 @@ m4_ifnblank([$1], [
         [Symbol name of the sub-build.])
     AC_SUBST([PACKAGE_BUILD], AFS_PACKAGE_BUILD)
 
+    AS_CASE([$srcdir],
+        [/*], [afs_package_srcdir=${srcdir}],
+        [afs_package_srcdir="${ac_pwd}/${srcdir}"])dnl
     AC_DEFINE_UNQUOTED([PACKAGE_SRCDIR],
-        ["$ac_pwd/$srcdir/]AFS_PACKAGE_TOP_BUILD["], [Source directory.])
+        ["${afs_package_srcdir}/]AFS_PACKAGE_TOP_BUILD["], [Source directory.])
+
     AC_DEFINE_UNQUOTED([PACKAGE_BUILDDIR],
         ["$ac_pwd"], [Build directory.])
 
