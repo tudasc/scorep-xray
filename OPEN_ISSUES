@@ -36,7 +36,7 @@
 
                         Score-P v1.2 OPEN ISSUES
                         ========================
-                                                           Status: Sep 2013
+                                                           Status: Nov 2013
 
 This file lists known limitations and unimplemented features of
 various Score-P components.
@@ -204,7 +204,7 @@ various Score-P components.
     explicitly given optimization flags. The instrumenter adds compiler
     flags to enable additional debugging information. Depending on the
     compiler this may turn off optimization unless optimization flags
-    are explicitly specified.
+    are explicitly specified. 
 
   - Applications using an autotools-based buildsystem should add the
     option "--disable-option-checking" to the usual configure

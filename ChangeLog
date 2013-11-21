@@ -40,31 +40,47 @@
   the first time. Thus, functions from shared libraries now appear in
   the measurment output.
 
-------------------- Upcoming version 1.2.2 ---------------------------
+------------------- Released version 1.2.2 ---------------------------
 
-- The Fortran Cray compiler instrumentation did not create an exit event.
-  Thus, we add an exit on Score-P finalization.
-- Removed remark of the intel compiler during instrumentation that VT_ROOT
-  is not set, if preprocessing was used.
+- The Fortran Cray compiler instrumentation did not create an exit
+  event. Thus, we add an exit on Score-P finalization.
+- Removed remark of the Intel compiler during instrumentation that
+  VT_ROOT is not set, if preprocessing was used.
 - MPI parallel measurements with just one process were fixed.
-- Fixed a race condition during initialization of the TRACE_BUFFER_FLUSH
-  region, that could lead to incomplete profiles if a user measures
-  a hybrid (MPI + OpenMP) applications and enables profiling and tracing
-  at the same time.
+- Fixed a race condition during initialization of the
+  TRACE_BUFFER_FLUSH region, that could lead to incomplete profiles if
+  a user runs a hybrid (MPI + OpenMP) application and enables
+  profiling and tracing at the same time.
 - Fix error message when scorep-config is called without arguments in
   a non-mpi installation.
 - scorep-config provides does not contain system paths as rpath option. This
   fixes some problems if Score-P is installed in standard locations.
 - Fixed broken MPI detection in the instrumenter if the MPI compiler
   wrapper is specified with the full path.
-- If Score-P is build with static and dynamic libraries, the selection of
-  using static or dynamic libraries was improved. Using -Bstatic
-  or -Bshared had some side effects and was sometimes unreliable.
-- Suppress failed assertion messages when initialzing compiler instrumentation
-  with intel compilers without libbfd. The measurement completes even
-  if these messages exist.
-- Added options to scorep-config and the scorep instrumenter to enable/disable
-  online access support.
+- If Score-P is build with static and dynamic libraries, the selection
+  of using static or dynamic libraries was improved. Using -Bstatic or
+  -Bshared had some side effects and was sometimes unreliable.
+- On Cray system, change libtools default to prefer static linking of
+  external libraries.
+- Suppress failed assertion messages when initializing compiler
+  instrumentation with Intel compilers without libbfd. The measurement
+  completes even if these messages exist.
+- Added options to scorep-config and the scorep instrumenter to
+  enable/disable online access support.
+- Fixed broken --includedir configure option that installed Score-P
+  headers in a wrong directory.
+- Fix SCOREP_RECORDING_IS_ON(isOn) user macro; in Fortran codes, isOn
+  was not set to false when instrumented with --nouser.
+- Fixed instrumentation compilation error that occurred if
+  --opari="--disable=atomic" was specified without OpenMP compilation
+  flags.
+- Improvements in obtaining region information via libbfd.
+- Improved configure checks to determine values of MPI
+  constants. Previous tests failed on AIX.
+- Improvements of measurement reconfiguration in Online Access mode.
+- Honor --without-mpi when --with-custom-compilers is given at
+  configure time.
+- Several smaller fixes. 
 
 ------------------- Released version 1.2.1 ---------------------------
 
