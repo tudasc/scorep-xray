@@ -145,29 +145,32 @@ scorep_mpi_user_disabled="no"
 AC_ARG_WITH([mpi],
     [AS_HELP_STRING([--with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|openmpi|platform|scali|sgimpt|sun)], 
          [The MPI compiler suite to build this package in non cross-compiling mode. Usually autodetected. Needs to be in $PATH.])],
-    [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
-         [AS_CASE([$withval],
-              ["bullxmpi"], [ac_scorep_compilers_mpi="compiler-mpi-bullxmpi"],
-              ["hp"], [ac_scorep_compilers_mpi="compiler-mpi-hp"],
-              ["ibmpoe"], [ac_scorep_compilers_mpi="compiler-mpi-ibmpoe"],
-              ["intel"], [ac_scorep_compilers_mpi="compiler-mpi-intel"],
-              ["intel2"], [ac_scorep_compilers_mpi="compiler-mpi-intel2"],
-              ["impi"], [AC_MSG_WARN([option 'impi' to --with-mpi deprecated, use 'intel2' instead.])
-                         ac_scorep_compilers_mpi="compiler-mpi-intel2"],
-              ["intelpoe"], [ac_scorep_compilers_mpi="compiler-mpi-intelpoe"],
-              ["lam"], [ac_scorep_compilers_mpi="compiler-mpi-lam"],
-              ["mpibull2"], [ac_scorep_compilers_mpi="compiler-mpi-mpibull2"],
-              ["mpich"], [ac_scorep_compilers_mpi="compiler-mpi-mpich"],
-              ["mpich2"], [ac_scorep_compilers_mpi="compiler-mpi-mpich2"],
-              ["mpich3"], [ac_scorep_compilers_mpi="compiler-mpi-mpich3"],
-              ["openmpi"], [ac_scorep_compilers_mpi="compiler-mpi-openmpi"],
-              ["platform"], [ac_scorep_compilers_mpi="compiler-mpi-platform"],
-              ["scali"], [ac_scorep_compilers_mpi="compiler-mpi-scali"],
-              ["sgimpt"], [ac_scorep_compilers_mpi="compiler-mpi-sgimpt"],
-              ["sun"], [ac_scorep_compilers_mpi="compiler-mpi-sun"],
-              ["no"], [ac_scorep_compilers_mpi="compiler-mpi-without"
-                       scorep_mpi_user_disabled="yes"],
-              [AC_MSG_ERROR([MPI compiler suite "${withval}" not supported by --with-mpi.])])
+    [AS_IF([test "x${withval}" = xno], 
+         [scorep_mpi_user_disabled=yes
+          ac_scorep_compilers_mpi="compiler-mpi-without"
+         ],
+         [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
+              [AS_CASE([$withval],
+                   ["bullxmpi"], [ac_scorep_compilers_mpi="compiler-mpi-bullxmpi"],
+                   ["hp"], [ac_scorep_compilers_mpi="compiler-mpi-hp"],
+                   ["ibmpoe"], [ac_scorep_compilers_mpi="compiler-mpi-ibmpoe"],
+                   ["intel"], [ac_scorep_compilers_mpi="compiler-mpi-intel"],
+                   ["intel2"], [ac_scorep_compilers_mpi="compiler-mpi-intel2"],
+                   ["impi"], [AC_MSG_WARN([option 'impi' to --with-mpi deprecated, use 'intel2' instead.])
+                              ac_scorep_compilers_mpi="compiler-mpi-intel2"],
+                   ["intelpoe"], [ac_scorep_compilers_mpi="compiler-mpi-intelpoe"],
+                   ["lam"], [ac_scorep_compilers_mpi="compiler-mpi-lam"],
+                   ["mpibull2"], [ac_scorep_compilers_mpi="compiler-mpi-mpibull2"],
+                   ["mpich"], [ac_scorep_compilers_mpi="compiler-mpi-mpich"],
+                   ["mpich2"], [ac_scorep_compilers_mpi="compiler-mpi-mpich2"],
+                   ["mpich3"], [ac_scorep_compilers_mpi="compiler-mpi-mpich3"],
+                   ["openmpi"], [ac_scorep_compilers_mpi="compiler-mpi-openmpi"],
+                   ["platform"], [ac_scorep_compilers_mpi="compiler-mpi-platform"],
+                   ["scali"], [ac_scorep_compilers_mpi="compiler-mpi-scali"],
+                   ["sgimpt"], [ac_scorep_compilers_mpi="compiler-mpi-sgimpt"],
+                   ["sun"], [ac_scorep_compilers_mpi="compiler-mpi-sun"],
+                   [AC_MSG_ERROR([MPI compiler suite "${withval}" not supported by --with-mpi.])])
+              ])
          ])
      # omit check "if in PATH" for now. Will fail in build-mpi configure. 
     ],
@@ -176,9 +179,10 @@ AC_ARG_WITH([mpi],
           ac_scorep_compilers_mpi="compiler-mpi-${afs_compiler_mpi}"])
     ])
 
-AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes" || test "x${ac_scorep_platform}" = "xaix"],
-    [ac_scorep_compilers_mpi="platform-mpi-${ac_scorep_platform}"])
-
+AS_IF([test "x${scorep_mpi_user_disabled}" = xno],
+    [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes" || test "x${ac_scorep_platform}" = "xaix"],
+         [ac_scorep_compilers_mpi="platform-mpi-${ac_scorep_platform}"])])
+     
 AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_mpi}"],
       [ac_scorep_compilers_mpi="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_mpi}"],
       [ac_scorep_compilers_mpi="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_mpi}"])

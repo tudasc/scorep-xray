@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2013,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -34,12 +34,15 @@
 # AFS_SUMMARY_INIT
 # ----------------
 # Initializes the summary system and adds the pacakge header (possibly
-# including the sub-build name) to it.
+# including the sub-build name) to it. It removes config.summary files
+# from previous configure runs recursively, therefore you need to call
+# AFS_SUMMARY_INIT before any sub-configures.
 # The sub-build name is used from the `AFS_PACKAGE_BUILD_NAME` variable
 # set by the AFS_PACAKGE_INIT macro.
 AC_DEFUN([AFS_SUMMARY_INIT], [
 AC_BEFORE([AFS_PACAKGE_INIT], [$0])dnl
 rm -f AC_PACKAGE_TARNAME.summary
+LC_ALL=C find . -name config.summary -exec rm -f '{}' \;
 cat >config.summary <<_ACEOF
 AS_HELP_STRING(AC_PACKAGE_NAME[]m4_ifdef([AFS_PACKAGE_BUILD_NAME], [ (]AFS_PACKAGE_BUILD_NAME[):]), [], 32, 128)
 _ACEOF
