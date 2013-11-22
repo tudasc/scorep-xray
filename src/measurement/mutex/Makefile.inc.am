@@ -23,6 +23,8 @@ libscorep_mutex_omp_la_CFLAGS = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libscorep_mutex_omp_la_CPPFLAGS = \
     $(AM_CPPFLAGS)     \
     -I$(INC_DIR_MUTEX) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/measurement/include \
     $(UTILS_CPPFLAGS)
 libscorep_mutex_omp_la_LDFLAGS = \
     $(library_api_version_ldflags)

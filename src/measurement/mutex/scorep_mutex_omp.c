@@ -41,6 +41,7 @@
 
 #include <config.h>
 #include <SCOREP_Mutex.h>
+#include <SCOREP_RuntimeManagement.h>
 
 #include <stdlib.h>
 
