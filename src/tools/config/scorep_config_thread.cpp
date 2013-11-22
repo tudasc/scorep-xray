@@ -30,7 +30,9 @@ scorep_config_init_thread_systems( void )
 {
     scorep_thread_systems.push_back( new SCOREP_Config_MockupThreadSystem() );
     scorep_thread_systems.push_back( new SCOREP_Config_PompTpdThreadSystem() );
+#if SCOREP_BACKEND_HAVE_OMP_ANCESTRY
     scorep_thread_systems.push_back( new SCOREP_Config_OmpAncestryThreadSystem() );
+#endif
     SCOREP_Config_ThreadSystem::current = scorep_thread_systems.front();
 }
 
