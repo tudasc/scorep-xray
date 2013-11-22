@@ -144,7 +144,7 @@ SCOREP_Instrumenter_Thread::SCOREP_Instrumenter_Thread()
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_SingleThreaded( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpTpd( this ) );
-#ifdef SCOREP_BACKEND_HAVE_OMP_ANCESTRY
+#if SCOREP_BACKEND_HAVE_OMP_ANCESTRY
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpAncestry( this ) );
 #endif
     m_current_selection = m_paradigm_list.front();
