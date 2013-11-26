@@ -150,44 +150,33 @@ scorep_thread_on_fork( uint32_t            nRequestedThreads,
     while ( 0 )
 /* *INDENT-ON* */
 
-/** This function uses the OpenMP ancestry functions to determine the current
- * thread's thread_private_data in the tree of nested parallel regions. The
- * calling function must know, whether to expect the tpd for the thread or its
- * parent!*/
+/* This function uses the OpenMP ancestry functions to determine the
+ * thread_private_data of the current thread's parent in the tree of nested
+ * parallel regions. */
 scorep_thread_private_data*
 scorep_thread_on_team_begin_get_parent( void )
 {
-    scorep_thread_private_data*         current;
-    scorep_thread_private_data_omp_tpd* current_model;
-    int                                 parallel_nesting_level, anc_tid, i;
-
     UTILS_BUG_ON( initial_tpd == 0, "Thread private data not initialized correctly." );
 
-    if ( omp_get_level() < 2 )
+    const int nesting_level = omp_get_level();
+    if ( nesting_level == 1 )
     {
         TPD = initial_tpd;
         return initial_tpd;
     }
 
-    current       = initial_tpd;
-    current_model = ( scorep_thread_private_data_omp_tpd* )scorep_thread_get_model_data( current );
-    char tmp_char[ 10 ];
+    scorep_thread_private_data*         current       = initial_tpd;
+    scorep_thread_private_data_omp_tpd* current_model = scorep_thread_get_model_data( current );
 
-    parallel_nesting_level = omp_get_level();
-    for ( i = 1; i < parallel_nesting_level; i++ )
+    for ( int level = 1; level < nesting_level; level++ )
     {
-        if ( omp_get_team_size( i ) > 1 )
+        if ( omp_get_team_size( level ) > 1 )
         {
-            anc_tid = omp_get_ancestor_thread_num( i );
-            if ( anc_tid > -1 && current_model->children[ anc_tid ] )
-            {
-                current       = current_model->children[ anc_tid ];
-                current_model = ( scorep_thread_private_data_omp_tpd* )scorep_thread_get_model_data( current );
-            }
-            else
-            {
-                return current;
-            }
+            int anc_tid = omp_get_ancestor_thread_num( level );
+            UTILS_BUG_ON( anc_tid == -1, "Ancestry: Requested omp_get_ancestor_thread_num() from invalid nesting level." );
+            UTILS_BUG_ON( current_model->children[ anc_tid ] == 0, "Ancestry: Children array invalid, shouldn't happen." );
+            current       = current_model->children[ anc_tid ];
+            current_model = scorep_thread_get_model_data( current );
         }
     }
 
