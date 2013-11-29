@@ -35,7 +35,6 @@
 
 typedef struct scorep_thread_private_data scorep_thread_private_data;
 
-#define TPD scorep_omp_local_tpd
 scorep_thread_private_data* TPD = NULL;
 #pragma omp threadprivate( TPD )
 
@@ -161,7 +160,6 @@ scorep_thread_on_team_begin_get_parent( void )
     const int nesting_level = omp_get_level();
     if ( nesting_level == 1 )
     {
-        TPD = initial_tpd;
         return initial_tpd;
     }
 
@@ -180,8 +178,7 @@ scorep_thread_on_team_begin_get_parent( void )
         }
     }
 
-    TPD = current;
-    return TPD;
+    return current;
 }
 
 
@@ -203,17 +200,15 @@ scorep_thread_on_team_begin( scorep_thread_private_data*  parentTpd,
      * Score-P at_exit handler so that it is executed *before* the OpenMP
      * runtime is shut down. */
     static bool exit_handler_re_registered = false;
-    if ( !exit_handler_re_registered && scorep_thread_is_initial_thread( TPD ) )
+    if ( !exit_handler_re_registered && scorep_thread_is_initial_thread( parentTpd ) )
     {
         exit_handler_re_registered = true;
         SCOREP_RegisterExitHandler();
     }
     /* End of portability-hack */
 
-    UTILS_BUG_ON( TPD == 0, "" );
     UTILS_BUG_ON( paradigm != SCOREP_PARADIGM_OPENMP, "" );
 
-    UTILS_ASSERT( parentTpd == TPD );
     scorep_thread_private_data_omp_tpd* parent_model_data =
         scorep_thread_get_model_data( parentTpd );
     *threadId = omp_get_thread_num();

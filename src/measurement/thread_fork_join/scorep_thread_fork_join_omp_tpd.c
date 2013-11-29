@@ -206,6 +206,9 @@ scorep_thread_on_fork( uint32_t            nRequestedThreads,
 scorep_thread_private_data*
 scorep_thread_on_team_begin_get_parent( void )
 {
+    /* here we rely on the 'copyin(pomp_tpd)' OPARI2 instrumentation,
+     * i.e., the parent is copied into the parallel region.. */
+    UTILS_BUG_ON( TPD == 0, "TPD was copied in, so it must not be NULL." );
     return TPD;
 }
 
@@ -228,17 +231,15 @@ scorep_thread_on_team_begin( scorep_thread_private_data*  parentTpd,
      * Score-P at_exit handler so that it is executed *before* the OpenMP
      * runtime is shut down. */
     static bool exit_handler_re_registered = false;
-    if ( !exit_handler_re_registered && scorep_thread_is_initial_thread( TPD ) )
+    if ( !exit_handler_re_registered && scorep_thread_is_initial_thread( parentTpd ) )
     {
         exit_handler_re_registered = true;
         SCOREP_RegisterExitHandler();
     }
     /* End of portability-hack */
 
-    UTILS_BUG_ON( TPD == 0, "" );
     UTILS_BUG_ON( paradigm != SCOREP_PARADIGM_OPENMP, "" );
 
-    UTILS_ASSERT( parentTpd == TPD );
     scorep_thread_private_data_omp_tpd* parent_model_data =
         scorep_thread_get_model_data( parentTpd );
     *threadId = omp_get_thread_num();
