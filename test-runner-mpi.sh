@@ -37,6 +37,7 @@ fi
 # Check whether test should by skipped
 if test $# -eq 2; then
     if test "$1" = "--skip"; then
+        echo "##EXEC## $2"
         exit 77
     else
         echo "ERROR: Unknown option '$1'!" >&2

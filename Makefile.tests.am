@@ -29,9 +29,17 @@
 ## they are skipped and automake's test harness is notified accordingly.
 ##
 ## Requirements:
-##     - Automake needs to be initialized with the 'parallel-tests' option
+##     - Automake needs to be initialized with the 'parallel-tests' option.
 ##     - The automake conditional 'BACKEND_TEST_RUNS' needs to be defined
-##       (either by using AC_SCOREP_BACKEND_TEST_RUNS or by manual definition)
+##       (either by using AC_SCOREP_BACKEND_TEST_RUNS or by manual definition).
+##     - If a list of skipped tests should be generated, let your 'check-local'
+##       rule depend on the 'skipped_tests' target.
+##
+## NOTE:
+##     Tests need to have a unique prefix, i.e., it is not possible to have
+##     a plain test called 'foo' and, for example, a test 'foo.compute' using
+##     the custom test runner listed in the same TESTS variable.  In this case,
+##     only one of the two tests will be executed!
 
 TEST_EXTENSIONS = .login .compute .compute_mpi
 
@@ -45,3 +53,17 @@ AM_COMPUTE_LOG_FLAGS     = --skip
 AM_COMPUTE_MPI_LOG_FLAGS = --skip
 
 endif !BACKEND_TEST_RUNS
+
+
+skipped_tests: $(TEST_SUITE_LOG)
+	@$(am__tty_colors);                                                                            \
+	grep '^##EXEC## ' $(TEST_SUITE_LOG) | sed 's/##EXEC## //' > $@;                                \
+	skip=`cat $@ | wc -l`;                                                                         \
+	if test $$skip -gt 0; then                                                                     \
+	  echo "$${blu}============================================================================="; \
+	  echo "The file 'skipped_tests' contains a list of all tests that have been skipped.";        \
+          echo "Either re-configure using the '--enable-backend-test-runs' option if backend";         \
+          echo "executables can be executed directly (using 'mpiexec' if necessary) or run";           \
+          echo "them manually using appropriate launchers/batch scripts.";                             \
+	  echo "=============================================================================$${std}"; \
+	fi
