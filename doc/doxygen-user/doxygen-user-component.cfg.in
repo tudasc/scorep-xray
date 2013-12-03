@@ -28,4 +28,6 @@ HTML_COLORSTYLE_HUE   = 0
 # in doxygen.
 ENABLE_PREPROCESSING=YES
 
+PREDEFINED += SCOREP_USER_ENABLE=1
+
 ALIASES += confvar{1}="<tt>\ref \1</tt>"
