@@ -8,3 +8,7 @@
 /config.summary
 /.deps
 /Makefile
+/online-access-registry
+/scorep
+/scorep-config
+/scorep-info

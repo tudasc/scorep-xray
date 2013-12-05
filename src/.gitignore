@@ -11,4 +11,6 @@
 /config-score.h.in
 /scorep_config_tool_backend.h
 /scorep_config_tool_mpi.h
-/stamp-h1
+/stamp-h*
+/scorep_config_library_dependencies_inc.hpp
+/scorep_config_library_dependencies_mpi_inc.hpp

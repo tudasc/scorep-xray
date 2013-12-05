@@ -9,3 +9,6 @@
 /.deps
 /Makefile
 /run_otf2_speed_test.sh
+/scorep_oa_parser.c
+/scorep_oa_scanner.c
+/scorep_oa_scanner.h
