@@ -1,3 +1,4 @@
+/config-common.h
 /config-backend.h.in
 /config-backend-mpi.h.in
 /config-frontend.h.in
@@ -8,4 +9,6 @@
 /config-backend-for-frontend.h
 /config-score.h
 /config-score.h.in
+/scorep_config_tool_backend.h
+/scorep_config_tool_mpi.h
 /stamp-h1

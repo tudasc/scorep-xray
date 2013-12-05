@@ -8,3 +8,4 @@
 /config.summary
 /.deps
 /Makefile
+/run_otf2_speed_test.sh

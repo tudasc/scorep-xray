@@ -24,3 +24,6 @@
 /user_provided_configure_args
 /config.status
 /Makefile
+/config.summary
+/scorep.summary
+/installcheck

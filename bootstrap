@@ -55,13 +55,44 @@ clean: clean-local
 	@$(MAKE) -C vendor/opari2 -f bootstrap clean
 	@$(MAKE) -C vendor/otf2   -f bootstrap clean
 
+clean_files = \
+	autom4te.cache/ \
+	configure \
+	aclocal.m4 \
+	Makefile.in \
+	Makefile \
+	user_provided_configure_args \
+	confdefs.h \
+	config.log \
+	config.status \
+	config.summary \
+	scorep.summary \
+	libtool \
+	.deps/ \
+	.libs/
+
+sub_builds = \
+	backend \
+	mpi \
+	frontend \
+	score
+
+config_headers = \
+	backend \
+	backend-mpi \
+	frontend \
+	backend-for-frontend \
+	score
+
 clean-local:
-	@rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in
-	@cd build-config; rm -f compile config.sub install-sh config.guess depcomp ltmain.sh missing
+	@rm -rf $(clean_files)
+	@cd build-config; rm -f compile config.sub install-sh config.guess depcomp ltmain.sh missing ylwrap
 	@cd vendor/common/build-config/m4; rm -f libtool.m4 ltsugar.m4 lt~obsolete.m4 ltoptions.m4 ltversion.m4
-	@cd build-backend;  rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
-	@cd build-mpi;      rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
-	@cd build-frontend; rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
-	@cd build-score;    rm -rf autom4te.cache/ configure aclocal.m4 Makefile.in Makefile confdefs.h config.log config.status libtool
+	@for build in $(sub_builds); do \
+	    ( cd build-$$build; rm -rf $(clean_files); ); \
+	done
 	@rm -f build-config/REVISION build-config/REVISION_COMMON
-	@rm -f src/config-backend.h.in src/config-backend-mpi.h.in src/config-frontend.h.in src/config-backend-for-frontend.h.in src/config-score.h.in
+	@for header in $(config_headers); do \
+	    rm -f src/config-$$header.h.in src/config-$$header.h; \
+	done
+	@rm -f src/config-common.h

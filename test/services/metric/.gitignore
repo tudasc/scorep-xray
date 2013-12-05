@@ -1,0 +1,6 @@
+/run_rusage_serial_metric_test.sh
+/run_rusage_openmp_metric_test.sh
+/run_rusage_openmp_per_process_metric_test.sh
+/run_papi_serial_metric_test.sh
+/run_papi_openmp_metric_test.sh
+/run_papi_openmp_per_process_metric_test.sh
