@@ -27,3 +27,6 @@
 /config.summary
 /scorep.summary
 /installcheck
+/platform-backend-user-provided
+/platform-frontend-user-provided
+/platform-mpi-user-provided
