@@ -94,7 +94,7 @@ You can subscribe to the news@score-p.org and users@score-p.org by ...
    \begin{table}[!h]
 	\caption{Score-P mailing lists}
 	\label{tab:mailinglists}
-    	\begin{tabular}{ | p{3.3cm} | p{2.0cm} | p{1.7cm} | p{6.0cm} |}
+    	\begin{tabular}{ | p{3.3cm} | p{2cm} | p{1.6cm} | p{4.0cm} |}
 	    \hline
 	    \bf List Address & \bf Subscription & \bf Posting & \bf Usage \\ \hline
 news@score-p.org & open & core team & Important news regarding the Score-P software, e.g. announcements of new releases. \\ \hline

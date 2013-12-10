@@ -79,7 +79,8 @@ yum install gcc g++ gfortran mpich2
 For users of the SuperMUC, it is recommended to load the following modules:
 
 @code
-module load ccomp/intel/12.1 fortran/intel/12.1 mpi.ibm/5.2_PMR-fixes papi/4.9
+module load ccomp/intel/12.1 fortran/intel/12.1 \
+            mpi.ibm/5.2_PMR-fixes papi/4.9
 @endcode
 
 @subsection general_autotools General Autotools Build Options
@@ -124,7 +125,10 @@ Users of the SuperMUC (after loading the required modules mentioned
 previously), can issue the following command to configure @scorep:
 
 @code
-./configure --prefix=$HOME/install/scorep --enable-static --disable-shared --with-nocross-compiler-suite=intel --with-mpi=openmpi --with-papi-header=$PAPI_BASE/include --with-papi-lib=$PAPI_BASE/lib
+./configure --prefix=$HOME/install/scorep --enable-static     \
+     --disable-shared --with-nocross-compiler-suite=intel     \
+     --with-mpi=openmpi --with-papi-header=$PAPI_BASE/include \
+     --with-papi-lib=$PAPI_BASE/lib
 @endcode
 
 @subsection scorep_specific @scorep Specific Build Options
@@ -139,14 +143,18 @@ explanation:
 
 <ul>
 <li>
-<tt>--with-nocross-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)</tt>
+@code--with-nocross-compiler-suite= (gcc|ibm|intel|
+                                 pathscale|pgi|studio)
+@endcode  
   Specifies the compiler suite to use when not cross-compiling. Selecting
 	one of the options sets all relevant variables to their expected names.
 	These are CC, FC, F77, as well as the linker, preprocessor, etc.
 	</li>
 
 <li>
-<tt>--with-frontend-compiler-suite=(gcc|ibm|intel|pathscale|pgi|studio)</tt>
+@code--with-frontend-compiler-suite= (gcc|ibm|intel|
+                                  pathscale|pgi|studio)
+@endcode
 	Similar to the previous configuration flag, but for cross-compiling
 	environments.
 	</li>
@@ -361,7 +369,8 @@ i.e. we now have to write:
 @code
   scorep mpicc -std=c99 -g -O2 -fopenmp -c jacobi.c
   scorep mpicc -std=c99 -g -O2 -fopenmp -c main.c
-  scorep mpicc -std=c99 -g -O2 -fopenmp -o jacobi jacobi.o main.o -lm
+  scorep mpicc -std=c99 -g -O2 -fopenmp -o jacobi jacobi.o \ 
+                main.o -lm
 @endcode
 
 This call sequence will create a number of auxiliary C source files

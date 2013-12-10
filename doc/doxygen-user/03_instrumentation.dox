@@ -77,7 +77,8 @@ When compiling without the @scorep instrumenter, the
 <tt>scorep-config</tt> command can be used to simplify determining the appropriate
 linker flags and libraries, or include paths:
 @verbatim
-    scorep-config [--mpp=none|--mpp=mpi|--thread=none|--thread=omp] --libs [--fortran]
+    scorep-config [--mpp=none|--mpp=mp] \ 
+                  [--thread=none|--thread=omp] --libs [--fortran]
 @endverbatim
 
 The @verb--mpp=<paradigm> switch selects which message passing paradigm is used. 
@@ -134,7 +135,7 @@ source routines and arbitrary regions, in addition to fully-automatic
 
 \else
   <table border=1 cellspacing=0>
-    <caption>@scorep instrumentr option overview</caption>
+    <caption>@scorep instrumenter option overview</caption>
     <tr>
       <th align="center" valign="middle" style="width:8em;">Type of instrumentation</th>
       <th align="center" valign="middle" style="width:8em;">Instrumenter switch</th>
@@ -497,7 +498,8 @@ C/C++:
 
 In C/C++, only a name for the parameter and the value needs to be provided. In Fortran, 
 the handle must be defined first with <tt>SCOREP_USER_PARAMETER_DEFINE</tt>. The defined handle
-name must be unique in the current scope. The <tt>SCOREP_USER_PARAMETER_INT64</tt> and
+name must be unique in the current scope. The macro <tt>SCOREP_USER_PARAMETER_INT64</tt> 
+as well as the macro 
 <tt>SCOREP_USER_PARAMETER_STRING</tt> need the handle as the first argument, followed by the
 name and the value.
 
@@ -506,10 +508,12 @@ name and the value.
 
 The @scorep user API also provides several macros for measurement control
 that can be incorporated in source files and activated during
-instrumentation. The macro <tt>SCOREP_RECORDING_OFF</tt> can be used to
+instrumentation. The macro 
+<tt>SCOREP_RECORDING_OFF</tt> can be used to
 (temporarily) pause recording until a subsequent
 <tt>SCOREP_RECORDING_ON</tt>. Just like the already covered user-defined annotated
-regions, <tt>SCOREP_RECORDING_ON</tt> and corresponding <tt>SCOREP_RECORDING_OFF</tt> 
+regions, <tt>SCOREP_RECORDING_ON</tt> and the corresponding
+ <tt>SCOREP_RECORDING_OFF</tt> 
 must be correctly nested with other enter/exit events. Finally, 
 with <tt>SCOREP_RECORDING_IS_ON</tt> you can test whether recording is switched on. 
 
@@ -548,7 +552,7 @@ of the online access phase defines the interaction points, where new measurement
 control commands are applied and data requests are answered.
 
 To insert an online online access phase into the code, the user has to insert the macros
-<tt>SCOREP_USER_OA_PHASE_BEGIN</tt> and
+<tt>SCOREP_USER_OA_PHASE_BEGIN</tt> and the corresponding 
 <tt>SCOREP_USER_OA_PHASE_END</tt> at appropriate locations. These macros must be 
 <ul>
  <li> correctly nested with all regions and </li>
@@ -683,7 +687,7 @@ C/C++:
       <tt>--nopomp</tt> to the instrumenter.
 
 By default, the source code is preprocessed before @pomp2 instrumentation happens.
-For more information on the preprocessing, see Section \ref{sec:opari2_preprocessing}.
+For more information on the preprocessing, see Section @secref{opari2_preprocessing}.
 
 @section opari2_preprocessing Preprocessing before @pomp2 and @openmp instrumentation
 @seclabel{opari2_preprocessing}
@@ -702,7 +706,7 @@ instrumentation. However, these compilers also
 disregard the source code information left by @opari2. Thus, 
 for these compilers the source location information is incorrect anyway.
 
-However, if the preprocessing is not desired, you can disable it
+If the preprocessing is not desired, you can disable it
 with the <tt>--nopreprocess</tt> flag. In this case the instrumentation is performed
 before the preprocessing happens. In this case constructs and regions in header 
 files, macros, or templates are not instrumented. Conditional compilation directives

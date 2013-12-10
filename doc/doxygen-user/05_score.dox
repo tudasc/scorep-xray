@@ -32,10 +32,11 @@ scorep-score profile.cubex
 The output of the command may look like this:
 
 @verbatim
-Estimated aggregate size of event trace (total_tbc):       24224 bytes
-Estimated requirements for largest trace buffer (max_tbc): 6381 bytes
-(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid intermediate flushes
- or reduce requirements using file listing names of USR regions to be filtered.)
+Estimated aggregate size of event trace (total_tbc):     24224 bytes
+Estimated requirements for largest trace buffer (max_tbc):6381 bytes
+(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid
+ intermediate flushes or reduce requirements using file listing
+ names of USR regions to be filtered.)
 
 flt type         max_tbc         time      % region
      ALL            6381         4.24  100.0 ALL
@@ -129,10 +130,11 @@ scorep-score profile.cubex -f myfilter
 An example output is:
 
 @verbatim
-Estimated aggregate size of event trace (total_tbc):       6406 bytes
-Estimated requirements for largest trace buffer (max_tbc): 1879 bytes
-(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid intermediate flushes
- or reduce requirements using file listing names of USR regions to be filtered.)
+Estimated aggregate size of event trace(total_tbc):      6406 bytes
+Estimated requirements for largest trace buffer(max_tbc):1879 bytes
+(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid
+ intermediate flushes  or reduce requirements using file listing
+ names of USR regions to be filtered.)
 
 flt type         max_tbc         time      % region
  -   ALL            1999         1.07  100.0 ALL

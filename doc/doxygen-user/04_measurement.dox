@@ -52,7 +52,7 @@ By default, the runtime and the number of visits are recorded. Additionally, har
 counters can be configured and are stored for every call-path. User defined metrics
 are only stored in those nodes, where the metric was triggered.
 
-For enabling profiling, set the environment variable \confvar{SCOREP_ENABLE_PROFILING}
+For enabling profiling, set the  \confvar{SCOREP_ENABLE_PROFILING} environment variable
 to 1 or <tt>true</tt>. After the execution of your application you will then find
 a file, named <tt>profile.cubex</tt> in your measurement directory, which you can display
 with the @cube4 with <tt>cube-qt profile.cubex</tt>. The name of the profile can be
@@ -473,8 +473,8 @@ not necessary to prepend rules with the <tt>MANGLED</tt> keyword if the
 displayed name is mangled, but only if a mangled name is available that differs
 from the displayed name.
 
-@note The keywords (e.g., <tt>SCOREP_REGION_NAMES_BEGIN</tt>, 
-      <tt>SCOREP_REGION_NAMES_END</tt>, <tt>EXCLUDE</tt>, <tt>INCLUDE</tt>, 
+@note The keywords (e.g., <tt>EXCLUDE</tt>, <tt>INCLUDE</tt>,
+      <tt>SCOREP_REGION_NAMES_BEGIN</tt>, <tt>SCOREP_REGION_NAMES_END</tt>, 
       and <tt>MANGLED</tt> are case-sensitive.
 
 
@@ -512,9 +512,9 @@ selective recording.
 </ul>
 
 Switching recording on or off, can result in inconsistent traces or profiles, if not
-applied with care. Especially, switching recording on/off manually via the Score-P user
-instrumentation macros <tt>SCOREP_RECORDING_ON</tt> and 
-<tt>SCOREP_RECORDING_OFF</tt> is not recommended. Inconsistent traces may result in
+applied with care. Especially, switching recording on/off manually via  
+<tt>SCOREP_RECORDING_ON</tt> and <tt>SCOREP_RECORDING_OFF</tt> from the Score-P user
+instrumentation macros is not recommended. Inconsistent traces may result in
 errors or deadlocks during analysis, or show unusable data. The consistency is endangered
 if:
 <ul>
@@ -582,9 +582,14 @@ with other sections.
 Based on user regions (see @secref{manual_instrumentation}), three macros are given which control the rewind. These are:
 
 @code
-SCOREP_USER_REWIND_DEFINE( regionHandle )          // to define a local region handle based on the function SCOREP_USER_REGION_DEFINE( ... )
-SCOREP_USER_REWIND_POINT( regionHandle, "name" )   // similar to SCOREP_USER_REGION_BEGIN( ... ) 
-SCOREP_USER_REWIND_CHECK( regionHandle, boolean )  // similar to SCOREP_USER_REGION_END( ... ) w/ additional parameter to control the rewind (yes or no) 
+  // to define a local region handle based on the function 
+  // SCOREP_USER_REGION_DEFINE( ... )
+SCOREP_USER_REWIND_DEFINE( regionHandle )
+  // similar to SCOREP_USER_REGION_BEGIN( ... )         
+SCOREP_USER_REWIND_POINT( regionHandle, "name" )  
+  // similar to SCOREP_USER_REGION_END( ... ) 
+  // w/ additional parameter to control the rewind (yes or no)
+SCOREP_USER_REWIND_CHECK( regionHandle, boolean )   
 @endcode
 
 The user has to specify whether or not a rewind is requested with a boolean variable in the SCOREP_USER_REWIND_CHECK function. 
@@ -787,7 +792,7 @@ These metrics use the Unix system call <tt>getrusage</tt> to provide information
 The manual page of <tt>getrusage</tt> provides a list of resource usage counters.
 Please note that the availability of specific counters depends on the operating system.
 
-You can enable recording of resource usage counters by setting the environment variable \confvar{SCOREP_METRIC_RUSAGE}.
+You can enable recording of resource usage counters by setting the \confvar{SCOREP_METRIC_RUSAGE} environment variable.
 The variable should contain a comma-separated list of counter names.
 
 Example:
@@ -834,8 +839,10 @@ The small example of a synchronous metric plugin  can be found in Appendix @secr
 The commands to build the corresponding library of this plugin might look like:
 
 @code
-gcc -c -fPIC hello_world.c -o libHelloWorld.so.o `scorep-config --cppflags`
-gcc -shared -Wl,-soname,libHelloWorld.so -o libHelloWorld.so libHelloWorld.so.o
+gcc -c -fPIC hello_world.c   \
+    -o libHelloWorld.so.o `scorep-config --cppflags`
+gcc -shared -Wl,-soname,libHelloWorld.so  \
+    -o libHelloWorld.so libHelloWorld.so.o
 @endcode
 
 To enable a metric plugin, set the environment variable \confvar{SCOREP_METRIC_PLUGINS}.
@@ -855,7 +862,11 @@ SCOREP_METRIC_HELLOWORLD=metric1,metric2
 
 If @scorep has been built with CUDA support it is capable of recording CUDA API function calls and GPU activities. The measurement is based on NVIDIA's <b>CU</b>DA <b>P</b>rofiling and <b>T</b>ool <b>I</b>nterface (CUPTI), which is an integral part of the CUDA Toolkit since version 4.1.
 
-@scorep can wrap the NVIDIA compiler (<b><tt>scorep nvcc</tt></b>) to instrument .cu files. If @scorep has been built with the Intel compiler an additional flag has to be added for instrumentation: <tt>--compiler-bindir=<path-to-intel-compiler-command></tt>. Otherwise the program will not be instrumented, as <tt>nvcc</tt> uses the GNU compiler by default. 
+@scorep can wrap the NVIDIA compiler (<b><tt>scorep nvcc</tt></b>) to instrument .cu files. If @scorep has been built with the Intel compiler an additional flag has to be added for instrumentation:
+
+ <tt>--compiler-bindir=<path-to-intel-compiler-command></tt>
+ 
+ Otherwise the program will not be instrumented, as <tt>nvcc</tt> uses the GNU compiler by default. 
 
 Setting the environment variable \confvar{SCOREP_CUDA_ENABLE} to <b><tt>yes</tt></b> enables CUDA measurement. 
 To enable a particular composition of CUDA measurement features the variable should contain a comma-separated list of the following CUDA measurement options:
@@ -874,7 +885,8 @@ gpumemusage    = Record CUDA memory (de)allocations as a counter
 stream_reuse   = Reuse destroyed/closed CUDA streams
 device_reuse   = Reuse destroyed/closed CUDA devices
 yes/DEFAULT/1  = "runtime, kernel, concurrent, memcpy"
-no             = Disable CUDA measurement (same as unset SCOREP_CUDA_ENABLE)
+no             = Disable CUDA measurement 
+                 (same as unset SCOREP_CUDA_ENABLE)
 @endcode
 
 CUPTI uses an extra buffer to store its activity records.
@@ -904,10 +916,15 @@ addresses and ports, the OA module will accept connections. Once the connection 
 application execution and wait for requests. The format of the requests is plain text following the syntax below: 
 
 @code
-<request>              = <configuration> | <execution> | <retrieval>
-<configuration>        = BEGINREQUESTS GLOBAL <request_type> ENDREQUESTS
-<request_type>         = MPI | EXECUTION_TIME | METRIC <metric_specification>
-<metric_specification> = PERISCOPE <periscope_metric_code> | PAPI "<papi_counter_name>" | RUSAGE "rusage_metric_name" | OTHER "metric_name"
+<request>              = <configuration>|<execution>|<retrieval>
+<configuration>        = BEGINREQUESTS GLOBAL <request_type> 
+                         ENDREQUESTS
+<request_type>         = MPI | EXECUTION_TIME | 
+                         METRIC <metric_specification>
+<metric_specification> = PERISCOPE <periscope_metric_code> | 
+                         PAPI "<papi_counter_name>" |
+                         RUSAGE "rusage_metric_name" | 
+                         OTHER "metric_name"
 <execution>            = TERMINATE | RUNTOSTART | RUNTOEND
 <retrieval>            = GETSUMMARYDATA 
 @endcode
