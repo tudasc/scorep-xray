@@ -122,26 +122,26 @@ definition of phases that are have multiple partitions
 @subsection dynamic_profiling Dynamic Region Profiling
 @seclabel{dynamic_profiling}
 
-When profiling, multiple visits of a callpath are summarized. However, e.g, for 
+When profiling, multiple visits of a call-path are summarized. However, e.g, for 
 investigations in time-dependent behavior of an application, each iteration of 
-a main loop (or some other region) should create a separate profile sub tree.
+a main loop (or some other region) should create a separate profile sub-tree.
 For such cases, @scorep allows to define regions to by of type dynamic. For dynamic
 regions, each entry of the region will create a separate path. For this cause, the
 @scorep profiling system creates an extra parameter, named <tt>instance</tt>. On each
-visit to a dynamic region, the instance parameter for this callpath is increased 
+visit to a dynamic region, the instance parameter for this call-path is increased 
 and triggered automatically. Thus, the every visit to a dynamic region generates a 
 separate subtree in the profile.
 
 As an example, let us assume that an application contains the regions <tt>foo</tt> and
 <tt>main</tt>, where <tt>main</tt> calls <tt>foo</tt> three times. A regular profile
-would show two callpathes:
+would show two call-pathes:
 <ul>
   <li><tt>main</tt></li>
   <li><tt>main/foo</tt></li>
 </ul>
-If <tt>foo</tt> is a dynamic region, the profile would contain additional subnodes for
+If <tt>foo</tt> is a dynamic region, the profile would contain additional sub-nodes for
 each visit of <tt>foo</tt>. The resulting profile would contain the following
-callpathes:
+call-pathes:
 <ul>
   <li><tt>main</tt></li>
   <li><tt>main/foo</tt></li>
@@ -151,12 +151,12 @@ callpathes:
 </ul>
 
 In this case <tt>main/foo</tt> contains the summarized statistics for all 3 visits, while
-<tt>main/foo/instance=0</tt> contains the statistics for the first visits of the callpath.
+<tt>main/foo/instance=0</tt> contains the statistics for the first visits of the call-path.
 
-@note The enumeration of the instance is per callpath and not per dynamic region. 
-      In particular, if a dynamic region foo appears in 2 callpathes, it has 2
-      instance number 0, one in both callpathes. It is not a global enumeration of 
-      the visits to foo but enumerates the visits of foo in a particular callpath from
+@note The enumeration of the instance is per call-path and not per dynamic region. 
+      In particular, if a dynamic region foo appears in 2 call-paths, it has 2
+      instance number 0, one in both call-paths. It is not a global enumeration of 
+      the visits to foo but enumerates the visits of foo in a particular call-path from
       0 to N.
 
 Currently, the only possibility to define dynamic regions is via the manual region 
@@ -174,23 +174,23 @@ instrumentation, described in Section @secref{manual_instrumentation}.
 @seclabel{clustering}
 
 Clustering allows to reduce the memory requirements of a dynamic region, by clustering
-similar subtrees into one cluster. A visualization tool (like CUBE 4) might expand
+similar sub-trees into one cluster. A visualization tool (like CUBE 4) might expand
 the clusters back to single iterations transparently. You can enable/disable 
 clustering via the environment variable \confvar{SCOREP_PROFILING_ENABLE_CLUSTERING}. 
 By default, clustering is enabled.
 
 Currently, clustering is limited to the instances of one node in the
-call-tree. If a dynamic region appears on several call paths, @scorep will only
+call-tree. If a dynamic region appears on several call-paths, @scorep will only
 cluster one, and generate separate sub-trees for every iterations in all other
 call-paths. By default, @scorep will cluster the instances of that dynamic region
-call path that it enters first. If you have only one call-path where a dynamic region
+call-path that it enters first. If you have only one call-path where a dynamic region
 occurs (e.g., if the body of the main loop is the only dynamic region), this
 region will be clustered automatically. Otherwise, we recommend to specify
 the region you want to cluster in the environment variable
 \confvar{SCOREP_PROFILING_CLUSTERED_REGION}.
 
-@note If the selected region appears on multiple call paths, only one of them
-      is clustered. @scorep chooses the call path of that regions that it enters first.
+@note If the selected region appears on multiple call-paths, only one of them
+      is clustered. @scorep chooses the call-path of that regions that it enters first.
       In particular, if the selected dynamic region is nested into itself, the 
       outermost occurrence is clustered.
 
@@ -232,13 +232,13 @@ in Table @tabref{Clustering modes}.
       \hline
       2   & The sub-trees structure and the number of visits must match. \\
       \hline
-      3   & The structure of the call path to MPI calls must match. Nodes that
-            are not on an MPI call path may differ. \\
+      3   & The structure of the call-path to MPI calls must match. Nodes that
+            are not on an MPI call-path may differ. \\
       \hline
       4   & Like Mode 3, but the number of visits of the MPI calls must match, too. \\
       \hline
       5   & Like Mode 4, but the number of visits must match also match on
-            all nodes on the call path to an MPI function.\\
+            all nodes on the call-path to an MPI function.\\
       \hline
     \end{tabular}
   \end{table}
@@ -260,8 +260,8 @@ in Table @tabref{Clustering modes}.
       <td WIDTH=90%>The sub-trees structure and the number of visits must match.</td>
     </tr><tr>
       <td WIDTH=10%>3</td>
-      <td WIDTH=90%>The structure of the call path to MPI calls must match. Nodes that
-                    are not on an MPI call path may differ.</td>
+      <td WIDTH=90%>The structure of the call-path to MPI calls must match. Nodes that
+                    are not on an MPI call-path may differ.</td>
     </tr><tr>
       <td WIDTH=10%>4</td>
       <td WIDTH=90%>Like Mode 3, but the number of visits of the MPI calls must match, 
@@ -269,7 +269,7 @@ in Table @tabref{Clustering modes}.
     </tr><tr>
       <td WIDTH=10%>5</td>
       <td WIDTH=90%>Like Mode 4, but the number of visits must match also match on
-                    all nodes on the call path to an MPI function.</td>
+                    all nodes on the call-path to an MPI function.</td>
     </tr>
   </table>
 \endif
@@ -375,15 +375,15 @@ sequential order. At the beginning all source files are included. Source files t
 are excluded after all rules are evaluated, are filtered.
 
 An exclude rule starts with the keyword <tt>EXCLUDE</tt> followed by
-one or multiple whitespace separated source file names. 
+one or multiple white-space separated source file names. 
 Respectively, include rules start with <tt>INCLUDE</tt>
-followed by one or multiple whitespace separated file names. For the specification of 
-file names, bash-like wildcards are supported. In particular, the '*' wildcard
+followed by one or multiple white-space separated file names. For the specification of 
+file names, bash-like wild-cards are supported. In particular, the '*' wild-card
 matches an string of arbitrary length, the '?' matches exactly one arbitrary
 character, or within `[]` you may specify multiple options.
 
 @note Unlike bash, a '*' may match a string that contains slashes. E.g, you may
-      use the '*' wildcard for path prefixes.
+      use the '*' wild-card for path prefixes.
 
 An example source file filter block could look like this:
 @code
@@ -402,7 +402,7 @@ Depending on instrumentation method and compiler the actual filename may
 contain the absolute path, a relative path or no path at all. The instrumentation
 tool tries to create as much absolute paths as possible. Paths are 
 simplified before comparison to a rule. E.g. it removes <tt>path/../</tt>, 
-<tt>/./</tt> and multiple slashes. You may lookup the actual filename in the resulting
+<tt>/./</tt> and multiple slashes. You may look up the actual filename in the resulting
 output of the measurement.
 
 
@@ -420,10 +420,10 @@ are excluded after all rules are evaluated, are filtered.
       include rule in the region filter block.
 
 An exclude rule starts with the keyword <tt>EXCLUDE</tt> followed by
-one or multiple whitespace separated region names. 
+one or multiple white-space separated region names. 
 Respectively, include rules start with <tt>INCLUDE</tt>
-followed by one or multiple whitespace separated expressions. For the specification of 
-file names, bash-like wildcards are supported. In particular, the '*' wildcard
+followed by one or multiple white-space separated expressions. For the specification of 
+file names, bash-like wild-cards are supported. In particular, the '*' wild card
 matches an string of arbitrary length, the '?' matches exactly one arbitrary
 character, or within `[]` you may specify multiple options.
 
@@ -632,7 +632,7 @@ calls.
 The general @scorep filtering mechanism is not applied to MPI functions. Instead,
 the user can decide whether event generation is turned on or off for a group of 
 @mpi functions, at strat time of the application. These groups
-are the listed sub modules of this adapter. Each module has a short
+are the listed sub-modules of this adapter. Each module has a short
 string token that identifies this group. To activate event generation
 for a specific group, the user can specify a comma-separated list of
 tokens in the configuration variable \confvar{SCOREP_MPI_ENABLE_GROUPS}. Additionally,

@@ -8,9 +8,15 @@ This document provides an introduction to
     Measurement Infrastructure for Parallel Codes}. It is a software system 
 that provides a measurement infrastructure for profiling, event trace
 recording, and online analysis of High Performance Computing (HPC)
-applications. It has been developed within the framework of the Scalable Infrastructure for the Automated Performance Analysis of Parallel Codes (@href{http://www.vi-hps.org/projects/silc,SILC}) project funded by the German Federal Ministry of Education and Research (@href{http://www.bmbf.bund.de,BMBF})
-under its HPC programme and the Performance Refactoring of Instrumentation, Measurement, and Analysis Technologies for Petascale Computing(@href{http://www.vi-hps.org/projects/prima,PRIMA}) project,
-funded by the United States Department of Energy (@href{http://energy.gov/, DOE})
+applications. It has been developed within the framework of the Scalable 
+Infrastructure for the Automated Performance Analysis of Parallel Codes 
+(@href{http://www.vi-hps.org/projects/silc,SILC}) project funded by the 
+German Federal Ministry of Education and Research 
+(@href{http://www.bmbf.bund.de,BMBF}) under its HPC programme and the 
+Performance Refactoring of Instrumentation, Measurement, and Analysis 
+Technologies for Petascale Computing
+(@href{http://www.vi-hps.org/projects/prima,PRIMA}) project,funded by 
+the United States Department of Energy (@href{http://energy.gov/, DOE})
 with the goals of being highly scalable and easy to use. 
 
 The partners involved in
@@ -28,7 +34,7 @@ the development of this system within the SILC and PRIMA projects were:
  <li> and @href{http://nic.uoregon.edu/prl,University of Oregon} </li>
 </ul>
   
-The goal of @scorep is to simplify the analysis of the behaviour
+The goal of @scorep is to simplify the analysis of the behavior
 of high performance computing software and to allow the developers of
 such software to find out where and why performance problems arise, where
 bottlenecks may be expected and where their codes offer room for
@@ -43,7 +49,7 @@ the code to be investigated. Next, the instrumented programs are
 executed and write out (often very large amounts of) performance
 data. These data are then finally graphically displayed and analyzed
 after the end of the program run. In certain special cases, the
-visualization and analysis of the program behaviour is also done while
+visualization and analysis of the program behavior is also done while
 the program is running. 
 
 A crucial problem in the traditional approach used to be the fact that
@@ -222,7 +228,7 @@ In order to allow the user to perform such an optimization of his code
 in a serial way or using a parallelization via OpenMP, MPI, or a
 combination thereof), the @scorep system provides a number of
 components that interact with each other and with external tools. A
-graphical overview of this structure is given in Fig.\ @figref{score-p-overview}.
+graphical overview of this structure is given in Fig. @figref{score-p-overview}.
 We shall now briefly introduce the elements of this structure; more
 details will be given in the later chapters of this document.
 
@@ -300,7 +306,7 @@ to on-line analysis tools like Periscope. The corresponding interface
 that allows this on-line access is also an integral part of @scorep.
 
 In profiling mode, the performance
-events are summarized at runtime separately for each call path like in
+events are summarized at runtime separately for each call-path like in
 Scalasca. Additionally, support for phases, dynamic
 regions and parameter-based profiling has been integrated. The collected
 data is passed to the @scorep's profiling back-end CUBE4 for

@@ -72,8 +72,8 @@ The following groups exist:
  <li> OMP: This group contains all regions that represent an OpenMP construct </li>
  <li> MPI: This group contains all MPI functions </li>
  <li> COM: This group contains all functions, implemented by the user that appear on 
-           a call path to an MPI function or an OpenMP construct </li>
- <li> USR: This group contains all user functions that do not appear on a call path to
+           a call-path to an MPI function or an OpenMP construct </li>
+ <li> USR: This group contains all user functions that do not appear on a call-path to
            an OpenMP construct or MPI function. </li>
 </ul>
 
@@ -111,9 +111,9 @@ For defining a filter, it is recommended to exclude short frequently called
 functions from measurement, because they require a lot of
 buffer space (represented by a high value under @verb{max_tbc}) but incur a high
 measurement overhead. Furthermore, for communication analysis, functions 
-that appear on a call path to MPI functions and OpenMP constructs (regions
+that appear on a call-path to MPI functions and OpenMP constructs (regions
 of type @verb{COM}) are usually of more interest than user functions of type @verb{USR}
-which do not appear on call path to communications. MPI functions and OpenMP
+which do not appear on call-path to communications. MPI functions and OpenMP
 constructs cannot be filtered. Thus, it is usually a good approach to exclude
 regions of type @verb{USR} starting at the top of the list until you reduced the trace
 to your needs. Section @secref{filtering} describes the format of a filter 

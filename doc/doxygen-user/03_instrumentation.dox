@@ -224,7 +224,7 @@ performed, this can help verify that the @scorep instrumenter correctly
 handles the compile/link commands. 
 
 @note Disabling @openmp in the instrumenter for @openmp applications will cause 
-      errors during program execution if any event occures inside of a parallel 
+      errors during program execution if any event occurs inside of a parallel 
       region.
 
 
@@ -378,7 +378,7 @@ binary OR-operator, e.g.:
 For function instrumentation in C and C++, @scorep provides macros, which 
 automatically pass the name and function type to @scorep measurement system.
 The <tt>SCOREP_USER_FUNC_BEGIN</tt> macro contains a variable definition.
-Thus, compilers that require strict separation of declarion and excution part,
+Thus, compilers that require strict separation of declaration and execution part,
 may not work with this macro.
 
 C/C++:
