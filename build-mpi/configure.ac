@@ -82,7 +82,6 @@ AC_SUBST([LIBTOOL_DEPS])
 
 AC_PROG_CC dnl required
 AC_SCOREP_PROG_CC_C99([], [AC_MSG_ERROR([No ISO C99 support in C compiler.])])
-AFS_SUMMARY([C99 compiler used], [$CC])
 AM_PROG_CC_C_O
 
 AC_PROG_CXX dnl needed for tests only
@@ -133,7 +132,7 @@ AC_SCOREP_CHECK_SIZEOF([void *])
 AC_LANG_POP([C])
 AFS_SUMMARY([MPI support for C], [$scorep_mpi_c_supported])
 AS_IF([test "x$scorep_mpi_c_supported" = "xyes"], [
-    AFS_SUMMARY([C compiler used for MPI], [$CC])
+    AFS_SUMMARY([C99 compiler used for MPI], [$CC])
 ])
 
 # C++ MPI is needed for the jacobi C++ tests only.
