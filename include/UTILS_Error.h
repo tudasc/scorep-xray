@@ -162,11 +162,11 @@ UTILS_Error_FromPosix( const int posixErrorCode );
 #if !HAVE( UTILS_NO_ASSERT )
 
 #define UTILS_ASSERT( expression ) \
-    UTILS_Error_Abort( !!( expression ), \
-                       __FILE__, \
-                       __LINE__, \
-                       __func__, \
-                       "Assertion '" UTILS_STRINGIFY( expression ) "' failed" )
+    ( ( expression ) ? ( void )0 : \
+      UTILS_Error_Abort( __FILE__, \
+                         __LINE__, \
+                         __func__, \
+                         "Assertion '" UTILS_STRINGIFY( expression ) "' failed" ) )
 
 #else
 
@@ -181,8 +181,7 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  *
  */
 #define UTILS_FATAL( ... ) \
-    UTILS_Error_Abort( 0, \
-                       __FILE__, \
+    UTILS_Error_Abort( __FILE__, \
                        __LINE__, \
                        __func__, \
                        __VA_ARGS__ )
@@ -196,8 +195,7 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  *
  */
 #define UTILS_BUG( ... ) \
-    UTILS_Error_Abort( 0, \
-                       __FILE__, \
+    UTILS_Error_Abort( __FILE__, \
                        __LINE__, \
                        __func__, \
                        "Bug: " __VA_ARGS__ )
@@ -210,32 +208,30 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  *
  */
 #define UTILS_BUG_ON( expression, ... ) \
-    UTILS_Error_Abort( !( expression ), \
-                       __FILE__, \
-                       __LINE__, \
-                       __func__, \
-                       "Bug: " __VA_ARGS__ )
+    ( !( expression ) ? ( void )0 :     \
+      UTILS_Error_Abort( __FILE__,      \
+                         __LINE__,      \
+                         __func__,      \
+                         "Bug: " __VA_ARGS__ ) )
 
 /**
- * This function implements the UTILS_ASSERT macro. If the assertion fails an error
- * message is output and the program is aborted. Do not insert calls to this function
- * directly, but use the UTILS_ASSERT macro instead.
- *  @param truthValue Contains the result of an evaluated logical expression. If it is
- *                    zero the assertion failed.
- *  @param file       The file name of the file which contains the source code where the
+ * This function implements the UTILS_ASSERT, UTILS_FATAL, UTILS_BUG, UTILS_BUG_ON macro.
+ * It prints an error message and aborts the program. Do not insert calls to this function
+ * directly, but use the macros instead.
+ *  @param fileName   The file name of the file which contains the source code where the
  *                    message was created.
  *  @param line       The line number of the source code line where the debug message
  *                    was created.
- *  @param function   A string containing the name of the function where the debug
- *                    message was called.
+ *  @param functionName  A string containing the name of the function where the debug
+ *                       message was called.
+ *  @param messageFormatString A printf-like format string.
  */
 #define UTILS_Error_Abort PACKAGE_MANGLE_NAME_CAPS( UTILS_Error_Abort )
 void
-UTILS_Error_Abort( const bool     truthValue,
-                   const char*    file,
-                   const uint64_t line,
-                   const char*    func,
-                   const char*    message,
+UTILS_Error_Abort( const char* fileName,
+                   uint64_t    line,
+                   const char* functionName,
+                   const char* messageFormatString,
                    ... );
 
 

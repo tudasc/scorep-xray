@@ -587,26 +587,20 @@ UTILS_Error_FromPosix( const int posixErrno )
 }
 
 void
-UTILS_Error_Abort( const bool     truthValue,
-                   const char*    file,
-                   const uint64_t line,
-                   const char*    func,
-                   const char*    msgFormatString,
+UTILS_Error_Abort( const char* fileName,
+                   uint64_t    line,
+                   const char* functionName,
+                   const char* messageFormatString,
                    ... )
 {
-    if ( truthValue )
-    {
-        return;
-    }
-
     va_list va;
-    va_start( va, msgFormatString );
+    va_start( va, messageFormatString );
 
-    utils_error_handler_va( file,
+    utils_error_handler_va( fileName,
                             line,
-                            func,
+                            functionName,
                             PACKAGE_ABORT,
-                            msgFormatString,
+                            messageFormatString,
                             va );
 
     va_end( va );
