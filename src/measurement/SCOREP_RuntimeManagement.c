@@ -478,6 +478,10 @@ scorep_finalize( void )
     // finalization of these processes. See otf2:ticket:154.
     if ( SCOREP_Status_IsMpp() && !SCOREP_Status_IsMppInitialized() )
     {
+        UTILS_WARN_ONCE( "If you are using MPICH1, please ignore this warning. "
+                         "If not, it seems that your interprocess communication "
+                         "library (e.g., MPI) hasn't been initialized. Score-P "
+                         "can't generate output." );
         return;
     }
 
