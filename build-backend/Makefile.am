@@ -107,10 +107,6 @@ clean-local-scorep-config-tests:
 	$(RM) test_scorep_config_number.*.out
 	$(RM) test_scorep_config_size.*.out
 
-distclean-local:
-	rm -rf ../test/jacobi/serial
-	rm -rf ../test/jacobi/OpenMP
-
 install-data-local: $(INSTALL_DATA_LOCAL_TARGETS)
 
 install-data-hook: $(INSTALL_DATA_HOOK_TARGETS)

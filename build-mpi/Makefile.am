@@ -79,11 +79,6 @@ LIB_DIR_SCOREP = ../build-backend/
 clean-local: clean-local-instrumenter-checks
 	rm -f scorep_mpi_omp_tests  scorep_mpi_tests lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 
-distclean-local:
-	rm -rf ../test/jacobi/MPI
-	rm -rf ../test/jacobi/hybrid
-
-
 INSTALLCHECK_SUBDIRS  =
 if HAVE_MPI_SUPPORT
 INSTALLCHECK_SUBDIRS +=
