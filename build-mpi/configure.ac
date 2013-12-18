@@ -96,14 +96,14 @@ AC_PROG_F77_C_O
 # from FLIBS and FCLIBS BEFORE calling AC_F*_WRAPPERS macros.
 AC_F77_LIBRARY_LDFLAGS
 AS_CASE([${ac_scorep_platform}],
-        [crayx*], [FLIBS=`echo ${FLIBS} | sed -e 's/-ltcmalloc_minimal //g'`])
+        [crayx*], [FLIBS=`echo ${FLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
 AC_F77_WRAPPERS
 
 AC_PROG_FC dnl needed for tests only
 AC_PROG_FC_C_O
 AC_FC_LIBRARY_LDFLAGS
 AS_CASE([${ac_scorep_platform}],
-        [crayx*], [FCLIBS=`echo ${FCLIBS} | sed -e 's/-ltcmalloc_minimal //g'`])
+        [crayx*], [FCLIBS=`echo ${FCLIBS} | sed -e 's/-ltcmalloc_minimal //g' -e 's/-ltcmalloc_minimal$//g'`])
 AC_FC_WRAPPERS
 
 AM_PROG_AS
