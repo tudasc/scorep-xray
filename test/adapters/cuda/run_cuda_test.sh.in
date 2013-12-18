@@ -19,12 +19,10 @@
 
 echo "===== CUDA Compile and Run Test ====="
 
-rm -f config.h cuda_test
+rm -f cuda_test
 
 # Get SRC_ROOT
 SRC_ROOT=@abs_top_srcdir@/..
-
-echo "/* Dummy */" > config.h
 
 ./scorep -v --build-check nvcc $SRC_ROOT/test/adapters/cuda/cuda_test.cu -o cuda_test -I.
 
@@ -100,7 +98,6 @@ do
 done #cudaapi
 
 
-rm -f config.h
 echo "====================================="
 
 exit 0

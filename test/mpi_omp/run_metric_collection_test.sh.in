@@ -1,25 +1,35 @@
 #!/bin/bash
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## Copyright (c) 2009-2011,
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2011,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2011, 2013,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2011,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2011,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2011,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
 ##
 
-## file       run_filter_test.sh
-
-cd ../build-backend
-make scorep-config-tool-local
-cd ../build-mpi
+## file       run_metric_collection_test.sh.in
 
 RESULT_DIR=scorep-metric-collection-test-dir
 rm -rf $RESULT_DIR
@@ -29,14 +39,13 @@ rm -rf $RESULT_DIR
 #-------------------------------------------------------------
 # build test
 cp  @abs_srcdir@/mpi_omp_metric_collection_test.c mpi_omp_metric_collection_test.c
-touch config.h
 
 @SCOREP_COMPILER_SUN_FALSE@extra_flag=""
 @SCOREP_COMPILER_SUN_TRUE@extra_flag="--nocompiler"
 
 ../build-backend/scorep --user -v --build-check $extra_flag @CC@ -I. @OPENMP_CFLAGS@ mpi_omp_metric_collection_test.c -o metric_collection_test
 
-rm -f config.h mpi_omp_metric_collection_test.opari.c mpi_omp_metric_collection_test.c.opari.inc mpi_omp_metric_collection_test.c metric_collection_test.pomp_init.c metric_collection_test.pomp_init.o
+rm -f mpi_omp_metric_collection_test.opari.c mpi_omp_metric_collection_test.c.opari.inc mpi_omp_metric_collection_test.c metric_collection_test.pomp_init.c metric_collection_test.pomp_init.o
 
 if [ ! -e metric_collection_test ]; then
     exit 1
