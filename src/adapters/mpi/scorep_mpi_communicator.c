@@ -248,8 +248,7 @@ scorep_mpi_win_rank_to_pe( SCOREP_MpiRank rank,
 SCOREP_InterimRmaWindowHandle
 scorep_mpi_win_id( MPI_Win win )
 {
-    int                                i = 0;
-    extern struct scorep_mpi_win_type* scorep_mpi_windows;
+    int i = 0;
 
     SCOREP_MutexLock( scorep_mpi_window_mutex );
     while ( i < scorep_mpi_last_window && scorep_mpi_windows[ i ].win != win )

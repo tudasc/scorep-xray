@@ -70,6 +70,12 @@ struct scorep_mpi_win_type
 };
 
 /**
+ *  @internal
+ *  Array which maps all MPI windows to Score-P internal handles.
+ */
+extern struct scorep_mpi_win_type* scorep_mpi_windows;
+
+/**
  * @internal
  *  Entry data structure to track GATS epochs
  */
