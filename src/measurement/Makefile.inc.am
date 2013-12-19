@@ -78,8 +78,6 @@ libscorep_measurement_core_la_SOURCES =                           \
     $(SRC_ROOT)src/measurement/scorep_definition_cube4.c          \
     $(SRC_ROOT)src/measurement/scorep_system_tree.h               \
     $(SRC_ROOT)src/measurement/scorep_system_tree.c               \
-    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.h     \
-    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.c     \
     $(SRC_ROOT)src/measurement/scorep_runtime_management_timings.h \
     $(SRC_ROOT)src/measurement/scorep_runtime_management_timings.c \
     $(SRC_ROOT)src/measurement/scorep_error_callback.h \
@@ -104,6 +102,8 @@ libscorep_mpp_mockup_la_SOURCES = \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mpp_mockup.c \
     $(SRC_ROOT)src/measurement/paradigm/scorep_ipc_mockup.c \
     $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpp_mockup.c \
+    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.h     \
+    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.c     \
     $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpp_mockup.c
 libscorep_mpp_mockup_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
@@ -124,6 +124,8 @@ noinst_LTLIBRARIES += libscorep_mpp_ipc.la
 libscorep_mpp_ipc_la_SOURCES = \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mpp_ipc.c \
     $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpp_ipc.c \
+    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.h  \
+    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.c  \
     $(SRC_ROOT)src/measurement/paradigm/scorep_clock_synchronization_mpp_ipc.c
 libscorep_mpp_ipc_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
