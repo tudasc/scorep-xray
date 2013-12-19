@@ -238,14 +238,17 @@ get_variable( struct scorep_config_name_space* nameSpace,
         &key,
         &hashHint );
 
+    /* !entry && !create: don't create a new entry if not requested
+     * entry && create:  creating the same variable twice is erroneous
+     */
+    if ( !entry == !create )
+    {
+        return NULL;
+    }
+
     if ( entry )
     {
         return entry->value;
-    }
-
-    if ( !create )
-    {
-        return NULL;
     }
 
     size_t name_len = strlen( name );

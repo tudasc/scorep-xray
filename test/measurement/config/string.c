@@ -52,7 +52,7 @@ static SCOREP_ConfigVariable string_config_variables[] =
         ""
     },
     {
-        "string_default_empty",
+        "string_default_foo",
         SCOREP_CONFIG_TYPE_STRING,
         &string_default_foo,
         NULL,
