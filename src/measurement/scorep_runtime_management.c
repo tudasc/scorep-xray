@@ -167,6 +167,18 @@ scorep_create_directory( void )
     /* rename an existing experiment directory */
     if ( stat( scorep_experiment_dir_name, &buf ) != -1 )
     {
+        /*
+         * fail if the previous entry exists and is not an directory at all
+         */
+        if ( !S_ISDIR( buf.st_mode ) )
+        {
+            UTILS_ERROR( SCOREP_ERROR_ENOTDIR,
+                         "Experiment directory \"%s\" exists but is not an directory.",
+                         scorep_experiment_dir_name );
+            _Exit( EXIT_FAILURE );
+        }
+
+
         if ( scorep_experiment_dir_needs_rename )
         {
             /*
