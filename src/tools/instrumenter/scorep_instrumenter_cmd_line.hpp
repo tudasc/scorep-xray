@@ -32,7 +32,7 @@
  * @file       scorep_instrumenter_command_line.hpp
  *
  * @brief      Declares a class for parsing and evaluating a the command line
- *             and makes the results accessable.
+ *             and makes the results accessible.
  */
 
 #ifndef SCOREP_INSTRUMENTER_COMMAND_LINE_H_
@@ -72,7 +72,7 @@ private:
        scorep_parse_mode_command. All further arguments are
        interpreted as arguments for the compiler/linker. The states
        scorep_parse_mode_output, and scorep_parse_mode_config are used
-       to deal with arguments which reguire a value in a successive
+       to deal with arguments which require a value in a successive
        argument. Thus, if A user specifies a config file the state
        switches to scorep_parse_mode_config. The next argument is
        interpreted as the config file name. Then the state switches
@@ -165,7 +165,7 @@ public:
     isTargetSharedLib( void );
 
     /**
-       Returns the list of full filenames for all libraries specified via -l flags.
+       Returns the list of full file names for all libraries specified via -l flags.
      */
     std::string
     getLibraryFiles( void );
@@ -232,14 +232,14 @@ private:
 
     /**
        Adds a file name to the list of input files.
-       @param input_file The filename of the input file.
+       @param input_file The file name of the input file.
      */
     void
     add_input_file( std::string input_file );
 
     /**
        Sets the output file name.
-       @param output_file The filename of the output file.
+       @param output_file The file name of the output file.
      */
     void
     set_output_file( std::string output_file );
@@ -268,7 +268,7 @@ private:
     /* ***************************************************** Private members */
 private:
     /**
-       Reference to the associated installation configration data
+       Reference to the associated installation configuration data
      */
     SCOREP_Instrumenter_InstallData& m_install_data;
 
@@ -327,7 +327,7 @@ private:
 
     /**
        Pointers to @a m_flags_before_lmpi or @a m_flags_after_lmpi, depending
-       whether -lmpi already occured.
+       whether -lmpi already occurred.
      */
     std::string* m_current_flags;
 
@@ -381,7 +381,7 @@ private:
     bool m_is_dry_run;
 
     /**
-       True, if temporary files should be kept. By default temprary files are
+       True, if temporary files should be kept. By default temporary files are
        deleted after successful instrumentation, but kept when the instrumenter
        aborts with an error.
      */

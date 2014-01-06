@@ -128,10 +128,10 @@ scorep_selective_init_region_list( void )
 }
 
 /**
-   Adds an addtional interval to an existing recorded region. It checks whether the new
+   Adds an additional interval to an existing recorded region. It checks whether the new
    region overlaps and concatenates to an existing region. In this case regions are
    merged.
-   @param region Pointer to the regio instance to which a new interval is added.
+   @param region Pointer to the region instance to which a new interval is added.
    @param first  First instance number of the new interval.
    @param last   Last instance number of the new interval.
  */
@@ -159,7 +159,7 @@ scorep_selective_add_interval( scorep_selected_region* region,
    Create a new new entry for the recorded region list.
    @param region The region name of the new recorded region.
    @param first  The first instance number of the initial instance interval.
-   @param last   The last instance numbe of the initial instance interval.
+   @param last   The last instance number of the initial instance interval.
    @param index  Index in the list where the new entry is inserted.
  */
 static SCOREP_ErrorCode
@@ -310,7 +310,7 @@ scorep_selective_parse_file( FILE* file )
                 }
                 else
                 {
-                    /* Check wether it is a single iteration or an interval */
+                    /* Check whether it is a single iteration or an interval */
                     pos   = strcspn( interval, ":" );
                     start = 0;
                     end   = -1;
@@ -382,7 +382,7 @@ scorep_selective_init( void )
         return;
     }
 
-    /* Check whether a configuraion file name was specified */
+    /* Check whether a configuration file name was specified */
     if ( scorep_selective_file_name == NULL || *scorep_selective_file_name == '\0' )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
@@ -410,7 +410,7 @@ scorep_selective_init( void )
     if ( err != SCOREP_SUCCESS )
     {
         UTILS_ERROR( err,
-                     "Unable to read configration file for selective recording.\n"
+                     "Unable to read configuration file for selective recording.\n"
                      "Disable selective recording." );
         fclose( config_file );
         return;

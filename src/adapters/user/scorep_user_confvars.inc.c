@@ -36,8 +36,8 @@
  */
 
 /**
-   Contains the file name for the selective recording configuration file. This filename
-   is filled out by the configration system. In particular, it is set by the environment
+   Contains the file name for the selective recording configuration file. This file name
+   is filled out by the configuration system. In particular, it is set by the environment
    variable 'SCOREP_SELECTIVE_CONFIG_FILE'.
  */
 static char* scorep_selective_file_name;

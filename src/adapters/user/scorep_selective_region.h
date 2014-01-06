@@ -31,9 +31,9 @@
 /**
  *  @file
  *
- *  This file containes the declaration of types and functions for selective recording.
+ *  This file contains the declaration of types and functions for selective recording.
  *  If selective recording is enabled, the measurement system records those only parts
- *  of the whole execution, that are executed within a user specifed region. Only
+ *  of the whole execution, that are executed within a user specified region. Only
  *  regions defined in the user adapter are selectable.
  *  For specifying the recorded regions, the user must provide a configuration file, where
  *  every line starts with the name of the recorded regions, optionally followed by
@@ -41,7 +41,7 @@
  *  <code> my_region 1, 23:100, 110:120, 130 </code>
  *  This line would configure to trace form a region named 'my_region' the instances
  *  1, 23 to 100, 110 to 120, and 130.
- *  The configration file must be specified in the environment variable
+ *  The configuration file must be specified in the environment variable
  *  <code>SCOREP_SELECTIVE_CONFIG_FILE</code>.
  */
 
