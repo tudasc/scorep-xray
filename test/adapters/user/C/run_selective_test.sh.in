@@ -31,7 +31,7 @@ cleanup()
 trap cleanup EXIT
 
 # Execute selective test
-SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_SELECTIVE_CONFIG_FILE=$SRC_ROOT/test/adapters/user/C/selective.cfg ./selective_test
+SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=true SCOREP_ENABLE_TRACING=true SCOREP_SELECTIVE_CONFIG_FILE=$SRC_ROOT/test/adapters/user/C/selective.cfg ./selective_test
 if [ $? -ne 0 ]; then
     echo "selective_test exited with errors."
     exit 1

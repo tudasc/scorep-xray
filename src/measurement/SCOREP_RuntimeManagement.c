@@ -107,7 +107,15 @@ SCOREP_RegionHandle scorep_record_off_region = SCOREP_INVALID_REGION;
  * Controlled by the SCOREP_EnableRecording() and SCOREP_DisableRecording()
  * functions.
  */
-bool scorep_recording_enabled = true;
+static bool scorep_recording_enabled = true;
+
+/** @brief Specifies whether recoding is enabled by default */
+static bool scorep_enable_recording_by_default = true;
+
+/** @brief Specifies whether it is allowed to modify the default
+ *  recording mode. After initialization, it must not be changed.
+ */
+static bool scorep_default_recoding_mode_changes_allowed = true;
 
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
@@ -224,6 +232,12 @@ SCOREP_InitMeasurement( void )
     if ( !SCOREP_Status_IsMpp() )
     {
         SCOREP_SynchronizeClocks();
+    }
+
+    scorep_default_recoding_mode_changes_allowed = false;
+    if ( !scorep_enable_recording_by_default )
+    {
+        SCOREP_DisableRecording();
     }
 
     SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurement );
@@ -357,6 +371,16 @@ SCOREP_FinalizeMppMeasurement( void )
     SCOREP_Status_OnMppFinalize();
 }
 
+/**
+ * Sets whether recording is enabled or disabled by default at measurement start.
+ * Has only effect, when set during initialization.
+ */
+void
+SCOREP_SetDefaultRecodingMode( bool enabled )
+{
+    UTILS_ASSERT( scorep_default_recoding_mode_changes_allowed );
+    scorep_enable_recording_by_default = enabled;
+}
 
 /**
  * Enable event recording for this process.
@@ -470,7 +494,6 @@ scorep_finalize( void )
 
     SCOREP_TIME_STOP_TIMING( MeasurementDuration );
     SCOREP_TIME_START_TIMING( scorep_finalize );
-
     SCOREP_TIME( scorep_trigger_exit_callbacks, ( ) );
 
     // MPICH1 creates some extra processes that are not properly SCOREP
@@ -483,6 +506,11 @@ scorep_finalize( void )
                          "library (e.g., MPI) hasn't been initialized. Score-P "
                          "can't generate output." );
         return;
+    }
+
+    if ( !scorep_enable_recording_by_default )
+    {
+        SCOREP_EnableRecording();
     }
 
     SCOREP_TIME( SCOREP_SynchronizeClocks, ( ) );

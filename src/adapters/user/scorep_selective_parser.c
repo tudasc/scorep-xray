@@ -417,7 +417,7 @@ scorep_selective_init( void )
     }
 
     /* Switch off recording */
-    SCOREP_DisableRecording();
+    SCOREP_SetDefaultRecodingMode( false );
 
     /* Clean up */
     fclose( config_file );
