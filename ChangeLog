@@ -40,6 +40,11 @@
   the first time. Thus, functions from shared libraries now appear in
   the measurment output.
 
+------------------- Upcoming version 1.2.3 ---------------------------
+
+- Fixed a failed assertion that occurs if selective recording was enabled
+  in profiling mode.
+
 ------------------- Released version 1.2.2 ---------------------------
 
 - The Fortran Cray compiler instrumentation did not create an exit
