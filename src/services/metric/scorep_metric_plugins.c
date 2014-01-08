@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -63,24 +63,31 @@
 
 #define BUFFER_SIZE 512
 
+typedef struct scorep_metric_plugin_meta_data_management_struct
+{
+    /** Meta data about metrics (e.g. metric name, units) */
+    SCOREP_Metric_Plugin_MetricProperties* properties;
+    /** Flag to indicate whether to call free() for this memory address or not */
+    bool                                   free_memory;
+} scorep_metric_plugin_meta_data_management;
 
 /** Per plugin library information */
 typedef struct scorep_metric_plugin_struct
 {
     /** Info from get_info() */
-    SCOREP_Metric_Plugin_Info              info;
+    SCOREP_Metric_Plugin_Info                  info;
     /** Handle (should be closed when finalize) */
-    void*                                  dlfcn_handle;
+    void*                                      dlfcn_handle;
     /** Plugin name */
-    char*                                  plugin_name;
+    char*                                      plugin_name;
     /** Index of additional environment variable in @ additional_environment_variables array */
-    uint32_t                               additional_event_environment_variable_index;
+    uint32_t                                   additional_event_environment_variable_index;
     /** Number of selected event_names */
-    uint32_t                               num_selected_events;
+    uint32_t                                   num_selected_events;
     /** Selected event_names */
-    char**                                 selected_events;
-    /** Meta data about metrics (e.g. metric name, units) */
-    SCOREP_Metric_Plugin_MetricProperties* metrics_meta_data;
+    char**                                     selected_events;
+    /** Meta data management */
+    scorep_metric_plugin_meta_data_management* metrics_meta_data;
 } scorep_metric_plugin;
 
 /** Data structure which a location uses to handle a single metric provided by a plugin */
@@ -503,21 +510,30 @@ scorep_metric_plugins_initialize_source( void )
                 continue;
             }
 
-            /* Read events selected for current plugin */
+            /*
+             * Read events selected for current plugin
+             *
+             * For example, if the user set SCOREP_METRIC_<pluginname> to token1,token2,token3
+             * the next loop will iterate over the tokens token1, token2, and token3.
+             */
             env_var_content = UTILS_CStr_dup( additional_environment_variable->event_variable );
             token           = strtok( env_var_content, scorep_metrics_plugins_separator );
             while ( token )
             {
+                /*
+                 * A plugin can extend one token to several metrics,
+                 * e.g. the token 'token2' taken from the example above
+                 * may result in metricB and metricC. In this case
+                 * get_event_info() will return a list of
+                 * SCOREP_Metric_Plugin_MetricProperties with two entries.
+                 */
                 SCOREP_Metric_Plugin_MetricProperties* metric_infos = info.get_event_info( token );
                 UTILS_BUG_ON( metric_infos == NULL, "Error while initializing plugin metric %s, no info returned\n", token );
                 UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Adding metric %s for plugin counter library: lib%s.so", token, current_plugin_name );
 
-                /* Store data structure containing meta data about current metrics */
-                current_plugin->metrics_meta_data = metric_infos;
-
                 /* Iterate over the info items */
-                SCOREP_Metric_Plugin_MetricProperties* current_metric_info = metric_infos;
-                for ( current_metric_info = metric_infos; current_metric_info->name != NULL; current_metric_info++ )
+                bool is_first_info_item = true;
+                for ( SCOREP_Metric_Plugin_MetricProperties* current_metric_info = metric_infos; current_metric_info->name != NULL; current_metric_info++ )
                 {
                     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "Retrieved metric %s for plugin counter library: lib%s.so."
                                         " Initializing data structures", current_metric_info->name, current_plugin_name );
@@ -534,6 +550,15 @@ scorep_metric_plugins_initialize_source( void )
                     current_plugin->selected_events[ current_plugin->num_selected_events - 1 ] =
                         current_metric_info->name;
 
+                    /* Handle metric meta data */
+                    current_plugin->metrics_meta_data =
+                        realloc( current_plugin->metrics_meta_data, current_plugin->num_selected_events * sizeof( scorep_metric_plugin_meta_data_management ) );
+                    UTILS_BUG_ON( current_plugin->metrics_meta_data == NULL, "Out of memory" );
+
+                    /* Set reference to meta data of current metric */
+                    current_plugin->metrics_meta_data[ current_plugin->num_selected_events - 1 ].properties  = current_metric_info;
+                    current_plugin->metrics_meta_data[ current_plugin->num_selected_events - 1 ].free_memory = is_first_info_item;
+
                     /* If a unit is provided, use it */
                     if ( current_metric_info->unit == NULL )
                     {
@@ -547,6 +572,8 @@ scorep_metric_plugins_initialize_source( void )
 
                     /* Metric plugins are in use */
                     is_scorep_metric_plugin_used = true;
+
+                    is_first_info_item = false;
                 } /* End of: for all metrics related to the metric string */
 
                 /* Handle next plugin */
@@ -593,7 +620,11 @@ scorep_metric_plugins_finalize_source( void )
                 /* Free resources */
                 for ( uint32_t event = 0; event < scorep_metric_plugin_handles[ i ][ j ].num_selected_events; event++ )
                 {
-                    free( scorep_metric_plugin_handles[ i ][ j ].metrics_meta_data[ event ].name );
+                    free( scorep_metric_plugin_handles[ i ][ j ].metrics_meta_data[ event ].properties->name );
+                    if ( scorep_metric_plugin_handles[ i ][ j ].metrics_meta_data[ event ].free_memory )
+                    {
+                        free( scorep_metric_plugin_handles[ i ][ j ].metrics_meta_data[ event ].properties );
+                    }
                 }
                 free( scorep_metric_plugin_handles[ i ][ j ].metrics_meta_data );
                 free( scorep_metric_plugin_handles[ i ][ j ].selected_events );
@@ -668,7 +699,7 @@ scorep_metric_plugins_initialize_location( SCOREP_Location*           location,
             }
 
             /* Add metric */
-            current[ *current_size ].meta_data        = &( current_plugin->metrics_meta_data[ event ] );
+            current[ *current_size ].meta_data        = current_plugin->metrics_meta_data[ event ].properties;
             current[ *current_size ].plugin_metric_id =
                 current_plugin->info.add_counter( current_plugin->selected_events[ event ] );
             /* Check whether adding metric finished successfully */
