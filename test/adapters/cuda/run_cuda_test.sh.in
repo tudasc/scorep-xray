@@ -24,7 +24,22 @@ rm -f cuda_test
 # Get SRC_ROOT
 SRC_ROOT=@abs_top_srcdir@/..
 
+# Get otf2print tool
+OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+
+# Set up directory that will contain experiment results
+RESULT_DIR=$PWD/scorep-serial-cuda
+
 ./scorep -v --build-check nvcc $SRC_ROOT/test/adapters/cuda/cuda_test.cu -o cuda_test -I.
+
+echo "Output of CUDA test can be found in $RESULT_DIR"
+
+# Number of CUDA streams for testing (currently fixed)
+num_streams=3
+
+### Check basic (-b) and advanced CUDA features in the example
+for testmode in "-b" ""
+do
 
 ### Check various combinations of CUDA runtime features ###
 features=""
@@ -79,14 +94,69 @@ do
               fi
               features="${features}${mcpy}${synchr}${idle}${streamreuse}${memusage}"
 
+              # Remove old result dir (if any)
+              rm -rf $RESULT_DIR
+
+              echo "Testing combination '${features}':"
+
               SCOREP_CUDA_ENABLE=${features} \
               SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY=true \
-              SCOREP_EXPERIMENT_DIRECTORY=scorep-serial-cuda \
-              ./cuda_test
+              SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR \
+              ./cuda_test ${testmode} -s ${num_streams} 2>&1 | tee cuda_test.out
 
               if [ $? -ne 0 ]; then
                   rm -rf scorep-measurement-tmp
                   exit 1
+              fi
+
+              LC_ALL=C grep "Skipping" cuda_test.out
+              if [ $? -eq 0 ]; then
+                  echo "CUDA trace file is inconsistent (timer synchronization)"
+
+                  # NOTE: This check currently fails with CUDA 5.5 due to timer synchronization problems.
+                  # Re-enable when fixed!
+                  echo "Ignored"
+                  continue
+                  #rm -rf scorep-measurement-tmp
+                  #exit 1
+              fi
+
+
+              if [ "x$testmode" = "x-b" ]; then
+                # test results of basic execution
+
+                num_kernels=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'init_array')
+                # Kernels launched via the CUDA runtime API create two host-side stub functions
+                # which include the kernel name. Even if no kernels are traced, these stubs still
+                # have recorded enter/leave events.
+                num_kernels_expected=4
+
+                if [[ "$kernel" =~ "kernel" ]]; then
+                    # Now we want to trace the actual device-side kernel events, too.
+                    num_kernels_expected=6
+                fi
+
+                if [ $num_kernels -ne $num_kernels_expected ]; then
+                    echo "CUDA trace file is inconsistent (wrong number of kernels '${num_kernels}/${num_kernels_expected}')"
+                    rm -rf scorep-measurement-tmp
+                    exit 1
+                fi
+              else
+                # test results of advanced execution
+
+                num_kernels=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'clock_block')
+                # Depends on the number of CUDA streams used (num_streams).
+                num_kernels_expected=$((4*$num_streams))
+
+                if [[ "$kernel" =~ "kernel" ]]; then
+                    num_kernels_expected=$((6*$num_streams))
+                fi
+
+                if [ $num_kernels -ne $num_kernels_expected ]; then
+                    echo "CUDA trace file is inconsistent (wrong number of kernels '${num_kernels}/${num_kernels_expected}')"
+                    rm -rf scorep-measurement-tmp
+                    exit 1
+                fi
               fi
 
             done #memusage
@@ -97,6 +167,7 @@ do
   done #kernel
 done #cudaapi
 
+done #testmode
 
 echo "====================================="
 
