@@ -22,7 +22,7 @@ acceptable limit. It uses intra-zone computation with OpenMP and inter-zone
 communication with MPI. The benchmark can be build with a predefined data class 
 (S,W,A,B,C,D,E,F) and any number of MPI processes and OpenMP threads.
 
-NPB BT-MZ distribution already prepared for this example could be obtained from ....
+NPB BT-MZ distribution already prepared for this example could be obtained from <a href="http://www.vi-hps.org/upload/material/general/VIHPS-tutorial-exercise.tgz"> here</a>.
 
 @section program_instrumentation Program Instrumentation
 @seclabel{program_instrumentation}
