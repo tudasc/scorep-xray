@@ -4,6 +4,9 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
@@ -99,7 +102,7 @@ scorep_thread_on_fork( uint32_t                nRequestedThreads,
  * Perform model-specific join activities in a fork-join model. Called
  * by SCOREP_Thread_Join(). Needs to provide the
  * SCOREP_Thread_PrivateData object @a tpdFromNowOn (that will be used
- * after the return from this function) to enbale a consistency check
+ * after the return from this function) to enable a consistency check
  * in the calling function. Needs to provide @a forkSequenceCount if
  * not provided by the model's adapter.
  *

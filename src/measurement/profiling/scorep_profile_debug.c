@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -165,7 +165,7 @@ scorep_profile_dump( FILE* file, SCOREP_Profile_LocationData* location )
 void
 scorep_profile_on_error( SCOREP_Profile_LocationData* location )
 {
-    /* Diable further profiling */
+    /* Disable further profiling */
     scorep_profile.is_initialized = false;
 
     /* If core files are enabled, write a core file */
