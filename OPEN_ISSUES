@@ -239,6 +239,10 @@ various Score-P components.
     exit event for 'main'. I.e., such traces are not analyzable by
     Scalasca.
 
+  - Running make check fails if SCOREP_EXPERIMENT_DIRECTORY is set to
+    'scorep'. One workaround is to run 
+    '(unset SCOREP_EXPERIMENT_DIRECTORY; make check;)'.
+
 --------------------------------------------------------------------------------
 
 Please report bugs, wishes, and suggestions to <support@score-p.org>.
