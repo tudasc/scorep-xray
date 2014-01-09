@@ -101,6 +101,7 @@ do
 
               SCOREP_CUDA_ENABLE=${features} \
               SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY=true \
+			  SCOREP_ENABLE_TRACING=yes \
               SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR \
               ./cuda_test ${testmode} -s ${num_streams} 2>&1 | tee cuda_test.out
 
