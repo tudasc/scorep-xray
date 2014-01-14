@@ -34,11 +34,11 @@
   are location specific meta data presented as key/value pair.
 - When using the intel compiler, we inspected the symbol table of the
   executable and evaluated the filtering on all functions in the
-  executable. Thus, compiler instrumneted functions from shared
+  executable. Thus, compiler instrumented functions from shared
   libraries are automatically filtered, when using the intel
   compiler. Now, the filters are evaluated when the functions appear
   the first time. Thus, functions from shared libraries now appear in
-  the measurment output.
+  the measurement output.
 
 ------------------- Upcoming version 1.2.3 ---------------------------
 
@@ -103,7 +103,7 @@
   detection of the MPI programming paradigm during instrumentation.
 - Abort with an error message during instrumentation if the user wants
   to build a shared library with static Score-P libraries.
-- Abort if the user specified a filter file which cannot be opended.
+- Abort if the user specified a filter file which cannot be opened.
 - Improved the auto-detection in the instrumenter for MPI libraries. This
   should fix some failures with MPI programs that do not use a compiler
   wrapper, e.g., when using SGI MPT.
@@ -175,19 +175,19 @@
   - Removed dependency to external repository that was used by
     Score-P, OTF2, and OPARI2 in order to prevent version conflicts.
 - Support for CUDA profiling and tracing.
-- Easier experiment configuration via scorep-info which porvides a
+- Easier experiment configuration via scorep-info which provides a
   list of all measurement configuration variables.
 - scorep-info also provides the improved configure-summary of the
   installation.
 - Scoring of profile experiments via scorep-score (if configured with
   external CUBE) to prepare a filter for subsequent trace experiment.
 - Documentation improvements.
-- Numereous configure improvements. Let external libraries use
+- Numerous configure improvements. Let external libraries use
   generic configure options (tbc). Fixed portability issues.
 - Numerous instrumenter improvements. All possible combinations of
   options supported.
 - MPI profiling improvements.
-- OpenMP nesting supported altough little tested.
+- OpenMP nesting supported although little tested.
 - Several compiler-dependent OpenMP-related bugfixes.
 
 ------------------- Released version 1.0.2 ---------------------------
