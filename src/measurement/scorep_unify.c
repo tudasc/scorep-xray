@@ -147,11 +147,6 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     ALLOC_MAPPINGS( definitionManager, type );
     SCOREP_LIST_OF_DEFS_WITH_MAPPINGS
     #undef DEF_WITH_MAPPING
-
-    ALLOC_MAPPINGS(& scorep_local_definition_manager,
-                   interim_communicator );
-
-    ALLOC_MAPPINGS( &scorep_local_definition_manager, interim_rma_window );
 }
 
 
@@ -241,4 +236,10 @@ SCOREP_Unify_Locally( void )
     // duplicates in the local ones. By creating mappings we are on the save side.
     SCOREP_CreateDefinitionMappings( &scorep_local_definition_manager );
     SCOREP_AssignDefinitionMappingsFromUnified( &scorep_local_definition_manager );
+
+    /*
+     * Allocate also mappings for the interim definitions.
+     */
+    ALLOC_MAPPINGS( &scorep_local_definition_manager, interim_communicator );
+    ALLOC_MAPPINGS( &scorep_local_definition_manager, interim_rma_window );
 }
