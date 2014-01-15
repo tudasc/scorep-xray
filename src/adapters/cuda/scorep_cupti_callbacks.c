@@ -3301,19 +3301,30 @@ scorep_cupti_callbacks_finalize()
             UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
                                 "[CUPTI Callbacks] Finalizing ... " );
 
+            if ( record_runtime_api || record_driver_api ||
+                 scorep_cuda_record_kernels || scorep_cuda_record_memcpy ||
+                 scorep_cuda_record_gpumemusage )
+            {
+                SCOREP_CUPTI_CALL( cuptiUnsubscribe( scorep_cupti_callbacks_subscriber ) );
+            }
+
+            if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_FLUSHATEXIT )
+            {
+                scorep_cupti_context_t* context = scorep_cupti_context_list;
+
+                while ( NULL != context )
+                {
+                    scorep_cupti_activity_context_flush( context );
+                    context = context->next;
+                }
+            }
+
             /* create the global CUDA communication group before the structures
                are destroyed */
             if ( scorep_cuda_record_memcpy )
             {
                 scorep_cuda_global_location_number =
                     scorep_cupti_create_cuda_comm_group( &scorep_cuda_global_location_ids );
-            }
-
-            if ( record_runtime_api || record_driver_api ||
-                 scorep_cuda_record_kernels || scorep_cuda_record_memcpy ||
-                 scorep_cuda_record_gpumemusage )
-            {
-                SCOREP_CUPTI_CALL( cuptiUnsubscribe( scorep_cupti_callbacks_subscriber ) );
             }
 
             /* clean up the Score-P CUPTI context list */
