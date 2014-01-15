@@ -48,7 +48,6 @@ include ../vendor/common/build-config/Makefile.tests-omp.inc.am
 AM_CPPFLAGS += -DBACKEND_BUILD_NOMPI
 
 frontend_bindir = @bindir@
-frontend_libdir = @libdir@
 bindir = @bindir@@backend_suffix@
 libdir = @libdir@@backend_suffix@
 

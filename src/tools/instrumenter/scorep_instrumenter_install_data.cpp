@@ -52,7 +52,7 @@
 
 SCOREP_Instrumenter_InstallData::SCOREP_Instrumenter_InstallData( void )
 {
-    m_scorep_config    = SCOREP_PREFIX "/bin/scorep-config";
+    m_scorep_config    = SCOREP_BINDIR "/scorep-config";
     m_c_compiler       = SCOREP_CC;
     m_cxx_compiler     = SCOREP_CXX;
     m_fortran_compiler = SCOREP_FC;

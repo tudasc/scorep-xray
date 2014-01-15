@@ -44,6 +44,8 @@
 
 - Fixed a failed assertion that occurs if selective recording was enabled
   in profiling mode.
+- Fixed wrong path names in the instrumenter, when Score-P was configured
+  with the --bindir flag.
 
 ------------------- Released version 1.2.2 ---------------------------
 
