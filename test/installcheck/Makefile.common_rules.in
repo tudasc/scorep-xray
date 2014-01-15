@@ -41,7 +41,7 @@ all:
 
 EXE = $(BINDIR)/$(CODE)-$(PARADIGM)-$(LANGUAGE)$(SUFFIX)
 
-TOOLS = @prefix@/bin/scorep @prefix@/bin/scorep-config
+TOOLS = @BINDIR@/scorep @BINDIR@/scorep-config
 
 SCOREP_INSTRUMENTING_VERBOSE = $(scorep_instrumenting_verbose_$(V))
 scorep_instrumenting_verbose_ = $(scorep_instrumenting_verbose_0)

@@ -81,7 +81,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                             echo "  GEN     $(BINDIR)/$${code}-$(PARADIGM)-$${language}$${suffix}"; \
                         fi; \
                         $(MAKE) -C $$obj_dir $(AM_MAKEFLAGS) \
-                            PREP="@prefix@/bin/scorep" \
+                            PREP="@BINDIR@/scorep" \
                             SUFFIX="$$suffix" \
                             OBJDIR="$$obj_dir" \
                             BINDIR="$(BINDIR)" \
@@ -105,7 +105,7 @@ instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
                     fi; \
                     while read line; do \
                         options=`echo $$line | awk '{for (i=1; i<= NF; i++) {options = options " --" $$i} } END{print options}'`; \
-                        prep="@prefix@/bin/scorep $$options"; \
+                        prep="@BINDIR@/scorep $$options"; \
                         suffix=`echo $$line | awk '{for (i=1; i<= NF; i++) {gsub("=", "-"); gsub(":", "-"); suffix = suffix "_" $$i} } END{print suffix}'`; \
                         obj_dir="$$obj_dir_prefix/$$code/$$language/$$suffix"; \
                         mkdir -p "$$obj_dir"; \
