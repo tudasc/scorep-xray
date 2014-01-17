@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2013
+ * Copyright (c) 2009-2013
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -424,8 +424,7 @@ scorep_cupticb_create_callbacks_context(
     context_callbacks->kernel_data = NULL;
 
 #if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 3 ) )
-    if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL )
-         == SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL )
+    if ( !( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_SERIAL ) )
     {
         context_callbacks->concurrent_kernels = true;
     }
@@ -1756,10 +1755,8 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
             if ( !scorep_cupti_events_enabled )
 #endif
             {
-                /* add the context without tracing CUDA driver API calls, if enabled */
-                DISABLE_CUDRV_CALLBACKS();
+                /* setup and create activity context, if necessary */
                 scorep_cupti_activity_context_setup( context );
-                ENABLE_CUDRV_CALLBACKS();
             }
 
             break;
@@ -1795,40 +1792,6 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
 
             break;
         }
-
-#if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 3 ) )
-        case CUPTI_CBID_RESOURCE_STREAM_CREATED:
-        {
-            if ( scorep_cuda_record_kernels &&
-                 ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL )
-                   != SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL ) )
-            {
-                scorep_cupti_context_t* context = scorep_cupti_context_get_create( resourceData->context );
-
-                /* if the device is capable of concurrent kernels */
-                if ( context->callbacks->concurrent_kernels )
-                {
-                    context->callbacks->streams_created++;
-
-                    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                                        "[CUPTI Callbacks] Creating stream %d (context %d)",
-                                        context->callbacks->streams_created, resourceData->context );
-
-                    if (
-#if defined( SCOREP_CUPTI_EVENTS )
-                        !scorep_cupti_events_enabled &&
-#endif
-                        context->callbacks->streams_created > 1 )
-                    {
-                        scorep_cupti_activity_enable_concurrent_kernel( context );
-                    }
-                }
-            }
-
-
-            break;
-        }
-#endif  /* CUPTI_API_VERSION >= 3 */
 
         case CUPTI_CBID_RESOURCE_STREAM_DESTROY_STARTING:
         {
@@ -3311,6 +3274,9 @@ scorep_cupti_callbacks_finalize()
             if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_FLUSHATEXIT )
             {
                 scorep_cupti_context_t* context = scorep_cupti_context_list;
+
+                UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                                    "[CUPTI Callbacks] Force CUPTI activity flush at program exit." );
 
                 while ( NULL != context )
                 {

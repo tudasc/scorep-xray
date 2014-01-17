@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,8 +49,8 @@ static const SCOREP_ConfigType_SetEntry scorep_cuda_enable_groups[] = {
     { "runtime",        SCOREP_CUDA_FEATURE_RUNTIME_API           },
     { "driver",         SCOREP_CUDA_FEATURE_DRIVER_API            },
     { "kernel",         SCOREP_CUDA_FEATURE_KERNEL                },
+    { "kernel_serial",  SCOREP_CUDA_FEATURE_KERNEL_SERIAL         },
     { "kernel_counter", SCOREP_CUDA_FEATURE_KERNEL_COUNTER        },
-    { "concurrent",     SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL     },
     { "memcpy",         SCOREP_CUDA_FEATURE_MEMCPY                },
     { "sync",           SCOREP_CUDA_FEATURE_SYNC                  },
     { "idle",           SCOREP_CUDA_FEATURE_IDLE                  },
@@ -82,8 +82,8 @@ static SCOREP_ConfigVariable scorep_cuda_configs[] = {
         "  runtime:        CUDA runtime API\n"
         "  driver:         CUDA driver API\n"
         "  kernel:         CUDA kernels\n"
+        "  kernel_serial:  Serialized kernel recording.\n"
         "  kernel_counter: Fixed CUDA kernel metrics.\n"
-        "  concurrent:     Concurrent kernel recording.\n"
         "  idle:           GPU compute idle time\n"
         "  pure_idle:      GPU idle time (memory copies are not idle)\n"
         "  memcpy:         CUDA memory copies\n"

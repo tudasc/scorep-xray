@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -956,8 +956,7 @@ scorep_cupti_activity_enable( bool enable )
             if ( scorep_cuda_record_kernels )
             {
   #if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 3 ) )
-                if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL )
-                     != SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL )
+                if ( !( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_SERIAL ) )
                 {
                     SCOREP_CUPTI_CALL( cuptiActivityEnable( CUPTI_ACTIVITY_KIND_CONCURRENT_KERNEL ) );
                 }
@@ -991,8 +990,7 @@ scorep_cupti_activity_enable( bool enable )
         if ( scorep_cuda_record_kernels )
         {
 #if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 3 ) )
-            if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL )
-                 != SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL )
+            if ( !( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_SERIAL ) )
             {
                 SCOREP_CUPTI_CALL( cuptiActivityDisable( CUPTI_ACTIVITY_KIND_CONCURRENT_KERNEL ) );
             }
@@ -1055,7 +1053,6 @@ scorep_cupti_activity_enable_concurrent_kernel( scorep_cupti_context_t* context 
      */
     SCOREP_CUPTI_CALL( cuptiActivityEnable( CUPTI_ACTIVITY_KIND_CONCURRENT_KERNEL ) );
 
-    scorep_cuda_features |= SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL;
     /*}*/
 }
 #endif

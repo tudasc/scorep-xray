@@ -875,8 +875,8 @@ To enable a particular composition of CUDA measurement features the variable sho
 runtime        = CUDA runtime API
 driver         = CUDA driver API
 kernel         = CUDA kernels
+kernel_serial  = Serialized kernel recording
 kernel_counter = Fixed CUDA kernel metrics
-concurrent     = Concurrent kernel recording
 idle           = GPU compute idle time
 pure_idle      = GPU idle time (memory copies are not idle)
 memcpy         = CUDA memory copies
@@ -884,7 +884,7 @@ sync           = Record implicit and explicit CUDA synchronization
 gpumemusage    = Record CUDA memory (de)allocations as a counter
 stream_reuse   = Reuse destroyed/closed CUDA streams
 device_reuse   = Reuse destroyed/closed CUDA devices
-yes/DEFAULT/1  = "runtime, kernel, concurrent, memcpy"
+yes/DEFAULT/1  = "runtime,kernel,memcpy"
 no             = Disable CUDA measurement 
                  (same as unset SCOREP_CUDA_ENABLE)
 @endcode

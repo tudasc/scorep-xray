@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -71,7 +71,9 @@ void
 scorep_cuda_set_features()
 {
     /* check for CUDA kernels */
-    if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL ) == SCOREP_CUDA_FEATURE_KERNEL )
+    if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL ) ||
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_SERIAL ) ||
+         ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_COUNTER ) )
     {
         scorep_cuda_record_kernels = SCOREP_CUDA_KERNEL;
 

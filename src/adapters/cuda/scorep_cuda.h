@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,7 +49,7 @@
 #define SCOREP_CUDA_FEATURE_RUNTIME_API         ( 1 << 0 )
 #define SCOREP_CUDA_FEATURE_DRIVER_API          ( 1 << 1 )
 #define SCOREP_CUDA_FEATURE_KERNEL              ( 1 << 2 )
-#define SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL   ( 1 << 3 )
+#define SCOREP_CUDA_FEATURE_KERNEL_SERIAL       ( 1 << 3 )
 #define SCOREP_CUDA_FEATURE_KERNEL_COUNTER      ( 1 << 4 )
 #define SCOREP_CUDA_FEATURE_MEMCPY              ( 1 << 5 )
 #define SCOREP_CUDA_FEATURE_IDLE                ( 1 << 6 )
@@ -61,7 +61,7 @@
 #define SCOREP_CUDA_FEATURE_FLUSHATEXIT         ( 1 << 12 )
 #define SCOREP_CUDA_FEATURES_DEFAULT \
     ( SCOREP_CUDA_FEATURE_RUNTIME_API | SCOREP_CUDA_FEATURE_KERNEL | \
-      SCOREP_CUDA_FEATURE_CONCURRENT_KERNEL | SCOREP_CUDA_FEATURE_MEMCPY )
+      SCOREP_CUDA_FEATURE_MEMCPY )
 
 
 /*
