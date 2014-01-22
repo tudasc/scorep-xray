@@ -50,7 +50,7 @@
   in profiling mode.
 - Fixed wrong path names in the instrumenter, when Score-P was configured
   with the --bindir flag.
-- Installscorep-score ins the correct directory, if Score-P was configured
+- Install scorep-score in the correct directory, if Score-P was configured
   with the --bindir flag.
 
 ------------------- Released version 1.2.2 ---------------------------
