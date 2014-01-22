@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -53,9 +53,17 @@
 #include <string.h>
 
 
+struct SCOREP_Ipc_Group
+{
+    int dummy;
+};
+
+SCOREP_Ipc_Group scorep_ipc_group_world;
+
 void
 SCOREP_Ipc_Init( void )
 {
+    scorep_ipc_group_world.dummy = 0;
 }
 
 
@@ -65,22 +73,29 @@ SCOREP_Ipc_Finalize( void )
 }
 
 
+SCOREP_Ipc_Group*
+SCOREP_Ipc_GetFileGroup( int nProcsPerFile )
+{
+    return NULL;
+}
+
+
 int
-SCOREP_Ipc_GetSize( void )
+SCOREP_IpcGroup_GetSize( SCOREP_Ipc_Group* group )
 {
     return 1;
 }
 
 
 int
-SCOREP_Ipc_GetRank( void )
+SCOREP_IpcGroup_GetRank( SCOREP_Ipc_Group* group )
 {
     return 0;
 }
 
 
 int
-SCOREP_Ipc_Barrier( void )
+SCOREP_IpcGroup_Barrier( SCOREP_Ipc_Group* group )
 {
     return 0;
 }
@@ -112,10 +127,11 @@ get_datatype_size( SCOREP_Ipc_Datatype datatype )
 
 
 int
-SCOREP_Ipc_Send( void*               buf,
-                 int                 count,
-                 SCOREP_Ipc_Datatype scorep_datatype,
-                 int                 dest )
+SCOREP_IpcGroup_Send( SCOREP_Ipc_Group*   group,
+                      void*               buf,
+                      int                 count,
+                      SCOREP_Ipc_Datatype scorep_datatype,
+                      int                 dest )
 {
     UTILS_BUG_ON( dest != 0, "SCOREP_Ipc_Send() called in non-mpi build." );
 
@@ -124,10 +140,11 @@ SCOREP_Ipc_Send( void*               buf,
 
 
 int
-SCOREP_Ipc_Recv( void*               buf,
-                 int                 count,
-                 SCOREP_Ipc_Datatype scorep_datatype,
-                 int                 source )
+SCOREP_IpcGroup_Recv( SCOREP_Ipc_Group*   group,
+                      void*               buf,
+                      int                 count,
+                      SCOREP_Ipc_Datatype scorep_datatype,
+                      int                 source )
 {
     UTILS_BUG_ON( source != 0, "SCOREP_Mpi_Recv() called in non-mpi build." );
 
@@ -136,10 +153,11 @@ SCOREP_Ipc_Recv( void*               buf,
 
 
 int
-SCOREP_Ipc_Bcast( void*               buf,
-                  int                 count,
-                  SCOREP_Ipc_Datatype datatype,
-                  int                 root )
+SCOREP_IpcGroup_Bcast( SCOREP_Ipc_Group*   group,
+                       void*               buf,
+                       int                 count,
+                       SCOREP_Ipc_Datatype datatype,
+                       int                 root )
 {
     UTILS_BUG_ON( root != 0,
                   "Invalid root given for broadcast in single process run." );
@@ -151,11 +169,12 @@ SCOREP_Ipc_Bcast( void*               buf,
 
 
 int
-SCOREP_Ipc_Gather( void*               sendbuf,
-                   void*               recvbuf,
-                   int                 count,
-                   SCOREP_Ipc_Datatype datatype,
-                   int                 root )
+SCOREP_IpcGroup_Gather( SCOREP_Ipc_Group*   group,
+                        void*               sendbuf,
+                        void*               recvbuf,
+                        int                 count,
+                        SCOREP_Ipc_Datatype datatype,
+                        int                 root )
 {
     UTILS_BUG_ON( root != 0,
                   "Invalid root given for gather in single process run." );
@@ -171,13 +190,14 @@ SCOREP_Ipc_Gather( void*               sendbuf,
 
 
 int
-SCOREP_Ipc_Gatherv( void*               sendbuf,
-                    int                 sendcount,
-                    void*               recvbuf,
-                    const int*          recvcnts,
-                    const int*          displs,
-                    SCOREP_Ipc_Datatype datatype,
-                    int                 root )
+SCOREP_IpcGroup_Gatherv( SCOREP_Ipc_Group*   group,
+                         void*               sendbuf,
+                         int                 sendcount,
+                         void*               recvbuf,
+                         const int*          recvcnts,
+                         const int*          displs,
+                         SCOREP_Ipc_Datatype datatype,
+                         int                 root )
 {
     UTILS_BUG_ON( root != 0,
                   "Invalid root given for gather in single process run." );
@@ -195,10 +215,11 @@ SCOREP_Ipc_Gatherv( void*               sendbuf,
 
 
 int
-SCOREP_Ipc_Allgather( void*               sendbuf,
-                      void*               recvbuf,
-                      int                 count,
-                      SCOREP_Ipc_Datatype datatype )
+SCOREP_IpcGroup_Allgather( SCOREP_Ipc_Group*   group,
+                           void*               sendbuf,
+                           void*               recvbuf,
+                           int                 count,
+                           SCOREP_Ipc_Datatype datatype )
 {
     /* In non-mpi case, we have only rank zero. Thus copy sendbuf to recvbuf. */
     if ( recvbuf != sendbuf )
@@ -211,12 +232,13 @@ SCOREP_Ipc_Allgather( void*               sendbuf,
 
 
 int
-SCOREP_Ipc_Reduce( void*                sendbuf,
-                   void*                recvbuf,
-                   int                  count,
-                   SCOREP_Ipc_Datatype  datatype,
-                   SCOREP_Ipc_Operation operation,
-                   int                  root )
+SCOREP_IpcGroup_Reduce( SCOREP_Ipc_Group*    group,
+                        void*                sendbuf,
+                        void*                recvbuf,
+                        int                  count,
+                        SCOREP_Ipc_Datatype  datatype,
+                        SCOREP_Ipc_Operation operation,
+                        int                  root )
 {
     UTILS_BUG_ON( root != 0,
                   "Invalid root given for reduce in single process run." );
@@ -233,7 +255,27 @@ SCOREP_Ipc_Reduce( void*                sendbuf,
 
 
 int
-SCOREP_Ipc_Allreduce( void*                sendbuf,
+SCOREP_IpcGroup_Allreduce( SCOREP_Ipc_Group*    group,
+                           void*                sendbuf,
+                           void*                recvbuf,
+                           int                  count,
+                           SCOREP_Ipc_Datatype  datatype,
+                           SCOREP_Ipc_Operation operation )
+{
+    /* In non-mpi case, we have only rank zero. Thus all operations just copy sendbuf to
+       recvbuf. */
+    if ( recvbuf != sendbuf )
+    {
+        size_t num = get_datatype_size( datatype ) * count;
+        memcpy( recvbuf, sendbuf, num );
+    }
+    return 0;
+}
+
+
+int
+SCOREP_IpcGroup_Scan( SCOREP_Ipc_Group*    group,
+                      void*                sendbuf,
                       void*                recvbuf,
                       int                  count,
                       SCOREP_Ipc_Datatype  datatype,
@@ -249,30 +291,13 @@ SCOREP_Ipc_Allreduce( void*                sendbuf,
     return 0;
 }
 
-
 int
-SCOREP_Ipc_Scan( void*                sendbuf,
-                 void*                recvbuf,
-                 int                  count,
-                 SCOREP_Ipc_Datatype  datatype,
-                 SCOREP_Ipc_Operation operation )
-{
-    /* In non-mpi case, we have only rank zero. Thus all operations just copy sendbuf to
-       recvbuf. */
-    if ( recvbuf != sendbuf )
-    {
-        size_t num = get_datatype_size( datatype ) * count;
-        memcpy( recvbuf, sendbuf, num );
-    }
-    return 0;
-}
-
-int
-SCOREP_Ipc_Scatter( void*               sendbuf,
-                    void*               recvbuf,
-                    int                 count,
-                    SCOREP_Ipc_Datatype datatype,
-                    int                 root )
+SCOREP_IpcGroup_Scatter( SCOREP_Ipc_Group*   group,
+                         void*               sendbuf,
+                         void*               recvbuf,
+                         int                 count,
+                         SCOREP_Ipc_Datatype datatype,
+                         int                 root )
 {
     UTILS_BUG_ON( root != 0,
                   "Invalid root given for scatter in single process run." );
@@ -285,13 +310,14 @@ SCOREP_Ipc_Scatter( void*               sendbuf,
 }
 
 int
-SCOREP_Ipc_Scatterv( void*               sendbuf,
-                     const int*          sendcounts,
-                     const int*          displs,
-                     void*               recvbuf,
-                     int                 recvcount,
-                     SCOREP_Ipc_Datatype datatype,
-                     int                 root )
+SCOREP_IpcGroup_Scatterv( SCOREP_Ipc_Group*   group,
+                          void*               sendbuf,
+                          const int*          sendcounts,
+                          const int*          displs,
+                          void*               recvbuf,
+                          int                 recvcount,
+                          SCOREP_Ipc_Datatype datatype,
+                          int                 root )
 {
     UTILS_BUG_ON( root != 0,
                   "Invalid root given for scatter in single process run." );

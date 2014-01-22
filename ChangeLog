@@ -28,8 +28,12 @@
   SION traces to all multi-process paradigms, not only MPI. Though
   only pure multi-process measurements are supported for now. No
   threads, no CUDA, no non-CPU metrics. Score-P itself does not depend
-  on SIONlib any longer, but OTF2 does. The configure option
+  on SIONlib any longer, only OTF2 does now. The configure option
   '--with-sionlib' (formerly '--with-sionconfig') is passed to OTF2.
+  As part of this integration the measurement configuration variable
+  'SCOREP_TRACING_NLOCATIONS_PER_SION_FILE' was renamed to
+  'SCOREP_TRACING_MAX_PROCS_PER_SION_FILE' to clarify that Score-P can
+  only distribute whole processes into a multi-file SION trace.
 - Extended the TAU adapter to allow input of location properties, which
   are location specific meta data presented as key/value pair.
 - When using the intel compiler, we inspected the symbol table of the

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -48,17 +48,34 @@
 #include <stdlib.h>
 
 
-static MPI_Comm comm_world_dup;
+struct SCOREP_Ipc_Group
+{
+    MPI_Comm comm;
+};
+
+
+SCOREP_Ipc_Group        scorep_ipc_group_world;
+static SCOREP_Ipc_Group file_group;
+
+static inline MPI_Comm
+resolve_comm( SCOREP_Ipc_Group* group )
+{
+    return group ? group->comm : scorep_ipc_group_world.comm;
+}
+
 
 static MPI_Datatype mpi_datatypes[ SCOREP_IPC_NUMBER_OF_DATATYPES ];
+
 
 void
 SCOREP_Ipc_Init( void )
 {
     assert( SCOREP_Status_IsMppInitialized() );
     assert( !SCOREP_Status_IsMppFinalized() );
-    int status = PMPI_Comm_dup( MPI_COMM_WORLD, &comm_world_dup );
+    int status = PMPI_Comm_dup( MPI_COMM_WORLD, &scorep_ipc_group_world.comm );
     assert( status == MPI_SUCCESS );
+
+    file_group.comm = MPI_COMM_NULL;
 
 /* SCOREP_MPI_INT64_T and SCOREP_MPI_UINT64_T were detected by configure */
 #define SCOREP_MPI_BYTE          MPI_BYTE
@@ -81,33 +98,95 @@ SCOREP_Ipc_Init( void )
 #undef SCOREP_MPI_DOUBLE
 }
 
+
 void
 SCOREP_Ipc_Finalize( void )
 {
     assert( SCOREP_Status_IsMppInitialized() );
     assert( !SCOREP_Status_IsMppFinalized() );
     /* Free duplicated communicator */
-    PMPI_Comm_free( &comm_world_dup );
+    PMPI_Comm_free( &scorep_ipc_group_world.comm );
+    if ( MPI_COMM_NULL != file_group.comm  )
+    {
+        PMPI_Comm_free( &file_group.comm );
+    }
 }
 
+
+SCOREP_Ipc_Group*
+SCOREP_Ipc_GetFileGroup( int nProcsPerFile )
+{
+    if ( MPI_COMM_NULL == file_group.comm  )
+    {
+        UTILS_BUG_ON( 0 == nProcsPerFile,
+                      "Invalid value for number of procs per file: %d",
+                      nProcsPerFile );
+
+        #if defined( __bgp__ )
+
+        /* MPIX_Pset_same_comm_create creates a communicator such that all
+           nodes in the same communicator are served by the same I/O node. For
+           each I/O node we will create one sion file that comprises the files
+           of all tasks of this communicator. To activate this, set
+           number_of_sion_files <= 0. */
+        MPIX_Pset_same_comm_create( &file_group.comm );
+
+        #else
+
+        int size = SCOREP_Ipc_GetSize();
+        int rank = SCOREP_Ipc_GetRank();
+
+        /* we need at least that number of files */
+        int number_of_files = size / nProcsPerFile + !!( size % nProcsPerFile );
+
+        /* distribute the ranks evenly into the files */
+        int file_number = 0;
+        int rem         = size % number_of_files;
+        int local_size  = size / number_of_files + !!rem;
+        int local_rank  = 0;
+        int local_root  = 0;
+        for ( int i = 0; i < rank; i++ )
+        {
+            local_rank++;
+            if ( local_root + local_size == i + 1 )
+            {
+                local_root += local_size;
+                file_number++;
+                local_size -= file_number == rem;
+                local_rank  = 0;
+            }
+        }
+
+        PMPI_Comm_split( scorep_ipc_group_world.comm,
+                         file_number,
+                         local_rank,
+                         &file_group.comm );
+
+        #endif
+    }
+
+    return &file_group;
+}
+
+
 int
-SCOREP_Ipc_GetSize( void )
+SCOREP_IpcGroup_GetSize( SCOREP_Ipc_Group* group )
 {
     assert( SCOREP_Status_IsMppInitialized() );
     assert( !SCOREP_Status_IsMppFinalized() );
     int size;
-    PMPI_Comm_size( comm_world_dup, &size );
+    PMPI_Comm_size( resolve_comm( group ), &size );
     return size;
 }
 
 
 int
-SCOREP_Ipc_GetRank( void )
+SCOREP_IpcGroup_GetRank( SCOREP_Ipc_Group* group )
 {
     assert( SCOREP_Status_IsMppInitialized() );
     assert( !SCOREP_Status_IsMppFinalized() );
     int rank;
-    PMPI_Comm_rank( comm_world_dup, &rank );
+    PMPI_Comm_rank( resolve_comm( group ), &rank );
     return rank;
 }
 
@@ -144,80 +223,85 @@ get_mpi_operation( SCOREP_Ipc_Operation op )
 
 
 int
-SCOREP_Ipc_Send( void*               buf,
-                 int                 count,
-                 SCOREP_Ipc_Datatype datatype,
-                 int                 dest )
+SCOREP_IpcGroup_Send( SCOREP_Ipc_Group*   group,
+                      void*               buf,
+                      int                 count,
+                      SCOREP_Ipc_Datatype datatype,
+                      int                 dest )
 {
     return PMPI_Send( buf,
                       count,
                       get_mpi_datatype( datatype ),
                       dest,
                       0,
-                      comm_world_dup ) != MPI_SUCCESS;
+                      resolve_comm( group ) ) != MPI_SUCCESS;
 }
 
 
 int
-SCOREP_Ipc_Recv( void*               buf,
-                 int                 count,
-                 SCOREP_Ipc_Datatype datatype,
-                 int                 source )
+SCOREP_IpcGroup_Recv( SCOREP_Ipc_Group*   group,
+                      void*               buf,
+                      int                 count,
+                      SCOREP_Ipc_Datatype datatype,
+                      int                 source )
 {
     return PMPI_Recv( buf,
                       count,
                       get_mpi_datatype( datatype ),
                       source,
                       0,
-                      comm_world_dup,
+                      resolve_comm( group ),
                       MPI_STATUS_IGNORE ) != MPI_SUCCESS;
 }
 
 
 int
-SCOREP_Ipc_Barrier( void )
+SCOREP_IpcGroup_Barrier( SCOREP_Ipc_Group* group )
 {
-    return PMPI_Barrier( comm_world_dup ) != MPI_SUCCESS;
+    return PMPI_Barrier( resolve_comm( group ) ) != MPI_SUCCESS;
 }
 
 
 int
-SCOREP_Ipc_Bcast( void*               buf,
-                  int                 count,
-                  SCOREP_Ipc_Datatype datatype,
-                  int                 root )
+SCOREP_IpcGroup_Bcast( SCOREP_Ipc_Group*   group,
+                       void*               buf,
+                       int                 count,
+                       SCOREP_Ipc_Datatype datatype,
+                       int                 root )
 {
     return PMPI_Bcast( buf, count,
                        get_mpi_datatype( datatype ),
                        root,
-                       comm_world_dup ) != MPI_SUCCESS;
+                       resolve_comm( group ) ) != MPI_SUCCESS;
 }
 
 
 int
-SCOREP_Ipc_Gather( void*               sendbuf,
-                   void*               recvbuf,
-                   int                 count,
-                   SCOREP_Ipc_Datatype datatype,
-                   int                 root )
+SCOREP_IpcGroup_Gather( SCOREP_Ipc_Group*   group,
+                        void*               sendbuf,
+                        void*               recvbuf,
+                        int                 count,
+                        SCOREP_Ipc_Datatype datatype,
+                        int                 root )
 {
     return PMPI_Gather( sendbuf, count,
                         get_mpi_datatype( datatype ),
                         recvbuf, count,
                         get_mpi_datatype( datatype ),
                         root,
-                        comm_world_dup ) != MPI_SUCCESS;
+                        resolve_comm( group ) ) != MPI_SUCCESS;
 }
 
 
 int
-SCOREP_Ipc_Gatherv( void*               sendbuf,
-                    int                 sendcount,
-                    void*               recvbuf,
-                    const int*          recvcnts,
-                    const int*          displs,
-                    SCOREP_Ipc_Datatype datatype,
-                    int                 root )
+SCOREP_IpcGroup_Gatherv( SCOREP_Ipc_Group*   group,
+                         void*               sendbuf,
+                         int                 sendcount,
+                         void*               recvbuf,
+                         const int*          recvcnts,
+                         const int*          displs,
+                         SCOREP_Ipc_Datatype datatype,
+                         int                 root )
 {
     return PMPI_Gatherv( sendbuf,
                          sendcount,
@@ -227,73 +311,79 @@ SCOREP_Ipc_Gatherv( void*               sendbuf,
                          ( int* )displs,
                          get_mpi_datatype( datatype ),
                          root,
-                         comm_world_dup ) != MPI_SUCCESS;
+                         resolve_comm( group ) ) != MPI_SUCCESS;
 }
 
 
 int
-SCOREP_Ipc_Allgather( void*               sendbuf,
-                      void*               recvbuf,
-                      int                 count,
-                      SCOREP_Ipc_Datatype datatype )
+SCOREP_IpcGroup_Allgather( SCOREP_Ipc_Group*   group,
+                           void*               sendbuf,
+                           void*               recvbuf,
+                           int                 count,
+                           SCOREP_Ipc_Datatype datatype )
 {
     return PMPI_Allgather( sendbuf, count,
                            get_mpi_datatype( datatype ),
                            recvbuf, count,
                            get_mpi_datatype( datatype ),
-                           comm_world_dup ) != MPI_SUCCESS;
+                           resolve_comm( group ) ) != MPI_SUCCESS;
 }
 
 
 int
-SCOREP_Ipc_Reduce( void*                sendbuf,
-                   void*                recvbuf,
-                   int                  count,
-                   SCOREP_Ipc_Datatype  datatype,
-                   SCOREP_Ipc_Operation operation,
-                   int                  root )
+SCOREP_IpcGroup_Reduce( SCOREP_Ipc_Group*    group,
+                        void*                sendbuf,
+                        void*                recvbuf,
+                        int                  count,
+                        SCOREP_Ipc_Datatype  datatype,
+                        SCOREP_Ipc_Operation operation,
+                        int                  root )
 {
     return PMPI_Reduce( sendbuf, recvbuf, count,
                         get_mpi_datatype( datatype ),
                         get_mpi_operation( operation ),
                         root,
-                        comm_world_dup ) != MPI_SUCCESS;
+                        resolve_comm( group ) ) != MPI_SUCCESS;
 }
 
 
 int
-SCOREP_Ipc_Allreduce( void*                sendbuf,
+SCOREP_IpcGroup_Allreduce( SCOREP_Ipc_Group*    group,
+                           void*                sendbuf,
+                           void*                recvbuf,
+                           int                  count,
+                           SCOREP_Ipc_Datatype  datatype,
+                           SCOREP_Ipc_Operation operation )
+{
+    return PMPI_Allreduce( sendbuf, recvbuf, count,
+                           get_mpi_datatype( datatype ),
+                           get_mpi_operation( operation ),
+                           resolve_comm( group ) ) != MPI_SUCCESS;
+}
+
+
+int
+SCOREP_IpcGroup_Scan( SCOREP_Ipc_Group*    group,
+                      void*                sendbuf,
                       void*                recvbuf,
                       int                  count,
                       SCOREP_Ipc_Datatype  datatype,
                       SCOREP_Ipc_Operation operation )
 {
-    return PMPI_Allreduce( sendbuf, recvbuf, count,
-                           get_mpi_datatype( datatype ),
-                           get_mpi_operation( operation ),
-                           comm_world_dup ) != MPI_SUCCESS;
-}
-
-
-int
-SCOREP_Ipc_Scan( void*                sendbuf,
-                 void*                recvbuf,
-                 int                  count,
-                 SCOREP_Ipc_Datatype  datatype,
-                 SCOREP_Ipc_Operation operation )
-{
     return PMPI_Scan( sendbuf, recvbuf, count,
                       get_mpi_datatype( datatype ),
                       get_mpi_operation( operation ),
-                      comm_world_dup ) != MPI_SUCCESS;
+                      resolve_comm( group ) ) != MPI_SUCCESS;
 }
 
+
 int
-SCOREP_Ipc_Scatter( void*               sendbuf,
-                    void*               recvbuf,
-                    int                 count,
-                    SCOREP_Ipc_Datatype datatype,
-                    int                 root )
+SCOREP_IpcGroup_Scatter( SCOREP_Ipc_Group*   group,
+                         void*               sendbuf,
+                         void*               recvbuf,
+                         int                 count,
+                         SCOREP_Ipc_Datatype datatype,
+                         int                 root )
 {
     return PMPI_Scatter( sendbuf,
                          count,
@@ -302,17 +392,19 @@ SCOREP_Ipc_Scatter( void*               sendbuf,
                          count,
                          get_mpi_datatype( datatype ),
                          root,
-                         comm_world_dup ) != MPI_SUCCESS;
+                         resolve_comm( group ) ) != MPI_SUCCESS;
 }
 
+
 int
-SCOREP_Ipc_Scatterv( void*               sendbuf,
-                     const int*          sendcounts,
-                     const int*          displs,
-                     void*               recvbuf,
-                     int                 recvcount,
-                     SCOREP_Ipc_Datatype datatype,
-                     int                 root )
+SCOREP_IpcGroup_Scatterv( SCOREP_Ipc_Group*   group,
+                          void*               sendbuf,
+                          const int*          sendcounts,
+                          const int*          displs,
+                          void*               recvbuf,
+                          int                 recvcount,
+                          SCOREP_Ipc_Datatype datatype,
+                          int                 root )
 {
     return PMPI_Scatterv( sendbuf,
                           ( int* )sendcounts,
@@ -322,5 +414,5 @@ SCOREP_Ipc_Scatterv( void*               sendbuf,
                           recvcount,
                           get_mpi_datatype( datatype ),
                           root,
-                          comm_world_dup ) != MPI_SUCCESS;
+                          resolve_comm( group ) ) != MPI_SUCCESS;
 }

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -72,9 +72,11 @@
 #include "SCOREP_Tracing_ThreadInteraction.h"
 #include "scorep_tracing_definitions.h"
 
+
 static OTF2_Archive*       scorep_otf2_archive;
 static SCOREP_Mutex        scorep_otf2_archive_lock;
 static SCOREP_RegionHandle scorep_flush_region = SCOREP_INVALID_REGION;
+
 
 /** @todo croessel in OTF2_Archive_Open we need to specify an event
     chunk-size and a definition chunk size. the chnunk size need to be
@@ -84,7 +86,9 @@ static SCOREP_RegionHandle scorep_flush_region = SCOREP_INVALID_REGION;
     size equal the memory page size (scorep_env_page_size)? */
 #define SCOREP_TRACING_CHUNK_SIZE ( 1024 * 1024 )
 
+
 #include "scorep_tracing_confvars.inc.c"
+
 
 static OTF2_FileSubstrate
 scorep_tracing_get_file_substrate( void )
@@ -99,6 +103,7 @@ scorep_tracing_get_file_substrate( void )
     return OTF2_SUBSTRATE_POSIX;
 }
 
+
 static OTF2_Compression
 scorep_tracing_get_compression( void )
 {
@@ -111,6 +116,7 @@ scorep_tracing_get_compression( void )
 
     return OTF2_COMPRESSION_NONE;
 }
+
 
 static bool
 scorep_trace_find_location_for_evt_writer_cb( SCOREP_Location* locationData,
@@ -342,6 +348,14 @@ SCOREP_Tracing_Initialize( void )
     OTF2_Error_RegisterCallback( scorep_tracing_otf2_error_callback, NULL );
 #endif
 
+    /* Check for valid scorep_tracing_max_procs_per_sion_file */
+    if ( 0 == scorep_tracing_max_procs_per_sion_file )
+    {
+        UTILS_FATAL(
+            "Invalid value for SCOREP_TRACING_MAX_PROCS_PER_SION_FILE: %" PRIu64,
+            scorep_tracing_max_procs_per_sion_file );
+    }
+
     /* @todo croessel step1: remove the "4 *" intoduced on Michael's request
      * when overflow checking for definitions is implemented.
      * step2: provide environment variables to adjust the chunck sizes.
@@ -384,6 +398,7 @@ SCOREP_Tracing_Finalize( void )
     SCOREP_MutexDestroy( &scorep_otf2_archive_lock );
 }
 
+
 void
 SCOREP_Tracing_OnMppInit( void )
 {
@@ -399,6 +414,7 @@ SCOREP_Tracing_OnMppInit( void )
     OTF2_ErrorCode otf2_err = OTF2_Archive_OpenEvtFiles( scorep_otf2_archive );
     UTILS_ASSERT( otf2_err == OTF2_SUCCESS );
 }
+
 
 void
 SCOREP_Tracing_LockArchive( void )
@@ -428,6 +444,7 @@ SCOREP_Tracing_GetEventWriter( void )
 
     return evt_writer;
 }
+
 
 static bool
 scorep_trace_finalize_event_writer_cb( SCOREP_Location* locationData,
@@ -528,6 +545,7 @@ SCOREP_Tracing_WriteDefinitions( void )
         /* There is no OTF2_Archive_CloseGlobalDefWriter in OTF2 */
     }
 }
+
 
 void
 SCOREP_Tracing_WriteProperties( void )

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -40,6 +40,9 @@
 
 
 #include "scorep_rewind_stack_management.h"
+
+
+extern uint64_t scorep_tracing_max_procs_per_sion_file;
 
 
 struct SCOREP_TracingData

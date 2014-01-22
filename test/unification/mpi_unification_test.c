@@ -2,34 +2,36 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
- *    RWTH Aachen University, Germany
+ * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2013,
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2014,
+ * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
- *    Technische Universitaet Dresden, Germany
+ * University of Oregon, Eugene, USA
  *
  * Copyright (c) 2009-2013,
- *    University of Oregon, Eugene, USA
+ * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
- *    Forschungszentrum Juelich GmbH, Germany
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ * Technische Universitaet Muenchen, Germany
  *
- * Copyright (c) 2009-2013,
- *    Technische Universitaet Muenchen, Germany
- *
- * See the COPYING file in the package base directory for details.
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license. See the COPYING file in the package base
+ * directory for details.
  *
  */
 
 
 
 /**
- * @file       test/unification/mpi_unification_test.c
+ * @file
  *
  *
  */
@@ -55,6 +57,7 @@
 
 #include <definitions/SCOREP_Definitions.h>
 #include <scorep_subsystem.h>
+#include <scorep_ipc.h>
 
 void
 SCOREP_RegisterAllConfigVariables( void );
@@ -70,10 +73,6 @@ void
 SCOREP_Definitions_Initialize( void );
 void
 scorep_mpi_setup_world( void );
-int
-SCOREP_Ipc_GetRank( void );
-void
-SCOREP_Ipc_Barrier( void );
 uint64_t
 SCOREP_Env_GetTotalMemory();
 uint64_t

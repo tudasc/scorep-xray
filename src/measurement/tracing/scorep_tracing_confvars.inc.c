@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -37,6 +37,7 @@
 
 
 static bool scorep_tracing_use_sion;
+uint64_t    scorep_tracing_max_procs_per_sion_file;
 static bool scorep_tracing_compress;
 
 
@@ -50,6 +51,17 @@ static SCOREP_ConfigVariable scorep_tracing_config_variables[] = {
         "false",
         "Whether or not to use libsion as OTF2 substrate",
         ""
+    },
+    {
+        "max_procs_per_sion_file",
+        SCOREP_CONFIG_TYPE_NUMBER,
+        &scorep_tracing_max_procs_per_sion_file,
+        NULL,
+        "1024",
+        "Maximum number of processes that share one sion file (must be > 0)",
+        "All processes are than evenly distributed over the number of needed "
+        "files to fulfill this constraint. E.g., having 4 processes and setting "
+        "the maximum to 3 would result in 2 files each holding 2 processes."
     },
     {
         "compress",

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -36,6 +36,8 @@
 
 #include <scorep_ipc.h>
 
+#include "scorep_tracing_internal.h"
+
 static inline SCOREP_Ipc_Datatype
 get_ipc_type( OTF2_Type type )
 {
@@ -68,7 +70,7 @@ scorep_tracing_otf2_collectives_get_size( void*                   userData,
                                           OTF2_CollectiveContext* commContext,
                                           uint32_t*               size )
 {
-    *size = SCOREP_Ipc_GetSize();
+    *size = SCOREP_IpcGroup_GetSize( ( SCOREP_Ipc_Group* )commContext );
 
     return OTF2_CALLBACK_SUCCESS;
 }
@@ -79,7 +81,7 @@ scorep_tracing_otf2_collectives_get_rank( void*                   userData,
                                           OTF2_CollectiveContext* commContext,
                                           uint32_t*               rank )
 {
-    *rank = SCOREP_Ipc_GetRank();
+    *rank = SCOREP_IpcGroup_GetRank( ( SCOREP_Ipc_Group* )commContext );
 
     return OTF2_CALLBACK_SUCCESS;
 }
@@ -89,7 +91,7 @@ static OTF2_CallbackCode
 scorep_tracing_otf2_collectives_barrier( void*                   userData,
                                          OTF2_CollectiveContext* commContext )
 {
-    SCOREP_Ipc_Barrier();
+    SCOREP_IpcGroup_Barrier( ( SCOREP_Ipc_Group* )commContext );
 
     return OTF2_CALLBACK_SUCCESS;
 }
@@ -103,10 +105,11 @@ scorep_tracing_otf2_collectives_bcast( void*                   userData,
                                        OTF2_Type               type,
                                        uint32_t                root )
 {
-    SCOREP_Ipc_Bcast( data,
-                      numberElements,
-                      get_ipc_type( type ),
-                      root );
+    SCOREP_IpcGroup_Bcast( ( SCOREP_Ipc_Group* )commContext,
+                           data,
+                           numberElements,
+                           get_ipc_type( type ),
+                           root );
 
     return OTF2_CALLBACK_SUCCESS;
 }
@@ -121,11 +124,12 @@ scorep_tracing_otf2_collectives_gather( void*                   userData,
                                         OTF2_Type               type,
                                         uint32_t                root )
 {
-    SCOREP_Ipc_Gather( inData,
-                       outData,
-                       numberElements,
-                       get_ipc_type( type ),
-                       root );
+    SCOREP_IpcGroup_Gather( ( SCOREP_Ipc_Group* )commContext,
+                            inData,
+                            outData,
+                            numberElements,
+                            get_ipc_type( type ),
+                            root );
 
     return OTF2_CALLBACK_SUCCESS;
 }
@@ -142,8 +146,8 @@ scorep_tracing_otf2_collectives_gatherv( void*                   userData,
                                          uint32_t                root )
 {
     int* displs = NULL;
-    int  size   = SCOREP_Ipc_GetSize();
-    int  rank   = SCOREP_Ipc_GetRank();
+    int  size   = SCOREP_IpcGroup_GetSize( ( SCOREP_Ipc_Group* )commContext );
+    int  rank   = SCOREP_IpcGroup_GetRank( ( SCOREP_Ipc_Group* )commContext );
     if ( rank == root )
     {
         displs = calloc( size, sizeof( *displs ) );
@@ -155,13 +159,14 @@ scorep_tracing_otf2_collectives_gatherv( void*                   userData,
         }
     }
 
-    SCOREP_Ipc_Gatherv( inData,
-                        inElements,
-                        outData,
-                        ( const int* )outElements,
-                        displs,
-                        get_ipc_type( type ),
-                        root );
+    SCOREP_IpcGroup_Gatherv( ( SCOREP_Ipc_Group* )commContext,
+                             inData,
+                             inElements,
+                             outData,
+                             ( const int* )outElements,
+                             displs,
+                             get_ipc_type( type ),
+                             root );
 
     free( displs );
 
@@ -178,11 +183,12 @@ scorep_tracing_otf2_collectives_scatter( void*                   userData,
                                          OTF2_Type               type,
                                          uint32_t                root )
 {
-    SCOREP_Ipc_Scatter( inData,
-                        outData,
-                        numberElements,
-                        get_ipc_type( type ),
-                        root );
+    SCOREP_IpcGroup_Scatter( ( SCOREP_Ipc_Group* )commContext,
+                             inData,
+                             outData,
+                             numberElements,
+                             get_ipc_type( type ),
+                             root );
 
     return OTF2_CALLBACK_SUCCESS;
 }
@@ -199,8 +205,8 @@ scorep_tracing_otf2_collectives_scatterv( void*                   userData,
                                           uint32_t                root )
 {
     int* displs = NULL;
-    int  size   = SCOREP_Ipc_GetSize();
-    int  rank   = SCOREP_Ipc_GetRank();
+    int  size   = SCOREP_IpcGroup_GetSize( ( SCOREP_Ipc_Group* )commContext );
+    int  rank   = SCOREP_IpcGroup_GetRank( ( SCOREP_Ipc_Group* )commContext );
     if ( rank == root )
     {
         displs = calloc( size, sizeof( *displs ) );
@@ -212,13 +218,14 @@ scorep_tracing_otf2_collectives_scatterv( void*                   userData,
         }
     }
 
-    SCOREP_Ipc_Scatterv( inData,
-                         ( const int* )inElements,
-                         displs,
-                         outData,
-                         outElements,
-                         get_ipc_type( type ),
-                         root );
+    SCOREP_IpcGroup_Scatterv( ( SCOREP_Ipc_Group* )commContext,
+                              inData,
+                              ( const int* )inElements,
+                              displs,
+                              outData,
+                              outElements,
+                              get_ipc_type( type ),
+                              root );
 
     free( displs );
 
@@ -245,12 +252,12 @@ static const OTF2_CollectiveCallbacks scorep_tracing_otf2_collectives =
 SCOREP_ErrorCode
 scorep_tracing_set_collective_callbacks( OTF2_Archive* archive )
 {
-    OTF2_ErrorCode err =
-        OTF2_Archive_SetCollectiveCallbacks( archive,
-                                             &scorep_tracing_otf2_collectives,
-                                             NULL,
-                                             NULL,
-                                             NULL );
+    OTF2_ErrorCode err = OTF2_Archive_SetCollectiveCallbacks(
+        archive,
+        &scorep_tracing_otf2_collectives,
+        NULL,
+        ( OTF2_CollectiveContext* )SCOREP_IPC_GROUP_WORLD,
+        ( OTF2_CollectiveContext* )SCOREP_Ipc_GetFileGroup( scorep_tracing_max_procs_per_sion_file ) );
     return OTF2_SUCCESS == err
            ? SCOREP_SUCCESS
            : SCOREP_ERROR_PROCESSED_WITH_FAULTS;
