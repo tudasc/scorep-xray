@@ -13,15 +13,14 @@ extern "C" {
 #define hashmask(n) (hashsize(n)-1)
 
 
-#ifndef PACKAGE_SYM
-# error "PACKAGE_SYM not defined."
+#ifndef AFS_PACKAGE_name
+# error "AFS_PACKAGE_name not defined."
 #endif
 
 
 #define _HASH_PREFIX_SYM2(a, b) a ## b
 #define _HASH_PREFIX_SYM(a, b)  _HASH_PREFIX_SYM2(a, b)
-#define _HASH_NAME(sym)         _HASH_PREFIX_SYM(PACKAGE_SYM, _ ## sym)
-#define _HASH_NAME_CAPS(sym)    _HASH_PREFIX_SYM(PACKAGE_SYM_CAPS, _ ## sym)
+#define _HASH_NAME(sym)         _HASH_PREFIX_SYM(AFS_PACKAGE_name, _ ## sym)
 
 
 #define jenkins_hashword    _HASH_NAME(jenkins_hashword)
