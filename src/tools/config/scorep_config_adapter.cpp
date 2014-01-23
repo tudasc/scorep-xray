@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -86,7 +89,7 @@ add_opari_cflags( bool build_check, bool with_cflags, bool is_fortran, bool nvcc
 #if !HAVE( EXTERNAL_OPARI2 )
         if ( build_check )
         {
-            std::cout << "-I" PACKAGE_SRCDIR "/vendor/opari2/include ";
+            std::cout << "-I" AFS_PACKAGE_SRCDIR "/vendor/opari2/include ";
             std::cout.flush();
             return;
         }
