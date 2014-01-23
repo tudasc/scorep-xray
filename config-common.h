@@ -2,15 +2,29 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2012,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2012,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2012, 2014,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2012,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
@@ -68,8 +82,8 @@
 #define UTILS_JOIN_3SYMS_( x, y, z )  x ## y ## z
 #define UTILS_JOIN_3SYMS( x, y, z )   UTILS_JOIN_3SYMS_( x, y, z )
 
-#define PACKAGE_MANGLE_NAME( sym )      UTILS_JOIN_SYMS( PACKAGE_SYM, _ ## sym )
-#define PACKAGE_MANGLE_NAME_CAPS( sym ) UTILS_JOIN_SYMS( PACKAGE_SYM_CAPS, _ ## sym )
+#define PACKAGE_MANGLE_name( name ) UTILS_JOIN_SYMS( AFS_PACKAGE_name, _ ## name )
+#define PACKAGE_MANGLE_NAME( name ) UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, _ ## name )
 
 
 /**

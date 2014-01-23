@@ -4,7 +4,10 @@
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2013,
-##    Forschungszentrum Juelich GmbH, Germany
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2014,
+## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
@@ -70,7 +73,7 @@ AC_DEFUN([_AFS_MPI_DATATYPE_INTEGER], [
         ])
     AS_IF([test "x$afs_cv_mpi_datatype_$1$2_t" = "xnone"],
         [AC_MSG_ERROR([No suitable MPI datatype found for $1$2_t.])],
-        [AC_DEFINE_UNQUOTED(AFS_PACKAGE_SYM_CAPS[]_MPI_[]m4_toupper([$1])$2_T,
+        [AC_DEFINE_UNQUOTED(AFS_PACKAGE_NAME[]_MPI_[]m4_toupper([$1])$2_T,
             [$afs_cv_mpi_datatype_$1$2_t],
             [MPI datatype compatible with $1$2_t])
         ])
