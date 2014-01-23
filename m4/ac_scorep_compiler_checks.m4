@@ -60,9 +60,6 @@ AC_LANG_PUSH([C])
 AX_COMPILER_VENDOR
 AC_LANG_POP([C])
 
-AS_IF([test "x${ax_cv_c_compiler_vendor}" = xunknown],
-    [AC_MSG_WARN([Could not determine compiler vendor.])])
-
 # Disable default OpenMP support for the Cray compilers 
 AS_IF([test "x${ax_cv_c_compiler_vendor}" = xcray],
     [CC="${CC} -hnoomp -O2"
@@ -77,7 +74,8 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [portland], [AFS_AM_CONDITIONAL([SCOREP_COMPILER_PGI],   [test 1 -eq 1], [false])],
     [gnu],      [AFS_AM_CONDITIONAL([SCOREP_COMPILER_GNU],   [test 1 -eq 1], [false])],
     [cray],     [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CRAY],  [test 1 -eq 1], [false])],
-    [])dnl
+    [unknown],  [AC_MSG_WARN([Could not determine compiler vendor. Score-P might not function properly.])],
+    [AC_MSG_WARN([Compiler vendor '${ax_cv_c_compiler_vendor}' unsupported. Score-P might not function properly.])])dnl
 
 afs_compiler_intel=0
 afs_compiler_sun=0
