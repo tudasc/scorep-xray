@@ -2,15 +2,29 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2012,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2012,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2012, 2014,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2012,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
@@ -35,7 +49,7 @@ extern "C"
    @param filename  The name of the file which is checked.
    @returns true if the file exists, else false.
  */
-#define UTILS_DoesFileExist PACKAGE_MANGLE_NAME_CAPS( UTILS_DoesFileExist )
+#define UTILS_DoesFileExist PACKAGE_MANGLE_NAME( UTILS_DoesFileExist )
 bool
 UTILS_DoesFileExist( const char* filename );
 
@@ -48,7 +62,7 @@ UTILS_DoesFileExist( const char* filename );
    @returns The path to the executable without the executable name itselfs and
             trailing slash. If no path was found, NULL is retured.
  */
-#define UTILS_GetExecutablePath PACKAGE_MANGLE_NAME_CAPS( UTILS_GetExecutablePath )
+#define UTILS_GetExecutablePath PACKAGE_MANGLE_NAME( UTILS_GetExecutablePath )
 char*
 UTILS_GetExecutablePath( const char* exe );
 
@@ -70,7 +84,7 @@ UTILS_GetExecutablePath( const char* exe );
  *          an error code is returned. Possible error codes are:
  *          PACKAGE_ERROR_MEM_ALLOC_FAILED and PACKAGE_ERROR_FILE_INTERACTION.
  */
-#define UTILS_IO_GetLine PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_GetLine )
+#define UTILS_IO_GetLine PACKAGE_MANGLE_NAME( UTILS_IO_GetLine )
 PACKAGE_ErrorCode
 UTILS_IO_GetLine( char**  buffer,
                   size_t* buffer_size,
@@ -79,7 +93,7 @@ UTILS_IO_GetLine( char**  buffer,
 /**
  * Returns true if @a path is a relative or absolute path.
  */
-#define UTILS_IO_HasPath PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_HasPath )
+#define UTILS_IO_HasPath PACKAGE_MANGLE_NAME( UTILS_IO_HasPath )
 bool
 UTILS_IO_HasPath( const char* path );
 
@@ -88,7 +102,7 @@ UTILS_IO_HasPath( const char* path );
  * @param path a filename which might have a path prefix.
  * @returns a pointer to the position in @a path where the filename starts.
  */
-#define UTILS_IO_GetWithoutPath PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_GetWithoutPath )
+#define UTILS_IO_GetWithoutPath PACKAGE_MANGLE_NAME( UTILS_IO_GetWithoutPath )
 const char*
 UTILS_IO_GetWithoutPath( const char* path );
 
@@ -103,7 +117,7 @@ UTILS_IO_GetWithoutPath( const char* path );
  *        location. It must not be a pointer to a constant in the program segment.
  *        Passing a pointer to a string literal results in a segmentation fault.
  */
-#define UTILS_IO_SimplifyPath PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_SimplifyPath )
+#define UTILS_IO_SimplifyPath PACKAGE_MANGLE_NAME( UTILS_IO_SimplifyPath )
 void
 UTILS_IO_SimplifyPath( char* path );
 
@@ -119,7 +133,7 @@ UTILS_IO_SimplifyPath( char* path );
  *
  * @return Joined path, allocated with @a malloc.
  */
-#define UTILS_IO_JoinPath PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_JoinPath )
+#define UTILS_IO_JoinPath PACKAGE_MANGLE_NAME( UTILS_IO_JoinPath )
 char*
 UTILS_IO_JoinPath( int nPaths,
                    ... );
@@ -132,7 +146,7 @@ UTILS_IO_JoinPath( int nPaths,
  * @param namelen  Length of the memory segment reserved for @a name.
  * @returns zero if the operation was successful. Else a non-zero value is returned.
  */
-#define UTILS_IO_GetHostname PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_GetHostname )
+#define UTILS_IO_GetHostname PACKAGE_MANGLE_NAME( UTILS_IO_GetHostname )
 int
 UTILS_IO_GetHostname( char*  name,
                       size_t namelen );
@@ -144,7 +158,7 @@ UTILS_IO_GetHostname( char*  name,
  *             of NULL if getcwd() should allocate the buffer.
  * @param size Is the size, in bytes, of the array of characters that buf points to.
  */
-#define UTILS_IO_GetCwd PACKAGE_MANGLE_NAME_CAPS( UTILS_IO_GetCwd )
+#define UTILS_IO_GetCwd PACKAGE_MANGLE_NAME( UTILS_IO_GetCwd )
 char*
 UTILS_IO_GetCwd( char*  buf,
                  size_t size );

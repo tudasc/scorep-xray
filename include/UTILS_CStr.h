@@ -2,15 +2,29 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2012,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2012,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2012, 2014,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2012,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
@@ -33,13 +47,13 @@ extern "C"
 /**
  * Defines a C value analog to std::string::npos
  */
-#define UTILS_CStr_npos PACKAGE_MANGLE_NAME_CAPS( UTILS_CStr_npos )
+#define UTILS_CStr_npos PACKAGE_MANGLE_NAME( UTILS_CStr_npos )
 extern const size_t UTILS_CStr_npos;
 
 /**
  * Duplicates the string @a source.
  */
-#define UTILS_CStr_dup PACKAGE_MANGLE_NAME_CAPS( UTILS_CStr_dup )
+#define UTILS_CStr_dup PACKAGE_MANGLE_NAME( UTILS_CStr_dup )
 char*
 UTILS_CStr_dup( const char* source );
 
@@ -55,7 +69,7 @@ UTILS_CStr_dup( const char* source );
            @a str. If the pattern is not found in @a str, it returns
            UTILS_CStr_npos.
  */
-#define UTILS_CStr_find PACKAGE_MANGLE_NAME_CAPS( UTILS_CStr_find )
+#define UTILS_CStr_find PACKAGE_MANGLE_NAME( UTILS_CStr_find )
 size_t
 UTILS_CStr_find( const char* str,
                  const char* pattern,
