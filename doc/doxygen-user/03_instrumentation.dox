@@ -227,6 +227,20 @@ handles the compile/link commands.
       errors during program execution if any event occurs inside of a parallel 
       region.
 
+Each thread model uses a default internal locking mechanism for the @scorep 
+measurement system. For the standard use case there is no need to specify an
+explicit locking mode. However, on certain systems or for performance 
+reasons it might be useful to change the locking mode. For 
+these cases the instrumenter provides the option
+ @verb{--mutex=[omp|pthread|pthread:spinlock|none]}. 
+Current possibilities are  the OpenMP locking (omp), Pthread mutex 
+(pthread), Pthread spinlock (pthread:spinlock) and none at all (none). Which of 
+these are available for a given installation will be determined at configure time.
+
+@note Not all combinations of thread model and explicit choice of locking 
+      are useful. Currently, only the combination of no locking with a real
+      threading system is overwritten by the thread model default to ensure
+      thread safety.
 
 @section compiler_instrumentation Automatic Compiler Instrumentation
 @seclabel{compiler_instrumentation}

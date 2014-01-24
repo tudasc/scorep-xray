@@ -120,6 +120,9 @@ while test $# -ne 0; do
         --thread=omp|--thread=omp:pomp_tpd|--thread=omp:ancestry)
             OMP=yes
             ;;
+        --mutex=omp|--mutex=pthread|--mutex=pthread:spinlock)
+            OMP=yes
+            ;;
 
         --user)
             USER=yes

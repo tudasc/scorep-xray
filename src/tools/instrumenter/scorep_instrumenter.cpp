@@ -57,6 +57,7 @@
 #include "scorep_instrumenter_thread.hpp"
 #include "scorep_instrumenter_user.hpp"
 #include "scorep_instrumenter_utils.hpp"
+#include "scorep_instrumenter_mutex.hpp"
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
 
@@ -96,6 +97,9 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     /* Create paradigm groups */
     m_thread = new SCOREP_Instrumenter_Thread();
     m_mpp    = new SCOREP_Instrumenter_Mpp();
+
+    /* Create mutex selector*/
+    m_mutex = new SCOREP_Instrumenter_Mutex();
 }
 
 SCOREP_Instrumenter::~SCOREP_Instrumenter ()

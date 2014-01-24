@@ -56,6 +56,8 @@ class SCOREP_Instrumenter_UserAdapter;
 class SCOREP_Instrumenter_Thread;
 class SCOREP_Instrumenter_Mpp;
 
+class SCOREP_Instrumenter_Mutex;
+
 /* ****************************************************************************
    Class SCOREP_Instrumenter
 ******************************************************************************/
@@ -218,6 +220,8 @@ private:
 
     SCOREP_Instrumenter_Thread* m_thread;
     SCOREP_Instrumenter_Mpp*    m_mpp;
+
+    SCOREP_Instrumenter_Mutex* m_mutex;
 
     std::deque<SCOREP_Instrumenter_Adapter*> m_precompile_adapters;
     std::deque<SCOREP_Instrumenter_Adapter*> m_prelink_adapters;

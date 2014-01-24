@@ -32,6 +32,45 @@ libscorep_mutex_omp_la_LDFLAGS = \
 endif HAVE_OPENMP_SUPPORT
 
 
+
+##Pthread locks
+# mutex lock
+if HAVE_PTHREAD_MUTEX
+
+lib_LTLIBRARIES += libscorep_mutex_pthread.la
+libscorep_mutex_pthread_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/mutex/scorep_mutex_pthread.c
+libscorep_mutex_pthread_la_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS)
+libscorep_mutex_pthread_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)     \
+    -I$(INC_DIR_MUTEX) \
+    $(SCOREP_PTHREAD_MUTEX_CPPFLAGS) \
+    $(UTILS_CPPFLAGS)
+libscorep_mutex_pthread_la_LDFLAGS = \
+    $(library_api_version_ldflags) \
+    $(PTHREAD_LIBS)
+
+endif HAVE_PTHREAD_MUTEX
+
+# spinlock
+if HAVE_PTHREAD_SPINLOCK
+
+lib_LTLIBRARIES += libscorep_mutex_pthread_spinlock.la
+libscorep_mutex_pthread_spinlock_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/mutex/scorep_mutex_pthread_spinlock.c
+libscorep_mutex_pthread_spinlock_la_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS)
+libscorep_mutex_pthread_spinlock_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)     \
+    -I$(INC_DIR_MUTEX) \
+     -D_POSIX_C_SOURCE=200112L \
+     $(SCOREP_PTHREAD_SPINLOCK_CPPFLAGS) \
+    $(UTILS_CPPFLAGS)
+libscorep_mutex_pthread_spinlock_la_LDFLAGS = \
+    $(library_api_version_ldflags) \
+    $(PTHREAD_LIBS)
+
+endif HAVE_PTHREAD_SPINLOCK 
+
 lib_LTLIBRARIES += libscorep_mutex_mockup.la
 libscorep_mutex_mockup_la_SOURCES = \
     $(SRC_ROOT)src/measurement/mutex/scorep_mutex_mockup.c \

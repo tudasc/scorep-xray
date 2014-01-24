@@ -23,6 +23,7 @@
 #include <deque>
 
 #include "SCOREP_Config_LibraryDependencies.hpp"
+#include "scorep_config_mutex.hpp"
 
 /* **************************************************************************************
  * enum SCOREP_Config_ThreadSystemId
@@ -64,7 +65,7 @@ public:
     SCOREP_Config_ThreadSystem( std::string                  name,
                                 std::string                  variant,
                                 std::string                  library,
-                                std::string                  mutexlib,
+                                SCOREP_Config_MutexId        mutexId,
                                 SCOREP_Config_ThreadSystemId id );
 
     /**
@@ -129,6 +130,17 @@ public:
                  bool         nvcc );
 
     /**
+     * Checks if an explicit choice has been made for the locking mechanism
+     *  - If the mutex selection has been explicitly changed from the default mockup,
+     *    the choice stays valid
+     *  - If either "none" is chosen explicitly or is still the default, the threading
+     *    system changes it to its own default, ensuring a valid locking for a threading
+     *    case.
+     */
+    virtual SCOREP_Config_MutexId
+    validateDependencies();
+
+    /**
      * Returns the threading system identifier.
      */
     SCOREP_Config_ThreadSystemId
@@ -151,9 +163,9 @@ protected:
     std::string m_library;
 
     /**
-     * The name of the mutex library.
+     * The name of the default parameter for the mutex choice.
      */
-    std::string m_mutexlib;
+    SCOREP_Config_MutexId m_mutexId;
 
 private:
     /**

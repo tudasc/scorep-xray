@@ -12,3 +12,6 @@ dnl directory for details.
 dnl
 
 dnl file build-includes/compute-node.m4
+
+SCOREP_PTHREAD_MUTEX
+SCOREP_PTHREAD_SPINLOCK

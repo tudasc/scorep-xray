@@ -21,6 +21,7 @@
 #include <scorep_config_tool_mpi.h>
 #include "scorep_config_thread.hpp"
 #include "scorep_config_adapter.hpp"
+#include "scorep_config_mutex.hpp"
 #include <iostream>
 
 std::deque<SCOREP_Config_ThreadSystem*> scorep_thread_systems;
@@ -56,14 +57,14 @@ SCOREP_Config_ThreadSystem* SCOREP_Config_ThreadSystem::current = NULL;
 SCOREP_Config_ThreadSystem::SCOREP_Config_ThreadSystem( std::string                  name,
                                                         std::string                  variant,
                                                         std::string                  library,
-                                                        std::string                  mutexlib,
+                                                        SCOREP_Config_MutexId        mutexId,
                                                         SCOREP_Config_ThreadSystemId id )
 {
-    m_name     = name;
-    m_variant  = variant;
-    m_library  = library;
-    m_mutexlib = mutexlib;
-    m_id       = id;
+    m_name    = name;
+    m_variant = variant;
+    m_library = library;
+    m_mutexId = mutexId;
+    m_id      = id;
 }
 
 SCOREP_Config_ThreadSystem::~SCOREP_Config_ThreadSystem()
@@ -103,7 +104,7 @@ SCOREP_Config_ThreadSystem::addLibs( std::deque<std::string>&           libs,
                                      SCOREP_Config_LibraryDependencies& deps )
 {
     deps.addDependency( "libscorep_measurement", "lib" + m_library );
-    deps.addDependency( "libscorep_measurement", "lib" + m_mutexlib );
+    //  deps.addDependency( "libscorep_measurement", "lib" + m_mutexlib );
 }
 
 void
@@ -112,6 +113,15 @@ SCOREP_Config_ThreadSystem::addCFlags( std::string& cflags,
                                        bool         fortran,
                                        bool         nvcc )
 {
+}
+SCOREP_Config_MutexId
+SCOREP_Config_ThreadSystem::validateDependencies()
+{
+    if ( SCOREP_Config_Mutex::current->getId()  == SCOREP_CONFIG_MUTEX_ID_NONE )
+    {
+        return m_mutexId;
+    }
+    return SCOREP_Config_Mutex::current->getId();
 }
 
 void
@@ -131,7 +141,7 @@ SCOREP_Config_ThreadSystem::getId( void )
 
 SCOREP_Config_MockupThreadSystem::SCOREP_Config_MockupThreadSystem()
     : SCOREP_Config_ThreadSystem( "none", "", "scorep_thread_fork_join_mockup",
-                                  "scorep_mutex_mockup", SCOREP_CONFIG_THREAD_SYSTEM_ID_NONE )
+                                  SCOREP_CONFIG_MUTEX_ID_NONE, SCOREP_CONFIG_THREAD_SYSTEM_ID_NONE )
 {
 }
 
@@ -149,7 +159,7 @@ SCOREP_Config_MockupThreadSystem::addLibs( std::deque<std::string>&           li
 
 SCOREP_Config_PompTpdThreadSystem::SCOREP_Config_PompTpdThreadSystem()
     : SCOREP_Config_ThreadSystem( "omp", "pomp_tpd", "scorep_thread_fork_join_omp_tpd",
-                                  "scorep_mutex_omp", SCOREP_CONFIG_THREAD_SYSTEM_ID_POMP_TPD )
+                                  SCOREP_CONFIG_MUTEX_ID_OMP, SCOREP_CONFIG_THREAD_SYSTEM_ID_POMP_TPD )
 {
 }
 
@@ -160,7 +170,6 @@ SCOREP_Config_PompTpdThreadSystem::addLibs( std::deque<std::string>&           l
     libs.push_back( "libscorep_adapter_pomp_omp_event" );
     deps.addDependency( "libscorep_measurement", "libscorep_adapter_pomp_omp_mgmt" );
     deps.addDependency( "libscorep_measurement", "libscorep_thread_fork_join_omp_tpd" );
-    deps.addDependency( "libscorep_thread_fork_join_omp_tpd", "libscorep_mutex_omp" );
 }
 
 void
@@ -191,7 +200,7 @@ SCOREP_Config_PompTpdThreadSystem::addIncFlags( std::string& incflags, bool buil
 
 SCOREP_Config_OmpAncestryThreadSystem::SCOREP_Config_OmpAncestryThreadSystem()
     : SCOREP_Config_ThreadSystem( "omp", "ancestry", "scorep_thread_fork_join_omp_ancestry",
-                                  "scorep_mutex_omp", SCOREP_CONFIG_THREAD_SYSTEM_ID_OMP_ANCESTRY )
+                                  SCOREP_CONFIG_MUTEX_ID_OMP, SCOREP_CONFIG_THREAD_SYSTEM_ID_OMP_ANCESTRY )
 {
 }
 
@@ -202,7 +211,6 @@ SCOREP_Config_OmpAncestryThreadSystem::addLibs( std::deque<std::string>&        
     libs.push_back( "libscorep_adapter_pomp_omp_event" );
     deps.addDependency( "libscorep_measurement", "libscorep_adapter_pomp_omp_mgmt" );
     deps.addDependency( "libscorep_measurement", "libscorep_thread_fork_join_omp_ancestry" );
-    deps.addDependency( "libscorep_thread_fork_join_omp_ancestry", "libscorep_mutex_omp" );
 }
 
 void

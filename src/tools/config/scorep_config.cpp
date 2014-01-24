@@ -45,6 +45,7 @@
 #include "scorep_config_mpp.hpp"
 #include "scorep_config_thread.hpp"
 #include "scorep_config_utils.hpp"
+#include "scorep_config_mutex.hpp"
 
 #define ACTION_LIBS           1
 #define ACTION_CFLAGS         2
@@ -113,6 +114,11 @@ print_help( void )
     {
         ( *i )->printHelp();
     }
+    for ( std::deque<SCOREP_Config_Mutex*>::iterator i = scorep_mutex_systems.begin();
+          i != scorep_mutex_systems.end(); i++ )
+    {
+        ( *i )->printHelp();
+    }
     std::cout << "            If no variant is specified the first matching\n"
               << "            threading system is used.\n";
     std::cout << "   --mpp=<multi-process paradigm>\n"
@@ -178,10 +184,12 @@ main( int    argc,
     std::deque<SCOREP_Config_Adapter*>::iterator      adapter;
     std::deque<SCOREP_Config_MppSystem*>::iterator    mpp;
     std::deque<SCOREP_Config_ThreadSystem*>::iterator ts;
+    std::deque<SCOREP_Config_Mutex*>::iterator        mutex;
 
     scorep_config_init_adapters();
     scorep_config_init_mpp_systems();
     scorep_config_init_thread_systems();
+    scorep_config_init_mutex_systems();
 
     /* parsing the command line */
     for ( i = 1; i < argc; i++ )
@@ -321,6 +329,26 @@ main( int    argc,
                 exit( EXIT_FAILURE );
             }
         }
+        else if ( strncmp( argv[ i ], "--mutex=", 8 ) == 0 )
+        {
+            bool known_arg = false;
+            for ( mutex = scorep_mutex_systems.begin();
+                  mutex != scorep_mutex_systems.end(); mutex++ )
+            {
+                known_arg = ( *mutex )->checkArgument( &argv[ i ][ 8 ] );
+                if ( known_arg )
+                {
+                    break;
+                }
+            }
+            if ( !known_arg )
+            {
+                std::cerr << "\nUnknown locking sytem " << &argv[ i ][ 8 ]
+                          << ". Abort.\n" << std::endl;
+                clean_up();
+                exit( EXIT_FAILURE );
+            }
+        }
         else
         {
             bool known_arg = false;
@@ -351,7 +379,19 @@ main( int    argc,
         ( *adapter )->addLibs( libs, deps );
     }
     SCOREP_Config_MppSystem::current->addLibs( libs, deps, online_access );
+    SCOREP_Config_MutexId newMutexId = SCOREP_Config_ThreadSystem::current->validateDependencies();
     SCOREP_Config_ThreadSystem::current->addLibs( libs, deps );
+    bool known_arg = false;
+    for ( mutex = scorep_mutex_systems.begin();
+          mutex != scorep_mutex_systems.end(); mutex++ )
+    {
+        known_arg = ( *mutex )->checkId( newMutexId );
+        if ( known_arg )
+        {
+            break;
+        }
+    }
+    SCOREP_Config_Mutex::current->addLibs( libs, deps );
 
     switch ( action )
     {

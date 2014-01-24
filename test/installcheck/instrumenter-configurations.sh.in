@@ -57,6 +57,10 @@ omp_args="thread=omp:pomp_tpd "
 
 @HAVE_SCOREP_OMP_ANCESTRY_TRUE@omp_args="${omp_args} thread=omp:ancestry "
 
+
+@HAVE_PTHREAD_MUTEX_TRUE@mutex_args="mutex=pthread"
+@HAVE_PTHREAD_SPINLOCK_TRUE@mutex_args="${mutex_args} mutex=pthread:spinlock"
+
 cd @abs_top_builddir@
 
 # remove files from previous invocation
@@ -87,7 +91,9 @@ done
 
                     # omp -------------------------------#
 @HAVE_OPENMP_SUPPORT_TRUE@                    for omp_arg in $omp_args; do # add noopenmp when multilibs are ready, see above comment
-@HAVE_OPENMP_SUPPORT_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $omp_arg" >> ${file_prefix}omp
+@HAVE_OPENMP_SUPPORT_TRUE@                         for mutex_arg in $mutex_args; do 
+@HAVE_OPENMP_SUPPORT_TRUE@                               echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $omp_arg $mutex_arg" >> ${file_prefix}omp
+@HAVE_OPENMP_SUPPORT_TRUE@                         done  
 @HAVE_OPENMP_SUPPORT_TRUE@                    done
 
                     # mpi -------------------------------#

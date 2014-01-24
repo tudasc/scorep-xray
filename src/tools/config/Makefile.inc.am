@@ -43,6 +43,8 @@ scorep_config_SOURCES = \
     $(SRC_ROOT)src/tools/config/scorep_config_thread.hpp \
     $(SRC_ROOT)src/tools/config/scorep_config_utils.cpp \
     $(SRC_ROOT)src/tools/config/scorep_config_utils.hpp \
+    $(SRC_ROOT)src/tools/config/scorep_config_mutex.cpp \
+    $(SRC_ROOT)src/tools/config/scorep_config_mutex.hpp \
     $(SRC_ROOT)src/tools/config/SCOREP_Config_LibraryDependencies.cpp \
     $(SRC_ROOT)src/tools/config/SCOREP_Config_LibraryDependencies.hpp
 
