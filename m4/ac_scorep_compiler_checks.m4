@@ -75,7 +75,7 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [gnu],      [AFS_AM_CONDITIONAL([SCOREP_COMPILER_GNU],   [test 1 -eq 1], [false])],
     [cray],     [AFS_AM_CONDITIONAL([SCOREP_COMPILER_CRAY],  [test 1 -eq 1], [false])],
     [unknown],  [AC_MSG_WARN([Could not determine compiler vendor. Score-P might not function properly.])],
-    [AC_MSG_WARN([Compiler vendor '${ax_cv_c_compiler_vendor}' unsupported. Score-P might not function properly.])])dnl
+    [AC_MSG_WARN([Compiler vendor '${ax_cv_c_compiler_vendor}' unsupported. AC_PACKAGE_NAME might not function properly.])])dnl
 
 afs_compiler_intel=0
 afs_compiler_sun=0
