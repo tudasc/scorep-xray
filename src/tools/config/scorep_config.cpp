@@ -114,13 +114,19 @@ print_help( void )
     {
         ( *i )->printHelp();
     }
+    std::cout << "            If no variant is specified the first matching\n"
+              << "            threading system is used.\n";
+
+    std::cout << "   --mutex=<locking system>[:<variant>]\n"
+              << "            Available locking systems are:\n";
     for ( std::deque<SCOREP_Config_Mutex*>::iterator i = scorep_mutex_systems.begin();
           i != scorep_mutex_systems.end(); i++ )
     {
         ( *i )->printHelp();
     }
-    std::cout << "            If no variant is specified the first matching\n"
+    std::cout << "            If no variant is specified the default for the respective\n"
               << "            threading system is used.\n";
+
     std::cout << "   --mpp=<multi-process paradigm>\n"
               << "            Available multi-process paradigms are:\n";
     for ( std::deque<SCOREP_Config_MppSystem*>::iterator i = scorep_mpp_systems.begin();
@@ -163,6 +169,7 @@ clean_up()
     scorep_config_final_thread_systems();
     scorep_config_final_mpp_systems();
     scorep_config_final_adapters();
+    scorep_config_final_mutex_systems();
 }
 
 int

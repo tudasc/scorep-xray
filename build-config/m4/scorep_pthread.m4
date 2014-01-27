@@ -30,7 +30,7 @@ dnl file build-config/m4/scorep_pthread.m4
 #         HAVE_PTHREAD_[]m4_toupper($1) automake conditional
 m4_define([_SCOREP_PTHREAD_FEATURE], [
 AC_REQUIRE([SCOREP_PTHREAD])dnl
-AS_IF([test "x${scorep_pthread_support}" = xyes], 
+AS_IF([test "x${scorep_pthread_support}" = x1], 
     [AC_LANG_PUSH([C])dnl
      AC_MSG_CHECKING([for pthread $1])
      for scorep_pthread_$1_flag in $2
@@ -43,25 +43,25 @@ AS_IF([test "x${scorep_pthread_support}" = xyes],
          CC="$PTHREAD_CC"
 
          AC_LINK_IFELSE([AC_LANG_PROGRAM($3)],
-             [scorep_pthread_$1=yes],
-             [scorep_pthread_$1=no])dnl
+             [scorep_pthread_$1=1],
+             [scorep_pthread_$1=0])dnl
      
          LIBS="$save_LIBS"
          CFLAGS="$save_CFLAGS"
          CC="$save_CC"
     
-         AS_IF([test "x$scorep_pthread_$1" = xyes], [break])dnl
+         AS_IF([test "x$scorep_pthread_$1" = x1], [break])dnl
      done
-     AS_IF([test "x$scorep_pthread_$1" = xno], 
+     AS_IF([test "x$scorep_pthread_$1" = x0], 
          [scorep_pthread_$1_flag=""
-          AC_MSG_RESULT([no])],
-         [AC_MSG_RESULT([yes])])
+          AC_MSG_RESULT([0])],
+         [AC_MSG_RESULT([1])])
      AC_LANG_POP([C])dnl
     ])dnl
 
 AC_SUBST(SCOREP_HAVE_PTHREAD_[]m4_toupper($1), [${scorep_pthread_$1}])dnl
 AC_SUBST(SCOREP_PTHREAD_[]m4_toupper($1)_CPPFLAGS, [${scorep_pthread_$1_flag}])dnl
-AFS_AM_CONDITIONAL(HAVE_PTHREAD_[]m4_toupper($1), [test "x$scorep_pthread_$1" = xyes], [false])dnl
+AFS_AM_CONDITIONAL(HAVE_PTHREAD_[]m4_toupper($1), [test "x$scorep_pthread_$1" = x1], [false])dnl
 ])
 
 # --------------------------------------------------------------------
@@ -121,5 +121,5 @@ _SCOREP_PTHREAD_FEATURE([mutex],
 # Wrapper around AX_PTHREAD to provide AC_REQUIRE([SCOREP_PTHREAD])
 # functionality.
 AC_DEFUN([SCOREP_PTHREAD], [
-AX_PTHREAD([scorep_pthread_support=yes], [scorep_pthread_support=no])
+AX_PTHREAD([scorep_pthread_support=1], [scorep_pthread_support=0])
 ])dnl SCOREP_PTHREAD

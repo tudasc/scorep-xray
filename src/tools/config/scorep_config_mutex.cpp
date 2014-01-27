@@ -30,8 +30,12 @@ scorep_config_init_mutex_systems( void )
 {
     scorep_mutex_systems.push_back( new SCOREP_Config_MutexMockup() );
     scorep_mutex_systems.push_back( new SCOREP_Config_MutexOmp() );
+    #if SCOREP_BACKEND_HAVE_PTHREAD_MUTEX
     scorep_mutex_systems.push_back( new SCOREP_Config_MutexPthread() );
+    #endif
+    #if SCOREP_BACKEND_HAVE_PTHREAD_SPINLOCK
     scorep_mutex_systems.push_back( new SCOREP_Config_MutexPthreadSpinlock() );
+    #endif
     SCOREP_Config_Mutex::current = scorep_mutex_systems.front();
 }
 
@@ -74,10 +78,6 @@ SCOREP_Config_Mutex::printHelp( void )
     if ( m_variant.length() > 0 )
     {
         std::cout << ":" << m_variant;
-    }
-    if ( this == SCOREP_Config_Mutex::current )
-    {
-        std::cout << "\tThis is the default.";
     }
     std::cout << std::endl;
 }

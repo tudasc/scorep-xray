@@ -118,10 +118,10 @@ SCOREP_Instrumenter_Mutex::SCOREP_Instrumenter_Mutex()
     : SCOREP_Instrumenter_Selector( "mutex" )
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexMockup( this ) );
-#ifdef SCOREP_BACKEND_HAVE_PTHREAD_MUTEX
+#if SCOREP_BACKEND_HAVE_PTHREAD_MUTEX
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexPthread( this ) );
 #endif
-#ifdef SCOREP_BACKEND_HAVE_PTHREAD_SPINLOCK
+#if SCOREP_BACKEND_HAVE_PTHREAD_SPINLOCK
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexPthreadSpinlock( this ) );
 #endif
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexOmp( this ) );
