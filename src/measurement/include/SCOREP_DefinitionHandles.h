@@ -40,8 +40,6 @@
  */
 
 
-#include <stdint.h>
-
 #include <scorep/SCOREP_PublicTypes.h>
 
 
