@@ -61,7 +61,7 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
     }
 
     /* this call does not give us a success status */
-    pthread_spin_init( *lock, NULL );
+    pthread_spin_init( *lock, PTHREAD_PROCESS_PRIVATE );
     return SCOREP_SUCCESS;
 }
 
@@ -90,8 +90,8 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
     {
         return SCOREP_SUCCESS;
     }
-    pthread_spin_destroy( lock );
-    free( *lock );
+    pthread_spin_destroy( *lock );
+    free( ( void* )*lock );
     *lock = NULL;
 
     return SCOREP_SUCCESS;
