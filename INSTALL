@@ -157,10 +157,11 @@ be used to build Score-P are as follows:
   --enable-shared[=PKGS]  build shared libraries [default=no]
   --enable-static[=PKGS]  build static libraries [default=yes]
   --enable-backend-test-runs
-               Run tests at make check [no]. If disabled, tests are
-               still build at make check. Additionally, scripts
-               (scorep_*tests.sh) containing the tests are generated
-               in <builddir>/build-backend.
+               Enable execution of tests during 'make check' [no]
+               (does not affect building of tests, though). If
+               disabled, the files 'check-file-*' and/or
+               'skipped_tests' listing the tests are generated in the
+               corresponding build directory.
   --enable-cuda
                Enable or disable support for CUDA. Fail if support
                can't be satisfied but was requested.
