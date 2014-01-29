@@ -337,7 +337,7 @@ SCOREP_Location_GetGlobalId( SCOREP_Location* locationData )
 
 void
 SCOREP_Location_SetLastTimestamp( SCOREP_Location* locationData,
-                                  int64_t          timestamp )
+                                  uint64_t         timestamp )
 {
     UTILS_BUG_ON( timestamp < locationData->last_timestamp,
                   "Wrong timestamp order: %" PRIu64 " (last recorded) > %" PRIu64 " (current).",

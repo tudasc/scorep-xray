@@ -119,7 +119,7 @@ SCOREP_Location_GetLastTimestamp( SCOREP_Location* locationData );
 
 void
 SCOREP_Location_SetLastTimestamp( SCOREP_Location* locationData,
-                                  int64_t          timestamp );
+                                  uint64_t         timestamp );
 
 const char*
 SCOREP_Location_GetName( SCOREP_Location* locationData );
