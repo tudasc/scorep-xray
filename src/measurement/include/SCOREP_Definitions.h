@@ -225,6 +225,28 @@ SCOREP_LineNo
 SCOREP_RegionHandle_GetEndLine( SCOREP_RegionHandle handle );
 
 
+/**
+ * Add a new attribute definition.
+ *
+ * @param attrName The string describing the attribute.
+ *
+ * @param attrType The type of this attribute.
+ *
+ * @return A process unique handle to a new attribute.
+ */
+SCOREP_AttributeHandle
+SCOREP_Definitions_NewAttribute( const char*          attrName,
+                                 SCOREP_AttributeType attrType );
+
+
+uint32_t
+SCOREP_AttributeHandle_GetId( SCOREP_AttributeHandle handle );
+
+
+SCOREP_AttributeType
+SCOREP_AttributeHandle_GetType( SCOREP_AttributeHandle handle );
+
+
 SCOREP_GroupHandle
 SCOREP_Definitions_NewGroup( SCOREP_GroupType type,
                              const char*      name,

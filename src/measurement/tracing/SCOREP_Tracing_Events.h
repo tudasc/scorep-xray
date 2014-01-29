@@ -72,6 +72,12 @@ SCOREP_Tracing_Leave( SCOREP_Location*    location,
 
 
 void
+SCOREP_Tracing_AddAttribute( SCOREP_Location*       location,
+                             SCOREP_AttributeHandle attrHandle,
+                             void*                  value );
+
+
+void
 SCOREP_Tracing_MpiSend( SCOREP_Location*                 location,
                         uint64_t                         timestamp,
                         SCOREP_MpiRank                   destinationRank,

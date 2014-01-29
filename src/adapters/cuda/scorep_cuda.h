@@ -59,6 +59,7 @@
 #define SCOREP_CUDA_FEATURE_STREAM_REUSE        ( 1 << 10 )
 #define SCOREP_CUDA_FEATURE_GPUMEMUSAGE         ( 1 << 11 )
 #define SCOREP_CUDA_FEATURE_FLUSHATEXIT         ( 1 << 12 )
+#define SCOREP_CUDA_FEATURE_REFERENCES          ( 1 << 13 )
 #define SCOREP_CUDA_FEATURES_DEFAULT \
     ( SCOREP_CUDA_FEATURE_RUNTIME_API | SCOREP_CUDA_FEATURE_KERNEL | \
       SCOREP_CUDA_FEATURE_MEMCPY )
@@ -144,6 +145,11 @@ extern bool scorep_cuda_device_reuse;
  *  SCOREP_CUDA_MEMUSAGE_AND_MISSING_FREES : user output for not freed CUDA memory allocations
  */
 extern uint8_t scorep_cuda_record_gpumemusage;
+
+/*
+ * flag: Shall record reference information for CUDA activities?
+ */
+extern bool scorep_cuda_record_references;
 
 /*
  * The default buffer size for the CUPTI activity buffer.

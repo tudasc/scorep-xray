@@ -106,6 +106,8 @@ typedef SCOREP_AnyHandle SCOREP_PropertyHandle;
 typedef SCOREP_AnyHandle SCOREP_SamplingSetRecorderHandle;
 
 
+typedef SCOREP_AnyHandle SCOREP_AttributeHandle;
+
 typedef SCOREP_AnyHandle SCOREP_LocationPropertyHandle;
 
 #endif /* SCOREP_DEFINITIONHANDLES_H */

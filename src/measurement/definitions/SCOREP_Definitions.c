@@ -145,6 +145,7 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, parameter );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, callpath );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, property );
+    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, attribute );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, location_property );
 
     if ( allocHashTables )
@@ -166,6 +167,7 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, parameter );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, callpath );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, property );
+        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, attribute );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, location_property );
     }
 }
@@ -204,6 +206,7 @@ SCOREP_Definitions_Finalize()
         free( scorep_unified_definition_manager->marker.hash_table );
         free( scorep_unified_definition_manager->parameter.hash_table );
         free( scorep_unified_definition_manager->callpath.hash_table );
+        free( scorep_unified_definition_manager->attribute.hash_table );
         free( scorep_unified_definition_manager->location_property.hash_table );
     }
     free( scorep_unified_definition_manager );

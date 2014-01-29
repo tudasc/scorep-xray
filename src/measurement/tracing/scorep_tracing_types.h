@@ -566,4 +566,42 @@ scorep_tracing_get_otf2_paradigm( SCOREP_ParadigmType paradigm )
 }
 
 
+static inline OTF2_Type
+scorep_tracing_attribute_type_to_otf2( SCOREP_AttributeType attrType )
+{
+    switch ( attrType )
+    {
+#define case_return( SCOREP, OTF2 ) \
+    case SCOREP_ATTRIBUTE_TYPE_ ## SCOREP: \
+        return OTF2_TYPE_ ## OTF2
+
+        case_return( UINT8,  UINT8 );
+        case_return( UINT16, UINT16 );
+        case_return( UINT32, UINT32 );
+        case_return( UINT64, UINT64 );
+        case_return( INT8,   INT8 );
+        case_return( INT16,  INT16 );
+        case_return( INT32,  INT32 );
+        case_return( INT64,  INT64 );
+        case_return( FLOAT, FLOAT );
+        case_return( DOUBLE, DOUBLE );
+        case_return( STRING, STRING );
+        case_return( ATTRIBUTE, ATTRIBUTE );
+        case_return( LOCATION, LOCATION );
+        case_return( REGION, REGION );
+        case_return( GROUP, GROUP );
+        case_return( METRIC, METRIC );
+        case_return( INTERIM_COMMUNICATOR, COMM );
+        case_return( PARAMETER, PARAMETER );
+        case_return( INTERIM_RMA_WINDOW, RMA_WIN );
+
+#undef case_return
+        default:
+            UTILS_BUG( "Invalid attribute type" );
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+
 #endif /* SCOREP_TRACING_INTERNAL_TYPES_H */

@@ -877,6 +877,45 @@ scorep_write_callpath_definitions( void*                     writerHandle,
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
+static void
+scorep_write_attribute_definitions( void*                     writerHandle,
+                                    SCOREP_DefinitionManager* definitionManager,
+                                    bool                      isGlobal )
+{
+    UTILS_ASSERT( writerHandle );
+
+    typedef  OTF2_ErrorCode ( *def_attribute_pointer_t )( void*,
+                                                          OTF2_AttributeRef,
+                                                          OTF2_StringRef,
+                                                          OTF2_Type );
+    def_attribute_pointer_t defAttribute = ( def_attribute_pointer_t )
+                                           OTF2_DefWriter_WriteAttribute;
+    if ( isGlobal )
+    {
+        defAttribute = ( def_attribute_pointer_t )
+                       OTF2_GlobalDefWriter_WriteAttribute;
+    }
+
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager,
+                                                         Attribute,
+                                                         attribute )
+    {
+        OTF2_ErrorCode status = defAttribute(
+            writerHandle,
+            definition->sequence_number,
+            SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
+            scorep_tracing_attribute_type_to_otf2( definition->type )
+            );
+
+
+        if ( status != OTF2_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "Attribute" );
+        }
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+}
+
 
 /**
  * Generate and write the id mapping for definition type @a type into the
@@ -884,16 +923,16 @@ scorep_write_callpath_definitions( void*                     writerHandle,
  *
  * @note @a TYPE denotes the all-caps OTF2 name of the definition type.
  */
-#define WRITE_MAPPING( definition_writer, type, OTF2_TYPE ) \
+#define WRITE_MAPPING( definition_writer, bitSize, type, OTF2_TYPE ) \
     do \
     { \
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Write mappings to OTF2 for %s", #type ); \
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Writing %s mappings", #type ); \
         if ( scorep_local_definition_manager.type.mapping && \
              scorep_local_definition_manager.type.counter > 0 ) \
         { \
-            OTF2_IdMap* map = OTF2_IdMap_CreateFromUint32Array( \
+            OTF2_IdMap* map = OTF2_IdMap_CreateFromUint ## bitSize ## Array( \
                 scorep_local_definition_manager.type.counter, \
-                scorep_local_definition_manager.type.mapping, \
+                ( const uint ## bitSize ## _t* )scorep_local_definition_manager.type.mapping, \
                 true ); \
             /* map can be NULL if the mapping is the identity */ \
             if ( map ) \
@@ -913,15 +952,23 @@ scorep_write_callpath_definitions( void*                     writerHandle,
 void
 scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
 {
-    WRITE_MAPPING( localDefinitionWriter, string, STRING );
-    WRITE_MAPPING( localDefinitionWriter, region, REGION );
-    WRITE_MAPPING( localDefinitionWriter, group, GROUP );
-    WRITE_MAPPING( localDefinitionWriter, interim_communicator, COMM );
-    WRITE_MAPPING( localDefinitionWriter, interim_rma_window, RMA_WIN );
-    WRITE_MAPPING( localDefinitionWriter, sampling_set, METRIC );
+    WRITE_MAPPING( localDefinitionWriter, 32, string, STRING );
+
+    /*
+     * Location definitions need special treatment as their global id is 64bit
+     * and they are not derived by the unification algorithm.
+     */
+    WRITE_MAPPING( localDefinitionWriter, 64, location, LOCATION );
+
+    WRITE_MAPPING( localDefinitionWriter, 32, region, REGION );
+    WRITE_MAPPING( localDefinitionWriter, 32, group, GROUP );
+    WRITE_MAPPING( localDefinitionWriter, 32, interim_communicator, COMM );
+    WRITE_MAPPING( localDefinitionWriter, 32, interim_rma_window, RMA_WIN );
+    WRITE_MAPPING( localDefinitionWriter, 32, sampling_set, METRIC );
+    WRITE_MAPPING( localDefinitionWriter, 32, attribute, ATTRIBUTE );
 
     // do we need Callpath and Parameter mappings for tracing?
-    WRITE_MAPPING( localDefinitionWriter, parameter, PARAMETER );
+    WRITE_MAPPING( localDefinitionWriter, 32, parameter, PARAMETER );
 }
 
 static void
@@ -964,6 +1011,7 @@ scorep_tracing_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
     scorep_write_sampling_set_definitions(           localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_parameter_definitions(              localDefinitionWriter, &scorep_local_definition_manager, false );
     scorep_write_callpath_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_attribute_definitions(              localDefinitionWriter, &scorep_local_definition_manager, false );
 }
 #else
 void
@@ -993,6 +1041,7 @@ scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition
     scorep_write_sampling_set_definitions(           global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_parameter_definitions(              global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_callpath_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_attribute_definitions(              global_definition_writer, scorep_unified_definition_manager, true );
 }
 
 void

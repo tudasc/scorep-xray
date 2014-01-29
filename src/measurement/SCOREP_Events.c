@@ -243,6 +243,35 @@ SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle, bool do_rewind )
     }
 }
 
+/**
+ * Add an attribute to the current attribute list.
+ */
+void
+SCOREP_AddAttribute( SCOREP_AttributeHandle attrHandle,
+                     void*                  value )
+{
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+        SCOREP_Tracing_AddAttribute( location, attrHandle, value );
+    }
+}
+
+
+/**
+ * Add an attribute to the attribute list of \p location.
+ */
+void
+SCOREP_Location_AddAttribute( SCOREP_Location*       location,
+                              SCOREP_AttributeHandle attrHandle,
+                              void*                  value )
+{
+    if ( scorep_tracing_consume_event() )
+    {
+        SCOREP_Tracing_AddAttribute( location, attrHandle, value );
+    }
+}
+
 
 /**
  * Process an mpi send event in the measurement system.

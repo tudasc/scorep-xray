@@ -46,7 +46,7 @@ features=""
 for cudaapi in "" "runtime" "driver"
 do
 
-  for kernel in "" ",kernel"
+  for kernel in "" ",kernel" ",kernel,references"
   do
 
     for idle in "" ",idle" ",pure_idle"
@@ -87,6 +87,9 @@ do
               if [ "x$features" = "x" -a "$kernel" = ",kernel" ]; then
                 kernel="kernel"
               fi
+              if [ "x$features" = "x" -a "$kernel" = ",kernel,references" ]; then
+                kernel="kernel,references"
+              fi
               features="${features}${kernel}"
 
               if [ "x$features" = "x" -a "${mcpy}" = ",memcpy" ]; then
@@ -122,6 +125,15 @@ do
                   #exit 1
               fi
 
+              # if 'references' is used without 'driver', expect warning
+              if [[ "$kernel" =~ "references" && "$cudaapi" != "driver" ]]; then
+                  LC_ALL=C grep "CUDA option 'references' requires option 'driver'" cuda_test.out
+                  if [ $? -ne 0 ]; then
+                      echo "Did not find expected warning message for 'references'"
+                      rm -rf scorep-measurement-tmp
+                      exit 1
+                  fi
+              fi
 
               if [ "x$testmode" = "x-b" ]; then
                 # test results of basic execution
@@ -158,6 +170,19 @@ do
                     rm -rf scorep-measurement-tmp
                     exit 1
                 fi
+              fi
+
+              if [[ "$kernel" =~ "references" && "$cudaapi" = "driver" ]]; then
+                  # test that all kernel launches have reference attributes
+                  num_launches=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'cuLaunchKernel')
+                  num_refs=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'ADDITIONAL ATTRIBUTES: ("CUDA_STREAM_REF')
+                  num_refs=$((2*$num_refs))
+
+                  if [ $num_refs -ne $num_launches ]; then
+                      echo "CUDA trace file is inconsistent (wrong number of reference attributes)"
+                      rm -rf scorep-measurement-tmp
+                      exit 1
+                  fi
               fi
 
             done #memusage

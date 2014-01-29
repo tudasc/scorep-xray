@@ -49,6 +49,7 @@ struct SCOREP_TracingData
 {
     OTF2_EvtWriter*      otf_writer;
     scorep_rewind_stack* rewind_stack;
+    OTF2_AttributeList*  otf_attribute_list;
 };
 
 

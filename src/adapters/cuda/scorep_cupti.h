@@ -205,6 +205,9 @@ typedef struct scorep_cupti_context_t
     SCOREP_Location*       scorep_host_location; /**< Score-P context host location */
     uint32_t               location_id;          /**< internal location ID used for unification */
     uint8_t                destroyed;
+    SCOREP_AttributeHandle streamRef;            /**< CUDA DRV stream references */
+    SCOREP_AttributeHandle eventRef;             /**< CUDA DRV events */
+    SCOREP_AttributeHandle cuResultRef;          /**< CUDA DRV API function results */
 #if ( defined( SCOREP_CUPTI_ACTIVITY ) || defined( SCOREP_CUPTI_CALLBACKS ) )
     scorep_cupti_stream_t* streams;              /**< list of Score-P CUDA streams */
     scorep_cupti_gpumem_t* cuda_mallocs;         /**< list of allocated GPU memory fields */

@@ -63,8 +63,11 @@ SCOREP_Tracing_CreateLocationData( SCOREP_Location* locationData )
     SCOREP_TracingData* new_data
         = SCOREP_Location_AllocForMisc( locationData, sizeof( *new_data ) );
 
-    new_data->otf_writer   = 0;
-    new_data->rewind_stack = 0;
+    new_data->otf_writer         = 0;
+    new_data->rewind_stack       = 0;
+    new_data->otf_attribute_list = OTF2_AttributeList_New();
+    UTILS_BUG_ON( NULL == new_data->otf_attribute_list,
+                  "Couldn't create event attribute list." );
 
     return new_data;
 }
@@ -73,10 +76,12 @@ SCOREP_Tracing_CreateLocationData( SCOREP_Location* locationData )
 void
 SCOREP_Tracing_DeleteLocationData( SCOREP_TracingData* traceLocationData )
 {
-    if ( traceLocationData && traceLocationData->otf_writer )
+    if ( traceLocationData )
     {
         traceLocationData->otf_writer = 0;
         // writer will be deleted by otf in call to OTF2_Archive_Close()
+
+        OTF2_AttributeList_Delete( traceLocationData->otf_attribute_list );
     }
 }
 

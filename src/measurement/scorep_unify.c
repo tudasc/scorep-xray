@@ -120,6 +120,7 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
     UNIFY_DEFINITION( sourceDefinitionManager, Parameter, parameter );
     UNIFY_DEFINITION( sourceDefinitionManager, Callpath, callpath );
     UNIFY_DEFINITION( sourceDefinitionManager, Property, property );
+    UNIFY_DEFINITION( sourceDefinitionManager, Attribute, attribute );
     UNIFY_DEFINITION( sourceDefinitionManager, LocationProperty, location_property );
 }
 
@@ -236,6 +237,29 @@ SCOREP_Unify_Locally( void )
     // duplicates in the local ones. By creating mappings we are on the save side.
     SCOREP_CreateDefinitionMappings( &scorep_local_definition_manager );
     SCOREP_AssignDefinitionMappingsFromUnified( &scorep_local_definition_manager );
+
+    /*
+     * Location definitions need special treatment as there global id is 64bit
+     * and are not derived by the unification algorithm. We nevertheless
+     * store the mapping array in the uint32_t* mappings member.
+     */
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Alloc mappings for location" );
+    scorep_local_definition_manager.location.mapping = malloc(
+        scorep_local_definition_manager.location.counter * sizeof( uint64_t ) );
+
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Assign mapping for Locations" );
+    if ( scorep_local_definition_manager.location.counter > 0 )
+    {
+        /* cast to uint64_t* to get the type right. */
+        uint64_t* mapping = ( uint64_t* )scorep_local_definition_manager.location.mapping;
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager,
+                                                             Location,
+                                                             location )
+        {
+            mapping[ definition->sequence_number ] = definition->global_location_id;
+        }
+        SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+    }
 
     /*
      * Allocate also mappings for the interim definitions.

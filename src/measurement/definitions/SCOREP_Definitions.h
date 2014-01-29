@@ -38,8 +38,8 @@
  *
  */
 
-#include <SCOREP_DefinitionHandles.h>
 #include <scorep/SCOREP_PublicTypes.h>
+#include <SCOREP_DefinitionHandles.h>
 #include <SCOREP_Memory.h>
 
 #include <jenkins_hash.h>
@@ -72,6 +72,7 @@ typedef struct SCOREP_DefinitionManager SCOREP_DefinitionManager;
 #include "scorep_definitions_io_file.h"
 #include "scorep_definitions_marker_group.h"
 #include "scorep_definitions_marker.h"
+#include "scorep_definitions_attribute.h"
 #include "scorep_definitions_location_property.h"
 
 /* super object for all definitions */
@@ -104,7 +105,8 @@ scorep_handle_to_id( SCOREP_AnyHandle handle )
     DEF_WITH_MAPPING( Metric, metric ) \
     DEF_WITH_MAPPING( SamplingSet, sampling_set ) \
     DEF_WITH_MAPPING( Parameter, parameter ) \
-    DEF_WITH_MAPPING( Callpath, callpath )
+    DEF_WITH_MAPPING( Callpath, callpath ) \
+    DEF_WITH_MAPPING( Attribute, attribute )
 
 
 /**
@@ -140,6 +142,7 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( parameter );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( callpath );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( property );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( attribute );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( location_property );
 
     /** The pager manager where all definition objects resides */

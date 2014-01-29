@@ -41,6 +41,11 @@
 
 #include <UTILS_CStr.h>
 
+/* String constants for CUDA attribute references */
+#define SCOREP_CUPTI_CUDA_STREAMREF_KEY     "CUDA_STREAM_REF"
+#define SCOREP_CUPTI_CUDA_EVENTREF_KEY      "CUDA_EVENT_REF"
+#define SCOREP_CUPTI_CUDA_CURESULT_KEY      "CUDA_DRV_API_RESULT"
+
 /* hash table for CUDA kernels */
 static scorep_cuda_kernel_hash_node* scorep_cuda_kernel_hashtab[ SCOREP_CUDA_KERNEL_HASHTABLE_SIZE ];
 
@@ -613,6 +618,16 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
 #if defined( SCOREP_CUPTI_EVENTS )
     context->events = NULL;
 #endif
+
+    if ( scorep_cuda_record_references )
+    {
+        context->streamRef = SCOREP_Definitions_NewAttribute(
+            SCOREP_CUPTI_CUDA_STREAMREF_KEY, SCOREP_ATTRIBUTE_TYPE_LOCATION );
+        context->eventRef = SCOREP_Definitions_NewAttribute(
+            SCOREP_CUPTI_CUDA_EVENTREF_KEY, SCOREP_ATTRIBUTE_TYPE_UINT32 );
+        context->cuResultRef = SCOREP_Definitions_NewAttribute(
+            SCOREP_CUPTI_CUDA_CURESULT_KEY, SCOREP_ATTRIBUTE_TYPE_UINT32 );
+    }
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
                         "[CUPTI] Created context for CUcontext %d, CUdevice %d",

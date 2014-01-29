@@ -67,7 +67,8 @@ SCOREP_Tracing_MeasurementOnOff( SCOREP_Location* location,
                                  uint64_t         timestamp,
                                  bool             on )
 {
-    OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
+    SCOREP_TracingData* tracing_data = SCOREP_Location_GetTracingData( location );
+    OTF2_EvtWriter*     evt_writer   = tracing_data->otf_writer;
 
     OTF2_EvtWriter_MeasurementOnOff( evt_writer,
                                      NULL,
@@ -75,6 +76,9 @@ SCOREP_Tracing_MeasurementOnOff( SCOREP_Location* location,
                                      on
                                      ? OTF2_MEASUREMENT_ON
                                      : OTF2_MEASUREMENT_OFF );
+
+    /* flush the attribute list for this location */
+    OTF2_AttributeList_RemoveAllAttributes( tracing_data->otf_attribute_list );
 }
 
 
@@ -114,10 +118,12 @@ SCOREP_Tracing_Enter( SCOREP_Location*    location,
                       uint64_t            timestamp,
                       SCOREP_RegionHandle regionHandle )
 {
-    OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
+    SCOREP_TracingData* tracing_data       = SCOREP_Location_GetTracingData( location );
+    OTF2_EvtWriter*     evt_writer         = tracing_data->otf_writer;
+    OTF2_AttributeList* otf_attribute_list = tracing_data->otf_attribute_list;
 
     OTF2_EvtWriter_Enter( evt_writer,
-                          NULL,
+                          ( OTF2_AttributeList* )otf_attribute_list,
                           timestamp,
                           SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
 }
@@ -128,12 +134,135 @@ SCOREP_Tracing_Leave( SCOREP_Location*    location,
                       uint64_t            timestamp,
                       SCOREP_RegionHandle regionHandle )
 {
-    OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
+    SCOREP_TracingData* tracing_data       = SCOREP_Location_GetTracingData( location );
+    OTF2_EvtWriter*     evt_writer         = tracing_data->otf_writer;
+    OTF2_AttributeList* otf_attribute_list = tracing_data->otf_attribute_list;
 
     OTF2_EvtWriter_Leave( evt_writer,
-                          NULL,
+                          ( OTF2_AttributeList* )otf_attribute_list,
                           timestamp,
                           SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
+}
+
+
+void
+SCOREP_Tracing_AddAttribute( SCOREP_Location*       location,
+                             SCOREP_AttributeHandle attrHandle,
+                             void*                  value )
+{
+    OTF2_AttributeList* otf_attribute_list = SCOREP_Location_GetTracingData( location )->otf_attribute_list;
+
+    OTF2_AttributeValue  otf_val;
+    OTF2_Type            otf_type;
+    SCOREP_AttributeType attrType = SCOREP_AttributeHandle_GetType( attrHandle );
+
+    switch ( attrType )
+    {
+        case SCOREP_ATTRIBUTE_TYPE_FLOAT:
+            otf_val.float32 = *( ( float* )value );
+            otf_type        = OTF2_TYPE_FLOAT;
+            break;
+        case SCOREP_ATTRIBUTE_TYPE_DOUBLE:
+            otf_val.float64 = *( ( double* )value );
+            otf_type        = OTF2_TYPE_DOUBLE;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_INT8:
+            otf_val.int8 = *( ( int8_t* )value );
+            otf_type     = OTF2_TYPE_INT8;
+            break;
+        case SCOREP_ATTRIBUTE_TYPE_INT16:
+            otf_val.int16 = *( ( int16_t* )value );
+            otf_type      = OTF2_TYPE_INT16;
+            break;
+        case SCOREP_ATTRIBUTE_TYPE_INT32:
+            otf_val.int32 = *( ( int32_t* )value );
+            otf_type      = OTF2_TYPE_INT32;
+            break;
+        case SCOREP_ATTRIBUTE_TYPE_INT64:
+            otf_val.int64 = *( ( int64_t* )value );
+            otf_type      = OTF2_TYPE_INT64;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_UINT8:
+            otf_val.uint8 = *( ( uint8_t* )value );
+            otf_type      = OTF2_TYPE_UINT8;
+            break;
+        case SCOREP_ATTRIBUTE_TYPE_UINT16:
+            otf_val.uint16 = *( ( uint16_t* )value );
+            otf_type       = OTF2_TYPE_UINT16;
+            break;
+        case SCOREP_ATTRIBUTE_TYPE_UINT32:
+            otf_val.uint32 = *( ( uint32_t* )value );
+            otf_type       = OTF2_TYPE_UINT32;
+            break;
+        case SCOREP_ATTRIBUTE_TYPE_UINT64:
+            otf_val.uint64 = *( ( uint64_t* )value );
+            otf_type       = OTF2_TYPE_UINT64;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_ATTRIBUTE:
+            otf_val.attributeRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_AttributeHandle* )value ), Attribute );
+            otf_type = OTF2_TYPE_ATTRIBUTE;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_INTERIM_COMMUNICATOR:
+            otf_val.commRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_InterimCommunicatorHandle* )value ), InterimCommunicator );
+            otf_type = OTF2_TYPE_COMM;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_GROUP:
+            otf_val.groupRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_GroupHandle* )value ), Group );
+            otf_type = OTF2_TYPE_GROUP;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_LOCATION:
+            otf_val.locationRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_LocationHandle* )value ), Location );
+            otf_type = OTF2_TYPE_LOCATION;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_METRIC:
+            otf_val.metricRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_MetricHandle* )value ), Metric );
+            otf_type = OTF2_TYPE_METRIC;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_PARAMETER:
+            otf_val.parameterRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_ParameterHandle* )value ), Parameter );
+            otf_type = OTF2_TYPE_PARAMETER;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_REGION:
+            otf_val.regionRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_RegionHandle* )value ), Region );
+            otf_type = OTF2_TYPE_REGION;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_INTERIM_RMA_WINDOW:
+            otf_val.rmaWinRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_InterimRmaWindowHandle* )value ), InterimRmaWindow );
+            otf_type = OTF2_TYPE_RMA_WIN;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_STRING:
+            otf_val.stringRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_StringHandle* )value ), String );
+            otf_type = OTF2_TYPE_STRING;
+            break;
+
+        default:
+            UTILS_BUG( "Invalid attribute type" );
+    }
+
+    OTF2_AttributeList_AddAttribute( otf_attribute_list,
+                                     SCOREP_LOCAL_HANDLE_TO_ID( attrHandle, Attribute ),
+                                     otf_type,
+                                     otf_val );
 }
 
 

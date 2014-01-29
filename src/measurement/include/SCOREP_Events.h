@@ -160,6 +160,31 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
                              SCOREP_RegionHandle regionHandle );
 
 
+/**
+ * Add an attribute to the attribute list of the current CPU location.
+ *
+ * @param attrHandle Attribute reference to add.
+ *
+ * @param value Pointer to the value to add. The pointer type is determined using \p attrHandle.
+ */
+void
+SCOREP_AddAttribute( SCOREP_AttributeHandle attrHandle,
+                     void*                  value );
+
+
+/**
+ * Add an attribute to a location's attribute list.
+ *
+ * @param location Location for attribute.
+ *
+ * @param attrHandle Attribute reference to add.
+ *
+ * @param value Pointer to the value to add. The pointer type is determined using \p attrHandle.
+ */
+void
+SCOREP_Location_AddAttribute( SCOREP_Location*       location,
+                              SCOREP_AttributeHandle attrHandle,
+                              void*                  value );
 
 
 /**
