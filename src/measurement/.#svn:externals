@@ -1,1 +1,1 @@
-cube_writer -r 10018 https://scorep@svn.version.fz-juelich.de/scalasca_soft/Cube/trunk/src/cubew
+cube_writer       https://scorep@svn.version.fz-juelich.de/scalasca_soft/Cube/tags/release-4.2.1/src/cubew
