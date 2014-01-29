@@ -36,7 +36,7 @@
 
                         Score-P v1.2 OPEN ISSUES
                         ========================
-                                                           Status: Nov 2013
+                                                           Status: Jan 2014
 
 This file lists known limitations and unimplemented features of
 various Score-P components.
@@ -196,6 +196,12 @@ various Score-P components.
    not match the one instrumented by OPARI2. On AIX, a workaround is
    to manusally rename it at link time (-brename:pomp_tpd_,pomp_tpd).
 
+ - With PGI C++ v13.10 compiler, preprocessing of OpenMP codes using
+   OPARI2 is not possible any longer as the compiler itself adds a
+   '--preinclude omp.h' option to the call of pgcpp1. This leads to
+   'invalid redeclaration' errors. As a workaround, use the
+   '--nopreprocess' instrumenter option.
+ 
 --------------------------------------------------------------------------------
 
 * Score-P misc.
