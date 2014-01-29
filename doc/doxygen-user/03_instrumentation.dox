@@ -77,7 +77,7 @@ When compiling without the @scorep instrumenter, the
 <tt>scorep-config</tt> command can be used to simplify determining the appropriate
 linker flags and libraries, or include paths:
 @verbatim
-    scorep-config [--mpp=none|--mpp=mp] \ 
+    scorep-config [--mpp=none|--mpp=mpi] \ 
                   [--thread=none|--thread=omp] --libs [--fortran]
 @endverbatim
 
