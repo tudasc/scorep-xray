@@ -57,6 +57,15 @@
   configured with the --bindir flag.
 - Install scorep-score in the correct directory, if Score-P was
   configured with the --bindir flag.
+- Reduce per-event measurement overhead by improving Score-P's assert
+  and error handling.
+- Adapt configure to recent Cray installations.
+- Score-P measururements provided with a SCOREP_EXPERIMENT_DIRECTORY,
+  say foo, used to overwrite an existing foo even if this foo is not a
+  directory. Will now abort with a meaningful message.
+- Metric plugin component: handling of multiple metrics improved.
+- Don't remove source files during make distclean in an in-place
+  build.
 
 ------------------- Released version 1.2.2 ---------------------------
 
