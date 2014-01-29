@@ -4,26 +4,28 @@
   as cc/CC/ftn is the compile command for both MPI and non-MPI).
 - Use Process Manager Interface (PMI) to get fine-granular information
   about the system topology on Cray machines.
-- Changed paradigm selection in the instrumenter to match the selection
-  options in the config tool. Thus, introduced --mpp=<paradigm> and
-  --thread=<paradigm> flags for the instrumenter to select the
-  multi-process paradigm and the threading paradigm. The old options
-  --mpi, --nompi, --openmp, --noopenmp are marked as deprecated and no
-  longer documented.
+- Changed paradigm selection in the instrumenter to match the
+  selection options in the config tool. Thus, introduced
+  --mpp=<paradigm> and --thread=<paradigm> flags for the instrumenter
+  to select the multi-process paradigm and the threading paradigm. The
+  old options --mpi, --nompi, --openmp, --noopenmp are marked as
+  deprecated and no longer documented.
 - Implemented the possibility to write CUBE profiles with the tuple
   values containing sum, minimum, maximum, number of samples, sum of
   squares.
 - Added handling for special characters, like space, in file names and
-  path names. However, there are still some limitation when using special
-  characters: The PDT parser can not deal with these characters
-  and, thus, fails if pdt instrumentation is enabled and special
-  characters appear. Furthermore, compilation fails when double quotes
-  appear in source file names and preprocessing is enabled.
+  path names. However, there are still some limitation when using
+  special characters: The PDT parser can not deal with these
+  characters and, thus, fails if pdt instrumentation is enabled and
+  special characters appear. Furthermore, compilation fails when
+  double quotes appear in source file names and preprocessing is
+  enabled.
 - Unified naming of macros in the user adapter. In C/C++ the macros to
   define global region handles (SCOREP_GLOBAL_REGION_DEFINE and
   SCOREP_GLOBAL_REGION_EXTERNAL) and in Fortran the parameter macros
-  (SCOREP_PARAMETER_DEFINE, SCOREP_PARAMETER_INT64, SCOREP_PARAMETER_UINT64,
-  SCOREP_PARAMETER_STRING) got the prefix SCOREP_USER instead of only SCOREP.
+  (SCOREP_PARAMETER_DEFINE, SCOREP_PARAMETER_INT64,
+  SCOREP_PARAMETER_UINT64, SCOREP_PARAMETER_STRING) got the prefix
+  SCOREP_USER instead of only SCOREP.
 - The new SIONlib integration of OTF2 extends the support of writing
   SION traces to all multi-process paradigms, not only MPI. Though
   only pure multi-process measurements are supported for now. No
@@ -34,11 +36,11 @@
   'SCOREP_TRACING_NLOCATIONS_PER_SION_FILE' was renamed to
   'SCOREP_TRACING_MAX_PROCS_PER_SION_FILE' to clarify that Score-P can
   only distribute whole processes into a multi-file SION trace.
-- Extended the TAU adapter to allow input of location properties, which
-  are location specific meta data presented as key/value pair.
+- Extended the TAU adapter to allow input of location properties,
+  which are location specific meta data presented as key/value pair.
 - Added selection for mutex locking, allowing to use the parameter
-   --mutex=<locking> to switch between known locking mechanisms 
-  within the measurement system (omp,pthread,pthread:spinlock).
+  --mutex=<locking> to switch between known locking mechanisms within
+  the measurement system (omp,pthread,pthread:spinlock).
 - When using the intel compiler, we inspected the symbol table of the
   executable and evaluated the filtering on all functions in the
   executable. Thus, compiler instrumented functions from shared
@@ -49,12 +51,12 @@
 
 ------------------- Upcoming version 1.2.3 ---------------------------
 
-- Fixed a failed assertion that occurs if selective recording was enabled
-  in profiling mode.
-- Fixed wrong path names in the instrumenter, when Score-P was configured
-  with the --bindir flag.
-- Install scorep-score in the correct directory, if Score-P was configured
-  with the --bindir flag.
+- Fixed a failed assertion that occurs if selective recording was
+  enabled in profiling mode.
+- Fixed wrong path names in the instrumenter, when Score-P was
+  configured with the --bindir flag.
+- Install scorep-score in the correct directory, if Score-P was
+  configured with the --bindir flag.
 
 ------------------- Released version 1.2.2 ---------------------------
 
@@ -69,8 +71,9 @@
   profiling and tracing at the same time.
 - Fix error message when scorep-config is called without arguments in
   a non-mpi installation.
-- scorep-config provides does not contain system paths as rpath option. This
-  fixes some problems if Score-P is installed in standard locations.
+- scorep-config provides does not contain system paths as rpath
+  option. This fixes some problems if Score-P is installed in standard
+  locations.
 - Fixed broken MPI detection in the instrumenter if the MPI compiler
   wrapper is specified with the full path.
 - If Score-P is build with static and dynamic libraries, the selection
