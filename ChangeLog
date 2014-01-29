@@ -80,9 +80,9 @@
   profiling and tracing at the same time.
 - Fix error message when scorep-config is called without arguments in
   a non-mpi installation.
-- scorep-config provides does not contain system paths as rpath
-  option. This fixes some problems if Score-P is installed in standard
-  locations.
+- In scorep-config's rpath options, omit paths searched by ldconfig,
+  even if Score-P was installed there, in order to comply to packaging
+  guidelines of some Linux distributions.
 - Fixed broken MPI detection in the instrumenter if the MPI compiler
   wrapper is specified with the full path.
 - If Score-P is build with static and dynamic libraries, the selection
