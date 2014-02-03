@@ -48,7 +48,7 @@ SCOREP_Instrumenter_CudaAdapter::SCOREP_Instrumenter_CudaAdapter( void )
 void
 SCOREP_Instrumenter_CudaAdapter::checkCompilerName( const std::string& compiler )
 {
-    if ( ( compiler.substr( 0, 2 ) == "nv" ) &&
+    if ( ( remove_path( compiler ).substr( 0, 2 ) == "nv" ) &&
          ( m_usage == detect ) )
     {
         m_usage = enabled;
