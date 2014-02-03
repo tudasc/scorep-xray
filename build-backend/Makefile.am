@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -181,19 +181,19 @@ instrumenter-checks: $(instrumenter_configuration_files)
 	  esac; \
 	done; \
 	list='$(PARADIGMS)'; for paradigm in $$list; do \
-	  echo "Making instrument-configurations in ../installcheck/$$paradigm"; \
-	  ($(am__cd) ../installcheck/$$paradigm && $(MAKE) $(AM_MAKEFLAGS) instrument-configurations) \
+	  echo "Making instrument-configurations in ../installcheck/instrumenter_checks/$$paradigm"; \
+	  ($(am__cd) ../installcheck/instrumenter_checks/$$paradigm && $(MAKE) $(AM_MAKEFLAGS) instrument-configurations) \
 	  || eval $$failcom; \
 	done; test -z "$$fail"
 
-instrumenter_configuration_files = ../installcheck/configurations_serial ../installcheck/configurations_omp
+instrumenter_configuration_files = ../installcheck/instrumenter_checks/configurations_serial ../installcheck/instrumenter_checks/configurations_omp
 
-$(instrumenter_configuration_files): ../installcheck/instrumenter-configurations.sh
-	@../installcheck/instrumenter-configurations.sh
+$(instrumenter_configuration_files): ../installcheck/instrumenter_checks/instrumenter-configurations.sh
+	@../installcheck/instrumenter_checks/instrumenter-configurations.sh
 
 clean-local-instrumenter-checks:
 	@rm -f $(instrumenter_configuration_files)
 	@for paradigm in $(PARADIGMS); do \
-            rm -f ../installcheck/bin/*-$${paradigm}-*; \
-            rm -rf ../installcheck/$$paradigm/build; \
+            rm -f ../installcheck/instrumenter_checks/bin/*-$${paradigm}-*; \
+            rm -rf ../installcheck/instrumenter_checks/$$paradigm/build; \
         done

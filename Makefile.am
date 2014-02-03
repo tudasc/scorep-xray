@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -214,8 +214,8 @@ bitten-persist-installchecks:
 	    lockfile-touch $(INSTALLCHECKS_PERSIST_DIR) &  \
 	    lockfile_touch_pid="$$!"; \
 	    rm -rf $(INSTALLCHECKS_PERSIST_DIR); \
-	    $(MKDIR_P) $(INSTALLCHECKS_PERSIST_DIR) || exit 1; \
-	    cp installcheck/bin/* $(INSTALLCHECKS_PERSIST_DIR)/ || exit 1; \
+	    $(MKDIR_P) $(INSTALLCHECKS_PERSIST_DIR)/instrumenter_checks || exit 1; \
+	    cp installcheck/instrumenter_checks/bin/* $(INSTALLCHECKS_PERSIST_DIR)/instrumenter_checks/ || exit 1; \
 	    echo $(REVISION) > $(INSTALLCHECKS_PERSIST_DIR)/REVISION || exit 1; \
 	    kill "$${lockfile_touch_pid}"; \
 	    lockfile-remove $(INSTALLCHECKS_PERSIST_DIR) || exit 1; \
@@ -227,8 +227,8 @@ else !HAVE_LOCKFILE_PROGS
 bitten-persist-installchecks:
 	if test "$(INSTALLCHECKS_PERSIST_DIR)" != no ; then \
 	    rm -rf $(INSTALLCHECKS_PERSIST_DIR); \
-	    $(MKDIR_P) $(INSTALLCHECKS_PERSIST_DIR) || exit 1; \
-	    cp installcheck/bin/* $(INSTALLCHECKS_PERSIST_DIR)/ || exit 1; \
+	    $(MKDIR_P) $(INSTALLCHECKS_PERSIST_DIR)/instrumenter_checks || exit 1; \
+	    cp installcheck/instrumenter_checks/bin/* $(INSTALLCHECKS_PERSIST_DIR)/instrumenter_checks/ || exit 1; \
 	    echo $(REVISION) > $(INSTALLCHECKS_PERSIST_DIR)/REVISION || exit 1; \
 	fi
 endif !HAVE_LOCKFILE_PROGS

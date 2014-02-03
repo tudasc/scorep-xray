@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2013,
+dnl Copyright (c) 2009-2014,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -316,10 +316,10 @@ sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&BE/' \
 Makefile >Makefile.be && mv -f Makefile.be Makefile || rm -f Makefile.be
 }
 ]], [ac_scorep_cross_compiling='$ac_scorep_cross_compiling'])
-AC_CONFIG_FILES([../installcheck/Makefile.common_rules:../test/installcheck/Makefile.common_rules.in
-                 ../installcheck/Makefile.instrument_configurations:../test/installcheck/Makefile.instrument_configurations.in
-                 ../installcheck/serial/Makefile:../test/installcheck/serial/Makefile.in
-                 ../installcheck/omp/Makefile:../test/installcheck/omp/Makefile.in
+AC_CONFIG_FILES([../installcheck/instrumenter_checks/Makefile.common_rules:../test/instrumenter_checks/Makefile.common_rules.in
+                 ../installcheck/instrumenter_checks/Makefile.instrument_configurations:../test/instrumenter_checks/Makefile.instrument_configurations.in
+                 ../installcheck/instrumenter_checks/serial/Makefile:../test/instrumenter_checks/serial/Makefile.in
+                 ../installcheck/instrumenter_checks/omp/Makefile:../test/instrumenter_checks/omp/Makefile.in
                  ../src/scorep_config_tool_backend.h:../src/tools/config/scorep_config_tool_backend.h.in])
 AC_CONFIG_FILES([../test/adapters/cuda/run_cuda_test.sh], \
                 [chmod +x ../test/adapters/cuda/run_cuda_test.sh])
@@ -335,10 +335,10 @@ AC_CONFIG_FILES([../test/omp_tasks/run_fibonacci_test.sh], \
                 [chmod +x ../test/omp_tasks/run_fibonacci_test.sh])
 AC_CONFIG_FILES([../test/omp_tasks/run_single_loop_test.sh], \
                 [chmod +x ../test/omp_tasks/run_single_loop_test.sh])
-AC_CONFIG_FILES([../installcheck/instrumenter-configurations.sh:../test/installcheck/instrumenter-configurations.sh.in],
-                [chmod +x ../installcheck/instrumenter-configurations.sh])
-AC_CONFIG_FILES([../installcheck/check-instrumentation.sh:../test/installcheck/check-instrumentation.sh.in],
-                [chmod +x ../installcheck/check-instrumentation.sh])
+AC_CONFIG_FILES([../installcheck/instrumenter_checks/instrumenter-configurations.sh:../test/instrumenter_checks/instrumenter-configurations.sh.in],
+                [chmod +x ../installcheck/instrumenter_checks/instrumenter-configurations.sh])
+AC_CONFIG_FILES([../installcheck/instrumenter_checks/check-instrumentation.sh:../test/instrumenter_checks/check-instrumentation.sh.in],
+                [chmod +x ../installcheck/instrumenter_checks/check-instrumentation.sh])
 AC_CONFIG_FILES([../test/filtering/run_filter_test.sh], \
                 [chmod +x ../test/filtering/run_filter_test.sh])
 AC_CONFIG_FILES([../test/filtering/run_filter_f_test.sh], \

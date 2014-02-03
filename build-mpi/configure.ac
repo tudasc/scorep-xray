@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2013,
+dnl Copyright (c) 2009-2014,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -256,8 +256,8 @@ sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&   /; t; s/_0 = @echo "  /&MPI/' \
 Makefile >Makefile.mpi && mv -f Makefile.mpi Makefile || rm -f Makefile.mpi
 ])
 AC_CONFIG_FILES([run_otf2_speed_test.sh \
-                 ../installcheck/mpi/Makefile:../test/installcheck/mpi/Makefile.in
-                 ../installcheck/mpi_omp/Makefile:../test/installcheck/mpi_omp/Makefile.in
+                 ../installcheck/instrumenter_checks/mpi/Makefile:../test/instrumenter_checks/mpi/Makefile.in
+                 ../installcheck/instrumenter_checks/mpi_omp/Makefile:../test/instrumenter_checks/mpi_omp/Makefile.in
                  ../src/scorep_config_tool_mpi.h:../src/tools/config/scorep_config_tool_mpi.h.in])
 AC_CONFIG_FILES([../test/mpi_omp/run_metric_collection_test.sh], \
                 [chmod +x ../test/mpi_omp/run_metric_collection_test.sh])
