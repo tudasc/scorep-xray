@@ -110,7 +110,7 @@ int main(int argc, char **argv)
   CUDART_CALL(cudaGetDeviceCount(&num_devices), "cudaGetDeviceCount");
   if(0==num_devices){
     printf("your system does not have a CUDA capable device, waiving test...\n");
-    exit(-1);
+    exit(77); /* denote the test as skipped */
   }
 
   /* check if the command-line chosen device ID is within range, exit if not
