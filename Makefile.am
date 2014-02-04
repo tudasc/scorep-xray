@@ -198,7 +198,8 @@ src/utils/include/scorep_error_decls.gen.h: $(srcdir)/share/scorep.errors
 
 ## bitten targets, intended to be used from bitten only
 
-# Copy installcheck binaries to a persistent directory
+# Copy installcheck binaries, i.e., all files in a directory named bin
+# under <builddir>/installcheck, to a persistent directory
 # $(INSTALLCHECKS_PERSIST_DIR) (to be executed later on). On systems
 # with low quota, disable copying of installcheck binaries by
 # providing $(INSTALLCHECKS_PERSIST_DIR) = no form bitten-slave.
@@ -214,8 +215,10 @@ bitten-persist-installchecks:
 	    lockfile-touch $(INSTALLCHECKS_PERSIST_DIR) &  \
 	    lockfile_touch_pid="$$!"; \
 	    rm -rf $(INSTALLCHECKS_PERSIST_DIR); \
-	    $(MKDIR_P) $(INSTALLCHECKS_PERSIST_DIR)/instrumenter_checks || exit 1; \
-	    cp installcheck/instrumenter_checks/bin/* $(INSTALLCHECKS_PERSIST_DIR)/instrumenter_checks/ || exit 1; \
+	    $(MKDIR_P) $(INSTALLCHECKS_PERSIST_DIR) || exit 1; \
+            cd installcheck || exit 1; \
+            find . -type d -name bin -exec cp --parents -r '{}' $(INSTALLCHECKS_PERSIST_DIR)/ \; || exit 1; \
+            cd .. || exit 1; \
 	    echo $(REVISION) > $(INSTALLCHECKS_PERSIST_DIR)/REVISION || exit 1; \
 	    kill "$${lockfile_touch_pid}"; \
 	    lockfile-remove $(INSTALLCHECKS_PERSIST_DIR) || exit 1; \
@@ -227,8 +230,10 @@ else !HAVE_LOCKFILE_PROGS
 bitten-persist-installchecks:
 	if test "$(INSTALLCHECKS_PERSIST_DIR)" != no ; then \
 	    rm -rf $(INSTALLCHECKS_PERSIST_DIR); \
-	    $(MKDIR_P) $(INSTALLCHECKS_PERSIST_DIR)/instrumenter_checks || exit 1; \
-	    cp installcheck/instrumenter_checks/bin/* $(INSTALLCHECKS_PERSIST_DIR)/instrumenter_checks/ || exit 1; \
+	    $(MKDIR_P) $(INSTALLCHECKS_PERSIST_DIR) || exit 1; \
+            cd installcheck || exit 1; \
+            find . -type d -name bin -exec cp --parents -r '{}' $(INSTALLCHECKS_PERSIST_DIR)/ \; || exit 1; \
+            cd .. || exit 1; \
 	    echo $(REVISION) > $(INSTALLCHECKS_PERSIST_DIR)/REVISION || exit 1; \
 	fi
 endif !HAVE_LOCKFILE_PROGS
