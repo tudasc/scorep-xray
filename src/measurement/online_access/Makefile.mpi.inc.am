@@ -99,7 +99,8 @@ else #if HAVE_ONLINE_ACCESS
 
 
 libscorep_online_access_mpp_mpi_la_LIBADD = \
-    libscorep_online_access_mpi_mockup.la
+    libscorep_online_access_mpi_mockup.la \
+    $(LIB_DIR_SCOREP)libutils.la
 
 libscorep_online_access_mpp_mpi_la_LDFLAGS = \
     $(library_api_version_ldflags)

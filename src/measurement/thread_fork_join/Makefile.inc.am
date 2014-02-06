@@ -35,7 +35,8 @@ libscorep_thread_fork_join_omp_tpd_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_DIR_COMMON_HASH)
 libscorep_thread_fork_join_omp_tpd_la_LIBADD = \
-    libscorep_thread_fork_join_generic.la
+    libscorep_thread_fork_join_generic.la \
+    libutils.la
 libscorep_thread_fork_join_omp_tpd_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
@@ -58,7 +59,8 @@ libscorep_thread_fork_join_omp_ancestry_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_DIR_COMMON_HASH) 
 libscorep_thread_fork_join_omp_ancestry_la_LIBADD = \
-    libscorep_thread_fork_join_generic.la
+    libscorep_thread_fork_join_generic.la \
+    libutils.la
 libscorep_thread_fork_join_omp_ancestry_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
@@ -103,5 +105,7 @@ libscorep_thread_fork_join_mockup_la_CPPFLAGS = \
     $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement
+libscorep_thread_fork_join_mockup_la_LIBADD = \
+    libutils.la
 libscorep_thread_fork_join_mockup_la_LDFLAGS = \
     $(library_api_version_ldflags)

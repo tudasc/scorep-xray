@@ -90,7 +90,8 @@ libscorep_online_access_spp_la_CPPFLAGS += -D_POSIX_SOURCE
 endif 
 
 libscorep_online_access_spp_la_LIBADD = \
-    libscorep_profile.la
+    libscorep_profile.la \
+    libutils.la
 
 libscorep_online_access_spp_la_LDFLAGS = \
     $(library_api_version_ldflags)

@@ -151,8 +151,10 @@ $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la:
 
 lib_LTLIBRARIES += libscorep_mpp_mpi.la
 libscorep_mpp_mpi_la_SOURCES =
-libscorep_mpp_mpi_la_LIBADD  = $(LIB_DIR_SCOREP_MPI)libscorep_ipc_mpi.la \
-                               libscorep_mpp_ipc.la
+libscorep_mpp_mpi_la_LIBADD  = \
+    $(LIB_DIR_SCOREP_MPI)libscorep_ipc_mpi.la \
+    libscorep_mpp_ipc.la                      \
+    libutils.la
 libscorep_mpp_mpi_la_LDFLAGS = \
     $(library_api_version_ldflags)
 

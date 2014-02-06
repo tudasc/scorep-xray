@@ -26,6 +26,8 @@ libscorep_mutex_omp_la_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/measurement/include \
     $(UTILS_CPPFLAGS)
+libscorep_mutex_omp_la_LIBADD = \
+    libutils.la
 libscorep_mutex_omp_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
@@ -46,6 +48,8 @@ libscorep_mutex_pthread_la_CPPFLAGS = \
     -I$(INC_DIR_MUTEX) \
     $(SCOREP_PTHREAD_MUTEX_CPPFLAGS) \
     $(UTILS_CPPFLAGS)
+libscorep_mutex_pthread_la_LIBADD = \
+    libutils.la
 libscorep_mutex_pthread_la_LDFLAGS = \
     $(library_api_version_ldflags) \
     $(PTHREAD_LIBS)
@@ -65,6 +69,8 @@ libscorep_mutex_pthread_spinlock_la_CPPFLAGS = \
      -D_POSIX_C_SOURCE=200112L \
      $(SCOREP_PTHREAD_SPINLOCK_CPPFLAGS) \
     $(UTILS_CPPFLAGS)
+libscorep_mutex_pthread_spinlock_la_LIBADD = \
+    libutils.la
 libscorep_mutex_pthread_spinlock_la_LDFLAGS = \
     $(library_api_version_ldflags) \
     $(PTHREAD_LIBS)
@@ -80,5 +86,7 @@ libscorep_mutex_mockup_la_CPPFLAGS = \
     $(AM_CPPFLAGS)     \
     -I$(INC_DIR_MUTEX) \
     $(UTILS_CPPFLAGS)
+libscorep_mutex_mockup_la_LIBADD = \
+    libutils.la
 libscorep_mutex_mockup_la_LDFLAGS = \
     $(library_api_version_ldflags)
