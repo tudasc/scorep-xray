@@ -40,8 +40,10 @@
 
 #include <SCOREP_Timing.h>
 #include <UTILS_Error.h>
+#include <UTILS_IO.h>
 #include <SCOREP_ThreadForkJoin_Mgmt.h>
 #include <SCOREP_Memory.h>
+#include <SCOREP_Config.h>
 #include "scorep_status.h"
 #include "scorep_ipc.h"
 #include <definitions/SCOREP_Definitions.h>
@@ -63,6 +65,7 @@ extern bool scorep_create_experiment_dir(void (*createDir) (void) );
 static void scorep_create_directory( void );
 static void scorep_create_experiment_dir_name( void );
 static bool scorep_dir_name_is_created( void );
+static void scorep_dump_config( void );
 /* *INDENT-ON* */
 
 
@@ -91,6 +94,10 @@ SCOREP_CreateExperimentDir( void )
     if ( scorep_create_experiment_dir( scorep_create_directory ) )
     {
         SCOREP_OnExperimentDirCreation();
+
+        /* dump the measurement configuration early, so that it is also
+           available in case of failure */
+        scorep_dump_config();
     }
 }
 
@@ -282,4 +289,38 @@ SCOREP_RenameExperimentDir( void )
     {
         printf( "[Score-P] final experiment directory: %s\n", new_experiment_dir_name );
     }
+}
+
+static void
+scorep_dump_config( void )
+{
+    if ( SCOREP_Status_IsMpp() && SCOREP_Status_GetRank() != 0 )
+    {
+        return;
+    }
+
+    char* dump_file_name = UTILS_IO_JoinPath(
+        2, SCOREP_GetExperimentDirName(), "scorep.cfg" );
+    if ( !dump_file_name )
+    {
+        UTILS_ERROR( SCOREP_ERROR_MEM_ALLOC_FAILED,
+                     "Can't write measurement configuration" );
+
+        return;
+    }
+
+    FILE* dump_file = fopen( dump_file_name, "w" );
+    if ( !dump_file )
+    {
+        UTILS_ERROR( SCOREP_ERROR_FILE_CAN_NOT_OPEN,
+                     "Can't write measurement configuration into `%s'",
+                     dump_file_name );
+
+        free( dump_file_name );
+        return;
+    }
+    free( dump_file_name );
+
+    SCOREP_ConfigDump( dump_file );
+    fclose( dump_file );
 }

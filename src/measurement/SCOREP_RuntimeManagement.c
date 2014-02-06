@@ -126,8 +126,6 @@ static void scorep_initialization_sanity_checks( void );
 static void scorep_profile_initialize( SCOREP_Location* loaction );
 static void scorep_profile_finalize( SCOREP_Location* loaction );
 static void scorep_trigger_exit_callbacks( void );
-static void scorep_dump_config( void );
-//static void scorep_deregister_config_variables( SCOREP_ConfigVariable configVars[] ); needed?
 /* *INDENT-ON* */
 
 /**
@@ -549,9 +547,6 @@ scorep_finalize( void )
     /* destroy all struct SCOREP_Location */
     SCOREP_TIME( SCOREP_Location_Finalize, ( ) );
 
-    /* dump config variables into experiment directory */
-    SCOREP_TIME( scorep_dump_config, ( ) );
-
     SCOREP_TIME( SCOREP_ConfigFini, ( ) );
 
     SCOREP_TIME( SCOREP_RenameExperimentDir, ( ) );   // needs MPI
@@ -595,34 +590,4 @@ scorep_trigger_exit_callbacks( void )
     {
         ( *( scorep_exit_callbacks[ i ] ) )();
     }
-}
-
-static void
-scorep_dump_config( void )
-{
-    const char* experiment_dir = SCOREP_GetExperimentDirName();
-    char*       dump_file_name;
-
-    if ( SCOREP_Status_IsMpp() && SCOREP_Status_GetRank() != 0 )
-    {
-        return;
-    }
-
-    dump_file_name = calloc( 1, strlen( experiment_dir ) + strlen( "/scorep.cfg" ) + 1 );
-    sprintf( dump_file_name, "%s%s", experiment_dir, "/scorep.cfg" );
-
-    FILE* dump_file = fopen( dump_file_name, "w" );
-    if ( !dump_file )
-    {
-        UTILS_ERROR( SCOREP_ERROR_FILE_CAN_NOT_OPEN,
-                     "Can't write config variables into `%s'",
-                     dump_file_name );
-
-        free( dump_file_name );
-        return;
-    }
-    free( dump_file_name );
-
-    SCOREP_ConfigDump( dump_file );
-    fclose( dump_file );
 }

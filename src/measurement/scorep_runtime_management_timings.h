@@ -74,7 +74,6 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_FinalizeLocations )     \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_finalize )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_Finalize )              \
-    SCOREP_TIMING_TRANSFORM_OP( scorep_dump_config )                    \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_ConfigFini )                     \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_RenameExperimentDir )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Status_Finalize )                \
