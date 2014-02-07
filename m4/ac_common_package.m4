@@ -60,15 +60,15 @@
 #  'AFS_PACKAGE_BUILD_name'   The value of AFS_PACKAGE_BUILD_name
 #  'AFS_PACKAGE_BUILD_NAME'   The value of AFS_PACKAGE_BUILD_NAME
 #  `AFS_PACKAGE_TO_TOP`::     The value of AFS_PACKAGE_TO_TOP
+#  'afs_srcdir'               The relative path to the source directory (i.e.,
+#                             where the top-level configure resides)
 # List of provided config header defines:
 #  `AFS_PACKAGE_BUILD`::      The value of AFS_PACKAGE_BUILD as a string
 #                             constant
 #  `AFS_PACKAGE_BUILD_name`:: The value of AFS_PACKAGE_BUILD_name
 #  `AFS_PACKAGE_BUILD_NAME`:: The value of AFS_PACKAGE_BUILD_NAME
-#  `AFS_PACKAGE_SRCDIR`::     The absolute path of the source directory as
-#                             string constant
-#  `AFS_PACKAGE_BUILDDIR`::   The absolute path of the build directory as string
-#                             constant
+#  `AFS_PACKAGE_SRCDIR`::     The relative path to the source directory as
+#                             string constant including a trailing slash
 #  `AFS_PACKAGE_name`::       The value of AFS_PACKAGE_name
 #  `AFS_PACKAGE_NAME`::       The value of AFS_PACKAGE_NAME
 #
@@ -98,6 +98,14 @@ m4_ifnblank([$1], [
         [], [m4_fatal([no trailing slash in TO-TOP argument to AFS_PACKAGE_INIT: ]AFS_PACKAGE_TO_TOP)])
     m4_popdef([_afs_package_tmp])dnl
 
+    # when building inplace, $srcdir equals ., ignore $srcdir than
+    AS_CASE([$srcdir],
+        [.], [afs_srcdir="]AFS_PACKAGE_TO_TOP["],
+        [afs_srcdir="${srcdir}/]AFS_PACKAGE_TO_TOP["])dnl
+    AC_DEFINE_UNQUOTED([[AFS_PACKAGE_SRCDIR]],
+        ["${afs_srcdir}"], [Relative path to the top-level source directory.])
+    AC_SUBST([afs_srcdir])
+
     m4_pushdef([_afs_package_tmp],
         m4_bpatsubst(m4_tolower(m4_normalize($1)), [[^a-z0-9]+], [_]))dnl
     AC_DEFINE_UNQUOTED([AFS_PACKAGE_BUILD_name], _afs_package_tmp,
@@ -113,15 +121,6 @@ m4_ifnblank([$1], [
     AC_SUBST([AFS_PACKAGE_BUILD_NAME], _afs_package_tmp)
     m4_define([AFS_PACKAGE_BUILD_NAME], _afs_package_tmp)dnl
     m4_popdef([_afs_package_tmp])dnl
-
-    AS_CASE([$srcdir],
-        [/*], [afs_package_srcdir=${srcdir}],
-        [afs_package_srcdir="${ac_pwd}/${srcdir}"])dnl
-    AC_DEFINE_UNQUOTED([[AFS_PACKAGE_SRCDIR]],
-        ["${afs_package_srcdir}/]AFS_PACKAGE_TO_TOP["], [Source directory.])
-
-    AC_DEFINE_UNQUOTED([[AFS_PACKAGE_BUILDDIR]],
-        ["$ac_pwd"], [Build directory.])
 
     AC_DEFINE_UNQUOTED([[AFS_PACKAGE_name]], AFS_PACKAGE_name,
         [The package name usable as a symbol in lower case.])
