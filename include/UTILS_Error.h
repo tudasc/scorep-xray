@@ -226,7 +226,7 @@ UTILS_Error_FromPosix( const int posixErrorCode );
       UTILS_Error_Abort( __FILE__,      \
                          __LINE__,      \
                          __func__,      \
-                         "Bug: " __VA_ARGS__ ) )
+                         "Bug '" #expression "': " __VA_ARGS__ ) )
 
 /**
  * This function implements the UTILS_ASSERT, UTILS_FATAL, UTILS_BUG, UTILS_BUG_ON macro.
