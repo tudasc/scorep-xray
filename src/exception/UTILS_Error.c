@@ -89,7 +89,7 @@ utils_error_handler_va( const char*       file,
                         const char*       msgFormatString,
                         va_list           va )
 {
-    char* normalized_file = normalize_file( file );
+    const char* normalized_file = normalize_file( file );
 
     if ( utils_error_callback )
     {
@@ -138,8 +138,6 @@ utils_error_handler_va( const char*       file,
             fprintf( stderr, "\n" );
         }
     }
-
-    free( normalized_file );
 
     return errorCode;
 }

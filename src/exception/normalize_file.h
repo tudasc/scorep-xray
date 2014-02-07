@@ -40,26 +40,18 @@
  */
 
 
-static char*
+static const char*
 normalize_file( const char* file )
 {
-    char* normalized_file = UTILS_IO_JoinPath( 2, AFS_PACKAGE_BUILDDIR, file );
-    UTILS_IO_SimplifyPath( normalized_file );
-    char srcdir[] = AFS_PACKAGE_SRCDIR;
-    UTILS_IO_SimplifyPath( srcdir );
-    size_t srcdir_len = strlen( srcdir );
+    const char* srcdir          = AFS_PACKAGE_SRCDIR;
+    size_t      srcdir_len      = sizeof( AFS_PACKAGE_SRCDIR ) - 1;
+    const char* normalized_file = file;
 
     /* srcdir is guaranteed to have an trailing slash, so no need to test for it
        in the file */
     if ( strncmp( normalized_file, srcdir, srcdir_len ) == 0 )
     {
-        char* to   = normalized_file;
-        char* from = normalized_file + srcdir_len;
-        while ( *from )
-        {
-            *to++ = *from++;
-        }
-        *to = *from;
+        normalized_file += srcdir_len;
     }
 
     return normalized_file;

@@ -348,7 +348,7 @@ UTILS_Debug_Printf( uint64_t    bitMask,
     size_t msg_format_string_length = msgFormatString ?
                                       strlen( msgFormatString ) : 0;
 
-    char* normalized_file = normalize_file( file );
+    const char* normalized_file = normalize_file( file );
 
     if ( kind )
     {
@@ -376,8 +376,6 @@ UTILS_Debug_Printf( uint64_t    bitMask,
                  line,
                  msg_format_string_length ? ": " : "\n" );
     }
-
-    free( normalized_file );
 
     if ( msg_format_string_length )
     {
@@ -431,7 +429,7 @@ UTILS_Debug_Prefix( uint64_t    bitMask,
 
     assert( kind != ( UTILS_DEBUG_FUNCTION_ENTRY | UTILS_DEBUG_FUNCTION_EXIT ) );
 
-    char* normalized_file = normalize_file( file );
+    const char* normalized_file = normalize_file( file );
 
     if ( kind )
     {
@@ -457,6 +455,4 @@ UTILS_Debug_Prefix( uint64_t    bitMask,
                  normalized_file,
                  line );
     }
-
-    free( normalized_file );
 }
