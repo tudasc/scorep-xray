@@ -89,7 +89,8 @@ add_opari_cflags( bool build_check, bool with_cflags, bool is_fortran, bool nvcc
 #if !HAVE( EXTERNAL_OPARI2 )
         if ( build_check )
         {
-            std::cout << "-I" AFS_PACKAGE_SRCDIR "/vendor/opari2/include ";
+            extern std::string path_to_binary;
+            std::cout << "-I" + path_to_binary + AFS_PACKAGE_SRCDIR "vendor/opari2/include ";
             std::cout.flush();
             return;
         }

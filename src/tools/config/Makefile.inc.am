@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2014,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -50,9 +50,8 @@ scorep_config_SOURCES = \
 
 scorep_config_CXXFLAGS = -DCXX=\""$(CXX)"\"
 
-scorep_config_CPPFLAGS = $(AM_CPPFLAGS)    \
-                         $(UTILS_CPPFLAGS) \
-                         -D"BUILD_DIR=\"`pwd`\""
+scorep_config_CPPFLAGS = $(AM_CPPFLAGS) \
+                         $(UTILS_CPPFLAGS)
 
 BUILT_SOURCES += ../src/scorep_config_library_dependencies_inc.hpp
 CLEANFILES += ../src/scorep_config_library_dependencies_inc.hpp

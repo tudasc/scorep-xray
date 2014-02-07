@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2014,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -110,7 +110,7 @@ install-data-local: $(INSTALL_DATA_LOCAL_TARGETS)
 
 install-data-hook: $(INSTALL_DATA_HOOK_TARGETS)
 
-SCOREP_SHARE_INSTALL_DIR = $(DESTDIR)@DATAROOTDIR_SCOREP@
+SCOREP_SHARE_INSTALL_DIR = $(DESTDIR)@PKGDATADIR@
 
 SCOREP_SHARE_LOCAL_DIR=$(PWD)/../share
 SCOREP_SHARE_GLOBAL_DIR=$(abs_top_srcdir)/../share

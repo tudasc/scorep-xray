@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -23,13 +23,13 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
 
 /**
- * @file       src/tools/info/scorep_info.cpp
+ * @file
  *
  *
  * The info tool of Score-P: scorep-info.
@@ -173,7 +173,7 @@ main( int   argc,
                 return EXIT_FAILURE;
             }
 
-            std::string summary_command( "cat " CONFIG_SUMMARY_FILE );
+            std::string summary_command( "cat " SCOREP_DATADIR "/scorep.summary" );
             int         return_value = system( summary_command.c_str() );
             if ( return_value != 0 )
             {

@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -11,7 +14,7 @@
  */
 
 /**
- * @file scorep_instrumenter_pdt.cpp
+ * @file
  *
  * Implements the class for PDT instrumentation.
  */
@@ -47,7 +50,7 @@ SCOREP_Instrumenter_PdtAdapter::SCOREP_Instrumenter_PdtAdapter( void )
     m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_COMPILER );
 
     m_pdt_bin_path    = PDT;
-    m_pdt_config_file = PDT_CONFIG;
+    m_pdt_config_file = SCOREP_DATADIR "/SCOREP_Pdt_Instrumentation.conf";
     m_use_params      = true;
 
 #ifndef HAVE_PDT
@@ -132,9 +135,10 @@ SCOREP_Instrumenter_PdtAdapter::precompile( SCOREP_Instrumenter&         instrum
 }
 
 void
-SCOREP_Instrumenter_PdtAdapter::setBuildCheck( void )
+SCOREP_Instrumenter_PdtAdapter::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine )
 {
-    m_pdt_config_file = simplify_path( BUILD_PDT_CONFIG );
+    m_pdt_config_file = cmdLine.getPathToBinary() +
+                        AFS_PACKAGE_SRCDIR "share/SCOREP_Pdt_Instrumentation.conf";
 }
 
 void

@@ -41,9 +41,11 @@ scorep_SOURCES = \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_mutex.cpp        \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_mutex.hpp
 
-scorep_CPPFLAGS = $(AM_CPPFLAGS) $(OPENMP_CFLAGS) -g \
-    $(UTILS_CPPFLAGS) \
-    -DBUILD_DIR=\"`pwd`\"
+scorep_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(OPENMP_CFLAGS) \
+    -g \
+    $(UTILS_CPPFLAGS)
 
 if HAVE_PDT
 scorep_CPPFLAGS += -DHAVE_PDT=1

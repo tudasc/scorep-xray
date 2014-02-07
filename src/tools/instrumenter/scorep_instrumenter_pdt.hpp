@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -14,7 +17,7 @@
 #define SCOREP_INSTRUMENTER_PDT_HPP
 
 /**
- * @file scorep_instrumenter_pdt.hpp
+ * @file
  *
  * Defines the class for PDT instrumentation.
  */
@@ -48,7 +51,7 @@ public:
                 const std::string&           source_file );
 
     virtual void
-    setBuildCheck( void );
+    setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine );
 
     virtual void
     setConfigValue( const std::string& key,

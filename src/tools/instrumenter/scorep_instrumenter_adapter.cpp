@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -11,7 +14,7 @@
  */
 
 /**
- * @file scorep_instrumenter_adapter.cpp
+ * @file
  *
  * Implements the base class for an instrumentation method.
  */
@@ -211,7 +214,7 @@ SCOREP_Instrumenter_Adapter::getConfigToolFlag( void )
 }
 
 void
-SCOREP_Instrumenter_Adapter::setBuildCheck( void )
+SCOREP_Instrumenter_Adapter::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine )
 {
 }
 
@@ -344,12 +347,12 @@ SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_Instrumenter_AdapterId id )
 }
 
 void
-SCOREP_Instrumenter_Adapter::setAllBuildCheck( void )
+SCOREP_Instrumenter_Adapter::setAllBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine )
 {
     SCOREP_Instrumenter_AdapterList::iterator adapter;
     for ( adapter = m_adapter_list.begin(); adapter != m_adapter_list.end(); adapter++ )
     {
-        adapter->second->setBuildCheck();
+        adapter->second->setBuildCheck( cmdLine );
     }
 }
 

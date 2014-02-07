@@ -5,6 +5,7 @@
 #define SCOREP_OPENMP_CFLAGS "@OPENMP_CFLAGS@"
 #define SCOREP_INCLUDEDIR    "@INCLUDEDIR@"
 #define SCOREP_BINDIR        "@BINDIR@"
+#define SCOREP_DATADIR       "@PKGDATADIR@"
 #define SCOREP_CC            "@CC@"
 #define SCOREP_CXX           "@CXX@"
 #define SCOREP_FC            "@FC@"
@@ -14,9 +15,6 @@
 #define OPARI                "@OPARI2_BINDIR@/opari2"
 #define OPARI_CONFIG         "@OPARI2_BINDIR@/opari2-config"
 #define PDT                  "@PDT_PATH@"
-#define PDT_CONFIG           "@DATAROOTDIR_SCOREP@/SCOREP_Pdt_Instrumentation.conf"
-#define COBI_CONFIG_DIR      "@DATAROOTDIR_SCOREP@"
-#define CONFIG_SUMMARY_FILE  "@DATAROOTDIR_SCOREP@/@PACKAGE@.summary"
 #define USE_LIBDIR_FLAG      @HARDCODE_INTO_LIBS@
 #define LIBDIR_FLAG_CC       "@HARDCODE_LIBDIR_FLAG_CC@"
 #define LIBDIR_FLAG_CXX      "@HARDCODE_LIBDIR_FLAG_CXX@"
@@ -25,9 +23,6 @@
 #define LIBDIR_FLAG_WL       "@HARDCODE_LIBDIR_WL@"
 #define LIBDIR_AIX_LIBPATH   "@HARDCODE_LIBDIR_AIX_LIBPATH@"
 #define SCOREP_BACKEND_SYS_LIB_DLSEARCH_PATH "@SYS_LIB_DLSEARCH_PATH_SPEC@"
-
-#define BUILD_SCOREP_PREFIX  "@abs_top_srcdir@/.." 
-#define BUILD_PDT_CONFIG     "@abs_top_srcdir@/../share/SCOREP_Pdt_Instrumentation.conf"
 
 #define HAVE_EXTERNAL_OPARI2                  @HAVE_EXTERNAL_OPARI2@
 #define HAVE_OPARI2_FIX_AND_FREE_FORM_OPTIONS @HAVE_OPARI2_FIX_AND_FREE_FORM_OPTIONS@

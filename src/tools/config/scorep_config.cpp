@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -172,6 +172,8 @@ clean_up()
     scorep_config_final_mutex_systems();
 }
 
+std::string path_to_binary;
+
 int
 main( int    argc,
       char** argv )
@@ -197,6 +199,13 @@ main( int    argc,
     scorep_config_init_mpp_systems();
     scorep_config_init_thread_systems();
     scorep_config_init_mutex_systems();
+
+    std::string binary( argv[ 0 ] );
+    size_t      last_slash = binary.find_last_of( "/" );
+    if ( last_slash != std::string::npos )
+    {
+        path_to_binary = binary.substr( 0, last_slash + 1 );
+    }
 
     /* parsing the command line */
     for ( i = 1; i < argc; i++ )
@@ -274,6 +283,11 @@ main( int    argc,
         }
         else if ( strcmp( argv[ i ], "--build-check" ) == 0 )
         {
+            if ( path_to_binary == "" )
+            {
+                std::cerr << "ERROR: Using --build-check requires calling scorep-config not via $PATH." << std::endl;
+                exit( EXIT_FAILURE );
+            }
             install = false;
         }
         else if ( strcmp( argv[ i ], "--cobi-deps" ) == 0 )
@@ -463,7 +477,8 @@ main( int    argc,
             }
             else
             {
-                str += "-I" BUILD_SCOREP_PREFIX "/include -I" BUILD_SCOREP_PREFIX "/include/scorep ";
+                str += "-I" + path_to_binary + AFS_PACKAGE_SRCDIR "include " +
+                       "-I" + path_to_binary + AFS_PACKAGE_SRCDIR "include/scorep ";
             }
             for ( adapter = scorep_adapters.begin();
                   adapter != scorep_adapters.end(); adapter++ )

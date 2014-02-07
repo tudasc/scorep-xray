@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -11,7 +14,7 @@
  */
 
 /**
- * @file scorep_instrumenter_cobi.cpp
+ * @file
  *
  * Implements the class for cobi instrumentation.
  */
@@ -44,7 +47,7 @@ SCOREP_Instrumenter_CobiAdapter::SCOREP_Instrumenter_CobiAdapter( void )
     m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_PDT );
 
     m_cobi            = SCOREP_COBI_PATH;
-    m_cobi_config_dir = COBI_CONFIG_DIR;
+    m_cobi_config_dir = SCOREP_DATADIR;
     m_use_params      = true;
 
 #if !HAVE( COBI )
@@ -103,9 +106,9 @@ SCOREP_Instrumenter_CobiAdapter::postlink( SCOREP_Instrumenter&         instrume
 }
 
 void
-SCOREP_Instrumenter_CobiAdapter::setBuildCheck( void )
+SCOREP_Instrumenter_CobiAdapter::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine )
 {
-    m_cobi_config_dir = simplify_path( BUILD_DIR "/../share" );
+    m_cobi_config_dir = cmdLine.getPathToBinary() + "../share";
 }
 
 void

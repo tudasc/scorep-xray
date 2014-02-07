@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2013,
+dnl Copyright (c) 2009-2014,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -111,6 +111,8 @@ adl_RECURSIVE_EVAL([${includedir}], [INCLUDEDIR])
 AC_SUBST([INCLUDEDIR])
 adl_RECURSIVE_EVAL([${bindir}], [BINDIR])
 AC_SUBST([BINDIR])
+adl_RECURSIVE_EVAL([${datadir}/${PACKAGE}], [PKGDATADIR])
+AC_SUBST([PKGDATADIR])
 
 AC_SCOREP_SVN_CONTROLLED
 
@@ -305,8 +307,6 @@ dnl The ${wl} part of the HARDCODE_LIBDIR_FLAG_* defines.
 AC_SUBST([HARDCODE_LIBDIR_WL], [${wl}])
 dnl The ${aix_libpath} part of the HARDCODE_LIBDIR_FLAG_* defines. Only available on AIX.
 AC_SUBST([HARDCODE_LIBDIR_AIX_LIBPATH], [${aix_libpath}])
-
-AC_SUBST([DATAROOTDIR_SCOREP], [`eval echo ${datarootdir}/${PACKAGE}`])
 
 AC_SUBST([SYS_LIB_DLSEARCH_PATH_SPEC], [${sys_lib_dlsearch_path_spec}]) 
 

@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -14,7 +17,7 @@
 #define SCOREP_INSTRUMENTER_ADAPTER_HPP
 
 /**
- * @file scorep_instrumenter_adapter.hpp
+ * @file
  *
  * Defines the base class for an instrumentation method.
  */
@@ -215,7 +218,7 @@ public:
      * location when installed than where built.
      */
     virtual void
-    setBuildCheck( void );
+    setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine );
 
     /**
      * Processes a key value pair from a config file. The default implementation
@@ -379,7 +382,7 @@ public:
      * Call the setBuildCheck function in all adapters.
      */
     static void
-    setAllBuildCheck( void );
+    setAllBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine );
 
     /**
      * Let all adapters check for the @a key/@a value pair.

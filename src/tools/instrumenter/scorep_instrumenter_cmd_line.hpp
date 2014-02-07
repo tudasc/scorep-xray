@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       scorep_instrumenter_command_line.hpp
+ * @file
  *
  * @brief      Declares a class for parsing and evaluating a the command line
  *             and makes the results accessible.
@@ -116,6 +116,12 @@ public:
     ParseCmdLine( int    argc,
                   char** argv );
 
+    /**
+        @return m_path_to_binary
+     */
+    const std::string&
+    getPathToBinary( void );
+
     bool
     isNvccCompiler( void );
     bool
@@ -186,6 +192,12 @@ public:
 
     /* ***************************************************** Private methods */
 private:
+
+    /**
+       Path to this binary. Extracted from argv[0] and includes the final slash.
+       Empty string if the binary was called via $PATH.
+     */
+    std::string m_path_to_binary;
 
     /**
        Prints the results from parsing the command line and parsing the

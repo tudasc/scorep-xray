@@ -39,7 +39,8 @@ libscorep_adapter_utils_la_SOURCES =
 libscorep_adapter_utils_la_LIBADD = \
     libscorep_filter.la             \
     libscorep_hashtab.la            \
-    libscorep_vector.la
+    libscorep_vector.la             \
+    libutils.la
 
 libscorep_adapter_utils_la_LDFLAGS = \
     $(library_api_version_ldflags)

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       SCOREP_Instrumenter_CommandLine.cpp
+ * @file
  */
 
 #include <config.h>
@@ -52,6 +52,8 @@ print_help( void );
 SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_InstallData& install_data )
     : m_install_data( install_data )
 {
+    m_path_to_binary = "";
+
     /* Execution modes */
     m_target_is_shared_lib = false;
     m_is_compiling         = true; // Opposite recognized if no source files in input
@@ -88,6 +90,16 @@ void
 SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
                                            char** argv )
 {
+    /* extract path to binary, used when in --build-check mode
+       dont't use extract_path() we need the final slash
+     */
+    std::string binary( argv[ 0 ] );
+    size_t      last_slash = binary.find_last_of( "/" );
+    if ( last_slash != std::string::npos )
+    {
+        m_path_to_binary = binary.substr( 0, last_slash + 1 );
+    }
+
     scorep_parse_mode_t mode = scorep_parse_mode_param;
     std::string         next = "";
 
@@ -115,6 +127,13 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
         print_parameter();
     }
 }
+
+const std::string&
+SCOREP_Instrumenter_CmdLine::getPathToBinary( void )
+{
+    return m_path_to_binary;
+}
+
 
 bool
 SCOREP_Instrumenter_CmdLine::isCompiling( void )
@@ -310,9 +329,14 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
 
     else if ( arg == "--build-check" )
     {
+        if ( m_path_to_binary == "" )
+        {
+            std::cerr << "ERROR: Using --build-check requires calling scorep not via $PATH." << std::endl;
+            exit( EXIT_FAILURE );
+        }
         m_is_build_check = true;
-        SCOREP_Instrumenter_Adapter::setAllBuildCheck();
-        m_install_data.setBuildCheck();
+        SCOREP_Instrumenter_Adapter::setAllBuildCheck( *this );
+        m_install_data.setBuildCheck( *this );
         return scorep_parse_mode_param;
     }
 

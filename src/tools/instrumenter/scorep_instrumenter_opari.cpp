@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,13 +23,13 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
 
 /**
- * @file       scorep_instrumenter_opari.cpp
+ * @file
  */
 
 #include <config.h>
@@ -229,12 +229,13 @@ SCOREP_Instrumenter_OpariAdapter::prelink( SCOREP_Instrumenter&         instrume
 }
 
 void
-SCOREP_Instrumenter_OpariAdapter::setBuildCheck( void )
+SCOREP_Instrumenter_OpariAdapter::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine )
 {
     #if !HAVE( EXTERNAL_OPARI2 )
-    m_opari_config = simplify_path( BUILD_DIR "/../vendor/opari2/build-frontend/opari2-config" )
-                     + " --build-check";
-    m_opari = simplify_path( BUILD_DIR "/../vendor/opari2/build-frontend/opari2" );
+    m_opari_config = cmdLine.getPathToBinary() +
+                     "../vendor/opari2/build-frontend/opari2-config --build-check";
+    m_opari = cmdLine.getPathToBinary() +
+              "../vendor/opari2/build-frontend/opari2";
     #endif
     m_nm           = "`" + m_opari_config +  " --nm`";
     m_opari_script = "`" + m_opari_config + " --region-initialization`";

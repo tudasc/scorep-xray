@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -29,11 +29,12 @@
  */
 
 /**
- * @file       scorep_instrumenter_install_config.cpp
+ * @file
  */
 
 #include <config.h>
 #include "scorep_instrumenter_install_data.hpp"
+#include "scorep_instrumenter_cmd_line.hpp"
 #include "scorep_instrumenter_adapter.hpp"
 #include "scorep_instrumenter_selector.hpp"
 #include "scorep_instrumenter_utils.hpp"
@@ -109,10 +110,9 @@ SCOREP_Instrumenter_InstallData::readConfigFile( const std::string& arg0 )
 }
 
 void
-SCOREP_Instrumenter_InstallData::setBuildCheck( void )
+SCOREP_Instrumenter_InstallData::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine )
 {
-    m_scorep_config = simplify_path( BUILD_DIR "/scorep-config" )
-                      + " --build-check";
+    m_scorep_config = cmdLine.getPathToBinary() + "scorep-config --build-check";
 }
 
 /* ****************************************************************************
