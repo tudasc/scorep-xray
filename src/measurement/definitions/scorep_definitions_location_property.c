@@ -53,16 +53,16 @@ define_location_property( SCOREP_DefinitionManager* definition_manager,
  *
  * @in internal
  */
-SCOREP_LocationHandle
-SCOREP_Definitions_NewLocationProperty( SCOREP_Location* location,
-                                        const char*      name,
-                                        const char*      value )
+SCOREP_LocationPropertyHandle
+SCOREP_Definitions_NewLocationProperty( SCOREP_LocationHandle locationHandle,
+                                        const char*           name,
+                                        const char*           value )
 {
     SCOREP_Definitions_Lock();
 
     SCOREP_LocationPropertyHandle new_handle = define_location_property(
         &scorep_local_definition_manager,
-        SCOREP_Location_GetLocationHandle( location ),
+        locationHandle,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "" ),

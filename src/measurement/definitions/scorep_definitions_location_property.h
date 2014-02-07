@@ -36,10 +36,10 @@ SCOREP_DEFINE_DEFINITION_TYPE( LocationProperty )
     SCOREP_LocationHandle location_handle;
 };
 
-SCOREP_LocationHandle
-SCOREP_Definitions_NewLocationProperty( SCOREP_Location* location,
-                                        const char*      name,
-                                        const char*      vale );
+SCOREP_LocationPropertyHandle
+SCOREP_Definitions_NewLocationProperty( SCOREP_LocationHandle locationHandle,
+                                        const char*           name,
+                                        const char*           value );
 
 void
 scorep_definitions_unify_location_property( SCOREP_LocationPropertyDef*   definition,

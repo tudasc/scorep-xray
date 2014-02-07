@@ -1413,17 +1413,16 @@ SCOREP_GetLastTimeStamp( void )
     return SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
 }
 
-SCOREP_LocationPropertyHandle
-SCOREP_Definitions_NewLocationProperty( SCOREP_Location* location,
-                                        const char*      name,
-                                        const char*      value );
-
 /**
  * Adds a meta data entry
  */
 void
-SCOREP_AddLocationProperty( const char* name, const char* value )
+SCOREP_AddLocationProperty( const char* name,
+                            const char* value )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    SCOREP_Definitions_NewLocationProperty( location, name, value );
+    SCOREP_Location*      location = SCOREP_Location_GetCurrentCPULocation();
+    SCOREP_LocationHandle handle   = SCOREP_Location_GetLocationHandle( location );
+    SCOREP_Definitions_NewLocationProperty( handle,
+                                            name,
+                                            value );
 }
