@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -14,9 +14,9 @@
  */
 
 /**
- * @file src/tools/config/scorep_config_mpp.cpp
+ * @file
  *
- * Collects information about available multi process systems.
+ * Collects information about available multi-process systems.
  */
 
 #include <config.h>
@@ -25,38 +25,67 @@
 #include "scorep_config_mpp.hpp"
 #include <iostream>
 
-std::deque<SCOREP_Config_MppSystem*> scorep_mpp_systems;
+/* **************************************************************************************
+ * class SCOREP_Config_MppSystem
+ * *************************************************************************************/
+
+std::deque<SCOREP_Config_MppSystem*> SCOREP_Config_MppSystem::all;
+
+SCOREP_Config_MppSystem* SCOREP_Config_MppSystem::current = 0;
 
 void
-scorep_config_init_mpp_systems( void )
+SCOREP_Config_MppSystem::init( void )
 {
 #if HAVE_BACKEND( MPI_SUPPORT )
-    scorep_mpp_systems.push_back( new SCOREP_Config_MpiMppSystem() );
+    all.push_back( new SCOREP_Config_MpiMppSystem() );
 #endif
-    scorep_mpp_systems.push_back( new SCOREP_Config_MockupMppSystem() );
-    SCOREP_Config_MppSystem::current = scorep_mpp_systems.front();
+    all.push_back( new SCOREP_Config_MockupMppSystem() );
+    current = all.front();
 }
 
 void
-scorep_config_final_mpp_systems( void )
+SCOREP_Config_MppSystem::fini( void )
 {
-    SCOREP_Config_MppSystem::current = NULL;
+    current = 0;
     std::deque<SCOREP_Config_MppSystem*>::iterator i;
-    for ( i = scorep_mpp_systems.begin(); i != scorep_mpp_systems.end(); i++ )
+    for ( i = all.begin(); i != all.end(); i++ )
     {
         delete ( *i );
     }
 }
 
-/* **************************************************************************************
- * class SCOREP_Config_MppSystem
- * *************************************************************************************/
-
-SCOREP_Config_MppSystem* SCOREP_Config_MppSystem::current = NULL;
-
-SCOREP_Config_MppSystem::SCOREP_Config_MppSystem( std::string name )
+void
+SCOREP_Config_MppSystem::printAll( void )
 {
-    m_name = name;
+    std::cout << "   --mpp=<multi-process paradigm>\n"
+              << "            Available multi-process paradigms are:\n";
+    std::deque<SCOREP_Config_MppSystem*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        ( *i )->printHelp();
+    }
+}
+
+bool
+SCOREP_Config_MppSystem::checkAll( const std::string& arg )
+{
+    current = 0;
+
+    std::deque<SCOREP_Config_MppSystem*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        if ( arg == ( *i )->m_name )
+        {
+            current = *i;
+            return true;
+        }
+    }
+    return false;
+}
+
+SCOREP_Config_MppSystem::SCOREP_Config_MppSystem( const std::string& name )
+    : m_name( name )
+{
 }
 
 SCOREP_Config_MppSystem::~SCOREP_Config_MppSystem()
@@ -67,22 +96,11 @@ void
 SCOREP_Config_MppSystem::printHelp( void )
 {
     std::cout << "         " << m_name;
-    if ( this == SCOREP_Config_MppSystem::current )
+    if ( this == current )
     {
         std::cout << "\tThis is the default.";
     }
     std::cout << std::endl;
-}
-
-bool
-SCOREP_Config_MppSystem::checkArgument( std::string system )
-{
-    if ( system == m_name )
-    {
-        SCOREP_Config_MppSystem::current = this;
-        return true;
-    }
-    return false;
 }
 
 void
@@ -96,7 +114,8 @@ SCOREP_Config_MppSystem::addLibs( std::deque<std::string>&           libs,
  * class SCOREP_Config_MockupMppSystem
  * *************************************************************************************/
 
-SCOREP_Config_MockupMppSystem::SCOREP_Config_MockupMppSystem() : SCOREP_Config_MppSystem( "none" )
+SCOREP_Config_MockupMppSystem::SCOREP_Config_MockupMppSystem()
+    : SCOREP_Config_MppSystem( "none" )
 {
 }
 
@@ -121,7 +140,8 @@ SCOREP_Config_MockupMppSystem::addLibs( std::deque<std::string>&           libs,
  * class SCOREP_Config_MpiMppSystem
  * *************************************************************************************/
 
-SCOREP_Config_MpiMppSystem::SCOREP_Config_MpiMppSystem() : SCOREP_Config_MppSystem( "mpi" )
+SCOREP_Config_MpiMppSystem::SCOREP_Config_MpiMppSystem()
+    : SCOREP_Config_MppSystem( "mpi" )
 {
 }
 

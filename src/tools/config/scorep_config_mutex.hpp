@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -51,6 +54,41 @@ class SCOREP_Config_Mutex
 {
 public:
     /**
+     * Initializes the mutex list.
+     */
+    static void
+    init( void );
+
+    /**
+     * Destroys the mutex list.
+     */
+    static void
+    fini( void );
+
+    /**
+     * Prints standard help output for all mutex types.
+     */
+    static void
+    printAll( void );
+
+    /**
+     * Checks whether the argument is one of the known mutex types,
+     * and sets the current class member current to this type.
+     * This implementation checks for the value after the '--mutex=' part.
+     * @param arg  The argument which is checked.
+     * @returns True if this argument matches any module. False otherwise.
+     */
+    static bool
+    checkAll( const std::string& arg );
+
+    /**
+     * Selects the mutex system for a matching ID.
+     * @param mutexId  The ID to select.
+     */
+    static void
+    select( SCOREP_Config_MutexId id );
+
+    /**
      * Constructs a SCOREP_Config_Mutex.
      * @param name     The name of the mutex.
      * @param variant  The name of the locking variant.
@@ -83,16 +121,7 @@ public:
      * @returns True if this argument is matches this module. False otherwise.
      */
     virtual bool
-    checkArgument( std::string system );
-
-    /**
-     * This implementation checks for a matching ID.
-     * @param mutexId  The ID which is checked.
-     * @returns True if this argument is matches this module. False otherwise.
-     */
-
-    virtual bool
-    checkId( SCOREP_Config_MutexId mutexId );
+    checkArgument( const std::string& system );
 
     /**
      * Adds required libraries of this mutex to the list of libraries.
@@ -167,29 +196,13 @@ public:
      * Points the the currently selected mutex.
      */
     static SCOREP_Config_Mutex* current;
+
+private:
+    /**
+     * List of available mutex types.
+     */
+    static std::deque<SCOREP_Config_Mutex*> all;
 };
-
-/* **************************************************************************************
- * Mutex system list
- * *************************************************************************************/
-
-/**
- * List of available mutex systems.
- */
-extern std::deque<SCOREP_Config_Mutex*> scorep_mutex_systems;
-
-/**
- * Initializes the mutex system list.
- */
-void
-scorep_config_init_mutex_systems( void );
-
-/**
- * Destroys the mutex system list.
- */
-void
-scorep_config_final_mutex_systems( void );
-
 
 /* **************************************************************************************
  * class SCOREP_Config_MutexMockup
@@ -203,9 +216,6 @@ class SCOREP_Config_MutexMockup : public SCOREP_Config_Mutex
 {
 public:
     SCOREP_Config_MutexMockup();
-    virtual void
-    addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
 };
 
 /* **************************************************************************************
@@ -219,9 +229,6 @@ class SCOREP_Config_MutexOmp : public SCOREP_Config_Mutex
 {
 public:
     SCOREP_Config_MutexOmp();
-    virtual void
-    addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
 };
 
 /* **************************************************************************************
@@ -235,9 +242,6 @@ class SCOREP_Config_MutexPthread : public SCOREP_Config_Mutex
 {
 public:
     SCOREP_Config_MutexPthread();
-    virtual void
-    addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
 };
 
 /* **************************************************************************************
@@ -251,9 +255,6 @@ class SCOREP_Config_MutexPthreadSpinlock : public SCOREP_Config_Mutex
 {
 public:
     SCOREP_Config_MutexPthreadSpinlock();
-    virtual void
-    addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
 };
 
 

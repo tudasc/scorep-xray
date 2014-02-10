@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -14,7 +17,7 @@
 #define SCOREP_CONFIG_THREAD_HPP
 
 /**
- * @file scorep_config_thread.hpp
+ * @file
  *
  * Collects information about available threading systems.
  */
@@ -53,6 +56,34 @@ class SCOREP_Config_ThreadSystem
 {
 public:
     /**
+     * Initializes the threading system list.
+     */
+    static void
+    init( void );
+
+    /**
+     * Destroys the threading system list.
+     */
+    static void
+    fini( void );
+
+    /**
+     * Prints standard help output for all threading system.
+     */
+    static void
+    printAll( void );
+
+    /**
+     * Checks whether the argument is one of the known threading system:variants,
+     * and sets the current class member to this system.
+     * This implementation checks for the value after the '--thread=' part.
+     * @param arg  The argument which is checked.
+     * @returns True if this argument matches any module. False otherwise.
+     */
+    static bool
+    checkAll( const std::string& arg );
+
+    /**
      * Constructs a SCOREP_Config_ThreadSystem.
      * @param name     The name of the threading system.
      * @param variant  The name of the measurement approach or threading system variant.
@@ -62,9 +93,9 @@ public:
      *                 the leading 'lib' which is prefixed automatically if needed.
      * @param id       The identifier of the threading system.
      */
-    SCOREP_Config_ThreadSystem( std::string                  name,
-                                std::string                  variant,
-                                std::string                  library,
+    SCOREP_Config_ThreadSystem( const std::string&           name,
+                                const std::string&           variant,
+                                const std::string&           library,
                                 SCOREP_Config_MutexId        mutexId,
                                 SCOREP_Config_ThreadSystemId id );
 
@@ -75,23 +106,7 @@ public:
     ~SCOREP_Config_ThreadSystem();
 
     /**
-     * Prints standart help output for this threading system, based on the name.
-     * Overwrite this functions if you need a different layout.
-     */
-    virtual void
-    printHelp( void );
-
-    /**
-     * Checks whether an pogram argument influences this module.
-     * This implementation checks for the value after the '--thread=' part.
-     * @param arg  The argument which is checked.
-     * @returns True if this argument is matches this module. False otherwise.
-     */
-    virtual bool
-    checkArgument( std::string system );
-
-    /**
-     * Adds required libraries of this threaing system to the list of libraries.
+     * Adds required libraries of this threading system to the list of libraries.
      * This implementation adds the value stored in m_library. Overwrite this
      * function if you need more or different libraries.
      * @param libs The list of libs to which you may add other libs.
@@ -119,7 +134,8 @@ public:
 
     /**
      * Overwrite this function if you want to do threading system specific modifications
-     * to the include flags.
+     * to the include flags. This function is also called, when the addCFlags()
+     * function will be called.
      * @param incflags    The compiler flags to which you may modify or add new flags.
      * @param build_check Specifies whether --build-check was set.
      * @param nvcc        True if compiler is nvcc.
@@ -147,6 +163,13 @@ public:
     getId( void );
 
 protected:
+    /**
+     * Prints standart help output for this threading system, based on the name.
+     * Overwrite this functions if you need a different layout.
+     */
+    virtual void
+    printHelp( void );
+
     /**
      * The name of the threading system.
      */
@@ -178,28 +201,13 @@ public:
      * Points the the currently selected threading system.
      */
     static SCOREP_Config_ThreadSystem* current;
+
+private:
+    /**
+     * List of available threading systems.
+     */
+    static std::deque<SCOREP_Config_ThreadSystem*> all;
 };
-
-/* **************************************************************************************
- * Threading system list
- * *************************************************************************************/
-
-/**
- * List of available threading systems.
- */
-extern std::deque<SCOREP_Config_ThreadSystem*> scorep_thread_systems;
-
-/**
- * Initializes the threading system list.
- */
-void
-scorep_config_init_thread_systems( void );
-
-/**
- * Destroys the threading system list.
- */
-void
-scorep_config_final_thread_systems( void );
 
 
 /* **************************************************************************************
@@ -218,6 +226,7 @@ public:
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );
 };
+
 
 /* **************************************************************************************
  * class SCOREP_Config_PompTpdThreadSystem

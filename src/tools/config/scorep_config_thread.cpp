@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -11,7 +14,7 @@
  */
 
 /**
- * @file scorep_config_thread.cpp
+ * @file
  *
  * Collects information about available thread systems
  */
@@ -24,47 +27,88 @@
 #include "scorep_config_mutex.hpp"
 #include <iostream>
 
-std::deque<SCOREP_Config_ThreadSystem*> scorep_thread_systems;
+/* **************************************************************************************
+ * class SCOREP_Config_ThreadSystem
+ * *************************************************************************************/
+
+std::deque<SCOREP_Config_ThreadSystem*> SCOREP_Config_ThreadSystem::all;
+
+SCOREP_Config_ThreadSystem* SCOREP_Config_ThreadSystem::current = 0;
 
 void
-scorep_config_init_thread_systems( void )
+SCOREP_Config_ThreadSystem::init( void )
 {
-    scorep_thread_systems.push_back( new SCOREP_Config_MockupThreadSystem() );
-    scorep_thread_systems.push_back( new SCOREP_Config_PompTpdThreadSystem() );
+    all.push_back( new SCOREP_Config_MockupThreadSystem() );
+    all.push_back( new SCOREP_Config_PompTpdThreadSystem() );
 #if SCOREP_BACKEND_HAVE_OMP_ANCESTRY
-    scorep_thread_systems.push_back( new SCOREP_Config_OmpAncestryThreadSystem() );
+    all.push_back( new SCOREP_Config_OmpAncestryThreadSystem() );
 #endif
-    SCOREP_Config_ThreadSystem::current = scorep_thread_systems.front();
+    current = all.front();
 }
 
 void
-scorep_config_final_thread_systems( void )
+SCOREP_Config_ThreadSystem::fini( void )
 {
-    SCOREP_Config_ThreadSystem::current = NULL;
+    current = 0;
     std::deque<SCOREP_Config_ThreadSystem*>::iterator i;
-    for ( i = scorep_thread_systems.begin(); i != scorep_thread_systems.end(); i++ )
+    for ( i = all.begin(); i != all.end(); i++ )
     {
         delete ( *i );
     }
 }
 
-/* **************************************************************************************
- * class SCOREP_Config_ThreadSystem
- * *************************************************************************************/
+void
+SCOREP_Config_ThreadSystem::printAll( void )
+{
+    std::cout << "   --thread=<threading system>[:<variant>]\n"
+              << "            Available threading systems are:\n";
+    std::deque<SCOREP_Config_ThreadSystem*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        ( *i )->printHelp();
+    }
+    std::cout << "            If no variant is specified the first matching\n"
+              << "            threading system is used.\n";
+}
 
-SCOREP_Config_ThreadSystem* SCOREP_Config_ThreadSystem::current = NULL;
+bool
+SCOREP_Config_ThreadSystem::checkAll( const std::string& arg )
+{
+    current = 0;
 
-SCOREP_Config_ThreadSystem::SCOREP_Config_ThreadSystem( std::string                  name,
-                                                        std::string                  variant,
-                                                        std::string                  library,
+    std::string system( arg );
+    std::string variant;
+    size_t      pos = system.find( ':' );
+    if ( pos != std::string::npos )
+    {
+        system  = arg.substr( 0, pos );
+        variant = arg.substr( pos + 1 );
+    }
+
+    std::deque<SCOREP_Config_ThreadSystem*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        if ( ( current == 0 && system == ( *i )->m_name ) ||
+             ( system == ( *i )->m_name && variant == ( *i )->m_variant ) )
+        {
+            current = *i;
+            break;
+        }
+    }
+    return current != 0;
+}
+
+SCOREP_Config_ThreadSystem::SCOREP_Config_ThreadSystem( const std::string&           name,
+                                                        const std::string&           variant,
+                                                        const std::string&           library,
                                                         SCOREP_Config_MutexId        mutexId,
                                                         SCOREP_Config_ThreadSystemId id )
+    : m_name( name ),
+      m_variant( variant ),
+      m_library( library ),
+      m_mutexId( mutexId ),
+      m_id( id )
 {
-    m_name    = name;
-    m_variant = variant;
-    m_library = library;
-    m_mutexId = mutexId;
-    m_id      = id;
 }
 
 SCOREP_Config_ThreadSystem::~SCOREP_Config_ThreadSystem()
@@ -79,24 +123,11 @@ SCOREP_Config_ThreadSystem::printHelp( void )
     {
         std::cout << ":" << m_variant;
     }
-    if ( this == SCOREP_Config_ThreadSystem::current )
+    if ( this == current )
     {
         std::cout << "\tThis is the default.";
     }
     std::cout << std::endl;
-}
-
-bool
-SCOREP_Config_ThreadSystem::checkArgument( std::string system )
-{
-    size_t pos = system.find( ':' );
-    if ( ( ( pos == std::string::npos ) && ( system == m_name ) ) ||
-         ( ( system.substr( 0, pos ) == m_name ) && ( system.substr( pos + 1 ) == m_variant ) ) )
-    {
-        SCOREP_Config_ThreadSystem::current = this;
-        return true;
-    }
-    return false;
 }
 
 void
@@ -125,7 +156,9 @@ SCOREP_Config_ThreadSystem::validateDependencies()
 }
 
 void
-SCOREP_Config_ThreadSystem::addIncFlags( std::string& incflags, bool build_check, bool nvcc )
+SCOREP_Config_ThreadSystem::addIncFlags( std::string& incflags,
+                                         bool         build_check,
+                                         bool         nvcc )
 {
 }
 
@@ -178,7 +211,10 @@ SCOREP_Config_PompTpdThreadSystem::addCFlags( std::string& cflags,
                                               bool         fortran,
                                               bool         nvcc )
 {
-    add_opari_cflags( build_check, true, fortran, nvcc );
+    SCOREP_Config_PompAdapter::printOpariCFlags( build_check,
+                                                 true,
+                                                 fortran,
+                                                 nvcc );
 
 #if SCOREP_BACKEND_COMPILER_IBM
     if ( fortran )
@@ -189,9 +225,14 @@ SCOREP_Config_PompTpdThreadSystem::addCFlags( std::string& cflags,
 }
 
 void
-SCOREP_Config_PompTpdThreadSystem::addIncFlags( std::string& incflags, bool build_check, bool nvcc )
+SCOREP_Config_PompTpdThreadSystem::addIncFlags( std::string& incflags,
+                                                bool         build_check,
+                                                bool         nvcc )
 {
-    add_opari_cflags( build_check, false, false, nvcc );
+    SCOREP_Config_PompAdapter::printOpariCFlags( build_check,
+                                                 false,
+                                                 false,
+                                                 nvcc );
 }
 
 /* **************************************************************************************
@@ -219,7 +260,10 @@ SCOREP_Config_OmpAncestryThreadSystem::addCFlags( std::string& cflags,
                                                   bool         fortran,
                                                   bool         nvcc )
 {
-    add_opari_cflags( build_check, true, fortran, nvcc );
+    SCOREP_Config_PompAdapter::printOpariCFlags( build_check,
+                                                 true,
+                                                 fortran,
+                                                 nvcc );
 
 #if SCOREP_BACKEND_COMPILER_IBM
     if ( fortran )
@@ -230,7 +274,12 @@ SCOREP_Config_OmpAncestryThreadSystem::addCFlags( std::string& cflags,
 }
 
 void
-SCOREP_Config_OmpAncestryThreadSystem::addIncFlags( std::string& incflags, bool build_check, bool nvcc )
+SCOREP_Config_OmpAncestryThreadSystem::addIncFlags( std::string& incflags,
+                                                    bool         build_check,
+                                                    bool         nvcc )
 {
-    add_opari_cflags( build_check, false, false, nvcc );
+    SCOREP_Config_PompAdapter::printOpariCFlags( build_check,
+                                                 false,
+                                                 false,
+                                                 nvcc );
 }

@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -11,7 +14,7 @@
  */
 
 /**
- * @file scorep_config_adapter.hpp
+ * @file
  *
  * Collects information about available libraries
  */
@@ -24,12 +27,6 @@
 #include <stdint.h>
 
 #include "SCOREP_Config_LibraryDependencies.hpp"
-
-void
-add_opari_cflags( bool build_check,
-                  bool with_cflags,
-                  bool is_fortran,
-                  bool nvcc );
 
 /* **************************************************************************************
  * class SCOREP_Config_Adapter
@@ -44,6 +41,61 @@ add_opari_cflags( bool build_check,
 class SCOREP_Config_Adapter
 {
 public:
+
+    /**
+     * Initializes the adapter list.
+     */
+    static void
+    init( void );
+
+    /**
+     * Destroys the adapter list.
+     */
+    static void
+    fini( void );
+
+    /**
+     * Prints for all adapters the help message.
+     */
+    static void
+    printAll( void );
+
+    /**
+     * Checks all adapters whether an program argument influences it.
+     */
+    static bool
+    checkAll( const std::string& arg );
+
+    /**
+     * Calls for all adapters the addLibs() member functions.
+     */
+    static void
+    addLibsAll( std::deque<std::string>&           libs,
+                SCOREP_Config_LibraryDependencies& deps );
+
+    /**
+     * Calls for all adapters the addCFlags() member functions.
+     */
+    static void
+    addCFlagsAll( std::string& cflags,
+                  bool         build_check,
+                  bool         fortran,
+                  bool         nvcc );
+
+    /**
+     * Calls for all adapters the addIncFlags() member functions.
+     */
+    static void
+    addIncFlagsAll( std::string& incflags,
+                    bool         build_check,
+                    bool         nvcc );
+
+    /**
+     * Calls for all adapters the addLdFlags() member functions.
+     */
+    static void
+    addLdFlagsAll( std::string& ldflags );
+
     /**
      * Constructs a SCOREP_Config_Adapter.
      * @param name        The name of the adapter, as displayed in the help output.
@@ -62,6 +114,7 @@ public:
     virtual
     ~SCOREP_Config_Adapter();
 
+protected:
     /**
      * Prints standart help output for this adapter, based on the name.
      * Overwrite this functions if you need a different layout.
@@ -78,7 +131,7 @@ public:
      * @returns True if this argument is known to this adapter. False otherwise.
      */
     virtual bool
-    checkArgument( std::string arg );
+    checkArgument( const std::string& arg );
 
     /**
      * Adds the adapter library to the list of libraries. This implementation
@@ -93,7 +146,8 @@ public:
 
     /**
      * Overwrite this function if you want to do adapter specific modifications
-     * to the compiler flags.
+     * to the compiler flags. This function is also called, when the addCFlags()
+     * function will be called.
      * @param cflgas       The compiler flags to which you may modify or add new flags.
      *                     This flags do not contain the include directories. For the
      *                     include flags use addIncFlags.
@@ -109,14 +163,6 @@ public:
 
     /**
      * Overwrite this function if you want to do adapter specific modifications
-     * to the linker flags.
-     * @param ldflgas  the linker flags to which you may modify or add new flags.
-     */
-    virtual void
-    addLdFlags( std::string& ldflags );
-
-    /**
-     * Overwrite this function if you want to do adapter specific modifications
      * to the include flags.
      * @param incflags  The include flags to which you may modify or add new flags.
      *                  This flags contain only the include directories. For other
@@ -129,7 +175,14 @@ public:
                  bool         build_check,
                  bool         nvcc );
 
-protected:
+    /**
+     * Overwrite this function if you want to do adapter specific modifications
+     * to the linker flags.
+     * @param ldflgas  the linker flags to which you may modify or add new flags.
+     */
+    virtual void
+    addLdFlags( std::string& ldflags );
+
     /**
      * Stores whether this adapter is currently enabled.
      */
@@ -144,28 +197,13 @@ protected:
      * The library name.
      */
     std::string m_library;
+
+private:
+    /**
+     * List of available adapters
+     */
+    static std::deque<SCOREP_Config_Adapter*> all;
 };
-
-/* **************************************************************************************
- * Adapter list
- * *************************************************************************************/
-
-/**
- * List of available adapters
- */
-extern std::deque<SCOREP_Config_Adapter*> scorep_adapters;
-
-/**
- * Initializes the adapter list.
- */
-void
-scorep_config_init_adapters( void );
-
-/**
- * Destroys the adapter list.
- */
-void
-scorep_config_final_adapters( void );
 
 /* **************************************************************************************
  * class SCOREP_CompilerAdapter
@@ -217,7 +255,7 @@ class SCOREP_Config_CudaAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_CudaAdapter();
     virtual bool
-    checkArgument( std::string arg );
+    checkArgument( const std::string& arg );
     virtual void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );
@@ -239,6 +277,12 @@ public:
                bool         build_check,
                bool         fortran,
                bool         nvcc );
+
+    static void
+    printOpariCFlags( bool build_check,
+                      bool with_cflags,
+                      bool is_fortran,
+                      bool nvcc );
 };
 
 #endif

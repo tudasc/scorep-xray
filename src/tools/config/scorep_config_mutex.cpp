@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -23,48 +26,95 @@
 #include "scorep_config_adapter.hpp"
 #include <iostream>
 
-std::deque<SCOREP_Config_Mutex*> scorep_mutex_systems;
+/* **************************************************************************************
+ * class SCOREP_Config_Mutex
+ * *************************************************************************************/
+
+std::deque<SCOREP_Config_Mutex*> SCOREP_Config_Mutex::all;
+
+SCOREP_Config_Mutex* SCOREP_Config_Mutex::current = NULL;
 
 void
-scorep_config_init_mutex_systems( void )
+SCOREP_Config_Mutex::init( void )
 {
-    scorep_mutex_systems.push_back( new SCOREP_Config_MutexMockup() );
-    scorep_mutex_systems.push_back( new SCOREP_Config_MutexOmp() );
+    all.push_back( new SCOREP_Config_MutexMockup() );
+    all.push_back( new SCOREP_Config_MutexOmp() );
     #if SCOREP_BACKEND_HAVE_PTHREAD_MUTEX
-    scorep_mutex_systems.push_back( new SCOREP_Config_MutexPthread() );
+    all.push_back( new SCOREP_Config_MutexPthread() );
     #endif
     #if SCOREP_BACKEND_HAVE_PTHREAD_SPINLOCK
-    scorep_mutex_systems.push_back( new SCOREP_Config_MutexPthreadSpinlock() );
+    all.push_back( new SCOREP_Config_MutexPthreadSpinlock() );
     #endif
-    SCOREP_Config_Mutex::current = scorep_mutex_systems.front();
+    current = all.front();
 }
 
 void
-scorep_config_final_mutex_systems( void )
+SCOREP_Config_Mutex::fini( void )
 {
-    SCOREP_Config_Mutex::current = NULL;
+    current = 0;
     std::deque<SCOREP_Config_Mutex*>::iterator i;
-    for ( i = scorep_mutex_systems.begin(); i != scorep_mutex_systems.end(); i++ )
+    for ( i = all.begin(); i != all.end(); i++ )
     {
         delete ( *i );
     }
 }
 
-/* **************************************************************************************
- * class SCOREP_Config_Mutex
- * *************************************************************************************/
+void
+SCOREP_Config_Mutex::printAll( void )
+{
+    std::cout << "   --mutex=<locking system>[:<variant>]\n"
+              << "            Available locking systems are:\n";
+    std::deque<SCOREP_Config_Mutex*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        ( *i )->printHelp();
+    }
+    std::cout << "            If no variant is specified the default for the respective\n"
+              << "            threading system is used.\n";
+}
 
-SCOREP_Config_Mutex* SCOREP_Config_Mutex::current = NULL;
+bool
+SCOREP_Config_Mutex::checkAll( const std::string& arg )
+{
+    current = 0;
+
+    std::deque<SCOREP_Config_Mutex*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        if ( ( *i )->checkArgument( arg ) )
+        {
+            current = *i;
+            return true;
+        }
+    }
+    return current != 0;
+}
+
+
+
+void
+SCOREP_Config_Mutex::select( SCOREP_Config_MutexId mutexId )
+{
+    std::deque<SCOREP_Config_Mutex*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        if ( ( *i )->m_id == mutexId )
+        {
+            current = *i;
+            return;
+        }
+    }
+}
 
 SCOREP_Config_Mutex::SCOREP_Config_Mutex( std::string           name,
                                           std::string           variant,
                                           std::string           library,
                                           SCOREP_Config_MutexId id )
+    : m_name( name ),
+      m_variant( variant ),
+      m_library( library ),
+      m_id( id )
 {
-    m_name    = name;
-    m_variant = variant;
-    m_library = library;
-    m_id      = id;
 }
 
 SCOREP_Config_Mutex::~SCOREP_Config_Mutex()
@@ -83,23 +133,12 @@ SCOREP_Config_Mutex::printHelp( void )
 }
 
 bool
-SCOREP_Config_Mutex::checkArgument( std::string system )
+SCOREP_Config_Mutex::checkArgument( const std::string& system )
 {
     if (  ( system == m_name + ":" + m_variant )
           || ( system == m_name ) )
     {
-        SCOREP_Config_Mutex::current = this;
-        return true;
-    }
-    return false;
-}
-
-bool
-SCOREP_Config_Mutex::checkId( SCOREP_Config_MutexId mutexId )
-{
-    if ( mutexId == m_id )
-    {
-        SCOREP_Config_Mutex::current = this;
+        current = this;
         return true;
     }
     return false;
@@ -140,13 +179,6 @@ SCOREP_Config_MutexMockup::SCOREP_Config_MutexMockup()
 {
 }
 
-void
-SCOREP_Config_MutexMockup::addLibs( std::deque<std::string>&           libs,
-                                    SCOREP_Config_LibraryDependencies& deps )
-{
-    SCOREP_Config_Mutex::addLibs( libs, deps );
-}
-
 /* **************************************************************************************
  * class SCOREP_Config_MutexOmp
  * *************************************************************************************/
@@ -154,13 +186,6 @@ SCOREP_Config_MutexMockup::addLibs( std::deque<std::string>&           libs,
 SCOREP_Config_MutexOmp::SCOREP_Config_MutexOmp()
     : SCOREP_Config_Mutex( "omp", "", "scorep_mutex_omp", SCOREP_CONFIG_MUTEX_ID_OMP )
 {
-}
-
-void
-SCOREP_Config_MutexOmp::addLibs( std::deque<std::string>&           libs,
-                                 SCOREP_Config_LibraryDependencies& deps )
-{
-    SCOREP_Config_Mutex::addLibs( libs, deps );
 }
 
 /* **************************************************************************************
@@ -172,13 +197,6 @@ SCOREP_Config_MutexPthread::SCOREP_Config_MutexPthread()
 {
 }
 
-void
-SCOREP_Config_MutexPthread::addLibs( std::deque<std::string>&           libs,
-                                     SCOREP_Config_LibraryDependencies& deps )
-{
-    SCOREP_Config_Mutex::addLibs( libs, deps );
-}
-
 /* **************************************************************************************
  * class SCOREP_Config_MutexPthreadSpinlock
  * *************************************************************************************/
@@ -186,11 +204,4 @@ SCOREP_Config_MutexPthread::addLibs( std::deque<std::string>&           libs,
 SCOREP_Config_MutexPthreadSpinlock::SCOREP_Config_MutexPthreadSpinlock()
     : SCOREP_Config_Mutex( "pthread", "spinlock", "scorep_mutex_pthread_spinlock", SCOREP_CONFIG_MUTEX_ID_PTHREAD_SPINLOCK )
 {
-}
-
-void
-SCOREP_Config_MutexPthreadSpinlock::addLibs( std::deque<std::string>&           libs,
-                                             SCOREP_Config_LibraryDependencies& deps )
-{
-    SCOREP_Config_Mutex::addLibs( libs, deps );
 }

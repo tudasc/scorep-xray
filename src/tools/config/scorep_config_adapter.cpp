@@ -14,7 +14,7 @@
  */
 
 /**
- * @file scorep_config_adapter.cpp
+ * @file
  *
  * Collects information about available adapters
  */
@@ -54,95 +54,108 @@
 #endif
 
 /* **************************************************************************************
- * functions and variables
+ * class SCOREP_Config_Adapter
  * *************************************************************************************/
 
-std::deque<SCOREP_Config_Adapter*> scorep_adapters;
+std::deque<SCOREP_Config_Adapter*> SCOREP_Config_Adapter::all;
 
 void
-scorep_config_init_adapters( void )
+SCOREP_Config_Adapter::init( void )
 {
-    scorep_adapters.push_back( new SCOREP_Config_CompilerAdapter() );
-    scorep_adapters.push_back( new SCOREP_Config_UserAdapter() );
-    scorep_adapters.push_back( new SCOREP_Config_PompAdapter() );
-    scorep_adapters.push_back( new SCOREP_Config_CudaAdapter() );
+    all.push_back( new SCOREP_Config_CompilerAdapter() );
+    all.push_back( new SCOREP_Config_UserAdapter() );
+    all.push_back( new SCOREP_Config_PompAdapter() );
+    all.push_back( new SCOREP_Config_CudaAdapter() );
 }
 
 void
-scorep_config_final_adapters( void )
+SCOREP_Config_Adapter::fini( void )
 {
     std::deque<SCOREP_Config_Adapter*>::iterator i;
-    for ( i = scorep_adapters.begin(); i != scorep_adapters.end(); i++ )
+    for ( i = all.begin(); i != all.end(); i++ )
     {
         delete ( *i );
     }
 }
 
 void
-add_opari_cflags( bool build_check, bool with_cflags, bool is_fortran, bool nvcc )
+SCOREP_Config_Adapter::printAll( void )
 {
-    static bool printed_once = false;
-    if ( !printed_once )
+    std::deque<SCOREP_Config_Adapter*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
     {
-        printed_once = true;
-
-#if !HAVE( EXTERNAL_OPARI2 )
-        if ( build_check )
-        {
-            extern std::string path_to_binary;
-            std::cout << "-I" + path_to_binary + AFS_PACKAGE_SRCDIR "vendor/opari2/include ";
-            std::cout.flush();
-            return;
-        }
-#endif
-
-        std::string opari_config = "`" OPARI_CONFIG " --cflags";
-#if ( !defined HAVE_BACKEND_OPARI2_REVISION ) || ( HAVE_BACKEND_OPARI2_REVISION < 1068 )
-        if ( with_cflags )
-        {
-            opari_config += "=" SCOREP_COMPILER_TYPE;
-
-            if ( is_fortran )
-            {
-                opari_config += " --fortran";
-            }
-        }
-#endif
-        opari_config += "` ";
-
-        if ( nvcc )
-        {
-            opari_config = "printf -- \"-Xcompiler %s \" " + opari_config;
-        }
-        else
-        {
-            opari_config = "printf -- \"%s \" " + opari_config;
-        }
-
-        int return_value = system( opari_config.c_str() );
-        if ( return_value != 0 )
-        {
-            std::cerr << "Error executing: " << opari_config.c_str() << std::endl;
-            exit( EXIT_FAILURE );
-        }
-        std::cout << " ";
-        std::cout.flush();
+        ( *i )->printHelp();
     }
 }
 
-/* **************************************************************************************
- * class SCOREP_Config_Adapter
- * *************************************************************************************/
+bool
+SCOREP_Config_Adapter::checkAll( const std::string& arg )
+{
+    std::deque<SCOREP_Config_Adapter*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        if ( ( *i )->checkArgument( arg ) )
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void
+SCOREP_Config_Adapter::addLibsAll( std::deque<std::string>&           libs,
+                                   SCOREP_Config_LibraryDependencies& deps )
+{
+    std::deque<SCOREP_Config_Adapter*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        ( *i )->addLibs( libs, deps );
+    }
+}
+
+void
+SCOREP_Config_Adapter::addCFlagsAll( std::string& cflags,
+                                     bool         build_check,
+                                     bool         fortran,
+                                     bool         nvcc )
+{
+    std::deque<SCOREP_Config_Adapter*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        ( *i )->addCFlags( cflags, build_check, fortran, nvcc );
+    }
+}
+
+void
+SCOREP_Config_Adapter::addIncFlagsAll( std::string& incflags,
+                                       bool         build_check,
+                                       bool         nvcc )
+{
+    std::deque<SCOREP_Config_Adapter*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        ( *i )->addIncFlags( incflags, build_check, nvcc );
+    }
+}
+
+void
+SCOREP_Config_Adapter::addLdFlagsAll( std::string& ldflags )
+{
+    std::deque<SCOREP_Config_Adapter*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        ( *i )->addLdFlags( ldflags );
+    }
+}
 
 SCOREP_Config_Adapter::SCOREP_Config_Adapter( std::string name,
                                               std::string library,
                                               bool        is_default )
+    : m_is_enabled( is_default ),
+      m_name( name ),
+      m_library( library )
 {
-    m_name       = name;
-    m_library    = library;
-    m_is_enabled = is_default;
 }
-
 
 SCOREP_Config_Adapter::~SCOREP_Config_Adapter()
 {
@@ -158,7 +171,7 @@ SCOREP_Config_Adapter::printHelp( void )
 }
 
 bool
-SCOREP_Config_Adapter::checkArgument( std::string arg )
+SCOREP_Config_Adapter::checkArgument( const std::string& arg )
 {
     if ( arg == "--" + m_name )
     {
@@ -202,7 +215,9 @@ SCOREP_Config_Adapter::addLdFlags( std::string& ldflags )
 }
 
 void
-SCOREP_Config_Adapter::addIncFlags( std::string& incflags, bool build_check, bool nvcc )
+SCOREP_Config_Adapter::addIncFlags( std::string& incflags,
+                                    bool         build_check,
+                                    bool         nvcc )
 {
 }
 
@@ -276,7 +291,7 @@ SCOREP_Config_CudaAdapter::SCOREP_Config_CudaAdapter()
 }
 
 bool
-SCOREP_Config_CudaAdapter::checkArgument( std::string arg )
+SCOREP_Config_CudaAdapter::checkArgument( const std::string& arg )
 {
 #if HAVE_BACKEND( CUDA_SUPPORT )
     if ( arg == "--" + m_name )
@@ -318,11 +333,16 @@ SCOREP_Config_PompAdapter::SCOREP_Config_PompAdapter()
 }
 
 void
-SCOREP_Config_PompAdapter::addIncFlags( std::string& incflags, bool build_check, bool nvcc )
+SCOREP_Config_PompAdapter::addIncFlags( std::string& incflags,
+                                        bool         build_check,
+                                        bool         nvcc )
 {
     if ( m_is_enabled )
     {
-        add_opari_cflags( build_check, false, false, nvcc );
+        printOpariCFlags( build_check,
+                          false,
+                          false,
+                          nvcc );
     }
 }
 
@@ -334,6 +354,64 @@ SCOREP_Config_PompAdapter::addCFlags( std::string& cflags,
 {
     if ( m_is_enabled )
     {
-        add_opari_cflags( build_check, true, fortran, nvcc );
+        printOpariCFlags( build_check,
+                          true,
+                          fortran,
+                          nvcc );
+    }
+}
+
+void
+SCOREP_Config_PompAdapter::printOpariCFlags( bool build_check,
+                                             bool with_cflags,
+                                             bool is_fortran,
+                                             bool nvcc )
+{
+    static bool printed_once = false;
+    if ( !printed_once )
+    {
+        printed_once = true;
+
+#if !HAVE( EXTERNAL_OPARI2 )
+        if ( build_check )
+        {
+            extern std::string path_to_binary;
+            std::cout << "-I" + path_to_binary + AFS_PACKAGE_SRCDIR "vendor/opari2/include ";
+            std::cout.flush();
+            return;
+        }
+#endif
+
+        std::string opari_config = "`" OPARI_CONFIG " --cflags";
+#if ( !defined HAVE_BACKEND_OPARI2_REVISION ) || ( HAVE_BACKEND_OPARI2_REVISION < 1068 )
+        if ( with_cflags )
+        {
+            opari_config += "=" SCOREP_COMPILER_TYPE;
+
+            if ( is_fortran )
+            {
+                opari_config += " --fortran";
+            }
+        }
+#endif
+        opari_config += "` ";
+
+        if ( nvcc )
+        {
+            opari_config = "printf -- \"-Xcompiler %s \" " + opari_config;
+        }
+        else
+        {
+            opari_config = "printf -- \"%s \" " + opari_config;
+        }
+
+        int return_value = system( opari_config.c_str() );
+        if ( return_value != 0 )
+        {
+            std::cerr << "Error executing: " << opari_config.c_str() << std::endl;
+            exit( EXIT_FAILURE );
+        }
+        std::cout << " ";
+        std::cout.flush();
     }
 }

@@ -28,6 +28,12 @@
  *
  */
 
+/**
+ * @file
+ *
+ * Score-P config tool.
+ */
+
 #include <config.h>
 
 #include <stdlib.h>
@@ -102,38 +108,10 @@ static void
 print_help( void )
 {
     std::cout << HELPTEXT;
-    for ( std::deque<SCOREP_Config_Adapter*>::iterator i = scorep_adapters.begin();
-          i != scorep_adapters.end(); i++ )
-    {
-        ( *i )->printHelp();
-    }
-    std::cout << "   --thread=<threading system>[:<variant>]\n"
-              << "            Available threading systems are:\n";
-    for ( std::deque<SCOREP_Config_ThreadSystem*>::iterator i = scorep_thread_systems.begin();
-          i != scorep_thread_systems.end(); i++ )
-    {
-        ( *i )->printHelp();
-    }
-    std::cout << "            If no variant is specified the first matching\n"
-              << "            threading system is used.\n";
-
-    std::cout << "   --mutex=<locking system>[:<variant>]\n"
-              << "            Available locking systems are:\n";
-    for ( std::deque<SCOREP_Config_Mutex*>::iterator i = scorep_mutex_systems.begin();
-          i != scorep_mutex_systems.end(); i++ )
-    {
-        ( *i )->printHelp();
-    }
-    std::cout << "            If no variant is specified the default for the respective\n"
-              << "            threading system is used.\n";
-
-    std::cout << "   --mpp=<multi-process paradigm>\n"
-              << "            Available multi-process paradigms are:\n";
-    for ( std::deque<SCOREP_Config_MppSystem*>::iterator i = scorep_mpp_systems.begin();
-          i != scorep_mpp_systems.end(); i++ )
-    {
-        ( *i )->printHelp();
-    }
+    SCOREP_Config_Adapter::printAll();
+    SCOREP_Config_ThreadSystem::printAll();
+    SCOREP_Config_Mutex::printAll();
+    SCOREP_Config_MppSystem::printAll();
 }
 
 static void
@@ -143,8 +121,8 @@ static void
 append_ld_run_path_to_rpath( std::deque<std::string>& rpath );
 
 static void
-write_cobi_deps( SCOREP_Config_LibraryDependencies& deps,
-                 const std::deque<std::string>&     libs,
+write_cobi_deps( const std::deque<std::string>&     libs,
+                 SCOREP_Config_LibraryDependencies& deps,
                  bool                               install );
 
 static void
@@ -166,10 +144,10 @@ get_full_library_names( const std::deque<std::string>& library_list,
 static inline void
 clean_up()
 {
-    scorep_config_final_thread_systems();
-    scorep_config_final_mpp_systems();
-    scorep_config_final_adapters();
-    scorep_config_final_mutex_systems();
+    SCOREP_Config_Mutex::fini();
+    SCOREP_Config_ThreadSystem::fini();
+    SCOREP_Config_MppSystem::fini();
+    SCOREP_Config_Adapter::fini();
 }
 
 std::string path_to_binary;
@@ -189,16 +167,10 @@ main( int    argc,
     bool allow_static  = true;
     bool online_access = true;
 
-    SCOREP_Config_LibraryDependencies                 deps;
-    std::deque<SCOREP_Config_Adapter*>::iterator      adapter;
-    std::deque<SCOREP_Config_MppSystem*>::iterator    mpp;
-    std::deque<SCOREP_Config_ThreadSystem*>::iterator ts;
-    std::deque<SCOREP_Config_Mutex*>::iterator        mutex;
-
-    scorep_config_init_adapters();
-    scorep_config_init_mpp_systems();
-    scorep_config_init_thread_systems();
-    scorep_config_init_mutex_systems();
+    SCOREP_Config_Adapter::init();
+    SCOREP_Config_MppSystem::init();
+    SCOREP_Config_ThreadSystem::init();
+    SCOREP_Config_Mutex::init();
 
     std::string binary( argv[ 0 ] );
     size_t      last_slash = binary.find_last_of( "/" );
@@ -312,19 +284,11 @@ main( int    argc,
         }
         else if ( strncmp( argv[ i ], "--thread=", 9 ) == 0 )
         {
-            bool known_arg = false;
-            for ( ts = scorep_thread_systems.begin();
-                  ts != scorep_thread_systems.end(); ts++ )
-            {
-                known_arg = ( *ts )->checkArgument( &argv[ i ][ 9 ] );
-                if ( known_arg )
-                {
-                    break;
-                }
-            }
+            std::string arg( &argv[ i ][ 9 ] );
+            bool        known_arg = SCOREP_Config_ThreadSystem::checkAll( arg );
             if ( !known_arg )
             {
-                std::cerr << "\nUnknown threading system " << &argv[ i ][ 9 ]
+                std::cerr << "\nUnknown threading system " << arg
                           << ". Abort.\n" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
@@ -332,19 +296,11 @@ main( int    argc,
         }
         else if ( strncmp( argv[ i ], "--mpp=", 6 ) == 0 )
         {
-            bool known_arg = false;
-            for ( mpp = scorep_mpp_systems.begin();
-                  mpp != scorep_mpp_systems.end(); mpp++ )
-            {
-                known_arg = ( *mpp )->checkArgument( &argv[ i ][ 6 ] );
-                if ( known_arg )
-                {
-                    break;
-                }
-            }
+            std::string arg( &argv[ i ][ 6 ] );
+            bool        known_arg = SCOREP_Config_MppSystem::checkAll( arg );
             if ( !known_arg )
             {
-                std::cerr << "\nUnknown multi-process paradigm " << &argv[ i ][ 6 ]
+                std::cerr << "\nUnknown multi-process paradigm " << arg
                           << ". Abort.\n" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
@@ -352,19 +308,11 @@ main( int    argc,
         }
         else if ( strncmp( argv[ i ], "--mutex=", 8 ) == 0 )
         {
-            bool known_arg = false;
-            for ( mutex = scorep_mutex_systems.begin();
-                  mutex != scorep_mutex_systems.end(); mutex++ )
-            {
-                known_arg = ( *mutex )->checkArgument( &argv[ i ][ 8 ] );
-                if ( known_arg )
-                {
-                    break;
-                }
-            }
+            std::string arg( &argv[ i ][ 8 ] );
+            bool        known_arg = SCOREP_Config_Mutex::checkAll( arg );
             if ( !known_arg )
             {
-                std::cerr << "\nUnknown locking sytem " << &argv[ i ][ 8 ]
+                std::cerr << "\nUnknown locking sytem " << arg
                           << ". Abort.\n" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
@@ -372,19 +320,11 @@ main( int    argc,
         }
         else
         {
-            bool known_arg = false;
-            for ( adapter = scorep_adapters.begin();
-                  adapter != scorep_adapters.end(); adapter++ )
-            {
-                known_arg = ( *adapter )->checkArgument( argv[ i ] );
-                if ( known_arg )
-                {
-                    break;
-                }
-            }
+            std::string arg( argv[ i ] );
+            bool        known_arg = SCOREP_Config_Adapter::checkAll( arg );
             if ( !known_arg )
             {
-                std::cerr << "\nUnknown option " << argv[ i ]
+                std::cerr << "\nUnknown option " << arg
                           << ". Abort.\n" << std::endl;
                 clean_up();
                 exit( EXIT_FAILURE );
@@ -392,26 +332,15 @@ main( int    argc,
         }
     }
 
-    std::deque<std::string> libs;
-    std::string             str;
+    std::deque<std::string>           libs;
+    SCOREP_Config_LibraryDependencies deps;
+    std::string                       str;
 
-    for ( adapter = scorep_adapters.begin(); adapter != scorep_adapters.end(); adapter++ )
-    {
-        ( *adapter )->addLibs( libs, deps );
-    }
+    SCOREP_Config_Adapter::addLibsAll( libs, deps );
     SCOREP_Config_MppSystem::current->addLibs( libs, deps, online_access );
     SCOREP_Config_MutexId newMutexId = SCOREP_Config_ThreadSystem::current->validateDependencies();
     SCOREP_Config_ThreadSystem::current->addLibs( libs, deps );
-    bool known_arg = false;
-    for ( mutex = scorep_mutex_systems.begin();
-          mutex != scorep_mutex_systems.end(); mutex++ )
-    {
-        known_arg = ( *mutex )->checkId( newMutexId );
-        if ( known_arg )
-        {
-            break;
-        }
-    }
+    SCOREP_Config_Mutex::select( newMutexId );
     SCOREP_Config_Mutex::current->addLibs( libs, deps );
 
     switch ( action )
@@ -430,11 +359,7 @@ main( int    argc,
                                          m_rpath_delimiter,
                                          m_rpath_tail );
             }
-            for ( adapter = scorep_adapters.begin();
-                  adapter != scorep_adapters.end(); adapter++ )
-            {
-                ( *adapter )->addLdFlags( str );
-            }
+            SCOREP_Config_Adapter::addLdFlagsAll( str );
 
             if ( nvcc )
             {
@@ -462,11 +387,7 @@ main( int    argc,
             break;
 
         case ACTION_CFLAGS:
-            for ( adapter = scorep_adapters.begin();
-                  adapter != scorep_adapters.end(); adapter++ )
-            {
-                ( *adapter )->addCFlags( str, !install, fortran, nvcc );
-            }
+            SCOREP_Config_Adapter::addCFlagsAll( str, !install, fortran, nvcc );
             SCOREP_Config_ThreadSystem::current->addCFlags( str, !install, fortran, nvcc );
 
         // Append the include directories, too
@@ -480,11 +401,7 @@ main( int    argc,
                 str += "-I" + path_to_binary + AFS_PACKAGE_SRCDIR "include " +
                        "-I" + path_to_binary + AFS_PACKAGE_SRCDIR "include/scorep ";
             }
-            for ( adapter = scorep_adapters.begin();
-                  adapter != scorep_adapters.end(); adapter++ )
-            {
-                ( *adapter )->addIncFlags( str, !install, nvcc );
-            }
+            SCOREP_Config_Adapter::addIncFlagsAll( str, !install, nvcc );
             SCOREP_Config_ThreadSystem::current->addIncFlags( str, !install, nvcc );
 
             if ( nvcc )
@@ -530,7 +447,7 @@ main( int    argc,
             {
                 libs.push_back( "libscorep_measurement" );
             }
-            write_cobi_deps( deps, libs, install );
+            write_cobi_deps( libs, deps, install );
             break;
 
         default:
@@ -674,8 +591,8 @@ get_full_library_names( const std::deque<std::string>& library_list,
 }
 
 static void
-write_cobi_deps( SCOREP_Config_LibraryDependencies& deps,
-                 const std::deque<std::string>&     libs,
+write_cobi_deps( const std::deque<std::string>&     libs,
+                 SCOREP_Config_LibraryDependencies& deps,
                  bool                               install )
 {
     std::deque<std::string> library_list = deps.getLibraries( libs );
