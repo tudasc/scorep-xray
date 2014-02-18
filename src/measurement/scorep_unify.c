@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -227,6 +227,10 @@ SCOREP_Unify_CreateUnifiedDefinitionManager( void )
     SCOREP_Definitions_InitializeDefinitionManager( &scorep_unified_definition_manager,
                                                     SCOREP_Memory_GetLocalDefinitionPageManager(),
                                                     alloc_hash_tables );
+
+    /* ensure, that the empty string gets id 0 */
+    scorep_definitions_new_string( scorep_unified_definition_manager,
+                                   "" );
 }
 
 void
