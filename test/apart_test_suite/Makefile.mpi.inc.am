@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2014,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -54,7 +54,7 @@ mpi_patt_all_test_f90_with_oa_SOURCES    = $(SRC_ROOT)test/apart_test_suite/fort
                                    $(SRC_ROOT)test/apart_test_suite/fortran/mpi_patt_all_test.F90
 
 mpi_patt_all_test_f90_with_oa_CPPFLAGS = \
-    -I../include                            \
+    -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/adapters/include       \
     $(UTILS_CPPFLAGS)
 
@@ -86,7 +86,7 @@ mpi_patt_all_test_f90_SOURCES    = $(SRC_ROOT)test/apart_test_suite/fortran/cali
                                    $(SRC_ROOT)test/apart_test_suite/fortran/mpi_patt_all_test.F90
 
 mpi_patt_all_test_f90_CPPFLAGS = \
-    -I../include                            \
+    -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/adapters/include       \
     $(UTILS_CPPFLAGS)
 

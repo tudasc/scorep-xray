@@ -1,4 +1,4 @@
-#include <SCOREP_User.inc>
+#include <scorep/SCOREP_User.inc>
 module JacobiMod
     use VariableDef
     implicit none 

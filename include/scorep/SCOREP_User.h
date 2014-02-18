@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -1347,11 +1347,14 @@
 
 #define SCOREP_USER_REGION( name, type )
 #define SCOREP_USER_REGION_DEFINE( handle )
+#define SCOREP_USER_REWIND_DEFINE( handle )
 #define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type  )
 #define SCOREP_USER_OA_PHASE_END( handle )
+#define SCOREP_USER_REWIND_POINT( handle, name )
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )
 #define SCOREP_USER_REGION_INIT( handle, name, type )
 #define SCOREP_USER_REGION_END( handle )
+#define SCOREP_USER_REWIND_CHECK( handle, value )
 #define SCOREP_USER_REGION_ENTER( handle )
 #define SCOREP_USER_FUNC_BEGIN()
 #define SCOREP_USER_FUNC_END()

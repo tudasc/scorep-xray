@@ -1,8 +1,4 @@
-#ifndef SCOREP_COMPILER_PGI
 #include <scorep/SCOREP_User.inc>
-#else
-#include <scorep/SCOREP_User_Pgi.inc>
-#endif
 
 program oa_test
 

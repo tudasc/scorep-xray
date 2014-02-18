@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2014,
 ##    Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -37,12 +37,8 @@ scorepinclude_HEADERS =                        \
     $(PUBLIC_INC_SRC)SCOREP_MetricTypes.h      \
     $(PUBLIC_INC_SRC)SCOREP_PublicTypes.h      \
     $(PUBLIC_INC_SRC)SCOREP_User.h             \
+    $(PUBLIC_INC_SRC)SCOREP_User.inc           \
     $(PUBLIC_INC_SRC)SCOREP_User_Functions.h   \
     $(PUBLIC_INC_SRC)SCOREP_User_Types.h       \
     $(PUBLIC_INC_SRC)SCOREP_User_Variables.h   \
-    $(PUBLIC_INC_SRC)SCOREP_Tau.h              \
-    ../include/scorep/SCOREP_User.inc
-
-EXTRA_DIST += \
-    $(SRC_ROOT)include/scorep/SCOREP_User_Pgi.inc.in \
-    $(SRC_ROOT)include/scorep/SCOREP_User.inc.in
+    $(PUBLIC_INC_SRC)SCOREP_Tau.h

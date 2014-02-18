@@ -365,10 +365,6 @@ AC_CONFIG_FILES([../test/OA/serial/C/run_oa_c_test.sh], \
                 [chmod +x ../test/OA/serial/C/run_oa_c_test.sh])
 AC_CONFIG_FILES([../test/OA/serial/Fortran/run_oa_f_test.sh], \
                 [chmod +x ../test/OA/serial/Fortran/run_oa_f_test.sh])
-AS_IF([test "x${ax_cv_c_compiler_vendor}" = xportland],
-    [scorep_user_inc="SCOREP_User_Pgi.inc.in"],
-    [scorep_user_inc="SCOREP_User.inc.in"])
-AC_CONFIG_FILES([../include/scorep/SCOREP_User.inc:../include/scorep/${scorep_user_inc}])
 AS_IF([test "x${enable_shared}" = xno],
     [AS_CASE([${ac_scorep_platform}],
          [crayx*], [AC_CONFIG_COMMANDS([libtool-cray-fix],

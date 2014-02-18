@@ -3,22 +3,22 @@
 !
 !  Copyright (c) 2009-2011,
 !  RWTH Aachen University, Germany
-! 
+!
 !  Copyright (c) 2009-2011,
 !  Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-! 
-!  Copyright (c) 2009-2011,
+!
+!  Copyright (c) 2009-2011, 2014,
 !  Technische Universitaet Dresden, Germany
-! 
+!
 !  Copyright (c) 2009-2011,
 !  University of Oregon, Eugene, USA
-! 
+!
 !  Copyright (c) 2009-2011, 2013
 !  Forschungszentrum Juelich GmbH, Germany
-! 
+!
 !  Copyright (c) 2009-2011,
 !  German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-! 
+!
 !  Copyright (c) 2009-2011,
 !  Technische Universitaet Muenchen, Germany
 !
@@ -34,6 +34,12 @@
 !<
 
 #ifdef SCOREP_USER_ENABLE
+
+#ifdef __PGI
+#define SCOREP_USER_DECL_VAR( type, variable, value ) type variable
+#else
+#define SCOREP_USER_DECL_VAR( type, variable, value ) type :: variable = value
+#endif
 
 !************************************************************* Data types
 
@@ -63,22 +69,22 @@
 !************************************************************* Regions
 
 #define SCOREP_USER_REGION_DEFINE( handle ) \
-        SCOREP_USER_REGION_HANDLE handle
-        
-#define SCOREP_USER_REWIND_DEFINE( handle ) \
-        SCOREP_USER_REGION_HANDLE handle        
+        SCOREP_USER_DECL_VAR( SCOREP_USER_REGION_HANDLE, handle, SCOREP_USER_INVALID_REGION )
 
-#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type ) \
-		call SCOREP_F_OaBegin(handle,name,type,"",__LINE__) 
+#define SCOREP_USER_REWIND_DEFINE( handle ) \
+        SCOREP_USER_DECL_VAR( SCOREP_USER_REGION_HANDLE, handle, SCOREP_USER_INVALID_REGION )
+
+#define SCOREP_USER_OA_PHASE_BEGIN( handle, name, type )\
+        call SCOREP_F_OaBegin( handle,name,type,"",__LINE__)
 
 #define SCOREP_USER_OA_PHASE_END( handle ) \
-		call SCOREP_F_OaEnd( handle )
+        call SCOREP_F_OaEnd( handle )
 
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )\
         call SCOREP_F_Begin(handle,name,type,"",__LINE__)
-        
-#define SCOREP_USER_REWIND_POINT( handle, name, type )\
-        call SCOREP_F_RewindBegin(handle,name,SCOREP_USER_REGION_TYPE_COMMON,"",__LINE__)        
+
+#define SCOREP_USER_REWIND_POINT( handle, name ) \
+        call SCOREP_F_RewindBegin(handle,name,SCOREP_USER_REGION_TYPE_COMMON,"",__LINE__)
 
 #define SCOREP_USER_REGION_INIT( handle, name, type )\
         call SCOREP_F_Init(handle,name,type,"",__LINE__)
@@ -97,17 +103,31 @@
 
 #define SCOREP_USER_FUNC_END() SCOREP_USER_REGION_END(scrpfh)
 
+!************************************************************* Parameter
+
+#define SCOREP_USER_PARAMETER_DEFINE( handle ) \
+        SCOREP_USER_DECL_VAR( SCOREP_USER_PARAMETER_HANDLE, handle, SCOREP_USER_INVALID_PARAMETER )
+
+#define SCOREP_USER_PARAMETER_INT64( handle, name, value ) \
+        call SCOREP_F_ParameterInt64( handle, name, value )
+
+#define SCOREP_USER_PARAMETER_UINT64( handle, name, value ) \
+        call SCOREP_F_ParameterUint64( handle, name, value )
+
+#define SCOREP_USER_PARAMETER_STRING( handle, name, value ) \
+        call SCOREP_F_ParameterString( handle, name, value )
+
 !************************************************************* User metric
 
 #define SCOREP_USER_METRIC_LOCAL( metricHandle ) \
-        SCOREP_USER_METRIC_HANDLE metricHandle
+        SCOREP_USER_DECL_VAR( SCOREP_USER_METRIC_HANDLE, metricHandle, SCOREP_USER_INVALID_METRIC)
 
 #define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context ) \
         call SCOREP_F_InitMetric(metricHandle,name,unit,type,context)
 
 #define SCOREP_USER_METRIC_INT64( metricHandle, value ) \
         call SCOREP_F_MetricInt64( metricHandle, value )
-        
+
 #define SCOREP_USER_METRIC_UINT64( metricHandle, value ) \
         call SCOREP_F_MetricUint64( metricHandle, value )
 
@@ -121,20 +141,6 @@
 #define SCOREP_RECORDING_OFF() call SCOREP_F_DisableRecording()
 
 #define SCOREP_RECORDING_IS_ON( isOn ) call SCOREP_F_RecordingEnabled( isOn )
-
-!************************************************************* Parameter
-
-#define SCOREP_USER_PARAMETER_DEFINE( handle ) \
-        SCOREP_USER_PARAMETER_HANDLE handle
-
-#define SCOREP_USER_PARAMETER_INT64( handle, name, value ) \
-        call SCOREP_F_ParameterInt64( handle, name, value )
-
-#define SCOREP_USER_PARAMETER_UINT64( handle, name, value ) \
-        call SCOREP_F_ParameterUint64( handle, name, value )
-
-#define SCOREP_USER_PARAMETER_STRING( handle, name, value ) \
-        call SCOREP_F_ParameterString( handle, name, value )
 
 !************************************************************* Empty defines
 
@@ -153,6 +159,14 @@
 #define SCOREP_USER_FUNC_DEFINE()
 #define SCOREP_USER_FUNC_BEGIN( name )
 #define SCOREP_USER_FUNC_END()
+#define SCOREP_USER_GLOBAL_REGION_DEFINE( handle )
+#define SCOREP_USER_GLOBAL_REGION_EXTERNAL( handle )
+#define SCOREP_USER_PARAMETER_DEFINE( handle )
+#define SCOREP_USER_PARAMETER_INT64( handle, name, value )
+#define SCOREP_USER_PARAMETER_UINT64( handle, name, value )
+#define SCOREP_USER_PARAMETER_STRING( handle, name, value )
+#define SCOREP_USER_METRIC_GLOBAL( metricHandle )
+#define SCOREP_USER_METRIC_EXTERNAL( metricHandle )
 #define SCOREP_USER_METRIC_LOCAL( metricHandle )
 #define SCOREP_USER_METRIC_INIT( metricHandle, name, unit, type, context )
 #define SCOREP_USER_METRIC_INT64( metricHandle, value )
@@ -161,9 +175,5 @@
 #define SCOREP_RECORDING_ON()
 #define SCOREP_RECORDING_OFF()
 #define SCOREP_RECORDING_IS_ON( isOn ) isOn = .false.
-#define SCOREP_USER_PARAMETER_DEFINE( handle )
-#define SCOREP_USER_PARAMETER_INT64( handle, name, value )
-#define SCOREP_USER_PARAMETER_UINT64( handle, name, value )
-#define SCOREP_USER_PARAMETER_STRING( handle, name, value )
 
 #endif
