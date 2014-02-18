@@ -73,5 +73,18 @@ SCOREP_CreateExperimentDir( void );
 void
 SCOREP_RenameExperimentDir( void );
 
+/**
+ * Called by the tracing component before a buffer flush happens.
+ */
+void
+SCOREP_OnTracingBufferFlushBegin( bool final );
+
+
+/**
+ * Called by the tracing component after a buffer flush happened.
+ */
+void
+SCOREP_OnTracingBufferFlushEnd( uint64_t timestamp );
+
 
 #endif /* SCOREP_INTERNAL_RUNTIME_MANAGEMENT_H */

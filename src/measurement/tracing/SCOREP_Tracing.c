@@ -73,9 +73,8 @@
 #include "scorep_tracing_definitions.h"
 
 
-static OTF2_Archive*       scorep_otf2_archive;
-static SCOREP_Mutex        scorep_otf2_archive_lock;
-static SCOREP_RegionHandle scorep_flush_region = SCOREP_INVALID_REGION;
+static OTF2_Archive* scorep_otf2_archive;
+static SCOREP_Mutex  scorep_otf2_archive_lock;
 
 
 /** @todo croessel in OTF2_Archive_Open we need to specify an event
@@ -145,21 +144,9 @@ scorep_on_trace_pre_flush( void*         userData,
                            void*         callerData,
                            bool          final )
 {
-    if ( SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled() && !final )
+    if ( fileType == OTF2_FILETYPE_EVENTS )
     {
-        SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-
-        SCOREP_Profile_Enter( location,
-                              scorep_flush_region,
-                              SCOREP_REGION_ARTIFICIAL,
-                              SCOREP_GetClockTicks(),
-                              SCOREP_Metric_Read( location ) );
-    }
-
-    if ( !SCOREP_Status_IsMppInitialized() )
-    {
-        // flush before MPI_Init, we are lost.
-        UTILS_FATAL( "Trace buffer flush before MPP was initialized." );
+        SCOREP_OnTracingBufferFlushBegin( final );
     }
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_TRACING,
@@ -218,20 +205,11 @@ scorep_on_trace_post_flush( void*         userData,
                             OTF2_FileType fileType,
                             uint64_t      locationId )
 {
-    /* remember that we have flushed the first time
-     * after this point, we can't switch into MPI mode anymore
-     */
-    SCOREP_Status_OnOtf2Flush();
-
     uint64_t timestamp = SCOREP_GetClockTicks();
 
-    if ( SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled() )
+    if ( fileType == OTF2_FILETYPE_EVENTS )
     {
-        SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-        SCOREP_Profile_Exit( location,
-                             scorep_flush_region,
-                             timestamp,
-                             SCOREP_Metric_Read( location ) );
+        SCOREP_OnTracingBufferFlushEnd( timestamp );
     }
 
     return timestamp;
@@ -375,14 +353,6 @@ SCOREP_Tracing_Initialize( void )
     OTF2_Archive_SetCreator( scorep_otf2_archive, PACKAGE_STRING );
 
     SCOREP_MutexCreate( &scorep_otf2_archive_lock );
-
-    scorep_flush_region =
-        SCOREP_Definitions_NewRegion( "TRACE BUFFER FLUSH", NULL,
-                                      SCOREP_INVALID_SOURCE_FILE,
-                                      SCOREP_INVALID_LINE_NO,
-                                      SCOREP_INVALID_LINE_NO,
-                                      SCOREP_PARADIGM_MEASUREMENT,
-                                      SCOREP_REGION_ARTIFICIAL );
 }
 
 

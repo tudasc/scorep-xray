@@ -56,10 +56,12 @@
 
 #include <SCOREP_Memory.h>
 #include <SCOREP_Subsystem.h>
+#include <SCOREP_Definitions.h>
 #include <definitions/SCOREP_Definitions.h>
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Timing.h>
+#include <SCOREP_Events.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Profile_MpiEvents.h>
 #include <tracing/SCOREP_Tracing.h>
@@ -99,8 +101,13 @@ static SCOREP_Platform_SystemTreePathElement* system_tree_path;
 static SCOREP_ExitCallback scorep_exit_callbacks[ scorep_max_exit_callbacks ];
 static int                 scorep_n_exit_callbacks = 0;
 
+/* Artificial regions from Score-P */
+
 /** @brief Region handle to collect data for when measurement is disabled. */
-SCOREP_RegionHandle scorep_record_off_region = SCOREP_INVALID_REGION;
+static SCOREP_RegionHandle scorep_record_off_region;
+
+/** @brief Region handle for the trace buffer flush region. */
+static SCOREP_RegionHandle scorep_buffer_flush_region;
 
 /** Temporally disable trace event consumption.
  *
@@ -126,6 +133,7 @@ static void scorep_initialization_sanity_checks( void );
 static void scorep_profile_initialize( SCOREP_Location* loaction );
 static void scorep_profile_finalize( SCOREP_Location* loaction );
 static void scorep_trigger_exit_callbacks( void );
+static void scorep_define_measurement_regions( void );
 /* *INDENT-ON* */
 
 /**
@@ -200,6 +208,9 @@ SCOREP_InitMeasurement( void )
 
     /* Get location group handle from system tree */
     location_group_handle = SCOREP_DefineSystemTree( system_tree_path );
+
+    /* Define artificial regions. */
+    scorep_define_measurement_regions();
 
     /* Data structure containing path in system tree is not needed any longer */
     SCOREP_FreeSystemTree( system_tree_path );
@@ -402,8 +413,10 @@ SCOREP_EnableRecording( void )
         if ( SCOREP_IsProfilingEnabled() && !scorep_recording_enabled  )
         {
             uint64_t* metric_values = SCOREP_Metric_Read( location );
-            SCOREP_Profile_Exit( location, scorep_record_off_region,
-                                 timestamp, metric_values );
+            SCOREP_Profile_Exit( location,
+                                 scorep_record_off_region,
+                                 timestamp,
+                                 metric_values );
         }
         scorep_recording_enabled = true;
     }
@@ -438,21 +451,12 @@ SCOREP_DisableRecording( void )
         }
         if ( SCOREP_IsProfilingEnabled() && scorep_recording_enabled )
         {
-            if ( scorep_record_off_region == SCOREP_INVALID_REGION )
-            {
-                scorep_record_off_region =
-                    SCOREP_Definitions_NewRegion( "MEASUREMENT OFF", NULL,
-                                                  SCOREP_INVALID_SOURCE_FILE,
-                                                  SCOREP_INVALID_LINE_NO,
-                                                  SCOREP_INVALID_LINE_NO,
-                                                  SCOREP_PARADIGM_USER,
-                                                  SCOREP_REGION_ARTIFICIAL );
-            }
-
             uint64_t* metric_values = SCOREP_Metric_Read( location );
-            SCOREP_Profile_Enter( location, scorep_record_off_region,
+            SCOREP_Profile_Enter( location,
+                                  scorep_record_off_region,
                                   SCOREP_REGION_ARTIFICIAL,
-                                  timestamp, metric_values );
+                                  timestamp,
+                                  metric_values );
         }
         scorep_recording_enabled = false;
     }
@@ -475,6 +479,57 @@ SCOREP_RecordingEnabled( void )
     UTILS_DEBUG_ENTRY();
 
     return scorep_recording_enabled;
+}
+
+/**
+ * Called by the tracing component before a buffer flush happens.
+ */
+void
+SCOREP_OnTracingBufferFlushBegin( bool final )
+{
+    if ( !SCOREP_Status_IsMppInitialized() )
+    {
+        UTILS_FATAL( "Trace buffer flush before MPP was initialized." );
+    }
+
+    if ( SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled() && !final )
+    {
+        /*
+         * We account the flush time of non-CPU locations (i.e., CUDA streams
+         * and metric locations) to the current CPU.
+         */
+        SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+        SCOREP_Profile_Enter( location,
+                              scorep_buffer_flush_region,
+                              SCOREP_REGION_ARTIFICIAL,
+                              SCOREP_GetClockTicks(),
+                              SCOREP_Metric_Read( location ) );
+    }
+}
+
+/**
+ * Called by the tracing component after a buffer flush happened.
+ */
+void
+SCOREP_OnTracingBufferFlushEnd( uint64_t timestamp )
+{
+    /* remember that we have flushed the first time
+     * after this point, we can't switch into multi-process mode anymore
+     */
+    SCOREP_Status_OnOtf2Flush();
+
+    if ( SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled() )
+    {
+        /*
+         * We account the flush time of non-CPU locations (i.e., CUDA streams
+         * and metric locations) to the current CPU.
+         */
+        SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+        SCOREP_Profile_Exit( location,
+                             scorep_buffer_flush_region,
+                             timestamp,
+                             SCOREP_Metric_Read( location ) );
+    }
 }
 
 static void
@@ -589,5 +644,28 @@ scorep_trigger_exit_callbacks( void )
     for ( int i = scorep_n_exit_callbacks - 1; i >= 0; --i )
     {
         ( *( scorep_exit_callbacks[ i ] ) )();
+    }
+}
+
+void
+scorep_define_measurement_regions( void )
+{
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+        scorep_record_off_region = SCOREP_Definitions_NewRegion(
+            "MEASUREMENT OFF", NULL,
+            SCOREP_INVALID_SOURCE_FILE,
+            SCOREP_INVALID_LINE_NO,
+            SCOREP_INVALID_LINE_NO,
+            SCOREP_PARADIGM_USER,
+            SCOREP_REGION_ARTIFICIAL );
+
+        scorep_buffer_flush_region = SCOREP_Definitions_NewRegion(
+            "TRACE BUFFER FLUSH", NULL,
+            SCOREP_INVALID_SOURCE_FILE,
+            SCOREP_INVALID_LINE_NO,
+            SCOREP_INVALID_LINE_NO,
+            SCOREP_PARADIGM_MEASUREMENT,
+            SCOREP_REGION_ARTIFICIAL );
     }
 }
