@@ -247,7 +247,7 @@ SCOREP_Config_CompilerAdapter::addLdFlags( std::string& ldflags )
 {
     if ( m_is_enabled )
     {
-        ldflags += " " SCOREP_LDFLAGS;
+        ldflags += " " SCOREP_CFLAGS " " SCOREP_LDFLAGS;
     }
 }
 

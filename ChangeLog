@@ -72,6 +72,9 @@
 - The measurement configuration (stored in the file `scorep.cfg') is
   now also preserved in the experiment directory in case of an failed
   measurement.
+- Added compiler instrumentation flags also to the ldflags to fix
+  missing instrumentation if high optimization levels recompile parts
+  od the code.
 
 ------------------- Released version 1.2.2 ---------------------------
 
