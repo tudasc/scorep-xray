@@ -238,7 +238,7 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string& cflags,
 {
     if ( m_is_enabled )
     {
-        cflags += "-g " SCOREP_CFLAGS " ";
+        cflags += SCOREP_CFLAGS " ";
     }
 }
 
