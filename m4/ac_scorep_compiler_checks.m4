@@ -18,7 +18,7 @@
 ## Copyright (c) 2009-2013,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2014
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -116,8 +116,8 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [sun],      [ac_scorep_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"],
     [ibm],      [ac_scorep_compiler_instrumentation_cppflags="-qdebug=function_trace"],
     [portland], [ac_scorep_compiler_instrumentation_cppflags="-Mprof=func"],
-    [gnu],      [ac_scorep_compiler_instrumentation_cppflags="-finstrument-functions"],
-    [cray],     [ac_scorep_compiler_instrumentation_cppflags="-hfunc_trace"
+    [gnu],      [ac_scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"],
+    [cray],     [ac_scorep_compiler_instrumentation_cppflags="-g -hfunc_trace"
                  ac_scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"],
     [])dnl
 
