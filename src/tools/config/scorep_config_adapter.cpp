@@ -139,12 +139,13 @@ SCOREP_Config_Adapter::addIncFlagsAll( std::string& incflags,
 }
 
 void
-SCOREP_Config_Adapter::addLdFlagsAll( std::string& ldflags )
+SCOREP_Config_Adapter::addLdFlagsAll( std::string& ldflags,
+                                      bool         nvcc )
 {
     std::deque<SCOREP_Config_Adapter*>::iterator i;
     for ( i = all.begin(); i != all.end(); i++ )
     {
-        ( *i )->addLdFlags( ldflags );
+        ( *i )->addLdFlags( ldflags, nvcc );
     }
 }
 
@@ -210,7 +211,8 @@ SCOREP_Config_Adapter::addCFlags( std::string& cflags,
 }
 
 void
-SCOREP_Config_Adapter::addLdFlags( std::string& ldflags )
+SCOREP_Config_Adapter::addLdFlags( std::string& ldflags,
+                                   bool         nvcc )
 {
 }
 
@@ -243,11 +245,19 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string& cflags,
 }
 
 void
-SCOREP_Config_CompilerAdapter::addLdFlags( std::string& ldflags )
+SCOREP_Config_CompilerAdapter::addLdFlags( std::string& ldflags,
+                                           bool         nvcc )
 {
     if ( m_is_enabled )
     {
-        ldflags += " " SCOREP_CFLAGS " " SCOREP_LDFLAGS;
+        if ( nvcc )
+        {
+            ldflags += " " SCOREP_LDFLAGS;
+        }
+        else
+        {
+            ldflags += " " SCOREP_CFLAGS " " SCOREP_LDFLAGS;
+        }
     }
 }
 

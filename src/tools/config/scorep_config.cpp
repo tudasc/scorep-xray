@@ -359,7 +359,7 @@ main( int    argc,
                                          m_rpath_delimiter,
                                          m_rpath_tail );
             }
-            SCOREP_Config_Adapter::addLdFlagsAll( str );
+            SCOREP_Config_Adapter::addLdFlagsAll( str, nvcc );
 
             if ( nvcc )
             {

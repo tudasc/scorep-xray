@@ -94,7 +94,8 @@ public:
      * Calls for all adapters the addLdFlags() member functions.
      */
     static void
-    addLdFlagsAll( std::string& ldflags );
+    addLdFlagsAll( std::string& ldflags,
+                   bool         nvcc );
 
     /**
      * Constructs a SCOREP_Config_Adapter.
@@ -178,10 +179,12 @@ protected:
     /**
      * Overwrite this function if you want to do adapter specific modifications
      * to the linker flags.
-     * @param ldflgas  the linker flags to which you may modify or add new flags.
+     * @param ldflags  the linker flags to which you may modify or add new flags.
+     * @param nvcc     True if compiler is nvcc.
      */
     virtual void
-    addLdFlags( std::string& ldflags );
+    addLdFlags( std::string& ldflags,
+                bool         nvcc );
 
     /**
      * Stores whether this adapter is currently enabled.
@@ -222,7 +225,8 @@ public:
                bool         fortran,
                bool         nvcc );
     virtual void
-    addLdFlags( std::string& ldflags );
+    addLdFlags( std::string& ldflags,
+                bool         nvcc );
 };
 
 /* **************************************************************************************
