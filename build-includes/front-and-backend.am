@@ -10,7 +10,7 @@ include ../src/adapters/cuda/Makefile.confvars.inc.am
 include ../src/adapters/mpi/Makefile.confvars.inc.am
 include ../src/adapters/pomp/Makefile.confvars.inc.am
 include ../src/adapters/user/Makefile.confvars.inc.am
-include ../src/measurement/thread_fork_join/Makefile.confvars.inc.am
+include ../src/measurement/thread/fork_join/Makefile.confvars.inc.am
 include ../src/utils/filtering/Makefile.inc.am
 include ../src/utils/vector/Makefile.inc.am
 include ../src/utils/hashtab/Makefile.inc.am

@@ -11,12 +11,12 @@
 ## directory for details.
 ##
 
-## file src/measurement/thread_fork_join/Makefile.confvars.inc.am
+## file src/measurement/thread/fork_join/Makefile.confvars.inc.am
 
 noinst_LTLIBRARIES += libscorep_thread_fork_join_confvars.la
 
 libscorep_thread_fork_join_confvars_la_SOURCES = \
-    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_confvars.c
+    $(SRC_ROOT)src/measurement/thread/fork_join/scorep_thread_fork_join_confvars.c
 
 libscorep_thread_fork_join_confvars_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \

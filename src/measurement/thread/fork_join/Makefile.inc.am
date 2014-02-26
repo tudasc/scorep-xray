@@ -12,17 +12,17 @@
 ## directory for details.
 ##
 
-## file src/measurement/thread_fork_join/Makefile.inc.am
+## file src/measurement/thread/fork_join/Makefile.inc.am
 
-INC_DIR_THREAD_FORK_JOIN = $(INC_ROOT)src/measurement/thread_fork_join/include_extern
-INC_DIR_THREAD_FORK_JOIN_INTERN = $(INC_ROOT)src/measurement/thread_fork_join/include_intern
+INC_DIR_THREAD_FORK_JOIN = $(INC_ROOT)src/measurement/thread/fork_join/include_extern
+INC_DIR_THREAD_FORK_JOIN_INTERN = $(INC_ROOT)src/measurement/thread/fork_join/include_intern
 
 if HAVE_OPENMP_SUPPORT
 
 lib_LTLIBRARIES += libscorep_thread_fork_join_omp_tpd.la
 libscorep_thread_fork_join_omp_tpd_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libscorep_thread_fork_join_omp_tpd_la_SOURCES  = \
-    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_omp_tpd.c
+    $(SRC_ROOT)src/measurement/thread/fork_join/scorep_thread_fork_join_omp_tpd.c
 libscorep_thread_fork_join_omp_tpd_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(INC_DIR_THREAD_FORK_JOIN_INTERN) \
@@ -46,7 +46,7 @@ lib_LTLIBRARIES += libscorep_thread_fork_join_omp_ancestry.la
 libscorep_thread_fork_join_omp_ancestry_la_CFLAGS   = \
     $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libscorep_thread_fork_join_omp_ancestry_la_SOURCES  = \
-    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_omp_ancestry.c
+    $(SRC_ROOT)src/measurement/thread/fork_join/scorep_thread_fork_join_omp_ancestry.c
 libscorep_thread_fork_join_omp_ancestry_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(INC_DIR_THREAD_FORK_JOIN_INTERN) \
@@ -71,14 +71,14 @@ endif HAVE_OPENMP_SUPPORT
 
 noinst_LTLIBRARIES += libscorep_thread_fork_join_generic.la
 libscorep_thread_fork_join_generic_la_SOURCES = \
-    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_generic.c                       \
-    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_team.c                          \
-    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_team.h                          \
-    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_team_unify.c                    \
-    $(SRC_ROOT)src/measurement/thread_fork_join/include_intern/scorep_thread_fork_join_generic.h        \
-    $(SRC_ROOT)src/measurement/thread_fork_join/include_intern/scorep_thread_fork_join_model_specific.h \
-    $(SRC_ROOT)src/measurement/thread_fork_join/include_extern/SCOREP_ThreadForkJoin_Event.h            \
-    $(SRC_ROOT)src/measurement/thread_fork_join/include_extern/SCOREP_ThreadForkJoin_Mgmt.h
+    $(SRC_ROOT)src/measurement/thread/fork_join/scorep_thread_fork_join_generic.c                       \
+    $(SRC_ROOT)src/measurement/thread/fork_join/scorep_thread_fork_join_team.c                          \
+    $(SRC_ROOT)src/measurement/thread/fork_join/scorep_thread_fork_join_team.h                          \
+    $(SRC_ROOT)src/measurement/thread/fork_join/scorep_thread_fork_join_team_unify.c                    \
+    $(SRC_ROOT)src/measurement/thread/fork_join/include_intern/scorep_thread_fork_join_generic.h        \
+    $(SRC_ROOT)src/measurement/thread/fork_join/include_intern/scorep_thread_fork_join_model_specific.h \
+    $(SRC_ROOT)src/measurement/thread/fork_join/include_extern/SCOREP_ThreadForkJoin_Event.h            \
+    $(SRC_ROOT)src/measurement/thread/fork_join/include_extern/SCOREP_ThreadForkJoin_Mgmt.h
 libscorep_thread_fork_join_generic_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(INC_DIR_THREAD_FORK_JOIN_INTERN) \
@@ -95,7 +95,7 @@ libscorep_thread_fork_join_generic_la_CPPFLAGS = \
 
 lib_LTLIBRARIES += libscorep_thread_fork_join_mockup.la
 libscorep_thread_fork_join_mockup_la_SOURCES  =                   \
-    $(SRC_ROOT)src/measurement/thread_fork_join/scorep_thread_fork_join_mockup.c
+    $(SRC_ROOT)src/measurement/thread/fork_join/scorep_thread_fork_join_mockup.c
 libscorep_thread_fork_join_mockup_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(INC_DIR_THREAD_FORK_JOIN_INTERN) \
