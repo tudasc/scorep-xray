@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -43,7 +43,6 @@
 #include <definitions/SCOREP_Definitions.h>
 
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -106,13 +105,17 @@ SCOREP_GetFirstClockSyncPair( int64_t*  offset1,
                               int64_t*  offset2,
                               uint64_t* timestamp2 )
 {
-    assert( clock_offset_head );
-    assert( clock_offset_head->next );
+    UTILS_BUG_ON( clock_offset_head == NULL || clock_offset_head->next == NULL,
+                  "Requesting the first clock sync pair without having at least 2 offsets" );
+
     *offset1    = clock_offset_head->offset;
     *timestamp1 = clock_offset_head->time;
     *offset2    = clock_offset_head->next->offset;
     *timestamp2 = clock_offset_head->next->time;
-    assert( *timestamp2 > *timestamp1 );
+
+    UTILS_BUG_ON( *timestamp1 >= *timestamp2,
+                  "Out of order clock sync pairs: %" PRIu64 " >= %" PRIu64,
+                  *timestamp1, *timestamp2 );
 }
 
 
@@ -122,8 +125,9 @@ SCOREP_GetLastClockSyncPair( int64_t*  offset1,
                              int64_t*  offset2,
                              uint64_t* timestamp2 )
 {
-    assert( clock_offset_head );
-    assert( clock_offset_head->next );
+    UTILS_BUG_ON( clock_offset_head == NULL || clock_offset_head->next == NULL,
+                  "Requesting the last clock sync pair without having at least 2 offsets" );
+
     SCOREP_ClockOffset* previous = clock_offset_head;
     SCOREP_ClockOffset* current  = previous->next;
 
@@ -137,7 +141,10 @@ SCOREP_GetLastClockSyncPair( int64_t*  offset1,
     *timestamp1 = previous->time;
     *offset2    = current->offset;
     *timestamp2 = current->time;
-    assert( *timestamp2 > *timestamp1 );
+
+    UTILS_BUG_ON( *timestamp1 >= *timestamp2,
+                  "Out of order clock sync pairs: %" PRIu64 " >= %" PRIu64,
+                  *timestamp1, *timestamp2 );
 }
 
 void

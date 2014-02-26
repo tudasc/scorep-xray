@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -43,7 +43,6 @@
 #include <definitions/SCOREP_Definitions.h>
 
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -381,8 +380,8 @@ void
 scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*       definition,
                                        SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( definition );
-    assert( handlesPageManager );
+    UTILS_ASSERT( definition );
+    UTILS_ASSERT( handlesPageManager );
 
     SCOREP_CommunicatorHandle unified_parent_handle = SCOREP_INVALID_COMMUNICATOR;
     if ( definition->parent_handle != SCOREP_INVALID_COMMUNICATOR )
@@ -391,7 +390,8 @@ scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*       definition,
             definition->parent_handle,
             Communicator,
             handlesPageManager );
-        assert( unified_parent_handle != SCOREP_MOVABLE_NULL );
+        UTILS_BUG_ON( unified_parent_handle == SCOREP_MOVABLE_NULL,
+                      "Invalid unification order of communicator definition: parent not yet unified" );
     }
 
     definition->unified = define_communicator(

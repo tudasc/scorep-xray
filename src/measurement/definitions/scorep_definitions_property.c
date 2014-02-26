@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -43,7 +43,6 @@
 #include <definitions/SCOREP_Definitions.h>
 
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -133,7 +132,7 @@ define_property( SCOREP_DefinitionManager* definition_manager,
                  bool                      initialValue,
                  bool                      invalidated )
 {
-    assert( definition_manager );
+    UTILS_ASSERT( definition_manager );
 
     SCOREP_PropertyDef*   new_definition = NULL;
     SCOREP_PropertyHandle new_handle     = SCOREP_INVALID_PARAMETER;
@@ -177,7 +176,8 @@ define_property( SCOREP_DefinitionManager* definition_manager,
                             existing_definition->invalidated || new_definition->invalidated;
                         break;
                     default:
-                        UTILS_BUG( "Invalid condition for property" );
+                        UTILS_BUG( "Invalid condition for property: %u",
+                                   existing_definition->condition );
                 }
 
                 SCOREP_Allocator_RollbackAllocMovable(

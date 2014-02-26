@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -43,7 +43,6 @@
 #include <definitions/SCOREP_Definitions.h>
 
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -144,7 +143,7 @@ SCOREP_Definitions_NewUnifiedGroup( SCOREP_GroupType type,
                                     uint32_t         numberOfMembers,
                                     const uint64_t*  members )
 {
-    assert( scorep_unified_definition_manager );
+    UTILS_ASSERT( scorep_unified_definition_manager );
 
     return define_group(
                scorep_unified_definition_manager,
@@ -168,7 +167,7 @@ SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
                                           uint32_t         numberOfMembers,
                                           const uint32_t*  members )
 {
-    assert( scorep_unified_definition_manager );
+    UTILS_ASSERT( scorep_unified_definition_manager );
 
     return define_group(
                scorep_unified_definition_manager,
@@ -186,8 +185,8 @@ void
 scorep_definitions_unify_group( SCOREP_GroupDef*              definition,
                                 SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( definition );
-    assert( handlesPageManager );
+    UTILS_ASSERT( definition );
+    UTILS_ASSERT( handlesPageManager );
 
     definition->unified = define_group(
         scorep_unified_definition_manager,

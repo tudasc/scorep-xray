@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -308,10 +308,13 @@ static inline void
 scorep_definitions_manager_entry_alloc_hash_table( scorep_definitions_manager_entry* entry,
                                                    uint32_t                          hash_table_power )
 {
-    UTILS_BUG_ON( hash_table_power > 15, "Hash table too big." );
+    UTILS_BUG_ON( hash_table_power > 15,
+                  "Hash table too big: %u", hash_table_power );
     entry->hash_table_mask = hashmask( hash_table_power );
     entry->hash_table      = calloc( hashsize( hash_table_power ), sizeof( *entry->hash_table ) );
-    UTILS_BUG_ON( entry->hash_table == 0, "Allocation failed." );
+    UTILS_BUG_ON( entry->hash_table == 0,
+                  "Can't allocate hash table of size %u",
+                  hash_table_power );
 }
 
 
@@ -336,7 +339,9 @@ scorep_definitions_manager_entry_alloc_mapping( scorep_definitions_manager_entry
     if ( entry->counter > 0 )
     {
         entry->mapping = malloc( entry->counter * sizeof( *entry->mapping ) );
-        UTILS_BUG_ON( entry->mapping == 0, "Allocation failed." );
+        UTILS_BUG_ON( entry->mapping == 0,
+                      "Can't allocate mapping table of size %u",
+                      entry->counter );
     }
 }
 

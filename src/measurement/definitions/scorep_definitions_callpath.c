@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -43,7 +43,6 @@
 #include <definitions/SCOREP_Definitions.h>
 
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -169,8 +168,8 @@ void
 scorep_definitions_unify_callpath( SCOREP_CallpathDef*           definition,
                                    SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( definition );
-    assert( handlesPageManager );
+    UTILS_ASSERT( definition );
+    UTILS_ASSERT( handlesPageManager );
 
     SCOREP_CallpathHandle unified_parent_callpath_handle = SCOREP_INVALID_CALLPATH;
     if ( definition->parent_callpath_handle != SCOREP_INVALID_CALLPATH )
@@ -179,7 +178,8 @@ scorep_definitions_unify_callpath( SCOREP_CallpathDef*           definition,
             definition->parent_callpath_handle,
             Callpath,
             handlesPageManager );
-        assert( unified_parent_callpath_handle != SCOREP_MOVABLE_NULL );
+        UTILS_BUG_ON( unified_parent_callpath_handle == SCOREP_MOVABLE_NULL,
+                      "Invalid unification order of callpath definition: parent not yet unified" );
     }
 
     SCOREP_RegionHandle    unified_region_handle    = SCOREP_INVALID_REGION;
@@ -195,7 +195,8 @@ scorep_definitions_unify_callpath( SCOREP_CallpathDef*           definition,
                 definition->callpath_argument.region_handle,
                 Callpath,
                 handlesPageManager );
-            assert( unified_region_handle != SCOREP_MOVABLE_NULL );
+            UTILS_BUG_ON( unified_region_handle == SCOREP_MOVABLE_NULL,
+                          "Invalid unification order of callpath definition: region not yet unified" );
         }
     }
     else
@@ -209,7 +210,8 @@ scorep_definitions_unify_callpath( SCOREP_CallpathDef*           definition,
                 handlesPageManager );
 
             unified_parameter_handle = parameter->unified;
-            assert( unified_parameter_handle != SCOREP_MOVABLE_NULL );
+            UTILS_BUG_ON( unified_parameter_handle == SCOREP_MOVABLE_NULL,
+                          "Invalid unification order of callpath definition: parameter not yet unified" );
 
             if ( ( parameter->parameter_type == SCOREP_PARAMETER_INT64 ) ||
                  ( parameter->parameter_type == SCOREP_PARAMETER_UINT64 ) )
@@ -224,12 +226,14 @@ scorep_definitions_unify_callpath( SCOREP_CallpathDef*           definition,
                         definition->parameter_value.string_handle,
                         String,
                         handlesPageManager );
-                    assert( unified_string_handle != SCOREP_MOVABLE_NULL );
+                    UTILS_BUG_ON( unified_string_handle == SCOREP_MOVABLE_NULL,
+                                  "Invalid unification order of callpath definition: string parameter not yet unified" );
                 }
             }
             else
             {
-                UTILS_BUG( "Not a valid parameter type." );
+                UTILS_BUG( "Not a valid parameter type: %u",
+                           parameter->parameter_type );
             }
         }
     }
@@ -254,7 +258,7 @@ define_callpath( SCOREP_DefinitionManager* definition_manager,
                  int64_t                   integerValue,
                  SCOREP_StringHandle       stringHandle )
 {
-    assert( definition_manager );
+    UTILS_ASSERT( definition_manager );
 
     SCOREP_CallpathDef*   new_definition = NULL;
     SCOREP_CallpathHandle new_handle     = SCOREP_INVALID_CALLPATH;

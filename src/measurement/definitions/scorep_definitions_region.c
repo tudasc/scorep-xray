@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -43,7 +43,6 @@
 #include <definitions/SCOREP_Definitions.h>
 
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -148,8 +147,8 @@ void
 scorep_definitions_unify_region( SCOREP_RegionDef*             definition,
                                  SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( definition );
-    assert( handlesPageManager );
+    UTILS_ASSERT( definition );
+    UTILS_ASSERT( handlesPageManager );
 
     SCOREP_StringHandle unified_file_name_handle = SCOREP_INVALID_STRING;
     if ( definition->file_name_handle != SCOREP_INVALID_STRING )
@@ -158,7 +157,8 @@ scorep_definitions_unify_region( SCOREP_RegionDef*             definition,
             definition->file_name_handle,
             String,
             handlesPageManager );
-        assert( unified_file_name_handle != SCOREP_MOVABLE_NULL );
+        UTILS_BUG_ON( unified_file_name_handle == SCOREP_MOVABLE_NULL,
+                      "Invalid unification order of region definition: file name not yet unified" );
     }
 
     definition->unified = define_region(
@@ -194,7 +194,7 @@ define_region( SCOREP_DefinitionManager* definition_manager,
                SCOREP_ParadigmType       paradigm,
                SCOREP_RegionType         regionType )
 {
-    assert( definition_manager );
+    UTILS_ASSERT( definition_manager );
 
     SCOREP_RegionDef*   new_definition = NULL;
     SCOREP_RegionHandle new_handle     = SCOREP_INVALID_REGION;

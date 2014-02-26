@@ -4,8 +4,11 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -23,7 +26,6 @@
 
 #include <definitions/SCOREP_Definitions.h>
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -35,6 +37,7 @@
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME DEFINITIONS
 #include <UTILS_Debug.h>
+
 #include <SCOREP_DefinitionHandles.h>
 #include <scorep_types.h>
 #include <SCOREP_Mutex.h>
@@ -79,8 +82,8 @@ void
 scorep_definitions_unify_location_property( SCOREP_LocationPropertyDef*   definition,
                                             SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( definition );
-    assert( handlesPageManager );
+    UTILS_ASSERT( definition );
+    UTILS_ASSERT( handlesPageManager );
 
     definition->unified = define_location_property(
         scorep_unified_definition_manager,
@@ -112,7 +115,7 @@ define_location_property( SCOREP_DefinitionManager* definition_manager,
                           SCOREP_StringHandle       nameHandle,
                           SCOREP_StringHandle       valueHandle )
 {
-    assert( definition_manager );
+    UTILS_ASSERT( definition_manager );
 
     SCOREP_LocationPropertyDef*   new_definition = NULL;
     SCOREP_LocationPropertyHandle new_handle     = SCOREP_INVALID_LOCATION_PROPERTY;

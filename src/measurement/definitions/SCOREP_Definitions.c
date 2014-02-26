@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -48,7 +48,6 @@
 #include <SCOREP_Mutex.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 #include "scorep_ipc.h"
@@ -56,6 +55,7 @@
 #include <jenkins_hash.h>
 #include <tracing/SCOREP_Tracing.h>
 
+#include <UTILS_Error.h>
 
 SCOREP_DefinitionManager  scorep_local_definition_manager;
 SCOREP_DefinitionManager* scorep_unified_definition_manager = 0;
@@ -90,7 +90,6 @@ SCOREP_Definitions_Initialize()
     scorep_definitions_create_interim_communicator_counter_lock();
 
     SCOREP_DefinitionManager* local_definition_manager = &scorep_local_definition_manager;
-    assert( local_definition_manager );
     SCOREP_Definitions_InitializeDefinitionManager( &local_definition_manager,
                                                     SCOREP_Memory_GetLocalDefinitionPageManager(),
                                                     false );
@@ -105,8 +104,8 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
                                                 SCOREP_Allocator_PageManager* pageManager,
                                                 bool                          allocHashTables )
 {
-    assert( definitionManager );
-    assert( pageManager );
+    UTILS_ASSERT( definitionManager );
+    UTILS_ASSERT( pageManager );
 
     if ( *definitionManager )
     {
@@ -115,6 +114,8 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     else
     {
         *definitionManager = calloc( 1, sizeof( SCOREP_DefinitionManager ) );
+        UTILS_BUG_ON( *definitionManager == 0,
+                      "Can't allocate definition manager" );
     }
 
     ( *definitionManager )->page_manager = pageManager;

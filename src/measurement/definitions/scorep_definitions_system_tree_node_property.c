@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -43,7 +43,6 @@
 #include <definitions/SCOREP_Definitions.h>
 
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -117,8 +116,8 @@ void
 scorep_definitions_unify_system_tree_node_property( SCOREP_SystemTreeNodePropertyDef* definition,
                                                     SCOREP_Allocator_PageManager*     handlesPageManager )
 {
-    assert( definition );
-    assert( handlesPageManager );
+    UTILS_ASSERT( definition );
+    UTILS_ASSERT( handlesPageManager );
 
     SCOREP_SystemTreeNodeHandle unified_system_tree_node_handle = SCOREP_HANDLE_GET_UNIFIED(
         definition->system_tree_node_handle,
@@ -163,7 +162,7 @@ add_system_tree_node_property( SCOREP_DefinitionManager*   definition_manager,
                                SCOREP_StringHandle         propertyNameHandle,
                                SCOREP_StringHandle         propertyValueHandle )
 {
-    assert( definition_manager );
+    UTILS_ASSERT( definition_manager );
 
     SCOREP_SystemTreeNodePropertyDef*   new_definition = NULL;
     SCOREP_SystemTreeNodePropertyHandle new_handle     = SCOREP_INVALID_SYSTEM_TREE_NODE_PROPERTY;

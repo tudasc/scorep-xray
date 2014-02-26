@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -43,7 +43,6 @@
 #include <definitions/SCOREP_Definitions.h>
 
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -178,17 +177,20 @@ void
 scorep_definitions_unify_sampling_set( SCOREP_SamplingSetDef*        definition,
                                        SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( definition );
-    assert( handlesPageManager );
+    UTILS_ASSERT( definition );
+    UTILS_ASSERT( handlesPageManager );
 
     if ( definition->is_scoped )
     {
         SCOREP_ScopedSamplingSetDef* scoped_definition
             = ( SCOREP_ScopedSamplingSetDef* )definition;
 
-        assert( scoped_definition->sampling_set_handle != SCOREP_INVALID_SAMPLING_SET );
-        assert( scoped_definition->recorder_handle != SCOREP_INVALID_LOCATION );
-        assert( scoped_definition->scope_handle != SCOREP_MOVABLE_NULL );
+        UTILS_BUG_ON( scoped_definition->sampling_set_handle == SCOREP_INVALID_SAMPLING_SET,
+                      "Invalid scoped sampling set definition: missing sampling set" );
+        UTILS_BUG_ON( scoped_definition->recorder_handle == SCOREP_INVALID_LOCATION,
+                      "Invalid scoped sampling set definition: missing location" );
+        UTILS_BUG_ON( scoped_definition->scope_handle == SCOREP_MOVABLE_NULL,
+                      "Invalid scoped sampling set definition: missing scope" );
 
         definition->unified = define_scoped_sampling_set(
             scorep_unified_definition_manager,
@@ -227,7 +229,7 @@ define_sampling_set( SCOREP_DefinitionManager*     definition_manager,
                      SCOREP_SamplingSetClass       klass,
                      SCOREP_Allocator_PageManager* handlesPageManager )
 {
-    assert( definition_manager );
+    UTILS_ASSERT( definition_manager );
 
     SCOREP_SamplingSetDef*   new_definition = NULL;
     SCOREP_SamplingSetHandle new_handle     = SCOREP_INVALID_SAMPLING_SET;
@@ -291,8 +293,8 @@ initialize_sampling_set( SCOREP_SamplingSetDef*        definition,
                 SCOREP_HANDLE_GET_UNIFIED( metrics[ i ],
                                            Metric,
                                            handlesPageManager );
-            assert( definition->metric_handles[ i ]
-                    != SCOREP_INVALID_METRIC );
+            UTILS_BUG_ON( definition->metric_handles[ i ] == SCOREP_INVALID_METRIC,
+                          "Invalid metric reference in sampling set definition" );
             HASH_ADD_HANDLE( definition, metric_handles[ i ], Metric );
         }
     }
@@ -301,8 +303,8 @@ initialize_sampling_set( SCOREP_SamplingSetDef*        definition,
         for ( uint8_t i = 0; i < numberOfMetrics; i++ )
         {
             definition->metric_handles[ i ] = metrics[ i ];
-            assert( definition->metric_handles[ i ]
-                    != SCOREP_INVALID_METRIC );
+            UTILS_BUG_ON( definition->metric_handles[ i ] == SCOREP_INVALID_METRIC,
+                          "Invalid metric reference in sampling set definition" );
             HASH_ADD_HANDLE( definition, metric_handles[ i ], Metric );
         }
     }
@@ -325,7 +327,7 @@ define_scoped_sampling_set( SCOREP_DefinitionManager* definition_manager,
                             SCOREP_MetricScope        scopeType,
                             SCOREP_AnyHandle          scopeHandle )
 {
-    assert( definition_manager );
+    UTILS_ASSERT( definition_manager );
 
     SCOREP_ScopedSamplingSetDef* new_definition = NULL;
     SCOREP_SamplingSetHandle     new_handle     = SCOREP_INVALID_SAMPLING_SET;
