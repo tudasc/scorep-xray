@@ -180,7 +180,7 @@ create_local_mappings( uint32_t comm_world_size,
             global_comm_id += total_number_of_root_comms;
             UTILS_BUG_ON( comm_payload->global_root_rank != rank,
                           "Invalid interim communicator definition, roots don't match: %u != %u",
-                          comm_payload->global_root_rank != rank );
+                          comm_payload->global_root_rank, rank );
         }
         interim_communicator_mapping[ definition->sequence_number ] =
             global_comm_id;
