@@ -41,7 +41,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
 #include <stdint.h>
 #include <inttypes.h>
 
@@ -51,7 +50,7 @@
 #include <SCOREP_Definitions.h>
 #include <definitions/SCOREP_Definitions.h>
 
-#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 
 static void
@@ -284,11 +283,15 @@ receive_and_unify_remote_definitions( int                           rank,
         *moved_page_ids = realloc( *moved_page_ids,
                                    number_of_pages
                                    * sizeof( **moved_page_ids ) );
-        assert( *moved_page_ids );
+        UTILS_BUG_ON( *moved_page_ids == NULL,
+                      "Can't allocate memory for moved_page_ids array of size: %u",
+                      number_of_pages );
         *moved_page_fills = realloc( *moved_page_fills,
                                      number_of_pages
                                      * sizeof( **moved_page_fills ) );
-        assert( *moved_page_fills );
+        UTILS_BUG_ON( *moved_page_fills == NULL,
+                      "Can't allocate memory for moved_page_fills array of size: %u",
+                      number_of_pages );
         *max_number_of_pages = number_of_pages;
     }
 
@@ -355,17 +358,25 @@ send_local_unified_definitions_to_parent( int        parent,
         *moved_page_ids = realloc( *moved_page_ids,
                                    number_of_used_pages
                                    * sizeof( **moved_page_ids ) );
-        assert( *moved_page_ids );
+        UTILS_BUG_ON( *moved_page_ids == NULL,
+                      "Can't allocate memory for moved_page_ids array of size: %u",
+                      number_of_used_pages );
+
         *moved_page_fills = realloc( *moved_page_fills,
                                      number_of_used_pages
                                      * sizeof( **moved_page_fills ) );
-        assert( *moved_page_fills );
+        UTILS_BUG_ON( *moved_page_fills == NULL,
+                      "Can't allocate memory for moved_page_fills array of size: %u",
+                      number_of_used_pages );
+
         *max_number_of_pages = number_of_used_pages;
     }
 
     void** moved_page_starts = calloc( number_of_used_pages,
                                        sizeof( *moved_page_starts ) );
-    assert( moved_page_starts );
+    UTILS_BUG_ON( moved_page_starts == NULL,
+                  "Can't allocate memory for moved_page_starts array of size: %u",
+                  number_of_used_pages );
 
     SCOREP_Allocator_GetPageInfos(
         scorep_unified_definition_manager->page_manager,
