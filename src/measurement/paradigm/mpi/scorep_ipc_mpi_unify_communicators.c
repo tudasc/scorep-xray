@@ -40,7 +40,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
 #include <stdint.h>
 #include <inttypes.h>
 
@@ -49,7 +48,7 @@
 #include <SCOREP_Definitions.h>
 #include <definitions/SCOREP_Definitions.h>
 
-#include <UTILS_Debug.h>
+#include <UTILS_Error.h>
 
 void
 scorep_mpi_unify_define_mpi_locations( void )
@@ -101,6 +100,8 @@ scorep_mpi_unify_communicators( void )
     uint32_t rank            = SCOREP_Ipc_GetRank();
     uint32_t total_number_of_root_comms;
 
+    UTILS_BUG_ON( comm_world_size == 0, "Invalid MPI_COMM_WORLD size of 0" );
+
     /* 1) Generate mapping from local to global communicators */
     total_number_of_root_comms = create_local_mappings( comm_world_size, rank );
 
@@ -118,12 +119,15 @@ create_local_mappings( uint32_t comm_world_size,
                        uint32_t rank )
 {
     /* Allocate memory for offsets */
-    uint32_t* offsets = calloc( comm_world_size, sizeof( *offsets ) );
-    assert( offsets );
+    uint32_t* number_of_root_comms_per_rank =
+        calloc( comm_world_size, sizeof( *number_of_root_comms_per_rank ) );
+    UTILS_BUG_ON( number_of_root_comms_per_rank == NULL,
+                  "Can't allocate comm_world_size array of size %u",
+                  comm_world_size );
 
     /* Gather communicator counts from all ranks */
     SCOREP_Ipc_Allgather( &scorep_mpi_number_of_root_comms,
-                          offsets,
+                          number_of_root_comms_per_rank,
                           1, SCOREP_IPC_UINT32_T );
 
     /*
@@ -136,15 +140,23 @@ create_local_mappings( uint32_t comm_world_size,
     uint32_t total_number_of_root_comms = 0;
     for ( uint32_t i = 0; i < comm_world_size; i++ )
     {
-        uint32_t comms_in_rank = offsets[ i ];
+        uint32_t comms_in_rank = number_of_root_comms_per_rank[ i ];
 
-        offsets[ i ] = total_number_of_root_comms;
+        number_of_root_comms_per_rank[ i ] = total_number_of_root_comms;
 
         total_number_of_root_comms += comms_in_rank;
     }
+    /*
+     * This array now holds the exclusive prefix sum of
+     * number_of_root_comms_per_rank, which is used as an offset from the
+     * the root comms I created into the global id of these communicators.
+     */
+    uint32_t* offsets = number_of_root_comms_per_rank;
+
 
     /* Create mapping tables
-       Every process calculates its own mappings from the offsets. */
+     * Every process calculates its own mappings from the offsets.
+     */
     uint32_t* interim_communicator_mapping =
         scorep_local_definition_manager.interim_communicator.mapping;
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager,
@@ -166,16 +178,18 @@ create_local_mappings( uint32_t comm_world_size,
         else
         {
             global_comm_id += total_number_of_root_comms;
-            assert( comm_payload->global_root_rank == rank );
+            UTILS_BUG_ON( comm_payload->global_root_rank != rank,
+                          "Invalid interim communicator definition, roots don't match: %u != %u",
+                          comm_payload->global_root_rank != rank );
         }
-        interim_communicator_mapping[ definition->sequence_number ]
-            = global_comm_id;
+        interim_communicator_mapping[ definition->sequence_number ] =
+            global_comm_id;
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 
-    free( offsets );
+    free( number_of_root_comms_per_rank );
 
-    /* the total number will be passed to the next phase */
+    /* The total number will be passed to the next phase */
     return total_number_of_root_comms;
 }
 
@@ -271,20 +285,28 @@ define_comms( uint32_t comm_world_size,
     {
         /* Allocate memory for the arrays. */
 
-        assert( comm_world_size );
         ranks_in_comm = calloc( comm_world_size, sizeof( *ranks_in_comm ) );
-        assert( ranks_in_comm );
+        UTILS_BUG_ON( ranks_in_comm == NULL,
+                      "Can't allocate ranks_in_comm array of size %u",
+                      comm_world_size );
 
         ranks_in_group = calloc( comm_world_size, sizeof( *ranks_in_group ) );
-        assert( ranks_in_group );
+        UTILS_BUG_ON( ranks_in_group == NULL,
+                      "Can't allocate ranks_in_group array of size %u",
+                      comm_world_size );
 
         comm_definitions = calloc( total_number_of_root_comms, sizeof( *comm_definitions ) );
-        assert( total_number_of_root_comms == 0 || comm_definitions );
+        UTILS_BUG_ON( total_number_of_root_comms != 0 && comm_definitions == NULL,
+                      "Can't allocate comm_definitions array of size %u",
+                      total_number_of_root_comms );
 
         /* Create a map from global ids to unified handles of string definitions */
         unified_strings = calloc( scorep_unified_definition_manager->string.counter,
                                   sizeof( *unified_strings ) );
-        assert( unified_strings );
+        UTILS_BUG_ON( unified_strings == NULL,
+                      "Can't allocate unified_strings array of size %u",
+                      scorep_unified_definition_manager->string.counter );
+
         SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
                                                              String,
                                                              string )
@@ -295,7 +317,9 @@ define_comms( uint32_t comm_world_size,
     }
 
     topo_comm_mapping = calloc( total_number_of_root_comms + 1, sizeof( *topo_comm_mapping ) );
-    assert( topo_comm_mapping );
+    UTILS_BUG_ON( topo_comm_mapping == NULL,
+                  "Can't allocate unified_strings array of size %u",
+                  total_number_of_root_comms + 1 );
 
     /*
      * Iterate over all communicators and create the corresponding MPI group
@@ -431,9 +455,12 @@ define_comms( uint32_t comm_world_size,
                     comm_definitions[ i ].group,
                     comm_definitions[ i ].name,
                     comm_parent_handle );
-                assert( SCOREP_UNIFIED_HANDLE_TO_ID(
-                            comm_definitions[ i ].handle, Communicator ) ==
-                        number_of_comms + global_comm_id );
+                UTILS_BUG_ON(
+                    SCOREP_UNIFIED_HANDLE_TO_ID( comm_definitions[ i ].handle, Communicator )
+                    == number_of_comms + global_comm_id,
+                    "Definition system created out-of-order sequence number for communicator: %u != %u",
+                    SCOREP_UNIFIED_HANDLE_TO_ID( comm_definitions[ i ].handle, Communicator ),
+                    number_of_comms + global_comm_id );
 
                 /*
                  * Account the already existing number of non-MPI communicators
@@ -531,8 +558,12 @@ define_self_likes( uint32_t rank )
                     self,
                     "",
                     SCOREP_INVALID_COMMUNICATOR );
-            assert( SCOREP_UNIFIED_HANDLE_TO_ID( handle, Communicator ) ==
-                    number_of_comms + i );
+            UTILS_BUG_ON(
+                SCOREP_UNIFIED_HANDLE_TO_ID( handle, Communicator )
+                == number_of_comms + i,
+                "Definition system created out-of-order sequence number for self-like communicator: %u != %u",
+                SCOREP_UNIFIED_HANDLE_TO_ID( handle, Communicator ),
+                number_of_comms + i );
         }
     }
 }
