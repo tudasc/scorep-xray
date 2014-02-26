@@ -51,6 +51,7 @@
 #include "scorep_subsystem.h"
 
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME UNIFY
 #include <UTILS_Debug.h>
 
 
@@ -90,7 +91,7 @@ SCOREP_Unify( void )
 #define UNIFY_DEFINITION( definition_manager, Type, type ) \
     do \
     { \
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Copying %s to unified", #type ); \
+        UTILS_DEBUG( "Copying %s to unified", #type ); \
         SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definition_manager, Type, type ) \
         { \
             scorep_definitions_unify_ ## type( definition, ( definition_manager )->page_manager ); \
@@ -133,7 +134,7 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
 #define ALLOC_MAPPINGS( definition_manager, type ) \
     do \
     { \
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Alloc mappings for %s", #type ); \
+        UTILS_DEBUG( "Alloc mappings for %s", #type ); \
         scorep_definitions_manager_entry_alloc_mapping( &( definition_manager )->type ); \
     } \
     while ( 0 )
@@ -158,7 +159,7 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
 #define ASSIGN_MAPPING( definition_manager, Type, type ) \
     do \
     { \
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Assign mapping for %s", #Type ); \
+        UTILS_DEBUG( "Assign mapping for %s", #Type ); \
         if ( ( definition_manager )->type.counter > 0 ) \
         { \
             SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definition_manager, Type, type ) \
@@ -192,7 +193,7 @@ SCOREP_AssignDefinitionMappingsFromUnified( SCOREP_DefinitionManager* definition
 #define FREE_MAPPING( definition_manager, type ) \
     do \
     { \
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Free mappings for %s", #type ); \
+        UTILS_DEBUG( "Free mappings for %s", #type ); \
         scorep_definitions_manager_entry_free_mapping( &( definition_manager )->type ); \
     } \
     while ( 0 )
@@ -246,11 +247,11 @@ SCOREP_Unify_Locally( void )
      * and are not derived by the unification algorithm. We nevertheless
      * store the mapping array in the uint32_t* mappings member.
      */
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Alloc mappings for location" );
+    UTILS_DEBUG( "Alloc mappings for location" );
     scorep_local_definition_manager.location.mapping = malloc(
         scorep_local_definition_manager.location.counter * sizeof( uint64_t ) );
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Assign mapping for Locations" );
+    UTILS_DEBUG( "Assign mapping for Locations" );
     if ( scorep_local_definition_manager.location.counter > 0 )
     {
         /* cast to uint64_t* to get the type right. */
