@@ -457,7 +457,7 @@ define_comms( uint32_t comm_world_size,
                     comm_parent_handle );
                 UTILS_BUG_ON(
                     SCOREP_UNIFIED_HANDLE_TO_ID( comm_definitions[ i ].handle, Communicator )
-                    == number_of_comms + global_comm_id,
+                    != number_of_comms + global_comm_id,
                     "Definition system created out-of-order sequence number for communicator: %u != %u",
                     SCOREP_UNIFIED_HANDLE_TO_ID( comm_definitions[ i ].handle, Communicator ),
                     number_of_comms + global_comm_id );
@@ -560,7 +560,7 @@ define_self_likes( uint32_t rank )
                     SCOREP_INVALID_COMMUNICATOR );
             UTILS_BUG_ON(
                 SCOREP_UNIFIED_HANDLE_TO_ID( handle, Communicator )
-                == number_of_comms + i,
+                != number_of_comms + i,
                 "Definition system created out-of-order sequence number for self-like communicator: %u != %u",
                 SCOREP_UNIFIED_HANDLE_TO_ID( handle, Communicator ),
                 number_of_comms + i );
