@@ -94,7 +94,7 @@ scorep_definitions_unify_string( SCOREP_StringDef*             definition,
 }
 
 
-bool
+static bool
 equal_string( const SCOREP_StringDef* existingDefinition,
               const SCOREP_StringDef* newDefinition )
 {

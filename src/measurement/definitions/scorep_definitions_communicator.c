@@ -287,7 +287,7 @@ SCOREP_Definitions_NewInterimCommunicatorInLocation(
 }
 
 
-static SCOREP_InterimCommunicatorHandle
+SCOREP_InterimCommunicatorHandle
 define_interim_communicator( SCOREP_DefinitionManager*        definition_manager,
                              SCOREP_InterimCommunicatorHandle parentComm,
                              SCOREP_ParadigmType              paradigmType,

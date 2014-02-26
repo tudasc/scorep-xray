@@ -67,7 +67,7 @@
 #include <SCOREP_Memory.h>
 
 
-SCOREP_SystemTreeNodeHandle
+static SCOREP_SystemTreeNodeHandle
 define_system_tree_node( SCOREP_DefinitionManager*   definition_manager,
                          SCOREP_SystemTreeNodeHandle parent,
                          SCOREP_SystemTreeDomain     domains,
