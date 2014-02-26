@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -181,17 +181,17 @@ create_local_mappings( uint32_t comm_world_size,
 
 
 /**
- * Helper function which checks for a global communicator id whether this rank
- * is part of the communicator. If it is, it returns its rank according to the
- * communicator specified by @a global_comm_id. If it is not, it returns -1.
+ * Helper function which checks whether this rank is part in the communicator
+ * given by the global communicator id @p global_comm_id. If it is, it returns
+ * the local rank according to the communicator. If not, it returns UINT32_MAX.
  *
- * @param global_comm_id A unified communicator id.
+ * @param global_comm_id      A unified communicator id.
  * @param global_aux_ids[out] Global ids of auxiliary communicator information.
  *                            Currently:
- *                            @li [0] Id of the communicator's name
- *                            @li [1] Id of the communicator's parent
+ *                            @li [0] Global id of the communicator's name
+ *                            @li [1] Global id of the communicator's parent
  *
- * @return My local rank in this communicator, or -1 when I'm not in
+ * @return My local rank in this communicator, or UINT32_MAX if I'm not in
  *         this communicator.
  */
 static uint32_t
@@ -218,12 +218,6 @@ is_this_rank_in_communicator( uint32_t  global_comm_id,
         {
             if ( comm_payload->local_rank == 0 )
             {
-                /*
-                 * If this comm does still not have a name (i.e. its
-                 * SCOREP_INVALID_STRING), assign it the empty string,
-                 * which has global id 0, and global_aux_ids[ 0 ] is already
-                 * initialized with 0.
-                 */
                 if ( definition->name_handle != SCOREP_INVALID_STRING )
                 {
                     SCOREP_StringDef* name_definition = SCOREP_HANDLE_DEREF(
@@ -345,6 +339,11 @@ define_comms( uint32_t comm_world_size,
             {
                 if ( ranks_in_comm[ i ] != UINT32_MAX )
                 {
+                    /*
+                     * The local rank 0 has auxiliary communicator
+                     * information for us. Receive them. But only if myself is
+                     * not the local root.
+                     */
                     if ( i > 0 && ranks_in_comm[ i ] == 0 )
                     {
                         SCOREP_Ipc_Recv( global_aux_ids,
@@ -357,21 +356,35 @@ define_comms( uint32_t comm_world_size,
                 }
             }
 
-            /* Define the MPI group */
-            comm_definitions[ global_comm_id ].handle =
-                SCOREP_INVALID_COMMUNICATOR;
-
+            /*
+             * Define the MPI group for this communicator, this may be a duplicate,
+             * but the definition system already handles this for us.
+             */
             comm_definitions[ global_comm_id ].group =
                 SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GROUP_MPI_GROUP,
                                                           "",
                                                           size,
                                                           ranks_in_group );
 
-            comm_definitions[ global_comm_id ].name        = unified_strings[ global_aux_ids[ 0 ] ];
-            comm_definitions[ global_comm_id ].comm_parent = global_aux_ids[ 1 ];
+            /*
+             * We don't define the communicator now, because the parent may not
+             * be defined yet. Thus just store the needed information now, and
+             * than define the communciators in an topological order later.
+             * The handle will be used for this topological sorting.
+             */
+            comm_definitions[ global_comm_id ].handle =
+                SCOREP_INVALID_COMMUNICATOR;
+            comm_definitions[ global_comm_id ].name =
+                unified_strings[ global_aux_ids[ 0 ] ];
+            comm_definitions[ global_comm_id ].comm_parent =
+                global_aux_ids[ 1 ];
         }
         else if ( my_rank_in_comm == 0 )
         {
+            /*
+             * I'm the local root in the communicator (but not the global root),
+             * send auxiliary communicator information to the global root.
+             */
             SCOREP_Ipc_Send( global_aux_ids,
                              2, SCOREP_IPC_UINT32_T, 0 );
         }
@@ -392,7 +405,7 @@ define_comms( uint32_t comm_world_size,
             {
                 if ( comm_definitions[ i ].handle != SCOREP_INVALID_COMMUNICATOR )
                 {
-                    // already defined
+                    /* already defined */
                     continue;
                 }
 
@@ -400,7 +413,7 @@ define_comms( uint32_t comm_world_size,
                      && comm_definitions[ comm_definitions[ i ].comm_parent ].handle
                      == SCOREP_INVALID_COMMUNICATOR )
                 {
-                    // parent not defined
+                    /* have a parent, but parent not yet defined */
                     continue;
                 }
 
