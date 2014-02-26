@@ -30,7 +30,7 @@
 
 /**
  *
- *  @file       scorep_metric_plugins.c
+ *  @file
  *
  *
  *  @brief This module implements support for metric plugins.
@@ -43,7 +43,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <sys/time.h>
 #include <sys/resource.h>
 

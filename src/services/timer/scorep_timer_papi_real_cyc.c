@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -23,13 +23,13 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
 
 /**
- * @file       scorep_timer_scorep_timer_papi_real_cyc.c
+ * @file
  *
  *
  * This is the implementation of the SCOREP_Timing.h interface that uses the
@@ -41,7 +41,6 @@
 #include "SCOREP_Timing.h"
 #include <UTILS_Error.h>
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <papi.h>

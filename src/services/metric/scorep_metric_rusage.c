@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -30,7 +30,7 @@
 
 /**
  *
- *  @file       scorep_metric_rusage.c
+ *  @file
  *
  *
  *  @brief This module implements support for resource usage counters.
@@ -43,7 +43,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include <sys/time.h>
 #include <sys/resource.h>
 
