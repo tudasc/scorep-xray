@@ -57,7 +57,7 @@ AS_IF([test $? -eq 0],
 
 # Warn if the REVISION* files contain anything but plain numbers.
 AS_IF([grep -E [[A-Z]] $srcdir/build-config/REVISION > /dev/null || \
-       grep ":" $srcdir/build-config/REVISION > /dev/null ||
+       grep ":" $srcdir/build-config/REVISION > /dev/null || \
        grep -E [[A-Z]] $srcdir/build-config/REVISION_COMMON > /dev/null || \
        grep ":" $srcdir/build-config/REVISION_COMMON > /dev/null],
       [component_revision=`cat $srcdir/build-config/REVISION`
