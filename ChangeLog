@@ -51,7 +51,7 @@
 - Added SCOREP_CUDA_ENABLE option 'references' to track references between
   CUDA host and device activities in the OTF2 trace.
 
-------------------- Upcoming version 1.2.3 ---------------------------
+------------------- Released version 1.2.3 ---------------------------
 
 - Fixed a failed assertion that occurs if selective recording was
   enabled in profiling mode.
@@ -62,7 +62,7 @@
 - Reduce per-event measurement overhead by improving Score-P's assert
   and error handling.
 - Adapt configure to recent Cray installations.
-- Score-P measururements provided with a SCOREP_EXPERIMENT_DIRECTORY,
+- Score-P measurements provided with a SCOREP_EXPERIMENT_DIRECTORY,
   say foo, used to overwrite an existing foo even if this foo is not a
   directory. Will now abort with a meaningful message.
 - Metric plugin component: handling of multiple metrics improved.
@@ -74,7 +74,7 @@
   measurement.
 - Added compiler instrumentation flags also to the ldflags to fix
   missing instrumentation if high optimization levels recompile parts
-  od the code.
+  of the code.
 
 ------------------- Released version 1.2.2 ---------------------------
 

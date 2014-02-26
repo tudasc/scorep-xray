@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -36,7 +36,7 @@
 
                         Score-P v1.2 OPEN ISSUES
                         ========================
-                                                           Status: Jan 2014
+                                                           Status: Feb 2014
 
 This file lists known limitations and unimplemented features of
 various Score-P components.
