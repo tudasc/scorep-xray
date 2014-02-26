@@ -44,13 +44,13 @@
 #include "scorep_environment.h"
 #include "scorep_status.h"
 #include <definitions/SCOREP_Definitions.h>
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <inttypes.h>
 #include "scorep_subsystem.h"
 
+#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 
 
@@ -103,7 +103,7 @@ SCOREP_Unify( void )
 void
 SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManager )
 {
-    assert( sourceDefinitionManager );
+    UTILS_ASSERT( sourceDefinitionManager );
     UNIFY_DEFINITION( sourceDefinitionManager, String, string );
     UNIFY_DEFINITION( sourceDefinitionManager, SystemTreeNode, system_tree_node );
     UNIFY_DEFINITION( sourceDefinitionManager, SystemTreeNodeProperty, system_tree_node_property );
@@ -142,7 +142,7 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
 void
 SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
 {
-    assert( definitionManager );
+    UTILS_ASSERT( definitionManager );
 
     #define DEF_WITH_MAPPING( Type, type ) \
     ALLOC_MAPPINGS( definitionManager, type );
@@ -161,13 +161,10 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_DEFINITIONS, "Assign mapping for %s", #Type ); \
         if ( ( definition_manager )->type.counter > 0 ) \
         { \
-            uint32_t type ## _sequence_number = 0; \
             SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definition_manager, Type, type ) \
             { \
-                assert( type ## _sequence_number == definition->sequence_number ); \
-                ( definition_manager )->type.mapping[ type ## _sequence_number ] = \
+                ( definition_manager )->type.mapping[ definition->sequence_number ] = \
                     SCOREP_UNIFIED_HANDLE_DEREF( definition->unified, Type )->sequence_number; \
-                ++type ## _sequence_number; \
             } \
             SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END(); \
         } \
@@ -178,7 +175,7 @@ SCOREP_CreateDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
 void
 SCOREP_AssignDefinitionMappingsFromUnified( SCOREP_DefinitionManager* definitionManager )
 {
-    assert( definitionManager );
+    UTILS_ASSERT( definitionManager );
 
     #define DEF_WITH_MAPPING( Type, type ) \
     ASSIGN_MAPPING( definitionManager, Type, type );
@@ -204,7 +201,7 @@ SCOREP_AssignDefinitionMappingsFromUnified( SCOREP_DefinitionManager* definition
 void
 SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
 {
-    assert( definitionManager );
+    UTILS_ASSERT( definitionManager );
 
     #define DEF_WITH_MAPPING( Type, type ) \
     FREE_MAPPING( definitionManager, type );
@@ -214,14 +211,16 @@ SCOREP_DestroyDefinitionMappings( SCOREP_DefinitionManager* definitionManager )
     FREE_MAPPING( definitionManager,
                   interim_communicator );
 
-    FREE_MAPPING( definitionManager, interim_rma_window );
+    FREE_MAPPING( definitionManager,
+                  interim_rma_window );
 }
 
 
 void
 SCOREP_Unify_CreateUnifiedDefinitionManager( void )
 {
-    assert( scorep_unified_definition_manager == 0 );
+    UTILS_BUG_ON( scorep_unified_definition_manager != NULL,
+                  "Unified definition manager already created" );
 
     bool alloc_hash_tables = true;
     SCOREP_Definitions_InitializeDefinitionManager( &scorep_unified_definition_manager,
