@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  *    Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -65,12 +65,12 @@
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 
-SCOREP_AttributeHandle
+static SCOREP_AttributeHandle
 define_attribute( SCOREP_DefinitionManager* definition_manager,
                   SCOREP_StringHandle       attrNameHandle,
                   SCOREP_AttributeType      attrType );
 
-void
+static void
 initialize_attribute( SCOREP_AttributeDef*      definition,
                       SCOREP_DefinitionManager* definition_manager,
                       SCOREP_StringHandle       attrNameHandle,
