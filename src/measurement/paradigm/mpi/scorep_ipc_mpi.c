@@ -215,7 +215,7 @@ get_mpi_operation( SCOREP_Ipc_Operation op )
         SCOREP_IPC_OPERATIONS
 #undef SCOREP_IPC_OPERATION
         default:
-            UTILS_BUG( "Unknown IPC reduction operation" );
+            UTILS_BUG( "Unknown IPC reduction operation: %u", op );
     }
 
     return MPI_OP_NULL;

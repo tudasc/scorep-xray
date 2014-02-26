@@ -256,7 +256,7 @@ SCOREP_Tracing_AddAttribute( SCOREP_Location*       location,
             break;
 
         default:
-            UTILS_BUG( "Invalid attribute type" );
+            UTILS_BUG( "Invalid attribute type: %u", attrType );
     }
 
     OTF2_AttributeList_AddAttribute( otf_attribute_list,
@@ -873,7 +873,7 @@ set_rewind_affected_thread_paradigm( SCOREP_Location* location, SCOREP_ParadigmT
 
 #undef case_break
         default:
-            UTILS_BUG( "Invalid threading model." );
+            UTILS_BUG( "Invalid threading model: %u", paradigm );
     }
 }
 

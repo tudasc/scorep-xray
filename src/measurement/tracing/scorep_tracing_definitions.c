@@ -767,7 +767,8 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
                     break;
 
                 default:
-                    UTILS_BUG( "Invalid metric scope" );
+                    UTILS_BUG( "Invalid metric scope: %u",
+                               scoped_definition->scope_type );
             }
 
             status = defMetricInstance(

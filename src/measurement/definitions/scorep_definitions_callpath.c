@@ -339,7 +339,8 @@ initialize_callpath( SCOREP_CallpathDef*       definition,
             }
             else
             {
-                UTILS_BUG( "Not a valid parameter type." );
+                UTILS_BUG( "Not a valid parameter type: %u",
+                           parameter->parameter_type );
             }
         }
     }

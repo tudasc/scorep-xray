@@ -99,7 +99,8 @@ define_fork_join_locations( uint32_t* local_to_thread_id )
             group_name = "OpenMP";
             break;
         default:
-            UTILS_BUG( "Fork-join threading component provided invalid paradigm." );
+            UTILS_BUG( "Fork-join threading component provided invalid paradigm: %u",
+                       scorep_thread_get_paradigm() );
     }
     uint32_t offset_to_global = scorep_unify_helper_define_comm_locations(
         group,
@@ -450,7 +451,8 @@ unify_teams_pre( void )
                 group = SCOREP_GROUP_OPENMP_THREAD_TEAM;
                 break;
             default:
-                UTILS_BUG( "Fork-join threading component provided invalid paradigm." );
+                UTILS_BUG( "Fork-join threading component provided invalid paradigm: %u",
+                           scorep_thread_get_paradigm() );
         }
         SCOREP_GroupHandle group_handle =
             SCOREP_Definitions_NewGroup(
