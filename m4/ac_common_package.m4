@@ -31,9 +31,11 @@
 
 ## file       ac_common_package.m4
 
-# AFS_PACKAGE_INIT([BUILD-NAME, [TO-TOP]])
-# ----------------------------------------
+# AFS_PACKAGE_INIT
+# ----------------
 # Common AC_DEFINE's and AC_SUBST's for the package based on its name.
+# Call this only in the top-level configure.ac, sub-builds should call
+# `AFS_PACKAGE_BUILD_INIT`.
 #
 # List of defined autoconf macros:
 #  `AFS_PACKAGE_name`::       The tarname of the package in lower case
@@ -45,9 +47,34 @@
 #  `AFS_PACKAGE_name`::       The value of AFS_PACKAGE_name
 #  `AFS_PACKAGE_NAME`::       The value of AFS_PACKAGE_NAME
 #
-# BUILD-NAME should be non-blank for sub-configures. The relative path to the
-# top-level configure can be specified with TO-TOP, defaulting to `../`. In
-# this case there will also be the following definitions:
+AC_DEFUN_ONCE([AFS_PACKAGE_INIT], [
+
+m4_case([$#],
+    [0], [],
+    [1], [m4_ifnblank($1, [m4_fatal([$0: too many arguments: $@])])],
+    [m4_fatal([$0: too many arguments: $@])])dnl
+
+m4_pushdef([_afs_package_tmp], m4_tolower(AC_PACKAGE_TARNAME))dnl
+AC_SUBST([AFS_PACKAGE_name], _afs_package_tmp)
+m4_define([AFS_PACKAGE_name], _afs_package_tmp)dnl
+m4_popdef([_afs_package_tmp])dnl
+
+m4_pushdef([_afs_package_tmp], m4_toupper(AC_PACKAGE_TARNAME))dnl
+AC_SUBST([AFS_PACKAGE_NAME], _afs_package_tmp)
+m4_define([AFS_PACKAGE_NAME], _afs_package_tmp)dnl
+m4_popdef([_afs_package_tmp])dnl
+
+dnl May be redefined by AFS_PACKAGE_BUILD_INIT
+m4_define([AFS_PACKAGE_TO_TOP], [])dnl
+])
+
+# AFS_PACKAGE_BUILD_INIT(BUILD-NAME, [TO-TOP])
+# --------------------------------------------
+# Initializes an sub-build configure. It is sufficient to call
+# `AFS_PACKAGE_BUILD_INIT`, `AFS_PACKAGE_INIT` will be called automatically.
+#
+# The relative path to the top-level configure to this configure
+# can be specified with TO-TOP, defaulting to `../`.
 #
 # List of defined autoconf macros:
 #  `AFS_PACKAGE_BUILD`::      The normalized name of the build (e.g., 'backend',
@@ -72,64 +99,58 @@
 #  `AFS_PACKAGE_name`::       The value of AFS_PACKAGE_name
 #  `AFS_PACKAGE_NAME`::       The value of AFS_PACKAGE_NAME
 #
-AC_DEFUN_ONCE([AFS_PACKAGE_INIT], [
+AC_DEFUN_ONCE([AFS_PACKAGE_BUILD_INIT], [
+AC_REQUIRE([AFS_PACKAGE_INIT])dnl
 
-m4_pushdef([_afs_package_tmp], m4_tolower(AC_PACKAGE_TARNAME))dnl
-AC_SUBST([AFS_PACKAGE_name], _afs_package_tmp)
-m4_define([AFS_PACKAGE_name], _afs_package_tmp)dnl
+m4_case([$#],
+    [0], [m4_fatal([$0: missing arguments])],
+    [1], [m4_ifblank(m4_normalize($1), [m4_fatal([$0: empty BUILD-NAME argument])])],
+    [2], [m4_ifblank(m4_normalize($1), [m4_fatal([$0: empty BUILD-NAME argument])])],
+    [m4_fatal([$0: too many arguments: $@])])dnl
+
+m4_pushdef([_afs_package_tmp], m4_normalize($1))dnl
+AC_DEFINE_UNQUOTED([AFS_PACKAGE_BUILD], "_afs_package_tmp",
+    [Name of the sub-build.])
+m4_define([AFS_PACKAGE_BUILD], _afs_package_tmp)dnl
 m4_popdef([_afs_package_tmp])dnl
 
-m4_pushdef([_afs_package_tmp], m4_toupper(AC_PACKAGE_TARNAME))dnl
-AC_SUBST([AFS_PACKAGE_NAME], _afs_package_tmp)
-m4_define([AFS_PACKAGE_NAME], _afs_package_tmp)dnl
+dnl Overwrites AFS_PACKAGE_TO_TOP defined in AFS_PACKAGE_INIT.
+m4_pushdef([_afs_package_tmp], m4_default([$2], [../]))dnl
+AC_SUBST([AFS_PACKAGE_TO_TOP], _afs_package_tmp)
+m4_define([AFS_PACKAGE_TO_TOP], _afs_package_tmp)dnl
+m4_if(m4_substr(AFS_PACKAGE_TO_TOP, decr(len(AFS_PACKAGE_TO_TOP))), [/],
+    [], [m4_fatal([$0: no trailing slash in TO-TOP argument: ]AFS_PACKAGE_TO_TOP)])
 m4_popdef([_afs_package_tmp])dnl
 
-m4_ifnblank([$1], [
-    m4_pushdef([_afs_package_tmp], m4_normalize($1))dnl
-    AC_DEFINE_UNQUOTED([AFS_PACKAGE_BUILD], "_afs_package_tmp",
-        [Name of the sub-build.])
-    m4_define([AFS_PACKAGE_BUILD], _afs_package_tmp)dnl
-    m4_popdef([_afs_package_tmp])dnl
+# when building inplace, $srcdir equals ., ignore $srcdir than
+AS_CASE([$srcdir],
+    [.], [afs_srcdir="]AFS_PACKAGE_TO_TOP["],
+    [afs_srcdir="${srcdir}/]AFS_PACKAGE_TO_TOP["])dnl
+AC_DEFINE_UNQUOTED([[AFS_PACKAGE_SRCDIR]],
+    ["${afs_srcdir}"], [Relative path to the top-level source directory.])
+AC_SUBST([afs_srcdir])
 
-    m4_pushdef([_afs_package_tmp], m4_default([$2], [../]))dnl
-    AC_SUBST([AFS_PACKAGE_TO_TOP], _afs_package_tmp)
-    m4_define([AFS_PACKAGE_TO_TOP], _afs_package_tmp)dnl
-    m4_if(m4_substr(AFS_PACKAGE_TO_TOP, decr(len(AFS_PACKAGE_TO_TOP))), [/],
-        [], [m4_fatal([no trailing slash in TO-TOP argument to AFS_PACKAGE_INIT: ]AFS_PACKAGE_TO_TOP)])
-    m4_popdef([_afs_package_tmp])dnl
+m4_pushdef([_afs_package_tmp],
+    m4_bpatsubst(m4_tolower(m4_normalize($1)), [[^a-z0-9]+], [_]))dnl
+AC_DEFINE_UNQUOTED([AFS_PACKAGE_BUILD_name], _afs_package_tmp,
+    [Symbol name of the sub-build in lower case.])
+AC_SUBST([AFS_PACKAGE_BUILD_name], _afs_package_tmp)
+m4_define([AFS_PACKAGE_BUILD_name], _afs_package_tmp)dnl
+m4_popdef([_afs_package_tmp])dnl
 
-    # when building inplace, $srcdir equals ., ignore $srcdir than
-    AS_CASE([$srcdir],
-        [.], [afs_srcdir="]AFS_PACKAGE_TO_TOP["],
-        [afs_srcdir="${srcdir}/]AFS_PACKAGE_TO_TOP["])dnl
-    AC_DEFINE_UNQUOTED([[AFS_PACKAGE_SRCDIR]],
-        ["${afs_srcdir}"], [Relative path to the top-level source directory.])
-    AC_SUBST([afs_srcdir])
+m4_pushdef([_afs_package_tmp],
+    m4_toupper(AFS_PACKAGE_BUILD_name))dnl
+AC_DEFINE_UNQUOTED([AFS_PACKAGE_BUILD_NAME], _afs_package_tmp,
+    [Symbol name of the sub-build in upper case.])
+AC_SUBST([AFS_PACKAGE_BUILD_NAME], _afs_package_tmp)
+m4_define([AFS_PACKAGE_BUILD_NAME], _afs_package_tmp)dnl
+m4_popdef([_afs_package_tmp])dnl
 
-    m4_pushdef([_afs_package_tmp],
-        m4_bpatsubst(m4_tolower(m4_normalize($1)), [[^a-z0-9]+], [_]))dnl
-    AC_DEFINE_UNQUOTED([AFS_PACKAGE_BUILD_name], _afs_package_tmp,
-        [Symbol name of the sub-build in lower case.])
-    AC_SUBST([AFS_PACKAGE_BUILD_name], _afs_package_tmp)
-    m4_define([AFS_PACKAGE_BUILD_name], _afs_package_tmp)dnl
-    m4_popdef([_afs_package_tmp])dnl
+AC_DEFINE_UNQUOTED([[AFS_PACKAGE_name]], AFS_PACKAGE_name,
+    [The package name usable as a symbol in lower case.])
 
-    m4_pushdef([_afs_package_tmp],
-        m4_toupper(AFS_PACKAGE_BUILD_name))dnl
-    AC_DEFINE_UNQUOTED([AFS_PACKAGE_BUILD_NAME], _afs_package_tmp,
-        [Symbol name of the sub-build in upper case.])
-    AC_SUBST([AFS_PACKAGE_BUILD_NAME], _afs_package_tmp)
-    m4_define([AFS_PACKAGE_BUILD_NAME], _afs_package_tmp)dnl
-    m4_popdef([_afs_package_tmp])dnl
-
-    AC_DEFINE_UNQUOTED([[AFS_PACKAGE_name]], AFS_PACKAGE_name,
-        [The package name usable as a symbol in lower case.])
-
-    AC_DEFINE_UNQUOTED([[AFS_PACKAGE_NAME]], AFS_PACKAGE_NAME,
-        [The package name usable as a symbol in upper case.])
-], [
-    m4_define([AFS_PACKAGE_TO_TOP], [])dnl
-])
+AC_DEFINE_UNQUOTED([[AFS_PACKAGE_NAME]], AFS_PACKAGE_NAME,
+    [The package name usable as a symbol in upper case.])
 ])
 
 # AC_SCOREP_DEFINE_HAVE(VARIABLE, VALUE[, DESCRIPTION])
