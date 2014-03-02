@@ -30,7 +30,7 @@ dnl
 AC_PREREQ([2.68])
 AC_INIT([Score-P], m4_esyscmd([../vendor/common/build-config/generate-package-version.sh ../build-config/VERSION]), [support@score-p.org], [scorep])
 
-AFS_PACKAGE_INIT([score])
+AFS_PACKAGE_BUILD_INIT([score])
 AFS_SUMMARY_INIT
 
 AC_CONFIG_AUX_DIR([../build-config])
