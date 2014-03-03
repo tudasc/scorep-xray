@@ -116,6 +116,8 @@ m4_popdef([_afs_package_tmp])dnl
 
 dnl Overwrites AFS_PACKAGE_TO_TOP defined in AFS_PACKAGE_INIT.
 m4_pushdef([_afs_package_tmp], m4_default([$2], [../]))dnl
+dnl undefine previously defined by AFS_PACKAGE_INIT
+m4_undefine([AFS_PACKAGE_TO_TOP])
 AC_SUBST([AFS_PACKAGE_TO_TOP], _afs_package_tmp)
 m4_define([AFS_PACKAGE_TO_TOP], _afs_package_tmp)dnl
 m4_if(m4_substr(AFS_PACKAGE_TO_TOP, decr(len(AFS_PACKAGE_TO_TOP))), [/],
