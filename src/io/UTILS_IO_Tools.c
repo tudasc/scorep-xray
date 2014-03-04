@@ -2,20 +2,34 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2012,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2012,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2012, 2014,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2012,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2012,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
 /**
- * @file       UTILS_IO_Tools.c
+ * @file
  *
  * Functions for file parsing in C.
  */
@@ -367,7 +381,7 @@ gethostname( char*  name,
 int
 UTILS_IO_GetHostname( char* name, size_t namelen )
 {
-#if HAVE( DECL_GETHOSTNAME ) || HAVE( GETHOSTNAME )
+#if HAVE( GETHOSTNAME )
     return gethostname( name, namelen );
 #else
 
@@ -399,7 +413,7 @@ getcwd( char*  buf,
 char*
 UTILS_IO_GetCwd( char* buf, size_t size )
 {
-#if HAVE( DECL_GETCWD ) || HAVE( GETCWD )
+#if HAVE( GETCWD )
     return getcwd( buf, size );
 #else
     char* cwd = getenv( "PWD" );
