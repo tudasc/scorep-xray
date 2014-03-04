@@ -399,6 +399,25 @@ SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
 {
     return ( arg.substr( 0, 16 ) == "-offload-option," ) ||
            ( arg.substr( 0, 26 ) == "-offload-attribute-target=" ) ||
+           ( arg.substr( 0, 14 ) == "-openmp-report" ) ||
+           ( arg.substr( 0, 17 ) == "-opt-block-factor" ) ||
+           ( arg.substr( 0, 16 ) == "-opt-jump-tables" ) ||
+           ( arg == "-opt-loadpair" ) ||
+           ( arg.substr( 0, 19 ) == "-opt-malloc-options" ) ||
+           ( arg.substr( 0, 18 ) == "-opt-mem-bandwidth" ) ||
+           ( arg == "-opt-mod-versioning" ) ||
+           ( arg == "-opt-multi-version-aggressive" ) ||
+           ( arg.substr( 0, 13 ) == "-opt-prefetch" ) ||
+           ( arg.substr( 0, 23 ) == "-opt-ra-region-strategy" ) ||
+           ( arg.substr( 0, 21 ) == "-opt-streaming-stores" ) ||
+           ( arg == "-opt-subscript-in-range" ) ||
+           ( arg.substr( 0, 11 ) == "-openmp-lib" ) ||
+           ( arg == "-openmp-profile" ) ||
+           ( arg == "-openmp-stubs" ) ||
+           ( arg.substr( 0, 12 ) == "-openmp-link" ) ||
+           ( arg.substr( 0, 21 ) == "-openmp-threadprivate" ) ||
+           ( arg.substr( 0, 11 ) == "-opt-report" ) ||
+           ( arg == "-onetrip" ) ||
            ( arg == "-openmp" );
 }
 
