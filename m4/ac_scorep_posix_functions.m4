@@ -1,18 +1,32 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2013, 
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## Copyright (c) 2009-2013,
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2013,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2014,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2013,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2013,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
 
@@ -41,7 +55,10 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     AC_LINK_IFELSE([
         AC_LANG_SOURCE([
             #include <stddef.h>
+
+            #if !HAVE_DECL_GETHOSTID
             long gethostid(void);
+            #endif
 
             int main()
             {
@@ -60,7 +77,10 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     AC_LINK_IFELSE([
         AC_LANG_SOURCE([
             #include <stddef.h>
+
+            #if !HAVE_DECL_GETHOSTNAME
             int gethostname(char *name, size_t namelen);
+            #endif
 
             int main()
             {
@@ -80,7 +100,10 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
         AC_LANG_SOURCE([
             #include <stdio.h>
             #include <fcntl.h>
+
+            #if !HAVE_DECL_FSEEKO
             int fseeko(FILE *stream, off_t offset, int whence);
+            #endif
 
             int main()
             {
@@ -101,7 +124,10 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
             #include <stdio.h>
             #include <unistd.h>
             #include <fcntl.h>
+
+            #if !HAVE_DECL_FSEEKO64
             int fseeko64(FILE *stream, off64_t offset, int whence);
+            #endif
 
             int main()
             {
@@ -123,7 +149,9 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
             #include <unistd.h>
             #include <stdlib.h>
 
+            #if !HAVE_DECL_GETCWD
             char* getcwd(char* buf, size_t size);
+            #endif
 
             int main()
             {
