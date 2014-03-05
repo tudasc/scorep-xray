@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2013,
+dnl Copyright (c) 2009-2014,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -136,9 +136,9 @@ AC_CHECK_FUNCS_ONCE([readlink])
 AC_SCOREP_BUILD_MODE
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION
 
-AC_CONFIG_FILES([Makefile], [[
+AC_CONFIG_FILES([Makefile], [
 sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&FE/' \
 Makefile >Makefile.fe && mv -f Makefile.fe Makefile || rm -f Makefile.fe
-]])
+])
 
 AC_OUTPUT

@@ -310,12 +310,12 @@ AC_SUBST([HARDCODE_LIBDIR_AIX_LIBPATH], [${aix_libpath}])
 
 AC_SUBST([SYS_LIB_DLSEARCH_PATH_SPEC], [${sys_lib_dlsearch_path_spec}]) 
 
-AC_CONFIG_FILES([Makefile], [[
-test "x${ac_scorep_cross_compiling}" = "xyes" && {
-sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&BE/' \
-Makefile >Makefile.be && mv -f Makefile.be Makefile || rm -f Makefile.be
-}
-]], [ac_scorep_cross_compiling='$ac_scorep_cross_compiling'])
+AC_CONFIG_FILES([Makefile], [
+if test "x${ac_scorep_cross_compiling}" = "xyes"; then
+    sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&BE/' \
+    Makefile >Makefile.be && mv -f Makefile.be Makefile || rm -f Makefile.be
+fi
+], [ac_scorep_cross_compiling='$ac_scorep_cross_compiling'])
 AC_CONFIG_FILES([../installcheck/instrumenter_checks/Makefile.common_rules:../test/instrumenter_checks/Makefile.common_rules.in
                  ../installcheck/instrumenter_checks/Makefile.instrument_configurations:../test/instrumenter_checks/Makefile.instrument_configurations.in
                  ../installcheck/instrumenter_checks/serial/Makefile:../test/instrumenter_checks/serial/Makefile.in
