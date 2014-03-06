@@ -215,12 +215,25 @@ typedef uint32_t SCOREP_LineNo;
  * track the origin of a region definition, the adapter needs to provide @e
  * his type.
  *
+ * The SCOREP_PARADIGMS consist of groups of specific paradigms. For
+ * example, OpenMP is a specific paradigm in the group Fork-Join. The
+ * entire bitfield is subdivided into these groups and for a group all
+ * the bits of this group are set (SCOREP_ALL_BITS). Inside these
+ * groups the specific paradigms are numerated (SCOREP_SUB_BITS).
+ *
+ *  EXAMPLE:
+ *
+ *  user    |compiler |mpp      | ...
+ *  0 0 0 0 | 0 0 0 0 | 1 1 1 1 | ...  = SCOREP_PARADIGM_MPP
+ *  0 0 0 0 | 0 0 0 0 | 0 0 0 1 | ...  = SCOREP_PARADIGM_MPI
+ *
  * TODO: to finish the refactoring of SCOREP_ADAPTER_* to
  *       SCOREP_PARADIGM_* the OTF2 names would also need to be
  *       changed accordingly. For example, I (pphilippen) currently
  *       gave all acclerator paradigms the OTF2 name CUDA, as this is
  *       the only one defined in OTF2.
  */
+
 #define SCOREP_BIT_WIDTH 4
 
 #define SCOREP_ALL_BITS( POS ) \
