@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2012, 2013
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2012,
@@ -40,36 +40,80 @@
 
 #include <config.h>
 #include <scorep/SCOREP_Tau.h>
+#include <SCOREP_Types.h>
+#include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Events.h>
+#include <UTILS_Error.h>
 #include <stdio.h>
-typedef uint32_t SCOREP_LineNo;
 
-extern void
-SCOREP_InitMeasurement
-(
-);
 
-extern void
-SCOREP_RegisterExitCallback( SCOREP_Tau_ExitCallback );
+#define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME, VALUE )   \
+    case SCOREP_TAU_PARADIGM_ ## NAME: \
+        return SCOREP_PARADIGM_ ## NAME;
 
-extern SCOREP_RegionHandle
-SCOREP_Definitions_NewRegion( const char*             regionName,
-                              const char*             regionCanonicalName,
-                              SCOREP_SourceFileHandle fileHandle,
-                              SCOREP_LineNo           beginLine,
-                              SCOREP_LineNo           endLine,
-                              SCOREP_ParadigmType     paradigm,
-                              SCOREP_RegionType       regionType );
+/**
+ * Converts TAU paradigm types to Score-P paradigm types.
+ */
+static SCOREP_ParadigmType
+scorep_tau_convert_paradigm_type( SCOREP_Tau_ParadigmType paradigm )
+{
+    switch ( paradigm )
+    {
+        SCOREP_PARADIGMS;
 
-extern void
-SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle );
+        default:
+            UTILS_BUG_ON( "Failed to convert TAU paradigm to Score-P paradigm." );
+    }
+    return SCOREP_INVALID_PARADIGM_TYPE;
+}
+#undef SCOREP_PARADIGM
 
-extern void
-SCOREP_ExitRegion( SCOREP_Tau_RegionHandle regionHandle );
 
-extern void
-SCOREP_AddLocationProperty( const char* name,
-                            const char* value );
+#define SCOREP_REGION_TYPE( NAME, name_str ) \
+    case SCOREP_TAU_REGION_ ## NAME: \
+        return SCOREP_REGION_ ## NAME;
 
+/**
+ * Converts TAU region types to Score-P region types.
+ */
+static SCOREP_RegionType
+scorep_tau_convert_region_type( SCOREP_Tau_RegionType region_type )
+{
+    switch ( region_type )
+    {
+        case SCOREP_TAU_REGION_UNKNOWN:
+            return SCOREP_REGION_UNKNOWN;
+        case SCOREP_TAU_REGION_FUNCTION:
+            return SCOREP_REGION_FUNCTION;
+        case SCOREP_TAU_REGION_LOOP:
+            return SCOREP_REGION_LOOP;
+        case SCOREP_TAU_REGION_USER:
+            return SCOREP_REGION_USER;
+        case SCOREP_TAU_REGION_CODE:
+            return SCOREP_REGION_CODE;
+
+        case SCOREP_TAU_REGION_PHASE:
+            return SCOREP_REGION_PHASE;
+        case SCOREP_TAU_REGION_DYNAMIC:
+            return SCOREP_REGION_DYNAMIC;
+        case SCOREP_TAU_REGION_DYNAMIC_PHASE:
+            return SCOREP_REGION_DYNAMIC_PHASE;
+        case SCOREP_TAU_REGION_DYNAMIC_LOOP:
+            return SCOREP_REGION_DYNAMIC_LOOP;
+        case SCOREP_TAU_REGION_DYNAMIC_FUNCTION:
+            return SCOREP_REGION_DYNAMIC_FUNCTION;
+        case SCOREP_TAU_REGION_DYNAMIC_LOOP_PHASE:
+            return SCOREP_REGION_DYNAMIC_LOOP_PHASE;
+
+            SCOREP_REGION_TYPES
+
+        default:
+            UTILS_BUG_ON( "Failed to convert TAU region type to Score-P region type." );
+    }
+    return SCOREP_INVALID_REGION_TYPE;
+}
+#undef SCOREP_REGION_TYPE
 
 /** @ingroup TAU
     @{
@@ -164,11 +208,14 @@ SCOREP_Tau_DefineRegion( const char*                 regionName,
                          SCOREP_Tau_SourceFileHandle fileHandle,
                          SCOREP_Tau_LineNo           beginLine,
                          SCOREP_Tau_LineNo           endLine,
-                         SCOREP_Tau_ParadigmType     paradigm,
-                         SCOREP_Tau_RegionType       regionType )
+                         SCOREP_Tau_ParadigmType     tauParadigm,
+                         SCOREP_Tau_RegionType       tauRegionType )
 {
+    SCOREP_ParadigmType paradigm    = scorep_tau_convert_paradigm_type( tauParadigm );
+    SCOREP_RegionType   region_type = scorep_tau_convert_region_type( tauRegionType );
+
     return ( SCOREP_Tau_RegionHandle )SCOREP_Definitions_NewRegion( regionName, NULL, fileHandle,
-                                                                    beginLine, endLine, paradigm, regionType );
+                                                                    beginLine, endLine, paradigm, region_type );
 }
 
 
