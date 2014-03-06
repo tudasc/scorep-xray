@@ -51,6 +51,11 @@
 - Added SCOREP_CUDA_ENABLE option 'references' to track references between
   CUDA host and device activities in the OTF2 trace.
 - Fix handling of Intel compiler options starting with "-o".
+- The pgCC compiler version 13.9 and newer preinclude omp.h if OpenMP
+  is enabled. This leads to multiply defined symbols if the source file
+  is preprocessed before compilation. Prevent the preinclusion for the
+  compilation of preprocessed files if an appropriate compiler option
+  exists (exists since pgCC version 14.1).
 
 ------------------- Released version 1.2.3 ---------------------------
 

@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2012,
@@ -127,6 +127,13 @@ various Score-P components.
     we look up in the symbol table of the executable. Thus, functions from 
     shared libraries, will not appear (are automatically filtered) in the
     measurement output.
+
+  - The pgCC compiler versions 13.9 and higher preinclude omp.h for OpenMP 
+    codes. This results in  multiply defined symbols if the source file
+    is preprocessed before compilation. Since version 14.1 an option is available
+    to avoid preinclusion, which we can use for preprocessed source files.
+    For the pgCC versions 13.9 until 14.0, preprocessing is not possible
+    for C++ codes.
 
 --------------------------------------------------------------------------------
 
