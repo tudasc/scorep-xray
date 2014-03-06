@@ -18,7 +18,7 @@
 ## Copyright (c) 2009-2013,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2014
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -45,6 +45,7 @@ scorep_config_SOURCES = \
     $(SRC_ROOT)src/tools/config/scorep_config_utils.hpp \
     $(SRC_ROOT)src/tools/config/scorep_config_mutex.cpp \
     $(SRC_ROOT)src/tools/config/scorep_config_mutex.hpp \
+    $(SRC_ROOT)src/tools/config/scorep_config_types.hpp \
     $(SRC_ROOT)src/tools/config/SCOREP_Config_LibraryDependencies.cpp \
     $(SRC_ROOT)src/tools/config/SCOREP_Config_LibraryDependencies.hpp
 

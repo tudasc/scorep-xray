@@ -7,6 +7,9 @@
  * Copyright (c) 2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2014,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -27,6 +30,7 @@
 
 #include "SCOREP_Config_LibraryDependencies.hpp"
 #include "scorep_config_mutex.hpp"
+#include "scorep_config_types.hpp"
 
 /* **************************************************************************************
  * enum SCOREP_Config_ThreadSystemId
@@ -123,14 +127,14 @@ public:
      *                    This flags do not contain the include directories. For the
      *                    include flags use addIncFlags.
      * @param build_check Specifies whether --build-check was set.
-     * @param fortran     True if the source file is a fortran file.
+     * @param language    Specifies the language of the compiler.
      * @param nvcc        True if compiler is nvcc.
      */
     virtual void
-    addCFlags( std::string& cflags,
-               bool         build_check,
-               bool         fortran,
-               bool         nvcc );
+    addCFlags( std::string&           cflags,
+               bool                   build_check,
+               SCOREP_Config_Language language,
+               bool                   nvcc );
 
     /**
      * Overwrite this function if you want to do threading system specific modifications
@@ -244,10 +248,10 @@ public:
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );
     virtual void
-    addCFlags( std::string& cflags,
-               bool         build_check,
-               bool         fortran,
-               bool         nvcc );
+    addCFlags( std::string&           cflags,
+               bool                   build_check,
+               SCOREP_Config_Language language,
+               bool                   nvcc );
 
     virtual void
     addIncFlags( std::string& incflags,
@@ -271,10 +275,10 @@ public:
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );
     virtual void
-    addCFlags( std::string& cflags,
-               bool         build_check,
-               bool         fortran,
-               bool         nvcc );
+    addCFlags( std::string&           cflags,
+               bool                   build_check,
+               SCOREP_Config_Language language,
+               bool                   nvcc );
 
     virtual void
     addIncFlags( std::string& incflags,

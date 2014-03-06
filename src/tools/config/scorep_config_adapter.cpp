@@ -7,6 +7,9 @@
  * Copyright (c) 2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2014,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -66,6 +69,7 @@ SCOREP_Config_Adapter::init( void )
     all.push_back( new SCOREP_Config_UserAdapter() );
     all.push_back( new SCOREP_Config_PompAdapter() );
     all.push_back( new SCOREP_Config_CudaAdapter() );
+    all.push_back( new SCOREP_Config_PreprocessAdapter() );
 }
 
 void
@@ -114,15 +118,15 @@ SCOREP_Config_Adapter::addLibsAll( std::deque<std::string>&           libs,
 }
 
 void
-SCOREP_Config_Adapter::addCFlagsAll( std::string& cflags,
-                                     bool         build_check,
-                                     bool         fortran,
-                                     bool         nvcc )
+SCOREP_Config_Adapter::addCFlagsAll( std::string&           cflags,
+                                     bool                   build_check,
+                                     SCOREP_Config_Language language,
+                                     bool                   nvcc )
 {
     std::deque<SCOREP_Config_Adapter*>::iterator i;
     for ( i = all.begin(); i != all.end(); i++ )
     {
-        ( *i )->addCFlags( cflags, build_check, fortran, nvcc );
+        ( *i )->addCFlags( cflags, build_check, language, nvcc );
     }
 }
 
@@ -203,10 +207,10 @@ SCOREP_Config_Adapter::addLibs( std::deque<std::string>&           libs,
 }
 
 void
-SCOREP_Config_Adapter::addCFlags( std::string& cflags,
-                                  bool         build_check,
-                                  bool         fortran,
-                                  bool         nvcc )
+SCOREP_Config_Adapter::addCFlags( std::string&           cflags,
+                                  bool                   build_check,
+                                  SCOREP_Config_Language language,
+                                  bool                   nvcc )
 {
 }
 
@@ -233,9 +237,9 @@ SCOREP_Config_CompilerAdapter::SCOREP_Config_CompilerAdapter()
 }
 
 void
-SCOREP_Config_CompilerAdapter::addCFlags( std::string& cflags,
-                                          bool         build_check,
-                                          bool         fortran,
+SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
+                                          bool                   build_check,
+                                          SCOREP_Config_Language language,
                                           bool /* nvcc */ )
 {
     if ( m_is_enabled )
@@ -270,14 +274,14 @@ SCOREP_Config_UserAdapter::SCOREP_Config_UserAdapter()
 }
 
 void
-SCOREP_Config_UserAdapter::addCFlags( std::string& cflags,
-                                      bool         build_check,
-                                      bool         fortran,
+SCOREP_Config_UserAdapter::addCFlags( std::string&           cflags,
+                                      bool                   build_check,
+                                      SCOREP_Config_Language language,
                                       bool /* nvcc */ )
 {
     if ( m_is_enabled )
     {
-        if ( fortran )
+        if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
         {
                 #ifdef SCOREP_COMPILER_IBM
             cflags += "-WF,-DSCOREP_USER_ENABLE ";
@@ -335,6 +339,32 @@ SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
 
 
 /* **************************************************************************************
+ * Preprocess adapter
+ * *************************************************************************************/
+SCOREP_Config_PreprocessAdapter::SCOREP_Config_PreprocessAdapter()
+    : SCOREP_Config_Adapter( "preprocess", "", false )
+{
+}
+
+void
+SCOREP_Config_PreprocessAdapter::addCFlags( std::string&           cflags,
+                                            bool                   build_check,
+                                            SCOREP_Config_Language language,
+                                            bool                   nvcc )
+{
+    if ( m_is_enabled && ( language == SCOREP_CONFIG_LANGUAGE_CXX ) )
+    {
+        cflags += SCOREP_NO_PREINCLUDE_FLAG " ";
+    }
+}
+
+void
+SCOREP_Config_PreprocessAdapter::addLibs( std::deque<std::string>&           libs,
+                                          SCOREP_Config_LibraryDependencies& deps )
+{
+}
+
+/* **************************************************************************************
  * Pomp adapter
  * *************************************************************************************/
 SCOREP_Config_PompAdapter::SCOREP_Config_PompAdapter()
@@ -351,31 +381,31 @@ SCOREP_Config_PompAdapter::addIncFlags( std::string& incflags,
     {
         printOpariCFlags( build_check,
                           false,
-                          false,
+                          SCOREP_CONFIG_LANGUAGE_C,
                           nvcc );
     }
 }
 
 void
-SCOREP_Config_PompAdapter::addCFlags( std::string& cflags,
-                                      bool         build_check,
-                                      bool         fortran,
-                                      bool         nvcc )
+SCOREP_Config_PompAdapter::addCFlags( std::string&           cflags,
+                                      bool                   build_check,
+                                      SCOREP_Config_Language language,
+                                      bool                   nvcc )
 {
     if ( m_is_enabled )
     {
         printOpariCFlags( build_check,
                           true,
-                          fortran,
+                          language,
                           nvcc );
     }
 }
 
 void
-SCOREP_Config_PompAdapter::printOpariCFlags( bool build_check,
-                                             bool with_cflags,
-                                             bool is_fortran,
-                                             bool nvcc )
+SCOREP_Config_PompAdapter::printOpariCFlags( bool                   build_check,
+                                             bool                   with_cflags,
+                                             SCOREP_Config_Language language,
+                                             bool                   nvcc )
 {
     static bool printed_once = false;
     if ( !printed_once )
@@ -398,7 +428,7 @@ SCOREP_Config_PompAdapter::printOpariCFlags( bool build_check,
         {
             opari_config += "=" SCOREP_COMPILER_TYPE;
 
-            if ( is_fortran )
+            if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
             {
                 opari_config += " --fortran";
             }

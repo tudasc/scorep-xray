@@ -7,6 +7,9 @@
  * Copyright (c) 2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2014,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -139,12 +142,13 @@ SCOREP_Config_ThreadSystem::addLibs( std::deque<std::string>&           libs,
 }
 
 void
-SCOREP_Config_ThreadSystem::addCFlags( std::string& cflags,
-                                       bool         build_check,
-                                       bool         fortran,
-                                       bool         nvcc )
+SCOREP_Config_ThreadSystem::addCFlags( std::string&           cflags,
+                                       bool                   build_check,
+                                       SCOREP_Config_Language language,
+                                       bool                   nvcc )
 {
 }
+
 SCOREP_Config_MutexId
 SCOREP_Config_ThreadSystem::validateDependencies()
 {
@@ -206,18 +210,18 @@ SCOREP_Config_PompTpdThreadSystem::addLibs( std::deque<std::string>&           l
 }
 
 void
-SCOREP_Config_PompTpdThreadSystem::addCFlags( std::string& cflags,
-                                              bool         build_check,
-                                              bool         fortran,
-                                              bool         nvcc )
+SCOREP_Config_PompTpdThreadSystem::addCFlags( std::string&           cflags,
+                                              bool                   build_check,
+                                              SCOREP_Config_Language language,
+                                              bool                   nvcc )
 {
     SCOREP_Config_PompAdapter::printOpariCFlags( build_check,
                                                  true,
-                                                 fortran,
+                                                 language,
                                                  nvcc );
 
 #if SCOREP_BACKEND_COMPILER_IBM
-    if ( fortran )
+    if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
     {
         cflags += "-d -WF,-qlanglvl=classic ";
     }
@@ -231,7 +235,7 @@ SCOREP_Config_PompTpdThreadSystem::addIncFlags( std::string& incflags,
 {
     SCOREP_Config_PompAdapter::printOpariCFlags( build_check,
                                                  false,
-                                                 false,
+                                                 SCOREP_CONFIG_LANGUAGE_C,
                                                  nvcc );
 }
 
@@ -255,18 +259,18 @@ SCOREP_Config_OmpAncestryThreadSystem::addLibs( std::deque<std::string>&        
 }
 
 void
-SCOREP_Config_OmpAncestryThreadSystem::addCFlags( std::string& cflags,
-                                                  bool         build_check,
-                                                  bool         fortran,
-                                                  bool         nvcc )
+SCOREP_Config_OmpAncestryThreadSystem::addCFlags( std::string&           cflags,
+                                                  bool                   build_check,
+                                                  SCOREP_Config_Language language,
+                                                  bool                   nvcc )
 {
     SCOREP_Config_PompAdapter::printOpariCFlags( build_check,
                                                  true,
-                                                 fortran,
+                                                 language,
                                                  nvcc );
 
 #if SCOREP_BACKEND_COMPILER_IBM
-    if ( fortran )
+    if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
     {
         cflags += "-d -WF,-qlanglvl=classic ";
     }
@@ -280,6 +284,6 @@ SCOREP_Config_OmpAncestryThreadSystem::addIncFlags( std::string& incflags,
 {
     SCOREP_Config_PompAdapter::printOpariCFlags( build_check,
                                                  false,
-                                                 false,
+                                                 SCOREP_CONFIG_LANGUAGE_C,
                                                  nvcc );
 }

@@ -7,6 +7,9 @@
  * Copyright (c) 2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2014,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -27,6 +30,7 @@
 #include <stdint.h>
 
 #include "SCOREP_Config_LibraryDependencies.hpp"
+#include "scorep_config_types.hpp"
 
 /* **************************************************************************************
  * class SCOREP_Config_Adapter
@@ -77,10 +81,10 @@ public:
      * Calls for all adapters the addCFlags() member functions.
      */
     static void
-    addCFlagsAll( std::string& cflags,
-                  bool         build_check,
-                  bool         fortran,
-                  bool         nvcc );
+    addCFlagsAll( std::string&           cflags,
+                  bool                   build_check,
+                  SCOREP_Config_Language language,
+                  bool                   nvcc );
 
     /**
      * Calls for all adapters the addIncFlags() member functions.
@@ -153,14 +157,14 @@ protected:
      *                     This flags do not contain the include directories. For the
      *                     include flags use addIncFlags.
      * @param build_check  True '--build-check' was specified.
-     * @param fortran      True if the source file is a fortran file.
+     * @param language     Specifies whether it is a C, C++ or Fortran compiler.
      * @param nvcc         True if compiler is nvcc.
      */
     virtual void
-    addCFlags( std::string& cflags,
-               bool         build_check,
-               bool         fortran,
-               bool         nvcc );
+    addCFlags( std::string&           cflags,
+               bool                   build_check,
+               SCOREP_Config_Language language,
+               bool                   nvcc );
 
     /**
      * Overwrite this function if you want to do adapter specific modifications
@@ -220,10 +224,10 @@ class SCOREP_Config_CompilerAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_CompilerAdapter();
     virtual void
-    addCFlags( std::string& cflags,
-               bool         build_check,
-               bool         fortran,
-               bool         nvcc );
+    addCFlags( std::string&           cflags,
+               bool                   build_check,
+               SCOREP_Config_Language language,
+               bool                   nvcc );
     virtual void
     addLdFlags( std::string& ldflags,
                 bool         nvcc );
@@ -241,10 +245,10 @@ class SCOREP_Config_UserAdapter : public SCOREP_Config_Adapter
 public:
     SCOREP_Config_UserAdapter();
     virtual void
-    addCFlags( std::string& cflags,
-               bool         build_check,
-               bool         fortran,
-               bool         nvcc );
+    addCFlags( std::string&           cflags,
+               bool                   build_check,
+               SCOREP_Config_Language language,
+               bool                   nvcc );
 };
 
 /* **************************************************************************************
@@ -277,16 +281,34 @@ public:
                  bool         build_check,
                  bool         nvcc );
     virtual void
-    addCFlags( std::string& cflags,
-               bool         build_check,
-               bool         fortran,
-               bool         nvcc );
+    addCFlags( std::string&           cflags,
+               bool                   build_check,
+               SCOREP_Config_Language language,
+               bool                   nvcc );
 
     static void
-    printOpariCFlags( bool build_check,
-                      bool with_cflags,
-                      bool is_fortran,
-                      bool nvcc );
+    printOpariCFlags( bool                   build_check,
+                      bool                   with_cflags,
+                      SCOREP_Config_Language language,
+                      bool                   nvcc );
+};
+
+/* **************************************************************************************
+ * class SCOREP_PreprocessAdapter
+ * *************************************************************************************/
+class SCOREP_Config_PreprocessAdapter : public SCOREP_Config_Adapter
+{
+public:
+    SCOREP_Config_PreprocessAdapter();
+
+    virtual void
+    addCFlags( std::string&           cflags,
+               bool                   build_check,
+               SCOREP_Config_Language language,
+               bool                   nvcc );
+    virtual void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
 };
 
 #endif

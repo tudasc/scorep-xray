@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -74,10 +74,14 @@
 #define HELPTEXT \
     "\nUsage:\nscorep-config <command> [<options>]\n" \
     "  Commands:\n" \
-    "   --cflags    prints additional compiler flags. They already contain the\n" \
-    "               include flags.\n" \
+    "   --cflags    prints additional compiler flags for a C compiler. They already\n" \
+    "               contain the include flags.\n" \
+    "   --cxxflags  prints additional compiler flags for a C++ compiler. They already\n" \
+    "               contain the include flags.\n" \
+    "   --fflags    prints additional compiler flags for a Fortran compiler. They already\n" \
+    "               contain the include flags.\n" \
     "   --cppflags  prints the include flags. They are already contained in the\n" \
-    "               output of the --cflags command\n" \
+    "               output of the --cflags, --cxxflags, and --fflags commands\n" \
     "   --ldflags   prints the library path flags for the linker\n" \
     "   --libs      prints the required linker flags\n" \
     "   --cc        prints the C compiler name\n" \
@@ -92,7 +96,6 @@
     "   --scorep-revision prints the revision number of the scorep package\n" \
     "   --common-revision prints the revision number of the common package\n" \
     "  Options:\n" \
-    "   --fortran   Specifies that the required flags are for the Fortran compiler.\n" \
     "   --nvcc      Convert flags to be suitable for the nvcc compiler.\n" \
     "   --static    Use only static Score-P libraries if possible.\n" \
     "   --dynamic   Use only dynamic Score-P libraries if possible.\n" \
@@ -158,14 +161,14 @@ main( int    argc,
 {
     int i;
     /* set default mode to mpi */
-    int  action        = 0;
-    int  ret           = EXIT_SUCCESS;
-    bool fortran       = false;
-    bool nvcc          = false;
-    bool install       = true;
-    bool allow_dynamic = true;
-    bool allow_static  = true;
-    bool online_access = true;
+    int                    action        = 0;
+    int                    ret           = EXIT_SUCCESS;
+    SCOREP_Config_Language language      = SCOREP_CONFIG_LANGUAGE_C;
+    bool                   nvcc          = false;
+    bool                   install       = true;
+    bool                   allow_dynamic = true;
+    bool                   allow_static  = true;
+    bool                   online_access = true;
 
     SCOREP_Config_Adapter::init();
     SCOREP_Config_MppSystem::init();
@@ -210,7 +213,18 @@ main( int    argc,
         }
         else if ( strcmp( argv[ i ], "--cflags" ) == 0 )
         {
-            action = ACTION_CFLAGS;
+            action   = ACTION_CFLAGS;
+            language = SCOREP_CONFIG_LANGUAGE_C;
+        }
+        else if ( strcmp( argv[ i ], "--cxxflags" ) == 0 )
+        {
+            action   = ACTION_CFLAGS;
+            language = SCOREP_CONFIG_LANGUAGE_CXX;
+        }
+        else if ( strcmp( argv[ i ], "--fflags" ) == 0 )
+        {
+            action   = ACTION_CFLAGS;
+            language = SCOREP_CONFIG_LANGUAGE_FORTRAN;
         }
         else if ( strcmp( argv[ i ], "--ldflags" ) == 0 )
         {
@@ -244,10 +258,6 @@ main( int    argc,
         else if ( strcmp( argv[ i ], "--mpifc" ) == 0 )
         {
             action = ACTION_MPIFC;
-        }
-        else if ( strcmp( argv[ i ], "--fortran" ) == 0 )
-        {
-            fortran = true;
         }
         else if ( strcmp( argv[ i ], "--nvcc" ) == 0 )
         {
@@ -387,8 +397,8 @@ main( int    argc,
             break;
 
         case ACTION_CFLAGS:
-            SCOREP_Config_Adapter::addCFlagsAll( str, !install, fortran, nvcc );
-            SCOREP_Config_ThreadSystem::current->addCFlags( str, !install, fortran, nvcc );
+            SCOREP_Config_Adapter::addCFlagsAll( str, !install, language, nvcc );
+            SCOREP_Config_ThreadSystem::current->addCFlags( str, !install, language, nvcc );
 
         // Append the include directories, too
         case ACTION_INCDIR:

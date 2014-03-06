@@ -2,10 +2,14 @@
 Usage:
 scorep-config <command> [<options>]
   Commands:
-   --cflags    prints additional compiler flags. They already contain the
-               include flags.
+   --cflags    prints additional compiler flags for a C compiler. They already
+               contain the include flags.
+   --cxxflags  prints additional compiler flags for a C++ compiler. They already
+               contain the include flags.
+   --fflags    prints additional compiler flags for a Fortran compiler. They already
+               contain the include flags.
    --cppflags  prints the include flags. They are already contained in the
-               output of the --cflags command
+               output of the --cflags, --cxxflags, and --fflags commands
    --ldflags   prints the library path flags for the linker
    --libs      prints the required linker flags
    --cc        prints the C compiler name
@@ -20,8 +24,12 @@ scorep-config <command> [<options>]
    --scorep-revision prints the revision number of the scorep package
    --common-revision prints the revision number of the common package
   Options:
-   --fortran   Specifies that the required flags are for the Fortran compiler.
    --nvcc      Convert flags to be suitable for the nvcc compiler.
+   --static    Use only static Score-P libraries if possible.
+   --dynamic   Use only dynamic Score-P libraries if possible.
+   --online-access|--noonline-access
+            Specifies whether online access (needed by Periscope) is enabled.
+            On default it is enabled.
    --compiler|--nocompiler
             Specifies whether compiler instrumentation is used.
             On default compiler instrumentation is enabled.
@@ -34,11 +42,23 @@ scorep-config <command> [<options>]
    --cuda|--nocuda
             Specifies whether cuda instrumentation is used.
             On default cuda instrumentation is enabled.
+   --preprocess|--nopreprocess
+            Specifies whether preprocess instrumentation is used.
+            On default preprocess instrumentation is disabled.
    --thread=<threading system>[:<variant>]
             Available threading systems are:
          none	This is the default.
          omp:pomp_tpd
+         omp:ancestry
             If no variant is specified the first matching
+            threading system is used.
+   --mutex=<locking system>[:<variant>]
+            Available locking systems are:
+         none
+         omp
+         pthread
+         pthread:spinlock
+            If no variant is specified the default for the respective
             threading system is used.
    --mpp=<multi-process paradigm>
             Available multi-process paradigms are:

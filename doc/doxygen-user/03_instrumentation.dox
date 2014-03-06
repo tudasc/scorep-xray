@@ -78,7 +78,7 @@ When compiling without the @scorep instrumenter, the
 linker flags and libraries, or include paths:
 @verbatim
     scorep-config [--mpp=none|--mpp=mpi] \ 
-                  [--thread=none|--thread=omp] --libs [--fortran]
+                  [--thread=none|--thread=omp] --libs
 @endverbatim
 
 The @verb--mpp=<paradigm> switch selects which message passing paradigm is used. 
@@ -98,17 +98,25 @@ a threading system.
 The <tt>scorep-config</tt> command can also be used to determine the right compiler
 flags for specifying the include directory of the <tt>scorep/SCOREP_User.h</tt> or
 <tt>scorep/SCOREP_User.inc</tt> header files. When compiling without using the @scorep
-instrumenter, necessary defines and compiler instrumentation flags can be obtained by calling:
+instrumenter, necessary defines and compiler instrumentation flags can be obtained by calling
+one of the following, depending on the language:
 @verbatim
-    scorep-config --cflags [--fortran] [--user] [--nocompiler]
+    scorep-config --cflags [<options>]
+    scorep-config --cxxflags [<options>]
+    scorep-config --fflags [<options>]
 @endverbatim
 
-If one wants to instrument Fortran code, <tt>--fortran</tt> should be added. The 
-<tt>--user</tt> and <tt>--nocompiler</tt> options allow to get the compiler flags 
-for non-default instrumentation possibilities. Thus <tt>--user</tt> enables the 
+If you compile a C file, you should use <tt>--cflags</tt>. If you use a C++ program,
+you should use <tt>--cxxflags</tt>. And if you compile a Fortran source file, you
+should use <tt>--flags</tt>.
+
+With the additional options it is possible to select the used adapter, the threading system and 
+the message passing system. For each adapter, we provides a pair of flags of the form
+<tt>--adapter</tt>, and <tt>--noadapter</tt> (please replace <tt>adapter</tt> by the 
+name of the adapter). This allows to get options  
+for non-default instrumentation possibilities. E.g., <tt>--user</tt> enables the 
 manual instrumentation with the @scorep user API, the <tt>--nocompiler</tt> option
-disables compiler instrumentation. If Fortran code is instrumented, <tt>--fortran</tt> has to
-be added.
+disables compiler instrumentation. 
 
 @scorep supports a variety of instrumentation types for user-level
 source routines and arbitrary regions, in addition to fully-automatic

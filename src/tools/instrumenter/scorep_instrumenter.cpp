@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -314,11 +314,6 @@ SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
     mode += SCOREP_Instrumenter_Selector::getAllConfigToolFlags();
     mode += SCOREP_Instrumenter_Adapter::getAllConfigToolFlags();
 
-    if ( is_fortran_file( input_file ) )
-    {
-        mode += " --fortran";
-    }
-
     if ( m_command_line.isNvccCompiler() )
     {
         mode += " --nvcc";
@@ -353,11 +348,21 @@ void
 SCOREP_Instrumenter::compile_source_file( const std::string& input_file,
                                           const std::string& output_file )
 {
+    std::string cflags = "--cflags";
+    if ( is_cpp_file( input_file ) )
+    {
+        cflags = "--cxxflags";
+    }
+    else if ( is_fortran_file( input_file ) )
+    {
+        cflags = "--fflags";
+    }
+
     /* Construct command */
     std::stringstream command;
     command << SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars();
     command << m_command_line.getCompilerName();
-    command << " `" << m_config_base << " --cflags` " << m_compiler_flags;
+    command << " `" << m_config_base << " " <<  cflags << "` " << m_compiler_flags;
     command << " " << m_command_line.getFlagsBeforeLmpi();
     command << " " << m_command_line.getFlagsAfterLmpi();
     command << " -c " << input_file;
