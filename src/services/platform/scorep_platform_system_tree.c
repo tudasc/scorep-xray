@@ -123,11 +123,11 @@ SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreePathElement* path )
  * scorep_platform_system_tree_top_down_add().
  */
 static SCOREP_Platform_SystemTreePathElement*
-scorep_platform_system_tree_create_element( SCOREP_SystemTreeDomain domains,
-                                            const char*             node_class,
-                                            size_t                  node_name_len,
-                                            const char*             node_name_fmt,
-                                            va_list                 vl )
+create_element( SCOREP_SystemTreeDomain domains,
+                const char*             node_class,
+                size_t                  node_name_len,
+                const char*             node_name_fmt,
+                va_list                 vl )
 {
     if ( !node_class || !node_name_fmt )
     {
@@ -198,11 +198,11 @@ scorep_platform_system_tree_top_down_add(
     va_start( vl, node_name_fmt );
 
     SCOREP_Platform_SystemTreePathElement* new_element =
-        scorep_platform_system_tree_create_element( domains,
-                                                    node_class,
-                                                    node_name_len,
-                                                    node_name_fmt,
-                                                    vl );
+        create_element( domains,
+                        node_class,
+                        node_name_len,
+                        node_name_fmt,
+                        vl );
 
     va_end( vl );
 
@@ -236,11 +236,11 @@ scorep_platform_system_tree_bottom_up_add(
     va_start( vl, node_name_fmt );
 
     SCOREP_Platform_SystemTreePathElement* new_element =
-        scorep_platform_system_tree_create_element( domains,
-                                                    node_class,
-                                                    node_name_len,
-                                                    node_name_fmt,
-                                                    vl );
+        create_element( domains,
+                        node_class,
+                        node_name_len,
+                        node_name_fmt,
+                        vl );
 
     va_end( vl );
 
