@@ -118,8 +118,9 @@ SCOREP_Platform_FreePath( SCOREP_Platform_SystemTreePathElement* path )
 
 
 /**
- *
- * @param node_name_len Total space alloacted for the node_name, including trailing NUL.
+ * For parameter documentation see
+ * scorep_platform_system_tree_bottom_up_add() and
+ * scorep_platform_system_tree_top_down_add().
  */
 static SCOREP_Platform_SystemTreePathElement*
 scorep_platform_system_tree_create_element( SCOREP_SystemTreeDomain domains,
