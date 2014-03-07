@@ -56,6 +56,7 @@
   is preprocessed before compilation. Prevent the preinclusion for the
   compilation of preprocessed files if an appropriate compiler option
   exists (exists since pgCC version 14.1).
+- Fix a deadlock on AIX, if MPI_Abort was called.
 
 ------------------- Released version 1.2.3 ---------------------------
 
