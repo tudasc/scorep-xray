@@ -56,6 +56,7 @@
 #include "SCOREP_Mpi.h"
 #include <UTILS_Error.h>
 #include <SCOREP_Events.h>
+#include <SCOREP_RuntimeManagement.h>
 
 /**
  * @name C wrappers
@@ -77,6 +78,7 @@ MPI_Abort( MPI_Comm comm,
     int return_val;
 
     UTILS_WARNING( "Explicit MPI_Abort call abandoning the SCOREP measurement." );
+    SCOREP_SetAbortFlag();
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
     {

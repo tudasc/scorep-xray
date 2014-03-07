@@ -124,6 +124,11 @@ static bool scorep_enable_recording_by_default = true;
  */
 static bool scorep_default_recoding_mode_changes_allowed = true;
 
+/**
+ * Indicates whether the application initiated an abortion.
+ */
+static bool scorep_application_aborted = false;
+
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
 static void scorep_finalize( void );
@@ -146,7 +151,6 @@ SCOREP_IsInitialized( void )
 
     return scorep_initialized && !scorep_finalized;
 }
-
 
 /**
  * Initialize the measurement system from the subsystem layer.
@@ -258,6 +262,13 @@ SCOREP_LocationGroupHandle
 SCOREP_GetLocationGroup( void )
 {
     return location_group_handle;
+}
+
+
+void
+SCOREP_SetAbortFlag( void )
+{
+    scorep_application_aborted = true;
 }
 
 
@@ -537,7 +548,7 @@ scorep_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    if ( !scorep_initialized || scorep_finalized )
+    if ( !scorep_initialized || scorep_finalized || scorep_application_aborted )
     {
         return;
     }

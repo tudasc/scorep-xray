@@ -194,11 +194,18 @@ SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback );
 SCOREP_LocationGroupHandle
 SCOREP_GetLocationGroup( void );
 
-/** Get the initiali timestamp of this process which denotes the begin of the
- *  epoch.
+/**
+ * Get the initiali timestamp of this process which denotes the begin of the
+ * epoch.
  */
 uint64_t
 SCOREP_GetBeginEpoch( void );
+
+/**
+ * Set an indication that the application aborted.
+ */
+void
+SCOREP_SetAbortFlag( void );
 
 /*@}*/
 
