@@ -1,5 +1,14 @@
 ## -*- mode: makefile -*-
 
+noinst_LTLIBRARIES += libscorep_openmp_version.la
+
+libscorep_openmp_version_la_SOURCES = \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_openmp_version.cpp
+
+libscorep_openmp_version_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(OPENMP_CFLAGS)
+
 bin_PROGRAMS += scorep
 
 scorep_SOURCES = \
@@ -43,17 +52,15 @@ scorep_SOURCES = \
 
 scorep_CPPFLAGS = \
     $(AM_CPPFLAGS) \
-    $(OPENMP_CFLAGS) \
-    -g \
     $(UTILS_CPPFLAGS)
 
 if HAVE_PDT
 scorep_CPPFLAGS += -DHAVE_PDT=1
 endif
 
-scorep_LDFLAGS = $(OPENMP_CFLAGS)
-
-scorep_LDADD = libutils.la
+scorep_LDADD = \
+    libutils.la \
+    libscorep_openmp_version.la
 
 EXTRA_DIST += \
     $(SRC_ROOT)share/SCOREP_Pdt_Instrumentation.conf \

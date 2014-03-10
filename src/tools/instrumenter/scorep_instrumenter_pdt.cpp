@@ -38,6 +38,8 @@
 #include <UTILS_Error.h>
 #include <UTILS_IO.h>
 
+extern const int scorep_openmp_version;
+
 /* **************************************************************************************
  * class SCOREP_Instrumenter_PdtAdapter
  * *************************************************************************************/
@@ -97,13 +99,11 @@ SCOREP_Instrumenter_PdtAdapter::precompile( SCOREP_Instrumenter&         instrum
     command << " " << cmdLine.getDefineFlags()
             << " " << cmdLine.getIncludeFlags()
             << " " << cflags;
-#ifdef _OPENMP
+
     if ( SCOREP_Instrumenter_Selector::isParadigmSelected( "omp" ) )
     {
-        command << " -D_OPENMP=";
-        command << _OPENMP;
+        command << " -D_OPENMP=" << scorep_openmp_version;
     }
-#endif
 
     if ( SCOREP_Instrumenter_Selector::isParadigmSelected( "mpi" ) )
     {
