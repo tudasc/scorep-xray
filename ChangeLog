@@ -57,6 +57,9 @@
   compilation of preprocessed files if an appropriate compiler option
   exists (exists since pgCC version 14.1).
 - Fix a deadlock on AIX, if MPI_Abort was called.
+- If a system provides only shared OpenMP runtime libraries and a compiler
+  does not add rpath information but relies on LD_LIBRARY_PATH, the 
+  scorep instrumenter fails execution. Fixed.
 
 ------------------- Released version 1.2.3 ---------------------------
 
