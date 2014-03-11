@@ -37,6 +37,8 @@ dnl need for a --with-libcupti as cupti resides within the toolkit
 dnl installation.
 AC_DEFUN([AC_SCOREP_CUDA], [
 scorep_have_cuda="no"
+scorep_have_cupti4="no"
+scorep_have_cupti_activity_async="no"
 
 ac_scorep_cuda_safe_CPPFLAGS=$CPPFLAGS
 ac_scorep_cuda_safe_LDFLAGS=$LDFLAGS
@@ -92,7 +94,15 @@ AC_SCOREP_COND_HAVE([CUDA_SUPPORT],
                      AC_SUBST(CUDA_LDFLAGS,  [""])
                      AC_SUBST(CUDA_LIBS,     [""])])
 
-AFS_SUMMARY([cuda support], [${scorep_have_cuda}, see also libcudart, libcuda, and libcupti support])
+AC_SCOREP_COND_HAVE([CUPTI_ASYNC_SUPPORT],
+                    [test "x${scorep_have_cupti_activity_async}" = "xyes"],
+                    [Defined if CUPTI activity asynchronous buffer handling is available.]
+                   )
+
+AFS_SUMMARY([CUDA support], [${scorep_have_cuda}, see also libcudart, libcuda, and libcupti support])
+
+AFS_SUMMARY([CUPTI async support], [${scorep_have_cupti_activity_async}])
+
 ])
 
 dnl ----------------------------------------------------------------------------
@@ -115,9 +125,9 @@ AS_IF([test x"$scorep_cudart_error" = "xno"],
       [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cuda_runtime_api.h"]],
         [[
 #ifndef CUDART_VERSION
-#  error "CUDART_VERSION not defined"
+#  ups__cudart_version_not_defined
 #elif CUDART_VERSION < 4010
-#  error "CUDART_VERSION < 4010"
+#  ups__cudart_version_lt_4010
 #endif
         ]])],
         [],
@@ -159,16 +169,40 @@ AS_IF([test "x$scorep_cupti_error" = "xno"],
       [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cupti.h"]],
         [[
 #ifndef CUPTI_API_VERSION
-#  error "CUPTI_API_VERSION not defined"
+#  ups__cupti_api_version_not_defined
 #elif CUPTI_API_VERSION < 2
-#  error "CUPTI_API_VERSION < 2"
+#  ups__cupti_api_version_lt_2
 #endif
          ]])],
-         [],
+         [
+            AS_IF([test "x$scorep_cupti_error" = "xno"],
+                  [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cupti.h"]],
+                    [[
+#if CUPTI_API_VERSION < 4
+#  ups__cupti_api_version_lt_4
+#endif
+                     ]])],
+                     [AC_MSG_NOTICE([Check for CUPTI 4 was successful.])
+                      scorep_have_cupti4="yes"],
+                     [])])
+         ],
          [AC_MSG_NOTICE([CUPTI version could not be determined and/or is
                          incompatible (< 2). See 'config.log' for more details.])
           scorep_cupti_error="yes" ])])
 
+dnl check for CUPTI activity asynchronous buffer handling
+AS_IF([test "x$scorep_have_cupti4" = "xyes"],
+  [
+  AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+#include <cupti.h>
+]],[[
+CUpti_BuffersCallbackRequestFunc funcBufferRequested;
+CUpti_BuffersCallbackCompleteFunc funcBufferCompleted;
+cuptiActivityRegisterCallbacks(funcBufferRequested, funcBufferCompleted);
+]])],
+      [scorep_have_cupti_activity_async="yes"],
+      [scorep_cupti_error="yes"])
+  ],[])
 
 dnl final check for errors
 if test "x${scorep_cupti_error}" = "xno"; then
@@ -200,9 +234,9 @@ AS_IF([test "x$scorep_cuda_error" = "xno"],
       [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cuda.h"]],
         [[
 #ifndef CUDA_VERSION
-#  error "CUDA_VERSION not defined"
+#  ups__cuda_version_not_defined
 #elif CUDA_VERSION < 4010
-#  error "CUDA_VERSION < 4010"
+#  ups__cuda_version_lt_4010
 #endif
         ]])],
         [],
