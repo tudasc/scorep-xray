@@ -35,10 +35,11 @@
  *
  */
 
-
+#include <config.h>
 
 uint64_t scorep_cuda_features;
 size_t   scorep_cupti_activity_buffer_size;
+size_t   scorep_cupti_activity_buffer_chunk_size;
 
 
 /*
@@ -102,8 +103,17 @@ static SCOREP_ConfigVariable scorep_cuda_configs[] = {
         SCOREP_CONFIG_TYPE_SIZE,
         &scorep_cupti_activity_buffer_size,
         NULL,
-        "64k",
+        "1M",
         "Total memory in bytes for the CUDA record buffer",
+        ""
+    },
+    {
+        "buffer_chunk",
+        SCOREP_CONFIG_TYPE_SIZE,
+        &scorep_cupti_activity_buffer_chunk_size,
+        NULL,
+        "8k",
+        "Chunk size in bytes for the CUDA record buffer (ignored for CUDA 5.5 and earlier)",
         ""
     },
     SCOREP_CONFIG_TERMINATOR

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -95,10 +95,6 @@ extern SCOREP_Mutex scorep_cupti_mutex;
 # define SCOREP_CUPTI_LOCK() SCOREP_MutexLock( scorep_cupti_mutex )
 # define SCOREP_CUPTI_UNLOCK() SCOREP_MutexUnlock( scorep_cupti_mutex )
 
-// TODO: define these macros during configure
-#define SCOREP_CUPTI_ACTIVITY
-#define SCOREP_CUPTI_CALLBACKS
-
 /*
  * The key of the hash node is a string, the value the corresponding region handle.
  * It is used to store region names with its corresponding region handles.
@@ -113,62 +109,53 @@ typedef struct scorep_cuda_kernel_hash_node
 /*
  * Score-P CUPTI stream
  */
-typedef struct scorep_cupti_stream_t
+typedef struct scorep_cupti_stream
 {
-    CUstream                      cuda_stream;           /**< the CUDA stream */
-    uint32_t                      stream_id;             /**< the CUDA stream ID */
-    SCOREP_Location*              scorep_location;       /**< Score-P location for this stream (unique) */
-    uint32_t                      location_id;           /**< internal location ID used for unification */
-    uint64_t                      scorep_last_timestamp; /**< last written Score-P timestamp */
-    bool                          destroyed;             /**< Is stream destroyed? Ready for reuse? */
-    struct scorep_cupti_stream_t* next;
-}scorep_cupti_stream_t;
+    CUstream                    cuda_stream;             /**< the CUDA stream */
+    uint32_t                    stream_id;               /**< the CUDA stream ID */
+    SCOREP_Location*            scorep_location;         /**< Score-P location for this stream (unique) */
+    uint32_t                    location_id;             /**< internal location ID used for unification */
+    uint64_t                    scorep_last_timestamp;   /**< last written Score-P timestamp */
+    bool                        destroyed;               /**< Is stream destroyed? Ready for reuse? */
+    struct scorep_cupti_stream* next;
+}scorep_cupti_stream;
 
-#if ( defined( SCOREP_CUPTI_CALLBACKS ) || defined( SCOREP_CUPTI_ACTIVITY ) )
 /*
  * data structure contains information about allocated CUDA memory
  */
-typedef struct scorep_cupti_gpumem_t
+typedef struct scorep_cupti_gpumem
 {
-    uint64_t                      address;  /**< pointer value to allocated memory */
-    size_t                        size;     /**< number of bytes allocated */
-    uint32_t                      tid;      /**< thread id used with this malloc */
-    struct scorep_cupti_gpumem_t* next;
-}scorep_cupti_gpumem_t;
-#endif /* SCOREP_CUPTI_CALLBACKS || SCOREP_CUPTI_ACTIVITY */
+    uint64_t                    address;    /**< pointer value to allocated memory */
+    size_t                      size;       /**< number of bytes allocated */
+    uint32_t                    tid;        /**< thread id used with this malloc */
+    struct scorep_cupti_gpumem* next;
+}scorep_cupti_gpumem;
 
-#if defined( SCOREP_CUPTI_CALLBACKS )
 /*
  * structure of a Score-P CUPTI CUDA runtime kernel
  */
-typedef struct scorep_cupti_kernel_t
+typedef struct scorep_cupti_kernel
 {
-    CUstream                      cuda_stream;        /**< the CUDA stream */
-    uint32_t                      blocks_per_grid;    /**< number of blocks per grid */
-    uint32_t                      threads_per_block;  /**< number of threads per block */
-    struct scorep_cupti_kernel_t* up;
-    struct scorep_cupti_kernel_t* down;
-}scorep_cupti_kernel_t;
-
+    CUstream                    cuda_stream;          /**< the CUDA stream */
+    uint32_t                    blocks_per_grid;      /**< number of blocks per grid */
+    uint32_t                    threads_per_block;    /**< number of threads per block */
+    struct scorep_cupti_kernel* up;
+    struct scorep_cupti_kernel* down;
+}scorep_cupti_kernel;
 
 /*
  * Score-P CUPTI callbacks specific context data.
  */
 typedef struct
 {
-    scorep_cupti_kernel_t* kernel_data;     /**< pointer to top of CUDA runtime kernel
+    scorep_cupti_kernel* kernel_data;     /**< pointer to top of CUDA runtime kernel
                                                configuration stack */
-    uint8_t                streams_created; /**< #streams created for this device */
+    uint8_t              streams_created; /**< #streams created for this device */
 # if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 3 ) )
-    bool                   concurrent_kernels;
+    bool                 concurrent_kernels;
 # endif
-# if !defined( SCOREP_CUPTI_ACTIVITY )
-    uint8_t callbacks_enabled;      /**< execute callback function? */
-# endif
-}scorep_cupti_callbacks_t;
-#endif /* SCOREP_CUPTI_CALLBACKS */
+}scorep_cupti_callbacks;
 
-#if defined( SCOREP_CUPTI_ACTIVITY )
 /*
  * Score-P CUPTI activity synchronization structure
  */
@@ -177,52 +164,67 @@ typedef struct
     uint64_t host_start; /**< host measurement interval start timestamp */
     uint64_t host_stop;  /**< host measurement interval stop timestamp */
     uint64_t gpu_start;  /**< gpu measurement interval start timestamp */
+    uint64_t gpu_stop;   /**< gpu measurement interval stop timestamp */
     double   factor;     /**< synchronization factor for time interval */
-}scorep_cupti_sync_t;
+}scorep_cupti_sync;
+
+#if HAVE( CUPTI_ASYNC_SUPPORT )
+/**
+ * Score-P CUPTI activity buffers list entry
+ */
+typedef struct scorep_cupti_buffer
+{
+    uint8_t*                    buffer;     /**< activity records buffer */
+    uint32_t                    stream_id;  /**< CUDA stream id */
+    size_t                      valid_size; /**< valid bytes in buffer */
+    size_t                      size;       /**< total size (bytes) in buffer */
+    bool                        committed;  /**< set if buffer is controlled by CUPTI */
+    bool                        pending;    /**< set if buffer has been filled by CUPTI */
+    struct scorep_cupti_buffer* next;       /**< ptr to next entry in list */
+} scorep_cupti_buffer;
+#endif
 
 /*
  * Score-P CUPTI activity specific context data.
  */
 typedef struct
 {
-    uint32_t            default_strm_id;      /**< CUPTI stream ID of default stream */
-    scorep_cupti_sync_t sync;                 /**< store synchronization information */
-    uint8_t*            buffer;               /**< CUPTI activity buffer pointer */
-    uint64_t            scorep_last_gpu_time; /**< last written Score-P timestamp */
-    bool                gpu_idle;             /**< has idle region enter been written last */
-}scorep_cupti_activity_t;
-#endif /* SCOREP_CUPTI_ACTIVITY */
+    uint32_t             default_strm_id;          /**< CUPTI stream ID of default stream */
+    scorep_cupti_sync    sync;                     /**< store synchronization information */
+#if HAVE( CUPTI_ASYNC_SUPPORT )
+    scorep_cupti_buffer* buffers;                  /**< CUPTI activity buffers list */
+    bool                 max_buffer_size_exceeded; /**< flag if the maximum allowed buffer size is reached */
+#else
+    uint8_t*             buffer;                   /**< CUPTI activity buffer pointer */
+#endif
+    uint64_t             scorep_last_gpu_time;     /**< last written Score-P timestamp */
+    bool                 gpu_idle;                 /**< has idle region enter been written last */
+}scorep_cupti_activity;
 
 /*
  * Score-P CUPTI context.
  */
-typedef struct scorep_cupti_context_t
+typedef struct scorep_cupti_context
 {
-    CUcontext              cuda_context;         /**< CUDA context handle */
-    uint32_t               context_id;           /**< context ID */
-    uint32_t               device_id;            /**< device ID */
-    CUdevice               cuda_device;          /**< CUDA device handle */
-    SCOREP_Location*       scorep_host_location; /**< Score-P context host location */
-    uint32_t               location_id;          /**< internal location ID used for unification */
-    uint8_t                destroyed;
-    SCOREP_AttributeHandle streamRef;            /**< CUDA DRV stream references */
-    SCOREP_AttributeHandle eventRef;             /**< CUDA DRV events */
-    SCOREP_AttributeHandle cuResultRef;          /**< CUDA DRV API function results */
-#if ( defined( SCOREP_CUPTI_ACTIVITY ) || defined( SCOREP_CUPTI_CALLBACKS ) )
-    scorep_cupti_stream_t* streams;              /**< list of Score-P CUDA streams */
-    scorep_cupti_gpumem_t* cuda_mallocs;         /**< list of allocated GPU memory fields */
-    size_t                 gpu_memory_allocated; /**< memory allocated on CUDA device */
-#endif
-#if defined( SCOREP_CUPTI_ACTIVITY )
-    scorep_cupti_activity_t* activity;
-#endif
-#if defined( SCOREP_CUPTI_CALLBACKS )
-    scorep_cupti_callbacks_t*      callbacks;
-#endif
-    struct scorep_cupti_context_t* next;
-}scorep_cupti_context_t;
+    CUcontext                    cuda_context;         /**< CUDA context handle */
+    uint32_t                     context_id;           /**< context ID */
+    uint32_t                     device_id;            /**< device ID */
+    CUdevice                     cuda_device;          /**< CUDA device handle */
+    SCOREP_Location*             scorep_host_location; /**< Score-P context host location */
+    uint32_t                     location_id;          /**< internal location ID used for unification */
+    uint8_t                      destroyed;
+    SCOREP_AttributeHandle       stream_ref;           /**< CUDA DRV stream references */
+    SCOREP_AttributeHandle       event_ref;            /**< CUDA DRV events */
+    SCOREP_AttributeHandle       result_ref;           /**< CUDA DRV API function results */
+    scorep_cupti_stream*         streams;              /**< list of Score-P CUDA streams */
+    scorep_cupti_gpumem*         cuda_mallocs;         /**< list of allocated GPU memory fields */
+    size_t                       gpu_memory_allocated; /**< memory allocated on CUDA device */
+    scorep_cupti_activity*       activity;
+    scorep_cupti_callbacks*      callbacks;
+    struct scorep_cupti_context* next;
+}scorep_cupti_context;
 
-extern scorep_cupti_context_t* scorep_cupti_context_list;
+extern scorep_cupti_context* scorep_cupti_context_list;
 
 extern size_t scorep_cupti_location_counter;
 
@@ -236,31 +238,41 @@ extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_threads_per_kernel;
 extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_threads_per_block;
 extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_blocks_per_grid;
 
-#if defined( SCOREP_CUPTI_ACTIVITY )
 /* CUPTI activity specific kernel counter IDs */
 extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_static_shared_mem;
 extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_dynamic_shared_mem;
 extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_local_mem_total;
 extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_registers_per_thread;
-#endif
 
 extern SCOREP_SamplingSetHandle scorep_cupti_sampling_set_gpumemusage;
 
-extern void
+/*
+ * Initialization of common variables for the Score-P CUPTI implementation.
+ *
+ * We assume that this function cannot be executed concurrently by multiple
+ * threads.
+ */
+void
 scorep_cupti_init( void );
 
-extern void
+/*
+ * Finalization of common variables in the Score-P CUPTI implementation.
+ *
+ * We assume that this function cannot be executed concurrently by multiple
+ * threads.
+ */
+void
 scorep_cupti_finalize( void );
 
 /*
  * Handles errors returned from CUPTI function calls.
  *
- * @param ecode the CUDA driver API error code
+ * @param err the CUDA driver API error code
  * @param msg a message to get more detailed information about the error
- * @param the corresponding file
- * @param the line the error occurred
+ * @param file pointer to the corresponding file name
+ * @param line the line the error occurred
  */
-extern void
+void
 scorep_cupti_handle_error( CUptiResult err,
                            const char* msg,
                            const char* file,
@@ -276,19 +288,11 @@ scorep_cupti_handle_error( CUptiResult err,
  *
  * @return pointer to created Score-P CUPTI context
  */
-extern scorep_cupti_context_t*
+scorep_cupti_context*
 scorep_cupti_context_create( CUcontext cudaContext,
                              CUdevice  cudaDevice,
                              uint32_t  cudaContextId,
                              uint32_t  cudaDeviceId );
-
-/*
- * Prepend the given Score-P CUPTI context to the global context list.
- *
- * @param context pointer to the Score-P CUPTI context to be prepended
- */
-extern void
-scorep_cupti_context_prepend( scorep_cupti_context_t* context );
 
 /*
  * Get a Score-P CUPTI context by CUDA context.
@@ -297,18 +301,8 @@ scorep_cupti_context_prepend( scorep_cupti_context_t* context );
  *
  * @return Score-P CUPTI context
  */
-extern scorep_cupti_context_t*
+scorep_cupti_context*
 scorep_cupti_context_get( CUcontext cudaContext );
-
-/*
- * Get a Score-P CUPTI context by CUDA context without locking.
- *
- * @param cudaContext the CUDA context
- *
- * @return Score-P CUPTI context
- */
-extern scorep_cupti_context_t*
-scorep_cupti_context_get_nolock( CUcontext cudaContext );
 
 /*
  * Get or if not available create a Score-P CUPTI context by CUDA context.
@@ -317,7 +311,7 @@ scorep_cupti_context_get_nolock( CUcontext cudaContext );
  *
  * @return Score-P CUPTI context
  */
-extern scorep_cupti_context_t*
+scorep_cupti_context*
 scorep_cupti_context_get_create( CUcontext cudaContext );
 
 /*
@@ -327,7 +321,7 @@ scorep_cupti_context_get_create( CUcontext cudaContext );
  *
  * @return the Score-P CUPTI context, which has been removed
  */
-extern scorep_cupti_context_t*
+scorep_cupti_context*
 scorep_cupti_context_remove( CUcontext cudaContext );
 
 /*
@@ -335,18 +329,17 @@ scorep_cupti_context_remove( CUcontext cudaContext );
  *
  * @param context pointer to the Score-P CUPTI context
  */
-extern void
-scorep_cupti_context_set_destroyed( scorep_cupti_context_t* context );
+void
+scorep_cupti_context_set_destroyed( scorep_cupti_context* context );
 
 /*
  * Finalize the Score-P CUPTI context and free all memory allocated with it.
  *
  * @param context pointer to the Score-P CUPTI context
  */
-extern void
-scorep_cupti_context_finalize( scorep_cupti_context_t* context );
+void
+scorep_cupti_context_finalize( scorep_cupti_context* context );
 
-#if ( defined( SCOREP_CUPTI_ACTIVITY ) || defined( SCOREP_CUPTI_CALLBACKS ) )
 /*
  * Create a Score-P CUPTI stream.
  *
@@ -356,11 +349,11 @@ scorep_cupti_context_finalize( scorep_cupti_context_t* context );
  *
  * @return pointer to created Score-P CUPTI stream
  */
-extern scorep_cupti_stream_t*
+scorep_cupti_stream*
 scorep_cupti_stream_create(
-    scorep_cupti_context_t* context,
-    CUstream                cudaStream,
-    uint32_t                streamId );
+    scorep_cupti_context* context,
+    CUstream              cudaStream,
+    uint32_t              streamId );
 
 /*
  * Get a Score-P CUPTI stream by CUDA stream without locking.
@@ -370,10 +363,10 @@ scorep_cupti_stream_create(
  *
  * @return Score-P CUPTI stream
  */
-extern scorep_cupti_stream_t*
+scorep_cupti_stream*
 scorep_cupti_stream_get_by_id(
-    scorep_cupti_context_t* context,
-    uint32_t                streamId );
+    scorep_cupti_context* context,
+    uint32_t              streamId );
 
 /*
  * Retrieve a Score-P CUPTI stream object. This function will lookup, if
@@ -386,11 +379,11 @@ scorep_cupti_stream_get_by_id(
  *
  * @return the Score-P CUPTI stream
  */
-extern scorep_cupti_stream_t*
+scorep_cupti_stream*
 scorep_cupti_stream_get_create(
-    scorep_cupti_context_t* context,
-    CUstream                cudaStream,
-    uint32_t                streamId );
+    scorep_cupti_context* context,
+    CUstream              cudaStream,
+    uint32_t              streamId );
 
 /*
  * Mark a CUDA stream as destroyed, so that it can be reused afterwards.
@@ -399,7 +392,7 @@ scorep_cupti_stream_get_create(
  * @param streamId the CUDA stream ID to be marked as destroyed
  *
  */
-extern void
+void
 scorep_cupti_stream_set_destroyed( CUcontext cudaContext,
                                    uint32_t  streamId );
 
@@ -412,16 +405,14 @@ scorep_cupti_stream_set_destroyed( CUcontext cudaContext,
  * @return the size of the array
  *
  */
-extern size_t
+size_t
 scorep_cupti_create_cuda_comm_group( uint64_t** globalLocationIds );
 
-#endif /* SCOREP_CUPTI_ACTIVITY || SCOREP_CUPTI_CALLBACKS */
-
-extern void*
+void*
 scorep_cupti_kernel_hash_put( const char*         name,
                               SCOREP_RegionHandle region );
 
-extern void*
+void*
 scorep_cupti_kernel_hash_get( const char* name );
 
 #endif  /* SCOREP_CUPTI_H */

@@ -893,6 +893,13 @@ CUPTI uses an extra buffer to store its activity records.
 If the size of this buffer is too small, @scorep will print a warning about the current buffer size and the number of dropped records.
 To avoid dropping of records increase the buffer size via the environment variable \confvar{SCOREP_CUDA_BUFFER}.
 
+Since CUDA toolkit version 5.5 the chunk size for the CUPTI activity buffer can be specified via the environment variable \confvar{SCOREP_CUDA_BUFFER_CHUNK}. Buffer chunks are allocated whenever CUPTI requests a buffer (e.g. to record activities on a CUDA stream).
+\confvar{SCOREP_CUDA_BUFFER} specifies the upper bound of memory to be allocated for CUPTI activities. Therefore it should be a multiple of \confvar{SCOREP_CUDA_BUFFER_CHUNK}.
+
+@note For CUDA 5.5 there is an error in CUPTI buffer handling. The last activity in a CUPTI activity buffer (\confvar{SCOREP_CUDA_BUFFER_CHUNK}) gets lost, when the buffer is full. 
+To avoid this issue specify \confvar{SCOREP_CUDA_BUFFER_CHUNK} as large as necessary to store all CUDA device activities until the CUDA device is synchronized with the host.
+In CUDA 6.0 this issue is fixed and CUPTI does not request buffers for individual streams any more.
+
 @note @scorep supports CUDA monitoring since CUDA toolkit version 4.1. Make sure that the @scorep installation has configured CUDA support. The configure summary should contain the line: 
 <pre>CUDA support: yes</pre>
 If not, for most systems it is sufficient to specify the CUDA toolkit directory at @scorep configuration time: 

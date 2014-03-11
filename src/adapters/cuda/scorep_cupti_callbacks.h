@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -40,14 +40,20 @@
 
 /**
  * Initialize the ScoreP CUPTI callbacks implementation.
+ *
+ * We assume that this function cannot be executed concurrently by multiple
+ * threads.
  */
-extern void
+void
 scorep_cupti_callbacks_init( void );
 
 /**
  * Finalize the ScoreP CUPTI callbacks implementation.
+ *
+ * We assume that this function cannot be executed concurrently by multiple
+ * threads.
  */
-extern void
+void
 scorep_cupti_callbacks_finalize( void );
 
 /**
@@ -55,7 +61,7 @@ scorep_cupti_callbacks_finalize( void );
  *
  * @param enable 'true' to enable CUPTI callbacks, 'false' to disable callbacks
  */
-extern void
+void
 scorep_cupti_callbacks_enable( bool enable );
 
 #endif  /* SCOREP_CUPTI_CALLBACKS_H */

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -39,16 +39,29 @@
 
 #include "scorep_cupti.h"    /* CUPTI common structures, functions, etc. */
 
+/* CUPTI >= 4 uses CUpti_ActivityKernel2 instead of CUpti_ActivityKernel */
+#if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 4 ) )
+typedef CUpti_ActivityKernel2 CUpti_ActivityKernelType;
+#else
+typedef CUpti_ActivityKernel  CUpti_ActivityKernelType;
+#endif
+
 /**
  * Initialize the Score-P CUPTI Activity implementation.
+ *
+ * We assume that this function cannot be executed concurrently by multiple
+ * threads.
  */
-extern void
+void
 scorep_cupti_activity_init( void );
 
 /**
  * Finalize the Score-P CUPTI Activity implementation.
+ *
+ * We assume that this function cannot be executed concurrently by multiple
+ * threads.
  */
-extern void
+void
 scorep_cupti_activity_finalize( void );
 
 /*
@@ -57,7 +70,7 @@ scorep_cupti_activity_finalize( void );
  *
  * @param enable 1 to enable recording of activities, 0 to disable
  */
-extern void
+void
 scorep_cupti_activity_enable( bool enable );
 
 /*
@@ -65,8 +78,8 @@ scorep_cupti_activity_enable( bool enable );
  *
  * @param context the Score-P CUPTI context, which contains the activities
  */
-extern void
-scorep_cupti_activity_context_finalize( scorep_cupti_context_t* context );
+void
+scorep_cupti_activity_context_finalize( scorep_cupti_context* context );
 
 /*
  * Setup a the Score-P CUPTI activity context. Trigger initialization and
@@ -74,18 +87,18 @@ scorep_cupti_activity_context_finalize( scorep_cupti_context_t* context );
  *
  * @param context the Score-P CUPTI context
  */
-extern void
-scorep_cupti_activity_context_setup( scorep_cupti_context_t* context );
+void
+scorep_cupti_activity_context_setup( scorep_cupti_context* context );
 
 /*
  * Check for empty activity buffer.
  *
- * @param cudaContext CUDA context
+ * @param context Score-P CUDA context
  *
  * @return 1 for empty, 0 for non-empty buffer
  */
-extern uint8_t
-scorep_cupti_activity_is_buffer_empty( CUcontext cudaContext );
+bool
+scorep_cupti_activity_is_buffer_empty( scorep_cupti_context* context );
 
 /*
  * Handle activities buffered by CUPTI. Lock a call to this routine!!!
@@ -109,19 +122,7 @@ scorep_cupti_activity_is_buffer_empty( CUcontext cudaContext );
  * @param context Score-P CUPTI context, NULL to handle globally buffered
  * activities
  */
-extern void
-scorep_cupti_activity_context_flush( scorep_cupti_context_t* context );
-
-#if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 3 ) )
-/*
- * Enable tracing of concurrent kernels. Disable normal kernel tracing, if
- * necessary.
- *
- * @param context pointer to the VampirTrace CUPTI context.
- */
-extern void
-scorep_cupti_activity_enable_concurrent_kernel( scorep_cupti_context_t* context );
-
-#endif
+void
+scorep_cupti_activity_context_flush( scorep_cupti_context* context );
 
 #endif  /* SCOREP_CUPTI_ACTIVITY_H */

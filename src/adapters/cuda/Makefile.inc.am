@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -48,7 +48,16 @@ libscorep_adapter_cuda_mgmt_la_SOURCES  = \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_callbacks.h \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity.c \
     $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity.h \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cupti_activity_internal.h \
     $(SRC_ROOT)src/measurement/paradigm/cuda/scorep_cuda_unify.c
+
+if HAVE_CUPTI_ASYNC_SUPPORT
+libscorep_adapter_cuda_mgmt_la_SOURCES  += \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cupti4_activity.c
+else
+libscorep_adapter_cuda_mgmt_la_SOURCES  += \
+    $(SRC_ROOT)src/adapters/cuda/scorep_cupti3_activity.c
+endif
 
 libscorep_adapter_cuda_mgmt_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                        \

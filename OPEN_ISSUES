@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -31,7 +31,15 @@
 
                         Score-P new OPEN ISSUES
                         ========================
+                                                           Status: Feb 2014
+* CUDA support
 
+  - CUDA device activities get lost for CUDA 5.5 (CUPTI 4). The last activity 
+    in a CUPTI activity buffer gets lost, when the buffer is full. The issue 
+    can be avoided by providing buffers, which are large enough to store all 
+    CUDA device activities until the buffer is flushed. The user can specify 
+    the CUPTI activity buffer (chunk) size with the environment variable 
+    SCOREP_CUDA_BUFFER_CHUNK. In CUDA 6.0 (CUPTI 5) this issue is fixed.
 
 
                         Score-P v1.2 OPEN ISSUES

@@ -156,6 +156,11 @@ extern bool scorep_cuda_record_references;
  */
 extern size_t scorep_cupti_activity_buffer_size;
 
+/*
+ * The chunk size for CUPTI activity asynchronous buffer handling
+ */
+extern size_t scorep_cupti_activity_buffer_chunk_size;
+
 extern size_t    scorep_cuda_global_location_number;
 extern uint64_t* scorep_cuda_global_location_ids;
 
