@@ -282,6 +282,16 @@ SCOREP_Instrumenter_OpariAdapter::setTpdMode( const bool use_tpd )
     m_use_tpd = use_tpd;
 }
 
+void
+SCOREP_Instrumenter_OpariAdapter::checkDefaults( void )
+{
+    SCOREP_Instrumenter_Adapter::checkDefaults();
+    if ( m_usage == detect )
+    {
+        m_usage = disabled;
+    }
+}
+
 /* ------------------------------------------------------------------- private methods */
 void
 SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumenter,

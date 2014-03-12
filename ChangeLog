@@ -48,9 +48,9 @@
   compiler. Now, the filters are evaluated when the functions appear
   the first time. Thus, functions from shared libraries now appear in
   the measurement output.
-- Added support for CUDA 5.5 and CUDA 6.0: The CUPTI activity buffer handling 
-  has changed. Therefore the environment variable SCOREP_CUDA_BUFFER_CHUNK 
-  has been introduced (see user documentation). Changed the default size for 
+- Added support for CUDA 5.5 and CUDA 6.0: The CUPTI activity buffer handling
+  has changed. Therefore the environment variable SCOREP_CUDA_BUFFER_CHUNK
+  has been introduced (see user documentation). Changed the default size for
   SCOREP_CUDA_BUFFER to '1M'.
 - Added SCOREP_CUDA_ENABLE option 'references' to track references between
   CUDA host and device activities in the OTF2 trace.
@@ -62,14 +62,17 @@
   exists (exists since pgCC version 14.1).
 - Fix a deadlock on AIX, if MPI_Abort was called.
 - If a system provides only shared OpenMP runtime libraries and a compiler
-  does not add rpath information but relies on LD_LIBRARY_PATH, the 
+  does not add rpath information but relies on LD_LIBRARY_PATH, the
   scorep instrumenter fails execution. Fixed.
-- Added SCOREP_CUDA_ENABLE option 'flushatexit', which forces pending CUDA 
-  activities to be flushed at program exit. This can avoid records to be 
+- Added SCOREP_CUDA_ENABLE option 'flushatexit', which forces pending CUDA
+  activities to be flushed at program exit. This can avoid records to be
   dropped in OpenACC programs.
 - Changed default method of CUDA kernel recording to concurrent. Therefore
-  the SCOREP_CUDA_ENABLE option 'concurrent' has been replaced with 
+  the SCOREP_CUDA_ENABLE option 'concurrent' has been replaced with
   'kernel_serial'.
+- Fix missing flags in OPARI2 call to disable OpenMP instrumentation, if the
+  user selected POMP instrumentation for a serial program without specifying
+  that the program is serial, manually.
 
 ------------------- Released version 1.2.3 ---------------------------
 

@@ -78,6 +78,8 @@ public:
     virtual bool
     checkCommand( const std::string& current,
                   const std::string& next );
+    virtual void
+    checkDefaults( void );
 
     void
     setTpdMode( const bool use_tpd );
