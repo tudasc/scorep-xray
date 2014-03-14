@@ -12,4 +12,4 @@ tau_test_LDADD = \
 
 tau_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
 
-TESTS_SERIAL += tau_test
+#TESTS_SERIAL += tau_test
