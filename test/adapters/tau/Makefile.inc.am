@@ -10,3 +10,4 @@ tau_test_CPPFLAGS = $(AM_CPPFLAGS) \
 tau_test_LDADD = \
     $(LIB_ROOT)libscorep_serial.la
 
+TESTS_SERIAL += tau_test
