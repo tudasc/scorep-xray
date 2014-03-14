@@ -52,4 +52,6 @@ main( int   argc,
     SCOREP_Tau_AddLocationProperty( "key2", "value2" );
     SCOREP_Tau_AddLocationProperty( "key3", "value3" );
     SCOREP_Tau_AddLocationProperty( "key4", "value4" );
+
+    return 0;
 }
