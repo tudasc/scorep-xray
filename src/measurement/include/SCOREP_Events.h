@@ -188,6 +188,23 @@ SCOREP_Location_AddAttribute( SCOREP_Location*       location,
 
 
 /**
+ * Add a location property to a location.
+ *
+ * @param location Location.
+ *
+ * @param name Property name.
+ *
+ * @param value Property value.
+ *
+ * @return The new location property handle.
+ */
+SCOREP_LocationPropertyHandle
+SCOREP_Location_AddLocationProperty( SCOREP_Location* location,
+                                     const char*      name,
+                                     const char*      value );
+
+
+/**
  * Process an mpi send event in the measurement system.
  *
  * @param destinationRank The MPI destination rank in the communicator

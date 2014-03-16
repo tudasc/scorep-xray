@@ -272,6 +272,18 @@ SCOREP_Location_AddAttribute( SCOREP_Location*       location,
     }
 }
 
+/**
+ * Add a location property to \p location.
+ */
+SCOREP_LocationPropertyHandle
+SCOREP_Location_AddLocationProperty( SCOREP_Location* location,
+                                     const char*      name,
+                                     const char*      value )
+{
+    SCOREP_LocationHandle handle = SCOREP_Location_GetLocationHandle( location );
+    return SCOREP_Definitions_NewLocationProperty( handle, name, value );
+}
+
 
 /**
  * Process an mpi send event in the measurement system.

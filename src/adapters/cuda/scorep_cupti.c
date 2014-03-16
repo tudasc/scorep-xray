@@ -46,6 +46,9 @@
 #define SCOREP_CUPTI_CUDA_EVENTREF_KEY      "CUDA_EVENT_REF"
 #define SCOREP_CUPTI_CUDA_CURESULT_KEY      "CUDA_DRV_API_RESULT"
 
+/* String constants for CUDA location properties */
+#define SCOREP_CUPTI_LOCATION_NULL_STREAM   "CUDA_NULL_STREAM"
+
 /* hash table for CUDA kernels */
 static scorep_cuda_kernel_hash_node* scorep_cuda_kernel_hashtab[ SCOREP_CUDA_KERNEL_HASHTABLE_SIZE ];
 
@@ -254,6 +257,16 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
         stream->scorep_location =
             SCOREP_Location_CreateNonCPULocation( context->scorep_host_location,
                                                   SCOREP_LOCATION_TYPE_GPU, thread_name );
+
+#if defined( SCOREP_CUPTI_ACTIVITY )
+        if ( context->activity && ( stream->stream_id == context->activity->default_strm_id ) )
+        {
+            /* add a location property marking CUDA NULL streams */
+            SCOREP_Location_AddLocationProperty( stream->scorep_location,
+                                                 SCOREP_CUPTI_LOCATION_NULL_STREAM,
+                                                 "yes" );
+        }
+#endif
 
         stream->location_id = SCOREP_CUPTI_NO_ID;
     }
