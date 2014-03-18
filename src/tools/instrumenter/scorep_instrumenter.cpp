@@ -422,6 +422,7 @@ void
 SCOREP_Instrumenter::link_step( void )
 {
     std::stringstream command;
+    command << SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars();
     command << m_command_line.getCompilerName();
     command << scorep_vector_to_string( m_input_files, " ", "", " " );
     command << " " << m_command_line.getFlagsBeforeLmpi();
