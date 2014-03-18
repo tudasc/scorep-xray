@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2013,
+dnl Copyright (c) 2009-2014,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -130,7 +130,7 @@ AM_CONDITIONAL([HAVE_LOCKFILE_PROGS],
 # used for EXTRA_DIST in Makefile.am
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
 
-AC_SCOREP_HAVE_CONFIG_TOOL([otf2],   [4])
+AC_SCOREP_HAVE_CONFIG_TOOL([otf2],   [5])
 AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [2])
 AC_SCOREP_HAVE_CONFIG_TOOL([cube],   [4])
 
