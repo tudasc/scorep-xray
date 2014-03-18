@@ -72,10 +72,9 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
 
     if ( UTILS_IO_GetHostname( node->node_name, 256 ) != 0 )
     {
-        int errno_safed = errno;
         SCOREP_Platform_FreePath( root );
-        errno = errno_safed;
-        return UTILS_ERROR_POSIX( "UTILS_IO_GetHostname() failed." );
+        return UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+                            "UTILS_IO_GetHostname() failed." );
     }
 
     return SCOREP_SUCCESS;

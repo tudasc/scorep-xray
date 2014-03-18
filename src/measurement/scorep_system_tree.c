@@ -64,11 +64,8 @@ SCOREP_BuildSystemTree( void )
         SCOREP_Platform_GetPathInSystemTree( &path,
                                              SCOREP_Env_GetMachineName(),
                                              SCOREP_PLATFORM_NAME );
-    if ( err != SCOREP_SUCCESS )
-    {
-        UTILS_ERROR( err, "Failed to obtain system tree information." );
-        return NULL;
-    }
+    UTILS_BUG_ON( SCOREP_SUCCESS != err,
+                  "Failed to obtain system tree information." );
 
     return path;
 }
