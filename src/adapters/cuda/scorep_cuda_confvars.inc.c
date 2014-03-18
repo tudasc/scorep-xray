@@ -35,7 +35,6 @@
  *
  */
 
-#include <config.h>
 
 uint64_t scorep_cuda_features;
 size_t   scorep_cupti_activity_buffer_size;
