@@ -1,4 +1,4 @@
- * 
+ *
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -47,7 +47,7 @@ simple as executing the shell commands
     make
     make install
 
-If you don't specify --prefix, /opt/scorep will be used. 
+If you don't specify --prefix, /opt/scorep will be used.
 
 Depending on your system configuration and specific needs, the build
 process can be customized as described below.
@@ -91,7 +91,7 @@ frontend parts can be specified explicitly if desired.
   --with-frontend-compiler-suite=(gcc|ibm|intel|pgi|studio)
                The compiler suite used to build the frontend parts of
                this package in cross-compiling environments.  Needs to
-               be in $PATH.  
+               be in $PATH.
                [Default: gcc]
 
 The MPI compiler, if in $PATH, is usually autodetected. If there are
@@ -141,7 +141,7 @@ provided with the tarball will be used:
                Use an already installed and compatible OTF2 library
                (v1.4 or newer). Provide path to otf2-config.
                Auto-detected if already in $PATH.
-  --with-cube[=<cube-bindir>] 
+  --with-cube[=<cube-bindir>]
                Use an already installed and compatible CUBE4 library
                (v4.2 or newer). Provide path to cube-config.
                Auto-detected if already in $PATH.
@@ -149,6 +149,10 @@ provided with the tarball will be used:
                Use an already installed and compatible OPARI2 (v.1.1
                or newer). Provide path to opari2-config.
                Auto-detected if already in $PATH.
+
+For the components otf2 and opari2, the corresponding
+--without-<component> or --with-<component>=no options will ignore the
+<component>-config in $PATH but use the Score-P internal components.
 
 Options to further specify which features and external packages should
 be used to build Score-P are as follows:
@@ -168,7 +172,7 @@ be used to build Score-P are as follows:
   --enable-timer-bgl_rts_get_timebase
                enable bgl_rts_get_timebase timer if available instead
                of platform default
-  --enable-timer-bgq_mftb 
+  --enable-timer-bgq_mftb
                enable bgq_mftb timer if available instead of platform
                default
   --enable-timer-bgp_get_timebase
@@ -720,4 +724,3 @@ operates.
 
 `configure' also accepts some other, not widely useful, options.  Run
 `configure --help' for more details.
-
