@@ -78,6 +78,8 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-mingw \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-necsx  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-solaris  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-backend-k  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-backend-fx10  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-user-provided  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-altix  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-arm  \
@@ -94,6 +96,8 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-mingw \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-necsx  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-solaris  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-frontend-k  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-frontend-fx10  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-user-provided  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-altix  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-arm  \
@@ -109,6 +113,8 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-mac  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-necsx  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-solaris  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-mpi-k  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-mpi-fx10  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-user-provided
 
 CLEANFILES += $(builddir)/user_provided_configure_args \

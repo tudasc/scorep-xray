@@ -82,6 +82,10 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
                                [ac_scorep_platform="crayxc"])],
                   [test "x${build_cpu}" = "xarmv7l"],
                       [ac_scorep_platform="arm"],
+                  [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVtclang],
+                      [ac_scorep_platform="k"],
+                  [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVfxlang],
+                      [ac_scorep_platform="fx10"],
                   [ac_scorep_platform=linux])],
          [sunos* | solaris*],
               [ac_scorep_platform="solaris"],
@@ -121,6 +125,8 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "x"],
          [crayxk],  [ac_scorep_cross_compiling="yes"],
          [crayxc],  [ac_scorep_cross_compiling="yes"],
          [arm],     [ac_scorep_cross_compiling="no"],
+         [k],       [ac_scorep_cross_compiling="yes"],
+         [fx10],    [ac_scorep_cross_compiling="yes"],
          [linux],   [ac_scorep_cross_compiling="no"],
          [solaris], [ac_scorep_cross_compiling="no"],
          [mac],     [ac_scorep_cross_compiling="no"],
@@ -158,6 +164,8 @@ AS_CASE([${ac_scorep_platform}],
     [crayxk],  [afs_scorep_platform_name="Cray XK"],
     [crayxc],  [afs_scorep_platform_name="Cray XC"],
     [arm],     [afs_scorep_platform_name="ARM"],
+    [k],       [afs_scorep_platform_name="K"],
+    [fx10],    [afs_scorep_platform_name="FX10"],
     [linux],   [afs_scorep_platform_name="Linux"],
     [solaris], [afs_scorep_platform_name="Solaris"],
     [mac],     [afs_scorep_platform_name="Mac OS X"],
@@ -207,6 +215,8 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_MAC],     [test "x${ac_scorep_platform}" = "xmac"])
     AM_CONDITIONAL([PLATFORM_NECSX],   [test "x${ac_scorep_platform}" = "xnecsx"])
     AM_CONDITIONAL([PLATFORM_ARM],     [test "x${ac_scorep_platform}" = "xarm"])
+    AM_CONDITIONAL([PLATFORM_K],       [test "x${ac_scorep_platform}" = "xk"])
+    AM_CONDITIONAL([PLATFORM_FX10],    [test "x${ac_scorep_platform}" = "xfx10"])
 
     AS_CASE([${ac_scorep_platform}],
             [crayx*],     [afs_platform_cray="yes"],
@@ -243,6 +253,10 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
         [AC_DEFINE([HAVE_PLATFORM_NECSX], [1], [Set if we are building for the NEC SX platform])])
     AM_COND_IF([PLATFORM_ARM],
         [AC_DEFINE([HAVE_PLATFORM_ARM], [1], [Set if we are building for the ARM platform])])
+    AM_COND_IF([PLATFORM_K],
+        [AC_DEFINE([HAVE_PLATFORM_K], [1], [Set if we are building for the K platform])])
+    AM_COND_IF([PLATFORM_ARM],
+        [AC_DEFINE([HAVE_PLATFORM_FX10], [1], [Set if we are building for the FX10 platform])])
 ])
 
 # Provides the platform and machine names as defines in the config header
