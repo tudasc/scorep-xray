@@ -42,6 +42,7 @@
 #include "scorep_rewind_stack_management.h"
 
 
+extern bool     scorep_tracing_use_sion;
 extern uint64_t scorep_tracing_max_procs_per_sion_file;
 
 

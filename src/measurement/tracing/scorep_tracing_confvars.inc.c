@@ -36,7 +36,7 @@
  */
 
 
-static bool scorep_tracing_use_sion;
+bool        scorep_tracing_use_sion;
 uint64_t    scorep_tracing_max_procs_per_sion_file;
 static bool scorep_tracing_compress;
 

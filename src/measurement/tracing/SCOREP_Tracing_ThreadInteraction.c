@@ -119,6 +119,12 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
         return;
     }
 
+    if ( scorep_tracing_use_sion && 0 != SCOREP_Location_GetId( locationData ) )
+    {
+        UTILS_FATAL( "Writing more than one location in a process is currently not "
+                     "supported by the SIONlib support of OTF2. Please disable SIONlib via SCOREP_TRACING_USE_SION." );
+    }
+
     SCOREP_TracingData* tracing_data = SCOREP_Location_GetTracingData( locationData );
 
     SCOREP_Tracing_LockArchive();
