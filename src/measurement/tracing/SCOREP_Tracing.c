@@ -326,6 +326,14 @@ SCOREP_Tracing_Initialize( void )
     OTF2_Error_RegisterCallback( scorep_tracing_otf2_error_callback, NULL );
 #endif
 
+#if !HAVE( OTF2_SUBSTRATE_SION )
+    if ( scorep_tracing_use_sion )
+    {
+        UTILS_WARNING( "Ignoring SIONlib trace substrate request via SCOREP_TRACING_USE_SION, "
+                       "as OTF2 does not have support for it." );
+    }
+#endif
+
     /* Check for valid scorep_tracing_max_procs_per_sion_file */
     if ( 0 == scorep_tracing_max_procs_per_sion_file )
     {
