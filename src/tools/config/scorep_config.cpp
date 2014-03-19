@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -493,7 +493,14 @@ get_rpath_struct_data( void )
     // '${wl}-rpath ${wl}$libdir'
     // '${wl}-R $wl$libdir'
     std::string rpath_flag = LIBDIR_FLAG_CC;
-    size_t      index      = 0;
+    size_t      index      = rpath_flag.find( "$libdir" );
+    UTILS_BUG_ON( index == std::string::npos,
+                  "LIBDIR_FLAG_CC does not contain $libdir. It is likely that "
+                  "something went wrong during configure. Please 'grep "
+                  "HARDCODE_LIBDIR_FLAG_CC <builddir>/build-backend/config.log'"
+                  " and provide the result. Thanks." );
+
+    index = 0;
     while ( true )
     {
         index = rpath_flag.find( "${wl}", index );
@@ -504,7 +511,7 @@ get_rpath_struct_data( void )
         rpath_flag.replace( index, strlen( "${wl}" ), LIBDIR_FLAG_WL );
         ++index;
     }
-    index = rpath_flag.find( "$libdir", 0 );
+    index = rpath_flag.find( "$libdir" );
     rpath_flag.erase( index );
 
 #if HAVE( PLATFORM_AIX )
