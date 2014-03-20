@@ -1,6 +1,6 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
@@ -16,7 +16,7 @@
 ##
 
 
-## file       ac_scorep_types.m4
+## file build-config/m4/scorep_types.m4
 
 # AC_SCOREP_CHECK_SIZEOF(TYPE, [INCLUDES = DEFAULT-INCLUDES])
 # -----------------------------------------------------------

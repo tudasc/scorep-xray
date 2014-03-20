@@ -1,9 +1,9 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012, 
+## Copyright (c) 2009-2012,
 ##    RWTH Aachen, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       ac_scorep_cuda.m4
+## file build-config/m4/scorep_cuda.m4
 
 dnl ----------------------------------------------------------------------------
 
@@ -56,8 +56,8 @@ LIBS="$LIBS ${with_libcuda_libs}"
 
 AS_UNSET([cupti_root])
 AS_IF([test "x${with_libcudart_lib}" = "xyes"],
-      [for path in ${sys_lib_search_path_spec}; do 
-           AS_IF([test -e ${path}/libcudart.a || test -e ${path}/libcudart.so || test -e ${path}/libcudart.dylib], 
+      [for path in ${sys_lib_search_path_spec}; do
+           AS_IF([test -e ${path}/libcudart.a || test -e ${path}/libcudart.so || test -e ${path}/libcudart.dylib],
                  [cupti_root="${path}"
                   break])
        done],
@@ -163,7 +163,7 @@ AS_IF([test "x$scorep_cupti_error" = "xno"],
                            [AC_MSG_NOTICE([no libcupti found; check path to CUPTI library ...])])
                      scorep_cupti_error="yes"])])
 LDFLAGS="${ldflags_save}"
-                     
+
 dnl check the version of CUPTI
 AS_IF([test "x$scorep_cupti_error" = "xno"],
       [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cupti.h"]],

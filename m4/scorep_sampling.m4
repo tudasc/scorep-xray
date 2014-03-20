@@ -1,9 +1,9 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012, 
+## Copyright (c) 2009-2012,
 ##    RWTH Aachen, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       ac_scorep_sampling.m4
+## file build-config/m4/scorep_sampling.m4
 
 
 AC_DEFUN([AC_SCOREP_LIBUNWIND], [
@@ -32,7 +32,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[
 #define UNW_LOCAL_ONLY
 #include <libunwind.h>]],
                 [[
-unw_cursor_t cursor; 
+unw_cursor_t cursor;
 unw_context_t uc;
 unw_word_t ip, sp;
 
@@ -44,7 +44,7 @@ while (unw_step(&cursor) > 0) {
     unw_get_reg(&cursor, UNW_REG_SP, &sp);
     /* printf ("ip = %lx, sp = %lx\n", (long) ip, (long) sp); */
 }]])],
-               [with_libunwind_lib_checks_successful="yes"], 
+               [with_libunwind_lib_checks_successful="yes"],
                [with_libunwind_lib_checks_successful="no"])
 
 with_libunwind_libs="-lunwind"
@@ -66,27 +66,27 @@ AC_CHECK_FUNCS([mprotect posix_memalign sigaction],
                [],
                [has_sampling_functions="no"])
 
-AC_CHECK_TYPE([sig_atomic_t], 
-              [has_sampling_sig_atomic_t="yes"], 
-              [has_sampling_sig_atomic_t="no"], 
+AC_CHECK_TYPE([sig_atomic_t],
+              [has_sampling_sig_atomic_t="yes"],
+              [has_sampling_sig_atomic_t="no"],
               [[#include <signal.h>]])
 
 cppflags_save=${CPPFLAGS}
 sampling_cppflags="-D_XOPEN_SOURCE=500"
 CPPFLAGS="${sampling_cppflags} ${CPPFLAGS}"
-AC_CHECK_MEMBER([struct sigaction.sa_handler], 
+AC_CHECK_MEMBER([struct sigaction.sa_handler],
                 [has_sampling_sigaction_sa_handler="yes"],
                 [has_sampling_sigaction_sa_handler="no"],
                 [[#include <signal.h>]])
 
-AC_CHECK_MEMBER([struct sigaction.sa_sigaction], 
+AC_CHECK_MEMBER([struct sigaction.sa_sigaction],
                 [has_sampling_sigaction_sa_sigaction="yes"],
                 [has_sampling_sigaction_sa_sigaction="no"],
                 [[#include <signal.h>]])
 
-AC_CHECK_TYPE([siginfo_t], 
-              [has_sampling_siginfo_t="yes"], 
-              [has_sampling_siginfo_t="no"], 
+AC_CHECK_TYPE([siginfo_t],
+              [has_sampling_siginfo_t="yes"],
+              [has_sampling_siginfo_t="no"],
               [[#include <signal.h>]])
 CPPFLAGS="${cppflags_save}"
 
@@ -101,8 +101,8 @@ AS_IF([   test "x${has_sampling_headers}" = "xyes"              \
        sampling_summary="yes, using ${sampling_cppflags}"
        AC_SUBST([SAMPLING_CPPFLAGS], ["${sampling_cppflags}"])
        AS_IF([   test "x${has_sampling_sigaction_sa_sigaction}" = "xyes" \
-              && test "x${has_sampling_siginfo_t}" = "xyes"], 
-             [AC_DEFINE([HAVE_SAMPLING_SIGACTION], [1], 
+              && test "x${has_sampling_siginfo_t}" = "xyes"],
+             [AC_DEFINE([HAVE_SAMPLING_SIGACTION], [1],
                         [Defined if struct member sigaction.sa_sigaction and type siginfo_t are available.])
               sampling_summary="yes, using ${sampling_cppflags} and sa_sigaction"])],
       [has_sampling="no"

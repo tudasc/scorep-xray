@@ -1,6 +1,6 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
@@ -27,9 +27,9 @@
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
-## 
+##
 
-## file build-config/m4/ac_scorep_openmp.m4
+## file build-config/m4/scorep_openmp.m4
 
 
 AC_DEFUN([AC_SCOREP_OPENMP],
@@ -58,8 +58,8 @@ else
 fi
 
 
-# On Hermit/CRAYXT, the C++ OpenMP check fails because 
-# of a broken CC. Set OPENMP_CXXFLAGS manually. See 
+# On Hermit/CRAYXT, the C++ OpenMP check fails because
+# of a broken CC. Set OPENMP_CXXFLAGS manually. See
 # also silc:#687.
 AS_IF([(test "x${afs_platform_cray}" = "xyes" && \
        test "x${ax_cv_c_compiler_vendor}" = xportland)],

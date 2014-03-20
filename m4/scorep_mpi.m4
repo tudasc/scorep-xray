@@ -1,6 +1,6 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
@@ -30,7 +30,7 @@
 ##
 
 
-## file       ac_scorep_mpi.m4
+## file build-config/m4/scorep_mpi.m4
 
 # The macros AC_SCOREP_MPI_COMPILER and AC_SCOREP_MPI_WORKING are based on
 # AX_MPI http://www.nongnu.org/autoconf-archive/ax_mpi.html by Steven G. Johnson
@@ -272,7 +272,7 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_MPI_ADD_ERROR_STRING_COMPLIANT, 1, [MPI_Add_error_string is standard compliant])], 
+         AC_DEFINE(HAVE_MPI_ADD_ERROR_STRING_COMPLIANT, 1, [MPI_Add_error_string is standard compliant])],
         [AC_MSG_RESULT(no)]
     ) # AC_COMPILE_IF_ELSE
 
@@ -291,10 +291,10 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_MPI_INFO_DELETE_COMPLIANT, 1, [MPI_Info_delete is standard compliant])], 
+         AC_DEFINE(HAVE_MPI_INFO_DELETE_COMPLIANT, 1, [MPI_Info_delete is standard compliant])],
         [AC_MSG_RESULT(no)]
     ) # AC_COMPILE_IF_ELSE
- 
+
     AC_MSG_CHECKING([whether MPI_Info_get is standard compliant])
     AC_COMPILE_IFELSE([
         AC_LANG_SOURCE([
@@ -310,10 +310,10 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_MPI_INFO_GET_COMPLIANT, 1, [MPI_Info_get is standard compliant])], 
+         AC_DEFINE(HAVE_MPI_INFO_GET_COMPLIANT, 1, [MPI_Info_get is standard compliant])],
         [AC_MSG_RESULT(no)]
     ) # AC_COMPILE_IF_ELSE
- 
+
     AC_MSG_CHECKING([whether MPI_Info_get_valuelen is standard compliant])
     AC_COMPILE_IFELSE([
         AC_LANG_SOURCE([
@@ -329,10 +329,10 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_MPI_INFO_GET_VALUELEN_COMPLIANT, 1, [MPI_Info_get_valuelen is standard compliant])], 
+         AC_DEFINE(HAVE_MPI_INFO_GET_VALUELEN_COMPLIANT, 1, [MPI_Info_get_valuelen is standard compliant])],
         [AC_MSG_RESULT(no)]
     ) # AC_COMPILE_IF_ELSE
- 
+
     AC_MSG_CHECKING([whether MPI_Info_set is standard compliant])
     AC_COMPILE_IFELSE([
         AC_LANG_SOURCE([
@@ -348,10 +348,10 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_MPI_INFO_SET_COMPLIANT, 1, [MPI_Info_set is standard compliant])], 
+         AC_DEFINE(HAVE_MPI_INFO_SET_COMPLIANT, 1, [MPI_Info_set is standard compliant])],
         [AC_MSG_RESULT(no)]
     ) # AC_COMPILE_IF_ELSE
- 
+
     AC_MSG_CHECKING([whether MPI_Grequest_complete is standard compliant])
     AC_LINK_IFELSE([
         AC_LANG_SOURCE([
@@ -364,11 +364,11 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
             int main()
             {
                 MPI_Request r;
-                return  MPI_Grequest_complete(r); 
+                return  MPI_Grequest_complete(r);
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_MPI_GREQUEST_COMPLETE_COMPLIANT, 1, [MPI_Grequest_complete is standard compliant])], 
+         AC_DEFINE(HAVE_MPI_GREQUEST_COMPLETE_COMPLIANT, 1, [MPI_Grequest_complete is standard compliant])],
         [AC_MSG_RESULT(no)]
     ) # AC_LINK_IF_ELSE
 
@@ -383,11 +383,11 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
 
             int main()
             {
-                return  MPI_Type_create_f90_complex(3,3,0); 
+                return  MPI_Type_create_f90_complex(3,3,0);
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_MPI_TYPE_CREATE_F90_COMPLEX_COMPLIANT, 1, [MPI_Type_create_f90_complex is standard compliant])], 
+         AC_DEFINE(HAVE_MPI_TYPE_CREATE_F90_COMPLEX_COMPLIANT, 1, [MPI_Type_create_f90_complex is standard compliant])],
         [AC_MSG_RESULT(no)]
     ) # AC_LINK_IF_ELSE
 
@@ -402,11 +402,11 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
 
             int main()
             {
-                return  MPI_Type_create_f90_integer(3,0); 
+                return  MPI_Type_create_f90_integer(3,0);
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_MPI_TYPE_CREATE_F90_INTEGER_COMPLIANT, 1, [MPI_Type_create_f90_integer is standard compliant])], 
+         AC_DEFINE(HAVE_MPI_TYPE_CREATE_F90_INTEGER_COMPLIANT, 1, [MPI_Type_create_f90_integer is standard compliant])],
         [AC_MSG_RESULT(no)]
     ) # AC_LINK_IF_ELSE
 
@@ -421,11 +421,11 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
 
             int main()
             {
-                return  MPI_Type_create_f90_real(3,3,0); 
+                return  MPI_Type_create_f90_real(3,3,0);
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_MPI_TYPE_CREATE_F90_REAL_COMPLIANT, 1, [MPI_Type_create_f90_integer is standard compliant])], 
+         AC_DEFINE(HAVE_MPI_TYPE_CREATE_F90_REAL_COMPLIANT, 1, [MPI_Type_create_f90_integer is standard compliant])],
         [AC_MSG_RESULT(no)]
     ) # AC_LINK_IF_ELSE
 
@@ -444,7 +444,7 @@ if test "x${scorep_mpi_c_supported}" = "xyes"; then
     scorep_mpi_supported="yes"
   else
     scorep_mpi_supported="no"
-  fi 
+  fi
 else
    scorep_mpi_supported="no"
 fi
@@ -470,7 +470,7 @@ if test "x${scorep_mpi_supported}" = "xyes"; then
       [AC_DEFINE([HAVE_MPI_VERSION], [1], [[]])
        AC_DEFINE([HAVE_MPI_SUBVERSION], [2], [[]])
        AC_SUBST([HAVE_MPI_VERSION], [1])
-       AC_SUBST([HAVE_MPI_SUBVERSION], [2])], 
+       AC_SUBST([HAVE_MPI_SUBVERSION], [2])],
       [
       AC_COMPILE_IFELSE(
           [AC_LANG_PROGRAM(
@@ -485,7 +485,7 @@ if test "x${scorep_mpi_supported}" = "xyes"; then
           [AC_DEFINE([HAVE_MPI_VERSION], [2], [[]])
            AC_DEFINE([HAVE_MPI_SUBVERSION], [0], [[]])
            AC_SUBST([HAVE_MPI_VERSION], [2])
-           AC_SUBST([HAVE_MPI_SUBVERSION], [0])], 
+           AC_SUBST([HAVE_MPI_SUBVERSION], [0])],
           [
           AC_COMPILE_IFELSE(
               [AC_LANG_PROGRAM(
@@ -500,7 +500,7 @@ if test "x${scorep_mpi_supported}" = "xyes"; then
               [AC_DEFINE([HAVE_MPI_VERSION], [2], [[]])
                AC_DEFINE([HAVE_MPI_SUBVERSION], [1], [[]])
                AC_SUBST([HAVE_MPI_VERSION], [2])
-               AC_SUBST([HAVE_MPI_SUBVERSION], [1])], 
+               AC_SUBST([HAVE_MPI_SUBVERSION], [1])],
               [
               AC_COMPILE_IFELSE(
                   [AC_LANG_PROGRAM(
@@ -515,13 +515,13 @@ if test "x${scorep_mpi_supported}" = "xyes"; then
                   [AC_DEFINE([HAVE_MPI_VERSION], [2], [[]])
                    AC_DEFINE([HAVE_MPI_SUBVERSION], [2], [[]])
                    AC_SUBST([HAVE_MPI_VERSION], [2])
-                   AC_SUBST([HAVE_MPI_SUBVERSION], [2])], 
+                   AC_SUBST([HAVE_MPI_SUBVERSION], [2])],
                   [
 
                   ]
-              ) 
+              )
               ]
-          )   
+          )
           ]
       )
       ]
@@ -547,7 +547,7 @@ ac_scorep_have_mpi_include="no"
 AC_LANG_PUSH([C])
 AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[#include <mpi.h>]], [])],
                   [GREP_OPTIONS= ${GREP} '/mpi.h"' conftest.i > conftest_mpi_includes
-                   AS_IF([test $? -eq 0], 
+                   AS_IF([test $? -eq 0],
                          [scorep_mpi_include=`cat conftest_mpi_includes | GREP_OPTIONS= ${GREP} '/mpi.h"' | \
                           head -1 | sed -e 's#^.* "##' -e 's#/mpi.h".*##'`
                           ac_scorep_have_mpi_include="yes"],

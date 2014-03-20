@@ -1,9 +1,9 @@
 dnl -*- mode: autoconf -*-
 
-dnl 
+dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2009-2011, 
+dnl Copyright (c) 2009-2011,
 dnl    RWTH Aachen, Germany
 dnl    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl    Technische Universitaet Dresden, Germany
@@ -15,7 +15,7 @@ dnl
 dnl See the COPYING file in the package base directory for details.
 dnl
 
-dnl file       build-config/m4/ac_scorep_mpi_profiling.m4
+dnl file build-config/m4/scorep_mpi_profiling.m4
 
 AC_DEFUN([AC_SCOREP_MPI_PROFILING_HEADERS],
 [
@@ -26,4 +26,4 @@ AM_CONDITIONAL([HAVE_MPI_PROFILING_HEADERS], [test "x${ac_scorep_have_mpi_profil
 
 AC_MSG_CHECKING([for MPI profiling headers])
 AC_MSG_RESULT([${ac_scorep_have_mpi_profiling_headers}])
-]) 
+])

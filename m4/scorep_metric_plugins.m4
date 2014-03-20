@@ -1,9 +1,9 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012, 
+## Copyright (c) 2009-2012,
 ## RWTH Aachen, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -12,16 +12,16 @@
 ## Copyright (c) 2009-2013,
 ## Technische Universitaet Dresden, Germany
 ##
-## Copyright (c) 2009-2012,  
+## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012,  
+## Copyright (c) 2009-2012,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2009-2012,  
+## Copyright (c) 2009-2012,
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
-## Copyright (c) 2009-2012,  
+## Copyright (c) 2009-2012,
 ## Technische Universitaet Muenchen, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-## file       ac_scorep_sampling.m4
+## file build-config/m4/scorep_sampling.m4
 
 
 AC_DEFUN([AC_SCOREP_METRIC_PLUGINS], [

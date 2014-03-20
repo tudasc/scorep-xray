@@ -1,9 +1,9 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2013, 
+## Copyright (c) 2009-2013,
 ##    RWTH Aachen, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file       ac_scorep_metrics.m4
+## file build-config/m4/scorep_metrics.m4
 
 
 AC_DEFUN([AC_SCOREP_LIBPAPI], [
@@ -29,7 +29,7 @@ AC_ARG_VAR([PAPI_LIB], [Library path to the papi library.])
 
 dnl checking for the header
 AC_ARG_WITH([papi-header],
-            [AS_HELP_STRING([--with-papi-header=<path-to-papi.h>], 
+            [AS_HELP_STRING([--with-papi-header=<path-to-papi.h>],
                             [If papi.h is not installed in the default location, specify the dirname where it can be found.])],
             [ac_scorep_papi_inc_dir="${withval}"],  # action-if-given.
             [ac_scorep_papi_inc_dir="${PAPI_INC-}"] # action-if-not-given
@@ -56,7 +56,7 @@ AC_LANG_POP([C])
 
 dnl checking for the library
 AC_ARG_WITH([papi-lib],
-            [AS_HELP_STRING([--with-papi-lib=<path-to-libpapi.*>], 
+            [AS_HELP_STRING([--with-papi-lib=<path-to-libpapi.*>],
                             [If libpapi.* is not installed in the default location, specify the dirname where it can be found.])],
             [ac_scorep_papi_lib_dir="${withval}"],  # action-if-given
             [ac_scorep_papi_lib_dir="${PAPI_LIB-}"] # action-if-not-given
@@ -133,9 +133,9 @@ AS_IF([test "x${ac_scorep_platform}" = "xbgq"],
        ac_scorep_rusage_cppflags=""],
       [dnl Check for getrusage function
        AC_LANG_PUSH([C])
-       AC_CHECK_DECL([getrusage], 
-                     [ac_scorep_getrusage="yes"], 
-                     [ac_scorep_getrusage="no"], 
+       AC_CHECK_DECL([getrusage],
+                     [ac_scorep_getrusage="yes"],
+                     [ac_scorep_getrusage="no"],
                      [[
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -143,9 +143,9 @@ AS_IF([test "x${ac_scorep_platform}" = "xbgq"],
 
        dnl Check for availability of RUSAGE_THREAD
        ac_scorep_rusage_cppflags=""
-       AC_CHECK_DECL([RUSAGE_THREAD], 
-                     [ac_scorep_rusage_thread="yes"], 
-                     [ac_scorep_rusage_thread="no"], 
+       AC_CHECK_DECL([RUSAGE_THREAD],
+                     [ac_scorep_rusage_thread="yes"],
+                     [ac_scorep_rusage_thread="no"],
                      [[
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -158,9 +158,9 @@ AS_IF([test "x${ac_scorep_platform}" = "xbgq"],
               dnl but per process only.
               ac_scorep_rusage_cppflags="-D_GNU_SOURCE"
               CPPFLAGS="${ac_scorep_rusage_cppflags} $CPPFLAGS"
-              AC_CHECK_DECL([RUSAGE_THREAD], 
-                            [ac_scorep_rusage_thread="yes"], 
-                            [ac_scorep_rusage_thread="no"], 
+              AC_CHECK_DECL([RUSAGE_THREAD],
+                            [ac_scorep_rusage_thread="yes"],
+                            [ac_scorep_rusage_thread="no"],
                             [[
 #include <sys/time.h>
 #include <sys/resource.h>
