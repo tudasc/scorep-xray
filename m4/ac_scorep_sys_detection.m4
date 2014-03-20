@@ -98,7 +98,7 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
          [mingw*],
               [ac_scorep_platform="mingw"],
          [ac_scorep_platform="unknown"])
-     
+
      AS_IF([test "x${ac_scorep_platform}" = "xunknown"],
          [AC_MSG_RESULT([$ac_scorep_platform, please contact <AC_PACKAGE_BUGREPORT> if you encounter any problems.])],
          [AC_MSG_RESULT([$ac_scorep_platform (auto detected)])
@@ -147,53 +147,6 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "x"],
 AC_MSG_CHECKING([for cross compilation])
 AC_MSG_RESULT([$ac_scorep_cross_compiling])
 ])# AFS_CROSSCOMPILING
-
-
-# intended to be called by toplevel configure
-AC_DEFUN_ONCE([AFS_SCOREP_PLATFORM_NAME],
-[
-AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])dnl
-
-AS_CASE([${ac_scorep_platform}],
-    [altix],   [afs_scorep_platform_name="Altix"],
-    [bgl],     [afs_scorep_platform_name="Blue Gene/L"],
-    [bgp],     [afs_scorep_platform_name="Blue Gene/P"],
-    [bgq],     [afs_scorep_platform_name="Blue Gene/Q"],
-    [crayxt],  [afs_scorep_platform_name="Cray XT"],
-    [crayxe],  [afs_scorep_platform_name="Cray XE"],
-    [crayxk],  [afs_scorep_platform_name="Cray XK"],
-    [crayxc],  [afs_scorep_platform_name="Cray XC"],
-    [arm],     [afs_scorep_platform_name="ARM"],
-    [k],       [afs_scorep_platform_name="K"],
-    [fx10],    [afs_scorep_platform_name="FX10"],
-    [linux],   [afs_scorep_platform_name="Linux"],
-    [solaris], [afs_scorep_platform_name="Solaris"],
-    [mac],     [afs_scorep_platform_name="Mac OS X"],
-    [mingw],   [afs_scorep_platform_name="MinGW"],
-    [aix],     [afs_scorep_platform_name="AIX"],
-    [necsx],   [afs_scorep_platform_name="NEC SX"],
-    [unknown], [afs_scorep_platform_name="Unknown"],
-    [AC_MSG_ERROR([provided platform '${ac_scorep_platform}' unknown.])])])
-])# AFS_SCOREP_PLATFORM_NAME
-
-
-# intended to be called by toplevel configure
-AC_DEFUN_ONCE([AFS_SCOREP_MACHINE_NAME],
-[
-AC_REQUIRE([AFS_SCOREP_PLATFORM_NAME])dnl
-
-AC_ARG_WITH([machine-name],
-    [AS_HELP_STRING([--with-machine-name=<default machine name>],
-        [The default machine name used in profile and trace output. We suggest using a unique name, e.g., the fully qualified domain name. If not set, a name based on the detected platform is used. Can be overridden at measurement time by setting the environment variable SCOREP_MACHINE_NAME.])],
-     # action-if-given
-     [AS_IF([test "x${withval}" != "xno"],
-          [afs_scorep_default_machine_name="${withval}"],
-          [AC_MSG_ERROR([option --without-machine-name makes no sense.])])],
-     # action-if-not-given
-     [afs_scorep_default_machine_name="${afs_scorep_platform_name}"])
-
-AFS_SUMMARY([Machine name], [${afs_scorep_default_machine_name}])
-])# AFS_SCOREP_MACHINE_NAME
 
 
 # This macro is called by the build-backend/frontend/mpi configures only.
@@ -257,15 +210,4 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
         [AC_DEFINE([HAVE_PLATFORM_K], [1], [Set if we are building for the K platform])])
     AM_COND_IF([PLATFORM_ARM],
         [AC_DEFINE([HAVE_PLATFORM_FX10], [1], [Set if we are building for the FX10 platform])])
-])
-
-# Provides the platform and machine names as defines in the config header
-AC_DEFUN([AC_SCOREP_PLATFORM_AND_MACHINE_NAMES],
-[
-    AC_DEFINE_UNQUOTED([SCOREP_PLATFORM_NAME],
-                       ["${afs_scorep_platform_name}"],
-                       [Name of the platform Score-P was built on.])
-    AC_DEFINE_UNQUOTED([SCOREP_DEFAULT_MACHINE_NAME],
-                       ["${afs_scorep_default_machine_name}"],
-                       [Default name of the machine Score-P is running on.])
 ])
