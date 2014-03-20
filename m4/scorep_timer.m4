@@ -1,6 +1,6 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
@@ -79,69 +79,6 @@ AC_MSG_RESULT([$ac_scorep_timer_bgp_get_timebase_available])
 
 ###############################################################################
 
-AC_DEFUN([AC_SCOREP_TIMER_CLOCK_GETTIME_AVAILABLE],[
-ac_scorep_timer_clock_gettime_available="no"
-ac_scorep_timer_clock_gettime_clock=""
-
-ac_scorep_timer_save_LIBS="$LIBS"
-AC_SEARCH_LIBS([clock_gettime], [rt],
-               [AS_IF([test "x${ac_cv_search_clock_gettime}" != "xnone required"],
-                      [ac_scorep_timer_librt="$ac_cv_search_clock_gettime"])])
-
-m4_foreach([clock],
-          [[CLOCK_REALTIME], [CLOCK_MONOTONIC], [CLOCK_MONOTONIC_RAW]],
-          [AC_MSG_CHECKING([for clock])
-           AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
-#ifdef _POSIX_C_SOURCE
-#  if _POSIX_C_SOURCE < 199309L
-#    undef _POSIX_C_SOURCE
-#    define _POSIX_C_SOURCE 199309L
-#  endif
-#else
-#  define _POSIX_C_SOURCE 199309L
-#endif
-#include <time.h>
-                                                      ], 
-                                                      [
-    struct timespec tp;
-    clock_getres(  clock, &tp );
-    clock_gettime( clock, &tp );
-                                                      ])], 
-                                     [ac_scorep_timer_clock_gettime_clock="clock"
-                                      AC_MSG_RESULT([yes])], 
-                                     [AC_MSG_RESULT([no])])
-])dnl
-
-# perform a final link test
-AS_IF([test "x${ac_scorep_timer_clock_gettime_clock}" != "x"],
-      [AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-#ifdef _POSIX_C_SOURCE
-#  if _POSIX_C_SOURCE < 199309L
-#    undef _POSIX_C_SOURCE
-#    define _POSIX_C_SOURCE 199309L
-#  endif
-#else
-#  define _POSIX_C_SOURCE 199309L
-#endif
-#include <time.h>]], [[
-    struct timespec tp;
-    clock_getres( $ac_scorep_timer_clock_gettime_clock , &tp );
-    clock_gettime( $ac_scorep_timer_clock_gettime_clock, &tp );
-]])], [ac_scorep_timer_clock_gettime_available="yes"
-       AC_DEFINE([HAVE_CLOCK_GETTIME], [1], 
-                 [Defined to 1 if the clock_gettime() function is available.])
-       AC_DEFINE_UNQUOTED([SCOREP_CLOCK_GETTIME_CLOCK], 
-                          [${ac_scorep_timer_clock_gettime_clock}],
-                          [The clock used in clock_gettime calls.])])])
-AC_MSG_CHECKING([for clock_gettime timer])
-AC_MSG_RESULT([$ac_scorep_timer_clock_gettime_available])
-
-LIBS="$ac_scorep_timer_save_LIBS"
-
-])
-
-###############################################################################
-
 AC_DEFUN([AC_SCOREP_TIMER_CRAY_RTCLOCK_AVAILABLE],[
 # not thouroghly tested yet. Do we need to link a particular library?
 ac_scorep_timer_cray_rtclock_available="no"
@@ -182,9 +119,9 @@ AC_DEFUN([AC_SCOREP_TIMER_CYCLE_COUNTER_TSC_AVAILABLE],[
 ac_scorep_timer_cycle_counter_tsc_available="yes"
 AC_MSG_CHECKING([for cycle_counter_tsc timer])
 AS_CASE([$host_cpu],
-        [i*86 | x86* | powerpc*], [AS_IF([test -e /proc/cpuinfo], 
+        [i*86 | x86* | powerpc*], [AS_IF([test -e /proc/cpuinfo],
                                          [${GREP} constant_tsc /proc/cpuinfo | ${GREP} -v nonstop_tsc > /dev/null
-                                          AS_IF([test $? -eq 0], 
+                                          AS_IF([test $? -eq 0],
                                                 [ac_scorep_timer_cycle_counter_tsc_available="no"])],
                                          [#no /proc/cpuinfo
                                           ac_scorep_timer_cycle_counter_tsc_available="no"])],
@@ -199,7 +136,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <unistd.h>]],
                   [AC_DEFINE([HAVE_USLEEP])], [])
 ])
 
-############################################################################### 
+###############################################################################
 
 AC_DEFUN([AC_SCOREP_TIMER_CRAY_DCLOCK_AVAILABLE],[
 # not tested yet as I don't have access to a cray xt
@@ -215,7 +152,7 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[#ifndef __LIBCATAMOUNT__
 AC_MSG_RESULT([$ac_scorep_timer_cray_dclock_available])
 ])
 
-############################################################################### 
+###############################################################################
 
 AC_DEFUN([AC_SCOREP_TIMER_SUN_GETHRTIME_AVAILABLE],[
 ## The gethrtime() function returns the current high-resolution real
@@ -230,24 +167,6 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <sys/time.h>]],
                                 [[hrtime_t wtime = gethrtime();]])],
                [ac_scorep_timer_sun_gethrtime_available="yes"], [])
 AC_MSG_RESULT([$ac_scorep_timer_sun_gethrtime_available])
-])
-
-###############################################################################
-
-AC_DEFUN([AC_SCOREP_TIMER_GETTIMEOFDAY_AVAILABLE],[
-ac_scorep_timer_gettimeofday_available="no"
-AH_TEMPLATE([HAVE_GETTIMEOFDAY],
-            [Define to 1 if the gettimeofday() function is available.])
-AC_MSG_CHECKING([for gettimeofday timer])
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-#include <sys/time.h>
-                                ]], [[
-struct timeval tp; gettimeofday( &tp, 0 );
-                                ]])], [
-ac_scorep_timer_gettimeofday_available="yes"
-AC_DEFINE([HAVE_GETTIMEOFDAY])
-                                ], [])
-AC_MSG_RESULT([$ac_scorep_timer_gettimeofday_available])
 ])
 
 ###############################################################################
@@ -378,15 +297,6 @@ AC_MSG_RESULT([$ac_scorep_timer_nec_syssx_hgtime_available])
 
 ###############################################################################
 
-#using this macro exceeds the autoreconfs recursion limit ...
-AC_DEFUN([AC_SCOREP_TIMER_CHECK], [
-ac_scorep_timer_$1="no"
-m4_expand(m4_join([], [AC_SCOREP_TIMER_], m4_toupper($1), [_AVAILABLE]))
-])
-
-
-###############################################################################
-
 AC_DEFUN([AC_SCOREP_TIMER_USE_IF_AVAILABLE], [[test "x$ac_scorep_timer_$1_available" = "xyes"],[
 ac_scorep_timer_given="yes"
 ac_scorep_timer_$1="yes"
@@ -398,7 +308,7 @@ AC_MSG_NOTICE([Selecting platform default $1 timer])]
 
 AC_DEFUN([AC_SCOREP_TIMER_PLATFORM_DEFAULTS], [
 AS_IF([test "x${ac_scorep_user_timer_given}" = "xno"], [
-    AS_CASE([${ac_scorep_platform}], 
+    AS_CASE([${ac_scorep_platform}],
             ["altix"],    [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([intel_mmtimer]),
                                  AC_SCOREP_TIMER_USE_IF_AVAILABLE([clock_gettime]))],
             ["bgl"],      [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([bgl_rts_get_timebase]))],
@@ -471,7 +381,7 @@ AC_SCOREP_TIMER_ARG_ENABLE([sun_gethrtime])
 ###############################################################################
 
 AC_DEFUN([AC_SCOREP_TIMER], [
-# init all timers to "no". then evaluate user arguments and availability 
+# init all timers to "no". then evaluate user arguments and availability
 # and set one of them to "yes"
 ac_scorep_timer_bgl_rts_get_timebase="no"
 ac_scorep_timer_bgq_mftb="no"
@@ -544,13 +454,13 @@ AM_CONDITIONAL([SCOREP_TIMER_SUN_GETHRTIME],        [test "x${ac_scorep_timer_su
 ac_scorep_timer_summary="${ac_scorep_timer}"
 # specific libs are defined during the checks in the SCOREP_TIMER_*_AVAILABLE macros
 ac_scorep_timer_lib=""
-AS_IF([test "x${ac_scorep_timer_clock_gettime}"    = "xyes"], 
+AS_IF([test "x${ac_scorep_timer_clock_gettime}"    = "xyes"],
           [ac_scorep_timer_lib=${ac_scorep_timer_librt}
            ac_scorep_timer_summary="${ac_scorep_timer_summary}, using ${ac_scorep_timer_clock_gettime_clock} ${ac_scorep_timer_librt}"],
-      [test "x${ac_scorep_timer_ibm_switch_clock}" = "xyes"], 
+      [test "x${ac_scorep_timer_ibm_switch_clock}" = "xyes"],
           [ac_scorep_timer_lib=${ac_scorep_timer_libswclock}
            ac_scorep_timer_summary="${ac_scorep_timer_summary}, using ${ac_scorep_timer_libswclock}"],
-      [test "x${ac_scorep_timer_bgp_get_timebase}" = "xyes"], 
+      [test "x${ac_scorep_timer_bgp_get_timebase}" = "xyes"],
           [ac_scorep_timer_lib="-lSPI.cna -lrt"
            ac_scorep_timer_summary="${ac_scorep_timer_summary}, using -lSPI.cna -lrt"])
 AC_SUBST([TIMER_LIB], ["$ac_scorep_timer_lib"])
