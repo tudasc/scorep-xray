@@ -39,6 +39,10 @@ public:
                   const std::string& next );
     virtual std::string
     getConfigToolFlag( void );
+
+private:
+    /* Is the nvcc compiler used to drive the compilation/linking */
+    bool m_nvcc_compiler;
 };
 
 #endif

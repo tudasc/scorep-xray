@@ -38,7 +38,8 @@
  * class SCOREP_Instrumenter_CudaAdapter
  * *************************************************************************************/
 SCOREP_Instrumenter_CudaAdapter::SCOREP_Instrumenter_CudaAdapter( void )
-    : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_CUDA, "cuda" )
+    : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_CUDA, "cuda" ),
+      m_nvcc_compiler( false )
 {
 #if !HAVE_BACKEND( CUDA_SUPPORT )
     unsupported();
@@ -48,10 +49,14 @@ SCOREP_Instrumenter_CudaAdapter::SCOREP_Instrumenter_CudaAdapter( void )
 void
 SCOREP_Instrumenter_CudaAdapter::checkCompilerName( const std::string& compiler )
 {
-    if ( ( remove_path( compiler ).substr( 0, 2 ) == "nv" ) &&
-         ( m_usage == detect ) )
+    if ( remove_path( compiler ).substr( 0, 2 ) == "nv" )
     {
-        m_usage = enabled;
+        if ( m_usage == detect )
+        {
+            m_usage = enabled;
+        }
+
+        m_nvcc_compiler = true;
     }
 }
 
@@ -71,10 +76,19 @@ SCOREP_Instrumenter_CudaAdapter::checkCommand( const std::string& current,
 std::string
 SCOREP_Instrumenter_CudaAdapter::getConfigToolFlag( void )
 {
+    std::string flags;
+
     // Per default, the scorep-config returns cuda libs.
     if ( !isEnabled() )
     {
-        return " --no" + m_name;
+        flags += " --no" + m_name;
     }
-    return "";
+
+    // if the nvcc compiler is used, we need to notify scorep-config about this
+    if ( m_nvcc_compiler )
+    {
+        flags += " --nvcc";
+    }
+
+    return flags;
 }

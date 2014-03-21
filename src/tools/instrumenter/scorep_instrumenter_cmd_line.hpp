@@ -123,8 +123,6 @@ public:
     getPathToBinary( void );
 
     bool
-    isNvccCompiler( void );
-    bool
     isCompiling( void );
     bool
     isLinking( void );

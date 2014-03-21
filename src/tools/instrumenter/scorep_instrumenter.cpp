@@ -314,11 +314,6 @@ SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
     mode += SCOREP_Instrumenter_Selector::getAllConfigToolFlags();
     mode += SCOREP_Instrumenter_Adapter::getAllConfigToolFlags();
 
-    if ( m_command_line.isNvccCompiler() )
-    {
-        mode += " --nvcc";
-    }
-
     if ( m_command_line.enforceStaticLinking() )
     {
         mode += " --static";
