@@ -1,6 +1,6 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
@@ -28,6 +28,44 @@
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
 ##
+
+AC_DEFUN([AC_SCOREP_COMPILER_INSTRUMENTATION_FLAGS],[
+AC_REQUIRE([AX_COMPILER_VENDOR])dnl
+
+dnl Is there a use case for extra-instrumentation-flags?
+AC_ARG_WITH([extra-instrumentation-flags],
+            [AS_HELP_STRING([--with-extra-instrumentation-flags=flags],
+                            [Add additional instrumentation flags.])],
+            [ac_scorep_with_extra_instrumentation_cppflags=$withval],
+            [ac_scorep_with_extra_instrumentation_cppflags=""])dnl
+
+AS_CASE([${ax_cv_c_compiler_vendor}],
+    [intel],    [ac_scorep_compiler_instrumentation_cppflags="-tcollect"],
+    [sun],      [ac_scorep_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"],
+    [ibm],      [ac_scorep_compiler_instrumentation_cppflags="-qdebug=function_trace"],
+    [portland], [ac_scorep_compiler_instrumentation_cppflags="-Mprof=func"],
+    [gnu],      [ac_scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"],
+    [cray],     [ac_scorep_compiler_instrumentation_cppflags="-g -hfunc_trace"
+                 ac_scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"],
+    [])dnl
+
+AS_IF([test "x${ac_scorep_with_extra_instrumentation_cppflags}" != x || \
+       test "x${ac_scorep_compiler_instrumentation_cppflags}" != x],
+    [AC_MSG_NOTICE([using compiler instrumentation cppflags: ${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
+     AFS_SUMMARY_VERBOSE([instrumentation cppflags], [${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
+     AS_IF([test "x${ac_scorep_compiler_instrumentation_ldflags}" != x],
+         [AC_MSG_NOTICE([using compiler instrumentation ldflags: ${ac_scorep_compiler_instrumentation_ldflags}])
+          AFS_SUMMARY_VERBOSE([instrumentation ldflags], [${ac_scorep_compiler_instrumentation_ldflags}])
+         ])
+    ])
+
+AC_SUBST([COMPILER_INSTRUMENTATION_CPPFLAGS],
+    ["${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}"])
+AC_SUBST([COMPILER_INSTRUMENTATION_LDFLAGS],
+    ["${ac_scorep_compiler_instrumentation_ldflags}"])
+])
+
+dnl ------------------------------------------------------------------
 
 AC_DEFUN([AC_SCOREP_COMPILER_INSTRUMENTATION], [
 AC_REQUIRE([AX_COMPILER_VENDOR])dnl
@@ -69,11 +107,11 @@ AS_IF([test "x${have_compiler_instrumentation}" = xyes],
     ])
 AFS_SUMMARY([compiler instrumentation], [${result}])
 
-AM_CONDITIONAL([HAVE_COMPILER_INSTRUMENTATION], 
+AM_CONDITIONAL([HAVE_COMPILER_INSTRUMENTATION],
                [test "x${have_compiler_instrumentation}" = xyes])
 
 # The following just deals with bfd, demangle, and nm
-AM_CONDITIONAL([HAVE_DEMANGLE],                 
+AM_CONDITIONAL([HAVE_DEMANGLE],
                [test "x${scorep_have_demangle}" = "xyes"])
 AM_COND_IF([HAVE_DEMANGLE],
            [AC_DEFINE([HAVE_DEMANGLE], [1], [Define if cplus_demangle is available.])])
@@ -81,7 +119,7 @@ AM_COND_IF([HAVE_DEMANGLE],
 AS_IF([test "x${scorep_have_libbfd}" = "xno" && test "x${scorep_have_nm}" != "xno"],
       [AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -eq 1])
        AC_DEFINE([HAVE_NM_AS_BFD_REPLACEMENT], [1], [Define if nm is available as a libbfd replacement.])
-       dnl scorep_have_nm=`which nm` is the correct one for BG and Cray, but 
+       dnl scorep_have_nm=`which nm` is the correct one for BG and Cray, but
        dnl wrong for NEC-SX, see opari2:ticket:54 and silc:ticket:620.
        AC_DEFINE_UNQUOTED([SCOREP_BACKEND_NM], ["${scorep_have_nm}"], [Backend nm as bfd replacement])],
       [AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -eq 0])])
@@ -95,7 +133,7 @@ LIBS="-lbfd"
 
 _AC_SCOREP_LIBBFD_LINK_TEST
 AS_IF([test "x${have_libbfd}" = "xno"],
-      [LIBS="${LIBS} -liberty"; 
+      [LIBS="${LIBS} -liberty";
        _AC_SCOREP_LIBBFD_LINK_TEST
        AS_IF([test "x${have_libbfd}" = "xno"],
              [LIBS="${LIBS} -lz";
@@ -120,11 +158,11 @@ dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([_AC_SCOREP_LIBBFD_LINK_TEST], [
 AC_LINK_IFELSE([_AC_SCOREP_LIBBFD_TEST_PROGRAM],
-               [have_libbfd="yes"], 
+               [have_libbfd="yes"],
                [libbfd_link_test_save_LIBS="${LIBS}"
                 LIBS="${LIBS} -ldl"
                 AC_LINK_IFELSE([_AC_SCOREP_LIBBFD_TEST_PROGRAM],
-                               [have_libbfd="yes"], 
+                               [have_libbfd="yes"],
                                [LIBS="${libbfd_link_test_save_LIBS}"])])
 ])
 
