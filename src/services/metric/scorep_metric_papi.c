@@ -407,7 +407,17 @@ scorep_metric_papi_close( void )
 
     if ( shutdown_papi )
     {
+        /* Don't call PAPI_shutdown on K/FX10 as it deadlocks. This is
+         * safe as it is not required to call PAPI_shutdown(). From
+         * the man page: PAPI_shutdown() is an exit function used by
+         * the PAPI Library to free resources and shut down when
+         * certain error conditions arise. It is not necessary for the
+         * user to call this function, but doing so allows the user to
+         * have the capability to free memory and resources used by
+         * the PAPI Library. */
+        #ifndef __FUJITSU
         PAPI_shutdown();
+        #endif
     }
 }
 
