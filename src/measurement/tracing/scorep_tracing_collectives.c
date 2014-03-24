@@ -125,7 +125,7 @@ scorep_tracing_otf2_collectives_gather( void*                   userData,
                                         uint32_t                root )
 {
     SCOREP_IpcGroup_Gather( ( SCOREP_Ipc_Group* )commContext,
-                            ( void* )inData,
+                            inData,
                             outData,
                             numberElements,
                             get_ipc_type( type ),
@@ -160,7 +160,7 @@ scorep_tracing_otf2_collectives_gatherv( void*                   userData,
     }
 
     SCOREP_IpcGroup_Gatherv( ( SCOREP_Ipc_Group* )commContext,
-                             ( void* )inData,
+                             inData,
                              inElements,
                              outData,
                              ( const int* )outElements,
@@ -184,7 +184,7 @@ scorep_tracing_otf2_collectives_scatter( void*                   userData,
                                          uint32_t                root )
 {
     SCOREP_IpcGroup_Scatter( ( SCOREP_Ipc_Group* )commContext,
-                             ( void* )inData,
+                             inData,
                              outData,
                              numberElements,
                              get_ipc_type( type ),
@@ -219,7 +219,7 @@ scorep_tracing_otf2_collectives_scatterv( void*                   userData,
     }
 
     SCOREP_IpcGroup_Scatterv( ( SCOREP_Ipc_Group* )commContext,
-                              ( void* )inData,
+                              inData,
                               ( const int* )inElements,
                               displs,
                               outData,

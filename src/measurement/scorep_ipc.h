@@ -164,13 +164,14 @@ typedef enum SCOREP_Ipc_Operation
 
 int
 SCOREP_IpcGroup_Send( SCOREP_Ipc_Group*   group,
-                      void*               buf,
+                      const void*         buf,
                       int                 count,
                       SCOREP_Ipc_Datatype datatype,
                       int                 dest );
 
+
 static inline int
-SCOREP_Ipc_Send( void*               buf,
+SCOREP_Ipc_Send( const void*         buf,
                  int                 count,
                  SCOREP_Ipc_Datatype datatype,
                  int                 dest )
@@ -224,12 +225,11 @@ SCOREP_IpcGroup_Bcast( SCOREP_Ipc_Group*   group,
                        int                 root );
 
 
-
 static inline int
-SCOREP_Ipc_Bcast(                  void*               buf,
-                                   int                 count,
-                                   SCOREP_Ipc_Datatype datatype,
-                                   int                 root )
+SCOREP_Ipc_Bcast( void*               buf,
+                  int                 count,
+                  SCOREP_Ipc_Datatype datatype,
+                  int                 root )
 {
     return SCOREP_IpcGroup_Bcast( SCOREP_IPC_GROUP_WORLD,
                                   buf,
@@ -241,16 +241,15 @@ SCOREP_Ipc_Bcast(                  void*               buf,
 
 int
 SCOREP_IpcGroup_Gather( SCOREP_Ipc_Group*   group,
-                        void*               sendbuf,
+                        const void*         sendbuf,
                         void*               recvbuf,
                         int                 count,
                         SCOREP_Ipc_Datatype datatype,
                         int                 root );
 
 
-
 static inline int
-SCOREP_Ipc_Gather( void*               sendbuf,
+SCOREP_Ipc_Gather( const void*         sendbuf,
                    void*               recvbuf,
                    int                 count,
                    SCOREP_Ipc_Datatype datatype,
@@ -267,7 +266,7 @@ SCOREP_Ipc_Gather( void*               sendbuf,
 
 int
 SCOREP_IpcGroup_Gatherv( SCOREP_Ipc_Group*   group,
-                         void*               sendbuf,
+                         const void*         sendbuf,
                          int                 sendcount,
                          void*               recvbuf,
                          const int*          recvcnts,
@@ -276,9 +275,8 @@ SCOREP_IpcGroup_Gatherv( SCOREP_Ipc_Group*   group,
                          int                 root );
 
 
-
 static inline int
-SCOREP_Ipc_Gatherv( void*               sendbuf,
+SCOREP_Ipc_Gatherv( const void*         sendbuf,
                     int                 sendcount,
                     void*               recvbuf,
                     const int*          recvcnts,
@@ -299,15 +297,14 @@ SCOREP_Ipc_Gatherv( void*               sendbuf,
 
 int
 SCOREP_IpcGroup_Allgather( SCOREP_Ipc_Group*   group,
-                           void*               sendbuf,
+                           const void*         sendbuf,
                            void*               recvbuf,
                            int                 count,
                            SCOREP_Ipc_Datatype datatype );
 
 
-
 static inline int
-SCOREP_Ipc_Allgather( void*               sendbuf,
+SCOREP_Ipc_Allgather( const void*         sendbuf,
                       void*               recvbuf,
                       int                 count,
                       SCOREP_Ipc_Datatype datatype )
@@ -322,7 +319,7 @@ SCOREP_Ipc_Allgather( void*               sendbuf,
 
 int
 SCOREP_IpcGroup_Reduce( SCOREP_Ipc_Group*    group,
-                        void*                sendbuf,
+                        const void*          sendbuf,
                         void*                recvbuf,
                         int                  count,
                         SCOREP_Ipc_Datatype  datatype,
@@ -330,9 +327,8 @@ SCOREP_IpcGroup_Reduce( SCOREP_Ipc_Group*    group,
                         int                  root );
 
 
-
 static inline int
-SCOREP_Ipc_Reduce( void*                sendbuf,
+SCOREP_Ipc_Reduce( const void*          sendbuf,
                    void*                recvbuf,
                    int                  count,
                    SCOREP_Ipc_Datatype  datatype,
@@ -351,16 +347,15 @@ SCOREP_Ipc_Reduce( void*                sendbuf,
 
 int
 SCOREP_IpcGroup_Allreduce( SCOREP_Ipc_Group*    group,
-                           void*                sendbuf,
+                           const void*          sendbuf,
                            void*                recvbuf,
                            int                  count,
                            SCOREP_Ipc_Datatype  datatype,
                            SCOREP_Ipc_Operation operation );
 
 
-
 static inline int
-SCOREP_Ipc_Allreduce( void*                sendbuf,
+SCOREP_Ipc_Allreduce( const void*          sendbuf,
                       void*                recvbuf,
                       int                  count,
                       SCOREP_Ipc_Datatype  datatype,
@@ -377,16 +372,15 @@ SCOREP_Ipc_Allreduce( void*                sendbuf,
 
 int
 SCOREP_IpcGroup_Scan( SCOREP_Ipc_Group*    group,
-                      void*                sendbuf,
+                      const void*          sendbuf,
                       void*                recvbuf,
                       int                  count,
                       SCOREP_Ipc_Datatype  datatype,
                       SCOREP_Ipc_Operation operation );
 
 
-
 static inline int
-SCOREP_Ipc_Scan( void*                sendbuf,
+SCOREP_Ipc_Scan( const void*          sendbuf,
                  void*                recvbuf,
                  int                  count,
                  SCOREP_Ipc_Datatype  datatype,
@@ -403,16 +397,15 @@ SCOREP_Ipc_Scan( void*                sendbuf,
 
 int
 SCOREP_IpcGroup_Scatter( SCOREP_Ipc_Group*   group,
-                         void*               sendbuf,
+                         const void*         sendbuf,
                          void*               recvbuf,
                          int                 count,
                          SCOREP_Ipc_Datatype datatype,
                          int                 root );
 
 
-
 static inline int
-SCOREP_Ipc_Scatter( void*               sendbuf,
+SCOREP_Ipc_Scatter( const void*         sendbuf,
                     void*               recvbuf,
                     int                 count,
                     SCOREP_Ipc_Datatype datatype,
@@ -429,7 +422,7 @@ SCOREP_Ipc_Scatter( void*               sendbuf,
 
 int
 SCOREP_IpcGroup_Scatterv( SCOREP_Ipc_Group*   group,
-                          void*               sendbuf,
+                          const void*         sendbuf,
                           const int*          sendcounts,
                           const int*          displs,
                           void*               recvbuf,
@@ -438,9 +431,8 @@ SCOREP_IpcGroup_Scatterv( SCOREP_Ipc_Group*   group,
                           int                 root );
 
 
-
 static inline int
-SCOREP_Ipc_Scatterv( void*               sendbuf,
+SCOREP_Ipc_Scatterv( const void*         sendbuf,
                      const int*          sendcounts,
                      const int*          displs,
                      void*               recvbuf,

@@ -127,7 +127,7 @@ get_datatype_size( SCOREP_Ipc_Datatype datatype )
 
 int
 SCOREP_IpcGroup_Send( SCOREP_Ipc_Group*   group,
-                      void*               buf,
+                      const void*         buf,
                       int                 count,
                       SCOREP_Ipc_Datatype scorep_datatype,
                       int                 dest )
@@ -169,7 +169,7 @@ SCOREP_IpcGroup_Bcast( SCOREP_Ipc_Group*   group,
 
 int
 SCOREP_IpcGroup_Gather( SCOREP_Ipc_Group*   group,
-                        void*               sendbuf,
+                        const void*         sendbuf,
                         void*               recvbuf,
                         int                 count,
                         SCOREP_Ipc_Datatype datatype,
@@ -190,7 +190,7 @@ SCOREP_IpcGroup_Gather( SCOREP_Ipc_Group*   group,
 
 int
 SCOREP_IpcGroup_Gatherv( SCOREP_Ipc_Group*   group,
-                         void*               sendbuf,
+                         const void*         sendbuf,
                          int                 sendcount,
                          void*               recvbuf,
                          const int*          recvcnts,
@@ -215,7 +215,7 @@ SCOREP_IpcGroup_Gatherv( SCOREP_Ipc_Group*   group,
 
 int
 SCOREP_IpcGroup_Allgather( SCOREP_Ipc_Group*   group,
-                           void*               sendbuf,
+                           const void*         sendbuf,
                            void*               recvbuf,
                            int                 count,
                            SCOREP_Ipc_Datatype datatype )
@@ -232,7 +232,7 @@ SCOREP_IpcGroup_Allgather( SCOREP_Ipc_Group*   group,
 
 int
 SCOREP_IpcGroup_Reduce( SCOREP_Ipc_Group*    group,
-                        void*                sendbuf,
+                        const void*          sendbuf,
                         void*                recvbuf,
                         int                  count,
                         SCOREP_Ipc_Datatype  datatype,
@@ -255,7 +255,7 @@ SCOREP_IpcGroup_Reduce( SCOREP_Ipc_Group*    group,
 
 int
 SCOREP_IpcGroup_Allreduce( SCOREP_Ipc_Group*    group,
-                           void*                sendbuf,
+                           const void*          sendbuf,
                            void*                recvbuf,
                            int                  count,
                            SCOREP_Ipc_Datatype  datatype,
@@ -274,7 +274,7 @@ SCOREP_IpcGroup_Allreduce( SCOREP_Ipc_Group*    group,
 
 int
 SCOREP_IpcGroup_Scan( SCOREP_Ipc_Group*    group,
-                      void*                sendbuf,
+                      const void*          sendbuf,
                       void*                recvbuf,
                       int                  count,
                       SCOREP_Ipc_Datatype  datatype,
@@ -292,7 +292,7 @@ SCOREP_IpcGroup_Scan( SCOREP_Ipc_Group*    group,
 
 int
 SCOREP_IpcGroup_Scatter( SCOREP_Ipc_Group*   group,
-                         void*               sendbuf,
+                         const void*         sendbuf,
                          void*               recvbuf,
                          int                 count,
                          SCOREP_Ipc_Datatype datatype,
@@ -310,7 +310,7 @@ SCOREP_IpcGroup_Scatter( SCOREP_Ipc_Group*   group,
 
 int
 SCOREP_IpcGroup_Scatterv( SCOREP_Ipc_Group*   group,
-                          void*               sendbuf,
+                          const void*         sendbuf,
                           const int*          sendcounts,
                           const int*          displs,
                           void*               recvbuf,

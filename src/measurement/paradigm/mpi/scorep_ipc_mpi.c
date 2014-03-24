@@ -47,6 +47,11 @@
 #include <assert.h>
 #include <stdlib.h>
 
+#if MPI_VERSION >= 3
+#define HANDLE_CONST( type, arg ) arg
+#else
+#define HANDLE_CONST( type, arg ) ( type* )arg
+#endif
 
 struct SCOREP_Ipc_Group
 {
@@ -224,12 +229,12 @@ get_mpi_operation( SCOREP_Ipc_Operation op )
 
 int
 SCOREP_IpcGroup_Send( SCOREP_Ipc_Group*   group,
-                      void*               buf,
+                      const void*         buf,
                       int                 count,
                       SCOREP_Ipc_Datatype datatype,
                       int                 dest )
 {
-    return PMPI_Send( buf,
+    return PMPI_Send( HANDLE_CONST( void, buf ),
                       count,
                       get_mpi_datatype( datatype ),
                       dest,
@@ -278,15 +283,17 @@ SCOREP_IpcGroup_Bcast( SCOREP_Ipc_Group*   group,
 
 int
 SCOREP_IpcGroup_Gather( SCOREP_Ipc_Group*   group,
-                        void*               sendbuf,
+                        const void*         sendbuf,
                         void*               recvbuf,
                         int                 count,
                         SCOREP_Ipc_Datatype datatype,
                         int                 root )
 {
-    return PMPI_Gather( sendbuf, count,
+    return PMPI_Gather( HANDLE_CONST( void, sendbuf ),
+                        count,
                         get_mpi_datatype( datatype ),
-                        recvbuf, count,
+                        recvbuf,
+                        count,
                         get_mpi_datatype( datatype ),
                         root,
                         resolve_comm( group ) ) != MPI_SUCCESS;
@@ -295,7 +302,7 @@ SCOREP_IpcGroup_Gather( SCOREP_Ipc_Group*   group,
 
 int
 SCOREP_IpcGroup_Gatherv( SCOREP_Ipc_Group*   group,
-                         void*               sendbuf,
+                         const void*         sendbuf,
                          int                 sendcount,
                          void*               recvbuf,
                          const int*          recvcnts,
@@ -303,12 +310,12 @@ SCOREP_IpcGroup_Gatherv( SCOREP_Ipc_Group*   group,
                          SCOREP_Ipc_Datatype datatype,
                          int                 root )
 {
-    return PMPI_Gatherv( sendbuf,
+    return PMPI_Gatherv( HANDLE_CONST( void, sendbuf ),
                          sendcount,
                          get_mpi_datatype( datatype ),
                          recvbuf,
-                         ( int* )recvcnts,
-                         ( int* )displs,
+                         HANDLE_CONST( int, recvcnts ),
+                         HANDLE_CONST( int, displs ),
                          get_mpi_datatype( datatype ),
                          root,
                          resolve_comm( group ) ) != MPI_SUCCESS;
@@ -317,14 +324,16 @@ SCOREP_IpcGroup_Gatherv( SCOREP_Ipc_Group*   group,
 
 int
 SCOREP_IpcGroup_Allgather( SCOREP_Ipc_Group*   group,
-                           void*               sendbuf,
+                           const void*         sendbuf,
                            void*               recvbuf,
                            int                 count,
                            SCOREP_Ipc_Datatype datatype )
 {
-    return PMPI_Allgather( sendbuf, count,
+    return PMPI_Allgather( HANDLE_CONST( void, sendbuf ),
+                           count,
                            get_mpi_datatype( datatype ),
-                           recvbuf, count,
+                           recvbuf,
+                           count,
                            get_mpi_datatype( datatype ),
                            resolve_comm( group ) ) != MPI_SUCCESS;
 }
@@ -332,14 +341,16 @@ SCOREP_IpcGroup_Allgather( SCOREP_Ipc_Group*   group,
 
 int
 SCOREP_IpcGroup_Reduce( SCOREP_Ipc_Group*    group,
-                        void*                sendbuf,
+                        const void*          sendbuf,
                         void*                recvbuf,
                         int                  count,
                         SCOREP_Ipc_Datatype  datatype,
                         SCOREP_Ipc_Operation operation,
                         int                  root )
 {
-    return PMPI_Reduce( sendbuf, recvbuf, count,
+    return PMPI_Reduce( HANDLE_CONST( void, sendbuf ),
+                        recvbuf,
+                        count,
                         get_mpi_datatype( datatype ),
                         get_mpi_operation( operation ),
                         root,
@@ -349,13 +360,15 @@ SCOREP_IpcGroup_Reduce( SCOREP_Ipc_Group*    group,
 
 int
 SCOREP_IpcGroup_Allreduce( SCOREP_Ipc_Group*    group,
-                           void*                sendbuf,
+                           const void*          sendbuf,
                            void*                recvbuf,
                            int                  count,
                            SCOREP_Ipc_Datatype  datatype,
                            SCOREP_Ipc_Operation operation )
 {
-    return PMPI_Allreduce( sendbuf, recvbuf, count,
+    return PMPI_Allreduce( HANDLE_CONST( void, sendbuf ),
+                           recvbuf,
+                           count,
                            get_mpi_datatype( datatype ),
                            get_mpi_operation( operation ),
                            resolve_comm( group ) ) != MPI_SUCCESS;
@@ -364,13 +377,15 @@ SCOREP_IpcGroup_Allreduce( SCOREP_Ipc_Group*    group,
 
 int
 SCOREP_IpcGroup_Scan( SCOREP_Ipc_Group*    group,
-                      void*                sendbuf,
+                      const void*          sendbuf,
                       void*                recvbuf,
                       int                  count,
                       SCOREP_Ipc_Datatype  datatype,
                       SCOREP_Ipc_Operation operation )
 {
-    return PMPI_Scan( sendbuf, recvbuf, count,
+    return PMPI_Scan( HANDLE_CONST( void, sendbuf ),
+                      recvbuf,
+                      count,
                       get_mpi_datatype( datatype ),
                       get_mpi_operation( operation ),
                       resolve_comm( group ) ) != MPI_SUCCESS;
@@ -379,13 +394,13 @@ SCOREP_IpcGroup_Scan( SCOREP_Ipc_Group*    group,
 
 int
 SCOREP_IpcGroup_Scatter( SCOREP_Ipc_Group*   group,
-                         void*               sendbuf,
+                         const void*         sendbuf,
                          void*               recvbuf,
                          int                 count,
                          SCOREP_Ipc_Datatype datatype,
                          int                 root )
 {
-    return PMPI_Scatter( sendbuf,
+    return PMPI_Scatter( HANDLE_CONST( void, sendbuf ),
                          count,
                          get_mpi_datatype( datatype ),
                          recvbuf,
@@ -398,7 +413,7 @@ SCOREP_IpcGroup_Scatter( SCOREP_Ipc_Group*   group,
 
 int
 SCOREP_IpcGroup_Scatterv( SCOREP_Ipc_Group*   group,
-                          void*               sendbuf,
+                          const void*         sendbuf,
                           const int*          sendcounts,
                           const int*          displs,
                           void*               recvbuf,
@@ -406,9 +421,9 @@ SCOREP_IpcGroup_Scatterv( SCOREP_Ipc_Group*   group,
                           SCOREP_Ipc_Datatype datatype,
                           int                 root )
 {
-    return PMPI_Scatterv( sendbuf,
-                          ( int* )sendcounts,
-                          ( int* )displs,
+    return PMPI_Scatterv( HANDLE_CONST( void, sendbuf ),
+                          HANDLE_CONST( int, sendcounts ),
+                          HANDLE_CONST( int, displs ),
                           get_mpi_datatype( datatype ),
                           recvbuf,
                           recvcount,
