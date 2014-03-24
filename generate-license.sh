@@ -119,8 +119,8 @@ fi
 cat <<[[EOT]]
 The entire code of ${PROJECT_NAME} is licensed under the BSD-style license
 agreement given below, except for the third-party code distributed in the
-'vendor/' subdirectory.  See the corresponding COPYING files in 'vendor/*'
-of the distribution tarball for details.
+'vendor/' subdirectory.  Please see the corresponding COPYING files in the
+subdirectories of 'vendor/' included in the distribution tarball for details.
 
 [[EOT]]
 
