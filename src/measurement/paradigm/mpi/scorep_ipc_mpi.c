@@ -306,19 +306,38 @@ SCOREP_IpcGroup_Gatherv( SCOREP_Ipc_Group*   group,
                          int                 sendcount,
                          void*               recvbuf,
                          const int*          recvcnts,
-                         const int*          displs,
                          SCOREP_Ipc_Datatype datatype,
                          int                 root )
 {
-    return PMPI_Gatherv( HANDLE_CONST( void, sendbuf ),
-                         sendcount,
-                         get_mpi_datatype( datatype ),
-                         recvbuf,
-                         HANDLE_CONST( int, recvcnts ),
-                         HANDLE_CONST( int, displs ),
-                         get_mpi_datatype( datatype ),
-                         root,
-                         resolve_comm( group ) ) != MPI_SUCCESS;
+    int* displs = NULL;
+    int  rank   = SCOREP_IpcGroup_GetRank( group );
+    if ( root == rank )
+    {
+        int size = SCOREP_IpcGroup_GetSize( group );
+        displs = calloc( size, sizeof( *displs ) );
+        UTILS_ASSERT( displs );
+
+        int total = 0;
+        for ( int i = 0; i < size; i++ )
+        {
+            displs[ i ] = total;
+            total      += recvcnts[ i ];
+        }
+    }
+
+    int ret = PMPI_Gatherv( HANDLE_CONST( void, sendbuf ),
+                            sendcount,
+                            get_mpi_datatype( datatype ),
+                            recvbuf,
+                            HANDLE_CONST( int, recvcnts ),
+                            displs,
+                            get_mpi_datatype( datatype ),
+                            root,
+                            resolve_comm( group ) ) != MPI_SUCCESS;
+
+    free( displs );
+
+    return ret;
 }
 
 
@@ -415,19 +434,38 @@ int
 SCOREP_IpcGroup_Scatterv( SCOREP_Ipc_Group*   group,
                           const void*         sendbuf,
                           const int*          sendcounts,
-                          const int*          displs,
                           void*               recvbuf,
                           int                 recvcount,
                           SCOREP_Ipc_Datatype datatype,
                           int                 root )
 {
-    return PMPI_Scatterv( HANDLE_CONST( void, sendbuf ),
-                          HANDLE_CONST( int, sendcounts ),
-                          HANDLE_CONST( int, displs ),
-                          get_mpi_datatype( datatype ),
-                          recvbuf,
-                          recvcount,
-                          get_mpi_datatype( datatype ),
-                          root,
-                          resolve_comm( group ) ) != MPI_SUCCESS;
+    int* displs = NULL;
+    int  rank   = SCOREP_IpcGroup_GetRank( group );
+    if ( root == rank )
+    {
+        int size = SCOREP_IpcGroup_GetSize( group );
+        displs = calloc( size, sizeof( *displs ) );
+        UTILS_ASSERT( displs );
+
+        int total = 0;
+        for ( int i = 0; i < size; i++ )
+        {
+            displs[ i ] = total;
+            total      += sendcounts[ i ];
+        }
+    }
+
+    int ret =  PMPI_Scatterv( HANDLE_CONST( void, sendbuf ),
+                              HANDLE_CONST( int, sendcounts ),
+                              displs,
+                              get_mpi_datatype( datatype ),
+                              recvbuf,
+                              recvcount,
+                              get_mpi_datatype( datatype ),
+                              root,
+                              resolve_comm( group ) ) != MPI_SUCCESS;
+
+    free( displs );
+
+    return ret;
 }

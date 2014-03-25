@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -107,7 +107,6 @@ scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,
                         number_of_members,
                         all_locations,
                         number_of_locations_per_rank,
-                        offsets,
                         SCOREP_IPC_UINT64_T,
                         0 );
     free( number_of_locations_per_rank );

@@ -194,7 +194,6 @@ SCOREP_IpcGroup_Gatherv( SCOREP_Ipc_Group*   group,
                          int                 sendcount,
                          void*               recvbuf,
                          const int*          recvcnts,
-                         const int*          displs,
                          SCOREP_Ipc_Datatype datatype,
                          int                 root )
 {
@@ -203,12 +202,13 @@ SCOREP_IpcGroup_Gatherv( SCOREP_Ipc_Group*   group,
     UTILS_BUG_ON( sendcount != recvcnts[ 0 ],
                   "Non-matching send and recv count." );
 
-    if ( ( ( char* )recvbuf + displs[ 0 ] ) != sendbuf )
+    if ( recvbuf != sendbuf )
     {
         /* In non-mpi case, we have only rank zero. Thus copy sendbuf to recvbuf. */
         size_t num = get_datatype_size( datatype ) * sendcount;
-        memcpy( ( char* )recvbuf + displs[ 0 ], sendbuf, num );
+        memcpy( recvbuf, sendbuf, num );
     }
+
     return 0;
 }
 
@@ -312,7 +312,6 @@ int
 SCOREP_IpcGroup_Scatterv( SCOREP_Ipc_Group*   group,
                           const void*         sendbuf,
                           const int*          sendcounts,
-                          const int*          displs,
                           void*               recvbuf,
                           int                 recvcount,
                           SCOREP_Ipc_Datatype datatype,
@@ -322,11 +321,11 @@ SCOREP_IpcGroup_Scatterv( SCOREP_Ipc_Group*   group,
                   "Invalid root given for scatter in single process run." );
 
     /* In non-mpi case, we have only rank zero. Thus copy sendbuf to recvbuf. */
-    if ( ( ( char* )recvbuf + displs[ 0 ] ) != sendbuf )
+    if ( recvbuf != sendbuf )
     {
         /* In non-mpi case, we have only rank zero. Thus copy sendbuf to recvbuf. */
         size_t num = get_datatype_size( datatype ) * recvcount;
-        memcpy( ( char* )recvbuf + displs[ 0 ], sendbuf, num );
+        memcpy( recvbuf, sendbuf, num );
     }
 
     return 0;

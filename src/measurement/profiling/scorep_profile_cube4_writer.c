@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -550,7 +550,6 @@ write_cube_##cube_type(                                                         
         {                                                                               \
             SCOREP_Ipc_Gatherv( local_values, write_set->local_threads * NUMBER,        \
                                 global_values, write_set->items_per_rank,               \
-                                write_set->offsets_per_rank,                            \
                                 SCOREP_IPC_ ## TYPE, 0 );                               \
         }                                                                               \
                                                                                         \

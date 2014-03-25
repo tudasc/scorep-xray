@@ -145,30 +145,13 @@ scorep_tracing_otf2_collectives_gatherv( void*                   userData,
                                          OTF2_Type               type,
                                          uint32_t                root )
 {
-    int* displs = NULL;
-    int  size   = SCOREP_IpcGroup_GetSize( ( SCOREP_Ipc_Group* )commContext );
-    int  rank   = SCOREP_IpcGroup_GetRank( ( SCOREP_Ipc_Group* )commContext );
-    if ( rank == root )
-    {
-        displs = calloc( size, sizeof( *displs ) );
-        int displ = 0;
-        for ( int i = 0; i < size; i++ )
-        {
-            displs[ i ] = displ;
-            displ      += outElements[ i ];
-        }
-    }
-
     SCOREP_IpcGroup_Gatherv( ( SCOREP_Ipc_Group* )commContext,
                              inData,
                              inElements,
                              outData,
                              ( const int* )outElements,
-                             displs,
                              get_ipc_type( type ),
                              root );
-
-    free( displs );
 
     return OTF2_CALLBACK_SUCCESS;
 }
@@ -204,30 +187,13 @@ scorep_tracing_otf2_collectives_scatterv( void*                   userData,
                                           OTF2_Type               type,
                                           uint32_t                root )
 {
-    int* displs = NULL;
-    int  size   = SCOREP_IpcGroup_GetSize( ( SCOREP_Ipc_Group* )commContext );
-    int  rank   = SCOREP_IpcGroup_GetRank( ( SCOREP_Ipc_Group* )commContext );
-    if ( rank == root )
-    {
-        displs = calloc( size, sizeof( *displs ) );
-        int displ = 0;
-        for ( int i = 0; i < size; i++ )
-        {
-            displs[ i ] = displ;
-            displ      += inElements[ i ];
-        }
-    }
-
     SCOREP_IpcGroup_Scatterv( ( SCOREP_Ipc_Group* )commContext,
                               inData,
                               ( const int* )inElements,
-                              displs,
                               outData,
                               outElements,
                               get_ipc_type( type ),
                               root );
-
-    free( displs );
 
     return OTF2_CALLBACK_SUCCESS;
 }
