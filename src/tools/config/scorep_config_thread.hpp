@@ -210,7 +210,7 @@ private:
     /**
      * List of available threading systems.
      */
-    static std::deque<SCOREP_Config_ThreadSystem*> all;
+    static std::deque<SCOREP_Config_ThreadSystem*> m_all;
 };
 
 

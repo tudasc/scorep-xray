@@ -34,27 +34,27 @@
  * class SCOREP_Config_ThreadSystem
  * *************************************************************************************/
 
-std::deque<SCOREP_Config_ThreadSystem*> SCOREP_Config_ThreadSystem::all;
+std::deque<SCOREP_Config_ThreadSystem*> SCOREP_Config_ThreadSystem::m_all;
 
-SCOREP_Config_ThreadSystem* SCOREP_Config_ThreadSystem::current = 0;
+SCOREP_Config_ThreadSystem* SCOREP_Config_ThreadSystem::current = NULL;
 
 void
 SCOREP_Config_ThreadSystem::init( void )
 {
-    all.push_back( new SCOREP_Config_MockupThreadSystem() );
-    all.push_back( new SCOREP_Config_PompTpdThreadSystem() );
+    m_all.push_back( new SCOREP_Config_MockupThreadSystem() );
+    m_all.push_back( new SCOREP_Config_PompTpdThreadSystem() );
 #if SCOREP_BACKEND_HAVE_OMP_ANCESTRY
-    all.push_back( new SCOREP_Config_OmpAncestryThreadSystem() );
+    m_all.push_back( new SCOREP_Config_OmpAncestryThreadSystem() );
 #endif
-    current = all.front();
+    current = m_all.front();
 }
 
 void
 SCOREP_Config_ThreadSystem::fini( void )
 {
-    current = 0;
+    current = NULL;
     std::deque<SCOREP_Config_ThreadSystem*>::iterator i;
-    for ( i = all.begin(); i != all.end(); i++ )
+    for ( i = m_all.begin(); i != m_all.end(); i++ )
     {
         delete ( *i );
     }
@@ -66,7 +66,7 @@ SCOREP_Config_ThreadSystem::printAll( void )
     std::cout << "   --thread=<threading system>[:<variant>]\n"
               << "            Available threading systems are:\n";
     std::deque<SCOREP_Config_ThreadSystem*>::iterator i;
-    for ( i = all.begin(); i != all.end(); i++ )
+    for ( i = m_all.begin(); i != m_all.end(); i++ )
     {
         ( *i )->printHelp();
     }
@@ -77,28 +77,44 @@ SCOREP_Config_ThreadSystem::printAll( void )
 bool
 SCOREP_Config_ThreadSystem::checkAll( const std::string& arg )
 {
-    current = 0;
+    /* The format is --thread=<system>[:<variant>]
+     * Note that the variant is optional. Thus, the user
+     * may provide either both, or only a system. */
 
-    std::string system( arg );
-    std::string variant;
-    size_t      pos = system.find( ':' );
+    std::string                                       system( arg );
+    std::string                                       variant;
+    size_t                                            pos = system.find( ':' );
+    std::deque<SCOREP_Config_ThreadSystem*>::iterator i;
+
+    /* If system and variant are provided, both must match */
     if ( pos != std::string::npos )
     {
         system  = arg.substr( 0, pos );
         variant = arg.substr( pos + 1 );
+
+        for ( i = m_all.begin(); i != m_all.end(); i++ )
+        {
+            if ( ( system == ( *i )->m_name ) &&
+                 ( variant == ( *i )->m_variant ) )
+            {
+                current = *i;
+                return true;
+            }
+        }
+        return false;
     }
 
-    std::deque<SCOREP_Config_ThreadSystem*>::iterator i;
-    for ( i = all.begin(); i != all.end(); i++ )
+    /* If only the system is provided, choose the first matching system */
+    for ( i = m_all.begin(); i != m_all.end(); i++ )
     {
-        if ( ( current == 0 && system == ( *i )->m_name ) ||
-             ( system == ( *i )->m_name && variant == ( *i )->m_variant ) )
+        if ( system == ( *i )->m_name )
         {
             current = *i;
-            break;
+            return true;
         }
     }
-    return current != 0;
+
+    return false;
 }
 
 SCOREP_Config_ThreadSystem::SCOREP_Config_ThreadSystem( const std::string&           name,
@@ -152,7 +168,7 @@ SCOREP_Config_ThreadSystem::addCFlags( std::string&           cflags,
 SCOREP_Config_MutexId
 SCOREP_Config_ThreadSystem::validateDependencies()
 {
-    if ( SCOREP_Config_Mutex::current->getId()  == SCOREP_CONFIG_MUTEX_ID_NONE )
+    if ( SCOREP_Config_Mutex::current->getId() == SCOREP_CONFIG_MUTEX_ID_NONE )
     {
         return m_mutexId;
     }
