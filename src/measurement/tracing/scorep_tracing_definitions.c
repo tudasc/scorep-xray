@@ -906,9 +906,8 @@ scorep_write_attribute_definitions( void*                     writerHandle,
             writerHandle,
             definition->sequence_number,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
-            OTF2_UNDEFINED_STRING,
-            scorep_tracing_attribute_type_to_otf2( definition->type )
-            );
+            SCOREP_HANDLE_TO_ID( definition->description_handle, String, definitionManager->page_manager ),
+            scorep_tracing_attribute_type_to_otf2( definition->type ) );
 
 
         if ( status != OTF2_SUCCESS )

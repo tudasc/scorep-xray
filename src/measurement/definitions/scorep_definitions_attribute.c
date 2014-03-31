@@ -68,14 +68,16 @@
 
 static SCOREP_AttributeHandle
 define_attribute( SCOREP_DefinitionManager* definition_manager,
-                  SCOREP_StringHandle       attrNameHandle,
-                  SCOREP_AttributeType      attrType );
+                  SCOREP_StringHandle       nameHandle,
+                  SCOREP_StringHandle       descriptionHandle,
+                  SCOREP_AttributeType      type );
 
 static void
 initialize_attribute( SCOREP_AttributeDef*      definition,
                       SCOREP_DefinitionManager* definition_manager,
-                      SCOREP_StringHandle       attrNameHandle,
-                      SCOREP_AttributeType      attrType );
+                      SCOREP_StringHandle       nameHandle,
+                      SCOREP_StringHandle       descriptionHandle,
+                      SCOREP_AttributeType      type );
 
 static bool
 equal_attribute( const SCOREP_AttributeDef* existingDefinition,
@@ -83,10 +85,11 @@ equal_attribute( const SCOREP_AttributeDef* existingDefinition,
 
 
 SCOREP_AttributeHandle
-SCOREP_Definitions_NewAttribute( const char*          attrName,
-                                 SCOREP_AttributeType attrType )
+SCOREP_Definitions_NewAttribute( const char*          name,
+                                 const char*          description,
+                                 SCOREP_AttributeType type )
 {
-    UTILS_DEBUG_ENTRY( "%s", attrName );
+    UTILS_DEBUG_ENTRY( "%s", name );
 
     SCOREP_Definitions_Lock();
 
@@ -94,8 +97,11 @@ SCOREP_Definitions_NewAttribute( const char*          attrName,
         &scorep_local_definition_manager,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            attrName ? attrName : "<unknown attribute>" ),
-        attrType );
+            name ? name : "<unknown attribute>" ),
+        scorep_definitions_new_string(
+            &scorep_local_definition_manager,
+            description ? description : "" ),
+        type );
 
     SCOREP_Definitions_Unlock();
 
@@ -128,13 +134,18 @@ scorep_definitions_unify_attribute( SCOREP_AttributeDef*          definition,
             definition->name_handle,
             String,
             handlesPageManager ),
+        SCOREP_HANDLE_GET_UNIFIED(
+            definition->description_handle,
+            String,
+            handlesPageManager ),
         definition->type );
 }
 
 SCOREP_AttributeHandle
 define_attribute( SCOREP_DefinitionManager* definition_manager,
-                  SCOREP_StringHandle       attrNameHandle,
-                  SCOREP_AttributeType      attrType )
+                  SCOREP_StringHandle       nameHandle,
+                  SCOREP_StringHandle       descriptionHandle,
+                  SCOREP_AttributeType      type )
 {
     UTILS_ASSERT( definition_manager );
 
@@ -144,8 +155,9 @@ define_attribute( SCOREP_DefinitionManager* definition_manager,
     SCOREP_DEFINITION_ALLOC( Attribute );
     initialize_attribute( new_definition,
                           definition_manager,
-                          attrNameHandle,
-                          attrType );
+                          nameHandle,
+                          descriptionHandle,
+                          type );
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Attribute, attribute );
@@ -156,13 +168,17 @@ define_attribute( SCOREP_DefinitionManager* definition_manager,
 void
 initialize_attribute( SCOREP_AttributeDef*      definition,
                       SCOREP_DefinitionManager* definition_manager,
-                      SCOREP_StringHandle       attrNameHandle,
-                      SCOREP_AttributeType      attrType )
+                      SCOREP_StringHandle       nameHandle,
+                      SCOREP_StringHandle       descriptionHandle,
+                      SCOREP_AttributeType      type )
 {
-    definition->name_handle = attrNameHandle;
+    definition->name_handle = nameHandle;
     HASH_ADD_HANDLE( definition, name_handle, String );
 
-    definition->type = attrType;
+    definition->description_handle = descriptionHandle;
+    HASH_ADD_HANDLE( definition, description_handle, String );
+
+    definition->type = type;
     HASH_ADD_POD( definition, type );
 }
 
@@ -171,5 +187,6 @@ equal_attribute( const SCOREP_AttributeDef* existingDefinition,
                  const SCOREP_AttributeDef* newDefinition )
 {
     return existingDefinition->name_handle == newDefinition->name_handle &&
+           existingDefinition->description_handle == newDefinition->description_handle &&
            existingDefinition->type == newDefinition->type;
 }

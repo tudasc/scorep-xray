@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -228,15 +228,18 @@ SCOREP_RegionHandle_GetEndLine( SCOREP_RegionHandle handle );
 /**
  * Add a new attribute definition.
  *
- * @param attrName The string describing the attribute.
+ * @param name The string naming the attribute.
  *
- * @param attrType The type of this attribute.
+ * @param name The string describing the attribute.
+ *
+ * @param type The type of this attribute.
  *
  * @return A process unique handle to a new attribute.
  */
 SCOREP_AttributeHandle
-SCOREP_Definitions_NewAttribute( const char*          attrName,
-                                 SCOREP_AttributeType attrType );
+SCOREP_Definitions_NewAttribute( const char*          name,
+                                 const char*          description,
+                                 SCOREP_AttributeType type );
 
 
 uint32_t

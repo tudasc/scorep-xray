@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -55,6 +55,7 @@ SCOREP_DEFINE_DEFINITION_TYPE( Attribute )
     SCOREP_DEFINE_DEFINITION_HEADER( Attribute );
 
     SCOREP_StringHandle  name_handle;               // Name for this attribute.
+    SCOREP_StringHandle  description_handle;        // Description for this attribute.
     SCOREP_AttributeType type;                      // Type for all values of this attribute.
 };
 
