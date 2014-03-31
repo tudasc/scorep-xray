@@ -1,9 +1,9 @@
 dnl -*- mode: autoconf -*-
 
-dnl 
+dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013
+dnl Copyright (c) 2013-2014,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2013,
@@ -30,7 +30,9 @@ dnl file build-config/m4/scorep_pthread.m4
 #         HAVE_PTHREAD_[]m4_toupper($1) automake conditional
 m4_define([_SCOREP_PTHREAD_FEATURE], [
 AC_REQUIRE([SCOREP_PTHREAD])dnl
-AS_IF([test "x${scorep_pthread_support}" = x1], 
+scorep_pthread_$1=0
+scorep_pthread_$1_flag=""
+AS_IF([test "x${scorep_pthread_support}" = x1],
     [AC_LANG_PUSH([C])dnl
      AC_MSG_CHECKING([for pthread $1])
      for scorep_pthread_$1_flag in $2
@@ -45,14 +47,14 @@ AS_IF([test "x${scorep_pthread_support}" = x1],
          AC_LINK_IFELSE([AC_LANG_PROGRAM($3)],
              [scorep_pthread_$1=1],
              [scorep_pthread_$1=0])dnl
-     
+
          LIBS="$save_LIBS"
          CFLAGS="$save_CFLAGS"
          CC="$save_CC"
-    
+
          AS_IF([test "x$scorep_pthread_$1" = x1], [break])dnl
      done
-     AS_IF([test "x$scorep_pthread_$1" = x0], 
+     AS_IF([test "x$scorep_pthread_$1" = x0],
          [scorep_pthread_$1_flag=""
           AC_MSG_RESULT([0])],
          [AC_MSG_RESULT([1])])
@@ -78,7 +80,7 @@ _SCOREP_PTHREAD_FEATURE([spinlock],
     [
      [[
      #include <pthread.h>
-     ]], 
+     ]],
      [[
      pthread_spinlock_t spinlock;
      pthread_spin_init(&spinlock, NULL);
@@ -103,7 +105,7 @@ _SCOREP_PTHREAD_FEATURE([mutex],
     [
      [[
      #include <pthread.h>
-     ]], 
+     ]],
      [[
      pthread_mutex_t mutex;
      pthread_mutex_init(&mutex, NULL);
