@@ -594,11 +594,17 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
     if ( scorep_cuda_record_references )
     {
         context->stream_ref = SCOREP_Definitions_NewAttribute(
-            SCOREP_CUPTI_CUDA_STREAMREF_KEY, "", SCOREP_ATTRIBUTE_TYPE_LOCATION );
+            SCOREP_CUPTI_CUDA_STREAMREF_KEY,
+            "Referenced CUDA stream",
+            SCOREP_ATTRIBUTE_TYPE_LOCATION );
         context->event_ref = SCOREP_Definitions_NewAttribute(
-            SCOREP_CUPTI_CUDA_EVENTREF_KEY, "", SCOREP_ATTRIBUTE_TYPE_UINT32 );
+            SCOREP_CUPTI_CUDA_EVENTREF_KEY,
+            "ID (address) of referenced CUDA event",
+            SCOREP_ATTRIBUTE_TYPE_UINT32 );
         context->result_ref = SCOREP_Definitions_NewAttribute(
-            SCOREP_CUPTI_CUDA_CURESULT_KEY, "", SCOREP_ATTRIBUTE_TYPE_UINT32 );
+            SCOREP_CUPTI_CUDA_CURESULT_KEY,
+            "CUDA driver API function result",
+            SCOREP_ATTRIBUTE_TYPE_UINT32 );
     }
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
