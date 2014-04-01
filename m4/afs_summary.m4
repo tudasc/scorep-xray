@@ -68,9 +68,18 @@ AC_DEFUN([AFS_SUMMARY_VERBOSE], [
     ])
 ])
 
-# should be called after AC_OUTPUT
-AC_DEFUN([AFS_SUMMARY_COLLECT], [
+AC_DEFUN([_AFS_SUMMARY_SHOW], [
     AS_ECHO([""])
+    cat AC_PACKAGE_TARNAME.summary
+])
+
+# AFS_SUMMARY_COLLECT([SHOW-COND])
+# --------------------------------
+# Collectes the summary of all configures recusivly into the file
+# $PACKAGE.summary. If SHOW-COND is not given, or the expression is
+# evaluates to true in an AS_IF the summary is also printed to stdout.
+# Should be called after AC_OUTPUT.
+AC_DEFUN([AFS_SUMMARY_COLLECT], [
     (
     AS_ECHO(["Configure command:"])
     prefix="  $as_myself "
@@ -85,9 +94,8 @@ AC_DEFUN([AFS_SUMMARY_COLLECT], [
     eval "set x $ac_configure_args"
     shift
     AS_FOR([ARG], [arg], [], [
-        case $arg in
-        *\'*) arg="`$as_echo "$arg" | sed "s/'/'\\\\\\\\''/g"`" ;;
-        esac
+        AS_CASE([$arg],
+        [*\'*], [arg="`$as_echo "$arg" | sed "s/'/'\\\\\\\\''/g"`"])
         AS_ECHO_N(["$sep'$arg'"])
         sep=" \\$as_nl$padding"
     ])
@@ -105,5 +113,8 @@ AC_DEFUN([AFS_SUMMARY_COLLECT], [
         cat $summary
         sep=""
     done
-    ) | tee AC_PACKAGE_TARNAME.summary
+    ) >AC_PACKAGE_TARNAME.summary
+    m4_ifblank($1,
+              [_AFS_SUMMARY_SHOW],
+              [AS_IF([$1], [_AFS_SUMMARY_SHOW])])
 ])
