@@ -882,8 +882,10 @@ pure_idle      = GPU idle time (memory copies are not idle)
 memcpy         = CUDA memory copies
 sync           = Record implicit and explicit CUDA synchronization
 gpumemusage    = Record CUDA memory (de)allocations as a counter
+references     = Record references between CUDA activities
 stream_reuse   = Reuse destroyed/closed CUDA streams
 device_reuse   = Reuse destroyed/closed CUDA devices
+flushatexit    = Flush CUDA activity buffer at program exit
 yes/DEFAULT/1  = "runtime,kernel,memcpy"
 no             = Disable CUDA measurement 
                  (same as unset SCOREP_CUDA_ENABLE)
@@ -891,10 +893,12 @@ no             = Disable CUDA measurement
 
 CUPTI uses an extra buffer to store its activity records.
 If the size of this buffer is too small, @scorep will print a warning about the current buffer size and the number of dropped records.
-To avoid dropping of records increase the buffer size via the environment variable \confvar{SCOREP_CUDA_BUFFER}.
+To avoid dropping of records increase the buffer size via the environment variable \confvar{SCOREP_CUDA_BUFFER} (default: 1M).
 
-Since CUDA toolkit version 5.5 the chunk size for the CUPTI activity buffer can be specified via the environment variable \confvar{SCOREP_CUDA_BUFFER_CHUNK}. Buffer chunks are allocated whenever CUPTI requests a buffer (e.g. to record activities on a CUDA stream).
+Since CUDA toolkit version 5.5 the chunk size for the CUPTI activity buffer can be specified via the environment variable \confvar{SCOREP_CUDA_BUFFER_CHUNK} (default: 8k). Buffer chunks are allocated whenever CUPTI requests a buffer (e.g. to record activities on a CUDA stream).
 \confvar{SCOREP_CUDA_BUFFER} specifies the upper bound of memory to be allocated for CUPTI activities. Therefore it should be a multiple of \confvar{SCOREP_CUDA_BUFFER_CHUNK}.
+
+@note Make sure to call <tt>cudaDeviceReset()</tt> or <tt>cudaDeviceSynchronize()</tt> before the exit of the program. Otherwise GPU activities might be missing in the trace.
 
 @note For CUDA 5.5 there is an error in CUPTI buffer handling. The last activity in a CUPTI activity buffer (\confvar{SCOREP_CUDA_BUFFER_CHUNK}) gets lost, when the buffer is full. 
 To avoid this issue specify \confvar{SCOREP_CUDA_BUFFER_CHUNK} as large as necessary to store all CUDA device activities until the CUDA device is synchronized with the host.
