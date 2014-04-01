@@ -16,7 +16,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
-dnl Copyright (c) 2009-2013,
+dnl Copyright (c) 2009-2014,
 dnl German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -159,7 +159,7 @@ AS_IF([test "x${scorep_have_cube_config}" = "xyes"],
               scorep_score_extra_arg=
               AS_IF([test "x${bindir}" = "x${BINDIR}"],
                   [scorep_score_extra_arg="--bindir=${BINDIR}"])
-              AC_CONFIG_SUBDIR_CUSTOM([build-score], [${scorep_score_extra_arg} CXX="${CUBE_READER_CXX}" ${scorep_cube_config_arg}])
+              AC_CONFIG_SUBDIR_CUSTOM([build-score], [${scorep_score_extra_arg} CXX="${CUBE_READER_CXX}" ${scorep_cube_config_arg} ${scorep_otf2_config_arg}])
               scorep_have_score_build="scorep_have_score_build=yes"])],
       [AS_IF([test "x${ac_scorep_svn_controlled}" = "xno" && test "x${triggered_by_make_distcheck}" != "xyes"],
              [AC_MSG_ERROR([cube installation required but not found. Please reconfigure using the --with-cube option or make sure that cube-config is in PATH.])],

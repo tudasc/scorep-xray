@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       SCOREP_Score_Profile.cpp
+ * @file
  *
  * @brief      Implements a class which represents a flat profile in the
  *             scorep-score tool.
@@ -37,16 +37,20 @@
 
 #include <config.h>
 #include "SCOREP_Score_Profile.hpp"
-#include "SCOREP_Score_EventList.hpp"
 #include <Cube.h>
 #include <CubeTypes.h>
 #include <assert.h>
+#include <sys/stat.h>
 
 using namespace std;
 using namespace cube;
 
 SCOREP_Score_Profile::SCOREP_Score_Profile( string cubeFile )
 {
+    struct stat file_stats;
+    stat( cubeFile.c_str(), &file_stats );
+    m_file_size = file_stats.st_size;
+
     m_cube = new Cube();
     m_cube->openCubeReport( cubeFile );
 
@@ -62,15 +66,15 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( string cubeFile )
     m_regions   = m_cube->get_regv();
 
     // Make sure the id of the region definitions match their position in the vector
-    for ( uint32_t i = 0; i < GetNumberOfRegions(); i++ )
+    for ( uint32_t i = 0; i < getNumberOfRegions(); i++ )
     {
         m_regions[ i ]->set_id( i );
     }
 
     // Analyze region types
     m_region_types = ( SCOREP_Score_Type* )
-                     malloc( sizeof( SCOREP_Score_Type ) * GetNumberOfRegions() );
-    for ( uint32_t i = 0; i < GetNumberOfRegions(); i++ )
+                     malloc( sizeof( SCOREP_Score_Type ) * getNumberOfRegions() );
+    for ( uint32_t i = 0; i < getNumberOfRegions(); i++ )
     {
         m_region_types[ i ] = get_definition_type( i );
     }
@@ -86,35 +90,8 @@ SCOREP_Score_Profile::~SCOREP_Score_Profile()
     delete ( m_cube );
 }
 
-bool
-SCOREP_Score_Profile::calculate_calltree_types( const vector<Cnode*>* cnodes,
-                                                Cnode*                node )
-{
-    bool is_on_path = false;
-    for ( uint32_t i = 0; i < node->num_children(); i++ )
-    {
-        is_on_path = calculate_calltree_types( cnodes, node->get_child( i ) ) ?
-                     true : is_on_path;
-    }
-
-    uint32_t          region = node->get_callee()->get_id();
-    SCOREP_Score_Type type   = GetGroup( region );
-    if ( is_on_path && type == SCOREP_SCORE_TYPE_USR )
-    {
-        m_region_types[ region ] = SCOREP_SCORE_TYPE_COM;
-    }
-
-    if ( type == SCOREP_SCORE_TYPE_OMP ||
-         type == SCOREP_SCORE_TYPE_MPI )
-    {
-        is_on_path = true;
-    }
-    return is_on_path;
-}
-
-
 double
-SCOREP_Score_Profile::GetTime( uint64_t region, uint64_t process )
+SCOREP_Score_Profile::getTime( uint64_t region, uint64_t process )
 {
     Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_EXCLUSIVE,
                                         m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
@@ -136,7 +113,7 @@ SCOREP_Score_Profile::GetTime( uint64_t region, uint64_t process )
 }
 
 double
-SCOREP_Score_Profile::GetTotalTime( uint64_t region )
+SCOREP_Score_Profile::getTotalTime( uint64_t region )
 {
     Value* value = m_cube->get_sev_adv( m_time, CUBE_CALCULATE_EXCLUSIVE,
                                         m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE );
@@ -157,7 +134,7 @@ SCOREP_Score_Profile::GetTotalTime( uint64_t region )
 }
 
 uint64_t
-SCOREP_Score_Profile::GetVisits( uint64_t region, uint64_t process )
+SCOREP_Score_Profile::getVisits( uint64_t region, uint64_t process )
 {
     Value* value = m_cube->get_sev_adv( m_visits, CUBE_CALCULATE_EXCLUSIVE,
                                         m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
@@ -179,7 +156,7 @@ SCOREP_Score_Profile::GetVisits( uint64_t region, uint64_t process )
 }
 
 uint64_t
-SCOREP_Score_Profile::GetTotalVisits( uint64_t region )
+SCOREP_Score_Profile::getTotalVisits( uint64_t region )
 {
     Value* value = m_cube->get_sev_adv( m_visits, CUBE_CALCULATE_EXCLUSIVE,
                                         m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE );
@@ -200,78 +177,85 @@ SCOREP_Score_Profile::GetTotalVisits( uint64_t region )
 }
 
 uint64_t
-SCOREP_Score_Profile::GetMaxVisits( uint64_t region )
+SCOREP_Score_Profile::getMaxVisits( uint64_t region )
 {
     uint64_t max = 0;
     uint64_t process;
     uint64_t value;
 
-    for ( process = 0; process < GetNumberOfProcesses(); process++ )
+    for ( process = 0; process < getNumberOfProcesses(); process++ )
     {
-        value = GetVisits( region, process );
+        value = getVisits( region, process );
         max   = value > max ? value : max;
     }
     return max;
 }
 
 string
-SCOREP_Score_Profile::GetRegionName( uint64_t region )
+SCOREP_Score_Profile::getRegionName( uint64_t region )
 {
     return m_regions[ region ]->get_name();
 }
 
 string
-SCOREP_Score_Profile::GetFileName( uint64_t region )
+SCOREP_Score_Profile::getFileName( uint64_t region )
 {
     return m_regions[ region ]->get_mod();
 }
 
 uint64_t
-SCOREP_Score_Profile::GetNumberOfRegions()
+SCOREP_Score_Profile::getNumberOfRegions()
 {
     return m_regions.size();
 }
 
 uint64_t
-SCOREP_Score_Profile::GetNumberOfProcesses()
+SCOREP_Score_Profile::getNumberOfProcesses()
 {
     return m_processes.size();
 }
 
 uint64_t
-SCOREP_Score_Profile::GetNumberOfMetrics()
+SCOREP_Score_Profile::getNumberOfMetrics()
 {
     return m_cube->get_metv().size();
 }
 
 void
-SCOREP_Score_Profile::Print()
+SCOREP_Score_Profile::print()
 {
     uint64_t region, process;
 
     cout << "group \t max visits \t total visits \t total time \t region" << endl;
-    for ( region = 0; region < GetNumberOfRegions(); region++ )
+    for ( region = 0; region < getNumberOfRegions(); region++ )
     {
-        cout << GetGroup( region );
-        cout << "\t" << GetMaxVisits( region );
-        cout << "\t" << GetTotalVisits( region );
-        cout << "\t" << GetTotalTime( region );
-        cout << "\t" << GetRegionName( region );
+        cout << getGroup( region );
+        cout << "\t" << getMaxVisits( region );
+        cout << "\t" << getTotalVisits( region );
+        cout << "\t" << getTotalTime( region );
+        cout << "\t" << getRegionName( region );
         cout << endl;
     }
 }
 
 SCOREP_Score_Type
-SCOREP_Score_Profile::GetGroup( uint64_t region )
+SCOREP_Score_Profile::getGroup( uint64_t region )
 {
-    assert( region < GetNumberOfRegions() );
+    assert( region < getNumberOfRegions() );
     return m_region_types[ region ];
 }
 
+uint64_t
+SCOREP_Score_Profile::getFileSize( void )
+{
+    return m_file_size;
+}
+
+/* **************************************************** private members */
 SCOREP_Score_Type
 SCOREP_Score_Profile::get_definition_type( uint64_t region )
 {
-    string name = GetRegionName( region );
+    string name = getRegionName( region );
     if ( name.substr( 0, 4 ) == "MPI_" )
     {
         return SCOREP_SCORE_TYPE_MPI;
@@ -287,149 +271,27 @@ SCOREP_Score_Profile::get_definition_type( uint64_t region )
 }
 
 bool
-SCOREP_Score_Profile::HasEnterExit( uint64_t region )
+SCOREP_Score_Profile::calculate_calltree_types( const vector<Cnode*>* cnodes,
+                                                Cnode*                node )
 {
-    string name = GetRegionName( region );
-    if ( name.find( '=', 0 ) == string::npos )
+    bool is_on_path = false;
+    for ( uint32_t i = 0; i < node->num_children(); i++ )
     {
-        return true;
+        is_on_path = calculate_calltree_types( cnodes, node->get_child( i ) ) ?
+                     true : is_on_path;
     }
-    return false; // Is a parameter region which has no enter/exit
-}
 
-bool
-SCOREP_Score_Profile::HasParameter( uint64_t region )
-{
-    string name = GetRegionName( region );
-    if ( name.find( '=', 0 ) == string::npos )
+    uint32_t          region = node->get_callee()->get_id();
+    SCOREP_Score_Type type   = getGroup( region );
+    if ( is_on_path && type == SCOREP_SCORE_TYPE_USR )
     {
-        return false;
+        m_region_types[ region ] = SCOREP_SCORE_TYPE_COM;
     }
-    if ( name.substr( 0, 9 ) == "instance=" )
+
+    if ( type == SCOREP_SCORE_TYPE_OMP ||
+         type == SCOREP_SCORE_TYPE_MPI )
     {
-        return false;                                        // Dynamic region
+        is_on_path = true;
     }
-    return true;
-}
-
-// Requires exact name matching
-#define SCOREP_SCORE_EVENT( name ) if ( name == GetRegionName( region ) ) { return true; }
-
-bool
-SCOREP_Score_Profile::HasSend( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_SEND
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasIsend( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_ISEND
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasIsendComplete( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_ISENDCOMPLETE
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasIrecvRequest( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_IRECVREQUEST
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasRecv( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_RECV
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasIrecv( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_IRECV
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasCollective( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_COLLECTIVE
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasAcquireLock( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_ACQUIRELOCK
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasReleaseLock( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_RELEASELOCK
-    return false;
-}
-
-#undef SCOREP_SCORE_EVENT
-
-// Requires prefix matching
-#define SCOREP_SCORE_EVENT( name )                                     \
-    if ( name == GetRegionName( region ).substr( 0, strlen( name ) ) ) \
-    { return true; }
-
-bool
-SCOREP_Score_Profile::HasFork( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_FORK
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasJoin( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_JOIN
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasThreadTeam( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_THREAD_TEAM
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasTaskCreateComplete( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_TASK_CREATE
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasTaskSwitch( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_TASK_SWITCH
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasCudaMemcpy( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_CUDAMEMCPY
-    return false;
-}
-
-bool
-SCOREP_Score_Profile::HasCudaStreamCreate( uint64_t region )
-{
-    SCOREP_SCORE_EVENT_CUDASTREAMCREATE
-    return false;
+    return is_on_path;
 }

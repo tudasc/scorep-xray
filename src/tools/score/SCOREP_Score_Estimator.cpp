@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       SCOREP_Score_Estimator.cpp
+ * @file
  *
  * @brief      Implements a class which performs calculations for trace
  *             size estimation.
@@ -37,16 +37,27 @@
 
 #include <config.h>
 #include "SCOREP_Score_Estimator.hpp"
+#include "SCOREP_Score_EventList.hpp"
 #include "SCOREP_Score_Types.hpp"
 #include <SCOREP_Filter.h>
 #include <math.h>
+#include <fstream>
 
 using namespace std;
+
+#define SCOREP_SCORE_BUFFER_SIZE 128
 
 /* **************************************************************************************
                                                                        internal functions
 ****************************************************************************************/
 
+/**
+ * Swaps the items on @a pos1 and @a pos2 from the group list.
+ * Needed for the quicksort.
+ * @param item  List of groups that is sorted.
+ * @param pos1  Position of an elemant that is swapped with the element at @a pos2.
+ * @param pos2  Position of an elemant that is swapped with the element at @a pos1.
+ */
 static void
 swap( SCOREP_Score_Group** items, uint64_t pos1, uint64_t pos2 )
 {
@@ -55,6 +66,11 @@ swap( SCOREP_Score_Group** items, uint64_t pos1, uint64_t pos2 )
     items[ pos2 ] = helper;
 }
 
+/**
+ * Sorts an array of pointers to groups using the quicksort algorithm.
+ * @param items  Array of groups that are sorted.
+ * @param size   Number of groups in @a items.
+ */
 static void
 quicksort( SCOREP_Score_Group** items, uint64_t size )
 {
@@ -64,7 +80,8 @@ quicksort( SCOREP_Score_Group** items, uint64_t size )
     }
     if ( size == 2 )
     {
-        if ( items[ 0 ]->GetMaxTBC() < items[ 1 ]->GetMaxTBC() )
+        if ( items[ 0 ]->getMaxTraceBufferSize() <
+             items[ 1 ]->getMaxTraceBufferSize() )
         {
             swap( items, 0, 1 );
         }
@@ -74,18 +91,18 @@ quicksort( SCOREP_Score_Group** items, uint64_t size )
     uint64_t beg       = 0;
     uint64_t end       = size - 1;
     uint64_t pos       = size / 2;
-    uint64_t threshold = items[ pos ]->GetMaxTBC();
+    uint64_t threshold = items[ pos ]->getMaxTraceBufferSize();
 
     while ( beg < end )
     {
         while ( ( beg < end ) &&
-                ( items[ beg ]->GetMaxTBC() > threshold ) )
+                ( items[ beg ]->getMaxTraceBufferSize() > threshold ) )
         {
             beg++;
         }
 
         while ( ( beg < end ) &&
-                ( items[ end ]->GetMaxTBC() <= threshold ) )
+                ( items[ end ]->getMaxTraceBufferSize() <= threshold ) )
         {
             end--;
         }
@@ -108,12 +125,12 @@ quicksort( SCOREP_Score_Group** items, uint64_t size )
 
     // Special handling if we have many entries with the same value
     // Otherwise,lots of equal values might lead to infinite recursion.
-    if ( items[ end ]->GetMaxTBC() < threshold )
+    if ( items[ end ]->getMaxTraceBufferSize() < threshold )
     {
         swap( items, end, pos );
     }
     while ( ( end < size ) &&
-            ( items[ end ]->GetMaxTBC() == threshold ) )
+            ( items[ end ]->getMaxTraceBufferSize() == threshold ) )
     {
         end++;
     }
@@ -122,20 +139,184 @@ quicksort( SCOREP_Score_Group** items, uint64_t size )
     quicksort( &items[ end ], size - end );
 }
 
+static bool
+is_writable_file_creatable( string filename )
+{
+    fstream temp_file( filename.c_str(), ios_base::out );
+    if ( temp_file.good() )
+    {
+        temp_file.close();
+        remove( filename.c_str() );
+        return true;
+    }
+    return false;
+}
+
+static string
+get_temp_filename( void )
+{
+    static string      temp_dir;
+    static bool        is_initialized = false;
+    static const char* username       = getenv( "USER" );
+    static uint32_t    sequence_no    = 0;
+
+    stringstream filename;
+    filename << "scorep-score_"; // Avoid clashes with other applications
+    if ( username != NULL )
+    {
+        filename << username << "_"; // Avoid interference with other users
+    }
+    filename << getpid() << "_"      // Avoid interference with other process of the same user
+             << sequence_no;         // Avoid interference of multiple calls in the one tool
+
+    sequence_no++;
+
+    if ( !is_initialized )
+    {
+        static string slash = "/";
+        const char*   temp;
+        is_initialized = true;
+
+        temp = getenv( "TMPDIR" );
+        if ( ( temp != NULL ) &&
+             is_writable_file_creatable( temp + slash + filename.str() ) )
+        {
+            temp_dir = temp + slash;
+            return temp_dir + filename.str();
+        }
+
+        temp = getenv( "TMP" );
+        if ( ( temp != NULL ) &&
+             is_writable_file_creatable( temp + slash + filename.str() ) )
+        {
+            temp_dir = temp + slash;
+            return temp_dir + filename.str();
+        }
+
+        temp = getenv( "TEMP" );
+        if ( ( temp != NULL ) &&
+             is_writable_file_creatable( temp + slash + filename.str() ) )
+        {
+            temp_dir = temp + slash;
+            return temp_dir + filename.str();
+        }
+
+        temp_dir = "/tmp/";
+        if ( is_writable_file_creatable( temp_dir + filename.str() ) )
+        {
+            return temp_dir + filename.str();
+        }
+
+        temp_dir = "";
+        if ( is_writable_file_creatable( filename.str() ) )
+        {
+            return filename.str();
+        }
+
+        cerr << "ERROR: Failed to find writable directory for temporary files." << endl;
+        exit( EXIT_FAILURE );
+    }
+
+    return temp_dir + filename.str();
+}
+
+
 /* **************************************************************************************
                                                              class SCOREP_Score_Estimator
 ****************************************************************************************/
 
 SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
-                                                uint32_t              denseNum )
+                                                uint64_t              denseNum )
 {
     m_dense_num   = denseNum;
     m_profile     = profile;
-    m_region_num  = profile->GetNumberOfRegions();
-    m_process_num = profile->GetNumberOfProcesses();
+    m_region_num  = profile->getNumberOfRegions();
+    m_process_num = profile->getNumberOfProcesses();
 
     m_has_filter = false;
-    m_timestamp  = 8;
+    m_event_list.push_back( new SCOREP_Score_TimestampEvent() );
+    m_event_list.push_back( new SCOREP_Score_EnterEvent() );
+    m_event_list.push_back( new SCOREP_Score_LeaveEvent() );
+    if ( denseNum > 0 )
+    {
+        m_event_list.push_back( new SCOREP_Score_MetricEvent() );
+    }
+    m_event_list.push_back( new SCOREP_Score_ParameterEvent() );
+
+#define SCOREP_SCORE_EVENT( name ) region_list.push_back( name );
+    std::deque<std::string> region_list;
+    SCOREP_SCORE_EVENT_SEND;
+    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiSend", region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_ISEND;
+    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiIsend", region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_ISENDCOMPLETE;
+    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiIsendComplete",
+                                                             region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_IRECVREQUEST;
+    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiIrecvRequest",
+                                                             region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_RECV;
+    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiRecv", region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_IRECV;
+    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiIrecv", region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_COLLECTIVE;
+    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiCollectiveBegin",
+                                                             region_list ) );
+    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiCollectiveEnd",
+                                                             region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_ACQUIRELOCK;
+    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "ThreadAcquireLock",
+                                                             region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_RELEASELOCK;
+    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "ThreadReleaseLock",
+                                                             region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_FORK;
+    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadFork",
+                                                               region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_JOIN;
+    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadJoin",
+                                                               region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_THREAD_TEAM;
+    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadTeamBegin",
+                                                               region_list ) );
+    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadTeamEnd",
+                                                               region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_TASK_CREATE;
+    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskCreate",
+                                                               region_list ) );
+    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskComplete",
+                                                               region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_TASK_SWITCH;
+    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskSwitch",
+                                                               region_list ) );
+#undef SCOREP_SCORE_EVENT
+
     calculate_event_sizes();
 
     m_filtered = NULL;
@@ -144,7 +325,7 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
     for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
         m_groups[ i ] = new SCOREP_Score_Group( i, m_process_num,
-                                                SCOREP_Score_GetTypeName( i ) );
+                                                SCOREP_Score_getTypeName( i ) );
     }
 }
 
@@ -158,35 +339,16 @@ SCOREP_Score_Estimator::~SCOREP_Score_Estimator()
     {
         SCOREP_Filter_FreeRules();
     }
-}
 
-void
-SCOREP_Score_Estimator::delete_groups( SCOREP_Score_Group** groups, uint64_t num )
-{
-    if ( groups != NULL )
+    while ( !m_event_list.empty() )
     {
-        for ( int i = 0; i < num; i++ )
-        {
-            delete ( groups[ i ] );
-        }
-        free( groups );
+        delete ( m_event_list.front() );
+        m_event_list.pop_front();
     }
 }
 
 void
-SCOREP_Score_Estimator::initialize_regions()
-{
-    m_regions = ( SCOREP_Score_Group** )malloc( m_region_num * sizeof( SCOREP_Score_Group* ) );
-    for ( uint64_t region = 0; region < m_region_num; region++ )
-    {
-        m_regions[ region ] = new SCOREP_Score_Group( m_profile->GetGroup( region ),
-                                                      m_process_num,
-                                                      m_profile->GetRegionName( region ) );
-    }
-}
-
-void
-SCOREP_Score_Estimator::InitializeFilter( string filterFile )
+SCOREP_Score_Estimator::initializeFilter( string filterFile )
 {
     /* Initialize filter component */
     SCOREP_ErrorCode err = SCOREP_SUCCESS;
@@ -194,7 +356,7 @@ SCOREP_Score_Estimator::InitializeFilter( string filterFile )
 
     if ( err != SCOREP_SUCCESS )
     {
-        cerr << "ERROR:Failed to open '" << filterFile << "'." << endl;
+        cerr << "ERROR: Failed to open '" << filterFile << "'." << endl;
         exit( EXIT_FAILURE );
     }
 
@@ -204,37 +366,27 @@ SCOREP_Score_Estimator::InitializeFilter( string filterFile )
 
     for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
-        string name = SCOREP_Score_GetTypeName( i );
+        string name = SCOREP_Score_getTypeName( i );
         if ( i != SCOREP_SCORE_TYPE_FLT )
         {
             name += "-FLT";
         }
 
         m_filtered[ i ] = new SCOREP_Score_Group( i, m_process_num, name );
-        m_filtered[ i ]->DoFilter( SCOREP_Score_GetFilterState( i ) );
+        m_filtered[ i ]->doFilter( SCOREP_Score_getFilterState( i ) );
     }
 
     /* Update regular groups */
     for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
-        m_groups[ i ]->DoFilter( SCOREP_SCORE_FILTER_NO );
+        m_groups[ i ]->doFilter( SCOREP_SCORE_FILTER_NO );
     }
 
     m_has_filter = true;
 }
 
-bool
-SCOREP_Score_Estimator::match_filter( uint64_t region )
-{
-    bool do_filter = SCOREP_Filter_Match( m_profile->GetFileName( region ).c_str(),
-                                          m_profile->GetRegionName( region ).c_str(),
-                                          NULL );
-    return do_filter &&
-           SCOREP_Score_GetFilterState( m_profile->GetGroup( region ) ) != SCOREP_SCORE_FILTER_NO;
-}
-
 void
-SCOREP_Score_Estimator::Calculate( bool showRegions )
+SCOREP_Score_Estimator::calculate( bool showRegions )
 {
     if ( showRegions )
     {
@@ -243,127 +395,37 @@ SCOREP_Score_Estimator::Calculate( bool showRegions )
 
     for ( uint64_t region = 0; region < m_region_num; region++ )
     {
-        uint64_t group = m_profile->GetGroup( region );
+        uint64_t group           = m_profile->getGroup( region );
+        uint64_t bytes_per_visit = 0;
 
+        /* Calculate bytes per visit */
+        for ( event_list_t::iterator i = m_event_list.begin();
+              i != m_event_list.end(); i++ )
+        {
+            if ( ( *i )->occursInRegion( m_profile, region ) )
+            {
+                bytes_per_visit += ( *i )->getEventSize();
+            }
+        }
+
+        /* Apply region data for each process */
         for ( uint64_t process = 0; process < m_process_num; process++ )
         {
-            uint64_t tbc    = 0;
-            uint64_t visits = m_profile->GetVisits( region, process );
-            double   time   = m_profile->GetTime( region, process );
+            uint64_t visits = m_profile->getVisits( region, process );
+            double   time   = m_profile->getTime( region, process );
 
             if ( visits == 0 )
             {
                 continue;
             }
 
-            // Consider effects of enter/exit events
-            if ( m_profile->HasEnterExit( region ) )
-            {
-                tbc += m_enter + m_exit;
-            }
-
-            // Calculate sizes of additional events
-            if ( m_profile->HasParameter( region ) )
-            {
-                tbc += m_parameter;
-            }
-
-            if ( m_profile->HasSend( region ) )
-            {
-                tbc += m_send;
-            }
-
-            if ( m_profile->HasIsend( region ) )
-            {
-                tbc += m_isend;
-            }
-
-            if ( m_profile->HasIsendComplete( region ) )
-            {
-                tbc += m_isend_complete;
-            }
-
-            if ( m_profile->HasIrecvRequest( region ) )
-            {
-                tbc += m_irecv_request;
-            }
-
-            if ( m_profile->HasRecv( region ) )
-            {
-                tbc += m_recv;
-            }
-
-            if ( m_profile->HasIrecv( region ) )
-            {
-                tbc += m_irecv;
-            }
-
-            if ( m_profile->HasCollective( region ) )
-            {
-                tbc += m_collective;
-            }
-
-            if ( m_profile->HasFork( region ) )
-            {
-                tbc += m_fork;
-            }
-
-            if ( m_profile->HasJoin( region ) )
-            {
-                tbc += m_join;
-            }
-
-            if ( m_profile->HasThreadTeam( region ) )
-            {
-                tbc += m_thread_team;
-            }
-
-            if ( m_profile->HasAcquireLock( region ) )
-            {
-                tbc += m_acquire_lock;
-            }
-
-            if ( m_profile->HasReleaseLock( region ) )
-            {
-                tbc += m_release_lock;
-            }
-
-            if ( m_profile->HasTaskCreateComplete( region ) )
-            {
-                tbc += m_task_create + m_task_complete;
-            }
-
-            if ( m_profile->HasTaskSwitch( region ) )
-            {
-                tbc += m_task_switch;
-            }
-
-            if ( m_profile->HasCudaStreamCreate( region ) )
-            {
-                /* CUDA streams use a global RMA window,
-                 * each RMA window is created and destroyed,
-                 * once on the CPU and additionally on each stream,
-                 * furthermore there is a win_create/win_destroy on
-                 * the implicit GPU location */
-                tbc    += m_rma_win_create + m_rma_win_destroy;
-                visits += 2;
-            }
-
-            if ( m_profile->HasCudaMemcpy( region ) )
-            {
-                /* RMA put/get operation + completion record */
-                tbc += m_rma_put + m_rma_op_complete_blocking;
-            }
-
-            // Consider number of visits
-            tbc *= visits;
-
-            m_groups[ group ]->AddRegion( tbc, time, process );
-            m_groups[ SCOREP_SCORE_TYPE_ALL ]->AddRegion( tbc, time, process );
+            m_groups[ group ]->addRegion( visits, bytes_per_visit, time, process );
+            m_groups[ SCOREP_SCORE_TYPE_ALL ]->addRegion( visits, bytes_per_visit,
+                                                          time, process );
 
             if ( showRegions )
             {
-                m_regions[ region ]->AddRegion( tbc, time, process );
+                m_regions[ region ]->addRegion( visits, bytes_per_visit, time, process );
             }
 
             if ( m_has_filter )
@@ -371,18 +433,23 @@ SCOREP_Score_Estimator::Calculate( bool showRegions )
                 bool do_filter = match_filter( region );
                 if ( showRegions )
                 {
-                    m_regions[ region ]->DoFilter( do_filter ?
+                    m_regions[ region ]->doFilter( do_filter ?
                                                    SCOREP_SCORE_FILTER_YES :
                                                    SCOREP_SCORE_FILTER_NO );
                 }
                 if ( !do_filter )
                 {
-                    m_filtered[ group ]->AddRegion( tbc, time, process );
-                    m_filtered[ SCOREP_SCORE_TYPE_ALL ]->AddRegion( tbc, time, process );
+                    m_filtered[ group ]->addRegion( visits, bytes_per_visit,
+                                                    time, process );
+                    m_filtered[ SCOREP_SCORE_TYPE_ALL ]->addRegion( visits,
+                                                                    bytes_per_visit,
+                                                                    time, process );
                 }
                 else
                 {
-                    m_filtered[ SCOREP_SCORE_TYPE_FLT ]->AddRegion( tbc, time, process );
+                    m_filtered[ SCOREP_SCORE_TYPE_FLT ]->addRegion( visits,
+                                                                    bytes_per_visit,
+                                                                    time, process );
                 }
             }
         }
@@ -390,38 +457,49 @@ SCOREP_Score_Estimator::Calculate( bool showRegions )
 }
 
 void
-SCOREP_Score_Estimator::PrintGroups()
+SCOREP_Score_Estimator::printGroups( void )
 {
-    double   total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTime();
-    uint64_t max_tbc;
-    uint64_t total_tbc;
+    double   total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getTotalTime();
+    uint64_t max_buf;
+    uint64_t total_buf;
+    uint64_t memory_req;
 
     if ( m_has_filter )
     {
-        max_tbc   = m_filtered[ SCOREP_SCORE_TYPE_ALL ]->GetMaxTBC();
-        total_tbc = m_filtered[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTBC();
+        max_buf   = m_filtered[ SCOREP_SCORE_TYPE_ALL ]->getMaxTraceBufferSize();
+        total_buf = m_filtered[ SCOREP_SCORE_TYPE_ALL ]->getTotalTraceBufferSize();
     }
     else
     {
-        max_tbc   = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetMaxTBC();
-        total_tbc = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTBC();
+        max_buf   = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getMaxTraceBufferSize();
+        total_buf = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getTotalTraceBufferSize();
     }
+
+    /* Estimate definition size by profile size and round up to the next
+       multiple of 2 MB */
+    memory_req = m_profile->getFileSize() /
+                 ( m_profile->getNumberOfProcesses() * m_profile->getNumberOfMetrics() );
+    memory_req = ( max_buf + memory_req + 4 * 1024 * 1024 ) /
+                 ( 2 * 1024 * 1024 );
 
     cout << endl;
     cout << "Estimated aggregate size of event trace:                   "
-         << total_tbc << " bytes" << endl;
-    cout << "Estimated requirements for largest trace buffer (max_tbc): "
-         << max_tbc << " bytes" << endl;
-    cout << "(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid intermediate flushes\n"
-         << " or reduce requirements using file listing names of USR regions to be filtered.)"
+         << total_buf << " bytes" << endl;
+    cout << "Estimated requirements for largest trace buffer (max_buf): "
+         << max_buf << " bytes" << endl;
+    cout << "Estimated memory requirements (SCOREP_TOTAL_MEMORY):       "
+         << memory_req * 2 << "MB" << endl;
+    cout << "(hint: When tracing set SCOREP_TOTAL_MEMORY="
+         << memory_req * 2 << "MB to avoid intermediate flushes\n"
+         << " or reduce requirements using USR regions filters.)"
          << endl << endl;
 
     quicksort( m_groups, SCOREP_SCORE_TYPE_NUM );
 
-    cout << "flt type         max_tbc         time      % region" << endl;
-    for ( int i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
+    cout << "flt type         max_buf        visits         time  %time  region" << endl;
+    for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
-        m_groups[ i ]->Print( total_time );
+        m_groups[ i ]->print( total_time );
     }
 
     if ( m_has_filter )
@@ -429,169 +507,151 @@ SCOREP_Score_Estimator::PrintGroups()
         quicksort( &m_filtered[ 1 ], SCOREP_SCORE_TYPE_NUM - 1 );
 
         cout << endl;
-        for ( int i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
+        for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
         {
-            m_filtered[ i ]->Print( total_time );
+            m_filtered[ i ]->print( total_time );
         }
     }
 }
 
 void
-SCOREP_Score_Estimator::PrintRegions()
+SCOREP_Score_Estimator::printRegions( void )
 {
     quicksort( m_regions, m_region_num );
 
-    double total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->GetTotalTime();
+    double total_time = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getTotalTime();
     cout << endl;
-    for ( int i = 0; i < m_region_num; i++ )
+    for ( uint64_t i = 0; i < m_region_num; i++ )
     {
-        m_regions[ i ]->Print( total_time );
+        m_regions[ i ]->print( total_time );
     }
 }
 
 void
-SCOREP_Score_Estimator::DumpEventSizes()
+SCOREP_Score_Estimator::dumpEventSizes( void )
 {
-    cout << "Dense metrics: " << m_dense << endl;
-    cout << "Enter:         " << m_enter << endl;
-    cout << "Exit:          " << m_exit  << endl;
-}
-
-uint32_t
-SCOREP_Score_Estimator::get_compressed_size( uint64_t max_value )
-{
-    return ( uint32_t )1 +                                    // Number of leading zeros
-           ceil( log( ( double )max_value ) / log( 256.0 ) ); // Number
+    for ( event_list_t::iterator i = m_event_list.begin(); i != m_event_list.end(); i++ )
+    {
+        std::string name   = ( *i )->getName();
+        std::string blanks = "                         ";
+        cout << name << ":" << blanks.substr( 0, 20 - name.length() )
+             << ( *i )->getEventSize() << std::endl;
+    }
 }
 
 void
-SCOREP_Score_Estimator::add_header_size( uint32_t* size )
+SCOREP_Score_Estimator::calculate_event_sizes( void )
 {
-    *size += 1 + get_compressed_size( *size );
+    /* Write otf2-estimator input */
+    string in_filename  = get_temp_filename();
+    string out_filename = get_temp_filename();
+
+    fstream estimator_in( in_filename.c_str(), ios_base::out );
+    if ( !estimator_in.good() )
+    {
+        cerr << "ERROR: Failed to open temorary file for otf2-estimator input."
+             << endl;
+        exit( EXIT_FAILURE );
+    }
+
+    estimator_in << "set Region " << m_region_num << "\n";
+    estimator_in << "set Metric " << m_profile->getNumberOfMetrics() << "\n";
+
+    for ( event_list_t::iterator i = m_event_list.begin(); i != m_event_list.end(); i++ )
+    {
+        if ( ( *i )->getName() == "Metric" )
+        {
+            estimator_in << "get " << ( *i )->getName()
+                         << " " << m_dense_num << "\n";
+        }
+        else
+        {
+            estimator_in << "get " << ( *i )->getName() << "\n";
+        }
+    }
+    estimator_in << "exit" << std::endl;
+    estimator_in.close();
+
+    string command = OTF2_ESTIMATOR_INSTALL " > \"" +
+                     out_filename + "\" < \"" + in_filename + "\"";
+    if ( system( command.c_str() ) != EXIT_SUCCESS )
+    {
+        cerr << "ERROR: Failed to call otf2-estimator." << endl;
+        exit( EXIT_FAILURE );
+    }
+
+    /* Read output of otf2-estimator */
+    fstream estimator_out( out_filename.c_str(), ios_base::in );
+    if ( !estimator_out.good() )
+    {
+        cerr << "ERROR: Failed to open temorary file for otf2-estimator input."
+             << endl;
+        exit( EXIT_FAILURE );
+    }
+
+    while ( !estimator_out.eof() )
+    {
+        /* Decode next line. Has format <name><space><number of bytes> */
+        char buf[ SCOREP_SCORE_BUFFER_SIZE ];
+        estimator_out.getline( buf, SCOREP_SCORE_BUFFER_SIZE );
+        char* number = buf;
+        while ( *number != ' ' && *number != '\0' )
+        {
+            number++;
+        }
+        *number = '\0';
+        number++;
+        uint64_t value = strtol( number, NULL, 0 );
+
+        /* Apply to event sizes */
+        for ( event_list_t::iterator i = m_event_list.begin();
+              i != m_event_list.end(); i++ )
+        {
+            ( *i )->setEventSize( buf, value );
+        }
+    }
+
+    /* Clean up */
+    estimator_out.close();
+    remove( in_filename.c_str() );
+    remove( out_filename.c_str() );
+
+    //dumpEventSizes();
+}
+
+/* ****************************************************** private methods */
+
+void
+SCOREP_Score_Estimator::delete_groups( SCOREP_Score_Group** groups, uint64_t num )
+{
+    if ( groups != NULL )
+    {
+        for ( uint64_t i = 0; i < num; i++ )
+        {
+            delete ( groups[ i ] );
+        }
+        free( groups );
+    }
 }
 
 void
-SCOREP_Score_Estimator::calculate_event_sizes()
+SCOREP_Score_Estimator::initialize_regions( void )
 {
-    if ( m_dense_num == 0 )
+    m_regions = ( SCOREP_Score_Group** )malloc( m_region_num * sizeof( SCOREP_Score_Group* ) );
+    for ( uint64_t region = 0; region < m_region_num; region++ )
     {
-        m_dense = 0;
+        m_regions[ region ] = new SCOREP_Score_Group( m_profile->getGroup( region ),
+                                                      m_process_num,
+                                                      m_profile->getRegionName( region ) );
     }
-    else
-    {
-        m_dense = get_compressed_size( m_profile->GetNumberOfMetrics() +
-                                       m_dense_num ) // handle
-                  + 1                                // number
-                  + m_dense_num                      // type ids
-                  + m_dense_num * 8;                 // values
-    }
+}
 
-    m_enter = m_timestamp +                         // timestamp
-              get_compressed_size( m_region_num ) + // region handle
-              m_dense;                              // metrics
-    m_enter += get_compressed_size( m_enter );      // record length
-
-    m_exit = m_timestamp +                          // timestamp
-             get_compressed_size( m_region_num ) +  // region handle
-             m_dense;                               // metrics
-    m_exit += get_compressed_size( m_exit );        // record length
-
-
-    m_send = get_compressed_size( m_process_num ) +              // receiver
-             4 +                                                 // communicator
-             4 +                                                 // tag
-             8;                                                  // message length
-    m_send += get_compressed_size( m_send );                     // record length
-
-    m_isend = m_send + 8;                                        // additional request id
-
-    m_isend_complete  = 8;                                       // request id
-    m_isend_complete += get_compressed_size( m_isend_complete ); // record length
-
-    m_irecv_request  = 8;                                        // request id
-    m_irecv_request += get_compressed_size( m_irecv_request );   // record length
-
-    m_recv = get_compressed_size( m_process_num ) +              // receiver
-             4 +                                                 // communicator
-             4 +                                                 // tag
-             8;                                                  // message length
-    m_recv += get_compressed_size( m_recv );                     // record length
-
-    m_irecv = m_recv + 8;                                        // additional request id
-
-    m_collective = 4 +                                           // collective type
-                   4 +                                           // communicator
-                   get_compressed_size( m_process_num ) +        // root
-                   8 +                                           // sent bytes
-                   8 +                                           // received bytes
-                   1;                                            // collective begin
-    m_collective += get_compressed_size( m_collective );         // record length
-
-    m_fork = 4 +                                                 // number of requested threads
-             1;                                                  // model
-    m_fork += get_compressed_size( m_fork );                     // record length
-
-    m_join = 1 +                                                 // only message type
-             1;                                                  // model
-    m_join += get_compressed_size( m_join );                     // record length
-
-    m_thread_team = 4 +                                          // thread team begin
-                    4;                                           // thread team end
-    m_thread_team += get_compressed_size( m_thread_team );       // record length
-
-    m_acquire_lock = 1 +                                         // model
-                     4 +                                         // lock id
-                     4;                                          // acquisition order
-    m_acquire_lock += get_compressed_size( m_acquire_lock );     // record length
-
-    m_release_lock = m_acquire_lock;
-
-    m_task_create = 4 +                                    // thread team
-                    4 +                                    // creator thread
-                    4;                                     // generation number
-    m_task_create += get_compressed_size( m_task_create ); // record length
-
-    m_task_switch   = m_task_create;
-    m_task_complete = m_task_create;
-
-    m_parameter = 4 +                                            // parameter id
-                  8;                                             // value
-    m_parameter += get_compressed_size( m_parameter );           // record length
-
-    m_rma_win_create  = 4;                                       // window reference
-    m_rma_win_create += get_compressed_size( m_rma_win_create ); // record length
-    m_rma_win_destroy = m_rma_win_create;
-
-    m_rma_get = 4 +                                // window reference
-                4 +                                // remote,
-                8 +                                // bytes,
-                8;                                 // matching id
-    m_rma_get += get_compressed_size( m_rma_get ); // record length
-    m_rma_put  = m_rma_get;
-
-    m_rma_op_complete_blocking = 4 +  // window reference
-                                 8;   // matching id
-    m_rma_op_complete_blocking += get_compressed_size( m_rma_op_complete_blocking );
-
-    add_header_size( &m_send );
-    add_header_size( &m_isend );
-    add_header_size( &m_isend_complete );
-    add_header_size( &m_irecv_request );
-    add_header_size( &m_recv );
-    add_header_size( &m_irecv );
-    add_header_size( &m_collective );
-    add_header_size( &m_fork );
-    add_header_size( &m_thread_team );
-    add_header_size( &m_thread_team ); // Two times for begin & end
-    add_header_size( &m_acquire_lock );
-    add_header_size( &m_release_lock );
-    add_header_size( &m_task_create );
-    add_header_size( &m_task_switch );
-    add_header_size( &m_task_complete );
-    add_header_size( &m_parameter );
-    add_header_size( &m_rma_win_create );
-    add_header_size( &m_rma_win_destroy );
-    add_header_size( &m_rma_get );
-    add_header_size( &m_rma_put );
-    add_header_size( &m_rma_op_complete_blocking );
+bool
+SCOREP_Score_Estimator::match_filter( uint64_t region )
+{
+    bool do_filter = SCOREP_Filter_Match( m_profile->getFileName( region ).c_str(),
+                                          m_profile->getRegionName( region ).c_str(),
+                                          NULL );
+    return do_filter &&
+           SCOREP_Score_getFilterState( m_profile->getGroup( region ) ) != SCOREP_SCORE_FILTER_NO;
 }

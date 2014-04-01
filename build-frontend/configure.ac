@@ -128,7 +128,8 @@ AC_SCOREP_PDT
 AC_SCOREP_COBI
 
 AS_IF([test "x${scorep_have_score_build}" = "xno"],
-      [AC_SCOREP_CUBE_READER],
+      [AC_SCOREP_CUBE_READER
+       SCOREP_ESTIMATOR],
       [AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 0])])
 
 AC_CHECK_FUNCS_ONCE([readlink])

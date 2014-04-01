@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       SCOREP_Score_Types.hpp
+ * @file
  *
  * @brief      Defines types for the score tool.
  */
@@ -54,6 +54,9 @@
     SCOREP_SCORE_FILTER_STATE( NO,          '-' ) \
     SCOREP_SCORE_FILTER_STATE( POSSIBLE,    '*' ) \
 
+/**
+ * Defines an enumeration of the group types.
+ */
 typedef enum
 {
     #define SCOREP_SCORE_TYPE( type, flt ) SCOREP_SCORE_TYPE_ ## type,
@@ -63,6 +66,9 @@ typedef enum
 
 extern const uint64_t SCOREP_SCORE_TYPE_NUM;
 
+/**
+ * Defines an enumaration of the available filter states.
+ */
 typedef enum
 {
     #define SCOREP_SCORE_FILTER_STATE( state, symbol ) SCOREP_SCORE_FILTER_ ## state,
@@ -70,14 +76,25 @@ typedef enum
     #undef SCOREP_SCORE_FILTER_STATE
 } SCOREP_Score_FilterState;
 
-
+/**
+ * Returns the name associated with a group type.
+ * @param type  The group type.
+ */
 std::string
-SCOREP_Score_GetTypeName( uint64_t type );
+SCOREP_Score_getTypeName( uint64_t type );
 
+/**
+ * Returns the filter possibilities for a group type.
+ * @param type  The group type for which the filter state is requested.
+ */
 SCOREP_Score_FilterState
-SCOREP_Score_GetFilterState( uint64_t type );
+SCOREP_Score_getFilterState( uint64_t type );
 
+/**
+ * Returns the symbol (*,-,+) associated with a particular filter state.
+ * @param state  The filter state.
+ */
 char
-SCOREP_Score_GetFilterSymbol( SCOREP_Score_FilterState state );
+SCOREP_Score_getFilterSymbol( SCOREP_Score_FilterState state );
 
 #endif // SCOREP_SCORE_TYPES_H

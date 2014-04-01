@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       SCOREP_Score_Estimator.hpp
+ * @file
  *
  * @brief      Defines a class which performs calculations for trace
  *             size estimation.
@@ -40,112 +40,144 @@
 
 #include "SCOREP_Score_Profile.hpp"
 #include "SCOREP_Score_Group.hpp"
+#include "SCOREP_Score_Event.hpp"
+#include <deque>
 
+/**
+ * This class implements the estimation logic.
+ */
 class SCOREP_Score_Estimator
 {
+protected:
+    /**
+     * Defines a type for the event list.
+     */
+    typedef std::deque<SCOREP_Score_Event*> event_list_t;
+
 public:
+    /**
+     * Creates an instance of SCOREP_Score_Estimator.
+     * @param profile   A pointer to the profile.
+     * @param denseNum  Number of dense metrics that should be recorded in the trace.
+     */
     SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
-                            uint32_t              denseBum );
+                            uint64_t              denseBum );
+
+    /**
+     * Destructor.
+     */
     virtual
     ~SCOREP_Score_Estimator();
 
+    /**
+     * Claculates the group an region data.
+     * @param showRegions  Pass true if the user wants to see per region data
+     *                     in addition to the groups.
+     */
     void
-    Calculate( bool showRegions );
-    void
-    PrintGroups();
-    void
-    PrintRegions();
+    calculate( bool showRegions );
 
+    /**
+     * Prints the group information to the screen.
+     */
     void
-    InitializeFilter( std::string filterFile );
+    printGroups( void );
 
+    /**
+     * Prints the per region information to the screen.
+     */
     void
-    DumpEventSizes();
+    printRegions( void );
+
+    /**
+     * Reads and evaluates a filter file.
+     * @param filterFile  The name of the filter file.
+     */
+    void
+    initializeFilter( std::string filterFile );
+
+    /**
+     * Dumps the event sizes to the screen, Used for debug purposes.
+     */
+    void
+    dumpEventSizes( void );
 
 private:
+    /**
+     * Checks whether @a region is filtered.
+     * @param regionId  Specifies the region by its ID.
+     */
     bool
-    match_filter( uint64_t region );
+    match_filter( uint64_t regionId );
 
+    /**
+     * Initialize per region data.
+     */
     void
-    initialize_regions();
+    initialize_regions( void );
 
+    /**
+     * Delete list of groups.
+     * @param groups Pointer to an array of pointer to SCOREP_Score_Group instances.
+     * @param num    Number of entries in @a group.
+     */
     void
     delete_groups( SCOREP_Score_Group** groups,
                    uint64_t             num );
 
-    uint32_t
-    get_compressed_size( uint64_t max_value );
-
+    /**
+     * Initializes the event sizes.
+     */
     void
-    calculate_event_sizes();
-
-    void
-    add_header_size( uint32_t* size );
+    calculate_event_sizes( void );
 
 private:
+    /**
+     * True, if a filter is used.
+     */
     bool m_has_filter;
 
+    /**
+     * Stores the pointer to the profile.
+     */
     SCOREP_Score_Profile* m_profile;
-    SCOREP_Score_Group**  m_groups;
-    SCOREP_Score_Group**  m_regions;
-    SCOREP_Score_Group**  m_filtered;
 
-    // Number of definitions
+    /**
+     * Array of pointers to the main groups (ALL, USR, MPI, COM, OMP).
+     */
+    SCOREP_Score_Group** m_groups;
+
+    /**
+     * Array of pointers to the regions. NULL if the user does not
+     * want to see per region data.
+     */
+    SCOREP_Score_Group** m_regions;
+
+    /**
+     * Array of pointers to the groups that represent the filtered amount
+     * of events.
+     */
+    SCOREP_Score_Group** m_filtered;
+
+    /**
+     * Stores the number of region definitons.
+     */
     uint64_t m_region_num;
+
+    /**
+     * Stores the number of processes.
+     */
     uint64_t m_process_num;
-    uint32_t m_dense_num;
 
-    // Size of events
-    uint32_t m_timestamp;
-    uint32_t m_dense;
-    uint32_t m_enter;
-    uint32_t m_exit;
+    /**
+     * Stores the number of dense metrics that should be taken into account.
+     */
+    uint64_t m_dense_num;
 
-    uint32_t m_send;
-    uint32_t m_isend;
-    uint32_t m_isend_complete;
-    uint32_t m_irecv_request;
-    uint32_t m_recv;
-    uint32_t m_irecv;
-    uint32_t m_collective;
-
-/*
- * Currently handled RMA records
- */
-    uint32_t m_rma_win_create;
-    uint32_t m_rma_win_destroy;
-    uint32_t m_rma_put;
-    uint32_t m_rma_get;
-    uint32_t m_rma_op_complete_blocking;
-
-/*
- * RMA events not handled yet:
- *
- *  uint32_t m_rma_acquire_lock;
- *  uint32_t m_rma_atomic;
- *  uint32_t m_rma_collective_begin;
- *  uint32_t m_rma_collective_end;
- *  uint32_t m_rma_get;
- *  uint32_t m_rma_group_sync;
- *  uint32_t m_rma_op_complete_non_blocking;
- *  uint32_t m_rma_op_complete_remote;
- *  uint32_t m_rma_op_test;
- *  uint32_t m_rma_release_lock;
- *  uint32_t m_rma_request_lock;
- *  uint32_t m_rma_sync;
- *  uint32_t m_rma_try_lock;
- *  uint32_t m_rma_wait_change;
- */
-
-    uint32_t m_fork;
-    uint32_t m_join;
-    uint32_t m_thread_team;
-    uint32_t m_acquire_lock;
-    uint32_t m_release_lock;
-    uint32_t m_task_create;
-    uint32_t m_task_switch;
-    uint32_t m_task_complete;
-    uint32_t m_parameter;
+    /**
+     * List of possible events.
+     */
+    event_list_t m_event_list;
 };
 
 

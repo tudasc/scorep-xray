@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       SCOREP_Score_EventList.hpp
+ * @file
  *
  * @brief      Defines name lists for determine which events are created by which region.
  */

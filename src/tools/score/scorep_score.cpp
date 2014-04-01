@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       score.cxx
+ * @file
  *
  * @brief      Implements the main function of the scorep-score tool.
  */
@@ -60,10 +60,10 @@ print_help()
 int
 main( int argc, char** argv )
 {
-    string  file_name;
-    string  filter_file;
-    int32_t dense_num    = 0;
-    bool    show_regions = false;
+    string   file_name;
+    string   filter_file;
+    uint64_t dense_num    = 0;
+    bool     show_regions = false;
 
     //--------------------------------------- Parameter options parsing
 
@@ -157,14 +157,14 @@ main( int argc, char** argv )
 
     if ( filter_file != "" )
     {
-        estimator.InitializeFilter( filter_file );
+        estimator.initializeFilter( filter_file );
     }
-    estimator.Calculate( show_regions );
-    estimator.PrintGroups();
+    estimator.calculate( show_regions );
+    estimator.printGroups();
 
     if ( show_regions )
     {
-        estimator.PrintRegions();
+        estimator.printRegions();
     }
 
     delete ( profile );

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       SCOREP_Score_Types.hpp
+ * @file
  *
  * @brief      Implements conversion for types for the score tool.
  */
@@ -49,13 +49,13 @@ static string scorep_score_type_names[] =
 const uint64_t SCOREP_SCORE_TYPE_NUM = sizeof( scorep_score_type_names ) / sizeof( string );
 
 string
-SCOREP_Score_GetTypeName( uint64_t type )
+SCOREP_Score_getTypeName( uint64_t type )
 {
     return scorep_score_type_names[ type ];
 }
 
 SCOREP_Score_FilterState
-SCOREP_Score_GetFilterState( uint64_t type )
+SCOREP_Score_getFilterState( uint64_t type )
 {
     static SCOREP_Score_FilterState filter_type[] =
     {
@@ -68,7 +68,7 @@ SCOREP_Score_GetFilterState( uint64_t type )
 }
 
 char
-SCOREP_Score_GetFilterSymbol( SCOREP_Score_FilterState state )
+SCOREP_Score_getFilterSymbol( SCOREP_Score_FilterState state )
 {
     static char symbols[] =
     {

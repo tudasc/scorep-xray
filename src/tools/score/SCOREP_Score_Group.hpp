@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -29,7 +29,7 @@
  */
 
 /**
- * @file       SCOREP_Score_Group.hpp
+ * @file
  *
  * @brief      Defines a class which represents a group in the
  *             scorep-score tool.
@@ -42,42 +42,116 @@
 #include <string>
 #include <stdint.h>
 
+/**
+ * This class represents a group. If the user requested a per
+ * region list (with -r) every region is a group, too.
+ * It stores relevent data for that group.
+ */
 class SCOREP_Score_Group
 {
 public:
+    /**
+     * Creates an instance of SCOREP_Score_Group.
+     * @param type      Specifies the group type (ALL, FLT, OMP, ... ).
+     * @param processes Specifies the number processes.
+     * @param name      The name of the group or region.
+     */
     SCOREP_Score_Group( uint64_t    type,
                         uint64_t    processes,
                         std::string name );
+    /**
+     * Destructor.
+     */
     virtual
     ~SCOREP_Score_Group();
 
+    /**
+     * Adds region data for one process to this group.
+     * @param numberOfVisits Number of visits for the new region.
+     * @param bytesPerVisit  Number of bytes that are written to the trace for every
+     *                       visit to this region.
+     * @param time           Sum of time spent in this region in all visits.
+     * @param process        The process num for which the data added.
+     */
     void
-    AddRegion( uint64_t bytesCount,
+    addRegion( uint64_t numberOfVisits,
+               uint64_t bytesPerVisit,
                double   time,
                uint64_t process );
 
+    /**
+     * Prints the region data to the standart output device.
+     * @param totalTime The total time spend in the application.
+     */
     void
-    Print( double totalTime );
+    print( double totalTime );
 
+    /**
+     * Returns the time spend in this group on all processes.
+     */
     double
-    GetTotalTime();
+    getTotalTime( void );
 
+    /**
+     * Returns the trace buffer requirements for the regions in this
+     * group on the process that required the largest buffer.
+     */
     uint64_t
-    GetMaxTBC();
+    getMaxTraceBufferSize( void );
 
+    /**
+     * Returns the sum of trace buffer requirements for the regions in
+     * this group over all processes.
+     */
     uint64_t
-    GetTotalTBC();
+    getTotalTraceBufferSize( void );
 
+    /**
+     * Configures whether filters are used and how this group is affected.
+     * @param state  The new filter state.
+     */
     void
-    DoFilter( SCOREP_Score_FilterState state );
+    doFilter( SCOREP_Score_FilterState state );
 
 private:
-    uint64_t                 m_type;
-    uint64_t                 m_processes;
-    uint64_t*                m_max_tbc;
-    uint64_t                 m_total_tbc;
-    double                   m_total_time;
-    std::string              m_name;
+    /**
+     * Stores the group type.
+     */
+    uint64_t m_type;
+
+    /**
+     * Stores the numnber of processes.
+     */
+    uint64_t m_processes;
+
+    /**
+     * Stores buffer requirements for each process.
+     */
+    uint64_t* m_max_buf;
+
+    /**
+     * Stores the sum of buffer requirements for all processes.
+     */
+    uint64_t m_total_buf;
+
+    /**
+     * Stores the number of visits for all processes.
+     */
+    uint64_t m_visits;
+
+    /**
+     * Stores the total time for all processes.
+     */
+    double m_total_time;
+
+    /**
+     * Stores the group name.
+     */
+    std::string m_name;
+
+    /**
+     * Stores the filter state.
+     */
     SCOREP_Score_FilterState m_filter;
 };
 

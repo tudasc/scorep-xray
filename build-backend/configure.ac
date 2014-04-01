@@ -243,7 +243,8 @@ AS_IF([test -n "${scorep_cube_bindir}"],
       ])
 
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${scorep_have_score_build}" = "xno"], 
-      [AC_SCOREP_CUBE_READER],
+      [AC_SCOREP_CUBE_READER
+       SCOREP_ESTIMATOR],
       [AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 0])])
 
 # does this work on cross-compile machines?

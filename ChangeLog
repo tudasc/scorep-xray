@@ -75,6 +75,7 @@
   that the program is serial, manually.
 - Prepend link calls to the intel compiler with seetings to VT_LIB_DIR and
   VT_LIBS to avoid remarks.
+- Improved event size estimation in scorep-score using otf2-estimator.
 
 ------------------- Released version 1.2.3 ---------------------------
 

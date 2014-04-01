@@ -16,7 +16,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
-dnl Copyright (c) 2009-2013,
+dnl Copyright (c) 2009-2014,
 dnl German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -69,6 +69,7 @@ AC_PROG_CXX
 AC_SCOREP_SVN_CONTROLLED
 
 AC_SCOREP_CUBE_READER
+SCOREP_ESTIMATOR
 
 AC_SCOREP_ERROR_CODES
 

@@ -8,6 +8,8 @@ scorep_score_SOURCES = \
     $(SRC_ROOT)src/tools/score/scorep_score.cpp \
     $(SRC_ROOT)src/tools/score/SCOREP_Score_Estimator.cpp \
     $(SRC_ROOT)src/tools/score/SCOREP_Score_Estimator.hpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Event.cpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Event.hpp \
     $(SRC_ROOT)src/tools/score/SCOREP_Score_EventList.hpp \
     $(SRC_ROOT)src/tools/score/SCOREP_Score_Group.cpp \
     $(SRC_ROOT)src/tools/score/SCOREP_Score_Group.hpp \
