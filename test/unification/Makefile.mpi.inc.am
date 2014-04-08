@@ -18,7 +18,7 @@
 ## Copyright (c) 2009-2013,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2014,
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -44,11 +44,9 @@ mpi_unification_test_CPPFLAGS  = $(AM_CPPFLAGS) \
                                 -I$(INC_ROOT)src/measurement \
                                 -I$(INC_DIR_COMMON_HASH) \
                                 $(UTILS_CPPFLAGS)
-mpi_unification_test_LDADD     = \
-    $(LIB_DIR_SCOREP)libscorep_mpi.la \
-    $(LIB_DIR_SCOREP)libscorep_measurement.la
-
-mpi_unification_test_LDFLAGS   = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+mpi_unification_test_LDADD     = $(mpi_libadd) \
+	$(LIB_DIR_SCOREP)libscorep_measurement.la
+mpi_unification_test_LDFLAGS   = $(mpi_ldflags)
 
 TESTS_MPI += mpi_unification_test
 

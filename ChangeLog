@@ -76,6 +76,8 @@
 - Prepend link calls to the intel compiler with seetings to VT_LIB_DIR and
   VT_LIBS to avoid remarks.
 - Improved event size estimation in scorep-score using otf2-estimator.
+- Improved initialization of adapters which results in a reduced
+  number of libraries needed to be linked into the application.
 
 ------------------- Released version 1.2.3 ---------------------------
 

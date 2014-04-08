@@ -252,6 +252,10 @@ SCOREP_Instrumenter::Run( void )
         prelink();
 
         // Perform linking
+        if ( !m_command_line.isTargetSharedLib() )
+        {
+            create_subsystem_initialization();
+        }
         link_step();
 
         // Perform post-link instrumentation actions
@@ -410,6 +414,31 @@ SCOREP_Instrumenter::postlink( void )
         {
             ( *adapter )->postlink( *this, m_command_line );
         }
+    }
+}
+
+void
+SCOREP_Instrumenter::create_subsystem_initialization( void )
+{
+    // Create initialization source
+    std::string init_source = m_command_line.getOutputName() + ".scorep_init.c";
+    {
+        std::stringstream command;
+        command << getConfigBaseCall() << " --adapter-init > " << init_source;
+        executeCommand( command.str() );
+        addTempFile( init_source );
+    }
+
+    // Compile initialization source file
+    {
+        std::string       init_object = remove_extension( init_source ) + ".o";
+        std::stringstream command;
+        command << m_install_data.getCC()
+                << " -c " << init_source
+                << " -o " << init_object;
+        executeCommand( command.str() );
+        addTempFile( init_object );
+        prependInputFile( init_object );
     }
 }
 

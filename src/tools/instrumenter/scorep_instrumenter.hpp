@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -167,6 +167,13 @@ private:
      */
     void
     postlink( void );
+
+    /**
+       Creates and compiles a source file which initializes the
+       used Score-P subsystems.
+     */
+    void
+    create_subsystem_initialization( void );
 
     /* ***************************************************** Private members */
 private:

@@ -199,11 +199,8 @@ SCOREP_Config_MockupThreadSystem::SCOREP_Config_MockupThreadSystem()
 }
 
 void
-SCOREP_Config_MockupThreadSystem::addLibs( std::deque<std::string>&           libs,
-                                           SCOREP_Config_LibraryDependencies& deps )
+SCOREP_Config_MockupThreadSystem::getInitStructName( std::deque<std::string>& init_structs )
 {
-    SCOREP_Config_ThreadSystem::addLibs( libs, deps );
-    deps.addDependency( "libscorep_measurement", "libscorep_adapter_pomp_omp_mgmt_mockup" );
 }
 
 /* **************************************************************************************
@@ -255,6 +252,13 @@ SCOREP_Config_PompTpdThreadSystem::addIncFlags( std::string& incflags,
                                                  nvcc );
 }
 
+void
+SCOREP_Config_PompTpdThreadSystem::getInitStructName( std::deque<std::string>& init_structs )
+{
+    init_structs.push_back( "SCOREP_Subsystem_PompOmpAdapter" );
+    init_structs.push_back( "SCOREP_Subsystem_ThreadForkJoin" );
+}
+
 /* **************************************************************************************
  * class SCOREP_Config_OmpAncestryThreadSystem
  * *************************************************************************************/
@@ -302,4 +306,11 @@ SCOREP_Config_OmpAncestryThreadSystem::addIncFlags( std::string& incflags,
                                                  false,
                                                  SCOREP_CONFIG_LANGUAGE_C,
                                                  nvcc );
+}
+
+void
+SCOREP_Config_OmpAncestryThreadSystem::getInitStructName( std::deque<std::string>& init_structs )
+{
+    init_structs.push_back( "SCOREP_Subsystem_PompOmpAdapter" );
+    init_structs.push_back( "SCOREP_Subsystem_ThreadForkJoin" );
 }

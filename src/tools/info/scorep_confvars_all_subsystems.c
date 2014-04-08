@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -31,15 +31,16 @@
 /**
  * @file
  *
- *
- * @brief       Holds the list of adapters linked into the measurement system.
+ * @brief Holds the list of all existing SCOREP_Subsystem objects. Needed for
+ * scorep-info and scorep-backend-info only. The list of subsystems active in
+ * an instrumented application is generated during instrumentation (via
+ * scorep-config ----adapter-init).
  */
 
 
 #include <config.h>
 
 #include <scorep_subsystem.h>
-
 extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_PompUserAdapter;

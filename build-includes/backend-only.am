@@ -12,7 +12,6 @@ include ../src/measurement/thread/fork_join/Makefile.inc.am
 include ../src/measurement/mutex/Makefile.inc.am
 include ../src/adapters/user/Makefile.inc.am
 include ../src/adapters/compiler/Makefile.inc.am
-include ../src/adapters/mpi/Makefile.inc.am
 include ../src/adapters/pomp/Makefile.inc.am
 include ../src/adapters/tau/Makefile.inc.am
 include ../src/adapters/cuda/Makefile.inc.am

@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
@@ -18,7 +18,7 @@
 ## Copyright (c) 2009-2013,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2014,
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -64,9 +64,8 @@ else
 mpi_patt_all_test_f90_with_oa_CPPFLAGS += -DSCOREP_USER_ENABLE=1
 endif
 
-mpi_patt_all_test_f90_with_oa_LDADD      = $(LIB_DIR_SCOREP)libscorep_mpi.la	
-
-mpi_patt_all_test_f90_with_oa_LDFLAGS    = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+mpi_patt_all_test_f90_with_oa_LDADD      = $(mpi_libadd)
+mpi_patt_all_test_f90_with_oa_LDFLAGS    = $(mpi_ldflags)
 
 EXTRA_DIST += $(SRC_ROOT)test/apart_test_suite/run_apart_test_suite_with_oa_test.sh.in
 
@@ -90,9 +89,8 @@ mpi_patt_all_test_f90_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include       \
     $(UTILS_CPPFLAGS)
 
-mpi_patt_all_test_f90_LDADD      = $(LIB_DIR_SCOREP)libscorep_mpi.la	
-
-mpi_patt_all_test_f90_LDFLAGS    = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+mpi_patt_all_test_f90_LDADD      = $(mpi_libadd)
+mpi_patt_all_test_f90_LDFLAGS    = $(mpi_ldflags)
 
 TESTS_MPI += mpi_patt_all_test_f90
 

@@ -3,17 +3,30 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## Copyright (c) 2009-2011,
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2011,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2011,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2011, 2014,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2011, 2014,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 
 ## file       Makefile.inc.am
 
@@ -30,17 +43,17 @@ filter_test_CPPFLAGS = $(AM_CPPFLAGS)                      \
                        $(UTILS_CPPFLAGS)                   \
                        -DSCOREP_USER_ENABLE
 
-filter_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
+filter_test_LDADD    = $(serial_libadd)
 
-filter_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
+filter_test_LDFLAGS  = $(serial_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 check_PROGRAMS += filter_f_test
 
 filter_f_test_SOURCES = $(SRC_ROOT)test/filtering/filter_test.F90
 filter_f_test_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@
-filter_f_test_LDADD    = $(LIB_ROOT)libscorep_serial.la
+filter_f_test_LDADD    = $(serial_libadd)
 
-filter_f_test_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
+filter_f_test_LDFLAGS  = $(serial_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 TESTS_SERIAL += ./../test/filtering/run_filter_test.sh
 

@@ -1,8 +1,197 @@
 ## -*- mode: makefile -*-
 
+# ------------------------------------------------------------------------------
+
+# Below, helper libs and variables from before multilib aera, needed
+# for 'make check' targets only. Used to be the four monolithic
+# libraries. Might vanish in future.
+
+# Usage: if your test requires one of the monolithic libs, use
+# $(<paradigm>_libadd) and $(<paradigm>_ldflags) for your
+# <target>_LDADD and <target>_LDFLAGS. <paradigm> is out of serial,
+# omp, mpi, and mpi_omp. mpi and mpi_omp are defined in
+# test/Makefile.mpi.inc.am.
+
+external_libadd = \
+    @OTF2_LIBS@                   \
+    @LIBBFD_LIBS@                 \
+    @SCOREP_PAPI_LIBS@            \
+    @SCOREP_METRIC_PLUGINS_LIBS@  \
+    @CUBE_WRITER_LIBS@            \
+    @TIMER_LIB@
+
+external_ldflags = \
+    @OTF2_LDFLAGS@        \
+    @LIBBFD_LDFLAGS@      \
+    @SCOREP_PAPI_LDFLAGS@ \
+    @CUBE_WRITER_LDFLAGS@ \
+    @CUDA_LDFLAGS@
+
+if BUILD_SHARED_LIBRARIES
+external_ldflags += -Wl,--no-as-needed
+endif
+
+common_event_libadd = \
+    libscorep_adapter_compiler_event.la  \
+    libscorep_adapter_user_event.la      \
+    libscorep_measurement.la
+
+common_mgmt_libadd = \
+    libscorep_adapter_compiler_mgmt.la   \
+    libscorep_adapter_user_mgmt.la
+
+if HAVE_CUDA_SUPPORT
+common_mgmt_libadd += libscorep_adapter_cuda_mgmt.la
+endif
+
+common_cppflags = \
+    $(AM_CPPFLAGS)                       \
+    -I$(INC_ROOT)src/adapters/include    \
+    -I$(INC_ROOT)src/services/include    \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement         \
+    -I$(PUBLIC_INC_DIR)                  \
+    $(UTILS_CPPFLAGS)
+
+
+## MPI -------------------------------------------------------------------------
+
+if HAVE_MPI_SUPPORT
+
+$(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_event.la:
+	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_adapter_mpi_event.la
+
+$(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_mgmt.la:
+	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_adapter_mpi_mgmt.la
+
+$(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la:
+	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_online_access_mpp_mpi.la
+
+check_LTLIBRARIES                          += libscorep_mpi_event.la
+libscorep_mpi_event_la_SOURCES              =
+nodist_EXTRA_libscorep_mpi_event_la_SOURCES = force_link_with_F77LD.f
+libscorep_mpi_event_la_CPPFLAGS             = $(common_cppflags)
+libscorep_mpi_event_la_LIBADD               = \
+    $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_event.la \
+    $(common_event_libadd)
+
+check_LTLIBRARIES             += libscorep_mpi_mgmt.la
+libscorep_mpi_mgmt_la_SOURCES  =
+libscorep_mpi_mgmt_la_CPPFLAGS = $(common_cppflags)
+libscorep_mpi_mgmt_la_LIBADD   = \
+    $(common_mgmt_libadd)                                   \
+    $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_mgmt.la      \
+    libscorep_mpp_mpi.la                                    \
+    $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
+    $(external_libadd)                                      \
+    libscorep_thread_fork_join_mockup.la                    \
+    libscorep_mutex_mockup.la
+libscorep_mpi_mgmt_la_LDFLAGS              = $(external_ldflags)
+
+endif HAVE_MPI_SUPPORT
+
+## Serial ----------------------------------------------------------------------
+
+serial_libadd = \
+    $(common_event_libadd)                    \
+    libscorep_subsystems_serial.la            \
+    $(common_mgmt_libadd)                     \
+    $(external_libadd)                        \
+    libscorep_mpp_mockup.la                   \
+    libscorep_thread_fork_join_mockup.la      \
+    libscorep_mutex_mockup.la                 \
+    libscorep_online_access_spp.la
+
+serial_ldflags = $(external_ldflags)
+
+## OpenMP ----------------------------------------------------------------------
+
+if HAVE_OPENMP_SUPPORT
+
+omp_libadd = \
+    libscorep_adapter_pomp_omp_event.la   \
+    libscorep_adapter_pomp_user_event.la  \
+    $(common_event_libadd)                \
+    libscorep_subsystems_omp.la           \
+    $(common_mgmt_libadd)                 \
+    $(external_libadd)                    \
+    libscorep_adapter_pomp_omp_mgmt.la    \
+    libscorep_adapter_pomp_user_mgmt.la   \
+    libscorep_mpp_mockup.la               \
+    libscorep_thread_fork_join_omp_tpd.la \
+    libscorep_mutex_omp.la                \
+    libscorep_online_access_spp.la
+
+omp_ldflags = $(external_ldflags)
+
+endif HAVE_OPENMP_SUPPORT
+
+## Hybrid ----------------------------------------------------------------------
+
+if HAVE_MPI_SUPPORT
+if HAVE_OPENMP_SUPPORT
+
+check_LTLIBRARIES                       += libscorep_mpi_omp_event.la
+libscorep_mpi_omp_event_la_SOURCES              =
+nodist_EXTRA_libscorep_mpi_omp_event_la_SOURCES = force_link_with_F77LD.f
+libscorep_mpi_omp_event_la_CFLAGS               = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_mpi_omp_event_la_CPPFLAGS             = $(common_cppflags)
+libscorep_mpi_omp_event_la_LIBADD               = \
+    $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_event.la     \
+    libscorep_adapter_pomp_omp_event.la                     \
+    libscorep_adapter_pomp_user_event.la                    \
+    $(common_event_libadd)
+
+check_LTLIBRARIES                 += libscorep_mpi_omp_mgmt.la
+libscorep_mpi_omp_mgmt_la_SOURCES  =
+libscorep_mpi_omp_mgmt_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_mpi_omp_mgmt_la_CPPFLAGS = $(common_cppflags)
+libscorep_mpi_omp_mgmt_la_LIBADD   = \
+    $(common_mgmt_libadd)                                   \
+    $(external_libadd)                                      \
+    $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_mgmt.la      \
+    libscorep_adapter_pomp_omp_mgmt.la                      \
+    libscorep_adapter_pomp_user_mgmt.la                     \
+    libscorep_mpp_mpi.la                                    \
+    $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
+    libscorep_thread_fork_join_omp_tpd.la                   \
+    libscorep_mutex_omp.la
+libscorep_mpi_omp_mgmt_la_LDFLAGS  = $(external_ldflags)
+
+endif HAVE_OPENMP_SUPPORT
+endif HAVE_MPI_SUPPORT
+
+# ------------------------------------------------------------------------------
+
+# Subsystems for <paradigm>_libadd
+
+subsystems_paradigm_cppflags = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/include \
+    $(UTILS_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR)
+
+check_LTLIBRARIES                      += libscorep_subsystems_serial.la
+libscorep_subsystems_serial_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
+libscorep_subsystems_serial_la_CPPFLAGS = $(subsystems_paradigm_cppflags)
+
+check_LTLIBRARIES                   += libscorep_subsystems_omp.la
+libscorep_subsystems_omp_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
+libscorep_subsystems_omp_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_OMP
+
+check_LTLIBRARIES                   += libscorep_subsystems_mpi.la
+libscorep_subsystems_mpi_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
+libscorep_subsystems_mpi_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_MPI
+
+check_LTLIBRARIES                       += libscorep_subsystems_mpi_omp.la
+libscorep_subsystems_mpi_omp_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
+libscorep_subsystems_mpi_omp_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_MPI -DSCOREP_SUBSYSTEMS_OMP
+
+# ------------------------------------------------------------------------------
+
 check_PROGRAMS += hello_functions
 
-hello_functions_SOURCES =  $(SRC_ROOT)test/hello_functions.c 
+hello_functions_SOURCES =  $(SRC_ROOT)test/hello_functions.c
 hello_functions_CPPFLAGS = $(AM_CPPFLAGS)           \
     -I$(INC_ROOT)src/adapters/include       \
     -I$(INC_ROOT)src/measurement/include    \

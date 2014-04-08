@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -87,8 +87,8 @@ definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
                               -I$(PUBLIC_INC_DIR) \
                               $(UTILS_CPPFLAGS) \
                               -I$(INC_DIR_COMMON_HASH)
-definitions_test_c_LDADD = libscorep_serial.la
-definitions_test_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+definitions_test_c_LDADD = $(serial_libadd)
+definitions_test_c_LDFLAGS  = $(serial_ldflags)
 
 TESTS_SERIAL += definitions_test_c
 
@@ -101,18 +101,8 @@ string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
                                -I$(PUBLIC_INC_DIR) \
                                $(UTILS_CPPFLAGS) \
                                -I$(INC_DIR_COMMON_HASH)
-string_duplicates_c_LDADD = libscorep_measurement.la                   \
-                            libscorep_adapter_compiler_mgmt_mockup.la  \
-                            libscorep_adapter_user_mgmt_mockup.la      \
-                            libscorep_adapter_pomp_user_mgmt_mockup.la \
-                            libscorep_adapter_pomp_omp_mgmt_mockup.la  \
-                            libscorep_adapter_mpi_mgmt_mockup.la       \
-                            libscorep_adapter_cuda_mgmt_mockup.la      \
-                            libscorep_mpp_mockup.la                    \
-                            libscorep_thread_fork_join_mockup.la                 \
-                            libscorep_mutex_mockup.la                  \
-                            libscorep_online_access_mockup.la
-
-string_duplicates_c_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+string_duplicates_c_LDADD = $(serial_libadd) \
+     libscorep_measurement.la
+string_duplicates_c_LDFLAGS  = $(serial_ldflags)
 
 TESTS_SERIAL += string_duplicates_c

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -200,10 +200,6 @@ SCOREP_Config_Adapter::addLibs( std::deque<std::string>&           libs,
         libs.push_back( "lib" + m_library + "_event" );
         deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
     }
-    else
-    {
-        deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt_mockup" );
-    }
 }
 
 void
@@ -225,6 +221,27 @@ SCOREP_Config_Adapter::addIncFlags( std::string& incflags,
                                     bool         build_check,
                                     bool         nvcc )
 {
+}
+
+void
+SCOREP_Config_Adapter::appendInitStructName( std::deque<std::string>& init_structs )
+{
+    std::string name = m_name;
+    name[ 0 ] = toupper( name[ 0 ] );
+    init_structs.push_back( "SCOREP_Subsystem_" + name + "Adapter" );
+}
+
+void
+SCOREP_Config_Adapter::getAllInitStructNames( std::deque<std::string>& init_structs )
+{
+    std::deque<SCOREP_Config_Adapter*>::iterator i;
+    for ( i = all.begin(); i != all.end(); i++ )
+    {
+        if ( ( *i )->m_is_enabled )
+        {
+            ( *i )->appendInitStructName( init_structs );
+        }
+    }
 }
 
 /* **************************************************************************************
@@ -331,10 +348,6 @@ SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
         libs.push_back( "lib" + m_library + "_event" );
         deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt" );
     }
-    else
-    {
-        deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt_mockup" );
-    }
 }
 
 
@@ -363,6 +376,13 @@ SCOREP_Config_PreprocessAdapter::addLibs( std::deque<std::string>&           lib
                                           SCOREP_Config_LibraryDependencies& deps )
 {
 }
+
+void
+SCOREP_Config_PreprocessAdapter::appendInitStructName( std::deque<std::string>& init_structs )
+{
+    // Do nothing here as PreprocessAdapter is no SCOREP_Subsystem.
+}
+
 
 /* **************************************************************************************
  * Pomp adapter
@@ -400,6 +420,14 @@ SCOREP_Config_PompAdapter::addCFlags( std::string&           cflags,
                           nvcc );
     }
 }
+
+
+void
+SCOREP_Config_PompAdapter::appendInitStructName( std::deque<std::string>& init_structs )
+{
+    init_structs.push_back( "SCOREP_Subsystem_PompUserAdapter" );
+}
+
 
 void
 SCOREP_Config_PompAdapter::printOpariCFlags( bool                   build_check,

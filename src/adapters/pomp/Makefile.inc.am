@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -226,23 +226,6 @@ libscorep_adapter_pomp_user_event_la_LDFLAGS = \
 
 
 # --------------------------------------------------------------------
-# runtime management mockup library for the pomp2 user adapter
-
-lib_LTLIBRARIES += libscorep_adapter_pomp_user_mgmt_mockup.la
-
-libscorep_adapter_pomp_user_mgmt_mockup_la_SOURCES = \
-    $(SRC_ROOT)src/adapters/SCOREP_AdapterMockup.c
-
-libscorep_adapter_pomp_user_mgmt_mockup_la_CPPFLAGS = \
-    $(AM_CPPFLAGS)                                    \
-    -I$(INC_ROOT)src/measurement/include              \
-    -I$(PUBLIC_INC_DIR)                               \
-    $(UTILS_CPPFLAGS)                                 \
-    -DADAPTER=PompUser
-
-libscorep_adapter_pomp_user_mgmt_mockup_la_LDFLAGS = \
-    $(library_api_version_ldflags)
-
 
 if HAVE_OPENMP_SUPPORT
 
@@ -375,23 +358,3 @@ libscorep_adapter_pomp_omp_event_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
 endif
-
-
-# --------------------------------------------------------------------
-# runtime management mockup library for the pomp2 OpenMP adapter
-
-lib_LTLIBRARIES += libscorep_adapter_pomp_omp_mgmt_mockup.la
-
-libscorep_adapter_pomp_omp_mgmt_mockup_la_SOURCES = \
-    $(SRC_ROOT)src/adapters/SCOREP_AdapterMockup.c  \
-    $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_Dummy.c
-
-libscorep_adapter_pomp_omp_mgmt_mockup_la_CPPFLAGS = \
-    $(AM_CPPFLAGS)                                   \
-    -I$(INC_ROOT)src/measurement/include             \
-    -I$(PUBLIC_INC_DIR)                              \
-    $(UTILS_CPPFLAGS)                                \
-    -DADAPTER=PompOmp
-
-libscorep_adapter_pomp_omp_mgmt_mockup_la_LDFLAGS = \
-    $(library_api_version_ldflags)

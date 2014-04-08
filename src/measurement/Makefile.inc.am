@@ -15,10 +15,10 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -54,7 +54,6 @@ libscorep_measurement_core_la_SOURCES =                           \
     $(SRC_ROOT)src/measurement/include/SCOREP_Properties.h        \
     $(SRC_ROOT)src/measurement/include/SCOREP_OA_Functions.h      \
     $(SRC_ROOT)src/measurement/filtering/SCOREP_Filter_Init.c     \
-    $(SRC_ROOT)src/measurement/paradigm/scorep_all_subsystems.c   \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.c        \
     $(SRC_ROOT)src/measurement/scorep_subsystem.c                 \
     $(SRC_ROOT)src/measurement/scorep_subsystem.h                 \

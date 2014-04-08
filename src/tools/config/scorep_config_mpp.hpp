@@ -7,6 +7,9 @@
  * Copyright (c) 2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2014,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -92,6 +95,15 @@ public:
              SCOREP_Config_LibraryDependencies& deps,
              bool                               withOnlineAccess );
 
+    /**
+     * Adds the name(s) of the SCOREP_Subsystem struct(s) associated with this
+     * adapter. To be implemented by derived-classes. These names need to match
+     * the SCOREP_Subsystem struct(s) variable name(s) used in the measurement
+     * system.
+     */
+    virtual void
+    getInitStructName( std::deque<std::string>& init_structs ) = 0;
+
 protected:
     /**
      * Prints standart help output for this paradigm, based on the name.
@@ -133,6 +145,8 @@ public:
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps,
              bool                               withOnlineAccess );
+    virtual void
+    getInitStructName( std::deque<std::string>& init_structs );
 };
 
 /* ***************************************************************************
@@ -150,6 +164,8 @@ public:
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps,
              bool                               withOnlineAccess );
+    virtual void
+    getInitStructName( std::deque<std::string>& init_structs );
 };
 
 #endif

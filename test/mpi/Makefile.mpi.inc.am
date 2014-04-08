@@ -18,7 +18,7 @@
 ## Copyright (c) 2009-2013,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -35,8 +35,9 @@ if HAVE_MPI_SUPPORT
 
 check_PROGRAMS += mpitest
 mpitest_SOURCES =  $(SRC_ROOT)test/mpi/mpitest.c
-mpitest_LDADD = $(LIB_DIR_SCOREP)libscorep_mpi.la
-mpitest_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+
+mpitest_LDADD = $(mpi_libadd)
+mpitest_LDFLAGS = $(mpi_ldflags)
 
 
 check_PROGRAMS += test_link
@@ -45,16 +46,15 @@ test_link_CPPFLAGS = $(AM_CPPFLAGS)         \
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/measurement/include    \
     $(UTILS_CPPFLAGS)
-test_link_LDADD =                     \
-    $(LIB_DIR_SCOREP)libscorep_mpi.la \
-    $(LIB_DIR_SCOREP)libscorep_measurement.la
-test_link_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+test_link_LDADD = $(mpi_libadd) \
+	$(LIB_DIR_SCOREP)libscorep_measurement.la 
+test_link_LDFLAGS = $(mpi_ldflags)
 
 
 check_PROGRAMS += mpi_hello_world
 mpi_hello_world_SOURCES =  $(SRC_ROOT)test/mpi/mpi_hello_world.c 
-mpi_hello_world_LDADD = $(LIB_DIR_SCOREP)libscorep_mpi.la
-mpi_hello_world_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+mpi_hello_world_LDADD = $(mpi_libadd)
+mpi_hello_world_LDFLAGS = $(mpi_ldflags)
 TESTS_MPI += mpi_hello_world
 
 
@@ -68,8 +68,8 @@ metric_on_one_rank_only_test_SOURCES = \
 metric_on_one_rank_only_test_CPPFLAGS = $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR)                     \
     -DSCOREP_USER_ENABLE
-metric_on_one_rank_only_test_LDADD = $(LIB_DIR_SCOREP)libscorep_mpi.la
-metric_on_one_rank_only_test_LDFLAGS = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@
+metric_on_one_rank_only_test_LDADD = $(mpi_libadd)
+metric_on_one_rank_only_test_LDFLAGS = $(mpi_ldflags)
 TESTS_MPI += metric_on_one_rank_only_test
 
 endif

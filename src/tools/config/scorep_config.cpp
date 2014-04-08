@@ -64,6 +64,7 @@
 #define ACTION_MPICXX         9
 #define ACTION_MPIFC         10
 #define ACTION_COBI_DEPS     11
+#define ACTION_ADAPTER_INIT  12
 
 #define SHORT_HELP \
     "\nUsage:\nscorep-config <command> [<options>]\n\n" \
@@ -95,6 +96,7 @@
     "   --version   prints the version number of the scorep package\n" \
     "   --scorep-revision prints the revision number of the scorep package\n" \
     "   --common-revision prints the revision number of the common package\n" \
+    "   --adapter-init    prints the code for adapter initialization\n" \
     "  Options:\n" \
     "   --nvcc      Convert flags to be suitable for the nvcc compiler.\n" \
     "   --static    Use only static Score-P libraries if possible.\n" \
@@ -143,6 +145,9 @@ get_full_library_names( const std::deque<std::string>& library_list,
                         bool                           allow_static,
                         bool                           allow_dynamic,
                         bool                           only_names );
+
+static void
+print_adapter_init_source( void );
 
 static inline void
 clean_up()
@@ -291,6 +296,10 @@ main( int    argc,
         else if ( strcmp( argv[ i ], "--noonline-access" ) == 0 )
         {
             online_access = false;
+        }
+        else if ( strcmp( argv[ i ], "--adapter-init" ) == 0 )
+        {
+            action = ACTION_ADAPTER_INIT;
         }
         else if ( strncmp( argv[ i ], "--thread=", 9 ) == 0 )
         {
@@ -458,6 +467,10 @@ main( int    argc,
                 libs.push_back( "libscorep_measurement" );
             }
             write_cobi_deps( libs, deps, install );
+            break;
+
+        case ACTION_ADAPTER_INIT:
+            print_adapter_init_source();
             break;
 
         default:
@@ -687,4 +700,42 @@ remove_system_path( const std::deque<std::string>& path_list )
         }
     }
     return result_paths;
+}
+
+static void
+print_adapter_init_source( void )
+{
+    std::cout << "#include <stddef.h>\n\n";
+
+    std::deque<std::string> init_structs;
+    SCOREP_Config_Adapter::getAllInitStructNames( init_structs );
+    SCOREP_Config_MppSystem::current->getInitStructName( init_structs );
+    SCOREP_Config_ThreadSystem::current->getInitStructName( init_structs );
+    if ( !init_structs.empty() )
+    {
+        init_structs.push_front( "SCOREP_Subsystem_MetricService" );
+
+        std::cout << deque_to_string( init_structs,
+                                      "extern const struct SCOREP_Subsystem ",
+                                      ";\nextern const struct SCOREP_Subsystem ",
+                                      ";\n" );
+
+        std::cout << "\nconst struct SCOREP_Subsystem* scorep_subsystems[] = {\n";
+
+        std::cout << deque_to_string( init_structs,
+                                      "    &",
+                                      ",\n    &",
+                                      "\n" );
+        std::cout << "};\n\n";
+
+        std::cout << "const size_t scorep_number_of_subsystems = sizeof( scorep_subsystems ) /\n"
+                  << "                                           sizeof( scorep_subsystems[ 0 ] );"
+                  << std::endl;
+    }
+    else
+    {
+        std::cout << "\nconst struct SCOREP_Subsystem** scorep_subsystems;\n\n"
+                  << "const size_t scorep_number_of_subsystems = 0;"
+                  << std::endl;
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -118,6 +118,23 @@ public:
      */
     virtual
     ~SCOREP_Config_Adapter();
+
+    /**
+     * Appends the name of the SCOREP_Subsystem struct associated with
+     * this adapter to @a init_strucrs. The default implementation
+     * appends 'SCOREP_Subsystem_<name>Adapter' Where the first letter of
+     * <name> is made uppercase. Overwrite this function of your subsystem
+     * name differs or if your subsystem shouldn't show up in
+     * scorep_subsystems.
+     */
+    virtual void
+    appendInitStructName( std::deque<std::string>& init_structs );
+
+    /**
+     * Inserts all initialization struct names into ta queue.
+     */
+    static void
+    getAllInitStructNames( std::deque<std::string>& init_structs );
 
 protected:
     /**
@@ -286,6 +303,9 @@ public:
                SCOREP_Config_Language language,
                bool                   nvcc );
 
+    virtual void
+    appendInitStructName( std::deque<std::string>& init_structs );
+
     static void
     printOpariCFlags( bool                   build_check,
                       bool                   with_cflags,
@@ -309,6 +329,9 @@ public:
     virtual void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );
+
+    virtual void
+    appendInitStructName( std::deque<std::string>& init_structs );
 };
 
 #endif

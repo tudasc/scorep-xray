@@ -3,16 +3,30 @@
 ## 
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## Copyright (c) 2009-2011,
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2011,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2011,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2011,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2011, 2014,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
 ## file       Makefile.inc.am
@@ -36,8 +50,8 @@ omp_tasks_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks.mod.c       \
                     $(SRC_ROOT)test/omp_tasks/omp_tasks.c.opari.inc
 omp_tasks_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 omp_tasks_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
-omp_tasks_LDADD    = $(LIB_ROOT)libscorep_omp.la $(LIB_ROOT)libomp_tasks_pomp.la
-omp_tasks_LDFLAGS  = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
+omp_tasks_LDADD    = $(omp_libadd) $(LIB_ROOT)libomp_tasks_pomp.la
+omp_tasks_LDFLAGS  = $(omp_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_omp_tasks.sh

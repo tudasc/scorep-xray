@@ -166,6 +166,15 @@ public:
     SCOREP_Config_ThreadSystemId
     getId( void );
 
+    /**
+     * Adds the name(s) of the SCOREP_Subsystem struct(s) associated with this
+     * adapter. To be implemented by derived-classes. These names need to match
+     * the SCOREP_Subsystem struct(s) variable name(s) used in the measurement
+     * system.
+     */
+    virtual void
+    getInitStructName( std::deque<std::string>& init_structs ) = 0;
+
 protected:
     /**
      * Prints standart help output for this threading system, based on the name.
@@ -227,8 +236,7 @@ class SCOREP_Config_MockupThreadSystem : public SCOREP_Config_ThreadSystem
 public:
     SCOREP_Config_MockupThreadSystem();
     virtual void
-    addLibs( std::deque<std::string>&           libs,
-             SCOREP_Config_LibraryDependencies& deps );
+    getInitStructName( std::deque<std::string>& init_structs );
 };
 
 
@@ -257,6 +265,8 @@ public:
     addIncFlags( std::string& incflags,
                  bool         build_check,
                  bool         nvcc );
+    virtual void
+    getInitStructName( std::deque<std::string>& init_structs );
 };
 
 /* **************************************************************************************
@@ -284,6 +294,8 @@ public:
     addIncFlags( std::string& incflags,
                  bool         build_check,
                  bool         nvcc );
+    virtual void
+    getInitStructName( std::deque<std::string>& init_structs );
 };
 
 #endif

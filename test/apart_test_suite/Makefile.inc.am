@@ -1,3 +1,34 @@
+## -*- mode: makefile -*-
+
+## 
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2013,
+## RWTH Aachen University, Germany
+##
+## Copyright (c) 2009-2013,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2013,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2014,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2014,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
 # Serial C
 
 check_PROGRAMS                  += distribution_test
@@ -5,15 +36,15 @@ distribution_test_sources        = $(SRC_ROOT)test/apart_test_suite/c/distributi
                                    $(SRC_ROOT)test/apart_test_suite/c/distribution.c
 distribution_test_SOURCES        = $(distribution_test_sources)
 distribution_test_CPPFLAGS       = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-distribution_test_LDADD          = $(LIB_ROOT)libscorep_serial.la
-distribution_test_LDFLAGS        = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
+distribution_test_LDADD          = $(serial_libadd)
+distribution_test_LDFLAGS        = $(serial_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 check_PROGRAMS                  += distribution_test2
 distribution_test2_sources       = $(SRC_ROOT)test/apart_test_suite/c/distribution_test2.c \
                                    $(SRC_ROOT)test/apart_test_suite/c/distribution.c
 distribution_test2_SOURCES       = $(distribution_test2_sources)
 distribution_test2_CPPFLAGS      = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
-distribution_test2_LDADD         = $(LIB_ROOT)libscorep_serial.la
-distribution_test2_LDFLAGS       = @SCOREP_PAPI_LDFLAGS@ @CUDA_LDFLAGS@ @COMPILER_INSTRUMENTATION_LDFLAGS@
+distribution_test2_LDADD         = $(serial_libadd)
+distribution_test2_LDFLAGS       = $(serial_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
 
 CLEANFILES += distribution.mod

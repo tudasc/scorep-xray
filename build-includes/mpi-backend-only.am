@@ -6,6 +6,7 @@ include ../src/measurement/online_access/Makefile.mpi.inc.am
 include ../src/tools/config/Makefile.mpi.inc.am
 
 ## include tests
+include ../test/Makefile.mpi.inc.am
 include ../test/mpi/Makefile.mpi.inc.am
 include ../test/jacobi/Makefile.mpi.inc.am
 include ../test/mpi_omp/Makefile.mpi.inc.am

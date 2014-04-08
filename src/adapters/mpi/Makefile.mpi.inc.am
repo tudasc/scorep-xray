@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -114,9 +114,6 @@ if SCOREP_COMPILER_PGI
 libscorep_adapter_mpi_fortran_conv_la_FFLAGS = $(AM_FFLAGS) -Mnoref_externals
 endif
 
-
-# runtime management mockup library for the MPI adapter, see
-# src/adapters/mpi/Makefile.inc.am
 
 # event library for the MPI adapter
 

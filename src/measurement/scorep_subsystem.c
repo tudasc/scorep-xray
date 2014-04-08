@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,7 +49,9 @@
 #include "scorep_environment.h"
 
 
-/** @brief a NULL terminated list of linked in subsystems. */
+/* scorep_subsystems[] and scorep_number_of_subsystems will be
+ * provided by instrumenter or libscorep_confvars.la. */
+/* List of linked in subsystems. */
 extern const SCOREP_Subsystem* scorep_subsystems[];
 extern const size_t            scorep_number_of_subsystems;
 

@@ -5,7 +5,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013,
+## Copyright (c) 2013-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -79,7 +79,7 @@ case ${PARADIGM} in
         MPI=yes
         ;;
 
-    *)        
+    *)
         echo "ERROR: Unknown paradigm '${PARADIGM}' encountered!" >&2
         exit 1
         ;;
@@ -185,35 +185,35 @@ fi
 
 # Compiler instrumentation?     (custom check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_compiler_region_mutex`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_compiler_event.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_compiler_mgmt.so`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }comp"
 fi
 
 # MPI instrumentation?     (Scalasca check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_mpi_status_size`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_mpi_event.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_mpi_mgmt.so`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }mpi"
 fi
 
 # OpenMP instrumentation?     (Scalasca check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} POMP2_Parallel_fork`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_pomp_omp_event.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_pomp_omp_mgmt.so`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }omp"
 fi
 
 # POMP user instrumentation?     (custom check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} POMP2_Begin`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_pomp_user_event.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_pomp_user_mgmt.so`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }pomp"
 fi
 
 # User instrumentation?     (custom check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_user_region_mutex`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_user_event.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_user_mgmt.so`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }user"
 fi

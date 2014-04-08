@@ -7,6 +7,9 @@
  * Copyright (c) 2013-2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2014,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -124,7 +127,6 @@ SCOREP_Config_MockupMppSystem::addLibs( std::deque<std::string>&           libs,
                                         SCOREP_Config_LibraryDependencies& deps,
                                         bool                               withOnlineAccess )
 {
-    deps.addDependency( "libscorep_measurement", "libscorep_adapter_mpi_mgmt_mockup" );
     deps.addDependency( "libscorep_measurement", "libscorep_mpp_mockup" );
     if ( withOnlineAccess )
     {
@@ -134,6 +136,11 @@ SCOREP_Config_MockupMppSystem::addLibs( std::deque<std::string>&           libs,
     {
         deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
     }
+}
+
+void
+SCOREP_Config_MockupMppSystem::getInitStructName( std::deque<std::string>& init_structs )
+{
 }
 
 /* **************************************************************************************
@@ -161,4 +168,10 @@ SCOREP_Config_MpiMppSystem::addLibs( std::deque<std::string>&           libs,
     {
         deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
     }
+}
+
+void
+SCOREP_Config_MpiMppSystem::getInitStructName( std::deque<std::string>& init_structs )
+{
+    init_structs.push_back( "SCOREP_Subsystem_MpiAdapter" );
 }
