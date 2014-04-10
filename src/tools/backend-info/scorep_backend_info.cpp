@@ -90,7 +90,7 @@ main( int   argc,
     if ( argc > 1 )
     {
         std::string info_command( argv[ 1 ] );
-        if ( info_command == "--help" )
+        if ( info_command == "--help" || info_command == "-h" )
         {
             print_help();
             return EXIT_SUCCESS;
