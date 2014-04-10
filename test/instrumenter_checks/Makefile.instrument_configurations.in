@@ -2,7 +2,7 @@
 
 ## @configure_input@
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
@@ -17,7 +17,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -53,14 +53,14 @@ PREPS_FILE      = @abs_top_builddir@/../installcheck/instrumenter_checks/configu
 SCOREP_INSTRUMENTER_CHECKS_VERBOSE = $(V)
 
 #------------------------------------------------------------------------------
-# Instrument possible configurations: 
+# Instrument possible configurations:
 # If we have a Makefile in PARADIGM_SRCDIR/<code>/<language>, create
 # an object directory (obj_dir) for every possible scorep option
 # configuration, copy the Makefile into this directory an call 'make
 # -C obj_dir <code>' additionally providing several make
 # variables. The possible configurations are listed in PREPS_FILE and
 # are generated from
-# scorep_configure_dir/installcheck/instrumenter_checks/instrumenter-configurations.sh. 
+# scorep_configure_dir/installcheck/instrumenter_checks/instrumenter-configurations.sh.
 # Instrumented codes can be found in BINDIR.
 #------------------------------------------------------------------------------
 instrument-configurations: $(PREPS_FILE) $(PARADIGM_SRCDIR) $(BINDIR)
@@ -151,4 +151,5 @@ $(BINDIR):
 	mkdir -p $(BINDIR)
 
 $(PREPS_FILE):
-	$(MAKE) -C @abs_top_builddir@ instrumenter-configurations
+	@echo "Cannot find installcheck/instrumenter_checks/configurations_$(PARADIGM). Please check instrumenter-configurations.sh[.in]"
+	@exit 1

@@ -4,7 +4,7 @@
 
 ## @configure_input@
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
@@ -19,7 +19,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -51,14 +51,15 @@ file_prefix="../installcheck/instrumenter_checks/configurations_"
 # noompenmp: if we model it like nompi, then we need to intercept just
 # the fork/join/thread_begin/thread_end. Everything else gets ignored.
 
-# pomp_user_arg: use HAVE_OPARI2_TRUE when it is implemented 
+# pomp_user_arg: use HAVE_OPARI2_TRUE when it is implemented
 
 omp_args="thread=omp:pomp_tpd "
 
 @HAVE_SCOREP_OMP_ANCESTRY_TRUE@omp_args="${omp_args} thread=omp:ancestry "
 
-
-@HAVE_PTHREAD_MUTEX_TRUE@mutex_args="mutex=pthread"
+mutex_args=
+@HAVE_OPENMP_SUPPORT_TRUE@mutex_args="${mutex_args} mutex=omp"
+@HAVE_PTHREAD_MUTEX_TRUE@mutex_args="${mutex_args} mutex==pthread"
 @HAVE_PTHREAD_SPINLOCK_TRUE@mutex_args="${mutex_args} mutex=pthread:spinlock"
 
 cd @abs_top_builddir@
@@ -91,9 +92,9 @@ done
 
                     # omp -------------------------------#
 @HAVE_OPENMP_SUPPORT_TRUE@                    for omp_arg in $omp_args; do # add noopenmp when multilibs are ready, see above comment
-@HAVE_OPENMP_SUPPORT_TRUE@                         for mutex_arg in $mutex_args; do 
+@HAVE_OPENMP_SUPPORT_TRUE@                         for mutex_arg in $mutex_args; do
 @HAVE_OPENMP_SUPPORT_TRUE@                               echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $omp_arg $mutex_arg" >> ${file_prefix}omp
-@HAVE_OPENMP_SUPPORT_TRUE@                         done  
+@HAVE_OPENMP_SUPPORT_TRUE@                         done
 @HAVE_OPENMP_SUPPORT_TRUE@                    done
 
                     # mpi -------------------------------#
@@ -124,7 +125,19 @@ done
 @HAVE_COMPILER_INSTRUMENTATION_TRUE@done
 
 # Notify about created files
-echo "  GEN    ${file_prefix}serial"
-@HAVE_OPENMP_SUPPORT_TRUE@echo "  GEN    ${file_prefix}omp"
-@HAVE_MPI_SUPPORT_TRUE@echo "  GEN    ${file_prefix}mpi"
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@echo "  GEN    ${file_prefix}mpi_omp"
+
+if test -f "${file_prefix}serial"; then
+    echo "  GEN    ${file_prefix}serial"
+fi
+
+@HAVE_OPENMP_SUPPORT_TRUE@if test -f "${file_prefix}omp"; then
+@HAVE_OPENMP_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}omp"
+@HAVE_OPENMP_SUPPORT_TRUE@fi
+
+@HAVE_MPI_SUPPORT_TRUE@if test -f "${file_prefix}mpi"; then
+@HAVE_MPI_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}mpi"
+@HAVE_MPI_SUPPORT_TRUE@fi
+
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@if test -f "${file_prefix}mpi_omp"; then
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@    echo "  GEN    ${file_prefix}mpi_omp"
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@fi
