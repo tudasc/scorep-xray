@@ -1165,10 +1165,9 @@ parse_bitset( const char*                 value,
                 break;
             }
         }
-        if ( !acceptedValue )
+        if ( !acceptedValue->name )
         {
             UTILS_WARNING( "Value '%s' not in accepted set.", entry );
-            continue;
         }
     }
 
