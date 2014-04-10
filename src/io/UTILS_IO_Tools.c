@@ -71,7 +71,7 @@ UTILS_IO_GetLine( char** buffer, size_t* buffer_size, FILE* file )
 
     if ( !fgets( *buffer, *buffer_size, file ) )
     {
-        if (  feof( file ) )
+        if ( feof( file ) )
         {
             return PACKAGE_ERROR_END_OF_BUFFER;
         }
@@ -92,7 +92,7 @@ UTILS_IO_GetLine( char** buffer, size_t* buffer_size, FILE* file )
         if ( !fgets( &( *buffer )[ *buffer_size - BUFFER_SIZE - 1 ],
                      BUFFER_SIZE + 1, file ) )
         {
-            if (  feof( file ) )
+            if ( feof( file ) )
             {
                 return PACKAGE_ERROR_END_OF_BUFFER;
             }
