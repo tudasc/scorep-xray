@@ -59,7 +59,7 @@ omp_args="thread=omp:pomp_tpd "
 
 mutex_args=
 @HAVE_OPENMP_SUPPORT_TRUE@mutex_args="${mutex_args} mutex=omp"
-@HAVE_PTHREAD_MUTEX_TRUE@mutex_args="${mutex_args} mutex==pthread"
+@HAVE_PTHREAD_MUTEX_TRUE@mutex_args="${mutex_args} mutex=pthread"
 @HAVE_PTHREAD_SPINLOCK_TRUE@mutex_args="${mutex_args} mutex=pthread:spinlock"
 
 cd @abs_top_builddir@
