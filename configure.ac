@@ -1,4 +1,4 @@
-dnl 
+dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
 dnl Copyright (c) 2009-2013,
@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2013,
+dnl Copyright (c) 2009-2014,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2014,
@@ -79,7 +79,7 @@ AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
        test "${ac_scorep_platform_data_provided}" = "no"],
       [AFS_CUSTOM_COMPILERS
        AS_IF([test "x${afs_custom_compilers_given}" = "xno"],
-           [dnl AFS_COMPILER_BACKEND([CC, CXX, F77, FC])       
+           [dnl AFS_COMPILER_BACKEND([CC, CXX, F77, FC])
             AC_SCOREP_WITH_COMPILER_SUITE
             AS_CASE([${ac_scorep_platform}],
                 [mac|mingw],
@@ -151,9 +151,8 @@ AS_IF([test "x${scorep_have_cube_config}" = "xyes"],
        # the backend configure is run.
        AC_REQUIRE([AC_PROG_GREP])
        AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-             [frontend_compilers=${ac_scorep_compilers_frontend}],
-             [frontend_compilers=${ac_scorep_compilers_backend}])
-       FRONTEND_CXX=`${GREP} CXX_FOR_BUILD ${frontend_compilers} | ${AWK} -F "=" '{print $2}' | ${AWK} '{print $1}'`
+             [FRONTEND_CXX=`${GREP} CXX_FOR_BUILD "${ac_scorep_compilers_frontend}" | ${AWK} -F "=" '{print $2}' | ${AWK} '{print $1}'`],
+             [FRONTEND_CXX=`${GREP} CXX           "${ac_scorep_compilers_backend}"  | ${AWK} -F "=" '{print $2}' | ${AWK} '{print $1}'`])
        AS_IF([test "x${FRONTEND_CXX}" != "x${CUBE_READER_CXX}"],
              [adl_RECURSIVE_EVAL([${bindir}], [BINDIR])
               scorep_score_extra_arg=
@@ -176,7 +175,7 @@ AS_IF([test "x${scorep_mpi_user_disabled}" != "xyes"],
 AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cube_config_arg} ${scorep_have_score_build}])
 
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then
-    AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_opari2_config_arg} ${scorep_cube_config_arg}  ${scorep_have_score_build}])
+    AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_opari2_config_arg} ${scorep_cube_config_arg} ${scorep_otf2_config_arg} ${scorep_have_score_build}])
 fi
 
 AC_CONFIG_FILES([
