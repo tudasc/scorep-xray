@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -56,7 +56,7 @@ SCOREP_Profile_InitializeMpi( void )
                                       SCOREP_METRIC_VALUE_UINT64,
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
-                                      "",
+                                      "bytes",
                                       SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
 
     scorep_bytes_recv_metric =
@@ -67,7 +67,7 @@ SCOREP_Profile_InitializeMpi( void )
                                       SCOREP_METRIC_VALUE_UINT64,
                                       SCOREP_METRIC_BASE_DECIMAL,
                                       0,
-                                      "",
+                                      "bytes",
                                       SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
 }
 
