@@ -2,16 +2,16 @@
 
 # NAME
 #     beautify
-# 
+#
 # DESCRIPTION
 #     Beautify all modified and added source files in your svn working copy.
-#     Without beautification, a svn commit may be rejected. Currently, the 
+#     Without beautification, a svn commit may be rejected. Currently, the
 #     beautification is performed by "uncrustify" using the configuration
 #     file "tools/beautifier/beautify.cfg".
 #
 # PRECONDITION
 #     Your working copy must contain everything under trunk, branches/FOO or
-#     tags/BAR, i.e. you checkout was one of 
+#     tags/BAR, i.e. you checkout was one of
 #       "svn co $REPOSITORY_ROOT/project/trunk"
 #       "svn co $REPOSITORY_ROOT/project/branches/<FOO>"
 #       "svn co $REPOSITORY_ROOT/project/tags/<BAR>"
@@ -23,7 +23,7 @@
 #     Call beautify from anywhere in your svn working copy.
 #
 # AUTHOR
-#     Christian Roessel <c.roessel@fz-juelich.de> 
+#     Christian Roessel <c.roessel@fz-juelich.de>
 
 AWK=awk
 BEAUTIFY=uncrustify
@@ -44,7 +44,7 @@ is_ignored()
 
 ################################################################################
 # General idea:
-# - cd to the top-level directory of your svn working copy in order to find 
+# - cd to the top-level directory of your svn working copy in order to find
 #   all modified and added source files and to get access to the beautifier's
 #   config file.
 # - beautify these files (unless they have zero size) in place and make a
@@ -81,7 +81,7 @@ if [ $N_DIRS_UP -gt 0 ]; then
         if [ ! -d ".svn" ]; then
             # Can happen if you checked out just a subdir of (trunk|
             # branch/<FOO>|tag/<BAR>). $BEAUTIFY will not find it's cfg file.
-            echo "Beautifying aborted: It seems that you are working on a partial working copy only as I can't find the top level directory." 
+            echo "Beautifying aborted: It seems that you are working on a partial working copy only as I can't find the top level directory."
             exit 1
         fi
     done

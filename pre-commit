@@ -41,7 +41,7 @@ SVNLOOK=/usr/bin/svnlook
 TAIL=/usr/bin/tail
 
 #### Clean-up handler: begin ###################################################
-# Start all temporary filenames with '/tmp/$$.', so that they get removed 
+# Start all temporary filenames with '/tmp/$$.', so that they get removed
 # at exit.
 
 cleanup()
