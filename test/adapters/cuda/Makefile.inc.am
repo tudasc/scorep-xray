@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
@@ -31,14 +31,14 @@
 
 EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/cuda/run_cuda_test.sh.in \
-    $(SRC_ROOT)test/adapters/cuda/cuda_test.cu 
+    $(SRC_ROOT)test/adapters/cuda/cuda_test.cu
 
 if HAVE_CUDA_SUPPORT
 
 #check_PROGRAMS += cuda_test
 
 #cuda_test_SOURCES = \
-#	$(SRC_ROOT)test/adapters/cuda/cuda_test.cu 
+#	$(SRC_ROOT)test/adapters/cuda/cuda_test.cu
 
 #cuda_test_CPPFLAGS = $(AM_CPPFLAGS) \
 #    -I$(SCOREP_LIBCUPTI_INCDIR)        \

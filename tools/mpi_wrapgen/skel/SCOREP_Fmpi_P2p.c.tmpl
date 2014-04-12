@@ -42,7 +42,7 @@ void FSUB(MPI_Waitany)(int*         count,
   #endif
 
   *ierr = MPI_Waitany(*count, array, index, status);
-  
+
   if ((*index != MPI_UNDEFINED) && (*index >= 0))
   {
     (*index)++;
@@ -74,7 +74,7 @@ void FSUB(MPI_Waitsome)(int*         incount,
   #endif
 
   *ierr = MPI_Waitsome(*incount, array_of_requests, outcount,
-                array_of_indices, array_of_statuses); 
+                array_of_indices, array_of_statuses);
   if (*outcount != MPI_UNDEFINED)
   {
     for (i=0; i < *outcount; i++)
@@ -110,12 +110,12 @@ void FSUB(MPI_Testany)(int*         count,
   #endif
 
   *ierr  = MPI_Testany(*count, array_of_requests, index, flag, status);
-  
+
   /* convert index to Fortran */
-  if ((*ierr == MPI_SUCCESS) 
-      && *flag 
-      && (*index != MPI_UNDEFINED) 
-      && (*index >= 0)) 
+  if ((*ierr == MPI_SUCCESS)
+      && *flag
+      && (*index != MPI_UNDEFINED)
+      && (*index >= 0))
   {
     (*index)++;
   }
@@ -230,7 +230,7 @@ void FSUB(MPI_Wait)(MPI_Fint *request,
 
   lrequest = PMPI_Request_f2c(*request);
   *request = PMPI_Request_c2f(lrequest);
-  
+
   #if HAVE(MPI_STATUS_IGNORE)
   if (status == scorep_mpi_fortran_status_ignore)
   {
@@ -240,7 +240,7 @@ void FSUB(MPI_Wait)(MPI_Fint *request,
 
   *ierr    = MPI_Wait(&lrequest, c_status_ptr);
 
-  if (*ierr == MPI_SUCCESS) 
+  if (*ierr == MPI_SUCCESS)
   {
     #if HAVE(MPI_STATUS_IGNORE)
     if (status != scorep_mpi_fortran_status_ignore)
@@ -270,7 +270,7 @@ void FSUB(MPI_Waitall)(MPI_Fint* count,
   if (*count > 0)
   {
     lrequest = alloc_request_array(*count);
-    
+
     #if HAVE(MPI_STATUSES_IGNORE)
     if (array_of_statuses != scorep_mpi_fortran_statuses_ignore)
     #endif
@@ -290,7 +290,7 @@ void FSUB(MPI_Waitall)(MPI_Fint* count,
   }
 
   *ierr = MPI_Waitall(*count, lrequest, c_status);
-  
+
   for (i=0; i < *count; i++)
   {
     array_of_requests[i] = MPI_Request_c2f(lrequest[i]);
@@ -337,7 +337,7 @@ void FSUB(MPI_Waitany)(MPI_Fint* count,
       lrequest[i] = PMPI_Request_f2c(array_of_requests[i]);
     }
   }
-  
+
   #if HAVE(MPI_STATUS_IGNORE)
   if (status == scorep_mpi_fortran_status_ignore)
   {
@@ -352,7 +352,7 @@ void FSUB(MPI_Waitany)(MPI_Fint* count,
     if (*index >= 0)
     {
       array_of_requests[*index] = PMPI_Request_c2f(lrequest[*index]);
-    
+
       /* See the description of waitany in the standard;
          the Fortran index ranges are from 1, not zero */
       (*index)++;
@@ -390,7 +390,7 @@ void FSUB(MPI_Waitsome)(MPI_Fint* incount,
   if (*incount > 0)
   {
     lrequest = alloc_request_array(*incount);
-    
+
     #if HAVE(MPI_STATUSES_IGNORE)
     if (array_of_statuses != scorep_mpi_fortran_statuses_ignore)
     #endif
@@ -403,7 +403,7 @@ void FSUB(MPI_Waitsome)(MPI_Fint* incount,
       c_status = MPI_STATUSES_IGNORE;
     }
     #endif
-      
+
     for (i=0; i<*incount; i++)
     {
       lrequest[i] = PMPI_Request_f2c(array_of_requests[i]);
@@ -411,8 +411,8 @@ void FSUB(MPI_Waitsome)(MPI_Fint* incount,
   }
 
   /* call C wrapper function */
-  *ierr = MPI_Waitsome(*incount, lrequest, outcount, indices, c_status); 
-  
+  *ierr = MPI_Waitsome(*incount, lrequest, outcount, indices, c_status);
+
   /* convert requests and indices back to fortran */
   if ((*ierr == MPI_SUCCESS) && (*outcount != MPI_UNDEFINED))
   {
@@ -432,7 +432,7 @@ void FSUB(MPI_Waitsome)(MPI_Fint* incount,
         {
           if (indices[j++] == i) found = 1;
         }
-        
+
         if (!found)
         {
           array_of_requests[i] = PMPI_Request_c2f(lrequest[i]);
@@ -537,14 +537,14 @@ void FSUB(MPI_Testany)(MPI_Fint* count,
   #endif
 
   *ierr = MPI_Testany(*count, lrequest, index, flag, c_status_ptr);
-  
+
   if ((*ierr == MPI_SUCCESS) && (*index != MPI_UNDEFINED))
   {
     if (*flag && *index >= 0)
     {
       /* index may be MPI_UNDEFINED if all are null */
       array_of_requests[*index] = PMPI_Request_c2f(lrequest[*index]);
-    
+
       /* See the description of waitany in the standard;
          the Fortran index ranges are from 1, not zero */
       (*index)++;
@@ -663,8 +663,8 @@ void FSUB(MPI_Testsome)(MPI_Fint* incount,
     }
   }
 
-  *ierr = MPI_Testsome(*incount, lrequest, outcount, indices, c_status); 
-  
+  *ierr = MPI_Testsome(*incount, lrequest, outcount, indices, c_status);
+
   if ((*ierr == MPI_SUCCESS) && (*outcount != MPI_UNDEFINED))
   {
     for (i=0; i<*incount; i++)
@@ -729,7 +729,7 @@ void FSUB(MPI_Startall)(MPI_Fint* count,
   }
 
   *ierr = MPI_Startall(*count, lrequest);
-  
+
   if (*ierr == MPI_SUCCESS)
   {
     for (i=0; i<*count; i++)
@@ -752,7 +752,7 @@ void FSUB(MPI_Request_free)(MPI_Fint* request,
   MPI_Request lrequest = PMPI_Request_f2c(*request);
 
   *ierr = MPI_Request_free(&lrequest);
-  
+
   if (*ierr == MPI_SUCCESS)
   {
     *request = PMPI_Request_c2f(lrequest);
@@ -773,8 +773,8 @@ void FSUB(MPI_Cancel)(MPI_Fint *request,
 {
   MPI_Request lrequest;
 
-  lrequest = PMPI_Request_f2c(*request);  
-  *ierr = MPI_Cancel(&lrequest); 
+  lrequest = PMPI_Request_f2c(*request);
+  *ierr = MPI_Cancel(&lrequest);
 }
 #endif
 

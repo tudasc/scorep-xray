@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
@@ -48,7 +48,7 @@ oa_f_test_CPPFLAGS += -DSCOREP_USER_ENABLE=1
 endif
 
 if SCOREP_COMPILER_PGI
-oa_f_test_CPPFLAGS += -DSCOREP_COMPILER_PGI=1 
+oa_f_test_CPPFLAGS += -DSCOREP_COMPILER_PGI=1
 endif
 
 oa_f_test_LDADD = $(serial_libadd)

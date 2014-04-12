@@ -1,6 +1,6 @@
 program MAIN
     !***********************************************************************
-    ! program to solve a finite difference                                 * 
+    ! program to solve a finite difference                                 *
     ! discretization of Helmholtz equation :                               *
     ! (d2/dx2)u + (d2/dy2)u - alpha u = f                                  *
     ! using Jacobi iterative method.                                       *
@@ -8,10 +8,10 @@ program MAIN
     ! Modified: Abdelali Malih,    Aachen University (RWTH), 2007          *
     ! Modified: Sanjiv Shah,       Kuck and Associates, Inc. (KAI), 1998   *
     ! Author  : Joseph Robicheaux, Kuck and Associates, Inc. (KAI), 1998   *
-    !                                                                      * 
+    !                                                                      *
     ! Directives are used in this code to achieve paralleism.              *
     ! All do loops are parallized with default 'static' scheduling.        *
-    !                                                                      * 
+    !                                                                      *
     ! Input :  n - grid dimension in x direction                           *
     !          m - grid dimension in y direction                           *
     !          alpha - Helmholtz constant (always greater than 0.0)        *
@@ -23,12 +23,12 @@ program MAIN
     !       : u(n,m) - Dependent variable (solutions)                      *
     !       : f(n,m) - Right hand side function                            *
     !***********************************************************************
-  
+
     use VariableDef
     use JacobiMod
     implicit none
     double precision get_wtime
-  
+
     TYPE(JacobiData) :: myData
 
 
@@ -62,7 +62,7 @@ program MAIN
 
 !    /* cleanup */
     call Finish(myData)
-    
+
 end program MAIN
 
 subroutine Init (myData)
@@ -127,14 +127,14 @@ subroutine InitializeMatrix (myData)
     use VariableDef
     implicit none
 
-    type(JacobiData), intent(inout) :: myData 
-    !.. Local Scalars .. 
+    type(JacobiData), intent(inout) :: myData
+    !.. Local Scalars ..
     integer :: i, j, xx, yy
-    !.. Intrinsic Functions .. 
+    !.. Intrinsic Functions ..
     intrinsic DBLE
-   
+
     ! Initilize initial condition and RHS
-  
+
     do j = myData%iRowFirst, myData%iRowLast
         do i = 0, myData%iCols -1
             xx = INT(-1.0 + myData%fDx*DBLE(i)) ! -1 < x < 1
@@ -186,9 +186,9 @@ end subroutine PrintResults
 subroutine CheckError(myData)
     use VariableDef
     implicit none
-    
+
     type(JacobiData), intent(inout) :: myData
-    !.. Local Scalars .. 
+    !.. Local Scalars ..
     integer :: i, j, iErr
     double precision :: error, temp, xx, yy
     !.. Intrinsic Functions ..
@@ -206,7 +206,7 @@ subroutine CheckError(myData)
     end do
 
     myData%fError = sqrt(error) / DBLE(myData%iCols * myData%iRows)
-   
+
 end subroutine CheckError
 
 double precision function get_wtime()

@@ -1,10 +1,10 @@
 #ifndef SCOREP_CONFIG_TOOL_MPI_H
 #define SCOREP_CONFIG_TOOL_MPI_H
 
-/* 
+/*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013, 
+ * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2013,
@@ -13,7 +13,7 @@
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
- * 
+ *
  */
 
 /* @configure_input@ */

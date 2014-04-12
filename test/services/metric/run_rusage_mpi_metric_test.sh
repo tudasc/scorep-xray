@@ -1,9 +1,9 @@
 #!/bin/bash
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2011,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -26,7 +26,7 @@
 OTF2_PRINT=@OTF2_BINDIR@/otf2-print
 SRC_ROOT=../..
 
-MPIRUN=mpiexec 
+MPIRUN=mpiexec
 
 TEST_DATA_DIR=$SRC_ROOT/test/services/metric/data
 

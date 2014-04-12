@@ -176,8 +176,8 @@ static void runCopyComputeOverlap(int nstreams)
 	int *hAligned_a = 0;  // pointer to the array data in host memory (aligned to MEMORY_ALIGNMENT)
 
 	// allocate host memory (pinned is required for achieve asynchronicity)
-	CUDART_CALL(cudaMallocHost((void**)&h_a, nbytes), "cudaMallocHost"); 
-	hAligned_a = h_a; 
+	CUDART_CALL(cudaMallocHost((void**)&h_a, nbytes), "cudaMallocHost");
+	hAligned_a = h_a;
 
 	// allocate device memory
 	int *d_a = 0, *d_c = 0;             // pointers to data and init value in the device memory
@@ -278,10 +278,10 @@ static void runConcurrentKernels(int nstreams)
 	cudaFree(d_ac);
 }
 
-/* 
+/*
  * Checks if a CUDA runtime API call returns successful and respectively prints
  * the error.
- * 
+ *
  * @param ecode the CUDA error code
  * @param msg a message to get more detailed information about the error
  * @param the corresponding file

@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
@@ -43,7 +43,7 @@ OBJECTS = \
 
 #LIBS_INTERNAL =
 
-all: 
+all:
 
 
 #------------------------------------------------------------------------------

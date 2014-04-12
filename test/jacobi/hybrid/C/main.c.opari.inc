@@ -7,8 +7,8 @@ extern int64_t __attribute__((aligned (16))) FORTRAN_MANGLED(pomp_tpd);
 static POMP2_Region_handle pomp2_region_1 = NULL;
 #define pomp2_ctc_1 "242*regionType=parallelfor*sscl=main.c:195:195*escl=main.c:210:210**"
 
-#ifdef __cplusplus 
- extern "C" 
+#ifdef __cplusplus
+ extern "C"
 #endif
 void POMP2_Init_reg_mg6lu98tlexp_1()
 {

@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
@@ -48,7 +48,7 @@ SCOREP_POMP_MGMT_FORTRAN_FLAGS =         \
     -I$(PUBLIC_INC_DIR)                  \
     @OPARI2_CPPFLAGS@                    \
     $(UTILS_CPPFLAGS)                    \
-    -I$(INC_DIR_MUTEX)                    
+    -I$(INC_DIR_MUTEX)
 
 SCOREP_POMP_MGMT_FORTRAN_SOURCES =                     \
     $(SRC_ROOT)src/adapters/pomp/SCOREP_Pomp_CommonF.c \

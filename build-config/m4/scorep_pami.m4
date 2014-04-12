@@ -1,6 +1,6 @@
 dnl -*- mode: autoconf -*-
 
-dnl 
+dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
 dnl Copyright (c) 2013
@@ -12,12 +12,12 @@ dnl directory for details.
 dnl
 
 AC_DEFUN([SCOREP_PAMI], [
-dnl Location and names of pami files unfortunatly not fixed. Search in all 
-dnl known locations. See 
-dnl http://www.fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUQUEEN/Documentation/MemoToUsersV1R2M1.html 
+dnl Location and names of pami files unfortunatly not fixed. Search in all
+dnl known locations. See
+dnl http://www.fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUQUEEN/Documentation/MemoToUsersV1R2M1.html
 dnl and http://www.redbooks.ibm.com/redbooks/pdfs/sg247948.pdf
 
-    AS_IF([test "x${ac_scorep_platform}" != "xbgq"], 
+    AS_IF([test "x${ac_scorep_platform}" != "xbgq"],
         [AC_MSG_ERROR([macro SCOREP[]_PAMI called on platform != Blue Gene/Q. This should not happen. Please contact <AC_PACKAGE_BUGREPORT>.])
         ])
 
@@ -42,7 +42,7 @@ dnl and http://www.redbooks.ibm.com/redbooks/pdfs/sg247948.pdf
          # that will reside in one of a few fixed directories.
          AC_MSG_ERROR([pami.h header not found. Please search for pami.h under /bgsys/drivers/ppcfloor/. Please provide your search result to <AC_PACKAGE_BUGREPORT>. You will be provided with an updated Score-P version in a timely manner. Thanks.])
         ])
-    
+
     # check for -lpami or -lpami-gcc.
     scorep_ldflags_save="${LDFLAGS}"
     scorep_pami_ldflags_common="-L/bgsys/drivers/ppcfloor/spi/lib"
@@ -51,12 +51,12 @@ dnl and http://www.redbooks.ibm.com/redbooks/pdfs/sg247948.pdf
         for scorep_pami_lib in "pami-gcc" "pami"; do
             LDFLAGS="${scorep_pami_ldflags} ${scorep_pami_ldflags_common}"
             AC_CHECK_LIB([${scorep_pami_lib}],
-                [PAMI_Client_create], 
+                [PAMI_Client_create],
                 [scorep_pami_lib_found="yes"
                  AC_SUBST([SCOREP_PAMI_LDFLAGS], ["${scorep_pami_ldflags} ${scorep_pami_ldflags_common}"])
                  AC_SUBST([SCOREP_PAMI_LIBS], ["-l${scorep_pami_lib} -lstdc++ -lSPI -lSPI_cnk -lrt"])
                  break
-                ], 
+                ],
                 [scorep_pami_lib_found="no"],
                 [-lstdc++ -lSPI -lSPI_cnk -lrt])
         done

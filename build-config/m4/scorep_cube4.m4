@@ -1,9 +1,9 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2011,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -24,14 +24,14 @@ dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([AC_SCOREP_CUBE_READER], [
 
-m4_ifdef([AC_SCOREP_SCORE], 
+m4_ifdef([AC_SCOREP_SCORE],
          [_AC_SCOREP_CUBE_READER_HEADER_AND_LIB
           AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 1])],
          [AS_IF([test -n "${scorep_cube_bindir}"],
                 [CUBE_READER_CXX="`${scorep_cube_bindir}/cube-config --reader-cxx`"
-                 AS_IF([test "x${CXX}" = "x${CUBE_READER_CXX}"], 
+                 AS_IF([test "x${CXX}" = "x${CUBE_READER_CXX}"],
                        [_AC_SCOREP_CUBE_READER_HEADER_AND_LIB],
-                       [# unfortunatly ../build-score is not a valid path for 
+                       [# unfortunatly ../build-score is not a valid path for
                         # AC_CONFIG_SUBDIR_CUSTOM so we need to trigger the score
                         # configure from the toplevel configure
                         AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 0])])],
@@ -58,8 +58,8 @@ AC_LANG_PUSH([C++])
 ## Check presence of cube reader header
 scorep_save_cppflags="${CPPFLAGS}"
 CPPFLAGS="${CUBE_READER_CPPFLAGS} ${CPPFLAGS}"
-AC_CHECK_HEADER([Cube.h], 
-                [has_cube_reader_header="yes"], 
+AC_CHECK_HEADER([Cube.h],
+                [has_cube_reader_header="yes"],
                 [has_cube_reader_header="no"])
 
 ## Check presence of cube reader library

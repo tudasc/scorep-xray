@@ -27,7 +27,7 @@
  * directory for details.
  *
  */
- 
+
  /**
   * @file
   *
@@ -86,9 +86,9 @@ Y             [Yy]
 Z             [Zz]
 
 
-%StartConditions ZEILE COMMENT1 COMMENT2 
+%StartConditions ZEILE COMMENT1 COMMENT2
 
-%% 
+%%
   BEGIN ZEILE;
 
 <ZEILE>"//"                              {BEGIN COMMENT1;}
@@ -144,7 +144,7 @@ Z             [Zz]
 <ZEILE>[;,=]                             |
 <ZEILE>\]                                {return (yytext[0]);}
 <ZEILE>[0-9]+                            {yylval.Zahl = atoi(yytext); return (T_ZAHL);}
-<ZEILE>\"[^ ";\t\n]+\"                   { 
+<ZEILE>\"[^ ";\t\n]+\"                   {
                                            //yytext string size including trailing 0
                                            int old_string_size= strlen(yytext) + 1;
                                            //string to be returned equal to the yytext but remove ""
@@ -168,7 +168,7 @@ Z             [Zz]
 
 int yywrap ()
 {
-  
+
   return 1;
 }
 

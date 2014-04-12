@@ -12,8 +12,8 @@ static POMP2_Region_handle pomp2_region_2 = NULL;
 static POMP2_Region_handle pomp2_region_3 = NULL;
 #define pomp2_ctc_3 "246*regionType=parallelfor*sscl=jacobi.c:154:154*escl=jacobi.c:161:161**"
 
-#ifdef __cplusplus 
- extern "C" 
+#ifdef __cplusplus
+ extern "C"
 #endif
 void POMP2_Init_reg_pg6lu98tlh0n_3()
 {

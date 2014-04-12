@@ -50,7 +50,7 @@
       SCOREP_RECORDING_OFF()
       SCOREP_RECORDING_IS_ON( l )
       if (l .eq. 0) then
-         SCOREP_RECORDING_ON()  
+         SCOREP_RECORDING_ON()
       endif
       SCOREP_USER_REGION_BEGIN(region1,"Region1",type)
       SCOREP_USER_REGION_END(region1)
@@ -59,7 +59,7 @@
 
       program ScorepTest
 
-      integer * 8 i1 
+      integer * 8 i1
       double precision r1
       integer l
       SCOREP_USER_REGION_DEFINE(region1)
@@ -75,7 +75,7 @@
       r1 = 24.5
 
       SCOREP_USER_FUNC_BEGIN("ScorepTest")
-      SCOREP_USER_REGION_INIT(region2,"Region2",0) 
+      SCOREP_USER_REGION_INIT(region2,"Region2",0)
       SCOREP_USER_REGION_BEGIN(region1,"Region1",0)
       SCOREP_USER_REGION_ENTER(region2)
       SCOREP_USER_PARAMETER_INT64(iparam,"iparam",-1)
@@ -95,7 +95,7 @@
       SCOREP_RECORDING_OFF()
       SCOREP_RECORDING_IS_ON( l )
       if (l .eq. 0) then
-         SCOREP_RECORDING_ON()  
+         SCOREP_RECORDING_ON()
       endif
       SCOREP_USER_REGION_BEGIN(region1,"Region1",SCOREP_USER_REGION_TYPE_FUNCTION)
       SCOREP_USER_REGION_END(region1)

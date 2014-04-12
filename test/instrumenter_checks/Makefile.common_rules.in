@@ -2,7 +2,7 @@
 
 ## @configure_input@
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
@@ -68,7 +68,7 @@ $(BINDIR)/$(CODE)-$(PARADIGM)-fc$(SUFFIX): $(OBJECTS) $(TOOLS)
 	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(FC) $(FCFLAGS) -o $@ $(OBJECTS) $(LIBS) $(LIBS_INTERNAL)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(TOOLS)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CC) $(CFLAGS) -o $@ -c $< 
+	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CC) $(CFLAGS) -o $@ -c $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(TOOLS)
 	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CXX) $(CXXFLAGS) -o $@ -c $<

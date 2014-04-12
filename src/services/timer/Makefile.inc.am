@@ -35,9 +35,9 @@ libscorep_timer_la_CPPFLAGS = \
     $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/services/include
 
-# compile just one of the following scorep_timer_*.c. The conditionals are set in 
+# compile just one of the following scorep_timer_*.c. The conditionals are set in
 # build-config/m4/ac-scorep-timers.m4
-if SCOREP_TIMER_BGP_GET_TIMEBASE 
+if SCOREP_TIMER_BGP_GET_TIMEBASE
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_bgp_get_timebase.c
 libscorep_timer_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor/arch/include
 libscorep_timer_la_LDFLAGS = -L$(TIMER_LIBDIR)
@@ -48,15 +48,15 @@ libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_bgq_mft
 libscorep_timer_la_CPPFLAGS += -I/bgsys/drivers/ppcfloor
 endif
 
-if SCOREP_TIMER_CLOCK_GETTIME    
+if SCOREP_TIMER_CLOCK_GETTIME
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_clock_gettime.c
 endif
 
-if SCOREP_TIMER_CRAY_RTCLOCK     
+if SCOREP_TIMER_CRAY_RTCLOCK
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_cray_rtclock.c
 endif
 
-if SCOREP_TIMER_CYCLE_COUNTER_TSC    
+if SCOREP_TIMER_CYCLE_COUNTER_TSC
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_cycle_counter_tsc.c
 endif
 
@@ -64,47 +64,47 @@ if SCOREP_TIMER_CYCLE_COUNTER_ITC
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_cycle_counter_itc.c
 endif
 
-if SCOREP_TIMER_CRAY_DCLOCK      
+if SCOREP_TIMER_CRAY_DCLOCK
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_cray_dclock.c
 endif
 
-if SCOREP_TIMER_SUN_GETHRTIME    
+if SCOREP_TIMER_SUN_GETHRTIME
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_sun_gethrtime.c
 endif
 
-if SCOREP_TIMER_GETTIMEOFDAY     
+if SCOREP_TIMER_GETTIMEOFDAY
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_gettimeofday.c
 endif
 
-if SCOREP_TIMER_INTEL_MMTIMER    
+if SCOREP_TIMER_INTEL_MMTIMER
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_intel_mmtimer.c
 endif
 
-if SCOREP_TIMER_PAPI_REAL_CYC    
+if SCOREP_TIMER_PAPI_REAL_CYC
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_papi_real_cyc.c
 endif
 
-if SCOREP_TIMER_PAPI_REAL_USEC   
+if SCOREP_TIMER_PAPI_REAL_USEC
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_papi_real_usec.c
 endif
 
-if SCOREP_TIMER_IBM_REALTIME   
+if SCOREP_TIMER_IBM_REALTIME
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_power_realtime.c
 endif
 
-if SCOREP_TIMER_CRAY_RTC         
+if SCOREP_TIMER_CRAY_RTC
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_cray_rtc.c
 endif
 
-if SCOREP_TIMER_BGL_RTS_GET_TIMEBASE 
+if SCOREP_TIMER_BGL_RTS_GET_TIMEBASE
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_bgl_rts_get_timebase.c
 libscorep_timer_la_CPPFLAGS += -I/bgl/BlueLight/ppcfloor/bglsys/include
 endif
 
-if SCOREP_TIMER_IBM_SWITCH_CLOCK 
+if SCOREP_TIMER_IBM_SWITCH_CLOCK
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_ibm_switch_clock.c
 endif
 
-if SCOREP_TIMER_NEC_SYSSX_HGTIME 
+if SCOREP_TIMER_NEC_SYSSX_HGTIME
 libscorep_timer_la_SOURCES += $(SRC_ROOT)src/services/timer/scorep_timer_nec_syssx_hgtime.c
 endif

@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2013
@@ -75,7 +75,7 @@ libscorep_mutex_pthread_spinlock_la_LDFLAGS = \
     $(library_api_version_ldflags) \
     $(PTHREAD_LIBS)
 
-endif HAVE_PTHREAD_SPINLOCK 
+endif HAVE_PTHREAD_SPINLOCK
 
 lib_LTLIBRARIES += libscorep_mutex_mockup.la
 libscorep_mutex_mockup_la_SOURCES = \

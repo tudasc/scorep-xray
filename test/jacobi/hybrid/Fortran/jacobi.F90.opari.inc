@@ -20,12 +20,12 @@
       integer ( kind=4 ) :: pomp2_lib_get_max_threads
       logical :: pomp2_test_lock
       integer ( kind=4 ) :: pomp2_test_nest_lock
-      integer( kind=8 ) pomp_tpd 
-      common /pomp_tpd/ pomp_tpd 
+      integer( kind=8 ) pomp_tpd
+      common /pomp_tpd/ pomp_tpd
 !$omp threadprivate(/pomp_tpd/)
-      integer ( kind=8 ) :: pomp2_old_task, pomp2_new_task 
-      logical :: pomp2_if 
-      integer ( kind=4 ) :: pomp2_num_threads 
+      integer ( kind=8 ) :: pomp2_old_task, pomp2_new_task
+      logical :: pomp2_if
+      integer ( kind=4 ) :: pomp2_num_threads
       common /cbkh6l759tlp3ei/ pomp2_region_1,&
               pomp2_region_2,&
               pomp2_region_3

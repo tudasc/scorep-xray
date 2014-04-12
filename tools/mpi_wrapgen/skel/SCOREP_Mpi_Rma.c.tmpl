@@ -40,7 +40,7 @@ int MPI_Get(void*        origin_addr,
             MPI_Aint     target_disp,
             int          target_count,
             MPI_Datatype target_datatype,
-            MPI_Win      win) 
+            MPI_Win      win)
 {
   int return_val;
 
@@ -59,13 +59,13 @@ int MPI_Get(void*        origin_addr,
 /* One-sided communication not handled in first version
     dest_proc_rank = scorep_mpi_win_rank_to_pe( target_rank, win );
     win_handle = scorep_mpi_win_id( win );
-*/    
+*/
     /* in MPI_GET the target buffer is remote */
 /* One-sided communication not handled in first version
     PMPI_Type_size(target_datatype, &sendsz);
     esd_mpi_get_1ts_remote(dest_proc_rank, win_handle, SCOREP_NEXT_RMA_ID, target_count * sendsz);
-*/    
-    return_val = PMPI_Get( origin_addr, origin_count, 
+*/
+    return_val = PMPI_Get( origin_addr, origin_count,
                   origin_datatype, target_rank, target_disp,
                   target_count, target_datatype, win );
 
@@ -79,7 +79,7 @@ int MPI_Get(void*        origin_addr,
   }
   else
   {
-    return_val = PMPI_Get(origin_addr, origin_count, 
+    return_val = PMPI_Get(origin_addr, origin_count,
                   origin_datatype, target_rank, target_disp,
                   target_count, target_datatype, win);
   }
@@ -108,11 +108,11 @@ int MPI_Get(void*        origin_addr,
 int MPI_Win_create(void*    base,
                    MPI_Aint size,
                    int      disp_unit,
-                   MPI_Info info, 
+                   MPI_Info info,
                    MPI_Comm comm,
-                   MPI_Win* win) 
+                   MPI_Win* win)
 {
-  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA); 
+  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
   int       return_val;
 
   if (event_gen_active)
@@ -121,7 +121,7 @@ int MPI_Win_create(void*    base,
 
     SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_WIN_CREATE]);
   }
-      
+
   return_val = PMPI_Win_create(base, size, disp_unit,
                 info, comm, win );
 
@@ -151,9 +151,9 @@ int MPI_Win_create(void*    base,
  * @ingroup rma
  * Triggers an enter and exit event.
  */
-int MPI_Win_free(MPI_Win* win) 
+int MPI_Win_free(MPI_Win* win)
 {
-  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA); 
+  const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
   int                 return_val;
 /* One-sided communication not handled in first version
   SCOREP_InterimRmaWindowHandle win_handle;
@@ -168,7 +168,7 @@ int MPI_Win_free(MPI_Win* win)
     win_handle = scorep_mpi_win_rank_id(*win);
 */
   }
-      
+
 /* One-sided communication not handled in first version
   scorep_mpi_win_rank_free(*win);
 */
@@ -200,8 +200,8 @@ int MPI_Win_free(MPI_Win* win)
  * @ingroup rma
  * Triggers an enter and exit event.
  */
-int MPI_Win_complete(MPI_Win win) 
-{ 
+int MPI_Win_complete(MPI_Win win)
+{
   int return_val;
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
@@ -234,7 +234,7 @@ int MPI_Win_complete(MPI_Win win)
  * Triggers an enter and exit event.
  */
 int MPI_Win_fence(int     assert,
-                  MPI_Win win) 
+                  MPI_Win win)
 {
   int return_val;
 
@@ -271,7 +271,7 @@ int MPI_Win_fence(int     assert,
 int MPI_Win_lock(int     lock_type,
                  int     rank,
                  int     assert,
-                 MPI_Win win) 
+                 MPI_Win win)
 {
   int return_val;
 
@@ -284,7 +284,7 @@ int MPI_Win_lock(int     lock_type,
 /* One-sided communication not handled in first version
     esd_mpi_win_lock( rank, scorep_mpi_win_rank_id(win), lock_type==MPI_LOCK_EXCLUSIVE);
 */
-    return_val = PMPI_Win_lock( lock_type, rank, 
+    return_val = PMPI_Win_lock( lock_type, rank,
                       assert, win );
 
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WIN_LOCK]);
@@ -293,7 +293,7 @@ int MPI_Win_lock(int     lock_type,
   }
   else
   {
-    return_val = PMPI_Win_lock( lock_type, rank, 
+    return_val = PMPI_Win_lock( lock_type, rank,
                       assert, win );
   }
   return return_val;
@@ -311,7 +311,7 @@ int MPI_Win_lock(int     lock_type,
  */
 int MPI_Win_post(MPI_Group group,
                  int       assert,
-                 MPI_Win   win) 
+                 MPI_Win   win)
 {
   int return_val;
 
@@ -350,7 +350,7 @@ int MPI_Win_post(MPI_Group group,
  */
 int MPI_Win_start(MPI_Group group,
                   int       assert,
-                  MPI_Win   win) 
+                  MPI_Win   win)
 {
   int return_val;
 
@@ -388,7 +388,7 @@ int MPI_Win_start(MPI_Group group,
  * Triggers an enter and exit event.
  */
 int MPI_Win_test(MPI_Win win,
-                 int*    flag) 
+                 int*    flag)
 {
   int return_val;
 
@@ -399,9 +399,9 @@ int MPI_Win_test(MPI_Win win,
     SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_WIN_TEST]);
 
     return_val = PMPI_Win_test(win, flag);
-    
+
 /* One-sided communication not handled in first version
-    if (*flag != 0) 
+    if (*flag != 0)
     {
       esd_mpi_winexit(scorep_mpi_regid[SCOREP__MPI_WIN_TEST],
                       scorep_mpi_win_rank_id(win), scorep_mpi_winacc_get_gid(win, 0), 1);
@@ -436,7 +436,7 @@ int MPI_Win_test(MPI_Win win,
  * Triggers an enter and exit event.
  */
 int MPI_Win_unlock(int     rank,
-                   MPI_Win win) 
+                   MPI_Win win)
 {
   int return_val;
 
@@ -450,7 +450,7 @@ int MPI_Win_unlock(int     rank,
 /* One-sided communication not handled in first version
     esd_mpi_win_unlock(rank, scorep_mpi_win_rank_id(win));
 */
-    
+
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WIN_UNLOCK]);
 
     SCOREP_MPI_EVENT_GEN_ON();
@@ -473,7 +473,7 @@ int MPI_Win_unlock(int     rank,
  * @ingroup rma
  * Triggers an enter and exit event.
  */
-int MPI_Win_wait(MPI_Win win) 
+int MPI_Win_wait(MPI_Win win)
 {
   int return_val;
 

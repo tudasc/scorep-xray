@@ -1,9 +1,9 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012, 
+## Copyright (c) 2009-2012,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -19,8 +19,8 @@
 AC_DEFUN([AC_SCOREP_PDT], [
 
 ## Evalute parameters
-AC_ARG_WITH([pdt], 
-            [AS_HELP_STRING([--with-pdt=<path-to-binaries>], 
+AC_ARG_WITH([pdt],
+            [AS_HELP_STRING([--with-pdt=<path-to-binaries>],
                             [Specifies the path to the program database toolkit (PDT) binaries, e.g., cparse.])],
 
             [provided_pdt_path=$withval$PATH_SEPARATOR$PATH],
@@ -44,7 +44,7 @@ AS_IF([test -n "${real_pdt_path}"],
       [have_pdt=no
        ## Temporarily disable PDT on Blue Gene systems until PDT bug is fixed,
        ## see scorep:ticket:508
-       AS_IF([(test "x${ac_scorep_platform}" = "xbgp") || (test "x${ac_scorep_platform}" = "xbgq") || (test "x${ac_scorep_platform}" = "xbgl")], 
+       AS_IF([(test "x${ac_scorep_platform}" = "xbgp") || (test "x${ac_scorep_platform}" = "xbgq") || (test "x${ac_scorep_platform}" = "xbgl")],
              [AS_UNSET([real_pdt_path])
               have_pdt="no, currently not available on Blue Gene platforms"
               AC_MSG_WARN([PDT on Blue Gene platforms currently not supported.])])])

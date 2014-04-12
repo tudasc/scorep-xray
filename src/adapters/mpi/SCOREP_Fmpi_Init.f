@@ -65,4 +65,4 @@
       INCLUDE  'mpif.h'
       CALL scorep_mpi_fortran_init_unweighted(MPI_UNWEIGHTED)
       END
-      
+

@@ -9,4 +9,4 @@ scorep_ftrace_getname_len:
 	                ldl     $s123,8*8-4(,$s123)     # ($s123) = length of caller's name
 	                b       0(,$s32)
 
-	
+

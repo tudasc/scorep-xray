@@ -2,7 +2,7 @@
 <adapter>
 <dependencies>
         <!-- A list of libraries that the binary instrumenter links to the
-             application. e use full pathes in order to be sure that the 
+             application. e use full pathes in order to be sure that the
              resulting executable can be found independent of the LD-LIBRARY_PATH.
              We have 4 versions of this script linking 4 different libraries, one
              script for each programming paradigm: scorep_serial.so, scorep_omp.so
@@ -22,7 +22,7 @@
 <adapterfilter>
 	<or>
             <!-- Possibility to exclude a function set, we exclude here all
-                 functions that share exit ot entry points -->         
+                 functions that share exit ot entry points -->
 	    <property name="hasoverlay" />
 	    <functionnames match="prefix">POMP2_Init_regions</functionnames>
             <functionnames match="regex">[A-Z|a-z|_|0-9]*._omp_fn.[0-9]</functionnames>
@@ -61,7 +61,7 @@
 						SCOREP_Definitions_NewSourceFile(@FILE@),
 						@LINE@,@LINE@,1,1);
 	</init>
-   
+
         <!-- Code executed on enters -->
 	<enter>
                 if ( SCOREP_IsInitialized() != 0 )

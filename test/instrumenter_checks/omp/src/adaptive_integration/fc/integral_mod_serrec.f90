@@ -2,7 +2,7 @@ module integral_module
    use function_module
    implicit none
    public :: integral
- 
+
  contains
 
  function integral (f, a, b, tolerance)  &

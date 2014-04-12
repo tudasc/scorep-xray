@@ -32,8 +32,8 @@ static POMP2_Region_handle pomp2_region_11 = NULL;
 static POMP2_Region_handle pomp2_region_12 = NULL;
 #define pomp2_ctc_12 "249*regionType=sections*sscl=oa_omp_test.c:101:101*escl=oa_omp_test.c:111:111*numSections=2**"
 
-#ifdef __cplusplus 
- extern "C" 
+#ifdef __cplusplus
+ extern "C"
 #endif
 void POMP2_Init_reg_1l6l1fetlr3qk_12()
 {

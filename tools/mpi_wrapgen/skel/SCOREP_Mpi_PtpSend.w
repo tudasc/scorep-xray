@@ -23,7 +23,7 @@ ${proto:c}
 
     SCOREP_MPI_EVENT_GEN_OFF();
     SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
-    
+
     ${guard:hooks}
       ${check:hooks}
         ${call:prehook};
@@ -36,7 +36,7 @@ ${proto:c}
                      tag, count * sz);
     }
     return_val = ${call:pmpi};
-    
+
     ${guard:hooks}
       ${check:hooks}
         ${call:posthook};

@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
@@ -41,25 +41,25 @@ mpitest_LDFLAGS = $(mpi_ldflags)
 
 
 check_PROGRAMS += test_link
-test_link_SOURCES =  $(SRC_ROOT)test/mpi/test_link.c 
+test_link_SOURCES =  $(SRC_ROOT)test/mpi/test_link.c
 test_link_CPPFLAGS = $(AM_CPPFLAGS)         \
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/measurement/include    \
     $(UTILS_CPPFLAGS)
 test_link_LDADD = $(mpi_libadd) \
-	$(LIB_DIR_SCOREP)libscorep_measurement.la 
+	$(LIB_DIR_SCOREP)libscorep_measurement.la
 test_link_LDFLAGS = $(mpi_ldflags)
 
 
 check_PROGRAMS += mpi_hello_world
-mpi_hello_world_SOURCES =  $(SRC_ROOT)test/mpi/mpi_hello_world.c 
+mpi_hello_world_SOURCES =  $(SRC_ROOT)test/mpi/mpi_hello_world.c
 mpi_hello_world_LDADD = $(mpi_libadd)
 mpi_hello_world_LDFLAGS = $(mpi_ldflags)
 TESTS_MPI += mpi_hello_world
 
 
 check_PROGRAMS += mpi_hello_world_uninstrumented
-mpi_hello_world_uninstrumented_SOURCES =  $(SRC_ROOT)test/mpi/mpi_hello_world.c 
+mpi_hello_world_uninstrumented_SOURCES =  $(SRC_ROOT)test/mpi/mpi_hello_world.c
 
 
 check_PROGRAMS += metric_on_one_rank_only_test

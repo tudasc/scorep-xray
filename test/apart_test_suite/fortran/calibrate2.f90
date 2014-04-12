@@ -69,7 +69,7 @@ LOGICAL :: no_exchange
 INTEGER :: i
 DOUBLE PRECISION :: temp
 
-DO 
+DO
   no_exchange = .TRUE.
   DO i = 1, n-1
     IF (array(i) > array(i+1)) THEN

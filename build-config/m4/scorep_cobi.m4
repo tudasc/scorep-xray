@@ -1,9 +1,9 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2011,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -16,11 +16,11 @@
 ##
 
 
-AC_DEFUN([AC_SCOREP_COBI], 
+AC_DEFUN([AC_SCOREP_COBI],
 [
 
-dnl AC_ARG_WITH([cobi], 
-dnl             [AS_HELP_STRING([--with-cobi=(yes|no|<path-to-cobi-binary>)], 
+dnl AC_ARG_WITH([cobi],
+dnl             [AS_HELP_STRING([--with-cobi=(yes|no|<path-to-cobi-binary>)],
 dnl                             [Whether to build with cobi binary instrumentation support. "yes" assumes it is in PATH [no].])],
 dnl             # action-if-given
 dnl             [AS_CASE([$withval],

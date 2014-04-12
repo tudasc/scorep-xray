@@ -8,7 +8,7 @@ ${guard:start}
  * Triggers an enter and exit event.
  * It wraps the ${name} call with enter and exit events.
  */
-${proto:c} 
+${proto:c}
 {
   ${rtype} return_val;
 
@@ -22,7 +22,7 @@ ${proto:c}
 
     ${xblock}
     return_val = ${call:pmpi};
-    
+
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
     SCOREP_MPI_EVENT_GEN_ON();
   }

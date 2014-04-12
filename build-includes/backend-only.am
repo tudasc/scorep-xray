@@ -38,7 +38,7 @@ include ../test/public_headers/Makefile.inc.am
 include ../test/jacobi/Makefile.inc.am
 include ../test/adapters/user/C/Makefile.inc.am
 include ../test/adapters/user/C++/Makefile.inc.am
-include ../test/adapters/user/Fortran/Makefile.inc.am 
+include ../test/adapters/user/Fortran/Makefile.inc.am
 include ../test/adapters/cuda/Makefile.inc.am
 include ../test/adapters/tau/Makefile.inc.am
 include ../test/serial/Makefile.inc.am

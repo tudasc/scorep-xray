@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
@@ -151,7 +151,7 @@ jacobi_mpi_f90_sources  = $(SRC_ROOT)test/jacobi/MPI/Fortran/VariableDef.f90 \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/jacobi.F90      \
                           $(SRC_ROOT)test/jacobi/MPI/Fortran/main.F90
 jacobi_mpi_f90_SOURCES  = $(jacobi_mpi_f90_sources)
-jacobi_mpi_f90_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@ 
+jacobi_mpi_f90_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@
 jacobi_mpi_f90_LDADD    = $(mpi_libadd)
 jacobi_mpi_f90_LDFLAGS  = $(mpi_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
 
@@ -159,7 +159,7 @@ check_PROGRAMS                        += jacobi_mpi_f90_uninstrumented
 jacobi_mpi_f90_uninstrumented_SOURCES  = $(jacobi_mpi_f90_sources)
 # if the CPP flags are not specified  AM_CPPFLAGS are used by default which
 # cause an error on Jump.
-jacobi_mpi_f90_uninstrumented_CPPFLAGS = 
+jacobi_mpi_f90_uninstrumented_CPPFLAGS =
 jacobi_mpi_f90_uninstrumented_LDADD    = -lm
 
 TESTS_MPI += jacobi_mpi_f90
@@ -202,7 +202,7 @@ jacobi_mpi_omp_f90_unistrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/Fortr
                                              $(SRC_ROOT)test/jacobi/hybrid/Fortran/main.F90
 jacobi_mpi_omp_f90_unistrumented_LDFLAGS   = $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_f90_unistrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
-jacobi_mpi_omp_f90_unistrumented_CPPFLAGS  = $(OPENMP_CXXFLAGS) 
+jacobi_mpi_omp_f90_unistrumented_CPPFLAGS  = $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_f90_unistrumented_LDADD     = -lm
 
 TESTS_MPI_OMP += jacobi_mpi_omp_f90

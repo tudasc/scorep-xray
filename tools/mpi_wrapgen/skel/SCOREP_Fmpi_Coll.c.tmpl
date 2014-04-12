@@ -1,7 +1,7 @@
 /**
  * @file
  * @ingroup    MPI_Wrapper
- * 
+ *
  * @brief Fortran interface wrappers for collective communication
  */
 
@@ -15,7 +15,7 @@
 #pragma wrapgen multiple restrict(gcoll) skel/SCOREP_Fmpi_DefineL.w
 
 /**
- * @name Fortran wrappers 
+ * @name Fortran wrappers
  * @{
  */
 
@@ -39,7 +39,7 @@
  * @note Introduced with MPI 1.0
  * @ingroup coll
  */
-void FSUB(MPI_Alltoallw)(void*     sendbuf, 
+void FSUB(MPI_Alltoallw)(void*     sendbuf,
                          MPI_Fint* sendcounts,
                          MPI_Fint* sdispls,
                          MPI_Fint* sendtypes,

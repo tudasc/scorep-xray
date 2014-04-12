@@ -5,7 +5,7 @@ Parallel Codes) measurement infrastructure is a highly scalable and
 easy-to-use tool suite for profiling, event trace recording, and
 online analysis of HPC applications.
 
-To build Score-P you usually just need to do 
+To build Score-P you usually just need to do
 
   ./configure
   make

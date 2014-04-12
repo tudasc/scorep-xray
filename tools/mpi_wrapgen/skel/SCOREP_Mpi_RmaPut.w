@@ -25,10 +25,10 @@ ${proto:c}
 /* One-sided communication not handled in first version
     dpid = scorep_mpi_win_rank_to_pe( target_rank, win );
     wid = scorep_mpi_win_rank_id( win );
-   
+
     PMPI_Type_size(origin_datatype, &sendsz);
     esd_mpi_put_1ts( dpid, wid, SCOREP_NEXT_RMA_ID, origin_count * sendsz);
-*/    
+*/
     return_val = ${call:pmpi};
 
 /* One-sided communication not handled in first version

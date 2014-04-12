@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
@@ -154,7 +154,7 @@ libscorep_adapter_mpi_c_event_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_hooks.c     \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_hooks.h     \
     $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile.c   \
-    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile.h 
+    $(SRC_ROOT)src/adapters/mpi/scorep_mpi_oa_profile.h
 
 libscorep_adapter_mpi_c_event_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                             \
@@ -166,7 +166,7 @@ libscorep_adapter_mpi_c_event_la_CPPFLAGS = \
     -I$(INC_DIR_MUTEX)
 
 ## Disable mpi profiling hooks
-##libscorep_adapter_mpi_c_event_la_CPPFLAGS += -DSCOREP_MPI_NO_HOOKS 
+##libscorep_adapter_mpi_c_event_la_CPPFLAGS += -DSCOREP_MPI_NO_HOOKS
 
 
 noinst_LTLIBRARIES += \

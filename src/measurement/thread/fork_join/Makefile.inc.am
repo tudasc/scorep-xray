@@ -1,7 +1,7 @@
 
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2013
@@ -57,7 +57,7 @@ libscorep_thread_fork_join_omp_ancestry_la_CPPFLAGS = \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement \
-    -I$(INC_DIR_COMMON_HASH) 
+    -I$(INC_DIR_COMMON_HASH)
 libscorep_thread_fork_join_omp_ancestry_la_LIBADD = \
     libscorep_thread_fork_join_generic.la \
     libutils.la

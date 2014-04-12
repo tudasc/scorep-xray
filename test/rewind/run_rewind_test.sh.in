@@ -1,9 +1,9 @@
 #!/bin/bash
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2011,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -23,7 +23,7 @@ RESULT_DIR=rewind-test-dir
 rm -rf $RESULT_DIR
 
 
-SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true ./rewind_test 
+SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true ./rewind_test
 
 $OTF2_PRINT $RESULT_DIR/traces.otf2 | grep -e foo -e MEASUREMENT_ON_OFF -e bar > trace.txt
 

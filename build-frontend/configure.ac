@@ -1,4 +1,4 @@
-dnl 
+dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
 dnl Copyright (c) 2009-2013,
@@ -109,13 +109,13 @@ AC_SCOREP_CHECK_SIZEOF([void *])
 AC_SCOREP_CHECK_SIZEOF([double])
 if (( ac_cv_sizeof_void_p > ac_cv_sizeof_double )); then
     AC_DEFINE_UNQUOTED(
-        [SCOREP_ALLOCATOR_ALIGNMENT], 
-        [$ac_cv_sizeof_void_p], 
+        [SCOREP_ALLOCATOR_ALIGNMENT],
+        [$ac_cv_sizeof_void_p],
         [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
 else
     AC_DEFINE_UNQUOTED(
-        [SCOREP_ALLOCATOR_ALIGNMENT], 
-        [$ac_cv_sizeof_double], 
+        [SCOREP_ALLOCATOR_ALIGNMENT],
+        [$ac_cv_sizeof_double],
         [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
 fi
 

@@ -1,7 +1,7 @@
 /** @page workflow Performance Analysis Workflow Using @scorep
 @seclabel{workflow}
 
-This chapter demonstrates a typical performance analysis workflow 
+This chapter demonstrates a typical performance analysis workflow
 using @scorep. It consist of the following steps:
 
 <ol>
@@ -14,12 +14,12 @@ using @scorep. It consist of the following steps:
 <li> Event trace collection and examination (Section @secref{trace_collection_exploration})
 </ol>
 
-The workflow is demonstrated using NPB BT-MZ benchmark as an example. 
-BT-MZ solves a discretized version of unsteady, compressible 
+The workflow is demonstrated using NPB BT-MZ benchmark as an example.
+BT-MZ solves a discretized version of unsteady, compressible
 Navier-Stokes equations in three spatial dimensions. It performs 200 time-steps
-on a regular 3-dimensional grid using ADI and verifies solution error within 
-acceptable limit. It uses intra-zone computation with OpenMP and inter-zone 
-communication with MPI. The benchmark can be build with a predefined data class 
+on a regular 3-dimensional grid using ADI and verifies solution error within
+acceptable limit. It uses intra-zone computation with OpenMP and inter-zone
+communication with MPI. The benchmark can be build with a predefined data class
 (S,W,A,B,C,D,E,F) and any number of MPI processes and OpenMP threads.
 
 NPB BT-MZ distribution already prepared for this example could be obtained from <a href="http://www.vi-hps.org/upload/material/general/VIHPS-tutorial-exercise.tgz"> here</a>.
@@ -30,11 +30,11 @@ NPB BT-MZ distribution already prepared for this example could be obtained from 
 In order to collect performance measurements, BT-MZ has to be instrumented.
 There are various types of instrumentation supported by @scorep which cover a
 broad spectrum of performance analysis use cases (see Chapter @secref{instrumentation}
-for more details). 
+for more details).
 
-In this example we start with automatic compiler instrumentation by 
-prepending compiler/linker specification variable <tt>MPIF77</tt> 
-found in <tt>config/make.def</tt> with <tt>scorep</tt>: 
+In this example we start with automatic compiler instrumentation by
+prepending compiler/linker specification variable <tt>MPIF77</tt>
+found in <tt>config/make.def</tt> with <tt>scorep</tt>:
 
 
 @code
@@ -89,36 +89,36 @@ Built executable ../bin.scorep/bt-mz_W.4
 make: Leaving directory 'BT-MZ'
 @endcode
 
-When make finishes, the built and instrumented application could be found 
-under <tt>bin.scorep/bt-mz\_W.4</tt>. 
+When make finishes, the built and instrumented application could be found
+under <tt>bin.scorep/bt-mz\_W.4</tt>.
 
 @section summary_measurement Summary Measurement Collection
 @seclabel{summary_measurement}
 
-Now instrumented BT-MZ is ready to be executed and to be profiled by @scorep 
-at the same time. However before doing so, one has an opportunity to configure 
+Now instrumented BT-MZ is ready to be executed and to be profiled by @scorep
+at the same time. However before doing so, one has an opportunity to configure
 @scorep measurement by setting @scorep environment variables. For the complete
-list of variables please refer to Appendix @secref{scorpeconfigvariables}. 
+list of variables please refer to Appendix @secref{scorpeconfigvariables}.
 
-The typical @scorep performance analysis workflow implies collecting summary 
-performance information first and then in detail performance exploration 
-using execution traces. Therefore @scorep has to be configured to 
-perform profiling and tracing has to be disabled. This is done by setting 
-corresponding environment variables: 
+The typical @scorep performance analysis workflow implies collecting summary
+performance information first and then in detail performance exploration
+using execution traces. Therefore @scorep has to be configured to
+perform profiling and tracing has to be disabled. This is done by setting
+corresponding environment variables:
 @code
 % export SCOREP_ENABLE_PROFILING=1
 % export SCOREP_ENABLE_TRACING=0
 @endcode
 
-Performance data collected by @scorep will be stored in an experiment directory. 
-In order to efficiently manage multiple experiments, one can specify a meaningful 
-name for the experiment directory by setting 
+Performance data collected by @scorep will be stored in an experiment directory.
+In order to efficiently manage multiple experiments, one can specify a meaningful
+name for the experiment directory by setting
 
 @code
 % export SCOREP_EXPERIMENT_DIRECTORY=scorep_bt-mz_W_4x4_sum
 @endcode
 
-After @scorep is prepared for summary collection, the instrumented application 
+After @scorep is prepared for summary collection, the instrumented application
 can be started as usual:
 
 @code
@@ -145,14 +145,14 @@ Time step    1
 [... More application output ...]
 @endcode
 
-After application execution is finished, the summary performance data collected 
-by @scorep is stored in the experiment directory <tt>bin.scorep/scorep_bt-mz_W_4x4_sum</tt>. 
+After application execution is finished, the summary performance data collected
+by @scorep is stored in the experiment directory <tt>bin.scorep/scorep_bt-mz_W_4x4_sum</tt>.
 The directory contains the following files:
 
 <ul>
   <li> <tt>scorep.cfg</tt> - a record of the measurement configuration used in the
        run
-  <li> <tt>profile.cubex</tt> - the analysis report that was collated after 
+  <li> <tt>profile.cubex</tt> - the analysis report that was collated after
        measurement
 </ul>
 
@@ -160,13 +160,13 @@ The directory contains the following files:
 @section summary_examination Summary report examination
 @seclabel{summary_examination}
 
-After BT-MZ finishes execution, the summary performance data measured by @scorep can be 
+After BT-MZ finishes execution, the summary performance data measured by @scorep can be
 investigated with @cube or ParaProf interactive report exploration tools.
 
 @cube:
 @code
 % cube scorep_bt-mz_W_4x4_sum/profile.cubex
-@endcode 
+@endcode
 
 ParaProf:
 @code
@@ -174,36 +174,36 @@ ParaProf:
 @endcode
 
 Both tools will reveal the call-path profile of BT-MZ annotated with
-metrics: \emph{Time}, \emph{Visits count}, MPI message statistics (bytes 
+metrics: \emph{Time}, \emph{Visits count}, MPI message statistics (bytes
 sent/received). For more information on using the tool please refer to
-the corresponding documentation 
+the corresponding documentation
 (@href{http://www.scalasca.org/download/documentation/documentation.html,@cube},
 @href{http://www.cs.uoregon.edu/Research/tau/docs/paraprof/index.html,ParaProf}).
 
 @section summary_scoring Summary experiment scoring
 @seclabel{summary_scoring}
 
-Though we were able to collect the profile data, one can mention that the execution 
+Though we were able to collect the profile data, one can mention that the execution
 took longer in comparison to un-instrumented run, even when the time spent for
 measurement start-up/finalization is disregarded. Longer execution times of
-the instrumented application is a sign of high instrumentation/measurement 
+the instrumented application is a sign of high instrumentation/measurement
 overhead. Furthermore, this overhead might result in large trace files and
-buffer flushes in the later tracing experiment if @scorep is not properly 
+buffer flushes in the later tracing experiment if @scorep is not properly
 configured.
 
-In order to investigate sources of the overhead and to tune measurement 
-configuration for consequent trace collection with @scorep, <tt>scorep-score</tt> tool 
-(see Section @secref{score} for more details about <tt>scorep-score</tt>) can be used: 
+In order to investigate sources of the overhead and to tune measurement
+configuration for consequent trace collection with @scorep, <tt>scorep-score</tt> tool
+(see Section @secref{score} for more details about <tt>scorep-score</tt>) can be used:
 
 @code
 % scorep-score scorep_bt-mz_W_4x4_sum/profile.cubex
-Estimated aggregate size of event trace (total_tbc):       
+Estimated aggregate size of event trace (total_tbc):
 					 990247448 bytes
-Estimated requirements for largest trace buffer (max_tbc): 
+Estimated requirements for largest trace buffer (max_tbc):
 					 256229936 bytes
-(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid 
+(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid
 intermediate flushes
-or reduce requirements using file listing names of USR regions 
+or reduce requirements using file listing names of USR regions
 to be filtered.)
 flt type         max_tbc         time      % region
      ALL       256229936      5549.78  100.0 ALL
@@ -213,16 +213,16 @@ flt type         max_tbc         time      % region
      MPI           93776        99.86    1.8 MPI
 @endcode
 
-The textual output of the tool generates an estimation of the size of an OTF2 
+The textual output of the tool generates an estimation of the size of an OTF2
 trace produced, should @scorep be run using the current configuration. Here the
-trace size estimation could be also seen as a measure of overhead, since both 
-are proportional to the number of recorded events. Additionally, the tool shows 
-the distribution of the required trace size over call-path classes. From the 
-report above one can see that the estimated trace size needed is equal to 1 GB 
-in total or 256 MB per 
-MPI rank, which is significant. From the breakdown per call-path class one can 
-see that most of the overhead is due to user-level computations. 
-In order to further localize the source of the overhead, <tt>scorep-score</tt> 
+trace size estimation could be also seen as a measure of overhead, since both
+are proportional to the number of recorded events. Additionally, the tool shows
+the distribution of the required trace size over call-path classes. From the
+report above one can see that the estimated trace size needed is equal to 1 GB
+in total or 256 MB per
+MPI rank, which is significant. From the breakdown per call-path class one can
+see that most of the overhead is due to user-level computations.
+In order to further localize the source of the overhead, <tt>scorep-score</tt>
 can print the breakdown of the buffer size on per-region basis:
 
 @code
@@ -246,12 +246,12 @@ flt  type    max_tbc       time      % region
      OMP      257280       0.48    0.0 !$omp parallel @exch_qbc.f
 @endcode
 
-The regions marked as USR type contribute to around 32\% of the total time, 
-however, much of that is very likely to be measurement overhead due to 
-frequently-executed small routines. Therefore, it is highly recommended to 
-remove these routines from measurements. This can be achieved by placing them 
+The regions marked as USR type contribute to around 32\% of the total time,
+however, much of that is very likely to be measurement overhead due to
+frequently-executed small routines. Therefore, it is highly recommended to
+remove these routines from measurements. This can be achieved by placing them
 into a filter file (please refer to Section @secref{scorep_filter} for more
-details about filter file specification) as regions to be excluded from measurements. 
+details about filter file specification) as regions to be excluded from measurements.
 There is already a filter file prepared for BT-MZ which can be used:
 
 @code
@@ -264,33 +264,33 @@ exact_solution*
 binvrhs*
 lhs*init*
 timer_*
-@endcode 
+@endcode
 
 One can use <tt>scorep-score</tt> once again to verify the effect of the filter file :
 
 @code
 % scorep-score -f ../config/scorep.filt scorep_bt-mz_W_4x4_sum
-Estimated aggregate size of event trace (total_tbc):       
+Estimated aggregate size of event trace (total_tbc):
 					 20210360 bytes
-Estimated requirements for largest trace buffer (max_tbc): 
+Estimated requirements for largest trace buffer (max_tbc):
 					 6290888 bytes
-(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid 
+(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid
 intermediate flushes
-or reduce requirements using file listing names of USR regions 
+or reduce requirements using file listing names of USR regions
 to be filtered.)
 @endcode
 
-Now one can see that the trace size is reduced to just 20MB in total or 6MB per 
+Now one can see that the trace size is reduced to just 20MB in total or 6MB per
 MPI rank. The regions filtered out will be marked with "+" in the left-most column
 of the per-region report.
 
 @section advanced_summary_collection Advanced summary measurement collection
 @seclabel{advanced_summary_collection}
 
-After the filtering file is prepared to exclude the sources of the overhead, it is 
+After the filtering file is prepared to exclude the sources of the overhead, it is
 recommended to repeat summary collection, in order to obtain more precise measurements.
 
-In order to specify the filter file to be used during measurements, the corresponding 
+In order to specify the filter file to be used during measurements, the corresponding
 environment variable has to be set:
 
 @code
@@ -304,11 +304,11 @@ It is also recommended to adjust the experiment directory name for the new run:
          scorep_bt-mz_W_4x4_sum_with_filter
 @endcode
 
-@scorep also has a possibility to record hardware counters (see Section @secref{papi_counters}) 
-and operating system resource usage (see Section @secref{rusage_counters}) in addition to default 
-time and number of visits metrics. 
-Hardware counters could be configured by setting @scorep environment variable 
-<tt>SCOREP_METRIC_PAPI</tt> to the comma-separated list of PAPI events (other 
+@scorep also has a possibility to record hardware counters (see Section @secref{papi_counters})
+and operating system resource usage (see Section @secref{rusage_counters}) in addition to default
+time and number of visits metrics.
+Hardware counters could be configured by setting @scorep environment variable
+<tt>SCOREP_METRIC_PAPI</tt> to the comma-separated list of PAPI events (other
 separator could be specified by setting <tt>SCOREP_METRIC_PAPI_SEP</tt>):
 
 @code
@@ -317,11 +317,11 @@ separator could be specified by setting <tt>SCOREP_METRIC_PAPI_SEP</tt>):
 
 
 @note The specified combination of the hardware events has to be valid,
-      otherwise @scorep will abort execution. Please run <tt>papi_avail</tt> 
+      otherwise @scorep will abort execution. Please run <tt>papi_avail</tt>
       and <tt>papi_native_avail</tt> in order to get the list of the available
       PAPI generic and native events.
 
-Operating system resource usage metrics are configured by setting the following 
+Operating system resource usage metrics are configured by setting the following
 variable:
 
 @code
@@ -329,24 +329,24 @@ variable:
 @endcode
 
 Additionally @scorep can be configured to record only a subset of the mpi functions.
-This is achieved by setting <tt>SCOREP_MPI_ENABLE_GROUPS</tt> variable with a 
-comma-separated list of sub-groups of MPI functions to be recorded (see 
+This is achieved by setting <tt>SCOREP_MPI_ENABLE_GROUPS</tt> variable with a
+comma-separated list of sub-groups of MPI functions to be recorded (see
 Appendix @secref{wrapperannex}):
 
 @code
 % export SCOREP_MPI_ENABLE_GROUPS=cg,coll,p2p,xnonblock
 @endcode
 
-In case performance of the CUDA code is of interest, @scorep can be configured to 
+In case performance of the CUDA code is of interest, @scorep can be configured to
 measure CUPTI metrics as follows (see Section @secref{cuda_adapter}):
 
 @code
 % export SCOREP_CUDA_ENABLE=gpu,kernel,idle
 @endcode
 
-When the granularity offered by the automatic compiler instrumentation is not sufficient, 
-one can use @scorep manual user instrumentation API (see Section @secref{manual_instrumentation}) 
-for more fine-grained annotation of particular code segments. For example 
+When the granularity offered by the automatic compiler instrumentation is not sufficient,
+one can use @scorep manual user instrumentation API (see Section @secref{manual_instrumentation})
+for more fine-grained annotation of particular code segments. For example
 initialization code, solver or any other code segment of interest can be annotated.
 
 In order to enable user instrumentation, an <tt>--user</tt> argument has to be passed to
@@ -375,7 +375,7 @@ subroutine foo(…)
 end subroutine
 @endcode
 
-This will appear as an additional region in the report. 
+This will appear as an additional region in the report.
 
 BT-MZ has to be recompiled and relinked in order to complete instrumentation.
 
@@ -384,7 +384,7 @@ BT-MZ has to be recompiled and relinked in order to complete instrumentation.
 % make bt-mz CLASS=W NPROCS=4
 @endcode
 
-After applying advanced configurations described above, summary collection 
+After applying advanced configurations described above, summary collection
 with @scorep can be started as usual:
 
 @code
@@ -394,18 +394,18 @@ with @scorep can be started as usual:
 @section advanced_summary_examination Advanced summary report examination
 @seclabel{advanced_summary_examination}
 
-After execution is finished, one can use <tt>scorep-score</tt> tool to verify 
+After execution is finished, one can use <tt>scorep-score</tt> tool to verify
 the effect of filtering:
 
 @code
 % scorep-score scorep_bt-mz_W_4x4_sum_with_filter/profile.cubex
-Estimated aggregate size of event trace (total_tbc):       
+Estimated aggregate size of event trace (total_tbc):
 					 20210360 bytes
-Estimated requirements for largest trace buffer (max_tbc): 
+Estimated requirements for largest trace buffer (max_tbc):
 					 6290888 bytes
-(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid 
+(hint: When tracing set SCOREP_TOTAL_MEMORY > max_tbc to avoid
 intermediate flushes
-or reduce requirements using file listing names of USR regions 
+or reduce requirements using file listing names of USR regions
 to be filtered.)
 flt type         max_tbc         time      % region
      ALL         6290888       241.77  100.0 ALL
@@ -415,14 +415,14 @@ flt type         max_tbc         time      % region
      USR             672         0.01    0.0 USR
 @endcode
 
-The report above shows significant reduction in runtime (due to elimination of 
-the overhead) not only in USR regions but also in MPI/OMP regions as well. 
+The report above shows significant reduction in runtime (due to elimination of
+the overhead) not only in USR regions but also in MPI/OMP regions as well.
 
-Now, the extended summary report can be interactively explored using 
+Now, the extended summary report can be interactively explored using
 @cube:
 @code
 % cube scorep_bt-mz_W_4x4_sum_with_filter/profile.cubex
-@endcode 
+@endcode
 
 or ParaProf:
 @code
@@ -432,13 +432,13 @@ or ParaProf:
 @section trace_collection_exploration  Event trace collection and examination
 @seclabel{trace_collection_exploration}
 
-After exploring extended summary report, additional insight into 
+After exploring extended summary report, additional insight into
 performance of BT-MZ can be gained by performing trace collection.
 In order to do so, @scorep has to be configured to perform tracing
-by setting corresponding variable to <tt>true</tt> and disabling 
+by setting corresponding variable to <tt>true</tt> and disabling
 profile generation:
 
-@code 
+@code
 % export SCOREP_ENABLE_TRACING=true
 % export SCOREP_ENABLE_PROFILING=false
 @endcode
@@ -447,23 +447,23 @@ Additionally it is recommended to set a meaningful experiment directory name:
 
 @code
 % export SCOREP_EXPERIMENT_DIRECTORY=scorep_bt-mz_W_4x4_trace
-@endcode 
+@endcode
 
-After BT-MZ execution is finished, a separate trace file per thread is 
-written into the new experiment directory. In order to explore it, 
+After BT-MZ execution is finished, a separate trace file per thread is
+written into the new experiment directory. In order to explore it,
 @href{http://www.vampir.eu/tutorial/manual,Vampir} tool can be used:
 
 @code
 % vampir scorep_bt-mz_W_4x4_trace/traces.otf2
-@endcode 
+@endcode
 
 Please consider that traces can become extremely large and unwieldy, because the size of the
-trace is proportional to number of processes/threads (width), 
-duration (length) and detail (depth) of measurement. When the trace is too 
-large to hold in the memory allocated by @scorep, flushes can happen. 
+trace is proportional to number of processes/threads (width),
+duration (length) and detail (depth) of measurement. When the trace is too
+large to hold in the memory allocated by @scorep, flushes can happen.
 Unfortunately the resulting traces are of little value, since uncoordinated
-flushes result in cascades of distortion. 
-      
+flushes result in cascades of distortion.
+
 Traces should be written to a parallel file system, e.g., to <tt>/work</tt>
 or <tt>/scratch</tt> which are typically provided for this purpose.
 

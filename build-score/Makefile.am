@@ -1,6 +1,6 @@
 # -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-## file       build-score/Makefile.am 
+## file       build-score/Makefile.am
 
 ACLOCAL_AMFLAGS = -I ../vendor/common/build-config/m4 -I ../build-config/m4
 

@@ -1,6 +1,6 @@
 program MAIN
     !***********************************************************************
-    ! program to solve a finite difference                                 * 
+    ! program to solve a finite difference                                 *
     ! discretization of Helmholtz equation :                               *
     ! (d2/dx2)u + (d2/dy2)u - alpha u = f                                  *
     ! using Jacobi iterative method.                                       *
@@ -8,10 +8,10 @@ program MAIN
     ! Modified: Abdelali Malih,    Aachen University (RWTH), 2007          *
     ! Modified: Sanjiv Shah,       Kuck and Associates, Inc. (KAI), 1998   *
     ! Author  : Joseph Robicheaux, Kuck and Associates, Inc. (KAI), 1998   *
-    !                                                                      * 
+    !                                                                      *
     ! Directives are used in this code to achieve paralleism.              *
     ! All do loops are parallized with default 'static' scheduling.        *
-    !                                                                      * 
+    !                                                                      *
     ! Input :  n - grid dimension in x direction                           *
     !          m - grid dimension in y direction                           *
     !          alpha - Helmholtz constant (always greater than 0.0)        *
@@ -23,12 +23,12 @@ program MAIN
     !       : u(n,m) - Dependent variable (solutions)                      *
     !       : f(n,m) - Right hand side function                            *
     !***********************************************************************
-  
+
     use VariableDef
     use JacobiMod
     implicit none
     include 'mpif.h'
-  
+
     TYPE(JacobiData) :: myData
 
 
@@ -62,7 +62,7 @@ program MAIN
 
 !    /* cleanup */
     call Finish(myData)
-    
+
 end program MAIN
 
 subroutine Init (myData)
@@ -90,9 +90,9 @@ subroutine Init (myData)
         call get_environment_variable("ITERATIONS", env)
         if (len_trim(env) > 0) then
             read(env,*,iostat=iErr) i
-            if ((iErr == 0) .and. (i > 0)) then 
+            if ((iErr == 0) .and. (i > 0)) then
                 ITERATIONS=i
-            else 
+            else
                 print*, "Ignoring ITERATIONS=", env
             endif
         endif
@@ -149,9 +149,9 @@ subroutine Init (myData)
     call MPI_ADDRESS(myData%fTolerance, displacements(8), iErr)
     call MPI_ADDRESS(myData, iStructDisp, iErr)
 #endif
-    
+
     displacements = displacements - iStructDisp
-        
+
 #if !defined(MPI_VERSION) || (MPI_VERSION>=2)
     call MPI_Type_create_struct(8, block_lengths, displacements, typelist, &
                                 MPI_JacobiData, iErr)
@@ -170,7 +170,7 @@ subroutine Init (myData)
     else
         myData%iRowLast = (myData%iMyRank + 1) * (myData%iRows - 2) / myData%iNumProcs + 1
     end if
-    
+
     allocate( myData%afU (0 : myData%iCols -1, myData%iRowFirst : myData%iRowLast))
     allocate( myData%afF (0 : myData%iCols -1, myData%iRowFirst : myData%iRowLast))
 
@@ -191,14 +191,14 @@ subroutine InitializeMatrix (myData)
     use VariableDef
     implicit none
 
-    type(JacobiData), intent(inout) :: myData 
-    !.. Local Scalars .. 
+    type(JacobiData), intent(inout) :: myData
+    !.. Local Scalars ..
     integer :: i, j, xx, yy
-    !.. Intrinsic Functions .. 
+    !.. Intrinsic Functions ..
     intrinsic DBLE
-   
+
     ! Initilize initial condition and RHS
-  
+
     do j = myData%iRowFirst, myData%iRowLast
         do i = 0, myData%iCols -1
             xx = INT(-1.0 + myData%fDx*DBLE(i)) ! -1 < x < 1
@@ -252,9 +252,9 @@ subroutine CheckError(myData)
     use VariableDef
     implicit none
     include 'mpif.h'
-    
+
     type(JacobiData), intent(inout) :: myData
-    !.. Local Scalars .. 
+    !.. Local Scalars ..
     integer :: i, j, iErr
     double precision :: error, temp, xx, yy
     !.. Intrinsic Functions ..
@@ -275,6 +275,6 @@ subroutine CheckError(myData)
     call MPI_Reduce(myData%fError, error, 1, MPI_DOUBLE_PRECISION, MPI_SUM, 0, &
                     MPI_COMM_WORLD, iErr)
     myData%fError = sqrt(error) / DBLE(myData%iCols * myData%iRows)
-   
+
 end subroutine CheckError
 

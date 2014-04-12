@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-## file  build-includes/common.am 
+## file  build-includes/common.am
 ##       Intended to be included by the components
 ##       build-(front|back)end/Makefile.am. Defines "common" entities
 ##       that all build-* Makefiles rely on.
@@ -57,7 +57,7 @@ INC_DIR_VENDOR_VALGRIND = $(INC_ROOT)vendor/valgrind/include
 SCOREP_MPI_OMP_TESTS =
 SCOREP_MPI_OMP_XFAIL_TESTS =
 SCOREP_MPI_TESTS =
-SCOREP_MPI_XFAIL_TESTS = 
+SCOREP_MPI_XFAIL_TESTS =
 
 # When $(YACC) is invoced, also create a header file.
 AM_YFLAGS = -d

@@ -1,4 +1,4 @@
-/** 
+/**
 @page metricpluginexample  @scorep Metric Plugin Example
 @seclabel{metricpluginexample}
 
@@ -43,7 +43,7 @@ init()
  * process, since Score-P will use this ID from now on to get results, en- and
  * disable the counting and so on. The plugin has to be aware of this counter and
  * the related counting facility structure.
- * 
+ *
  * @param event_name            Name of the selected metric (provided by @ get_event_info)
  *
  * @return A unique ID (unique within the plugin) or -1 if adding the counter failed.

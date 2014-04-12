@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
@@ -78,7 +78,7 @@ endif
 if HAVE_DEMANGLE
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
     -DGNU_DEMANGLE
-endif 
+endif
 
 if HAVE_NM_AS_BFD_REPLACEMENT
 # the SCOREP_Timing.h dependency is used to generate unique
@@ -117,7 +117,7 @@ endif
 if HAVE_DEMANGLE
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
     -DGNU_DEMANGLE
-endif 
+endif
 
 if HAVE_NM_AS_BFD_REPLACEMENT
 # the SCOREP_Timing.h dependency is used to generate unique
@@ -147,7 +147,7 @@ libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel_init.c   \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.c   \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.h
-endif 
+endif
 
 
 #--- PGI specific settings

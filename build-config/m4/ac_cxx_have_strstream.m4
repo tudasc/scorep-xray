@@ -22,7 +22,7 @@
 #   permitted in any medium without royalty provided the copyright notice
 #   and this notice are preserved.
 
-# 2009-04-27 17:05:34 +0200 Adapted for strstream by 
+# 2009-04-27 17:05:34 +0200 Adapted for strstream by
 # Christian Roessel <c.roessel@fz-juelich.de>
 
 AC_DEFUN([AC_CXX_HAVE_STRSTREAM],

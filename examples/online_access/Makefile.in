@@ -14,7 +14,7 @@ LDLIBS =
 #------------------------------------------------------------------------------
 
 OBJECTS = \
-	oa_example.o 
+	oa_example.o
 
 
 
@@ -33,7 +33,7 @@ jacobi: $(OBJECTS)
 .PHONY: all clean
 .SUFFIXES: .c .o
 
-.c.o: 
+.c.o:
 	$(CC) $(CFLAGS) -c $<
 
 
@@ -44,4 +44,4 @@ jacobi: $(OBJECTS)
 # Dependencies
 #------------------------------------------------------------------------------
 
-oa_example.o: oa_example.c 
+oa_example.o: oa_example.c

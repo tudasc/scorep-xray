@@ -1,4 +1,4 @@
-dnl 
+dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
 dnl Copyright (c) 2009-2013,
@@ -141,13 +141,13 @@ AC_SCOREP_CHECK_SIZEOF([void *])
 AC_SCOREP_CHECK_SIZEOF([double])
 if (( ac_cv_sizeof_void_p > ac_cv_sizeof_double )); then
     AC_DEFINE_UNQUOTED(
-        [SCOREP_ALLOCATOR_ALIGNMENT], 
-        [$ac_cv_sizeof_void_p], 
+        [SCOREP_ALLOCATOR_ALIGNMENT],
+        [$ac_cv_sizeof_void_p],
         [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
 else
     AC_DEFINE_UNQUOTED(
-        [SCOREP_ALLOCATOR_ALIGNMENT], 
-        [$ac_cv_sizeof_double], 
+        [SCOREP_ALLOCATOR_ALIGNMENT],
+        [$ac_cv_sizeof_double],
         [First guess, use the maximum of size(void*) and sizeof(double) as alignment for SCOREP_Allocator.])
 fi
 
@@ -156,7 +156,7 @@ AC_SCOREP_ERROR_CODES
 
 AS_IF([test "x${ac_scorep_platform}" = "xbgq"],
     [SCOREP_PAMI])
-AC_SCOREP_RUNTIME_MANAGEMENT_TIMINGS 
+AC_SCOREP_RUNTIME_MANAGEMENT_TIMINGS
 AC_SCOREP_COMPILER_INSTRUMENTATION_FLAGS
 AC_SCOREP_BACKEND_TEST_RUNS
 AC_SCOREP_ATTRIBUTE_ALIGNMENT
@@ -242,7 +242,7 @@ AS_IF([test -n "${scorep_cube_bindir}"],
        AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE_WRITER], [test 1 -eq 0])
       ])
 
-AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${scorep_have_score_build}" = "xno"], 
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${scorep_have_score_build}" = "xno"],
       [AC_SCOREP_CUBE_READER
        SCOREP_ESTIMATOR],
       [AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 0])])
@@ -280,8 +280,8 @@ AC_SCOREP_ONLINE_ACCESS
 AC_SEARCH_LIBS([trunc], [m])
 AC_SEARCH_LIBS([ceil], [m])
 
-# We get cube via svn:externals and build it ourselves with compression 
-# support disabled. This solves difficulties with library detection on 
+# We get cube via svn:externals and build it ourselves with compression
+# support disabled. This solves difficulties with library detection on
 # cross compile systems. The following check can be omitted.
 #AC_SCOREP_CUBE4
 
@@ -292,8 +292,8 @@ AC_SCOREP_COND_HAVE([MPI_SUPPORT],
 
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION
 
-dnl Predicate to use HARDCODE_LIBDIR_FLAG_* only if linker needs it. 
-AS_IF([test "x${hardcode_into_libs}" = "xyes"], 
+dnl Predicate to use HARDCODE_LIBDIR_FLAG_* only if linker needs it.
+AS_IF([test "x${hardcode_into_libs}" = "xyes"],
       [ac_scorep_hardcode_into_libs=1],
       [ac_scorep_hardcode_into_libs=0])
 AC_SUBST([HARDCODE_INTO_LIBS], [${ac_scorep_hardcode_into_libs}])
@@ -310,7 +310,7 @@ AC_SUBST([HARDCODE_LIBDIR_WL], [${wl}])
 dnl The ${aix_libpath} part of the HARDCODE_LIBDIR_FLAG_* defines. Only available on AIX.
 AC_SUBST([HARDCODE_LIBDIR_AIX_LIBPATH], [${aix_libpath}])
 
-AC_SUBST([SYS_LIB_DLSEARCH_PATH_SPEC], [${sys_lib_dlsearch_path_spec}]) 
+AC_SUBST([SYS_LIB_DLSEARCH_PATH_SPEC], [${sys_lib_dlsearch_path_spec}])
 
 AC_CONFIG_FILES([Makefile], [
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then

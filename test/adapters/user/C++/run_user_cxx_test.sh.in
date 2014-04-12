@@ -33,7 +33,7 @@
 
 cleanup()
 {
-   #rm -f user_cxx_test 
+   #rm -f user_cxx_test
    rm -rf scorep-measurement-tmp
 }
 trap cleanup EXIT
@@ -61,7 +61,7 @@ exit 0
 
 # Do not execute the OpenMP test, because the Studio compiler has not
 # initialized its OpenMP environment when executing the constructor of
-# a static object. 
+# a static object.
 
 # Execute test with OpenMP compiler and user instrumentation.
 ./scorep -v --build-check --user --nocompiler $CXX $OPENMP_CFLAGS -I. -g -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx

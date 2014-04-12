@@ -1,7 +1,7 @@
 #include <opari2/pomp2_lib.h>
 
 #include <stdint.h>
-extern "C" 
+extern "C"
 {
 extern int64_t FORTRAN_MANGLED(pomp_tpd);
 }
@@ -14,7 +14,7 @@ static POMP2_Region_handle pomp2_region_2 = NULL;
 #define POMP2_DLIST_00003 shared(pomp2_region_3)
 static POMP2_Region_handle pomp2_region_3 = NULL;
 #define pomp2_ctc_3 "254*regionType=parallelfor*sscl=jacobi.cpp:154:154*escl=jacobi.cpp:161:161**"
-extern "C" 
+extern "C"
 {
 void POMP2_Init_reg_4h6ldx9tlnr9d_3()
 {

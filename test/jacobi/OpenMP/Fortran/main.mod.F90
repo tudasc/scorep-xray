@@ -2,7 +2,7 @@
 #line 1 "main.F90"
 program MAIN
     !***********************************************************************
-    ! program to solve a finite difference                                 * 
+    ! program to solve a finite difference                                 *
     ! discretization of Helmholtz equation :                               *
     ! (d2/dx2)u + (d2/dy2)u - alpha u = f                                  *
     ! using Jacobi iterative method.                                       *
@@ -10,10 +10,10 @@ program MAIN
     ! Modified: Abdelali Malih,    Aachen University (RWTH), 2007          *
     ! Modified: Sanjiv Shah,       Kuck and Associates, Inc. (KAI), 1998   *
     ! Author  : Joseph Robicheaux, Kuck and Associates, Inc. (KAI), 1998   *
-    !                                                                      * 
+    !                                                                      *
     ! Directives are used in this code to achieve paralleism.              *
     ! All do loops are parallized with default 'static' scheduling.        *
-    !                                                                      * 
+    !                                                                      *
     ! Input :  n - grid dimension in x direction                           *
     !          m - grid dimension in y direction                           *
     !          alpha - Helmholtz constant (always greater than 0.0)        *
@@ -25,7 +25,7 @@ program MAIN
     !       : u(n,m) - Dependent variable (solutions)                      *
     !       : f(n,m) - Right hand side function                            *
     !***********************************************************************
-  
+
     use VariableDef
     use JacobiMod
 #ifdef _OPENMP
@@ -35,7 +35,7 @@ program MAIN
       include 'main.F90.opari.inc'
 #line 33 "main.F90"
     double precision get_wtime
-  
+
     TYPE(JacobiData) :: myData
 
 
@@ -69,7 +69,7 @@ program MAIN
 
 !    /* cleanup */
     call Finish(myData)
-    
+
 end program MAIN
 
 subroutine Init (myData)
@@ -143,15 +143,15 @@ subroutine InitializeMatrix (myData)
 
       include 'main.F90.opari.inc'
 #line 138 "main.F90"
-    type(JacobiData), intent(inout) :: myData 
-    !.. Local Scalars .. 
+    type(JacobiData), intent(inout) :: myData
+    !.. Local Scalars ..
     integer :: i, j
     double precision :: xx, yy
-    !.. Intrinsic Functions .. 
+    !.. Intrinsic Functions ..
     intrinsic DBLE
-   
+
     ! Initilize initial condition and RHS
-  
+
       pomp2_num_threads = pomp2_lib_get_max_threads()
       pomp2_if = .true.
       call POMP2_Parallel_fork(pomp2_region_1,&
@@ -165,7 +165,7 @@ subroutine InitializeMatrix (myData)
       call POMP2_Do_enter(pomp2_region_1, &
      pomp2_ctc_1 )
 #line 147 "main.F90"
-!$omp          do                       
+!$omp          do
     do j = myData%iRowFirst, myData%iRowLast
         do i = 0, myData%iCols -1
             xx = (-1.0 + myData%fDx*DBLE(i)) ! -1 < x < 1
@@ -233,11 +233,11 @@ end subroutine PrintResults
 subroutine CheckError(myData)
     use VariableDef
     implicit none
-    
+
       include 'main.F90.opari.inc'
 #line 201 "main.F90"
     type(JacobiData), intent(inout) :: myData
-    !.. Local Scalars .. 
+    !.. Local Scalars ..
     integer :: i, j, iErr
     double precision :: error, temp, xx, yy
     !.. Intrinsic Functions ..
@@ -255,7 +255,7 @@ subroutine CheckError(myData)
     end do
 
     myData%fError = sqrt(error) / DBLE(myData%iCols * myData%iRows)
-   
+
 end subroutine CheckError
 
 double precision function get_wtime()
@@ -267,7 +267,7 @@ double precision function get_wtime()
 #else
     real, dimension(2) :: tarray
     get_wtime = dtime(tarray)
-#endif    
+#endif
     return
 end function get_wtime
 

@@ -57,7 +57,7 @@ result_dir_base="scorep_fibonacci_"
 # provide a reasonable default input for running the applications
 if [ ! x$1 = x ]; then
   FIB_NUM=$1
-fi 
+fi
 
 if [ x$FIB_NUM = x ]; then
    FIB_NUM=20

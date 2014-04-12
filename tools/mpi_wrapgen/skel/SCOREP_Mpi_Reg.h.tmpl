@@ -5,7 +5,7 @@
  * @brief Registration of MPI functions
  * For all MPI functions a region is registered at initialization time of the MPI adapter.
  * The dynamic region handle obtained from the measurement system is stored in an array
- * unter a fixed index for every region. 
+ * unter a fixed index for every region.
  */
 
 #ifndef _SCOREP_MPIWRAP_REG_H
@@ -13,10 +13,10 @@
 
 #include <SCOREP_Definitions.h>
 
-/* 
+/*
  * -----------------------------------------------------------------------------
  *
- *  - Registration of MPI functions  
+ *  - Registration of MPI functions
  *
  * -----------------------------------------------------------------------------
  */
@@ -93,7 +93,7 @@ enum scorep_mpi_groups {
                                    SCOREP_MPI_ENABLED_TYPE      |
                                    SCOREP_MPI_ENABLED_PERF      |
                                    SCOREP_MPI_ENABLED_XNONBLOCK |
-                                   SCOREP_MPI_ENABLED_XREQTEST, 
+                                   SCOREP_MPI_ENABLED_XREQTEST,
     /* NOTE: DEFAULT should reflect the default set */
     SCOREP_MPI_ENABLED_DEFAULT   = SCOREP_MPI_ENABLED_CG    |
                                    SCOREP_MPI_ENABLED_COLL  |
@@ -103,8 +103,8 @@ enum scorep_mpi_groups {
                                    SCOREP_MPI_ENABLED_RMA   |
                                    SCOREP_MPI_ENABLED_TOPO  |
                                    SCOREP_MPI_ENABLED_XNONBLOCK
-};                                                     
-                                                       
+};
+
 /** Bit vector for runtime measurement wrapper enabling/disabling */
 extern uint64_t scorep_mpi_enabled;
 

@@ -1,8 +1,8 @@
 
 OBJ_DIR?=..
 COMP = $(OBJ_DIR)/build-backend/scorep
-INST = comp:gnu 
-COMPFLAGS = -c 
+INST = comp:gnu
+COMPFLAGS = -c
 INCLUDE=
 OBJ=-Wl,--whole-archive \
     $(OBJ_DIR)/build-backend/.libs/libscorep_serial.a \
@@ -11,8 +11,8 @@ OBJ=-Wl,--whole-archive \
     -Wl,--no-whole-archive \
     -lm -lbfd
 
-hello: 
-	$(COMP) $(INST) $(INCLUDE) $(COMPFLAGS) hello_functions.c  
+hello:
+	$(COMP) $(INST) $(INCLUDE) $(COMPFLAGS) hello_functions.c
 	$(COMP) $(INST) $(OBJ) hello_functions.o -o hello
 
 clean:

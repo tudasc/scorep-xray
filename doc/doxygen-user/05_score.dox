@@ -1,15 +1,15 @@
 /** @page score Usage of scorep-score
 @seclabel{score}
 
-scorep-score is a tool that allows to estimate the size of an OTF2 trace 
-from a CUBE4 profile. Furthermore, the effects of 
+scorep-score is a tool that allows to estimate the size of an OTF2 trace
+from a CUBE4 profile. Furthermore, the effects of
 filters are estimated. The main goal is to define appropriate filters for
 a tracing run from a profile.
 
 The general work-flow for performance analysis with @scorep is:
 <ol>
   <li> Instrument an application (see Section @secref{instrumentation}).</li>
-  <li> Perform a measurement run and record a profile (see Section @secref{measurement}). 
+  <li> Perform a measurement run and record a profile (see Section @secref{measurement}).
        The profile already
        gives an overview what may happen inside the application. </li>
   <li> Use scorep-score to define an appropriate filter for an application
@@ -46,24 +46,24 @@ flt type         max_tbc         time      % region
      USR              24         0.00    0.0 USR
 @endverbatim
 
-The first line of the output gives an estimation of the total size of the trace, 
+The first line of the output gives an estimation of the total size of the trace,
 aggregated over all processes. This information is useful for estimating the space
-required on disk. In the given example, the estimated total size of the event 
-trace is 24224 bytes. 
+required on disk. In the given example, the estimated total size of the event
+trace is 24224 bytes.
 
 The second line prints an estimation of the memory space required
 by a single process for the trace. The memory space that @scorep reserves on each process
-at application start must be large enough to hold the process' trace in memory 
-in order to avoid flushes during runtime, because flushes heavily disturb 
-measurements. The memory size per process that @scorep reserves is set via the 
-environment variable @confvar{SCOREP_TOTAL_MEMORY}. In the given example the per 
+at application start must be large enough to hold the process' trace in memory
+in order to avoid flushes during runtime, because flushes heavily disturb
+measurements. The memory size per process that @scorep reserves is set via the
+environment variable @confvar{SCOREP_TOTAL_MEMORY}. In the given example the per
 process memory should be larger than 6381 bytes.
 
 Beginning with the 6th line, @verb{scorep-score} prints a table that show
-how the trace memory requirements and the runtime is distributed among certain function 
-groups. The column @verb{max_tbc} shows how much trace buffer is needed 
-on a single process. The column @verb{time} shows how much execution time was spend 
-in regions of that group, and the column @verb{%} shows the fraction of the overall 
+how the trace memory requirements and the runtime is distributed among certain function
+groups. The column @verb{max_tbc} shows how much trace buffer is needed
+on a single process. The column @verb{time} shows how much execution time was spend
+in regions of that group, and the column @verb{%} shows the fraction of the overall
 runtime that was used by this group.
 
 The following groups exist:
@@ -71,7 +71,7 @@ The following groups exist:
  <li> ALL: Includes all functions of the application </li>
  <li> OMP: This group contains all regions that represent an OpenMP construct </li>
  <li> MPI: This group contains all MPI functions </li>
- <li> COM: This group contains all functions, implemented by the user that appear on 
+ <li> COM: This group contains all functions, implemented by the user that appear on
            a call-path to an MPI function or an OpenMP construct </li>
  <li> USR: This group contains all user functions that do not appear on a call-path to
            an OpenMP construct or MPI function. </li>
@@ -79,14 +79,14 @@ The following groups exist:
 
 @section score_region_output Additional per-region information
 
-For a more detailed output, which shows the data for every region, you can use the 
+For a more detailed output, which shows the data for every region, you can use the
 @verb{-r} option. The command could look like this.
 
 @verbatim
 scorep-score profile.cubex -r
 @endverbatim
 
-This command adds information about the used buffer sizes and execution time of every 
+This command adds information about the used buffer sizes and execution time of every
 region to the table. The additional lines of the output may look like this:
 
 @verbatim
@@ -100,7 +100,7 @@ flt type         max_tbc         time      % region
 @endverbatim
 
 The region name is displayed in the column named @verb{region}.
-The column @verb{type} shows to which group this region belongs. 
+The column @verb{type} shows to which group this region belongs.
 In the example above the function main belongs to group @verb{COM}
 required 24 bytes per process and used 0 s execution time. The
 regions are sorted by their buffer requirements.
@@ -110,13 +110,13 @@ regions are sorted by their buffer requirements.
 For defining a filter, it is recommended to exclude short frequently called
 functions from measurement, because they require a lot of
 buffer space (represented by a high value under @verb{max_tbc}) but incur a high
-measurement overhead. Furthermore, for communication analysis, functions 
+measurement overhead. Furthermore, for communication analysis, functions
 that appear on a call-path to MPI functions and OpenMP constructs (regions
 of type @verb{COM}) are usually of more interest than user functions of type @verb{USR}
 which do not appear on call-path to communications. MPI functions and OpenMP
 constructs cannot be filtered. Thus, it is usually a good approach to exclude
 regions of type @verb{USR} starting at the top of the list until you reduced the trace
-to your needs. Section @secref{filtering} describes the format of a filter 
+to your needs. Section @secref{filtering} describes the format of a filter
 specification file.
 
 If you have a filter file, you can test the effect of your filter on the trace file.
@@ -150,26 +150,26 @@ flt type         max_tbc         time      % region
 @endverbatim
 
 Now, the output estimates the total trace size an the required memory per process,
-if you would apply the provided filter for the measurement run which records the 
+if you would apply the provided filter for the measurement run which records the
 trace. A new group @verb{FLT} appears, which contains all regions that
-are filtered. Under @verb{max_tbc} the group @verb{FLT} displays how the memory 
-requirements per process are reduced. Furthermore, the groups that end 
-on @verb{-FLT}, like @verb{ALL-FLT} contain only the unfiltered regions of the 
+are filtered. Under @verb{max_tbc} the group @verb{FLT} displays how the memory
+requirements per process are reduced. Furthermore, the groups that end
+on @verb{-FLT}, like @verb{ALL-FLT} contain only the unfiltered regions of the
 original group. E.g. @verb{USR-FLT} contains all regions of group @verb{USR} that
 are not filtered.
 
-Furthermore, the column @verb{flt} is no longer empty but contain a symbol that 
-indicates how this group is affected by the filter. A '@verb{-}' 
+Furthermore, the column @verb{flt} is no longer empty but contain a symbol that
+indicates how this group is affected by the filter. A '@verb{-}'
 means 'not filtered', a '@verb{+}' means 'filtered' and a '@verb{*}' appears in front
 of groups that potentially can be affected by the filter.
 
-You may combine the @verb{-f} option with a @verb{-r} option. In this case, for each 
+You may combine the @verb{-f} option with a @verb{-r} option. In this case, for each
 function a '@verb{+}' or '@verb{-}' indicates whether the function is filtered.
 
 @section score_metrics Calculating the effects of recording hardware counters
 
-Recording additional metrics, e.g. hardware counters may significantly increase 
-the trace size, because for many events additional metric values 
+Recording additional metrics, e.g. hardware counters may significantly increase
+the trace size, because for many events additional metric values
 are stored. In order to estimate the effects of these metrics, you may add
 a @verb{-c} followed by the number of metrics you want to record. E.g.
 

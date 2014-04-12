@@ -3,21 +3,21 @@
 @seclabel{introduction}
 
 
-This document provides an introduction to 
-@href{http://www.score-p.org,@scorep}: the @emph{Scalable Performance 
-    Measurement Infrastructure for Parallel Codes}. It is a software system 
+This document provides an introduction to
+@href{http://www.score-p.org,@scorep}: the @emph{Scalable Performance
+    Measurement Infrastructure for Parallel Codes}. It is a software system
 that provides a measurement infrastructure for profiling, event trace
 recording, and online analysis of High Performance Computing (HPC)
-applications. It has been developed within the framework of the Scalable 
-Infrastructure for the Automated Performance Analysis of Parallel Codes 
-(@href{http://www.vi-hps.org/projects/silc,SILC}) project funded by the 
-German Federal Ministry of Education and Research 
-(@href{http://www.bmbf.bund.de,BMBF}) under its HPC programme and the 
-Performance Refactoring of Instrumentation, Measurement, and Analysis 
+applications. It has been developed within the framework of the Scalable
+Infrastructure for the Automated Performance Analysis of Parallel Codes
+(@href{http://www.vi-hps.org/projects/silc,SILC}) project funded by the
+German Federal Ministry of Education and Research
+(@href{http://www.bmbf.bund.de,BMBF}) under its HPC programme and the
+Performance Refactoring of Instrumentation, Measurement, and Analysis
 Technologies for Petascale Computing
-(@href{http://www.vi-hps.org/projects/prima,PRIMA}) project,funded by 
+(@href{http://www.vi-hps.org/projects/prima,PRIMA}) project,funded by
 the United States Department of Energy (@href{http://energy.gov/, DOE})
-with the goals of being highly scalable and easy to use. 
+with the goals of being highly scalable and easy to use.
 
 The partners involved in
 the development of this system within the SILC and PRIMA projects were:
@@ -25,7 +25,7 @@ the development of this system within the SILC and PRIMA projects were:
  <li> @href{http://www.fz-juelich.de/jsc,Forschungszentrum Jülich}, </li>
  <li> @href{http://www.parallel.grs-sim.de,German Research School for
       Simulation Sciences}, </li>
- <li> @href{http://www.gns-mbh.com,Gesellschaft für numerische 
+ <li> @href{http://www.gns-mbh.com,Gesellschaft für numerische
       Simulation mbH},</li>
  <li> @href{http://www.gwtonline.de,Gesellschaft für Wissens- und Technologietransfer der TU Dresden (GWT-TUD GmbH)}, </li>
  <li> @href{http://www.rz.rwth-aachen.de,Rheinisch-Westfälische Technische Hochschule (RWTH) Aachen}, </li>
@@ -33,7 +33,7 @@ the development of this system within the SILC and PRIMA projects were:
  <li> @href{http://www.lrr.in.tum.de,Technische Universität München}, </li>
  <li> and @href{http://nic.uoregon.edu/prl,University of Oregon} </li>
 </ul>
-  
+
 The goal of @scorep is to simplify the analysis of the behavior
 of high performance computing software and to allow the developers of
 such software to find out where and why performance problems arise, where
@@ -50,21 +50,21 @@ executed and write out (often very large amounts of) performance
 data. These data are then finally graphically displayed and analyzed
 after the end of the program run. In certain special cases, the
 visualization and analysis of the program behavior is also done while
-the program is running. 
+the program is running.
 
 A crucial problem in the traditional approach used to be the fact that
 each analysis tool had its own instrumentation system, so the user
 was commonly forced to repeat the instrumentation procedure if more
-than one tool was to be employed. 
+than one tool was to be employed.
 In this context, @scorep offers the user a maximum of convenience by
 providing the Opari2 instrumenter as a common infrastructure for a
 number of analysis tools like
-@href{http://www.lrr.in.tum.de/periscope,Periscope}, 
+@href{http://www.lrr.in.tum.de/periscope,Periscope},
 @href{http://www.scalasca.org,Scalasca},
 @href{http://www.vampir.eu,Vampir}, and
 @href{http://www.cs.uoregon.edu/research/tau,Tau} that obviates the
 need for multiple repetitions of the instrumentation and thus
-substantially reduces the amount of work required. 
+substantially reduces the amount of work required.
 It is open for other tools as well. Moreover, @scorep
 provides the new Open Trace Format Version 2 (OTF2) for the
 tracing data and the new CUBE4 profiling data format which allow a
@@ -73,7 +73,7 @@ process to be analyzed and the number of cores to be used.
 
 @scorep supports the programming paradigms @emph{serial},
 @emph{OpenMP}, @emph{MPI}, and @emph{hybrid} (MPI combined with
-OpenMP). 
+OpenMP).
 
 @section about_doc About this Document
 @seclabel{about_doc}
@@ -89,13 +89,13 @@ reader can find more detailed information about the components of
 @scorep. Chapter @secref{workflow} provides a typical workflow of
 performance analysis with @scorep and detailed instructions.
 
-@section getting_help Getting Help and Support 
+@section getting_help Getting Help and Support
 @seclabel{getting_help}
 The @scorep project uses various mailing lists to coordinate the development and to provide support to the user community. An overview of the available mailing lists can be found in @tabref{mailinglists}.
 
 You can subscribe to the news@score-p.org and users@score-p.org by ...
 
-\if LATEX 
+\if LATEX
 \latexonly
    \begin{table}[!h]
 	\caption{Score-P mailing lists}
@@ -106,7 +106,7 @@ You can subscribe to the news@score-p.org and users@score-p.org by ...
 news@score-p.org & open & core team & Important news regarding the Score-P software, e.g. announcements of new releases. \\ \hline
 users@score-p.org  & open & subscribers & Anything related to the Score-P project: usage, problems, feature requests, etc. \\ \hline
 support@score-p.org & closed & anyone & Bug reports and general user support for the Score-P software. \\ \hline
-info@score-p.org & closed & anyone & General information about the Score-P consortium and collaboration requests.   \\ \hline 
+info@score-p.org & closed & anyone & General information about the Score-P consortium and collaboration requests.   \\ \hline
     	\end{tabular}
     \end{table}
 \endlatexonly
@@ -148,7 +148,7 @@ info@score-p.org & closed & anyone & General information about the Score-P conso
   </table>
 \endif
 
-@section basic_idea Basics of Performance Optimization 
+@section basic_idea Basics of Performance Optimization
 @seclabel{basic_idea}
 
 Performance optimization is a process that is usually executed in a
@@ -165,10 +165,10 @@ properties to take place. There are different ways to do this,
 including manual instrumentation of the source code by the user,
 automatic instrumentation by the compiler, or linking against
 pre-instrumented libraries. All these options are available in
-@scorep. 
+@scorep.
 
 When the instrumented application obtained in this way is executed,
-the additional commands introduced during the instrumentation phase 
+the additional commands introduced during the instrumentation phase
 collect the data required to evaluate the performance properties of
 the code. Depending on the user's requirements, @scorep allows to
 store these data either as a profile or as event traces. The user must
@@ -186,7 +186,7 @@ suffer from significant perturbations. It is therefore advisable not
 to measure such regions.
 
 The next step is the analysis of the data obtained in the measurement
-phase. Traditionally this has mainly been done post mortem, i.\ e.\ after 
+phase. Traditionally this has mainly been done post mortem, i.\ e.\ after
 the execution of the instrumented application has ended. This is
 of course possible in @scorep too, but @scorep offers the additional
 option to go into the analysis in the so-called on-line mode, i.\ e.\ to
@@ -203,13 +203,13 @@ from the measured data. The reduction of the complexity achieved in
 this way will simplify the evaluation of the data for the
 user. However, care must be taken in order not to present the results
 in a too abstract fashion which would hide important facts from the
-user. 
+user.
 
 The performance report then allows the user to evaluate the
 performance of the code. One can then either conclude that the application
 behaves sufficiently well and exit the optimization cycle with the
 optimized version of the software being chosen as the final state, or
-one can proceed to identify weaknesses that need to be addressed and 
+one can proceed to identify weaknesses that need to be addressed and
 the potential for improvements of the code.
 
 In the latter case, one then continues by changing the source code
@@ -224,7 +224,7 @@ ready for a re-entry into the optimization cycle.
 @seclabel{overview}
 
 In order to allow the user to perform such an optimization of his code
-(typically written in Fortran, C, or C++ and implemented 
+(typically written in Fortran, C, or C++ and implemented
 in a serial way or using a parallelization via OpenMP, MPI, or a
 combination thereof), the @scorep system provides a number of
 components that interact with each other and with external tools. A
@@ -254,28 +254,28 @@ instrumentation. These are currently:
 While the first three of these methods are based on using tools
 provided externally, the Opari2 instrumenter for OpenMP programs is a
 part of the @scorep infrastructure itself. It is an extension of the well
-known and frequently used 
-@href{http://www2.fz-juelich.de/jsc/kojak/opari/,OpenMP Pragma And Region Instrumenter} 
+known and frequently used
+@href{http://www2.fz-juelich.de/jsc/kojak/opari/,OpenMP Pragma And Region Instrumenter}
 system (Opari) that has been successfully used
 in the past in combination with tools like Scalasca, VampirTrace and
-ompP. The fundamental concept of such a system is a 
-source-to-source translation that automatically adds all necessary calls 
-to a runtime measurement library allowing to collect runtime performance 
-data of Fortran, C, or C++ OpenMP applications. This translation is based 
+ompP. The fundamental concept of such a system is a
+source-to-source translation that automatically adds all necessary calls
+to a runtime measurement library allowing to collect runtime performance
+data of Fortran, C, or C++ OpenMP applications. This translation is based
 on the idea of OpenMP pragma/directive rewriting.
 The key innovation in Opari2, as compared to its predecessor,
 is the capability to support features introduced in version 3.0 of the
 OpenMP standard, in particular its new tasking functionality and
 OpenMP nesting. Opari used to work by automatically wrapping
 OpenMP constructs like parallel regions with calls to the portable
-OpenMP monitoring interface @href{https://wiki.alcf.anl.gov/index.php/POMP,POMP}. 
-In order to reflect the above-mentioned extensions, this interface also 
+OpenMP monitoring interface @href{https://wiki.alcf.anl.gov/index.php/POMP,POMP}.
+In order to reflect the above-mentioned extensions, this interface also
 had to be replaced by an enhanced version, POMP2.
- 
-Additionally, the user may instrument the code manually with convenient 
-macros provided by @scorep. @scorep also includes the option for 
-instrumentation of executables using binary rewriting. 
-Later @scorep may be extended with sampling functionality 
+
+Additionally, the user may instrument the code manually with convenient
+macros provided by @scorep. @scorep also includes the option for
+instrumentation of executables using binary rewriting.
+Later @scorep may be extended with sampling functionality
 that provides an alternative to direct instrumentation.
 
 During measurement, the system records several performance metrics
@@ -287,11 +287,11 @@ measurement perturbation by flushing the data to disk prematurely.
 
 Without recompilation, measurement runs can switch between
 @emph{tracing} and @emph{profiling} mode. In tracing mode, the
-performance events are passed to the tracing back-end of @scorep  
+performance events are passed to the tracing back-end of @scorep
 and are written to files for subsequent post mortem
 analysis using Scalasca or Vampir. This backend uses the newly
-developed Open Trace Format 2 (OTF2), the joint successor of the 
-@href{http://www.tu-dresden.de/zih/otf,Open Trace Format} used by Vampir 
+developed Open Trace Format 2 (OTF2), the joint successor of the
+@href{http://www.tu-dresden.de/zih/otf,Open Trace Format} used by Vampir
 and the Epilog format used by Scalasca.
 The @scorep system contains a new library with reading and writing
 routines for OTF2. Basically, OTF2 is a full merge of its two
@@ -301,7 +301,7 @@ Scalasca. In this way, the user is free to choose between these two
 complementary tools to investigate the trace files and may select the
 one that is more appropriate for the specific question at hand.
 As an alternative to writing the trace data to disk and evaluating
-them post mortem, it is also possible to directly hand over the data 
+them post mortem, it is also possible to directly hand over the data
 to on-line analysis tools like Periscope. The corresponding interface
 that allows this on-line access is also an integral part of @scorep.
 
@@ -325,30 +325,30 @@ display parameters, and various techniques to enhance the efficiency
 that result in a much better scaling behavior of the analysis tool
 even in a range of tens of thousands of processes.
 
-As a rough guideline for users who are uncertain which of these two modes 
-to employ, we provide a brief comparison of their main advantages and 
-disadvantages. Specifically, tracing mode allows to retain temporal 
-and spatial connections, and it can reflect the dynamical behavior 
+As a rough guideline for users who are uncertain which of these two modes
+to employ, we provide a brief comparison of their main advantages and
+disadvantages. Specifically, tracing mode allows to retain temporal
+and spatial connections, and it can reflect the dynamical behavior
 to an arbitrary precision. Moreover, statistical information and profiles
 may be derived from the program traces. On the other hand, the amount of
 data that is produced in the tracing mode can become prohibitively large;
-profiles tend to require much less storage space. In addition, the 
+profiles tend to require much less storage space. In addition, the
 additional load that is imposed on the process, and hence the perturbations
 of the behavior of the code to be analyzed, are much smaller in profiling
-mode than in tracing mode. And finally we mention that the accurate 
-synchronization of the clocks is an important aspect in tracing mode that 
-may cause difficulties. 
+mode than in tracing mode. And finally we mention that the accurate
+synchronization of the clocks is an important aspect in tracing mode that
+may cause difficulties.
 
 
 
 @section acknowledgment Acknowledgment
 @seclabel{acknowledgment}
 
-The development of @scorep was sponsored by a grant from the 
+The development of @scorep was sponsored by a grant from the
 @href{http://www.bmbf.bund.de,German Federal Ministry of Education
 and Research} (Grant No.\ 01IH08006) within the framework of its High
-Performance Computing programme and with a grant from the 
-@href{http://energy.gov/, US Department of Energy} 
+Performance Computing programme and with a grant from the
+@href{http://energy.gov/, US Department of Energy}
 (Award No. DE-SC0001621). This support is gratefully
-acknowledged. 
+acknowledged.
 */

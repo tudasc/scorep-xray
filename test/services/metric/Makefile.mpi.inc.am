@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
@@ -57,7 +57,7 @@ EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_mpi_metric_test.sh \
               $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_papi_metric_definitions.out \
               $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_papi_metric_events.out
 
-# As long as there is no appropriate make target add binary to MPI test 
+# As long as there is no appropriate make target add binary to MPI test
 # cases. No metrics will be recorded because corresponding environment
 # variables aren't set.
 TESTS_MPI += jacobi_mpi_c_metric_test
@@ -118,7 +118,7 @@ EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_hybrid_metric_test.sh \
               $(SRC_ROOT)test/services/metric/data/jacobi_c_hybrid_papi_metric_definitions.out \
               $(SRC_ROOT)test/services/metric/data/jacobi_c_hybrid_papi_metric_events.out
 
-# As long as there is no appropriate make target add binary to MPI test 
+# As long as there is no appropriate make target add binary to MPI test
 # cases. No metrics will be recorded because corresponding environment
 # variables aren't set.
 TESTS_MPI_OMP += jacobi_mpi_omp_c_metric_test

@@ -1,6 +1,6 @@
 dnl -*- mode: autoconf -*-
 
-dnl 
+dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
 dnl Copyright (c) 2013
@@ -27,10 +27,10 @@ scorep_cflags_save=${CFLAGS}
 CFLAGS="${OPENMP_CFLAGS}"
 
 AC_MSG_CHECKING([for OpenMP ancestry runtime library routines])
-AC_LINK_IFELSE([AC_LANG_PROGRAM( 
+AC_LINK_IFELSE([AC_LANG_PROGRAM(
 [[
 #include <omp.h>
-]], 
+]],
 [[
     omp_get_max_active_levels();
     omp_get_level();
@@ -43,8 +43,8 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM(
     [scorep_have_omp_ancestry=0
      AC_MSG_RESULT([no])])
 
-AFS_AM_CONDITIONAL([HAVE_SCOREP_OMP_ANCESTRY], 
-    [test 1 -eq ${scorep_have_omp_ancestry}], 
+AFS_AM_CONDITIONAL([HAVE_SCOREP_OMP_ANCESTRY],
+    [test 1 -eq ${scorep_have_omp_ancestry}],
     [false])
 AC_SUBST([SCOREP_OMP_ANCESTRY], [${scorep_have_omp_ancestry}])
 

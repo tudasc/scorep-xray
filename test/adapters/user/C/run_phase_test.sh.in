@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
@@ -37,7 +37,7 @@ rm -f  scorep_phase_test.pomp_init.c \
        scorep_phase_test.opari.c \
        scorep_phase_test.c.opari.inc \
        scorep_phase_test.c \
-       scorep_phase_test 
+       scorep_phase_test
 
 rm -rf scorep-measurement-tmp
 }

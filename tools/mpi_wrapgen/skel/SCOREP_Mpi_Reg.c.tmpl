@@ -16,8 +16,8 @@
 /* Placeholder for MPI functions which are not communicative */
 #define SCOREP_REGION_NONE SCOREP_REGION_FUNCTION
 
-/** 
- * MPI operation event type 
+/**
+ * MPI operation event type
  */
 typedef struct
 {
@@ -51,7 +51,7 @@ static const scorep_mpi_type scorep_mpi_pt2pt[] = {
   { "MPI_Waitsome",                                 SCOREP_MPI_TYPE__RECV },
 };
 
-/** MPI collective function types 
+/** MPI collective function types
  * @note contents must be alphabetically sorted */
 static const scorep_mpi_type scorep_mpi_colls[] = {
   { "MPI_Allgather",      SCOREP_COLL_TYPE__ALL2ALL },
@@ -100,12 +100,12 @@ void scorep_mpi_register_regions()
   /* Artificial root for MPI-only experiments when no user-code
    * instrumenation is available */
   scorep_mpi_regid[SCOREP_PARALLEL__MPI] =
-      SCOREP_Definitions_NewRegion("PARALLEL", 
-      			           NULL, 
-				   SCOREP_INVALID_SOURCE_FILE, 
-				   SCOREP_INVALID_LINE_NO, 
-                                   SCOREP_INVALID_LINE_NO, 
-				   SCOREP_PARADIGM_MPI, 
+      SCOREP_Definitions_NewRegion("PARALLEL",
+      			           NULL,
+				   SCOREP_INVALID_SOURCE_FILE,
+				   SCOREP_INVALID_LINE_NO,
+                                   SCOREP_INVALID_LINE_NO,
+				   SCOREP_PARADIGM_MPI,
 				   SCOREP_REGION_ARTIFICIAL);
 }
 

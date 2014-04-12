@@ -23,10 +23,10 @@ online_access_registry_CPPFLAGS = $(AM_CPPFLAGS)      \
 
 if ! PLATFORM_AIX
 online_access_registry_CPPFLAGS += -D_POSIX_SOURCE
-endif 
+endif
 
 online_access_registry_LDADD = $(LIB_ROOT)libutils.la
-    
+
 EXTRA_DIST += $(SRC_ROOT)tools/oa_registry/scenario_mpi
 EXTRA_DIST += $(SRC_ROOT)tools/oa_registry/scenario_serial
 

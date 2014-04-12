@@ -1,9 +1,9 @@
 module JacobiMod
     use VariableDef
-    implicit none 
+    implicit none
 
     contains
-   
+
     subroutine Jacobi(myData)
         implicit none
         include 'mpif.h'
@@ -24,48 +24,48 @@ module JacobiMod
         !         maxit  Maximum number of iterations                       *
         !                                                                   *
         ! Output : myData%afU(n,m) - Solution                               *
-        !******************************************************************** 
-  
-        !.. Formal Arguments .. 
-        type(JacobiData), intent(inout) :: myData 
-         
-        !.. Local Scalars .. 
+        !********************************************************************
+
+        !.. Formal Arguments ..
+        type(JacobiData), intent(inout) :: myData
+
+        !.. Local Scalars ..
         integer :: i, j, iErr
         double precision :: ax, ay, b, residual, fLRes, tmpResd
-         
-        !.. Local Arrays .. 
+
+        !.. Local Arrays ..
         double precision, allocatable :: uold(:,:)
-         
-        !.. Intrinsic Functions .. 
+
+        !.. Intrinsic Functions ..
         intrinsic DBLE, SQRT
 
         allocate(uold (0 : myData%iCols -1, myData%iRowFirst : myData%iRowLast))
 
         ! ... Executable Statements ...
-        ! Initialize coefficients 
-        
-        if (allocated(uold)) then    
-            ax = 1.0d0 / (myData%fDx * myData%fDx)      ! X-direction coef 
+        ! Initialize coefficients
+
+        if (allocated(uold)) then
+            ax = 1.0d0 / (myData%fDx * myData%fDx)      ! X-direction coef
             ay = 1.0d0 / (myData%fDx * myData%fDx)      ! Y-direction coef
-            b = -2.0d0 * (ax + ay) - myData%fAlpha      ! Central coeff  
+            b = -2.0d0 * (ax + ay) - myData%fAlpha      ! Central coeff
             residual = 10.0d0 * myData%fTolerance
-        
+
             do while (myData%iIterCount < myData%iIterMax .and. residual > myData%fTolerance)
                 residual = 0.0d0
-        
+
             ! Copy new solution into old
                 call ExchangeJacobiMpiData(myData, uold)
                   ! Compute stencil, residual, & update
                    do j = myData%iRowFirst + 1, myData%iRowLast - 1
                        do i = 1, myData%iCols - 2
-                           ! Evaluate residual 
+                           ! Evaluate residual
                            fLRes = (ax * (uold(i-1, j) + uold(i+1, j)) &
                                   + ay * (uold(i, j-1) + uold(i, j+1)) &
                                   + b * uold(i, j) - myData%afF(i, j)) / b
-                    
-                           ! Update solution 
+
+                           ! Update solution
                            myData%afU(i, j) = uold(i, j) - myData%fRelax * fLRes
-                    
+
                            ! Accumulate residual error
                            residual = residual + fLRes * fLRes
                        end do
@@ -73,12 +73,12 @@ module JacobiMod
                   tmpResd = residual
                   call MPI_Allreduce(tmpResd, residual, 1, MPI_DOUBLE_PRECISION, &
                                 MPI_SUM, MPI_COMM_WORLD, Ierr)
-          
-                 ! Error check 
-                 myData%iIterCount = myData%iIterCount + 1      
+
+                 ! Error check
+                 myData%iIterCount = myData%iIterCount + 1
                  residual = SQRT(residual) / DBLE(myData%iCols * myData%iRows)
-             
-            ! End iteration loop 
+
+            ! End iteration loop
             end do
             myData%fResidual = residual
             deallocate(uold)
@@ -99,7 +99,7 @@ module JacobiMod
         integer :: single_status(MPI_STATUS_SIZE)
         integer, parameter :: iTagMoveLeft = 10, iTagMoveRight = 11
         integer i, j, iErr, iReqCnt
- 
+
         iReqCnt = 0
         if (myData%iMyRank /= myData%iNumProcs - 1) then
 !!           /* send stripe mhi-1 to right neighbour async */
@@ -108,7 +108,7 @@ module JacobiMod
                             MPI_DOUBLE_PRECISION, myData%iMyRank + 1,         &
                             iTagMoveRight, MPI_COMM_WORLD, request(iReqCnt), iErr)
         end if
- 
+
         if (myData%iMyRank /= 0) then
 !!           /* send stripe mlo+1 to left neighbour async */
             iReqCnt = iReqCnt + 1
@@ -129,14 +129,14 @@ module JacobiMod
                            MPI_DOUBLE_PRECISION, myData%iMyRank - 1, &
                            iTagMoveRight, MPI_COMM_WORLD, single_status, iErr)
         end if
- 
+
         if (myData%iMyRank /= myData%iNumProcs - 1) then
 !!           /* receive stripe mhi from right neighbour blocking */
             call MPI_Recv( uold(0, myData%iRowLast), myData%iCols,  &
                            MPI_DOUBLE_PRECISION, myData%iMyRank + 1, &
                            iTagMoveLeft, MPI_COMM_WORLD, single_status, iErr)
         end if
- 
+
         call MPI_Waitall(iReqCnt, request, status, iErr)
     end subroutine ExchangeJacobiMpiData
 end module JacobiMod

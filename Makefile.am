@@ -1,6 +1,6 @@
 # -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
@@ -44,9 +44,9 @@ include vendor/common/build-config/Makefile.inc.am
 include vendor/common/build-config/platforms.am
 
 ## Still, sometimes there are files that must be distributed, but which are not
-## covered in the automatic rules. These files should be listed in the 
+## covered in the automatic rules. These files should be listed in the
 ## EXTRA_DIST variable. You can mention files from subdirectories in EXTRA_DIST.
-## 
+##
 ## You can also mention a directory in EXTRA_DIST. In this case the entire
 ## directory will be recursively copied into the distribution. Please note that
 ## this will also copy everything in the directory, including CVS/RCS version

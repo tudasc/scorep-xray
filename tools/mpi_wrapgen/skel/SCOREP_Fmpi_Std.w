@@ -13,7 +13,7 @@ ${proto:fortran} {
   ${xblock:fortran}
 
   *ierr = ${call:fortran}
-  
+
   ${cleanup:fortran}
 }
 ${guard:end}

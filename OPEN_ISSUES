@@ -1,4 +1,4 @@
-/* 
+/*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
@@ -25,7 +25,7 @@
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
- * 
+ *
  */
 
 
@@ -34,11 +34,11 @@
                                                            Status: Feb 2014
 * CUDA support
 
-  - CUDA device activities get lost for CUDA 5.5 (CUPTI 4). The last activity 
-    in a CUPTI activity buffer gets lost, when the buffer is full. The issue 
-    can be avoided by providing buffers, which are large enough to store all 
-    CUDA device activities until the buffer is flushed. The user can specify 
-    the CUPTI activity buffer (chunk) size with the environment variable 
+  - CUDA device activities get lost for CUDA 5.5 (CUPTI 4). The last activity
+    in a CUPTI activity buffer gets lost, when the buffer is full. The issue
+    can be avoided by providing buffers, which are large enough to store all
+    CUDA device activities until the buffer is flushed. The user can specify
+    the CUPTI activity buffer (chunk) size with the environment variable
     SCOREP_CUDA_BUFFER_CHUNK. In CUDA 6.0 (CUPTI 5) this issue is fixed.
 
 
@@ -97,12 +97,12 @@ various Score-P components.
              Note that PGI 13.8 is currently not supported as it is not
              recognized as an PGI compiler anymore
   - Oracle : only works for Fortran (not C/C++), tested with version 12.2
-  - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and 
+  - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and
              higher and corresponding bgxl compilers on BlueGene systems
   - Intel  : only works with Intel icc/ifort version 10 and higher compilers
   - Cray   : tested with version 8.1.8
 
-  - Because the compiler instrumentation interface of the XL compiler series 
+  - Because the compiler instrumentation interface of the XL compiler series
     changed with xlc 11.1/xlf 13.1. You need a separate installations
     for older versions than xlc 11.1/xlf 13.1 and newer versions.
 
@@ -132,11 +132,11 @@ various Score-P components.
     case, region names will be provided by nm.
 
   - The GNU compiler instrumentation provides only functions pointers, which
-    we look up in the symbol table of the executable. Thus, functions from 
+    we look up in the symbol table of the executable. Thus, functions from
     shared libraries, will not appear (are automatically filtered) in the
     measurement output.
 
-  - The pgCC compiler versions 13.9 and higher preinclude omp.h for OpenMP 
+  - The pgCC compiler versions 13.9 and higher preinclude omp.h for OpenMP
     codes. This results in  multiply defined symbols if the source file
     is preprocessed before compilation. Since version 14.1 an option is available
     to avoid preinclusion, which we can use for preprocessed source files.
@@ -151,7 +151,7 @@ various Score-P components.
     no support for MPI_Type_dup() was detected, then please ensure,
     that the MPI_Datatype handle is still valid at the time the
     request finishes.
-    
+
   - Online detection of MPI wait states might produce wrong results
     when messages sent within different communicators overtake each
     other.
@@ -206,7 +206,7 @@ various Score-P components.
 
  - OPARI2-instrumented Fortran OpenMP codes that use compiler options
    to change the default name-mangling (XL compilers: -qextname, GNU:
-   -fno-underscoring' and '-fsecond-underscore') will likely crash. 
+   -fno-underscoring' and '-fsecond-underscore') will likely crash.
    This is because a variable name used in the Score-P libraries does
    not match the one instrumented by OPARI2. On AIX, a workaround is
    to manusally rename it at link time (-brename:pomp_tpd_,pomp_tpd).
@@ -216,7 +216,7 @@ various Score-P components.
    '--preinclude omp.h' option to the call of pgcpp1. This leads to
    'invalid redeclaration' errors. As a workaround, use the
    '--nopreprocess' instrumenter option.
- 
+
 --------------------------------------------------------------------------------
 
 * Score-P misc.
@@ -225,16 +225,16 @@ various Score-P components.
     explicitly given optimization flags. The instrumenter adds compiler
     flags to enable additional debugging information. Depending on the
     compiler this may turn off optimization unless optimization flags
-    are explicitly specified. 
+    are explicitly specified.
 
   - Applications using an autotools-based buildsystem should add the
     option "--disable-option-checking" to the usual configure
     call. Score-P is added only at make time like "make CC="scorep
     <your-CC>" (same for CXX, F77, and FC)
 
-  - Literal file-filter rules like "INCLUDE bt.f" for Fortran files that 
-    will be processed by OPARI2 (i.e., files containing OpenMP or POMP 
-    user pragmas) do not work as expected as OPARI2 changes the file 
+  - Literal file-filter rules like "INCLUDE bt.f" for Fortran files that
+    will be processed by OPARI2 (i.e., files containing OpenMP or POMP
+    user pragmas) do not work as expected as OPARI2 changes the file
     name (here to bt.opari.f)
 
   - Due to a bug in PDT 3.18 and earlier versions, PDT support is
@@ -261,7 +261,7 @@ various Score-P components.
     Scalasca.
 
   - Running make check fails if SCOREP_EXPERIMENT_DIRECTORY is set to
-    'scorep'. One workaround is to run 
+    'scorep'. One workaround is to run
     '(unset SCOREP_EXPERIMENT_DIRECTORY; make check;)'.
 
 --------------------------------------------------------------------------------

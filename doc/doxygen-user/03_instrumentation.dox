@@ -2,14 +2,14 @@
 @seclabel{instrumentation}
 
 @scorep provides several possibilities to instrument user application code.
-Besides the automatic compiler-based instrumentation 
+Besides the automatic compiler-based instrumentation
 (Section @secref{compiler_instrumentation}), it
-provides manual instrumentation using the @scorep User API 
+provides manual instrumentation using the @scorep User API
 (Section @secref{manual_instrumentation}),
-semi-automatic instrumentation using @pomp2 directives 
+semi-automatic instrumentation using @pomp2 directives
 (Section @secref{pomp_instrumentation}) and,
 if configured, automatic source-code instrumentation using the PDToolkit-based
-instrumenter (Section @secref{tau_instrumentation}). 
+instrumenter (Section @secref{tau_instrumentation}).
 
 As well as user routines and specified source regions, @scorep currently supports the
 following kinds of events:
@@ -23,7 +23,7 @@ following kinds of events:
     Note that the @scorep libraries must be linked <i>before</i> the @mpi library
     to ensure interposition will be effective.
   </li>
-  
+
   <li>
     <b>@openmp directives @& API calls</b>:<br>
     The @scorep measurement system uses the @opari2 tool for instrumentation
@@ -37,7 +37,7 @@ The @scorep instrumenter command <tt>scorep</tt> automatically takes
 care of compilation and linking to produce an instrumented executable,
 and should be prefixed to compile and link commands.  Often this only
 requires prefixing definitions for @verb{CC} or @verb{MPICC} (and
-equivalents) in Makefiles.  
+equivalents) in Makefiles.
 
 When using Makefiles, it is often convenient to define a "preparation preposition"
 placeholder (e.g., <tt>PREP</tt>) which can be prefixed to (selected)
@@ -54,12 +54,12 @@ These can make it easier to prepare an instrumented version of the program with
 while default builds (without specifying <tt>PREP</tt> on the command line)
 remain fully optimized and without instrumentation.
 
-In order to instrument applications which employ GNU Autotools for building, following 
+In order to instrument applications which employ GNU Autotools for building, following
 instrumentation procedure has to be used:
 
 <ol>
-<li>Configure application as usual, but provide additional 
-argument:  
+<li>Configure application as usual, but provide additional
+argument:
 
 <tt>--disable-dependency-tracking</tt></li>
 
@@ -68,7 +68,7 @@ argument:
 <tt>make CC="scorep <your-cc-compiler>"  \\
 
          CXX="scorep <your-cxx-compiler>" \\
- 
+
          FC="scorep <your-fc-compiler>" ...</tt></li>
 </ol>
 
@@ -77,16 +77,16 @@ When compiling without the @scorep instrumenter, the
 <tt>scorep-config</tt> command can be used to simplify determining the appropriate
 linker flags and libraries, or include paths:
 @verbatim
-    scorep-config [--mpp=none|--mpp=mpi] \ 
+    scorep-config [--mpp=none|--mpp=mpi] \
                   [--thread=none|--thread=omp] --libs
 @endverbatim
 
-The @verb--mpp=<paradigm> switch selects which message passing paradigm is used. 
-Currently, @scorep supports applications using MPI and applications without any 
+The @verb--mpp=<paradigm> switch selects which message passing paradigm is used.
+Currently, @scorep supports applications using MPI and applications without any
 message passing paradigm. It is not possible to specify two message passing systems
 for the same application.
-The @verb--thread=<paradigm> switch selects which threading system is used in 
-Score-P. You may use OpenMP ( @verb--thread=omp ) or no threading system 
+The @verb--thread=<paradigm> switch selects which threading system is used in
+Score-P. You may use OpenMP ( @verb--thread=omp ) or no threading system
 ( @verb--thread=none ). It is not possible to specify two threading systems
 for the same application. However, you may combine a message passing system with
 a threading system.
@@ -94,7 +94,7 @@ a threading system.
 @note
   A particular installation of @scorep may not offer all measurement
   configurations!
-	
+
 The <tt>scorep-config</tt> command can also be used to determine the right compiler
 flags for specifying the include directory of the <tt>scorep/SCOREP_User.h</tt> or
 <tt>scorep/SCOREP_User.inc</tt> header files. When compiling without using the @scorep
@@ -110,19 +110,19 @@ If you compile a C file, you should use <tt>--cflags</tt>. If you use a C++ prog
 you should use <tt>--cxxflags</tt>. And if you compile a Fortran source file, you
 should use <tt>--flags</tt>.
 
-With the additional options it is possible to select the used adapter, the threading system and 
+With the additional options it is possible to select the used adapter, the threading system and
 the message passing system. For each adapter, we provides a pair of flags of the form
-<tt>--adapter</tt>, and <tt>--noadapter</tt> (please replace <tt>adapter</tt> by the 
-name of the adapter). This allows to get options  
-for non-default instrumentation possibilities. E.g., <tt>--user</tt> enables the 
+<tt>--adapter</tt>, and <tt>--noadapter</tt> (please replace <tt>adapter</tt> by the
+name of the adapter). This allows to get options
+for non-default instrumentation possibilities. E.g., <tt>--user</tt> enables the
 manual instrumentation with the @scorep user API, the <tt>--nocompiler</tt> option
-disables compiler instrumentation. 
+disables compiler instrumentation.
 
 @scorep supports a variety of instrumentation types for user-level
 source routines and arbitrary regions, in addition to fully-automatic
 @mpi and @openmp instrumentation, as summarized in Table @tabref{instopts}.
 
-\if LATEX 
+\if LATEX
 \latexonly
    \begin{table}
 	\caption{Score-P instrumenter option overview}
@@ -130,8 +130,8 @@ source routines and arbitrary regions, in addition to fully-automatic
     	\begin{tabular}{ | p{1.7cm} | p{3.0cm} | p{1.6cm} | p{2.1cm} | p{2.1cm} |}
 	    \hline
 	    \bf Type of\newline instrumen\-tation & \bf Instrumenter switch & \bf Default value & \bf Instrumented routines & \bf  Runtime measurement control \\ \hline
-      
-	    MPI & {\ttfamily -\/-\/mpp=mpi/ \newline -\/-\/mpp=none} & (auto) &  configured by install & see Sec. \ref{sec:mpi_groups}  \\ \hline	    
+
+	    MPI & {\ttfamily -\/-\/mpp=mpi/ \newline -\/-\/mpp=none} & (auto) &  configured by install & see Sec. \ref{sec:mpi_groups}  \\ \hline
 	    OpenMP & {\ttfamily -\/-\/thread=omp/ \newline -\/-\/thread=none} & (auto) &  all parallel constructs &  --  \\ \hline
 	    Compiler, Sec. \ref{sec:compiler_instrumentation} & {\ttfamily -\/-\/compiler/ \newline -\/-\/nocompiler} & enabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    PDT,\newline Sec. \ref{sec:tau_instrumentation} & {\ttfamily -\/-\/pdt/ \newline -\/-\/nopdt} & disabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
@@ -156,42 +156,42 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="center" valign="middle"> --mpp=mpi </td>
       <td align="center" valign="middle"> (auto) </td>
       <td align="center" valign="middle"> configured by install </td>
-      <td align="center" valign="middle"> (see Sec. @ref mpi_groups ) </td> 
+      <td align="center" valign="middle"> (see Sec. @ref mpi_groups ) </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> OpenMP </td>
       <td align="center" valign="middle"> --thread=omp </td>
       <td align="center" valign="middle"> (auto) </td>
       <td align="center" valign="middle"> all parallel constructs </td>
-      <td align="center" valign="middle"> &mdash; </td> 
+      <td align="center" valign="middle"> &mdash; </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> Compiler (see Sec. @ref compiler_instrumentation ) </td>
       <td align="center" valign="middle"> --compiler/--nocompiler </td>
       <td align="center" valign="middle"> enabled </td>
       <td align="center" valign="middle"> all </td>
-      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </tt> </td> 
+      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </tt> </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> PDT instrumentation (see Sec. @ref tau_instrumentation ) </td>
       <td align="center" valign="middle"> --pdt/--nopdt </td>
       <td align="center" valign="middle"> disabled </td>
       <td align="center" valign="middle"> all </td>
-      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </td> 
+      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> @pomp2 user regions (see Sec. @ref pomp_instrumentation ) </td>
       <td align="center" valign="middle"> --pomp/--nopomp</td>
       <td align="center" valign="middle"> depends on OpenMP usage </td>
       <td align="center" valign="middle"> manually annotated </td>
-      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </td> 
+      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </td>
     </tr>
     <tr>
       <td align="left" valign="middle"> Manual (see Sec. @ref manual_instrumentation ) </td>
       <td align="center" valign="middle"> --user/--nouser </td>
       <td align="center" valign="middle"> disabled </td>
       <td align="center" valign="middle"> manually annotated </td>
-      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering )<br> and<br> selective recording (see Sec. @ref selective_recording ) </td> 
+      <td align="center" valign="middle"> Filtering (see Sec. @ref filtering )<br> and<br> selective recording (see Sec. @ref selective_recording ) </td>
     </tr>
   </table>
 \endif
@@ -204,7 +204,7 @@ parallel constructs and API calls are instrumented by default.
 
 By default, automatic instrumentation of user-level source routines by
 the compiler is enabled (equivalent to specifying <tt>--compiler</tt>).
-The compiler instrumentation can be disabled with <tt>--nocompiler</tt> when desired, 
+The compiler instrumentation can be disabled with <tt>--nocompiler</tt> when desired,
 such as when
 using PDToolkit, or POMP2 or @scorep user API manual source annotations, are
 enabled with <tt>--pdt</tt>, <tt>--pomp</tt> and <tt>--user</tt>, respectively.
@@ -218,34 +218,34 @@ because it inserts @scorep user macros into the source code.
 @note There are two ways of internal data handling for measurements
       involving the OpenMP threading model. The possible options are:
       @n @verb{--thread=omp:pomp_tpd}
-      @n @verb{--thread=omp:ancestry} 
+      @n @verb{--thread=omp:ancestry}
       @n These options should be identical in behavior. If you specify
       @verb{--thread=omp} or OpenMP is automatically detected, the default
       is @verb{pomp_tpd}.
 
 
 Sometimes it is desirable to explicitly direct the @scorep instrumenter to
-do nothing except execute the associated compile/link command. For such cases 
+do nothing except execute the associated compile/link command. For such cases
 it is possible to disable default instrumentation with <tt>--nocompiler</tt>,
 <tt>--thread=none</tt>, and/or <tt>--mpp=none</tt>. Although no instrumentation is
 performed, this can help verify that the @scorep instrumenter correctly
-handles the compile/link commands. 
+handles the compile/link commands.
 
-@note Disabling @openmp in the instrumenter for @openmp applications will cause 
-      errors during program execution if any event occurs inside of a parallel 
+@note Disabling @openmp in the instrumenter for @openmp applications will cause
+      errors during program execution if any event occurs inside of a parallel
       region.
 
-Each thread model uses a default internal locking mechanism for the @scorep 
+Each thread model uses a default internal locking mechanism for the @scorep
 measurement system. For the standard use case there is no need to specify an
-explicit locking mode. However, on certain systems or for performance 
-reasons it might be useful to change the locking mode. For 
+explicit locking mode. However, on certain systems or for performance
+reasons it might be useful to change the locking mode. For
 these cases the instrumenter provides the option
- @verb{--mutex=[omp|pthread|pthread:spinlock|none]}. 
-Current possibilities are  the OpenMP locking (omp), Pthread mutex 
-(pthread), Pthread spinlock (pthread:spinlock) and none at all (none). Which of 
+ @verb{--mutex=[omp|pthread|pthread:spinlock|none]}.
+Current possibilities are  the OpenMP locking (omp), Pthread mutex
+(pthread), Pthread spinlock (pthread:spinlock) and none at all (none). Which of
 these are available for a given installation will be determined at configure time.
 
-@note Not all combinations of thread model and explicit choice of locking 
+@note Not all combinations of thread model and explicit choice of locking
       are useful. Currently, only the combination of no locking with a real
       threading system is overwritten by the thread model default to ensure
       thread safety.
@@ -299,8 +299,8 @@ and could be applied successfully.
 @section manual_instrumentation Manual Region Instrumentation
 @seclabel{manual_instrumentation}
 
-In addition to the automatic compiler-based instrumentation 
-(see Section @secref{compiler_instrumentation}), 
+In addition to the automatic compiler-based instrumentation
+(see Section @secref{compiler_instrumentation}),
 instrumentation can be done manually. Manual instrumentation can
 also be used to augment automatic instrumentation with region or phase
 annotations, which can improve the structure of analysis reports. Furthermore, it
@@ -347,7 +347,7 @@ C/C++:
 C++ only:
 @code
     #include <scorep/SCOREP_User.h>
-	
+
     void foo()
     {
       SCOREP_USER_REGION( "foo", SCOREP_USER_REGION_TYPE_FUNCTION )
@@ -358,20 +358,20 @@ C++ only:
 
 @note
   When using Fortran, make sure the C preprocessor expands the macros. In most cases,
-  the fortran compiler invoke the C preprocessor if the source file suffix is in 
+  the fortran compiler invoke the C preprocessor if the source file suffix is in
   capital letters. However, some compilers provide extra flags to tell the compiler
-  to use a C preprocessor. 
-  Furthermore, it is important to use the C-like <tt>#include</tt> with 
+  to use a C preprocessor.
+  Furthermore, it is important to use the C-like <tt>#include</tt> with
   the leading '#'-character to include the <tt>SCOREP_User.inc</tt> header file.
-  Otherwise, the inclusion may happen after the C preprocessor ran. As result 
-  the fortran compiler complains about unknown preprocessing directives. 
+  Otherwise, the inclusion may happen after the C preprocessor ran. As result
+  the fortran compiler complains about unknown preprocessing directives.
 
 
 Region handles (<tt>my_region_handle</tt>) should be registered in each annotated
 function/subroutine prologue before use within the associated body, and should
-not already be declared in the same program scope. 
- 
-For every region, the region type can be indicated via the region type flag. 
+not already be declared in the same program scope.
+
+For every region, the region type can be indicated via the region type flag.
 Possible region types are:
 <dl>
  <dt> SCOREP_USER_REGION_TYPE_COMMON </dt>
@@ -379,13 +379,13 @@ Possible region types are:
  <dt> SCOREP_USER_REGION_TYPE_FUNCTION </dt>
    <dd> Indicates that the region is a function or subroutine </dd>
  <dt> SCOREP_USER_REGION_TYPE_LOOP </dt>
-   <dd> Indicates that the region is the body of a loop, with the same number of 
+   <dd> Indicates that the region is the body of a loop, with the same number of
         iterations in all locations. </dd>
  <dt> SCOREP_USER_REGION_TYPE_DYNAMIC </dt>
    <dd> Set this type to create a separate branch in the call-tree for every execution
         of the region. See Section @secref{dynamic_profiling}. </dd>
  <dt> SCOREP_USER_REGION_TYPE_PHASE </dt>
-   <dd> Indicates that this region belongs to a special phase. See Section 
+   <dd> Indicates that this region belongs to a special phase. See Section
         @secref{phase_profiling}. </dd>
 </dl>
 To create a region of combined region types you can connect two or more types with the
@@ -394,10 +394,10 @@ binary OR-operator, e.g.:
    SCOREP_USER_REGION_BEGIN( handle, "foo",
                              SCOREP_USER_REGION_TYPE_LOOP |
                              SCOREP_USER_REGION_TYPE_PHASE |
-                             SCOREP_USER_REGION_TYPE_DYNAMIC )  
+                             SCOREP_USER_REGION_TYPE_DYNAMIC )
 @endcode
 
-For function instrumentation in C and C++, @scorep provides macros, which 
+For function instrumentation in C and C++, @scorep provides macros, which
 automatically pass the name and function type to @scorep measurement system.
 The <tt>SCOREP_USER_FUNC_BEGIN</tt> macro contains a variable definition.
 Thus, compilers that require strict separation of declaration and execution part,
@@ -417,11 +417,11 @@ C/C++:
 
 In some cases, it might be useful to have the possibility to define region
 handles with a global scope. In C/C++, a region handle can be defined at a
-global scope with <tt>SCOREP_USER_GLOBAL_REGION_DEFINE</tt>. In this case, the 
-<tt>SCOREP_USER_REGION_DEFINE</tt> must be omitted. The 
+global scope with <tt>SCOREP_USER_GLOBAL_REGION_DEFINE</tt>. In this case, the
+<tt>SCOREP_USER_REGION_DEFINE</tt> must be omitted. The
 <tt>SCOREP_USER_GLOBAL_REGION_DEFINE</tt> must only appear in one file. To use the same global
 variable in other files, too, declare the global region in other files with
-<tt>SCOREP_USER_GLOBAL_REGION_EXTERNAL</tt>. 
+<tt>SCOREP_USER_GLOBAL_REGION_EXTERNAL</tt>.
 
 File 1:
 @code
@@ -429,7 +429,7 @@ File 1:
 
     foo()
     {
-        SCOREP_USER_REGION_BEGIN( global_handle, "phase 1", 
+        SCOREP_USER_REGION_BEGIN( global_handle, "phase 1",
                                   SCOREP_USER_REGION_TYPE_PHASE)
         // do something
         SCOREP_USER_REGION_END( global_handle )
@@ -442,7 +442,7 @@ File 2:
 
     bar()
     {
-        SCOREP_USER_REGION_BEGIN( global_handle, "phase 1", 
+        SCOREP_USER_REGION_BEGIN( global_handle, "phase 1",
                                   SCOREP_USER_REGION_TYPE_PHASE)
         // do something
         SCOREP_USER_REGION_END( global_handle )
@@ -468,15 +468,15 @@ case.
 @section parameter_instrumentation Instrumentation for Parameter-Based Profiling
 @seclabel{parameter_instrumentation}
 
-The @scorep user API provides also macros for parameter-based profiling. In 
+The @scorep user API provides also macros for parameter-based profiling. In
 parameter-based profiling, the parameters of a function are used to split up the call-path
 for executions of different parameter values. In @scorep parameter-based profiling is
 supported for integer and string parameters. To associate a parameter value to a region
-entry, insert a call to <tt>SCOREP_USER_PARAMETER_INT64</tt> for signed integer 
-parameters, <tt>SCOREP_USER_PARAMETER_UINT64</tt> for unsigned integer parameters, or 
-<tt>SCOREP_USER_PARAMETER_STRING</tt> for string parameters after the region entry 
-(e.g. after 
-<tt>SCOREP_USER_REGION_BEGIN</tt> or <tt>SCOREP_USER_FUNC_BEGIN</tt>). 
+entry, insert a call to <tt>SCOREP_USER_PARAMETER_INT64</tt> for signed integer
+parameters, <tt>SCOREP_USER_PARAMETER_UINT64</tt> for unsigned integer parameters, or
+<tt>SCOREP_USER_PARAMETER_STRING</tt> for string parameters after the region entry
+(e.g. after
+<tt>SCOREP_USER_REGION_BEGIN</tt> or <tt>SCOREP_USER_FUNC_BEGIN</tt>).
 
 Fortran:
 @code
@@ -518,10 +518,10 @@ C/C++:
     }
 @endcode
 
-In C/C++, only a name for the parameter and the value needs to be provided. In Fortran, 
+In C/C++, only a name for the parameter and the value needs to be provided. In Fortran,
 the handle must be defined first with <tt>SCOREP_USER_PARAMETER_DEFINE</tt>. The defined handle
-name must be unique in the current scope. The macro <tt>SCOREP_USER_PARAMETER_INT64</tt> 
-as well as the macro 
+name must be unique in the current scope. The macro <tt>SCOREP_USER_PARAMETER_INT64</tt>
+as well as the macro
 <tt>SCOREP_USER_PARAMETER_STRING</tt> need the handle as the first argument, followed by the
 name and the value.
 
@@ -530,18 +530,18 @@ name and the value.
 
 The @scorep user API also provides several macros for measurement control
 that can be incorporated in source files and activated during
-instrumentation. The macro 
+instrumentation. The macro
 <tt>SCOREP_RECORDING_OFF</tt> can be used to
 (temporarily) pause recording until a subsequent
 <tt>SCOREP_RECORDING_ON</tt>. Just like the already covered user-defined annotated
 regions, <tt>SCOREP_RECORDING_ON</tt> and the corresponding
- <tt>SCOREP_RECORDING_OFF</tt> 
-must be correctly nested with other enter/exit events. Finally, 
-with <tt>SCOREP_RECORDING_IS_ON</tt> you can test whether recording is switched on. 
+ <tt>SCOREP_RECORDING_OFF</tt>
+must be correctly nested with other enter/exit events. Finally,
+with <tt>SCOREP_RECORDING_IS_ON</tt> you can test whether recording is switched on.
 
 Events are not recorded when recording is switched off (though associated
 definitions are), resulting in smaller measurement overhead.  In particular,
-traces can be much smaller and can target specific application phases (e.g., 
+traces can be much smaller and can target specific application phases (e.g.,
 excluding initialization and/or finalization) or specific iterations.  Since
 the recording switch is process-local, and effects all threads on the process,
 it can only be initiated outside of OpenMP parallel regions.  Switching recording
@@ -553,8 +553,8 @@ on/off is done independently on each MPI process without synchronization.
       it may result in errors during execution or analysis. Furthermore, it is not
       possible to switch recording on/off from within parallel OpenMP regions. We
       recommend to use the selective recording interface, instead of the manual on/off
-      switch whenever possible. Special care is required in combination with 
-      selective recording (see Section @secref{selective_recording}, which also 
+      switch whenever possible. Special care is required in combination with
+      selective recording (see Section @secref{selective_recording}, which also
       switches recording on/off.
 
 @section online_access Source-Code Instrumentation Enabling Online Access
@@ -563,25 +563,25 @@ on/off is done independently on each MPI process without synchronization.
 The Online Access interface to the measurement system of @scorep allows remote
 control of measurement and access to the profile data. The online access interface
 may not be available on all platforms. To use the Online Access interface, @scorep must
-have been built with Online Access (OA) support. 
+have been built with Online Access (OA) support.
 
-The Online Access module requires the user to specify at least one 
+The Online Access module requires the user to specify at least one
 \emph{online access phase}. The online access phase does not show the behavior of
-a region of type phase as defined in Section @secref{manual_instrumentation}. 
-However, the way to specify an online access phase is similar to manual region 
-instrumentation. The start and end 
-of the online access phase defines the interaction points, where new measurement 
+a region of type phase as defined in Section @secref{manual_instrumentation}.
+However, the way to specify an online access phase is similar to manual region
+instrumentation. The start and end
+of the online access phase defines the interaction points, where new measurement
 control commands are applied and data requests are answered.
 
 To insert an online online access phase into the code, the user has to insert the macros
-<tt>SCOREP_USER_OA_PHASE_BEGIN</tt> and the corresponding 
-<tt>SCOREP_USER_OA_PHASE_END</tt> at appropriate locations. These macros must be 
+<tt>SCOREP_USER_OA_PHASE_BEGIN</tt> and the corresponding
+<tt>SCOREP_USER_OA_PHASE_END</tt> at appropriate locations. These macros must be
 <ul>
  <li> correctly nested with all regions and </li>
  <li> must be potential global synchronization points. </li>
 </ul>
-Common practice is to mark the body of the application's main loop as online access 
-phase, in order to utilize the main loop iterations for iterative online analysis. 
+Common practice is to mark the body of the application's main loop as online access
+phase, in order to utilize the main loop iterations for iterative online analysis.
 Only the measurements collected inside the OA phase could be configured and retrieved.
 
 Instrumentation can be performed in the following ways, depending on the
@@ -627,7 +627,7 @@ If you manually instrument the desired user functions and regions of your
 application source files using the @pomp2 <tt>INST</tt> directives described
 below, the @scorep instrumenter <tt>--pomp</tt> flag will generate
 instrumentation for them. It is automatically enabled for @openmp applications,
-but can be disabled with <tt>--nopomp</tt>. @pomp2 instrumentation directives 
+but can be disabled with <tt>--nopomp</tt>. @pomp2 instrumentation directives
 are supported for Fortran and C/C++. The main advantages are that
 <ul>
   <li>
@@ -702,10 +702,10 @@ C/C++:
 @endcode
 
 @note The @pomp2 instrumentation uses the @opari2 instrumenter. Thus, for
-      @openmp application, which automatically enable @opari2 
-      to instrument the parallel constructs, @pomp2 user region 
+      @openmp application, which automatically enable @opari2
+      to instrument the parallel constructs, @pomp2 user region
       instrumentation is enabled, too. Too disable @pomp2 user
-      region instrumentation for @openmp applications, pass 
+      region instrumentation for @openmp applications, pass
       <tt>--nopomp</tt> to the instrumenter.
 
 By default, the source code is preprocessed before @pomp2 instrumentation happens.
@@ -717,24 +717,24 @@ For more information on the preprocessing, see Section @secref{opari2_preprocess
 By default, source files are preprocessed before the semi-automatic @pomp2 instrumentation
 or the OpenMP construct instrumentation with @opari2 happens. This ensures, that all
 constructs and regions that might be contained in header files, templates, or macros
-are properly instrumented. Furthermore, conditional compilation directives take 
-effect, too. The necessary steps are performed by the @scorep instrumenter tool. 
+are properly instrumented. Furthermore, conditional compilation directives take
+effect, too. The necessary steps are performed by the @scorep instrumenter tool.
 
-Some Fortran compilers do not regard information about the original 
+Some Fortran compilers do not regard information about the original
 source location that the preprocessing leaves in
 the preprocessed code. This causes wrong source code information for
-regions from compiler instrumentation, and manual source code 
+regions from compiler instrumentation, and manual source code
 instrumentation. However, these compilers also
-disregard the source code information left by @opari2. Thus, 
+disregard the source code information left by @opari2. Thus,
 for these compilers the source location information is incorrect anyway.
 
 If the preprocessing is not desired, you can disable it
 with the <tt>--nopreprocess</tt> flag. In this case the instrumentation is performed
-before the preprocessing happens. In this case constructs and regions in header 
+before the preprocessing happens. In this case constructs and regions in header
 files, macros, or templates are not instrumented. Conditional compilation directives
 around constructs may also lead to broken instrumentation.
 
-@note If a parallel region is not instrumented, the application will 
+@note If a parallel region is not instrumented, the application will
       crash during runtime.
 
 The preprocessing does not work in combination with PDT source
@@ -758,16 +758,16 @@ To enable PDT-based source-code instrumentation, call <tt>scorep</tt> with the <
 @verbatim
     scorep --pdt  mpicc -c foo.c
 @endverbatim
-This will by default instrument all routines found in <tt>foo.c</tt>. 
+This will by default instrument all routines found in <tt>foo.c</tt>.
 (To avoid double instrumentation, automatic compiler instrumentation is
 disabled when using Source-Code Instrumentation with PDT. However,
-if you you can enforce additional compiler instrumentation with 
+if you you can enforce additional compiler instrumentation with
 @verb{--compiler}.)
 
 @subsection tau_inst_limitations Limitations
 @seclabel{tau_inst_limitations}
 
-Currently the support for the PDT-based source-code instrumenter still has a number 
+Currently the support for the PDT-based source-code instrumenter still has a number
 of limitations:
 <ul>
   <li>
@@ -799,32 +799,32 @@ of limitations:
 
 If you have an installation of the binary instrumenter Cobi, you can configure
 @scorep to support binary instrumentation of functions with Cobi during
-@scorep installation. To use Cobi for function instrumentation, you 
+@scorep installation. To use Cobi for function instrumentation, you
 must set the <tt>--cobi</tt> flag. E.g.
 
 @verbatim
     scorep --cobi mpicc foo.c -o foo
 @endverbatim
 
-By default, it will disable automatic compiler instrumentation during 
+By default, it will disable automatic compiler instrumentation during
 compilation and instrument all function in the executable. Although
 the instrumentation happens after linking, we recommend to compile
-all objects with the <tt>--cobi</tt> flag to avoid double instrumentation. 
+all objects with the <tt>--cobi</tt> flag to avoid double instrumentation.
 However, you can enforce compiler instrumentation with @verb{--compiler}.
 
 @note Cobi is still considered to be an experimental tool. Thus, it may
       have some limitations. E.g. it is currently only available for
-      GNU compilers and requires @scorep to be build in shared mode. Also the 
+      GNU compilers and requires @scorep to be build in shared mode. Also the
       support for Cobi itself is limited.
 
 
 @section scorep_link_mode Enforce Linking of Static/Shared @scorep Libraries
 @seclabel{scorep_link_mode}
 
-If the @scorep was build with shared libraries and with static libraries, 
+If the @scorep was build with shared libraries and with static libraries,
 the instrumenter uses the compiler defaults for linking. E.g. if the compiler
 chooses shared libraries by default, the instrumenter will link your application
-with the shared Score-P libraries. Furthermore, the linking is affected by 
+with the shared Score-P libraries. Furthermore, the linking is affected by
 parameters in the original link command. E.g. if your link command contains
 a <tt>-Bstatic</tt> flag, afterwards appended @scorep libraries are also linked
 statically.
@@ -840,11 +840,11 @@ for the instrumenter. E.g. a command to enforce static linking can look like:
 In this case, the linking against the static version of the @scorep libraries
 is enforced.
 
-If enforcing static or dynamic linking is not possible on your 
+If enforcing static or dynamic linking is not possible on your
 system, e.g., because no static/dynamic @scorep libraries are installed,
 the instrumenter will abort with an error. You can determine whether
-<tt>--static</tt> or <tt>--dynamic</tt> is available from the 
-output of <tt>scorep --help</tt>. If the <tt>--static</tt> or 
+<tt>--static</tt> or <tt>--dynamic</tt> is available from the
+output of <tt>scorep --help</tt>. If the <tt>--static</tt> or
 <tt>--dynamic</tt> flags are not shown, then they are not available.
 
 */

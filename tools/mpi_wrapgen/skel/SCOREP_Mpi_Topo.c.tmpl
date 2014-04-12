@@ -17,7 +17,7 @@
  */
 
 #if HAVE(DECL_PMPI_CART_CREATE)
-/** 
+/**
  * Measurement wrapper for MPI_Cart_create
  * @note Manually adapted wrapper
  * @note C interface
@@ -60,20 +60,20 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
 
     /* register the new topology communicator */
     scorep_mpi_comm_create(*comm_cart, comm_old);
-  
+
     /* get the internal comminicator id for the communicator of the new topology */
     cid = scorep_mpi_comm_handle(*comm_cart);
 
     /* find the rank of the calling process */
-    PMPI_Comm_rank(*comm_cart, &my_rank); 
-  
+    PMPI_Comm_rank(*comm_cart, &my_rank);
+
     /* assign the cartesian topology dimension parameters */
     udimv   = calloc(ndims, sizeof(uint32_t));
     if (!udimv)
     {
       UTILS_ERROR_POSIX();
     }
-    
+
     uperiodv = calloc(ndims, sizeof(uint8_t));
     if (!uperiodv)
     {
@@ -85,7 +85,7 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
       udimv[i]    =  (uint32_t) dims[i];
       uperiodv[i] =  (uint8_t)  periodv[i];
     }
-          
+
     /* create the cartesian topology definition record */
     topid = SCOREP_Definitions_NewMPICartesianTopology("", cid, ndims, udimv, uperiodv);
 
@@ -101,7 +101,7 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
     {
       UTILS_ERROR_POSIX();
     }
-                          
+
     /* get the coordinates of the calling process in coordv */
     PMPI_Cart_coords(*comm_cart, my_rank, ndims, coordv);
 
@@ -110,9 +110,9 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
     {
       ucoordv[i] = (uint32_t) coordv[i];
     }
-  
+
     /* create the coordinates definition record */
-    SCOREP_Definitions_NewMPICartesianCoords(topid, ndims, ucoordv);               
+    SCOREP_Definitions_NewMPICartesianCoords(topid, ndims, ucoordv);
 
     free(udimv);
     free(uperiodv);

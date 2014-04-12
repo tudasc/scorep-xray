@@ -33,8 +33,8 @@ static POMP2_Region_handle pomp2_region_9 = NULL;
 static POMP2_Region_handle pomp2_region_10 = NULL;
 #define pomp2_ctc_10 "225*regionType=atomic*sscl=omp_test_nested.c:115:115*escl=omp_test_nested.c:116:116**"
 
-#ifdef __cplusplus 
- extern "C" 
+#ifdef __cplusplus
+ extern "C"
 #endif
 void POMP2_Init_reg_5lg6q5kdvs27_10()
 {

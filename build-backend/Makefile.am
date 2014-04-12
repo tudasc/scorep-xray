@@ -1,6 +1,6 @@
 # -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-## file       build-backend/Makefile.am 
+## file       build-backend/Makefile.am
 
 
 ## ACLOCAL_AMFLAGS contains options to pass to aclocal when aclocal.m4
@@ -95,7 +95,7 @@ LIB_DIR_SCOREP = ./
 LIB_DIR_SCOREP_MPI = ../build-mpi/
 
 clean-local: clean-local-scorep-experiment-dirs clean-local-scorep-config-tests clean-local-instrumenter-checks
-	rm -f lex.yy.c scanner.h yacc.c yacc.h y.tab.h 
+	rm -f lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 
 clean-local-scorep-experiment-dirs:
 	rm -rf scorep-2*
@@ -119,14 +119,14 @@ SCOREP_COBI_CONFIG_IN=$(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Cobi_Adapter.xml.in
 
 uninstall-local: $(UNINSTALL_LOCAL_TARGETS)
 	rm -f $(DESTDIR)$(exec_prefix)/bin/scorep_config.dat \
-              $(SCOREP_PDT_CONFIG_INSTALL_TARGET) 
+              $(SCOREP_PDT_CONFIG_INSTALL_TARGET)
 	if [ -e $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_Adapter.xml.in ]; then \
 	  rm -f  $(SCOREP_SHARE_LOCAL_DIR)/SCOREP_Cobi_Adapter.xml; \
 	else \
 	  rm -rf $(SCOREP_SHARE_LOCAL_DIR); \
 	fi
 
-INSTALL_DATA_LOCAL_TARGETS += scorep-config-tool-install 
+INSTALL_DATA_LOCAL_TARGETS += scorep-config-tool-install
 
 scorep-config-tool-install:
 	$(MKDIR_P) $(SCOREP_SHARE_INSTALL_DIR)

@@ -2,12 +2,12 @@
 @seclabel{quickstart}
 
 In order to quickly introduce the user to the @scorep system, we explain
-how to build and install the tool and look at a simple example. We go 
+how to build and install the tool and look at a simple example. We go
 through the example in full detail.
 
-As mentioned above, the three core steps of a typical work cycle in 
-the investigation of the behavior of a software package can be 
-described as follows: 
+As mentioned above, the three core steps of a typical work cycle in
+the investigation of the behavior of a software package can be
+described as follows:
 <ul>
 <li> \emph{Instrumentation of user code}: Calls to the measurement
   system are inserted into the application. This can be done either
@@ -17,31 +17,31 @@ described as follows:
   instrumented application is executed under the control of the
   measurement system and the information gathered during the run time
   of this process is stored and analyzed.</li>
-<li> \emph{Examination of results}: The information about the 
+<li> \emph{Examination of results}: The information about the
 	behavior of the code at run time is
   visualized and the user gets the opportunity to examine the reported
   results. </li>
 </ul>
 
-After building and installing the tool, we shall go through 
+After building and installing the tool, we shall go through
 these three steps one after the other in the next
 sections. This will be followed by a full workflow example. For
 getting detailed presentations of available features, see Section
-@secref{instrumentation} for the instrumentation step and 
-Section @secref{measurement} for the measurement. 
+@secref{instrumentation} for the instrumentation step and
+Section @secref{measurement} for the measurement.
 
 
 @section quickinstallation @scorep Quick Installation
 @seclabel{quickinstallation}
 
-The @scorep performance analysis tool uses the GNU Autotools (Autoconf, 
-Automake, Libtool and M4) build system.  The use of Autotools allows 
-@scorep to be build in many different systems with varying combinations of 
+The @scorep performance analysis tool uses the GNU Autotools (Autoconf,
+Automake, Libtool and M4) build system.  The use of Autotools allows
+@scorep to be build in many different systems with varying combinations of
 compilers, libraries and MPI implementations.
 
-Autotools based projects are build as follows: 
+Autotools based projects are build as follows:
 <ol>
-<li>The available compilers and tools available are detected 
+<li>The available compilers and tools available are detected
 		from the environment by the configure script.
 		</li>
 <li>Makefiles are generated based on the detected compilers and tools.
@@ -52,24 +52,24 @@ Autotools based projects are build as follows:
 
 @scorep will have features enabled or disabled, based on the detection
 made by the Autotools generated configure script.  The following 2 sub-sections
-cover mandatory prerequisites as well as optional features that are enabled 
+cover mandatory prerequisites as well as optional features that are enabled
 based on what is available in the configured platform.
 
 @subsection prerequisites Prerequisites
 @seclabel{prerequisites}
 
-To build @scorep, C, C++ and Fortran compilers and related tools are required.  
-These can be available as modules (typically on super-computer environments) 
+To build @scorep, C, C++ and Fortran compilers and related tools are required.
+These can be available as modules (typically on super-computer environments)
 or as packages (on most Linux or BSD distributions).
 
-For Debian based Linux systems using the APT package manager, the following 
+For Debian based Linux systems using the APT package manager, the following
 command (as root) is sufficient to build @scorep with minimal features enabled:
 
 @code
 apt-get install gcc g++ gfortran mpich2
 @endcode
 
-On Red-Hat and derivative Linux systems running the YUM package manager, 
+On Red-Hat and derivative Linux systems running the YUM package manager,
 in a similar way:
 
 @code
@@ -86,7 +86,7 @@ module load ccomp/intel/12.1 fortran/intel/12.1 \
 @subsection general_autotools General Autotools Build Options
 @seclabel{general_autotools}
 
-System administrators can build @scorep with the familiar: 
+System administrators can build @scorep with the familiar:
 
 @code
 ./configure && make && make install
@@ -102,8 +102,8 @@ and then build and install @scorep in the following system directories:
 /usr/local/share
 @endcode
 
-Users that are not administrators on the target machine may need to install 
-the tool in an different location (due to permissions). The prefix flag 
+Users that are not administrators on the target machine may need to install
+the tool in an different location (due to permissions). The prefix flag
 should be specified with the target directory:
 
 @code
@@ -116,12 +116,12 @@ For example, in the <tt>install/scorep</tt> directory on his/her home folder:
 ./configure --prefix=$HOME/install/scorep
 @endcode
 
-In this case, the user's <tt>PATH</tt> variable needs to be updated to 
-include the <tt>bin</tt> directory of @scorep, and the appropriate 
-library and include folders specified (with <tt>-L</tt> and <tt>-I</tt>) 
+In this case, the user's <tt>PATH</tt> variable needs to be updated to
+include the <tt>bin</tt> directory of @scorep, and the appropriate
+library and include folders specified (with <tt>-L</tt> and <tt>-I</tt>)
 	when instrumenting and building applications.
 
-Users of the SuperMUC (after loading the required modules mentioned 
+Users of the SuperMUC (after loading the required modules mentioned
 previously), can issue the following command to configure @scorep:
 
 @code
@@ -134,7 +134,7 @@ previously), can issue the following command to configure @scorep:
 @subsection scorep_specific @scorep Specific Build Options
 @seclabel{scorep_specific}
 
-In addition to general options available in all Autotools based build 
+In addition to general options available in all Autotools based build
 systems, there are @scorep configuration flags.  These can be printed
 out by passing the --help flag to the configure script.
 
@@ -145,7 +145,7 @@ explanation:
 <li>
 @code--with-nocross-compiler-suite= (gcc|ibm|intel|
                                  pathscale|pgi|studio)
-@endcode  
+@endcode
   Specifies the compiler suite to use when not cross-compiling. Selecting
 	one of the options sets all relevant variables to their expected names.
 	These are CC, FC, F77, as well as the linker, preprocessor, etc.
@@ -167,7 +167,7 @@ explanation:
 
 <li>
 <tt>--with-otf2=(yes|<otf2-bindir>)</tt>
-	An already install OTF2 can be specified with this flag.  This is 
+	An already install OTF2 can be specified with this flag.  This is
 	usually not necessary since OTF2 is built together with @scorep.
 	Specify yes if the tool is in your $PATH, otherwise specify the
 	full path.
@@ -188,21 +188,21 @@ explanation:
 @section quick_instrumentation Instrumentation
 @seclabel{quick_instrumentation}
 
-Various analysis tools are supported by the @scorep infrastructure. 
+Various analysis tools are supported by the @scorep infrastructure.
 Most of these tools are focused on certain special aspects that are
 significant in the code optimization process, but none of them
 provides the full picture. In the traditional
-workflow, each tool used to have its own measurement system, and 
+workflow, each tool used to have its own measurement system, and
 hence its own instrumenter,
 so the user was forced to instrument his code more than once if more
-than one class of features of the application was to be investigated. 
+than one class of features of the application was to be investigated.
 One of the key advantages of @scorep is that it provides an
 instrumentation system that can be used for all the performance
 measurement and analysis tools, so that the instrumentation work only
 needs to be done once.
 
 Internally, the instrumentation itself will insert special measurement
-calls into the application code at specific important points (events). 
+calls into the application code at specific important points (events).
 This can be done in an almost automatic way using corresponding
 features of typical compilers, but also semi-automatically or in a
 fully manual way, thus giving the user complete control of the process.
@@ -240,7 +240,7 @@ the same time (e.g., if makefiles are used). It is possible to use the
 flexibility to the user. Specifically, it is often sufficient to use
 the instrumenter not in all compilations but only in those that deal
 with source files containing MPI code. However, when invoking the
-linker, the instrumenter must \emph{always} be used. 
+linker, the instrumenter must \emph{always} be used.
 
 When makefiles are employed to build the application, it is convenient
 to define a placeholder variable to indicate whether a ``preparation''
@@ -263,14 +263,14 @@ to
 the same makefile to either build an instrumented version with the
 
 @code
-  make PREP="scorep" 
+  make PREP="scorep"
 @endcode
 
 command or a fully optimized and not instrumented default build by
 simply using:
 
 @code
-  make 
+  make
 @endcode
 
 in the standard way, i.e. without specifying <tt>PREP</tt> on the
@@ -308,18 +308,18 @@ may have to be substituted by an appropriate replacement.
 When running the instrumented executable, the measurement system will
 create a directory called <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt> where
 its measurement data will be stored. Here <tt>YYYYMMDD</tt> and <tt>
-HHMM</tt> are the date (in year-month-day format) and time, respectively, 
+HHMM</tt> are the date (in year-month-day format) and time, respectively,
 when the measurement run was started, whereas <tt>XXXXXXXX</tt> is an
 additional identification number. Thus, repeated measurements,
 as required by the optimization work cycle, can
 easily be performed without the danger of accidentally overwriting
-results of earlier measurements. The environment variables 
+results of earlier measurements. The environment variables
 \confvar{SCOREP_ENABLE_TRACING} and \confvar{SCOREP_ENABLE_PROFILING}
 control whether event trace data or profiles are stored in this
 directory. By setting either variable to <tt>true</tt>, the corresponding
 data will be written to the directory. The default values are <tt>true</tt>
-for \confvar{SCOREP_ENABLE_PROFILING} and <tt>false</tt> for 
-\confvar{SCOREP_ENABLE_TRACING}. 
+for \confvar{SCOREP_ENABLE_PROFILING} and <tt>false</tt> for
+\confvar{SCOREP_ENABLE_TRACING}.
 
 
 @section quick_examination Report Examination
@@ -331,15 +331,15 @@ locations. Appropriate tools can then be used to visualize this
 information and to generate reports, and thus to identify weaknesses
 of the code that need to be modified in order to obtain programs with
 a better performance. A number of tools are already available for this
-purpose. This includes, in particular, the 
+purpose. This includes, in particular, the
 \href{http://www.scalasca.org,CUBE4 performance report explorer}
 for viewing and analyzing profile data,
 \href{http://www.vampir.eu,Vampir} for the investigation of trace
 information, and the corresponding components of the
 \href{http://www.cs.uoregon.edu/Research/tau/home.php,TAU}
-toolsuite. 
+toolsuite.
 
-Alternatively, the \href{http://www.lrr.in.tum.de/periscope,Periscope} 
+Alternatively, the \href{http://www.lrr.in.tum.de/periscope,Periscope}
 system may be used to analyze the behaviour of the code on-line during
 its run time, i.e. (in contrast to the approaches mentioned above)
 \emph{before} the end of the program run.
@@ -351,7 +351,7 @@ its run time, i.e. (in contrast to the approaches mentioned above)
 
 As a specific example, we look at a short C code for the solution of a
 Poisson equation in a hybrid (@mpi and OpenMP) environment. The
-corresponding source code comes as part of the @scorep distribution under the \emph{scorep/test/jacobi/} folder. 
+corresponding source code comes as part of the @scorep distribution under the \emph{scorep/test/jacobi/} folder.
 Various other versions are also available - not only hybrid but also for a pure MPI
 parallelization, a pure OpenMP approach, and in a non-parallel way;
 and, in each case, not only in C but also in C++ and Fortran.
@@ -369,7 +369,7 @@ i.e. we now have to write:
 @code
   scorep mpicc -std=c99 -g -O2 -fopenmp -c jacobi.c
   scorep mpicc -std=c99 -g -O2 -fopenmp -c main.c
-  scorep mpicc -std=c99 -g -O2 -fopenmp -o jacobi jacobi.o \ 
+  scorep mpicc -std=c99 -g -O2 -fopenmp -o jacobi jacobi.o \
                 main.o -lm
 @endcode
 
@@ -378,16 +378,16 @@ containing the original source code and a number of commands
 introduced by the measurement system in order to enable the latter to
 create the required measurements when the code is actually run. These
 modified source files are then compiled and linked, thus producing the
-desired executable named <tt>jacobi</tt>. 
+desired executable named <tt>jacobi</tt>.
 
 The actual measurement process is then initiated, e.g.,  by the call:
 @code
   mpiexec -n 2 ./jacobi
 @endcode
 The output data of this process will be stored in
-a newly created experiment directory <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt> 
+a newly created experiment directory <tt>scorep-YYYYMMDD_HHMM_XXXXXXXX</tt>
 whose name is built up from the date and time when the measurement was started
-and an identification number. 
+and an identification number.
 
 As we had not explicitly set any @scorep related environment variables, the
 profiling mode was active by default. We obtain a file called

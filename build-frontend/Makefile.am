@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-## file       build-frontend/Makefile.am 
+## file       build-frontend/Makefile.am
 
 
 ## ACLOCAL_AMFLAGS contains options to pass to aclocal when aclocal.m4

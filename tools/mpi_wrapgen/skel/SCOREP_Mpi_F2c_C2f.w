@@ -7,7 +7,7 @@ ${guard:start}
  * @ingroup ${group|lowercase}
  * For the order of events see @ref ${name}
  */
-${proto:f2c_c2f} 
+${proto:f2c_c2f}
 {
     ${decl:f2c_c2f}
     ${init:f2c_c2f}

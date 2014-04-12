@@ -17,7 +17,7 @@ EXT (external interfaces, e.g. handle attributes), or \p ERR (error handlers).
 
 
 For example, the functions in group \p CG_MISC will only generate events
-if both groups \p CG and \p MISC are enabled at runtime. 
+if both groups \p CG and \p MISC are enabled at runtime.
 @section f2g Function to group
 
 <table>
@@ -1271,7 +1271,7 @@ if both groups \p CG and \p MISC are enabled at runtime.
 @section g2f Group to function
 
 <table width="100%">
-<tr><td width="10%"><b><b>CG</b></b> - 
+<tr><td width="10%"><b><b>CG</b></b> -
 <b>Communicators and Groups</b>
 </td></tr>
 <tr><td>
@@ -1304,7 +1304,7 @@ MPI_Intercomm_merge,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>CG_ERR</b> - 
+<tr><td width="10%"><b>CG_ERR</b> -
 <b>Error handlers for
 Communicators and Groups</b>
 </td></tr>
@@ -1317,7 +1317,7 @@ MPI_Comm_set_errhandler,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>CG_EXT</b> - 
+<tr><td width="10%"><b>CG_EXT</b> -
 <b>External interfaces for
 Communicators and Groups</b>
 </td></tr>
@@ -1338,7 +1338,7 @@ MPI_Keyval_free,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>CG_MISC</b> - 
+<tr><td width="10%"><b>CG_MISC</b> -
 <b>Miscellaneous functions for
 Communicators and Groups</b>
 </td></tr>
@@ -1351,7 +1351,7 @@ MPI_Group_f2c,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>COLL</b> - 
+<tr><td width="10%"><b>COLL</b> -
 <b>Collective communication</b>
 </td></tr>
 <tr><td>
@@ -1377,7 +1377,7 @@ MPI_Scatterv,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>ENV</b> - 
+<tr><td width="10%"><b>ENV</b> -
 <b>Environmental management</b>
 </td></tr>
 <tr><td>
@@ -1392,7 +1392,7 @@ MPI_Query_thread,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>ERR</b> - 
+<tr><td width="10%"><b>ERR</b> -
 <b>Common error handlers</b>
 </td></tr>
 <tr><td>
@@ -1409,7 +1409,7 @@ MPI_Error_string,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>IO</b> - 
+<tr><td width="10%"><b>IO</b> -
 <b>Parallel I/O</b>
 </td></tr>
 <tr><td>
@@ -1469,7 +1469,7 @@ MPI_Register_datarep,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>IO_ERR</b> - 
+<tr><td width="10%"><b>IO_ERR</b> -
 <b>Error handlers for Parallel I/O</b>
 </td></tr>
 <tr><td>
@@ -1481,7 +1481,7 @@ MPI_File_set_errhandler,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>IO_MISC</b> - 
+<tr><td width="10%"><b>IO_MISC</b> -
 <b>Miscellaneous functions for Parallel I/O</b>
 </td></tr>
 <tr><td>
@@ -1491,7 +1491,7 @@ MPI_File_f2c,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>EXT</b> - 
+<tr><td width="10%"><b>EXT</b> -
 <b>Common external interfaces </b>
 </td></tr>
 <tr><td>
@@ -1509,7 +1509,7 @@ MPI_Wtime,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>MISC</b> - 
+<tr><td width="10%"><b>MISC</b> -
 <b>Miscellaneous functions</b>
 </td></tr>
 <tr><td>
@@ -1543,7 +1543,7 @@ MPI_Status_f2c,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>P2P</b> - 
+<tr><td width="10%"><b>P2P</b> -
 <b>Point-to-point communication</b>
 </td></tr>
 <tr><td>
@@ -1585,7 +1585,7 @@ MPI_Waitsome,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>PERF</b> - 
+<tr><td width="10%"><b>PERF</b> -
 <b>Profiling Interface</b>
 </td></tr>
 <tr><td>
@@ -1594,7 +1594,7 @@ MPI_Pcontrol,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>RMA</b> - 
+<tr><td width="10%"><b>RMA</b> -
 <b>One-sided communication (Remote Memory Access)</b>
 </td></tr>
 <tr><td>
@@ -1616,7 +1616,7 @@ MPI_Win_wait,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>RMA_ERR</b> - 
+<tr><td width="10%"><b>RMA_ERR</b> -
 <b>Error handlers for
 One-sided communication (Remote Memory Access)</b>
 </td></tr>
@@ -1629,7 +1629,7 @@ MPI_Win_set_errhandler,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>RMA_EXT</b> - 
+<tr><td width="10%"><b>RMA_EXT</b> -
 <b>External interfaces for
 One-sided communication (Remote Memory Access)</b>
 </td></tr>
@@ -1645,7 +1645,7 @@ MPI_Win_set_name,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>RMA_MISC</b> - 
+<tr><td width="10%"><b>RMA_MISC</b> -
 <b>Miscellaneous functions for
 One-sided communication (Remote Memory Access)</b>
 </td></tr>
@@ -1656,7 +1656,7 @@ MPI_Win_f2c,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>SPAWN</b> - 
+<tr><td width="10%"><b>SPAWN</b> -
 <b>Process spawning</b>
 </td></tr>
 <tr><td>
@@ -1676,7 +1676,7 @@ MPI_Unpublish_name,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>TOPO</b> - 
+<tr><td width="10%"><b>TOPO</b> -
 <b>Topology (cartesian and graph) communicators</b>
 </td></tr>
 <tr><td>
@@ -1704,7 +1704,7 @@ MPI_Topo_test,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>TYPE</b> - 
+<tr><td width="10%"><b>TYPE</b> -
 <b>Datatypes</b>
 </td></tr>
 <tr><td>
@@ -1747,7 +1747,7 @@ MPI_Unpack_external,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>TYPE_EXT</b> - 
+<tr><td width="10%"><b>TYPE_EXT</b> -
 <b>External interfaces for
 datatypes</b>
 </td></tr>
@@ -1763,7 +1763,7 @@ MPI_Type_set_name,
 </table>
 
 <table width="100%">
-<tr><td width="10%"><b>TYPE_MISC</b> - 
+<tr><td width="10%"><b>TYPE_MISC</b> -
 <b>Miscellaneous functions for
 datatypes</b>
 </td></tr>

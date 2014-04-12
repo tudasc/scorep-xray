@@ -9,7 +9,7 @@ PUBLIC :: df_block3
 DOUBLE PRECISION, PUBLIC :: default_sf = 1.0
 
 TYPE, PUBLIC :: val_distr_t
-	DOUBLE PRECISION :: val	
+	DOUBLE PRECISION :: val
 	DOUBLE PRECISION :: low
 	DOUBLE PRECISION :: high
 	DOUBLE PRECISION :: med

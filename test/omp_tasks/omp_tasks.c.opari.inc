@@ -14,8 +14,8 @@ static POMP2_Region_handle pomp2_region_3 = NULL;
 static POMP2_Region_handle pomp2_region_4 = NULL;
 #define pomp2_ctc_4 "231*regionType=single*sscl=omp_tasks.c:64:64*escl=omp_tasks.c:65:65**"
 
-#ifdef __cplusplus 
- extern "C" 
+#ifdef __cplusplus
+ extern "C"
 #endif
 void POMP2_Init_reg_jl6l9ddtlx35j_4()
 {

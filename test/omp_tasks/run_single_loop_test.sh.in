@@ -57,7 +57,7 @@ result_dir_base="scorep_single_loop_"
 # provide a reasonable default input for running the applications
 if [ ! x$1 = x ]; then
   LOOP_NUM=$1
-fi 
+fi
 
 if [ x$LOOP_NUM = x ]; then
    LOOP_NUM=100000

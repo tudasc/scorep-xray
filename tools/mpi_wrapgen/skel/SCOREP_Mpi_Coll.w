@@ -8,7 +8,7 @@ ${guard:start}
  * It wraps the mpi call with an enter and exit event. Additionally, a collective
  * event is generated in between the enter and exit event after the PMPI call.
  */
-${proto:c} 
+${proto:c}
 {
   ${rtype} return_val;
 
@@ -22,7 +22,7 @@ ${proto:c}
         = SCOREP_MpiCollectiveBegin(scorep_mpi_regid[SCOREP__${name|uppercase}]);
 
       return_val = ${call:pmpi};
-      
+
       ${guard:hooks}
         ${check:hooks}
           ${call:posthook};

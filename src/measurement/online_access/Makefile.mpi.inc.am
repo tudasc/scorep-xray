@@ -1,6 +1,6 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
@@ -74,7 +74,7 @@ libscorep_online_access_mpp_mpi_la_SOURCES =                               \
     $(SRC_ROOT)src/measurement/profiling/SCOREP_Profile_OAConsumer.c       \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_oaconsumer_process.h \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_oaconsumer_process.c \
-    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control_mockup.c 
+    $(SRC_ROOT)src/measurement/online_access/scorep_oa_mri_control_mockup.c
 
 libscorep_online_access_mpp_mpi_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
@@ -93,7 +93,7 @@ libscorep_online_access_mpp_mpi_la_CPPFLAGS = \
 
 if ! PLATFORM_AIX
 libscorep_online_access_mpp_mpi_la_CPPFLAGS += -D_POSIX_SOURCE
-endif 
+endif
 
 else #if HAVE_ONLINE_ACCESS
 

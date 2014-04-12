@@ -20,14 +20,14 @@ DOC_INSTALLDIR  = ../../../doc/doxygen-user/
 MPI_PROTOTYPES  = $(MPI_TMPL_DIR)/SCOREP_Mpi_Prototypes.xml
 
 WRAPGEN         = ./wrapgen
-WFLAGS          = -b -p $(MPI_PROTOTYPES) $(MPI_TMPL_DIR)/SCOREP_Mpi_Header.txt 
+WFLAGS          = -b -p $(MPI_PROTOTYPES) $(MPI_TMPL_DIR)/SCOREP_Mpi_Header.txt
 INSTALL         = /usr/bin/install
 
 DOXYGEN         = doxygen
 DOXYGEN_CONF    = dox_mpi_wrapper.cfg
-DOXYGEN_OPTS    = 
+DOXYGEN_OPTS    =
 
-MODS            = SCOREP_Wrapgen_Funcparam.o SCOREP_Wrapgen_Func.o SCOREP_Wrapgen_MpiFunc.o SCOREP_Wrapgen_Util.o SCOREP_Wrapgen_Handlers.o SCOREP_Wrapgen_HandlersMpi.o 
+MODS            = SCOREP_Wrapgen_Funcparam.o SCOREP_Wrapgen_Func.o SCOREP_Wrapgen_MpiFunc.o SCOREP_Wrapgen_Util.o SCOREP_Wrapgen_Handlers.o SCOREP_Wrapgen_HandlersMpi.o
 
 MPI_FILES       = $(patsubst $(MPI_TMPL_DIR)/%.tmpl,%,$(wildcard $(MPI_TMPL_DIR)/*.tmpl))
 DOC_FILES       = $(patsubst $(DOC_TMPL_DIR)/%.tmpl,%,$(wildcard $(DOC_TMPL_DIR)/*.tmpl))
@@ -46,7 +46,7 @@ doc: all-files $(DOXYGEN_CONF)
 wrapgen : SCOREP_Wrapgen.o $(MODS)
 	$(CXX) $(CXXFLAGS) $(MODS) SCOREP_Wrapgen.o $(LIBS) -o $@
 
-SCOREP_Wrapgen_Funcparam.o : SCOREP_Wrapgen_Funcparam.h SCOREP_Wrapgen_Funcparam.cpp 
+SCOREP_Wrapgen_Funcparam.o : SCOREP_Wrapgen_Funcparam.h SCOREP_Wrapgen_Funcparam.cpp
 	$(CXX) $(CXXFLAGS) -Wall -c $*.cpp
 
 SCOREP_Wrapgen_Func.o : SCOREP_Wrapgen_Func.h SCOREP_Wrapgen_Func.cpp SCOREP_Wrapgen_Util.h SCOREP_Wrapgen_Util.cpp SCOREP_Wrapgen_Funcparam.h \
@@ -60,7 +60,7 @@ SCOREP_Wrapgen_MpiFunc.o : SCOREP_Wrapgen_MpiFunc.h SCOREP_Wrapgen_MpiFunc.cpp S
 SCOREP_Wrapgen_Util.o : SCOREP_Wrapgen_Util.cpp SCOREP_Wrapgen_Util.h
 	$(CXX) $(CXXFLAGS) -Wall -c $*.cpp
 
-SCOREP_Wrapgen_Handlers.o : SCOREP_Wrapgen_Handlers.cpp SCOREP_Wrapgen_Handlers.h SCOREP_Wrapgen_MpiFunc.h SCOREP_Wrapgen_Func.h 
+SCOREP_Wrapgen_Handlers.o : SCOREP_Wrapgen_Handlers.cpp SCOREP_Wrapgen_Handlers.h SCOREP_Wrapgen_MpiFunc.h SCOREP_Wrapgen_Func.h
 	$(CXX) $(CXXFLAGS) -Wall -c $*.cpp
 
 wrapgen_handlers_mpi.o :SCOREP_Wrapgen_HandlersMpi.cppSCOREP_Wrapgen_HandlersMpi.h SCOREP_Wrapgen_MpiFunc.h SCOREP_Wrapgen_Func.hSCOREP_Wrapgen_HandlersMpi_datatypes.h
