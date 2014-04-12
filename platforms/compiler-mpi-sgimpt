@@ -12,7 +12,7 @@ MPI_LIBS=-lmpi
 
 # # Scalasca1 settings
 # MPILIB    = -lmpi
-# PMPILIB   = 
+# PMPILIB   =
 # FMPILIB   = -lepk.ad.fmpi
 # FMPIOBJ   = libepk.ad.fmpi.a
 # MPIEXTRA  = -DSGI_MPT -DMPI_NO_CPPBIND -DHAS_MPI2_1SIDED

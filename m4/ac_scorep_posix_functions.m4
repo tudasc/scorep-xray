@@ -89,7 +89,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_GETHOSTNAME, 1, [Can link a gethostname function])], 
+         AC_DEFINE(HAVE_GETHOSTNAME, 1, [Can link a gethostname function])],
         [AC_MSG_RESULT(no)
          has_gethostname_func="no"]
     ) # AC_LINK_IF_ELSE
@@ -112,7 +112,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_FSEEKO, 1, [Can link a fseeko function])], 
+         AC_DEFINE(HAVE_FSEEKO, 1, [Can link a fseeko function])],
         [AC_MSG_RESULT(no)
          has_fseeko_func="no"]
     ) # AC_LINK_IF_ELSE
@@ -136,7 +136,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_FSEEKO64, 1, [Can link a fseeko64 function])], 
+         AC_DEFINE(HAVE_FSEEKO64, 1, [Can link a fseeko64 function])],
         [AC_MSG_RESULT(no)
          has_fseeko64_func="no"]
     ) # AC_LINK_IF_ELSE
@@ -160,7 +160,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
             }
             ])],
         [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_GETCWD, 1, [Can link a getcwd function])], 
+         AC_DEFINE(HAVE_GETCWD, 1, [Can link a getcwd function])],
         [AC_MSG_RESULT(no)
          has_getcwd_func="no"]
     ) # AC_LINK_IF_ELSE

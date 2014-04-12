@@ -1130,8 +1130,8 @@ else
 fi]
 
 # per default, enable --help=recursive in directory $1.
-[m4_ifval([$3], 
-          [], 
+[m4_ifval([$3],
+          [],
           [m4_append([_AC_LIST_SUBDIRS], [$1], [
 ])dnl
 ])]dnl
@@ -1162,21 +1162,21 @@ if test "$no_recursion" != yes; then
     IFS=$OIFS
     eval $dir_and_args
     if test "x$custom_sub_configure_dir" = x; then continue; fi
-    _AC_SUB_CONFIGURE_ARGS([$custom_sub_configure_args], 
+    _AC_SUB_CONFIGURE_ARGS([$custom_sub_configure_args],
                            [ac_custom_sub_configure_args])
-    _AC_SUB_CONFIGURE([$custom_sub_configure_dir], 
+    _AC_SUB_CONFIGURE([$custom_sub_configure_dir],
                       [$ac_custom_sub_configure_args])
     cd "$ac_popdir"
     IFS='|'
   done
-  IFS=$OIFS  
+  IFS=$OIFS
 
   # call configures in $subdirs with fixed arguments.
   _AC_SUB_CONFIGURE_ARGS([$ac_configure_args],
                          [ac_sub_configure_args])
   for ac_dir in : $subdirs; do test "x$ac_dir" = x: && continue
      echo "ac_dir(inside): $ac_dir"
-    _AC_SUB_CONFIGURE([$ac_dir], 
+    _AC_SUB_CONFIGURE([$ac_dir],
                       [$ac_sub_configure_args])
     cd "$ac_popdir"
   done
@@ -1378,7 +1378,7 @@ if test "$no_create" != yes; then
   $ac_cs_success || AS_EXIT([1])
 fi
 dnl config.status should not do recursion.
-AC_PROVIDE_IFELSE([AC_CONFIG_SUBDIRS], 
+AC_PROVIDE_IFELSE([AC_CONFIG_SUBDIRS],
                   [_AC_OUTPUT_SUBDIRS()],
                   [AC_PROVIDE_IFELSE([AC_CONFIG_SUBDIR_CUSTOM],
                                      [_AC_OUTPUT_SUBDIRS()])])dnl

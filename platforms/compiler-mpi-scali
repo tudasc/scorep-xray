@@ -12,7 +12,7 @@ MPIFC=mpif90 -ccl {FC}
 
 # # Scalasca1 settings
 # MPILIB    = -lmpi
-# PMPILIB   = 
+# PMPILIB   =
 # FMPILIB   = -lfmpi
 # FMPIOBJ   =
 # MPIEXTRA  = -DHAS_MPI2_1SIDED

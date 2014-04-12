@@ -1,9 +1,9 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2011,
 ##    RWTH Aachen, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file  vendor/common/build-config/Makefile.tests-mpi-omp.inc.am 
+## file  vendor/common/build-config/Makefile.tests-mpi-omp.inc.am
 ##       Intended to be included by the component's
 ##       build-(front|back|mpi)end/Makefile.am. Defines targets and
 ##       variablec for OpenMP tests.
@@ -42,7 +42,7 @@ if HAVE_OPENMP_SUPPORT
 if HAVE_MPI_SUPPORT
 check-run-mpi-omp: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) check-mpi-omp-am
-check-file-mpi-omp: 
+check-file-mpi-omp:
 	rm -f check-file-mpi-omp
 	echo "# Available hybrid tests:" > check-file-mpi-omp
 	for i in $(TESTS_MPI_OMP); do echo "$$i" >> check-file-mpi-omp; done

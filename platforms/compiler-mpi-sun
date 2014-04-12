@@ -12,7 +12,7 @@ MPIFC=mpf95
 
 # # Scalasca1 settings
 # MPILIB    = -lmpi
-# PMPILIB   = 
+# PMPILIB   =
 # FMPILIB   = -lepk.ad.fmpi
 # FMPIOBJ   = libepk.ad.fmpi.a
 # MPIEXTRA  = -DHAS_MPI2_1SIDED -DNEED_F2C_CONV

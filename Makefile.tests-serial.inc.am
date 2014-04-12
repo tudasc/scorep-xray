@@ -1,9 +1,9 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2011,
 ##    RWTH Aachen, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -15,7 +15,7 @@
 ## See the COPYING file in the package base directory for details.
 ##
 
-## file  vendor/common/build-config/Makefile.tests-serial.inc.am 
+## file  vendor/common/build-config/Makefile.tests-serial.inc.am
 ##       Intended to be included by the component's
 ##       build-(front|back|mpi)end/Makefile.am. Defines targets and
 ##       variablec for OpenMP tests.

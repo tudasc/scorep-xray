@@ -12,7 +12,7 @@ MPIFC=mpif77
 
 # # Scalasca1 settings
 # MPILIB    = -lmpi -llam
-# PMPILIB   = 
+# PMPILIB   =
 # FMPILIB   = -llamf77mpi
 # FMPIOBJ   =
 # MPIEXTRA  =

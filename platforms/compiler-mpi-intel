@@ -12,7 +12,7 @@ MPIFC=mpiifort
 
 # # Scalasca1 settings
 # MPILIB    = -lmpi
-# PMPILIB   = 
+# PMPILIB   =
 # FMPILIB   = -lmpiif
 # FMPIOBJ   =
 # MPIEXTRA  =

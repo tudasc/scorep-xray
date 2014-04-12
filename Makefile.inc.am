@@ -1,9 +1,9 @@
 ## -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2011,
 ##    RWTH Aachen, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -53,7 +53,7 @@ common-uninstall:
 
 
 ###############################################################################
-## doxygen related targets 
+## doxygen related targets
 ##
 
 ## In the following conditional we must distinguish if we are in "developer
@@ -188,7 +188,7 @@ doxygen-user-install:
 
 copy-revision-file-to-dist:
 
-endif # SVN_CONTROLLED 
+endif # SVN_CONTROLLED
                                                                              ##
                                                                              ##
 ###############################################################################
@@ -198,7 +198,7 @@ SCOREP_RECURSIVE_TARGETS=
 
 
 ###############################################################################
-## code beautification targets 
+## code beautification targets
 ##
 if SVN_CONTROLLED
 if HAVE_UNCRUSTIFY
@@ -211,7 +211,7 @@ SCOREP_RECURSIVE_TARGETS += beautify-recursive
 beautify-clean:
 
 endif # HAVE_UNCRUSTIFY
-endif # SVN_CONTROLLED 
+endif # SVN_CONTROLLED
                                                                              ##
                                                                              ##
 ###############################################################################

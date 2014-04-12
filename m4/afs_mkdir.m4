@@ -1,6 +1,6 @@
 dnl -*- mode: autoconf -*-
 
-dnl 
+dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
 dnl Copyright (c) 2014,
@@ -28,7 +28,7 @@ dnl file afs_mkdir.m4
 AC_DEFUN([AFS_PORTABLE_MKDIR], [
 
 AC_LANG_PUSH([C])
-AC_CHECK_HEADERS([io.h]) dnl MinGW declares mkdir here instead 
+AC_CHECK_HEADERS([io.h]) dnl MinGW declares mkdir here instead
                          dnl of POSIX sys/stat.h
 AC_MSG_CHECKING([whether mkdir accepts a mode_t argument])
 AC_COMPILE_IFELSE([

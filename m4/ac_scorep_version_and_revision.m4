@@ -97,7 +97,7 @@ AC_DEFUN([AC_SCOREP_DEFINE_REVISIONS],
     done
 
     component_revision=`cat ${srcdir}/../build-config/REVISION`
-    common_revision=`cat ${srcdir}/../build-config/REVISION_COMMON`    
+    common_revision=`cat ${srcdir}/../build-config/REVISION_COMMON`
     AC_DEFINE_UNQUOTED([SCOREP_COMPONENT_REVISION], ["${component_revision}"], [Revision of ]AC_PACKAGE_NAME)
     AC_DEFINE_UNQUOTED([SCOREP_COMMON_REVISION],    ["${common_revision}"], [Revision of common repository])
 ])

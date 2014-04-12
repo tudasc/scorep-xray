@@ -12,7 +12,7 @@ MPI_CPPFLAGS=-DMPICH_SKIP_MPICXX
 
 # # Scalasca1 settings
 # MPILIB    =
-# PMPILIB   = 
+# PMPILIB   =
 # FMPILIB   = -lepk.ad.fmpi
 # FMPIOBJ   = libepk.ad.fmpi.a
 # MPIEXTRA  = -DMPICH_IGNORE_CXX_SEEK -DHAS_MPI2_1SIDED

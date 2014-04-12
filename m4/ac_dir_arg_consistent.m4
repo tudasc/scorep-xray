@@ -1,9 +1,9 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2011,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -20,7 +20,7 @@
 # ------------------------------
 # Check directory argument DIR_ARG for consistency, i.e. remove trailing
 # slashes and abort if argument is not an absolute directory name. Use
-# FAILED_OPTION to show the user which option caused an error,  e.g. 
+# FAILED_OPTION to show the user which option caused an error,  e.g.
 # AC_DIR_ARG_CONSISTENT([doxygen_output_dir], [--with-doxygen-output-dir])
 #
 AC_DEFUN([AC_DIR_ARG_CONSISTENT],

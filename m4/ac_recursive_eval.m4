@@ -1,4 +1,4 @@
-dnl copied from http://ac-archive.sourceforge.net/adl/relpaths.m4 
+dnl copied from http://ac-archive.sourceforge.net/adl/relpaths.m4
 dnl @category Misc
 dnl @author Alexandre Duret-Lutz <duret_g@epita.fr>
 dnl @version 2001-05-25

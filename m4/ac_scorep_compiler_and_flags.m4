@@ -1,6 +1,6 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
@@ -38,7 +38,7 @@ if test "x${ac_cv_env_[$1]_FOR_BUILD_set}" != "xset"; then
    # don't use the default flags if nothing is specified for the frontend
    unset [$1]
 else
-   # use the FOR_BUILD flags 
+   # use the FOR_BUILD flags
    [$1]="$ac_cv_env_[$1]_FOR_BUILD_value"
 fi
 ])
@@ -49,7 +49,7 @@ if test "x${ac_cv_env_MPI_[$1]_set}" != "xset"; then
    # don't use the default flags if nothing is specified for MPI
    unset [$1]
 else
-   # use the MPI flags 
+   # use the MPI flags
    [$1]="$ac_cv_env_MPI_[$1]_value"
 fi
 ])
@@ -99,9 +99,9 @@ AS_IF([test "x${ac_scorep_compiler_suite_called}" != "x"],
     [ac_scorep_compiler_suite_called="yes"])
 
 AC_ARG_WITH([nocross-compiler-suite],
-            [AS_HELP_STRING([--with-nocross-compiler-suite=(gcc|ibm|intel|pgi|studio)], 
+            [AS_HELP_STRING([--with-nocross-compiler-suite=(gcc|ibm|intel|pgi|studio)],
                             [The compiler suite used to build this package in non cross-compiling environments. Needs to be in $PATH [gcc].])],
-            [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"], 
+            [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
                    [ac_scorep_compilers_backend="compiler-nocross-gcc" # default
                     AS_CASE([$withval],
                             ["gcc"],       [ac_scorep_compilers_backend="compiler-nocross-gcc"],
@@ -118,9 +118,9 @@ AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_backend}"],
 
 
 AC_ARG_WITH([frontend-compiler-suite],
-            [AS_HELP_STRING([--with-frontend-compiler-suite=(gcc|ibm|intel|pgi|studio)], 
+            [AS_HELP_STRING([--with-frontend-compiler-suite=(gcc|ibm|intel|pgi|studio)],
                             [The compiler suite used to build the frontend parts of this package in cross-compiling environments. Needs to be in $PATH [gcc].])],
-            [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"], 
+            [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
                    [ac_scorep_compilers_frontend="compiler-frontend-gcc"
                     AS_CASE([$withval],
                             ["gcc"],       [ac_scorep_compilers_frontend="compiler-frontend-gcc"],
@@ -143,9 +143,9 @@ AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
 
 scorep_mpi_user_disabled="no"
 AC_ARG_WITH([mpi],
-    [AS_HELP_STRING([--with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|openmpi|platform|scali|sgimpt|sun)], 
+    [AS_HELP_STRING([--with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|openmpi|platform|scali|sgimpt|sun)],
          [The MPI compiler suite to build this package in non cross-compiling mode. Usually autodetected. Needs to be in $PATH.])],
-    [AS_IF([test "x${withval}" = xno], 
+    [AS_IF([test "x${withval}" = xno],
          [scorep_mpi_user_disabled=yes
           ac_scorep_compilers_mpi="compiler-mpi-without"
          ],
@@ -172,7 +172,7 @@ AC_ARG_WITH([mpi],
                    [AC_MSG_ERROR([MPI compiler suite "${withval}" not supported by --with-mpi.])])
               ])
          ])
-     # omit check "if in PATH" for now. Will fail in build-mpi configure. 
+     # omit check "if in PATH" for now. Will fail in build-mpi configure.
     ],
     [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
          [AFS_COMPILER_MPI
@@ -182,7 +182,7 @@ AC_ARG_WITH([mpi],
 AS_IF([test "x${scorep_mpi_user_disabled}" = xno],
     [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes" || test "x${ac_scorep_platform}" = "xaix"],
          [ac_scorep_compilers_mpi="platform-mpi-${ac_scorep_platform}"])])
-     
+
 AS_IF([test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_mpi}"],
       [ac_scorep_compilers_mpi="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_mpi}"],
       [ac_scorep_compilers_mpi="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_mpi}"])

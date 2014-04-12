@@ -1,9 +1,9 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2011,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -32,12 +32,12 @@ do
   *) ;;
   esac
   # Add the quoted argument to the list.
-  TOPLEVEL_CONFIGURE_ARGUMENTS="$TOPLEVEL_CONFIGURE_ARGUMENTS  
+  TOPLEVEL_CONFIGURE_ARGUMENTS="$TOPLEVEL_CONFIGURE_ARGUMENTS
 $ac_arg"
 done
 # Remove the initial space we just introduced and, as these will be
 # expanded by make, quote '$'.
 TOPLEVEL_CONFIGURE_ARGUMENTS=`echo "x$TOPLEVEL_CONFIGURE_ARGUMENTS" | sed -e 's/^x *//' -e 's,\\$,$$,g'`
 
-echo "$TOPLEVEL_CONFIGURE_ARGUMENTS" > ./user_provided_configure_args 
+echo "$TOPLEVEL_CONFIGURE_ARGUMENTS" > ./user_provided_configure_args
 ])

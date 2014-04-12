@@ -34,7 +34,7 @@
 
 AC_DEFUN([AC_SCOREP_BACKEND_TEST_RUNS], [
 AC_ARG_ENABLE([backend-test-runs],
-              [AS_HELP_STRING([--enable-backend-test-runs], 
+              [AS_HELP_STRING([--enable-backend-test-runs],
                               [Enable execution of tests during 'make check' [no] (does not affect building of tests, though). If disabled, the files 'check-file-*' and/or 'skipped_tests' listing the tests are generated in the corresponding build directory.])],
               [ac_scorep_enable_backend_test_runs=$enableval],
               [ac_scorep_enable_backend_test_runs="no"])

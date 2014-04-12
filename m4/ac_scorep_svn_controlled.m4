@@ -1,9 +1,9 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2011, 
+## Copyright (c) 2009-2011,
 ##    RWTH Aachen University, Germany
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##    Technische Universitaet Dresden, Germany
@@ -23,5 +23,5 @@ AS_IF([test -d $srcdir/.svn],
       [ac_scorep_svn_controlled="yes"
        AC_DEFINE([SCOREP_IN_DEVELOPEMENT], [], [Defined if we are working from svn.])],
       [AC_DEFINE([SCOREP_IN_PRODUCTION], [], [Defined if we are working from a make dist generated tarball.])])
-AM_CONDITIONAL([SVN_CONTROLLED], [test "x${ac_scorep_svn_controlled}" = xyes])  
+AM_CONDITIONAL([SVN_CONTROLLED], [test "x${ac_scorep_svn_controlled}" = xyes])
 ])

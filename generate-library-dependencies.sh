@@ -56,7 +56,7 @@
 ##      libs.push_back( "-lpapi" );
 ##      libs.push_back( "-lm" );
 ##      ldflags.push_back( "-L/opt/packages/papi/4.1.2.1/lib" );
-##      if ( la_objects.find( "libscorep_mpi" ) != la_objects.end() ) 
+##      if ( la_objects.find( "libscorep_mpi" ) != la_objects.end() )
 ##      {
 ##          la_objects[ "libscorep_mpi" ] =
 ##              la_object( "libscorep_mpi",
@@ -71,7 +71,7 @@
 #set -x
 set -e
 
-parse_la () 
+parse_la ()
 {
     la_file="$1"
 
@@ -101,14 +101,14 @@ parse_la ()
     IFS=${awk_ifs}
     eval `echo ${dependency_libs} | awk '
     {
-        for (i=1; i<= NF; i++) 
-        { 
+        for (i=1; i<= NF; i++)
+        {
             if      (index($i, "-L") == 1) {ldflags = ldflags $i ":"
-                                            sub(/L/, "R", $i ) 
-                                            rpath = rpath $i ":"} 
+                                            sub(/L/, "R", $i )
+                                            rpath = rpath $i ":"}
             else if (index($i, "-R") == 1) {rpath = rpath $i ":"}
-            else if (index($i, "-l") == 1) {libs = libs $i ":"}  
-            else                           {dependency_la = dependency_la $i ":"} 
+            else if (index($i, "-l") == 1) {libs = libs $i ":"}
+            else                           {dependency_la = dependency_la $i ":"}
         }
     }
     END {

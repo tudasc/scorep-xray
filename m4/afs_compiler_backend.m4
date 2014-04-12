@@ -1,6 +1,6 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2013
@@ -24,13 +24,13 @@ AC_DEFUN([AFS_COMPILER_BACKEND],
 m4_ifblank([$1], [m4_fatal([Macro requires at least one argument])])
 m4_foreach([afs_tmp_var],
     [$1],
-    [m4_case(afs_tmp_var, [CC], [], [CXX], [], [F77], [], [FC], [], 
+    [m4_case(afs_tmp_var, [CC], [], [CXX], [], [F77], [], [FC], [],
          [m4_fatal([first parameter must be a list out of CC, CXX, F77, FC])])
 ])
 m4_ifnblank([$2],
     m4_foreach([afs_tmp_var],
         [$2],
-        [m4_case(afs_tmp_var, [CC], [], [CXX], [], [F77], [], [FC], [], 
+        [m4_case(afs_tmp_var, [CC], [], [CXX], [], [F77], [], [FC], [],
              [m4_fatal([second parameter must be a list out of CC, CXX, F77, FC or empty])])
 ]))
 
@@ -42,13 +42,13 @@ AC_REQUIRE([AC_PROG_GREP])
 
 # Create set of requested compilers, and a list of relevant variables
 m4_set_add_all([afs_requested_compilers_set], $1, $2)
-m4_set_foreach([afs_requested_compilers_set], 
+m4_set_foreach([afs_requested_compilers_set],
     [afs_tmp_var],
     [m4_set_add([afs_relevant_build_variables_set], afs_tmp_var)
      m4_case(afs_tmp_var,
-         [CC], [m4_set_add([afs_relevant_build_variables_set], [CFLAGS])], 
-         [CXX], [m4_set_add([afs_relevant_build_variables_set], [CXXFLAGS])], 
-         [F77], [m4_set_add([afs_relevant_build_variables_set], [FFLAGS])], 
+         [CC], [m4_set_add([afs_relevant_build_variables_set], [CFLAGS])],
+         [CXX], [m4_set_add([afs_relevant_build_variables_set], [CXXFLAGS])],
+         [F77], [m4_set_add([afs_relevant_build_variables_set], [FFLAGS])],
          [FC], [m4_set_add([afs_relevant_build_variables_set], [FCFLAGS])])])
 m4_set_add([afs_relevant_build_variables_set], [CPPFLAGS])
 m4_set_add([afs_relevant_build_variables_set], [LDFLAGS])
@@ -57,26 +57,26 @@ m4_set_add([afs_relevant_build_variables_set], [LIBS])
 afs_compiler_files="$srcdir/vendor/common/build-config/platforms/backend-"
 
 # clear all variables
-m4_foreach([afs_tmp_var], 
-    [afs_all_build_variables_list], 
+m4_foreach([afs_tmp_var],
+    [afs_all_build_variables_list],
     [AS_UNSET([afs_tmp_var])
     ])
 
 # read relevant variables from platform file, provides at least CC, CXX, etc.
-m4_set_foreach([afs_relevant_build_variables_set], 
-    [afs_tmp_var], 
+m4_set_foreach([afs_relevant_build_variables_set],
+    [afs_tmp_var],
     [_AFS_READ_VAR_FROM_FILE([${afs_compiler_files}${ac_scorep_platform}], [platform])
      afs_tmp_var="${afs_[]afs_tmp_var[]_platform}"
     ])
 
 # handle --with-compiler-suite= configure option, overrides platform defaults
-AC_ARG_WITH([compiler-suite], 
-    [AS_HELP_STRING([--with-compiler-suite=(gcc|ibm|intel|pgi|studio)], 
-         [The compiler suite used to build this package. Applies currently only to non-cross-compile systems. Compilers need to be in $PATH [gcc].])], 
+AC_ARG_WITH([compiler-suite],
+    [AS_HELP_STRING([--with-compiler-suite=(gcc|ibm|intel|pgi|studio)],
+         [The compiler suite used to build this package. Applies currently only to non-cross-compile systems. Compilers need to be in $PATH [gcc].])],
     [# action if given
      AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
          [# non-cross-compile systems, read variables from vendor file
-          # user provided $withval valid?       
+          # user provided $withval valid?
           afs_compiler_suite="${withval}"
           AS_CASE([${withval}],
               ["no"],     [AC_MSG_ERROR([option --without-compiler-suite makes no sense.])],
@@ -92,8 +92,8 @@ AC_ARG_WITH([compiler-suite],
           # read relevant variables from compiler vendor file, provides at least CC, CXX, etc.
           # override current setting with vendor settings
           AC_MSG_NOTICE([overriding platform compilers with '--with-compiler-suite=${afs_compiler_suite}'])
-          m4_set_foreach([afs_relevant_build_variables_set], 
-              [afs_tmp_var], 
+          m4_set_foreach([afs_relevant_build_variables_set],
+              [afs_tmp_var],
               [_AFS_READ_VAR_FROM_FILE([${afs_compiler_files}${afs_compiler_suite}], [vendor])
                AS_IF([test "${afs_[]afs_tmp_var[]_vendor}" != "${afs_[]afs_tmp_var[]_platform}"],
                    [AC_MSG_NOTICE([afs_tmp_var: overriding '${afs_[]afs_tmp_var[]_platform}' with '${afs_[]afs_tmp_var[]_vendor}'])
@@ -109,18 +109,18 @@ AC_ARG_WITH([compiler-suite],
 # read relevant variables from file ./user_provided_configure_args
 # override current setting with user settings, if provided
 m4_set_foreach([afs_relevant_build_variables_set],
-    [afs_tmp_var], 
+    [afs_tmp_var],
     [_AFS_READ_VAR_FROM_FILE([./user_provided_configure_args], [user])
      AS_IF([test -n "${afs_[]afs_tmp_var[]_user}"],
          [AC_MSG_NOTICE([afs_tmp_var: overriding '${afs_tmp_var}' with user provided '${afs_[]afs_tmp_var[]_user}'])
           afs_tmp_var="${afs_[]afs_tmp_var[]_user}"])
     ])
 
-# remove all build variables and compiler options from file 
+# remove all build variables and compiler options from file
 # ./user_provided_configure_args to prevent duplicate processing
 afs_filter_user_provided_configure_args_cmd="cat ./user_provided_configure_args | ${GREP} -v \"^--with-compiler-suite\""
-m4_foreach([afs_tmp_var], 
-    [afs_all_build_variables_list], 
+m4_foreach([afs_tmp_var],
+    [afs_all_build_variables_list],
     [afs_filter_user_provided_configure_args_cmd="${afs_filter_user_provided_configure_args_cmd} | ${GREP} -v \"^[]afs_tmp_var[]=\""
     ])
 afs_filter_user_provided_configure_args_cmd="${afs_filter_user_provided_configure_args_cmd} > ./afs_user_provided_configure_args_tmp"
@@ -128,38 +128,38 @@ eval ${afs_filter_user_provided_configure_args_cmd}
 mv ./afs_user_provided_configure_args_tmp ./user_provided_configure_args
 
 # get the compiler's basename, ignore options like -std=c99.
-m4_set_foreach([afs_requested_compilers_set], 
+m4_set_foreach([afs_requested_compilers_set],
     [afs_tmp_var],
     [_LT_CC_BASENAME(["$[]afs_tmp_var"])
      afs_tmp_var[]_basename=`$ECHO "${cc_basename}" | $AWK '{print $[]1}' | $SED "s%'%%g" | $SED "s%\"%%g"`
     ])
 
 # check if required compilers in PATH
-m4_foreach([afs_tmp_var], 
-    [$1], 
+m4_foreach([afs_tmp_var],
+    [$1],
     [afs_in_path=`which ${afs_tmp_var[]_basename} 2> /dev/null`
      AS_IF([test -z "${afs_in_path}"],
          [AC_MSG_ERROR([required compiler 'afs_tmp_var[]=${afs_tmp_var[]_basename}' not in PATH.])])
     ])
 
 # check if optional compilers in PATH
-m4_foreach([afs_tmp_var], 
-    [$2], 
+m4_foreach([afs_tmp_var],
+    [$2],
     [afs_in_path=`which ${afs_tmp_var[]_basename} 2> /dev/null`
      AS_IF([test -z "${afs_in_path}"],
-         [AC_MSG_WARN([optional compiler 'afs_tmp_var[]=${afs_tmp_var[]_basename}' not in PATH.])         
+         [AC_MSG_WARN([optional compiler 'afs_tmp_var[]=${afs_tmp_var[]_basename}' not in PATH.])
           AS_UNSET([afs_tmp_var])
-          m4_case(afs_tmp_var, 
-              [CC], [AS_UNSET([CFLAGS])], 
-              [CXX], [AS_UNSET([CXXFLAGS])], 
-              [F77], [AS_UNSET([FFLAGS])], 
+          m4_case(afs_tmp_var,
+              [CC], [AS_UNSET([CFLAGS])],
+              [CXX], [AS_UNSET([CXXFLAGS])],
+              [F77], [AS_UNSET([FFLAGS])],
               [FC], [AS_UNSET([FCFLAGS])])
          ])
     ])
 
 # check if compilers are from same vendor (3)
 # 1. set <>_vendor
-m4_set_foreach([afs_requested_compilers_set], 
+m4_set_foreach([afs_requested_compilers_set],
     [afs_tmp_var],
     [AS_CASE([${afs_tmp_var[]_basename}],
          [gcc* | g++* | gfortran*],        [afs_tmp_var[]_vendor="gnu"],
@@ -172,7 +172,7 @@ m4_set_foreach([afs_requested_compilers_set],
     ])
 # 2. check if required compilers are from same vendor
 AS_UNSET([afs_common_vendor])
-m4_foreach([afs_tmp_var], 
+m4_foreach([afs_tmp_var],
     [$1],
     [AS_IF([test -z "${afs_common_vendor}"],
          [afs_common_vendor=${afs_tmp_var[]_vendor}],
@@ -180,13 +180,13 @@ m4_foreach([afs_tmp_var],
               [AC_MSG_ERROR([required compilers not from a single vendor ('${afs_common_vendor}' and '${afs_tmp_var[]_vendor}'). Please use --with-custom-compilers for experimental configurations.])])])
     ])
 # 3. check if optional compilers are from same vendor as required compilers
-m4_foreach([afs_tmp_var], 
+m4_foreach([afs_tmp_var],
     [$2],
     [AS_IF([test "x${afs_common_vendor}" != "x${afs_tmp_var[]_vendor}"],
         [AC_MSG_WARN([optional compiler 'afs_tmp_var=${afs_tmp_var}' not from vendor '${afs_common_vendor}'. Ignoring optional compiler. You may use --with-custom-compilers for experimental configurations.])
          AS_UNSET([afs_tmp_var])
          m4_case(afs_tmp_var,
-             [CC], [AS_UNSET([CFLAGS])], 
+             [CC], [AS_UNSET([CFLAGS])],
              [CXX], [AS_UNSET([CXXFLAGS])],
              [F77], [AS_UNSET([FFLAGS])],
              [FC], [AS_UNSET([FCFLAGS])])
@@ -194,29 +194,29 @@ m4_foreach([afs_tmp_var],
     ])
 
 dnl # print all varaibles and values
-dnl m4_foreach([afs_tmp_var], 
+dnl m4_foreach([afs_tmp_var],
 dnl     [afs_all_build_variables_list], [AS_IF([test -n "${afs_tmp_var}"], [echo afs_tmp_var[]: ${afs_tmp_var}
-dnl ]) 
+dnl ])
 dnl ])
 
 # create output argument string 'afs_backend_compiler_vars' to be passed to build-backend configure
 AS_UNSET([afs_backend_compiler_vars])
-m4_set_foreach([afs_relevant_build_variables_set], 
+m4_set_foreach([afs_relevant_build_variables_set],
     [afs_tmp_var],
-    [AS_IF([test -n "${afs_tmp_var}"], 
+    [AS_IF([test -n "${afs_tmp_var}"],
          [AS_CASE(["${afs_tmp_var}"],
-              [*\ *], 
+              [*\ *],
                   [# contains spaces, already quoted?
                    ( $ECHO "${afs_tmp_var}" | $GREP ^\' | $GREP \'$ >/dev/null 2>&1 )
                    afs_single_quoted=$?
                    ( $ECHO "${afs_tmp_var}" | $GREP ^\" | $GREP \"$ >/dev/null 2>&1 )
                    afs_double_quoted=$?
-                   AS_IF([test ${afs_single_quoted} -ne 0 && test ${afs_double_quoted} -ne 0 ], 
+                   AS_IF([test ${afs_single_quoted} -ne 0 && test ${afs_double_quoted} -ne 0 ],
                        [# needs quoting
                         afs_backend_compiler_vars="${afs_backend_compiler_vars} afs_tmp_var='${afs_tmp_var}'"],
                        [# already quoted
                         afs_backend_compiler_vars="${afs_backend_compiler_vars} afs_tmp_var=${afs_tmp_var}"])],
-              [*], 
+              [*],
                   [# contains no spaces, no quoting needed
                    afs_backend_compiler_vars="${afs_backend_compiler_vars} afs_tmp_var=${afs_tmp_var}"])
          ])
@@ -229,13 +229,13 @@ m4_set_delete(afs_relevant_build_variables_set)
 ])# AFS_COMPILER_BACKEND
 
 
-m4_define([afs_all_build_variables_list], 
+m4_define([afs_all_build_variables_list],
     [CC, CXX, F77, FC, CPPFLAGS, CFLAGS, CXXFLAGS, FFLAGS, FCFLAGS, LDFLAGS, LIBS])
 
 dnl _AFS_READ_VAR_FROM_FILE($1, $2)
 dnl $1: file to read variables from
 dnl $2: variable name suffix
-m4_define([_AFS_READ_VAR_FROM_FILE], 
+m4_define([_AFS_READ_VAR_FROM_FILE],
     [afs_[]afs_tmp_var[]_[]$2[]="`${GREP} "^[]afs_tmp_var[]=" $1 | ${AWK} -F "=" '{print $[]2}'`"])
 
 
@@ -275,7 +275,7 @@ AC_DEFUN([AFS_CUSTOM_COMPILERS],
              [AC_MSG_ERROR(['${withval}' not supported by --with-custom-compilers.])])
         ],
         [afs_custom_compilers_given="no"
-        ])    
+        ])
 ])
 
 dnl ----------------------------------------------------------------------------
@@ -344,7 +344,7 @@ fi
 # Invoke $ECHO with all args, space-separated.
 func_echo_all ()
 {
-    $ECHO "$*" 
+    $ECHO "$*"
 }
 
 case "$ECHO" in

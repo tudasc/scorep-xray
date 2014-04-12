@@ -1,6 +1,6 @@
 ## -*- mode: autoconf -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
@@ -44,17 +44,17 @@ dnl conditionals and scorep_$1_config_arg to pe passed to
 dnl sub-configures.
 AC_DEFUN([AC_SCOREP_HAVE_CONFIG_TOOL], [
 
-AC_ARG_WITH([$1], 
-    [AS_HELP_STRING([--with-$1[[=<$1-bindir>]]], 
-        [Use an already installed $1. Provide path to $1-config. Auto-detected if already in $PATH.])], 
+AC_ARG_WITH([$1],
+    [AS_HELP_STRING([--with-$1[[=<$1-bindir>]]],
+        [Use an already installed $1. Provide path to $1-config. Auto-detected if already in $PATH.])],
     [with_$1="${with_$1%/}"], dnl yes, no, or <path>
     [with_$1="not_given"])
 
 AS_UNSET([scorep_have_$1_config])
 AS_UNSET([scorep_$1_config_bin])
 AS_UNSET([scorep_$1_config_arg])
-AS_IF([test "x${with_$1}" != "xno"], 
-    [AS_IF([test "x${with_$1}" = "xyes" || test "x${with_$1}" = "xnot_given"], 
+AS_IF([test "x${with_$1}" != "xno"],
+    [AS_IF([test "x${with_$1}" = "xyes" || test "x${with_$1}" = "xnot_given"],
         [AC_CHECK_PROG([scorep_have_$1_config], [$1-config], ["yes"], ["no"])
          AS_IF([test "x${scorep_have_$1_config}" = "xyes"],
              [scorep_$1_config_bin="`which $1-config`"])],
@@ -68,11 +68,11 @@ AS_IF([test "x${with_$1}" != "xno"],
               AS_IF([test "x${scorep_have_$1_config}" = "xyes"],
                   [scorep_$1_config_bin="${with_$1}/bin/$1-config"])])
         ])
-     AS_IF([test "x${scorep_have_$1_config}" = "xyes"], 
+     AS_IF([test "x${scorep_have_$1_config}" = "xyes"],
          [scorep_$1_config_arg="scorep_$1_bindir=`dirname ${scorep_$1_config_bin}`"
           # version checking, see http://www.gnu.org/software/libtool/manual/libtool.html#Versioning
           interface_version=`${scorep_$1_config_bin} --interface-version 2> /dev/null`
-          AS_IF([test $? -eq 0 && test "x${interface_version}" != "x"], 
+          AS_IF([test $? -eq 0 && test "x${interface_version}" != "x"],
               [# get 'current'
                $1_max_provided_interface_version=`echo ${interface_version} | awk -F ":" '{print $[]1}'`
                # get 'age'
@@ -104,7 +104,7 @@ AS_IF([test "x${with_$1}" != "xno"],
          ])
     ],
     [# --without-$1
-     AS_IF([test ! -d ${srcdir}/vendor/$1], 
+     AS_IF([test ! -d ${srcdir}/vendor/$1],
          [AC_MSG_ERROR([$1 is required. Opting out an external $1 via --without-$1 is only an option if an internal $1 is available, which isn't the case here. Please provide an external $1.])])
      scorep_have_$1_config="no"
      AFS_SUMMARY([$1 support], [yes, using internal])])

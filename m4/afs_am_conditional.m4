@@ -1,6 +1,6 @@
 dnl -*- mode: autoconf -*-
 
-dnl 
+dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
 dnl Copyright (c) 2013
@@ -20,7 +20,7 @@ dnl file afs_am_conditional.m4
 # default to BOOLEAN-VALUE (true|false) if this macro is not
 # encountered during configure. This allows you to define automake
 # conditionals conditionally.
-AC_DEFUN([AFS_AM_CONDITIONAL], 
+AC_DEFUN([AFS_AM_CONDITIONAL],
 [m4_case([$3], [true], [],
                [false], [],
                [m4_fatal([AFS_AM_CONDITIONAL requires the third parameter to be either 'true' or 'false'.])])dnl
