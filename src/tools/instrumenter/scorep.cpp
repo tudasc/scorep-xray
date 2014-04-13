@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -54,7 +54,7 @@ const std::string toolname = "scorep";
 void
 print_short_usage( void )
 {
-    std::cout << "\nThis is the SCOREP instrumentation tool. The usage is:\n"
+    std::cout << "\nThis is the Score-P instrumentation tool. The usage is:\n"
               << toolname << " <options> <original command>\n\n"
               << "To print out more detailed help information on available parameters, "
               << "type\n"
@@ -68,7 +68,7 @@ print_short_usage( void )
 void
 print_help( void )
 {
-    std::cout << "\nThis is the SCOREP instrumentation tool. The usage is:\n"
+    std::cout << "\nThis is the Score-P instrumentation tool. The usage is:\n"
               << toolname << " <options> <original command>\n\n"
               << "Common options are:\n"
               << "  --help, -h      Show help output. Does not execute any other command.\n"
@@ -92,9 +92,9 @@ print_help( void )
 #endif
 #if defined( SCOREP_SHARED_BUILD )
     << "  --no-as-needed  Adds a GNU ld linker flag to fix undefined references\n"
-    "                  when using shared scorep libraries. This happens on\n"
+    "                  when using shared Score-P libraries. This happens on\n"
     "                  systems using --as-needed as linker default. It will\n"
-    "                  be handled transparently in future releases of scorep.\n"
+    "                  be handled transparently in future releases of Score-P.\n"
 #endif
     ;
     SCOREP_Instrumenter_Selector::printAll();

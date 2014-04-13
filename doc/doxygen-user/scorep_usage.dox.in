@@ -1,5 +1,5 @@
 
-This is the SCOREP instrumentation tool. The usage is:
+This is the Score-P instrumentation tool. The usage is:
 scorep <options> <original command>
 
 Common options are:
@@ -26,9 +26,9 @@ Common options are:
                   program.
   --noopenmp      Disables OpenMP support.
   --no-as-needed  Adds a GNU ld linker flag to fix undefined references
-                  when using shared scorep libraries. This happens on
+                  when using shared Score-P libraries. This happens on
                   systems using --as-needed as linker default. It will
-                  be handled transparently in future releases of scorep.
+                  be handled transparently in future releases of Score-P.
   --nocobi        Disables cobi instrumentation.
   --compiler      Enables compiler instrumentation.
                   By default, it disables cobi and pdt instrumentation.

@@ -93,8 +93,8 @@
     "   --mpifc     prints the MPI Fortran compiler name\n" \
     "   --cobi-deps prints the dependency library part for the Cobi adapter file\n" \
     "   --help      prints this usage information\n" \
-    "   --version   prints the version number of the scorep package\n" \
-    "   --scorep-revision prints the revision number of the scorep package\n" \
+    "   --version   prints the version number of the Score-P package\n" \
+    "   --scorep-revision prints the revision number of the Score-P package\n" \
     "   --common-revision prints the revision number of the common package\n" \
     "   --adapter-init    prints the code for adapter initialization\n" \
     "  Options:\n" \

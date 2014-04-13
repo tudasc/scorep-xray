@@ -20,8 +20,8 @@ scorep-config <command> [<options>]
    --mpifc     prints the MPI Fortran compiler name
    --cobi-deps prints the dependency library part for the Cobi adapter file
    --help      prints this usage information
-   --version   prints the version number of the scorep package
-   --scorep-revision prints the revision number of the scorep package
+   --version   prints the version number of the Score-P package
+   --scorep-revision prints the revision number of the Score-P package
    --common-revision prints the revision number of the common package
   Options:
    --nvcc      Convert flags to be suitable for the nvcc compiler.
