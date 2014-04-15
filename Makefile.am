@@ -89,7 +89,8 @@ EXTRA_DIST += $(srcdir)/build-score/configure.ac \
               $(srcdir)/src/config-score.h.in
 endif
 
-pkgdata_DATA = @PACKAGE@.summary
+pkgdata_DATA = @PACKAGE@.summary \
+               share/scorep.spec
 
 install-data-local: doxygen-user-install
 	$(MKDIR_P) $(DESTDIR)$(docdir)/profile; \

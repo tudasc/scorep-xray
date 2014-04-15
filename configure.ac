@@ -188,6 +188,9 @@ AC_CONFIG_FILES(
     [src/utils/include/SCOREP_ErrorCodes.h:vendor/common/src/utils/exception/ErrorCodes.tmpl.h],
     [$srcdir/vendor/common/src/utils/exception/finalize_error_codes.sh SCOREP $srcdir/share/scorep.errors src/utils/include/SCOREP_ErrorCodes.h src/utils/include/scorep_error_decls.gen.h])
 
+# generate remapper specification file
+AC_CONFIG_FILES([share/scorep.spec])
+
 AC_OUTPUT
 
 AS_IF([test "x$ac_scorep_platform_data_provided" != "xyes"], [

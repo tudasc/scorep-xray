@@ -96,6 +96,7 @@
     "   --version   prints the version number of the Score-P package\n" \
     "   --scorep-revision prints the revision number of the Score-P package\n" \
     "   --common-revision prints the revision number of the common package\n" \
+    "   --remap-specfile  prints the path to the remapper specification file\n" \
     "   --adapter-init    prints the code for adapter initialization\n" \
     "  Options:\n" \
     "   --nvcc      Convert flags to be suitable for the nvcc compiler.\n" \
@@ -210,6 +211,11 @@ main( int    argc,
         else if ( strcmp( argv[ i ], "--common-revision" ) == 0 )
         {
             std::cout << SCOREP_COMMON_REVISION << std::endl;
+            exit( EXIT_SUCCESS );
+        }
+        else if ( strcmp( argv[ i ], "--remap-specfile" ) == 0 )
+        {
+            std::cout << SCOREP_DATADIR << "/scorep.spec" << std::endl;
             exit( EXIT_SUCCESS );
         }
         else if ( strcmp( argv[ i ], "--libs" ) == 0 )

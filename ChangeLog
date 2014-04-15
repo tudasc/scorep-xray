@@ -16,7 +16,7 @@
 - Added handling for special characters, like space, in file names and
   path names. However, there are still some limitation when using
   special characters: The PDT parser can not deal with these
-  characters and, thus, fails if pdt instrumentation is enabled and
+  characters and, thus, fails if PDT instrumentation is enabled and
   special characters appear. Furthermore, compilation fails when
   double quotes appear in source file names and preprocessing is
   enabled.
@@ -41,10 +41,10 @@
 - Added selection for mutex locking, allowing to use the parameter
   --mutex=<locking> to switch between known locking mechanisms within
   the measurement system (omp,pthread,pthread:spinlock).
-- When using the intel compiler, we inspected the symbol table of the
+- When using the Intel compiler, we inspected the symbol table of the
   executable and evaluated the filtering on all functions in the
   executable. Thus, compiler instrumented functions from shared
-  libraries are automatically filtered, when using the intel
+  libraries are automatically filtered, when using the Intel
   compiler. Now, the filters are evaluated when the functions appear
   the first time. Thus, functions from shared libraries now appear in
   the measurement output.
@@ -78,6 +78,8 @@
 - Improved event size estimation in scorep-score using otf2-estimator.
 - Improved initialization of adapters which results in a reduced
   number of libraries needed to be linked into the application.
+- Install Cube remap specification file and provide its location via
+  scorep-config tool.
 
 ------------------- Released version 1.2.3 ---------------------------
 
