@@ -135,6 +135,10 @@ while test $# -ne 0; do
             VERBOSE=yes
             ;;
 
+        --keep-files)
+            # May be used for debugging -- ignored
+            ;;
+
         *)
             echo "ERROR: Unknown option '$1' encountered!" >&2
             exit 1
