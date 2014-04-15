@@ -121,7 +121,7 @@ public:
 
     /**
      * Appends the name of the SCOREP_Subsystem struct associated with
-     * this adapter to @a init_strucrs. The default implementation
+     * this adapter to @a init_structs. The default implementation
      * appends 'SCOREP_Subsystem_<name>Adapter' Where the first letter of
      * <name> is made uppercase. Overwrite this function of your subsystem
      * name differs or if your subsystem shouldn't show up in
@@ -170,7 +170,7 @@ protected:
      * Overwrite this function if you want to do adapter specific modifications
      * to the compiler flags. This function is also called, when the addCFlags()
      * function will be called.
-     * @param cflgas       The compiler flags to which you may modify or add new flags.
+     * @param cflags       The compiler flags to which you may modify or add new flags.
      *                     This flags do not contain the include directories. For the
      *                     include flags use addIncFlags.
      * @param build_check  True '--build-check' was specified.

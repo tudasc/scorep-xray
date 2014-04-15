@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -136,7 +136,7 @@ private:
        compile the source. It uses the compiler used by the user command,
        appends compiler flags given by the user.
        @param input_file  Source file which is compiled.
-       @param output_file Filename for the obejct file.
+       @param output_file Filename for the object file.
      */
     void
     compile_source_file( const std::string& input_file,
@@ -191,13 +191,13 @@ private:
     /**
        input file names. Need to be separated because OPARI may
        perform source code modifications which take these as input and
-       the original command needs the result from the OPRI output. Thus,
-       they are then substituted by the OPRI output.
+       the original command needs the result from the OPARI output. Thus,
+       they are then substituted by the OPARI output.
      */
     std::vector<std::string> m_input_files;
 
     /**
-       A list of temorarily created files that are deleted at the end of a
+       A list of temporarily created files that are deleted at the end of a
        successful execution, if @a keep_files is false.
      */
     std::vector<std::string> m_temp_files;
@@ -208,7 +208,7 @@ private:
     std::string m_config_base;
 
     /**
-       Additional compiler flgas added by the instrumenter
+       Additional compiler flags added by the instrumenter
      */
     std::string m_compiler_flags;
 
