@@ -1059,7 +1059,7 @@
                     ${a} = 0;
                     if ( ${syncs_fence}[${calculation::callpath::id}] == 1 )
                     {
-                        ${a} = metric::time(e) - metric::omp_idle_threads(e);
+                        ${a} = metric::visits(e);
                     };
                     return ${a};
                 }
@@ -1108,7 +1108,7 @@
                         ${a} = 0;
                         if ( ${syncs_gats_access}[${calculation::callpath::id}] == 1 )
                         {
-                            ${a} = metric::time(e) - metric::omp_idle_threads(e);
+                            ${a} = metric::visits(e);
                         };
                         return ${a};
                     }
@@ -1147,7 +1147,7 @@
                         ${a} = 0;
                         if ( ${syncs_gats_exposure}[${calculation::callpath::id}] == 1 )
                         {
-                            ${a} = metric::time(e) - metric::omp_idle_threads(e);
+                            ${a} = metric::visits(e);
                         };
                         return ${a};
                     }
@@ -1176,12 +1176,43 @@
                 </metric>
             </metric>
             <metric>
-                <disp_name>Locks</disp_name>
+                <disp_name>Lock Epochs</disp_name>
                 <uniq_name>syncs_locks</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>occ</uom>
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_locks</url>
-                <descr>Number of locks</descr>
+                <descr>Number of lock epochs</descr>
+                <cubepl>
+                {
+                    ${a} = 0;
+                    if ( ${syncs_locks}[${calculation::callpath::id}] == 1 )
+                    {
+                        ${a} = metric::visits(e);
+                    }
+                    return ${a};
+                }
+                </cubepl>
+                <cubeplinit>
+                    {
+                        global(syncs_locks);
+                        ${i} = 0;
+                        while( ${i} < ${cube::#callpaths} )
+                        {
+                            ${syncs_locks}[${i}] = 0;
+                            ${regionid} = ${cube::callpath::calleeid}[${i}];
+                            if (
+                                ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                and
+                                ( ${cube::region::name}[${regionid}] seq "mpi_win_lock" )
+                               )
+                            {
+                                ${syncs_locks}[${i}] = 1;
+                            };
+                            ${i} = ${i} + 1;
+                        };
+                        return 0;
+                    }
+                </cubeplinit>
             </metric>
         </metric>
     </metric>
@@ -1217,7 +1248,7 @@
                     ${a} = 0;
                     if ( ${comms_rma_puts}[${calculation::callpath::id}] == 1 )
                     {
-                        ${a} = metric::time(e) - metric::omp_idle_threads(e);
+                        ${a} = metric::visits(e);
                     };
                     return ${a};
                 }
@@ -1260,7 +1291,7 @@
                     ${a} = 0;
                     if ( ${comms_rma_gets}[${calculation::callpath::id}] == 1 )
                     {
-                        ${a} = metric::time(e) - metric::omp_idle_threads(e);
+                        ${a} = metric::visits(e);
                     };
                     return ${a};
                 }
