@@ -80,6 +80,8 @@
   number of libraries needed to be linked into the application.
 - Install Cube remap specification file and provide its location via
   scorep-config tool.
+- Changed enumeration of threads in the profile from a global enumeration
+  to an enumeration from 0 to N-1 on each process.
 
 ------------------- Released version 1.2.3 ---------------------------
 
