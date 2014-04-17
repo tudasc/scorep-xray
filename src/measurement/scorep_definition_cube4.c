@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -814,8 +814,7 @@ static cube_location**
 write_location_definitions( cube_t*                   my_cube,
                             SCOREP_DefinitionManager* manager,
                             uint32_t                  ranks,
-                            uint64_t                  number_of_threads,
-                            int*                      offsets )
+                            uint64_t                  number_of_threads )
 {
     /* Counts the number of threads already registered for each rank */
     uint32_t* threads = calloc( ranks, sizeof( uint32_t ) );
@@ -832,16 +831,19 @@ write_location_definitions( cube_t*                   my_cube,
 
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, Location, location )
     {
-        uint32_t parent_id = definition->location_group_id;
-        uint32_t index     = offsets[ parent_id ] + threads[ parent_id ];
-        threads[ parent_id ]++;
-        const char* name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
-                                                        String )->string_data;
+        uint32_t    parent_id = definition->location_group_id;
+        const char* name      = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
+                                                             String )->string_data;
         cube_location_type type =
             convert_to_cube_location_type( definition->location_type );
 
         locations[ definition->sequence_number ] =
-            cube_def_location( my_cube, name, index, type, processes[ parent_id ] );
+            cube_def_location( my_cube,
+                               name,
+                               threads[ parent_id ],
+                               type,
+                               processes[ parent_id ] );
+        threads[ parent_id ]++;
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
     free( threads );
@@ -886,7 +888,6 @@ scorep_write_definitions_to_cube4( cube_t*                       myCube,
                                    scorep_cube4_definitions_map* map,
                                    uint32_t                      nRanks,
                                    uint64_t                      nLocations,
-                                   int*                          offsets,
                                    bool                          writeTaskMetrics,
                                    bool                          writeTuples )
 {
@@ -905,7 +906,7 @@ scorep_write_definitions_to_cube4( cube_t*                       myCube,
     write_region_definitions( myCube, manager, map );
     write_callpath_definitions( myCube, manager, map );
     cube_location** location_map =
-        write_location_definitions( myCube, manager, nRanks, nLocations, offsets );
+        write_location_definitions( myCube, manager, nRanks, nLocations );
     scorep_write_cube_location_property( myCube, manager, location_map );
     free( location_map );
 }

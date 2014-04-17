@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011, 2013
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -70,7 +70,6 @@ typedef struct
    @param map         Pointer to an already inititialized mapping structure.
    @param nRanks      Number of ranks.
    @param nLocations  Global number of locations.
-   @param offsets     Offset for global thread enumeration.
    @param writeTaskMetrics Indicates whether task related metric defintions are
                       written to the Cube file.
    @param writeTupels Indicates whether tuples are written.
@@ -80,7 +79,6 @@ scorep_write_definitions_to_cube4( cube_t*                       myCube,
                                    scorep_cube4_definitions_map* map,
                                    uint32_t                      nRanks,
                                    uint64_t                      nLocations,
-                                   int*                          offsets,
                                    bool                          writeTaskMetrics,
                                    bool                          writeTuples );
 
