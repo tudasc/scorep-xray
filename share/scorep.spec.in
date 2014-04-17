@@ -1175,7 +1175,7 @@
                     </cubeplinit>
                 </metric>
             </metric>
-            <metric>
+            <metric type="PREDERIVED_EXCLUSIVE">
                 <disp_name>Lock Epochs</disp_name>
                 <uniq_name>syncs_locks</uniq_name>
                 <dtype>INTEGER</dtype>
