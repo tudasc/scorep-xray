@@ -1188,7 +1188,7 @@
                     if ( ${syncs_locks}[${calculation::callpath::id}] == 1 )
                     {
                         ${a} = metric::visits(e);
-                    }
+                    };
                     return ${a};
                 }
                 </cubepl>
