@@ -82,6 +82,10 @@
   scorep-config tool.
 - Changed enumeration of threads in the profile from a global enumeration
   to an enumeration from 0 to N-1 on each process.
+- Basic support for the K Computer anf Fujitsu FX10 systems added. The
+  Tofu network topology will be supported in a subsequent release.
+  Note that some C++ OpenMP programs fail during measurement
+  initialization for unknown reasons.
 
 ------------------- Released version 1.2.3 ---------------------------
 

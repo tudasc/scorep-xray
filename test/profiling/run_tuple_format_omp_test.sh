@@ -11,4 +11,6 @@
 ## directory for details.
 ##
 
-SCOREP_PROFILING_FORMAT=CUBE_TUPLE ./jacobi_omp_c
+if test -f ./jacobi_omp_c; then
+    SCOREP_PROFILING_FORMAT=CUBE_TUPLE ./jacobi_omp_c
+fi

@@ -4,7 +4,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013
+## Copyright (c) 2013,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -18,6 +18,8 @@ INC_DIR_THREAD_FORK_JOIN = $(INC_ROOT)src/measurement/thread/fork_join/include_e
 INC_DIR_THREAD_FORK_JOIN_INTERN = $(INC_ROOT)src/measurement/thread/fork_join/include_intern
 
 if HAVE_OPENMP_SUPPORT
+
+if HAVE_SCOREP_OMP_TPD
 
 lib_LTLIBRARIES += libscorep_thread_fork_join_omp_tpd.la
 libscorep_thread_fork_join_omp_tpd_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
@@ -39,6 +41,9 @@ libscorep_thread_fork_join_omp_tpd_la_LIBADD = \
     libutils.la
 libscorep_thread_fork_join_omp_tpd_la_LDFLAGS = \
     $(library_api_version_ldflags)
+
+endif HAVE_SCOREP_OMP_TPD
+
 
 if HAVE_SCOREP_OMP_ANCESTRY
 

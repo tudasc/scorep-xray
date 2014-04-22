@@ -36,7 +36,7 @@ check_PROGRAMS += oa_f_test
 oa_f_test_SOURCES =                                       \
 	$(SRC_ROOT)test/OA/serial/Fortran/oa_test.F90
 
-oa_f_test_CPPFLAGS = @COMPILER_INSTRUMENTATION_CPPFLAGS@\
+oa_f_test_CPPFLAGS = @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@\
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/adapters/include       \
     $(UTILS_CPPFLAGS)
@@ -53,7 +53,7 @@ endif
 
 oa_f_test_LDADD = $(serial_libadd)
 
-oa_f_test_LDFLAGS = $(serial_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
+oa_f_test_LDFLAGS = $(serial_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
 EXTRA_DIST       += \
     $(SRC_ROOT)test/OA/serial/Fortran/run_oa_f_test.sh.in

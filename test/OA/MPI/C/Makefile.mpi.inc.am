@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -39,7 +39,6 @@ oa_c_test_mpi_SOURCES =                                       \
 
 oa_c_test_mpi_CPPFLAGS = $(AM_CPPFLAGS)       \
     -I$(INC_ROOT)src/adapters/include       \
-    -I$(INC_ROOT)include/scorep				\
     -I$(INC_ROOT)src/measurement/include    \
     -I$(PUBLIC_INC_DIR)                     \
     $(UTILS_CPPFLAGS)                       \

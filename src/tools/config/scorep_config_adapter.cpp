@@ -54,6 +54,8 @@
 #elif SCOREP_BACKEND_COMPILER_STUDIO
 #define SCOREP_COMPILER_TYPE "sun"
 
+#elif SCOREP_BACKEND_COMPILER_FUJITSU
+#define SCOREP_COMPILER_TYPE "fujitsu"
 #endif
 
 /* **************************************************************************************
@@ -261,7 +263,7 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
 {
     if ( m_is_enabled )
     {
-        cflags += SCOREP_CFLAGS " ";
+        cflags += SCOREP_COMPILER_INSTRUMENTATION_CFLAGS " ";
     }
 }
 
@@ -273,11 +275,12 @@ SCOREP_Config_CompilerAdapter::addLdFlags( std::string& ldflags,
     {
         if ( nvcc )
         {
-            ldflags += " " SCOREP_LDFLAGS;
+            ldflags += " " SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS;
         }
         else
         {
-            ldflags += " " SCOREP_CFLAGS " " SCOREP_LDFLAGS;
+            ldflags += " " SCOREP_COMPILER_INSTRUMENTATION_CFLAGS
+                       " " SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS;
         }
     }
 }

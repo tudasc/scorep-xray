@@ -101,6 +101,18 @@ SCOREP_Instrumenter_OmpTpd::setConfigValue( const std::string& key,
     }
 }
 
+void
+SCOREP_Instrumenter_OmpTpd::checkDependencies( void )
+{
+    SCOREP_Instrumenter_Paradigm::checkDependencies();
+
+    SCOREP_Instrumenter_Adapter* adapter = SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
+    if ( ( adapter != NULL ) )
+    {
+        ( ( SCOREP_Instrumenter_OpariAdapter* )adapter )->setTpdMode( true );
+    }
+}
+
 /* **************************************************************************************
  * class SCOREP_Instrumenter_OmpAncestry
  * *************************************************************************************/
@@ -114,16 +126,36 @@ SCOREP_Instrumenter_OmpAncestry::SCOREP_Instrumenter_OmpAncestry
     m_openmp_cflag = SCOREP_OPENMP_CFLAGS;
 }
 
-void
-SCOREP_Instrumenter_OmpAncestry::checkDependencies( void )
+bool
+SCOREP_Instrumenter_OmpAncestry::checkCommand( const std::string& current,
+                                               const std::string& next )
 {
-    SCOREP_Instrumenter_Paradigm::checkDependencies();
-
-    SCOREP_Instrumenter_Adapter* adapter = SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
-    if ( ( adapter != NULL ) )
+    if ( current == m_openmp_cflag )
     {
-        ( ( SCOREP_Instrumenter_OpariAdapter* )adapter )->setTpdMode( false );
+        m_selector->select( this, false );
     }
+#if SCOREP_BACKEND_COMPILER_INTEL
+    if ( current == "-openmp" )
+    {
+        m_selector->select( this, false );
+    }
+#endif
+#if SCOREP_BACKEND_COMPILER_IBM
+    if ( ( current.length() > m_openmp_cflag.length() ) &&
+         ( current.substr( 0, 6 ) == "-qsmp=" ) )
+    {
+        size_t end;
+        for ( size_t start = 5; start != std::string::npos; start = end )
+        {
+            end = current.find( ':', start + 1 );
+            if ( current.substr( start + 1, end - start - 1 ) == "omp" )
+            {
+                m_selector->select( this, false );
+            }
+        }
+    }
+#endif
+    return false;
 }
 
 void
@@ -143,7 +175,9 @@ SCOREP_Instrumenter_Thread::SCOREP_Instrumenter_Thread()
     : SCOREP_Instrumenter_Selector( "thread" )
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_SingleThreaded( this ) );
+#if SCOREP_BACKEND_HAVE_OMP_TPD
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpTpd( this ) );
+#endif
 #if SCOREP_BACKEND_HAVE_OMP_ANCESTRY
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpAncestry( this ) );
 #endif

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -36,7 +36,6 @@ mpi_nonblocking_wait_states_SOURCES =                                       \
 	$(SRC_ROOT)test/OA/MPI/wait_state/mpi_nonblocking_wait_states.c
 
 mpi_nonblocking_wait_states_CPPFLAGS = $(AM_CPPFLAGS)       \
-    -I$(INC_ROOT)include/scorep				\
     -I$(PUBLIC_INC_DIR)                     \
     $(UTILS_CPPFLAGS)
 
@@ -46,4 +45,3 @@ mpi_nonblocking_wait_states_LDFLAGS = $(mpi_ldflags)
 
 TESTS_MPI += mpi_nonblocking_wait_states
 endif #if HAVE_MPI_SUPPORT
-

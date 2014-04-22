@@ -29,47 +29,9 @@
 ## directory for details.
 ##
 
-AC_DEFUN([AC_SCOREP_COMPILER_INSTRUMENTATION_FLAGS],[
-AC_REQUIRE([AX_COMPILER_VENDOR])dnl
-
-dnl Is there a use case for extra-instrumentation-flags?
-AC_ARG_WITH([extra-instrumentation-flags],
-            [AS_HELP_STRING([--with-extra-instrumentation-flags=flags],
-                            [Add additional instrumentation flags.])],
-            [ac_scorep_with_extra_instrumentation_cppflags=$withval],
-            [ac_scorep_with_extra_instrumentation_cppflags=""])dnl
-
-AS_CASE([${ax_cv_c_compiler_vendor}],
-    [intel],    [ac_scorep_compiler_instrumentation_cppflags="-tcollect"],
-    [sun],      [ac_scorep_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"],
-    [ibm],      [ac_scorep_compiler_instrumentation_cppflags="-qdebug=function_trace"],
-    [portland], [ac_scorep_compiler_instrumentation_cppflags="-Mprof=func"],
-    [gnu],      [ac_scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"],
-    [cray],     [ac_scorep_compiler_instrumentation_cppflags="-g -hfunc_trace"
-                 ac_scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"],
-    [])dnl
-
-AS_IF([test "x${ac_scorep_with_extra_instrumentation_cppflags}" != x || \
-       test "x${ac_scorep_compiler_instrumentation_cppflags}" != x],
-    [AC_MSG_NOTICE([using compiler instrumentation cppflags: ${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
-     AFS_SUMMARY_VERBOSE([instrumentation cppflags], [${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}])
-     AS_IF([test "x${ac_scorep_compiler_instrumentation_ldflags}" != x],
-         [AC_MSG_NOTICE([using compiler instrumentation ldflags: ${ac_scorep_compiler_instrumentation_ldflags}])
-          AFS_SUMMARY_VERBOSE([instrumentation ldflags], [${ac_scorep_compiler_instrumentation_ldflags}])
-         ])
-    ])
-
-AC_SUBST([COMPILER_INSTRUMENTATION_CPPFLAGS],
-    ["${ac_scorep_compiler_instrumentation_cppflags} ${ac_scorep_with_extra_instrumentation_cppflags}"])
-AC_SUBST([COMPILER_INSTRUMENTATION_LDFLAGS],
-    ["${ac_scorep_compiler_instrumentation_ldflags}"])
-])
-
-dnl ------------------------------------------------------------------
-
 AC_DEFUN([AC_SCOREP_COMPILER_INSTRUMENTATION], [
 AC_REQUIRE([AX_COMPILER_VENDOR])dnl
-AC_REQUIRE([AC_SCOREP_COMPILER_INSTRUMENTATION_FLAGS])
+AC_REQUIRE([SCOREP_COMPILER_INSTRUMENTATION_FLAGS])
 
 have_compiler_instrumentation=yes
 AS_CASE([${ax_cv_c_compiler_vendor}],
@@ -79,14 +41,18 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [portland], [],
     [gnu],      [],
     [cray],     [],
+    [fujitsu],  [],
     [have_compiler_instrumentation=no
      result="no, compiler vendor '${ax_cv_c_compiler_vendor}' not supported."])dnl
 
 AS_IF([test "x${have_compiler_instrumentation}" = xyes],
     [scorep_have_demangle="no"
      AS_IF([test "x${ax_cv_c_compiler_vendor}" = xgnu || \
-            test "x${ax_cv_c_compiler_vendor}" = xcray ],
-         [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])
+            test "x${ax_cv_c_compiler_vendor}" = xcray || \
+            test "x${ax_cv_c_compiler_vendor}" = xfujitsu],
+         [AS_IF([test "x${ac_scorep_platform}" = xk || test "x${ac_scorep_platform}" = xfx10],
+              [BYPASS_GENERIC_LIB_CHECK_ON_K_AND_FX10([libbfd], [-lbfd])],
+              [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])])
           AS_IF([test "x${scorep_have_libbfd}" = "xyes"],
              [result=${libbfd_result}],
              [# search for nm if bfd is not usable

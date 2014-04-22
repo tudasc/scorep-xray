@@ -36,20 +36,20 @@ configure:
 # to break this circle, touch an emtpy file
 build-backend/configure: configure
 	@: >src/config-backend-for-frontend.h.in
-	$(AUTORECONF) --install $(AUTORECONFFLAGS) build-backend
+	cd build-backend; $(AUTORECONF) --install $(AUTORECONFFLAGS)
 	@echo "scorep-autoheader: \`src/config-backend-for-frontend.h.in' is created"; \
             vendor/common/build-config/generate-config-backend-for-frontend.sh \
                 src/config-backend.h.in \
                 >src/config-backend-for-frontend.h.in
 
 build-frontend/configure: build-backend/configure
-	$(AUTORECONF) $(AUTORECONFFLAGS) build-frontend
+	cd build-frontend; $(AUTORECONF) $(AUTORECONFFLAGS)
 
 build-mpi/configure: build-backend/configure
-	$(AUTORECONF) $(AUTORECONFFLAGS) build-mpi
+	cd build-mpi; $(AUTORECONF) $(AUTORECONFFLAGS)
 
 build-score/configure: build-backend/configure
-	$(AUTORECONF) $(AUTORECONFFLAGS) build-score
+	cd build-score; $(AUTORECONF) $(AUTORECONFFLAGS)
 
 clean: clean-local
 	@$(MAKE) -C vendor/opari2 -f bootstrap clean

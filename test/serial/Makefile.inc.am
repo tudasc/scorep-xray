@@ -35,9 +35,9 @@
 check_PROGRAMS += serial_test
 
 serial_test_SOURCES  = $(SRC_ROOT)test/serial/serial_test.c
-serial_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+serial_test_CPPFLAGS = $(AM_CPPFLAGS) @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
 serial_test_LDADD    = $(serial_libadd)
-serial_test_LDFLAGS  = $(serial_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
+serial_test_LDFLAGS  = $(serial_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
 TESTS_SERIAL += $(srcdir)/../test/serial/run_serial_test.sh
 EXTRA_DIST          += $(SRC_ROOT)test/serial/run_serial_test.sh
@@ -48,9 +48,9 @@ EXTRA_DIST          += $(SRC_ROOT)test/serial/run_serial_test_profile.sh
 check_PROGRAMS += serial_ack_test
 
 serial_ack_test_SOURCES  = $(SRC_ROOT)test/serial/serial_ack_test.c
-serial_ack_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+serial_ack_test_CPPFLAGS = $(AM_CPPFLAGS) @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
 serial_ack_test_LDADD    = $(serial_libadd)
-serial_ack_test_LDFLAGS  = $(serial_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
+serial_ack_test_LDFLAGS  = $(serial_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
 TESTS_SERIAL += $(srcdir)/../test/serial/run_serial_ack_test.sh
 EXTRA_DIST   += $(SRC_ROOT)test/serial/run_serial_ack_test.sh
@@ -66,7 +66,7 @@ region_types_consistency_check_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR) \
     $(UTILS_CPPFLAGS)
 region_types_consistency_check_LDADD   = $(serial_libadd) libscorep_measurement.la
-region_types_consistency_check_LDFLAGS = $(serial_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
+region_types_consistency_check_LDFLAGS = $(serial_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
 EXTRA_DIST   += $(SRC_ROOT)test/serial/run_region_types_consistency_check.sh
 TESTS_SERIAL += $(srcdir)/../test/serial/run_region_types_consistency_check.sh

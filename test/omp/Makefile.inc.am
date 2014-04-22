@@ -37,11 +37,12 @@ check_PROGRAMS += omp_test_unistrumented
 
 omp_test_unistrumented_SOURCES  = $(SRC_ROOT)test/omp/omp_test.c
 omp_test_unistrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-#omp_test_unistrumented_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+#omp_test_unistrumented_CPPFLAGS = $(AM_CPPFLAGS) @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
 #omp_test_unistrumented_LDADD    = $(omp_libadd)
 
 #TESTS_OMP += omp_test_unistrumented
 
+if HAVE_SCOREP_OMP_TPD
 
 check_PROGRAMS += omp_test
 
@@ -53,9 +54,9 @@ libomp_test_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
 omp_test_SOURCES  = $(SRC_ROOT)test/omp/omp_test.mod.c       \
                     $(SRC_ROOT)test/omp/omp_test.c.opari.inc
 omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-omp_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
+omp_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
 omp_test_LDADD    = $(omp_libadd) $(LIB_ROOT)libomp_test_pomp.la
-omp_test_LDFLAGS  = $(omp_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
+omp_test_LDFLAGS  = $(omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
 TESTS_OMP += $(srcdir)/../test/omp/run_omp_test.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test.sh
@@ -63,23 +64,28 @@ EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test.sh
 TESTS_OMP += $(srcdir)/../test/omp/run_omp_test_profile.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test_profile.sh
 
+
 check_PROGRAMS += internal_thread_handling
 
 internal_thread_handling_SOURCES  = $(SRC_ROOT)test/omp/internal_thread_handling.c       \
                                     $(SRC_ROOT)test/omp/omp_test.c.opari.inc
 internal_thread_handling_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-internal_thread_handling_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
+internal_thread_handling_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
 internal_thread_handling_LDADD    = $(omp_libadd) $(LIB_ROOT)libomp_test_pomp.la
-internal_thread_handling_LDFLAGS  = $(omp_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
+internal_thread_handling_LDFLAGS  = $(omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
 TESTS_OMP += $(srcdir)/../test/omp/run_internal_thread_handling.sh
+
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_internal_thread_handling.sh
 
+endif HAVE_SCOREP_OMP_TPD
 
 if ! SCOREP_COMPILER_PGI
 # The PGI compilers do currently not support nested
 # parallelism. Therefore testing this functionality does not make any
 # sense.
+
+if HAVE_SCOREP_OMP_TPD
 
 check_PROGRAMS += omp_test_nested
 
@@ -91,9 +97,9 @@ libomp_test_nested_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
 omp_test_nested_SOURCES  = $(SRC_ROOT)test/omp/omp_test_nested.mod.c       \
                     $(SRC_ROOT)test/omp/omp_test_nested.c.opari.inc
 omp_test_nested_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-omp_test_nested_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
+omp_test_nested_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
 omp_test_nested_LDADD    = $(omp_libadd) $(LIB_ROOT)libomp_test_nested_pomp.la
-omp_test_nested_LDFLAGS  = $(omp_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
+omp_test_nested_LDFLAGS  = $(omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
 TESTS_OMP += $(srcdir)/../test/omp/run_omp_test_nested.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test_nested.sh
@@ -101,6 +107,8 @@ EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test_nested.sh
 TESTS_OMP += $(srcdir)/../test/omp/run_omp_test_nested_profile.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test_nested_profile.sh
 
-endif
+endif HAVE_SCOREP_OMP_TPD
 
-endif
+endif !SCOREP_COMPILER_PGI
+
+endif HAVE_OPENMP_SUPPORT

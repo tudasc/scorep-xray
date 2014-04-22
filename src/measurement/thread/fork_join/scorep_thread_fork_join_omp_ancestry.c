@@ -72,9 +72,34 @@ scorep_thread_on_create_private_data( scorep_thread_private_data* tpd,
 }
 
 
+
+/* FUJITSU-COMPILER-BUG-WORKAROUND
+ * -------------------------------
+ * Without any OpenMP directive the Fujitsu compiler creates OpenMP
+ * threadprivate variables, e.g., pomp_tpd_, as:
+ * $ nm .libs/libscorep_thread_fork_join_omp_tpd.a | grep pomp
+ * 0000000000000000 D pomp_tpd_
+ * This is not sufficient as instrumented compilation units require
+ * the pomp_tpd symbol to be __threadprivate_pomp_tpd_. Using an OpenMP
+ * directive in a dummy function solves this issue:
+ * $ nm .libs/libscorep_thread_fork_join_omp_tpd.a | grep pomp
+ * 0000000000000008 C __threadprivate_pomp_tpd_
+ * 0000000000000000 D pomp_tpd_
+ */
+static void
+weird_workaround_to_force_fujitsu_compiler_to_generate_threadprivate_variables()
+{
+#ifdef __FUJITSU
+    #pragma omp barrier
+#endif /* __FUJITSU */
+}
+
+
 void
 scorep_thread_on_initialize( scorep_thread_private_data* initialTpd )
 {
+    weird_workaround_to_force_fujitsu_compiler_to_generate_threadprivate_variables();
+
     UTILS_BUG_ON( omp_in_parallel(), "" );
     UTILS_BUG_ON( initialTpd == 0, "" );
     UTILS_BUG_ON( scorep_thread_get_model_data( initialTpd ) == 0, "" );

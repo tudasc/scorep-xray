@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013
+dnl Copyright (c) 2013,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -39,9 +39,11 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM(
     omp_get_active_level();
 ]])],
     [scorep_have_omp_ancestry=1
-     AC_MSG_RESULT([yes])],
+     AC_MSG_RESULT([yes])
+     AFS_SUMMARY([OpenMP ancestry], [yes])],
     [scorep_have_omp_ancestry=0
-     AC_MSG_RESULT([no])])
+     AC_MSG_RESULT([no])
+     AFS_SUMMARY([OpenMP ancestry], [no])])
 
 AFS_AM_CONDITIONAL([HAVE_SCOREP_OMP_ANCESTRY],
     [test 1 -eq ${scorep_have_omp_ancestry}],

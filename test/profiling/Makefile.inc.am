@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011, 2014,
+## Copyright (c) 2009-2011, 2013-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -34,9 +34,9 @@
 check_PROGRAMS += profile_depth_limit_test
 
 profile_depth_limit_test_SOURCES = $(SRC_ROOT)test/profiling/profile_depth_limit_test.c
-profile_depth_limit_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+profile_depth_limit_test_CPPFLAGS = $(AM_CPPFLAGS) @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
 profile_depth_limit_test_LDADD    = $(serial_libadd)
-profile_depth_limit_test_LDFLAGS  = $(serial_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
+profile_depth_limit_test_LDFLAGS  = $(serial_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
 EXTRA_DIST          += $(SRC_ROOT)test/profiling/run_profile_depth_limit_test.sh
 if !SCOREP_COMPILER_SUN

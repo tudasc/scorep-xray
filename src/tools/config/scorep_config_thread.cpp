@@ -42,7 +42,9 @@ void
 SCOREP_Config_ThreadSystem::init( void )
 {
     m_all.push_back( new SCOREP_Config_MockupThreadSystem() );
+#if SCOREP_BACKEND_HAVE_OMP_TPD
     m_all.push_back( new SCOREP_Config_PompTpdThreadSystem() );
+#endif
 #if SCOREP_BACKEND_HAVE_OMP_ANCESTRY
     m_all.push_back( new SCOREP_Config_OmpAncestryThreadSystem() );
 #endif

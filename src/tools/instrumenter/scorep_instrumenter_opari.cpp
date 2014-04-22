@@ -71,6 +71,10 @@
 #define SCOREP_OPARI_MANGLING_SCHEME "sun"
 #define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
 
+#elif SCOREP_BACKEND_COMPILER_FUJITSU
+#define SCOREP_OPARI_MANGLING_SCHEME "fujitsu"
+#define SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS
+
 #endif
 
 /* **************************************************************************************
@@ -87,7 +91,7 @@ SCOREP_Instrumenter_OpariAdapter::SCOREP_Instrumenter_OpariAdapter( void )
     m_c_compiler   = SCOREP_CC;
     m_nm           = "`" OPARI_CONFIG " --nm`";
     m_pomp         = detect;
-    m_use_tpd      = true;
+    m_use_tpd      = false;
 }
 
 bool

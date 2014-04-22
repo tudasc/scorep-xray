@@ -53,8 +53,8 @@ file_prefix="../installcheck/instrumenter_checks/configurations_"
 
 # pomp_user_arg: use HAVE_OPARI2_TRUE when it is implemented
 
-omp_args="thread=omp:pomp_tpd "
-
+omp_args=
+@HAVE_SCOREP_OMP_TPD_TRUE@omp_args="${omp_args} thread=omp:pomp_tpd "
 @HAVE_SCOREP_OMP_ANCESTRY_TRUE@omp_args="${omp_args} thread=omp:ancestry "
 
 mutex_args=

@@ -605,6 +605,75 @@ SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
     return false;
 }
 
+#elif SCOREP_BACKEND_COMPILER_FUJITSU
+bool
+SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
+{
+    return arg == "-shared";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFreeform( const std::string& arg )
+{
+    return arg == "-Free";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgForFixedform( const std::string& arg )
+{
+    return arg == "-Fixed";
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCPreprocessingFlags( const std::string& input_file,
+                                                         const std::string& output_file )
+{
+    return "-E > " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCxxPreprocessingFlags( const std::string& input_file,
+                                                           const std::string& output_file )
+{
+    return "-E > " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( const std::string& input_file,
+                                                               const std::string& output_file )
+{
+    return "-E > " + output_file;
+}
+
+std::string
+SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars( void )
+{
+    return "";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isArgWithO( std::string arg )
+{
+    return false;
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isPreprocessFlag( std::string arg )
+{
+    return arg == "-E";
+}
+
+bool
+SCOREP_Instrumenter_InstallData::isCompositeArg( std::string current,
+                                                 std::string next )
+{
+    if ( current == "-x" )
+    {
+        return true;
+    }
+    return false;
+}
+
 #endif
 
 /* ****************************************************************************

@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2013
+ * Copyright (c) 2009-2011, 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -42,6 +42,16 @@
 #ifdef SCOREP_USER_ENABLE
 #include <scorep/SCOREP_User_Variables.h>
 #include <scorep/SCOREP_User_Functions.h>
+#endif
+
+/* Provide macro SCOREP_USER_FUNCTION_NAME that expands to the
+ * function name of the enclosing function. */
+#ifndef SCOREP_USER_FUNCTION_NAME
+    #if defined( __cplusplus ) && defined( __FUJITSU )
+        #define SCOREP_USER_FUNCTION_NAME __FUNCTION__
+    #else
+        #define SCOREP_USER_FUNCTION_NAME __func__
+    #endif
 #endif
 
 /**
@@ -669,7 +679,7 @@
 #define SCOREP_USER_FUNC_BEGIN() static SCOREP_User_RegionHandle        \
     scorep_user_func_handle =  SCOREP_USER_INVALID_REGION; \
     SCOREP_User_RegionBegin( &scorep_user_func_handle, &SCOREP_User_LastFileName, \
-                             &SCOREP_User_LastFileHandle, __func__,      \
+                             &SCOREP_User_LastFileHandle, SCOREP_USER_FUNCTION_NAME, \
                              SCOREP_USER_REGION_TYPE_FUNCTION, __FILE__, __LINE__ );
 
 #define SCOREP_USER_FUNC_END() SCOREP_User_RegionEnd( scorep_user_func_handle );

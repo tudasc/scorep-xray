@@ -57,6 +57,7 @@ mpi_ldflags = $(external_ldflags)
 ## Hybrid ----------------------------------------------------------------------
 
 if HAVE_OPENMP_SUPPORT
+if HAVE_SCOREP_OMP_TPD
 
 $(LIB_DIR_SCOREP)libscorep_mpi_omp_event.la:
 	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpi_omp_event.la
@@ -73,6 +74,7 @@ mpi_omp_libadd = \
     $(LIB_DIR_SCOREP)libscorep_mpi_omp_mgmt.la
 mpi_omp_ldflags = $(external_ldflags)
 
+endif HAVE_SCOREP_OMP_TPD
 endif HAVE_OPENMP_SUPPORT
 
 endif HAVE_MPI_SUPPORT

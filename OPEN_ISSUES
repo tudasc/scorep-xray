@@ -31,7 +31,7 @@
 
                         Score-P new OPEN ISSUES
                         ========================
-                                                           Status: Feb 2014
+                                                           Status: April 2014
 * CUDA support
 
   - CUDA device activities get lost for CUDA 5.5 (CUPTI 4). The last activity
@@ -40,6 +40,12 @@
     CUDA device activities until the buffer is flushed. The user can specify
     the CUPTI activity buffer (chunk) size with the environment variable
     SCOREP_CUDA_BUFFER_CHUNK. In CUDA 6.0 (CUPTI 5) this issue is fixed.
+
+* OpenMP support
+
+  - On K Computer and Fujitsu FX10 systems, some C++ OpenMP programs
+    crash for unknown reason during measurement initialization when
+    accessing an OpenMP threadprivate variable.
 
 
                         Score-P v1.2 OPEN ISSUES

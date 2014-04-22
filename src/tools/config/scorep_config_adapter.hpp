@@ -136,6 +136,15 @@ public:
     static void
     getAllInitStructNames( std::deque<std::string>& init_structs );
 
+    /**
+     * Returns true if at least one adapter is active.
+     */
+    static inline bool
+    isActive()
+    {
+        return !all.empty();
+    }
+
 protected:
     /**
      * Prints standart help output for this adapter, based on the name.

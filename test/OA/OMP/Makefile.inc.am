@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -30,6 +30,7 @@
 ##
 
 if HAVE_OPENMP_SUPPORT
+if HAVE_SCOREP_OMP_TPD
 if HAVE_ONLINE_ACCESS
 
 check_PROGRAMS += oa_omp_test
@@ -42,16 +43,16 @@ liboa_omp_test_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
 oa_omp_test_SOURCES  = $(SRC_ROOT)test/OA/OMP/oa_omp_test.mod.c       \
                        $(SRC_ROOT)test/OA/OMP/oa_omp_test.c.opari.inc
 oa_omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-oa_omp_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@	\
-    -I$(INC_ROOT)include/scorep	\
+oa_omp_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@	\
     -I$(INC_ROOT)include       	\
     -DSCOREP_USER_ENABLE
 
 oa_omp_test_LDADD    = $(omp_libadd) $(LIB_ROOT)liboa_omp_test_pomp.la
-oa_omp_test_LDFLAGS  = $(omp_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
+oa_omp_test_LDFLAGS  = $(omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
 TESTS_OMP += ./../test/OA/OMP/run_oa_omp_test.sh
 EXTRA_DIST       += $(SRC_ROOT)test/OA/OMP/run_oa_omp_test.sh.in
 
-endif #if HAVE_ONLINE_ACCESS
-endif #if HAVE_OPENMP_SUPPORT
+endif HAVE_ONLINE_ACCESS
+endif HAVE_SCOREP_OMP_TPD
+endif HAVE_OPENMP_SUPPORT

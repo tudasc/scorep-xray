@@ -19,7 +19,7 @@
  */
 
 #include <stdio.h>
-#include "SCOREP_User.h"
+#include <scorep/SCOREP_User.h>
 
 void
 foo( int depth )

@@ -18,7 +18,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <omp.h>
-#include "SCOREP_User.h"
+#include <scorep/SCOREP_User.h>
 
 void
 foo( int depth )

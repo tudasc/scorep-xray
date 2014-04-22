@@ -39,7 +39,7 @@ check_PROGRAMS                   += jacobi_mpi_c_metric_test
 jacobi_mpi_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/MPI/C/jacobi.c  \
                                     $(SRC_ROOT)test/services/metric/data/jacobi/MPI/C/jacobi.h  \
                                     $(SRC_ROOT)test/services/metric/data/jacobi/MPI/C/main.c
-jacobi_mpi_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_mpi_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
 
 # TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
 # printf statements, REMOVE this flag after this bug is fixed properly
@@ -48,7 +48,7 @@ jacobi_mpi_c_metric_test_CPPFLAGS += -finstrument-functions-exclude-file-list=/u
 endif
 
 jacobi_mpi_c_metric_test_LDADD    = $(mpi_libadd)
-jacobi_mpi_c_metric_test_LDFLAGS  = $(mpi_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
+jacobi_mpi_c_metric_test_LDFLAGS  = $(mpi_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
 EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_mpi_metric_test.sh \
               $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_rusage_metric_definitions.out \
@@ -80,6 +80,8 @@ noinst_LTLIBRARIES                          += libjacobi_mpi_pomp_c_metric_test.
 libjacobi_mpi_pomp_c_metric_test_la_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/pomp.c
 libjacobi_mpi_pomp_c_metric_test_la_CPPFLAGS = $(AM_CPPFLAGS)
 
+if HAVE_SCOREP_OMP_TPD
+
 check_PROGRAMS                       += jacobi_mpi_omp_c_metric_test
 jacobi_mpi_omp_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/jacobi.mod.c       \
                                         $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/jacobi.c.opari.inc \
@@ -87,7 +89,7 @@ jacobi_mpi_omp_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jac
                                         $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/main.mod.c         \
                                         $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/main.c.opari.inc
 jacobi_mpi_omp_c_metric_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-jacobi_mpi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @COMPILER_INSTRUMENTATION_CPPFLAGS@
+jacobi_mpi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
 
 # TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
 # printf statements, REMOVE this flag after this bug is fixed properly
@@ -102,7 +104,7 @@ jacobi_mpi_omp_c_metric_test_CPPFLAGS += -I$(INC_ROOT)test/jacobi/OpenMP/C
 endif
 
 jacobi_mpi_omp_c_metric_test_LDADD    = $(mpi_omp_libadd) libjacobi_mpi_pomp_c_metric_test.la
-jacobi_mpi_omp_c_metric_test_LDFLAGS  = $(mpi_omp_ldflags) @COMPILER_INSTRUMENTATION_LDFLAGS@
+jacobi_mpi_omp_c_metric_test_LDFLAGS  = $(mpi_omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
 # for some unknown reason we need an extra -I for the SUN compiler in
 # OpenMP and hybrid mode.
@@ -122,6 +124,9 @@ EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_papi_hybrid_metric_test.sh \
 # cases. No metrics will be recorded because corresponding environment
 # variables aren't set.
 TESTS_MPI_OMP += jacobi_mpi_omp_c_metric_test
+
+endif HAVE_SCOREP_OMP_TPD
+
 ##
 ## Enable test scripts if appropriate make target will be available
 ##

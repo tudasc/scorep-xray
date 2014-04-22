@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2013,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -329,6 +329,10 @@ AS_IF([test "x${ac_scorep_user_timer_given}" = "xno"], [
                                  AC_SCOREP_TIMER_USE_IF_AVAILABLE([gettimeofday]))],
             ["arm"],      [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([cycle_counter_itc]),
                                  AC_SCOREP_TIMER_USE_IF_AVAILABLE([clock_gettime]),
+                                 AC_SCOREP_TIMER_USE_IF_AVAILABLE([gettimeofday]))],
+            [k],          [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([clock_gettime]),
+                                 AC_SCOREP_TIMER_USE_IF_AVAILABLE([gettimeofday]))],
+            [fx10],       [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([clock_gettime]),
                                  AC_SCOREP_TIMER_USE_IF_AVAILABLE([gettimeofday]))],
             [AC_MSG_ERROR([Encountered unsupported platform "$ac_scorep_platform" during timer checks.])])
 ])

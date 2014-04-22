@@ -108,6 +108,8 @@ serial_ldflags = $(external_ldflags)
 
 if HAVE_OPENMP_SUPPORT
 
+if HAVE_SCOREP_OMP_TPD
+
 omp_libadd = \
     libscorep_adapter_pomp_omp_event.la   \
     libscorep_adapter_pomp_user_event.la  \
@@ -124,12 +126,15 @@ omp_libadd = \
 
 omp_ldflags = $(external_ldflags)
 
+endif HAVE_SCOREP_OMP_TPD
+
 endif HAVE_OPENMP_SUPPORT
 
 ## Hybrid ----------------------------------------------------------------------
 
 if HAVE_MPI_SUPPORT
 if HAVE_OPENMP_SUPPORT
+if HAVE_SCOREP_OMP_TPD
 
 check_LTLIBRARIES                       += libscorep_mpi_omp_event.la
 libscorep_mpi_omp_event_la_SOURCES              =
@@ -158,6 +163,7 @@ libscorep_mpi_omp_mgmt_la_LIBADD   = \
     libscorep_mutex_omp.la
 libscorep_mpi_omp_mgmt_la_LDFLAGS  = $(external_ldflags)
 
+endif HAVE_SCOREP_OMP_TPD
 endif HAVE_OPENMP_SUPPORT
 endif HAVE_MPI_SUPPORT
 
