@@ -188,6 +188,17 @@ SCOREP_Location_AddAttribute( SCOREP_Location*       location,
 
 
 /**
+ * Adds a location property to the current location. A property consists of a
+ * key/value pair.
+ * @param name   the key of the property.
+ * @param value  the property value.
+ */
+void
+SCOREP_AddLocationProperty( const char* name,
+                            const char* value );
+
+
+/**
  * Add a location property to a location.
  *
  * @param location Location.
@@ -195,10 +206,8 @@ SCOREP_Location_AddAttribute( SCOREP_Location*       location,
  * @param name Property name.
  *
  * @param value Property value.
- *
- * @return The new location property handle.
  */
-SCOREP_LocationPropertyHandle
+void
 SCOREP_Location_AddLocationProperty( SCOREP_Location* location,
                                      const char*      name,
                                      const char*      value );
@@ -1030,15 +1039,6 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
 uint64_t
 SCOREP_GetLastTimeStamp( void );
 
-/**
- * Adds a location property to the current location. A property consists of a
- * key/value pair.
- * @param name   the key of the property.
- * @param value  the property value.
- */
-void
-SCOREP_AddLocationProperty( const char* name,
-                            const char* value );
 
 /*@}*/
 

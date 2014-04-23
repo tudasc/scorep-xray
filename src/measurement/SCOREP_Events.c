@@ -243,6 +243,7 @@ SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle, bool do_rewind )
     }
 }
 
+
 /**
  * Add an attribute to the current attribute list.
  */
@@ -272,16 +273,32 @@ SCOREP_Location_AddAttribute( SCOREP_Location*       location,
     }
 }
 
+
+/**
+ * Adds a meta data entry
+ */
+void
+SCOREP_AddLocationProperty( const char* name,
+                            const char* value )
+{
+    SCOREP_Location*      location = SCOREP_Location_GetCurrentCPULocation();
+    SCOREP_LocationHandle handle   = SCOREP_Location_GetLocationHandle( location );
+    SCOREP_Definitions_NewLocationProperty( handle,
+                                            name,
+                                            value );
+}
+
+
 /**
  * Add a location property to \p location.
  */
-SCOREP_LocationPropertyHandle
+void
 SCOREP_Location_AddLocationProperty( SCOREP_Location* location,
                                      const char*      name,
                                      const char*      value )
 {
     SCOREP_LocationHandle handle = SCOREP_Location_GetLocationHandle( location );
-    return SCOREP_Definitions_NewLocationProperty( handle, name, value );
+    SCOREP_Definitions_NewLocationProperty( handle, name, value );
 }
 
 
@@ -1423,18 +1440,4 @@ uint64_t
 SCOREP_GetLastTimeStamp( void )
 {
     return SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
-}
-
-/**
- * Adds a meta data entry
- */
-void
-SCOREP_AddLocationProperty( const char* name,
-                            const char* value )
-{
-    SCOREP_Location*      location = SCOREP_Location_GetCurrentCPULocation();
-    SCOREP_LocationHandle handle   = SCOREP_Location_GetLocationHandle( location );
-    SCOREP_Definitions_NewLocationProperty( handle,
-                                            name,
-                                            value );
 }
