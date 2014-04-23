@@ -29,7 +29,7 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [ibm],      [scorep_compiler_instrumentation_cppflags="-qdebug=function_trace"],
     [portland], [scorep_compiler_instrumentation_cppflags="-Mprof=func"],
     [gnu],      [scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"],
-    [cray],     [scorep_compiler_instrumentation_cppflags="-g -hfunc_trace"
+    [cray],     [scorep_compiler_instrumentation_cppflags="-Gf -hfunc_trace"
                  scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"],
     [fujitsu],  [scorep_compiler_instrumentation_cppflags="-g -Ntl_vtrc -Ntl_notrt"],
     [])dnl
