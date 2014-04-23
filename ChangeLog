@@ -86,7 +86,7 @@
   Tofu network topology will be supported in a subsequent release.
   Note that some C++ OpenMP programs fail during measurement
   initialization for unknown reasons.
-- Use "-Gf" when using the compiler instrumentation with the Cray compiler.
+- Use "-G2" if the Cray compiler instrumentation is used.
   The previous "-g" flag disabled all optimizations.
 
 ------------------- Released version 1.2.3 ---------------------------
