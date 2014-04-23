@@ -867,7 +867,11 @@
                                     (
                                         ( lowercase(${cube::region::name}[${regionid}]) =~ /^!\$omp atomic/ )
                                         or
-                                        ( lowercase(${cube::region::name}[${regionid}]) =~ /^!\$omp critical\s@/ )
+                                        (
+                                            ( lowercase(${cube::region::name}[${regionid}]) =~ /^!\$omp critical/ )
+                                            and
+                                            not ( lowercase(${cube::region::name}[${regionid}]) =~ /^!\$omp critical sblock/ )
+                                        )
                                     )
                                    )
                                 {
