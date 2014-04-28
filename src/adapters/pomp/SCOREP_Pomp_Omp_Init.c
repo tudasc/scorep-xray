@@ -109,6 +109,7 @@ static void
 scorep_pomp_omp_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
+    scorep_pomp_adapter_finalize();
 }
 
 static void
