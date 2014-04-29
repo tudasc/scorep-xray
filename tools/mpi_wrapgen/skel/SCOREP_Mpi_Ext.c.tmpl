@@ -51,7 +51,7 @@ int MPI_Abort(MPI_Comm comm,
 }
 #endif
 
-#pragma wrapgen single MPI_Grequest_complete skel/SCOREP_Mpi_CompliantStd.w
+#pragma wrapgen single MPI_Grequest_complete skel/SCOREP_Mpi_StdCompl.w
 
 #pragma wrapgen multiple restrict(gext+tint+!nMPI_Abort+!nMPI_Grequest_complete) skel/SCOREP_Mpi_Std.w
 
