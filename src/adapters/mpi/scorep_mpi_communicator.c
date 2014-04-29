@@ -308,7 +308,7 @@ scorep_mpi_setup_world( void )
 
     /* create a derived datatype for distributed communicator
      * definition handling */
-#if HAVE( MPI_GET_ADDRESS )
+#if HAVE( DECL_MPI_GET_ADDRESS )
     PMPI_Get_address( &pair.id, &( disp[ 0 ] ) );
     PMPI_Get_address( &pair.root, &( disp[ 1 ] ) );
 #else
@@ -320,7 +320,7 @@ scorep_mpi_setup_world( void )
         disp[ i ] -= disp[ 0 ];
     }
 
-#if HAVE( MPI_TYPE_CREATE_STRUCT )
+#if HAVE( DECL_MPI_TYPE_CREATE_STRUCT )
     PMPI_Type_create_struct( 2, lengths, disp, types, &scorep_mpi_id_root_type );
 #else
     PMPI_Type_struct( 2, lengths, disp, types, &scorep_mpi_id_root_type );
