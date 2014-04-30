@@ -115,11 +115,12 @@ enum
 /* *INDENT-OFF* */
 
 #define UTILS_DEBUG_PRINTF( debugLevel, ... ) \
-    UTILS_Debug_Printf(   \
-        debugLevel,       \
-        __FILE__,         \
-        __LINE__,         \
-        __func__,         \
+    UTILS_Debug_Printf( \
+        debugLevel, \
+        AFS_PACKAGE_SRCDIR, \
+        __FILE__, \
+        __LINE__, \
+        __func__, \
         __VA_ARGS__ )
 
 #define HAVE_DEBUG_MODULE_NAME_( sym ) defined( sym ## _DEBUG_MODULE_NAME )
@@ -132,9 +133,10 @@ enum
         UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
                 UTILS_JOIN_SYMS( _DEBUG_, \
                         PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ), \
-        __FILE__,                                  \
-        __LINE__,                                  \
-        __func__,                                  \
+        AFS_PACKAGE_SRCDIR, \
+        __FILE__, \
+        __LINE__, \
+        __func__, \
         "" __VA_ARGS__ )
 
 #define UTILS_DEBUG_ENTRY( ... ) \
@@ -142,10 +144,11 @@ enum
         UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
                 UTILS_JOIN_SYMS( _DEBUG_, \
                         PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) | \
-            UTILS_DEBUG_FUNCTION_ENTRY,            \
-        __FILE__,                                  \
-        __LINE__,                                  \
-        __func__,                                  \
+            UTILS_DEBUG_FUNCTION_ENTRY, \
+        AFS_PACKAGE_SRCDIR, \
+        __FILE__, \
+        __LINE__, \
+        __func__, \
         "" __VA_ARGS__ )
 
 #define UTILS_DEBUG_EXIT( ... ) \
@@ -153,10 +156,11 @@ enum
         UTILS_JOIN_SYMS( AFS_PACKAGE_NAME, \
                 UTILS_JOIN_SYMS( _DEBUG_, \
                         PACKAGE_MANGLE_NAME( DEBUG_MODULE_NAME ) ) ) | \
-            UTILS_DEBUG_FUNCTION_EXIT,             \
-        __FILE__,                                  \
-        __LINE__,                                  \
-        __func__,                                  \
+            UTILS_DEBUG_FUNCTION_EXIT, \
+        AFS_PACKAGE_SRCDIR, \
+        __FILE__, \
+        __LINE__, \
+        __func__, \
         "" __VA_ARGS__ )
 
 #else
@@ -208,10 +212,11 @@ enum
 #if HAVE( UTILS_DEBUG )
 
 #define UTILS_DEBUG_PREFIX( debugLevel ) \
-    UTILS_Debug_Prefix(   \
-        debugLevel,       \
-        __FILE__,         \
-        __LINE__,         \
+    UTILS_Debug_Prefix( \
+        debugLevel, \
+        AFS_PACKAGE_SRCDIR, \
+        __FILE__, \
+        __LINE__, \
         __func__ )
 
 #else
@@ -258,6 +263,7 @@ enum
 #define UTILS_Debug_Printf PACKAGE_MANGLE_NAME( UTILS_Debug_Printf )
 void
 UTILS_Debug_Printf( uint64_t    bitMask,
+                    const char* srcdir,
                     const char* file,
                     uint64_t    line,
                     const char* function,
@@ -290,6 +296,7 @@ UTILS_Debug_RawPrintf( uint64_t    bitMask,
 #define UTILS_Debug_Prefix PACKAGE_MANGLE_NAME( UTILS_Debug_Prefix )
 void
 UTILS_Debug_Prefix( uint64_t    bitMask,
+                    const char* srcdir,
                     const char* file,
                     uint64_t    line,
                     const char* function );

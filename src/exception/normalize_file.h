@@ -41,10 +41,10 @@
 
 
 static const char*
-normalize_file( const char* file )
+normalize_file( const char* srcdir,
+                const char* file )
 {
-    const char* srcdir          = AFS_PACKAGE_SRCDIR;
-    size_t      srcdir_len      = sizeof( AFS_PACKAGE_SRCDIR ) - 1;
+    size_t      srcdir_len      = strlen( srcdir );
     const char* normalized_file = file;
 
     /* srcdir is guaranteed to have an trailing slash, so no need to test for it

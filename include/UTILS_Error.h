@@ -66,7 +66,8 @@ UTILS_BEGIN_C_DECLS
  * @ingroup UTILS_Exception_module
  */
 #define UTILS_ERROR( errCode, ... ) \
-    UTILS_Error_Handler( __FILE__, \
+    UTILS_Error_Handler( AFS_PACKAGE_SRCDIR, \
+                         __FILE__, \
                          __LINE__, \
                          __func__, \
                          errCode, \
@@ -76,7 +77,8 @@ UTILS_BEGIN_C_DECLS
  * Emit a warning.
  */
 #define UTILS_WARNING( ... ) \
-    UTILS_Error_Handler( __FILE__, \
+    UTILS_Error_Handler( AFS_PACKAGE_SRCDIR, \
+                         __FILE__, \
                          __LINE__, \
                          __func__, \
                          PACKAGE_MANGLE_NAME( WARNING ), \
@@ -109,7 +111,8 @@ UTILS_BEGIN_C_DECLS
         if ( !utils_deprecated_##__LINE__ ) \
         { \
             utils_deprecated_##__LINE__ = 1; \
-            UTILS_Error_Handler( __FILE__, \
+            UTILS_Error_Handler( AFS_PACKAGE_SRCDIR, \
+                                 __FILE__, \
                                  __LINE__, \
                                  __func__, \
                                  PACKAGE_MANGLE_NAME( DEPRECATED ), \
@@ -132,7 +135,8 @@ UTILS_BEGIN_C_DECLS
  */
 #define UTILS_Error_Handler PACKAGE_MANGLE_NAME( UTILS_Error_Handler )
 PACKAGE_ErrorCode
-UTILS_Error_Handler( const char*       file,
+UTILS_Error_Handler( const char*       srcdir,
+                     const char*       file,
                      uint64_t          line,
                      const char*       function,
                      PACKAGE_ErrorCode errorCode,
@@ -177,7 +181,8 @@ UTILS_Error_FromPosix( const int posixErrorCode );
 
 #define UTILS_ASSERT( expression ) \
     ( ( expression ) ? ( void )0 : \
-      UTILS_Error_Abort( __FILE__, \
+      UTILS_Error_Abort( AFS_PACKAGE_SRCDIR, \
+                         __FILE__, \
                          __LINE__, \
                          __func__, \
                          "Assertion '" UTILS_STRINGIFY( expression ) "' failed" ) )
@@ -195,7 +200,8 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  *
  */
 #define UTILS_FATAL( ... ) \
-    UTILS_Error_Abort( __FILE__, \
+    UTILS_Error_Abort( AFS_PACKAGE_SRCDIR, \
+                       __FILE__, \
                        __LINE__, \
                        __func__, \
                        __VA_ARGS__ )
@@ -209,7 +215,8 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  *
  */
 #define UTILS_BUG( ... ) \
-    UTILS_Error_Abort( __FILE__, \
+    UTILS_Error_Abort( AFS_PACKAGE_SRCDIR, \
+                       __FILE__, \
                        __LINE__, \
                        __func__, \
                        "Bug: " __VA_ARGS__ )
@@ -223,7 +230,8 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  */
 #define UTILS_BUG_ON( expression, ... ) \
     ( !( expression ) ? ( void )0 :     \
-      UTILS_Error_Abort( __FILE__,      \
+      UTILS_Error_Abort( AFS_PACKAGE_SRCDIR, \
+                         __FILE__,      \
                          __LINE__,      \
                          __func__,      \
                          "Bug '" #expression "': " __VA_ARGS__ ) )
@@ -242,7 +250,8 @@ UTILS_Error_FromPosix( const int posixErrorCode );
  */
 #define UTILS_Error_Abort PACKAGE_MANGLE_NAME( UTILS_Error_Abort )
 void
-UTILS_Error_Abort( const char* fileName,
+UTILS_Error_Abort( const char* srcdir,
+                   const char* fileName,
                    uint64_t    line,
                    const char* functionName,
                    const char* messageFormatString,

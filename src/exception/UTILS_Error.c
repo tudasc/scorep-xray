@@ -82,14 +82,15 @@ static void*                 utils_error_callback_user_data;
 /*--- External visible functions ----------------------------------*/
 
 static PACKAGE_ErrorCode
-utils_error_handler_va( const char*       file,
+utils_error_handler_va( const char*       srcdir,
+                        const char*       file,
                         const uint64_t    line,
                         const char*       function,
                         PACKAGE_ErrorCode errorCode,
                         const char*       msgFormatString,
                         va_list           va )
 {
-    const char* normalized_file = normalize_file( file );
+    const char* normalized_file = normalize_file( srcdir, file );
 
     if ( utils_error_callback )
     {
@@ -143,7 +144,8 @@ utils_error_handler_va( const char*       file,
 }
 
 PACKAGE_ErrorCode
-UTILS_Error_Handler( const char*       file,
+UTILS_Error_Handler( const char*       srcdir,
+                     const char*       file,
                      const uint64_t    line,
                      const char*       function,
                      PACKAGE_ErrorCode errorCode,
@@ -158,7 +160,8 @@ UTILS_Error_Handler( const char*       file,
     va_list va;
     va_start( va, msgFormatString );
 
-    errorCode = utils_error_handler_va( file,
+    errorCode = utils_error_handler_va( srcdir,
+                                        file,
                                         line,
                                         function,
                                         errorCode,
@@ -599,7 +602,8 @@ UTILS_Error_FromPosix( const int posixErrno )
 }
 
 void
-UTILS_Error_Abort( const char* fileName,
+UTILS_Error_Abort( const char* srcdir,
+                   const char* fileName,
                    uint64_t    line,
                    const char* functionName,
                    const char* messageFormatString,
@@ -608,7 +612,8 @@ UTILS_Error_Abort( const char* fileName,
     va_list va;
     va_start( va, messageFormatString );
 
-    utils_error_handler_va( fileName,
+    utils_error_handler_va( srcdir,
+                            fileName,
                             line,
                             functionName,
                             PACKAGE_ABORT,
