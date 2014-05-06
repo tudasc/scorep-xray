@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011,
  *    Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -143,8 +143,8 @@ SCOREP::Wrapgen::handler::dispatch
         key
     );
 
-    stack<string> modifier_stack;
-    size_t        pos = string::npos;
+    stack<string>     modifier_stack;
+    string::size_type pos = string::npos;
 
     // check if general modifier is attached to key
     while ( ( pos = internal_key.find_last_of( "|" ) ) != string::npos )

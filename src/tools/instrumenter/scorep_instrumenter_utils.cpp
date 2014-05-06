@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -45,7 +45,7 @@
 std::string
 undo_backslashing( std::string str )
 {
-    size_t pos = str.find( "\\" );
+    std::string::size_type pos = str.find( "\\" );
     while ( pos != std::string::npos )
     {
         str.erase( pos, 1 );
@@ -59,7 +59,7 @@ backslash_special_chars( std::string str )
 {
     static const std::string char_list = "\\ ?\"<>|&;,`'$()\n\t#*";
 
-    size_t pos = str.find_last_of( char_list );
+    std::string::size_type pos = str.find_last_of( char_list );
     while ( pos != std::string::npos )
     {
         str.insert( pos, "\\" );
@@ -138,7 +138,7 @@ simplify_path( const std::string& path )
 std::string
 extract_path( const std::string& filename )
 {
-    size_t pos = filename.find_last_of( '/' );
+    std::string::size_type pos = filename.find_last_of( '/' );
     if ( pos == 0 )
     {
         return "/";
@@ -153,7 +153,7 @@ extract_path( const std::string& filename )
 std::string
 remove_path( const std::string& full_path )
 {
-    size_t pos = full_path.rfind( "/" );
+    std::string::size_type pos = full_path.rfind( "/" );
     if ( pos == std::string::npos )
     {
         return full_path;
@@ -167,7 +167,7 @@ remove_path( const std::string& full_path )
 std::string
 get_extension( const std::string& filename )
 {
-    int pos = filename.rfind( "." );
+    std::string::size_type pos = filename.rfind( "." );
     if ( pos == std::string::npos )
     {
         return "";
@@ -178,7 +178,7 @@ get_extension( const std::string& filename )
 std::string
 remove_extension( const std::string& filename )
 {
-    int pos = filename.rfind( "." );
+    std::string::size_type pos = filename.rfind( "." );
     if ( pos == std::string::npos )
     {
         return filename;
@@ -365,7 +365,7 @@ find_library( std::string                     library,
 std::string
 scorep_tolower( std::string str )
 {
-    for ( size_t i = 0; i < str.length(); i++ )
+    for ( std::string::size_type i = 0; i < str.length(); i++ )
     {
         str[ i ] = tolower( str[ i ] );
     }
@@ -375,7 +375,7 @@ scorep_tolower( std::string str )
 std::string
 scorep_toupper( std::string str )
 {
-    for ( size_t i = 0; i < str.length(); i++ )
+    for ( std::string::size_type i = 0; i < str.length(); i++ )
     {
         str[ i ] = toupper( str[ i ] );
     }
@@ -394,7 +394,7 @@ scorep_vector_to_string( const std::vector<std::string>& list,
         return "";
     }
     result << head << list[ 0 ];
-    for ( int i = 1; i < list.size(); i++ )
+    for ( std::vector<std::string>::size_type i = 1; i < list.size(); i++ )
     {
         result << delimiter << list[ i ];
     }

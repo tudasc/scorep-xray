@@ -181,8 +181,8 @@ main( int    argc,
     SCOREP_Config_ThreadSystem::init();
     SCOREP_Config_Mutex::init();
 
-    std::string binary( argv[ 0 ] );
-    size_t      last_slash = binary.find_last_of( "/" );
+    std::string            binary( argv[ 0 ] );
+    std::string::size_type last_slash = binary.find_last_of( "/" );
     if ( last_slash != std::string::npos )
     {
         path_to_binary = binary.substr( 0, last_slash + 1 );
@@ -519,8 +519,8 @@ get_rpath_struct_data( void )
     // '${wl}--rpath ${wl}$libdir'
     // '${wl}-rpath ${wl}$libdir'
     // '${wl}-R $wl$libdir'
-    std::string rpath_flag = LIBDIR_FLAG_CC;
-    size_t      index      = rpath_flag.find( "$libdir" );
+    std::string            rpath_flag = LIBDIR_FLAG_CC;
+    std::string::size_type index      = rpath_flag.find( "$libdir" );
     UTILS_BUG_ON( index == std::string::npos,
                   "LIBDIR_FLAG_CC does not contain $libdir. It is likely that "
                   "something went wrong during configure. Please 'grep "

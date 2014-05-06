@@ -16,7 +16,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2013,
@@ -186,8 +186,8 @@ deque<string>
 string_to_deque( const string& input, const string& delimiter )
 {
     std::string             current_path = "";
-    size_t                  cur_pos      = 0;
-    size_t                  old_pos      = 0;
+    std::string::size_type  cur_pos      = 0;
+    std::string::size_type  old_pos      = 0;
     std::deque<std::string> path_list;
 
     while ( cur_pos != std::string::npos )

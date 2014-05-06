@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011,
  *    Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -82,9 +82,9 @@ namespace Wrapgen
 string
 readLineFromHeader( ifstream* hfile )
 {
-    char   cline[ SCOREP_WRAPGEN_MAXLINELENGTH ];
-    string line;
-    size_t pos;
+    char              cline[ SCOREP_WRAPGEN_MAXLINELENGTH ];
+    string            line;
+    string::size_type pos;
 
     // Read until next ';'
     hfile->getline( cline, SCOREP_WRAPGEN_MAXLINELENGTH, ';' );
@@ -139,8 +139,8 @@ void
 processParams( Func*  func,
                string plist )
 {
-    string param, name, type_modifier, type, suffix;
-    int    pos;
+    string            param, name, type_modifier, type, suffix;
+    string::size_type pos;
 
     // Separate last parameter and work recursively on the beginning
     pos = plist.rfind( ',' );
@@ -189,8 +189,8 @@ processParams( Func*  func,
 Func*
 evalHeaderLine( string line )
 {
-    string params, name, type;
-    int    bracOpen, bracClose, pos;
+    string            params, name, type;
+    string::size_type bracOpen, bracClose, pos;
 
     // Separate function name+type from parameters
     bracOpen  = line.find( '(' );

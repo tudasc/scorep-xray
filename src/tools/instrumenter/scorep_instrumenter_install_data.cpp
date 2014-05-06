@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -703,10 +703,10 @@ SCOREP_ErrorCode
 SCOREP_Instrumenter_InstallData::read_parameter( std::string line )
 {
     /* check for comments */
-    int pos = line.find( "#" );
+    std::string::size_type pos = line.find( "#" );
     if ( pos == 0 )
     {
-        return SCOREP_SUCCESS;                      // Whole line cemmented out
+        return SCOREP_SUCCESS;                      // Whole line commented out
     }
     if ( pos != std::string::npos )
     {

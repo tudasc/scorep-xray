@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -77,8 +80,8 @@ SCOREP_Instrumenter_OmpTpd::checkCommand( const std::string& current,
     if ( ( current.length() > m_openmp_cflag.length() ) &&
          ( current.substr( 0, 6 ) == "-qsmp=" ) )
     {
-        size_t end;
-        for ( size_t start = 5; start != std::string::npos; start = end )
+        std::string::size_type end;
+        for ( std::string::size_type start = 5; start != std::string::npos; start = end )
         {
             end = current.find( ':', start + 1 );
             if ( current.substr( start + 1, end - start - 1 ) == "omp" )

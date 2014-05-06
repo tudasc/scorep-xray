@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -177,7 +177,7 @@ SCOREP_Config_LibraryDependencies::getRpathFlags( const deque<string>& libs,
         }
         for ( j = obj.m_rpath.begin(); j != obj.m_rpath.end(); j++ )
         {
-            size_t index = j->find( "-R" );
+            string::size_type index = j->find( "-R" );
             if ( index == 0 )
             {
                 j->replace( index, strlen( "-R" ), "" );

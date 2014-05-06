@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -93,8 +93,8 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
     /* extract path to binary, used when in --build-check mode
        dont't use extract_path() we need the final slash
      */
-    std::string binary( argv[ 0 ] );
-    size_t      last_slash = binary.find_last_of( "/" );
+    std::string            binary( argv[ 0 ] );
+    std::string::size_type last_slash = binary.find_last_of( "/" );
     if ( last_slash != std::string::npos )
     {
         m_path_to_binary = binary.substr( 0, last_slash + 1 );
@@ -401,14 +401,14 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         std::cout << PACKAGE_STRING << std::endl;
         exit( EXIT_SUCCESS );
     }
-    else if ( ( arg.length() >= 8 ) && ( arg.substr( 0, 8 ) == "--config" ) )
+    else if ( ( arg.length() >= 9 ) && ( arg.substr( 0, 9 ) == "--config=" ) )
     {
-        if ( arg.length() < 11 )
+        if ( arg.length() < 10 )
         {
             std::cerr << "ERROR: No config file specified." << std::endl;
             exit( EXIT_FAILURE );
         }
-        std::string config_file = arg.substr( 9, arg.length() - 9 );
+        std::string config_file = arg.substr( 9 );
         if ( m_install_data.readConfigFile( config_file ) != SCOREP_SUCCESS )
         {
             std::cerr << "ERROR: Failed to read config file." << std::endl;
@@ -416,19 +416,27 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         }
         return scorep_parse_mode_param;
     }
-    else if ( ( arg.length() >= 9 ) && ( arg.substr( 0, 9 ) == "--verbose" ) )
+    else if ( arg == "--verbose" )
     {
-        if ( arg.length() > 10 )
+        m_verbosity = 1;
+        return scorep_parse_mode_param;
+    }
+    else if ( ( arg.length() >= 10 ) && ( arg.substr( 0, 10 ) == "--verbose=" ) )
+    {
+        if ( arg.length() < 11 )
         {
-            m_verbosity = atol( arg.substr( 10, arg.length() - 10 ).c_str() );
+            std::cerr << "ERROR: No verbosity value specified." << std::endl;
+            exit( EXIT_FAILURE );
         }
-        else
+        m_verbosity = atol( arg.substr( 10 ).c_str() );
+        if ( m_verbosity < 0 )
         {
-            m_verbosity = 1;
+            std::cerr << "ERROR: Invalid verbosity value: " << m_verbosity << std::endl;
+            exit( EXIT_FAILURE );
         }
         return scorep_parse_mode_param;
     }
-    else if ( ( arg.length() >= 2 ) && ( arg.substr( 0, 2 ) == "-v" ) )
+    else if ( arg == "-v" )
     {
         m_verbosity = 1;
         return scorep_parse_mode_param;
@@ -577,12 +585,12 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
             /* Do not add the output name to parameter list, because the intermediate
                files may have a different name and having then an -o paramter in
                the parameter list makes trouble. */
-            set_output_file( current.substr( 2, std::string::npos ) );
+            set_output_file( current.substr( 2 ) );
             return scorep_parse_mode_command;
         }
         else if ( current[ 1 ] == 'I' )
         {
-            add_include_path( current.substr( 2, std::string::npos ) );
+            add_include_path( current.substr( 2 ) );
         }
         else if ( current[ 1 ] == 'D' )
         {
@@ -594,7 +602,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         }
         else if ( current[ 1 ] == 'L' )
         {
-            add_library_path( current.substr( 2, std::string::npos ) );
+            add_library_path( current.substr( 2 ) );
         }
         else if ( current[ 1 ] == 'l' )
         {
@@ -629,7 +637,7 @@ SCOREP_Instrumenter_CmdLine::add_define( std::string arg )
 {
     /* we need to escape quotes since they get lost otherwise when calling
        system() */
-    size_t pos = 0;
+    std::string::size_type pos = 0;
     while ( ( pos = arg.find( '"', pos ) ) != std::string::npos )
     {
         arg.insert( pos, 1, '\\' );

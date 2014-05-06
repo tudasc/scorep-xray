@@ -85,7 +85,7 @@ SCOREP_Config_ThreadSystem::checkAll( const std::string& arg )
 
     std::string                                       system( arg );
     std::string                                       variant;
-    size_t                                            pos = system.find( ':' );
+    std::string::size_type                            pos = system.find( ':' );
     std::deque<SCOREP_Config_ThreadSystem*>::iterator i;
 
     /* If system and variant are provided, both must match */

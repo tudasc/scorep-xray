@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011,
  *    Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -518,7 +518,7 @@ SCOREP::Wrapgen::handle_file_template
     while ( getline( file_tmpl, src_line ) )
     {
         lineno++;
-        if ( int pos = src_line.find( "#pragma wrapgen" ) != string::npos )
+        if ( string::size_type pos = src_line.find( "#pragma wrapgen" ) != string::npos )
         {
             string scope, cmd, wrapper_tmpl;
             istringstream
@@ -547,9 +547,9 @@ SCOREP::Wrapgen::handle_file_template
             }
             else if ( scope == "multiple" )
             {
-                string op;      // operator for choosing multiple functions
-                string rule;    // parameter of operator
-                size_t ppos;    // offset of opening bracket
+                string            op;    // operator for choosing multiple functions
+                string            rule;  // parameter of operator
+                string::size_type ppos;  // offset of opening bracket
                 if ( ( ppos = cmd.find( '(' ) ) != string::npos )
                 {
                     op   = cmd.substr( 0, ppos );
@@ -626,7 +626,7 @@ SCOREP::Wrapgen::handle_file_template
  * @param key key of template variable found
  * @return position of template variable in string
  */
-size_t
+string::size_type
 find_variable
 (
     const string& str,
@@ -634,14 +634,14 @@ find_variable
     string&       key
 )
 {
-    size_t pos = str.rfind( "$", p );
+    string::size_type pos = str.rfind( "$", p );
 
     if ( pos != string::npos )
     {
         if ( str[ pos + 1 ] == '{' )
         {
             // parse long variable name
-            size_t endpos = string::npos;
+            string::size_type endpos = string::npos;
 
             if ( ( endpos = str.find_first_of( '}', pos + 2 ) ) != string::npos )
             {
@@ -692,7 +692,7 @@ SCOREP::Wrapgen::is_selected
         }
         // first character indicates scope of the rule token
         char   rule_scope = ( *tok ).at( scope_offset );
-        string rule_body  = ( *tok ).substr( scope_offset + 1, string::npos );
+        string rule_body  = ( *tok ).substr( scope_offset + 1 );
 
         switch ( rule_scope )
         {
