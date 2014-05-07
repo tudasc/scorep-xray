@@ -106,11 +106,13 @@ do
               SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY=true \
               SCOREP_ENABLE_TRACING=yes \
               SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR \
-              ./cuda_test ${testmode} -s ${num_streams} 2>&1 | tee cuda_test.out
+              ./cuda_test ${testmode} -s ${num_streams} >cuda_test.out 2>&1
+              res=$?
+              cat cuda_test.out
 
-              if [ $? -ne 0 ]; then
+              if [ $res -ne 0 ]; then
                   rm -rf scorep-measurement-tmp
-                  exit 1
+                  exit $res
               fi
 
               LC_ALL=C grep 'Skipping\|Cannot flush' cuda_test.out
