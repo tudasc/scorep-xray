@@ -267,11 +267,18 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     /* Register outer region */
     if ( type_outer != SCOREP_REGION_UNKNOWN )
     {
-        char* type_name = scorep_pomp_region_type_map[ region->regionType ].outerRegionName;
-        int   length    = strlen( type_name ) + 7 + strlen( source_name ) + 1;
+        char* type_name;
+        if ( region->name == 0 )
+        {
+            type_name = scorep_pomp_region_type_map[ region->regionType ].outerRegionName;
+        }
+        else
+        {
+            type_name = region->name;
+        }
+        int length = strlen( type_name ) + 7 + strlen( source_name ) + 1;
         region_name = ( char* )malloc( length );
         sprintf( region_name, "!$omp %s %s", type_name, source_name );
-
         if ( scorep_pomp_region_type_map[ region->regionType ].hasParallel )
         {
             start = region->startLine2;
@@ -297,7 +304,7 @@ scorep_pomp_register_region( SCOREP_Pomp_Region* region )
     if ( type_inner != SCOREP_REGION_UNKNOWN )
     {
         char* type_name = NULL;
-        if ( region->name == 0 )
+        if ( ( region->name == 0 ) || ( region->regionType != SCOREP_Pomp_UserRegion ) )
         {
             type_name = scorep_pomp_region_type_map[ region->regionType ].innerRegionName;
         }

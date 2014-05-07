@@ -113,6 +113,10 @@
 - Added compiler instrumentation flags also to the ldflags to fix
   missing instrumentation if high optimization levels recompile parts
   of the code.
+- Changed the region names of OPARI2 instrumented named criticals.
+  If a name for the critical region is provided, the enclosing region
+  will have the name '!$omp critical <name>' and the structured block
+  '!$omp critical sblock'. Replace <name> by the given name.
 
 ------------------- Released version 1.2.2 ---------------------------
 
