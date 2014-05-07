@@ -234,87 +234,90 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
     m_process_num = profile->getNumberOfProcesses();
 
     m_has_filter = false;
-    m_event_list.push_back( new SCOREP_Score_TimestampEvent() );
-    m_event_list.push_back( new SCOREP_Score_EnterEvent() );
-    m_event_list.push_back( new SCOREP_Score_LeaveEvent() );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_TimestampEvent() );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_EnterEvent() );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_LeaveEvent() );
     if ( denseNum > 0 )
     {
-        m_event_list.push_back( new SCOREP_Score_MetricEvent() );
+        SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_MetricEvent( denseNum ) );
     }
-    m_event_list.push_back( new SCOREP_Score_ParameterEvent() );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_ParameterEvent() );
 
-#define SCOREP_SCORE_EVENT( name ) region_list.push_back( name );
-    std::deque<std::string> region_list;
+#define SCOREP_SCORE_EVENT( name ) region_set.insert( name );
+    set<string> region_set;
     SCOREP_SCORE_EVENT_SEND;
-    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiSend", region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiSend", region_set ) );
 
-    region_list.clear();
+    region_set.clear();
     SCOREP_SCORE_EVENT_ISEND;
-    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiIsend", region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiIsend", region_set ) );
 
-    region_list.clear();
+    region_set.clear();
     SCOREP_SCORE_EVENT_ISENDCOMPLETE;
-    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiIsendComplete",
-                                                             region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiIsendComplete",
+                                                                        region_set ) );
 
-    region_list.clear();
+    region_set.clear();
     SCOREP_SCORE_EVENT_IRECVREQUEST;
-    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiIrecvRequest",
-                                                             region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiIrecvRequest",
+                                                                        region_set ) );
 
-    region_list.clear();
+    region_set.clear();
     SCOREP_SCORE_EVENT_RECV;
-    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiRecv", region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiRecv", region_set ) );
 
-    region_list.clear();
+    region_set.clear();
     SCOREP_SCORE_EVENT_IRECV;
-    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiIrecv", region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiIrecv", region_set ) );
 
-    region_list.clear();
+    region_set.clear();
     SCOREP_SCORE_EVENT_COLLECTIVE;
-    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiCollectiveBegin",
-                                                             region_list ) );
-    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "MpiCollectiveEnd",
-                                                             region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiCollectiveBegin",
+                                                                        region_set ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "MpiCollectiveEnd",
+                                                                        region_set ) );
 
-    region_list.clear();
+    region_set.clear();
     SCOREP_SCORE_EVENT_ACQUIRELOCK;
-    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "ThreadAcquireLock",
-                                                             region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "ThreadAcquireLock",
+                                                                        region_set ) );
 
-    region_list.clear();
+    region_set.clear();
     SCOREP_SCORE_EVENT_RELEASELOCK;
-    m_event_list.push_back( new SCOREP_Score_NameMatchEvent( "ThreadReleaseLock",
-                                                             region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_NameMatchEvent( "ThreadReleaseLock",
+                                                                        region_set ) );
 
+#undef SCOREP_SCORE_EVENT
+#define SCOREP_SCORE_EVENT( name ) region_list.push_back( name );
+    deque<string> region_list;
     region_list.clear();
     SCOREP_SCORE_EVENT_FORK;
-    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadFork",
-                                                               region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadFork",
+                                                                          region_list ) );
 
     region_list.clear();
     SCOREP_SCORE_EVENT_JOIN;
-    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadJoin",
-                                                               region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadJoin",
+                                                                          region_list ) );
 
     region_list.clear();
     SCOREP_SCORE_EVENT_THREAD_TEAM;
-    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadTeamBegin",
-                                                               region_list ) );
-    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadTeamEnd",
-                                                               region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadTeamBegin",
+                                                                          region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadTeamEnd",
+                                                                          region_list ) );
 
     region_list.clear();
     SCOREP_SCORE_EVENT_TASK_CREATE;
-    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskCreate",
-                                                               region_list ) );
-    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskComplete",
-                                                               region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskCreate",
+                                                                          region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskComplete",
+                                                                          region_list ) );
 
     region_list.clear();
     SCOREP_SCORE_EVENT_TASK_SWITCH;
-    m_event_list.push_back( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskSwitch",
-                                                               region_list ) );
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskSwitch",
+                                                                          region_list ) );
 #undef SCOREP_SCORE_EVENT
 
     calculate_event_sizes();
@@ -338,12 +341,6 @@ SCOREP_Score_Estimator::~SCOREP_Score_Estimator()
     if ( m_has_filter )
     {
         SCOREP_Filter_FreeRules();
-    }
-
-    while ( !m_event_list.empty() )
-    {
-        delete ( m_event_list.front() );
-        m_event_list.pop_front();
     }
 }
 
@@ -395,16 +392,17 @@ SCOREP_Score_Estimator::calculate( bool showRegions )
 
     for ( uint64_t region = 0; region < m_region_num; region++ )
     {
-        uint64_t group           = m_profile->getGroup( region );
-        uint64_t bytes_per_visit = 0;
+        const string& region_name     = m_profile->getRegionName( region );
+        uint64_t      group           = m_profile->getGroup( region );
+        uint64_t      bytes_per_visit = 0;
 
         /* Calculate bytes per visit */
-        for ( event_list_t::iterator i = m_event_list.begin();
-              i != m_event_list.end(); i++ )
+        for ( map<string, SCOREP_Score_Event*>::iterator i = SCOREP_Score_Event::m_all_events.begin();
+              i != SCOREP_Score_Event::m_all_events.end(); i++ )
         {
-            if ( ( *i )->occursInRegion( m_profile, region ) )
+            if ( i->second->occursInRegion( region_name ) )
             {
-                bytes_per_visit += ( *i )->getEventSize();
+                bytes_per_visit += i->second->getEventSize();
             }
         }
 
@@ -530,12 +528,12 @@ SCOREP_Score_Estimator::printRegions( void )
 void
 SCOREP_Score_Estimator::dumpEventSizes( void )
 {
-    for ( event_list_t::iterator i = m_event_list.begin(); i != m_event_list.end(); i++ )
+    for ( map<string, SCOREP_Score_Event*>::iterator i = SCOREP_Score_Event::m_all_events.begin(); i != SCOREP_Score_Event::m_all_events.end(); i++ )
     {
-        std::string name   = ( *i )->getName();
-        std::string blanks = "                         ";
-        cout << name << ":" << blanks.substr( 0, 20 - name.length() )
-             << ( *i )->getEventSize() << std::endl;
+        const string& name   = i->second->getName();
+        string        blanks = "                         ";
+        cerr << name << ":" << blanks.substr( 0, 20 - name.length() )
+             << i->second->getEventSize() << endl;
     }
 }
 
@@ -547,7 +545,7 @@ SCOREP_Score_Estimator::calculate_event_sizes( void )
     string out_filename = get_temp_filename();
 
     fstream estimator_in( in_filename.c_str(), ios_base::out );
-    if ( !estimator_in.good() )
+    if ( !estimator_in )
     {
         cerr << "ERROR: Failed to open temorary file for otf2-estimator input."
              << endl;
@@ -557,19 +555,11 @@ SCOREP_Score_Estimator::calculate_event_sizes( void )
     estimator_in << "set Region " << m_region_num << "\n";
     estimator_in << "set Metric " << m_profile->getNumberOfMetrics() << "\n";
 
-    for ( event_list_t::iterator i = m_event_list.begin(); i != m_event_list.end(); i++ )
+    for ( map<string, SCOREP_Score_Event*>::iterator i = SCOREP_Score_Event::m_all_events.begin(); i != SCOREP_Score_Event::m_all_events.end(); i++ )
     {
-        if ( ( *i )->getName() == "Metric" )
-        {
-            estimator_in << "get " << ( *i )->getName()
-                         << " " << m_dense_num << "\n";
-        }
-        else
-        {
-            estimator_in << "get " << ( *i )->getName() << "\n";
-        }
+        estimator_in << "get " << i->second->getName() << "\n";
     }
-    estimator_in << "exit" << std::endl;
+    estimator_in << "exit" << endl;
     estimator_in.close();
 
     string command = OTF2_ESTIMATOR_INSTALL " > \"" +
@@ -582,33 +572,35 @@ SCOREP_Score_Estimator::calculate_event_sizes( void )
 
     /* Read output of otf2-estimator */
     fstream estimator_out( out_filename.c_str(), ios_base::in );
-    if ( !estimator_out.good() )
+    if ( !estimator_out )
     {
         cerr << "ERROR: Failed to open temorary file for otf2-estimator input."
              << endl;
         exit( EXIT_FAILURE );
     }
 
-    while ( !estimator_out.eof() )
+    while ( estimator_out )
     {
-        /* Decode next line. Has format <name><space><number of bytes> */
-        char buf[ SCOREP_SCORE_BUFFER_SIZE ];
-        estimator_out.getline( buf, SCOREP_SCORE_BUFFER_SIZE );
-        char* number = buf;
-        while ( *number != ' ' && *number != '\0' )
+        /* Decode next line. Has format <name><space><number of bytes>
+         * where <name> can have spaces too. */
+        string line;
+        getline( estimator_out, line );
+        size_t size_pos = line.find_last_of( " " );
+        if ( size_pos == string::npos )
         {
-            number++;
+            continue;
         }
-        *number = '\0';
-        number++;
-        uint64_t value = strtol( number, NULL, 0 );
+        string   event = line.substr( 0, size_pos );
+        string   number( line.substr( size_pos + 1 ) );
+        char*    end_pos;
+        uint64_t value = strtoul( number.c_str(), &end_pos, 0 );
+        if ( *end_pos )
+        {
+            continue;
+        }
 
         /* Apply to event sizes */
-        for ( event_list_t::iterator i = m_event_list.begin();
-              i != m_event_list.end(); i++ )
-        {
-            ( *i )->setEventSize( buf, value );
-        }
+        SCOREP_Score_Event::SetEventSize( event, value );
     }
 
     /* Clean up */

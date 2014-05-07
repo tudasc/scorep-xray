@@ -78,7 +78,7 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( string cubeFile )
     {
         m_region_types[ i ] = get_definition_type( i );
     }
-    std::vector<Cnode*> roots =  m_cube->get_root_cnodev();
+    vector<Cnode*> roots =  m_cube->get_root_cnodev();
     for ( uint64_t i = 0; i < roots.size(); i++ )
     {
         calculate_calltree_types( &m_cube->get_cnodev(), roots[ i ] );

@@ -48,12 +48,6 @@
  */
 class SCOREP_Score_Estimator
 {
-protected:
-    /**
-     * Defines a type for the event list.
-     */
-    typedef std::deque<SCOREP_Score_Event*> event_list_t;
-
 public:
     /**
      * Creates an instance of SCOREP_Score_Estimator.
@@ -173,11 +167,6 @@ private:
      * Stores the number of dense metrics that should be taken into account.
      */
     uint64_t m_dense_num;
-
-    /**
-     * List of possible events.
-     */
-    event_list_t m_event_list;
 };
 
 

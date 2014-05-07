@@ -22,6 +22,8 @@
 
 #include <string>
 #include <deque>
+#include <map>
+#include <set>
 #include <stdint.h>
 
 class SCOREP_Score_Profile;
@@ -33,11 +35,31 @@ class SCOREP_Score_Event
 {
     /*------------------------------------------------ public functions */
 public:
+
+    /**
+     * Regsiter the @p event by its name.
+     */
+    static void
+    RegisterEvent( SCOREP_Score_Event* event );
+
+    /**
+     * returns the size estimate for the named event.
+     */
+    static uint32_t
+    GetEventSize( const std::string& eventName );
+
+    /**
+     * Sets the size estimate of the named event.
+     */
+    static void
+    SetEventSize( const std::string& name,
+                  uint32_t           size );
+
     /**
      * Constructs an new instance of SCOREP_Score_Event.
      * @param name The name of the event as it appears in OTF2.
      */
-    SCOREP_Score_Event( std::string name );
+    SCOREP_Score_Event( const std::string& name );
 
     /**
      * Destructor.
@@ -48,32 +70,28 @@ public:
     /**
      * Returns the event name.
      */
-    virtual std::string
+    virtual const std::string&
     getName( void );
 
     /*
      * Returns size of the event.
      */
     virtual uint32_t
-    getEventSize( void );
+    getEventSize( void ) const;
 
     /**
      * Set event size.
-     * @param name  Name of the event for which the size is given.
      * @param size  Number of bytes for that event.
      */
     virtual void
-    setEventSize( std::string name,
-                  uint32_t    size );
+    setEventSize( uint32_t size );
 
     /**
      * Returns whether this event occurs in the specified region.
-     * @param profile  Pointer to the profile instance.
-     * @param regionId Region identifier.
+     * @param regionName  The specified regions name.
      */
     virtual bool
-    occursInRegion( SCOREP_Score_Profile* profile,
-                    uint64_t              regionId );
+    occursInRegion( const std::string& regionName );
 
     /*------------------------------------------------ protected members */
 protected:
@@ -86,6 +104,12 @@ protected:
      * Stores the event size.
      */
     uint32_t m_size;
+
+public:
+    /**
+     * Stores all events by its name.
+     */
+    static std::map< std::string, SCOREP_Score_Event* > m_all_events;
 };
 
 /* **************************************************************************************
@@ -96,8 +120,7 @@ class SCOREP_Score_EnterEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_EnterEvent( void );
     virtual bool
-    occursInRegion( SCOREP_Score_Profile* profile,
-                    uint64_t              regionId );
+    occursInRegion( const std::string& regionName );
 };
 
 /* **************************************************************************************
@@ -108,8 +131,7 @@ class SCOREP_Score_LeaveEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_LeaveEvent( void );
     virtual bool
-    occursInRegion( SCOREP_Score_Profile* profile,
-                    uint64_t              regionId );
+    occursInRegion( const std::string& regionName );
 };
 
 /* **************************************************************************************
@@ -118,13 +140,14 @@ public:
 class SCOREP_Score_MetricEvent : public SCOREP_Score_Event
 {
 public:
-    SCOREP_Score_MetricEvent( void );
+    SCOREP_Score_MetricEvent( uint64_t numDense );
     virtual bool
-    occursInRegion( SCOREP_Score_Profile* profile,
-                    uint64_t              regionId );
+    occursInRegion( const std::string& regionName );
     virtual void
-    setEventSize( std::string name,
-                  uint32_t    size );
+    setEventSize( uint32_t size );
+
+private:
+    uint64_t m_num_dense;
 };
 
 /* **************************************************************************************
@@ -136,12 +159,10 @@ public:
     SCOREP_Score_TimestampEvent( void );
 
     virtual bool
-    occursInRegion( SCOREP_Score_Profile* profile,
-                    uint64_t              regionId );
+    occursInRegion( const std::string& regionName );
 
     virtual void
-    setEventSize( std::string name,
-                  uint32_t    size );
+    setEventSize( uint32_t size );
 };
 
 /* **************************************************************************************
@@ -152,8 +173,7 @@ class SCOREP_Score_ParameterEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_ParameterEvent( void );
     virtual bool
-    occursInRegion( SCOREP_Score_Profile* profile,
-                    uint64_t              regionId );
+    occursInRegion( const std::string& regionName );
 };
 
 /* **************************************************************************************
@@ -162,14 +182,13 @@ public:
 class SCOREP_Score_NameMatchEvent : public SCOREP_Score_Event
 {
 public:
-    SCOREP_Score_NameMatchEvent( std::string             eventName,
-                                 std::deque<std::string> regionNames );
+    SCOREP_Score_NameMatchEvent( const std::string&           eventName,
+                                 const std::set<std::string>& regionNames );
     virtual bool
-    occursInRegion( SCOREP_Score_Profile* profile,
-                    uint64_t              regionId );
+    occursInRegion( const std::string& regionName );
 
 protected:
-    std::deque<std::string> m_region_names;
+    std::set<std::string> m_region_names;
 };
 
 /* **************************************************************************************
@@ -178,11 +197,10 @@ protected:
 class SCOREP_Score_PrefixMatchEvent : public SCOREP_Score_Event
 {
 public:
-    SCOREP_Score_PrefixMatchEvent( std::string             eventName,
-                                   std::deque<std::string> regionPrefix );
+    SCOREP_Score_PrefixMatchEvent( const std::string&             eventName,
+                                   const std::deque<std::string>& regionPrefix );
     virtual bool
-    occursInRegion( SCOREP_Score_Profile* profile,
-                    uint64_t              regionId );
+    occursInRegion( const std::string& regionName );
 
 protected:
     std::deque<std::string> m_region_prefix;
