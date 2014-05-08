@@ -14,7 +14,11 @@
  * @{
  */
 
-#pragma wrapgen multiple restrict(gtype+!nf90) skel/SCOREP_Mpi_Std.w
+#pragma wrapgen multiple restrict(gtype+!nf90+!nMPI_Type_hindexed+!nMPI_Type_struct) skel/SCOREP_Mpi_Std.w
+
+#pragma wrapgen single MPI_Type_hindexed skel/SCOREP_Mpi_StdWithProto.w
+
+#pragma wrapgen single MPI_Type_struct skel/SCOREP_Mpi_StdWithProto.w
 
 #pragma wrapgen multiple restrict(gtype+nf90) skel/SCOREP_Mpi_StdCompl.w
 
