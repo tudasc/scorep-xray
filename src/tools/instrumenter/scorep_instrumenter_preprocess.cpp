@@ -44,6 +44,7 @@ SCOREP_Instrumenter_PreprocessAdapter::SCOREP_Instrumenter_PreprocessAdapter( vo
     : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_PREPROCESS, "preprocess" )
 {
     m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_PDT );
+    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
 }
 
 std::string
@@ -51,14 +52,6 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
                                                    SCOREP_Instrumenter_CmdLine& cmdLine,
                                                    const std::string&           source_file )
 {
-    /* Preprocess only possible if we use OPARI */
-    SCOREP_Instrumenter_Adapter* adapter =
-        SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
-    if ( ( adapter == NULL ) || !adapter->isEnabled() )
-    {
-        return source_file;
-    }
-
     std::string orig_ext   = get_extension( source_file );
     std::string input_file = source_file;
     std::string command;
