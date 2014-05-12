@@ -63,7 +63,7 @@ scorep_tau_convert_paradigm_type( SCOREP_Tau_ParadigmType paradigm )
         SCOREP_PARADIGMS;
 
         default:
-            UTILS_BUG_ON( "Failed to convert TAU paradigm to Score-P paradigm." );
+            UTILS_BUG( "Failed to convert TAU paradigm to Score-P paradigm." );
     }
     return SCOREP_INVALID_PARADIGM_TYPE;
 }
@@ -109,7 +109,7 @@ scorep_tau_convert_region_type( SCOREP_Tau_RegionType region_type )
             SCOREP_REGION_TYPES
 
         default:
-            UTILS_BUG_ON( "Failed to convert TAU region type to Score-P region type." );
+            UTILS_BUG( "Failed to convert TAU region type to Score-P region type." );
     }
     return SCOREP_INVALID_REGION_TYPE;
 }
