@@ -55,6 +55,9 @@ static scorep_cuda_kernel_hash_node* scorep_cuda_kernel_hashtab[ SCOREP_CUDA_KER
 /* mutex for locking the CUPTI environment */
 SCOREP_Mutex scorep_cupti_mutex = NULL;
 
+/* attribute handles for CUDA references */
+scorep_cupti_attribute_handles scorep_cupti_attributes;
+
 /* set the list of CUPTI contexts to 'empty' */
 scorep_cupti_context* scorep_cupti_context_list = NULL;
 
@@ -142,6 +145,22 @@ scorep_cupti_init()
             scorep_cupti_sampling_set_gpumemusage =
                 SCOREP_Definitions_NewSamplingSet( 1, &metric_handle,
                                                    SCOREP_METRIC_OCCURRENCE_SYNCHRONOUS, SCOREP_SAMPLING_SET_GPU );
+        }
+
+        if ( scorep_cuda_record_references )
+        {
+            scorep_cupti_attributes.stream_ref = SCOREP_Definitions_NewAttribute(
+                SCOREP_CUPTI_CUDA_STREAMREF_KEY,
+                "Referenced CUDA stream",
+                SCOREP_ATTRIBUTE_TYPE_LOCATION );
+            scorep_cupti_attributes.event_ref = SCOREP_Definitions_NewAttribute(
+                SCOREP_CUPTI_CUDA_EVENTREF_KEY,
+                "ID (address) of referenced CUDA event",
+                SCOREP_ATTRIBUTE_TYPE_UINT32 );
+            scorep_cupti_attributes.result_ref = SCOREP_Definitions_NewAttribute(
+                SCOREP_CUPTI_CUDA_CURESULT_KEY,
+                "CUDA driver API function result",
+                SCOREP_ATTRIBUTE_TYPE_UINT32 );
         }
 
         scorep_cupti_initialized = true;
@@ -590,22 +609,6 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
 
     context->activity  = NULL;
     context->callbacks = NULL;
-
-    if ( scorep_cuda_record_references )
-    {
-        context->stream_ref = SCOREP_Definitions_NewAttribute(
-            SCOREP_CUPTI_CUDA_STREAMREF_KEY,
-            "Referenced CUDA stream",
-            SCOREP_ATTRIBUTE_TYPE_LOCATION );
-        context->event_ref = SCOREP_Definitions_NewAttribute(
-            SCOREP_CUPTI_CUDA_EVENTREF_KEY,
-            "ID (address) of referenced CUDA event",
-            SCOREP_ATTRIBUTE_TYPE_UINT32 );
-        context->result_ref = SCOREP_Definitions_NewAttribute(
-            SCOREP_CUPTI_CUDA_CURESULT_KEY,
-            "CUDA driver API function result",
-            SCOREP_ATTRIBUTE_TYPE_UINT32 );
-    }
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
                         "[CUPTI] Created context for CUcontext %d, CUdevice %d",

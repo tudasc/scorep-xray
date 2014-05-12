@@ -532,12 +532,12 @@ create_references_list( SCOREP_Location* location,
 
         if ( references & SCOREP_CUPTI_KEY_CURESULT )
         {
-            SCOREP_Location_AddAttribute( location, scorep_ctx->result_ref, &result );
+            SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.result_ref, &result );
         }
 
         if ( references & SCOREP_CUPTI_KEY_EVENT )
         {
-            SCOREP_Location_AddAttribute( location, scorep_ctx->event_ref, event );
+            SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.event_ref, event );
         }
 
         if ( references & SCOREP_CUPTI_KEY_STREAM )
@@ -551,7 +551,7 @@ create_references_list( SCOREP_Location* location,
             SCOREP_LocationHandle location_handle =
                 SCOREP_Location_GetLocationHandle( scorep_strm->scorep_location );
 
-            SCOREP_Location_AddAttribute( location, scorep_ctx->stream_ref, &location_handle );
+            SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.stream_ref, &location_handle );
         }
     }
 }
