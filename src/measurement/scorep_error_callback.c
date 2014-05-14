@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -61,10 +61,10 @@ scorep_error_callback( void*            userData,
     size_t msg_format_string_length = msgFormatString ?
                                       strlen( msgFormatString ) : 0;
     const char* type = "Error";
-#if HAVE( SCOREP_DEBUG )
+//#if HAVE( SCOREP_DEBUG )
     const char* description        = "";
     const char* description_prefix = "";
-#endif
+//#endif
     if ( errorCode == SCOREP_WARNING )
     {
         /* return, if the verbosity level is too low */
@@ -81,30 +81,30 @@ scorep_error_callback( void*            userData,
         type = "Fatal";
     }
     /* SCOREP_ERROR_* => return, if the verbosity level is too low */
-#if HAVE( SCOREP_DEBUG )
+//#if HAVE( SCOREP_DEBUG )
     else
     {
         description        = SCOREP_Error_GetDescription( errorCode );
         description_prefix = ": ";
     }
-#endif
+//#endif
 
-#if HAVE( SCOREP_DEBUG )
+//#if HAVE( SCOREP_DEBUG )
     fprintf( stderr, "[%s] %s:%" PRIu64 ": %s%s%s%s",
              PACKAGE_NAME, file, line,
              type, description_prefix, description,
              msg_format_string_length ? ": " : "\n" );
-#else
-
-    /*
-     * @todo extract module from filename (ie. last directory component
-     * or scorep_<module>_foo.c)
-     */
-    fprintf( stderr, "[%s] %s%s",
-             PACKAGE_NAME,
-             type,
-             msg_format_string_length ? ": " : "\n" );
-#endif
+//#else
+//
+//    /*
+//     * @todo extract module from filename (ie. last directory component
+//     * or scorep_<module>_foo.c)
+//     */
+//    fprintf( stderr, "[%s] %s%s",
+//             PACKAGE_NAME,
+//             type,
+//             msg_format_string_length ? ": " : "\n" );
+//#endif
 
     if ( msg_format_string_length )
     {
