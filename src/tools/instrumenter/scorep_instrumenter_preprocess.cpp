@@ -56,6 +56,17 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
     std::string input_file = source_file;
     std::string command;
 
+    // Determine language
+    std::string language = "c";
+    if ( is_fortran_file( source_file ) )
+    {
+        language = "f";
+    }
+    else if ( is_cpp_file( source_file ) )
+    {
+        language = "cxx";
+    }
+
     // Prepare file for preprocessing
     if ( !is_fortran_file( source_file ) )
     {
@@ -87,7 +98,7 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
     command = SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars()
               + cmdLine.getCompilerName()
               + " " + cmdLine.getFlagsBeforeLmpi()
-              + " `" + instrumenter.getConfigBaseCall() + " --cflags`"
+              + " `" + instrumenter.getConfigBaseCall() + " --" + language + "flags`"
               + " " + instrumenter.getCompilerFlags()
               + " " + cmdLine.getFlagsAfterLmpi()
               + " " + input_file;
