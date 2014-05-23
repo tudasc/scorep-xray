@@ -118,11 +118,6 @@ various Score-P components.
     functions. (Filtering of MPI functions, OpenMP is always
     ineffective.)
 
-  - Function instrumentation based on using the GNU and Intel
-    interface has the limitation that instrumented functions in
-    dynamically loaded (shared) libraries are not measured (i.e.,
-    implicitly filtered).
-
   - The GNU Fortran compiler versions 4.6.0 and 4.6.1 have a bug which
     leads to an internal compiler error when using automatic function
     instrumentation.  It is therefore recommended to either use an
