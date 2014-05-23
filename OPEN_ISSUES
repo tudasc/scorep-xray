@@ -144,6 +144,12 @@ various Score-P components.
     For the pgCC versions 13.9 until 14.0, preprocessing is not possible
     for C++ codes.
 
+  - The GCC compiler uses DWARF v4 as the default debug information format
+    since version 4.8. But when used with an older binutils version this
+    results in unreliably region meta data. If file name information are
+    missing in the resulting region meta data, than try recompiling with
+    the -gdwarf-3 or -gdwarf-2.
+
 --------------------------------------------------------------------------------
 
 * MPI support
