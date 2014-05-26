@@ -293,7 +293,7 @@ void FSUB(MPI_Waitall)(MPI_Fint* count,
 
   for (i=0; i < *count; i++)
   {
-    array_of_requests[i] = MPI_Request_c2f(lrequest[i]);
+    array_of_requests[i] = PMPI_Request_c2f(lrequest[i]);
   }
   if (*ierr == MPI_SUCCESS)
   {

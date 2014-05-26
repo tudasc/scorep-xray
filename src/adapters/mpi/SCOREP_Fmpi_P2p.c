@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1376,7 +1376,7 @@ FSUB( MPI_Waitall )( MPI_Fint* count,
 
     for ( i = 0; i < *count; i++ )
     {
-        array_of_requests[ i ] = MPI_Request_c2f( lrequest[ i ] );
+        array_of_requests[ i ] = PMPI_Request_c2f( lrequest[ i ] );
     }
     if ( *ierr == MPI_SUCCESS )
     {
