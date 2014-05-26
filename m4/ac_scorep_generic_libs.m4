@@ -317,12 +317,26 @@ AS_IF([test "x${with_$1_lib}" != "xno" && test "x${with_$1_include_checks_succes
        libs_save_$1="${LIBS}"
        cpp_flags_save_$1="${CPPFLAGS}"
        AS_IF([test "x${with_$1_lib}" != "xyes"],
-             [with_$1_ldflags="-L${with_$1_lib}"
+             [_AC_SCOREP_ONE_OF_FILES_EXIST([$1.a $1.so $1.dylib], [${with_$1_lib}], [with_$1_lib_checks_successful])
+              AS_IF([test "x${with_$1_lib_checks_successful}" = "xno"],
+                    [tmp_basename=`basename ${with_$1_lib}`
+                     tmp_dirname=`dirname ${with_$1_lib}`
+                     with_$1_lib_checks_successful="unknown"
+                     AS_IF([test "x${tmp_basename}" = "xlib"],
+                           [_AC_SCOREP_ONE_OF_FILES_EXIST([$1.a $1.so $1.dylib], [${tmp_dirname}/lib64], [with_$1_lib_checks_successful])
+                            AS_IF([test "x${with_$1_lib_checks_successful}" != "xno"],
+                                  [with_$1_lib="${tmp_dirname}/lib64"])
+                           ],
+                           [test "x${tmp_basename}" = "xlib64"],
+                           [_AC_SCOREP_ONE_OF_FILES_EXIST([$1.a $1.so $1.dylib], [${tmp_dirname}/lib], [with_$1_lib_checks_successful])
+                            AS_IF([test "x${with_$1_lib_checks_successful}" != "xno"],
+                                  [with_$1_lib="${tmp_dirname}/lib"])
+                           ])
+                    ])
+              with_$1_ldflags="-L${with_$1_lib}"
               with_$1_rpathflag="-R${with_$1_lib}"
-              _AC_SCOREP_ONE_OF_FILES_EXIST([$1.a $1.so $1.dylib], [${with_$1_lib}], [with_$1_lib_checks_successful])
               AS_IF([test "x${with_$1_lib_checks_successful}" = "xno"],
                     [AC_MSG_ERROR([cannot find $1.a, $1.so, or $1.dylib])])])
-
        AS_IF([test "x${with_$1_lib_checks_successful}" = "xunknown"],
              [CPPFLAGS="${with_$1_cppflags} ${CPPFLAGS}"
               LDFLAGS="${with_$1_ldflags} ${LDFLAGS}"
