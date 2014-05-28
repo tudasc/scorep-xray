@@ -423,7 +423,7 @@ An exclude rule starts with the keyword <tt>EXCLUDE</tt> followed by
 one or multiple white-space separated region names.
 Respectively, include rules start with <tt>INCLUDE</tt>
 followed by one or multiple white-space separated expressions. For the specification of
-file names, bash-like wild-cards are supported. In particular, the '*' wild card
+region names, bash-like wild-cards are supported. In particular, the '*' wild card
 matches an string of arbitrary length, the '?' matches exactly one arbitrary
 character, or within `[]` you may specify multiple options.
 
@@ -438,7 +438,7 @@ SCOREP_REGION_NAMES_BEGIN
 SCOREP_REGION_NAMES_END
 @endcode
 
-In this example all but the functions bar, foo, baz and main are filtered.
+In this example, all but the functions bar, foo, baz and main are filtered.
 
 The filtering is based on the region names as seen by the measurement system.
 Depending on instrumentation method and compiler the actual region name may
