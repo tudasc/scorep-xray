@@ -220,6 +220,52 @@ get_temp_filename( void )
     return temp_dir + filename.str();
 }
 
+static string
+get_user_readable_byte_no( uint64_t bytes )
+{
+    const uint32_t base = 1024;
+    uint32_t       exp;
+    for ( exp = 0; bytes > 4 * base; exp++ )
+    {
+        bytes /= base;
+    }
+    // round up;
+    bytes++;
+    stringstream result;
+    result << bytes;
+    switch ( exp )
+    {
+        case 0:
+            result << " bytes";
+            break;
+        case 1:
+            result << "kB";
+            break;
+        case 2:
+            result << "MB";
+            break;
+        case 3:
+            result << "GB";
+            break;
+        case 4:
+            result << "TB";
+            break;
+        case 5:
+            result << "PB";
+            break;
+        case 6:
+            result << "EB";
+            break;
+        case 7:
+            result << "ZB";
+            break;
+        case 8:
+            result << "YB";
+            break;
+    }
+    return result.str();
+}
+
 
 /* **************************************************************************************
                                                              class SCOREP_Score_Estimator
@@ -473,28 +519,26 @@ SCOREP_Score_Estimator::printGroups( void )
         total_buf = m_groups[ SCOREP_SCORE_TYPE_ALL ]->getTotalTraceBufferSize();
     }
 
-    /* Estimate definition size by profile size and round up to the next
-       multiple of 2 MB */
+    /* Estimate definition size by profile size and add a minimum of 4 MB. */
     memory_req = m_profile->getFileSize() /
                  ( m_profile->getNumberOfProcesses() * m_profile->getNumberOfMetrics() );
-    memory_req = ( max_buf + memory_req + 4 * 1024 * 1024 ) /
-                 ( 2 * 1024 * 1024 );
+    memory_req = ( max_buf + memory_req + 4 * 1024 * 1024 );
 
     cout << endl;
     cout << "Estimated aggregate size of event trace:                   "
-         << total_buf << " bytes" << endl;
+         << get_user_readable_byte_no( total_buf ) << endl;
     cout << "Estimated requirements for largest trace buffer (max_buf): "
-         << max_buf << " bytes" << endl;
+         << get_user_readable_byte_no( max_buf ) << endl;
     cout << "Estimated memory requirements (SCOREP_TOTAL_MEMORY):       "
-         << memory_req * 2 << "MB" << endl;
+         << get_user_readable_byte_no( memory_req ) << endl;
     cout << "(hint: When tracing set SCOREP_TOTAL_MEMORY="
-         << memory_req * 2 << "MB to avoid intermediate flushes\n"
+         << get_user_readable_byte_no( memory_req ) << " to avoid intermediate flushes\n"
          << " or reduce requirements using USR regions filters.)"
          << endl << endl;
 
     quicksort( m_groups, SCOREP_SCORE_TYPE_NUM );
 
-    cout << "flt type         max_buf        visits         time  %time  region" << endl;
+    cout << "flt type      max_buf[B]        visits      time[s]  time[%]  time/visit[us]  region" << endl;
     for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
         m_groups[ i ]->print( total_time );

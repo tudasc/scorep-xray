@@ -40,8 +40,47 @@
 #include <stdlib.h>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 
 using namespace std;
+
+static string
+get_number_with_comma( uint64_t number )
+{
+    uint32_t blocks[ 20 ];
+    int32_t  exp;
+
+    if ( number == 0 )
+    {
+        return "0";
+    }
+
+    for ( exp = 0; number > 0; exp++ )
+    {
+        blocks[ exp ] = number % 1000;
+        number       /= 1000;
+    }
+
+    stringstream result;
+    exp--;
+    result << blocks[ exp ];
+    exp--;
+    for (; exp >= 0; exp-- )
+    {
+        result << ",";
+        if ( blocks[ exp ] < 10 )
+        {
+            result << "00";
+        }
+        else if ( blocks[ exp ] < 100 )
+        {
+            result << "0";
+        }
+        result << blocks[ exp ];
+    }
+
+    return result.str();
+}
 
 SCOREP_Score_Group::SCOREP_Score_Group( uint64_t type,
                                         uint64_t processes,
@@ -85,10 +124,11 @@ SCOREP_Score_Group::print( double totalTime )
     {
         cout << " " << SCOREP_Score_getFilterSymbol( m_filter ) << right
              << setw( 6 ) << SCOREP_Score_getTypeName( m_type )
-             << setw( 16 ) << getMaxTraceBufferSize()
-             << setw( 14 ) << m_visits
+             << setw( 16 ) << get_number_with_comma( getMaxTraceBufferSize() )
+             << setw( 14 ) << get_number_with_comma( m_visits )
              << setw( 13 ) << setprecision( 2 ) << m_total_time
-             << setw( 7 )  << setprecision( 1 ) << 100.0 / totalTime * m_total_time
+             << setw( 9 )  << setprecision( 1 ) << 100.0 / totalTime * m_total_time
+             << setw( 16 ) << setprecision( 2 ) << m_total_time / m_visits * 1000000
              << left << "  " << m_name << endl;
     }
 }
