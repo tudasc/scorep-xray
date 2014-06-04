@@ -47,7 +47,7 @@ print_help()
     cout << "Usage: scorep-score <profile> [options]" << endl;
     cout << "Options:\n"
          << " -r          Show all regions.\n"
-         << " -h          Show this help and exit.\n"
+         << " -h, --help  Show this help and exit.\n"
          << " -f <filter> Shows the result with the filter applied.\n"
          << " -c <num>    Specifes the number of hardware counters that shall be measured.\n"
          << "             By default, this value is 0, which means that only a timestamp\n"
@@ -69,19 +69,22 @@ main( int argc, char** argv )
 
     for ( int i = 1; i < argc; i++ )
     {
+        string arg = argv[ i ];
+
         // Options start with a dash
         if ( argv[ i ][ 0 ] == '-' )
         {
-            if ( argv[ i ][ 1 ] == 'r' )
+            if ( arg == "-r" )
             {
                 show_regions = true;
             }
-            else if ( argv[ i ][ 1 ] == 'h' )
+            else if ( ( arg == "-h" ) ||
+                      ( arg == "--help" ) )
             {
                 print_help();
                 exit( EXIT_SUCCESS );
             }
-            else if ( argv[ i ][ 1 ] == 'f' )
+            else if ( arg == "-f" )
             {
                 if ( i + 1 < argc )
                 {
@@ -95,7 +98,7 @@ main( int argc, char** argv )
                     exit( EXIT_FAILURE );
                 }
             }
-            else if ( argv[ i ][ 1 ] == 'c' )
+            else if ( arg == "-c" )
             {
                 if ( i + 1 < argc )
                 {
@@ -111,7 +114,7 @@ main( int argc, char** argv )
             }
             else
             {
-                cerr << "ERROR: Unknown argment -" << argv[ i ][ 1 ] << "." << endl;
+                cerr << "ERROR: Unknown argment " << arg << "." << endl;
                 print_help();
                 exit( EXIT_FAILURE );
             }
