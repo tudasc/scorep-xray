@@ -117,11 +117,12 @@ libscorep_adapter_user_fortran_sub4_la_CPPFLAGS = \
 
 lib_LTLIBRARIES += libscorep_adapter_user_event.la
 
-libscorep_adapter_user_event_la_SOURCES =                \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Control.c   \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Metric.c    \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Parameter.c \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_Region.c    \
+libscorep_adapter_user_event_la_SOURCES =                  \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Control.c     \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Metric.c      \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Parameter.c   \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_Region.c      \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_RegionCxx.cxx \
     $(SRC_ROOT)src/adapters/user/SCOREP_User_Init.h
 
 libscorep_adapter_user_event_la_CPPFLAGS = \

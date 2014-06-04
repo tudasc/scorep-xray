@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011,
  *    Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -394,7 +394,11 @@ public:
                         reinitialization, if the region is revisited.
     @param regionName   The name of the region.
     @param regionType   The type of the region.
-    @param file         The filename of the source file which contains the instrumented
+    @param lastFileName The name of the source file of the current compilation unit.
+                        Can be NULL if not initialized.
+    @param lastFileHandle Location where we store the source file handle for the
+                        current compilation unit.
+    @param fileName     The filename of the source file which contains the instrumented
                         region.
     @param lineNo       The line number of the first source code line of the instrumented
                         region.
@@ -402,27 +406,23 @@ public:
     SCOREP_User_RegionClass( SCOREP_User_RegionHandle*    regionHandle,
                              const char*                  regionName,
                              const SCOREP_User_RegionType regionType,
-                             const char*                  file,
-                             const uint32_t               lineNo )
-    {
-        SCOREP_User_RegionBegin( regionHandle, &SCOREP_User_LastFileName,
-                                 &SCOREP_User_LastFileHandle, regionName, regionType,
-                                 file, lineNo );
-        region_handle = *regionHandle;
-    }
+                             const char**                 lastFileName,
+                             SCOREP_SourceFileHandle*     lastFileHandle,
+                             const char*                  fileName,
+                             const uint32_t               lineNo );
 
     /**
         Generates an exit event for the instrumented region
      */
-    ~
-    SCOREP_User_RegionClass()
-    {
-        SCOREP_User_RegionEnd( region_handle );
-    }
+    ~SCOREP_User_RegionClass();
 
 private:
     /**
-        Stores the region handle
+        We need to store the region handle to pass it to the destructor.
+        We want to initialize the region handle only once and store it in a static
+        variable. Thus, if the region is revisited, we do not need to evaluate filters
+        and check double definitions. However, we want the region object reconstruct
+        every time to execute the enter/exit in the constructor/destructor.
      */
     SCOREP_User_RegionHandle region_handle;
 };

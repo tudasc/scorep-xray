@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011, 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -1217,10 +1217,20 @@
 
 #ifdef __cplusplus
 
+/* We want to initialize the region handle only once and store it in a static variable.
+   Thus, if the region is revisited, we do not need to evaluate filters and check double
+   definitions. However, we want the region object reconstruct every time to execute
+   the enter/exit in the constructor/destructor. The region handle in the class is
+   necessary to pass the region handle from the constructor to the destructor. */
 #define SCOREP_USER_REGION( name, type ) static SCOREP_User_RegionHandle \
     scorep_user_region_handle = SCOREP_USER_INVALID_REGION; \
     SCOREP_User_RegionClass \
-    scorep_user_region_inst( &scorep_user_region_handle, name, type, __FILE__, __LINE__ );
+    scorep_user_region_inst( &scorep_user_region_handle, \
+                             name, \
+                             type, \
+                             &SCOREP_User_LastFileName, \
+                             &SCOREP_User_LastFileHandle, \
+                             __FILE__, __LINE__ );
 
 #else // __cplusplus
 
