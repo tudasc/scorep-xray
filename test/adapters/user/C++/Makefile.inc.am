@@ -1,7 +1,7 @@
 # User C++ test
 
 EXTRA_DIST       += \
-    $(SRC_ROOT)test/adapters/user/C++/user_test.cxx \
+    $(SRC_ROOT)test/adapters/user/C++/user_test.cpp \
     $(SRC_ROOT)test/adapters/user/C++/run_user_cxx_test.sh.in
 
 TESTS_SERIAL += ./../test/adapters/user/C++/run_user_cxx_test.sh

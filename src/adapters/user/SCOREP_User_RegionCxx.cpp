@@ -32,13 +32,13 @@
  *
  *  This file contains the implementation of class SCOREP_User_RegionClass.
  *  Putting this into the header file. leads to incorrect instrumentation.
- *  See ticket #875. 
+ *  See ticket #875.
  */
 
 #include <config.h>
 #include <scorep/SCOREP_User_Functions.h>
 
-SCOREP_User_RegionClass::SCOREP_User_RegionClass( 
+SCOREP_User_RegionClass::SCOREP_User_RegionClass(
     SCOREP_User_RegionHandle*    regionHandle,
     const char*                  regionName,
     const SCOREP_User_RegionType regionType,
@@ -47,18 +47,18 @@ SCOREP_User_RegionClass::SCOREP_User_RegionClass(
     const char*                  fileName,
     const uint32_t               lineNo )
 {
-  SCOREP_User_RegionBegin( regionHandle, 
-			   lastFileName, 
-			   lastFileHandle,
-			   regionName,
-			   regionType,
-			   fileName,
-			   lineNo );
+    SCOREP_User_RegionBegin( regionHandle,
+                             lastFileName,
+                             lastFileHandle,
+                             regionName,
+                             regionType,
+                             fileName,
+                             lineNo );
 
-  region_handle = *regionHandle;
+    region_handle = *regionHandle;
 }
 
 SCOREP_User_RegionClass::~SCOREP_User_RegionClass()
 {
-  SCOREP_User_RegionEnd( region_handle );
+    SCOREP_User_RegionEnd( region_handle );
 }

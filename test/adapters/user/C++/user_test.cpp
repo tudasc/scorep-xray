@@ -47,17 +47,18 @@ class MyClass
 public:
     MyClass()
     {
-        SCOREP_USER_REGION("MyClass Constructor", 0);
-        printf("In constructor of static class instance\n");
+        SCOREP_USER_REGION( "MyClass Constructor", 0 );
+        printf( "In constructor of static class instance\n" );
 #ifdef _OPENMP
         omp_init_lock( &m_lock );
 #endif
     }
 
-    virtual~ MyClass()
+    virtual
+    ~MyClass()
     {
-        SCOREP_USER_REGION("MyClass Destructor", 0);
-        printf("In destructor of static class instance\n");
+        SCOREP_USER_REGION( "MyClass Destructor", 0 );
+        printf( "In destructor of static class instance\n" );
 #ifdef _OPENMP
         omp_destroy_lock( &m_lock );
 #endif
@@ -72,9 +73,10 @@ private:
 
 MyClass my_static_instance;
 
-int main()
+int
+main()
 {
-    SCOREP_USER_REGION("main", 0);
-    printf("In main\n");
+    SCOREP_USER_REGION( "main", 0 );
+    printf( "In main\n" );
     return 0;
 }

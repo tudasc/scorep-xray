@@ -45,7 +45,7 @@ OPENMP_CFLAGS=@OPENMP_CFLAGS@
 export LD_LIBRARY_PATH=@SCOREP_PAPI_LIBDIR@:$LD_LIBRARY_PATH
 
 # Execute test without OpenMP and compiler instrumentation (only user)
-./scorep -v --build-check --user --nocompiler $CXX -I. -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx
+./scorep -v --build-check --user --nocompiler $CXX -I. -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cpp
 if [ $? -ne 0 ]; then
     echo "Failed to build serial user_cxx_test"
     exit 1
@@ -64,7 +64,7 @@ exit 0
 # a static object.
 
 # Execute test with OpenMP compiler and user instrumentation.
-./scorep -v --build-check --user --nocompiler $CXX $OPENMP_CFLAGS -I. -g -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cxx
+./scorep -v --build-check --user --nocompiler $CXX $OPENMP_CFLAGS -I. -g -o user_cxx_test $SRC_ROOT/test/adapters/user/C++/user_test.cpp
 if [ ! -e user_cxx_test ]; then
     echo "Failed to build user_cxx_test with OpenMP compiler"
     exit 1

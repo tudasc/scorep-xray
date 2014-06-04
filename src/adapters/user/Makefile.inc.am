@@ -18,7 +18,7 @@
 ## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -122,7 +122,7 @@ libscorep_adapter_user_event_la_SOURCES =                  \
     $(SRC_ROOT)src/adapters/user/SCOREP_User_Metric.c      \
     $(SRC_ROOT)src/adapters/user/SCOREP_User_Parameter.c   \
     $(SRC_ROOT)src/adapters/user/SCOREP_User_Region.c      \
-    $(SRC_ROOT)src/adapters/user/SCOREP_User_RegionCxx.cxx \
+    $(SRC_ROOT)src/adapters/user/SCOREP_User_RegionCxx.cpp \
     $(SRC_ROOT)src/adapters/user/SCOREP_User_Init.h
 
 libscorep_adapter_user_event_la_CPPFLAGS = \
