@@ -4,21 +4,39 @@
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2013,
-##    RWTH Aachen, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## RWTH Aachen, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2013,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2014,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2013,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2013,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2013,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
 ##
 
 ## file build-config/m4/scorep_metrics.m4
 
+AC_DEFUN([SCOREP_METRICS_CHECK], [
+    _SCOREP_METRICS_CHECK_LIBPAPI
+    _SCOREP_METRICS_CHECK_RUSAGE
+]) # AC_DEFUN(SCOREP_METRICS_CHECK)
 
-AC_DEFUN([AC_SCOREP_LIBPAPI], [
+AC_DEFUN([_SCOREP_METRICS_CHECK_LIBPAPI], [
 
 dnl Don't check for PAPI on the frontend.
 AS_IF([test "x$ac_scorep_backend" = xno], [AC_MSG_ERROR([cannot check for PAPI on frontend.])])
@@ -125,7 +143,7 @@ AS_IF([test "x${ac_scorep_have_papi}" = "xyes"], [
 
 
 
-AC_DEFUN([AC_SCOREP_RUSAGE], [
+AC_DEFUN([_SCOREP_METRICS_CHECK_RUSAGE], [
 
 AS_IF([test "x${ac_scorep_platform}" = "xbgq"],
       [ac_scorep_getrusage="no, not supported on BG/Q"
