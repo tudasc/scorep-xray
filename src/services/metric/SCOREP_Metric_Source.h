@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -30,7 +30,7 @@
 
 /**
  *
- *  @file       SCOREP_Metric_Source.h
+ *  @file
  *
  *
  *  This file contains the interface for the hardware counter access. This module can

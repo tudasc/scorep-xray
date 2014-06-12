@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -30,7 +30,7 @@
 
 /**
  *
- *  @file       scorep_metric_management_mockup.c
+ *  @file
  *
  *
  *  @brief On systems without support for any metric source this module

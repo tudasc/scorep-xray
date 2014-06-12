@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -34,7 +34,7 @@
 
 
 /**
- * @file       scorep_metric_plugins.h
+ * @file
  *
  * @brief Metric plugins source definition object.
  */
