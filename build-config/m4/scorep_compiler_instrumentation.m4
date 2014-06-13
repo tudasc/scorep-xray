@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -51,7 +51,7 @@ AS_IF([test "x${have_compiler_instrumentation}" = xyes],
             test "x${ax_cv_c_compiler_vendor}" = xcray || \
             test "x${ax_cv_c_compiler_vendor}" = xfujitsu],
          [AS_IF([test "x${ac_scorep_platform}" = xk || test "x${ac_scorep_platform}" = xfx10],
-              [BYPASS_GENERIC_LIB_CHECK_ON_K_AND_FX10([libbfd], [-lbfd])],
+              [_FUJITSU_COMPILER_INSTRUMENTATION_WORKAROUND],
               [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])])
           AS_IF([test "x${scorep_have_libbfd}" = "xyes"],
              [result=${libbfd_result}],
@@ -89,6 +89,29 @@ AS_IF([test "x${scorep_have_libbfd}" = "xno" && test "x${scorep_have_nm}" != "xn
        dnl wrong for NEC-SX, see opari2:ticket:54 and silc:ticket:620.
        AC_DEFINE_UNQUOTED([SCOREP_BACKEND_NM], ["${scorep_have_nm}"], [Backend nm as bfd replacement])],
       [AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -eq 0])])
+])
+
+dnl ----------------------------------------------------------------------------
+
+# _FUJITSU_COMPILER_INSTRUMENTATION_WORKAROUND
+# K and FX10 are cross-compile machines, i.e. we explicitly need to specify the
+# path to bfd. This path (which contains system stuff) is used in a CPPFLAGS. 
+# This breaks compilation. Therefore, work around the the usual compiler 
+# instrumentation's AC_SCOREP_BACKEND_LIB check.
+# -----------------------------------------------------------------------------
+m4_define([_FUJITSU_COMPILER_INSTRUMENTATION_WORKAROUND], [
+BYPASS_GENERIC_LIB_CHECK_ON_K_AND_FX10([libbfd], [-lbfd -liberty])
+AC_CHECK_HEADER([demangle.h])
+AC_MSG_CHECKING([for cplus_demangle])
+save_libs=${LIBS}
+LIBS="${LIBBFD_LIBS} ${LIBS}"
+AC_LINK_IFELSE(
+    [AC_LANG_PROGRAM([[char* cplus_demangle( const char* mangled, int options );]],
+                     [[cplus_demangle("test", 27)]])],
+    [scorep_have_demangle=yes],
+    [scorep_have_demangle=no])
+LIBS=${save_libs}
+AC_MSG_RESULT([${scorep_have_demangle}])
 ])
 
 dnl ----------------------------------------------------------------------------
