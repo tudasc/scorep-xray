@@ -32,7 +32,7 @@ SCOREP_Instrumenter_OnlineAccess::SCOREP_Instrumenter_OnlineAccess( void )
 void
 SCOREP_Instrumenter_OnlineAccess::printHelp( void )
 {
-    std::cout << "  --" << m_name << " Enables online-access support. It is enabled by default\n"
+    std::cout << "  --" << m_name << " Enables online-access support. It is disabled by default\n"
               << "  --no" << m_name << " online-access Disables online-access support.\n";
 }
 
