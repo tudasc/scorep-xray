@@ -157,7 +157,7 @@ AC_SCOREP_MPI_WORKING([scorep_mpi_f90_supported="yes"],[scorep_mpi_f90_supported
 AC_LANG_POP([Fortran])
 AFS_SUMMARY([MPI support F90], [$scorep_mpi_f90_supported])
 AS_IF([test "x$scorep_mpi_f90_supported" = "xyes"], [
-    AFS_SUMMARY([F90 compiler used for MPI], [$F90])
+    AFS_SUMMARY([F90 compiler used for MPI], [$FC])
 ])
 
 AS_IF([test "x$scorep_mpi_c_supported$scorep_mpi_cxx_supported$scorep_mpi_f77_supported$scorep_mpi_f90_supported" != "xnononono"], [
