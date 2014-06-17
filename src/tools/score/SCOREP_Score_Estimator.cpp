@@ -538,10 +538,20 @@ SCOREP_Score_Estimator::printGroups( void )
 
     quicksort( m_groups, SCOREP_SCORE_TYPE_NUM );
 
-    cout << "flt type      max_buf[B]        visits      time[s]  time[%]  time/visit[us]  region" << endl;
+    // The first group is "ALL", whose widths are maximal
+    m_groups[ 0 ]->updateWidths( m_widths );
+    cout << "flt"
+         << " " << setw( m_widths.m_type ) << "type"
+         << " " << setw( m_widths.m_bytes ) << "max_buf[B]"
+         << " " << setw( m_widths.m_visits ) << "visits"
+         << " " << setw( m_widths.m_time ) << "time[s]"
+         << " time[%]"
+         << " " << setw( m_widths.m_time_per_visit ) << "time/visit[us]"
+         << "  region"
+         << endl;
     for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
-        m_groups[ i ]->print( total_time );
+        m_groups[ i ]->print( total_time, m_widths );
     }
 
     if ( m_has_filter )
@@ -551,7 +561,7 @@ SCOREP_Score_Estimator::printGroups( void )
         cout << endl;
         for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
         {
-            m_filtered[ i ]->print( total_time );
+            m_filtered[ i ]->print( total_time, m_widths );
         }
     }
 }
@@ -565,7 +575,7 @@ SCOREP_Score_Estimator::printRegions( void )
     cout << endl;
     for ( uint64_t i = 0; i < m_region_num; i++ )
     {
-        m_regions[ i ]->print( total_time );
+        m_regions[ i ]->print( total_time, m_widths );
     }
 }
 

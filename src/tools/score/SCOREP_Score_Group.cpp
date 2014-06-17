@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -38,6 +38,7 @@
 #include <config.h>
 #include "SCOREP_Score_Group.hpp"
 #include <stdlib.h>
+#include <algorithm>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -115,21 +116,48 @@ SCOREP_Score_Group::addRegion( uint64_t numberOfVisits,
 }
 
 void
-SCOREP_Score_Group::print( double totalTime )
+SCOREP_Score_Group::updateWidths( SCOREP_Score_FieldWidths& widths )
+{
+    ostringstream str;
+
+    str.setf( ios::fixed, ios::floatfield );
+    str.setf( ios::showpoint );
+
+    if ( m_total_buf > 0 )
+    {
+        widths.m_type   = std::max<int>( widths.m_type, SCOREP_Score_getTypeName( m_type ).size() );
+        widths.m_bytes  = std::max<int>( widths.m_bytes, get_number_with_comma( getMaxTraceBufferSize() ).size() );
+        widths.m_visits = std::max<int>( widths.m_visits, get_number_with_comma( m_visits ).size() );
+
+        str << setprecision( 2 ) << m_total_time;
+        widths.m_time = std::max<int>( widths.m_time, str.str().size() );
+        str.clear();
+
+        str << setprecision( 2 ) << m_total_time / m_visits * 1000000;
+        widths.m_time_per_visit = std::max<int>( widths.m_time_per_visit, str.str().size() );
+        str.clear();
+    }
+}
+
+void
+SCOREP_Score_Group::print( double                   totalTime,
+                           SCOREP_Score_FieldWidths widths )
 {
     cout.setf( ios::fixed, ios::floatfield );
     cout.setf( ios::showpoint );
 
     if ( m_total_buf > 0 )
     {
-        cout << " " << SCOREP_Score_getFilterSymbol( m_filter ) << right
-             << setw( 6 ) << SCOREP_Score_getTypeName( m_type )
-             << setw( 16 ) << get_number_with_comma( getMaxTraceBufferSize() )
-             << setw( 14 ) << get_number_with_comma( m_visits )
-             << setw( 13 ) << setprecision( 2 ) << m_total_time
-             << setw( 9 )  << setprecision( 1 ) << 100.0 / totalTime * m_total_time
-             << setw( 16 ) << setprecision( 2 ) << m_total_time / m_visits * 1000000
-             << left << "  " << m_name << endl;
+        cout << " " << SCOREP_Score_getFilterSymbol( m_filter ) << " "
+             << right
+             << " " << setw( widths.m_type ) << SCOREP_Score_getTypeName( m_type )
+             << " " << setw( widths.m_bytes ) << get_number_with_comma( getMaxTraceBufferSize() )
+             << " " << setw( widths.m_visits ) << get_number_with_comma( m_visits )
+             << " " << setw( widths.m_time ) << setprecision( 2 ) << m_total_time
+             << " " << setw( 7 )  << setprecision( 1 ) << 100.0 / totalTime * m_total_time
+             << " " << setw( widths.m_time_per_visit ) << setprecision( 2 ) << m_total_time / m_visits * 1000000
+             << left
+             << "  " << m_name << endl;
     }
 }
 

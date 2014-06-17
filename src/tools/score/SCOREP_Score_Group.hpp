@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -41,6 +41,53 @@
 #include "SCOREP_Score_Types.hpp"
 #include <string>
 #include <stdint.h>
+
+/**
+ * This struct is used to keep track of the minimal required field
+ * widths of the score output columns.
+ */
+struct SCOREP_Score_FieldWidths
+{
+    /**
+     * Creates an instance of SCOREP_Score_Field_Widths, initializing
+     * all width attributes with their minimal values (based on the
+     * column header).
+     */
+    SCOREP_Score_FieldWidths()
+        : m_type( 4 ),
+          m_bytes( 10 ),
+          m_visits( 6 ),
+          m_time( 7 ),
+          m_time_per_visit( 14 )
+    {
+    }
+
+    /**
+     * Stores the required width of the 'type' column.
+     */
+    int m_type;
+
+    /**
+     * Stores the required width of the 'max_buf[b]' column.
+     */
+    int m_bytes;
+
+    /**
+     * Stores the required width of the 'visits' column.
+     */
+    int m_visits;
+
+    /**
+     * Stores the required width of the 'time[s]' column.
+     */
+    int m_time;
+
+    /**
+     * Stores the required width of the 'time/visit[us]' column.
+     */
+    int m_time_per_visit;
+};
+
 
 /**
  * This class represents a group. If the user requested a per
@@ -80,11 +127,20 @@ public:
                uint64_t process );
 
     /**
-     * Prints the region data to the standart output device.
-     * @param totalTime The total time spend in the application.
+     * Updates the field width to the required values.
+     * @param widths Current field widths.
      */
     void
-    print( double totalTime );
+    updateWidths( SCOREP_Score_FieldWidths& widths );
+
+    /**
+     * Prints the region data to the standart output device.
+     * @param totalTime The total time spend in the application.
+     * @param widths    Field widths used for printing.
+     */
+    void
+    print( double                   totalTime,
+           SCOREP_Score_FieldWidths widths );
 
     /**
      * Returns the time spend in this group on all processes.

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -152,6 +152,11 @@ private:
      * of events.
      */
     SCOREP_Score_Group** m_filtered;
+
+    /**
+     * Stores the minimal required field widths of the score output.
+     */
+    SCOREP_Score_FieldWidths m_widths;
 
     /**
      * Stores the number of region definitons.
