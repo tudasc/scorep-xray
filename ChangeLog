@@ -88,6 +88,8 @@
   initialization for unknown reasons.
 - Use "-G2" if the Cray compiler instrumentation is used.
   The previous "-g" flag disabled all optimizations.
+- Fix creation of experiment directory, if the monitored application make
+  use of 'chdir' operation.
 
 ------------------- Released version 1.2.3 ---------------------------
 

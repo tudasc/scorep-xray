@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -58,7 +58,25 @@
 #include <stdbool.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <unistd.h>
 #include <inttypes.h>
+
+
+/** @def WORK_DIR_SIZE length for buffer storing the current working directory */
+#define WORK_DIR_SIZE 1024
+
+/** @def FORMAT_TIME_SIZE length for generated experiment directory names based on timestamp */
+#define FORMAT_TIME_SIZE  128
+
+/** @def SCOREP_FAILED_DIR_NAME_PREFIX directory name prefix of failed Score-P measurement runs */
+#define SCOREP_FAILED_DIR_NAME_PREFIX "scorep-failed-"
+
+/** @def SCOREP_DIR_NAME_PREFIX directory name prefix of Score-P measurement runs */
+#define SCOREP_DIR_NAME_PREFIX "scorep-"
+
+/** @def SCOREP_TMP_DIR_NAME name of temporary Score-P directory */
+#define SCOREP_TMP_DIR_NAME "scorep-measurement-tmp"
+
 
 /* *INDENT-OFF* */
 extern bool scorep_create_experiment_dir(void (*createDir) (void) );
@@ -69,9 +87,9 @@ static void scorep_dump_config( void );
 /* *INDENT-ON* */
 
 
-static const char* scorep_experiment_dir_name;
-static bool scorep_experiment_dir_needs_rename;
-/* length for generated experiment directory names based on timestamp */
+static char scorep_working_directory[ WORK_DIR_SIZE ];
+static char* scorep_experiment_dir_name;
+static bool  scorep_experiment_dir_needs_rename;
 
 
 const char*
@@ -110,17 +128,45 @@ scorep_create_experiment_dir_name( void )
         return;
     }
 
-    scorep_experiment_dir_name = SCOREP_Env_GetExperimentDirectory();
+    const char* env_get_experiment_dir_name;
+    env_get_experiment_dir_name = SCOREP_Env_GetExperimentDirectory();
 
-    /* if the user does not specified an experiment name,
-     * use scorep-measurement-tmp and rename it to a timestamp based
-     * at the end.
-     */
-    if ( 0 == strlen( scorep_experiment_dir_name ) )
+    scorep_working_directory[ 0 ] = '\0';
+
+    if ( UTILS_IO_GetCwd( scorep_working_directory, sizeof( scorep_working_directory ) - 1 ) == NULL )
     {
-        static char tmp_experiment_dir_name_buf[] = "scorep-measurement-tmp";
-        scorep_experiment_dir_name         = tmp_experiment_dir_name_buf;
+        UTILS_ERROR_POSIX( "Error while getting absolute path name of the current working directory." );
+        _Exit( EXIT_FAILURE );
+    }
+
+    if ( strlen( env_get_experiment_dir_name ) == 0 )
+    {
+        /*
+         * if the user does not specified an experiment name,
+         * use default temporary directory name and rename it to a timestamp based
+         * at the end.
+         */
+
+        scorep_experiment_dir_name = UTILS_IO_JoinPath( 2, scorep_working_directory,
+                                                        SCOREP_TMP_DIR_NAME );
         scorep_experiment_dir_needs_rename = true;
+    }
+    else
+    {
+        /*
+         * if the user specified an experiment name, use this one,
+         * no need to rename it at the end
+         */
+
+        /*
+         * If env_get_experiment_dir_name contains an absolute path,
+         * scorep_working_directory will be skipped by UTILS_IO_JoinPath,
+         * otherwise scorep_experiment_dir_name is set to scorep_working_directory +
+         * path separator + env_get_experiment_dir_name
+         */
+        scorep_experiment_dir_name = UTILS_IO_JoinPath( 2, scorep_working_directory,
+                                                        env_get_experiment_dir_name );
+        scorep_experiment_dir_needs_rename = false;
     }
 }
 
@@ -132,12 +178,11 @@ scorep_dir_name_is_created( void )
 }
 
 
-#define format_time_size  128
 static const char*
 scorep_format_time( time_t* timestamp )
 {
     assert( !SCOREP_Thread_InParallel() ); // localtime() not reentrant
-    static char local_time_buf[ format_time_size ];
+    static char local_time_buf[ FORMAT_TIME_SIZE ];
     time_t      now;
     struct tm*  local_time;
 
@@ -154,11 +199,11 @@ scorep_format_time( time_t* timestamp )
         _Exit( EXIT_FAILURE );
     }
 
-    strftime( local_time_buf, format_time_size - 1, "%Y%m%d_%H%M_", local_time );
+    strftime( local_time_buf, FORMAT_TIME_SIZE - 1, "%Y%m%d_%H%M_", local_time );
     snprintf( &( local_time_buf[ strlen( local_time_buf ) ] ),
-              format_time_size - strlen( local_time_buf ) - 1,
+              FORMAT_TIME_SIZE - strlen( local_time_buf ) - 1,
               "%" PRIu64, SCOREP_GetClockTicks() );
-    local_time_buf[ format_time_size - 1 ] = '\0';
+    local_time_buf[ FORMAT_TIME_SIZE - 1 ] = '\0';
 
     return local_time_buf;
 }
@@ -189,17 +234,24 @@ scorep_create_directory( void )
         if ( scorep_experiment_dir_needs_rename )
         {
             /*
-             * we use the default scorep-measurement-tmp directory,
+             * we use the default temporary directory,
              * rename previous failed runs away
              */
-            char failed_experiment_dir_name[ sizeof( "scorep-failed-" ) + format_time_size ] = "scorep-failed-";
-            strcat( failed_experiment_dir_name, scorep_format_time( NULL ) );
+            char* tmp = calloc( strlen( SCOREP_FAILED_DIR_NAME_PREFIX ) + FORMAT_TIME_SIZE + 1,
+                                sizeof( char ) );
+            UTILS_ASSERT( tmp );
+            strncat( tmp, SCOREP_FAILED_DIR_NAME_PREFIX, strlen( SCOREP_FAILED_DIR_NAME_PREFIX ) );
+            strncat( tmp, scorep_format_time( NULL ), FORMAT_TIME_SIZE );
+            char* failed_experiment_dir_name = UTILS_IO_JoinPath( 2, scorep_working_directory, tmp );
+
             if ( rename( scorep_experiment_dir_name, failed_experiment_dir_name ) != 0 )
             {
                 UTILS_ERROR_POSIX( "Can't rename experiment directory \"%s\" to \"%s\".",
                                    scorep_experiment_dir_name, failed_experiment_dir_name );
                 _Exit( EXIT_FAILURE );
             }
+            free( failed_experiment_dir_name );
+            free( tmp );
         }
         else
         {
@@ -273,11 +325,16 @@ SCOREP_RenameExperimentDir( void )
     }
 
     /*
-     * we use the default scorep-measurement-tmp,
+     * we use the default temporary directory,
      * thus rename it to a timestamped based directory name
      */
-    char new_experiment_dir_name[ sizeof( "scorep-" ) + format_time_size ] = "scorep-";
-    strcat( new_experiment_dir_name, scorep_format_time( NULL ) );
+    char* tmp = calloc( strlen( SCOREP_DIR_NAME_PREFIX ) + FORMAT_TIME_SIZE + 1,
+                        sizeof( char ) );
+    UTILS_ASSERT( tmp );
+    strncat( tmp, SCOREP_DIR_NAME_PREFIX, strlen( SCOREP_DIR_NAME_PREFIX ) );
+    strncat( tmp, scorep_format_time( NULL ), FORMAT_TIME_SIZE );
+    char* new_experiment_dir_name = UTILS_IO_JoinPath( 2, scorep_working_directory, tmp );
+
     if ( rename( scorep_experiment_dir_name, new_experiment_dir_name ) != 0 )
     {
         UTILS_ERROR_POSIX( "Can't rename experiment directory from \"%s\" to \"%s\".",
@@ -289,6 +346,8 @@ SCOREP_RenameExperimentDir( void )
     {
         printf( "[Score-P] final experiment directory: %s\n", new_experiment_dir_name );
     }
+    free( new_experiment_dir_name );
+    free( tmp );
 }
 
 static void
