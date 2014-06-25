@@ -69,6 +69,22 @@ void
 SCOREP_Instrumenter_Adapter::checkDependencies( void )
 {
     SCOREP_Instrumenter_DependencyList::iterator i;
+    bool                                         prereqs = m_prerequisites.empty();
+
+    for ( i = m_prerequisites.begin(); i != m_prerequisites.end(); i++ )
+    {
+        if ( getAdapter( *i )->isEnabled() )
+        {
+            prereqs = true;
+            break;
+        }
+    }
+    if ( !prereqs )
+    {
+        m_usage = disabled;
+        std::cerr << "WARNING: Disabled " << m_name << " because no of its "
+                  << "prerequisites are enabled." << std::endl;
+    }
 
     for ( i = m_conflicts.begin(); i != m_conflicts.end(); i++ )
     {
@@ -133,6 +149,9 @@ SCOREP_Instrumenter_Adapter::printHelp( void )
 
         printDepList( &m_requires,
                       space + "It requires and, thus, automatically enables " );
+        printDepList( &m_prerequisites,
+                      space + "It can not be enabled, if not at least one of the "
+                      "following is enabled: " );
         printDepList( &m_conflicts,
                       space + "It conflicts and, thus, automatically disables " );
         printDepList( &m_default_on,

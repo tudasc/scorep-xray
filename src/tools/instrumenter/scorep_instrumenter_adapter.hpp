@@ -287,8 +287,20 @@ protected:
 
     /**
      * Stores ids of adapters which are required by this adapter to work.
+     * If the required adapters are not enabled, it will automatically
+     * enable them if not explicitly disabled by the user. If the
+     * required adapter was disabled by the user, the instrumenter will
+     * quit with an error message.
      */
     SCOREP_Instrumenter_DependencyList m_requires;
+
+    /**
+     * Stores ids of adapters which are required by this adapter to work.
+     * If none of the adapters in the list is enabled, the adapter can
+     * not be enabled. The instrumenter prints a warning that it was
+     * not possible to enable the adapter.
+     */
+    SCOREP_Instrumenter_DependencyList m_prerequisites;
 
     /**
      * Stores ids of adapters which must bot be used together with this adapter.

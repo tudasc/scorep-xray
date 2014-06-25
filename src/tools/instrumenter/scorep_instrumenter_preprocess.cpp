@@ -44,7 +44,7 @@ SCOREP_Instrumenter_PreprocessAdapter::SCOREP_Instrumenter_PreprocessAdapter( vo
     : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_PREPROCESS, "preprocess" )
 {
     m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_PDT );
-    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
+    m_prerequisites.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
 }
 
 std::string
