@@ -17,23 +17,45 @@ Common options are:
                   instrumentation. By default, temporary files are deleted
                   if no error occures during instrumentation.
   --version       Prints the Score-P version and exits.
-  --mpi           Enables mpi wrapper. They are enabled by default if it is an
-                  mpi program.
-  --nompi         Disables mpi wrappers. They are disabled by default if
-                  it is no mpi program.
-  --openmp        Enables OpenMP support. Needed if the instrumentation
-                  does not correctly identify your application as OpenMP
-                  program.
-  --noopenmp      Disables OpenMP support.
+  --static        Enforce static linking of the Score-P libraries.
+  --dynamic       Enforce dynamic linking of the Score-P libraries.
   --no-as-needed  Adds a GNU ld linker flag to fix undefined references
                   when using shared Score-P libraries. This happens on
                   systems using --as-needed as linker default. It will
                   be handled transparently in future releases of Score-P.
+  --thread=<paradigm>[:<variant>]
+                  Possible paradigms and variants are:
+              none
+                  No thread support.
+              omp:pomp_tpd
+                  OpenMP support using OPARI2 thread tracking
+                  It requires and, thus, automatically enables opari instrumentation.
+              omp:ancestry
+                  OpenMP support using thread tracking with ancestry functions in OpenMP 3.0 and later
+                  It requires and, thus, automatically enables opari instrumentation.
+  --mpp=<paradigm>[:<variant>]
+                  Possible paradigms and variants are:
+              none
+                  No multi-process support.
+              mpi
+                  MPI support using library wrapping
+  --mutex=<paradigm>[:<variant>]
+                  Possible paradigms and variants are:
+              none
+                  serial case, no locking
+              pthread
+                  Pthread mutex locks
+              pthread:spinlock
+                  Pthread spinlocks
+              omp
+                  OpenMP locks
   --nocobi        Disables cobi instrumentation.
   --compiler      Enables compiler instrumentation.
                   By default, it disables cobi and pdt instrumentation.
   --nocompiler    Disables compiler instrumentation.
   --nocuda        Disables cuda instrumentation.
+  --online-access Enables online-access support. It is disabled by default
+  --noonline-access online-access Disables online-access support.
   --pomp[=<paramter-list>]
                   Enables pomp user instrumentation.
                   You may add additional parameters that are passed to OPARI2.
@@ -52,6 +74,7 @@ Common options are:
                   By default, it disables cobi and compiler instrumentation.
   --nopdt         Disables pdt instrumentation.
   --preprocess    Enables preprocess instrumentation.
+                  It requires and, thus, automatically enables opari instrumentation.
                   It conflicts and, thus, automatically disables pdt instrumentation.
   --nopreprocess  Disables preprocess instrumentation.
   --user          Enables user instrumentation.
