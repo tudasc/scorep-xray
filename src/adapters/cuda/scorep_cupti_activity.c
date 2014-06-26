@@ -74,7 +74,8 @@ typedef enum
 static bool scorep_cupti_activity_initialized               = false;
 static bool scorep_cupti_activity_finalized                 = false;
 
-static bool scorep_cupti_activity_enabled                   = false;
+/* enable state of individual CUPTI activity types (zero is disabled) */
+uint8_t scorep_cupti_activity_state                         = 0;
 
 /* global region IDs for wrapper internal recording */
 SCOREP_RegionHandle scorep_cupti_buffer_flush_region_handle = SCOREP_INVALID_REGION;
@@ -693,7 +694,7 @@ scorep_cupti_activity_enable( bool enable )
 {
     if ( enable ) /* enable activities */
     {
-        if ( !scorep_cupti_activity_enabled )
+        if ( !scorep_cupti_activity_state )
         {
             /* enable kernel recording */
             if ( scorep_cuda_record_kernels )
@@ -702,32 +703,31 @@ scorep_cupti_activity_enable( bool enable )
                 if ( !( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_SERIAL ) )
                 {
                     SCOREP_CUPTI_CALL( cuptiActivityEnable( CUPTI_ACTIVITY_KIND_CONCURRENT_KERNEL ) );
+                    scorep_cupti_activity_state |= SCOREP_CUPTI_ACTIVITY_STATE_CONCURRENT_KERNEL;
                 }
                 else
   #endif
                 {
                     SCOREP_CUPTI_CALL( cuptiActivityEnable( CUPTI_ACTIVITY_KIND_KERNEL ) );
+                    scorep_cupti_activity_state |= SCOREP_CUPTI_ACTIVITY_STATE_KERNEL;
                 }
-
-                scorep_cupti_activity_enabled = true;
             }
 
             /* enable memory copy tracing */
-            if ( scorep_cuda_record_memcpy )
+            if ( scorep_cuda_record_memcpy && scorep_cuda_sync_level == 0 )
             {
                 SCOREP_CUPTI_CALL( cuptiActivityEnable( CUPTI_ACTIVITY_KIND_MEMCPY ) );
-
-                scorep_cupti_activity_enabled = true;
+                scorep_cupti_activity_state |= SCOREP_CUPTI_ACTIVITY_STATE_MEMCPY;
             }
 
             /* create new synchronization points */
-            if ( scorep_cupti_activity_enabled )
+            if ( scorep_cupti_activity_state )
             {
                 synchronize_context_list();
             }
         }
     }
-    else if ( scorep_cupti_activity_enabled ) /* disable activities */
+    else if ( scorep_cupti_activity_state ) /* disable activities */
     {
         /* disable kernel recording */
         if ( scorep_cuda_record_kernels )
@@ -736,11 +736,13 @@ scorep_cupti_activity_enable( bool enable )
             if ( !( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_SERIAL ) )
             {
                 SCOREP_CUPTI_CALL( cuptiActivityDisable( CUPTI_ACTIVITY_KIND_CONCURRENT_KERNEL ) );
+                scorep_cupti_activity_state &= ~SCOREP_CUPTI_ACTIVITY_STATE_CONCURRENT_KERNEL;
             }
             else
 #endif
             {
                 SCOREP_CUPTI_CALL( cuptiActivityDisable( CUPTI_ACTIVITY_KIND_KERNEL ) );
+                scorep_cupti_activity_state &= ~SCOREP_CUPTI_ACTIVITY_STATE_KERNEL;
             }
         }
 
@@ -748,9 +750,8 @@ scorep_cupti_activity_enable( bool enable )
         if ( scorep_cuda_record_memcpy )
         {
             SCOREP_CUPTI_CALL( cuptiActivityDisable( CUPTI_ACTIVITY_KIND_MEMCPY ) );
+            scorep_cupti_activity_state &= ~SCOREP_CUPTI_ACTIVITY_STATE_MEMCPY;
         }
-
-        scorep_cupti_activity_enabled = false;
 
         /* flush activities */
 #if HAVE( CUPTI_ASYNC_SUPPORT )

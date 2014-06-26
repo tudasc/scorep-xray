@@ -46,6 +46,16 @@ typedef CUpti_ActivityKernel2 CUpti_ActivityKernelType;
 typedef CUpti_ActivityKernel  CUpti_ActivityKernelType;
 #endif
 
+/* Defines CUPTI activity states to monitor enable/disable state */
+#define SCOREP_CUPTI_ACTIVITY_STATE_KERNEL                ( 1 << 0 )
+#define SCOREP_CUPTI_ACTIVITY_STATE_CONCURRENT_KERNEL     ( 1 << 1 )
+#define SCOREP_CUPTI_ACTIVITY_STATE_MEMCPY                ( 1 << 2 )
+
+/**
+ * enable state of individual CUPTI activity types
+ */
+extern uint8_t scorep_cupti_activity_state;
+
 /**
  * Initialize the Score-P CUPTI Activity implementation.
  *
