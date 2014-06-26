@@ -103,10 +103,8 @@ You can subscribe to the news@score-p.org and users@score-p.org by ...
     	\begin{tabular}{ | p{3.3cm} | p{2cm} | p{1.6cm} | p{4.0cm} |}
 	    \hline
 	    \bf List Address & \bf Subscription & \bf Posting & \bf Usage \\ \hline
-news@score-p.org & open & core team & Important news regarding the Score-P software, e.g. announcements of new releases. \\ \hline
 users@score-p.org  & open & subscribers & Anything related to the Score-P project: usage, problems, feature requests, etc. \\ \hline
 support@score-p.org & closed & anyone & Bug reports and general user support for the Score-P software. \\ \hline
-info@score-p.org & closed & anyone & General information about the Score-P consortium and collaboration requests.   \\ \hline
     	\end{tabular}
     \end{table}
 \endlatexonly
@@ -127,22 +125,10 @@ info@score-p.org & closed & anyone & General information about the Score-P conso
       <td align="left" valign="middle">Important news regarding the Score-P software, e.g. announcements of new releases.</td>
     </tr>
     <tr>
-      <td align="left" valign="middle">users@score-p.org</td>
-      <td align="center" valign="middle">open</td>
-      <td align="center" valign="middle">subscribers</td>
-      <td align="left" valign="middle">Anything related to the Score-P project: usage, problems, feature requests, etc.</td>
-    </tr>
-    <tr>
       <td align="left" valign="middle">support@score-p.org</td>
       <td align="center" valign="middle">closed</td>
       <td align="center" valign="middle">anyone</td>
       <td align="left" valign="middle">Bug reports and general user support for the Score-P software.</td>
-    </tr>
-    <tr>
-      <td align="left" valign="middle">info@score-p.org</td>
-      <td align="center" valign="middle">closed</td>
-      <td align="center" valign="middle">anyone</td>
-      <td align="left" valign="middle">General information about the Score-P consortium and collaboration requests.</td>
     </tr>
 
   </table>
