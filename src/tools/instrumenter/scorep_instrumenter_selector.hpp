@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -107,6 +110,18 @@ public:
                   const std::string& next );
 
     /**
+     * This function is called during the command line parsing of the user
+     * command. It decides whether options following the compiler name
+     * belong to a wrapper, or to a build command.
+     * @param current The current argument that is evaluated.
+     * @param next    The next parameter.
+     * @returns true if the current argument is a wrapper option.
+     */
+    virtual bool
+    checkWrapperOption( const std::string& current,
+                        const std::string& next );
+
+    /**
      * Processes a key value pair from a config file. The default implementation
      * invokes the check for all paradigms of this group.
      * @param key   The key that is sepcified.
@@ -189,6 +204,18 @@ public:
     static bool
     checkAllCommand( const std::string& current,
                      const std::string& next );
+
+    /**
+     * Let the selected paradigm decide whether options
+     * following the compiler name belong to a wrapper, or
+     * to a build command.
+     * @param current The current argument that is evaluated.
+     * @param next    The next parameter.
+     * @returns true if the current argument is a wrapper option.
+     */
+    static bool
+    checkAllWrapperOption( const std::string& current,
+                           const std::string& next );
 
     /**
      * Let all paradigms evaluate a scorep option.

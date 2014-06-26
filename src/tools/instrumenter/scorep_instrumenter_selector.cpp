@@ -94,6 +94,13 @@ SCOREP_Instrumenter_Selector::checkCommand(  const std::string& current,
 }
 
 bool
+SCOREP_Instrumenter_Selector::checkWrapperOption(  const std::string& current,
+                                                   const std::string& next )
+{
+    return m_current_selection->checkWrapperOption( current, next );
+}
+
+bool
 SCOREP_Instrumenter_Selector::checkOption( std::string arg )
 {
     SCOREP_Instrumenter_ParadigmList::iterator paradigm;
@@ -250,6 +257,21 @@ SCOREP_Instrumenter_Selector::checkAllCommand( const std::string& current,
         skip_next |= ( *selector )->checkCommand( current, next );
     }
     return skip_next;
+}
+
+bool
+SCOREP_Instrumenter_Selector::checkAllWrapperOption( const std::string& current,
+                                                     const std::string& next )
+{
+    bool                                       is_wrapper_option = false;
+    SCOREP_Instrumenter_SelectorList::iterator selector;
+    for ( selector = m_selector_list.begin();
+          selector != m_selector_list.end();
+          selector++ )
+    {
+        is_wrapper_option |= ( *selector )->checkWrapperOption( current, next );
+    }
+    return is_wrapper_option;
 }
 
 void

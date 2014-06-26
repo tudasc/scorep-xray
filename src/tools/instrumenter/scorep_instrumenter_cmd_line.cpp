@@ -118,6 +118,8 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
                 /* Skip this, it was already processed */
                 mode = scorep_parse_mode_command;
                 break;
+            case scorep_parse_mode_wrapper_option:
+                mode = parse_wrapper_option( argv[ i ], next );
         }
     }
 
@@ -311,7 +313,7 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
         m_compiler_name = arg;
         SCOREP_Instrumenter_Adapter::checkAllCompilerName( arg );
         SCOREP_Instrumenter_Selector::checkAllCompilerName( arg );
-        return scorep_parse_mode_command;
+        return scorep_parse_mode_wrapper_option;
     }
 
     /* Check for execution parameters */
@@ -458,6 +460,18 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
 
     /* Never executed but removes a warning with xl-compilers. */
     return scorep_parse_mode_param;
+}
+
+SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t
+SCOREP_Instrumenter_CmdLine::parse_wrapper_option( const std::string& current,
+                                                   const std::string& next )
+{
+    if ( SCOREP_Instrumenter_Selector::checkAllWrapperOption( current, next ) )
+    {
+        m_compiler_name += " " + current;
+        return scorep_parse_mode_wrapper_option;
+    }
+    return parse_command( current, next );
 }
 
 SCOREP_Instrumenter_CmdLine::scorep_parse_mode_t

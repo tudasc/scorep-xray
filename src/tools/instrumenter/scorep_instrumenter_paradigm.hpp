@@ -149,6 +149,20 @@ public:
     virtual void
     checkObjects( SCOREP_Instrumenter* instrumenter );
 
+    /**
+     * This function is called during the command line parsing of the user
+     * command. It decides whether options following the compiler name
+     * belong to a wrapper, or to a build command.
+     * It is only called, if the detection or selection of this paradigm,
+     * suggested that this paradigm will be selected.
+     * @param current The current argument that is evaluated.
+     * @param next    The next parameter.
+     * @returns true if the current argument is a wrapper option.
+     */
+    virtual bool
+    checkWrapperOption( const std::string& current,
+                        const std::string& next );
+
 protected:
     /**
      * If the paradigm is not supported by this installation. This function

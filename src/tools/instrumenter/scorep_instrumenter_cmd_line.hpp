@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -68,7 +68,10 @@ private:
        in state scorep_parse_mode_param which means that arguments are
        interpreted as options of the wrapper tool. When the first
        argument is reached which has no leading dash it assumes that
-       this is the compiler or linker command and changes to
+       this is the compiler or linker command. Then the parser chages to
+       scorep_parse_mode_wrapper_option to check whether the next option(s)
+       pass information to a compiler wrapper. On the first, option that
+       does not belong to the wrapper itself, the mode changes to
        scorep_parse_mode_command. All further arguments are
        interpreted as arguments for the compiler/linker. The states
        scorep_parse_mode_output, and scorep_parse_mode_config are used
@@ -84,7 +87,8 @@ private:
     {
         scorep_parse_mode_param,
         scorep_parse_mode_command,
-        scorep_parse_mode_option_part
+        scorep_parse_mode_option_part,
+        scorep_parse_mode_wrapper_option
     } scorep_parse_mode_t;
 
     /* ****************************************************** Public methods */
@@ -224,6 +228,16 @@ private:
     scorep_parse_mode_t
     parse_command( const std::string& current,
                    const std::string& next );
+
+    /**
+       Evaluates one parameter when in wrapper option mode
+       @param current  The current argument
+       @param next     The next argument
+       @returns the parsing mode for the next parameter.
+     */
+    scorep_parse_mode_t
+    parse_wrapper_option( const std::string& current,
+                          const std::string& next );
 
     /**
        Evaluates one parameter when in parameter mode.

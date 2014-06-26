@@ -134,6 +134,13 @@ SCOREP_Instrumenter_Paradigm::checkCommand( const std::string& current,
     return false;
 }
 
+bool
+SCOREP_Instrumenter_Paradigm::checkWrapperOption( const std::string& current,
+                                                  const std::string& next )
+{
+    return false;
+}
+
 void
 SCOREP_Instrumenter_Paradigm::setConfigValue( const std::string& key,
                                               const std::string& value )

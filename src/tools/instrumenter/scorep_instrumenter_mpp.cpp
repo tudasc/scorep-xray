@@ -91,6 +91,34 @@ SCOREP_Instrumenter_Mpi::checkCommand( const std::string& current,
     return false;
 }
 
+bool
+SCOREP_Instrumenter_Mpi::checkWrapperOption( const std::string& current,
+                                             const std::string& next )
+{
+    static bool next_is_also_wrapper = false;
+
+    if ( next_is_also_wrapper )
+    {
+        next_is_also_wrapper = false;
+        return true;
+    }
+    else if ( current == "-ccl" )
+    {
+        next_is_also_wrapper = true;
+        return true;
+    }
+    else if ( ( current.substr( 0, 4 ) == "-cc=" ) ||
+              ( current.substr( 0, 4 ) == "-CC=" ) ||
+              ( current.substr( 0, 5 ) == "-cxx=" ) ||
+              ( current.substr( 0, 5 ) == "-f77=" ) ||
+              ( current.substr( 0, 5 ) == "-f90=" ) ||
+              ( current.substr( 0, 4 ) == "-fc=" ) )
+    {
+        return true;
+    }
+    return false;
+}
+
 void
 SCOREP_Instrumenter_Mpi::checkObjects( SCOREP_Instrumenter* instrumenter )
 {

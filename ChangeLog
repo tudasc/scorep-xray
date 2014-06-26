@@ -90,6 +90,8 @@
   The previous "-g" flag disabled all optimizations.
 - Fix creation of experiment directory, if the monitored application make
   use of 'chdir' operation.
+- The scorep instrumenter tool moved compiler selection flags for the
+  MPI compiler wrapper to a different location in the command line. Fixed.
 
 ------------------- Released version 1.2.3 ---------------------------
 
