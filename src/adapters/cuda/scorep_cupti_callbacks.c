@@ -40,6 +40,7 @@
 #include "SCOREP_Definitions.h"
 #include "SCOREP_Events.h"
 #include "SCOREP_Types.h"
+#include "SCOREP_Filter.h"
 
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
@@ -831,13 +832,16 @@ scorep_cupti_callbacks_runtime_api( CUpti_CallbackId          callbackId,
        this point */
 
     /*********** write enter and exit records for CUDA runtime API **************/
-    if ( cbInfo->callbackSite == CUPTI_API_ENTER )
+    if ( !SCOREP_Filter_MatchFunction( cbInfo->functionName, NULL ) )
     {
-        SCOREP_Location_EnterRegion( location, time, region_handle );
-    }
-    else if ( cbInfo->callbackSite == CUPTI_API_EXIT )
-    {
-        SCOREP_Location_ExitRegion( location, time, region_handle );
+        if ( cbInfo->callbackSite == CUPTI_API_ENTER )
+        {
+            SCOREP_Location_EnterRegion( location, time, region_handle );
+        }
+        else if ( cbInfo->callbackSite == CUPTI_API_EXIT )
+        {
+            SCOREP_Location_ExitRegion( location, time, region_handle );
+        }
     }
 
     /*
@@ -1209,166 +1213,169 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
     if ( record_driver_api )
     {
         /********** write enter and exit records for CUDA driver API **********/
-        if ( cbInfo->callbackSite == CUPTI_API_ENTER )
+        if ( !SCOREP_Filter_MatchFunction( cbInfo->functionName, NULL ) )
         {
-            /* handle callbacks which might have to write reference attributes separately */
-            switch ( callbackId )
+            if ( cbInfo->callbackSite == CUPTI_API_ENTER )
             {
-                case CUPTI_DRIVER_TRACE_CBID_cuLaunchKernel:
+                /* handle callbacks which might have to write reference attributes separately */
+                switch ( callbackId )
                 {
-                    cuLaunchKernel_params* params =
-                        ( cuLaunchKernel_params* )cbInfo->functionParams;
+                    case CUPTI_DRIVER_TRACE_CBID_cuLaunchKernel:
+                    {
+                        cuLaunchKernel_params* params =
+                            ( cuLaunchKernel_params* )cbInfo->functionParams;
 
-                    enter_with_refs( location, &time, region_handle,
-                                     cbInfo->context, params->hStream,
-                                     NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
-                    break;
+                        enter_with_refs( location, &time, region_handle,
+                                         cbInfo->context, params->hStream,
+                                         NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
+                        break;
+                    }
+
+                    case CUPTI_DRIVER_TRACE_CBID_cuLaunchGrid:
+                    {
+                        enter_with_refs( location, &time, region_handle,
+                                         cbInfo->context, NULL, NULL,
+                                         CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
+                        break;
+                    }
+
+                    case CUPTI_DRIVER_TRACE_CBID_cuLaunchGridAsync:
+                    {
+                        cuLaunchGridAsync_params* params =
+                            ( cuLaunchGridAsync_params* )cbInfo->functionParams;
+
+                        enter_with_refs( location, &time, region_handle,
+                                         cbInfo->context, params->hStream,
+                                         NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
+                        break;
+                    }
+
+                    case CUPTI_DRIVER_TRACE_CBID_cuLaunch:
+                    {
+                        enter_with_refs( location, &time, region_handle,
+                                         cbInfo->context, NULL, NULL,
+                                         CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
+                        break;
+                    }
+
+                    default:
+                        SCOREP_Location_EnterRegion( location, time, region_handle );
                 }
-
-                case CUPTI_DRIVER_TRACE_CBID_cuLaunchGrid:
-                {
-                    enter_with_refs( location, &time, region_handle,
-                                     cbInfo->context, NULL, NULL,
-                                     CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
-                    break;
-                }
-
-                case CUPTI_DRIVER_TRACE_CBID_cuLaunchGridAsync:
-                {
-                    cuLaunchGridAsync_params* params =
-                        ( cuLaunchGridAsync_params* )cbInfo->functionParams;
-
-                    enter_with_refs( location, &time, region_handle,
-                                     cbInfo->context, params->hStream,
-                                     NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
-                    break;
-                }
-
-                case CUPTI_DRIVER_TRACE_CBID_cuLaunch:
-                {
-                    enter_with_refs( location, &time, region_handle,
-                                     cbInfo->context, NULL, NULL,
-                                     CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
-                    break;
-                }
-
-                default:
-                    SCOREP_Location_EnterRegion( location, time, region_handle );
             }
-        }
-        else if ( cbInfo->callbackSite == CUPTI_API_EXIT )
-        {
-            /* handle callbacks which might have to write reference attributes separately */
-            switch ( callbackId )
+            else if ( cbInfo->callbackSite == CUPTI_API_EXIT )
             {
-                case CUPTI_DRIVER_TRACE_CBID_cuStreamSynchronize:
+                /* handle callbacks which might have to write reference attributes separately */
+                switch ( callbackId )
                 {
-                    cuStreamSynchronize_params* params =
-                        ( cuStreamSynchronize_params* )cbInfo->functionParams;
-                    exit_with_refs( location, &time, region_handle, cbInfo->context,
-                                    params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
-                    break;
+                    case CUPTI_DRIVER_TRACE_CBID_cuStreamSynchronize:
+                    {
+                        cuStreamSynchronize_params* params =
+                            ( cuStreamSynchronize_params* )cbInfo->functionParams;
+                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                                        params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
+                        break;
+                    }
+
+                    case CUPTI_DRIVER_TRACE_CBID_cuMemcpyAsync:
+                    {
+                        cuMemcpyAsync_params* params =
+                            ( cuMemcpyAsync_params* )cbInfo->functionParams;
+
+                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                                        params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
+                        break;
+                    }
+
+                    case CUPTI_DRIVER_TRACE_CBID_cuMemcpy2DAsync:
+                    {
+                        cuMemcpy2DAsync_params* params =
+                            ( cuMemcpy2DAsync_params* )cbInfo->functionParams;
+
+                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                                        params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
+                        break;
+                    }
+
+                    case CUPTI_DRIVER_TRACE_CBID_cuMemcpy2DAsync_v2:
+                    {
+                        cuMemcpy2DAsync_v2_params* params =
+                            ( cuMemcpy2DAsync_v2_params* )cbInfo->functionParams;
+
+                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                                        params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
+                        break;
+                    }
+
+                    case CUPTI_DRIVER_TRACE_CBID_cuMemcpy3DAsync:
+                    {
+                        cuMemcpy3DAsync_params* params =
+                            ( cuMemcpy3DAsync_params* )cbInfo->functionParams;
+
+                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                                        params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
+                        break;
+                    }
+
+                    case CUPTI_DRIVER_TRACE_CBID_cuMemcpy3DAsync_v2:
+                    {
+                        cuMemcpy3DAsync_v2_params* params =
+                            ( cuMemcpy3DAsync_v2_params* )cbInfo->functionParams;
+
+                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                                        params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
+                        break;
+                    }
+
+                    case CUPTI_DRIVER_TRACE_CBID_cuEventRecord:
+                    {
+                        cuEventRecord_params* params =
+                            ( cuEventRecord_params* )cbInfo->functionParams;
+
+                        CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
+                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                                        params->hStream, params->hEvent, funcResult,
+                                        SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT | SCOREP_CUPTI_KEY_STREAM );
+                        break;
+                    }
+
+                    case CUPTI_DRIVER_TRACE_CBID_cuEventSynchronize:
+                    {
+                        cuEventSynchronize_params* params =
+                            ( cuEventSynchronize_params* )cbInfo->functionParams;
+
+                        CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
+                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                                        NULL, params->hEvent, funcResult,
+                                        SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT );
+                        break;
+                    }
+
+                    case CUPTI_DRIVER_TRACE_CBID_cuEventQuery:
+                    {
+                        cuEventQuery_params* params =
+                            ( cuEventQuery_params* )cbInfo->functionParams;
+
+                        CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
+                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                                        NULL, params->hEvent, funcResult,
+                                        SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT );
+                        break;
+                    }
+
+                    case CUPTI_DRIVER_TRACE_CBID_cuStreamWaitEvent:
+                    {
+                        cuStreamWaitEvent_params* params =
+                            ( cuStreamWaitEvent_params* )cbInfo->functionParams;
+
+                        CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
+                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                                        params->hStream, params->hEvent, funcResult,
+                                        SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT | SCOREP_CUPTI_KEY_STREAM );
+                        break;
+                    }
+                    default:
+                        SCOREP_Location_ExitRegion( location, time, region_handle );
                 }
-
-                case CUPTI_DRIVER_TRACE_CBID_cuMemcpyAsync:
-                {
-                    cuMemcpyAsync_params* params =
-                        ( cuMemcpyAsync_params* )cbInfo->functionParams;
-
-                    exit_with_refs( location, &time, region_handle, cbInfo->context,
-                                    params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
-                    break;
-                }
-
-                case CUPTI_DRIVER_TRACE_CBID_cuMemcpy2DAsync:
-                {
-                    cuMemcpy2DAsync_params* params =
-                        ( cuMemcpy2DAsync_params* )cbInfo->functionParams;
-
-                    exit_with_refs( location, &time, region_handle, cbInfo->context,
-                                    params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
-                    break;
-                }
-
-                case CUPTI_DRIVER_TRACE_CBID_cuMemcpy2DAsync_v2:
-                {
-                    cuMemcpy2DAsync_v2_params* params =
-                        ( cuMemcpy2DAsync_v2_params* )cbInfo->functionParams;
-
-                    exit_with_refs( location, &time, region_handle, cbInfo->context,
-                                    params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
-                    break;
-                }
-
-                case CUPTI_DRIVER_TRACE_CBID_cuMemcpy3DAsync:
-                {
-                    cuMemcpy3DAsync_params* params =
-                        ( cuMemcpy3DAsync_params* )cbInfo->functionParams;
-
-                    exit_with_refs( location, &time, region_handle, cbInfo->context,
-                                    params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
-                    break;
-                }
-
-                case CUPTI_DRIVER_TRACE_CBID_cuMemcpy3DAsync_v2:
-                {
-                    cuMemcpy3DAsync_v2_params* params =
-                        ( cuMemcpy3DAsync_v2_params* )cbInfo->functionParams;
-
-                    exit_with_refs( location, &time, region_handle, cbInfo->context,
-                                    params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
-                    break;
-                }
-
-                case CUPTI_DRIVER_TRACE_CBID_cuEventRecord:
-                {
-                    cuEventRecord_params* params =
-                        ( cuEventRecord_params* )cbInfo->functionParams;
-
-                    CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
-                    exit_with_refs( location, &time, region_handle, cbInfo->context,
-                                    params->hStream, params->hEvent, funcResult,
-                                    SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT | SCOREP_CUPTI_KEY_STREAM );
-                    break;
-                }
-
-                case CUPTI_DRIVER_TRACE_CBID_cuEventSynchronize:
-                {
-                    cuEventSynchronize_params* params =
-                        ( cuEventSynchronize_params* )cbInfo->functionParams;
-
-                    CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
-                    exit_with_refs( location, &time, region_handle, cbInfo->context,
-                                    NULL, params->hEvent, funcResult,
-                                    SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT );
-                    break;
-                }
-
-                case CUPTI_DRIVER_TRACE_CBID_cuEventQuery:
-                {
-                    cuEventQuery_params* params =
-                        ( cuEventQuery_params* )cbInfo->functionParams;
-
-                    CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
-                    exit_with_refs( location, &time, region_handle, cbInfo->context,
-                                    NULL, params->hEvent, funcResult,
-                                    SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT );
-                    break;
-                }
-
-                case CUPTI_DRIVER_TRACE_CBID_cuStreamWaitEvent:
-                {
-                    cuStreamWaitEvent_params* params =
-                        ( cuStreamWaitEvent_params* )cbInfo->functionParams;
-
-                    CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
-                    exit_with_refs( location, &time, region_handle, cbInfo->context,
-                                    params->hStream, params->hEvent, funcResult,
-                                    SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT | SCOREP_CUPTI_KEY_STREAM );
-                    break;
-                }
-                default:
-                    SCOREP_Location_ExitRegion( location, time, region_handle );
             }
         }
     }
@@ -2159,7 +2166,8 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
                                     stream->location_id, bytes, 42 );
         }
 
-        if ( region != SCOREP_INVALID_REGION )
+        if ( ( region != SCOREP_INVALID_REGION ) &&
+             ( !SCOREP_Filter_MatchFunction( cbInfo->functionName, NULL ) ) )
         {
             SCOREP_Location_EnterRegion( host_location, time, region );
         }

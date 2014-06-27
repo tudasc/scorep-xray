@@ -37,6 +37,7 @@
 #include <config.h>
 
 #include <SCOREP_Config.h>
+#include <SCOREP_Filter.h>
 
 #include <UTILS_CStr.h>
 
@@ -393,54 +394,57 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
             }
         }
 
-        SCOREP_Location_EnterRegion( stream_location, start, regionHandle );
-
-        /* use counter to provide additional information for kernels */
-        if ( scorep_cuda_record_kernels == SCOREP_CUDA_KERNEL_AND_COUNTER )
+        if ( !SCOREP_Filter_MatchFunction( kernel->name, NULL ) )
         {
-            /* grid and block size counter (start) */
-            {
-                uint32_t threadsPerBlock = kernel->blockX * kernel->blockY * kernel->blockZ;
-                uint32_t blocksPerGrid   = kernel->gridX * kernel->gridY * kernel->gridZ;
+            SCOREP_Location_EnterRegion( stream_location, start, regionHandle );
 
+            /* use counter to provide additional information for kernels */
+            if ( scorep_cuda_record_kernels == SCOREP_CUDA_KERNEL_AND_COUNTER )
+            {
+                /* grid and block size counter (start) */
+                {
+                    uint32_t threadsPerBlock = kernel->blockX * kernel->blockY * kernel->blockZ;
+                    uint32_t blocksPerGrid   = kernel->gridX * kernel->gridY * kernel->gridZ;
+
+                    SCOREP_Location_TriggerCounterUint64( stream_location, start,
+                                                          scorep_cupti_sampling_set_blocks_per_grid, blocksPerGrid );
+                    SCOREP_Location_TriggerCounterUint64( stream_location, start,
+                                                          scorep_cupti_sampling_set_threads_per_block, threadsPerBlock );
+                    SCOREP_Location_TriggerCounterUint64( stream_location, start,
+                                                          scorep_cupti_sampling_set_threads_per_kernel, threadsPerBlock * blocksPerGrid );
+                }
+
+                /* memory counter (start) */
                 SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                      scorep_cupti_sampling_set_blocks_per_grid, blocksPerGrid );
+                                                      scorep_cupti_sampling_set_static_shared_mem, kernel->staticSharedMemory );
                 SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                      scorep_cupti_sampling_set_threads_per_block, threadsPerBlock );
+                                                      scorep_cupti_sampling_set_dynamic_shared_mem, kernel->dynamicSharedMemory );
                 SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                      scorep_cupti_sampling_set_threads_per_kernel, threadsPerBlock * blocksPerGrid );
+                                                      scorep_cupti_sampling_set_local_mem_total, kernel->localMemoryTotal );
+                SCOREP_Location_TriggerCounterUint64( stream_location, start,
+                                                      scorep_cupti_sampling_set_registers_per_thread, kernel->registersPerThread );
+
+                /* memory counter (stop) */
+                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
+                                                      scorep_cupti_sampling_set_static_shared_mem, 0 );
+                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
+                                                      scorep_cupti_sampling_set_dynamic_shared_mem, 0 );
+                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
+                                                      scorep_cupti_sampling_set_local_mem_total, 0 );
+                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
+                                                      scorep_cupti_sampling_set_registers_per_thread, 0 );
+
+                /* grid and block size counter (stop) */
+                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
+                                                      scorep_cupti_sampling_set_blocks_per_grid, 0 );
+                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
+                                                      scorep_cupti_sampling_set_threads_per_block, 0 );
+                SCOREP_Location_TriggerCounterUint64( stream_location, stop,
+                                                      scorep_cupti_sampling_set_threads_per_kernel, 0 );
             }
 
-            /* memory counter (start) */
-            SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                  scorep_cupti_sampling_set_static_shared_mem, kernel->staticSharedMemory );
-            SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                  scorep_cupti_sampling_set_dynamic_shared_mem, kernel->dynamicSharedMemory );
-            SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                  scorep_cupti_sampling_set_local_mem_total, kernel->localMemoryTotal );
-            SCOREP_Location_TriggerCounterUint64( stream_location, start,
-                                                  scorep_cupti_sampling_set_registers_per_thread, kernel->registersPerThread );
-
-            /* memory counter (stop) */
-            SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                  scorep_cupti_sampling_set_static_shared_mem, 0 );
-            SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                  scorep_cupti_sampling_set_dynamic_shared_mem, 0 );
-            SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                  scorep_cupti_sampling_set_local_mem_total, 0 );
-            SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                  scorep_cupti_sampling_set_registers_per_thread, 0 );
-
-            /* grid and block size counter (stop) */
-            SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                  scorep_cupti_sampling_set_blocks_per_grid, 0 );
-            SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                  scorep_cupti_sampling_set_threads_per_block, 0 );
-            SCOREP_Location_TriggerCounterUint64( stream_location, stop,
-                                                  scorep_cupti_sampling_set_threads_per_kernel, 0 );
+            SCOREP_Location_ExitRegion( stream_location, stop, regionHandle );
         }
-
-        SCOREP_Location_ExitRegion( stream_location, stop, regionHandle );
 
         if ( contextActivity->scorep_last_gpu_time < stop )
         {

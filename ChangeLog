@@ -70,6 +70,7 @@
 - Changed default method of CUDA kernel recording to concurrent. Therefore
   the SCOREP_CUDA_ENABLE option 'concurrent' has been replaced with
   'kernel_serial'.
+- Added support for runtime filtering of CUDA device and host activities.
 - Fix missing flags in OPARI2 call to disable OpenMP instrumentation, if the
   user selected POMP instrumentation for a serial program without specifying
   that the program is serial, manually.
