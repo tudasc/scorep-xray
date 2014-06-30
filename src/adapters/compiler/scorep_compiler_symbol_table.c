@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -415,10 +415,11 @@ scorep_compiler_create_nm_file( char* nmfile,
 void
 scorep_compiler_get_sym_tab( void )
 {
-    FILE* nmfile;
-    char  line[ 1024 ];
-    char  path[ SCOREP_COMPILER_BUFFER_LEN ] = { 0 };
-    char  nmfilename[ 1024 ];
+    FILE*  nmfile;
+    size_t line_size                          = 0;
+    char*  line                               = NULL;
+    char   path[ SCOREP_COMPILER_BUFFER_LEN ] = { 0 };
+    char   nmfilename[ 1024 ];
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Read symbol table using nm" );
 
@@ -440,7 +441,7 @@ scorep_compiler_get_sym_tab( void )
     }
 
     /* read lines */
-    while ( fgets( line, sizeof( line ) - 1, nmfile ) )
+    while ( UTILS_IO_GetLine( &line, &line_size, nmfile ) == SCOREP_SUCCESS )
     {
         char* col;
         char  delim[ 2 ] = " ";
@@ -508,7 +509,8 @@ scorep_compiler_get_sym_tab( void )
         }
     }
 
-    /* close nm-file */
+    /* clean up */
+    free( line );
     fclose( nmfile );
     remove( nmfilename );
 }
