@@ -76,6 +76,9 @@ SCOREP_Instrumenter_MutexPthread::SCOREP_Instrumenter_MutexPthread
 ) : SCOREP_Instrumenter_Paradigm( selector, "pthread", "",
                                   "Pthread mutex locks" )
 {
+#if !SCOREP_BACKEND_HAVE_PTHREAD_MUTEX
+    unsupported();
+#endif
 }
 
 bool
@@ -97,6 +100,9 @@ SCOREP_Instrumenter_MutexPthreadSpinlock::SCOREP_Instrumenter_MutexPthreadSpinlo
 ) : SCOREP_Instrumenter_Paradigm( selector, "pthread", "spinlock",
                                   "Pthread spinlocks" )
 {
+#if !SCOREP_BACKEND_HAVE_PTHREAD_SPINLOCK
+    unsupported();
+#endif
 }
 
 bool
@@ -118,12 +124,8 @@ SCOREP_Instrumenter_Mutex::SCOREP_Instrumenter_Mutex()
     : SCOREP_Instrumenter_Selector( "mutex" )
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexMockup( this ) );
-#if SCOREP_BACKEND_HAVE_PTHREAD_MUTEX
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexPthread( this ) );
-#endif
-#if SCOREP_BACKEND_HAVE_PTHREAD_SPINLOCK
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexPthreadSpinlock( this ) );
-#endif
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexOmp( this ) );
     m_current_selection = m_paradigm_list.front();
 }

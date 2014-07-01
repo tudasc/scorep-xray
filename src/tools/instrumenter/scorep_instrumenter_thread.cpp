@@ -60,6 +60,10 @@ SCOREP_Instrumenter_OmpTpd::SCOREP_Instrumenter_OmpTpd
 {
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
     m_openmp_cflag = SCOREP_OPENMP_CFLAGS;
+
+#if !SCOREP_BACKEND_HAVE_OMP_TPD
+    unsupported();
+#endif
 }
 
 bool
@@ -127,6 +131,10 @@ SCOREP_Instrumenter_OmpAncestry::SCOREP_Instrumenter_OmpAncestry
 {
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
     m_openmp_cflag = SCOREP_OPENMP_CFLAGS;
+
+#if !SCOREP_BACKEND_HAVE_OMP_ANCESTRY
+    unsupported();
+#endif
 }
 
 bool
@@ -178,11 +186,7 @@ SCOREP_Instrumenter_Thread::SCOREP_Instrumenter_Thread()
     : SCOREP_Instrumenter_Selector( "thread" )
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_SingleThreaded( this ) );
-#if SCOREP_BACKEND_HAVE_OMP_TPD
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpTpd( this ) );
-#endif
-#if SCOREP_BACKEND_HAVE_OMP_ANCESTRY
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpAncestry( this ) );
-#endif
     m_current_selection = m_paradigm_list.front();
 }
