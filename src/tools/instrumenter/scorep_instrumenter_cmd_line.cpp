@@ -534,8 +534,20 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
             m_lmpi_set      = true;
             m_current_flags = &m_flags_after_lmpi;
         }
+        else if ( next == "c" )
+        {
+            m_flags_after_lmpi += " -lc";
+            add_library( "-lc" );
+            return scorep_parse_mode_option_part;
+        }
         add_library( "-l" + next );
         ret_val = scorep_parse_mode_option_part;
+    }
+    else if ( current == "-lc" )
+    {
+        m_flags_after_lmpi += " -lc";
+        add_library( "-lc" );
+        return scorep_parse_mode_command;
     }
     else if ( current == "-L" )
     {

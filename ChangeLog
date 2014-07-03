@@ -93,6 +93,7 @@
   use of 'chdir' operation.
 - The scorep instrumenter tool moved compiler selection flags for the
   MPI compiler wrapper to a different location in the command line. Fixed.
+- Fix broken instrumentation if the link line explcitly links libc.
 
 ------------------- Released version 1.2.3 ---------------------------
 
