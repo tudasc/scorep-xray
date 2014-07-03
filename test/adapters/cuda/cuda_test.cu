@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 
 static void runBasicTest(void)
 {
-    int n = 16 * 1024 * 1024;       // number of integers in the data set
+    int n = 512 * 1024;       // number of integers in the data set
 	int nbytes = n * sizeof(int);   // number of data bytes
 	dim3 threads, blocks;           // kernel launch configuration
     int niterations = kernel_workload;	// number of iterations for the loop inside the kernel_time
@@ -165,7 +165,7 @@ static void runBasicTest(void)
 static void runCopyComputeOverlap(int nstreams)
 {
 	int nreps = 3;                 // number of times each experiment is repeated
-	int n = 16 * 1024 * 1024;       // number of integers in the data set
+	int n = 512 * 1024;       // number of integers in the data set
 	int nbytes = n * sizeof(int);   // number of data bytes
 	dim3 threads, blocks;           // kernel launch configuration
     int niterations = kernel_workload;	// number of iterations for the loop inside the kernel_time
