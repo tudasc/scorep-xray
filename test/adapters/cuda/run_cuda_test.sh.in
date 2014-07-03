@@ -71,7 +71,7 @@ do
             continue
           fi
 
-          for streamreuse in "" #",stream_reuse"
+          for streamreuse in "" ",stream_reuse"
           do
 
             # if stream reuse is enabled, but no GPU activities enabled continue
