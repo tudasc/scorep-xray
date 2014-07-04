@@ -145,11 +145,11 @@ do
                 # Kernels launched via the CUDA runtime API create two host-side stub functions
                 # which include the kernel name. Even if no kernels are traced, these stubs still
                 # have recorded enter/leave events.
-                num_kernels_expected=4
+                num_kernels_expected=$((4*($num_streams+1)))
 
                 if [[ "$kernel" =~ "kernel" ]]; then
                     # Now we want to trace the actual device-side kernel events, too.
-                    num_kernels_expected=6
+                    num_kernels_expected=$((6*($num_streams+1)))
                 fi
 
                 if [ $num_kernels -ne $num_kernels_expected ]; then
