@@ -38,7 +38,7 @@ echo "Output of CUDA test can be found in $RESULT_DIR"
 num_streams=3
 
 ### Check basic (-b) and advanced CUDA features in the example
-for testmode in "-b" ""
+for testmode in "-b"
 do
 
 ### Check various combinations of CUDA runtime features ###

@@ -36,8 +36,8 @@
  * been extracted from the NVIDIA computing samples 'simpleStreams' and
  * 'concurrentKernels'
  *
- * The basic test runs one kernel in one stream (null stream).
- *
+ * The basic test runs one kernel in (1+num_streams) streams.
+ * 
  * This advanced test runs (1+nreps*num_streams) instances of kernel 'init_array' and
  * (num_streams) instances of kernel 'clock_block'.
  */
@@ -55,7 +55,7 @@
 
 static uint32_t kernel_workload = 20;
 
-static uint64_t cpu_usleeptime = 20000;
+static uint64_t cpu_usleeptime = 10000;
 
 static uint32_t num_streams = 3;
 
@@ -65,7 +65,7 @@ static int basic_mode = 0;
 static void __checkCUDACall(cudaError_t ecode, const char* msg,
                             const char *file, const int line);
 
-static void runBasicTest(void);
+static void runBasicTest(int nstreams);
 
 static void runCopyComputeOverlap(int nstreams);
 
@@ -89,15 +89,28 @@ __global__ void init_array(int *g_data, int *factor, int num_iterations)
 // This is a kernel that does no real work but runs at least for a specified number of clocks
 __global__ void clock_block(clock_t* d_o, clock_t clock_count)
 {
-	clock_t start_clock = clock();
+    unsigned int start_clock = (unsigned int) clock();
 
-	clock_t clock_offset = 0;
+    clock_t clock_offset = 0;
 
-	while( clock_offset < clock_count ) {
-		clock_offset = clock() - start_clock;
-	}
+    while (clock_offset < clock_count)
+    {
+        unsigned int end_clock = (unsigned int) clock();
 
-	d_o[0] = clock_offset;
+        // The code below should work like
+        // this (thanks to modular arithmetics):
+        //
+        // clock_offset = (clock_t) (end_clock > start_clock ?
+        //                           end_clock - start_clock :
+        //                           end_clock + (0xffffffffu - start_clock));
+        //
+        // Indeed, let m = 2^32 then
+        // end - start = end + m - start (mod m).
+
+        clock_offset = (clock_t)(end_clock - start_clock);
+    }
+
+    d_o[0] = clock_offset;
 }
 
 int main(int argc, char **argv)
@@ -120,27 +133,29 @@ int main(int argc, char **argv)
   }*/
 
   if (basic_mode){
-      runBasicTest();
+    runBasicTest(num_streams);
   }
   else{
     runCopyComputeOverlap(num_streams);
 
     runConcurrentKernels(num_streams);
   }
+  
+  cudaDeviceReset();
 }
 
-static void runBasicTest(void)
+static void runBasicTest(int nstreams)
 {
     int n = 512 * 1024;       // number of integers in the data set
-	int nbytes = n * sizeof(int);   // number of data bytes
-	dim3 threads, blocks;           // kernel launch configuration
+	  int nbytes = n * sizeof(int);   // number of data bytes
+	  dim3 threads, blocks;           // kernel launch configuration
     int niterations = kernel_workload;	// number of iterations for the loop inside the kernel_time
 
     // allocate host memory
-	int c = 5;            // value to which the array will be initialized
-	int *h_a = 0;         // pointer to the array data in host memory
+	  int c = 5;            // value to which the array will be initialized
+	  int *h_a = 0;         // pointer to the array data in host memory
 
-    printf("\nStarting basic test\n");
+    printf("Starting basic test\n");
     h_a = (int*)malloc(nbytes);
 
     // allocate device memory
@@ -153,10 +168,25 @@ static void runBasicTest(void)
 
     threads=dim3(512, 1);
     blocks=dim3(n / threads.x, 1);
-	init_array<<<blocks, threads>>>(d_a, d_c, niterations);
+    cudaStream_t *streams = (cudaStream_t*) malloc(nstreams * sizeof(cudaStream_t));
+    for(int i = 0; i < nstreams; i++) {
+      CUDART_CALL( cudaStreamCreate(&(streams[i])), "cudaStreamCreate");
+    }
+    
+	  init_array<<<blocks, threads>>>(d_a, d_c, niterations);
     CUDART_CALL( cudaDeviceSynchronize(), "cudaDeviceSynchronize");
+    
+    for(int i = 0; i < nstreams; i++) {
+      init_array<<<blocks, threads, 0, streams[i]>>>(d_a, d_c, niterations);
+      CUDART_CALL( cudaDeviceSynchronize(), "cudaDeviceSynchronize");
+    }
 
     // cleanup
+    for(int i = 0; i < nstreams; i++) {
+      cudaStreamDestroy(streams[i]);
+    }
+    free(streams);
+  
     cudaFree(d_a);
     cudaFree(d_c);
     free(h_a);
@@ -168,7 +198,7 @@ static void runCopyComputeOverlap(int nstreams)
 	int n = 512 * 1024;       // number of integers in the data set
 	int nbytes = n * sizeof(int);   // number of data bytes
 	dim3 threads, blocks;           // kernel launch configuration
-    int niterations = kernel_workload;	// number of iterations for the loop inside the kernel_time
+  int niterations = kernel_workload;	// number of iterations for the loop inside the kernel_time
 
 	// allocate host memory
 	int c = 5;            // value to which the array will be initialized
@@ -199,7 +229,7 @@ static void runCopyComputeOverlap(int nstreams)
 
     niterations = kernel_workload;
 
-	printf("\nStarting Copy/Compute overlap test\n");
+	printf("Starting Copy/Compute overlap test\n");
 	threads=dim3(512,1);
 	blocks=dim3(n/(nstreams*threads.x),1);
 	memset(hAligned_a, 255, nbytes); // set host memory bits to all 1s, for testing correctness
@@ -259,7 +289,7 @@ static void runConcurrentKernels(int nstreams)
 	// time execution with nkernels streams
     clock_t total_clocks = 0;
     clock_t time_clocks = kernel_time * deviceProp.clockRate;
-	printf("\nStarting concurrent kernel test\n");
+	printf("Starting concurrent kernel test\n");
 
     // queue nkernels in separate streams and record when they are done
 	for( int i=0; i<nstreams; ++i) {
