@@ -131,7 +131,7 @@ std::string
 simplify_path( const std::string& path );
 
 /**
-   Removes everything before the first slash from @a full_path.
+   Removes everything before the last slash from @a full_path.
    @param a file with its full path.
    @returns The filename without its path.
  */
