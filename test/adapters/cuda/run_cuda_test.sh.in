@@ -71,125 +71,116 @@ do
             continue
           fi
 
-          for streamreuse in "" ",stream_reuse"
+          for memusage in "" ",gpumemusage"
           do
 
-            # if stream reuse is enabled, but no GPU activities enabled continue
-            if [ "$streamreuse" = ",stream_reuse" -a "x$kernel" = "x" -a "x$mcpy" = "x" ]; then
-              continue
+            features=${cudaapi}
+
+            if [ "x$features" = "x" -a "$kernel" = ",kernel" ]; then
+              kernel="kernel"
+            fi
+            if [ "x$features" = "x" -a "$kernel" = ",kernel,references" ]; then
+              kernel="kernel,references"
+            fi
+            features="${features}${kernel}"
+
+            if [ "x$features" = "x" -a "${mcpy}" = ",memcpy" ]; then
+              mcpy="memcpy"
+            fi
+            features="${features}${mcpy}${synchr}${idle}${memusage}"
+
+            # Remove old result dir (if any)
+            rm -rf $RESULT_DIR
+
+            echo "Testing combination '${features}':"
+
+            SCOREP_CUDA_ENABLE=${features} \
+            SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY=true \
+            SCOREP_ENABLE_TRACING=yes \
+            SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR \
+            ./cuda_test ${testmode} -s ${num_streams} >cuda_test.out 2>&1
+            res=$?
+            cat cuda_test.out
+
+            if [ $res -ne 0 ]; then
+                rm -rf scorep-measurement-tmp
+                exit $res
             fi
 
-            for memusage in "" ",gpumemusage"
-            do
+            LC_ALL=C grep 'Skipping\|Cannot flush' cuda_test.out
+            if [ $? -eq 0 ]; then
+                echo "CUDA trace file is inconsistent (activities are missing)"
 
-              features=${cudaapi}
+                # NOTE: In some non-reproducible cases the buffer cannot be
+                #       flushed or activities are missing due to time
+                #       synchronization issues.
+                echo "Ignored"
+                continue
+                #rm -rf scorep-measurement-tmp
+                #exit 1
+            fi
 
-              if [ "x$features" = "x" -a "$kernel" = ",kernel" ]; then
-                kernel="kernel"
+            # if 'references' is used without 'driver', expect warning
+            if [[ "$kernel" =~ "references" && "$cudaapi" != "driver" ]]; then
+                LC_ALL=C grep "CUDA option 'references' requires option 'driver'" cuda_test.out
+                if [ $? -ne 0 ]; then
+                    echo "Did not find expected warning message for 'references'"
+                    rm -rf scorep-measurement-tmp
+                    exit 1
+                fi
+            fi
+
+            if [ "x$testmode" = "x-b" ]; then
+              # test results of basic execution
+
+              num_kernels=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'init_array')
+              # Kernels launched via the CUDA runtime API create two host-side stub functions
+              # which include the kernel name. Even if no kernels are traced, these stubs still
+              # have recorded enter/leave events.
+              num_kernels_expected=$((4*($num_streams+1)))
+
+              if [[ "$kernel" =~ "kernel" ]]; then
+                  # Now we want to trace the actual device-side kernel events, too.
+                  num_kernels_expected=$((6*($num_streams+1)))
               fi
-              if [ "x$features" = "x" -a "$kernel" = ",kernel,references" ]; then
-                kernel="kernel,references"
-              fi
-              features="${features}${kernel}"
 
-              if [ "x$features" = "x" -a "${mcpy}" = ",memcpy" ]; then
-                mcpy="memcpy"
-              fi
-              features="${features}${mcpy}${synchr}${idle}${streamreuse}${memusage}"
-
-              # Remove old result dir (if any)
-              rm -rf $RESULT_DIR
-
-              echo "Testing combination '${features}':"
-
-              SCOREP_CUDA_ENABLE=${features} \
-              SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY=true \
-              SCOREP_ENABLE_TRACING=yes \
-              SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR \
-              ./cuda_test ${testmode} -s ${num_streams} >cuda_test.out 2>&1
-              res=$?
-              cat cuda_test.out
-
-              if [ $res -ne 0 ]; then
+              if [ $num_kernels -ne $num_kernels_expected ]; then
+                  echo "CUDA trace file is inconsistent (wrong number of kernels '${num_kernels}/${num_kernels_expected}')"
                   rm -rf scorep-measurement-tmp
-                  exit $res
+                  exit 1
+              fi
+            else
+              # test results of advanced execution
+
+              num_kernels=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'clock_block')
+              # Depends on the number of CUDA streams used (num_streams).
+              num_kernels_expected=$((4*$num_streams))
+
+              if [[ "$kernel" =~ "kernel" ]]; then
+                  num_kernels_expected=$((6*$num_streams))
               fi
 
-              LC_ALL=C grep 'Skipping\|Cannot flush' cuda_test.out
-              if [ $? -eq 0 ]; then
-                  echo "CUDA trace file is inconsistent (activities are missing)"
-
-                  # NOTE: In some non-reproducible cases the buffer cannot be
-                  #       flushed or activities are missing due to time
-                  #       synchronization issues.
-                  echo "Ignored"
-                  continue
-                  #rm -rf scorep-measurement-tmp
-                  #exit 1
+              if [ $num_kernels -ne $num_kernels_expected ]; then
+                  echo "CUDA trace file is inconsistent (wrong number of kernels '${num_kernels}/${num_kernels_expected}')"
+                  rm -rf scorep-measurement-tmp
+                  exit 1
               fi
+            fi
 
-              # if 'references' is used without 'driver', expect warning
-              if [[ "$kernel" =~ "references" && "$cudaapi" != "driver" ]]; then
-                  LC_ALL=C grep "CUDA option 'references' requires option 'driver'" cuda_test.out
-                  if [ $? -ne 0 ]; then
-                      echo "Did not find expected warning message for 'references'"
-                      rm -rf scorep-measurement-tmp
-                      exit 1
-                  fi
-              fi
+            if [[ "$kernel" =~ "references" && "$cudaapi" = "driver" ]]; then
+                # test that all kernel launches have reference attributes
+                num_launches=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'cuLaunchKernel')
+                num_refs=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'ADDITIONAL ATTRIBUTES: ("CUDA_STREAM_REF')
+                num_refs=$((2*$num_refs))
 
-              if [ "x$testmode" = "x-b" ]; then
-                # test results of basic execution
-
-                num_kernels=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'init_array')
-                # Kernels launched via the CUDA runtime API create two host-side stub functions
-                # which include the kernel name. Even if no kernels are traced, these stubs still
-                # have recorded enter/leave events.
-                num_kernels_expected=$((4*($num_streams+1)))
-
-                if [[ "$kernel" =~ "kernel" ]]; then
-                    # Now we want to trace the actual device-side kernel events, too.
-                    num_kernels_expected=$((6*($num_streams+1)))
-                fi
-
-                if [ $num_kernels -ne $num_kernels_expected ]; then
-                    echo "CUDA trace file is inconsistent (wrong number of kernels '${num_kernels}/${num_kernels_expected}')"
+                if [ $num_refs -ne $num_launches ]; then
+                    echo "CUDA trace file is inconsistent (wrong number of reference attributes)"
                     rm -rf scorep-measurement-tmp
                     exit 1
                 fi
-              else
-                # test results of advanced execution
+            fi
 
-                num_kernels=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'clock_block')
-                # Depends on the number of CUDA streams used (num_streams).
-                num_kernels_expected=$((4*$num_streams))
-
-                if [[ "$kernel" =~ "kernel" ]]; then
-                    num_kernels_expected=$((6*$num_streams))
-                fi
-
-                if [ $num_kernels -ne $num_kernels_expected ]; then
-                    echo "CUDA trace file is inconsistent (wrong number of kernels '${num_kernels}/${num_kernels_expected}')"
-                    rm -rf scorep-measurement-tmp
-                    exit 1
-                fi
-              fi
-
-              if [[ "$kernel" =~ "references" && "$cudaapi" = "driver" ]]; then
-                  # test that all kernel launches have reference attributes
-                  num_launches=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'cuLaunchKernel')
-                  num_refs=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'ADDITIONAL ATTRIBUTES: ("CUDA_STREAM_REF')
-                  num_refs=$((2*$num_refs))
-
-                  if [ $num_refs -ne $num_launches ]; then
-                      echo "CUDA trace file is inconsistent (wrong number of reference attributes)"
-                      rm -rf scorep-measurement-tmp
-                      exit 1
-                  fi
-              fi
-
-            done #memusage
-          done #streamreuse
+          done #memusage
         done #sync
       done #memcpy
     done #idle

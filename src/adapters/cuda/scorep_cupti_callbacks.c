@@ -1716,7 +1716,7 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
 #else
                 /* TODO: NVIDIA bug??? */
                 /* cuCtxSynchronize() runs into a lock here, therefore just flush */
-#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION < 6000 ) )
+#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION == 5000 ) )
                 /* cuptiActivityFlushAll runs into a lock here for CUDA 6.0+ */
                 SCOREP_CUPTI_LOCK();
                 scorep_cupti_activity_context_flush(
