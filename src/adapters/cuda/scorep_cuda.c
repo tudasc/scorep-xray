@@ -51,10 +51,6 @@ bool scorep_cuda_record_memcpy = false;
 
 uint8_t scorep_cuda_sync_level = 0;
 
-bool scorep_cuda_stream_reuse = false;
-
-bool scorep_cuda_device_reuse = false;
-
 uint8_t scorep_cuda_record_gpumemusage = 0;
 
 bool scorep_cuda_record_references = false;
@@ -111,16 +107,6 @@ scorep_cuda_set_features()
     /* check for features, which are only available, when something is recorded on the device */
     if ( scorep_cuda_record_kernels || scorep_cuda_record_memcpy || scorep_cuda_record_gpumemusage )
     {
-        if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_STREAM_REUSE )
-        {
-            scorep_cuda_stream_reuse = true;
-        }
-
-        if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_DEVICE_REUSE )
-        {
-            scorep_cuda_device_reuse = true;
-        }
-
         if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_SYNC )
         {
             scorep_cuda_sync_level = SCOREP_CUDA_RECORD_SYNC_FULL;
@@ -134,16 +120,6 @@ scorep_cuda_set_features()
     else
     {
         /* Warn if required feature is missing */
-        if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_STREAM_REUSE )
-        {
-            UTILS_WARNING( "CUDA option 'stream_reuse' requires recording of device activities." );
-        }
-
-        if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_DEVICE_REUSE )
-        {
-            UTILS_WARNING( "CUDA option 'device_reuse' requires recording of  device activities." );
-        }
-
         if ( scorep_cuda_features & SCOREP_CUDA_FEATURE_SYNC )
         {
             UTILS_WARNING( "CUDA option 'sync' requires recording of  device activities." );

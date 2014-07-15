@@ -55,8 +55,6 @@ static const SCOREP_ConfigType_SetEntry scorep_cuda_enable_groups[] = {
     { "sync",           SCOREP_CUDA_FEATURE_SYNC                  },
     { "idle",           SCOREP_CUDA_FEATURE_IDLE                  },
     { "pure_idle",      SCOREP_CUDA_FEATURE_PURE_IDLE             },
-    { "device_reuse",   SCOREP_CUDA_FEATURE_DEVICE_REUSE          },
-    { "stream_reuse",   SCOREP_CUDA_FEATURE_STREAM_REUSE          },
     { "gpumemusage",    SCOREP_CUDA_FEATURE_GPUMEMUSAGE           },
     { "references",     SCOREP_CUDA_FEATURE_REFERENCES            },
     { "flushatexit",    SCOREP_CUDA_FEATURE_FLUSHATEXIT           },
@@ -91,8 +89,6 @@ static SCOREP_ConfigVariable scorep_cuda_configs[] = {
         "  sync:           Record implicit and explicit CUDA synchronization\n"
         "  gpumemusage:    Record CUDA memory (de)allocations as a counter\n"
         "  references:     Record references between CUDA activities\n"
-        "  stream_reuse:   Reuse destroyed/closed CUDA streams\n"
-        "  device_reuse:   Reuse destroyed/closed CUDA devices\n"
         "  flushatexit:    Flush CUDA activity buffer at program exit\n"
         "  default/yes/1:  CUDA runtime API and GPU activities\n"
         "  no:             Disable CUDA measurement\n"

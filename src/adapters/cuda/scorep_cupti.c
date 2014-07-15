@@ -237,7 +237,6 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
 
     stream->cuda_stream           = cudaStream;
     stream->scorep_last_timestamp = SCOREP_GetBeginEpoch();
-    stream->destroyed             = false;
     stream->stream_id             = streamId;
     stream->next                  = NULL;
 
@@ -245,31 +244,18 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
     {
         char thread_name[ 16 ] = "CUDA";
 
-        if ( scorep_cuda_stream_reuse )
+        if ( context->device_id == SCOREP_CUPTI_NO_DEVICE_ID )
         {
-            if ( context->device_id != SCOREP_CUPTI_NO_DEVICE_ID )
+            if ( -1 == snprintf( thread_name + 4, 12, "[?:%d]", streamId ) )
             {
-                if ( -1 == snprintf( thread_name + 4, 12, "[%d]", context->device_id ) )
-                {
-                    UTILS_WARNING( "[CUPTI] Could not create thread name for CUDA thread!" );
-                }
+                UTILS_WARNING( "[CUPTI] Could not create thread name for CUDA thread!" );
             }
         }
         else
         {
-            if ( context->device_id == SCOREP_CUPTI_NO_DEVICE_ID )
+            if ( -1 == snprintf( thread_name + 4, 12, "[%d:%d]", context->device_id, streamId ) )
             {
-                if ( -1 == snprintf( thread_name + 4, 12, "[?:%d]", streamId ) )
-                {
-                    UTILS_WARNING( "[CUPTI] Could not create thread name for CUDA thread!" );
-                }
-            }
-            else
-            {
-                if ( -1 == snprintf( thread_name + 4, 12, "[%d:%d]", context->device_id, streamId ) )
-                {
-                    UTILS_WARNING( "[CUPTI] Could not create thread name for CUDA thread!" );
-                }
+                UTILS_WARNING( "[CUPTI] Could not create thread name for CUDA thread!" );
             }
         }
 
@@ -367,9 +353,8 @@ scorep_cupti_stream*
 scorep_cupti_stream_get_create( scorep_cupti_context* context,
                                 CUstream cudaStream, uint32_t streamId )
 {
-    scorep_cupti_stream* stream          = NULL;
-    scorep_cupti_stream* last_stream     = NULL;
-    scorep_cupti_stream* reusable_stream = NULL;
+    scorep_cupti_stream* stream      = NULL;
+    scorep_cupti_stream* last_stream = NULL;
 
     if ( context == NULL )
     {
@@ -399,31 +384,11 @@ scorep_cupti_stream_get_create( scorep_cupti_context* context,
             return stream;
         }
 
-        /* check for reusable stream */
-        if ( scorep_cuda_stream_reuse && reusable_stream == NULL && stream->destroyed == 1 )
-        {
-            reusable_stream = stream;
-        }
-
         /* remember last stream to append new created stream later */
         last_stream = stream;
 
         /* check next stream */
         stream = stream->next;
-    }
-
-    /* reuse a destroyed stream, if there is any available */
-    if ( scorep_cuda_stream_reuse && reusable_stream )
-    {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                            "[CUPTI] Reusing CUDA stream %d with stream %d",
-                            reusable_stream->stream_id, streamId );
-
-        reusable_stream->destroyed   = 0;
-        reusable_stream->stream_id   = streamId;
-        reusable_stream->cuda_stream = cudaStream;
-
-        return reusable_stream;
     }
 
     /*
@@ -485,42 +450,6 @@ scorep_cupti_stream_get_by_id( scorep_cupti_context* context,
     return NULL;
 }
 
-void
-scorep_cupti_stream_set_destroyed( CUcontext cudaContext, uint32_t streamId )
-{
-    scorep_cupti_context* context = NULL;
-    scorep_cupti_stream*  stream  = NULL;
-
-    SCOREP_CUPTI_LOCK();
-
-    if ( cudaContext == NULL )
-    {
-        UTILS_WARNING( "[CUPTI Activity] No CUDA context given. "
-                       "Stream with ID %d cannot be reused!", streamId );
-        SCOREP_CUPTI_UNLOCK();
-        return;
-    }
-
-    context = scorep_cupti_context_get( cudaContext );
-
-    if ( context == NULL )
-    {
-        UTILS_WARNING( "[CUPTI Activity] Context not found. "
-                       "Stream with ID %d cannot be reused!", streamId );
-        SCOREP_CUPTI_UNLOCK();
-        return;
-    }
-
-    /* set the destroyed flag */
-    stream = scorep_cupti_stream_get_by_id( context, streamId );
-    if ( NULL != stream )
-    {
-        stream->destroyed = 1;
-    }
-
-    SCOREP_CUPTI_UNLOCK();
-}
-
 /*
  * Create a Score-P CUPTI context. If the CUDA context is not given, the
  * current context will be requested and used.
@@ -549,8 +478,6 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
 
     context->scorep_host_location = SCOREP_Location_GetCurrentCPULocation();
     context->location_id          = SCOREP_CUPTI_NO_ID;
-
-    context->destroyed = 0;
 
     /* try to get CUDA device (ID), if they are not given */
     if ( deviceId == SCOREP_CUPTI_NO_DEVICE_ID )
@@ -639,32 +566,7 @@ scorep_cupti_context_get( CUcontext cudaContext )
             return context;
         }
 
-        if ( context->destroyed && reusable_context == NULL )
-        {
-            CUdevice cuDev = 0;
-
-            SCOREP_CUDA_DRIVER_CALL( cuCtxGetDevice( &cuDev ) );
-
-            if ( context->cuda_device == cuDev )
-            {
-                reusable_context = context;
-            }
-        }
-
         context = context->next;
-    }
-
-    /* reuse a destroyed stream, if there is any available */
-    if ( scorep_cuda_device_reuse && reusable_context )
-    {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                            "[CUPTI] Reusing CUDA context %d with context %d",
-                            reusable_context->cuda_context, cudaContext );
-
-        reusable_context->destroyed    = 0;
-        reusable_context->cuda_context = cudaContext;
-
-        return reusable_context;
     }
 
     return NULL;
@@ -745,55 +647,6 @@ scorep_cupti_context_remove( CUcontext cudaContext )
 
     return NULL;
 }
-
-void
-scorep_cupti_context_set_destroyed( scorep_cupti_context* context )
-{
-    scorep_cupti_stream* stream = NULL;
-
-    /* mark all streams as destroyed */
-    stream = context->streams;
-    while ( stream != NULL )
-    {
-        stream->destroyed = 1;
-        stream            = stream->next;
-    }
-
-    context->destroyed = 1;
-
-    /* dequeue and deallocate the activity buffer */
-#if !HAVE( CUPTI_ASYNC_SUPPORT )
-    if ( context->activity && context->activity->buffer )
-    {
-        size_t bufSize;
-
-        /* dump the contents of the global queue */
-        SCOREP_CUPTI_CALL( cuptiActivityDequeueBuffer(
-                               context->cuda_context, 0, &( context->activity->buffer ),
-                               &bufSize ) );
-    }
-#endif
-
-    /* free CUDA malloc entries, if user application has memory leaks */
-    while ( context->cuda_mallocs != NULL )
-    {
-        scorep_cupti_gpumem* gpumem =  context->cuda_mallocs;
-
-        if ( scorep_cuda_record_gpumemusage == SCOREP_CUDA_GPUMEMUSAGE_AND_MISSING_FREES )
-        {
-            UTILS_WARNING( "[CUPTI] Free of %zd bytes GPU memory missing!",
-                           gpumem->size );
-        }
-
-        context->cuda_mallocs = gpumem->next;
-        /* free is implicitly done by Score-P memory management */
-        /*free(gpumem);*/
-        gpumem = NULL;
-    }
-
-    context->gpu_memory_allocated = 0;
-}
-
 
 /*
  * Finalize the Score-P CUPTI context and free all memory allocated with it.

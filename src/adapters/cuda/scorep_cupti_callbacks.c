@@ -1682,13 +1682,6 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
 
                 scorep_cupti_activity_context_flush( context );
 
-                /* If device reuse is set, mark the context as destroyed. Memory is not
-                   deallocated, but buffer dequeued. */
-                if ( scorep_cuda_device_reuse )
-                {
-                    scorep_cupti_context_set_destroyed( context );
-                }
-
                 SCOREP_CUPTI_UNLOCK();
             }
 
@@ -1697,47 +1690,16 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
 
         case CUPTI_CBID_RESOURCE_STREAM_DESTROY_STARTING:
         {
-            if ( scorep_cuda_stream_reuse )
-            {
-                uint32_t strmID;
+            uint32_t strmID;
 
-#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION < 5000 ) )
-                /* implicitly flush context activities via cuCtxSynchronize() */
-                {
-                    SCOREP_EnterRegion( cuda_sync_region_handle );
+            /* get the stream id from stream type */
+            SCOREP_CUPTI_CALL( cuptiGetStreamId( resourceData->context,
+                                                 resourceData->resourceHandle.stream,
+                                                 &strmID ) );
 
-
-                    DISABLE_CUDRV_CALLBACKS();
-                    SCOREP_CUDA_DRIVER_CALL( cuCtxSynchronize() );
-                    ENABLE_CUDRV_CALLBACKS();
-
-                    SCOREP_ExitRegion( cuda_sync_region_handle );
-                }
-#else
-                /* TODO: NVIDIA bug??? */
-                /* cuCtxSynchronize() runs into a lock here, therefore just flush */
-#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION == 5000 ) )
-                /* cuptiActivityFlushAll runs into a lock here for CUDA 6.0+ */
-                SCOREP_CUPTI_LOCK();
-                scorep_cupti_activity_context_flush(
-                    scorep_cupti_context_get( resourceData->context ) );
-                SCOREP_CUPTI_UNLOCK();
-#endif
-#endif
-                {
-                    /* get the stream id from stream type */
-                    SCOREP_CUPTI_CALL( cuptiGetStreamId( resourceData->context,
-                                                         resourceData->resourceHandle.stream,
-                                                         &strmID ) );
-
-                    /* mark the stream as destroyed to be available for reuse */
-                    scorep_cupti_stream_set_destroyed( resourceData->context, strmID );
-                }
-
-                UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                                    "[CUPTI Callbacks] Destroying stream %d (context %d)",
-                                    strmID, resourceData->context );
-            }
+            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                                "[CUPTI Callbacks] Destroying stream %d (context %d)",
+                                strmID, resourceData->context );
 
             break;
         }

@@ -116,7 +116,6 @@ typedef struct scorep_cupti_stream
     SCOREP_Location*            scorep_location;         /**< Score-P location for this stream (unique) */
     uint32_t                    location_id;             /**< internal location ID used for unification */
     uint64_t                    scorep_last_timestamp;   /**< last written Score-P timestamp */
-    bool                        destroyed;               /**< Is stream destroyed? Ready for reuse? */
     struct scorep_cupti_stream* next;
 }scorep_cupti_stream;
 
@@ -212,7 +211,6 @@ typedef struct scorep_cupti_context
     CUdevice                     cuda_device;          /**< CUDA device handle */
     SCOREP_Location*             scorep_host_location; /**< Score-P context host location */
     uint32_t                     location_id;          /**< internal location ID used for unification */
-    uint8_t                      destroyed;
     scorep_cupti_stream*         streams;              /**< list of Score-P CUDA streams */
     scorep_cupti_gpumem*         cuda_mallocs;         /**< list of allocated GPU memory fields */
     size_t                       gpu_memory_allocated; /**< memory allocated on CUDA device */
@@ -334,14 +332,6 @@ scorep_cupti_context*
 scorep_cupti_context_remove( CUcontext cudaContext );
 
 /*
- * Mark the Score-P CUPTI context as destroyed, so that it can be reused later.
- *
- * @param context pointer to the Score-P CUPTI context
- */
-void
-scorep_cupti_context_set_destroyed( scorep_cupti_context* context );
-
-/*
  * Finalize the Score-P CUPTI context and free all memory allocated with it.
  *
  * @param context pointer to the Score-P CUPTI context
@@ -393,18 +383,6 @@ scorep_cupti_stream_get_create(
     scorep_cupti_context* context,
     CUstream              cudaStream,
     uint32_t              streamId );
-
-/*
- * Mark a CUDA stream as destroyed, so that it can be reused afterwards.
- *
- * @param cuda_context CUDA context, which contains the stream
- * @param streamId the CUDA stream ID to be marked as destroyed
- *
- */
-void
-scorep_cupti_stream_set_destroyed( CUcontext cudaContext,
-                                   uint32_t  streamId );
-
 
 /*
  * Collect all Score-P locations, which are involved in CUDA communication.

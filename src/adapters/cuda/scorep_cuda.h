@@ -55,11 +55,9 @@
 #define SCOREP_CUDA_FEATURE_IDLE                ( 1 << 6 )
 #define SCOREP_CUDA_FEATURE_PURE_IDLE           ( 1 << 7 )
 #define SCOREP_CUDA_FEATURE_SYNC                ( 1 << 8 )
-#define SCOREP_CUDA_FEATURE_DEVICE_REUSE        ( 1 << 9 )
-#define SCOREP_CUDA_FEATURE_STREAM_REUSE        ( 1 << 10 )
-#define SCOREP_CUDA_FEATURE_GPUMEMUSAGE         ( 1 << 11 )
-#define SCOREP_CUDA_FEATURE_FLUSHATEXIT         ( 1 << 12 )
-#define SCOREP_CUDA_FEATURE_REFERENCES          ( 1 << 13 )
+#define SCOREP_CUDA_FEATURE_GPUMEMUSAGE         ( 1 << 9 )
+#define SCOREP_CUDA_FEATURE_FLUSHATEXIT         ( 1 << 10 )
+#define SCOREP_CUDA_FEATURE_REFERENCES          ( 1 << 11 )
 #define SCOREP_CUDA_FEATURES_DEFAULT \
     ( SCOREP_CUDA_FEATURE_RUNTIME_API | SCOREP_CUDA_FEATURE_KERNEL | \
       SCOREP_CUDA_FEATURE_MEMCPY )
@@ -127,16 +125,6 @@ extern bool scorep_cuda_record_memcpy;
  * (level 3) is supported.
  */
 extern uint8_t scorep_cuda_sync_level;
-
-/*
- * flag: Shall destroyed CUDA streams be reused?
- */
-extern bool scorep_cuda_stream_reuse;
-
-/*
- * flag: Shall destroyed CUDA device be reused?
- */
-extern bool scorep_cuda_device_reuse;
 
 /*
  * Record memory usage of cudaMalloc*, cudaFree*, cuMalloc*, cuFree* functions.
