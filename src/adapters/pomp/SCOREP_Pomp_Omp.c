@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -217,6 +217,7 @@ POMP2_Critical_begin( POMP2_Region_handle* pomp_handle )
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
+        region->lock->acquisition_order++;
         SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_OPENMP,
                                   region->lock->handle,
                                   region->lock->acquisition_order );

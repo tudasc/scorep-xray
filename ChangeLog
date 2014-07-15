@@ -95,6 +95,8 @@
 - The scorep instrumenter tool moved compiler selection flags for the
   MPI compiler wrapper to a different location in the command line. Fixed.
 - Fix broken instrumentation if the link line explcitly links libc.
+- Fixed constant zero for aquisition order value of acquire lock events
+  from OpenMP critical sections.
 
 ------------------- Released version 1.2.3 ---------------------------
 
