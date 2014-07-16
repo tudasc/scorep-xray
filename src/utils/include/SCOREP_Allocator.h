@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -169,21 +169,21 @@ SCOREP_Allocator_AllocMovedPage( SCOREP_Allocator_PageManager* movedPageManager,
  */
 void*
 SCOREP_Allocator_GetAddressFromMovableMemory(
-    SCOREP_Allocator_PageManager*  pageManager,
-    SCOREP_Allocator_MovableMemory movableMemory );
+    const SCOREP_Allocator_PageManager* pageManager,
+    SCOREP_Allocator_MovableMemory      movableMemory );
 
 
 void*
 SCOREP_Allocator_GetAddressFromMovedMemory(
-    SCOREP_Allocator_PageManager*  movedPageManager,
-    SCOREP_Allocator_MovableMemory movedMemory );
-
+    const SCOREP_Allocator_PageManager* movedPageManager,
+    SCOREP_Allocator_MovableMemory      movedMemory );
 
 
 /** Discarde the last movable allocation */
 void
 SCOREP_Allocator_RollbackAllocMovable( SCOREP_Allocator_PageManager*  pageManager,
                                        SCOREP_Allocator_MovableMemory movableMemory );
+
 
 /**
  * Get the number of used pages for this page manager.
@@ -199,7 +199,7 @@ SCOREP_Allocator_RollbackAllocMovable( SCOREP_Allocator_PageManager*  pageManage
  * @return The number of used pages in the page manager @a pageManager.
  */
 uint32_t
-SCOREP_Allocator_GetNumberOfUsedPages( SCOREP_Allocator_PageManager* pageManager );
+SCOREP_Allocator_GetNumberOfUsedPages( const SCOREP_Allocator_PageManager* pageManager );
 
 
 /**
@@ -217,10 +217,10 @@ SCOREP_Allocator_GetNumberOfUsedPages( SCOREP_Allocator_PageManager* pageManager
  *                            (Can be NULL)
  */
 void
-SCOREP_Allocator_GetPageInfos( SCOREP_Allocator_PageManager* pageManager,
-                               uint32_t*                     pageIds,
-                               uint32_t*                     pageUsages,
-                               void** const                  pageStarts );
+SCOREP_Allocator_GetPageInfos( const SCOREP_Allocator_PageManager* pageManager,
+                               uint32_t*                           pageIds,
+                               uint32_t*                           pageUsages,
+                               void** const                        pageStarts );
 
 
 SCOREP_Allocator_Page*

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -46,7 +46,7 @@
 #include "scorep_allocator.h"
 
 static inline uint32_t
-page_size( SCOREP_Allocator_Allocator* allocator )
+page_size( const SCOREP_Allocator_Allocator* allocator )
 {
     uint32_t o = 1;
     return o << allocator->page_shift;
@@ -54,21 +54,21 @@ page_size( SCOREP_Allocator_Allocator* allocator )
 
 
 static inline uint32_t
-total_memory( SCOREP_Allocator_Allocator* allocator )
+total_memory( const SCOREP_Allocator_Allocator* allocator )
 {
     return allocator->n_pages << allocator->page_shift;
 }
 
 
 static inline uint32_t
-page_mask( SCOREP_Allocator_Allocator* allocator )
+page_mask( const SCOREP_Allocator_Allocator* allocator )
 {
     return page_size( allocator ) - 1;
 }
 
 
 static inline uint32_t
-get_page_id( SCOREP_Allocator_Page* page )
+get_page_id( const SCOREP_Allocator_Page* page )
 {
     intptr_t offset  = ( char* )page->memory_start_address - ( char* )page->allocator;
     uint32_t page_id = offset >> page->allocator->page_shift;
@@ -77,7 +77,7 @@ get_page_id( SCOREP_Allocator_Page* page )
 }
 
 static inline uint32_t
-get_order( SCOREP_Allocator_Allocator* allocator, uint32_t length )
+get_order( const SCOREP_Allocator_Allocator* allocator, uint32_t length )
 {
     uint32_t order = ( length >> allocator->page_shift )
                      + !!( length & page_mask( allocator ) );
@@ -120,7 +120,7 @@ clear_page( SCOREP_Allocator_Page* page )
 }
 
 static inline uint32_t
-get_page_length( SCOREP_Allocator_Page* page )
+get_page_length( const SCOREP_Allocator_Page* page )
 {
     ptrdiff_t length = page->memory_end_address - page->memory_start_address;
 
@@ -128,7 +128,7 @@ get_page_length( SCOREP_Allocator_Page* page )
 }
 
 static inline uint32_t
-get_page_order( SCOREP_Allocator_Page* page )
+get_page_order( const SCOREP_Allocator_Page* page )
 {
     ptrdiff_t length = get_page_length( page );
     uint32_t  order  = length >> page->allocator->page_shift;
@@ -137,7 +137,7 @@ get_page_order( SCOREP_Allocator_Page* page )
 }
 
 static inline uint32_t
-get_page_usage( SCOREP_Allocator_Page* page )
+get_page_usage( const SCOREP_Allocator_Page* page )
 {
     ptrdiff_t usage = page->memory_current_address - page->memory_start_address;
 
@@ -145,7 +145,7 @@ get_page_usage( SCOREP_Allocator_Page* page )
 }
 
 static inline uint32_t
-get_page_avail( SCOREP_Allocator_Page* page )
+get_page_avail( const SCOREP_Allocator_Page* page )
 {
     ptrdiff_t avail = page->memory_end_address - page->memory_current_address;
 

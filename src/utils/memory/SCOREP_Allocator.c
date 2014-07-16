@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -684,8 +684,9 @@ SCOREP_Allocator_AllocMovedPage( SCOREP_Allocator_PageManager* movedPageManager,
 
 
 void*
-SCOREP_Allocator_GetAddressFromMovableMemory( SCOREP_Allocator_PageManager*  pageManager,
-                                              SCOREP_Allocator_MovableMemory movableMemory )
+SCOREP_Allocator_GetAddressFromMovableMemory(
+    const SCOREP_Allocator_PageManager* pageManager,
+    SCOREP_Allocator_MovableMemory      movableMemory )
 {
     assert( pageManager );
     assert( movableMemory >= page_size( pageManager->allocator ) );
@@ -707,8 +708,8 @@ SCOREP_Allocator_GetAddressFromMovableMemory( SCOREP_Allocator_PageManager*  pag
 
 void*
 SCOREP_Allocator_GetAddressFromMovedMemory(
-    SCOREP_Allocator_PageManager*  movedPageManager,
-    SCOREP_Allocator_MovableMemory movedMemory )
+    const SCOREP_Allocator_PageManager* movedPageManager,
+    SCOREP_Allocator_MovableMemory      movedMemory )
 {
     assert( movedPageManager );
     assert( movedPageManager->moved_page_id_mapping );
@@ -744,12 +745,12 @@ SCOREP_Allocator_RollbackAllocMovable( SCOREP_Allocator_PageManager*  pageManage
 
 
 uint32_t
-SCOREP_Allocator_GetNumberOfUsedPages( SCOREP_Allocator_PageManager* pageManager )
+SCOREP_Allocator_GetNumberOfUsedPages( const SCOREP_Allocator_PageManager* pageManager )
 {
     assert( pageManager );
 
-    uint32_t               number_of_used_pages = 0;
-    SCOREP_Allocator_Page* page                 = pageManager->pages_in_use_list;
+    uint32_t                     number_of_used_pages = 0;
+    const SCOREP_Allocator_Page* page                 = pageManager->pages_in_use_list;
     while ( page )
     {
         if ( get_page_usage( page ) )
@@ -764,16 +765,16 @@ SCOREP_Allocator_GetNumberOfUsedPages( SCOREP_Allocator_PageManager* pageManager
 
 
 void
-SCOREP_Allocator_GetPageInfos( SCOREP_Allocator_PageManager* pageManager,
-                               uint32_t*                     pageIds,
-                               uint32_t*                     pageUsages,
-                               void** const                  pageStarts )
+SCOREP_Allocator_GetPageInfos( const SCOREP_Allocator_PageManager* pageManager,
+                               uint32_t*                           pageIds,
+                               uint32_t*                           pageUsages,
+                               void** const                        pageStarts )
 {
     assert( pageManager );
     assert( pageIds );
 
-    SCOREP_Allocator_Page* page     = pageManager->pages_in_use_list;
-    uint32_t               position = 0;
+    const SCOREP_Allocator_Page* page     = pageManager->pages_in_use_list;
+    uint32_t                     position = 0;
     while ( page )
     {
         uint32_t usage = get_page_usage( page );
