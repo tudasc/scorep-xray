@@ -127,12 +127,8 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
 
     SCOREP_TracingData* tracing_data = SCOREP_Location_GetTracingData( locationData );
 
-    SCOREP_Tracing_LockArchive();
-    {
-        /* SCOREP_Tracing_GetEventWriter() aborts on error */
-        tracing_data->otf_writer = SCOREP_Tracing_GetEventWriter();
-    }
-    SCOREP_Tracing_UnlockArchive();
+    /* SCOREP_Tracing_GetEventWriter() aborts on error */
+    tracing_data->otf_writer = SCOREP_Tracing_GetEventWriter();
 
     if ( SCOREP_Status_IsMppInitialized() )
     {

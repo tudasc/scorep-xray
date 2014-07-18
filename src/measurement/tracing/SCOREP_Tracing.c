@@ -411,6 +411,8 @@ SCOREP_Tracing_UnlockArchive( void )
 OTF2_EvtWriter*
 SCOREP_Tracing_GetEventWriter( void )
 {
+    SCOREP_Tracing_LockArchive();
+
     OTF2_EvtWriter* evt_writer = OTF2_Archive_GetEvtWriter(
         scorep_otf2_archive,
         OTF2_UNDEFINED_LOCATION );
@@ -419,6 +421,8 @@ SCOREP_Tracing_GetEventWriter( void )
         /* aborts */
         SCOREP_Memory_HandleOutOfMemory();
     }
+
+    SCOREP_Tracing_UnlockArchive();
 
     return evt_writer;
 }
