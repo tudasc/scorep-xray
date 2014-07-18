@@ -547,7 +547,9 @@ create_references_list( SCOREP_Location* location,
             scorep_cupti_stream* scorep_strm = NULL;
 
             cuptiGetStreamId( context, stream, &strm_id );
+            SCOREP_CUPTI_LOCK();
             scorep_strm = scorep_cupti_stream_get_create( scorep_ctx, stream, strm_id );
+            SCOREP_CUPTI_UNLOCK();
 
             SCOREP_LocationHandle location_handle =
                 SCOREP_Location_GetLocationHandle( scorep_strm->scorep_location );

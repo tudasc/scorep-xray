@@ -38,7 +38,7 @@ handle_buffer( uint8_t*              buffer,
 static scorep_cupti_buffer*
 get_free_buffer( scorep_cupti_context* context );
 
-static void
+static scorep_cupti_context*
 mark_complete_buffer( uint8_t*  buffer,
                       size_t    validSize,
                       CUcontext cudaContext,
@@ -131,7 +131,11 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
         return;
     }
 
+#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
+    SCOREP_CUPTI_CALL( cuptiActivityFlushAll( 0 ) );
+#else
     SCOREP_CUPTI_CALL( cuptiActivityFlush( context->cuda_context, 0, 0 ) );
+#endif
 
     {
         uint64_t               hostStop, gpuStop;
@@ -342,11 +346,12 @@ buffer_requested_callback( uint8_t** buffer,
     scorep_cupti_buffer*  free_buffer  = NULL;
     scorep_cupti_context* context      = NULL;
     CUcontext             cuda_context = NULL;
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                        "[CUPTI Activity] buffer requested" );
 
     SCOREP_CUDA_DRIVER_CALL( cuCtxGetCurrent( &cuda_context ) );
     context = scorep_cupti_context_get( cuda_context );
+
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                        "[CUPTI Activity] Buffer for context %d requested", cuda_context );
 
     if ( context )
     {
@@ -374,8 +379,11 @@ buffer_completed_callback( CUcontext cudaContext,
                            size_t    size,
                            size_t    validSize )
 {
-    mark_complete_buffer( buffer, validSize, cudaContext, streamId );
-
+    scorep_cupti_context* scorep_ctx = mark_complete_buffer( buffer, validSize, cudaContext, streamId );
+    if ( scorep_ctx )
+    {
+        cudaContext = scorep_ctx->cuda_context;
+    }
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
                         "[CUPTI Activity] Buffer with %zu bytes for context %d, stream %d completed",
                         validSize, cudaContext, streamId );
@@ -439,7 +447,7 @@ handle_buffer( uint8_t*              buffer,
  * @return Score-P buffer entry
  */
 static scorep_cupti_buffer*
-get_buffer( uint8_t* buffer )
+get_buffer( uint8_t* buffer, scorep_cupti_context** scorepCtx )
 {
     scorep_cupti_context* context = NULL;
 
@@ -462,6 +470,10 @@ get_buffer( uint8_t* buffer )
         {
             if ( current->buffer == buffer )
             {
+                if ( scorepCtx )
+                {
+                    *scorepCtx = context;
+                }
                 return current;
             }
 
@@ -475,13 +487,14 @@ get_buffer( uint8_t* buffer )
     return NULL;
 }
 
-static void
+static scorep_cupti_context*
 mark_complete_buffer( uint8_t*  buffer,
                       size_t    validSize,
                       CUcontext cudaContext,
                       uint32_t  streamId )
 {
-    scorep_cupti_buffer* buffer_entry = NULL;
+    scorep_cupti_buffer*  buffer_entry = NULL;
+    scorep_cupti_context* result       = NULL;
 
     if ( cudaContext ) /* get Score-P buffer for context queue */
     {
@@ -492,7 +505,7 @@ mark_complete_buffer( uint8_t*  buffer,
         if ( context == NULL || context->activity == NULL )
         {
             UTILS_WARNING( "[CUPTI Activity] Context not found!" );
-            return;
+            return NULL;
         }
 
         /* try to find entry for buffer in pool */
@@ -503,6 +516,7 @@ mark_complete_buffer( uint8_t*  buffer,
                 if ( current->buffer == buffer )
                 {
                     buffer_entry = current;
+                    result       = context;
                     break;
                 }
 
@@ -512,13 +526,13 @@ mark_complete_buffer( uint8_t*  buffer,
     }
     else /* get Score-P buffer for global queue */
     {
-        buffer_entry = get_buffer( buffer );
+        buffer_entry = get_buffer( buffer, &result );
     }
 
     if ( !buffer_entry )
     {
         UTILS_WARNING( "[CUPTI Activity] Could not find CUPTI activity buffer entry! " );
-        return;
+        return NULL;
     }
 
     /* mark entry to contain completed, pending records*/
@@ -529,6 +543,7 @@ mark_complete_buffer( uint8_t*  buffer,
     }
     buffer_entry->valid_size = validSize;
     buffer_entry->stream_id  = streamId;
+    return result;
 }
 
 static scorep_cupti_buffer*

@@ -312,6 +312,16 @@ scorep_cupti_context*
 scorep_cupti_context_get( CUcontext cudaContext );
 
 /*
+ * Get a Score-P CUPTI context by CUDA context ID
+ *
+ * @param contextId the CUDA context ID
+ *
+ * @return Score-P CUPTI context
+ */
+scorep_cupti_context*
+scorep_cupti_context_get_by_id( uint32_t contextId );
+
+/*
  * Get or if not available create a Score-P CUPTI context by CUDA context.
  *
  * @param cudaContext the CUDA context

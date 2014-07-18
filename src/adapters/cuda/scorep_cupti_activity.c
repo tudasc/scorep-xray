@@ -81,6 +81,10 @@ uint8_t scorep_cupti_activity_state                         = 0;
 /* global region IDs for wrapper internal recording */
 SCOREP_RegionHandle scorep_cupti_buffer_flush_region_handle = SCOREP_INVALID_REGION;
 
+static void
+replace_context( uint32_t               newContextId,
+                 scorep_cupti_context** context );
+
 /*
  * Initialize the Score-P CUPTI Activity implementation.
  *
@@ -266,10 +270,34 @@ scorep_cupti_activity_context_create( CUcontext cudaContext )
     return context_activity;
 }
 
+static void
+replace_context( uint32_t               newContextId,
+                 scorep_cupti_context** context )
+{
+    if ( NULL == context || NULL == *context )
+    {
+        return;
+    }
+
+    /* get CUDA context for each individual record as records are mixed in buffer */
+    /* update sync data of record's context with that of actually sync'd context */
+    scorep_cupti_sync current_sync_data = ( *context )->activity->sync;
+    *context                               = scorep_cupti_context_get_by_id( newContextId );
+    ( *context )->activity->sync           = current_sync_data;
+    ( *context )->activity->sync.host_stop = current_sync_data.host_stop;
+    ( *context )->activity->sync.gpu_stop  = current_sync_data.gpu_stop;
+    ( *context )->activity->sync.factor    = current_sync_data.factor;
+}
+
+
 void
 scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
                                     scorep_cupti_context*     context )
 {
+#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
+    replace_context( kernel->contextId, &context );
+#endif
+
     scorep_cupti_activity*        contextActivity = context->activity;
     scorep_cupti_stream*          stream          = NULL;
     SCOREP_Location*              stream_location = NULL;
@@ -457,6 +485,10 @@ void
 scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy* memcpy,
                                     scorep_cupti_context* context )
 {
+#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
+    replace_context( memcpy->contextId, &context );
+#endif
+
     scorep_cupti_activity*            contextActivity = context->activity;
     scorep_cupti_activity_memcpy_kind kind            = SCOREP_CUPTI_COPYDIRECTION_UNKNOWN;
 

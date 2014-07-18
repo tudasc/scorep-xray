@@ -339,9 +339,11 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
 }
 
 /*
- * Retrieve a Score-P CUPTI stream object. This function will lookup, if
- * the stream is already available, a stream is reusable or if it has to be
+ * Retrieve a Score-P CUPTI stream object. This function will lookup if
+ * the stream is already available or if it has to be
  * created and will return the Score-P CUPTI stream object.
+ *
+ * Note: This function must be locked with a Score-P CUPTI lock
  *
  * @param context Score-P CUPTI Activity context
  * @param cudaStream CUDA stream
@@ -371,7 +373,6 @@ scorep_cupti_stream_get_create( scorep_cupti_context* context,
     }
 
     /*** lookup stream ***/
-    /*SCOREP_CUPTI_LOCK();*/
     stream      = context->streams;
     last_stream = context->streams;
     while ( stream != NULL )
@@ -380,7 +381,6 @@ scorep_cupti_stream_get_create( scorep_cupti_context* context,
         if ( ( streamId != SCOREP_CUPTI_NO_STREAM_ID && stream->stream_id == streamId ) ||
              ( cudaStream != SCOREP_CUPTI_NO_STREAM && stream->cuda_stream == cudaStream ) )
         {
-            /*SCOREP_CUPTI_UNLOCK();*/
             return stream;
         }
 
@@ -419,7 +419,6 @@ scorep_cupti_stream_get_create( scorep_cupti_context* context,
         context->streams = stream;
     }
 
-    /*SCOREP_CUPTI_UNLOCK();*/
     return stream;
 }
 
@@ -554,8 +553,7 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
 scorep_cupti_context*
 scorep_cupti_context_get( CUcontext cudaContext )
 {
-    scorep_cupti_context* context          = NULL;
-    scorep_cupti_context* reusable_context = NULL;
+    scorep_cupti_context* context = NULL;
 
     /* lookup context */
     context = scorep_cupti_context_list;
@@ -571,6 +569,34 @@ scorep_cupti_context_get( CUcontext cudaContext )
 
     return NULL;
 }
+
+/*
+ * Get a Score-P CUPTI context by CUDA context ID
+ *
+ * @param contextId the CUDA context ID
+ *
+ * @return Score-P CUPTI context
+ */
+scorep_cupti_context*
+scorep_cupti_context_get_by_id( uint32_t contextId )
+{
+    scorep_cupti_context* context = NULL;
+
+    /* lookup context */
+    context = scorep_cupti_context_list;
+    while ( context != NULL )
+    {
+        if ( context->context_id == contextId )
+        {
+            return context;
+        }
+
+        context = context->next;
+    }
+
+    return NULL;
+}
+
 
 /*
  * Get or if not available create a Score-P CUPTI context by CUDA context.
@@ -593,8 +619,12 @@ scorep_cupti_context_get_create( CUcontext cudaContext )
 
         if ( context == NULL )
         {
+            uint32_t context_id = SCOREP_CUPTI_NO_CONTEXT_ID;
+#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
+            SCOREP_CUPTI_CALL( cuptiGetContextId( cudaContext, &context_id ) );
+#endif
             context = scorep_cupti_context_create( cudaContext, SCOREP_CUPTI_NO_DEVICE,
-                                                   SCOREP_CUPTI_NO_CONTEXT_ID, SCOREP_CUPTI_NO_DEVICE_ID );
+                                                   context_id, SCOREP_CUPTI_NO_DEVICE_ID );
 
             /* prepend context to global context list */
             context->next             = scorep_cupti_context_list;
