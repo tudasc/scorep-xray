@@ -129,11 +129,6 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
 
     /* SCOREP_Tracing_GetEventWriter() aborts on error */
     tracing_data->otf_writer = SCOREP_Tracing_GetEventWriter();
-
-    if ( SCOREP_Status_IsMppInitialized() )
-    {
-        SCOREP_Tracing_AssignLocationId( locationData );
-    }
 }
 
 
