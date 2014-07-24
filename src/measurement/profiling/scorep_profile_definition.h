@@ -58,9 +58,8 @@
    Disables further construction of the profile.
  */
 #define SCOREP_PROFILE_STOP( location )       \
-    do {                                       \
-        scorep_profile.is_initialized = false; \
-        scorep_profile_on_error( location );   \
+    do {                                      \
+        scorep_profile_on_error( location );  \
     } while ( 0 );
 
 /* **************************************************************************************

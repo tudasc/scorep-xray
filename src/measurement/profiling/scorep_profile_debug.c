@@ -210,4 +210,6 @@ scorep_profile_on_error( SCOREP_Profile_LocationData* location )
 
         fclose( file );
     }
+
+    abort();
 }
