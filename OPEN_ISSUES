@@ -47,6 +47,13 @@
     crash for unknown reason during measurement initialization when
     accessing an OpenMP threadprivate variable.
 
+* Compiler instrumentation
+
+  - The Intel compiler provides the function name and the source code location
+    in one string separated by a colon. Thus, if the path name of the source
+    code file or the function name contains colons, Score-P might split
+    the source file name and the function name improperly.
+
 
                         Score-P v1.2 OPEN ISSUES
                         ========================
