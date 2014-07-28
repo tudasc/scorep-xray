@@ -203,7 +203,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
             {
                 UTILS_WARNING( "[CUPTI Activity] Dropped %u records. Current buffer size: %llu bytes\n"
                                "To avoid dropping of records increase the buffer size!\n"
-                               "Proposed minimum VT_CUDATRACE_BUFFER_SIZE=%llu",
+                               "Proposed minimum SCOREP_CUDA_BUFFER=%llu",
                                ( unsigned int )dropped, scorep_cupti_activity_buffer_size,
                                scorep_cupti_activity_buffer_size + dropped / 2 *
                                ( sizeof( CUpti_ActivityKernelType ) + sizeof( CUpti_ActivityMemcpy ) ) );
