@@ -65,16 +65,17 @@ CUDA support improvements and changes:
   has changed. Therefore the environment variable SCOREP_CUDA_BUFFER_CHUNK
   has been introduced (see user documentation). Changed the default size for
   SCOREP_CUDA_BUFFER to '1M'.
-- Added SCOREP_CUDA_ENABLE option 'references' to track references between
-  CUDA host and device activities in the OTF2 trace.
-- Added SCOREP_CUDA_ENABLE option 'flushatexit', which forces pending CUDA
-  activities to be flushed at program exit. This can avoid records to be
-  dropped in OpenACC programs.
-- Changed default method of CUDA kernel recording to concurrent. Therefore
-  the SCOREP_CUDA_ENABLE option 'concurrent' has been replaced with
-  'kernel_serial'.
+- New options for SCOREP_CUDA_ENABLE:
+  'references'   : track references between CUDA host and device activities in
+                   the OTF2 trace
+  'flushatexit'  : forces pending CUDA activities to be flushed at program exit
+                   (avoids records to be dropped in OpenACC programs)
+  'kernel_serial': serialize recording of (potentially concurrent) kernels
+- Obsolete options for SCOREP_CUDA_ENABLE:
+  'concurrent'  : recording of (potentially concurrent) kernels is the default
+  'stream_reuse': feature has been removed
+  'device_reuse': feature has been removed
 - Added support for runtime filtering of CUDA device and host activities.
-- Removed SCOREP_CUDA_ENABLE option 'stream_reuse'
 
 Bugfixes:
 
