@@ -1,18 +1,44 @@
 ------------------- Upcoming version 1.3 -----------------------------
 
-- Improved automatic MPI detection in instrumenter (helpful on Cray,
-  as cc/CC/ftn is the compile command for both MPI and non-MPI).
+Major features:
+
+- Basic support for the K Computer and Fujitsu FX10 systems added. The
+  Tofu network topology will be supported in a subsequent release.
+  Note that some C++ OpenMP programs fail during measurement
+  initialization for unknown reasons.
+
+Features and improvements:
+
 - Use Process Manager Interface (PMI) to get fine-granular information
   about the system topology on Cray machines.
+- Implemented the possibility to write CUBE profiles with the tuple
+  values containing sum, minimum, maximum, number of samples, sum of
+  squares.
+- The new SIONlib integration of OTF2 extends the support of writing
+  SION traces to all multi-process paradigms, not only MPI. Though
+  only pure multi-process measurements are supported for now. No
+  threads, no CUDA, no non-CPU metrics. Score-P itself does not depend
+  on SIONlib any longer, only OTF2 does now. The configure option
+  '--with-sionlib' (formerly '--with-sionconfig') is passed to OTF2.
+  As part of this integration the measurement configuration variable
+  'SCOREP_TRACING_NLOCATIONS_PER_SION_FILE' was renamed to
+  'SCOREP_TRACING_MAX_PROCS_PER_SION_FILE' to clarify that Score-P can
+  only distribute whole processes into a multi-file SION trace.
+- Improved initialization of adapters which results in a reduced
+  number of libraries needed to be linked into the application.
+- Extended the TAU adapter to allow input of location properties,
+  which are location specific meta data presented as key/value pair.
+
+User tools and API improvements and changes:
+
+- Improved automatic MPI detection in instrumenter (helpful on Cray,
+  as cc/CC/ftn is the compile command for both MPI and non-MPI).
 - Changed paradigm selection in the instrumenter to match the
   selection options in the config tool. Thus, introduced
   --mpp=<paradigm> and --thread=<paradigm> flags for the instrumenter
   to select the multi-process paradigm and the threading paradigm. The
   old options --mpi, --nompi, --openmp, --noopenmp are marked as
   deprecated and no longer documented.
-- Implemented the possibility to write CUBE profiles with the tuple
-  values containing sum, minimum, maximum, number of samples, sum of
-  squares.
 - Added handling for special characters, like space, in file names and
   path names. However, there are still some limitation when using
   special characters: The PDT parser can not deal with these
@@ -26,21 +52,32 @@
   (SCOREP_PARAMETER_DEFINE, SCOREP_PARAMETER_INT64,
   SCOREP_PARAMETER_UINT64, SCOREP_PARAMETER_STRING) got the prefix
   SCOREP_USER instead of only SCOREP.
-- The new SIONlib integration of OTF2 extends the support of writing
-  SION traces to all multi-process paradigms, not only MPI. Though
-  only pure multi-process measurements are supported for now. No
-  threads, no CUDA, no non-CPU metrics. Score-P itself does not depend
-  on SIONlib any longer, only OTF2 does now. The configure option
-  '--with-sionlib' (formerly '--with-sionconfig') is passed to OTF2.
-  As part of this integration the measurement configuration variable
-  'SCOREP_TRACING_NLOCATIONS_PER_SION_FILE' was renamed to
-  'SCOREP_TRACING_MAX_PROCS_PER_SION_FILE' to clarify that Score-P can
-  only distribute whole processes into a multi-file SION trace.
-- Extended the TAU adapter to allow input of location properties,
-  which are location specific meta data presented as key/value pair.
 - Added selection for mutex locking, allowing to use the parameter
   --mutex=<locking> to switch between known locking mechanisms within
   the measurement system (omp,pthread,pthread:spinlock).
+- Improved event size estimation in scorep-score using otf2-estimator.
+- Install Cube remap specification file and provide its location via
+  scorep-config tool.
+
+CUDA support improvements and changes:
+
+- Added support for CUDA 5.5 and CUDA 6.0: The CUPTI activity buffer handling
+  has changed. Therefore the environment variable SCOREP_CUDA_BUFFER_CHUNK
+  has been introduced (see user documentation). Changed the default size for
+  SCOREP_CUDA_BUFFER to '1M'.
+- Added SCOREP_CUDA_ENABLE option 'references' to track references between
+  CUDA host and device activities in the OTF2 trace.
+- Added SCOREP_CUDA_ENABLE option 'flushatexit', which forces pending CUDA
+  activities to be flushed at program exit. This can avoid records to be
+  dropped in OpenACC programs.
+- Changed default method of CUDA kernel recording to concurrent. Therefore
+  the SCOREP_CUDA_ENABLE option 'concurrent' has been replaced with
+  'kernel_serial'.
+- Added support for runtime filtering of CUDA device and host activities.
+- Removed SCOREP_CUDA_ENABLE option 'stream_reuse'
+
+Bugfixes:
+
 - When using the Intel compiler, we inspected the symbol table of the
   executable and evaluated the filtering on all functions in the
   executable. Thus, compiler instrumented functions from shared
@@ -48,12 +85,6 @@
   compiler. Now, the filters are evaluated when the functions appear
   the first time. Thus, functions from shared libraries now appear in
   the measurement output.
-- Added support for CUDA 5.5 and CUDA 6.0: The CUPTI activity buffer handling
-  has changed. Therefore the environment variable SCOREP_CUDA_BUFFER_CHUNK
-  has been introduced (see user documentation). Changed the default size for
-  SCOREP_CUDA_BUFFER to '1M'.
-- Added SCOREP_CUDA_ENABLE option 'references' to track references between
-  CUDA host and device activities in the OTF2 trace.
 - Fix handling of Intel compiler options starting with "-o".
 - The pgCC compiler version 13.9 and newer preinclude omp.h if OpenMP
   is enabled. This leads to multiply defined symbols if the source file
@@ -63,39 +94,22 @@
 - Fix a deadlock on AIX, if MPI_Abort was called.
 - If a system provides only shared OpenMP runtime libraries and a compiler
   does not add rpath information but relies on LD_LIBRARY_PATH, the
-  scorep instrumenter fails execution. Fixed.
-- Added SCOREP_CUDA_ENABLE option 'flushatexit', which forces pending CUDA
-  activities to be flushed at program exit. This can avoid records to be
-  dropped in OpenACC programs.
-- Changed default method of CUDA kernel recording to concurrent. Therefore
-  the SCOREP_CUDA_ENABLE option 'concurrent' has been replaced with
-  'kernel_serial'.
-- Added support for runtime filtering of CUDA device and host activities.
-- Removed SCOREP_CUDA_ENABLE option 'stream_reuse'
+  Score-P instrumenter fails execution. Fixed.
 - Fix missing flags in OPARI2 call to disable OpenMP instrumentation, if the
   user selected POMP instrumentation for a serial program without specifying
   that the program is serial, manually.
 - Prepend link calls to the intel compiler with seetings to VT_LIB_DIR and
   VT_LIBS to avoid remarks.
-- Improved event size estimation in scorep-score using otf2-estimator.
-- Improved initialization of adapters which results in a reduced
-  number of libraries needed to be linked into the application.
-- Install Cube remap specification file and provide its location via
-  scorep-config tool.
 - Changed enumeration of threads in the profile from a global enumeration
   to an enumeration from 0 to N-1 on each process.
-- Basic support for the K Computer and Fujitsu FX10 systems added. The
-  Tofu network topology will be supported in a subsequent release.
-  Note that some C++ OpenMP programs fail during measurement
-  initialization for unknown reasons.
 - Use "-G2" if the Cray compiler instrumentation is used.
   The previous "-g" flag disabled all optimizations.
 - Fix creation of experiment directory, if the monitored application make
   use of 'chdir' operation.
-- The scorep instrumenter tool moved compiler selection flags for the
+- The Score-P instrumenter tool moved compiler selection flags for the
   MPI compiler wrapper to a different location in the command line. Fixed.
-- Fix broken instrumentation if the link line explcitly links libc.
-- Fixed constant zero for aquisition order value of acquire lock events
+- Fix broken instrumentation if the link line explicitly links libc.
+- Fixed constant zero for acquisition order value of acquire lock events
   from OpenMP critical sections.
 
 ------------------- Released version 1.2.3 ---------------------------
