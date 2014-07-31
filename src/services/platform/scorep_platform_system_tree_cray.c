@@ -51,6 +51,12 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
     pmi_mesh_coord_t max_xyz, coord;
     pmi_nic_addr_t   nic;
 
+    SCOREP_Platform_SystemTreeProperty* property = NULL;
+    int                                 fd       = -1;
+    char                                buffer[ 256 ];
+    size_t                              buffer_size = sizeof( buffer ) - 1;
+    ssize_t                             bytes       = 0;
+
     /* Get hostname */
     SCOREP_Platform_SystemTreePathElement* node = NULL;
     node = scorep_platform_system_tree_bottom_up_add( &node,
@@ -127,7 +133,7 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
 
 
     /* Add coordinates (x,y,z) to the ASIC */
-    SCOREP_Platform_SystemTreeProperty* property =
+    property =
         scorep_platform_system_tree_add_property( node,
                                                   "x_coord",
                                                   4, "%3d", coord.mesh_x );
@@ -155,7 +161,7 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
     }
 
     /* get cname */
-    int fd = open( "/proc/cray_xt/cname", O_RDONLY );
+    fd = open( "/proc/cray_xt/cname", O_RDONLY );
     if ( fd < 0 )
     {
         UTILS_WARNING( "Cannot open file /proc/cray_xt/cname: %s",
@@ -163,9 +169,7 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
         goto fail;
     }
 
-    char    buffer[ 256 ];
-    size_t  buffer_size = sizeof( buffer ) - 1;
-    ssize_t bytes       = read( fd, buffer, buffer_size );
+    bytes = read( fd, buffer, buffer_size );
     if ( bytes <= 0 )
     {
         UTILS_WARNING( "Cannot read file /proc/cray_xt/cname: %s",
