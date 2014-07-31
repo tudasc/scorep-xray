@@ -257,6 +257,16 @@ scorep_metric_papi_open( const char* listOfMetricNames,
     int retval;
     /** Info struct about PAPI event */
     PAPI_event_info_t info;
+    /** Number of separators in string */
+    size_t list_alloc = 1;
+    /** Number of metric names in string */
+    size_t list_len = 0;
+    /** Current position in processed string */
+    const char* position = NULL;
+    /** Array of requested metric names */
+    char** metric_names = NULL;
+    /** Metric definition data */
+    scorep_metric_definition_data* metric_definition = NULL;
 
     /* Get working copy of all metric names. */
     env_metrics = UTILS_CStr_dup( listOfMetricNames );
@@ -269,8 +279,7 @@ scorep_metric_papi_open( const char* listOfMetricNames,
     }
 
     /* Count number of separator characters in list of metric names */
-    size_t      list_alloc = 1;
-    const char* position   = env_metrics;
+    position = env_metrics;
     while ( *position )
     {
         if ( strchr( metricsSeparator, *position ) )
@@ -281,7 +290,7 @@ scorep_metric_papi_open( const char* listOfMetricNames,
     }
 
     /* Allocate memory for array of metric names */
-    char** metric_names = calloc( list_alloc, sizeof( char* ) );
+    metric_names = calloc( list_alloc, sizeof( char* ) );
     if ( !metric_names )
     {
         UTILS_ERROR_POSIX();
@@ -289,7 +298,6 @@ scorep_metric_papi_open( const char* listOfMetricNames,
     }
 
     /* Parse list of metric names */
-    size_t list_len = 0;
     token = strtok( env_metrics, metricsSeparator );
     while ( token )
     {
@@ -307,7 +315,7 @@ scorep_metric_papi_open( const char* listOfMetricNames,
     }
 
     /* Create new event set (variables initialized with zero) */
-    scorep_metric_definition_data* metric_definition = calloc( 1, sizeof( scorep_metric_definition_data ) );
+    metric_definition = calloc( 1, sizeof( scorep_metric_definition_data ) );
     UTILS_ASSERT( metric_definition );
 
     /* Initialize PAPI */
