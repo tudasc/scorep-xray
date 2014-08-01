@@ -88,7 +88,10 @@ SCOREP_Instrumenter_Selector::checkCommand(  const std::string& current,
           paradigm != m_paradigm_list.end();
           paradigm++ )
     {
-        skip_next |= ( *paradigm )->checkCommand( current, next );
+        if ( ( *paradigm )->isSupported() )
+        {
+            skip_next |= ( *paradigm )->checkCommand( current, next );
+        }
     }
     return skip_next;
 }
@@ -328,6 +331,13 @@ void
 SCOREP_Instrumenter_Selector::select( SCOREP_Instrumenter_Paradigm* selection,
                                       bool                          is_user_selection )
 {
+    if ( !selection->isSupported() )
+    {
+        std::cerr << "ERROR: Selection of an unsupported paradigm implementation: "
+                  << selection->getConfigName() << "." << std::endl;
+        exit( EXIT_FAILURE );
+    }
+
     selection_priority_t priority = ( is_user_selection ? user_selection : auto_selection );
 
     if (  m_current_priority < priority )

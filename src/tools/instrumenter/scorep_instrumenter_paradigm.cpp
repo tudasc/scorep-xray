@@ -114,9 +114,21 @@ SCOREP_Instrumenter_Paradigm::printHelp( void )
 bool
 SCOREP_Instrumenter_Paradigm::checkOption( std::string arg )
 {
-    if ( ( arg == getConfigName() ) || ( arg == m_name ) )
+    if ( isSupported() )
     {
-        return true;
+        if ( ( arg == getConfigName() ) || ( arg == m_name ) )
+        {
+            return true;
+        }
+        return false;
+    }
+    else if ( arg == getConfigName() )
+    {
+        // If the user specified this particular variant we can saz it is not supported.
+        // Otherwise another variant exists that support the paradigm.
+        std::cerr << "ERROR: " << getConfigName()
+                  << " is not supported by this Score-P installation." << std::endl;
+        exit( EXIT_FAILURE );
     }
     return false;
 }
