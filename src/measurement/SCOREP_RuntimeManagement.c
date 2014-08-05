@@ -279,12 +279,6 @@ scorep_initialization_sanity_checks( void )
     {
         _Exit( EXIT_FAILURE );
     }
-
-    if ( SCOREP_Thread_InParallel() )
-    {
-        UTILS_ERROR( SCOREP_ERROR_INTEGRITY_FAULT, "Can't initialize measurement core from within parallel region." );
-        _Exit( EXIT_FAILURE );
-    }
 }
 
 
