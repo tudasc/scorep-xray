@@ -28,6 +28,13 @@ Features and improvements:
   number of libraries needed to be linked into the application.
 - Extended the TAU adapter to allow input of location properties,
   which are location specific meta data presented as key/value pair.
+- The option --thread=<paradigm>[:<variant>] gives users the
+  possibility to choose the threading model and to fine-tune certain
+  aspects. Currently OpenMP is supported with --thread=omp. By using
+  --thread=omp:pomp_tpd to include OpenMP support using OPARI2 thread
+  tracking It requires and, thus, automatically enables opari
+  instrumentation.  --thread=omp:ancestry enables OpenMP support using
+  thread tracking with ancestry functions in OpenMP 3.0 and later.
 
 User tools and API improvements and changes:
 
