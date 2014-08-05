@@ -53,6 +53,12 @@ SCOREP_Location_CreateCPULocation( SCOREP_Location* parent,
                                    const char*      name,
                                    bool             deferNewLocationNotification );
 
+/**
+ * Returns the current number of locations.
+ */
+uint32_t
+SCOREP_Location_GetCountOfLocations( void );
+
 
 SCOREP_Allocator_PageManager*
 SCOREP_Location_GetMemoryPageManager( SCOREP_Location*  locationData,

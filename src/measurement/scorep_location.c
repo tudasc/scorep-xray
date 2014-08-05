@@ -167,6 +167,14 @@ SCOREP_Location_CreateCPULocation( SCOREP_Location* parent,
 
 
 uint32_t
+SCOREP_Location_GetCountOfLocations( void )
+{
+    /* read should be atomic, thus not locking needed */
+    return scorep_local_definition_manager.location.counter;
+}
+
+
+uint32_t
 SCOREP_Location_GetId( SCOREP_Location* locationData )
 {
     /*
