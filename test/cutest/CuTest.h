@@ -63,12 +63,15 @@ CuStringResize( CuString* str,
 typedef struct CuTest CuTest;
 
 typedef void ( *TestFunction )( CuTest* );
+typedef void ( *TestAllreduce )( int* );
 
 struct CuTest
 {
     const char*    name;
     TestFunction   function;
+    TestAllreduce  testAllreduce;
     int            failed;
+    int            failedLocally;
     int            ran;
     const char*    message;
     jmp_buf*       jumpBuf;
@@ -101,7 +104,7 @@ CuAssert_Line( CuTest*     tc,
                const char* file,
                int         line,
                const char* message,
-               int         condition );
+               int         success );
 void
 CuAssertStrEquals_LineMsg( CuTest*     tc,
                            const char* file,
@@ -159,11 +162,15 @@ CuAssertPtrEquals_LineMsg( CuTest*     tc,
 
 typedef struct
 {
-    const char* name;
-    int         count;
-    CuTest*     head;
-    CuTest**    tail;
-    int         failCount;
+    const char*   name;
+    int           count;
+    CuTest*       head;
+    CuTest**      tail;
+    int           failCount;
+
+    int           currentRank;
+    int           masterRank;
+    TestAllreduce testAllreduce;
 } CuSuite;
 
 
@@ -171,10 +178,16 @@ void
 CuUseColors( void );
 
 void
-CuSuiteInit( const char* name,
-             CuSuite*    testSuite );
+CuSuiteInit( const char*   name,
+             CuSuite*      testSuite,
+             int           currentRank,
+             TestAllreduce testAllreduce );
 CuSuite*
 CuSuiteNew( const char* name );
+CuSuite*
+CuSuiteNewParallel( const char*   name,
+                    int           currentRank,
+                    TestAllreduce testAllreduce );
 void
 CuSuiteClear( CuSuite* testSuite );
 void
