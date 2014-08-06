@@ -181,7 +181,6 @@ scorep_dir_name_is_created( void )
 static const char*
 scorep_format_time( time_t* timestamp )
 {
-    assert( !SCOREP_Thread_InParallel() ); // localtime() not reentrant
     static char local_time_buf[ FORMAT_TIME_SIZE ];
     time_t      now;
     struct tm*  local_time;

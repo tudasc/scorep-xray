@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -122,7 +122,6 @@ scorep_thread_on_create_private_data( scorep_thread_private_data* tpd,
 void
 scorep_thread_on_initialize( scorep_thread_private_data* initialTpd )
 {
-    UTILS_BUG_ON( omp_in_parallel(), "" );
     UTILS_BUG_ON( initialTpd == 0, "" );
     UTILS_BUG_ON( scorep_thread_get_model_data( initialTpd ) == 0, "" );
     UTILS_BUG_ON( initial_tpd != 0, "" );
