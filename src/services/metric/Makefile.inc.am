@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -51,7 +51,7 @@ libscorep_metric_la_SOURCES = \
 
 if ! HAVE_PAPI
 if ! HAVE_GETRUSAGE
-if ! HAVE_METRIC_PLUGINS
+if ! HAVE_DLFCN_SUPPORT
 libscorep_metric_la_SOURCES += $(SRC_ROOT)src/services/metric/scorep_metric_management_mockup.c
 else
 libscorep_metric_la_SOURCES += $(SRC_ROOT)src/services/metric/scorep_metric_management.c
@@ -98,7 +98,7 @@ endif
 
 # Plugins source specific settings
 
-if HAVE_METRIC_PLUGINS
+if HAVE_DLFCN_SUPPORT
 noinst_LTLIBRARIES += libscorep_metric_plugins.la
 
 libscorep_metric_plugins_la_CPPFLAGS = $(scorep_metric_common_cppflags)

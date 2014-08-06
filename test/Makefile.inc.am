@@ -13,11 +13,11 @@
 # test/Makefile.mpi.inc.am.
 
 external_libadd = \
-    @OTF2_LIBS@                   \
-    @LIBBFD_LIBS@                 \
-    @SCOREP_PAPI_LIBS@            \
-    @SCOREP_METRIC_PLUGINS_LIBS@  \
-    @CUBE_WRITER_LIBS@            \
+    @OTF2_LIBS@         \
+    @LIBBFD_LIBS@       \
+    @SCOREP_PAPI_LIBS@  \
+    @SCOREP_DLFCN_LIBS@ \
+    @CUBE_WRITER_LIBS@  \
     @TIMER_LIB@
 
 external_ldflags = \

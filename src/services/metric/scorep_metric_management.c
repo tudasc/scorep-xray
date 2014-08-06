@@ -79,7 +79,7 @@
 #if HAVE( GETRUSAGE )
 #include "scorep_metric_rusage.h"
 #endif
-#if HAVE( METRIC_PLUGINS )
+#if HAVE( DLFCN_SUPPORT )
 #include "scorep_metric_plugins.h"
 #endif
 
@@ -95,7 +95,7 @@ static const SCOREP_MetricSource* scorep_metric_sources[] = {
 #if HAVE( GETRUSAGE )
     &SCOREP_Metric_Rusage,
 #endif
-#if HAVE( METRIC_PLUGINS )
+#if HAVE( DLFCN_SUPPORT )
     &SCOREP_Metric_Plugins
 #endif
 };

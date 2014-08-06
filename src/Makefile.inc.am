@@ -66,7 +66,7 @@ libscorep_measurement_la_LIBADD =        \
     libjenkins_hash.la                   \
     @LIBBFD_LIBS@                        \
     @SCOREP_PAPI_LIBS@                   \
-    @SCOREP_METRIC_PLUGINS_LIBS@         \
+    @SCOREP_DLFCN_LIBS@                  \
     @TIMER_LIB@
 
 if HAVE_SCOREP_EXTERNAL_OTF2

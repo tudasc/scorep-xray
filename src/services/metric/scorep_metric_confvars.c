@@ -70,7 +70,7 @@ scorep_metric_register( size_t subsystem_id )
                                HAVE_BACKEND_GETRUSAGE );
     SCOREP_ConfigRegisterCond( "metric",
                                scorep_metric_plugins_configs,
-                               HAVE_BACKEND_METRIC_PLUGINS );
+                               HAVE_BACKEND_DLFCN_SUPPORT );
 
     return SCOREP_SUCCESS;
 }
