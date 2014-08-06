@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011,2014
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -83,7 +83,7 @@ fi
 ])
 
 
-dnl dont' use together with AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE
+dnl do not use together with AC_SCOREP_WITH_NOCROSS_COMPILER_SUITE
 AC_DEFUN([AC_SCOREP_WITH_COMPILER_SUITE],
 [
 AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
@@ -218,4 +218,86 @@ AC_ARG_VAR(FFLAGS_FOR_BUILD, [Fortran 77 compiler flags for the frontend build])
 AC_ARG_VAR(FCFLAGS_FOR_BUILD, [Fortran compiler flags for the frontend build])
 AC_ARG_VAR(LDFLAGS_FOR_BUILD, [linker flags for the frontend build, e.g. -L<lib dir> if you have libraries in a nonstandard directory <lib dir>])
 AC_ARG_VAR(LIBS_FOR_BUILD, [libraries to pass to the linker for the frontend build, e.g. -l<library>])
+])
+
+
+dnl --------------------------------------------------------------------
+
+
+AC_DEFUN([AFS_WITH_SHMEM_COMPILER_SUITE],
+[
+AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
+
+scorep_shmem_user_disabled="no"
+AC_ARG_WITH([shmem],
+    [AS_HELP_STRING([--with-shmem=(openshmem|openmpi|sgimpt)],
+         [The SHMEM compiler suite to build this package in non cross-compiling mode. Usually autodetected. Needs to be in $PATH.])],
+    [AS_IF([test "x${withval}" = xno],
+         [scorep_shmem_user_disabled=yes
+          ac_scorep_compilers_shmem="compiler-shmem-without"
+         ],
+         [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
+              [AS_CASE([$withval],
+                   ["openshmem"], [ac_scorep_compilers_shmem="compiler-shmem-openshmem"],
+                   ["openmpi"], [ac_scorep_compilers_shmem="compiler-shmem-openmpi"],
+                   ["sgimpt"], [ac_scorep_compilers_shmem="compiler-shmem-sgimpt"],
+                   [AC_MSG_ERROR([SHMEM compiler suite "${withval}" not supported by --with-shmem.])])
+              ])
+         ])
+     # omit check "if in PATH" for now.
+    ],
+    [AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${ac_scorep_platform}" != "xaix"],
+         [AFS_COMPILER_SHMEM
+          ac_scorep_compilers_shmem="compiler-shmem-${afs_compiler_shmem}"])
+    ])
+
+AS_IF([test "x${scorep_shmem_user_disabled}" = xno],
+      [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+             [AS_CASE([${ac_scorep_platform}],
+                [cray*],
+                    [ac_scorep_compilers_shmem="platform-shmem-${ac_scorep_platform}"],
+                [ac_scorep_compilers_shmem=""])])])
+
+AS_IF([test "x${ac_scorep_compilers_shmem}" != "x" && test -f "AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_shmem}"],
+      [ac_scorep_compilers_shmem="AFS_COMPILER_FILES_PACKAGE/${ac_scorep_compilers_shmem}"],
+      [ac_scorep_compilers_shmem="AFS_COMPILER_FILES_COMMON/${ac_scorep_compilers_shmem}"])
+# sanity checks missing
+])# AFS_WITH_SHMEM_COMPILER_SUITE
+
+
+AC_DEFUN([AFS_PRECIOUS_VARS_SHMEM],
+[
+AC_ARG_VAR(SHMEMCC,[SHMEM C compiler command])
+AC_ARG_VAR(SHMEMCXX,[SHMEM C++ compiler command])
+AC_ARG_VAR(SHMEMF77,[SHMEM Fortran 77 compiler command])
+AC_ARG_VAR(SHMEMFC,[SHMEM Fortran compiler command])
+AC_ARG_VAR(SHMEM_CPPFLAGS, [SHMEM (Objective) C/C++ preprocessor flags, e.g. -I<include dir> if you have headers in a nonstandard directory <include dir>])
+AC_ARG_VAR(SHMEM_CFLAGS, [SHMEM C compiler flags])
+AC_ARG_VAR(SHMEM_CXXFLAGS, [SHMEM C++ compiler flags])
+AC_ARG_VAR(SHMEM_FFLAGS, [SHMEM Fortran 77 compiler flags])
+AC_ARG_VAR(SHMEM_FCFLAGS, [SHMEM Fortran compiler flags])
+AC_ARG_VAR(SHMEM_LDFLAGS, [SHMEM linker flags, e.g. -L<lib dir> if you have libraries in a nonstandard directory <lib dir>])
+AC_ARG_VAR(SHMEM_LIBS, [SHMEM libraries to pass to the linker, e.g. -l<library>])
+AC_ARG_VAR(SHMEM_LIB_NAME, [name of the SHMEM library])
+])
+
+AC_DEFUN([AFS_CONVERT_SHMEM_COMPILER],
+[
+if test "x${ac_cv_env_SHMEM[$1]_set}" != "xset"; then
+    # don't use the default compiler if nothing is specified for SHMEM
+    unset [$1]
+else
+    [$1]="$ac_cv_env_SHMEM[$1]_value"
+fi
+])
+
+AC_DEFUN([AFS_CONVERT_SHMEM_FLAGS],
+[
+if test "x${ac_cv_env_SHMEM_[$1]_set}" != "xset"; then
+   # don't use the default flags if nothing is specified for SHMEM
+   unset [$1]
+else
+   # use the SHMEM flags
+   [$1]="$ac_cv_env_SHMEM_[$1]_value"
+fi
 ])

@@ -6,6 +6,9 @@
 ## Copyright (c) 2013
 ## Forschungszentrum Juelich GmbH, Germany
 ##
+## Copyright (c) 2014
+## Technische Universitaet Dresden, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -256,21 +259,24 @@ AC_DEFUN([AFS_CUSTOM_COMPILERS],
 
     AC_ARG_WITH([custom-compilers],
         [AS_HELP_STRING([--with-custom-compilers],
-             [Customize compiler settings by 1. copying the three files <srcdir>/vendor/common/build-config/platforms/platform-*-user-provided to the directory where you run configure <builddir>, 2. editing those files to your needs, and 3. running configure. Alternatively, edit the files under <srcdir> directly. Files in <builddir> take precedence. You are entering unsupported terrain. Namaste, and good luck!])
+             [Customize compiler settings by 1. copying the files <srcdir>/vendor/common/build-config/platforms/platform-*-user-provided to the directory where you run configure <builddir>, 2. editing those files to your needs, and 3. running configure. Alternatively, edit the files under <srcdir> directly. Files in <builddir> take precedence. You are entering unsupported terrain. Namaste, and good luck!])
         ],
         [afs_custom_compilers_given="yes"
          AS_CASE([${withval}],
              ["yes"], [AS_IF([test -f ./platform-backend-user-provided && \
                               test -f ./platform-frontend-user-provided && \
-                              test -f ./platform-mpi-user-provided],
+                              test -f ./platform-mpi-user-provided && \
+                              test -f ./platform-shmem-user-provided],
                            [AC_MSG_NOTICE([Using compiler specification from ./platform-*-user-provided files.])
                             ac_scorep_compilers_backend="./platform-backend-user-provided"
                             ac_scorep_compilers_frontend="./platform-frontend-user-provided"
-                            ac_scorep_compilers_mpi="./platform-mpi-user-provided"],
+                            ac_scorep_compilers_mpi="./platform-mpi-user-provided"
+                            ac_scorep_compilers_shmem="./platform-shmem-user-provided"],
                            [AC_MSG_NOTICE([Using compiler specification from AFS_COMPILER_FILES_COMMON/platform-*-user-provided files.])
                             ac_scorep_compilers_backend="AFS_COMPILER_FILES_COMMON/platform-backend-user-provided"
                             ac_scorep_compilers_frontend="AFS_COMPILER_FILES_COMMON/platform-frontend-user-provided"
-                            ac_scorep_compilers_mpi="AFS_COMPILER_FILES_COMMON/platform-mpi-user-provided"])
+                            ac_scorep_compilers_mpi="AFS_COMPILER_FILES_COMMON/platform-mpi-user-provided"
+                            ac_scorep_compilers_shmem="AFS_COMPILER_FILES_COMMON/platform-shmem-user-provided"])
                       ],
              [AC_MSG_ERROR(['${withval}' not supported by --with-custom-compilers.])])
         ],

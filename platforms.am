@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013
+## Copyright (c) 2009-2014
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -58,6 +58,10 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-sgimpt \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-sun \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-without \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-shmem-openmpi \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-shmem-openshmem \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-shmem-sgimpt \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-shmem-without \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-gcc  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-ibm  \
               $(srcdir)/vendor/common/build-config/platforms/compiler-nocross-intel  \
@@ -113,6 +117,11 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-mac  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-necsx  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-solaris  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-shmem-crayxk  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-shmem-crayxe  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-shmem-crayxt  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-shmem-crayxc  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-shmem-user-provided  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-k  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-fx10  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-user-provided

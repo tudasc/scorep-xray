@@ -64,6 +64,16 @@ function evaluate_placeholder(compiler)
       sub(pattern, args_binary[compiler], args_binary[mpi_compiler])
     }
   }
+
+  # e.g. transform SHMEMCC={CC} to SHMEMCC="icc",
+  # assuming that CC=icc
+  shmem_compiler = "SHMEM" compiler
+  pattern = "{" compiler "}"
+  if (shmem_compiler in args_binary) {
+    if (match(args_binary[shmem_compiler], pattern) != 0) {
+      sub(pattern, args_binary[compiler], args_binary[shmem_compiler])
+    }
+  }
 }
 
 
