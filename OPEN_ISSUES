@@ -157,6 +157,12 @@ various Score-P components.
     missing in the resulting region meta data, than try recompiling with
     the -gdwarf-3 or -gdwarf-2.
 
+  - When instrumenting an application which contains bison generated code,
+    the link step fails because of multiple defined symbols conflicting
+    with the online access module of Score-P. Please use
+    'scorep --noonline-access' to disable the online access and avoid
+    multiple symbol definitions.
+
 --------------------------------------------------------------------------------
 
 * MPI support
