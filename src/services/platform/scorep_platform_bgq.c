@@ -52,7 +52,7 @@
  *  Determined during SCOREP_Platform_GetPathInSystemTree, used during
  *  SCOREP_Platform_GetHostId.
  */
-static node_id = 0;
+static int32_t node_id;
 
 
 SCOREP_ErrorCode
