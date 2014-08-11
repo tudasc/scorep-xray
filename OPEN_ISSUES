@@ -48,6 +48,24 @@
     crash for unknown reason during measurement initialization when
     accessing an OpenMP threadprivate variable.
 
+* MPI support
+
+  - The C++ bindings for MPI are not supported. When using C++ bindings
+    for MPI, Score-P will most likely indicate the failed library wrapping
+    with the following warning: "If you are using MPICH1, please ignore 
+    this warning. If not, it seems that your interprocess communication 
+    library (e.g., MPI) hasn't been initialized. Score-P can't generate 
+    output."
+    If your MPI implements the C++ bindings in a separate library on top of
+    the C bindings, the following workaround might work for you:
+    1) Instrument your application with 'scorep --keep-files -v'
+       It will make the instrumenter not remove the intermediate files and
+       output the commands it executes
+    2) Coppy the link command (the last command from the scorep output).
+    3) Insert a link flag (e.g. -lmpicxx) for your C++ bindings library 
+       right before '-lscorep_adapter_mpi_events' and execute the 
+       modified link command.
+
 * Compiler instrumentation
 
   - The Intel compiler provides the function name and the source code location
