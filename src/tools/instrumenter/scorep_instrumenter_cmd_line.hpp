@@ -135,9 +135,9 @@ public:
     std::string
     getCompilerName( void );
     std::string
-    getFlagsBeforeLmpi( void );
+    getFlagsBeforeInterpositionLib( void );
     std::string
-    getFlagsAfterLmpi( void );
+    getFlagsAfterInterpositionLib( void );
     std::string
     getIncludeFlags( void );
     std::string
@@ -150,7 +150,7 @@ public:
     int
     getInputFileNumber( void );
     bool
-    isLmpiSet( void );
+    isInterpositionLibSet( void );
     bool
     isDryRun( void );
     bool
@@ -338,20 +338,20 @@ private:
     std::string m_compiler_name;
 
     /**
-       all compiler/linker flags, before an explicit -lmpi,
+       all compiler/linker flags, before an explicit interposition lib (e.g., -lmpi, -lshmem),
        except source files, object files, -c and -o options.
      */
-    std::string m_flags_before_lmpi;
+    std::string m_flags_before_interposition_lib;
 
     /**
-       all compiler/linker flags, after an explicit -lmpi,
+       all compiler/linker flags, after an explicit interposition lib (e.g., -lmpi, -lshmem),
        except source files, object files, -c and -o options.
      */
-    std::string m_flags_after_lmpi;
+    std::string m_flags_after_interposition_lib;
 
     /**
-       Pointers to @a m_flags_before_lmpi or @a m_flags_after_lmpi, depending
-       whether -lmpi already occurred.
+       Pointers to @a m_flags_before_interposition_lib or @a m_flags_after_interposition_lib, depending
+       whether an interposition lib (e.g. -lmpi) already occurred.
      */
     std::string* m_current_flags;
 
@@ -391,9 +391,9 @@ private:
     //int m_input_file_number;
 
     /**
-       True, if -lmpi was specified.
+       True, if an interposition lib (e.g., -lmpi) was specified.
      */
-    bool m_lmpi_set;
+    bool m_interposition_lib_set;
 
     /* --------------------------------------------
        Instrumenter flags

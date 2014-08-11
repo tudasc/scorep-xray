@@ -55,7 +55,7 @@ scorep_thread_fork_join_create_team_data( SCOREP_Location* location )
         location,
         sizeof( *data ) );
     scorep_definitions_manager_init_entry( &data->thread_team );
-    /* don't use scorep_definition_manager_entry_alloc_hash_table, it uses calloc */
+    /* don't use scorep_definitions_manager_entry_alloc_hash_table, it uses calloc */
     data->thread_team.hash_table_mask = hashmask( THREAD_TEAM_HASH_POWER );
     data->thread_team.hash_table      = SCOREP_Location_AllocForMisc(
         location,
@@ -123,13 +123,13 @@ scorep_thread_get_team_handle( SCOREP_Location*                 location,
 
     struct scorep_thread_team_comm_payload* new_payload;
     SCOREP_InterimCommunicatorHandle        new_handle =
-        SCOREP_Definitions_NewInterimCommunicatorInLocation(
+        SCOREP_Definitions_NewInterimCommunicatorCustom(
             location,
-            parentThreadTeam,
-            scorep_thread_get_paradigm(),
+            &data->thread_team,
             init_payload_fn,
             equal_payloads_fn,
-            &data->thread_team,
+            parentThreadTeam,
+            scorep_thread_get_paradigm(),
             sizeof( *new_payload ),
             ( void** )&new_payload,
             numThreads,

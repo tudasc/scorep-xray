@@ -53,3 +53,7 @@ error_code OA_PARSE_MRI "Could not parse MRI request"
 error_code ON_SYSTEM_CALL "Error in execution of system command"
 
 error_code POMP_UNKNOWN_REGION_TYPE "Unknown POMP region type specified in CTC string"
+
+error_code DLOPEN_FAILED "Cannot open library handle"
+error_code DLSYM_FAILED "Could not find symbol"
+error_code DLCLOSE_FAILED "Cannot close library handle"

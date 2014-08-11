@@ -273,24 +273,6 @@ SCOREP_IpcGroup_Allreduce( SCOREP_Ipc_Group*    group,
 
 
 int
-SCOREP_IpcGroup_Scan( SCOREP_Ipc_Group*    group,
-                      const void*          sendbuf,
-                      void*                recvbuf,
-                      int                  count,
-                      SCOREP_Ipc_Datatype  datatype,
-                      SCOREP_Ipc_Operation operation )
-{
-    /* In non-mpi case, we have only rank zero. Thus all operations just copy sendbuf to
-       recvbuf. */
-    if ( recvbuf != sendbuf )
-    {
-        size_t num = get_datatype_size( datatype ) * count;
-        memcpy( recvbuf, sendbuf, num );
-    }
-    return 0;
-}
-
-int
 SCOREP_IpcGroup_Scatter( SCOREP_Ipc_Group*   group,
                          const void*         sendbuf,
                          void*               recvbuf,

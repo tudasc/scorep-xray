@@ -43,11 +43,9 @@
 #include <stdbool.h>
 
 
-// different impl for MPI and non-MPI
 void
 SCOREP_Status_Initialize( void );
 
-// different impl for MPI and non-MPI
 void
 SCOREP_Status_Finalize( void );
 
@@ -78,10 +76,10 @@ SCOREP_OnExperimentDirCreation( void );
 
 
 /**
- * Indicates whether we are a MPI application or not. This eases the
- * initialization process.
+ * Indicates whether we are a MPP application or not.
+ * This eases the initialization process.
  *
- * @return In MPI mode return true, false otherwise.
+ * @return In MPP mode return true, false otherwise.
  */
 bool
 SCOREP_Status_IsMpp( void );
@@ -104,20 +102,20 @@ SCOREP_Status_OnMppFinalize( void );
 
 
 /**
- * Indicates whether MPI_Init() was already called or not. In non-MPI mode always true
+ * Indicates whether MPP initialization (e.g., MPI_Init()) was already called or not. In non-MPP mode always true.
  *
- * @return In MPI mode true if MPI_Init() has been called earlier, false otherwise.
- *         In non-MPI mode always true.
+ * @return In MPP mode true if initialization (e.g., MPI_Init()) has been called earlier, false otherwise.
+ *         In non-MPP mode always true.
  */
 bool
 SCOREP_Status_IsMppInitialized( void );
 
 
 /**
- * Indicates whether MPI_Finalize() was already called or not. In non-MPI mode always true
+ * Indicates whether MPP finalization (e.g., MPI_Finalize()) was already called or not. In non-MPP mode always true.
  *
- * @return In MPI mode true if MPI_Finalize() has been called before, false otherwise.
- *         In non-MPI mode always true.
+ * @return In MPP mode true if finalization (e.g., MPI_Finalize()) has been called before, false otherwise.
+ *         In non-MPP mode always true.
  */
 bool
 SCOREP_Status_IsMppFinalized( void );

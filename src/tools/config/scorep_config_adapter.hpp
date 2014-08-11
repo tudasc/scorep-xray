@@ -99,6 +99,7 @@ public:
      */
     static void
     addLdFlagsAll( std::string& ldflags,
+                   bool         build_check,
                    bool         nvcc );
 
     /**
@@ -209,11 +210,13 @@ protected:
     /**
      * Overwrite this function if you want to do adapter specific modifications
      * to the linker flags.
-     * @param ldflags  the linker flags to which you may modify or add new flags.
-     * @param nvcc     True if compiler is nvcc.
+     * @param ldflags     The linker flags to which you may modify or add new flags.
+     * @param build_check True '--build-check' was specified.
+     * @param nvcc        True if compiler is nvcc.
      */
     virtual void
     addLdFlags( std::string& ldflags,
+                bool         build_check,
                 bool         nvcc );
 
     /**
@@ -256,6 +259,7 @@ public:
                bool                   nvcc );
     virtual void
     addLdFlags( std::string& ldflags,
+                bool         build_check,
                 bool         nvcc );
 };
 

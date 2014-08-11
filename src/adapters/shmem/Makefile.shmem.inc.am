@@ -1,0 +1,156 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2013-2014,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file src/adapters/shmem/Makefile.shmem.inc.am
+
+if HAVE_SHMEM_SUPPORT
+
+$(LIB_DIR_SCOREP)libscorep_measurement.la:
+	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_measurement.la
+
+$(LIB_DIR_SCOREP)libscorep_mpp_ipc.la:
+	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpp_ipc.la
+
+$(LIB_DIR_SCOREP)libutils.la:
+	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libutils.la
+
+shmem_libwrap_cppflags =
+shmem_libwrap_ldflags =
+if HAVE_SHMEM_PROFILING_INTERFACE
+shmem_libwrap_cppflags += -DSCOREP_LIBWRAP_WEAK
+else !HAVE_SHMEM_PROFILING_INTERFACE
+shmem_libwrap_cppflags += -DSCOREP_LIBWRAP_STATIC
+shmem_libwrap_ldflags += -Wl,@../share/shmem.wrap
+endif !HAVE_SHMEM_PROFILING_INTERFACE
+
+
+# runtime management library for the SHMEM adapter
+
+lib_LTLIBRARIES += libscorep_adapter_shmem_mgmt.la
+libscorep_adapter_shmem_mgmt_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/shmem/scorep_shmem_init.c              \
+    $(SRC_ROOT)src/adapters/shmem/scorep_shmem_setup.c             \
+    $(SRC_ROOT)src/adapters/shmem/scorep_shmem_communicator_mgmt.c \
+    $(SRC_ROOT)src/adapters/shmem/scorep_shmem_communicator_mgmt.h \
+    $(SRC_ROOT)src/adapters/shmem/scorep_shmem_reg.c               \
+    $(SRC_ROOT)src/adapters/shmem/scorep_shmem_reg.h               \
+    $(SRC_ROOT)src/measurement/paradigm/shmem/scorep_shmem_unify.c
+libscorep_adapter_shmem_mgmt_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                         \
+    -I$(PUBLIC_INC_DIR)                    \
+    $(UTILS_CPPFLAGS)                      \
+    -I$(INC_ROOT)src/adapters/shmem        \
+    -I$(INC_ROOT)src/measurement/include   \
+    -I$(INC_ROOT)src/measurement           \
+    -I$(INC_DIR_MUTEX)                     \
+    -I$(INC_DIR_COMMON_HASH)               \
+    $(shmem_libwrap_cppflags)
+libscorep_adapter_shmem_mgmt_la_LIBADD = \
+    $(LIB_DIR_SCOREP)libutils.la
+libscorep_adapter_shmem_mgmt_la_LDFLAGS = \
+    $(shmem_libwrap_ldflags) \
+    $(library_api_version_ldflags)
+
+#
+# event library for the SHMEM adapter
+#
+
+lib_LTLIBRARIES += libscorep_adapter_shmem_event.la
+libscorep_adapter_shmem_event_la_SOURCES =
+nodist_EXTRA_libscorep_adapter_shmem_event_la_SOURCES = force_link_with_F77LD.f
+libscorep_adapter_shmem_event_la_LIBADD = \
+    libscorep_adapter_shmem_c_event.la            \
+    $(LIB_DIR_SCOREP)libscorep_measurement.la     \
+    libscorep_adapter_shmem_event_fortran_sub3.la \
+    libscorep_adapter_shmem_event_fortran_sub4.la
+libscorep_adapter_shmem_event_la_LDFLAGS = \
+    $(shmem_libwrap_ldflags) \
+    $(library_api_version_ldflags)
+
+noinst_LTLIBRARIES += \
+    libscorep_adapter_shmem_event_fortran_sub3.la \
+    libscorep_adapter_shmem_event_fortran_sub4.la
+
+SCOREP_SHMEM_EVENT_FORTRAN_SOURCES = \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem.h \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Fortran.c
+
+SCOREP_SHMEM_EVENT_FORTRAN_CPPFLAGS = \
+    $(AM_CPPFLAGS)                             \
+    -I$(PUBLIC_INC_DIR)                        \
+    $(UTILS_CPPFLAGS)                          \
+    -I$(INC_ROOT)src/adapters/include          \
+    -I$(INC_ROOT)src/measurement/include       \
+    -I$(INC_ROOT)src/adapters/shmem            \
+    $(shmem_libwrap_cppflags)
+
+libscorep_adapter_shmem_event_fortran_sub3_la_SOURCES = \
+    $(SCOREP_SHMEM_EVENT_FORTRAN_SOURCES)
+libscorep_adapter_shmem_event_fortran_sub3_la_CPPFLAGS = \
+    $(SCOREP_SHMEM_EVENT_FORTRAN_CPPFLAGS)               \
+    -DFSUB=SCOREP_FORTRAN_SUB3
+
+libscorep_adapter_shmem_event_fortran_sub4_la_SOURCES = \
+    $(SCOREP_SHMEM_EVENT_FORTRAN_SOURCES)
+libscorep_adapter_shmem_event_fortran_sub4_la_CPPFLAGS = \
+    $(SCOREP_SHMEM_EVENT_FORTRAN_CPPFLAGS)               \
+    -DFSUB=SCOREP_FORTRAN_SUB4
+
+noinst_LTLIBRARIES += libscorep_adapter_shmem_c_event.la
+libscorep_adapter_shmem_c_event_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem.h            \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Atomic.c     \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Broadcast.c  \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Cache.c      \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Collect.c    \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Data.c       \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Event.c      \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Init.c       \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Lock.c       \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Query.c      \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Reduction.c  \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_RemotePtr.c  \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_SymHeap.c    \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Sync.c       \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Team.c       \
+    $(SRC_ROOT)src/adapters/shmem/scorep_shmem_internal.h
+
+libscorep_adapter_shmem_c_event_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                            \
+    -I$(PUBLIC_INC_DIR)                       \
+    $(UTILS_CPPFLAGS)                         \
+    -I$(INC_ROOT)src/adapters/include         \
+    -I$(INC_ROOT)src/measurement/include      \
+    -I$(INC_ROOT)src/adapters/shmem           \
+    $(shmem_libwrap_cppflags)
+
+
+## endif HAVE_SHMEM_SUPPORT
+endif
+
+EXTRA_DIST += \
+    $(SRC_ROOT)src/adapters/shmem/scorep_shmem_function_list.inc                    \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_atomic.inc.c         \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_broadcast.inc.c      \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_cache.inc.c          \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_collect.inc.c        \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_data.inc.c           \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_event.inc.c          \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_init.inc.c           \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_lock.inc.c           \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_query.inc.c          \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_reduction.inc.c      \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_remote_ptr.inc.c     \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_sym_heap.inc.c       \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_sync.inc.c           \
+    $(SRC_ROOT)src/adapters/shmem/fortran_common/scorep_fshmem_team.inc.c

@@ -47,9 +47,18 @@
 
 
 #include "scorep_ipc.h"
+#include "scorep_mpp.h"
+#include "scorep_status.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+
+
+#define LOCATION_GROUP_NAME_LENGTH 9
+
+static char name[ LOCATION_GROUP_NAME_LENGTH ];
+
 
 bool
 SCOREP_Status_IsMpp( void )
@@ -57,6 +66,13 @@ SCOREP_Status_IsMpp( void )
     return false;
 }
 
+char*
+SCOREP_Mpp_GetLocationGroupName( void )
+{
+    snprintf( name, LOCATION_GROUP_NAME_LENGTH, "Process" );
+
+    return name;
+}
 
 bool
 scorep_create_experiment_dir( void ( * createDir )( void ) )

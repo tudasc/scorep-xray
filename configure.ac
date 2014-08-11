@@ -88,18 +88,31 @@ AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
                     [AC_MSG_ERROR([cannot detect platform to set suitable defaults. Please use --with-custom-compilers and provide settings and platform to <AC_PACKAGE_BUGREPORT> on success. Thanks.])
                 ])
             AC_SCOREP_WITH_MPI_COMPILER_SUITE
+            AFS_WITH_SHMEM_COMPILER_SUITE
            ],
            [afs_compiler_mpi_save=${ac_scorep_compilers_mpi}
             AC_SCOREP_WITH_MPI_COMPILER_SUITE
             AS_IF([test "x${scorep_mpi_user_disabled}" = xno],
                 [ac_scorep_compilers_mpi=${afs_compiler_mpi_save}])
+            afs_compiler_shmem_save=${ac_scorep_compilers_shmem}
+            AFS_WITH_SHMEM_COMPILER_SUITE
+            AS_IF([test "x${scorep_shmem_user_disabled}" = xno],
+                [ac_scorep_compilers_shmem=${afs_compiler_shmem_save}])
            ])
-       # determine arguments for subdir configures
-       args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk \
-              ${ac_scorep_compilers_mpi}                                       \
-              ${ac_scorep_compilers_frontend}                                  \
-              ${ac_scorep_compilers_backend}                                   \
-              user_provided_configure_args`"
+       AS_IF([test -f ${ac_scorep_compilers_shmem}],
+             [# determine arguments for subdir configures with handling SHMEM compiler
+              args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk \
+                     ${ac_scorep_compilers_mpi}                                       \
+                     ${ac_scorep_compilers_shmem}                                     \
+                     ${ac_scorep_compilers_frontend}                                  \
+                     ${ac_scorep_compilers_backend}                                   \
+                     user_provided_configure_args`"],
+             [# determine arguments for subdir configures without handling SHMEM compiler
+              args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk \
+                     ${ac_scorep_compilers_mpi}                                       \
+                     ${ac_scorep_compilers_frontend}                                  \
+                     ${ac_scorep_compilers_backend}                                   \
+                     user_provided_configure_args`"])
        AS_IF([test $? -ne 0], [AC_MSG_ERROR([cannot process provided and/or autodetected arguments. Please contact <AC_PACKAGE_BUGREPORT> and provide the above output. Thanks.])])
       ],
       [AC_MSG_NOTICE([platform data provided by toplevel configure.])
@@ -172,6 +185,18 @@ AS_IF([test "x${scorep_mpi_user_disabled}" != "xyes"],
     [AFS_SUMMARY([MPI support], [no, explicitly disabled via --without-mpi])
      AC_CONFIG_FILES([src/scorep_config_tool_mpi.h:src/tools/config/scorep_config_tool_without_mpi.h.in])
     ])
+
+AM_CONDITIONAL([HAVE_SCOREP_SHMEM],
+               [test "x${scorep_shmem_user_disabled}" != "xyes" && \
+                ( test "x${ac_scorep_platform}" = "xlinux" || \
+                  test -f "${srcdir}/vendor/common/build-config/platforms/platform-shmem-${ac_scorep_platform}" )])
+AM_COND_IF([HAVE_SCOREP_SHMEM],
+    [AC_CONFIG_SUBDIR_CUSTOM([build-shmem], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg}])
+    ],
+    [AFS_SUMMARY([SHMEM support], [no])
+     AC_CONFIG_FILES([src/scorep_config_tool_shmem.h:src/tools/config/scorep_config_tool_without_shmem.h.in])
+    ])
+
 AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cube_config_arg} ${scorep_have_score_build}])
 
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then

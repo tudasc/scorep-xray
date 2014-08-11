@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -45,7 +45,7 @@ SCOREP_User_EnableRecording( void )
     SCOREP_USER_ASSERT_INITIALIZED;
 
     /* (Re)start recording */
-    SCOREP_EnableRecording();
+    SCOREP_EnableRecording( true );
 }
 
 void
@@ -55,7 +55,7 @@ SCOREP_User_DisableRecording( void )
     SCOREP_USER_ASSERT_INITIALIZED;
 
     /* Stop recording */
-    SCOREP_DisableRecording();
+    SCOREP_DisableRecording( true );
 }
 
 bool

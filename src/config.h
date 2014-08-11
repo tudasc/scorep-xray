@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -50,8 +50,11 @@
     #elif defined BACKEND_BUILD_MPI
         #include <config-backend-mpi.h>
         #define HAVE_BACKEND( H ) ( defined( HAVE_ ## H ) && HAVE_ ## H )
+    #elif defined BACKEND_BUILD_SHMEM
+        #include <config-backend-shmem.h>
+        #define HAVE_BACKEND( H ) ( defined( HAVE_ ## H ) && HAVE_ ## H )
     #else
-        #error "You cannot use config.h without defining either FRONTEND_BUILD, BACKEND_BUILD_NOMPI or BACKEND_BUILD_MPI."
+        #error "You cannot use config.h without defining either FRONTEND_BUILD, BACKEND_BUILD_NOMPI, BACKEND_BUILD_MPI or BACKEND_BUILD_SHMEM."
     #endif
 
 #elif defined NOCROSS_BUILD
@@ -59,8 +62,10 @@
         #include <config-backend.h>
     #elif defined BACKEND_BUILD_MPI
         #include <config-backend-mpi.h>
+    #elif defined BACKEND_BUILD_SHMEM
+        #include <config-backend-shmem.h>
     #else
-        #error "You cannot use config.h without defining either BACKEND_BUILD_NOMPI or BACKEND_BUILD_MPI."
+        #error "You cannot use config.h without defining either BACKEND_BUILD_NOMPI, BACKEND_BUILD_MPI or BACKEND_BUILD_SHMEM."
     #endif
 
     #define HAVE_BACKEND( H ) ( defined( HAVE_ ## H ) && HAVE_ ## H )

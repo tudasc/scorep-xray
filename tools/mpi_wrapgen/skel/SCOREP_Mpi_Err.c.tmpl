@@ -16,9 +16,7 @@
 
 #pragma wrapgen multiple restrict(gerr+!nMPI_Add_error_string) skel/SCOREP_Mpi_Std.w
 
-#if HAVE( MPI_ADD_ERROR_STRING_COMPLIANT )
-#pragma wrapgen single MPI_Add_error_string skel/SCOREP_Mpi_Std.w
-#endif
+#pragma wrapgen single MPI_Add_error_string skel/SCOREP_Mpi_StdWithProto.w
 
 /**
  * @}

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011,2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -117,6 +117,7 @@ typedef enum
     SCOREP_TAU_PARADIGM_ACCELERATOR,
     SCOREP_TAU_PARADIGM_CUDA,
     SCOREP_TAU_PARADIGM_MEASUREMENT,
+    SCOREP_TAU_PARADIGM_SHMEM,
 
     SCOREP_TAU_INVALID_PARADIGM_TYPE /**< For internal use only. */
 } SCOREP_Tau_ParadigmType;
@@ -126,6 +127,7 @@ typedef enum
 #define SCOREP_TAU_ADAPTER_MPI            SCOREP_TAU_PARADIGM_MPI
 #define SCOREP_TAU_ADAPTER_POMP           SCOREP_TAU_PARADIGM_OPENMP
 #define SCOREP_TAU_ADAPTER_PTHREAD        SCOREP_TAU_PARADIGM_THREAD_CREATE_WAIT
+#define SCOREP_TAU_ADAPTER_SHMEM          SCOREP_TAU_PARADIGM_SHMEM
 #define SCOREP_TAU_INVALID_ADAPTER_TYPE   SCOREP_TAU_INVALID_PARADIGM_TYPE
 
 typedef enum

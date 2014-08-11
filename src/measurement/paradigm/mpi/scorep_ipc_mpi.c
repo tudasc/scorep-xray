@@ -395,23 +395,6 @@ SCOREP_IpcGroup_Allreduce( SCOREP_Ipc_Group*    group,
 
 
 int
-SCOREP_IpcGroup_Scan( SCOREP_Ipc_Group*    group,
-                      const void*          sendbuf,
-                      void*                recvbuf,
-                      int                  count,
-                      SCOREP_Ipc_Datatype  datatype,
-                      SCOREP_Ipc_Operation operation )
-{
-    return PMPI_Scan( HANDLE_CONST( void, sendbuf ),
-                      recvbuf,
-                      count,
-                      get_mpi_datatype( datatype ),
-                      get_mpi_operation( operation ),
-                      resolve_comm( group ) ) != MPI_SUCCESS;
-}
-
-
-int
 SCOREP_IpcGroup_Scatter( SCOREP_Ipc_Group*   group,
                          const void*         sendbuf,
                          void*               recvbuf,

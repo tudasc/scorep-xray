@@ -101,6 +101,7 @@ SCOREP_Config_LibraryDependencies::SCOREP_Config_LibraryDependencies( void )
        vendor/common/build-config/generate-library-dependency.sh */
     #include <scorep_config_library_dependencies_inc.hpp>
     #include <scorep_config_library_dependencies_mpi_inc.hpp>
+    #include <scorep_config_library_dependencies_shmem_inc.hpp>
 }
 
 SCOREP_Config_LibraryDependencies::~SCOREP_Config_LibraryDependencies()

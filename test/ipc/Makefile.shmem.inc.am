@@ -1,0 +1,48 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2012-2014,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+
+if HAVE_SHMEM_SUPPORT
+
+check_PROGRAMS += test_ipc_shmem
+test_ipc_shmem_SOURCES = \
+    $(SRC_ROOT)test/ipc/test_ipc_shmem.c         \
+    $(SRC_ROOT)test/ipc/test_ipc.c               \
+    $(SRC_ROOT)test/ipc/test_ipc.h               \
+    $(SRC_ROOT)test/ipc/tests/ipc_gather.c       \
+    $(SRC_ROOT)test/ipc/tests/ipc_misc.c         \
+    $(SRC_ROOT)test/ipc/tests/ipc_reduce.c       \
+    $(SRC_ROOT)test/ipc/tests/ipc_scatter.c      \
+    $(SRC_ROOT)test/ipc/tests/ipc_send_recive.c  \
+    $(SRC_ROOT)test/ipc/tests/ipc_tests.h        \
+    $(SRC_ROOT)test/ipc/tests/ipc_test_utils.h   \
+    $(SRC_ROOT)vendor/common/cutest/CuTest.c     \
+    $(SRC_ROOT)vendor/common/cutest/CuTest.h
+
+test_ipc_shmem_CPPFLAGS = \
+    $(AM_CPPFLAGS)                         \
+    -I$(INC_ROOT)src/measurement/include   \
+    -I$(INC_ROOT)src/measurement           \
+    -I$(PUBLIC_INC_DIR)                    \
+    -I$(INC_ROOT)src/utils/include         \
+    -I$(INC_DIR_COMMON_CUTEST)             \
+    $(shmem_libwrap_cppflags)
+
+test_ipc_shmem_LDADD = \
+    libscorep_ipc_shmem.la \
+    $(LIB_DIR_SCOREP)libutils.la
+test_ipc_shmem_LDFLAGS = $(shmem_libwrap_ldflags)
+
+TESTS_SHMEM += test_ipc_shmem
+
+endif HAVE_SHMEM_SUPPORT

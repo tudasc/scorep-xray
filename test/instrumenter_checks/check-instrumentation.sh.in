@@ -8,6 +8,9 @@
 ## Copyright (c) 2013-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
+## Copyright (c) 2014,
+## Technische Universitaet Dresden, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -36,10 +39,12 @@ if test $# -lt 2; then
     echo "Usage: check-instrumentation.sh <paradigm> <executable> [<options>]" >&2
     echo >&2
     echo "Valid <paradigm>s:" >&2
-    echo "   serial   -  Serial execution" >&2
-    echo "   omp      -  Pure OpenMP" >&2
-    echo "   mpi      -  Pure MPI" >&2
-    echo "   mpi_omp  -  Hybrid MPI + OpenMP" >&2
+    echo "   serial    -  Serial execution" >&2
+    echo "   omp       -  Pure OpenMP" >&2
+    echo "   mpi       -  Pure MPI" >&2
+    echo "   mpi_omp   -  Hybrid MPI + OpenMP" >&2
+    echo "   shmem     -  Pure SHMEM" >&2
+    echo "   shmem_omp -  Hybrid SHMEM + OpenMP" >&2
     echo >&2
     echo "Valid <options> are instrumenter command-line arguments affecting" >&2
     echo "instrumentation." >&2
@@ -54,10 +59,32 @@ EXE=$2
 shift
 shift
 
+valid_mpp()
+{
+    case $1 in
+    mpi|shmem)
+        return 0
+    ;;
+    esac
+
+    return 1
+}
+
+valid_thread()
+{
+    case $1 in
+        omp)
+            return 0
+            ;;
+    esac
+
+    return 1
+}
+
 # Initialize defaults
 COMP=yes
-unset MPI
-unset OMP
+unset MPP
+unset THREAD
 unset POMP
 unset USER
 unset VERBOSE
@@ -66,22 +93,24 @@ case ${PARADIGM} in
         # Compiler instrumentation only -- nothing to adjust
         ;;
 
-    omp)
-        OMP=yes
-        ;;
-
-    mpi)
-        MPI=yes
-        ;;
-
-    mpi_omp)
-        OMP=yes
-        MPI=yes
+    *_*)
+        MPP=${PARADIGM%_*}
+        THREAD=${PARADIGM#*_}
+        if ! valid_mpp ${MPP} || ! valid_thread ${THREAD}; then
+            echo "ERROR: Unknown paradigm '${PARADIGM}' encountered!" >&2
+            exit 1
+        fi
         ;;
 
     *)
-        echo "ERROR: Unknown paradigm '${PARADIGM}' encountered!" >&2
-        exit 1
+        if valid_mpp ${PARADIGM}; then
+            MPP=${PARADIGM}
+        elif valid_thread ${PARADIGM}; then
+            THREAD=${PARADIGM}
+        else
+            echo "ERROR: Unknown paradigm '${PARADIGM}' encountered!" >&2
+            exit 1
+        fi
         ;;
 esac
 
@@ -95,8 +124,12 @@ while test $# -ne 0; do
             unset COMP
             ;;
 
-        --mpp=mpi)
-            MPI=yes
+        --mpp=*)
+            MPP=${1#--mpp=}
+            if ! valid_mpp ${MPP}; then
+                echo "ERROR: Unknown multi-process paradigm in $1!" >&2
+                exit 1
+            fi
             ;;
 
         --pdt)
@@ -117,11 +150,22 @@ while test $# -ne 0; do
             # These options have no effect on the inserted instrumentation
             ;;
 
-        --thread=omp|--thread=omp:pomp_tpd|--thread=omp:ancestry)
-            OMP=yes
+        --thread=*)
+            THREAD=${1#--thread=}
+            case ${THREAD} in
+                omp|omp:pomp_tpd|omp:ancestry)
+                    VARIANT=${THREAD#*:}
+                    THREAD=${THREAD%:*}
+                    ;;
+                *)
+                    echo "ERROR: Unknown thread paradigm in $1!" >&2
+                    exit 1
+                    ;;
+            esac
             ;;
+
         --mutex=omp|--mutex=pthread|--mutex=pthread:spinlock)
-            OMP=yes
+            THREAD=omp
             ;;
 
         --user)
@@ -149,17 +193,17 @@ done
 
 # --- Determine which kind of instrumentation is expected ---
 unset INST_EXPECTED
-if test -n "${COMP}${MPI}${OMP}${POMP}${USER}"; then
+if test -n "${COMP}${MPP}${THREAD}${POMP}${USER}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }init"
 fi
 if test -n "${COMP}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }comp"
 fi
-if test -n "${MPI}"; then
-    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }mpi"
+if test -n "${MPP}"; then
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }${MPP}"
 fi
-if test -n "${OMP}"; then
-    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }omp"
+if test -n "${THREAD}"; then
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }${THREAD}"
 fi
 if test -n "${POMP}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }pomp"
@@ -177,7 +221,7 @@ else
 fi
 
 
-# --- Determine instrumentation in binary ---
+# --- Determine instrumentation in binary (same order as the expected checks)---
 unset INST_FOUND
 
 # Instrumented at all?     (Scalasca check)
@@ -194,12 +238,23 @@ if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }comp"
 fi
 
+# All MPP checks
+
 # MPI instrumentation?     (Scalasca check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_mpi_status_size`
 SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_mpi_mgmt.so`
 if test -n "${STATIC}${SHARED}"; then
     INST_FOUND="${INST_FOUND}${INST_FOUND:+ }mpi"
 fi
+
+# SHMEM instrumentation?     (custom check)
+STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_shmem_number_of_root_comms`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_shmem_mgmt.so`
+if test -n "${STATIC}${SHARED}"; then
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }shmem"
+fi
+
+# All thread checks
 
 # OpenMP instrumentation?     (Scalasca check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} POMP2_Parallel_fork`

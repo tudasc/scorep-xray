@@ -31,7 +31,8 @@
 
                         Score-P new OPEN ISSUES
                         ========================
-                                                           Status: April 2014
+                                                           Status: May 2014
+
 * CUDA support
 
   - CUDA device activities get lost for CUDA 5.5 (CUPTI 4). The last activity
@@ -53,6 +54,33 @@
     in one string separated by a colon. Thus, if the path name of the source
     code file or the function name contains colons, Score-P might split
     the source file name and the function name improperly.
+
+* SHMEM support
+
+  - When using the OpenSHMEM reference implementation and building Score-P
+    as a shared library, ensure that the GASNet library is build with -fPIC
+    on platforms which need this flag for shared library code. For example,
+    run make with the MANUAL_LIBCFLAGS and MANUAL_CFLAGS variables set:
+
+      make MANUAL_LIBCFLAGS="-fPIC -DPIC" MANUAL_CFLAGS="-fPIC -DPIC"
+
+    on GNU/Linux platforms.
+
+    Also, if you encounter segmentation faults when running the instrumented
+    application with Score-P attached, but the error disapears magically on
+    subsequent runs, than the OpenSHMEM reference implementation may not
+    consider some of your global or static variables as symmetric objects.
+    Please allocate these objects with shmalloc() to ensure that they are
+    in the symmetric heap.
+
+  - Currently tested SHMEM implementations:
+    + OpenSHMEM reference implementation 1.0f
+    + Open MPI implementation 1.8.2a
+    + SGI SHMEM
+    + Cray SHMEM
+
+  - The online access interface is currently not available in SHMEM
+    applications.
 
 
                         Score-P v1.2 OPEN ISSUES

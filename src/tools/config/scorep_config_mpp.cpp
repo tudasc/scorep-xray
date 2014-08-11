@@ -42,6 +42,9 @@ SCOREP_Config_MppSystem::init( void )
 #if HAVE_BACKEND( MPI_SUPPORT )
     all.push_back( new SCOREP_Config_MpiMppSystem() );
 #endif
+#if HAVE_BACKEND( SHMEM_SUPPORT )
+    all.push_back( new SCOREP_Config_ShmemMppSystem() );
+#endif
     all.push_back( new SCOREP_Config_MockupMppSystem() );
     current = all.front();
 }
@@ -113,6 +116,13 @@ SCOREP_Config_MppSystem::addLibs( std::deque<std::string>&           libs,
 {
 }
 
+void
+SCOREP_Config_MppSystem::addLdFlags( std::string& /* ldflags */,
+                                     bool /* build_check */,
+                                     bool /* nvcc */ )
+{
+}
+
 /* **************************************************************************************
  * class SCOREP_Config_MockupMppSystem
  * *************************************************************************************/
@@ -174,4 +184,48 @@ void
 SCOREP_Config_MpiMppSystem::getInitStructName( std::deque<std::string>& init_structs )
 {
     init_structs.push_back( "SCOREP_Subsystem_MpiAdapter" );
+}
+
+/* **************************************************************************************
+ * class SCOREP_Config_ShmemMppSystem
+ * *************************************************************************************/
+
+SCOREP_Config_ShmemMppSystem::SCOREP_Config_ShmemMppSystem()
+    : SCOREP_Config_MppSystem( "shmem" )
+{
+}
+
+void
+SCOREP_Config_ShmemMppSystem::addLibs( std::deque<std::string>&           libs,
+                                       SCOREP_Config_LibraryDependencies& deps,
+                                       bool                               withOnlineAccess )
+{
+    libs.push_back( "libscorep_adapter_shmem_event" );
+    deps.addDependency( "libscorep_measurement", "libscorep_adapter_shmem_mgmt" );
+    deps.addDependency( "libscorep_measurement", "libscorep_mpp_shmem" );
+    deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
+}
+
+void
+SCOREP_Config_ShmemMppSystem::addLdFlags( std::string& ldflags,
+                                          bool         build_check,
+                                          bool /* nvcc */ )
+{
+#if !HAVE_BACKEND( SHMEM_PROFILING_INTERFACE )
+    if ( build_check )
+    {
+        extern std::string path_to_binary;
+        ldflags += " -Wl,@" + path_to_binary + "../share/shmem.wrap";
+    }
+    else
+    {
+        ldflags += " -Wl,@" SCOREP_DATADIR "/shmem.wrap";
+    }
+#endif
+}
+
+void
+SCOREP_Config_ShmemMppSystem::getInitStructName( std::deque<std::string>& init_structs )
+{
+    init_structs.push_back( "SCOREP_Subsystem_ShmemAdapter" );
 }

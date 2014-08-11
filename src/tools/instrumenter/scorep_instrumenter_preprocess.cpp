@@ -7,6 +7,9 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -97,10 +100,10 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
     // Preprocess file
     command = SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars()
               + cmdLine.getCompilerName()
-              + " " + cmdLine.getFlagsBeforeLmpi()
+              + " " + cmdLine.getFlagsBeforeInterpositionLib()
               + " `" + instrumenter.getConfigBaseCall() + " --" + language + "flags`"
               + " " + instrumenter.getCompilerFlags()
-              + " " + cmdLine.getFlagsAfterLmpi()
+              + " " + cmdLine.getFlagsAfterInterpositionLib()
               + " " + input_file;
 
     std::string output_file = remove_extension( remove_path( source_file ) )

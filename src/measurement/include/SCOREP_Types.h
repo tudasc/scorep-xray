@@ -247,6 +247,7 @@ typedef uint32_t SCOREP_LineNo;
     SCOREP_PARADIGM( COMPILER,           "compiler",           COMPILER,           SCOREP_ALL_BITS( 1 ) )    \
     SCOREP_PARADIGM( MPP,                "mpp",                MPI,                SCOREP_ALL_BITS( 2 ) )    \
     SCOREP_PARADIGM( MPI,                "mpi",                MPI,                SCOREP_SUB_BITS( 2, 1 ) ) \
+    SCOREP_PARADIGM( SHMEM,              "shmem",              SHMEM,              SCOREP_SUB_BITS( 2, 2 ) ) \
     SCOREP_PARADIGM( THREAD_FORK_JOIN,   "thread-fork-join",   OPENMP,             SCOREP_ALL_BITS( 3 ) )    \
     SCOREP_PARADIGM( OPENMP,             "openmp",             OPENMP,             SCOREP_SUB_BITS( 3, 1 ) ) \
     SCOREP_PARADIGM( THREAD_CREATE_WAIT, "thread-create-wait", OPENMP,             SCOREP_ALL_BITS( 4 ) )    \
@@ -348,6 +349,10 @@ typedef enum SCOREP_GroupType
 
     SCOREP_GROUP_CUDA_LOCATIONS     = 9,
     SCOREP_GROUP_CUDA_GROUP         = 10,
+
+    SCOREP_GROUP_SHMEM_LOCATIONS    = 11,
+    SCOREP_GROUP_SHMEM_GROUP        = 12,
+    SCOREP_GROUP_SHMEM_SELF         = 13,
 
     SCOREP_INVALID_GROUP_TYPE /**< For internal use only. */
 } SCOREP_GroupType;
@@ -591,6 +596,7 @@ typedef struct SCOREP_ConfigType_SetEntry
  */
 typedef int SCOREP_MpiRank;
 
+
 /**
  * Type of a MPI Non-blocking communication request id.
  */
@@ -726,6 +732,10 @@ typedef enum SCOREP_RmaAtomicType
     SCOREP_RMA_ATOMIC_TYPE_INCREMENT,
     SCOREP_RMA_ATOMIC_TYPE_TEST_AND_SET,
     SCOREP_RMA_ATOMIC_TYPE_COMPARE_AND_SWAP,
+    SCOREP_RMA_ATOMIC_TYPE_SWAP,
+    SCOREP_RMA_ATOMIC_TYPE_FETCH_AND_ADD,
+    SCOREP_RMA_ATOMIC_TYPE_FETCH_AND_INCREMENT,
+    SCOREP_RMA_ATOMIC_TYPE_ADD,
 
     SCOREP_INVALID_RMA_ATOMIC_TYPE
 } SCOREP_RmaAtomicType;

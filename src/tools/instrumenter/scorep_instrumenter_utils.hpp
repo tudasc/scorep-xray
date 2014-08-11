@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -116,11 +116,25 @@ bool
 is_library( const std::string& filename );
 
 /**
+   Checks whether the library name is a library we want to interpose.
+   @param library_name  The name of the library.
+ */
+bool
+is_interposition_library( const std::string& library_name );
+
+/**
    Checks whether the library name is an mpi library.
    @param library_name  The name of the library.
  */
 bool
 is_mpi_library( const std::string& library_name );
+
+/**
+   Checks whether the library name is an shmem library.
+   @param library_name  The name of the library.
+ */
+bool
+is_shmem_library( const std::string& library_name );
 
 /**
    Simpifies a path.

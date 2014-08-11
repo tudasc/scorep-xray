@@ -1,5 +1,21 @@
 ## -*- mode: makefile -*-
 
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2014,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2014,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file test/Makefile.inc.am
+
 # ------------------------------------------------------------------------------
 
 # Below, helper libs and variables from before multilib aera, needed
@@ -27,9 +43,11 @@ external_ldflags = \
     @CUBE_WRITER_LDFLAGS@ \
     @CUDA_LDFLAGS@
 
+if HAVE_GNU_LINKER
 if BUILD_SHARED_LIBRARIES
 external_ldflags += -Wl,--no-as-needed
-endif
+endif BUILD_SHARED_LIBRARIES
+endif HAVE_GNU_LINKER
 
 common_event_libadd = \
     libscorep_adapter_compiler_event.la  \
@@ -42,7 +60,7 @@ common_mgmt_libadd = \
 
 if HAVE_CUDA_SUPPORT
 common_mgmt_libadd += libscorep_adapter_cuda_mgmt.la
-endif
+endif HAVE_CUDA_SUPPORT
 
 common_cppflags = \
     $(AM_CPPFLAGS)                       \
@@ -89,6 +107,42 @@ libscorep_mpi_mgmt_la_LIBADD   = \
 libscorep_mpi_mgmt_la_LDFLAGS              = $(external_ldflags)
 
 endif HAVE_MPI_SUPPORT
+
+## SHMEM -------------------------------------------------------------------------
+
+if HAVE_SHMEM_SUPPORT
+
+$(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_event.la:
+	@$(am__cd) $(LIB_DIR_SCOREP_SHMEM) && $(MAKE) $(AM_MAKEFLAGS) libscorep_adapter_shmem_event.la
+
+$(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_mgmt.la:
+	@$(am__cd) $(LIB_DIR_SCOREP_SHMEM) && $(MAKE) $(AM_MAKEFLAGS) libscorep_adapter_shmem_mgmt.la
+
+$(LIB_DIR_SCOREP_SHMEM)libscorep_online_access_mpp_shmem.la:
+	@$(am__cd) $(LIB_DIR_SCOREP_SHMEM) && $(MAKE) $(AM_MAKEFLAGS) libscorep_online_access_mpp_shmem.la
+
+check_LTLIBRARIES                            += libscorep_shmem_event.la
+libscorep_shmem_event_la_SOURCES              =
+nodist_EXTRA_libscorep_shmem_event_la_SOURCES = force_link_with_F77LD.f
+libscorep_shmem_event_la_CPPFLAGS             = $(common_cppflags)
+libscorep_shmem_event_la_LIBADD               = \
+    $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_event.la \
+    $(common_event_libadd)
+
+check_LTLIBRARIES             += libscorep_shmem_mgmt.la
+libscorep_shmem_mgmt_la_SOURCES  =
+libscorep_shmem_mgmt_la_CPPFLAGS = $(common_cppflags)
+libscorep_shmem_mgmt_la_LIBADD   = \
+    $(common_mgmt_libadd)                                  \
+    $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_mgmt.la \
+    $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la          \
+    libscorep_online_access_mockup.la                      \
+    $(external_libadd)                                     \
+    libscorep_thread_fork_join_mockup.la                   \
+    libscorep_mutex_mockup.la
+libscorep_shmem_mgmt_la_LDFLAGS              = $(external_ldflags)
+
+endif HAVE_SHMEM_SUPPORT
 
 ## Serial ----------------------------------------------------------------------
 
@@ -167,6 +221,39 @@ endif HAVE_SCOREP_OMP_TPD
 endif HAVE_OPENMP_SUPPORT
 endif HAVE_MPI_SUPPORT
 
+if HAVE_SHMEM_SUPPORT
+if HAVE_OPENMP_SUPPORT
+
+check_LTLIBRARIES                       += libscorep_shmem_omp_event.la
+libscorep_shmem_omp_event_la_SOURCES              =
+nodist_EXTRA_libscorep_shmem_omp_event_la_SOURCES = force_link_with_F77LD.f
+libscorep_shmem_omp_event_la_CFLAGS               = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_shmem_omp_event_la_CPPFLAGS             = $(common_cppflags)
+libscorep_shmem_omp_event_la_LIBADD               = \
+    $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_event.la \
+    libscorep_adapter_pomp_omp_event.la                     \
+    libscorep_adapter_pomp_user_event.la                    \
+    $(common_event_libadd)
+
+check_LTLIBRARIES                   += libscorep_shmem_omp_mgmt.la
+libscorep_shmem_omp_mgmt_la_SOURCES  =
+libscorep_shmem_omp_mgmt_la_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+libscorep_shmem_omp_mgmt_la_CPPFLAGS = $(common_cppflags)
+libscorep_shmem_omp_mgmt_la_LIBADD   = \
+    $(common_mgmt_libadd)                                  \
+    $(external_libadd)                                     \
+    $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_mgmt.la \
+    libscorep_adapter_pomp_omp_mgmt.la                     \
+    libscorep_adapter_pomp_user_mgmt.la                    \
+    $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la          \
+    libscorep_online_access_mockup.la                      \
+    libscorep_thread_fork_join_omp_tpd.la                  \
+    libscorep_mutex_omp.la
+libscorep_shmem_omp_mgmt_la_LDFLAGS  = $(external_ldflags)
+
+endif HAVE_OPENMP_SUPPORT
+endif HAVE_SHMEM_SUPPORT
+
 # ------------------------------------------------------------------------------
 
 # Subsystems for <paradigm>_libadd
@@ -192,6 +279,14 @@ libscorep_subsystems_mpi_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_
 check_LTLIBRARIES                       += libscorep_subsystems_mpi_omp.la
 libscorep_subsystems_mpi_omp_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_mpi_omp_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_MPI -DSCOREP_SUBSYSTEMS_OMP
+
+check_LTLIBRARIES                     += libscorep_subsystems_shmem.la
+libscorep_subsystems_shmem_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
+libscorep_subsystems_shmem_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_SHMEM
+
+check_LTLIBRARIES                         += libscorep_subsystems_shmem_omp.la
+libscorep_subsystems_shmem_omp_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
+libscorep_subsystems_shmem_omp_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_SHMEM -DSCOREP_SUBSYSTEMS_OMP
 
 # ------------------------------------------------------------------------------
 

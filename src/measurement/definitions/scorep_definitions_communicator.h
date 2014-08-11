@@ -88,31 +88,50 @@ typedef bool
                                            const void* );
 
 /**
- *  Creates a new interim communicator definition in the definition memory pool
- *  of the given location and maintains it in the given @a manager_entry.
+ *  Creates a new interim communicator definition either in the definition
+ *  memory pool of the given @a location argument or in the common pool. Locking
+ *  is only done when @a location points to NULL.
+ *  It is maintained in the given (non-null) @a managerEntry argument.
  *  The definition can be augmented via the @a sizeOfPayload argument. This number
  *  of bytes is additionally allocated and a pointer to it will be returned
  *  via @a payloadOut.
- *  If the manager entry does has a hash table allocated and an @a init_payload_fn
+ *  If the manager entry does has a hash table allocated and an @a initPayloadFn
  *  function pointer is given, this function is called to initialize the
  *  payload before checking for an already existing definition. Any additional
- *  arguments to this function is passed as an @a va_list to the @a init_payload_fn
- *  call. The @a init_payload_fn can also update the hash value of the definition.
+ *  arguments to this function is passed as an @a va_list to the @a initPayloadFn
+ *  call. The @a initPayloadFn can also update the hash value of the definition.
  *  The current hash value is given as the second argument, the new hash value should
  *  be returned.
- *  When searching for an existing definition, the @a equal_payloads_fn function
+ *  When searching for an existing definition, the @a equalPayloadsFn function
  *  is used to compare the payloads of two definitions.
  *  If the definition was already known, @a *payloadOut will be NULL, else
  *  it points to the payload of the new definition.
+ *
+ *  @todo List valid combination of location/managerEntry/initPayloadFn/equalPayloadsFn
+ *
+ *  Common usages:
+ *  (1) Use a location shared (i.e., per-process) definition pool but avoid duplicates:
+ *      - @a location: NULL, to get approriate locking
+ *      - @a managerEntry:: a per-process @a scorep_definitions_manager_entry object and allocate
+ *        a hash table for it (see scorep_definitions_manager_entry_alloc_hash_table).
+ *      - @a initPayloadFn and @a equalPayloadsFn:: appropriate callbacks
+ *        to initialize and test for equality of the payloads
+ *      - @a sizeOfPayload:: the size of the paload struct
+ *      - @a payloadOut:: pointer to payload, if NULL on return the definition already existed
+ *      - @a ...:: an arbitrary number of arguments which are passed on to @a initPayloadFn
+ *  (2) Use a per-location, (mostly) lockfree, definition pool:
+ *      - @a location: the current location
+ *      - @a managerEntry:: a location private @a scorep_definitions_manager_entry object
+ *      - (optional) avoid duplicates like in usage (1)
  */
 SCOREP_InterimCommunicatorHandle
-SCOREP_Definitions_NewInterimCommunicatorInLocation(
+SCOREP_Definitions_NewInterimCommunicatorCustom(
     SCOREP_Location*                     location,
+    scorep_definitions_manager_entry*    managerEntry,
+    scorep_definitions_init_payload_fn   initPayloadFn,
+    scorep_definitions_equal_payloads_fn equalPayloadsFn,
     SCOREP_InterimCommunicatorHandle     parentComm,
     SCOREP_ParadigmType                  paradigmType,
-    scorep_definitions_init_payload_fn   init_payload_fn,
-    scorep_definitions_equal_payloads_fn equal_payloads_fn,
-    scorep_definitions_manager_entry*    manager_entry,
     size_t                               sizeOfPayload,
     void**                               payloadOut,
     ... );

@@ -1,0 +1,28 @@
+#ifndef SCOREP_CONFIG_TOOL_SHMEM_H
+#define SCOREP_CONFIG_TOOL_SHMEM_H
+
+/*
+ * This file is part of the Score-P software (http://www.score-p.org)
+ *
+ * Copyright (c) 2013,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2013,
+ * Technische Universitaet Dresden, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
+ *
+ */
+
+/* @configure_input@ */
+
+#define SCOREP_SHMEMCC                        "not available in this installation"
+#define SCOREP_SHMEMCXX                       "not available in this installation"
+#define SCOREP_SHMEMFC                        "not available in this installation"
+#define SCOREP_HAVE_PDT_SHMEM_INSTRUMENTATION 0
+#define SCOREP_SHMEM_INCLUDE                  "not supported in this installation"
+#define SCOREP_SHMEM_LIB_NAME                 "not supported in this installation"
+
+#endif /* SCOREP_CONFIG_TOOL_SHMEM_H */

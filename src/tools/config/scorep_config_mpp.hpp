@@ -88,12 +88,25 @@ public:
      * a customized class.
      * @param libs The list of libs to which you may add other libs.
      * @param deps The library dependencies information structure.
-     * @param withOnlineAccess Sopecifies whether online access is enabled or not
+     * @param withOnlineAccess Specifies whether online access is enabled or not
      */
     virtual void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps,
              bool                               withOnlineAccess );
+
+    /**
+     * Adds required linker flags of this paradigm to the list of flags.
+     * This implementation does nothing, but need to be overwritten by
+     * a customized class.
+     * @param ldflags      The linker flags to which you may modify or add new flags.
+     * @param build_check  True '--build-check' was specified.
+     * @param nvcc         True if compiler is nvcc.
+     */
+    virtual void
+    addLdFlags( std::string& ldflags,
+                bool         build_check,
+                bool         nvcc );
 
     /**
      * Adds the name(s) of the SCOREP_Subsystem struct(s) associated with this
@@ -164,6 +177,29 @@ public:
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps,
              bool                               withOnlineAccess );
+    virtual void
+    getInitStructName( std::deque<std::string>& init_structs );
+};
+
+/* ***************************************************************************
+* class SCOREP_Config_ShmemMppSystem
+* ***************************************************************************/
+
+/**
+ * This class represents the SHMEM implementation of the multi process paradigm.
+ */
+class SCOREP_Config_ShmemMppSystem : public SCOREP_Config_MppSystem
+{
+public:
+    SCOREP_Config_ShmemMppSystem();
+    virtual void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps,
+             bool                               withOnlineAccess );
+    virtual void
+    addLdFlags( std::string& ldflags,
+                bool         build_check,
+                bool         nvcc );
     virtual void
     getInitStructName( std::deque<std::string>& init_structs );
 };

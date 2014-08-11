@@ -28,6 +28,7 @@
 #include "scorep_instrumenter.hpp"
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
+#include <scorep_config_tool_shmem.h>
 
 #include <iostream>
 #include <stdlib.h>
@@ -110,6 +111,11 @@ SCOREP_Instrumenter_PdtAdapter::precompile( SCOREP_Instrumenter&         instrum
         command << " -I" SCOREP_MPI_INCLUDE;
     }
 
+    if ( SCOREP_Instrumenter_Selector::isParadigmSelected( "shmem" ) )
+    {
+        command << " -I" SCOREP_SHMEM_INCLUDE;
+    }
+
     instrumenter.executeCommand( command.str() );
 
     // instrument source
@@ -124,6 +130,11 @@ SCOREP_Instrumenter_PdtAdapter::precompile( SCOREP_Instrumenter&         instrum
     if ( SCOREP_Instrumenter_Selector::isParadigmSelected( "mpi" ) )
     {
         command << " -I" SCOREP_MPI_INCLUDE;
+    }
+
+    if ( SCOREP_Instrumenter_Selector::isParadigmSelected( "shmem" ) )
+    {
+        command << " -I" SCOREP_SHMEM_INCLUDE;
     }
 
     instrumenter.executeCommand( command.str() );

@@ -288,6 +288,14 @@ AC_SCOREP_COND_HAVE([MPI_SUPPORT],
                     [test -f ../build-mpi/Makefile],
                     [Defined if MPI support is available.])
 
+# assuming that shmem configure already ran
+AC_SCOREP_COND_HAVE([SHMEM_SUPPORT],
+                    [test -f ../build-shmem/Makefile],
+                    [Defined if SHMEM support is available.])
+AC_SCOREP_COND_HAVE([SHMEM_PROFILING_INTERFACE],
+                    [test -f ../build-shmem/scorep_have_pshmem_support.txt],
+                    [Defined if SHMEM Profiling Interface support is available.])
+
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION
 
 dnl Predicate to use HARDCODE_LIBDIR_FLAG_* only if linker needs it.

@@ -108,6 +108,15 @@ Note that there is currently no consistency check if backend and MPI
 compiler are from the same vendor. If they are not, linking problems
 (undefined references) might occur.
 
+The SHMEM compiler, if in $PATH, is usually autodetected. If there are
+several SHMEM compilers in $PATH the user is requested to select one
+using the configure option:
+
+  --with-shmem=(openshmem|openmpi|sgimpt)
+               The SHMEM compiler suite to build this package in
+               non cross-compiling mode. Usually autodetected.
+               Needs to be in $PATH.
+
 If a particular system requires to use compilers different to those
 Score-P currently supports, please edit the three files
 vendor/common/build-config/platforms/platform-*-user-provided to your

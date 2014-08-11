@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -34,6 +34,7 @@
 
 #include <config.h>
 #include "scorep_instrumenter_utils.hpp"
+#include <scorep_config_tool_shmem.h>
 #include <UTILS_IO.h>
 #include <UTILS_CStr.h>
 
@@ -321,9 +322,42 @@ is_library( const std::string& filename )
 }
 
 bool
+is_interposition_library( const std::string& library_name )
+{
+    return is_mpi_library( library_name ) || is_shmem_library( library_name );
+}
+
+bool
+check_lib_name(  const std::string& library_name, const std::string& value )
+{
+    std::string value_with_dot = value + ".";
+    return ( ( library_name.length() == value.length() ) && ( library_name.substr( 0, value.length() ) == value ) ) ||
+           ( ( library_name.length() > value.length() ) && ( library_name.substr( 0, value.length() + 1 ) == value_with_dot ) );
+}
+
+bool
 is_mpi_library( const std::string& library_name )
 {
-    return library_name.substr( 0, 3 ) == "mpi";
+    std::string mpi_string( "mpi" );
+
+    return check_lib_name( library_name,  mpi_string );
+}
+
+bool
+is_shmem_library( const std::string& library_name )
+{
+    /*
+     * Check for libopenshmem (OpenSHMEM)
+     *           liboshmem    (OpenMPI)
+     *           libsma       (SGI MPT, Cray SHMEM)
+     */
+
+    if ( SCOREP_SHMEM_LIB_NAME != "" )
+    {
+        return check_lib_name( library_name, SCOREP_SHMEM_LIB_NAME );
+    }
+
+    return false;
 }
 
 bool

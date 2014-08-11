@@ -1,0 +1,53 @@
+WRITING A NEW TEST DRIVER:
+
+In order to write a new test driver for the IPC interface, you need to implement
+the default C main function. Within this function there has to be a call to
+test_ipc. The test_ipc function is defined in it's header file and takes two
+arguments, the index of the current process and a pointer to a function. The
+main function has also to contain the initialization and finalization of the
+multi-process environment, if necessary.
+To ensure a minimum impact of the Score-P measurment infrastructure on the tests
+it is required, that the libscorep_ipc_<foo> library is self-contained.
+
+#include /* FOO */
+#include "test_ipc.h"
+
+int
+main( int argc, char** argv )
+{
+    /* DO INITIALIZATION */
+
+    int ret = test_ipc( my_rank,
+                        reduce_results );
+
+    /* DO FINALIZATION */
+
+    return ret;
+}
+
+
+The prototype of this function pointer is "void ( * testAllReduce )( int* )".
+This is the callback for CuTest which synchronizes the test results between the
+running processes. Thus there are some requirements that must be fulfilled by
+this function.
+At first it has to be a blocking collective operation which is executed by all
+processes. This collective operation takes as argument a pointer to an single
+integer. The Operation executed, by this function, has to return the minimal
+value of this integer across all processes. And the result of it's operation
+must be sent to all processes, afterwards.
+Within MPI, the MPI_Allreduce function would provide the desired behavior.
+
+static void
+reduce_results( int* ... )
+{
+    /* DO FOO */
+
+    MPI_Allreduce( ...,
+                   ...,
+                   1,
+                   MPI_INT,
+                   MPI_MIN,
+                   MPI_COMM_WORLD );
+
+    /* DO BAR */
+}

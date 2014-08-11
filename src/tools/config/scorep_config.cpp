@@ -388,7 +388,8 @@ main( int    argc,
             {
                 str += " " SCOREP_INSTRUMENTATION_LDFLAGS;
             }
-            SCOREP_Config_Adapter::addLdFlagsAll( str, nvcc );
+            SCOREP_Config_Adapter::addLdFlagsAll( str, !install, nvcc );
+            SCOREP_Config_MppSystem::current->addLdFlags( str, !install, nvcc );
 
             if ( nvcc )
             {

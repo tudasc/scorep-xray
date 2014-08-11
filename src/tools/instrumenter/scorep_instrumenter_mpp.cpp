@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2013-2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -25,6 +28,7 @@
 #include "scorep_instrumenter.hpp"
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
+#include <scorep_config_tool_shmem.h>
 
 #include <iostream>
 #include <stdlib.h>
@@ -145,6 +149,74 @@ SCOREP_Instrumenter_Mpi::checkObjects( SCOREP_Instrumenter* instrumenter )
 }
 
 /* **************************************************************************************
+ * class SCOREP_Instrumenter_Shmem
+ * *************************************************************************************/
+SCOREP_Instrumenter_Shmem::SCOREP_Instrumenter_Shmem
+(
+    SCOREP_Instrumenter_Selector* selector
+) : SCOREP_Instrumenter_Paradigm( selector, "shmem", "",
+                                  "SHMEM support using library wrapping" )
+{
+#if !( HAVE_BACKEND( SHMEM_SUPPORT ) )
+    unsupported();
+#endif
+}
+
+void
+SCOREP_Instrumenter_Shmem::checkCompilerName( const std::string& compiler )
+{
+    /* Adapt for other SHMEM compilers than OpenSHMEM (osh**) */
+    if ( compiler.substr( 0, 3 ) == "osh" )
+    {
+        m_selector->select( this, false );
+    }
+}
+
+bool
+SCOREP_Instrumenter_Shmem::checkCommand( const std::string& current,
+                                         const std::string& next )
+{
+    if ( ( current == "-l" ) &&
+         ( is_shmem_library( next ) ) )
+    {
+        m_selector->select( this, false );
+        return true;
+    }
+    else if ( ( current.substr( 0, 2 ) == "-l" ) &&
+              ( is_shmem_library( current.substr( 2 ) ) ) )
+    {
+        m_selector->select( this, false );
+        return false;
+    }
+    return false;
+}
+
+void
+SCOREP_Instrumenter_Shmem::checkObjects( SCOREP_Instrumenter* instrumenter )
+{
+    if ( m_selector->getSelection() == this )
+    {
+        return;
+    }
+
+    std::vector<std::string>* object_list = instrumenter->getInputFiles();
+
+    for ( std::vector<std::string>::iterator current_file = object_list->begin();
+          current_file != object_list->end();
+          current_file++ )
+    {
+        std::string command = SCOREP_NM " " + *current_file + " | "
+                              SCOREP_EGREP " -l 'U (shmem_|my_pe|_my_pe|num_pes|_num_pes|start_pes|shmalloc|shfree|shmemalign|shrealloc)' >/dev/null 2>&1";
+        int return_value = system( command.c_str() );
+        if ( return_value == 0 )
+        {
+            m_selector->select( this, false );
+            break;
+        }
+    }
+}
+
+/* **************************************************************************************
  * class SCOREP_Instrumenter_Mpp
  * *************************************************************************************/
 SCOREP_Instrumenter_Mpp::SCOREP_Instrumenter_Mpp()
@@ -152,5 +224,6 @@ SCOREP_Instrumenter_Mpp::SCOREP_Instrumenter_Mpp()
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_NoMpp( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_Mpi( this ) );
+    m_paradigm_list.push_back( new SCOREP_Instrumenter_Shmem( this ) );
     m_current_selection = m_paradigm_list.front();
 }

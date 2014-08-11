@@ -11,6 +11,7 @@ LOCAL_CONFIGURES = \
 	build-backend/configure \
 	build-frontend/configure \
 	build-mpi/configure \
+	build-shmem/configure \
 	build-score/configure
 
 SUB_CONFIGURES = \
@@ -48,6 +49,9 @@ build-frontend/configure: build-backend/configure
 build-mpi/configure: build-backend/configure
 	cd build-mpi; $(AUTORECONF) $(AUTORECONFFLAGS)
 
+build-shmem/configure: build-backend/configure
+	cd build-shmem; $(AUTORECONF) $(AUTORECONFFLAGS)
+
 build-score/configure: build-backend/configure
 	cd build-score; $(AUTORECONF) $(AUTORECONFFLAGS)
 
@@ -74,12 +78,14 @@ clean_files = \
 sub_builds = \
 	backend \
 	mpi \
+	shmem \
 	frontend \
 	score
 
 config_headers = \
 	backend \
 	backend-mpi \
+	backend-shmem \
 	frontend \
 	backend-for-frontend \
 	score

@@ -64,4 +64,5 @@ scorep-config <command> [<options>]
    --mpp=<multi-process paradigm>
             Available multi-process paradigms are:
          mpi	This is the default.
+         shmem
          none

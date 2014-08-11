@@ -640,9 +640,8 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                   sourceRank,
 void
 SCOREP_RmaWinCreate( SCOREP_InterimRmaWindowHandle windowHandle )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
 
     /* Nothing to do for profiling. */
 
@@ -674,9 +673,8 @@ SCOREP_Location_RmaWinCreate( SCOREP_Location*              location,
 void
 SCOREP_RmaWinDestroy( SCOREP_InterimRmaWindowHandle windowHandle )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
 
     /* Nothing to do for profiling. */
 
@@ -708,9 +706,8 @@ SCOREP_Location_RmaWinDestroy( SCOREP_Location*              location,
 void
 SCOREP_RmaCollectiveBegin()
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
 
     /* Nothing to do for profiling. */
 
@@ -730,9 +727,8 @@ SCOREP_RmaCollectiveEnd( SCOREP_MpiCollectiveType      collectiveOp,
                          uint64_t                      bytesSent,
                          uint64_t                      bytesReceived )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
 
     /* Nothing to do for profiling. */
 
@@ -913,9 +909,8 @@ SCOREP_RmaPut( SCOREP_InterimRmaWindowHandle windowHandle,
                uint64_t                      bytes,
                uint64_t                      matchingId )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
 
     /* Nothing to do for profiling. */
 
@@ -959,9 +954,8 @@ SCOREP_RmaGet( SCOREP_InterimRmaWindowHandle windowHandle,
                uint64_t                      bytes,
                uint64_t                      matchingId )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
 
     /* Nothing to do for profiling. */
 
@@ -1032,9 +1026,8 @@ void
 SCOREP_RmaOpCompleteBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
                               uint64_t                      matchingId )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
 
     /* Nothing to do for profiling. */
 
@@ -1070,9 +1063,8 @@ void
 SCOREP_RmaOpCompleteNonBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
                                  uint64_t                      matchingId )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
 
     /* Nothing to do for profiling. */
 
@@ -1090,9 +1082,8 @@ void
 SCOREP_RmaOpTest( SCOREP_InterimRmaWindowHandle windowHandle,
                   uint64_t                      matchingId )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
 
     /* Nothing to do for profiling. */
 
@@ -1110,9 +1101,8 @@ void
 SCOREP_RmaOpCompleteRemote( SCOREP_InterimRmaWindowHandle windowHandle,
                             uint64_t                      matchingId )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
 
     /* Nothing to do for profiling. */
 

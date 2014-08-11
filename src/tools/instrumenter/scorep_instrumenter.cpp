@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -60,6 +60,7 @@
 #include "scorep_instrumenter_mutex.hpp"
 #include <scorep_config_tool_backend.h>
 #include <scorep_config_tool_mpi.h>
+#include <scorep_config_tool_shmem.h>
 
 void
 print_help();
@@ -119,8 +120,8 @@ SCOREP_Instrumenter::Run( void )
     {
         /* Construct command */
         std::string command = m_command_line.getCompilerName()
-                              + " " + m_command_line.getFlagsBeforeLmpi()
-                              + " " + m_command_line.getFlagsAfterLmpi()
+                              + " " + m_command_line.getFlagsBeforeInterpositionLib()
+                              + " " + m_command_line.getFlagsAfterInterpositionLib()
                               + scorep_vector_to_string( m_input_files,
                                                          " ", "", " " );
 
@@ -362,8 +363,8 @@ SCOREP_Instrumenter::compile_source_file( const std::string& input_file,
     command << SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars();
     command << m_command_line.getCompilerName();
     command << " `" << m_config_base << " " <<  cflags << "` " << m_compiler_flags;
-    command << " " << m_command_line.getFlagsBeforeLmpi();
-    command << " " << m_command_line.getFlagsAfterLmpi();
+    command << " " << m_command_line.getFlagsBeforeInterpositionLib();
+    command << " " << m_command_line.getFlagsAfterInterpositionLib();
     command << " -c " << input_file;
     command << " -o " << output_file;
     executeCommand( command.str() );
@@ -449,9 +450,9 @@ SCOREP_Instrumenter::link_step( void )
     command << SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars();
     command << m_command_line.getCompilerName();
     command << scorep_vector_to_string( m_input_files, " ", "", " " );
-    command << " " << m_command_line.getFlagsBeforeLmpi();
+    command << " " << m_command_line.getFlagsBeforeInterpositionLib();
     command << " " << m_linker_flags;
-    command << " " << m_command_line.getFlagsAfterLmpi();
+    command << " " << m_command_line.getFlagsAfterInterpositionLib();
 
     if ( m_command_line.getOutputName() != "" )
     {

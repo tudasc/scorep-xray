@@ -571,6 +571,13 @@ scorep_write_group_definitions( void*                     writerHandle,
             case SCOREP_GROUP_CUDA_GROUP:
                 paradigm = OTF2_PARADIGM_CUDA;
                 break;
+
+            case SCOREP_GROUP_SHMEM_LOCATIONS:
+            case SCOREP_GROUP_SHMEM_GROUP:
+            case SCOREP_GROUP_SHMEM_SELF:
+                paradigm    = OTF2_PARADIGM_SHMEM;
+                group_flags = OTF2_GROUP_FLAG_GLOBAL_MEMBERS;
+                break;
         }
 
         OTF2_ErrorCode status = defGroup(

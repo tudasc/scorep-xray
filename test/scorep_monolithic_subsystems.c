@@ -4,6 +4,9 @@
  * Copyright (c) 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -22,6 +25,7 @@
 
 extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_PompUserAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_PompOmpAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
@@ -40,6 +44,9 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
 #endif
 #ifdef SCOREP_SUBSYSTEMS_MPI
     &SCOREP_Subsystem_MpiAdapter,
+#endif
+#ifdef SCOREP_SUBSYSTEMS_SHMEM
+    &SCOREP_Subsystem_ShmemAdapter,
 #endif
 #if HAVE_CUDA_SUPPORT
     &SCOREP_Subsystem_CudaAdapter,

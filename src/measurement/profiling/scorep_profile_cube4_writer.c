@@ -688,19 +688,6 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tuples )
         return false;
     }
 
-    /* Calculate the global number of locations */
-    SCOREP_Ipc_Reduce( &write_set->local_threads, &write_set->global_threads,
-                       1, SCOREP_IPC_UINT32_T, SCOREP_IPC_SUM, 0 );
-
-
-    /* Calculate the offset of this thread in the value vector
-       Normally, I need MPI_Exscan, but since it is not available in MPI 1.0 it is
-       emulated with MPI_Scan.
-     */
-    SCOREP_Ipc_Scan( &write_set->local_threads, &write_set->offset, 1,
-                     SCOREP_IPC_UINT32_T, SCOREP_IPC_SUM );
-    write_set->offset -= write_set->local_threads;
-
     /* Calculate the offsets of all ranks and the number of locations per rank */
     if ( write_set->my_rank == 0 )
     {
@@ -712,22 +699,32 @@ init_cube_writing_data( scorep_cube_writing_data* write_set, bool write_tuples )
     SCOREP_Ipc_Gather( &write_set->local_threads,
                        write_set->items_per_rank,
                        1, SCOREP_IPC_UINT32_T, 0 );
-    SCOREP_Ipc_Gather( &write_set->offset,
-                       write_set->offsets_per_rank,
-                       1, SCOREP_IPC_UINT32_T, 0 );
 
-    /* Determine whether all ranks have the same number of threads */
-    int32_t same_thread_num = 1;
-    if ( ( write_set->my_rank != 0 ) &&
-         ( write_set->offset / write_set->my_rank != write_set->local_threads ) )
+    if ( write_set->my_rank == 0 )
     {
-        same_thread_num = 0;
+        write_set->global_threads  = 0;
+        write_set->same_thread_num = 1;
+        for ( int32_t i = 0; i < write_set->ranks_number; ++i )
+        {
+            if ( write_set->local_threads != write_set->items_per_rank[ i ] )
+            {
+                write_set->same_thread_num = 0;
+            }
+            write_set->offsets_per_rank[ i ] = write_set->global_threads;
+            write_set->global_threads       += write_set->items_per_rank[ i ];
+        }
     }
-    SCOREP_Ipc_Allreduce( &same_thread_num,
-                          &write_set->same_thread_num,
-                          1,
-                          SCOREP_IPC_INT32_T,
-                          SCOREP_IPC_BAND );
+
+    /* Distribute the global number of locations */
+    SCOREP_Ipc_Bcast( &write_set->global_threads, 1, SCOREP_IPC_UINT32_T, 0 );
+
+    /* Distribute whether all ranks have the same number of locations */
+    SCOREP_Ipc_Bcast( &write_set->same_thread_num, 1, SCOREP_IPC_UINT32_T, 0 );
+
+    /* Distribute the per-rank offsets */
+    SCOREP_Ipc_Scatter( write_set->offsets_per_rank,
+                        &write_set->offset,
+                        1, SCOREP_IPC_UINT32_T, 0 );
 
     /* Get number of unified metrics to every rank */
     if ( write_set->my_rank == 0 )

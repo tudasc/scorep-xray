@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -96,11 +96,15 @@ get_new_interim_communicator_id( void )
 
 
 static SCOREP_InterimCommunicatorHandle
-define_interim_communicator( SCOREP_DefinitionManager*        definition_manager,
-                             SCOREP_InterimCommunicatorHandle parentComm,
-                             SCOREP_ParadigmType              paradigmType,
-                             size_t                           sizeOfPayload,
-                             void**                           payload );
+define_interim_communicator( SCOREP_Allocator_PageManager*        pageManager,
+                             scorep_definitions_manager_entry*    managerEntry,
+                             scorep_definitions_init_payload_fn   initPayloadFn,
+                             scorep_definitions_equal_payloads_fn equalPayloadsFn,
+                             size_t                               sizeOfPayload,
+                             void**                               payloadOut,
+                             SCOREP_InterimCommunicatorHandle     parentComm,
+                             SCOREP_ParadigmType                  paradigmType,
+                             va_list                              va );
 
 
 static size_t
@@ -117,22 +121,17 @@ SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle pare
                                            size_t                           sizeOfPayload,
                                            void**                           payload )
 {
-    SCOREP_InterimCommunicatorHandle new_handle = SCOREP_INVALID_INTERIM_COMMUNICATOR;
-
     UTILS_DEBUG_ENTRY();
 
-    SCOREP_Definitions_Lock();
-
-    new_handle = define_interim_communicator(
-        &scorep_local_definition_manager,
-        parentComm,
-        paradigmType,
-        sizeOfPayload,
-        payload );
-
-    SCOREP_Definitions_Unlock();
-
-    return new_handle;
+    return SCOREP_Definitions_NewInterimCommunicatorCustom(
+               NULL,
+               &scorep_local_definition_manager.interim_communicator,
+               NULL,
+               NULL,
+               parentComm,
+               paradigmType,
+               sizeOfPayload,
+               payload );
 }
 
 
@@ -175,20 +174,74 @@ SCOREP_InterimCommunicatorHandle_GetParent( SCOREP_InterimCommunicatorHandle com
 }
 
 
-/**
- * Associate a MPI communicator with a process unique communicator handle.
- */
 SCOREP_InterimCommunicatorHandle
-SCOREP_Definitions_NewInterimCommunicatorInLocation(
+SCOREP_Definitions_NewInterimCommunicatorCustom(
     SCOREP_Location*                     location,
+    scorep_definitions_manager_entry*    managerEntry,
+    scorep_definitions_init_payload_fn   initPayloadFn,
+    scorep_definitions_equal_payloads_fn equalPayloadsFn,
     SCOREP_InterimCommunicatorHandle     parentComm,
     SCOREP_ParadigmType                  paradigmType,
-    scorep_definitions_init_payload_fn   init_payload_fn,
-    scorep_definitions_equal_payloads_fn equal_payloads_fn,
-    scorep_definitions_manager_entry*    manager_entry,
     size_t                               sizeOfPayload,
-    void**                               payloadOut,
+    void**                               payload,
     ... )
+{
+    va_list va;
+    va_start( va, payload );
+
+    SCOREP_Allocator_PageManager* page_manager;
+    if ( !location )
+    {
+        /* No location given, we need to do the locking and using
+           the common definition memory pool. */
+        SCOREP_Definitions_Lock();
+        page_manager = SCOREP_Memory_GetLocalDefinitionPageManager();
+    }
+    else
+    {
+        /*
+         * Use the memory pool from the given location.
+         * The caller needs to be care of the locking, if the
+         * manager entry is shared.
+         */
+        page_manager = SCOREP_Location_GetMemoryPageManager(
+            location,
+            SCOREP_MEMORY_TYPE_DEFINITIONS );
+    }
+
+    SCOREP_InterimCommunicatorHandle new_handle =
+        define_interim_communicator(
+            page_manager,
+            managerEntry,
+            initPayloadFn,
+            equalPayloadsFn,
+            sizeOfPayload,
+            payload,
+            parentComm,
+            paradigmType,
+            va );
+
+    if ( !location )
+    {
+        SCOREP_Definitions_Unlock();
+    }
+
+    va_end( va );
+
+    return new_handle;
+}
+
+
+SCOREP_InterimCommunicatorHandle
+define_interim_communicator( SCOREP_Allocator_PageManager*        pageManager,
+                             scorep_definitions_manager_entry*    managerEntry,
+                             scorep_definitions_init_payload_fn   initPayloadFn,
+                             scorep_definitions_equal_payloads_fn equalPayloadsFn,
+                             size_t                               sizeOfPayload,
+                             void**                               payloadOut,
+                             SCOREP_InterimCommunicatorHandle     parentComm,
+                             SCOREP_ParadigmType                  paradigmType,
+                             va_list                              va )
 {
     SCOREP_InterimCommunicatorDef*   new_definition = NULL;
     SCOREP_InterimCommunicatorHandle new_handle     = SCOREP_INVALID_INTERIM_COMMUNICATOR;
@@ -196,18 +249,10 @@ SCOREP_Definitions_NewInterimCommunicatorInLocation(
     size_t payload_offset = interim_comm_static_size();
     size_t total_size     = payload_offset + sizeOfPayload;
 
-    SCOREP_Allocator_PageManager* page_manager =
-        SCOREP_Location_GetMemoryPageManager( location,
-                                              SCOREP_MEMORY_TYPE_DEFINITIONS );
-    new_handle = SCOREP_Allocator_AllocMovable( page_manager, total_size );
-    if ( new_handle == SCOREP_MOVABLE_NULL )
-    {
-        /* aborts */
-        SCOREP_Memory_HandleOutOfMemory();
-    }
-    new_definition = SCOREP_Allocator_GetAddressFromMovableMemory(
-        page_manager,
-        new_handle );
+    new_handle =
+        SCOREP_Allocator_AllocMovable( pageManager, total_size );
+    new_definition =
+        SCOREP_Allocator_GetAddressFromMovableMemory( pageManager, new_handle );
     SCOREP_INIT_DEFINITION_HEADER( new_definition );
 
     // Init new_definition
@@ -218,7 +263,7 @@ SCOREP_Definitions_NewInterimCommunicatorInLocation(
     {
         SCOREP_InterimCommunicatorDef* parent_definition =
             SCOREP_Allocator_GetAddressFromMovableMemory(
-                page_manager,
+                pageManager,
                 parentComm );
         new_definition->hash_value = jenkins_hashword(
             &parent_definition->hash_value,
@@ -232,39 +277,39 @@ SCOREP_Definitions_NewInterimCommunicatorInLocation(
     void* payload = ( char* )new_definition + payload_offset;
     if ( payloadOut )
     {
-        /* indicates that the definition already existsed */
+        /* indicates that the definition already existed */
         *payloadOut = NULL;
     }
 
-    if ( init_payload_fn )
+    if ( initPayloadFn )
     {
-        va_list va;
-        va_start( va, payloadOut );
         new_definition->hash_value =
-            init_payload_fn( payload, new_definition->hash_value, va );
-        va_end( va );
+            initPayloadFn( payload, new_definition->hash_value, va );
     }
 
-    if ( manager_entry->hash_table && equal_payloads_fn )
+    if ( equalPayloadsFn )
     {
-        SCOREP_InterimCommunicatorHandle* hash_table_bucket = &manager_entry->hash_table[
-            new_definition->hash_value & manager_entry->hash_table_mask ];
+        UTILS_BUG_ON( managerEntry->hash_table == NULL,
+                      "No hash table allocated, even though a equal function was provided" );
+
+        SCOREP_InterimCommunicatorHandle* hash_table_bucket = &managerEntry->hash_table[
+            new_definition->hash_value & managerEntry->hash_table_mask ];
         SCOREP_InterimCommunicatorHandle hash_list_iterator = *hash_table_bucket;
         while ( hash_list_iterator != SCOREP_MOVABLE_NULL )
         {
             SCOREP_InterimCommunicatorDef* existing_definition =
                 SCOREP_Allocator_GetAddressFromMovableMemory(
-                    page_manager,
+                    pageManager,
                     hash_list_iterator );
             void* existing_payload = ( char* )existing_definition + interim_comm_static_size();
             if ( existing_definition->hash_value       == new_definition->hash_value
                  && existing_definition->name_handle   == new_definition->name_handle
                  && existing_definition->parent_handle == new_definition->parent_handle
                  && existing_definition->paradigm_type  == new_definition->paradigm_type
-                 && equal_payloads_fn( existing_payload, payload ) )
+                 && equalPayloadsFn( existing_payload, payload ) )
             {
                 SCOREP_Allocator_RollbackAllocMovable(
-                    page_manager,
+                    pageManager,
                     new_handle );
                 return hash_list_iterator;
             }
@@ -273,49 +318,13 @@ SCOREP_Definitions_NewInterimCommunicatorInLocation(
         new_definition->hash_next = *hash_table_bucket;
         *hash_table_bucket        = new_handle;
     }
-    *manager_entry->tail            = new_handle;
-    manager_entry->tail             = &new_definition->next;
+    *managerEntry->tail             = new_handle;
+    managerEntry->tail              = &new_definition->next;
     new_definition->sequence_number = get_new_interim_communicator_id();
 
     if ( sizeOfPayload && payloadOut )
     {
         *payloadOut = payload;
-    }
-
-    return new_handle;
-}
-
-
-SCOREP_InterimCommunicatorHandle
-define_interim_communicator( SCOREP_DefinitionManager*        definition_manager,
-                             SCOREP_InterimCommunicatorHandle parentComm,
-                             SCOREP_ParadigmType              paradigmType,
-                             size_t                           sizeOfPayload,
-                             void**                           payload )
-{
-    SCOREP_InterimCommunicatorDef*   new_definition = NULL;
-    SCOREP_InterimCommunicatorHandle new_handle     = SCOREP_INVALID_INTERIM_COMMUNICATOR;
-
-    size_t payload_offset = interim_comm_static_size();
-    size_t total_size     = payload_offset + sizeOfPayload;
-    SCOREP_DEFINITION_ALLOC_SIZE( InterimCommunicator, total_size );
-
-    // Init new_definition
-    new_definition->name_handle   = SCOREP_INVALID_STRING;
-    new_definition->parent_handle = parentComm;
-    new_definition->paradigm_type = paradigmType;
-
-    UTILS_BUG_ON( definition_manager->interim_communicator.hash_table,
-                  "interim communicator definitions shouldn't have a hash table" );
-
-    *definition_manager->interim_communicator.tail =
-        new_handle;
-    definition_manager->interim_communicator.tail = &new_definition->next;
-    new_definition->sequence_number               = get_new_interim_communicator_id();
-
-    if ( sizeOfPayload && payload )
-    {
-        *payload = ( char* )new_definition + payload_offset;
     }
 
     return new_handle;

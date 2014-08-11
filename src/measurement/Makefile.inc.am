@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -41,10 +41,13 @@ libscorep_measurement_core_la_SOURCES =                           \
     $(SRC_ROOT)src/measurement/scorep_events_common.h             \
     $(SRC_ROOT)src/measurement/SCOREP_Config.c                    \
     $(SRC_ROOT)src/measurement/SCOREP_Memory.c                    \
+    $(SRC_ROOT)src/measurement/SCOREP_Libwrap.c                   \
     $(SRC_ROOT)src/measurement/include/SCOREP_Subsystem.h         \
     $(SRC_ROOT)src/measurement/include/SCOREP_Config.h            \
     $(SRC_ROOT)src/measurement/include/SCOREP_Definitions.h       \
     $(SRC_ROOT)src/measurement/include/SCOREP_Events.h            \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Libwrap.h           \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Libwrap_Macros.h    \
     $(SRC_ROOT)src/measurement/include/SCOREP_Memory.h            \
     $(SRC_ROOT)src/measurement/include/SCOREP_RuntimeManagement.h \
     $(SRC_ROOT)src/measurement/include/SCOREP_Location.h          \
@@ -61,9 +64,11 @@ libscorep_measurement_core_la_SOURCES =                           \
     $(SRC_ROOT)src/measurement/scorep_types.h                     \
     $(SRC_ROOT)src/measurement/scorep_location.h                  \
     $(SRC_ROOT)src/measurement/scorep_location.c                  \
+    $(SRC_ROOT)src/measurement/scorep_libwrap_management.h        \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.h        \
     $(SRC_ROOT)src/measurement/scorep_status.c                    \
     $(SRC_ROOT)src/measurement/scorep_status.h                    \
+    $(SRC_ROOT)src/measurement/scorep_mpp.h                       \
     $(SRC_ROOT)src/measurement/scorep_properties.c                \
     $(SRC_ROOT)src/measurement/scorep_properties.h                \
     $(SRC_ROOT)src/measurement/scorep_ipc.h                       \
@@ -120,8 +125,7 @@ libscorep_mpp_mockup_la_LDFLAGS = \
 ## paradigm mpp
 
 noinst_LTLIBRARIES += libscorep_mpp_ipc.la
-# libscorep_mpp_ipc.la needs a real ipc implementation. Currently we
-# provide just an MPI implementation, see libscorep_ipc_mpi.la.
+# libscorep_mpp_ipc.la needs a real ipc implementation.
 libscorep_mpp_ipc_la_SOURCES = \
     $(SRC_ROOT)src/measurement/paradigm/scorep_mpp_ipc.c \
     $(SRC_ROOT)src/measurement/paradigm/scorep_unify_mpp_ipc.c \

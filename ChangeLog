@@ -119,6 +119,8 @@ Bugfixes:
 - Fix broken instrumentation if the link line explicitly links libc.
 - Fixed constant zero for acquisition order value of acquire lock events
   from OpenMP critical sections.
+- Add support for instrumenting programs which use SHMEM library calls for
+  one-sided communication.
 
 ------------------- Released version 1.2.3 ---------------------------
 

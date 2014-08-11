@@ -39,6 +39,8 @@ Common options are:
                   No multi-process support.
               mpi
                   MPI support using library wrapping
+              shmem
+                  SHMEM support using library wrapping
   --mutex=<paradigm>[:<variant>]
                   Possible paradigms and variants are:
               none

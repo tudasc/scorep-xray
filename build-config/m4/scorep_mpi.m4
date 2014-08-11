@@ -145,73 +145,13 @@ AC_LANG_POP([C])
 
 dnl ----------------------------------------------------------------------------
 
-## _SCOREP_MPI_CHECK_SOURCE( $1: RETURN-TYPE,
-##                           $2: RETURN-STMT,
-##                           $3: FUNCTION-NAME,
-##                           $4: FUNCTION-ARGS )
-m4_define([_SCOREP_MPI_CHECK_SOURCE],
-[AC_LANG_SOURCE([dnl
-#include<mpi.h>
-$1 $3$4
-{
-    $2;
-}dnl
-])])
-
-## _SCOREP_MPI_CHECK_VARIANTS_REC( $1: RETURN-TYPE,
-##                                 $2: RETURN-STMT,
-##                                 $3: FUNCTION-NAME,
-##                                 [VARIANT-NAME, VARIANT-ARGS]... )
-m4_define([_SCOREP_MPI_CHECK_VARIANTS_REC], [
-m4_if([$#], 0, [], [$#], 1, [], [$#], 2, [], [$#], 3, [], [$#], 4, [], [
-AC_MSG_CHECKING([whether $3 is $4 variant])
-AC_COMPILE_IFELSE([_SCOREP_MPI_CHECK_SOURCE([$1], [$2], [$3], [$5])],
-                  [AC_MSG_RESULT([yes])
-                   AC_DEFINE([HAVE_]AS_TR_CPP($3)[_]AS_TR_CPP($4)[_VARIANT], [1], [$3 is $4 variant])
-                   AC_DEFINE([SCOREP_]AS_TR_CPP($3)[_PROTO_ARGS], [$5], [Compliant pototype arguments for $3])],
-                  [AC_MSG_RESULT([no])
-                   $0([$1], [$2], [$3], m4_shiftn(5, $@))])])
-])
-
-## _SCOREP_MPI_CHECK_COMPLIANCE( $1: RETURN-TYPE,
-##                               $2: RETURN-STMT,
-##                               $3: FUNCTION-NAME,
-##                               $4: COMPLIANT-ARGS,
-##                               [VARIANT-NAME, VARIANT-ARGS]... )
-AC_DEFUN([_SCOREP_MPI_CHECK_COMPLIANCE], [
-AC_MSG_CHECKING([whether $3 is standard compliant])
-AC_COMPILE_IFELSE([_SCOREP_MPI_CHECK_SOURCE([$1], [$2], [$3], [$4])],
-                  [AC_MSG_RESULT([yes])
-                   AC_DEFINE([HAVE_]AS_TR_CPP($3)[_COMPLIANT], [1], [$3 is standard compliant])
-                   AC_DEFINE([SCOREP_]AS_TR_CPP($3)[_PROTO_ARGS], [$4], [Compliant pototype arguments for $3])],
-                  [AC_MSG_RESULT([no])
-                   dnl Iterate over next given variant
-                   _SCOREP_MPI_CHECK_VARIANTS_REC([$1], [$2], [$3], m4_shiftn(4, $@))])
-])
+AC_DEFUN([_SCOREP_MPI_CHECK_COMPLIANCE],
+         [AFS_CHECK_COMPLIANCE([@%:@include <mpi.h>], $@)])
 
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
     AC_LANG_PUSH(C)
-
-    AC_MSG_CHECKING([whether MPI_Add_error_string is standard compliant])
-    AC_COMPILE_IFELSE([
-        AC_LANG_SOURCE([
-            #include<mpi.h>
-            #if MPI_VERSION >= 3
-            #define SCOREP_MPI_CONST_DECL const
-            #else
-            #define SCOREP_MPI_CONST_DECL
-            #endif
-            int MPI_Add_error_string(int i, SCOREP_MPI_CONST_DECL char *c)
-            {
-                return 0;
-            }
-            ])],
-        [AC_MSG_RESULT(yes);
-         AC_DEFINE(HAVE_MPI_ADD_ERROR_STRING_COMPLIANT, 1, [MPI_Add_error_string is standard compliant])],
-        [AC_MSG_RESULT(no)]
-    ) # AC_COMPILE_IF_ELSE
 
     AC_MSG_CHECKING([whether MPI_Info_delete is standard compliant])
     AC_COMPILE_IFELSE([
@@ -368,18 +308,23 @@ AC_DEFUN([AC_SCOREP_MPI_COMPLIANCE], [
 
     _SCOREP_MPI_CHECK_COMPLIANCE(
     [int], [return 0],
-    [MPI_Address], [( const void* location, MPI_Aint* address )],
-    [MPI-1],       [( void* location, MPI_Aint* address )])
+    [MPI_Address], [( void* location, MPI_Aint* address )],
+    [CONST],       [( const void* location, MPI_Aint* address )])
 
     _SCOREP_MPI_CHECK_COMPLIANCE(
     [int], [return 0],
-    [MPI_Type_hindexed], [( int count, const int* array_of_blocklengths, const MPI_Aint* array_of_displacements, MPI_Datatype oldtype, MPI_Datatype* newtype )],
-    [MPI-1],             [( int count, int* array_of_blocklengths, MPI_Aint* array_of_displacements, MPI_Datatype oldtype, MPI_Datatype* newtype )])
+    [MPI_Type_hindexed], [( int count, int* array_of_blocklengths, MPI_Aint* array_of_displacements, MPI_Datatype oldtype, MPI_Datatype* newtype )],
+    [CONST],             [( int count, const int* array_of_blocklengths, const MPI_Aint* array_of_displacements, MPI_Datatype oldtype, MPI_Datatype* newtype )])
 
     _SCOREP_MPI_CHECK_COMPLIANCE(
     [int], [return 0],
-    [MPI_Type_struct], [( int count, const int* array_of_blocklengths, const MPI_Aint* array_of_displacements, const MPI_Datatype* array_of_types, MPI_Datatype* newtype )],
-    [MPI-1],           [( int count, int* array_of_blocklengths, MPI_Aint* array_of_displacements, MPI_Datatype* array_of_types, MPI_Datatype* newtype )])
+    [MPI_Type_struct], [( int count, int* array_of_blocklengths, MPI_Aint* array_of_displacements, MPI_Datatype* array_of_types, MPI_Datatype* newtype )],
+    [CONST],           [( int count, const int* array_of_blocklengths, const MPI_Aint* array_of_displacements, const MPI_Datatype* array_of_types, MPI_Datatype* newtype )])
+
+    _SCOREP_MPI_CHECK_COMPLIANCE(
+    [int], [return 0],
+    [MPI_Add_error_string], [(int errorcode, char *string)],
+    [CONST],                [(int errorcode, const char *string)])
 
     AC_LANG_POP(C)
 ]) # AC_DEFUN(AC_SCOREP_MPI_COMPLIANCE)

@@ -43,6 +43,7 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <definitions/SCOREP_Definitions.h>
 #include <scorep_status.h>
+#include <scorep_mpp.h>
 #include <scorep_environment.h>
 #include <stdio.h>
 #include <string.h>
@@ -131,24 +132,14 @@ SCOREP_FinalizeLocationGroup( void )
 {
     /* Update location group ID and name */
 
-    char     name[ 32 ];
-    uint32_t location_group_id = 0;
-    if ( SCOREP_Status_IsMpp() )
-    {
-        int rank = SCOREP_Status_GetRank();
-        sprintf( name, "MPI Rank %d", rank );
-        location_group_id = rank;
-    }
-    else
-    {
-        strcpy( name, "Process" );
-    }
+    uint32_t location_group_id = SCOREP_Status_GetRank();
+
     SCOREP_LocationGroupDef* location_group
         = SCOREP_LOCAL_HANDLE_DEREF( SCOREP_GetLocationGroup(), LocationGroup );
 
     /* In early stage 'global location group ID' and 'name' are set to invalid dummies.
      * Correct values must be set manually. */
-    location_group->name_handle              = SCOREP_Definitions_NewString( name );
+    location_group->name_handle              = SCOREP_Definitions_NewString( SCOREP_Mpp_GetLocationGroupName() );
     location_group->global_location_group_id = location_group_id;
 
 

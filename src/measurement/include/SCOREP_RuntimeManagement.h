@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -149,18 +149,24 @@ SCOREP_FinalizeMppMeasurement( void );
  * Enable event recording for this process. This is a noop if
  * SCOREP_RecordingEnabled() equals true.
  *
+ * @param writeOnOffRecord      Indicates whether a RecordingOnOff record
+ *                              should be written.
+ *
  */
 void
-SCOREP_EnableRecording( void );
+SCOREP_EnableRecording( bool writeOnOffRecord );
 
 
 /**
  * Disable event recording for this process. This is a noop if
  * SCOREP_RecordingEnabled() equals false.
  *
+ * @param writeOnOffRecord      Indicates whether a RecordingOnOff record
+ *                              should be written.
+ *
  */
 void
-SCOREP_DisableRecording( void );
+SCOREP_DisableRecording( bool writeOnOffRecord );
 
 
 /**

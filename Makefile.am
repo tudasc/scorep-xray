@@ -158,6 +158,10 @@ CHECK_TARGETS += \
     build-mpi:check-mpi \
     build-mpi:check-mpi-omp
 endif HAVE_SCOREP_MPI
+if HAVE_SCOREP_SHMEM
+CHECK_TARGETS += \
+    build-shmem:check-shmem
+endif HAVE_SCOREP_SHMEM
 else !CROSS_BUILD
 CHECK_TARGETS = \
     build-backend:check-serial \
@@ -167,6 +171,10 @@ CHECK_TARGETS += \
     build-mpi:check-mpi \
     build-mpi:check-mpi-omp
 endif HAVE_SCOREP_MPI
+if HAVE_SCOREP_SHMEM
+CHECK_TARGETS += \
+    build-shmem:check-shmem
+endif HAVE_SCOREP_SHMEM
 endif !CROSS_BUILD
 
 check-local:

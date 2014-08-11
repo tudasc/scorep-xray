@@ -368,31 +368,6 @@ SCOREP_Ipc_Allreduce( const void*          sendbuf,
 
 
 int
-SCOREP_IpcGroup_Scan( SCOREP_Ipc_Group*    group,
-                      const void*          sendbuf,
-                      void*                recvbuf,
-                      int                  count,
-                      SCOREP_Ipc_Datatype  datatype,
-                      SCOREP_Ipc_Operation operation );
-
-
-static inline int
-SCOREP_Ipc_Scan( const void*          sendbuf,
-                 void*                recvbuf,
-                 int                  count,
-                 SCOREP_Ipc_Datatype  datatype,
-                 SCOREP_Ipc_Operation operation )
-{
-    return SCOREP_IpcGroup_Scan( SCOREP_IPC_GROUP_WORLD,
-                                 sendbuf,
-                                 recvbuf,
-                                 count,
-                                 datatype,
-                                 operation );
-}
-
-
-int
 SCOREP_IpcGroup_Scatter( SCOREP_Ipc_Group*   group,
                          const void*         sendbuf,
                          void*               recvbuf,

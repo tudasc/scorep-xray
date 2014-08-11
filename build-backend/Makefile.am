@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2014,
+## Copyright (c) 2009-2011, 2013-2014,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -93,6 +93,9 @@ LIB_DIR_SCOREP = ./
 
 ## Here the MPI convenience libraries are build
 LIB_DIR_SCOREP_MPI = ../build-mpi/
+
+## Here the SHMEM convenience libraries are build
+LIB_DIR_SCOREP_SHMEM = ../build-shmem/
 
 clean-local: clean-local-scorep-experiment-dirs clean-local-scorep-config-tests clean-local-instrumenter-checks
 	rm -f lex.yy.c scanner.h yacc.c yacc.h y.tab.h

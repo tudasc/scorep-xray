@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -105,7 +105,7 @@ scorep_selective_check_enter( SCOREP_User_RegionHandle region )
     if ( ( region->enters >= region->current_interval.first ) &&
          ( region->enters <= region->current_interval.last ) )
     {
-        SCOREP_EnableRecording();
+        SCOREP_EnableRecording( true );
         /* The measurement system may refuse to switch */
         if ( SCOREP_RecordingEnabled() )
         {
@@ -134,7 +134,7 @@ scorep_selective_check_exit( SCOREP_User_RegionHandle region )
         /* Check whether recording must be disabled */
         if ( region->exits <= 0 )
         {
-            SCOREP_DisableRecording();
+            SCOREP_DisableRecording( true );
             region->has_enabled = false;
             /* Check whether we need to find the next interval */
             while ( region->current_interval.last < region->enters )

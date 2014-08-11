@@ -166,6 +166,13 @@ explanation:
 	</li>
 
 <li>
+<tt>--with-shmem=(openshmem|openmpi|sgimpt)</tt>
+    The SHMEM compiler suite to build this package in
+    non cross-compiling mode. Usually autodetected.
+    Needs to be in $PATH.
+</li>
+
+<li>
 <tt>--with-otf2=(yes|<otf2-bindir>)</tt>
 	An already install OTF2 can be specified with this flag.  This is
 	usually not necessary since OTF2 is built together with @scorep.

@@ -8,6 +8,7 @@ include ../src/services/metric/Makefile.confvars.inc.am
 include ../src/adapters/compiler/Makefile.confvars.inc.am
 include ../src/adapters/cuda/Makefile.confvars.inc.am
 include ../src/adapters/mpi/Makefile.confvars.inc.am
+include ../src/adapters/shmem/Makefile.confvars.inc.am
 include ../src/adapters/pomp/Makefile.confvars.inc.am
 include ../src/adapters/user/Makefile.confvars.inc.am
 include ../src/measurement/thread/fork_join/Makefile.confvars.inc.am

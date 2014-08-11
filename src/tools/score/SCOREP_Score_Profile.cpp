@@ -260,6 +260,10 @@ SCOREP_Score_Profile::get_definition_type( uint64_t region )
     {
         return SCOREP_SCORE_TYPE_MPI;
     }
+    if ( name.substr( 0, 6 ) == "shmem_" )
+    {
+        return SCOREP_SCORE_TYPE_SHMEM;
+    }
     if ( name.substr( 0, 6 ) == "!$omp " )
     {
         return SCOREP_SCORE_TYPE_OMP;
@@ -289,7 +293,8 @@ SCOREP_Score_Profile::calculate_calltree_types( const vector<Cnode*>* cnodes,
     }
 
     if ( type == SCOREP_SCORE_TYPE_OMP ||
-         type == SCOREP_SCORE_TYPE_MPI )
+         type == SCOREP_SCORE_TYPE_MPI ||
+         type == SCOREP_SCORE_TYPE_SHMEM )
     {
         is_on_path = true;
     }

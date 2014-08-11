@@ -89,23 +89,28 @@ scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
     case SCOREP_GROUP_ ## SCOREP: \
         return OTF2_GROUP_TYPE_ ## OTF2
 
-        case_return( UNKNOWN,         UNKNOWN );
-        case_return( LOCATIONS,       LOCATIONS );
-        case_return( REGIONS,         REGIONS );
-        case_return( METRIC,          METRIC );
+        case_return( UNKNOWN,            UNKNOWN );
+        case_return( LOCATIONS,          LOCATIONS );
+        case_return( REGIONS,            REGIONS );
+        case_return( METRIC,             METRIC );
 
         // MPI
-        case_return( MPI_LOCATIONS,   COMM_LOCATIONS );
-        case_return( MPI_GROUP,       COMM_GROUP );
-        case_return( MPI_SELF,        COMM_SELF );
+        case_return( MPI_LOCATIONS,      COMM_LOCATIONS );
+        case_return( MPI_GROUP,          COMM_GROUP );
+        case_return( MPI_SELF,           COMM_SELF );
 
         // OpenMP
         case_return( OPENMP_LOCATIONS,   COMM_LOCATIONS );
         case_return( OPENMP_THREAD_TEAM, COMM_GROUP );
 
         // CUDA
-        case_return( CUDA_LOCATIONS, COMM_LOCATIONS );
-        case_return( CUDA_GROUP, COMM_GROUP );
+        case_return( CUDA_LOCATIONS,     COMM_LOCATIONS );
+        case_return( CUDA_GROUP,         COMM_GROUP );
+
+        // SHMEM
+        case_return( SHMEM_LOCATIONS,    COMM_LOCATIONS );
+        case_return( SHMEM_GROUP,        COMM_GROUP );
+        case_return( SHMEM_SELF,         COMM_SELF );
 
 
 #undef case_return
@@ -479,6 +484,9 @@ scorep_tracing_rma_atomic_type_to_otf2( SCOREP_RmaAtomicType scorepType )
         case_return( INCREMENT );
         case_return( TEST_AND_SET );
         case_return( COMPARE_AND_SWAP );
+        case_return( SWAP );
+        case_return( FETCH_AND_ADD );
+        case_return( FETCH_AND_INCREMENT );
 
         default:
             UTILS_BUG( "Invalid RMA atomic type: %u", scorepType );

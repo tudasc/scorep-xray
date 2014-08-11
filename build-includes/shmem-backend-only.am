@@ -1,0 +1,17 @@
+## -*- mode: makefile -*-
+
+include ../src/adapters/shmem/Makefile.shmem.inc.am
+include ../src/measurement/Makefile.shmem.inc.am
+include ../src/measurement/online_access/Makefile.shmem.inc.am
+include ../src/tools/config/Makefile.shmem.inc.am
+
+## include tests
+include ../test/shmem/Makefile.shmem.inc.am
+include ../test/ipc/Makefile.shmem.inc.am
+##include ../test/jacobi/Makefile.mpi.inc.am
+##include ../test/mpi_omp/Makefile.mpi.inc.am
+##include ../test/unification/Makefile.mpi.inc.am
+##include ../test/apart_test_suite/Makefile.mpi.inc.am
+##include ../test/OA/MPI/C/Makefile.mpi.inc.am
+##include ../test/OA/MPI/wait_state/Makefile.mpi.inc.am
+##include ../test/services/metric/Makefile.mpi.inc.am

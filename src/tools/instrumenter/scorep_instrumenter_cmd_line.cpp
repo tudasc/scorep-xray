@@ -62,14 +62,14 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_link_static          = detect;
 
     /* Input command elements */
-    m_compiler_name     = "";
-    m_flags_before_lmpi = "";
-    m_flags_after_lmpi  = "";
-    m_current_flags     = &m_flags_before_lmpi;
-    m_include_flags     = "";
-    m_define_flags      = "";
-    m_output_name       = "";
-    m_lmpi_set          = false;
+    m_compiler_name                  = "";
+    m_flags_before_interposition_lib = "";
+    m_flags_after_interposition_lib  = "";
+    m_current_flags                  = &m_flags_before_interposition_lib;
+    m_include_flags                  = "";
+    m_define_flags                   = "";
+    m_output_name                    = "";
+    m_interposition_lib_set          = false;
 
     /* Instrumenter flags */
     m_is_dry_run     = false;
@@ -162,15 +162,15 @@ SCOREP_Instrumenter_CmdLine::getCompilerName( void )
 }
 
 std::string
-SCOREP_Instrumenter_CmdLine::getFlagsBeforeLmpi( void )
+SCOREP_Instrumenter_CmdLine::getFlagsBeforeInterpositionLib( void )
 {
-    return m_flags_before_lmpi;
+    return m_flags_before_interposition_lib;
 }
 
 std::string
-SCOREP_Instrumenter_CmdLine::getFlagsAfterLmpi( void )
+SCOREP_Instrumenter_CmdLine::getFlagsAfterInterpositionLib( void )
 {
-    return m_flags_after_lmpi;
+    return m_flags_after_interposition_lib;
 }
 
 std::string
@@ -204,9 +204,9 @@ SCOREP_Instrumenter_CmdLine::getInputFileNumber( void )
 }
 
 bool
-SCOREP_Instrumenter_CmdLine::isLmpiSet( void )
+SCOREP_Instrumenter_CmdLine::isInterpositionLibSet( void )
 {
-    return m_lmpi_set;
+    return m_interposition_lib_set;
 }
 
 bool
@@ -295,8 +295,8 @@ SCOREP_Instrumenter_CmdLine::print_parameter( void )
     std::cout << std::endl;
 
     std::cout << "\nCompiler name: " << m_compiler_name << std::endl;
-    std::cout << "Flags before -lmpi: " << m_flags_before_lmpi << std::endl;
-    std::cout << "Flags after -lmpi: " << m_flags_after_lmpi << std::endl;
+    std::cout << "Flags before interposition lib: " << m_flags_before_interposition_lib << std::endl;
+    std::cout << "Flags after interposition lib: " << m_flags_after_interposition_lib << std::endl;
     std::cout << "Output file: " << m_output_name << std::endl;
     std::cout << "Input file(s): "
               << scorep_vector_to_string( m_input_files, "", "", ", " )
@@ -493,10 +493,11 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     {
         std::string lib = remove_path( current );
         if ( ( lib.length() >= 4 ) &&
-             ( is_mpi_library( lib.substr( 3 ) ) ) )
+             ( lib.substr( 0, 3 ) == "lib" ) &&
+             ( is_interposition_library( lib.substr( 3 ) ) ) )
         {
-            m_lmpi_set      = true;
-            m_current_flags = &m_flags_after_lmpi;
+            m_interposition_lib_set = true;
+            m_current_flags         = &m_flags_after_interposition_lib;
         }
         add_library( current );
     }
@@ -529,14 +530,14 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     }
     else if ( current == "-l" )
     {
-        if ( is_mpi_library( next ) )
+        if ( is_interposition_library( next ) )
         {
-            m_lmpi_set      = true;
-            m_current_flags = &m_flags_after_lmpi;
+            m_interposition_lib_set = true;
+            m_current_flags         = &m_flags_after_interposition_lib;
         }
         else if ( next == "c" )
         {
-            m_flags_after_lmpi += " -lc";
+            m_flags_after_interposition_lib += " -lc";
             add_library( "-lc" );
             return scorep_parse_mode_option_part;
         }
@@ -545,7 +546,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     }
     else if ( current == "-lc" )
     {
-        m_flags_after_lmpi += " -lc";
+        m_flags_after_interposition_lib += " -lc";
         add_library( "-lc" );
         return scorep_parse_mode_command;
     }
@@ -632,10 +633,10 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         }
         else if ( current[ 1 ] == 'l' )
         {
-            if ( is_mpi_library( current.substr( 2 ) ) )
+            if ( is_interposition_library( current.substr( 2 ) ) )
             {
-                m_lmpi_set      = true;
-                m_current_flags = &m_flags_after_lmpi;
+                m_interposition_lib_set = true;
+                m_current_flags         = &m_flags_after_interposition_lib;
             }
             add_library( current );
         }
