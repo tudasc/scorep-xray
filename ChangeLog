@@ -6,6 +6,9 @@ Major features:
   Tofu network topology will be supported in a subsequent release.
   Note that some C++ OpenMP programs fail during measurement
   initialization for unknown reasons.
+- Add support for instrumenting programs which use SHMEM library calls for
+  one-sided communication. Score-P currently supports the SHMEM
+  implementations of Cray, Open MPI, OpenSHMEM, and SGI.
 
 Features and improvements:
 
@@ -119,8 +122,6 @@ Bugfixes:
 - Fix broken instrumentation if the link line explicitly links libc.
 - Fixed constant zero for acquisition order value of acquire lock events
   from OpenMP critical sections.
-- Add support for instrumenting programs which use SHMEM library calls for
-  one-sided communication.
 
 ------------------- Released version 1.2.3 ---------------------------
 
