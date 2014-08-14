@@ -1747,9 +1747,15 @@
                         if (
                             ( ${cube::region::mod}[${regionid}] eq "MPI" )
                             and
-                            ( lowercase(${cube::region::name}[${regionid}]) =~ /mpi_file/ )
+                            ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file/ )
                             and
-                            ( lowercase(${cube::region::name}[${regionid}])  =~ /read/ )
+                            (
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file.*read$/ )
+                                or
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file.*read_at$/ )
+                                or
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file.*read_shared$/ )
+                            )
                            )
                         {
                             ${mpi_file_irops}[${i}] = 1;
@@ -1788,9 +1794,15 @@
                         if (
                             ( ${cube::region::mod}[${regionid}] eq "MPI" )
                             and
-                            ( lowercase(${cube::region::name}[${regionid}]) =~ /mpi_file/ )
+                            ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file/ )
                             and
-                            ( lowercase(${cube::region::name}[${regionid}]) =~ /write/ )
+                            (
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file.*write$/ )
+                                or
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file.*write_at$/ )
+                                or
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file.*write_shared$/ )
+                            )
                            )
                         {
                             ${mpi_file_iwops}[${i}] = 1;
