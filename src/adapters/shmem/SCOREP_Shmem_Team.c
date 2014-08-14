@@ -145,11 +145,11 @@ TEAM_FREE( shmem_team_free )
                                                                         \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );     \
                                                                         \
-            ret = SCOREP_SHMEM_EVENT_GEN_ON();                          \
+            SCOREP_SHMEM_EVENT_GEN_ON();                                \
         }                                                               \
         else                                                            \
         {                                                               \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team ) );         \
+            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team ) );   \
         }                                                               \
                                                                         \
         return ret;                                                     \
