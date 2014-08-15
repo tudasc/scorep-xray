@@ -61,7 +61,7 @@
     1) Instrument your application with 'scorep --keep-files -v'
        It will make the instrumenter not remove the intermediate files and
        output the commands it executes
-    2) Coppy the link command (the last command from the scorep output).
+    2) Copy the link command (the last command from the scorep output).
     3) Insert a link flag (e.g. -lmpicxx) for your C++ bindings library 
        right before '-lscorep_adapter_mpi_events' and execute the 
        modified link command.
@@ -72,6 +72,20 @@
     in one string separated by a colon. Thus, if the path name of the source
     code file or the function name contains colons, Score-P might split
     the source file name and the function name improperly.
+
+  - When using any of the intrinsics headers from GCC (e.g., xmmintrin.h and
+    friends), than, from GCC version 4.6 onwards, it is known that the result
+    of the compiler instrumentation will fail at link time because of undefined
+    reference. A work around is to pass
+
+      -finstrument-functions-exclude-file-list=intrin.h
+
+    as flag to GCC on the command line, or pass it as configure option to
+    Score-P with
+
+      --with-extra-instrumentation-flags=-finstrument-functions-exclude-file-list=intrin.h
+
+    to make it permanently inside the Score-P installation.
 
 * SHMEM support
 
@@ -201,7 +215,7 @@ various Score-P components.
     since version 4.8. But when used with an older binutils version this
     results in unreliably region meta data. If file name information are
     missing in the resulting region meta data, than try recompiling with
-    the -gdwarf-3 or -gdwarf-2.
+    the -gdwarf-3 or -gdwarf-2 flag.
 
   - When instrumenting an application which contains bison generated code,
     the link step fails because of multiple defined symbols conflicting
