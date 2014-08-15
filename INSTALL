@@ -213,7 +213,7 @@ be used to build Score-P are as follows:
                (PDT) binaries, e.g., cparse.
   --with-extra-instrumentation-flags=flags
                Add additional instrumentation flags.
- --with-sionlib[=<sionlib-bindir>]
+  --with-sionlib[=<sionlib-bindir>]
                Use an already installed sionlib. Provide path to
                sionconfig. Auto-detected if already in $PATH. This
                option is not used by Score-P itself but passed to an
