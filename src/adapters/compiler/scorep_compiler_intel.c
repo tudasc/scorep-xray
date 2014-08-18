@@ -57,8 +57,6 @@
 static SCOREP_RegionHandle
 register_region( const char* str )
 {
-    SCOREP_RegionHandle region_handle = SCOREP_FILTERED_REGION;
-
     uint64_t    len         = 0;
     const char* region_name = strchr( str, ':' );
     if ( region_name )
@@ -83,14 +81,21 @@ register_region( const char* str )
     memcpy( file_name, str, len );
     file_name[ len ] = '\0';
 
+    /* Filter on file name early to avoid unused SourceFile definitions. */
+    if ( SCOREP_Filter_MatchFile( file_name ) )
+    {
+        return SCOREP_FILTERED_REGION;
+    }
+
     /* Get file handle */
     SCOREP_SourceFileHandle file_handle = SCOREP_Definitions_NewSourceFile( file_name );
 
     /* Register file */
+    SCOREP_RegionHandle region_handle = SCOREP_FILTERED_REGION;
     if ( ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
          ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
          ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
-         ( !SCOREP_Filter_Match( file_name, region_name, NULL ) ) )
+         ( !SCOREP_Filter_MatchFunction( region_name, NULL ) ) )
     {
         region_handle = SCOREP_Definitions_NewRegion( region_name,
                                                       NULL,
