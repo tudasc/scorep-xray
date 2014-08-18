@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,15 +38,73 @@
 #include <config.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 
+#include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Events.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Mutex.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Filter.h>
 
 #include "SCOREP_Compiler_Init.h"
-#include "scorep_compiler_data_intel.h"
+
+
+/* Register a new region to the measurement system */
+static SCOREP_RegionHandle
+register_region( const char* str )
+{
+    SCOREP_RegionHandle region_handle = SCOREP_FILTERED_REGION;
+
+    uint64_t    len         = 0;
+    const char* region_name = strchr( str, ':' );
+    if ( region_name )
+    {
+        len = region_name - str;
+        region_name++;
+    }
+    else
+    {
+        /*
+         * We expected a ':', but did not find one, use the whole string
+         * as region name.
+         */
+        region_name = str;
+        UTILS_WARNING( "Malformed region string from Intel instrumentation: %s",
+                       str );
+    }
+
+    /* Get file name */
+    char* file_name = malloc( len + 1 );
+    UTILS_ASSERT( file_name );
+    memcpy( file_name, str, len );
+    file_name[ len ] = '\0';
+
+    /* Get file handle */
+    SCOREP_SourceFileHandle file_handle = SCOREP_Definitions_NewSourceFile( file_name );
+
+    /* Register file */
+    if ( ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
+         ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
+         ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
+         ( !SCOREP_Filter_Match( file_name, region_name, NULL ) ) )
+    {
+        region_handle = SCOREP_Definitions_NewRegion( region_name,
+                                                      NULL,
+                                                      file_handle,
+                                                      SCOREP_INVALID_LINE_NO,
+                                                      SCOREP_INVALID_LINE_NO,
+                                                      SCOREP_PARADIGM_COMPILER,
+                                                      SCOREP_REGION_FUNCTION );
+    }
+
+    free( file_name );
+
+    return region_handle;
+}
 
 
 /* ***************************************************************************************
@@ -61,7 +119,7 @@ __VT_IntelEntry( char*     str,
                  uint32_t* id,
                  uint32_t* id2 )
 {
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call at function enter." );
+    UTILS_DEBUG_ENTRY( "%s, %u", str, *id );
 
     /*
      * put hash table entries via mechanism for bfd symbol table
@@ -79,19 +137,13 @@ __VT_IntelEntry( char*     str,
         SCOREP_InitMeasurement();
     }
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " function id: %u ", *id );
-
     /* Register new region if unknown */
     if ( *id == 0 )
     {
         SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( *id == 0 )
         {
-            *id = scorep_compiler_hash_get( str );
-            if ( *id == SCOREP_INVALID_REGION )
-            {
-                *id = scorep_compiler_register_region( str );
-            }
+            *id = register_region( str );
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
@@ -99,8 +151,7 @@ __VT_IntelEntry( char*     str,
     /* Enter event */
     if ( *id != SCOREP_FILTERED_REGION )
     {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                            "enter the region with id %u ", *id );
+        UTILS_DEBUG( "enter the region with id %u ", *id );
         SCOREP_EnterRegion( ( SCOREP_RegionHandle ) * id );
     }
 
@@ -124,6 +175,8 @@ VT_IntelEntry( char*     str,
 void
 __VT_IntelExit( uint32_t* id2 )
 {
+    UTILS_DEBUG_ENTRY( "%u", *id2 );
+
     if ( scorep_compiler_finalized )
     {
         return;
@@ -135,7 +188,6 @@ __VT_IntelExit( uint32_t* id2 )
         return;
     }
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit." );
     SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
 }
 
@@ -152,6 +204,8 @@ VT_IntelExit( uint32_t* id2 )
 void
 __VT_IntelCatch( uint32_t* id2 )
 {
+    UTILS_DEBUG_ENTRY( "%u", *id2 );
+
     if ( scorep_compiler_finalized )
     {
         return;
@@ -163,7 +217,6 @@ __VT_IntelCatch( uint32_t* id2 )
         return;
     }
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Catch in region." );
     SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
 }
 
@@ -176,6 +229,8 @@ VT_IntelCatch( uint32_t* id2 )
 void
 __VT_IntelCheck( uint32_t* id2 )
 {
+    UTILS_DEBUG_ENTRY( "%u", *id2 );
+
     if ( scorep_compiler_finalized )
     {
         return;
@@ -187,7 +242,6 @@ __VT_IntelCheck( uint32_t* id2 )
         return;
     }
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Check in region. Try " );
     SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
 }
 

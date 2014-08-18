@@ -182,10 +182,8 @@ endif
 
 #--- Intel specific settings
 if SCOREP_COMPILER_INTEL
-libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel_init.c   \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.c   \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data_intel.h
+libscorep_adapter_compiler_mgmt_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel_init.c
 endif
 
 

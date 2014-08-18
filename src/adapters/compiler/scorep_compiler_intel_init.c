@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -39,7 +39,6 @@
 #include <UTILS_Debug.h>
 
 #include "SCOREP_Compiler_Init.h"
-#include "scorep_compiler_data_intel.h"
 
 
 /* ***************************************************************************************
@@ -55,9 +54,6 @@ scorep_compiler_init_adapter( void )
 
         /* Initialize region mutex */
         SCOREP_MutexCreate( &scorep_compiler_region_mutex );
-
-        /* Initialize hash tables */
-        scorep_compiler_hash_init();
 
         /* Set flag */
         scorep_compiler_initialized = true;
@@ -83,9 +79,6 @@ scorep_compiler_finalize( void )
     /* call only, if previously initialized */
     if ( scorep_compiler_initialized )
     {
-        /* Delete hash table */
-        scorep_compiler_hash_free();
-
         /* Set initialization flag */
         scorep_compiler_initialized = false;
         scorep_compiler_finalized   = true;
