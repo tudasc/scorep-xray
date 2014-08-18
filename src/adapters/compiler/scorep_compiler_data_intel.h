@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -53,11 +53,11 @@
    In multithreaded environments, calls to this function do not need
    to be locked if it is guaranteed that initialization is already finished and
    finalization will not start before this function returns.
-   @param region_name  Name of the region
+   @param region_string  the region string as passed to the compiler adapter.
    @returns the hash_node for the given key.
  */
 SCOREP_RegionHandle
-scorep_compiler_hash_get( const char* region_name );
+scorep_compiler_hash_get( const char* region_string );
 
 /**
    Frees the memory allocated for the hash table.
@@ -74,13 +74,11 @@ scorep_compiler_hash_init( void );
 /**
    Registers a region to the SCOREP measurement system and creates a new entry
    in the hash table.
-   @param node A pointer to a hash node which contains the region data for the
-               region to be registered ot the SCOREP measurement system.
+   @param region_string  the region string as passed to the compiler adapter.
    @returns the region handle of the newly registered region. If the region
             is filtered, it returns SCOREP_FILTERED_REGION.
  */
 SCOREP_RegionHandle
-scorep_compiler_register_region( const char* str,
-                                 const char* region_name  );
+scorep_compiler_register_region( const char* region_string );
 
 #endif /* SCOREP_COMPILER_DATA_H_ */

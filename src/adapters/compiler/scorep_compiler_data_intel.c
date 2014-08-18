@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -66,8 +66,7 @@
  */
 typedef struct scorep_compiler_hash_node
 {
-    char*                             region_name;
-    char*                             file_name;
+    char*                             region_string;
     SCOREP_RegionHandle               region_handle;
     struct scorep_compiler_hash_node* next;
 } scorep_compiler_hash_node;
@@ -96,9 +95,9 @@ scorep_compiler_hash_init( void )
 
 /* Get hash table entry for given name. */
 SCOREP_RegionHandle
-scorep_compiler_hash_get( const char* region_name )
+scorep_compiler_hash_get( const char* region_string )
 {
-    uint64_t hash_code = SCOREP_Hashtab_HashString( region_name ) % SCOREP_COMPILER_REGION_SLOTS;
+    uint64_t hash_code = SCOREP_Hashtab_HashString( region_string ) % SCOREP_COMPILER_REGION_SLOTS;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld", hash_code );
 
@@ -109,7 +108,7 @@ scorep_compiler_hash_get( const char* region_name )
      */
     while ( curr )
     {
-        if ( strcmp( curr->region_name, region_name )  == 0 )
+        if ( strcmp( curr->region_string, region_string )  == 0 )
         {
             return curr->region_handle;
         }
@@ -126,16 +125,14 @@ scorep_compiler_hash_get( const char* region_name )
    @returns a pointer to the newly created hash node.
  */
 static void
-scorep_compiler_hash_put( const char*         region_name,
-                          const char*         file_name,
+scorep_compiler_hash_put( const char*         region_string,
                           SCOREP_RegionHandle region_handle )
 {
-    uint64_t hash_code = SCOREP_Hashtab_HashString( region_name ) % SCOREP_COMPILER_REGION_SLOTS;
+    uint64_t hash_code = SCOREP_Hashtab_HashString( region_string ) % SCOREP_COMPILER_REGION_SLOTS;
 
     scorep_compiler_hash_node* add = ( scorep_compiler_hash_node* )
                                      malloc( sizeof( scorep_compiler_hash_node ) );
-    add->region_name   = UTILS_CStr_dup( region_name );
-    add->file_name     = UTILS_CStr_dup( file_name );
+    add->region_string = UTILS_CStr_dup( region_string );
     add->region_handle = region_handle;
     /* Inserting elements at the head allows parallel calls to
      * @ref scorep_compiler_hash_get
@@ -160,14 +157,7 @@ scorep_compiler_hash_free( void )
             while ( cur != NULL )
             {
                 next = cur->next;
-                if ( cur->region_name != NULL )
-                {
-                    free( cur->region_name );
-                }
-                if ( cur->file_name != NULL )
-                {
-                    free( cur->file_name );
-                }
+                free( cur->region_string );
                 free( cur );
                 cur = next;
             }
@@ -176,11 +166,27 @@ scorep_compiler_hash_free( void )
     }
 }
 
+static const char*
+get_name_from_string( const char* str )
+{
+    while ( *str != '\0' )
+    {
+        if ( *str == ':' )
+        {
+            str++;
+            break;
+        }
+        str++;
+    }
+    return str;
+}
+
 /* Register a new region to the measurement system */
 SCOREP_RegionHandle
-scorep_compiler_register_region( const char* str, const char* region_name )
+scorep_compiler_register_region( const char* str )
 {
     SCOREP_RegionHandle region_handle = SCOREP_FILTERED_REGION;
+    const char*         region_name   = get_name_from_string( str );
 
     /* Get file name */
     uint64_t len       = region_name - str;
@@ -197,7 +203,7 @@ scorep_compiler_register_region( const char* str, const char* region_name )
          ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
          ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
          ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
-         ( !SCOREP_Filter_MatchFunction( region_name, NULL ) ) )
+         ( !SCOREP_Filter_Match( file_name, region_name, NULL ) ) )
     {
         region_handle = SCOREP_Definitions_NewRegion( region_name,
                                                       NULL,
@@ -209,7 +215,7 @@ scorep_compiler_register_region( const char* str, const char* region_name )
     }
 
     /* Add entry in hash table */
-    scorep_compiler_hash_put( region_name, file_name, region_handle );
+    scorep_compiler_hash_put( str, region_handle );
 
     free( file_name );
     return region_handle;

@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -48,20 +48,6 @@
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data_intel.h"
 
-static const char*
-get_name_from_string( const char* str )
-{
-    while ( *str != '\0' )
-    {
-        if ( *str == ':' )
-        {
-            str++;
-            break;
-        }
-        str++;
-    }
-    return str;
-}
 
 /* ***************************************************************************************
    Implementation of functions called by compiler instrumentation
@@ -101,11 +87,10 @@ __VT_IntelEntry( char*     str,
         SCOREP_MutexLock( scorep_compiler_region_mutex );
         if ( *id == 0 )
         {
-            const char* region_name = get_name_from_string( str );
-            *id = scorep_compiler_hash_get( region_name );
+            *id = scorep_compiler_hash_get( str );
             if ( *id == SCOREP_INVALID_REGION )
             {
-                *id = scorep_compiler_register_region( str, region_name );
+                *id = scorep_compiler_register_region( str );
             }
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
