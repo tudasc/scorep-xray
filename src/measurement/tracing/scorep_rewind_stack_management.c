@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -58,7 +58,8 @@ bool
 scorep_rewind_stack_find( SCOREP_Location* location,
                           uint32_t         id )
 {
-    scorep_rewind_stack* stack_item = SCOREP_Location_GetTracingData( location )->rewind_stack;
+    SCOREP_TracingData*  tracing_data = SCOREP_Location_GetTracingData( location );
+    scorep_rewind_stack* stack_item   = tracing_data->rewind_stack;
 
     while ( stack_item && stack_item->id != id )
     {
@@ -84,7 +85,8 @@ scorep_rewind_stack_push( SCOREP_Location* location,
                           uint32_t         id,
                           uint64_t         entertimestamp )
 {
-    scorep_rewind_stack* stack_head      = SCOREP_Location_GetTracingData( location )->rewind_stack;
+    SCOREP_TracingData*  tracing_data    = SCOREP_Location_GetTracingData( location );
+    scorep_rewind_stack* stack_head      = tracing_data->rewind_stack;
     scorep_rewind_stack* stack_item      = stack_head;
     scorep_rewind_stack* last_stack_item = stack_head;
 
@@ -111,7 +113,16 @@ scorep_rewind_stack_push( SCOREP_Location* location,
     else
     {
         /* else, push the new id on top of the stack */
-        stack_item                 = ( scorep_rewind_stack* )malloc( sizeof( scorep_rewind_stack ) );
+        stack_item = tracing_data->rewind_free_list;
+        if ( stack_item )
+        {
+            tracing_data->rewind_free_list = stack_item->prev;
+        }
+        else
+        {
+            stack_item = SCOREP_Location_AllocForMisc( location,
+                                                       sizeof( *stack_item ) );
+        }
         stack_item->id             = id;
         stack_item->entertimestamp = entertimestamp;
         for ( int i = 0; i < SCOREP_REWIND_PARADIGM_MAX; i++ )
@@ -122,7 +133,7 @@ scorep_rewind_stack_push( SCOREP_Location* location,
         stack_head       = stack_item;
     }
 
-    SCOREP_Location_GetTracingData( location )->rewind_stack = stack_head;
+    tracing_data->rewind_stack = stack_head;
 }
 
 
@@ -137,8 +148,9 @@ scorep_rewind_stack_pop( SCOREP_Location* location,
                          uint64_t*        entertimestamp,
                          bool             paradigm_affected[ SCOREP_REWIND_PARADIGM_MAX ] )
 {
-    scorep_rewind_stack* stack_head = SCOREP_Location_GetTracingData( location )->rewind_stack;
-    scorep_rewind_stack* stack_item = NULL;
+    SCOREP_TracingData*  tracing_data = SCOREP_Location_GetTracingData( location );
+    scorep_rewind_stack* stack_head   = tracing_data->rewind_stack;
+    scorep_rewind_stack* stack_item   = NULL;
 
     if ( stack_head )
     {
@@ -150,10 +162,11 @@ scorep_rewind_stack_pop( SCOREP_Location* location,
         stack_item = stack_head;
         stack_head = stack_head->prev;
 
-        free( stack_item );
+        stack_item->prev               = tracing_data->rewind_free_list;
+        tracing_data->rewind_free_list = stack_item;
     }
 
-    SCOREP_Location_GetTracingData( location )->rewind_stack = stack_head;
+    tracing_data->rewind_stack = stack_head;
 }
 
 
@@ -163,18 +176,21 @@ scorep_rewind_stack_pop( SCOREP_Location* location,
 void
 scorep_rewind_stack_delete( SCOREP_Location* location )
 {
-    scorep_rewind_stack* stack_head = SCOREP_Location_GetTracingData( location )->rewind_stack;
-    scorep_rewind_stack* stack_item = NULL;
+    SCOREP_TracingData*  tracing_data = SCOREP_Location_GetTracingData( location );
+    scorep_rewind_stack* stack_head   = tracing_data->rewind_stack;
+    scorep_rewind_stack* stack_item   = NULL;
 
     /* Iterate over all elements and free the allocated buffer. */
     while ( stack_head )
     {
         stack_item = stack_head;
         stack_head = stack_head->prev;
-        free( stack_item );
+
+        stack_item->prev               = tracing_data->rewind_free_list;
+        tracing_data->rewind_free_list = stack_item;
     }
 
-    SCOREP_Location_GetTracingData( location )->rewind_stack = NULL;
+    tracing_data->rewind_stack = NULL;
 }
 
 /**
@@ -184,7 +200,9 @@ void
 scorep_rewind_set_affected_paradigm( SCOREP_Location* location, SCOREP_Rewind_Paradigm paradigm )
 {
     UTILS_ASSERT( paradigm < SCOREP_REWIND_PARADIGM_MAX );
-    scorep_rewind_stack* stack_item = SCOREP_Location_GetTracingData( location )->rewind_stack;
+
+    SCOREP_TracingData*  tracing_data = SCOREP_Location_GetTracingData( location );
+    scorep_rewind_stack* stack_item   = tracing_data->rewind_stack;
 
     while ( stack_item )
     {

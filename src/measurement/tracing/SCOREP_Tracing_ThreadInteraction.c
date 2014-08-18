@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -65,6 +65,7 @@ SCOREP_Tracing_CreateLocationData( SCOREP_Location* locationData )
 
     new_data->otf_writer         = 0;
     new_data->rewind_stack       = 0;
+    new_data->rewind_free_list   = 0;
     new_data->otf_attribute_list = OTF2_AttributeList_New();
     UTILS_BUG_ON( NULL == new_data->otf_attribute_list,
                   "Couldn't create event attribute list." );
