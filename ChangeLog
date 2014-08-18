@@ -68,6 +68,9 @@ User tools and API improvements and changes:
 - Improved event size estimation in scorep-score using otf2-estimator.
 - Install Cube remap specification file and provide its location via
   scorep-config tool.
+- The scorep-info tool can now show known and open issues regarding
+  the measurement with Score-P. It is highly advised to consult this list
+  before reporting problems.
 
 CUDA support improvements and changes:
 
