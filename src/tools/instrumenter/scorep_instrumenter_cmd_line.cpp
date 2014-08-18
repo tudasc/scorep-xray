@@ -693,8 +693,8 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
 
     /* Check default relations */
     SCOREP_Instrumenter_Selector::checkDefaults();
-    SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_INSTRUMENTER_ADAPTER_COMPILER );
     SCOREP_Instrumenter_Adapter::checkAllDefaults();
+    SCOREP_Instrumenter_Adapter::defaultOn( SCOREP_INSTRUMENTER_ADAPTER_COMPILER );
 
     /* Check whether the selected paradigms are supported */
     SCOREP_Instrumenter_Selector::checkAllSupported();
