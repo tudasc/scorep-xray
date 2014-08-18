@@ -54,7 +54,7 @@ FSUB( SCOREP_F_EnableRecording )( void )
     SCOREP_USER_ASSERT_INITIALIZED;
 
     /* (Re)start recording */
-    SCOREP_EnableRecording( true );
+    SCOREP_EnableRecording();
 }
 
 void
@@ -64,7 +64,7 @@ FSUB( SCOREP_F_DisableRecording )( void )
     SCOREP_USER_ASSERT_INITIALIZED;
 
     /* Stop recording */
-    SCOREP_DisableRecording( true );
+    SCOREP_DisableRecording();
 }
 
 void

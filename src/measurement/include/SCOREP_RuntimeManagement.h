@@ -148,25 +148,17 @@ SCOREP_FinalizeMppMeasurement( void );
 /**
  * Enable event recording for this process. This is a noop if
  * SCOREP_RecordingEnabled() equals true.
- *
- * @param writeOnOffRecord      Indicates whether a RecordingOnOff record
- *                              should be written.
- *
  */
 void
-SCOREP_EnableRecording( bool writeOnOffRecord );
+SCOREP_EnableRecording( void );
 
 
 /**
  * Disable event recording for this process. This is a noop if
  * SCOREP_RecordingEnabled() equals false.
- *
- * @param writeOnOffRecord      Indicates whether a RecordingOnOff record
- *                              should be written.
- *
  */
 void
-SCOREP_DisableRecording( bool writeOnOffRecord );
+SCOREP_DisableRecording( void );
 
 
 /**
@@ -201,7 +193,7 @@ SCOREP_LocationGroupHandle
 SCOREP_GetLocationGroup( void );
 
 /**
- * Get the initiali timestamp of this process which denotes the begin of the
+ * Get the initial timestamp of this process which denotes the begin of the
  * epoch.
  */
 uint64_t

@@ -45,7 +45,7 @@ SCOREP_User_EnableRecording( void )
     SCOREP_USER_ASSERT_INITIALIZED;
 
     /* (Re)start recording */
-    SCOREP_EnableRecording( true );
+    SCOREP_EnableRecording();
 }
 
 void
@@ -55,7 +55,7 @@ SCOREP_User_DisableRecording( void )
     SCOREP_USER_ASSERT_INITIALIZED;
 
     /* Stop recording */
-    SCOREP_DisableRecording( true );
+    SCOREP_DisableRecording();
 }
 
 bool

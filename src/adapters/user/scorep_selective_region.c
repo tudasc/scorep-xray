@@ -105,7 +105,7 @@ scorep_selective_check_enter( SCOREP_User_RegionHandle region )
     if ( ( region->enters >= region->current_interval.first ) &&
          ( region->enters <= region->current_interval.last ) )
     {
-        SCOREP_EnableRecording( true );
+        SCOREP_EnableRecording();
         /* The measurement system may refuse to switch */
         if ( SCOREP_RecordingEnabled() )
         {
@@ -134,7 +134,7 @@ scorep_selective_check_exit( SCOREP_User_RegionHandle region )
         /* Check whether recording must be disabled */
         if ( region->exits <= 0 )
         {
-            SCOREP_DisableRecording( true );
+            SCOREP_DisableRecording();
             region->has_enabled = false;
             /* Check whether we need to find the next interval */
             while ( region->current_interval.last < region->enters )

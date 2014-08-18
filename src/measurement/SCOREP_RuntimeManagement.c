@@ -250,7 +250,7 @@ SCOREP_InitMeasurement( void )
     scorep_default_recoding_mode_changes_allowed = false;
     if ( !scorep_enable_recording_by_default )
     {
-        SCOREP_DisableRecording( true );
+        SCOREP_DisableRecording();
     }
 
     SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurement );
@@ -398,12 +398,9 @@ SCOREP_SetDefaultRecodingMode( bool enabled )
 
 /**
  * Enable event recording for this process.
- *
- * @param writeOnOffRecord      Indicates whether a RecordingOnOff record
- *                              should be written.
  */
 void
-SCOREP_EnableRecording( bool writeOnOffRecord )
+SCOREP_EnableRecording( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -412,13 +409,13 @@ SCOREP_EnableRecording( bool writeOnOffRecord )
 
     if ( !SCOREP_Thread_InParallel() )
     {
-        if ( SCOREP_IsTracingEnabled() && writeOnOffRecord )
+        if ( SCOREP_IsTracingEnabled() )
         {
             SCOREP_Tracing_MeasurementOnOff( location,
                                              timestamp,
                                              true );
         }
-        if ( SCOREP_IsProfilingEnabled() && !scorep_recording_enabled && writeOnOffRecord )
+        if ( SCOREP_IsProfilingEnabled() && !scorep_recording_enabled )
         {
             uint64_t* metric_values = SCOREP_Metric_Read( location );
             SCOREP_Profile_Exit( location,
@@ -440,12 +437,9 @@ SCOREP_EnableRecording( bool writeOnOffRecord )
 
 /**
  * Disable event recording for this process.
- *
- * @param writeOnOffRecord      Indicates whether a RecordingOnOff record
- *                              should be written.
  */
 void
-SCOREP_DisableRecording( bool writeOnOffRecord )
+SCOREP_DisableRecording( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -454,13 +448,13 @@ SCOREP_DisableRecording( bool writeOnOffRecord )
 
     if ( !SCOREP_Thread_InParallel() )
     {
-        if ( SCOREP_IsTracingEnabled() && writeOnOffRecord )
+        if ( SCOREP_IsTracingEnabled() )
         {
             SCOREP_Tracing_MeasurementOnOff( location,
                                              timestamp,
                                              false );
         }
-        if ( SCOREP_IsProfilingEnabled() && scorep_recording_enabled && writeOnOffRecord )
+        if ( SCOREP_IsProfilingEnabled() && scorep_recording_enabled )
         {
             uint64_t* metric_values = SCOREP_Metric_Read( location );
             SCOREP_Profile_Enter( location,
@@ -561,8 +555,6 @@ scorep_finalize( void )
     SCOREP_TIME_START_TIMING( scorep_finalize );
     SCOREP_TIME( scorep_trigger_exit_callbacks, ( ) );
 
-    SCOREP_DisableRecording( false );
-
     // MPICH1 creates some extra processes that are not properly SCOREP
     // initialized and don't execute normal user code. We need to prevent SCOREP
     // finalization of these processes. See otf2:ticket:154.
@@ -577,7 +569,7 @@ scorep_finalize( void )
 
     if ( !scorep_enable_recording_by_default )
     {
-        SCOREP_EnableRecording( true );
+        SCOREP_EnableRecording();
     }
 
     SCOREP_TIME( SCOREP_SynchronizeClocks, ( ) );
