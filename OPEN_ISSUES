@@ -31,7 +31,7 @@
 
                         Score-P new OPEN ISSUES
                         ========================
-                                                           Status: May 2014
+                                                           Status: Aug 2014
 
 * CUDA support
 
@@ -50,8 +50,14 @@
 
 * MPI support
 
-  - The C++ bindings for MPI are not supported. When using C++ bindings
-    for MPI, Score-P will most likely indicate the failed library wrapping
+  - Functions added with MPI-3.0 are not supported by Score-P.  Measurements
+    using libraries providing MPI-3.0 functions will be incomplete if any of
+    the new functions are used, and use of communicators or windows created
+    by new functions are likely to result in measurement failure.
+
+  - C++ bindings for MPI are not supported.  These were deprecated as of
+    MPI-2.2 and removed with MPI-3.0.  When using C++ bindings for MPI,
+    Score-P will most likely indicate the failed library wrapping
     with the following warning: "If you are using MPICH1, please ignore 
     this warning. If not, it seems that your interprocess communication 
     library (e.g., MPI) hasn't been initialized. Score-P can't generate 
