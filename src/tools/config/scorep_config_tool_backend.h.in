@@ -8,6 +8,7 @@
 #define SCOREP_INCLUDEDIR    "@INCLUDEDIR@"
 #define SCOREP_BINDIR        "@BINDIR@"
 #define SCOREP_DATADIR       "@PKGDATADIR@"
+#define SCOREP_DOCDIR        "@DOCDIR@"
 #define SCOREP_CC            "@CC@"
 #define SCOREP_CXX           "@CXX@"
 #define SCOREP_FC            "@FC@"

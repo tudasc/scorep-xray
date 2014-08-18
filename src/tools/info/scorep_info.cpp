@@ -89,6 +89,9 @@ print_help( void )
     std::cout << "  config-summary:" << std::endl;
     std::cout << "    Shows the configure summary of the Score-P package." << std::endl;
     std::cout << std::endl;
+    std::cout << "  open-issues:" << std::endl;
+    std::cout << "    Shows open and known issues of the Score-P package." << std::endl;
+    std::cout << std::endl;
 }
 
 int
@@ -178,6 +181,27 @@ main( int   argc,
             if ( return_value != 0 )
             {
                 std::cerr << "Error executing: " << summary_command << std::endl;
+                return EXIT_FAILURE;
+            }
+            return EXIT_SUCCESS;
+        }
+
+
+        if ( info_command == "open-issues" )
+        {
+            if ( args.size() != 0 )
+            {
+                std::cerr << "Invalid number of options for info command "
+                          << info_command << std::endl;
+                print_short_usage( std::cerr );
+                return EXIT_FAILURE;
+            }
+
+            std::string command( "cat " SCOREP_DOCDIR "/OPEN_ISSUES" );
+            int         return_value = system( command.c_str() );
+            if ( return_value != 0 )
+            {
+                std::cerr << "Error executing: " << command << std::endl;
                 return EXIT_FAILURE;
             }
             return EXIT_SUCCESS;
