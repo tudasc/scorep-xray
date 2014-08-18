@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2014,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -193,8 +193,6 @@ endif
 if SCOREP_COMPILER_PGI
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi_init.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c     \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h     \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi_data.h
 endif
 
