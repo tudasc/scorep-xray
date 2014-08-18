@@ -68,7 +68,8 @@ EXTRA_DIST += $(srcdir)/src/config.h                                      \
               $(srcdir)/doc/profile/scorep_metrics.html                   \
               $(srcdir)/src/adapters/include/SCOREP_Fortran_Wrapper.h     \
               $(srcdir)/share/scorep.errors                               \
-              $(srcdir)/THANKS
+              $(srcdir)/THANKS                                            \
+              $(srcdir)/OPEN_ISSUES
 
 
 if ! CROSS_BUILD
