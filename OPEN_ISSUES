@@ -44,9 +44,13 @@
 * Compiler instrumentation
 
   - The Intel compiler provides the function name and the source code location
-    in one string separated by a colon. Thus, if the path name of the source
-    code file or the function name contains colons, Score-P might split
-    the source file name and the function name improperly.
+    in one string separated by a colon.  Thus, if the path name of the source
+    code file contains colons, Score-P will split the source file name and
+    the function name improperly.
+
+    Additionally, the provided function name makes it impossible to distinguish
+    overloaded functions in C++.  Thus, functions which differ only in the
+    argument list will be mapped to the same function definition by Score-P.
 
   - When using any of the intrinsics headers from GCC (e.g., xmmintrin.h and
     friends), than, from GCC version 4.6 onwards, it is known that the result
