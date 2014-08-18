@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -130,30 +130,5 @@ scorep_compiler_hash_init( void );
  */
 extern void
 scorep_compiler_register_region( scorep_compiler_hash_node* node );
-
-/**
-   Initialize the file table.
- */
-void
-scorep_compiler_init_file_table( void );
-
-/**
-   Finalize the file table
- */
-void
-scorep_compiler_finalize_file_table( void );
-
-/**
-   Returns the file handle for a given file name. It searches in the hash table if the
-   requested name is already there and returns the stored value. If the file name is not
-   found in the hash table, it creates a bew entry and registers the file to the SCOREP
-   measurement system.
-   @param file The file name fr which the handle is returned.
-   @returns the handle for the @a file.
- */
-SCOREP_SourceFileHandle
-scorep_compiler_get_file( const char* file );
-
-
 
 #endif /* SCOREP_COMPILER_DATA_H_ */

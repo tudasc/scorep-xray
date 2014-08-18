@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -78,98 +78,6 @@ typedef struct scorep_compiler_hash_node
  */
 scorep_compiler_hash_node* region_hash_table[ SCOREP_COMPILER_REGION_SLOTS ];
 
-/**
-   Hash table for mapping source file names to SCOREP file handles.
- */
-SCOREP_Hashtab* scorep_compiler_file_table = NULL;
-
-/* ***************************************************************************************
-   File hash table functions
-*****************************************************************************************/
-
-/**
-   Deletes one file table entry.
-   @param entry Pointer to the entry to be deleted.
- */
-static void
-scorep_compiler_delete_file_entry( SCOREP_Hashtab_Entry* entry )
-{
-    UTILS_ASSERT( entry );
-
-    free( ( SCOREP_SourceFileHandle* )entry->value );
-    free( ( char* )entry->key );
-}
-
-/* Initialize the file table */
-static void
-scorep_compiler_init_file_table( void )
-{
-    scorep_compiler_file_table = SCOREP_Hashtab_CreateSize( SCOREP_COMPILER_FILE_SLOTS,
-                                                            &SCOREP_Hashtab_HashString,
-                                                            &SCOREP_Hashtab_CompareStrings );
-}
-
-/* Finalize the file table */
-static void
-scorep_compiler_final_file_table( void )
-{
-    SCOREP_Hashtab_Foreach( scorep_compiler_file_table, &scorep_compiler_delete_file_entry );
-    SCOREP_Hashtab_Free( scorep_compiler_file_table );
-    scorep_compiler_file_table = NULL;
-}
-
-/**
-   Returns the file handle for a given file name. It searches in the hash table if the
-   requested name is already there and returns the stored value. If the file name is not
-   found in the hash table, it creates a new entry and registers the file to the SCOREP
-   measurement system.
-   @param file The file name for which the handle is returned.
-   @returns the handle for the @a file.
- */
-static SCOREP_SourceFileHandle
-scorep_compiler_get_file( const char* file )
-{
-    size_t                index;
-    SCOREP_Hashtab_Entry* entry = NULL;
-
-    if ( file == NULL )
-    {
-        return SCOREP_INVALID_SOURCE_FILE;
-    }
-
-    entry = SCOREP_Hashtab_Find( scorep_compiler_file_table, file,
-                                 &index );
-
-    /* If not found, register new file */
-    if ( !entry )
-    {
-        /* Reserve own storage for file name */
-        char* file_name = ( char* )malloc( ( strlen( file ) + 1 ) * sizeof( char ) );
-        strcpy( file_name, file );
-
-        /* Register file to measurement system */
-        SCOREP_SourceFileHandle* handle = malloc( sizeof( SCOREP_SourceFileHandle ) );
-        if ( SCOREP_Filter_MatchFile( file_name ) )
-        {
-            *handle = SCOREP_INVALID_SOURCE_FILE;
-        }
-        else
-        {
-            *handle = SCOREP_Definitions_NewSourceFile( file_name );
-        }
-
-        /* Store handle in hashtable */
-        SCOREP_Hashtab_Insert( scorep_compiler_file_table, ( void* )file_name,
-                               handle, &index );
-
-        return *handle;
-    }
-
-    return *( SCOREP_SourceFileHandle* )entry->value;
-}
-
-
-
 /* ***************************************************************************************
    Region hash table functions
 *****************************************************************************************/
@@ -179,8 +87,6 @@ void
 scorep_compiler_hash_init( void )
 {
     uint64_t i;
-
-    scorep_compiler_init_file_table();
 
     for ( i = 0; i < SCOREP_COMPILER_REGION_SLOTS; i++ )
     {
@@ -268,8 +174,6 @@ scorep_compiler_hash_free( void )
             region_hash_table[ i ] = NULL;
         }
     }
-
-    scorep_compiler_final_file_table();
 }
 
 /* Register a new region to the measurement system */
@@ -286,7 +190,7 @@ scorep_compiler_register_region( const char* str, const char* region_name )
     file_name[ len - 1 ] = '\0';
 
     /* Get file handle */
-    SCOREP_SourceFileHandle file_handle = scorep_compiler_get_file( file_name );
+    SCOREP_SourceFileHandle file_handle = SCOREP_Definitions_NewSourceFile( file_name );
 
     /* Register file */
     if ( ( file_handle != SCOREP_INVALID_SOURCE_FILE ) &&

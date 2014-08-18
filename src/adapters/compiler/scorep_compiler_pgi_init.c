@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -82,9 +82,6 @@ scorep_compiler_init_adapter( void )
         /* Initialize region mutex */
         SCOREP_MutexCreate( &scorep_compiler_region_mutex );
 
-        /* Initialize file table */
-        scorep_compiler_init_file_table();
-
         /* Set flag */
         scorep_compiler_initialized = true;
     }
@@ -99,9 +96,6 @@ scorep_compiler_finalize( void )
     /* call only, if previously initialized */
     if ( scorep_compiler_initialized )
     {
-        /* Finalize file table */
-        scorep_compiler_finalize_file_table();
-
         /* Delete region mutex */
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
 

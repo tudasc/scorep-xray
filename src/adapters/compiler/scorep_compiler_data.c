@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -52,95 +52,6 @@
  */
 scorep_compiler_hash_node* region_hash_table[ SCOREP_COMPILER_REGION_SLOTS ];
 
-/**
-   Hash table for mapping source file names to SCOREP file handles.
- */
-SCOREP_Hashtab* scorep_compiler_file_table = NULL;
-
-/**
-   Mutex for mutual exclusive access to @ref scorep_compiler_file_table.
- */
-SCOREP_Mutex scorep_compiler_file_table_mutex;
-
-/* ***************************************************************************************
-   File hash table functions
-*****************************************************************************************/
-
-/**
-   Deletes one file table entry.
-   @param entry Pointer to the entry to be deleted.
- */
-static void
-scorep_compiler_delete_file_entry( SCOREP_Hashtab_Entry* entry )
-{
-    UTILS_ASSERT( entry );
-
-    free( ( SCOREP_SourceFileHandle* )entry->value );
-    free( ( char* )entry->key );
-}
-
-/* Initialize the file table */
-void
-scorep_compiler_init_file_table( void )
-{
-    SCOREP_MutexCreate( &scorep_compiler_file_table_mutex );
-    scorep_compiler_file_table = SCOREP_Hashtab_CreateSize( SCOREP_COMPILER_FILE_SLOTS,
-                                                            &SCOREP_Hashtab_HashString,
-                                                            &SCOREP_Hashtab_CompareStrings );
-}
-
-/* Finalize the file table */
-void
-scorep_compiler_finalize_file_table( void )
-{
-    SCOREP_Hashtab_Foreach( scorep_compiler_file_table, &scorep_compiler_delete_file_entry );
-    SCOREP_Hashtab_Free( scorep_compiler_file_table );
-    scorep_compiler_file_table = NULL;
-    SCOREP_MutexDestroy( &scorep_compiler_file_table_mutex );
-}
-
-/* Returns the file handle for a given file name. */
-SCOREP_SourceFileHandle
-scorep_compiler_get_file( const char* file )
-{
-    size_t                index;
-    SCOREP_Hashtab_Entry* entry = NULL;
-
-    if ( file == NULL )
-    {
-        return SCOREP_INVALID_SOURCE_FILE;
-    }
-
-    SCOREP_MutexLock( scorep_compiler_file_table_mutex );
-
-    entry = SCOREP_Hashtab_Find( scorep_compiler_file_table, file,
-                                 &index );
-
-    /* If not found, register new file */
-    if ( !entry )
-    {
-        /* Reserve own storage for file name */
-        char* file_name = ( char* )malloc( ( strlen( file ) + 1 ) * sizeof( char ) );
-        strcpy( file_name, file );
-
-        /* Register file to measurement system */
-        SCOREP_SourceFileHandle* handle = malloc( sizeof( SCOREP_SourceFileHandle ) );
-        *handle = SCOREP_Definitions_NewSourceFile( file_name );
-
-        /* Store handle in hashtable */
-        SCOREP_Hashtab_Insert( scorep_compiler_file_table, ( void* )file_name,
-                               handle, &index );
-
-        SCOREP_MutexUnlock( scorep_compiler_file_table_mutex );
-        return *handle;
-    }
-
-    SCOREP_MutexUnlock( scorep_compiler_file_table_mutex );
-    return *( SCOREP_SourceFileHandle* )entry->value;
-}
-
-
-
 /* ***************************************************************************************
    Region hash table functions
 *****************************************************************************************/
@@ -150,8 +61,6 @@ void
 scorep_compiler_hash_init( void )
 {
     uint64_t i;
-
-    scorep_compiler_init_file_table();
 
     for ( i = 0; i < SCOREP_COMPILER_REGION_SLOTS; i++ )
     {
@@ -244,15 +153,13 @@ scorep_compiler_hash_free( void )
             region_hash_table[ i ] = NULL;
         }
     }
-
-    scorep_compiler_finalize_file_table();
 }
 
 /* Register a new region to the measurement system */
 void
 scorep_compiler_register_region( scorep_compiler_hash_node* node )
 {
-    SCOREP_SourceFileHandle file_handle = scorep_compiler_get_file( node->file_name );
+    SCOREP_SourceFileHandle file_handle = SCOREP_Definitions_NewSourceFile( node->file_name );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s", node->region_name_demangled );
 

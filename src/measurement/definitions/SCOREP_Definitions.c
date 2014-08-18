@@ -122,6 +122,7 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
 
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, string );
     SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, string );
+    SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, source_file );
 
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, system_tree_node );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, system_tree_node_property );
@@ -153,7 +154,6 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     {
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, system_tree_node );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, system_tree_node_property );
-        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, source_file );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, region );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, group );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, mpi_cartesian_topology );
