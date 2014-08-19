@@ -386,10 +386,6 @@ SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm )
     scorep_thread_on_end( tpd, &parent, paradigm );
     UTILS_ASSERT( parent );
 
-    SCOREP_Location_CallSubstratesOnDeactivation(
-        location,
-        scorep_thread_get_location( parent ) );
-
     /* Nothing to do for profiling. */
 
     if ( scorep_tracing_consume_event() )
@@ -403,6 +399,10 @@ SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm )
     {
         SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
     }
+
+    SCOREP_Location_CallSubstratesOnDeactivation(
+        location,
+        scorep_thread_get_location( parent ) );
 }
 
 void
