@@ -4,8 +4,8 @@ F77=gfortran
 FC=gfortran
 
 #CPPFLAGS=
-CFLAGS=-g -O0
-CXXFLAGS=-g -O0
+#CFLAGS=
+#CXXFLAGS=
 #FFLAGS=
 #FCFLAGS=
 #LDFLAGS=
