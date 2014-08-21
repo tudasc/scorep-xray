@@ -73,7 +73,7 @@ SCOREP_Instrumenter_MutexOmp::checkCommand( const std::string& current,
 SCOREP_Instrumenter_MutexPthread::SCOREP_Instrumenter_MutexPthread
 (
     SCOREP_Instrumenter_Selector* selector
-) : SCOREP_Instrumenter_Paradigm( selector, "pthread", "",
+) : SCOREP_Instrumenter_Paradigm( selector, "pthread", "lock",
                                   "Pthread mutex locks" )
 {
 #if !SCOREP_BACKEND_HAVE_PTHREAD_MUTEX

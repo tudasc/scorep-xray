@@ -193,7 +193,7 @@ SCOREP_Config_MutexOmp::SCOREP_Config_MutexOmp()
  * *************************************************************************************/
 
 SCOREP_Config_MutexPthread::SCOREP_Config_MutexPthread()
-    : SCOREP_Config_Mutex( "pthread", "", "scorep_mutex_pthread", SCOREP_CONFIG_MUTEX_ID_PTHREAD )
+    : SCOREP_Config_Mutex( "pthread", "lock", "scorep_mutex_pthread", SCOREP_CONFIG_MUTEX_ID_PTHREAD )
 {
 }
 
