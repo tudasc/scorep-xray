@@ -4189,8 +4189,8 @@ scorep_mpi_register_regions()
 
     /* Artificial root for MPI-only experiments when no user-code
      * instrumenation is available */
-    scorep_mpi_regid[ SCOREP__MPI_ARTIFICIAL_ROOT ] =
-        SCOREP_Definitions_NewRegion( "MPI",
+    scorep_mpi_regid[ SCOREP_PARALLEL__MPI ] =
+        SCOREP_Definitions_NewRegion( "PARALLEL",
                                       NULL,
                                       SCOREP_INVALID_SOURCE_FILE,
                                       SCOREP_INVALID_LINE_NO,

@@ -784,7 +784,7 @@ extern uint64_t scorep_mpi_enabled;
 
 /** Artificial root for MPI-only experiments when no user-code
  * instrumenation is available */
-#define SCOREP__MPI_ARTIFICIAL_ROOT                  SCOREP__MPI_NUMFUNCS
+#define SCOREP_PARALLEL__MPI           SCOREP__MPI_NUMFUNCS
 
 /** Region IDs of MPI functions */
 extern SCOREP_RegionHandle scorep_mpi_regid[ SCOREP__MPI_NUMFUNCS + 1 ];
