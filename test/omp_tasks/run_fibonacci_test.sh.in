@@ -68,7 +68,7 @@ fi
 #./scorep --user \
 #         --noopari \
 #         --nocompiler \
-#         -v \
+#         ${V:+--verbose} \
 #         --build-check \
 #         @CC@ -I. -o fib_main task_fibonacci.c @OPENMP_CFLAGS@
 #
@@ -80,7 +80,7 @@ fi
 # build with main and pomp instrumentation
 ./scorep --user \
          --nocompiler \
-         -v \
+         ${V:+--verbose} \
          --build-check \
          @CC@ -I. -o fib_pomp task_fibonacci.c @OPENMP_CFLAGS@
 
@@ -90,7 +90,7 @@ fi
 
 # build with compiler and pomp instrumentation
 ./scorep $extra_flag \
-         -v \
+         ${V:+--verbose} \
          --build-check \
          @CC@ -I. -o fib_full task_fibonacci.c @OPENMP_CFLAGS@
 
