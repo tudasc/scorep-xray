@@ -119,7 +119,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # execute pomp test with tupel format
-SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp \
+SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp_tuple \
     SCOREP_ENABLE_PROFILING=true \
     SCOREP_ENABLE_TRACING=false \
     SCOREP_PROFILING_FORMAT=CUBE_TUPLE \
