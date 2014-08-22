@@ -241,7 +241,8 @@ else !HAVE_LOCKFILE_PROGS
 # override $(INSTALLCHECKS_PERSIST_DIR) while processing inside
 # $(INSTALLCHECKS_PERSIST_DIR).
 bitten-persist-installchecks:
-	if test "$(INSTALLCHECKS_PERSIST_DIR)" != no ; then \
+	installchecks_persist_dir="$(INSTALLCHECKS_PERSIST_DIR)"; \
+	if test "$${installchecks_persist_dir:-no}" != no ; then \
 	    rm -rf $(INSTALLCHECKS_PERSIST_DIR); \
 	    $(MKDIR_P) $(INSTALLCHECKS_PERSIST_DIR) || exit 1; \
             cd installcheck || exit 1; \
