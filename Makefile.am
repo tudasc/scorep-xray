@@ -219,7 +219,8 @@ if HAVE_LOCKFILE_PROGS
 # Save version, user can lock $(INSTALLCHECKS_PERSIST_DIR) to execute
 # installchecks, new installchecks will not overwrite existing ones.
 bitten-persist-installchecks:
-	if test "$(INSTALLCHECKS_PERSIST_DIR)" != no ; then \
+	installchecks_persist_dir="$(INSTALLCHECKS_PERSIST_DIR)"; \
+	if test "$${installchecks_persist_dir:-no}" != no ; then \
 	    $(MKDIR_P) `dirname $(INSTALLCHECKS_PERSIST_DIR)`; \
 	    lockfile-check $(INSTALLCHECKS_PERSIST_DIR); \
 	    if test $$? -eq 0; then exit 0; fi; \
