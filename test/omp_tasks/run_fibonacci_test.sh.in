@@ -122,7 +122,7 @@ fi
 SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp \
     SCOREP_ENABLE_PROFILING=true \
     SCOREP_ENABLE_TRACING=false \
-    SCOREP_PROFILING_FORMAT=CUBE_TUPEL \
+    SCOREP_PROFILING_FORMAT=CUBE_TUPLE \
     ./fib_pomp $FIB_NUM
 
 if [ $? -ne 0 ]; then
