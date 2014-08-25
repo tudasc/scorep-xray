@@ -56,11 +56,6 @@ SCOREP_DEFINE_DEFINITION_TYPE( String )
     char string_data[];
 };
 
-
-SCOREP_StringHandle
-SCOREP_Definitions_NewString( const char* str );
-
-
 void
 scorep_definitions_unify_string( SCOREP_StringDef*             definition,
                                  SCOREP_Allocator_PageManager* handlesPageManager );

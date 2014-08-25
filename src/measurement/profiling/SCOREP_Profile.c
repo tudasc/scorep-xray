@@ -121,6 +121,7 @@ SCOREP_Profile_Initialize( void )
     scorep_cluster_initialize();
 
     scorep_profile_init_definition();
+    scorep_profile_init_rma();
 
     if ( !scorep_profile.reinitialize )
     {

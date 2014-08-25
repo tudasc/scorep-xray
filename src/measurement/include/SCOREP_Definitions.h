@@ -85,6 +85,10 @@
 /*@{*/
 
 
+SCOREP_StringHandle
+SCOREP_Definitions_NewString( const char* str );
+
+
 const char*
 SCOREP_StringHandle_Get( SCOREP_StringHandle handle );
 

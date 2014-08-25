@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -671,20 +671,36 @@ typedef enum SCOREP_SystemTreeDomain
 } SCOREP_SystemTreeDomain;
 
 
+#define SCOREP_RMA_SYNC_TYPES \
+    SCOREP_RMA_SYNC_TYPE( MEMORY, memory, "memory" )             /* Synchronize memory copy. */ \
+    SCOREP_RMA_SYNC_TYPE( NOTIFY_IN, notify_in, "notify in" )    /* Incoming remote notification. */ \
+    SCOREP_RMA_SYNC_TYPE( NOTIFY_OUT, notify_out, "notify out" ) /* Outgoing remote notification. */
+
 /**
  * Type of direct RMA synchronization call.
  */
 typedef enum SCOREP_RmaSyncType
 {
-    /** Synchronize memory copy. */
-    SCOREP_RMA_SYNC_TYPE_MEMORY,
-    /** Incoming remote notification. */
-    SCOREP_RMA_SYNC_TYPE_NOTIFY_IN,
-    /** Outgoing remote notification. */
-    SCOREP_RMA_SYNC_TYPE_NOTIFY_OUT,
+#define SCOREP_RMA_SYNC_TYPE( upper, lower, name )  SCOREP_RMA_SYNC_TYPE_ ## upper,
+    SCOREP_RMA_SYNC_TYPES
+    #undef SCOREP_RMA_SYNC_TYPE
 
     SCOREP_INVALID_RMA_SYNC_TYPE /**< For internal use only. */
 } SCOREP_RmaSyncType;
+
+
+/*
+ * NONE: No process synchronization or access completion (e.g.,
+ * MPI_Win_post.
+ *
+ * PROCESS: Synchronize processes (e.g., MPI_Win_create/free)
+ *
+ * MEMORY: Complete memory accesses (e.g., MPI_Win_complete, MPI_Win_wait)
+ */
+#define SCOREP_RMA_SYNC_LEVELS \
+    SCOREP_RMA_SYNC_LEVEL( NONE, none, "none", 0 ) \
+    SCOREP_RMA_SYNC_LEVEL( PROCESS, process, "process", 1 << 0 ) \
+    SCOREP_RMA_SYNC_LEVEL( MEMORY, memory, "memory", 1 << 1 )
 
 
 /**
@@ -693,16 +709,11 @@ typedef enum SCOREP_RmaSyncType
  */
 typedef enum SCOREP_RmaSyncLevel
 {
-    /** @brief No process synchronization or access completion (e.g., MPI_Win_post,
-     *  MPI_Win_start).
-     */
-    SCOREP_RMA_SYNC_LEVEL_NONE    = 0,
-    /** @brief Synchronize processes (e.g., MPI_Win_create/free).
-     */
-    SCOREP_RMA_SYNC_LEVEL_PROCESS = ( 1 << 0 ),
-    /** @brief Complete memory accesses (e.g., MPI_Win_complete, MPI_Win_wait).
-     */
-    SCOREP_RMA_SYNC_LEVEL_MEMORY  = ( 1 << 1 )
+#define SCOREP_RMA_SYNC_LEVEL( upper, lower, name, value ) \
+    SCOREP_RMA_SYNC_LEVEL_ ## upper = value,
+
+    SCOREP_RMA_SYNC_LEVELS
+#undef SCOREP_RMA_SYNC_LEVEL
 } SCOREP_RmaSyncLevel;
 
 
@@ -722,20 +733,25 @@ typedef enum SCOREP_LockType
     SCOREP_INVALID_LOCK_TYPE /**< For internal use only. */
 } SCOREP_LockType;
 
+#define SCOREP_RMA_ATOMIC_TYPES \
+    SCOREP_RMA_ATOMIC_TYPE( ACCUMULATE, accumulate,      "accumulate" )   \
+    SCOREP_RMA_ATOMIC_TYPE( INCREMENT, increment,       "increment" )     \
+    SCOREP_RMA_ATOMIC_TYPE( TEST_AND_SET, test_and_set,    "test and set" ) \
+    SCOREP_RMA_ATOMIC_TYPE( COMPARE_AND_SWAP, compare_and_swap, "compare and swap" ) \
+    SCOREP_RMA_ATOMIC_TYPE( SWAP, swap, "swap" ) \
+    SCOREP_RMA_ATOMIC_TYPE( FETCH_AND_ADD, fetch_and_add, "fetch and add" ) \
+    SCOREP_RMA_ATOMIC_TYPE( FETCH_AND_INCREMENT, fetch_and_increment, "fetch and increment" ) \
+    SCOREP_RMA_ATOMIC_TYPE( ADD, add, "add" )
+
 
 /**
  * RMA Atomic Operation Type.
  */
 typedef enum SCOREP_RmaAtomicType
 {
-    SCOREP_RMA_ATOMIC_TYPE_ACCUMULATE,
-    SCOREP_RMA_ATOMIC_TYPE_INCREMENT,
-    SCOREP_RMA_ATOMIC_TYPE_TEST_AND_SET,
-    SCOREP_RMA_ATOMIC_TYPE_COMPARE_AND_SWAP,
-    SCOREP_RMA_ATOMIC_TYPE_SWAP,
-    SCOREP_RMA_ATOMIC_TYPE_FETCH_AND_ADD,
-    SCOREP_RMA_ATOMIC_TYPE_FETCH_AND_INCREMENT,
-    SCOREP_RMA_ATOMIC_TYPE_ADD,
+#define SCOREP_RMA_ATOMIC_TYPE( upper, lower, name ) SCOREP_RMA_ATOMIC_TYPE_ ## upper,
+    SCOREP_RMA_ATOMIC_TYPES
+    #undef SCOREP_RMA_ATOMIC_TYPE
 
     SCOREP_INVALID_RMA_ATOMIC_TYPE
 } SCOREP_RmaAtomicType;

@@ -444,7 +444,7 @@ SCOREP_RmaCollectiveBegin();
 /**
  * @param syncLevel Synchronization level.
  *
- * @param win Memory window.
+ * @param windowHandle Memory window.
  *
  * @param collectiveOp Determines type of collective operation.
  *
@@ -493,7 +493,7 @@ SCOREP_RmaTryLock( SCOREP_InterimRmaWindowHandle windowHandle,
  * It has to be followed by a matching @a SCOREP_RmaReleaseLock record
  * later on.
  *
- * @param win Memory window.
+ * @param windowHandle Memory window.
  *
  * @param remote Rank of target in context of window.
  *
@@ -535,7 +535,7 @@ SCOREP_RmaRequestLock( SCOREP_InterimRmaWindowHandle windowHandle,
  * @a SCOREP_RequestLock event and is required to follow either of the
  * two.
  *
- * @param win Memory window.
+ * @param windowHandle Memory window.
  *
  * @param remote Rank of target in context of window.
  *
@@ -552,7 +552,7 @@ SCOREP_RmaReleaseLock( SCOREP_InterimRmaWindowHandle windowHandle,
 /**
  * This record marks a simple pairwise synchronization.
  *
- * @param win Memory window.
+ * @param windowHandle Memory window.
  *
  * @param remote Rank of target in context of window.
  *
@@ -572,7 +572,7 @@ SCOREP_RmaSync( SCOREP_InterimRmaWindowHandle windowHandle,
  *
  * @param syncLevel Synchronization level.
  *
- * @param win Memory window.
+ * @param windowHandle Memory window.
  *
  * @param group Group of participating processes or threads.
  */
@@ -588,7 +588,7 @@ SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel           syncLevel,
  * event marks the beginning of the waiting period. The memory field in
  * question is part of the specified window.
  *
- * @param win Memory window.
+ * @param windowHandle Memory window.
  */
 void
 SCOREP_RmaWaitChange( SCOREP_InterimRmaWindowHandle windowHandle );
@@ -599,7 +599,7 @@ SCOREP_RmaWaitChange( SCOREP_InterimRmaWindowHandle windowHandle );
  * corresponding get and put records mark when they are issued. The
  * actual start and the completion may happen later.
  *
- * @param win Memory window.
+ * @param windowHandle Memory window.
  *
  * @param remote Rank of target in context of window.
  *
@@ -624,7 +624,7 @@ SCOREP_RmaPut( SCOREP_InterimRmaWindowHandle windowHandle,
  * corresponding get and put records mark when they are issued. The
  * actual start and the completion may happen later.
  *
- * @param win Memory window.
+ * @param windowHandle Memory window.
  *
  * @param remote Rank of target in context of window.
  *
@@ -651,7 +651,7 @@ SCOREP_RmaGet( SCOREP_InterimRmaWindowHandle windowHandle,
  * sizes are specified separately. Matching the local and optionally
  * remote completion works the same way as for get and put operations.
  *
- * @param win Window.
+ * @param windowHandle Window.
  *
  * @param remote Rank of target in context of window.
  *

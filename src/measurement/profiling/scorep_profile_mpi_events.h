@@ -38,9 +38,23 @@
 
 #include <SCOREP_DefinitionHandles.h>
 
+/**
+ * Initilaizes the metrics and handles for one-sided communication.
+ * They are not initialized with SCOREP_Profile_initializeMpp because
+ * the CUDA adapter uses also one-sided events.
+ */
+void
+scorep_profile_init_rma( void );
+
+/**
+ * Returns the handle for the 'bytes recv' metric.
+ */
 SCOREP_MetricHandle
 scorep_profile_get_bytes_recv_metric_handle( void );
 
+/**
+ * Returns the handle for the 'bytes sent' metric.
+ */
 SCOREP_MetricHandle
 scorep_profile_get_bytes_send_metric_handle( void );
 

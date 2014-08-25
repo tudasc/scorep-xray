@@ -362,7 +362,7 @@ SCOREP_InitMppMeasurement( void )
     SCOREP_SynchronizeClocks();
 
     SCOREP_Tracing_OnMppInit();
-    SCOREP_Profile_InitializeMpi();
+    SCOREP_Profile_InitializeMpp();
 
     /* Register finalization handler, also called in SCOREP_InitMeasurement() and
      * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is

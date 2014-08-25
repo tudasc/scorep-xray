@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -730,8 +730,16 @@ SCOREP_RmaCollectiveEnd( SCOREP_MpiCollectiveType      collectiveOp,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    /* Nothing to do for profiling. */
-
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_RmaCollectiveEnd( location,
+                                         collectiveOp,
+                                         syncLevel,
+                                         windowHandle,
+                                         root,
+                                         bytesSent,
+                                         bytesReceived );
+    }
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_RmaCollectiveEnd( location,
@@ -755,8 +763,13 @@ SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel           syncLevel,
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
-    /* Nothing to do for profiling. */
-
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_RmaGroupSync( location,
+                                     syncLevel,
+                                     windowHandle,
+                                     groupHandle );
+    }
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_RmaGroupSync( location,
@@ -871,8 +884,13 @@ SCOREP_RmaSync( SCOREP_InterimRmaWindowHandle windowHandle,
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
-    /* Nothing to do for profiling. */
-
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_RmaSync( location,
+                                windowHandle,
+                                remote,
+                                syncType );
+    }
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_RmaSync( location,
@@ -912,8 +930,14 @@ SCOREP_RmaPut( SCOREP_InterimRmaWindowHandle windowHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    /* Nothing to do for profiling. */
-
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_RmaPut( location,
+                               windowHandle,
+                               remote,
+                               bytes,
+                               matchingId );
+    }
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_RmaPut( location,
@@ -934,8 +958,14 @@ SCOREP_Location_RmaPut( SCOREP_Location*              location,
                         uint64_t                      bytes,
                         uint64_t                      matchingId )
 {
-    /* Nothing to do for profiling. */
-
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_RmaPut( location,
+                               windowHandle,
+                               remote,
+                               bytes,
+                               matchingId );
+    }
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_RmaPut( location,
@@ -957,8 +987,14 @@ SCOREP_RmaGet( SCOREP_InterimRmaWindowHandle windowHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    /* Nothing to do for profiling. */
-
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_RmaGet( location,
+                               windowHandle,
+                               remote,
+                               bytes,
+                               matchingId );
+    }
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_RmaGet( location,
@@ -980,8 +1016,14 @@ SCOREP_Location_RmaGet( SCOREP_Location*              location,
                         uint64_t                      bytes,
                         uint64_t                      matchingId )
 {
-    /* Nothing to do for profiling. */
-
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_RmaGet( location,
+                               windowHandle,
+                               remote,
+                               bytes,
+                               matchingId );
+    }
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_RmaGet( location,
@@ -1006,8 +1048,16 @@ SCOREP_RmaAtomic( SCOREP_InterimRmaWindowHandle windowHandle,
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
-    /* Nothing to do for profiling. */
-
+    if ( scorep_profiling_consume_event() )
+    {
+        SCOREP_Profile_RmaAtomic( location,
+                                  windowHandle,
+                                  remote,
+                                  type,
+                                  bytesSent,
+                                  bytesReceived,
+                                  matchingId );
+    }
     if ( scorep_tracing_consume_event() )
     {
         SCOREP_Tracing_RmaAtomic( location,
