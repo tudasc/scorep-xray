@@ -50,6 +50,7 @@
    A hash table which stores information about regions under their name as
    key. Mainly used to obtain the region handle from the region name.
  */
+static
 scorep_compiler_hash_node* region_hash_table[ SCOREP_COMPILER_REGION_SLOTS ];
 
 /* ***************************************************************************************
