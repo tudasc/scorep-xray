@@ -100,7 +100,7 @@ update_on_resume( scorep_profile_node* node,
     }
 }
 
-scorep_profile_node*
+static scorep_profile_node*
 create_task_root( SCOREP_Profile_LocationData* location,
                   SCOREP_RegionHandle          regionHandle,
                   uint64_t                     timestamp,

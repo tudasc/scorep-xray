@@ -57,6 +57,7 @@
 #include <scorep_profile_location.h>
 #include <scorep_profile_task_table.h>
 #include <scorep_profile_event_base.h>
+#include <scorep_profile_mpi_events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Timing.h>
 #include <SCOREP_Location.h>
