@@ -38,7 +38,7 @@
 
 typedef struct scorep_thread_private_data scorep_thread_private_data;
 
-scorep_thread_private_data* TPD = NULL;
+static scorep_thread_private_data* TPD = NULL;
 #pragma omp threadprivate( TPD )
 
 static scorep_thread_private_data* initial_tpd;
