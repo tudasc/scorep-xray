@@ -62,8 +62,8 @@ scorep_oa_phase_enter
     {
         scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_BEGINNING );
         scorep_oa_mri_set_phase( ms_handle );
-        scorep_oa_connection_send_string( connection, "SUSPENDED\n" );
-        scorep_oa_mri_receive_and_process_requests( connection );
+        scorep_oa_connection_send_string( scorep_oa_connection, "SUSPENDED\n" );
+        scorep_oa_mri_receive_and_process_requests( scorep_oa_connection );
     }
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Leaving %s\n", __func__ );
 }
@@ -83,8 +83,8 @@ scorep_oa_phase_exit
     {
         scorep_oa_mri_set_phase( ms_handle );
         scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_END );
-        scorep_oa_connection_send_string( connection, "SUSPENDED\n" );
-        scorep_oa_mri_receive_and_process_requests( connection );
+        scorep_oa_connection_send_string( scorep_oa_connection, "SUSPENDED\n" );
+        scorep_oa_mri_receive_and_process_requests( scorep_oa_connection );
     }
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Leaving %s\n", __func__ );
 }

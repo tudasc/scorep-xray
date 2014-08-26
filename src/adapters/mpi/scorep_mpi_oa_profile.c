@@ -83,6 +83,27 @@ SCOREP_SamplingSetHandle scorep_mpiprofiling_lateRecv = SCOREP_INVALID_METRIC;
 
 #define _WITH_PREALLOCATION_OF_TIME_PACKS
 
+/**
+ * Gets threshold value for determining late process wait states for mpi profiling.
+ *
+ * @return Threshold value.
+ */
+static int64_t
+mpiprofiling_get_late_threshold( void )
+{
+    return scorep_mpiprofiling_lateThreshold;
+}
+
+/**
+ * Sets threshold value for determining late process wait states for mpi profiling.
+ *
+ * @param newThreshold New threshold value.
+ */
+static void
+mpiprofiling_set_late_threshold( int64_t newThreshold )
+{
+    scorep_mpiprofiling_lateThreshold = newThreshold;
+}
 
 /**
  * Initializes MPI profiling module
@@ -782,18 +803,6 @@ scorep_mpiprofile_eval_time_stamps
         ///no late state
         ///trigger user metric here
     }
-}
-
-int64_t
-mpiprofiling_get_late_threshold( void )
-{
-    return scorep_mpiprofiling_lateThreshold;
-}
-
-void
-mpiprofiling_set_late_threshold( int64_t newThreshold )
-{
-    scorep_mpiprofiling_lateThreshold = newThreshold;
 }
 
 void

@@ -36,11 +36,11 @@
  */
 
 
-uint64_t silc_oa_registry_port  = 50100;
-bool     scorep_oa_is_requested = false;
-char*    silc_oa_registry_host  = NULL;
-char*    silc_oa_app_name       = NULL;
-uint64_t silc_oa_port           = 50010;
+uint64_t scorep_oa_registry_port = 50100;
+bool     scorep_oa_is_requested  = false;
+char*    scorep_oa_registry_host = NULL;
+char*    scorep_oa_app_name      = NULL;
+uint64_t scorep_oa_port          = 50010;
 
 
 /**
@@ -60,7 +60,7 @@ static SCOREP_ConfigVariable scorep_oa_configs[] =
     {
         "reg_port",
         SCOREP_CONFIG_TYPE_NUMBER,
-        &silc_oa_registry_port,
+        &scorep_oa_registry_port,
         NULL,
         "50100",
         "Online access registry service port",
@@ -69,7 +69,7 @@ static SCOREP_ConfigVariable scorep_oa_configs[] =
     {
         "reg_host",
         SCOREP_CONFIG_TYPE_STRING,
-        &silc_oa_registry_host,
+        &scorep_oa_registry_host,
         NULL,
         "localhost",
         "Online access registry service hostname",
@@ -78,7 +78,7 @@ static SCOREP_ConfigVariable scorep_oa_configs[] =
     {
         "base_port",
         SCOREP_CONFIG_TYPE_NUMBER,
-        &silc_oa_port,
+        &scorep_oa_port,
         NULL,
         "50010",
         "Base port for online access server",
@@ -87,7 +87,7 @@ static SCOREP_ConfigVariable scorep_oa_configs[] =
     {
         "appl_name",
         SCOREP_CONFIG_TYPE_STRING,
-        &silc_oa_app_name,
+        &scorep_oa_app_name,
         NULL,
         "appl",
         "Application name to be registered",

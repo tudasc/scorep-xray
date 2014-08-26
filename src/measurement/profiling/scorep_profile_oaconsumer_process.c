@@ -64,6 +64,20 @@
 static int do_print_out = 0;
 
 
+/** Prints registered metric definitions
+ */
+static void
+print_metric_definitions
+(
+);
+
+/** Prints registered region deifnitions
+ */
+static void
+print_region_definitions
+(
+);
+
 uint32_t
 scorep_oaconsumer_get_number_of_roots
 (
@@ -120,7 +134,7 @@ scorep_oaconsumer_get_phase_node
 }
 
 SCOREP_OA_FlatProfileMeasurement*
-get_static_profile_measurements
+scorep_oaconsumer_get_static_profile_measurements
 (
     thread_private_index_type** private_index_pointer_array
 )
@@ -168,7 +182,7 @@ get_static_profile_measurements
     return shared_index->static_measurement_buffer;
 }
 SCOREP_OA_CallPathRegionDef*
-get_merged_region_definitions
+scorep_oaconsumer_get_merged_region_definitions
 (
     thread_private_index_type** private_index_pointer_array
 )
@@ -215,7 +229,7 @@ get_merged_region_definitions
 }
 
 SCOREP_OA_CallPathCounterDef*
-get_metric_definitions
+scorep_oaconsumer_get_metric_definitions
 (
     thread_private_index_type** private_index_pointer_array
 )
@@ -289,7 +303,7 @@ get_metric_definitions
 }
 
 int32_t
-get_metric_request_index_pointer
+scorep_oaconsumer_get_metric_request_index_pointer
 (
     SCOREP_MetricHandle metric_handle,
     uint32_t*           metric_index
@@ -456,7 +470,7 @@ scorep_oaconsumer_count_index
             {
                 uint32_t metric_index;
 
-                if ( !get_metric_request_index_pointer( shared_index->dense_metrics_sampling_set->metric_handles[ i ], &metric_index ) )
+                if ( !scorep_oaconsumer_get_metric_request_index_pointer( shared_index->dense_metrics_sampling_set->metric_handles[ i ], &metric_index ) )
                 {
                     continue;
                 }
@@ -479,7 +493,7 @@ scorep_oaconsumer_count_index
         {
             /** Translate metric handle to OA metric definition index*/
             uint32_t metric_index;
-            if ( get_metric_request_index_pointer( sparse_int->metric, &metric_index ) )
+            if ( scorep_oaconsumer_get_metric_request_index_pointer( sparse_int->metric, &metric_index ) )
             {
                 /** Generate static measurement key for metric and this region*/
                 static_meas_key = scorep_oaconsumer_generate_static_measurement_key(      region_key,
@@ -552,7 +566,7 @@ scorep_oa_index_data_key
     return current_index;
 }
 
-uint32_t
+static uint32_t
 check_region_definition_merge_needed
 (
     scorep_profile_node* node
@@ -697,7 +711,7 @@ scorep_oaconsumer_copy_static_measurement
             {
                 uint32_t metric_index;
 
-                if ( !get_metric_request_index_pointer( shared_index->dense_metrics_sampling_set->metric_handles[ i ], &metric_index ) )
+                if ( !scorep_oaconsumer_get_metric_request_index_pointer( shared_index->dense_metrics_sampling_set->metric_handles[ i ], &metric_index ) )
                 {
                     continue;
                 }
@@ -722,7 +736,7 @@ scorep_oaconsumer_copy_static_measurement
             /** Translate metric handle to OA metric definition index*/
             uint32_t metric_index;
 
-            if ( get_metric_request_index_pointer( sparse_int->metric, &metric_index ) )
+            if ( scorep_oaconsumer_get_metric_request_index_pointer( sparse_int->metric, &metric_index ) )
             {
                 /** Generate static measurement key for metric and this region*/
                 static_meas_key = scorep_oaconsumer_generate_static_measurement_key(      region_key,
@@ -885,7 +899,9 @@ SCOREP_Hashtab_HashOAKeys( const void* key )
     return ( ( SCOREP_OA_Key* )key )->region_id * UINT32_C( 2654435761l );
 }
 
-void
+/** Prints given hash table
+ */
+static void
 print_hash_table
 (
     const SCOREP_Hashtab* hash_table,
@@ -924,7 +940,7 @@ print_hash_table
     printf( "///////////////////////////\n\n" );
 }
 
-void
+static void
 print_region_definitions
 (
 )
@@ -952,7 +968,7 @@ print_region_definitions
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
-void
+static void
 print_metric_definitions
 (
 )

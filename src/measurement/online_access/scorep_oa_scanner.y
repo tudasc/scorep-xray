@@ -129,21 +129,21 @@ int yylex (void);
 /* Es folgten die yacc-Regeln.                                                */
 /******************************************************************************/
 
-Command          : RequestCommand ';' {scorep_oa_connection_send_string(connection,"OK\n");}
+Command          : RequestCommand ';' {scorep_oa_connection_send_string(scorep_oa_connection,"OK\n");}
                  | ControlCommand ';'
 
 
-ControlCommand   : T_TERMINATE {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Termination request received\n");scorep_oa_mri_set_appl_control(SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE);scorep_oa_connection_send_string(connection,"OK\n");}
+ControlCommand   : T_TERMINATE {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Termination request received\n");scorep_oa_mri_set_appl_control(SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE);scorep_oa_connection_send_string(scorep_oa_connection,"OK\n");}
                  | T_RUNTOSTART '(' T_ZAHL ',' T_ZAHL ')' {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Execution request run_to_beginning received\n");scorep_oa_mri_set_appl_control(SCOREP_OA_MRI_STATUS_RUNNING_TO_BEGINNING);}
                  | T_RUNTOEND '(' T_ZAHL ',' T_ZAHL ')' {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Execution request run_to_end received\n");scorep_oa_mri_set_appl_control(SCOREP_OA_MRI_STATUS_RUNNING_TO_END);}
-                 | T_GETSUMMARYDATA {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Measured data requested\n");scorep_oa_mri_return_summary_data(connection);}
-                 | T_BEGINREQUESTS {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Standby for requests...\n");scorep_oa_mri_begin_request();scorep_oa_connection_send_string(connection,"OK\n");}
-                 | T_ENDREQUESTS {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Requests submitted\n");scorep_oa_mri_end_request();scorep_oa_connection_send_string(connection,"OK\n");}
+                 | T_GETSUMMARYDATA {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Measured data requested\n");scorep_oa_mri_return_summary_data(scorep_oa_connection);}
+                 | T_BEGINREQUESTS {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Standby for requests...\n");scorep_oa_mri_begin_request();scorep_oa_connection_send_string(scorep_oa_connection,"OK\n");}
+                 | T_ENDREQUESTS {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Requests submitted\n");scorep_oa_mri_end_request();scorep_oa_connection_send_string(scorep_oa_connection,"OK\n");}
 
 RequestCommand   : T_REQUEST {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Measurements are requested\n");} '[' NodeList ']' RequestKind
 
 RequestKind      : T_GLOBAL GlobalRequestList
-                 | T_LOCAL RegionSpecifier '=' LocalRequestList {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Local requests are not supported yet\n");scorep_oa_connection_send_string(connection,"Local requests are not supported yet\n");}
+                 | T_LOCAL RegionSpecifier '=' LocalRequestList {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Local requests are not supported yet\n");scorep_oa_connection_send_string(scorep_oa_connection,"Local requests are not supported yet\n");}
 
 NodeList         : NodeNrs
                  | '*'                           {UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OA,"Node lists are ignored\n");}

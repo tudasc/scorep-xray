@@ -157,13 +157,13 @@ SCOREP_OAConsumer_GetData
     switch ( data_type )
     {
         case FLAT_PROFILE:
-            return get_static_profile_measurements( thread_index_pointer_array );
+            return scorep_oaconsumer_get_static_profile_measurements( thread_index_pointer_array );
         case MERGED_REGION_DEFINITIONS:
-            return get_merged_region_definitions( thread_index_pointer_array );
+            return scorep_oaconsumer_get_merged_region_definitions( thread_index_pointer_array );
         case REGION_DEFINITIONS:
             return NULL;
         case COUNTER_DEFINITIONS:
-            return get_metric_definitions( thread_index_pointer_array );
+            return scorep_oaconsumer_get_metric_definitions( thread_index_pointer_array );
         case CALLPATH_PROFILE_CONTEXTS:
             return NULL;
         case CALLPATH_PROFILE_MEASUREMENTS:

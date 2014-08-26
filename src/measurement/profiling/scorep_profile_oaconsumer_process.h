@@ -173,7 +173,7 @@ scorep_oaconsumer_get_phase_node
 /** Returns a pointer to the buffer with flat profile measurements of the given thread
  */
 SCOREP_OA_FlatProfileMeasurement*
-get_static_profile_measurements
+scorep_oaconsumer_get_static_profile_measurements
 (
     thread_private_index_type** private_index_pointer_array
 );
@@ -181,7 +181,7 @@ get_static_profile_measurements
 /** Returns a pointer to the buffer with merged region definitions
  */
 SCOREP_OA_CallPathRegionDef*
-get_merged_region_definitions
+scorep_oaconsumer_get_merged_region_definitions
 (
     thread_private_index_type** private_index_pointer_array
 );
@@ -189,7 +189,7 @@ get_merged_region_definitions
 /** Returns a pointer to the buffer with metric definitions
  */
 SCOREP_OA_CallPathCounterDef*
-get_metric_definitions
+scorep_oaconsumer_get_metric_definitions
 (
     thread_private_index_type** private_index_pointer_array
 );
@@ -204,7 +204,7 @@ get_metric_definitions
  * @return 1 if success, 0 otherwise
  */
 int32_t
-get_metric_request_index_pointer
+scorep_oaconsumer_get_metric_request_index_pointer
 (
     SCOREP_MetricHandle metric_handle,
     uint32_t*           metric_index
@@ -264,14 +264,7 @@ scorep_oa_index_data_key
 /*----------------------------------------------------------------------------------------
    Profile transformation
    -------------------------------------------------------------------------------------*/
-/** Returns 1 if a merge of the region definition of the provided node with the region definition
- * of a prent node is needed and possible. Returns 0 oterwise.
- */
-uint32_t
-check_region_definition_merge_needed
-(
-    scorep_profile_node* node
-);
+
 
 
 /** Updates a specified flat profile measurement in the corresponding buffer
@@ -355,42 +348,6 @@ size_t
 SCOREP_Hashtab_HashOAKeys
 (
     const void* key
-);
-
-/*----------------------------------------------------------------------------------------
-   Debug
-   -------------------------------------------------------------------------------------*/
-
-/** Prints given hash table
- */
-void
-print_hash_table
-(
-    const SCOREP_Hashtab* hash_table,
-    char*                 tag
-);
-
-/** Prints registered region deifnitions
- */
-void
-print_region_definitions
-(
-);
-
-/*
-   extern void
-   scorep_profile_dump_subtree
-   (
-    scorep_profile_node* node,
-    uint32_t             level
-   );
- */
-
-/** Prints registered metric definitions
- */
-void
-print_metric_definitions
-(
 );
 
 #endif /* SCOREP_OA_CONSUMER_PROCESS_H_ */

@@ -48,7 +48,7 @@
 
 static int8_t scorep_oa_is_connected = 0;
 static int    scorep_oa_socket       = 0;
-int           connection             = 0;
+int           scorep_oa_connection   = 0;
 
 
 
@@ -64,15 +64,15 @@ scorep_oa_connection_connect
     }
     if ( SCOREP_Status_IsMpp() )
     {
-        silc_oa_port = silc_oa_port + SCOREP_Status_GetRank();
+        scorep_oa_port = scorep_oa_port + SCOREP_Status_GetRank();
     }
-    scorep_oa_socket = scorep_oa_sockets_server_startup_retry( &silc_oa_port, 10, 1 );
+    scorep_oa_socket = scorep_oa_sockets_server_startup_retry( &scorep_oa_port, 10, 1 );
     if ( scorep_oa_socket == -1 )
     {
         _Exit( EXIT_FAILURE );
     }
     scorep_oa_is_connected = 1;
-    scorep_oa_sockets_register_with_registry( silc_oa_port, silc_oa_registry_port, silc_oa_registry_host, silc_oa_app_name );
+    scorep_oa_sockets_register_with_registry( scorep_oa_port, scorep_oa_registry_port, scorep_oa_registry_host, scorep_oa_app_name );
     scorep_oa_socket = scorep_oa_sockets_server_accept_client( scorep_oa_socket );
     //receive_and_process_requests(scorep_oa_socket);
     return scorep_oa_socket;

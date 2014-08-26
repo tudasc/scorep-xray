@@ -229,23 +229,5 @@ scorep_mpiprofile_eval_time_stamps
     uint64_t recvTime
 );
 
-/**
- * Gets threshold value for determining late process wait states for mpi profiling.
- *
- * @return Threshold value.
- */
-int64_t
-mpiprofiling_get_late_threshold( void );
-
-/**
- * Sets threshold value for determining late process wait states for mpi profiling.
- *
- * @param newThreshold New threshold value.
- */
-void
-mpiprofiling_set_late_threshold
-(
-    int64_t newThreshold
-);
 
 #endif /* SCOREP_MPIPROFILE_H */

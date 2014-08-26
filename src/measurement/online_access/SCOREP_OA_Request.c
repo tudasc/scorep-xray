@@ -59,7 +59,7 @@
 
 
 /** Helper function mapping Periscope metric groups to Score-P metric sources*/
-OA_MetricSource
+static OA_MetricSource
 get_scorep_metric_source
 (
     PSC_MetricGroup metric_group
@@ -70,13 +70,13 @@ get_scorep_metric_source
  * metric source configuration string later and to map Score-P metric definition codes back to
  * Periscope metric codes.
  */
-SCOREP_Hashtab* requestsByName = NULL;
+static SCOREP_Hashtab* requestsByName = NULL;
 
 /**
  * Internal hash-table storing metric requests using their handle as a key. It is used when OA is
  * sends measurements back to select requested metrics among the defined metrics.
  */
-SCOREP_Hashtab* requestsByID = NULL;
+static SCOREP_Hashtab* requestsByID = NULL;
 
 /** Internal request handling statuses enum */
 typedef enum RequestsHandlingStatus
@@ -87,31 +87,31 @@ typedef enum RequestsHandlingStatus
 }RequestsHandlingStatus;
 
 /** Internal status of the request handling */
-RequestsHandlingStatus requestsStatus    = NOT_INITIALIZED;
+static RequestsHandlingStatus requestsStatus    = NOT_INITIALIZED;
 
 
 /** Counts the total size PAPI metric source configuration string */
-uint32_t size_of_papi_config_string      = 1;
+static uint32_t size_of_papi_config_string      = 1;
 
 /** Counts the total size RUSAGE metric source configuration string */
-uint32_t size_of_rusage_config_string    = 1;
+static uint32_t size_of_rusage_config_string    = 1;
 
 /** Stores the maximum metric_definition id configured in the previous phase. All
  * the metrics having definition ID smaller then the one stored in this variable
  * will be ignored.
  */
-int32_t max_definition_id_previous_phase = -1;
+static int32_t max_definition_id_previous_phase = -1;
 
 /**
  * The index of the next to be received request during accepting request state
  */
-int32_t phase_request_oa_index           = 0;
+static int32_t phase_request_oa_index           = 0;
 
 /**
  * Since execution time dense metric doesn't get defined in the Score-P,
  * the request data for it is stored and accessed separately
  */
-MetricRequest* execution_time_request    = NULL;
+static MetricRequest* execution_time_request    = NULL;
 
 /** Prints call-tree profile
  */
@@ -124,7 +124,7 @@ scorep_profile_dump_subtree
 
 /** Prints hash-table profile
  */
-void
+static void
 print_hash_table_request
 (
     const SCOREP_Hashtab* hash_table,
@@ -155,7 +155,7 @@ scorep_oa_request_exec_time_submit
 /**
  * Helper function to free MetricRequest data structure
  */
-void
+static void
 free_metric_request
 (
     void* request
@@ -680,7 +680,7 @@ SCOREP_OA_RequestsDismiss
     requestsStatus = NOT_INITIALIZED;
 }
 
-OA_MetricSource
+static OA_MetricSource
 get_scorep_metric_source
 (
     PSC_MetricGroup metric_group
@@ -722,7 +722,7 @@ free_metric_request
     free( m_request );
 }
 
-void
+static void
 print_hash_table_request
 (
     const SCOREP_Hashtab* hash_table,

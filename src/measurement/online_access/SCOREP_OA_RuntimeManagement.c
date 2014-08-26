@@ -67,14 +67,14 @@ SCOREP_OA_Init
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 
-    //printf("ENV variables: %ld %ld %s\n",silc_oa_port,silc_oa_registry_port,silc_oa_registry_host);
+    //printf("ENV variables: %ld %ld %s\n",scorep_oa_port,scorep_oa_registry_port,scorep_oa_registry_host);
     if ( scorep_oa_is_initialized == 0 && SCOREP_OA_IS_REQUESTED )
     {
         /* Set the intialization flag to indicate that the adapter is initialized */
         scorep_oa_is_initialized = 1;
         scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_INITIALIZATION );
-        connection = scorep_oa_connection_connect();
-        scorep_oa_mri_receive_and_process_requests( connection );
+        scorep_oa_connection = scorep_oa_connection_connect();
+        scorep_oa_mri_receive_and_process_requests( scorep_oa_connection );
         return 1;
     }
     return 0;
@@ -97,7 +97,7 @@ SCOREP_OA_Finalize
     if ( scorep_oa_is_initialized
          && scorep_oa_mri_get_appl_control() != SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE )
     {
-        scorep_oa_connection_send_string( connection, "SUSPENDEDATEND\n" );
-        //scorep_oa_mri_receive_and_process_requests( connection );
+        scorep_oa_connection_send_string( scorep_oa_connection, "SUSPENDEDATEND\n" );
+        //scorep_oa_mri_receive_and_process_requests( scorep_oa_connection );
     }
 }
