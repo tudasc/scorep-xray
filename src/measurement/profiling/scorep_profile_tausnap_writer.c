@@ -531,7 +531,10 @@ struct list_el
 
 
 typedef struct list_el item;
-item* curr, * head, * tail;
+static item* curr;
+static item* head;
+static item* tail;
+
 /**
    Helper function for the profile writer in TAU snapshot format.
    It writes the user event names and eventID  for a thread to a given file.
