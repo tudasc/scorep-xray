@@ -34,7 +34,7 @@ AS_IF([test -n "${MPIICC}"],
      MINCDIR=`echo ${MBINDIR} | sed -e 's/bin/include/'`
      AS_IF([test -f ${MINCDIR}/mpi.h],
          [IMPIVER=`${GREP} ^# ${MINCDIR}/mpi.h 2> /dev/null | \
-                   ${GREP} MPI_VERSION | ${AWK} '{print $NF}'`
+                   ${GREP} MPI_VERSION | head -1 | ${AWK} '{print $NF}'`
           AS_IF([test -z "${IMPIVER}"],
               [IMPIVER=-42])
           AS_IF([test ${IMPIVER} -eq 1],
@@ -45,8 +45,12 @@ AS_IF([test -n "${MPIICC}"],
               [NMPIS=`expr ${NMPIS} + 1`
                MPI=intel2
                AC_MSG_RESULT([Intel MPI 2 ${MPIICC}])],
+              [test ${IMPIVER} -eq 3],
+              [NMPIS=`expr ${NMPIS} + 1`
+               MPI=intel3
+               AC_MSG_RESULT([Intel MPI 3 ${MPIICC}])],
               [AC_MSG_RESULT([yes])
-               AC_MSG_ERROR([cannot determine Intel MPI version. Please select MPI using --with-mpi=intel|intel2])
+               AC_MSG_ERROR([cannot determine Intel MPI version. Please select MPI using --with-mpi=intel|intel2|intel3])
               ])
          ])
      AS_IF([test -z "${MPIS}"],

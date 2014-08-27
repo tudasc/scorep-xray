@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -46,6 +46,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-ibmpoe \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-intel \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-intel2 \
+              $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-intel3 \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-intelpoe \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-lam \
               $(srcdir)/vendor/common/build-config/platforms/compiler-mpi-mpibull2 \

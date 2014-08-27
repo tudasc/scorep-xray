@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -143,7 +143,7 @@ AC_REQUIRE([AC_SCOREP_DETECT_PLATFORMS])
 
 scorep_mpi_user_disabled="no"
 AC_ARG_WITH([mpi],
-    [AS_HELP_STRING([--with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|openmpi|platform|scali|sgimpt|sun)],
+    [AS_HELP_STRING([--with-mpi=(bullxmpi|hp|ibmpoe|intel|intel2|intel3|intelpoe|lam|mpibull2|mpich|mpich2|mpich3|openmpi|platform|scali|sgimpt|sun)],
          [The MPI compiler suite to build this package in non cross-compiling mode. Usually autodetected. Needs to be in $PATH.])],
     [AS_IF([test "x${withval}" = xno],
          [scorep_mpi_user_disabled=yes
@@ -156,6 +156,7 @@ AC_ARG_WITH([mpi],
                    ["ibmpoe"], [ac_scorep_compilers_mpi="compiler-mpi-ibmpoe"],
                    ["intel"], [ac_scorep_compilers_mpi="compiler-mpi-intel"],
                    ["intel2"], [ac_scorep_compilers_mpi="compiler-mpi-intel2"],
+                   ["intel3"], [ac_scorep_compilers_mpi="compiler-mpi-intel3"],
                    ["impi"], [AC_MSG_WARN([option 'impi' to --with-mpi deprecated, use 'intel2' instead.])
                               ac_scorep_compilers_mpi="compiler-mpi-intel2"],
                    ["intelpoe"], [ac_scorep_compilers_mpi="compiler-mpi-intelpoe"],
