@@ -608,7 +608,14 @@ check_region_definition_merge_needed
     return 1;
 }
 
-int32_t
+/** Updates a specified flat profile measurement in the corresponding buffer
+ *
+ * @param static_meas_key hash key of the flat profile measurement
+ * @param value of the flat profile measurement
+ * @param samples samples of the flat profile measurement
+ * @param data_index index data structure of a thread
+ */
+static int32_t
 update_static_measurement
 (
     SCOREP_OA_Key*             static_meas_key,

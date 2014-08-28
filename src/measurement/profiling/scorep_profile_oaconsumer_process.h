@@ -265,24 +265,6 @@ scorep_oa_index_data_key
    Profile transformation
    -------------------------------------------------------------------------------------*/
 
-
-
-/** Updates a specified flat profile measurement in the corresponding buffer
- *
- * @param static_meas_key hash key of the flat profile measurement
- * @param value of the flat profile measurement
- * @param samples samples of the flat profile measurement
- * @param data_index index data structure of a thread
- */
-int32_t
-update_static_measurement
-(
-    SCOREP_OA_Key*             static_meas_key,
-    uint64_t                   value,
-    uint64_t                   samples,
-    thread_private_index_type* thread_private_index
-);
-
 /** Copies merged flat profile measurements of the given profile node to the merged region definition buffer
  * which is passed over @a param. The pointer to this function is passed to @ref scorep_profile_for_all()
  * in order to parse the whole call-tree
