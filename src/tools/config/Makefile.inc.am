@@ -90,33 +90,4 @@ CLEANFILES +=../src/scorep_config_library_dependencies_mpi_inc.hpp \
              touch ../src/scorep_config_library_dependencies_shmem_inc.hpp; \
          fi
 
-
-if HAVE_PDT
-scorep_config_CPPFLAGS += -DHAVE_PDT=1
-endif
-
-if SCOREP_COMPILER_INTEL
-scorep_config_CPPFLAGS += -DSCOREP_COMPILER_INTEL=1
-endif
-
-if SCOREP_COMPILER_SUN
-scorep_config_CPPFLAGS += -DSCOREP_COMPILER_SUN=1
-endif
-
-if SCOREP_COMPILER_IBM
-scorep_config_CPPFLAGS += -DSCOREP_COMPILER_IBM=1
-endif
-
-if SCOREP_COMPILER_PGI
-scorep_config_CPPFLAGS += -DSCOREP_COMPILER_PGI=1
-endif
-
-if SCOREP_COMPILER_GNU
-scorep_config_CPPFLAGS += -DSCOREP_COMPILER_GNU=1
-endif
-
-if SCOREP_COMPILER_CRAY
-scorep_config_CPPFLAGS += -DSCOREP_COMPILER_CRAY=1
-endif
-
 scorep_config_LDADD = libutils.la

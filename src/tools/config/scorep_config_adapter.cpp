@@ -321,11 +321,11 @@ SCOREP_Config_UserAdapter::addCFlags( std::string&           cflags,
     {
         if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
         {
-                #ifdef SCOREP_COMPILER_IBM
+                #if SCOREP_BACKEND_COMPILER_IBM
             cflags += "-WF,-DSCOREP_USER_ENABLE ";
                 #else
             cflags += "-DSCOREP_USER_ENABLE ";
-                #endif // SCOREP_COMPILER_IBM
+                #endif // SCOREP_BACKEND_COMPILER_IBM
         }
         else
         {
