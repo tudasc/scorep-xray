@@ -137,17 +137,17 @@ POMP2_Barrier_exit( POMP2_Region_handle* pomp_handle,
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Barrier_exit" );
 
-    pomp_current_task = pomp_old_task;
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         if ( pomp_current_task != pomp_old_task )
         {
             SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_PARADIGM_OPENMP,
-                                              pomp2_decode_task_handle( pomp_current_task ) );
+                                              pomp2_decode_task_handle( pomp_old_task ) );
         }
         SCOREP_ExitRegion( region->outerBlock );
     }
+    pomp_current_task = pomp_old_task;
 }
 
 void
@@ -171,17 +171,17 @@ POMP2_Implicit_barrier_exit( POMP2_Region_handle* pomp_handle,
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENMP, "In POMP2_Implicit_barrier_exit" );
 
-    pomp_current_task = pomp_old_task;
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         if ( pomp_current_task != pomp_old_task )
         {
             SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_PARADIGM_OPENMP,
-                                              pomp2_decode_task_handle( pomp_current_task ) );
+                                              pomp2_decode_task_handle( pomp_old_task ) );
         }
         SCOREP_ExitRegion( region->barrier );
     }
+    pomp_current_task = pomp_old_task;
 }
 
 void
