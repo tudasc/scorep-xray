@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -62,7 +62,9 @@ SCOREP_DEFINE_DEFINITION_TYPE( Location )
 
 SCOREP_LocationHandle
 SCOREP_Definitions_NewLocation( SCOREP_LocationType type,
-                                const char*         name );
+                                const char*         name,
+                                size_t              sizeOfPayload,
+                                void**              payload );
 
 
 void

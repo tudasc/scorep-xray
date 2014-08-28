@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -30,6 +30,25 @@
 #include <UTILS_Error.h>
 #include <pthread.h>
 
+
+#ifdef SCOREP_MUTEX_PTHREAD_WRAP
+int
+__real_pthread_mutex_init( pthread_mutex_t*,
+                           const pthread_mutexattr_t* );
+int
+__real_pthread_mutex_destroy( pthread_mutex_t* );
+int
+__real_pthread_mutex_lock( pthread_mutex_t* mutex );
+int
+__real_pthread_mutex_unlock( pthread_mutex_t* mutex );
+
+#define CALL_PTHREAD_REAL_FUNC( func_name ) __real_##func_name
+
+#else
+
+#define CALL_PTHREAD_REAL_FUNC( func_name ) func_name
+
+#endif //SCOREP_MUTEX_PTHREAD_WRAP
 
 /**
  * Allocates and initializes a new Pthread lock.
@@ -61,7 +80,7 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
     }
 
     /* this call does not give us a success status */
-    pthread_mutex_init( *lock, NULL );
+    CALL_PTHREAD_REAL_FUNC( pthread_mutex_init ) ( *lock, NULL );
     return SCOREP_SUCCESS;
 }
 
@@ -90,7 +109,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
     {
         return SCOREP_SUCCESS;
     }
-    pthread_mutex_destroy( *lock );
+    CALL_PTHREAD_REAL_FUNC( pthread_mutex_destroy ) ( *lock );
     free( *lock );
     *lock = NULL;
 
@@ -120,7 +139,7 @@ SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
     }
 
     pthread_mutex_t* lock = ( pthread_mutex_t* )scorepMutex;
-    pthread_mutex_lock( lock );
+    CALL_PTHREAD_REAL_FUNC( pthread_mutex_lock ) ( lock );
 
     return SCOREP_SUCCESS;
 }
@@ -149,7 +168,7 @@ SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
 
     pthread_mutex_t* lock = ( pthread_mutex_t* )scorepMutex;
 
-    pthread_mutex_unlock( lock );
+    CALL_PTHREAD_REAL_FUNC( pthread_mutex_unlock ) ( lock );
 
     return SCOREP_SUCCESS;
 }

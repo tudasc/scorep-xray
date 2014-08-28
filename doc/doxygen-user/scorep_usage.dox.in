@@ -33,6 +33,9 @@ Common options are:
               omp:ancestry
                   OpenMP support using thread tracking with ancestry functions in OpenMP 3.0 and later
                   It requires and, thus, automatically enables opari instrumentation.
+              pthread
+                  Pthread support using thread tracking via library wrapping
+                  It conflicts and, thus, automatically disables opari instrumentation.
   --mpp=<paradigm>[:<variant>]
                   Possible paradigms and variants are:
               none
@@ -81,4 +84,3 @@ Common options are:
   --nopreprocess  Disables preprocess instrumentation.
   --user          Enables user instrumentation.
   --nouser        Disables user instrumentation.
-

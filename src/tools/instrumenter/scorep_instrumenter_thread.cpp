@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -179,6 +179,64 @@ SCOREP_Instrumenter_OmpAncestry::setConfigValue( const std::string& key,
     }
 }
 
+/* ****************************************************************************
+* class SCOREP_Instrumenter_Pthread
+* ****************************************************************************/
+
+SCOREP_Instrumenter_Pthread::SCOREP_Instrumenter_Pthread(
+    SCOREP_Instrumenter_Selector* selector ) :
+    SCOREP_Instrumenter_Paradigm( selector,
+                                  "pthread",
+                                  "",
+                                  "Pthread support using thread tracking via "
+                                  "library wrapping" ),
+    m_pthread_cflag( SCOREP_BACKEND_PTHREAD_CFLAGS ),
+    m_pthread_lib( SCOREP_BACKEND_PTHREAD_LIBS )
+{
+    m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
+#if !SCOREP_BACKEND_HAVE_PTHREAD
+    unsupported();
+#endif
+}
+
+bool
+SCOREP_Instrumenter_Pthread::checkCommand( const std::string& current,
+                                           const std::string& next )
+{
+    // See ax_pthread.m4:
+    // possible cflags: -Kthread -kthread -pthread -pthreads -mthreads --thread-safe -mt
+    // possible libs: -lpthreads -llthread -lpthread
+    if ( current == m_pthread_cflag )
+    {
+        m_selector->select( this, false );
+    }
+    else if ( current == m_pthread_lib )
+    {
+        m_selector->select( this, false );
+    }
+    else if ( ( current.substr( 0, 2 ) == "-l" ) &&
+              ( is_pthread_library( current.substr( 2 ) ) ) )
+    {
+        m_selector->select( this, false );
+    }
+    else if ( ( current == "-l" ) &&
+              ( is_pthread_library( next ) ) )
+    {
+        m_selector->select( this, false );
+    }
+    return false;
+}
+
+void
+SCOREP_Instrumenter_Pthread::setConfigValue( const std::string& key,
+                                             const std::string& value )
+{
+    if ( key == "PTHREAD_CFLAGS" && value != "" )
+    {
+        m_pthread_cflag = value;
+    }
+}
+
 /* **************************************************************************************
  * class SCOREP_Instrumenter_Thread
  * *************************************************************************************/
@@ -188,5 +246,6 @@ SCOREP_Instrumenter_Thread::SCOREP_Instrumenter_Thread()
     m_paradigm_list.push_back( new SCOREP_Instrumenter_SingleThreaded( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpTpd( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_OmpAncestry( this ) );
+    m_paradigm_list.push_back( new SCOREP_Instrumenter_Pthread( this ) );
     m_current_selection = m_paradigm_list.front();
 }

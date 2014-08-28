@@ -361,6 +361,14 @@ is_shmem_library( const std::string& library_name )
 }
 
 bool
+is_pthread_library( const std::string& library_name )
+{
+    return check_lib_name( library_name, std::string( "pthread" ) ) ||
+           check_lib_name( library_name, std::string( "pthreads" ) ) ||
+           check_lib_name( library_name, std::string( "lthread" ) );
+}
+
+bool
 exists_file( const std::string& filename )
 {
     std::ifstream ifile( filename.c_str() );

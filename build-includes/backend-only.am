@@ -8,13 +8,16 @@ include ../src/measurement/Makefile.cube_writer.inc.am
 include ../src/measurement/profiling/Makefile.inc.am
 include ../src/measurement/tracing/Makefile.inc.am
 include ../src/measurement/definitions/Makefile.inc.am
+include ../src/measurement/thread/Makefile.inc.am
 include ../src/measurement/thread/fork_join/Makefile.inc.am
+include ../src/measurement/thread/create_wait/Makefile.inc.am
 include ../src/measurement/mutex/Makefile.inc.am
 include ../src/adapters/user/Makefile.inc.am
 include ../src/adapters/compiler/Makefile.inc.am
 include ../src/adapters/pomp/Makefile.inc.am
 include ../src/adapters/tau/Makefile.inc.am
 include ../src/adapters/cuda/Makefile.inc.am
+include ../src/adapters/pthread/Makefile.inc.am
 include ../src/services/metric/Makefile.inc.am
 include ../src/services/platform/Makefile.inc.am
 include ../src/services/timer/Makefile.inc.am

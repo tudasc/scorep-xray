@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -853,58 +853,6 @@ SCOREP_Location_RmaOpCompleteBlocking( SCOREP_Location*              location,
                                        uint64_t                      timestamp,
                                        SCOREP_InterimRmaWindowHandle windowHandle,
                                        uint64_t                      matchingId );
-
-
-/**
- * Notify the measurement system about the creation of a create-wait
- * parallel execution with one new thread. This function needs to be
- * triggered for every thread creation in a create-wait model, e.g.,
- * pthread_create() in Pthreads (for fork-join models see
- * SCOREP_ThreadForkJoin_Fork()).
- *
- * @param paradigm One of the predefined threading models.
- *
- * @return The process-global forkSequenceCount (starting at 0) that
- * needs to be provided in the corresponding SCOREP_ThreadTeamBegin(),
- * SCOREP_ThreadEnd() and SCOREP_ThreadWait(), if providing by the
- * adapter is possible. You can ignore the return value and pass
- * SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT to the mentioned
- * functions if the model implementation takes care of maintaining the
- * sequence count.
- *
- * @note Only the created thread must call SCOREP_ThreadTeamBegin() and
- * SCOREP_ThreadEnd().
- *
- * @note Usually some other thread waits for the completion of the
- * created one (e.g., pthread_join()). This thread needs to call
- * SCOREP_ThreadWait() providing the unique fork_sequence_count
- * returned from this function. For Pthreads this is always possible
- * even if the thread is terminated using pthread_exit() or
- * pthread_cancel().
- *
- * @see SCOREP_ThreadForkJoin_Fork()
- */
-uint32_t
-SCOREP_ThreadCreate( SCOREP_ParadigmType paradigm );
-
-
-/**
- * Notify the measurement system about the completion of a create-wait
- * parallel execution. The parallel execution was started by a call to
- * SCOREP_ThreadCreate() that returned the @a forkSequenceCount that
- * needs to be provided to this function.
- *
- * @param paradigm One of the predefined threading models.
- *
- * @param forkSequenceCount The fork sequence count returned by the
- * corresponding SCOREP_ThreadCreate() or
- * SCOREP_THREAD_INVALID_FORK_SEQUENCE_COUNT. If you pass the latter,
- * the forkSequenceCount should be maintained in the model-specific
- * implementation.
- */
-void
-SCOREP_ThreadWait( SCOREP_ParadigmType paradigm,
-                   uint32_t            forkSequenceCount );
 
 
 /**

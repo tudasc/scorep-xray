@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -39,6 +39,7 @@ typedef enum
     SCOREP_CONFIG_MUTEX_ID_NONE,
     SCOREP_CONFIG_MUTEX_ID_OMP,
     SCOREP_CONFIG_MUTEX_ID_PTHREAD,
+    SCOREP_CONFIG_MUTEX_ID_PTHREAD_WRAP,
     SCOREP_CONFIG_MUTEX_ID_PTHREAD_SPINLOCK,
 } SCOREP_Config_MutexId;
 
@@ -242,6 +243,19 @@ class SCOREP_Config_MutexPthread : public SCOREP_Config_Mutex
 {
 public:
     SCOREP_Config_MutexPthread();
+};
+
+/* **************************************************************************************
+ * class SCOREP_Config_MutexPthreadWrap
+ * *************************************************************************************/
+
+/**
+ * This class represents the Pthread-based mutex locking system for library wrapping.
+ */
+class SCOREP_Config_MutexPthreadWrap : public SCOREP_Config_Mutex
+{
+public:
+    SCOREP_Config_MutexPthreadWrap();
 };
 
 /* **************************************************************************************

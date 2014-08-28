@@ -93,6 +93,23 @@
   - The online access interface is currently not available in SHMEM
     applications.
 
+* Pthread support
+  - Following Pthread management functions are not supported yet and
+    will cause an instrumentetd application to abort: pthread_exit,
+    pthread_cancel. The usage of pthread_detach will cause the pogram
+    to fail if the detached thread is still running after the end of
+    main.
+  - Pthread support is currently not available on systems that use
+    linkers other than the GNU linker, e.g., AIX systems. Pthread
+    support is currently not available when compiling with Fujitsu
+    compilers. The compiler switch -Xg (GNU compatibility mode) might
+    help, but is untested.
+  - Please note that on systems where Pthreads don't need extra flags
+    (like e.g., -pthread) to be compiled and linked (e.g., Cray, Blue
+    Gene/Q), Score-P can't instrument Pthreads automatically. You need
+    to enable Pthread instrumentation manually via scorep's
+    --thread=pthread option.
+
 
                         Score-P v1.2 OPEN ISSUES
                         ========================

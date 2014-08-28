@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -71,6 +71,27 @@ public:
 
 private:
     std::string m_openmp_cflag;
+};
+
+/* ****************************************************************************
+* class SCOREP_Instrumenter_Pthread
+* ****************************************************************************/
+class SCOREP_Instrumenter_Pthread : public SCOREP_Instrumenter_Paradigm
+{
+public:
+    SCOREP_Instrumenter_Pthread( SCOREP_Instrumenter_Selector* selector );
+
+    virtual bool
+    checkCommand( const std::string& current,
+                  const std::string& next );
+
+    virtual void
+    setConfigValue( const std::string& key,
+                    const std::string& value );
+
+private:
+    std::string m_pthread_cflag;
+    std::string m_pthread_lib;
 };
 
 /* **************************************************************************************

@@ -40,10 +40,10 @@ struct JacobiData
 
 // jacobi calculation routine
 void
-Jacobi( JacobiData &data );
+Jacobi( JacobiData& data );
 
 // final cleanup routines
 void
-Finish( JacobiData &data );
+Finish( JacobiData& data );
 
 #endif

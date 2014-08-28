@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -94,6 +94,5 @@ libscorep_profile_la_SOURCES =                                              \
 libscorep_profile_la_CPPFLAGS = \
     $(PROFILE_FLAGS) \
     -DDOCDIR='"$(docdir)"' \
-    -I$(INC_DIR_THREAD_FORK_JOIN) \
+    -I$(INC_DIR_THREAD) \
     -I$(INC_DIR_MUTEX)
-

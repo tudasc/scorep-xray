@@ -116,18 +116,28 @@ typedef struct SCOREP_Subsystem
     SCOREP_ErrorCode ( * subsystem_register )( size_t );
 
     /**
-     * Initialize the subsystem for measurement.
+     * Callback to be notified about the initialization of your subsystem. This
+     * takes place during measurement initialization.
      *
+     * It is safe to assume single-threaded mode.
      * At this point all configure variables are set to there current
      * environment values. The subsystem can also do calls to the definition
-     * interface from this point on.
-     *
+     * interface from this point on. You are not supposed to access
+     * SCOREP_Location objects even if your subsystem created them. First
+     * time to access SCOREP_Location objects is in subsystem_init_location.
+     * It is ok to use malloc. If you need to realloc during measurement,
+     * please consider not to use malloc.
      */
     SCOREP_ErrorCode ( * subsystem_init )( void );
 
     /**
-     * Callback to register a location to the subsystem.
+     * Callback to be notified about a location creation. This takes place
+     * during measurement, except for the initial location/master thread.
      *
+     * It is not safe to assume single-threaded mode. A valid
+     * SCOREP_Location objects is provided (this is the first time
+     * your subsystem is supposed to access this SCOREP_Location object
+     * although you might retrieve is earlier).
      */
     SCOREP_ErrorCode ( * subsystem_init_location )( struct SCOREP_Location* );
 

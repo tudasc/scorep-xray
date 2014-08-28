@@ -51,6 +51,7 @@ scorep-config <command> [<options>]
          none	This is the default.
          omp:pomp_tpd
          omp:ancestry
+         pthread
             If no variant is specified the first matching
             threading system is used.
    --mutex=<locking system>[:<variant>]
@@ -59,6 +60,7 @@ scorep-config <command> [<options>]
          omp
          pthread
          pthread:spinlock
+         pthread:wrap
             If no variant is specified the default for the respective
             threading system is used.
    --mpp=<multi-process paradigm>

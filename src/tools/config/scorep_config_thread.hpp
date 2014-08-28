@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -43,7 +43,8 @@ typedef enum
 {
     SCOREP_CONFIG_THREAD_SYSTEM_ID_NONE,
     SCOREP_CONFIG_THREAD_SYSTEM_ID_POMP_TPD,
-    SCOREP_CONFIG_THREAD_SYSTEM_ID_OMP_ANCESTRY
+    SCOREP_CONFIG_THREAD_SYSTEM_ID_OMP_ANCESTRY,
+    SCOREP_CONFIG_THREAD_SYSTEM_ID_PTHREAD
 } SCOREP_Config_ThreadSystemId;
 
 /* **************************************************************************************
@@ -148,6 +149,17 @@ public:
     addIncFlags( std::string& incflags,
                  bool         build_check,
                  bool         nvcc );
+
+
+    /**
+     * Overwrite this function if you want to do adapter specific modifications
+     * to the linker flags.
+     * @param ldflags  the linker flags to which you may modify or add new flags.
+     * @param nvcc     True if compiler is nvcc.
+     */
+    virtual void
+    addLdFlags( std::string& ldflags,
+                bool         nvcc );
 
     /**
      * Checks if an explicit choice has been made for the locking mechanism
@@ -275,7 +287,7 @@ public:
 
 /**
  * This class represents the POMP2-based implementation for OpenMP threads which
- * uses the copyin structure for the TPD variable.
+ * uses OpenMP 3.0's ancestry runtime functions.
  */
 class SCOREP_Config_OmpAncestryThreadSystem : public SCOREP_Config_ThreadSystem
 {
@@ -294,6 +306,27 @@ public:
     addIncFlags( std::string& incflags,
                  bool         build_check,
                  bool         nvcc );
+    virtual void
+    getInitStructName( std::deque<std::string>& init_structs );
+};
+
+/* ****************************************************************************
+* class SCOREP_Config_PthreadThreadSystem
+* ****************************************************************************/
+
+/**
+ * This class represents the Pthread backend
+ */
+class SCOREP_Config_PthreadThreadSystem : public SCOREP_Config_ThreadSystem
+{
+public:
+    SCOREP_Config_PthreadThreadSystem();
+    virtual void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
+    virtual void
+    addLdFlags( std::string& ldflags,
+                bool         nvcc );
     virtual void
     getInitStructName( std::deque<std::string>& init_structs );
 };

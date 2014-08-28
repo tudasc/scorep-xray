@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -85,4 +85,10 @@ EXTRA_DIST += \
     $(INSTALLCHECK_DIR)/shmem/src/heat/cc/Makefile \
     $(INSTALLCHECK_DIR)/shmem/src/heat/cc/heat.c \
     $(INSTALLCHECK_DIR)/shmem_omp/src/heat/cc/Makefile \
-    $(INSTALLCHECK_DIR)/shmem_omp/src/heat/cc/heat.c
+    $(INSTALLCHECK_DIR)/shmem_omp/src/heat/cc/heat.c \
+    $(INSTALLCHECK_DIR)/create_wait/pthread/dining_philosophers_pthread.c \
+    $(INSTALLCHECK_DIR)/create_wait/pthread/management_routines_pthread.c \
+    $(INSTALLCHECK_DIR)/create_wait/pthread/pi_mutex_pthread.c \
+    $(INSTALLCHECK_DIR)/create_wait/pthread/pi_pthread.c \
+    $(INSTALLCHECK_DIR)/create_wait/pthread/producer_consumer_pthread.c \
+    $(INSTALLCHECK_DIR)/create_wait/pthread/synchronization_routines_pthread.c

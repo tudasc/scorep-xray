@@ -1,11 +1,14 @@
-#ifndef SCOREP_THREAD_FORK_JOIN_GENERIC_H_
-#define SCOREP_THREAD_FORK_JOIN_GENERIC_H_
+#ifndef SCOREP_THREAD_GENERIC_H_
+#define SCOREP_THREAD_GENERIC_H_
 
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
@@ -19,8 +22,19 @@
  */
 
 
+#include <SCOREP_DefinitionHandles.h>
+
 #include <stdbool.h>
 #include <stdint.h>
+
+struct scorep_thread_private_data;
+struct SCOREP_Location;
+
+/**
+ * Symbolic constant denoting that the fork sequence count
+ * is not in a valid state.
+ */
+#define SCOREP_THREAD_INVALID_SEQUENCE_COUNT UINT32_MAX
 
 
 /**
@@ -41,9 +55,13 @@ scorep_thread_get_next_sequence_count( void );
  * get reused. If there is a need for a new SCOREP_Location object,
  * create it in the model-specific functions, usually in
  * SCOREP_Thread_OnBegin().
+ *
+ * Uses memory from the provided location, i.e., the location must be owned
+ * by the current thread.
  */
 struct scorep_thread_private_data*
-scorep_thread_create_private_data( struct scorep_thread_private_data* parent );
+scorep_thread_create_private_data( struct scorep_thread_private_data* parent,
+                                   struct SCOREP_Location*            location );
 
 
 /**
@@ -60,6 +78,16 @@ scorep_thread_get_model_data( struct scorep_thread_private_data* tpd );
  */
 bool
 scorep_thread_is_initial_thread( struct scorep_thread_private_data* tpd );
+
+
+/**
+ *
+ *
+ *
+ * @return
+ */
+struct scorep_thread_private_data*
+scorep_thread_get_initial_tpd( void );
 
 
 /**
@@ -86,4 +114,48 @@ scorep_thread_set_location( struct scorep_thread_private_data* tpd,
                             struct SCOREP_Location*            location );
 
 
-#endif /* SCOREP_THREAD_FORK_JOIN_GENERIC_H_ */
+/**
+ *
+ *
+ * @param tpd
+ *
+ * @return
+ */
+uint32_t
+scorep_thread_get_tmp_sequence_count( struct scorep_thread_private_data* tpd );
+
+
+/**
+ *
+ *
+ * @param tpd
+ * @param sequenceCount
+ */
+void
+scorep_thread_set_tmp_sequence_count( struct scorep_thread_private_data* tpd,
+                                      uint32_t                           sequenceCount );
+
+
+/**
+ *
+ *
+ * @param tpd
+ *
+ * @return
+ */
+SCOREP_InterimCommunicatorHandle
+scorep_thread_get_team( struct scorep_thread_private_data* tpd );
+
+
+/**
+ *
+ *
+ * @param tpd
+ * @param team
+ */
+void
+scorep_thread_set_team( struct scorep_thread_private_data* tpd,
+                        SCOREP_InterimCommunicatorHandle   team );
+
+
+#endif /* SCOREP_THREAD_GENERIC_H_ */

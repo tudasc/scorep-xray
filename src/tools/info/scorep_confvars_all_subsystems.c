@@ -49,6 +49,8 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MetricService;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin;
+extern const SCOREP_Subsystem SCOREP_Subsystem_PthreadAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadCreateWait;
 
 /**
  * List of subsystems.
@@ -61,7 +63,9 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_PompOmpAdapter,
     &SCOREP_Subsystem_MpiAdapter,
     &SCOREP_Subsystem_CudaAdapter,
-    &SCOREP_Subsystem_ThreadForkJoin
+    &SCOREP_Subsystem_ThreadForkJoin,
+    &SCOREP_Subsystem_PthreadAdapter,
+    &SCOREP_Subsystem_ThreadCreateWait
 };
 
 const size_t scorep_number_of_subsystems = sizeof( scorep_subsystems ) /

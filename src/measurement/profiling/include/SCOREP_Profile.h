@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -274,6 +274,30 @@ SCOREP_Profile_ThreadFork( SCOREP_Location* threadData,
  */
 void
 SCOREP_Profile_ThreadJoin( SCOREP_Location* locationData );
+
+
+void
+SCOREP_Profile_ThreadCreate( SCOREP_Location* threadData,
+                             uint32_t         createSequenceCount );
+
+void
+SCOREP_Profile_ThreadWait( SCOREP_Location* threadData,
+                           uint32_t         createSequenceCount );
+
+void
+SCOREP_Profile_ThreadBegin( SCOREP_Location*                 location,
+                            uint64_t                         timestamp,
+                            SCOREP_ParadigmType              paradigm,
+                            SCOREP_InterimCommunicatorHandle threadTeam,
+                            uint32_t                         createSequenceCount );
+
+
+void
+SCOREP_Profile_ThreadEnd( SCOREP_Location*                 location,
+                          uint64_t                         timestamp,
+                          SCOREP_ParadigmType              paradigm,
+                          SCOREP_InterimCommunicatorHandle threadTeam,
+                          uint32_t                         createSequenceCount );
 
 /**
  * Triggered on thread creation, i.e. when a thread is encountered the first

@@ -49,7 +49,7 @@ Jacobi( struct JacobiData* data )
         b        = -2.0 * ( ax + ay ) - data->fAlpha; /* Central coeff */
         residual = 10.0 * data->fTolerance;
 
-        while ( data->iIterCount < data->iIterMax && residual > data->fTolerance )
+        while ( data->iIterCount < data->iIterMax&& residual > data->fTolerance )
         {
             residual = 0.0;
 

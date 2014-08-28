@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -870,6 +870,8 @@ set_rewind_affected_thread_paradigm( SCOREP_Location* location, SCOREP_ParadigmT
 
         case_break( OPENMP, THREAD_FORK_JOIN );
         case_break( THREAD_FORK_JOIN, THREAD_FORK_JOIN );
+        case_break( PTHREAD, THREAD_CREATE_WAIT );
+        case_break( THREAD_CREATE_WAIT, THREAD_CREATE_WAIT );
 
 #undef case_break
         default:
@@ -941,6 +943,86 @@ SCOREP_Tracing_ThreadJoin( SCOREP_Location*    location,
                                NULL,
                                timestamp,
                                scorep_tracing_get_otf2_paradigm( paradigm ) );
+
+    set_rewind_affected_thread_paradigm( location, paradigm );
+}
+
+
+void
+SCOREP_Tracing_ThreadCreate( SCOREP_Location*                 location,
+                             uint64_t                         timestamp,
+                             SCOREP_ParadigmType              paradigm,
+                             SCOREP_InterimCommunicatorHandle threadTeam,
+                             uint32_t                         createSequenceCount )
+{
+    OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
+
+    OTF2_EvtWriter_ThreadCreate( evt_writer,
+                                 NULL,
+                                 timestamp,
+                                 SCOREP_LOCAL_HANDLE_TO_ID( threadTeam,
+                                                            InterimCommunicator ),
+                                 createSequenceCount );
+
+    set_rewind_affected_thread_paradigm( location, paradigm );
+}
+
+
+void
+SCOREP_Tracing_ThreadWait( SCOREP_Location*                 location,
+                           uint64_t                         timestamp,
+                           SCOREP_ParadigmType              paradigm,
+                           SCOREP_InterimCommunicatorHandle threadTeam,
+                           uint32_t                         createSequenceCount )
+{
+    OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
+
+    OTF2_EvtWriter_ThreadWait( evt_writer,
+                               NULL,
+                               timestamp,
+                               SCOREP_LOCAL_HANDLE_TO_ID( threadTeam,
+                                                          InterimCommunicator ),
+                               createSequenceCount );
+
+    set_rewind_affected_thread_paradigm( location, paradigm );
+}
+
+
+void
+SCOREP_Tracing_ThreadBegin( SCOREP_Location*                 location,
+                            uint64_t                         timestamp,
+                            SCOREP_ParadigmType              paradigm,
+                            SCOREP_InterimCommunicatorHandle threadTeam,
+                            uint32_t                         createSequenceCount )
+{
+    OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
+
+    OTF2_EvtWriter_ThreadBegin( evt_writer,
+                                NULL,
+                                timestamp,
+                                SCOREP_LOCAL_HANDLE_TO_ID( threadTeam,
+                                                           InterimCommunicator ),
+                                createSequenceCount );
+
+    set_rewind_affected_thread_paradigm( location, paradigm );
+}
+
+
+void
+SCOREP_Tracing_ThreadEnd( SCOREP_Location*                 location,
+                          uint64_t                         timestamp,
+                          SCOREP_ParadigmType              paradigm,
+                          SCOREP_InterimCommunicatorHandle threadTeam,
+                          uint32_t                         createSequenceCount )
+{
+    OTF2_EvtWriter* evt_writer = SCOREP_Location_GetTracingData( location )->otf_writer;
+
+    OTF2_EvtWriter_ThreadEnd( evt_writer,
+                              NULL,
+                              timestamp,
+                              SCOREP_LOCAL_HANDLE_TO_ID( threadTeam,
+                                                         InterimCommunicator ),
+                              createSequenceCount );
 
     set_rewind_affected_thread_paradigm( location, paradigm );
 }

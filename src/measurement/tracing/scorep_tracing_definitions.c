@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -577,6 +577,11 @@ scorep_write_group_definitions( void*                     writerHandle,
             case SCOREP_GROUP_SHMEM_SELF:
                 paradigm    = OTF2_PARADIGM_SHMEM;
                 group_flags = OTF2_GROUP_FLAG_GLOBAL_MEMBERS;
+                break;
+
+            case SCOREP_GROUP_PTHREAD_LOCATIONS:
+            case SCOREP_GROUP_PTHREAD_THREAD_TEAM:
+                paradigm = OTF2_PARADIGM_PTHREAD;
                 break;
         }
 

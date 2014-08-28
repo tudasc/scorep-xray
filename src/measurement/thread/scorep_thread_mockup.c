@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -36,9 +36,8 @@
 
 #include <config.h>
 
-#include <SCOREP_ThreadForkJoin_Mgmt.h>
+#include <SCOREP_Thread_Mgmt.h>
 #include <scorep_location.h>
-#include <SCOREP_Subsystem.h>
 
 #include <UTILS_Error.h>
 
@@ -47,16 +46,18 @@ static SCOREP_Location* scorep_thread_sole_cpu_location;
 
 
 void
-SCOREP_ThreadForkJoin_Initialize()
+SCOREP_Thread_Initialize()
 {
     UTILS_ASSERT( scorep_thread_sole_cpu_location == 0 );
-    scorep_thread_sole_cpu_location = SCOREP_Location_CreateCPULocation( NULL, "Master thread",  /* deferNewLocationNotification = */ false );
+    scorep_thread_sole_cpu_location =
+        SCOREP_Location_CreateCPULocation( NULL, "Master thread",
+                                           /* deferNewLocationNotification = */ false );
     UTILS_ASSERT( scorep_thread_sole_cpu_location );
 }
 
 
 void
-SCOREP_ThreadForkJoin_Finalize()
+SCOREP_Thread_Finalize()
 {
 }
 
@@ -73,18 +74,3 @@ SCOREP_Location_GetCurrentCPULocation()
 {
     return scorep_thread_sole_cpu_location;
 }
-
-
-const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin =
-{
-    .subsystem_name              = "THREAD FORK JOIN",
-    .subsystem_register          = NULL,
-    .subsystem_init              = NULL,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = NULL,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
-};

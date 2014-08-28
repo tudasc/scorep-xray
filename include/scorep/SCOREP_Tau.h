@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,2014,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2013
+ * Copyright (c) 2009-2011, 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -118,6 +118,7 @@ typedef enum
     SCOREP_TAU_PARADIGM_CUDA,
     SCOREP_TAU_PARADIGM_MEASUREMENT,
     SCOREP_TAU_PARADIGM_SHMEM,
+    SCOREP_TAU_PARADIGM_PTHREAD,
 
     SCOREP_TAU_INVALID_PARADIGM_TYPE /**< For internal use only. */
 } SCOREP_Tau_ParadigmType;
@@ -172,6 +173,8 @@ typedef enum
     SCOREP_TAU_REGION_ORDERED,
     SCOREP_TAU_REGION_ORDERED_SBLOCK,
     SCOREP_TAU_REGION_ARTIFICIAL,
+    SCOREP_TAU_REGION_THREAD_CREATE,
+    SCOREP_TAU_REGION_THREAD_WAIT,
 
     SCOREP_TAU_INVALID_REGION_TYPE /**< For internal use only. */
 } SCOREP_Tau_RegionType;

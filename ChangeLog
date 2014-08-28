@@ -9,7 +9,18 @@ Major features:
 - Add support for instrumenting programs which use SHMEM library calls for
   one-sided communication. Score-P currently supports the SHMEM
   implementations of Cray, Open MPI, OpenSHMEM, and SGI.
-
+- Basic support for Pthread instrumentation. Supported Pthread
+  routines are pthread_create, pthread_join, pthread_mutex_init,
+  pthread_mutex_destroy, pthread_mutex_lock, pthread_mutex_trylock,
+  pthread_mutex_unlock, pthread_cond_init, pthread_cond_destroy,
+  pthread_cond_signal, pthread_cond_broadcast, pthread_cond_wait, and
+  pthread_cond_timedwait. Following thread management functions are
+  currently not supported and will abort the program: pthread_exit and
+  pthread_cancel. The usage of pthread_detach will cause the program to
+  fail if the detached thread is still running after the end of
+  main. These limitations will be addressed in an upcoming version of
+  Score-P.
+  
 Features and improvements:
 
 - Use Process Manager Interface (PMI) to get fine-granular information
@@ -64,7 +75,7 @@ User tools and API improvements and changes:
   SCOREP_USER instead of only SCOREP.
 - Added selection for mutex locking, allowing to use the parameter
   --mutex=<locking> to switch between known locking mechanisms within
-  the measurement system (omp,pthread,pthread:spinlock).
+  the measurement system (omp,pthread,pthread:spinlock,pthread:wrap).
 - Improved event size estimation in scorep-score using otf2-estimator.
 - Install Cube remap specification file and provide its location via
   scorep-config tool.

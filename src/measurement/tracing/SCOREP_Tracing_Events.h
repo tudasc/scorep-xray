@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -322,6 +322,35 @@ SCOREP_Tracing_ThreadJoin( SCOREP_Location*    location,
                            uint64_t            timestamp,
                            SCOREP_ParadigmType paradigm );
 
+
+void
+SCOREP_Tracing_ThreadCreate( SCOREP_Location*                 location,
+                             uint64_t                         timestamp,
+                             SCOREP_ParadigmType              paradigm,
+                             SCOREP_InterimCommunicatorHandle threadTeam,
+                             uint32_t                         createSequenceCount );
+
+
+void
+SCOREP_Tracing_ThreadWait( SCOREP_Location*                 location,
+                           uint64_t                         timestamp,
+                           SCOREP_ParadigmType              paradigm,
+                           SCOREP_InterimCommunicatorHandle threadTeam,
+                           uint32_t                         createSequenceCount );
+
+void
+SCOREP_Tracing_ThreadBegin( SCOREP_Location*                 location,
+                            uint64_t                         timestamp,
+                            SCOREP_ParadigmType              paradigm,
+                            SCOREP_InterimCommunicatorHandle threadTeam,
+                            uint32_t                         createSequenceCount );
+
+void
+SCOREP_Tracing_ThreadEnd( SCOREP_Location*                 location,
+                          uint64_t                         timestamp,
+                          SCOREP_ParadigmType              paradigm,
+                          SCOREP_InterimCommunicatorHandle threadTeam,
+                          uint32_t                         createSequenceCount );
 
 void
 SCOREP_Tracing_ThreadAcquireLock( SCOREP_Location*    location,

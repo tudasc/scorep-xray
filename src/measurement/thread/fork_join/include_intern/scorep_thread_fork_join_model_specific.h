@@ -7,7 +7,7 @@
  * Copyright (c) 2014,
  * Technische Universitaet Dresden, Germany
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -29,51 +29,14 @@
 #include <stdint.h>
 
 struct SCOREP_Location;
+struct scorep_thread_private_data;
 
-/*************** Model-specific threading functions ******************/
-/**
- * @name Model-specific threading functions. To be implemented for
- * every supported threading model. For most of the generic thread
- * functions SCOREP_Thread_<Foo> there is a scorep_thread_on_<foo>
- * counterpart that is called by SCOREP_Thread_<Foo>.
- */
-/**@{*/
-
-
-/**
- * Return the current thread's SCOREP_Thread_PrivateData object. This
- * function is supposed to return a valid object, never 0. The object
- * is usually accessed via a model-specific thread-local-storage
- * mechanism.
- */
-struct scorep_thread_private_data*
-scorep_thread_get_private_data();
-
-
-/**
- * Initialize the model-specific @a modelData part attached to the
- * SCOREP_Thread_PrivateData @a tpd object.
- */
 void
-scorep_thread_on_create_private_data( struct scorep_thread_private_data* tpd,
-                                      void*                              modelData );
+scorep_thread_create_first_fork_locations_mutex();
 
 
-/**
- * Perform the model-specific part of the initialization of the
- * threading subsystem, e.g., make @a initialTpd available via a
- * thread-local-storage mechanism.
- */
 void
-scorep_thread_on_initialize( struct scorep_thread_private_data* initialTpd );
-
-
-/**
- * Perform the model-specific part of the finalization of the
- * threading subsystem.
- */
-void
-scorep_thread_on_finalize( struct scorep_thread_private_data* initialTpd );
+scorep_thread_destroy_first_fork_locations_mutex();
 
 
 /**
@@ -176,46 +139,35 @@ scorep_thread_on_team_begin( struct scorep_thread_private_data*  parentTpd,
  * object.
  */
 void
-scorep_thread_on_end( struct scorep_thread_private_data*  currentTpd,
-                      struct scorep_thread_private_data** parentTpd,
-                      SCOREP_ParadigmType                 paradigm );
-
-
-
-/**
- * Returns the size in bytes of the model-specific object embedded into
- * each scorep_thread_private_data object.
- */
-size_t
-scorep_thread_get_sizeof_model_data();
+scorep_thread_on_team_end( struct scorep_thread_private_data*  currentTpd,
+                           struct scorep_thread_private_data** parentTpd,
+                           SCOREP_ParadigmType                 paradigm );
 
 
 /**
- * Delete all SCOREP_Thread_PrivateData objects created in
- * SCOREP_Thread_OnBegin() events, starting at @a tpd (usually a tree
- * structure).
+ *
+ *
+ *
+ * @return
  */
-void
-scorep_thread_delete_private_data( struct scorep_thread_private_data* tpd );
-
-
 uint32_t
-scorep_thread_get_team_size();
+scorep_thread_get_team_size( void );
 
 
+/**
+ *
+ *
+ * @param locationName
+ * @param locationNameMaxLength
+ * @param threadId
+ * @param parentTpd
+ */
 void
 scorep_thread_create_location_name( char*                              locationName,
                                     int                                locationNameMaxLength,
                                     int                                threadId,
                                     struct scorep_thread_private_data* parentTpd );
 
-
-/**
- * Return the corresponding SCOREP_ParadigmType. External/callback threading
- * models are supposed to return SCOREP_PARADIGM_THREAD_FORK_JOIN.
- */
-SCOREP_ParadigmType
-scorep_thread_get_paradigm( void );
 
 /**@}*/
 

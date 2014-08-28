@@ -405,6 +405,25 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
     SCOREP_SCORE_EVENT_THREAD_TASK_SWITCH;
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadTaskSwitch",
                                                                           region_list ) );
+    region_list.clear();
+    SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_CREATE;
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadCreate",
+                                                                          region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_BEGIN;
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadBegin",
+                                                                          region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_WAIT;
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadWait",
+                                                                          region_list ) );
+
+    region_list.clear();
+    SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_END;
+    SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_PrefixMatchEvent( "ThreadEnd",
+                                                                          region_list ) );
 #undef SCOREP_SCORE_EVENT
 
     calculate_event_sizes();
@@ -548,7 +567,7 @@ SCOREP_Score_Estimator::printGroups( void )
     uint64_t max_buf;
     uint64_t total_buf;
     uint64_t memory_req;
-
+    uint64_t value = 2 * 1024 * 1024;
     if ( m_has_filter )
     {
         max_buf   = m_filtered[ SCOREP_SCORE_TYPE_ALL ]->getMaxTraceBufferSize();
@@ -563,7 +582,9 @@ SCOREP_Score_Estimator::printGroups( void )
     /* Estimate definition size by profile size and add a minimum of 4 MB. */
     memory_req = m_profile->getFileSize() /
                  ( m_profile->getNumberOfProcesses() * m_profile->getNumberOfMetrics() );
-    memory_req = ( max_buf + memory_req + 4 * 1024 * 1024 );
+    memory_req = max_buf + memory_req;
+    memory_req = value > memory_req ? value : memory_req;
+    memory_req = memory_req + value*  m_profile->getMaxNumberOfLocationsPerProcess();
 
     cout << endl;
     cout << "Estimated aggregate size of event trace:                   "
@@ -579,7 +600,7 @@ SCOREP_Score_Estimator::printGroups( void )
 
     quicksort( m_groups, SCOREP_SCORE_TYPE_NUM );
 
-    // The first group is "ALL", whose widths are maximal
+    // The first group is "ALL"
     m_groups[ 0 ]->updateWidths( m_widths );
     cout << "flt"
          << " " << setw( m_widths.m_type ) << "type"

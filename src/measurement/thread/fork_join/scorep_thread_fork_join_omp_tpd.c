@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -34,7 +34,8 @@
  */
 
 #include <config.h>
-#include <scorep_thread_fork_join_generic.h>
+#include <scorep_thread_generic.h>
+#include <scorep_thread_model_specific.h>
 #include <scorep_thread_fork_join_model_specific.h>
 
 #include <SCOREP_Timing.h>
@@ -85,9 +86,6 @@ SCOREP_PRAGMA_OMP( threadprivate( POMP_TPD_MANGLED ) )
 
 typedef struct scorep_thread_private_data scorep_thread_private_data;
 
-static scorep_thread_private_data* initial_tpd;
-static SCOREP_Location*            initial_location;
-
 /* *INDENT-OFF* */
 static void set_tpd_to( scorep_thread_private_data* newTpd );
 /* *INDENT-ON* */
@@ -124,12 +122,11 @@ scorep_thread_on_initialize( scorep_thread_private_data* initialTpd )
 {
     UTILS_BUG_ON( initialTpd == 0, "" );
     UTILS_BUG_ON( scorep_thread_get_model_data( initialTpd ) == 0, "" );
-    UTILS_BUG_ON( initial_tpd != 0, "" );
-    UTILS_BUG_ON( initial_location != 0, "" );
+
+    scorep_thread_create_first_fork_locations_mutex();
 
     set_tpd_to( initialTpd );
-    initial_tpd      = initialTpd;
-    initial_location = scorep_thread_get_location( initialTpd );
+    UTILS_BUG_ON( TPD == 0, "" );
     /* From here on it is save to call SCOREP_Location_GetCurrentCPULocation(). */
 }
 
@@ -152,8 +149,7 @@ scorep_thread_on_finalize( scorep_thread_private_data* tpd )
 {
     scorep_thread_private_data_omp_tpd* model_data = scorep_thread_get_model_data( tpd );
     UTILS_BUG_ON( model_data->parent_reuse_count != 0, "" );
-    initial_tpd      = 0;
-    initial_location = 0;
+    scorep_thread_destroy_first_fork_locations_mutex();
 }
 
 
@@ -255,28 +251,22 @@ scorep_thread_on_team_begin( scorep_thread_private_data*  parentTpd,
         *locationIsCreated = false;
 
         /* Set TPD to a child of itself, create new one if necessary */
-        UTILS_BUG_ON( *threadId >= parent_model_data->n_children, "" );
+        UTILS_BUG_ON( *threadId >= parent_model_data->n_children,
+                      "More threads created than requested: %u >= %u",
+                      *threadId, parent_model_data->n_children );
 
         *currentTpd = parent_model_data->children[ *threadId ];
 
-        if ( *currentTpd != 0 )
-        {
-            /* Previously been in this thread. */
-            SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( scorep_thread_get_location( *currentTpd ) );
-        }
-        else
+        if ( *currentTpd == 0 )
         {
             /* Never been here before. */
-            *currentTpd =
-                scorep_thread_create_private_data( parentTpd );
-            parent_model_data->children[ *threadId ] = *currentTpd;
+
+            SCOREP_Location* location;
 
             if ( *threadId == 0 )
             {
                 /* for the master, reuse parents location data. */
-                scorep_thread_set_location( *currentTpd, scorep_thread_get_location( parentTpd ) );
-
-                SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( scorep_thread_get_location( *currentTpd ) );
+                location = scorep_thread_get_location( parentTpd );
             }
             else
             {
@@ -284,7 +274,7 @@ scorep_thread_on_team_begin( scorep_thread_private_data*  parentTpd,
                 {
                     /* For the first fork, use locations created in order corresponding to threadId. */
                     UTILS_ASSERT( firstForkLocations[ *threadId - 1 ] );
-                    scorep_thread_set_location( *currentTpd, firstForkLocations[ *threadId - 1 ] );
+                    location = firstForkLocations[ *threadId - 1 ];
                 }
                 else
                 {
@@ -292,21 +282,25 @@ scorep_thread_on_team_begin( scorep_thread_private_data*  parentTpd,
                      * create locations on a first comes, first served basis. */
                     char location_name[ 80 ];
                     scorep_thread_create_location_name( location_name, 80, *threadId, parentTpd );
-                    scorep_thread_set_location( *currentTpd,
-                                                SCOREP_Location_CreateCPULocation( scorep_thread_get_location( parentTpd ),
-                                                                                   location_name,
-                                                                                   /* deferNewLocationNotification = */ true ) );
+                    location = SCOREP_Location_CreateCPULocation( scorep_thread_get_location( parentTpd ),
+                                                                  location_name,
+                                                                  /* deferNewLocationNotification = */ true );
                 }
                 /* We need to assign *currentTpd to the TPD first, before we
                  * can notify about the new location. */
                 *locationIsCreated = true;
-
-                SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( scorep_thread_get_location( *currentTpd ) );
             }
+
+            *currentTpd =
+                scorep_thread_create_private_data( parentTpd, location );
+            scorep_thread_set_location( *currentTpd, location );
+            parent_model_data->children[ *threadId ] = *currentTpd;
         }
 
         set_tpd_to( *currentTpd );
     }
+
+    SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( scorep_thread_get_location( *currentTpd ) );
 }
 
 
@@ -327,12 +321,12 @@ scorep_thread_create_location_name( char*                       locationName,
         return;
     }
     /* Nesting */
-    else if ( parent_location == initial_location )
+    else if ( parent_location == scorep_thread_get_location( scorep_thread_get_initial_tpd() ) )
     {
         /* Children of master */
         length = 12;
         strncpy( locationName, "OMP thread 0", length + 1 );
-        while ( tpd && tpd != initial_tpd )
+        while ( tpd && !scorep_thread_is_initial_thread( tpd ) )
         {
             length += 2;
             UTILS_ASSERT( length < locationNameMaxLength );
@@ -367,9 +361,9 @@ scorep_thread_get_private_data()
 
 
 void
-scorep_thread_on_end( scorep_thread_private_data*  currentTpd,
-                      scorep_thread_private_data** parentTpd,
-                      SCOREP_ParadigmType          paradigm )
+scorep_thread_on_team_end( scorep_thread_private_data*  currentTpd,
+                           scorep_thread_private_data** parentTpd,
+                           SCOREP_ParadigmType          paradigm )
 {
     UTILS_BUG_ON( currentTpd != TPD, "" );
     UTILS_BUG_ON( paradigm != SCOREP_PARADIGM_OPENMP, "" );
@@ -421,9 +415,11 @@ scorep_thread_on_join( scorep_thread_private_data*  currentTpd,
 SCOREP_Location*
 SCOREP_Location_GetCurrentCPULocation()
 {
-    UTILS_BUG_ON( TPD == 0, "" );
+    UTILS_BUG_ON( TPD == 0, "Invalid OpenMP thread specific data object. "
+                  "Please ensure that all omp parallel regions are instrumented." );
     SCOREP_Location* location = scorep_thread_get_location( TPD );
-    UTILS_BUG_ON( location == 0, "" );
+    UTILS_BUG_ON( location == 0, "Invalid location object associated with "
+                  "OpenMP thread specific data object." );
     return location;
 }
 
@@ -431,18 +427,6 @@ SCOREP_Location_GetCurrentCPULocation()
 void
 scorep_thread_delete_private_data( scorep_thread_private_data* tpd )
 {
-    UTILS_ASSERT( tpd != 0 );
-
-    scorep_thread_private_data_omp_tpd* model_data = scorep_thread_get_model_data( tpd );
-
-    for ( uint32_t i = 0; i < model_data->n_children; ++i )
-    {
-        if ( model_data->children[ i ] != 0 )
-        {
-            scorep_thread_delete_private_data( model_data->children[ i ] );
-        }
-    }
-    free( tpd );
 }
 
 

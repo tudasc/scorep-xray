@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -54,6 +54,7 @@ typedef enum
 {
     SCOREP_REWIND_PARADIGM_MPI,
     SCOREP_REWIND_PARADIGM_THREAD_FORK_JOIN,
+    SCOREP_REWIND_PARADIGM_THREAD_CREATE_WAIT,
     SCOREP_REWIND_PARADIGM_MAX
 } SCOREP_Rewind_Paradigm;
 

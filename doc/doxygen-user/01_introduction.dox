@@ -71,7 +71,7 @@ tracing data and the new CUBE4 profiling data format which allow a
 better scaling of the tools with respect to both the run time of the
 process to be analyzed and the number of cores to be used.
 
-@scorep supports the following programming paradigms:
+@@scorep supports the following programming paradigms:
 <dl>
 <dt>Multi-process paradigms:</dt>
 <dd><ul>
@@ -81,6 +81,7 @@ process to be analyzed and the number of cores to be used.
 <dt>Thread-parallel paradigms:</dt>
 <dd><ul>
   <li>@emph{OpenMP}</li>
+  <li>@emph{Pthreads}</li>
 </ul></dd>
 <dt>Accelerator-based paradigms:</dt>
 <dd><ul>
@@ -247,7 +248,8 @@ instrumentation. These are currently:
  <li> MPI and SHMEM library interposition, </li>
  <li> source code instrumentation via the TAU instrumenter, </li>
  <li> OpenMP source code instrumentation using Opari2. </li>
- <li> binary instrumentation using Cobi
+ <li> Pthread instrumentation via GNU ld library wrapping. </li>
+ <li> binary instrumentation using Cobi </li>
  <li> CUDA instrumentation</li>
 </ul>
 

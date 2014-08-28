@@ -72,6 +72,8 @@
  */
 static SCOREP_Mutex scorep_profile_location_mutex;
 
+static SCOREP_RegionHandle thread_create_wait_regions;
+
 /* ***************************************************************************************
    internal helper functions
 *****************************************************************************************/
@@ -160,6 +162,16 @@ SCOREP_Profile_Initialize( void )
     UTILS_FOOL_LINKER( SCOREP_Profile_Tasking );
 
     UTILS_ASSERT( scorep_profile_param_instance );
+
+    SCOREP_SourceFileHandle file = SCOREP_Definitions_NewSourceFile( "THREADS" );
+    thread_create_wait_regions = SCOREP_Definitions_NewRegion(
+        "THREADS",
+        NULL,
+        file,
+        SCOREP_INVALID_LINE_NO,
+        SCOREP_INVALID_LINE_NO,
+        SCOREP_PARADIGM_THREAD_CREATE_WAIT,
+        SCOREP_REGION_ARTIFICIAL /* SCOREP_REGION_PARALLEL ? */ );
 }
 
 void
@@ -823,4 +835,56 @@ SCOREP_Profile_ThreadJoin( SCOREP_Location* locationData )
     SCOREP_Profile_LocationData* location =
         SCOREP_Location_GetProfileData( locationData );
     scorep_profile_remove_fork_node( location );
+}
+
+
+void
+SCOREP_Profile_ThreadCreate( SCOREP_Location* threadData,
+                             uint32_t         createSequenceCount )
+{
+    /* Variant 1: Link current node (which is root of this location) to creator
+     * node like in fork-join threading. */
+    //SCOREP_Profile_ThreadFork( threadData, 1, createSequenceCount );
+
+    /* Variant 2: Consider new thread as asynchronous, do not link current node
+     * to creator node, i.e. do nothing */
+}
+
+
+void
+SCOREP_Profile_ThreadWait( SCOREP_Location* threadData,
+                           uint32_t         createSequenceCount )
+{
+    /* Variant 1: see SCOREP_Profile_ThreadCreate() */
+    //SCOREP_Profile_ThreadJoin( threadData );
+
+    /* Variant 2: do nothing, see SCOREP_Profile_ThreadCreate() */
+}
+
+void
+SCOREP_Profile_ThreadBegin( SCOREP_Location*                 location,
+                            uint64_t                         timestamp,
+                            SCOREP_ParadigmType              paradigm,
+                            SCOREP_InterimCommunicatorHandle threadTeam,
+                            uint32_t                         createSequenceCount )
+{
+    SCOREP_Profile_Enter( location,
+                          thread_create_wait_regions,
+                          SCOREP_RegionHandle_GetType( thread_create_wait_regions ),
+                          timestamp,
+                          0 );
+}
+
+
+void
+SCOREP_Profile_ThreadEnd( SCOREP_Location*                 location,
+                          uint64_t                         timestamp,
+                          SCOREP_ParadigmType              paradigm,
+                          SCOREP_InterimCommunicatorHandle threadTeam,
+                          uint32_t                         createSequenceCount )
+{
+    SCOREP_Profile_Exit( location,
+                         thread_create_wait_regions,
+                         timestamp,
+                         0 );
 }

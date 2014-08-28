@@ -72,7 +72,9 @@ define_location( SCOREP_DefinitionManager* definition_manager,
                  SCOREP_StringHandle       nameHandle,
                  SCOREP_LocationType       locationType,
                  uint64_t                  numberOfEvents,
-                 uint64_t                  locationGroupId );
+                 uint64_t                  locationGroupId,
+                 size_t                    sizeOfPayload,
+                 void**                    payloadOut );
 
 /**
  * Registers a new location into the definitions.
@@ -81,7 +83,9 @@ define_location( SCOREP_DefinitionManager* definition_manager,
  */
 SCOREP_LocationHandle
 SCOREP_Definitions_NewLocation( SCOREP_LocationType type,
-                                const char*         name )
+                                const char*         name,
+                                size_t              sizeOfPayload,
+                                void**              payload )
 {
     SCOREP_Definitions_Lock();
 
@@ -91,7 +95,8 @@ SCOREP_Definitions_NewLocation( SCOREP_LocationType type,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
             name ? name : "" ),
-        type, 0, 0 );
+        type, 0, 0,
+        sizeOfPayload, payload );
 
     SCOREP_Definitions_Unlock();
 
@@ -115,7 +120,8 @@ scorep_definitions_unify_location( SCOREP_LocationDef*           definition,
             handlesPageManager ),
         definition->location_type,
         definition->number_of_events,
-        definition->location_group_id );
+        definition->location_group_id,
+        0, NULL );
 }
 
 
@@ -133,14 +139,24 @@ define_location( SCOREP_DefinitionManager* definition_manager,
                  SCOREP_StringHandle       nameHandle,
                  SCOREP_LocationType       locationType,
                  uint64_t                  numberOfEvents,
-                 uint64_t                  locationGroupId )
+                 uint64_t                  locationGroupId,
+                 size_t                    sizeOfPayload,
+                 void**                    payloadOut )
 {
     UTILS_ASSERT( definition_manager );
 
     SCOREP_LocationDef*   new_definition = NULL;
     SCOREP_LocationHandle new_handle     = SCOREP_INVALID_LOCATION;
 
-    SCOREP_DEFINITION_ALLOC( Location );
+    if ( payloadOut )
+    {
+        *payloadOut = NULL;
+    }
+
+    size_t payload_offset = SCOREP_Allocator_RoundupToAlignment( sizeof( SCOREP_LocationDef ) );
+    new_handle     = SCOREP_Memory_AllocForDefinitions( NULL, payload_offset + sizeOfPayload );
+    new_definition = SCOREP_LOCAL_HANDLE_DEREF( new_handle, Location );
+    SCOREP_INIT_DEFINITION_HEADER( new_definition );
 
     /* locations wont be unfied, therefore no hash value needed */
     new_definition->global_location_id = globalLocationId;
@@ -151,6 +167,11 @@ define_location( SCOREP_DefinitionManager* definition_manager,
 
     /* Does return if it is a duplicate */
     SCOREP_DEFINITIONS_MANAGER_ADD_DEFINITION( Location, location );
+
+    if ( payloadOut )
+    {
+        *payloadOut = ( char* )new_definition + payload_offset;
+    }
 
     return new_handle;
 }

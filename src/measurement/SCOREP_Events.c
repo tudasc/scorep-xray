@@ -1171,9 +1171,9 @@ SCOREP_ThreadAcquireLock( SCOREP_ParadigmType paradigm,
                           uint32_t            lockId,
                           uint32_t            acquisitionOrder )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
+
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
     /* Nothing to do for profiling. */
@@ -1198,9 +1198,8 @@ SCOREP_ThreadReleaseLock( SCOREP_ParadigmType paradigm,
                           uint32_t            lockId,
                           uint32_t            acquisitionOrder )
 {
-    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-    /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 

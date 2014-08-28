@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -42,11 +42,12 @@
 #include <assert.h>
 #include <inttypes.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <SCOREP_Mutex.h>
 #include "scorep_subsystem.h"
 #include "scorep_status.h"
-#include <SCOREP_ThreadForkJoin_Mgmt.h>
+#include <SCOREP_Thread_Mgmt.h>
 #include <SCOREP_Definitions.h>
 #include <definitions/SCOREP_Definitions.h>
 
@@ -93,11 +94,18 @@ scorep_location_create_location( SCOREP_Location*    parent,
     size_t           total_memory = sizeof( *new_location )
                                     + ( sizeof( *new_location->per_subsystem_data )
                                         * scorep_subsystems_get_number() );
-    // Need synchronized malloc here
-    new_location = calloc( 1, total_memory );
-    assert( new_location );
 
-    // Locking done in SCOREP_Allocator_CreatePageManager
+    /* Trigger the definition for this new location and let it allocate
+       also the SCOREP_Location, will abort on out-of-memory */
+    SCOREP_LocationHandle location_handle = SCOREP_Definitions_NewLocation(
+        type,
+        name,
+        total_memory,
+        ( void* )&new_location );
+    memset( new_location, 0, total_memory );
+    new_location->location_handle = location_handle;
+
+    /* Locking done in SCOREP_Allocator_CreatePageManager */
     SCOREP_Memory_CreatePageManagers( new_location->page_managers );
 
     new_location->type = type;
@@ -115,11 +123,6 @@ scorep_location_create_location( SCOREP_Location*    parent,
     }
 
     new_location->next = NULL;
-
-    /* Trigger the definition for this new location */
-    new_location->location_handle = SCOREP_Definitions_NewLocation(
-        type,
-        name );
 
     SCOREP_ErrorCode result = SCOREP_MutexLock( scorep_location_list_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
@@ -289,15 +292,6 @@ SCOREP_Location_Finalize( void )
 {
     assert( !SCOREP_Thread_InParallel() );
 
-    SCOREP_Location* location_data = location_list_head;
-    while ( location_data )
-    {
-        SCOREP_Location* tmp = location_data->next;
-
-        free( location_data );
-
-        location_data = tmp;
-    }
     location_list_head = 0;
     location_list_tail = &location_list_head;
 
@@ -329,6 +323,7 @@ SCOREP_Location_GetTracingData( SCOREP_Location* locationData )
 {
     return locationData->tracing_data;
 }
+
 
 uint64_t
 SCOREP_Location_GetGlobalId( SCOREP_Location* locationData )

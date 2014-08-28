@@ -40,6 +40,12 @@ following kinds of events:
     @openmp source code. In addition, the application must be linked with the @scorep
     @openmp (or hybrid) measurement library.
   </li>
+
+    <li>
+    <b>Pthread library calls</b>:<br>
+    The @scorep measurement system uses GNU linker for instrumentation
+    of Pthreads library calls. At the moment only a few library calls are supported.
+  </li>
 </ul>
 
 The @scorep instrumenter command <tt>scorep</tt> automatically takes
@@ -47,6 +53,15 @@ care of compilation and linking to produce an instrumented executable,
 and should be prefixed to compile and link commands.  Often this only
 requires prefixing definitions for @verb{CC} or @verb{MPICC} (and
 equivalents) in Makefiles.
+
+Usually the @scorep instrumenter <tt>scorep</tt> is able to
+automatically detect the programming paradigm from the set of compile
+and link options given to the compiler. In some cases however, when
+the compiler or compiler wrapper enables specific programming paradigm
+by default (e.g., Pthreads on Cray and Blue Gene/Q systems),
+<tt>scorep</tt> needs to be made aware of the programming paradigm in
+order to do the correct instrumentation. Please see <tt>scorep
+--help</tt> for the available options.
 
 When using Makefiles, it is often convenient to define a "preparation preposition"
 placeholder (e.g., <tt>PREP</tt>) which can be prefixed to (selected)
@@ -87,7 +102,7 @@ When compiling without the @scorep instrumenter, the
 linker flags and libraries, or include paths:
 @verbatim
     scorep-config [--mpp=none|--mpp=mpi|--mpp=shmem] \
-                  [--thread=none|--thread=omp] --libs
+    [--thread=none|--thread=omp|--thread=pthread] --libs
 @endverbatim
 
 The @verb--mpp=<paradigm> switch selects which message passing paradigm is used.
@@ -95,8 +110,8 @@ Currently, @scorep supports applications using MPI ( @verb--mpp=mpi ) or SHMEM
 ( @verb--mpp=shmem ) and applications without any message passing paradigm.
 It is not possible to specify two message passing systems for the same application.
 The @verb--thread=<paradigm> switch selects which threading system is used in
-Score-P. You may use OpenMP ( @verb--thread=omp ) or no threading system
-( @verb--thread=none ). It is not possible to specify two threading systems
+Score-P. You may use OpenMP ( @verb--thread=omp ), no threading system
+( @verb--thread=none ) or POSIX threading system ( @verb--thread=pthread ). It is not possible to specify two threading systems
 for the same application. However, you may combine a message passing system with
 a threading system.
 
@@ -143,6 +158,7 @@ source routines and arbitrary regions, in addition to fully-automatic
 	    MPI & {\ttfamily -\/-\/mpp=mpi/ \newline -\/-\/mpp=none} & (auto) &  configured by install & see Sec. \ref{sec:mpi_groups}  \\ \hline
 	    SHMEM & {\ttfamily -\/-\/mpp=shmem/ \newline -\/-\/mpp=none} & (auto) &  configured by install & --  \\ \hline
 	    OpenMP & {\ttfamily -\/-\/thread=omp/ \newline -\/-\/thread=none} & (auto) &  all parallel constructs &  --  \\ \hline
+	    Pthread & {\ttfamily -\/-\/thread= \newline pthread} & (auto) &  Basic Pthread library calls &  --  \\ \hline
 	    Compiler, Sec. \ref{sec:compiler_instrumentation} & {\ttfamily -\/-\/compiler/ \newline -\/-\/nocompiler} & enabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    PDT,\newline Sec. \ref{sec:tau_instrumentation} & {\ttfamily -\/-\/pdt/ \newline -\/-\/nopdt} & disabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    POMP2 user regions, Sec. \ref{sec:pomp_instrumentation} & {\ttfamily -\/-\/pomp/ \newline -\/-\/nopomp} & depends on OpenMP usage &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}  \\ \hline
@@ -180,6 +196,13 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="center" valign="middle"> --thread=omp </td>
       <td align="center" valign="middle"> (auto) </td>
       <td align="center" valign="middle"> all parallel constructs </td>
+      <td align="center" valign="middle"> &mdash; </td>
+    </tr>
+    <tr>
+      <td align="left" valign="middle"> Pthread </td>
+      <td align="center" valign="middle"> --thread=pthread </td>
+      <td align="center" valign="middle"> (auto) </td>
+      <td align="center" valign="middle"> Basic Pthread library calls  </td>
       <td align="center" valign="middle"> &mdash; </td>
     </tr>
     <tr>
@@ -257,9 +280,9 @@ measurement system. For the standard use case there is no need to specify an
 explicit locking mode. However, on certain systems or for performance
 reasons it might be useful to change the locking mode. For
 these cases the instrumenter provides the option
- @verb{--mutex=[omp|pthread|pthread:spinlock|none]}.
+ @verb{--mutex=[omp|pthread|pthread:spinlock|pthread:wrap|none]}.
 Current possibilities are  the OpenMP locking (omp), Pthread mutex
-(pthread), Pthread spinlock (pthread:spinlock) and none at all (none). Which of
+(pthread), Pthread spinlock (pthread:spinlock), Pthread mutex, where original functions replaced with __real functions (pthread:wrap), and none at all (none). Which of
 these are available for a given installation will be determined at configure time.
 
 @note Not all combinations of thread model and explicit choice of locking

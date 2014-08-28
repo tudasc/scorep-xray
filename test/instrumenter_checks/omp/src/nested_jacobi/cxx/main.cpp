@@ -18,7 +18,7 @@ using namespace std;
 
 // setting values, init mpi, omp etc
 void
-Init( JacobiData &data, int &argc, char** argv )
+Init( JacobiData& data, int& argc, char** argv )
 {
     int   ITERATIONS = 1000;
     char* env        = getenv( "ITERATIONS" );
@@ -90,7 +90,7 @@ Init( JacobiData &data, int &argc, char** argv )
 
 // final cleanup routines
 void
-Finish( JacobiData &data )
+Finish( JacobiData& data )
 {
     delete[] data.afU;
     delete[] data.afF;
@@ -102,7 +102,7 @@ Finish( JacobiData &data )
 //is needed for tests and it must be in this source
 //file to avoid inlining
 void
-update_residual( double &residual, double fLRes )
+update_residual( double& residual, double fLRes )
 {
     residual += fLRes * fLRes;
     return;
@@ -110,7 +110,7 @@ update_residual( double &residual, double fLRes )
 
 // print result summary
 void
-PrintResults( const JacobiData &data )
+PrintResults( const JacobiData& data )
 {
     if ( data.iMyRank == 0 )
     {
@@ -128,7 +128,7 @@ PrintResults( const JacobiData &data )
 // Initializes matrix
 // Assumes exact solution is u(x,y) = (1-x^2)*(1-y^2)
 void
-InitializeMatrix( JacobiData &data )
+InitializeMatrix( JacobiData& data )
 {
     /* Initilize initial condition and RHS */
 #pragma omp parallel for
@@ -152,7 +152,7 @@ InitializeMatrix( JacobiData &data )
 
 // Checks error between numerical and exact solution
 void
-CheckError( JacobiData &data )
+CheckError( JacobiData& data )
 {
     double error = 0.0;
 

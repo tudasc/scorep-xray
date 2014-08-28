@@ -331,6 +331,9 @@ AC_CONFIG_FILES([../installcheck/instrumenter_checks/Makefile.common_rules:../te
                  ../installcheck/instrumenter_checks/serial/Makefile:../test/instrumenter_checks/serial/Makefile.in
                  ../installcheck/instrumenter_checks/omp/Makefile:../test/instrumenter_checks/omp/Makefile.in
                  ../src/scorep_config_tool_backend.h:../src/tools/config/scorep_config_tool_backend.h.in])
+AM_COND_IF([HAVE_GNU_LINKER],
+    [AM_COND_IF([HAVE_PTHREAD],
+         [AC_CONFIG_FILES([../installcheck/instrumenter_checks/create_wait/pthread/Makefile:../test/instrumenter_checks/create_wait/pthread/Makefile.in])])])
 AC_CONFIG_FILES([../test/adapters/cuda/run_cuda_test.sh], \
                 [chmod +x ../test/adapters/cuda/run_cuda_test.sh])
 AC_CONFIG_FILES([../test/adapters/user/C/run_phase_test.sh], \

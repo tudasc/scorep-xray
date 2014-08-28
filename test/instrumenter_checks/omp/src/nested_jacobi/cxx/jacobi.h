@@ -44,17 +44,17 @@ struct JacobiData
 
 // jacobi calculation routine
 void
-Jacobi( JacobiData &data );
+Jacobi( JacobiData& data );
 
 // final cleanup routines
 void
-Finish( JacobiData &data );
+Finish( JacobiData& data );
 
 // routine to update the residual
 // needed to have a function call
 // in the parallel region for tests
 void
-update_residual( double &residual,
+update_residual( double& residual,
                  double  fLRes );
 
 #endif

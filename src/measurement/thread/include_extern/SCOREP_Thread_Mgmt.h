@@ -1,10 +1,10 @@
-#ifndef SCOREP_THREAD_FORK_JOIN_MGMT_H_
-#define SCOREP_THREAD_FORK_JOIN_MGMT_H_
+#ifndef SCOREP_THREAD_MGMT_H_
+#define SCOREP_THREAD_MGMT_H_
 
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -21,7 +21,6 @@
 
 #include <stdbool.h>
 
-struct SCOREP_Location;
 
 /**
  * Initialize the threading subsystem, call from initial thread,
@@ -29,7 +28,7 @@ struct SCOREP_Location;
  * thread-local access.
  */
 void
-SCOREP_ThreadForkJoin_Initialize( void );
+SCOREP_Thread_Initialize( void );
 
 
 /**
@@ -37,7 +36,7 @@ SCOREP_ThreadForkJoin_Initialize( void );
  * e.g. for scorep_finalize().
  */
 void
-SCOREP_ThreadForkJoin_Finalize( void );
+SCOREP_Thread_Finalize( void );
 
 
 /**
@@ -48,4 +47,4 @@ bool
 SCOREP_Thread_InParallel( void );
 
 
-#endif /* SCOREP_THREAD_FORK_JOIN_MGMT_H_ */
+#endif /* SCOREP_THREAD_MGMT_H_ */

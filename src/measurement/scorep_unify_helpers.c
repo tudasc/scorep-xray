@@ -114,7 +114,7 @@ scorep_unify_helper_define_comm_locations( SCOREP_GroupType type,
     if ( 0 == rank )
     {
         /*
-         * Don't define this in the unified manager, it distrurbs greatly
+         * Don't define this in the unified manager, it disturbs greatly
          * the string mapping
          */
         SCOREP_Definitions_NewGroup( type,

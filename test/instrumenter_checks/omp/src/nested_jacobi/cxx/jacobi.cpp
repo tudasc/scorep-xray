@@ -33,7 +33,7 @@ using namespace std;
 #define UOLD( j, i ) uold[ ( ( j ) - data.iRowFirst ) * data.iCols + ( i ) ]
 
 void
-Jacobi( JacobiData &data )
+Jacobi( JacobiData& data )
 {
     /*use local pointers for performance reasons*/
     double* afU, * afF;
@@ -51,7 +51,7 @@ Jacobi( JacobiData &data )
         double b        = -2.0 * ( ax + ay ) - data.fAlpha; /* Central coeff */
         double residual = 10.0 * data.fTolerance;
 
-        while ( data.iIterCount < data.iIterMax && residual > data.fTolerance )
+        while ( data.iIterCount < data.iIterMax&& residual > data.fTolerance )
         {
             SCOREP_USER_REGION_BEGIN( scorep_iteration, "ITERATION",
                                       SCOREP_USER_REGION_TYPE_DYNAMIC );

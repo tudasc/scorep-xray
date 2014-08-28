@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license.  See the COPYING file in the package base
+ * a BSD-style license. See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -322,12 +322,33 @@
 #define SCOREP_SCORE_EVENT_THREAD_TASK_SWITCH \
     SCOREP_SCORE_EVENT( "!$omp task" )
 
+// In case of "pthread_mutex_trylock"
+// it is unknown how many times locks were locked
+// but amount of unlocks is reliable
 #define SCOREP_SCORE_EVENT_THREAD_ACQUIRELOCK \
     SCOREP_SCORE_EVENT( "omp_set_lock" ) \
-    SCOREP_SCORE_EVENT( "omp_set_nest_lock" )
+    SCOREP_SCORE_EVENT( "omp_set_nest_lock" ) \
+    SCOREP_SCORE_EVENT( "pthread_mutex_unlock" ) \
+    SCOREP_SCORE_EVENT( "pthread_cond_wait" ) \
+    SCOREP_SCORE_EVENT( "pthread_cond_timedwait" )
 
 #define SCOREP_SCORE_EVENT_THREAD_RELEASELOCK \
     SCOREP_SCORE_EVENT( "omp_unset_lock" ) \
-    SCOREP_SCORE_EVENT( "omp_unset_nest_lock" )
+    SCOREP_SCORE_EVENT( "omp_unset_nest_lock" ) \
+    SCOREP_SCORE_EVENT( "pthread_mutex_unlock" ) \
+    SCOREP_SCORE_EVENT( "pthread_cond_wait" ) \
+    SCOREP_SCORE_EVENT( "pthread_cond_timedwait" )
+
+#define SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_CREATE \
+    SCOREP_SCORE_EVENT( "pthread_create" )
+
+#define SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_BEGIN \
+    SCOREP_SCORE_EVENT( "pthread_create" )
+
+#define SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_WAIT \
+    SCOREP_SCORE_EVENT( "pthread_join" )
+
+#define SCOREP_SCORE_EVENT_THREAD_CREATE_WAIT_END \
+    SCOREP_SCORE_EVENT( "pthread_create" )
 
 #endif

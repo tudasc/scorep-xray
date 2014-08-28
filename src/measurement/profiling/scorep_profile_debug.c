@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -43,7 +43,7 @@
 
 #include <scorep_ipc.h>
 #include <scorep_runtime_management.h>
-#include <SCOREP_ThreadForkJoin_Mgmt.h>
+#include <SCOREP_Thread_Mgmt.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

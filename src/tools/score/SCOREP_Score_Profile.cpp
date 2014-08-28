@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -221,6 +221,20 @@ SCOREP_Score_Profile::getNumberOfMetrics()
     return m_cube->get_metv().size();
 }
 
+uint64_t
+SCOREP_Score_Profile::getMaxNumberOfLocationsPerProcess()
+{
+    vector<LocationGroup*> loc_group =    m_cube->get_procv();
+    uint64_t               max       = 0;
+    uint64_t               val;
+    for ( uint64_t i = 0; i < loc_group.size(); i++ )
+    {
+        val = loc_group[ i ]->num_children();
+        max = val > max ? val : max;
+    }
+    return max;
+}
+
 void
 SCOREP_Score_Profile::print()
 {
@@ -267,6 +281,10 @@ SCOREP_Score_Profile::get_definition_type( uint64_t region )
     if ( name.substr( 0, 6 ) == "!$omp " )
     {
         return SCOREP_SCORE_TYPE_OMP;
+    }
+    if ( name.substr( 0, 8 ) == "pthread_" )
+    {
+        return SCOREP_SCORE_TYPE_PTHREAD;
     }
     else
     {

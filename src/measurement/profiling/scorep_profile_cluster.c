@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -54,7 +54,7 @@
 #include <scorep_runtime_management.h> /* SCOREP_GetExperimentDirName() */
 #include <scorep_environment.h>
 #include <scorep_ipc.h>
-#include <SCOREP_ThreadForkJoin_Mgmt.h>
+#include <SCOREP_Thread_Mgmt.h>
 #include <math.h>                      /* sqrt() and log10() */
 #include <float.h>                     /* DBL_MAX */
 #include <string.h>                    /* strlen() */

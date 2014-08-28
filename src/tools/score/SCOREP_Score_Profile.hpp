@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -124,6 +124,12 @@ public:
      */
     uint64_t
     getNumberOfProcesses( void );
+
+    /**
+     * Returns the number of locations.
+     */
+    uint64_t
+    getMaxNumberOfLocationsPerProcess( void );
 
     /**
      * Returns the number of metric definitions.

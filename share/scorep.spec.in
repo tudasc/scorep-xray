@@ -967,6 +967,147 @@
                     </metric>
                 </metric>
             </metric>
+	    <metric type="POSTDERIVED">
+            <disp_name>Pthread</disp_name>
+            <uniq_name>pthread_time</uniq_name>
+            <dtype>FLOAT</dtype>
+            <uom>sec</uom>
+            <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_time</url>
+            <descr>Time spent in the Pthread run-time system and API</descr>
+                <cubepl>
+                    metric::pthread_management() + metric::pthread_synchronization()
+                </cubepl>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Management</disp_name>
+                    <uniq_name>pthread_management</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_management</url>
+                    <descr>Time needed to start up and shut down team of threads</descr>
+		    <cubepl>
+                    {
+                        ${a} = 0;
+                        if ( ${pthread_management}[${calculation::callpath::id}] == 1 )
+                        {
+                            ${a} = metric::time(e) - metric::omp_idle_threads(e);
+                        };
+                        return ${a};
+                    }
+                    </cubepl>
+                    <cubeplinit>
+                    {
+                        global(pthread_management);
+                        ${i} = 0;
+                        while( ${i} < ${cube::#callpaths} )
+                        {
+                            ${pthread_mgmt}[${i}] = 0;
+                            ${regionid} = ${cube::callpath::calleeid}[${i}];
+                            if ( ( ${cube::region::mod}[${regionid}] eq "PTHREAD" )
+                                 and
+                                 ( ( ${cube::region::name}[${regionid}] seq "pthread_create" )
+                                    or
+                                    ( ${cube::region::name}[${regionid}] seq "pthread_join" )
+                                    or
+                                    ( ${cube::region::name}[${regionid}] seq "pthread_exit" )
+				    or
+                                    ( ${cube::region::name}[${regionid}] seq "pthread_abort" )
+                                    or
+                                    ( ${cube::region::name}[${regionid}] seq "pthread_cancel" )
+				    or
+                                    ( ${cube::region::name}[${regionid}] seq "pthread_detach" )
+                                 )
+                               )
+                            {
+                                ${pthread_management}[${i}] = 1;
+                            };
+                            ${i} = ${i} + 1;
+                        };
+                        return 0;
+                    }
+                    </cubeplinit>
+                </metric>
+		<metric type="POSTDERIVED">
+                    <disp_name>Synchronization</disp_name>
+                    <uniq_name>pthread_synchronization</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_synchronization</url>
+                    <descr>Time spent on Pthread synchronization</descr>
+                    <cubepl>
+                        metric::pthread_mutex_api() + metric::pthread_cond_api()
+                    </cubepl>
+		    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Mutex</disp_name>
+                        <uniq_name>pthread_mutex_api</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_lock_api</url>
+                        <descr>Time spent in Pthread API calls dealing with mutexes</descr>
+                        <cubepl>
+                        {
+                            ${a} = 0;
+                            if ( ${pthread_mutex_api}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${a} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${a};
+                        }
+                        </cubepl>
+                        <cubeplinit>
+                        {
+                            global(pthread_mutex_api);
+                            ${i} = 0;
+                            while( ${i} < ${cube::#callpaths} )
+                            {
+                                ${pthread_mutex_api}[${i}] = 0;
+                                ${regionid} = ${cube::callpath::calleeid}[${i}];
+                                if ( ( lowercase(${cube::region::name}[${regionid}]) =~ /^pthread_mutex_*/ ) )
+                                {
+                                    ${pthread_mutex_api}[${i}] = 1;
+                                };
+                                ${i} = ${i} + 1;
+                            };
+                            return 0;
+                        }
+                        </cubeplinit>
+                    </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Conditional</disp_name>
+                        <uniq_name>pthread_cond_api</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_lock_api</url>
+                        <descr>Time spent in Pthread API calls dealing with conditional operations</descr>
+                        <cubepl>
+                        {
+                            ${a} = 0;
+                            if ( ${pthread_cond_api}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${a} = metric::time(e) - metric::omp_idle_threads(e);
+                            };
+                            return ${a};
+                        }
+                        </cubepl>
+                        <cubeplinit>
+                        {
+                            global(pthread_cond_api);
+                            ${i} = 0;
+                            while( ${i} < ${cube::#callpaths} )
+                            {
+                                ${pthread_cond_api}[${i}] = 0;
+                                ${regionid} = ${cube::callpath::calleeid}[${i}];
+                                if ( ( lowercase(${cube::region::name}[${regionid}]) =~ /^pthread_cond_*/ ) )
+                                {
+                                    ${pthread_cond_api}[${i}] = 1;
+                                };
+                                ${i} = ${i} + 1;
+                            };
+                            return 0;
+                        }
+                        </cubeplinit>
+                    </metric>  
+                </metric>	
+            </metric>
         </metric>
         <metric type="PREDERIVED_EXCLUSIVE">
             <disp_name>Overhead</disp_name>

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -85,6 +85,11 @@ scorep_properties[ SCOREP_PROPERTY_MAX ] =
     {
         .condition    = SCOREP_PROPERTY_CONDITION_ANY,
         .initialValue = true
+    },
+    // SCOREP_PROPERTY_PTHREAD_LOCATION_REUSED
+    {
+        .condition    = SCOREP_PROPERTY_CONDITION_ANY,
+        .initialValue = false
     }
 };
 

@@ -390,6 +390,7 @@ main( int    argc,
             }
             SCOREP_Config_Adapter::addLdFlagsAll( str, !install, nvcc );
             SCOREP_Config_MppSystem::current->addLdFlags( str, !install, nvcc );
+            SCOREP_Config_ThreadSystem::current->addLdFlags( str, nvcc );
 
             if ( nvcc )
             {

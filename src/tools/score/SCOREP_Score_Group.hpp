@@ -54,7 +54,7 @@ struct SCOREP_Score_FieldWidths
      * column header).
      */
     SCOREP_Score_FieldWidths()
-        : m_type( 4 ),
+        : m_type( 8 ),
           m_bytes( 10 ),
           m_visits( 6 ),
           m_time( 7 ),

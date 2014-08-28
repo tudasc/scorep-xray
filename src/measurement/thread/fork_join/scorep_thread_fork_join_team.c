@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -39,7 +39,7 @@
 #include <config.h>
 #include "scorep_thread_fork_join_team.h"
 
-#include <scorep_thread_fork_join_model_specific.h>
+#include <scorep_thread_model_specific.h>
 
 #define SCOREP_DEBUG_MODULE_NAME THREAD_FORK_JOIN
 #include <UTILS_Debug.h>

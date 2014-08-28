@@ -102,7 +102,7 @@ libscorep_mpi_mgmt_la_LIBADD   = \
     libscorep_mpp_mpi.la                                    \
     $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
     $(external_libadd)                                      \
-    libscorep_thread_fork_join_mockup.la                    \
+    libscorep_thread_mockup.la                              \
     libscorep_mutex_mockup.la
 libscorep_mpi_mgmt_la_LDFLAGS              = $(external_ldflags)
 
@@ -152,7 +152,7 @@ serial_libadd = \
     $(common_mgmt_libadd)                     \
     $(external_libadd)                        \
     libscorep_mpp_mockup.la                   \
-    libscorep_thread_fork_join_mockup.la      \
+    libscorep_thread_mockup.la                \
     libscorep_mutex_mockup.la                 \
     libscorep_online_access_spp.la
 

@@ -153,7 +153,7 @@ INSTALLCHECK_SUBDIRS +=
 else
 endif
 
-installcheck-local: instrumenter-checks installcheck-public-headers
+installcheck-local: instrumenter-checks instrumenter-checks-pthread installcheck-public-headers
 	@fail= failcom='exit 1'; \
 	for f in x $$MAKEFLAGS; do \
 	  case $$f in \
@@ -194,9 +194,21 @@ instrumenter_configuration_files = ../installcheck/instrumenter_checks/configura
 $(instrumenter_configuration_files): ../installcheck/instrumenter_checks/instrumenter-configurations.sh
 	@../installcheck/instrumenter_checks/instrumenter-configurations.sh
 
+if HAVE_PTHREAD
+if HAVE_GNU_LINKER
+instrumenter-checks-pthread:
+	$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread
+else !HAVE_GNU_LINKER
+instrumenter-checks-pthread:
+endif !HAVE_GNU_LINKER
+else !HAVE_PTHREAD
+instrumenter-checks-pthread:
+endif !HAVE_PTHREAD
+
 clean-local-instrumenter-checks:
 	@rm -f $(instrumenter_configuration_files)
 	@for paradigm in $(PARADIGMS); do \
             rm -f ../installcheck/instrumenter_checks/bin/*-$${paradigm}-*; \
             rm -rf ../installcheck/instrumenter_checks/$$paradigm/build; \
         done
+	@$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread clean

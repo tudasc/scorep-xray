@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -41,6 +41,7 @@ SCOREP_Config_Mutex::init( void )
     all.push_back( new SCOREP_Config_MutexOmp() );
     #if SCOREP_BACKEND_HAVE_PTHREAD_MUTEX
     all.push_back( new SCOREP_Config_MutexPthread() );
+    all.push_back( new SCOREP_Config_MutexPthreadWrap() );
     #endif
     #if SCOREP_BACKEND_HAVE_PTHREAD_SPINLOCK
     all.push_back( new SCOREP_Config_MutexPthreadSpinlock() );
@@ -193,7 +194,16 @@ SCOREP_Config_MutexOmp::SCOREP_Config_MutexOmp()
  * *************************************************************************************/
 
 SCOREP_Config_MutexPthread::SCOREP_Config_MutexPthread()
-    : SCOREP_Config_Mutex( "pthread", "lock", "scorep_mutex_pthread", SCOREP_CONFIG_MUTEX_ID_PTHREAD )
+    : SCOREP_Config_Mutex( "pthread", "default", "scorep_mutex_pthread", SCOREP_CONFIG_MUTEX_ID_PTHREAD )
+{
+}
+
+/* **************************************************************************************
+ * class SCOREP_Config_MutexPthreadWrap
+ * *************************************************************************************/
+
+SCOREP_Config_MutexPthreadWrap::SCOREP_Config_MutexPthreadWrap()
+    : SCOREP_Config_Mutex( "pthread", "wrap", "scorep_mutex_pthread_wrap", SCOREP_CONFIG_MUTEX_ID_PTHREAD_WRAP )
 {
 }
 

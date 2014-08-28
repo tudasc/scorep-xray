@@ -1,0 +1,79 @@
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2014,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file src/adapter/pthread/Makefile.inc.am
+
+# runtime management library for the pthread adapter
+
+if HAVE_PTHREAD
+
+lib_LTLIBRARIES += libscorep_adapter_pthread_mgmt.la
+
+libscorep_adapter_pthread_mgmt_la_SOURCES  = \
+    $(SRC_ROOT)src/adapters/pthread/scorep_pthread_mgmt.c  \
+    $(SRC_ROOT)src/adapters/pthread/scorep_pthread.h       \
+    $(SRC_ROOT)src/adapters/pthread/scorep_pthread_mutex.h \
+    $(SRC_ROOT)src/adapters/pthread/scorep_pthread_mutex.c
+
+libscorep_adapter_pthread_mgmt_la_CFLAGS = \
+    $(AM_CFLAGS)                           \
+    @PTHREAD_CFLAGS@
+
+libscorep_adapter_pthread_mgmt_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                           \
+    -I$(PUBLIC_INC_DIR)                      \
+    -I$(INC_ROOT)src/measurement/include     \
+    -I$(INC_DIR_MUTEX)                       \
+    -I$(INC_DIR_COMMON_HASH)                 \
+    $(UTILS_CPPFLAGS)
+
+libscorep_adapter_pthread_mgmt_la_LIBADD = \
+    @PTHREAD_LIBS@
+
+libscorep_adapter_pthread_mgmt_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+
+# event library for the pthread adapter
+
+if HAVE_GNU_LINKER
+
+lib_LTLIBRARIES += libscorep_adapter_pthread_event.la
+
+libscorep_adapter_pthread_event_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/pthread/scorep_pthread_event_functions.h \
+    $(SRC_ROOT)src/adapters/pthread/scorep_pthread_event.c
+
+libscorep_adapter_pthread_event_la_CFLAGS = \
+    $(AM_CFLAGS)                            \
+    @PTHREAD_CFLAGS@
+
+libscorep_adapter_pthread_event_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                            \
+    -I$(PUBLIC_INC_DIR)                       \
+    -I$(INC_ROOT)src/measurement/include      \
+    -I$(INC_DIR_MUTEX)                        \
+    -I$(INC_DIR_THREAD_CREATE_WAIT)           \
+    -D_XOPEN_SOURCE=500                       \
+    $(UTILS_CPPFLAGS)
+
+
+libscorep_adapter_pthread_event_la_LIBADD = \
+    @PTHREAD_LIBS@ \
+    libscorep_measurement.la
+
+libscorep_adapter_pthread_event_la_LDFLAGS = \
+    $(library_api_version_ldflags)           \
+    -Wl,-wrap,pthread_create,-wrap,pthread_join,-wrap,pthread_mutex_init,-wrap,pthread_mutex_destroy,-wrap,pthread_mutex_lock,-wrap,pthread_mutex_unlock,-wrap,pthread_mutex_trylock,-wrap,pthread_exit,-wrap,pthread_cancel,-wrap,pthread_detach,-wrap,pthread_cond_init,-wrap,pthread_cond_signal,-wrap,pthread_cond_broadcast,-wrap,pthread_cond_wait,-wrap,pthread_cond_timedwait,-wrap,pthread_cond_destroy
+
+endif HAVE_GNU_LINKER
+
+endif HAVE_PTHREAD

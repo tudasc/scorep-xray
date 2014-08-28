@@ -1,0 +1,61 @@
+## -*- mode: makefile -*-
+
+## @configure_input@ from test/instrumenter_checks/create_wait/pthread/Makefile.in
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2014,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+
+CC   = @CC@
+# -Ox does not work for all compilers. Use AM_CONDITIONAL here?
+CFLAGS   = -O3
+
+@HAVE_PTHREAD_WITHOUT_FLAGS_TRUE@PTHREAD_OPTION = --thread=pthread
+@HAVE_PTHREAD_WITHOUT_FLAGS_FALSE@PTHREAD_OPTION =
+
+@SCOREP_COMPILER_SUN_TRUE@SCOREP_OPTIONS = --nocompiler
+@SCOREP_COMPILER_SUN_FALSE@SCOREP_OPTIONS =
+
+BINDIR = @abs_top_builddir@/../installcheck/instrumenter_checks/bin
+SRCDIR = @abs_top_srcdir@/../test/instrumenter_checks/create_wait/pthread
+TOOLS  = @BINDIR@/scorep @BINDIR@/scorep-config
+PREP   = "@BINDIR@/scorep"
+
+SCOREP_INSTRUMENTING_VERBOSE = $(scorep_instrumenting_verbose_$(V))
+scorep_instrumenting_verbose_ = $(scorep_instrumenting_verbose_0)
+scorep_instrumenting_verbose_0 = @echo "  SCOREP " $@;
+
+SCOREP_INSTRUMENTING_VERBOSE2 = $(scorep_instrumenting_verbose2_$(V))
+scorep_instrumenting_verbose2_ =
+scorep_instrumenting_verbose2_1 = --verbose
+
+
+TESTS = \
+    $(BINDIR)/pi_pthread \
+    $(BINDIR)/pi_mutex_pthread \
+    $(BINDIR)/producer_consumer_pthread \
+    $(BINDIR)/management_routines_pthread \
+    $(BINDIR)/synchronization_routines_pthread \
+    $(BINDIR)/dining_philosophers_pthread
+
+
+all: $(TESTS)
+
+
+$(TESTS):
+
+
+$(BINDIR)/%: $(SRCDIR)/%.c $(TOOLS)
+	@mkdir -p $(BINDIR)
+	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(PTHREAD_OPTION) $(SCOREP_OPTIONS) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CC) @PTHREAD_CFLAGS@ $(CFLAGS) -o $@ $< @PTHREAD_LIBS@ -lm
+
+clean:
+	@rm -f $(TESTS)

@@ -346,5 +346,4 @@ public:
     virtual void
     appendInitStructName( std::deque<std::string>& init_structs );
 };
-
 #endif

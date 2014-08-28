@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -42,24 +42,27 @@
  */
 
 #define UTILS_DEBUG_MODULES \
-    UTILS_DEFINE_DEBUG_MODULE( CORE,              0 ), \
-    UTILS_DEFINE_DEBUG_MODULE( MPI,               1 ), \
-    UTILS_DEFINE_DEBUG_MODULE( USER,              2 ), \
-    UTILS_DEFINE_DEBUG_MODULE( COMPILER,          3 ), \
-    UTILS_DEFINE_DEBUG_MODULE( OPENMP,            4 ), \
-    UTILS_DEFINE_DEBUG_MODULE( EVENTS,            5 ), \
-    UTILS_DEFINE_DEBUG_MODULE( DEFINITIONS,       6 ), \
-    UTILS_DEFINE_DEBUG_MODULE( CONFIG,            7 ), \
-    UTILS_DEFINE_DEBUG_MODULE( PROFILE,           8 ), \
-    UTILS_DEFINE_DEBUG_MODULE( OA,                9 ), \
-    UTILS_DEFINE_DEBUG_MODULE( MPIPROFILING,     10 ), \
-    UTILS_DEFINE_DEBUG_MODULE( FILTERING,        11 ), \
-    UTILS_DEFINE_DEBUG_MODULE( METRIC,           12 ), \
-    UTILS_DEFINE_DEBUG_MODULE( TRACING,          13 ), \
-    UTILS_DEFINE_DEBUG_MODULE( MEMORY,           14 ), \
-    UTILS_DEFINE_DEBUG_MODULE( CUDA,             15 ), \
-    UTILS_DEFINE_DEBUG_MODULE( UNIFY,            16 ), \
-    UTILS_DEFINE_DEBUG_MODULE( THREAD_FORK_JOIN, 17 ), \
-    UTILS_DEFINE_DEBUG_MODULE( SHMEM,            18 )
+    UTILS_DEFINE_DEBUG_MODULE( CORE,                0 ), \
+    UTILS_DEFINE_DEBUG_MODULE( MPI,                 1 ), \
+    UTILS_DEFINE_DEBUG_MODULE( USER,                2 ), \
+    UTILS_DEFINE_DEBUG_MODULE( COMPILER,            3 ), \
+    UTILS_DEFINE_DEBUG_MODULE( OPENMP,              4 ), \
+    UTILS_DEFINE_DEBUG_MODULE( EVENTS,              5 ), \
+    UTILS_DEFINE_DEBUG_MODULE( DEFINITIONS,         6 ), \
+    UTILS_DEFINE_DEBUG_MODULE( CONFIG,              7 ), \
+    UTILS_DEFINE_DEBUG_MODULE( PROFILE,             8 ), \
+    UTILS_DEFINE_DEBUG_MODULE( OA,                  9 ), \
+    UTILS_DEFINE_DEBUG_MODULE( MPIPROFILING,       10 ), \
+    UTILS_DEFINE_DEBUG_MODULE( FILTERING,          11 ), \
+    UTILS_DEFINE_DEBUG_MODULE( METRIC,             12 ), \
+    UTILS_DEFINE_DEBUG_MODULE( TRACING,            13 ), \
+    UTILS_DEFINE_DEBUG_MODULE( MEMORY,             14 ), \
+    UTILS_DEFINE_DEBUG_MODULE( CUDA,               15 ), \
+    UTILS_DEFINE_DEBUG_MODULE( UNIFY,              16 ), \
+    UTILS_DEFINE_DEBUG_MODULE( THREAD_FORK_JOIN,   17 ), \
+    UTILS_DEFINE_DEBUG_MODULE( SHMEM,              18 ), \
+    UTILS_DEFINE_DEBUG_MODULE( PTHREAD,            19 ), \
+    UTILS_DEFINE_DEBUG_MODULE( THREAD_CREATE_WAIT, 20 ), \
+    UTILS_DEFINE_DEBUG_MODULE( THREAD,             21 )
 
 #endif /* CONFIG_CUSTOM_H */

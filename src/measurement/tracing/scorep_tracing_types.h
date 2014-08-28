@@ -7,13 +7,13 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -89,29 +89,32 @@ scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
     case SCOREP_GROUP_ ## SCOREP: \
         return OTF2_GROUP_TYPE_ ## OTF2
 
-        case_return( UNKNOWN,            UNKNOWN );
-        case_return( LOCATIONS,          LOCATIONS );
-        case_return( REGIONS,            REGIONS );
-        case_return( METRIC,             METRIC );
+        case_return( UNKNOWN,         UNKNOWN );
+        case_return( LOCATIONS,       LOCATIONS );
+        case_return( REGIONS,         REGIONS );
+        case_return( METRIC,          METRIC );
 
         // MPI
-        case_return( MPI_LOCATIONS,      COMM_LOCATIONS );
-        case_return( MPI_GROUP,          COMM_GROUP );
-        case_return( MPI_SELF,           COMM_SELF );
+        case_return( MPI_LOCATIONS,   COMM_LOCATIONS );
+        case_return( MPI_GROUP,       COMM_GROUP );
+        case_return( MPI_SELF,        COMM_SELF );
 
         // OpenMP
         case_return( OPENMP_LOCATIONS,   COMM_LOCATIONS );
         case_return( OPENMP_THREAD_TEAM, COMM_GROUP );
 
         // CUDA
-        case_return( CUDA_LOCATIONS,     COMM_LOCATIONS );
-        case_return( CUDA_GROUP,         COMM_GROUP );
+        case_return( CUDA_LOCATIONS, COMM_LOCATIONS );
+        case_return( CUDA_GROUP, COMM_GROUP );
 
         // SHMEM
         case_return( SHMEM_LOCATIONS,    COMM_LOCATIONS );
         case_return( SHMEM_GROUP,        COMM_GROUP );
         case_return( SHMEM_SELF,         COMM_SELF );
 
+        // Pthread
+        case_return( PTHREAD_LOCATIONS,   COMM_LOCATIONS );
+        case_return( PTHREAD_THREAD_TEAM, COMM_GROUP );
 
 #undef case_return
         default:
@@ -345,6 +348,7 @@ scorep_tracing_property_to_otf2( SCOREP_Property property )
         case_return( THREAD_FORK_JOIN_EVENT_COMPLETE );
         case_return( THREAD_CREATE_WAIT_EVENT_COMPLETE );
         case_return( THREAD_LOCK_EVENT_COMPLETE );
+        case_return( PTHREAD_LOCATION_REUSED );
 
         default:
             UTILS_BUG( "Invalid property enum value: %u", property );

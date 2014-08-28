@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -47,6 +47,9 @@ SCOREP_Config_ThreadSystem::init( void )
 #endif
 #if SCOREP_BACKEND_HAVE_OMP_ANCESTRY
     m_all.push_back( new SCOREP_Config_OmpAncestryThreadSystem() );
+#endif
+#if SCOREP_BACKEND_HAVE_PTHREAD && HAVE_BACKEND( GNU_LINKER )
+    m_all.push_back( new SCOREP_Config_PthreadThreadSystem() );
 #endif
     current = m_all.front();
 }
@@ -167,6 +170,12 @@ SCOREP_Config_ThreadSystem::addCFlags( std::string&           cflags,
 {
 }
 
+void
+SCOREP_Config_ThreadSystem::addLdFlags( std::string& ldflags,
+                                        bool         nvcc )
+{
+}
+
 SCOREP_Config_MutexId
 SCOREP_Config_ThreadSystem::validateDependencies()
 {
@@ -195,7 +204,7 @@ SCOREP_Config_ThreadSystem::getId( void )
  * *************************************************************************************/
 
 SCOREP_Config_MockupThreadSystem::SCOREP_Config_MockupThreadSystem()
-    : SCOREP_Config_ThreadSystem( "none", "", "scorep_thread_fork_join_mockup",
+    : SCOREP_Config_ThreadSystem( "none", "", "scorep_thread_mockup",
                                   SCOREP_CONFIG_MUTEX_ID_NONE, SCOREP_CONFIG_THREAD_SYSTEM_ID_NONE )
 {
 }
@@ -315,4 +324,57 @@ SCOREP_Config_OmpAncestryThreadSystem::getInitStructName( std::deque<std::string
 {
     init_structs.push_back( "SCOREP_Subsystem_PompOmpAdapter" );
     init_structs.push_back( "SCOREP_Subsystem_ThreadForkJoin" );
+}
+
+/* ****************************************************************************
+* class SCOREP_Config_PthreadThreadSystem
+* ****************************************************************************/
+
+SCOREP_Config_PthreadThreadSystem::SCOREP_Config_PthreadThreadSystem()
+    : SCOREP_Config_ThreadSystem( "pthread",
+                                  "",
+                                  "scorep_thread_create_wait_pthread",
+                                  SCOREP_CONFIG_MUTEX_ID_PTHREAD_WRAP,
+                                  SCOREP_CONFIG_THREAD_SYSTEM_ID_PTHREAD )
+{
+}
+
+void
+SCOREP_Config_PthreadThreadSystem::addLibs( std::deque<std::string>&           libs,
+                                            SCOREP_Config_LibraryDependencies& deps )
+{
+    libs.push_back( "libscorep_adapter_pthread_event" );
+    deps.addDependency( "libscorep_measurement", "libscorep_adapter_pthread_mgmt" );
+    deps.addDependency( "libscorep_thread_create_wait_pthread", "libscorep_adapter_pthread_mgmt" );
+    deps.addDependency( "libscorep_measurement", "libscorep_thread_create_wait_pthread" );
+}
+
+void
+SCOREP_Config_PthreadThreadSystem::addLdFlags( std::string& ldflags,
+                                               bool         nvcc )
+{
+    ldflags += " -Wl,-wrap,pthread_create,"
+               "-wrap,pthread_join,"
+               "-wrap,pthread_exit,"
+               "-wrap,pthread_cancel,"
+               "-wrap,pthread_detach,"
+               "-wrap,pthread_mutex_init,"
+               "-wrap,pthread_mutex_destroy,"
+               "-wrap,pthread_mutex_lock,"
+               "-wrap,pthread_mutex_unlock,"
+               "-wrap,pthread_mutex_trylock,"
+               "-wrap,pthread_cond_init,"
+               "-wrap,pthread_cond_signal,"
+               "-wrap,pthread_cond_broadcast,"
+               "-wrap,pthread_cond_wait,"
+               "-wrap,pthread_cond_timedwait,"
+               "-wrap,pthread_cond_destroy "
+    ;
+}
+
+void
+SCOREP_Config_PthreadThreadSystem::getInitStructName( std::deque<std::string>& init_structs )
+{
+    init_structs.push_back( "SCOREP_Subsystem_PthreadAdapter" );
+    init_structs.push_back( "SCOREP_Subsystem_ThreadCreateWait" );
 }

@@ -124,4 +124,11 @@ _SCOREP_PTHREAD_FEATURE([mutex],
 # functionality.
 AC_DEFUN([SCOREP_PTHREAD], [
 AX_PTHREAD([scorep_pthread_support=1], [scorep_pthread_support=0])
+AC_SUBST([SCOREP_HAVE_PTHREAD], [${scorep_pthread_support}])
+AFS_AM_CONDITIONAL([HAVE_PTHREAD], [test "x${scorep_pthread_support}" = x1], [false])
+AFS_AM_CONDITIONAL([HAVE_PTHREAD_WITHOUT_FLAGS], 
+    [test "x${PTHREAD_CFLAGS}" = x && test "x${PTHREAD_LIBS}" = x], [false])
+AS_IF([test "x${scorep_pthread_support}" = x1],
+   [AFS_SUMMARY([Pthread support], [yes, using ${PTHREAD_CC} ${PTHREAD_CFLAGS} ${PTHREAD_LIBS}])],
+   [AFS_SUMMARY([Pthread support], [no])])
 ])dnl SCOREP_PTHREAD

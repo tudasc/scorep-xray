@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -46,8 +46,9 @@
     SCOREP_SCORE_TYPE( USR, POSSIBLE ) \
     SCOREP_SCORE_TYPE( COM, POSSIBLE ) \
     SCOREP_SCORE_TYPE( MPI, NO )       \
-    SCOREP_SCORE_TYPE( SHMEM, NO )       \
-    SCOREP_SCORE_TYPE( OMP, NO )
+    SCOREP_SCORE_TYPE( OMP, NO )       \
+    SCOREP_SCORE_TYPE( SHMEM, NO )     \
+    SCOREP_SCORE_TYPE( PTHREAD, NO )
 
 #define SCOREP_SCORE_FILTER_STATES \
     SCOREP_SCORE_FILTER_STATE( UNSPECIFIED, ' ' ) \
