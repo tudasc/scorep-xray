@@ -9,7 +9,6 @@ Major features:
 - Add support for instrumenting programs which use SHMEM library calls
   for one-sided communication. Score-P currently supports the SHMEM
   implementations of Cray, Open MPI, OpenSHMEM, and SGI.
-
 - Basic support for POSIX thread instrumentation. Supported POSIX
   thread routines are pthread_create, pthread_join,
   pthread_mutex_init, pthread_mutex_destroy, pthread_mutex_lock,
