@@ -138,7 +138,7 @@ libscorep_shmem_mgmt_la_LIBADD   = \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la          \
     libscorep_online_access_mockup.la                      \
     $(external_libadd)                                     \
-    libscorep_thread_fork_join_mockup.la                   \
+    libscorep_thread_mockup.la                             \
     libscorep_mutex_mockup.la
 libscorep_shmem_mgmt_la_LDFLAGS              = $(external_ldflags)
 
