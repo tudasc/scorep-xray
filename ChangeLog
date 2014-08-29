@@ -1,4 +1,4 @@
-------------------- Upcoming version 1.3 -----------------------------
+------------------- Released version 1.3 -----------------------------
 
 Major features:
 
@@ -6,21 +6,23 @@ Major features:
   Tofu network topology will be supported in a subsequent release.
   Note that some C++ OpenMP programs fail during measurement
   initialization for unknown reasons.
-- Add support for instrumenting programs which use SHMEM library calls for
-  one-sided communication. Score-P currently supports the SHMEM
+- Add support for instrumenting programs which use SHMEM library calls
+  for one-sided communication. Score-P currently supports the SHMEM
   implementations of Cray, Open MPI, OpenSHMEM, and SGI.
-- Basic support for Pthread instrumentation. Supported Pthread
-  routines are pthread_create, pthread_join, pthread_mutex_init,
-  pthread_mutex_destroy, pthread_mutex_lock, pthread_mutex_trylock,
-  pthread_mutex_unlock, pthread_cond_init, pthread_cond_destroy,
-  pthread_cond_signal, pthread_cond_broadcast, pthread_cond_wait, and
-  pthread_cond_timedwait. Following thread management functions are
-  currently not supported and will abort the program: pthread_exit and
-  pthread_cancel. The usage of pthread_detach will cause the program to
-  fail if the detached thread is still running after the end of
-  main. These limitations will be addressed in an upcoming version of
-  Score-P.
-  
+
+- Basic support for POSIX thread instrumentation. Supported POSIX
+  thread routines are pthread_create, pthread_join,
+  pthread_mutex_init, pthread_mutex_destroy, pthread_mutex_lock,
+  pthread_mutex_trylock, pthread_mutex_unlock, pthread_cond_init,
+  pthread_cond_destroy, pthread_cond_signal, pthread_cond_broadcast,
+  pthread_cond_wait, and pthread_cond_timedwait. Following thread
+  management functions are currently not supported and will abort the
+  program: pthread_exit and pthread_cancel. The usage of
+  pthread_detach will cause the program to fail if the detached thread
+  is still running after the end of main. These limitations will be
+  addressed in an upcoming version of Score-P. Note that you need to
+  instrument every thread creation.
+
 Features and improvements:
 
 - Use Process Manager Interface (PMI) to get fine-granular information
@@ -44,22 +46,23 @@ Features and improvements:
   which are location specific meta data presented as key/value pair.
 - The option --thread=<paradigm>[:<variant>] gives users the
   possibility to choose the threading model and to fine-tune certain
-  aspects. Currently OpenMP is supported with --thread=omp. By using
-  --thread=omp:pomp_tpd to include OpenMP support using OPARI2 thread
-  tracking It requires and, thus, automatically enables opari
-  instrumentation.  --thread=omp:ancestry enables OpenMP support using
-  thread tracking with ancestry functions in OpenMP 3.0 and later.
+  aspects. Currently OpenMP and POSIX threads are supported with
+  either --thread=omp or --thread=pthread. For OpenMP we provide the
+  two variants --thread=omp:pomp_tpd (default) and
+  --thread=omp:ancestry. The former tells OPARI2 to insert code for
+  thread tracking where the latter uses the ancestry functions in
+  OpenMP 3.0 and later to accomplish the same task.
 
 User tools and API improvements and changes:
 
-- Improved automatic MPI detection in instrumenter (helpful on Cray,
-  as cc/CC/ftn is the compile command for both MPI and non-MPI).
+- Improved automatic MPI detection in the instrumenter (helpful on
+  Cray, as cc/CC/ftn is the compile command for both MPI and non-MPI).
 - Changed paradigm selection in the instrumenter to match the
-  selection options in the config tool. Thus, introduced
+  selection options in the scorep-config tool. Thus, introduced
   --mpp=<paradigm> and --thread=<paradigm> flags for the instrumenter
   to select the multi-process paradigm and the threading paradigm. The
   old options --mpi, --nompi, --openmp, --noopenmp are marked as
-  deprecated and no longer documented.
+  deprecated and are no longer documented.
 - Added handling for special characters, like space, in file names and
   path names. However, there are still some limitation when using
   special characters: The PDT parser can not deal with these
@@ -78,64 +81,69 @@ User tools and API improvements and changes:
   the measurement system (omp,pthread,pthread:spinlock,pthread:wrap).
 - Improved event size estimation in scorep-score using otf2-estimator.
 - Install Cube remap specification file and provide its location via
-  scorep-config tool.
+  the scorep-config tool.
 - The scorep-info tool can now show known and open issues regarding
-  the measurement with Score-P. It is highly advised to consult this list
-  before reporting problems.
+  the measurement with Score-P. It is highly advised to consult this
+  list before reporting problems.
 
 CUDA support improvements and changes:
 
-- Added support for CUDA 5.5 and CUDA 6.0: The CUPTI activity buffer handling
-  has changed. Therefore the environment variable SCOREP_CUDA_BUFFER_CHUNK
-  has been introduced (see user documentation). Changed the default size for
-  SCOREP_CUDA_BUFFER to '1M'.
+- Added support for CUDA 5.5 and CUDA 6.0: The CUPTI activity buffer
+  handling has changed. The SCOREP_CUDA_BUFFER_CHUNK environment
+  variable has therefore been introduced (see user documentation). The
+  default size for SCOREP_CUDA_BUFFER was changed to '1M'.
 - New options for SCOREP_CUDA_ENABLE:
-  'references'   : track references between CUDA host and device activities in
-                   the OTF2 trace
-  'flushatexit'  : forces pending CUDA activities to be flushed at program exit
-                   (avoids records to be dropped in OpenACC programs)
+  'references'   : track references between CUDA host and device
+                   activities in the OTF2 trace
+  'flushatexit'  : forces pending CUDA activities to be flushed at program
+                   exit (avoids records to be dropped in OpenACC programs)
   'kernel_serial': serialize recording of (potentially concurrent) kernels
 - Obsolete options for SCOREP_CUDA_ENABLE:
-  'concurrent'  : recording of (potentially concurrent) kernels is the default
+  'concurrent'  : recording of (potentially concurrent) kernels is the
+                  default
   'stream_reuse': feature has been removed
   'device_reuse': feature has been removed
-- Added support for runtime filtering of CUDA device and host activities.
+
+- Added support for runtime filtering of CUDA device and host
+  activities.
 
 Bugfixes:
 
-- When using the Intel compiler, we inspected the symbol table of the
-  executable and evaluated the filtering on all functions in the
-  executable. Thus, compiler instrumented functions from shared
-  libraries are automatically filtered, when using the Intel
+- When using the Intel compiler, functions from shared libraries now
+  appear in the measurement output. Previously we inspected the symbol
+  table of the executable and evaluated the filtering on all functions
+  in the executable. Thus, compiler instrumented functions from shared
+  libraries were automatically filtered, when using the Intel
   compiler. Now, the filters are evaluated when the functions appear
-  the first time. Thus, functions from shared libraries now appear in
-  the measurement output.
+  the first time.
 - Fix handling of Intel compiler options starting with "-o".
 - The pgCC compiler version 13.9 and newer preinclude omp.h if OpenMP
-  is enabled. This leads to multiply defined symbols if the source file
-  is preprocessed before compilation. Prevent the preinclusion for the
-  compilation of preprocessed files if an appropriate compiler option
-  exists (exists since pgCC version 14.1).
+  is enabled. This leads to multiply defined symbols if the source
+  file is preprocessed before compilation. Prevent the preinclusion
+  for the compilation of preprocessed files if an appropriate compiler
+  option exists (exists since pgCC version 14.1).
 - Fix a deadlock on AIX, if MPI_Abort was called.
-- If a system provides only shared OpenMP runtime libraries and a compiler
-  does not add rpath information but relies on LD_LIBRARY_PATH, the
-  Score-P instrumenter fails execution. Fixed.
-- Fix missing flags in OPARI2 call to disable OpenMP instrumentation, if the
-  user selected POMP instrumentation for a serial program without specifying
-  that the program is serial, manually.
-- Prepend link calls to the intel compiler with seetings to VT_LIB_DIR and
+- If a system provides only shared OpenMP runtime libraries and a
+  compiler does not add rpath information but relies on
+  LD_LIBRARY_PATH, the Score-P instrumenter fails execution. Fixed.
+- Fix missing flags in OPARI2 call to disable OpenMP instrumentation,
+  if the user selected POMP instrumentation for a serial program
+  without specifying that the program is serial.
+- Prepend link calls to the Intel compiler by setting VT_LIB_DIR and
   VT_LIBS to avoid remarks.
-- Changed enumeration of threads in the profile from a global enumeration
-  to an enumeration from 0 to N-1 on each process.
+- Changed enumeration of threads in the profile from a global
+  enumeration to an enumeration from 0 to N-1 on each process.
 - Use "-G2" if the Cray compiler instrumentation is used.
   The previous "-g" flag disabled all optimizations.
-- Fix creation of experiment directory, if the monitored application make
-  use of 'chdir' operation.
+- Fix creation of experiment directory if the monitored application
+  make use of 'chdir' operation.
 - The Score-P instrumenter tool moved compiler selection flags for the
-  MPI compiler wrapper to a different location in the command line. Fixed.
-- Fix broken instrumentation if the link line explicitly links libc.
-- Fixed constant zero for acquisition order value of acquire lock events
-  from OpenMP critical sections.
+  MPI compiler wrapper to a different location in the command
+  line. Fixed.
+- Fixed broken instrumentation if the applications link step
+  explicitly links libc.
+- Fixed wrong acquisition order attribute passed to acquire lock
+  events from OpenMP critical sections.
 
 ------------------- Released version 1.2.3 ---------------------------
 
@@ -333,7 +341,8 @@ Bugfixes:
 - Various fixes for the generated OpenMP region names:
   - Inner and outer blocks got different names.
   - Regions with the ordered clause got a special name.
-  - All region names got it '@file:lno' appended, to make them distinguishable.
+  - All region names got it '@file:lno' appended, to make them
+    distinguishable.
 
 ------------------- Released version 1.0.1 ---------------------------
 

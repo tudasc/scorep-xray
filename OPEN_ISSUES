@@ -1,119 +1,7 @@
-                        Score-P new OPEN ISSUES
+
+                        Score-P v1.3 OPEN ISSUES
                         ========================
-                                                           Status: Aug 2014
-
-* CUDA support
-
-  - CUDA device activities get lost for CUDA 5.5 (CUPTI 4). The last activity
-    in a CUPTI activity buffer gets lost, when the buffer is full. The issue
-    can be avoided by providing buffers, which are large enough to store all
-    CUDA device activities until the buffer is flushed. The user can specify
-    the CUPTI activity buffer (chunk) size with the environment variable
-    SCOREP_CUDA_BUFFER_CHUNK. In CUDA 6.0 (CUPTI 5) this issue is fixed.
-
-* OpenMP support
-
-  - On K Computer and Fujitsu FX10 systems, some C++ OpenMP programs
-    crash for unknown reason during measurement initialization when
-    accessing an OpenMP threadprivate variable.
-
-* MPI support
-
-  - Functions added with MPI-3.0 are not supported by Score-P.  Measurements
-    using libraries providing MPI-3.0 functions will be incomplete if any of
-    the new functions are used, and use of communicators or windows created
-    by new functions are likely to result in measurement failure.
-
-  - C++ bindings for MPI are not supported.  These were deprecated as of
-    MPI-2.2 and removed with MPI-3.0.  When using C++ bindings for MPI,
-    Score-P will most likely indicate the failed library wrapping
-    with the following warning: "If you are using MPICH1, please ignore 
-    this warning. If not, it seems that your interprocess communication 
-    library (e.g., MPI) hasn't been initialized. Score-P can't generate 
-    output."
-    If your MPI implements the C++ bindings in a separate library on top of
-    the C bindings, the following workaround might work for you:
-    1) Instrument your application with 'scorep --keep-files -v'
-       It will make the instrumenter not remove the intermediate files and
-       output the commands it executes
-    2) Copy the link command (the last command from the scorep output).
-    3) Insert a link flag (e.g. -lmpicxx) for your C++ bindings library 
-       right before '-lscorep_adapter_mpi_events' and execute the 
-       modified link command.
-
-* Compiler instrumentation
-
-  - The Intel compiler provides the function name and the source code location
-    in one string separated by a colon.  Thus, if the path name of the source
-    code file contains colons, Score-P will split the source file name and
-    the function name improperly.
-
-    Additionally, the provided function name makes it impossible to distinguish
-    overloaded functions in C++.  Thus, functions which differ only in the
-    argument list will be mapped to the same function definition by Score-P.
-
-  - When using any of the intrinsics headers from GCC (e.g., xmmintrin.h and
-    friends), than, from GCC version 4.6 onwards, it is known that the result
-    of the compiler instrumentation will fail at link time because of undefined
-    reference. A work around is to pass
-
-      -finstrument-functions-exclude-file-list=intrin.h
-
-    as flag to GCC on the command line, or pass it as configure option to
-    Score-P with
-
-      --with-extra-instrumentation-flags=-finstrument-functions-exclude-file-list=intrin.h
-
-    to make it permanently inside the Score-P installation.
-
-* SHMEM support
-
-  - When using the OpenSHMEM reference implementation and building Score-P
-    as a shared library, ensure that the GASNet library is build with -fPIC
-    on platforms which need this flag for shared library code. For example,
-    run make with the MANUAL_LIBCFLAGS and MANUAL_CFLAGS variables set:
-
-      make MANUAL_LIBCFLAGS="-fPIC -DPIC" MANUAL_CFLAGS="-fPIC -DPIC"
-
-    on GNU/Linux platforms.
-
-    Also, if you encounter segmentation faults when running the instrumented
-    application with Score-P attached, but the error disapears magically on
-    subsequent runs, than the OpenSHMEM reference implementation may not
-    consider some of your global or static variables as symmetric objects.
-    Please allocate these objects with shmalloc() to ensure that they are
-    in the symmetric heap.
-
-  - Currently tested SHMEM implementations:
-    + OpenSHMEM reference implementation 1.0f
-    + Open MPI implementation 1.8.2a
-    + SGI SHMEM
-    + Cray SHMEM
-
-  - The online access interface is currently not available in SHMEM
-    applications.
-
-* Pthread support
-  - Following Pthread management functions are not supported yet and
-    will cause an instrumentetd application to abort: pthread_exit,
-    pthread_cancel. The usage of pthread_detach will cause the pogram
-    to fail if the detached thread is still running after the end of
-    main.
-  - Pthread support is currently not available on systems that use
-    linkers other than the GNU linker, e.g., AIX systems. Pthread
-    support is currently not available when compiling with Fujitsu
-    compilers. The compiler switch -Xg (GNU compatibility mode) might
-    help, but is untested.
-  - Please note that on systems where Pthreads don't need extra flags
-    (like e.g., -pthread) to be compiled and linked (e.g., Cray, Blue
-    Gene/Q), Score-P can't instrument Pthreads automatically. You need
-    to enable Pthread instrumentation manually via scorep's
-    --thread=pthread option.
-
-
-                        Score-P v1.2 OPEN ISSUES
-                        ========================
-                                                           Status: Feb 2014
+                                                           Effective: Aug 2014
 
 This file lists known limitations and unimplemented features of
 various Score-P components.
@@ -127,6 +15,7 @@ various Score-P components.
     + IBM SP & BladeCenter clusters, only static libraries supported
     + Cray XE, XK, XC, only static libraries supported
     + SGI Altix/ICE
+    + K Computer and Fujitsu FX10, no POSIX threads supported yet
     + various Linux/Intel (x86/x64) clusters
     The provided configure options (see INSTALL) may provide a good
     basis for building and testing the toolset on other systems.
@@ -135,7 +24,7 @@ various Score-P components.
     + IBM Blue Gene/P
     + Cray XT
     + Sun Solaris/SPARC-based clusters
-    However the supplied buildsystem might still work on these
+    However the supplied build system might still work on these
     systems.
 
   - The following platforms have not been tested:
@@ -148,7 +37,7 @@ various Score-P components.
     (because MPI is only source-code but not binary compatible). If
     your systems support more than one MPI implementation (e.g. Linux
     clusters often do), separate builds for each MPI implementation
-    have to be installed.
+    have to be installed. The same applies for SHMEM.
 
   - The same is true if your system features more than one compiler
     supporting automatic function instrumentation.
@@ -168,18 +57,43 @@ various Score-P components.
   - Oracle : only works for Fortran (not C/C++), tested with version 12.2
   - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and
              higher and corresponding bgxl compilers on BlueGene systems
-  - Intel  : only works with Intel icc/ifort version 10 and higher compilers
-  - Cray   : tested with version 8.1.8
+  - Intel  : only works with Intel icc/ifort version 11 and higher compilers
+  - Cray   : tested with version 8.1.8 and later
 
-  - Because the compiler instrumentation interface of the XL compiler series
-    changed with xlc 11.1/xlf 13.1. You need a separate installations
-    for older versions than xlc 11.1/xlf 13.1 and newer versions.
+  - The Intel compiler provides the function name and the source code
+    location in one string separated by a colon.  Thus, if the path
+    name of the source code file contains colons, Score-P will split
+    the source file name and the function name improperly.
+    Additionally, the provided function name makes it impossible to
+    distinguish overloaded functions in C++. Thus, functions which
+    differ only in the argument list will be mapped to the same
+    function definition by Score-P.
+
+  - When using any of the intrinsics headers from GCC (e.g.,
+    xmmintrin.h and friends), than, from GCC version 4.6 onwards, it
+    is known that the result of the compiler instrumentation will fail
+    at link time because of undefined reference. A work around is to
+    pass
+
+      -finstrument-functions-exclude-file-list=intrin.h
+
+    as flag to GCC on the command line, or pass it as configure option
+    to Score-P with
+
+      --with-extra-instrumentation-flags=-finstrument-functions-exclude-file-list=intrin.h
+
+    to make it permanently inside the Score-P installation.
+
+  - Because the compiler instrumentation interface of the XL compiler
+    series changed with xlc 11.1/xlf 13.1. You need a separate
+    installations for older versions than xlc 11.1/xlf 13.1 and newer
+    versions.
 
   - Measurement filtering can only be applied to functions
     instrumented by the IBM, GNU, Intel, PGI, or Oracle compilers as
-    well as functions instrumented by PDT and user
-    functions. (Filtering of MPI functions, OpenMP is always
-    ineffective.)
+    well as functions instrumented by PDT and user functions.
+    Filtering of MPI, SHMEM, and OpenMP runtime functions is always
+    ineffective.
 
   - The GNU Fortran compiler versions 4.6.0 and 4.6.1 have a bug which
     leads to an internal compiler error when using automatic function
@@ -195,27 +109,27 @@ various Score-P components.
     disable libbfd region naming (--without-libbfd). In the latter
     case, region names will be provided by nm.
 
-  - The GNU compiler instrumentation provides only functions pointers, which
-    we look up in the symbol table of the executable. Thus, functions from
-    shared libraries, will not appear (are automatically filtered) in the
-    measurement output.
+  - The GNU compiler instrumentation provides only functions pointers,
+    which we look up in the symbol table of the executable. Thus,
+    functions from shared libraries, will not appear (are
+    automatically filtered) in the measurement output.
 
-  - The pgCC compiler versions 13.9 and higher preinclude omp.h for OpenMP
-    codes. This results in  multiply defined symbols if the source file
-    is preprocessed before compilation. Since version 14.1 an option is available
-    to avoid preinclusion, which we can use for preprocessed source files.
-    For the pgCC versions 13.9 until 14.0, preprocessing is not possible
-    for C++ codes.
+  - The pgCC compiler versions 13.9 and higher preinclude omp.h for
+    OpenMP codes. This results in multiply defined symbols if the
+    source file is preprocessed before compilation. Since version 14.1
+    an option is available to avoid preinclusion, which we can use for
+    preprocessed source files.  For the pgCC versions 13.9 until 14.0,
+    preprocessing is not possible for C++ codes.
 
-  - The GCC compiler uses DWARF v4 as the default debug information format
-    since version 4.8. But when used with an older binutils version this
-    results in unreliably region meta data. If file name information are
-    missing in the resulting region meta data, than try recompiling with
-    the -gdwarf-3 or -gdwarf-2 flag.
+  - The GCC compiler uses DWARF v4 as the default debug information
+    format since version 4.8. But when used with an older binutils
+    version this results in unreliably region meta data. If file name
+    information are missing in the resulting region meta data, than
+    try recompiling with the -gdwarf-3 or -gdwarf-2 flag.
 
-  - When instrumenting an application which contains bison generated code,
-    the link step fails because of multiple defined symbols conflicting
-    with the online access module of Score-P. Please use
+  - When instrumenting an application which contains bison generated
+    code, the link step fails because of multiple defined symbols
+    conflicting with the online access module of Score-P. Please use
     'scorep --noonline-access' to disable the online access and avoid
     multiple symbol definitions.
 
@@ -223,10 +137,35 @@ various Score-P components.
 
 * MPI support
 
+  - Functions added with MPI-3.0 are not supported by Score-P.
+    Measurements using libraries providing MPI-3.0 functions will be
+    incomplete if any of the new functions are used, and use of
+    communicators or windows created by new functions are likely to
+    result in measurement failure.
+
+  - C++ bindings for MPI are not supported. These were deprecated as
+    of MPI-2.2 and removed with MPI-3.0. When using C++ bindings for
+    MPI, Score-P will most likely indicate the failed library wrapping
+    with the following warning: "If you are using MPICH1, please
+    ignore this warning. If not, it seems that your interprocess
+    communication library (e.g., MPI) hasn't been initialized. Score-P
+    can't generate output."
+    If your MPI implements the C++ bindings in a separate library on
+    top of the C bindings, the following workaround might work for
+    you:
+    1) Instrument your application with 'scorep --keep-files -v' It
+       will make the instrumenter not remove the intermediate files
+       and output the commands it executes.
+    2) Copy the link command (the last command from the scorep
+       output).
+    3) Insert a link flag (e.g. -lmpicxx) for your C++ bindings
+       library right before '-lscorep_adapter_mpi_events' and execute
+       the modified link command.
+
   - When using derived data types in non-blocking communications, and
-    no support for MPI_Type_dup() was detected, then please ensure,
-    that the MPI_Datatype handle is still valid at the time the
-    request finishes.
+    no support for MPI_Type_dup() was detected, please ensure that the
+    MPI_Datatype handle is still valid at the time the request
+    finishes.
 
   - Online detection of MPI wait states might produce wrong results
     when messages sent within different communicators overtake each
@@ -250,6 +189,10 @@ various Score-P components.
 
 * OpenMP support
 
+  - On K Computer and Fujitsu FX10 systems, some C++ OpenMP programs
+    crash for unknown reason during measurement initialization when
+    accessing an OpenMP threadprivate variable.
+
   - Function instrumentation using the Intel compiler version 11.1 for
     codes using OpenMP tasking is erroneous. You might try PDT
     instrumentation instead.
@@ -268,7 +211,7 @@ various Score-P components.
 
   - Currently, the instrumenter allows to switch off OPARI2
     instrumentation for OpenMP programs. If OpenMP parallel regions
-    are not instrumented and an event occures inside a parallel region
+    are not instrumented and an event occurs inside a parallel region
     (e.g., because an instrumented function is called inside of a
     parallel region) Score-P will crash. We are considering to make
     the usage more secure in future versions of Score-P. This might
@@ -285,7 +228,7 @@ various Score-P components.
    -fno-underscoring' and '-fsecond-underscore') will likely crash.
    This is because a variable name used in the Score-P libraries does
    not match the one instrumented by OPARI2. On AIX, a workaround is
-   to manusally rename it at link time (-brename:pomp_tpd_,pomp_tpd).
+   to manually rename it at link time (-brename:pomp_tpd_,pomp_tpd).
 
  - With PGI C++ v13.10 compiler, preprocessing of OpenMP codes using
    OPARI2 is not possible any longer as the compiler itself adds a
@@ -295,23 +238,90 @@ various Score-P components.
 
 --------------------------------------------------------------------------------
 
+* CUDA support
+
+  - CUDA device activities get lost for CUDA 5.5 (CUPTI 4). The last
+    activity in a CUPTI activity buffer gets lost, when the buffer is
+    full. The issue can be avoided by providing buffers, which are
+    large enough to store all CUDA device activities until the buffer
+    is flushed. The user can specify the CUPTI activity buffer (chunk)
+    size with the environment variable SCOREP_CUDA_BUFFER_CHUNK. In
+    CUDA 6.0 (CUPTI 5) this issue is fixed.
+
+--------------------------------------------------------------------------------
+
+* SHMEM support
+
+  - When using the OpenSHMEM reference implementation and building
+    Score-P as a shared library, ensure that the GASNet library is
+    build with -fPIC on platforms which need this flag for shared
+    library code. For example, run make with the MANUAL_LIBCFLAGS and
+    MANUAL_CFLAGS variables set:
+
+      make MANUAL_LIBCFLAGS="-fPIC -DPIC" MANUAL_CFLAGS="-fPIC -DPIC"
+
+    on GNU/Linux platforms.
+    Also, if you encounter segmentation faults when running the
+    instrumented application with Score-P attached, but the error
+    disappears magically on subsequent runs, than the OpenSHMEM
+    reference implementation may not consider some of your global or
+    static variables as symmetric objects.  Please allocate these
+    objects with shmalloc() to ensure that they are in the symmetric
+    heap.
+  - Currently tested SHMEM implementations:
+    + OpenSHMEM reference implementation 1.0f
+    + Open MPI implementation 1.8.2a
+    + SGI SHMEM
+    + Cray SHMEM
+  - The online access interface is currently not available in SHMEM
+    applications.
+
+--------------------------------------------------------------------------------
+
+* POSIX threads support
+
+  - Please note that you need to instrument every thread creation
+    where the newly generated thread might create measurement events
+    (which is usually the case when you use the default compiler-based
+    instrumentation).
+
+  - Following Pthread management functions are not supported yet and
+    will cause an instrumented application to abort: pthread_exit,
+    pthread_cancel. The usage of pthread_detach will cause the program
+    to fail if the detached thread is still running after the end of
+    main.
+
+  - Pthread support is currently not available on systems that use
+    linkers other than the GNU linker, e.g., AIX systems. Pthread
+    support is currently not available when compiling with Fujitsu
+    compilers. The compiler switch -Xg (GNU compatibility mode) might
+    help, but is untested.
+
+  - Please note that on systems where Pthreads don't need extra flags
+    (like e.g., -pthread) to be compiled and linked (e.g., Cray, Blue
+    Gene/Q), Score-P can't instrument Pthreads automatically. You need
+    to enable Pthread instrumentation manually via scorep's
+    --thread=pthread option.
+
+--------------------------------------------------------------------------------
+
 * Score-P misc.
 
-  - There might be a performance impact when instrumenting code without
-    explicitly given optimization flags. The instrumenter adds compiler
-    flags to enable additional debugging information. Depending on the
-    compiler this may turn off optimization unless optimization flags
-    are explicitly specified.
+  - There might be a performance impact when instrumenting code
+    without explicitly given optimization flags. The instrumenter adds
+    compiler flags to enable additional debugging
+    information. Depending on the compiler this may turn off
+    optimization unless optimization flags are explicitly specified.
 
   - Applications using an autotools-based buildsystem should add the
     option "--disable-option-checking" to the usual configure
     call. Score-P is added only at make time like "make CC="scorep
     <your-CC>" (same for CXX, F77, and FC)
 
-  - Literal file-filter rules like "INCLUDE bt.f" for Fortran files that
-    will be processed by OPARI2 (i.e., files containing OpenMP or POMP
-    user pragmas) do not work as expected as OPARI2 changes the file
-    name (here to bt.opari.f)
+  - Literal file-filter rules like "INCLUDE bt.f" for Fortran files
+    that will be processed by OPARI2 (i.e., files containing OpenMP or
+    POMP user pragmas) do not work as expected as OPARI2 changes the
+    file name (here to bt.opari.f)
 
   - Due to a bug in PDT 3.18 and earlier versions, PDT support is
     disabled on BlueGene systems.
@@ -328,8 +338,8 @@ various Score-P components.
 
   - COBI binary instrumentation is currently disabled due to changes
     in Score-P's linking process that now passes more libraries to
-    COBI/Dyninst than it can handle at the moment. This issue
-    will be addressed in a future release of Score-P and/or Dyninst.
+    COBI/Dyninst than it can handle at the moment. This issue might be
+    addressed in a future release of Score-P and/or Dyninst.
 
   - Traces generated by applications compiled with the CCE Fortran
     compiler on Cray X series systems are inconsistent as there is no
@@ -337,8 +347,8 @@ various Score-P components.
     Scalasca.
 
   - Running make check fails if SCOREP_EXPERIMENT_DIRECTORY is set to
-    'scorep'. One workaround is to run
-    '(unset SCOREP_EXPERIMENT_DIRECTORY; make check;)'.
+    'scorep'. One workaround is to run '(unset
+    SCOREP_EXPERIMENT_DIRECTORY; make check;)'.
 
 --------------------------------------------------------------------------------
 
