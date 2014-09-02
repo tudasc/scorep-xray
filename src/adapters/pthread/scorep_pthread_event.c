@@ -713,6 +713,7 @@ __wrap_pthread_cond_timedwait( pthread_cond_t*        cond,
 
     if ( scorep_mutex->process_shared == false )
     {
+        scorep_mutex->nesting_level--;
         SCOREP_ThreadReleaseLock( SCOREP_PARADIGM_PTHREAD,
                                   scorep_mutex->id,
                                   scorep_mutex->acquisition_order );
@@ -729,6 +730,7 @@ __wrap_pthread_cond_timedwait( pthread_cond_t*        cond,
     if ( scorep_mutex->process_shared == false )
     {
         scorep_mutex->acquisition_order++;
+        scorep_mutex->nesting_level++;
         SCOREP_ThreadAcquireLock( SCOREP_PARADIGM_PTHREAD,
                                   scorep_mutex->id,
                                   scorep_mutex->acquisition_order );
