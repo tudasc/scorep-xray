@@ -71,7 +71,7 @@ tracing data and the new CUBE4 profiling data format which allow a
 better scaling of the tools with respect to both the run time of the
 process to be analyzed and the number of cores to be used.
 
-@@scorep supports the following programming paradigms:
+@scorep supports the following programming paradigms:
 <dl>
 <dt>Multi-process paradigms:</dt>
 <dd><ul>
