@@ -30,13 +30,13 @@ write_cupti_activity_record( CUpti_Activity*       record,
  * Functions that are not used in in CUPTI prior to version 4.
  */
 void
-scorep_cupti_activity_check_chunk_size()
+scorep_cupti_activity_check_chunk_size( void )
 {
     return;
 }
 
 void
-scorep_cupti_activity_register_callbacks()
+scorep_cupti_activity_register_callbacks( void )
 {
     return;
 }

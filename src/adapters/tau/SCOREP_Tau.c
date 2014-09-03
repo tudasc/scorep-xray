@@ -143,7 +143,7 @@ scorep_tau_convert_region_type( SCOREP_Tau_RegionType region_type )
  */
 
 void
-SCOREP_Tau_InitMeasurement()
+SCOREP_Tau_InitMeasurement( void )
 {
     SCOREP_InitMeasurement();
 }

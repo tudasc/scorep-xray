@@ -104,7 +104,7 @@ struct scorep_thread_private_data_omp_tpd
 
 
 size_t
-scorep_thread_get_sizeof_model_data()
+scorep_thread_get_sizeof_model_data( void )
 {
     return sizeof( scorep_thread_private_data_omp_tpd );
 }
@@ -354,7 +354,7 @@ scorep_thread_create_location_name( char*                       locationName,
 
 
 scorep_thread_private_data*
-scorep_thread_get_private_data()
+scorep_thread_get_private_data( void )
 {
     return TPD;
 }
@@ -413,7 +413,7 @@ scorep_thread_on_join( scorep_thread_private_data*  currentTpd,
 
 
 SCOREP_Location*
-SCOREP_Location_GetCurrentCPULocation()
+SCOREP_Location_GetCurrentCPULocation( void )
 {
     UTILS_BUG_ON( TPD == 0, "Invalid OpenMP thread specific data object. "
                   "Please ensure that all omp parallel regions are instrumented." );
@@ -431,14 +431,14 @@ scorep_thread_delete_private_data( scorep_thread_private_data* tpd )
 
 
 bool
-SCOREP_Thread_InParallel()
+SCOREP_Thread_InParallel( void )
 {
     return omp_in_parallel();
 }
 
 
 uint32_t
-scorep_thread_get_team_size()
+scorep_thread_get_team_size( void )
 {
     return omp_get_num_threads();
 }

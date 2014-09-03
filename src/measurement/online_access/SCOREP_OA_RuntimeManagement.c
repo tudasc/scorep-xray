@@ -55,7 +55,7 @@ static int8_t scorep_oa_is_initialized = 0;
 #include "scorep_oa_confvars.inc.c"
 
 void
-SCOREP_OA_Register()
+SCOREP_OA_Register( void )
 {
     SCOREP_ConfigRegister( "onlineaccess", scorep_oa_configs );
 }

@@ -59,7 +59,7 @@ buffer_completed_callback( CUcontext cudaContext,
 /*****************************************/
 
 void
-scorep_cupti_activity_check_chunk_size()
+scorep_cupti_activity_check_chunk_size( void )
 {
     if ( scorep_cupti_activity_buffer_chunk_size < 1024 )
     {
@@ -265,7 +265,7 @@ scorep_cupti_activity_context_finalize( scorep_cupti_context* context )
 }
 
 void
-scorep_cupti_activity_register_callbacks()
+scorep_cupti_activity_register_callbacks( void )
 {
     /* opt-in for CUPTI activity callbacks */
     SCOREP_CUPTI_CALL( cuptiActivityRegisterCallbacks(

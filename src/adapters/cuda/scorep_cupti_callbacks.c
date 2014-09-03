@@ -2304,7 +2304,7 @@ handle_cuda_memcpy_default( const CUpti_CallbackData* cbInfo,
  * threads.
  */
 void
-scorep_cupti_callbacks_init()
+scorep_cupti_callbacks_init( void )
 {
     if ( !scorep_cupti_callbacks_initialized )
     {
@@ -2448,7 +2448,7 @@ scorep_cupti_callbacks_init()
  * threads.
  */
 void
-scorep_cupti_callbacks_finalize()
+scorep_cupti_callbacks_finalize( void )
 {
     if ( !scorep_cupti_callbacks_finalized && scorep_cupti_callbacks_initialized )
     {

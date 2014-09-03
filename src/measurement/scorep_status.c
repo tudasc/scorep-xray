@@ -109,7 +109,7 @@ SCOREP_Status_Initialize( void )
 
 
 void
-SCOREP_Status_Finalize()
+SCOREP_Status_Finalize( void )
 {
     UTILS_DEBUG_ENTRY();
 }

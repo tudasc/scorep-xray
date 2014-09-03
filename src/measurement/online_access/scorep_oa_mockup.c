@@ -59,13 +59,13 @@ SCOREP_OA_PhaseEnd
 }
 
 void
-SCOREP_OA_Register()
+SCOREP_OA_Register( void )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA,  "Dummy %s\n", __func__ );
 }
 
 void
-SCOREP_OA_Finalize()
+SCOREP_OA_Finalize( void )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA,  "Dummy %s\n", __func__ );
 }

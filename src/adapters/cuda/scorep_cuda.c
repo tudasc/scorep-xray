@@ -66,7 +66,7 @@ size_t scorep_cuda_global_location_number = 0;
 uint64_t* scorep_cuda_global_location_ids = NULL;
 
 void
-scorep_cuda_set_features()
+scorep_cuda_set_features( void )
 {
     /* check for CUDA kernels */
     if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL ) ||

@@ -77,7 +77,7 @@ static struct SCOREP_Location** location_list_tail = &location_list_head;
 static SCOREP_Mutex scorep_location_list_mutex;
 
 void
-SCOREP_Location_Initialize()
+SCOREP_Location_Initialize( void )
 {
     SCOREP_ErrorCode result = SCOREP_MutexCreate( &scorep_location_list_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );

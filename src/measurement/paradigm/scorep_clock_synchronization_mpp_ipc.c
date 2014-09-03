@@ -67,7 +67,7 @@ synchronize_with_worker( int worker, int* min_index )
 
 
 void
-SCOREP_SynchronizeClocks()
+SCOREP_SynchronizeClocks( void )
 {
     if ( SCOREP_ClockIsGlobal() )
     {

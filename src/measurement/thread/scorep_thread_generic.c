@@ -77,7 +77,7 @@ static scorep_thread_private_data* initial_tpd;
 
 
 void
-SCOREP_Thread_Initialize()
+SCOREP_Thread_Initialize( void )
 {
     UTILS_DEBUG_ENTRY();
     SCOREP_ErrorCode result = SCOREP_MutexCreate( &sequence_count_lock );

@@ -33,7 +33,7 @@ extern void scorep_interpolate_epoch(uint64_t* epochBegin, uint64_t* epochEnd);
 /* *INDENT-ON*  */
 
 void
-SCOREP_SynchronizeClocks()
+SCOREP_SynchronizeClocks( void )
 {
     // We assume that all cores use the same clock.
     SCOREP_AddClockOffset( SCOREP_GetClockTicks(), 0, 0 );

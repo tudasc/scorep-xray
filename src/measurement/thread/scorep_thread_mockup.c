@@ -46,7 +46,7 @@ static SCOREP_Location* scorep_thread_sole_cpu_location;
 
 
 void
-SCOREP_Thread_Initialize()
+SCOREP_Thread_Initialize( void )
 {
     UTILS_ASSERT( scorep_thread_sole_cpu_location == 0 );
     scorep_thread_sole_cpu_location =
@@ -57,20 +57,20 @@ SCOREP_Thread_Initialize()
 
 
 void
-SCOREP_Thread_Finalize()
+SCOREP_Thread_Finalize( void )
 {
 }
 
 
 bool
-SCOREP_Thread_InParallel()
+SCOREP_Thread_InParallel( void )
 {
     return false;
 }
 
 
 SCOREP_Location*
-SCOREP_Location_GetCurrentCPULocation()
+SCOREP_Location_GetCurrentCPULocation( void )
 {
     return scorep_thread_sole_cpu_location;
 }

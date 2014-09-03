@@ -62,7 +62,7 @@ static SCOREP_Mutex      first_fork_locations_mutex;
 
 
 void
-scorep_thread_create_first_fork_locations_mutex()
+scorep_thread_create_first_fork_locations_mutex( void )
 {
     SCOREP_ErrorCode result = SCOREP_MutexCreate( &first_fork_locations_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
@@ -70,7 +70,7 @@ scorep_thread_create_first_fork_locations_mutex()
 
 
 void
-scorep_thread_destroy_first_fork_locations_mutex()
+scorep_thread_destroy_first_fork_locations_mutex( void )
 {
     SCOREP_ErrorCode result = SCOREP_MutexDestroy( &first_fork_locations_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS );

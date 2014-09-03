@@ -138,7 +138,7 @@ SCOREP_RegionHandle scorep_mpi_regid[ SCOREP__MPI_NUMFUNCS + 1 ];
  * Register MPI functions and initialize data structures
  */
 void
-scorep_mpi_register_regions()
+scorep_mpi_register_regions( void )
 {
     /* Define source file handle for MPI functions */
     SCOREP_SourceFileHandle file_id = SCOREP_Definitions_NewSourceFile( "MPI" );

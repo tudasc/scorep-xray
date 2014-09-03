@@ -94,7 +94,7 @@ static bool scorep_cupti_initialized = 0;
 static bool scorep_cupti_finalized   = 0;
 
 void
-scorep_cupti_init()
+scorep_cupti_init( void )
 {
     if ( !scorep_cupti_initialized )
     {
@@ -174,7 +174,7 @@ scorep_cupti_init()
  * threads.
  */
 void
-scorep_cupti_finalize()
+scorep_cupti_finalize( void )
 {
     if ( !scorep_cupti_finalized && scorep_cupti_initialized )
     {

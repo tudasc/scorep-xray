@@ -56,7 +56,7 @@
 #include "scorep_oa_confvars.inc.c"
 
 void
-SCOREP_OA_Register()
+SCOREP_OA_Register( void )
 {
     SCOREP_ConfigRegisterCond( "onlineaccess",
                                scorep_oa_configs,

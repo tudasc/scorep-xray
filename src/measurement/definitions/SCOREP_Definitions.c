@@ -78,7 +78,7 @@ SCOREP_Definitions_Unlock( void )
 }
 
 void
-SCOREP_Definitions_Initialize()
+SCOREP_Definitions_Initialize( void )
 {
     if ( scorep_definitions_initialized )
     {
@@ -174,7 +174,7 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
 }
 
 void
-SCOREP_Definitions_Finalize()
+SCOREP_Definitions_Finalize( void )
 {
     if ( !scorep_definitions_initialized )
     {
@@ -223,7 +223,7 @@ SCOREP_Definitions_Finalize()
 
 
 void
-SCOREP_Definitions_Write()
+SCOREP_Definitions_Write( void )
 {
     if ( !scorep_definitions_initialized )
     {

@@ -215,7 +215,7 @@ finalize( void )
 
 
 bool
-SCOREP_Thread_InParallel()
+SCOREP_Thread_InParallel( void )
 {
     UTILS_DEBUG_ENTRY();
     if ( !is_initialized || is_finalized )

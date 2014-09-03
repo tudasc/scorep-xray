@@ -704,7 +704,7 @@ SCOREP_Location_RmaWinDestroy( SCOREP_Location*              location,
 
 
 void
-SCOREP_RmaCollectiveBegin()
+SCOREP_RmaCollectiveBegin( void )
 {
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );

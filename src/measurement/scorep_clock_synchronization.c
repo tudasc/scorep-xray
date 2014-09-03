@@ -43,7 +43,7 @@ static bool     scorep_epoch_end_set      = false;
 static bool     scorep_epoch_interpolated = false;
 
 void
-SCOREP_BeginEpoch()
+SCOREP_BeginEpoch( void )
 {
     assert( !scorep_epoch_begin_set );
     scorep_epoch_begin     = SCOREP_GetClockTicks();
@@ -52,7 +52,7 @@ SCOREP_BeginEpoch()
 
 
 uint64_t
-SCOREP_GetBeginEpoch()
+SCOREP_GetBeginEpoch( void )
 {
     assert( scorep_epoch_begin_set );
     return scorep_epoch_begin;
@@ -60,7 +60,7 @@ SCOREP_GetBeginEpoch()
 
 
 void
-SCOREP_EndEpoch()
+SCOREP_EndEpoch( void )
 {
     assert( scorep_epoch_begin_set );
     assert( !scorep_epoch_end_set );

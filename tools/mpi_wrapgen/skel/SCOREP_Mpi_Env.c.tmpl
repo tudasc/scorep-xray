@@ -187,7 +187,7 @@ int MPI_Init_thread(int* argc, char*** argv, int required, int* provided )
  * measurement system, but substituts it with a barrier. The MPI finalization
  * will be done from the measurement system.
  */
-int MPI_Finalize()
+int MPI_Finalize( void )
 {
   const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_ENV);
   int       return_val;

@@ -237,7 +237,7 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
  * will be done from the measurement system.
  */
 int
-MPI_Finalize()
+MPI_Finalize( void )
 {
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ENV );
     int       return_val;

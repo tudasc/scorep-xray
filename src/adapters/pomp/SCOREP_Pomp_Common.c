@@ -74,7 +74,7 @@ static scorep_stack_node* scorep_region_list_top = NULL;
  ************************************************************************/
 
 static SCOREP_Pomp_Region*
-scorep_pomp_allocate_region_on_the_fly()
+scorep_pomp_allocate_region_on_the_fly( void )
 {
     scorep_stack_node* node = malloc( sizeof( scorep_stack_node ) );
     node->next             = scorep_region_list_top;

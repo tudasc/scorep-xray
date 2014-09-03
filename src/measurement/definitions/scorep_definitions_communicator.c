@@ -108,7 +108,7 @@ define_interim_communicator( SCOREP_Allocator_PageManager*        pageManager,
 
 
 static size_t
-interim_comm_static_size()
+interim_comm_static_size( void )
 {
     return SCOREP_Allocator_RoundupToAlignment(
                sizeof( SCOREP_InterimCommunicatorDef ) );

@@ -83,7 +83,7 @@ scorep_compiler_register( size_t subsystem_id )
    on deregistration.
  */
 static void
-scorep_compiler_deregister()
+scorep_compiler_deregister( void )
 {
     UTILS_DEBUG_ENTRY();
 

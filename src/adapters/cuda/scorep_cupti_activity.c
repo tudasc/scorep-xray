@@ -92,7 +92,7 @@ replace_context( uint32_t               newContextId,
  * threads.
  */
 void
-scorep_cupti_activity_init()
+scorep_cupti_activity_init( void )
 {
     if ( !scorep_cupti_activity_initialized )
     {
@@ -212,7 +212,7 @@ scorep_cupti_activity_init()
 }
 
 void
-scorep_cupti_activity_finalize()
+scorep_cupti_activity_finalize( void )
 {
     if ( !scorep_cupti_activity_finalized && scorep_cupti_activity_initialized )
     {
