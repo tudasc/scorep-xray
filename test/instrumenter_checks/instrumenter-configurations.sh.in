@@ -114,7 +114,7 @@ done
 @HAVE_SHMEM_SUPPORT_TRUE@                        echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpp_arg" >> ${file_prefix}shmem
 @HAVE_SHMEM_SUPPORT_TRUE@                    done
 
-                    # mpi_omp ---------------------------#
+                    # shmem_omp -------------------------#
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    for mpp_arg in "mpp=shmem"; do
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_arg in $omp_args; do
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpp_arg $omp_arg" >> ${file_prefix}shmem_omp
