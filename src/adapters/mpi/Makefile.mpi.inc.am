@@ -33,6 +33,12 @@
 
 if HAVE_MPI_SUPPORT
 
+$(LIB_DIR_SCOREP)libscorep_measurement.la:
+	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_measurement.la
+
+$(LIB_DIR_SCOREP)libscorep_mpp_ipc.la:
+	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpp_ipc.la
+
 $(LIB_DIR_SCOREP)libutils.la:
 	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libutils.la
 
@@ -226,10 +232,5 @@ libscorep_adapter_mpi_event_fortran_sub4_la_SOURCES = \
 libscorep_adapter_mpi_event_fortran_sub4_la_CPPFLAGS = \
     $(SCOREP_MPI_EVENT_FORTRAN_CPPFLAGS)               \
     -DFSUB=SCOREP_FORTRAN_SUB4
-
-
-$(LIB_DIR_SCOREP)libscorep_measurement.la:
-	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_measurement.la
-
 
 endif

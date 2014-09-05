@@ -96,21 +96,8 @@ libscorep_measurement_la_LDFLAGS = \
 
 if HAVE_MPI_SUPPORT
 
-$(LIB_DIR_SCOREP_MPI)libscorep_ipc_mpi.la:
-	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_ipc_mpi.la
-
-lib_LTLIBRARIES += libscorep_mpp_mpi.la
-libscorep_mpp_mpi_la_SOURCES = \
-    $(SRC_ROOT)src/measurement/paradigm/mpi/scorep_mpp_mpi.c
-libscorep_mpp_mpi_la_CPPFLAGS =  \
-    $(AM_CPPFLAGS) \
-    -I$(INC_ROOT)src/measurement
-libscorep_mpp_mpi_la_LIBADD  = \
-    $(LIB_DIR_SCOREP_MPI)libscorep_ipc_mpi.la \
-    libscorep_mpp_ipc.la                      \
-    libutils.la
-libscorep_mpp_mpi_la_LDFLAGS = \
-    $(library_api_version_ldflags)
+$(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_mpi.la:
+	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpp_mpi.la
 
 endif HAVE_MPI_SUPPORT
 

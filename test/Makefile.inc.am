@@ -99,7 +99,7 @@ libscorep_mpi_mgmt_la_CPPFLAGS = $(common_cppflags)
 libscorep_mpi_mgmt_la_LIBADD   = \
     $(common_mgmt_libadd)                                   \
     $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_mgmt.la      \
-    libscorep_mpp_mpi.la                                    \
+    $(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la               \
     $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
     $(external_libadd)                                      \
     libscorep_thread_mockup.la                              \
@@ -211,7 +211,7 @@ libscorep_mpi_omp_mgmt_la_LIBADD   = \
     $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_mgmt.la      \
     libscorep_adapter_pomp_omp_mgmt.la                      \
     libscorep_adapter_pomp_user_mgmt.la                     \
-    libscorep_mpp_mpi.la                                    \
+    $(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la               \
     $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
     libscorep_thread_fork_join_omp_tpd.la                   \
     libscorep_mutex_omp.la

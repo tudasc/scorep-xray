@@ -42,6 +42,19 @@ include ../src/measurement/Makefile.common.inc.am
 
 if HAVE_MPI_SUPPORT
 
+lib_LTLIBRARIES += libscorep_mpp_mpi.la
+libscorep_mpp_mpi_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/paradigm/mpi/scorep_mpp_mpi.c
+libscorep_mpp_mpi_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement
+libscorep_mpp_mpi_la_LIBADD = \
+    libscorep_ipc_mpi.la \
+    $(LIB_DIR_SCOREP)libscorep_mpp_ipc.la \
+    $(LIB_DIR_SCOREP)libutils.la
+libscorep_mpp_mpi_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
 noinst_LTLIBRARIES += libscorep_ipc_mpi.la
 libscorep_ipc_mpi_la_SOURCES = \
     $(SRC_ROOT)src/measurement/paradigm/mpi/scorep_ipc_mpi.c \
