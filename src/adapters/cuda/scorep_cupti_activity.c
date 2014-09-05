@@ -260,8 +260,8 @@ scorep_cupti_activity_context_create( CUcontext cudaContext )
         /* get pseudo timestamp as warmup for CUPTI */
         SCOREP_CUPTI_CALL( cuptiGetTimestamp( &( context_activity->sync.gpu_start ) ) );
 
-        scorep_set_synchronization_point( &( context_activity->sync.gpu_start ),
-                                          &( context_activity->sync.host_start ) );
+        scorep_cupti_set_synchronization_point( &( context_activity->sync.gpu_start ),
+                                                &( context_activity->sync.host_start ) );
     }
 
     /* set default CUPTI stream ID (needed for memory usage and idle tracing) */
@@ -667,8 +667,8 @@ scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy* memcpy,
 }
 
 void
-scorep_set_synchronization_point( uint64_t* gpu,
-                                  uint64_t* host )
+scorep_cupti_set_synchronization_point( uint64_t* gpu,
+                                        uint64_t* host )
 {
     uint64_t t1 = 0, t2 = 0;
 
@@ -712,8 +712,8 @@ synchronize_context_list( void )
             SCOREP_CUDA_DRIVER_CALL( cuCtxPopCurrent( &( context->cuda_context ) ) );
         }
 
-        scorep_set_synchronization_point( &( context->activity->sync.gpu_start ),
-                                          &( context->activity->sync.host_start ) );
+        scorep_cupti_set_synchronization_point( &( context->activity->sync.gpu_start ),
+                                                &( context->activity->sync.host_start ) );
 
         context = context->next;
     }

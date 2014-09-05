@@ -64,8 +64,8 @@ scorep_cupti_activity_context_create( CUcontext cudaContext );
  * @param host
  */
 void
-scorep_set_synchronization_point( uint64_t* gpu,
-                                  uint64_t* host );
+scorep_cupti_set_synchronization_point( uint64_t* gpu,
+                                        uint64_t* host );
 
 /*
  * Use the CUPTI activity kernel record to write the corresponding Score-P

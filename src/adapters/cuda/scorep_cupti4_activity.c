@@ -150,8 +150,8 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
         {
             double gpu_diff = 0;
 
-            scorep_set_synchronization_point( &( context_activity->sync.gpu_stop ),
-                                              &( context_activity->sync.host_stop ) );
+            scorep_cupti_set_synchronization_point( &( context_activity->sync.gpu_stop ),
+                                                    &( context_activity->sync.host_stop ) );
 
             /* save these as next synchronization point */
             gpuStop  = context_activity->sync.gpu_stop;
