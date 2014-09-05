@@ -96,7 +96,7 @@ libscorep_measurement_la_LDFLAGS = \
 
 if HAVE_MPI_SUPPORT
 
-$(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_mpi.la:
+$(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la:
 	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpp_mpi.la
 
 endif HAVE_MPI_SUPPORT
