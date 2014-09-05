@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -41,8 +41,10 @@
 #include <config.h>
 
 #include <scorep_subsystem.h>
+
 extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_PompUserAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_PompOmpAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
@@ -65,7 +67,8 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_CudaAdapter,
     &SCOREP_Subsystem_ThreadForkJoin,
     &SCOREP_Subsystem_PthreadAdapter,
-    &SCOREP_Subsystem_ThreadCreateWait
+    &SCOREP_Subsystem_ThreadCreateWait,
+    &SCOREP_Subsystem_ShmemAdapter
 };
 
 const size_t scorep_number_of_subsystems = sizeof( scorep_subsystems ) /
