@@ -16,7 +16,7 @@
                                                    int  *length,            \
                                                    long *errcode,           \
                                                    int  *abort )            \
-                                                                            \
+    {                                                                       \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
