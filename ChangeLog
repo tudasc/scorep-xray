@@ -10,7 +10,8 @@ User tools and API improvements and changes:
 
 
 Bugfixes:
-
+- Fix building of MPI wrapper if compiler issues unrelated warnings at
+  configure time.
 
 ------------------- Upcoming version 1.3.1 ---------------------------
 
