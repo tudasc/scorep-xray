@@ -268,25 +268,45 @@ check_LTLIBRARIES                      += libscorep_subsystems_serial.la
 libscorep_subsystems_serial_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_serial_la_CPPFLAGS = $(subsystems_paradigm_cppflags)
 
+if HAVE_OPENMP_SUPPORT
+
 check_LTLIBRARIES                   += libscorep_subsystems_omp.la
 libscorep_subsystems_omp_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_omp_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_OMP
+
+endif HAVE_OPENMP_SUPPORT
+
+if HAVE_MPI_SUPPORT
 
 check_LTLIBRARIES                   += libscorep_subsystems_mpi.la
 libscorep_subsystems_mpi_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_mpi_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_MPI
 
+if HAVE_OPENMP_SUPPORT
+
 check_LTLIBRARIES                       += libscorep_subsystems_mpi_omp.la
 libscorep_subsystems_mpi_omp_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_mpi_omp_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_MPI -DSCOREP_SUBSYSTEMS_OMP
+
+endif HAVE_OPENMP_SUPPORT
+
+endif HAVE_MPI_SUPPORT
+
+if HAVE_SHMEM_SUPPORT
 
 check_LTLIBRARIES                     += libscorep_subsystems_shmem.la
 libscorep_subsystems_shmem_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_shmem_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_SHMEM
 
+if HAVE_OPENMP_SUPPORT
+
 check_LTLIBRARIES                         += libscorep_subsystems_shmem_omp.la
 libscorep_subsystems_shmem_omp_la_SOURCES  = $(SRC_ROOT)test/scorep_monolithic_subsystems.c
 libscorep_subsystems_shmem_omp_la_CPPFLAGS = $(subsystems_paradigm_cppflags) -DSCOREP_SUBSYSTEMS_SHMEM -DSCOREP_SUBSYSTEMS_OMP
+
+endif HAVE_OPENMP_SUPPORT
+
+endif HAVE_SHMEM_SUPPORT
 
 # ------------------------------------------------------------------------------
 
