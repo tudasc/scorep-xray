@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -556,8 +556,9 @@ SCOREP_RmaReleaseLock( SCOREP_InterimRmaWindowHandle windowHandle,
  *
  * @param remote Rank of target in context of window.
  *
- * @param syncType Synchronization level (e.g. SCOREP_RMA_SYNC_LEVEL_NONE,
- * SCOREP_RMA_SYNC_LEVEL_PROCESS, SCOREP_RMA_SYNC_LEVEL_MEMORY).
+ * @param syncType Type of direct RMA synchronization call
+ * (e.g. SCOREP_RMA_SYNC_TYPE_MEMORY, SCOREP_RMA_SYNC_TYPE_NOTIFY_IN,
+ * SCOREP_RMA_SYNC_TYPE_NOTIFY_OUT).
  */
 void
 SCOREP_RmaSync( SCOREP_InterimRmaWindowHandle windowHandle,
