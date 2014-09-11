@@ -18,8 +18,8 @@ In general, you can record a profile and/or a event trace. Whether a profile and
 trace is recorded, is specified by the environment variables
 \confvar{SCOREP_ENABLE_PROFILING} and \confvar{SCOREP_ENABLE_TRACING}. If the value of this
 variables is zero or <tt>false</tt>, profiling/tracing is disabled.
-Otherwise @scorep will record a profile and/or trace. By default, profiling and tracing
-are both enabled.
+Otherwise @scorep will record a profile and/or trace. By default, profiling is enabled and tracing
+is disabled.
 
 You may start with a profiling run, because of its lower space requirements. According
 to profiling results, you may configure the trace buffer limits, filtering or selective
