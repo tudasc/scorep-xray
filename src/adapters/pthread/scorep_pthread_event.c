@@ -27,6 +27,7 @@
 #include <SCOREP_ThreadCreateWait_Event.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Memory.h>
+#include <SCOREP_Libwrap_Macros.h>
 
 #define SCOREP_DEBUG_MODULE_NAME PTHREAD
 #include <UTILS_Debug.h>
@@ -64,10 +65,10 @@ get_reuse_key( scorep_pthread_wrapped_arg* wrappedArg );
 
 
 int
-__wrap_pthread_create( pthread_t*            thread,
-                       const pthread_attr_t* attr,
-                       void* ( *start_routine )( void* ),
-                       void*                 arg )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_create ) ( pthread_t *            thread,
+                                             const pthread_attr_t * attr,
+                                             void* ( *start_routine )( void* ),
+                                             void*                 arg )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -207,8 +208,8 @@ cleanup_handler( void* arg )
 
 
 int
-__wrap_pthread_join( pthread_t thread,
-                     void**    valuePtr )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_join ) ( pthread_t thread,
+                                           void**    valuePtr )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -259,7 +260,7 @@ __wrap_pthread_join( pthread_t thread,
 
 
 void
-__wrap_pthread_exit( void* valuePtr )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_exit ) ( void* valuePtr )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -300,7 +301,7 @@ __wrap_pthread_exit( void* valuePtr )
 
 
 int
-__wrap_pthread_cancel( pthread_t thread )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cancel ) ( pthread_t thread )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -325,7 +326,7 @@ __wrap_pthread_cancel( pthread_t thread )
 
 
 int
-__wrap_pthread_detach( pthread_t thread )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_detach ) ( pthread_t thread )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -352,8 +353,8 @@ __wrap_pthread_detach( pthread_t thread )
 
 
 int
-__wrap_pthread_mutex_init( pthread_mutex_t*           pthreadMutex,
-                           const pthread_mutexattr_t* pthreadAttr )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_init ) ( pthread_mutex_t *           pthreadMutex,
+                                                 const pthread_mutexattr_t * pthreadAttr )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -408,7 +409,7 @@ issue_process_shared_mutex_warning( void )
 
 
 int
-__wrap_pthread_mutex_destroy( pthread_mutex_t* pthreadMutex )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_destroy ) ( pthread_mutex_t * pthreadMutex )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -431,7 +432,7 @@ __wrap_pthread_mutex_destroy( pthread_mutex_t* pthreadMutex )
 
 
 int
-__wrap_pthread_mutex_lock( pthread_mutex_t* pthreadMutex )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_lock ) ( pthread_mutex_t * pthreadMutex )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -486,7 +487,7 @@ record_acquire_lock_event( scorep_pthread_mutex* scorepMutex )
 
 
 int
-__wrap_pthread_mutex_unlock( pthread_mutex_t* pthreadMutex )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_unlock ) ( pthread_mutex_t * pthreadMutex )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -530,7 +531,7 @@ __wrap_pthread_mutex_unlock( pthread_mutex_t* pthreadMutex )
 
 
 int
-__wrap_pthread_mutex_trylock( pthread_mutex_t* pthreadMutex )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_trylock ) ( pthread_mutex_t * pthreadMutex )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -562,7 +563,8 @@ __wrap_pthread_mutex_trylock( pthread_mutex_t* pthreadMutex )
 
 
 int
-__wrap_pthread_cond_init( pthread_cond_t* cond, pthread_condattr_t* attr )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_init ) ( pthread_cond_t * cond,
+                                                pthread_condattr_t * attr )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -590,7 +592,7 @@ __wrap_pthread_cond_init( pthread_cond_t* cond, pthread_condattr_t* attr )
 
 
 int
-__wrap_pthread_cond_signal( pthread_cond_t* cond )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_signal ) ( pthread_cond_t * cond )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -611,7 +613,7 @@ __wrap_pthread_cond_signal( pthread_cond_t* cond )
 
 
 int
-__wrap_pthread_cond_broadcast( pthread_cond_t* cond )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_broadcast ) ( pthread_cond_t * cond )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -632,7 +634,8 @@ __wrap_pthread_cond_broadcast( pthread_cond_t* cond )
 
 
 int
-__wrap_pthread_cond_wait( pthread_cond_t* cond, pthread_mutex_t* pthreadMutex )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_wait ) ( pthread_cond_t * cond,
+                                                pthread_mutex_t * pthreadMutex )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -690,9 +693,9 @@ __wrap_pthread_cond_wait( pthread_cond_t* cond, pthread_mutex_t* pthreadMutex )
 
 
 int
-__wrap_pthread_cond_timedwait( pthread_cond_t*        cond,
-                               pthread_mutex_t*       pthreadMutex,
-                               const struct timespec* time )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_timedwait ) ( pthread_cond_t *        cond,
+                                                     pthread_mutex_t *       pthreadMutex,
+                                                     const struct timespec* time )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -750,7 +753,7 @@ __wrap_pthread_cond_timedwait( pthread_cond_t*        cond,
 
 
 int
-__wrap_pthread_cond_destroy( pthread_cond_t* cond )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_destroy ) ( pthread_cond_t * cond )
 {
     UTILS_DEBUG_ENTRY();
 
