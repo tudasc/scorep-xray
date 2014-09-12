@@ -32,9 +32,11 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MetricService;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin;
+extern const SCOREP_Subsystem SCOREP_Subsystem_TaskStack;
 
 /** @brief a NULL terminated list of linked in subsystems. */
 const SCOREP_Subsystem* scorep_subsystems[] = {
+    &SCOREP_Subsystem_TaskStack,
     &SCOREP_Subsystem_MetricService,
     &SCOREP_Subsystem_CompilerAdapter,
     &SCOREP_Subsystem_UserAdapter,

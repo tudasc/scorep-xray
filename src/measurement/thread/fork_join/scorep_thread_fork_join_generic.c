@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -47,6 +47,7 @@
 #include <SCOREP_Profile_Tasking.h>
 #include <SCOREP_Metric_Management.h>
 #include "scorep_events_common.h"
+#include "scorep_task_internal.h"
 
 #include <UTILS_Error.h>
 
@@ -160,8 +161,7 @@ SCOREP_ThreadForkJoin_Join( SCOREP_ParadigmType paradigm )
     }
 }
 
-
-void
+SCOREP_TaskHandle
 SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
                                  uint32_t            threadId )
 {
@@ -240,6 +240,8 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
     {
         //SCOREP_Profiling_ThreadTeamBegin( current_location, timestamp, forkSequenceCount, threadId, paradigm );
     }
+
+    return SCOREP_Task_GetCurrentTask( current_location );
 }
 
 
@@ -304,12 +306,16 @@ SCOREP_ThreadForkJoin_TaskCreate( SCOREP_ParadigmType paradigm,
 
 void
 SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_ParadigmType paradigm,
-                                  uint32_t            threadId,
-                                  uint32_t            generationNumber )
+                                  SCOREP_TaskHandle   task )
 {
     struct scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
     SCOREP_Location*                   location  = scorep_thread_get_location( tpd );
     uint64_t                           timestamp = scorep_get_timestamp( location );
+
+    scorep_task_switch( location, task );
+
+    uint32_t thread_id     = SCOREP_Task_GetThreadId( task );
+    uint32_t generation_no = SCOREP_Task_GetGenerationNumber( task );
 
     if ( scorep_profiling_consume_event() )
     {
@@ -317,8 +323,8 @@ SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_ParadigmType paradigm,
         SCOREP_Profile_TaskSwitch( location,
                                    timestamp,
                                    metric_values,
-                                   threadId,
-                                   generationNumber );
+                                   thread_id,
+                                   generation_no );
     }
 
     if ( scorep_tracing_consume_event() )
@@ -327,8 +333,8 @@ SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_ParadigmType paradigm,
                                          timestamp,
                                          paradigm,
                                          scorep_thread_get_team( tpd ),
-                                         threadId,
-                                         generationNumber );
+                                         thread_id,
+                                         generation_no );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
@@ -337,7 +343,7 @@ SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_ParadigmType paradigm,
 }
 
 
-void
+SCOREP_TaskHandle
 SCOREP_ThreadForkJoin_TaskBegin( SCOREP_ParadigmType paradigm,
                                  SCOREP_RegionHandle regionHandle,
                                  uint32_t            threadId,
@@ -347,6 +353,22 @@ SCOREP_ThreadForkJoin_TaskBegin( SCOREP_ParadigmType paradigm,
     SCOREP_Location*                   location      = scorep_thread_get_location( tpd );
     uint64_t                           timestamp     = scorep_get_timestamp( location );
     uint64_t*                          metric_values = SCOREP_Metric_Read( location );
+
+    /* We create the task data construct late when the tasks starts running, because
+     * the number of tasks that are running concurrently is usually much smaller
+     * then the number of tasks in the creation queue. Thus, we need only a few
+     * task data objects. Furthermore, we take the memory from the location memory
+     * pool. Thus, if we create the data structure on another location than
+     * the location that executes a task, we have a memory transfer problem.
+     * However, task migration is very rare, usually the location that started the
+     * execution will finish it. Thus, the memory flow is low. If we would create
+     * the task data structure at task creation time, the memory transfer might be
+     * significant (e.g. with master/worker schemes).
+     */
+    SCOREP_TaskHandle new_task = scorep_task_create( location,
+                                                     threadId,
+                                                     generationNumber );
+    scorep_task_switch( location, new_task );
 
     if ( scorep_profiling_consume_event() )
     {
@@ -381,19 +403,22 @@ SCOREP_ThreadForkJoin_TaskBegin( SCOREP_ParadigmType paradigm,
     {
         SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
     }
+
+    return new_task;
 }
 
 
 void
 SCOREP_ThreadForkJoin_TaskEnd( SCOREP_ParadigmType paradigm,
                                SCOREP_RegionHandle regionHandle,
-                               uint32_t            threadId,
-                               uint32_t            generationNumber )
+                               SCOREP_TaskHandle   task )
 {
     struct scorep_thread_private_data* tpd           = scorep_thread_get_private_data();
     SCOREP_Location*                   location      = scorep_thread_get_location( tpd );
     uint64_t                           timestamp     = scorep_get_timestamp( location );
     uint64_t*                          metric_values = SCOREP_Metric_Read( location );
+    uint32_t                           thread_id     = SCOREP_Task_GetThreadId( task );
+    uint32_t                           generation_no = SCOREP_Task_GetGenerationNumber( task );
 
     if ( scorep_profiling_consume_event() )
     {
@@ -401,8 +426,8 @@ SCOREP_ThreadForkJoin_TaskEnd( SCOREP_ParadigmType paradigm,
                                 timestamp,
                                 metric_values,
                                 regionHandle,
-                                threadId,
-                                generationNumber );
+                                thread_id,
+                                generation_no );
     }
 
     if ( scorep_tracing_consume_event() )
@@ -420,11 +445,13 @@ SCOREP_ThreadForkJoin_TaskEnd( SCOREP_ParadigmType paradigm,
                                            timestamp,
                                            paradigm,
                                            scorep_thread_get_team( tpd ),
-                                           threadId,
-                                           generationNumber );
+                                           thread_id,
+                                           generation_no );
     }
     else if ( !SCOREP_RecordingEnabled() )
     {
         SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
     }
+
+    scorep_task_complete( location, task );
 }

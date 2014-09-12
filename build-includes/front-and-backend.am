@@ -1,5 +1,6 @@
 ## -*- mode: makefile -*-
 include ../src/tools/info/Makefile.confvars.inc.am
+include ../src/measurement/Makefile.confvars.inc.am
 include ../src/measurement/profiling/Makefile.confvars.inc.am
 include ../src/measurement/tracing/Makefile.confvars.inc.am
 include ../src/measurement/online_access/Makefile.confvars.inc.am

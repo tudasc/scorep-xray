@@ -58,6 +58,18 @@ POMP2_Task_handle pomp_current_task = 0;
 POMP2_Task_handle pomp_task_counter = 1;
 #pragma omp threadprivate(pomp_task_counter)
 
+/*
+ * NOTE: The POMP2_Task_handle changes its value and
+ * type when the task execution starts. Between task creation and execution
+ * POMP2_Task_handle contains a 64 bit unsigned integer value consisting of the
+ * thread id and the generation number.
+ * When execution starts, a data structure is allocated for the task and
+ * the content of POMP2_Task_handle is replaced by a pointer to this structure.
+ * Thus, Task events that happen before the start of the task execution, e.g.,
+ * SCOREP_ThreadForkJoin_CreateTask(), access POMP2_Task_handle as a number.
+ * Events that happen after SCOREP_ThreadForkJoin_TaskBegin() access
+ * POMP2_Task_handle as a pointer to a data structure.
+ */
 POMP2_Task_handle
 POMP2_Get_new_task_handle( void )
 {
@@ -80,6 +92,11 @@ POMP2_Get_current_task( void )
     ( ( uint32_t )( ( task ) >> 32 ) ), \
     ( ( uint32_t )( ( task ) & 0xFFFFFFFFu ) )
 
+#define pomp2_to_scorep_handle( task ) \
+    ( ( SCOREP_TaskHandle )task )
+
+#define scorep_to_pomp2_handle( task ) \
+    ( ( POMP2_Task_handle )task )
 
 /** @ingroup POMP2
     @{
@@ -143,7 +160,7 @@ POMP2_Barrier_exit( POMP2_Region_handle* pomp_handle,
         if ( pomp_current_task != pomp_old_task )
         {
             SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_PARADIGM_OPENMP,
-                                              pomp2_decode_task_handle( pomp_old_task ) );
+                                              pomp2_to_scorep_handle( pomp_old_task ) );
         }
         SCOREP_ExitRegion( region->outerBlock );
     }
@@ -177,7 +194,7 @@ POMP2_Implicit_barrier_exit( POMP2_Region_handle* pomp_handle,
         if ( pomp_current_task != pomp_old_task )
         {
             SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_PARADIGM_OPENMP,
-                                              pomp2_decode_task_handle( pomp_old_task ) );
+                                              pomp2_to_scorep_handle( pomp_old_task ) );
         }
         SCOREP_ExitRegion( region->barrier );
     }
@@ -325,8 +342,7 @@ POMP2_Parallel_begin( POMP2_Region_handle* pomp_handle )
 
     if ( !scorep_pomp_is_finalized )
     {
-        SCOREP_ThreadForkJoin_TeamBegin( SCOREP_PARADIGM_OPENMP,
-                                         omp_get_thread_num() );
+        pomp_current_task = scorep_to_pomp2_handle( SCOREP_ThreadForkJoin_TeamBegin( SCOREP_PARADIGM_OPENMP, omp_get_thread_num() ) );
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_EnterRegion( region->innerParallel );
     }
@@ -530,7 +546,6 @@ POMP2_Ordered_exit( POMP2_Region_handle* pomp_handle )
     }
 }
 
-
 void
 POMP2_Task_create_begin( POMP2_Region_handle* pomp_handle,
                          POMP2_Task_handle*   pomp_new_task,
@@ -568,13 +583,25 @@ POMP2_Task_create_end( POMP2_Region_handle* pomp_handle,
         if ( pomp_current_task != pomp_old_task )
         {
             SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_PARADIGM_OPENMP,
-                                              pomp2_decode_task_handle( pomp_old_task ) );
+                                              pomp2_to_scorep_handle( pomp_old_task ) );
         }
         SCOREP_ExitRegion( region->outerBlock );
     }
     pomp_current_task = pomp_old_task;
 }
 
+/*
+ * NOTE: The POMP2_Task_handle changes its value and
+ * type when the task execution starts. Between task creation and execution
+ * POMP2_Task_handle contains a 64 bit unsigned integer value consisting of the
+ * thread id and the generation number.
+ * When execution starts, a data structure is allocated for the task and
+ * the content of POMP2_Task_handle is replaced by a pointer to this structure.
+ * Thus, Task events that happen before the start of the task execution, e.g.,
+ * SCOREP_ThreadForkJoin_CreateTask(), access POMP2_Task_handle as a number.
+ * Events that happen after SCOREP_ThreadForkJoin_TaskBegin() access
+ * POMP2_Task_handle as a pointer to a data structure.
+ */
 void
 POMP2_Task_begin( POMP2_Region_handle* pomp_handle,
                   POMP2_Task_handle    pomp_task )
@@ -587,9 +614,10 @@ POMP2_Task_begin( POMP2_Region_handle* pomp_handle,
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_ThreadForkJoin_TaskBegin( SCOREP_PARADIGM_OPENMP,
-                                         region->innerBlock,
-                                         pomp2_decode_task_handle( pomp_current_task ) );
+        pomp_current_task = scorep_to_pomp2_handle(
+            SCOREP_ThreadForkJoin_TaskBegin( SCOREP_PARADIGM_OPENMP,
+                                             region->innerBlock,
+                                             pomp2_decode_task_handle( pomp_task ) ) );
     }
 }
 
@@ -602,7 +630,7 @@ POMP2_Task_end( POMP2_Region_handle* pomp_handle )
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_ThreadForkJoin_TaskEnd( SCOREP_PARADIGM_OPENMP,
                                        region->innerBlock,
-                                       pomp2_decode_task_handle( pomp_current_task ) );
+                                       pomp2_to_scorep_handle( pomp_current_task ) );
     }
 }
 
@@ -640,7 +668,7 @@ POMP2_Untied_task_create_end( POMP2_Region_handle* pomp_handle,
         if ( pomp_current_task != pomp_old_task )
         {
             SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_PARADIGM_OPENMP,
-                                              pomp2_decode_task_handle( pomp_old_task ) );
+                                              pomp2_to_scorep_handle( pomp_old_task ) );
         }
         SCOREP_ExitRegion( region->outerBlock );
     }
@@ -659,9 +687,10 @@ POMP2_Untied_task_begin( POMP2_Region_handle* pomp_handle,
     if ( scorep_pomp_is_tracing_on )
     {
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
-        SCOREP_ThreadForkJoin_TaskBegin( SCOREP_PARADIGM_OPENMP,
-                                         region->innerBlock,
-                                         pomp2_decode_task_handle( pomp_current_task ) );
+        pomp_current_task = scorep_to_pomp2_handle(
+            SCOREP_ThreadForkJoin_TaskBegin( SCOREP_PARADIGM_OPENMP,
+                                             region->innerBlock,
+                                             pomp2_decode_task_handle( pomp_task ) ) );
     }
 }
 
@@ -674,7 +703,7 @@ POMP2_Untied_task_end( POMP2_Region_handle* pomp_handle )
         SCOREP_Pomp_Region* region = *( SCOREP_Pomp_Region** )pomp_handle;
         SCOREP_ThreadForkJoin_TaskEnd( SCOREP_PARADIGM_OPENMP,
                                        region->innerBlock,
-                                       pomp2_decode_task_handle( pomp_current_task ) );
+                                       pomp2_to_scorep_handle( pomp_current_task ) );
     }
 }
 
@@ -707,7 +736,7 @@ POMP2_Taskwait_end( POMP2_Region_handle* pomp_handle,
         if ( pomp_current_task != pomp_old_task )
         {
             SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_PARADIGM_OPENMP,
-                                              pomp2_decode_task_handle( pomp_old_task ) );
+                                              pomp2_to_scorep_handle( pomp_old_task ) );
         }
         SCOREP_ExitRegion( region->outerBlock );
     }

@@ -790,6 +790,11 @@ typedef enum SCOREP_AttributeType
     SCOREP_ATTRIBUTE_TYPE_INTERIM_RMA_WINDOW
 } SCOREP_AttributeType;
 
+/**
+ * Task Handle
+ */
+typedef struct SCOREP_Task* SCOREP_TaskHandle;
+
 /*@}*/
 
 

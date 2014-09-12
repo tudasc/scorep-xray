@@ -1,0 +1,31 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2014,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
+##
+
+## file       src/measurement/Makefile.confvars.inc.am
+
+noinst_LTLIBRARIES += libscorep_measurement_confvars.la
+
+libscorep_measurement_confvars_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/scorep_task_confvars.c
+
+libscorep_measurement_confvars_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR) \
+    $(UTILS_CPPFLAGS)
+
+libscorep_confvars_la_LIBADD += libscorep_measurement_confvars.la
+
+EXTRA_DIST += \
+    $(SRC_ROOT)src/measurement/scorep_task_confvars.inc.c

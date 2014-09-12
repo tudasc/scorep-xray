@@ -7,6 +7,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -84,7 +87,7 @@ SCOREP_ThreadForkJoin_Join( SCOREP_ParadigmType paradigm );
  * thread we don't call SCOREP_ThreadForkJoin_TeamBegin() and SCOREP_ThreadForkJoin_TeamEnd()
  * for the initial thread.
  */
-void
+SCOREP_TaskHandle
 SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
                                  uint32_t            threadId );
 
@@ -114,7 +117,7 @@ SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm );
 /**
  * Process a task create event in the measurement system.
  *
- * @param paradigm            One of the predefined threading models.
+ * @param paradigm         One of the predefined threading models.
  * @param threadId         Id of the this thread within the team of
  *                         threads that constitute the parallel region.
  * @param generationNumber The sequence number for this task. Each task
@@ -132,25 +135,18 @@ SCOREP_ThreadForkJoin_TaskCreate( SCOREP_ParadigmType paradigm,
 /**
  * Process a task switch event in the measurement system.
  *
- * @param paradigm            One of the predefined threading models.
- * @param threadId         Id of the this thread within the team of
- *                         threads that constitute the parallel region.
- * @param generationNumber The sequence number for this task. Each task
- *                         gets a thread private generation number of the
- *                         creating thread attached. Combined with the
- *                         @a threadId, this constitutes a unique task ID
- *                         inside the parallel region.
+ * @param paradigm         One of the predefined threading models.
+ * @param task             A handle to the resumed task.
  */
 void
 SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_ParadigmType paradigm,
-                                  uint32_t            threadId,
-                                  uint32_t            generationNumber );
+                                  SCOREP_TaskHandle   task );
 
 
 /**
  * Process a task begin event in the measurement system.
  *
- * @param paradigm            One of the predefined threading models.
+ * @param paradigm         One of the predefined threading models.
  * @param regionHandle     Region handle of the task region.
  * @param threadId         Id of the this thread within the team of
  *                         threads that constitute the parallel region.
@@ -158,8 +154,10 @@ SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_ParadigmType paradigm,
  *                         gets a thread private generation number attached.
  *                         Combined with the @a threadId, this constitutes a
  *                         unique task ID inside the parallel region.
+ * @returns a handle to the started task that must be passed to following task
+ *          events.
  */
-void
+SCOREP_TaskHandle
 SCOREP_ThreadForkJoin_TaskBegin( SCOREP_ParadigmType paradigm,
                                  SCOREP_RegionHandle regionHandle,
                                  uint32_t            threadId,
@@ -168,21 +166,14 @@ SCOREP_ThreadForkJoin_TaskBegin( SCOREP_ParadigmType paradigm,
 /**
  * Process a task end event in the measurement system.
  *
- * @param paradigm            One of the predefined threading models.
+ * @param paradigm         One of the predefined threading models.
  * @param regionHandle     Region handle of the task region.
- * @param threadId         Id of the this thread within the team of
- *                         threads that constitute the parallel region.
- * @param generationNumber The sequence number for this task. Each task
- *                         gets a thread private generation number of the
- *                         creating thread attached. Combined with the
- *                         @a threadId, this constitutes a unique task ID
- *                         inside the parallel region.
+ * @param task             A handle to the completed task.
  */
 void
 SCOREP_ThreadForkJoin_TaskEnd( SCOREP_ParadigmType paradigm,
                                SCOREP_RegionHandle regionHandle,
-                               uint32_t            threadId,
-                               uint32_t            generationNumber );
+                               SCOREP_TaskHandle   task );
 
 
 #endif /* SCOREP_THREAD_FORK_JOIN_EVENT_H_ */

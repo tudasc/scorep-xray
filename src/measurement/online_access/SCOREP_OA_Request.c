@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -56,6 +56,7 @@
 #include <SCOREP_Profile.h>
 #include <UTILS_Debug.h>
 #include <SCOREP_Config.h>
+#include <SCOREP_Task.h>
 
 
 /** Helper function mapping Periscope metric groups to Score-P metric sources*/
@@ -280,13 +281,15 @@ SCOREP_OA_RequestsSubmit
     SCOREP_ErrorCode return_value = SCOREP_Metric_Reinitialize();
     assert( return_value == SCOREP_SUCCESS );
 
-
     /** Reinitialize profile module */
     // Finalize profile
     if ( scorep_profile.is_initialized )
     {
         SCOREP_Profile_Finalize();
     }
+
+    /* Cleanup the task stack */
+    SCOREP_Task_ClearCurrent();
 
     // Initialize profile
     if ( !scorep_profile.is_initialized && scorep_profile.reinitialize )

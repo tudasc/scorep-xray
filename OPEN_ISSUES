@@ -209,6 +209,14 @@ various Score-P components.
     instrumentation together with applications using tasks. You may
     try PDT instrumentation instead.
 
+  - When compiling with the PGI compiler version 10.1, local variables
+    that are defined after a OpenMP for construct share the same memory
+    address. This breaks the OPARI2 instrumentation for task tracking
+    and may lead to segmentation faults in the measurement system.
+    Our recommendation is to use a newer compiler version, According
+    to our tests, late compiler versions have fixed this issues.
+    We tested with PGi compiler version 11.7.
+
   - Currently, the instrumenter allows to switch off OPARI2
     instrumentation for OpenMP programs. If OpenMP parallel regions
     are not instrumented and an event occurs inside a parallel region

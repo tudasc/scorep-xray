@@ -730,6 +730,7 @@ print_adapter_init_source( void )
     if ( !init_structs.empty() )
     {
         init_structs.push_front( "SCOREP_Subsystem_MetricService" );
+        init_structs.push_front( "SCOREP_Subsystem_TaskStack" );
 
         std::cout << deque_to_string( init_structs,
                                       "extern const struct SCOREP_Subsystem ",

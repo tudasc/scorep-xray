@@ -42,6 +42,7 @@ libscorep_measurement_core_la_SOURCES =                           \
     $(SRC_ROOT)src/measurement/SCOREP_Config.c                    \
     $(SRC_ROOT)src/measurement/SCOREP_Memory.c                    \
     $(SRC_ROOT)src/measurement/SCOREP_Libwrap.c                   \
+    $(SRC_ROOT)src/measurement/SCOREP_Task.c                      \
     $(SRC_ROOT)src/measurement/include/SCOREP_Subsystem.h         \
     $(SRC_ROOT)src/measurement/include/SCOREP_Config.h            \
     $(SRC_ROOT)src/measurement/include/SCOREP_Definitions.h       \
@@ -56,6 +57,7 @@ libscorep_measurement_core_la_SOURCES =                           \
     $(SRC_ROOT)src/measurement/include/SCOREP_Filter_Init.h       \
     $(SRC_ROOT)src/measurement/include/SCOREP_Properties.h        \
     $(SRC_ROOT)src/measurement/include/SCOREP_OA_Functions.h      \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Task.h              \
     $(SRC_ROOT)src/measurement/filtering/SCOREP_Filter_Init.c     \
     $(SRC_ROOT)src/measurement/scorep_runtime_management.c        \
     $(SRC_ROOT)src/measurement/scorep_subsystem.c                 \
@@ -86,8 +88,9 @@ libscorep_measurement_core_la_SOURCES =                           \
     $(SRC_ROOT)src/measurement/scorep_clock_synchronization.c     \
     $(SRC_ROOT)src/measurement/scorep_runtime_management_timings.h \
     $(SRC_ROOT)src/measurement/scorep_runtime_management_timings.c \
-    $(SRC_ROOT)src/measurement/scorep_error_callback.h \
-    $(SRC_ROOT)src/measurement/scorep_error_callback.c
+    $(SRC_ROOT)src/measurement/scorep_error_callback.h            \
+    $(SRC_ROOT)src/measurement/scorep_error_callback.c            \
+    $(SRC_ROOT)src/measurement/scorep_task_internal.h
 
 libscorep_measurement_core_la_CPPFLAGS = \
     $(common_libscorep_cppflags) \
@@ -99,7 +102,6 @@ libscorep_measurement_core_la_CPPFLAGS = \
 if ! HAVE_SCOREP_EXTERNAL_CUBE_WRITER
 libscorep_measurement_core_la_CPPFLAGS += -DCUBE_AS_SVN_EXTERNAL
 endif # HAVE_SCOREP_EXTERNAL_CUBE_WRITER
-
 
 ## paradigm non mpp
 

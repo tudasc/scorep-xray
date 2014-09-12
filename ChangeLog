@@ -10,13 +10,15 @@ User tools and API improvements and changes:
 
 
 Bugfixes:
+- In some cases, not all regions are exited at measurement finalization
+  time. Fixed.
 - Fix building of MPI wrapper if compiler issues unrelated warnings at
   configure time.
 
 ------------------- Upcoming version 1.3.1 ---------------------------
 
 Bugfixes:
-- Fixes wrong acquisition order in pthread_cond_timedwait by modifying 
+- Fixes wrong acquisition order in pthread_cond_timedwait by modifying
   the nesting level (analog pthread_cond_wait)
 
 
