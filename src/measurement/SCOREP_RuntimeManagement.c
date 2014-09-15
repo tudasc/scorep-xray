@@ -573,7 +573,8 @@ scorep_finalize( void )
         SCOREP_EnableRecording();
     }
 
-    scorep_task_exit_all_regions( SCOREP_Task_GetCurrentTask( location ) );
+    scorep_task_exit_all_regions( location,
+                                  SCOREP_Task_GetCurrentTask( location ) );
     SCOREP_TIME( SCOREP_SynchronizeClocks, ( ) );
     SCOREP_TIME( SCOREP_EndEpoch, ( ) );
     SCOREP_TIME( SCOREP_Filter_Finalize, ( ) );

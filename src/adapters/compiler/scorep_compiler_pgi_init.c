@@ -39,37 +39,13 @@
 #include <UTILS_Debug.h>
 
 #include "SCOREP_Compiler_Init.h"
-#include "scorep_compiler_data.h"
-#include "scorep_compiler_pgi_data.h"
 #include <SCOREP_Location.h>
 #include <SCOREP_Memory.h>
-
-
-extern size_t scorep_compiler_subsystem_id;
 
 
 /* **************************************************************************************
  * Initialization / Finalization
  ***************************************************************************************/
-
-/* Location initialization */
-SCOREP_ErrorCode
-scorep_compiler_init_location( struct SCOREP_Location* locationData )
-{
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI compiler adapter init location!" );
-    /* Create location struct */
-    pgi_location_data* pgi_data = SCOREP_Location_AllocForMisc( locationData,
-                                                                sizeof( *pgi_data ) );
-
-    pgi_data->callstack_top   = 0;
-    pgi_data->callstack_count = 0;
-
-    SCOREP_Location_SetSubsystemData( locationData,
-                                      scorep_compiler_subsystem_id,
-                                      pgi_data );
-
-    return SCOREP_SUCCESS;
-}
 
 /* Adapter initialization */
 SCOREP_ErrorCode
@@ -86,6 +62,14 @@ scorep_compiler_init_adapter( void )
         scorep_compiler_initialized = true;
     }
 
+    return SCOREP_SUCCESS;
+}
+
+/* Location initialization */
+SCOREP_ErrorCode
+scorep_compiler_init_location( struct SCOREP_Location* locationData )
+{
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "IBM xl compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }
 

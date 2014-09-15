@@ -56,8 +56,8 @@
 #include <SCOREP_Profile_Tasking.h>
 #include <SCOREP_Profile_MpiEvents.h>
 #include <SCOREP_Metric_Management.h>
+#include <SCOREP_Task.h>
 
-#include "scorep_task_internal.h"
 #include "scorep_events_common.h"
 #include "scorep_runtime_management.h"
 #include "scorep_types.h"
@@ -75,7 +75,7 @@ scorep_enter_region( uint64_t            timestamp,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%u",
                         scorep_handle_to_id( regionHandle ) );
 
-    scorep_task_enter( location, regionHandle );
+    SCOREP_Task_Enter( location, regionHandle );
 
     if ( scorep_profiling_consume_event() )
     {
@@ -171,7 +171,7 @@ scorep_exit_region( uint64_t            timestamp,
                               regionHandle );
     }
 
-    scorep_task_exit( location );
+    SCOREP_Task_Exit( location );
 }
 
 

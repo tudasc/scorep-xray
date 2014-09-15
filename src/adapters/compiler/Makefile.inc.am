@@ -190,8 +190,7 @@ endif
 #--- PGI specific settings
 if SCOREP_COMPILER_PGI
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi_init.c \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi_data.h
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi_init.c
 endif
 
 

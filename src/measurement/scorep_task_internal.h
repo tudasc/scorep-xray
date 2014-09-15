@@ -73,22 +73,6 @@ scorep_task_create( struct SCOREP_Location* location,
                     uint32_t                generationNumber );
 
 /**
- * Adds @a region to the region stack of the current task executed by @a location.
- * @param location The location which executes the enter event.
- * @param region   The region handle of the entered region.
- */
-void
-scorep_task_enter( struct SCOREP_Location* location,
-                   SCOREP_RegionHandle     region );
-
-/**
- * Moves the stack pointer of the current task one element down.
- * @param location The location that executes the exit.
- */
-void
-scorep_task_exit( struct SCOREP_Location* location );
-
-/**
  * Cleans up the task data structure if a task has completed execution.
  * @param location The location that executes the task complete event.
  * @param task     The completed task.
@@ -109,9 +93,11 @@ scorep_task_switch( struct SCOREP_Location* location,
 
 /**
  * Creates exit events for all regions on the stack for @a task.
- * @param task The task.
+ * @param location  The location that porcesses the exits.
+ * @param task      The task.
  */
 void
-scorep_task_exit_all_regions( SCOREP_TaskHandle task );
+scorep_task_exit_all_regions( struct SCOREP_Location* location,
+                              SCOREP_TaskHandle       task );
 
 #endif

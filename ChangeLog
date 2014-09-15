@@ -12,6 +12,8 @@ User tools and API improvements and changes:
 Bugfixes:
 - In some cases, not all regions are exited at measurement finalization
   time. Fixed.
+- Using PGI compiler instrumentation in conjunction with tasks could
+  lead wrong region handles in region exits. Fixed.
 - Fix building of MPI wrapper if compiler issues unrelated warnings at
   configure time.
 

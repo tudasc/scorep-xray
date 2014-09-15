@@ -197,18 +197,6 @@ various Score-P components.
     codes using OpenMP tasking is erroneous. You might try PDT
     instrumentation instead.
 
-  - OpenMP tasking: On Exits, the PGI compiler instrumentation
-    interface does not provide information which function was
-    exited. Thus, we reconstruct this information from a call stack
-    inside the compiler adapter. However, if the instrumented
-    application uses tasks, the enter/exit event sequence for a thread
-    may not be nested anymore, due to interleaved execution of
-    tasks. This results in incorrect region handles on exit events
-    which may lead to errors in the profiling algorithm or errors in
-    analysis tools. Thus, we recommend to no use PGI compiler
-    instrumentation together with applications using tasks. You may
-    try PDT instrumentation instead.
-
   - When compiling with the PGI compiler version 10.1, local variables
     that are defined after a OpenMP for construct share the same memory
     address. This breaks the OPARI2 instrumentation for task tracking

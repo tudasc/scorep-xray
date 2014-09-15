@@ -70,4 +70,20 @@ SCOREP_Task_ClearStack( struct SCOREP_Location* location,
 void
 SCOREP_Task_ClearCurrent( void );
 
+/**
+ * Adds @a region to the region stack of the current task executed by @a location.
+ * @param location The location which executes the enter event.
+ * @param region   The region handle of the entered region.
+ */
+void
+SCOREP_Task_Enter( struct SCOREP_Location* location,
+                   SCOREP_RegionHandle     region );
+
+/**
+ * Moves the stack pointer of the current task one element down.
+ * @param location The location that executes the exit.
+ */
+void
+SCOREP_Task_Exit( struct SCOREP_Location* location );
+
 #endif

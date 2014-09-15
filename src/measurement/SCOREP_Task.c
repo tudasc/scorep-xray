@@ -20,6 +20,7 @@
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Location.h>
+#include <UTILS_Error.h>
 
 #define SCOREP_TASK_STACK_SIZE 30
 
@@ -48,6 +49,8 @@ typedef struct scorep_location_task_data
 } scorep_location_task_data;
 
 static size_t task_subsystem_id;
+
+static SCOREP_Location* initial_location;
 
 /* ********************************************* static functions */
 static inline void
@@ -103,17 +106,31 @@ task_subsystem_init_location( SCOREP_Location* location )
     scorep_location_task_data* subsystem_data
         = SCOREP_Location_AllocForMisc( location,
                                         sizeof( scorep_location_task_data ) );
-    subsystem_data->recycled_tasks  = NULL;
-    subsystem_data->recycled_frames = NULL;
+    /* The initial location was initialized earlier */
+    if ( initial_location != location )
+    {
+        subsystem_data->recycled_tasks  = NULL;
+        subsystem_data->recycled_frames = NULL;
 
-    SCOREP_Location_SetSubsystemData( location,
-                                      task_subsystem_id,
-                                      subsystem_data );
+        SCOREP_Location_SetSubsystemData( location,
+                                          task_subsystem_id,
+                                          subsystem_data );
 
-    subsystem_data->current_task = scorep_task_create( location,
-                                                       SCOREP_Location_GetId( location ),
-                                                       0 );
-    subsystem_data->implicit_task = subsystem_data->current_task;
+        subsystem_data->current_task = scorep_task_create( location,
+                                                           SCOREP_Location_GetId( location ),
+                                                           0 );
+        subsystem_data->implicit_task = subsystem_data->current_task;
+    }
+    return SCOREP_SUCCESS;
+}
+
+static SCOREP_ErrorCode
+task_subsystem_init( void )
+{
+    /* Need to initialize the master location earlier. */
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    task_subsystem_init_location( location );
+    initial_location = location;
     return SCOREP_SUCCESS;
 }
 
@@ -126,13 +143,29 @@ task_subsystem_finalize_location( SCOREP_Location* location )
     scorep_task_complete( location, subsystem_data->current_task );
 }
 
+static inline void
+task_pop_stack( SCOREP_Location*  location,
+                SCOREP_TaskHandle task )
+{
+    if ( task->current_index == 0 )
+    {
+        scorep_task_stack_frame* old_frame = task->current_frame;
+        task->current_frame = task->current_frame->prev;
+        task->current_index = SCOREP_TASK_STACK_SIZE - 1;
+        recycle_stack_frame( location, old_frame );
+    }
+    else
+    {
+        task->current_index--;
+    }
+}
 /* ************************************** subsystem struct */
 
 const SCOREP_Subsystem SCOREP_Subsystem_TaskStack =
 {
     .subsystem_name              = "TASK",
     .subsystem_register          = &task_subsystem_register,
-    .subsystem_init              = NULL,
+    .subsystem_init              = &task_subsystem_init,
     .subsystem_init_location     = &task_subsystem_init_location,
     .subsystem_finalize_location = &task_subsystem_finalize_location,
     .subsystem_pre_unify         = NULL,
@@ -172,49 +205,6 @@ scorep_task_create( SCOREP_Location* location,
 }
 
 void
-scorep_task_enter( SCOREP_Location*    location,
-                   SCOREP_RegionHandle region )
-{
-    scorep_location_task_data* subsystem_data
-        = SCOREP_Location_GetSubsystemData( location, task_subsystem_id );
-    SCOREP_TaskHandle task = subsystem_data->current_task;
-
-    if ( task->current_index < SCOREP_TASK_STACK_SIZE - 1 )
-    {
-        task->current_index++;
-        task->current_frame->regions[ task->current_index ] = region;
-    }
-    else
-    {
-        scorep_task_stack_frame* new_frame = alloc_new_stack_frame( location );
-        new_frame->prev                   = task->current_frame;
-        task->current_frame               = new_frame;
-        task->current_frame->regions[ 0 ] = region;
-        task->current_index               = 0;
-    }
-}
-
-void
-scorep_task_exit( SCOREP_Location* location )
-{
-    scorep_location_task_data* subsystem_data
-        = SCOREP_Location_GetSubsystemData( location, task_subsystem_id );
-    SCOREP_TaskHandle task = subsystem_data->current_task;
-
-    if ( task->current_index == 0 )
-    {
-        scorep_task_stack_frame* old_frame = task->current_frame;
-        task->current_frame = task->current_frame->prev;
-        task->current_index = SCOREP_TASK_STACK_SIZE - 1;
-        recycle_stack_frame( location, old_frame );
-    }
-    else
-    {
-        task->current_index--;
-    }
-}
-
-void
 scorep_task_complete( SCOREP_Location*  location,
                       SCOREP_TaskHandle task )
 {
@@ -231,12 +221,21 @@ scorep_task_switch( SCOREP_Location*  location,
 }
 
 void
-scorep_task_exit_all_regions( SCOREP_TaskHandle task )
+scorep_task_exit_all_regions( SCOREP_Location*  location,
+                              SCOREP_TaskHandle task )
 {
     while ( task->current_frame != NULL )
     {
         /* The exit removes the top region from the stack. */
-        SCOREP_ExitRegion( SCOREP_Task_GetTopRegion( task ) );
+        SCOREP_RegionHandle region = SCOREP_Task_GetTopRegion( task );
+        if ( region != SCOREP_FILTERED_REGION )
+        {
+            SCOREP_ExitRegion( region );
+        }
+        else
+        {
+            task_pop_stack( location, task );
+        }
     }
 }
 
@@ -287,4 +286,38 @@ SCOREP_Task_ClearCurrent( void )
 {
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     SCOREP_Task_ClearStack( location, SCOREP_Task_GetCurrentTask( location ) );
+}
+
+void
+SCOREP_Task_Enter( SCOREP_Location*    location,
+                   SCOREP_RegionHandle region )
+{
+    scorep_location_task_data* subsystem_data
+        = SCOREP_Location_GetSubsystemData( location, task_subsystem_id );
+    UTILS_ASSERT( subsystem_data != NULL );
+    SCOREP_TaskHandle task = subsystem_data->current_task;
+
+    if ( task->current_index < SCOREP_TASK_STACK_SIZE - 1 )
+    {
+        task->current_index++;
+        task->current_frame->regions[ task->current_index ] = region;
+    }
+    else
+    {
+        scorep_task_stack_frame* new_frame = alloc_new_stack_frame( location );
+        new_frame->prev                   = task->current_frame;
+        task->current_frame               = new_frame;
+        task->current_frame->regions[ 0 ] = region;
+        task->current_index               = 0;
+    }
+}
+
+void
+SCOREP_Task_Exit( SCOREP_Location* location )
+{
+    scorep_location_task_data* subsystem_data
+        = SCOREP_Location_GetSubsystemData( location, task_subsystem_id );
+    SCOREP_TaskHandle task = subsystem_data->current_task;
+
+    task_pop_stack( location, task );
 }

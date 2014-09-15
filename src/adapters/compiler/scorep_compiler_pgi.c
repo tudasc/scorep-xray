@@ -42,15 +42,15 @@
 #include <stdio.h>
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
+#include <UTILS_IO.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_RuntimeManagement.h>
-#include "scorep_compiler_data.h"
-#include "scorep_compiler_pgi_data.h"
 #include "SCOREP_Compiler_Init.h"
 #include <SCOREP_Filter.h>
 #include <SCOREP_Memory.h>
+#include <SCOREP_Task.h>
 
 
 
@@ -167,23 +167,6 @@ struct PGI_PROFENT_64
 #endif
 
 
-extern size_t scorep_compiler_subsystem_id;
-
-
-/* **************************************************************************************
- * location table access
- ***************************************************************************************/
-
-static inline pgi_location_data*
-scorep_compiler_get_location_data( SCOREP_Location* locationData )
-{
-    pgi_location_data* pgi_data = SCOREP_Location_GetSubsystemData(
-        locationData,
-        scorep_compiler_subsystem_id );
-
-    return pgi_data;
-}
-
 /* **************************************************************************************
  * Implementation of complier inserted functions
  ***************************************************************************************/
@@ -251,7 +234,7 @@ pgi_enter_region( SCOREP_RegionHandle* region,
             if ( ( strncmp( region_name, "POMP", 4 ) != 0 ) &&
                  ( strncmp( region_name, "Pomp", 4 ) != 0 ) &&
                  ( strncmp( region_name, "pomp", 4 ) != 0 ) &&
-                 ( strstr( region_name, "SCOREP_User_RegionClass" ) == NULL ) &&
+                 ( strstr( region_name, "SCOREP_User_RegionClass" ) == 0 ) &&
                  ( !SCOREP_Filter_Match( file_name, region_name, NULL ) ) )
             {
                 *region = SCOREP_Definitions_NewRegion( region_name,
@@ -270,29 +253,14 @@ pgi_enter_region( SCOREP_RegionHandle* region,
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
 
-    SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
-    UTILS_ASSERT( data != NULL );
-    pgi_location_data* pgi_data = scorep_compiler_get_location_data( data );
-    if ( pgi_data == NULL )
+    if ( *region != SCOREP_FILTERED_REGION )
     {
-        scorep_compiler_init_location( data );
-        pgi_data = scorep_compiler_get_location_data( data );
+        SCOREP_EnterRegion( *region );
     }
-
-    /* Check callstack */
-    if ( pgi_data->callstack_count < CALLSTACK_MAX )
+    else
     {
-        /* Update callstack */
-        pgi_data->callstack_base[ pgi_data->callstack_top ] = *region;
-        pgi_data->callstack_top++;
-
-        /* Enter event */
-        if ( *region != SCOREP_FILTERED_REGION )
-        {
-            SCOREP_EnterRegion( *region );
-        }
+        SCOREP_Task_Enter( SCOREP_Location_GetCurrentCPULocation(), *region );
     }
-    pgi_data->callstack_count++;
 }
 
 #if __i386__
@@ -355,27 +323,23 @@ ___rouret( void )
         return;
     }
 
-    SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
-    UTILS_ASSERT( data != NULL );
-    pgi_location_data* location_data = scorep_compiler_get_location_data( data );
-    if ( location_data == NULL )
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    UTILS_ASSERT( location != NULL );
+
+    SCOREP_RegionHandle region_handle =
+        SCOREP_Task_GetTopRegion( SCOREP_Task_GetCurrentTask( location ) );
+    UTILS_ASSERT( region_handle != SCOREP_INVALID_REGION );
+
+    /* Check whether the top element of the callstack has a valid region handle.
+       If the region is filtered the top pointer is SCOREP_INVALID_REGION.
+     */
+    if ( region_handle != SCOREP_FILTERED_REGION )
     {
-        return;
+        SCOREP_ExitRegion( region_handle );
     }
-
-    location_data->callstack_count--;
-    if ( location_data->callstack_count < CALLSTACK_MAX )
+    else
     {
-        location_data->callstack_top--;
-        SCOREP_RegionHandle region_handle = location_data->callstack_base[ location_data->callstack_top ];
-
-        /* Check whether the top element of the callstack has a valid region handle.
-           If the region is filtered the top pointer is SCOREP_INVALID_REGION.
-         */
-        if ( region_handle != SCOREP_FILTERED_REGION )
-        {
-            SCOREP_ExitRegion( region_handle );
-        }
+        SCOREP_Task_Exit( location );
     }
 }
 
