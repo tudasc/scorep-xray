@@ -130,6 +130,11 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
 
     /* SCOREP_Tracing_GetEventWriter() aborts on error */
     tracing_data->otf_writer = SCOREP_Tracing_GetEventWriter();
+
+    /* Attach the location to the evetn writer, so that we can access
+     * it in case of an buffer flush.
+     */
+    OTF2_EvtWriter_SetUserData( tracing_data->otf_writer, locationData );
 }
 
 

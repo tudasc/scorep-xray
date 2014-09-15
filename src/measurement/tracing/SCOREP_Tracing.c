@@ -117,26 +117,6 @@ scorep_tracing_get_compression( void )
 }
 
 
-static bool
-scorep_trace_find_location_for_evt_writer_cb( SCOREP_Location* locationData,
-                                              void*            userData )
-{
-    void**            find_location_args = userData;
-    OTF2_EvtWriter*   evt_writer         = find_location_args[ 0 ];
-    SCOREP_Location** found_location     = find_location_args[ 1 ];
-
-    SCOREP_TracingData* tracing_data =
-        SCOREP_Location_GetTracingData( locationData );
-
-    if ( evt_writer == tracing_data->otf_writer )
-    {
-        *found_location = locationData;
-        return true;
-    }
-    return false;
-}
-
-
 static OTF2_FlushType
 scorep_on_trace_pre_flush( void*         userData,
                            OTF2_FileType fileType,
@@ -184,14 +164,11 @@ scorep_on_trace_pre_flush( void*         userData,
         do_flush = OTF2_FLUSH;
     }
 
-
     if ( fileType == OTF2_FILETYPE_EVENTS )
     {
-        SCOREP_Location* location                = NULL;
-        void*            find_location_args[ 2 ] = { callerData, &location };
-        SCOREP_Location_ForAll( scorep_trace_find_location_for_evt_writer_cb,
-                                &find_location_args );
-        UTILS_ASSERT( location );
+        SCOREP_Location* location = NULL;
+        OTF2_ErrorCode   err      = OTF2_EvtWriter_GetUserData( callerData, &location );
+        UTILS_ASSERT( err == OTF2_SUCCESS && location );
         SCOREP_Location_EnsureGlobalId( location );
         scorep_rewind_stack_delete( location );
     }
