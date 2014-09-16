@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -363,7 +363,7 @@ scorep_metric_finalize_callback( void );
  *          otherwise an error code will be reported.
  */
 static SCOREP_ErrorCode
-scorep_metric_register( size_t subsystem_id )
+metric_subsystem_register( size_t subsystem_id )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register metric management." );
 
@@ -381,7 +381,7 @@ scorep_metric_register( size_t subsystem_id )
 /** @brief Called on deregistration of the metric service.
  */
 static void
-scorep_metric_deregister( void )
+metric_subsystem_deregister( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " deregister metric management." );
 
@@ -398,7 +398,7 @@ scorep_metric_deregister( void )
  *          otherwise an error code will be reported.
  */
 static SCOREP_ErrorCode
-scorep_metric_initialize_service( void )
+metric_subsystem_init( void )
 {
     /* Call only, if not previously initialized */
     if ( !scorep_metric_management_initialized )
@@ -442,7 +442,7 @@ scorep_metric_initialize_service( void )
 /** @brief Service finalization.
  */
 static void
-scorep_metric_finalize_service( void )
+metric_subsystem_finalize( void )
 {
     /* Call only, if previously initialized */
     if ( scorep_metric_management_initialized )
@@ -940,7 +940,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
  *          otherwise an error code will be reported.
  */
 static SCOREP_ErrorCode
-scorep_metric_initialize_location( SCOREP_Location* location )
+metric_subsystem_init_location( SCOREP_Location* location )
 {
     UTILS_ASSERT( location != NULL );
 
@@ -1077,7 +1077,7 @@ finalize_location_metric_cb( SCOREP_Location* location,
  *  @param location Reference to location that will finalize its metric related data structures.
  */
 static void
-scorep_metric_finalize_location( SCOREP_Location* location )
+metric_subsystem_finalize_location( SCOREP_Location* location )
 {
     /* All finalization is done in separate function that is re-used
      * by SCOREP_Metric_Reinitialize() */
@@ -1709,10 +1709,10 @@ SCOREP_Metric_Reinitialize( void )
     SCOREP_Location_ForAll( finalize_location_metric_cb, NULL );
 
     /* Finalize metric service */
-    scorep_metric_finalize_service();
+    metric_subsystem_finalize();
 
     /* Reinitialize metric service */
-    scorep_metric_initialize_service();
+    metric_subsystem_init();
 
     /* Reinitialize each location */
     SCOREP_Location_ForAll( initialize_location_metric_cb, NULL );
@@ -1921,13 +1921,13 @@ SCOREP_Metric_WriteToProfile( SCOREP_Location* location )
 const SCOREP_Subsystem SCOREP_Subsystem_MetricService =
 {
     .subsystem_name              = "METRIC",
-    .subsystem_register          = &scorep_metric_register,
-    .subsystem_init              = &scorep_metric_initialize_service,
-    .subsystem_init_location     = &scorep_metric_initialize_location,
-    .subsystem_finalize_location = &scorep_metric_finalize_location,
+    .subsystem_register          = &metric_subsystem_register,
+    .subsystem_init              = &metric_subsystem_init,
+    .subsystem_init_location     = &metric_subsystem_init_location,
+    .subsystem_finalize_location = &metric_subsystem_finalize_location,
     .subsystem_pre_unify         = NULL,
     .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &scorep_metric_finalize_service,
-    .subsystem_deregister        = &scorep_metric_deregister,
+    .subsystem_finalize          = &metric_subsystem_finalize,
+    .subsystem_deregister        = &metric_subsystem_deregister,
     .subsystem_control           = NULL
 };

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -37,7 +37,7 @@ static size_t scorep_pomp_user_subsystem_id;
     variables. No variables are registered.
  */
 static SCOREP_ErrorCode
-scorep_pomp_user_register( size_t subsystem_id )
+pomp_user_subsystem_register( size_t subsystem_id )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -51,7 +51,7 @@ scorep_pomp_user_register( size_t subsystem_id )
 /** Adapter initialization function.
  */
 static SCOREP_ErrorCode
-scorep_pomp_user_init( void )
+pomp_user_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -66,7 +66,7 @@ scorep_pomp_user_init( void )
 /** Adapter finalization function.
  */
 static void
-scorep_pomp_user_finalize( void )
+pomp_user_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -81,13 +81,13 @@ scorep_pomp_user_finalize( void )
 const SCOREP_Subsystem SCOREP_Subsystem_PompUserAdapter =
 {
     .subsystem_name              = "POMP2 User Adapter / Version 1.0",
-    .subsystem_register          = &scorep_pomp_user_register,
-    .subsystem_init              = &scorep_pomp_user_init,
+    .subsystem_register          = &pomp_user_subsystem_register,
+    .subsystem_init              = &pomp_user_subsystem_init,
     .subsystem_init_location     = NULL,
     .subsystem_finalize_location = NULL,
     .subsystem_pre_unify         = NULL,
     .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &scorep_pomp_user_finalize,
+    .subsystem_finalize          = &pomp_user_subsystem_finalize,
     .subsystem_deregister        = NULL,
     .subsystem_control           = NULL
 };

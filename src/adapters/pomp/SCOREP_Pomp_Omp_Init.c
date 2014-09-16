@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2013,
@@ -67,7 +67,7 @@ SCOREP_RegionHandle scorep_pomp_lock_region_handles[ SCOREP_POMP_REGION_LOCK_NUM
 static size_t scorep_pomp_omp_subsystem_id;
 
 static SCOREP_ErrorCode
-scorep_pomp_omp_register( size_t subsystem_id )
+pomp_omp_subsystem_register( size_t subsystem_id )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -77,7 +77,7 @@ scorep_pomp_omp_register( size_t subsystem_id )
 }
 
 static SCOREP_ErrorCode
-scorep_pomp_omp_init( void )
+pomp_omp_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -106,16 +106,10 @@ scorep_pomp_omp_init( void )
 }
 
 static void
-scorep_pomp_omp_finalize( void )
+pomp_omp_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
     scorep_pomp_adapter_finalize();
-}
-
-static void
-scorep_pomp_omp_deregister( void )
-{
-    UTILS_DEBUG_ENTRY();
 }
 
 /** Struct which contains the adapter iniitialization and finalization
@@ -124,13 +118,13 @@ scorep_pomp_omp_deregister( void )
 const SCOREP_Subsystem SCOREP_Subsystem_PompOmpAdapter =
 {
     .subsystem_name              = "POMP2 OpenMP Adapter / Version 1.0",
-    .subsystem_register          = &scorep_pomp_omp_register,
-    .subsystem_init              = &scorep_pomp_omp_init,
+    .subsystem_register          = &pomp_omp_subsystem_register,
+    .subsystem_init              = &pomp_omp_subsystem_init,
     .subsystem_init_location     = NULL,
     .subsystem_finalize_location = NULL,
     .subsystem_pre_unify         = NULL,
     .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &scorep_pomp_omp_finalize,
-    .subsystem_deregister        = &scorep_pomp_omp_deregister,
+    .subsystem_finalize          = &pomp_omp_subsystem_finalize,
+    .subsystem_deregister        = NULL,
     .subsystem_control           = NULL
 };

@@ -4,6 +4,9 @@
  * Copyright (c) 2013-2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2014,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -63,7 +66,7 @@ bool scorep_shmem_parallel_entered = false;
  * adapter.
  */
 static SCOREP_ErrorCode
-register_adapter( size_t subsystemId )
+shmem_subsystem_register( size_t subsystemId )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -97,7 +100,7 @@ exit_callback( void )
  * adapter.
  */
 static SCOREP_ErrorCode
-init_adapter( void )
+shmem_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -114,7 +117,7 @@ init_adapter( void )
  * adapter.
  */
 static SCOREP_ErrorCode
-init_location( struct SCOREP_Location* locationData )
+shmem_subsystem_init_location( struct SCOREP_Location* locationData )
 {
     UTILS_DEBUG_ENTRY();
     return SCOREP_SUCCESS;
@@ -126,7 +129,7 @@ init_location( struct SCOREP_Location* locationData )
  * SHMEM adapter.
  */
 static void
-finalize_location( struct SCOREP_Location* locationData )
+shmem_subsystem_finalize_location( struct SCOREP_Location* locationData )
 {
     UTILS_DEBUG_ENTRY();
 }
@@ -135,7 +138,7 @@ finalize_location( struct SCOREP_Location* locationData )
  * Define the group of all SHMEM locations.
  */
 static SCOREP_ErrorCode
-pre_unify( void )
+shmem_subsystem_pre_unify( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -149,7 +152,7 @@ pre_unify( void )
  * Unify the SHMEM communicators.
  */
 static SCOREP_ErrorCode
-post_unify( void )
+shmem_subsystem_post_unify( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -165,7 +168,7 @@ post_unify( void )
  * adapter.
  */
 static void
-finalize_adapter( void )
+shmem_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -183,7 +186,7 @@ finalize_adapter( void )
  * adapter.
  */
 static void
-deregister_adapter( void )
+shmem_subsystem_deregister( void )
 {
     UTILS_DEBUG_ENTRY();
     SCOREP_FinalizeMppMeasurement();
@@ -194,7 +197,7 @@ deregister_adapter( void )
 }
 
 static void
-control( SCOREP_Subsystem_Command command )
+shmem_subsystem_control( SCOREP_Subsystem_Command command )
 {
     switch ( command )
     {
@@ -211,13 +214,13 @@ control( SCOREP_Subsystem_Command command )
 const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter =
 {
     .subsystem_name              = "SHMEM",
-    .subsystem_register          = &register_adapter,
-    .subsystem_init              = &init_adapter,
-    .subsystem_init_location     = &init_location,
-    .subsystem_finalize_location = &finalize_location,
-    .subsystem_pre_unify         = &pre_unify,
-    .subsystem_post_unify        = &post_unify,
-    .subsystem_finalize          = &finalize_adapter,
-    .subsystem_deregister        = &deregister_adapter,
-    .subsystem_control           = &control
+    .subsystem_register          = &shmem_subsystem_register,
+    .subsystem_init              = &shmem_subsystem_init,
+    .subsystem_init_location     = &shmem_subsystem_init_location,
+    .subsystem_finalize_location = &shmem_subsystem_finalize_location,
+    .subsystem_pre_unify         = &shmem_subsystem_pre_unify,
+    .subsystem_post_unify        = &shmem_subsystem_post_unify,
+    .subsystem_finalize          = &shmem_subsystem_finalize,
+    .subsystem_deregister        = &shmem_subsystem_deregister,
+    .subsystem_control           = &shmem_subsystem_control
 };

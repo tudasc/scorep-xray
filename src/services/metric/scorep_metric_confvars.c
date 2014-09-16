@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -60,7 +60,7 @@
 #include "scorep_metric_plugins_confvars.inc.c"
 
 static SCOREP_ErrorCode
-scorep_metric_register( size_t subsystem_id )
+metric_subsystem_register( size_t subsystem_id )
 {
     SCOREP_ConfigRegisterCond( "metric",
                                scorep_metric_papi_configs,
@@ -81,7 +81,7 @@ scorep_metric_register( size_t subsystem_id )
 const SCOREP_Subsystem SCOREP_Subsystem_MetricService =
 {
     .subsystem_name              = "METRIC (config variables only)",
-    .subsystem_register          = &scorep_metric_register,
+    .subsystem_register          = &metric_subsystem_register,
     .subsystem_init              = NULL,
     .subsystem_init_location     = NULL,
     .subsystem_finalize_location = NULL,

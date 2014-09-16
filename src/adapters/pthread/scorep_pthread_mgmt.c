@@ -54,7 +54,7 @@ scorep_pthread_reuse_policy_type scorep_pthread_reuse_policy;
 
 
 static SCOREP_ErrorCode
-scorep_pthread_register( size_t subsystemId )
+pthread_subsystem_register( size_t subsystemId )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -65,7 +65,7 @@ scorep_pthread_register( size_t subsystemId )
 
 
 static SCOREP_ErrorCode
-scorep_pthread_init_adapter( void )
+pthread_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
     if ( scorep_pthread_initialized )
@@ -117,7 +117,7 @@ register_pthread_regions( void )
 
 
 static void
-scorep_pthread_finalize( void )
+pthread_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
     if ( scorep_pthread_outside_measurement )
@@ -131,15 +131,8 @@ scorep_pthread_finalize( void )
 }
 
 
-static void
-scorep_pthread_deregister( void )
-{
-    UTILS_DEBUG_ENTRY();
-}
-
-
 static SCOREP_ErrorCode
-scorep_pthread_init_location( struct SCOREP_Location* locationData )
+pthread_subsystem_init_location( struct SCOREP_Location* locationData )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -156,24 +149,17 @@ scorep_pthread_init_location( struct SCOREP_Location* locationData )
 }
 
 
-static void
-scorep_pthread_finalize_location( struct SCOREP_Location* locationData )
-{
-    UTILS_DEBUG_ENTRY();
-}
-
-
 /* Implementation of the pthread adapter initialization/finalization struct */
 const SCOREP_Subsystem SCOREP_Subsystem_PthreadAdapter =
 {
     .subsystem_name              = "PTHREAD",
-    .subsystem_register          = &scorep_pthread_register,
-    .subsystem_init              = &scorep_pthread_init_adapter,
-    .subsystem_init_location     = &scorep_pthread_init_location,
-    .subsystem_finalize_location = &scorep_pthread_finalize_location,
+    .subsystem_register          = &pthread_subsystem_register,
+    .subsystem_init              = &pthread_subsystem_init,
+    .subsystem_init_location     = &pthread_subsystem_init_location,
+    .subsystem_finalize_location = NULL,
     .subsystem_pre_unify         = NULL,
     .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &scorep_pthread_finalize,
-    .subsystem_deregister        = &scorep_pthread_deregister,
+    .subsystem_finalize          = &pthread_subsystem_finalize,
+    .subsystem_deregister        = NULL,
     .subsystem_control           = NULL
 };

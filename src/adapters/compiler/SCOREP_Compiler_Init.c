@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -58,46 +58,42 @@ SCOREP_Mutex scorep_compiler_region_mutex;
    compiler adapter implementation.
  */
 extern SCOREP_ErrorCode
-scorep_compiler_init_adapter( void );
+scorep_compiler_subsystem_init( void );
 
 /**
    The location init function is compiler specific. Thus it is contained in each
    compiler adapter implementation.
  */
 extern SCOREP_ErrorCode
-scorep_compiler_init_location( struct SCOREP_Location* location );
-
-/**
-   The location finalize function.
- */
-static void
-scorep_compiler_finalize_location( struct SCOREP_Location* location );
+scorep_compiler_subsystem_init_location( struct SCOREP_Location* location );
 
 /**
    The adapter finalize function is compiler specific. Thus it is contained in each
    compiler adapter implementation.
  */
 extern void
-scorep_compiler_finalize( void );
+scorep_compiler_subsystem_finalize( void );
+
+/**
+   The location finalize function.
+ */
+static void
+compiler_subsystem_finalize_location( struct SCOREP_Location* location )
+{
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "compiler adapter finalize location!" );
+}
 
 /* Implementation of the compiler adapter initialization/finalization struct */
 const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter =
 {
     .subsystem_name              = "COMPILER",
-    .subsystem_register          = &scorep_compiler_register,
-    .subsystem_init              = &scorep_compiler_init_adapter,
-    .subsystem_init_location     = &scorep_compiler_init_location,
-    .subsystem_finalize_location = &scorep_compiler_finalize_location,
+    .subsystem_register          = &compiler_subsystem_register,
+    .subsystem_init              = &scorep_compiler_subsystem_init,
+    .subsystem_init_location     = &scorep_compiler_subsystem_init_location,
+    .subsystem_finalize_location = &compiler_subsystem_finalize_location,
     .subsystem_pre_unify         = NULL,
     .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &scorep_compiler_finalize,
-    .subsystem_deregister        = &scorep_compiler_deregister,
+    .subsystem_finalize          = &scorep_compiler_subsystem_finalize,
+    .subsystem_deregister        = &compiler_subsystem_deregister,
     .subsystem_control           = NULL
 };
-
-/* Location finalization */
-static void
-scorep_compiler_finalize_location( struct SCOREP_Location* locationData )
-{
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "compiler adapter finalize location!" );
-}

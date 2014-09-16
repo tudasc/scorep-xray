@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -182,7 +182,7 @@ static size_t scorep_mpi_subsystem_id;
    adapter.
  */
 static SCOREP_ErrorCode
-scorep_mpi_register( size_t subsystem_id )
+mpi_subsystem_register( size_t subsystem_id )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -197,7 +197,7 @@ scorep_mpi_register( size_t subsystem_id )
    adapter.
  */
 static SCOREP_ErrorCode
-scorep_mpi_init_adapter( void )
+mpi_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -230,28 +230,17 @@ scorep_mpi_init_adapter( void )
    adapter.
  */
 static SCOREP_ErrorCode
-scorep_mpi_init_location( struct SCOREP_Location* locationData )
+mpi_subsystem_init_location( struct SCOREP_Location* locationData )
 {
     UTILS_DEBUG_ENTRY();
     return SCOREP_SUCCESS;
 }
 
 /**
-   Implementation of the adapter_finalize_location function of the
-   @ref SCOREP_Subsystem struct for the initialization process of the
-   MPI adapter.
- */
-static void
-scorep_mpi_finalize_location( struct SCOREP_Location* locationData )
-{
-    UTILS_DEBUG_ENTRY();
-}
-
-/**
    Define the group of all MPI locations.
  */
 static SCOREP_ErrorCode
-scorep_mpi_pre_unify( void )
+mpi_subsystem_pre_unify( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -265,7 +254,7 @@ scorep_mpi_pre_unify( void )
    Unify the MPI communicators.
  */
 static SCOREP_ErrorCode
-scorep_mpi_post_unify( void )
+mpi_subsystem_post_unify( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -281,7 +270,7 @@ scorep_mpi_post_unify( void )
    adapter.
  */
 static void
-scorep_mpi_finalize( void )
+mpi_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -303,7 +292,7 @@ scorep_mpi_finalize( void )
    adapter.
  */
 static void
-scorep_mpi_deregister( void )
+mpi_subsystem_deregister( void )
 {
     int res;
 
@@ -328,7 +317,7 @@ scorep_mpi_deregister( void )
 }
 
 static void
-scorep_mpi_control( SCOREP_Subsystem_Command command )
+mpi_subsystem_control( SCOREP_Subsystem_Command command )
 {
     switch ( command )
     {
@@ -345,15 +334,15 @@ scorep_mpi_control( SCOREP_Subsystem_Command command )
 const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter =
 {
     .subsystem_name              = "MPI",
-    .subsystem_register          = &scorep_mpi_register,
-    .subsystem_init              = &scorep_mpi_init_adapter,
-    .subsystem_init_location     = &scorep_mpi_init_location,
-    .subsystem_finalize_location = &scorep_mpi_finalize_location,
-    .subsystem_pre_unify         = &scorep_mpi_pre_unify,
-    .subsystem_post_unify        = &scorep_mpi_post_unify,
-    .subsystem_finalize          = &scorep_mpi_finalize,
-    .subsystem_deregister        = &scorep_mpi_deregister,
-    .subsystem_control           = &scorep_mpi_control
+    .subsystem_register          = &mpi_subsystem_register,
+    .subsystem_init              = &mpi_subsystem_init,
+    .subsystem_init_location     = &mpi_subsystem_init_location,
+    .subsystem_finalize_location = NULL,
+    .subsystem_pre_unify         = &mpi_subsystem_pre_unify,
+    .subsystem_post_unify        = &mpi_subsystem_post_unify,
+    .subsystem_finalize          = &mpi_subsystem_finalize,
+    .subsystem_deregister        = &mpi_subsystem_deregister,
+    .subsystem_control           = &mpi_subsystem_control
 };
 
 /**

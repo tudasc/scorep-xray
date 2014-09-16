@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -69,7 +69,7 @@ size_t scorep_compiler_subsystem_id;
    Registers configuration variables for the compiler adapters.
  */
 static SCOREP_ErrorCode
-scorep_compiler_register( size_t subsystem_id )
+compiler_subsystem_register( size_t subsystem_id )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -83,7 +83,7 @@ scorep_compiler_register( size_t subsystem_id )
    on deregistration.
  */
 static void
-scorep_compiler_deregister( void )
+compiler_subsystem_deregister( void )
 {
     UTILS_DEBUG_ENTRY();
 

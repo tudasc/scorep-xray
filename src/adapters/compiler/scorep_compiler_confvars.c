@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -60,13 +60,13 @@
 const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter =
 {
     .subsystem_name              = "COMPILER (config variables only)",
-    .subsystem_register          = &scorep_compiler_register,
+    .subsystem_register          = &compiler_subsystem_register,
     .subsystem_init              = NULL,
     .subsystem_init_location     = NULL,
     .subsystem_finalize_location = NULL,
     .subsystem_pre_unify         = NULL,
     .subsystem_post_unify        = NULL,
     .subsystem_finalize          = NULL,
-    .subsystem_deregister        = &scorep_compiler_deregister,
+    .subsystem_deregister        = &compiler_subsystem_deregister,
     .subsystem_control           = NULL
 };

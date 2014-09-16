@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -56,7 +56,7 @@ static size_t scorep_user_subsystem_id;
     to the measurement system. Currently, it registers no variables.
  */
 static SCOREP_ErrorCode
-scorep_user_register( size_t subsystem_id )
+user_subsystem_register( size_t subsystem_id )
 {
     scorep_user_subsystem_id = subsystem_id;
 
@@ -66,7 +66,7 @@ scorep_user_register( size_t subsystem_id )
 /** Initializes the user adapter.
  */
 static SCOREP_ErrorCode
-scorep_user_init( void )
+user_subsystem_init( void )
 {
     if ( scorep_user_is_initialized == 0 )
     {
@@ -82,22 +82,15 @@ scorep_user_init( void )
 
 /** Initializes the location specific data of the user adapter */
 static SCOREP_ErrorCode
-scorep_user_init_location( SCOREP_Location* locationData )
+user_subsystem_init_location( SCOREP_Location* locationData )
 {
     return SCOREP_SUCCESS;
-}
-
-/** Finalizes the location specific data of the user adapter.
- */
-static void
-scorep_user_finalize_location( SCOREP_Location* locationData )
-{
 }
 
 /** Finalizes the user adapter.
  */
 static void
-scorep_user_finalize( void )
+user_subsystem_finalize( void )
 {
     if ( scorep_user_is_initialized == 1 )
     {
@@ -109,24 +102,18 @@ scorep_user_finalize( void )
     scorep_selective_finalize();
 }
 
-/** Deregisters the user adapter.
- */
-static void
-scorep_user_deregister( void )
-{
-}
 
 const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter =
 {
     .subsystem_name              = "USER",
-    .subsystem_register          = &scorep_user_register,
-    .subsystem_init              = &scorep_user_init,
-    .subsystem_init_location     = &scorep_user_init_location,
-    .subsystem_finalize_location = &scorep_user_finalize_location,
+    .subsystem_register          = &user_subsystem_register,
+    .subsystem_init              = &user_subsystem_init,
+    .subsystem_init_location     = &user_subsystem_init_location,
+    .subsystem_finalize_location = NULL,
     .subsystem_pre_unify         = NULL,
     .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &scorep_user_finalize,
-    .subsystem_deregister        = &scorep_user_deregister,
+    .subsystem_finalize          = &user_subsystem_finalize,
+    .subsystem_deregister        = NULL,
     .subsystem_control           = NULL
 };
 

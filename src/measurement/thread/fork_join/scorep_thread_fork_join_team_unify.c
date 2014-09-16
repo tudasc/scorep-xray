@@ -393,7 +393,7 @@ create_mapping( SCOREP_Location* location,
 
 
 static SCOREP_ErrorCode
-unify_teams_pre( void )
+fork_join_subsystem_pre_unify( void )
 {
     uint32_t local_to_thread_id[ scorep_local_definition_manager.location.counter ];
 
@@ -506,7 +506,7 @@ unify_teams_pre( void )
 }
 
 static SCOREP_ErrorCode
-unify_teams_post( void )
+fork_join_subsystem_post_unify( void )
 {
     SCOREP_Location_ForAll( create_mapping, NULL );
     return SCOREP_SUCCESS;
@@ -514,7 +514,7 @@ unify_teams_post( void )
 
 
 static SCOREP_ErrorCode
-subsystem_register( size_t subsystem_id )
+fork_join_subsystem_register( size_t subsystem_id )
 {
     scorep_thread_fork_join_subsystem_id = subsystem_id;
     return SCOREP_SUCCESS;
@@ -522,7 +522,7 @@ subsystem_register( size_t subsystem_id )
 
 
 static SCOREP_ErrorCode
-create_team_data( SCOREP_Location* location )
+fork_join_subsystem_init_location( SCOREP_Location* location )
 {
     if ( SCOREP_LOCATION_TYPE_CPU_THREAD == SCOREP_Location_GetType( location ) )
     {
@@ -537,12 +537,12 @@ create_team_data( SCOREP_Location* location )
 const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin =
 {
     .subsystem_name              = "THREAD FORK JOIN",
-    .subsystem_register          = &subsystem_register,
+    .subsystem_register          = &fork_join_subsystem_register,
     .subsystem_init              = NULL,
-    .subsystem_init_location     = &create_team_data,
+    .subsystem_init_location     = &fork_join_subsystem_init_location,
     .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = &unify_teams_pre,
-    .subsystem_post_unify        = &unify_teams_post,
+    .subsystem_pre_unify         = &fork_join_subsystem_pre_unify,
+    .subsystem_post_unify        = &fork_join_subsystem_post_unify,
     .subsystem_finalize          = NULL,
     .subsystem_deregister        = NULL,
     .subsystem_control           = NULL

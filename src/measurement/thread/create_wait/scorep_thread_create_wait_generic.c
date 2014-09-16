@@ -49,10 +49,10 @@
 
 
 /* *INDENT-OFF* */
-static SCOREP_ErrorCode subsystem_init( void );
-static SCOREP_ErrorCode subsystem_pre_unify( void );
-static SCOREP_ErrorCode subsystem_post_unify( void );
-static void finalize( void );
+static SCOREP_ErrorCode create_wait_subsystem_init( void );
+static SCOREP_ErrorCode create_wait_subsystem_pre_unify( void );
+static SCOREP_ErrorCode create_wait_subsystem_post_unify( void );
+static void create_wait_subsystem_finalize( void );
 /* *INDENT-ON*  */
 
 
@@ -68,19 +68,19 @@ const SCOREP_Subsystem SCOREP_Subsystem_ThreadCreateWait =
 {
     .subsystem_name              = "THREAD CREATE WAIT",
     .subsystem_register          = NULL,
-    .subsystem_init              = &subsystem_init,
+    .subsystem_init              = &create_wait_subsystem_init,
     .subsystem_init_location     = NULL,
     .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = &subsystem_pre_unify,
-    .subsystem_post_unify        = &subsystem_post_unify,
-    .subsystem_finalize          = &finalize,
+    .subsystem_pre_unify         = &create_wait_subsystem_pre_unify,
+    .subsystem_post_unify        = &create_wait_subsystem_post_unify,
+    .subsystem_finalize          = &create_wait_subsystem_finalize,
     .subsystem_deregister        = NULL,
     .subsystem_control           = NULL
 };
 
 
 static SCOREP_ErrorCode
-subsystem_init( void )
+create_wait_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
     if ( is_initialized )
@@ -105,7 +105,7 @@ subsystem_init( void )
 }
 
 static SCOREP_ErrorCode
-subsystem_pre_unify( void )
+create_wait_subsystem_pre_unify( void )
 {
     UTILS_DEBUG_ENTRY();
     // todo CR: everything that mentions PTHREAD should come from
@@ -183,7 +183,7 @@ subsystem_pre_unify( void )
 
 
 static SCOREP_ErrorCode
-subsystem_post_unify( void )
+create_wait_subsystem_post_unify( void )
 {
     UTILS_DEBUG_ENTRY();
     /* Map the local interim communicator to the unified communicator */
@@ -200,7 +200,7 @@ subsystem_post_unify( void )
 
 
 static void
-finalize( void )
+create_wait_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
     if ( !is_initialized )

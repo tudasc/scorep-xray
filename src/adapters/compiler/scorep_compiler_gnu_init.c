@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -48,7 +48,7 @@
 *****************************************************************************************/
 
 SCOREP_ErrorCode
-scorep_compiler_init_adapter( void )
+scorep_compiler_subsystem_init( void )
 {
     if ( !scorep_compiler_initialized )
     {
@@ -74,7 +74,7 @@ scorep_compiler_init_adapter( void )
 }
 
 SCOREP_ErrorCode
-scorep_compiler_init_location( struct SCOREP_Location* locationData )
+scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "GNU compiler adapter init location!" );
     return SCOREP_SUCCESS;
@@ -82,7 +82,7 @@ scorep_compiler_init_location( struct SCOREP_Location* locationData )
 
 /* Adapter finalization */
 void
-scorep_compiler_finalize( void )
+scorep_compiler_subsystem_finalize( void )
 {
     /* call only, if previously initialized */
     if ( scorep_compiler_initialized )

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -57,7 +57,7 @@ SCOREP_RegionHandle scorep_compiler_main_handle = SCOREP_INVALID_REGION;
 
 
 SCOREP_ErrorCode
-scorep_compiler_init_adapter( void )
+scorep_compiler_subsystem_init( void )
 {
     if ( !scorep_compiler_initialized )
     {
@@ -76,7 +76,7 @@ scorep_compiler_init_adapter( void )
 }
 
 SCOREP_ErrorCode
-scorep_compiler_init_location( struct SCOREP_Location* locationData )
+scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter init location!" );
     /* The studio compiler does not instrument "main" but we want to have a
@@ -105,7 +105,7 @@ on_scorep_finalize( void )
 }
 
 void
-scorep_compiler_finalize( void )
+scorep_compiler_subsystem_finalize( void )
 {
     /* call only, if previously initialized */
     if ( scorep_compiler_initialized )
