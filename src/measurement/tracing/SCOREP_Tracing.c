@@ -166,9 +166,11 @@ scorep_on_trace_pre_flush( void*         userData,
 
     if ( fileType == OTF2_FILETYPE_EVENTS )
     {
-        SCOREP_Location* location = NULL;
-        OTF2_ErrorCode   err      = OTF2_EvtWriter_GetUserData( callerData, &location );
-        UTILS_ASSERT( err == OTF2_SUCCESS && location );
+        void*          user_data = NULL;
+        OTF2_ErrorCode err       = OTF2_EvtWriter_GetUserData( callerData, &user_data );
+        UTILS_ASSERT( err == OTF2_SUCCESS && user_data );
+
+        SCOREP_Location* location = ( SCOREP_Location* )user_data;
         SCOREP_Location_EnsureGlobalId( location );
         scorep_rewind_stack_delete( location );
     }
