@@ -26,6 +26,3 @@ libscorep_measurement_confvars_la_CPPFLAGS = \
     $(UTILS_CPPFLAGS)
 
 libscorep_confvars_la_LIBADD += libscorep_measurement_confvars.la
-
-EXTRA_DIST += \
-    $(SRC_ROOT)src/measurement/scorep_task_confvars.inc.c
