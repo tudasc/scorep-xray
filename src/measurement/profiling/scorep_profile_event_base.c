@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -175,7 +175,6 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
     if ( ( node->node_type == scorep_profile_node_regular_region ) &&
          ( scorep_profile_type_get_region_handle( node->type_specific_data ) != region ) )
     {
-        SCOREP_PROFILE_STOP( location );
         UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                      "Exit event for other than current region occured at "
                      "location %" PRIu64 ": Expected exit for region %s. "
@@ -183,6 +182,7 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
                      scorep_profile_type_get_int_value( location->root_node->type_specific_data ),
                      SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ),
                      SCOREP_RegionHandle_GetName( region ) );
+        SCOREP_PROFILE_STOP( location );
         return NULL;
     }
     return parent;

@@ -44,6 +44,8 @@
 #include <scorep_ipc.h>
 #include <scorep_runtime_management.h>
 #include <SCOREP_Thread_Mgmt.h>
+#include <UTILS_Error.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -209,7 +211,10 @@ scorep_profile_on_error( SCOREP_Profile_LocationData* location )
         scorep_profile_dump( file, location );
 
         fclose( file );
+        UTILS_FATAL( "Cannot continue profiling, profiling core file written to %s.\n",
+                     filename );
     }
 
-    abort();
+    UTILS_FATAL( "Cannot continue profiling. Activating core files (export "
+                 "SCOREP_PROFILING_ENABLE_CORE_FILES=1) might provide more insight." );
 }
