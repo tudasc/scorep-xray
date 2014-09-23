@@ -92,6 +92,10 @@
 #define SCOREP_CUDA_GPUMEMUSAGE 1
 #define SCOREP_CUDA_GPUMEMUSAGE_AND_MISSING_FREES 2 /* NOT yet available */
 
+/*
+ * ID of the CUDA subsystem
+ */
+extern size_t scorep_cuda_subsystem_id;
 
 /*
  * Specifies the CUDA tracing mode with a bit mask.

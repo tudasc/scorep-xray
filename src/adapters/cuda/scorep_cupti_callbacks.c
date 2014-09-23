@@ -78,22 +78,22 @@
 
 /* Enable CUDA runtime API callbacks, if recording is enabled */
 #define ENABLE_CUDART_CALLBACKS() \
-    if ( record_runtime_api ) \
+    if ( scorep_record_runtime_api ) \
         SCOREP_CUPTI_ENABLE_CALLBACK_DOMAIN( CUPTI_CB_DOMAIN_RUNTIME_API )
 
 /* Disable CUDA runtime API callbacks, if recording is enabled */
 #define DISABLE_CUDART_CALLBACKS() \
-    if ( record_runtime_api ) \
+    if ( scorep_record_runtime_api ) \
         SCOREP_CUPTI_DISABLE_CALLBACK_DOMAIN( CUPTI_CB_DOMAIN_RUNTIME_API )
 
 /* Enable CUDA driver API callbacks, if recording is enabled */
 #define ENABLE_CUDRV_CALLBACKS() \
-    if ( record_driver_api ) \
+    if ( scorep_record_driver_api ) \
         SCOREP_CUPTI_ENABLE_CALLBACK_DOMAIN( CUPTI_CB_DOMAIN_DRIVER_API )
 
 /* Disable CUDA driver API callbacks, if recording is enabled */
 #define DISABLE_CUDRV_CALLBACKS() \
-    if ( record_driver_api ) \
+    if ( scorep_record_driver_api ) \
         SCOREP_CUPTI_DISABLE_CALLBACK_DOMAIN( CUPTI_CB_DOMAIN_DRIVER_API )
 
 /*
@@ -126,10 +126,13 @@ static bool scorep_cupti_callbacks_enabled = false;
 static bool is_driver_domain_enabled = false;
 
 /* flag: tracing of CUDA runtime API enabled? */
-static bool record_runtime_api = false;
+bool scorep_record_runtime_api = false;
 
 /* flag: tracing of CUDA driver API enabled? */
-static bool record_driver_api = false;
+bool scorep_record_driver_api = false;
+
+/* flag: callbacks state */
+uint8_t scorep_cupti_callbacks_state = 0;
 
 /* global subscriber handle */
 static CUpti_SubscriberHandle scorep_cupti_callbacks_subscriber;
@@ -246,7 +249,7 @@ cuda_api_function_hash( CUpti_CallbackDomain domain,
 
     /* Use an offset for the driver API functions, if CUDA runtime and driver
        API recording is enabled (uncommon case) */
-    if ( record_runtime_api && record_driver_api )
+    if ( scorep_record_runtime_api && scorep_record_driver_api )
     {
         uint16_t offset = 0;
 
@@ -354,7 +357,7 @@ scorep_cupti_callbacks_enable( bool enable )
         if ( !scorep_cupti_callbacks_enabled )
         {
             /* set callback for CUDA API functions */
-            if ( record_runtime_api )
+            if ( scorep_record_runtime_api )
             {
                 SCOREP_CUPTI_CALL( cuptiEnableDomain( 1, scorep_cupti_callbacks_subscriber,
                                                       CUPTI_CB_DOMAIN_RUNTIME_API ) );
@@ -362,9 +365,9 @@ scorep_cupti_callbacks_enable( bool enable )
                 scorep_cupti_callbacks_enabled = true;
             }
 
-            if ( record_driver_api ||
-                 ( !record_runtime_api && scorep_cuda_record_gpumemusage ) ||
-                 ( !record_runtime_api && scorep_cuda_record_memcpy &&
+            if ( scorep_record_driver_api ||
+                 ( !scorep_record_runtime_api && scorep_cuda_record_gpumemusage ) ||
+                 ( !scorep_record_runtime_api && scorep_cuda_record_memcpy &&
                    scorep_cuda_sync_level == SCOREP_CUDA_RECORD_SYNC_FULL ) )
             {
                 SCOREP_CUPTI_CALL( cuptiEnableDomain( 1, scorep_cupti_callbacks_subscriber,
@@ -638,8 +641,10 @@ scorep_cupti_callbacks_runtime_api( CUpti_CallbackId          callbackId,
 {
     SCOREP_Location*    location = SCOREP_Location_GetCurrentCPULocation();
     uint64_t            time;
-    SCOREP_RegionHandle region_handle        = SCOREP_INVALID_REGION;
-    SCOREP_RegionHandle region_handle_stored = SCOREP_INVALID_REGION;
+    SCOREP_RegionHandle region_handle              = SCOREP_INVALID_REGION;
+    SCOREP_RegionHandle region_handle_stored       = SCOREP_INVALID_REGION;
+    bool                record_driver_api_location =
+        SCOREP_IS_CALLBACK_STATE_SET( SCOREP_CUPTI_CALLBACKS_STATE_DRIVER, location );
 
     if ( callbackId == CUPTI_RUNTIME_TRACE_CBID_INVALID )
     {
@@ -682,7 +687,7 @@ scorep_cupti_callbacks_runtime_api( CUpti_CallbackId          callbackId,
     /* time stamp for all the following potential events */
     time = SCOREP_GetClockTicks();
 
-    if ( scorep_cuda_record_memcpy && !record_driver_api )
+    if ( scorep_cuda_record_memcpy && !record_driver_api_location )
     {
         if (
             ( scorep_cuda_sync_level == SCOREP_CUDA_RECORD_SYNC_FULL ) )
@@ -851,7 +856,7 @@ scorep_cupti_callbacks_runtime_api( CUpti_CallbackId          callbackId,
      */
 
     /* Memory allocation and deallocation tracing */
-    if ( scorep_cuda_record_gpumemusage && !record_driver_api )
+    if ( scorep_cuda_record_gpumemusage && !record_driver_api_location )
     {
         switch ( callbackId )
         {
@@ -971,8 +976,10 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
 {
     SCOREP_Location*    location = SCOREP_Location_GetCurrentCPULocation();
     uint64_t            time;
-    SCOREP_RegionHandle region_handle        = SCOREP_INVALID_REGION;
-    SCOREP_RegionHandle region_handle_stored = SCOREP_INVALID_REGION;
+    SCOREP_RegionHandle region_handle              = SCOREP_INVALID_REGION;
+    SCOREP_RegionHandle region_handle_stored       = SCOREP_INVALID_REGION;
+    bool                record_driver_api_location =
+        SCOREP_IS_CALLBACK_STATE_SET( SCOREP_CUPTI_CALLBACKS_STATE_DRIVER, location );
 
     if ( callbackId == CUPTI_DRIVER_TRACE_CBID_INVALID )
     {
@@ -998,7 +1005,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
     }
 
     /* Generate Score-P region handle for the API functions (if enabled) */
-    if ( record_driver_api )
+    if ( record_driver_api_location )
     {
         region_handle_stored =
             cuda_api_function_get( CUPTI_CB_DOMAIN_DRIVER_API, callbackId );
@@ -1023,7 +1030,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
         if (
             ( scorep_cuda_sync_level == SCOREP_CUDA_RECORD_SYNC_FULL ) )
         {
-            if ( !record_driver_api )
+            if ( !record_driver_api_location )
             {
                 time = SCOREP_GetClockTicks();
             }
@@ -1212,7 +1219,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
     /* all synchronous memory copies have been handled here and will not reach
        this point */
 
-    if ( record_driver_api )
+    if ( record_driver_api_location )
     {
         /********** write enter and exit records for CUDA driver API **********/
         if ( !SCOREP_Filter_MatchFunction( cbInfo->functionName, NULL ) )
@@ -1625,9 +1632,7 @@ scorep_cupti_callbacks_sync( CUpti_CallbackId             cbid,
 
             if ( !scorep_cupti_activity_is_buffer_empty( context ) )
             {
-                SCOREP_CUPTI_LOCK();
                 scorep_cupti_activity_context_flush( context );
-                SCOREP_CUPTI_UNLOCK();
             }
         }
     }
@@ -1679,12 +1684,9 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
                 scorep_cupti_context* context = NULL;
                 /* Only flush the activities of the context. The user code has to ensure,
                    that the context is synchronized */
-                SCOREP_CUPTI_LOCK();
                 context = scorep_cupti_context_get( resourceData->context );
 
                 scorep_cupti_activity_context_flush( context );
-
-                SCOREP_CUPTI_UNLOCK();
             }
 
             break;
@@ -1724,6 +1726,8 @@ scorep_cupticb_synchronize_context( SCOREP_Location* location )
 {
     uint64_t time;
 
+    SCOREP_SUSPEND_CUDRV_CALLBACKS();
+
     if ( is_driver_domain_enabled )
     {
         SCOREP_CUDA_DRIVER_CALL( cuCtxSynchronize() );
@@ -1745,6 +1749,9 @@ scorep_cupticb_synchronize_context( SCOREP_Location* location )
             SCOREP_Location_ExitRegion( location, time, cuda_sync_region_handle );
         }
     }
+
+    SCOREP_RESUME_CUDRV_CALLBACKS();
+
     return time;
 }
 
@@ -2230,7 +2237,7 @@ handle_cuda_memcpy_default( const CUpti_CallbackData* cbInfo,
     enum cudaMemcpyKind kind = cudaMemcpyDefault;
 
     /* do not trace these CUDA driver API function calls */
-    DISABLE_CUDRV_CALLBACKS();
+    SCOREP_SUSPEND_CUDRV_CALLBACKS();
 
     cuPointerGetAttribute( &cuSrcCtx, CU_POINTER_ATTRIBUTE_CONTEXT,
                            cuSrcDevPtr );
@@ -2242,7 +2249,7 @@ handle_cuda_memcpy_default( const CUpti_CallbackData* cbInfo,
     cuPointerGetAttribute( &dstMemType, CU_POINTER_ATTRIBUTE_MEMORY_TYPE,
                            cuDstDevPtr );
 
-    ENABLE_CUDRV_CALLBACKS();
+    SCOREP_RESUME_CUDRV_CALLBACKS();
 
     /* get memory copy direction */
     kind = get_cuda_memcpy_kind( srcMemType, dstMemType );
@@ -2315,21 +2322,24 @@ scorep_cupti_callbacks_init( void )
                             "[CUPTI Callbacks] Initializing ... " );
 
         /* check the CUDA APIs to be traced */
-        record_driver_api  = false;
-        record_runtime_api = false;
+        scorep_record_driver_api     = false;
+        scorep_record_runtime_api    = false;
+        scorep_cupti_callbacks_state = SCOREP_CUPTI_CALLBACKS_STATE_NONE;
 
         /* check for CUDA runtime API */
         if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_RUNTIME_API ) == SCOREP_CUDA_FEATURE_RUNTIME_API )
         {
-            record_runtime_api       = true;
-            cuda_runtime_file_handle = SCOREP_Definitions_NewSourceFile( "CUDART" );
+            scorep_record_runtime_api     = true;
+            scorep_cupti_callbacks_state |= SCOREP_CUPTI_CALLBACKS_STATE_RUNTIME;
+            cuda_runtime_file_handle      = SCOREP_Definitions_NewSourceFile( "CUDART" );
         }
 
         /* check for CUDA driver API */
         if ( ( scorep_cuda_features & SCOREP_CUDA_FEATURE_DRIVER_API ) == SCOREP_CUDA_FEATURE_DRIVER_API )
         {
-            record_driver_api       = true;
-            cuda_driver_file_handle = SCOREP_Definitions_NewSourceFile( "CUDRV" );
+            scorep_record_driver_api      = true;
+            scorep_cupti_callbacks_state |= SCOREP_CUPTI_CALLBACKS_STATE_DRIVER;
+            cuda_driver_file_handle       = SCOREP_Definitions_NewSourceFile( "CUDRV" );
         }
 
         scorep_cupti_set_callback( scorep_cupti_callbacks_all );
@@ -2455,7 +2465,7 @@ scorep_cupti_callbacks_finalize( void )
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
                             "[CUPTI Callbacks] Finalizing ... " );
 
-        if ( record_runtime_api || record_driver_api ||
+        if ( scorep_record_runtime_api || scorep_record_driver_api ||
              scorep_cuda_record_kernels || scorep_cuda_record_memcpy ||
              scorep_cuda_record_gpumemusage )
         {

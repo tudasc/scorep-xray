@@ -24,6 +24,7 @@
 #include "scorep_cuda.h"
 #include "scorep_cupti_activity.h"
 #include "scorep_cupti_activity_internal.h"
+#include "scorep_cupti_callbacks.h"
 
 /* static/internal function declarations */
 static bool
@@ -137,6 +138,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
     SCOREP_CUPTI_CALL( cuptiActivityFlush( context->cuda_context, 0, 0 ) );
 #endif
 
+    SCOREP_CUPTI_LOCK();
     {
         uint64_t               hostStop, gpuStop;
         scorep_cupti_activity* context_activity = NULL;
@@ -165,6 +167,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
             if ( gpu_diff == ( double )0 )
             {
                 UTILS_WARNING( "[CUPTI Activity] GPU time difference is 0! Cannot flush." );
+                SCOREP_CUPTI_UNLOCK();
                 return;
             }
 
@@ -229,6 +232,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
         /* write exit event for activity flush */
         SCOREP_ExitRegion( scorep_cupti_buffer_flush_region_handle );
     }
+    SCOREP_CUPTI_UNLOCK();
 }
 
 void
@@ -347,7 +351,9 @@ buffer_requested_callback( uint8_t** buffer,
     scorep_cupti_context* context      = NULL;
     CUcontext             cuda_context = NULL;
 
+    SCOREP_SUSPEND_CUDRV_CALLBACKS();
     SCOREP_CUDA_DRIVER_CALL( cuCtxGetCurrent( &cuda_context ) );
+    SCOREP_RESUME_CUDRV_CALLBACKS();
     context = scorep_cupti_context_get( cuda_context );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,

@@ -44,6 +44,7 @@
 #include "scorep_cuda.h"
 #include "scorep_cupti_activity.h"
 #include "scorep_cupti_activity_internal.h"
+#include "scorep_cupti_callbacks.h"
 
 #include <inttypes.h>
 
@@ -693,6 +694,7 @@ synchronize_context_list( void )
     }
 
     /* save the current CUDA context */
+    SCOREP_SUSPEND_CUDRV_CALLBACKS();
     SCOREP_CUDA_DRIVER_CALL( cuCtxGetCurrent( &old_context ) );
     while ( NULL != context )
     {
@@ -717,6 +719,7 @@ synchronize_context_list( void )
 
         context = context->next;
     }
+    SCOREP_RESUME_CUDRV_CALLBACKS();
 }
 
 /*

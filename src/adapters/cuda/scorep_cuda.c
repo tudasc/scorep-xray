@@ -42,6 +42,7 @@
 #include "scorep_cuda.h"
 #include "scorep_cupti.h"
 
+size_t scorep_cuda_subsystem_id = 0;
 
 uint8_t scorep_cuda_record_kernels = 0;
 

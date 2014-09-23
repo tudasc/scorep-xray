@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -42,6 +42,7 @@
 #include "SCOREP_Config.h"
 #include "SCOREP_Types.h"
 #include "SCOREP_Cuda_Init.h"
+#include "SCOREP_Memory.h"
 
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME CUDA
@@ -62,6 +63,8 @@ static SCOREP_ErrorCode
 cuda_subsystem_register( size_t subsystem_id )
 {
     UTILS_DEBUG( "Register environment variables" );
+
+    scorep_cuda_subsystem_id = subsystem_id;
 
     return SCOREP_ConfigRegister( "cuda", scorep_cuda_configs );
 }
@@ -96,6 +99,26 @@ cuda_subsystem_init( void )
 static SCOREP_ErrorCode
 cuda_subsystem_init_location( SCOREP_Location* location )
 {
+    /* for CPU locations, create location/thread-specific CUDA data */
+    if ( SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD )
+    {
+        scorep_cuda_location_data* loc_data =
+            ( scorep_cuda_location_data* )SCOREP_Memory_AllocForMisc( sizeof( scorep_cuda_location_data ) );
+
+        loc_data->callbacksState = SCOREP_CUPTI_CALLBACKS_STATE_NONE;
+        if ( scorep_record_driver_api )
+        {
+            loc_data->callbacksState |= SCOREP_CUPTI_CALLBACKS_STATE_DRIVER;
+        }
+
+        if ( scorep_record_runtime_api )
+        {
+            loc_data->callbacksState |= SCOREP_CUPTI_CALLBACKS_STATE_RUNTIME;
+        }
+
+        SCOREP_Location_SetSubsystemData( location, scorep_cuda_subsystem_id, loc_data );
+    }
+
     return SCOREP_SUCCESS;
 }
 

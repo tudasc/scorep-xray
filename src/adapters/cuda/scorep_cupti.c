@@ -38,6 +38,7 @@
 #include <config.h>
 #include "scorep_cupti.h"
 #include "scorep_cuda.h"     /* CUPTI common structures, functions, etc. */
+#include "scorep_cupti_callbacks.h"
 
 #include <UTILS_CStr.h>
 
@@ -478,6 +479,8 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
     context->scorep_host_location = SCOREP_Location_GetCurrentCPULocation();
     context->location_id          = SCOREP_CUPTI_NO_ID;
 
+    SCOREP_SUSPEND_CUDRV_CALLBACKS();
+
     /* try to get CUDA device (ID), if they are not given */
     if ( deviceId == SCOREP_CUPTI_NO_DEVICE_ID )
     {
@@ -487,7 +490,7 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
 
             if ( cudaContext != NULL )
             {
-                cuCtxGetCurrent( &cuCurrCtx );
+                SCOREP_CUDA_DRIVER_CALL( cuCtxGetCurrent( &cuCurrCtx ) );
 
                 /* if given context does not match the current one, get the device for
                    the given one */
@@ -540,6 +543,8 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
                         "[CUPTI] Created context for CUcontext %d, CUdevice %d",
                         cudaContext, cudaDevice );
 
+    SCOREP_RESUME_CUDRV_CALLBACKS();
+
     return context;
 }
 
@@ -555,12 +560,22 @@ scorep_cupti_context_get( CUcontext cudaContext )
 {
     scorep_cupti_context* context = NULL;
 
+    /* since CUDA 6.0, we also have to test against the CUDA context ID */
+#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
+    uint32_t cudaContextId = SCOREP_CUPTI_NO_CONTEXT_ID;
+    SCOREP_CUPTI_CALL( cuptiGetContextId( cudaContext, &cudaContextId ) );
+#endif
+
+
     /* lookup context */
     context = scorep_cupti_context_list;
     while ( context != NULL )
     {
         if ( context->cuda_context == cudaContext )
         {
+#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
+            if ( context->context_id == cudaContextId )
+#endif
             return context;
         }
 
