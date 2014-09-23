@@ -22,6 +22,8 @@ Bugfixes:
 Bugfixes:
 - Fixes wrong acquisition order in pthread_cond_timedwait by modifying
   the nesting level (analog pthread_cond_wait)
+- Fixes that internal CUDA driver calls were recorded
+- Fixes a potential deadlock in CUDA adapter for multithreaded CUDA
 
 
 ------------------- Released version 1.3 -----------------------------
