@@ -233,7 +233,7 @@ AC_SCOREP_COMPILER_INSTRUMENTATION
 AC_SCOREP_PACKAGE_AND_LIBRARY_VERSION
 
 AC_CONFIG_FILES([Makefile], [
-sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&   /; t; s/_0 = @echo "  /&SHMEM/' \
+sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&     /; t; s/_0 = @echo "  /&SHMEM/' \
 Makefile >Makefile.shmem && mv -f Makefile.shmem Makefile || rm -f Makefile.shmem
 ])
 AC_CONFIG_FILES([../installcheck/instrumenter_checks/shmem/Makefile:../test/instrumenter_checks/shmem/Makefile.in
