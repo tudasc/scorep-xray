@@ -206,8 +206,7 @@ create_references_list( SCOREP_Location* location,
                         int              references );
 
 static void
-enter_with_refs( SCOREP_Location*    location,
-                 uint64_t*           time,
+enter_with_refs( uint64_t*           time,
                  SCOREP_RegionHandle region,
                  CUcontext           context,
                  CUstream            stream,
@@ -216,8 +215,7 @@ enter_with_refs( SCOREP_Location*    location,
                  int                 references );
 
 static void
-exit_with_refs( SCOREP_Location*    location,
-                uint64_t*           time,
+exit_with_refs( uint64_t*           time,
                 SCOREP_RegionHandle region,
                 CUcontext           context,
                 CUstream            stream,
@@ -563,9 +561,9 @@ create_references_list( SCOREP_Location* location,
 }
 
 /**
- * Writes an enter region along with reference attributes.
+ * Writes an enter region on the current CPU location
+ * along with reference attributes.
  *
- * @param location location handle
  * @param time pointer to the timestamp for this region
  * @param region region handle
  * @param context CUDA context
@@ -575,8 +573,7 @@ create_references_list( SCOREP_Location* location,
  * @param references combination of SCOREP_CUPTI_KEY_* values
  */
 static void
-enter_with_refs( SCOREP_Location*    location,
-                 uint64_t*           time,
+enter_with_refs( uint64_t*           time,
                  SCOREP_RegionHandle region,
                  CUcontext           context,
                  CUstream            stream,
@@ -586,19 +583,22 @@ enter_with_refs( SCOREP_Location*    location,
 {
     if ( scorep_cuda_record_references )
     {
-        create_references_list( location, context, stream,
-                                event, result, references );
+        create_references_list( SCOREP_Location_GetCurrentCPULocation(),
+                                context, stream, event,
+                                result, references );
     }
     if ( time )
     {
-        SCOREP_Location_EnterRegion( location, *time, region );
+        /* With 'location == NULL' SCOREP_Location_EnterRegion will
+         * write the event on the current CPU location */
+        SCOREP_Location_EnterRegion( NULL, *time, region );
     }
 }
 
 /**
- * Writes an exit region along with reference attributes.
+ * Writes an exit region on the current CPU location
+ * along with reference attributes.
  *
- * @param location location handle
  * @param time pointer to the timestamp for this region
  * @param region region handle
  * @param context CUDA context
@@ -608,8 +608,7 @@ enter_with_refs( SCOREP_Location*    location,
  * @param references combination of SCOREP_CUPTI_KEY_* values
  */
 static void
-exit_with_refs( SCOREP_Location*    location,
-                uint64_t*           time,
+exit_with_refs( uint64_t*           time,
                 SCOREP_RegionHandle region,
                 CUcontext           context,
                 CUstream            stream,
@@ -619,12 +618,15 @@ exit_with_refs( SCOREP_Location*    location,
 {
     if ( scorep_cuda_record_references )
     {
-        create_references_list( location, context, stream,
-                                event, result, references );
+        create_references_list( SCOREP_Location_GetCurrentCPULocation(),
+                                context, stream, event,
+                                result, references );
     }
     if ( time )
     {
-        SCOREP_Location_ExitRegion( location, *time, region );
+        /* With 'location == NULL' SCOREP_Location_ExitRegion will
+         * write the event on the current CPU location */
+        SCOREP_Location_ExitRegion( NULL, *time, region );
     }
 }
 
@@ -843,11 +845,15 @@ scorep_cupti_callbacks_runtime_api( CUpti_CallbackId          callbackId,
     {
         if ( cbInfo->callbackSite == CUPTI_API_ENTER )
         {
-            SCOREP_Location_EnterRegion( location, time, region_handle );
+            /* With 'location == NULL' SCOREP_Location_EnterRegion will
+             * write the event on the current CPU location */
+            SCOREP_Location_EnterRegion( NULL, time, region_handle );
         }
         else if ( cbInfo->callbackSite == CUPTI_API_EXIT )
         {
-            SCOREP_Location_ExitRegion( location, time, region_handle );
+            /* With 'location == NULL' SCOREP_Location_ExitRegion will
+             * write the event on the current CPU location */
+            SCOREP_Location_ExitRegion( NULL, time, region_handle );
         }
     }
 
@@ -1234,7 +1240,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                         cuLaunchKernel_params* params =
                             ( cuLaunchKernel_params* )cbInfo->functionParams;
 
-                        enter_with_refs( location, &time, region_handle,
+                        enter_with_refs( &time, region_handle,
                                          cbInfo->context, params->hStream,
                                          NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
                         break;
@@ -1242,7 +1248,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
 
                     case CUPTI_DRIVER_TRACE_CBID_cuLaunchGrid:
                     {
-                        enter_with_refs( location, &time, region_handle,
+                        enter_with_refs( &time, region_handle,
                                          cbInfo->context, NULL, NULL,
                                          CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
                         break;
@@ -1253,7 +1259,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                         cuLaunchGridAsync_params* params =
                             ( cuLaunchGridAsync_params* )cbInfo->functionParams;
 
-                        enter_with_refs( location, &time, region_handle,
+                        enter_with_refs( &time, region_handle,
                                          cbInfo->context, params->hStream,
                                          NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
                         break;
@@ -1261,14 +1267,16 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
 
                     case CUPTI_DRIVER_TRACE_CBID_cuLaunch:
                     {
-                        enter_with_refs( location, &time, region_handle,
+                        enter_with_refs( &time, region_handle,
                                          cbInfo->context, NULL, NULL,
                                          CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
                         break;
                     }
 
                     default:
-                        SCOREP_Location_EnterRegion( location, time, region_handle );
+                        /* With 'location == NULL' SCOREP_Location_EnterRegion will
+                         * write the event on the current CPU location */
+                        SCOREP_Location_EnterRegion( NULL, time, region_handle );
                 }
             }
             else if ( cbInfo->callbackSite == CUPTI_API_EXIT )
@@ -1280,7 +1288,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                     {
                         cuStreamSynchronize_params* params =
                             ( cuStreamSynchronize_params* )cbInfo->functionParams;
-                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                        exit_with_refs( &time, region_handle, cbInfo->context,
                                         params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
                         break;
                     }
@@ -1290,7 +1298,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                         cuMemcpyAsync_params* params =
                             ( cuMemcpyAsync_params* )cbInfo->functionParams;
 
-                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                        exit_with_refs( &time, region_handle, cbInfo->context,
                                         params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
                         break;
                     }
@@ -1300,7 +1308,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                         cuMemcpy2DAsync_params* params =
                             ( cuMemcpy2DAsync_params* )cbInfo->functionParams;
 
-                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                        exit_with_refs( &time, region_handle, cbInfo->context,
                                         params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
                         break;
                     }
@@ -1310,7 +1318,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                         cuMemcpy2DAsync_v2_params* params =
                             ( cuMemcpy2DAsync_v2_params* )cbInfo->functionParams;
 
-                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                        exit_with_refs( &time, region_handle, cbInfo->context,
                                         params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
                         break;
                     }
@@ -1320,7 +1328,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                         cuMemcpy3DAsync_params* params =
                             ( cuMemcpy3DAsync_params* )cbInfo->functionParams;
 
-                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                        exit_with_refs( &time, region_handle, cbInfo->context,
                                         params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
                         break;
                     }
@@ -1330,7 +1338,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                         cuMemcpy3DAsync_v2_params* params =
                             ( cuMemcpy3DAsync_v2_params* )cbInfo->functionParams;
 
-                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                        exit_with_refs( &time, region_handle, cbInfo->context,
                                         params->hStream, NULL, CUDA_SUCCESS, SCOREP_CUPTI_KEY_STREAM );
                         break;
                     }
@@ -1341,7 +1349,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                             ( cuEventRecord_params* )cbInfo->functionParams;
 
                         CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
-                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                        exit_with_refs( &time, region_handle, cbInfo->context,
                                         params->hStream, params->hEvent, funcResult,
                                         SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT | SCOREP_CUPTI_KEY_STREAM );
                         break;
@@ -1353,7 +1361,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                             ( cuEventSynchronize_params* )cbInfo->functionParams;
 
                         CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
-                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                        exit_with_refs( &time, region_handle, cbInfo->context,
                                         NULL, params->hEvent, funcResult,
                                         SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT );
                         break;
@@ -1365,7 +1373,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                             ( cuEventQuery_params* )cbInfo->functionParams;
 
                         CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
-                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                        exit_with_refs( &time, region_handle, cbInfo->context,
                                         NULL, params->hEvent, funcResult,
                                         SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT );
                         break;
@@ -1377,13 +1385,15 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
                             ( cuStreamWaitEvent_params* )cbInfo->functionParams;
 
                         CUresult funcResult = *( ( CUresult* )( cbInfo->functionReturnValue ) );
-                        exit_with_refs( location, &time, region_handle, cbInfo->context,
+                        exit_with_refs( &time, region_handle, cbInfo->context,
                                         params->hStream, params->hEvent, funcResult,
                                         SCOREP_CUPTI_KEY_CURESULT | SCOREP_CUPTI_KEY_EVENT | SCOREP_CUPTI_KEY_STREAM );
                         break;
                     }
                     default:
-                        SCOREP_Location_ExitRegion( location, time, region_handle );
+                        /* With 'location == NULL' SCOREP_Location_EnterRegion will
+                         * write the event on the current CPU location */
+                        SCOREP_Location_ExitRegion( NULL, time, region_handle );
                 }
             }
         }
@@ -1717,12 +1727,10 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
  * Synchronize the current CUDA context and record the synchronization as
  * necessary.
  *
- * @param location Score-P process/thread location
- *
  * @return Score-P time stamp after synchronization
  */
 static uint64_t
-scorep_cupticb_synchronize_context( SCOREP_Location* location )
+scorep_cupticb_synchronize_context( void )
 {
     uint64_t time;
 
@@ -1738,7 +1746,9 @@ scorep_cupticb_synchronize_context( SCOREP_Location* location )
         if ( scorep_cuda_sync_level > SCOREP_CUDA_RECORD_SYNC )
         {
             time = SCOREP_GetClockTicks();
-            SCOREP_Location_EnterRegion( location, time, cuda_sync_region_handle );
+            /* With 'location == NULL' SCOREP_Location_EnterRegion will
+             * write the event on the current CPU location */
+            SCOREP_Location_EnterRegion( NULL, time, cuda_sync_region_handle );
         }
 
         SCOREP_CUDA_DRIVER_CALL( cuCtxSynchronize() );
@@ -1746,7 +1756,9 @@ scorep_cupticb_synchronize_context( SCOREP_Location* location )
 
         if ( scorep_cuda_sync_level > SCOREP_CUDA_RECORD_SYNC )
         {
-            SCOREP_Location_ExitRegion( location, time, cuda_sync_region_handle );
+            /* With 'location == NULL' SCOREP_Location_ExitRegion will
+             * write the event on the current CPU location */
+            SCOREP_Location_ExitRegion( NULL, time, cuda_sync_region_handle );
         }
     }
 
@@ -1835,7 +1847,7 @@ handle_cuda_malloc( CUcontext cudaContext,
          ( ( scorep_cuda_record_kernels || scorep_cuda_record_memcpy ) &&
            !scorep_cupti_activity_is_buffer_empty( context ) ) )
     {
-        scorep_cupticb_synchronize_context( context->scorep_host_location );
+        scorep_cupticb_synchronize_context();
     }
 
     /* write counter value */
@@ -1890,7 +1902,7 @@ handle_cuda_free( CUcontext cudaContext,
          ( ( scorep_cuda_record_kernels || scorep_cuda_record_memcpy ) &&
            !scorep_cupti_activity_is_buffer_empty( context ) ) )
     {
-        scorep_cupticb_synchronize_context( context->scorep_host_location );
+        scorep_cupticb_synchronize_context();
     }
 
     SCOREP_CUPTI_LOCK();
@@ -2060,7 +2072,7 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
                 if ( !scorep_cuda_record_kernels ||
                      !scorep_cupti_activity_is_buffer_empty( context ) )
                 {
-                    time = scorep_cupticb_synchronize_context( context->scorep_host_location );
+                    time = scorep_cupticb_synchronize_context();
                 }
             }
 
@@ -2143,7 +2155,9 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
         if ( ( region != SCOREP_INVALID_REGION ) &&
              ( !SCOREP_Filter_MatchFunction( cbInfo->functionName, NULL ) ) )
         {
-            SCOREP_Location_EnterRegion( host_location, time, region );
+            /* With 'location == NULL' SCOREP_Location_EnterRegion will
+             * write the event on the current CPU location */
+            SCOREP_Location_EnterRegion( NULL, time, region );
         }
     }
 
@@ -2178,7 +2192,9 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
 
         if ( region != SCOREP_INVALID_REGION )
         {
-            SCOREP_Location_ExitRegion( host_location, time, region );
+            /* With 'location == NULL' SCOREP_Location_ExitRegion will
+             * write the event on the current CPU location */
+            SCOREP_Location_ExitRegion( NULL, time, region );
         }
 
         /* pure idle time */
