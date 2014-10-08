@@ -69,8 +69,8 @@
 #include <SCOREP_Filter_Init.h>
 #include <scorep_unify.h>
 #include <SCOREP_OA_RuntimeManagement.h>
+#include <SCOREP_Task.h>
 
-#include "scorep_task_internal.h"
 #include "scorep_error_callback.h"
 #include "scorep_types.h"
 #include "scorep_subsystem.h"
@@ -573,8 +573,8 @@ scorep_finalize( void )
         SCOREP_EnableRecording();
     }
 
-    scorep_task_exit_all_regions( location,
-                                  SCOREP_Task_GetCurrentTask( location ) );
+    SCOREP_Task_ExitAllRegions( location,
+                                SCOREP_Task_GetCurrentTask( location ) );
     SCOREP_TIME( SCOREP_SynchronizeClocks, ( ) );
     SCOREP_TIME( SCOREP_EndEpoch, ( ) );
     SCOREP_TIME( SCOREP_Filter_Finalize, ( ) );

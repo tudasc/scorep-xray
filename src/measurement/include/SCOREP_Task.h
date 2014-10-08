@@ -86,4 +86,13 @@ SCOREP_Task_Enter( struct SCOREP_Location* location,
 void
 SCOREP_Task_Exit( struct SCOREP_Location* location );
 
+/**
+ * Creates exit events for all regions on the stack for @a task.
+ * @param location  The location that processes the exits.
+ * @param task      The task.
+ */
+void
+SCOREP_Task_ExitAllRegions( struct SCOREP_Location* location,
+                            SCOREP_TaskHandle       task );
+
 #endif

@@ -35,25 +35,36 @@ check_status( char* string, int status )
 }
 
 
+void
+test_exit_child( void* arg )
+{
+    pthread_exit( arg );
+}
+
 void*
 test_exit( void* arg )
 {
-    pthread_exit( arg );
+    test_exit_child( arg );
     return NULL;
 }
 
 
-void*
-test_cancel( void* arg )
+void
+test_cancel_child()
 {
+    int i = 0;
     for (;; )
     {
-        printf( "Thread is running\n" );
-        // thread in loop, awaiting for stop
+        printf( "Thread is running, waiting to be cancelled: %d\n", i++ );
         pthread_testcancel();
         sleep( 1 );
     }
+}
 
+void*
+test_cancel( void* arg )
+{
+    test_cancel_child();
     return NULL;
 }
 
@@ -82,13 +93,13 @@ main( int argc, char* argv[] )
     check_status( "pthread_attr_init()", status );
 
 
-    /* pthread_exit not supported yet */
-    //status = pthread_create( &t, &attr, test_exit, NULL );
-    //check_status( "pthread_create()", status );
-    //sleep( 2 );
-    //printf( "Let's join the thread\n" );
-    //status = pthread_join( t, NULL );
-    //check_status( "pthread_join()", status );
+    /* pthread_exit  */
+    status = pthread_create( &t, &attr, test_exit, NULL );
+    check_status( "pthread_create()", status );
+    sleep( 2 );
+    printf( "Let's join the thread\n" );
+    status = pthread_join( t, NULL );
+    check_status( "pthread_join()", status );
 
 
     /* pthread_abort not supported yet */
@@ -100,13 +111,15 @@ main( int argc, char* argv[] )
     //check_status("pthread_abort()", status);
 
 
-    /* pthread_cancel not supported yet */
-    //status = pthread_create( &t, &attr, test_cancel, NULL );
-    //check_status( "pthread_create()", status );
-    //sleep( 2 );
-    //printf( "Let's cancel the thread\n" );
-    //status = pthread_cancel( t );
-    //check_status( "pthread_cancel()", status );
+    /* pthread_cancel */
+    status = pthread_create( &t, &attr, test_cancel, NULL );
+    check_status( "pthread_create()", status );
+    sleep( 2 );
+    printf( "Let's cancel the thread\n" );
+    status = pthread_cancel( t );
+    check_status( "pthread_cancel()", status );
+    status = pthread_join( t, NULL );
+    check_status( "pthread_join()", status );
 
 
     // test_detach needs to finish before we start finalization

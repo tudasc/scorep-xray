@@ -90,14 +90,4 @@ void
 scorep_task_switch( struct SCOREP_Location* location,
                     SCOREP_TaskHandle       newTask );
 
-
-/**
- * Creates exit events for all regions on the stack for @a task.
- * @param location  The location that porcesses the exits.
- * @param task      The task.
- */
-void
-scorep_task_exit_all_regions( struct SCOREP_Location* location,
-                              SCOREP_TaskHandle       task );
-
 #endif

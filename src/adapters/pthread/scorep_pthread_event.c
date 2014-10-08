@@ -28,6 +28,7 @@
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Libwrap_Macros.h>
+#include <SCOREP_Task.h>
 
 #define SCOREP_DEBUG_MODULE_NAME PTHREAD
 #include <UTILS_Debug.h>
@@ -55,9 +56,11 @@ struct scorep_pthread_wrapped_arg
     void*                              orig_arg;
     void*                              orig_ret_val;
     struct scorep_thread_private_data* parent_tpd;
-    uint32_t                           sequence_count;
-    bool                               cancelled;
     struct scorep_pthread_wrapped_arg* next;
+    uint32_t                           sequence_count;
+    int                                detached;
+    bool                               cancelled;
+    bool                               exited;
 };
 
 static size_t
@@ -72,9 +75,9 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_create ) ( pthread_t *            thread,
 {
     UTILS_DEBUG_ENTRY();
 
+    int detach_state = PTHREAD_CREATE_JOINABLE; /* pthread default */
     if ( attr )
     {
-        int detach_state;
         int result = pthread_attr_getdetachstate( attr, &detach_state );
 
         if ( detach_state == PTHREAD_CREATE_DETACHED )
@@ -118,6 +121,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_create ) ( pthread_t *            thread,
     }
     memset( wrapped_arg, 0, sizeof( *wrapped_arg ) );
     wrapped_arg->cancelled = true;
+    wrapped_arg->detached  = detach_state;
 
     wrapped_arg->orig_start_routine = start_routine;
     wrapped_arg->orig_arg           = arg;
@@ -161,18 +165,21 @@ wrapped_start_routine( void* wrappedArg )
         SCOREP_Location_GetSubsystemData( location, scorep_pthread_subsystem_id );
     data->wrapped_arg = wrapped_arg;
 
-    int execute = 1;
     pthread_cleanup_push( cleanup_handler, location );
 
-    // Call original start_routine. It might call pthread_exit, i.e. we might
-    // not return from here.
+    /* Call original start_routine. It might call pthread_exit or the thread
+     * might get cancelled, i.e. we might not return from here and have to
+     * rely on the cleanup_handler(). */
     wrapped_arg->orig_ret_val = wrapped_arg->orig_start_routine( wrapped_arg->orig_arg );
 
-    /* The cleanup_handler will be called, but we must notify him, that
-     * we were not cancelled and still use the wrapper_arg for the return value.
-     */
+    /* The cleanup_handler will be called, but we must notify him, that we were
+     * not cancelled in time (i.e. before normal thread execution finished) and
+     * still use the wrapper_arg for the return value. Note that we cannot
+     * maintain scorep_pthread_wrapped_arg.cancelled in the pthread_cancel
+     * wrapper because there we just issue a cancellation request that might be
+     * acted upon. If we reach this point, it hasn't been acted upon. */
     wrapped_arg->cancelled = false;
-    pthread_cleanup_pop( execute );
+    pthread_cleanup_pop( 1 /* execute cleanup handler */ );
 
     UTILS_DEBUG_EXIT();
     return wrapped_arg;
@@ -189,11 +196,28 @@ cleanup_handler( void* arg )
         SCOREP_Location_GetSubsystemData( location, scorep_pthread_subsystem_id );
     scorep_pthread_wrapped_arg* wrapped_arg = data->wrapped_arg;
 
+    if ( wrapped_arg->exited )
+    {
+        /* A call to pthread_exit will prevent entered regions to be exited
+         * the normal way. Therefore, exit remaining regions explicitly. */
+        SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_EXIT ] );
+        SCOREP_Task_ExitAllRegions( location,
+                                    SCOREP_Task_GetCurrentTask( location ) );
+    }
+
+    if ( wrapped_arg->cancelled )
+    {
+        /* A call to pthread_cancel might prevent entered regions to be exited
+         * the normal way. If the runtime acts upon a cancellation request,
+         * exit remaining regions explicitly. */
+        SCOREP_Task_ExitAllRegions( location,
+                                    SCOREP_Task_GetCurrentTask( location ) );
+    }
     SCOREP_ThreadCreateWait_End( SCOREP_PARADIGM_PTHREAD,
                                  wrapped_arg->parent_tpd,
                                  wrapped_arg->sequence_count );
 
-    if ( wrapped_arg->cancelled )
+    if ( wrapped_arg->cancelled ||  wrapped_arg->detached == PTHREAD_CREATE_DETACHED )
     {
         /* wrapped_arg will not be used as return value wrapper, put it in our
          * own free list for later reuse
@@ -269,11 +293,8 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_exit ) ( void* valuePtr )
         __real_pthread_exit( valuePtr );
     }
 
-    UTILS_FATAL( "The usage of pthread_exit is not supported by this version of "
-                 "Score-P as it will produce inconsistent profiles and traces. "
-                 "We will support this feature in a subsequent release." );
-
     SCOREP_EnterRegion( scorep_pthread_regions[ SCOREP_PTHREAD_EXIT ] );
+    /* Matching exit will be triggered from cleanup_handler(); */
 
     SCOREP_Location*              location = SCOREP_Location_GetCurrentCPULocation();
     scorep_pthread_location_data* data     =
@@ -286,15 +307,13 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_exit ) ( void* valuePtr )
      * we were not cancelled and still use the wrapper_arg for the return value.
      */
     wrapped_arg->cancelled = false;
+    wrapped_arg->exited    = true;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PTHREAD, "sequence_count :%" PRIu32 "",
                         wrapped_arg->sequence_count );
 
     wrapped_arg->orig_ret_val = valuePtr;
 
-    // Exit events needs to happen earlier than __real_pthread_exit as this
-    // function does not return.
-    SCOREP_ExitRegion( scorep_pthread_regions[ SCOREP_PTHREAD_EXIT ] );
     UTILS_DEBUG_EXIT();
     __real_pthread_exit( wrapped_arg );
 }
@@ -309,10 +328,6 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_cancel ) ( pthread_t thread )
     {
         return __real_pthread_cancel( thread );
     }
-
-    UTILS_FATAL( "The usage of pthread_cancel is not supported by this version of "
-                 "Score-P as it will produce inconsistent profiles and traces. "
-                 "We will support this feature in a subsequent release." );
 
     SCOREP_EnterRegion( scorep_pthread_regions[ SCOREP_PTHREAD_CANCEL ] );
 

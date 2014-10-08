@@ -1,7 +1,7 @@
 
-                        Score-P v1.3 OPEN ISSUES
-                        ========================
-                                                           Effective: Aug 2014
+                        Score-P trunk OPEN ISSUES
+                        =========================
+                                                           Effective: mon year
 
 This file lists known limitations and unimplemented features of
 various Score-P components.
@@ -281,11 +281,8 @@ various Score-P components.
     (which is usually the case when you use the default compiler-based
     instrumentation).
 
-  - Following Pthread management functions are not supported yet and
-    will cause an instrumented application to abort: pthread_exit,
-    pthread_cancel. The usage of pthread_detach will cause the program
-    to fail if the detached thread is still running after the end of
-    main.
+  - The usage of pthread_detach will cause the program to fail if the
+    detached thread is still running after the end of main.
 
   - Pthread support is currently not available on systems that use
     linkers other than the GNU linker, e.g., AIX systems. Pthread

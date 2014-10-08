@@ -220,9 +220,11 @@ scorep_task_switch( SCOREP_Location*  location,
     subsystem_data->current_task = newTask;
 }
 
+/* ************************************** external interface functions */
+
 void
-scorep_task_exit_all_regions( SCOREP_Location*  location,
-                              SCOREP_TaskHandle task )
+SCOREP_Task_ExitAllRegions( SCOREP_Location*  location,
+                            SCOREP_TaskHandle task )
 {
     while ( task->current_frame != NULL )
     {
@@ -238,8 +240,6 @@ scorep_task_exit_all_regions( SCOREP_Location*  location,
         }
     }
 }
-
-/* ************************************** external interface functions */
 
 SCOREP_RegionHandle
 SCOREP_Task_GetTopRegion( SCOREP_TaskHandle task )
