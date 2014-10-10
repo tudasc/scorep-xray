@@ -69,6 +69,7 @@ enum
 SCOREP_ErrorCode
 SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
 {
+#if HAVE( SCOREP_DEBUG )
     if ( !scorepMutex )
     {
         return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
@@ -84,6 +85,7 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
 
     /* mark this lock initialized */
     ( *mutex )->state = SCOREP_MUTEXT_MARKER_UNLOCKED;
+#endif
 
     return SCOREP_SUCCESS;
 }
@@ -96,6 +98,7 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
 SCOREP_ErrorCode
 SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
 {
+#if HAVE( SCOREP_DEBUG )
     if ( !scorepMutex )
     {
         return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
@@ -114,6 +117,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
 
     free( *mutex );
     *mutex = NULL;
+#endif
 
     return SCOREP_SUCCESS;
 }
@@ -126,6 +130,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
 SCOREP_ErrorCode
 SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
 {
+#if HAVE( SCOREP_DEBUG )
     if ( !scorepMutex )
     {
         return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
@@ -138,6 +143,7 @@ SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
                   "Trying to lock an already locked mutex." );
 
     mutex->state = SCOREP_MUTEXT_MARKER_LOCKED;
+#endif
 
     return SCOREP_SUCCESS;
 }
@@ -150,6 +156,7 @@ SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
 SCOREP_ErrorCode
 SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
 {
+#if HAVE( SCOREP_DEBUG )
     if ( !scorepMutex )
     {
         return UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
@@ -162,6 +169,7 @@ SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
                   "Trying to unlock an non-locked mutex." );
 
     mutex->state = SCOREP_MUTEXT_MARKER_UNLOCKED;
+#endif
 
     return SCOREP_SUCCESS;
 }
