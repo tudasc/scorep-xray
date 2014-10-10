@@ -126,7 +126,7 @@ scorep_compiler_hash_init( void );
 /**
    Registers a region to the SCOREP measurement system from data of a hash node.
    @param node A pointer to a hash node which contains the region data for the
-               region to be registered ot the SCOREP measurement system.
+               region to be registered to the SCOREP measurement system.
  */
 extern void
 scorep_compiler_register_region( scorep_compiler_hash_node* node );

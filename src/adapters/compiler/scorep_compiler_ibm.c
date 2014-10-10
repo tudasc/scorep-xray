@@ -55,7 +55,7 @@
 
 /**
  * Looks up the region name in the hash table, registers the region
- * if it is not alread registered and returns the region handle.
+ * if it is not already registered and returns the region handle.
  * If the region is filtered it returns SCOREP_INVALID_REGION.
  * @ param region_name function name
  * @ param file_name   file name

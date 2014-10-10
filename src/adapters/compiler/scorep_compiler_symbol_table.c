@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -84,7 +84,7 @@ extern char* scorep_compiler_executable;
 *****************************************************************************************/
 
 #if defined( GNU_DEMANGLE )
-/* Declaration of external demangeling function */
+/* Declaration of external demangling function */
 /* It is contained in "demangle.h" */
 extern char*
 cplus_demangle( const char* mangled,
@@ -111,7 +111,7 @@ static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
 /**
    Writes the path/filename of the executable into @a path. If the path is longer
    than the @a path, the last @a length characters of the path are written.
-   @param path    A buffer into which the pat is written. The memoty for the buffer
+   @param path    A buffer into which the pat is written. The memory for the buffer
                   must be allocated already.
    @param length  The size of the buffer @a path. If the retrieved path/filename of
                   the executable is longer than @a length, the path's head is truncated.
@@ -119,8 +119,8 @@ static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
                  returned.
  */
 static bool
-scorep_compiler_get_exe( char   path[],
-                         size_t length )
+get_exe( char   path[],
+         size_t length )
 {
     int         pid;
     int         err;
@@ -176,11 +176,11 @@ scorep_compiler_get_exe( char   path[],
     }
 }
 
-void
-scorep_compiler_process_symbol( long         addr,
-                                const char*  funcname,
-                                const char*  filename,
-                                unsigned int lno )
+static void
+process_symbol( long         addr,
+                const char*  funcname,
+                const char*  filename,
+                unsigned int lno )
 {
     char* path = NULL;
     if ( filename != NULL )
@@ -230,7 +230,7 @@ scorep_compiler_process_symbol( long         addr,
 /**
  * Get symbol table using BFD. Stores all functions obtained from the symbol table
  * in a hashtable. The key of the hashtable is the function pointer. This must be done
- * during initialization of the GNU compiler adapter, becuase enter and exit events
+ * during initialization of the GNU compiler adapter, because enter and exit events
  * provide only a file pointer.
  * It also collects information about source file and line number.
  */
@@ -251,7 +251,7 @@ scorep_compiler_get_sym_tab( void )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Read symbol table using BFD" );
 
     /* get the path from system */
-    if ( !scorep_compiler_get_exe( path, SCOREP_COMPILER_BUFFER_LEN ) )
+    if ( !get_exe( path, SCOREP_COMPILER_BUFFER_LEN ) )
     {
         return;
     }
@@ -349,7 +349,7 @@ scorep_compiler_get_sym_tab( void )
                                &lno );
         funcname = canonic_symbols[ i ]->name;
 
-        scorep_compiler_process_symbol( addr, funcname, filename, lno );
+        process_symbol( addr, funcname, filename, lno );
     }
     free( canonic_symbols );
     bfd_close( bfd_image );
@@ -364,13 +364,13 @@ scorep_compiler_get_sym_tab( void )
 
 /**
  * Write output from nm for @a exefile to @a nmfile.
- * @param exefile Filename of the executable which is analysed.
+ * @param exefile Filename of the executable which is analyzed.
  * @param nmfile  Filename of the file to which the output is written.
  * @returns true if the nm output was created successfully, else it returns false.
  */
 static bool
-scorep_compiler_create_nm_file( char* nmfile,
-                                char* exefile )
+create_nm_file( char* nmfile,
+                char* exefile )
 {
     char* errfile = malloc( strlen( nmfile ) + 5 );
     UTILS_ASSERT( errfile );
@@ -404,10 +404,10 @@ scorep_compiler_create_nm_file( char* nmfile,
 
 
 /**
- * Get symbol table by parsing the oputput from nm. Stores all functions obtained
+ * Get symbol table by parsing the output from nm. Stores all functions obtained
  * from the symbol table
  * in a hashtable. The key of the hashtable is the function pointer. This must be done
- * during initialization of the GNU compiler adapter, becuase enter and exit events
+ * during initialization of the GNU compiler adapter, because enter and exit events
  * provide only a file pointer.
  * It also collects information about source file and line number.
 
@@ -424,14 +424,14 @@ scorep_compiler_get_sym_tab( void )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Read symbol table using nm" );
 
     /* get the path from system */
-    if ( !scorep_compiler_get_exe( path, SCOREP_COMPILER_BUFFER_LEN ) )
+    if ( !get_exe( path, SCOREP_COMPILER_BUFFER_LEN ) )
     {
         return;
     }
 
     /* open nm-file */
     sprintf( nmfilename, "scorep_nm_file.%" PRIu64, SCOREP_GetClockTicks() );
-    if ( !scorep_compiler_create_nm_file( nmfilename, path ) )
+    if ( !create_nm_file( nmfilename, path ) )
     {
         return;
     }
@@ -505,7 +505,7 @@ scorep_compiler_get_sym_tab( void )
 
         if ( col_num >= 3 )
         {
-            scorep_compiler_process_symbol( addr, funcname, filename, line_no );
+            process_symbol( addr, funcname, filename, line_no );
         }
     }
 
@@ -518,7 +518,7 @@ scorep_compiler_get_sym_tab( void )
 #else /* HAVE_LIBBFD / HAVE_NM */
 
 /* ***************************************************************************************
-   dummy implememtation of symbol table analysis
+   dummy implementation of symbol table analysis
 *****************************************************************************************/
 
 #warning Neither BFD nor nm are available. Thus, the symbol table cannot be analyzed.

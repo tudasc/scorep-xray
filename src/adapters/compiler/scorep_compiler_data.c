@@ -78,7 +78,7 @@ scorep_compiler_hash_get( uint64_t key )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld", hash_code );
 
     scorep_compiler_hash_node* curr = region_hash_table[ hash_code ];
-    /* The tail after curr will never change because, new elements are instered before
+    /* The tail after curr will never change because, new elements are inserted before
        curr. Thus, it allows a parallel @ref scorep_compiler_hash_put which can only
        insert a new element before curr.
      */
