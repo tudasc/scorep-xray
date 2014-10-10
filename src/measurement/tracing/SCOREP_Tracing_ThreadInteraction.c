@@ -41,6 +41,7 @@
 
 
 #include <stdlib.h>
+#include <inttypes.h>
 
 
 #include <otf2/otf2.h>
@@ -156,7 +157,8 @@ SCOREP_Tracing_AssignLocationId( SCOREP_Location* threadLocationData )
                                                          location_id );
     if ( OTF2_SUCCESS != error )
     {
-        _Exit( EXIT_FAILURE );
+        UTILS_FATAL( "Could not set location id %" PRIu64 "to OTF2 event writer: %s",
+                     location_id, OTF2_Error_GetName( error ) );
     }
 
     SCOREP_Tracing_UnlockArchive();

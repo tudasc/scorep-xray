@@ -349,7 +349,12 @@ SCOREP_Tracing_Finalize( void )
     UTILS_ASSERT( scorep_otf2_archive );
 
     /// @todo? set archive to "unified"/"not unified"
-    OTF2_Archive_Close( scorep_otf2_archive );
+    OTF2_ErrorCode ret = OTF2_Archive_Close( scorep_otf2_archive );
+    if ( OTF2_SUCCESS != ret )
+    {
+        UTILS_FATAL( "Could not finalize OTF2 archive: %s",
+                     OTF2_Error_GetDescription( ret ) );
+    }
     scorep_otf2_archive = 0;
 
     SCOREP_MutexDestroy( &scorep_otf2_archive_lock );
@@ -369,7 +374,11 @@ SCOREP_Tracing_OnMppInit( void )
     UTILS_ASSERT( err == SCOREP_SUCCESS );
 
     OTF2_ErrorCode otf2_err = OTF2_Archive_OpenEvtFiles( scorep_otf2_archive );
-    UTILS_ASSERT( otf2_err == OTF2_SUCCESS );
+    if ( OTF2_SUCCESS != otf2_err )
+    {
+        UTILS_FATAL( "Could not open OTF2 event files: %s",
+                     OTF2_Error_GetDescription( otf2_err ) );
+    }
 }
 
 
@@ -429,8 +438,15 @@ scorep_trace_finalize_event_writer_cb( SCOREP_Location* locationData,
     location_definition->number_of_events = number_of_events;
 
     /* close the event writer */
-    OTF2_Archive_CloseEvtWriter( scorep_otf2_archive,
-                                 tracing_data->otf_writer );
+    OTF2_ErrorCode ret = OTF2_Archive_CloseEvtWriter( scorep_otf2_archive,
+                                                      tracing_data->otf_writer );
+    if ( OTF2_SUCCESS != ret )
+    {
+        UTILS_FATAL( "Could not finalize OTF2 event writer %" PRIu64 ": %s",
+                     location_definition->global_location_id,
+                     OTF2_Error_GetDescription( ret ) );
+    }
+
     tracing_data->otf_writer = NULL;
     return false;
 }
@@ -450,7 +466,11 @@ SCOREP_Tracing_FinalizeEventWriters( void )
                             NULL );
 
     OTF2_ErrorCode err = OTF2_Archive_CloseEvtFiles( scorep_otf2_archive );
-    UTILS_ASSERT( OTF2_SUCCESS == err );
+    if ( OTF2_SUCCESS != err )
+    {
+        UTILS_FATAL( "Could not close OTF2 event files: %s",
+                     OTF2_Error_GetDescription( err ) );
+    }
 }
 
 
@@ -459,8 +479,15 @@ SCOREP_Tracing_WriteDefinitions( void )
 {
     UTILS_ASSERT( scorep_otf2_archive );
 
+    OTF2_ErrorCode ret;
+
     /* Write for all local locations the same local definition file */
-    OTF2_Archive_OpenDefFiles( scorep_otf2_archive );
+    ret = OTF2_Archive_OpenDefFiles( scorep_otf2_archive );
+    if ( OTF2_SUCCESS != ret )
+    {
+        UTILS_FATAL( "Could not open OTF2 definition files: %s",
+                     OTF2_Error_GetDescription( ret ) );
+    }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_local_definition_manager, Location, location )
     {
         OTF2_DefWriter* local_definition_writer = OTF2_Archive_GetDefWriter(
@@ -476,11 +503,21 @@ SCOREP_Tracing_WriteDefinitions( void )
         scorep_tracing_write_clock_offsets( local_definition_writer );
         scorep_tracing_write_local_definitions( local_definition_writer );
 
-        OTF2_Archive_CloseDefWriter( scorep_otf2_archive,
-                                     local_definition_writer );
+        ret = OTF2_Archive_CloseDefWriter( scorep_otf2_archive,
+                                           local_definition_writer );
+        if ( OTF2_SUCCESS != ret )
+        {
+            UTILS_FATAL( "Could not finalize OTF2 definition writer: %s",
+                         OTF2_Error_GetDescription( ret ) );
+        }
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
-    OTF2_Archive_CloseDefFiles( scorep_otf2_archive );
+    ret = OTF2_Archive_CloseDefFiles( scorep_otf2_archive );
+    if ( OTF2_SUCCESS != ret )
+    {
+        UTILS_FATAL( "Could not close OTF2 definition files: %s",
+                     OTF2_Error_GetDescription( ret ) );
+    }
 
 
     uint64_t epoch_begin;
@@ -503,8 +540,13 @@ SCOREP_Tracing_WriteDefinitions( void )
             epoch_end - epoch_begin );
         scorep_tracing_write_global_definitions( global_definition_writer );
 
-        OTF2_Archive_CloseGlobalDefWriter( scorep_otf2_archive,
-                                           global_definition_writer );
+        ret = OTF2_Archive_CloseGlobalDefWriter( scorep_otf2_archive,
+                                                 global_definition_writer );
+        if ( OTF2_SUCCESS != ret )
+        {
+            UTILS_FATAL( "Could not finalize global OTF2 definition writer: %s",
+                         OTF2_Error_GetDescription( ret ) );
+        }
     }
 }
 
