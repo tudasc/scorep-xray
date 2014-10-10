@@ -37,10 +37,10 @@ typedef enum SCOREP_Libwrap_paradigm_type
 } SCOREP_LibwrapParadigmType;
 
 /** @brief Keeps all necessary information of the library wrapping object. */
-typedef struct SCOREP_LibwrapHandle_struct SCOREP_LibwrapHandle;
+typedef struct SCOREP_LibwrapHandle SCOREP_LibwrapHandle;
 
 /** Determine which mode of library type is used */
-typedef enum
+typedef enum SCOREP_LibwrapMode
 {
     SCOREP_LIBWRAP_MODE_SHARED,  /**< wrapping dynamically linked library */
     SCOREP_LIBWRAP_MODE_STATIC,  /**< wrapping statically linked library */
@@ -48,12 +48,13 @@ typedef enum
 } SCOREP_LibwrapMode;
 
 /** Data structure for library wrapper attributes */
-typedef struct
+typedef struct SCOREP_LibwrapAttributes SCOREP_LibwrapAttributes;
+struct SCOREP_LibwrapAttributes
 {
     SCOREP_LibwrapMode mode;
     int                number_of_shared_libs;
     const char**       shared_libs;
-} SCOREP_LibwrapAttributes;
+};
 
 
 /* function definitions */

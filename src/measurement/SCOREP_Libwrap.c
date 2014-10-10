@@ -37,7 +37,7 @@
 
 
 /** Data structure for library wrapper handle */
-struct SCOREP_LibwrapHandle_struct
+struct SCOREP_LibwrapHandle
 {
     SCOREP_LibwrapAttributes* attributes;
     SCOREP_LibwrapHandle*     next;
