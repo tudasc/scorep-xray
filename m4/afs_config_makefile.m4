@@ -12,9 +12,11 @@ dnl
 ## AFS_SET_SILENT_RULE_PREFIX( PREFIX )
 ## ======================================
 ## Prepends a prefix to all preprocess/compile/link silent rule builds.
+## Prefix can only have alphanumeric, underscore, and space characters.
 AC_DEFUN([AFS_SET_SILENT_RULE_PREFIX], [
 m4_pushdef([_afs_srp], m4_toupper($1))dnl
-AC_SUBST([AFS_SRP], _afs_srp)
+AFS_SRP="_afs_srp"
+AFS_SRP_PADDING="m4_bpatsubst(_afs_srp, [[A-Z0-9_]], [ ])"
 m4_popdef([_afs_srp])dnl
 ])
 
@@ -25,9 +27,12 @@ m4_popdef([_afs_srp])dnl
 AC_DEFUN([AFS_CONFIG_MAKEFILE],
 AC_CONFIG_FILES([Makefile], [
 sed -e '
-s/_0 = @echo "  \(YACC\|GEN\|LEX\)/_0 = @AFS_SRP="`echo $(AFS_SRP) | sed "s,., ,g"`"; echo "  \1$$$AFS_SRP/
+s/^\(am__v_\(GEN\|YACC\|LEX\)_0 = @echo "  \)\2/\1\2'"$AFS_SRP_PADDING"'/
 t
-s/_0 = @echo "  \(@<:@^ @:>@\+\)/_0 = @echo "  $(AFS_SRP)\1$/' \
+s/^\(am__v_\(@<:@^ @:>@\+\)_0 = @echo "  \)\2/\1'"$AFS_SRP"'\2/' \
     Makefile >Makefile.afs && mv -f Makefile.afs Makefile || rm -f Makefile.afs
+], [
+AFS_SRP='$AFS_SRP'
+AFS_SRP_PADDING='$AFS_SRP_PADDING'
 ])
 )
