@@ -67,14 +67,20 @@ number_of_hits_per_thread( void* input )
 int
 main( int argc, const char* argv[] )
 {
+    long number_of_points  = 1000;
+    long number_of_threads = 4;
+
     if ( argc != 3 )
     {
-        printf( "Usage: ./pi_pthread <number_of_points> <number_of_threads>\n" );
-        exit( 1 );
+        printf( "Usage: ./pi-pthread-cc <number_of_points> <number_of_threads>\n"
+                "       using default values (1000, 4).\n" );
+    }
+    else
+    {
+        number_of_points  = atol( argv[ 1 ] );
+        number_of_threads = atol( argv[ 2 ] );
     }
 
-    long            number_of_points  = atol( argv[ 1 ] );
-    long            number_of_threads = atol( argv[ 2 ] );
     long            points_per_thread = number_of_points / number_of_threads;
     pthread_input_t pthread_input[ number_of_threads ];
 
