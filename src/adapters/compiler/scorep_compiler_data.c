@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2013
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -173,4 +173,38 @@ scorep_compiler_register_region( scorep_compiler_hash_node* node )
                                                         SCOREP_REGION_FUNCTION );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s done", node->region_name_demangled );
+}
+
+
+void
+scorep_compiler_get_hash_statistics()
+{
+#if HAVE( UTILS_DEBUG )
+    unsigned elements         = 0;
+    unsigned occupied_buckets = 0;
+    unsigned collisions       = 0;
+    unsigned buckets          = SCOREP_COMPILER_REGION_SLOTS;
+    for ( int i = 0; i < SCOREP_COMPILER_REGION_SLOTS; ++i )
+    {
+        if ( !region_hash_table[ i ] )
+        {
+            continue;
+        }
+        scorep_compiler_hash_node* node = region_hash_table[ i ];
+        ++elements;
+        ++occupied_buckets;
+        while ( node->next )
+        {
+            ++elements;
+            ++collisions;
+            node = node->next;
+        }
+    }
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Hashtable of size %d contains %d"
+                        " elements and exhibits %d collisions. Fill rate is %d%%.",
+                        buckets,
+                        elements,
+                        collisions,
+                        ( unsigned )( occupied_buckets / ( double )buckets * 100 ) );
+#endif
 }

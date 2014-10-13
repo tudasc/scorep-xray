@@ -63,6 +63,8 @@ scorep_compiler_subsystem_init( void )
         /* call function to calculate symbol table */
         scorep_compiler_get_sym_tab();
 
+        scorep_compiler_get_hash_statistics();
+
         /* Set flag */
         scorep_compiler_initialized = true;
 
