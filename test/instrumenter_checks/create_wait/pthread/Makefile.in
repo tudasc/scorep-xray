@@ -24,6 +24,11 @@ CFLAGS   = -O3
 @SCOREP_COMPILER_SUN_TRUE@SCOREP_OPTIONS = --nocompiler
 @SCOREP_COMPILER_SUN_FALSE@SCOREP_OPTIONS =
 
+@HAVE_PTHREAD_WITHOUT_FLAGS_TRUE@@SCOREP_COMPILER_SUN_TRUE@suffix = _pthread_nocompiler
+@HAVE_PTHREAD_WITHOUT_FLAGS_TRUE@@SCOREP_COMPILER_SUN_FALSE@suffix = _pthread
+@HAVE_PTHREAD_WITHOUT_FLAGS_FALSE@@SCOREP_COMPILER_SUN_TRUE@suffix = _nocompiler
+@HAVE_PTHREAD_WITHOUT_FLAGS_FALSE@@SCOREP_COMPILER_SUN_FALSE@suffix =
+
 BINDIR = @abs_top_builddir@/../installcheck/instrumenter_checks/bin
 SRCDIR = @abs_top_srcdir@/../test/instrumenter_checks/create_wait/pthread
 TOOLS  = @BINDIR@/scorep @BINDIR@/scorep-config
@@ -39,12 +44,12 @@ scorep_instrumenting_verbose2_1 = --verbose
 
 
 TESTS = \
-    $(BINDIR)/pi_pthread \
-    $(BINDIR)/pi_mutex_pthread \
-    $(BINDIR)/producer_consumer_pthread \
-    $(BINDIR)/management_routines_pthread \
-    $(BINDIR)/synchronization_routines_pthread \
-    $(BINDIR)/dining_philosophers_pthread
+    $(BINDIR)/pi-pthread-cc \
+    $(BINDIR)/pi_mutex-pthread-cc \
+    $(BINDIR)/producer_consumer-pthread-cc \
+    $(BINDIR)/management_routines-pthread-cc \
+    $(BINDIR)/synchronization_routines-pthread-cc \
+    $(BINDIR)/dining_philosophers-pthread-cc
 
 
 all: $(TESTS)
@@ -55,7 +60,7 @@ $(TESTS):
 
 $(BINDIR)/%: $(SRCDIR)/%.c $(TOOLS)
 	@mkdir -p $(BINDIR)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(PTHREAD_OPTION) $(SCOREP_OPTIONS) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CC) @PTHREAD_CFLAGS@ $(CFLAGS) -o $@ $< @PTHREAD_LIBS@ -lm
+	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(PTHREAD_OPTION) $(SCOREP_OPTIONS) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CC) @PTHREAD_CFLAGS@ $(CFLAGS) -o $@$(suffix) $< @PTHREAD_LIBS@ -lm
 
 clean:
 	@rm -f $(TESTS)
