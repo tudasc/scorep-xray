@@ -86,9 +86,9 @@ EXTRA_DIST += \
     $(INSTALLCHECK_DIR)/shmem/src/heat/cc/heat.c \
     $(INSTALLCHECK_DIR)/shmem_omp/src/heat/cc/Makefile \
     $(INSTALLCHECK_DIR)/shmem_omp/src/heat/cc/heat.c \
-    $(INSTALLCHECK_DIR)/create_wait/pthread/dining_philosophers_pthread.c \
-    $(INSTALLCHECK_DIR)/create_wait/pthread/management_routines_pthread.c \
-    $(INSTALLCHECK_DIR)/create_wait/pthread/pi_mutex_pthread.c \
-    $(INSTALLCHECK_DIR)/create_wait/pthread/pi_pthread.c \
-    $(INSTALLCHECK_DIR)/create_wait/pthread/producer_consumer_pthread.c \
-    $(INSTALLCHECK_DIR)/create_wait/pthread/synchronization_routines_pthread.c
+    $(INSTALLCHECK_DIR)/create_wait/pthread/dining_philosophers-pthread-cc.c \
+    $(INSTALLCHECK_DIR)/create_wait/pthread/management_routines-pthread-cc.c \
+    $(INSTALLCHECK_DIR)/create_wait/pthread/pi_mutex-pthread-cc.c \
+    $(INSTALLCHECK_DIR)/create_wait/pthread/pi-pthread-cc.c \
+    $(INSTALLCHECK_DIR)/create_wait/pthread/producer_consumer-pthread-cc.c \
+    $(INSTALLCHECK_DIR)/create_wait/pthread/synchronization_routines-pthread-cc.c
