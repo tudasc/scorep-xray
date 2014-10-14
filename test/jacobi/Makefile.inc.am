@@ -59,7 +59,7 @@ if HAVE_SCOREP_OMP_TPD
 
 # the pomp.c file needs to be compiled without compiler instrumentation
 # so achieve this, we put it in a noinst library and link against it
-noinst_LTLIBRARIES         += libjacobi_pomp_c.la
+check_LTLIBRARIES           += libjacobi_pomp_c.la
 libjacobi_pomp_c_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C/pomp.c
 libjacobi_pomp_c_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src
 
@@ -117,7 +117,7 @@ if HAVE_OPENMP_SUPPORT
 
 if HAVE_SCOREP_OMP_TPD
 
-noinst_LTLIBRARIES           += libjacobi_pomp_cxx.la
+check_LTLIBRARIES             += libjacobi_pomp_cxx.la
 libjacobi_pomp_cxx_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/C++/pomp.c
 libjacobi_pomp_cxx_la_CPPFLAGS = $(AM_CPPFLAGS)
 
@@ -186,7 +186,7 @@ if ! SCOREP_COMPILER_CRAY
 jacobi_omp_f90-jacobi.$(OBJEXT): variabledef.mod
 jacobi_omp_f90-main.$(OBJEXT): variabledef.mod
 
-noinst_LTLIBRARIES           += libjacobi_pomp_f90.la
+check_LTLIBRARIES             += libjacobi_pomp_f90.la
 libjacobi_pomp_f90_la_SOURCES  = $(SRC_ROOT)test/jacobi/OpenMP/Fortran/pomp.c
 libjacobi_pomp_f90_la_CPPFLAGS = $(AM_CPPFLAGS)
 

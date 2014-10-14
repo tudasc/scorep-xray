@@ -41,7 +41,7 @@ mpi_omp_hello_world_uninstrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 mpi_omp_hello_world_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
 
 
-noinst_LTLIBRARIES                     += libmpi_omp_hello_world_pomp.la
+check_LTLIBRARIES                      += libmpi_omp_hello_world_pomp.la
 libmpi_omp_hello_world_pomp_la_SOURCES  = $(SRC_ROOT)test/mpi_omp/pomp.c
 libmpi_omp_hello_world_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
 

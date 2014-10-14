@@ -36,7 +36,7 @@ if HAVE_ONLINE_ACCESS
 check_PROGRAMS += oa_omp_test
 
 # do not instrument the OPARI2 generated POMP code
-noinst_LTLIBRARIES          += liboa_omp_test_pomp.la
+check_LTLIBRARIES              += liboa_omp_test_pomp.la
 liboa_omp_test_pomp_la_SOURCES  = $(SRC_ROOT)test/OA/OMP/pomp.c
 liboa_omp_test_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
 

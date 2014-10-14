@@ -76,7 +76,7 @@ TESTS_MPI += jacobi_mpi_c_metric_test
 
 if HAVE_OPENMP_SUPPORT
 
-noinst_LTLIBRARIES                          += libjacobi_mpi_pomp_c_metric_test.la
+check_LTLIBRARIES                           += libjacobi_mpi_pomp_c_metric_test.la
 libjacobi_mpi_pomp_c_metric_test_la_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/pomp.c
 libjacobi_mpi_pomp_c_metric_test_la_CPPFLAGS = $(AM_CPPFLAGS)
 
