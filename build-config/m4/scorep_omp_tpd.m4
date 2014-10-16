@@ -33,6 +33,13 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 )
 AC_LANG_POP([C])
 
+AS_IF([test "x${ac_scorep_platform}" = xk ||
+       test "x${ac_scorep_platform}" = xfx10],
+    [# Can't get OPENMP_TPD working reliably on K/FX10. Compiler options
+     # -Xg -noansi needed for Pthreads, but they break OPENMP_TPD. 
+     # Using OpenMP_ANCESTRY as alternative. 
+     scorep_has_alignment_attribute="no"])
+
 AS_IF([test "x${scorep_has_alignment_attribute}" = "xyes"],
     [AC_DEFINE([FORTRAN_ALIGNED],
          [__attribute__((aligned (16)))],
