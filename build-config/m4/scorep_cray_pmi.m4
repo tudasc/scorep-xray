@@ -30,7 +30,7 @@ AC_SCOREP_COND_HAVE([PMI],
                     [Defined if PMI is available.],
                     [scorep_have_pmi="yes"
                      AC_SUBST(PMI_CPPFLAGS, ["${with_libpmi_cppflags}"])
-                     AC_SUBST(PMI_LDFLAGS,  ["${with_libpmi_ldflags} ${with_librca_ldflags} ${with_libpmi_rpathflag} ${with_librca_rpathflag}}"])
+                     AC_SUBST(PMI_LDFLAGS,  ["${with_libpmi_ldflags} ${with_librca_ldflags} ${with_libpmi_rpathflag} ${with_librca_rpathflag}"])
                      AC_SUBST(PMI_LIBS,     ["${with_libpmi_libs} ${with_librca_libs}"])],
                     [AC_SUBST(PMI_CPPFLAGS, [""])
                      AC_SUBST(PMI_LDFLAGS,  [""])
