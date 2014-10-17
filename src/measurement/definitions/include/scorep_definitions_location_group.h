@@ -32,8 +32,8 @@
 #error "Do not include this header directly, use SCOREP_Definitions.h instead."
 #endif
 
-#ifndef SCOREP_PRIVATE_DEFINITIONS_IO_FILE_H
-#define SCOREP_PRIVATE_DEFINITIONS_IO_FILE_H
+#ifndef SCOREP_PRIVATE_DEFINITIONS_LOCATION_GROUP_H
+#define SCOREP_PRIVATE_DEFINITIONS_LOCATION_GROUP_H
 
 
 /**
@@ -42,17 +42,29 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( IOFile )
+SCOREP_DEFINE_DEFINITION_TYPE( LocationGroup )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( IOFile );
+    SCOREP_DEFINE_DEFINITION_HEADER( LocationGroup );
 
-    // Add SCOREP_IOFile stuff from here on.
+    /* don't use the sequence number for the id, this is generated */
+    uint32_t                    global_location_group_id;
+    SCOREP_SystemTreeNodeHandle parent;
+    SCOREP_StringHandle         name_handle;
+    SCOREP_LocationGroupType    location_group_type;
 };
 
 
-#endif /* SCOREP_PRIVATE_DEFINITIONS_IO_FILE_H */
+SCOREP_LocationGroupHandle
+SCOREP_Definitions_NewLocationGroup( SCOREP_SystemTreeNodeHandle parent );
+
+
+struct SCOREP_Allocator_PageManager;
+
+void
+scorep_definitions_unify_location_group( SCOREP_LocationGroupDef*             definition,
+                                         struct SCOREP_Allocator_PageManager* handlesPageManager );
+
+
+#endif /* SCOREP_PRIVATE_DEFINITIONS_LOCATION_GROUP_H */

@@ -45,7 +45,6 @@ libscorep_measurement_core_la_SOURCES =                           \
     $(SRC_ROOT)src/measurement/SCOREP_Task.c                      \
     $(SRC_ROOT)src/measurement/include/SCOREP_Subsystem.h         \
     $(SRC_ROOT)src/measurement/include/SCOREP_Config.h            \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Definitions.h       \
     $(SRC_ROOT)src/measurement/include/SCOREP_Events.h            \
     $(SRC_ROOT)src/measurement/include/SCOREP_Libwrap.h           \
     $(SRC_ROOT)src/measurement/include/SCOREP_Libwrap_Macros.h    \
@@ -53,7 +52,6 @@ libscorep_measurement_core_la_SOURCES =                           \
     $(SRC_ROOT)src/measurement/include/SCOREP_RuntimeManagement.h \
     $(SRC_ROOT)src/measurement/include/SCOREP_Location.h          \
     $(SRC_ROOT)src/measurement/include/SCOREP_Types.h             \
-    $(SRC_ROOT)src/measurement/include/SCOREP_DefinitionHandles.h \
     $(SRC_ROOT)src/measurement/include/SCOREP_Filter_Init.h       \
     $(SRC_ROOT)src/measurement/include/SCOREP_Properties.h        \
     $(SRC_ROOT)src/measurement/include/SCOREP_OA_Functions.h      \
@@ -97,7 +95,8 @@ libscorep_measurement_core_la_CPPFLAGS = \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_DIR_THREAD) \
     @CUBE_WRITER_CPPFLAGS@ \
-    -I$(INC_DIR_MUTEX)
+    -I$(INC_DIR_MUTEX) \
+    -I$(INC_DIR_DEFINITIONS)
 
 if ! HAVE_SCOREP_EXTERNAL_CUBE_WRITER
 libscorep_measurement_core_la_CPPFLAGS += -DCUBE_AS_SVN_EXTERNAL
@@ -118,7 +117,8 @@ libscorep_mpp_mockup_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_DIR_COMMON_HASH) \
-    -I$(INC_ROOT)src/services/include
+    -I$(INC_ROOT)src/services/include \
+    -I$(INC_DIR_DEFINITIONS)
 libscorep_mpp_mockup_la_LIBADD = \
     libutils.la
 libscorep_mpp_mockup_la_LDFLAGS = \
@@ -139,4 +139,5 @@ libscorep_mpp_ipc_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_DIR_COMMON_HASH) \
-    -I$(INC_ROOT)src/services/include
+    -I$(INC_ROOT)src/services/include \
+    -I$(INC_DIR_DEFINITIONS)

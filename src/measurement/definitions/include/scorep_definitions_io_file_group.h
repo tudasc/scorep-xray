@@ -32,8 +32,8 @@
 #error "Do not include this header directly, use SCOREP_Definitions.h instead."
 #endif
 
-#ifndef SCOREP_PRIVATE_DEFINITIONS_STRING_H
-#define SCOREP_PRIVATE_DEFINITIONS_STRING_H
+#ifndef SCOREP_PRIVATE_DEFINITIONS_IO_FILE_GROUP_H
+#define SCOREP_PRIVATE_DEFINITIONS_IO_FILE_GROUP_H
 
 
 /**
@@ -42,28 +42,28 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( String )
+SCOREP_DEFINE_DEFINITION_TYPE( IOFileGroup )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( String );
+    SCOREP_DEFINE_DEFINITION_HEADER( IOFileGroup );
 
-    uint32_t string_length;
-    // variable array member
-    char string_data[];
+    // Add SCOREP_IOFileGroup stuff from here on.
 };
 
-void
-scorep_definitions_unify_string( SCOREP_StringDef*             definition,
-                                 SCOREP_Allocator_PageManager* handlesPageManager );
+
+/**
+ * Associate a name with a process unique I/O file group handle.
+ *
+ * @param name A meaningfule name of the I/O file group.
+ *
+ * @return A process unique file I/O file group handle to be used in calls to
+ * SCOREP_Definitions_NewIOFile().
+ *
+ * @planned To be implemented in milestone 2
+ */
+SCOREP_IOFileGroupHandle
+SCOREP_Definitions_NewIOFileGroup( const char* name );
 
 
-SCOREP_StringHandle
-scorep_definitions_new_string( SCOREP_DefinitionManager* definition_manager,
-                               const char*               str );
-
-
-#endif /* SCOREP_PRIVATE_DEFINITIONS_STRING_H */
+#endif /* SCOREP_PRIVATE_DEFINITIONS_IO_FILE_GROUP_H */

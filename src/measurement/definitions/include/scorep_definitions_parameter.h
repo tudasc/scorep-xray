@@ -42,9 +42,6 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
 SCOREP_DEFINE_DEFINITION_TYPE( Parameter )
@@ -57,9 +54,35 @@ SCOREP_DEFINE_DEFINITION_TYPE( Parameter )
 };
 
 
+/**
+ * Associate a name and a type with a process unique parameter handle.
+ *
+ * @param name A meaningful name for the parameter.
+ *
+ * @param type The type of the parameter.
+ *
+ * @return A process unique parameter handle to be used in calls to
+ * SCOREP_TriggerParameter().
+ *
+ * @planned To be implemented in milestone 3
+ *
+ */
+SCOREP_ParameterHandle
+SCOREP_Definitions_NewParameter( const char*          name,
+                                 SCOREP_ParameterType type );
+
+
+const char*
+SCOREP_ParameterHandle_GetName( SCOREP_ParameterHandle handle );
+
+
+SCOREP_ParameterType
+SCOREP_ParameterHandle_GetType( SCOREP_ParameterHandle handle );
+
+
 void
-scorep_definitions_unify_parameter( SCOREP_ParameterDef*          definition,
-                                    SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_parameter( SCOREP_ParameterDef*                 definition,
+                                    struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_PARAMETER_H */

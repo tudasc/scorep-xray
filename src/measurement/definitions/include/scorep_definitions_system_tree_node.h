@@ -42,9 +42,6 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
 SCOREP_DEFINE_DEFINITION_TYPE( SystemTreeNode )
@@ -62,6 +59,20 @@ SCOREP_DEFINE_DEFINITION_TYPE( SystemTreeNode )
 };
 
 
+/**
+ * Associate a system tree node with a process unique system tree node handle.
+ *
+ * @param parent Parent node in system tree.
+ *
+ * @param domains Bit set of domains this node spans.
+ *
+ * @param klass Class of the system tree node.
+ *
+ * @param name A meaningful name for the system tree node.
+ *
+ * @return A process unique system tree node handle.
+ *
+ */
 SCOREP_SystemTreeNodeHandle
 SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
                                       SCOREP_SystemTreeDomain     domains,
@@ -69,9 +80,11 @@ SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
                                       const char*                 name );
 
 
+struct SCOREP_Allocator_PageManager;
+
 void
-scorep_definitions_unify_system_tree_node( SCOREP_SystemTreeNodeDef*     definition,
-                                           SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_system_tree_node( SCOREP_SystemTreeNodeDef*            definition,
+                                           struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_SYSTEM_TREE_NODE_H */

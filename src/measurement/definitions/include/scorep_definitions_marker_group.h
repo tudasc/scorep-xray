@@ -42,9 +42,6 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
 SCOREP_DEFINE_DEFINITION_TYPE( MarkerGroup )
@@ -53,6 +50,20 @@ SCOREP_DEFINE_DEFINITION_TYPE( MarkerGroup )
 
     // Add SCOREP_MarkerGroup stuff from here on.
 };
+
+
+/**
+ * Associate a name with a process unique marker group handle.
+ *
+ * @param name A meaningfule name of the marker group.
+ *
+ * @return A process unique marker group handle to be used in calls to
+ * SCOREP_Definitions_NewMarker().
+ *
+ * @planned To be implemented in milestone 2
+ */
+SCOREP_MarkerGroupHandle
+SCOREP_Definitions_NewMarkerGroup( const char* name );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_MARKER_GROUP_H */

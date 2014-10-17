@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -37,11 +37,13 @@
  */
 
 
-#include <definitions/SCOREP_Definitions.h>
+#include <SCOREP_Definitions.h>
 
 #include <stdint.h>
 #include <stddef.h>
 
+
+struct SCOREP_Location;
 
 size_t scorep_thread_fork_join_subsystem_id;
 
@@ -61,7 +63,7 @@ struct scorep_thread_team_comm_payload
 
 
 SCOREP_InterimCommunicatorHandle
-scorep_thread_get_team_handle( SCOREP_Location*                 location,
+scorep_thread_get_team_handle( struct SCOREP_Location*          location,
                                SCOREP_InterimCommunicatorHandle parentThreadTeam,
                                uint32_t                         numThreads,
                                uint32_t                         threadNum );
@@ -72,7 +74,7 @@ scorep_thread_get_parent_team_handle( SCOREP_InterimCommunicatorHandle threadHan
 
 
 struct scorep_thread_team_data*
-scorep_thread_fork_join_create_team_data( SCOREP_Location* location );
+scorep_thread_fork_join_create_team_data( struct SCOREP_Location* location );
 
 
 #endif /* SCOREP_OMP_THREAD_TEAMS_H */

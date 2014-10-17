@@ -42,10 +42,6 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
-
 
 /* Not really a definition, but we need to store them somewhere */
 typedef struct SCOREP_ClockOffset SCOREP_ClockOffset;

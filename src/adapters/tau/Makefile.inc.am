@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -40,6 +40,7 @@ libscorep_adapter_tau_la_CPPFLAGS = \
     $(AM_CPPFLAGS)                \
     -I$(PUBLIC_INC_DIR)           \
     $(UTILS_CPPFLAGS)             \
-    -I$(INC_ROOT)src/measurement/include
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_DIR_DEFINITIONS)
 
 #libscorep_adapter_tau_la_LIBADD   =

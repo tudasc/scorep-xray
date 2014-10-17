@@ -42,9 +42,6 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
 SCOREP_DEFINE_DEFINITION_TYPE( Group )
@@ -70,6 +67,14 @@ SCOREP_Definitions_NewGroup( SCOREP_GroupType type,
                              uint32_t         numberOfMembers,
                              const uint64_t*  members );
 
+
+SCOREP_GroupHandle
+SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
+                                   const char*      name,
+                                   const uint32_t   numberOfRanks,
+                                   const uint32_t*  ranks );
+
+
 SCOREP_GroupHandle
 SCOREP_Definitions_NewUnifiedGroup( SCOREP_GroupType type,
                                     const char*      name,
@@ -85,8 +90,8 @@ SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
 
 
 void
-scorep_definitions_unify_group( SCOREP_GroupDef*              definition,
-                                SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_group( SCOREP_GroupDef*                     definition,
+                                struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_GROUP_H */

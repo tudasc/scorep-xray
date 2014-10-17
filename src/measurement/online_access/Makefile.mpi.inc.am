@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -89,7 +89,8 @@ libscorep_online_access_mpp_mpi_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/mpi \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_ROOT)src/services/include \
-    -I$(INC_ROOT)src/adapters/user
+    -I$(INC_ROOT)src/adapters/user \
+    -I$(INC_DIR_DEFINITIONS)
 
 if ! PLATFORM_AIX
 libscorep_online_access_mpp_mpi_la_CPPFLAGS += -D_POSIX_SOURCE

@@ -32,8 +32,8 @@
 #error "Do not include this header directly, use SCOREP_Definitions.h instead."
 #endif
 
-#ifndef SCOREP_PRIVATE_DEFINITIONS_PROPERTY_H
-#define SCOREP_PRIVATE_DEFINITIONS_PROPERTY_H
+#ifndef SCOREP_PRIVATE_DEFINITIONS_STRING_H
+#define SCOREP_PRIVATE_DEFINITIONS_STRING_H
 
 
 /**
@@ -42,34 +42,33 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
-
-SCOREP_DEFINE_DEFINITION_TYPE( Property )
+SCOREP_DEFINE_DEFINITION_TYPE( String )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( Property );
+    SCOREP_DEFINE_DEFINITION_HEADER( String );
 
-    SCOREP_Property          property;
-    SCOREP_PropertyCondition condition;
-    bool                     initialValue;
-    bool                     invalidated;
+    uint32_t string_length;
+    // variable array member
+    char string_data[];
 };
 
 
-/**
- * Define a property with its initial value.
- */
-SCOREP_PropertyHandle
-SCOREP_Definitions_NewProperty( SCOREP_Property          property,
-                                SCOREP_PropertyCondition condition,
-                                bool                     initialValue );
+SCOREP_StringHandle
+SCOREP_Definitions_NewString( const char* str );
+
+const char*
+SCOREP_StringHandle_Get( SCOREP_StringHandle handle );
+
 
 
 void
-scorep_definitions_unify_property( SCOREP_PropertyDef*           definition,
-                                   SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_string( SCOREP_StringDef*                    definition,
+                                 struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
-#endif /* SCOREP_PRIVATE_DEFINITIONS_PROPERTY_H */
+SCOREP_StringHandle
+scorep_definitions_new_string( SCOREP_DefinitionManager* definition_manager,
+                               const char*               str );
+
+
+#endif /* SCOREP_PRIVATE_DEFINITIONS_STRING_H */

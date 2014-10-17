@@ -32,8 +32,8 @@
 #error "Do not include this header directly, use SCOREP_Definitions.h instead."
 #endif
 
-#ifndef SCOREP_PRIVATE_DEFINITIONS_TOPOLOGY_H
-#define SCOREP_PRIVATE_DEFINITIONS_TOPOLOGY_H
+#ifndef SCOREP_PRIVATE_DEFINITIONS_IO_FILE_H
+#define SCOREP_PRIVATE_DEFINITIONS_IO_FILE_H
 
 
 /**
@@ -42,25 +42,31 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( MPICartesianTopology )
+SCOREP_DEFINE_DEFINITION_TYPE( IOFile )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( MPICartesianTopology );
+    SCOREP_DEFINE_DEFINITION_HEADER( IOFile );
 
-    // Add SCOREP_MPICartesianTopology stuff from here on.
+    // Add SCOREP_IOFile stuff from here on.
 };
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( MPICartesianCoords )
-{
-    SCOREP_DEFINE_DEFINITION_HEADER( MPICartesianCoords );
+/**
+ * Associate a name and a group handle with a process unique I/O file handle.
+ *
+ * @param name A meaningful name for the I/O file.
+ *
+ * @param ioFileGroup Handle to the group the I/O file is associated to.
+ *
+ * @return A process unique I/O file handle to be used in calls to
+ * SCOREP_TriggerIOFile().
+ *
+ * @planned To be implemented in milestone 2
+ */
+SCOREP_IOFileHandle
+SCOREP_Definitions_NewIOFile( const char*              name,
+                              SCOREP_IOFileGroupHandle ioFileGroup );
 
-    // Add SCOREP_MPICartesianCoords stuff from here on.
-};
 
-
-#endif /* SCOREP_PRIVATE_DEFINITIONS_TOPOLOGY_H */
+#endif /* SCOREP_PRIVATE_DEFINITIONS_IO_FILE_H */

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -59,6 +59,7 @@
 #include <strings.h>
 
 #include "SCOREP_Mpi.h"
+#include <SCOREP_Definitions.h>
 
 /* Placeholder for MPI functions which are not communicative */
 #define SCOREP_REGION_NONE SCOREP_REGION_FUNCTION

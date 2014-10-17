@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -46,6 +46,7 @@
 #include <UTILS_IO.h>
 #include <SCOREP_OA_Functions.h>
 #include "scorep_selective_region.h"
+#include <SCOREP_RuntimeManagement.h>
 
 #include <stdlib.h>
 

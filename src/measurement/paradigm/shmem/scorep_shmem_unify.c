@@ -4,6 +4,9 @@
  * Copyright (c) 2013-2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2014,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -29,7 +32,8 @@
 #include <SCOREP_Shmem.h>
 
 #include <SCOREP_Definitions.h>
-#include <definitions/SCOREP_Definitions.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Memory.h>
 #include <scorep_status.h>
 #include <scorep_ipc.h>
 

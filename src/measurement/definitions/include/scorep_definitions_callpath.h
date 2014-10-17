@@ -42,9 +42,6 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
 SCOREP_DEFINE_DEFINITION_TYPE( Callpath )
@@ -91,8 +88,8 @@ SCOREP_Definitions_NewCallpathParameterString( SCOREP_CallpathHandle  parent,
 
 
 void
-scorep_definitions_unify_callpath( SCOREP_CallpathDef*           definition,
-                                   SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_callpath( SCOREP_CallpathDef*                  definition,
+                                   struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 /**

@@ -42,12 +42,7 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
-
-#include <jenkins_hash.h>
 
 SCOREP_DEFINE_DEFINITION_TYPE( InterimRmaWindow )
 {
@@ -72,14 +67,32 @@ SCOREP_Definitions_NewRmaWindow( const char*               name,
                                  SCOREP_CommunicatorHandle communicatorHandle );
 
 
+/**
+ * Associate the parameter tuple with a process unique RMA window handle.
+ *
+ * @param name A meaningful name for the RMA window, e.g. 'MPI window'
+ * or 'Gfx Card 1'. The string will be copied.
+ *
+ * @param communicatorHandle Underlying communicator
+ *
+ * @return A process unique RMA window handle to be used in calls to other
+ * SCOREP_RMA* functions.
+ */
+SCOREP_InterimRmaWindowHandle
+SCOREP_Definitions_NewInterimRmaWindow( const char*                      name,
+                                        SCOREP_InterimCommunicatorHandle communicatorHandle );
+
+
 SCOREP_RmaWindowHandle
 SCOREP_Definitions_NewUnifiedRmaWindow( const char*               name,
                                         SCOREP_CommunicatorHandle communicatorHandle );
 
 
+struct SCOREP_Allocator_PageManager;
+
 void
-scorep_definitions_unify_rma_window( SCOREP_RmaWindowDef*          definition,
-                                     SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_rma_window( SCOREP_RmaWindowDef*                 definition,
+                                     struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_RMA_WINDOW_H */

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014,
@@ -46,7 +46,7 @@
 #include <SCOREP_OA_Request.h>
 #include <scorep_status.h>
 #include <scorep_profile_definition.h>
-#include <definitions/SCOREP_Definitions.h>
+#include <SCOREP_Definitions.h>
 
 #include <UTILS_CStr.h>
 #include <SCOREP_Metric_Management.h>
@@ -57,6 +57,7 @@
 #include <UTILS_Debug.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Task.h>
+#include <SCOREP_Memory.h>
 
 
 /** Helper function mapping Periscope metric groups to Score-P metric sources*/

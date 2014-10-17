@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -57,6 +57,8 @@
 #include "scorep_mpi_communicator.h"
 #include <UTILS_Error.h>
 #include <SCOREP_Events.h>
+
+#include <stdlib.h>
 
 /**
  * internal array of statuses

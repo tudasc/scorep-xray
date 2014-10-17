@@ -40,8 +40,8 @@
 #include <config.h>
 
 
-#include <definitions/SCOREP_Definitions.h>
-
+#include <SCOREP_Definitions.h>
+#include "scorep_definitions_private.h"
 
 #include <stdbool.h>
 #include <stdlib.h>

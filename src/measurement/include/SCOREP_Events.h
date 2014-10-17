@@ -45,7 +45,7 @@
 
 #include "SCOREP_Types.h"
 #include "SCOREP_Location.h"
-#include "SCOREP_DefinitionHandles.h"
+#include <SCOREP_DefinitionHandles.h>
 
 #include <stdbool.h>
 

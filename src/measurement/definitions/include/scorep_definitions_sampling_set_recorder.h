@@ -32,8 +32,8 @@
 #error "Do not include this header directly, use SCOREP_Definitions.h instead."
 #endif
 
-#ifndef SCOREP_PRIVATE_DEFINITIONS_SOURCE_FILE_H
-#define SCOREP_PRIVATE_DEFINITIONS_SOURCE_FILE_H
+#ifndef SCOREP_PRIVATE_DEFINITIONS_SAMPLING_SET_RECORDER_H
+#define SCOREP_PRIVATE_DEFINITIONS_SAMPLING_SET_RECORDER_H
 
 
 /**
@@ -42,22 +42,23 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( SourceFile )
+SCOREP_DEFINE_DEFINITION_TYPE( SamplingSetRecorder )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( SourceFile );
+    SCOREP_DEFINE_DEFINITION_HEADER( SamplingSetRecorder );
 
-    SCOREP_StringHandle name_handle;
+    SCOREP_SamplingSetHandle sampling_set_handle;
+    SCOREP_LocationHandle    recorder_handle;
+
+    /* Chain of recorders of one sampling set. */
+    SCOREP_SamplingSetRecorderHandle recorders_next;
 };
 
 
 void
-scorep_definitions_unify_source_file( SCOREP_SourceFileDef*         definition,
-                                      SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_sampling_set_recorder( SCOREP_SamplingSetRecorderDef*       definition,
+                                                struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
-#endif /* SCOREP_PRIVATE_DEFINITIONS_SOURCE_FILE_H */
+#endif /* SCOREP_PRIVATE_DEFINITIONS_SAMPLING_SET_RECORDER_H */

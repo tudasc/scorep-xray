@@ -46,7 +46,7 @@
 #include <scorep_profile_mpi_events.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Metric_Management.h>
-#include <definitions/SCOREP_Definitions.h>
+#include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME PROFILE

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2013
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -53,6 +53,7 @@
 #include <SCOREP_OA_Functions.h>
 #include <SCOREP_Fortran_Wrapper.h>
 #include "scorep_selective_region.h"
+#include <SCOREP_RuntimeManagement.h>
 
 #define SCOREP_F_Begin_U SCOREP_F_BEGIN
 #define SCOREP_F_RewindBegin_U SCOREP_F_REWINDBEGIN

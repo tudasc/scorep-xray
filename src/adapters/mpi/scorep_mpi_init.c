@@ -47,6 +47,8 @@
 #include "scorep_mpi_communicator_mgmt.h"
 #include "scorep_mpi_request.h"
 
+#include <stdlib.h>
+
 void
 scorep_mpi_request_finalize( void );
 

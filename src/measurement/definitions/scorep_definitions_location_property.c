@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -24,7 +24,8 @@
 #include <config.h>
 
 
-#include <definitions/SCOREP_Definitions.h>
+#include <SCOREP_Definitions.h>
+#include "scorep_definitions_private.h"
 
 #include <stdbool.h>
 #include <stdlib.h>

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -45,7 +45,7 @@
 #include <SCOREP_Config.h>
 
 #include "scorep_profile_definition.h"
-#include <definitions/SCOREP_Definitions.h>
+#include <SCOREP_Definitions.h>
 
 /*----------------------------------------------------------------------------------------
    External configuration variables

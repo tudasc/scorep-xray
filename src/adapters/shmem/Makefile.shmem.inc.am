@@ -6,6 +6,9 @@
 ## Copyright (c) 2013-2014,
 ## Technische Universitaet Dresden, Germany
 ##
+## Copyright (c) 2014,
+## Forschungszentrum Juelich GmbH, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -54,6 +57,7 @@ libscorep_adapter_shmem_mgmt_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement           \
     -I$(INC_DIR_MUTEX)                     \
     -I$(INC_DIR_COMMON_HASH)               \
+    -I$(INC_DIR_DEFINITIONS)               \
     $(shmem_libwrap_cppflags)
 libscorep_adapter_shmem_mgmt_la_LIBADD = \
     $(LIB_DIR_SCOREP)libutils.la
@@ -92,7 +96,8 @@ SCOREP_SHMEM_EVENT_FORTRAN_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include          \
     -I$(INC_ROOT)src/measurement/include       \
     -I$(INC_ROOT)src/adapters/shmem            \
-    $(shmem_libwrap_cppflags)
+    $(shmem_libwrap_cppflags)                  \
+    -I$(INC_DIR_DEFINITIONS)
 
 libscorep_adapter_shmem_event_fortran_sub3_la_SOURCES = \
     $(SCOREP_SHMEM_EVENT_FORTRAN_SOURCES)
@@ -132,7 +137,8 @@ libscorep_adapter_shmem_c_event_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include         \
     -I$(INC_ROOT)src/measurement/include      \
     -I$(INC_ROOT)src/adapters/shmem           \
-    $(shmem_libwrap_cppflags)
+    $(shmem_libwrap_cppflags)                 \
+    -I$(INC_DIR_DEFINITIONS)
 
 
 ## endif HAVE_SHMEM_SUPPORT

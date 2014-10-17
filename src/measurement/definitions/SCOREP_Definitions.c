@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -39,13 +39,14 @@
 #include <config.h>
 
 
-#include <definitions/SCOREP_Definitions.h>
+#include <SCOREP_Definitions.h>
 
 
 #include "scorep_environment.h"
 #include "scorep_runtime_management.h"
 #include <scorep/SCOREP_PublicTypes.h>
 #include <SCOREP_Mutex.h>
+#include <SCOREP_Memory.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -97,6 +98,38 @@ SCOREP_Definitions_Initialize( void )
     /* ensure, that the empty string gets id 0 */
     SCOREP_Definitions_NewString( "" );
 }
+
+
+void
+scorep_definitions_manager_entry_alloc_hash_table( scorep_definitions_manager_entry* entry,
+                                                   uint32_t                          hashTablePower )
+{
+    UTILS_BUG_ON( hashTablePower > 15,
+                  "Hash table too big: %u", hashTablePower );
+    entry->hash_table_mask = hashmask( hashTablePower );
+    entry->hash_table      = calloc( hashsize( hashTablePower ), sizeof( *entry->hash_table ) );
+    UTILS_BUG_ON( entry->hash_table == 0,
+                  "Can't allocate hash table of size %u",
+                  hashTablePower );
+}
+
+#define SCOREP_DEFINITIONS_DEFAULT_HASH_TABLE_POWER ( 8 )
+
+/**
+ * Initializes a manager entry named @a type in the definition manager @a
+ * definition_manager.
+ */
+#define SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( definition_manager, type ) \
+    scorep_definitions_manager_init_entry( &( definition_manager )->type )
+
+
+/**
+ * Allocates the hash table for type @a type in the given definition manager
+ * with the default hash table size of @a SCOREP_DEFINITIONS_DEFAULT_HASH_TABLE_POWER.
+ */
+#define SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( definition_manager, type ) \
+    scorep_definitions_manager_entry_alloc_hash_table( &( definition_manager )->type, \
+                                                       SCOREP_DEFINITIONS_DEFAULT_HASH_TABLE_POWER )
 
 
 void
@@ -257,4 +290,16 @@ uint32_t
 SCOREP_Definitions_GetNumberOfUnifiedCallpathDefinitions( void )
 {
     return scorep_unified_definition_manager->callpath.counter;
+}
+
+
+uint32_t
+SCOREP_Definitions_HandleToId( SCOREP_AnyHandle handle )
+{
+    if ( handle == SCOREP_MOVABLE_NULL )
+    {
+        return UINT32_MAX;
+    }
+
+    return SCOREP_LOCAL_HANDLE_TO_ID( handle, Any );
 }

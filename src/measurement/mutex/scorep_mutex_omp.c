@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -41,7 +41,6 @@
 
 #include <config.h>
 #include <SCOREP_Mutex.h>
-#include <SCOREP_RuntimeManagement.h>
 
 #include <stdlib.h>
 

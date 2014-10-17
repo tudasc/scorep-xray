@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -43,7 +43,8 @@ libscorep_metric_confvars_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/services/metric \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_DIR_DEFINITIONS)
 
 libscorep_confvars_la_LIBADD += libscorep_metric_confvars.la
 

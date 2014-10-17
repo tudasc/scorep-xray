@@ -14,7 +14,7 @@
 # Copyright (c) 2009-2013,
 # University of Oregon, Eugene, USA
 #
-# Copyright (c) 2009-2013,
+# Copyright (c) 2009-2014,
 # Forschungszentrum Juelich GmbH, Germany
 #
 # Copyright (c) 2009-2013,
@@ -29,60 +29,60 @@
 
 ## file       src/measurement/definitions/Makefile.inc.am
 
-
 noinst_LTLIBRARIES += libscorep_definitions.la
 libscorep_definitions_la_SOURCES =                                \
     $(SRC_ROOT)src/measurement/definitions/SCOREP_Definitions.c   \
-    $(SRC_ROOT)src/measurement/definitions/SCOREP_Definitions.h   \
+    $(SRC_ROOT)src/measurement/definitions/include/SCOREP_Definitions.h   \
+    $(SRC_ROOT)src/measurement/definitions/include/SCOREP_DefinitionHandles.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_private.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_string.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_string.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_string.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_source_file.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_source_file.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_source_file.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location_group.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location_group.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_location_group.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_location.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_system_tree_node.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_system_tree_node.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_system_tree_node.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_system_tree_node_property.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_system_tree_node_property.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_system_tree_node_property.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_region.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_region.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_region.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_communicator.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_communicator.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_communicator.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_group.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_group.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_group.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_metric.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_metric.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_metric.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_sampling_set.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_sampling_set.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_sampling_set.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_sampling_set_recorder.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_sampling_set_recorder.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_sampling_set_recorder.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_parameter.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_parameter.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_parameter.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_callpath.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_callpath.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_callpath.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_clock_offset.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_clock_offset.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_clock_offset.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_property.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_property.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_property.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_rma_window.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_rma_window.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_rma_window.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_topology.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_topology.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_topology.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_file_group.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_file_group.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_io_file_group.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_file.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_io_file.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_io_file.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker_group.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker_group.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_marker_group.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_marker.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_marker.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_attribute.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_attribute.h \
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_attribute.h \
     $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location_property.c \
-    $(SRC_ROOT)src/measurement/definitions/scorep_definitions_location_property.h
+    $(SRC_ROOT)src/measurement/definitions/include/scorep_definitions_location_property.h
 
 libscorep_definitions_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
@@ -92,4 +92,5 @@ libscorep_definitions_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_DIR_COMMON_HASH) \
-    -I$(INC_DIR_MUTEX)
+    -I$(INC_DIR_MUTEX) \
+    -I$(INC_DIR_DEFINITIONS)

@@ -69,7 +69,8 @@ libscorep_adapter_cuda_mgmt_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement          \
     -I$(INC_DIR_COMMON_HASH)              \
     -I$(INC_ROOT)src/adapters/cuda        \
-    -I$(INC_DIR_MUTEX)
+    -I$(INC_DIR_MUTEX)                    \
+    -I$(INC_DIR_DEFINITIONS)
 
 libscorep_adapter_cuda_mgmt_la_LIBADD = \
     @CUDA_LIBS@

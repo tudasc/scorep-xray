@@ -45,6 +45,7 @@
 #include <scorep_runtime_management.h>
 #include <SCOREP_Thread_Mgmt.h>
 #include <UTILS_Error.h>
+#include <SCOREP_Definitions.h>
 
 #include <stdio.h>
 #include <stdlib.h>

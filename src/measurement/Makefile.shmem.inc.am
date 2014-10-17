@@ -6,6 +6,9 @@
 ## Copyright (c) 2013-2014,
 ## Technische Universitaet Dresden, Germany
 ##
+## Copyright (c) 2014,
+## Forschungszentrum Juelich GmbH, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -50,6 +53,7 @@ libscorep_ipc_shmem_la_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR)                  \
     -I$(INC_DIR_COMMON_HASH)             \
     -I$(INC_ROOT)src/adapters/shmem      \
-    $(shmem_libwrap_cppflags)
+    $(shmem_libwrap_cppflags)            \
+    -I$(INC_DIR_DEFINITIONS)
 
 endif HAVE_SHMEM_SUPPORT

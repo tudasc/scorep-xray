@@ -32,8 +32,8 @@
 #error "Do not include this header directly, use SCOREP_Definitions.h instead."
 #endif
 
-#ifndef SCOREP_PRIVATE_DEFINITIONS_MARKER_H
-#define SCOREP_PRIVATE_DEFINITIONS_MARKER_H
+#ifndef SCOREP_PRIVATE_DEFINITIONS_SOURCE_FILE_H
+#define SCOREP_PRIVATE_DEFINITIONS_SOURCE_FILE_H
 
 
 /**
@@ -42,17 +42,38 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( Marker )
+SCOREP_DEFINE_DEFINITION_TYPE( SourceFile )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( Marker );
+    SCOREP_DEFINE_DEFINITION_HEADER( SourceFile );
 
-    // Add SCOREP_Marker stuff from here on.
+    SCOREP_StringHandle name_handle;
 };
 
 
-#endif /* SCOREP_PRIVATE_DEFINITIONS_MARKER_H */
+/**
+ * Associate a file name with a process unique file handle.
+ *
+ * @param fileName A meaningful name for the source file.
+ *
+ * @return A process unique file handle to be used in calls to
+ * SCOREP_Definitions_NewRegion().
+ *
+ */
+SCOREP_SourceFileHandle
+SCOREP_Definitions_NewSourceFile( const char* fileName );
+
+
+const char*
+SCOREP_SourceFileHandle_GetName( SCOREP_SourceFileHandle handle );
+
+
+struct SCOREP_Allocator_PageManager;
+
+void
+scorep_definitions_unify_source_file( SCOREP_SourceFileDef*                definition,
+                                      struct SCOREP_Allocator_PageManager* handlesPageManager );
+
+
+#endif /* SCOREP_PRIVATE_DEFINITIONS_SOURCE_FILE_H */

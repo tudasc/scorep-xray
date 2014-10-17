@@ -35,6 +35,7 @@ libscorep_confvars_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include \
     -I$(INC_ROOT)src/services/include \
     -I$(PUBLIC_INC_DIR) \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_DIR_DEFINITIONS)
 
 libscorep_confvars_la_LIBADD =

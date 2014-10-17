@@ -32,8 +32,8 @@
 #error "Do not include this header directly, use SCOREP_Definitions.h instead."
 #endif
 
-#ifndef SCOREP_PRIVATE_DEFINITIONS_METRIC_H
-#define SCOREP_PRIVATE_DEFINITIONS_METRIC_H
+#ifndef SCOREP_PRIVATE_DEFINITIONS_PROPERTY_H
+#define SCOREP_PRIVATE_DEFINITIONS_PROPERTY_H
 
 
 /**
@@ -42,31 +42,33 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( Metric )
+SCOREP_DEFINE_DEFINITION_TYPE( Property )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( Metric );
+    SCOREP_DEFINE_DEFINITION_HEADER( Property );
 
-    // Add SCOREP_Metric stuff from here on.
-    SCOREP_StringHandle        name_handle;
-    SCOREP_StringHandle        description_handle;
-    SCOREP_MetricSourceType    source_type;
-    SCOREP_MetricMode          mode;
-    SCOREP_MetricValueType     value_type;
-    SCOREP_MetricBase          base;
-    int64_t                    exponent;
-    SCOREP_StringHandle        unit_handle;
-    SCOREP_MetricProfilingType profiling_type;
+    SCOREP_Property          property;
+    SCOREP_PropertyCondition condition;
+    bool                     initialValue;
+    bool                     invalidated;
 };
 
 
+/**
+ * Define a property with its initial value.
+ */
+SCOREP_PropertyHandle
+SCOREP_Definitions_NewProperty( SCOREP_Property          property,
+                                SCOREP_PropertyCondition condition,
+                                bool                     initialValue );
+
+
+struct SCOREP_Allocator_PageManager;
+
 void
-scorep_definitions_unify_metric( SCOREP_MetricDef*             definition,
-                                 SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_property( SCOREP_PropertyDef*                  definition,
+                                   struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
-#endif /* SCOREP_PRIVATE_DEFINITIONS_METRIC_H */
+#endif /* SCOREP_PRIVATE_DEFINITIONS_PROPERTY_H */

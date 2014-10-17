@@ -45,7 +45,8 @@ libscorep_adapter_compiler_mgmt_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include      \
     -I$(PUBLIC_INC_DIR)                       \
     $(UTILS_CPPFLAGS)                         \
-    -I$(INC_DIR_MUTEX)
+    -I$(INC_DIR_MUTEX)                        \
+    -I$(INC_DIR_DEFINITIONS)
 
 libscorep_adapter_compiler_mgmt_la_LIBADD = \
     libutils.la
@@ -213,7 +214,8 @@ libscorep_adapter_compiler_event_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include       \
     -I$(PUBLIC_INC_DIR)                        \
     $(UTILS_CPPFLAGS)                          \
-    -I$(INC_DIR_MUTEX)
+    -I$(INC_DIR_MUTEX)                         \
+    -I$(INC_DIR_DEFINITIONS)
 
 libscorep_adapter_compiler_event_la_LIBADD = \
     libscorep_measurement.la

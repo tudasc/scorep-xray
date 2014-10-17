@@ -36,7 +36,8 @@ libscorep_thread_create_wait_pthread_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement                   \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(PUBLIC_INC_DIR)                            \
-    $(UTILS_CPPFLAGS)
+    $(UTILS_CPPFLAGS)                              \
+    -I$(INC_DIR_DEFINITIONS)
 libscorep_thread_create_wait_pthread_la_LIBADD = \
     libscorep_thread_create_wait_generic.la      \
     libutils.la                                  \
@@ -70,4 +71,5 @@ libscorep_thread_create_wait_generic_la_CPPFLAGS = \
     -I$(INC_ROOT)src/services/include              \
     -I$(PUBLIC_INC_DIR)                            \
     $(UTILS_CPPFLAGS)                              \
-    -I$(INC_DIR_COMMON_HASH)
+    -I$(INC_DIR_COMMON_HASH)                       \
+    -I$(INC_DIR_DEFINITIONS)

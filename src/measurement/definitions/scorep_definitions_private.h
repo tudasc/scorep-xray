@@ -1,3 +1,6 @@
+#ifndef SCOREP_DEFINITIONS_PRIVATE_H_
+#define SCOREP_DEFINITIONS_PRIVATE_H_
+
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
@@ -13,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -35,93 +38,13 @@
  */
 
 
-#ifndef SCOREP_INTERNAL_DEFINITIONS_H
-#error "Do not include this header directly, use SCOREP_Definitions.h instead."
-#endif
-
-#ifndef SCOREP_PRIVATE_DEFINITIONS_H
-#define SCOREP_PRIVATE_DEFINITIONS_H
-
-#include <SCOREP_Memory.h>
-#include <stdint.h>
-
-#include <UTILS_Error.h>
-
 #include <jenkins_hash.h>
 
-/**
- * Just a convenience macro to access the @e real memory a
- * SCOREP_Allocator_MovableMemory object is referring to.
- *
- * @param definition_memory_ptr Pointer to some SCOREP_Memory_DefinitionMemory
- * object.
- * @param targetType The type @a definition_memory_ptr should be converted to.
- *
- * @return A pointer to an object of type @a target_type.
- */
-#define SCOREP_MEMORY_DEREF_MOVABLE( movableMemory, movablePageManager, targetType ) \
-    ( ( targetType )SCOREP_Memory_GetAddressFromMovableMemory( movableMemory, \
-                                                               movablePageManager ) )
 
 #define SCOREP_MEMORY_DEREF_LOCAL( localMemory, targetType ) \
     SCOREP_MEMORY_DEREF_MOVABLE( localMemory, \
                                  SCOREP_Memory_GetLocalDefinitionPageManager(), \
                                  targetType )
-
-/**
- *  Dereferences a moveable memory pointer to the definition struct.
- *
- */
-#define SCOREP_HANDLE_DEREF( handle, Type, movablePageManager ) \
-    SCOREP_MEMORY_DEREF_MOVABLE( handle, \
-                                 movablePageManager, \
-                                 SCOREP_ ## Type ## Def* )
-
-#define SCOREP_LOCAL_HANDLE_DEREF( handle, Type ) \
-    SCOREP_HANDLE_DEREF( handle, \
-                         Type, \
-                         SCOREP_Memory_GetLocalDefinitionPageManager() )
-
-#define SCOREP_UNIFIED_HANDLE_DEREF( handle, Type ) \
-    SCOREP_HANDLE_DEREF( handle, \
-                         Type, \
-                         SCOREP_Memory_GetLocalDefinitionPageManager() )
-
-
-/**
- * Use this macro to define a definition struct.
- *
- * Usage:
- * @code
- *     SCOREP_DEFINE_DEFINITION_TYPE( Type )
- *     {
- *         SCOREP_DEFINE_DEFINITION_HEADER( Type ); // must be first
- *         // definition specfic members
- *         :
- *     };
- * @endcode
- *
- * @see SCOREP_DEFINE_DEFINITION_HEADER
- */
-#define SCOREP_DEFINE_DEFINITION_TYPE( Type ) \
-    typedef struct SCOREP_ ## Type ## Def SCOREP_ ## Type ## Def; \
-    struct SCOREP_ ## Type ## Def
-
-/**
- * Provides a stub for the definition struct header.
- *
- * The sequence_number member is mostly used as the id for the local definitions
- *
- * @see SCOREP_DEFINE_DEFINITION_TYPE
- *
- * @note No ';' after
- */
-#define SCOREP_DEFINE_DEFINITION_HEADER( Type ) \
-    SCOREP_ ## Type ## Handle next;             \
-    SCOREP_ ## Type ## Handle unified;          \
-    SCOREP_ ## Type ## Handle hash_next;        \
-    uint32_t hash_value;                        \
-    uint32_t sequence_number
 
 /**
  * Initializes common members of the definition @a definition.
@@ -144,36 +67,12 @@
 
 
 /**
- *  Extracts the ID out of an handle pointer.
- *
- *  @note This is only the process local sequence number, which
- *        may happen to be the OTF2 definition id.
+ *  Extracts the hash value out of a handle pointer.
  *
  *  @note You can take also the address of this member with this macro
  */
-#define SCOREP_HANDLE_TO_ID( handle, Type, movablePageManager ) \
-    ( SCOREP_HANDLE_DEREF( handle, Type, movablePageManager )->sequence_number )
-
-#define SCOREP_LOCAL_HANDLE_TO_ID( handle, Type ) \
-    ( SCOREP_LOCAL_HANDLE_DEREF( handle, Type )->sequence_number )
-
-#define SCOREP_UNIFIED_HANDLE_TO_ID( handle, Type ) \
-    ( SCOREP_UNIFIED_HANDLE_DEREF( handle, Type )->sequence_number )
-
-
-/**
- *  Extracts the hash value out of an handle pointer.
- *
- *  @note You can take also the address of this member with this macro
- */
-#define SCOREP_GET_HASH_OF_HANDLE( handle, Type, movablePageManager ) \
-    ( SCOREP_HANDLE_DEREF( handle, Type, movablePageManager )->hash_value )
-
 #define SCOREP_GET_HASH_OF_LOCAL_HANDLE( handle, Type ) \
     ( SCOREP_LOCAL_HANDLE_DEREF( handle, Type )->hash_value )
-
-#define SCOREP_GET_HASH_OF_UNIFIED_HANDLE( handle, Type ) \
-    ( SCOREP_UNIFIED_HANDLE_DEREF( handle, Type )->hash_value )
 
 
 /**
@@ -249,45 +148,11 @@
 /* *INDENT-ON* */
 
 
-#define SCOREP_DEFINITIONS_DEFAULT_HASH_TABLE_POWER ( 8 )
-
-
-/**
- * Defines a new type of definition for use in @a SCOREP_DefinitionManager.
- */
-typedef struct scorep_definitions_manager_entry
-{
-    SCOREP_AnyHandle  head;
-    SCOREP_AnyHandle* tail;
-    SCOREP_AnyHandle* hash_table;
-    uint32_t          hash_table_mask;
-    uint32_t          counter;
-    uint32_t*         mapping;
-} scorep_definitions_manager_entry;
-
-
 /**
  * Declares a definition manager entry of type @a type.
  */
 #define SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( type ) \
     scorep_definitions_manager_entry type
-
-
-/**
- * Initialize a definition type in a @a SCOREP_DefinitionManager @a
- * definition_manager.
- *
- */
-static inline void
-scorep_definitions_manager_init_entry( scorep_definitions_manager_entry* entry )
-{
-    entry->head            = SCOREP_MOVABLE_NULL;
-    entry->tail            = &entry->head;
-    entry->hash_table      = 0;
-    entry->hash_table_mask = 0;
-    entry->counter         = 0;
-    entry->mapping         = 0;
-}
 
 
 /**
@@ -299,64 +164,12 @@ scorep_definitions_manager_init_entry( scorep_definitions_manager_entry* entry )
 
 
 /**
- * Allocate memory for a definition type's hash_table in a @a
- * SCOREP_DefinitionManager @a definition_manager.
- *
- * @note Will be called at init-time.
- */
-static inline void
-scorep_definitions_manager_entry_alloc_hash_table( scorep_definitions_manager_entry* entry,
-                                                   uint32_t                          hash_table_power )
-{
-    UTILS_BUG_ON( hash_table_power > 15,
-                  "Hash table too big: %u", hash_table_power );
-    entry->hash_table_mask = hashmask( hash_table_power );
-    entry->hash_table      = calloc( hashsize( hash_table_power ), sizeof( *entry->hash_table ) );
-    UTILS_BUG_ON( entry->hash_table == 0,
-                  "Can't allocate hash table of size %u",
-                  hash_table_power );
-}
-
-
-/**
  * Allocates the hash table for type @a type in the given definition manager
  * with the default hash table size of @a SCOREP_DEFINITIONS_DEFAULT_HASH_TABLE_POWER.
  */
 #define SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( definition_manager, type ) \
     scorep_definitions_manager_entry_alloc_hash_table( &( definition_manager )->type, \
                                                        SCOREP_DEFINITIONS_DEFAULT_HASH_TABLE_POWER )
-
-
-/**
- * Allocates the array member @a type_mappings of struct SCOREP_DefinitionMappings that lives
- * in @a definition_manager. The size of the array equals @a type_definition_counter.
- *
- */
-static inline void
-scorep_definitions_manager_entry_alloc_mapping( scorep_definitions_manager_entry* entry )
-{
-    entry->mapping = NULL;
-    if ( entry->counter > 0 )
-    {
-        entry->mapping = malloc( entry->counter * sizeof( *entry->mapping ) );
-        UTILS_BUG_ON( entry->mapping == 0,
-                      "Can't allocate mapping table of size %u",
-                      entry->counter );
-    }
-}
-
-
-/**
- * Frees the array member @a type_mappings of struct SCOREP_DefinitionMappings that lives
- * in @a definition_manager. The size of the array equals @a type_definition_counter.
- *
- */
-static inline void
-scorep_definitions_manager_entry_free_mapping( scorep_definitions_manager_entry* entry )
-{
-    free( entry->mapping );
-    entry->mapping = NULL;
-}
 
 
 /**
@@ -449,57 +262,6 @@ scorep_definitions_manager_entry_free_mapping( scorep_definitions_manager_entry*
 
 
 /**
- * Iterator functions for definition. The iterator variable is named
- * @definition.
- * @{
- *
- * Iterates over all definitions of definition type @a Type from the
- * definition manager @a definition_manager.
- *
- * Example:
- * @code
- *  SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( &scorep_definition_manager, String, string )
- *  {
- *      :
- *      definition->member = ...
- *      :
- *  }
- *  SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
- * @endcode
- *
- * You can still use break and continue statements.
- *
- * @declares Variable with name @a definition of definition type @a Type*.
- */
-/* *INDENT-OFF* */
-#define SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_BEGIN( entry, Type, page_manager ) \
-    do \
-    { \
-        SCOREP_ ## Type ## Def*   definition; \
-        SCOREP_ ## Type ## Handle handle; \
-        for ( handle = ( entry )->head; \
-              handle != SCOREP_MOVABLE_NULL; \
-              handle = definition->next ) \
-        { \
-            definition = SCOREP_HANDLE_DEREF( handle, Type, page_manager ); \
-
-#define SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_END() \
-        } \
-    } \
-    while ( 0 )
-
-#define SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definition_manager, Type, type ) \
-    SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_BEGIN( &( definition_manager )->type, \
-                                                               Type, \
-                                                               ( definition_manager )->page_manager )
-
-#define SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END() \
-        SCOREP_DEFINITIONS_MANAGER_ENTRY_FOREACH_DEFINITION_END()
-/* *INDENT-ON* */
-/** @} */
-
-
-/**
  * Some convenient macros to add members or sub-hashes to the hash value
  * @{
  */
@@ -563,4 +325,4 @@ scorep_definitions_manager_entry_free_mapping( scorep_definitions_manager_entry*
  */
 
 
-#endif /* SCOREP_PRIVATE_DEFINITIONS_H */
+#endif /* SCOREP_DEFINITIONS_PRIVATE_H_ */

@@ -40,15 +40,18 @@
 #include "scorep_thread_fork_join_team.h"
 
 #include <scorep_thread_model_specific.h>
+#include <SCOREP_Memory.h>
 
 #define SCOREP_DEBUG_MODULE_NAME THREAD_FORK_JOIN
 #include <UTILS_Debug.h>
+
+#include <jenkins_hash.h>
 
 
 #define THREAD_TEAM_HASH_POWER 6
 
 struct scorep_thread_team_data*
-scorep_thread_fork_join_create_team_data( SCOREP_Location* location )
+scorep_thread_fork_join_create_team_data( struct SCOREP_Location* location )
 {
     UTILS_DEBUG_ENTRY();
     struct scorep_thread_team_data* data = SCOREP_Location_AllocForMisc(
@@ -98,7 +101,7 @@ equal_payloads_fn( const void* payloadA_,
 
 
 SCOREP_InterimCommunicatorHandle
-scorep_thread_get_team_handle( SCOREP_Location*                 location,
+scorep_thread_get_team_handle( struct SCOREP_Location*          location,
                                SCOREP_InterimCommunicatorHandle parentThreadTeam,
                                uint32_t                         numThreads,
                                uint32_t                         threadNum )

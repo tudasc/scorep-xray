@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -49,7 +49,6 @@
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Definitions.h>
-#include <definitions/SCOREP_Definitions.h>
 #include <SCOREP_Properties.h>
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Profile.h>
@@ -73,7 +72,7 @@ scorep_enter_region( uint64_t            timestamp,
                      SCOREP_Location*    location )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%u",
-                        scorep_handle_to_id( regionHandle ) );
+                        SCOREP_Definitions_HandleToId( regionHandle ) );
 
     SCOREP_Task_Enter( location, regionHandle );
 
@@ -144,7 +143,7 @@ scorep_exit_region( uint64_t            timestamp,
                     SCOREP_Location*    location )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%u",
-                        scorep_handle_to_id( regionHandle ) );
+                        SCOREP_Definitions_HandleToId( regionHandle ) );
 
     if ( scorep_profiling_consume_event() )
     {
@@ -217,7 +216,7 @@ SCOREP_EnterRewindRegion( SCOREP_RegionHandle regionHandle )
     uint64_t         timestamp = scorep_get_timestamp( location );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%u",
-                        scorep_handle_to_id( regionHandle ) );
+                        SCOREP_Definitions_HandleToId( regionHandle ) );
 
     /* Nothing to do for profiling. */
 
@@ -238,7 +237,7 @@ SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle, bool do_rewind )
     uint64_t         leavetimestamp = scorep_get_timestamp( location );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%u",
-                        scorep_handle_to_id( regionHandle ) );
+                        SCOREP_Definitions_HandleToId( regionHandle ) );
 
     /* Nothing to do for profiling. */
 
@@ -324,7 +323,7 @@ SCOREP_MpiSend( SCOREP_MpiRank                   destinationRank,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Dst:%d Comm:%u Tag:%u Bytes:%llu",
                         destinationRank,
-                        scorep_handle_to_id( communicatorHandle ),
+                        SCOREP_Definitions_HandleToId( communicatorHandle ),
                         tag,
                         ( unsigned long long )bytesSent );
 
@@ -370,7 +369,7 @@ SCOREP_MpiRecv( SCOREP_MpiRank                   sourceRank,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Src:%u Comm:%u Tag:%u Bytes:%llu",
                         sourceRank,
-                        scorep_handle_to_id( communicatorHandle ),
+                        SCOREP_Definitions_HandleToId( communicatorHandle ),
                         tag,
                         ( unsigned long long )bytesReceived );
 

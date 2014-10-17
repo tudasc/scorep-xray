@@ -44,7 +44,8 @@ common_wrapper_sources = $(SRC_ROOT)test/libwrap/wrapper.c
 scorep_libwrap_macros_static_test_SOURCES =  $(common_wrapper_sources) \
                                              $(SRC_ROOT)test/libwrap/scorep_libwrap_macros_test.c
 scorep_libwrap_macros_static_test_CPPFLAGS = $(common_libwrap_cppflags) \
-                                             -DSCOREP_LIBWRAP_STATIC
+                                             -DSCOREP_LIBWRAP_STATIC \
+                                             -I$(INC_DIR_DEFINITIONS)
 scorep_libwrap_macros_static_test_LDFLAGS = $(serial_ldflags) \
                                             $(common_libwrap_ldflags) \
                                             -static-libtool-libs

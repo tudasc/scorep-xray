@@ -42,12 +42,6 @@
  *
  */
 
-#include <stdarg.h>
-
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
-
 
 SCOREP_DEFINE_DEFINITION_TYPE( InterimCommunicator )
 {
@@ -86,6 +80,8 @@ typedef uint32_t
 typedef bool
 ( *scorep_definitions_equal_payloads_fn )( const void*,
                                            const void* );
+
+struct SCOREP_Location;
 
 /**
  *  Creates a new interim communicator definition either in the definition
@@ -126,7 +122,7 @@ typedef bool
  */
 SCOREP_InterimCommunicatorHandle
 SCOREP_Definitions_NewInterimCommunicatorCustom(
-    SCOREP_Location*                     location,
+    struct SCOREP_Location*              location,
     scorep_definitions_manager_entry*    managerEntry,
     scorep_definitions_init_payload_fn   initPayloadFn,
     scorep_definitions_equal_payloads_fn equalPayloadsFn,
@@ -139,6 +135,42 @@ SCOREP_Definitions_NewInterimCommunicatorCustom(
 
 SCOREP_InterimCommunicatorHandle
 SCOREP_InterimCommunicatorHandle_GetParent( SCOREP_InterimCommunicatorHandle commHandle );
+
+
+/**
+ * Associate a MPI communicator with a process unique communicator handle.
+ *
+ * @param parentComm    A possible parent communicator.
+ * @param paradigmType  The paradigm of the adapter which defines this
+ *                      communicator.
+ * @param sizeOfPayload The size of the payload which the adapter requests
+ *                      for this communicator.
+ * @param[out] payload  Will be set to the memory location of the payload.
+ *
+ * @return A process unique communicator handle to be used in calls to other
+ * SCOREP_Definitions_NewMPI* functions.
+ *
+ */
+SCOREP_InterimCommunicatorHandle
+SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle parentComm,
+                                           SCOREP_ParadigmType              paradigmType,
+                                           size_t                           sizeOfPayload,
+                                           void**                           payload );
+
+
+/**
+ * Get access to the payload from a communicator definition.
+ */
+void*
+SCOREP_InterimCommunicatorHandle_GetPayload( SCOREP_InterimCommunicatorHandle handle );
+
+
+/**
+ * Set the name of the communicator to @a name, but only if it wasn't done before.
+ */
+void
+SCOREP_InterimCommunicatorHandle_SetName( SCOREP_InterimCommunicatorHandle localMPICommHandle,
+                                          const char*                      name );
 
 
 SCOREP_CommunicatorHandle
@@ -154,8 +186,8 @@ SCOREP_Definitions_NewUnifiedCommunicator( SCOREP_GroupHandle        group_handl
 
 
 void
-scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*       definition,
-                                       SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_communicator( SCOREP_CommunicatorDef*              definition,
+                                       struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_COMMUNICATOR_H */

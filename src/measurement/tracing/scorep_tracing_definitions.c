@@ -61,7 +61,7 @@
 #include <scorep_status.h>
 #include <scorep_clock_synchronization.h>
 #include <SCOREP_Memory.h>
-#include <definitions/SCOREP_Definitions.h>
+#include <SCOREP_Definitions.h>
 #include <SCOREP_Bitstring.h>
 #include <UTILS_Error.h>
 

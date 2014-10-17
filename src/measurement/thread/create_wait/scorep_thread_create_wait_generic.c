@@ -28,7 +28,7 @@
 
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Mutex.h>
-#include <definitions/SCOREP_Definitions.h>
+#include <SCOREP_Definitions.h>
 #include <scorep_events_common.h>
 #include <SCOREP_Properties.h>
 #include <SCOREP_Profile.h>

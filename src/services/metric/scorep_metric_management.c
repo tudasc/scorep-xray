@@ -59,7 +59,7 @@
 #include <tracing/SCOREP_Tracing_Events.h>
 
 
-#include <definitions/SCOREP_Definitions.h>
+#include <SCOREP_Definitions.h>
 #include "scorep_system_tree.h"
 
 /* RonnyT: is this include valid for a service */

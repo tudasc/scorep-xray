@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -83,11 +83,12 @@ libscorep_online_access_spp_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_ROOT)src/services/include \
-    -I$(INC_ROOT)src/adapters/user
+    -I$(INC_ROOT)src/adapters/user \
+    -I$(INC_DIR_DEFINITIONS)
 
 if ! PLATFORM_AIX
 libscorep_online_access_spp_la_CPPFLAGS += -D_POSIX_SOURCE
-endif
+endif ! PLATFORM_AIX
 
 libscorep_online_access_spp_la_LIBADD = \
     libscorep_profile.la \
@@ -97,7 +98,7 @@ libscorep_online_access_spp_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
 
-else
+else ! HAVE_ONLINE_ACCESS
 
 libscorep_online_access_spp_la_LIBADD = \
     libscorep_online_access_mockup.la
@@ -105,4 +106,4 @@ libscorep_online_access_spp_la_LIBADD = \
 libscorep_online_access_spp_la_LDFLAGS = \
     $(library_api_version_ldflags)
 
-endif #if HAVE_ONLINE_ACCESS
+endif ! HAVE_ONLINE_ACCESS

@@ -57,7 +57,6 @@
 #include <SCOREP_Memory.h>
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Definitions.h>
-#include <definitions/SCOREP_Definitions.h>
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Timing.h>
@@ -416,7 +415,7 @@ SCOREP_EnableRecording( void )
                                              timestamp,
                                              true );
         }
-        if ( SCOREP_IsProfilingEnabled() && !scorep_recording_enabled )
+        if ( SCOREP_IsProfilingEnabled() && !scorep_recording_enabled  )
         {
             uint64_t* metric_values = SCOREP_Metric_Read( location );
             SCOREP_Profile_Exit( location,

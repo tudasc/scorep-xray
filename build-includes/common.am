@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ##    University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ##    Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -49,6 +49,7 @@ UTILS_CPPFLAGS = \
 
 INC_DIR_OPARI2 = $(INC_ROOT)vendor/opari2/include
 INC_DIR_MUTEX = $(INC_ROOT)src/measurement/mutex/include
+INC_DIR_DEFINITIONS = $(INC_ROOT)src/measurement/definitions/include
 
 ##  Where to find the valgrind headers.
 INC_DIR_VENDOR_VALGRIND = $(INC_ROOT)vendor/valgrind/include

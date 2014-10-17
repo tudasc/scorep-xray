@@ -42,9 +42,6 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
 SCOREP_DEFINE_DEFINITION_TYPE( Location )
@@ -68,8 +65,8 @@ SCOREP_Definitions_NewLocation( SCOREP_LocationType type,
 
 
 void
-scorep_definitions_unify_location( SCOREP_LocationDef*           definition,
-                                   SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_location( SCOREP_LocationDef*                  definition,
+                                   struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_LOCATION_H */

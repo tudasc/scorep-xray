@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -52,7 +52,7 @@
 #include <SCOREP_Metric_Management.h>
 
 #include <scorep_profile_definition.h>
-#include <definitions/SCOREP_Definitions.h>
+#include <SCOREP_Definitions.h>
 #include <scorep_ipc.h>
 #include <scorep_runtime_management.h>
 #include <scorep_profile_metric.h>

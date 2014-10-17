@@ -42,9 +42,6 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
 SCOREP_DEFINE_DEFINITION_TYPE( SystemTreeNodeProperty )
@@ -66,9 +63,11 @@ SCOREP_SystemTreeNodeHandle_AddProperty( SCOREP_SystemTreeNodeHandle systemTreeN
                                          const char*                 propertyValue  );
 
 
+struct SCOREP_Allocator_PageManager;
+
 void
-scorep_definitions_unify_system_tree_node_property( SCOREP_SystemTreeNodePropertyDef* definition,
-                                                    SCOREP_Allocator_PageManager*     handlesPageManager );
+scorep_definitions_unify_system_tree_node_property( SCOREP_SystemTreeNodePropertyDef*    definition,
+                                                    struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_SYSTEM_TREE_NODE_PROPERTY_H */

@@ -26,7 +26,7 @@
 #include <SCOREP_Timing.h>
 #include <scorep_location.h>
 #include <SCOREP_RuntimeManagement.h>
-#include <definitions/SCOREP_Definitions.h>
+#include <SCOREP_Definitions.h>
 #include <SCOREP_Types.h>
 
 #include <UTILS_Error.h>

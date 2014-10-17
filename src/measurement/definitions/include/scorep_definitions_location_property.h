@@ -22,9 +22,6 @@
  * @file
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 SCOREP_DEFINE_DEFINITION_TYPE( LocationProperty )
 {
@@ -36,13 +33,18 @@ SCOREP_DEFINE_DEFINITION_TYPE( LocationProperty )
     SCOREP_LocationHandle location_handle;
 };
 
+struct SCOREP_Location;
+
 SCOREP_LocationPropertyHandle
 SCOREP_Definitions_NewLocationProperty( SCOREP_LocationHandle locationHandle,
                                         const char*           name,
                                         const char*           value );
 
+
+struct SCOREP_Allocator_PageManager;
+
 void
-scorep_definitions_unify_location_property( SCOREP_LocationPropertyDef*   definition,
-                                            SCOREP_Allocator_PageManager* handlesPageManager );
+scorep_definitions_unify_location_property( SCOREP_LocationPropertyDef*          definition,
+                                            struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_LOCATION_PROPERTY_H */

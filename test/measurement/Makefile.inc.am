@@ -58,22 +58,22 @@ self_contained_scorep_config_c_SOURCES = $(SRC_ROOT)test/measurement/self_contai
 self_contained_scorep_config_c_CPPFLAGS = $(self_contained_cppflags)
 
 self_contained_scorep_definitions_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_definitions.c
-self_contained_scorep_definitions_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_definitions_c_CPPFLAGS = $(self_contained_cppflags) -I$(INC_DIR_DEFINITIONS)
 
 self_contained_scorep_events_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_events.c
-self_contained_scorep_events_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_events_c_CPPFLAGS = $(self_contained_cppflags) -I$(INC_DIR_DEFINITIONS)
 
 self_contained_scorep_memory_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_memory.c
-self_contained_scorep_memory_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_memory_c_CPPFLAGS = $(self_contained_cppflags) -I$(INC_DIR_DEFINITIONS)
 
 self_contained_scorep_public_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_public_types.c
 self_contained_scorep_public_types_c_CPPFLAGS = $(self_contained_cppflags)
 
 self_contained_scorep_runtime_management_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_runtime_management.c
-self_contained_scorep_runtime_management_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_runtime_management_c_CPPFLAGS = $(self_contained_cppflags) -I$(INC_DIR_DEFINITIONS)
 
 self_contained_scorep_location_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_location.c
-self_contained_scorep_location_c_CPPFLAGS = $(self_contained_cppflags)
+self_contained_scorep_location_c_CPPFLAGS = $(self_contained_cppflags) -I$(INC_DIR_DEFINITIONS)
 
 self_contained_scorep_types_c_SOURCES = $(SRC_ROOT)test/measurement/self_contained_scorep_types.c
 self_contained_scorep_types_c_CPPFLAGS = $(self_contained_cppflags)
@@ -86,7 +86,8 @@ definitions_test_c_CPPFLAGS = $(AM_CPPFLAGS) \
                               -I$(INC_ROOT)src/measurement/include \
                               -I$(PUBLIC_INC_DIR) \
                               $(UTILS_CPPFLAGS) \
-                              -I$(INC_DIR_COMMON_HASH)
+                              -I$(INC_DIR_COMMON_HASH) \
+                              -I$(INC_DIR_DEFINITIONS)
 definitions_test_c_LDADD = $(serial_libadd)
 definitions_test_c_LDFLAGS  = $(serial_ldflags)
 
@@ -100,7 +101,8 @@ string_duplicates_c_CPPFLAGS = $(AM_CPPFLAGS) \
                                -I$(INC_ROOT)src/measurement/include \
                                -I$(PUBLIC_INC_DIR) \
                                $(UTILS_CPPFLAGS) \
-                               -I$(INC_DIR_COMMON_HASH)
+                               -I$(INC_DIR_COMMON_HASH) \
+                               -I$(INC_DIR_DEFINITIONS)
 string_duplicates_c_LDADD = $(serial_libadd) \
      libscorep_measurement.la
 string_duplicates_c_LDFLAGS  = $(serial_ldflags)

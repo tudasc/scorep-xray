@@ -161,9 +161,9 @@ count_total_thread_teams( SCOREP_Location* location,
             SCOREP_InterimCommunicatorHandle_GetPayload( handle );
 
         UTILS_DEBUG( " %u[%u, %u, %u, %u]",
-                     scorep_handle_to_id( handle ),
-                     scorep_handle_to_id( definition->name_handle ),
-                     scorep_handle_to_id( definition->parent_handle ),
+                     SCOREP_Definitions_HandleToId( handle ),
+                     SCOREP_Definitions_HandleToId( definition->name_handle ),
+                     SCOREP_Definitions_HandleToId( definition->parent_handle ),
                      payload->num_threads,
                      payload->thread_num );
     }
@@ -317,8 +317,8 @@ find_thread_team_members( SCOREP_Location* location,
                          local_to_thread_id[ SCOREP_Location_GetId( location ) ],
                          thread_team_payload->thread_num,
                          team_leader->sequence_number,
-                         scorep_handle_to_id( team_leader->name_handle ),
-                         scorep_handle_to_id( team_leader->parent_handle ),
+                         SCOREP_Definitions_HandleToId( team_leader->name_handle ),
+                         SCOREP_Definitions_HandleToId( team_leader->parent_handle ),
                          team_leader_payload->num_threads );
 
             return false;
@@ -426,8 +426,8 @@ fork_join_subsystem_pre_unify( void )
 
         UTILS_DEBUG( "Next thread team %u{%u, %u, %u}",
                      current_team_leader->sequence_number,
-                     scorep_handle_to_id( current_team_leader->name_handle ),
-                     scorep_handle_to_id( current_team_leader->parent_handle ),
+                     SCOREP_Definitions_HandleToId( current_team_leader->name_handle ),
+                     SCOREP_Definitions_HandleToId( current_team_leader->parent_handle ),
                      current_team_leader_payload->num_threads );
 
         /*

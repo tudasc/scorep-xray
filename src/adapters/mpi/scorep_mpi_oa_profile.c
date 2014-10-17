@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2013
+ * Copyright (c) 2009-2011, 2014
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -52,6 +52,7 @@
 #include "SCOREP_Mpi.h"
 #include <SCOREP_Events.h>
 #include "scorep_mpi_communicator.h"
+#include <SCOREP_Definitions.h>
 
 
 static int64_t scorep_mpiprofiling_lateThreshold;

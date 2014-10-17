@@ -32,8 +32,8 @@
 #error "Do not include this header directly, use SCOREP_Definitions.h instead."
 #endif
 
-#ifndef SCOREP_PRIVATE_DEFINITIONS_SAMPLING_SET_RECORDER_H
-#define SCOREP_PRIVATE_DEFINITIONS_SAMPLING_SET_RECORDER_H
+#ifndef SCOREP_PRIVATE_DEFINITIONS_MARKER_H
+#define SCOREP_PRIVATE_DEFINITIONS_MARKER_H
 
 
 /**
@@ -42,26 +42,31 @@
  *
  */
 
-#include <scorep/SCOREP_PublicTypes.h>
-#include <SCOREP_DefinitionHandles.h>
-#include <SCOREP_Memory.h>
 
 
-SCOREP_DEFINE_DEFINITION_TYPE( SamplingSetRecorder )
+SCOREP_DEFINE_DEFINITION_TYPE( Marker )
 {
-    SCOREP_DEFINE_DEFINITION_HEADER( SamplingSetRecorder );
+    SCOREP_DEFINE_DEFINITION_HEADER( Marker );
 
-    SCOREP_SamplingSetHandle sampling_set_handle;
-    SCOREP_LocationHandle    recorder_handle;
-
-    /* Chain of recorders of one sampling set. */
-    SCOREP_SamplingSetRecorderHandle recorders_next;
+    // Add SCOREP_Marker stuff from here on.
 };
 
 
-void
-scorep_definitions_unify_sampling_set_recorder( SCOREP_SamplingSetRecorderDef* definition,
-                                                SCOREP_Allocator_PageManager*  handlesPageManager );
+/**
+ * Associate a name and a group handle with a process unique marker handle.
+ *
+ * @param name A meaningful name for the marker
+ *
+ * @param markerGroup Handle to the group the marker is associated to.
+ *
+ * @return A process unique marker handle to be used in calls to
+ * SCOREP_TriggerMarker().
+ *
+ * @planned To be implemented in milestone 2
+ */
+SCOREP_MarkerHandle
+SCOREP_Definitions_NewMarker( const char*              name,
+                              SCOREP_MarkerGroupHandle markerGroup );
 
 
-#endif /* SCOREP_PRIVATE_DEFINITIONS_SAMPLING_SET_RECORDER_H */
+#endif /* SCOREP_PRIVATE_DEFINITIONS_MARKER_H */
