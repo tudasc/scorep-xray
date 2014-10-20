@@ -78,7 +78,7 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_RenameExperimentDir )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Status_Finalize )                \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_deregister )          \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_ThreadForkJoin_Finalize )        \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_Finalize )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Memory_Finalize )                \
     SCOREP_TIMING_TRANSFORM_OP( scorep_finalize )
 
