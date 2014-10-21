@@ -31,31 +31,17 @@
 
 /* *INDENT-OFF* */
 
-#define TEAM_SPLIT( FUNCNAME )                                          \
-    void                                                                \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( shmem_team_t   team,         \
-                                           int            color,        \
-                                           int            key,          \
-                                           shmem_team_t * newTeam )     \
-    {                                                                   \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                             \
-        {                                                               \
-            SCOREP_SHMEM_EVENT_GEN_OFF();                               \
-                                                                        \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );    \
-                                                                        \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                     \
-                                      ( team, color, key, newTeam) );   \
-                                                                        \
-            SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );     \
-                                                                        \
-            SCOREP_SHMEM_EVENT_GEN_ON();                                \
-        }                                                               \
-        else                                                            \
-        {                                                               \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                     \
-                                      ( team, color, key, newTeam) );   \
-        }                                                               \
+#define TEAM_SPLIT( FUNCNAME )                      \
+    void                                            \
+    FSUB( FUNCNAME ) ( shmem_team_t * team,         \
+                       int          * color,        \
+                       int          * key,          \
+                       shmem_team_t * newTeam )     \
+    {                                               \
+        FUNCNAME( *team,                            \
+                  *color,                           \
+                  *key,                             \
+                  newTeam );                        \
     }
 
 /* *INDENT-ON* */
@@ -67,31 +53,17 @@ TEAM_SPLIT( shmem_team_split )
 
 /* *INDENT-OFF* */
 
-#define TEAM_CREATE_STRIDED( FUNCNAME )                                 \
-    void                                                                \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( int            peStart,      \
-                                           int            peStride,     \
-                                           int            peSize,       \
-                                           shmem_team_t * newTeam )     \
-    {                                                                   \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                             \
-        {                                                               \
-            SCOREP_SHMEM_EVENT_GEN_OFF();                               \
-                                                                        \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );    \
-                                                                        \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                     \
-                            ( peStart, peStride, peSize, newTeam ) );   \
-                                                                        \
-            SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );     \
-                                                                        \
-            SCOREP_SHMEM_EVENT_GEN_ON();                                \
-        }                                                               \
-        else                                                            \
-        {                                                               \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                     \
-                            ( peStart, peStride, peSize, newTeam ) );   \
-        }                                                               \
+#define TEAM_CREATE_STRIDED( FUNCNAME )             \
+    void                                            \
+    FSUB( FUNCNAME ) ( int          * peStart,      \
+                       int          * peStride,     \
+                       int          * peSize,       \
+                       shmem_team_t * newTeam )     \
+    {                                               \
+        FUNCNAME( *peStart,                         \
+                  *peStride,                        \
+                  *peSize,                          \
+                  newTeam );                        \
     }
 
 /* *INDENT-ON* */
@@ -103,26 +75,11 @@ TEAM_CREATE_STRIDED( shmem_team_create_strided )
 
 /* *INDENT-OFF* */
 
-#define TEAM_FREE( FUNCNAME )                                           \
-    void                                                                \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( shmem_team_t * team )        \
-    {                                                                   \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                             \
-        {                                                               \
-            SCOREP_SHMEM_EVENT_GEN_OFF();                               \
-                                                                        \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );    \
-                                                                        \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team ) );         \
-                                                                        \
-            SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );     \
-                                                                        \
-            SCOREP_SHMEM_EVENT_GEN_ON();                                \
-        }                                                               \
-        else                                                            \
-        {                                                               \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team ) );         \
-        }                                                               \
+#define TEAM_FREE( FUNCNAME )                       \
+    void                                            \
+    FSUB( FUNCNAME ) ( shmem_team_t * team )        \
+    {                                               \
+        FUNCNAME( team  );                          \
     }
 
 /* *INDENT-ON* */
@@ -134,30 +91,11 @@ TEAM_FREE( shmem_team_free )
 
 /* *INDENT-OFF* */
 
-#define TEAM_QUERY( FUNCNAME )                                          \
-    int                                                                 \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( shmem_team_t team )          \
-    {                                                                   \
-        int ret;                                                        \
-                                                                        \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                             \
-        {                                                               \
-            SCOREP_SHMEM_EVENT_GEN_OFF();                               \
-                                                                        \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );    \
-                                                                        \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team ) );   \
-                                                                        \
-            SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );     \
-                                                                        \
-            ret = SCOREP_SHMEM_EVENT_GEN_ON();                          \
-        }                                                               \
-        else                                                            \
-        {                                                               \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team ) );         \
-        }                                                               \
-                                                                        \
-        return ret;                                                     \
+#define TEAM_QUERY( FUNCNAME )                      \
+    int                                             \
+    FSUB( FUNCNAME ) ( shmem_team_t * team )        \
+    {                                               \
+        return FUNCNAME( *team );                   \
     }
 
 /* *INDENT-ON* */
@@ -173,34 +111,15 @@ TEAM_QUERY( shmem_team_mype )
 
 /* *INDENT-OFF* */
 
-#define TEAM_TRANSLATE_PE( FUNCNAME )                                   \
-    int                                                                 \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( shmem_team_t team1,          \
-                                           int          team1Pe,        \
-                                           shmem_team_t team2 )         \
-    {                                                                   \
-        int ret;                                                        \
-                                                                        \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                             \
-        {                                                               \
-            SCOREP_SHMEM_EVENT_GEN_OFF();                               \
-                                                                        \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );    \
-                                                                        \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,               \
-                                      ( team1, team1Pe, team2 ) );      \
-                                                                        \
-            SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );     \
-                                                                        \
-            SCOREP_SHMEM_EVENT_GEN_ON();                                \
-        }                                                               \
-        else                                                            \
-        {                                                               \
-            ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,               \
-                                      ( team1, team1Pe, team2 ) );      \
-        }                                                               \
-                                                                        \
-        return ret;                                                     \
+#define TEAM_TRANSLATE_PE( FUNCNAME )               \
+    int                                             \
+    FSUB( FUNCNAME ) ( shmem_team_t * team1,        \
+                       int          * team1Pe,      \
+                       shmem_team_t * team2 )       \
+    {                                               \
+        return FUNCNAME( *team1,                    \
+                         *team1Pe,                  \
+                         *team2 );                  \
     }
 
 /* *INDENT-ON* */
@@ -212,29 +131,13 @@ TEAM_TRANSLATE_PE( shmem_team_translate_pe )
 
 /* *INDENT-OFF* */
 
-#define TEAM_BARRIER( FUNCNAME )                                        \
-    void                                                                \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( shmem_team_t team,           \
-                                           long *       pSync )         \
-    {                                                                   \
-              \
-                                                                        \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                             \
-        {                                                               \
-            SCOREP_SHMEM_EVENT_GEN_OFF();                               \
-                                                                        \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );    \
-                                                                        \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team, pSync ) );  \
-                                                                        \
-            SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );     \
-                                                                        \
-            SCOREP_SHMEM_EVENT_GEN_ON();                                \
-        }                                                               \
-        else                                                            \
-        {                                                               \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( team, pSync ) );  \
-        }                                                               \
+#define TEAM_BARRIER( FUNCNAME )                    \
+    void                                            \
+    FSUB( FUNCNAME ) ( shmem_team_t * team,         \
+                       long         * pSync )       \
+    {                                               \
+        FUNCNAME( *team,                            \
+                  *pSync );                         \
     }
 
 /* *INDENT-ON* */
@@ -246,34 +149,19 @@ TEAM_BARRIER( shmem_team_barrier )
 
 /* *INDENT-OFF* */
 
-#define TEAM_ALLTOALL( FUNCNAME )                                       \
-    void                                                                \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( void *       target,         \
-                                           const void * src,            \
-                                           size_t       len,            \
-                                           shmem_team_t team,           \
-                                           long *       pSync )         \
-    {                                                                   \
-              \
-                                                                        \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                             \
-        {                                                               \
-            SCOREP_SHMEM_EVENT_GEN_OFF();                               \
-                                                                        \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );    \
-                                                                        \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                     \
-                                ( target, src, len, team, pSync ) );    \
-                                                                        \
-            SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );     \
-                                                                        \
-            SCOREP_SHMEM_EVENT_GEN_ON();                                \
-        }                                                               \
-        else                                                            \
-        {                                                               \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                     \
-                                ( target, src, len, team, pSync ) );    \
-        }                                                               \
+#define TEAM_ALLTOALL( FUNCNAME )               \
+    void                                        \
+    FSUB( FUNCNAME ) ( void         * target,   \
+                       const void   * src,      \
+                       size_t       * len,      \
+                       shmem_team_t * team,     \
+                       long         * pSync )   \
+    {                                           \
+        FUNCNAME( target,                       \
+                  src,                          \
+                  *len,                         \
+                  *team,                        \
+                  pSync );                      \
     }
 
 /* *INDENT-ON* */
@@ -285,35 +173,25 @@ TEAM_ALLTOALL( shmem_team_alltoall )
 
 /* *INDENT-OFF* */
 
-#define TEAM_ALLTOALLV( FUNCNAME )                                                  \
-    void                                                                            \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( void *       target,                     \
-                                           size_t *     tOffsets,                   \
-                                           size_t *     tSizes,                     \
-                                           const void * src,                        \
-                                           size_t *     sOffsets,                   \
-                                           size_t *     sSizes,                     \
-                                           shmem_team_t team,                       \
-                                           long *       pSync )                     \
-    {                                                                               \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                         \
-        {                                                                           \
-            SCOREP_SHMEM_EVENT_GEN_OFF();                                           \
-                                                                                    \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );                \
-                                                                                    \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                                 \
-                ( target, tOffsets, tSizes, src, sOffsets, sSizes, team, pSync ) ); \
-                                                                                    \
-            SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                 \
-                                                                                    \
-            SCOREP_SHMEM_EVENT_GEN_ON();                                            \
-        }                                                                           \
-        else                                                                        \
-        {                                                                           \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                                 \
-                ( target, tOffsets, tSizes, src, sOffsets, sSizes, team, pSync ) ); \
-        }                                                                           \
+#define TEAM_ALLTOALLV( FUNCNAME )              \
+    void                                        \
+    FSUB( FUNCNAME ) ( void         * target,   \
+                       size_t       * tOffsets, \
+                       size_t       * tSizes,   \
+                       const void   * src,      \
+                       size_t       * sOffsets, \
+                       size_t       * sSizes,   \
+                       shmem_team_t * team,     \
+                       long         * pSync )   \
+    {                                           \
+        FUNCNAME( target,                       \
+                  tOffsets,                     \
+                  tSizes,                       \
+                  src,                          \
+                  sOffsets,                     \
+                  sSizes,                       \
+                  *team,                        \
+                  pSync );                      \
     }
 
 /* *INDENT-ON* */
@@ -325,35 +203,25 @@ TEAM_ALLTOALLV( shmem_team_alltoallv )
 
 /* *INDENT-OFF* */
 
-#define TEAM_ALLTOALLV_PACKED( FUNCNAME )                                           \
-    void                                                                            \
-    SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( void *       target,                     \
-                                           size_t       tLength,                    \
-                                           size_t *     tSizes,                     \
-                                           const void * src,                        \
-                                           size_t *     sOffsets,                   \
-                                           size_t *     sSizes,                     \
-                                           shmem_team_t team,                       \
-                                           long *       pSync )                     \
-    {                                                                               \
-        if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                         \
-        {                                                                           \
-            SCOREP_SHMEM_EVENT_GEN_OFF();                                           \
-                                                                                    \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );                \
-                                                                                    \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                                 \
-                ( target, tLength, tSizes, src, sOffsets, sSizes, team, pSync ) );  \
-                                                                                    \
-            SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );                 \
-                                                                                    \
-            SCOREP_SHMEM_EVENT_GEN_ON();                                            \
-        }                                                                           \
-        else                                                                        \
-        {                                                                           \
-            SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME,                                 \
-                ( target, tLength, tSizes, src, sOffsets, sSizes, team, pSync ) );  \
-        }                                                                           \
+#define TEAM_ALLTOALLV_PACKED( FUNCNAME )       \
+    void                                        \
+    FSUB( FUNCNAME ) ( void         * target,   \
+                       size_t       * tLength,  \
+                       size_t       * tSizes,   \
+                       const void   * src,      \
+                       size_t       * sOffsets, \
+                       size_t       * sSizes,   \
+                       shmem_team_t * team,     \
+                       long         * pSync )   \
+    {                                           \
+        FUNCNAME( target,                       \
+                  *tLength,                     \
+                  tSizes,                       \
+                  src,                          \
+                  sOffsets,                     \
+                  sSizes,                       \
+                  *team,                        \
+                  pSync );                      \
     }
 
 /* *INDENT-ON* */
