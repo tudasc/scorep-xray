@@ -137,7 +137,7 @@ TEAM_TRANSLATE_PE( shmem_team_translate_pe )
                        long         * pSync )       \
     {                                               \
         FUNCNAME( *team,                            \
-                  *pSync );                         \
+                  pSync );                          \
     }
 
 /* *INDENT-ON* */
