@@ -120,9 +120,15 @@ SCOREP_SynchronizeClocks( void )
         int      master = 0;
         for ( int i = 0; i < N_PINGPONGS; ++i )
         {
-            SCOREP_Ipc_Recv( NULL, 0, SCOREP_IPC_INT, master );
+            /*
+             * Some SHMEM implementations don't support zero-count put/get
+             * operations and/or NULL buffers. That's why we send a dummy
+             * integer value.
+             */
+            int dummy = 0;
+            SCOREP_Ipc_Recv( &dummy, 1, SCOREP_IPC_INT, master );
             worker_time[ i ] = SCOREP_GetClockTicks();
-            SCOREP_Ipc_Send( NULL, 0, SCOREP_IPC_INT, master );
+            SCOREP_Ipc_Send( &dummy, 1, SCOREP_IPC_INT, master );
         }
 
         uint64_t sync_time;
