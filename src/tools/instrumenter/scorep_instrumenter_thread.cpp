@@ -75,7 +75,7 @@ SCOREP_Instrumenter_OmpTpd::checkCommand( const std::string& current,
         m_selector->select( this, false );
     }
 #if SCOREP_BACKEND_COMPILER_INTEL
-    if ( current == "-openmp" )
+    if ( current == "-openmp" || current == "-qopenmp" )
     {
         m_selector->select( this, false );
     }
@@ -146,7 +146,7 @@ SCOREP_Instrumenter_OmpAncestry::checkCommand( const std::string& current,
         m_selector->select( this, false );
     }
 #if SCOREP_BACKEND_COMPILER_INTEL
-    if ( current == "-openmp" )
+    if ( current == "-openmp" || current == "-qopenmp" )
     {
         m_selector->select( this, false );
     }
