@@ -93,7 +93,11 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
         input_file = remove_extension( remove_path( source_file ) )
                      + ".input"
                      + scorep_toupper( orig_ext );
-        instrumenter.executeCommand( "cat " + source_file + " > " + input_file );
+
+        command = "echo \"#line 1 \\\"" + undo_backslashing( source_file ) + "\\\"\" > " + input_file;
+        instrumenter.executeCommand( command );
+
+        instrumenter.executeCommand( "cat " + source_file + " >> " + input_file );
         instrumenter.addTempFile( input_file );
     }
 

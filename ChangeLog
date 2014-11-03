@@ -26,7 +26,9 @@ Bugfixes:
   the nesting level (analog pthread_cond_wait)
 - Fixes that internal CUDA driver calls were recorded
 - Fixes a potential deadlock in CUDA adapter for multithreaded CUDA
-
+- Fortran OpenMP applications instrumented with OPARI2 and
+  preprocessing report wrong file names ending in '.input.F' for POMP2
+  regions. Fixed.
 
 ------------------- Released version 1.3 -----------------------------
 
