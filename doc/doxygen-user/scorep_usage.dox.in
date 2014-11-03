@@ -58,6 +58,7 @@ Common options are:
   --compiler      Enables compiler instrumentation.
                   By default, it disables cobi and pdt instrumentation.
   --nocompiler    Disables compiler instrumentation.
+  --cuda          Enables cuda instrumentation.
   --nocuda        Disables cuda instrumentation.
   --online-access Enables online-access support. It is disabled by default
   --noonline-access online-access Disables online-access support.
