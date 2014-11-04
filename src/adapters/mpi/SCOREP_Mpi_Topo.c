@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -57,9 +57,6 @@
 #include "scorep_mpi_communicator.h"
 #include <UTILS_Error.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Definitions.h>
-
-#include <stdlib.h>
 
 /**
  * @name C wrappers

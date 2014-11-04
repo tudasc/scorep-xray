@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -59,9 +59,6 @@
 #define _SCOREP_MPIWRAP_REG_H
 
 #include <SCOREP_Definitions.h>
-#include <scorep/SCOREP_PublicTypes.h>
-
-#include <stdint.h>
 
 /*
  * -----------------------------------------------------------------------------

@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011,
  *    Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -113,16 +113,24 @@ SCOREP::Wrapgen::handler::mpi::_initialize
 
     /** - Point to Point class macros */
     comm_kind[ "MPI_Bsend" ]            = "POINT2POINT";
+    comm_kind[ "MPI_Bsend_init" ]       = "POINT2POINT";
     comm_kind[ "MPI_Ibsend" ]           = "POINT2POINT";
+    comm_kind[ "MPI_Iprobe" ]           = "POINT2POINT";
     comm_kind[ "MPI_Irsend" ]           = "POINT2POINT";
     comm_kind[ "MPI_Isend" ]            = "POINT2POINT";
     comm_kind[ "MPI_Issend" ]           = "POINT2POINT";
+    comm_kind[ "MPI_Irecv" ]            = "POINT2POINT";
+    comm_kind[ "MPI_Probe" ]            = "POINT2POINT";
     comm_kind[ "MPI_Recv" ]             = "POINT2POINT";
+    comm_kind[ "MPI_Recv_init" ]        = "POINT2POINT";
     comm_kind[ "MPI_Rsend" ]            = "POINT2POINT";
+    comm_kind[ "MPI_Rsend_init" ]       = "POINT2POINT";
     comm_kind[ "MPI_Send" ]             = "POINT2POINT";
+    comm_kind[ "MPI_Send_init" ]        = "POINT2POINT";
     comm_kind[ "MPI_Sendrecv" ]         = "POINT2POINT";
     comm_kind[ "MPI_Sendrecv_replace" ] = "POINT2POINT";
     comm_kind[ "MPI_Ssend" ]            = "POINT2POINT";
+    comm_kind[ "MPI_Ssend_init" ]       = "POINT2POINT";
     comm_kind[ "MPI_Start" ]            = "POINT2POINT";
     comm_kind[ "MPI_Startall" ]         = "POINT2POINT";
     comm_kind[ "MPI_Test" ]             = "POINT2POINT";

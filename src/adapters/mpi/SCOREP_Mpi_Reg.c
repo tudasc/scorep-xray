@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -59,78 +59,9 @@
 #include <strings.h>
 
 #include "SCOREP_Mpi.h"
-#include <SCOREP_Definitions.h>
 
 /* Placeholder for MPI functions which are not communicative */
 #define SCOREP_REGION_NONE SCOREP_REGION_FUNCTION
-
-/**
- * MPI operation event type
- */
-typedef struct
-{
-    char*    name;
-    uint32_t type;
-} scorep_mpi_type;
-
-/** MPI point-to-point function types
- * @note contents must be alphabetically sorted */
-static const scorep_mpi_type scorep_mpi_pt2pt[] = {
-    { "MPI_Bsend",            SCOREP_MPI_TYPE__SEND                                 },
-    { "MPI_Ibsend",           SCOREP_MPI_TYPE__SEND                                 },
-    { "MPI_Irsend",           SCOREP_MPI_TYPE__SEND                                 },
-    { "MPI_Isend",            SCOREP_MPI_TYPE__SEND                                 },
-    { "MPI_Issend",           SCOREP_MPI_TYPE__SEND                                 },
-    { "MPI_Recv",             SCOREP_MPI_TYPE__RECV                                 },
-    { "MPI_Rsend",            SCOREP_MPI_TYPE__SEND                                 },
-    { "MPI_Send",             SCOREP_MPI_TYPE__SEND                                 },
-    { "MPI_Sendrecv",         SCOREP_MPI_TYPE__SEND | SCOREP_MPI_TYPE__RECV         },
-    { "MPI_Sendrecv_replace", SCOREP_MPI_TYPE__SEND | SCOREP_MPI_TYPE__RECV         },
-    { "MPI_Ssend",            SCOREP_MPI_TYPE__SEND                                 },
-    { "MPI_Start",            SCOREP_MPI_TYPE__SEND                                 },
-    { "MPI_Startall",         SCOREP_MPI_TYPE__SEND                                 },
-    { "MPI_Test",             SCOREP_MPI_TYPE__RECV                                 },
-    { "MPI_Testall",          SCOREP_MPI_TYPE__RECV                                 },
-    { "MPI_Testany",          SCOREP_MPI_TYPE__RECV                                 },
-    { "MPI_Testsome",         SCOREP_MPI_TYPE__RECV                                 },
-    { "MPI_Wait",             SCOREP_MPI_TYPE__RECV                                 },
-    { "MPI_Waitall",          SCOREP_MPI_TYPE__RECV                                 },
-    { "MPI_Waitany",          SCOREP_MPI_TYPE__RECV                                 },
-    { "MPI_Waitsome",         SCOREP_MPI_TYPE__RECV                                 },
-};
-
-/** MPI collective function types
- * @note contents must be alphabetically sorted */
-static const scorep_mpi_type scorep_mpi_colls[] = {
-    { "MPI_Allgather",      SCOREP_COLL_TYPE__ALL2ALL           },
-    { "MPI_Allgatherv",     SCOREP_COLL_TYPE__ALL2ALL           },
-    { "MPI_Allreduce",      SCOREP_COLL_TYPE__ALL2ALL           },
-    { "MPI_Alltoall",       SCOREP_COLL_TYPE__ALL2ALL           },
-    { "MPI_Alltoallv",      SCOREP_COLL_TYPE__ALL2ALL           },
-    { "MPI_Alltoallw",      SCOREP_COLL_TYPE__ALL2ALL           },
-    { "MPI_Barrier",        SCOREP_COLL_TYPE__BARRIER           },
-    { "MPI_Bcast",          SCOREP_COLL_TYPE__ONE2ALL           },
-    { "MPI_Cart_create",    SCOREP_COLL_TYPE__IMPLIED           },
-    { "MPI_Cart_sub",       SCOREP_COLL_TYPE__IMPLIED           },
-    { "MPI_Comm_create",    SCOREP_COLL_TYPE__IMPLIED           },
-    { "MPI_Comm_dup",       SCOREP_COLL_TYPE__IMPLIED           },
-    { "MPI_Comm_free",      SCOREP_COLL_TYPE__IMPLIED           },
-    { "MPI_Comm_split",     SCOREP_COLL_TYPE__IMPLIED           },
-    { "MPI_Exscan",         SCOREP_COLL_TYPE__PARTIAL           },
-    { "MPI_Finalize",       SCOREP_COLL_TYPE__IMPLIED           },
-    { "MPI_Gather",         SCOREP_COLL_TYPE__ALL2ONE           },
-    { "MPI_Gatherv",        SCOREP_COLL_TYPE__ALL2ONE           },
-    { "MPI_Init",           SCOREP_COLL_TYPE__IMPLIED           },
-    { "MPI_Init_thread",    SCOREP_COLL_TYPE__IMPLIED           },
-    { "MPI_Reduce",         SCOREP_COLL_TYPE__ALL2ONE           },
-    { "MPI_Reduce_scatter", SCOREP_COLL_TYPE__ALL2ALL           },
-    { "MPI_Scan",           SCOREP_COLL_TYPE__PARTIAL           },
-    { "MPI_Scatter",        SCOREP_COLL_TYPE__ONE2ALL           },
-    { "MPI_Scatterv",       SCOREP_COLL_TYPE__ONE2ALL           },
-    { "MPI_Win_create",     SCOREP_COLL_TYPE__IMPLIED           },
-    { "MPI_Win_fence",      SCOREP_COLL_TYPE__IMPLIED           },
-    { "MPI_Win_free",       SCOREP_COLL_TYPE__IMPLIED           }
-};
 
 /** Region IDs of MPI functions */
 SCOREP_RegionHandle scorep_mpi_regid[ SCOREP__MPI_NUMFUNCS + 1 ];
@@ -401,7 +332,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( DECL_PMPI_BUFFER_ATTACH ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Buffer_attach )
@@ -2520,7 +2451,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( DECL_PMPI_IRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Irecv )
@@ -2533,7 +2464,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( DECL_PMPI_IRSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Irsend )
@@ -2780,7 +2711,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( DECL_PMPI_PUBLISH_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Publish_name )
@@ -2845,7 +2776,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( DECL_PMPI_REDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce )
@@ -2988,7 +2919,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( DECL_PMPI_SCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scan )
@@ -3053,7 +2984,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( DECL_PMPI_SENDRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Sendrecv )
@@ -3118,7 +3049,7 @@ scorep_mpi_register_regions( void )
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_INVALID_LINE_NO,
                                           SCOREP_PARADIGM_MPI,
-                                          SCOREP_REGION_NONE );
+                                          SCOREP_REGION_POINT2POINT );
     }
 #endif
 #if HAVE( DECL_PMPI_START ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Start )
@@ -4198,16 +4129,4 @@ scorep_mpi_register_regions( void )
                                       SCOREP_INVALID_LINE_NO,
                                       SCOREP_PARADIGM_MPI,
                                       SCOREP_REGION_ARTIFICIAL );
-}
-
-/**
- * Compare function for binary search
- * @param v1 string to checked
- * @param v2 pointer to \p scorep_mpi_type structure
- * @return result is equivalent to \p strcasecmp result of two strings
- */
-static int
-scorep_mpi_mycmp( const void* v1, const void* v2 )
-{
-    return strcasecmp( ( char* )v1, ( ( scorep_mpi_type* )v2 )->name );
 }
