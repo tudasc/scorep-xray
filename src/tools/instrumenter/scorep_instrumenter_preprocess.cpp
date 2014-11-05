@@ -95,6 +95,16 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
                      + scorep_toupper( orig_ext );
 
         command = "echo \"#line 1 \\\"" + undo_backslashing( source_file ) + "\\\"\" > " + input_file;
+        #if SCOREP_BACKEND_COMPILER_CRAY
+        // Cray ftn does chokes on '#line number' but accepts
+        // '# number'. If the semantics is the same is investigated.
+        command = "echo \"# 1 \\\"" + undo_backslashing( source_file ) + "\\\"\" > " + input_file;
+        #endif
+        #if SCOREP_BACKEND_COMPILER_STUDIO
+        // Above approach did not work for studio compiler.
+        // Start with an empty input_file as we append below.
+        command = "> " + input_file;
+        #endif
         instrumenter.executeCommand( command );
 
         instrumenter.executeCommand( "cat " + source_file + " >> " + input_file );
