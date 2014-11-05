@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -60,6 +60,17 @@ AC_REQUIRE([AC_CANONICAL_BUILD])dnl
 # To distinguish Cray XE and XK systems we determine whether the system uses GPU
 # accelerators (Cray XK) or not (Cray XE).
 AC_MSG_CHECKING([for platform])
+AC_ARG_ENABLE([platform-mic],
+    [AS_HELP_STRING([--enable-platform-mic],
+                    [Force build for Intel MIC platform [no]])],
+    [AS_CASE([${enableval}],
+        [yes],
+            [ac_scorep_platform=mic],
+        [no],
+            [],
+        [AC_MSG_ERROR([value '$enableval' unsupported for '--enable-platform-mic'])])
+    ])
+
 AS_IF([test "x${ac_scorep_platform}" = "x"],
     [AS_CASE([${build_os}],
          [linux*],
@@ -130,6 +141,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "x"],
          [linux],   [ac_scorep_cross_compiling="no"],
          [solaris], [ac_scorep_cross_compiling="no"],
          [mac],     [ac_scorep_cross_compiling="no"],
+         [mic],     [ac_scorep_cross_compiling="yes"],
          [mingw],   [ac_scorep_cross_compiling="no"],
          [aix],     [ac_scorep_cross_compiling="no"],
          [necsx],   [ac_scorep_cross_compiling="yes"],
@@ -166,6 +178,7 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_LINUX],   [test "x${ac_scorep_platform}" = "xlinux"])
     AM_CONDITIONAL([PLATFORM_SOLARIS], [test "x${ac_scorep_platform}" = "xsolaris"])
     AM_CONDITIONAL([PLATFORM_MAC],     [test "x${ac_scorep_platform}" = "xmac"])
+    AM_CONDITIONAL([PLATFORM_MIC],     [test "x${ac_scorep_platform}" = "xmic"])
     AM_CONDITIONAL([PLATFORM_NECSX],   [test "x${ac_scorep_platform}" = "xnecsx"])
     AM_CONDITIONAL([PLATFORM_ARM],     [test "x${ac_scorep_platform}" = "xarm"])
     AM_CONDITIONAL([PLATFORM_K],       [test "x${ac_scorep_platform}" = "xk"])
@@ -202,6 +215,8 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
         [AC_DEFINE([HAVE_PLATFORM_SOLARIS], [1], [Set if we are building for the Solaris platform])])
     AM_COND_IF([PLATFORM_MAC],
         [AC_DEFINE([HAVE_PLATFORM_MAC], [1], [Set if we are building for the Mac platform])])
+    AM_COND_IF([PLATFORM_MIC],
+        [AC_DEFINE([HAVE_PLATFORM_MIC], [1], [Set if we are building for the Intel MIC platform])])
     AM_COND_IF([PLATFORM_NECSX],
         [AC_DEFINE([HAVE_PLATFORM_NECSX], [1], [Set if we are building for the NEC SX platform])])
     AM_COND_IF([PLATFORM_ARM],

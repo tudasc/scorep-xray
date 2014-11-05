@@ -80,6 +80,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-aix  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-linux  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-mac  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-backend-mic  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-mingw \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-necsx  \
               $(srcdir)/vendor/common/build-config/platforms/platform-backend-solaris  \
@@ -98,6 +99,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-aix  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-linux  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-mac  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-frontend-mic  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-mingw \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-necsx  \
               $(srcdir)/vendor/common/build-config/platforms/platform-frontend-solaris  \
@@ -116,6 +118,7 @@ EXTRA_DIST += $(srcdir)/vendor/common/build-config/process_arguments.awk \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-aix  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-linux  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-mac  \
+              $(srcdir)/vendor/common/build-config/platforms/platform-mpi-mic  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-necsx  \
               $(srcdir)/vendor/common/build-config/platforms/platform-mpi-solaris  \
               $(srcdir)/vendor/common/build-config/platforms/platform-shmem-crayxk  \
