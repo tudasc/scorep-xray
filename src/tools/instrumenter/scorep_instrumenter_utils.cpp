@@ -338,9 +338,8 @@ check_lib_name(  const std::string& library_name, const std::string& value )
 bool
 is_mpi_library( const std::string& library_name )
 {
-    std::string mpi_string( "mpi" );
-
-    return check_lib_name( library_name,  mpi_string );
+    return check_lib_name( library_name, "mpi" ) ||
+           check_lib_name( library_name, "mpich" );
 }
 
 bool
