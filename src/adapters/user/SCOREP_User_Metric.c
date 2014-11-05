@@ -64,7 +64,7 @@ SCOREP_User_InitMetric
     /* Check if metric handle is already initialized */
     if ( *metricHandle != SCOREP_INVALID_SAMPLING_SET )
     {
-        UTILS_WARNING( "Reinitializtaion of user metric not possible" );
+        UTILS_WARNING( "Reinitialization of user metric not possible" );
     }
     else
     {
