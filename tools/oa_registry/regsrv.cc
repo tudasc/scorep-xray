@@ -436,7 +436,7 @@ int main( int argc, char* argv[] ){
 
 		if(scenario_file.size()==0)
 		{
-			fprintf(stderr,"No scenario file provided\n", argv[2] );
+			fprintf(stderr,"No scenario file provided\n" );
 			usage(argc, argv);
 			exit(1);
 		}
