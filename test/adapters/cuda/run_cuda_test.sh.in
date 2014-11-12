@@ -3,19 +3,36 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2009-2012,
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## Copyright (c) 2009-2012
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2012,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2012,2014,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2012,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2012,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2012,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
 ##
 
 ## file       run_cuda_test.sh
+
+## Note: create gold files using the 'create_gold_files.sh' script.
 
 echo "===== CUDA Compile and Run Test ====="
 
@@ -26,6 +43,8 @@ SRC_ROOT=@abs_top_srcdir@/..
 
 # Get otf2print tool
 OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+
+TEST_DATA_DIR=$SRC_ROOT/test/adapters/cuda/data
 
 # Set up directory that will contain experiment results
 RESULT_DIR=$PWD/scorep-serial-cuda
@@ -98,7 +117,7 @@ do
             SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY=true \
             SCOREP_ENABLE_TRACING=yes \
             SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR \
-            ./cuda_test ${testmode} -s ${num_streams} >cuda_test.out 2>&1
+            ./cuda_test ${testmode} -s ${num_streams} > cuda_test.out 2>&1
             res=$?
             cat cuda_test.out
 
@@ -178,6 +197,45 @@ do
                     rm -rf scorep-measurement-tmp
                     exit 1
                 fi
+            fi
+
+            # For combinations that have a gold file, compare output to gold file
+            features_pure=${features//,/.}
+            testmode_pure=${testmode//-/}
+            goldfile="$testmode_pure.$features_pure.gold"
+            goldfile=$TEST_DATA_DIR/${goldfile//".."/.}
+            if [ -e $goldfile.host -a -e $goldfile.device ]; then
+                # print, replace timestamps with 0 and write to trace_host.txt
+                $OTF2_PRINT $RESULT_DIR/traces.otf2 |
+                  grep '^ENTER\|LEAVE' |
+                  grep -Fv 'tmpxft' |
+                  sed -e 's/[^ ]*[^ ]/0/3' |
+                  egrep '^(ENTER|LEAVE)[[:space:]]+0' > trace_host.txt
+
+                # print, replace timestamps with 0 and write to trace_device.txt
+                $OTF2_PRINT $RESULT_DIR/traces.otf2 |
+                  grep '^ENTER\|LEAVE' |
+                  grep -Fv 'tmpxft' |
+                  sed -e 's/[^ ]*[^ ]/0/3' |
+                  egrep -v '^(ENTER|LEAVE)[[:space:]]+0' > trace_device.txt
+
+                # compare host events to gold file
+                diff $goldfile.host trace_host.txt > /dev/null
+                if [[ $? -gt 0 ]]; then
+                  echo "-------- ERROR: in host event output --------" >&2
+                  diff -u $goldfile.host trace_host.txt >&2
+                  exit 1
+                fi
+
+                # compare device events to gold file
+                diff $goldfile.device trace_device.txt > /dev/null
+                if [[ $? -gt 0 ]]; then
+                  echo "-------- ERROR: in device event output --------" >&2
+                  diff -u $goldfile.device trace_device.txt >&2
+                  exit 1
+                fi
+
+                echo "Gold file OK"
             fi
 
           done #memusage

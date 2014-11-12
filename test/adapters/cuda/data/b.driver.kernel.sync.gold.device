@@ -1,0 +1,8 @@
+ENTER                             4294967296     0  Region: "_Z10init_arrayPiS_i" <32>
+LEAVE                             4294967296     0  Region: "_Z10init_arrayPiS_i" <32>
+ENTER                             8589934592     0  Region: "_Z10init_arrayPiS_i" <32>
+LEAVE                             8589934592     0  Region: "_Z10init_arrayPiS_i" <32>
+ENTER                            12884901888     0  Region: "_Z10init_arrayPiS_i" <32>
+LEAVE                            12884901888     0  Region: "_Z10init_arrayPiS_i" <32>
+ENTER                            17179869184     0  Region: "_Z10init_arrayPiS_i" <32>
+LEAVE                            17179869184     0  Region: "_Z10init_arrayPiS_i" <32>
