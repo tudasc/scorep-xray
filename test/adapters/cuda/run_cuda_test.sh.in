@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012,2014,
+## Copyright (c) 2009-2012, 2014,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -210,14 +210,16 @@ do
                   grep '^ENTER\|LEAVE' |
                   grep -Fv 'tmpxft' |
                   sed -e 's/[^ ]*[^ ]/0/3' |
-                  egrep '^(ENTER|LEAVE)[[:space:]]+0' > trace_host.txt
+                  egrep '^(ENTER|LEAVE)[[:space:]]+0' |
+                  sed -e 's/<[0-9][0-9]*>$/<id>/g' > trace_host.txt
 
                 # print, replace timestamps with 0 and write to trace_device.txt
                 $OTF2_PRINT $RESULT_DIR/traces.otf2 |
                   grep '^ENTER\|LEAVE' |
                   grep -Fv 'tmpxft' |
                   sed -e 's/[^ ]*[^ ]/0/3' |
-                  egrep -v '^(ENTER|LEAVE)[[:space:]]+0' > trace_device.txt
+                  egrep -v '^(ENTER|LEAVE)[[:space:]]+0' |
+                  sed -e 's/<[0-9][0-9]*>$/<id>/g' > trace_device.txt
 
                 # compare host events to gold file
                 diff $goldfile.host trace_host.txt > /dev/null

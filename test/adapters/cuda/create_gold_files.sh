@@ -18,11 +18,12 @@
 ## Created files must be committed for automated testing.
 ##
 ## Gold files are created with:
-## otf2-print <trace> | grep -e '^ENTER\|LEAVE' | grep -Fv 'tmpxft' | sed -e 's/[^ ]*[^ ]/0/3' > | egrep | <gold>
+## otf2-print <trace> | grep -e '^ENTER\|LEAVE' | grep -Fv 'tmpxft' | sed -e 's/[^ ]*[^ ]/0/3' | egrep | sed -e 's/<[0-9][0-9]*>$/<id>/g' > <gold>
 ##
 ## grep for lines starting with 'ENTER' or 'LEAVE' and which do not contain dynamic function names ('tmpxft')
 ## replace every 3rd word (timestamp) with '0'
 ## filter for host and device locations using egrep [-v]
+## replace region id of ENTER/LEAVE records by general pattern
 
 RESULT_DIR=tmp_cuda_trace
 TARGET_DIR=$1
@@ -83,11 +84,13 @@ do
     grep '^ENTER\|LEAVE' |
     grep -Fv 'tmpxft' |
     sed -e 's/[^ ]*[^ ]/0/3' |
-    egrep '^(ENTER|LEAVE)[[:space:]]+0' > $goldfile.host
+    egrep '^(ENTER|LEAVE)[[:space:]]+0' |
+    sed -e 's/<[0-9][0-9]*>$/<id>/g' > $goldfile.host
 
   $OTF2_PRINT $RESULT_DIR/traces.otf2 |
     grep '^ENTER\|LEAVE' |
     grep -Fv 'tmpxft' |
     sed -e 's/[^ ]*[^ ]/0/3' |
-    egrep -v '^(ENTER|LEAVE)[[:space:]]+0' > $goldfile.device
+    egrep -v '^(ENTER|LEAVE)[[:space:]]+0' |
+    sed -e 's/<[0-9][0-9]*>$/<id>/g' > $goldfile.device
 done
