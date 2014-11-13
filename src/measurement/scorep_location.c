@@ -41,6 +41,7 @@
 
 #include <assert.h>
 #include <inttypes.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -53,6 +54,10 @@
 
 #include <UTILS_Error.h>
 
+#if HAVE( THREAD_LOCAL_STORAGE )
+/*  Declare and initialize thread local storage for in-measurement counter */
+__thread volatile sig_atomic_t scorep_in_measurement = 0;
+#endif /* HAVE( THREAD_LOCAL_STORAGE ) */
 
 // locations live inside SCOREP_Thread_ThreadPrivateData, may be referenced by
 // multiple ones.
@@ -66,7 +71,11 @@ struct SCOREP_Location
     SCOREP_Profile_LocationData*  profile_data;
     SCOREP_TracingData*           tracing_data;
 
-    SCOREP_Location*              next;  // store location objects in list for easy cleanup
+#if !HAVE( THREAD_LOCAL_STORAGE )
+    volatile sig_atomic_t scorep_in_measurement;
+#endif /* !HAVE( THREAD_LOCAL_STORAGE ) */
+
+    SCOREP_Location* next;               // store location objects in list for easy cleanup
 
     /** Flexible array member with length scorep_subsystems_get_number() */
     void* per_subsystem_data[];
@@ -248,6 +257,16 @@ SCOREP_Location_CallSubstratesOnActivation( SCOREP_Location* current,
                                             SCOREP_Location* parent,
                                             uint32_t         forkSequenceCount )
 {
+    /*
+     * Initialize the per-thread in-measurement counter
+     *
+     * If we have thread local storage support the corresponding
+     * variable is initialized at its declaration (see above)
+     */
+#if !HAVE( THREAD_LOCAL_STORAGE )
+    current->scorep_in_measurement = 0;
+#endif /* !HAVE( THREAD_LOCAL_STORAGE ) */
+
     if ( SCOREP_IsProfilingEnabled() )
     {
         SCOREP_Profile_OnLocationActivation( current, parent, forkSequenceCount );
@@ -408,3 +427,28 @@ SCOREP_Location_GetName( SCOREP_Location* locationData )
                    Location )->name_handle,
                String )->string_data;
 }
+
+
+#if !HAVE( THREAD_LOCAL_STORAGE )
+
+void
+SCOREP_Location_InMeasurementIncrement( SCOREP_Location* locationData )
+{
+    locationData->scorep_in_measurement++;
+}
+
+
+void
+SCOREP_Location_InMeasurementDecrement( SCOREP_Location* locationData )
+{
+    locationData->scorep_in_measurement--;
+}
+
+
+bool
+SCOREP_Location_InMeasurement( SCOREP_Location* locationData )
+{
+    return locationData->scorep_in_measurement > 0;
+}
+
+#endif /* !HAVE( THREAD_LOCAL_STORAGE ) */

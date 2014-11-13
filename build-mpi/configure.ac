@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2013,
+dnl Copyright (c) 2009-2014,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -200,6 +200,7 @@ AC_SCOREP_RUNTIME_MANAGEMENT_TIMINGS
 
 AC_SCOREP_BACKEND_TEST_RUNS
 AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE
+SCOREP_THREAD_LOCAL_STORAGE
 SCOREP_METRICS_CHECK
 SCOREP_DLFCN
 

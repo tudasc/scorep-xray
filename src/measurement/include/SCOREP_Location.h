@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -123,5 +123,21 @@ SCOREP_Location_SetLastTimestamp( SCOREP_Location* locationData,
 
 const char*
 SCOREP_Location_GetName( SCOREP_Location* locationData );
+
+
+#if !HAVE( THREAD_LOCAL_STORAGE )
+
+void
+SCOREP_Location_InMeasurementIncrement( SCOREP_Location* locationData );
+
+
+void
+SCOREP_Location_InMeasurementDecrement( SCOREP_Location* locationData );
+
+
+bool
+SCOREP_Location_InMeasurement( SCOREP_Location* locationData );
+
+#endif /* !HAVE( THREAD_LOCAL_STORAGE ) */
 
 #endif /* SCOREP_LOCATION_H */

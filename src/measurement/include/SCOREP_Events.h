@@ -989,6 +989,47 @@ uint64_t
 SCOREP_GetLastTimeStamp( void );
 
 
+
+/*
+ * Interface to detect if we are already inside the measurement system.
+ * Every adapter event function needs to have SCOREP_IN_MEASUREMENT_INCREMENT
+ * as first and SCOREP_IN_MEASUREMENT_DECREMENT as last statement
+ * (i.e. before every return).
+ */
+
+#if HAVE( THREAD_LOCAL_STORAGE )
+
+extern __thread volatile sig_atomic_t scorep_in_measurement;
+
+/** Enter the measurement system */
+#define SCOREP_IN_MEASUREMENT_INCREMENT \
+    scorep_in_measurement++;
+
+/** Leave the measurement system */
+
+#define SCOREP_IN_MEASUREMENT_DECREMENT \
+    scorep_in_measurement--;
+
+/** Test whether we are already inside the measurement system */
+#define SCOREP_IN_MEASUREMENT           \
+    ( scorep_in_measurement > 0 )
+
+#else
+
+/** Enter the measurement system */
+#define SCOREP_IN_MEASUREMENT_INCREMENT \
+    SCOREP_Location_InMeasurementIncrement( SCOREP_Location_GetCurrentCPULocation() );
+
+/** Leave the measurement system */
+#define SCOREP_IN_MEASUREMENT_DECREMENT \
+    SCOREP_Location_InMeasurementDecrement( SCOREP_Location_GetCurrentCPULocation() );
+
+/** Test whether we are already inside the measurement system */
+#define SCOREP_IN_MEASUREMENT           \
+    ( SCOREP_Location_InMeasurement( SCOREP_Location_GetCurrentCPULocation() ) )
+
+#endif /* HAVE( THREAD_LOCAL_STORAGE ) */
+
 /*@}*/
 
 
