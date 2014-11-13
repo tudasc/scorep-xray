@@ -44,7 +44,12 @@ SRC_ROOT=@abs_top_srcdir@/..
 # Get otf2print tool
 OTF2_PRINT=@OTF2_BINDIR@/otf2-print
 
-TEST_DATA_DIR=$SRC_ROOT/test/adapters/cuda/data
+# Check CUDA version, we provide different gold files for CUDA version 5 and 6
+@HAVE_CUDA_VERSION_GREATER_EQUAL_60_TRUE@cuda_gold_file_version=v6
+@HAVE_CUDA_VERSION_GREATER_EQUAL_60_FALSE@cuda_gold_file_version=v5
+
+# Directory containing the gold files
+TEST_DATA_DIR=$SRC_ROOT/test/adapters/cuda/data/$cuda_gold_file_version
 
 # Set up directory that will contain experiment results
 RESULT_DIR=$PWD/scorep-serial-cuda

@@ -4,15 +4,29 @@
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
-##    RWTH Aachen, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## RWTH Aachen, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2012,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2012, 2014,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2012,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2012,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2012,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
 ##
 
 ## file build-config/m4/scorep_cuda.m4
@@ -35,10 +49,12 @@ dnl the driver and the toolkit can be installed separatly, we provide the
 dnl user with the options --with-libcudart and --with-libcuda. There is no
 dnl need for a --with-libcupti as cupti resides within the toolkit
 dnl installation.
+
 AC_DEFUN([AC_SCOREP_CUDA], [
 scorep_have_cuda="no"
 scorep_have_cupti4="no"
 scorep_have_cupti_activity_async="no"
+scorep_cuda_version_greater_equal_60="no"
 
 ac_scorep_cuda_safe_CPPFLAGS=$CPPFLAGS
 ac_scorep_cuda_safe_LDFLAGS=$LDFLAGS
@@ -99,9 +115,16 @@ AC_SCOREP_COND_HAVE([CUPTI_ASYNC_SUPPORT],
                     [Defined if CUPTI activity asynchronous buffer handling is available.]
                    )
 
+AC_SCOREP_COND_HAVE([CUDA_VERSION_GREATER_EQUAL_60],
+                    [test "x${scorep_cuda_version_greater_equal_60}" = "xyes"],
+                    [Defined if CUDA version is greater or equal 6.0.]
+                   )
+
 AFS_SUMMARY([CUDA support], [${scorep_have_cuda}, see also libcudart, libcuda, and libcupti support])
 
 AFS_SUMMARY([CUPTI async support], [${scorep_have_cupti_activity_async}])
+
+AFS_SUMMARY([CUDA version >= 6.0], [${scorep_cuda_version_greater_equal_60}])
 
 ])
 
@@ -243,6 +266,19 @@ AS_IF([test "x$scorep_cuda_error" = "xno"],
         [AC_MSG_NOTICE([CUDA driver API version could not be determined and/or is
                         incompatible (< 4.1). See 'config.log' for more details.])
          scorep_cuda_error="yes" ])])
+
+dnl check for CUDA version >= 6.0
+AS_IF([test "x$scorep_cuda_error" = "xno"],
+      [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include "cuda.h"]],
+        [[
+#if CUDA_VERSION < 6000
+#  ups__cuda_version_lt_6000
+#endif
+        ]])],
+        [scorep_cuda_version_greater_equal_60="yes"],
+        [AC_MSG_NOTICE([CUDA driver API version is less than 6.0.
+                        See 'config.log' for more details.])
+         scorep_cuda_version_greater_equal_60="no"])])
 
 dnl final check for errors
 if test "x${scorep_cuda_error}" = "xno"; then
