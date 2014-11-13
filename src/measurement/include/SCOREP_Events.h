@@ -49,6 +49,10 @@
 
 #include <stdbool.h>
 
+#if HAVE( THREAD_LOCAL_STORAGE )
+#include <signal.h>
+#endif /* HAVE( THREAD_LOCAL_STORAGE ) */
+
 /**
  * @defgroup SCOREP_Events SCOREP Events
  *
