@@ -79,12 +79,12 @@ if SCOREP_COMPILER_SUN
 jacobi_mpi_omp_c_CPPFLAGS += -I$(INC_ROOT)test/jacobi/hybrid/C
 endif SCOREP_COMPILER_SUN
 
-check_PROGRAMS                        += jacobi_mpi_omp_c_unistrumented
-jacobi_mpi_omp_c_unistrumented_SOURCES = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.c \
-                                         $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.h \
-                                         $(SRC_ROOT)test/jacobi/hybrid/C/main.c
-jacobi_mpi_omp_c_unistrumented_CFLAGS  = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-jacobi_mpi_omp_c_unistrumented_LDADD   = -lm
+check_PROGRAMS                         += jacobi_mpi_omp_c_uninstrumented
+jacobi_mpi_omp_c_uninstrumented_SOURCES = $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.c \
+                                          $(SRC_ROOT)test/jacobi/hybrid/C/jacobi.h \
+                                          $(SRC_ROOT)test/jacobi/hybrid/C/main.c
+jacobi_mpi_omp_c_uninstrumented_CFLAGS  = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+jacobi_mpi_omp_c_uninstrumented_LDADD   = -lm
 
 TESTS_MPI_OMP += jacobi_mpi_omp_c
 
@@ -133,12 +133,12 @@ jacobi_mpi_omp_cxx_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_
 jacobi_mpi_omp_cxx_LDADD    = $(mpi_omp_libadd) libjacobi_mpi_pomp_cxx.la
 jacobi_mpi_omp_cxx_LDFLAGS  = $(mpi_omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
-check_PROGRAMS                            += jacobi_mpi_omp_cxx_unistrumented
-jacobi_mpi_omp_cxx_unistrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.cpp \
+check_PROGRAMS                            += jacobi_mpi_omp_cxx_uninstrumented
+jacobi_mpi_omp_cxx_uninstrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.cpp \
                                              $(SRC_ROOT)test/jacobi/hybrid/C++/jacobi.h   \
                                              $(SRC_ROOT)test/jacobi/hybrid/C++/main.cpp
-jacobi_mpi_omp_cxx_unistrumented_CXXFLAGS  = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
-jacobi_mpi_omp_cxx_unistrumented_LDADD     = -lm
+jacobi_mpi_omp_cxx_uninstrumented_CXXFLAGS  = $(AM_CXXFLAGS) $(OPENMP_CXXFLAGS)
+jacobi_mpi_omp_cxx_uninstrumented_LDADD     = -lm
 
 TESTS_MPI_OMP += jacobi_mpi_omp_cxx
 
@@ -209,14 +209,14 @@ jacobi_mpi_omp_f90_LDADD    = $(mpi_omp_libadd) libjacobi_mpi_pomp_f90.la
 jacobi_mpi_omp_f90_LDFLAGS  = $(OPENMP_CXXFLAGS)
 jacobi_mpi_omp_f90_LDFLAGS += $(mpi_omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
 
-check_PROGRAMS                            += jacobi_mpi_omp_f90_unistrumented
-jacobi_mpi_omp_f90_unistrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.f90 \
-                                             $(SRC_ROOT)test/jacobi/hybrid/Fortran/jacobi.F90      \
-                                             $(SRC_ROOT)test/jacobi/hybrid/Fortran/main.F90
-jacobi_mpi_omp_f90_unistrumented_LDFLAGS   = $(OPENMP_CXXFLAGS)
-jacobi_mpi_omp_f90_unistrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
-jacobi_mpi_omp_f90_unistrumented_CPPFLAGS  = $(OPENMP_CXXFLAGS)
-jacobi_mpi_omp_f90_unistrumented_LDADD     = -lm
+check_PROGRAMS                             += jacobi_mpi_omp_f90_uninstrumented
+jacobi_mpi_omp_f90_uninstrumented_SOURCES   = $(SRC_ROOT)test/jacobi/hybrid/Fortran/VariableDef.f90 \
+                                              $(SRC_ROOT)test/jacobi/hybrid/Fortran/jacobi.F90      \
+                                              $(SRC_ROOT)test/jacobi/hybrid/Fortran/main.F90
+jacobi_mpi_omp_f90_uninstrumented_LDFLAGS   = $(OPENMP_CXXFLAGS)
+jacobi_mpi_omp_f90_uninstrumented_FCFLAGS   = $(AM_FCFLAGS) $(OPENMP_FCFLAGS)
+jacobi_mpi_omp_f90_uninstrumented_CPPFLAGS  = $(OPENMP_CXXFLAGS)
+jacobi_mpi_omp_f90_uninstrumented_LDADD     = -lm
 
 TESTS_MPI_OMP += jacobi_mpi_omp_f90
 

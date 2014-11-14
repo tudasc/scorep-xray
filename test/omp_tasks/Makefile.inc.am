@@ -34,10 +34,10 @@
 
 if HAVE_OPENMP_SUPPORT
 
-check_PROGRAMS += omp_tasks_unistrumented
+check_PROGRAMS += omp_tasks_uninstrumented
 
-omp_tasks_unistrumented_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks.c
-omp_tasks_unistrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+omp_tasks_uninstrumented_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks.c
+omp_tasks_uninstrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 
 if HAVE_SCOREP_OMP_TPD
 

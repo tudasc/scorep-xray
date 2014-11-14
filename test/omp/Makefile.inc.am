@@ -33,14 +33,14 @@
 
 if HAVE_OPENMP_SUPPORT
 
-check_PROGRAMS += omp_test_unistrumented
+check_PROGRAMS += omp_test_uninstrumented
 
-omp_test_unistrumented_SOURCES  = $(SRC_ROOT)test/omp/omp_test.c
-omp_test_unistrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-#omp_test_unistrumented_CPPFLAGS = $(AM_CPPFLAGS) @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
-#omp_test_unistrumented_LDADD    = $(omp_libadd)
+omp_test_uninstrumented_SOURCES  = $(SRC_ROOT)test/omp/omp_test.c
+omp_test_uninstrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
+#omp_test_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS) @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
+#omp_test_uninstrumented_LDADD    = $(omp_libadd)
 
-#TESTS_OMP += omp_test_unistrumented
+#TESTS_OMP += omp_test_uninstrumented
 
 if HAVE_SCOREP_OMP_TPD
 
