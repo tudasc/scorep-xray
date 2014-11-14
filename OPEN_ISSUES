@@ -243,6 +243,10 @@ various Score-P components.
     is flushed. The user can specify the CUPTI activity buffer (chunk)
     size with the environment variable SCOREP_CUDA_BUFFER_CHUNK. In
     CUDA 6.0 (CUPTI 5) this issue is fixed.
+  - Support for CUDA 4.2 and prior versions is deprecated. Score-P may
+    work in combination with these CUDA versions but it is not tested.
+    Support for CUDA 4.2 and prior versions will become officially
+    unsupported in a future release of Score-P.
 
 --------------------------------------------------------------------------------
 
