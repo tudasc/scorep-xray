@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -69,10 +69,9 @@ scorep_profile_process_collapse( void )
         return;
     }
 
-    fprintf( stderr,
-             "Score-P callpath depth limitation of %" PRIu64 " exceeded.\n"
-             "Reached callpath depth was %" PRIu64 "\n",
-             scorep_profile.max_callpath_depth, scorep_profile.reached_depth );
+    UTILS_WARNING( "Score-P callpath depth limitation of %" PRIu64 " exceeded.\n"
+                   "Reached callpath depth was %" PRIu64 "\n",
+                   scorep_profile.max_callpath_depth, scorep_profile.reached_depth );
 
     scorep_profile_collapse_region = SCOREP_Definitions_NewRegion( "COLLAPSE",
                                                                    NULL,
