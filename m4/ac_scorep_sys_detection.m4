@@ -223,6 +223,6 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
         [AC_DEFINE([HAVE_PLATFORM_ARM], [1], [Set if we are building for the ARM platform])])
     AM_COND_IF([PLATFORM_K],
         [AC_DEFINE([HAVE_PLATFORM_K], [1], [Set if we are building for the K platform])])
-    AM_COND_IF([PLATFORM_ARM],
+    AM_COND_IF([PLATFORM_FX10],
         [AC_DEFINE([HAVE_PLATFORM_FX10], [1], [Set if we are building for the FX10 platform])])
 ])
