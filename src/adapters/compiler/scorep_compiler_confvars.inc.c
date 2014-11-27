@@ -36,6 +36,12 @@
  */
 
 
+#include <SCOREP_Config.h>
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
+#include <UTILS_Debug.h>
+
+#include <stdlib.h>
+
 /**
    Contains the name of the executable.
  */

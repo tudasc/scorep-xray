@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -37,26 +37,10 @@
 
 #include <config.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <inttypes.h>
-#include <stdbool.h>
-
-
-#include <UTILS_Error.h>
-#define SCOREP_DEBUG_MODULE_NAME OPENMP
-#include <UTILS_Debug.h>
-
-
 #include <SCOREP_Subsystem.h>
-#include <SCOREP_Config.h>
-#include <SCOREP_Location.h>
 
 
-#include "scorep_pomp_confvars.inc.c"
-
-/** Struct which contains the adapter iniitialization and finalization functions for the
+/** Struct which contains the adapter initialization and finalization functions for the
     POMP2 User adapter.
  */
 const SCOREP_Subsystem SCOREP_Subsystem_PompUserAdapter =
@@ -73,7 +57,7 @@ const SCOREP_Subsystem SCOREP_Subsystem_PompUserAdapter =
     .subsystem_control           = NULL
 };
 
-/** Struct which contains the adapter iniitialization and finalization functions for the
+/** Struct which contains the adapter initialization and finalization functions for the
     POMP2 OpenMP adapter.
  */
 const SCOREP_Subsystem SCOREP_Subsystem_PompOmpAdapter =

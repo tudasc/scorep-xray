@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,25 +38,21 @@
 
 #include <config.h>
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "SCOREP_Config.h"
-#include <SCOREP_RuntimeManagement.h>
+#include "SCOREP_Metric_Source.h"
+#include <SCOREP_Location.h>
+
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
 #include <UTILS_CStr.h>
 
-#include <SCOREP_Location.h>
-
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
 
 #if defined( __STDC_VERSION__ ) && ( __STDC_VERSION__ >= 199901L ) && !defined( C99 )
 #define C99
 #endif
 #include <papi.h>
-
-#include "SCOREP_Metric_Source.h"
 
 //#if !(defined(HAVE_DECL_LONG_LONG) && HAVE_DECL_LONG_LONG)
 //# define long_long long long

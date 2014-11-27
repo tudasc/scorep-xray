@@ -37,21 +37,7 @@
 
 #include <config.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <inttypes.h>
-#include <stdbool.h>
-
-
-#include <UTILS_Error.h>
-#define SCOREP_DEBUG_MODULE_NAME METRIC
-#include <UTILS_Debug.h>
-
-
 #include <SCOREP_Subsystem.h>
-#include <SCOREP_Config.h>
-#include <SCOREP_Location.h>
 
 #include "scorep_metric_papi_confvars.inc.c"
 

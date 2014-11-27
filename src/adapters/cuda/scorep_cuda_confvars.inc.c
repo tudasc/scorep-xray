@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -35,6 +35,8 @@
  *
  */
 
+
+#include "scorep_cuda.h"
 
 uint64_t scorep_cuda_features;
 size_t   scorep_cupti_activity_buffer_size;

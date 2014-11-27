@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,25 +38,17 @@
 
 #include <config.h>
 
-#include <ctype.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <sys/resource.h>
+#include "SCOREP_Metric_Source.h"
 
-#include <dlfcn.h>
+#include <scorep/SCOREP_MetricPlugins.h>
+#include <SCOREP_Timing.h>
 
-#include "SCOREP_Config.h"
-#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include <UTILS_CStr.h>
 
-#include "SCOREP_Metric_Source.h"
-#include <scorep/SCOREP_MetricPlugins.h>
-
-#include <SCOREP_Timing.h>
+#include <stdlib.h>
+#include <string.h>
+#include <dlfcn.h>
 
 #define SCOREP_METRIC_PLUGIN_MAX_PER_THREAD 16
 
@@ -649,7 +641,7 @@ scorep_metric_plugins_finalize_source( void )
  *  @param event_sets           Event sets of all metrics.
  */
 static SCOREP_Metric_EventSet*
-scorep_metric_plugins_initialize_location( SCOREP_Location*           location,
+scorep_metric_plugins_initialize_location( struct SCOREP_Location*    location,
                                            SCOREP_MetricSynchronicity sync_type,
                                            SCOREP_MetricPer           metric_type )
 {

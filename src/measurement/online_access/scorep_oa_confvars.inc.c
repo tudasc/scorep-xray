@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -34,6 +34,13 @@
  *
  *
  */
+
+
+#include <SCOREP_Config.h>
+
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
 
 uint64_t scorep_oa_registry_port = 50100;

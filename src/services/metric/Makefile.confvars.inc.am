@@ -40,11 +40,7 @@ libscorep_metric_confvars_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_ROOT)src/measurement \
-    -I$(INC_ROOT)src/services/include \
-    -I$(INC_ROOT)src/services/metric \
-    $(UTILS_CPPFLAGS) \
-    -I$(INC_DIR_DEFINITIONS)
+    $(UTILS_CPPFLAGS)
 
 libscorep_confvars_la_LIBADD += libscorep_metric_confvars.la
 

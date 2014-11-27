@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -36,23 +36,16 @@
 
 
 #include <config.h>
-#include <UTILS_Debug.h>
-#include <SCOREP_Config.h>
-#include <SCOREP_RuntimeManagement.h>
 
-#include "SCOREP_Types.h"
 #include "SCOREP_OA_RuntimeManagement.h"
-
-
 #include "scorep_oa_connection.h"
 #include "scorep_oa_mri_control.h"
-#include "scorep_status.h"
 
-#include <stdio.h>
-
-static int8_t scorep_oa_is_initialized = 0;
+#include <UTILS_Debug.h>
 
 #include "scorep_oa_confvars.inc.c"
+
+static int8_t scorep_oa_is_initialized = 0;
 
 void
 SCOREP_OA_Register( void )

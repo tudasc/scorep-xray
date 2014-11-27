@@ -38,40 +38,25 @@
 
 #include <config.h>
 
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <inttypes.h>
-
+#include "SCOREP_Tracing.h"
 
 #include <otf2/otf2.h>
 
+#include <scorep_runtime_management.h>
+#include <SCOREP_Mutex.h>
+#include <scorep_status.h>
+#include <scorep_location.h>
+#include "scorep_rewind_stack_management.h"
+#include <SCOREP_Timing.h>
+#include "scorep_tracing_internal.h"
+#include <SCOREP_Definitions.h>
+#include "scorep_tracing_definitions.h"
+#include <scorep_clock_synchronization.h>
 
-#include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME TRACING
 #include <UTILS_Debug.h>
 
-#include <SCOREP_Profile.h>
-#include <SCOREP_Metric_Management.h>
-#include <SCOREP_RuntimeManagement.h>
-#include <SCOREP_Config.h>
-#include <scorep_status.h>
-#include <scorep_environment.h>
-#include <scorep_runtime_management.h>
-#include <scorep_clock_synchronization.h>
-#include <scorep_location.h>
-#include <SCOREP_Memory.h>
-#include <SCOREP_Timing.h>
-#include <SCOREP_Definitions.h>
-#include <SCOREP_Mutex.h>
-
-
-#include "scorep_tracing_internal.h"
-#include "SCOREP_Tracing.h"
-#include "SCOREP_Tracing_ThreadInteraction.h"
-#include "scorep_tracing_definitions.h"
-
+#include <inttypes.h>
 
 static OTF2_Archive* scorep_otf2_archive;
 static SCOREP_Mutex  scorep_otf2_archive_lock;

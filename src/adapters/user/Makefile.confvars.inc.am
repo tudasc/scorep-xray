@@ -40,11 +40,7 @@ libscorep_user_confvars_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_ROOT)src/measurement \
-    -I$(INC_ROOT)src/adapters/user \
-    -I$(INC_ROOT)src/adapters/include \
-    $(UTILS_CPPFLAGS) \
-    -I$(INC_DIR_DEFINITIONS)
+    $(UTILS_CPPFLAGS)
 
 libscorep_confvars_la_LIBADD += libscorep_user_confvars.la
 

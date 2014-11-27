@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -44,12 +44,10 @@
 #ifndef SCOREP_METRIC_SOURCE_H
 #define SCOREP_METRIC_SOURCE_H
 
-#include <stdint.h>
-
-#include "SCOREP_Types.h"
-#include "SCOREP_Location.h"
-
 #include <scorep/SCOREP_MetricTypes.h>
+
+#include <UTILS_Error.h>
+
 
 /** @defgroup SCOREP_Metric
  *
@@ -77,6 +75,8 @@ typedef struct SCOREP_Metric_EventSet SCOREP_Metric_EventSet;
 /* *********************************************************************
  * Functions
  **********************************************************************/
+
+struct SCOREP_Location;
 
 /**
  * A metric source needs to provide numerous functions for the metric
@@ -110,7 +110,7 @@ typedef struct SCOREP_MetricSource
     /**
      * Callback to register a location to the metric source.
      */
-    SCOREP_Metric_EventSet* ( *metric_source_initialize_location )( SCOREP_Location *           location,
+    SCOREP_Metric_EventSet* ( *metric_source_initialize_location )( struct SCOREP_Location*           location,
                                                                     SCOREP_MetricSynchronicity metric_synchronicity,
                                                                     SCOREP_MetricPer metric_type );
 

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,21 +38,15 @@
 
 #include <config.h>
 
-#include <ctype.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <sys/resource.h>
+#include "SCOREP_Metric_Source.h"
 
-#include "SCOREP_Config.h"
-#include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include <UTILS_CStr.h>
 
-#include "SCOREP_Metric_Source.h"
-
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <sys/resource.h>
 
 /** @defgroup SCOREP_Metric_RUSAGE Resource Usage Metric Source
  *  @ingroup SCOREP_Metric
@@ -438,7 +432,7 @@ scorep_metric_rusage_finalize_source( void )
  *  @param event_sets           Event sets of all metrics.
  */
 static SCOREP_Metric_EventSet*
-scorep_metric_rusage_initialize_location( SCOREP_Location*           locationData,
+scorep_metric_rusage_initialize_location( struct SCOREP_Location*    locationData,
                                           SCOREP_MetricSynchronicity sync_type,
                                           SCOREP_MetricPer           metric_type )
 {

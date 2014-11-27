@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -36,22 +36,6 @@
  */
 
 #include <config.h>
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <inttypes.h>
-#include <stdbool.h>
-
-
-#include <UTILS_Error.h>
-#include <UTILS_Debug.h>
-
-
-#include <SCOREP_Subsystem.h>
-#include <SCOREP_Config.h>
-#include <SCOREP_Location.h>
-
 
 #include "scorep_oa_confvars.inc.c"
 

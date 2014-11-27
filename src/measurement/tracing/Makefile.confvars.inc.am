@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -39,7 +39,6 @@ libscorep_tracing_confvars_la_SOURCES = \
 libscorep_tracing_confvars_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_ROOT)src/measurement \
     -I$(PUBLIC_INC_DIR) \
     $(UTILS_CPPFLAGS)
 

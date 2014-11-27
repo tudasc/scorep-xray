@@ -4,6 +4,9 @@
  * Copyright (c) 2013-2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2014,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -19,19 +22,8 @@
 
 #include <config.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <inttypes.h>
-#include <stdbool.h>
-
-#define SCOREP_DEBUG_MODULE_NAME SHMEM
-#include <UTILS_Debug.h>
-
 #include <SCOREP_Subsystem.h>
-#include <SCOREP_Config.h>
 
-#include "scorep_shmem_confvars.inc.c"
 
 /* The initialization struct for the SHMEM adapter */
 const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter =

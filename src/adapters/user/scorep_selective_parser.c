@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014
@@ -36,19 +36,19 @@
  */
 
 #include <config.h>
-#include <stdio.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
-//#include <SCOREP_Subsystem.h>
-#include <SCOREP_Config.h>
+#include <SCOREP_Vector.h>
+#include "scorep_selective_region.h"
 #include <SCOREP_RuntimeManagement.h>
+
+#include <UTILS_Error.h>
 #include <UTILS_CStr.h>
 #include <UTILS_Debug.h>
 #include <UTILS_IO.h>
-#include "scorep_selective_region.h"
-#include <UTILS_Error.h>
 
 /* **************************************************************************************
    Variable definitions

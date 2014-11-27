@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -35,6 +35,12 @@
  *
  */
 
+
+#include <SCOREP_Config.h>
+#include <UTILS_Error.h>
+
+#include <stdbool.h>
+#include <stdint.h>
 
 bool        scorep_tracing_use_sion;
 uint64_t    scorep_tracing_max_procs_per_sion_file;

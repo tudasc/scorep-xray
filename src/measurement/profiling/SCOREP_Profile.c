@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -37,31 +37,27 @@
  */
 
 #include <config.h>
-#include <SCOREP_Memory.h>
-#include <UTILS_Error.h>
-#define SCOREP_DEBUG_MODULE_NAME PROFILE
-#include <UTILS_Debug.h>
 #include <SCOREP_Profile.h>
-#include <SCOREP_Config.h>
+
 #include <SCOREP_Mutex.h>
 
-#include <scorep_location.h>
-#include <inttypes.h>
-#include <stdlib.h>
+#include "scorep_profile_node.h"
+#include "scorep_profile_definition.h"
+#include <SCOREP_Metric_Management.h>
 
-#include <scorep_profile_cluster.h>
-#include <scorep_profile_node.h>
-#include <scorep_profile_definition.h>
-#include <scorep_profile_process.h>
-#include <scorep_profile_writer.h>
-#include <scorep_profile_location.h>
-#include <scorep_profile_task_table.h>
-#include <scorep_profile_event_base.h>
-#include <scorep_profile_mpi_events.h>
+#define SCOREP_DEBUG_MODULE_NAME PROFILE
+#include <UTILS_Debug.h>
+
+#include "scorep_profile_cluster.h"
+#include "scorep_profile_mpi_events.h"
 #include <SCOREP_Definitions.h>
+#include "scorep_profile_location.h"
+#include <SCOREP_Memory.h>
 #include <SCOREP_Timing.h>
-#include <SCOREP_Location.h>
-#include "SCOREP_Metric_Management.h"
+#include <scorep_location.h>
+#include "scorep_profile_process.h"
+#include "scorep_profile_writer.h"
+#include "scorep_profile_event_base.h"
 
 /* ***************************************************************************************
    Type definitions and variables

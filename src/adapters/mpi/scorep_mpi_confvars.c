@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,19 +38,10 @@
 
 #include <config.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <inttypes.h>
-#include <stdbool.h>
-
 #define SCOREP_DEBUG_MODULE_NAME MPI
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Subsystem.h>
-#include <SCOREP_Config.h>
-
-#include "SCOREP_Mpi_Reg.h"
 
 #include "scorep_mpi_confvars.inc.c"
 

@@ -22,9 +22,6 @@ libscorep_pthread_confvars_la_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_ROOT)src/measurement \
-    -I$(INC_ROOT)src/adapters/pthread \
-    -I$(INC_ROOT)src/adapters/include \
     $(UTILS_CPPFLAGS)
 
 libscorep_confvars_la_LIBADD += libscorep_pthread_confvars.la

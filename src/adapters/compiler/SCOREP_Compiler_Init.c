@@ -40,13 +40,6 @@
 #include <config.h>
 #include "SCOREP_Compiler_Init.h"
 
-#include <stdlib.h>
-
-#include "SCOREP_Config.h"
-#define SCOREP_DEBUG_MODULE_NAME COMPILER
-#include <UTILS_Debug.h>
-
-
 #include "scorep_compiler_confvars.inc.c"
 
 bool         scorep_compiler_initialized = false;
