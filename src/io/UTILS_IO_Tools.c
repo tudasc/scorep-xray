@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -47,6 +47,10 @@
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 #include <UTILS_CStr.h>
+
+#if HAVE( PLATFORM_MINGW )
+#include <windows.h>
+#endif
 
 #define BUFFER_SIZE 1024
 
@@ -383,6 +387,15 @@ UTILS_IO_GetHostname( char* name, size_t namelen )
 {
 #if HAVE( GETHOSTNAME )
     return gethostname( name, namelen );
+#elif HAVE( PLATFORM_MINGW )
+    TCHAR computer_name[ MAX_COMPUTERNAME_LENGTH + 1 ];
+    DWORD computer_name_len;
+    GetComputerName( computer_name, &computer_name_len );
+    size_t effective_name_len = namelen >= ( size_t )computer_name_len ?
+                                ( size_t )computer_name_len : namelen - 1;
+    strncpy( name, computer_name, effective_name_len );
+    name[ effective_name_len ] = '\0';
+    return 0;
 #else
 
     char* hostname = getenv( "HOST" );
