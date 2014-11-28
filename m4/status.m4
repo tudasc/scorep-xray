@@ -1,6 +1,6 @@
 # This file is part of Autoconf.                       -*- Autoconf -*-
 # Parameterizing and creating config.status.
-# Copyright (C) 1992-1996, 1998-2011 Free Software Foundation, Inc.
+# Copyright (C) 1992-1996, 1998-2012 Free Software Foundation, Inc.
 
 # This file is part of Autoconf.  This program is free
 # software; you can redistribute it and/or modify it under the
@@ -191,7 +191,7 @@ m4_define([_AC_CONFIG_DEPENDENCY_DEFAULT],
 
 # _AC_CONFIG_UNIQUE(MODE, DEST)
 # -----------------------------
-# MODE is `FILES', `HEADERS', `LINKS', `COMMANDS', `SUBDIRS' or CONFIG_SUBDIR_CUSTOM.
+# MODE is `FILES', `HEADERS', `LINKS', `COMMANDS', `SUBDIRS or CONFIG_SUBDIR_CUSTOM'.
 #
 # Verify that there is no double definition of an output file.
 #
@@ -1619,7 +1619,7 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
 dnl Check this before opening the log, to avoid a bug on MinGW,
 dnl which prohibits the recursive instance from truncating an open log.
 if \$ac_cs_recheck; then
-  set X '$SHELL' '$[0]' $ac_configure_args \$ac_configure_extra_args --no-create --no-recursion
+  set X $SHELL '$[0]' $ac_configure_args \$ac_configure_extra_args --no-create --no-recursion
   shift
   \AS_ECHO(["running CONFIG_SHELL=$SHELL \$[*]"]) >&AS_MESSAGE_FD
   CONFIG_SHELL='$SHELL'
