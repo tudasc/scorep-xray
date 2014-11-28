@@ -362,7 +362,7 @@ scorep_cupti_stream_get_create( scorep_cupti_context* context,
     if ( context == NULL )
     {
         UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
-                     "[CUPTI] No context given in scorep_cupti_getCreateStream()!" );
+                     "[CUPTI] Stream creation: No context given!" );
         return NULL;
     }
 
@@ -540,7 +540,7 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
     context->callbacks = NULL;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                        "[CUPTI] Created context for CUcontext %d, CUdevice %d",
+                        "[CUPTI] Created context for CUcontext %p, CUdevice %d",
                         cudaContext, cudaDevice );
 
     SCOREP_RESUME_CUDRV_CALLBACKS();

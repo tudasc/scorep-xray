@@ -1632,7 +1632,7 @@ scorep_cupti_callbacks_sync( CUpti_CallbackId             cbid,
     if ( CUPTI_CBID_SYNCHRONIZE_CONTEXT_SYNCHRONIZED == cbid )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                            "[CUPTI Callbacks] Synchronize called for CUDA context %d",
+                            "[CUPTI Callbacks] Synchronize called for CUDA context %p",
                             syncData->context );
 
         if ( scorep_cuda_record_kernels || scorep_cuda_record_memcpy )
@@ -1640,7 +1640,13 @@ scorep_cupti_callbacks_sync( CUpti_CallbackId             cbid,
             scorep_cupti_context* context =
                 scorep_cupti_context_get( syncData->context );
 
-            if ( !scorep_cupti_activity_is_buffer_empty( context ) )
+            if ( NULL == context )
+            {
+                UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                                    "[CUPTI Callbacks] Synchronize: No Score-P "
+                                    "context for CUDA context %p." );
+            }
+            else if ( !scorep_cupti_activity_is_buffer_empty( context ) )
             {
                 scorep_cupti_activity_context_flush( context );
             }
@@ -1687,7 +1693,7 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
         case CUPTI_CBID_RESOURCE_CONTEXT_DESTROY_STARTING:
         {
             UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                                "[CUPTI Callbacks] Destroying context %d ...",
+                                "[CUPTI Callbacks] Destroying context %p ...",
                                 resourceData->context );
 
             {

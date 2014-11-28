@@ -107,7 +107,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
     /* check for Score-P CUPTI context */
     if ( context == NULL || context->activity == NULL )
     {
-        UTILS_WARNING( "[CUPTI Activity] Context not found! Cannot flush buffer ..." );
+        UTILS_WARNING( "[CUPTI3 Activity] Context not found! Cannot flush buffer ..." );
         return;
     }
     context_activity = context->activity;
@@ -121,7 +121,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
     /* expose Score-P CUPTI activity flush as measurement overhead */
     SCOREP_EnterRegion( scorep_cupti_buffer_flush_region_handle );
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI Activity] Handle context %d activities", context->cuda_context );
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA, "[CUPTI3 Activity] Handle context %p activities", context->cuda_context );
 
     /* dump the contents of the global queue */
     SCOREP_CUPTI_CALL( cuptiActivityDequeueBuffer( context->cuda_context, 0, &buffer,
@@ -147,7 +147,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
 
     if ( gpu_diff == ( double )0 )
     {
-        UTILS_WARNING( "[CUPTI Activity] GPU time difference is 0! Cannot flush." );
+        UTILS_WARNING( "[CUPTI3 Activity] GPU time difference is 0! Cannot flush." );
         return;
     }
 
@@ -180,7 +180,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
         SCOREP_CUPTI_CALL( cuptiActivityGetNumDroppedRecords( context->cuda_context, 0, &dropped ) );
         if ( dropped != 0 )
         {
-            UTILS_WARNING( "[CUPTI Activity] Dropped %u records. Current buffer size: %llu bytes\n"
+            UTILS_WARNING( "[CUPTI3 Activity] Dropped %u records. Current buffer size: %llu bytes\n"
                            "To avoid dropping of records increase the buffer size!\n"
                            "Proposed minimum SCOREP_CUDA_BUFFER=%llu",
                            ( unsigned int )dropped, scorep_cupti_activity_buffer_size,

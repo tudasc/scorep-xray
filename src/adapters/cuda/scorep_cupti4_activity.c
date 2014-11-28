@@ -357,11 +357,17 @@ buffer_requested_callback( uint8_t** buffer,
     context = scorep_cupti_context_get( cuda_context );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                        "[CUPTI Activity] Buffer for context %d requested", cuda_context );
+                        "[CUPTI Activity] Buffer for context %p requested", cuda_context );
 
     if ( context )
     {
         free_buffer = get_free_buffer( context );
+    }
+    else
+    {
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                            "[CUPTI Activity] No Score-P context for CUDA context %p found.",
+                            cuda_context );
     }
 
     if ( free_buffer )
@@ -391,7 +397,7 @@ buffer_completed_callback( CUcontext cudaContext,
         cudaContext = scorep_ctx->cuda_context;
     }
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                        "[CUPTI Activity] Buffer with %zu bytes for context %d, stream %d completed",
+                        "[CUPTI Activity] Buffer with %zu bytes for context %p, stream %d completed",
                         validSize, cudaContext, streamId );
 }
 
@@ -412,7 +418,7 @@ handle_buffer( uint8_t*              buffer,
     else
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                            "[CUPTI Activity] Handle activities from context %d, stream %d",
+                            "[CUPTI Activity] Handle activities from context %p, stream %d",
                             context->cuda_context, streamId );
     }
 
@@ -596,7 +602,7 @@ get_free_buffer( scorep_cupti_context* context )
         {
             if ( !activity->max_buffer_size_exceeded )
             {
-                UTILS_WARNING( "[CUPTI Activity] Reached maximum CUDA buffer size for context %d",
+                UTILS_WARNING( "[CUPTI Activity] Reached maximum CUDA buffer size for context %p",
                                context->cuda_context );
                 activity->max_buffer_size_exceeded = true;
             }
