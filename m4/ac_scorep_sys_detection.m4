@@ -181,6 +181,7 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_MIC],     [test "x${ac_scorep_platform}" = "xmic"])
     AM_CONDITIONAL([PLATFORM_NECSX],   [test "x${ac_scorep_platform}" = "xnecsx"])
     AM_CONDITIONAL([PLATFORM_ARM],     [test "x${ac_scorep_platform}" = "xarm"])
+    AM_CONDITIONAL([PLATFORM_MINGW],   [test "x${ac_scorep_platform}" = "xmingw"])
     AM_CONDITIONAL([PLATFORM_K],       [test "x${ac_scorep_platform}" = "xk"])
     AM_CONDITIONAL([PLATFORM_FX10],    [test "x${ac_scorep_platform}" = "xfx10"])
 
@@ -221,6 +222,8 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
         [AC_DEFINE([HAVE_PLATFORM_NECSX], [1], [Set if we are building for the NEC SX platform])])
     AM_COND_IF([PLATFORM_ARM],
         [AC_DEFINE([HAVE_PLATFORM_ARM], [1], [Set if we are building for the ARM platform])])
+    AM_COND_IF([PLATFORM_MINGW],
+        [AC_DEFINE([HAVE_PLATFORM_MINGW], [1], [Set if we are building for the MinGW platform])])
     AM_COND_IF([PLATFORM_K],
         [AC_DEFINE([HAVE_PLATFORM_K], [1], [Set if we are building for the K platform])])
     AM_COND_IF([PLATFORM_FX10],
