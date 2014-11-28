@@ -351,11 +351,23 @@ scorep_metric_papi_open( const char* listOfMetricNames,
         component = token;
 
         retval = PAPI_event_name_to_code( component, &code );
-        assert( retval == PAPI_OK && code != -1 );
+        if ( retval != PAPI_OK )
+        {
+            scorep_metric_papi_error( retval,
+                                      "Could not convert metric name to a "
+                                      "numeric hardware event code. "
+                                      "Did you use the correct SCOREP_METRIC_PAPI_SEP "
+                                      "in your SCOREP_METRIC_PAPI definition?" );
+        }
 
         memset( &info, 0, sizeof( PAPI_event_info_t ) );
         retval = PAPI_get_event_info( code, &info );
-        assert( retval == PAPI_OK );
+        if ( retval != PAPI_OK )
+        {
+            scorep_metric_papi_error( retval,
+                                      "Could not get metric event's name "
+                                      "and description info." );
+        }
 
         scorep_metric_papi_add( component, code, is_absolute, metric_definition );
     }
