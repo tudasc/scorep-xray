@@ -638,19 +638,21 @@ static void
 scorep_metric_papi_error( int   errcode,
                           char* note )
 {
+#ifdef PAPIV
+    PAPI_perror( NULL );
+    UTILS_ERROR( SCOREP_ERROR_PAPI_INIT, "%s (fatal)\n", note ? note : "PAPI" );
+#else
     char errstring[ PAPI_MAX_STR_LEN ];
 
-#ifdef PAPIV
-    PAPI_perror( errstring );
-#else
     PAPI_perror( errcode, errstring, PAPI_MAX_STR_LEN );
-#endif
+
     if ( errcode == PAPI_ESYS )
     {
         strncat( errstring, ": ", PAPI_MAX_STR_LEN - strlen( errstring ) - 1 );
         strncat( errstring, strerror( errno ), PAPI_MAX_STR_LEN - strlen( errstring ) - 1 );
     }
     UTILS_ERROR( SCOREP_ERROR_PAPI_INIT, "%s: %s (fatal)\n", note ? note : "PAPI", errstring );
+#endif
 
     _Exit( EXIT_FAILURE );
 }
@@ -664,13 +666,13 @@ static void
 scorep_metric_papi_warning( int   errcode,
                             char* note )
 {
+#ifdef PAPIV
+    PAPI_perror( NULL );
+    UTILS_WARNING( "%s (ignored)\n", note ? note : "PAPI" );
+#else
     char errstring[ PAPI_MAX_STR_LEN ];
 
-#ifdef PAPIV
-    PAPI_perror( errstring );
-#else
     PAPI_perror( errcode, errstring, PAPI_MAX_STR_LEN );
-#endif
 
     if ( errcode == PAPI_ESYS )
     {
@@ -678,6 +680,7 @@ scorep_metric_papi_warning( int   errcode,
         strncat( errstring, strerror( errno ), PAPI_MAX_STR_LEN - strlen( errstring ) - 1 );
     }
     UTILS_WARNING( "%s: %s (ignored)\n", note ? note : "PAPI", errstring );
+#endif
 }
 
 /** @brief Prints metric descriptions.
