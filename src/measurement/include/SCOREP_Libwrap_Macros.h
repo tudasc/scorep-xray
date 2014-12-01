@@ -71,6 +71,17 @@
 #define SCOREP_LIBWRAP_FUNC_NAME( func ) __wrap_##func
 
 /**
+ * @def SCOREP_LIBWRAP_INTERNAL_FUNC_CALL
+ * Call real function symbol from Score-P internal adapters
+ *
+ * @param funcptr          Function pointer
+ * @param func             Function name
+ * @param args             Function arguments
+ */
+#define SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( funcptr, func, args ) \
+    SCOREP_LIBWRAP_FUNC_CALL( NULL, func, args )
+
+/**
  * @def SCOREP_LIBWRAP_FUNC_CALL
  * Call real function symbol
  *
@@ -146,6 +157,17 @@
  * Define function pointer
  */
 #define SCOREP_LIBWRAP_FUNC_PTR funcptr
+
+/**
+ * @def SCOREP_LIBWRAP_INTERNAL_FUNC_CALL
+ * Call real function symbol from Score-P internal adapters
+ *
+ * @param funcptr           Function pointer
+ * @param func              Function pointer
+ * @param args              Function arguments
+ */
+#define SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( funcptr, func, args ) \
+    ( *funcptr )args;
 
 /**
  * @def SCOREP_LIBWRAP_FUNC_CALL
@@ -253,6 +275,17 @@
  */
 #define _SCOREP_PREPEND_PREFIX( prefix, func, args ) \
     _SCOREP_CONCATENATE_PREFIX( prefix, func, args )
+
+/**
+ * @def SCOREP_LIBWRAP_INTERNAL_FUNC_CALL
+ * Call real function symbol from Score-P internal adapters
+ *
+ * @param funcptr           Function pointer
+ * @param func              Function name
+ * @param args              Function arguments
+ */
+#define SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( funcptr, func, args ) \
+    SCOREP_LIBWRAP_FUNC_CALL( NULL, func, args )
 
 /**
  * @def SCOREP_LIBWRAP_FUNC_CALL
