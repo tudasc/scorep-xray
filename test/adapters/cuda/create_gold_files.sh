@@ -17,9 +17,6 @@
 ## Run this script once to create .gold files for CUDA testing in the test/adapters/src/data directory.
 ## Created files must be committed for automated testing.
 ##
-## Gold files are created with:
-## otf2-print <trace> | grep -e '^ENTER\|LEAVE' | grep -Fv 'tmpxft' | sed -e 's/[^ ]*[^ ]/0/3' | egrep | sed -e 's/<[0-9][0-9]*>$/<id>/g' > <gold>
-##
 ## grep for lines starting with 'ENTER' or 'LEAVE' and which do not contain dynamic function names ('tmpxft')
 ## replace every 3rd word (timestamp) with '0'
 ## filter for host and device locations using egrep [-v]
@@ -81,16 +78,16 @@ do
 
   # print, replace timestamps with 0 and write to gold file
   $OTF2_PRINT $RESULT_DIR/traces.otf2 |
-    grep '^ENTER\|LEAVE' |
-    grep -Fv 'tmpxft' |
-    sed -e 's/[^ ]*[^ ]/0/3' |
-    egrep '^(ENTER|LEAVE)[[:space:]]+0' |
-    sed -e 's/<[0-9][0-9]*>$/<id>/g' > $goldfile.host
+    GREP_OPTIONS= grep '^ENTER\|LEAVE' |
+    GREP_OPTIONS= grep -Fv 'tmpxft' |
+    LC_ALL=C sed -e 's/[^ ]*[^ ]/0/3' |
+    GREP_OPTIONS=  egrep '^(ENTER|LEAVE)[[:space:]]+0' |
+    LC_ALL=C sed -e 's/<[0-9][0-9]*>$/<id>/g' > $goldfile.host
 
-  $OTF2_PRINT $RESULT_DIR/traces.otf2 |
-    grep '^ENTER\|LEAVE' |
-    grep -Fv 'tmpxft' |
-    sed -e 's/[^ ]*[^ ]/0/3' |
-    egrep -v '^(ENTER|LEAVE)[[:space:]]+0' |
-    sed -e 's/<[0-9][0-9]*>$/<id>/g' > $goldfile.device
+  GREP_OPTIONS= $OTF2_PRINT $RESULT_DIR/traces.otf2 |
+    GREP_OPTIONS= grep '^ENTER\|LEAVE' |
+    GREP_OPTIONS= grep -Fv 'tmpxft' |
+    LC_ALL=C sed -e 's/[^ ]*[^ ]/0/3' |
+    GREP_OPTIONS= egrep -v '^(ENTER|LEAVE)[[:space:]]+0' |
+    LC_ALL=C sed -e 's/<[0-9][0-9]*>$/<id>/g' > $goldfile.device
 done

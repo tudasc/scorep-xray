@@ -211,31 +211,33 @@ do
             if [ -e $goldfile.host -a -e $goldfile.device ]; then
                 # print, replace timestamps with 0 and write to trace_host.txt
                 $OTF2_PRINT $RESULT_DIR/traces.otf2 |
-                  grep '^ENTER\|LEAVE' |
-                  grep -Fv 'tmpxft' |
-                  sed -e 's/[^ ]*[^ ]/0/3' |
-                  egrep '^(ENTER|LEAVE)[[:space:]]+0' |
-                  sed -e 's/<[0-9][0-9]*>$/<id>/g' > trace_host.txt
+                  GREP_OPTIONS= grep '^ENTER\|LEAVE' |
+                  GREP_OPTIONS= grep -Fv 'tmpxft' |
+                  LC_ALL=C sed -e 's/[^ ]*[^ ]/0/3' |
+                  GREP_OPTIONS= egrep '^(ENTER|LEAVE)[[:space:]]+0' |
+                  LC_ALL=C sed -e 's/<[0-9][0-9]*>$/<id>/g' > trace_host.txt
 
                 # print, replace timestamps with 0 and write to trace_device.txt
                 $OTF2_PRINT $RESULT_DIR/traces.otf2 |
-                  grep '^ENTER\|LEAVE' |
-                  grep -Fv 'tmpxft' |
-                  sed -e 's/[^ ]*[^ ]/0/3' |
-                  egrep -v '^(ENTER|LEAVE)[[:space:]]+0' |
-                  sed -e 's/<[0-9][0-9]*>$/<id>/g' > trace_device.txt
+                  GREP_OPTIONS= grep '^ENTER\|LEAVE' |
+                  GREP_OPTIONS= grep -Fv 'tmpxft' |
+                  LC_ALL=C sed -e 's/[^ ]*[^ ]/0/3' |
+                  GREP_OPTIONS= egrep -v '^(ENTER|LEAVE)[[:space:]]+0' |
+                  LC_ALL=C sed -e 's/<[0-9][0-9]*>$/<id>/g' > trace_device.txt
 
                 # compare host events to gold file
-                diff $goldfile.host trace_host.txt > /dev/null
-                if [[ $? -gt 0 ]]; then
+                num_enter_events_gold_host=`GREP_OPTIONS= grep -c ENTER $goldfile.host`
+                num_enter_events_trace_host=`GREP_OPTIONS= grep -c ENTER trace_host.txt`
+                if [[ $num_enter_events_gold_host -ne $num_enter_events_trace_host ]]; then
                   echo "-------- ERROR: in host event output --------" >&2
                   diff -u $goldfile.host trace_host.txt >&2
                   exit 1
                 fi
 
                 # compare device events to gold file
-                diff $goldfile.device trace_device.txt > /dev/null
-                if [[ $? -gt 0 ]]; then
+                num_enter_events_gold_device=`GREP_OPTIONS= grep -c ENTER $goldfile.device`
+                num_enter_events_trace_device=`GREP_OPTIONS= grep -c ENTER trace_device.txt`
+                if [[ $num_enter_events_gold_device -ne $num_enter_events_trace_device ]]; then
                   echo "-------- ERROR: in device event output --------" >&2
                   diff -u $goldfile.device trace_device.txt >&2
                   exit 1
