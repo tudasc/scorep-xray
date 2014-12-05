@@ -19,9 +19,9 @@ AC_REQUIRE([AC_SCOREP_OPENMP])
 scorep_no_preinclude_flag=""
 AS_IF([test "x${ax_cv_c_compiler_vendor}" = xportland],
 [
-    AS_IF([${CXX} ${CXXFLAGS} ${OPENMP_CXXFLAGS} -show 2>&1 | grep preinclude],
+    AS_IF([${CXX} ${CXXFLAGS} ${OPENMP_CXXFLAGS} -show 2>&1 | GREP_OPTIONS= grep -q preinclude],
     [
-        AS_IF([${CXX} ${CXXFLAGS} ${OPENMP_CXXFLAGS} -show --no_preincludes],
+        AS_IF([${CXX} ${CXXFLAGS} ${OPENMP_CXXFLAGS} -show --no_preincludes >/dev/null 2>&1],
         [scorep_no_preinclude_flag="--no_preincludes"])
     ])
 ])
