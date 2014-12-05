@@ -131,31 +131,6 @@ typedef struct scorep_cupti_gpumem
 }scorep_cupti_gpumem;
 
 /*
- * structure of a Score-P CUPTI CUDA runtime kernel
- */
-typedef struct scorep_cupti_kernel
-{
-    CUstream                    cuda_stream;          /**< the CUDA stream */
-    uint32_t                    blocks_per_grid;      /**< number of blocks per grid */
-    uint32_t                    threads_per_block;    /**< number of threads per block */
-    struct scorep_cupti_kernel* up;
-    struct scorep_cupti_kernel* down;
-}scorep_cupti_kernel;
-
-/*
- * Score-P CUPTI callbacks specific context data.
- */
-typedef struct
-{
-    scorep_cupti_kernel* kernel_data;     /**< pointer to top of CUDA runtime kernel
-                                               configuration stack */
-    uint8_t              streams_created; /**< #streams created for this device */
-# if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 3 ) )
-    bool                 concurrent_kernels;
-# endif
-}scorep_cupti_callbacks;
-
-/*
  * Score-P CUPTI activity synchronization structure
  */
 typedef struct
@@ -215,7 +190,6 @@ typedef struct scorep_cupti_context
     scorep_cupti_gpumem*         cuda_mallocs;         /**< list of allocated GPU memory fields */
     size_t                       gpu_memory_allocated; /**< memory allocated on CUDA device */
     scorep_cupti_activity*       activity;
-    scorep_cupti_callbacks*      callbacks;
     struct scorep_cupti_context* next;
 }scorep_cupti_context;
 

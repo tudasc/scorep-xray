@@ -82,9 +82,12 @@ uint8_t scorep_cupti_activity_state                         = 0;
 /* global region IDs for wrapper internal recording */
 SCOREP_RegionHandle scorep_cupti_buffer_flush_region_handle = SCOREP_INVALID_REGION;
 
+#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
 static void
 replace_context( uint32_t               newContextId,
                  scorep_cupti_context** context );
+
+#endif
 
 /*
  * Initialize the Score-P CUPTI Activity implementation.
@@ -271,6 +274,16 @@ scorep_cupti_activity_context_create( CUcontext cudaContext )
     return context_activity;
 }
 
+#if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
+/*
+ * Set the given Score-P context (currently flushing records) to the context
+ * corresponding to the given context id (record's context).
+ * The synchronization data of the new context (record's context) are overwritten
+ * with the Score-P (flush) context synchronization data.
+ *
+ * @param newContextId context ID of the context replacing the current one
+ * @param context Score-P context (that is currently flushed)
+ */
 static void
 replace_context( uint32_t               newContextId,
                  scorep_cupti_context** context )
@@ -280,15 +293,37 @@ replace_context( uint32_t               newContextId,
         return;
     }
 
+    //flush context is the same as record context
+    if ( ( *context )->context_id == newContextId )
+    {
+        return;
+    }
+
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
+                        "[CUPTI Activity] Replace flush context (ID: %d) with "
+                        "record context (ID: %d)",
+                        ( *context )->context_id, newContextId );
+
     /* get CUDA context for each individual record as records are mixed in buffer */
     /* update sync data of record's context with that of actually sync'd context */
     scorep_cupti_sync current_sync_data = ( *context )->activity->sync;
-    *context                               = scorep_cupti_context_get_by_id( newContextId );
-    ( *context )->activity->sync           = current_sync_data;
-    ( *context )->activity->sync.host_stop = current_sync_data.host_stop;
-    ( *context )->activity->sync.gpu_stop  = current_sync_data.gpu_stop;
-    ( *context )->activity->sync.factor    = current_sync_data.factor;
+
+    // get the record's context
+    scorep_cupti_context* sync_context = scorep_cupti_context_get_by_id( newContextId );
+
+    if ( sync_context )
+    {
+        //set record's context for write kernel/memcpy routine
+        *context = sync_context;
+
+        //overwrite synchronization data of the records context
+        ( *context )->activity->sync           = current_sync_data;
+        ( *context )->activity->sync.host_stop = current_sync_data.host_stop;
+        ( *context )->activity->sync.gpu_stop  = current_sync_data.gpu_stop;
+        ( *context )->activity->sync.factor    = current_sync_data.factor;
+    }
 }
+#endif
 
 
 void
@@ -298,6 +333,8 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
 #if ( defined( CUDA_VERSION ) && ( CUDA_VERSION >= 6000 ) )
     replace_context( kernel->contextId, &context );
 #endif
+
+    //context and context->activity cannot be NULL (caller of this function checks both)
 
     scorep_cupti_activity*        contextActivity = context->activity;
     scorep_cupti_stream*          stream          = NULL;

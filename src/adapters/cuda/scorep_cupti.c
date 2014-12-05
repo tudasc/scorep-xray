@@ -536,8 +536,7 @@ scorep_cupti_context_create( CUcontext cudaContext, CUdevice cudaDevice,
         SCOREP_RmaWinCreate( scorep_cuda_interim_window_handle );
     }
 
-    context->activity  = NULL;
-    context->callbacks = NULL;
+    context->activity = NULL;
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
                         "[CUPTI] Created context for CUcontext %p, CUdevice %d",

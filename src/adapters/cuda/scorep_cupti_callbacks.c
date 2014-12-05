@@ -403,78 +403,6 @@ scorep_cupti_callbacks_enable( bool enable )
 }
 
 /*
- * Creates a Score-P CUPTI callbacks context.
- *
- * @param context the Score-P CUPTI context
- * @param cuStrm the CUDA stream
- *
- * @return the Score-P CUPTI callbacks context
- */
-static scorep_cupti_callbacks*
-scorep_cupticb_create_callbacks_context(
-    scorep_cupti_context* context
-    )
-{
-    scorep_cupti_callbacks* context_callbacks = NULL;
-
-    if ( context == NULL )
-    {
-        return NULL;
-    }
-
-    /* create new context, as it is not listed */
-    context_callbacks = ( scorep_cupti_callbacks* )SCOREP_Memory_AllocForMisc( sizeof( scorep_cupti_callbacks ) );
-
-    context_callbacks->kernel_data = NULL;
-
-#if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 3 ) )
-    if ( !( scorep_cuda_features & SCOREP_CUDA_FEATURE_KERNEL_SERIAL ) )
-    {
-        context_callbacks->concurrent_kernels = true;
-    }
-    else
-    {
-        int tmp_ck;
-
-        /* check for concurrent kernel support */
-        SCOREP_CUDA_DRIVER_CALL( cuDeviceGetAttribute( &tmp_ck,
-                                                       CU_DEVICE_ATTRIBUTE_CONCURRENT_KERNELS, context->cuda_device ) );
-
-        context_callbacks->concurrent_kernels = ( bool )tmp_ck;
-    }
-
-    context_callbacks->streams_created = 0;
-#endif
-
-    /* set the callback context */
-    context->callbacks = context_callbacks;
-
-    return context_callbacks;
-}
-
-/*
- * Finalize the Score-P CUPTI Callbacks context.
- *
- * @param context pointer to Score-P CUPTI context
- */
-static void
-scorep_cupti_callbacks_finalize_context( scorep_cupti_context* context )
-{
-    if ( context == NULL || context->callbacks == NULL ||
-         context->callbacks->kernel_data == NULL )
-    {
-        return;
-    }
-
-    if ( context->callbacks->kernel_data->down != NULL )
-    {
-        UTILS_WARNING( "[CUPTI Callbacks] Not all configured kernels have been executed!" );
-    }
-
-    context->callbacks->kernel_data = NULL;
-}
-
-/*
  * This CUPTI callback function chooses the CUPTI domain.
  *
  * @param userdata pointer to the user data
@@ -1674,16 +1602,6 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
 
             context = scorep_cupti_context_get_create( cudaContext );
 
-            /*
-             * Create the Score-P CUPTI callbacks context for CUPTI >3
-             * (needed for concurrent kernel tracing)
-             */
-#if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 3 ) )
-            if ( context->callbacks == NULL )
-            {
-                context->callbacks = scorep_cupticb_create_callbacks_context( context );
-            }
-#endif
             /* setup and create activity context, if necessary */
             scorep_cupti_activity_context_setup( context );
 
@@ -1718,7 +1636,7 @@ scorep_cupti_callbacks_resource( CUpti_CallbackId          callbackId,
                                                  &strmID ) );
 
             UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
-                                "[CUPTI Callbacks] Destroying stream %d (context %d)",
+                                "[CUPTI Callbacks] Destroying stream %d (context %p)",
                                 strmID, resourceData->context );
 
             break;
@@ -2528,8 +2446,6 @@ scorep_cupti_callbacks_finalize( void )
             {
                 scorep_cupti_activity_context_finalize( context );
             }
-
-            scorep_cupti_callbacks_finalize_context( context );
 
             /* this will free the allocated memory of the context as well */
             scorep_cupti_context_finalize( context );

@@ -41,9 +41,13 @@
 
 /* CUPTI >= 4 uses CUpti_ActivityKernel2 instead of CUpti_ActivityKernel */
 #if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 4 ) )
+# if ( defined( CUPTI_API_VERSION ) && ( CUPTI_API_VERSION >= 8 ) )
+typedef CUpti_ActivityKernel3 CUpti_ActivityKernelType;
+# else
 typedef CUpti_ActivityKernel2 CUpti_ActivityKernelType;
+# endif
 #else
-typedef CUpti_ActivityKernel  CUpti_ActivityKernelType;
+typedef CUpti_ActivityKernel CUpti_ActivityKernelType;
 #endif
 
 /* Defines CUPTI activity states to monitor enable/disable state */

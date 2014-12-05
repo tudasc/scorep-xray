@@ -72,6 +72,16 @@ do
   for kernel in "" ",kernel" ",kernel,references"
   do
 
+    # skip at least the test where no CUDA API is recorded, but references enabled
+    if [ "$kernel" = ",kernel,references" -a "x$cudaapi" = "x" ]; then
+        continue
+    fi
+
+    # skip advanced tests for references enabled without driver option
+    if [ "$kernel" = ",kernel,references" -a "x$testmode" = "x" ]; then
+        continue
+    fi
+
     for idle in "" ",idle" ",pure_idle"
     do
 
