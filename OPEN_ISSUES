@@ -15,7 +15,7 @@ various Score-P components.
     + IBM SP & BladeCenter clusters, only static libraries supported
     + Cray XE, XK, XC, only static libraries supported
     + SGI Altix/ICE
-    + K Computer and Fujitsu FX10, no POSIX threads supported yet
+    + K Computer and Fujitsu FX10
     + various Linux/Intel (x86/x64) clusters
     The provided configure options (see INSTALL) may provide a good
     basis for building and testing the toolset on other systems.
