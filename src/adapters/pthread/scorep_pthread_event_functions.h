@@ -51,7 +51,7 @@ __real_pthread_mutex_trylock( pthread_mutex_t* mutex );
 
 int
 __real_pthread_cond_init( pthread_cond_t*,
-                          pthread_condattr_t* );
+                          const pthread_condattr_t* );
 
 int
 __real_pthread_cond_signal( pthread_cond_t* );

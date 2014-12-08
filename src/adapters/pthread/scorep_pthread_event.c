@@ -579,7 +579,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_trylock ) ( pthread_mutex_t * pthreadMut
 
 int
 SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_init ) ( pthread_cond_t * cond,
-                                                pthread_condattr_t * attr )
+                                                const pthread_condattr_t * attr )
 {
     UTILS_DEBUG_ENTRY();
 
