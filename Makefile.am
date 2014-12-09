@@ -93,7 +93,8 @@ endif
 pkgdata_DATA = @PACKAGE@.summary \
                share/scorep.spec
 
-doc_DATA = $(srcdir)/OPEN_ISSUES
+doc_DATA = $(srcdir)/OPEN_ISSUES \
+           $(srcdir)/ChangeLog
 
 install-data-local: doxygen-user-install
 	$(MKDIR_P) $(DESTDIR)$(docdir)/profile; \
