@@ -95,21 +95,4 @@ void
 SCOREP_Task_ExitAllRegions( struct SCOREP_Location* location,
                             SCOREP_TaskHandle       task );
 
-/**
- * Returns the profiling specific data for @a task.
- * @param task  The task handle from which we get the profiling data.
- *              If profiling is disabled. the data will be NULL.
- */
-void*
-SCOREP_Task_GetProfileData( SCOREP_TaskHandle task );
-
-/**
- * Sets the profiling specific data for @a task.
- * @param task  The task for which we set the data.
- * @param data  The profiling data.
- */
-void
-SCOREP_Task_SetProfilingData( SCOREP_TaskHandle task,
-                              void*             data );
-
 #endif

@@ -151,7 +151,6 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
     parent = node;
 
     uint32_t number_of_synchronus_strict_metrics = SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics();
-
     do
     {
         location->current_depth--;
@@ -164,6 +163,7 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
         {
             scorep_profile_update_dense_metric( &node->dense_metrics[ i ], metrics[ i ] );
         }
+
 
         parent = node->parent;
     }

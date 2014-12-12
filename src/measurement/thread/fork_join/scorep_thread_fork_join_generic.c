@@ -323,7 +323,8 @@ SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_ParadigmType paradigm,
         SCOREP_Profile_TaskSwitch( location,
                                    timestamp,
                                    metric_values,
-                                   task );
+                                   thread_id,
+                                   generation_no );
     }
 
     if ( scorep_tracing_consume_event() )
@@ -375,7 +376,8 @@ SCOREP_ThreadForkJoin_TaskBegin( SCOREP_ParadigmType paradigm,
                                   timestamp,
                                   metric_values,
                                   regionHandle,
-                                  new_task );
+                                  threadId,
+                                  generationNumber );
     }
 
     if ( scorep_tracing_consume_event() )
@@ -424,7 +426,8 @@ SCOREP_ThreadForkJoin_TaskEnd( SCOREP_ParadigmType paradigm,
                                 timestamp,
                                 metric_values,
                                 regionHandle,
-                                task );
+                                thread_id,
+                                generation_no );
     }
 
     if ( scorep_tracing_consume_event() )

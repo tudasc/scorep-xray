@@ -39,16 +39,41 @@
 #include <config.h>
 #include <stddef.h>
 
-#include <SCOREP_Memory.h>
+#include "SCOREP_Memory.h"
 
 #include "scorep_profile_node.h"
 #include "scorep_profile_definition.h"
-#include "scorep_profile_converter.h"
 
 
 /* ***************************************************************************************
    Defines
 *****************************************************************************************/
+
+/**
+   @def SCOREP_PROFILE_POINTER2DATA( handle )
+   Casts a pointer to node specific data type.
+   @param handle The pointer which is casted to node specific data.
+ */
+#if SIZEOF_VOID_P == 8
+#define SCOREP_PROFILE_POINTER2INT( ptr ) ( ( uint64_t )ptr )
+#elif SIZEOF_VOID_P == 4
+#define SCOREP_PROFILE_POINTER2INT( ptr ) ( ( uint32_t )ptr )
+#else
+#error Unsupported architecture. Only 32 bit and 64 bit architectures are supported.
+#endif
+
+/**
+   @def SCOREP_PROFILE_DATA2POINTER( data )
+   Casts a node specific data item to a region handle.
+   @param data The node specific data that is casted to a pointer.
+ */
+#if SIZEOF_VOID_P == 8
+#define SCOREP_PROFILE_INT2POINTER( data )   ( ( void* )( uint64_t )data )
+#elif SIZEOF_VOID_P == 4
+#define SCOREP_PROFILE_INT2POINTER( data )   ( ( void* )( uint32_t )data )
+#else
+#error Unsupported architecture. Only 32 bit and 64 bit architectures are supported.
+#endif
 
 /**
    @def SCOREP_PROFILE_REGION2DATA( handle )

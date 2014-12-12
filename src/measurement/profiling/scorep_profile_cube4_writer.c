@@ -43,22 +43,21 @@
 #include <SCOREP_Memory.h>
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
+#include <SCOREP_Definitions.h>
 #include <SCOREP_Timing.h>
 #include <SCOREP_Bitstring.h>
 #include <SCOREP_Metric_Management.h>
-#include <SCOREP_Definitions.h>
 
 #include <scorep_profile_definition.h>
 #include <scorep_profile_location.h>
-#include <scorep_profile_task_init.h>
+#include <SCOREP_Definitions.h>
 #include <scorep_ipc.h>
 #include <scorep_runtime_management.h>
 #include <scorep_location.h>
 
 #define SCOREP_PROFILE_DENSE_METRIC ( ( SCOREP_MetricHandle )UINT32_MAX - 1 )
 
-extern SCOREP_MetricHandle scorep_profile_migration_loss_metric;
-extern SCOREP_MetricHandle scorep_profile_migration_win_metric;
+extern SCOREP_MetricHandle scorep_profile_active_task_metric;
 
 extern void
 scorep_cluster_write_cube4( scorep_cube_writing_data* write_data );
@@ -608,15 +607,14 @@ SCOREP_PROFILE_WRITE_CUBE_METRIC( cube_type_tau_atomic, BYTE,
 
 /**
    Returns true, if sparce metric @a metric is written.
-   @param metric Metric handle that is going to be written.
+   @param metric          Metric handle that is goinf to be written.
  */
 static bool
 check_if_metric_shall_be_written( scorep_cube_writing_data* write_set,
                                   SCOREP_MetricHandle       metric )
 {
-    return metric != SCOREP_PROFILE_DENSE_METRIC &&
-           ( ( metric != scorep_profile_migration_loss_metric &&
-               metric != scorep_profile_migration_win_metric ) ||
+    return ( metric != SCOREP_PROFILE_DENSE_METRIC ) &&
+           ( metric != scorep_profile_active_task_metric ||
              write_set->has_tasks );
 }
 

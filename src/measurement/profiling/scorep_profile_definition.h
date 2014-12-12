@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2012,
  * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2012,
@@ -150,16 +150,16 @@ scorep_profile_delete_definition( void );
 
 
 /**
-   Returns the configuration value for SCOREP_PROFILE_TASK_EXCHANGE_NUM.
- */
-uint64_t
-scorep_profile_get_task_exchange_num( void );
-
-/**
    Returns the configuration value for SCOREP_PROFILE_MAX_CALLPATH_DEPTH.
  */
 uint64_t
 scorep_profile_get_max_callapth_depth( void );
+
+/**
+   Returns the configuration value for SCOREP_PROFILE_TASK_TABLE_SIZE.
+ */
+uint64_t
+scorep_profile_get_task_table_size( void );
 
 /**
    Returns the configuration value for SCOREP_PROFILE_BASENAME.

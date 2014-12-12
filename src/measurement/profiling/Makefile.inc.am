@@ -55,7 +55,6 @@ PROFILE_FLAGS += -DCUBE_AS_SVN_EXTERNAL
 endif # HAVE_SCOREP_EXTERNAL_CUBE_WRITER
 
 noinst_LTLIBRARIES += libscorep_profile.la
-
 libscorep_profile_la_SOURCES =                                              \
     $(SRC_ROOT)src/measurement/profiling/include/SCOREP_Profile.h           \
     $(SRC_ROOT)src/measurement/profiling/include/SCOREP_Profile_Tasking.h   \
@@ -77,6 +76,8 @@ libscorep_profile_la_SOURCES =                                              \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_definition.c        \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_location.h          \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_location.c          \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_table.h        \
+    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_table.c        \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_debug.h             \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_debug.c             \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_process.h           \
@@ -87,11 +88,7 @@ libscorep_profile_la_SOURCES =                                              \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_tausnap_writer.c    \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_writer.h            \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_callpath.c          \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_converter.h         \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_substitute_parameter.c \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_init.h         \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_switch.c       \
-    $(SRC_ROOT)src/measurement/profiling/scorep_profile_task_switch.h       \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.c      \
     $(SRC_ROOT)src/measurement/profiling/scorep_profile_cube4_writer.h
 
