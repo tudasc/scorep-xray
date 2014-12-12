@@ -394,6 +394,7 @@ typedef enum SCOREP_GroupType
     SCOREP_REGION_TYPE( SINGLE_SBLOCK, "single sblock" ) \
     SCOREP_REGION_TYPE( WRAPPER,      "wrapper" ) \
     SCOREP_REGION_TYPE( TASK,         "task" ) \
+    SCOREP_REGION_TYPE( TASK_UNTIED,  "untied task" ) \
     SCOREP_REGION_TYPE( TASK_WAIT,    "taskwait" ) \
     SCOREP_REGION_TYPE( TASK_CREATE,  "task create" ) \
     SCOREP_REGION_TYPE( ORDERED,      "ordered" ) \

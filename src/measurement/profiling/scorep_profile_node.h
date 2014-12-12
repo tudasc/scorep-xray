@@ -40,8 +40,8 @@
 
 #include <stdbool.h>
 #include <SCOREP_DefinitionHandles.h>
-#include <scorep_profile_metric.h>
 #include <SCOREP_Profile.h>
+#include <scorep_profile_metric.h>
 
 /* ***************************************************************************************
    Type definitions
@@ -134,7 +134,8 @@ typedef struct scorep_profile_node_struct
 typedef enum
 {
     SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE = 1, /**< Set if the subtree contains MPI calls */
-    SCOREP_PROFILE_FLAG_IS_FORK_NODE   = 2  /**< Set if another thread was forked here */
+    SCOREP_PROFILE_FLAG_IS_FORK_NODE   = 2, /**< Set if another thread was forked here */
+    SCOREP_PROFILE_FLAG_IN_UNTIED_TASK = 3  /**< Set if in untied task */
 } scorep_profile_node_flag;
 
 /**
@@ -170,6 +171,7 @@ typedef bool ( scorep_profile_compare_node_t )( scorep_profile_node* node_a,
    @param type   The type of the node.
    @param data   The type dependent data for this node.
    @param timestamp The timestamp of its first enter event.
+   @param is_in_untied True if the new node is inside an untied task.
    @return A pointer to the newly created node.
  */
 extern scorep_profile_node*
@@ -177,7 +179,8 @@ scorep_profile_create_node( SCOREP_Profile_LocationData* location,
                             scorep_profile_node*         parent,
                             scorep_profile_node_type     type,
                             scorep_profile_type_data_t   data,
-                            uint64_t                     timestamp );
+                            uint64_t                     timestamp,
+                            bool                         is_in_untied );
 
 /**
    Creates a new node and copies the statistics from @a source to it. The new node is
@@ -209,18 +212,12 @@ scorep_profile_release_subtree( SCOREP_Profile_LocationData* location,
                    used to determine whether the memory must be taken from miscellaneous
                    of from the profile pool. Because some node must not be released on
                    reconfiguration.
+   @param is_in_untied True if the new node is in an untied task.
  */
 extern scorep_profile_node*
 scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
-                           scorep_profile_node_type     type );
-
-/**
-   Allocates memory for additional metrics (recorded only by this location).
- */
-extern void
-scorep_profile_alloc_location_specific_metrics_store( SCOREP_Profile_LocationData* location,
-                                                      scorep_profile_node*         node );
-
+                           scorep_profile_node_type     type,
+                           bool                         is_in_untied );
 
 /**
    Find a child node of @a parent of a specified type. If parent has a child
@@ -386,6 +383,7 @@ void
 scorep_profile_copy_all_dense_metrics( scorep_profile_node* destination,
                                        scorep_profile_node* source );
 
+
 /**
    Returns the location data of the location of @a node.
    @param node  Pointer to the node for which the location data is returned.
@@ -486,6 +484,22 @@ scorep_profile_is_fork_node( scorep_profile_node* node );
 void
 scorep_profile_set_fork_node( scorep_profile_node* node,
                               bool                 is_fork_node );
+
+/**
+   Returns whether the SCOREP_PROFILE_FLAG_IN_UNTIED_TASK flag is set for @a node.
+   @param node         Pointer to the node which flag is requested.
+ */
+bool
+scorep_profile_is_in_untied( scorep_profile_node* node );
+
+/**
+   Sets the value of the SCOREP_PROFILE_FLAG_IN_UNTIED_TASK flag in @a node.
+   @param node         Pointer to the node which flag is set.
+   @param is_fork_node Specifies the value of the SCOREP_PROFILE_FLAG_IN_UNTIED_TASK flag.
+ */
+void
+scorep_profile_set_in_untied( scorep_profile_node* node,
+                              bool                 is_in_untied );
 
 
 

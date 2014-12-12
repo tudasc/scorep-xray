@@ -60,9 +60,10 @@ scorep_profile_create_node( SCOREP_Profile_LocationData* location,
                             scorep_profile_node*         parent,
                             scorep_profile_node_type     type,
                             scorep_profile_type_data_t   data,
-                            uint64_t                     timestamp )
+                            uint64_t                     timestamp,
+                            bool                         is_in_untied )
 {
-    scorep_profile_node* node = scorep_profile_alloc_node( location, type );
+    scorep_profile_node* node = scorep_profile_alloc_node( location, type, is_in_untied );
     if ( node == NULL )
     {
         return NULL;
@@ -79,7 +80,6 @@ scorep_profile_create_node( SCOREP_Profile_LocationData* location,
     node->first_enter_time    = timestamp;
     node->last_exit_time      = timestamp;
     node->node_type           = type;
-    node->flags               = 0;
     scorep_profile_copy_type_data( &node->type_specific_data, data, type );
 
     /* Initialize dense metric values */
@@ -105,7 +105,8 @@ scorep_profile_copy_node( SCOREP_Profile_LocationData* location,
                                                             NULL,
                                                             source->node_type,
                                                             source->type_specific_data,
-                                                            0 );
+                                                            0,
+                                                            scorep_profile_is_in_untied( source ) );
 
     /* Copy dense metric values */
     scorep_profile_copy_all_dense_metrics( node, source );
@@ -172,23 +173,37 @@ scorep_profile_release_subtree( SCOREP_Profile_LocationData* location,
     }
 
     /* Insert this node into list of released nodes */
-    root->first_child    = location->free_nodes;
-    location->free_nodes = root;
+    if ( scorep_profile_is_in_untied( root ) )
+    {
+        scorep_profile_release_stubs( location, root, root, 1, false );
+    }
+    else
+    {
+        root->first_child    = location->free_nodes;
+        location->free_nodes = root;
+    }
 }
 
 scorep_profile_node*
 scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
-                           scorep_profile_node_type     type )
+                           scorep_profile_node_type     type,
+                           bool                         is_in_untied )
 {
     scorep_profile_node* new_node;
 
     /* Try to recycle released nodes */
-    if ( ( location != NULL ) &&
+    if ( ( !is_in_untied ) &&
+         ( location != NULL ) &&
          ( location->free_nodes != NULL ) &&
          ( type != scorep_profile_node_thread_root ) )
     {
         new_node             = location->free_nodes;
         location->free_nodes = new_node->first_child;
+        return new_node;
+    }
+    else if ( ( type != scorep_profile_node_thread_root ) &&
+              ( ( new_node = scorep_profile_recycle_stub( location ) ) != NULL ) )
+    {
         return new_node;
     }
 
@@ -207,12 +222,14 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
     if ( type == scorep_profile_node_thread_root )
     {
         new_node = ( scorep_profile_node* )
-                   SCOREP_Location_AllocForMisc( location->location_data, sizeof( scorep_profile_node ) );
+                   SCOREP_Location_AllocForMisc( location->location_data,
+                                                 sizeof( scorep_profile_node ) );
     }
     else
     {
         new_node = ( scorep_profile_node* )
-                   SCOREP_Location_AllocForProfile( location->location_data, sizeof( scorep_profile_node ) );
+                   SCOREP_Location_AllocForProfile( location->location_data,
+                                                    sizeof( scorep_profile_node ) );
     }
 
     /* Reserve space for dense metrics,
@@ -223,12 +240,21 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
      */
     if ( SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics() > 0 )
     {
+        /* Size of the allocated memory for dense metrics */
+        uint32_t size = SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics() *
+                        sizeof( scorep_profile_dense_metric );
+
         new_node->dense_metrics = ( scorep_profile_dense_metric* )
                                   SCOREP_Location_AllocForProfile( location->location_data, size );
     }
     else
     {
         new_node->dense_metrics = NULL;
+    }
+
+    if ( is_in_untied )
+    {
+        scorep_profile_set_in_untied( new_node, true );
     }
 
     return new_node;
@@ -295,15 +321,13 @@ void
 scorep_profile_copy_all_dense_metrics( scorep_profile_node* destination,
                                        scorep_profile_node* source )
 {
-    int i;
-
     destination->count            = source->count;
     destination->first_enter_time = source->first_enter_time;
     destination->last_exit_time   = source->last_exit_time;
 
     /* Copy dense metric values */
     scorep_profile_copy_dense_metric( &destination->inclusive_time, &source->inclusive_time );
-    for ( i = 0; i < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
+    for ( uint32_t i = 0; i < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
     {
         scorep_profile_copy_dense_metric( &destination->dense_metrics[ i ],
                                           &source->dense_metrics[ i ] );
@@ -517,7 +541,8 @@ scorep_profile_find_create_child( SCOREP_Profile_LocationData* location,
     {
         child = scorep_profile_create_node( location, parent, node_type,
                                             specific_data,
-                                            timestamp );
+                                            timestamp,
+                                            scorep_profile_is_in_untied( parent ) );
         child->next_sibling = parent->first_child;
         parent->first_child = child;
     }
@@ -968,4 +993,19 @@ scorep_profile_set_fork_node( scorep_profile_node* node,
     node->flags = ( is_fork_node ?
                     node->flags | SCOREP_PROFILE_FLAG_IS_FORK_NODE :
                     node->flags & ( ~SCOREP_PROFILE_FLAG_IS_FORK_NODE ) );
+}
+
+bool
+scorep_profile_is_in_untied( scorep_profile_node* node )
+{
+    return node->flags & SCOREP_PROFILE_FLAG_IN_UNTIED_TASK;
+}
+
+void
+scorep_profile_set_in_untied( scorep_profile_node* node,
+                              bool                 is_in_untied )
+{
+    node->flags = ( is_in_untied ?
+                    node->flags | SCOREP_PROFILE_FLAG_IN_UNTIED_TASK :
+                    node->flags & ( ~SCOREP_PROFILE_FLAG_IN_UNTIED_TASK ) );
 }

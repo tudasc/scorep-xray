@@ -112,7 +112,6 @@ const size_t scorep_pomp_token_map_size =
 /** Contains the data for one region type */
 typedef struct
 {
-    char*                  regionTypeString;
     char*                  outerRegionName;
     char*                  innerRegionName;
     bool                   hasParallel;
@@ -129,27 +128,27 @@ typedef struct
 static const scorep_pomp_region_type_map_entry scorep_pomp_region_type_map[] =
 {
     /* Entries must be sorted to be used in binary search. */
-    /* If you add/remove items, scorep_pomp_region_type_map_size. */
     /* Entries must be in same order like SCOREP_Pomp_RegionType to allow lookup. */
-  { "atomic",            "atomic",      "",                false, false, SCOREP_Pomp_Atomic            , SCOREP_REGION_ATOMIC,      SCOREP_REGION_UNKNOWN         },
-  { "barrier",           "barrier",     "",                false, false, SCOREP_Pomp_Barrier           , SCOREP_REGION_BARRIER,     SCOREP_REGION_UNKNOWN         },
-  { "critical",          "critical",    "critical sblock", false, false, SCOREP_Pomp_Critical          , SCOREP_REGION_CRITICAL,    SCOREP_REGION_CRITICAL_SBLOCK },
-  { "do",                "do",          "",                false, true,  SCOREP_Pomp_Do                , SCOREP_REGION_LOOP,        SCOREP_REGION_UNKNOWN         },
-  { "flush",             "flush",       "",                false, false, SCOREP_Pomp_Flush             , SCOREP_REGION_FLUSH,       SCOREP_REGION_UNKNOWN         },
-  { "for",               "for",         "",                false, true,  SCOREP_Pomp_For               , SCOREP_REGION_LOOP,        SCOREP_REGION_UNKNOWN         },
-  { "master",            "",            "master",          false, false, SCOREP_Pomp_Master            , SCOREP_REGION_UNKNOWN,     SCOREP_REGION_MASTER          },
-  { "ordered",           "ordered",     "ordered sblock",  false, false, SCOREP_Pomp_Ordered           , SCOREP_REGION_ORDERED,     SCOREP_REGION_ORDERED_SBLOCK  },
-  { "parallel",          "",            "",                true,  true,  SCOREP_Pomp_Parallel          , SCOREP_REGION_UNKNOWN,     SCOREP_REGION_UNKNOWN         },
-  { "parallel do",       "do",          "",                true,  true,  SCOREP_Pomp_ParallelDo        , SCOREP_REGION_LOOP,        SCOREP_REGION_UNKNOWN         },
-  { "parallel for",      "for",         "",                true,  true,  SCOREP_Pomp_ParallelFor       , SCOREP_REGION_LOOP,        SCOREP_REGION_UNKNOWN         },
-  { "parallel sections", "sections",    "section",         true,  true,  SCOREP_Pomp_ParallelSections  , SCOREP_REGION_SECTIONS,    SCOREP_REGION_SECTION         },
-  { "parallel workshare","workshare",   "",                true,  true,  SCOREP_Pomp_ParallelWorkshare , SCOREP_REGION_WORKSHARE,   SCOREP_REGION_UNKNOWN         },
-  { "region",            "",            "region",          false, false, SCOREP_Pomp_UserRegion        , SCOREP_REGION_UNKNOWN,     SCOREP_REGION_USER,           },
-  { "sections",          "sections",    "section",         false, true,  SCOREP_Pomp_Sections          , SCOREP_REGION_SECTIONS,    SCOREP_REGION_SECTION         },
-  { "single",            "single",      "single sblock",   false, true,  SCOREP_Pomp_Single            , SCOREP_REGION_SINGLE,      SCOREP_REGION_SINGLE_SBLOCK,  },
-  { "task",              "create task", "task",            false, false, SCOREP_Pomp_Task              , SCOREP_REGION_TASK_CREATE, SCOREP_REGION_TASK            },
-  { "taskwait",          "taskwait",    "",                false, false, SCOREP_Pomp_Taskwait          , SCOREP_REGION_TASK_WAIT,   SCOREP_REGION_UNKNOWN         },
-  { "workshare",         "workshare",   "",                false, true,  SCOREP_Pomp_Workshare         , SCOREP_REGION_WORKSHARE,   SCOREP_REGION_UNKNOWN         }
+  { "atomic",        "",                false, false, SCOREP_Pomp_Atomic            , SCOREP_REGION_ATOMIC,      SCOREP_REGION_UNKNOWN         },
+  { "barrier",       "",                false, false, SCOREP_Pomp_Barrier           , SCOREP_REGION_BARRIER,     SCOREP_REGION_UNKNOWN         },
+  { "critical",      "critical sblock", false, false, SCOREP_Pomp_Critical          , SCOREP_REGION_CRITICAL,    SCOREP_REGION_CRITICAL_SBLOCK },
+  { "do",            "",                false, true,  SCOREP_Pomp_Do                , SCOREP_REGION_LOOP,        SCOREP_REGION_UNKNOWN         },
+  { "flush",         "",                false, false, SCOREP_Pomp_Flush             , SCOREP_REGION_FLUSH,       SCOREP_REGION_UNKNOWN         },
+  { "for",           "",                false, true,  SCOREP_Pomp_For               , SCOREP_REGION_LOOP,        SCOREP_REGION_UNKNOWN         },
+  { "",              "master",          false, false, SCOREP_Pomp_Master            , SCOREP_REGION_UNKNOWN,     SCOREP_REGION_MASTER          },
+  { "ordered",       "ordered sblock",  false, false, SCOREP_Pomp_Ordered           , SCOREP_REGION_ORDERED,     SCOREP_REGION_ORDERED_SBLOCK  },
+  { "",              "",                true,  true,  SCOREP_Pomp_Parallel          , SCOREP_REGION_UNKNOWN,     SCOREP_REGION_UNKNOWN         },
+  { "do",            "",                true,  true,  SCOREP_Pomp_ParallelDo        , SCOREP_REGION_LOOP,        SCOREP_REGION_UNKNOWN         },
+  { "for",           "",                true,  true,  SCOREP_Pomp_ParallelFor       , SCOREP_REGION_LOOP,        SCOREP_REGION_UNKNOWN         },
+  { "sections",      "section",         true,  true,  SCOREP_Pomp_ParallelSections  , SCOREP_REGION_SECTIONS,    SCOREP_REGION_SECTION         },
+  { "workshare",     "",                true,  true,  SCOREP_Pomp_ParallelWorkshare , SCOREP_REGION_WORKSHARE,   SCOREP_REGION_UNKNOWN         },
+  { "",              "region",          false, false, SCOREP_Pomp_UserRegion        , SCOREP_REGION_UNKNOWN,     SCOREP_REGION_USER,           },
+  { "sections",      "section",         false, true,  SCOREP_Pomp_Sections          , SCOREP_REGION_SECTIONS,    SCOREP_REGION_SECTION         },
+  { "single",        "single sblock",   false, true,  SCOREP_Pomp_Single            , SCOREP_REGION_SINGLE,      SCOREP_REGION_SINGLE_SBLOCK,  },
+  { "create task",   "task",            false, false, SCOREP_Pomp_Task              , SCOREP_REGION_TASK_CREATE, SCOREP_REGION_TASK            },
+  { "create untied", "untied task",     false, false, SCOREP_Pomp_Taskuntied        , SCOREP_REGION_TASK_CREATE, SCOREP_REGION_TASK_UNTIED     },
+  { "taskwait",      "",                false, false, SCOREP_Pomp_Taskwait          , SCOREP_REGION_TASK_WAIT,   SCOREP_REGION_UNKNOWN         },
+  { "workshare",     "",                false, true,  SCOREP_Pomp_Workshare         , SCOREP_REGION_WORKSHARE,   SCOREP_REGION_UNKNOWN         }
 };
 /* *INDENT-ON* */
 
@@ -458,7 +457,7 @@ SCOREP_Pomp_ParseInitString( const char          initString[],
             region->regionType = SCOREP_Pomp_Task;
             break;
         case POMP2_Taskuntied:
-            region->regionType = SCOREP_Pomp_Task;
+            region->regionType = SCOREP_Pomp_Taskuntied;
             break;
         case POMP2_Taskwait:
             region->regionType = SCOREP_Pomp_Taskwait;

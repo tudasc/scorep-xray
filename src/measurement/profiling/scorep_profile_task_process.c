@@ -117,7 +117,7 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
                                                 NULL,
                                                 scorep_profile_node_task_root,
                                                 data,
-                                                0 );
+                                                0, false );
     }
 
     /* move task tree to task_root */

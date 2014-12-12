@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2012,
@@ -51,8 +51,8 @@
    External configuration variables
    -------------------------------------------------------------------------------------*/
 
+extern uint64_t scorep_profile_task_exchange_num;
 extern uint64_t scorep_profile_max_callpath_depth;
-extern uint64_t scorep_profile_task_table_size;
 extern char*    scorep_profile_basename;
 extern uint64_t scorep_profile_output_format;
 extern uint64_t scorep_profile_cluster_count;
@@ -136,15 +136,15 @@ scorep_profile_get_number_of_threads( void )
    -------------------------------------------------------------------------------------*/
 
 uint64_t
-scorep_profile_get_max_callapth_depth( void )
+scorep_profile_get_task_exchange_num( void )
 {
-    return scorep_profile_max_callpath_depth;
+    return scorep_profile_task_exchange_num;
 }
 
 uint64_t
-scorep_profile_get_task_table_size( void )
+scorep_profile_get_max_callapth_depth( void )
 {
-    return scorep_profile_task_table_size;
+    return scorep_profile_max_callpath_depth;
 }
 
 const char*

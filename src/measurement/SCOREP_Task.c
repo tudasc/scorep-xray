@@ -20,7 +20,9 @@
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Location.h>
+#include <SCOREP_Profile_Tasking.h>
 #include <UTILS_Error.h>
+#include <scorep_status.h>
 
 #define SCOREP_TASK_STACK_SIZE 30
 
@@ -38,6 +40,7 @@ typedef struct SCOREP_Task
     uint32_t                 thread_id;
     uint32_t                 generation_number;
     SCOREP_TaskHandle        next;
+    void*                    profile_data;
 } SCOREP_Task;
 
 typedef struct scorep_location_task_data
@@ -201,6 +204,15 @@ scorep_task_create( SCOREP_Location* location,
     new_task->thread_id         = threadId;
     new_task->generation_number = generationNumber;
 
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+        new_task->profile_data = SCOREP_Profile_CreateTaskData( location, new_task );
+    }
+    else
+    {
+        new_task->profile_data = NULL;
+    }
+
     return new_task;
 }
 
@@ -208,6 +220,11 @@ void
 scorep_task_complete( SCOREP_Location*  location,
                       SCOREP_TaskHandle task )
 {
+    if ( task->profile_data != NULL )
+    {
+        SCOREP_Profile_FreeTaskData( location, task );
+        task->profile_data = NULL;
+    }
     recycle_task( location, task );
 }
 
@@ -320,4 +337,17 @@ SCOREP_Task_Exit( SCOREP_Location* location )
     SCOREP_TaskHandle task = subsystem_data->current_task;
 
     task_pop_stack( location, task );
+}
+
+void*
+SCOREP_Task_GetProfileData( SCOREP_TaskHandle task )
+{
+    return task->profile_data;
+}
+
+void
+SCOREP_Task_SetProfilingData( SCOREP_TaskHandle task,
+                              void*             data )
+{
+    task->profile_data = data;
 }
