@@ -51,7 +51,7 @@ AS_CASE([${CXX_STRIPPED}],
         [icpc],        [CC=icc],   # intel
         [CC],          [CC=cc],    # studio
         [xlC*|xlc++*], [CC=xlc_r], # ibm
-        [pgCC],        [CC=pgcc],  # pgi
+        [pgCC|pgc++],  [CC=pgcc],  # pgi
         [AC_MSG_ERROR([invalid value of CXX (${CXX_STRIPPED}), cannot determine corresponding CC])])
 
 AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
