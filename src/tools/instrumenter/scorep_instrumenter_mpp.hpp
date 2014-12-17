@@ -54,7 +54,7 @@ public:
                         const std::string& next );
 
     virtual void
-    checkObjects( SCOREP_Instrumenter* instrumenter );
+    checkObjects( SCOREP_Instrumenter& instrumenter );
 };
 
 /* **************************************************************************************
@@ -73,7 +73,7 @@ public:
                   const std::string& next );
 
     virtual void
-    checkObjects( SCOREP_Instrumenter* instrumenter );
+    checkObjects( SCOREP_Instrumenter& instrumenter );
 };
 
 /* **************************************************************************************

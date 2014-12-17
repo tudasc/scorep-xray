@@ -167,7 +167,7 @@ SCOREP_Instrumenter_Selector::checkCompilerName( const std::string& compiler )
 }
 
 void
-SCOREP_Instrumenter_Selector::checkObjects( SCOREP_Instrumenter* instrumenter )
+SCOREP_Instrumenter_Selector::checkObjects( SCOREP_Instrumenter& instrumenter )
 {
     SCOREP_Instrumenter_ParadigmList::iterator paradigm;
     for ( paradigm = m_paradigm_list.begin();
@@ -450,7 +450,7 @@ SCOREP_Instrumenter_Selector::isParadigmSelected( std::string name )
 }
 
 void
-SCOREP_Instrumenter_Selector::checkAllObjects( SCOREP_Instrumenter* instrumenter )
+SCOREP_Instrumenter_Selector::checkAllObjects( SCOREP_Instrumenter& instrumenter )
 {
     SCOREP_Instrumenter_SelectorList::iterator selector;
     for ( selector = m_selector_list.begin();

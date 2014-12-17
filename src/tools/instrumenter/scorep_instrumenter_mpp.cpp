@@ -124,14 +124,14 @@ SCOREP_Instrumenter_Mpi::checkWrapperOption( const std::string& current,
 }
 
 void
-SCOREP_Instrumenter_Mpi::checkObjects( SCOREP_Instrumenter* instrumenter )
+SCOREP_Instrumenter_Mpi::checkObjects( SCOREP_Instrumenter& instrumenter )
 {
     if ( m_selector->getSelection() == this )
     {
         return;
     }
 
-    std::vector<std::string>* object_list = instrumenter->getInputFiles();
+    std::vector<std::string>* object_list = instrumenter.getInputFiles();
 
     for ( std::vector<std::string>::iterator current_file = object_list->begin();
           current_file != object_list->end();
@@ -192,14 +192,14 @@ SCOREP_Instrumenter_Shmem::checkCommand( const std::string& current,
 }
 
 void
-SCOREP_Instrumenter_Shmem::checkObjects( SCOREP_Instrumenter* instrumenter )
+SCOREP_Instrumenter_Shmem::checkObjects( SCOREP_Instrumenter& instrumenter )
 {
     if ( m_selector->getSelection() == this )
     {
         return;
     }
 
-    std::vector<std::string>* object_list = instrumenter->getInputFiles();
+    std::vector<std::string>* object_list = instrumenter.getInputFiles();
 
     for ( std::vector<std::string>::iterator current_file = object_list->begin();
           current_file != object_list->end();

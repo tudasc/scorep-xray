@@ -181,6 +181,6 @@ SCOREP_Instrumenter_Paradigm::unsupported( void )
 }
 
 void
-SCOREP_Instrumenter_Paradigm:: checkObjects( SCOREP_Instrumenter* instrumenter )
+SCOREP_Instrumenter_Paradigm:: checkObjects( SCOREP_Instrumenter& instrumenter )
 {
 }

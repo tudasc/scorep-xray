@@ -157,7 +157,7 @@ public:
      * @param instrumenter The instrumenter instance.
      */
     virtual void
-    checkObjects( SCOREP_Instrumenter* instrumenter );
+    checkObjects( SCOREP_Instrumenter& instrumenter );
 
     /**
      * Returns a pointer to the currently selected paradigm.
@@ -284,7 +284,7 @@ public:
      * @param instrumenter The instrumenter instance.
      */
     static void
-    checkAllObjects( SCOREP_Instrumenter* instrumenter );
+    checkAllObjects( SCOREP_Instrumenter& instrumenter );
 
     /* ---------------------------------------------------------------- static members */
 private:

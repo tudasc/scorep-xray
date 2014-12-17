@@ -147,7 +147,7 @@ public:
      * @param instrumenter  Pointer to the instrumenter instance.
      */
     virtual void
-    checkObjects( SCOREP_Instrumenter* instrumenter );
+    checkObjects( SCOREP_Instrumenter& instrumenter );
 
     /**
      * This function is called during the command line parsing of the user

@@ -244,7 +244,7 @@ SCOREP_Instrumenter::Run( void )
 
     if ( m_command_line.isLinking() )
     {
-        SCOREP_Instrumenter_Selector::checkAllObjects( this );
+        SCOREP_Instrumenter_Selector::checkAllObjects( *this );
 
         // Create the config tool calls for linking
         prepare_config_tool_calls( "" );
