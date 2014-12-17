@@ -137,7 +137,7 @@ SCOREP_Instrumenter_Mpi::checkObjects( SCOREP_Instrumenter* instrumenter )
           current_file != object_list->end();
           current_file++ )
     {
-        std::string command = SCOREP_NM " " + *current_file + " | "
+        std::string command = SCOREP_NM " " + *current_file + " 2>/dev/null | "
                               SCOREP_EGREP " -l 'U (MPI|mpi)_' >/dev/null 2>&1";
         int return_value = system( command.c_str() );
         if ( return_value == 0 )
@@ -205,7 +205,7 @@ SCOREP_Instrumenter_Shmem::checkObjects( SCOREP_Instrumenter* instrumenter )
           current_file != object_list->end();
           current_file++ )
     {
-        std::string command = SCOREP_NM " " + *current_file + " | "
+        std::string command = SCOREP_NM " " + *current_file + " 2>/dev/null | "
                               SCOREP_EGREP " -l 'U (shmem_|my_pe|_my_pe|num_pes|_num_pes|start_pes|shmalloc|shfree|shmemalign|shrealloc)' >/dev/null 2>&1";
         int return_value = system( command.c_str() );
         if ( return_value == 0 )
