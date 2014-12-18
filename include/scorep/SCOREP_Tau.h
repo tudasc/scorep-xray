@@ -72,9 +72,7 @@ extern "C" {
  * @see SCOREP_FinalizeMeasurement()
  */
 void
-SCOREP_Tau_InitMeasurement
-(
-);
+SCOREP_Tau_InitMeasurement( void );
 
 
 /**
@@ -245,14 +243,12 @@ typedef enum
 #define SCOREP_Tau_SourceFileHandle       SCOREP_SourceFileHandle
 
 SCOREP_Tau_RegionHandle
-SCOREP_Tau_DefineRegion(
-    const char*                 regionName,
-    SCOREP_Tau_SourceFileHandle fileHandle,
-    SCOREP_Tau_LineNo           beginLine,
-    SCOREP_Tau_LineNo           endLine,
-    SCOREP_Tau_ParadigmType     paradigm,
-    SCOREP_Tau_RegionType       regionType
-    );
+SCOREP_Tau_DefineRegion( const char*                 regionName,
+                         SCOREP_Tau_SourceFileHandle fileHandle,
+                         SCOREP_Tau_LineNo           beginLine,
+                         SCOREP_Tau_LineNo           endLine,
+                         SCOREP_Tau_ParadigmType     paradigm,
+                         SCOREP_Tau_RegionType       regionType );
 
 /**
  * Generate a region enter event in the measurement system.
@@ -260,9 +256,7 @@ SCOREP_Tau_DefineRegion(
  * @param regionHandle The corresponding region for the enter event.
  */
 void
-SCOREP_Tau_EnterRegion(
-    SCOREP_Tau_RegionHandle regionHandle
-    );
+SCOREP_Tau_EnterRegion( SCOREP_Tau_RegionHandle regionHandle );
 
 /**
  * Generate a region exit event in the measurement system.
@@ -270,9 +264,7 @@ SCOREP_Tau_EnterRegion(
  * @param regionHandle The corresponding region for the enter event.
  */
 void
-SCOREP_Tau_ExitRegion(
-    SCOREP_Tau_RegionHandle regionHandle
-    );
+SCOREP_Tau_ExitRegion( SCOREP_Tau_RegionHandle regionHandle );
 
 /**
  * Register a function that can close the callstack. This is invoked by
@@ -283,9 +275,8 @@ SCOREP_Tau_ExitRegion(
  * Tau_profile_exit_all_threads.
  */
 void
-SCOREP_Tau_RegisterExitCallback(
-    SCOREP_Tau_ExitCallback
-    );
+SCOREP_Tau_RegisterExitCallback( SCOREP_Tau_ExitCallback );
+
 #define SCOREP_Tau_MetricHandle            SCOREP_SamplingSetHandle
 #define SCOREP_TAU_INIT_METRIC_HANDLE   SCOREP_INVALID_SAMPLING_SET
 
@@ -294,10 +285,7 @@ SCOREP_Tau_RegisterExitCallback(
  * @param metricHandle  The handle that is invalidated.
  */
 void
-SCOREP_Tau_Metric
-(
-    SCOREP_Tau_MetricHandle* metricHandle
-);
+SCOREP_Tau_Metric( SCOREP_Tau_MetricHandle* metricHandle );
 
 /**
  * Defines a metric handle. Every metric must be initialized before first usage.
@@ -306,12 +294,9 @@ SCOREP_Tau_Metric
  * @param unit         A string containing the metric unit for display.
  */
 void
-SCOREP_Tau_InitMetric
-(
-    SCOREP_Tau_MetricHandle* metricHandle,
-    const char*              name,
-    const char*              unit
-);
+SCOREP_Tau_InitMetric( SCOREP_Tau_MetricHandle* metricHandle,
+                       const char*              name,
+                       const char*              unit );
 
 /**
  * Adds a metric sample.
@@ -319,11 +304,8 @@ SCOREP_Tau_InitMetric
  * @param value        The value of the current metric sample.
  */
 void
-SCOREP_Tau_TriggerMetricDouble
-(
-    SCOREP_Tau_MetricHandle metricHandle,
-    double                  value
-);
+SCOREP_Tau_TriggerMetricDouble( SCOREP_Tau_MetricHandle metricHandle,
+                                double                  value );
 
 #define SCOREP_Tau_ParamHandle           SCOREP_User_ParameterHandle
 #define SCOREP_TAU_INIT_PARAM_HANDLE           SCOREP_USER_INVALID_PARAMETER
@@ -336,11 +318,9 @@ SCOREP_Tau_TriggerMetricDouble
  * @param value       The parameter value.
  */
 void
-SCOREP_Tau_Parameter_INT64(
-    SCOREP_Tau_ParamHandle* paramHandle,
-    const char*             name,
-    int64_t                 value
-    );
+SCOREP_Tau_Parameter_INT64( SCOREP_Tau_ParamHandle* paramHandle,
+                            const char*             name,
+                            int64_t                 value );
 
 /**
  * Adds a property to the calling location. A property is a key/value pair.

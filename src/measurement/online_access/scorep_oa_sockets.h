@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -68,23 +68,17 @@ typedef struct
 }       registry;
 
 int
-scorep_oa_sockets_server_startup_retry
-(
-    uint64_t* init_port,
-    int       retries,
-    int       step
-);
+scorep_oa_sockets_server_startup_retry( uint64_t* init_port,
+                                        int       retries,
+                                        int       step );
 
 /*
  * open connection to the registry server,
  * initialize data-structures
  */
 registry*
-scorep_oa_sockets_open_registry
-(
-    const char* hostname,
-    int         port
-);
+scorep_oa_sockets_open_registry( const char* hostname,
+                                 int         port );
 
 
 /*
@@ -92,10 +86,7 @@ scorep_oa_sockets_open_registry
  * returns 1 on success, 0 on failure
  */
 int
-scorep_oa_sockets_close_registry
-(
-    registry* reg
-);
+scorep_oa_sockets_close_registry( registry* reg );
 
 
 /*
@@ -103,78 +94,51 @@ scorep_oa_sockets_close_registry
  * returns the entry's positive ID on success 0 on failure
  */
 int
-scorep_oa_sockets_registry_create_entry
-(
-    registry*   reg,
-    const char* app,
-    const char* site,
-    const char* mach,
-    const char* node,
-    int         port,
-    int         pid,
-    const char* comp,
-    const char* tag
-);
+scorep_oa_sockets_registry_create_entry( registry*   reg,
+                                         const char* app,
+                                         const char* site,
+                                         const char* mach,
+                                         const char* node,
+                                         int         port,
+                                         int         pid,
+                                         const char* comp,
+                                         const char* tag );
 
 int
-scorep_oa_sockets_client_connect_retry
-(
-    char* hostname,
-    int   port,
-    int   retries
-);
+scorep_oa_sockets_client_connect_retry( char* hostname,
+                                        int   port,
+                                        int   retries );
 
 int
-scorep_oa_sockets_socket_my_read
-(
-    int   fd,
-    char* ptr
-);
+scorep_oa_sockets_socket_my_read( int   fd,
+                                  char* ptr );
 
 int
-scorep_oa_sockets_blockread
-(
-    int   sock,
-    char* ptr,
-    int   size
-);
+scorep_oa_sockets_blockread( int   sock,
+                             char* ptr,
+                             int   size );
 
 int
-scorep_oa_sockets_read_line
-(
-    int   sock,
-    char* str,
-    int   maxlen
-);
+scorep_oa_sockets_read_line( int   sock,
+                             char* str,
+                             int   maxlen );
 
 void
-scorep_oa_sockets_write_line
-(
-    int         sock,
-    const char* str
-);
+scorep_oa_sockets_write_line( int         sock,
+                              const char* str );
 
 void
-scorep_oa_sockets_write_data
-(
-    int         sock,
-    const void* buf,
-    int         nbyte
-);
+scorep_oa_sockets_write_data( int         sock,
+                              const void* buf,
+                              int         nbyte );
 
 void
-scorep_oa_sockets_register_with_registry
-(
-    uint64_t port,
-    uint64_t reg_port,
-    char*    reg_host,
-    char*    app_name
-);
+scorep_oa_sockets_register_with_registry( uint64_t port,
+                                          uint64_t reg_port,
+                                          char*    reg_host,
+                                          char*    app_name );
 
 int
-scorep_oa_sockets_server_accept_client
-(
-    int sock
-);
+scorep_oa_sockets_server_accept_client( int sock );
 
 #endif /* SCOREP_OA_SOCKETS_H */

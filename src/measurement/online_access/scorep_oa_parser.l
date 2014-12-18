@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -188,10 +188,7 @@ int yyparse ();
 #endif /* ! YYPARSE_PARAM */
 
 SCOREP_ErrorCode
-scorep_oa_mri_parse
-(
-    char* buffer
-)
+scorep_oa_mri_parse( char* buffer)
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     SCOREP_ErrorCode return_status = SCOREP_SUCCESS;

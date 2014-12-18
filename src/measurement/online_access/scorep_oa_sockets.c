@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -65,12 +65,9 @@ static char  read_buf[ 1000 ];
 
 
 int
-scorep_oa_sockets_server_startup_retry
-(
-    uint64_t* init_port,
-    int       retries,
-    int       step
-)
+scorep_oa_sockets_server_startup_retry( uint64_t* init_port,
+                                        int       retries,
+                                        int       step )
 {
     int                sock;
     int                yes  = 1;
@@ -152,11 +149,8 @@ scorep_oa_sockets_server_startup_retry
 }
 
 registry*
-scorep_oa_sockets_open_registry
-(
-    const char* hostname,
-    int         port
-)
+scorep_oa_sockets_open_registry( const char* hostname,
+                                 int         port )
 {
     registry* reg = ( registry* )malloc( sizeof( registry ) );
     char      buf[ BUFSIZE ];
@@ -199,10 +193,7 @@ scorep_oa_sockets_open_registry
  * close the connection to the registry server
  */
 int
-scorep_oa_sockets_close_registry
-(
-    registry* reg
-)
+scorep_oa_sockets_close_registry( registry* reg )
 {
     int  ret;
     char buf[ BUFSIZE ];
@@ -232,18 +223,15 @@ scorep_oa_sockets_close_registry
 
 
 int
-scorep_oa_sockets_registry_create_entry
-(
-    registry*   reg,
-    const char* app,
-    const char* site,
-    const char* mach,
-    const char* node,
-    int         port,
-    int         pid,
-    const char* comp,
-    const char* tag
-)
+scorep_oa_sockets_registry_create_entry( registry*   reg,
+                                         const char* app,
+                                         const char* site,
+                                         const char* mach,
+                                         const char* node,
+                                         int         port,
+                                         int         pid,
+                                         const char* comp,
+                                         const char* tag )
 {
     int  id = 0;
     char buf[ BUFSIZE ];
@@ -272,11 +260,8 @@ scorep_oa_sockets_registry_create_entry
 }
 
 int
-scorep_oa_sockets_registry_delete_entry
-(
-    registry* reg,
-    int       entid
-)
+scorep_oa_sockets_registry_delete_entry( registry* reg,
+                                         int       entid )
 {
     char buf[ BUFSIZE ];
     int  id;
@@ -296,12 +281,9 @@ scorep_oa_sockets_registry_delete_entry
 }
 
 int
-scorep_oa_sockets_client_connect_retry
-(
-    char* hostname,
-    int   port,
-    int   retries
-)
+scorep_oa_sockets_client_connect_retry( char* hostname,
+                                        int   port,
+                                        int   retries )
 {
     struct addrinfo  hints;
     struct addrinfo* result;
@@ -371,32 +353,23 @@ scorep_oa_sockets_client_connect_retry
 
 
 void
-scorep_oa_sockets_write_line
-(
-    int         sock,
-    const char* str
-)
+scorep_oa_sockets_write_line( int         sock,
+                              const char* str )
 {
     int result = write( sock, str, strlen( str ) );
 }
 
 void
-scorep_oa_sockets_write_data
-(
-    int         sock,
-    const void* buf,
-    int         nbyte
-)
+scorep_oa_sockets_write_data( int         sock,
+                              const void* buf,
+                              int         nbyte )
 {
     int result = write( sock, buf, nbyte );
 }
 
 int
-scorep_oa_sockets_socket_my_read
-(
-    int   fd,
-    char* ptr
-)
+scorep_oa_sockets_socket_my_read( int   fd,
+                                  char* ptr )
 {
     if ( read_cnt <= 0 )
     {
@@ -424,12 +397,9 @@ again:
 
 
 int
-scorep_oa_sockets_blockread
-(
-    int   sock,
-    char* ptr,
-    int   size
-)
+scorep_oa_sockets_blockread( int   sock,
+                             char* ptr,
+                             int   size )
 {
     int  n, rc;
     char c;
@@ -457,12 +427,9 @@ scorep_oa_sockets_blockread
 
 
 int
-scorep_oa_sockets_read_line
-(
-    int   sock,
-    char* str,
-    int   maxlen
-)
+scorep_oa_sockets_read_line( int   sock,
+                             char* str,
+                             int   maxlen )
 {
     int  n, rc;
     char c, * ptr;
@@ -496,13 +463,10 @@ scorep_oa_sockets_read_line
 }
 
 void
-scorep_oa_sockets_register_with_registry
-(
-    uint64_t port,
-    uint64_t reg_port,
-    char*    reg_host,
-    char*    app_name
-)
+scorep_oa_sockets_register_with_registry( uint64_t port,
+                                          uint64_t reg_port,
+                                          char*    reg_host,
+                                          char*    app_name )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     registry* reg;
@@ -651,10 +615,7 @@ scorep_oa_sockets_register_with_registry
 }
 
 int
-scorep_oa_sockets_server_accept_client
-(
-    int sock
-)
+scorep_oa_sockets_server_accept_client( int sock )
 {
     int newsock;
 

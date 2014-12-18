@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -41,19 +41,12 @@
 
 
 void
-SCOREP_OA_PhaseBegin
-(
-    const SCOREP_RegionHandle handle
-)
+SCOREP_OA_PhaseBegin( const SCOREP_RegionHandle handle )
 {
-    UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA,  "Dummy %s\n", __func__ );
 }
 
 void
-SCOREP_OA_PhaseEnd
-(
-    const SCOREP_RegionHandle handle
-)
+SCOREP_OA_PhaseEnd( const SCOREP_RegionHandle handle )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA,  "Dummy %s\n", __func__ );
 }

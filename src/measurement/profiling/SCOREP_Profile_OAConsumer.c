@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -67,11 +67,8 @@ static thread_private_index_type** thread_index_pointer_array = NULL;
 static uint32_t thread_count = 0;
 
 void
-SCOREP_OAConsumer_Initialize
-(
-    SCOREP_Location*    location,
-    SCOREP_RegionHandle phase_handle
-)
+SCOREP_OAConsumer_Initialize( SCOREP_Location*    location,
+                              SCOREP_RegionHandle phase_handle )
 {
     int i;
 
@@ -112,10 +109,7 @@ SCOREP_OAConsumer_Initialize
 }
 
 uint32_t
-SCOREP_OAConsumer_GetDataSize
-(
-    SCOREP_OAConsumer_DataTypes data_type
-)
+SCOREP_OAConsumer_GetDataSize( SCOREP_OAConsumer_DataTypes data_type )
 {
     if ( thread_index_pointer_array[ 0 ] == NULL )
     {
@@ -144,10 +138,7 @@ SCOREP_OAConsumer_GetDataSize
 }
 
 void*
-SCOREP_OAConsumer_GetData
-(
-    SCOREP_OAConsumer_DataTypes data_type
-)
+SCOREP_OAConsumer_GetData( SCOREP_OAConsumer_DataTypes data_type )
 {
     if ( thread_index_pointer_array == NULL )
     {
@@ -174,9 +165,7 @@ SCOREP_OAConsumer_GetData
 }
 
 void
-SCOREP_OAConsumer_DismissData
-(
-)
+SCOREP_OAConsumer_DismissData( void )
 {
     if ( thread_index_pointer_array == NULL )
     {

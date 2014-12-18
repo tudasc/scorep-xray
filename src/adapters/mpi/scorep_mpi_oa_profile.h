@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -80,28 +80,19 @@ typedef struct scorep_mpiprofile_world_comm_dup_struct
 extern scorep_mpiprofile_world_comm_dup scorep_mpiprofiling_world_comm_dup;
 
 int
-scorep_mpiprofile_get_timepack_from_pool
-(
-    void** free_buffer,
-    int*   index
-);
+scorep_mpiprofile_get_timepack_from_pool( void** free_buffer,
+                                          int*   index );
 
 void
-scorep_mpiprofile_store_timepack_request_in_pool
-(
-    MPI_Request request,
-    int         position
-);
+scorep_mpiprofile_store_timepack_request_in_pool( MPI_Request request,
+                                                  int         position );
 
 void
 scorep_mpiprofile_free_timepack_pool( void );
 
 void
-scorep_mpiprofile_init_timepack
-(
-    void*    buf,
-    uint64_t time
-);
+scorep_mpiprofile_init_timepack( void*    buf,
+                                 uint64_t time );
 
 int
 scorep_mpiprofiling_get_group( MPI_Comm   comm,
@@ -113,12 +104,9 @@ scorep_mpiprofiling_rank_to_pe_by_group( int       rank,
                                          int*      global_rank );
 
 int
-scorep_mpiprofiling_rank_to_pe
-(
-    int      rank,
-    MPI_Comm comm,
-    int*     global_rank
-);
+scorep_mpiprofiling_rank_to_pe( int      rank,
+                                MPI_Comm comm,
+                                int*     global_rank );
 
 void
 scorep_mpiprofile_init( void );
@@ -133,31 +121,19 @@ void
 scorep_mpiprofile_finalize( void );
 
 void*
-scorep_mpiprofile_get_remote_time_packs
-(
-    int size
-);
+scorep_mpiprofile_get_remote_time_packs( int size );
 
 void*
 scorep_mpiprofile_get_remote_time_pack( void );
 
 void
-scorep_mpiprofile_release_local_time_pack
-(
-    void* local_time_pack
-);
+scorep_mpiprofile_release_local_time_pack( void* local_time_pack );
 
 void
-scorep_mpiprofile_release_remote_time_pack
-(
-    void* remote_time_pack
-);
+scorep_mpiprofile_release_remote_time_pack( void* remote_time_pack );
 
 void
-scorep_mpiprofile_release_remote_time_packs
-(
-    void* remote_time_packs
-);
+scorep_mpiprofile_release_remote_time_packs( void* remote_time_packs );
 
 /**
  * Creates time pack buffer containing rank and time stamp
@@ -166,10 +142,7 @@ scorep_mpiprofile_release_remote_time_packs
  * @return pointer to the MPI_PACKED buffer containing time stamp and mpi rank.
  */
 void*
-scorep_mpiprofile_get_time_pack
-(
-    uint64_t time
-);
+scorep_mpiprofile_get_time_pack( uint64_t time );
 
 /**
  * Evaluates two time packs for p2p communications
@@ -178,11 +151,8 @@ scorep_mpiprofile_get_time_pack
  * @param dstTimePack time pack of the receiving process.
  */
 void
-scorep_mpiprofile_eval_1x1_time_packs
-(
-    void* srcTimePack,
-    void* dstTimePack
-);
+scorep_mpiprofile_eval_1x1_time_packs( void* srcTimePack,
+                                       void* dstTimePack );
 
 /**
  * Evaluates multiple time packs for Nx1 communications
@@ -191,11 +161,8 @@ scorep_mpiprofile_eval_1x1_time_packs
  * @param size size of the array.
  */
 void
-scorep_mpiprofile_eval_nx1_time_packs
-(
-    void* timePacks,
-    int   size
-);
+scorep_mpiprofile_eval_nx1_time_packs( void* timePacks,
+                                       int   size );
 
 /**
  * Evaluates multiple time packs for NxN communications
@@ -205,12 +172,9 @@ scorep_mpiprofile_eval_nx1_time_packs
  * @param size size of the srcTimePacks array.
  */
 void
-scorep_mpiprofile_eval_multi_time_packs
-(
-    void* srcTimePacks,
-    void* dstTimePack,
-    int   size
-);
+scorep_mpiprofile_eval_multi_time_packs( void* srcTimePacks,
+                                         void* dstTimePack,
+                                         int   size );
 
 /**
  * Evaluates two time stamps of the communicating processes to determine waiting states
@@ -221,13 +185,10 @@ scorep_mpiprofile_eval_multi_time_packs
  * @param recvTime Time stamp on the receive side.
  */
 void
-scorep_mpiprofile_eval_time_stamps
-(
-    int      src,
-    int      dst,
-    uint64_t sendTime,
-    uint64_t recvTime
-);
+scorep_mpiprofile_eval_time_stamps( int      src,
+                                    int      dst,
+                                    uint64_t sendTime,
+                                    uint64_t recvTime );
 
 
 #endif /* SCOREP_MPIPROFILE_H */

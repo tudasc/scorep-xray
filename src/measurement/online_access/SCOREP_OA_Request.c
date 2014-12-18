@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -62,10 +62,7 @@
 
 /** Helper function mapping Periscope metric groups to Score-P metric sources*/
 static OA_MetricSource
-get_scorep_metric_source
-(
-    PSC_MetricGroup metric_group
-);
+get_scorep_metric_source( PSC_MetricGroup metric_group );
 
 /**
  * Internal hash-table storing metric requests using their name as a key. It is used to create
@@ -118,31 +115,22 @@ static MetricRequest* execution_time_request    = NULL;
 /** Prints call-tree profile
  */
 extern void
-scorep_profile_dump_subtree
-(
-    scorep_profile_node* node,
-    uint32_t             level
-);
+scorep_profile_dump_subtree( scorep_profile_node* node,
+                             uint32_t             level );
 
 /** Prints hash-table profile
  */
 static void
-print_hash_table_request
-(
-    const SCOREP_Hashtab* hash_table,
-    char*                 tag
-);
+print_hash_table_request( const SCOREP_Hashtab* hash_table,
+                          char*                 tag );
 
 /**
  * Indexes submitted requests for later use
  */
 void
-scorep_oa_request_submit
-(
-    const char*             metric_name,
-    uint32_t                metric_id,
-    SCOREP_MetricSourceType metric_source_type
-);
+scorep_oa_request_submit( const char*             metric_name,
+                          uint32_t                metric_id,
+                          SCOREP_MetricSourceType metric_source_type );
 
 /**
  * Helper function to add request for the execution time. Execution
@@ -150,23 +138,16 @@ scorep_oa_request_submit
  * for time measurements in Score-P
  */
 void
-scorep_oa_request_exec_time_submit
-(
-);
+scorep_oa_request_exec_time_submit( void );
 
 /**
  * Helper function to free MetricRequest data structure
  */
 static void
-free_metric_request
-(
-    void* request
-);
+free_metric_request( void* request );
 
 void
-SCOREP_OA_RequestBegin
-(
-)
+SCOREP_OA_RequestBegin( void )
 {
     /** Check accepting requests is not already initialized*/
     assert( requestsStatus == NOT_INITIALIZED );
@@ -189,9 +170,7 @@ SCOREP_OA_RequestBegin
 }
 
 void
-SCOREP_OA_RequestsSubmit
-(
-)
+SCOREP_OA_RequestsSubmit( void )
 {
     assert( requestsStatus == ACCEPTING );
     if ( requestsStatus != ACCEPTING )
@@ -340,9 +319,7 @@ SCOREP_OA_RequestsSubmit
 }
 
 void
-scorep_oa_request_exec_time_submit
-(
-)
+scorep_oa_request_exec_time_submit( void )
 {
     if ( execution_time_request )
     {
@@ -359,12 +336,9 @@ scorep_oa_request_exec_time_submit
 }
 
 void
-scorep_oa_request_submit
-(
-    const char*             metric_name,
-    uint32_t                metric_id,
-    SCOREP_MetricSourceType metric_source_type
-)
+scorep_oa_request_submit( const char*             metric_name,
+                          uint32_t                metric_id,
+                          SCOREP_MetricSourceType metric_source_type )
 {
     /**
      * Since the definitions are duplicated when the metric module is reinitialized, the duplicats have to
@@ -427,11 +401,8 @@ scorep_oa_request_submit
 }
 
 void
-SCOREP_OA_RequestsAddMetricByName
-(
-    char*           metric_name,
-    OA_MetricSource metric_source
-)
+SCOREP_OA_RequestsAddMetricByName( char*           metric_name,
+                                   OA_MetricSource metric_source )
 {
     int i;
     assert( requestsStatus == ACCEPTING );
@@ -524,10 +495,7 @@ SCOREP_OA_RequestsAddMetricByName
 }
 
 void
-SCOREP_OA_RequestsAddPeriscopeMetric
-(
-    int metric_code
-)
+SCOREP_OA_RequestsAddPeriscopeMetric( int metric_code )
 {
     int i;
 
@@ -600,10 +568,7 @@ SCOREP_OA_RequestsAddPeriscopeMetric
 }
 
 MetricRequest*
-SCOREP_OA_RequestGet
-(
-    uint32_t metric_ID
-)
+SCOREP_OA_RequestGet( uint32_t metric_ID )
 {
     assert( requestsStatus == SUBMITTED );
     if ( requestsStatus != SUBMITTED )
@@ -630,17 +595,13 @@ SCOREP_OA_RequestGet
 }
 
 MetricRequest*
-SCOREP_OA_RequestGetExecutionTime
-(
-)
+SCOREP_OA_RequestGetExecutionTime( void )
 {
     return execution_time_request;
 }
 
 uint32_t
-SCOREP_OA_GetNumberOfRequests
-(
-)
+SCOREP_OA_GetNumberOfRequests( void )
 {
     assert( requestsStatus == SUBMITTED );
 
@@ -659,9 +620,7 @@ SCOREP_OA_GetNumberOfRequests
 }
 
 void
-SCOREP_OA_RequestsDismiss
-(
-)
+SCOREP_OA_RequestsDismiss( void )
 {
     assert( requestsStatus == SUBMITTED );
 
@@ -685,10 +644,7 @@ SCOREP_OA_RequestsDismiss
 }
 
 static OA_MetricSource
-get_scorep_metric_source
-(
-    PSC_MetricGroup metric_group
-)
+get_scorep_metric_source( PSC_MetricGroup metric_group )
 {
     switch ( metric_group )
     {
@@ -709,10 +665,7 @@ get_scorep_metric_source
 }
 
 void
-free_metric_request
-(
-    void* request
-)
+free_metric_request( void* request )
 {
     if ( !request )
     {
@@ -727,11 +680,8 @@ free_metric_request
 }
 
 static void
-print_hash_table_request
-(
-    const SCOREP_Hashtab* hash_table,
-    char*                 tag
-)
+print_hash_table_request( const SCOREP_Hashtab* hash_table,
+                          char*                 tag )
 {
     printf( "\n/////////////%s///////////\n", tag );
     SCOREP_Hashtab_Iterator* iter;

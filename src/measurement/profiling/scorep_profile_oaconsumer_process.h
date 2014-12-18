@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -157,42 +157,28 @@ typedef struct SCOREP_OA_Key_struct
 /** Returns number of thread root nodes in profile
  */
 uint32_t
-scorep_oaconsumer_get_number_of_roots
-(
-);
+scorep_oaconsumer_get_number_of_roots( void );
 
 /** Searches for a OA phase node in the call-tree profile by a given region id
  */
 scorep_profile_node*
-scorep_oaconsumer_get_phase_node
-(
-    scorep_profile_node* node,
-    uint32_t             phase_id
-);
+scorep_oaconsumer_get_phase_node( scorep_profile_node* node,
+                                  uint32_t             phase_id );
 
 /** Returns a pointer to the buffer with flat profile measurements of the given thread
  */
 SCOREP_OA_FlatProfileMeasurement*
-scorep_oaconsumer_get_static_profile_measurements
-(
-    thread_private_index_type** private_index_pointer_array
-);
+scorep_oaconsumer_get_static_profile_measurements( thread_private_index_type** private_index_pointer_array );
 
 /** Returns a pointer to the buffer with merged region definitions
  */
 SCOREP_OA_CallPathRegionDef*
-scorep_oaconsumer_get_merged_region_definitions
-(
-    thread_private_index_type** private_index_pointer_array
-);
+scorep_oaconsumer_get_merged_region_definitions( thread_private_index_type** private_index_pointer_array );
 
 /** Returns a pointer to the buffer with metric definitions
  */
 SCOREP_OA_CallPathCounterDef*
-scorep_oaconsumer_get_metric_definitions
-(
-    thread_private_index_type** private_index_pointer_array
-);
+scorep_oaconsumer_get_metric_definitions( thread_private_index_type** private_index_pointer_array );
 
 /**
  * Stores the metric definition index specified with metric handle in to the provided address.
@@ -204,11 +190,8 @@ scorep_oaconsumer_get_metric_definitions
  * @return 1 if success, 0 otherwise
  */
 int32_t
-scorep_oaconsumer_get_metric_request_index_pointer
-(
-    SCOREP_MetricHandle metric_handle,
-    uint32_t*           metric_index
-);
+scorep_oaconsumer_get_metric_request_index_pointer( SCOREP_MetricHandle metric_handle,
+                                                    uint32_t*           metric_index );
 
 /*----------------------------------------------------------------------------------------
    Profile indexing
@@ -217,20 +200,14 @@ scorep_oaconsumer_get_metric_request_index_pointer
  * external metric id
  */
 void
-scorep_oaconsumer_initialize_metric_def
-(
-    shared_index_type* shared_index
-);
+scorep_oaconsumer_initialize_metric_def( shared_index_type* shared_index );
 
 /** Allocates an array of pointers to indexes. Each thread has it is own index data structure.
  *  Also phase node corresponding to a given phase_handle is searched in each call-tree of each thread
  *  and stored in phase_node entry of the data_index_type
  */
 thread_private_index_type**
-scorep_oa_consumer_initialize_index
-(
-    SCOREP_RegionHandle phase_handle
-);
+scorep_oa_consumer_initialize_index( SCOREP_RegionHandle phase_handle );
 
 /** A function which creates index for a given profile node. A pointer to this function is passed
  * to @ref scorep_profile_for_all() which parses the profile call-tree
@@ -239,11 +216,8 @@ scorep_oa_consumer_initialize_index
  * @param param a void pointer to index data structure of a currently indexed thread
  */
 void
-scorep_oaconsumer_count_index
-(
-    scorep_profile_node* node,
-    void*                param
-);
+scorep_oaconsumer_count_index( scorep_profile_node* node,
+                               void*                param );
 
 /** Creates an entry in the given hash table and returns a suggested index if entry
  * was not already in the hash table or an index of entry if it is already in a
@@ -254,12 +228,9 @@ scorep_oaconsumer_count_index
  * @param current_index suggested index for the new entry
  */
 uint32_t
-scorep_oa_index_data_key
-(
-    SCOREP_Hashtab* hash_table,
-    SCOREP_OA_Key*  key,
-    uint32_t        current_index
-);
+scorep_oa_index_data_key( SCOREP_Hashtab* hash_table,
+                          SCOREP_OA_Key*  key,
+                          uint32_t        current_index );
 
 /*----------------------------------------------------------------------------------------
    Profile transformation
@@ -273,11 +244,8 @@ scorep_oa_index_data_key
  * @param param a void pointer to the merged region definition buffer
  */
 void
-scorep_oaconsumer_copy_static_measurement
-(
-    scorep_profile_node* node,
-    void*                param                          /// SCOREP_OA_FlatProfileMeasurement* buffer
-);
+scorep_oaconsumer_copy_static_measurement( scorep_profile_node* node,
+                                           void*                param );
 
 /** Copies merged region definition of the given profile node to the merged region definition buffer
  * which is passed over @a param. The pointer to this function is passed to @ref scorep_profile_for_all()
@@ -287,11 +255,8 @@ scorep_oaconsumer_copy_static_measurement
  * @param param a void pointer to the merged region definition buffer
  */
 void
-scorep_oaconsumer_copy_merged_region_definitions
-(
-    scorep_profile_node* node,
-    void*                param                          /// SCOREP_OA_FlatProfileMeasurement* buffer
-);
+scorep_oaconsumer_copy_merged_region_definitions( scorep_profile_node* node,
+                                                  void*                param );
 
 /*----------------------------------------------------------------------------------------
    Hashing
@@ -300,36 +265,24 @@ scorep_oaconsumer_copy_merged_region_definitions
 /** Generates hash key for a merged region definition of a given profile node
  */
 SCOREP_OA_Key*
-scorep_oaconsumer_generate_region_key
-(
-    scorep_profile_node* node
-);
+scorep_oaconsumer_generate_region_key( scorep_profile_node* node );
 
 /** Generates hash key for a flat profile measurement for a given region defined
  * with merged region definition key and a counter id
  */
 SCOREP_OA_Key*
-scorep_oaconsumer_generate_static_measurement_key
-(
-    SCOREP_OA_Key* region_key,
-    uint32_t       counter_id
-);
+scorep_oaconsumer_generate_static_measurement_key( SCOREP_OA_Key* region_key,
+                                                   uint32_t       counter_id );
 
 /** Hash-compare functions for region ids
  */
 int32_t
-SCOREP_Hashtab_CompareOAKeys
-(
-    const void* key,
-    const void* item_key
-);
+SCOREP_Hashtab_CompareOAKeys( const void* key,
+                              const void* item_key );
 
 /** Hashing functions for region ids
  */
 size_t
-SCOREP_Hashtab_HashOAKeys
-(
-    const void* key
-);
+SCOREP_Hashtab_HashOAKeys( const void* key );
 
 #endif /* SCOREP_OA_CONSUMER_PROCESS_H_ */

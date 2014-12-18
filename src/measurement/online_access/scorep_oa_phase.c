@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -48,10 +48,7 @@
 #include "scorep_selective_region.h"
 
 void
-scorep_oa_phase_enter
-(
-    const SCOREP_RegionHandle ms_handle
-)
+scorep_oa_phase_enter( const SCOREP_RegionHandle ms_handle )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __func__ );
 
@@ -69,10 +66,7 @@ scorep_oa_phase_enter
 }
 
 void
-scorep_oa_phase_exit
-(
-    const SCOREP_RegionHandle ms_handle
-)
+scorep_oa_phase_exit( const SCOREP_RegionHandle ms_handle )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s\n", __func__ );
 

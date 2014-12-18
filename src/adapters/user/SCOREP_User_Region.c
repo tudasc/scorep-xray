@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -25,6 +25,7 @@
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
+ *
  */
 
 /**
@@ -256,16 +257,13 @@ SCOREP_User_RegionEnter( const SCOREP_User_RegionHandle handle )
 }
 
 void
-SCOREP_User_RewindRegionBegin
-(
-    SCOREP_User_RegionHandle*    handle,
-    const char**                 lastFileName,
-    SCOREP_SourceFileHandle*     lastFile,
-    const char*                  name,
-    const SCOREP_User_RegionType regionType,
-    const char*                  fileName,
-    const uint32_t               lineNo
-)
+SCOREP_User_RewindRegionBegin( SCOREP_User_RegionHandle*    handle,
+                               const char**                 lastFileName,
+                               SCOREP_SourceFileHandle*     lastFile,
+                               const char*                  name,
+                               const SCOREP_User_RegionType regionType,
+                               const char*                  fileName,
+                               const uint32_t               lineNo )
 {
     SCOREP_USER_ASSERT_NOT_FINALIZED;
 
@@ -281,11 +279,8 @@ SCOREP_User_RewindRegionBegin
 }
 
 void
-SCOREP_User_RewindRegionEnd
-(
-    const SCOREP_User_RegionHandle handle,
-    bool                           value
-)
+SCOREP_User_RewindRegionEnd( const SCOREP_User_RegionHandle handle,
+                             bool                           value )
 {
     SCOREP_USER_ASSERT_NOT_FINALIZED
 
@@ -299,10 +294,7 @@ SCOREP_User_RewindRegionEnd
 }
 
 void
-SCOREP_User_RewindRegionEnter
-(
-    const SCOREP_User_RegionHandle handle
-)
+SCOREP_User_RewindRegionEnter( const SCOREP_User_RegionHandle handle )
 {
     /* Check for intialization */
     SCOREP_USER_ASSERT_INITIALIZED;
@@ -313,16 +305,13 @@ SCOREP_User_RewindRegionEnter
 }
 
 void
-SCOREP_User_OaPhaseBegin
-(
-    SCOREP_User_RegionHandle*    handle,
-    const char**                 lastFileName,
-    SCOREP_SourceFileHandle*     lastFile,
-    const char*                  name,
-    const SCOREP_User_RegionType regionType,
-    const char*                  fileName,
-    const uint32_t               lineNo
-)
+SCOREP_User_OaPhaseBegin( SCOREP_User_RegionHandle*    handle,
+                          const char**                 lastFileName,
+                          SCOREP_SourceFileHandle*     lastFile,
+                          const char*                  name,
+                          const SCOREP_User_RegionType regionType,
+                          const char*                  fileName,
+                          const uint32_t               lineNo )
 {
     SCOREP_USER_ASSERT_NOT_FINALIZED;
 
@@ -339,10 +328,7 @@ SCOREP_User_OaPhaseBegin
 }
 
 void
-SCOREP_User_OaPhaseEnd
-(
-    const SCOREP_User_RegionHandle handle
-)
+SCOREP_User_OaPhaseEnd( const SCOREP_User_RegionHandle handle )
 {
     /* Check for intialization */
     SCOREP_USER_ASSERT_INITIALIZED;

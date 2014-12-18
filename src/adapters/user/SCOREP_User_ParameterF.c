@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2013,
+ * Copyright (c) 2009-2011, 2013-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -57,13 +57,10 @@
 
 
 void
-FSUB( SCOREP_F_ParameterInt64 )
-(
-    SCOREP_Fortran_Parameter* handle,
-    const char*               name,
-    int64_t*                  value,
-    int                       name_len
-)
+FSUB( SCOREP_F_ParameterInt64 )( SCOREP_Fortran_Parameter* handle,
+                                 const char*               name,
+                                 int64_t*                  value,
+                                 int                       name_len )
 {
     char* c_name = NULL;
 
@@ -85,13 +82,10 @@ FSUB( SCOREP_F_ParameterInt64 )
 }
 
 void
-FSUB( SCOREP_F_ParameterUint64 )
-(
-    SCOREP_Fortran_Parameter* handle,
-    const char*               name,
-    uint64_t*                 value,
-    int                       name_len
-)
+FSUB( SCOREP_F_ParameterUint64 )( SCOREP_Fortran_Parameter* handle,
+                                  const char*               name,
+                                  uint64_t*                 value,
+                                  int                       name_len )
 {
     char* c_name = NULL;
 
@@ -113,14 +107,11 @@ FSUB( SCOREP_F_ParameterUint64 )
 }
 
 void
-FSUB( SCOREP_F_ParameterString )
-(
-    SCOREP_User_ParameterHandle* handle,
-    const char*                  name,
-    const char*                  value,
-    int                          name_len,
-    int                          value_len
-)
+FSUB( SCOREP_F_ParameterString )( SCOREP_User_ParameterHandle* handle,
+                                  const char*                  name,
+                                  const char*                  value,
+                                  int                          name_len,
+                                  int                          value_len )
 {
 #ifdef SCOREP_COMPILER_PGI
     /* The PGI Fortran interface provides no handle initialization */

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -58,16 +58,13 @@
 #define SCOREP_F_MetricDouble_U    SCOREP_F_METRICDOUBLE
 
 void
-FSUB( SCOREP_F_InitMetric )
-(
-    SCOREP_Fortran_MetricHandle* metricHandle,
-    char*                        nameF,
-    char*                        unitF,
-    int*                         metricType,
-    int*                         context,
-    int                          nameLen,
-    int                          unitLen
-)
+FSUB( SCOREP_F_InitMetric )( SCOREP_Fortran_MetricHandle* metricHandle,
+                             char*                        nameF,
+                             char*                        unitF,
+                             int*                         metricType,
+                             int*                         context,
+                             int                          nameLen,
+                             int                          unitLen )
 {
     char* name;
     char* unit;

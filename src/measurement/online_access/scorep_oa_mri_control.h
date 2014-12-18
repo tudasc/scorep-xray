@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -67,10 +67,7 @@ typedef enum
  * @param connection a connection handler to listen for MRI commands
  */
 void
-scorep_oa_mri_receive_and_process_requests
-(
-    int connection
-);
+scorep_oa_mri_receive_and_process_requests( int connection );
 
 /*----------------------------------------------------------------------------------------
    Getters
@@ -81,9 +78,7 @@ scorep_oa_mri_receive_and_process_requests
  * Returns current application execution control status
  */
 scorep_oa_mri_app_control_type
-scorep_oa_mri_get_appl_control
-(
-);
+scorep_oa_mri_get_appl_control( void );
 
 /*----------------------------------------------------------------------------------------
    Configuration of execution control
@@ -94,10 +89,7 @@ scorep_oa_mri_get_appl_control
  * @param command new execution control status
  */
 void
-scorep_oa_mri_set_appl_control
-(
-    scorep_oa_mri_app_control_type command
-);
+scorep_oa_mri_set_appl_control( scorep_oa_mri_app_control_type command );
 
 /**
  * Sets Online Access phase
@@ -105,10 +97,7 @@ scorep_oa_mri_set_appl_control
  * @param handle a region handle to set as OA phase
  */
 void
-scorep_oa_mri_set_phase
-(
-    SCOREP_RegionHandle handle
-);
+scorep_oa_mri_set_phase( SCOREP_RegionHandle handle );
 
 /*----------------------------------------------------------------------------------------
    Configuration of measurements
@@ -117,9 +106,7 @@ scorep_oa_mri_set_phase
  * Empty operation
  */
 void
-scorep_oa_mri_noop
-(
-);
+scorep_oa_mri_noop( void );
 
 /**
  * Enable/Disable MPI profiling
@@ -127,10 +114,7 @@ scorep_oa_mri_noop
  * @param value MPI profiling status (0 - OFF, 1 - ON)
  */
 void
-scorep_oa_mri_set_mpiprofiling
-(
-    int value
-);
+scorep_oa_mri_set_mpiprofiling( int value );
 
 /**
  * Adds a metric specified by Periscope code to the Score-P measurement configuration requests
@@ -138,10 +122,7 @@ scorep_oa_mri_set_mpiprofiling
  * @param metric_code Persicope metric code to add
  */
 void
-scorep_oa_mri_add_metric_by_code
-(
-    int metric_code
-);
+scorep_oa_mri_add_metric_by_code( int metric_code );
 
 /**
  * Adds a metric specified by name to the Score-P measurement configuration requests
@@ -149,26 +130,19 @@ scorep_oa_mri_add_metric_by_code
  * @param metric_code Persicope metric code to add
  */
 void
-scorep_oa_mri_add_metric_by_name
-(
-    char* metric_name
-);
+scorep_oa_mri_add_metric_by_name( char* metric_name );
 
 /**
  * Initializes metric request handling module
  */
 void
-scorep_oa_mri_begin_request
-(
-);
+scorep_oa_mri_begin_request( void );
 
 /**
  * Submits metric requests to measurement core
  */
 void
-scorep_oa_mri_end_request
-(
-);
+scorep_oa_mri_end_request( void );
 
 /*----------------------------------------------------------------------------------------
    Retrieval of measurements
@@ -180,9 +154,6 @@ scorep_oa_mri_end_request
  * @param connection a connection handle to send measurements over
  */
 void
-scorep_oa_mri_return_summary_data
-(
-    int connection
-);
+scorep_oa_mri_return_summary_data( int connection );
 
 #endif /* SCOREP_OA_MRI_CONTROL_H */

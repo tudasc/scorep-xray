@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -25,6 +25,7 @@
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
+ *
  */
 
 /**
@@ -46,14 +47,11 @@
 
 
 void
-SCOREP_User_InitMetric
-(
-    SCOREP_SamplingSetHandle*    metricHandle,
-    const char*                  name,
-    const char*                  unit,
-    const SCOREP_User_MetricType metricType,
-    const int8_t                 context
-)
+SCOREP_User_InitMetric( SCOREP_SamplingSetHandle*    metricHandle,
+                        const char*                  name,
+                        const char*                  unit,
+                        const SCOREP_User_MetricType metricType,
+                        const int8_t                 context )
 {
     /* Check for initialization */
     SCOREP_USER_ASSERT_INITIALIZED;
@@ -110,31 +108,22 @@ out:
 }
 
 void
-SCOREP_User_TriggerMetricInt64
-(
-    SCOREP_SamplingSetHandle metricHandle,
-    int64_t                  value
-)
+SCOREP_User_TriggerMetricInt64( SCOREP_SamplingSetHandle metricHandle,
+                                int64_t                  value )
 {
     SCOREP_TriggerCounterInt64( metricHandle, value );
 }
 
 void
-SCOREP_User_TriggerMetricUint64
-(
-    SCOREP_SamplingSetHandle metricHandle,
-    uint64_t                 value
-)
+SCOREP_User_TriggerMetricUint64( SCOREP_SamplingSetHandle metricHandle,
+                                 uint64_t                 value )
 {
     SCOREP_TriggerCounterUint64( metricHandle, value );
 }
 
 void
-SCOREP_User_TriggerMetricDouble
-(
-    SCOREP_SamplingSetHandle metricHandle,
-    double                   value
-)
+SCOREP_User_TriggerMetricDouble( SCOREP_SamplingSetHandle metricHandle,
+                                 double                   value )
 {
     SCOREP_TriggerCounterDouble( metricHandle, value );
 }

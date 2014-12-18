@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -124,28 +124,17 @@ typedef enum SCOREP_OAConsumer_DataTypes
 
 
 void
-SCOREP_OAConsumer_Initialize
-(
-    SCOREP_Location*    location,
-    SCOREP_RegionHandle phase_handle
-);
+SCOREP_OAConsumer_Initialize( SCOREP_Location*    location,
+                              SCOREP_RegionHandle phase_handle );
 
 void
-SCOREP_OAConsumer_DismissData
-(
-);
+SCOREP_OAConsumer_DismissData( void );
 
 void*
-SCOREP_OAConsumer_GetData
-(
-    SCOREP_OAConsumer_DataTypes data_type
-);
+SCOREP_OAConsumer_GetData( SCOREP_OAConsumer_DataTypes data_type );
 
 uint32_t
-SCOREP_OAConsumer_GetDataSize
-(
-    SCOREP_OAConsumer_DataTypes data_type
-);
+SCOREP_OAConsumer_GetDataSize( SCOREP_OAConsumer_DataTypes data_type );
 
 
 #endif // SCOREP_PROFILE_OACONSUMER_H

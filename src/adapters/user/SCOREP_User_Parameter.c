@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2013,
+ * Copyright (c) 2009-2011, 2013-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -25,6 +25,7 @@
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
+ *
  */
 
 /**
@@ -46,12 +47,9 @@
 #define SCOREP_PARAMETER_FROM_USER( handle ) ( ( SCOREP_ParameterHandle )( handle ) )
 
 void
-SCOREP_User_ParameterInt64
-(
-    SCOREP_User_ParameterHandle* handle,
-    const char*                  name,
-    int64_t                      value
-)
+SCOREP_User_ParameterInt64( SCOREP_User_ParameterHandle* handle,
+                            const char*                  name,
+                            int64_t                      value )
 {
     /* Check for initialization */
     SCOREP_USER_ASSERT_INITIALIZED;
@@ -72,12 +70,9 @@ SCOREP_User_ParameterInt64
 }
 
 void
-SCOREP_User_ParameterUint64
-(
-    SCOREP_User_ParameterHandle* handle,
-    const char*                  name,
-    uint64_t                     value
-)
+SCOREP_User_ParameterUint64( SCOREP_User_ParameterHandle* handle,
+                             const char*                  name,
+                             uint64_t                     value )
 {
     /* Check for initialization */
     SCOREP_USER_ASSERT_INITIALIZED;
@@ -99,12 +94,9 @@ SCOREP_User_ParameterUint64
 
 
 void
-SCOREP_User_ParameterString
-(
-    SCOREP_User_ParameterHandle* handle,
-    const char*                  name,
-    const char*                  value
-)
+SCOREP_User_ParameterString( SCOREP_User_ParameterHandle* handle,
+                             const char*                  name,
+                             const char*                  value )
 {
     /* Check for initialization */
     SCOREP_USER_ASSERT_INITIALIZED;

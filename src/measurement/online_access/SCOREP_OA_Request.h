@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -71,19 +71,13 @@ typedef struct MetricRequest
  * Initializes requests submittion, prepares Score-P measurement reconfiguration
  */
 void
-SCOREP_OA_RequestBegin
-(
-    void
-);
+SCOREP_OA_RequestBegin( void );
 
 /**
  * Configures Score-P measurement core according to the received measurement requests
  */
 void
-SCOREP_OA_RequestsSubmit
-(
-    void
-);
+SCOREP_OA_RequestsSubmit( void );
 
 /**
  * Add a request specified by metric name and metric source to the list to configure Score-P measurement core with
@@ -92,11 +86,8 @@ SCOREP_OA_RequestsSubmit
  * @param metric_source a metric source of the request
  */
 void
-SCOREP_OA_RequestsAddMetricByName
-(
-    char*           metric_name,
-    OA_MetricSource metric_source
-);
+SCOREP_OA_RequestsAddMetricByName( char*           metric_name,
+                                   OA_MetricSource metric_source );
 
 /**
  * Adds a request specified by Periscope code to the request list to configure Score-P measurement core with
@@ -104,46 +95,31 @@ SCOREP_OA_RequestsAddMetricByName
  * @param request_string a string containing name of the metric to measure
  */
 void
-SCOREP_OA_RequestsAddPeriscopeMetric
-(
-    int metric_code
-);
+SCOREP_OA_RequestsAddPeriscopeMetric( int metric_code );
 
 /**
  * Provides the measurement requests received over OA.
  */
 MetricRequest*
-SCOREP_OA_RequestGet
-(
-    uint32_t metric_ID
-);
+SCOREP_OA_RequestGet( uint32_t metric_ID );
 
 /**
  * Since timer measurements don't get definitions, but still are measured and can be requested over OA
  * this is a special function returning metric request associated with time measurements
  */
 MetricRequest*
-SCOREP_OA_RequestGetExecutionTime
-(
-    void
-);
+SCOREP_OA_RequestGetExecutionTime( void );
 
 /**
  * Returns the number of submitted requests
  */
 uint32_t
-SCOREP_OA_GetNumberOfRequests
-(
-    void
-);
+SCOREP_OA_GetNumberOfRequests( void );
 
 /**
  * Frees datastructure allocated for storing requests related information
  */
 void
-SCOREP_OA_RequestsDismiss
-(
-    void
-);
+SCOREP_OA_RequestsDismiss( void );
 
 #endif /* SCOREP_OA_REQUEST_H_ */

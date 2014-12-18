@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -458,10 +458,7 @@ scorep_mpiprofiling_rank_to_pe( int      rank,
  * @return a pointer to the buffer containing packed time stamp and a rank
  */
 void*
-scorep_mpiprofile_get_time_pack
-(
-    uint64_t time
-)
+scorep_mpiprofile_get_time_pack( uint64_t time )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "mpiprofile : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
 
@@ -509,10 +506,7 @@ scorep_mpiprofile_get_time_pack
  *
  */
 void*
-scorep_mpiprofile_get_remote_time_packs
-(
-    int size
-)
+scorep_mpiprofile_get_remote_time_packs( int size )
 {
     if ( !scorep_mpiprofiling_metrics_initialized )
     {
@@ -558,10 +552,7 @@ scorep_mpiprofile_get_remote_time_pack( void )
 }
 
 void
-scorep_mpiprofile_release_local_time_pack
-(
-    void* local_time_pack
-)
+scorep_mpiprofile_release_local_time_pack( void* local_time_pack )
 {
     if ( !scorep_mpiprofiling_metrics_initialized )
     {
@@ -575,10 +566,7 @@ scorep_mpiprofile_release_local_time_pack
         #endif
 }
 void
-scorep_mpiprofile_release_remote_time_pack
-(
-    void* remote_time_pack
-)
+scorep_mpiprofile_release_remote_time_pack( void* remote_time_pack )
 {
     #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
     scorep_mpiprofiling_remote_time_pack_in_use = 0;
@@ -587,10 +575,7 @@ scorep_mpiprofile_release_remote_time_pack
         #endif
 }
 void
-scorep_mpiprofile_release_remote_time_packs
-(
-    void* remote_time_packs
-)
+scorep_mpiprofile_release_remote_time_packs( void* remote_time_packs )
 {
     #ifdef _WITH_PREALLOCATION_OF_TIME_PACKS
     scorep_mpiprofiling_remote_time_packs_in_use = 0;
@@ -604,11 +589,8 @@ scorep_mpiprofile_release_remote_time_packs
  *
  */
 void
-scorep_mpiprofile_eval_1x1_time_packs
-(
-    void* srcTimePack,
-    void* dstTimePack
-)
+scorep_mpiprofile_eval_1x1_time_packs( void* srcTimePack,
+                                       void* dstTimePack )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "mpiprofile : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     int      src;
@@ -660,11 +642,8 @@ scorep_mpiprofile_eval_1x1_time_packs
  *
  */
 void
-scorep_mpiprofile_eval_nx1_time_packs
-(
-    void* timePacks,
-    int   size
-)
+scorep_mpiprofile_eval_nx1_time_packs( void* timePacks,
+                                       int   size )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "mpiprofile : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     int      src;
@@ -714,12 +693,9 @@ scorep_mpiprofile_eval_nx1_time_packs
  *
  */
 void
-scorep_mpiprofile_eval_multi_time_packs
-(
-    void* srcTimePacks,
-    void* dstTimePack,
-    int   size
-)
+scorep_mpiprofile_eval_multi_time_packs( void* srcTimePacks,
+                                         void* dstTimePack,
+                                         int   size )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "mpiprofile : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     int      src;
@@ -767,13 +743,10 @@ scorep_mpiprofile_eval_multi_time_packs
  *
  */
 void
-scorep_mpiprofile_eval_time_stamps
-(
-    int      src,
-    int      dst,
-    uint64_t sendTime,
-    uint64_t recvTime
-)
+scorep_mpiprofile_eval_time_stamps( int      src,
+                                    int      dst,
+                                    uint64_t sendTime,
+                                    uint64_t recvTime )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "mpiprofile : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     if ( src == dst )

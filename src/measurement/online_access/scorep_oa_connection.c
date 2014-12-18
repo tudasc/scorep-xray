@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -53,9 +53,7 @@ int           scorep_oa_connection   = 0;
 
 
 int
-scorep_oa_connection_connect
-(
-)
+scorep_oa_connection_connect( void )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     if ( scorep_oa_is_connected )
@@ -79,20 +77,14 @@ scorep_oa_connection_connect
 }
 
 SCOREP_ErrorCode
-scorep_oa_connection_disconnect
-(
-    int connection
-)
+scorep_oa_connection_disconnect( int connection )
 {
     return SCOREP_SUCCESS;
 }
 
 SCOREP_ErrorCode
-scorep_oa_connection_send_string
-(
-    int         connection,
-    const char* message_string
-)
+scorep_oa_connection_send_string( int         connection,
+                                  const char* message_string )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "%s sending: %s", __func__, message_string );
     scorep_oa_sockets_write_line( connection, message_string );
@@ -100,13 +92,10 @@ scorep_oa_connection_send_string
 }
 
 SCOREP_ErrorCode
-scorep_oa_connection_send_data
-(
-    int   connection,
-    void* message_data,
-    int   size,
-    int   type_size
-)
+scorep_oa_connection_send_data( int   connection,
+                                void* message_data,
+                                int   size,
+                                int   type_size )
 {
     scorep_oa_sockets_write_data( connection, &size, sizeof( int ) );
     scorep_oa_sockets_write_data( connection, message_data, size * type_size );
@@ -115,12 +104,9 @@ scorep_oa_connection_send_data
 
 
 int
-scorep_oa_connection_read_string
-(
-    int   connection,
-    char* message_string,
-    int   maxlen
-)
+scorep_oa_connection_read_string( int   connection,
+                                  char* message_string,
+                                  int   maxlen )
 {
     return scorep_oa_sockets_read_line( scorep_oa_socket, message_string, maxlen );
 }

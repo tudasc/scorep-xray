@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -54,9 +54,7 @@ SCOREP_OA_Register( void )
 }
 
 int8_t
-SCOREP_OA_Init
-(
-)
+SCOREP_OA_Init( void )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 
@@ -74,17 +72,13 @@ SCOREP_OA_Init
 }
 
 int8_t
-SCOREP_OA_Initialized
-(
-)
+SCOREP_OA_Initialized( void )
 {
     return scorep_oa_is_initialized;
 }
 
 void
-SCOREP_OA_Finalize
-(
-)
+SCOREP_OA_Finalize( void )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
     if ( scorep_oa_is_initialized

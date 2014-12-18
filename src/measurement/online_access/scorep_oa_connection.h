@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -49,38 +49,24 @@ extern char*    scorep_oa_registry_host;
 extern char*    scorep_oa_app_name;
 
 int
-scorep_oa_connection_connect
-(
-);
+scorep_oa_connection_connect( void );
 
 SCOREP_ErrorCode
-scorep_oa_connection_disconnect
-(
-    int connection
-);
+scorep_oa_connection_disconnect( int connection );
 
 SCOREP_ErrorCode
-scorep_oa_connection_send_string
-(
-    int         connection,
-    const char* message_string
-);
+scorep_oa_connection_send_string( int         connection,
+                                  const char* message_string );
 
 SCOREP_ErrorCode
-scorep_oa_connection_send_data
-(
-    int   connection,
-    void* message_data,
-    int   size,
-    int   type_size
-);
+scorep_oa_connection_send_data( int   connection,
+                                void* message_data,
+                                int   size,
+                                int   type_size );
 
 int
-scorep_oa_connection_read_string
-(
-    int   connection,
-    char* message_string,
-    int   maxlen
-);
+scorep_oa_connection_read_string( int   connection,
+                                  char* message_string,
+                                  int   maxlen );
 
 #endif /* SCOREP_OA_CONNECTION_H */

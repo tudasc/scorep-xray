@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -23,7 +23,7 @@
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
- * a BSD-style license. See the COPYING file in the package base
+ * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
  *
  */
@@ -834,12 +834,9 @@ SCOREP_Hooks_Post_MPI_Recv_init( void*        buf,
 }
 
 void
-SCOREP_Hooks_Post_MPI_Start
-(
-    MPI_Request* request,
-    int64_t      start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Start( MPI_Request* request,
+                             int64_t      start_time_stamp,
+                             int          return_val )
 {
     /* get scorep internal request tracking datastructure */
     scorep_mpi_request* scorep_request = scorep_mpi_request_get( *request );
@@ -899,10 +896,7 @@ SCOREP_Hooks_Post_MPI_Start
 }
 
 void
-SCOREP_Hooks_Pre_MPI_Request_free
-(
-    scorep_mpi_request* scorep_req
-)
+SCOREP_Hooks_Pre_MPI_Request_free( scorep_mpi_request* scorep_req )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     if ( !scorep_req )
@@ -935,10 +929,7 @@ SCOREP_Hooks_Pre_MPI_Request_free
 }
 
 void
-SCOREP_Hooks_Post_MPI_Cancel
-(
-    scorep_mpi_request* scorep_req
-)
+SCOREP_Hooks_Post_MPI_Cancel( scorep_mpi_request* scorep_req )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     if ( !scorep_req )
@@ -959,12 +950,9 @@ SCOREP_Hooks_Post_MPI_Cancel
 }
 
 void
-SCOREP_Hooks_Post_MPI_Asynch_Complete
-(
-    scorep_mpi_request* orig_req,
-    MPI_Status*         status,
-    int64_t             start_time_stamp
-)
+SCOREP_Hooks_Post_MPI_Asynch_Complete( scorep_mpi_request* orig_req,
+                                       MPI_Status*         status,
+                                       int64_t             start_time_stamp )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
 
@@ -1057,12 +1045,9 @@ SCOREP_Hooks_Post_MPI_Asynch_Complete
 }
 
 void
-SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking
-(
-    scorep_mpi_request* orig_req,
-    MPI_Status*         status,
-    int64_t             start_time_stamp
-)
+SCOREP_Hooks_Post_MPI_Asynch_Complete_Blocking( scorep_mpi_request* orig_req,
+                                                MPI_Status*         status,
+                                                int64_t             start_time_stamp )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
 
@@ -1292,12 +1277,9 @@ SCOREP_Hooks_Post_MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf,
 }
 
 void
-SCOREP_Hooks_Post_MPI_Barrier
-(
-    MPI_Comm comm,
-    uint64_t start_time_stamp,
-    int      return_val
-)
+SCOREP_Hooks_Post_MPI_Barrier( MPI_Comm comm,
+                               uint64_t start_time_stamp,
+                               int      return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
     void* localTimePack = scorep_mpiprofile_get_time_pack( start_time_stamp );
@@ -1550,16 +1532,13 @@ SCOREP_Hooks_Post_MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf,
    -----------------------------------------------*/
 
 void
-SCOREP_Hooks_Post_MPI_Bcast
-(
-    void*        buffer,
-    int          count,
-    MPI_Datatype datatype,
-    int          root,
-    MPI_Comm     comm,
-    uint64_t     start_time_stamp,
-    int          return_val
-)
+SCOREP_Hooks_Post_MPI_Bcast( void*        buffer,
+                             int          count,
+                             MPI_Datatype datatype,
+                             int          root,
+                             MPI_Comm     comm,
+                             uint64_t     start_time_stamp,
+                             int          return_val )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPIPROFILING, "HOOK : myrank = %d,%s", scorep_mpiprofiling_myrank, __func__ );
 
