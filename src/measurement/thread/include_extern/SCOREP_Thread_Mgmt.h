@@ -7,6 +7,9 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -26,9 +29,20 @@
  * Initialize the threading subsystem, call from initial thread,
  * e.g. for SCOREP_InitMeasurement(). Prepare data-structures for
  * thread-local access.
+ *
+ * Should at most allocate the master location and set the TPD, it should not
+ * call into any substrate (OnNewLocation, OnActivation, ...).
  */
 void
 SCOREP_Thread_Initialize( void );
+
+
+/**
+ * Activates the master thread location.
+ * Will call OnNewLocation and OnActivation now.
+ */
+void
+SCOREP_Thread_ActivateMaster( void );
 
 
 /**

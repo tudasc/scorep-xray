@@ -116,11 +116,6 @@ void
 SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
                                    SCOREP_Location* parentLocationData )
 {
-    if ( !SCOREP_IsTracingEnabled() )
-    {
-        return;
-    }
-
     if ( scorep_tracing_use_sion && 0 != SCOREP_Location_GetId( locationData ) )
     {
         UTILS_FATAL( "Writing more than one location in a process is currently not "
@@ -143,11 +138,6 @@ void
 SCOREP_Tracing_AssignLocationId( SCOREP_Location* threadLocationData )
 {
     // Does this function needs locking? I don't think so, it operates just on local data.
-    if ( !SCOREP_IsTracingEnabled() )
-    {
-        return;
-    }
-
     SCOREP_TracingData* tracing_data = SCOREP_Location_GetTracingData( threadLocationData );
     uint64_t            location_id  = SCOREP_Location_GetGlobalId( threadLocationData );
 

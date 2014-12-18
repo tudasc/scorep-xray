@@ -239,10 +239,7 @@ scorep_thread_create_wait_on_begin( SCOREP_ParadigmType                 paradigm
         int  length = snprintf( location_name, 80, "Pthread thread %d", sequenceCount );
         UTILS_ASSERT( length < 80 );
 
-        location = SCOREP_Location_CreateCPULocation(
-            scorep_thread_get_location( parentTpd ),
-            location_name,
-            /* deferNewLocationNotification = */ true );
+        location = SCOREP_Location_CreateCPULocation( location_name );
 
         *locationIsCreated = true;
     }

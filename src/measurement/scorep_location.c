@@ -2,7 +2,7 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
- * RWTH Aachen, Germany
+ * RWTH Aachen University, Germany
  *
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
@@ -94,10 +94,8 @@ SCOREP_Location_Initialize( void )
 
 
 SCOREP_Location*
-scorep_location_create_location( SCOREP_Location*    parent,
-                                 SCOREP_LocationType type,
-                                 const char*         name,
-                                 bool                deferNewLocationNotification )
+scorep_location_create_location( SCOREP_LocationType type,
+                                 const char*         name )
 {
     SCOREP_Location* new_location;
     size_t           total_memory = sizeof( *new_location )
@@ -142,11 +140,6 @@ scorep_location_create_location( SCOREP_Location*    parent,
     result = SCOREP_MutexUnlock( scorep_location_list_mutex );
     UTILS_BUG_ON( result != SCOREP_SUCCESS, "" );
 
-    if ( !deferNewLocationNotification )
-    {
-        SCOREP_Location_CallSubstratesOnNewLocation( new_location, name, parent );
-    }
-
     return new_location;
 }
 
@@ -158,23 +151,18 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
     UTILS_BUG_ON( type == SCOREP_LOCATION_TYPE_CPU_THREAD,
                   "SCOREP_CreateNonCPULocation() does not support creation of CPU locations." );
 
-    SCOREP_Location* new_location = scorep_location_create_location( parent, type, name,
-                                                                     /* deferNewLocationNotification = */ false );
+    SCOREP_Location* new_location = scorep_location_create_location( type, name );
+    SCOREP_Location_CallSubstratesOnNewLocation( new_location, parent );
 
     return new_location;
 }
 
 
 SCOREP_Location*
-SCOREP_Location_CreateCPULocation( SCOREP_Location* parent,
-                                   const char*      name,
-                                   bool             deferNewLocationNotification )
+SCOREP_Location_CreateCPULocation( const char* name )
 {
-    SCOREP_Location* new_location = scorep_location_create_location( parent,
-                                                                     SCOREP_LOCATION_TYPE_CPU_THREAD,
-                                                                     name,
-                                                                     deferNewLocationNotification );
-    return new_location;
+    return scorep_location_create_location( SCOREP_LOCATION_TYPE_CPU_THREAD,
+                                            name );
 }
 
 
@@ -233,22 +221,22 @@ SCOREP_Location_GetLocationHandle( SCOREP_Location* locationData )
 
 void
 SCOREP_Location_CallSubstratesOnNewLocation( SCOREP_Location* locationData,
-                                             const char*      name,
                                              SCOREP_Location* parent )
 {
     // Where to do the locking? Well, at the moment we do the locking
     // in SCOREP_Profile_OnLocationCreation, SCOREP_Tracing_OnLocationCreation
     // and below for the location definition. The alternative is to lock
     // this entire function.
-    SCOREP_Profile_OnLocationCreation( locationData, parent );
-    SCOREP_Tracing_OnLocationCreation( locationData, parent );
-
-    /* For the main location (e.g. first thread ) we will initialize subsystem later on,
-     * as we need an already initialized metric subsystem at this point. */
-    if ( 0 != SCOREP_Location_GetId( locationData ) )
+    if ( SCOREP_IsProfilingEnabled() )
     {
-        scorep_subsystems_initialize_location( locationData );
+        SCOREP_Profile_OnLocationCreation( locationData, parent );
     }
+    if ( SCOREP_IsTracingEnabled() )
+    {
+        SCOREP_Tracing_OnLocationCreation( locationData, parent );
+    }
+
+    scorep_subsystems_initialize_location( locationData );
 }
 
 
@@ -271,7 +259,10 @@ SCOREP_Location_CallSubstratesOnActivation( SCOREP_Location* current,
     {
         SCOREP_Profile_OnLocationActivation( current, parent, forkSequenceCount );
     }
-    SCOREP_Tracing_OnLocationActivation( current, parent );
+    if ( SCOREP_IsTracingEnabled() )
+    {
+        SCOREP_Tracing_OnLocationActivation( current, parent );
+    }
 }
 
 
@@ -283,7 +274,10 @@ SCOREP_Location_CallSubstratesOnDeactivation( SCOREP_Location* current,
     {
         SCOREP_Profile_OnLocationDeactivation( current, parent );
     }
-    SCOREP_Tracing_OnLocationDeactivation( current, parent );
+    if ( SCOREP_IsTracingEnabled() )
+    {
+        SCOREP_Tracing_OnLocationDeactivation( current, parent );
+    }
 }
 
 
@@ -298,8 +292,14 @@ SCOREP_Location_FinalizeLocations( void )
         SCOREP_Location* tmp = location_data->next;
 
         scorep_subsystems_finalize_location( location_data );
-        SCOREP_Tracing_DeleteLocationData( location_data->tracing_data );
-        SCOREP_Profile_DeleteLocationData( location_data->profile_data );
+        if ( SCOREP_IsTracingEnabled() )
+        {
+            SCOREP_Tracing_DeleteLocationData( location_data->tracing_data );
+        }
+        if ( SCOREP_IsProfilingEnabled() )
+        {
+            SCOREP_Profile_DeleteLocationData( location_data->profile_data );
+        }
         SCOREP_Memory_DeletePageManagers( location_data->page_managers );
         location_data = tmp;
     }
@@ -383,7 +383,10 @@ SCOREP_Location_EnsureGlobalId( SCOREP_Location* location )
     {
         location_definition->global_location_id =
             SCOREP_Location_GetGlobalId( location );
-        SCOREP_Tracing_AssignLocationId( location );
+        if ( SCOREP_IsTracingEnabled() )
+        {
+            SCOREP_Tracing_AssignLocationId( location );
+        }
     }
 }
 

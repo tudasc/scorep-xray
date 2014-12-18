@@ -282,9 +282,7 @@ scorep_thread_on_team_begin( scorep_thread_private_data*  parentTpd,
                      * create locations on a first comes, first served basis. */
                     char location_name[ 80 ];
                     scorep_thread_create_location_name( location_name, 80, *threadId, parentTpd );
-                    location = SCOREP_Location_CreateCPULocation( scorep_thread_get_location( parentTpd ),
-                                                                  location_name,
-                                                                  /* deferNewLocationNotification = */ true );
+                    location = SCOREP_Location_CreateCPULocation( location_name );
                 }
                 /* We need to assign *currentTpd to the TPD first, before we
                  * can notify about the new location. */

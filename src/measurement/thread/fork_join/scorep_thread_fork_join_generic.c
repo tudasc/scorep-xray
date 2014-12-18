@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -178,9 +178,7 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
             for ( int i = 0; i < thread_team_size - 1; ++i )
             {
                 scorep_thread_create_location_name( location_name, 80, i + 1, parent_tpd );
-                first_fork_locations[ i ] = SCOREP_Location_CreateCPULocation( scorep_thread_get_location( parent_tpd ),
-                                                                               location_name,
-                                                                               /* deferNewLocationNotification = */ true );
+                first_fork_locations[ i ] = SCOREP_Location_CreateCPULocation( location_name );
             }
         }
         SCOREP_MutexUnlock( first_fork_locations_mutex );
@@ -208,7 +206,6 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
     if ( location_is_created )
     {
         SCOREP_Location_CallSubstratesOnNewLocation( current_location,
-                                                     0,
                                                      parent_location );
     }
 

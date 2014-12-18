@@ -85,10 +85,7 @@ SCOREP_Thread_Initialize( void )
 
     UTILS_BUG_ON( initial_tpd != 0, "" );
 
-    SCOREP_Location* location = SCOREP_Location_CreateCPULocation(
-        0 /* parent_location */,
-        "Master thread",
-        /* deferNewLocationNotification = */ true );
+    SCOREP_Location* location = SCOREP_Location_CreateCPULocation( "Master thread" );
 
     initial_tpd = scorep_thread_create_private_data( 0 /* parent_tpd */,
                                                      location );
@@ -96,13 +93,21 @@ SCOREP_Thread_Initialize( void )
 
     scorep_thread_on_initialize( initial_tpd );
 
-    SCOREP_Location_CallSubstratesOnNewLocation( scorep_thread_get_location( initial_tpd ),
-                                                 "" /* name */,
+    UTILS_DEBUG_EXIT();
+}
+
+
+void
+SCOREP_Thread_ActivateMaster( void )
+{
+    UTILS_BUG_ON( initial_tpd == NULL,
+                  "Master location not created yet." );
+
+    SCOREP_Location_CallSubstratesOnNewLocation( initial_tpd->location,
                                                  0 /* parent_location */ );
-    SCOREP_Location_CallSubstratesOnActivation( scorep_thread_get_location( initial_tpd ),
+    SCOREP_Location_CallSubstratesOnActivation( initial_tpd->location,
                                                 0 /* parent_location */,
                                                 scorep_thread_get_next_sequence_count() );
-    UTILS_DEBUG_EXIT();
 }
 
 

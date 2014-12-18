@@ -349,11 +349,6 @@ SCOREP_Tracing_Finalize( void )
 void
 SCOREP_Tracing_OnMppInit( void )
 {
-    if ( !SCOREP_IsTracingEnabled() )
-    {
-        return;
-    }
-
     SCOREP_ErrorCode err =
         scorep_tracing_set_collective_callbacks( scorep_otf2_archive );
     UTILS_ASSERT( err == SCOREP_SUCCESS );
@@ -440,11 +435,6 @@ scorep_trace_finalize_event_writer_cb( SCOREP_Location* locationData,
 void
 SCOREP_Tracing_FinalizeEventWriters( void )
 {
-    if ( !SCOREP_IsTracingEnabled() )
-    {
-        return;
-    }
-
     UTILS_ASSERT( scorep_otf2_archive );
 
     SCOREP_Location_ForAll( scorep_trace_finalize_event_writer_cb,

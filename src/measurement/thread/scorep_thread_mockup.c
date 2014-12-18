@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -50,9 +50,20 @@ SCOREP_Thread_Initialize( void )
 {
     UTILS_ASSERT( scorep_thread_sole_cpu_location == 0 );
     scorep_thread_sole_cpu_location =
-        SCOREP_Location_CreateCPULocation( NULL, "Master thread",
-                                           /* deferNewLocationNotification = */ false );
+        SCOREP_Location_CreateCPULocation( "Master thread" );
     UTILS_ASSERT( scorep_thread_sole_cpu_location );
+}
+
+
+void
+SCOREP_Thread_ActivateMaster( void )
+{
+    UTILS_BUG_ON( scorep_thread_sole_cpu_location == NULL,
+                  "Master location not created yet." );
+
+    SCOREP_Location_CallSubstratesOnNewLocation( scorep_thread_sole_cpu_location,
+                                                 0 /* parent_location */ );
+    SCOREP_Location_CallSubstratesOnActivation( scorep_thread_sole_cpu_location, NULL, 0 );
 }
 
 

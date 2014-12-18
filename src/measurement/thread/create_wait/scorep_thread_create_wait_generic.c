@@ -337,7 +337,6 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
     if ( location_is_created )
     {
         SCOREP_Location_CallSubstratesOnNewLocation( *location,
-                                                     0,
                                                      parent_location );
     }
 

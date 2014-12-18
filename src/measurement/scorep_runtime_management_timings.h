@@ -5,15 +5,29 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
- *    RWTH Aachen, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2013,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2014,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2014,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
@@ -48,9 +62,9 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Initialize )         \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_Initialize )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_Initialize )              \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_ActivateMaster )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filter_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize )          \
-    SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize_location ) \
     SCOREP_TIMING_TRANSFORM_OP( scorep_profile_initialize )             \
     SCOREP_TIMING_TRANSFORM_OP( scorep_properties_initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_BeginEpoch )                     \

@@ -2,15 +2,29 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2013,
- *    RWTH Aachen, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2013,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2014,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2014,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2013,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
@@ -45,13 +59,8 @@ void
 SCOREP_Location_Finalize( void );
 
 
-/** @param  deferNewLocationNotification tpd-based thread implementations must notify,
- * i.e. call SCOREP_Location_CallSubstratesOnNewLocation(), not before the tpd update
- * to ensure that tpd is in a valid state. */
 SCOREP_Location*
-SCOREP_Location_CreateCPULocation( SCOREP_Location* parent,
-                                   const char*      name,
-                                   bool             deferNewLocationNotification );
+SCOREP_Location_CreateCPULocation( const char* name );
 
 /**
  * Returns the current number of locations.
@@ -91,7 +100,6 @@ SCOREP_Location_FinalizeLocations( void );
 
 void
 SCOREP_Location_CallSubstratesOnNewLocation( SCOREP_Location* locationData,
-                                             const char*      name,
                                              SCOREP_Location* parent );
 
 
