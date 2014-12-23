@@ -41,6 +41,7 @@ __thread int global_thread_private_var = 1;
 ], [static __thread int my_thread_private_var = 0])],
    [have_thread_local_storage="yes"],
    [have_thread_local_storaeg="no"])
+AC_MSG_RESULT([${have_thread_local_storage}])
 
 AC_LANG_POP([C])
 
