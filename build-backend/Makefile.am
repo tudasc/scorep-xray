@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -146,13 +146,6 @@ create-cobi-config-local:
 	 cp $(SCOREP_SHARE_GLOBAL_DIR)/SCOREP_Cobi_Filter.xml $(SCOREP_SHARE_LOCAL_DIR)/; \
 	fi
 
-
-INSTALLCHECK_SUBDIRS  =
-if HAVE_OPENMP_SUPPORT
-INSTALLCHECK_SUBDIRS +=
-else
-endif
-
 installcheck-local: instrumenter-checks instrumenter-checks-pthread installcheck-public-headers
 	@fail= failcom='exit 1'; \
 	for f in x $$MAKEFLAGS; do \
@@ -161,11 +154,7 @@ installcheck-local: instrumenter-checks instrumenter-checks-pthread installcheck
 	    *k*) failcom='fail=yes';; \
 	  esac; \
 	done; \
-	list='$(INSTALLCHECK_SUBDIRS)'; for subdir in $$list; do \
-	  echo "Making in $$subdir"; \
-	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS)) \
-	  || eval $$failcom; \
-	done; test -z "$$fail"
+	test -z "$$fail"
 
 PARADIGMS = serial
 # component separation will provide the HAVE_OPARI2 conditional

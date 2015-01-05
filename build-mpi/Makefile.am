@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -79,14 +79,6 @@ LIB_DIR_SCOREP = ../build-backend/
 clean-local: clean-local-instrumenter-checks
 	rm -f lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 
-INSTALLCHECK_SUBDIRS  =
-if HAVE_MPI_SUPPORT
-INSTALLCHECK_SUBDIRS +=
-if HAVE_OPENMP_SUPPORT
-INSTALLCHECK_SUBDIRS +=
-endif
-endif
-
 installcheck-local: instrumenter-checks
 	@fail= failcom='exit 1'; \
 	for f in x $$MAKEFLAGS; do \
@@ -95,11 +87,7 @@ installcheck-local: instrumenter-checks
 	    *k*) failcom='fail=yes';; \
 	  esac; \
 	done; \
-	list='$(INSTALLCHECK_SUBDIRS)'; for subdir in $$list; do \
-	  echo "Making in $$subdir"; \
-	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS)) \
-	  || eval $$failcom; \
-	done; test -z "$$fail"
+	test -z "$$fail"
 
 PARADIGMS =
 if HAVE_MPI_SUPPORT

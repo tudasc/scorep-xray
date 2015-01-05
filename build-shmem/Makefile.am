@@ -1,17 +1,20 @@
 # -*- mode: makefile -*-
 
-## 
+##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2013-2014,
 ## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2015,
+## Forschungszentrum Juelich GmbH, Germany
 ##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
 ##
 
-## file       build-shmem/Makefile.am 
+## file       build-shmem/Makefile.am
 
 
 ## ACLOCAL_AMFLAGS contains options to pass to aclocal when aclocal.m4
@@ -64,14 +67,6 @@ LIB_DIR_SCOREP = ../build-backend/
 clean-local: clean-local-instrumenter-checks
 	rm -f lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 
-INSTALLCHECK_SUBDIRS  =
-if HAVE_SHMEM_SUPPORT
-INSTALLCHECK_SUBDIRS +=
-if HAVE_OPENMP_SUPPORT
-INSTALLCHECK_SUBDIRS +=
-endif HAVE_OPENMP_SUPPORT
-endif HAVE_SHMEM_SUPPORT
-
 installcheck-local: instrumenter-checks
 	@fail= failcom='exit 1'; \
 	for f in x $$MAKEFLAGS; do \
@@ -80,11 +75,7 @@ installcheck-local: instrumenter-checks
 	    *k*) failcom='fail=yes';; \
 	  esac; \
 	done; \
-	list='$(INSTALLCHECK_SUBDIRS)'; for subdir in $$list; do \
-	  echo "Making in $$subdir"; \
-	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS)) \
-	  || eval $$failcom; \
-	done; test -z "$$fail"
+	test -z "$$fail"
 
 PARADIGMS =
 instrumenter_check_paradigm_makefiles =
