@@ -120,7 +120,7 @@ libscorep_adapter_shmem_c_event_la_SOURCES = \
     $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Collect.c    \
     $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Data.c       \
     $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Event.c      \
-    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Init.c       \
+    $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem.c            \
     $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Lock.c       \
     $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Query.c      \
     $(SRC_ROOT)src/adapters/shmem/SCOREP_Shmem_Reduction.c  \
