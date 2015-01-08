@@ -73,13 +73,16 @@
         if ( _status != CUPTI_SUCCESS )                                 \
         {                                                               \
             const char* msg;                                            \
-            cuptiGetResultString( _status, &msg );                      \
+            cuptiGetResultString( _status, & msg );                      \
             UTILS_WARNING( "[CUPTI] Call to '%s' failed with message: '%s'",  #fct, msg ); \
         }                                                               \
     }
 
 #if defined( HAVE_DEMANGLE )
-   #include <demangle.h>
+extern char*
+cplus_demangle( const char* mangled,
+                int         options );
+
    #define SCOREP_DEMANGLE_CUDA_KERNEL( mangled ) \
     cplus_demangle( mangled, 0 )
 #else
