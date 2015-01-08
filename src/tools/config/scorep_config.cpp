@@ -91,7 +91,6 @@
     "   --mpicc     prints the MPI C compiler name\n" \
     "   --mpicxx    prints the MPI C++ compiler name\n" \
     "   --mpifc     prints the MPI Fortran compiler name\n" \
-    "   --cobi-deps prints the dependency library part for the Cobi adapter file\n" \
     "   --help      prints this usage information\n" \
     "   --version   prints the version number of the Score-P package\n" \
     "   --scorep-revision prints the revision number of the Score-P package\n" \
@@ -126,10 +125,12 @@ get_rpath_struct_data( void );
 static void
 append_ld_run_path_to_rpath( std::deque<std::string>& rpath );
 
-static void
-write_cobi_deps( const std::deque<std::string>&     libs,
+/*
+   static void
+   write_cobi_deps( const std::deque<std::string>&     libs,
                  SCOREP_Config_LibraryDependencies& deps,
                  bool                               install );
+ */
 
 static void
 treat_linker_flags_for_nvcc( std::string& flags );
@@ -283,10 +284,12 @@ main( int    argc,
             }
             install = false;
         }
-        else if ( strcmp( argv[ i ], "--cobi-deps" ) == 0 )
-        {
+        /*
+           else if ( strcmp( argv[ i ], "--cobi-deps" ) == 0 )
+           {
             action = ACTION_COBI_DEPS;
-        }
+           }
+         */
         else if ( strcmp( argv[ i ], "--dynamic" ) == 0 )
         {
             allow_static = false;
@@ -476,15 +479,15 @@ main( int    argc,
             std::cout << SCOREP_MPIFC;
             std::cout.flush();
             break;
-
-        case ACTION_COBI_DEPS:
-            if ( libs.empty() )
-            {
-                libs.push_back( "libscorep_measurement" );
-            }
-            write_cobi_deps( libs, deps, install );
-            break;
-
+        /*
+           case ACTION_COBI_DEPS:
+           if ( libs.empty() )
+           {
+            libs.push_back( "libscorep_measurement" );
+           }
+           write_cobi_deps( libs, deps, install );
+           break;
+         */
         case ACTION_ADAPTER_INIT:
             print_adapter_init_source();
             break;
@@ -636,11 +639,12 @@ get_full_library_names( const std::deque<std::string>& library_list,
     return full_names;
 }
 
-static void
-write_cobi_deps( const std::deque<std::string>&     libs,
+/*
+   static void
+   write_cobi_deps( const std::deque<std::string>&     libs,
                  SCOREP_Config_LibraryDependencies& deps,
                  bool                               install )
-{
+   {
     std::deque<std::string> library_list = deps.getLibraries( libs );
     std::deque<std::string> path_list    = deps.getRpathFlags( libs, install );
     std::cout << deque_to_string( get_full_library_names( library_list,
@@ -649,8 +653,8 @@ write_cobi_deps( const std::deque<std::string>&     libs,
                                   "\t<library name=\"",
                                   "\" />\n\t<library name=\"",
                                   "\" />\n" );
-}
-
+   }
+ */
 
 static void
 treat_linker_flags_for_nvcc( std::string& flags )

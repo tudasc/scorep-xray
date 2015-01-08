@@ -45,7 +45,7 @@
 #include <vector>
 
 class SCOREP_Instrumenter_Adapter;
-class SCOREP_Instrumenter_CobiAdapter;
+//class SCOREP_Instrumenter_CobiAdapter;
 class SCOREP_Instrumenter_CompilerAdapter;
 class SCOREP_Instrumenter_CudaAdapter;
 class SCOREP_Instrumenter_OpariAdapter;
@@ -217,7 +217,7 @@ private:
      */
     std::string m_linker_flags;
 
-    SCOREP_Instrumenter_CobiAdapter*       m_cobi_adapter;
+    //SCOREP_Instrumenter_CobiAdapter*       m_cobi_adapter;
     SCOREP_Instrumenter_CompilerAdapter*   m_compiler_adapter;
     SCOREP_Instrumenter_CudaAdapter*       m_cuda_adapter;
     SCOREP_Instrumenter_OpariAdapter*      m_opari_adapter;

@@ -18,7 +18,6 @@ scorep-config <command> [<options>]
    --mpicc     prints the MPI C compiler name
    --mpicxx    prints the MPI C++ compiler name
    --mpifc     prints the MPI Fortran compiler name
-   --cobi-deps prints the dependency library part for the Cobi adapter file
    --help      prints this usage information
    --version   prints the version number of the Score-P package
    --scorep-revision prints the revision number of the Score-P package

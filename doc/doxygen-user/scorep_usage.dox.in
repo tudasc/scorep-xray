@@ -54,9 +54,8 @@ Common options are:
                   Pthread spinlocks
               omp
                   OpenMP locks
-  --nocobi        Disables cobi instrumentation.
   --compiler      Enables compiler instrumentation.
-                  By default, it disables cobi and pdt instrumentation.
+                  By default, it disables pdt instrumentation.
   --nocompiler    Disables compiler instrumentation.
   --cuda          Enables cuda instrumentation.
   --nocuda        Disables cuda instrumentation.
@@ -77,7 +76,7 @@ Common options are:
                   You may add additional parameters that are passed to pdt.
                   It requires and, thus, automatically enables user instrumentation.
                   It conflicts and, thus, automatically disables preprocess instrumentation.
-                  By default, it disables cobi and compiler instrumentation.
+                  By default, it disables compiler instrumentation.
   --nopdt         Disables pdt instrumentation.
   --preprocess    Enables preprocess instrumentation.
                   It requires and, thus, automatically enables opari instrumentation.

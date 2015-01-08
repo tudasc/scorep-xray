@@ -19,8 +19,6 @@ scorep_SOURCES = \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_adapter.hpp      \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cmd_line.cpp     \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cmd_line.hpp     \
-    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cobi.cpp         \
-    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cobi.hpp         \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_compiler.cpp     \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_compiler.hpp     \
     $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cuda.cpp         \
@@ -63,10 +61,17 @@ scorep_LDADD = \
     libscorep_openmp_version.la
 
 EXTRA_DIST += \
-    $(SRC_ROOT)share/SCOREP_Pdt_Instrumentation.conf \
-    $(SRC_ROOT)share/SCOREP_Cobi_Adapter.xml.in      \
-    $(SRC_ROOT)share/SCOREP_Cobi_Filter.xml
+    $(SRC_ROOT)share/SCOREP_Pdt_Instrumentation.conf
+
 
 if HAVE_COBI
+scorep_SOURCES += \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cobi.cpp \
+    $(SRC_ROOT)src/tools/instrumenter/scorep_instrumenter_cobi.hpp
+
+EXTRA_DIST += \
+    $(SRC_ROOT)share/SCOREP_Cobi_Adapter.xml.in \
+    $(SRC_ROOT)share/SCOREP_Cobi_Filter.xml
+
 BUILT_SOURCES += create-cobi-config-local
 endif

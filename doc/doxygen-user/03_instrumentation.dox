@@ -834,30 +834,6 @@ of limitations:
 </ul>
 
 
-@section cobi_instrumentation Binary Instrumentation Using Cobi
-@seclabel{cobi_instrumentation}
-
-If you have an installation of the binary instrumenter Cobi, you can configure
-@scorep to support binary instrumentation of functions with Cobi during
-@scorep installation. To use Cobi for function instrumentation, you
-must set the <tt>--cobi</tt> flag. E.g.
-
-@verbatim
-    scorep --cobi mpicc foo.c -o foo
-@endverbatim
-
-By default, it will disable automatic compiler instrumentation during
-compilation and instrument all function in the executable. Although
-the instrumentation happens after linking, we recommend to compile
-all objects with the <tt>--cobi</tt> flag to avoid double instrumentation.
-However, you can enforce compiler instrumentation with @verb{--compiler}.
-
-@note Cobi is still considered to be an experimental tool. Thus, it may
-      have some limitations. E.g. it is currently only available for
-      GNU compilers and requires @scorep to be build in shared mode. Also the
-      support for Cobi itself is limited.
-
-
 @section scorep_link_mode Enforce Linking of Static/Shared @scorep Libraries
 @seclabel{scorep_link_mode}
 
