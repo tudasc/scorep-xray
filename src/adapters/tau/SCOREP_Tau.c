@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -245,7 +245,7 @@ SCOREP_Tau_ExitRegion( SCOREP_Tau_RegionHandle regionHandle )
 void
 SCOREP_Tau_Metric( SCOREP_Tau_MetricHandle* metricHandle )
 {
-    metricHandle = SCOREP_INVALID_SAMPLING_SET;
+    *metricHandle = SCOREP_INVALID_SAMPLING_SET;
 }
 
 
