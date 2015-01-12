@@ -16,7 +16,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012, 2014,
+## Copyright (c) 2009-2012, 2014-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -387,7 +387,7 @@ AFS_SUMMARY([$1 support], [${$1_result}])
 ])
 
 
-dnl BYPASS_GENERIC_LIB_CHECK_ON_K_AND_FX10(libname, -llib)
+dnl BYPASS_GENERIC_LIB_CHECK_ON_FUJITSU(libname, -llib)
 dnl S1: libname as in AC_SCOREP_BACKEND_LIB, e.g. libbfd
 dnl $2: lib as in link command, e.g., -lbfd
 dnl ------------------------------------------------------
@@ -400,9 +400,9 @@ dnl compiler fail. This is most likely a compiler bug. As we know that
 dnl libbfd and libz are available, lets bypass the check for now using:
 dnl AS_IF([test "x${ac_scorep_platform}" = xk ||
 dnl        test "x${ac_scorep_platform}" = xfx10],
-dnl     [BYPASS_GENERIC_LIB_CHECK_ON_K_AND_FX10([<lib-to-bypass>])],
+dnl     [BYPASS_GENERIC_LIB_CHECK_ON_FUJITSU([<lib-to-bypass>])],
 dnl     [AC_SCOREP_BACKEND_LIB([<lib-to-bypass>], ...)])
-AC_DEFUN([BYPASS_GENERIC_LIB_CHECK_ON_K_AND_FX10], [
+AC_DEFUN([BYPASS_GENERIC_LIB_CHECK_ON_FUJITSU], [
 
 AS_IF([test "x${with_$1}" = xno],
     [scorep_have_$1="no"
@@ -421,7 +421,7 @@ AS_IF([test "x${with_$1}" = xno],
      AC_SUBST(m4_toupper($1)[]_LIBS,     ["$2"])
 
      AC_MSG_CHECKING([for $1])
-     AC_MSG_RESULT([yes, bypassed on K/FX10])
-     AFS_SUMMARY([$1 support], [yes (check bypassed on K/FX10)])
+     AC_MSG_RESULT([yes, bypassed on Fujitsu systems])
+     AFS_SUMMARY([$1 support], [yes (check bypassed on Fujitsu systems)])
     ])
 ])

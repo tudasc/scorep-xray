@@ -97,6 +97,8 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
                       [ac_scorep_platform="k"],
                   [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVfxlang],
                       [ac_scorep_platform="fx10"],
+                  [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVmxlang],
+                      [ac_scorep_platform="fx100"],
                   [ac_scorep_platform=linux])],
          [sunos* | solaris*],
               [ac_scorep_platform="solaris"],
@@ -138,6 +140,7 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "x"],
          [arm],     [ac_scorep_cross_compiling="no"],
          [k],       [ac_scorep_cross_compiling="yes"],
          [fx10],    [ac_scorep_cross_compiling="yes"],
+         [fx100],   [ac_scorep_cross_compiling="yes"],
          [linux],   [ac_scorep_cross_compiling="no"],
          [solaris], [ac_scorep_cross_compiling="no"],
          [mac],     [ac_scorep_cross_compiling="no"],
@@ -184,6 +187,7 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
     AM_CONDITIONAL([PLATFORM_MINGW],   [test "x${ac_scorep_platform}" = "xmingw"])
     AM_CONDITIONAL([PLATFORM_K],       [test "x${ac_scorep_platform}" = "xk"])
     AM_CONDITIONAL([PLATFORM_FX10],    [test "x${ac_scorep_platform}" = "xfx10"])
+    AM_CONDITIONAL([PLATFORM_FX100],   [test "x${ac_scorep_platform}" = "xfx100"])
 
     AS_CASE([${ac_scorep_platform}],
             [crayx*],     [afs_platform_cray="yes"],
@@ -228,4 +232,6 @@ AC_DEFUN([AC_SCOREP_PLATFORM_SETTINGS],
         [AC_DEFINE([HAVE_PLATFORM_K], [1], [Set if we are building for the K platform])])
     AM_COND_IF([PLATFORM_FX10],
         [AC_DEFINE([HAVE_PLATFORM_FX10], [1], [Set if we are building for the FX10 platform])])
+    AM_COND_IF([PLATFORM_FX100],
+        [AC_DEFINE([HAVE_PLATFORM_FX100], [1], [Set if we are building for the FX100 platform])])
 ])
