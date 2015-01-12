@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011, 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011, 2014
+ * Copyright (c) 2009-2011, 2014-2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -1166,7 +1166,7 @@
         metricHandle, value );
 
 #define SCOREP_USER_METRIC_UINT64( metricHandle, \
-                                   value )  SCOREP_User_TriggerMetricInt64( \
+                                   value )  SCOREP_User_TriggerMetricUint64( \
         metricHandle, value );
 
 #define SCOREP_USER_METRIC_DOUBLE( metricHandle, \
