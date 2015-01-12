@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -91,7 +91,7 @@ AS_IF([test "x${ac_scorep_platform}" = "x"],
                                [ac_scorep_platform="crayxk"],
                            [test "x`readlink -f /opt/cray/pmi/default | grep -o --regexp=[[a-z]]*$ | grep -q ari && echo TRUE`" = "xTRUE"],
                                [ac_scorep_platform="crayxc"])],
-                  [test "x${build_cpu}" = "xarmv7l"],
+                  [test "x${build_cpu}" = "xarmv7l" || test "x${build_cpu}" = "xaarch64" ],
                       [ac_scorep_platform="arm"],
                   [test "x${build_cpu}" = "xx86_64" && test -d /opt/FJSVtclang],
                       [ac_scorep_platform="k"],
