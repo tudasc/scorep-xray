@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013
+dnl Copyright (c) 2013-2014,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -34,10 +34,11 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
 AC_LANG_POP([C])
 
 AS_IF([test "x${ac_scorep_platform}" = xk ||
-       test "x${ac_scorep_platform}" = xfx10],
-    [# Can't get OPENMP_TPD working reliably on K/FX10. Compiler options
-     # -Xg -noansi needed for Pthreads, but they break OPENMP_TPD. 
-     # Using OpenMP_ANCESTRY as alternative. 
+       test "x${ac_scorep_platform}" = xfx10 ||
+       test "x${ac_scorep_platform}" = xfx100],
+    [# Can't get OPENMP_TPD working reliably on Fujitsu. Compiler options
+     # -Xg -noansi needed for Pthreads, but they break OPENMP_TPD.
+     # Using OpenMP_ANCESTRY as alternative.
      scorep_has_alignment_attribute="no"])
 
 AS_IF([test "x${scorep_has_alignment_attribute}" = "xyes"],

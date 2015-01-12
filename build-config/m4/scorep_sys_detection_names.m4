@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -49,6 +49,7 @@ AS_CASE([${ac_scorep_platform}],
     [arm],     [afs_scorep_platform_name="ARM"],
     [k],       [afs_scorep_platform_name="K"],
     [fx10],    [afs_scorep_platform_name="FX10"],
+    [fx100],   [afs_scorep_platform_name="FX100"],
     [linux],   [afs_scorep_platform_name="Linux"],
     [solaris], [afs_scorep_platform_name="Solaris"],
     [mac],     [afs_scorep_platform_name="Mac OS X"],

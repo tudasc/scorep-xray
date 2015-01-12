@@ -50,7 +50,9 @@ AS_IF([test "x${have_compiler_instrumentation}" = xyes],
      AS_IF([test "x${ax_cv_c_compiler_vendor}" = xgnu || \
             test "x${ax_cv_c_compiler_vendor}" = xcray || \
             test "x${ax_cv_c_compiler_vendor}" = xfujitsu],
-         [AS_IF([test "x${ac_scorep_platform}" = xk || test "x${ac_scorep_platform}" = xfx10],
+         [AS_IF([test "x${ac_scorep_platform}" = xk ||
+                 test "x${ac_scorep_platform}" = xfx10 ||
+                 test "x${ac_scorep_platform}" = xfx100],
               [_FUJITSU_COMPILER_INSTRUMENTATION_WORKAROUND],
               [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])])
           AS_IF([test "x${scorep_have_libbfd}" = "xyes"],
@@ -94,13 +96,13 @@ AS_IF([test "x${scorep_have_libbfd}" = "xno" && test "x${scorep_have_nm}" != "xn
 dnl ----------------------------------------------------------------------------
 
 # _FUJITSU_COMPILER_INSTRUMENTATION_WORKAROUND
-# K and FX10 are cross-compile machines, i.e. we explicitly need to specify the
-# path to bfd. This path (which contains system stuff) is used in a CPPFLAGS. 
-# This breaks compilation. Therefore, work around the the usual compiler 
+# Fujitsu are cross-compile machines, i.e. we explicitly need to specify the
+# path to bfd. This path (which contains system stuff) is used in a CPPFLAGS.
+# This breaks compilation. Therefore, work around the the usual compiler
 # instrumentation's AC_SCOREP_BACKEND_LIB check.
 # -----------------------------------------------------------------------------
 m4_define([_FUJITSU_COMPILER_INSTRUMENTATION_WORKAROUND], [
-BYPASS_GENERIC_LIB_CHECK_ON_K_AND_FX10([libbfd], [-lbfd -liberty])
+BYPASS_GENERIC_LIB_CHECK_ON_FUJITSU([libbfd], [-lbfd -liberty])
 AC_CHECK_HEADER([demangle.h])
 AC_MSG_CHECKING([for cplus_demangle])
 save_libs=${LIBS}

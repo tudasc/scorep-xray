@@ -6,6 +6,7 @@ Major features:
 Features and improvements:
 
 - Support for pthread_exit and pthread_cancel was added.
+- Basic support for Fujitsu FX100 systems added.
 
 User tools and API improvements and changes:
 
