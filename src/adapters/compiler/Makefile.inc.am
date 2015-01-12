@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -74,12 +74,12 @@ libscorep_adapter_compiler_mgmt_la_LIBADD += \
 
 libscorep_adapter_compiler_mgmt_la_LDFLAGS += \
     @LIBBFD_LDFLAGS@
-endif
+endif HAVE_LIBBFD
 
 if HAVE_DEMANGLE
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
     -DGNU_DEMANGLE
-endif
+endif HAVE_DEMANGLE
 
 if HAVE_NM_AS_BFD_REPLACEMENT
 # the SCOREP_Timing.h dependency is used to generate unique
@@ -90,8 +90,8 @@ libscorep_adapter_compiler_mgmt_la_SOURCES  += \
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
     -I$(INC_ROOT)src/services/include          \
     -DHAVE_NM
-endif
-endif
+endif HAVE_NM_AS_BFD_REPLACEMENT
+endif SCOREP_COMPILER_CRAY
 
 
 #--- GNU specific settings
@@ -113,12 +113,12 @@ libscorep_adapter_compiler_mgmt_la_LIBADD += \
 
 libscorep_adapter_compiler_mgmt_la_LDFLAGS += \
     @LIBBFD_LDFLAGS@
-endif
+endif HAVE_LIBBFD
 
 if HAVE_DEMANGLE
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
     -DGNU_DEMANGLE
-endif
+endif HAVE_DEMANGLE
 
 if HAVE_NM_AS_BFD_REPLACEMENT
 # the SCOREP_Timing.h dependency is used to generate unique
@@ -129,8 +129,8 @@ libscorep_adapter_compiler_mgmt_la_SOURCES  += \
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
     -I$(INC_ROOT)src/services/include          \
     -DHAVE_NM
-endif
-endif
+endif HAVE_NM_AS_BFD_REPLACEMENT
+endif SCOREP_COMPILER_GNU
 
 
 #--- Fujitsu specific settings, same as GNU
@@ -178,28 +178,28 @@ libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm_init.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c     \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
-endif
+endif SCOREP_COMPILER_IBM
 
 
 #--- Intel specific settings
 if SCOREP_COMPILER_INTEL
 libscorep_adapter_compiler_mgmt_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel_init.c
-endif
+endif SCOREP_COMPILER_INTEL
 
 
 #--- PGI specific settings
 if SCOREP_COMPILER_PGI
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi_init.c
-endif
+endif SCOREP_COMPILER_PGI
 
 
 #--- Oracle Studio specific settings
 if SCOREP_COMPILER_SUN
 libscorep_adapter_compiler_mgmt_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun_init.c
-endif
+endif SCOREP_COMPILER_SUN
 
 
 # --------------------------------------------------------------------
@@ -229,37 +229,37 @@ if SCOREP_COMPILER_CRAY
 libscorep_adapter_compiler_event_la_SOURCES +=              \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_cray.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
-endif
+endif SCOREP_COMPILER_CRAY
 
 #--- GNU specific settings
 if SCOREP_COMPILER_GNU
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
-endif
+endif SCOREP_COMPILER_GNU
 
 #--- IBM specific settings
 if SCOREP_COMPILER_IBM
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_ibm.c
-endif
+endif SCOREP_COMPILER_IBM
 
 #--- Intel specific settings
 if SCOREP_COMPILER_INTEL
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_intel.c
-endif
+endif SCOREP_COMPILER_INTEL
 
 #--- PGI specific settings
 if SCOREP_COMPILER_PGI
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_pgi.c
-endif
+endif SCOREP_COMPILER_PGI
 
 #--- Oracle Studio specific settings
 if SCOREP_COMPILER_SUN
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c
-endif
+endif SCOREP_COMPILER_SUN
 
 #--- Fujitsu specific settings, same as GNU
 if SCOREP_COMPILER_FUJITSU
