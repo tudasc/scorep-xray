@@ -95,6 +95,21 @@ private:
 };
 
 /* **************************************************************************************
+ *  * class SCOREP_Instrumenter_PthreadAdapter
+ *   * *************************************************************************************/
+class SCOREP_Instrumenter_PthreadAdapter : public SCOREP_Instrumenter_Adapter
+{
+public:
+    SCOREP_Instrumenter_PthreadAdapter( void );
+
+    void
+    printHelp( void );
+
+    std::string
+    getConfigToolFlag( void );
+};
+
+/* **************************************************************************************
  * class SCOREP_Instrumenter_Thread
  * *************************************************************************************/
 class SCOREP_Instrumenter_Thread : public SCOREP_Instrumenter_Selector

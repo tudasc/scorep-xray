@@ -21,6 +21,8 @@ Bugfixes:
 - Fix building of MPI wrapper if compiler issues unrelated warnings at
   configure time.
 - The SCOREP_USER_METRIC_UINT64 macro used signed values. Fixed.
+- Add conflict in the instrumenter between --thread=pthread and
+  --mutex=pthread
 
 ------------------- Upcoming version 1.3.1 ---------------------------
 

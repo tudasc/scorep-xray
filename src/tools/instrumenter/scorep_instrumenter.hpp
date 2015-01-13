@@ -52,6 +52,7 @@ class SCOREP_Instrumenter_OpariAdapter;
 class SCOREP_Instrumenter_PreprocessAdapter;
 class SCOREP_Instrumenter_PdtAdapter;
 class SCOREP_Instrumenter_UserAdapter;
+class SCOREP_Instrumenter_PthreadAdapter;
 
 class SCOREP_Instrumenter_Thread;
 class SCOREP_Instrumenter_Mpp;
@@ -224,6 +225,7 @@ private:
     SCOREP_Instrumenter_PreprocessAdapter* m_preprocess_adapter;
     SCOREP_Instrumenter_PdtAdapter*        m_pdt_adapter;
     SCOREP_Instrumenter_UserAdapter*       m_user_adapter;
+    SCOREP_Instrumenter_PthreadAdapter*    m_pthread_adapter;
 
     SCOREP_Instrumenter_Thread* m_thread;
     SCOREP_Instrumenter_Mpp*    m_mpp;

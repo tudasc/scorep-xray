@@ -79,6 +79,7 @@ SCOREP_Instrumenter_MutexPthread::SCOREP_Instrumenter_MutexPthread
 #if !SCOREP_BACKEND_HAVE_PTHREAD_MUTEX
     unsupported();
 #endif
+    m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_PTHREAD );
 }
 
 bool
@@ -91,6 +92,21 @@ SCOREP_Instrumenter_MutexPthread::checkCommand( const std::string& current,
     }
     return false;
 }
+
+/* **************************************************************************************
+ *  * class SCOREP_Instrumenter_MutexPthreadWrap
+ *   * *************************************************************************************/
+SCOREP_Instrumenter_MutexPthreadWrap::SCOREP_Instrumenter_MutexPthreadWrap
+(
+    SCOREP_Instrumenter_Selector* selector
+) : SCOREP_Instrumenter_Paradigm( selector, "pthread", "wrap",
+                                  "Wrapped Pthread mutex locks" )
+{
+#if !SCOREP_BACKEND_HAVE_PTHREAD_MUTEX
+    unsupported();
+#endif
+}
+
 /* **************************************************************************************
  * class SCOREP_Instrumenter_MutexPthreadSpinlock
  * *************************************************************************************/
@@ -125,6 +141,7 @@ SCOREP_Instrumenter_Mutex::SCOREP_Instrumenter_Mutex()
 {
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexMockup( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexPthread( this ) );
+    m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexPthreadWrap( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexPthreadSpinlock( this ) );
     m_paradigm_list.push_back( new SCOREP_Instrumenter_MutexOmp( this ) );
     m_current_selection = m_paradigm_list.front();

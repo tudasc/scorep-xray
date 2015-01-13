@@ -58,6 +58,15 @@ public:
 };
 
 /* **************************************************************************************
+ * class SCOREP_Instrumenter_MutexPthreadWrap
+ * *************************************************************************************/
+class SCOREP_Instrumenter_MutexPthreadWrap : public SCOREP_Instrumenter_Paradigm
+{
+public:
+    SCOREP_Instrumenter_MutexPthreadWrap( SCOREP_Instrumenter_Selector* selector );
+};
+
+/* **************************************************************************************
  * class SCOREP_Instrumenter_MutexPthreadSpinlock
  * *************************************************************************************/
 class SCOREP_Instrumenter_MutexPthreadSpinlock : public SCOREP_Instrumenter_Paradigm
