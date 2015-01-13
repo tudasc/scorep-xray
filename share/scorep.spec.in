@@ -972,7 +972,7 @@
             <uniq_name>pthread_time</uniq_name>
             <dtype>FLOAT</dtype>
             <uom>sec</uom>
-            <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_time</url>
+            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_time</url>
             <descr>Time spent in the Pthread run-time system and API</descr>
                 <cubepl>
                     metric::pthread_management() + metric::pthread_synchronization()
@@ -982,7 +982,7 @@
                     <uniq_name>pthread_management</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_management</url>
+                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_management</url>
                     <descr>Time needed to start up and shut down team of threads</descr>
 		    <cubepl>
                     {
@@ -1000,7 +1000,6 @@
                         ${i} = 0;
                         while( ${i} < ${cube::#callpaths} )
                         {
-                            ${pthread_mgmt}[${i}] = 0;
                             ${regionid} = ${cube::callpath::calleeid}[${i}];
                             if ( ( ${cube::region::mod}[${regionid}] eq "PTHREAD" )
                                  and
@@ -1031,7 +1030,7 @@
                     <uniq_name>pthread_synchronization</uniq_name>
                     <dtype>FLOAT</dtype>
                     <uom>sec</uom>
-                    <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_synchronization</url>
+                    <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_synchronization</url>
                     <descr>Time spent on Pthread synchronization</descr>
                     <cubepl>
                         metric::pthread_mutex_api() + metric::pthread_cond_api()
@@ -1041,7 +1040,7 @@
                         <uniq_name>pthread_mutex_api</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_lock_api</url>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_mutex_api</url>
                         <descr>Time spent in Pthread API calls dealing with mutexes</descr>
                         <cubepl>
                         {
@@ -1076,7 +1075,7 @@
                         <uniq_name>pthread_cond_api</uniq_name>
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
-                        <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_lock_api</url>
+                        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_cond_api</url>
                         <descr>Time spent in Pthread API calls dealing with conditional operations</descr>
                         <cubepl>
                         {
