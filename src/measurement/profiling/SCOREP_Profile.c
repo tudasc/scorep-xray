@@ -40,24 +40,23 @@
 #include <SCOREP_Profile.h>
 
 #include <SCOREP_Mutex.h>
+#include <SCOREP_Memory.h>
+#include <SCOREP_Timing.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Metric_Management.h>
+#define SCOREP_DEBUG_MODULE_NAME PROFILE
+#include <UTILS_Debug.h>
+#include <scorep_location.h>
 
 #include "scorep_profile_node.h"
 #include "scorep_profile_definition.h"
-#include <SCOREP_Metric_Management.h>
-
-#define SCOREP_DEBUG_MODULE_NAME PROFILE
-#include <UTILS_Debug.h>
-
 #include "scorep_profile_cluster.h"
 #include "scorep_profile_mpi_events.h"
-#include <SCOREP_Definitions.h>
 #include "scorep_profile_location.h"
-#include <SCOREP_Memory.h>
-#include <SCOREP_Timing.h>
-#include <scorep_location.h>
 #include "scorep_profile_process.h"
 #include "scorep_profile_writer.h"
 #include "scorep_profile_event_base.h"
+#include "scorep_profile_task_init.h"
 
 /* ***************************************************************************************
    Type definitions and variables
@@ -118,8 +117,9 @@ SCOREP_Profile_Initialize( void )
     SCOREP_MutexCreate( &scorep_profile_location_mutex );
 
     scorep_cluster_initialize();
-
     scorep_profile_init_definition();
+    scorep_profile_initialize_exchange();
+    scorep_profile_task_initialize();
     scorep_profile_init_rma();
 
     if ( !scorep_profile.reinitialize )
@@ -152,10 +152,6 @@ SCOREP_Profile_Initialize( void )
             current = current->next_sibling;
         }
     }
-
-    /* fool linker, so that the SCOREP_Profile_Tasking.c unit is always linked
-     * into the library/binary. */
-    UTILS_FOOL_LINKER( SCOREP_Profile_Tasking );
 
     UTILS_ASSERT( scorep_profile_param_instance );
 
@@ -210,8 +206,9 @@ SCOREP_Profile_Finalize( void )
     /* Reset profile definition struct */
     scorep_profile_delete_definition();
 
-    /* Finalize clustering system */
+    /* Finalize sub-systems */
     scorep_cluster_finalize();
+    scorep_profile_finalize_exchange();
 
     /* Delete mutex */
     SCOREP_MutexDestroy( &scorep_profile_location_mutex );
@@ -418,10 +415,12 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
     SCOREP_PROFILE_ASSURE_INITIALIZED;
     location = SCOREP_Location_GetProfileData( thread );
 
-    /* Store task metrics if we leave a parallel region */
-    if ( SCOREP_REGION_PARALLEL == type )
+    /* Store task metrics if in task scheduling points */
+    if ( ( type == SCOREP_REGION_BARRIER ) ||
+         ( type == SCOREP_REGION_TASK_WAIT ) ||
+         ( type == SCOREP_REGION_TASK_CREATE ) )
     {
-        scorep_profile_task_parallel_exit( location );
+        scorep_profile_update_task_metrics( location );
     }
 
     /* Get current node */
@@ -586,7 +585,8 @@ SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
                                            parent,
                                            scorep_profile_node_parameter_integer,
                                            node_data,
-                                           -1 );
+                                           -1,
+                                           scorep_profile_get_task_context( parent ) );
         node->next_sibling  = parent->first_child;
         parent->first_child = node;
     }
@@ -686,7 +686,7 @@ SCOREP_Profile_OnLocationActivation( SCOREP_Location* locationData,
         node = scorep_profile_create_node( thread_data,
                                            root,
                                            scorep_profile_node_thread_start,
-                                           data, 0 );
+                                           data, 0, false );
 
         /* Disable profiling if node creation failed */
         if ( node == NULL )
@@ -751,7 +751,7 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
     node = scorep_profile_create_node( thread_data,
                                        NULL,
                                        scorep_profile_node_thread_root,
-                                       node_data, 0 );
+                                       node_data, 0, false );
 
     /* Disable profiling if node creation failed */
     if ( node == NULL )

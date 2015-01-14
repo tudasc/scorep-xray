@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -20,7 +20,9 @@
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Location.h>
+#include <SCOREP_Profile_Tasking.h>
 #include <UTILS_Error.h>
+#include <scorep_status.h>
 
 #define SCOREP_TASK_STACK_SIZE 30
 
@@ -38,6 +40,10 @@ typedef struct SCOREP_Task
     uint32_t                 thread_id;
     uint32_t                 generation_number;
     SCOREP_TaskHandle        next;
+    /* Keep the array of substrates the last entry. By allocating some
+       space than the size of this struct, it may hold an array of void*
+       pointers to the substrates' data. */
+    void* substrate_data[];
 } SCOREP_Task;
 
 typedef struct scorep_location_task_data
@@ -192,14 +198,30 @@ scorep_task_create( SCOREP_Location* location,
     }
     else
     {
+        /* TODO: Currently, we use substrate specific data only for profiling. However,
+           a generic solution would be to have an array of pointers to
+           substrate specific data. Then we must alloc
+           num_of_substrates * sizeof (void*)
+           bytes in addition to hold the substrates' data */
         new_task = ( SCOREP_TaskHandle )
-                   SCOREP_Location_AllocForMisc( location, sizeof( SCOREP_Task ) );
+                   SCOREP_Location_AllocForMisc( location, sizeof( SCOREP_Task ) + sizeof( void* ) );
     }
 
     new_task->current_frame     = NULL;
     new_task->current_index     = SCOREP_TASK_STACK_SIZE - 1;
     new_task->thread_id         = threadId;
     new_task->generation_number = generationNumber;
+
+    /* TODO: Currently only the profiling sustrate uses task specific data.
+       A generic approach must iterate over all available substrates */
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+        SCOREP_Profile_CreateTaskData( location, new_task );
+    }
+    else
+    {
+        new_task->substrate_data[ 0 ] = NULL;
+    }
 
     return new_task;
 }
@@ -208,6 +230,13 @@ void
 scorep_task_complete( SCOREP_Location*  location,
                       SCOREP_TaskHandle task )
 {
+    /* TODO: Currently only the profiling sustrate uses task specific data.
+       A generic approach must iterate over all available substrates */
+    if ( SCOREP_IsProfilingEnabled() )
+    {
+        SCOREP_Profile_FreeTaskData( location, task );
+        task->substrate_data[ 0 ] = NULL;
+    }
     recycle_task( location, task );
 }
 
@@ -320,4 +349,19 @@ SCOREP_Task_Exit( SCOREP_Location* location )
     SCOREP_TaskHandle task = subsystem_data->current_task;
 
     task_pop_stack( location, task );
+}
+
+void*
+SCOREP_Task_GetSubstrateData( SCOREP_TaskHandle task,
+                              uint32_t          substrateId )
+{
+    return task->substrate_data[ substrateId ];
+}
+
+void
+SCOREP_Task_SetSubstrateData( SCOREP_TaskHandle task,
+                              uint32_t          substrateId,
+                              void*             data )
+{
+    task->substrate_data[ substrateId ] = data;
 }

@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -36,8 +36,17 @@
 
 #include <config.h>
 #include <scorep_profile_location.h>
+#include <scorep_profile_task_switch.h>
 #include <SCOREP_Memory.h>
+#include <SCOREP_Mutex.h>
+#include <SCOREP_Task.h>
 #include <UTILS_Error.h>
+
+#include <assert.h>
+
+/* **************************************************************************************
+ *                                                              Local types and variables
+ * *************************************************************************************/
 
 struct scorep_profile_fork_list_node
 {
@@ -47,6 +56,22 @@ struct scorep_profile_fork_list_node
     scorep_profile_fork_list_node* prev;
     scorep_profile_fork_list_node* next;
 };
+
+static scorep_profile_task* scorep_profile_task_exchange = NULL;
+
+static SCOREP_Mutex scorep_task_object_exchange_lock;
+
+static scorep_profile_node* scorep_profile_stub_exchange = NULL;
+
+static SCOREP_Mutex scorep_stub_exchange_lock;
+
+/* TODO: Set the substrate ID to 0 as long as we donot yet have substrates.
+   Assign a valid number if we introduce substrates. */
+uint32_t scorep_profile_substrate_id = 0;
+
+/* **************************************************************************************
+ *                                                                            Data access
+ * *************************************************************************************/
 
 scorep_profile_node*
 scorep_profile_get_current_node( SCOREP_Profile_LocationData* location )
@@ -61,17 +86,38 @@ scorep_profile_set_current_node( SCOREP_Profile_LocationData* location,
     location->current_task_node = node;
 }
 
+/* **************************************************************************************
+ *                                                          Initialization / Finalization
+ * *************************************************************************************/
+
+void
+scorep_profile_initialize_exchange( void )
+{
+    SCOREP_MutexCreate( &scorep_task_object_exchange_lock );
+    SCOREP_MutexCreate( &scorep_stub_exchange_lock );
+    scorep_profile_task_exchange = NULL;
+    scorep_profile_stub_exchange = NULL;
+}
+
+void
+scorep_profile_finalize_exchange( void )
+{
+    SCOREP_MutexDestroy( &scorep_task_object_exchange_lock );
+    SCOREP_MutexDestroy( &scorep_stub_exchange_lock );
+}
+
 void
 scorep_profile_reinitialize_location( SCOREP_Profile_LocationData* location )
 {
-    /* Initialize locations task instance table */
-    scorep_profile_task_initialize( location->location_data, location );
+    SCOREP_Location*  location_data = location->location_data;
+    SCOREP_TaskHandle task_handle   = SCOREP_Task_GetCurrentTask( location_data );
+    SCOREP_Profile_CreateTaskData( location_data, task_handle );
 }
 
 void
 scorep_profile_finalize_location( SCOREP_Profile_LocationData* location )
 {
-    location->current_task          = SCOREP_PROFILE_IMPLICIT_TASK;
+    location->current_task          = NULL;
     location->current_task_node     = location->root_node;
     location->current_implicit_node = location->root_node;
     location->current_depth         = 0;
@@ -81,7 +127,12 @@ scorep_profile_finalize_location( SCOREP_Profile_LocationData* location )
     location->free_nodes            = NULL;
     location->free_int_metrics      = NULL;
     location->free_double_metrics   = NULL;
-    scorep_profile_task_finalize( location );
+    location->free_tasks            = NULL;
+    location->foreign_tasks         = NULL;
+    location->free_stubs            = NULL;
+    location->foreign_stubs         = NULL;
+    location->num_foreign_tasks     = 0;
+    location->num_foreign_stubs     = 0;
 }
 
 SCOREP_Profile_LocationData*
@@ -107,11 +158,16 @@ scorep_profile_create_location_data( SCOREP_Location* locationData )
     location->free_int_metrics      = NULL;
     location->free_double_metrics   = NULL;
     location->current_task_node     = NULL;
-    location->current_task          = SCOREP_PROFILE_IMPLICIT_TASK;
+    location->current_task          = NULL;
+    location->implicit_task         = NULL;
+    location->free_tasks            = NULL;
+    location->foreign_tasks         = NULL;
+    location->free_stubs            = NULL;
+    location->num_foreign_tasks     = 0;
+    location->num_foreign_stubs     = 0;
     location->location_data         = locationData;
-
-    /* Initialize locations task instance table */
-    scorep_profile_task_initialize( locationData, location );
+    location->migration_sum         = 0;
+    location->migration_win         = 0;
 
     return location;
 }
@@ -120,14 +176,11 @@ scorep_profile_create_location_data( SCOREP_Location* locationData )
 void
 scorep_profile_delete_location_data( SCOREP_Profile_LocationData* location )
 {
-    if ( location == NULL )
-    {
-        return;
-    }
-
-    /* Finalize locations task instance table */
-    scorep_profile_task_finalize( location );
 }
+
+/* **************************************************************************************
+ *                                                                     Fork data handling
+ * *************************************************************************************/
 
 static scorep_profile_fork_list_node*
 create_fork_list_item( SCOREP_Profile_LocationData* location )
@@ -152,8 +205,8 @@ create_fork_list_item( SCOREP_Profile_LocationData* location )
 
 void
 scorep_profile_add_fork_node( SCOREP_Profile_LocationData* location,
-                              scorep_profile_node*         fork_node,
-                              uint32_t                     profile_depth,
+                              scorep_profile_node*         forkNode,
+                              uint32_t                     profileDepth,
                               uint32_t                     forkSequenceCount )
 {
     /* Create or reuse new list item */
@@ -188,9 +241,9 @@ scorep_profile_add_fork_node( SCOREP_Profile_LocationData* location,
     UTILS_ASSERT( new_list_item );
 
     /* Initialize entry */
-    new_list_item->fork_node           = fork_node;
+    new_list_item->fork_node           = forkNode;
     new_list_item->fork_sequence_count = forkSequenceCount;
-    new_list_item->profile_depth       = profile_depth;
+    new_list_item->profile_depth       = profileDepth;
 
     location->fork_list_tail = new_list_item;
 }
@@ -248,4 +301,174 @@ scorep_profile_get_fork_depth( SCOREP_Profile_LocationData* location,
     }
     //UTILS_ASSERT( current->fork_sequence_count == forkSequenceCount );
     return current->profile_depth;
+}
+
+/* **************************************************************************************
+ *                                                                       Memory recycling
+ * *************************************************************************************/
+
+void
+scorep_profile_release_stubs( SCOREP_Profile_LocationData* location,
+                              scorep_profile_node*         root,
+                              scorep_profile_node*         leaf,
+                              uint32_t                     num,
+                              bool                         localObjects )
+{
+    assert( root );
+    assert( leaf );
+    if ( localObjects )
+    {
+        if ( location->free_stubs != NULL )
+        {
+            scorep_profile_add_child( leaf, location->free_stubs );
+        }
+        location->free_stubs = root;
+    }
+    else
+    {
+        if ( location->foreign_stubs != NULL )
+        {
+            scorep_profile_add_child( leaf,  location->foreign_stubs );
+        }
+        location->foreign_stubs      = root;
+        location->num_foreign_stubs += num;
+
+        if ( location->num_foreign_stubs > scorep_profile_get_task_exchange_num() )
+        {
+            UTILS_WARNING( "Collected too many foreign stub objects. Trigger backflow "
+                           "of stub objects. This requires locking and, thus, can "
+                           "have an impact on the behavior of your application. You "
+                           "can influence the frequency of the backflow by specifying "
+                           "a higher value in SCOREP_PROFILE_TASK_EXCHANGE_NUM." );
+
+            scorep_profile_node* current = leaf;
+            while ( current->first_child != NULL )
+            {
+                current = current->first_child;
+            }
+            SCOREP_MutexLock( scorep_stub_exchange_lock );
+            if ( scorep_profile_stub_exchange != NULL )
+            {
+                scorep_profile_add_child( current, scorep_profile_stub_exchange );
+            }
+            scorep_profile_stub_exchange = root;
+            SCOREP_MutexUnlock( scorep_stub_exchange_lock );
+
+            location->foreign_stubs     = NULL;
+            location->num_foreign_stubs = 0;
+        }
+    }
+}
+
+scorep_profile_node*
+scorep_profile_recycle_stub( SCOREP_Profile_LocationData* location )
+{
+    scorep_profile_node* new_stub = NULL;
+
+    if ( location->free_stubs != NULL )
+    {
+        new_stub             = location->free_stubs;
+        location->free_stubs = location->free_stubs->first_child;
+        return new_stub;
+    }
+    if ( location->foreign_stubs != NULL )
+    {
+        new_stub                = location->foreign_stubs;
+        location->foreign_stubs = location->foreign_stubs->first_child;
+        location->num_foreign_stubs--;
+        return new_stub;
+    }
+    if ( scorep_profile_stub_exchange != NULL )
+    {
+        SCOREP_MutexLock( scorep_stub_exchange_lock );
+        if ( scorep_profile_stub_exchange != NULL )
+        {
+            location->free_stubs         = scorep_profile_stub_exchange;
+            scorep_profile_stub_exchange = NULL;
+        }
+        SCOREP_MutexUnlock( scorep_stub_exchange_lock );
+        if ( location->free_stubs != NULL )
+        {
+            new_stub             = location->free_stubs;
+            location->free_stubs = location->free_stubs->first_child;
+            return new_stub;
+        }
+    }
+    return NULL;
+}
+
+void
+scorep_profile_release_task( SCOREP_Profile_LocationData* location,
+                             scorep_profile_task*         task )
+{
+    assert( task );
+    if ( task->creator == location )
+    {
+        /* task did not migrate (or at least migrated back at the end) */
+        task->next           = location->free_tasks;
+        location->free_tasks = task;
+    }
+    else
+    {
+        /* task did migrate */
+        task->next              = location->foreign_tasks;
+        location->foreign_tasks = task;
+        location->num_foreign_tasks++;
+
+        if ( location->num_foreign_tasks > scorep_profile_get_task_exchange_num() )
+        {
+            UTILS_WARNING( "Collected too many foreign task objects. Trigger backflow "
+                           "of task objects. This requires locking and, thus, can "
+                           "have an impact on the behavior of your application. You "
+                           "can influence the frequency of the backflow by specifying "
+                           "a higher value in SCOREP_PROFILE_TASK_EXCHANGE_NUM." );
+
+            scorep_profile_task* current = task;
+            while ( current->next != NULL )
+            {
+                current = current->next;
+            }
+            SCOREP_MutexLock( scorep_task_object_exchange_lock );
+            current->next                = scorep_profile_task_exchange;
+            scorep_profile_task_exchange = task;
+            SCOREP_MutexUnlock( scorep_task_object_exchange_lock );
+
+            location->foreign_tasks     = NULL;
+            location->num_foreign_tasks = 0;
+        }
+    }
+}
+
+scorep_profile_task*
+scorep_profile_recycle_task( SCOREP_Profile_LocationData* location )
+{
+    scorep_profile_task* new_task = NULL;
+
+    /* Check for released entries */
+    if ( location->free_tasks != NULL )
+    {
+        new_task             = location->free_tasks;
+        location->free_tasks = new_task->next;
+    }
+    else if ( location->foreign_tasks != NULL )
+    {
+        new_task                = location->foreign_tasks;
+        location->foreign_tasks = new_task->next;
+        location->num_foreign_tasks--;
+    }
+    else if ( scorep_profile_task_exchange != NULL )
+    {
+        SCOREP_MutexLock( scorep_task_object_exchange_lock );
+        if ( scorep_profile_task_exchange != NULL )
+        {
+            new_task                     = scorep_profile_task_exchange;
+            scorep_profile_task_exchange = NULL;
+        }
+        SCOREP_MutexUnlock( scorep_task_object_exchange_lock );
+        if ( new_task != NULL )
+        {
+            location->free_tasks = new_task->next;
+        }
+    }
+    return new_task;
 }

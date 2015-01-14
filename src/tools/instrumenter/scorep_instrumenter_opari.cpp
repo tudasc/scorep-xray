@@ -305,9 +305,14 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
     std::string command = m_opari + m_params +
                           SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS " ";
 
+    if ( m_params.find( "--untied=" ) == std::string::npos )
+    {
+        command += "--untied=keep ";
+    }
+
     if ( m_use_tpd )
     {
-        command += " --tpd --tpd-mangling=" SCOREP_OPARI_MANGLING_SCHEME " ";
+        command += "--tpd --tpd-mangling=" SCOREP_OPARI_MANGLING_SCHEME " ";
     }
 
     SCOREP_Instrumenter_Adapter* adapter = getAdapter( SCOREP_INSTRUMENTER_ADAPTER_PDT );

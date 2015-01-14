@@ -6,10 +6,24 @@ Major features:
 Features and improvements:
 
 - Support for pthread_exit and pthread_cancel was added.
+- Added support for task migration in the profiling system.
 - Basic support for Fujitsu FX100 systems added.
 
 User tools and API improvements and changes:
-
+- Due to the added task migration support, the default for the invokation
+  of OPARI2 in the instrumenter was changed. Until now, the instrumenter
+  let OPARI2 make all tasks tied and print a warning if an untied
+  task was encountered. The new default is that the untied tasks
+  are left untied and no warning is printed.
+- The task related data storage mechanism was changed. The profiling
+  backend does not use a hash table to associate a task id with a
+  data structure anymore, but gets a pointer from the task management
+  in the measurement core. Thus, the environment variable
+  SCOREP_PROFILING_TASK_TABLE_SIZE to specify the size of the hash table
+  disappeared.
+- Added the environment variabel SCOREP_PROFILING_TASK_EXCHANGE_NUM to
+  specify how ofter the profiling system returns reallocated memory objects
+  that have mirgated to another thread.
 - Support for cobi was removed.
 
 Bugfixes:

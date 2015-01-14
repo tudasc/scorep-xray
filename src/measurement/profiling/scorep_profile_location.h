@@ -13,10 +13,10 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2012,
@@ -41,16 +41,17 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_DefinitionHandles.h>
 #include <SCOREP_Hashtab.h>
+#include <SCOREP_Profile_Tasking.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <scorep_profile_definition.h>
-#include <scorep_profile_task_table.h>
 
 /* **************************************************************************************
    Typedefs
 ****************************************************************************************/
 
 typedef struct scorep_profile_fork_list_node scorep_profile_fork_list_node;
+typedef struct scorep_profile_task           scorep_profile_task;
 
 /**
  * Data structure type for profile location data. Contains information about a
@@ -58,122 +59,132 @@ typedef struct scorep_profile_fork_list_node scorep_profile_fork_list_node;
  */
 struct SCOREP_Profile_LocationData
 {
-    scorep_profile_node*                 current_implicit_node;         /**< Current callpath of this thread */
-    scorep_profile_node*                 root_node;                     /**< Root node of this thread */
-    scorep_profile_node*                 creation_node;                 /**< Node where the thread was created */
-    uint32_t                             current_depth;                 /**< Stores the current length of the callpath */
-    uint32_t                             implicit_depth;                /**< Depth of the implicit task */
-    scorep_profile_node*                 free_nodes;                    /**< List of records for recycling */
-    scorep_profile_sparse_metric_int*    free_int_metrics;              /**< List of records for recycling */
-    scorep_profile_sparse_metric_double* free_double_metrics;           /**< List of records for recycling */
+    scorep_profile_node*                 current_implicit_node;    /**< Current callpath of this thread */
+    scorep_profile_node*                 root_node;                /**< Root node of this thread */
+    scorep_profile_node*                 creation_node;            /**< Node where the thread was created */
+    uint32_t                             current_depth;            /**< Stores the current length of the callpath */
+    uint32_t                             implicit_depth;           /**< Depth of the implicit task */
+    scorep_profile_node*                 free_nodes;               /**< List of records for recycling */
+    scorep_profile_sparse_metric_int*    free_int_metrics;         /**< List of records for recycling */
+    scorep_profile_sparse_metric_double* free_double_metrics;      /**< List of records for recycling */
+    scorep_profile_node*                 free_stubs;               /**< List of stubs for recycling */
+    scorep_profile_node*                 foreign_stubs;            /**< List of stubs from other locations */
+    uint32_t                             num_foreign_stubs;        /**< Number of objects in @a foreign_stubs */
 
-    scorep_profile_node*                 current_task_node;             /**< Callpath node of the current task */
-    scorep_profile_task_table*           tasks;                         /**< Hashtable to track task instances */
-    scorep_profile_task*                 current_task;                  /**< Current task instance */
-    SCOREP_Location*                     location_data;                 /**< Pointer to the Score-P location */
-    scorep_profile_fork_list_node*       fork_list_head;                /**< Pointer to the list head of fork points */
-    scorep_profile_fork_list_node*       fork_list_tail;                /**< Pointer to the list tail of fork points */
+    scorep_profile_node*                 current_task_node;        /**< Callpath node of the current task */
+    scorep_profile_task*                 current_task;             /**< Current task instance */
+    scorep_profile_task*                 implicit_task;            /** Impliciti task instance */
+    scorep_profile_task*                 free_tasks;               /**< Released task structures */
+    scorep_profile_task*                 foreign_tasks;            /**< Released tasks from other creators */
+    uint32_t                             num_foreign_tasks;        /**< Number of objects in @a foreign_tasks */
+    int64_t                              migration_sum;            /**< Sum of task migrations from/to this location */
+    uint64_t                             migration_win;            /**< Number of tasks that migrated here */
+    SCOREP_Location*                     location_data;            /**< Pointer to the Score-P location */
+    scorep_profile_fork_list_node*       fork_list_head;           /**< Pointer to the list head of fork points */
+    scorep_profile_fork_list_node*       fork_list_tail;           /**< Pointer to the list tail of fork points */
 };
+
+/**
+ * Stores the substrate id of the profiling system.
+ *
+ * TODO: Currently, set this value to a constant value of 0.
+ *       Assign a valid value if, we introduce generic substrates.
+ */
+extern uint32_t scorep_profile_substrate_id;
 
 /* **************************************************************************************
    Functions
 ****************************************************************************************/
 
 /**
-   Creates a new locationd data structure.
+ * Initializes the memory object exchange.
+ */
+void
+scorep_profile_initialize_exchange( void );
+
+/**
+ * Finalizes the memory object exchange.
+ */
+void
+scorep_profile_finalize_exchange( void );
+
+/**
+ * Creates a new location data structure.
  */
 SCOREP_Profile_LocationData*
 scorep_profile_create_location_data( SCOREP_Location* locationData );
 
 /**
-   Deletes a location data structure.
-   @param location Location that is deleted.
+ * Deletes a location data structure.
+ * @param location Location that is deleted.
  */
 void
 scorep_profile_delete_location_data( SCOREP_Profile_LocationData* location );
 
 /**
-   Finalizes a location data structure. Is called during profile finalization.
-   Keeps the data structure alive and allows reuse of it after a
-   reinitialization of the profile.
-   @param location Location that is finalized.
+ * Finalizes a location data structure. Is called during profile finalization.
+ * Keeps the data structure alive and allows reuse of it after a
+ * reinitialization of the profile.
+ * @param location Location that is finalized.
  */
 void
 scorep_profile_finalize_location( SCOREP_Profile_LocationData* location );
 
 /**
-   Reinitializes a location data object after profile finalization and
-   reinitialization of the profile.
-   @param location Location that is reinitialized.
+ * Reinitializes a location data object after profile finalization and
+ * reinitialization of the profile.
+ * @param location Location that is reinitialized.
  */
 void
 scorep_profile_reinitialize_location( SCOREP_Profile_LocationData* locationData );
 
 /**
-   Returns the current node for a thread
+ * Returns the current node for a thread
  */
 scorep_profile_node*
 scorep_profile_get_current_node( SCOREP_Profile_LocationData* location );
 
 /**
-   Sets the current node for a thread
+ * Sets the current node for a thread
  */
 void
 scorep_profile_set_current_node( SCOREP_Profile_LocationData* location,
                                  scorep_profile_node*         node );
 
 /**
- * Sets number of location specific metrics
- *
- * @param location                      Location.
- * @param numLocationSpecificMetrics    Number of location specific metrics.
- */
-void
-scorep_profile_set_num_location_metrics( SCOREP_Profile_LocationData* location,
-                                         uint32_t                     numLocationSpecificMetrics );
-
-/**
- * Gets number of location specific metrics
- *
- * @param location                      Location.
- */
-uint32_t
-scorep_profile_get_num_location_metrics( SCOREP_Profile_LocationData* location );
-
-/**
  * Adds a fork node to the list
  *
  * @param location      Location.
  * @param fork_node     The fork node.
- * @param profile_depth Depth of the profile node in the call tree.
- * @param nesting_level The nesting level of the forked paralle region.
+ * @param profileDepth  Depth of the profile node in the call tree.
+ * @param nestingLevel  The nesting level of the forked paralle region.
  */
 void
 scorep_profile_add_fork_node( SCOREP_Profile_LocationData* location,
                               scorep_profile_node*         fork_node,
-                              uint32_t                     profile_depth,
-                              uint32_t                     nesting_level );
+                              uint32_t                     profileDepth,
+                              uint32_t                     nestingLevel );
 
 /**
  * Returns the fork node of the parallel region at @a nesting_level.
  *
  * @param location      Location.
- * @param nesting_level The nesting level of the forked paralle region.
+ * @param nestingLevel  The nesting level of the forked paralle region.
  */
 scorep_profile_node*
 scorep_profile_get_fork_node( SCOREP_Profile_LocationData* location,
-                              uint32_t                     nesting_level );
+                              uint32_t                     nestingLevel );
 
 
 /**
  * Returns the depth level of fork node of the parallel region at @a nesting_level.
  *
  * @param location      Location.
- * @param nesting_level The nesting level of the forked paralle region.
+ * @param nestingLevel  The nesting level of the forked paralle region.
  */
 uint32_t
 scorep_profile_get_fork_depth( SCOREP_Profile_LocationData* location,
-                               uint32_t                     nesting_level );
+                               uint32_t                     nestingLevel );
 
 
 /**
@@ -184,5 +195,48 @@ scorep_profile_get_fork_depth( SCOREP_Profile_LocationData* location,
  */
 void
 scorep_profile_remove_fork_node( SCOREP_Profile_LocationData* location );
+
+/**
+ * Releases a chain of stub nodes for recycling. The nodes must be
+ * connected via parent-child links in the scorep_profile_node object.
+ * @param location      The location which executes the release.
+ * @param root          Pointer to the root of the chain.
+ * @param leaf          Pointer to the last child end of the chain.
+ * @param num           Number of elements in the chain.
+ * @param localObjects  True if the task has not migrated during last switch.
+ */
+void
+scorep_profile_release_stubs( SCOREP_Profile_LocationData* location,
+                              scorep_profile_node*         root,
+                              scorep_profile_node*         leaf,
+                              uint32_t                     num,
+                              bool                         localObjects );
+
+/**
+ * Returns a recycled stub objects if available.
+ * @param location  The location on which a stub node is requested.
+ * @retuns a recycled stub object if available. Otherwise it returns NULL.
+ */
+scorep_profile_node*
+scorep_profile_recycle_stub( SCOREP_Profile_LocationData* location );
+
+/**
+ * Releases a task object for recycling.
+ * @param location The location which executes the release.
+ * @param task     The task object that should be released.
+ */
+void
+scorep_profile_release_task( SCOREP_Profile_LocationData* location,
+                             scorep_profile_task*         task );
+
+/**
+ * Returns a recycled task object if available.
+ * @param location  The location on which the new task object is requested.
+ * @retuns a recycled task object if available. Otherwise it returns NULL.
+ */
+scorep_profile_task*
+scorep_profile_recycle_task( SCOREP_Profile_LocationData* location );
+
+
 
 #endif // SCOREP_PROFILE_LOCATION_H

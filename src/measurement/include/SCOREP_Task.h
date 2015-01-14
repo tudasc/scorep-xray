@@ -28,6 +28,7 @@ struct SCOREP_Location;
  * passed to SCOREP_Task_Create().
  * Together with the generation number it identifies the task instance.
  * @param task  The task handle.
+ * @returns the thread id of the @a task object.
  */
 uint32_t
 SCOREP_Task_GetThreadId( SCOREP_TaskHandle task );
@@ -37,6 +38,7 @@ SCOREP_Task_GetThreadId( SCOREP_TaskHandle task );
  * number that was passed to SCOREP_Task_Create().
  * Together with the thread id it identifies the task instance.
  * @param task  The task handle.
+ * @returns the generation number of the @a task object.
  */
 uint32_t
 SCOREP_Task_GetGenerationNumber( SCOREP_TaskHandle task );
@@ -44,6 +46,7 @@ SCOREP_Task_GetGenerationNumber( SCOREP_TaskHandle task );
 /**
  * Returns the currently executed task for @a location.
  * @param location The location.
+ * @returns the currently executed task for @a location.
  */
 SCOREP_TaskHandle
 SCOREP_Task_GetCurrentTask( struct SCOREP_Location* location );
@@ -51,6 +54,7 @@ SCOREP_Task_GetCurrentTask( struct SCOREP_Location* location );
 /**
  * Returns the region handle on top of the stack for @a task.
  * @param task The task.
+ * @returns the region handle on top of the stack for @a task.
  */
 SCOREP_RegionHandle
 SCOREP_Task_GetTopRegion( SCOREP_TaskHandle task );
@@ -94,5 +98,28 @@ SCOREP_Task_Exit( struct SCOREP_Location* location );
 void
 SCOREP_Task_ExitAllRegions( struct SCOREP_Location* location,
                             SCOREP_TaskHandle       task );
+
+/**
+ * Returns the substrate specific data for @a task.
+ * @param task        The task handle from which we get the substrate data.
+ * @param substrateId The Id of the substrate.
+ *
+ * @returns the substrate specific data for @a task.
+ *          If the substrate not enabled, it returns NULL.
+ */
+void*
+SCOREP_Task_GetSubstrateData( SCOREP_TaskHandle task,
+                              uint32_t          substrateId );
+
+/**
+ * Sets the profiling specific data for @a task.
+ * @param task        The task for which we set the data.
+ * @param substrateId The Id of the substrate.
+ * @param data        The profiling data.
+ */
+void
+SCOREP_Task_SetSubstrateData( SCOREP_TaskHandle task,
+                              uint32_t          substrateId,
+                              void*             data );
 
 #endif

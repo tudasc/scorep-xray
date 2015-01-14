@@ -31,9 +31,11 @@
 
 ## file       Makefile.inc.am
 
+
+# -------------------------------------------- depth limit test
 check_PROGRAMS += profile_depth_limit_test
 
-profile_depth_limit_test_SOURCES = $(SRC_ROOT)test/profiling/profile_depth_limit_test.c
+profile_depth_limit_test_SOURCES  = $(SRC_ROOT)test/profiling/profile_depth_limit_test.c
 profile_depth_limit_test_CPPFLAGS = $(AM_CPPFLAGS) @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
 profile_depth_limit_test_LDADD    = $(serial_libadd)
 profile_depth_limit_test_LDFLAGS  = $(serial_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
@@ -43,6 +45,7 @@ if !SCOREP_COMPILER_SUN
 TESTS_SERIAL += $(srcdir)/../test/profiling/run_profile_depth_limit_test.sh
 endif
 
+# -------------------------------------------- clustering test
 check_PROGRAMS += clustering_test
 clustering_test_SOURCES = $(SRC_ROOT)test/profiling/clustering_test.c
 clustering_test_CPPFLAGS = $(AM_CPPFLAGS) \
@@ -53,6 +56,25 @@ clustering_test_LDFLAGS  = $(serial_ldflags)
 
 TESTS_SERIAL += ./clustering_test
 
+
+# -------------------------------------------- task migration test
+check_PROGRAMS += task_migration_test
+
+task_migration_test_SOURCES  = $(SRC_ROOT)test/profiling/task_migration_test.c
+task_migration_test_CPPFLAGS = $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR)                       \
+    $(UTILS_CPPFLAGS)                         \
+    -I$(INC_ROOT)src/measurement/include      \
+    -I$(INC_ROOT)src/measurement/definitions/include \
+    -I$(INC_ROOT)src/measurement/profiling/include \
+    -I$(INC_ROOT)src/measurement
+task_migration_test_LDADD    = $(serial_libadd)
+task_migration_test_LDFLAGS  = $(serial_ldflags)
+
+TESTS_SERIAL += ./task_migration_test
+
+
+# -------------------------------------------- test scripts
 TESTS_SERIAL += $(SRC_ROOT)test/profiling/run_tuple_format_serial_test.sh
 EXTRA_DIST += $(SRC_ROOT)test/profiling/run_tuple_format_serial_test.sh
 
@@ -60,3 +82,4 @@ if HAVE_OPENMP_SUPPORT
 TESTS_OMP += $(SRC_ROOT)test/profiling/run_tuple_format_omp_test.sh
 EXTRA_DIST += $(SRC_ROOT)test/profiling/run_tuple_format_omp_test.sh
 endif
+

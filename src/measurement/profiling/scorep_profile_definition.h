@@ -13,10 +13,10 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2012,
@@ -148,18 +148,11 @@ scorep_profile_init_definition( void );
 void
 scorep_profile_delete_definition( void );
 
-
 /**
-   Returns the configuration value for SCOREP_PROFILE_MAX_CALLPATH_DEPTH.
+   Returns the configuration value for SCOREP_PROFILE_TASK_EXCHANGE_NUM.
  */
 uint64_t
-scorep_profile_get_max_callapth_depth( void );
-
-/**
-   Returns the configuration value for SCOREP_PROFILE_TASK_TABLE_SIZE.
- */
-uint64_t
-scorep_profile_get_task_table_size( void );
+scorep_profile_get_task_exchange_num( void );
 
 /**
    Returns the configuration value for SCOREP_PROFILE_BASENAME.

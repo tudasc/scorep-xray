@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011, 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -173,6 +173,7 @@ typedef enum
     SCOREP_TAU_REGION_ARTIFICIAL,
     SCOREP_TAU_REGION_THREAD_CREATE,
     SCOREP_TAU_REGION_THREAD_WAIT,
+    SCOREP_TAU_REGION_TASK_UNTIED,
 
     SCOREP_TAU_INVALID_REGION_TYPE /**< For internal use only. */
 } SCOREP_Tau_RegionType;

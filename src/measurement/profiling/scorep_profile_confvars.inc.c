@@ -13,10 +13,10 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2014
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2012,
@@ -43,15 +43,16 @@
 #include <stdbool.h>
 
 /**
+   Number of foreign task objects that are collected before they are put into
+   the common exchange buffer.
+ */
+uint64_t scorep_profile_task_exchange_num;
+
+/**
    Initial value for scorep_profile.max_callpath_depth, which may change over
    time.
  */
 uint64_t scorep_profile_max_callpath_depth;
-
-/**
-   Stores the configuration of the hash table size.
- */
-uint64_t scorep_profile_task_table_size;
 
 /**
    Contains the basename for profile files.
@@ -106,16 +107,27 @@ static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
  */
 static SCOREP_ConfigVariable scorep_profile_configs[] = {
     {
-        "task_table_size",
+        "task_exchange_num",
         SCOREP_CONFIG_TYPE_NUMBER,
-        &scorep_profile_task_table_size,
+        &scorep_profile_task_exchange_num,
         NULL,
-        "64",
-        "Size of the task tracing table",
-        "Size of the task tracing table. Best performance is obtained, if the\n"
-        "table size matches the number of tasks that are active at once. If\n"
-        "your program does not use tasks, you may set this value to zero, to\n"
-        "save some memory."
+        "1024",
+        "Number of foreign task objects that are collected before they are put into "
+        "the common task object exchange buffer.",
+        "The profiling creates a record for every task instance that is running. "
+        "To avoid locking, the required memory is taken from a preallocated memory "
+        "block. Each thread has its own memory block. On task completion, the created "
+        "object can be reused by other tasks. However, if tasks migrate, the data "
+        "structure migrates with them. Thus, if there is an imbalance in the migration "
+        "from a source thread that starts the execution of tasks towards a sink thread "
+        "that completes the tasks, the source thread may continually creating new "
+        "task objects while in the sink, released task objects are collected. Thus, "
+        "if the sink collected a certain number of tasks it should trigger a backflow "
+        "of its collected task objects. However, this requires locking which should be "
+        "avoided as much as possible. Thus, we do not want the locking happen on every "
+        "migrated task, but only if a certain imbalance occurs. This environment "
+        "variable determines the number of igrated task instances that must be "
+        "collected before the backflow is triggered."
     },
     {
         "max_callpath_depth",

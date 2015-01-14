@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2012, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2012,
@@ -51,8 +51,8 @@
    External configuration variables
    -------------------------------------------------------------------------------------*/
 
+extern uint64_t scorep_profile_task_exchange_num;
 extern uint64_t scorep_profile_max_callpath_depth;
-extern uint64_t scorep_profile_task_table_size;
 extern char*    scorep_profile_basename;
 extern uint64_t scorep_profile_output_format;
 extern uint64_t scorep_profile_cluster_count;
@@ -136,15 +136,9 @@ scorep_profile_get_number_of_threads( void )
    -------------------------------------------------------------------------------------*/
 
 uint64_t
-scorep_profile_get_max_callapth_depth( void )
+scorep_profile_get_task_exchange_num( void )
 {
-    return scorep_profile_max_callpath_depth;
-}
-
-uint64_t
-scorep_profile_get_task_table_size( void )
-{
-    return scorep_profile_task_table_size;
+    return scorep_profile_task_exchange_num;
 }
 
 const char*
