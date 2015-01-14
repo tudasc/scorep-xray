@@ -49,7 +49,7 @@ SCOREP_Instrumenter_PdtAdapter::SCOREP_Instrumenter_PdtAdapter( void )
 {
     m_conflicts.push_back( SCOREP_INSTRUMENTER_ADAPTER_PREPROCESS );
     m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_USER );
-    m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_COBI );
+//    m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_COBI );
     m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_COMPILER );
 
     m_pdt_bin_path    = PDT;

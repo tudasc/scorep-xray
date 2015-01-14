@@ -76,7 +76,7 @@ scorep_get_ibm_compiler_version( std::string compiler, int& major, int& minor )
 SCOREP_Instrumenter_CompilerAdapter::SCOREP_Instrumenter_CompilerAdapter( void )
     : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_COMPILER, "compiler" )
 {
-    m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_COBI );
+//    m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_COBI );
     m_default_off.push_back( SCOREP_INSTRUMENTER_ADAPTER_PDT );
 }
 
