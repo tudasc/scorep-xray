@@ -42,6 +42,7 @@ Bugfixes:
 - The SCOREP_USER_METRIC_UINT64 macro used signed values. Fixed.
 - Add conflict in the instrumenter between --thread=pthread and
   --mutex=pthread.
+- Fixed errors with libmpigf during linking of the instrumended application.
 
 ------------------- Upcoming version 1.3.1 ---------------------------
 

@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -339,7 +339,8 @@ bool
 is_mpi_library( const std::string& library_name )
 {
     return check_lib_name( library_name, "mpi" ) ||
-           check_lib_name( library_name, "mpich" );
+           check_lib_name( library_name, "mpich" ) ||
+           check_lib_name( library_name, "mpigf" );
 }
 
 bool
