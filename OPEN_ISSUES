@@ -304,6 +304,13 @@ various Score-P components.
 
 * Score-P misc.
 
+  - Score-P does not support MPMD style programs where the executables
+    are instrumented differently. I.e., it is best to compile/link all
+    sources with the same set of flags for the Score-P insturmenter, so
+    that the instrumenter itself can't automatically decides what
+    paradigms the program uses. This applies to the --mpp and --thread
+    flags.
+
   - There might be a performance impact when instrumenting code
     without explicitly given optimization flags. The instrumenter adds
     compiler flags to enable additional debugging
