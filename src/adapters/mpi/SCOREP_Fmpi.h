@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -65,8 +65,7 @@
 #include <string.h>
 #include <mpi.h>
 
-#if defined( __sun ) || defined( _SX ) || defined( OPEN_MPI ) || defined( HP_MPI ) || \
-    defined( SGI_MPT )
+#if defined( __sun ) || defined( _SX ) || defined( OPEN_MPI ) || defined( HP_MPI )
 #  define NEED_F2C_CONV
 #endif
 
@@ -97,16 +96,12 @@ extern void* scorep_mpi_fortran_statuses_ignore;
 extern void* scorep_mpi_fortran_unweighted;
 #endif
 
-#if defined( SGI_MPT )
+#if !( HAVE( DECL_PMPI_STATUS_F2C ) )
+#define PMPI_Status_f2c( f, c ) memcpy( ( c ), ( f ), scorep_mpi_status_size )
+#endif /* !HAVE( DECL_PMPI_STATUS_F2C ) */
 
-  #if !( HAVE( DECL_PMPI_STATUS_F2C ) )
-  #define PMPI_Status_f2c( f, c ) memcpy( ( c ), ( f ), scorep_mpi_status_size )
-  #endif /* !HAVE( DECL_PMPI_STATUS_F2C ) */
-
-  #if !( HAVE( DECL_PMPI_STATUS_C2F ) )
-  #define PMPI_Status_c2f( c, f ) memcpy( ( f ), ( c ), scorep_mpi_status_size )
-  #endif /* !HAVE( DECL_PMPI_STATUS_C2F ) */
-
-#endif   /* SGI_MPT */
+#if !( HAVE( DECL_PMPI_STATUS_C2F ) )
+#define PMPI_Status_c2f( c, f ) memcpy( ( f ), ( c ), scorep_mpi_status_size )
+#endif /* !HAVE( DECL_PMPI_STATUS_C2F ) */
 
 #endif   /* SCOREP_FMPI_H */
