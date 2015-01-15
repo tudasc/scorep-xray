@@ -134,8 +134,7 @@ extern bool scorep_mpi_generate_events;
 /** @def SCOREP_MPI_EVENT_GEN_OFF
     Turn off event generation for MPI adapter. It is used inside the
     wrappers and the measurement core to avoid events from MPI
-    function calls, e.g., MPI calls internal to MPI itself or SIONlibs
-    paropen/close.
+    function calls, e.g., MPI calls internal to MPI itself.
  */
 #define SCOREP_MPI_EVENT_GEN_OFF() scorep_mpi_generate_events = false
 

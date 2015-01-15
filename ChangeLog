@@ -2,12 +2,17 @@
 
 Major features:
 
+- If the used OTF2 version supports SIONlib, then it is now possible to
+  write also traces with SIONlib that include an arbitrary number of
+  threads, asynchronous metric plugins, and accelerator (CUDA/OpenCL/...)
+  streams.
 
 Features and improvements:
 
 - Support for pthread_exit and pthread_cancel was added.
 - Added support for task migration in the profiling system.
 - Basic support for Fujitsu FX100 systems added.
+- Score-P now requires at least OTF2 1.5.
 
 User tools and API improvements and changes:
 - Due to the added task migration support, the default for the invokation
@@ -36,7 +41,7 @@ Bugfixes:
   configure time.
 - The SCOREP_USER_METRIC_UINT64 macro used signed values. Fixed.
 - Add conflict in the instrumenter between --thread=pthread and
-  --mutex=pthread
+  --mutex=pthread.
 
 ------------------- Upcoming version 1.3.1 ---------------------------
 

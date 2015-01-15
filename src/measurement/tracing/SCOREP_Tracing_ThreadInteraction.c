@@ -116,12 +116,6 @@ void
 SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
                                    SCOREP_Location* parentLocationData )
 {
-    if ( scorep_tracing_use_sion && 0 != SCOREP_Location_GetId( locationData ) )
-    {
-        UTILS_FATAL( "Writing more than one location in a process is currently not "
-                     "supported by the SIONlib support of OTF2. Please disable SIONlib via SCOREP_TRACING_USE_SION." );
-    }
-
     SCOREP_TracingData* tracing_data = SCOREP_Location_GetTracingData( locationData );
 
     /* SCOREP_Tracing_GetEventWriter() aborts on error */
@@ -141,8 +135,6 @@ SCOREP_Tracing_AssignLocationId( SCOREP_Location* threadLocationData )
     SCOREP_TracingData* tracing_data = SCOREP_Location_GetTracingData( threadLocationData );
     uint64_t            location_id  = SCOREP_Location_GetGlobalId( threadLocationData );
 
-    SCOREP_Tracing_LockArchive();
-
     OTF2_ErrorCode error = OTF2_EvtWriter_SetLocationID( tracing_data->otf_writer,
                                                          location_id );
     if ( OTF2_SUCCESS != error )
@@ -150,6 +142,4 @@ SCOREP_Tracing_AssignLocationId( SCOREP_Location* threadLocationData )
         UTILS_FATAL( "Could not set location id %" PRIu64 "to OTF2 event writer: %s",
                      location_id, OTF2_Error_GetName( error ) );
     }
-
-    SCOREP_Tracing_UnlockArchive();
 }

@@ -149,7 +149,7 @@ provided with the tarball will be used:
 
   --with-otf2[=<otf2-bindir>]
                Use an already installed and compatible OTF2 library
-               (v1.4 or newer). Provide path to otf2-config.
+               (v1.5 or newer). Provide path to otf2-config.
                Auto-detected if already in $PATH.
   --with-cube[=<cube-bindir>]
                Use an already installed and compatible CUBE4 library

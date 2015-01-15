@@ -43,7 +43,6 @@
 #include <otf2/otf2.h>
 
 #include <scorep_runtime_management.h>
-#include <SCOREP_Mutex.h>
 #include <scorep_status.h>
 #include <scorep_location.h>
 #include "scorep_rewind_stack_management.h"
@@ -59,7 +58,6 @@
 #include <inttypes.h>
 
 static OTF2_Archive* scorep_otf2_archive;
-static SCOREP_Mutex  scorep_otf2_archive_lock;
 
 
 /** @todo croessel in OTF2_Archive_Open we need to specify an event
@@ -322,9 +320,11 @@ SCOREP_Tracing_Initialize( void )
     scorep_tracing_register_flush_callbacks( scorep_otf2_archive );
     scorep_tracing_register_memory_callbacks( scorep_otf2_archive );
 
-    OTF2_Archive_SetCreator( scorep_otf2_archive, PACKAGE_STRING );
+    SCOREP_ErrorCode err =
+        scorep_tracing_set_locking_callbacks( scorep_otf2_archive );
+    UTILS_ASSERT( err == SCOREP_SUCCESS );
 
-    SCOREP_MutexCreate( &scorep_otf2_archive_lock );
+    OTF2_Archive_SetCreator( scorep_otf2_archive, PACKAGE_STRING );
 }
 
 
@@ -341,8 +341,6 @@ SCOREP_Tracing_Finalize( void )
                      OTF2_Error_GetDescription( ret ) );
     }
     scorep_otf2_archive = 0;
-
-    SCOREP_MutexDestroy( &scorep_otf2_archive_lock );
 }
 
 
@@ -362,25 +360,9 @@ SCOREP_Tracing_OnMppInit( void )
 }
 
 
-void
-SCOREP_Tracing_LockArchive( void )
-{
-    SCOREP_MutexLock( scorep_otf2_archive_lock );
-}
-
-
-void
-SCOREP_Tracing_UnlockArchive( void )
-{
-    SCOREP_MutexUnlock( scorep_otf2_archive_lock );
-}
-
-
 OTF2_EvtWriter*
 SCOREP_Tracing_GetEventWriter( void )
 {
-    SCOREP_Tracing_LockArchive();
-
     OTF2_EvtWriter* evt_writer = OTF2_Archive_GetEvtWriter(
         scorep_otf2_archive,
         OTF2_UNDEFINED_LOCATION );
@@ -389,8 +371,6 @@ SCOREP_Tracing_GetEventWriter( void )
         /* aborts */
         SCOREP_Memory_HandleOutOfMemory();
     }
-
-    SCOREP_Tracing_UnlockArchive();
 
     return evt_writer;
 }

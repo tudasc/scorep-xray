@@ -39,6 +39,12 @@
  */
 
 
+#include <otf2/otf2.h>
+
+
+#include <UTILS_Error.h>
+
+
 #include "scorep_rewind_stack_management.h"
 
 
@@ -59,16 +65,12 @@ OTF2_EvtWriter*
 SCOREP_Tracing_GetEventWriter( void );
 
 
-void
-SCOREP_Tracing_LockArchive( void );
-
-
-void
-SCOREP_Tracing_UnlockArchive( void );
+SCOREP_ErrorCode
+scorep_tracing_set_collective_callbacks( OTF2_Archive* archive );
 
 
 SCOREP_ErrorCode
-scorep_tracing_set_collective_callbacks( OTF2_Archive* archive );
+scorep_tracing_set_locking_callbacks( OTF2_Archive* archive );
 
 
 #endif /* SCOREP_INTERNAL_TRACING_H */
