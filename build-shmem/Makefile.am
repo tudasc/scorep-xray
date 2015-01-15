@@ -42,7 +42,6 @@ else !CROSS_BUILD
 AM_CPPFLAGS += -DNOCROSS_BUILD
 endif !CROSS_BUILD
 
-pkgdata_DATA =
 if HAVE_SHMEM_SUPPORT
 if !HAVE_SHMEM_PROFILING_INTERFACE
 pkgdata_DATA += ../share/shmem.wrap
