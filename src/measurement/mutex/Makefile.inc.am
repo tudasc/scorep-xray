@@ -25,6 +25,7 @@ libscorep_mutex_omp_la_CPPFLAGS = \
     -I$(INC_DIR_MUTEX) \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_DIR_DEFINITIONS) \
     $(UTILS_CPPFLAGS)
 libscorep_mutex_omp_la_LIBADD = \
     libutils.la
