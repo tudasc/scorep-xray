@@ -806,5 +806,8 @@ get_reuse_key( scorep_pthread_wrapped_arg* wrappedArg )
              * also for threads which have different start routine.
              */
             return 1;
+        default:
+            UTILS_FATAL( "Invalid reuse-policy." );
+            return 0;
     }
 }
