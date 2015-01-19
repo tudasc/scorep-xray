@@ -280,6 +280,7 @@ AC_ARG_VAR(SHMEM_FCFLAGS, [SHMEM Fortran compiler flags])
 AC_ARG_VAR(SHMEM_LDFLAGS, [SHMEM linker flags, e.g. -L<lib dir> if you have libraries in a nonstandard directory <lib dir>])
 AC_ARG_VAR(SHMEM_LIBS, [SHMEM libraries to pass to the linker, e.g. -l<library>])
 AC_ARG_VAR(SHMEM_LIB_NAME, [name of the SHMEM library])
+AC_ARG_VAR(SHMEM_NAME, [name of the implemented SHMEM specification])
 ])
 
 AC_DEFUN([AFS_CONVERT_SHMEM_COMPILER],

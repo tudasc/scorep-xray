@@ -16,3 +16,4 @@ SHMEMFC=
 # This name is used by the Score-P instrumenter to detect whether a
 # SHMEM application is built.
 #SHMEM_LIB_NAME=
+SHMEM_NAME=SHMEM
