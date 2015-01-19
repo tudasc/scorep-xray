@@ -42,13 +42,16 @@ SCOREP_RegionHandle scorep_shmem_region__SHMEM;
 void
 scorep_shmem_register_regions( void )
 {
-#define SCOREP_SHMEM_PROCESS_FUNC( return_type, func, func_args )                                               \
-    scorep_shmem_region__ ##func = SCOREP_Definitions_NewRegion( #func,                                         \
-                                                                 NULL,                                          \
-                                                                 SCOREP_Definitions_NewSourceFile( "SHMEM" ),   \
-                                                                 SCOREP_INVALID_LINE_NO,                        \
-                                                                 SCOREP_INVALID_LINE_NO,                        \
-                                                                 SCOREP_PARADIGM_SHMEM,                         \
+    SCOREP_SourceFileHandle source_file_handle =
+        SCOREP_Definitions_NewSourceFile( SCOREP_SHMEM_NAME );
+
+#define SCOREP_SHMEM_PROCESS_FUNC( return_type, func, func_args )                          \
+    scorep_shmem_region__ ##func = SCOREP_Definitions_NewRegion( #func,                    \
+                                                                 NULL,                     \
+                                                                 source_file_handle,         \
+                                                                 SCOREP_INVALID_LINE_NO,   \
+                                                                 SCOREP_INVALID_LINE_NO,   \
+                                                                 SCOREP_PARADIGM_SHMEM,    \
                                                                  SCOREP_REGION_FUNCTION );
 
 #include "scorep_shmem_function_list.inc"

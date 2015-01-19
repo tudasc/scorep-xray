@@ -29,6 +29,7 @@
 #include <SCOREP_Config.h>
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Paradigms.h>
 #include <SCOREP_Events.h>
 
 
@@ -103,6 +104,15 @@ static SCOREP_ErrorCode
 shmem_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
+
+    SCOREP_Paradigms_RegisterParallelParadigm(
+        SCOREP_PARADIGM_SHMEM,
+        SCOREP_PARADIGM_CLASS_MPP,
+        SCOREP_SHMEM_NAME,
+        SCOREP_PARADIGM_FLAG_RMA_ONLY );
+    SCOREP_Paradigms_SetStringProperty( SCOREP_PARADIGM_SHMEM,
+                                        SCOREP_PARADIGM_PROPERTY_RMA_WINDOW_TEMPLATE,
+                                        "Active set ${id}" );
 
     scorep_shmem_register_regions();
 

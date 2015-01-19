@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -34,7 +34,7 @@
 
 
 /**
- * @file       /scorep/include/scorep/SCOREP_Tau.h
+ * @file
  *
  * @ingroup    TAU
  *
@@ -107,12 +107,23 @@ typedef enum
 {
     SCOREP_TAU_PARADIGM_USER,
     SCOREP_TAU_PARADIGM_COMPILER,
+
+    /** Deprecated, don't use. */
     SCOREP_TAU_PARADIGM_MPP,
+
     SCOREP_TAU_PARADIGM_MPI,
+
+    /** Deprecated, don't use. */
     SCOREP_TAU_PARADIGM_THREAD_FORK_JOIN,
+
     SCOREP_TAU_PARADIGM_OPENMP,
+
+    /** Deprecated, don't use. */
     SCOREP_TAU_PARADIGM_THREAD_CREATE_WAIT,
+
+    /** Deprecated, don't use. */
     SCOREP_TAU_PARADIGM_ACCELERATOR,
+
     SCOREP_TAU_PARADIGM_CUDA,
     SCOREP_TAU_PARADIGM_MEASUREMENT,
     SCOREP_TAU_PARADIGM_SHMEM,

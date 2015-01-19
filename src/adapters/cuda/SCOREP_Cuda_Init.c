@@ -38,6 +38,7 @@
 #include <config.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
+#include <SCOREP_Paradigms.h>
 #include <SCOREP_Events.h>
 #include "SCOREP_Config.h"
 #include "SCOREP_Types.h"
@@ -84,6 +85,12 @@ static SCOREP_ErrorCode
 cuda_subsystem_init( void )
 {
     UTILS_DEBUG( "Selected options: %llu", scorep_cuda_features );
+
+    SCOREP_Paradigms_RegisterParallelParadigm(
+        SCOREP_PARADIGM_CUDA,
+        SCOREP_PARADIGM_CLASS_ACCELERATOR,
+        "CUDA",
+        SCOREP_PARADIGM_FLAG_RMA_ONLY );
 
     if ( scorep_cuda_features > 0 )
     {

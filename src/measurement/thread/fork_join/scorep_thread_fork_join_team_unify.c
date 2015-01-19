@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -45,6 +45,7 @@
 #include <scorep_unify_helpers.h>
 #include <scorep_ipc.h>
 #include <SCOREP_Subsystem.h>
+#include <SCOREP_Paradigms.h>
 
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME UNIFY
@@ -148,7 +149,7 @@ count_total_thread_teams( SCOREP_Location* location,
         InterimCommunicator,
         page_manager )
     {
-        if ( !( definition->paradigm_type & SCOREP_PARADIGM_THREAD_FORK_JOIN ) )
+        if ( !SCOREP_PARADIGM_TEST_CLASS( definition->paradigm_type, THREAD_FORK_JOIN ) )
         {
             /*
              * unlikely, but who knows, maybe we have one day a manager entry
@@ -195,7 +196,7 @@ find_next_thread_team( SCOREP_Location* location,
         InterimCommunicator,
         page_manager )
     {
-        if ( !( definition->paradigm_type & SCOREP_PARADIGM_THREAD_FORK_JOIN ) )
+        if ( !SCOREP_PARADIGM_TEST_CLASS( definition->paradigm_type, THREAD_FORK_JOIN ) )
         {
             /*
              * unlikely, but who knows, maybe we have one day a manager entry
@@ -352,7 +353,7 @@ create_mapping( SCOREP_Location* location,
         InterimCommunicator,
         page_manager )
     {
-        if ( !( definition->paradigm_type & SCOREP_PARADIGM_THREAD_FORK_JOIN ) )
+        if ( !SCOREP_PARADIGM_TEST_CLASS( definition->paradigm_type, THREAD_FORK_JOIN ) )
         {
             /*
              * unlikely, but who knows, maybe we have one day a manager entry

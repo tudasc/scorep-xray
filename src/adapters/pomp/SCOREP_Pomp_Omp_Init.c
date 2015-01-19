@@ -27,6 +27,7 @@
 
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Definitions.h>
+#include <SCOREP_Paradigms.h>
 #include <SCOREP_Location.h>
 
 #define SCOREP_DEBUG_MODULE_NAME OPENMP
@@ -80,6 +81,15 @@ static SCOREP_ErrorCode
 pomp_omp_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
+
+    SCOREP_Paradigms_RegisterParallelParadigm(
+        SCOREP_PARADIGM_OPENMP,
+        SCOREP_PARADIGM_CLASS_THREAD_FORK_JOIN,
+        "OpenMP",
+        SCOREP_PARADIGM_FLAG_NONE );
+    SCOREP_Paradigms_SetStringProperty( SCOREP_PARADIGM_OPENMP,
+                                        SCOREP_PARADIGM_PROPERTY_COMMUNICATOR_TEMPLATE,
+                                        "Thread team ${id}" );
 
     /* Initialize the common POMP adapter */
     scorep_pomp_adapter_init();

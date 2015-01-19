@@ -120,9 +120,10 @@ typedef struct SCOREP_Subsystem
      * takes place during measurement initialization.
      *
      * It is safe to assume single-threaded mode.
-     * At this point all configure variables are set to there current
-     * environment values. The subsystem can also do calls to the definition
-     * interface from this point on. You are not supposed to access
+     * At this point all configure variables are set to their current
+     * environment values. Subsystem of parallel paradigms should register
+     * the paradigm in this callback, calls to the definition interface can
+     * be done from this point on too. You are not supposed to access
      * SCOREP_Location objects even if your subsystem created them. First
      * time to access SCOREP_Location objects is in subsystem_init_location.
      * It is ok to use malloc. If you need to realloc during measurement,

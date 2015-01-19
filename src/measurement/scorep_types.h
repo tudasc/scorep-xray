@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -56,6 +56,28 @@
  */
 extern const char*
 scorep_paradigm_type_to_string( SCOREP_ParadigmType paradigmType );
+
+
+/**
+ * Converts a SCOREP_ParadigmClass into a string.
+ *
+ * @param paradigmClass The paradigm class which should be expressed as a string.
+ *
+ * @return              A string representation of @a paradigmClass.
+ */
+extern const char*
+scorep_paradigm_class_to_string( SCOREP_ParadigmClass paradigmClass );
+
+
+/**
+ * Converts a SCOREP_ParadigmProperty into a string.
+ *
+ * @param paradigmProperty The paradigm property which should be expressed as a string.
+ *
+ * @return                 A string representation of @a paradigmProperty.
+ */
+extern const char*
+scorep_paradigm_property_to_string( SCOREP_ParadigmProperty paradigmProperty );
 
 
 /**

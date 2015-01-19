@@ -307,6 +307,7 @@ scorep_definitions_manager_entry_free_mapping( scorep_definitions_manager_entry*
 #include "scorep_definitions_metric.h"
 #include "scorep_definitions_sampling_set.h"
 #include "scorep_definitions_sampling_set_recorder.h"
+#include "scorep_definitions_paradigm.h"
 #include "scorep_definitions_parameter.h"
 #include "scorep_definitions_callpath.h"
 #include "scorep_definitions_clock_offset.h"

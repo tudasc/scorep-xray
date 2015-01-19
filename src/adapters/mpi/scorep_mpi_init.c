@@ -42,6 +42,7 @@
 
 #include <SCOREP_Config.h>
 #include <SCOREP_Subsystem.h>
+#include <SCOREP_Paradigms.h>
 #include <SCOREP_RuntimeManagement.h>
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator_mgmt.h"
@@ -202,6 +203,18 @@ static SCOREP_ErrorCode
 mpi_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
+
+    SCOREP_Paradigms_RegisterParallelParadigm(
+        SCOREP_PARADIGM_MPI,
+        SCOREP_PARADIGM_CLASS_MPP,
+        "MPI",
+        SCOREP_PARADIGM_FLAG_NONE );
+    SCOREP_Paradigms_SetStringProperty( SCOREP_PARADIGM_MPI,
+                                        SCOREP_PARADIGM_PROPERTY_COMMUNICATOR_TEMPLATE,
+                                        "Comm ${id}" );
+    SCOREP_Paradigms_SetStringProperty( SCOREP_PARADIGM_MPI,
+                                        SCOREP_PARADIGM_PROPERTY_RMA_WINDOW_TEMPLATE,
+                                        "Win ${id}" );
 
     /* Set Fortran constants */
     SCOREP_FORTRAN_GET_MPI_STATUS_SIZE( &scorep_mpi_status_size );

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -507,7 +507,7 @@ scorep_tracing_get_otf2_paradigm( SCOREP_ParadigmType paradigm )
 {
     switch ( paradigm )
     {
-#define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME, VALUE ) \
+#define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME ) \
     case SCOREP_PARADIGM_ ## NAME: \
         return OTF2_PARADIGM_ ## OTF2_NAME;
         SCOREP_PARADIGMS
@@ -515,6 +515,65 @@ scorep_tracing_get_otf2_paradigm( SCOREP_ParadigmType paradigm )
 
         default:
             UTILS_BUG( "Invalid paradigm: %u", paradigm );
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+
+static inline OTF2_ParadigmClass
+scorep_tracing_get_otf2_paradigm_class( SCOREP_ParadigmClass paradigmClass )
+{
+    switch ( paradigmClass )
+    {
+#define SCOREP_PARADIGM_CLASS( NAME, name_str, OTF2_NAME ) \
+    case SCOREP_PARADIGM_CLASS_ ## NAME: \
+        return OTF2_PARADIGM_CLASS_ ## OTF2_NAME;
+        SCOREP_PARADIGM_CLASSES
+#undef SCOREP_PARADIGM_CLASS
+
+        default:
+            UTILS_BUG( "Invalid paradigm class: %u", paradigmClass );
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+
+/* Score-P paradigm flags will be converted to OTF2 paradigm properties
+   of type Boolean */
+static inline OTF2_ParadigmProperty
+scorep_tracing_get_otf2_paradigm_boolean_property( SCOREP_ParadigmFlags paradigmFlag )
+{
+    switch ( paradigmFlag )
+    {
+        case SCOREP_PARADIGM_FLAG_RMA_ONLY:
+            return OTF2_PARADIGM_PROPERTY_RMA_ONLY;
+
+        default:
+            UTILS_BUG( "Invalid paradigm flag: %u", paradigmFlag );
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
+
+
+static inline OTF2_ParadigmProperty
+scorep_tracing_get_otf2_paradigm_property( SCOREP_ParadigmProperty paradigmProperty )
+{
+    switch ( paradigmProperty )
+    {
+#define case_return( SCOREP, OTF2 ) \
+    case SCOREP_PARADIGM_PROPERTY_ ## SCOREP: \
+        return OTF2_PARADIGM_PROPERTY_ ## OTF2
+
+        case_return( COMMUNICATOR_TEMPLATE, COMM_NAME_TEMPLATE );
+        case_return( RMA_WINDOW_TEMPLATE, RMA_WIN_NAME_TEMPLATE );
+
+#undef case_return
+
+        default:
+            UTILS_BUG( "Invalid paradigm property: %u", paradigmProperty );
     }
 
     return OTF2_UNDEFINED_TYPE;

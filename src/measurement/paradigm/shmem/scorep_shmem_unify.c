@@ -90,7 +90,7 @@ scorep_shmem_define_shmem_locations( void )
             members[ i ] = i;
         }
         SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GROUP_SHMEM_LOCATIONS,
-                                                  "SHMEM",
+                                                  "",
                                                   scorep_shmem_number_of_pes,
                                                   members );
     }

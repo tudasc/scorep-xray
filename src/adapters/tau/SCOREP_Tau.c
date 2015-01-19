@@ -48,10 +48,6 @@
 #include <stdio.h>
 
 
-#define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME, VALUE )   \
-    case SCOREP_TAU_PARADIGM_ ## NAME: \
-        return SCOREP_PARADIGM_ ## NAME;
-
 /**
  * Converts TAU paradigm types to Score-P paradigm types.
  */
@@ -60,14 +56,43 @@ scorep_tau_convert_paradigm_type( SCOREP_Tau_ParadigmType paradigm )
 {
     switch ( paradigm )
     {
-        SCOREP_PARADIGMS;
+        case SCOREP_TAU_PARADIGM_USER:
+            return SCOREP_PARADIGM_USER;
+
+        case SCOREP_TAU_PARADIGM_COMPILER:
+            return SCOREP_PARADIGM_COMPILER;
+
+        case SCOREP_TAU_PARADIGM_MPI:
+            return SCOREP_PARADIGM_MPI;
+
+        case SCOREP_TAU_PARADIGM_OPENMP:
+            return SCOREP_PARADIGM_OPENMP;
+
+        case SCOREP_TAU_PARADIGM_CUDA:
+            return SCOREP_PARADIGM_CUDA;
+
+        case SCOREP_TAU_PARADIGM_MEASUREMENT:
+            return SCOREP_PARADIGM_MEASUREMENT;
+
+        case SCOREP_TAU_PARADIGM_SHMEM:
+            return SCOREP_PARADIGM_SHMEM;
+
+        case SCOREP_TAU_PARADIGM_PTHREAD:
+            return SCOREP_PARADIGM_PTHREAD;
+
+        case SCOREP_TAU_PARADIGM_MPP:
+        case SCOREP_TAU_PARADIGM_THREAD_FORK_JOIN:
+        case SCOREP_TAU_PARADIGM_THREAD_CREATE_WAIT:
+        case SCOREP_TAU_PARADIGM_ACCELERATOR:
+            UTILS_BUG( "These paradigm classes are deprecated and should not be used as an paradigm: %u", paradigm );
+            break;
 
         default:
             UTILS_BUG( "Failed to convert TAU paradigm to Score-P paradigm." );
+            break;
     }
     return SCOREP_INVALID_PARADIGM_TYPE;
 }
-#undef SCOREP_PARADIGM
 
 
 #define SCOREP_REGION_TYPE( NAME, name_str ) \

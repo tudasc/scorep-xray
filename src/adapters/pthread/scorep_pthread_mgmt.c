@@ -28,6 +28,7 @@
 
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Definitions.h>
+#include <SCOREP_Paradigms.h>
 #include <SCOREP_Memory.h>
 
 #define SCOREP_DEBUG_MODULE_NAME PTHREAD
@@ -74,6 +75,12 @@ pthread_subsystem_init( void )
     }
     scorep_pthread_initialized         = true;
     scorep_pthread_outside_measurement = false;
+
+    SCOREP_Paradigms_RegisterParallelParadigm(
+        SCOREP_PARADIGM_PTHREAD,
+        SCOREP_PARADIGM_CLASS_THREAD_CREATE_WAIT,
+        "Pthread",
+        SCOREP_PARADIGM_FLAG_NONE );
 
     register_pthread_regions();
     scorep_pthread_mutex_init();

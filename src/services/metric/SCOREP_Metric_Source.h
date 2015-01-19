@@ -101,7 +101,7 @@ typedef struct SCOREP_MetricSource
     /**
      * Initialize the metric source for measurement.
      *
-     * At this point all configure variables are set to there current
+     * At this point all configure variables are set to their current
      * environment values. The metric source can also do calls to the definition
      * interface from this point on.
      */

@@ -4,7 +4,7 @@
  * Copyright (c) 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -30,6 +30,7 @@
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Definitions.h>
 #include <scorep_events_common.h>
+#include <SCOREP_Paradigms.h>
 #include <SCOREP_Properties.h>
 #include <SCOREP_Profile.h>
 #include <tracing/SCOREP_Tracing_Events.h>
@@ -236,8 +237,8 @@ SCOREP_ThreadCreateWait_Create( SCOREP_ParadigmType                 paradigm,
                                 uint32_t*                           sequenceCount )
 {
     UTILS_DEBUG_ENTRY();
-    UTILS_BUG_ON( ( paradigm & SCOREP_PARADIGM_THREAD_CREATE_WAIT ) == 0,
-                  "Provided paradigm not in group SCOREP_PARADIGM_THREAD_CREATE_WAIT " );
+    UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_CREATE_WAIT ),
+                  "Provided paradigm not of create/wait class " );
     /* We are in the creator thread. */
 
     struct scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
@@ -276,8 +277,8 @@ SCOREP_ThreadCreateWait_Wait( SCOREP_ParadigmType paradigm,
                               uint32_t            sequenceCount )
 {
     UTILS_DEBUG_ENTRY();
-    UTILS_BUG_ON( ( paradigm & SCOREP_PARADIGM_THREAD_CREATE_WAIT ) == 0,
-                  "Provided paradigm not in group SCOREP_PARADIGM_THREAD_CREATE_WAIT " );
+    UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_CREATE_WAIT ),
+                  "Provided paradigm not of create/wait class" );
 
     struct scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
     struct SCOREP_Location*            location  = scorep_thread_get_location( tpd );
@@ -316,7 +317,8 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
 {
     UTILS_DEBUG_ENTRY();
 
-    UTILS_ASSERT( paradigm & SCOREP_PARADIGM_THREAD_CREATE_WAIT );
+    UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_CREATE_WAIT ),
+                  "Provided paradigm not of create/wait class" );
     UTILS_BUG_ON( parentTpd == 0 );
     /* We are in a new thread. */
     struct scorep_thread_private_data* current_tpd         = 0;
@@ -383,7 +385,8 @@ SCOREP_ThreadCreateWait_End( SCOREP_ParadigmType                paradigm,
 {
     UTILS_DEBUG_ENTRY();
 
-    UTILS_ASSERT( paradigm & SCOREP_PARADIGM_THREAD_CREATE_WAIT );
+    UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_CREATE_WAIT ),
+                  "Provided paradigm not of create/wait class" );
     UTILS_BUG_ON( parentTpd == 0 );
 
     struct scorep_thread_private_data* current_tpd      = scorep_thread_get_private_data();

@@ -4,11 +4,11 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
- * Technische Universitaet Dresden, Germany
- *
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2014-2015,
+ * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
@@ -89,8 +89,7 @@ scorep_thread_delete_private_data( struct scorep_thread_private_data* tpd );
 
 
 /**
- * Return the corresponding SCOREP_ParadigmType. External/callback threading
- * models are supposed to return SCOREP_PARADIGM_THREAD_FORK_JOIN.
+ * Return the corresponding SCOREP_ParadigmType.
  */
 SCOREP_ParadigmType
 scorep_thread_get_paradigm( void );

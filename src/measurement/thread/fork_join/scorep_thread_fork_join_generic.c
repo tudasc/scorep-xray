@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -42,6 +42,7 @@
 #include "scorep_thread_fork_join_team.h"
 
 #include <SCOREP_Mutex.h>
+#include <SCOREP_Paradigms.h>
 #include <SCOREP_Properties.h>
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Profile_Tasking.h>
@@ -82,7 +83,8 @@ void
 SCOREP_ThreadForkJoin_Fork( SCOREP_ParadigmType paradigm,
                             uint32_t            nRequestedThreads )
 {
-    UTILS_ASSERT( paradigm & SCOREP_PARADIGM_THREAD_FORK_JOIN );
+    UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_FORK_JOIN ),
+                  "Provided paradigm not of class fork/join" );
     struct scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
     SCOREP_Location*                   location  = scorep_thread_get_location( tpd );
     uint64_t                           timestamp = scorep_get_timestamp( location );
@@ -126,7 +128,8 @@ SCOREP_ThreadForkJoin_Fork( SCOREP_ParadigmType paradigm,
 void
 SCOREP_ThreadForkJoin_Join( SCOREP_ParadigmType paradigm )
 {
-    UTILS_ASSERT( paradigm & SCOREP_PARADIGM_THREAD_FORK_JOIN );
+    UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_FORK_JOIN ),
+                  "Provided paradigm not of fork/join class" );
     struct scorep_thread_private_data* tpd             = scorep_thread_get_private_data();
     struct scorep_thread_private_data* tpd_from_now_on = 0;
 
@@ -184,7 +187,8 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
         SCOREP_MutexUnlock( first_fork_locations_mutex );
     }
 
-    UTILS_ASSERT( paradigm & SCOREP_PARADIGM_THREAD_FORK_JOIN );
+    UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_FORK_JOIN ),
+                  "Provided paradigm not of fork/join class" );
     struct scorep_thread_private_data* current_tpd         = 0;
     int                                thread_id           = -1;
     bool                               location_is_created = false;
@@ -245,7 +249,8 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
 void
 SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm )
 {
-    UTILS_ASSERT( paradigm & SCOREP_PARADIGM_THREAD_FORK_JOIN );
+    UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_FORK_JOIN ),
+                  "Provided paradigm not of fork/join class" );
     struct scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
     struct scorep_thread_private_data* parent    = 0;
     SCOREP_Location*                   location  = scorep_thread_get_location( tpd );

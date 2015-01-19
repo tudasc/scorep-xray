@@ -561,6 +561,9 @@ dnl ----------------------------------------------------------------------------
 AC_DEFUN([SCOREP_SHMEM], [
 AC_REQUIRE([_SCOREP_PDT_SHMEM_INSTRUMENTATION])
 
+AC_DEFINE_UNQUOTED([SCOREP_SHMEM_NAME], ["${SHMEM_NAME}"],
+                   [Name of the implemented SHMEM specification.])
+
 dnl First check for a SHMEM compiler
 AS_IF([test "x${scorep_shmem_c_supported}" = "xyes" &&
        ( test "x${scorep_shmem_f77_supported}" = "xyes" || test "x${scorep_shmem_f90_supported}" = "xyes" )],

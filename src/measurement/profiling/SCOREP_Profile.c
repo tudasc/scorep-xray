@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -162,7 +162,7 @@ SCOREP_Profile_Initialize( void )
         file,
         SCOREP_INVALID_LINE_NO,
         SCOREP_INVALID_LINE_NO,
-        SCOREP_PARADIGM_THREAD_CREATE_WAIT,
+        SCOREP_PARADIGM_MEASUREMENT,
         SCOREP_REGION_ARTIFICIAL /* SCOREP_REGION_PARALLEL ? */ );
 }
 

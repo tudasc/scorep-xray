@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -868,9 +868,7 @@ set_rewind_affected_thread_paradigm( SCOREP_Location* location, SCOREP_ParadigmT
         break;
 
         case_break( OPENMP, THREAD_FORK_JOIN );
-        case_break( THREAD_FORK_JOIN, THREAD_FORK_JOIN );
         case_break( PTHREAD, THREAD_CREATE_WAIT );
-        case_break( THREAD_CREATE_WAIT, THREAD_CREATE_WAIT );
 
 #undef case_break
         default:

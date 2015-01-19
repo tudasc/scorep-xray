@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -215,58 +215,96 @@ typedef uint32_t SCOREP_LineNo;
  * track the origin of a region definition, the adapter needs to provide @e
  * his type.
  *
- * The SCOREP_PARADIGMS consist of groups of specific paradigms. For
- * example, OpenMP is a specific paradigm in the group Fork-Join. The
- * entire bitfield is subdivided into these groups and for a group all
- * the bits of this group are set (SCOREP_ALL_BITS). Inside these
- * groups the specific paradigms are numerated (SCOREP_SUB_BITS).
- *
- *  EXAMPLE:
- *
- *  user    |compiler |mpp      | ...
- *  0 0 0 0 | 0 0 0 0 | 1 1 1 1 | ...  = SCOREP_PARADIGM_MPP
- *  0 0 0 0 | 0 0 0 0 | 0 0 0 1 | ...  = SCOREP_PARADIGM_MPI
- *
- * TODO: to finish the refactoring of SCOREP_ADAPTER_* to
- *       SCOREP_PARADIGM_* the OTF2 names would also need to be
- *       changed accordingly. For example, I (pphilippen) currently
- *       gave all acclerator paradigms the OTF2 name CUDA, as this is
- *       the only one defined in OTF2.
  */
 
-#define SCOREP_BIT_WIDTH 4
+#define SCOREP_PARADIGM_CLASSES \
+    SCOREP_PARADIGM_CLASS( MPP,                "multi-process", PROCESS ) \
+    SCOREP_PARADIGM_CLASS( THREAD_FORK_JOIN,   "fork/join",     THREAD_FORK_JOIN ) \
+    SCOREP_PARADIGM_CLASS( THREAD_CREATE_WAIT, "create/wait",   THREAD_CREATE_WAIT ) \
+    SCOREP_PARADIGM_CLASS( ACCELERATOR,        "accelerator",   ACCELERATOR )
 
-#define SCOREP_ALL_BITS( POS ) \
-    ( ( 1 << SCOREP_BIT_WIDTH ) - 1 ) << ( SCOREP_BIT_WIDTH * POS )
 
-#define SCOREP_SUB_BITS( POS, ID ) \
-    ( ID << ( SCOREP_BIT_WIDTH * POS ) )
+typedef enum SCOREP_ParadigmClass
+{
+#define SCOREP_PARADIGM_CLASS( NAME, name, OTF2_NAME ) \
+    SCOREP_PARADIGM_CLASS_ ## NAME,
+    SCOREP_PARADIGM_CLASSES
 
+#undef SCOREP_PARADIGM_CLASS
+
+    SCOREP_INVALID_PARADIGM_CLASS /**< For internal use only. */
+} SCOREP_ParadigmClass;
+
+
+/* Keep MPI first after the non-parallel paradigms */
 #define SCOREP_PARADIGMS                                                                                 \
-    SCOREP_PARADIGM( USER,               "user",               USER,               SCOREP_ALL_BITS( 0 ) )    \
-    SCOREP_PARADIGM( COMPILER,           "compiler",           COMPILER,           SCOREP_ALL_BITS( 1 ) )    \
-    SCOREP_PARADIGM( MPP,                "mpp",                MPI,                SCOREP_ALL_BITS( 2 ) )    \
-    SCOREP_PARADIGM( MPI,                "mpi",                MPI,                SCOREP_SUB_BITS( 2, 1 ) ) \
-    SCOREP_PARADIGM( SHMEM,              "shmem",              SHMEM,              SCOREP_SUB_BITS( 2, 2 ) ) \
-    SCOREP_PARADIGM( THREAD_FORK_JOIN,   "thread-fork-join",   OPENMP,             SCOREP_ALL_BITS( 3 ) )    \
-    SCOREP_PARADIGM( OPENMP,             "openmp",             OPENMP,             SCOREP_SUB_BITS( 3, 1 ) ) \
-    SCOREP_PARADIGM( THREAD_CREATE_WAIT, "thread-create-wait", PTHREAD,            SCOREP_ALL_BITS( 4 ) )    \
-    SCOREP_PARADIGM( PTHREAD,            "pthread",            PTHREAD,            SCOREP_SUB_BITS( 4, 1 ) ) \
-    SCOREP_PARADIGM( ACCELERATOR,        "accelerator",        CUDA,               SCOREP_ALL_BITS( 5 ) )    \
-    SCOREP_PARADIGM( CUDA,               "cuda",               CUDA,               SCOREP_SUB_BITS( 5, 1 ) ) \
-    SCOREP_PARADIGM( MEASUREMENT,        "measurement",        MEASUREMENT_SYSTEM, SCOREP_ALL_BITS( 6 ) )
+    SCOREP_PARADIGM( MEASUREMENT,        "measurement",        MEASUREMENT_SYSTEM ) \
+    SCOREP_PARADIGM( USER,               "user",               USER ) \
+    SCOREP_PARADIGM( COMPILER,           "compiler",           COMPILER ) \
+    SCOREP_PARADIGM( MPI,                "mpi",                MPI ) \
+    SCOREP_PARADIGM( SHMEM,              "shmem",              SHMEM ) \
+    SCOREP_PARADIGM( OPENMP,             "openmp",             OPENMP ) \
+    SCOREP_PARADIGM( PTHREAD,            "pthread",            PTHREAD ) \
+    SCOREP_PARADIGM( CUDA,               "cuda",               CUDA )
 
-#define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME, VALUE )   \
-    SCOREP_PARADIGM_ ## NAME = VALUE,
 
 typedef enum SCOREP_ParadigmType
 {
+#define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME )   \
+    SCOREP_PARADIGM_ ## NAME,
     SCOREP_PARADIGMS
 
-        SCOREP_INVALID_PARADIGM_TYPE /**< For internal use only. */
+#undef SCOREP_PARADIGM
+
+    SCOREP_INVALID_PARADIGM_TYPE /**< For internal use only. */
 } SCOREP_ParadigmType;
 
-#undef SCOREP_PARADIGM
+
+/**
+ *  Known flags for parallel paradigms.
+ *
+ *  Flags are essential boolean typed SCOREP_ParadigmProperty and thus
+ *  exists as convenience.
+ */
+typedef enum SCOREP_ParadigmFlags
+{
+    /**
+     *  Attests that the paradigm is purely RMA based.
+     *
+     *  As the definitions structure for RMA windows is based on communicators,
+     *  these additional definitions don't reflect the actuall paradigm.
+     *  By setting this flag for the paradigm it can therefore attest to the
+     *  measurement data reader that the additional communicator definitions
+     *  are not used.
+     */
+    SCOREP_PARADIGM_FLAG_RMA_ONLY = 1 << 0,
+
+    /** Value for empty flags. */
+    SCOREP_PARADIGM_FLAG_NONE     = 0
+} SCOREP_ParadigmFlags;
+
+
+/**
+ *  Known properties for parallel paradigms.
+ */
+typedef enum SCOREP_ParadigmProperty
+{
+    /** Template for communicators without an explicit name.
+     *  Must contain the string "${id}" to make each name unique.
+     *  Mostly only useful if the paradigm allows user created communicators.
+     *  Value is of type SCOREP_StringHandle.
+     */
+    SCOREP_PARADIGM_PROPERTY_COMMUNICATOR_TEMPLATE,
+
+    /** Template for RMA windows without an explicit name.
+     *  Must contain the string "${id}" to make each name unique.
+     *  Mostly only useful if the paradigm allows user created rma windows.
+     *  Value is of type SCOREP_StringHandle.
+     */
+    SCOREP_PARADIGM_PROPERTY_RMA_WINDOW_TEMPLATE,
+
+    SCOREP_INVALID_PARADIGM_PROPERTY /**< For internal use only. */
+} SCOREP_ParadigmProperty;
 
 
 /**

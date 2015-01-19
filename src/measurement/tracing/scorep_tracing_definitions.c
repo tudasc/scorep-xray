@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1036,13 +1036,119 @@ scorep_tracing_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
 #endif
 
 
+static void
+write_paradigm_cb( SCOREP_Paradigm* paradigm,
+                   void*            userData )
+{
+    void** args                                  = userData;
+    OTF2_GlobalDefWriter* writer                 = args[ 0 ];
+    SCOREP_DefinitionManager* definition_manager = args[ 1 ];
+
+    OTF2_Paradigm otf2_paradigm =
+        scorep_tracing_get_otf2_paradigm( paradigm->paradigm_type );
+
+    OTF2_ErrorCode status = OTF2_GlobalDefWriter_WriteParadigm(
+        writer,
+        otf2_paradigm,
+        SCOREP_HANDLE_TO_ID(
+            SCOREP_LOCAL_HANDLE_DEREF(
+                paradigm->name_handle,
+                String )->unified,
+            String,
+            definition_manager->page_manager ),
+        scorep_tracing_get_otf2_paradigm_class( paradigm->paradigm_class ) );
+    UTILS_ASSERT( status == OTF2_SUCCESS );
+
+    /* Each set paradigm flag is a boolean property with value true in OTF2. */
+    OTF2_Type type;
+    OTF2_AttributeValue value;
+    OTF2_AttributeValue_SetBoolean( OTF2_TRUE,
+                                    &type,
+                                    &value );
+
+    SCOREP_ParadigmFlags paradigm_flags = paradigm->paradigm_flags;
+    SCOREP_ParadigmFlags flag_it        = 1;
+    OTF2_ParadigmProperty property;
+    while ( paradigm_flags )
+    {
+        if ( paradigm_flags & flag_it )
+        {
+            /* Clear flag */
+            paradigm_flags &= ~flag_it;
+
+            property = scorep_tracing_get_otf2_paradigm_boolean_property( flag_it );
+
+            status = OTF2_GlobalDefWriter_WriteParadigmProperty( writer,
+                                                                 otf2_paradigm,
+                                                                 property,
+                                                                 type,
+                                                                 value );
+            UTILS_ASSERT( status == OTF2_SUCCESS );
+        }
+
+        flag_it <<= 1;
+    }
+
+    /* Write other paradigm properties. */
+    for ( int i = 0; i < SCOREP_INVALID_PARADIGM_PROPERTY; i++ )
+    {
+        if ( paradigm->property_handles[ i ] == SCOREP_MOVABLE_NULL )
+        {
+            continue;
+        }
+
+        switch ( i )
+        {
+            /* For now only String typed properties known. */
+            case SCOREP_PARADIGM_PROPERTY_COMMUNICATOR_TEMPLATE:
+            case SCOREP_PARADIGM_PROPERTY_RMA_WINDOW_TEMPLATE:
+                property        = scorep_tracing_get_otf2_paradigm_property( i );
+                type            = OTF2_TYPE_STRING;
+                value.stringRef = SCOREP_HANDLE_TO_ID(
+                    SCOREP_LOCAL_HANDLE_DEREF(
+                        paradigm->property_handles[ i ],
+                        String )->unified,
+                    String,
+                    definition_manager->page_manager );
+                break;
+
+            default:
+                UTILS_BUG( "Unhandled paradigm property: %u", i );
+                break;
+        }
+
+        status = OTF2_GlobalDefWriter_WriteParadigmProperty( writer,
+                                                             otf2_paradigm,
+                                                             property,
+                                                             type,
+                                                             value );
+        UTILS_ASSERT( status == OTF2_SUCCESS );
+    }
+}
+
+static void
+write_paradigms( OTF2_GlobalDefWriter*     globalDefinitionWriter,
+                 SCOREP_DefinitionManager* definitionManager )
+{
+    void* args[ 2 ] = {
+        globalDefinitionWriter,
+        definitionManager
+    };
+    SCOREP_ForAllParadigms( write_paradigm_cb, args );
+}
+
 void
 scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition_writer )
 {
     UTILS_ASSERT( SCOREP_Status_GetRank() == 0 );
     UTILS_ASSERT( scorep_unified_definition_manager );
 
-    scorep_write_string_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_string_definitions( global_definition_writer, scorep_unified_definition_manager, true );
+
+    /* Write these after the strings, as they reference these already. */
+    write_paradigms( global_definition_writer,
+                     scorep_unified_definition_manager );
+
     scorep_write_system_tree_node_definitions(       global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_location_group_definitions(         global_definition_writer, scorep_unified_definition_manager, true );
     scorep_write_location_definitions(               global_definition_writer, scorep_unified_definition_manager, true );

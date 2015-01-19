@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -47,8 +47,8 @@
 const char*
 scorep_paradigm_type_to_string( SCOREP_ParadigmType paradigmType )
 {
-    #define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME, VALUE ) \
-    case SCOREP_PARADIGM_ ## NAME:                    \
+    #define SCOREP_PARADIGM( NAME, name_str, OTF2_NAME ) \
+    case SCOREP_PARADIGM_ ## NAME: \
         return name_str;
 
     switch ( paradigmType )
@@ -58,7 +58,53 @@ scorep_paradigm_type_to_string( SCOREP_ParadigmType paradigmType )
         default:
             return "unknown";
     }
+
     #undef SCOREP_PARADIGM
+}
+
+
+/**
+ * Converts a SCOREP_ParadigmClass into a string.
+ */
+const char*
+scorep_paradigm_class_to_string( SCOREP_ParadigmClass paradigmClass )
+{
+    #define SCOREP_PARADIGM_CLASS( NAME, name, OTF2_NAME ) \
+    case SCOREP_PARADIGM_CLASS_ ## NAME: \
+        return name;
+
+    switch ( paradigmClass )
+    {
+        SCOREP_PARADIGM_CLASSES
+
+        default:
+            return "unknown";
+    }
+
+    #undef SCOREP_PARADIGM_CLASS
+}
+
+
+/**
+ * Converts a SCOREP_ParadigmProperty into a string.
+ */
+const char*
+scorep_paradigm_property_to_string( SCOREP_ParadigmProperty paradigmProperty )
+{
+    switch ( paradigmProperty )
+    {
+#define case_return( PROPERTY ) \
+    case SCOREP_PARADIGM_PROPERTY_ ## PROPERTY: \
+        return #PROPERTY;
+
+        case_return( COMMUNICATOR_TEMPLATE );
+        case_return( RMA_WINDOW_TEMPLATE );
+
+#undef case_return
+
+        default:
+            return "unknown";
+    }
 }
 
 

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -81,6 +81,7 @@
 #include "scorep_runtime_management.h"
 #include "scorep_system_tree.h"
 #include "scorep_clock_synchronization.h"
+#include "scorep_paradigms_management.h"
 #include "scorep_properties.h"
 #include "scorep_runtime_management_timings.h"
 
@@ -209,6 +210,8 @@ SCOREP_InitMeasurement( void )
 
     SCOREP_TIME( SCOREP_Memory_Initialize,
                  ( SCOREP_Env_GetTotalMemory(), SCOREP_Env_GetPageSize() ) );
+
+    SCOREP_TIME( SCOREP_Paradigms_Initialize, ( ) );
 
     /* == Initialize definitions and create some core specific definitions == */
 
