@@ -67,15 +67,16 @@ libscorep_measurement_la_LIBADD =        \
     @LIBBFD_LIBS@                        \
     @SCOREP_PAPI_LIBS@                   \
     @SCOREP_DLFCN_LIBS@                  \
-    @TIMER_LIB@
+    @TIMER_LIB@                          \
+    @OTF2_LIBS@
 
-if HAVE_SCOREP_EXTERNAL_OTF2
-libscorep_measurement_la_LIBADD += @OTF2_LIBS@
-else
-# Force automake to generate a dependency rule if using internal
-# lib (can't be done using AC_SUBST).
-libscorep_measurement_la_LIBADD += ../vendor/otf2/build-backend/libotf2.la
-endif # HAVE_SCOREP_EXTERNAL_OTF2
+if !HAVE_SCOREP_EXTERNAL_OTF2
+
+BUILT_SOURCES += @OTF2_LIBS@
+@OTF2_LIBS@:
+	@$(am__cd) `dirname $@` && $(MAKE) $(AM_MAKEFLAGS) `basename $@`
+
+endif !HAVE_SCOREP_EXTERNAL_OTF2
 
 if HAVE_SCOREP_EXTERNAL_CUBE_WRITER
 libscorep_measurement_la_LIBADD += @CUBE_WRITER_LIBS@
@@ -108,4 +109,3 @@ $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la:
 	@$(am__cd) $(LIB_DIR_SCOREP_SHMEM) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpp_shmem.la
 
 endif HAVE_SHMEM_SUPPORT
-
