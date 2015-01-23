@@ -84,3 +84,5 @@ Common options are:
   --nopreprocess  Disables preprocess instrumentation.
   --user          Enables user instrumentation.
   --nouser        Disables user instrumentation.
+  --opencl        Enables OpenCL instrumentation.
+  --noopencl      Disables OpenCL instrumentation.

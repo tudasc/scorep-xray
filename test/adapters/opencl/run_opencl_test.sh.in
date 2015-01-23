@@ -1,0 +1,96 @@
+#!/bin/bash
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2014-2015,
+##    Technische Universitaet Dresden, Germany
+##
+## See the COPYING file in the package base directory for details.
+##
+
+## file       run_opencl_test.sh
+
+echo "===== OpenCL Compile and Run Test ====="
+
+rm -f opencl_test
+
+# Get SRC_ROOT
+SRC_ROOT=@abs_top_srcdir@/..
+
+# Get otf2print tool
+OTF2_PRINT=@OTF2_BINDIR@/otf2-print
+
+# Set up directory that will contain experiment results
+RESULT_DIR=$PWD/scorep-serial-opencl
+
+# Directory with source files of the OpenCL test
+OPENCL_TEST_SRC_DIR=$SRC_ROOT/test/adapters/opencl
+
+# Copy kernel.cl to current working dir
+cp $OPENCL_TEST_SRC_DIR/kernel.cl .
+
+./scorep --static -v --build-check gcc $OPENCL_TEST_SRC_DIR/opencl_test.c -o opencl_test @OPENCL_CPPFLAGS@ @OPENCL_LDFLAGS_FOR_TESTS@ @OPENCL_LIBS@
+
+echo "Output of OpenCL test can be found in $RESULT_DIR"
+
+# Number of OpenCL command queues for testing (currently fixed)
+num_queues=1
+
+### Check various combinations of OpenCL features ###
+features=""
+for openclapi in "" "api"
+do
+
+  for kernel in "" ",kernel"
+  do
+
+    for mcpy in "" ",memcpy"
+    do
+
+      for synchr in "" ",sync"
+      do
+
+        # continue if neither kernel nor memory copy is enabled
+        if [ "$synchr" = ",sync" -a "x$kernel" = "x" -a "x$mcpy" = "x" ]; then
+          continue
+        fi
+
+        features=${openclapi}
+
+        if [ "x$features" = "x" -a "$kernel" = ",kernel" ]; then
+          kernel="kernel"
+        fi
+        features="${features}${kernel}"
+
+        if [ "x$features" = "x" -a "${mcpy}" = ",memcpy" ]; then
+          mcpy="memcpy"
+        fi
+        features="${features}${mcpy}${synchr}"
+
+        # Remove old result dir (if any)
+        rm -rf $RESULT_DIR
+
+        echo "Testing combination '${features}':"
+
+        SCOREP_OPENCL_ENABLE=${features} \
+        SCOREP_OVERWRITE_EXPERIMENT_DIRECTORY=true \
+        SCOREP_ENABLE_TRACING=yes \
+        SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR \
+        ./opencl_test -q ${num_queues} >opencl_test.out 2>&1
+        res=$?
+        cat opencl_test.out
+
+        if [ $res -ne 0 ]; then
+            rm -rf scorep-measurement-tmp
+            exit $res
+        fi
+
+      done #sync
+    done #memcpy
+  done #kernel
+done #openclapi
+
+echo "====================================="
+
+exit 0

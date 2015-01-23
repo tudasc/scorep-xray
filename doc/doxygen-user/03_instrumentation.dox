@@ -157,6 +157,7 @@ source routines and arbitrary regions, in addition to fully-automatic
 
 	    MPI & {\ttfamily -\/-\/mpp=mpi/ \newline -\/-\/mpp=none} & (auto) &  configured by install & see Sec. \ref{sec:mpi_groups}  \\ \hline
 	    SHMEM & {\ttfamily -\/-\/mpp=shmem/ \newline -\/-\/mpp=none} & (auto) &  configured by install & --  \\ \hline
+        OpenCL & {\ttfamily -\/-\/opencl/ \newline -\/-\/noopencl} & enabled &  configured by install & --  \\ \hline
 	    OpenMP & {\ttfamily -\/-\/thread=omp/ \newline -\/-\/thread=none} & (auto) &  all parallel constructs &  --  \\ \hline
 	    Pthread & {\ttfamily -\/-\/thread= \newline pthread} & (auto) &  Basic Pthread library calls &  --  \\ \hline
 	    Compiler, Sec. \ref{sec:compiler_instrumentation} & {\ttfamily -\/-\/compiler/ \newline -\/-\/nocompiler} & enabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
@@ -188,6 +189,13 @@ source routines and arbitrary regions, in addition to fully-automatic
       <td align="left" valign="middle"> SHMEM </td>
       <td align="center" valign="middle"> --mpp=shmem/--mpp=none </td>
       <td align="center" valign="middle"> (auto) </td>
+      <td align="center" valign="middle"> configured by install </td>
+      <td align="center" valign="middle"> &mdash; </td>
+    </tr>
+    <tr>
+      <td align="left" valign="middle"> OpenCL </td>
+      <td align="center" valign="middle"> --opencl/--noopencl </td>
+      <td align="center" valign="middle"> enabled </td>
       <td align="center" valign="middle"> configured by install </td>
       <td align="center" valign="middle"> &mdash; </td>
     </tr>

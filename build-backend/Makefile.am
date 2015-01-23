@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013-2014,
+## Copyright (c) 2009-2011, 2013-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -46,6 +46,9 @@ include ../vendor/common/build-config/Makefile.tests-serial.inc.am
 include ../vendor/common/build-config/Makefile.tests-omp.inc.am
 
 AM_CPPFLAGS += -DBACKEND_BUILD_NOMPI
+
+pkgdata_DATA += ../share/opencl.wrap \
+                ../share/opencl.nvcc.wrap
 
 frontend_bindir = @bindir@
 bindir = @bindir@@backend_suffix@

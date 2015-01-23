@@ -6,6 +6,7 @@ Major features:
   write also traces with SIONlib that include an arbitrary number of
   threads, asynchronous metric plugins, and accelerator (CUDA/OpenCL/...)
   streams.
+- Basic support for OpenCL instrumentation.
 
 Features and improvements:
 

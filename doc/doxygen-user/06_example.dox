@@ -344,6 +344,13 @@ measure CUPTI metrics as follows (see Section @secref{cuda_adapter}):
 % export SCOREP_CUDA_ENABLE=gpu,kernel,idle
 @endcode
 
+In case performance of the OpenCL code is of interest, @scorep can be configured to
+measure OpenCL events as follows (see Section @secref{opencl_adapter}):
+
+@code
+% export SCOREP_OPENCL_ENABLE=api,kernel,memcpy
+@endcode
+
 When the granularity offered by the automatic compiler instrumentation is not sufficient,
 one can use @scorep manual user instrumentation API (see Section @secref{manual_instrumentation})
 for more fine-grained annotation of particular code segments. For example

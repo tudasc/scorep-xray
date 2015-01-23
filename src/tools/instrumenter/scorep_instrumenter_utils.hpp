@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -135,6 +135,13 @@ is_mpi_library( const std::string& library_name );
  */
 bool
 is_shmem_library( const std::string& library_name );
+
+/**
+   Checks whether the library name is an OpenCL library.
+   @param library_name  The name of the library.
+ */
+bool
+is_opencl_library( const std::string& library_name );
 
 /**
    Checks whether the library name is a pthread library.

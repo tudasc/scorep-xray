@@ -87,6 +87,9 @@ process to be analyzed and the number of cores to be used.
 <dd><ul>
   <li>@emph{CUDA}</li>
 </ul></dd>
+<dd><ul>
+  <li>@emph{OpenCL}</li>
+</ul></dd>
 </dl>
 And possible combinations from these including simple @emph{serial} programs.
 

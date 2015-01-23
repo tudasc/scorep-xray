@@ -1,0 +1,155 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2014,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file       /scorep/src/adapters/opencl/Makefile.inc.am
+
+if HAVE_OPENCL_SUPPORT
+
+opencl_libwrap_static_cppflags = -DSCOREP_LIBWRAP_STATIC
+opencl_libwrap_shared_cppflags = -DSCOREP_LIBWRAP_SHARED
+
+
+# runtime management library for the OpenCL adapter
+
+libscorep_adapter_opencl_mgmt_common_sources  = \
+    $(SRC_ROOT)src/adapters/opencl/SCOREP_Opencl_Init.c \
+    $(SRC_ROOT)src/adapters/opencl/SCOREP_Opencl_Init.h \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_config.c \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_config.h \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_regions.c \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_regions.h \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl.c \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl.h \
+    $(SRC_ROOT)src/measurement/paradigm/opencl/scorep_opencl_unify.c
+
+libscorep_adapter_opencl_mgmt_common_cppflags = \
+    $(AM_CPPFLAGS)                        \
+    -I$(PUBLIC_INC_DIR)                   \
+    -I$(INC_ROOT)src/measurement          \
+    -I$(INC_ROOT)src/measurement/include  \
+    -I$(INC_ROOT)src/adapters/opencl      \
+    -I$(INC_ROOT)src/adapters/include     \
+    -I$(INC_ROOT)src/services/include     \
+    $(UTILS_CPPFLAGS)                     \
+    -I$(INC_DIR_MUTEX)                    \
+    -I$(INC_DIR_COMMON_HASH)              \
+    -I$(INC_DIR_DEFINITIONS)              \
+    @OPENCL_CPPFLAGS@
+
+libscorep_adapter_opencl_mgmt_common_libadd = \
+    @OPENCL_LIBS@
+
+libscorep_adapter_opencl_mgmt_common_ldflags = \
+    @OPENCL_LDFLAGS@                           \
+    $(library_api_version_ldflags)
+
+
+lib_LTLIBRARIES += libscorep_adapter_opencl_mgmt_static.la
+
+libscorep_adapter_opencl_mgmt_static_la_SOURCES  = \
+    $(libscorep_adapter_opencl_mgmt_common_sources)
+
+libscorep_adapter_opencl_mgmt_static_la_CPPFLAGS = \
+    $(libscorep_adapter_opencl_mgmt_common_cppflags) \
+    $(opencl_libwrap_static_cppflags)
+
+libscorep_adapter_opencl_mgmt_static_la_LIBADD = \
+    $(libscorep_adapter_opencl_mgmt_common_libadd)
+
+libscorep_adapter_opencl_mgmt_static_la_LDFLAGS = \
+    $(libscorep_adapter_opencl_mgmt_common_ldflags)
+
+lib_LTLIBRARIES += libscorep_adapter_opencl_mgmt_shared.la
+
+libscorep_adapter_opencl_mgmt_shared_la_SOURCES  = \
+    $(libscorep_adapter_opencl_mgmt_common_sources) \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_function_pointers.c \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_function_pointers.h
+
+libscorep_adapter_opencl_mgmt_shared_la_CPPFLAGS = \
+    $(libscorep_adapter_opencl_mgmt_common_cppflags) \
+    $(opencl_libwrap_shared_cppflags)
+
+libscorep_adapter_opencl_mgmt_shared_la_LIBADD = \
+    $(libscorep_adapter_opencl_mgmt_common_libadd)
+
+libscorep_adapter_opencl_mgmt_shared_la_LDFLAGS = \
+    $(libscorep_adapter_opencl_mgmt_common_ldflags)
+
+
+
+# event library for the OpenCL adapter
+
+libscorep_adapter_opencl_event_common_sources = \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_wrap.c
+
+libscorep_adapter_opencl_event_common_cppflags = \
+    $(AM_CPPFLAGS)                           \
+    -I$(PUBLIC_INC_DIR)                      \
+    $(UTILS_CPPFLAGS)                        \
+    -I$(INC_ROOT)src/adapters/include        \
+    -I$(INC_ROOT)src/measurement             \
+    -I$(INC_ROOT)src/measurement/include     \
+    -I$(INC_ROOT)src/services/include        \
+    -I$(INC_ROOT)src/adapters/opencl         \
+    -I$(INC_DIR_COMMON_HASH)                 \
+    -I$(INC_DIR_MUTEX)                       \
+    -I$(INC_DIR_DEFINITIONS)                 \
+    @OPENCL_CPPFLAGS@
+
+libscorep_adapter_opencl_event_common_libadd = \
+    $(LIB_DIR_SCOREP)libscorep_measurement.la
+
+libscorep_adapter_opencl_event_common_ldflags = \
+    @OPENCL_LDFLAGS@                            \
+    $(library_api_version_ldflags)
+
+
+lib_LTLIBRARIES += libscorep_adapter_opencl_event_static.la
+
+libscorep_adapter_opencl_event_static_la_SOURCES = \
+    $(libscorep_adapter_opencl_event_common_sources)
+
+libscorep_adapter_opencl_event_static_la_CPPFLAGS = \
+    $(libscorep_adapter_opencl_event_common_cppflags) \
+    $(opencl_libwrap_static_cppflags)
+
+libscorep_adapter_opencl_event_static_la_LDFLAGS = \
+    $(libscorep_adapter_opencl_event_common_ldflags)
+
+libscorep_adapter_opencl_event_static_la_LIBADD = \
+    $(libscorep_adapter_opencl_mgmt_common_libadd)
+
+lib_LTLIBRARIES += libscorep_adapter_opencl_event_shared.la
+
+libscorep_adapter_opencl_event_shared_la_SOURCES = \
+    $(libscorep_adapter_opencl_event_common_sources)
+
+libscorep_adapter_opencl_event_shared_la_CPPFLAGS = \
+    $(libscorep_adapter_opencl_event_common_cppflags) \
+    $(opencl_libwrap_shared_cppflags)
+
+libscorep_adapter_opencl_event_shared_la_LDFLAGS = \
+    $(libscorep_adapter_opencl_event_common_ldflags)
+
+libscorep_adapter_opencl_event_shared_la_LIBADD = \
+    $(libscorep_adapter_opencl_mgmt_common_libadd)
+
+endif HAVE_OPENCL_SUPPORT
+
+EXTRA_DIST += \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_function_list.inc      \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_wrap_version_1_0.inc.c \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_wrap_version_1_1.inc.c \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_wrap_version_1_2.inc.c \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_wrap_version_2_0.inc.c

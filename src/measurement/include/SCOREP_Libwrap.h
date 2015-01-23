@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -28,13 +28,6 @@
  *  Symbolic constant representing a filtered region
  */
 #define SCOREP_LIBWRAP_FILTERED_REGION ( ( SCOREP_RegionHandle ) - 1 )
-
-/* determine which paradigm is used for region definitions */
-typedef enum SCOREP_Libwrap_paradigm_type
-{
-    SCOREP_LIBWRAP_PARADIGM_USER,   // user function
-    SCOREP_LIBWRAP_PARADIGM_SHMEM,  // SHMEM function
-} SCOREP_LibwrapParadigmType;
 
 /** @brief Keeps all necessary information of the library wrapping object. */
 typedef struct SCOREP_LibwrapHandle SCOREP_LibwrapHandle;

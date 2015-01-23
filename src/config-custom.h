@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -63,6 +63,7 @@
     UTILS_DEFINE_DEBUG_MODULE( SHMEM,              18 ), \
     UTILS_DEFINE_DEBUG_MODULE( PTHREAD,            19 ), \
     UTILS_DEFINE_DEBUG_MODULE( THREAD_CREATE_WAIT, 20 ), \
-    UTILS_DEFINE_DEBUG_MODULE( THREAD,             21 )
+    UTILS_DEFINE_DEBUG_MODULE( THREAD,             21 ), \
+    UTILS_DEFINE_DEBUG_MODULE( OPENCL,             22 )
 
 #endif /* CONFIG_CUSTOM_H */

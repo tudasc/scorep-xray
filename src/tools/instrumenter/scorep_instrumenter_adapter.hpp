@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -45,6 +45,7 @@ typedef enum
     SCOREP_INSTRUMENTER_ADAPTER_PREPROCESS,
     SCOREP_INSTRUMENTER_ADAPTER_USER,
     SCOREP_INSTRUMENTER_ADAPTER_PTHREAD,
+    SCOREP_INSTRUMENTER_ADAPTER_OPENCL,
 
     /* Should stay last element in enum */
     SCOREP_INSTRUMENTER_ADAPTER_NUM

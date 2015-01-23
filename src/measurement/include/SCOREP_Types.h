@@ -237,7 +237,7 @@ typedef enum SCOREP_ParadigmClass
 
 
 /* Keep MPI first after the non-parallel paradigms */
-#define SCOREP_PARADIGMS                                                                                 \
+#define SCOREP_PARADIGMS \
     SCOREP_PARADIGM( MEASUREMENT,        "measurement",        MEASUREMENT_SYSTEM ) \
     SCOREP_PARADIGM( USER,               "user",               USER ) \
     SCOREP_PARADIGM( COMPILER,           "compiler",           COMPILER ) \
@@ -245,7 +245,8 @@ typedef enum SCOREP_ParadigmClass
     SCOREP_PARADIGM( SHMEM,              "shmem",              SHMEM ) \
     SCOREP_PARADIGM( OPENMP,             "openmp",             OPENMP ) \
     SCOREP_PARADIGM( PTHREAD,            "pthread",            PTHREAD ) \
-    SCOREP_PARADIGM( CUDA,               "cuda",               CUDA )
+    SCOREP_PARADIGM( CUDA,               "cuda",               CUDA ) \
+    SCOREP_PARADIGM( OPENCL,             "opencl",             OPENCL )
 
 
 typedef enum SCOREP_ParadigmType
@@ -395,6 +396,9 @@ typedef enum SCOREP_GroupType
 
     SCOREP_GROUP_PTHREAD_LOCATIONS   = 14,
     SCOREP_GROUP_PTHREAD_THREAD_TEAM = 15,
+
+    SCOREP_GROUP_OPENCL_LOCATIONS    = 16,
+    SCOREP_GROUP_OPENCL_GROUP        = 17,
 
     SCOREP_INVALID_GROUP_TYPE /**< For internal use only. */
 } SCOREP_GroupType;

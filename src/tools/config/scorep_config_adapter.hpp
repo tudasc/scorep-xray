@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -297,6 +297,28 @@ public:
     virtual void
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps );
+};
+
+/* **************************************************************************************
+ * class SCOREP_OpenclAdapter
+ * *************************************************************************************/
+
+/**
+ * This class represents the OpenCL adapter.
+ */
+class SCOREP_Config_OpenclAdapter : public SCOREP_Config_Adapter
+{
+public:
+    SCOREP_Config_OpenclAdapter();
+    virtual bool
+    checkArgument( const std::string& arg );
+    virtual void
+    addLibs( std::deque<std::string>&           libs,
+             SCOREP_Config_LibraryDependencies& deps );
+    virtual void
+    addLdFlags( std::string& ldflags,
+                bool         build_check,
+                bool         nvcc );
 };
 
 /* **************************************************************************************

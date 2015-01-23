@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2014,
+dnl Copyright (c) 2009-2015,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -164,6 +164,7 @@ AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE
 SCOREP_THREAD_LOCAL_STORAGE
 SCOREP_METRICS_CHECK
 SCOREP_DLFCN
+SCOREP_OPENCL
 AC_SCOREP_LINK_FLAGS_CHECK
 
 scorep_otf2_config=
@@ -335,6 +336,8 @@ AC_CONFIG_FILES([../installcheck/instrumenter_checks/Makefile.common_rules:../te
 AM_COND_IF([HAVE_GNU_LINKER],
     [AM_COND_IF([HAVE_PTHREAD],
          [AC_CONFIG_FILES([../installcheck/instrumenter_checks/create_wait/pthread/Makefile:../test/instrumenter_checks/create_wait/pthread/Makefile.in])])])
+AC_CONFIG_FILES([../test/adapters/opencl/run_opencl_test.sh], \
+                [chmod +x ../test/adapters/opencl/run_opencl_test.sh])
 AC_CONFIG_FILES([../test/adapters/cuda/run_cuda_test.sh], \
                 [chmod +x ../test/adapters/cuda/run_cuda_test.sh])
 AC_CONFIG_FILES([../test/adapters/user/C/run_phase_test.sh], \
@@ -386,4 +389,13 @@ AS_IF([test "x${enable_shared}" = xno],
                          libtool > libtool.fix && mv libtool.fix libtool])
                    ])
     ])
+
+AC_CONFIG_FILES([../share/opencl.wrap:../share/opencl.wrap.in],
+                [printf '\x2dwrap %s\n' $scorep_opencl_wrap_symbols >../share/opencl.wrap],
+                [scorep_opencl_wrap_symbols='$scorep_opencl_wrap_symbols'])
+AC_CONFIG_FILES([../share/opencl.nvcc.wrap:../share/opencl.wrap.in],
+                [printf '\x2dXlinker \x2dwrap \x2dXlinker %s\n' $scorep_opencl_wrap_symbols >../share/opencl.nvcc.wrap \
+                 && sed -i '0,/-Xlinker\ /s/-Xlinker\ //' ../share/opencl.nvcc.wrap],
+                [scorep_opencl_wrap_symbols='$scorep_opencl_wrap_symbols'])
+
 AC_OUTPUT

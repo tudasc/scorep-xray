@@ -89,23 +89,27 @@ scorep_tracing_group_type_to_otf2( SCOREP_GroupType scorepType )
     case SCOREP_GROUP_ ## SCOREP: \
         return OTF2_GROUP_TYPE_ ## OTF2
 
-        case_return( UNKNOWN,         UNKNOWN );
-        case_return( LOCATIONS,       LOCATIONS );
-        case_return( REGIONS,         REGIONS );
-        case_return( METRIC,          METRIC );
+        case_return( UNKNOWN,            UNKNOWN );
+        case_return( LOCATIONS,          LOCATIONS );
+        case_return( REGIONS,            REGIONS );
+        case_return( METRIC,             METRIC );
 
         // MPI
-        case_return( MPI_LOCATIONS,   COMM_LOCATIONS );
-        case_return( MPI_GROUP,       COMM_GROUP );
-        case_return( MPI_SELF,        COMM_SELF );
+        case_return( MPI_LOCATIONS,      COMM_LOCATIONS );
+        case_return( MPI_GROUP,          COMM_GROUP );
+        case_return( MPI_SELF,           COMM_SELF );
 
         // OpenMP
         case_return( OPENMP_LOCATIONS,   COMM_LOCATIONS );
         case_return( OPENMP_THREAD_TEAM, COMM_GROUP );
 
         // CUDA
-        case_return( CUDA_LOCATIONS, COMM_LOCATIONS );
-        case_return( CUDA_GROUP, COMM_GROUP );
+        case_return( CUDA_LOCATIONS,     COMM_LOCATIONS );
+        case_return( CUDA_GROUP,         COMM_GROUP );
+
+        // OpenCL
+        case_return( OPENCL_LOCATIONS,   COMM_LOCATIONS );
+        case_return( OPENCL_GROUP,       COMM_GROUP );
 
         // SHMEM
         case_return( SHMEM_LOCATIONS,    COMM_LOCATIONS );

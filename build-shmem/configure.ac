@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013-2014,
+dnl Copyright (c) 2013-2015,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -192,6 +192,7 @@ AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE
 SCOREP_THREAD_LOCAL_STORAGE
 SCOREP_METRICS_CHECK
 SCOREP_DLFCN
+SCOREP_OPENCL
 
 AS_IF([test -n "${scorep_otf2_bindir}"],
       [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],

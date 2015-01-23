@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2014,
+dnl Copyright (c) 2009-2015,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -203,6 +203,7 @@ AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE
 SCOREP_THREAD_LOCAL_STORAGE
 SCOREP_METRICS_CHECK
 SCOREP_DLFCN
+SCOREP_OPENCL
 
 AS_IF([test -n "${scorep_otf2_bindir}"],
       [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],

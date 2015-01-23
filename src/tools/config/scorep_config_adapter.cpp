@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -71,6 +71,7 @@ SCOREP_Config_Adapter::init( void )
     all.push_back( new SCOREP_Config_UserAdapter() );
     all.push_back( new SCOREP_Config_PompAdapter() );
     all.push_back( new SCOREP_Config_CudaAdapter() );
+    all.push_back( new SCOREP_Config_OpenclAdapter() );
     all.push_back( new SCOREP_Config_PreprocessAdapter() );
 }
 
@@ -371,6 +372,75 @@ SCOREP_Config_CudaAdapter::addLibs( std::deque<std::string>&           libs,
     }
 }
 
+/* **************************************************************************************
+ * OpenCL adapter
+ * *************************************************************************************/
+SCOREP_Config_OpenclAdapter::SCOREP_Config_OpenclAdapter()
+    : SCOREP_Config_Adapter( "opencl", "scorep_adapter_opencl", true )
+{
+}
+
+bool
+SCOREP_Config_OpenclAdapter::checkArgument( const std::string& arg )
+{
+#if HAVE_BACKEND( OPENCL_SUPPORT )
+    if ( arg == "--" + m_name )
+    {
+        m_is_enabled = true;
+        return true;
+    }
+#endif
+    if ( arg == "--no" + m_name )
+    {
+        m_is_enabled = false;
+        return true;
+    }
+    return false;
+}
+
+void
+SCOREP_Config_OpenclAdapter::addLibs( std::deque<std::string>&           libs,
+                                      SCOREP_Config_LibraryDependencies& deps )
+{
+    if ( HAVE_BACKEND_OPENCL_SUPPORT && m_is_enabled )
+    {
+        libs.push_back( "lib" + m_library + "_event_static" );
+        deps.addDependency( "libscorep_measurement", "lib" + m_library + "_mgmt_static" );
+    }
+}
+
+void
+SCOREP_Config_OpenclAdapter::addLdFlags( std::string& ldflags,
+                                         bool         build_check,
+                                         bool         nvcc )
+{
+    if ( m_is_enabled )
+    {
+        if ( build_check )
+        {
+            extern std::string path_to_binary;
+            if ( nvcc )
+            {
+                ldflags += " -Wl,@" + path_to_binary + "../share/opencl.nvcc.wrap";
+            }
+            else
+            {
+                ldflags += " -Wl,@" + path_to_binary + "../share/opencl.wrap";
+            }
+        }
+        else
+        {
+            if ( nvcc )
+            {
+                ldflags += " -Wl,@" SCOREP_DATADIR "/opencl.nvcc.wrap";
+            }
+            else
+            {
+                ldflags += " -Wl,@" SCOREP_DATADIR "/opencl.wrap";
+            }
+        }
+    }
+}
 
 /* **************************************************************************************
  * Preprocess adapter

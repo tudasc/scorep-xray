@@ -915,6 +915,30 @@ If a kernel is filtered, no kernel launch properties activated in \confvar{SCORE
 GPU idle time is not affected by kernel filtering.
 
 
+@section opencl_adapter OpenCL Performance Measurement
+@seclabel{opencl_adapter}
+
+If @scorep has been built with OpenCL support it is capable of recording OpencCL API function calls.
+
+Setting the environment variable \confvar{SCOREP_OPENCL_ENABLE} to <b><tt>yes</tt></b> enables OpenCL measurement.
+To enable a particular composition of OpenCL measurement features the variable should contain a comma-separated list of the following OpenCL measurement options:
+
+@code
+api            = OpenCL runtime API
+kernel         = OpenCL kernels
+memcpy         = OpenCL buffer reads/writes
+sync           = Record implicit and explicit OpenCL synchronization
+memusage       = Record OpenCL memory (de)allocations as a counter
+default/yes/1  = OpenCL API and GPU activities
+no             = Disable OpenCL measurement
+@endcode
+
+OpenCL measurement uses an extra buffer to store its activity records.
+If the size of this buffer is too small, @scorep will print a warning about the current buffer size and the number of dropped records.
+To avoid dropping of records increase the buffer size via the environment variable \confvar{SCOREP_OPENCL_BUFFER} (default: 1M).
+Memory in bytes for the OpenCL command queue buffer can be adjusted by setting the environment variable \confvar{SCOREP_OPENCL_BUFFER_QUEUE} (default: 8k).
+
+
 @section online_access_measurement Online Access Interface
 @seclabel{online_access_measurement}
 
