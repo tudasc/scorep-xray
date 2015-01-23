@@ -61,17 +61,17 @@ Common options are:
   --nocuda        Disables cuda instrumentation.
   --online-access Enables online-access support. It is disabled by default
   --noonline-access online-access Disables online-access support.
-  --pomp[=<paramter-list>]
+  --pomp[=<parameter-list>]
                   Enables pomp user instrumentation.
                   You may add additional parameters that are passed to OPARI2.
                   By default, it enables also preprocessing
   --nopomp        Disables pomp user instrumentation.
-  --opari[=<paramter-list>]
+  --opari[=<parameter-list>]
                   Enables OPARI2 instrumentation of OpenMP regions.
                   You may add additional parameters that are passed to OPARI2
                   By default, it enables also preprocessing and
                   pomp user instrumentation.
-  --pdt[=<paramter-list>]
+  --pdt[=<parameter-list>]
                   Enables pdt instrumentation.
                   You may add additional parameters that are passed to pdt.
                   It requires and, thus, automatically enables user instrumentation.

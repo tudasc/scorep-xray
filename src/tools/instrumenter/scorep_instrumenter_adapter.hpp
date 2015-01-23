@@ -142,7 +142,7 @@ public:
      * '--noname'. hereby you need to replace 'name' by the name of the adapter.
      * If an '=' follows the '--name' parameter, the string after the '=' character
      * is stored in m_params.
-     * Overwrite this function if you need to process different or more paramters.
+     * Overwrite this function if you need to process different or more parameters.
      * @param arg  The option that is evaluated.
      * @returns true, if this argument was known to this adapter.
      */
@@ -243,8 +243,8 @@ public:
      * @param next    The next argument of the command line. Sometimes, the current
      *                argument indicates that the next argument contains some value
      *                that belongs together.
-     * @returns This function should return true, if the next paramter and the
-     *          current paramter belong together and the next parameter was already
+     * @returns This function should return true, if the next parameter and the
+     *          current parameter belong together and the next parameter was already
      *          processed by this call. Thus, the iteration for the next parameter
      *          is skipped.
      */
@@ -330,7 +330,7 @@ protected:
     std::string m_params;
 
     /**
-     * Set this to true if you want to use the possibility to pass extra paramters to
+     * Set this to true if you want to use the possibility to pass extra parameters to
      * the the tool.
      */
     bool m_use_params;

@@ -151,12 +151,12 @@ SCOREP_Instrumenter_OpariAdapter::getConfigToolFlag( void )
 void
 SCOREP_Instrumenter_OpariAdapter::printHelp( void )
 {
-    std::cout << "  --pomp[=<paramter-list>]\n"
+    std::cout << "  --pomp[=<parameter-list>]\n"
               << "                  Enables pomp user instrumentation.\n"
               << "                  You may add additional parameters that are passed to OPARI2.\n"
               << "                  By default, it enables also preprocessing\n";
     std::cout << "  --nopomp        Disables pomp user instrumentation.\n";
-    std::cout << "  --opari[=<paramter-list>]\n"
+    std::cout << "  --opari[=<parameter-list>]\n"
               << "                  Enables OPARI2 instrumentation of OpenMP regions.\n"
               << "                  You may add additional parameters that are passed to OPARI2\n"
               << "                  By default, it enables also preprocessing and\n"

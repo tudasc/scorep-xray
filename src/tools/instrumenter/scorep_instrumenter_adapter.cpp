@@ -130,7 +130,7 @@ SCOREP_Instrumenter_Adapter::printHelp( void )
         std::cout << "  --" << m_name;
         if ( m_use_params )
         {
-            std::cout << "[=<paramter-list>]\n" << space;
+            std::cout << "[=<parameter-list>]\n" << space;
         }
         else if ( m_name.length() > 14 )
         {

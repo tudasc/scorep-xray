@@ -82,7 +82,7 @@ public:
 
     /**
      * Evaluates an scorep option for this paradigm.
-     * Overwrite this function if you need to process different or more paramters.
+     * Overwrite this function if you need to process different or more parameters.
      * @param arg  The option that is evaluated.
      * @returns true, if this argument selects this paradigm.
      */
@@ -104,8 +104,8 @@ public:
      * @param next    The next argument of the command line. Sometimes, the current
      *                argument indicates that the next argument contains some value
      *                that belongs together.
-     * @returns This function should return true, if the next paramter and the
-     *          current paramter belong together and the next parameter was already
+     * @returns This function should return true, if the next parameter and the
+     *          current parameter belong together and the next parameter was already
      *          processed by this call. Thus, the iteration for the next parameter
      *          is skipped.
      */

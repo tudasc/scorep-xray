@@ -571,7 +571,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
     else if ( current == "-o" )
     {
         /* Do not add the output name to parameter list, because the intermediate
-           files may have a different name and having then an -o paramter in
+           files may have a different name and having then an -o parameter in
            the parameter list makes trouble. */
         set_output_file( next );
         return scorep_parse_mode_option_part;
@@ -610,7 +610,7 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         if ( current[ 1 ] == 'o' )
         {
             /* Do not add the output name to parameter list, because the intermediate
-               files may have a different name and having then an -o paramter in
+               files may have a different name and having then an -o parameter in
                the parameter list makes trouble. */
             set_output_file( current.substr( 2 ) );
             return scorep_parse_mode_command;
