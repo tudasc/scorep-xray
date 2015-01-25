@@ -477,13 +477,6 @@ from the displayed name.
       <tt>SCOREP_REGION_NAMES_BEGIN</tt>, <tt>SCOREP_REGION_NAMES_END</tt>,
       and <tt>MANGLED</tt> are case-sensitive.
 
-@note
-  The GCC plug-in based function instrumentation supports all above mentioned
-  filtering features when using the @verb{--instrument-filter} flag to the
-  @scorep instrumenter (see Sec. @secref{compiler_instrumentation}).
-  The filter file is then used during compilation time but the use of auch a filter file
-  during runtime is still possible. The usage of the filter during compilation time
-  removes the overhead of runtime filtering.
 
 @section selective_recording Selective Recording
 @seclabel{selective_recording}
