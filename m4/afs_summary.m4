@@ -104,10 +104,10 @@ AC_DEFUN([AFS_SUMMARY_COLLECT], [
     AS_ECHO([""])
     sep="Configuration summary:"
     LC_ALL=C find . -name config.summary |
-        LC_ALL=C $AWK -F "/" '{print NF, $[]0}' |
-        LC_ALL=C sed -e 's/^. /0&/' |
+        LC_ALL=C $AWK -F "config.summary" '{print $[]1}' |
         LC_ALL=C sort |
-        while read level summary
+        LC_ALL=C $AWK '{print $[]0 "config.summary"}' |
+        while read summary
     do
         AS_ECHO(["$sep"])
         cat $summary
