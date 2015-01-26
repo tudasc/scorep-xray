@@ -4,13 +4,25 @@
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## RWTH Aachen University, Germany
+##
+## Copyright (c) 2009-2011,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2011, 2015,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2011,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2011,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2011,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Muenchen, Germany
 ##
 ## See the COPYING file in the package base directory for details.
 ##
@@ -20,7 +32,7 @@
 
 OTF2_PRINT=@OTF2_BINDIR@/otf2-print
 SRC_ROOT=@abs_top_srcdir@/..
-RESULT_DIR=scorep-selective-f-test-dir
+RESULT_DIR=scorep-selective-f90-test-dir
 
 cleanup()
 {
@@ -32,26 +44,26 @@ trap cleanup EXIT
 
 
 # Execute selective test
-SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_SELECTIVE_CONFIG_FILE=$SRC_ROOT/test/adapters/user/Fortran/selective.cfg ./user_f_test
+SCOREP_EXPERIMENT_DIRECTORY=$RESULT_DIR SCOREP_ENABLE_PROFILING=false SCOREP_ENABLE_TRACING=true SCOREP_SELECTIVE_CONFIG_FILE=$SRC_ROOT/test/adapters/user/Fortran/selective.cfg ./user_f90_test
 if [ $? -ne 0 ]; then
-    echo "Runnning user_f_test with selective measurment failed"
+    echo "Running user_f90_test with selective measurement failed"
     exit 1
 fi
 
 # Check output
 $OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep '^\(ENTER\|LEAVE\) ' > trace.txt
 if [ x`grep -c Region1 trace.txt` = x4 ]; then
-  if [ x`grep -v Region1 trace.txt | grep -v main | grep -v Region2` = x ]; then
+  if [ x`grep -v Region1 trace.txt | grep -v main | grep -v Region2 | grep -v byname_region | wc -l` = x0 ]; then
     exit 0;
   else
     echo "Unexpected events detected in trace:"
-    echo "`grep -v Region1 trace.txt | grep -v main`"
+    echo "`grep -v Region1 trace.txt | grep -v main | grep -v Region2 | grep -v byname_region`"
     exit 1
   fi
 fi
 
-echo "Uncorrect number of events for 'Region1'."
-echo "4 expected but `grep -c Region1 trace.txt` occured"
+echo "Incorrect number of events for 'Region1'."
+echo "4 expected but `grep -c Region1 trace.txt` occurred"
 exit 1
 
 

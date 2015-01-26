@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -45,10 +45,10 @@
 
 #include "scorep_user.h"
 
+/* size of hash map for the regions tagged by name */
+#define SCOREP_USER_REGION_BY_NAME_SIZE 128
 
-int8_t scorep_user_is_initialized = 0;
-
-
+int8_t        scorep_user_is_initialized = 0;
 static size_t scorep_user_subsystem_id;
 
 
@@ -146,6 +146,7 @@ SCOREP_Mutex scorep_user_file_table_mutex;
    Mutex to avoid parallel assignement of region handles to the same region.
  */
 SCOREP_Mutex scorep_user_region_mutex;
+SCOREP_Mutex scorep_user_region_by_name_mutex;
 
 /**
     @internal
@@ -156,14 +157,23 @@ SCOREP_Mutex scorep_user_region_mutex;
  */
 SCOREP_Hashtab* scorep_user_region_table = NULL;
 
+/*
+ * Hastable for the regions by name
+ */
+SCOREP_Hashtab* scorep_user_region_by_name_hash_table = NULL;
 
 void
 scorep_user_init_regions( void )
 {
     SCOREP_MutexCreate( &scorep_user_region_mutex );
+    SCOREP_MutexCreate( &scorep_user_region_by_name_mutex );
     SCOREP_MutexCreate( &scorep_user_file_table_mutex );
     scorep_user_region_table = SCOREP_Hashtab_CreateSize( 10, &SCOREP_Hashtab_HashString,
                                                           &SCOREP_Hashtab_CompareStrings );
+    /* create empty hashtab for regions by name */
+    scorep_user_region_by_name_hash_table = SCOREP_Hashtab_CreateSize( SCOREP_USER_REGION_BY_NAME_SIZE,
+                                                                       &SCOREP_Hashtab_HashString,
+                                                                       &SCOREP_Hashtab_CompareStrings );
 }
 
 void
@@ -175,7 +185,12 @@ scorep_user_finalize_regions( void )
                             &SCOREP_Hashtab_DeleteFree,
                             &SCOREP_Hashtab_DeleteNone );
 
+    SCOREP_Hashtab_FreeAll( scorep_user_region_by_name_hash_table,
+                            &SCOREP_Hashtab_DeleteNone,
+                            &SCOREP_Hashtab_DeleteNone );
+
     scorep_user_region_table = NULL;
     SCOREP_MutexDestroy( &scorep_user_file_table_mutex );
     SCOREP_MutexDestroy( &scorep_user_region_mutex );
+    SCOREP_MutexDestroy( &scorep_user_region_by_name_mutex );
 }

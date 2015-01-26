@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -664,6 +664,13 @@
         type, __FILE__, __LINE__ );
 
 #define SCOREP_USER_REGION_END( handle ) SCOREP_User_RegionEnd( handle );
+
+/* automatic, name tagged region begin */
+#define SCOREP_USER_REGION_BY_NAME_BEGIN( name, type ) SCOREP_User_RegionByNameBegin( \
+        name, type, "", 0 );
+
+/* automatic, name tagged region end */
+#define SCOREP_USER_REGION_BY_NAME_END( name ) SCOREP_User_RegionByNameEnd( name );
 
 #define SCOREP_USER_REWIND_DEFINE( handle ) \
     static SCOREP_User_RegionHandle handle = SCOREP_USER_INVALID_REGION;
@@ -1372,8 +1379,10 @@
 #define SCOREP_USER_OA_PHASE_END( handle )
 #define SCOREP_USER_REWIND_POINT( handle, name )
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )
+#define SCOREP_USER_REGION_BY_NAME_BEGIN( name, type )
 #define SCOREP_USER_REGION_INIT( handle, name, type )
 #define SCOREP_USER_REGION_END( handle )
+#define SCOREP_USER_REGION_BY_NAME_END( name )
 #define SCOREP_USER_REWIND_CHECK( handle, value )
 #define SCOREP_USER_REGION_ENTER( handle )
 #define SCOREP_USER_FUNC_BEGIN()

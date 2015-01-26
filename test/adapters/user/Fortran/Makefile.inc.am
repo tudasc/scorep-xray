@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -29,30 +29,30 @@
 ## directory for details.
 ##
 
-check_PROGRAMS += user_f_test
+check_PROGRAMS += user_f90_test
 
-user_f_test_SOURCES =                                       \
-	$(SRC_ROOT)test/adapters/user/Fortran/user_test.F
+user_f90_test_SOURCES =                                     \
+	$(SRC_ROOT)test/adapters/user/Fortran/user_test.F90
 
-user_f_test_CPPFLAGS = \
+user_f90_test_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR)                     \
     -I$(INC_ROOT)src/adapters/include       \
     $(UTILS_CPPFLAGS)
 
 if SCOREP_COMPILER_IBM
-user_f_test_CPPFLAGS += -WF,-DSCOREP_USER_ENABLE=1
+user_f90_test_CPPFLAGS += -WF,-DSCOREP_USER_ENABLE=1
 else
-user_f_test_CPPFLAGS += -DSCOREP_USER_ENABLE=1
+user_f90_test_CPPFLAGS += -DSCOREP_USER_ENABLE=1
 endif
 
 if SCOREP_COMPILER_PGI
-user_f_test_CPPFLAGS += -DSCOREP_COMPILER_PGI=1
+user_f90_test_CPPFLAGS += -DSCOREP_COMPILER_PGI=1
 endif
 
-user_f_test_LDADD = $(serial_libadd)
-user_f_test_LDFLAGS  = $(serial_ldflags)
+user_f90_test_LDADD = $(serial_libadd)
+user_f90_test_LDFLAGS  = $(serial_ldflags)
 
-TESTS_SERIAL += ./user_f_test
+TESTS_SERIAL += ./user_f90_test
 
 EXTRA_DIST       += \
     $(SRC_ROOT)test/adapters/user/Fortran/selective.cfg \

@@ -73,4 +73,8 @@ main( int   argc,
     SCOREP_USER_REGION_INIT( my_region, "my region", SCOREP_USER_REGION_TYPE_COMMON );
     SCOREP_USER_REGION_ENTER(  my_region );
     SCOREP_USER_REGION_END( my_region );
+
+    /* BY_NAME Regions*/
+    SCOREP_USER_REGION_BY_NAME_BEGIN( "byname_region", SCOREP_USER_REGION_TYPE_COMMON );
+    SCOREP_USER_REGION_BY_NAME_END( "byname_region" );
 }

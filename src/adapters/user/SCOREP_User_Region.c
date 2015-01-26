@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2012, 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -48,11 +48,14 @@
 #include <SCOREP_OA_Functions.h>
 #include "scorep_selective_region.h"
 #include <SCOREP_RuntimeManagement.h>
+#define SCOREP_DEBUG_MODULE_NAME USER
+#include <UTILS_Debug.h>
+#include <SCOREP_Memory.h>
 
 #include <stdlib.h>
+#include <string.h>
 
 #define SCOREP_FILTERED_USER_REGION ( ( void* )-1 )
-
 
 
 static SCOREP_SourceFileHandle
@@ -71,7 +74,7 @@ scorep_user_get_file( const char*              file,
        However, if regions are defined in included header files, one must lookup
        file handles.
      */
-    if ( *lastFileName == file )
+    if ( lastFileName && lastFile && *lastFileName == file )
     {
         SCOREP_MutexUnlock( scorep_user_file_table_mutex );
         return *lastFile;
@@ -86,8 +89,11 @@ scorep_user_get_file( const char*              file,
     free( file_name );
 
     /* Cache last used file information */
-    *lastFile     = handle;
-    *lastFileName = file;
+    if ( lastFileName && lastFile )
+    {
+        *lastFile     = handle;
+        *lastFileName = file;
+    }
 
     SCOREP_MutexUnlock( scorep_user_file_table_mutex );
     return handle;
@@ -179,6 +185,95 @@ SCOREP_User_RegionEnd( const SCOREP_User_RegionHandle handle )
         SCOREP_ExitRegion( handle->handle );
         scorep_selective_check_exit( handle );
     }
+}
+
+
+void
+SCOREP_User_RegionByNameBegin( const char*                  name,
+                               const SCOREP_User_RegionType regionType,
+                               const char*                  fileName,
+                               const uint32_t               lineNo )
+{
+    /* Check for intialization */
+    SCOREP_USER_ASSERT_INITIALIZED;
+    /* Check if measurement env is running */
+    SCOREP_USER_ASSERT_NOT_FINALIZED;
+
+    /* Abort if name is NULL */
+    UTILS_BUG_ON( name == NULL, "Provide a valid region name to user instrumentation" ); /* Error */
+
+    UTILS_DEBUG_ENTRY( "begin region by name: %s", name );
+
+    SCOREP_User_RegionHandle handle = SCOREP_USER_INVALID_REGION;
+    SCOREP_Hashtab_Entry*    result;
+
+    /* search handle in the hashtab */
+    result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, NULL );
+
+    /* if it's an invalid handle, or added by mistake (==NULL) create new, valid handle */
+    if ( result == NULL )
+    {
+        SCOREP_MutexLock( scorep_user_region_by_name_mutex );
+        result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, NULL );
+        if ( result == NULL )
+        {
+            SCOREP_User_RegionInit( &handle, NULL, NULL,
+                                    name, regionType, fileName, lineNo );
+
+            if ( handle == SCOREP_FILTERED_USER_REGION )
+            {
+                char* saved_name = SCOREP_Memory_AllocForMisc( sizeof( char ) * ( strlen( name ) + 1 ) );
+                saved_name[ strlen( name ) ] = '\0';
+                strncpy( saved_name, name, strlen( name ) );
+
+                SCOREP_Hashtab_Insert( scorep_user_region_by_name_hash_table,
+                                       ( void* )saved_name,
+                                       ( void* )handle, NULL );
+            }
+            else
+            {
+                /* insert handle into hashtab, handle is only a ptr hence we can cast to void* */
+                SCOREP_Hashtab_Insert( scorep_user_region_by_name_hash_table,
+                                       ( void* )SCOREP_RegionHandle_GetName( handle->handle ),
+                                       ( void* )handle, NULL );
+            }
+        }
+        SCOREP_MutexUnlock( scorep_user_region_by_name_mutex );
+    }
+    else
+    {
+        /* if handle is valid, we can just use it */
+        handle = ( SCOREP_User_RegionHandle )result->value;
+    }
+
+    SCOREP_User_RegionEnter( handle );
+}
+
+
+void
+SCOREP_User_RegionByNameEnd( const char* name )
+{
+    SCOREP_USER_ASSERT_NOT_FINALIZED;
+
+    /* Abort if name is NULL */
+    UTILS_BUG_ON( name == NULL, "Provide a valid region name to user instrumentation" ); /* Error */
+
+    UTILS_DEBUG_ENTRY( "end region by name: %s", name );
+
+    /* if no hashtab had been previously initialized, exit with error*/
+    UTILS_BUG_ON( scorep_user_region_by_name_hash_table == NULL, "No hash table initialized, no region to end" ); /* Error */
+
+    /* search for handle in hashtab */
+    SCOREP_Hashtab_Entry* result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, NULL );
+
+    /* if handle not found, end-region without begin-region */
+    UTILS_BUG_ON( !result, "Trying to close a region never opened" ); /* Error */
+
+    SCOREP_User_RegionHandle handle = result->value;
+
+    UTILS_BUG_ON( handle == SCOREP_USER_INVALID_REGION, "Trying to close a uninitialized region" );
+
+    SCOREP_User_RegionEnd( handle );
 }
 
 void

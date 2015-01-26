@@ -7,13 +7,13 @@
 !  Copyright (c) 2009-2011,
 !  Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 !
-!  Copyright (c) 2009-2011, 2014,
+!  Copyright (c) 2009-2011, 2014-2015,
 !  Technische Universitaet Dresden, Germany
 !
 !  Copyright (c) 2009-2011,
 !  University of Oregon, Eugene, USA
 !
-!  Copyright (c) 2009-2011, 2013
+!  Copyright (c) 2009-2011, 2013,
 !  Forschungszentrum Juelich GmbH, Germany
 !
 !  Copyright (c) 2009-2011,
@@ -83,6 +83,9 @@
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )\
         call SCOREP_F_Begin(handle,name,type,"",__LINE__)
 
+#define SCOREP_USER_REGION_BY_NAME_BEGIN( name, type )\
+        call SCOREP_F_RegionByNameBegin(name,type,"",0)
+
 #define SCOREP_USER_REWIND_POINT( handle, name ) \
         call SCOREP_F_RewindBegin(handle,name,SCOREP_USER_REGION_TYPE_COMMON,"",__LINE__)
 
@@ -90,6 +93,8 @@
         call SCOREP_F_Init(handle,name,type,"",__LINE__)
 
 #define SCOREP_USER_REGION_END( handle ) call SCOREP_F_RegionEnd( handle )
+
+#define SCOREP_USER_REGION_BY_NAME_END( name ) call SCOREP_F_RegionByNameEnd(name)
 
 #define SCOREP_USER_REWIND_CHECK( handle, value ) call SCOREP_F_RewindRegionEnd( handle, value )
 
@@ -154,6 +159,8 @@
 #define SCOREP_USER_REGION_BEGIN( handle, name, type )
 #define SCOREP_USER_REGION_INIT( handle, name, type )
 #define SCOREP_USER_REGION_END( handle )
+#define SCOREP_USER_REGION_BY_NAME_BEGIN( name, type )
+#define SCOREP_USER_REGION_BY_NAME_END( name )
 #define SCOREP_USER_REWIND_CHECK( handle, value )
 #define SCOREP_USER_REGION_ENTER( handle )
 #define SCOREP_USER_FUNC_DEFINE()

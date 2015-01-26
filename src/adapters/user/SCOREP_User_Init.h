@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -69,6 +69,12 @@ extern SCOREP_Mutex scorep_user_file_table_mutex;
    Mutex to avoid parallel assignement of region handles to the same region.
  */
 extern SCOREP_Mutex scorep_user_region_mutex;
+extern SCOREP_Mutex scorep_user_region_by_name_mutex;
+
+/**
+   Maximum size of by name region hash table
+ */
+extern SCOREP_Hashtab* scorep_user_region_by_name_hash_table;
 
 /**
     @internal

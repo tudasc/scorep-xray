@@ -38,14 +38,13 @@ filter_test_SOURCES = \
     $(SRC_ROOT)test/filtering/not_filtered.c
 
 filter_test_CPPFLAGS = $(AM_CPPFLAGS)                      \
-                       @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@ \
                        -I$(PUBLIC_INC_DIR)                 \
                        $(UTILS_CPPFLAGS)                   \
                        -DSCOREP_USER_ENABLE
 
 filter_test_LDADD    = $(serial_libadd)
 
-filter_test_LDFLAGS  = $(serial_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
+filter_test_LDFLAGS  = $(serial_ldflags)
 
 check_PROGRAMS += filter_f_test
 

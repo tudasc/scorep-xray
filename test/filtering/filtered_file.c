@@ -28,6 +28,6 @@ void
 filtered2()
 {
     SCOREP_USER_FUNC_BEGIN();
-    printf( "2" );
+    printf( "%s\n", "2" );
     SCOREP_USER_FUNC_END();
 }

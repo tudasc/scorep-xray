@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -39,6 +39,8 @@
 #include <string.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 #include <scorep/SCOREP_User_Functions.h>
 #include "SCOREP_User_Init.h"
@@ -54,20 +56,25 @@
 #include <SCOREP_Fortran_Wrapper.h>
 #include "scorep_selective_region.h"
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Memory.h>
 
 #define SCOREP_F_Begin_U SCOREP_F_BEGIN
+#define SCOREP_F_RegionByNameBegin_U SCOREP_F_REGIONBYNAMEBEGIN
 #define SCOREP_F_RewindBegin_U SCOREP_F_REWINDBEGIN
 #define SCOREP_F_Init_U SCOREP_F_INIT
 #define SCOREP_F_RegionEnd_U SCOREP_F_REGIONEND
+#define SCOREP_F_RegionByNameEnd_U SCOREP_F_REGIONBYNAMEEND
 #define SCOREP_F_RewindRegionEnd_U SCOREP_F_REWINDREGIONEND
 #define SCOREP_F_RegionEnter_U SCOREP_F_REGIONENTER
 #define SCOREP_F_OaBegin_U SCOREP_F_OABEGIN
 #define SCOREP_F_OaEnd_U SCOREP_F_OAEND
 
 #define SCOREP_F_Begin_L scorep_f_begin
+#define SCOREP_F_RegionByNameBegin_L scorep_f_regionbynamebegin
 #define SCOREP_F_RewindBegin_L scorep_f_rewindbegin
 #define SCOREP_F_Init_L scorep_f_init
 #define SCOREP_F_RegionEnd_L scorep_f_regionend
+#define SCOREP_F_RegionByNameEnd_L scorep_f_regionbynameend
 #define SCOREP_F_RewindRegionEnd_L scorep_f_rewindregionend
 #define SCOREP_F_RegionEnter_L scorep_f_regionenter
 #define SCOREP_F_OaBegin_L scorep_f_oabegin
@@ -80,7 +87,6 @@ extern SCOREP_Hashtab* scorep_user_region_table;
 
 extern SCOREP_RegionType
 scorep_user_to_scorep_region_type( const SCOREP_User_RegionType user_type );
-
 
 static inline SCOREP_User_RegionHandle
 scorep_user_find_region( char* region_name )
@@ -214,6 +220,43 @@ FSUB( SCOREP_F_Begin )( SCOREP_Fortran_RegionHandle* regionHandle,
 }
 
 void
+FSUB( SCOREP_F_RegionByNameBegin )( char*    regionNameF,
+                                    int32_t* regionType,
+                                    char*    fileNameF,
+                                    int32_t* lineNo,
+                                    int      regionNameLen,
+                                    int      fileNameLen )
+{
+    char* region_name;
+    char* file_name;
+
+    /* Check for initialization */
+    SCOREP_USER_ASSERT_INITIALIZED;
+
+    /* Check if measurement env is running */
+    SCOREP_USER_ASSERT_NOT_FINALIZED;
+
+    /* Copy strings */
+    region_name = ( char* )malloc( ( regionNameLen + 1 ) * sizeof( char ) );
+    strncpy( region_name, regionNameF, regionNameLen );
+    region_name[ regionNameLen ] = '\0';
+
+    file_name = ( char* )malloc( ( fileNameLen + 1 ) * sizeof( char ) );
+    strncpy( file_name, fileNameF, fileNameLen );
+    file_name[ fileNameLen ] = '\0';
+    UTILS_IO_SimplifyPath( file_name );
+
+    SCOREP_User_RegionByNameBegin( region_name,
+                                   ( SCOREP_User_RegionType )( *regionType ),
+                                   file_name,
+                                   ( uint32_t )*lineNo );
+
+    /* Cleanup */
+    free( region_name );
+    free( file_name );
+}
+
+void
 FSUB( SCOREP_F_RewindBegin )( SCOREP_Fortran_RegionHandle* handle,
                               char*                        name_f,
                               int32_t*                     type,
@@ -241,18 +284,37 @@ FSUB( SCOREP_F_RegionEnd )( SCOREP_Fortran_RegionHandle* regionHandle )
 
 
 void
+FSUB( SCOREP_F_RegionByNameEnd )( char* regionNameF,
+                                  int   regionNameLen )
+{
+    char* region_name;
+
+    SCOREP_USER_ASSERT_NOT_FINALIZED;
+
+    /* Copy strings */
+    region_name = ( char* )malloc( ( regionNameLen + 1 ) * sizeof( char ) );
+    strncpy( region_name, regionNameF, regionNameLen );
+    region_name[ regionNameLen ] = '\0';
+
+    SCOREP_User_RegionByNameEnd( region_name );
+
+    free( region_name );
+}
+
+void
 FSUB( SCOREP_F_RewindRegionEnd )( SCOREP_Fortran_RegionHandle* handle, int* value )
 {
     SCOREP_USER_ASSERT_NOT_FINALIZED;
     SCOREP_User_RewindRegionEnd( SCOREP_F2C_REGION( *handle ), *value == 1 );
 }
 
-
-
 void
 FSUB( SCOREP_F_RegionEnter )( SCOREP_Fortran_RegionHandle* regionHandle )
 {
+    /* Check for intialization and that not already closed */
+    SCOREP_USER_ASSERT_INITIALIZED;
     SCOREP_USER_ASSERT_NOT_FINALIZED;
+
     if ( *regionHandle == SCOREP_FORTRAN_INVALID_REGION )
     {
         fprintf( stderr,

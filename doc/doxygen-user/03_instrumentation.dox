@@ -499,6 +499,52 @@ File 2:
 
 @note These macros are not available in Fortran.
 
+In addition, the macros <tt>SCOREP_USER_REGION_BY_NAME_BEGIN( name, type )</tt> and
+<tt>SCOREP_USER_REGION_BY_NAME_END( name )</tt> are available. These macros might
+introduce more overhead than the standard marcos but can annotate user regions
+without the need to take care about the handle struct. This might be useful for
+automatically generating instrumented code or to avoid global declaration
+of this variable.
+
+C/C++:
+@code
+    #include <scorep/SCOREP_User.h>
+
+    /* Application functions are already instrumented with these two calls. */
+    void instrument_begin(const char* regionname)
+    {
+      /* code added for Score-P instrumentation */
+      SCOREP_USER_REGION_BY_NAME_BEGIN( regionname, SCOREP_USER_REGION_TYPE_COMMON )
+    }
+
+    void instrument_end(const char* regionname)
+    {
+      SCOREP_USER_REGION_BY_NAME_END( regionname )
+    }
+@endcode
+
+Fortran:
+@code
+    #include "scorep/SCOREP_User.inc"
+
+    subroutine instrument_begin(regionname)
+      character(len=*) :: regionname
+      SCOREP_USER_REGION_BY_NAME_BEGIN( regionname, SCOREP_USER_REGION_TYPE_COMMON )
+    end subroutine instrument_begin
+
+    subroutine instrument_end(regionname)
+      character(len=*) :: regionname
+      SCOREP_USER_REGION_BY_NAME_END( regionname )
+    end subroutine instrument_end
+@endcode
+
+@note When using the "BY_NAME" macros in Fortran, be aware of section 12.4.1.1 of the
+      F90/95/2003 standard. If you pass <i>name</i> through a dummy argument of a subroutine
+      the length <i>len</i> of the character array <i>name</i> must be exactly the size of the
+      actual string passed. In the Fortran examples above this is assured by <pre>len=*</pre>.
+
+@note To ensure correct nesting, avoid automatic compiler instrumentation for these helper
+      functions.
 
 The source files instrumented with @scorep user macros have to be compiled with
 <tt>-DSCOREP_USER_ENABLE</tt> otherwise <tt>SCOREP_*</tt> calls expand to nothing and are

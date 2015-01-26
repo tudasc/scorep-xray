@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2013,
+ * Copyright (c) 2009-2011, 2013, 2015,
  *    Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011,
  *    Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2011, 2014
+ * Copyright (c) 2009-2011, 2014,
  *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2011,
@@ -78,17 +78,18 @@ extern "C" {
     @param handle     The handle for this region. It must be defined before.
     @param lastFileName Pointer to the last source file name. In most cases, it is
                       expected that in most cases no regions are in included
-                      files. If the compiler inserts always the same string adress
+                      files. If the compiler inserts always the same string address
                       for file names, one static variable in a source file
                       (@ref scorep_user_last_file_name) can remember
                       the last used filename from a source file and string comparisons
                       can be avoided.
-                      Here the adress of @ref SCOREP_User_LastFileName should be provided.
+                      Here the address of @ref SCOREP_User_LastFileName should be provided
+                      or NULL.
     @param lastFile   The handle for the last used source file. It is remembered in every
                       source file in a static variable.
                       Thus, in most cases string comparisons can be avoided.
-                      Here, the adress of @ref SCOREP_User_LastFileHandle should be
-                      provided.
+                      Here, the address of @ref SCOREP_User_LastFileHandle should be
+                      provided or NULL.
     @param name       The name of the region.
     @param regionType The type of the region.
     @param fileName   The filename of the source file which contains the instrumented
@@ -115,6 +116,38 @@ void
 SCOREP_User_RegionEnd( const SCOREP_User_RegionHandle handle );
 
 /**
+    Generates an enter event for the specified region. If the region was not registered
+    before, it registers the region. On the first enter, the region is registered to
+    the measurement system. A pre-initialized handle is not needed in this version, if
+    no initialized handle is found in the internal data-structures one is generated
+    internally. If a region already had been entered before the handle is found and
+    used again.
+    @note We strongly recommend not to insert calls to this
+    function for instrumentation, but use the SCOREP_USER_REGION_BY_NAME_BEGIN macro instead.
+    @param name       The name of the region (must not be NULL).
+    @param regionType The type of the region.
+    @param fileName   The filename of the source file which contains the instrumented
+                      region.
+    @param lineNo     The line number of the first source code line of the instrumented
+                      region.
+ */
+void
+SCOREP_User_RegionByNameBegin( const char*                  name,
+                               const SCOREP_User_RegionType regionType,
+                               const char*                  fileName,
+                               const uint32_t               lineNo );
+
+/**
+    Generates an exit event for the specified name tagged region.
+    @note We strongly recommend not to insert calls to this
+    function for instrumentation, but use the SCOREP_USER_REGION_BY_NAME_END macro instead.
+    @param name     The name of the region (must not be NULL).
+ */
+void
+SCOREP_User_RegionByNameEnd( const char* name );
+
+
+/**
     Registers a region. The region handle must be defined before. If the handle
     was already initialized, no operation is performed.
     @note We strongly recommend not to insert calls to this
@@ -122,17 +155,18 @@ SCOREP_User_RegionEnd( const SCOREP_User_RegionHandle handle );
     @param handle     The handle for this region. It must be defined before.
     @param lastFileName Pointer to the last source file name. In most cases, it is
                       expected that in most cases no regions are in included
-                      files. If the compiler inserts always the same string adress
+                      files. If the compiler inserts always the same string address
                       for file names, one static variable in a source file
                       (@ref scorep_user_last_file_name) can remember
                       the last used filename from a source file and string comparisons
                       can be avoided.
-                      Here the adress of @ref SCOREP_User_LastFileName should be provided.
+                      Here the address of @ref SCOREP_User_LastFileName should be provided
+                      or NULL.
     @param lastFile   The handle for the last used source file. It is remembered in every
                       source file in a static variable.
                       Thus, in most cases string comparisons can be avoided.
-                      Here, the adress of @ref SCOREP_User_LastFileHandle should be
-                      provided.
+                      Here, the address of @ref SCOREP_User_LastFileHandle should be
+                      provided or NULL.
     @param name       The name of the region.
     @param regionType The type of the region.
     @param fileName   The filename of the source file which contains the instrumented
@@ -169,17 +203,18 @@ SCOREP_User_RegionEnter( const SCOREP_User_RegionHandle handle );
     @param handle     The handle for this region. It must be defined before.
     @param lastFileName Pointer to the last source file name. In most cases, it is
                       expected that in most cases no regions are in included
-                      files. If the compiler inserts always the same string adress
+                      files. If the compiler inserts always the same string address
                       for file names, one static variable in a source file
                       (@ref scorep_user_last_file_name) can remember
                       the last used filename from a source file and string comparisons
                       can be avoided.
-                      Here the adress of @ref SCOREP_User_LastFileName should be provided.
+                      Here the address of @ref SCOREP_User_LastFileName should be provided
+                      or NULL.
     @param lastFile   The handle for the last used source file. It is remembered in every
                       source file in a static variable.
                       Thus, in most cases string comparisons can be avoided.
-                      Here, the adress of @ref SCOREP_User_LastFileHandle should be
-                      provided.
+                      Here, the address of @ref SCOREP_User_LastFileHandle should be
+                      provided or NULL.
     @param name       The name of the region.
     @param regionType The type of the region.
     @param fileName   The filename of the source file which contains the instrumented

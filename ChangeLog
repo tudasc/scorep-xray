@@ -14,8 +14,13 @@ Features and improvements:
 - Added support for task migration in the profiling system.
 - Basic support for Fujitsu FX100 systems added.
 - Score-P now requires at least OTF2 1.5.
+- Added new user instrumentation macros (e.g.,
+  SCOREP_USER_REGION_BY_NAME_BEGIN( name, type ) and
+  SCOREP_USER_REGION_BY_NAME_END( name )). These macros can annotate
+  user regions without the need to take care about the handle struct.
 
 User tools and API improvements and changes:
+
 - Due to the added task migration support, the default for the invokation
   of OPARI2 in the instrumenter was changed. Until now, the instrumenter
   let OPARI2 make all tasks tied and print a warning if an untied
@@ -31,6 +36,9 @@ User tools and API improvements and changes:
   specify how ofter the profiling system returns reallocated memory objects
   that have mirgated to another thread.
 - Support for cobi was removed.
+- SCOREP_User_RegionBegin / SCOREP_User_RegionInit accept NULL as
+  parameter value for lastFileName and lastFileHandle. This simplifies the
+  calls to these functions when used directly without the provided macros.
 
 Bugfixes:
 

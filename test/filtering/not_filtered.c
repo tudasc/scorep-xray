@@ -30,6 +30,6 @@ void
 filter_not2()
 {
     SCOREP_USER_FUNC_BEGIN();
-    printf( "4\n" );
+    printf( "%s\n", "5" );
     SCOREP_USER_FUNC_END();
 }
