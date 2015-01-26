@@ -51,7 +51,6 @@
 ****************************************************************************************/
 
 typedef struct scorep_profile_fork_list_node scorep_profile_fork_list_node;
-typedef struct scorep_profile_task           scorep_profile_task;
 
 /**
  * Data structure type for profile location data. Contains information about a
@@ -72,10 +71,10 @@ struct SCOREP_Profile_LocationData
     uint32_t                             num_foreign_stubs;        /**< Number of objects in @a foreign_stubs */
 
     scorep_profile_node*                 current_task_node;        /**< Callpath node of the current task */
-    scorep_profile_task*                 current_task;             /**< Current task instance */
-    scorep_profile_task*                 implicit_task;            /** Impliciti task instance */
-    scorep_profile_task*                 free_tasks;               /**< Released task structures */
-    scorep_profile_task*                 foreign_tasks;            /**< Released tasks from other creators */
+    struct scorep_profile_task*          current_task;             /**< Current task instance */
+    struct scorep_profile_task*          implicit_task;            /** Impliciti task instance */
+    struct scorep_profile_task*          free_tasks;               /**< Released task structures */
+    struct scorep_profile_task*          foreign_tasks;            /**< Released tasks from other creators */
     uint32_t                             num_foreign_tasks;        /**< Number of objects in @a foreign_tasks */
     int64_t                              migration_sum;            /**< Sum of task migrations from/to this location */
     uint64_t                             migration_win;            /**< Number of tasks that migrated here */
@@ -227,14 +226,14 @@ scorep_profile_recycle_stub( SCOREP_Profile_LocationData* location );
  */
 void
 scorep_profile_release_task( SCOREP_Profile_LocationData* location,
-                             scorep_profile_task*         task );
+                             struct scorep_profile_task*  task );
 
 /**
  * Returns a recycled task object if available.
  * @param location  The location on which the new task object is requested.
  * @retuns a recycled task object if available. Otherwise it returns NULL.
  */
-scorep_profile_task*
+struct scorep_profile_task*
 scorep_profile_recycle_task( SCOREP_Profile_LocationData* location );
 
 
