@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014,
+## Copyright (c) 2009-2012, 2014-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -53,7 +53,7 @@ TEST_DATA_DIR=$SRC_ROOT/test/adapters/cuda/data/$cuda_gold_file_version
 # Set up directory that will contain experiment results
 RESULT_DIR=$PWD/scorep-serial-cuda
 
-./scorep -v --build-check nvcc $SRC_ROOT/test/adapters/cuda/cuda_test.cu -o cuda_test -I.
+./scorep -v --build-check --nocompiler --user nvcc $SRC_ROOT/test/adapters/cuda/cuda_test.cu -o cuda_test -I.
 
 echo "Output of CUDA test can be found in $RESULT_DIR"
 
@@ -170,11 +170,12 @@ do
               # Kernels launched via the CUDA runtime API create two host-side stub functions
               # which include the kernel name. Even if no kernels are traced, these stubs still
               # have recorded enter/leave events.
-              num_kernels_expected=$((4*($num_streams+1)))
+              num_kernels_expected=$((2*($num_streams+1)))
 
               if [[ "$kernel" =~ "kernel" ]]; then
                   # Now we want to trace the actual device-side kernel events, too.
-                  num_kernels_expected=$((6*($num_streams+1)))
+                  # Thus expect an additional enter/exit pair for each stream
+                  num_kernels_expected=$((num_kernels_expected + 2*($num_streams+1)))
               fi
 
               if [ $num_kernels -ne $num_kernels_expected ]; then
@@ -187,10 +188,11 @@ do
 
               num_kernels=$($OTF2_PRINT $RESULT_DIR/traces.otf2 | LC_ALL=C grep -c 'clock_block')
               # Depends on the number of CUDA streams used (num_streams).
-              num_kernels_expected=$((4*$num_streams))
+              num_kernels_expected=$((2*$num_streams))
 
               if [[ "$kernel" =~ "kernel" ]]; then
-                  num_kernels_expected=$((6*$num_streams))
+                  # Thus expect an additional enter/exit pair for each stream
+                  num_kernels_expected=$((num_kernels_expected + 2*$num_streams))
               fi
 
               if [ $num_kernels -ne $num_kernels_expected ]; then
@@ -218,7 +220,7 @@ do
             testmode_pure=${testmode//-/}
             goldfile="$testmode_pure.$features_pure.gold"
             goldfile=$TEST_DATA_DIR/${goldfile//".."/.}
-            if [ -e $goldfile.host -a -e $goldfile.device ]; then
+            if [ -e $goldfile.device ]; then
                 # print, replace timestamps with 0 and write to trace_host.txt
                 $OTF2_PRINT $RESULT_DIR/traces.otf2 |
                   GREP_OPTIONS= grep '^ENTER\|LEAVE' |
@@ -234,15 +236,6 @@ do
                   LC_ALL=C sed -e 's/[^ ]*[^ ]/0/3' |
                   GREP_OPTIONS= egrep -v '^(ENTER|LEAVE)[[:space:]]+0' |
                   LC_ALL=C sed -e 's/<[0-9][0-9]*>$/<id>/g' > trace_device.txt
-
-                # compare host events to gold file
-                num_enter_events_gold_host=`GREP_OPTIONS= grep -c ENTER $goldfile.host`
-                num_enter_events_trace_host=`GREP_OPTIONS= grep -c ENTER trace_host.txt`
-                if [[ $num_enter_events_gold_host -ne $num_enter_events_trace_host ]]; then
-                  echo "-------- ERROR: in host event output --------" >&2
-                  diff -u $goldfile.host trace_host.txt >&2
-                  exit 1
-                fi
 
                 # compare device events to gold file
                 num_enter_events_gold_device=`GREP_OPTIONS= grep -c ENTER $goldfile.device`

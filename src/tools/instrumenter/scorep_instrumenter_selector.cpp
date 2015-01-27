@@ -132,7 +132,7 @@ SCOREP_Instrumenter_Selector::checkOption( std::string arg )
 }
 
 std::string
-SCOREP_Instrumenter_Selector::getConfigToolFlag( void )
+SCOREP_Instrumenter_Selector::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
 {
     if ( m_current_selection != NULL )
     {
@@ -417,7 +417,7 @@ SCOREP_Instrumenter_Selector::printSelectedParadigms( void )
 }
 
 std::string
-SCOREP_Instrumenter_Selector::getAllConfigToolFlags( void )
+SCOREP_Instrumenter_Selector::getAllConfigToolFlags( SCOREP_Instrumenter_CmdLine& cmdLine )
 {
     std::string                                flags;
     SCOREP_Instrumenter_SelectorList::iterator selector;
@@ -425,7 +425,7 @@ SCOREP_Instrumenter_Selector::getAllConfigToolFlags( void )
           selector != m_selector_list.end();
           selector++ )
     {
-        flags += ( *selector )->getConfigToolFlag();
+        flags += ( *selector )->getConfigToolFlag( cmdLine );
     }
     return flags;
 }

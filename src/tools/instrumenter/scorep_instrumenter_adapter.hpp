@@ -211,7 +211,7 @@ public:
      * this behavior, e.g., if you do not pass anything at all.
      */
     virtual std::string
-    getConfigToolFlag( void );
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
 
     /**
      * Changes the behavior of the adapter to use not the installed files, but the
@@ -390,7 +390,7 @@ public:
      * Returns the config tool flags for all adapters. It has a leading space.
      */
     static std::string
-    getAllConfigToolFlags( void );
+    getAllConfigToolFlags( SCOREP_Instrumenter_CmdLine& cmdLine );
 
     /**
      * Call the setBuildCheck function in all adapters.

@@ -31,6 +31,8 @@
 #include <stdlib.h>
 #include "jacobi.h"
 
+#include <scorep/SCOREP_User.h>
+
 #define U( j, i ) afU[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define F( j, i ) afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define UOLD( j, i ) uold[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
@@ -42,6 +44,8 @@ ExchangeJacobiMpiData( struct JacobiData* data,
 void
 Jacobi( struct JacobiData* data )
 {
+    SCOREP_USER_FUNC_BEGIN();
+
     /*use local pointers for performance reasons*/
     double* afU, * afF;
     int     i, j;
@@ -128,14 +132,19 @@ Jacobi( struct JacobiData* data )
     {
         fprintf( stderr, "Error: cant allocate memory\n" );
         Finish( data );
+        SCOREP_USER_FUNC_END();
         exit( 1 );
     }
+
+    SCOREP_USER_FUNC_END();
 }
 
 void
 ExchangeJacobiMpiData( struct JacobiData* data,
                        double*            uold )
 {
+    SCOREP_USER_FUNC_BEGIN();
+
     MPI_Request request[ 4 ];
     MPI_Status  status[ 4 ];
     double*     afU, * afF;
@@ -210,4 +219,6 @@ ExchangeJacobiMpiData( struct JacobiData* data,
 #line 164 "jacobi.c"
 
     MPI_Waitall( iReqCnt, request, status );
+
+    SCOREP_USER_FUNC_END();
 }

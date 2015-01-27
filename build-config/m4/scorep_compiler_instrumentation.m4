@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2014,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -47,7 +47,7 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
 
 AS_IF([test "x${have_compiler_instrumentation}" = xyes],
     [scorep_have_demangle="no"
-     AS_IF([test "x${ax_cv_c_compiler_vendor}" = xgnu || \
+     AS_IF([test "x${ax_cv_c_compiler_vendor}${scorep_compiler_gnu_with_plugin}" = xgnuno || \
             test "x${ax_cv_c_compiler_vendor}" = xcray || \
             test "x${ax_cv_c_compiler_vendor}" = xfujitsu],
          [AS_IF([test "x${ac_scorep_platform}" = xk ||
@@ -70,6 +70,8 @@ AS_IF([test "x${have_compiler_instrumentation}" = xyes],
           AM_CONDITIONAL(HAVE_LIBBFD, [test 1 -eq 0])
           AS_IF([test "x${ax_cv_c_compiler_vendor}" = xsun],
               [result="partially, studio compiler supports Fortran only."],
+              [test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],
+              [result="yes, using GCC plug-in with support for compile-time filtering"],
               [result="yes"])
          ])
     ])

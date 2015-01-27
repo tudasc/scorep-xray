@@ -47,7 +47,7 @@ public:
     postlink( SCOREP_Instrumenter&         instrumenter,
               SCOREP_Instrumenter_CmdLine& cmdLine );
     virtual std::string
-    getConfigToolFlag( void );
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
 
     virtual void
     setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine );

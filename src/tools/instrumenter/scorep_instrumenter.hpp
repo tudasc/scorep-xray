@@ -112,6 +112,9 @@ public:
     void
     prependInputFile( std::string filename );
 
+    void
+    appendInputFile( std::string filename );
+
     std::string
     getConfigBaseCall( void );
 

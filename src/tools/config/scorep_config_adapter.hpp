@@ -110,9 +110,9 @@ public:
      *                    if needed.
      * @param is_default  True, if this adapter is enabled by default.
      */
-    SCOREP_Config_Adapter( std::string name,
-                           std::string library,
-                           bool        is_default );
+    SCOREP_Config_Adapter( const std::string& name,
+                           const std::string& library,
+                           bool               is_default );
 
     /**
      * Destructs the adapter.
@@ -252,6 +252,8 @@ class SCOREP_Config_CompilerAdapter : public SCOREP_Config_Adapter
 {
 public:
     SCOREP_Config_CompilerAdapter();
+    virtual bool
+    checkArgument( const std::string& arg );
     virtual void
     addCFlags( std::string&           cflags,
                bool                   build_check,
@@ -261,6 +263,12 @@ public:
     addLdFlags( std::string& ldflags,
                 bool         build_check,
                 bool         nvcc );
+
+#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+private:
+    /** Any additional cflags */
+    std::string m_cflags;
+#endif
 };
 
 /* **************************************************************************************

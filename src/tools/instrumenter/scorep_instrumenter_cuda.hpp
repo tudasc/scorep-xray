@@ -38,7 +38,7 @@ public:
     checkCommand( const std::string& current,
                   const std::string& next );
     virtual std::string
-    getConfigToolFlag( void );
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
 
 private:
     /* Is the nvcc compiler used to drive the compilation/linking */

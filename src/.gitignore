@@ -10,6 +10,8 @@
 /config-backend-shmem.h.in
 /config-score.h
 /config-score.h.in
+/config-gcc-plugin.h.in
+/config-gcc-plugin.h
 /scorep_config_tool_backend.h
 /scorep_config_tool_mpi.h
 /stamp-h*

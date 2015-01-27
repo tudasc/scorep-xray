@@ -1,0 +1,124 @@
+/*
+ * This file is part of the Score-P software (http://www.score-p.org)
+ *
+ * Copyright (c) 2012-2014,
+ * Technische Universitaet Dresden, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license. See the COPYING file in the package base
+ * directory for details.
+ *
+ */
+
+/**
+ * @file
+ *
+ * @brief  Global vars and their parsing for the GCC plug-in.
+ *
+ */
+
+int scorep_plugin_verbosity              = 0;
+int scorep_plugin_symbol_verbosity       = 2;
+int scorep_plugin_disable_runtime_filter = 0;
+
+static int
+scorep_plugin_parameters_init( struct plugin_name_args* plugin_info )
+{
+    for ( int i = 0; i < plugin_info->argc; i++ )
+    {
+        const struct plugin_argument* arg = &plugin_info->argv[ i ];
+        if ( strcmp( arg->key, "filter" ) == 0 )
+        {
+            if ( !arg->value )
+            {
+                UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                             "Missing argument for filter paramter." );
+                return 1;
+            }
+            SCOREP_ErrorCode status = SCOREP_Filter_ParseFile( arg->value );
+
+            if ( status != SCOREP_SUCCESS )
+            {
+                UTILS_ERROR( status,
+                             "Couldn't load filter file '%s'.",
+                             arg->value );
+                return 1;
+            }
+        }
+        else if ( strcmp( arg->key, "verbosity" ) == 0 )
+        {
+            if ( !arg->value )
+            {
+                /* without argument, just increase the verbosity */
+                scorep_plugin_verbosity++;
+                continue;
+            }
+
+            char* endptr;
+            long  value = strtol( arg->value, &endptr, 0 );
+            if ( endptr == arg->value || *endptr || value < 0 )
+            {
+                UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                             "Invalid value for verbosity: '%s'.",
+                             arg->value );
+                return 1;
+            }
+
+            scorep_plugin_verbosity = value;
+        }
+        else if ( strcmp( arg->key, "symbol-verbosity" ) == 0 )
+        {
+            if ( !arg->value )
+            {
+                UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                             "Missing argument for symbol-verbosity paramter." );
+                return 1;
+            }
+
+            char* endptr;
+            long  value = strtol( arg->value, &endptr, 0 );
+            if ( endptr == arg->value || *endptr || value < 0 || value > 2 )
+            {
+                UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                             "Invalid value for symbol verbosity: '%s'.",
+                             arg->value );
+                return 1;
+            }
+
+            scorep_plugin_symbol_verbosity = value;
+        }
+        else if ( strcmp( arg->key, "disable-runtime-filter" ) == 0 )
+        {
+            /* -fplugin-arg-<plugin>-disable-runtime-filter will be handled as true */
+            if ( !arg->value
+                 || strcmp( arg->value, "true" ) == 0
+                 || strcmp( arg->value, "yes" ) == 0 )
+            {
+                scorep_plugin_disable_runtime_filter = 1;
+            }
+            else
+            {
+                char* endptr;
+                long  value = strtol( arg->value, &endptr, 0 );
+                if ( endptr == arg->value || *endptr || value < 0 )
+                {
+                    UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                                 "Invalid value for disable-runtime-filter: '%s'.",
+                                 arg->value );
+                    return 1;
+                }
+
+                scorep_plugin_disable_runtime_filter = !!value;
+            }
+        }
+        else
+        {
+            UTILS_ERROR( SCOREP_ERROR_INVALID_ARGUMENT,
+                         "Invalid parameter '%s'.",
+                         arg->key );
+            return 1;
+        }
+    }
+
+    return 0;
+}

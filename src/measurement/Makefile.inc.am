@@ -55,6 +55,7 @@ libscorep_measurement_core_la_SOURCES =                           \
     $(SRC_ROOT)src/measurement/include/SCOREP_Filter_Init.h       \
     $(SRC_ROOT)src/measurement/include/SCOREP_Properties.h        \
     $(SRC_ROOT)src/measurement/include/SCOREP_OA_Functions.h      \
+    $(SRC_ROOT)src/measurement/include/SCOREP_ErrorCallback.h     \
     $(SRC_ROOT)src/measurement/include/SCOREP_Task.h              \
     $(SRC_ROOT)src/measurement/include/SCOREP_Paradigms.h         \
     $(SRC_ROOT)src/measurement/filtering/SCOREP_Filter_Init.c     \
@@ -89,7 +90,6 @@ libscorep_measurement_core_la_SOURCES =                           \
     $(SRC_ROOT)src/measurement/scorep_clock_synchronization.c     \
     $(SRC_ROOT)src/measurement/scorep_runtime_management_timings.h \
     $(SRC_ROOT)src/measurement/scorep_runtime_management_timings.c \
-    $(SRC_ROOT)src/measurement/scorep_error_callback.h            \
     $(SRC_ROOT)src/measurement/scorep_error_callback.c            \
     $(SRC_ROOT)src/measurement/scorep_task_internal.h
 

@@ -16,6 +16,11 @@ Common options are:
   --keep-files    Do not delete temporarily created files after successfull
                   instrumentation. By default, temporary files are deleted
                   if no error occures during instrumentation.
+  --instrument-filter=<file>
+                  Specifies the filter file for filtering functions during
+                  compile-time. Not supported by all instrumentation methods.
+                  It applies the same syntax, as the one used by Score-P during
+                  run-time.
   --version       Prints the Score-P version and exits.
   --static        Enforce static linking of the Score-P libraries.
   --dynamic       Enforce dynamic linking of the Score-P libraries.

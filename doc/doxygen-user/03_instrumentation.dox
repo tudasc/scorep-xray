@@ -338,6 +338,11 @@ appropriate support in their Fortran compiler.
   possible to prevent the instrumentation of specific functions on all
   platforms when using automatic compiler instrumentation.
 
+@note
+  As an exception, the GCC plug-in based function instrumentation supports all
+  filtering features when using the @verb{--instrument-filter} flag to the
+  @scorep instrumenter (see Sec. @secref{filtering}).
+
 Names provided for instrumented routines depend on the compiler, which may
 add underscores and other decorations to Fortran and C++ routine names, and
 whether name "demangling" has been enabled when @scorep was installed

@@ -114,6 +114,13 @@ various Score-P components.
     functions from shared libraries, will not appear (are
     automatically filtered) in the measurement output.
 
+  - The new GNU compiler instrumentation based on the plug-in interface is
+    currently not available on cross build machines.
+
+  - Due to heavy changes in the GNU compiler infrastructure, the instrumentation
+    based on the plug-in interface is currently not available for GNU Compiler
+    versions greater then 4.9.
+
   - The pgCC compiler versions 13.9 and higher preinclude omp.h for
     OpenMP codes. This results in multiply defined symbols if the
     source file is preprocessed before compilation. Since version 14.1

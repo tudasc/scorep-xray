@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2014-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -40,21 +40,17 @@ mpi_omp_hello_world_uninstrumented_SOURCES  = $(SRC_ROOT)test/mpi_omp/mpi_omp_he
 mpi_omp_hello_world_uninstrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 mpi_omp_hello_world_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
 
-
-check_LTLIBRARIES                      += libmpi_omp_hello_world_pomp.la
-libmpi_omp_hello_world_pomp_la_SOURCES  = $(SRC_ROOT)test/mpi_omp/pomp.c
-libmpi_omp_hello_world_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
-
 if HAVE_SCOREP_OMP_TPD
 
 check_PROGRAMS += mpi_omp_hello_world
 
-mpi_omp_hello_world_SOURCES  = $(SRC_ROOT)test/mpi_omp/mpi_omp_hello_world.mod.c      \
-                               $(SRC_ROOT)test/mpi_omp/mpi_omp_hello_world.c.opari.inc
+mpi_omp_hello_world_SOURCES  = $(SRC_ROOT)test/mpi_omp/mpi_omp_hello_world.mod.c       \
+                               $(SRC_ROOT)test/mpi_omp/mpi_omp_hello_world.c.opari.inc \
+                               $(SRC_ROOT)test/mpi_omp/pomp.c
 mpi_omp_hello_world_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-mpi_omp_hello_world_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
-mpi_omp_hello_world_LDADD    = $(mpi_omp_libadd) libmpi_omp_hello_world_pomp.la
-mpi_omp_hello_world_LDFLAGS  = $(mpi_omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
+mpi_omp_hello_world_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
+mpi_omp_hello_world_LDADD    = $(mpi_omp_libadd)
+mpi_omp_hello_world_LDFLAGS  = $(mpi_omp_ldflags)
 
 TESTS_MPI_OMP += mpi_omp_hello_world
 

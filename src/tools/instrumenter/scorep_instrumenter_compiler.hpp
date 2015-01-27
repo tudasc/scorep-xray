@@ -32,12 +32,18 @@ class SCOREP_Instrumenter_CompilerAdapter : public SCOREP_Instrumenter_Adapter
 {
 public:
     SCOREP_Instrumenter_CompilerAdapter( void );
+
     virtual std::string
-    getConfigToolFlag( void );
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
+
     virtual std::string
     precompile( SCOREP_Instrumenter&         instrumenter,
                 SCOREP_Instrumenter_CmdLine& cmdLine,
                 const std::string&           source_file );
+
+    virtual void
+    prelink( SCOREP_Instrumenter&         instrumenter,
+             SCOREP_Instrumenter_CmdLine& cmdLine );
 };
 
 #endif

@@ -73,6 +73,9 @@
 #elif defined SCORE_BUILD
     #include <config-score.h>
 
+#elif defined GCC_PLUGIN_BUILD
+       #include <config-gcc-plugin.h>
+
 #else
     #error "You cannot use config.h without defining either CROSS_BUILD or NOCROSS_BUILD."
 #endif

@@ -33,7 +33,7 @@ class SCOREP_Instrumenter_OpenCLAdapter : public SCOREP_Instrumenter_Adapter
 public:
     SCOREP_Instrumenter_OpenCLAdapter( void );
     virtual std::string
-    getConfigToolFlag( void );
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
     virtual void
     printHelp( void );
     virtual bool

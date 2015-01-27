@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -39,16 +39,13 @@ check_PROGRAMS                   += jacobi_mpi_c_metric_test
 jacobi_mpi_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/MPI/C/jacobi.c  \
                                     $(SRC_ROOT)test/services/metric/data/jacobi/MPI/C/jacobi.h  \
                                     $(SRC_ROOT)test/services/metric/data/jacobi/MPI/C/main.c
-jacobi_mpi_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
-
-# TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
-# printf statements, REMOVE this flag after this bug is fixed properly
-if SCOREP_COMPILER_GNU
-jacobi_mpi_c_metric_test_CPPFLAGS += -finstrument-functions-exclude-file-list=/usr/include
-endif
+jacobi_mpi_c_metric_test_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)include \
+    -DSCOREP_USER_ENABLE
 
 jacobi_mpi_c_metric_test_LDADD    = $(mpi_libadd)
-jacobi_mpi_c_metric_test_LDFLAGS  = $(mpi_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
+jacobi_mpi_c_metric_test_LDFLAGS  = $(mpi_ldflags)
 
 EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_mpi_metric_test.sh \
               $(SRC_ROOT)test/services/metric/data/jacobi_c_mpi_rusage_metric_definitions.out \
@@ -76,10 +73,6 @@ TESTS_MPI += jacobi_mpi_c_metric_test
 
 if HAVE_OPENMP_SUPPORT
 
-check_LTLIBRARIES                           += libjacobi_mpi_pomp_c_metric_test.la
-libjacobi_mpi_pomp_c_metric_test_la_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/pomp.c
-libjacobi_mpi_pomp_c_metric_test_la_CPPFLAGS = $(AM_CPPFLAGS)
-
 if HAVE_SCOREP_OMP_TPD
 
 check_PROGRAMS                       += jacobi_mpi_omp_c_metric_test
@@ -87,30 +80,29 @@ jacobi_mpi_omp_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jac
                                         $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/jacobi.c.opari.inc \
                                         $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/jacobi.h           \
                                         $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/main.mod.c         \
-                                        $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/main.c.opari.inc
+                                        $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/main.c.opari.inc   \
+                                        $(SRC_ROOT)test/services/metric/data/jacobi/hybrid/C/pomp.c
 jacobi_mpi_omp_c_metric_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-jacobi_mpi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
-
-# TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
-# printf statements, REMOVE this flag after this bug is fixed properly
-if SCOREP_COMPILER_GNU
-jacobi_mpi_omp_c_metric_test_CPPFLAGS += -finstrument-functions-exclude-file-list=/usr/include
-endif
+jacobi_mpi_omp_c_metric_test_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    @OPARI2_CPPFLAGS@ \
+    -I$(PUBLIC_INC_DIR) \
+    -DSCOREP_USER_ENABLE
 
 # for some unknown reason we need an extra -I for the SUN compiler in
 # OpenMP and hybrid mode.
 if SCOREP_COMPILER_SUN
 jacobi_mpi_omp_c_metric_test_CPPFLAGS += -I$(INC_ROOT)test/jacobi/OpenMP/C
-endif
+endif SCOREP_COMPILER_SUN
 
-jacobi_mpi_omp_c_metric_test_LDADD    = $(mpi_omp_libadd) libjacobi_mpi_pomp_c_metric_test.la
-jacobi_mpi_omp_c_metric_test_LDFLAGS  = $(mpi_omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
+jacobi_mpi_omp_c_metric_test_LDADD    = $(mpi_omp_libadd)
+jacobi_mpi_omp_c_metric_test_LDFLAGS  = $(mpi_omp_ldflags)
 
 # for some unknown reason we need an extra -I for the SUN compiler in
 # OpenMP and hybrid mode.
 if SCOREP_COMPILER_SUN
 jacobi_mpi_omp_c_metric_test_CPPFLAGS += -I$(INC_ROOT)test/services/metric/data/jacobi/hybrid/C
-endif
+endif SCOREP_COMPILER_SUN
 
 
 EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_hybrid_metric_test.sh \
@@ -138,8 +130,6 @@ endif HAVE_SCOREP_OMP_TPD
 ##endif
 
 
-endif
-# !HAVE_OPENMP_SUPPORT
+endif HAVE_OPENMP_SUPPORT
 
-endif
-# !HAVE_MPI_SUPPORT
+endif HAVE_MPI_SUPPORT

@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include "jacobi.h"
 
+#include <scorep/SCOREP_User.h>
+
 #define U( j, i ) afU[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define F( j, i ) afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define UOLD( j, i ) uold[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
@@ -35,14 +37,17 @@
 void
 Jacobi( struct JacobiData* data )
 {
+    SCOREP_USER_FUNC_BEGIN();
+
     /*use local pointers for performance reasons*/
     double* afU, * afF;
     int     i, j;
     double  fLRes;
 
-    double  ax, ay, b, residual, tmpResd;
+    double ax, ay, b, residual, tmpResd;
 
     double* uold = ( double* )malloc( data->iCols * data->iRows * sizeof( double ) );
+
     afU = data->afU;
     afF = data->afF;
 
@@ -53,41 +58,36 @@ Jacobi( struct JacobiData* data )
         b        = -2.0 * ( ax + ay ) - data->fAlpha; /* Central coeff */
         residual = 10.0 * data->fTolerance;
 
-        while ( data->iIterCount < data->iIterMax && residual > data->fTolerance )
+        while ( data->iIterCount < data->iIterMax&& residual > data->fTolerance )
         {
             residual = 0.0;
 
             /* copy new solution into old */
-#pragma omp parallel
+            for ( j = 1; j < data->iRows - 1; j++ )
             {
-#pragma omp for private(j, i)
-                for ( j = 1; j < data->iRows - 1; j++ )
+                for ( i = 1; i < data->iCols - 1; i++ )
                 {
-                    for ( i = 1; i < data->iCols - 1; i++ )
-                    {
-                        UOLD( j, i ) = U( j, i );
-                    }
+                    UOLD( j, i ) = U( j, i );
                 }
+            }
 
 
-                /* compute stencil, residual and update */
-#pragma omp for private(j, i, fLRes) reduction(+:residual)
-                for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
+            /* compute stencil, residual and update */
+            for ( j = data->iRowFirst + 1; j <= data->iRowLast - 1; j++ )
+            {
+                for ( i = 1; i <= data->iCols - 2; i++ )
                 {
-                    for ( i = 1; i <= data->iCols - 2; i++ )
-                    {
-                        fLRes = ( ax * ( UOLD( j, i - 1 ) + UOLD( j, i + 1 ) )
-                                  + ay * ( UOLD( j - 1, i ) + UOLD( j + 1, i ) )
-                                  +  b * UOLD( j, i ) - F( j, i ) ) / b;
+                    fLRes = ( ax * ( UOLD( j, i - 1 ) + UOLD( j, i + 1 ) )
+                              + ay * ( UOLD( j - 1, i ) + UOLD( j + 1, i ) )
+                              +  b * UOLD( j, i ) - F( j, i ) ) / b;
 
-                        /* update solution */
-                        U( j, i ) = UOLD( j, i ) - data->fRelax * fLRes;
+                    /* update solution */
+                    U( j, i ) = UOLD( j, i ) - data->fRelax * fLRes;
 
-                        /* accumulate residual error */
-                        residual += fLRes * fLRes;
-                    }
+                    /* accumulate residual error */
+                    residual += fLRes * fLRes;
                 }
-            } /* end omp parallel */
+            }
 
             /* error check */
             ( data->iIterCount )++;
@@ -101,6 +101,9 @@ Jacobi( struct JacobiData* data )
     {
         fprintf( stderr, "Error: cant allocate memory\n" );
         Finish( data );
+        SCOREP_USER_FUNC_END();
         exit( 1 );
     }
+
+    SCOREP_USER_FUNC_END();
 }

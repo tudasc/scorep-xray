@@ -35,7 +35,7 @@ public:
     virtual void
     printHelp( void );
     virtual std::string
-    getConfigToolFlag( void );
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
 };
 
 #endif

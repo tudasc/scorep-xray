@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -35,14 +35,10 @@ check_PROGRAMS                       += jacobi_serial_c_metric_test
 jacobi_serial_c_metric_test_SOURCES   = $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/jacobi.c  \
                                         $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/jacobi.h  \
                                         $(SRC_ROOT)test/services/metric/data/jacobi/serial/C/main.c
-jacobi_serial_c_metric_test_CPPFLAGS  = $(AM_CPPFLAGS) @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
-
-# TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
-# printf statements, REMOVE this flag after this bug is fixed properly
-if SCOREP_COMPILER_GNU
-jacobi_serial_c_metric_test_CPPFLAGS += -finstrument-functions-exclude-file-list=/usr/include
-endif
-
+jacobi_serial_c_metric_test_CPPFLAGS  = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)include \
+    -DSCOREP_USER_ENABLE
 jacobi_serial_c_metric_test_LDADD     = $(serial_libadd)
 
 
@@ -61,18 +57,12 @@ endif
 if HAVE_PAPI
 TESTS_SERIAL += ./../test/services/metric/run_papi_serial_metric_test.sh
 endif
-jacobi_serial_c_metric_test_LDFLAGS   = $(serial_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
+jacobi_serial_c_metric_test_LDFLAGS   = $(serial_ldflags)
 endif
 
 ## OpenMP
 
 if HAVE_OPENMP_SUPPORT
-
-# the pomp.c file needs to be compiled without compiler instrumentation
-# to achieve this, we put it in a noinst library and link against it
-check_LTLIBRARIES                       += libjacobi_pomp_c_metric_test.la
-libjacobi_pomp_c_metric_test_la_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/pomp.c
-libjacobi_pomp_c_metric_test_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(INC_ROOT)src
 
 if HAVE_SCOREP_OMP_TPD
 
@@ -81,15 +71,14 @@ jacobi_omp_c_metric_test_SOURCES  = $(SRC_ROOT)test/services/metric/data/jacobi/
                                     $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/jacobi.c.opari.inc \
                                     $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/jacobi.h           \
                                     $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/main.mod.c         \
-                                    $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/main.c.opari.inc
+                                    $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/main.c.opari.inc   \
+                                    $(SRC_ROOT)test/services/metric/data/jacobi/OpenMP/C/pomp.c
 jacobi_omp_c_metric_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-jacobi_omp_c_metric_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
-
-# TODO: -finstrument-functions-exclude-file-list is a quick fix for the problem of recorded enter/leave events of
-# printf statements, REMOVE this flag after this bug is fixed properly
-if SCOREP_COMPILER_GNU
-jacobi_omp_c_metric_test_CPPFLAGS += -finstrument-functions-exclude-file-list=/usr/include
-endif
+jacobi_omp_c_metric_test_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    @OPARI2_CPPFLAGS@ \
+    -I$(PUBLIC_INC_DIR) \
+    -DSCOREP_USER_ENABLE
 
 # for some unknown reason we need an extra -I for the SUN compiler in
 # OpenMP and hybrid mode.
@@ -97,7 +86,7 @@ if SCOREP_COMPILER_SUN
 jacobi_omp_c_metric_test_CPPFLAGS += -I$(INC_ROOT)test/jacobi/OpenMP/C
 endif
 
-jacobi_omp_c_metric_test_LDADD    = $(omp_libadd) libjacobi_pomp_c_metric_test.la
+jacobi_omp_c_metric_test_LDADD    = $(omp_libadd)
 
 EXTRA_DIST += $(SRC_ROOT)test/services/metric/run_rusage_openmp_metric_test.sh.in \
               $(SRC_ROOT)test/services/metric/data/jacobi_c_openmp_rusage_metric_definitions.out \
@@ -125,7 +114,7 @@ TESTS_OMP  += ./../test/services/metric/run_papi_openmp_metric_test.sh \
               ./../test/services/metric/run_papi_openmp_per_process_metric_test.sh
 endif
 
-jacobi_omp_c_metric_test_LDFLAGS  = $(omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
+jacobi_omp_c_metric_test_LDFLAGS  = $(omp_ldflags)
 
 endif !SCOREP_COMPILER_SUN
 

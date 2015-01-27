@@ -7,6 +7,13 @@ Major features:
   threads, asynchronous metric plugins, and accelerator (CUDA/OpenCL/...)
   streams.
 - Basic support for OpenCL instrumentation.
+- For GCC versions 4.5 till 4.9 a new function instrumentation is available
+  via the plug-in interface of the compiler. This new function instrumentation
+  greatly improves the measurement performance. It also provides compile-time
+  instrumentation filtering using the same filter file format as the run-time
+  filtering.
+  On some systems the GCC plug-in dev package needs to be installed, in
+  order to provide the necessary header files.
 
 Features and improvements:
 

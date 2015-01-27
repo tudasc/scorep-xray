@@ -38,7 +38,7 @@ public:
     SCOREP_Instrumenter_PdtAdapter( void );
 
     virtual std::string
-    getConfigToolFlag( void );
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
 
     /**
      * Instruments @a source_file with the Tau instrumentor.

@@ -1,0 +1,100 @@
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2012-2014,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+if HAVE_GCC_PLUGIN_SUPPORT
+
+pkglib_LTLIBRARIES = scorep_instrument_function.la
+
+scorep_plugin_cppflags = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/utils/filtering \
+    @GCC_PLUGIN_CPPFLAGS@
+
+scorep_instrument_function_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/scorep_error_callback.c \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin.h \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_descriptor.h \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_handle.h \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_hook.h \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_tree-flow.h \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_gcc_version_compatibility.h
+scorep_instrument_function_la_LDFLAGS = \
+    -module \
+    -export-symbols-regex='^(plugin_init|plugin_is_GPL_compatible)$$'
+scorep_instrument_function_la_LIBADD =
+
+
+if GCC_COMPILED_WITH_CXX
+
+noinst_LTLIBRARIES += libscorep_instrument_function_cxx.la
+libscorep_instrument_function_cxx_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_descriptor.cpp \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_handle.cpp \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_hook.cpp \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_attribute.cpp \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_pass_instrument.cpp
+libscorep_instrument_function_cxx_la_CPPFLAGS = \
+    $(scorep_plugin_cppflags)
+libscorep_instrument_function_cxx_la_CXXFLAGS = \
+    $(AM_CXXFLAGS) \
+    @GCC_PLUGIN_CXXFLAGS@
+
+scorep_instrument_function_la_LIBADD += libscorep_instrument_function_cxx.la
+
+if GCC_VERSION_GE_49
+
+libscorep_instrument_function_cxx_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_cxx.cpp
+
+else !GCC_VERSION_GE_49
+
+libscorep_instrument_function_cxx_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_cc.c
+
+endif !GCC_VERSION_GE_49
+
+else !GCC_COMPILED_WITH_CXX
+
+noinst_LTLIBRARIES += libscorep_instrument_function_cc.la
+libscorep_instrument_function_cc_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_descriptor.c \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_handle.c \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_hook.c \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_attribute.c \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_pass_instrument.c \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_cc.c
+libscorep_instrument_function_cc_la_CPPFLAGS = \
+    $(scorep_plugin_cppflags)
+libscorep_instrument_function_cc_la_CFLAGS = \
+    $(AM_CFLAGS)
+
+scorep_instrument_function_la_LIBADD += libscorep_instrument_function_cc.la
+
+endif !GCC_COMPILED_WITH_CXX
+
+scorep_instrument_function_la_CPPFLAGS = \
+    $(scorep_plugin_cppflags)
+scorep_instrument_function_la_LIBADD += \
+    libscorep_filter.la \
+    libutils.la
+
+endif HAVE_GCC_PLUGIN_SUPPORT
+
+EXTRA_DIST += \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_parameters.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_attribute.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_descriptor.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_handle.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_hook.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_pass_instrument.inc.c
+

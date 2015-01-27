@@ -12,6 +12,7 @@ LOCAL_CONFIGURES = \
 	build-frontend/configure \
 	build-mpi/configure \
 	build-shmem/configure \
+	build-gcc-plugin/configure \
 	build-score/configure
 
 SUB_CONFIGURES = \
@@ -52,6 +53,9 @@ build-mpi/configure: build-backend/configure
 build-shmem/configure: build-backend/configure
 	cd build-shmem; $(AUTORECONF) $(AUTORECONFFLAGS)
 
+build-gcc-plugin/configure: build-backend/configure
+	cd build-gcc-plugin; $(AUTORECONF) $(AUTORECONFFLAGS)
+
 build-score/configure: build-backend/configure
 	cd build-score; $(AUTORECONF) $(AUTORECONFFLAGS)
 
@@ -80,7 +84,8 @@ sub_builds = \
 	mpi \
 	shmem \
 	frontend \
-	score
+	score \
+	gcc-plugin
 
 config_headers = \
 	backend \
@@ -88,7 +93,8 @@ config_headers = \
 	backend-shmem \
 	frontend \
 	backend-for-frontend \
-	score
+	score \
+	gcc-plugin
 
 clean-local:
 	@rm -rf $(clean_files)

@@ -157,9 +157,9 @@ SCOREP_Config_Adapter::addLdFlagsAll( std::string& ldflags,
     }
 }
 
-SCOREP_Config_Adapter::SCOREP_Config_Adapter( std::string name,
-                                              std::string library,
-                                              bool        is_default )
+SCOREP_Config_Adapter::SCOREP_Config_Adapter( const std::string& name,
+                                              const std::string& library,
+                                              bool               is_default )
     : m_is_enabled( is_default ),
       m_name( name ),
       m_library( library )
@@ -258,6 +258,26 @@ SCOREP_Config_CompilerAdapter::SCOREP_Config_CompilerAdapter()
 {
 }
 
+bool
+SCOREP_Config_CompilerAdapter::checkArgument( const std::string& arg )
+{
+    if ( SCOREP_Config_Adapter::checkArgument( arg ) )
+    {
+        return true;
+    }
+
+#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+    /* Catch any compiler plug-in args */
+    if ( arg.substr( 0, 22 ) == "--compiler-plugin-arg=" )
+    {
+        m_cflags += "-fplugin-arg-scorep_instrument_function-" + arg.substr( 22 ) + " ";
+        return true;
+    }
+#endif
+
+    return false;
+}
+
 void
 SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
                                           bool                   build_check,
@@ -267,6 +287,19 @@ SCOREP_Config_CompilerAdapter::addCFlags( std::string&           cflags,
     if ( m_is_enabled )
     {
         cflags += SCOREP_COMPILER_INSTRUMENTATION_CFLAGS " ";
+
+#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+        if ( build_check )
+        {
+            extern std::string path_to_binary;
+            cflags += "-fplugin=" + path_to_binary + "../build-gcc-plugin/" LT_OBJDIR "scorep_instrument_function.so ";
+        }
+        else
+        {
+            cflags += "-fplugin=" SCOREP_PKGLIBDIR "/scorep_instrument_function.so ";
+        }
+        cflags += m_cflags;
+#endif
     }
 }
 

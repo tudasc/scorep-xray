@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2013, 2014,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -11,7 +14,7 @@
  */
 
 /**
- * @file scorep_instrumenter_compiler.cpp
+ * @file
  *
  * Implements the class for compiler instrumentation.
  */
@@ -81,13 +84,33 @@ SCOREP_Instrumenter_CompilerAdapter::SCOREP_Instrumenter_CompilerAdapter( void )
 }
 
 std::string
-SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( void )
+SCOREP_Instrumenter_CompilerAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine )
 {
     if ( !isEnabled() )
     {
         return " --no" + m_name;
     }
-    return "";
+
+    std::string flags;
+
+#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+    if ( cmdLine.getVerbosity() >= 1 )
+    {
+        std::ostringstream verbosity_arg;
+        verbosity_arg << " --compiler-plugin-arg=verbosity=";
+        verbosity_arg << cmdLine.getVerbosity();
+        flags += verbosity_arg.str();
+    }
+    const std::vector<std::string>& filter_files = cmdLine.getInstrumentFilterFiles();
+    for ( std::vector<std::string>::const_iterator file_it = filter_files.begin();
+          file_it != filter_files.end();
+          ++file_it )
+    {
+        flags += " --compiler-plugin-arg=filter=" + *file_it;
+    }
+#endif // HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+
+    return flags;
 }
 
 std::string
@@ -168,4 +191,29 @@ SCOREP_Instrumenter_CompilerAdapter::precompile
 #endif // SCOREP_BACKEND_COMPILER_IBM
 
     return input_file;
+}
+
+void
+SCOREP_Instrumenter_CompilerAdapter::prelink( SCOREP_Instrumenter&         instrumenter,
+                                              SCOREP_Instrumenter_CmdLine& cmdLine )
+{
+#if HAVE_BACKEND( GCC_PLUGIN_SUPPORT )
+    if ( !cmdLine.isTargetSharedLib() )
+    {
+        if ( cmdLine.isBuildCheck() )
+        {
+            instrumenter.prependInputFile(
+                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_gcc_plugin_begin.o" );
+            instrumenter.appendInputFile(
+                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_gcc_plugin_end.o" );
+        }
+        else
+        {
+            instrumenter.prependInputFile(
+                SCOREP_PKGLIBDIR "/scorep_compiler_gcc_plugin_begin.o" );
+            instrumenter.appendInputFile(
+                SCOREP_PKGLIBDIR "/scorep_compiler_gcc_plugin_end.o" );
+        }
+    }
+#endif
 }

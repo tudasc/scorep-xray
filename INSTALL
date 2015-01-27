@@ -415,6 +415,25 @@ Note that parallel builds (i.e., using 'make -j <n>') are fully supported.
 
 
 
+                      Platform-specific Instructions
+                      ==============================
+
+GNU Compiler Plug-In
+====================
+
+   On some system the necessary header files, for compiling with support for
+the GNU Compiler plug-in instrumentation, are not installed by default. Therefore
+an extra package needs to be installed.
+
+On Debian and it's derivates the package is called:
+
+     gcc-<version>-plugin-dev
+
+On Fedora and it's derivates the mentioned package is called:
+
+     gcc-plugin-devel
+
+
 
                      Generic Installation Instructions
                      =================================

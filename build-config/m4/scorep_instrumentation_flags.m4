@@ -6,6 +6,9 @@ dnl
 dnl Copyright (c) 2013
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
+dnl Copyright (c) 2013-2015,
+dnl Technische Universitaet Dresden, Germany
+dnl
 dnl This software may be modified and distributed under the terms of
 dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
@@ -23,12 +26,20 @@ AC_ARG_WITH([extra-instrumentation-flags],
             [scorep_with_extra_instrumentation_cppflags=$withval],
             [scorep_with_extra_instrumentation_cppflags=""])dnl
 
+AC_SCOREP_COND_HAVE([GCC_PLUGIN_SUPPORT],
+                    [test -f ../build-gcc-plugin/gcc_plugin_supported],
+                    [Defined if GCC plug-in support is available.],
+                    [scorep_compiler_gnu_with_plugin=yes],
+                    [scorep_compiler_gnu_with_plugin=no])
+
 AS_CASE([${ax_cv_c_compiler_vendor}],
     [intel],    [scorep_compiler_instrumentation_cppflags="-tcollect"],
     [sun],      [scorep_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"],
     [ibm],      [scorep_compiler_instrumentation_cppflags="-qdebug=function_trace"],
     [portland], [scorep_compiler_instrumentation_cppflags="-Mprof=func"],
-    [gnu],      [scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"],
+    [gnu],      [AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],
+                       [scorep_compiler_instrumentation_cppflags=""],
+                       [scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"])],
     [cray],     [scorep_compiler_instrumentation_cppflags="-G2 -hfunc_trace"
                  scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"],
     [fujitsu],  [scorep_compiler_instrumentation_cppflags="-g -Ntl_vtrc -Ntl_notrt"],

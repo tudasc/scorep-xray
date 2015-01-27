@@ -2,15 +2,29 @@
  * This file is part of the Score-P software (http://www.score-p.org)
  *
  * Copyright (c) 2009-2011,
- *    RWTH Aachen University, Germany
- *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
- *    Technische Universitaet Dresden, Germany
- *    University of Oregon, Eugene, USA
- *    Forschungszentrum Juelich GmbH, Germany
- *    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
- *    Technische Universitaet Muenchen, Germany
+ * RWTH Aachen University, Germany
  *
- * See the COPYING file in the package base directory for details.
+ * Copyright (c) 2009-2011,
+ * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+ *
+ * Copyright (c) 2009-2011, 2014-2015,
+ * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * University of Oregon, Eugene, USA
+ *
+ * Copyright (c) 2009-2011,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+ *
+ * Copyright (c) 2009-2011,
+ * Technische Universitaet Muenchen, Germany
+ *
+ * This software may be modified and distributed under the terms of
+ * a BSD-style license.  See the COPYING file in the package base
+ * directory for details.
  *
  */
 
@@ -28,6 +42,8 @@
 #include <omp.h>
 #include "jacobi.h"
 
+#include <scorep/SCOREP_User.h>
+
 #define U( j, i ) data->afU[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define F( j, i ) data->afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 
@@ -39,6 +55,8 @@ Init( struct JacobiData* data,
       int*               argc,
       char**             argv )
 {
+    SCOREP_USER_FUNC_BEGIN();
+
     int          i;
     int          block_lengths[ 8 ];
     MPI_Datatype MPI_JacobiData;
@@ -148,6 +166,8 @@ Init( struct JacobiData* data,
 
     data->iIterCount = 0;
 
+    SCOREP_USER_FUNC_END();
+
     return;
 }
 
@@ -157,9 +177,13 @@ Init( struct JacobiData* data,
 void
 Finish( struct JacobiData* data )
 {
+    SCOREP_USER_FUNC_BEGIN();
+
     free( data->afU );
     free( data->afF );
     MPI_Finalize();
+
+    SCOREP_USER_FUNC_END();
 
     return;
 }
@@ -170,6 +194,8 @@ Finish( struct JacobiData* data )
 void
 PrintResults( const struct JacobiData* data )
 {
+    SCOREP_USER_FUNC_BEGIN();
+
     if ( data->iMyRank == 0 )
     {
         printf( " Number of iterations : %d\n", data->iIterCount );
@@ -181,6 +207,9 @@ PrintResults( const struct JacobiData* data )
                 0.000013 * data->iIterCount * ( data->iCols - 2 ) * ( data->iRows - 2 )
                 / ( data->fTimeStop - data->fTimeStart ) );
     }
+
+    SCOREP_USER_FUNC_END();
+
     return;
 }
 
@@ -191,6 +220,8 @@ PrintResults( const struct JacobiData* data )
 void
 InitializeMatrix( struct JacobiData* data )
 {
+    SCOREP_USER_FUNC_BEGIN();
+
     int    i, j;
     double xx, yy, xx2, yy2;
 
@@ -211,6 +242,8 @@ InitializeMatrix( struct JacobiData* data )
                         + 2.0 * ( -2.0 + xx2 + yy2 );
         }
     }
+
+    SCOREP_USER_FUNC_END();
 }
 
 /*
@@ -219,6 +252,8 @@ InitializeMatrix( struct JacobiData* data )
 void
 CheckError( struct JacobiData* data )
 {
+    SCOREP_USER_FUNC_BEGIN();
+
     double error = 0.0;
     int    i, j;
     double xx, yy, temp;
@@ -244,6 +279,8 @@ CheckError( struct JacobiData* data )
     MPI_Reduce( &data->fError, &error, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD );
     data->fError = sqrt( error ) / ( data->iCols * data->iRows );
 
+    SCOREP_USER_FUNC_END();
+
     return;
 }
 
@@ -252,6 +289,8 @@ int
 main( int    argc,
       char** argv )
 {
+    SCOREP_USER_FUNC_BEGIN();
+
     int               retVal = 0; /* return value */
 
     struct JacobiData myData;
@@ -291,6 +330,8 @@ main( int    argc,
 
     /* cleanup */
     Finish( &myData );
+
+    SCOREP_USER_FUNC_END();
 
     return retVal;
 }

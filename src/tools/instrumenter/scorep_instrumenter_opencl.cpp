@@ -46,7 +46,7 @@ SCOREP_Instrumenter_OpenCLAdapter::SCOREP_Instrumenter_OpenCLAdapter( void )
 }
 
 std::string
-SCOREP_Instrumenter_OpenCLAdapter::getConfigToolFlag( void )
+SCOREP_Instrumenter_OpenCLAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
 {
     std::string flags;
 

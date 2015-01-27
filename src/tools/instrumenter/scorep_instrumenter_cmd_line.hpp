@@ -178,6 +178,9 @@ public:
     std::string
     getLibraryFiles( void );
 
+    const std::vector<std::string>&
+    getInstrumentFilterFiles( void ) const;
+
 #if defined( SCOREP_SHARED_BUILD )
     /**
      * Returns true if the user provided --no-as-needed on the command
@@ -384,6 +387,11 @@ private:
        input file names
      */
     std::vector<std::string> m_input_files;
+
+    /**
+       instrument filter files
+     */
+    std::vector<std::string> m_filters;
 
     /**
        number of input file names.

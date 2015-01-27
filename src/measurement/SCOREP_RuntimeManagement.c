@@ -68,9 +68,9 @@
 #include <SCOREP_Filter_Init.h>
 #include <scorep_unify.h>
 #include <SCOREP_OA_RuntimeManagement.h>
+#include <SCOREP_ErrorCallback.h>
 #include <SCOREP_Task.h>
 
-#include "scorep_error_callback.h"
 #include "scorep_types.h"
 #include "scorep_subsystem.h"
 #include "scorep_environment.h"

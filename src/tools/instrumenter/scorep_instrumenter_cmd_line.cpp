@@ -265,6 +265,12 @@ SCOREP_Instrumenter_CmdLine::getLibraryFiles( void )
     return lib_files;
 }
 
+const std::vector<std::string>&
+SCOREP_Instrumenter_CmdLine::getInstrumentFilterFiles( void ) const
+{
+    return m_filters;
+}
+
 #if defined( SCOREP_SHARED_BUILD )
 bool
 SCOREP_Instrumenter_CmdLine::getNoAsNeeded( void )
@@ -346,6 +352,26 @@ SCOREP_Instrumenter_CmdLine::parse_parameter( const std::string& arg )
     {
         print_help();
         exit( EXIT_SUCCESS );
+    }
+
+    else if ( arg.substr( 0, 20 ) == "--instrument-filter=" )
+    {
+        std::string filter_file_name = arg.substr( 20 );
+
+        if ( filter_file_name == "" )
+        {
+            std::cerr << "ERROR: No filter file specified." << std::endl;
+            exit( EXIT_FAILURE );
+        }
+
+        if ( !exists_file( filter_file_name ) )
+        {
+            std::cerr << "ERROR: filter file does not exists." << std::endl;
+            exit( EXIT_FAILURE );
+        }
+
+        m_filters.push_back( filter_file_name );
+        return scorep_parse_mode_param;
     }
 
     /* Check for instrumentation and paradigms */

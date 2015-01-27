@@ -56,7 +56,7 @@ SCOREP_Instrumenter_CobiAdapter::SCOREP_Instrumenter_CobiAdapter( void )
 }
 
 std::string
-SCOREP_Instrumenter_CobiAdapter::getConfigToolFlag( void )
+SCOREP_Instrumenter_CobiAdapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
 {
     return "";
 }

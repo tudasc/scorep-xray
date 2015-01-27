@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2014-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -43,17 +43,13 @@ if HAVE_SCOREP_OMP_TPD
 
 check_PROGRAMS += omp_tasks
 
-# do not instrument the OPARI2 generated POMP code
-check_LTLIBRARIES            += libomp_tasks_pomp.la
-libomp_tasks_pomp_la_SOURCES  = $(SRC_ROOT)test/omp_tasks/pomp.c
-libomp_tasks_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
-
 omp_tasks_SOURCES  = $(SRC_ROOT)test/omp_tasks/omp_tasks.mod.c       \
-                    $(SRC_ROOT)test/omp_tasks/omp_tasks.c.opari.inc
+                     $(SRC_ROOT)test/omp_tasks/omp_tasks.c.opari.inc \
+                     $(SRC_ROOT)test/omp_tasks/pomp.c
 omp_tasks_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-omp_tasks_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
-omp_tasks_LDADD    = $(omp_libadd) $(LIB_ROOT)libomp_tasks_pomp.la
-omp_tasks_LDFLAGS  = $(omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
+omp_tasks_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
+omp_tasks_LDADD    = $(omp_libadd)
+omp_tasks_LDFLAGS  = $(omp_ldflags)
 
 TESTS_OMP += $(srcdir)/../test/omp_tasks/run_omp_tasks.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp_tasks/run_omp_tasks.sh

@@ -195,8 +195,8 @@ SCOREP_Instrumenter_Adapter::checkOption( std::string arg )
         {
             error_unsupported();
         }
-        m_usage  = enabled;
-        m_params = arg.substr( 3 + m_name.length(), std::string::npos );
+        m_usage   = enabled;
+        m_params += " " + arg.substr( 3 + m_name.length(), std::string::npos );
         return true;
     }
     return false;
@@ -223,7 +223,7 @@ SCOREP_Instrumenter_Adapter::postlink( SCOREP_Instrumenter&         instrumenter
 }
 
 std::string
-SCOREP_Instrumenter_Adapter::getConfigToolFlag( void )
+SCOREP_Instrumenter_Adapter::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
 {
     if ( isEnabled() )
     {
@@ -348,13 +348,13 @@ SCOREP_Instrumenter_Adapter::printEnabledAdapterList( void )
 }
 
 std::string
-SCOREP_Instrumenter_Adapter::getAllConfigToolFlags( void )
+SCOREP_Instrumenter_Adapter::getAllConfigToolFlags( SCOREP_Instrumenter_CmdLine& cmdLine )
 {
     std::string                               flags;
     SCOREP_Instrumenter_AdapterList::iterator adapter;
     for ( adapter = m_adapter_list.begin(); adapter != m_adapter_list.end(); adapter++ )
     {
-        flags += adapter->second->getConfigToolFlag();
+        flags += adapter->second->getConfigToolFlag( cmdLine );
     }
     return flags;
 }

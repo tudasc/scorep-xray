@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2014-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -37,7 +37,7 @@ check_PROGRAMS += omp_test_uninstrumented
 
 omp_test_uninstrumented_SOURCES  = $(SRC_ROOT)test/omp/omp_test.c
 omp_test_uninstrumented_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-#omp_test_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS) @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
+#omp_test_uninstrumented_CPPFLAGS = $(AM_CPPFLAGS)
 #omp_test_uninstrumented_LDADD    = $(omp_libadd)
 
 #TESTS_OMP += omp_test_uninstrumented
@@ -46,17 +46,13 @@ if HAVE_SCOREP_OMP_TPD
 
 check_PROGRAMS += omp_test
 
-# do not instrument the OPARI2 generated POMP code
-check_LTLIBRARIES           += libomp_test_pomp.la
-libomp_test_pomp_la_SOURCES  = $(SRC_ROOT)test/omp/pomp.c
-libomp_test_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
-
 omp_test_SOURCES  = $(SRC_ROOT)test/omp/omp_test.mod.c       \
-                    $(SRC_ROOT)test/omp/omp_test.c.opari.inc
+                    $(SRC_ROOT)test/omp/omp_test.c.opari.inc \
+                    $(SRC_ROOT)test/omp/pomp.c
 omp_test_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-omp_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
-omp_test_LDADD    = $(omp_libadd) $(LIB_ROOT)libomp_test_pomp.la
-omp_test_LDFLAGS  = $(omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
+omp_test_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
+omp_test_LDADD    = $(omp_libadd)
+omp_test_LDFLAGS  = $(omp_ldflags)
 
 TESTS_OMP += $(srcdir)/../test/omp/run_omp_test.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test.sh
@@ -67,12 +63,13 @@ EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test_profile.sh
 
 check_PROGRAMS += internal_thread_handling
 
-internal_thread_handling_SOURCES  = $(SRC_ROOT)test/omp/internal_thread_handling.c       \
-                                    $(SRC_ROOT)test/omp/omp_test.c.opari.inc
+internal_thread_handling_SOURCES  = $(SRC_ROOT)test/omp/internal_thread_handling.c \
+                                    $(SRC_ROOT)test/omp/omp_test.c.opari.inc \
+                                    $(SRC_ROOT)test/omp/pomp.c
 internal_thread_handling_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-internal_thread_handling_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
-internal_thread_handling_LDADD    = $(omp_libadd) $(LIB_ROOT)libomp_test_pomp.la
-internal_thread_handling_LDFLAGS  = $(omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
+internal_thread_handling_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
+internal_thread_handling_LDADD    = $(omp_libadd)
+internal_thread_handling_LDFLAGS  = $(omp_ldflags)
 
 TESTS_OMP += $(srcdir)/../test/omp/run_internal_thread_handling.sh
 
@@ -90,16 +87,17 @@ if HAVE_SCOREP_OMP_TPD
 check_PROGRAMS += omp_test_nested
 
 # do not instrument the OPARI2 generated POMP code
-check_LTLIBRARIES                  += libomp_test_nested_pomp.la
+noinst_LTLIBRARIES          += libomp_test_nested_pomp.la
 libomp_test_nested_pomp_la_SOURCES  = $(SRC_ROOT)test/omp/pomp_nested.c
 libomp_test_nested_pomp_la_CPPFLAGS = $(AM_CPPFLAGS)
 
-omp_test_nested_SOURCES  = $(SRC_ROOT)test/omp/omp_test_nested.mod.c       \
-                    $(SRC_ROOT)test/omp/omp_test_nested.c.opari.inc
+omp_test_nested_SOURCES  = $(SRC_ROOT)test/omp/pomp_nested.c \
+                           $(SRC_ROOT)test/omp/omp_test_nested.mod.c \
+                           $(SRC_ROOT)test/omp/omp_test_nested.c.opari.inc
 omp_test_nested_CFLAGS   = $(AM_CFLAGS) $(OPENMP_CFLAGS)
-omp_test_nested_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@ @SCOREP_COMPILER_INSTRUMENTATION_CPPFLAGS@
-omp_test_nested_LDADD    = $(omp_libadd) $(LIB_ROOT)libomp_test_nested_pomp.la
-omp_test_nested_LDFLAGS  = $(omp_ldflags) @SCOREP_COMPILER_INSTRUMENTATION_LDFLAGS@
+omp_test_nested_CPPFLAGS = $(AM_CPPFLAGS) @OPARI2_CPPFLAGS@
+omp_test_nested_LDADD    = $(omp_libadd)
+omp_test_nested_LDFLAGS  = $(omp_ldflags)
 
 TESTS_OMP += $(srcdir)/../test/omp/run_omp_test_nested.sh
 EXTRA_DIST       += $(SRC_ROOT)test/omp/run_omp_test_nested.sh

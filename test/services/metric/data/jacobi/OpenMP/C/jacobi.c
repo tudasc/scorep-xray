@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include "jacobi.h"
 
+#include <scorep/SCOREP_User.h>
+
 #define U( j, i ) afU[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define F( j, i ) afF[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
 #define UOLD( j, i ) uold[ ( ( j ) - data->iRowFirst ) * data->iCols + ( i ) ]
@@ -35,12 +37,14 @@
 void
 Jacobi( struct JacobiData* data )
 {
+    SCOREP_USER_FUNC_BEGIN();
+
     /*use local pointers for performance reasons*/
     double* afU, * afF;
     int     i, j;
     double  fLRes;
 
-    double  ax, ay, b, residual, tmpResd;
+    double ax, ay, b, residual, tmpResd;
 
     double* uold = ( double* )malloc( data->iCols * data->iRows * sizeof( double ) );
     afU = data->afU;
@@ -53,7 +57,7 @@ Jacobi( struct JacobiData* data )
         b        = -2.0 * ( ax + ay ) - data->fAlpha; /* Central coeff */
         residual = 10.0 * data->fTolerance;
 
-        while ( data->iIterCount < data->iIterMax && residual > data->fTolerance )
+        while ( data->iIterCount < data->iIterMax&& residual > data->fTolerance )
         {
             residual = 0.0;
 
@@ -101,6 +105,9 @@ Jacobi( struct JacobiData* data )
     {
         fprintf( stderr, "Error: cant allocate memory\n" );
         Finish( data );
+        SCOREP_USER_FUNC_END();
         exit( 1 );
     }
+
+    SCOREP_USER_FUNC_END();
 }

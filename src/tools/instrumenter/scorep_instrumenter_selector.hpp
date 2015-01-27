@@ -80,7 +80,7 @@ public:
      * Returns the flag as used for the scorep-config tool.
      */
     virtual std::string
-    getConfigToolFlag( void );
+    getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );
 
     /**
      * Evaluates an scorep option for this paradigm.
@@ -264,7 +264,7 @@ public:
      * Returns the config tool flags for all selection groups. It has a leading space.
      */
     static std::string
-    getAllConfigToolFlags( void );
+    getAllConfigToolFlags( SCOREP_Instrumenter_CmdLine& cmdLine );
 
     /**
      * Returns whether a specific paradigm is selected.

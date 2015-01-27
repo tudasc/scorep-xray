@@ -24,7 +24,7 @@
 
 #define OPENCL_CHECK( err ) \
     if ( err != CL_SUCCESS ) { \
-        fprintf( stderr, "[OpenCL] Error '%s'", \
+        fprintf( stderr, "[OpenCL] Error '%s'\n", \
                  scorep_opencl_get_error_string( err ) ); \
         return false; \
     }
@@ -146,7 +146,7 @@ get_devices()
 
     if ( platformCount == 0 )
     {
-        printf( "No OpenCL platforms found!" );
+        printf( "No OpenCL platforms found!\n" );
         return false;
     }
     else
@@ -172,7 +172,7 @@ get_devices()
 
     if ( platform_id >= platformCount )
     {
-        fprintf( stderr, "Platform with ID %d is not available\n>", platform_id );
+        fprintf( stderr, "Platform with ID %d is not available\n", platform_id );
         return false;
     }
 
@@ -181,7 +181,7 @@ get_devices()
 
     if ( deviceCount == 0 )
     {
-        printf( "No OpenCL devices found for platform %d!", platform_id );
+        printf( "No OpenCL devices found for platform %d!\n", platform_id );
 
         free( clPlatforms );
 

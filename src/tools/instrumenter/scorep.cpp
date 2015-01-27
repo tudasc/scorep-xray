@@ -85,6 +85,11 @@ print_help( void )
               << "  --keep-files    Do not delete temporarily created files after successfull\n"
               << "                  instrumentation. By default, temporary files are deleted\n"
               << "                  if no error occures during instrumentation.\n"
+              << "  --instrument-filter=<file>\n"
+              << "                  Specifies the filter file for filtering functions during\n"
+              << "                  compile-time. Not supported by all instrumentation methods.\n"
+              << "                  It applies the same syntax, as the one used by Score-P during\n"
+              << "                  run-time.\n"
               << "  --version       Prints the Score-P version and exits.\n"
 #if defined( SCOREP_SHARED_BUILD ) && defined ( SCOREP_STATIC_BUILD )
               << "  --static        Enforce static linking of the Score-P libraries.\n"

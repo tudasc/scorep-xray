@@ -37,7 +37,7 @@ SCOREP_Instrumenter_OnlineAccess::printHelp( void )
 }
 
 std::string
-SCOREP_Instrumenter_OnlineAccess::getConfigToolFlag( void )
+SCOREP_Instrumenter_OnlineAccess::getConfigToolFlag( SCOREP_Instrumenter_CmdLine& /* cmdLine */ )
 {
     if ( !isEnabled() )
     {

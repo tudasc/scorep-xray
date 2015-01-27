@@ -93,6 +93,7 @@ SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& insta
     m_precompile_adapters.push_back( m_pdt_adapter );
 
     /* pre-link adapter order */
+    m_prelink_adapters.push_back( m_compiler_adapter );
     m_prelink_adapters.push_back( m_opari_adapter );
 
     /* post-link adapter order */
@@ -289,6 +290,12 @@ SCOREP_Instrumenter::prependInputFile( std::string filename )
     m_input_files.insert( m_input_files.begin(), filename );
 }
 
+void
+SCOREP_Instrumenter::appendInputFile( std::string filename )
+{
+    m_input_files.insert( m_input_files.end(), filename );
+}
+
 std::string
 SCOREP_Instrumenter::getConfigBaseCall( void )
 {
@@ -319,8 +326,8 @@ SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
     std::string mode          = "";
     std::string scorep_config = m_install_data.getScorepConfig();
 
-    mode += SCOREP_Instrumenter_Selector::getAllConfigToolFlags();
-    mode += SCOREP_Instrumenter_Adapter::getAllConfigToolFlags();
+    mode += SCOREP_Instrumenter_Selector::getAllConfigToolFlags( m_command_line );
+    mode += SCOREP_Instrumenter_Adapter::getAllConfigToolFlags( m_command_line );
 
     if ( m_command_line.enforceStaticLinking() )
     {
@@ -365,7 +372,8 @@ SCOREP_Instrumenter::compile_source_file( const std::string& input_file,
     std::stringstream command;
     command << SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars();
     command << m_command_line.getCompilerName();
-    command << " `" << m_config_base << " " <<  cflags << "` " << m_compiler_flags;
+    command << " `" << m_config_base << " " <<  cflags << "`";
+    command << " " << m_compiler_flags;
     command << " " << m_command_line.getFlagsBeforeInterpositionLib();
     command << " " << m_command_line.getFlagsAfterInterpositionLib();
     command << " -c " << input_file;

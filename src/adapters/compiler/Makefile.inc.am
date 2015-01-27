@@ -96,6 +96,9 @@ endif SCOREP_COMPILER_CRAY
 
 #--- GNU specific settings
 if SCOREP_COMPILER_GNU
+
+if !HAVE_GCC_PLUGIN_SUPPORT
+
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c     \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table.c \
@@ -130,10 +133,55 @@ libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
     -I$(INC_ROOT)src/services/include          \
     -DHAVE_NM
 endif HAVE_NM_AS_BFD_REPLACEMENT
+
+#--- GCC-Plugin specific settings
+else HAVE_GCC_PLUGIN_SUPPORT
+
+libscorep_adapter_compiler_mgmt_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_init.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_weak.c
+
+pkglib_DATA = \
+    scorep_compiler_gcc_plugin_begin.o \
+    scorep_compiler_gcc_plugin_end.o
+
+gccplugin_objects_cppflags = \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/adapters/compiler \
+    -I$(INC_ROOT)src/measurement/include
+
+scorep_compiler_gcc_plugin_begin.o: $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_begin.c \
+                                    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo $(gccplugin_objects_cppflags) -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) $(gccplugin_objects_cppflags) -c $<
+
+scorep_compiler_gcc_plugin_end.o: $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_end.c \
+                                  $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo $(gccplugin_objects_cppflags) -c -o $@ $<
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(COMPILE) $(gccplugin_objects_cppflags) -c $<
+
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scorep_compiler_gcc_plugin_begin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scorep_compiler_gcc_plugin_end.Po@am__quote@
+
+endif HAVE_GCC_PLUGIN_SUPPORT
+
 endif SCOREP_COMPILER_GNU
 
+EXTRA_DIST += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_begin.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_end.c
 
-#--- Fujitsu specific settings, same as GNU
+
+#--- Fujitsu specific settings, same as GNU non-plug-in
 if SCOREP_COMPILER_FUJITSU
 libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu_init.c     \
@@ -179,7 +227,6 @@ libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.c     \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
 endif SCOREP_COMPILER_IBM
-
 
 #--- Intel specific settings
 if SCOREP_COMPILER_INTEL
@@ -233,8 +280,19 @@ endif SCOREP_COMPILER_CRAY
 
 #--- GNU specific settings
 if SCOREP_COMPILER_GNU
+
+if !HAVE_GCC_PLUGIN_SUPPORT
+
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
+
+else HAVE_GCC_PLUGIN_SUPPORT
+
+libscorep_adapter_compiler_event_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.c
+
+endif HAVE_GCC_PLUGIN_SUPPORT
+
 endif SCOREP_COMPILER_GNU
 
 #--- IBM specific settings
@@ -261,7 +319,7 @@ libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun.c
 endif SCOREP_COMPILER_SUN
 
-#--- Fujitsu specific settings, same as GNU
+#--- Fujitsu specific settings, same as GNU non-plug-in
 if SCOREP_COMPILER_FUJITSU
 libscorep_adapter_compiler_event_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gnu.c
