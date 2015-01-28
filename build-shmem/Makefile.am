@@ -45,7 +45,9 @@ endif !CROSS_BUILD
 if HAVE_SHMEM_SUPPORT
 if !HAVE_SHMEM_PROFILING_INTERFACE
 pkgdata_DATA += ../share/shmem.wrap
-endif !HAVE_SHMEM_PROFILING_INTERFACE
+else HAVE_SHMEM_PROFILING_INTERFACE
+DISTCLEANFILES += $(builddir)/scorep_have_pshmem_support.txt
+endif HAVE_SHMEM_PROFILING_INTERFACE
 endif HAVE_SHMEM_SUPPORT
 
 ## Determine how to handle tests
