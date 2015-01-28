@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2012-2014,
+## Copyright (c) 2012-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -23,6 +23,8 @@ include ../vendor/common/src/utils/cstr/Makefile.inc.am
 include ../vendor/common/src/utils/io/Makefile.inc.am
 include ../vendor/common/src/utils/exception/Makefile.inc.am
 include ../vendor/common/src/utils/Makefile.inc.am
+
+DISTCLEANFILES += $(builddir)/gcc_plugin_supported
 
 endif HAVE_GCC_PLUGIN_SUPPORT
 
