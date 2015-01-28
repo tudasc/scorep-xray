@@ -934,7 +934,6 @@ To enable a particular composition of OpenCL measurement features the variable s
 api            = OpenCL runtime API
 kernel         = OpenCL kernels
 memcpy         = OpenCL buffer reads/writes
-sync           = Record implicit and explicit OpenCL synchronization
 memusage       = Record OpenCL memory (de)allocations as a counter
 default/yes/1  = OpenCL API and GPU activities
 no             = Disable OpenCL measurement
