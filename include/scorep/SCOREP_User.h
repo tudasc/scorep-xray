@@ -99,7 +99,7 @@
     This macro marks the start of a user defined Online Access phase region. The SCOREP_USER_OA_PHASE_BEGIN and
     SCOREP_USER_OA_PHASE_END must be correctly nested and be a potential global synchronization points, also it is
     recommended to mark the body of the application's main loop as a Online Access phase in order to utilize main loop
-    iterations for iterative online analisys.
+    iterations for iterative online analysis.
     @param handle  The handle of the associated user region, which will become a root of the profile call-tree.
                                    This handle must be declared using SCOREP_USER_REGION_DEFINE or SCOREP_USER_GLOBAL_REGION_DEFINE before.
     @param name    A string containing the name of the new region. The name should be
@@ -160,7 +160,7 @@
     This macro marks the end of a user defined Online Access phase region. The SCOREP_USER_OA_PHASE_BEGIN and
     SCOREP_USER_OA_PHASE_END must be correctly nested and be a potential global synchronization points, also it is
     recommended to mark the body of the application's main loop as a Online Access phase in order to utilize main loop
-    iterations for iterative online analisys.
+    iterations for iterative online analysis.
     @param handle  The handle of the associated user region, which will become a root of the profile call-tree.
                                    This handle must be declared using SCOREP_USER_REGION_DEFINE or SCOREP_USER_GLOBAL_REGION_DEFINE before.
     C/C++ example:
@@ -450,7 +450,7 @@
 
     The C/C++ version of this command takes no arguments. It contains a variable
     declaration and a function call. Compilers that require a strict separation
-    between declaration block and execution block may fail if this maroc is used.
+    between declaration block and execution block may fail if this macro is used.
 
     In Fortran one argument is
     required for the name of the function. Furthermore, the handle must be declared
@@ -539,7 +539,7 @@
     they were all the same region. Enter and exit events for global regions
     are created with SCOREP_USER_REGION_BEGIN and SCOREP_USER_REGION_END, respectively.
     Its name and type is determined at the first enter event and is not changed on later
-    events, even if other code blocks conatain a different name or type in their
+    events, even if other code blocks contains a different name or type in their
     SCOREP_USER_REGION_BEGIN statement.
 
     This macro is not available in Fortran.
@@ -584,7 +584,7 @@
 
 /**
     @def SCOREP_USER_GLOBAL_REGION_EXTERNAL( handle )
-    This macro declares an axternally defined global region.
+    This macro declares an externally defined global region.
     If a region is used in multiple source files, only one of them must contain
     the definition using SCOREP_USER_GLOBAL_REGION_DEFINE. All other files, in which the
     global handle is accessed, must only declare the global handle with
@@ -593,7 +593,7 @@
     they were all the same region. Enter and exit events for global regions
     are created with SCOREP_USER_REGION_BEGIN and SCOREP_USER_REGION_END, respectively.
     Its name and type is determined at the first enter event and is not changed on later
-    events, even if other code blocks conatain a different name or type in their
+    events, even if other code blocks contains a different name or type in their
     SCOREP_USER_REGION_BEGIN statement.
 
     This macro is not available in Fortran
@@ -1023,7 +1023,7 @@
     Each user metric must be declared with SCOREP_USER_COUNTER_LOCAL,
     SCOREP_USER_COUNTER_GLOBAL, or SCOREP_USER_COUNTER_EXTERNAL and initialized with
     SCOREP_USER_COUNTER_INIT before it is triggered for the first time.
-    @param metricHandle The handle of the metric for which avalue is given in this
+    @param metricHandle The handle of the metric for which a value is given in this
                  statement.
     @param value The value of the counter. It must be possible for implicit casts to
                   cast it to a 64 bit integer.
@@ -1075,7 +1075,7 @@
 
     In Fortran is the unsigned integer type metric not available.
 
-    @param metricHandle The handle of the metric for which avalue is given in this
+    @param metricHandle The handle of the metric for which a value is given in this
                  statement.
     @param value The value of the counter. It must be possible for implicit casts to
                   cast it to a 64 bit unsigned integer.
@@ -1106,7 +1106,7 @@
     type. Each user metric must be declared with SCOREP_USER_COUNTER_LOCAL,
     SCOREP_USER_COUNTER_GLOBAL, or SCOREP_USER_COUNTER_EXTERNAL and initialized with
     SCOREP_USER_COUNTER_INIT before it is triggered for the first time.
-    @param metricHandle The handle of the metric for which avalue is given in this
+    @param metricHandle The handle of the metric for which a value is given in this
                  statement.
     @param value The value of the counter. It must be possible for implicit casts to
                   cast it to a double.
@@ -1193,7 +1193,7 @@
 
 /**
     @def SCOREP_USER_REGION(name,type)
-    Instruments a codeblock as a region with the given name. It inserts a local variable
+    Instruments a code block as a region with the given name. It inserts a local variable
     of the type class SCOREP_User_Region. Its constructor generates the enter event and
     its destructor generates the exit event. Thus, only one statement is necessary to
     instrument the code block. This statement is only in C++ available.
@@ -1318,7 +1318,7 @@
 
 /**
     @def SCOREP_RECORDING_IS_ON()
-    In C/C++ it behaves like a function call which returns wether recording is
+    In C/C++ it behaves like a function call which returns whether recording is
     enabled or not. It returns false if the recording of events is disabled, else
     it returns true.
 
