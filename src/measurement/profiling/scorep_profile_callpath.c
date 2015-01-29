@@ -33,14 +33,14 @@
  *
  *
  *
- * Contains algorithms to assign callpathes to each node during post-processing.
+ * Contains algorithms to assign callpaths to each node during post-processing.
  * Therefore we assume that the first root node of the forest is the master thread.
  * First all nodes in the master thread get an callpath ID. Afterwards all other threads
  * try to match their nodes to the master thread. If a matching node exist, the callpath
  * handle is copied. If no matching callpath exist, the master thread is extended by the
  * new nodes (with zero values for all metrics) and a new callpath is registered.
- * At the end, the master thread's calltree contains all callpathes that occur in the
- * whole profile. All other threads contain only those callpathes which contains leaves
+ * At the end, the master thread's calltree contains all callpaths that occur in the
+ * whole profile. All other threads contain only those callpaths which contains leaves
  * which they really executed.
  *
  * While the fist step can happen before the thread start nodes are expanded, the second
@@ -76,7 +76,7 @@ sort_tree( void )
 }
 
 /**
-   Assignes a callpath to a node, if it has none so far. It is used by a
+   Assigns a callpath to a node, if it has none so far. It is used by a
    @ref scorep_profile_for_all traversal, thus it has to fit the
    @ref scorep_profile_process_func_t.
  */
@@ -89,7 +89,7 @@ assign_callpath( scorep_profile_node* current, void* param )
 
     if ( current->callpath_handle == SCOREP_INVALID_CALLPATH )
     {
-        /* Get parent path. Check wether it is an extention or the first one */
+        /* Get parent path. Check whether it is an extension or the first one */
         if ( current->parent == NULL )
         {
             parent_path = SCOREP_INVALID_CALLPATH;
@@ -136,7 +136,7 @@ assign_callpath( scorep_profile_node* current, void* param )
                 break;
             default:
                 UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                             "Callpath assignedment to node type %d not supported.",
+                             "Callpath assignment to node type %d not supported.",
                              current->node_type );
                 scorep_profile_on_error( NULL );
         }
@@ -157,12 +157,13 @@ match_callpath( SCOREP_Profile_LocationData* location,
 
     /* Find a matching node in the master thread */
     scorep_profile_node* match =
-        scorep_profile_find_create_child( location,                                                                                 master,
+        scorep_profile_find_create_child( location,
+                                          master,
                                           current->node_type,
                                           current->type_specific_data,
                                           current->first_enter_time );
 
-    /* Make sure the mathcing node has a callpath assigned */
+    /* Make sure the matching node has a callpath assigned */
     if ( match->callpath_handle == SCOREP_INVALID_CALLPATH )
     {
         assign_callpath( match, NULL );
@@ -208,7 +209,7 @@ scorep_profile_assign_callpath_to_master( void )
 }
 
 /**
-   Traverses all threads and matches their callpathes to the master thread.
+   Traverses all threads and matches their callpaths to the master thread.
  */
 void
 scorep_profile_assign_callpath_to_workers( void )
