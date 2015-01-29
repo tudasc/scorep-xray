@@ -73,7 +73,6 @@ libscorep_adapter_cuda_mgmt_la_CPPFLAGS = \
     -I$(INC_DIR_DEFINITIONS)
 
 libscorep_adapter_cuda_mgmt_la_LIBADD =       \
-    $(LIB_DIR_SCOREP)libscorep_measurement.la \
     @CUDA_LIBS@
 
 libscorep_adapter_cuda_mgmt_la_LDFLAGS = \
@@ -84,6 +83,8 @@ libscorep_adapter_cuda_mgmt_la_LDFLAGS = \
 
 lib_LTLIBRARIES += libscorep_adapter_cuda_event.la
 libscorep_adapter_cuda_event_la_SOURCES =
+libscorep_adapter_cuda_event_la_LIBADD = \
+    $(LIB_DIR_SCOREP)libscorep_measurement.la
 libscorep_adapter_cuda_event_la_LDFLAGS = \
     $(library_api_version_ldflags)
 

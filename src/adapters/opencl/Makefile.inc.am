@@ -47,7 +47,6 @@ libscorep_adapter_opencl_mgmt_common_cppflags = \
     @OPENCL_CPPFLAGS@
 
 libscorep_adapter_opencl_mgmt_common_libadd = \
-    $(LIB_DIR_SCOREP)libscorep_measurement.la \
     @OPENCL_LIBS@
 
 libscorep_adapter_opencl_mgmt_common_ldflags = \
@@ -129,7 +128,7 @@ libscorep_adapter_opencl_event_static_la_LDFLAGS = \
     $(libscorep_adapter_opencl_event_common_ldflags)
 
 libscorep_adapter_opencl_event_static_la_LIBADD = \
-    $(libscorep_adapter_opencl_mgmt_common_libadd)
+    $(libscorep_adapter_opencl_event_common_libadd)
 
 lib_LTLIBRARIES += libscorep_adapter_opencl_event_shared.la
 
@@ -144,7 +143,7 @@ libscorep_adapter_opencl_event_shared_la_LDFLAGS = \
     $(libscorep_adapter_opencl_event_common_ldflags)
 
 libscorep_adapter_opencl_event_shared_la_LIBADD = \
-    $(libscorep_adapter_opencl_mgmt_common_libadd)
+    $(libscorep_adapter_opencl_event_common_libadd)
 
 endif HAVE_OPENCL_SUPPORT
 
