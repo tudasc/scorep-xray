@@ -15,7 +15,7 @@ various Score-P components.
     + IBM SP & BladeCenter clusters, only static libraries supported
     + Cray XE, XK, XC, only static libraries supported
     + SGI Altix/ICE
-    + K Computer and Fujitsu FX10
+    + K Computer, Fujitsu FX10 and FX100 systems
     + various Linux/Intel (x86/x64) clusters
     The provided configure options (see INSTALL) may provide a good
     basis for building and testing the toolset on other systems.
@@ -114,12 +114,12 @@ various Score-P components.
     functions from shared libraries, will not appear (are
     automatically filtered) in the measurement output.
 
-  - The new GNU compiler instrumentation based on the plug-in interface is
-    currently not available on cross build machines.
+  - The new GNU compiler instrumentation based on the plug-in
+    interface is currently not available on cross build machines.
 
-  - Due to heavy changes in the GNU compiler infrastructure, the instrumentation
-    based on the plug-in interface is currently not available for GNU Compiler
-    versions greater then 4.9.
+  - Due to heavy changes in the GNU compiler infrastructure, the
+    instrumentation based on the plug-in interface is currently not
+    available for GNU Compiler versions greater then 4.9.
 
   - The pgCC compiler versions 13.9 and higher preinclude omp.h for
     OpenMP codes. This results in multiply defined symbols if the
@@ -231,7 +231,8 @@ various Score-P components.
    -fno-underscoring' and '-fsecond-underscore') will likely crash.
    This is because a variable name used in the Score-P libraries does
    not match the one instrumented by OPARI2. On AIX, a workaround is
-   to manually rename it at link time (-brename:pomp_tpd_,pomp_tpd).
+   to use scorep's commandline option --thread=omp:ancestry or to
+   manually rename it at link time (-brename:pomp_tpd_,pomp_tpd).
 
  - With PGI C++ v13.10 compiler, preprocessing of OpenMP codes using
    OPARI2 is not possible any longer as the compiler itself adds a
