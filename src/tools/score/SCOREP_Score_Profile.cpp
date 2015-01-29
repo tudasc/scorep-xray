@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -196,6 +196,13 @@ SCOREP_Score_Profile::getRegionName( uint64_t region )
 {
     return m_regions[ region ]->get_name();
 }
+
+string
+SCOREP_Score_Profile::getMangledName( uint64_t region )
+{
+    return m_regions[ region ]->get_mangled_name();
+}
+
 
 string
 SCOREP_Score_Profile::getFileName( uint64_t region )

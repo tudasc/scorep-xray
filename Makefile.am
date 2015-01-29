@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -79,15 +79,6 @@ EXTRA_DIST += $(srcdir)/build-frontend/configure.ac \
               $(srcdir)/build-frontend/Makefile.in  \
               $(srcdir)/build-frontend/configure    \
               $(srcdir)/src/config-frontend.h.in
-endif
-
-if ! HAVE_SCORE_BUILD
-EXTRA_DIST += $(srcdir)/build-score/configure.ac \
-              $(srcdir)/build-score/aclocal.m4   \
-              $(srcdir)/build-score/Makefile.am  \
-              $(srcdir)/build-score/Makefile.in  \
-              $(srcdir)/build-score/configure    \
-              $(srcdir)/src/config-score.h.in
 endif
 
 pkgdata_DATA = @PACKAGE@.summary \

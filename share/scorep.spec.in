@@ -27,6 +27,12 @@
             <cubeplinit>
             {
                 global(execution);
+
+                ${doVoidmpi} = 1;
+                ${doVoidomp} = 1;
+                ${doVoidpthread} = 1;
+                ${doVoidopencl} = 1;
+
                 ${i} = 0;
                 while( ${i} < ${cube::#callpaths} )
                 {
@@ -37,7 +43,49 @@
                         ${execution}[${i}] = 1;
                     };
                     ${i} = ${i} + 1;
+
+                    if ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
+                    {
+                        ${doVoidmpi} = 0;
+                    };
+                    if ( ${cube::region::paradigm}[${regionid}] eq "openmp" )
+                    {
+                        ${doVoidomp} = 0;
+                    };
+
+                    if ( ${cube::region::paradigm}[${regionid}] eq "pthread" )
+                    {
+                        ${doVoidpthread} = 0;
+                    };
+
+                    if ( ${cube::region::description}[${regionid}] eq "opencl" )
+                    {
+                        ${doVoidopencl} = 0;
+                    };
+
                 };
+
+
+                if ( ${doVoidmpi} == 1 )
+                {
+                  cube::metric::set::mpi("value", "VOID");
+                };
+
+                if ( ${doVoidomp} == 1 )
+                {
+                  cube::metric::set::omp_time("value", "VOID");
+                };
+
+                if ( ${doVoidpthread} == 1 )
+                {
+                  cube::metric::set::pthread_time("value", "VOID");
+                };
+
+                if ( ${doVoidopencl} == 1 )
+                {
+                  cube::metric::set::opencl_time("value", "VOID");
+                };
+
                 return 0;
             }
             </cubeplinit>
@@ -65,7 +113,7 @@
                     while( ${i} < ${cube::#callpaths} )
                     {
                         ${mpi}[${i}] = 0;
-                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] eq "MPI" )
+                        if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "mpi" )
                         {
                             ${mpi}[${i}] = 1;
                         };
@@ -100,10 +148,10 @@
                             ${mpi_synchronization}[${i}] = 0;
                             ${regionid} = ${cube::callpath::calleeid}[${i}];
                             if (
-                                ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                 and
                                 (
-                                    ( ${cube::region::name}[${regionid}] seq "mpi_barrier" )
+                                    ( ${cube::region::role}[${regionid}] eq "barrier" )
                                     or
                                     ( ${cube::region::name}[${regionid}] seq "mpi_win_post" )
                                     or
@@ -154,9 +202,9 @@
                                 ${mpi_sync_collective}[${i}] = 0;
                                 ${regionid} = ${cube::callpath::calleeid}[${i}];
                                 if (
-                                    ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                    ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                     and
-                                    ( ${cube::region::name}[${regionid}] seq "mpi_barrier" )
+                                    ( ${cube::region::role}[${regionid}] eq "barrier" )
                                    )
                                 {
                                     ${mpi_sync_collective}[${i}] = 1;
@@ -193,7 +241,7 @@
                                 ${mpi_rma_synchronization}[${i}] = 0;
                                 ${regionid} = ${cube::callpath::calleeid}[${i}];
                                 if (
-                                    ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                    ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                     and
                                     (
                                         ( ${cube::region::name}[${regionid}] seq "mpi_win_post" )
@@ -245,7 +293,7 @@
                                     ${mpi_rma_sync_active}[${i}] = 0;
                                     ${regionid} = ${cube::callpath::calleeid}[${i}];
                                     if (
-                                        ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                        ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                         and
                                         (
                                             ( ${cube::region::name}[${regionid}] seq "mpi_win_post" )
@@ -294,7 +342,7 @@
                                     ${mpi_rma_sync_passive}[${i}] = 0;
                                     ${regionid} = ${cube::callpath::calleeid}[${i}];
                                     if (
-                                        ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                        ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                         and
                                         (
                                             ( ${cube::region::name}[${regionid}] seq "mpi_win_lock" )
@@ -349,32 +397,18 @@
                                 ${mpi_point2point}[${i}] = 0;
                                 ${regionid} = ${cube::callpath::calleeid}[${i}];
                                 if (
-                                    ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                    ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                     and
                                     (
+                                      ( ${cube::region::role}[${regionid}] eq "point2point" )
+                                        or
                                         ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*buffer/ )
                                         or
                                         ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*cancel/ )
                                         or
                                         ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*get_count/ )
                                         or
-                                        ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*probe/ )
-                                        or
-                                        ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*recv/ )
-                                        or
                                         ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*request/ )
-                                        or
-                                        ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*send/ )
-                                        or
-                                        ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_test/ )
-                                        or
-                                        ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_wait/ )
-                                        or
-                                        (
-                                            not ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_win/ )
-                                            and
-                                            ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*start/ )
-                                        )
                                     )
                                    )
                                 {
@@ -412,7 +446,7 @@
                                 ${mpi_collective}[${i}] = 0;
                                 ${regionid} = ${cube::callpath::calleeid}[${i}];
                                 if (
-                                    ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                    ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                     and
                                     (
                                         ( ${cube::region::name}[${regionid}] seq "mpi_allgather" )
@@ -483,7 +517,7 @@
                                 ${mpi_rma_communication}[${i}] = 0;
                                 ${regionid} = ${cube::callpath::calleeid}[${i}];
                                 if (
-                                    ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                    ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                     and
                                     (
                                         ( ${cube::region::name}[${regionid}] seq "mpi_get" )
@@ -529,7 +563,7 @@
                             ${mpi_io}[${i}] = 0;
                             ${regionid} = ${cube::callpath::calleeid}[${i}];
                             if (
-                                ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                 and
                                 ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file/ )
                                )
@@ -567,7 +601,7 @@
                                 ${mpi_io_collective}[${i}] = 0;
                                 ${regionid} = ${cube::callpath::calleeid}[${i}];
                                 if (
-                                    ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                    ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                     and
                                     (
                                         ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file/ )
@@ -629,7 +663,7 @@
                             ${mpi_init_exit}[${i}] = 0;
                             ${regionid} = ${cube::callpath::calleeid}[${i}];
                             if (
-                                ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                 and
                                 (
                                     ( ${cube::region::name}[${regionid}] seq "mpi_init" )
@@ -685,9 +719,9 @@
                             ${omp_flush}[${i}] = 0;
                             ${regionid} = ${cube::callpath::calleeid}[${i}];
                             if (
-                                ( ${cube::region::description}[${regionid}] seq "openmp" )
+                                ( ${cube::region::paradigm}[${regionid}] eq "openmp" )
                                 and
-                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^!\$omp flush/ )
+                                ( ${cube::region::role}[${regionid}] eq "flush" )
                                )
                             {
                                 ${omp_flush}[${i}] = 1;
@@ -724,9 +758,9 @@
                             ${omp_management}[${i}] = 0;
                             ${regionid} = ${cube::callpath::calleeid}[${i}];
                             if (
-                                ( ${cube::region::description}[${regionid}] seq "openmp" )
+                                ( ${cube::region::paradigm}[${regionid}] eq "openmp" )
                                 and
-                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^!\$omp parallel\s@/ )
+                                (${cube::region::role}[${regionid}] eq "parallel" )
                                )
                             {
                                 ${omp_management}[${i}] = 1;
@@ -783,9 +817,9 @@
                                     ${omp_ebarrier}[${i}] = 0;
                                     ${regionid} = ${cube::callpath::calleeid}[${i}];
                                     if (
-                                        ( ${cube::region::description}[${regionid}] seq "openmp" )
+                                        ( ${cube::region::paradigm}[${regionid}] eq "openmp" )
                                         and
-                                        ( lowercase(${cube::region::name}[${regionid}]) =~ /^!\$omp barrier/ )
+                                        ( ${cube::region::role}[${regionid}] eq "barrier" )
                                        )
                                     {
                                         ${omp_ebarrier}[${i}] = 1;
@@ -822,9 +856,9 @@
                                     ${omp_ibarrier}[${i}] = 0;
                                     ${regionid} = ${cube::callpath::calleeid}[${i}];
                                     if (
-                                        ( ${cube::region::description}[${regionid}] seq "openmp" )
+                                        ( ${cube::region::paradigm}[${regionid}] eq "openmp" )
                                         and
-                                        ( lowercase(${cube::region::name}[${regionid}]) =~ /^!\$omp implicit barrier/ )
+                                        ( ${cube::region::role}[${regionid}] eq "implicit barrier" )
                                        )
                                     {
                                         ${omp_ibarrier}[${i}] = 1;
@@ -862,16 +896,15 @@
                                 ${omp_critical}[${i}] = 0;
                                 ${regionid} = ${cube::callpath::calleeid}[${i}];
                                 if (
-                                    ( ${cube::region::description}[${regionid}] seq "openmp" )
+                                    ( ${cube::region::paradigm}[${regionid}] eq "openmp" )
                                     and
                                     (
-                                        ( lowercase(${cube::region::name}[${regionid}]) =~ /^!\$omp atomic/ )
+                                        ( ${cube::region::role}[${regionid}] eq "atomic" )
                                         or
-                                        (
-                                            ( lowercase(${cube::region::name}[${regionid}]) =~ /^!\$omp critical/ )
-                                            and
-                                            not ( lowercase(${cube::region::name}[${regionid}]) =~ /^!\$omp critical sblock/ )
-                                        )
+
+                                          ( ${cube::region::role}[${regionid}] eq "critical" )
+
+
                                     )
                                    )
                                 {
@@ -909,7 +942,7 @@
                                 ${omp_lock_api}[${i}] = 0;
                                 ${regionid} = ${cube::callpath::calleeid}[${i}];
                                 if (
-                                    ( ${cube::region::description}[${regionid}] seq "openmp" )
+                                    ( ${cube::region::paradigm}[${regionid}] seq "openmp" )
                                     and
                                     (
                                         ( lowercase(${cube::region::name}[${regionid}]) =~ /^omp_/ )
@@ -952,10 +985,14 @@
                                 ${omp_ordered}[${i}] = 0;
                                 ${regionid} = ${cube::callpath::calleeid}[${i}];
                                 if (
-                                    ( ${cube::region::description}[${regionid}] seq "openmp" )
+                                    ( ${cube::region::paradigm}[${regionid}] seq "openmp" )
                                     and
-                                    ( lowercase(${cube::region::name}[${regionid}]) =~ /^!\$omp ordered\s@/ )
+                                   (
+                                    ( ${cube::region::role}[${regionid}] eq "ordered" )
+                                    or
+                                    ( ${cube::region::role}[${regionid}] eq "ordered_sblock" )
                                    )
+                                  )
                                 {
                                     ${omp_ordered}[${i}] = 1;
                                 };
@@ -1282,7 +1319,7 @@
                         {
                             ${pthread_mgmt}[${i}] = 0;
                             ${regionid} = ${cube::callpath::calleeid}[${i}];
-                            if ( ( ${cube::region::mod}[${regionid}] eq "PTHREAD" )
+                            if ( ( ${cube::region::paradigm}[${regionid}] eq "pthread" )
                                  and
                                  ( ( ${cube::region::name}[${regionid}] seq "pthread_create" )
                                     or
@@ -1385,8 +1422,8 @@
                             return 0;
                         }
                         </cubeplinit>
-                    </metric>  
-                </metric>	
+                    </metric>
+                </metric>
             </metric>
         </metric>
         <metric type="PREDERIVED_EXCLUSIVE">
@@ -1498,7 +1535,7 @@
                         ${syncs_fence}[${i}] = 0;
                         ${regionid} = ${cube::callpath::calleeid}[${i}];
                         if (
-                            ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                            ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                             and
                             ( ${cube::region::name}[${regionid}] seq "mpi_win_fence" )
                            )
@@ -1547,7 +1584,7 @@
                             ${syncs_gats_access}[${i}] = 0;
                             ${regionid} = ${cube::callpath::calleeid}[${i}];
                             if (
-                                ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                 and
                                 ( ${cube::region::name}[${regionid}] seq "mpi_win_start" )
                                )
@@ -1586,7 +1623,7 @@
                             ${syncs_gats_exposure}[${i}] = 0;
                             ${regionid} = ${cube::callpath::calleeid}[${i}];
                             if (
-                                ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                 and
                                 ( ${cube::region::name}[${regionid}] seq "mpi_win_post" )
                                )
@@ -1626,7 +1663,7 @@
                             ${syncs_locks}[${i}] = 0;
                             ${regionid} = ${cube::callpath::calleeid}[${i}];
                             if (
-                                ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                                ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                 and
                                 ( ${cube::region::name}[${regionid}] seq "mpi_win_lock" )
                                )
@@ -1687,7 +1724,7 @@
                         ${comms_rma_puts}[${i}] = 0;
                         ${regionid} = ${cube::callpath::calleeid}[${i}];
                         if (
-                            ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                            ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                             and
                             (
                                 ( ${cube::region::name}[${regionid}] seq "mpi_put" )
@@ -1730,7 +1767,7 @@
                         ${comms_rma_gets}[${i}] = 0;
                         ${regionid} = ${cube::callpath::calleeid}[${i}];
                         if (
-                            ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                            ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                             and
                             ( ${cube::region::name}[${regionid}] seq "mpi_get" )
                            )
@@ -1753,17 +1790,20 @@
         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes</url>
         <descr>Number of bytes transferred</descr>
         <cubepl>
-            metric::bytes_sent() + metric::bytes_received()
+            metric::bytes_p2p() + metric::bytes_coll() + metric::bytes_rma()
         </cubepl>
-        <metric>
-            <disp_name>Sent</disp_name>
-            <uniq_name>bytes_sent</uniq_name>
+        <metric type="POSTDERIVED">
+            <disp_name>Point-to-point</disp_name>
+            <uniq_name>bytes_p2p</uniq_name>
             <dtype>INTEGER</dtype>
             <uom>bytes</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent</url>
-            <descr>Number of bytes sent in point-to-point communication operations</descr>
+            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_p2p</url>
+            <descr>Number of bytes transferred in point-to-point communication operations</descr>
+            <cubepl>
+                metric::bytes_sent_p2p() + metric::bytes_received_p2p()
+            </cubepl>
             <metric type="PREDERIVED_EXCLUSIVE">
-                <disp_name>Point-to-point</disp_name>
+                <disp_name>Sent</disp_name>
                 <uniq_name>bytes_sent_p2p</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
@@ -1788,7 +1828,7 @@
                         ${bytes_sent_p2p}[${i}] = 0;
                         ${regionid} = ${cube::callpath::calleeid}[${i}];
                         if (
-                            ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                            ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                             and
                             (
                                 ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*buffer/ )
@@ -1826,7 +1866,81 @@
                 </cubeplinit>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
-                <disp_name>Collective</disp_name>
+                <disp_name>Received</disp_name>
+                <uniq_name>bytes_received_p2p</uniq_name>
+                <dtype>INTEGER</dtype>
+                <uom>bytes</uom>
+                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_received_p2p</url>
+                <descr>Number of bytes received in point-to-point communication operations</descr>
+                <cubepl>
+                {
+                    ${a} = 0;
+                    if ( ${bytes_received_p2p}[${calculation::callpath::id}] == 1 )
+                    {
+                        ${a} = metric::bytes_received(e);
+                    };
+                    return ${a};
+                }
+                </cubepl>
+                <cubeplinit>
+                {
+                    global(bytes_received_p2p);
+                    ${i} = 0;
+                    while( ${i} < ${cube::#callpaths} )
+                    {
+                        ${bytes_received_p2p}[${i}] = 0;
+                        ${regionid} = ${cube::callpath::calleeid}[${i}];
+                        if (
+                            ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
+                            and
+                            (
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*buffer/ )
+                                or
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*cancel/ )
+                                or
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*get_count/ )
+                                or
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*probe/ )
+                                or
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*recv/ )
+                                or
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*request/ )
+                                or
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*send/ )
+                                or
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_test/ )
+                                or
+                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_wait/ )
+                                or
+                                (
+                                    not ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_win/ )
+                                    and
+                                    ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*start/ )
+                                )
+                            )
+                           )
+                        {
+                            ${bytes_received_p2p}[${i}] = 1;
+                        };
+                        ${i} = ${i} + 1;
+                    };
+                    return 0;
+                }
+                </cubeplinit>
+            </metric>
+        </metric>
+        <metric type="POSTDERIVED">
+            <disp_name>Collective</disp_name>
+            <uniq_name>bytes_coll</uniq_name>
+            <dtype>INTEGER</dtype>
+            <uom>bytes</uom>
+            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_p2p</url>
+            <descr>Number of bytes transferred in collective communication operations</descr>
+            <cubepl>
+                metric::bytes_sent_coll() + metric::bytes_received_coll()
+            </cubepl>
+            <metric type="PREDERIVED_EXCLUSIVE">
+                <disp_name>Outgoing</disp_name>
                 <uniq_name>bytes_sent_coll</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
@@ -1851,7 +1965,7 @@
                         ${bytes_sent_coll}[${i}] = 0;
                         ${regionid} = ${cube::callpath::calleeid}[${i}];
                         if (
-                            ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                            ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                             and
                             (
                                 ( ${cube::region::name}[${regionid}] seq "mpi_allgather" )
@@ -1896,79 +2010,8 @@
                 }
                 </cubeplinit>
             </metric>
-        </metric>
-        <metric>
-            <disp_name>Received</disp_name>
-            <uniq_name>bytes_received</uniq_name>
-            <dtype>INTEGER</dtype>
-            <uom>bytes</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_rcvd</url>
-            <descr>Number of bytes received in point-to-point communication operations</descr>
             <metric type="PREDERIVED_EXCLUSIVE">
-                <disp_name>Point-to-point</disp_name>
-                <uniq_name>bytes_received_p2p</uniq_name>
-                <dtype>INTEGER</dtype>
-                <uom>bytes</uom>
-                <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_received_p2p</url>
-                <descr>Number of bytes received in point-to-point communication operations</descr>
-                <cubepl>
-                {
-                    ${a} = 0;
-                    if ( ${bytes_received_p2p}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${a} = metric::bytes_received(e);
-                    };
-                    return ${a};
-                }
-                </cubepl>
-                <cubeplinit>
-                {
-                    global(bytes_received_p2p);
-                    ${i} = 0;
-                    while( ${i} < ${cube::#callpaths} )
-                    {
-                        ${bytes_received_p2p}[${i}] = 0;
-                        ${regionid} = ${cube::callpath::calleeid}[${i}];
-                        if (
-                            ( ${cube::region::mod}[${regionid}] eq "MPI" )
-                            and
-                            (
-                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*buffer/ )
-                                or
-                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*cancel/ )
-                                or
-                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*get_count/ )
-                                or
-                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*probe/ )
-                                or
-                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*recv/ )
-                                or
-                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*request/ )
-                                or
-                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*send/ )
-                                or
-                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_test/ )
-                                or
-                                ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_wait/ )
-                                or
-                                (
-                                    not ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_win/ )
-                                    and
-                                    ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*start/ )
-                                )
-                            )
-                           )
-                        {
-                            ${bytes_received_p2p}[${i}] = 1;
-                        };
-                        ${i} = ${i} + 1;
-                    };
-                    return 0;
-                }
-                </cubeplinit>
-            </metric>
-            <metric type="PREDERIVED_EXCLUSIVE">
-                <disp_name>Collective</disp_name>
+                <disp_name>Incoming</disp_name>
                 <uniq_name>bytes_received_coll</uniq_name>
                 <dtype>INTEGER</dtype>
                 <uom>bytes</uom>
@@ -1993,7 +2036,7 @@
                         ${bytes_received_coll}[${i}] = 0;
                         ${regionid} = ${cube::callpath::calleeid}[${i}];
                         if (
-                            ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                            ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                             and
                             (
                                 ( ${cube::region::name}[${regionid}] seq "mpi_allgather" )
@@ -2039,6 +2082,36 @@
                 </cubeplinit>
             </metric>
         </metric>
+        <metric type="POSTDERIVED">
+            <disp_name>Remote Memory Access</disp_name>
+            <uniq_name>bytes_rma</uniq_name>
+            <dtype>INTEGER</dtype>
+            <uom>bytes</uom>
+            <url>@mirror@scorep_metrics-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#bytes_rma</url>
+            <descr>Number of bytes transferred in remote memory access operations</descr>
+            <cubepl>
+                metric::bytes_put() + metric::bytes_get()
+            </cubepl>
+            <metric>
+                <!-- This metric is copied from the trace analysis -->
+                <disp_name>Sent</disp_name>
+                <uniq_name>bytes_put</uniq_name>
+                <dtype>INTEGER</dtype>
+                <uom>bytes</uom>
+                <url>@mirror@scorep_metrics-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#bytes_put</url>
+                <descr>Number of bytes sent in remote memory access operations</descr>
+            </metric>
+            <metric>
+                <!-- This metric is copied from the trace analysis -->
+                <disp_name>Received</disp_name>
+                <uniq_name>bytes_get</uniq_name>
+                <dtype>INTEGER</dtype>
+                <uom>bytes</uom>
+                <url>@mirror@scorep_metrics-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#bytes_get</url>
+                <descr>Number of bytes received in remote memory access operations</descr>
+            </metric>
+        </metric>
+
     </metric>
     <metric type="PREDERIVED_EXCLUSIVE">
         <disp_name>MPI file operations</disp_name>
@@ -2066,7 +2139,7 @@
                 ${mpi_file_ops}[${i}] = 0;
                 ${regionid} = ${cube::callpath::calleeid}[${i}];
                 if (
-                    ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                    ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                     and
                     ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file/ )
                    )
@@ -2104,7 +2177,7 @@
                     ${mpi_file_iops}[${i}] = 0;
                     ${regionid} = ${cube::callpath::calleeid}[${i}];
                     if (
-                        ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                        ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                         and
                         (
                             ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file/ )
@@ -2166,7 +2239,7 @@
                         ${mpi_file_irops}[${i}] = 0;
                         ${regionid} = ${cube::callpath::calleeid}[${i}];
                         if (
-                            ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                            ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                             and
                             ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file/ )
                             and
@@ -2213,7 +2286,7 @@
                         ${mpi_file_iwops}[${i}] = 0;
                         ${regionid} = ${cube::callpath::calleeid}[${i}];
                         if (
-                            ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                            ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                             and
                             ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file/ )
                             and
@@ -2261,7 +2334,7 @@
                     ${mpi_file_cops}[${i}] = 0;
                     ${regionid} = ${cube::callpath::calleeid}[${i}];
                     if (
-                        ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                        ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                         and
                         (
                             ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file/ )
@@ -2321,7 +2394,7 @@
                         ${mpi_file_crops}[${i}] = 0;
                         ${regionid} = ${cube::callpath::calleeid}[${i}];
                         if (
-                            ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                            ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                             and
                             (
                                 ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file_read.*_all/ )
@@ -2364,7 +2437,7 @@
                         ${mpi_file_cwops}[${i}] = 0;
                         ${regionid} = ${cube::callpath::calleeid}[${i}];
                         if (
-                            ( ${cube::region::mod}[${regionid}] eq "MPI" )
+                            ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                             and
                             (
                                 ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_file_write.*_all/ )
@@ -2436,4 +2509,23 @@
             </metric>
         </metric>
     </metric>
+
+        <metric viztype="GHOST">
+            <disp_name>Bytes sent</disp_name>
+            <uniq_name>bytes_sent</uniq_name>
+            <dtype>INTEGER</dtype>
+            <uom>bytes</uom>
+            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent</url>
+            <descr>Number of bytes sent in point-to-point communication operations</descr>
+        </metric>
+        <metric viztype="GHOST">
+            <disp_name>Bytes received</disp_name>
+            <uniq_name>bytes_received</uniq_name>
+            <dtype>INTEGER</dtype>
+            <uom>bytes</uom>
+            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_rcvd</url>
+            <descr>Number of bytes received in point-to-point communication operations</descr>
+        </metric>
+
+
 </metrics>

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -68,7 +68,8 @@ libscorep_measurement_la_LIBADD =        \
     @SCOREP_PAPI_LIBS@                   \
     @SCOREP_DLFCN_LIBS@                  \
     @TIMER_LIB@                          \
-    @OTF2_LIBS@
+    @OTF2_LIBS@                          \
+    @CUBE_WRITER_LIBS@
 
 if !HAVE_SCOREP_EXTERNAL_OTF2
 
@@ -78,14 +79,15 @@ BUILT_SOURCES += @OTF2_LIBS@
 
 endif !HAVE_SCOREP_EXTERNAL_OTF2
 
-if HAVE_SCOREP_EXTERNAL_CUBE_WRITER
-libscorep_measurement_la_LIBADD += @CUBE_WRITER_LIBS@
-else
-# Force automake to generate a dependency rule if using internal
-# lib (can't be done using AC_SUBST).
-libscorep_measurement_la_LIBADD += libscorep_cube_writer.la
-endif # HAVE_SCOREP_EXTERNAL_CUBE_WRITER
+if !HAVE_SCOREP_EXTERNAL_CUBE
 
+BUILT_SOURCES += @CUBE_WRITER_LIBS@
+../vendor/cube/build-backend/libcube4w.la:
+	@$(am__cd) `dirname $@` && $(MAKE) $(AM_MAKEFLAGS) `basename $@`
+../vendor/cube/build-backend/libcubewriter4.la:
+	@$(am__cd) `dirname $@` && $(MAKE) $(AM_MAKEFLAGS) `basename $@`
+
+endif !HAVE_SCOREP_EXTERNAL_CUBE
 
 libscorep_measurement_la_LDFLAGS = \
     $(library_api_version_ldflags) \

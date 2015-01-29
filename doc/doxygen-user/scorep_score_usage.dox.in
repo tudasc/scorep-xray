@@ -9,3 +9,4 @@ Options:
               is measured on each event. If you plan to record hardware counters
               specify the number of hardware counters. Otherwise, scorep-score
               may underestimate the required space.
+  -m          Prints mangled region names if available.

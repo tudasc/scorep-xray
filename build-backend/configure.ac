@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2014,
+dnl Copyright (c) 2009-2015,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -237,18 +237,13 @@ AS_IF([test -n "${scorep_cube_bindir}"],
        AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
            [scorep_cube_config_backend_arg="--backend"])
        AC_SUBST([CUBE_WRITER_LDFLAGS],       ["`${scorep_cube_bindir}/cube-config --writer-ldflags ${scorep_cube_config_backend_arg}`"])
-       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE_WRITER], [test 1 -eq 1])
+       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE], [test 1 -eq 1])
       ],
-      [AC_SUBST([CUBE_WRITER_CPPFLAGS],      ['-I$(srcdir)/../src/measurement/cube_writer'])
-       AC_SUBST([CUBE_WRITER_LIBS],          [libscorep_cube_writer.la])
+      [AC_SUBST([CUBE_WRITER_CPPFLAGS],      ['-I$(srcdir)/../vendor/cube/src/cubew -I../vendor/cube/src'])
+       AC_SUBST([CUBE_WRITER_LIBS],          ['../vendor/cube/build-backend/libcube4w.la ../vendor/cube/build-backend/libcubewriter4.la'])
        AC_SUBST([CUBE_WRITER_LDFLAGS],       [])
-       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE_WRITER], [test 1 -eq 0])
+       AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE], [test 1 -eq 0])
       ])
-
-AS_IF([test "x${ac_scorep_cross_compiling}" = "xno" && test "x${scorep_have_score_build}" = "xno"],
-      [AC_SCOREP_CUBE_READER
-       SCOREP_ESTIMATOR],
-      [AM_CONDITIONAL([HAVE_SCORE], [test 1 -eq 0])])
 
 # does this work on cross-compile machines?
 AC_CHECK_FUNCS_ONCE([readlink])

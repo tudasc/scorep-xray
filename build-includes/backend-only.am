@@ -4,7 +4,6 @@
 
 include ../src/Makefile.inc.am
 include ../src/measurement/Makefile.inc.am
-include ../src/measurement/Makefile.cube_writer.inc.am
 include ../src/measurement/profiling/Makefile.inc.am
 include ../src/measurement/tracing/Makefile.inc.am
 include ../src/measurement/definitions/Makefile.inc.am

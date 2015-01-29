@@ -14,6 +14,16 @@ Major features:
   filtering.
   On some systems the GCC plug-in dev package needs to be installed, in
   order to provide the necessary header files.
+- Score-P now ships with the entire Cube package included. I.e., a
+  Cube installation is no longer a hard requirement when building
+  Score-P from a tarball (this requirement was introduced with Score-P
+  1.2 and was needed to build scorep-score, a tool to score profile
+  experiments to prepare a filter for subsequent trace experiments). A
+  Cube installation will be favored if cube-config is in PATH (as with
+  OTF2 and OPARI2 installations). To use the internal Cube even if a
+  cube-config is in PATH, specify --without-cube on the configure
+  command-line. To prevent building the Cube GUI, add --without-gui to
+  the configure command-line.
 
 Features and improvements:
 
@@ -46,6 +56,9 @@ User tools and API improvements and changes:
 - SCOREP_User_RegionBegin / SCOREP_User_RegionInit accept NULL as
   parameter value for lastFileName and lastFileHandle. This simplifies the
   calls to these functions when used directly without the provided macros.
+- score-score got a new option: -m allows to display mangled region names.
+  Furthermore, the filter evalution in scorep-score can also use mangled
+  names, too.
 
 Bugfixes:
 

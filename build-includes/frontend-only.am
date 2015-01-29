@@ -2,7 +2,6 @@
 
 include ../src/tools/instrumenter/Makefile.inc.am
 include ../src/tools/config/Makefile.inc.am
-include ../src/tools/score/Makefile.inc.am
 include ../src/tools/info/Makefile.inc.am
 include ../tools/oa_registry/Makefile.inc.am
 

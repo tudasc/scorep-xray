@@ -17,7 +17,8 @@ LOCAL_CONFIGURES = \
 
 SUB_CONFIGURES = \
 	vendor/opari2/configure \
-	vendor/otf2/configure
+	vendor/otf2/configure \
+	vendor/cube/configure
 
 .PHONY: all local $(LOCAL_CONFIGURES) $(SUB_CONFIGURES) clean clean-local
 all: local $(SUB_CONFIGURES)
@@ -29,6 +30,9 @@ vendor/opari2/configure:
 
 vendor/otf2/configure:
 	@$(MAKE) -C vendor/otf2 -f bootstrap AUTORECONF=$(AUTORECONF)
+
+vendor/cube/configure:
+	@$(MAKE) -C vendor/cube -f bootstrap AUTORECONF=$(AUTORECONF)
 
 configure:
 	$(AUTORECONF) --install $(AUTORECONFFLAGS) .
@@ -62,6 +66,7 @@ build-score/configure: build-backend/configure
 clean: clean-local
 	@$(MAKE) -C vendor/opari2 -f bootstrap clean
 	@$(MAKE) -C vendor/otf2   -f bootstrap clean
+	@$(MAKE) -C vendor/cube   -f bootstrap clean
 
 clean_files = \
 	autom4te.cache/ \

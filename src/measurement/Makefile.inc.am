@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2014,
@@ -100,10 +100,6 @@ libscorep_measurement_core_la_CPPFLAGS = \
     @CUBE_WRITER_CPPFLAGS@ \
     -I$(INC_DIR_MUTEX) \
     -I$(INC_DIR_DEFINITIONS)
-
-if ! HAVE_SCOREP_EXTERNAL_CUBE_WRITER
-libscorep_measurement_core_la_CPPFLAGS += -DCUBE_AS_SVN_EXTERNAL
-endif # HAVE_SCOREP_EXTERNAL_CUBE_WRITER
 
 ## paradigm non mpp
 

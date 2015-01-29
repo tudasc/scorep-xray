@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -489,11 +489,11 @@ SCOREP_Score_Estimator::initializeFilter( string filterFile )
 }
 
 void
-SCOREP_Score_Estimator::calculate( bool showRegions )
+SCOREP_Score_Estimator::calculate( bool showRegions, bool useMangled )
 {
     if ( showRegions )
     {
-        initialize_regions();
+        initialize_regions( useMangled );
     }
 
     for ( uint64_t region = 0; region < m_region_num; region++ )
@@ -743,14 +743,17 @@ SCOREP_Score_Estimator::delete_groups( SCOREP_Score_Group** groups, uint64_t num
 }
 
 void
-SCOREP_Score_Estimator::initialize_regions( void )
+SCOREP_Score_Estimator::initialize_regions( bool useMangled )
 {
     m_regions = ( SCOREP_Score_Group** )malloc( m_region_num * sizeof( SCOREP_Score_Group* ) );
     for ( uint64_t region = 0; region < m_region_num; region++ )
     {
+        string name = ( useMangled ?
+                        m_profile->getMangledName( region ) :
+                        m_profile->getRegionName( region ) );
         m_regions[ region ] = new SCOREP_Score_Group( m_profile->getGroup( region ),
                                                       m_process_num,
-                                                      m_profile->getRegionName( region ) );
+                                                      name );
     }
 }
 
@@ -759,7 +762,7 @@ SCOREP_Score_Estimator::match_filter( uint64_t region )
 {
     bool do_filter = SCOREP_Filter_Match( m_profile->getFileName( region ).c_str(),
                                           m_profile->getRegionName( region ).c_str(),
-                                          NULL );
+                                          m_profile->getMangledName( region ).c_str() );
     return do_filter &&
            SCOREP_Score_getFilterState( m_profile->getGroup( region ) ) != SCOREP_SCORE_FILTER_NO;
 }

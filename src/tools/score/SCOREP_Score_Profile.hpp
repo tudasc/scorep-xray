@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -94,21 +94,28 @@ public:
 
     /**
      * Returns the maximum number of visits to a region on one process over all processes.
-     * @param regionID  ID of the region for which the visits are requested.
+     * @param regionId  ID of the region for which the visits are requested.
      */
     uint64_t
     getMaxVisits( uint64_t regionId );
 
     /**
      * Returns the region name.
-     * @param regionID  ID of the region for which the name is requested.
+     * @param regionId  ID of the region for which the name is requested.
      */
     std::string
     getRegionName( uint64_t regionId );
 
     /**
+     * Returns the mangled region name.
+     * @param regionId  ID of the region for which the mangled name id requested.
+     */
+    std::string
+    getMangledName( uint64_t regionId );
+
+    /**
      * Returns the name of the source file where a region was implemented.
-     * @param regionID  ID of the region for which the source file is requested.
+     * @param regionId  ID of the region for which the source file is requested.
      */
     std::string
     getFileName( uint64_t regionId );

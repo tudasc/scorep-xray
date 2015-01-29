@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2012,
@@ -67,9 +67,12 @@ public:
      * Claculates the group an region data.
      * @param showRegions  Pass true if the user wants to see per region data
      *                     in addition to the groups.
+     * @param useMangled   Wether mangled or demangled region names are used for
+     *                     display.
      */
     void
-    calculate( bool showRegions );
+    calculate( bool showRegions,
+               bool useMangled );
 
     /**
      * Prints the group information to the screen.
@@ -106,9 +109,11 @@ private:
 
     /**
      * Initialize per region data.
+     * @param useMangled  Whether mangled names or demangled names are used for
+     *                    display.
      */
     void
-    initialize_regions( void );
+    initialize_regions( bool useMangled );
 
     /**
      * Delete list of groups.

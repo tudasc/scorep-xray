@@ -228,6 +228,7 @@ libscorep_adapter_compiler_mgmt_la_SOURCES +=                   \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
 endif SCOREP_COMPILER_IBM
 
+
 #--- Intel specific settings
 if SCOREP_COMPILER_INTEL
 libscorep_adapter_compiler_mgmt_la_SOURCES += \

@@ -625,7 +625,10 @@ write_region_definitions( cube_t*                       my_cube,
         /* Collect necessary data */
         const char* region_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
                                                                String )->string_data;
+        const char* canonical_region_name = SCOREP_UNIFIED_HANDLE_DEREF( definition->canonical_name_handle,
+                                                                         String )->string_data;
         const char* paradigm  = scorep_paradigm_type_to_string( definition->paradigm_type );
+        const char* role      = scorep_region_type_to_string( definition->region_type );
         const char* file_name = "";
         if ( definition->file_name_handle != SCOREP_INVALID_STRING )
         {
@@ -636,10 +639,13 @@ write_region_definitions( cube_t*                       my_cube,
         /* Register region to cube */
         cube_region* cube_handle = cube_def_region( my_cube,
                                                     region_name,
+                                                    canonical_region_name,
+                                                    paradigm,
+                                                    role,
                                                     definition->begin_line,
                                                     definition->end_line,
                                                     "", /* URL */
-                                                    paradigm,
+                                                    "",
                                                     file_name );
 
         /* Create entry in mapping table */

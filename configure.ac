@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2014,
+dnl Copyright (c) 2009-2015,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2014,
@@ -145,9 +145,16 @@ AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
 
 AC_SCOREP_HAVE_CONFIG_TOOL([otf2],   [6])
 AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [2])
-AC_SCOREP_HAVE_CONFIG_TOOL([cube],   [4])
+AC_SCOREP_HAVE_CONFIG_TOOL([cube],   [7])
 
 # handle external package's subdir configures
+
+# Cube's java-reader breaks the parallel build and is used by TAU only
+# which ships its own, so disable it.
+cube_args="`${AWK} -f ${srcdir}/vendor/common/build-config/process_arguments.awk user_provided_configure_args` --without-java-reader"
+AS_IF([test "x${scorep_have_cube_config}" = xno],
+    [AC_CONFIG_SUBDIR_CUSTOM([vendor/cube], [${cube_args} afs_externally_triggered=yes ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/cube])])
+
 AS_IF([test "x${scorep_have_opari2_config}" = "xno"],
       [AC_CONFIG_SUBDIR_CUSTOM([vendor/opari2], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/opari2])])
 
@@ -155,28 +162,18 @@ AS_IF([test "x${scorep_have_otf2_config}" = "xno"],
       [AC_CONFIG_SUBDIR_CUSTOM([vendor/otf2],   [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_platform_data_provided=yes ac_scorep_cross_compiling=${ac_scorep_cross_compiling} ac_scorep_doxygen_distdir=${ac_scorep_doxygen_distdir}/vendor/otf2])])
 
 # handle own package's subdir configures
-scorep_have_score_build="scorep_have_score_build=no"
-AS_IF([test "x${scorep_have_cube_config}" = "xyes"],
-      [CUBE_READER_CXX="`${scorep_cube_config_bin} --reader-cxx | ${AWK} '{print $1}'`"
-       # Source files to get CXX and CXX_FOR_BUILD. Fragile, does not
-       # consider user-provided arguments. We can't get CXX from the
-       # backend because the following conditional is evaluated before
-       # the backend configure is run.
-       AC_REQUIRE([AC_PROG_GREP])
-       AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-             [FRONTEND_CXX=`${GREP} CXX_FOR_BUILD "${ac_scorep_compilers_frontend}" | ${AWK} -F "=" '{print $2}' | ${AWK} '{print $1}'`],
-             [FRONTEND_CXX=`${GREP} CXX           "${ac_scorep_compilers_backend}"  | ${AWK} -F "=" '{print $2}' | ${AWK} '{print $1}'`])
-       AS_IF([test "x${FRONTEND_CXX}" != "x${CUBE_READER_CXX}"],
-             [adl_RECURSIVE_EVAL([${bindir}], [BINDIR])
-              scorep_score_extra_arg=
-              AS_IF([test "x${bindir}" = "x${BINDIR}"],
-                  [scorep_score_extra_arg="--bindir=${BINDIR}"])
-              AC_CONFIG_SUBDIR_CUSTOM([build-score], [${scorep_score_extra_arg} CXX="${CUBE_READER_CXX}" ${scorep_cube_config_arg} ${scorep_otf2_config_arg}])
-              scorep_have_score_build="scorep_have_score_build=yes"])],
-      [AS_IF([test "x${ac_scorep_svn_controlled}" = "xno" && test "x${triggered_by_make_distcheck}" != "xyes"],
-             [AC_MSG_ERROR([cube installation required but not found. Please reconfigure using the --with-cube option or make sure that cube-config is in PATH.])],
-             [AC_MSG_WARN([cube installation required but not found. scorep-score wont be build. Please reconfigure using the --with-cube option or make sure that cube-config is in PATH.])])])
-AM_CONDITIONAL([HAVE_SCORE_BUILD], [test "x${scorep_have_score_build}" = "xscorep_have_score_build=yes"])
+
+# Always build scorep-score as frontend tool. scorep-score uses cube
+# libraries and compiler information, either from internal or external
+# cube. Don't pass the usual ${args} to the score configure, it
+# figures it out by querying an installed cube or by searching the
+# internal cube's configure output. If --bindir was used we need to
+# pass it down though (--bindir was used if $bindir = $BINDIR).
+scorep_score_extra_arg=
+adl_RECURSIVE_EVAL([${bindir}], [BINDIR_EVALUATED])
+AS_IF([test "x${bindir}" = "x${BINDIR_EVALUATED}"],
+    [scorep_score_extra_arg="--bindir=${BINDIR_EVALUATED}"])
+AC_CONFIG_SUBDIR_CUSTOM([build-score], [${scorep_score_extra_arg} ${scorep_cube_config_arg}  ${scorep_otf2_config_arg} afs_cross_compiling=${ac_scorep_cross_compiling}])
 
 AC_CONFIG_SUBDIR_CUSTOM([build-gcc-plugin], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling}])
 
@@ -199,10 +196,10 @@ AM_COND_IF([HAVE_SCOREP_SHMEM],
      AC_CONFIG_FILES([src/scorep_config_tool_shmem.h:src/tools/config/scorep_config_tool_without_shmem.h.in])
     ])
 
-AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cube_config_arg} ${scorep_have_score_build}])
+AC_CONFIG_SUBDIR_CUSTOM([build-backend], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg} ${scorep_opari2_config_arg} ${scorep_cube_config_arg}])
 
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then
-    AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_opari2_config_arg} ${scorep_cube_config_arg} ${scorep_otf2_config_arg} ${scorep_have_score_build}])
+    AC_CONFIG_SUBDIR_CUSTOM([build-frontend], [${args} ac_scorep_platform=${ac_scorep_platform} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_opari2_config_arg} ${scorep_cube_config_arg} ${scorep_otf2_config_arg}])
 fi
 
 AC_CONFIG_FILES([

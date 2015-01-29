@@ -57,8 +57,8 @@ at application start must be large enough to hold the process' trace in memory
 in order to avoid flushes during runtime, because flushes heavily disturb
 measurements. In addition to the trace, Score-P requires some additinal memory to
 maintain internal data structures. Thus, it provides also an estimation for the
-total amount of required memory on each process. The memory size per process that 
-@scorep reserves is set via the environment variable @confvar{SCOREP_TOTAL_MEMORY}. 
+total amount of required memory on each process. The memory size per process that
+@scorep reserves is set via the environment variable @confvar{SCOREP_TOTAL_MEMORY}.
 In the given example the per process memory should be larger than 24MB.
 
 Beginning with the 6th line, @verb{scorep-score} prints a table that show
@@ -110,6 +110,25 @@ The column @verb{type} shows to which group this region belongs.
 In the example above the function main belongs to group @verb{COM}
 required 24 bytes per process and used 0 s execution time. The
 regions are sorted by their buffer requirements.
+
+By default scorep-score uses demangled function names. However, if you want to
+map data to tools which use mangled names you might want to display mangled names.
+Furthermore, if you have trouble with function signatures that contain characters
+that also have a wildcard meaning, defining filters on mangled names might be easier.
+To display mangled names instead of demangled names, you can use the -m flag, e.g.
+
+@verbatim
+scorep-score profile.cubex -r -m
+@endverbatim
+
+@note The -m flag takes only effect if you display region names. In particular
+      it means that the -m flag is only effective if also the -r is specified.
+
+@note In some cases, the same name is shown for the mangled and the demangled name.
+      Some instrumentation methods, e.g. user instrumentation, provide only a
+      demangled name. For C-compilers mangled and demangled names are usually
+      identical. Or the demangling might have failed and only a mangled name is
+      available. In these cases we show always the one name that is available.
 
 @section scorep_filter Defining and testing a filter
 @seclabel{scorep_filter}

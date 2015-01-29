@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2012,
@@ -53,7 +53,8 @@ print_help()
          << "             By default, this value is 0, which means that only a timestamp\n"
          << "             is measured on each event. If you plan to record hardware counters\n"
          << "             specify the number of hardware counters. Otherwise, scorep-score\n"
-         << "             may underestimate the required space."
+         << "             may underestimate the required space.\n"
+         << " -m          Prints mangled region names instead of demangled names."
          << endl;
 }
 
@@ -64,6 +65,7 @@ main( int argc, char** argv )
     string   filter_file;
     uint64_t dense_num    = 0;
     bool     show_regions = false;
+    bool     use_mangled  = false;
 
     //--------------------------------------- Parameter options parsing
 
@@ -111,6 +113,10 @@ main( int argc, char** argv )
                     print_help();
                     exit( EXIT_FAILURE );
                 }
+            }
+            else if ( arg == "-m" )
+            {
+                use_mangled = true;
             }
             else
             {
@@ -162,7 +168,7 @@ main( int argc, char** argv )
     {
         estimator.initializeFilter( filter_file );
     }
-    estimator.calculate( show_regions );
+    estimator.calculate( show_regions, use_mangled );
     estimator.printGroups();
 
     if ( show_regions )
