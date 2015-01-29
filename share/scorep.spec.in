@@ -449,37 +449,13 @@
                                     ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                     and
                                     (
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_allgather" )
+                                        ( ${cube::region::role}[${regionid}] eq "one2all" )
                                         or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_allgatherv" )
+                                        ( ${cube::region::role}[${regionid}] eq "all2one" )
                                         or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_allreduce" )
+                                        ( ${cube::region::role}[${regionid}] eq "all2all" )
                                         or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_alltoall" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_alltoallv" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_alltoallw" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_bcast" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_exscan" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_gather" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_gatherv" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_reduce" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_reduce_scatter" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_reduce_scatter_block" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_scan" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_scatter" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "mpi_scatterv" )
+                                        ( ${cube::region::role}[${regionid}] eq "other collective" )
                                     )
                                    )
                                 {
@@ -985,13 +961,9 @@
                                 ${omp_ordered}[${i}] = 0;
                                 ${regionid} = ${cube::callpath::calleeid}[${i}];
                                 if (
-                                    ( ${cube::region::paradigm}[${regionid}] seq "openmp" )
+                                    ( ${cube::region::paradigm}[${regionid}] eq "openmp" )
                                     and
-                                   (
                                     ( ${cube::region::role}[${regionid}] eq "ordered" )
-                                    or
-                                    ( ${cube::region::role}[${regionid}] eq "ordered_sblock" )
-                                   )
                                   )
                                 {
                                     ${omp_ordered}[${i}] = 1;
