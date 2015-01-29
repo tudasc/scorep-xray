@@ -417,6 +417,8 @@ AS_IF([test "x${ac_scorep_user_timer_given}" = "xno"], [
                                  AC_SCOREP_TIMER_USE_IF_AVAILABLE([gettimeofday]))],
             [fx100],      [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([clock_gettime]),
                                  AC_SCOREP_TIMER_USE_IF_AVAILABLE([gettimeofday]))],
+            [mic],        [AS_IF(AC_SCOREP_TIMER_USE_IF_AVAILABLE([clock_gettime]),
+                                 AC_SCOREP_TIMER_USE_IF_AVAILABLE([gettimeofday]))],
             [AC_MSG_ERROR([Encountered unsupported platform "$ac_scorep_platform" during timer checks.])])
 ])
 ])

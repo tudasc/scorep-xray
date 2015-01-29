@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -33,12 +33,12 @@
  */
 
 #include <config.h>
+#include <scorep_config_tool_mpi.h>
+#include <scorep_config_tool_backend.h>
 #include "scorep_instrumenter_cmd_line.hpp"
 #include "scorep_instrumenter_adapter.hpp"
 #include "scorep_instrumenter_selector.hpp"
 #include "scorep_instrumenter_utils.hpp"
-#include <scorep_config_tool_mpi.h>
-#include <scorep_config_tool_backend.h>
 
 #include <iostream>
 #include <stdlib.h>
@@ -70,6 +70,9 @@ SCOREP_Instrumenter_CmdLine::SCOREP_Instrumenter_CmdLine( SCOREP_Instrumenter_In
     m_define_flags                   = "";
     m_output_name                    = "";
     m_interposition_lib_set          = false;
+#if SCOREP_BACKEND_COMPILER_INTEL
+    m_mmic_set = false;
+#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
 
     /* Instrumenter flags */
     m_is_dry_run     = false;
@@ -128,6 +131,24 @@ SCOREP_Instrumenter_CmdLine::ParseCmdLine( int    argc,
     {
         print_parameter();
     }
+
+#if SCOREP_BACKEND_COMPILER_INTEL && HAVE( PLATFORM_MIC )
+    if ( !m_mmic_set )
+    {
+        std::cerr << "Could not detect '-mmic' flag. Host compilation not supported "
+                  << "by this installation."
+                  << std::endl;
+        exit( EXIT_FAILURE );
+    }
+#endif /* SCOREP_BACKEND_COMPILER_INTEL */
+#if SCOREP_BACKEND_COMPILER_INTEL && !HAVE( PLATFORM_MIC ) && !HAVE( MIC_SUPPORT )
+    if ( m_mmic_set )
+    {
+        std::cerr << "MIC compilation not supported by this installation."
+                  << std::endl;
+        exit( EXIT_FAILURE );
+    }
+#endif
 }
 
 const std::string&
@@ -208,6 +229,14 @@ SCOREP_Instrumenter_CmdLine::isInterpositionLibSet( void )
 {
     return m_interposition_lib_set;
 }
+
+#if SCOREP_BACKEND_COMPILER_INTEL
+bool
+SCOREP_Instrumenter_CmdLine::isMmicSet( void )
+{
+    return m_mmic_set;
+}
+#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
 
 bool
 SCOREP_Instrumenter_CmdLine::isDryRun( void )
@@ -533,6 +562,12 @@ SCOREP_Instrumenter_CmdLine::parse_command( const std::string& current,
         add_input_file( current );
         return scorep_parse_mode_command;
     }
+#if SCOREP_BACKEND_COMPILER_INTEL
+    else if ( current == "-mmic" )
+    {
+        m_mmic_set = true;
+    }
+#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
     else if ( current == "-c" )
     {
         m_is_linking = false;

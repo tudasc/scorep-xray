@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -33,6 +33,9 @@
  */
 
 #include <config.h>
+#include <scorep_config_tool_backend.h>
+#include <scorep_config_tool_mpi.h>
+#include <scorep_config_tool_shmem.h>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -59,9 +62,6 @@
 #include "scorep_instrumenter_opencl.hpp"
 #include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter_mutex.hpp"
-#include <scorep_config_tool_backend.h>
-#include <scorep_config_tool_mpi.h>
-#include <scorep_config_tool_shmem.h>
 
 void
 print_help();
@@ -324,6 +324,7 @@ void
 SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
 {
     std::string mode          = "";
+    std::string target        = "";
     std::string scorep_config = m_install_data.getScorepConfig();
 
     mode += SCOREP_Instrumenter_Selector::getAllConfigToolFlags( m_command_line );
@@ -338,17 +339,23 @@ SCOREP_Instrumenter::prepare_config_tool_calls( const std::string& input_file )
         mode += " --dynamic";
     }
 
+#if SCOREP_BACKEND_COMPILER_INTEL && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) )
+    if ( m_command_line.isMmicSet() )
+    {
+        target += " --target mic";
+    }
+#endif  /* SCOREP_BACKEND_COMPILER_INTEL && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) ) */
     // Generate calls
-    m_config_base  = scorep_config + mode;
-    m_linker_flags = "`" + scorep_config + mode + " --ldflags` " +
-                     "`" + scorep_config + mode + " --libs` ";
+    m_config_base  = scorep_config + target + mode;
+    m_linker_flags = "`" + scorep_config + target + mode + " --ldflags` " +
+                     "`" + scorep_config + target + mode + " --libs` ";
 #if defined( SCOREP_SHARED_BUILD )
     /* temporary, see ticket:385 */
     if ( m_command_line.getNoAsNeeded() )
     {
-        m_linker_flags = "`" + scorep_config + mode + " --ldflags` " +
+        m_linker_flags = "`" + scorep_config + target + mode + " --ldflags` " +
                          LIBDIR_FLAG_WL "--no-as-needed " +
-                         "`" + scorep_config + mode + " --libs` "
+                         "`" + scorep_config + target + mode + " --libs` "
                          LIBDIR_FLAG_WL "--as-needed ";
     }
 #endif
@@ -443,9 +450,19 @@ SCOREP_Instrumenter::create_subsystem_initialization( void )
 
     // Compile initialization source file
     {
-        std::string       init_object = remove_extension( init_source ) + ".o";
+        std::string       init_object  = remove_extension( init_source ) + ".o";
+        std::string       target_flags = "";
         std::stringstream command;
+
+#if SCOREP_BACKEND_COMPILER_INTEL && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) )
+        if ( m_command_line.isMmicSet() )
+        {
+            target_flags += " -mmic";
+        }
+#endif  /* SCOREP_BACKEND_COMPILER_INTEL && ( HAVE( PLATFORM_MIC ) || HAVE( MIC_SUPPORT ) ) */
+
         command << m_install_data.getCC()
+                << target_flags
                 << " -c " << init_source
                 << " -o " << init_object;
         executeCommand( command.str() );

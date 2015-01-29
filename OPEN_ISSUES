@@ -17,6 +17,7 @@ various Score-P components.
     + SGI Altix/ICE
     + K Computer, Fujitsu FX10 and FX100 systems
     + various Linux/Intel (x86/x64) clusters
+    + Intel Xeon Phi, only native mode supported
     The provided configure options (see INSTALL) may provide a good
     basis for building and testing the toolset on other systems.
 

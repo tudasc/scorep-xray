@@ -92,6 +92,17 @@ install-data-local: doxygen-user-install
 	$(INSTALL_DATA) $(DOC_SRC_DIR)/profile/scorep_metrics.html \
                         $(DESTDIR)$(docdir)/profile/scorep_metrics-$(PACKAGE_VERSION).html
 
+install-data-hook:
+	for target in $(TARGETS)""; do \
+	    if test -n "$$target" && test -f $(pkgdatadir)/$$target/@PACKAGE@.summary; then \
+	        echo >> $(pkgdatadir)/@PACKAGE@.summary ; \
+	        echo >> $(pkgdatadir)/@PACKAGE@.summary ; \
+	        echo "=====[ Target: $$target ]====================" >> $(pkgdatadir)/@PACKAGE@.summary ; \
+	        echo >> $(pkgdatadir)/@PACKAGE@.summary ; \
+	        cat $(pkgdatadir)/$$target/@PACKAGE@.summary >> $(pkgdatadir)/@PACKAGE@.summary ; \
+	    fi \
+	done
+
 uninstall-hook: common-uninstall
 
 dist-hook: prohibit-svn-files-in-dist doc/doxygen-user/main.dox doxygen-user-generate
@@ -248,3 +259,15 @@ endif !HAVE_LOCKFILE_PROGS
 # Temporary fix for make distcheck failure introduced by r4404, see
 # also configure.ac. Obsolete once #741 is completed.
 DISTCHECK_CONFIGURE_FLAGS = triggered_by_make_distcheck=yes
+
+# On MIC, install config.summary also in $pkgdatadir/mic
+if PLATFORM_MIC
+
+micpkgdatadir = $(pkgdatadir)/mic
+micpkgdata_DATA = @PACKAGE@.summary
+
+else !PLATFORM_MIC
+
+TARGETS = mic
+
+endif !PLATFORM_MIC

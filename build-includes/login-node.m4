@@ -12,3 +12,5 @@ dnl directory for details.
 dnl
 
 dnl file build-includes/login-node.m4
+
+SCOREP_DETECT_MIC_BUILD

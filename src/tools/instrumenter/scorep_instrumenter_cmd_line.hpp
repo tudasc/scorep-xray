@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -151,6 +151,13 @@ public:
     getInputFileNumber( void );
     bool
     isInterpositionLibSet( void );
+
+#if SCOREP_BACKEND_COMPILER_INTEL
+    bool
+    isMmicSet( void );
+
+#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
+
     bool
     isDryRun( void );
     bool
@@ -402,6 +409,13 @@ private:
        True, if an interposition lib (e.g., -lmpi) was specified.
      */
     bool m_interposition_lib_set;
+
+#if SCOREP_BACKEND_COMPILER_INTEL
+    /**
+       True, if -mmic was specified.
+     */
+    bool m_mmic_set;
+#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
 
     /* --------------------------------------------
        Instrumenter flags

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -56,6 +56,7 @@ AS_CASE([${ac_scorep_platform}],
     [mingw],   [afs_scorep_platform_name="MinGW"],
     [aix],     [afs_scorep_platform_name="AIX"],
     [necsx],   [afs_scorep_platform_name="NEC SX"],
+    [mic],     [afs_scorep_platform_name="Xeon Phi"],
     [unknown], [afs_scorep_platform_name="Unknown"],
     [AC_MSG_ERROR([provided platform '${ac_scorep_platform}' unknown.])])])
 ])# AFS_SCOREP_PLATFORM_NAME

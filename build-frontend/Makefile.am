@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -54,3 +54,15 @@ include ../build-includes/front-and-backend.am
 
 check-serial: check-run-serial
 check-omp:    check-run-omp
+
+# On MIC, scorep-config is also installed to $pkglibexecdir; rename to
+# # scorep-config-mic afterwards
+if PLATFORM_MIC
+
+install-exec-hook:
+	mv $(pkglibexecdir)/scorep-config $(pkglibexecdir)/scorep-config-mic
+
+uninstall-hook:
+	rm $(pkglibexecdir)/scorep-config-mic
+
+endif PLATFORM_MIC

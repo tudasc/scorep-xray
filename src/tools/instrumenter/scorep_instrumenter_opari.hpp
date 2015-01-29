@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -158,6 +158,14 @@ private:
      * Specifies whether --tpd should be used.
      */
     bool m_use_tpd;
+
+#if SCOREP_BACKEND_COMPILER_INTEL
+    /**
+     * Specifies whether -mmic was given on the command line.
+     */
+    bool m_mmic_set;
+
+#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
 };
 
 #endif

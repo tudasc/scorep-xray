@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -33,13 +33,13 @@
  */
 
 #include <config.h>
+#include <scorep_config_tool_backend.h>
+#include <scorep_config_tool_mpi.h>
 #include "scorep_instrumenter_opari.hpp"
 #include "scorep_instrumenter_cmd_line.hpp"
 #include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter_install_data.hpp"
 #include "scorep_instrumenter.hpp"
-#include <scorep_config_tool_backend.h>
-#include <scorep_config_tool_mpi.h>
 
 #include <algorithm>
 
@@ -92,6 +92,9 @@ SCOREP_Instrumenter_OpariAdapter::SCOREP_Instrumenter_OpariAdapter( void )
     m_nm           = "`" OPARI_CONFIG " --nm`";
     m_pomp         = detect;
     m_use_tpd      = false;
+#if SCOREP_BACKEND_COMPILER_INTEL
+    m_mmic_set = false;
+#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
 }
 
 bool
@@ -277,6 +280,14 @@ SCOREP_Instrumenter_OpariAdapter::checkCommand( const std::string& current,
         set_fortran_form( false );
         return current == "-f";
     }
+
+#if SCOREP_BACKEND_COMPILER_INTEL
+    if ( arg == "-mmic" )
+    {
+        m_mmic_set = true;
+    }
+#endif  /* SCOREP_BACKEND_COMPILER_INTEL */
+
     return false;
 }
 
@@ -359,7 +370,17 @@ SCOREP_Instrumenter_OpariAdapter::compile_init_file( SCOREP_Instrumenter& instru
                                                      const std::string&   input_file,
                                                      const std::string&   output_file )
 {
+    std::string target_flags = "";
+
+#if SCOREP_BACKEND_COMPILER_INTEL && HAVE( MIC_SUPPORT )
+    if ( m_mmic_set )
+    {
+        target_flags += " -mmic ";
+    }
+#endif  /* SCOREP_BACKEND_COMPILER_INTEL && HAVE( MIC_SUPPORT ) */
+
     std::string command = m_c_compiler
+                          + target_flags
                           + " -c " + input_file
                           + " `" + m_opari_config + " --cflags` "
                           + " -o " + output_file;

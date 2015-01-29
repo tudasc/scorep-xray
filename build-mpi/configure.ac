@@ -13,7 +13,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl University of Oregon, Eugene, USA
 dnl
-dnl Copyright (c) 2009-2014,
+dnl Copyright (c) 2009-2015,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -205,10 +205,15 @@ SCOREP_METRICS_CHECK
 SCOREP_DLFCN
 SCOREP_OPENCL
 
+## Configure internal/external libraries
+scorep_otf2_config_backend_arg=
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+      [scorep_otf2_config_backend_arg="--target=backend"
+       AS_IF([test "x${ac_scorep_platform}" = "xmic"],
+             [scorep_otf2_config_backend_arg="--target=mic"])
+      ])
 AS_IF([test -n "${scorep_otf2_bindir}"],
-      [AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-           [scorep_otf2_config_backend_arg="--backend"])
-       AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cppflags ${scorep_otf2_config_backend_arg}`"])
+      [AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cppflags ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_LIBS],     ["`${scorep_otf2_bindir}/otf2-config --libs ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_LDFLAGS],  ["`${scorep_otf2_bindir}/otf2-config --ldflags ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_BINDIR],   ["${scorep_otf2_bindir}"])
@@ -235,10 +240,14 @@ AC_SCOREP_BUILD_MODE
 AC_SCOREP_CUDA
 SCOREP_CRAY_PMI
 
-# On crosscompile machines, install backend stuff into $(bin|lid)dir/backend.
+# On crosscompile machines, install backend/mic stuff into
+# $(bin|lid)dir/(backend|mic).
 backend_suffix=""
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-      [backend_suffix="/backend"])
+      [backend_suffix="/backend"
+       AS_IF([test "x${ac_scorep_platform}" = "xmic"],
+             [backend_suffix="/mic"])
+      ])
 AC_SUBST([backend_suffix])
 
 AC_SCOREP_OPENMP

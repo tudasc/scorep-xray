@@ -30,6 +30,7 @@ Features and improvements:
 - Support for pthread_exit and pthread_cancel was added.
 - Added support for task migration in the profiling system.
 - Basic support for Fujitsu FX100 systems added.
+- Added support for Intel Xeon Phi systems (native mode only)
 - Score-P now requires at least OTF2 1.5.
 - Added new user instrumentation macros (e.g.,
   SCOREP_USER_REGION_BY_NAME_BEGIN( name, type ) and

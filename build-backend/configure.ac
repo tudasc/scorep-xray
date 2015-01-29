@@ -172,7 +172,10 @@ AC_SCOREP_LINK_FLAGS_CHECK
 scorep_otf2_config=
 scorep_otf2_config_backend_arg=
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-      [scorep_otf2_config_backend_arg="--backend"])
+      [scorep_otf2_config_backend_arg="--target=backend"
+       AS_IF([test "x${ac_scorep_platform}" = "xmic"],
+             [scorep_otf2_config_backend_arg="--target=mic"])
+      ])
 AS_IF([test -n "${scorep_otf2_bindir}"],
       [AC_SUBST([OTF2_CPPFLAGS], ["`${scorep_otf2_bindir}/otf2-config --cppflags ${scorep_otf2_config_backend_arg}`"])
        AC_SUBST([OTF2_LIBS],     ["`${scorep_otf2_bindir}/otf2-config --libs ${scorep_otf2_config_backend_arg}`"])
@@ -232,10 +235,14 @@ AS_IF([test -n "${scorep_opari2_bindir}"],
 AC_SUBST([HAVE_OPARI2_FIX_AND_FREE_FORM_OPTIONS], [${opari2_fix_and_free_form_options}])
 
 AS_IF([test -n "${scorep_cube_bindir}"],
-      [AC_SUBST([CUBE_WRITER_CPPFLAGS],      ["`${scorep_cube_bindir}/cube-config --writer-cppflags`"])
-       AC_SUBST([CUBE_WRITER_LIBS],          ["`${scorep_cube_bindir}/cube-config --writer-libs`"])
+      [scorep_cube_config_backend_arg=""
        AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-           [scorep_cube_config_backend_arg="--backend"])
+             [scorep_cube_config_backend_arg="--target=backend"
+              AS_IF([test "x${ac_scorep_platform}" = "xmic"],
+                    [scorep_cube_config_backend_arg="--target=mic"])
+             ])
+       AC_SUBST([CUBE_WRITER_CPPFLAGS],      ["`${scorep_cube_bindir}/cube-config --writer-cppflags`"])
+       AC_SUBST([CUBE_WRITER_LIBS],          ["`${scorep_cube_bindir}/cube-config --writer-libs`"])
        AC_SUBST([CUBE_WRITER_LDFLAGS],       ["`${scorep_cube_bindir}/cube-config --writer-ldflags ${scorep_cube_config_backend_arg}`"])
        AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE], [test 1 -eq 1])
       ],
@@ -252,10 +259,14 @@ AC_SCOREP_BUILD_MODE
 AC_SCOREP_CUDA
 SCOREP_CRAY_PMI
 
-# On crosscompile machines, install backend stuff into $(bin|lid)dir/backend.
+# On crosscompile machines, install backend/mic stuff into
+# $(bin|lid)dir/(backend|mic).
 backend_suffix=""
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-      [backend_suffix="/backend"])
+      [backend_suffix="/backend"
+       AS_IF([test "x${ac_scorep_platform}" = "xmic"],
+             [backend_suffix="/mic"])
+      ])
 AC_SUBST([backend_suffix])
 
 AC_SCOREP_CHECK_SIZEOF([int64_t])

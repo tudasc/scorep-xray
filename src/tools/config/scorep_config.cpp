@@ -65,6 +65,7 @@
 #define ACTION_MPIFC         10
 #define ACTION_COBI_DEPS     11
 #define ACTION_ADAPTER_INIT  12
+#define ACTION_TARGETS       13
 
 #define SHORT_HELP \
     "\nUsage:\nscorep-config <command> [<options>]\n\n" \
@@ -109,6 +110,12 @@ std::string m_rpath_head      = "";
 std::string m_rpath_delimiter = "";
 std::string m_rpath_tail      = "";
 
+enum
+{
+    TARGET_PLAIN = 0,
+    TARGET_MIC   = 1
+};
+
 static void
 print_help( void )
 {
@@ -151,6 +158,11 @@ get_full_library_names( const std::deque<std::string>& library_list,
 static void
 print_adapter_init_source( void );
 
+static void
+delegate( int                argc,
+          char**             argv,
+          const std::string& target );
+
 static inline void
 clean_up()
 {
@@ -176,6 +188,8 @@ main( int    argc,
     bool                   allow_dynamic = true;
     bool                   allow_static  = true;
     bool                   online_access = true;
+    /* set default target to plain */
+    int target = TARGET_PLAIN;
 
     SCOREP_Config_Adapter::init();
     SCOREP_Config_MppSystem::init();
@@ -346,6 +360,38 @@ main( int    argc,
                 exit( EXIT_FAILURE );
             }
         }
+        else if ( strncmp( argv[ i ], "--target", 8 ) == 0 )
+        {
+            const char* target_name = 0;
+            if ( argv[ i ][ 8 ] == '=' )
+            {
+                target_name = argv[ i ] + 9;
+            }
+            else
+            {
+                target_name = argv[ i + 1 ];
+                i++;
+            }
+            if ( !target_name )
+            {
+                std::cerr << "Missing argument for --target"
+                          << ". Abort.\n" << std::endl;
+                clean_up();
+                exit( EXIT_FAILURE );
+            }
+
+            if ( !strcmp( target_name, "mic" ) )
+            {
+                target = TARGET_MIC;
+            }
+            else
+            {
+                std::cerr << "\nUnknown target: " << target_name
+                          << ". Abort.\n" << std::endl;
+                clean_up();
+                exit( EXIT_FAILURE );
+            }
+        }
         else
         {
             std::string arg( argv[ i ] );
@@ -359,6 +405,14 @@ main( int    argc,
             }
         }
     }
+
+#if HAVE( MIC_SUPPORT )
+    if ( target == TARGET_MIC )
+    {
+        delegate( argc, argv, "mic" );
+    }
+#endif  /* HAVE( MIC_SUPPORT ) */
+
 
     std::deque<std::string>           libs;
     SCOREP_Config_LibraryDependencies deps;
@@ -759,4 +813,18 @@ print_adapter_init_source( void )
                   << "const size_t scorep_number_of_subsystems = 0;"
                   << std::endl;
     }
+}
+
+void
+delegate( int argc, char** argv, const std::string& target )
+{
+    // Construct command string with all original arguments
+    std::string command = PKGLIBEXECDIR "/scorep-config-" + target;
+    for ( int i = 1; i < argc; ++i )
+    {
+        command += " " + std::string( argv[ i ] );
+    }
+
+    // Delegate to scorep-config command of target build
+    exit( system( command.c_str() ) );
 }

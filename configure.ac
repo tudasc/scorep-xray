@@ -63,6 +63,7 @@ AC_SCOREP_DETECT_PLATFORMS
 AFS_CROSSCOMPILING
 AFS_SCOREP_MACHINE_NAME
 AFS_SCOREP_PLATFORM_NAME
+AC_SCOREP_PLATFORM_SETTINGS
 
 # quote $afs_scorep_platform_name and $afs_scorep_default_machine_name for use as arguments to sub-configures
 afs_scorep_default_machine_name_sq=$afs_scorep_default_machine_name
@@ -144,8 +145,30 @@ AM_CONDITIONAL([HAVE_LOCKFILE_PROGS],
 AM_CONDITIONAL([CROSS_BUILD], [test "x${ac_scorep_cross_compiling}" = "xyes"])
 
 AC_SCOREP_HAVE_CONFIG_TOOL([otf2],   [6])
+AS_IF([test -n "${scorep_otf2_config_bin}" && \
+       test "x${ac_scorep_platform}" = "xmic"],
+      [scorep_otf2_have_mic=no
+       for target in `${scorep_otf2_config_bin} --features=targets`
+       do
+           AS_CASE([${target}],
+               [mic], [scorep_otf2_have_mic=yes])
+       done
+       AS_IF([test "x${scorep_otf2_have_mic}" = "xno"],
+             [AC_MSG_ERROR([cannot detect MIC support for external OTF2 installation. Either provide a suitable OTF2 library or reconfigure ]AC_PACKAGE_NAME[ with the '--without-otf2' option to use the included OTF2 copy.])])
+      ])
 AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [2])
 AC_SCOREP_HAVE_CONFIG_TOOL([cube],   [7])
+AS_IF([test -n "${scorep_cube_config_bin}" && \
+       test "x${ac_scorep_platform}" = "xmic"],
+      [scorep_cube_have_mic=no
+       for target in `${scorep_cube_config_bin} --features=targets`
+       do
+           AS_CASE([${target}],
+               [mic], [scorep_cube_have_mic=yes])
+       done
+       AS_IF([test "x${scorep_cube_have_mic}" = "xno"],
+             [AC_MSG_ERROR([cannot detect MIC support for external Cube installation. Either provide a suitable Cube library or reconfigure ]AC_PACKAGE_NAME[ with the '--without-cube' option to use the included Cube copy.])])
+      ])
 
 # handle external package's subdir configures
 
