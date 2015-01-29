@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -102,10 +102,21 @@ scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* 
     PMI_Get_meshcoord( nid, &coord );
     PMI_nid_to_nicaddrs( nid, 1, &nic );
 
-    if ( PMI_FALSE == initialized )
-    {
+    /*
+     * PMI is also initialized by MPI_Init and finalized by
+     * MPI_Finalize. We noticed that if Score-P initializes
+     * and finalizes PMI here, MPI programs might end up in
+     * a segmentation fault in MPI_Finalize. It seems that
+     * there is a bug if PMI is initialized/finalized twice.
+     * Cray support says that user code should not finalize
+     * PMI. That's why the call to PMI_Finalize is skipped to
+     * work around this issue.
+     *
+       if ( PMI_FALSE == initialized )
+       {
         PMI_Finalize();
-    }
+       }
+     */
 
     /* NIC */
     node = scorep_platform_system_tree_bottom_up_add( &node,
