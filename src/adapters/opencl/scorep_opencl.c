@@ -1183,9 +1183,10 @@ kernel_hash_put( const char*         name,
 
     scorep_opencl_kernel_hash_node* add =
         ( scorep_opencl_kernel_hash_node* )SCOREP_Memory_AllocForMisc(
-            sizeof( scorep_opencl_kernel_hash_node ) + sizeof( char[ len ] ) );
+            sizeof( scorep_opencl_kernel_hash_node ) + ( len + 1 ) * sizeof( char ) );
 
-    strncpy( add->name, name, len );
+    memcpy( add->name, name, len );
+    ( add->name )[ len ] = '\0';
 
     add->region = region;
 
