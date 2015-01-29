@@ -41,12 +41,6 @@ public:
     virtual bool
     checkCommand( const std::string& current,
                   const std::string& next );
-
-private:
-    /**
-     * Specifies whether shared or static wrapping mode is used.
-     */
-    bool m_use_shared_wrapping_mode;
 };
 
 #endif
