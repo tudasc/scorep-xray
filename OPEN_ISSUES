@@ -363,6 +363,10 @@ various Score-P components.
     'scorep'. One workaround is to run '(unset
     SCOREP_EXPERIMENT_DIRECTORY; make check;)'.
 
+  - Currently OTF2 definitions are limited with respect to the maximum
+    number of group members (i.e., MPI_COMM_WORLD). OTF2 traces with
+    more than 512k threads are not supported yet.
+
 --------------------------------------------------------------------------------
 
 Please report bugs, wishes, and suggestions to <support@score-p.org>.
