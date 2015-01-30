@@ -33,13 +33,10 @@ static const SCOREP_ConfigType_SetEntry scorep_opencl_enable_groups[] =
     { "kernel",  SCOREP_OPENCL_FEATURE_KERNEL         },
     { "memcpy",  SCOREP_OPENCL_FEATURE_MEMCPY         },
     { "sync",    SCOREP_OPENCL_FEATURE_SYNC           },
-    { "DEFAULT", SCOREP_OPENCL_FEATURES_DEFAULT       },
+    { "default", SCOREP_OPENCL_FEATURES_DEFAULT       },
     { "1",       SCOREP_OPENCL_FEATURES_DEFAULT       },
     { "yes",     SCOREP_OPENCL_FEATURES_DEFAULT       },
     { "true",    SCOREP_OPENCL_FEATURES_DEFAULT       },
-    { "0",       0                                    },
-    { "no",      0                                    },
-    { "false",   0                                    },
     { NULL,      0                                    }
 };
 
