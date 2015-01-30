@@ -30,6 +30,15 @@ AC_CONFIG_HEADERS([../src/config-gcc-plugin.h])
 
 AC_DEFUN([AC_SCOREP_FRONTEND_GCC_PLUGIN], [])
 
+scorep_enable_gcc_plugin=detect
+AC_ARG_ENABLE([gcc-plugin],
+    [AS_HELP_STRING([--disable-gcc-plugin],
+        [Disable support for the GCC plug-in instrumentation. Default is to determine support automatically. This disables it by request and fail if support can't be satisfied but was requested.])],
+    [scorep_enable_gcc_plugin=${enableval}
+    AS_CASE([${scorep_enable_gcc_plugin}],
+        [yes|no], [:],
+        [AC_MSG_ERROR([Invalid argument for --disable-gcc-plugin: ${scorep_enable_gcc_plugin}])])])
+
 ## require $ac_scorep_cross_compiling to be set to 'yes' or 'no'
 AS_IF([test "x${ac_scorep_cross_compiling}" != "xyes" && \
        test "x${ac_scorep_cross_compiling}" != "xno"],
@@ -67,16 +76,22 @@ AC_SUBST([PKGDATADIR])
 
 # Only if the platform supports shared libraries, try to check for plug-in
 # support in GCC
-AS_CASE([${cross_compiling},${ax_cv_c_compiler_vendor},${enable_shared}],
-    [no,gnu,yes],
+AS_CASE([${cross_compiling},${ax_cv_c_compiler_vendor},${enable_shared},${scorep_enable_gcc_plugin}],
+    [*,*,*,no], dnl early avoid checks if the user disabled detection
+        [AFS_SUMMARY([GCC plug-in support], [no, explicitly disabled via --disable-gcc-plugin])],
+    [no,gnu,yes,*],
         [SCOREP_GCC_PLUGIN],
-    [yes,*,*],
+    [yes,*,*,*],
         [AFS_SUMMARY([GCC plug-in support], [no, disabled on cross build machines])],
-    [*,*,no],
+    [*,*,no,*],
         [AFS_SUMMARY([GCC plug-in support], [no, need support for shared libraries])],
-    [*,*,*],
+    [*,*,*,*],
         [AFS_SUMMARY([GCC plug-in support], [no, only GNU compilers supported])])
 
+AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
+    [],
+    [AS_IF([test "x${scorep_enable_gcc_plugin}" = "xyes"],
+        [AC_MSG_ERROR([Request to enable the GCC plug-in could not be fulfilled. Run configure with --disable-gcc-plugin or run without --enable-gcc-plugin to see the reason.])])])
 
 AC_SCOREP_ERROR_CODES
 

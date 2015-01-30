@@ -183,6 +183,11 @@ be used to build Score-P are as follows:
   --enable-cuda
                Enable or disable support for CUDA. Fail if support
                can't be satisfied but was requested.
+  --disable-gcc-plugin
+               Disable support for the GCC plug-in
+               instrumentation. Default is to determine support
+               automatically. This disables it by request and fail
+               if support can't be satisfied but was requested.
   --enable-timer-bgl_rts_get_timebase
                enable bgl_rts_get_timebase timer if available instead
                of platform default
