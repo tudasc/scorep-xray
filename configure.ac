@@ -215,7 +215,7 @@ AM_CONDITIONAL([HAVE_SCOREP_SHMEM],
 AM_COND_IF([HAVE_SCOREP_SHMEM],
     [AC_CONFIG_SUBDIR_CUSTOM([build-shmem], [${args} ac_scorep_platform=${ac_scorep_platform} ac_scorep_cross_compiling=${ac_scorep_cross_compiling} afs_scorep_platform_name='${afs_scorep_platform_name_sq}' afs_scorep_default_machine_name='${afs_scorep_default_machine_name_sq}' ${scorep_otf2_config_arg}])
     ],
-    [AFS_SUMMARY([SHMEM support], [no])
+    [AFS_SUMMARY([SHMEM support], [no, explicitly disabled via --without-shmem])
      AC_CONFIG_FILES([src/scorep_config_tool_shmem.h:src/tools/config/scorep_config_tool_without_shmem.h.in])
     ])
 
