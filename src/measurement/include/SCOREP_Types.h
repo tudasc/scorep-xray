@@ -574,7 +574,7 @@ typedef enum SCOREP_ConfigType
      * SCOREP_ConfigVariable::variableContext should point to a NULL terminated
      * string list with valid set members
      *
-     * The strings can be separated by any of the following charachters:
+     * The strings can be separated by any of the following characters:
      *   @li " " - space
      *   @li "," - comma
      *   @li ":" - colon
@@ -593,12 +593,14 @@ typedef enum SCOREP_ConfigType
      * type uint64_t.
      *
      * SCOREP_ConfigVariable::variableContext should point to an array of type
-     * SCOREP_ConfigType_SetEntry with valid set members and there values.
+     * SCOREP_ConfigType_SetEntry with valid set members and their values.
+     * "none" and "no" are always considered as the empty set and should
+     * not show up in this list, also entries with value zero are prohibited.
      * For better debugging, they should be in decreasing order of the value
      * field.
      * Terminate the array with an entry { NULL, 0 }. Case doesn't matter.
      *
-     * The strings can be separated by any of the following charachters:
+     * The strings can be separated by any of the following characters:
      *   @li " " - space
      *   @li "," - comma
      *   @li ":" - colon

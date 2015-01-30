@@ -60,10 +60,9 @@ static const SCOREP_ConfigType_SetEntry scorep_cuda_enable_groups[] = {
     { "gpumemusage",    SCOREP_CUDA_FEATURE_GPUMEMUSAGE           },
     { "references",     SCOREP_CUDA_FEATURE_REFERENCES            },
     { "flushatexit",    SCOREP_CUDA_FEATURE_FLUSHATEXIT           },
-    { "DEFAULT",        SCOREP_CUDA_FEATURES_DEFAULT              },
+    { "default",        SCOREP_CUDA_FEATURES_DEFAULT              },
     { "1",              SCOREP_CUDA_FEATURES_DEFAULT              },
     { "yes",            SCOREP_CUDA_FEATURES_DEFAULT              },
-    { "no",             0                                         },
     { NULL,             0                                         }
 };
 

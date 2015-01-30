@@ -94,7 +94,6 @@ bool scorep_profile_enable_core_files;
    Bitset table for output format string configuration.
  */
 static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
-    { "none",         SCOREP_Profile_OutputNone         },
     { "tau_snapshot", SCOREP_Profile_OutputTauSnapshot  },
     { "cube4",        SCOREP_Profile_OutputCube4        },
     { "cube_tuple",   SCOREP_Profile_OutputCubeTuple    },

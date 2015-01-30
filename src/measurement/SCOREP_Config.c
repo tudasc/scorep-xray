@@ -100,6 +100,11 @@ check_name( const char* name,
             bool        isNameSpace );
 
 static void
+check_bitset( const char*                 nameSpaceName,
+              const char*                 variableName,
+              SCOREP_ConfigType_SetEntry* acceptedValues );
+
+static void
 string_to_lower( char* str );
 
 static void
@@ -335,6 +340,14 @@ SCOREP_ConfigRegister( const char*            nameSpaceName,
                      scorep_config_type_to_string( variable->data.type ) );
         UTILS_DEBUG( "  Default:     %s", variable->data.defaultValue );
         UTILS_DEBUG( "  Description: %s", variable->data.shortHelp );
+
+        /* sanity check possible bitset members */
+        if ( SCOREP_CONFIG_TYPE_BITSET == variable->data.type )
+        {
+            check_bitset( nameSpaceName,
+                          variable->data.name,
+                          variable->data.variableContext );
+        }
 
         /* set the variable to its default value */
         successfully_parsed = parse_value( variable->data.defaultValue,
@@ -700,6 +713,27 @@ check_name( const char* name, size_t nameLen, bool isNameSpace )
     }
 }
 
+void
+check_bitset( const char*                 nameSpaceName,
+              const char*                 variableName,
+              SCOREP_ConfigType_SetEntry* acceptedValues )
+{
+    while ( acceptedValues->name )
+    {
+        UTILS_BUG_ON( 0 == acceptedValues->value,
+                      "Possible set members for variable %s::%s includes the 0 value!",
+                      nameSpaceName, variableName );
+        UTILS_BUG_ON( 0 == strcasecmp( acceptedValues->name, "no" )
+                      || 0 == strcasecmp( acceptedValues->name, "none" ),
+                      "Invalid set member name for variable %s::%s: %s",
+                      nameSpaceName,
+                      variableName,
+                      acceptedValues->name );
+
+        acceptedValues++;
+    }
+}
+
 static bool
 parse_bool( const char* value,
             bool*       boolReference );
@@ -807,7 +841,7 @@ parse_uint64( const char*        numberString,
 
     /*
      * Ignore leading whitespace, but also ignore this whether we have consumed
-     * real number charachters. That is an whitespace only string is not
+     * real number characters. That is an whitespace only string is not
      * a valid number
      */
     while ( isspace( *numberString ) )
@@ -1038,7 +1072,7 @@ parse_set( const char* value,
            char***     stringListReference,
            char**      acceptedValues )
 {
-    /* count number of separator charachters and use it as an upper bound
+    /* count number of separator characters and use it as an upper bound
        for the number of entries in the string list */
     size_t      string_list_alloc = 1;
     const char* value_position    = value;
@@ -1133,6 +1167,13 @@ parse_bitset( const char*                 value,
               uint64_t*                   bitsetReference,
               SCOREP_ConfigType_SetEntry* acceptedValues )
 {
+    *bitsetReference = 0;
+
+    if ( 0 == strcasecmp( value, "none" ) || 0 == strcasecmp( value, "no" ) )
+    {
+        return true;
+    }
+
     char* value_copy = malloc( strlen( value ) + 1 );
     if ( !value_copy )
     {
@@ -1140,8 +1181,6 @@ parse_bitset( const char*                 value,
         return false;
     }
     strcpy( value_copy, value );
-
-    *bitsetReference = 0;
 
     char* entry;
     bool  success          = true;
