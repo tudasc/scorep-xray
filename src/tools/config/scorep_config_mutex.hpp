@@ -109,7 +109,7 @@ public:
     ~SCOREP_Config_Mutex();
 
     /**
-     * Prints standart help output for this mutex system, based on the name.
+     * Prints standard help output for this mutex system, based on the name.
      * Overwrite this functions if you need a different layout.
      */
     virtual void

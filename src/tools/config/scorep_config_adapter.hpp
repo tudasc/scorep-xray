@@ -148,7 +148,7 @@ public:
 
 protected:
     /**
-     * Prints standart help output for this adapter, based on the name.
+     * Prints standard help output for this adapter, based on the name.
      * Overwrite this functions if you need a different layout.
      */
     virtual void

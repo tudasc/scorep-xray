@@ -134,7 +134,7 @@ public:
     updateWidths( SCOREP_Score_FieldWidths& widths );
 
     /**
-     * Prints the region data to the standart output device.
+     * Prints the region data to the standard output device.
      * @param totalTime The total time spend in the application.
      * @param widths    Field widths used for printing.
      */
