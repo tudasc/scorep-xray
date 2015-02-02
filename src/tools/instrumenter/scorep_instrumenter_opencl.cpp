@@ -99,7 +99,7 @@ SCOREP_Instrumenter_OpenCLAdapter::checkCommand( const std::string& current,
               ( is_opencl_library( current.substr( 2 ) ) ) )
     {
         m_usage = enabled;
-        return true;
+        return false;
     }
     return false;
 }
