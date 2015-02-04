@@ -40,6 +40,63 @@
 #include <UTILS_IO.h>
 
 /* **************************************************************************************
+ * static functions
+ * *************************************************************************************/
+
+/**
+ * Checks whether the current argument is indicates whether OpenMP is used.
+ * @param current     The current argument.
+ * @param openmpCflag The standard OpenMP C Flag for the compiler.
+ * @returns true if @a current indicates OpenMP usage.
+ */
+static bool
+check_command_for_openmp_option( std::string current, std::string openmpCflag )
+{
+    if ( current == openmpCflag )
+    {
+        return true;
+    }
+#if SCOREP_BACKEND_COMPILER_INTEL
+    if ( current == "-openmp" || current == "-qopenmp" )
+    {
+        return true;
+    }
+#endif
+#if SCOREP_BACKEND_COMPILER_IBM
+    if ( ( current.length() > openmpCflag.length() ) &&
+         ( current.substr( 0, 6 ) == "-qsmp=" ) )
+    {
+        size_t end;
+        for ( size_t start = 5; start != std::string::npos; start = end )
+        {
+            end = current.find( ':', start + 1 );
+            if ( current.substr( start + 1, end - start - 1 ) == "omp" )
+            {
+                return true;
+            }
+        }
+    }
+#endif
+#if SCOREP_BACKEND_COMPILER_FUJITSU
+    if ( ( current.length() > openmpCflag.length() ) &&
+         ( current.substr( 0, 2 ) == "-K" ) )
+    {
+        size_t end;
+        for ( size_t start = 1; start != std::string::npos; start = end )
+        {
+            end = current.find( ',', start + 1 );
+            if ( current.substr( start + 1, end - start - 1 ) == "openmp" )
+            {
+                return true;
+            }
+        }
+    }
+#endif
+    return false;
+}
+
+
+/* **************************************************************************************
  * class SCOREP_Instrumenter_SingleThreaded
  * *************************************************************************************/
 SCOREP_Instrumenter_SingleThreaded::SCOREP_Instrumenter_SingleThreaded
@@ -70,31 +127,10 @@ bool
 SCOREP_Instrumenter_OmpTpd::checkCommand( const std::string& current,
                                           const std::string& next )
 {
-    if ( current == m_openmp_cflag )
+    if ( check_command_for_openmp_option( current, m_openmp_cflag ) )
     {
         m_selector->select( this, false );
     }
-#if SCOREP_BACKEND_COMPILER_INTEL
-    if ( current == "-openmp" || current == "-qopenmp" )
-    {
-        m_selector->select( this, false );
-    }
-#endif
-#if SCOREP_BACKEND_COMPILER_IBM
-    if ( ( current.length() > m_openmp_cflag.length() ) &&
-         ( current.substr( 0, 6 ) == "-qsmp=" ) )
-    {
-        std::string::size_type end;
-        for ( std::string::size_type start = 5; start != std::string::npos; start = end )
-        {
-            end = current.find( ':', start + 1 );
-            if ( current.substr( start + 1, end - start - 1 ) == "omp" )
-            {
-                m_selector->select( this, false );
-            }
-        }
-    }
-#endif
     return false;
 }
 
@@ -141,31 +177,10 @@ bool
 SCOREP_Instrumenter_OmpAncestry::checkCommand( const std::string& current,
                                                const std::string& next )
 {
-    if ( current == m_openmp_cflag )
+    if ( check_command_for_openmp_option( current, m_openmp_cflag ) )
     {
         m_selector->select( this, false );
     }
-#if SCOREP_BACKEND_COMPILER_INTEL
-    if ( current == "-openmp" || current == "-qopenmp" )
-    {
-        m_selector->select( this, false );
-    }
-#endif
-#if SCOREP_BACKEND_COMPILER_IBM
-    if ( ( current.length() > m_openmp_cflag.length() ) &&
-         ( current.substr( 0, 6 ) == "-qsmp=" ) )
-    {
-        size_t end;
-        for ( size_t start = 5; start != std::string::npos; start = end )
-        {
-            end = current.find( ':', start + 1 );
-            if ( current.substr( start + 1, end - start - 1 ) == "omp" )
-            {
-                m_selector->select( this, false );
-            }
-        }
-    }
-#endif
     return false;
 }
 
@@ -225,6 +240,7 @@ SCOREP_Instrumenter_Pthread::checkCommand( const std::string& current,
     {
         m_selector->select( this, false );
     }
+
     return false;
 }
 
