@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -127,13 +127,12 @@ SCOREP_Ipc_GetFileGroup( int nProcsPerFile )
                       "Invalid value for number of procs per file: %d",
                       nProcsPerFile );
 
-        #if defined( __bgp__ )
+        #if defined( __bgp__ ) || defined( __bgq__ )
 
-        /* MPIX_Pset_same_comm_create creates a communicator such that all
-           nodes in the same communicator are served by the same I/O node. For
-           each I/O node we will create one sion file that comprises the files
-           of all tasks of this communicator. To activate this, set
-           number_of_sion_files <= 0. */
+        /* MPIX_Pset_same_comm_create returns a communicator which contains
+           only MPI ranks which run on nodes belonging to the same I/O node.
+           For each I/O node we will create one SION file that stores the
+           logical files of all MPI ranks in this communicator. */
         MPIX_Pset_same_comm_create( &file_group.comm );
 
         #else
