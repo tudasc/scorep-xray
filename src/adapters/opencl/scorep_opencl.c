@@ -1008,14 +1008,14 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
             UTILS_WARNING( "[OpenCL] Unknown buffer entry type found!" );
         }
 
-        // go to next entry in buffer
-        buf_entry += sizeof( scorep_opencl_buffer_entry );
-
         // release event that has been retained by this wrapper
         if ( buf_entry->retained_event == true && buf_entry->event )
         {
             SCOREP_OPENCL_CALL( clReleaseEvent, ( buf_entry->event ) );
         }
+
+        // go to next entry in buffer
+        buf_entry += sizeof( scorep_opencl_buffer_entry );
     }
 
     // reset buffer pointers
