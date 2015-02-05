@@ -383,9 +383,9 @@ create_nm_file( char* nmfile,
     UTILS_ASSERT( exefile );
 
 #ifdef GNU_DEMANGLE
-    sprintf( command, SCOREP_BACKEND_NM " -Aol %s 2> %s > %s", exefile, nmfile, nmfile );
+    sprintf( command, SCOREP_BACKEND_NM " -Aol %s 2> %s > %s", exefile, errfile, nmfile );
 #else /* GNU_DEMANGLE */
-    sprintf( command, SCOREP_BACKEND_NM " -ol %s 2> %s > %s", exefile, nmfile, nmfile );
+    sprintf( command, SCOREP_BACKEND_NM " -ol %s 2> %s > %s", exefile, errfile, nmfile );
 #endif /* GNU_DEMANGLE */
     if ( system( command ) != EXIT_SUCCESS )
     {
