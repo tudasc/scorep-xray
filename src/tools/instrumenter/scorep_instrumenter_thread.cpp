@@ -240,6 +240,7 @@ SCOREP_Instrumenter_Pthread::checkCommand( const std::string& current,
               ( is_pthread_library( next ) ) )
     {
         m_selector->select( this, false );
+        return true;
     }
 
     return false;
