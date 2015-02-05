@@ -12,6 +12,8 @@ Bugfixes:
 
 Bugfixes:
 
+- BG/Q: use optimized MPI rank to SION file mapping (one file per I/O node)
+
 ------------------- Released version 1.4 -----------------------------
 
 Major features:
