@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2012, 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -45,7 +45,6 @@
 #include <string.h>
 
 #include <UTILS_IO.h>
-#include <SCOREP_Hashtab.h>
 #include <UTILS_CStr.h>
 #include <SCOREP_Types.h>
 

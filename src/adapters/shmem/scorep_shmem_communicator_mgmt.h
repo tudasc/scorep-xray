@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -18,7 +18,6 @@
 #ifndef SCOREP_SHMEM_COMMUNICATOR_MGMT_H
 #define SCOREP_SHMEM_COMMUNICATOR_MGMT_H
 
-#include <SCOREP_Hashtab.h>
 #include <SCOREP_DefinitionHandles.h>
 #include <SCOREP_Types.h>
 
