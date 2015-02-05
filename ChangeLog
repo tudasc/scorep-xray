@@ -15,6 +15,8 @@ Bugfixes:
 - BG/Q: use optimized MPI rank to SION file mapping (one file per I/O node)
 - OpenCL: Score-P instrumenter reports correctly when it noticed
   OpenCL library on command line
+- The Score-P instrumenter did misinterpret the Pthread library as an input
+  file, if it was given as '-l pthread' on the command line. Fixed.
 
 ------------------- Released version 1.4 -----------------------------
 
