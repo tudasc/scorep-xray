@@ -243,7 +243,7 @@ scorep_compiler_get_sym_tab( void )
     size_t    size;
     asymbol** canonic_symbols;
     char*     exepath;
-    char      path[ 512 ] = { 0 };
+    char      path[ SCOREP_COMPILER_BUFFER_LEN ] = { 0 };
 
     /* initialize BFD */
     bfd_init();
