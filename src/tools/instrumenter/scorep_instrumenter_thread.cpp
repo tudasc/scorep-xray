@@ -7,6 +7,9 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -40,20 +43,58 @@
 #include <UTILS_IO.h>
 
 /* **************************************************************************************
- * static functions
+ * class SCOREP_Instrumenter_SingleThreaded
  * *************************************************************************************/
+SCOREP_Instrumenter_SingleThreaded::SCOREP_Instrumenter_SingleThreaded
+(
+    SCOREP_Instrumenter_Selector* selector
+) : SCOREP_Instrumenter_Paradigm( selector, "none", "", "No thread support." )
+{
+}
+
+/* *****************************************************************************
+ * class SCOREP_Instrumenter_Omp
+ * ****************************************************************************/
+SCOREP_Instrumenter_Omp::SCOREP_Instrumenter_Omp(
+    SCOREP_Instrumenter_Selector* selector,
+    const std::string&            variant,
+    const std::string&            description )
+    : SCOREP_Instrumenter_Paradigm( selector, "omp", variant, description )
+{
+    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
+    m_openmp_cflag = SCOREP_OPENMP_CFLAGS;
+}
+
+bool
+SCOREP_Instrumenter_Omp::checkCommand( const std::string& current,
+                                       const std::string& next )
+{
+    if ( checkForOpenmpOption( current ) )
+    {
+        m_selector->select( this, false );
+    }
+    return false;
+}
+
+void
+SCOREP_Instrumenter_Omp::setConfigValue( const std::string& key,
+                                         const std::string& value )
+{
+    if ( key == "OPENMP_CFLAGS" && value != "" )
+    {
+        m_openmp_cflag = value;
+    }
+}
 
 /**
  * Checks whether the current argument is indicates whether OpenMP is used.
  * @param current     The current argument.
- * @param openmpCflag The standard OpenMP C Flag for the compiler.
  * @returns true if @a current indicates OpenMP usage.
  */
-static bool
-check_command_for_openmp_option( const std::string& current,
-                                 const std::string& openmpCflag )
+bool
+SCOREP_Instrumenter_Omp::checkForOpenmpOption( const std::string& current )
 {
-    if ( current == openmpCflag )
+    if ( current == m_openmp_cflag )
     {
         return true;
     }
@@ -64,7 +105,7 @@ check_command_for_openmp_option( const std::string& current,
     }
 #endif
 #if SCOREP_BACKEND_COMPILER_IBM
-    if ( ( current.length() > openmpCflag.length() ) &&
+    if ( ( current.length() > m_openmp_cflag.length() ) &&
          ( current.substr( 0, 6 ) == "-qsmp=" ) )
     {
         size_t end;
@@ -79,7 +120,7 @@ check_command_for_openmp_option( const std::string& current,
     }
 #endif
 #if SCOREP_BACKEND_COMPILER_FUJITSU
-    if ( ( current.length() > openmpCflag.length() ) &&
+    if ( ( current.length() > m_openmp_cflag.length() ) &&
          ( current.substr( 0, 2 ) == "-K" ) )
     {
         size_t end;
@@ -96,53 +137,18 @@ check_command_for_openmp_option( const std::string& current,
     return false;
 }
 
-
-/* **************************************************************************************
- * class SCOREP_Instrumenter_SingleThreaded
- * *************************************************************************************/
-SCOREP_Instrumenter_SingleThreaded::SCOREP_Instrumenter_SingleThreaded
-(
-    SCOREP_Instrumenter_Selector* selector
-) : SCOREP_Instrumenter_Paradigm( selector, "none", "", "No thread support." )
-{
-}
-
 /* **************************************************************************************
  * class SCOREP_Instrumenter_OmpTpd
  * *************************************************************************************/
 SCOREP_Instrumenter_OmpTpd::SCOREP_Instrumenter_OmpTpd
 (
     SCOREP_Instrumenter_Selector* selector
-) : SCOREP_Instrumenter_Paradigm( selector, "omp", "pomp_tpd",
-                                  "OpenMP support using OPARI2 thread tracking" )
+) : SCOREP_Instrumenter_Omp( selector, "pomp_tpd",
+                             "OpenMP support using OPARI2 thread tracking" )
 {
-    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
-    m_openmp_cflag = SCOREP_OPENMP_CFLAGS;
-
 #if !SCOREP_BACKEND_HAVE_OMP_TPD
     unsupported();
 #endif
-}
-
-bool
-SCOREP_Instrumenter_OmpTpd::checkCommand( const std::string& current,
-                                          const std::string& next )
-{
-    if ( check_command_for_openmp_option( current, m_openmp_cflag ) )
-    {
-        m_selector->select( this, false );
-    }
-    return false;
-}
-
-void
-SCOREP_Instrumenter_OmpTpd::setConfigValue( const std::string& key,
-                                            const std::string& value )
-{
-    if ( key == "OPENMP_CFLAGS" && value != "" )
-    {
-        m_openmp_cflag = value;
-    }
 }
 
 void
@@ -163,41 +169,17 @@ SCOREP_Instrumenter_OmpTpd::checkDependencies( void )
 SCOREP_Instrumenter_OmpAncestry::SCOREP_Instrumenter_OmpAncestry
 (
     SCOREP_Instrumenter_Selector* selector
-) : SCOREP_Instrumenter_Paradigm( selector, "omp", "ancestry",
-                                  "OpenMP support using thread tracking with ancestry functions in OpenMP 3.0 and later" )
+) : SCOREP_Instrumenter_Omp( selector, "ancestry",
+                             "OpenMP support using thread tracking with ancestry functions in OpenMP 3.0 and later" )
 {
-    m_requires.push_back( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
-    m_openmp_cflag = SCOREP_OPENMP_CFLAGS;
-
 #if !SCOREP_BACKEND_HAVE_OMP_ANCESTRY
     unsupported();
 #endif
 }
 
-bool
-SCOREP_Instrumenter_OmpAncestry::checkCommand( const std::string& current,
-                                               const std::string& next )
-{
-    if ( check_command_for_openmp_option( current, m_openmp_cflag ) )
-    {
-        m_selector->select( this, false );
-    }
-    return false;
-}
-
-void
-SCOREP_Instrumenter_OmpAncestry::setConfigValue( const std::string& key,
-                                                 const std::string& value )
-{
-    if ( key == "OPENMP_CFLAGS" && value != "" )
-    {
-        m_openmp_cflag = value;
-    }
-}
-
-/* ****************************************************************************
-* class SCOREP_Instrumenter_Pthread
-* ****************************************************************************/
+/* *****************************************************************************
+ * class SCOREP_Instrumenter_Pthread
+ * ****************************************************************************/
 
 SCOREP_Instrumenter_Pthread::SCOREP_Instrumenter_Pthread(
     SCOREP_Instrumenter_Selector* selector ) :
@@ -256,9 +238,9 @@ SCOREP_Instrumenter_Pthread::setConfigValue( const std::string& key,
     }
 }
 
-/* **************************************************************************************
- *  * class SCOREP_Instrumenter_PthreadAdapter
- *   * *************************************************************************************/
+/* *****************************************************************************
+ * class SCOREP_Instrumenter_PthreadAdapter
+ * ****************************************************************************/
 SCOREP_Instrumenter_PthreadAdapter::SCOREP_Instrumenter_PthreadAdapter( void )
     : SCOREP_Instrumenter_Adapter( SCOREP_INSTRUMENTER_ADAPTER_PTHREAD, "pthread" )
 {
