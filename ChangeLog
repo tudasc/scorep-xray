@@ -11,6 +11,7 @@ Bugfixes:
 ------------------- Upcoming version 1.4.1 ---------------------------
 
 Bugfixes:
+- Fixed segmentation fault of clReleaseEvent during Score-P OpenCL flush
 
 - BG/Q: use optimized MPI rank to SION file mapping (one file per I/O node)
 - OpenCL: Score-P instrumenter reports correctly when it noticed
@@ -59,7 +60,7 @@ Features and improvements:
 
 User tools and API improvements and changes:
 
-- Due to the added task migration support, the default for the invokation
+- Due to the added task migration support, the default for the invocation
   of OPARI2 in the instrumenter was changed. Until now, the instrumenter
   let OPARI2 make all tasks tied and print a warning if an untied
   task was encountered. The new default is that the untied tasks
@@ -70,15 +71,15 @@ User tools and API improvements and changes:
   in the measurement core. Thus, the environment variable
   SCOREP_PROFILING_TASK_TABLE_SIZE to specify the size of the hash table
   disappeared.
-- Added the environment variabel SCOREP_PROFILING_TASK_EXCHANGE_NUM to
+- Added the environment variable SCOREP_PROFILING_TASK_EXCHANGE_NUM to
   specify how ofter the profiling system returns reallocated memory objects
-  that have mirgated to another thread.
+  that have migrated to another thread.
 - Support for cobi was removed.
 - SCOREP_User_RegionBegin / SCOREP_User_RegionInit accept NULL as
   parameter value for lastFileName and lastFileHandle. This simplifies the
   calls to these functions when used directly without the provided macros.
 - scorep-score got a new option: -m allows to display mangled region names.
-  Furthermore, the filter evalution in scorep-score can also use mangled
+  Furthermore, the filter evaluation in scorep-score can also use mangled
   names, too.
 
 Bugfixes:
@@ -92,7 +93,7 @@ Bugfixes:
 - The SCOREP_USER_METRIC_UINT64 macro used signed values. Fixed.
 - Add conflict in the instrumenter between --thread=pthread and
   --mutex=pthread.
-- Fixed errors with libmpigf during linking of the instrumended application.
+- Fixed errors with libmpigf during linking of the instrumented application.
 - Fixes wrong acquisition order in pthread_cond_timedwait by modifying
   the nesting level (analog pthread_cond_wait)
 - Fixes that internal CUDA driver calls were recorded
