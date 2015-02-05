@@ -50,7 +50,8 @@
  * @returns true if @a current indicates OpenMP usage.
  */
 static bool
-check_command_for_openmp_option( std::string current, std::string openmpCflag )
+check_command_for_openmp_option( const std::string& current,
+                                 const std::string& openmpCflag )
 {
     if ( current == openmpCflag )
     {
