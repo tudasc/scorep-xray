@@ -106,32 +106,20 @@ SCOREP_Instrumenter_Omp::checkForOpenmpOption( const std::string& current )
 #endif
 #if SCOREP_BACKEND_COMPILER_IBM
     if ( ( current.length() > m_openmp_cflag.length() ) &&
-         ( current.substr( 0, 6 ) == "-qsmp=" ) )
+         ( current.substr( 0, 6 ) == "-qsmp=" ) &&
+         ( find_string_in_list( current.substr( 6 ), "omp", ':' )
+           != std::string::npos ) )
     {
-        size_t end;
-        for ( size_t start = 5; start != std::string::npos; start = end )
-        {
-            end = current.find( ':', start + 1 );
-            if ( current.substr( start + 1, end - start - 1 ) == "omp" )
-            {
-                return true;
-            }
-        }
+        return true;
     }
 #endif
 #if SCOREP_BACKEND_COMPILER_FUJITSU
     if ( ( current.length() > m_openmp_cflag.length() ) &&
-         ( current.substr( 0, 2 ) == "-K" ) )
+         ( current.substr( 0, 2 ) == "-K" ) &&
+         ( find_string_in_list( current.substr( 2 ), "openmp", ',' )
+           != std::string::npos ) )
     {
-        size_t end;
-        for ( size_t start = 1; start != std::string::npos; start = end )
-        {
-            end = current.find( ',', start + 1 );
-            if ( current.substr( start + 1, end - start - 1 ) == "openmp" )
-            {
-                return true;
-            }
-        }
+        return true;
     }
 #endif
     return false;

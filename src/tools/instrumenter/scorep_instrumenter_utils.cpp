@@ -449,3 +449,19 @@ scorep_vector_to_string( const std::vector<std::string>& list,
     result << tail;
     return result.str();
 }
+
+std::string::size_type
+find_string_in_list( const std::string& haystackList,
+                     const std::string& needleString,
+                     char               separator )
+{
+    std::string haystack = separator + haystackList + separator;
+    std::string needle   = separator + needleString + separator;
+
+    /* If we would have a match, we would matched also the separator, thus we
+       would need to increase the pos by one to get the start of the
+       needleString. But we also shifted the haystackList by one, thus we would
+       need to decrease the pos again. Therefor pos already indicates the right
+       position in haystackList, if it was a match at all. */
+    return haystack.find( needle );
+}
