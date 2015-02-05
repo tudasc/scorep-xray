@@ -269,7 +269,10 @@ scorep_opencl_wrap_finalize( void )
                     scorep_opencl_queue_flush( queue );
                 }
 
-                SCOREP_OPENCL_CALL( clReleaseCommandQueue, ( queue->queue ) );
+                if ( queue->queue )
+                {
+                    SCOREP_OPENCL_CALL( clReleaseCommandQueue, ( queue->queue ) );
+                }
 
                 queue = queue->next;
             }
@@ -1009,7 +1012,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
         buf_entry += sizeof( scorep_opencl_buffer_entry );
 
         // release event that has been retained by this wrapper
-        if ( buf_entry->retained_event == true )
+        if ( buf_entry->retained_event == true && buf_entry->event )
         {
             SCOREP_OPENCL_CALL( clReleaseEvent, ( buf_entry->event ) );
         }
