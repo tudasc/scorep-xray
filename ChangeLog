@@ -13,6 +13,8 @@ Bugfixes:
 Bugfixes:
 
 - BG/Q: use optimized MPI rank to SION file mapping (one file per I/O node)
+- OpenCL: Score-P instrumenter reports correctly when it noticed
+  OpenCL library on command line
 
 ------------------- Released version 1.4 -----------------------------
 
