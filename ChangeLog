@@ -77,7 +77,7 @@ User tools and API improvements and changes:
 - SCOREP_User_RegionBegin / SCOREP_User_RegionInit accept NULL as
   parameter value for lastFileName and lastFileHandle. This simplifies the
   calls to these functions when used directly without the provided macros.
-- score-score got a new option: -m allows to display mangled region names.
+- scorep-score got a new option: -m allows to display mangled region names.
   Furthermore, the filter evalution in scorep-score can also use mangled
   names, too.
 
