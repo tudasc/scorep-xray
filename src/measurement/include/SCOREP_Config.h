@@ -156,9 +156,8 @@ SCOREP_ConfigForceConditionalRegister( void );
 
 /**
  * Evaluate all corresponding environment variables and assign the values to
- * the config variables.
- *
- * This function can only be called once.
+ * the config variables. This function can be called multiple but already
+ * evaluated config variables will be skipped and not evaluated once more.
  *
  * @return Success or error code.
  */
