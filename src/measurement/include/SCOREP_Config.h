@@ -63,7 +63,7 @@
  * There is a limitation of 32 characters, per namespace, per variable name.
 
  * Namespaces and variables can consists only of alpha numeric characters
-   and varialbes can also have "_" - underscore ( but not at the beginning
+   and variables can also have "_" - underscore ( but not at the beginning
    or end).
 
  * @{
@@ -167,10 +167,10 @@ SCOREP_ConfigApplyEnv( void );
 
 
 /**
- * Assign a value to a existing config variable.
+ * Assign a value to an existing config variable.
  *
  * @param nameSpaceName  The name space where the variable lives in.
- * @param variableName   The name of the vaariable.
+ * @param variableName   The name of the variable.
  * @param variableValue  The new value for the variable.
  *
  * @return Success or one of the following error codes:
@@ -197,7 +197,7 @@ SCOREP_ConfigDump( FILE* dumpFile );
 
 
 /**
- * Displays all config vrialbes with there short description, type and default value.
+ * Displays all config variables with there short description, type and default value.
  *
  * If @a full is set than the long description is also displayed.
  *
