@@ -18,6 +18,9 @@ Bugfixes:
   OpenCL library on command line
 - The Score-P instrumenter did misinterpret the Pthread library as an input
   file, if it was given as '-l pthread' on the command line. Fixed.
+- The collapse node post-processing in the profile happened for the master
+  location and lead to errors if a collapse node appeared on anther location.
+  Fixed.
 
 ------------------- Released version 1.4 -----------------------------
 
