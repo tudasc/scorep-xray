@@ -21,6 +21,7 @@ Bugfixes:
 - The collapse node post-processing in the profile happened for the master
   location and lead to errors if a collapse node appeared on anther location.
   Fixed.
+- Fixed detection of building a shared library on Cray in the instrumenter.
 
 ------------------- Released version 1.4 -----------------------------
 

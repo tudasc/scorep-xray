@@ -124,7 +124,7 @@ SCOREP_Instrumenter_InstallData::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmd
 bool
 SCOREP_Instrumenter_InstallData::isArgForShared( const std::string& arg )
 {
-    return arg == "-dynamic";
+    return arg == "-shared";
 }
 
 bool
