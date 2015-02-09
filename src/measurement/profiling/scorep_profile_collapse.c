@@ -81,7 +81,12 @@ scorep_profile_process_collapse( void )
                                                                    SCOREP_PARADIGM_USER,
                                                                    SCOREP_REGION_UNKNOWN );
 
-    scorep_profile_for_all( scorep_profile.first_root_node,
-                            &substitute_collapse,
-                            NULL );
+    for ( scorep_profile_node* current = scorep_profile.first_root_node;
+          current != NULL;
+          current = current->next_sibling )
+    {
+        scorep_profile_for_all( current,
+                                &substitute_collapse,
+                                NULL );
+    }
 }
