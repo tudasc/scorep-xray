@@ -32,6 +32,7 @@ AC_SCOREP_COND_HAVE([GCC_PLUGIN_SUPPORT],
                     [scorep_compiler_gnu_with_plugin=yes],
                     [scorep_compiler_gnu_with_plugin=no])
 
+scorep_compiler_instrumentation_needs_symbol_table="no"
 AS_CASE([${ax_cv_c_compiler_vendor}],
     [intel],    [scorep_compiler_instrumentation_cppflags="-tcollect"],
     [sun],      [scorep_compiler_instrumentation_cppflags="-O -Qoption f90comp -phat"],
@@ -39,10 +40,13 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [portland], [scorep_compiler_instrumentation_cppflags="-Mprof=func"],
     [gnu],      [AS_IF([test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],
                        [scorep_compiler_instrumentation_cppflags=""],
-                       [scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"])],
+                       [scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"
+                        scorep_compiler_instrumentation_needs_symbol_table="yes"])],
     [cray],     [scorep_compiler_instrumentation_cppflags="-G2 -hfunc_trace"
-                 scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"],
-    [fujitsu],  [scorep_compiler_instrumentation_cppflags="-g -Ntl_vtrc -Ntl_notrt"],
+                 scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"
+                 scorep_compiler_instrumentation_needs_symbol_table=yes],
+    [fujitsu],  [scorep_compiler_instrumentation_cppflags="-g -Ntl_vtrc -Ntl_notrt"
+                 scorep_compiler_instrumentation_needs_symbol_table="yes"],
     [])dnl
 
 AS_IF([test "x${scorep_with_extra_instrumentation_cppflags}" != x || \

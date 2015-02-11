@@ -47,9 +47,7 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
 
 AS_IF([test "x${have_compiler_instrumentation}" = xyes],
     [scorep_have_demangle="no"
-     AS_IF([test "x${ax_cv_c_compiler_vendor}${scorep_compiler_gnu_with_plugin}" = xgnuno || \
-            test "x${ax_cv_c_compiler_vendor}" = xcray || \
-            test "x${ax_cv_c_compiler_vendor}" = xfujitsu],
+     AS_IF([test "x${scorep_compiler_instrumentation_needs_symbol_table}" = xyes],
          [AS_IF([test "x${ac_scorep_platform}" = xk ||
                  test "x${ac_scorep_platform}" = xfx10 ||
                  test "x${ac_scorep_platform}" = xfx100],
@@ -79,6 +77,11 @@ AFS_SUMMARY([compiler instrumentation], [${result}])
 
 AM_CONDITIONAL([HAVE_COMPILER_INSTRUMENTATION],
                [test "x${have_compiler_instrumentation}" = xyes])
+
+AC_SCOREP_COND_HAVE([COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE],
+    [test "x${have_compiler_instrumentation}" = xyes &&
+     test "x${scorep_compiler_instrumentation_needs_symbol_table}" = "xyes"],
+    [Define if the compiler instrumentation needs the symbol table.])
 
 # The following just deals with bfd, demangle, and nm
 AM_CONDITIONAL([HAVE_DEMANGLE],
