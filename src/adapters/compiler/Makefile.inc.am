@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012, 2014,
+## Copyright (c) 2009-2012, 2014-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -84,9 +84,6 @@ endif HAVE_DEMANGLE
 if HAVE_NM_AS_BFD_REPLACEMENT
 # the SCOREP_Timing.h dependency is used to generate unique
 # filenames. This should be done differently, see #692
-libscorep_adapter_compiler_mgmt_la_SOURCES  += \
-    $(SRC_ROOT)src/services/include/SCOREP_Timing.h
-
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
     -I$(INC_ROOT)src/services/include          \
     -DHAVE_NM
@@ -126,9 +123,6 @@ endif HAVE_DEMANGLE
 if HAVE_NM_AS_BFD_REPLACEMENT
 # the SCOREP_Timing.h dependency is used to generate unique
 # filenames. This should be done differently, see #692
-libscorep_adapter_compiler_mgmt_la_SOURCES  += \
-    $(SRC_ROOT)src/services/include/SCOREP_Timing.h
-
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
     -I$(INC_ROOT)src/services/include          \
     -DHAVE_NM
@@ -210,9 +204,6 @@ endif HAVE_DEMANGLE
 if HAVE_NM_AS_BFD_REPLACEMENT
 # the SCOREP_Timing.h dependency is used to generate unique
 # filenames. This should be done differently, see #692
-libscorep_adapter_compiler_mgmt_la_SOURCES  += \
-    $(SRC_ROOT)src/services/include/SCOREP_Timing.h
-
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
     -I$(INC_ROOT)src/services/include          \
     -DHAVE_NM
