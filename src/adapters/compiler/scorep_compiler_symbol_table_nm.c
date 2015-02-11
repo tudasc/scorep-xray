@@ -103,11 +103,10 @@ create_nm_file( char*       nmfile,
  * during initialization of the GNU compiler adapter, because enter and exit events
  * provide only a file pointer.
  * It also collects information about source file and line number.
-
  */
 void
-scorep_compiler_process_symbol_table_nm( const char*                       executable,
-                                         scorep_compiler_process_symbol_cb processSymbol )
+scorep_compiler_process_symbol_table( const char*                       executable,
+                                      scorep_compiler_process_symbol_cb processSymbol )
 {
     FILE*  nmfile;
     size_t line_size = 0;
