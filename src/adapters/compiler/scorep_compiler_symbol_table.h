@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -31,15 +31,26 @@
 #ifndef SCOREP_COMPILER_SYMBOL_TABLE_H
 #define SCOREP_COMPILER_SYMBOL_TABLE_H
 
+typedef void
+( *scorep_compiler_process_symbol_cb )( long         addr,
+                                        const char*  funcname,
+                                        const char*  filename,
+                                        unsigned int lno );
+
 /**
- * @file
- *
  * @brief Symbol table analysis functions declaration.
  * Contains functions that read the symbol table of a executable and add all functions
  * found to a hashtable.
  */
-
 void
-scorep_compiler_get_sym_tab( void );
+scorep_compiler_load_symbols( void );
+
+/**
+ *
+ * @brief Symbol table extraction method specific implementation.
+ */
+void
+scorep_compiler_process_symbol_table( const char*                       executable,
+                                      scorep_compiler_process_symbol_cb processSymbol );
 
 #endif // SCOREP_COMPILER_SYMBOL_TABLE_H

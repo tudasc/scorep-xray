@@ -33,17 +33,7 @@
  *
  * @brief Symbol table analysis functions.
  * Contains functions that read the symbol table of a executable and add all functions
- * found to a hashtable. For this it offers 2 possibilities:
- * @li A bfd based implementation is the best choice.
- * @li If no bfd is available, nm can be used instead. However, it involves system calls
- *     and scales worse.
- * @li If none of both is enabled, a dummy is compiled, which disables the adapter.
- *
- * It may be compiled with different defines:
- * @li If HAVE_LIBBFD is defined, it uses the bfd library to read the symbols.
- * @li If HAVE_NM is defined, it uses a system call to nm to read the symbols. This
- *     option is only available if HAVE_LIBBFD is undefined, because of worse scaling.
- * @li If GNU_DEMANGLE is defined it uses cplus_demangle() to demangle function names.
+ * found to a hashtable.
  */
 
 #include <config.h>
@@ -57,12 +47,6 @@
 #include <inttypes.h>
 #include <sys/stat.h>
 #include <string.h>
-
-#ifdef HAVE_LIBBFD
-#include <bfd.h>
-#elif defined HAVE_NM
-#include <SCOREP_Timing.h>
-#endif /* HAVE_LIBBFD / HAVE_NM */
 
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
@@ -119,8 +103,8 @@ static int scorep_compiler_demangle_style = SCOREP_COMPILER_DEMANGLE_PARAMS  |
                  returned.
  */
 static bool
-get_exe( char   path[],
-         size_t length )
+get_executable( char*  path,
+                size_t length )
 {
     int         pid;
     int         err;
@@ -216,322 +200,19 @@ process_symbol( long         addr,
         scorep_compiler_hash_put( addr, funcname, funcname_demangled, path, lno );
     }
 
-    if ( path != NULL )
-    {
-        free( path );
-    }
+    free( path );
 }
 
-/* ***************************************************************************************
-   BFD based symbol table analysis
-*****************************************************************************************/
-#ifdef HAVE_LIBBFD
-/**
- * Get symbol table using BFD. Stores all functions obtained from the symbol table
- * in a hashtable. The key of the hashtable is the function pointer. This must be done
- * during initialization of the GNU compiler adapter, because enter and exit events
- * provide only a file pointer.
- * It also collects information about source file and line number.
- */
 void
-scorep_compiler_get_sym_tab( void )
+scorep_compiler_load_symbols( void )
 {
-    bfd*      bfd_image = 0;
-    int       nr_all_syms;
-    int       i;
-    size_t    size;
-    asymbol** canonic_symbols;
-    char*     exepath;
-    char      path[ SCOREP_COMPILER_BUFFER_LEN ] = { 0 };
+    char executable[ SCOREP_COMPILER_BUFFER_LEN ];
 
-    /* initialize BFD */
-    bfd_init();
-
-    UTILS_DEBUG( "Read symbol table using BFD" );
-
-    /* get the path from system */
-    if ( !get_exe( path, SCOREP_COMPILER_BUFFER_LEN ) )
+    if ( !get_executable( executable, SCOREP_COMPILER_BUFFER_LEN ) )
     {
         return;
     }
-    bfd_image = bfd_openr( path, 0 );
-    if ( !bfd_image )
-    {
-        UTILS_ERROR( SCOREP_ERROR_ENOENT, "BFD image not present at path: %s \n", path );
-        return;
-    }
 
-    /* check image format   */
-    if ( !bfd_check_format( bfd_image, bfd_object ) )
-    {
-        UTILS_ERROR( SCOREP_ERROR_EIO, "BFD: bfd_check_format(): failed\n" );
-        return;
-    }
-
-    /* return if file has no symbols at all */
-    if ( !( bfd_get_file_flags( bfd_image ) & HAS_SYMS ) )
-    {
-        UTILS_ERROR( SCOREP_ERROR_FILE_INTERACTION,
-                     "BFD: bfd_get_file_flags(): failed \n" );
-        return;
-    }
-
-    /* get the upper bound number of symbols */
-    size = bfd_get_symtab_upper_bound( bfd_image );
-
-    /* HAS_SYMS can be set even with no symbols in the file! */
-    if ( size < 1 )
-    {
-        UTILS_ERROR( SCOREP_ERROR_INVALID_SIZE_GIVEN,
-                     "BFD: bfd_get_symtab_upper_bound(): < 1 \n" );
-        return;
-    }
-
-    /* read canonicalized symbols  */
-    canonic_symbols = ( asymbol** )malloc( size );
-
-    nr_all_syms = bfd_canonicalize_symtab( bfd_image, canonic_symbols );
-    if ( nr_all_syms < 1 )
-    {
-        UTILS_ERROR( SCOREP_ERROR_INVALID_SIZE_GIVEN,
-                     "BFD: bfd_canonicalize_symtab(): < 1\n" );
-    }
-    for ( i = 0; i < nr_all_syms; ++i )
-    {
-        long         addr;
-        const char*  filename = NULL;
-        const char*  funcname;
-        unsigned int lno = SCOREP_INVALID_LINE_NO;
-
-        if ( !canonic_symbols[ i ] )
-        {
-            static bool only_once = false;
-            if ( !only_once )
-            {
-                UTILS_ERROR( SCOREP_ERROR_EADDRNOTAVAIL,
-                             "Failed to retrive symbol information from BFD.\n" );
-                only_once = true;
-            }
-            continue;
-        }
-
-        /* Process only symbols of type function */
-        if ( !( canonic_symbols[ i ]->flags & BSF_FUNCTION ) )
-        {
-            continue;
-        }
-
-        /* ignore system functions */
-        if ( strncmp( canonic_symbols[ i ]->name, "bfd_", 4 ) == 0 ||
-             strncmp( canonic_symbols[ i ]->name, "_bfd_", 5 ) == 0 ||
-             strstr( canonic_symbols[ i ]->name, "@@" ) != NULL )
-        {
-            continue;
-        }
-
-        /* get filename and linenumber from debug info */
-        /* needs -g */
-        filename = NULL;
-        lno      = SCOREP_INVALID_LINE_NO;
-
-        /* calculate function address */
-        addr = canonic_symbols[ i ]->section->vma + canonic_symbols[ i ]->value;
-
-        /* get the source info for every function in case of gnu by default */
-        /* calls BFD_SEND */
-        bfd_find_nearest_line( bfd_image,
-                               bfd_get_section( canonic_symbols[ i ] ),
-                               canonic_symbols,
-                               canonic_symbols[ i ]->value,
-                               &filename,
-                               &funcname,
-                               &lno );
-        funcname = canonic_symbols[ i ]->name;
-
-        process_symbol( addr, funcname, filename, lno );
-    }
-    free( canonic_symbols );
-    bfd_close( bfd_image );
-    return;
+    scorep_compiler_process_symbol_table( executable,
+                                          process_symbol );
 }
-
-#elif HAVE_NM
-
-/* ***************************************************************************************
-   nm based symbol table analysis
-*****************************************************************************************/
-
-/**
- * Write output from nm for @a exefile to @a nmfile.
- * @param exefile Filename of the executable which is analyzed.
- * @param nmfile  Filename of the file to which the output is written.
- * @returns true if the nm output was created successfully, else it returns false.
- */
-static bool
-create_nm_file( char* nmfile,
-                char* exefile )
-{
-    char* errfile = malloc( strlen( nmfile ) + 5 );
-    UTILS_ASSERT( errfile );
-    sprintf( errfile, "%s_err", nmfile );
-
-    char* command = malloc( strlen( nmfile )  +
-                            strlen( errfile ) +
-                            strlen( exefile ) +
-                            strlen( SCOREP_BACKEND_NM ) + 15 );
-    UTILS_ASSERT( exefile );
-
-#ifdef GNU_DEMANGLE
-    sprintf( command, SCOREP_BACKEND_NM " -Aol %s 2> %s > %s", exefile, errfile, nmfile );
-#else /* GNU_DEMANGLE */
-    sprintf( command, SCOREP_BACKEND_NM " -ol %s 2> %s > %s", exefile, errfile, nmfile );
-#endif /* GNU_DEMANGLE */
-    if ( system( command ) != EXIT_SUCCESS )
-    {
-        UTILS_ERROR( SCOREP_ERROR_ON_SYSTEM_CALL,
-                     "Failed to get symbol table output using following command: %s",
-                     command );
-        free( errfile );
-        free( command );
-        return false;
-    }
-    remove( errfile );
-    free( errfile );
-    free( command );
-    return true;
-}
-
-
-/**
- * Get symbol table by parsing the output from nm. Stores all functions obtained
- * from the symbol table
- * in a hashtable. The key of the hashtable is the function pointer. This must be done
- * during initialization of the GNU compiler adapter, because enter and exit events
- * provide only a file pointer.
- * It also collects information about source file and line number.
-
- */
-void
-scorep_compiler_get_sym_tab( void )
-{
-    FILE*  nmfile;
-    size_t line_size                          = 0;
-    char*  line                               = NULL;
-    char   path[ SCOREP_COMPILER_BUFFER_LEN ] = { 0 };
-    char   nmfilename[ 1024 ];
-
-    UTILS_DEBUG( "Read symbol table using nm" );
-
-    /* get the path from system */
-    if ( !get_exe( path, SCOREP_COMPILER_BUFFER_LEN ) )
-    {
-        return;
-    }
-
-    /* open nm-file */
-    sprintf( nmfilename, "scorep_nm_file.%" PRIu64, SCOREP_GetClockTicks() );
-    if ( !create_nm_file( nmfilename, path ) )
-    {
-        return;
-    }
-    if ( !( nmfile = fopen( nmfilename, "r" ) ) )
-    {
-        UTILS_ERROR_POSIX();
-    }
-
-    /* read lines */
-    while ( UTILS_IO_GetLine( &line, &line_size, nmfile ) == SCOREP_SUCCESS )
-    {
-        char* col;
-        char  delim[ 2 ] = " ";
-        int   col_num    = 0;
-        int   length     = 0;
-
-        long         addr     = -1;
-        char*        filename = NULL;
-        char*        funcname = NULL;
-        unsigned int line_no  = SCOREP_INVALID_LINE_NO;
-
-        if ( strlen( line ) == 0 || line[ 0 ] == ' ' )
-        {
-            continue;
-        }
-
-        if ( line[ strlen( line ) - 1 ] == '\n' )
-        {
-            line[ strlen( line ) - 1 ] = '\0';
-        }
-
-        /* split line to columns */
-        col = strtok( line, delim );
-        do
-        {
-            if ( col_num == 0 ) /* column 1 (address) */
-            {
-                length = strlen( col );
-                addr   = strtol( col + length - sizeof( void* ) * 2, NULL, 16 );
-                if ( addr == 0 )
-                {
-                    break;
-                }
-            }
-            else if ( col_num == 1 ) /* column 2 (type) */
-            {
-                strcpy( delim, "\t" );
-            }
-            else if ( col_num == 2 ) /* column 3 (symbol) */
-            {
-                funcname = col;
-                strcpy( delim, ":" );
-            }
-            else if ( col_num == 3 ) /* column 4 (filename) */
-            {
-                filename = col;
-            }
-            else /* column 5 (line number) */
-            {
-                line_no = atoi( col );
-                if ( line_no == 0 )
-                {
-                    line_no = SCOREP_INVALID_LINE_NO;
-                }
-                break;
-            }
-
-            col_num++;
-        }
-        while ( ( col = strtok( 0, delim ) ) );
-
-        if ( col_num >= 3 )
-        {
-            process_symbol( addr, funcname, filename, line_no );
-        }
-    }
-
-    /* clean up */
-    free( line );
-    fclose( nmfile );
-    remove( nmfilename );
-}
-
-#else /* HAVE_LIBBFD / HAVE_NM */
-
-/* ***************************************************************************************
-   dummy implementation of symbol table analysis
-*****************************************************************************************/
-
-#warning Neither BFD nor nm are available. Thus, the symbol table cannot be analyzed.
-#warning The compiler adapter will be disabled.
-
-/**
-   Dummy implementation of symbol table analysis for the case that neither BFD
-   nor nm are available. It allows to compile without error, but the compiler adapter
-   is will not generate events, though the compiler instrumented the code, because
-   it cannot map the function pointers to names.
- */
-void
-scorep_compiler_get_sym_tab( void )
-{
-}
-
-#endif /* HAVE_LIBBFD / HAVE_NM */

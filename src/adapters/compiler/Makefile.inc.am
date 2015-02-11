@@ -65,8 +65,9 @@ libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
 
 if HAVE_LIBBFD
+libscorep_adapter_compiler_mgmt_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_libbfd.c
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
-    -DHAVE_LIBBFD                              \
     @LIBBFD_CPPFLAGS@
 
 libscorep_adapter_compiler_mgmt_la_LIBADD += \
@@ -82,11 +83,12 @@ libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
 endif HAVE_DEMANGLE
 
 if HAVE_NM_AS_BFD_REPLACEMENT
+libscorep_adapter_compiler_mgmt_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_nm.c
 # the SCOREP_Timing.h dependency is used to generate unique
 # filenames. This should be done differently, see #692
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
-    -I$(INC_ROOT)src/services/include          \
-    -DHAVE_NM
+    -I$(INC_ROOT)src/services/include
 endif HAVE_NM_AS_BFD_REPLACEMENT
 endif SCOREP_COMPILER_CRAY
 
@@ -104,8 +106,9 @@ libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
 
 if HAVE_LIBBFD
+libscorep_adapter_compiler_mgmt_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_libbfd.c
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
-    -DHAVE_LIBBFD                              \
     @LIBBFD_CPPFLAGS@
 
 libscorep_adapter_compiler_mgmt_la_LIBADD += \
@@ -121,11 +124,12 @@ libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
 endif HAVE_DEMANGLE
 
 if HAVE_NM_AS_BFD_REPLACEMENT
+libscorep_adapter_compiler_mgmt_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_nm.c
 # the SCOREP_Timing.h dependency is used to generate unique
 # filenames. This should be done differently, see #692
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
-    -I$(INC_ROOT)src/services/include          \
-    -DHAVE_NM
+    -I$(INC_ROOT)src/services/include
 endif HAVE_NM_AS_BFD_REPLACEMENT
 
 #--- GCC-Plugin specific settings
@@ -185,8 +189,9 @@ libscorep_adapter_compiler_mgmt_la_SOURCES +=                       \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_data.h
 
 if HAVE_LIBBFD
+libscorep_adapter_compiler_mgmt_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_libbfd.c
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
-    -DHAVE_LIBBFD                              \
     @LIBBFD_CPPFLAGS@
 
 libscorep_adapter_compiler_mgmt_la_LIBADD += \
@@ -202,11 +207,12 @@ libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
 endif HAVE_DEMANGLE
 
 if HAVE_NM_AS_BFD_REPLACEMENT
+libscorep_adapter_compiler_mgmt_la_SOURCES += \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_nm.c
 # the SCOREP_Timing.h dependency is used to generate unique
 # filenames. This should be done differently, see #692
 libscorep_adapter_compiler_mgmt_la_CPPFLAGS += \
-    -I$(INC_ROOT)src/services/include          \
-    -DHAVE_NM
+    -I$(INC_ROOT)src/services/include
 endif HAVE_NM_AS_BFD_REPLACEMENT
 endif SCOREP_COMPILER_FUJITSU
 

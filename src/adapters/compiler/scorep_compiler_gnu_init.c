@@ -61,8 +61,8 @@ scorep_compiler_subsystem_init( void )
         /* Initialize hash tables */
         scorep_compiler_hash_init();
 
-        /* call function to calculate symbol table */
-        scorep_compiler_get_sym_tab();
+        /* call function to load all symbols from the executable */
+        scorep_compiler_load_symbols();
 
         scorep_compiler_get_hash_statistics();
 
