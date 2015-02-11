@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -40,6 +40,7 @@
 #include <string.h>
 #include <assert.h>
 
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Events.h>
@@ -76,8 +77,6 @@ _ftrace_enter2_( void )
     char* region_name = scorep_ftrace_getname();
     int   name_len    = scorep_ftrace_getname_len();
 
-    scorep_compiler_hash_node* hash_node = scorep_compiler_hash_get( ( long )region_name );
-
     if ( !scorep_compiler_initialized )
     {
         if ( scorep_compiler_finalized )
@@ -89,9 +88,9 @@ _ftrace_enter2_( void )
         SCOREP_InitMeasurement();
     }
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "function name: %s", region_name );
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "function length: %i", name_len );
+    UTILS_DEBUG( "name: %s, length: %i", region_name, name_len );
 
+    scorep_compiler_hash_node* hash_node = scorep_compiler_hash_get( ( long )region_name );
     if ( !hash_node )
     {
         scorep_compiler_hash_put( ( long )region_name, region_name, region_name, "", name_len );
@@ -125,9 +124,6 @@ _ftrace_enter2_( void )
         }
         if ( hash_node->region_handle != SCOREP_FILTERED_REGION )
         {
-            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                                "enter the region with handle %i",
-                                hash_node->region_handle );
             SCOREP_EnterRegion( hash_node->region_handle );
         }
     }
@@ -150,8 +146,8 @@ _ftrace_exit2_( void )
     char* region_name = scorep_ftrace_getname();
     long  key         = ( long )region_name;
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit!!!" );
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace exit 2 %i", key );
+    UTILS_DEBUG( "name: %s, key: %ld", region_name, key );
+
     scorep_compiler_hash_node* hash_node = scorep_compiler_hash_get( key );
     if ( hash_node )
     {
@@ -169,5 +165,5 @@ _ftrace_exit2_( void )
 void
 _ftrace_stop2_( void )
 {
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " ftrace stop 2" );
+    UTILS_DEBUG_ENTRY();
 }

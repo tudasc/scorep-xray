@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -73,7 +73,7 @@ scorep_compiler_subsystem_finalize( void );
 static void
 compiler_subsystem_finalize_location( struct SCOREP_Location* location )
 {
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "compiler adapter finalize location!" );
+    UTILS_DEBUG( "compiler adapter finalize location!" );
 }
 
 /* Implementation of the compiler adapter initialization/finalization struct */

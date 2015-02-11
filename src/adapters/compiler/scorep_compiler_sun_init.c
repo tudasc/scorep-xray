@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -35,13 +35,15 @@
  */
 
 #include <config.h>
+
 #include <string.h>
+
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
+#include <UTILS_Debug.h>
 
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Filter.h>
-
-#include <UTILS_Debug.h>
 
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_sun_data.h"
@@ -61,8 +63,7 @@ scorep_compiler_subsystem_init( void )
 {
     if ( !scorep_compiler_initialized )
     {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                            " inititialize studio compiler adapter!" );
+        UTILS_DEBUG( "inititialize studio compiler adapter!" );
 
         SCOREP_MutexCreate( &scorep_compiler_region_mutex  );
         scorep_compiler_main_handle = scorep_compiler_register_region( "main" );
@@ -78,7 +79,7 @@ scorep_compiler_subsystem_init( void )
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData )
 {
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "studio compiler adapter init location!" );
+    UTILS_DEBUG( "studio compiler adapter init location!" );
     /* The studio compiler does not instrument "main" but we want to have a
        main. Note that this main is triggered by the first event that arrives
        at the measurement system. */
@@ -112,7 +113,7 @@ scorep_compiler_subsystem_finalize( void )
     {
         scorep_compiler_initialized = false;
         scorep_compiler_finalized   = true;
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize studio compiler adapter!" );
+        UTILS_DEBUG( "finalize studio compiler adapter!" );
 
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
     }

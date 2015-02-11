@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -39,6 +39,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Types.h>
@@ -66,8 +67,6 @@ __cyg_profile_func_enter( void* func,
 {
     scorep_compiler_hash_node* hash_node;
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function enter." );
-
     /*
      * put hash table entries via mechanism for bfd symbol table
      * to calculate function addresses if measurement was not initialized
@@ -83,6 +82,8 @@ __cyg_profile_func_enter( void* func,
         /* not initialized so far */
         SCOREP_InitMeasurement();
     }
+
+    UTILS_DEBUG_ENTRY( "%p, %p", func, callsite );
 
     /* On ARM platform the 0-bit indicates whether it is thumb code or arm code.
        Thus, thumb code address differ from the real function address that we
@@ -104,9 +105,6 @@ __cyg_profile_func_enter( void* func,
             }
             SCOREP_MutexUnlock( scorep_compiler_region_mutex );
         }
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                            "enter the region with address %p",
-                            func );
         SCOREP_EnterRegion( hash_node->region_handle );
     }
 }
@@ -126,6 +124,8 @@ __cyg_profile_func_exit( void* func,
         return;
     }
 
+    UTILS_DEBUG_ENTRY( "%p, %p", func, callsite );
+
     /* On ARM platform the 0-bit indicates whether it is thumb code or arm code.
        Thus, thumb code address differ from the real function address that we
        get from libbfd or nm by 1 */
@@ -135,12 +135,8 @@ __cyg_profile_func_exit( void* func,
 #endif
 
     scorep_compiler_hash_node* hash_node;
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit." );
     if ( ( hash_node = scorep_compiler_hash_get( ( long )func ) ) )
     {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                            "exit the region with address %p",
-                            func );
         SCOREP_ExitRegion( hash_node->region_handle );
     }
 }

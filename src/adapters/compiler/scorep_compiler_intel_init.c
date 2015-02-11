@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -36,6 +36,7 @@
 
 #include <config.h>
 
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
 #include "SCOREP_Compiler_Init.h"
@@ -50,7 +51,7 @@ scorep_compiler_subsystem_init( void )
 {
     if ( !scorep_compiler_initialized )
     {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " initialize intel compiler adapter." );
+        UTILS_DEBUG( "initialize intel compiler adapter." );
 
         /* Initialize region mutex */
         SCOREP_MutexCreate( &scorep_compiler_region_mutex );
@@ -58,8 +59,7 @@ scorep_compiler_subsystem_init( void )
         /* Set flag */
         scorep_compiler_initialized = true;
 
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                            " initialization of intel compiler adapter done." );
+        UTILS_DEBUG( "initialization of intel compiler adapter done." );
     }
 
     return SCOREP_SUCCESS;
@@ -68,7 +68,7 @@ scorep_compiler_subsystem_init( void )
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init_location( struct SCOREP_Location* location )
 {
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "intel compiler adapter init location!" );
+    UTILS_DEBUG( "intel compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }
 
@@ -82,7 +82,7 @@ scorep_compiler_subsystem_finalize( void )
         /* Set initialization flag */
         scorep_compiler_initialized = false;
         scorep_compiler_finalized   = true;
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize intel compiler adapter." );
+        UTILS_DEBUG( "finalize intel compiler adapter." );
 
         /* Delete region mutex */
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );

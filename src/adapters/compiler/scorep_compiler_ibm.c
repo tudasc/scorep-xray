@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -41,6 +41,7 @@
 #include <string.h>
 
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 #include <UTILS_IO.h>
 #include <SCOREP_Location.h>
@@ -66,12 +67,10 @@ get_region_handle( char* region_name,
                    char* file_name,
                    int   line_no )
 {
-    scorep_compiler_hash_node* hash_node;
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                        " function name: %s %s", region_name, file_name );
+    UTILS_DEBUG_ENTRY( "%s in %s:%d", region_name, file_name, line_no );
 
     /* put function to list */
+    scorep_compiler_hash_node* hash_node;
     if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) == 0 )
     {
         /* The IBM compiler instruments outlined functions of OpenMP parallel regions.
@@ -89,9 +88,8 @@ get_region_handle( char* region_name,
                                                   region_name,
                                                   region_name,
                                                   file, line_no );
-            UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                                " number %ld and put name -- %s -- to list",
-                                ( long )region_name, region_name );
+            UTILS_DEBUG( "number %ld and put name -- %s -- to list",
+                         ( long )region_name, region_name );
 
             /* Check for filters:
                  1. In case OpenMP is used, the XL compiler creates some
@@ -223,6 +221,9 @@ __func_trace_exit( char*                region_name,
     {
         return;
     }
+
+    UTILS_DEBUG_ENTRY();
+
     if ( *handle != SCOREP_FILTERED_REGION )
     {
         SCOREP_ExitRegion( *handle );
@@ -239,8 +240,10 @@ __func_trace_exit( char* region_name,
     {
         return;
     }
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "call function exit!!!" );
-    if ( hash_node = scorep_compiler_hash_get( ( long )region_name ) )
+
+    UTILS_DEBUG_ENTRY();
+
+    if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) )
     {
         /* Invalid handle marks filtered regions */
         if ( ( hash_node->region_handle != SCOREP_INVALID_REGION ) )

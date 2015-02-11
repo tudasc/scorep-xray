@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -41,6 +41,7 @@
 #include <config.h>
 #include <stdio.h>
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 #include <UTILS_IO.h>
 #include <SCOREP_Location.h>
@@ -178,7 +179,7 @@ struct PGI_PROFENT_64
 void
 __rouinit( void )
 {
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "PGI init routine" );
+    UTILS_DEBUG_ENTRY();
 
     if ( !scorep_compiler_initialized )
     {
@@ -201,8 +202,7 @@ __rouinit( void )
 void
 __rouexit( void )
 {
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                        "Termination routine from PGI compiler instrumentation called" );
+    UTILS_DEBUG_ENTRY();
 }
 
 static inline void

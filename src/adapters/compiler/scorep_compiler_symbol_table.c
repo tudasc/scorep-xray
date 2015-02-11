@@ -63,6 +63,7 @@
 #endif /* HAVE_LIBBFD / HAVE_NM */
 
 #include <UTILS_Error.h>
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Types.h>
@@ -144,7 +145,7 @@ get_exe( char   path[],
             exepath   = scorep_compiler_executable + exelength - length + 1;
             exelength = length;
         }
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "  exepath = %s ", exepath );
+        UTILS_DEBUG( "exepath = %s", exepath );
 
         strncpy( path, exepath, exelength );
         return true;
@@ -168,9 +169,8 @@ get_exe( char   path[],
     }
     else
     {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                            "Meanwhile, you have to set the configuration variable"
-                            "'executable' to your local executable." );
+        UTILS_DEBUG( "Meanwhile, you have to set the configuration variable"
+                     "'executable' to your local executable." );
         UTILS_ERROR( SCOREP_ERROR_ENOENT, "Could not determine path of executable." );
         return false;
     }
@@ -248,7 +248,7 @@ scorep_compiler_get_sym_tab( void )
     /* initialize BFD */
     bfd_init();
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Read symbol table using BFD" );
+    UTILS_DEBUG( "Read symbol table using BFD" );
 
     /* get the path from system */
     if ( !get_exe( path, SCOREP_COMPILER_BUFFER_LEN ) )
@@ -421,7 +421,7 @@ scorep_compiler_get_sym_tab( void )
     char   path[ SCOREP_COMPILER_BUFFER_LEN ] = { 0 };
     char   nmfilename[ 1024 ];
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Read symbol table using nm" );
+    UTILS_DEBUG( "Read symbol table using nm" );
 
     /* get the path from system */
     if ( !get_exe( path, SCOREP_COMPILER_BUFFER_LEN ) )

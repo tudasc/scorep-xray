@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2012, 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -40,7 +40,9 @@
 
 #include <string.h>
 #include <unistd.h>
+#include <inttypes.h>
 
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
 #include <SCOREP_Definitions.h>
@@ -75,7 +77,7 @@ scorep_compiler_hash_get( uint64_t key )
 {
     uint64_t hash_code = key % SCOREP_COMPILER_REGION_SLOTS;
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " hash code %ld", hash_code );
+    UTILS_DEBUG( "hash code %" PRIx64, hash_code );
 
     scorep_compiler_hash_node* curr = region_hash_table[ hash_code ];
     /* The tail after curr will never change because, new elements are inserted before
@@ -162,7 +164,7 @@ scorep_compiler_register_region( scorep_compiler_hash_node* node )
 {
     SCOREP_SourceFileHandle file_handle = SCOREP_Definitions_NewSourceFile( node->file_name );
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s", node->region_name_demangled );
+    UTILS_DEBUG( "Define region %s", node->region_name_demangled );
 
     node->region_handle = SCOREP_Definitions_NewRegion( node->region_name_demangled,
                                                         node->region_name_mangled,
@@ -172,12 +174,12 @@ scorep_compiler_register_region( scorep_compiler_hash_node* node )
                                                         SCOREP_PARADIGM_COMPILER,
                                                         SCOREP_REGION_FUNCTION );
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Define region %s done", node->region_name_demangled );
+    UTILS_DEBUG( "Define region %s done", node->region_name_demangled );
 }
 
 
 void
-scorep_compiler_get_hash_statistics()
+scorep_compiler_get_hash_statistics( void )
 {
 #if HAVE( UTILS_DEBUG )
     unsigned elements         = 0;
@@ -200,11 +202,11 @@ scorep_compiler_get_hash_statistics()
             node = node->next;
         }
     }
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "Hashtable of size %d contains %d"
-                        " elements and exhibits %d collisions. Fill rate is %d%%.",
-                        buckets,
-                        elements,
-                        collisions,
-                        ( unsigned )( occupied_buckets / ( double )buckets * 100 ) );
+    UTILS_DEBUG( "Hashtable of size %d contains %d"
+                 " elements and exhibits %d collisions. Fill rate is %d%%.",
+                 buckets,
+                 elements,
+                 collisions,
+                 ( unsigned )( occupied_buckets / ( double )buckets * 100 ) );
 #endif
 }

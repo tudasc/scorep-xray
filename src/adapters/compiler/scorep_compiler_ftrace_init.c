@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -36,6 +36,7 @@
 
 #include <config.h>
 
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
 #include "SCOREP_Compiler_Init.h"
@@ -51,8 +52,7 @@ scorep_compiler_subsystem_init( void )
 {
     if ( !scorep_compiler_initialized )
     {
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER,
-                            " inititialize ftrace compiler adapter!" );
+        UTILS_DEBUG( "inititialize ftrace compiler adapter!" );
 
         /* Initialize region mutex */
         SCOREP_MutexCreate( &scorep_compiler_region_mutex );
@@ -70,7 +70,7 @@ scorep_compiler_subsystem_init( void )
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData )
 {
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, "ftrace Compiler adapter init location!" );
+    UTILS_DEBUG( "ftrace Compiler adapter init location!" );
     return SCOREP_SUCCESS;
 }
 
@@ -85,7 +85,7 @@ scorep_compiler_subsystem_finalize( void )
 
         scorep_compiler_initialized = false;
         scorep_compiler_finalized   = true;
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_COMPILER, " finalize ftrace compiler adapter!" );
+        UTILS_DEBUG( "finalize ftrace compiler adapter!" );
 
         /* Delete region mutex */
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );

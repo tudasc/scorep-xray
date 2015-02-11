@@ -135,7 +135,7 @@ scorep_compiler_register_region( scorep_compiler_hash_node* node );
  * In debug mode SCOREP_DEBUG_COMPILER, calculate and print hash table
  * statistics like number of elements and collisions and fill rate.
  */
-void
-scorep_compiler_get_hash_statistics();
+extern void
+scorep_compiler_get_hash_statistics( void );
 
 #endif /* SCOREP_COMPILER_DATA_H_ */
