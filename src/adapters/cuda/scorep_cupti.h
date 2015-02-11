@@ -78,7 +78,7 @@
         }                                                               \
     }
 
-#if defined( HAVE_DEMANGLE )
+#if HAVE( DEMANGLE )
 extern char*
 cplus_demangle( const char* mangled,
                 int         options );
