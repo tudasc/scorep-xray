@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -37,8 +37,6 @@
 
 
 #include <SCOREP_Config.h>
-#define SCOREP_DEBUG_MODULE_NAME COMPILER
-#include <UTILS_Debug.h>
 
 #include <stdlib.h>
 

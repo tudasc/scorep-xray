@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -37,8 +37,10 @@
  */
 
 #include <config.h>
+
+#include <stdlib.h>
 #include <stdbool.h>
-#include <stdio.h>
+
 #include <SCOREP_RuntimeManagement.h>
 
 static void* scorep_first_func        = NULL;

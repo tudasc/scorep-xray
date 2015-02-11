@@ -37,18 +37,20 @@
  */
 
 #include <config.h>
-#include <stdio.h>
+
+#include <stdlib.h>
 #include <string.h>
 
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
+
 #include <UTILS_IO.h>
-#include <SCOREP_Location.h>
-#include <SCOREP_Events.h>
-#include <SCOREP_Definitions.h>
-#include <SCOREP_Mutex.h>
+#include <UTILS_CStr.h>
+
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Events.h>
+#include <SCOREP_Mutex.h>
 #include <SCOREP_Filter.h>
 
 #include "SCOREP_Compiler_Init.h"

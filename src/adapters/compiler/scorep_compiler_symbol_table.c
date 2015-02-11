@@ -47,11 +47,13 @@
  */
 
 #include <config.h>
+
 #include "scorep_compiler_symbol_table.h"
 
+#include <stdlib.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <limits.h>
-#include <unistd.h>
 #include <inttypes.h>
 #include <sys/stat.h>
 #include <string.h>
@@ -65,14 +67,11 @@
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
+#include <UTILS_CStr.h>
+#include <UTILS_IO.h>
 
-#include <SCOREP_Types.h>
-#include <SCOREP_Events.h>
-#include <SCOREP_Definitions.h>
-#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Filter.h>
 
-#include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data.h"
 
 #define SCOREP_COMPILER_BUFFER_LEN 512

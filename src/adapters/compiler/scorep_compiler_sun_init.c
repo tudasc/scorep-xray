@@ -42,6 +42,7 @@
 #include <UTILS_Debug.h>
 
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Filter.h>
 

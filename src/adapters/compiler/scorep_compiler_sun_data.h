@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -40,7 +40,7 @@
 #ifndef SCOREP_COMPILER_SUN_DATA_
 #define SCOREP_COMPILER_SUN_DATA_
 
-#include <SCOREP_Definitions.h>
+#include <SCOREP_Types.h>
 
 
 /**

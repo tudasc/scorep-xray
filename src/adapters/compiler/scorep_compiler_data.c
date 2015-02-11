@@ -36,17 +36,17 @@
  */
 
 #include <config.h>
+
 #include "scorep_compiler_data.h"
 
-#include <string.h>
-#include <unistd.h>
+#include <stdlib.h>
 #include <inttypes.h>
 
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
+#include <UTILS_CStr.h>
 
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Mutex.h>
 
 /**
    A hash table which stores information about regions under their name as

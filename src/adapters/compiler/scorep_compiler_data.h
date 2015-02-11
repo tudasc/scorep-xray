@@ -40,12 +40,8 @@
 #ifndef SCOREP_COMPILER_DATA_H_
 #define SCOREP_COMPILER_DATA_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdint.h>
 
-#include <UTILS_IO.h>
-#include <UTILS_CStr.h>
 #include <SCOREP_Types.h>
 
 /**

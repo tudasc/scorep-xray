@@ -38,7 +38,11 @@
  */
 
 #include <config.h>
+
 #include "SCOREP_Compiler_Init.h"
+
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
+#include <UTILS_Debug.h>
 
 #include "scorep_compiler_confvars.inc.c"
 

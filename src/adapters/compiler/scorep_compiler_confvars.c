@@ -37,6 +37,9 @@
 
 #include <config.h>
 
+#define SCOREP_DEBUG_MODULE_NAME COMPILER
+#include <UTILS_Debug.h>
+
 #include <SCOREP_Subsystem.h>
 
 

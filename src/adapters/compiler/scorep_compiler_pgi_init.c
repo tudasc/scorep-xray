@@ -39,9 +39,9 @@
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
+#include <SCOREP_Mutex.h>
+
 #include "SCOREP_Compiler_Init.h"
-#include <SCOREP_Location.h>
-#include <SCOREP_Memory.h>
 
 
 /* **************************************************************************************

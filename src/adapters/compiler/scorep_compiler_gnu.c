@@ -36,15 +36,13 @@
  */
 
 #include <config.h>
-#include <stdio.h>
-#include <unistd.h>
 
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Mutex.h>
 
 #include "SCOREP_Compiler_Init.h"
