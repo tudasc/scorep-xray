@@ -38,8 +38,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
+#include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 #include <SCOREP_Location.h>
@@ -116,8 +116,8 @@ _ftrace_enter2_( void )
                 else
                 {
                     scorep_compiler_register_region( hash_node );
-                    assert( hash_node->region_handle != SCOREP_FILTERED_REGION );
-                    assert( hash_node->region_handle != SCOREP_INVALID_REGION );
+                    UTILS_ASSERT( hash_node->region_handle != SCOREP_FILTERED_REGION );
+                    UTILS_ASSERT( hash_node->region_handle != SCOREP_INVALID_REGION );
                 }
             }
             SCOREP_MutexUnlock( scorep_compiler_region_mutex );
