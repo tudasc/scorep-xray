@@ -176,16 +176,16 @@ libscorep_adapter_compiler_symbol_table_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR) \
     $(UTILS_CPPFLAGS)
+libscorep_adapter_compiler_symbol_table_la_LIBADD =
+libscorep_adapter_compiler_symbol_table_la_LDFLAGS =
 
 if HAVE_LIBBFD
 libscorep_adapter_compiler_symbol_table_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_libbfd.c
 libscorep_adapter_compiler_symbol_table_la_CPPFLAGS += \
     @LIBBFD_CPPFLAGS@
-
 libscorep_adapter_compiler_symbol_table_la_LIBADD += \
     @LIBBFD_LIBS@
-
 libscorep_adapter_compiler_symbol_table_la_LDFLAGS += \
     @LIBBFD_LDFLAGS@
 
