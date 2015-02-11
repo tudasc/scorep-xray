@@ -188,21 +188,27 @@ libscorep_adapter_compiler_symbol_table_la_LIBADD += \
 
 libscorep_adapter_compiler_symbol_table_la_LDFLAGS += \
     @LIBBFD_LDFLAGS@
-endif HAVE_LIBBFD
 
-if HAVE_DEMANGLE
-libscorep_adapter_compiler_symbol_table_la_CPPFLAGS += \
-    -DGNU_DEMANGLE
-endif HAVE_DEMANGLE
+else !HAVE_LIBBFD
 
-if HAVE_NM_AS_BFD_REPLACEMENT
+if HAVE_NM
+
 libscorep_adapter_compiler_symbol_table_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_symbol_table_nm.c
 # the SCOREP_Timing.h dependency is used to generate unique
 # filenames. This should be done differently, see #692
 libscorep_adapter_compiler_symbol_table_la_CPPFLAGS += \
     -I$(INC_ROOT)src/services/include
-endif HAVE_NM_AS_BFD_REPLACEMENT
+
+endif HAVE_NM
+
+endif !HAVE_LIBBFD
+
+if HAVE_DEMANGLE
+libscorep_adapter_compiler_symbol_table_la_CPPFLAGS += \
+    -DGNU_DEMANGLE
+endif HAVE_DEMANGLE
+
 endif HAVE_COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE
 
 # --------------------------------------------------------------------

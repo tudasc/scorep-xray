@@ -43,70 +43,67 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [cray],     [],
     [fujitsu],  [],
     [have_compiler_instrumentation=no
-     result="no, compiler vendor '${ax_cv_c_compiler_vendor}' not supported."])dnl
+     compiler_instrumentation_result="no, compiler vendor '${ax_cv_c_compiler_vendor}' not supported."])dnl
+
+scorep_have_demangle="no"
+AS_CASE([${ac_scorep_platform}],
+    [k|fx10|fx100], [_FUJITSU_LIBBFD_CHECK_WORKAROUND],
+    [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])])
+AC_SCOREP_COND_HAVE([LIBBFD],
+    [test "x${scorep_have_libbfd}" = "xyes"],
+    [Define if libbfd is available.])
+
+AC_SCOREP_COND_HAVE([DEMANGLE],
+    [test "x${scorep_have_demangle}" = "xyes"],
+    [Define if cplus_demangle is available.])
+
+dnl `which nm` is the correct one for BG and Cray, but
+dnl wrong for NEC-SX, see opari2:ticket:54 and silc:ticket:620.
+AC_CHECK_PROG([scorep_have_nm], [nm], ["`which nm`"], ["no"])
+AC_SCOREP_COND_HAVE([NM],
+    [test "x${scorep_have_nm}" != "xno"],
+    [Define if nm is available.])
 
 AS_IF([test "x${have_compiler_instrumentation}" = xyes],
-    [scorep_have_demangle="no"
-     AS_IF([test "x${scorep_compiler_instrumentation_needs_symbol_table}" = xyes],
-         [AS_IF([test "x${ac_scorep_platform}" = xk ||
-                 test "x${ac_scorep_platform}" = xfx10 ||
-                 test "x${ac_scorep_platform}" = xfx100],
-              [_FUJITSU_COMPILER_INSTRUMENTATION_WORKAROUND],
-              [AC_SCOREP_BACKEND_LIB([libbfd], [bfd.h])])
-          AS_IF([test "x${scorep_have_libbfd}" = "xyes"],
-             [result=${libbfd_result}],
-             [# search for nm if bfd is not usable
-              AC_MSG_WARN([libbfd not available. Trying compiler instrumentation via nm.])
-              AC_CHECK_PROG([scorep_have_nm], [nm], ["`which nm`"], ["no"])
-              AS_IF([test "x${scorep_have_nm}" = "xno"],
+    [AS_IF([test "x${scorep_compiler_instrumentation_needs_symbol_table}" = xyes],
+         [AM_COND_IF([HAVE_LIBBFD],
+             [compiler_instrumentation_result="yes, using libbfd"],
+             [# try nm if bfd is not available
+              AM_COND_IF([HAVE_NM],
+                  [compiler_instrumentation_result="yes, using nm"
+                   AC_DEFINE_UNQUOTED([SCOREP_BACKEND_NM], ["${scorep_have_nm}"], [Backend nm.])],
                   [have_compiler_instrumentation="no"
-                   AC_MSG_WARN([Neither libbfd nor nm are available. Compiler instrumentation will not work.])
-                   result="no, neither libbfd nor nm are available."],
-                  [result="yes, using nm."])])
+                   compiler_instrumentation_result="no, neither libbfd nor nm are available"])])
          ],
-         [# non-gnu, non-cray compilers
-          AM_CONDITIONAL(HAVE_LIBBFD, [test 1 -eq 0])
+         [# compilers which do not need the symbol table
           AS_IF([test "x${ax_cv_c_compiler_vendor}" = xsun],
-              [result="partially, studio compiler supports Fortran only."],
+              [compiler_instrumentation_result="partially, studio compiler supports Fortran only."],
               [test "x${scorep_compiler_gnu_with_plugin}" = "xyes"],
-              [result="yes, using GCC plug-in with support for compile-time filtering"],
-              [result="yes"])
+              [compiler_instrumentation_result="yes, using GCC plug-in with support for compile-time filtering"],
+              [compiler_instrumentation_result="yes"])
          ])
     ])
-AFS_SUMMARY([compiler instrumentation], [${result}])
+AFS_SUMMARY([compiler instrumentation], [${compiler_instrumentation_result}])
 
 AM_CONDITIONAL([HAVE_COMPILER_INSTRUMENTATION],
-               [test "x${have_compiler_instrumentation}" = xyes])
+    [test "x${have_compiler_instrumentation}" = xyes])
 
 AC_SCOREP_COND_HAVE([COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE],
     [test "x${have_compiler_instrumentation}" = xyes &&
      test "x${scorep_compiler_instrumentation_needs_symbol_table}" = "xyes"],
     [Define if the compiler instrumentation needs the symbol table.])
 
-# The following just deals with bfd, demangle, and nm
-AM_CONDITIONAL([HAVE_DEMANGLE],
-               [test "x${scorep_have_demangle}" = "xyes"])
-AM_COND_IF([HAVE_DEMANGLE],
-           [AC_DEFINE([HAVE_DEMANGLE], [1], [Define if cplus_demangle is available.])])
-
-AS_IF([test "x${scorep_have_libbfd}" = "xno" && test "x${scorep_have_nm}" != "xno"],
-      [AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -eq 1])
-       AC_DEFINE([HAVE_NM_AS_BFD_REPLACEMENT], [1], [Define if nm is available as a libbfd replacement.])
-       dnl scorep_have_nm=`which nm` is the correct one for BG and Cray, but
-       dnl wrong for NEC-SX, see opari2:ticket:54 and silc:ticket:620.
-       AC_DEFINE_UNQUOTED([SCOREP_BACKEND_NM], ["${scorep_have_nm}"], [Backend nm as bfd replacement])],
-      [AM_CONDITIONAL([HAVE_NM_AS_BFD_REPLACEMENT], [test 1 -eq 0])])
 ])
 
 dnl ----------------------------------------------------------------------------
 
-# _FUJITSU_COMPILER_INSTRUMENTATION_WORKAROUND
+# _FUJITSU_LIBBFD_CHECK_WORKAROUND
 # Fujitsu are cross-compile machines, i.e. we explicitly need to specify the
 # path to bfd. This path (which contains system stuff) is used in a CPPFLAGS.
 # This breaks compilation. Therefore, work around the the usual compiler
 # instrumentation's AC_SCOREP_BACKEND_LIB check.
 # -----------------------------------------------------------------------------
-m4_define([_FUJITSU_COMPILER_INSTRUMENTATION_WORKAROUND], [
+m4_define([_FUJITSU_LIBBFD_CHECK_WORKAROUND], [
 BYPASS_GENERIC_LIB_CHECK_ON_FUJITSU([libbfd], [-lbfd -liberty])
 AC_CHECK_HEADER([demangle.h])
 AC_MSG_CHECKING([for cplus_demangle])
