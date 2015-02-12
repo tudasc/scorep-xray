@@ -11,11 +11,12 @@ Bugfixes:
 ------------------- Upcoming version 1.4.1 ---------------------------
 
 Bugfixes:
-- Fixed segmentation fault of clReleaseEvent during Score-P OpenCL flush
-
 - BG/Q: use optimized MPI rank to SION file mapping (one file per I/O node)
-- OpenCL: Score-P instrumenter reports correctly when it noticed
-  OpenCL library on command line
+- Fixes in the OpenCL adapter:
+  - The Score-P instrumenter did misinterpret the OpenCL library as an
+    input file, if it was given as '-l opencl' on the command line. Fixed.
+  - Fixed segmentation fault of clReleaseEvent during Score-P OpenCL flush.
+  - Fixed wrappers of OpenCL 2.0 functions.
 - The Score-P instrumenter did misinterpret the Pthread library as an input
   file, if it was given as '-l pthread' on the command line. Fixed.
 - The collapse node post-processing in the profile happened for the master
