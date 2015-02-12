@@ -97,9 +97,9 @@ SCOREP_LIBWRAP_FUNC_NAME( clSVMFree ) ( cl_context context,
 {
     SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clSVMFree );
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clSVMFree,
-                                             clSVMFree,
-                                             ( context, svmPointer ) );
+    SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clSVMFree,
+                                       clSVMFree,
+                                       ( context, svmPointer ) );
 
     SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clSVMFree );
 }
@@ -159,7 +159,7 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetKernelExecInfo ) ( cl_kernel           kernel,
 
     ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clSetKernelExecInfo,
                                              clSetKernelExecInfo,
-                                             ( kernel, paramName, paramvalueSize,
+                                             ( kernel, paramName, paramValueSize,
                                                paramValue ) );
 
     SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clSetKernelExecInfo );
@@ -172,10 +172,10 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetKernelExecInfo ) ( cl_kernel           kernel,
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMFree ) ( cl_command_queue commandQueue,
                                                cl_uint          numSvmPointers,
-                                               void*[]          svmPointers,
+                                               void**           svmPointers,
                                                void ( CL_CALLBACK* pfnFreeFunc )( cl_command_queue queue,
                                                                                   cl_uint          num_svm_pointers,
-                                                                                  void*[]          svm_pointers,
+                                                                                  void**           svm_pointers,
                                                                                   void*            user_data ),
                                                void*            userData,
                                                cl_uint          numEventsInWaitList,
