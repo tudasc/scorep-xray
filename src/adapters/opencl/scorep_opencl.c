@@ -185,6 +185,9 @@ static bool opencl_wrap_finalized = false;
 /** list of Score-P OpenCL command queues */
 static scorep_opencl_queue* cl_queue_list = NULL;
 
+/** maximum number of Score-P command queue buffer entries */
+static size_t queue_max_buffer_entries = 0;
+
 /**
  * Initialize the OpenCL adapter.
  *
@@ -242,6 +245,9 @@ scorep_opencl_wrap_init( void )
                     "OPENCL_WINDOW",
                     scorep_opencl_interim_communicator_handle );
         }
+
+        queue_max_buffer_entries = scorep_opencl_queue_size
+                                   / sizeof( scorep_opencl_buffer_entry );
 
         opencl_wrap_initialized = true;
     }
@@ -513,8 +519,7 @@ static inline void
 guarantee_buffer( scorep_opencl_queue* queue )
 {
     /* check if there is enough buffer space for this kernel */
-    if ( queue->buf_pos + sizeof( scorep_opencl_buffer_entry )
-         > ( queue->buffer + scorep_opencl_queue_size ) )
+    if ( queue->buf_pos + 1 > queue->buffer + queue_max_buffer_entries )
     {
         UTILS_WARNING( "[OpenCL] Buffer limit exceeded! Flushing queue %p ...",
                        queue->queue );
@@ -553,7 +558,7 @@ scorep_opencl_enqueue_kernel( cl_command_queue clQueue,
 
     /* update buffer status */
     queue->buf_last = queue->buf_pos;
-    queue->buf_pos += sizeof( scorep_opencl_buffer_entry );
+    queue->buf_pos++;
 
     if ( clKernel != NULL )
     {
@@ -592,7 +597,7 @@ scorep_opencl_enqueue_buffer( scorep_enqueue_buffer_kind kind,
 
     /* increment buffer of asynchronous calls */
     queue->buf_last = queue->buf_pos;
-    queue->buf_pos += sizeof( scorep_opencl_buffer_entry );
+    queue->buf_pos++;
 
     // the following might also be executed in scorep_opencl_queue_flush()
 
@@ -700,8 +705,7 @@ set_synchronization_point( scorep_opencl_queue* queue )
                        "If last entry is not NULL, then the corresponding clEvent is NULL.",
                        queue->queue, queue->buf_last );
 
-        if ( ( queue->buf_last + sizeof( scorep_opencl_buffer_entry ) )
-             >= ( queue->buffer + scorep_opencl_queue_size ) )
+        if ( ( queue->buf_last + 1 ) >= ( queue->buffer + queue_max_buffer_entries ) )
         {
             UTILS_WARNING( "[OpenCL] Buffer out of memory access!" );
         }
@@ -867,7 +871,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
             {
                 UTILS_WARN_ONCE( "[OpenCL] Skip recording of activity ..." );
 
-                buf_entry += sizeof( scorep_opencl_buffer_entry );
+                buf_entry++;
                 continue;
             }
         }
@@ -878,7 +882,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
             UTILS_WARN_ONCE( "[OpenCL] Activity start time > stop time!" );
 
             //TODO: provide more debug info like kernel, device, queue
-            buf_entry += sizeof( scorep_opencl_buffer_entry );
+            buf_entry++;
         }
 
         // check if synchronization stop time is before device activity stop time
@@ -903,7 +907,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
             {
                 UTILS_WARN_ONCE( "[OpenCL] Skip recording of activity ..." );
 
-                buf_entry += sizeof( scorep_opencl_buffer_entry );
+                buf_entry++;
                 continue;
             }
         }
@@ -1015,7 +1019,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
         }
 
         // go to next entry in buffer
-        buf_entry += sizeof( scorep_opencl_buffer_entry );
+        buf_entry++;
     }
 
     // reset buffer pointers
