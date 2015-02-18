@@ -25,6 +25,7 @@ Bugfixes:
 - Fixed detection of building a shared library on Cray in the instrumenter.
 - Fixed failed OpenMP detection on K if the -Kopenmp flag was combined
   with other flags in a comme separated list.
+- Fixed errorneous calculation and presentation of task migration metrics.
 
 ------------------- Released version 1.4 -----------------------------
 
