@@ -110,8 +110,7 @@ alloc_new_task( SCOREP_Location*             locationData,
     scorep_profile_task* task =
         SCOREP_Location_AllocForProfile( locationData, sizeof( scorep_profile_task ) );
 
-    task->creator                 = location;
-    scorep_profile_has_tasks_flag = 1;
+    task->creator = location;
     return task;
 }
 
@@ -296,6 +295,10 @@ SCOREP_Profile_CreateTaskData( SCOREP_Location*  locationData,
     {
         location->implicit_task = new_task;
         location->current_task  = new_task;
+    }
+    else
+    {
+        scorep_profile_has_tasks_flag = 1;
     }
 
     SCOREP_Task_SetSubstrateData( taskHandle, scorep_profile_substrate_id, new_task );
