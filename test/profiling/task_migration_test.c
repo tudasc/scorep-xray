@@ -50,6 +50,14 @@ main( int argc, char** argv )
                                               SCOREP_LOCATION_TYPE_GPU,
                                               "test_thread_2" );
 
+    SCOREP_RegionHandle parallel = SCOREP_Definitions_NewRegion( "parallel",
+                                                                 "parallel",
+                                                                 SCOREP_INVALID_SOURCE_FILE,
+                                                                 SCOREP_INVALID_LINE_NO,
+                                                                 SCOREP_INVALID_LINE_NO,
+                                                                 SCOREP_PARADIGM_OPENMP,
+                                                                 SCOREP_REGION_PARALLEL );
+
     SCOREP_RegionHandle region1 = SCOREP_Definitions_NewRegion( "region1",
                                                                 "region1",
                                                                 SCOREP_INVALID_SOURCE_FILE,
@@ -86,6 +94,9 @@ main( int argc, char** argv )
                                                                 SCOREP_INVALID_LINE_NO,
                                                                 SCOREP_PARADIGM_USER,
                                                                 SCOREP_REGION_BARRIER );
+
+    SCOREP_Profile_Enter( location1, parallel, SCOREP_REGION_PARALLEL, SEC( 1 ), NULL );
+    SCOREP_Profile_Enter( location2, parallel, SCOREP_REGION_PARALLEL, SEC( 1 ), NULL );
 
     SCOREP_Profile_Enter( location1, foo_region, SCOREP_REGION_FUNCTION, SEC( 1 ), NULL );
     SCOREP_Profile_Enter( location2, foo_region, SCOREP_REGION_FUNCTION, SEC( 1 ), NULL );
@@ -184,5 +195,9 @@ main( int argc, char** argv )
     SCOREP_Profile_Exit( location2, barrier,
                          SEC( iterations * steps + 53 ), NULL );
 
+    SCOREP_Profile_Exit( location1, parallel,
+                         SEC( iterations * steps + 53 ), NULL );
+    SCOREP_Profile_Exit( location2, parallel,
+                         SEC( iterations * steps + 53 ), NULL );
     return 0;
 }

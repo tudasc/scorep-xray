@@ -415,10 +415,8 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
     SCOREP_PROFILE_ASSURE_INITIALIZED;
     location = SCOREP_Location_GetProfileData( thread );
 
-    /* Store task metrics if in task scheduling points */
-    if ( ( type == SCOREP_REGION_BARRIER ) ||
-         ( type == SCOREP_REGION_TASK_WAIT ) ||
-         ( type == SCOREP_REGION_TASK_CREATE ) )
+    /* Store task metrics if exiting a parallel region */
+    if ( type == SCOREP_REGION_PARALLEL )
     {
         scorep_profile_update_task_metrics( location );
     }

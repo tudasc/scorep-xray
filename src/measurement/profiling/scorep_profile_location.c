@@ -166,7 +166,7 @@ scorep_profile_create_location_data( SCOREP_Location* locationData )
     location->num_foreign_tasks     = 0;
     location->num_foreign_stubs     = 0;
     location->location_data         = locationData;
-    location->migration_sum         = 0;
+    location->migration_sum         = 1;
     location->migration_win         = 0;
 
     return location;

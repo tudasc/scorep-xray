@@ -298,6 +298,7 @@ SCOREP_Profile_CreateTaskData( SCOREP_Location*  locationData,
     }
     else
     {
+        /* Mark that we have explicit tasks */
         scorep_profile_has_tasks_flag = 1;
     }
 
