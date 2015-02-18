@@ -23,6 +23,8 @@ Bugfixes:
   location and lead to errors if a collapse node appeared on anther location.
   Fixed.
 - Fixed detection of building a shared library on Cray in the instrumenter.
+- Fixed failed OpenMP detection on K if the -Kopenmp flag was combined
+  with other flags in a comme separated list.
 
 ------------------- Released version 1.4 -----------------------------
 
