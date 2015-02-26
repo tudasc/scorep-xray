@@ -33,12 +33,12 @@
 
 # AFS_SUMMARY_INIT
 # ----------------
-# Initializes the summary system and adds the pacakge header (possibly
+# Initializes the summary system and adds the package header (possibly
 # including the sub-build name) to it. It removes config.summary files
 # from previous configure runs recursively, therefore you need to call
 # AFS_SUMMARY_INIT before any sub-configures.
 # The sub-build name is used from the `AFS_PACKAGE_BUILD` variable
-# set by the AFS_PACAKGE_INIT macro.
+# set by the AFS_PACKAGE_INIT macro.
 AC_DEFUN([AFS_SUMMARY_INIT], [
 rm -f AC_PACKAGE_TARNAME.summary
 LC_ALL=C find . -name config.summary -exec rm -f '{}' \;
