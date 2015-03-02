@@ -78,6 +78,10 @@ defaults by using the following configure options:
                overridden at measurement time by setting the
                environment variable SCOREP_MACHINE_NAME.
 
+Score-P requires a full compiler suite with language support for C99,
+C++98, Fortran 77, and Fortran 90. The following section describes how
+to select supported compiler suits.
+
 In non-cross-compiling environments, the compiler suite used to build
 the backend parts can be specified explicitly if desired. On Linux
 clusters it is currently recommended to use this option to select a
