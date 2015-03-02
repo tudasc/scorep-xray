@@ -123,6 +123,9 @@ _SCOREP_PTHREAD_FEATURE([mutex],
 # Wrapper around AX_PTHREAD to provide AC_REQUIRE([SCOREP_PTHREAD])
 # functionality.
 AC_DEFUN([SCOREP_PTHREAD], [
+dnl advertise the PTHREAD_CFLAGS and PTHREAD_LIBS environment variables
+AC_ARG_VAR([PTHREAD_CFLAGS], [CFLAGS use to compile Pthread programs])
+AC_ARG_VAR([PTHREAD_LIBS], [LIBS use to link Pthread programs])
 AX_PTHREAD([scorep_pthread_support=1], [scorep_pthread_support=0])
 AC_SUBST([SCOREP_HAVE_PTHREAD], [${scorep_pthread_support}])
 AFS_AM_CONDITIONAL([HAVE_PTHREAD], [test "x${scorep_pthread_support}" = x1], [false])
