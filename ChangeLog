@@ -17,6 +17,7 @@ Bugfixes:
     input file, if it was given as '-l opencl' on the command line. Fixed.
   - Fixed segmentation fault of clReleaseEvent during Score-P OpenCL flush.
   - Fixed wrappers of OpenCL 2.0 functions.
+  - Revised mutex locking.
 - The Score-P instrumenter did misinterpret the Pthread library as an input
   file, if it was given as '-l pthread' on the command line. Fixed.
 - The collapse node post-processing in the profile happened for the master

@@ -877,7 +877,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clFinish ) ( cl_command_queue commandQueue )
     if ( scorep_opencl_record_kernels || scorep_opencl_record_memcpy )
     {
         //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENCL, "[OpenCL] Finish command queue %p", commandQueue );
-        scorep_opencl_queue_flush( scorep_opencl_queue_get( commandQueue ) );
+        scorep_opencl_queue *queue = scorep_opencl_queue_get( commandQueue );
+
+        SCOREP_MutexLock( queue->mutex );
+        scorep_opencl_queue_flush( queue );
+        SCOREP_MutexUnlock( queue->mutex );
     }
 
     ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clFinish, clFinish,
@@ -901,18 +905,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueReadBuffer ) ( cl_command_queue commandQueue,
                                                   const cl_event*  eventWaitList,
                                                   cl_event*        event )
 {
-    cl_int ret;
-
     SCOREP_OPENCL_ENQUEUE_BUFFER( scorep_opencl_region__clEnqueueReadBuffer,
                                   SCOREP_ENQUEUE_BUFFER_DEV2HOST,
                                   size, commandQueue, event, blockingRead,
-                                  ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueReadBuffer, clEnqueueReadBuffer,
+                                  SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueReadBuffer, clEnqueueReadBuffer,
                                                                            ( commandQueue, buffer, blockingRead,
                                                                              offset, size, ptr, numEventsInWaitList,
-                                                                             eventWaitList, event ) );
+                                                                             eventWaitList, event ) )
                                   )
-
-    return ret;
 }
 
 
@@ -928,18 +928,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteBuffer ) ( cl_command_queue commandQueue
                                                    const cl_event*  eventWaitList,
                                                    cl_event*        event )
 {
-    cl_int ret;
-
     SCOREP_OPENCL_ENQUEUE_BUFFER( scorep_opencl_region__clEnqueueWriteBuffer,
                                   SCOREP_ENQUEUE_BUFFER_HOST2DEV,
                                   size, commandQueue, event, blockingWrite,
-                                  ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueWriteBuffer, clEnqueueWriteBuffer,
+                                  SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueWriteBuffer, clEnqueueWriteBuffer,
                                                                            ( commandQueue, buffer, blockingWrite,
                                                                              offset, size, ptr, numEventsInWaitList,
                                                                              eventWaitList, event ) );
                                   )
-
-    return ret;
 }
 
 
@@ -1225,9 +1221,9 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueNDRangeKernel ) ( cl_command_queue commandQue
     if ( scorep_opencl_record_kernels )
     {
         scorep_opencl_buffer_entry* kernel =
-            scorep_opencl_enqueue_kernel( commandQueue, clKernel );
+            scorep_opencl_get_buffer_entry( scorep_opencl_queue_get( commandQueue ) );
 
-        if ( event == NULL )
+        if ( kernel && event == NULL )
         {
             event = &( kernel->event );
         }
@@ -1238,9 +1234,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueNDRangeKernel ) ( cl_command_queue commandQue
                                                    localWorkSize, numEventsInWaitList,
                                                    eventWaitList, event ) );
 
-        SCOREP_OPENCL_CALL( clRetainEvent, ( *event ) );
-        kernel->event          = *event;
-        kernel->retained_event = true;
+        if ( kernel && CL_SUCCESS == ret )
+        {
+            kernel->u.kernel = clKernel;
+            scorep_opencl_retain_kernel( kernel );
+        }
     }
     else
     {

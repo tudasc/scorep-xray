@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014, 2015
+ * Copyright (c) 2014-2015
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -21,7 +21,6 @@
 #include "scorep_opencl.h"
 #include "scorep_opencl_config.h"
 
-#include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Timing.h>
@@ -110,7 +109,7 @@ static scorep_opencl_kernel_hash_node* opencl_kernel_hashtab[ KERNEL_HASHTABLE_S
  */
 # define SCOREP_OPENCL_UNLOCK() SCOREP_MutexUnlock( opencl_mutex )
 
-/** Score-P mutex for the OpenCL wrapper */
+/** Score-P mutex for access to global variables in the OpenCL adapter */
 static SCOREP_Mutex opencl_mutex = NULL;
 
 /**
@@ -270,10 +269,16 @@ scorep_opencl_wrap_finalize( void )
             scorep_opencl_queue* queue = cl_queue_list;
             while ( queue != NULL )
             {
+                SCOREP_MutexLock( queue->mutex );
+
                 if ( queue->buffer < queue->buf_pos )
                 {
                     scorep_opencl_queue_flush( queue );
                 }
+
+                SCOREP_MutexUnlock( queue->mutex );
+
+                SCOREP_MutexDestroy( &queue->mutex );
 
                 if ( queue->queue )
                 {
@@ -407,6 +412,9 @@ scorep_opencl_queue_create( cl_command_queue clQueue,
     queue->buf_pos  = queue->buffer;
     queue->buf_last = queue->buffer;
 
+    // create a mutex to lock the buffer of the command queue
+    SCOREP_MutexCreate( &queue->mutex );
+
     // append generated queue to global queue list
     SCOREP_OPENCL_LOCK();
     queue->next   = cl_queue_list;
@@ -429,18 +437,15 @@ scorep_opencl_queue_get( cl_command_queue clQueue )
 {
     scorep_opencl_queue* queue = NULL;
 
-    SCOREP_OPENCL_LOCK();
     queue = cl_queue_list;
     while ( queue != NULL )
     {
         if ( queue->queue == clQueue )
         {
-            SCOREP_OPENCL_UNLOCK();
             return queue;
         }
         queue = queue->next;
     }
-    SCOREP_OPENCL_UNLOCK();
 
     return queue;
 }
@@ -512,8 +517,9 @@ opencl_set_cpu_location_id( SCOREP_Location* hostLocation )
 /**
  * Guarantee that the entry can be stored in the queue's buffer. Queue might be
  * flushed, if the buffer limit was exceeded.
+ * The given given command queue has to be locked!
  *
- * @param queue Score-P OpenCL command queue
+ * @param queue Score-P OpenCL command queue (has to be locked for thread-safety)
  */
 static inline void
 guarantee_buffer( scorep_opencl_queue* queue )
@@ -528,78 +534,87 @@ guarantee_buffer( scorep_opencl_queue* queue )
 }
 
 /**
- * Adds a kernel to the given command queue and initializes the internal
- * kernel structure. Kernel must not yet be enqueued!
+ * Acquires memory in the Score-P queue buffer to store an activity that will be
+ * enqueued in the given OpenCL command queue.
  *
- * @param clQueue           OpenCL command queue
- * @param clKernel          OpenCL kernel
+ * @param queue pointer to Score-P OpenCL command queue
  *
- * @return the Score-P kernel structure
+ * @return pointer to Score-P buffer entry
  */
 scorep_opencl_buffer_entry*
-scorep_opencl_enqueue_kernel( cl_command_queue clQueue,
-                              cl_kernel        clKernel )
+scorep_opencl_get_buffer_entry( scorep_opencl_queue* queue )
 {
-    scorep_opencl_queue*        queue  = scorep_opencl_queue_get( clQueue );
-    scorep_opencl_buffer_entry* kernel = NULL;
-
     if ( queue == NULL )
     {
-        UTILS_WARNING( "[OpenCL] Add kernel failed!" );
+        UTILS_WARNING( "[OpenCL] Queue not found!" );
+        return NULL;
     }
+
+    // lock work on the queue's buffer
+    SCOREP_MutexLock( queue->mutex );
 
     guarantee_buffer( queue );
 
-    /* create Score-P OpenCL kernel call and initialize it */
-    kernel                 = ( scorep_opencl_buffer_entry* )queue->buf_pos;
-    kernel->type           = SCOREP_OPENCL_BUF_ENTRY_KERNEL;
-    kernel->retained_event = false;
-    kernel->u.kernel       = clKernel;
+    scorep_opencl_buffer_entry* entry = queue->buf_pos;
 
-    /* update buffer status */
+    // update buffer pointers
     queue->buf_last = queue->buf_pos;
     queue->buf_pos++;
 
-    if ( clKernel != NULL )
-    {
-        SCOREP_OPENCL_CALL( clRetainKernel, ( clKernel ) );
-    }
+    SCOREP_MutexUnlock( queue->mutex );
 
-    return kernel;
+
+    entry->is_enqueued = false;
+
+    return entry;
 }
 
 /**
- * Add memory copy to buffer of non-blocking device activities.
+ * Retains the OpenCL kernel and the corresponding OpenCL profiling event.
+ * Set the type to kernel and mark it as enqueued.
  *
- * @param kind          kind/direction of memory copy
- * @param count         number of bytes for this data transfer
- * @param clQueue       pointer to the OpenCL command queue
- *
- * @return pointer to the Score-P memory copy structure
+ * @param kernel the Score-P buffer entry to be used as kernel activity
  */
-scorep_opencl_buffer_entry*
-scorep_opencl_enqueue_buffer( scorep_enqueue_buffer_kind kind,
-                              size_t                     count,
-                              cl_command_queue           clQueue )
+void
+scorep_opencl_retain_kernel( scorep_opencl_buffer_entry* kernel )
 {
-    scorep_opencl_buffer_entry* mcpy  = NULL;
-    scorep_opencl_queue*        queue = scorep_opencl_queue_get( clQueue );
+    // set activity type to kernel
+    kernel->type = SCOREP_OPENCL_BUF_ENTRY_KERNEL;
 
-    guarantee_buffer( queue );
+    // retain kernel
+    if ( kernel->u.kernel != NULL )
+    {
+        SCOREP_OPENCL_CALL( clRetainKernel, ( kernel->u.kernel ) );
+    }
 
+    // retain OpenCL profiling event
+    SCOREP_OPENCL_CALL( clRetainEvent, ( kernel->event ) );
+
+    // mark as enqueued (valid for flush)
+    kernel->is_enqueued = true;
+}
+
+/**
+ * Stores properties of the data transfer, creates RMA windows if necessary and
+ * retains the attached OpenCL profiling event.
+ *
+ * @param mcpy  the Score-P buffer entry to be used as data transfer activity
+ * @param kind  kind/direction of memory copy
+ * @param count number of bytes for this data transfer
+ */
+void
+scorep_opencl_retain_buffer( scorep_opencl_queue*        queue,
+                             scorep_opencl_buffer_entry* mcpy,
+                             scorep_enqueue_buffer_kind  kind,
+                             size_t                      count )
+{
     /* create and initialize asynchronous memory copy entry */
-    mcpy                 = ( scorep_opencl_buffer_entry* )queue->buf_pos;
     mcpy->type           = SCOREP_OPENCL_BUF_ENTRY_MEMCPY;
-    mcpy->event          = NULL;
-    mcpy->retained_event = false;
     mcpy->u.memcpy.bytes = count;
     mcpy->u.memcpy.kind  = kind;
 
-    /* increment buffer of asynchronous calls */
-    queue->buf_last = queue->buf_pos;
-    queue->buf_pos++;
-
-    // the following might also be executed in scorep_opencl_queue_flush()
+    // the following might also be executed in scorep_opencl_queue_flush(), but
+    // window creation time is more difficult to determine in flush
 
     // set host location ID and create RMA window
     if ( kind != SCOREP_ENQUEUE_BUFFER_DEV2DEV )
@@ -623,7 +638,11 @@ scorep_opencl_enqueue_buffer( scorep_enqueue_buffer_kind kind,
                                       scorep_opencl_interim_window_handle );
     }
 
-    return mcpy;
+    // retain OpenCL profiling event
+    SCOREP_OPENCL_CALL( clRetainEvent, ( mcpy->event ) );
+
+    // mark as enqueued (valid for flush)
+    mcpy->is_enqueued = true;
 }
 
 /**
@@ -748,9 +767,10 @@ set_synchronization_point( scorep_opencl_queue* queue )
 
 
 /**
- * Write OpenCL activities to Score-P OpenCL locations
+ * Write OpenCL activities to Score-P OpenCL locations.
+ * The given command queue has to be locked for thread-safety!
  *
- * @param queue             Score-P OpenCL command queue to be flushed
+ * @param queue Score-P OpenCL command queue to be flushed (has to be locked)
  *
  * @return true on success, false on failure (mostly during synchronize due to OpenCL context already released)
  */
@@ -769,6 +789,9 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
     {
         return true;
     }
+
+    // lock work on the queue's buffer
+    // SCOREP_MutexLock( queue->mutex );
 
     buf_entry = queue->buffer;
 
@@ -828,6 +851,13 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
     /* write events for all recorded asynchronous calls */
     while ( buf_entry < queue->buf_pos )
     {
+        // skip activities that have not successfully been enqueued
+        if ( !buf_entry->is_enqueued )
+        {
+            buf_entry++;
+            continue;
+        }
+
         uint64_t host_start, host_stop;
 
         /* get profiling information (start and stop time) */
@@ -883,6 +913,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
 
             //TODO: provide more debug info like kernel, device, queue
             buf_entry++;
+            continue;
         }
 
         // check if synchronization stop time is before device activity stop time
@@ -1013,7 +1044,7 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
         }
 
         // release event that has been retained by this wrapper
-        if ( buf_entry->retained_event == true && buf_entry->event )
+        if ( buf_entry->is_enqueued == true && buf_entry->event )
         {
             SCOREP_OPENCL_CALL( clReleaseEvent, ( buf_entry->event ) );
         }
@@ -1026,36 +1057,17 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
     queue->buf_pos  = queue->buffer;
     queue->buf_last = queue->buffer;
 
+    //SCOREP_MutexUnlock( queue->mutex );
+
     SCOREP_ExitRegion( opencl_flush_region_handle );
 
     return true;
 }
 
 /**
- * Flush all listed Score-P OpenCL queues.
- */
-void
-scorep_opencl_flush_all()
-{
-    if ( scorep_opencl_record_memcpy || scorep_opencl_record_kernels )
-    {
-        SCOREP_OPENCL_LOCK();
-
-        scorep_opencl_queue* queue = cl_queue_list;
-        while ( queue != NULL )
-        {
-            scorep_opencl_queue_flush( queue );
-            queue = queue->next;
-        }
-
-        SCOREP_OPENCL_UNLOCK();
-    }
-}
-
-/**
  * Returns the OpenCL error string for the given error code
  *
- * @param error         the error code
+ * @param error the error code
  *
  * @return the error string
  */

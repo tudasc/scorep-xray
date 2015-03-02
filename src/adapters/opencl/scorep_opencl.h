@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -13,7 +13,7 @@
 /**
  *  @file
  *
- *  @brief Definitions for thei Score-P OpenCL wrapper.
+ *  @brief Definitions for the Score-P OpenCL wrapper.
  */
 
 #ifndef SCOREP_OPENCL_H
@@ -26,6 +26,8 @@
 
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
+
+#include <SCOREP_Mutex.h>
 #include <SCOREP_Definitions.h>
 
 #define SCOREP_OPENCL_NO_ID          0xFFFFFFFF
@@ -137,7 +139,7 @@ typedef struct
 {
     scorep_opencl_buffer_entry_type type;           /**< type of buffer entry */
     cl_event                        event;          /**< OpenCL event (contains profiling info) */
-    bool                            retained_event; /**< free cl_event after kernel flush? */
+    bool                            is_enqueued;    /**< Is this entry enqueued? */
     union
     {
         cl_kernel kernel;                           /**< OpenCL kernel (contains name) */
@@ -163,6 +165,7 @@ typedef struct scorep_opencl_queue
     scorep_opencl_buffer_entry* buffer;                /**< OpenCL buffer pointer */
     scorep_opencl_buffer_entry* buf_pos;               /**< current buffer position */
     scorep_opencl_buffer_entry* buf_last;              /**< points to last buffer entry (scorep_opencl_buffer_entry) */
+    SCOREP_Mutex                mutex;                 /**< Is queue locked? */
     scorep_opencl_vendor        vendor;                /**< vendor specification */
     struct scorep_opencl_queue* next;                  /**< Pointer to next element in the queue */
 }scorep_opencl_queue;
@@ -228,38 +231,38 @@ bool
 scorep_opencl_queue_flush( scorep_opencl_queue* queue );
 
 /**
- * Flush all listed Score-P OpenCL queues.
+ * Acquires memory in the Score-P queue buffer to store an activity that will be
+ * enqueued in the given OpenCL command queue.
+ *
+ * @param queue pointer to Score-P OpenCL command queue
+ *
+ * @return pointer to Score-P buffer entry
+ */
+scorep_opencl_buffer_entry*
+scorep_opencl_get_buffer_entry( scorep_opencl_queue* queue );
+
+/**
+ * Retains the OpenCL kernel and the corresponding OpenCL profiling event.
+ * Set the type to kernel and mark it as enqueued.
+ *
+ * @param kernel the Score-P buffer entry to be used as kernel activity
  */
 void
-scorep_opencl_flush_all( void );
+scorep_opencl_retain_kernel( scorep_opencl_buffer_entry* kernel );
 
 /**
- * Adds a kernel to the given command queue and initializes the internal
- * kernel structure. Kernel must not yet be enqueued!
+ * Stores properties of the data transfer, creates RMA windows if necessary and
+ * retains the attached OpenCL profiling event.
  *
- * @param clQueue           OpenCL command queue
- * @param clKernel          OpenCL kernel
- *
- * @return the Score-P kernel structure
+ * @param mcpy  the Score-P buffer entry to be used as data transfer activity
+ * @param kind  kind/direction of memory copy
+ * @param count number of bytes for this data transfer
  */
-scorep_opencl_buffer_entry*
-scorep_opencl_enqueue_kernel( cl_command_queue clQueue,
-                              cl_kernel        clKernel );
-
-/**
- * Add memory copy to buffer of non-blocking device activities.
- *
- * @param kind              kind/direction of memory copy
- * @param count             number of bytes for this data transfer
- * @param clQueue           pointer to the OpenCL command queue
- * @param clEvent           pointer to the OpenCL event
- *
- * @return pointer to the Score-P memory copy structure
- */
-scorep_opencl_buffer_entry*
-scorep_opencl_enqueue_buffer( scorep_enqueue_buffer_kind kind,
-                              size_t                     count,
-                              cl_command_queue           clQueue );
+void
+scorep_opencl_retain_buffer( scorep_opencl_queue*        queue,
+                             scorep_opencl_buffer_entry* mcpy,
+                             scorep_enqueue_buffer_kind  kind,
+                             size_t                      count );
 
 /**
  * Returns the OpenCL error string for the given error code
