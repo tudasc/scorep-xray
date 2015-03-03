@@ -19,7 +19,7 @@ AC_LANG_PUSH($1)
 scorep_gcc_plugin_cppflags=`[$]_AC_CC -print-file-name=plugin`/include
 
 save_CPPFLAGS=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS -I${scorep_gcc_plugin_cppflags}"
+CPPFLAGS="$CPPFLAGS -I${scorep_gcc_plugin_cppflags} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"
 
 AC_CHECK_HEADERS([gcc-plugin.h],
     [AC_CHECK_HEADERS([tree.h],
@@ -132,13 +132,13 @@ rm -f gcc_plugin_supported
 AS_IF([test ${scorep_gcc_version} -lt 4005],
     [scorep_gcc_plugin_support_reason="no, GCC ${GCC_VERSION} is too old, no plug-in support"],
     [_SCOREP_GCC_PLUGIN_CHECK([C],
-        [AC_SUBST([GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_cppflags}"])
+        [AC_SUBST([GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_cppflags} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
          AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [false], [false])
          touch gcc_plugin_supported],
         [AS_UNSET([ac_cv_header_gcc_plugin_h])
          AS_UNSET([ac_cv_header_tree_h])
          _SCOREP_GCC_PLUGIN_CHECK([C++],
-            [AC_SUBST([GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_cppflags}"])
+            [AC_SUBST([GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_cppflags} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
              AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [true], [false])
              touch gcc_plugin_supported])])])
 

@@ -96,5 +96,6 @@ EXTRA_DIST += \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_descriptor.inc.c \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_handle.inc.c \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_inst_hook.inc.c \
-    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_pass_instrument.inc.c
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_pass_instrument.inc.c \
+    $(SRC_ROOT)src/adapters/compiler/gcc-plugin/fake-gmp/gmp.h
 
