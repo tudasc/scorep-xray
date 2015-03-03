@@ -25,8 +25,25 @@ AC_CHECK_HEADERS([gcc-plugin.h],
     [AC_CHECK_HEADERS([tree.h],
         [scorep_gcc_have_plugin_headers=yes],
         [scorep_gcc_have_plugin_headers=no],
-        [#include <gcc-plugin.h>])],
-    [scorep_gcc_have_plugin_headers=no])
+        [[
+#undef PACKAGE_NAME
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#undef PACKAGE_STRING
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_URL
+#include <gcc-plugin.h>
+]])],
+    [scorep_gcc_have_plugin_headers=no],
+    [[
+/* no default includes */
+#undef PACKAGE_NAME
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#undef PACKAGE_STRING
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_URL
+]])
 
 scorep_gcc_have_working_plugin=no
 AS_IF([test "x${scorep_gcc_have_plugin_headers}" = "xyes"], [
@@ -35,7 +52,14 @@ AS_IF([test "x${scorep_gcc_have_plugin_headers}" = "xyes"], [
     _AC_LANG_PREFIX[FLAGS]="[$]_AC_LANG_PREFIX[FLAGS] -shared"
 
     # minimalistic GCC plug-in
-cat >conftest.$ac_ext <<\_EOF
+cat confdefs.h - >conftest.$ac_ext <<\_EOF
+/* end confdefs.h.  */
+#undef PACKAGE_NAME
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#undef PACKAGE_STRING
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_URL
 #include "gcc-plugin.h"
 #include "tree.h"
 
