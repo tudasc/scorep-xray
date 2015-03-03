@@ -195,8 +195,13 @@ AFS_AM_CONDITIONAL([GCC_VERSION_GE_49], [test ${scorep_gcc_version} -ge 4009], [
 AM_COND_IF([GCC_VERSION_GE_49],
     [AC_SUBST([GCC_PLUGIN_CXXFLAGS], ["-fno-rtti"])])
 
-AFS_SUMMARY([GCC plug-in support], [${scorep_gcc_plugin_support_reason}])
 AFS_AM_CONDITIONAL([HAVE_GCC_PLUGIN_SUPPORT], [test -f gcc_plugin_supported], [false])
+
+AFS_SUMMARY([GCC plug-in support], [${scorep_gcc_plugin_support_reason}])
+AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
+    [AM_COND_IF([GCC_COMPILED_WITH_CXX],
+        [AFS_SUMMARY([Compiler used], [$CXX])],
+        [AFS_SUMMARY([Compiler used], [$CC])])])
 
 AS_UNSET([scorep_gcc_plugin_cppflags])
 AS_UNSET([scorep_gcc_plugin_support_reason])
