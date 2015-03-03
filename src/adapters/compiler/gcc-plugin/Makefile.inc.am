@@ -47,7 +47,7 @@ libscorep_instrument_function_cxx_la_CPPFLAGS = \
     $(scorep_plugin_cppflags)
 libscorep_instrument_function_cxx_la_CXXFLAGS = \
     $(AM_CXXFLAGS) \
-    @GCC_PLUGIN_CXXFLAGS@
+    @SCOREP_GCC_PLUGIN_CXXFLAGS@
 
 scorep_instrument_function_la_LIBADD += libscorep_instrument_function_cxx.la
 
