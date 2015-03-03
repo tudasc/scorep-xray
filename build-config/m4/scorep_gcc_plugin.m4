@@ -180,14 +180,25 @@ rm -f gcc_plugin_supported
 
 AS_IF([test ${scorep_gcc_version} -lt 4005],
     [scorep_gcc_plugin_support_reason="no, GCC ${GCC_VERSION} is too old, no plug-in support"],
-    [_SCOREP_GCC_PLUGIN_CHECK([C],
+    [test ${scorep_gcc_version} -lt 4007],
+    [# GCC 4.5 and 4.6 are always built with the C compiler
+    _SCOREP_GCC_PLUGIN_CHECK([C],
+        [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [false], [false])
+         touch gcc_plugin_supported])],
+    [test ${scorep_gcc_version} -eq 4007],
+    [# GCC 4.7 can either be build with the C or the C++ compiler
+    _SCOREP_GCC_PLUGIN_CHECK([C],
         [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [false], [false])
          touch gcc_plugin_supported],
         [AS_UNSET([ac_cv_header_gcc_plugin_h])
          AS_UNSET([ac_cv_header_tree_h])
          _SCOREP_GCC_PLUGIN_CHECK([C++],
             [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [true], [false])
-             touch gcc_plugin_supported])])])
+             touch gcc_plugin_supported])])],
+    [# GCC 4.8 and onwards are compiled with the C++ compiler
+    _SCOREP_GCC_PLUGIN_CHECK([C++],
+        [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [true], [false])
+         touch gcc_plugin_supported])])
 
 AFS_AM_CONDITIONAL([HAVE_GCC_PLUGIN_SUPPORT], [test -f gcc_plugin_supported], [false])
 
