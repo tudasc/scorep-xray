@@ -46,9 +46,6 @@
 #include "plugin.h"
 #include "gimple.h"
 #include "tree-pass.h"
-#include "rtl.h"
-#include "output.h"
-#include "defaults.h"
 
 #include "scorep_plugin_inst_handle.h"
 
