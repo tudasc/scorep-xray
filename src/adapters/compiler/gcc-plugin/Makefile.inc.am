@@ -18,7 +18,7 @@ scorep_plugin_cppflags = \
     $(UTILS_CPPFLAGS) \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/utils/filtering \
-    @GCC_PLUGIN_CPPFLAGS@
+    @SCOREP_GCC_PLUGIN_CPPFLAGS@
 
 scorep_instrument_function_la_SOURCES = \
     $(SRC_ROOT)src/measurement/scorep_error_callback.c \

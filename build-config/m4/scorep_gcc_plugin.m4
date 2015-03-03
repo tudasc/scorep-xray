@@ -181,14 +181,12 @@ rm -f gcc_plugin_supported
 AS_IF([test ${scorep_gcc_version} -lt 4005],
     [scorep_gcc_plugin_support_reason="no, GCC ${GCC_VERSION} is too old, no plug-in support"],
     [_SCOREP_GCC_PLUGIN_CHECK([C],
-        [AC_SUBST([GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_cppflags} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
-         AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [false], [false])
+        [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [false], [false])
          touch gcc_plugin_supported],
         [AS_UNSET([ac_cv_header_gcc_plugin_h])
          AS_UNSET([ac_cv_header_tree_h])
          _SCOREP_GCC_PLUGIN_CHECK([C++],
-            [AC_SUBST([GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_cppflags} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
-             AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [true], [false])
+            [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [true], [false])
              touch gcc_plugin_supported])])])
 
 AFS_AM_CONDITIONAL([GCC_VERSION_GE_49], [test ${scorep_gcc_version} -ge 4009], [false])
@@ -199,7 +197,8 @@ AFS_AM_CONDITIONAL([HAVE_GCC_PLUGIN_SUPPORT], [test -f gcc_plugin_supported], [f
 
 AFS_SUMMARY([GCC plug-in support], [${scorep_gcc_plugin_support_reason}])
 AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
-    [AM_COND_IF([GCC_COMPILED_WITH_CXX],
+    [AC_SUBST([SCOREP_GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_cppflags} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
+    AM_COND_IF([GCC_COMPILED_WITH_CXX],
         [AFS_SUMMARY([Compiler used], [$CXX])],
         [AFS_SUMMARY([Compiler used], [$CC])])])
 
