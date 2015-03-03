@@ -51,9 +51,6 @@ AC_MSG_RESULT([${scorep_gcc_have_plugin_headers}])
 scorep_gcc_have_working_plugin=no
 AS_IF([test "x${scorep_gcc_have_plugin_headers}" = "xyes"], [
 
-    [save_]_AC_LANG_PREFIX[FLAGS]=[$]_AC_LANG_PREFIX[FLAGS]
-    _AC_LANG_PREFIX[FLAGS]="[$]_AC_LANG_PREFIX[FLAGS] -shared"
-
     # minimalistic GCC plug-in
 cat confdefs.h - >conftest.$ac_ext <<\_EOF
 /* end confdefs.h.  */
@@ -100,6 +97,7 @@ _EOF
         AC_MSG_RESULT([yes])
 
         # now try to use this plug-in in an compile test
+        [save_]_AC_LANG_PREFIX[FLAGS]=[$]_AC_LANG_PREFIX[FLAGS]
         _AC_LANG_PREFIX[FLAGS]="[$save_]_AC_LANG_PREFIX[FLAGS] -fplugin=$PWD/lib/confmodule.so"
         AC_MSG_CHECKING([to load a $1 plug-in])
         AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [])],
@@ -109,6 +107,7 @@ _EOF
             [scorep_gcc_plugin_support_reason="no, failed to load plug-in"
             AC_MSG_RESULT([no])
             ])
+        _AC_LANG_PREFIX[FLAGS]=[$save_]_AC_LANG_PREFIX[FLAGS]
 
         plugin_uninstall='$SHELL ./libtool --mode=uninstall $RM $PWD/lib/confmodule.la >&AS_MESSAGE_LOG_FD'
         _AC_DO_VAR([plugin_uninstall])
@@ -125,8 +124,6 @@ _EOF
     AS_UNSET([plugin_clean])
     AS_UNSET([plugin_uninstall])
     AS_UNSET([plugin_rmdir])
-
-    _AC_LANG_PREFIX[FLAGS]=[$save_]_AC_LANG_PREFIX[FLAGS]
 
     $RM conftest.$ac_ext
 ], [
