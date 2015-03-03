@@ -91,6 +91,8 @@ _EOF
 
 CPPFLAGS=$save_CPPFLAGS
 
+AS_UNSET([save_CPPFLAGS])
+
 AC_LANG_POP($1)
 
 AS_IF([test "x${scorep_gcc_have_working_plugin}" = "xyes"],
@@ -100,6 +102,9 @@ AS_IF([test "x${scorep_gcc_have_working_plugin}" = "xyes"],
     [AS_UNSET([scorep_gcc_plugin_cppflags])
     $3
     :])
+
+AS_UNSET([scorep_gcc_have_plugin_headers])
+AS_UNSET([scorep_gcc_have_working_plugin])
 ])
 
 # SCOREP_GCC_VERSION
@@ -148,4 +153,7 @@ AM_COND_IF([GCC_VERSION_GE_49],
 
 AFS_SUMMARY([GCC plug-in support], [${scorep_gcc_plugin_support_reason}])
 AFS_AM_CONDITIONAL([HAVE_GCC_PLUGIN_SUPPORT], [test -f gcc_plugin_supported], [false])
+
+AS_UNSET([scorep_gcc_plugin_cppflags])
+AS_UNSET([scorep_gcc_plugin_support_reason])
 ])
