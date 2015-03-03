@@ -45,6 +45,9 @@ AC_CHECK_HEADERS([gcc-plugin.h],
 #undef PACKAGE_URL
 ]])
 
+AC_MSG_CHECKING([for GCC $1 plug-in headers])
+AC_MSG_RESULT([${scorep_gcc_have_plugin_headers}])
+
 scorep_gcc_have_working_plugin=no
 AS_IF([test "x${scorep_gcc_have_plugin_headers}" = "xyes"], [
 
@@ -82,6 +85,7 @@ _EOF
 
     # build plug-in with libtool to get an shared object
     # -rpath is needed, else libool will only build an convenient library
+    AC_MSG_CHECKING([to build a $1 plug-in])
     AS_IF([$SHELL ./libtool --mode=compile --tag=_AC_CC \
         [$]_AC_CC $CPPFLAGS [$]_AC_LANG_PREFIX[FLAGS] \
         -c -o conftest.lo conftest.$ac_ext >&AS_MESSAGE_LOG_FD &&
@@ -95,15 +99,24 @@ _EOF
     $SHELL ./libtool --mode=clean \
         $RM conftest.lo confmodule.la >&AS_MESSAGE_LOG_FD], [
 
+        AC_MSG_RESULT([yes])
+
         # now try to use this plug-in in an compile test
         _AC_LANG_PREFIX[FLAGS]="[$save_]_AC_LANG_PREFIX[FLAGS] -fplugin=$PWD/lib/confmodule.so"
+        AC_MSG_CHECKING([to load a $1 plug-in])
         AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [])],
-            [scorep_gcc_have_working_plugin=yes],
-            [scorep_gcc_plugin_support_reason="no, failed to load plug-in"])
+            [scorep_gcc_have_working_plugin=yes
+            AC_MSG_RESULT([yes])
+            ],
+            [scorep_gcc_plugin_support_reason="no, failed to load plug-in"
+            AC_MSG_RESULT([no])
+            ])
 
         $SHELL ./libtool --mode=uninstall \
             $RM $PWD/lib/confmodule.la >&AS_MESSAGE_LOG_FD
         rmdir lib >&AS_MESSAGE_LOG_FD 2>&1
+    ], [
+        AC_MSG_RESULT([no])
     ])
 
     _AC_LANG_PREFIX[FLAGS]=[$save_]_AC_LANG_PREFIX[FLAGS]
@@ -119,11 +132,14 @@ AS_UNSET([save_CPPFLAGS])
 
 AC_LANG_POP($1)
 
+AC_MSG_CHECKING([for working GCC $1 plug-in support])
 AS_IF([test "x${scorep_gcc_have_working_plugin}" = "xyes"],
-    [scorep_gcc_plugin_support_reason="yes, using the $1 compiler and -I${scorep_gcc_plugin_cppflags}"
+    [AC_MSG_RESULT([yes])
+    scorep_gcc_plugin_support_reason="yes, using the $1 compiler and -I${scorep_gcc_plugin_cppflags}"
     $2
     :],
     [AS_UNSET([scorep_gcc_plugin_cppflags])
+    AC_MSG_RESULT([no])
     $3
     :])
 
