@@ -86,19 +86,17 @@ _EOF
     # build plug-in with libtool to get an shared object
     # -rpath is needed, else libool will only build an convenient library
     AC_MSG_CHECKING([to build a $1 plug-in])
-    AS_IF([$SHELL ./libtool --mode=compile --tag=_AC_CC \
-        [$]_AC_CC $CPPFLAGS [$]_AC_LANG_PREFIX[FLAGS] \
-        -c -o conftest.lo conftest.$ac_ext >&AS_MESSAGE_LOG_FD &&
-    $SHELL ./libtool --mode=link --tag=_AC_CC \
-        [$]_AC_CC [$]_AC_LANG_PREFIX[FLAGS] -module $LDFLAGS \
-        -rpath $PWD/lib \
-        -o confmodule.la conftest.lo >&AS_MESSAGE_LOG_FD &&
-    $MKDIR_P lib &&
-    $SHELL ./libtool --mode=install \
-        $INSTALL confmodule.la $PWD/lib/confmodule.la >&AS_MESSAGE_LOG_FD &&
-    $SHELL ./libtool --mode=clean \
-        $RM conftest.lo confmodule.la >&AS_MESSAGE_LOG_FD], [
-
+    plugin_compile='$SHELL ./libtool --mode=compile --tag=_AC_CC [$]_AC_CC $CPPFLAGS [$]_AC_LANG_PREFIX[FLAGS] -c -o conftest.lo conftest.$ac_ext >&AS_MESSAGE_LOG_FD'
+    plugin_link='$SHELL ./libtool --mode=link --tag=_AC_CC [$]_AC_CC [$]_AC_LANG_PREFIX[FLAGS] -module $LDFLAGS -rpath $PWD/lib -o confmodule.la conftest.lo >&AS_MESSAGE_LOG_FD'
+    plugin_mkdir='$MKDIR_P lib >&AS_MESSAGE_LOG_FD'
+    plugin_install='$SHELL ./libtool --mode=install $INSTALL confmodule.la $PWD/lib/confmodule.la >&AS_MESSAGE_LOG_FD'
+    plugin_clean='$SHELL ./libtool --mode=clean $RM conftest.lo confmodule.la >&AS_MESSAGE_LOG_FD'
+    AS_IF([_AC_DO_VAR([plugin_compile]) &&
+        _AC_DO_VAR([plugin_link]) &&
+        _AC_DO_VAR([plugin_mkdir]) &&
+        _AC_DO_VAR([plugin_install]) &&
+        _AC_DO_VAR([plugin_clean])],
+    [
         AC_MSG_RESULT([yes])
 
         # now try to use this plug-in in an compile test
@@ -112,12 +110,21 @@ _EOF
             AC_MSG_RESULT([no])
             ])
 
-        $SHELL ./libtool --mode=uninstall \
-            $RM $PWD/lib/confmodule.la >&AS_MESSAGE_LOG_FD
-        rmdir lib >&AS_MESSAGE_LOG_FD 2>&1
+        plugin_uninstall='$SHELL ./libtool --mode=uninstall $RM $PWD/lib/confmodule.la >&AS_MESSAGE_LOG_FD'
+        _AC_DO_VAR([plugin_uninstall])
+        plugin_rmdir='rmdir lib >&AS_MESSAGE_LOG_FD'
+        _AC_DO_VAR([plugin_rmdir])
     ], [
         AC_MSG_RESULT([no])
     ])
+
+    AS_UNSET([plugin_compile])
+    AS_UNSET([plugin_link])
+    AS_UNSET([plugin_mkdir])
+    AS_UNSET([plugin_install])
+    AS_UNSET([plugin_clean])
+    AS_UNSET([plugin_uninstall])
+    AS_UNSET([plugin_rmdir])
 
     _AC_LANG_PREFIX[FLAGS]=[$save_]_AC_LANG_PREFIX[FLAGS]
 
