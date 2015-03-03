@@ -415,9 +415,9 @@ variables:
               This script will default YFLAGS to the empty string to avoid a
               default value of `-d' given by some make applications.
   PTHREAD_CFLAGS
-              CFLAGS use to compile Pthread programs
+              CFLAGS used to compile Pthread programs
   PTHREAD_LIBS
-              LIBS use to link Pthread programs
+              LIBS used to link Pthread programs
   RUNTIME_MANAGEMENT_TIMINGS
               Whether to activate time measurements for Score-P's
               SCOREP_InitMeasurement() and scorep_finalize() functions.
