@@ -204,7 +204,7 @@ AFS_AM_CONDITIONAL([HAVE_GCC_PLUGIN_SUPPORT], [test -f gcc_plugin_supported], [f
 
 AFS_SUMMARY([GCC plug-in support], [${scorep_gcc_plugin_support_reason}])
 AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
-    [AFS_AM_CONDITIONAL([GCC_VERSION_GE_49], [test ${scorep_gcc_plugin_target_version} -ge 4009], [false])
+    [AFS_AM_CONDITIONAL([GCC_VERSION_GE_49], [test ${scorep_gcc_version} -ge 4009], [false])
     AM_COND_IF([GCC_VERSION_GE_49],
         [AC_SUBST([SCOREP_GCC_PLUGIN_CXXFLAGS], ["-fno-rtti"])])
     AC_SUBST([SCOREP_GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_cppflags} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
