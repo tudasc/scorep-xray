@@ -2114,7 +2114,8 @@ handle_cuda_memcpy( const CUpti_CallbackData* cbInfo,
                                                    scorep_cuda_interim_window_handle, 42 );
         }
 
-        if ( region != SCOREP_INVALID_REGION )
+        if ( ( region != SCOREP_INVALID_REGION ) &&
+             ( !SCOREP_Filter_MatchFunction( cbInfo->functionName, NULL ) ) )
         {
             /* With 'location == NULL' SCOREP_Location_ExitRegion will
              * write the event on the current CPU location */

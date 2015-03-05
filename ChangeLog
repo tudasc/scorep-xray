@@ -18,6 +18,7 @@ Bugfixes:
   - Fixed segmentation fault of clReleaseEvent during Score-P OpenCL flush.
   - Fixed wrappers of OpenCL 2.0 functions.
   - Revised mutex locking.
+- Apply filtering also to CUDA API exit events.
 - The Score-P instrumenter did misinterpret the Pthread library as an input
   file, if it was given as '-l pthread' on the command line. Fixed.
 - The collapse node post-processing in the profile happened for the master
