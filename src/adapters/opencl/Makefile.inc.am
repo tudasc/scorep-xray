@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014,
+## Copyright (c) 2014-2015
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -16,7 +16,6 @@
 if HAVE_OPENCL_SUPPORT
 
 opencl_libwrap_static_cppflags = -DSCOREP_LIBWRAP_STATIC
-opencl_libwrap_shared_cppflags = -DSCOREP_LIBWRAP_SHARED
 
 
 # runtime management library for the OpenCL adapter
@@ -69,23 +68,6 @@ libscorep_adapter_opencl_mgmt_static_la_LIBADD = \
 libscorep_adapter_opencl_mgmt_static_la_LDFLAGS = \
     $(libscorep_adapter_opencl_mgmt_common_ldflags)
 
-lib_LTLIBRARIES += libscorep_adapter_opencl_mgmt_shared.la
-
-libscorep_adapter_opencl_mgmt_shared_la_SOURCES  = \
-    $(libscorep_adapter_opencl_mgmt_common_sources) \
-    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_function_pointers.c \
-    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_function_pointers.h
-
-libscorep_adapter_opencl_mgmt_shared_la_CPPFLAGS = \
-    $(libscorep_adapter_opencl_mgmt_common_cppflags) \
-    $(opencl_libwrap_shared_cppflags)
-
-libscorep_adapter_opencl_mgmt_shared_la_LIBADD = \
-    $(libscorep_adapter_opencl_mgmt_common_libadd)
-
-libscorep_adapter_opencl_mgmt_shared_la_LDFLAGS = \
-    $(libscorep_adapter_opencl_mgmt_common_ldflags)
-
 
 
 # event library for the OpenCL adapter
@@ -128,21 +110,6 @@ libscorep_adapter_opencl_event_static_la_LDFLAGS = \
     $(libscorep_adapter_opencl_event_common_ldflags)
 
 libscorep_adapter_opencl_event_static_la_LIBADD = \
-    $(libscorep_adapter_opencl_event_common_libadd)
-
-lib_LTLIBRARIES += libscorep_adapter_opencl_event_shared.la
-
-libscorep_adapter_opencl_event_shared_la_SOURCES = \
-    $(libscorep_adapter_opencl_event_common_sources)
-
-libscorep_adapter_opencl_event_shared_la_CPPFLAGS = \
-    $(libscorep_adapter_opencl_event_common_cppflags) \
-    $(opencl_libwrap_shared_cppflags)
-
-libscorep_adapter_opencl_event_shared_la_LDFLAGS = \
-    $(libscorep_adapter_opencl_event_common_ldflags)
-
-libscorep_adapter_opencl_event_shared_la_LIBADD = \
     $(libscorep_adapter_opencl_event_common_libadd)
 
 endif HAVE_OPENCL_SUPPORT
