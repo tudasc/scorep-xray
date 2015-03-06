@@ -110,6 +110,7 @@ XFAIL_TESTS =
 .PHONY: $(PHONY_TARGETS)
 
 ## Automatically update the libtool script if it becomes out-of-date.
+BUILT_SOURCES += libtool
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
