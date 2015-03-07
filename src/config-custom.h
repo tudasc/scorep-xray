@@ -46,7 +46,7 @@
     UTILS_DEFINE_DEBUG_MODULE( MPI,                 1 ), \
     UTILS_DEFINE_DEBUG_MODULE( USER,                2 ), \
     UTILS_DEFINE_DEBUG_MODULE( COMPILER,            3 ), \
-    UTILS_DEFINE_DEBUG_MODULE( OPENMP,              4 ), \
+    UTILS_DEFINE_DEBUG_MODULE( OPARI2,              4 ), \
     UTILS_DEFINE_DEBUG_MODULE( EVENTS,              5 ), \
     UTILS_DEFINE_DEBUG_MODULE( DEFINITIONS,         6 ), \
     UTILS_DEFINE_DEBUG_MODULE( CONFIG,              7 ), \

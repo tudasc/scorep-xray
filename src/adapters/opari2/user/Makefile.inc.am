@@ -1,0 +1,202 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2013,
+## RWTH Aachen University, Germany
+##
+## Copyright (c) 2009-2013,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2013,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2014,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2013,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2013,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file       src/adapters/opari2/user/Makefile.inc.am
+
+# --------------------------------------------------------------------
+# Fortran binding for the common runtime management library for the
+# opari2 User adapters
+
+noinst_LTLIBRARIES +=                           \
+    libscorep_adapter_opari2_user_mgmt_fortran_sub1.la \
+    libscorep_adapter_opari2_user_mgmt_fortran_sub2.la \
+    libscorep_adapter_opari2_user_mgmt_fortran_sub3.la \
+    libscorep_adapter_opari2_user_mgmt_fortran_sub4.la
+
+SCOREP_OPARI2_USER_MGMT_FORTRAN_FLAGS =         \
+    $(AM_CPPFLAGS)                       \
+    -I$(INC_ROOT)src/adapters/include    \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(PUBLIC_INC_DIR)                  \
+    @OPARI2_CPPFLAGS@                    \
+    $(UTILS_CPPFLAGS)
+
+SCOREP_OPARI2_USER_MGMT_FORTRAN_SOURCES =                     \
+    $(SRC_ROOT)src/adapters/opari2/user/SCOREP_Opari2_User_RegionsF.c \
+    $(SRC_ROOT)src/adapters/opari2/user/SCOREP_Opari2_User_Regions.h
+
+libscorep_adapter_opari2_user_mgmt_fortran_sub1_la_SOURCES = \
+    $(SCOREP_OPARI2_USER_MGMT_FORTRAN_SOURCES)
+
+libscorep_adapter_opari2_user_mgmt_fortran_sub1_la_CPPFLAGS = \
+    -DFSUB=SCOREP_FORTRAN_SUB1                         \
+    $(SCOREP_OPARI2_USER_MGMT_FORTRAN_FLAGS)
+
+libscorep_adapter_opari2_user_mgmt_fortran_sub2_la_SOURCES = \
+    $(SCOREP_OPARI2_USER_MGMT_FORTRAN_SOURCES)
+
+libscorep_adapter_opari2_user_mgmt_fortran_sub2_la_CPPFLAGS = \
+    -DFSUB=SCOREP_FORTRAN_SUB2                         \
+    $(SCOREP_OPARI2_USER_MGMT_FORTRAN_FLAGS)
+
+libscorep_adapter_opari2_user_mgmt_fortran_sub3_la_SOURCES = \
+    $(SCOREP_OPARI2_USER_MGMT_FORTRAN_SOURCES)
+
+libscorep_adapter_opari2_user_mgmt_fortran_sub3_la_CPPFLAGS = \
+    -DFSUB=SCOREP_FORTRAN_SUB3                         \
+    $(SCOREP_OPARI2_USER_MGMT_FORTRAN_FLAGS)
+
+libscorep_adapter_opari2_user_mgmt_fortran_sub4_la_SOURCES = \
+    $(SCOREP_OPARI2_USER_MGMT_FORTRAN_SOURCES)
+
+libscorep_adapter_opari2_user_mgmt_fortran_sub4_la_CPPFLAGS = \
+    -DFSUB=SCOREP_FORTRAN_SUB4                         \
+    $(SCOREP_OPARI2_USER_MGMT_FORTRAN_FLAGS)
+
+# --------------------------------------------------------------------
+# runtime management library for the opari2 user adapter
+
+lib_LTLIBRARIES += libscorep_adapter_opari2_user_mgmt.la
+
+libscorep_adapter_opari2_user_mgmt_la_SOURCES =                       \
+    $(SRC_ROOT)src/adapters/opari2/user/SCOREP_Opari2_User_Init.c     \
+    $(SRC_ROOT)src/adapters/opari2/user/SCOREP_Opari2_User_Regions.c  \
+    $(SRC_ROOT)src/adapters/opari2/user/SCOREP_Opari2_User_Regions.h
+
+nodist_libscorep_adapter_opari2_user_mgmt_la_SOURCES =    \
+    @OPARI2_REGION_INFO_SRC_DIR@/pomp2_user_region_info.c \
+    @OPARI2_REGION_INFO_INC_DIR@/pomp2_user_region_info.h
+
+libscorep_adapter_opari2_user_mgmt_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                               \
+    -I$(INC_ROOT)src/measurement/include         \
+    -I$(INC_ROOT)src/adapters/opari2             \
+    -I@OPARI2_REGION_INFO_INC_DIR@               \
+    -I$(PUBLIC_INC_DIR)                          \
+    -I$(INC_DIR_DEFINITIONS)                     \
+    @OPARI2_CPPFLAGS@                            \
+    $(UTILS_CPPFLAGS)                            \
+    -I$(INC_DIR_MUTEX)
+
+libscorep_adapter_opari2_user_mgmt_la_LIBADD = \
+    libscorep_adapter_opari2_mgmt.la \
+    libscorep_adapter_opari2_user_mgmt_fortran_sub1.la \
+    libscorep_adapter_opari2_user_mgmt_fortran_sub2.la \
+    libscorep_adapter_opari2_user_mgmt_fortran_sub3.la \
+    libscorep_adapter_opari2_user_mgmt_fortran_sub4.la \
+    libutils.la
+
+libscorep_adapter_opari2_user_mgmt_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+
+# --------------------------------------------------------------------
+# Fortran binding for the opari2 user adapter
+
+noinst_LTLIBRARIES +=                           \
+    libscorep_adapter_opari2_user_fortran_sub1.la \
+    libscorep_adapter_opari2_user_fortran_sub2.la \
+    libscorep_adapter_opari2_user_fortran_sub3.la \
+    libscorep_adapter_opari2_user_fortran_sub4.la
+
+SCOREP_OPARI2_USER_FORTRAN_FLAGS =       \
+    $(AM_CPPFLAGS)                       \
+    -I$(INC_ROOT)src/adapters/include    \
+    -I$(INC_ROOT)src/adapters/opari2     \
+    -I$(INC_ROOT)src/measurement/include \
+    -I@OPARI2_REGION_INFO_INC_DIR@        \
+    -I$(PUBLIC_INC_DIR)                  \
+    @OPARI2_CPPFLAGS@                    \
+    $(UTILS_CPPFLAGS)
+
+SCOREP_OPARI2_USER_FORTRAN_SOURCES =                    \
+    $(SRC_ROOT)src/adapters/opari2/user/SCOREP_Opari2_UserF.c  \
+    $(SRC_ROOT)src/adapters/opari2/user/SCOREP_Opari2_User_Fortran.h
+
+libscorep_adapter_opari2_user_fortran_sub1_la_SOURCES = \
+    $(SCOREP_OPARI2_USER_FORTRAN_SOURCES)
+
+libscorep_adapter_opari2_user_fortran_sub1_la_CPPFLAGS = \
+    -DFSUB=SCOREP_FORTRAN_SUB1                         \
+    $(SCOREP_OPARI2_USER_FORTRAN_FLAGS)
+
+libscorep_adapter_opari2_user_fortran_sub2_la_SOURCES = \
+    $(SCOREP_OPARI2_USER_FORTRAN_SOURCES)
+
+libscorep_adapter_opari2_user_fortran_sub2_la_CPPFLAGS = \
+    -DFSUB=SCOREP_FORTRAN_SUB2                         \
+    $(SCOREP_OPARI2_USER_FORTRAN_FLAGS)
+
+libscorep_adapter_opari2_user_fortran_sub3_la_SOURCES = \
+    $(SCOREP_OPARI2_USER_FORTRAN_SOURCES)
+
+libscorep_adapter_opari2_user_fortran_sub3_la_CPPFLAGS = \
+    -DFSUB=SCOREP_FORTRAN_SUB3                         \
+    $(SCOREP_OPARI2_USER_FORTRAN_FLAGS)
+
+libscorep_adapter_opari2_user_fortran_sub4_la_SOURCES = \
+    $(SCOREP_OPARI2_USER_FORTRAN_SOURCES)
+
+libscorep_adapter_opari2_user_fortran_sub4_la_CPPFLAGS = \
+    -DFSUB=SCOREP_FORTRAN_SUB4                         \
+    $(SCOREP_OPARI2_USER_FORTRAN_FLAGS)
+
+
+# --------------------------------------------------------------------
+# event library for the opari2 user adapter
+
+lib_LTLIBRARIES += libscorep_adapter_opari2_user_event.la
+
+libscorep_adapter_opari2_user_event_la_SOURCES =        \
+    $(SRC_ROOT)src/adapters/opari2/user/SCOREP_Opari2_User.c
+
+libscorep_adapter_opari2_user_event_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                                \
+    -I$(INC_ROOT)src/measurement/include          \
+    -I$(INC_ROOT)src/adapters/opari2              \
+    -I@OPARI2_REGION_INFO_INC_DIR@                \
+    -I$(PUBLIC_INC_DIR)                           \
+    -I$(INC_DIR_DEFINITIONS)                      \
+    @OPARI2_CPPFLAGS@                             \
+    $(UTILS_CPPFLAGS)                             \
+    -I$(INC_DIR_MUTEX)
+
+libscorep_adapter_opari2_user_event_la_LIBADD = \
+    libscorep_adapter_opari2_user_fortran_sub1.la \
+    libscorep_adapter_opari2_user_fortran_sub2.la \
+    libscorep_adapter_opari2_user_fortran_sub3.la \
+    libscorep_adapter_opari2_user_fortran_sub4.la \
+    libscorep_measurement.la
+
+libscorep_adapter_opari2_user_event_la_LDFLAGS = \
+    $(library_api_version_ldflags)
+
+

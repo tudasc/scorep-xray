@@ -85,6 +85,7 @@ fi
          @CC@ -I. -o task_loop_pomp task_single_loop.c @OPENMP_CFLAGS@
 
 if [ ! -e task_loop_pomp ]; then
+    echo "Failed to build with main and pomp instrumentation"
     exit 1
 fi
 
@@ -95,6 +96,7 @@ fi
          @CC@ -I. -o task_loop_full task_single_loop.c @OPENMP_CFLAGS@
 
 if [ ! -e task_loop_full ]; then
+    echo "Failed to build with compiler and pomp instrumentation"
     exit 1
 fi
 
@@ -119,6 +121,7 @@ SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp \
 
 if [ $? -ne 0 ]; then
     cat scorep-measurement-tmp/*.core
+    echo "Failed to execute pomp test"
     exit 1
 fi
 
@@ -131,6 +134,7 @@ SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}full \
 
 if [ $? -ne 0 ]; then
     cat scorep-measurement-tmp/*.core
+    echo "Failed to execute full test"
     exit 1
 fi
 

@@ -85,6 +85,7 @@ fi
          @CC@ -I. -o fib_pomp task_fibonacci.c @OPENMP_CFLAGS@
 
 if [ ! -e fib_pomp ]; then
+    echo "Failed test with main and pomp instrumentation"
     exit 1
 fi
 
@@ -95,6 +96,7 @@ fi
          @CC@ -I. -o fib_full task_fibonacci.c @OPENMP_CFLAGS@
 
 if [ ! -e fib_full ]; then
+    echo "Failed test with compiler and pomp instrumentation"
     exit 1
 fi
 
@@ -115,6 +117,7 @@ SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp \
     ./fib_pomp $FIB_NUM
 
 if [ $? -ne 0 ]; then
+    echo "Failed execution of pomp test"
     exit 1
 fi
 
@@ -126,6 +129,7 @@ SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp_tuple \
     ./fib_pomp $FIB_NUM
 
 if [ $? -ne 0 ]; then
+    echo "Failed pomp test with tupel format"
     exit 1
 fi
 
@@ -136,6 +140,7 @@ SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}full \
     ./fib_full $FIB_NUM
 
 if [ $? -ne 0 ]; then
+    echo "Failed full test"
     exit 1
 fi
 

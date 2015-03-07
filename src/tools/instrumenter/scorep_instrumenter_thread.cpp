@@ -175,7 +175,7 @@ SCOREP_Instrumenter_Pthread::SCOREP_Instrumenter_Pthread(
                                   "pthread",
                                   "",
                                   "Pthread support using thread tracking via "
-                                  "library wrapping" ),
+                                  "library wrapping." ),
     m_pthread_cflag( SCOREP_BACKEND_PTHREAD_CFLAGS ),
     m_pthread_lib( SCOREP_BACKEND_PTHREAD_LIBS )
 {

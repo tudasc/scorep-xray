@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -29,15 +29,16 @@
 
 /**
  * @file
- * @ingroup    POMP2
  *
- * @brief Implementation of the POMP2 fortran user adapter functions.
+ * @ingroup OPARI2
+ *
+ * @brief Implementation of the OPARI2 fortran user adapter functions.
  */
 
 #include <config.h>
 
-#include "SCOREP_Pomp_Fortran.h"
-#include "SCOREP_Pomp_Common.h"
+#include "SCOREP_Opari2_User_Fortran.h"
+#include "SCOREP_Opari2_Region_Info.h"
 
 /*
  * Fortran wrappers calling the C versions
@@ -47,7 +48,7 @@ void
 FSUB( POMP2_Begin )( POMP2_Region_handle_fortran* regionHandle,
                      const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Begin( SCOREP_POMP_F2C_REGION( regionHandle ), ctc_string );
     }
@@ -56,7 +57,7 @@ FSUB( POMP2_Begin )( POMP2_Region_handle_fortran* regionHandle,
 void
 FSUB( POMP2_End )( POMP2_Region_handle_fortran* regionHandle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_End( SCOREP_POMP_F2C_REGION( regionHandle ) );
     }
@@ -77,11 +78,11 @@ FSUB( POMP2_Finalize )( void )
 void
 FSUB( POMP2_On )( void )
 {
-    scorep_pomp_is_tracing_on = 1;
+    scorep_opari2_recording_on = 1;
 }
 
 void
 FSUB( POMP2_Off )( void )
 {
-    scorep_pomp_is_tracing_on = 0;
+    scorep_opari2_recording_on = 0;
 }

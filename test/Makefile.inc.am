@@ -166,14 +166,12 @@ if HAVE_OPENMP_SUPPORT
 if HAVE_SCOREP_OMP_TPD
 
 omp_libadd = \
-    libscorep_adapter_pomp_omp_event.la   \
-    libscorep_adapter_pomp_user_event.la  \
+    libscorep_adapter_opari2_openmp_event.la \
     $(common_event_libadd)                \
     libscorep_subsystems_omp.la           \
     $(common_mgmt_libadd)                 \
     $(external_libadd)                    \
-    libscorep_adapter_pomp_omp_mgmt.la    \
-    libscorep_adapter_pomp_user_mgmt.la   \
+    libscorep_adapter_opari2_openmp_mgmt.la \
     libscorep_mpp_mockup.la               \
     libscorep_thread_fork_join_omp_tpd.la \
     libscorep_mutex_omp.la                \
@@ -197,9 +195,8 @@ nodist_EXTRA_libscorep_mpi_omp_event_la_SOURCES = force_link_with_F77LD.f
 libscorep_mpi_omp_event_la_CFLAGS               = $(AM_CFLAGS) $(OPENMP_CFLAGS)
 libscorep_mpi_omp_event_la_CPPFLAGS             = $(common_cppflags)
 libscorep_mpi_omp_event_la_LIBADD               = \
-    $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_event.la     \
-    libscorep_adapter_pomp_omp_event.la                     \
-    libscorep_adapter_pomp_user_event.la                    \
+    $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_event.la \
+    libscorep_adapter_opari2_openmp_event.la \
     $(common_event_libadd)
 
 check_LTLIBRARIES                 += libscorep_mpi_omp_mgmt.la
@@ -210,8 +207,7 @@ libscorep_mpi_omp_mgmt_la_LIBADD   = \
     $(common_mgmt_libadd)                                   \
     $(external_libadd)                                      \
     $(LIB_DIR_SCOREP_MPI)libscorep_adapter_mpi_mgmt.la      \
-    libscorep_adapter_pomp_omp_mgmt.la                      \
-    libscorep_adapter_pomp_user_mgmt.la                     \
+    libscorep_adapter_opari2_openmp_mgmt.la                 \
     $(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la               \
     $(LIB_DIR_SCOREP_MPI)libscorep_online_access_mpp_mpi.la \
     libscorep_thread_fork_join_omp_tpd.la                   \
@@ -232,8 +228,8 @@ libscorep_shmem_omp_event_la_CFLAGS               = $(AM_CFLAGS) $(OPENMP_CFLAGS
 libscorep_shmem_omp_event_la_CPPFLAGS             = $(common_cppflags)
 libscorep_shmem_omp_event_la_LIBADD               = \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_event.la \
-    libscorep_adapter_pomp_omp_event.la                     \
-    libscorep_adapter_pomp_user_event.la                    \
+    libscorep_adapter_opari2_openmp_event.la                     \
+    libscorep_adapter_opari2_user_event.la                    \
     $(common_event_libadd)
 
 check_LTLIBRARIES                   += libscorep_shmem_omp_mgmt.la
@@ -244,8 +240,8 @@ libscorep_shmem_omp_mgmt_la_LIBADD   = \
     $(common_mgmt_libadd)                                  \
     $(external_libadd)                                     \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_adapter_shmem_mgmt.la \
-    libscorep_adapter_pomp_omp_mgmt.la                     \
-    libscorep_adapter_pomp_user_mgmt.la                    \
+    libscorep_adapter_opari2_openmp_mgmt.la                     \
+    libscorep_adapter_opari2_user_mgmt.la                    \
     $(LIB_DIR_SCOREP_SHMEM)libscorep_mpp_shmem.la          \
     libscorep_online_access_mockup.la                      \
     libscorep_thread_fork_join_omp_tpd.la                  \

@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2012,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2012, 2014,
+## Copyright (c) 2009-2012, 2014
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -29,17 +29,17 @@
 ## directory for details.
 ##
 
-## file       src/adapters/pomp/Makefile.confvars.inc.am
+## file       src/adapters/opari2/openmp/Makefile.confvars.inc.am
 
-noinst_LTLIBRARIES += libscorep_pomp_confvars.la
+noinst_LTLIBRARIES += libscorep_opari2_openmp_confvars.la
 
-libscorep_pomp_confvars_la_SOURCES = \
-    $(SRC_ROOT)src/adapters/pomp/scorep_pomp_confvars.c
+libscorep_opari2_openmp_confvars_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/opari2/openmp/scorep_opari2_openmp_confvars.c
 
-libscorep_pomp_confvars_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    -I$(PUBLIC_INC_DIR) \
-    -I$(INC_ROOT)src/measurement/include \
+libscorep_opari2_openmp_confvars_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                             \
+    -I$(PUBLIC_INC_DIR)                        \
+    -I$(INC_ROOT)src/measurement/include       \
     $(UTILS_CPPFLAGS)
 
-libscorep_confvars_la_LIBADD += libscorep_pomp_confvars.la
+libscorep_confvars_la_LIBADD += libscorep_opari2_openmp_confvars.la

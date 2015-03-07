@@ -85,7 +85,7 @@ valid_thread()
 COMP=yes
 unset MPP
 unset THREAD
-unset POMP
+unset OPARI2_USER
 unset USER
 unset VERBOSE
 case ${PARADIGM} in
@@ -139,11 +139,17 @@ while test $# -ne 0; do
             unset USER
             ;;
 
+        --openmp)
+            ;;
+
+        --noopenmp)
+            ;;
+
         --pomp)
-            POMP=yes
+            OPARI2_USER=yes
             ;;
         --nopomp)
-            unset POMP
+            unset OPARI2_USER
             ;;
 
         --preprocess|--nopreprocess)
@@ -165,7 +171,7 @@ while test $# -ne 0; do
             ;;
 
         --mutex=omp|--mutex=pthread|--mutex=pthread:spinlock)
-            THREAD=omp
+            THREAD=opari2_openmp
             ;;
 
         --user)
@@ -193,7 +199,7 @@ done
 
 # --- Determine which kind of instrumentation is expected ---
 unset INST_EXPECTED
-if test -n "${COMP}${MPP}${THREAD}${POMP}${USER}"; then
+if test -n "${COMP}${MPP}${THREAD}${OPARI2_USER}${USER}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }init"
 fi
 if test -n "${COMP}"; then
@@ -203,10 +209,10 @@ if test -n "${MPP}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }${MPP}"
 fi
 if test -n "${THREAD}"; then
-    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }${THREAD}"
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }opari2_openmp"
 fi
-if test -n "${POMP}"; then
-    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }pomp"
+if test -n "${OPARI2_USER}"; then
+    INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }opari2_user"
 fi
 if test -n "${USER}"; then
     INST_EXPECTED="${INST_EXPECTED}${INST_EXPECTED:+ }user"
@@ -224,7 +230,7 @@ fi
 # --- Determine instrumentation in binary (same order as the expected checks)---
 unset INST_FOUND
 
-# Instrumented at all?     (Scalasca check)
+# Instrumented at all?     (Scalasca check - do not modify without changing Scalasca)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} SCOREP_InitMeasurement`
 SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_`
 if test -n "${STATIC}${SHARED}"; then
@@ -240,7 +246,7 @@ fi
 
 # All MPP checks
 
-# MPI instrumentation?     (Scalasca check)
+# MPI instrumentation?     (Scalasca check - do not modify without changing Scalasca)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} scorep_mpi_status_size`
 SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_mpi_mgmt.so`
 if test -n "${STATIC}${SHARED}"; then
@@ -256,18 +262,18 @@ fi
 
 # All thread checks
 
-# OpenMP instrumentation?     (Scalasca check)
+# OpenMP full instrumentation?     (Scalasca check - do not modify without changing Scalasca)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} POMP2_Parallel_fork`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_pomp_omp_mgmt.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_opari2_openmp_mgmt.so`
 if test -n "${STATIC}${SHARED}"; then
-    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }omp"
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }opari2_openmp"
 fi
 
 # POMP user instrumentation?     (custom check)
 STATIC=`${NM}  ${EXE} 2>/dev/null | ${GREP} POMP2_Begin`
-SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_pomp_user_mgmt.so`
+SHARED=`${LDD} ${EXE} 2>/dev/null | ${GREP} libscorep_adapter_opari2_user_mgmt.so`
 if test -n "${STATIC}${SHARED}"; then
-    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }pomp"
+    INST_FOUND="${INST_FOUND}${INST_FOUND:+ }opari2_user"
 fi
 
 # User instrumentation?     (custom check)

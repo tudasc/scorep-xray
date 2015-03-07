@@ -152,12 +152,27 @@ private:
     /**
      * Specifies whether OpenMP pragma instrumentation is enabled.
      */
+    instrumentation_usage_t m_openmp;
+
+    /**
+     * Specifies whether OpenMP pragma instrumentation is enabled due to user.
+     */
+    instrumentation_usage_t m_openmp_user;
+
+    /**
+     * Specifies whether user instrumentation is enabled.
+     */
     instrumentation_usage_t m_pomp;
 
     /**
      * Specifies whether --tpd should be used.
      */
     bool m_use_tpd;
+
+    /**
+     * Specifies the OpenMP compiler flag.
+     */
+    std::string m_openmp_cflag;
 
 #if SCOREP_BACKEND_COMPILER_INTEL
     /**

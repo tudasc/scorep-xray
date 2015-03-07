@@ -23,12 +23,6 @@ POMP2_Get_num_regions()
     return 4;
 }
 
-const char*
-POMP2_Get_opari2_version()
-{
-    return "1.0.7";
-}
-
 #ifdef __cplusplus
 }
 #endif

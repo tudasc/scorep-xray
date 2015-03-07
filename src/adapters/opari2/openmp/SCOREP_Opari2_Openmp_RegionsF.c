@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -13,13 +13,16 @@
 
 /**
  * @file
+ *
+ * @ingroup OPARI2
+ *
+ * @brief Fortran wrapper for region initialization
  */
 
 
 #include <config.h>
 
-#include "SCOREP_Pomp_Fortran.h"
-#include "SCOREP_Pomp_Common.h"
+#include "SCOREP_Opari2_Openmp_Fortran.h"
 
 #include <stdlib.h>
 #include <string.h>

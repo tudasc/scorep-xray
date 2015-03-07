@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -30,9 +30,10 @@
 
 /**
  * @file
- * @ingroup    POMP2
  *
- * @brief Implementation of the POMP2 fortran user adapter functions and initialization.
+ * @ingroup OPARI2
+ *
+ * @brief Implementation of the OPARI2 fortran user adapter functions and initialization.
  */
 
 #include <config.h>
@@ -40,9 +41,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <opari2/pomp2_lib.h>
-#include "SCOREP_Fortran_Wrapper.h"
-#include "SCOREP_Pomp_Common.h"
-#include "SCOREP_Pomp_Fortran.h"
+#include <opari2/pomp2_user_lib.h>
+#include <SCOREP_Opari2_Region_Info.h>
+#include "SCOREP_Opari2_Openmp_Fortran.h"
+#include "SCOREP_Opari2_Openmp_Regions.h"
 
 /*
  * Fortran wrappers calling the C versions
@@ -51,9 +53,9 @@ void
 FSUB( POMP2_Atomic_enter )( POMP2_Region_handle_fortran* region_handle,
                             const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
-        POMP2_Atomic_enter( SCOREP_POMP_F2C_REGION( region_handle ), \
+        POMP2_Atomic_enter( SCOREP_POMP_F2C_REGION( region_handle ),
                             ctc_string );
     }
 }
@@ -61,7 +63,7 @@ FSUB( POMP2_Atomic_enter )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Atomic_exit )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Atomic_exit( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -72,7 +74,7 @@ FSUB( POMP2_Barrier_enter )( POMP2_Region_handle_fortran* region_handle,
                              POMP2_Task_handle_fortran*   pomp_old_task,
                              const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Barrier_enter( SCOREP_POMP_F2C_REGION( region_handle ),
                              SCOREP_POMP_F2C_TASK( pomp_old_task ),
@@ -84,7 +86,7 @@ void
 FSUB( POMP2_Barrier_exit )( POMP2_Region_handle_fortran* region_handle,
                             POMP2_Task_handle_fortran*   pomp_old_task )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Barrier_exit( SCOREP_POMP_F2C_REGION( region_handle ),
                             *SCOREP_POMP_F2C_TASK( pomp_old_task ) );
@@ -95,7 +97,7 @@ void
 FSUB( POMP2_Implicit_barrier_enter )( POMP2_Region_handle_fortran* region_handle,
                                       POMP2_Task_handle_fortran*   pomp_old_task )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Implicit_barrier_enter( SCOREP_POMP_F2C_REGION( region_handle ),
                                       SCOREP_POMP_F2C_TASK( pomp_old_task ) );
@@ -106,7 +108,7 @@ void
 FSUB( POMP2_Implicit_barrier_exit )( POMP2_Region_handle_fortran* region_handle,
                                      POMP2_Task_handle_fortran*   pomp_old_task )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Implicit_barrier_exit( SCOREP_POMP_F2C_REGION( region_handle ),
                                      *SCOREP_POMP_F2C_TASK( pomp_old_task ) );
@@ -117,7 +119,7 @@ void
 FSUB( POMP2_Flush_enter )( POMP2_Region_handle_fortran* region_handle,
                            const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Flush_enter( SCOREP_POMP_F2C_REGION( region_handle ),
                            ctc_string );
@@ -127,7 +129,7 @@ FSUB( POMP2_Flush_enter )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Flush_exit )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Flush_exit( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -136,7 +138,7 @@ FSUB( POMP2_Flush_exit )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Critical_begin )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Critical_begin( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -145,7 +147,7 @@ FSUB( POMP2_Critical_begin )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Critical_end )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Critical_end( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -155,7 +157,7 @@ void
 FSUB( POMP2_Critical_enter )( POMP2_Region_handle_fortran* region_handle,
                               const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Critical_enter( SCOREP_POMP_F2C_REGION( region_handle ),
                               ctc_string );
@@ -165,7 +167,7 @@ FSUB( POMP2_Critical_enter )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Critical_exit )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Critical_exit( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -175,7 +177,7 @@ void
 FSUB( POMP2_Do_enter )( POMP2_Region_handle_fortran* region_handle,
                         const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_For_enter( SCOREP_POMP_F2C_REGION( region_handle ),
                          ctc_string );
@@ -185,7 +187,7 @@ FSUB( POMP2_Do_enter )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Do_exit )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_For_exit( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -195,7 +197,7 @@ void
 FSUB( POMP2_Master_begin )( POMP2_Region_handle_fortran* region_handle,
                             const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Master_begin( SCOREP_POMP_F2C_REGION( region_handle ),
                             ctc_string );
@@ -205,7 +207,7 @@ FSUB( POMP2_Master_begin )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Master_end )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Master_end( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -215,7 +217,7 @@ void
 FSUB( POMP2_Ordered_enter )( POMP2_Region_handle_fortran* region_handle,
                              const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Ordered_enter( SCOREP_POMP_F2C_REGION( region_handle ),
                              ctc_string );
@@ -225,7 +227,7 @@ FSUB( POMP2_Ordered_enter )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Ordered_exit )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Ordered_exit( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -234,7 +236,7 @@ FSUB( POMP2_Ordered_exit )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Ordered_begin )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Ordered_begin( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -243,7 +245,7 @@ FSUB( POMP2_Ordered_begin )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Ordered_end )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Ordered_end( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -252,7 +254,7 @@ FSUB( POMP2_Ordered_end )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Parallel_begin )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Parallel_begin( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -261,7 +263,7 @@ FSUB( POMP2_Parallel_begin )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Parallel_end )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Parallel_end( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -274,7 +276,7 @@ FSUB( POMP2_Parallel_fork )( POMP2_Region_handle_fortran* region_handle,
                              POMP2_Task_handle_fortran*   pomp_old_task,
                              const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Parallel_fork( SCOREP_POMP_F2C_REGION( region_handle ),
                              *if_clause,
@@ -288,7 +290,7 @@ void
 FSUB( POMP2_Parallel_join )( POMP2_Region_handle_fortran* region_handle,
                              POMP2_Task_handle_fortran*   pomp_old_task )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Parallel_join( SCOREP_POMP_F2C_REGION( region_handle ),
                              *SCOREP_POMP_F2C_TASK( pomp_old_task ) );
@@ -299,7 +301,7 @@ void
 FSUB( POMP2_Section_begin )( POMP2_Region_handle_fortran* region_handle,
                              const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Section_begin( SCOREP_POMP_F2C_REGION( region_handle ),
                              ctc_string );
@@ -309,7 +311,7 @@ FSUB( POMP2_Section_begin )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Section_end )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Section_end( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -319,7 +321,7 @@ void
 FSUB( POMP2_Sections_enter )( POMP2_Region_handle_fortran* region_handle,
                               const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Sections_enter( SCOREP_POMP_F2C_REGION( region_handle ),
                               ctc_string );
@@ -329,7 +331,7 @@ FSUB( POMP2_Sections_enter )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Sections_exit )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Sections_exit( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -338,7 +340,7 @@ FSUB( POMP2_Sections_exit )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Single_begin )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Single_begin( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -347,7 +349,7 @@ FSUB( POMP2_Single_begin )( POMP2_Region_handle_fortran* region_handle )
 void
 FSUB( POMP2_Single_end )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Single_end( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -357,7 +359,7 @@ void
 FSUB( POMP2_Single_enter )( POMP2_Region_handle_fortran* region_handle,
                             const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Single_enter( SCOREP_POMP_F2C_REGION( region_handle ),
                             ctc_string );
@@ -367,7 +369,7 @@ FSUB( POMP2_Single_enter )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Single_exit )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Single_exit( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -467,7 +469,7 @@ void
 FSUB( POMP2_Workshare_enter )( POMP2_Region_handle_fortran* region_handle,
                                const char*                  ctc_string )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Workshare_enter( SCOREP_POMP_F2C_REGION( region_handle ),
                                ctc_string );
@@ -477,7 +479,7 @@ FSUB( POMP2_Workshare_enter )( POMP2_Region_handle_fortran* region_handle,
 void
 FSUB( POMP2_Workshare_exit )( POMP2_Region_handle_fortran* region_handle )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Workshare_exit( SCOREP_POMP_F2C_REGION( region_handle ) );
     }
@@ -492,7 +494,7 @@ FSUB( POMP2_Lib_get_max_threads )( void )
 void
 FSUB( POMP2_Init_lock )( omp_lock_t* s )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Init_lock( s );
     }
@@ -505,7 +507,7 @@ FSUB( POMP2_Init_lock )( omp_lock_t* s )
 void
 FSUB( POMP2_Destroy_lock )( omp_lock_t* s )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Destroy_lock( s );
     }
@@ -518,7 +520,7 @@ FSUB( POMP2_Destroy_lock )( omp_lock_t* s )
 void
 FSUB( POMP2_Set_lock )( omp_lock_t* s )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Set_lock( s );
     }
@@ -531,7 +533,7 @@ FSUB( POMP2_Set_lock )( omp_lock_t* s )
 void
 FSUB( POMP2_Unset_lock )( omp_lock_t* s )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Unset_lock( s );
     }
@@ -544,7 +546,7 @@ FSUB( POMP2_Unset_lock )( omp_lock_t* s )
 int
 FSUB( POMP2_Test_lock )( omp_lock_t* s )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         return POMP2_Test_lock( s );
     }
@@ -557,7 +559,7 @@ FSUB( POMP2_Test_lock )( omp_lock_t* s )
 void
 FSUB( POMP2_Init_nest_lock )( omp_nest_lock_t* s )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Init_nest_lock( s );
     }
@@ -570,7 +572,7 @@ FSUB( POMP2_Init_nest_lock )( omp_nest_lock_t* s )
 void
 FSUB( POMP2_Destroy_nest_lock )( omp_nest_lock_t* s )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Destroy_nest_lock( s );
     }
@@ -583,7 +585,7 @@ FSUB( POMP2_Destroy_nest_lock )( omp_nest_lock_t* s )
 void
 FSUB( POMP2_Set_nest_lock )( omp_nest_lock_t* s )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Set_nest_lock( s );
     }
@@ -596,7 +598,7 @@ FSUB( POMP2_Set_nest_lock )( omp_nest_lock_t* s )
 void
 FSUB( POMP2_Unset_nest_lock )( omp_nest_lock_t* s )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         POMP2_Unset_nest_lock( s );
     }
@@ -609,7 +611,7 @@ FSUB( POMP2_Unset_nest_lock )( omp_nest_lock_t* s )
 int
 FSUB( POMP2_Test_nest_lock )( omp_nest_lock_t* s )
 {
-    if ( scorep_pomp_is_tracing_on )
+    if ( scorep_opari2_recording_on )
     {
         return POMP2_Test_nest_lock( s );
     }

@@ -13,9 +13,9 @@ Common options are:
                   2 = Detailed information is displayed
   --dry-run       Only displays the executed commands. It does not
                   execute any command.
-  --keep-files    Do not delete temporarily created files after successfull
+  --keep-files    Do not delete temporarily created files after successful
                   instrumentation. By default, temporary files are deleted
-                  if no error occures during instrumentation.
+                  if no error occurs during instrumentation.
   --instrument-filter=<file>
                   Specifies the filter file for filtering functions during
                   compile-time. Not supported by all instrumentation methods.
@@ -33,14 +33,18 @@ Common options are:
               none
                   No thread support.
               omp:pomp_tpd
-                  OpenMP support using OPARI2 thread tracking
-                  It requires and, thus, automatically enables opari instrumentation.
+                  OpenMP support using OPARI2 thread tracking.
+                  It requires and, thus, automatically enables OPARI2
+                  instrumentation.
               omp:ancestry
-                  OpenMP support using thread tracking with ancestry functions in OpenMP 3.0 and later
-                  It requires and, thus, automatically enables opari instrumentation.
+                  OpenMP support using thread tracking with ancestry functions
+                  in OpenMP 3.0 and later.
+                  It requires and, thus, automatically enables OPARI2
+                  instrumentation.
               pthread
                   Pthread support using thread tracking via library wrapping
-                  It conflicts and, thus, automatically disables opari instrumentation.
+                  It conflicts and, thus, automatically disables OPARI2
+                  instrumentation.
   --mpp=<paradigm>[:<variant>]
                   Possible paradigms and variants are:
               none
@@ -65,27 +69,37 @@ Common options are:
   --cuda          Enables cuda instrumentation.
   --nocuda        Disables cuda instrumentation.
   --online-access Enables online-access support. It is disabled by default
-  --noonline-access online-access Disables online-access support.
-  --pomp[=<parameter-list>]
-                  Enables pomp user instrumentation.
-                  You may add additional parameters that are passed to OPARI2.
-                  By default, it enables also preprocessing
-  --nopomp        Disables pomp user instrumentation.
-  --opari[=<parameter-list>]
-                  Enables OPARI2 instrumentation of OpenMP regions.
-                  You may add additional parameters that are passed to OPARI2
-                  By default, it enables also preprocessing and
-                  pomp user instrumentation.
+  --noonline-access Disables online-access support.
+  --pomp          Enables pomp user instrumentation. By default, it also
+                  enables preprocessing.
+  --nopomp        Disables pomp user instrumentation. (Default)
+  --openmp        Enables instrumentation of OpenMP directives. By default,
+                  it also enables preprocessing. (Default for compile units
+                  with enabled OpenMP support during the compilation)
+  --noopenmp      Disables instrumentation of OpenMP directives.
+                  Note: To ensure thread-safe execution of the measurement,
+                  parallel regions still need to be tracked and will appear
+                  in the results. (Default for compile units without OpenMP
+                  enabled compilation)
+  --opari=<parameter-list>
+                  Pass options to the source-to-source instrumenter OPARI2
+                  to have finer control over the instrumentation process.
+                  Please refer to the OPARI2 user documentation for more
+                  details.
   --pdt[=<parameter-list>]
                   Enables pdt instrumentation.
                   You may add additional parameters that are passed to pdt.
-                  It requires and, thus, automatically enables user instrumentation.
-                  It conflicts and, thus, automatically disables preprocess instrumentation.
+                  It requires and, thus, automatically enables user
+                  instrumentation.
+                  It conflicts and, thus, automatically disables preprocess
+                  instrumentation.
                   By default, it disables compiler instrumentation.
   --nopdt         Disables pdt instrumentation.
   --preprocess    Enables preprocess instrumentation.
-                  It requires and, thus, automatically enables opari instrumentation.
-                  It conflicts and, thus, automatically disables pdt instrumentation.
+                  It can not be enabled, if not at least one of the following is
+                  enabled: OPARI2 instrumentation.
+                  It conflicts and, thus, automatically disables pdt
+                  instrumentation.
   --nopreprocess  Disables preprocess instrumentation.
   --user          Enables user instrumentation.
   --nouser        Disables user instrumentation.

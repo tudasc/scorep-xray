@@ -1,0 +1,45 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2009-2012,
+## RWTH Aachen University, Germany
+##
+## Copyright (c) 2009-2012,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2012,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2012, 2014
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2012,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
+##
+
+## file       src/adapters/opari2/user/Makefile.confvars.inc.am
+
+noinst_LTLIBRARIES += libscorep_opari2_user_confvars.la
+
+libscorep_opari2_user_confvars_la_SOURCES = \
+    $(SRC_ROOT)src/adapters/opari2/user/scorep_opari2_user_confvars.c
+
+libscorep_opari2_user_confvars_la_CPPFLAGS = \
+    $(AM_CPPFLAGS)                           \
+    -I$(PUBLIC_INC_DIR)                      \
+    -I$(INC_ROOT)src/measurement/include     \
+    $(UTILS_CPPFLAGS)
+
+libscorep_confvars_la_LIBADD += libscorep_opari2_user_confvars.la

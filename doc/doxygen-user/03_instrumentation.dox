@@ -142,6 +142,13 @@ for non-default instrumentation possibilities. E.g., <tt>--user</tt> enables the
 manual instrumentation with the @scorep user API, the <tt>--nocompiler</tt> option
 disables compiler instrumentation.
 
+@note
+  Disabling OpenMP measurements with the <tt>--noopenmp</tt> flag,
+  disables all except parallel regions. Internally Score-P needs to
+  track events on a per-thread basis and thus needs to be aware of the
+  creation and destruction of OpenMP threads. Accordingly these
+  regions will also show up in the measurements.
+
 @scorep supports a variety of instrumentation types for user-level
 source routines and arbitrary regions, in addition to fully-automatic
 @mpi and @openmp instrumentation, as summarized in Table @tabref{instopts}.
@@ -157,12 +164,12 @@ source routines and arbitrary regions, in addition to fully-automatic
 
 	    MPI & {\ttfamily -\/-\/mpp=mpi/ \newline -\/-\/mpp=none} & (auto) &  configured by install & see Sec. \ref{sec:mpi_groups}  \\ \hline
 	    SHMEM & {\ttfamily -\/-\/mpp=shmem/ \newline -\/-\/mpp=none} & (auto) &  configured by install & --  \\ \hline
-        OpenCL & {\ttfamily -\/-\/opencl/ \newline -\/-\/noopencl} & enabled &  configured by install & --  \\ \hline
-	    OpenMP & {\ttfamily -\/-\/thread=omp/ \newline -\/-\/thread=none} & (auto) &  all parallel constructs &  --  \\ \hline
+            OpenCL & {\ttfamily -\/-\/opencl/ \newline -\/-\/noopencl} & enabled &  configured by install & --  \\ \hline
+	    OpenMP & {\ttfamily -\/-\/thread=omp/ \newline -\/-\/thread=none \newline -\/-\/openmp \newline -\/-\/noopenmp} & (auto)  &  all parallel constructs &  --  \\ \hline
 	    Pthread & {\ttfamily -\/-\/thread= \newline pthread} & (auto) &  Basic Pthread library calls &  --  \\ \hline
 	    Compiler, Sec. \ref{sec:compiler_instrumentation} & {\ttfamily -\/-\/compiler/ \newline -\/-\/nocompiler} & enabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    PDT,\newline Sec. \ref{sec:tau_instrumentation} & {\ttfamily -\/-\/pdt/ \newline -\/-\/nopdt} & disabled &  all & Filtering, Sec. \ref{sec:filtering}  \\ \hline
-	    POMP2 user regions, Sec. \ref{sec:pomp_instrumentation} & {\ttfamily -\/-\/pomp/ \newline -\/-\/nopomp} & depends on OpenMP usage &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}  \\ \hline
+	    POMP2 user regions, Sec. \ref{sec:pomp_instrumentation} & {\ttfamily -\/-\/pomp/ \newline -\/-\/nopomp} & disabled &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}  \\ \hline
 	    Manual, Sec. \ref{sec:manual_instrumentation} & {\ttfamily -\/-\/user/ \newline -\/-\/nouser} & disabled &  manually\newline annotated & Filtering, Sec. \ref{sec:filtering}, and selective recording, Sec. \ref{sec:selective_recording}\\ \hline
     	\end{tabular}
     \end{table}
@@ -201,7 +208,7 @@ source routines and arbitrary regions, in addition to fully-automatic
     </tr>
     <tr>
       <td align="left" valign="middle"> OpenMP </td>
-      <td align="center" valign="middle"> --thread=omp </td>
+      <td align="center" valign="middle"> --thread=omp / --no|openmp </td>
       <td align="center" valign="middle"> (auto) </td>
       <td align="center" valign="middle"> all parallel constructs </td>
       <td align="center" valign="middle"> &mdash; </td>
@@ -249,6 +256,10 @@ automatically enables MPI library instrumentation or OPARI2-based OpenMP
 instrumentation, respectively.  The default set of instrumented MPI
 library functions is specified when @scorep is installed.  All OpenMP
 parallel constructs and API calls are instrumented by default.
+
+@note To fine-tune instrumentation of OpenMP regions, use the
+      --opari=<parameter-list> option. For available parameters please
+      refer to the OPARI2 manual.
 
 By default, automatic instrumentation of user-level source routines by
 the compiler is enabled (equivalent to specifying <tt>--compiler</tt>).
@@ -506,7 +517,7 @@ File 2:
 
 In addition, the macros <tt>SCOREP_USER_REGION_BY_NAME_BEGIN( name, type )</tt> and
 <tt>SCOREP_USER_REGION_BY_NAME_END( name )</tt> are available. These macros might
-introduce more overhead than the standard marcos but can annotate user regions
+introduce more overhead than the standard macros but can annotate user regions
 without the need to take care about the handle struct. This might be useful for
 automatically generating instrumented code or to avoid global declaration
 of this variable.
@@ -722,12 +733,16 @@ C/C++:
 @section pomp_instrumentation Semi-Automatic Instrumentation of @pomp2 User Regions
 @seclabel{pomp_instrumentation}
 
-If you manually instrument the desired user functions and regions of your
-application source files using the @pomp2 <tt>INST</tt> directives described
-below, the @scorep instrumenter <tt>--pomp</tt> flag will generate
-instrumentation for them. It is automatically enabled for @openmp applications,
-but can be disabled with <tt>--nopomp</tt>. @pomp2 instrumentation directives
-are supported for Fortran and C/C++. The main advantages are that
+@note Since @scorep version 1.4, OpenMP instrumentation using @opari2
+no longer activates @pomp2 instrumentation implicitly. You need to
+explicitly add the <tt>--pomp</tt> option to the @scorep instrumenter.
+
+If you manually instrument the desired user functions and regions of
+your application source files using the @pomp2 <tt>INST</tt>
+directives described below, the @scorep instrumenter <tt>--pomp</tt>
+flag will generate instrumentation for them. @pomp2 instrumentation
+directives are supported for Fortran and C/C++. The main advantages
+are that
 <ul>
   <li>
     being directives, the instrumentation is ignored during "normal"
@@ -799,13 +814,6 @@ C/C++:
         ...
     }
 @endcode
-
-@note The @pomp2 instrumentation uses the @opari2 instrumenter. Thus, for
-      @openmp application, which automatically enable @opari2
-      to instrument the parallel constructs, @pomp2 user region
-      instrumentation is enabled, too. Too disable @pomp2 user
-      region instrumentation for @openmp applications, pass
-      <tt>--nopomp</tt> to the instrumenter.
 
 By default, the source code is preprocessed before @pomp2 instrumentation happens.
 For more information on the preprocessing, see Section @secref{opari2_preprocessing}.

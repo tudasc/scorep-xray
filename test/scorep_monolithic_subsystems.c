@@ -25,9 +25,8 @@
 
 extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_Opari2OpenmpAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter;
-extern const SCOREP_Subsystem SCOREP_Subsystem_PompUserAdapter;
-extern const SCOREP_Subsystem SCOREP_Subsystem_PompOmpAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MetricService;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
@@ -41,8 +40,7 @@ const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_CompilerAdapter,
     &SCOREP_Subsystem_UserAdapter,
 #ifdef SCOREP_SUBSYSTEMS_OMP
-    &SCOREP_Subsystem_PompUserAdapter,
-    &SCOREP_Subsystem_PompOmpAdapter,
+    &SCOREP_Subsystem_Opari2OpenmpAdapter,
 #endif
 #ifdef SCOREP_SUBSYSTEMS_MPI
     &SCOREP_Subsystem_MpiAdapter,

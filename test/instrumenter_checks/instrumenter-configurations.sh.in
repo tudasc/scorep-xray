@@ -39,7 +39,8 @@ comp_arg=""
 pomp_user_arg=""
 pdt_arg=""
 cobi_arg=""
-omp_arg=""
+omp_i_arg=""
+omp_b_arg=""
 mpp_arg=""
 
 file_prefix="../installcheck/instrumenter_checks/configurations_"
@@ -48,14 +49,17 @@ file_prefix="../installcheck/instrumenter_checks/configurations_"
 # wrapping except for init/finalize". Still it makes no sense for
 # non-mpi sources.
 
-# noompenmp: if we model it like nompi, then we need to intercept just
+# noopenmp: if we model it like nompi, then we need to intercept just
 # the fork/join/thread_begin/thread_end. Everything else gets ignored.
 
 # pomp_user_arg: use HAVE_OPARI2_TRUE when it is implemented
 
-omp_args=
-@HAVE_SCOREP_OMP_TPD_TRUE@omp_args="${omp_args} thread=omp:pomp_tpd "
-@HAVE_SCOREP_OMP_ANCESTRY_TRUE@omp_args="${omp_args} thread=omp:ancestry "
+omp_instrumenter_args=
+@HAVE_OPENMP_SUPPORT_TRUE@omp_instrumenter_args="openmp noopenmp "
+
+omp_backend_args=
+@HAVE_SCOREP_OMP_TPD_TRUE@omp_backend_args="${omp_backend_args} thread=omp:pomp_tpd "
+@HAVE_SCOREP_OMP_ANCESTRY_TRUE@omp_backend_args="${omp_backend_args} thread=omp:ancestry "
 
 mutex_args=
 @HAVE_OPENMP_SUPPORT_TRUE@mutex_args="${mutex_args} mutex=omp"
@@ -91,9 +95,11 @@ done
                     echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg" >> ${file_prefix}serial
 
                     # omp -------------------------------#
-@HAVE_OPENMP_SUPPORT_TRUE@                    for omp_arg in $omp_args; do # add noopenmp when multilibs are ready, see above comment
-@HAVE_OPENMP_SUPPORT_TRUE@                         for mutex_arg in $mutex_args; do
-@HAVE_OPENMP_SUPPORT_TRUE@                               echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $omp_arg $mutex_arg" >> ${file_prefix}omp
+@HAVE_OPENMP_SUPPORT_TRUE@                    for omp_i_arg in $omp_instrumenter_args; do
+@HAVE_OPENMP_SUPPORT_TRUE@                         for omp_b_arg in $omp_backend_args; do
+@HAVE_OPENMP_SUPPORT_TRUE@                              for mutex_arg in $mutex_args; do
+@HAVE_OPENMP_SUPPORT_TRUE@                                   echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $omp_i_arg $omp_b_arg $mutex_arg" >> ${file_prefix}omp
+@HAVE_OPENMP_SUPPORT_TRUE@                              done
 @HAVE_OPENMP_SUPPORT_TRUE@                         done
 @HAVE_OPENMP_SUPPORT_TRUE@                    done
 
@@ -104,8 +110,10 @@ done
 
                     # mpi_omp ---------------------------#
 @HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    for mpp_arg in "mpp=mpi"; do # add nompi when multilibs are ready, see above comment
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_arg in $omp_args; do # add noopenmp when multilibs are ready, see above comment
-@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpp_arg $omp_arg" >> ${file_prefix}mpi_omp
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_i_arg in $omp_instrumenter_args; do
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                             for omp_b_arg in $omp_backend_args; do
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                                  echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpp_arg $omp_i_arg $omp_b_arg" >> ${file_prefix}mpi_omp
+@HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                             done
 @HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        done
 @HAVE_MPI_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    done
 
@@ -116,8 +124,10 @@ done
 
                     # shmem_omp -------------------------#
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    for mpp_arg in "mpp=shmem"; do
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_arg in $omp_args; do
-@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpp_arg $omp_arg" >> ${file_prefix}shmem_omp
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        for omp_i_arg in $omp_instrumenter_args; do
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            for omp_b_arg in $omp_backend_args; do
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                                echo "$user_arg $comp_arg $pomp_user_arg $preprocess_user_arg $pdt_arg $cobi_arg $mpp_arg $omp_i_arg $omp_b_arg" >> ${file_prefix}shmem_omp
+@HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                            done
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                        done
 @HAVE_SHMEM_SUPPORT_TRUE@@HAVE_OPENMP_SUPPORT_TRUE@                    done
 

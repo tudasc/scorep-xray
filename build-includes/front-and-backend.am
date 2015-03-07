@@ -11,7 +11,8 @@ include ../src/adapters/cuda/Makefile.confvars.inc.am
 include ../src/adapters/opencl/Makefile.confvars.inc.am
 include ../src/adapters/mpi/Makefile.confvars.inc.am
 include ../src/adapters/shmem/Makefile.confvars.inc.am
-include ../src/adapters/pomp/Makefile.confvars.inc.am
+include ../src/adapters/opari2/openmp/Makefile.confvars.inc.am
+include ../src/adapters/opari2/user/Makefile.confvars.inc.am
 include ../src/adapters/user/Makefile.confvars.inc.am
 include ../src/adapters/pthread/Makefile.confvars.inc.am
 include ../src/measurement/thread/fork_join/Makefile.confvars.inc.am

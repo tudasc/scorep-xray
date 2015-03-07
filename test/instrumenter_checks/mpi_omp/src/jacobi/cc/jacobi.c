@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include "jacobi.h"
 #ifdef SCOREP_POMP_USER
-#  include <opari2/pomp2_lib.h>
+#  include <opari2/pomp2_user_lib.h>
 #endif
 
 #include <SCOREP_User.h>
@@ -68,7 +68,7 @@ Jacobi( struct JacobiData* data )
          */
         POMP2_Region_handle pomp_user_region_handle = NULL;
         POMP2_Begin( &pomp_user_region_handle,
-                     "82*regionType=region*sscl=jacobi.c:63:63*escl=jacobi.c:102:102*userRegionName=loop**" );
+                     "82*regionType=userRegion*sscl=jacobi.c:63:63*escl=jacobi.c:102:102*userRegionName=loop**" );
 #endif
         while ( residual > data->fTolerance && data->iIterCount < data->iIterMax )
         {

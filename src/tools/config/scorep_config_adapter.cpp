@@ -69,7 +69,7 @@ SCOREP_Config_Adapter::init( void )
 {
     all.push_back( new SCOREP_Config_CompilerAdapter() );
     all.push_back( new SCOREP_Config_UserAdapter() );
-    all.push_back( new SCOREP_Config_PompAdapter() );
+    all.push_back( new SCOREP_Config_Opari2Adapter() );
     all.push_back( new SCOREP_Config_CudaAdapter() );
     all.push_back( new SCOREP_Config_OpenclAdapter() );
     all.push_back( new SCOREP_Config_PreprocessAdapter() );
@@ -509,17 +509,17 @@ SCOREP_Config_PreprocessAdapter::appendInitStructName( std::deque<std::string>& 
 
 
 /* **************************************************************************************
- * Pomp adapter
+ * Opari2 adapter
  * *************************************************************************************/
-SCOREP_Config_PompAdapter::SCOREP_Config_PompAdapter()
-    : SCOREP_Config_Adapter( "pomp", "scorep_adapter_pomp_user", false )
+SCOREP_Config_Opari2Adapter::SCOREP_Config_Opari2Adapter()
+    : SCOREP_Config_Adapter( "pomp", "scorep_adapter_opari2_user", false )
 {
 }
 
 void
-SCOREP_Config_PompAdapter::addIncFlags( std::string& incflags,
-                                        bool         build_check,
-                                        bool         nvcc )
+SCOREP_Config_Opari2Adapter::addIncFlags( std::string& incflags,
+                                          bool         build_check,
+                                          bool         nvcc )
 {
     if ( m_is_enabled )
     {
@@ -531,10 +531,10 @@ SCOREP_Config_PompAdapter::addIncFlags( std::string& incflags,
 }
 
 void
-SCOREP_Config_PompAdapter::addCFlags( std::string&           cflags,
-                                      bool                   build_check,
-                                      SCOREP_Config_Language language,
-                                      bool                   nvcc )
+SCOREP_Config_Opari2Adapter::addCFlags( std::string&           cflags,
+                                        bool                   build_check,
+                                        SCOREP_Config_Language language,
+                                        bool                   nvcc )
 {
     if ( m_is_enabled )
     {
@@ -547,17 +547,17 @@ SCOREP_Config_PompAdapter::addCFlags( std::string&           cflags,
 
 
 void
-SCOREP_Config_PompAdapter::appendInitStructName( std::deque<std::string>& init_structs )
+SCOREP_Config_Opari2Adapter::appendInitStructName( std::deque<std::string>& init_structs )
 {
-    init_structs.push_back( "SCOREP_Subsystem_PompUserAdapter" );
+    init_structs.push_back( "SCOREP_Subsystem_Opari2UserAdapter" );
 }
 
 
 void
-SCOREP_Config_PompAdapter::printOpariCFlags( bool                   build_check,
-                                             bool                   with_cflags,
-                                             SCOREP_Config_Language language,
-                                             bool                   nvcc )
+SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_check,
+                                               bool                   with_cflags,
+                                               SCOREP_Config_Language language,
+                                               bool                   nvcc )
 {
     static bool printed_once = false;
     if ( !printed_once )

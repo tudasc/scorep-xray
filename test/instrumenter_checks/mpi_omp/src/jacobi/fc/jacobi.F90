@@ -62,7 +62,7 @@ module JacobiMod
             ! With Pragmas, the instrumenter would create initialization time
             ! initialization.
 	    call POMP2_Begin( pomp_user_region_handle, &
-	      "90*regionType=region*sscl=jacobi.F90:63:63*escl=jacobi.F90:102:102*userRegionName=userloop**" )
+	      "90*regionType=userRegion*sscl=jacobi.F90:63:63*escl=jacobi.F90:102:102*userRegionName=userloop**" )
 #endif
             do while (myData%iIterCount < myData%iIterMax .and. residual > myData%fTolerance)
 	        SCOREP_USER_REGION_BEGIN( main_loop, "main_loop", SCOREP_USER_REGION_TYPE_DYNAMIC )

@@ -228,8 +228,8 @@ void
 SCOREP_Config_PompTpdThreadSystem::addLibs( std::deque<std::string>&           libs,
                                             SCOREP_Config_LibraryDependencies& deps )
 {
-    libs.push_back( "libscorep_adapter_pomp_omp_event" );
-    deps.addDependency( "libscorep_measurement", "libscorep_adapter_pomp_omp_mgmt" );
+    libs.push_back( "libscorep_adapter_opari2_openmp_event" );
+    deps.addDependency( "libscorep_measurement", "libscorep_adapter_opari2_openmp_mgmt" );
     deps.addDependency( "libscorep_measurement", "libscorep_thread_fork_join_omp_tpd" );
 }
 
@@ -239,10 +239,10 @@ SCOREP_Config_PompTpdThreadSystem::addCFlags( std::string&           cflags,
                                               SCOREP_Config_Language language,
                                               bool                   nvcc )
 {
-    SCOREP_Config_PompAdapter::printOpariCFlags( build_check,
-                                                 true,
-                                                 language,
-                                                 nvcc );
+    SCOREP_Config_Opari2Adapter::printOpariCFlags( build_check,
+                                                   true,
+                                                   language,
+                                                   nvcc );
 
 #if SCOREP_BACKEND_COMPILER_IBM
     if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
@@ -257,16 +257,16 @@ SCOREP_Config_PompTpdThreadSystem::addIncFlags( std::string& incflags,
                                                 bool         build_check,
                                                 bool         nvcc )
 {
-    SCOREP_Config_PompAdapter::printOpariCFlags( build_check,
-                                                 false,
-                                                 SCOREP_CONFIG_LANGUAGE_C,
-                                                 nvcc );
+    SCOREP_Config_Opari2Adapter::printOpariCFlags( build_check,
+                                                   false,
+                                                   SCOREP_CONFIG_LANGUAGE_C,
+                                                   nvcc );
 }
 
 void
 SCOREP_Config_PompTpdThreadSystem::getInitStructName( std::deque<std::string>& init_structs )
 {
-    init_structs.push_back( "SCOREP_Subsystem_PompOmpAdapter" );
+    init_structs.push_back( "SCOREP_Subsystem_Opari2OpenmpAdapter" );
     init_structs.push_back( "SCOREP_Subsystem_ThreadForkJoin" );
 }
 
@@ -284,8 +284,8 @@ void
 SCOREP_Config_OmpAncestryThreadSystem::addLibs( std::deque<std::string>&           libs,
                                                 SCOREP_Config_LibraryDependencies& deps )
 {
-    libs.push_back( "libscorep_adapter_pomp_omp_event" );
-    deps.addDependency( "libscorep_measurement", "libscorep_adapter_pomp_omp_mgmt" );
+    libs.push_back( "libscorep_adapter_opari2_openmp_event" );
+    deps.addDependency( "libscorep_measurement", "libscorep_adapter_opari2_openmp_mgmt" );
     deps.addDependency( "libscorep_measurement", "libscorep_thread_fork_join_omp_ancestry" );
 }
 
@@ -295,10 +295,10 @@ SCOREP_Config_OmpAncestryThreadSystem::addCFlags( std::string&           cflags,
                                                   SCOREP_Config_Language language,
                                                   bool                   nvcc )
 {
-    SCOREP_Config_PompAdapter::printOpariCFlags( build_check,
-                                                 true,
-                                                 language,
-                                                 nvcc );
+    SCOREP_Config_Opari2Adapter::printOpariCFlags( build_check,
+                                                   true,
+                                                   language,
+                                                   nvcc );
 
 #if SCOREP_BACKEND_COMPILER_IBM
     if ( language == SCOREP_CONFIG_LANGUAGE_FORTRAN )
@@ -313,16 +313,16 @@ SCOREP_Config_OmpAncestryThreadSystem::addIncFlags( std::string& incflags,
                                                     bool         build_check,
                                                     bool         nvcc )
 {
-    SCOREP_Config_PompAdapter::printOpariCFlags( build_check,
-                                                 false,
-                                                 SCOREP_CONFIG_LANGUAGE_C,
-                                                 nvcc );
+    SCOREP_Config_Opari2Adapter::printOpariCFlags( build_check,
+                                                   false,
+                                                   SCOREP_CONFIG_LANGUAGE_C,
+                                                   nvcc );
 }
 
 void
 SCOREP_Config_OmpAncestryThreadSystem::getInitStructName( std::deque<std::string>& init_structs )
 {
-    init_structs.push_back( "SCOREP_Subsystem_PompOmpAdapter" );
+    init_structs.push_back( "SCOREP_Subsystem_Opari2OpenmpAdapter" );
     init_structs.push_back( "SCOREP_Subsystem_ThreadForkJoin" );
 }
 

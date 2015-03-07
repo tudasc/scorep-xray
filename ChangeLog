@@ -1,10 +1,26 @@
 ------------------- Upcoming version 1.5 -----------------------------
 
 Major features:
+- Support for OPARI2 2.0 was integrated. OPARI2 is now more
+  flexible to enable support for other pragma/directive based
+  paradigms.
 
 Features and improvements:
 
 User tools and API improvements and changes:
+
+- The option --pomp does not take any options any more.
+- Specific options for OPARI2 are passed via the
+  --opari=<parameter-list> option.
+- To enable or disable instrumentation of OpenMP the options
+  --openmp and --noopenmp have been added. Note that for compile
+  units with enabled OpenMP compilerflag, instrumentation is
+  enabled by default. However, when manually disabling, some
+  instrumentation must still be carried out, to ensure a
+  thread-safe execution of the measurement system.
+- POMP user instrumentation is no longer automatically activated
+  together with OpenMP instrumentation. The --pomp flag has to be
+  explicitly specified with the scorep command
 
 Bugfixes:
 

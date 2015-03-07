@@ -330,12 +330,12 @@ public:
 };
 
 /* **************************************************************************************
- * class SCOREP_PompAdapter
+ * class SCOREP_Opari2Adapter
  * *************************************************************************************/
-class SCOREP_Config_PompAdapter : public SCOREP_Config_Adapter
+class SCOREP_Config_Opari2Adapter : public SCOREP_Config_Adapter
 {
 public:
-    SCOREP_Config_PompAdapter();
+    SCOREP_Config_Opari2Adapter();
     virtual void
     addIncFlags( std::string& incflags,
                  bool         build_check,

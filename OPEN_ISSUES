@@ -214,14 +214,11 @@ various Score-P components.
     We tested with PGi compiler version 11.7.
 
   - Currently, the instrumenter allows to switch off OPARI2
-    instrumentation for OpenMP programs. If OpenMP parallel regions
-    are not instrumented and an event occurs inside a parallel region
-    (e.g., because an instrumented function is called inside of a
-    parallel region) Score-P will crash. We are considering to make
-    the usage more secure in future versions of Score-P. This might
-    result in a change of the instrumenter option or the option may
-    vanish completely. However, there are some use-cases where
-    disabling OPARI2 instrumentation is helpful.
+    instrumentation for OpenMP programs with the --noopenmp
+    option. However parallel regions still need to be instrumented to
+    ensure thread-safe exectution of the measurement system. Currently
+    combined constructs, such as parallel for/do, are still
+    instrumented fully, i.e. the for/do appears in the measurements.
 
   - Due to a bug in the Cray compilers OpenMP instrumentation is
     broken if an OpenMP parallel pragma is used in combination with

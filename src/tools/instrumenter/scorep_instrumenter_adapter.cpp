@@ -82,7 +82,7 @@ SCOREP_Instrumenter_Adapter::checkDependencies( void )
     if ( !prereqs )
     {
         m_usage = disabled;
-        std::cerr << "WARNING: Disabled " << m_name << " because no of its "
+        std::cerr << "WARNING: Disabled " << m_name << " because none of its "
                   << "prerequisites are enabled." << std::endl;
     }
 
@@ -487,25 +487,44 @@ void
 SCOREP_Instrumenter_Adapter::printDepList( SCOREP_Instrumenter_DependencyList* list,
                                            std::string                         entry )
 {
+    std::string                                  output;
     SCOREP_Instrumenter_DependencyList::iterator i;
+    std::string                                  space = entry.substr( 0, entry.find_first_not_of( " " ) - 1 );
     if ( !list->empty() )
     {
-        std::cout << entry;
+        output = entry;
         for ( i = list->begin(); i != list->end(); i++ )
         {
             if ( i != list->begin() )
             {
                 if ( i + 1 == list->end() )
                 {
-                    std::cout << " and ";
+                    output += " and ";
                 }
                 else
                 {
-                    std::cout << ", ";
+                    output += ", ";
                 }
             }
-            std::cout << getAdapter( *i )->m_name;
+            output += getAdapter( *i )->m_name;
         }
-        std::cout << " instrumentation.\n";
+        output += " instrumentation.\n";
     }
+
+    size_t pos      = output.find( ' ', pos );
+    size_t prev_pos = 0;
+    size_t end      = 80;
+    while ( pos != std::string::npos )
+    {
+        pos = output.find( ' ', pos + 1 );
+        if ( ( pos > end && pos != std::string::npos ) ||
+             ( pos == std::string::npos && output.size() > end ) )
+        {
+            output.insert( prev_pos, "\n" + space, 0, 1 + space.size() );
+            end += 80;
+        }
+        prev_pos = pos;
+    }
+
+    std::cout << output;
 }

@@ -163,7 +163,7 @@ with the tarball will be used:
                (v4.3 or newer). Provide path to cube-config.
                Auto-detected if already in $PATH.
   --with-opari2[=<opari2-bindir>]
-               Use an already installed and compatible OPARI2 (v.1.1
+               Use an already installed and compatible OPARI2 (v.2.0
                or newer). Provide path to opari2-config.
                Auto-detected if already in $PATH.
 
