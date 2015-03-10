@@ -46,6 +46,8 @@ Bugfixes:
 - Fixed errorneous calculation and presentation of task migration metrics.
 - The GCC instrumentation plug-in can now also be built if the used GCC
   installation does not provide a `gmp.h` header.
+- Fixed missing DESTDIR support for installing `scorep-config` delegate on
+  Xeon Phi.
 
 ------------------- Released version 1.4 -----------------------------
 
