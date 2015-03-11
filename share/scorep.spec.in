@@ -58,7 +58,7 @@
                         ${doVoidpthread} = 0;
                     };
 
-                    if ( ${cube::region::description}[${regionid}] eq "opencl" )
+                    if ( ${cube::region::paradigm}[${regionid}] eq "opencl" )
                     {
                         ${doVoidopencl} = 0;
                     };
@@ -1019,7 +1019,7 @@
                          ${opencl_setup}[${i}] = 0;
                          ${regionid} = ${cube::callpath::calleeid}[${i}] ;
                          if (
-                           (${cube::region::description}[ ${regionid} ] seq "opencl")
+                           (${cube::region::paradigm}[ ${regionid} ] seq "opencl")
                            and
                            (
                            not (${cube::region::mod}[ ${regionid} ] seq "OPENCL_KERNEL")
@@ -1083,7 +1083,7 @@
                          ${opencl_comm}[${i}] = 0;
                          ${regionid} = ${cube::callpath::calleeid}[${i}] ;
                          if (
-                           (${cube::region::description}[ ${regionid} ] seq "opencl")
+                           (${cube::region::paradigm}[ ${regionid} ] seq "opencl")
                            and
                            (
                            not (${cube::region::mod}[ ${regionid} ] seq "OPENCL_KERNEL")
@@ -1137,7 +1137,7 @@
                          ${opencl_sync}[${i}] = 0;
                          ${regionid} = ${cube::callpath::calleeid}[${i}] ;
                          if (
-                           (${cube::region::description}[ ${regionid} ] seq "opencl")
+                           (${cube::region::paradigm}[ ${regionid} ] seq "opencl")
                            and
                            (
                            not (${cube::region::mod}[ ${regionid} ] seq "OPENCL_KERNEL")
@@ -1187,7 +1187,7 @@
                          ${opencl_kernel_launches}[${i}] = 0;
                          ${regionid} = ${cube::callpath::calleeid}[${i}] ;
                          if (
-                           (${cube::region::description}[ ${regionid} ] seq "opencl")
+                           (${cube::region::paradigm}[ ${regionid} ] seq "opencl")
                            and
                            (
                            not (${cube::region::mod}[ ${regionid} ] seq "OPENCL_KERNEL")
