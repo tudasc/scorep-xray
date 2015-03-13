@@ -185,7 +185,7 @@ typedef bool ( scorep_profile_compare_node_t )( scorep_profile_node* node_a,
    @param context  Specifies whether this call happens in the context of e tied or untied task.
    @return A pointer to the newly created node.
  */
-extern scorep_profile_node*
+scorep_profile_node*
 scorep_profile_create_node( SCOREP_Profile_LocationData* location,
                             scorep_profile_node*         parent,
                             scorep_profile_node_type     type,
@@ -201,7 +201,7 @@ scorep_profile_create_node( SCOREP_Profile_LocationData* location,
    @param source Pointer to the node which gets copied.
    @return A pointer to the new node.
  */
-extern scorep_profile_node*
+scorep_profile_node*
 scorep_profile_copy_node( SCOREP_Profile_LocationData* location,
                           scorep_profile_node*         source );
 
@@ -211,7 +211,7 @@ scorep_profile_copy_node( SCOREP_Profile_LocationData* location,
                    page.
    @param root     Pointer to the root node of a subtree, whose memory can be reused.
  */
-extern void
+void
 scorep_profile_release_subtree( SCOREP_Profile_LocationData* location,
                                 scorep_profile_node*         root );
 
@@ -225,7 +225,7 @@ scorep_profile_release_subtree( SCOREP_Profile_LocationData* location,
                    reconfiguration.
    @param context  Specifies whether this call happens in the context of e tied or untied task.
  */
-extern scorep_profile_node*
+scorep_profile_node*
 scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
                            scorep_profile_node_type     type,
                            scorep_profile_task_context  context );
@@ -245,16 +245,16 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
    and the type specific data and adds it to the children of @a parent.
    @param location  Pointer to the location data.
    @param parent    Pointer to a node which children are searched.
-   @param node_type The node type of the searched or created node.
+   @param nodeType  The node type of the searched or created node.
    @param specific  The type specific data of the searched or created node.
    @param timestamp Timestamp for the first enter time in case a new node is created.
    @returns The matching node from the children of @a parent. This might be a newly
             created node.
  */
-extern scorep_profile_node*
+scorep_profile_node*
 scorep_profile_find_create_child( SCOREP_Profile_LocationData* location,
                                   scorep_profile_node*         parent,
-                                  scorep_profile_node_type     node_type,
+                                  scorep_profile_node_type     nodeType,
                                   scorep_profile_type_data_t   specific,
                                   uint64_t                     timestamp );
 
@@ -282,7 +282,7 @@ scorep_profile_add_child( scorep_profile_node* parent,
    @returns The matching node from the children of @a parent. If no matching node is
             found, it returns NULL.
  */
-extern scorep_profile_node*
+scorep_profile_node*
 scorep_profile_find_child( scorep_profile_node* parent,
                            scorep_profile_node* type );
 
@@ -295,7 +295,7 @@ scorep_profile_find_child( scorep_profile_node* parent,
    @return true, if @a node1 and @a node2 are of the same type, and their type dependent
           data match. Else false is returned.
  */
-extern bool
+bool
 scorep_profile_compare_nodes( scorep_profile_node* node1,
                               scorep_profile_node* node2 );
 
@@ -315,7 +315,7 @@ scorep_profile_node_hash( scorep_profile_node* node );
    different, an arbitrary (but well-defined) ordering is applied based on
    their types.
  */
-extern bool
+bool
 scorep_profile_node_less_than( scorep_profile_node* a,
                                scorep_profile_node* b );
 
@@ -328,7 +328,7 @@ scorep_profile_node_less_than( scorep_profile_node* a,
    @param source      Pointer to a node from which the children are removed. This
                       must not be NULL.
  */
-extern void
+void
 scorep_profile_move_children(  scorep_profile_node* destination,
                                scorep_profile_node* source );
 
@@ -338,20 +338,20 @@ scorep_profile_move_children(  scorep_profile_node* destination,
    @param node A pointer to a node which is to be removed from the profile. It
                must not be NULL.
  */
-extern void
+void
 scorep_profile_remove_node( scorep_profile_node* node );
 
 /**
    Traverse the (sub)tree rooted in @a root_node via depth search and execute the
    function @a func for each node.
-   @param root_node Pointer to the root node of the subtree which is processed. Its
+   @param rootNode  Pointer to the root node of the subtree which is processed. Its
                     siblings are nor processed.
    @param func      Function pointer to the function which is called for each node in
                     the (sub)tree.
    @param param     Pointer to a parameter that is passed to @a func.
  */
-extern void
-scorep_profile_for_all( scorep_profile_node*           root_node,
+void
+scorep_profile_for_all( scorep_profile_node*           rootNode,
                         scorep_profile_process_func_t* func,
                         void*                          param );
 
@@ -374,12 +374,12 @@ scorep_profile_merge_subtree( SCOREP_Profile_LocationData* location,
 /**
    Sorts the children of all nodes in the subtree according to the given comparison
    function @a comparison_func.
-   @param root             Pointer to the root of the subtree to be sorted.
-   @param comparison_func  Pointer to the comparison function.
+   @param root            Pointer to the root of the subtree to be sorted.
+   @param comparisonFunc  Pointer to the comparison function.
  */
 void
 scorep_profile_sort_subtree( scorep_profile_node*           root,
-                             scorep_profile_compare_node_t* comparision_func );
+                             scorep_profile_compare_node_t* comparisionFunc );
 
 /* ***************************************************************************************
    Data accesss and evaluation
@@ -473,12 +473,12 @@ scorep_profile_is_mpi_in_subtree( scorep_profile_node* node );
 /**
    Sets the value of the SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE flag in @a node.
    @param node         Pointer to the node which flag is set.
-   @param is_fork_node Specifies the value of the
+   @param mpiInSubtree Specifies the value of the
                        SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE flag.
  */
 void
 scorep_profile_set_mpi_in_subtree( scorep_profile_node* node,
-                                   bool                 mpi_in_subtree );
+                                   bool                 mpiInSubtree );
 
 /**
    Returns whether the SCOREP_PROFILE_FLAG_IS_FORK_NODE flag is set for @a node.
@@ -490,11 +490,11 @@ scorep_profile_is_fork_node( scorep_profile_node* node );
 /**
    Sets the value of the SCOREP_PROFILE_FLAG_IS_FORK_NODE flag in @a node.
    @param node         Pointer to the node which flag is set.
-   @param is_fork_node Specifies the value of the SCOREP_PROFILE_FLAG_IS_FORK_NODE flag.
+   @param isForkNode   Specifies the value of the SCOREP_PROFILE_FLAG_IS_FORK_NODE flag.
  */
 void
 scorep_profile_set_fork_node( scorep_profile_node* node,
-                              bool                 is_fork_node );
+                              bool                 isForkNode );
 
 /**
    Returns the context of the node.

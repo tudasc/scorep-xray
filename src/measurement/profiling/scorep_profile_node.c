@@ -862,18 +862,18 @@ scorep_profile_merge_subtree( SCOREP_Profile_LocationData* location,
 /**
    Helper function for @ref scorep_profile_sort_subtree. Implements a recursive
    merge sort algorithm on a linked list of profile nodes.
-   @param head       Head of the linked list of profile nodes. Will return the head of
-                     the sorted list.
-   @param tail       Returns the tail of the sorted list.
-   @param number     Number of elements in the list.
-   @param comp_func  Comparison function.
+   @param head    Head of the linked list of profile nodes. Will return the head of
+                  the sorted list.
+   @param tail    Returns the tail of the sorted list.
+   @param number  Number of elements in the list.
+   @param func    Comparison function.
  */
 
 static void
-scorep_profile_sort_list( scorep_profile_node**          head,
-                          scorep_profile_node**          tail,
-                          uint32_t                       number,
-                          scorep_profile_compare_node_t* func )
+sort_node_list( scorep_profile_node**          head,
+                scorep_profile_node**          tail,
+                uint32_t                       number,
+                scorep_profile_compare_node_t* func )
 {
     /* If it's a single element list, return that list */
     if ( number <= 1 )
@@ -897,8 +897,8 @@ scorep_profile_sort_list( scorep_profile_node**          head,
     *last = NULL;
 
     /* Sort the two sub-lists */
-    scorep_profile_sort_list( head, &head_tail, pos_end, func );
-    scorep_profile_sort_list( &mid, tail, number - pos_end, func );
+    sort_node_list( head, &head_tail, pos_end, func );
+    sort_node_list( &mid, tail, number - pos_end, func );
 
     /* See if it's a merge or a concatenation */
     // TODO: What is nodeid?
@@ -949,19 +949,19 @@ scorep_profile_sort_list( scorep_profile_node**          head,
 
 void
 scorep_profile_sort_subtree( scorep_profile_node*           root,
-                             scorep_profile_compare_node_t* comparision_func )
+                             scorep_profile_compare_node_t* comparisionFunc )
 {
     scorep_profile_node* curr;
 
     /* Sort children */
-    scorep_profile_sort_list( &( root->first_child ), &curr,
-                              scorep_profile_get_number_of_children( root ),
-                              comparision_func );
+    sort_node_list( &( root->first_child ), &curr,
+                    scorep_profile_get_number_of_children( root ),
+                    comparisionFunc );
 
     /* Sort the subtrees of the children */
     for ( curr = root->first_child; NULL != curr; curr = curr->next_sibling )
     {
-        scorep_profile_sort_subtree( curr, comparision_func );
+        scorep_profile_sort_subtree( curr, comparisionFunc );
     }
 }
 
@@ -973,9 +973,9 @@ scorep_profile_is_mpi_in_subtree( scorep_profile_node* node )
 
 void
 scorep_profile_set_mpi_in_subtree( scorep_profile_node* node,
-                                   bool                 mpi_in_subtree )
+                                   bool                 mpiInSubtree )
 {
-    node->flags = ( mpi_in_subtree ?
+    node->flags = ( mpiInSubtree ?
                     node->flags | SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE :
                     node->flags & ( ~SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE ) );
 }
@@ -988,9 +988,9 @@ scorep_profile_is_fork_node( scorep_profile_node* node )
 
 void
 scorep_profile_set_fork_node( scorep_profile_node* node,
-                              bool                 is_fork_node )
+                              bool                 isForkNode )
 {
-    node->flags = ( is_fork_node ?
+    node->flags = ( isForkNode ?
                     node->flags | SCOREP_PROFILE_FLAG_IS_FORK_NODE :
                     node->flags & ( ~SCOREP_PROFILE_FLAG_IS_FORK_NODE ) );
 }
