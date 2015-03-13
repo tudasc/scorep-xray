@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2012,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -146,7 +149,7 @@ substitute_parameter_data( scorep_profile_node* node,
     }
 
     /* Modify node data */
-    node->node_type = scorep_profile_node_regular_region;
+    node->node_type = SCOREP_PROFILE_NODE_REGULAR_REGION;
     scorep_profile_type_set_region_handle( &node->type_specific_data, *handle );
 }
 
@@ -164,7 +167,7 @@ substitute_parameter_in_node( scorep_profile_node* node,
     SCOREP_RegionHandle handle = scorep_profile_type_get_region_handle( node->type_specific_data );
 
     /* process integer parameter nodes */
-    if ( node->node_type == scorep_profile_node_parameter_integer )
+    if ( node->node_type == SCOREP_PROFILE_NODE_PARAMETER_INTEGER )
     {
         const char* name = SCOREP_ParameterHandle_GetName( handle );
 
@@ -195,7 +198,7 @@ substitute_parameter_in_node( scorep_profile_node* node,
     }
 
     /* process string parameter nodes */
-    else if ( node->node_type == scorep_profile_node_parameter_string )
+    else if ( node->node_type == SCOREP_PROFILE_NODE_PARAMETER_STRING )
     {
         const char* name  = SCOREP_ParameterHandle_GetName( handle );
         const char* value = SCOREP_StringHandle_Get( scorep_profile_type_get_string_handle( node->type_specific_data ) );

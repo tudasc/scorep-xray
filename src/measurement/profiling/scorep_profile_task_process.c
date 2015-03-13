@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2012,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -54,7 +57,7 @@ static void
 visit_to_switches( scorep_profile_node* node,
                    void*                param )
 {
-    if ( node->node_type != scorep_profile_node_regular_region  )
+    if ( node->node_type != SCOREP_PROFILE_NODE_REGULAR_REGION )
     {
         return;
     }
@@ -115,7 +118,7 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
 
         task_root = scorep_profile_create_node( location,
                                                 NULL,
-                                                scorep_profile_node_task_root,
+                                                SCOREP_PROFILE_NODE_TASK_ROOT,
                                                 data,
                                                 0, false );
     }
@@ -146,7 +149,7 @@ scorep_profile_process_tasks( void )
             next = node->next_sibling;
 
             /* If not a task root, traverse tree and process all task pointers */
-            if ( node->node_type != scorep_profile_node_task_root  )
+            if ( node->node_type != SCOREP_PROFILE_NODE_TASK_ROOT )
             {
                 /*
                    scorep_profile_for_all( node,

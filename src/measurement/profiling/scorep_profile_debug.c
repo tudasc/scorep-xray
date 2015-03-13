@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -80,11 +83,11 @@ scorep_dump_node( FILE* file, scorep_profile_node* node )
     }
 
     fprintf( file, "type: %s\t", type_name_map[ node->node_type ] );
-    if ( node->node_type == scorep_profile_node_regular_region )
+    if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION )
     {
         fprintf( file, "name: %s", SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
     }
-    else if ( node->node_type == scorep_profile_node_thread_start )
+    else if ( node->node_type == SCOREP_PROFILE_NODE_THREAD_START )
     {
         fprintf( file, "fork node: %p",
                  scorep_profile_type_get_fork_node( node->type_specific_data ) );

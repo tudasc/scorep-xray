@@ -49,7 +49,7 @@ void
 scorep_profile_process_collapse( void );
 
 /**
-   Expands all threads. All nodes of type @ref scorep_profile_node_thread_start
+   Expands all threads. All nodes of type @ref SCOREP_PROFILE_NODE_THREAD_START
    in the profile are substituted by the callpath to the node where the thread was
    activated. In OpenMP this is the callpath which contained the parallel region
    statement.

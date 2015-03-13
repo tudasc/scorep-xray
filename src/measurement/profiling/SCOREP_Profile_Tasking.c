@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -85,7 +88,7 @@ create_task_root( SCOREP_Profile_LocationData* location,
 
     scorep_profile_node* new_node =
         scorep_profile_create_node( location, NULL,
-                                    scorep_profile_node_task_root,
+                                    SCOREP_PROFILE_NODE_TASK_ROOT,
                                     specific_data,
                                     timestamp,
                                     is_untied );

@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2012,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -94,11 +97,11 @@ bool scorep_profile_enable_core_files;
    Bitset table for output format string configuration.
  */
 static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
-    { "tau_snapshot", SCOREP_Profile_OutputTauSnapshot  },
-    { "cube4",        SCOREP_Profile_OutputCube4        },
-    { "cube_tuple",   SCOREP_Profile_OutputCubeTuple    },
-    { "default",      SCOREP_Profile_OutputDefault      },
-    { NULL,           0                                 }
+    { "tau_snapshot", SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT },
+    { "cube4",        SCOREP_PROFILE_OUTPUT_CUBE4        },
+    { "cube_tuple",   SCOREP_PROFILE_OUTPUT_CUBE_TUPLE   },
+    { "default",      SCOREP_PROFILE_OUTPUT_DEFAULT      },
+    { NULL,           0                                  }
 };
 
 /**

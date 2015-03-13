@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2011,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -94,7 +97,7 @@ assign_callpath( scorep_profile_node* current, void* param )
         {
             parent_path = SCOREP_INVALID_CALLPATH;
         }
-        else if ( current->parent->node_type == scorep_profile_node_thread_root )
+        else if ( current->parent->node_type == SCOREP_PROFILE_NODE_THREAD_ROOT )
         {
             parent_path = SCOREP_INVALID_CALLPATH;
         }
@@ -106,28 +109,28 @@ assign_callpath( scorep_profile_node* current, void* param )
         /* register new callpath */
         switch ( current->node_type )
         {
-            case scorep_profile_node_task_root:
-            case scorep_profile_node_regular_region:
+            case SCOREP_PROFILE_NODE_TASK_ROOT:
+            case SCOREP_PROFILE_NODE_REGULAR_REGION:
                 current->callpath_handle =
                     SCOREP_Definitions_NewCallpath( parent_path,
                                                     scorep_profile_type_get_region_handle( current->type_specific_data ) );
                 break;
-            case scorep_profile_node_parameter_string:
+            case SCOREP_PROFILE_NODE_PARAMETER_STRING:
                 current->callpath_handle = SCOREP_Definitions_NewCallpathParameterString(
                     parent_path,
                     scorep_profile_type_get_parameter_handle( current->type_specific_data ),
                     scorep_profile_type_get_string_handle( current->type_specific_data ) );
                 break;
-            case scorep_profile_node_parameter_integer:
+            case SCOREP_PROFILE_NODE_PARAMETER_INTEGER:
                 current->callpath_handle = SCOREP_Definitions_NewCallpathParameterInteger(
                     parent_path,
                     scorep_profile_type_get_parameter_handle( current->type_specific_data ),
                     scorep_profile_type_get_int_value( current->type_specific_data ) );
                 break;
-            case scorep_profile_node_thread_root:
+            case SCOREP_PROFILE_NODE_THREAD_ROOT:
                 /* Do no assign a callpath to the thread root node */
                 break;
-            case scorep_profile_node_thread_start:
+            case SCOREP_PROFILE_NODE_THREAD_START:
                 UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                              "Try to assign a callpath to a thread activation node. "
                              "This means that this is not the master thread and the worker "
@@ -197,7 +200,7 @@ scorep_profile_assign_callpath_to_master( void )
         UTILS_WARNING( "Try to assign callpathes to empty callpath." );
         return;
     }
-    UTILS_ASSERT( master->node_type == scorep_profile_node_thread_root );
+    UTILS_ASSERT( master->node_type == SCOREP_PROFILE_NODE_THREAD_ROOT );
     if ( master->first_child == NULL )
     {
         UTILS_WARNING( "Master thread contains no regions." );

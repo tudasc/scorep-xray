@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -81,7 +84,7 @@ scorep_oaconsumer_get_number_of_roots( void )
     scorep_profile_node* thread_root  = scorep_profile.first_root_node;
     while ( thread_root != NULL )
     {
-        if ( thread_root->node_type == scorep_profile_node_thread_root )
+        if ( thread_root->node_type == SCOREP_PROFILE_NODE_THREAD_ROOT )
         {
             thread_count++;
         }
@@ -95,7 +98,7 @@ scorep_oaconsumer_get_phase_node( scorep_profile_node* node,
                                   uint32_t             phase_id )
 {
     scorep_profile_node* phase_node = NULL;
-    if ( node->node_type == scorep_profile_node_regular_region )
+    if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION )
     {
         SCOREP_RegionHandle region_handle     = scorep_profile_type_get_region_handle( node->type_specific_data );
         uint32_t            current_region_id = SCOREP_RegionHandle_GetId( region_handle );
@@ -116,7 +119,7 @@ scorep_oaconsumer_get_phase_node( scorep_profile_node* node,
         return phase_node;
     }
 
-    if ( node->next_sibling != NULL && node->node_type != scorep_profile_node_thread_root )
+    if ( node->next_sibling != NULL && node->node_type != SCOREP_PROFILE_NODE_THREAD_ROOT )
     {
         phase_node = scorep_oaconsumer_get_phase_node( node->next_sibling, phase_id );
     }
@@ -362,7 +365,7 @@ scorep_oa_consumer_initialize_index( SCOREP_RegionHandle phase_handle )
     scorep_profile_node* thread_root = scorep_profile.first_root_node;
     while ( thread_root != NULL )
     {
-        if ( thread_root->node_type == scorep_profile_node_thread_root )
+        if ( thread_root->node_type == SCOREP_PROFILE_NODE_THREAD_ROOT )
         {
             private_index_pointer_array[ i ] = calloc( 1, sizeof( thread_private_index_type ) );
 
@@ -403,7 +406,7 @@ scorep_oaconsumer_count_index( scorep_profile_node* node,
 //    {
 //        printf( "scorep_oaconsumer_count_index: node->type = %d\n", ( int )node->node_type );
 //    }
-    if ( node->node_type == scorep_profile_node_regular_region )
+    if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION )
     {
         thread_private_index_type* thread_private_index = ( thread_private_index_type* )param;
         shared_index_type*         shared_index         = thread_private_index->shared_index;
@@ -548,7 +551,7 @@ check_region_definition_merge_needed( scorep_profile_node* node )
         return 0;
     }
 
-    if ( parent_node->node_type != scorep_profile_node_regular_region )
+    if ( parent_node->node_type != SCOREP_PROFILE_NODE_REGULAR_REGION )
     {
         return 0;
     }
@@ -643,7 +646,7 @@ scorep_oaconsumer_copy_static_measurement( scorep_profile_node* node,
     assert( node );
     assert( param );
 
-    if ( node->node_type == scorep_profile_node_regular_region )
+    if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION )
     {
         thread_private_index_type* thread_private_index = ( thread_private_index_type* )param;
         shared_index_type*         shared_index         = thread_private_index->shared_index;
@@ -727,7 +730,7 @@ scorep_oaconsumer_copy_merged_region_definitions( scorep_profile_node* node,
     assert( node );
     assert( param );
 
-    if ( node->node_type == scorep_profile_node_regular_region )
+    if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION )
     {
         thread_private_index_type* thread_private_index = ( thread_private_index_type* )param;
         shared_index_type*         shared_index         = thread_private_index->shared_index;

@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -195,13 +198,13 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
     if ( ( context == SCOREP_PROFILE_TASK_CONTEXT_TIED ) &&
          ( location != NULL ) &&
          ( location->free_nodes != NULL ) &&
-         ( type != scorep_profile_node_thread_root ) )
+         ( type != SCOREP_PROFILE_NODE_THREAD_ROOT ) )
     {
         new_node             = location->free_nodes;
         location->free_nodes = new_node->first_child;
         return new_node;
     }
-    else if ( ( type != scorep_profile_node_thread_root ) &&
+    else if ( ( type != SCOREP_PROFILE_NODE_THREAD_ROOT ) &&
               ( ( new_node = scorep_profile_recycle_stub( location ) ) != NULL ) )
     {
         return new_node;
@@ -219,7 +222,7 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
      *  Thus, space for thread root nodes must not be allocated
      *  from profile memory.
      */
-    if ( type == scorep_profile_node_thread_root )
+    if ( type == SCOREP_PROFILE_NODE_THREAD_ROOT )
     {
         new_node = ( scorep_profile_node* )
                    SCOREP_Location_AllocForMisc( location->location_data,
@@ -637,7 +640,7 @@ scorep_profile_get_location_of_node( scorep_profile_node* node )
 {
     while ( node != NULL )
     {
-        if ( node->node_type == scorep_profile_node_thread_root )
+        if ( node->node_type == SCOREP_PROFILE_NODE_THREAD_ROOT )
         {
             return scorep_profile_type_get_location_data( node->type_specific_data );
         }
@@ -729,7 +732,7 @@ get_thread_start_for_fork( scorep_profile_node* root,
     scorep_profile_node* child = root->first_child;
     while ( child != NULL )
     {
-        if ( ( child->node_type == scorep_profile_node_thread_start ) &&
+        if ( ( child->node_type == SCOREP_PROFILE_NODE_THREAD_START ) &&
              ( scorep_profile_type_get_fork_node( child->type_specific_data ) == fork ) )
         {
             return child;

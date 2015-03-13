@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -388,15 +391,15 @@ write_node_tau( SCOREP_Profile_LocationData* location,
     }
     switch ( node->node_type )
     {
-        case scorep_profile_node_regular_region:
+        case SCOREP_PROFILE_NODE_REGULAR_REGION:
             write_region_tau( location, node, parentpath, file, callpath_counter );
             break;
 
-        case scorep_profile_node_parameter_string:
+        case SCOREP_PROFILE_NODE_PARAMETER_STRING:
             write_paramstring_tau( location, node, parentpath, file, callpath_counter );
             break;
 
-        case scorep_profile_node_parameter_integer:
+        case SCOREP_PROFILE_NODE_PARAMETER_INTEGER:
             write_paramint_tau( location, node, parentpath, file, callpath_counter );
             break;
 
@@ -499,7 +502,7 @@ write_data_tau( scorep_profile_node*      node,
     /* Write data in format:
        <callpath id> <number of calls> <child calls> <exclusive time> <inclusive time>
      */
-    if ( node->node_type != scorep_profile_node_regular_region || SCOREP_RegionHandle_GetType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) != SCOREP_REGION_DYNAMIC )
+    if ( node->node_type != SCOREP_PROFILE_NODE_REGULAR_REGION || SCOREP_RegionHandle_GetType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) != SCOREP_REGION_DYNAMIC )
     {
         fprintf( file,
                  "%" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64 " %" PRIu64,

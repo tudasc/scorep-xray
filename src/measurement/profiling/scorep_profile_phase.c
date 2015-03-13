@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2011,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -86,7 +89,7 @@ setup_phase( SCOREP_Profile_LocationData* location,
 static bool
 is_phase( scorep_profile_node* node )
 {
-    if ( node->node_type != scorep_profile_node_regular_region )
+    if ( node->node_type != SCOREP_PROFILE_NODE_REGULAR_REGION )
     {
         return false;
     }

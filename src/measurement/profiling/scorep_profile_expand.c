@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2012,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -35,7 +38,7 @@
  *
  * Contains implmentation for post-processing operations to expand thread start nodes.
  * In this first prost-processing step the nodes of type
- * @ref scorep_profile_node_thread_start are replaced by the callpath to their creation
+ * @ref SCOREP_PROFILE_NODE_THREAD_START are replaced by the callpath to their creation
  * point.
  *
  */
@@ -100,8 +103,8 @@ add_callpath( SCOREP_Profile_LocationData* location,
 
     /* If parent is root node of the thread */
     if ( ( parent == NULL ) ||
-         ( ( parent->node_type == scorep_profile_node_thread_root ) ||
-           ( parent->node_type == scorep_profile_node_thread_start ) ) )
+         ( ( parent->node_type == SCOREP_PROFILE_NODE_THREAD_ROOT ) ||
+           ( parent->node_type == SCOREP_PROFILE_NODE_THREAD_START ) ) )
     {
         return merge_child( location, destination_root,
                             callpath_leaf, data_source );
@@ -143,7 +146,7 @@ sum_children( scorep_profile_node* parent )
 }
 
 /**
-    Replaces a node of type @ref scorep_profile_node_thread_start with the callpath
+    Replaces a node of type @ref SCOREP_PROFILE_NODE_THREAD_START with the callpath
     from the creation point.
     @param thread_start Pointer to the node which is replaced by the callpath of its
            creation point. The creation point should be stored in its type dependent
@@ -159,16 +162,16 @@ expand_thread_start( SCOREP_Profile_LocationData* location,
 
     /* Assertions and setting of relatives */
     UTILS_ASSERT( thread_start != NULL );
-    UTILS_ASSERT( thread_start->node_type == scorep_profile_node_thread_start );
+    UTILS_ASSERT( thread_start->node_type == SCOREP_PROFILE_NODE_THREAD_START );
     thread_root = thread_start->parent;
     UTILS_ASSERT( thread_root != NULL ); /* Thread activation without location creation */
-    UTILS_ASSERT( thread_root->node_type == scorep_profile_node_thread_root );
+    UTILS_ASSERT( thread_root->node_type == SCOREP_PROFILE_NODE_THREAD_ROOT );
 
     creation_point = scorep_profile_type_get_fork_node( thread_start->type_specific_data );
     /* If the creation point happend at another thread start node, follow the
        chain until we find a node that is not a thread start */
     while ( ( creation_point != NULL ) &&
-            ( creation_point->node_type == scorep_profile_node_thread_start ) )
+            ( creation_point->node_type == SCOREP_PROFILE_NODE_THREAD_START ) )
     {
         creation_point = scorep_profile_type_get_fork_node( creation_point->type_specific_data );
     }
@@ -206,7 +209,7 @@ expand_thread_start( SCOREP_Profile_LocationData* location,
 /**
    Expand all thread start nodes of a thread_root.
    @param thread_root Pointer to a thread node whose children of type
-          @ref scorep_profile_node_thread_start are expanded.
+          @ref SCOREP_PROFILE_NODE_THREAD_START are expanded.
  */
 static void
 expand_thread_root( scorep_profile_node* thread_root )
@@ -222,7 +225,7 @@ expand_thread_root( scorep_profile_node* thread_root )
         next_node = thread_start->next_sibling;
 
         /* Expand thread_start node */
-        if ( thread_start->node_type == scorep_profile_node_thread_start )
+        if ( thread_start->node_type == SCOREP_PROFILE_NODE_THREAD_START )
         {
             expand_thread_start( location, thread_start );
         }
@@ -236,7 +239,7 @@ expand_thread_root( scorep_profile_node* thread_root )
 }
 
 /**
-   Expands all threads. All nodes of type @ref scorep_profile_node_thread_start
+   Expands all threads. All nodes of type @ref SCOREP_PROFILE_NODE_THREAD_START
    in the profile are substituted by the callpath to the node where the thread was
    activated. In OpenMP this is the callpath which contained the parallel region
    statement.
@@ -247,7 +250,7 @@ scorep_profile_expand_threads( void )
     scorep_profile_node* thread_root = scorep_profile.first_root_node;
     while ( thread_root != NULL )
     {
-        if ( thread_root->node_type == scorep_profile_node_thread_root )
+        if ( thread_root->node_type == SCOREP_PROFILE_NODE_THREAD_ROOT )
         {
             expand_thread_root( thread_root );
         }
@@ -271,7 +274,7 @@ scorep_profile_sort_threads( void )
     scorep_profile_node* thread_root = scorep_profile.first_root_node;
     while ( thread_root != NULL )
     {
-        if ( thread_root->node_type == scorep_profile_node_thread_root )
+        if ( thread_root->node_type == SCOREP_PROFILE_NODE_THREAD_ROOT )
         {
             thread_count++;
         }
@@ -290,7 +293,7 @@ scorep_profile_sort_threads( void )
         thread_root = scorep_profile.first_root_node;
         while ( thread_root != NULL )
         {
-            if ( thread_root->node_type == scorep_profile_node_thread_root )
+            if ( thread_root->node_type == SCOREP_PROFILE_NODE_THREAD_ROOT )
             {
                 uint32_t index = ( uint32_t )
                                  scorep_profile_type_get_int_value( thread_root->type_specific_data );

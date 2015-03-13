@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -64,41 +67,44 @@
 
 #include <SCOREP_Timing.h>
 
-enum { met_execution_time,      /* inclusive time */
-       met_visits,              /* visits */
+enum
+{
+    MET_EXECUTION_TIME,     /* inclusive time */
+    MET_VISITS,             /* visits */
 
-       met_mpi_time,            /* mpi time */
-       //met_mpi_sync_time,       /* mpi synchronization time */
-       met_mpi_coll_sync_time,  /* mpi collective synchronization time */
-       met_mpi_comm_time,       /* mpi communication time */
-       met_mpi_p2p_comm_time,   /* mpi point-to-point communication time */
-       met_mpi_coll_comm_time,  /* mpi collective communication time */
+    MET_MPI_TIME,           /* mpi time */
+    //met_mpi_sync_time,      /* mpi synchronization time */
+    MET_MPI_COLL_SYNC_TIME, /* mpi collective synchronization time */
+    MET_MPI_COMM_TIME,      /* mpi communication time */
+    MET_MPI_P2P_COMM_TIME,  /* mpi point-to-point communication time */
+    MET_MPI_COLL_COMM_TIME, /* mpi collective communication time */
 
-       met_coll_bsent,          /* collective bytes sent */
-       met_coll_brcvd,          /* collective bytes received */
-       met_coll_syncs,          /* collective sync accumulator */
-       //met_coll_c_dst,          /* collective comm as destination */
-       //met_coll_c_src,          /* collective comm as source */
-       //met_coll_c_xch,          /* collective comm as src & dest */
-       met_send_bytes,          /* sent bytes accumulator */
-       met_send_comms,          /* message send accumulator */
-       //met_send_syncs,          /* zero-sized sends */
-       met_recv_bytes,          /* received bytes accumulator */
-       met_recv_comms,          /* message recv accumulator */
-       //met_recv_syncs,          /* zero-sized recvs */
+    MET_COLL_BSENT,         /* collective bytes sent */
+    MET_COLL_BRCVD,         /* collective bytes received */
+    MET_COLL_SYNCS,         /* collective sync accumulator */
+    //met_coll_c_dst,         /* collective comm as destination */
+    //met_coll_c_src,         /* collective comm as source */
+    //met_coll_c_xch,         /* collective comm as src & dest */
+    MET_SEND_BYTES,         /* sent bytes accumulator */
+    MET_SEND_COMMS,         /* message send accumulator */
+    //met_send_syncs,         /* zero-sized sends */
+    MET_RECV_BYTES,         /* received bytes accumulator */
+    MET_RECV_COMMS,         /* message recv accumulator */
+    //met_recv_syncs,         /* zero-sized recvs */
 
-       met_p2p_bytes,           /* p2p bytes transferred */
-       met_coll_bytes,          /* collective bytes transferred */
-       met_bytes,               /* bytes transferred */
-       met_p2p_comm,            /* p2p communication count */
-       met_coll_comm,           /* collective communication count */
-       met_comm,                /* communication count */
-       //met_p2p_syncs,           /* p2p synchronization count */
-       //met_syncs,               /* synchronization count */
+    MET_P2P_BYTES,          /* p2p bytes transferred */
+    MET_COLL_BYTES,         /* collective bytes transferred */
+    MET_BYTES,              /* bytes transferred */
+    MET_P2P_COMM,           /* p2p communication count */
+    MET_COLL_COMM,          /* collective communication count */
+    MET_COMM,               /* communication count */
+    //met_p2p_syncs,          /* p2p synchronization count */
+    //met_syncs,              /* synchronization count */
 
-       met_dense_start };       /* Number of predefined metrics */
+    MET_DENSE_START         /* Number of predefined metrics */
+};
 
-static uint64_t scorep_cluster_metric_number = met_dense_start;
+static uint64_t scorep_cluster_metric_number = MET_DENSE_START;
 
 /* Type declarations */
 
@@ -883,7 +889,7 @@ get_thread_start_for_fork( scorep_profile_node* root,
     scorep_profile_node* child = root->first_child;
     while ( child != NULL )
     {
-        if ( ( child->node_type == scorep_profile_node_thread_start ) &&
+        if ( ( child->node_type == SCOREP_PROFILE_NODE_THREAD_START ) &&
              ( scorep_profile_type_get_fork_node( child->type_specific_data ) == fork ) )
         {
             return child;
@@ -998,7 +1004,7 @@ get_send_bytes( scorep_profile_node* node )
 static inline bool
 is_mpi_node( scorep_profile_node* node )
 {
-    return node->node_type == scorep_profile_node_regular_region &&
+    return node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION &&
            SCOREP_RegionHandle_GetParadigmType( scorep_profile_type_get_region_handle( node->type_specific_data ) ) == SCOREP_PARADIGM_MPI;
 }
 
@@ -1017,7 +1023,7 @@ scorep_calculate_derived_metrics( scorep_cluster_t*    cluster,
     scorep_profile_node* curr;
 
     /* Get the visits */
-    cluster->mets_sum.dense_metrics[ met_visits ] += path->count;
+    cluster->mets_sum.dense_metrics[ MET_VISITS ] += path->count;
 
     /* Calculate derived MPI metrics */
     if ( is_mpi_node( path ) )
@@ -1029,48 +1035,48 @@ scorep_calculate_derived_metrics( scorep_cluster_t*    cluster,
         uint64_t          execution_time = path->inclusive_time.sum;
         SCOREP_RegionType region_type    = SCOREP_RegionHandle_GetType( scorep_profile_type_get_region_handle( path->type_specific_data ) );
 
-        cluster->mets_sum.dense_metrics[ met_mpi_time ] += execution_time;
+        cluster->mets_sum.dense_metrics[ MET_MPI_TIME ] += execution_time;
         switch ( region_type )
         {
             case SCOREP_REGION_BARRIER:
-                cluster->mets_sum.dense_metrics[ met_mpi_coll_sync_time ] += execution_time;
-                cluster->mets_sum.dense_metrics[ met_coll_syncs ]         += visits;
+                cluster->mets_sum.dense_metrics[ MET_MPI_COLL_SYNC_TIME ] += execution_time;
+                cluster->mets_sum.dense_metrics[ MET_COLL_SYNCS ]         += visits;
                 break;
             case SCOREP_REGION_COLL_ONE2ALL:
             case SCOREP_REGION_COLL_ALL2ONE:
             case SCOREP_REGION_COLL_ALL2ALL:
             case SCOREP_REGION_COLL_OTHER:
-                cluster->mets_sum.dense_metrics[ met_mpi_coll_comm_time ] += execution_time;
-                cluster->mets_sum.dense_metrics[ met_coll_comm ]          += visits;
+                cluster->mets_sum.dense_metrics[ MET_MPI_COLL_COMM_TIME ] += execution_time;
+                cluster->mets_sum.dense_metrics[ MET_COLL_COMM ]          += visits;
                 send_bytes                                                 = get_send_bytes( path );
                 if ( send_bytes != NULL )
                 {
-                    cluster->mets_sum.dense_metrics[ met_coll_bsent ] += send_bytes->sum;
+                    cluster->mets_sum.dense_metrics[ MET_COLL_BSENT ] += send_bytes->sum;
                 }
                 recv_bytes = get_recv_bytes( path );
                 if ( recv_bytes != NULL )
                 {
-                    cluster->mets_sum.dense_metrics[ met_coll_brcvd ] += recv_bytes->sum;
+                    cluster->mets_sum.dense_metrics[ MET_COLL_BRCVD ] += recv_bytes->sum;
                 }
                 break;
             case SCOREP_REGION_POINT2POINT:
-                cluster->mets_sum.dense_metrics[ met_mpi_p2p_comm_time ] += execution_time;
-                cluster->mets_sum.dense_metrics[ met_p2p_comm ]          += visits;
+                cluster->mets_sum.dense_metrics[ MET_MPI_P2P_COMM_TIME ] += execution_time;
+                cluster->mets_sum.dense_metrics[ MET_P2P_COMM ]          += visits;
                 send_bytes                                                = get_send_bytes( path );
                 if ( send_bytes != NULL )
                 {
-                    cluster->mets_sum.dense_metrics[ met_send_bytes ] += send_bytes->sum;
-                    cluster->mets_sum.dense_metrics[ met_send_comms ] += send_bytes->count;
+                    cluster->mets_sum.dense_metrics[ MET_SEND_BYTES ] += send_bytes->sum;
+                    cluster->mets_sum.dense_metrics[ MET_SEND_COMMS ] += send_bytes->count;
                 }
                 recv_bytes = get_recv_bytes( path );
                 if ( recv_bytes != NULL )
                 {
-                    cluster->mets_sum.dense_metrics[ met_recv_bytes ] += recv_bytes->sum;
-                    cluster->mets_sum.dense_metrics[ met_recv_comms ] += recv_bytes->count;
+                    cluster->mets_sum.dense_metrics[ MET_RECV_BYTES ] += recv_bytes->sum;
+                    cluster->mets_sum.dense_metrics[ MET_RECV_COMMS ] += recv_bytes->count;
                 }
                 break;
             default:
-                cluster->mets_sum.dense_metrics[ met_mpi_time ] += execution_time;
+                cluster->mets_sum.dense_metrics[ MET_MPI_TIME ] += execution_time;
         }
     }
 
@@ -1107,44 +1113,44 @@ scorep_post_process_derived_metrics( scorep_cluster_t* cluster )
     scorep_profile_node* path = cluster->root;
 
     /* Time */
-    cluster->mets_sum.dense_metrics[ met_execution_time ] = path->inclusive_time.sum;
+    cluster->mets_sum.dense_metrics[ MET_EXECUTION_TIME ] = path->inclusive_time.sum;
 
     /* Set iteration_count to 1 */
     cluster->iteration_count = 1;
 
     /* Derived MPI metrics */
-    cluster->mets_sum.dense_metrics[ met_mpi_comm_time ]
-        = cluster->mets_sum.dense_metrics[ met_mpi_p2p_comm_time ]
-          + cluster->mets_sum.dense_metrics[ met_mpi_coll_comm_time ];
+    cluster->mets_sum.dense_metrics[ MET_MPI_COMM_TIME ]
+        = cluster->mets_sum.dense_metrics[ MET_MPI_P2P_COMM_TIME ]
+          + cluster->mets_sum.dense_metrics[ MET_MPI_COLL_COMM_TIME ];
 
-    cluster->mets_sum.dense_metrics[ met_mpi_time ]
-        += cluster->mets_sum.dense_metrics[ met_mpi_comm_time ]
-           + cluster->mets_sum.dense_metrics[ met_mpi_coll_sync_time ];
+    cluster->mets_sum.dense_metrics[ MET_MPI_TIME ]
+        += cluster->mets_sum.dense_metrics[ MET_MPI_COMM_TIME ]
+           + cluster->mets_sum.dense_metrics[ MET_MPI_COLL_SYNC_TIME ];
 
-    cluster->mets_sum.dense_metrics[ met_p2p_bytes ]
-        = cluster->mets_sum.dense_metrics[ met_send_bytes ]
-          + cluster->mets_sum.dense_metrics[ met_recv_bytes ];
+    cluster->mets_sum.dense_metrics[ MET_P2P_BYTES ]
+        = cluster->mets_sum.dense_metrics[ MET_SEND_BYTES ]
+          + cluster->mets_sum.dense_metrics[ MET_RECV_BYTES ];
 
-    cluster->mets_sum.dense_metrics[ met_coll_bytes ]
-        = cluster->mets_sum.dense_metrics[ met_coll_brcvd ]
-          + cluster->mets_sum.dense_metrics[ met_coll_bsent ];
+    cluster->mets_sum.dense_metrics[ MET_COLL_BYTES ]
+        = cluster->mets_sum.dense_metrics[ MET_COLL_BRCVD ]
+          + cluster->mets_sum.dense_metrics[ MET_COLL_BSENT ];
 
-    cluster->mets_sum.dense_metrics[ met_bytes ]
-        = cluster->mets_sum.dense_metrics[ met_p2p_bytes ]
-          + cluster->mets_sum.dense_metrics[ met_coll_bytes ];
+    cluster->mets_sum.dense_metrics[ MET_BYTES ]
+        = cluster->mets_sum.dense_metrics[ MET_P2P_BYTES ]
+          + cluster->mets_sum.dense_metrics[ MET_COLL_BYTES ];
 
-    cluster->mets_sum.dense_metrics[ met_coll_comm ]
-        += cluster->mets_sum.dense_metrics[ met_coll_syncs ];
+    cluster->mets_sum.dense_metrics[ MET_COLL_COMM ]
+        += cluster->mets_sum.dense_metrics[ MET_COLL_SYNCS ];
 
-    cluster->mets_sum.dense_metrics[ met_comm ]
-        = cluster->mets_sum.dense_metrics[ met_p2p_comm ]
-          + cluster->mets_sum.dense_metrics[ met_coll_comm ];
+    cluster->mets_sum.dense_metrics[ MET_COMM ]
+        = cluster->mets_sum.dense_metrics[ MET_P2P_COMM ]
+          + cluster->mets_sum.dense_metrics[ MET_COLL_COMM ];
 
     /* Dense metrics */
-    uint32_t dense_end = met_dense_start + SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics();
-    for ( uint32_t mr = met_dense_start; mr < dense_end; mr++ )
+    uint32_t dense_end = MET_DENSE_START + SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics();
+    for ( uint32_t mr = MET_DENSE_START; mr < dense_end; mr++ )
     {
-        cluster->mets_sum.dense_metrics[ mr ] = path->dense_metrics[ mr - met_dense_start ].sum;
+        cluster->mets_sum.dense_metrics[ mr ] = path->dense_metrics[ mr - MET_DENSE_START ].sum;
     }
 
     /* Set avg data based on sum data. This function is only
@@ -1596,7 +1602,7 @@ consider_visit_count( int cluster_mode, scorep_profile_node* node )
          cluster_mode == 5 ||
          ( cluster_mode == 4 && is_mpi_node( node ) ) )
     {
-        if ( node->node_type == scorep_profile_node_regular_region )
+        if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION )
         {
             const char* name = SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) );
             if ( ( 0 == strncmp( "MPI_Probe", name, 9 ) ) ||
@@ -1976,7 +1982,7 @@ scorep_cluster_if_necessary( SCOREP_Profile_LocationData* location,
     if ( NULL == scorep_clusterer )
     {
         /* Initialize also the number of dense metrics */
-        scorep_cluster_metric_number = met_dense_start
+        scorep_cluster_metric_number = MET_DENSE_START
                                        + SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics();
 
         /* Create clusterer */

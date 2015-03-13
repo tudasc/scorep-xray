@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2012,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -65,13 +68,13 @@ typedef struct
  */
 typedef enum
 {
-    scorep_profile_node_regular_region,
-    scorep_profile_node_parameter_string,
-    scorep_profile_node_parameter_integer,
-    scorep_profile_node_thread_root,
-    scorep_profile_node_thread_start,
-    scorep_profile_node_collapse,
-    scorep_profile_node_task_root,
+    SCOREP_PROFILE_NODE_REGULAR_REGION,
+    SCOREP_PROFILE_NODE_PARAMETER_STRING,
+    SCOREP_PROFILE_NODE_PARAMETER_INTEGER,
+    SCOREP_PROFILE_NODE_THREAD_ROOT,
+    SCOREP_PROFILE_NODE_THREAD_START,
+    SCOREP_PROFILE_NODE_COLLAPSE,
+    SCOREP_PROFILE_NODE_TASK_ROOT
 } scorep_profile_node_type;
 
 /**
@@ -98,20 +101,20 @@ typedef enum
 
    Here is a list which data this field contains:
    <dl>
-    <dt>scorep_profile_node_regular_region</dt>
+    <dt>SCOREP_PROFILE_NODE_REGULAR_REGION</dt>
     <dd>The region handle</dd>
-    <dt>scorep_profile_node_parameter_string</dt>
+    <dt>SCOREP_PROFILE_NODE_PARAMETER_STRING</dt>
     <dd>The parameter handle and a handle for the string value</dd>
-    <dt>scorep_profile_node_parameter_integer</dt>
+    <dt>SCOREP_PROFILE_NODE_PARAMETER_INTEGER</dt>
     <dd>The parameter handle and an integer value</dd>
-    <dt>scorep_profile_node_thread_root</dt>
+    <dt>SCOREP_PROFILE_NODE_THREAD_ROOT</dt>
     <dd>A pointer to a @ref scorep_profile_root_node_data instance and the thread id</dd>
-    <dt>scorep_profile_node_thread_start</dt>
+    <dt>SCOREP_PROFILE_NODE_THREAD_START</dt>
     <dd>A pointer to the @ref scorep_profile_node instance from which the new thread
         was created</dd>
-    <dt>scorep_profile_node_collapse</dt>
+    <dt>SCOREP_PROFILE_NODE_COLLAPSE</dt>
     <dd>The depth level of the node</dd>
-    <dt>scorep_profile_node_task_root</dt>
+    <dt>SCOREP_PROFILE_NODE_TASK_ROOT</dt>
     <dd>The region handle</dd>
    </dl>
 

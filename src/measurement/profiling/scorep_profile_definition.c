@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2012,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -121,7 +124,7 @@ scorep_profile_get_number_of_threads( void )
 
     while ( current != NULL )
     {
-        if ( current->node_type == scorep_profile_node_thread_root )
+        if ( current->node_type == SCOREP_PROFILE_NODE_THREAD_ROOT )
         {
             no_of_threads++;
         }

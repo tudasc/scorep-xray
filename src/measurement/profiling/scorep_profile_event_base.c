@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -62,7 +65,7 @@ scorep_profile_enter( SCOREP_Profile_LocationData* location,
 
     /* If we are already in a collapse node -> do nothing more */
     if ( ( current_node != NULL ) &&
-         ( current_node->node_type == scorep_profile_node_collapse ) )
+         ( current_node->node_type == SCOREP_PROFILE_NODE_COLLAPSE ) )
     {
         if ( scorep_profile.reached_depth <  location->current_depth )
         {
@@ -82,7 +85,7 @@ scorep_profile_enter( SCOREP_Profile_LocationData* location,
         scorep_profile_type_set_depth( &node_data, location->current_depth );
         node = scorep_profile_find_create_child( location,
                                                  current_node,
-                                                 scorep_profile_node_collapse,
+                                                 SCOREP_PROFILE_NODE_COLLAPSE,
                                                  node_data,
                                                  timestamp );
     }
@@ -92,7 +95,7 @@ scorep_profile_enter( SCOREP_Profile_LocationData* location,
         scorep_profile_type_set_region_handle( &node_data, region );
         node = scorep_profile_find_create_child( location,
                                                  current_node,
-                                                 scorep_profile_node_regular_region,
+                                                 SCOREP_PROFILE_NODE_REGULAR_REGION,
                                                  node_data,
                                                  timestamp );
     }
@@ -138,7 +141,7 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
 
     /* If we are in a collapse node, check whether the current depth is still
        larger than the creation depth of the collapse node */
-    if ( ( node->node_type == scorep_profile_node_collapse ) &&
+    if ( ( node->node_type == SCOREP_PROFILE_NODE_COLLAPSE ) &&
          ( location->current_depth > scorep_profile_type_get_depth( node->type_specific_data ) ) )
     {
         location->current_depth--;
@@ -167,12 +170,12 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
 
         parent = node->parent;
     }
-    while ( ( node->node_type != scorep_profile_node_regular_region ) &&
-            ( node->node_type != scorep_profile_node_collapse ) &&
+    while ( ( node->node_type != SCOREP_PROFILE_NODE_REGULAR_REGION ) &&
+            ( node->node_type != SCOREP_PROFILE_NODE_COLLAPSE ) &&
             ( parent != NULL ) );
     /* If this was a parameter node also exit next level node */
 
-    if ( ( node->node_type == scorep_profile_node_regular_region ) &&
+    if ( ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION ) &&
          ( scorep_profile_type_get_region_handle( node->type_specific_data ) != region ) )
     {
         UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,

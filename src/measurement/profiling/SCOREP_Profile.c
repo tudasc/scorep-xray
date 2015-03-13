@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2013,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -176,10 +179,10 @@ SCOREP_Profile_Finalize( void )
 
     /* Update all root nodes which survive a finalize, because locations are not
        reinitialized. Assume that the siblings of scorep_profile.first_root_node
-       are all of type scorep_profile_node_thread_root. */
+       are all of type SCOREP_PROFILE_NODE_THREAD_ROOT. */
     while ( current != NULL )
     {
-        if ( current->node_type == scorep_profile_node_thread_root )
+        if ( current->node_type == SCOREP_PROFILE_NODE_THREAD_ROOT )
         {
             /* Cut off children */
             current->first_child = NULL;
@@ -249,8 +252,8 @@ SCOREP_Profile_Process( SCOREP_Location* location )
         {
             node = scorep_profile_get_current_node( SCOREP_Location_GetProfileData( location ) );
             while ( ( node != NULL ) &&
-                    ( node->node_type != scorep_profile_node_regular_region ) &&
-                    ( node->node_type != scorep_profile_node_collapse ) )
+                    ( node->node_type != SCOREP_PROFILE_NODE_REGULAR_REGION ) &&
+                    ( node->node_type != SCOREP_PROFILE_NODE_COLLAPSE ) )
             {
                 node = node->parent;
             }
@@ -259,7 +262,7 @@ SCOREP_Profile_Process( SCOREP_Location* location )
                 break;
             }
 
-            if ( node->node_type == scorep_profile_node_regular_region  )
+            if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION  )
             {
                 SCOREP_RegionHandle region =
                     scorep_profile_type_get_region_handle( node->type_specific_data );
@@ -267,7 +270,7 @@ SCOREP_Profile_Process( SCOREP_Location* location )
                          SCOREP_RegionHandle_GetName( region ) );
                 SCOREP_Profile_Exit( location, region, exit_time, metrics );
             }
-            else if ( node->node_type == scorep_profile_node_collapse )
+            else if ( node->node_type == SCOREP_PROFILE_NODE_COLLAPSE )
             {
                 fprintf( stderr, "Warning: Force exit from collapsed node\n" );
                 SCOREP_Profile_Exit( location, SCOREP_INVALID_REGION,
@@ -288,7 +291,7 @@ SCOREP_Profile_Process( SCOREP_Location* location )
     scorep_cluster_postprocess();
 
     /* Substitute parameter entries by regions */
-    if ( scorep_profile_output_format != SCOREP_Profile_OutputTauSnapshot )
+    if ( scorep_profile_output_format != SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT )
     {
         scorep_profile_substitute_parameter();
     }
@@ -309,19 +312,19 @@ SCOREP_Profile_Process( SCOREP_Location* location )
 void
 SCOREP_Profile_Write( SCOREP_Location* location )
 {
-    if ( scorep_profile_output_format == SCOREP_Profile_OutputNone )
+    if ( scorep_profile_output_format == SCOREP_PROFILE_OUTPUT_NONE )
     {
         return;
     }
-    else if ( scorep_profile_output_format & SCOREP_Profile_OutputCube4 )
+    else if ( scorep_profile_output_format & SCOREP_PROFILE_OUTPUT_CUBE4 )
     {
         scorep_profile_write_cube4( false );
     }
-    else if ( scorep_profile_output_format & SCOREP_Profile_OutputTauSnapshot )
+    else if ( scorep_profile_output_format & SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT )
     {
         scorep_profile_write_tau_snapshot( SCOREP_Location_GetProfileData( location ) );
     }
-    else if ( scorep_profile_output_format & SCOREP_Profile_OutputCubeTuple )
+    else if ( scorep_profile_output_format & SCOREP_PROFILE_OUTPUT_CUBE_TUPLE )
     {
         scorep_profile_write_cube4( true );
     }
@@ -526,7 +529,7 @@ SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
     /* Get new callpath node */
     node = scorep_profile_find_create_child( location,
                                              scorep_profile_get_current_node( location ),
-                                             scorep_profile_node_parameter_string,
+                                             SCOREP_PROFILE_NODE_PARAMETER_STRING,
                                              node_data, -1 );
 
     /* Disable profiling if node creation failed */
@@ -581,7 +584,7 @@ SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
     {
         node = scorep_profile_create_node( location,
                                            parent,
-                                           scorep_profile_node_parameter_integer,
+                                           SCOREP_PROFILE_NODE_PARAMETER_INTEGER,
                                            node_data,
                                            -1,
                                            scorep_profile_get_task_context( parent ) );
@@ -592,7 +595,7 @@ SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
     {
         node = scorep_profile_find_create_child( location,
                                                  parent,
-                                                 scorep_profile_node_parameter_integer,
+                                                 SCOREP_PROFILE_NODE_PARAMETER_INTEGER,
                                                  node_data, -1 );
     }
 
@@ -670,7 +673,7 @@ SCOREP_Profile_OnLocationActivation( SCOREP_Location* locationData,
     /* Check wether such an activation node already exists */
     node = root->first_child;
     while ( ( node != NULL ) &&
-            ( ( node->node_type != scorep_profile_node_thread_start ) ||
+            ( ( node->node_type != SCOREP_PROFILE_NODE_THREAD_START ) ||
               ( creation_point != scorep_profile_type_get_fork_node( node->type_specific_data ) ) ) )
     {
         node = node->next_sibling;
@@ -683,7 +686,7 @@ SCOREP_Profile_OnLocationActivation( SCOREP_Location* locationData,
         scorep_profile_type_set_fork_node( &data, creation_point );
         node = scorep_profile_create_node( thread_data,
                                            root,
-                                           scorep_profile_node_thread_start,
+                                           SCOREP_PROFILE_NODE_THREAD_START,
                                            data, 0, false );
 
         /* Disable profiling if node creation failed */
@@ -748,7 +751,7 @@ SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
     /* Create thread root node */
     node = scorep_profile_create_node( thread_data,
                                        NULL,
-                                       scorep_profile_node_thread_root,
+                                       SCOREP_PROFILE_NODE_THREAD_ROOT,
                                        node_data, 0, false );
 
     /* Disable profiling if node creation failed */
@@ -812,7 +815,7 @@ SCOREP_Profile_ThreadFork( SCOREP_Location* threadData,
 
     /* In case the fork node is a thread start node, this thread started at the same
        node like its parent thread. Thus, transfer the pointer. */
-    if ( fork_node->node_type == scorep_profile_node_thread_start &&
+    if ( fork_node->node_type == SCOREP_PROFILE_NODE_THREAD_START &&
          scorep_profile_type_get_fork_node( fork_node->type_specific_data ) != NULL )
     {
         fork_node = scorep_profile_type_get_fork_node( fork_node->type_specific_data );

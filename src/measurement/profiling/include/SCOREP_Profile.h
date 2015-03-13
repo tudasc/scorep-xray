@@ -22,6 +22,9 @@
  * Copyright (c) 2009-2011,
  * Technische Universitaet Muenchen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Darmstadt, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -70,13 +73,13 @@ typedef struct SCOREP_Profile_LocationData SCOREP_Profile_LocationData;
  */
 typedef enum
 {
-    SCOREP_Profile_OutputNone        = 0,
-    SCOREP_Profile_OutputTauSnapshot = 1,
-    SCOREP_Profile_OutputCube4       = 2,
-    SCOREP_Profile_OutputCubeTuple   = 4,
+    SCOREP_PROFILE_OUTPUT_NONE         = 0,
+    SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT = 1,
+    SCOREP_PROFILE_OUTPUT_CUBE4        = 2,
+    SCOREP_PROFILE_OUTPUT_CUBE_TUPLE   = 4,
 } SCOREP_Profile_OutputFormat;
 
-#define SCOREP_Profile_OutputDefault SCOREP_Profile_OutputCube4
+#define SCOREP_PROFILE_OUTPUT_DEFAULT SCOREP_PROFILE_OUTPUT_CUBE4
 
 /* ----------------------------------------------------- Initialization / Finalization */
 

@@ -56,9 +56,9 @@ static SCOREP_RegionHandle scorep_profile_collapse_region = SCOREP_INVALID_REGIO
 static void
 substitute_collapse( scorep_profile_node* node, void* param )
 {
-    if ( node->node_type == scorep_profile_node_collapse )
+    if ( node->node_type == SCOREP_PROFILE_NODE_COLLAPSE )
     {
-        node->node_type = scorep_profile_node_regular_region;
+        node->node_type = SCOREP_PROFILE_NODE_REGULAR_REGION;
         scorep_profile_type_set_region_handle( &node->type_specific_data,
                                                scorep_profile_collapse_region );
     }
