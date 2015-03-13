@@ -104,7 +104,7 @@ enum
     MET_DENSE_START         /* Number of predefined metrics */
 };
 
-static uint64_t scorep_cluster_metric_number = MET_DENSE_START;
+static uint64_t cluster_metric_number = MET_DENSE_START;
 
 /* Type declarations */
 
@@ -249,7 +249,7 @@ typedef struct scorep_clusterer_t
 /* Variable and constant declarations */
 
 /* Whether or not to measure time spent in clustering */
-#define SCOREP_MEASURE_CLUSTERING_TIME
+#define MEASURE_CLUSTERING_TIME
 
 /**
    The one global clusterer object.
@@ -257,40 +257,40 @@ typedef struct scorep_clusterer_t
 scorep_clusterer_t* scorep_clusterer;
 
 /* Mutex */
-static SCOREP_Mutex scorep_cluster_distance_lock;
-static SCOREP_Mutex scorep_cluster_lock;
-static SCOREP_Mutex scorep_cluster_queue_elem_lock;
+static SCOREP_Mutex cluster_distance_lock;
+static SCOREP_Mutex cluster_lock;
+static SCOREP_Mutex cluster_queue_elem_lock;
 
 /* Flag whether clustering is initialized and enabled */
-static bool scorep_clustering_enabled = false;
+static bool clustering_enabled = false;
 
 /* Stores a pointer to the root node of the clustered dynamic region.
    Used for fast identification whether a node should be clustered. */
-static scorep_profile_node* scorep_cluster_parent = NULL;
+static scorep_profile_node* cluster_parent = NULL;
 
 
 /* Some prototypes */
 static uint32_t
-scorep_calculate_hash( scorep_profile_node* path );
+calculate_hash( scorep_profile_node* path );
 
 static void
-scorep_calculate_derived_metrics( scorep_cluster_t*    cluster,
-                                  scorep_profile_node* path );
+calculate_derived_metrics( scorep_cluster_t*    cluster,
+                           scorep_profile_node* path );
 
 static void
-scorep_post_process_derived_metrics( scorep_cluster_t* cluster );
+post_process_derived_metrics( scorep_cluster_t* cluster );
 
 
 static int
-scorep_compare_call_trees( scorep_profile_node* a,
-                           scorep_profile_node* b,
-                           uint32_t             a_it_cnt,
-                           uint32_t             b_it_cnt );
+compare_call_trees( scorep_profile_node* a,
+                    scorep_profile_node* b,
+                    uint32_t             itCntA,
+                    uint32_t             itCntB );
 
 static void
-scorep_add_iter_to_clustering( SCOREP_Profile_LocationData* location,
-                               scorep_profile_node*         path,
-                               scorep_clusterer_t*          clusterer );
+add_iter_to_clustering( SCOREP_Profile_LocationData* location,
+                        scorep_profile_node*         path,
+                        scorep_clusterer_t*          clusterer );
 
 /* **************************************************************************
    Local helper functions
@@ -302,13 +302,13 @@ scorep_add_iter_to_clustering( SCOREP_Profile_LocationData* location,
    @returns the root iteration of the disjoint set.
  */
 static scorep_clustered_iteration_t*
-scorep_disjoint_set_get_root( scorep_clustered_iteration_t* iteration )
+disjoint_set_get_root( scorep_clustered_iteration_t* iteration )
 {
     if ( NULL == iteration->parent )
     {
         return iteration;
     }
-    return iteration->parent = scorep_disjoint_set_get_root( iteration->parent );
+    return iteration->parent = disjoint_set_get_root( iteration->parent );
 }
 
 /**
@@ -321,12 +321,12 @@ scorep_disjoint_set_get_root( scorep_clustered_iteration_t* iteration )
    @param cluster The cluster with which a and b will be associated with.
  */
 static void
-scorep_disjoint_set_merge( scorep_clustered_iteration_t* a,
-                           scorep_clustered_iteration_t* b,
-                           scorep_cluster_t*             cluster )
+disjoint_set_merge( scorep_clustered_iteration_t* a,
+                    scorep_clustered_iteration_t* b,
+                    scorep_cluster_t*             cluster )
 {
-    a = scorep_disjoint_set_get_root( a );
-    b = scorep_disjoint_set_get_root( b );
+    a = disjoint_set_get_root( a );
+    b = disjoint_set_get_root( b );
     if ( a->rank < b->rank )
     {
         scorep_clustered_iteration_t* temp;
@@ -355,15 +355,15 @@ scorep_disjoint_set_merge( scorep_clustered_iteration_t* a,
    @returns a the distance of a and b.
  */
 static double
-scorep_calculate_cluster_distance( const scorep_cluster_t* a,
-                                   const scorep_cluster_t* b,
-                                   scorep_reference_t*     reference )
+calculate_cluster_distance( const scorep_cluster_t* a,
+                            const scorep_cluster_t* b,
+                            scorep_reference_t*     reference )
 {
     /*  scorep_warning("DISTANCE BEGIN");*/
     /* Calculate basic distance value */
     double distance = 0.0;
     int    mr;
-    for ( mr = 0; mr < scorep_cluster_metric_number; mr++ )
+    for ( mr = 0; mr < cluster_metric_number; mr++ )
     {
         double diff = a->mets_avg.dense_metrics[ mr ] - b->mets_avg.dense_metrics[ mr ];
         if ( 0.0 == diff )
@@ -408,11 +408,11 @@ scorep_calculate_cluster_distance( const scorep_cluster_t* a,
             profile pages are freed.
  */
 static scorep_cluster_distance_t*
-scorep_new_cluster_distance( SCOREP_Location*    location,
-                             scorep_clusterer_t* clusterer )
+new_cluster_distance( SCOREP_Location*    location,
+                      scorep_clusterer_t* clusterer )
 {
     scorep_cluster_distance_t* cluster_distance;
-    SCOREP_MutexLock( scorep_cluster_distance_lock );
+    SCOREP_MutexLock( cluster_distance_lock );
 
     if ( NULL == clusterer->free_cluster_distances )
     {
@@ -426,29 +426,29 @@ scorep_new_cluster_distance( SCOREP_Location*    location,
     clusterer->free_cluster_distances = cluster_distance->next;
     cluster_distance->next            = NULL;
 
-    SCOREP_MutexUnlock( scorep_cluster_distance_lock );
+    SCOREP_MutexUnlock( cluster_distance_lock );
     return cluster_distance;
 }
 
 /**
    Adds a scorep_cluster_distance_t object to the list of unused.
-   @param distance_obj The distance object that will be recycled.
+   @param distanceObj  The distance object that will be recycled.
    @param clusterer    The associated clusterer.
    @returns the next object in the list (which might be useful when
             deleting a list of objects).
  */
 static scorep_cluster_distance_t*
-scorep_delete_cluster_distance( scorep_cluster_distance_t* distance_obj,
-                                scorep_clusterer_t*        clusterer )
+delete_cluster_distance( scorep_cluster_distance_t* distanceObj,
+                         scorep_clusterer_t*        clusterer )
 {
     scorep_cluster_distance_t* next;
-    SCOREP_MutexLock( scorep_cluster_distance_lock );
+    SCOREP_MutexLock( cluster_distance_lock );
 
-    next                              = distance_obj->next;
-    distance_obj->next                = clusterer->free_cluster_distances;
-    clusterer->free_cluster_distances = distance_obj;
+    next                              = distanceObj->next;
+    distanceObj->next                 = clusterer->free_cluster_distances;
+    clusterer->free_cluster_distances = distanceObj;
 
-    SCOREP_MutexUnlock( scorep_cluster_distance_lock );
+    SCOREP_MutexUnlock( cluster_distance_lock );
     return next;
 }
 
@@ -465,13 +465,13 @@ scorep_delete_cluster_distance( scorep_cluster_distance_t* distance_obj,
    @returns the new object.
  */
 static scorep_cluster_t*
-scorep_new_cluster( SCOREP_Location*              location,
-                    scorep_clusterer_t*           clusterer,
-                    scorep_clustered_iteration_t* clustered_iteration,
-                    scorep_profile_node*          root )
+new_cluster( SCOREP_Location*              location,
+             scorep_clusterer_t*           clusterer,
+             scorep_clustered_iteration_t* clustered_iteration,
+             scorep_profile_node*          root )
 {
     scorep_cluster_t* cluster;
-    SCOREP_MutexLock( scorep_cluster_lock );
+    SCOREP_MutexLock( cluster_lock );
 
     /* Create structural parts */
     if ( NULL == clusterer->free_clusters )
@@ -494,10 +494,10 @@ scorep_new_cluster( SCOREP_Location*              location,
     cluster->iteration_count = 1;
 
     /* Create metric part */
-    size_t metric_array_size = sizeof( uint64_t ) * scorep_cluster_metric_number;
+    size_t metric_array_size = sizeof( uint64_t ) * cluster_metric_number;
     cluster->mets_sum.dense_metrics = SCOREP_Location_AllocForProfile( location, metric_array_size );
     cluster->mets_avg.dense_metrics = SCOREP_Location_AllocForProfile( location, metric_array_size );
-    for ( int mr = 0; mr < scorep_cluster_metric_number; mr++ )
+    for ( int mr = 0; mr < cluster_metric_number; mr++ )
     {
         cluster->mets_sum.dense_metrics[ mr ] = 0.0;
         cluster->mets_avg.dense_metrics[ mr ] = 0.0;
@@ -511,7 +511,7 @@ scorep_new_cluster( SCOREP_Location*              location,
     cluster->disjoint_set->parent       = NULL;
     cluster->next                       = NULL;
 
-    SCOREP_MutexUnlock( scorep_cluster_lock );
+    SCOREP_MutexUnlock( cluster_lock );
     return cluster;
 }
 
@@ -524,21 +524,21 @@ scorep_new_cluster( SCOREP_Location*              location,
             cluster's equvalence list.
  */
 static scorep_cluster_t*
-scorep_delete_cluster( scorep_cluster_t*   cluster,
-                       scorep_clusterer_t* clusterer )
+delete_cluster( scorep_cluster_t*   cluster,
+                scorep_clusterer_t* clusterer )
 {
     scorep_cluster_t* next;
-    SCOREP_MutexLock( scorep_cluster_lock );
+    SCOREP_MutexLock( cluster_lock );
 
     next = cluster->next;
     while ( NULL != cluster->d )
     {
-        cluster->d = scorep_delete_cluster_distance( cluster->d, clusterer );
+        cluster->d = delete_cluster_distance( cluster->d, clusterer );
     }
     cluster->next            = clusterer->free_clusters;
     clusterer->free_clusters = cluster;
 
-    SCOREP_MutexUnlock( scorep_cluster_lock );
+    SCOREP_MutexUnlock( cluster_lock );
     return next;
 }
 
@@ -548,7 +548,7 @@ scorep_delete_cluster( scorep_cluster_t*   cluster,
    @retuns the new object.
  */
 static scorep_clustered_iteration_t*
-scorep_new_clustered_iteration( SCOREP_Location* location )
+new_clustered_iteration( SCOREP_Location* location )
 {
     scorep_clustered_iteration_t* clustered_iteration;
     clustered_iteration =
@@ -565,7 +565,7 @@ scorep_new_clustered_iteration( SCOREP_Location* location )
    @retuns the new object.
  */
 static scorep_equiv_cluster_list_t*
-scorep_new_equiv_cluster_list( SCOREP_Location* location )
+new_equiv_cluster_list( SCOREP_Location* location )
 {
     scorep_equiv_cluster_list_t* list;
     list          = SCOREP_Location_AllocForProfile( location, sizeof( scorep_equiv_cluster_list_t ) );
@@ -583,7 +583,7 @@ scorep_new_equiv_cluster_list( SCOREP_Location* location )
    @retuns the new object.
  */
 static scorep_equiv_cluster_list_set_t*
-scorep_new_equiv_cluster_list_set( SCOREP_Location* location )
+new_equiv_cluster_list_set( SCOREP_Location* location )
 {
     scorep_equiv_cluster_list_set_t* list_set;
     list_set = SCOREP_Location_AllocForProfile( location, sizeof( scorep_equiv_cluster_list_set_t ) );
@@ -601,15 +601,15 @@ scorep_new_equiv_cluster_list_set( SCOREP_Location* location )
    @retuns the new object.
  */
 static scorep_reference_t*
-scorep_new_reference( SCOREP_Location* location )
+new_reference( SCOREP_Location* location )
 {
     uint32_t            mr;
     scorep_reference_t* reference;
     reference = SCOREP_Location_AllocForProfile( location, sizeof( scorep_reference_t ) );
     /* Initialize */
     reference->count         = 0;
-    reference->dense_metrics = SCOREP_Location_AllocForProfile( location, sizeof( uint64_t ) * scorep_cluster_metric_number );
-    for ( mr = 0; mr < scorep_cluster_metric_number; mr++ )
+    reference->dense_metrics = SCOREP_Location_AllocForProfile( location, sizeof( uint64_t ) * cluster_metric_number );
+    for ( mr = 0; mr < cluster_metric_number; mr++ )
     {
         reference->dense_metrics[ mr ] = 0.0;
     }
@@ -623,12 +623,12 @@ scorep_new_reference( SCOREP_Location* location )
    @retuns the new object.
  */
 static scorep_cluster_queue_elem_t*
-scorep_new_cluster_queue_elem( SCOREP_Location*     location,
-                               scorep_clusterer_t*  clusterer,
-                               scorep_profile_node* path )
+new_cluster_queue_elem( SCOREP_Location*     location,
+                        scorep_clusterer_t*  clusterer,
+                        scorep_profile_node* path )
 {
     scorep_cluster_queue_elem_t* elem;
-    SCOREP_MutexLock( scorep_cluster_queue_elem_lock );
+    SCOREP_MutexLock( cluster_queue_elem_lock );
 
     if ( NULL == clusterer->free_cluster_queue_elems )
     {
@@ -639,7 +639,7 @@ scorep_new_cluster_queue_elem( SCOREP_Location*     location,
     }
     elem                                = clusterer->free_cluster_queue_elems;
     clusterer->free_cluster_queue_elems = elem->next;
-    SCOREP_MutexUnlock( scorep_cluster_queue_elem_lock );
+    SCOREP_MutexUnlock( cluster_queue_elem_lock );
 
     /* Initialize */
     elem->path = path;
@@ -654,15 +654,15 @@ scorep_new_cluster_queue_elem( SCOREP_Location*     location,
    @param clusterer The associated clusterer.
  */
 static void
-scorep_delete_cluster_queue_elem( scorep_cluster_queue_elem_t* elem,
-                                  scorep_clusterer_t*          clusterer )
+delete_cluster_queue_elem( scorep_cluster_queue_elem_t* elem,
+                           scorep_clusterer_t*          clusterer )
 {
-    SCOREP_MutexLock( scorep_cluster_queue_elem_lock );
+    SCOREP_MutexLock( cluster_queue_elem_lock );
 
     elem->next                          = clusterer->free_cluster_queue_elems;
     clusterer->free_cluster_queue_elems = elem;
 
-    SCOREP_MutexUnlock( scorep_cluster_queue_elem_lock );
+    SCOREP_MutexUnlock( cluster_queue_elem_lock );
 }
 
 /**
@@ -671,7 +671,7 @@ scorep_delete_cluster_queue_elem( scorep_cluster_queue_elem_t* elem,
    @retuns the new object.
  */
 static scorep_cluster_queue_t*
-scorep_new_cluster_queue( SCOREP_Location* location )
+new_cluster_queue( SCOREP_Location* location )
 {
     scorep_cluster_queue_t* queue;
     queue = SCOREP_Location_AllocForProfile( location, sizeof( scorep_cluster_queue_t ) );
@@ -684,27 +684,27 @@ scorep_new_cluster_queue( SCOREP_Location* location )
 
 /**
    Create a new scorep_clusterer_t object
-   @param location     The Score-P location object of the executing location.
-   @param max_cl_count The maximum number of clusters.
+   @param location        The Score-P location object of the executing location.
+   @param maxClusterCount The maximum number of clusters.
    @retuns the new object.
  */
 static scorep_clusterer_t*
-scorep_new_clusterer( SCOREP_Location* location,
-                      uint32_t         max_cl_count )
+new_clusterer( SCOREP_Location* location,
+               uint32_t         maxClusterCount )
 {
     scorep_clusterer_t* clusterer;
     clusterer = SCOREP_Location_AllocForProfile( location, sizeof( scorep_clusterer_t ) );
 
     /* Initialize */
-    clusterer->max_cl_count             = max_cl_count;
+    clusterer->max_cl_count             = maxClusterCount;
     clusterer->clustering_buffer        = scorep_profile_get_cluster_count();
     clusterer->cl_count                 = 0;
     clusterer->cl_it_count              = 0;
     clusterer->cl_it_head               = NULL;
     clusterer->cl_it_tail               = &( clusterer->cl_it_head );
-    clusterer->eq_cl_lt_set             = scorep_new_equiv_cluster_list_set( location );
-    clusterer->ref_vals                 = scorep_new_reference( location );
-    clusterer->queue                    = scorep_new_cluster_queue( location );
+    clusterer->eq_cl_lt_set             = new_equiv_cluster_list_set( location );
+    clusterer->ref_vals                 = new_reference( location );
+    clusterer->queue                    = new_cluster_queue( location );
     clusterer->free_cluster_distances   = NULL;
     clusterer->free_clusters            = NULL;
     clusterer->free_cluster_queue_elems = NULL;
@@ -719,13 +719,13 @@ scorep_new_clusterer( SCOREP_Location* location,
    @param iteration The iteration object.
  */
 static void
-scorep_update_reference_values( scorep_reference_t*           reference,
-                                scorep_clustered_iteration_t* iteration )
+update_reference_values( scorep_reference_t*           reference,
+                         scorep_clustered_iteration_t* iteration )
 {
     scorep_cluster_t* cluster = iteration->cluster;
     double            count   = reference->count;
 
-    for ( int mr = 0; mr < scorep_cluster_metric_number; mr++ )
+    for ( int mr = 0; mr < cluster_metric_number; mr++ )
     {
         reference->dense_metrics[ mr ] *= count / ( count + 1.0 );
         reference->dense_metrics[ mr ] += cluster->mets_avg.dense_metrics[ mr ] / ( count + 1.0 );
@@ -744,10 +744,10 @@ scorep_update_reference_values( scorep_reference_t*           reference,
    @param clusterer The clusterer object.
  */
 static void
-scorep_calculate_distances_for_new_cluster( SCOREP_Location*             location,
-                                            scorep_cluster_t*            cluster,
-                                            scorep_equiv_cluster_list_t* list,
-                                            scorep_clusterer_t*          clusterer )
+calculate_distances_for_new_cluster( SCOREP_Location*             location,
+                                     scorep_cluster_t*            cluster,
+                                     scorep_equiv_cluster_list_t* list,
+                                     scorep_clusterer_t*          clusterer )
 {
     scorep_cluster_distance_t** tail = &( cluster->d );
     /* Set up a shortcut to the list set */
@@ -758,9 +758,9 @@ scorep_calculate_distances_for_new_cluster( SCOREP_Location*             locatio
     {
         /* Calculate distance */
         scorep_cluster_distance_t* distance =
-            scorep_new_cluster_distance( location, clusterer );
-        distance->value = scorep_calculate_cluster_distance( cluster, cl,
-                                                             clusterer->ref_vals );
+            new_cluster_distance( location, clusterer );
+        distance->value = calculate_cluster_distance( cluster, cl,
+                                                      clusterer->ref_vals );
         /* Insert distance value */
         *tail = distance;
         tail  = &( distance->next );
@@ -802,9 +802,9 @@ scorep_calculate_distances_for_new_cluster( SCOREP_Location*             locatio
    @param len   The number of elements that are sorted.
  */
 static void
-scorep_merge_sort_call_paths( scorep_profile_node** head,
-                              scorep_profile_node** tail,
-                              int                   len )
+merge_sort_call_paths( scorep_profile_node** head,
+                       scorep_profile_node** tail,
+                       int                   len )
 {
     /* If it's a single element list, return that list */
     if ( 1 >= len )
@@ -826,8 +826,8 @@ scorep_merge_sort_call_paths( scorep_profile_node** head,
     /* Cut the list in the middle */
     *last = NULL;
     /* Sort the two sub-lists */
-    scorep_merge_sort_call_paths( head, &head_tail, pos_end );
-    scorep_merge_sort_call_paths( &mid, tail, len - pos_end );
+    merge_sort_call_paths( head, &head_tail, pos_end );
+    merge_sort_call_paths( &mid, tail, len - pos_end );
     /* See if it's a merge or a concatenation */
     if ( scorep_profile_node_less_than( head_tail, mid ) )
     {
@@ -906,7 +906,7 @@ get_thread_start_for_fork( scorep_profile_node* root,
    @param path  The root node of the subtree that is sorted.
  */
 static void
-scorep_sort_subtree( scorep_profile_node* path )
+sort_subtree( scorep_profile_node* path )
 {
     uint32_t             ch, len;
     scorep_profile_node* curr;
@@ -916,14 +916,14 @@ scorep_sort_subtree( scorep_profile_node* path )
     {
         ;
     }
-    scorep_merge_sort_call_paths( &( path->first_child ), &curr, len );
+    merge_sort_call_paths( &( path->first_child ), &curr, len );
 
     /* Sort the subtrees of the children */
     for ( curr = path->first_child, ch = 0;
           NULL != curr;
           curr = curr->next_sibling, ch++ )
     {
-        scorep_sort_subtree( curr );
+        sort_subtree( curr );
     }
 
     /* Sort the subtrees of the fork children */
@@ -935,7 +935,7 @@ scorep_sort_subtree( scorep_profile_node* path )
             curr = get_thread_start_for_fork( root, path );
             if ( curr != NULL )
             {
-                scorep_sort_subtree( curr );
+                sort_subtree( curr );
             }
 
             root = root->next_sibling;
@@ -1017,8 +1017,8 @@ is_mpi_node( scorep_profile_node* node )
                    derived metrics are calculated.
  */
 static void
-scorep_calculate_derived_metrics( scorep_cluster_t*    cluster,
-                                  scorep_profile_node* path )
+calculate_derived_metrics( scorep_cluster_t*    cluster,
+                           scorep_profile_node* path )
 {
     scorep_profile_node* curr;
 
@@ -1083,7 +1083,7 @@ scorep_calculate_derived_metrics( scorep_cluster_t*    cluster,
     /* Call children */
     for ( curr = path->first_child; NULL != curr; curr = curr->next_sibling )
     {
-        scorep_calculate_derived_metrics( cluster, curr );
+        calculate_derived_metrics( cluster, curr );
     }
 
     /* Call fork children */
@@ -1096,7 +1096,7 @@ scorep_calculate_derived_metrics( scorep_cluster_t*    cluster,
             curr = get_thread_start_for_fork( root, path );
             if ( curr != NULL )
             {
-                scorep_calculate_derived_metrics( cluster, curr );
+                calculate_derived_metrics( cluster, curr );
             }
         }
     }
@@ -1108,7 +1108,7 @@ scorep_calculate_derived_metrics( scorep_cluster_t*    cluster,
    @param cluster  The cluster representing the new iteration.
  */
 static void
-scorep_post_process_derived_metrics( scorep_cluster_t* cluster )
+post_process_derived_metrics( scorep_cluster_t* cluster )
 {
     scorep_profile_node* path = cluster->root;
 
@@ -1154,8 +1154,8 @@ scorep_post_process_derived_metrics( scorep_cluster_t* cluster )
     }
 
     /* Set avg data based on sum data. This function is only
-       called from scorep_init_cluster, thus, the iteration count is 1 */
-    for ( int mr = 0; mr < scorep_cluster_metric_number; mr++ )
+       called from init_cluster, thus, the iteration count is 1 */
+    for ( int mr = 0; mr < cluster_metric_number; mr++ )
     {
         cluster->mets_avg.dense_metrics[ mr ] = cluster->mets_sum.dense_metrics[ mr ];
     }
@@ -1166,22 +1166,22 @@ scorep_post_process_derived_metrics( scorep_cluster_t* cluster )
    @param cluster The newly created cluster object.
  */
 static void
-scorep_init_cluster( scorep_cluster_t* cluster )
+init_cluster( scorep_cluster_t* cluster )
 {
     UTILS_DEBUG_ENTRY( "" );
 
     /* Let's do the sorting upfront */
-    scorep_sort_subtree( cluster->root );
+    sort_subtree( cluster->root );
 
     /* Calculate hash value */
-    cluster->hash = scorep_calculate_hash( cluster->root );
+    cluster->hash = calculate_hash( cluster->root );
 
     /* The node in the root is always different, so remove it from the hash */
     cluster->hash -= scorep_profile_node_hash( cluster->root );
 
     /* Calculate derived metrics */
-    scorep_calculate_derived_metrics( cluster, cluster->root );
-    scorep_post_process_derived_metrics( cluster );
+    calculate_derived_metrics( cluster, cluster->root );
+    post_process_derived_metrics( cluster );
 
     UTILS_DEBUG_EXIT( "" );
 }
@@ -1192,19 +1192,19 @@ scorep_init_cluster( scorep_cluster_t* cluster )
    creates it. The return value is the list used.
    @param location  The Score-P location object of the executing location.
    @param cluster   The cluster that is inserted.
-   @param list_set  The list of equivalence sets of the associated clusterer.
+   @param listSet   The list of equivalence sets of the associated clusterer.
    @returns the equivalence class into which the cluster was inserted.
  */
 static scorep_equiv_cluster_list_t*
-scorep_insert_cluster( SCOREP_Location*                 location,
-                       scorep_cluster_t*                cluster,
-                       scorep_equiv_cluster_list_set_t* list_set )
+insert_cluster( SCOREP_Location*                 location,
+                scorep_cluster_t*                cluster,
+                scorep_equiv_cluster_list_set_t* listSet )
 {
     /* We assume that the equivalence list is sorted by their hash value.
        Traverse the equivalence cluster list until last points to
        a lower value and list to a higher or equal value.
      */
-    scorep_equiv_cluster_list_t* list, ** last = &( list_set->head );
+    scorep_equiv_cluster_list_t* list, ** last = &( listSet->head );
     for ( list = *last; NULL != list && list->head->hash < cluster->hash;
           last = &( list->next ), list = *last )
     {
@@ -1217,22 +1217,22 @@ scorep_insert_cluster( SCOREP_Location*                 location,
     for (; NULL != list && list->head->hash == cluster->hash;
          last = &( list->next ), list = *last )
     {
-        if ( 0 == scorep_compare_call_trees( list->head->root, cluster->root,
-                                             list->head->iteration_count,
-                                             cluster->iteration_count ) )
+        if ( 0 == compare_call_trees( list->head->root, cluster->root,
+                                      list->head->iteration_count,
+                                      cluster->iteration_count ) )
         {
-            //fprintf( stderr, "scorep_insert_cluster: Trees match\n" );
+            //fprintf( stderr, "insert_cluster: Trees match\n" );
             /* Insert cluster */
             cluster->next = list->head;
             list->head    = cluster;
             return list;
         }
 
-        //fprintf( stderr, "scorep_insert_cluster: Trees don't match\n" );
+        //fprintf( stderr, "insert_cluster: Trees don't match\n" );
     }
     /*  scorep_cntl_msg("No match found, creating new list");*/
     /* List not found, create new list */
-    list = scorep_new_equiv_cluster_list( location );
+    list = new_equiv_cluster_list( location );
     /* Insert new list */
     list->next = *last;
     *last      = list;
@@ -1248,8 +1248,8 @@ scorep_insert_cluster( SCOREP_Location*                 location,
    @param elem   The queue element that is appended.
  */
 static void
-scorep_cluster_queue_push( scorep_cluster_queue_t*      queue,
-                           scorep_cluster_queue_elem_t* elem )
+cluster_queue_push( scorep_cluster_queue_t*      queue,
+                    scorep_cluster_queue_elem_t* elem )
 {
     *( queue->end ) = elem;
     elem->next      = NULL;
@@ -1264,7 +1264,7 @@ scorep_cluster_queue_push( scorep_cluster_queue_t*      queue,
             queue.
  */
 static scorep_cluster_queue_elem_t*
-scorep_cluster_queue_pop( scorep_cluster_queue_t* queue )
+cluster_queue_pop( scorep_cluster_queue_t* queue )
 {
     scorep_cluster_queue_elem_t* first = queue->begin;
     if ( NULL != first )
@@ -1287,13 +1287,13 @@ scorep_cluster_queue_pop( scorep_cluster_queue_t* queue )
    @param path       The profile node that is the root of the new iteration.
  */
 static void
-scorep_add_iter_to_queue( SCOREP_Location*     location,
-                          scorep_clusterer_t*  clusterer,
-                          scorep_profile_node* path )
+add_iter_to_queue( SCOREP_Location*     location,
+                   scorep_clusterer_t*  clusterer,
+                   scorep_profile_node* path )
 {
     scorep_cluster_queue_elem_t* elem =
-        scorep_new_cluster_queue_elem( location, clusterer, path );
-    scorep_cluster_queue_push( clusterer->queue, elem );
+        new_cluster_queue_elem( location, clusterer, path );
+    cluster_queue_push( clusterer->queue, elem );
 }
 
 /**
@@ -1305,13 +1305,13 @@ scorep_add_iter_to_queue( SCOREP_Location*     location,
    @param location   The executing location.
  */
 static void
-scorep_process_queue( scorep_clusterer_t*          clusterer,
-                      SCOREP_Profile_LocationData* location )
+process_queue( scorep_clusterer_t*          clusterer,
+               SCOREP_Profile_LocationData* location )
 {
     scorep_cluster_queue_elem_t* elem;
-    while ( ( elem = scorep_cluster_queue_pop( clusterer->queue ) ) )
+    while ( ( elem = cluster_queue_pop( clusterer->queue ) ) )
     {
-        scorep_add_iter_to_clustering( location, elem->path, clusterer );
+        add_iter_to_clustering( location, elem->path, clusterer );
     }
 }
 
@@ -1322,31 +1322,31 @@ scorep_process_queue( scorep_clusterer_t*          clusterer,
    @param clusterer The associated clusterer.
  */
 static void
-scorep_add_iter_to_clustering( SCOREP_Profile_LocationData* location,
-                               scorep_profile_node*         path,
-                               scorep_clusterer_t*          clusterer )
+add_iter_to_clustering( SCOREP_Profile_LocationData* location,
+                        scorep_profile_node*         path,
+                        scorep_clusterer_t*          clusterer )
 {
     UTILS_DEBUG_ENTRY( "" );
     /* Create new clustered_iteration */
     scorep_clustered_iteration_t* clustered_iteration =
-        scorep_new_clustered_iteration( location->location_data );
+        new_clustered_iteration( location->location_data );
 
     /* Create new cluster */
-    scorep_cluster_t* cluster = scorep_new_cluster( location->location_data,
-                                                    clusterer,
-                                                    clustered_iteration,
-                                                    path );
+    scorep_cluster_t* cluster = new_cluster( location->location_data,
+                                             clusterer,
+                                             clustered_iteration,
+                                             path );
     /* Initialize cluster */
-    scorep_init_cluster( cluster );
+    init_cluster( cluster );
 
     /* Insert cluster. If there is no list with a tree like this, a new list
        will be created */
-    scorep_equiv_cluster_list_t* list = scorep_insert_cluster( location->location_data,
-                                                               cluster,
-                                                               clusterer->eq_cl_lt_set );
+    scorep_equiv_cluster_list_t* list = insert_cluster( location->location_data,
+                                                        cluster,
+                                                        clusterer->eq_cl_lt_set );
 
     /* Update reference data */
-    scorep_update_reference_values( clusterer->ref_vals, clustered_iteration );
+    update_reference_values( clusterer->ref_vals, clustered_iteration );
 
     /* Insert new iteration into the iteration list */
     *( clusterer->cl_it_tail ) = clustered_iteration;
@@ -1368,15 +1368,15 @@ scorep_add_iter_to_clustering( SCOREP_Profile_LocationData* location,
             {
                 for ( cl = lt->head; NULL != cl; cl = cl->next )
                 {
-                    scorep_calculate_distances_for_new_cluster( location->location_data,
-                                                                cl, lt, clusterer );
+                    calculate_distances_for_new_cluster( location->location_data,
+                                                         cl, lt, clusterer );
                 }
             }
         }
         else
         {
-            scorep_calculate_distances_for_new_cluster( location->location_data,
-                                                        cluster, list, clusterer );
+            calculate_distances_for_new_cluster( location->location_data,
+                                                 cluster, list, clusterer );
         }
     }
 
@@ -1430,7 +1430,7 @@ scorep_add_iter_to_clustering( SCOREP_Profile_LocationData* location,
 
             /* Add up metric values from the two clusters in cl_a */
             cl_a->iteration_count += cl_b->iteration_count;
-            for ( mr = 0; mr < scorep_cluster_metric_number; mr++ )
+            for ( mr = 0; mr < cluster_metric_number; mr++ )
             {
                 cl_a->mets_sum.dense_metrics[ mr ] += cl_b->mets_sum.dense_metrics[ mr ];
                 cl_a->mets_avg.dense_metrics[ mr ]  =
@@ -1445,7 +1445,7 @@ scorep_add_iter_to_clustering( SCOREP_Profile_LocationData* location,
             scorep_profile_merge_subtree( location, cl_a->root, cl_b->root );
 
             /* Merge the disjoint sets corresponding to these clusters */
-            scorep_disjoint_set_merge( cl_a->disjoint_set, cl_b->disjoint_set, cl_a );
+            disjoint_set_merge( cl_a->disjoint_set, cl_b->disjoint_set, cl_a );
 
             /* Count the number of elements in the list up to cl_a */
             for ( cl = list->head, ctr_a = 0; cl != cl_a; cl = cl->next, ctr_a++ )
@@ -1463,7 +1463,7 @@ scorep_add_iter_to_clustering( SCOREP_Profile_LocationData* location,
                     ;
                 }
                 temp_dist->value =
-                    scorep_calculate_cluster_distance( cl, cl_a, clusterer->ref_vals );
+                    calculate_cluster_distance( cl, cl_a, clusterer->ref_vals );
                 /* Update cluster minimum */
                 if ( cl->min_val > temp_dist->value )
                 {
@@ -1508,7 +1508,7 @@ scorep_add_iter_to_clustering( SCOREP_Profile_LocationData* location,
                         }
                     }
                 }
-                *last = scorep_delete_cluster_distance( temp_dist, clusterer );
+                *last = delete_cluster_distance( temp_dist, clusterer );
             }
 
             /* Remove the element for cl_b from the distance lists of the
@@ -1538,11 +1538,11 @@ scorep_add_iter_to_clustering( SCOREP_Profile_LocationData* location,
                         }
                     }
                 }
-                *last = scorep_delete_cluster_distance( temp_dist, clusterer );
+                *last = delete_cluster_distance( temp_dist, clusterer );
             }
 
             /* Unlink and delete cl_b */
-            before_cl_b->next = scorep_delete_cluster( cl_b, clusterer );
+            before_cl_b->next = delete_cluster( cl_b, clusterer );
 
             /* Update all the distance values in cl_a */
             cl_a->min_val = DBL_MAX;
@@ -1550,7 +1550,7 @@ scorep_add_iter_to_clustering( SCOREP_Profile_LocationData* location,
                   temp_dist = temp_dist->next, cl = cl->next )
             {
                 temp_dist->value =
-                    scorep_calculate_cluster_distance( cl_a, cl, clusterer->ref_vals );
+                    calculate_cluster_distance( cl_a, cl, clusterer->ref_vals );
                 /* Update minimum */
                 if ( cl_a->min_val > temp_dist->value )
                 {
@@ -1591,16 +1591,16 @@ scorep_add_iter_to_clustering( SCOREP_Profile_LocationData* location,
 /**
    Evaluates whether we need to consider the visit count for a @a node
    when conidering equivalence classes.
-   @param cluster_mode The clustering mode.
+   @param clusterMode  The clustering mode.
    @param node         The profile node.
    @returns true if we need to consider the visit count for @a node.
  */
 static inline bool
-consider_visit_count( int cluster_mode, scorep_profile_node* node )
+consider_visit_count( int clusterMode, scorep_profile_node* node )
 {
-    if ( cluster_mode == 2 ||
-         cluster_mode == 5 ||
-         ( cluster_mode == 4 && is_mpi_node( node ) ) )
+    if ( clusterMode == 2 ||
+         clusterMode == 5 ||
+         ( clusterMode == 4 && is_mpi_node( node ) ) )
     {
         if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION )
         {
@@ -1629,15 +1629,15 @@ consider_visit_count( int cluster_mode, scorep_profile_node* node )
    5 - MPI and COM structure, MPI and COM visits.
    @param a        Pointer to the root of the first call tree.
    @param b        Pointer to the root of the second call tree.
-   @param a_it_cnt Number of iterations contained in a.
-   @param b_it_cnt Number of iterations conatined in b.
+   @param itCntA   Number of iterations contained in a.
+   @param itCntB   Number of iterations conatined in b.
    @returns 0 if the structure of a and b matches according to the
             rules of the clustering mode. Otherwise non-zero is
             returned.
  */
 static int
-scorep_compare_call_trees( scorep_profile_node* a, scorep_profile_node* b,
-                           uint32_t a_it_cnt, uint32_t b_it_cnt )
+compare_call_trees( scorep_profile_node* a, scorep_profile_node* b,
+                    uint32_t itCntA, uint32_t itCntB )
 {
     scorep_profile_node* a_tail;
     scorep_profile_node* b_tail;
@@ -1670,11 +1670,11 @@ scorep_compare_call_trees( scorep_profile_node* a, scorep_profile_node* b,
             }
         }
 
-        if ( scorep_profile_compare_nodes( a_tail, b_tail ) &&               /* Same node and region types and */
-             ( !consider_visit_count( clustering_mode, a_tail ) ||           /* visits do not matter or */
-               ( a_tail->count / a_it_cnt ==  b_tail->count / b_it_cnt ) ) ) /* visits match */
+        if ( scorep_profile_compare_nodes( a_tail, b_tail ) &&           /* Same node and region types and */
+             ( !consider_visit_count( clustering_mode, a_tail ) ||       /* visits do not matter or */
+               ( a_tail->count / itCntA ==  b_tail->count / itCntB ) ) ) /* visits match */
         {
-            int res = scorep_compare_call_trees( a_tail, b_tail, a_it_cnt, b_it_cnt );
+            int res = compare_call_trees( a_tail, b_tail, itCntA, itCntB );
             if ( 0 != res )
             {
                 return res;
@@ -1691,13 +1691,13 @@ scorep_compare_call_trees( scorep_profile_node* a, scorep_profile_node* b,
             {
                 return 1;
             }
-            else if ( a_tail->count / a_it_cnt <
-                      b_tail->count / b_it_cnt )
+            else if ( a_tail->count / itCntA <
+                      b_tail->count / itCntB )
             {
                 return -1;
             }
-            else /* a_tail->record->count / a_it_cnt >
-                    b_tail->record->count / b_it_cnt */
+            else /* a_tail->record->count / itCntA >
+                    b_tail->record->count / itCntB */
             {
                 return 1;
             }
@@ -1773,7 +1773,7 @@ scorep_compare_call_trees( scorep_profile_node* a, scorep_profile_node* b,
                 continue;
             }
 
-            int res = scorep_compare_call_trees( child_a, child_b, a_it_cnt, b_it_cnt );
+            int res = compare_call_trees( child_a, child_b, itCntA, itCntB );
             if ( 0 != res )
             {
                 fprintf( stderr, "comparison failed, due to forked children\n" );
@@ -1794,7 +1794,7 @@ scorep_compare_call_trees( scorep_profile_node* a, scorep_profile_node* b,
    @returns the hash value.
  */
 static uint32_t
-scorep_calculate_hash( scorep_profile_node* path )
+calculate_hash( scorep_profile_node* path )
 {
     uint32_t             val = 0;
     uint32_t             ch, used_ch;
@@ -1813,7 +1813,7 @@ scorep_calculate_hash( scorep_profile_node* path )
     for ( curr = path->first_child, ch = 0, used_ch = 0; NULL != curr; curr = curr->next_sibling, ch++ )
     {
         /* The call also sets mpi_in_subtree in the child */
-        int child_val = scorep_calculate_hash( curr );
+        int child_val = calculate_hash( curr );
         /* In these modes, only the subtrees with MPI count */
         if ( 3 <= clustering_mode && !scorep_profile_is_mpi_in_subtree( curr ) )
         {
@@ -1843,7 +1843,7 @@ scorep_calculate_hash( scorep_profile_node* path )
             }
             thread_count++;
 
-            int child_val = scorep_calculate_hash( curr ) - scorep_profile_node_hash( curr );
+            int child_val = calculate_hash( curr ) - scorep_profile_node_hash( curr );
             /* In these modes, only the subtrees with MPI count */
             if ( 3 <= clustering_mode &&
                  !scorep_profile_is_mpi_in_subtree( curr ) )
@@ -1874,7 +1874,7 @@ scorep_calculate_hash( scorep_profile_node* path )
 
 /**
    Writes the mapping data for one iteration into Cube.
-   @param write_data  The Cube writing data object.
+   @param writeData   The Cube writing data object.
    @param lineno      The iteration number.
    @param entry_count The number of ranks.
    @param entries     An array containing the cnode ids of the iteration for
@@ -1884,10 +1884,10 @@ scorep_calculate_hash( scorep_profile_node* path )
                       rank.
  */
 static void
-scorep_cluster_write_line( scorep_cube_writing_data* write_data,
-                           uint32_t                  lineno,
-                           uint32_t                  entry_count,
-                           uint32_t*                 entries )
+cluster_write_line( scorep_cube_writing_data* writeData,
+                    uint32_t                  lineno,
+                    uint32_t                  entry_count,
+                    uint32_t*                 entries )
 {
     /* Calculate string length */
     size_t length = 0;
@@ -1916,7 +1916,7 @@ scorep_cluster_write_line( scorep_cube_writing_data* write_data,
     /* Create key string */
     char key[ 32 ];
     sprintf( key, "CLUSTER MAPPING %" PRIu32, lineno );
-    cube_def_attr( write_data->my_cube, key, line );
+    cube_def_attr( writeData->my_cube, key, line );
 
     free( line );
 }
@@ -1931,7 +1931,7 @@ scorep_cluster_on_enter_dynamic(  SCOREP_Profile_LocationData* location,
 {
     /* If we do not cluster or the only supported cluster is already identified
        nothing is to do. */
-    if ( !scorep_clustering_enabled || scorep_cluster_parent != NULL )
+    if ( !clustering_enabled || cluster_parent != NULL )
     {
         return;
     }
@@ -1949,12 +1949,12 @@ scorep_cluster_on_enter_dynamic(  SCOREP_Profile_LocationData* location,
         {
             UTILS_WARNING( "Cannot cluster regions that appear inside "
                            "of parallel regions. Clustering disabled." );
-            scorep_clustering_enabled = false;
+            clustering_enabled = false;
             return;
         }
 
         /* This will be the region that we cluster */
-        scorep_cluster_parent = node;
+        cluster_parent = node;
     }
 }
 
@@ -1968,7 +1968,7 @@ scorep_cluster_if_necessary( SCOREP_Profile_LocationData* location,
                              scorep_profile_node*         node )
 {
     /* Check if we plan to cluster this dynamic region or not */
-    if ( !scorep_clustering_enabled || node->parent != scorep_cluster_parent )
+    if ( !clustering_enabled || node->parent != cluster_parent )
     {
         return;
     }
@@ -1982,30 +1982,30 @@ scorep_cluster_if_necessary( SCOREP_Profile_LocationData* location,
     if ( NULL == scorep_clusterer )
     {
         /* Initialize also the number of dense metrics */
-        scorep_cluster_metric_number = MET_DENSE_START
-                                       + SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics();
+        cluster_metric_number = MET_DENSE_START
+                                + SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics();
 
         /* Create clusterer */
-        scorep_clusterer = scorep_new_clusterer( location->location_data,
-                                                 scorep_profile_get_cluster_count() );
+        scorep_clusterer = new_clusterer( location->location_data,
+                                          scorep_profile_get_cluster_count() );
     }
 
     /* Add the iteration to the queue */
-    scorep_add_iter_to_queue( location->location_data, scorep_clusterer, node );
+    add_iter_to_queue( location->location_data, scorep_clusterer, node );
 
     /* Process the queue. This is only one of the possibilities, processing the
        queue here, immediately. It could be done somewhere later, e.g. at a
        collective synchronization point, where it could be completely hidden
        between two barriers or such... */
-    scorep_process_queue( scorep_clusterer, location );
+    process_queue( scorep_clusterer, location );
 }
 
 void
 scorep_cluster_initialize( void )
 {
-    SCOREP_MutexCreate( &scorep_cluster_distance_lock );
-    SCOREP_MutexCreate( &scorep_cluster_lock );
-    SCOREP_MutexCreate( &scorep_cluster_queue_elem_lock );
+    SCOREP_MutexCreate( &cluster_distance_lock );
+    SCOREP_MutexCreate( &cluster_lock );
+    SCOREP_MutexCreate( &cluster_queue_elem_lock );
 
     if ( !scorep_profile_do_clustering() )
     {
@@ -2032,23 +2032,23 @@ scorep_cluster_initialize( void )
         return;
     }
 
-    scorep_clustering_enabled = true;
+    clustering_enabled = true;
 }
 
 void
 scorep_cluster_finalize( void )
 {
-    scorep_clustering_enabled = false;
+    clustering_enabled = false;
 
-    SCOREP_MutexDestroy( &scorep_cluster_queue_elem_lock );
-    SCOREP_MutexDestroy( &scorep_cluster_lock );
-    SCOREP_MutexDestroy( &scorep_cluster_distance_lock );
+    SCOREP_MutexDestroy( &cluster_queue_elem_lock );
+    SCOREP_MutexDestroy( &cluster_lock );
+    SCOREP_MutexDestroy( &cluster_distance_lock );
 }
 
 void
 scorep_cluster_postprocess( void )
 {
-    if ( scorep_clusterer == NULL || !scorep_clustering_enabled )
+    if ( scorep_clusterer == NULL || !clustering_enabled )
     {
         return;
     }
@@ -2071,7 +2071,7 @@ scorep_cluster_postprocess( void )
 }
 
 void
-scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
+scorep_cluster_write_cube4( scorep_cube_writing_data* writeData )
 {
     char                 value[ 12 ];
     int*                 cluster_ids = NULL;
@@ -2086,39 +2086,39 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
                           SCOREP_IPC_SUM );
     if ( has_cluster_global == 0 )
     {
-        if ( write_data->my_rank == 0 )
+        if ( writeData->my_rank == 0 )
         {
-            cube_def_attr( write_data->my_cube, "CLUSTERING", "OFF" );
+            cube_def_attr( writeData->my_cube, "CLUSTERING", "OFF" );
         }
         return; /* No clusters */
     }
 
-    if ( write_data->my_rank == 0 )
+    if ( writeData->my_rank == 0 )
     {
-        cube_def_attr( write_data->my_cube, "CLUSTERING", "ON" );
+        cube_def_attr( writeData->my_cube, "CLUSTERING", "ON" );
 
         /* Write cluster root */
-        root = scorep_disjoint_set_get_root( scorep_clusterer->cl_it_head )->cluster->root->parent;
+        root = disjoint_set_get_root( scorep_clusterer->cl_it_head )->cluster->root->parent;
         SCOREP_CallpathHandle handle =
             SCOREP_CallpathHandle_GetUnified( root->callpath_handle );
         uint32_t root_id =
-            cube_cnode_get_id( scorep_get_cube4_callpath( write_data->map, handle ) );
+            cube_cnode_get_id( scorep_get_cube4_callpath( writeData->map, handle ) );
         sprintf( value, "%" PRIu32, root_id );
-        cube_def_attr( write_data->my_cube, "CLUSTER ROOT CNODE ID", value );
+        cube_def_attr( writeData->my_cube, "CLUSTER ROOT CNODE ID", value );
 
         /* Write number of processes */
-        sprintf( value, "%" PRIu32, write_data->ranks_number );
-        cube_def_attr( write_data->my_cube, "CLUSTER PROCESS NUM", value );
+        sprintf( value, "%" PRIu32, writeData->ranks_number );
+        cube_def_attr( writeData->my_cube, "CLUSTER PROCESS NUM", value );
     }
 
     /* Create mapping from cluster number to Cube's cnode id.
        Clusters are enumerated from 1 to n.
        Cluster number 0 means invalid cluster */
-    if ( write_data->my_rank == 0 )
+    if ( writeData->my_rank == 0 )
     {
         SCOREP_CallpathHandle handle =
             SCOREP_CallpathHandle_GetUnified( root->callpath_handle );
-        cube_cnode* root_cn     = scorep_get_cube4_callpath( write_data->map, handle );
+        cube_cnode* root_cn     = scorep_get_cube4_callpath( writeData->map, handle );
         uint32_t    cluster_num = cube_cnode_num_children( root_cn );
         cluster_ids = ( int* )malloc( sizeof( int ) * cluster_num );
         UTILS_ASSERT( cluster_ids );
@@ -2139,10 +2139,10 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
                           1, SCOREP_IPC_UINT32_T,
                           SCOREP_IPC_MAX );
 
-    if ( write_data->my_rank == 0 )
+    if ( writeData->my_rank == 0 )
     {
         sprintf( value, "%" PRIu32, global_it_count );
-        cube_def_attr( write_data->my_cube, "CLUSTER ITERATION COUNT", value );
+        cube_def_attr( writeData->my_cube, "CLUSTER ITERATION COUNT", value );
     }
 
     /* Collect array with local iterations.
@@ -2153,16 +2153,16 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
            it != NULL;
            it = it->next )
     {
-        scorep_profile_node* cluster = scorep_disjoint_set_get_root( it )->cluster->root;
+        scorep_profile_node* cluster = disjoint_set_get_root( it )->cluster->root;
         it_map[ it->iteration_id - 1 ] = scorep_profile_type_get_int_value( cluster->type_specific_data );
     }
 
     /* Collect data to rank 0 */
     /* Variant that writes one iterations for all process in one line */
     uint32_t* line = NULL;
-    if ( write_data->my_rank == 0 )
+    if ( writeData->my_rank == 0 )
     {
-        line = ( uint32_t* )malloc( write_data->ranks_number * sizeof( uint32_t ) );
+        line = ( uint32_t* )malloc( writeData->ranks_number * sizeof( uint32_t ) );
     }
 
     for ( uint32_t i = 0; i < global_it_count; i++ )
@@ -2172,18 +2172,18 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data )
                            0 );
         SCOREP_Ipc_Barrier();
 
-        if ( write_data->my_rank == 0 )
+        if ( writeData->my_rank == 0 )
         {
             /* Replace cluster number by cnode id
                cnode id 0 means that the iteations did not appear on this rank. */
-            for ( int i = 0; i < write_data->ranks_number; i++ )
+            for ( int i = 0; i < writeData->ranks_number; i++ )
             {
                 line[ i ] = ( line[ i ] == 0 ? 0 : cluster_ids[ line[ i ] - 1 ] );
             }
-            scorep_cluster_write_line( write_data, i, write_data->ranks_number, line );
+            cluster_write_line( writeData, i, writeData->ranks_number, line );
         }
     }
-    if ( write_data->my_rank == 0 )
+    if ( writeData->my_rank == 0 )
     {
         free( line );
         free( cluster_ids );
