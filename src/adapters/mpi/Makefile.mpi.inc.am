@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2015,
+## Copyright (c) 2009-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -113,15 +113,18 @@ noinst_LTLIBRARIES += libscorep_adapter_mpi_fortran_conv.la
 libscorep_adapter_mpi_fortran_conv_la_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Init.f
 
-# Due to the external declaration of MPI_WTIME, MPI_WTICK , PMPI_WTICK, and
-# PMPI_WTIME in openmpi's mpif.h we get four undeclared symbols when linking
-# applications to libscorep_adapter_mpi_mgmt.la.  Also, the PGI F90 compiler
-# (by default used instead of F77 for Open MPI >= 1.8) adds a reference to
-# 'pgf90_compiled' to each object file.
 if SCOREP_COMPILER_PGI
-libscorep_adapter_mpi_fortran_conv_la_LIBADD = $(FLIBS)
-endif SCOREP_COMPILER_PGI
+# due to the external declaration of MPI_WTIME, MPI_WTICK , PMPI_WTICK, and
+# PMPI_WTIME in openmpi's mpif.h we get four undeclared symbols when linking
+# applications to libscorep_adapter_mpi_mgmt.la. The language option
+# noref_externals prevents this.
+libscorep_adapter_mpi_fortran_conv_la_FFLAGS = $(AM_FFLAGS) -Mnoref_externals
+endif
+
 if SCOREP_COMPILER_FUJITSU
+# due to the external declaration of MPI_WTIME, MPI_WTICK , PMPI_WTICK, and
+# PMPI_WTIME in the Fujitsu mpif.h we get four undeclared symbols when linking
+# applications to libscorep_adapter_mpi_mgmt.la.
 libscorep_adapter_mpi_fortran_conv_la_LIBADD = $(FLIBS)
 endif SCOREP_COMPILER_FUJITSU
 
