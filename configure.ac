@@ -128,7 +128,7 @@ AC_SCOREP_UNCRUSTIFY
 AC_SCOREP_DOXYGEN
 AC_SCOREP_DOXYGEN_CONFIG_FILES
 
-AC_SCOREP_DEBUG_OPTION
+AFS_DEBUG_OPTION
 
 # Assume that all lockfile-progs are available if lockfile-create is.
 AC_CHECK_PROG([ac_scorep_have_lockfile_progs], [lockfile-create], [yes], [no])
