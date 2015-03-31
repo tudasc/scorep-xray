@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014,
@@ -51,15 +51,26 @@
 #include "SCOREP_Opari2_Openmp_Regions.h"
 #include "SCOREP_Opari2_Openmp_Lock.h"
 
+#ifdef __FUJITSU
 
+/* Id of the currently executing task. */
+__thread POMP2_Task_handle pomp_current_task = 0;
 
-/** Id of the currently executing task*/
+/* Counter of tasks used to determine task ids for newly created tasks .*/
+__thread POMP2_Task_handle pomp_task_counter = 1;
+
+#else /* !__FUJITSU */
+
+/** Id of the currently executing task. */
 POMP2_Task_handle pomp_current_task = 0;
 #pragma omp threadprivate(pomp_current_task)
 
-/** Counter of tasks used to determine task ids for newly created tasks*/
+/** Counter of tasks used to determine task ids for newly created tasks. */
 POMP2_Task_handle pomp_task_counter = 1;
 #pragma omp threadprivate(pomp_task_counter)
+
+#endif /* !__FUJITSU */
+
 
 /*
  * NOTE: The POMP2_Task_handle changes its value and
