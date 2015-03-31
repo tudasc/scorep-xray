@@ -43,7 +43,7 @@ AC_DEFUN([AFS_SUMMARY_INIT], [
 rm -f AC_PACKAGE_TARNAME.summary
 LC_ALL=C find . -name config.summary -exec rm -f '{}' \;
 cat >config.summary <<_ACEOF
-AS_HELP_STRING(AC_PACKAGE_NAME[]m4_ifdef([AFS_PACKAGE_BUILD], [ (]AFS_PACKAGE_BUILD[):]), [], 32, 128)
+AS_HELP_STRING(AC_PACKAGE_NAME[ ]m4_ifndef([AFS_PACKAGE_BUILD], AC_PACKAGE_VERSION, [(]AFS_PACKAGE_BUILD[)])[:], [], 32, 128)
 _ACEOF
 ])
 
