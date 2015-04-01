@@ -52,7 +52,7 @@ libscorep_mpp_mpi_la_LIBADD = \
     libscorep_ipc_mpi.la \
     $(LIB_DIR_SCOREP)libscorep_mpp_ipc.la \
     $(LIB_DIR_SCOREP)libutils.la
-libscorep_mpp_mpi_la_LDFLAGS = \
+libscorep_mpp_mpi_la_LDFLAGS = @MPILIB_LDFLAGS@ \
     $(library_api_version_ldflags)
 
 noinst_LTLIBRARIES += libscorep_ipc_mpi.la
@@ -69,6 +69,7 @@ libscorep_ipc_mpi_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/mpi \
     -I$(INC_DIR_DEFINITIONS)
 
+libscorep_ipc_mpi_la_LDFLAGS = @MPILIB_LDFLAGS@
 
 ## sion-mpi
 

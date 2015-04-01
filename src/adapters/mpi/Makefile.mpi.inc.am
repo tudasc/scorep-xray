@@ -68,6 +68,7 @@ libscorep_adapter_mpi_mgmt_la_LIBADD = \
     libscorep_adapter_mpi_fortran_conv.la      \
     $(LIB_DIR_SCOREP)libutils.la
 libscorep_adapter_mpi_mgmt_la_LDFLAGS = \
+    @MPILIB_LDFLAGS@ \
     $(library_api_version_ldflags)
 
 noinst_LTLIBRARIES += \
@@ -141,6 +142,7 @@ libscorep_adapter_mpi_event_la_LIBADD = \
     libscorep_adapter_mpi_event_fortran_sub4.la \
     $(LIB_DIR_SCOREP)libscorep_measurement.la
 libscorep_adapter_mpi_event_la_LDFLAGS = \
+    @MPILIB_LDFLAGS@ \
     $(library_api_version_ldflags)
 
 noinst_LTLIBRARIES += libscorep_adapter_mpi_c_event.la

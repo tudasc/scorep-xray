@@ -44,6 +44,7 @@ libscorep_online_access_mpi_mockup_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -DWITH_MPI
 libscorep_online_access_mpi_mockup_la_LDFLAGS = \
+    @MPILIB_LDFLAGS@ \
     $(library_api_version_ldflags)
 
 lib_LTLIBRARIES += libscorep_online_access_mpp_mpi.la
@@ -98,15 +99,15 @@ endif
 
 else #if HAVE_ONLINE_ACCESS
 
-
 libscorep_online_access_mpp_mpi_la_LIBADD = \
     libscorep_online_access_mpi_mockup.la \
     $(LIB_DIR_SCOREP)libutils.la
 
-libscorep_online_access_mpp_mpi_la_LDFLAGS = \
-    $(library_api_version_ldflags)
-
 endif #if HAVE_ONLINE_ACCESS
+
+libscorep_online_access_mpp_mpi_la_LDFLAGS = \
+    @MPILIB_LDFLAGS@ \
+    $(library_api_version_ldflags)
 
 endif #if HAVE_MPI_SUPPORT
 
