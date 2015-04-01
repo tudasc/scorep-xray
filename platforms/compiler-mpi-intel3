@@ -11,6 +11,7 @@ MPIFC=mpif90 -fc={FC}
 MPI_CPPFLAGS=-DMPICH_SKIP_MPICXX
 #MPI_LDFLAGS=
 #MPI_LIBS=
+MPILIB_LDFLAGS=-Wc,-nolinkage
 
 # # Scalasca1 settings
 # MPILIB    =

@@ -9,6 +9,7 @@ MPIFC=mpiifort
 #MPI_CPPFLAGS=
 #MPI_LDFLAGS=
 #MPI_LIBS=
+MPILIB_LDFLAGS=-Wc,-nolinkage
 
 # # Scalasca1 settings
 # MPILIB    = -lmpi
