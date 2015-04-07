@@ -252,7 +252,6 @@ instrumentation. These are currently:
  <li> source code instrumentation via the TAU instrumenter, </li>
  <li> OpenMP source code instrumentation using Opari2. </li>
  <li> Pthread instrumentation via GNU ld library wrapping. </li>
- <li> binary instrumentation using Cobi </li>
  <li> CUDA instrumentation</li>
 </ul>
 
@@ -278,10 +277,8 @@ In order to reflect the above-mentioned extensions, this interface also
 had to be replaced by an enhanced version, POMP2.
 
 Additionally, the user may instrument the code manually with convenient
-macros provided by @scorep. @scorep also includes the option for
-instrumentation of executables using binary rewriting.
-Later @scorep may be extended with sampling functionality
-that provides an alternative to direct instrumentation.
+macros provided by @scorep. Later @scorep may be extended with sampling
+functionality that provides an alternative to direct instrumentation.
 
 During measurement, the system records several performance metrics
 including execution time, communication metrics, and optionally
