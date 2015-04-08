@@ -216,17 +216,20 @@ scorep_thread_on_team_begin( scorep_thread_private_data*  parentTpd,
                              SCOREP_Location**            firstForkLocations,
                              bool*                        locationIsCreated )
 {
+    *threadId = omp_get_thread_num();
     /* Begin of portability-hack:
-     * OpenMP implementations on XL/AIX use the at_exit mechanism to
-     * shut-down the OpenMP runtime. The at_exit handler is registered
+     * OpenMP implementations on XL/AIX use the atexit mechanism to
+     * shut-down the OpenMP runtime. The atexit handler is registered
      * during the first usage of OpenMP, usually after the Score-P at_exit
      * handler. I.e. the OpenMP runtime is shut down *before* the Score-P
      * finalization, preventing Score-P from accessing e.g. OpenMP
      * threadprivate variables. To solve this issue we re-register the
-     * Score-P at_exit handler so that it is executed *before* the OpenMP
+     * Score-P atexit handler so that it is executed *before* the OpenMP
      * runtime is shut down. */
     static bool exit_handler_re_registered = false;
-    if ( !exit_handler_re_registered && scorep_thread_is_initial_thread( parentTpd ) )
+    if ( *threadId == 0 &&
+         scorep_thread_is_initial_thread( parentTpd ) &&
+         !exit_handler_re_registered )
     {
         exit_handler_re_registered = true;
         SCOREP_RegisterExitHandler();
@@ -237,7 +240,6 @@ scorep_thread_on_team_begin( scorep_thread_private_data*  parentTpd,
 
     scorep_thread_private_data_omp_tpd* parent_model_data =
         scorep_thread_get_model_data( parentTpd );
-    *threadId = omp_get_thread_num();
 
     if ( omp_get_num_threads() == 1 )
     {
