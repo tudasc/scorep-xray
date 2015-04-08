@@ -34,6 +34,7 @@
 extern const scorep_compiler_region_description scorep_region_descriptions_begin;
 extern const scorep_compiler_region_description scorep_region_descriptions_end;
 
+int scorep_compiler_measurement_phase = SCOREP_COMPILER_PHASE_PRE_INIT;
 
 /****************************************************************************************
    Adapter management
@@ -90,8 +91,9 @@ scorep_compiler_subsystem_init( void )
             scorep_compiler_register_region( region_descr );
         }
 
-        /* Set flag */
-        scorep_compiler_initialized = true;
+        /* Set flags */
+        scorep_compiler_initialized       = true;
+        scorep_compiler_measurement_phase = SCOREP_COMPILER_PHASE_MEASUREMENT;
     }
 
     return SCOREP_SUCCESS;
@@ -112,9 +114,10 @@ scorep_compiler_subsystem_finalize( void )
     /* call only, if previously initialized */
     if ( scorep_compiler_initialized )
     {
-        /* Set initialization flag */
-        scorep_compiler_initialized = false;
-        scorep_compiler_finalized   = true;
+        /* Set flags */
+        scorep_compiler_initialized       = false;
+        scorep_compiler_finalized         = true;
+        scorep_compiler_measurement_phase = SCOREP_COMPILER_PHASE_POST_FINALIZE;
 
         /* Delete region mutex */
         SCOREP_MutexDestroy( &scorep_compiler_region_mutex );

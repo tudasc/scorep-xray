@@ -50,8 +50,9 @@
 #include "scorep_plugin_gcc_version_compatibility.h"
 
 static const char* register_hook_name = "scorep_plugin_register_region";
-static const char* entry_hook_name    = "SCOREP_EnterRegion";
-static const char* exit_hook_name     = "SCOREP_ExitRegion";
+static const char* entry_hook_name    = "scorep_plugin_enter_region";
+static const char* exit_hook_name     = "scorep_plugin_exit_region";
+
 
 static tree
 build_inst_function( scorep_gcc_plugin_hook_type hook_type,

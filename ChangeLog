@@ -42,8 +42,8 @@ Bugfixes:
   Fixed.
 - Fixed detection of building a shared library on Cray in the instrumenter.
 - Fixed failed OpenMP detection on K if the -Kopenmp flag was combined
-  with other flags in a comme separated list.
-- Fixed errorneous calculation and presentation of task migration metrics.
+  with other flags in a comma separated list.
+- Fixed erroneous calculation and presentation of task migration metrics.
 - The GCC instrumentation plug-in can now also be built if the used GCC
   installation does not provide a `gmp.h` header.
 - Fixed missing DESTDIR support for installing `scorep-config` delegate on
@@ -53,6 +53,8 @@ Bugfixes:
   initialization time. This was due to a bug in the Fujitsu compiler
   and OpenMP runtime. Fujitsu provided a workaround that fixed this
   issues.
+- Calls to functions, instrumented by the GCC plug-in, after the finalization
+  of the measurement, aborted the application. Fixed.
 
 ------------------- Released version 1.4 -----------------------------
 

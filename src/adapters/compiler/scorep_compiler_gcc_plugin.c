@@ -20,6 +20,7 @@
 #include "scorep_compiler_gcc_plugin.h"
 
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Events.h>
 #include <SCOREP_Mutex.h>
 
 #include "SCOREP_Compiler_Init.h"
@@ -49,3 +50,21 @@ scorep_plugin_register_region( const scorep_compiler_region_description* regionD
 
     SCOREP_MutexUnlock( scorep_compiler_region_mutex );
 } /* scorep_compiler_register_region */
+
+void
+scorep_plugin_enter_region( SCOREP_RegionHandle regionHandle )
+{
+    if ( scorep_compiler_measurement_phase == SCOREP_COMPILER_PHASE_MEASUREMENT )
+    {
+        SCOREP_EnterRegion( regionHandle );
+    }
+}
+
+void
+scorep_plugin_exit_region( SCOREP_RegionHandle regionHandle )
+{
+    if ( scorep_compiler_measurement_phase == SCOREP_COMPILER_PHASE_MEASUREMENT )
+    {
+        SCOREP_ExitRegion( regionHandle );
+    }
+}

@@ -41,4 +41,12 @@ scorep_compiler_region_description;
 void
 scorep_compiler_register_region( const scorep_compiler_region_description* region_descr );
 
+enum
+{
+    SCOREP_COMPILER_PHASE_PRE_INIT      = -1,
+    SCOREP_COMPILER_PHASE_MEASUREMENT   = 0,
+    SCOREP_COMPILER_PHASE_POST_FINALIZE = +1
+};
+extern int scorep_compiler_measurement_phase;
+
 #endif /* SCOREP_COMPILER_GCC_PLUGIN_H_ */
