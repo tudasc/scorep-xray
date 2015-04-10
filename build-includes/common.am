@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2015,
 ##    Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -53,6 +53,9 @@ INC_DIR_DEFINITIONS = $(INC_ROOT)src/measurement/definitions/include
 
 ##  Where to find the valgrind headers.
 INC_DIR_VENDOR_VALGRIND = $(INC_ROOT)vendor/valgrind/include
+
+CLEAN_LOCAL =
+clean-local: $(CLEAN_LOCAL)
 
 # When $(YACC) is invoced, also create a header file.
 AM_YFLAGS = -d

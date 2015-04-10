@@ -100,14 +100,15 @@ LIB_DIR_SCOREP_MPI = ../build-mpi/
 ## Here the SHMEM convenience libraries are build
 LIB_DIR_SCOREP_SHMEM = ../build-shmem/
 
-clean-local: clean-local-scorep-experiment-dirs clean-local-scorep-config-tests clean-local-instrumenter-checks
-	rm -f lex.yy.c scanner.h yacc.c yacc.h y.tab.h
+CLEANFILES += lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 
+CLEAN_LOCAL += clean-local-scorep-experiment-dirs
 clean-local-scorep-experiment-dirs:
 	rm -rf scorep-2*
 	rm -rf scorep-measurement-tmp
 	rm -f serial_inst_test
 
+CLEAN_LOCAL += clean-local-scorep-config-tests
 clean-local-scorep-config-tests:
 	$(RM) test_scorep_config_number.*.out
 	$(RM) test_scorep_config_size.*.out
@@ -170,8 +171,14 @@ $(instrumenter_configuration_files): ../installcheck/instrumenter_checks/instrum
 
 if HAVE_PTHREAD
 if HAVE_GNU_LINKER
+
 instrumenter-checks-pthread:
 	$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread
+
+CLEAN_LOCAL += clean-local-instrumenter-checks-pthread
+clean-local-instrumenter-checks-pthread:
+	@$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread clean
+
 else !HAVE_GNU_LINKER
 instrumenter-checks-pthread:
 endif !HAVE_GNU_LINKER
@@ -179,10 +186,10 @@ else !HAVE_PTHREAD
 instrumenter-checks-pthread:
 endif !HAVE_PTHREAD
 
+CLEAN_LOCAL += clean-local-instrumenter-checks
 clean-local-instrumenter-checks:
 	@rm -f $(instrumenter_configuration_files)
 	@for paradigm in $(PARADIGMS); do \
             rm -f ../installcheck/instrumenter_checks/bin/*-$${paradigm}-*; \
             rm -rf ../installcheck/instrumenter_checks/$$paradigm/build; \
         done
-	@$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread clean

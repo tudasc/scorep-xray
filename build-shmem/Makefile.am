@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2014,
+## Copyright (c) 2013-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2015,
@@ -65,8 +65,7 @@ endif !CROSS_BUILD
 ## Here all libscorep_*.la are build
 LIB_DIR_SCOREP = ../build-backend/
 
-clean-local: clean-local-instrumenter-checks
-	rm -f lex.yy.c scanner.h yacc.c yacc.h y.tab.h
+CLEANFILES += lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 
 installcheck-local: instrumenter-checks
 	@fail= failcom='exit 1'; \
@@ -126,6 +125,7 @@ instrumenter-checks: $(instrumenter_configuration_files) \
 	  || eval $$failcom; \
 	done; test -z "$$fail"
 
+CLEAN_LOCAL += clean-local-instrumenter-checks
 clean-local-instrumenter-checks:
 	@rm -f $(instrumenter_configuration_files)
 	@for paradigm in $(PARADIGMS); do \

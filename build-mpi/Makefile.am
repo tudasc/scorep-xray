@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -76,8 +76,7 @@ endif !CROSS_BUILD
 ## Here all libscorep_*.la are build
 LIB_DIR_SCOREP = ../build-backend/
 
-clean-local: clean-local-instrumenter-checks
-	rm -f lex.yy.c scanner.h yacc.c yacc.h y.tab.h
+CLEANFILES += lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 
 installcheck-local: instrumenter-checks
 	@fail= failcom='exit 1'; \
@@ -116,6 +115,7 @@ instrumenter_configuration_files = ../installcheck/instrumenter_checks/configura
 $(instrumenter_configuration_files): ../installcheck/instrumenter_checks/instrumenter-configurations.sh
 	@../installcheck/instrumenter_checks/instrumenter-configurations.sh
 
+CLEAN_LOCAL += clean-local-instrumenter-checks
 clean-local-instrumenter-checks:
 	@rm -f $(instrumenter_configuration_files)
 	@for paradigm in $(PARADIGMS); do \
