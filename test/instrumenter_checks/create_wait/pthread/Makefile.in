@@ -8,6 +8,9 @@
 ## Copyright (c) 2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
+## Copyright (c) 2015,
+## Technische Universitaet Dresden, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -44,12 +47,12 @@ scorep_instrumenting_verbose2_1 = --verbose
 
 
 TESTS = \
-    $(BINDIR)/pi-pthread-cc \
-    $(BINDIR)/pi_mutex-pthread-cc \
-    $(BINDIR)/producer_consumer-pthread-cc \
-    $(BINDIR)/management_routines-pthread-cc \
-    $(BINDIR)/synchronization_routines-pthread-cc \
-    $(BINDIR)/dining_philosophers-pthread-cc
+    $(BINDIR)/pi-pthread-cc$(suffix) \
+    $(BINDIR)/pi_mutex-pthread-cc$(suffix) \
+    $(BINDIR)/producer_consumer-pthread-cc$(suffix) \
+    $(BINDIR)/management_routines-pthread-cc$(suffix) \
+    $(BINDIR)/synchronization_routines-pthread-cc$(suffix) \
+    $(BINDIR)/dining_philosophers-pthread-cc$(suffix)
 
 
 all: $(TESTS)
@@ -58,9 +61,9 @@ all: $(TESTS)
 $(TESTS):
 
 
-$(BINDIR)/%: $(SRCDIR)/%.c $(TOOLS)
+$(BINDIR)/%$(suffix): $(SRCDIR)/%.c $(TOOLS)
 	@mkdir -p $(BINDIR)
-	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(PTHREAD_OPTION) $(SCOREP_OPTIONS) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CC) @PTHREAD_CFLAGS@ $(CFLAGS) -o $@$(suffix) $< @PTHREAD_LIBS@ -lm
+	$(SCOREP_INSTRUMENTING_VERBOSE)$(PREP) $(PTHREAD_OPTION) $(SCOREP_OPTIONS) $(SCOREP_INSTRUMENTING_VERBOSE2) $(CC) @PTHREAD_CFLAGS@ $(CFLAGS) -o $@ $< @PTHREAD_LIBS@ -lm
 
 clean:
 	@rm -f $(TESTS)
