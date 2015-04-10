@@ -51,7 +51,7 @@ SHMEM_FORTRAN_SHPALLOC( shpalloc )
     SCOREP_LIBWRAP_FUNC_NAME( FSUB( FUNCNAME ) ) ( void **addr,             \
                                                    long *errcode,           \
                                                    int  *abort )            \
-                                                                            \
+    {                                                                       \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
@@ -87,7 +87,7 @@ SHMEM_FORTRAN_SHPDEALLOC( shpdealloc )
                                                    int  *length,            \
                                                    long *errcode,           \
                                                    int  *abort )            \
-                                                                            \
+    {                                                                       \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
