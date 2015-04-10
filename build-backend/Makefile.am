@@ -132,16 +132,6 @@ scorep-config-tool-install:
 	$(MKDIR_P) $(SCOREP_SHARE_INSTALL_DIR)
 	$(INSTALL_DATA) $(INC_ROOT)share/SCOREP_Pdt_Instrumentation.conf $(SCOREP_PDT_CONFIG_INSTALL_TARGET)
 
-installcheck-local: instrumenter-checks instrumenter-checks-pthread installcheck-public-headers
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	test -z "$$fail"
-
 PARADIGMS = serial
 # component separation will provide the HAVE_OPARI2 conditional
 #if HAVE_OPARI2
@@ -150,6 +140,7 @@ PARADIGMS += omp
 endif
 #endif
 
+INSTALLCHECK_LOCAL += instrumenter-checks
 instrumenter-checks: $(instrumenter_configuration_files)
 	@fail= failcom='exit 1'; \
 	for f in x $$MAKEFLAGS; do \
@@ -169,23 +160,6 @@ instrumenter_configuration_files = ../installcheck/instrumenter_checks/configura
 $(instrumenter_configuration_files): ../installcheck/instrumenter_checks/instrumenter-configurations.sh
 	@../installcheck/instrumenter_checks/instrumenter-configurations.sh
 
-if HAVE_PTHREAD
-if HAVE_GNU_LINKER
-
-instrumenter-checks-pthread:
-	$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread
-
-CLEAN_LOCAL += clean-local-instrumenter-checks-pthread
-clean-local-instrumenter-checks-pthread:
-	@$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread clean
-
-else !HAVE_GNU_LINKER
-instrumenter-checks-pthread:
-endif !HAVE_GNU_LINKER
-else !HAVE_PTHREAD
-instrumenter-checks-pthread:
-endif !HAVE_PTHREAD
-
 CLEAN_LOCAL += clean-local-instrumenter-checks
 clean-local-instrumenter-checks:
 	@rm -f $(instrumenter_configuration_files)
@@ -193,3 +167,17 @@ clean-local-instrumenter-checks:
             rm -f ../installcheck/instrumenter_checks/bin/*-$${paradigm}-*; \
             rm -rf ../installcheck/instrumenter_checks/$$paradigm/build; \
         done
+
+if HAVE_PTHREAD
+if HAVE_GNU_LINKER
+
+INSTALLCHECK_LOCAL += instrumenter-checks-pthread
+instrumenter-checks-pthread:
+	$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread
+
+CLEAN_LOCAL += clean-local-instrumenter-checks-pthread
+clean-local-instrumenter-checks-pthread:
+	@$(MAKE) -C ../installcheck/instrumenter_checks/create_wait/pthread clean
+
+endif HAVE_GNU_LINKER
+endif HAVE_PTHREAD

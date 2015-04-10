@@ -67,16 +67,6 @@ LIB_DIR_SCOREP = ../build-backend/
 
 CLEANFILES += lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 
-installcheck-local: instrumenter-checks
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	test -z "$$fail"
-
 PARADIGMS =
 instrumenter_check_paradigm_makefiles =
 instrumenter_configuration_files =
@@ -109,6 +99,7 @@ $(foreign_instrumenter_check_prerequisites):
 $(instrumenter_configuration_files): ../installcheck/instrumenter_checks/instrumenter-configurations.sh
 	@../installcheck/instrumenter_checks/instrumenter-configurations.sh
 
+INSTALLCHECK_LOCAL += instrumenter-checks
 instrumenter-checks: $(instrumenter_configuration_files) \
                      $(instrumenter_check_paradigm_makefiles) \
                      $(foreign_instrumenter_check_prerequisites)

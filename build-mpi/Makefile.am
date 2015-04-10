@@ -78,16 +78,6 @@ LIB_DIR_SCOREP = ../build-backend/
 
 CLEANFILES += lex.yy.c scanner.h yacc.c yacc.h y.tab.h
 
-installcheck-local: instrumenter-checks
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	test -z "$$fail"
-
 PARADIGMS =
 if HAVE_MPI_SUPPORT
 PARADIGMS += mpi
@@ -96,6 +86,7 @@ PARADIGMS += mpi_omp
 endif
 endif
 
+INSTALLCHECK_LOCAL += instrumenter-checks
 instrumenter-checks: $(instrumenter_configuration_files)
 	@fail= failcom='exit 1'; \
 	for f in x $$MAKEFLAGS; do \

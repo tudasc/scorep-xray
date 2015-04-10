@@ -6,7 +6,7 @@
 ## Copyright (c) 2009-2011,
 ## RWTH Aachen University, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2015,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -134,6 +134,7 @@ installcheck_public_headers += \
     installcheck_public_header_pomp_lib_c.$(OBJEXT)
 endif
 
+INSTALLCHECK_LOCAL += installcheck-public-headers
 installcheck-public-headers: $(installcheck_public_headers)
 
 DISTCLEANFILES += $(installcheck_public_headers)
