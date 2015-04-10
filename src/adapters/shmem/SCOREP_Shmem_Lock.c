@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -38,7 +38,7 @@
                                                                                 \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( lock ) );                 \
                                                                                 \
-            SCOREP_RmaRequestLock( scorep_shmem_interim_world_window_handle,    \
+            SCOREP_RmaAcquireLock( scorep_shmem_interim_world_window_handle,    \
                                    NO_PROCESSING_ELEMENT,                       \
                                    ( uint64_t )lock,                            \
                                    SCOREP_LOCK_EXCLUSIVE );                     \
