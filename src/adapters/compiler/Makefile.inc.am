@@ -156,7 +156,8 @@ endif SCOREP_COMPILER_PGI
 #--- Oracle Studio specific settings
 if SCOREP_COMPILER_SUN
 libscorep_adapter_compiler_mgmt_la_SOURCES += \
-    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun_init.c
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun_init.c \
+    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_sun_data.h
 endif SCOREP_COMPILER_SUN
 
 #--- Common functionality if the used compiler instrumentation needs
