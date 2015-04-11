@@ -93,6 +93,8 @@ libscorep_online_access_mpp_mpi_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/user \
     -I$(INC_DIR_DEFINITIONS)
 
+CLEANFILES += scorep_oa_parser.c scorep_oa_scanner.c scorep_oa_scanner.h
+
 if ! PLATFORM_AIX
 libscorep_online_access_mpp_mpi_la_CPPFLAGS += -D_POSIX_SOURCE
 endif

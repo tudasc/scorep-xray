@@ -107,6 +107,10 @@ clean-local-scorep-experiment-dirs:
 	rm -rf scorep-2*
 	rm -rf scorep-measurement-tmp
 	rm -f serial_inst_test
+	rm -rf rewind-test-dir
+	rm -rf scorep-serial-cuda
+	rm -rf scorep-serial-opencl
+	rm -rf scorep-serial-*-metric-test-dir
 
 CLEAN_LOCAL += clean-local-scorep-config-tests
 clean-local-scorep-config-tests:

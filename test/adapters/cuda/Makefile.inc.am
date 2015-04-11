@@ -49,5 +49,6 @@ if HAVE_CUDA_SUPPORT
 
 TESTS_SERIAL += \
    ./../test/adapters/cuda/run_cuda_test.sh
+CLEANFILES += cuda_test.out
 
 endif

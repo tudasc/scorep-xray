@@ -33,7 +33,7 @@
 
 cleanup()
 {
-   #rm -f user_cxx_test
+   rm -f user_cxx_test
    rm -rf scorep-measurement-tmp
 }
 trap cleanup EXIT

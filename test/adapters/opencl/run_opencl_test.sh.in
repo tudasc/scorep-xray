@@ -13,7 +13,14 @@
 
 echo "===== OpenCL Compile and Run Test ====="
 
-rm -f opencl_test
+cleanup()
+{
+    rm -f opencl_test
+    rm -rf scorep-serial-opencl
+    rm -f kernel.cl
+}
+trap cleanup EXIT
+cleanup
 
 # Get SRC_ROOT
 SRC_ROOT=@abs_top_srcdir@/..
