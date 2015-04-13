@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -59,7 +59,7 @@ typedef struct scorep_wait_state_tracking_struct
     int         tp_comm_partner_wc;
     int         tp_tag_wc;
     MPI_Group   group;
-}scorep_wait_state_request_tracking;
+} scorep_wait_state_request_tracking;
 
 
 extern int scorep_mpiprofiling_myrank;
@@ -72,7 +72,7 @@ typedef struct scorep_mpiprofile_world_comm_dup_struct
 {
     MPI_Group group;                            /** Associated MPI group */
     MPI_Comm  comm;
-}scorep_mpiprofile_world_comm_dup;
+} scorep_mpiprofile_world_comm_dup;
 
 /**
  * Contains the data of the MPI_COMM_WORLD definition.

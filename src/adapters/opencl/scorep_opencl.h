@@ -149,7 +149,7 @@ typedef struct
             size_t                     bytes;       /**< number of bytes */
         } memcpy;
     } u;
-}scorep_opencl_buffer_entry;
+} scorep_opencl_buffer_entry;
 
 /**
  * Score-P OpenCL command queue
@@ -168,7 +168,7 @@ typedef struct scorep_opencl_queue
     SCOREP_Mutex                mutex;                 /**< Is queue locked? */
     scorep_opencl_vendor        vendor;                /**< vendor specification */
     struct scorep_opencl_queue* next;                  /**< Pointer to next element in the queue */
-}scorep_opencl_queue;
+} scorep_opencl_queue;
 
 
 /** number of already existing global location */

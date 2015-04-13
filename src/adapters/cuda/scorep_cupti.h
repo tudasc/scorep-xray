@@ -120,7 +120,7 @@ typedef struct scorep_cupti_stream
     uint32_t                    location_id;             /**< internal location ID used for unification */
     uint64_t                    scorep_last_timestamp;   /**< last written Score-P timestamp */
     struct scorep_cupti_stream* next;
-}scorep_cupti_stream;
+} scorep_cupti_stream;
 
 /*
  * data structure contains information about allocated CUDA memory
@@ -131,7 +131,7 @@ typedef struct scorep_cupti_gpumem
     size_t                      size;       /**< number of bytes allocated */
     uint32_t                    tid;        /**< thread id used with this malloc */
     struct scorep_cupti_gpumem* next;
-}scorep_cupti_gpumem;
+} scorep_cupti_gpumem;
 
 /*
  * Score-P CUPTI activity synchronization structure
@@ -143,7 +143,7 @@ typedef struct
     uint64_t gpu_start;  /**< gpu measurement interval start timestamp */
     uint64_t gpu_stop;   /**< gpu measurement interval stop timestamp */
     double   factor;     /**< synchronization factor for time interval */
-}scorep_cupti_sync;
+} scorep_cupti_sync;
 
 #if HAVE( CUPTI_ASYNC_SUPPORT )
 /**
@@ -176,7 +176,7 @@ typedef struct
 #endif
     uint64_t             scorep_last_gpu_time;     /**< last written Score-P timestamp */
     bool                 gpu_idle;                 /**< has idle region enter been written last */
-}scorep_cupti_activity;
+} scorep_cupti_activity;
 
 /*
  * Score-P CUPTI context.
@@ -194,7 +194,7 @@ typedef struct scorep_cupti_context
     size_t                       gpu_memory_allocated; /**< memory allocated on CUDA device */
     scorep_cupti_activity*       activity;
     struct scorep_cupti_context* next;
-}scorep_cupti_context;
+} scorep_cupti_context;
 
 /*
  * Score-P CUPTI attribute handles
@@ -204,7 +204,7 @@ typedef struct
     SCOREP_AttributeHandle stream_ref;                 /**< CUDA DRV stream references */
     SCOREP_AttributeHandle event_ref;                  /**< CUDA DRV events */
     SCOREP_AttributeHandle result_ref;                 /**< CUDA DRV API function results */
-}scorep_cupti_attribute_handles;
+} scorep_cupti_attribute_handles;
 
 extern scorep_cupti_attribute_handles scorep_cupti_attributes;
 
