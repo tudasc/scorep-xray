@@ -115,9 +115,12 @@ various Score-P components.
     functions from shared libraries, will not appear (are
     automatically filtered) in the measurement output.
 
-  - Due to constant changes in the plug-in API of the GNU compiler
-    infrastructure, it is highly unlikely that the Score-P instrumentation
-    plug-in builds with version newer than GCC 5.
+  - The new GNU compiler instrumentation based on the plug-in
+    interface is currently not available on cross build machines.
+
+  - Due to heavy changes in the GNU compiler infrastructure, the
+    instrumentation based on the plug-in interface is currently not
+    available for GNU Compiler versions greater then 4.9.
 
   - The pgCC compiler versions 13.9 and higher preinclude omp.h for
     OpenMP codes. This results in multiply defined symbols if the

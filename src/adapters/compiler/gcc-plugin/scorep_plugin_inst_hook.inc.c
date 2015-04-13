@@ -30,6 +30,7 @@
 #include "tree.h"
 #include "input.h"
 #include "hashtab.h"
+#include "pointer-set.h"
 #include "splay-tree.h"
 #include "langhooks.h"
 #include "cgraph.h"
@@ -44,9 +45,9 @@
 #include "gimple.h"
 #include "tree-pass.h"
 
-#include "scorep_plugin_gcc_version_compatibility.h"
 #include "scorep_plugin_inst_handle.h"
 #include "scorep_plugin_inst_hook.h"
+#include "scorep_plugin_gcc_version_compatibility.h"
 
 static const char* register_hook_name = "scorep_plugin_register_region";
 static const char* entry_hook_name    = "scorep_plugin_enter_region";

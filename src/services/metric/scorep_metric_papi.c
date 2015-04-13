@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -1051,14 +1051,14 @@ scorep_metric_papi_strictly_synchronous_read( SCOREP_Metric_EventSet* eventSet,
 /** @brief Reads values of counters relative to the time of scorep_metric_papi_open().
  *         This function is used to write values of synchronous metrics.
  *
- *  @param      eventSet     An event set, that contains the definition of the counters
- *                           that should be measured.
- *  @param[out] values       Reference to array that will be filled with values from
- *                           active metrics.
- *  @param[out] is_updated   An array which indicates whether a new value of a specfic
- *                           metric was written (@ is_updated[i] == true ) or not
- *                           (@ is_updated[i] == false ).
- *  @param      force_update Update of all metric value in this event set is enforced.
+ *  @param eventSet[in]     An event set, that contains the definition of the counters
+ *                          that should be measured.
+ *  @param values[out]      Reference to array that will be filled with values from
+ *                          active metrics.
+ *  @param is_updated[out]  An array which indicates whether a new value of a specfic
+ *                          metric was written (@ is_updated[i] == true ) or not
+ *                          (@ is_updated[i] == false ).
+ *  @param force_update[in] Update of all metric value in this event set is enforced.
  */
 static void
 scorep_metric_papi_synchronous_read( SCOREP_Metric_EventSet* eventSet,

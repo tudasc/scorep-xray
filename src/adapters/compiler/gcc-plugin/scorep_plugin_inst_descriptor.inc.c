@@ -30,6 +30,7 @@
 #include "tree.h"
 #include "input.h"
 #include "hashtab.h"
+#include "pointer-set.h"
 #include "splay-tree.h"
 #include "langhooks.h"
 #include "cgraph.h"
@@ -44,7 +45,6 @@
 #include "gimple.h"
 #include "tree-pass.h"
 
-#include "scorep_plugin_gcc_version_compatibility.h"
 #include "scorep_plugin.h"
 #include "scorep_plugin_inst_descriptor.h"
 
@@ -203,9 +203,10 @@ scorep_plugin_region_description_build( const char* function_name,
     DECL_SIZE( region_descr_var )      = build_int_cst( size_type_node, 64 * BITS_PER_UNIT );
     DECL_SIZE_UNIT( region_descr_var ) = build_int_cst( size_type_node, 64 );
 
-    DECL_INITIAL( region_descr_var ) = region_descr_value;
-    DECL_CONTEXT( region_descr_var ) = current_function_decl;
-    set_decl_section_name( region_descr_var, region_descrs_section );
+    DECL_INITIAL( region_descr_var )      = region_descr_value;
+    DECL_CONTEXT( region_descr_var )      = current_function_decl;
+    DECL_SECTION_NAME( region_descr_var ) = build_string( strlen( region_descrs_section ),
+                                                          region_descrs_section );
     TREE_PUBLIC( region_descr_var )     = 0;
     TREE_USED( region_descr_var )       = 1;
     DECL_PRESERVE_P( region_descr_var ) = 1;

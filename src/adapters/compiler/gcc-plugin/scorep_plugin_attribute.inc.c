@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -21,27 +21,26 @@
 #include "tree.h"
 #include "plugin.h"
 
-#if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 4009
+#if ( __GNUC__ > 4 ) || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 9 )
 #include "attribs.h"
 #include "stringpool.h"
 #endif
 
 #include "tree-pass.h"
 
-#include "scorep_plugin_gcc_version_compatibility.h"
 #include "scorep_plugin.h"
 
 struct attribute_spec scorep_no_instrument_attribute =
 {
-    "scorep_no_instrument",
-    0,
-    0,
-    false,
-    false,
-    false,
-    NULL,
-    #if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 4007
-    false
+    .name                   = "scorep_no_instrument",
+    .min_length             = 0,
+    .max_length             = 0,
+    .decl_required          = false,
+    .type_required          = false,
+    .function_type_required = false,
+    .handler                = NULL,
+    #if ( __GNUC__ > 4 ) || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 7 )
+    .affects_type_identity  = false
     #endif
 };
 

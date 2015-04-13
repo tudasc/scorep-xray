@@ -7,9 +7,6 @@ Major features:
 
 Features and improvements:
 
-- The GCC plug-in can now also be built on cross build machines and
-  with the upcomming GCC 5.
-
 User tools and API improvements and changes:
 
 - The option --pomp does not take any options any more.

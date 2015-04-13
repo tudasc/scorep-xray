@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2015,
+ * Copyright (c) 2013-2014,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -135,10 +135,10 @@ scorep_shmem_define_shmem_group( void )
  * Calculate the total number of communicators (except
  * 'self-like' ones).
  *
- * @param[out] recvCnts         Array with the number of communicators.
+ * @param recvCnts [out]        Array with the number of communicators.
  *                              recvCnts[i] contains the number of
  *                              communicator with PE i as 'root'.
- * @param[out] offsets          Array with the number of preceding
+ * @param offsets  [out]        Array with the number of preceding
  *                              communicators. offsets[i] contains the
  *                              number of communicators which had
  *                              already been created by PEs < i.

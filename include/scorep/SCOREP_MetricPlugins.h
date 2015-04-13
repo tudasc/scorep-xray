@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  *    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013,
  *    Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -312,8 +312,8 @@ typedef struct SCOREP_Metric_Plugin_Info
      */
     /** This function must be implemented by synchronous metric plugins.
      *
-     *  @param      id          Counter id (see @ add_counter).
-     *  @param[out] value       Value of requested counter.
+     *  @param id[in]           Counter id (see @ add_counter).
+     *  @param value[out]       Value of requested counter.
      *
      *  @return True if value of requested counter was written,
      *          otherwise false.
@@ -332,9 +332,9 @@ typedef struct SCOREP_Metric_Plugin_Info
     /** This function must be implemented by asynchronous metric
      *  plugins. It is used to get values of asynchronous metrics.
      *
-     *  @param      id               Counter id (see @ add_counter).
-     *  @param[out] time_value_list  Pointer to list with return values
-     *                               (pairs of timestamp and value).
+     *  @param id[in]               Counter id (see @ add_counter).
+     *  @param time_value_list[out] Pointer to list with return values
+     *                              (pairs of timestamp and value).
      *
      *  @return Length of list with return values
      */

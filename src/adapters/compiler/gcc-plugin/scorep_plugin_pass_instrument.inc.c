@@ -32,6 +32,7 @@
 #include "tree.h"
 #include "input.h"
 #include "hashtab.h"
+#include "pointer-set.h"
 #include "splay-tree.h"
 #include "langhooks.h"
 #include "cgraph.h"
@@ -49,7 +50,6 @@
 #include <SCOREP_Filter.h>
 #include <scorep_filter_matching.h>
 
-#include "scorep_plugin_gcc_version_compatibility.h"
 #include "scorep_plugin.h"
 #include "scorep_plugin_inst_descriptor.h"
 #include "scorep_plugin_inst_handle.h"
