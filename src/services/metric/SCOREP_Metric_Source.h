@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -189,14 +189,14 @@ typedef struct SCOREP_MetricSource
      * It is allowed that specific metrics of @eventSet are not updated (no values are
      * written).
      *
-     *  @param eventSet[in]     An event set, that contains the definition of the counters
-     *                          that should be measured.
-     *  @param values[out]      Reference to array that will be filled with values from
-     *                          active metrics.
-     *  @param is_updated[out]  An array which indicates whether a new value of a specfic
-     *                          metric was written (@ is_updated[i] == true ) or not
-     *                          (@ is_updated[i] == false ).
-     *  @param force_update[in] Update of all metric value in this event set is enforced.
+     *  @param      eventSet     An event set, that contains the definition of the counters
+     *                           that should be measured.
+     *  @param[out] values       Reference to array that will be filled with values from
+     *                           active metrics.
+     *  @param[out] is_updated   An array which indicates whether a new value of a specfic
+     *                           metric was written (@ is_updated[i] == true ) or not
+     *                           (@ is_updated[i] == false ).
+     *  @param      force_update Update of all metric value in this event set is enforced.
      */
     void ( * metric_source_synchronous_read )( SCOREP_Metric_EventSet* eventSet,
                                                uint64_t*               values,
@@ -206,12 +206,12 @@ typedef struct SCOREP_MetricSource
     /**
      * Read values of counters relative to the time of @ref metric_source_register() asynchronously.
      *
-     *  @param eventSet[in]             An event set, that contains the definition of the counters
+     *  @param      eventSet            An event set, that contains the definition of the counters
      *                                  that should be measured.
-     *  @param timevalue_pointer[out]   An array, to which the counter values are written.
-     *  @param num_pairs[out]           Number of pairs (timestamp + value) written for each
+     *  @param[out] timevalue_pointer   An array, to which the counter values are written.
+     *  @param[out] num_pairs           Number of pairs (timestamp + value) written for each
      *                                  individual metric.
-     *  @param force_update[in]         Update of all metric value in this event set is enforced.
+     *  @param      force_update        Update of all metric value in this event set is enforced.
      */
     void ( * metric_source_asynchronous_read )( SCOREP_Metric_EventSet*      eventSet,
                                                 SCOREP_MetricTimeValuePair** timevalue_pointer,
