@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -48,16 +48,16 @@
  * It is used to store region names with its corresponding region handles.
  * The region name is implemented as C99 flexible array member.
  */
-typedef struct scorep_opencl_kernel_hash_node
+typedef struct opencl_kernel_hash_node
 {
-    SCOREP_RegionHandle                    region; /**< associated region handle */
-    uint32_t                               hash;   /**< hash for this region */
-    struct scorep_opencl_kernel_hash_node* next;   /**< bucket for collision */
-    char                                   name[]; /**< name of the symbol */
-} scorep_opencl_kernel_hash_node;
+    SCOREP_RegionHandle             region; /**< associated region handle */
+    uint32_t                        hash;   /**< hash for this region */
+    struct opencl_kernel_hash_node* next;   /**< bucket for collision */
+    char                            name[]; /**< name of the symbol */
+} opencl_kernel_hash_node;
 
 /** hash table for OpenCL kernels */
-static scorep_opencl_kernel_hash_node* opencl_kernel_hashtab[ KERNEL_HASHTABLE_SIZE ];
+static opencl_kernel_hash_node* opencl_kernel_hashtab[ KERNEL_HASHTABLE_SIZE ];
 
 /**
  * @def SCOREP_OPENCL_CHECK
@@ -388,7 +388,7 @@ scorep_opencl_queue_create( cl_command_queue clQueue,
 
     if ( strstr( vendor, "Intel" ) )
     {
-        queue->vendor = INTEL;
+        queue->vendor = SCOREP_OPENCL_VENDOR_INTEL;
     }
     /* END: get vendor */
 
@@ -667,7 +667,7 @@ add_synchronization_event( scorep_opencl_queue* queue )
      * For Intel we need submit time so first wait only makes sure
      * we are at the end of the queue
      */
-    if ( queue->vendor == INTEL && ret == CL_SUCCESS )
+    if ( queue->vendor == SCOREP_OPENCL_VENDOR_INTEL && ret == CL_SUCCESS )
     {
         OPENCL_CALL( clEnqueueMarker, ( queue->queue, tmpEvt ) );
         ret                     = OPENCL_CALL( clWaitForEvents, ( 1, tmpEvt ) );
@@ -683,7 +683,7 @@ add_synchronization_event( scorep_opencl_queue* queue )
     SCOREP_OPENCL_CHECK( ret );
 
     /* use submit time for Intel */
-    cl_profiling_info info = ( queue->vendor == INTEL ) ?
+    cl_profiling_info info = ( queue->vendor == SCOREP_OPENCL_VENDOR_INTEL ) ?
                              CL_PROFILING_COMMAND_SUBMIT : CL_PROFILING_COMMAND_END;
     SCOREP_OPENCL_CALL( clGetEventProfilingInfo, ( tmpEvt[ 0 ], info,
                                                    sizeof( cl_ulong ),
@@ -950,9 +950,9 @@ scorep_opencl_queue_flush( scorep_opencl_queue* queue )
 
         if ( buf_entry->type == SCOREP_OPENCL_BUF_ENTRY_KERNEL )
         {
-            cl_kernel                       kernel = buf_entry->u.kernel;
-            char                            kernel_name[ KERNEL_STRING_LENGTH ];
-            scorep_opencl_kernel_hash_node* hashNode = NULL;
+            cl_kernel                kernel = buf_entry->u.kernel;
+            char                     kernel_name[ KERNEL_STRING_LENGTH ];
+            opencl_kernel_hash_node* hashNode = NULL;
 
             // get kernel name
             if ( kernel )
@@ -1200,9 +1200,9 @@ kernel_hash_put( const char*         name,
 
     size_t len = strlen( name );
 
-    scorep_opencl_kernel_hash_node* add =
-        ( scorep_opencl_kernel_hash_node* )SCOREP_Memory_AllocForMisc(
-            sizeof( scorep_opencl_kernel_hash_node ) + ( len + 1 ) * sizeof( char ) );
+    opencl_kernel_hash_node* add =
+        ( opencl_kernel_hash_node* )SCOREP_Memory_AllocForMisc(
+            sizeof( opencl_kernel_hash_node ) + ( len + 1 ) * sizeof( char ) );
 
     memcpy( add->name, name, len );
     ( add->name )[ len ] = '\0';
@@ -1240,7 +1240,7 @@ kernel_hash_get( const char* name )
     uint32_t id   = hash & ( KERNEL_HASHTABLE_SIZE - 1 );
 
     // get the bucket
-    scorep_opencl_kernel_hash_node* curr = opencl_kernel_hashtab[ id ];
+    opencl_kernel_hash_node* curr = opencl_kernel_hashtab[ id ];
 
     // iterate over bucket
     while ( curr )

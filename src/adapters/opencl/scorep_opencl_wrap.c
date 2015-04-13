@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -54,13 +54,13 @@
  * function that uses it! It evaluates the return value of the given function
  * 'call' and uses it in the return statement.
  *
- * @param _regionHandle         region handle for the wrapped function
- * @param _direction            data transfer direction
- * @param _bytes                number of bytes to be transfered
- * @param _clQueue              OpenCL command queue
- * @param _clEvt                address of the OpenCL profiling event
- * @param _isBlocking           true, if function is blocking, otherwise false
- * @param _call                 call of the 'real' function
+ * @param regionHandle          region handle for the wrapped function
+ * @param direction             data transfer direction
+ * @param bytes                 number of bytes to be transfered
+ * @param clQueue               OpenCL command queue
+ * @param clEvt                 address of the OpenCL profiling event
+ * @param isBlocking            true, if function is blocking, otherwise false
+ * @param call                  call of the 'real' function
  */
 #define SCOREP_OPENCL_ENQUEUE_BUFFER( regionHandle, direction, bytes, clQueue, \
                                       clEvt, isBlocking, call )                \

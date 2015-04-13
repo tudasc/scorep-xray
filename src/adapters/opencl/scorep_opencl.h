@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014-2015
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -96,10 +96,10 @@
  */
 typedef enum
 {
-    UNKNOWN = 0, /**< unknown platform */
-    INTEL   = 1, /**< Intel platform */
-    NVIDIA  = 2, /**< NVIDIA platform */
-    AMD     = 3  /**< AMD platform */
+    SCOREP_OPENCL_VENDOR_UNKNOWN = 0, /**< unknown platform */
+    SCOREP_OPENCL_VENDOR_INTEL   = 1, /**< Intel platform */
+    SCOREP_OPENCL_VENDOR_NVIDIA  = 2, /**< NVIDIA platform */
+    SCOREP_OPENCL_VENDOR_AMD     = 3  /**< AMD platform */
 } scorep_opencl_vendor;
 
 /**
