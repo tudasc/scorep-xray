@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -51,7 +51,7 @@
     to the measurement system.
  */
 static SCOREP_ErrorCode
-scorep_cuda_register( size_t subsystem_id )
+cuda_subsystem_register( size_t subsystem_id )
 {
     UTILS_DEBUG( "Register environment variables" );
 
@@ -63,7 +63,7 @@ scorep_cuda_register( size_t subsystem_id )
 SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter =
 {
     .subsystem_name              = "CUDA (config variables only)",
-    .subsystem_register          = &scorep_cuda_register,
+    .subsystem_register          = &cuda_subsystem_register,
     .subsystem_init              = NULL,
     .subsystem_init_location     = NULL,
     .subsystem_finalize_location = NULL,

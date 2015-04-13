@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -52,7 +52,7 @@ static size_t scorep_mpi_subsystem_id;
    for the initialization process of the MPI adapter.
  */
 static SCOREP_ErrorCode
-scorep_mpi_register( size_t subsystem_id )
+mpi_subsystem_register( size_t subsystem_id )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -67,7 +67,7 @@ scorep_mpi_register( size_t subsystem_id )
 const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter =
 {
     .subsystem_name              = "MPI (config variables only)",
-    .subsystem_register          = &scorep_mpi_register,
+    .subsystem_register          = &mpi_subsystem_register,
     .subsystem_init              = NULL,
     .subsystem_init_location     = NULL,
     .subsystem_finalize_location = NULL,

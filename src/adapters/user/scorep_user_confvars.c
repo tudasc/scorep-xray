@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,7 +49,7 @@ static size_t scorep_user_subsystem_id;
     to the measurement system. Currently, it registers no variables.
  */
 static SCOREP_ErrorCode
-scorep_user_register( size_t subsystem_id )
+user_subsystem_register( size_t subsystem_id )
 {
     scorep_user_subsystem_id = subsystem_id;
 
@@ -60,7 +60,7 @@ scorep_user_register( size_t subsystem_id )
 const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter =
 {
     .subsystem_name              = "USER (config variables only)",
-    .subsystem_register          = &scorep_user_register,
+    .subsystem_register          = &user_subsystem_register,
     .subsystem_init              = NULL,
     .subsystem_init_location     = NULL,
     .subsystem_finalize_location = NULL,
