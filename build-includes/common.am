@@ -60,5 +60,11 @@ clean-local: $(CLEAN_LOCAL)
 INSTALLCHECK_LOCAL =
 installcheck-local: $(INSTALLCHECK_LOCAL)
 
+INSTALL_EXEC_HOOK =
+install-exec-hook: $(INSTALL_EXEC_HOOK)
+
+UNINSTALL_HOOK =
+uninstall-hook: $(UNINSTALL_HOOK)
+
 # When $(YACC) is invoced, also create a header file.
 AM_YFLAGS = -d

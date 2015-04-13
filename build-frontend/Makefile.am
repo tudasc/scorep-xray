@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -54,16 +54,3 @@ include ../build-includes/front-and-backend.am
 
 check-serial: check-run-serial
 check-omp:    check-run-omp
-
-# On MIC, scorep-config is also installed to $pkglibexecdir; rename to
-# scorep-config-mic afterwards
-if PLATFORM_MIC
-
-install-exec-hook:
-	mv $(DESTDIR)$(pkglibexecdir)/scorep-config \
-	   $(DESTDIR)$(pkglibexecdir)/scorep-config-mic
-
-uninstall-hook:
-	rm $(DESTDIR)$(pkglibexecdir)/scorep-config-mic
-
-endif PLATFORM_MIC

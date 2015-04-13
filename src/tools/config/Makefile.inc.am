@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2014,
+## Copyright (c) 2009-2011, 2014-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -98,5 +98,14 @@ scorep_config_LDADD = libutils.la
 if PLATFORM_MIC
 
 pkglibexec_PROGRAMS += scorep-config
+
+INSTALL_EXEC_HOOK += install-exec-hook-platform-mic
+install-exec-hook-platform-mic:
+	mv $(DESTDIR)$(pkglibexecdir)/scorep-config \
+	   $(DESTDIR)$(pkglibexecdir)/scorep-config-mic
+
+UNINSTALL_HOOK += uninstall-hook-platform-mic
+uninstall-hook-platform-mic:
+	rm $(DESTDIR)$(pkglibexecdir)/scorep-config-mic
 
 endif PLATFORM_MIC
