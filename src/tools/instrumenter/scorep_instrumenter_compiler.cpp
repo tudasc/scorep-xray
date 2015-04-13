@@ -210,9 +210,9 @@ SCOREP_Instrumenter_CompilerAdapter::prelink( SCOREP_Instrumenter&         instr
         else
         {
             instrumenter.prependInputFile(
-                SCOREP_PKGLIBDIR "/scorep_compiler_gcc_plugin_begin.o" );
+                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_gcc_plugin_begin.o" );
             instrumenter.appendInputFile(
-                SCOREP_PKGLIBDIR "/scorep_compiler_gcc_plugin_end.o" );
+                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_gcc_plugin_end.o" );
         }
     }
 #endif

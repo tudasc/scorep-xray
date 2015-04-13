@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -200,8 +200,8 @@ create_local_mappings( uint32_t comm_world_size,
  * given by the global communicator id @p global_comm_id. If it is, it returns
  * the local rank according to the communicator. If not, it returns UINT32_MAX.
  *
- * @param global_comm_id      A unified communicator id.
- * @param global_aux_ids[out] Global ids of auxiliary communicator information.
+ * @param      global_comm_id A unified communicator id.
+ * @param[out] global_aux_ids Global ids of auxiliary communicator information.
  *                            Currently:
  *                            @li [0] Global id of the communicator's name
  *                            @li [1] Global id of the communicator's parent
