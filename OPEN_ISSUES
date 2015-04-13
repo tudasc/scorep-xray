@@ -324,7 +324,7 @@ various Score-P components.
     optimization unless optimization flags are explicitly specified.
 
   - Applications using an autotools-based buildsystem should add the
-    option "--disable-option-checking" to the usual configure
+    option "--disable-dependency-tracking" to the usual configure
     call. Score-P is added only at make time like "make CC="scorep
     <your-CC>" (same for CXX, F77, and FC)
 
