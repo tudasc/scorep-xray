@@ -103,7 +103,7 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         &scorep_env_total_memory,
         NULL,
         "16000k",
-        "Total memory in bytes for the measurement system",
+        "Total memory in bytes per process for the measurement system",
         ""
     },
     {
