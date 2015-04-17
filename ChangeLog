@@ -55,6 +55,10 @@ Bugfixes:
   issues.
 - Calls to functions, instrumented by the GCC plug-in, after the finalization
   of the measurement, aborted the application. Fixed.
+- Instrumentation of applications compiled with PGI compilers and Open
+  MPI 1.8 failed with an 'undefined reference to pgf90_compiled'.
+  Fixed by adding the '-pgf90libs' option when using MPI with PGI
+  compilers.
 
 ------------------- Released version 1.4 -----------------------------
 
