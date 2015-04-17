@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2013-2014,
@@ -178,6 +178,17 @@ SCOREP_Config_MpiMppSystem::addLibs( std::deque<std::string>&           libs,
     {
         deps.addDependency( "libscorep_measurement", "libscorep_online_access_mockup" );
     }
+}
+
+void
+SCOREP_Config_MpiMppSystem::addLdFlags( std::string& ldflags,
+                                        bool         build_check,
+                                        bool /* nvcc */ )
+{
+#if SCOREP_BACKEND_COMPILER_PGI
+    // see 'Linking issues with PGI compilers and Open MPI 1.8' #951
+    ldflags += " -pgf90libs";
+#endif // SCOREP_BACKEND_COMPILER_PGI
 }
 
 void

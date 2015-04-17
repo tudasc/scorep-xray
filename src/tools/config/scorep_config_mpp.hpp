@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -177,6 +177,10 @@ public:
     addLibs( std::deque<std::string>&           libs,
              SCOREP_Config_LibraryDependencies& deps,
              bool                               withOnlineAccess );
+    virtual void
+    addLdFlags( std::string& ldflags,
+                bool         build_check,
+                bool         nvcc );
     virtual void
     getInitStructName( std::deque<std::string>& init_structs );
 };

@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014,
+## Copyright (c) 2014-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014-2015,
@@ -40,6 +40,11 @@ if BUILD_SHARED_LIBRARIES
 external_ldflags += -Wl,--no-as-needed
 endif BUILD_SHARED_LIBRARIES
 endif HAVE_GNU_LINKER
+
+if SCOREP_COMPILER_PGI
+# see 'Linking issues with PGI compilers and Open MPI 1.8' #951
+external_ldflags += -pgf90libs
+endif SCOREP_COMPILER_PGI
 
 ## MPI -------------------------------------------------------------------------
 
