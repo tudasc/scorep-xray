@@ -55,6 +55,11 @@ Bugfixes:
   issues.
 - Calls to functions, instrumented by the GCC plug-in, after the finalization
   of the measurement, aborted the application. Fixed.
+- In shared Score-P builds using recent Intel MPI a 'MPIR_Thread: TLS
+  definition ... mismatches non-TLS definition ...' error was
+  encountered. Fixed.
+- The OpenSHMEM measurement adapter records request-lock instead of
+  acquire-lock events. Fixed.
 - Instrumentation of applications compiled with PGI compilers and Open
   MPI 1.8 failed with an 'undefined reference to pgf90_compiled'.
   Fixed by adding the '-pgf90libs' option when using MPI with PGI
