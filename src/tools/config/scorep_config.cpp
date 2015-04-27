@@ -189,7 +189,8 @@ main( int    argc,
     bool                   allow_static  = true;
     bool                   online_access = true;
     /* set default target to plain */
-    int target = TARGET_PLAIN;
+    int         target      = TARGET_PLAIN;
+    const char* target_name = 0;
 
     SCOREP_Config_Adapter::init();
     SCOREP_Config_MppSystem::init();
@@ -362,7 +363,6 @@ main( int    argc,
         }
         else if ( strncmp( argv[ i ], "--target", 8 ) == 0 )
         {
-            const char* target_name = 0;
             if ( argv[ i ][ 8 ] == '=' )
             {
                 target_name = argv[ i ] + 9;
@@ -406,13 +406,17 @@ main( int    argc,
         }
     }
 
-#if HAVE( MIC_SUPPORT )
     if ( target == TARGET_MIC )
     {
+#if HAVE( MIC_SUPPORT )
         delegate( argc, argv, "mic" );
-    }
+#else
+        std::cerr << "\nUnsupported target: " << target_name
+                  << ". Abort.\n" << std::endl;
+        clean_up();
+        exit( EXIT_FAILURE );
 #endif  /* HAVE( MIC_SUPPORT ) */
-
+    }
 
     std::deque<std::string>           libs;
     SCOREP_Config_LibraryDependencies deps;
