@@ -95,11 +95,11 @@ install-data-local: doxygen-user-install
 install-data-hook:
 	for target in $(TARGETS)""; do \
 	    if test -n "$$target" && test -f $(pkgdatadir)/$$target/@PACKAGE@.summary; then \
-	        echo >> $(pkgdatadir)/@PACKAGE@.summary ; \
-	        echo >> $(pkgdatadir)/@PACKAGE@.summary ; \
-	        echo "=====[ Target: $$target ]====================" >> $(pkgdatadir)/@PACKAGE@.summary ; \
-	        echo >> $(pkgdatadir)/@PACKAGE@.summary ; \
-	        cat $(pkgdatadir)/$$target/@PACKAGE@.summary >> $(pkgdatadir)/@PACKAGE@.summary ; \
+	        echo >> $(DESTDIR)$(pkgdatadir)/@PACKAGE@.summary ; \
+	        echo >> $(DESTDIR)$(pkgdatadir)/@PACKAGE@.summary ; \
+	        echo "=====[ Target: $$target ]====================" >> $(DESTDIR)$(pkgdatadir)/@PACKAGE@.summary ; \
+	        echo >> $(DESTDIR)$(pkgdatadir)/@PACKAGE@.summary ; \
+	        cat $(pkgdatadir)/$$target/@PACKAGE@.summary >> $(DESTDIR)$(pkgdatadir)/@PACKAGE@.summary ; \
 	    fi \
 	done
 
