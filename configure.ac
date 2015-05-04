@@ -156,7 +156,7 @@ AS_IF([test -n "${scorep_otf2_config_bin}" && \
        AS_IF([test "x${scorep_otf2_have_mic}" = "xno"],
              [AC_MSG_ERROR([cannot detect MIC support for external OTF2 installation. Either provide a suitable OTF2 library or reconfigure ]AC_PACKAGE_NAME[ with the '--without-otf2' option to use the included OTF2 copy.])])
       ])
-AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [2])
+AC_SCOREP_HAVE_CONFIG_TOOL([opari2], [3])
 AC_SCOREP_HAVE_CONFIG_TOOL([cube],   [7])
 AS_IF([test -n "${scorep_cube_config_bin}" && \
        test "x${ac_scorep_platform}" = "xmic"],
