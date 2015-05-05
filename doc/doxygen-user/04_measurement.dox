@@ -638,7 +638,7 @@ calls.
 
 The general @scorep filtering mechanism is not applied to MPI functions. Instead,
 the user can decide whether event generation is turned on or off for a group of
-@mpi functions, at strat time of the application. These groups
+@mpi functions, at start time of the application. These groups
 are the listed sub-modules of this adapter. Each module has a short
 string token that identifies this group. To activate event generation
 for a specific group, the user can specify a comma-separated list of
