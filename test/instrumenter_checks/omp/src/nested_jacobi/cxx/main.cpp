@@ -10,6 +10,7 @@
 #endif
 #include "jacobi.h"
 
+#include <scorep/SCOREP_User.h>
 
 #define U( j, i ) data.afU[ ( ( j ) - data.iRowFirst ) * data.iCols + ( i ) ]
 #define F( j, i ) data.afF[ ( ( j ) - data.iRowFirst ) * data.iCols + ( i ) ]
@@ -192,6 +193,7 @@ get_wtime()
 int
 main( int argc, char** argv )
 {
+    SCOREP_USER_REGION( "main_user_instrumented", SCOREP_USER_REGION_TYPE_FUNCTION );
     int retVal = 0;    // return value
 
     JacobiData myData;

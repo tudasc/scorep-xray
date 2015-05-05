@@ -5,8 +5,10 @@
 #include <cstdlib>
 #include <cstdio>
 #include "jacobi.h"
-
 #include <stddef.h>
+
+#include <scorep/SCOREP_User.h>
+
 #if !defined ( __offsetof__ ) && !defined ( offsetof )
 #define offsetof( TYPE, MEMBER ) ( ( size_t )&( ( TYPE* )0 )->MEMBER )
 #endif
@@ -199,6 +201,7 @@ CheckError( JacobiData& data )
 int
 main( int argc, char** argv )
 {
+    SCOREP_USER_REGION( "main_user_instrumented", SCOREP_USER_REGION_TYPE_FUNCTION );
     int retVal = 0;    // return value
 
     JacobiData myData;
