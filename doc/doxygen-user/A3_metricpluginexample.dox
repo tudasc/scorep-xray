@@ -8,15 +8,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-/* Use mutex to make ID generation thread safe */
-#include <pthread.h>
 
 
 /* Maximum number of metrics */
-#define NUMBER_RANDOM_METRICS 5
+#define NUMBER_METRICS 5
 
-/* Guard for metric ID generation */
-static pthread_mutex_t add_metric_mutex;
+/* Maximum string length */
+#define MAX_BUFFER_LENGTH 255
 
 /* Number of individual metrics */
 static int32_t num_metrics = 0;
@@ -51,13 +49,8 @@ init()
 int32_t
 add_counter( char * event_name )
 {
-    /* ID generation has to be thread save */
-    int id;
-
-    pthread_mutex_lock( &add_metric_mutex );
-    id = num_metrics;
+    int id = num_metrics;
     num_metrics++;
-    pthread_mutex_unlock( &add_metric_mutex );
 
     return id;
 }
@@ -66,16 +59,16 @@ SCOREP_Metric_Plugin_MetricProperties*
 get_event_info( char * event_name )
 {
     SCOREP_Metric_Plugin_MetricProperties *return_values;
-    char name_buffer[255];
+    char name_buffer[MAX_BUFFER_LENGTH];
     int i;
 
-    /* If wildcard, add some random counters */
+    /* If wildcard is specified, add some default counters */
     if ( strcmp( event_name, "*" ) == 0 )
     {
-        return_values = malloc( ( NUMBER_RANDOM_METRICS + 1 ) * sizeof( SCOREP_Metric_Plugin_MetricProperties ) );
-        for ( i = 0; i < NUMBER_RANDOM_METRICS; i++ )
+        return_values = malloc( ( NUMBER_METRICS + 1 ) * sizeof( SCOREP_Metric_Plugin_MetricProperties ) );
+        for ( i = 0; i < NUMBER_METRICS; i++ )
         {
-            sprintf( name_buffer, "random strictly sync counter #%i", i );
+            snprintf( name_buffer, MAX_BUFFER_LENGTH, "sync counter #%i", i );
             return_values[ i ].name        = strdup( name_buffer );
             return_values[ i ].description = NULL;
             return_values[ i ].unit        = NULL;
@@ -84,13 +77,13 @@ get_event_info( char * event_name )
             return_values[ i ].base        = SCOREP_METRIC_BASE_DECIMAL;
             return_values[ i ].exponent    = 0;
         }
-        return_values[ NUMBER_RANDOM_METRICS ].name = NULL;
+        return_values[ NUMBER_METRICS ].name = NULL;
     }
     else
     {
-        /* If no wildcard is given create one random counter with the passed name */
+        /* If no wildcard is given create one counter with the passed name */
         return_values = malloc( 2 * sizeof( SCOREP_Metric_Plugin_MetricProperties ) );
-        sprintf( name_buffer, "random strictly sync counter #%s", event_name );
+        snprintf( name_buffer, MAX_BUFFER_LENGTH, "sync counter #%s", event_name );
         return_values[ 0 ].name        = strdup( name_buffer );
         return_values[ 0 ].description = NULL;
         return_values[ 0 ].unit        = NULL;
@@ -103,15 +96,18 @@ get_event_info( char * event_name )
     return return_values;
 }
 
-uint64_t
-get_value( int32_t counterIndex )
+bool
+get_value( int32_t  counterIndex,
+           uint64_t *value )
 {
-    return counterIndex;
+    *value = counterIndex;
+
+    return true;
 }
 
 void fini()
 {
-    pthread_mutex_destroy( &add_metric_mutex );
+    return;
 }
 
 SCOREP_METRIC_PLUGIN_ENTRY( HelloWorld )
@@ -121,14 +117,14 @@ SCOREP_METRIC_PLUGIN_ENTRY( HelloWorld )
     memset( &info, 0, sizeof( SCOREP_Metric_Plugin_Info ) );
 
     /* Set up */
-    info.plugin_version    = SCOREP_METRIC_PLUGIN_VERSION;
-    info.run_per           = SCOREP_METRIC_PER_THREAD;
-    info.sync              = SCOREP_METRIC_STRICTLY_SYNC;
-    info.initialize        = init;
-    info.finalize          = fini;
-    info.get_event_info    = get_event_info;
-    info.add_counter       = add_counter;
-    info.get_current_value = get_value;
+    info.plugin_version     = SCOREP_METRIC_PLUGIN_VERSION;
+    info.run_per            = SCOREP_METRIC_PER_PROCESS;
+    info.sync               = SCOREP_METRIC_SYNC;
+    info.initialize         = init;
+    info.finalize           = fini;
+    info.get_event_info     = get_event_info;
+    info.add_counter        = add_counter;
+    info.get_optional_value = get_value;
 
     return info;
 }
