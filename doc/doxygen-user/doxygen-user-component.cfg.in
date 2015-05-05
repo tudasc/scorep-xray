@@ -32,3 +32,5 @@ PREDEFINED += SCOREP_USER_ENABLE=1
 
 ALIASES += confvar{1}="<tt>\ref \1</tt>" \
            shmem=SHMEM
+
+EXAMPLE_PATH += @abs_top_srcdir@/doc/examples

@@ -255,6 +255,7 @@ bitten-persist-installchecks:
 	fi
 endif !HAVE_LOCKFILE_PROGS
 
+include doc/examples/Makefile.inc.am
 
 # Temporary fix for make distcheck failure introduced by r4404, see
 # also configure.ac. Obsolete once #741 is completed.
