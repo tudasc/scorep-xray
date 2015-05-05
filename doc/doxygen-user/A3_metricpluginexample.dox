@@ -114,22 +114,21 @@ void fini()
     pthread_mutex_destroy( &add_metric_mutex );
 }
 
-SCOREP_Metric_Plugin_Info
-get_info()
+SCOREP_METRIC_PLUGIN_ENTRY( HelloWorld )
 {
     /* Initialize info data (with zero) */
     SCOREP_Metric_Plugin_Info info;
     memset( &info, 0, sizeof( SCOREP_Metric_Plugin_Info ) );
 
     /* Set up */
-    info.scorep_metric_plugin_version = SCOREP_METRIC_PLUGIN_VERSION;
-    info.run_per                      = SCOREP_METRIC_PER_THREAD;
-    info.sync                         = SCOREP_METRIC_STRICTLY_SYNC;
-    info.initialize                   = init;
-    info.finalize                     = fini;
-    info.get_event_info               = get_event_info;
-    info.add_counter                  = add_counter;
-    info.get_current_value            = get_value;
+    info.plugin_version    = SCOREP_METRIC_PLUGIN_VERSION;
+    info.run_per           = SCOREP_METRIC_PER_THREAD;
+    info.sync              = SCOREP_METRIC_STRICTLY_SYNC;
+    info.initialize        = init;
+    info.finalize          = fini;
+    info.get_event_info    = get_event_info;
+    info.add_counter       = add_counter;
+    info.get_current_value = get_value;
 
     return info;
 }

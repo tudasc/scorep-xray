@@ -838,11 +838,11 @@ In addition it is possible to specify metrics that will be recorded only by the 
 
 @subsection metric_plugins Metric Plugins
 
-Metric plugins extend the functionality of @scorep by providing additional counter as external libraries.
+Metric plugins extend the functionality of @scorep by providing additional counters as external libraries.
 The libraries are loaded when tracing or profiling your application.
 So there is no need to recompile your application or instrument it manually.
 
-The small example of a synchronous metric plugin  can be found in Appendix @secref{metricpluginexample}.
+A simple example of a synchronous metric plugin can be found in Appendix @secref{metricpluginexample}.
 The commands to build the corresponding library of this plugin might look like:
 
 @code
@@ -854,7 +854,7 @@ gcc -shared -Wl,-soname,libHelloWorld.so  \
 
 To enable a metric plugin, set the environment variable \confvar{SCOREP_METRIC_PLUGINS}.
 In the following example we want to use a plugin named <tt>HelloWorld</tt>.
-The corresponding was built as <tt>libHelloWorld.so</tt>.
+The corresponding library was built as <tt>libHelloWorld.so</tt>.
 Furthermore, we select two counters <tt>metric1</tt> and <tt>metric2</tt> from the plugin.
 Make sure that the metric plugin library is placed in a directory which is part of <tt>LD_LIBRARY_PATH</tt>.
 
@@ -862,6 +862,8 @@ Make sure that the metric plugin library is placed in a directory which is part 
 SCOREP_METRIC_PLUGINS=HelloWorld
 SCOREP_METRIC_HELLOWORLD=metric1,metric2
 </pre>
+
+@note Plugins are not supposed to trigger events (e.g. via @mpi, @openmp, Pthreads or user instrumentation) during initialization and finalization of the plugin.
 
 
 @section cuda_adapter CUDA Performance Measurement
