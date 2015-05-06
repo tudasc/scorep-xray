@@ -84,6 +84,9 @@ public:
     void
     setTpdMode( const bool use_tpd );
 
+    void
+    enableOpenmpDefault( void );
+
 private:
     /**
      * Invokes the opari tool to instrument a source file.
@@ -153,11 +156,6 @@ private:
      * Specifies whether OpenMP pragma instrumentation is enabled.
      */
     instrumentation_usage_t m_openmp;
-
-    /**
-     * Specifies whether OpenMP pragma instrumentation is enabled due to user.
-     */
-    instrumentation_usage_t m_openmp_user;
 
     /**
      * Specifies whether user instrumentation is enabled.

@@ -91,7 +91,6 @@ SCOREP_Instrumenter_OpariAdapter::SCOREP_Instrumenter_OpariAdapter( void )
     m_c_compiler   = SCOREP_CC;
     m_nm           = "`" OPARI_CONFIG " --nm`";
     m_openmp       = detect;
-    m_openmp_user  = detect;
     m_pomp         = detect;
     m_use_tpd      = false;
     m_openmp_cflag = SCOREP_OPENMP_CFLAGS;
@@ -105,12 +104,12 @@ SCOREP_Instrumenter_OpariAdapter::checkOption( std::string arg )
 {
     if ( arg == "--openmp" )
     {
-        m_openmp_user = enabled;
+        m_openmp = enabled;
         return true;
     }
     if ( arg == "--noopenmp" )
     {
-        m_openmp_user = disabled;
+        m_openmp = disabled;
         return true;
     }
     if ( arg == "--pomp" )
@@ -172,6 +171,7 @@ SCOREP_Instrumenter_OpariAdapter::printHelp( void )
     std::cout << "  --opari=<parameter-list>\n";
     std::cout << "                  Pass options to the source-to-source instrumenter OPARI2\n";
     std::cout << "                  to have finer control over the instrumentation process.\n";
+    std::cout << "                  Enables OPARI2 instrumentation.\n";
     std::cout << "                  Please refer to the OPARI2 user documentation for more\n";
     std::cout << "                  details.\n";
 }
@@ -290,32 +290,6 @@ SCOREP_Instrumenter_OpariAdapter::checkCommand( const std::string& current,
         return current == "-f";
     }
 
-    if ( current == m_openmp_cflag )
-    {
-        m_openmp = enabled;
-    }
-#if SCOREP_BACKEND_COMPILER_INTEL
-    if ( current == "-openmp" || current == "-qopenmp" )
-    {
-        m_openmp = enabled;
-    }
-#endif
-#if SCOREP_BACKEND_COMPILER_IBM
-    if ( ( current.length() > m_openmp_cflag.length() ) &&
-         ( current.substr( 0, 6 ) == "-qsmp=" ) )
-    {
-        size_t end;
-        for ( size_t start = 5; start != std::string::npos; start = end )
-        {
-            end = current.find( ':', start + 1 );
-            if ( current.substr( start + 1, end - start - 1 ) == "omp" )
-            {
-                m_openmp = enabled;
-            }
-        }
-    }
-#endif
-
 #if SCOREP_BACKEND_COMPILER_INTEL
     if ( arg == "-mmic" )
     {
@@ -336,21 +310,20 @@ void
 SCOREP_Instrumenter_OpariAdapter::checkDefaults( void )
 {
     SCOREP_Instrumenter_Adapter::checkDefaults();
-    if ( m_usage == detect )
-    {
-        m_usage = disabled;
-    }
     if ( m_openmp == detect )
     {
         m_openmp = disabled;
     }
-    if ( m_openmp_user == detect )
-    {
-        m_openmp_user = m_openmp;
-    }
     if ( m_pomp == detect )
     {
-        m_pomp = disabled;
+        if ( m_openmp == enabled )
+        {
+            m_pomp = enabled;
+        }
+        else
+        {
+            m_pomp = disabled;
+        }
     }
     if ( ( m_openmp == enabled ) || ( m_pomp == enabled ) )
     {
@@ -358,7 +331,29 @@ SCOREP_Instrumenter_OpariAdapter::checkDefaults( void )
     }
 }
 
+void
+SCOREP_Instrumenter_OpariAdapter::enableOpenmpDefault( void )
+{
+    if ( m_openmp != disabled )
+    {
+        m_openmp = enabled;
+    }
+    else
+    {
+        std::cerr << "[SCORE-P] WARNING: Detected an OpenMP program, but OpenMP instrumentation is disabled. Your program is likely to crash at runtime. We strongly recomment to not disable OpenMP instrumentation for OpenMP programs." << std::endl;
+    }
+}
+
 /* ------------------------------------------------------------------- private methods */
+static inline void
+add_param( std::string& command, std::string param, std::string prefix )
+{
+    if ( command.find( prefix ) == std::string::npos )
+    {
+        command += param + " ";
+    }
+}
+
 void
 SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumenter,
                                                 const std::string&   input_file,
@@ -367,44 +362,43 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
     std::string command = m_opari + m_params +
                           SCOREP_ADDITIONAL_OPARI_FORTRAN_FLAGS " ";
 
-    if ( m_params.find( "--omp-task-untied=" ) == std::string::npos )
-    {
-        command += "--omp-task-untied=keep ";
-    }
-
+    add_param( command, "--omp-task-untied=keep", "--omp-task-untied=" );
     if ( m_use_tpd )
     {
-        command += " --omp-tpd --omp-tpd-mangling=" SCOREP_OPARI_MANGLING_SCHEME " ";
+        add_param( command, "--omp-tpd", "--omp-tpd" );
+        add_param( command,
+                   "--omp-tpd-mangling=" SCOREP_OPARI_MANGLING_SCHEME,
+                   "--omp-tpd-mangling=" );
     }
 
     SCOREP_Instrumenter_Adapter* adapter = getAdapter( SCOREP_INSTRUMENTER_ADAPTER_PDT );
     if ( ( adapter != NULL ) && adapter->isEnabled() && is_fortran_file( input_file ) )
     {
-        command += "--nosrc ";
+        add_param( command, "--nosrc", "--nosrc" );
     }
 
     adapter = getAdapter( SCOREP_INSTRUMENTER_ADAPTER_PREPROCESS );
     if ( ( adapter != NULL ) && adapter->isEnabled() )
     {
-        command += "--preprocessed ";
+        add_param( command, "--preprocessed", "--preprocessed" );
     }
 
     std::string disable = "";
-    if ( m_openmp == disabled || m_openmp == detect )
-    {
-        disable = "omp:all";
-    }
-    else if ( m_openmp_user == disabled || m_openmp_user == detect )
-    {
-        disable = "omp";
-    }
-    if ( m_pomp == disabled || m_pomp == detect )
+    if ( m_pomp == disabled )
     {
         if ( disable != "" )
         {
             disable += "+";
         }
         disable += "pomp";
+    }
+    if ( m_openmp == disabled )
+    {
+        if ( disable != "" )
+        {
+            disable += "+";
+        }
+        disable += "omp";
     }
     if ( disable != "" )
     {

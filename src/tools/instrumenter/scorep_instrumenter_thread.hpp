@@ -51,6 +51,10 @@ public:
     setConfigValue( const std::string& key,
                     const std::string& value );
 
+
+    virtual void
+    checkDependencies( void );
+
 protected:
     std::string m_openmp_cflag;
 

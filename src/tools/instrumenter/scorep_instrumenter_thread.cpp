@@ -125,6 +125,18 @@ SCOREP_Instrumenter_Omp::checkForOpenmpOption( const std::string& current )
     return false;
 }
 
+void
+SCOREP_Instrumenter_Omp::checkDependencies( void )
+{
+    SCOREP_Instrumenter_Paradigm::checkDependencies();
+
+    SCOREP_Instrumenter_Adapter* adapter = SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
+    if ( ( adapter != NULL ) )
+    {
+        ( ( SCOREP_Instrumenter_OpariAdapter* )adapter )->enableOpenmpDefault();
+    }
+}
+
 /* **************************************************************************************
  * class SCOREP_Instrumenter_OmpTpd
  * *************************************************************************************/
@@ -142,7 +154,7 @@ SCOREP_Instrumenter_OmpTpd::SCOREP_Instrumenter_OmpTpd
 void
 SCOREP_Instrumenter_OmpTpd::checkDependencies( void )
 {
-    SCOREP_Instrumenter_Paradigm::checkDependencies();
+    SCOREP_Instrumenter_Omp::checkDependencies();
 
     SCOREP_Instrumenter_Adapter* adapter = SCOREP_Instrumenter_Adapter::getAdapter( SCOREP_INSTRUMENTER_ADAPTER_OPARI );
     if ( ( adapter != NULL ) )
