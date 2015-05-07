@@ -237,7 +237,7 @@ source routines and arbitrary regions, in addition to fully-automatic
     <tr>
       <td align="left" valign="middle"> @pomp2 user regions (see Sec. @ref pomp_instrumentation ) </td>
       <td align="center" valign="middle"> --pomp/--nopomp</td>
-      <td align="center" valign="middle"> depends on OpenMP usage </td>
+      <td align="center" valign="middle"> disabled </td>
       <td align="center" valign="middle"> manually annotated </td>
       <td align="center" valign="middle"> Filtering (see Sec. @ref filtering ) </td>
     </tr>
