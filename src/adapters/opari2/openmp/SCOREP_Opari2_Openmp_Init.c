@@ -86,7 +86,7 @@ opari2_openmp_subsystem_register( size_t id )
 {
     UTILS_DEBUG_ENTRY();
 
-    subsystem_id = subsystem_id;
+    subsystem_id = id;
 
     return SCOREP_SUCCESS;
 }
