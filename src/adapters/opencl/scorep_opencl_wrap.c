@@ -27,7 +27,9 @@
 #include "scorep_opencl.h"
 #include "scorep_opencl_config.h"
 #include "scorep_opencl_regions.h"
+#ifdef SCOREP_LIBWRAP_SHARED
 #include "scorep_opencl_function_pointers.h"
+#endif
 
 #include <stdio.h>
 
