@@ -91,6 +91,7 @@ SCOREP_Instrumenter_OpariAdapter::SCOREP_Instrumenter_OpariAdapter( void )
     m_c_compiler   = SCOREP_CC;
     m_nm           = "`" OPARI_CONFIG " --nm`";
     m_openmp       = detect;
+    m_parallel     = detect;
     m_pomp         = detect;
     m_use_tpd      = false;
     m_openmp_cflag = SCOREP_OPENMP_CFLAGS;
@@ -314,11 +315,19 @@ SCOREP_Instrumenter_OpariAdapter::checkDefaults( void )
     {
         m_openmp = disabled;
     }
+    if ( m_parallel == detect )
+    {
+        /* Usually parallel regions are instrumented whenever we have
+           OpenMP construct instrumentation. However, if we have
+           --thread=none && --nopenmp, only m_parallel should be enabled.
+         */
+        m_parallel = m_openmp;
+    }
     if ( m_pomp == detect )
     {
         m_pomp = disabled;
     }
-    if ( ( m_openmp == enabled ) || ( m_pomp == enabled ) )
+    if ( ( m_parallel == enabled ) || ( m_pomp == enabled ) )
     {
         m_usage = enabled;
     }
@@ -327,13 +336,10 @@ SCOREP_Instrumenter_OpariAdapter::checkDefaults( void )
 void
 SCOREP_Instrumenter_OpariAdapter::enableOpenmpDefault( void )
 {
+    m_parallel = enabled;
     if ( m_openmp != disabled )
     {
         m_openmp = enabled;
-    }
-    else
-    {
-        std::cerr << "[SCORE-P] WARNING: Detected an OpenMP program, but OpenMP instrumentation is disabled. Your program is likely to crash at runtime. We strongly recomment to not disable OpenMP instrumentation for OpenMP programs." << std::endl;
     }
 }
 
@@ -392,6 +398,10 @@ SCOREP_Instrumenter_OpariAdapter::invoke_opari( SCOREP_Instrumenter& instrumente
             disable += "+";
         }
         disable += "omp";
+        if ( m_parallel == disabled )
+        {
+            disable += ":all";
+        }
     }
     if ( disable != "" )
     {

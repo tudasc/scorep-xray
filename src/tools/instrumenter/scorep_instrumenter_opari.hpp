@@ -163,6 +163,11 @@ private:
     instrumentation_usage_t m_pomp;
 
     /**
+     * Specifies whether OpenMP parallel regions are instrumented.
+     */
+    instrumentation_usage_t m_parallel;
+
+    /**
      * Specifies whether --tpd should be used.
      */
     bool m_use_tpd;
