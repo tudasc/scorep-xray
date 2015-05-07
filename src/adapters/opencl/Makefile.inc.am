@@ -29,6 +29,7 @@ libscorep_adapter_opencl_mgmt_common_sources  = \
     $(SRC_ROOT)src/adapters/opencl/scorep_opencl_regions.h \
     $(SRC_ROOT)src/adapters/opencl/scorep_opencl.c \
     $(SRC_ROOT)src/adapters/opencl/scorep_opencl.h \
+    $(SRC_ROOT)src/adapters/opencl/scorep_opencl_function_pointers.h \
     $(SRC_ROOT)src/measurement/paradigm/opencl/scorep_opencl_unify.c
 
 libscorep_adapter_opencl_mgmt_common_cppflags = \
