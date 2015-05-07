@@ -316,14 +316,16 @@ SCOREP_Instrumenter_OpariAdapter::checkDefaults( void )
     }
     if ( m_pomp == detect )
     {
-        if ( m_openmp == enabled )
-        {
-            m_pomp = enabled;
-        }
-        else
-        {
-            m_pomp = disabled;
-        }
+        /*
+              if ( m_openmp == enabled )
+              {
+                  m_pomp = enabled;
+              }
+              else
+              {
+         */
+        m_pomp = disabled;
+        //     }
     }
     if ( ( m_openmp == enabled ) || ( m_pomp == enabled ) )
     {
