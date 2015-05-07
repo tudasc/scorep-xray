@@ -37,7 +37,7 @@ OPENCL_TEST_SRC_DIR=$SRC_ROOT/test/adapters/opencl
 # Copy kernel.cl to current working dir
 cp $OPENCL_TEST_SRC_DIR/kernel.cl .
 
-./scorep --static -v --build-check gcc $OPENCL_TEST_SRC_DIR/opencl_test.c -o opencl_test @OPENCL_CPPFLAGS@ @OPENCL_LDFLAGS_FOR_TESTS@ @OPENCL_LIBS@
+./scorep --static -v --build-check @CC@ $OPENCL_TEST_SRC_DIR/opencl_test.c -o opencl_test @OPENCL_CPPFLAGS@ @OPENCL_LDFLAGS_FOR_TESTS@ @OPENCL_LIBS@
 
 echo "Output of OpenCL test can be found in $RESULT_DIR"
 
