@@ -362,6 +362,13 @@ various Score-P components.
     to '_Unwind_Resume'. Adding -lstdc++ to the original link line
     solves this issue.
 
+  - In cases where scorep was compiled with PAPI support, the
+    instrumenter option --static (only available for '--enable-shared
+    --enable-static' builds) explicitly adds the static PAPI library to
+    the link line which may cause 'undefined reference' errors. This
+    may happen for other libraries that were requested at configure time
+    as well.
+
 --------------------------------------------------------------------------------
 
 Please report bugs, wishes, and suggestions to <support@score-p.org>.
