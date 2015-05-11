@@ -94,7 +94,9 @@ SCOREP_Instrumenter_Omp::setConfigValue( const std::string& key,
 bool
 SCOREP_Instrumenter_Omp::checkForOpenmpOption( const std::string& current )
 {
-    if ( current == m_openmp_cflag )
+    if ( current == m_openmp_cflag ||
+         ( current.length() > m_openmp_cflag.length() &&
+           current.substr( 0, m_openmp_cflag.length() + 1 ) == m_openmp_cflag + "=" ) )
     {
         return true;
     }
