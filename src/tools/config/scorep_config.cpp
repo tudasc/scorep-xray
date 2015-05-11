@@ -152,8 +152,7 @@ static std::deque<std::string>
 get_full_library_names( const std::deque<std::string>& library_list,
                         const std::deque<std::string>& path_list,
                         bool                           allow_static,
-                        bool                           allow_dynamic,
-                        bool                           only_names );
+                        bool                           allow_dynamic );
 
 static void
 print_adapter_init_source( void );
@@ -467,8 +466,7 @@ main( int    argc,
                 libs = get_full_library_names( deps.getLibraries( libs ),
                                                deps.getRpathFlags( libs, install ),
                                                allow_static,
-                                               allow_dynamic,
-                                               false );
+                                               allow_dynamic );
             }
             else
             {
@@ -673,24 +671,54 @@ find_library( std::string                    library,
     return "";
 }
 
+static bool
+is_scorep_lib( const std::string& name )
+{
+    if ( name.length() < 6 )
+    {
+        return false;
+    }
+    if ( name.substr( 0, 6 ) == "-lotf2" ||
+         name.substr( 0, 6 ) == "-lcube" )
+    {
+        return true;
+    }
+    if ( name.length() >= 8 &&
+         name.substr( 0, 8 ) == "-lscorep" )
+    {
+        return true;
+    }
+    return false;
+}
+
 static std::deque<std::string>
 get_full_library_names( const std::deque<std::string>& library_list,
                         const std::deque<std::string>& path_list,
                         bool                           allow_static,
-                        bool                           allow_dynamic,
-                        bool                           only_names )
+                        bool                           allow_dynamic )
 {
     std::deque<std::string> full_names;
     for ( std::deque<std::string>::const_iterator lib = library_list.begin();
           lib != library_list.end(); lib++ )
     {
-        std::string name = find_library( *lib, path_list, allow_static, allow_dynamic );
-        if ( name != "" )
+        std:: cout << *lib;
+        if ( is_scorep_lib( *lib ) )
         {
-            full_names.push_back( name );
+            std::cout << " true" << std::endl;
+
+            std::string name = find_library( *lib, path_list, allow_static, allow_dynamic );
+            if ( name != "" )
+            {
+                full_names.push_back( name );
+            }
+            else
+            {
+                full_names.push_back( *lib );
+            }
         }
-        else if ( !only_names )
+        else
         {
+            std::cout << " false" << std::endl;
             full_names.push_back( *lib );
         }
     }
