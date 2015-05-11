@@ -24,7 +24,9 @@ User tools and API improvements and changes:
 
 Bugfixes:
 
-------------------- Upcoming version 1.4.1 ---------------------------
+------------------- Upcoming version 1.4.2 ---------------------------
+
+------------------- Released version 1.4.1 ---------------------------
 
 Bugfixes:
 - BG/Q: use optimized MPI rank to SION file mapping (one file per I/O node)
