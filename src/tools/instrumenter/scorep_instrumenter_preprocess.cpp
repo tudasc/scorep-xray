@@ -70,6 +70,11 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
         language = "cxx";
     }
 
+    // Remove problematic arguments from command line
+#if SCOREP_BACKEND_COMPILER_CRAY
+    cmdLine.removeUserArg( "-eZ" );
+#endif
+
     // Prepare file for preprocessing
     if ( !is_fortran_file( source_file ) )
     {

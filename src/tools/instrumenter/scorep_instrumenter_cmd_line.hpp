@@ -202,6 +202,15 @@ public:
     SCOREP_Instrumenter_InstallData*
     getInstallData();
 
+    /**
+     * Removes @a argument given by the user from on the command line from any further
+     * invocations of the compiler. If @a argument is not present in the command line,
+     * this function does nothing.
+     * @param argument  The flag that is removed from the command line.
+     */
+    void
+    removeUserArg( std::string argument );
+
     /* ***************************************************** Private methods */
 private:
 
