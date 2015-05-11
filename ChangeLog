@@ -30,6 +30,9 @@ Bugfixes:
  - The OpenMP flag for PGI compilers (-mp) may have a value appended.
    In this case, the instrumenter did not detect the OpenMP paradigm
    properly. Fixed.
+ - On Cray systems, a conclict between the -eZ and and the -eP flag
+   occurred if the instrumenter performed preprocessing before OPARI2
+   instrumentation and the command line contains -eZ. Fixed.
 
 ------------------- Released version 1.4.1 ---------------------------
 
