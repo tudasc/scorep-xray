@@ -33,6 +33,10 @@ Bugfixes:
  - On Cray systems, a conclict between the -eZ and and the -eP flag
    occurred if the instrumenter performed preprocessing before OPARI2
    instrumentation and the command line contains -eZ. Fixed.
+ - If the user explicitly requires static scorep libraries by specifzing
+   --static on the command line, scorep-config provides also full paths
+   to the dependencies of its libraries, which might cause problems if
+   the libraries are linked with dynamic libraries. Fixed.
 
 ------------------- Released version 1.4.1 ---------------------------
 
