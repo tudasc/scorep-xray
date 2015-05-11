@@ -234,6 +234,16 @@ various Score-P components.
    'invalid redeclaration' errors. As a workaround, use the
    '--nopreprocess' instrumenter option.
 
+ - The OPARI2 instrumentation and the preprcessing for OPARI2 
+   instrumentation prepend some headers to source files which 
+   include stdint.h in C/C++ files. The behavior of this header changes
+   whether macros the __STDC_CONSTANT_MACROS or __STDC_LIMIT_MACROS are
+   defined. If these macros are defined in a header file or source file,
+   the instrumentation will prepend the include directive before the macro
+   definition. Thus, macors like UINT32_C are left undefined. As workaround,
+   pass macros like __STDC_CONSTANT_MACROS or __STDC_LIMIT_MACROS on the 
+   command line. See also the Open Issues of OPARI2.
+
 --------------------------------------------------------------------------------
 
 * CUDA support
