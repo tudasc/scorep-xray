@@ -26,6 +26,11 @@ Bugfixes:
 
 ------------------- Upcoming version 1.4.2 ---------------------------
 
+Bugfixes:
+ - The OpenMP flag for PGI compilers (-mp) may have a value appended.
+   In this case, the instrumenter did not detect the OpenMP paradigm
+   properly. Fixed.
+
 ------------------- Released version 1.4.1 ---------------------------
 
 Bugfixes:
