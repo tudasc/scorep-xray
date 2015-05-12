@@ -37,6 +37,9 @@ Bugfixes:
    --static on the command line, scorep-config provides also full paths
    to the dependencies of its libraries, which might cause problems if
    the libraries are linked with dynamic libraries. Fixed.
+ - The preprocessing step for the OPARI2 instrumentation did not add
+   preprocessing flags to the preprocessor invocation. Thus, it becomes
+   a full compilation step. Added nvcc preprocessing flags.
 
 ------------------- Released version 1.4.1 ---------------------------
 

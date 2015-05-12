@@ -146,6 +146,10 @@ SCOREP_Instrumenter_PreprocessAdapter::precompile( SCOREP_Instrumenter&         
         command += " " +  SCOREP_Instrumenter_InstallData::getFortranPreprocessingFlags( input_file,
                                                                                          output_file );
     }
+    else if ( is_cuda_file( source_file ) )
+    {
+        command += " -E > " + output_file;
+    }
 
     instrumenter.executeCommand( command );
     instrumenter.addTempFile( output_file );
