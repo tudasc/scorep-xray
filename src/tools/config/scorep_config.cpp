@@ -701,11 +701,8 @@ get_full_library_names( const std::deque<std::string>& library_list,
     for ( std::deque<std::string>::const_iterator lib = library_list.begin();
           lib != library_list.end(); lib++ )
     {
-        std:: cout << *lib;
         if ( is_scorep_lib( *lib ) )
         {
-            std::cout << " true" << std::endl;
-
             std::string name = find_library( *lib, path_list, allow_static, allow_dynamic );
             if ( name != "" )
             {
@@ -718,7 +715,6 @@ get_full_library_names( const std::deque<std::string>& library_list,
         }
         else
         {
-            std::cout << " false" << std::endl;
             full_names.push_back( *lib );
         }
     }
