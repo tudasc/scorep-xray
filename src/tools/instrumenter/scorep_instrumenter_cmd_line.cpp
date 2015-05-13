@@ -315,38 +315,15 @@ SCOREP_Instrumenter_CmdLine::getInstallData()
 }
 
 void
-SCOREP_Instrumenter_CmdLine::removeUserArg( std::string arg )
+SCOREP_Instrumenter_CmdLine::removeUserArg( const std::string& arg )
 {
     // Remove all instances before the interposition lib
-    size_t pos = m_flags_before_interposition_lib.find( " " + arg + " " );
-    while ( pos != std::string::npos )
-    {
-        m_flags_before_interposition_lib = m_flags_before_interposition_lib.substr( 0, pos )
-                                           + m_flags_before_interposition_lib.substr( pos + arg.length() + 1 );
-        pos = m_flags_before_interposition_lib.find( " " + arg + " " );
-    }
-    // The last one has no trailing whitespace
-    pos = m_flags_before_interposition_lib.find( " " + arg );
-    size_t length = m_flags_before_interposition_lib.length() - arg.length() - 1;
-    if ( pos == length )
-    {
-        m_flags_before_interposition_lib = m_flags_before_interposition_lib.substr( 0, length );
-    }
+    m_flags_before_interposition_lib =
+        remove_string_from_list( m_flags_before_interposition_lib, arg, ' ' );
 
     //Remove all instances after the interposition lib
-    pos = m_flags_after_interposition_lib.find( " " + arg + " " );
-    while ( pos != std::string::npos )
-    {
-        m_flags_after_interposition_lib = m_flags_after_interposition_lib.substr( 0, pos )
-                                          + m_flags_after_interposition_lib.substr( pos + arg.length() + 1 );
-        pos = m_flags_after_interposition_lib.find( " " + arg + " " );
-    }
-    pos    = m_flags_after_interposition_lib.find( " " + arg );
-    length = m_flags_after_interposition_lib.length() - arg.length() - 1;
-    if ( pos == length )
-    {
-        m_flags_after_interposition_lib = m_flags_after_interposition_lib.substr( 0, length );
-    }
+    m_flags_after_interposition_lib =
+        remove_string_from_list( m_flags_after_interposition_lib, arg, ' ' );
 }
 
 /* ****************************************************************************

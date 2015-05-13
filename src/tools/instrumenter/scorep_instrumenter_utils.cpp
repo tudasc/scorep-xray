@@ -465,3 +465,18 @@ find_string_in_list( const std::string& haystackList,
        position in haystackList, if it was a match at all. */
     return haystack.find( needle );
 }
+
+std::string
+remove_string_from_list( const std::string& haystackList,
+                         const std::string& needleString,
+                         char               separator )
+{
+    std::string haystack = separator + haystackList + separator;
+    std::string needle   = separator + needleString + separator;
+
+    std::string result = replace_all( needle,
+                                      std::string( 1, separator ),
+                                      haystack );
+
+    return result.substr( 1, result.length() - 2 );
+}

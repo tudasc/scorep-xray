@@ -209,7 +209,7 @@ public:
      * @param argument  The flag that is removed from the command line.
      */
     void
-    removeUserArg( std::string argument );
+    removeUserArg( const std::string& argument );
 
     /* ***************************************************** Private methods */
 private:

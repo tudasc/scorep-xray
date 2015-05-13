@@ -276,4 +276,16 @@ find_string_in_list( const std::string& haystackList,
                      const std::string& needleString,
                      char               separator );
 
+/**
+ *  Removes all occurrences of a substring in a string list.
+ *  @param haystackList A list of strings joined by @a separator.
+ *  @param needleString The string to remove.
+ *  @patam separator    The separator character which splits the lists into
+ *                      individual tokens.
+ */
+std::string
+remove_string_from_list( const std::string& haystackList,
+                         const std::string& needleString,
+                         char               separator );
+
 #endif // SCOREP_INSTRUMENTER_UTILS_HPP
