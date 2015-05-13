@@ -104,9 +104,9 @@ various Score-P components.
     instrumentation based on PDToolkit.
 
   - On systems where libiberty is build without -fPIC, one cannot use
-    libbdfd for compiler instrumentation's region naming (GNU, Intel,
+    libbfd for compiler instrumentation's region naming (GNU, Intel,
     Cray) in --enable-shared builds of Score-P. Either provide a
-    libbdfd that comes with a proper libiberty (--with-libbfd) or
+    libbfd that comes with a proper libiberty (--with-libbfd) or
     disable libbfd region naming (--without-libbfd). In the latter
     case, region names will be provided by nm.
 
