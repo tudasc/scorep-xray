@@ -123,7 +123,7 @@ various Score-P components.
     available for GNU Compiler versions greater then 4.9.
 
   - The pgCC compiler versions 13.9 and higher preinclude omp.h for
-    OpenMP codes. This results in multiply defined symbols if the
+    OpenMP codes. This results in multiple defined symbols if the
     source file is preprocessed before compilation. Since version 14.1
     an option is available to avoid preinclusion, which we can use for
     preprocessed source files.  For the pgCC versions 13.9 until 14.0,
@@ -207,12 +207,12 @@ various Score-P components.
     and may lead to segmentation faults in the measurement system.
     Our recommendation is to use a newer compiler version, According
     to our tests, late compiler versions have fixed this issues.
-    We tested with PGi compiler version 11.7.
+    We tested with PGI compiler version 11.7.
 
   - Currently, the instrumenter allows to switch off OPARI2
     instrumentation for OpenMP programs with the --noopenmp
     option. However parallel regions still need to be instrumented to
-    ensure thread-safe exectution of the measurement system. Currently
+    ensure thread-safe execution of the measurement system. Currently
     combined constructs, such as parallel for/do, are still
     instrumented fully, i.e. the for/do appears in the measurements.
 
@@ -234,14 +234,14 @@ various Score-P components.
    'invalid redeclaration' errors. As a workaround, use the
    '--nopreprocess' instrumenter option.
 
- - The OPARI2 instrumentation and the preprcessing for OPARI2 
-   instrumentation prepend some headers to source files which 
+ - The OPARI2 instrumentation and the preprocessing for OPARI2
+   instrumentation prepend some headers to source files which
    include stdint.h in C/C++ files. The behavior of this header changes
    whether macros the __STDC_CONSTANT_MACROS or __STDC_LIMIT_MACROS are
    defined. If these macros are defined in a header file or source file,
    the instrumentation will prepend the include directive before the macro
-   definition. Thus, macors like UINT32_C are left undefined. As workaround,
-   pass macros like __STDC_CONSTANT_MACROS or __STDC_LIMIT_MACROS on the 
+   definition. Thus, macros like UINT32_C are left undefined. As workaround,
+   pass macros like __STDC_CONSTANT_MACROS or __STDC_LIMIT_MACROS on the
    command line. See also the Open Issues of OPARI2.
 
 --------------------------------------------------------------------------------
@@ -315,7 +315,7 @@ various Score-P components.
 
   - Score-P does not support MPMD style programs where the executables
     are instrumented differently. I.e., it is best to compile/link all
-    sources with the same set of flags for the Score-P insturmenter, so
+    sources with the same set of flags for the Score-P instrumenter, so
     that the instrumenter itself can't automatically decides what
     paradigms the program uses. This applies to the --mpp and --thread
     flags.
