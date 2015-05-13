@@ -2325,7 +2325,7 @@ scorep_cupti_callbacks_init( void )
                                                       SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
                                                       SCOREP_METRIC_VALUE_UINT64,
                                                       SCOREP_METRIC_BASE_DECIMAL,
-                                                      1,
+                                                      0,
                                                       "#",
                                                       SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
 
@@ -2342,7 +2342,7 @@ scorep_cupti_callbacks_init( void )
                                                       SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
                                                       SCOREP_METRIC_VALUE_UINT64,
                                                       SCOREP_METRIC_BASE_DECIMAL,
-                                                      1,
+                                                      0,
                                                       "#",
                                                       SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
 
@@ -2359,7 +2359,7 @@ scorep_cupti_callbacks_init( void )
                                                       SCOREP_METRIC_MODE_ABSOLUTE_NEXT,
                                                       SCOREP_METRIC_VALUE_UINT64,
                                                       SCOREP_METRIC_BASE_DECIMAL,
-                                                      1,
+                                                      0,
                                                       "#",
                                                       SCOREP_METRIC_PROFILING_TYPE_EXCLUSIVE );
 

@@ -40,6 +40,7 @@ Bugfixes:
  - The preprocessing step for the OPARI2 instrumentation did not add
    preprocessing flags to the preprocessor invocation. Thus, it becomes
    a full compilation step. Added nvcc preprocessing flags.
+ - Fix exponent in the CUDA metric definitions.
 
 ------------------- Released version 1.4.1 ---------------------------
 
