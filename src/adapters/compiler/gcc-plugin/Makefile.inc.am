@@ -30,6 +30,7 @@ scorep_instrument_function_la_SOURCES = \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_gcc_version_compatibility.h
 scorep_instrument_function_la_LDFLAGS = \
     -module \
+    -avoid-version \
     -export-symbols-regex='^(plugin_init|plugin_is_GPL_compatible)$$'
 scorep_instrument_function_la_LIBADD =
 
