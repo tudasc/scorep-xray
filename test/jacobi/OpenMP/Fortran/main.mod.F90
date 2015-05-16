@@ -74,10 +74,12 @@ end program MAIN
 
 subroutine Init (myData)
     use VariableDef
+#ifdef _OPENMP
     use omp_lib
+#endif
     implicit none
       include 'main.F90.opari.inc'
-#line 75 "main.F90"
+#line 77 "main.F90"
     type(JacobiData), intent(inout) :: myData
     character(len=8) :: env = ' '
     integer :: ITERATIONS = 5
@@ -142,7 +144,7 @@ subroutine InitializeMatrix (myData)
     implicit none
 
       include 'main.F90.opari.inc'
-#line 138 "main.F90"
+#line 140 "main.F90"
     type(JacobiData), intent(inout) :: myData
     !.. Local Scalars ..
     integer :: i, j
@@ -195,7 +197,7 @@ subroutine Finish(myData)
     implicit none
 
       include 'main.F90.opari.inc'
-#line 165 "main.F90"
+#line 167 "main.F90"
     integer :: iErr
     type(JacobiData), intent(inout) :: myData
 
@@ -209,7 +211,7 @@ subroutine PrintResults(myData)
     implicit none
 
       include 'main.F90.opari.inc'
-#line 177 "main.F90"
+#line 179 "main.F90"
     type(JacobiData), intent(inout) :: myData
 
     if (myData%iMyRank == 0) then
@@ -235,7 +237,7 @@ subroutine CheckError(myData)
     implicit none
 
       include 'main.F90.opari.inc'
-#line 201 "main.F90"
+#line 203 "main.F90"
     type(JacobiData), intent(inout) :: myData
     !.. Local Scalars ..
     integer :: i, j, iErr

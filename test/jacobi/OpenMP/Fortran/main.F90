@@ -70,7 +70,9 @@ end program MAIN
 
 subroutine Init (myData)
     use VariableDef
+#ifdef _OPENMP
     use omp_lib
+#endif
     implicit none
     type(JacobiData), intent(inout) :: myData
     character(len=8) :: env = ' '
