@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -29,7 +29,7 @@
 ## directory for details.
 ##
 
-## file       afs_summary.m4
+## file afs_summary.m4
 
 # AFS_SUMMARY_INIT
 # ----------------
@@ -42,42 +42,107 @@
 AC_DEFUN([AFS_SUMMARY_INIT], [
 rm -f AC_PACKAGE_TARNAME.summary
 LC_ALL=C find . -name config.summary -exec rm -f '{}' \;
-cat >config.summary <<_ACEOF
-AS_HELP_STRING(AC_PACKAGE_NAME[ ]m4_ifndef([AFS_PACKAGE_BUILD], AC_PACKAGE_VERSION, [(]AFS_PACKAGE_BUILD[)])[:], [], 32, 128)
+m4_define([_AFS_SUMMARY_INDENT], [m4_ifndef([AFS_PACKAGE_BUILD], [], [  ])])dnl
+m4_define([_AFS_SUMMARY_FILE], [config.summary])
+cat >_AFS_SUMMARY_FILE <<_ACEOF
+AS_HELP_STRING(_AFS_SUMMARY_INDENT[]AC_PACKAGE_NAME[ ]m4_ifndef([AFS_PACKAGE_BUILD], AC_PACKAGE_VERSION, [(]AFS_PACKAGE_BUILD[)])[:], [], 32, 128)
 _ACEOF
 ])
 
-AC_DEFUN([AFS_SUMMARY_SECTION], [
-    AC_REQUIRE([AFS_SUMMARY_INIT])
-cat >>config.summary <<_ACEOF
-AS_HELP_STRING([ $1:], [], 32, 128)
-_ACEOF
+
+# AFS_SUMMARY_SECTION_BEGIN( [DESCR, [VALUE]] )
+# ---------------------------------------------
+# Starts a new section, optionally with the given description.
+# All summary lines after this call will be indented by 2 spaces.
+# Close the section with 'AFS_SUMMARY_SECTION_END'.
+AC_DEFUN([AFS_SUMMARY_SECTION_BEGIN], [
+AC_REQUIRE([AFS_SUMMARY_INIT])dnl
+
+m4_ifnblank($1, AFS_SUMMARY([$1], [$2]))
+m4_pushdef([_AFS_SUMMARY_INDENT], _AFS_SUMMARY_INDENT[  ])dnl
 ])
 
+
+# AFS_SUMMARY_SECTION_END
+# -----------------------
+# Close a previously opened section with 'AFS_SUMMARY_SECTION_BEGIN'.
+AC_DEFUN([AFS_SUMMARY_SECTION_END], [
+AC_REQUIRE([AFS_SUMMARY_INIT])dnl
+
+m4_popdef([_AFS_SUMMARY_INDENT])dnl
+])
+
+
+# AFS_SUMMARY_PUSH
+# ----------------
+# Starts a new section (see 'AFS_SUMMARY_SECTION_BEGIN'), but without a
+# section heading and it collects all subsequent summaries and sections in
+# a hold space.
+# All summary lines after this call will be indented by 2 spaces.
+# Output the hold space with 'AFS_SUMMARY_POP'.
+AC_DEFUN([AFS_SUMMARY_PUSH], [
+AC_REQUIRE([AFS_SUMMARY_INIT])dnl
+
+AFS_SUMMARY_SECTION_BEGIN
+m4_pushdef([_AFS_SUMMARY_FILE], _AFS_SUMMARY_FILE[.x])dnl
+: >_AFS_SUMMARY_FILE
+])
+
+
+# AFS_SUMMARY_POP( DESCR, VALUE )
+# -------------------------------
+# Close a previously opened section with 'AFS_SUMMARY_PUSH'. Outputs the
+# section header with DESCR and VALUE, and than outputs the summary from the
+# hold space.
+AC_DEFUN([AFS_SUMMARY_POP], [
+AC_REQUIRE([AFS_SUMMARY_INIT])dnl
+
+m4_define([_afs_summary_tmp], _AFS_SUMMARY_FILE)dnl
+m4_popdef([_AFS_SUMMARY_FILE])dnl
+AFS_SUMMARY_SECTION_END
+
+AFS_SUMMARY([$1], [$2])
+cat _afs_summary_tmp >>_AFS_SUMMARY_FILE
+rm _afs_summary_tmp
+])
+
+
+# AFS_SUMMARY( DESCR, VALUE )
+# ---------------------------
+# Generates a summary line with the given description and value.
 AC_DEFUN([AFS_SUMMARY], [
-    AC_REQUIRE([AFS_SUMMARY_INIT])
-cat >>config.summary <<_ACEOF
-AS_HELP_STRING([  $1:], [$2], 32, 128)
+AC_REQUIRE([AFS_SUMMARY_INIT])dnl
+
+cat >>_AFS_SUMMARY_FILE <<_ACEOF
+AS_HELP_STRING(_AFS_SUMMARY_INDENT[  $1:], [$2], 32, 128)
 _ACEOF
 ])
 
-# additional output if ./configure was called with --verbose
+
+# AFS_SUMMARY_VERBOSE( DESCR, VALUE )
+# -----------------------------------
+# Generates a summary line with the given description and value, but only
+# if ./configure was called with --verbose
 AC_DEFUN([AFS_SUMMARY_VERBOSE], [
-    AS_IF([test "x${verbose}" = "xyes"], [
-        AFS_SUMMARY([$1], [$2])
-    ])
+
+AS_IF([test "x${verbose}" = "xyes"], [
+    AFS_SUMMARY([$1], [$2])
+])
 ])
 
+
+# internal
 AC_DEFUN([_AFS_SUMMARY_SHOW], [
-    AS_ECHO([""])
-    cat AC_PACKAGE_TARNAME.summary
+
+AS_ECHO([""])
+cat AC_PACKAGE_TARNAME.summary
 ])
 
-# AFS_SUMMARY_COLLECT([SHOW-COND])
+# AFS_SUMMARY_COLLECT( [SHOW-COND] )
 # --------------------------------
-# Collectes the summary of all configures recusivly into the file
-# $PACKAGE.summary. If SHOW-COND is not given, or the expression is
-# evaluates to true in an AS_IF the summary is also printed to stdout.
+# Collectes the summary of all configures recursively into the file
+# $PACKAGE.summary. If SHOW-COND is not given, or the expression
+# evaluates to true the summary is also printed to stdout.
 # Should be called after AC_OUTPUT.
 AC_DEFUN([AFS_SUMMARY_COLLECT], [
     (
