@@ -162,6 +162,7 @@ m4_foreach([func],
 dnl ----------------------------------------------------------------------------
 
 AC_DEFUN([SCOREP_OPENCL], [
+AFS_SUMMARY_PUSH
 
 dnl check if library wrapping is possible
 SCOREP_LIBRARY_WRAPPING
@@ -211,7 +212,7 @@ AC_SCOREP_COND_HAVE([OPENCL_SUPPORT],
                      AC_SUBST(OPENCL_LIBS,              [""])
                      scorep_opencl_summary="no"])
 
-AFS_SUMMARY([OpenCL support], [${scorep_opencl_summary}])
+AFS_SUMMARY_POP([OpenCL support], [${scorep_opencl_summary}])
 ])
 
 dnl --------------------------------------------------------------------------

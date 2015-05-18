@@ -116,40 +116,38 @@ AC_SCOREP_PLATFORM_AND_MACHINE_NAMES
 
 AC_LANG_PUSH([C])
 SCOREP_SHMEM_WORKING(
-    [scorep_shmem_c_supported="yes"],
+    [scorep_shmem_c_supported="yes"
+     scorep_shmem_c_summary_tail=", using $CC"],
     [scorep_shmem_c_supported="no"])
 AC_SCOREP_CHECK_SIZEOF([void *])
 AC_LANG_POP([C])
 cross_compiling=${ac_scorep_cross_compiling}
-AFS_SUMMARY([SHMEM support for C], [$scorep_shmem_c_supported])
-AS_IF([test "x$scorep_shmem_c_supported" = "xyes"], [
-    AFS_SUMMARY([C compiler used for SHMEM], [$CC])
-])
+AFS_SUMMARY([C99 compiler works], [${scorep_shmem_c_supported}${scorep_shmem_c_summary_tail}])
 
 # C++ SHMEM is needed for the jacobi C++ tests only.
 AC_LANG_PUSH([C++])
-SCOREP_SHMEM_WORKING([scorep_shmem_cxx_supported="yes"],[scorep_shmem_cxx_supported="no"])
+SCOREP_SHMEM_WORKING(
+    [scorep_shmem_cxx_supported="yes"
+     scorep_shmem_cxx_summary_tail=", using $CXX"],
+    [scorep_shmem_cxx_supported="no"])
 AC_LANG_POP([C++])
-AFS_SUMMARY([SHMEM support for C++], [$scorep_shmem_cxx_supported])
-AS_IF([test "x$scorep_shmem_cxx_supported" = "xyes"], [
-    AFS_SUMMARY([C++ compiler used for SHMEM], [$CXX])
-])
+AFS_SUMMARY([C++ compiler works], [${scorep_shmem_cxx_supported}${scorep_shmem_cxx_summary_tail}])
 
 AC_LANG_PUSH([Fortran 77])
-SCOREP_SHMEM_WORKING([scorep_shmem_f77_supported="yes"],[scorep_shmem_f77_supported="no"])
+SCOREP_SHMEM_WORKING(
+    [scorep_shmem_f77_supported="yes"
+     scorep_shmem_f77_summary_tail=", using $F77"],
+    [scorep_shmem_f77_supported="no"])
 AC_LANG_POP([Fortran 77])
-AFS_SUMMARY([SHMEM support for F77], [$scorep_shmem_f77_supported])
-AS_IF([test "x$scorep_shmem_f77_supported" = "xyes"], [
-    AFS_SUMMARY([F77 compiler used for SHMEM], [$F77])
-])
+AFS_SUMMARY([F77 compiler works], [${scorep_shmem_f77_supported}${scorep_shmem_f77_summary_tail}])
 
 AC_LANG_PUSH([Fortran])
-SCOREP_SHMEM_WORKING([scorep_shmem_f90_supported="yes"],[scorep_shmem_f90_supported="no"])
+SCOREP_SHMEM_WORKING(
+    [scorep_shmem_f90_supported="yes"
+     scorep_shmem_f90_summary_tail=", using $FC"],
+    [scorep_shmem_f90_supported="no"])
 AC_LANG_POP([Fortran])
-AFS_SUMMARY([SHMEM support for F90], [$scorep_shmem_f90_supported])
-AS_IF([test "x$scorep_shmem_f90_supported" = "xyes"], [
-    AFS_SUMMARY([F90 compiler used for SHMEM], [$FC])
-])
+AFS_SUMMARY([F90 compiler works], [${scorep_shmem_f90_supported}${scorep_shmem_f90_summary_tail}])
 
 AS_IF([test "x$scorep_shmem_c_supported$scorep_shmem_cxx_supported$scorep_shmem_f77_supported$scorep_shmem_f90_supported" != "xnononono"], [
     AFS_SUMMARY([Library used for SHMEM], [$SHMEM_LIBS])
