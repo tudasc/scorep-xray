@@ -168,6 +168,8 @@ SCOREP_DLFCN
 SCOREP_OPENCL
 AC_SCOREP_LINK_FLAGS_CHECK
 
+AFS_SUMMARY_SECTION_BEGIN([OTF2 features])
+
 scorep_otf2_config=
 scorep_otf2_config_backend_arg=
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
@@ -198,7 +200,7 @@ done
 AS_IF([test "x$scorep_otf2_have_sion" = "xyes"], [
     AC_DEFINE([HAVE_OTF2_SUBSTRATE_SION], [1], [Define if the used OTF2 library has SIONlib support.])
 ])
-AFS_SUMMARY([OTF2 with SIONlib support], [$scorep_otf2_have_sion])
+AFS_SUMMARY([SIONlib support], [$scorep_otf2_have_sion])
 
 scorep_otf2_have_zlib=no
 for compression in `$scorep_otf2_config $scorep_otf2_config_backend_arg --features=compressions`
@@ -209,7 +211,9 @@ done
 AS_IF([test "x$scorep_otf2_have_zlib" = "xyes"], [
     AC_DEFINE([HAVE_OTF2_COMPRESSION_ZLIB], [1], [Define if the used OTF2 library has zlib compression support.])
 ])
-AFS_SUMMARY([OTF2 with zlib support], [$scorep_otf2_have_zlib])
+AFS_SUMMARY([zlib support], [$scorep_otf2_have_zlib])
+
+AFS_SUMMARY_SECTION_END # OTF2 features
 
 opari2_fix_and_free_form_options=1
 AS_IF([test -n "${scorep_opari2_bindir}"],
