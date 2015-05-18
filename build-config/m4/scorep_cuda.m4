@@ -51,6 +51,8 @@ dnl need for a --with-libcupti as cupti resides within the toolkit
 dnl installation.
 
 AC_DEFUN([AC_SCOREP_CUDA], [
+AFS_SUMMARY_PUSH
+
 scorep_have_cuda="no"
 scorep_have_cupti4="no"
 scorep_have_cupti_activity_async="no"
@@ -121,11 +123,11 @@ AC_SCOREP_COND_HAVE([CUDA_VERSION_GREATER_EQUAL_60],
                     [Defined if CUDA version is greater or equal 6.0.]
                    )
 
-AFS_SUMMARY([CUDA support],        [${scorep_have_cuda}, see also libcudart, libcuda, and libcupti support])
-
 AFS_SUMMARY([CUPTI async support], [${scorep_have_cupti_activity_async}])
 
 AFS_SUMMARY([CUDA version >= 6.0], [${scorep_cuda_version_greater_equal_60}])
+
+AFS_SUMMARY_POP([CUDA support], [${scorep_have_cuda}])
 
 AC_SUBST(SCOREP_CUDA_VERSION,      ["${scorep_cuda_version}"])
 
