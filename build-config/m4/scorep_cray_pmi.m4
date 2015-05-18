@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013,
+## Copyright (c) 2013, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -16,6 +16,8 @@
 ## maintainer Ronny Tschueter <ronny.tschueter@tu-dresden.de>
 
 AC_DEFUN([SCOREP_CRAY_PMI], [
+AFS_SUMMARY_PUSH
+
 scorep_have_pmi="no"
 
 # On Cray system we want to use PMI to get fine granular information about system topology
@@ -36,7 +38,7 @@ AC_SCOREP_COND_HAVE([PMI],
                      AC_SUBST(PMI_LDFLAGS,  [""])
                      AC_SUBST(PMI_LIBS,     [""])])
 
-AFS_SUMMARY([Cray PMI support], [${scorep_have_pmi}])
+AFS_SUMMARY_POP([Cray PMI support], [${scorep_have_pmi}])
 ])
 
 
