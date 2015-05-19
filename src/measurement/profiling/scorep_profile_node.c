@@ -79,6 +79,7 @@ scorep_profile_create_node( SCOREP_Profile_LocationData* location,
     node->next_sibling        = NULL;
     node->first_double_sparse = NULL;
     node->first_int_sparse    = NULL;
+    node->flags               = 0;
     node->count               = 0; /* Is increased to one during SCOREP_Profile_Enter() */
     node->first_enter_time    = timestamp;
     node->last_exit_time      = timestamp;
@@ -110,6 +111,7 @@ scorep_profile_copy_node( SCOREP_Profile_LocationData* location,
                                                             source->type_specific_data,
                                                             0,
                                                             scorep_profile_get_task_context( source ) );
+    node->flags = source->flags;
 
     /* Copy dense metric values */
     scorep_profile_copy_all_dense_metrics( node, source );
