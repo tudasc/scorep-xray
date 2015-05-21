@@ -28,8 +28,10 @@ if HAVE_OPENCL_SUPPORT
 #opencl_test_LDADD = $(serial_libadd)
 #cude_test_LDFLAGS = $(serial_ldflags)
 
+if BUILD_STATIC_LIBRARIES
 TESTS_SERIAL += \
    ./../test/adapters/opencl/run_opencl_test.sh
 CLEANFILES += opencl_test.out
+endif BUILD_STATIC_LIBRARIES
 
 endif
