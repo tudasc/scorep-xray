@@ -870,6 +870,18 @@ This will by default instrument all routines found in <tt>foo.c</tt>.
 disabled when using Source-Code Instrumentation with PDT. However,
 if you you can enforce additional compiler instrumentation with
 @verb{--compiler}.)
+The underlying PDT instrumentor supports a set a instrumentation options, which
+can be set like
+@verbatim
+    scorep --pdt="-f <inclusion/exclusion file>"  mpicc -c foo.c
+@endverbatim
+This particular option for example can be used to manually include/exclude
+specific functions from the instrumentation process.
+The respective file format is described
+@href{http://www.cs.uoregon.edu/research/tau/docs/newguide/bk01ch01s03.html,here}.
+Please check the documentation about the
+@href{http://www.cs.uoregon.edu/research/tau/docs/newguide/re34.html,tau_instrumentor}
+for more valid options.
 
 @subsection tau_inst_limitations Limitations
 @seclabel{tau_inst_limitations}
@@ -899,7 +911,6 @@ of limitations:
     in the selective instrumentation file will be ignored.
   </li>
 </ul>
-
 
 @section scorep_link_mode Enforce Linking of Static/Shared @scorep Libraries
 @seclabel{scorep_link_mode}
