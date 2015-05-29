@@ -41,6 +41,8 @@ Bugfixes:
    did not add preprocessing flags to the preprocessor invocation. Thus, it
    becomes a full compilation step. Fixed.
  - Fix exponent in the CUDA metric definitions.
+ - Fix scorep-config bug on MIC, which always showed an 'Unsupported 
+   target mic. Abort'
 
 ------------------- Released version 1.4.1 ---------------------------
 
