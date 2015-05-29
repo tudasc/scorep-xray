@@ -152,7 +152,8 @@ static std::deque<std::string>
 get_full_library_names( const std::deque<std::string>& library_list,
                         const std::deque<std::string>& path_list,
                         bool                           allow_static,
-                        bool                           allow_dynamic );
+                        bool                           allow_dynamic,
+                        bool                           only_names );
 
 static void
 print_adapter_init_source( void );
@@ -410,11 +411,13 @@ main( int    argc,
 #if HAVE( MIC_SUPPORT )
         delegate( argc, argv, "mic" );
 #else
+#if !HAVE( PLATFORM_MIC )
         std::cerr << "\nUnsupported target: " << target_name
                   << ". Abort.\n" << std::endl;
         clean_up();
         exit( EXIT_FAILURE );
-#endif  /* HAVE( MIC_SUPPORT ) */
+#endif /* !HAVE( PLATFORM_MIC )	*/
+#endif /* HAVE( MIC_SUPPORT ) */
     }
 
     std::deque<std::string>           libs;
@@ -466,7 +469,8 @@ main( int    argc,
                 libs = get_full_library_names( deps.getLibraries( libs ),
                                                deps.getRpathFlags( libs, install ),
                                                allow_static,
-                                               allow_dynamic );
+                                               allow_dynamic,
+                                               false );
             }
             else
             {
@@ -671,49 +675,23 @@ find_library( std::string                    library,
     return "";
 }
 
-static bool
-is_scorep_lib( const std::string& name )
-{
-    if ( name.length() < 6 )
-    {
-        return false;
-    }
-    if ( name.substr( 0, 6 ) == "-lotf2" ||
-         name.substr( 0, 6 ) == "-lcube" )
-    {
-        return true;
-    }
-    if ( name.length() >= 8 &&
-         name.substr( 0, 8 ) == "-lscorep" )
-    {
-        return true;
-    }
-    return false;
-}
-
 static std::deque<std::string>
 get_full_library_names( const std::deque<std::string>& library_list,
                         const std::deque<std::string>& path_list,
                         bool                           allow_static,
-                        bool                           allow_dynamic )
+                        bool                           allow_dynamic,
+                        bool                           only_names )
 {
     std::deque<std::string> full_names;
     for ( std::deque<std::string>::const_iterator lib = library_list.begin();
           lib != library_list.end(); lib++ )
     {
-        if ( is_scorep_lib( *lib ) )
+        std::string name = find_library( *lib, path_list, allow_static, allow_dynamic );
+        if ( name != "" )
         {
-            std::string name = find_library( *lib, path_list, allow_static, allow_dynamic );
-            if ( name != "" )
-            {
-                full_names.push_back( name );
-            }
-            else
-            {
-                full_names.push_back( *lib );
-            }
+            full_names.push_back( name );
         }
-        else
+        else if ( !only_names )
         {
             full_names.push_back( *lib );
         }
