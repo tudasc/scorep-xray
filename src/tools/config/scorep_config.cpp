@@ -99,15 +99,15 @@
     "   --remap-specfile  prints the path to the remapper specification file\n" \
     "   --adapter-init    prints the code for adapter initialization\n" \
     "  Options:\n" \
-    "   --target    Get flags for specified target, e.g. mic"
-"   --nvcc      Convert flags to be suitable for the nvcc compiler.\n" \
+    "   --target    Get flags for specified target, e.g. mic.\n" \
+    "   --nvcc      Convert flags to be suitable for the nvcc compiler.\n" \
     "   --static    Use only static Score-P libraries if possible.\n" \
     "   --dynamic   Use only dynamic Score-P libraries if possible.\n" \
     "   --online-access|--noonline-access\n" \
     "            Specifies whether online access (needed by Periscope) is enabled.\n" \
     "            On default it is enabled.\n"
 
-std::string m_rpath_head = "";
+std::string m_rpath_head      = "";
 std::string m_rpath_delimiter = "";
 std::string m_rpath_tail      = "";
 
