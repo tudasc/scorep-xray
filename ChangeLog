@@ -43,6 +43,7 @@ Bugfixes:
  - Fix exponent in the CUDA metric definitions.
  - Fix scorep-config bug on MIC, which always showed an 'Unsupported 
    target mic. Abort'
+ - Help text for --target attribute of scorep-config added
 
 ------------------- Released version 1.4.1 ---------------------------
 

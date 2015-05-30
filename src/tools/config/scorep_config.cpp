@@ -99,14 +99,15 @@
     "   --remap-specfile  prints the path to the remapper specification file\n" \
     "   --adapter-init    prints the code for adapter initialization\n" \
     "  Options:\n" \
-    "   --nvcc      Convert flags to be suitable for the nvcc compiler.\n" \
+    "   --target    Get flags for specified target, e.g. mic"
+"   --nvcc      Convert flags to be suitable for the nvcc compiler.\n" \
     "   --static    Use only static Score-P libraries if possible.\n" \
     "   --dynamic   Use only dynamic Score-P libraries if possible.\n" \
     "   --online-access|--noonline-access\n" \
     "            Specifies whether online access (needed by Periscope) is enabled.\n" \
     "            On default it is enabled.\n"
 
-std::string m_rpath_head      = "";
+std::string m_rpath_head = "";
 std::string m_rpath_delimiter = "";
 std::string m_rpath_tail      = "";
 
@@ -152,8 +153,7 @@ static std::deque<std::string>
 get_full_library_names( const std::deque<std::string>& library_list,
                         const std::deque<std::string>& path_list,
                         bool                           allow_static,
-                        bool                           allow_dynamic,
-                        bool                           only_names );
+                        bool                           allow_dynamic );
 
 static void
 print_adapter_init_source( void );
@@ -416,8 +416,8 @@ main( int    argc,
                   << ". Abort.\n" << std::endl;
         clean_up();
         exit( EXIT_FAILURE );
-#endif /* !HAVE( PLATFORM_MIC )	*/
-#endif /* HAVE( MIC_SUPPORT ) */
+#endif  /* !HAVE( PLATFORM_MIC ) */
+#endif  /* HAVE( MIC_SUPPORT ) */
     }
 
     std::deque<std::string>           libs;
@@ -469,8 +469,7 @@ main( int    argc,
                 libs = get_full_library_names( deps.getLibraries( libs ),
                                                deps.getRpathFlags( libs, install ),
                                                allow_static,
-                                               allow_dynamic,
-                                               false );
+                                               allow_dynamic );
             }
             else
             {
@@ -675,23 +674,49 @@ find_library( std::string                    library,
     return "";
 }
 
+static bool
+is_scorep_lib( const std::string& name )
+{
+    if ( name.length() < 6 )
+    {
+        return false;
+    }
+    if ( name.substr( 0, 6 ) == "-lotf2" ||
+         name.substr( 0, 6 ) == "-lcube" )
+    {
+        return true;
+    }
+    if ( name.length() >= 8 &&
+         name.substr( 0, 8 ) == "-lscorep" )
+    {
+        return true;
+    }
+    return false;
+}
+
 static std::deque<std::string>
 get_full_library_names( const std::deque<std::string>& library_list,
                         const std::deque<std::string>& path_list,
                         bool                           allow_static,
-                        bool                           allow_dynamic,
-                        bool                           only_names )
+                        bool                           allow_dynamic )
 {
     std::deque<std::string> full_names;
     for ( std::deque<std::string>::const_iterator lib = library_list.begin();
           lib != library_list.end(); lib++ )
     {
-        std::string name = find_library( *lib, path_list, allow_static, allow_dynamic );
-        if ( name != "" )
+        if ( is_scorep_lib( *lib ) )
         {
-            full_names.push_back( name );
+            std::string name = find_library( *lib, path_list, allow_static, allow_dynamic );
+            if ( name != "" )
+            {
+                full_names.push_back( name );
+            }
+            else
+            {
+                full_names.push_back( *lib );
+            }
         }
-        else if ( !only_names )
+        else
         {
             full_names.push_back( *lib );
         }
