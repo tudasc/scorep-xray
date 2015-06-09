@@ -94,6 +94,8 @@ if test "x${ac_scorep_platform}" = "xaix"; then
     ac_scorep_papi_additional_libs="-lpmapi"
 elif test "x${ac_scorep_platform}" = "xbgq"; then
     ac_scorep_papi_additional_libs="-lstdc++ -lrt"
+elif test "x${ac_scorep_platform}" = "xmic"; then
+    ac_scorep_papi_additional_libs="-lpfm"
 else
     ac_scorep_papi_additional_libs=""
 fi
