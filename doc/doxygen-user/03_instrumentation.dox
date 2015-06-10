@@ -258,7 +258,7 @@ library functions is specified when @scorep is installed.  All OpenMP
 parallel constructs and API calls are instrumented by default.
 
 @note To fine-tune instrumentation of OpenMP regions, use the
-      --opari=<parameter-list> option. For available parameters please
+      <tt>--opari=<parameter-list></tt> option. For available parameters please
       refer to the OPARI2 manual.
 
 By default, automatic instrumentation of user-level source routines by

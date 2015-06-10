@@ -329,11 +329,17 @@ are cases where measurement and associated analysis are degraded,
 e.g., by frequently-executed, small and/or generally uninteresting
 functions, methods and subroutines.
 
-A measurement filtering capability is therefore supported for compiler instrumented
-regions, regions instrumented with @scorep user API and regions from @opari2
-instrumentation (see Section @secref{pomp_instrumentation}).
-Because PDT instrumentation (Section @secref{tau_instrumentation}) inserts,
-@scorep user API instrumentation, those regions can be filtered, too.
+A measurement filtering capability is therefore only supported for compiler
+instrumented regions, regions instrumented with the user API from @scorep (see
+section @secref{manual_instrumentation}), regions instrumented with the user API
+from @opari2 (see section @secref{pomp_instrumentation}), and CUDA device and host
+activities (see Section @secref{cuda_adapter}). See section @secref{mpi_groups}
+to restrict the recording of @mpi features and the @opari2 documentation of
+<tt>--disable</tt> to restrict instrumentation of @openmp directives. This
+<tt>--disable</tt> flag can than be passed on to the @opari2 invocation with the
+<tt>--opari2=<parameter-list></tt> flag of the @scorep instrumenter.
+Because PDT instrumentation (Section @secref{tau_instrumentation}) inserts
+@scorep user API instrumentation those regions can be filtered, too.
 Regions can be filtered based on their region name (e.g., their function name)
 or based on the source file, in which they are defined.
 
