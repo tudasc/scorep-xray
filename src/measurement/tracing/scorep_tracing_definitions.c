@@ -697,7 +697,7 @@ scorep_write_sampling_set_definitions( void*                     writerHandle,
         defMetricInstance =
             ( def_metric_instance_pointer_t )OTF2_GlobalDefWriter_WriteMetricInstance;
         defMetricClassRecorder =
-            ( def_metric_class_recorder_pointer_t )OTF2_GlobalDefWriter_WriteMetricInstance;
+            ( def_metric_class_recorder_pointer_t )OTF2_GlobalDefWriter_WriteMetricClassRecorder;
     }
 
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager,
