@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013, 2015,
@@ -42,6 +42,7 @@
 #include <SCOREP_Filter.h>
 #include <math.h>
 #include <fstream>
+#include <iomanip>
 
 using namespace std;
 
