@@ -214,10 +214,6 @@ scorep_profile_alloc_node( SCOREP_Profile_LocationData* location,
 
     /* Allocate new memory if no released nodes are available */
 
-    /* Size of the allocated memory for dense metrics */
-    uint32_t size = SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics() * sizeof( scorep_profile_dense_metric );
-
-
     /* Reserve space for the node record and dense metrics.
      *  Thread root nodes must not be deleted in Periscope phases, while all other
      *  nodes are. The profile memory pages are deleted in Periscope phases.
