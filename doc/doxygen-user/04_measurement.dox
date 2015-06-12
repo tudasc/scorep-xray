@@ -337,7 +337,7 @@ activities (see Section @secref{cuda_adapter}). See section @secref{mpi_groups}
 to restrict the recording of @mpi features and the @opari2 documentation of
 <tt>--disable</tt> to restrict instrumentation of @openmp directives. This
 <tt>--disable</tt> flag can than be passed on to the @opari2 invocation with the
-<tt>--opari2=<parameter-list></tt> flag of the @scorep instrumenter.
+<tt>--opari=<parameter-list></tt> flag of the @scorep instrumenter.
 Because PDT instrumentation (Section @secref{tau_instrumentation}) inserts
 @scorep user API instrumentation those regions can be filtered, too.
 Regions can be filtered based on their region name (e.g., their function name)
