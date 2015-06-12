@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -34,7 +34,7 @@
 /**
  * @file        SCOREP_Timing.h
  *
- * @brief       Provide platform independant timing functionality.
+ * @brief       Provide platform independent timing functionality.
  */
 
 #include <stdint.h>
@@ -54,7 +54,7 @@ SCOREP_Timer_Initialize( void );
 
 
 /**
- * Platform independant timing functions to be used for providing timestamps
+ * Platform independent timing functions to be used for providing timestamps
  * to @ref SCOREP_Events events.
  *
  * @note This may be combined (for performance reasons) with some HWC
@@ -68,7 +68,7 @@ SCOREP_GetClockTicks( void );
 
 
 /**
- * Platform independant clock resolution in order to convert wall clock times
+ * Platform independent clock resolution in order to convert wall clock times
  * to seconds.
  *
  * @return Clock resolution in ticks/second.

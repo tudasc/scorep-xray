@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -48,14 +48,14 @@
  * Platform dependent function to built-up the path from the given root node
  * (this is the machine node) down to the shared memory node.
  *
- * @param root The machine node, ie. the root node.
+ * @param root The machine node, i.e. the root node.
  */
 SCOREP_ErrorCode
 scorep_platform_get_path_in_system_tree( SCOREP_Platform_SystemTreePathElement* root );
 
 
 /**
- * Use this function if you build the path top-down, ie. the first one added is
+ * Use this function if you build the path top-down, i.e. the first one added is
  * the root.
  *
  * @param tail           The tail of the path.
@@ -80,7 +80,7 @@ scorep_platform_system_tree_top_down_add(
 
 
 /**
- * Use this function if you build the path bottom-up, ie. the last one added
+ * Use this function if you build the path bottom-up, i.e. the last one added
  * is the root.
  *
  * @param head           The head of the path.
@@ -116,7 +116,7 @@ scorep_platform_system_tree_bottom_up_add(
  *                           specifiers and the length is taken from the @a
  *                           property_value_fmt.
  * @param property_value_fmt A @a printf-like format string which forms the
- *                           value of the proerty.
+ *                           value of the property.
  * @param ...                Arguments for use in @a property_value_fmt.
  *
  * @return The newly created property or NULL in case of error.

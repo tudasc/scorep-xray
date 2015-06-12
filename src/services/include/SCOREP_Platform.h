@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -47,7 +47,7 @@
 UTILS_BEGIN_C_DECLS
 
 /**
- * Contains one element of the system tree path. Used to specifiy a path in the
+ * Contains one element of the system tree path. Used to specify a path in the
  * system tree
  */
 typedef struct SCOREP_Platform_SystemTreeProperty
@@ -59,7 +59,7 @@ typedef struct SCOREP_Platform_SystemTreeProperty
 
 
 /**
- * Contains one element of the system tree path. Used to specifiy a path in the
+ * Contains one element of the system tree path. Used to specify a path in the
  * system tree
  */
 typedef struct SCOREP_Platform_SystemTreePathElement
