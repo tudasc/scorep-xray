@@ -37,6 +37,7 @@
 
 #include <SCOREP_ErrorCallback.h>
 
+#include "scorep_plugin_gcc_version_compatibility.h"
 #include "scorep_plugin.h"
 
 int plugin_is_GPL_compatible = 1;
@@ -50,8 +51,10 @@ const pass_data pass_data_instrument =
     GIMPLE_PASS,                          // .type
     "scorep_instrument_function",         // .name
     OPTGROUP_NONE,                        // .optinfo_flags
+#if SCOREP_GCC_PLUGIN_TARGET_VERSION < 5000
     NULL,                                 // .gate
     true,                                 // .execute
+#endif
     TV_NONE,                              // .tv_id
     PROP_cfg,                             // .properties_required
     0,                                    // .properties_provided

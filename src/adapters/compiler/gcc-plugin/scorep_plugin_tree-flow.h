@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -18,10 +18,10 @@
  */
 
 /* Test for GCC >= 4.9.0 */
-#if __GNUC__ > 4 || \
-    ( __GNUC__ == 4 && ( __GNUC_MINOR__ > 9 || __GNUC_MINOR__ == 9 ) )
+#if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 4009
 
 #include "stringpool.h"
+#include "basic-block.h"
 #include "tree-ssa-alias.h"
 #include "tree-ssanames.h"
 #include "internal-fn.h"
@@ -31,7 +31,6 @@
 #include "gimple-iterator.h"
 #include "stor-layout.h"
 #include "varasm.h"
-#include "basic-block.h"
 
 #define FOR_EACH_BB( BB ) FOR_EACH_BB_FN( BB, cfun )
 #define ENTRY_BLOCK_PTR ENTRY_BLOCK_PTR_FOR_FN( cfun )

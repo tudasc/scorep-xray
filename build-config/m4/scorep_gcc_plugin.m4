@@ -16,8 +16,6 @@ AC_REQUIRE([LT_OUTPUT])
 
 AC_LANG_PUSH($1)
 
-scorep_gcc_plugin_cppflags=`[$]_AC_CC -print-file-name=plugin`/include
-
 save_CPPFLAGS=$CPPFLAGS
 CPPFLAGS="$CPPFLAGS -I${scorep_gcc_plugin_cppflags} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"
 
@@ -96,9 +94,18 @@ _EOF
     [
         AC_MSG_RESULT([yes])
 
-        # now try to use this plug-in in an compile test
-        [save_]_AC_LANG_PREFIX[FLAGS]=[$]_AC_LANG_PREFIX[FLAGS]
-        _AC_LANG_PREFIX[FLAGS]="[$save_]_AC_LANG_PREFIX[FLAGS] -fplugin=$PWD/lib/confmodule.so"
+        # now try to use this plug-in in a compile test, always use the C
+        # compiler, $1 is about in what language the compiler is written,
+        # not what language the compiler should compile
+        AC_LANG_PUSH([C])
+
+        save_target_CC=$CC
+        save_target_CPPFLAGS=$CPPFLAGS
+        save_target_CFLAGS=$CFLAGS
+        CC=$GCC_PLUGIN_TARGET_CC
+        CPPFLAGS=$GCC_PLUGIN_TARGET_CPPFLAGS
+        CFLAGS="$GCC_PLUGIN_TARGET_CFLAGS -fplugin=$PWD/lib/confmodule.so"
+
         AC_MSG_CHECKING([to load a $1 plug-in])
         AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [])],
             [scorep_gcc_have_working_plugin=yes
@@ -107,7 +114,16 @@ _EOF
             [scorep_gcc_plugin_support_reason="no, failed to load plug-in"
             AC_MSG_RESULT([no])
             ])
-        _AC_LANG_PREFIX[FLAGS]=[$save_]_AC_LANG_PREFIX[FLAGS]
+
+        CC=$save_target_CC
+        CPPFLAGS=$save_target_CPPFLAGS
+        CFLAGS=$save_target_CFLAGS
+
+        AS_UNSET([save_target_CC])
+        AS_UNSET([save_target_CPPFLAGS])
+        AS_UNSET([save_target_CFLAGS])
+
+        AC_LANG_POP([C])
 
         plugin_uninstall='$SHELL ./libtool --mode=uninstall $RM $PWD/lib/confmodule.la >&AS_MESSAGE_LOG_FD'
         _AC_DO_VAR([plugin_uninstall])
@@ -142,8 +158,7 @@ AS_IF([test "x${scorep_gcc_have_working_plugin}" = "xyes"],
     scorep_gcc_plugin_support_reason="yes, using the $1 compiler and -I${scorep_gcc_plugin_cppflags}"
     $2
     :],
-    [AS_UNSET([scorep_gcc_plugin_cppflags])
-    AC_MSG_RESULT([no])
+    [AC_MSG_RESULT([no])
     $3
     :])
 
@@ -151,22 +166,24 @@ AS_UNSET([scorep_gcc_have_plugin_headers])
 AS_UNSET([scorep_gcc_have_working_plugin])
 ])
 
-# SCOREP_GCC_VERSION
-# ------------------
-# Provides the GCC version as number via AC_SUBST([SCOREP_GCC_VERSION_NUMBER]).
+# _SCOREP_GCC_PLUGIN_TARGET_VERSION
+# ---------------------------------
+# Provides the GCC version for the target GCC as a number
 # version = major * 1000 + minor
-# equals 0 for non-gcc compilers
-AC_DEFUN([SCOREP_GCC_VERSION], [
-AC_REQUIRE([AX_GCC_VERSION])
+AC_DEFUN([_SCOREP_GCC_PLUGIN_TARGET_VERSION], [
 
-scorep_gcc_version=0
-AS_IF([test "x${GCC_VERSION}" != "x"],
-      [scorep_gcc_version_major=${GCC_VERSION%%.*}
-       scorep_gcc_version_minor=${GCC_VERSION#*.}
-       scorep_gcc_version_minor=${scorep_gcc_version_minor%%.*}
-       scorep_gcc_version=`expr ${scorep_gcc_version_major} "*" 1000 + ${scorep_gcc_version_minor}`])
+# -dumpversion gives us only ever major.minor
+scorep_gcc_plugin_target_version_dump="$($GCC_PLUGIN_TARGET_CC -dumpversion)"
 
-AC_SUBST([SCOREP_GCC_VERSION_NUMBER], [${scorep_gcc_version}])
+scorep_gcc_plugin_target_version=0
+AS_IF([test "x${scorep_gcc_plugin_target_version_dump}" != "x"],
+      [scorep_gcc_plugin_target_version_major=${scorep_gcc_plugin_target_version_dump%%.*}
+       scorep_gcc_plugin_target_version_minor=${scorep_gcc_plugin_target_version_dump#*.}
+       scorep_gcc_plugin_target_version_minor=${scorep_gcc_plugin_target_version_minor%%.*}
+       scorep_gcc_plugin_target_version=$(expr ${scorep_gcc_plugin_target_version_major} "*" 1000 + ${scorep_gcc_plugin_target_version_minor})])
+AC_DEFINE_UNQUOTED([SCOREP_GCC_PLUGIN_TARGET_VERSION],
+    [${scorep_gcc_plugin_target_version}],
+    [The GCC version for what we build the plug-in.])
 ])
 
 # SCOREP_GCC_PLUGIN
@@ -174,18 +191,21 @@ AC_SUBST([SCOREP_GCC_VERSION_NUMBER], [${scorep_gcc_version}])
 # Performs checks whether the GCC compiler has plug-in support, and with which
 # compiler it was built.
 AC_DEFUN([SCOREP_GCC_PLUGIN], [
-AC_REQUIRE([SCOREP_GCC_VERSION])
+AC_REQUIRE([_SCOREP_GCC_PLUGIN_TARGET_VERSION])dnl
 
 rm -f gcc_plugin_supported
 
-AS_IF([test ${scorep_gcc_version} -lt 4005],
-    [scorep_gcc_plugin_support_reason="no, GCC ${GCC_VERSION} is too old, no plug-in support"],
-    [test ${scorep_gcc_version} -lt 4007],
+# we need the include directory from the target CC
+scorep_gcc_plugin_cppflags=$($GCC_PLUGIN_TARGET_CC -print-file-name=plugin/include)
+
+AS_IF([test ${scorep_gcc_plugin_target_version} -lt 4005],
+    [scorep_gcc_plugin_support_reason="no, GCC ${scorep_gcc_plugin_target_version_dump} is too old, no plug-in support"],
+    [test ${scorep_gcc_plugin_target_version} -lt 4007],
     [# GCC 4.5 and 4.6 are always built with the C compiler
     _SCOREP_GCC_PLUGIN_CHECK([C],
         [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [false], [false])
          touch gcc_plugin_supported])],
-    [test ${scorep_gcc_version} -eq 4007],
+    [test ${scorep_gcc_plugin_target_version} -eq 4007],
     [# GCC 4.7 can either be build with the C or the C++ compiler
     _SCOREP_GCC_PLUGIN_CHECK([C],
         [AFS_AM_CONDITIONAL([GCC_COMPILED_WITH_CXX], [false], [false])
@@ -204,8 +224,9 @@ AFS_AM_CONDITIONAL([HAVE_GCC_PLUGIN_SUPPORT], [test -f gcc_plugin_supported], [f
 
 AFS_SUMMARY([GCC plug-in support], [${scorep_gcc_plugin_support_reason}])
 AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
-    [AFS_AM_CONDITIONAL([GCC_VERSION_GE_49], [test ${scorep_gcc_version} -ge 4009], [false])
-    AM_COND_IF([GCC_VERSION_GE_49],
+    [AFS_AM_CONDITIONAL([SCOREP_GCC_PLUGIN_TARGET_VERSION_GE_49],
+        [test ${scorep_gcc_plugin_target_version} -ge 4009], [false])
+    AM_COND_IF([SCOREP_GCC_PLUGIN_TARGET_VERSION_GE_49],
         [AC_SUBST([SCOREP_GCC_PLUGIN_CXXFLAGS], ["-fno-rtti"])])
     AC_SUBST([SCOREP_GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_cppflags} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
     AM_COND_IF([GCC_COMPILED_WITH_CXX],

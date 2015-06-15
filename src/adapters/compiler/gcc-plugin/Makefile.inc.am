@@ -52,17 +52,17 @@ libscorep_instrument_function_cxx_la_CXXFLAGS = \
 
 scorep_instrument_function_la_LIBADD += libscorep_instrument_function_cxx.la
 
-if GCC_VERSION_GE_49
+if SCOREP_GCC_PLUGIN_TARGET_VERSION_GE_49
 
 libscorep_instrument_function_cxx_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_cxx.cpp
 
-else !GCC_VERSION_GE_49
+else !SCOREP_GCC_PLUGIN_TARGET_VERSION_GE_49
 
 libscorep_instrument_function_cxx_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/gcc-plugin/scorep_plugin_cc.c
 
-endif !GCC_VERSION_GE_49
+endif !SCOREP_GCC_PLUGIN_TARGET_VERSION_GE_49
 
 else !GCC_COMPILED_WITH_CXX
 

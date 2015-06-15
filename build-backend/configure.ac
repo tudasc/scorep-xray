@@ -103,6 +103,16 @@ AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
     [ac_scorep_frontend="no"],
     [ac_scorep_frontend="yes"])
 
+# On crosscompile machines, install backend/mic stuff into
+# $(bin|lid)dir/(backend|mic).
+backend_suffix=""
+AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
+      [backend_suffix="/backend"
+       AS_IF([test "x${ac_scorep_platform}" = "xmic"],
+             [backend_suffix="/mic"])
+      ])
+AC_SUBST([backend_suffix])
+
 m4_include(../build-includes/compute-node.m4)
 AS_IF([test "x${ac_scorep_cross_compiling}" = "xno"],
     [m4_include(../build-includes/login-node.m4)])
@@ -113,6 +123,8 @@ adl_RECURSIVE_EVAL([${bindir}], [BINDIR])
 AC_SUBST([BINDIR])
 adl_RECURSIVE_EVAL([${libdir}/${PACKAGE}], [PKGLIBDIR])
 AC_SUBST([PKGLIBDIR])
+adl_RECURSIVE_EVAL([${libdir}${backend_suffix}/${PACKAGE}], [BACKEND_PKGLIBDIR])
+AC_SUBST([BACKEND_PKGLIBDIR])
 adl_RECURSIVE_EVAL([${datadir}/${PACKAGE}], [PKGDATADIR])
 AC_SUBST([PKGDATADIR])
 adl_RECURSIVE_EVAL([${docdir}], [DOCDIR])
@@ -261,16 +273,6 @@ AC_CHECK_FUNCS_ONCE([readlink])
 AC_SCOREP_BUILD_MODE
 AC_SCOREP_CUDA
 SCOREP_CRAY_PMI
-
-# On crosscompile machines, install backend/mic stuff into
-# $(bin|lid)dir/(backend|mic).
-backend_suffix=""
-AS_IF([test "x${ac_scorep_cross_compiling}" = "xyes"],
-      [backend_suffix="/backend"
-       AS_IF([test "x${ac_scorep_platform}" = "xmic"],
-             [backend_suffix="/mic"])
-      ])
-AC_SUBST([backend_suffix])
 
 AC_SCOREP_CHECK_SIZEOF([int64_t])
 if (( ac_cv_sizeof_void_p > ac_cv_sizeof_int64_t )); then

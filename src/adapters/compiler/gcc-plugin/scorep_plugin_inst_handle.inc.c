@@ -32,7 +32,6 @@
 #include "tree.h"
 #include "input.h"
 #include "hashtab.h"
-#include "pointer-set.h"
 #include "splay-tree.h"
 #include "langhooks.h"
 #include "cgraph.h"
@@ -47,6 +46,7 @@
 #include "gimple.h"
 #include "tree-pass.h"
 
+#include "scorep_plugin_gcc_version_compatibility.h"
 #include "scorep_plugin_inst_handle.h"
 
 static const char* region_handle_var_name = "__scorep_region_handle";
@@ -61,10 +61,9 @@ var_build( scorep_plugin_inst_handle* handle )
                                   get_identifier( region_handle_var_name ),
                                   handle->type );
 
-    DECL_INITIAL( handle_var )      = build_int_cst( handle->type, 0 );
-    DECL_CONTEXT( handle_var )      = current_function_decl;
-    DECL_SECTION_NAME( handle_var ) = build_string( strlen( region_handles_section ),
-                                                    region_handles_section );
+    DECL_INITIAL( handle_var ) = build_int_cst( handle->type, 0 );
+    DECL_CONTEXT( handle_var ) = current_function_decl;
+    set_decl_section_name( handle_var, region_handles_section );
     TREE_STATIC( handle_var )     = 1;
     TREE_PUBLIC( handle_var )     = 0;
     TREE_USED( handle_var )       = 1;
