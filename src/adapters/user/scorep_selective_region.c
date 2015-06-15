@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -31,7 +31,7 @@
 /**
  *  @file
  *
- *  This file containes the implementation of functions for selective recording.
+ *  This file contains the implementation of functions for selective recording.
  */
 
 #include <config.h>
