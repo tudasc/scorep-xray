@@ -7,9 +7,6 @@ Major features:
 
 Features and improvements:
 
-- The GCC plug-in can also be built on cross build machines and with
-  the GCC 5 release series.
-
 User tools and API improvements and changes:
 
 - The option --pomp does not take any options any more.
@@ -29,20 +26,27 @@ Bugfixes:
 
 ------------------- Upcoming version 1.4.2 ---------------------------
 
+Features and improvements:
+
+- The GCC plug-in can also be built on cross build machines and with
+  the GCC 5 release series.
+
 Bugfixes:
+
  - The OpenMP flag for PGI compilers (-mp) may have a value appended.
    In this case, the instrumenter did not detect the OpenMP paradigm
    properly. Fixed.
  - On Cray systems, a conflict between the -eZ and and the -eP flag
    occurred if the instrumenter performed preprocessing before OPARI2
    instrumentation and the command line contains -eZ. Fixed.
- - If the user explicitly requires static Score-P libraries by specifying
-   --static on the command line, scorep-config provides also full paths
-   to the dependencies of its libraries, which might cause problems if
-   the libraries are linked with dynamic libraries. Fixed.
- - The preprocessing step of CUDA source files for the OPARI2 instrumentation
-   did not add preprocessing flags to the preprocessor invocation. Thus, it
-   becomes a full compilation step. Fixed.
+ - If the user explicitly requires static Score-P libraries by
+   specifying --static on the command line, scorep-config provides
+   also full paths to the dependencies of its libraries, which might
+   cause problems if the libraries are linked with dynamic
+   libraries. Fixed.
+ - The preprocessing step of CUDA source files for the OPARI2
+   instrumentation did not add preprocessing flags to the preprocessor
+   invocation. Thus, it becomes a full compilation step. Fixed.
  - Fix exponent in the CUDA metric definitions.
  - Fix scorep-config bug on MIC, which always showed an 'Unsupported
    target mic. Abort'
