@@ -11,9 +11,10 @@
 ## directory for details.
 ##
 
-EXTRA_DIST       += \
+EXTRA_DIST += \
     $(SRC_ROOT)test/adapters/opencl/run_opencl_test.sh.in \
-    $(SRC_ROOT)test/adapters/opencl/opencl_test.c
+    $(SRC_ROOT)test/adapters/opencl/opencl_test.c \
+    $(SRC_ROOT)test/adapters/opencl/kernel.cl
 
 if HAVE_OPENCL_SUPPORT
 
