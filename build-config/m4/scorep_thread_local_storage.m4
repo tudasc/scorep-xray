@@ -39,13 +39,13 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([#if defined(__GNUC__) && ((__GNUC__ < 4) || (__
 
 __thread int global_thread_private_var = 1;
 ], [static __thread int my_thread_private_var = 0])],
-   [have_thread_local_storage="yes"],
-   [have_thread_local_storage="no"])
-AC_MSG_RESULT([${have_thread_local_storage}])
+   [scorep_have_thread_local_storage="yes"],
+   [scorep_have_thread_local_storage="no"])
+AC_MSG_RESULT([${scorep_have_thread_local_storage}])
 
 AC_LANG_POP([C])
 
 AC_SCOREP_COND_HAVE([THREAD_LOCAL_STORAGE],
-                    [test "x${have_thread_local_storage}" = "xyes"],
+                    [test "x${scorep_have_thread_local_storage}" = "xyes"],
                     [Defined if thread local storage support is available.])
 ])
