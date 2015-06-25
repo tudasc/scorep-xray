@@ -45,27 +45,30 @@ int plugin_is_GPL_compatible = 1;
 
 static struct opt_pass pass_instrument =
 {
-    .type                 = GIMPLE_PASS,
-    .name                 = "scorep_instrument_function",
-    .gate                 = NULL,
-    .execute              = scorep_plugin_pass_instrument_function,
-    .sub                  = NULL,
-    .next                 = NULL,
-    .static_pass_number   = 0,
-    .tv_id                = TV_NONE,
-    .properties_required  = PROP_cfg,
-    .properties_provided  = 0,
-    .properties_destroyed = 0,
-    .todo_flags_start     = 0,
-    .todo_flags_finish    = TODO_verify_ssa | TODO_update_ssa,
+    GIMPLE_PASS,                            /* .type */
+    "scorep_instrument_function",           /* .name */
+#if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 4008
+    OPTGROUP_NONE,                          /* .optinfo_flags */
+#endif
+    NULL,                                   /* .gate */
+    scorep_plugin_pass_instrument_function, /* .execute */
+    NULL,                                   /* .sub */
+    NULL,                                   /* .next */
+    0,                                      /* .static_pass_number */
+    TV_NONE,                                /* .tv_id */
+    PROP_cfg,                               /* .properties_required */
+    0,                                      /* .properties_provided */
+    0,                                      /* .properties_destroyed */
+    0,                                      /* .todo_flags_start */
+    TODO_verify_ssa | TODO_update_ssa,      /* .todo_flags_finish */
 };
 
 static struct register_pass_info pass_instrument_info =
 {
-    .pass                     = &pass_instrument,
-    .reference_pass_name      = "early_optimizations",
-    .ref_pass_instance_number = 0,
-    .pos_op                   = PASS_POS_INSERT_BEFORE,
+    &pass_instrument,           /* .pass */
+    "early_optimizations",      /* .reference_pass_name */
+    0,                          /* .ref_pass_instance_number */
+    PASS_POS_INSERT_BEFORE,     /* .pos_op */
 };
 
 int

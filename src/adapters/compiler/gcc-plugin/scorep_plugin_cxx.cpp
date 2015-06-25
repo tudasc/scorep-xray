@@ -52,8 +52,8 @@ const pass_data pass_data_instrument =
     "scorep_instrument_function",         // .name
     OPTGROUP_NONE,                        // .optinfo_flags
 #if SCOREP_GCC_PLUGIN_TARGET_VERSION < 5000
-    NULL,                                 // .gate
-    true,                                 // .execute
+    false,                                // .has_gate
+    true,                                 // .has_execute
 #endif
     TV_NONE,                              // .tv_id
     PROP_cfg,                             // .properties_required
