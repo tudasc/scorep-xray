@@ -60,7 +60,7 @@ static SCOREP_ConfigVariable scorep_opencl_configs[] =
         /*"  sync:           Record implicit and explicit OpenCL synchronization\n"*/
         "  memusage:       Record OpenCL memory (de)allocations as a counter\n"
         "  default/yes/1:  OpenCL API and GPU activities\n"
-        "  no:             Disable OpenCL measurement\n"
+        "  no:             Disable OpenCL measurement"
     },
     {
         "buffer",

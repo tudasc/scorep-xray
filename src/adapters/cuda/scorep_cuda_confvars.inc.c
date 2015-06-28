@@ -92,7 +92,7 @@ static SCOREP_ConfigVariable scorep_cuda_configs[] = {
         "  references:     Record references between CUDA activities\n"
         "  flushatexit:    Flush CUDA activity buffer at program exit\n"
         "  default/yes/1:  CUDA runtime API and GPU activities\n"
-        "  no:             Disable CUDA measurement\n"
+        "  no:             Disable CUDA measurement"
     },
     {
         "buffer",

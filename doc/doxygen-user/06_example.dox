@@ -98,7 +98,7 @@ under <tt>bin.scorep/bt-mz\_W.4</tt>.
 Now instrumented BT-MZ is ready to be executed and to be profiled by @scorep
 at the same time. However before doing so, one has an opportunity to configure
 @scorep measurement by setting @scorep environment variables. For the complete
-list of variables please refer to Appendix @secref{scorpeconfigvariables}.
+list of variables please refer to Appendix @secref{scorepconfigvariables}.
 
 The typical @scorep performance analysis workflow implies collecting summary
 performance information first and then in detail performance exploration

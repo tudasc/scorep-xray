@@ -119,12 +119,12 @@ else
 INFO_TOOL_BUILD=build-backend
 endif
 
-$(INFO_TOOL_BUILD)/scorep-info:
+scorep-info-command:
 	$(am__cd) $(INFO_TOOL_BUILD) && $(MAKE) $(AM_MAKEFLAGS) scorep-info
 
 CLEANFILES += doc/doxygen-user/confvars.dox.in
 
-doc/doxygen-user/confvars.dox.in: $(INFO_TOOL_BUILD)/scorep-info
+doc/doxygen-user/confvars.dox.in: scorep-info-command
 	$(AM_V_GEN)$(MKDIR_P) `dirname $@` && \
 	./$(INFO_TOOL_BUILD)/scorep-info config-vars --doxygen >$@
 

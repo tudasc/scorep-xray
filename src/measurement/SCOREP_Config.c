@@ -549,12 +549,7 @@ config_type_as_string( SCOREP_ConfigType type )
 void
 SCOREP_ConfigHelp( bool full, bool html )
 {
-    const char* sep = "";
-
-    if ( html )
-    {
-        printf( "<dl>\n" );
-    }
+    const char* sep = html ? "<dl>\n" : "";
     for ( struct scorep_config_name_space* name_space = name_spaces_head;
           name_space;
           name_space = name_space->next )
@@ -574,9 +569,9 @@ SCOREP_ConfigHelp( bool full, bool html )
             printf( "%s%s%s\n",
                     html ? " <dd>\n  " : "  Description: ",
                     variable->data.shortHelp,
-                    html ? "<br>" : "" );
+                    html ? "<br/>" : "" );
             printf( "%sType:%s%s%s\n",
-                    html ? "  <dl>\n   <dt>" : "         ",
+                    html ? "  <br/>\n  <dl>\n   <dt>" : "         ",
                     html ? "</dt><dd>" : " ",
                     config_type_as_string( variable->data.type ),
                     html ? "</dd>" : "" );
@@ -588,7 +583,7 @@ SCOREP_ConfigHelp( bool full, bool html )
 
             if ( full && strlen( variable->data.longHelp ) )
             {
-                printf( "%s\n", html ? "  <br>" : "\n  Full description:" );
+                printf( "%s\n", html ? "  <br/>" : "\n  Full description:" );
                 const char* curr = variable->data.longHelp;
                 const char* next;
                 do
@@ -599,13 +594,13 @@ SCOREP_ConfigHelp( bool full, bool html )
                         next = curr + strlen( curr );
                     }
                     int len = ( int )( next - curr );
-                    printf( "  %.*s%s\n", len, curr, html ? "<br>" : "" );
+                    printf( "  %.*s%s\n", len, curr, html ? "<br/>" : "" );
                     curr = next + 1;
                 }
                 while ( *next );
             }
             printf( "%s", html ? " </dd>" : "" );
-            sep = "\n";
+            sep = html ? "\n <br/>\n" : "\n";
         }
     }
     if ( html )
