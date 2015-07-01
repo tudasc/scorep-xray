@@ -235,10 +235,10 @@ main( int argc, char* argv[] )
     status = pthread_mutex_init( &RECURSIVE_LOCK, &recursive );
     check_status( "pthread_mutex_init()", status );
 
-    status = pthread_create( &t[ i ], NULL, test_recursive_mutex, ( void* )i );
+    status = pthread_create( &t[ 0 ], NULL, test_recursive_mutex, ( void* )0 );
     check_status( "pthread_create()", status );
 
-    status = pthread_join( t[ i ], NULL );
+    status = pthread_join( t[ 0 ], NULL );
     check_status( "pthread_join()", status );
 
     status = pthread_mutexattr_destroy( &recursive );
