@@ -55,7 +55,7 @@ SCOREP_LIBWRAP_FUNC_NAME( foo ) ( void )
 
     SCOREP_LIBWRAP_FUNC_INIT( lw, lw_attr,
                               void, foo, ( void ),
-                              example.h, 0 );
+                              "example.h", 0 );
 
     SCOREP_LIBWRAP_FUNC_ENTER
 

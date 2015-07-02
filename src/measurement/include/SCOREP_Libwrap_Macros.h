@@ -101,8 +101,8 @@
  * @param rettype          Return type
  * @param func             Function name
  * @param argtypes         Argument types
- * @param file             Source code location (file)
- * @param line             Source code location (line)
+ * @param file             Source code location (file as `const char*`)
+ * @param line             Source code location (line as `int`)
  */
 #define SCOREP_LIBWRAP_FUNC_INIT( handle, attributes, rettype, func, argtypes, file, line ) \
     SCOREP_LIBWRAP_FUNC_INIT_STATIC( handle, attributes, func, file, line )
@@ -115,8 +115,8 @@
  * @param handle           Library wrapper handle
  * @param attributes       Library wrapper handle attributes
  * @param func             Function name
- * @param file             Source code location (file)
- * @param line             Source code location (line)
+ * @param file             Source code location (file as `const char*`)
+ * @param line             Source code location (line as `int`)
  */
 #define SCOREP_LIBWRAP_FUNC_INIT_STATIC( handle, attributes, func, file, line )             \
     static SCOREP_RegionHandle scorep_libwrap_region = SCOREP_INVALID_REGION;               \
@@ -126,7 +126,7 @@
     }                                                                                       \
     if ( scorep_libwrap_region == SCOREP_INVALID_REGION )                                   \
     {                                                                                       \
-        SCOREP_Libwrap_DefineRegion( handle, &scorep_libwrap_region, #func, #file, line );  \
+        SCOREP_Libwrap_DefineRegion( handle, &scorep_libwrap_region, #func, file, line );   \
     }
 
 /* *********************************************************************
@@ -189,8 +189,8 @@
  * @param rettype           Return type
  * @param func              Function name
  * @param argtypes          Argument types
- * @param file              Source code location (file)
- * @param line              Source code location (line)
+ * @param file              Source code location (file as `const char*`)
+ * @param line              Source code location (line as `int`)
  */
 #define SCOREP_LIBWRAP_FUNC_INIT( handle, attributes, rettype, func, argtypes, file, line ) \
     SCOREP_LIBWRAP_FUNC_INIT_SHARED( handle, attributes, rettype, func, argtypes, file, line )
@@ -205,8 +205,8 @@
  * @param rettype           Return type
  * @param func              Function name
  * @param argtypes          Argument types
- * @param file              Source code location (file)
- * @param line              Source code location (line)
+ * @param file              Source code location (file as `const char*`)
+ * @param line              Source code location (line as `int`)
  */
 #define SCOREP_LIBWRAP_FUNC_INIT_SHARED( handle, attributes, rettype, func, argtypes, file, line )  \
     static rettype( *SCOREP_LIBWRAP_FUNC_PTR ) argtypes = SCOREP_LIBWRAP_NULL;                      \
@@ -221,7 +221,7 @@
     }                                                                                               \
     if ( scorep_libwrap_region == SCOREP_INVALID_REGION )                                           \
     {                                                                                               \
-        SCOREP_Libwrap_DefineRegion( handle, &scorep_libwrap_region, #func, #file, line );          \
+        SCOREP_Libwrap_DefineRegion( handle, &scorep_libwrap_region, #func, file, line );           \
     }
 
 /* *********************************************************************
@@ -307,8 +307,8 @@
  * @param rettype           Return type
  * @param func              Function name
  * @param argtypes          Argument types
- * @param file              Source code location (file)
- * @param line              Source code location (line)
+ * @param file              Source code location (file as `const char*`)
+ * @param line              Source code location (line as `int`)
  */
 #define SCOREP_LIBWRAP_FUNC_INIT( handle, attributes, rettype, func, argtypes, file, line ) \
     SCOREP_LIBWRAP_FUNC_INIT_WEAK( handle, attributes, func, file, line )
@@ -321,8 +321,8 @@
  * @param handle            Library wrapper handle
  * @param attributes        Library wrapper handle attributes
  * @param func              Function name
- * @param file              Source code location (file)
- * @param line              Source code location (line)
+ * @param file              Source code location (file as `const char*`)
+ * @param line              Source code location (line as `int`)
  */
 #define SCOREP_LIBWRAP_FUNC_INIT_WEAK( handle, attributes, func, file, line )               \
     static SCOREP_RegionHandle scorep_libwrap_region = SCOREP_INVALID_REGION;               \
@@ -332,7 +332,7 @@
     }                                                                                       \
     if ( scorep_libwrap_region == SCOREP_INVALID_REGION )                                   \
     {                                                                                       \
-        SCOREP_Libwrap_DefineRegion( handle, &scorep_libwrap_region, #func, #file, line );  \
+        SCOREP_Libwrap_DefineRegion( handle, &scorep_libwrap_region, #func, file, line );   \
     }
 
 /* *********************************************************************
