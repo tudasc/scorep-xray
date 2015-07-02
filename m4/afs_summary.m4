@@ -166,6 +166,25 @@ AC_DEFUN([AFS_SUMMARY_COLLECT], [
     ])
     AS_ECHO([""])
 
+    AS_IF([test x"${MODULESHOME:+set}" = x"set"], [
+        AS_ECHO([""])
+        AS_ECHO(["Loaded modules:"])
+        sep=""
+        AS_IF([test x"${LOADEDMODULES:+set}" = x"set"], [
+            prefix="  module load "
+            printf "%-32s" "$prefix"
+            IFS=': ' eval 'set x $LOADEDMODULES'
+            shift
+            AS_FOR([MODULE], [module], [], [
+                AS_ECHO_N(["$sep$module"])
+                sep=" \\$as_nl$padding"
+            ])
+            AS_ECHO([""])
+        ], [
+            AS_ECHO(["  No modules loaded"])
+        ])
+    ])
+
     AS_ECHO([""])
     sep="Configuration summary:"
     LC_ALL=C find . -name config.summary |
