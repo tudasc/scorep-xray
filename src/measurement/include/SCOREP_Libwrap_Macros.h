@@ -196,7 +196,7 @@
     SCOREP_LIBWRAP_FUNC_INIT_SHARED( handle, attributes, rettype, func, argtypes, file, line )
 
 /**
- * @def SCOREP_LIBWRAP_FUNC_INIT_STATIC
+ * @def SCOREP_LIBWRAP_FUNC_INIT_SHARED
  * Initialize library wrapping of requested function and
  * create a static region handle called scorep_libwrap_region.
  *
