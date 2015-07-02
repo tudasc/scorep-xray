@@ -73,8 +73,11 @@ scorep_profile_process_collapse( void )
     }
 
     UTILS_WARNING( "Score-P callpath depth limitation of %" PRIu64 " exceeded.\n"
-                   "Reached callpath depth was %" PRIu64 "\n",
-                   scorep_profile.max_callpath_depth, scorep_profile.reached_depth );
+                   "Reached callpath depth was %" PRIu64 ".\n"
+                   "Consider setting SCOREP_PROFILING_MAX_CALLPATH_DEPTH to %" PRIu64 ".\n",
+                   scorep_profile.max_callpath_depth,
+                   scorep_profile.reached_depth,
+                   scorep_profile.reached_depth );
 
     scorep_profile_collapse_region = SCOREP_Definitions_NewRegion( "COLLAPSE",
                                                                    NULL,
