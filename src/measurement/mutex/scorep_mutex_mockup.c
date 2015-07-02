@@ -57,8 +57,8 @@ typedef struct scorep_mutex
 
 enum
 {
-    SCOREP_MUTEXT_MARKER_UNLOCKED,
-    SCOREP_MUTEXT_MARKER_LOCKED
+    SCOREP_MUTEX_MARKER_UNLOCKED,
+    SCOREP_MUTEX_MARKER_LOCKED
 };
 
 
@@ -84,7 +84,7 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
     }
 
     /* mark this lock initialized */
-    ( *mutex )->state = SCOREP_MUTEXT_MARKER_UNLOCKED;
+    ( *mutex )->state = SCOREP_MUTEX_MARKER_UNLOCKED;
 #endif
 
     return SCOREP_SUCCESS;
@@ -112,7 +112,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
         return SCOREP_SUCCESS;
     }
 
-    UTILS_BUG_ON( ( *mutex )->state == SCOREP_MUTEXT_MARKER_LOCKED,
+    UTILS_BUG_ON( ( *mutex )->state == SCOREP_MUTEX_MARKER_LOCKED,
                   "Trying to destroy an locked mutex." );
 
     free( *mutex );
@@ -139,10 +139,10 @@ SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
 
     scorep_mutex* mutex = ( scorep_mutex* )scorepMutex;
 
-    UTILS_BUG_ON( mutex->state == SCOREP_MUTEXT_MARKER_LOCKED,
+    UTILS_BUG_ON( mutex->state == SCOREP_MUTEX_MARKER_LOCKED,
                   "Trying to lock an already locked mutex." );
 
-    mutex->state = SCOREP_MUTEXT_MARKER_LOCKED;
+    mutex->state = SCOREP_MUTEX_MARKER_LOCKED;
 #endif
 
     return SCOREP_SUCCESS;
@@ -165,10 +165,10 @@ SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
 
     scorep_mutex* mutex = ( scorep_mutex* )scorepMutex;
 
-    UTILS_BUG_ON( mutex->state == SCOREP_MUTEXT_MARKER_UNLOCKED,
+    UTILS_BUG_ON( mutex->state == SCOREP_MUTEX_MARKER_UNLOCKED,
                   "Trying to unlock an non-locked mutex." );
 
-    mutex->state = SCOREP_MUTEXT_MARKER_UNLOCKED;
+    mutex->state = SCOREP_MUTEX_MARKER_UNLOCKED;
 #endif
 
     return SCOREP_SUCCESS;
