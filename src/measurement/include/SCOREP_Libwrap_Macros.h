@@ -90,7 +90,7 @@
  * @param args             Function arguments
  */
 #define SCOREP_LIBWRAP_FUNC_CALL( handle, func, args ) \
-    __real_##func args;
+    __real_##func args
 
 /**
  * @def SCOREP_LIBWRAP_FUNC_INIT
@@ -167,7 +167,7 @@
  * @param args              Function arguments
  */
 #define SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( funcptr, func, args ) \
-    ( *funcptr )args;
+    ( *funcptr )args
 
 /**
  * @def SCOREP_LIBWRAP_FUNC_CALL
@@ -178,7 +178,7 @@
  * @param args              Function arguments
  */
 #define SCOREP_LIBWRAP_FUNC_CALL( handle, func, args ) \
-    ( *SCOREP_LIBWRAP_FUNC_PTR )args;
+    ( *SCOREP_LIBWRAP_FUNC_PTR )args
 
 /**
  * @def SCOREP_LIBWRAP_FUNC_INIT
@@ -263,7 +263,7 @@
  * @param func              Function name
  * @param args              Function arguments
  */
-#define _SCOREP_CONCATENATE_PREFIX( prefix, func, args ) prefix##func args;
+#define _SCOREP_CONCATENATE_PREFIX( prefix, func, args ) prefix##func args
 
 /**
  * @def _SCOREP_PREPEND_PREFIX
