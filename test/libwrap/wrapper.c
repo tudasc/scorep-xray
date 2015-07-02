@@ -21,6 +21,7 @@
 #include <SCOREP_Libwrap_Macros.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_Libwrap.h>
 
 /* Library wrapper object */
 static SCOREP_LibwrapHandle* lw = SCOREP_LIBWRAP_NULL;
@@ -50,6 +51,7 @@ SCOREP_LIBWRAP_FUNC_NAME( foo ) ( void )
 {
     /* Initialize the measurement system */
     SCOREP_InitMeasurement();
+    SCOREP_Libwrap_Initialize();
 
     printf( "Wrapped function 'foo'\n" );
 
@@ -64,4 +66,6 @@ SCOREP_LIBWRAP_FUNC_NAME( foo ) ( void )
                               ( ) );
 
     SCOREP_LIBWRAP_FUNC_EXIT
+
+    SCOREP_Libwrap_Finalize();
 }
