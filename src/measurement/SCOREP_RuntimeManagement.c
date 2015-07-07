@@ -137,7 +137,7 @@ static void scorep_otf2_initialize( void );
 static void scorep_otf2_finalize( void );
 static void scorep_initialization_sanity_checks( void );
 static void scorep_profile_initialize( void );
-static void scorep_profile_finalize( SCOREP_Location* loaction );
+static void scorep_profile_finalize( void );
 static void scorep_trigger_exit_callbacks( void );
 static void scorep_define_measurement_regions( void );
 /* *INDENT-ON* */
@@ -657,7 +657,7 @@ scorep_finalize( void )
 
     SCOREP_TIME( scorep_properties_write, ( ) );
 
-    SCOREP_TIME( scorep_profile_finalize, ( location ) );
+    SCOREP_TIME( scorep_profile_finalize, ( ) );
     SCOREP_TIME( SCOREP_Definitions_Write, ( ) );
     SCOREP_TIME( SCOREP_Definitions_Finalize, ( ) );
     SCOREP_TIME( scorep_otf2_finalize, ( ) );
@@ -688,11 +688,11 @@ scorep_finalize( void )
 
 
 static void
-scorep_profile_finalize( SCOREP_Location* location )
+scorep_profile_finalize( void )
 {
     if ( SCOREP_IsProfilingEnabled() )
     {
-        SCOREP_Profile_Write( location );
+        SCOREP_Profile_Write();
         SCOREP_Profile_Finalize();
     }
 }

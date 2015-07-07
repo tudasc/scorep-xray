@@ -64,11 +64,10 @@
 
 /* Forward declaration */
 static void
-write_node_tau( SCOREP_Profile_LocationData* location,
-                scorep_profile_node*         node,
-                char*                        parentpath,
-                FILE*                        file,
-                uint64_t*                    callpath_counter );
+write_node_tau( scorep_profile_node* node,
+                char*                parentpath,
+                FILE*                file,
+                uint64_t*            callpath_counter );
 
 /**
    Replaces all occurences of symbols in a string that have a special meaning in XML
@@ -192,11 +191,10 @@ write_tausnap_def( char*     path,
                            number of processed callpathes.
  */
 static void
-write_region_tau( SCOREP_Profile_LocationData* location,
-                  scorep_profile_node*         node,
-                  char*                        parentpath,
-                  FILE*                        file,
-                  uint64_t*                    callpath_counter )
+write_region_tau( scorep_profile_node* node,
+                  char*                parentpath,
+                  FILE*                file,
+                  uint64_t*            callpath_counter )
 {
     /* Construct callpath name */
     char* name   = xmlize_string( SCOREP_RegionHandle_GetName( scorep_profile_type_get_region_handle( node->type_specific_data ) ) );
@@ -205,7 +203,7 @@ write_region_tau( SCOREP_Profile_LocationData* location,
     {
         length += strlen( parentpath ) + 7;
     }
-    char* path = SCOREP_Location_AllocForProfile( location->location_data, length );
+    char* path = malloc( length );
     if ( parentpath == NULL )
     {
         strcpy( path, name );
@@ -228,10 +226,11 @@ write_region_tau( SCOREP_Profile_LocationData* location,
         scorep_profile_node* child = node->first_child;
         while ( child != NULL )
         {
-            write_node_tau( location, child, path, file, callpath_counter );
+            write_node_tau( child, path, file, callpath_counter );
             child = child->next_sibling;
         }
     }
+    free( path );
 }
 
 /**
@@ -248,11 +247,10 @@ write_region_tau( SCOREP_Profile_LocationData* location,
                            number of processed callpathes.
  */
 static void
-write_paramstring_tau( SCOREP_Profile_LocationData* location,
-                       scorep_profile_node*         node,
-                       char*                        parentpath,
-                       FILE*                        file,
-                       uint64_t*                    callpath_counter )
+write_paramstring_tau( scorep_profile_node* node,
+                       char*                parentpath,
+                       FILE*                file,
+                       uint64_t*            callpath_counter )
 {
     /* Construct callpath name */
     char* path;
@@ -281,7 +279,7 @@ write_paramstring_tau( SCOREP_Profile_LocationData* location,
         scorep_profile_node* child = node->first_child;
         while ( child != NULL )
         {
-            write_node_tau( location, child, path, file, callpath_counter );
+            write_node_tau( child, path, file, callpath_counter );
             child = child->next_sibling;
         }
     }
@@ -301,11 +299,10 @@ write_paramstring_tau( SCOREP_Profile_LocationData* location,
                            number of processed callpathes.
  */
 static void
-write_paramint_tau( SCOREP_Profile_LocationData* location,
-                    scorep_profile_node*         node,
-                    char*                        parentpath,
-                    FILE*                        file,
-                    uint64_t*                    callpath_counter )
+write_paramint_tau( scorep_profile_node* node,
+                    char*                parentpath,
+                    FILE*                file,
+                    uint64_t*            callpath_counter )
 {
     /* Construct callpath name */
     char*                  path;
@@ -358,7 +355,7 @@ write_paramint_tau( SCOREP_Profile_LocationData* location,
         scorep_profile_node* child = node->first_child;
         while ( child != NULL )
         {
-            write_node_tau( location, child, path, file, callpath_counter );
+            write_node_tau( child, path, file, callpath_counter );
             child = child->next_sibling;
         }
     }
@@ -379,11 +376,10 @@ write_paramint_tau( SCOREP_Profile_LocationData* location,
                            number of processed callpathes.
  */
 static void
-write_node_tau( SCOREP_Profile_LocationData* location,
-                scorep_profile_node*         node,
-                char*                        parentpath,
-                FILE*                        file,
-                uint64_t*                    callpath_counter )
+write_node_tau( scorep_profile_node* node,
+                char*                parentpath,
+                FILE*                file,
+                uint64_t*            callpath_counter )
 {
     if ( node == NULL )
     {
@@ -392,15 +388,15 @@ write_node_tau( SCOREP_Profile_LocationData* location,
     switch ( node->node_type )
     {
         case SCOREP_PROFILE_NODE_REGULAR_REGION:
-            write_region_tau( location, node, parentpath, file, callpath_counter );
+            write_region_tau( node, parentpath, file, callpath_counter );
             break;
 
         case SCOREP_PROFILE_NODE_PARAMETER_STRING:
-            write_paramstring_tau( location, node, parentpath, file, callpath_counter );
+            write_paramstring_tau( node, parentpath, file, callpath_counter );
             break;
 
         case SCOREP_PROFILE_NODE_PARAMETER_INTEGER:
-            write_paramint_tau( location, node, parentpath, file, callpath_counter );
+            write_paramint_tau( node, parentpath, file, callpath_counter );
             break;
 
         default:
@@ -598,11 +594,10 @@ write_atomicdata_tau( scorep_profile_node*      node,
  */
 
 static void
-write_userevent_data_metric_tau( SCOREP_Profile_LocationData* location,
-                                 scorep_profile_node*         node,
-                                 char*                        parentpath,
-                                 FILE*                        file,
-                                 SCOREP_DefinitionManager*    manager )
+write_userevent_data_metric_tau( scorep_profile_node*      node,
+                                 char*                     parentpath,
+                                 FILE*                     file,
+                                 SCOREP_DefinitionManager* manager )
 
 {
     scorep_profile_sparse_metric_double* metric = node->first_double_sparse;
@@ -702,7 +697,7 @@ write_userevent_data_metric_tau( SCOREP_Profile_LocationData* location,
         }
         while ( child != NULL )
         {
-            write_userevent_data_metric_tau( location, child, parentpath, file,  manager );
+            write_userevent_data_metric_tau( child, parentpath, file,  manager );
             child = child->next_sibling;
         }
     }
@@ -717,11 +712,10 @@ write_userevent_data_metric_tau( SCOREP_Profile_LocationData* location,
  */
 
 static void
-write_userevent_data_tau( SCOREP_Profile_LocationData* location,
-                          scorep_profile_node*         child,
-                          uint64_t                     threadnum,
-                          FILE*                        file,
-                          SCOREP_DefinitionManager*    manager )
+write_userevent_data_tau( scorep_profile_node*      child,
+                          uint64_t                  threadnum,
+                          FILE*                     file,
+                          SCOREP_DefinitionManager* manager )
 {
     head = NULL;
     tail = NULL;
@@ -750,7 +744,7 @@ write_userevent_data_tau( SCOREP_Profile_LocationData* location,
             }
 
             parentpath = path;
-            write_userevent_data_metric_tau( location, child, path, file, manager );
+            write_userevent_data_metric_tau( child, path, file, manager );
             child = child->next_sibling;
 
             free( name );
@@ -773,11 +767,10 @@ write_userevent_data_tau( SCOREP_Profile_LocationData* location,
    @param file      A pointer to an open file to which the data is written.
  */
 static void
-write_thread_tau( SCOREP_Profile_LocationData* location,
-                  scorep_profile_node*         node,
-                  uint64_t                     threadnum,
-                  FILE*                        file,
-                  SCOREP_DefinitionManager*    manager )
+write_thread_tau( scorep_profile_node*      node,
+                  uint64_t                  threadnum,
+                  FILE*                     file,
+                  SCOREP_DefinitionManager* manager )
 {
     /* The counter is used to enumerate the callpathes and
        serves as an unique id to map callpath definitions
@@ -805,7 +798,7 @@ write_thread_tau( SCOREP_Profile_LocationData* location,
 
     fprintf( file, "<definitions thread=\"%d.0.%" PRIu64 ".0\">\n",
              SCOREP_Ipc_GetRank(), threadnum );
-    write_userevent_data_tau( location, child, threadnum, file,  manager );
+    write_userevent_data_tau( child, threadnum, file,  manager );
 
     fprintf( file, "</definitions>\n\n" );
 
@@ -816,7 +809,7 @@ write_thread_tau( SCOREP_Profile_LocationData* location,
 
     while ( child != NULL )
     {
-        write_node_tau( location, child, NULL, file, &callpath_counter );
+        write_node_tau( child, NULL, file, &callpath_counter );
         child = child->next_sibling;
     }
     fprintf( file, "</definitions>\n\n" );
@@ -967,7 +960,7 @@ write_tau_add_callpath_nodes( scorep_profile_node* parent )
 /* rImplemetatio  of the top function for writing a TAU snapshot profile.
  */
 void
-scorep_profile_write_tau_snapshot( SCOREP_Profile_LocationData* location )
+scorep_profile_write_tau_snapshot( void )
 {
     uint64_t             threadnum = 0;
     scorep_profile_node* thread    = scorep_profile.first_root_node;
@@ -1016,7 +1009,7 @@ scorep_profile_write_tau_snapshot( SCOREP_Profile_LocationData* location )
     /* Write thread data */
     while ( thread != NULL )
     {
-        write_thread_tau( location, thread, threadnum, file, manager );
+        write_thread_tau( thread, threadnum, file, manager );
         thread = thread->next_sibling;
         threadnum++;
     }

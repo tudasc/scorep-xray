@@ -45,7 +45,7 @@
    file is created. The files are named snapshot.<rank>.0.0
  */
 extern void
-scorep_profile_write_tau_snapshot( SCOREP_Profile_LocationData* location );
+scorep_profile_write_tau_snapshot( void );
 
 /**
    Writes the profile in Cube 4 format to disk. For each metric a separate
