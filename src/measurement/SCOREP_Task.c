@@ -56,6 +56,8 @@ typedef struct scorep_location_task_data
 
 static size_t task_subsystem_id;
 
+static SCOREP_Location* initial_location;
+
 /* ********************************************* static functions */
 static inline void
 recycle_stack_frame( SCOREP_Location*         location,
@@ -110,18 +112,31 @@ task_subsystem_init_location( SCOREP_Location* location )
     scorep_location_task_data* subsystem_data
         = SCOREP_Location_AllocForMisc( location,
                                         sizeof( scorep_location_task_data ) );
+    /* The initial location was initialized earlier */
+    if ( initial_location != location )
+    {
+        subsystem_data->recycled_tasks  = NULL;
+        subsystem_data->recycled_frames = NULL;
 
-    /* Order important as scorep_task_create retrieves and accesses subsystem object. */
-    subsystem_data->recycled_tasks  = NULL;
-    subsystem_data->recycled_frames = NULL;
-    SCOREP_Location_SetSubsystemData( location,
-                                      task_subsystem_id,
-                                      subsystem_data );
-    subsystem_data->current_task = scorep_task_create( location,
-                                                       SCOREP_Location_GetId( location ),
-                                                       0 );
-    subsystem_data->implicit_task = subsystem_data->current_task;
+        SCOREP_Location_SetSubsystemData( location,
+                                          task_subsystem_id,
+                                          subsystem_data );
 
+        subsystem_data->current_task = scorep_task_create( location,
+                                                           SCOREP_Location_GetId( location ),
+                                                           0 );
+        subsystem_data->implicit_task = subsystem_data->current_task;
+    }
+    return SCOREP_SUCCESS;
+}
+
+static SCOREP_ErrorCode
+task_subsystem_init( void )
+{
+    /* Need to initialize the master location earlier. */
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    task_subsystem_init_location( location );
+    initial_location = location;
     return SCOREP_SUCCESS;
 }
 
@@ -156,8 +171,14 @@ const SCOREP_Subsystem SCOREP_Subsystem_TaskStack =
 {
     .subsystem_name              = "TASK",
     .subsystem_register          = &task_subsystem_register,
+    .subsystem_init              = &task_subsystem_init,
     .subsystem_init_location     = &task_subsystem_init_location,
     .subsystem_finalize_location = &task_subsystem_finalize_location,
+    .subsystem_pre_unify         = NULL,
+    .subsystem_post_unify        = NULL,
+    .subsystem_finalize          = NULL,
+    .subsystem_deregister        = NULL,
+    .subsystem_control           = NULL
 };
 
 /* ************************************** internal interface functions */
