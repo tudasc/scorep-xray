@@ -1223,34 +1223,34 @@
                             };
                             return ${a};
                         }
-                    </cubepl>
-                    <cubeplinit>
-                    {
-                        global(opencl_kernel_executions);
-                        ${i} = 0;
-                        while( ${i} < ${cube::#callpaths} )
+                        </cubepl>
+                        <cubeplinit>
                         {
-                            ${opencl_kernel_executions}[${i}] = 0;
-                            ${regionid} = ${cube::callpath::calleeid}[${i}];
-                            if ( ${cube::region::mod}[${regionid}] seq "OPENCL_KERNEL" )
+                            global(opencl_kernel_executions);
+                            ${i} = 0;
+                            while( ${i} < ${cube::#callpaths} )
                             {
-                                ${opencl_kernel_executions}[${i}] = 1;
+                                ${opencl_kernel_executions}[${i}] = 0;
+                                ${regionid} = ${cube::callpath::calleeid}[${i}];
+                                if ( ${cube::region::mod}[${regionid}] seq "OPENCL_KERNEL" )
+                                {
+                                    ${opencl_kernel_executions}[${i}] = 1;
+                                };
+                                ${i} = ${i} + 1;
                             };
-                            ${i} = ${i} + 1;
-                        };
-                        return 0;
-                    }
-                    </cubeplinit>
+                            return 0;
+                        }
+                        </cubeplinit>
+                    </metric>
                 </metric>
             </metric>
-        </metric>
-        <metric type="POSTDERIVED">
-            <disp_name>Pthread</disp_name>
-            <uniq_name>pthread_time</uniq_name>
-            <dtype>FLOAT</dtype>
-            <uom>sec</uom>
-            <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_time</url>
-            <descr>Time spent in the Pthread run-time system and API</descr>
+            <metric type="POSTDERIVED">
+                <disp_name>Pthread</disp_name>
+                <uniq_name>pthread_time</uniq_name>
+                <dtype>FLOAT</dtype>
+                <uom>sec</uom>
+                <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_time</url>
+                <descr>Time spent in the Pthread run-time system and API</descr>
                 <cubepl>
                     metric::pthread_management() + metric::pthread_synchronization()
                 </cubepl>
