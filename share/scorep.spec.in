@@ -37,12 +37,11 @@
                 while( ${i} < ${cube::#callpaths} )
                 {
                     ${execution}[${i}] = 0;
-                    ${regionid} = ${cube::callpath::calleeid}[${i}] ;
+                    ${regionid} = ${cube::callpath::calleeid}[${i}];
                     if ( not ( ${cube::region::name}[${regionid}] eq "TRACE BUFFER FLUSH" ) )
                     {
                         ${execution}[${i}] = 1;
                     };
-                    ${i} = ${i} + 1;
 
                     if ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                     {
@@ -63,27 +62,28 @@
                         ${doVoidopencl} = 0;
                     };
 
+                    ${i} = ${i} + 1;
                 };
 
 
                 if ( ${doVoidmpi} == 1 )
                 {
-                  cube::metric::set::mpi("value", "VOID");
+                    cube::metric::set::mpi("value", "VOID");
                 };
 
                 if ( ${doVoidomp} == 1 )
                 {
-                  cube::metric::set::omp_time("value", "VOID");
+                    cube::metric::set::omp_time("value", "VOID");
                 };
 
                 if ( ${doVoidpthread} == 1 )
                 {
-                  cube::metric::set::pthread_time("value", "VOID");
+                    cube::metric::set::pthread_time("value", "VOID");
                 };
 
                 if ( ${doVoidopencl} == 1 )
                 {
-                  cube::metric::set::opencl_time("value", "VOID");
+                    cube::metric::set::opencl_time("value", "VOID");
                 };
 
                 return 0;
@@ -113,7 +113,8 @@
                     while( ${i} < ${cube::#callpaths} )
                     {
                         ${mpi}[${i}] = 0;
-                        if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "mpi" )
+                        ${regionid} = ${cube::callpath::calleeid}[${i}];
+                        if ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                         {
                             ${mpi}[${i}] = 1;
                         };
@@ -400,7 +401,7 @@
                                     ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
                                     and
                                     (
-                                      ( ${cube::region::role}[${regionid}] eq "point2point" )
+                                        ( ${cube::region::role}[${regionid}] eq "point2point" )
                                         or
                                         ( lowercase(${cube::region::name}[${regionid}]) =~ /^mpi_.*buffer/ )
                                         or
@@ -736,7 +737,7 @@
                             if (
                                 ( ${cube::region::paradigm}[${regionid}] eq "openmp" )
                                 and
-                                (${cube::region::role}[${regionid}] eq "parallel" )
+                                ( ${cube::region::role}[${regionid}] eq "parallel" )
                                )
                             {
                                 ${omp_management}[${i}] = 1;
@@ -877,10 +878,7 @@
                                     (
                                         ( ${cube::region::role}[${regionid}] eq "atomic" )
                                         or
-
-                                          ( ${cube::region::role}[${regionid}] eq "critical" )
-
-
+                                        ( ${cube::region::role}[${regionid}] eq "critical" )
                                     )
                                    )
                                 {
@@ -964,7 +962,7 @@
                                     ( ${cube::region::paradigm}[${regionid}] eq "openmp" )
                                     and
                                     ( ${cube::region::role}[${regionid}] eq "ordered" )
-                                  )
+                                   )
                                 {
                                     ${omp_ordered}[${i}] = 1;
                                 };
@@ -977,287 +975,277 @@
                 </metric>
             </metric>
 	    <metric type="POSTDERIVED">
-               <disp_name>OpenCL</disp_name>
-               <uniq_name>opencl_time</uniq_name>
-               <dtype>FLOAT</dtype>
-               <uom>sec</uom>
-               <descr>Time spent in the OpenCL run-time system, API and on device</descr>
-               <cubepl>
-                 metric::opencl_host()+metric::opencl_device()
-               </cubepl>
-               <metric type="PREDERIVED_EXCLUSIVE">
-                 <disp_name>Host</disp_name>
-                 <uniq_name>opencl_host</uniq_name>
-                 <dtype>FLOAT</dtype>
-                 <uom>sec</uom>
-                 <descr>TODO: Add description here</descr>
-                 <cubepl>
-                   metric::opencl_setup() + metric::opencl_sync() + metric::opencl_comm() + metric::opencl_kernel_launches()
-                 </cubepl>
-                 <metric type="PREDERIVED_EXCLUSIVE">
-                   <disp_name>Initialization and Finalization</disp_name>
-                   <uniq_name>opencl_setup</uniq_name>
-                   <dtype>FLOAT</dtype>
-                   <uom>sec</uom>
-                   <descr>TODO: Add description here</descr>
-                   <cubepl>
-                   {
-                       ${a}=0;
-                       if ( ${opencl_setup}[${calculation::callpath::id} ]== 1 )
-                       {
-                       ${a} = metric::time(e);
-                       };
-                       return ${a};
-                   }
-                   </cubepl>
-                   <cubeplinit>
-                   {
-                       global(opencl_setup);
-                       ${i}=0;
-                       while( ${i}  < ${cube::#callpaths} )
-                       {
-                         ${opencl_setup}[${i}] = 0;
-                         ${regionid} = ${cube::callpath::calleeid}[${i}] ;
-                         if (
-                           (${cube::region::paradigm}[ ${regionid} ] seq "opencl")
-                           and
-                           (
-                           not (${cube::region::mod}[ ${regionid} ] seq "OPENCL_KERNEL")
-                           )
-                           and
-                           (
-                           (${cube::region::name}[${regionid} ] seq "clGetPlatformIDs" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clGetDeviceIDs" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clGetDeviceInfo" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clCreateContext" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clCreateProgramWithSource" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clBuildProgram" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clCreateKernel" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clReleaseEvent" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clReleaseContext" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clReleaseKernel" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clReleaseProgram" )
-                           )
-                         )
-                         {
-                           ${opencl_setup}[${i}] = 1;
-                         };
-                         ${i} = ${i} + 1;
-                       };
-                       return 0;
-                   }
-                   </cubeplinit>
-                 </metric>
-                 <metric type="PREDERIVED_EXCLUSIVE">
-                   <disp_name>Data transfer</disp_name>
-                   <uniq_name>opencl_comm</uniq_name>
-                   <dtype>FLOAT</dtype>
-                   <uom>sec</uom>
-                   <descr>TODO: Add description here</descr>
-                   <cubepl>
-                   {
-                       ${a}=0;
-                       if ( ${opencl_comm}[${calculation::callpath::id} ]== 1 )
-                       {
-                         ${a} = metric::time(e);
-                       };
-                       return ${a};
-                   }
-                   </cubepl>
-                   <cubeplinit>
-                   {
-                       global(opencl_comm);
-                       ${i}=0;
-                       while( ${i}  < ${cube::#callpaths} )
-                       {
-                         ${opencl_comm}[${i}] = 0;
-                         ${regionid} = ${cube::callpath::calleeid}[${i}] ;
-                         if (
-                           (${cube::region::paradigm}[ ${regionid} ] seq "opencl")
-                           and
-                           (
-                           not (${cube::region::mod}[ ${regionid} ] seq "OPENCL_KERNEL")
-                           )
-                           and
-                           (
-                           (${cube::region::name}[${regionid} ] seq "clCreateBuffer" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clEnqueueWriteBuffer" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clEnqueueReadBuffer" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clCreateImage2D" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clRetainMemoryObject" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clReleaseMemObject" )
-                           )
-                         )
-                         {
-                           ${opencl_comm}[${i}] = 1;
-                         };
-                         ${i} = ${i} + 1;
-                       };
-                       return 0;
-                   }
-                   </cubeplinit>
-                 </metric>
-                 <metric type="PREDERIVED_EXCLUSIVE">
-                   <disp_name>Synchronization</disp_name>
-                   <uniq_name>opencl_sync</uniq_name>
-                   <dtype>FLOAT</dtype>
-                   <uom>sec</uom>
-                   <descr>TODO: Add description here</descr>
-                   <cubepl>
-                   {
-                       ${a}=0;
-                       if ( ${opencl_sync}[${calculation::callpath::id} ]== 1 )
-                       {
-                         ${a} = metric::time(e);
-                       };
-                       return ${a};
-                   }
-                   </cubepl>
-                   <cubeplinit>
-                   {
-                       global(opencl_sync);
-                       ${i}=0;
-                       while( ${i}  < ${cube::#callpaths} )
-                       {
-                         ${opencl_sync}[${i}] = 0;
-                         ${regionid} = ${cube::callpath::calleeid}[${i}] ;
-                         if (
-                           (${cube::region::paradigm}[ ${regionid} ] seq "opencl")
-                           and
-                           (
-                           not (${cube::region::mod}[ ${regionid} ] seq "OPENCL_KERNEL")
-                           )
-                           and
-                           (
-                           (${cube::region::name}[${regionid} ] seq "clFinish" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "cl_sync" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "cl_flush" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clRetainMemoryObject" )
-                           )
-                         )
-                         {
-                            ${opencl_sync}[${i}] = 1;
-                         };
-                         ${i} = ${i} + 1;
-                       };
-                       return 0;
-                   }
-                   </cubeplinit>
-                 </metric>
-                 <metric type="PREDERIVED_EXCLUSIVE">
-                   <disp_name>Kernel launches</disp_name>
-                   <uniq_name>opencl_kernel_launches</uniq_name>
-                   <dtype>FLOAT</dtype>
-                   <uom>sec</uom>
-                   <descr>TODO: Add description here</descr>
-                   <cubepl>
-                   {
-                       ${a}=0;
-                       if ( ${opencl_kernel_launches}[${calculation::callpath::id} ]== 1 )
-                       {
-                         ${a} = metric::time(e);
-                       };
-                       return ${a};
-                   }
-                   </cubepl>
-                   <cubeplinit>
-                   {
-                       global(opencl_kernel_launches);
-                       ${i}=0;
-                       while( ${i}  < ${cube::#callpaths} )
-                       {
-                         ${opencl_kernel_launches}[${i}] = 0;
-                         ${regionid} = ${cube::callpath::calleeid}[${i}] ;
-                         if (
-                           (${cube::region::paradigm}[ ${regionid} ] seq "opencl")
-                           and
-                           (
-                           not (${cube::region::mod}[ ${regionid} ] seq "OPENCL_KERNEL")
-                           )
-                           and
-                           (
-                           (${cube::region::name}[${regionid} ] seq "clSetKernelArg" )
-                           or
-                           (${cube::region::name}[${regionid} ] seq "clEnqueueNDRangeKernel" )
-                           )
-                         )
-                         {
-                           ${opencl_kernel_launches}[${i}] = 1;
-                         };
-                         ${i} = ${i} + 1;
-                       };
-                       return 0;
-                   }
-                   </cubeplinit>
-                 </metric>
-               </metric>
-               <metric type="PREDERIVED_EXCLUSIVE">
-                 <disp_name>Device</disp_name>
-                 <uniq_name>opencl_device</uniq_name>
-                 <dtype>FLOAT</dtype>
-                 <uom>sec</uom>
-                 <descr>TODO: Add description here</descr>
-                 <cubepl>
-                   metric::opencl_kernel_executions()
-                 </cubepl>
-                 <metric type="PREDERIVED_EXCLUSIVE">
-                   <disp_name>Kernels</disp_name>
-                   <uniq_name>opencl_kernel_executions</uniq_name>
-                   <dtype>FLOAT</dtype>
-                   <uom>sec</uom>
-                   <descr>TODO: Add description here</descr>
-                   <cubepl>
-                   {
-                       ${a}=0;
-                       if ( ${opencl_kernel_executions}[${calculation::callpath::id} ]== 1 )
-                       {
-                          ${a} = metric::time(e);
-                       };
-                       return ${a};
-                   }
-                   </cubepl>
-                   <cubeplinit>
-                   {
-                       global(opencl_kernel_executions);
-                       ${i}=0;
-                       while( ${i}  < ${cube::#callpaths} )
-                       {
-                         ${opencl_kernel_executions}[${i}] = 0;
-                         ${regionid} = ${cube::callpath::calleeid}[${i}] ;
-                         if (
-                           (${cube::region::mod}[ ${regionid} ] seq "OPENCL_KERNEL")
-                         )
-                         {
-                           ${opencl_kernel_executions}[${i}] = 1;
-                         };
-                         ${i} = ${i} + 1;
-                       };
-                       return 0;
-                   }
-                   </cubeplinit>
-                 </metric>
-               </metric>
-             </metric>
-             <metric type="POSTDERIVED">
-             <disp_name>Pthread</disp_name>
+                <disp_name>OpenCL</disp_name>
+                <uniq_name>opencl_time</uniq_name>
+                <dtype>FLOAT</dtype>
+                <uom>sec</uom>
+                <descr>Time spent in the OpenCL run-time system, API and on device</descr>
+                <cubepl>
+                    metric::opencl_host() + metric::opencl_device()
+                </cubepl>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Host</disp_name>
+                    <uniq_name>opencl_host</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <descr>TODO: Add description here</descr>
+                    <cubepl>
+                        metric::opencl_setup() + metric::opencl_sync() + metric::opencl_comm() + metric::opencl_kernel_launches()
+                    </cubepl>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Initialization and Finalization</disp_name>
+                        <uniq_name>opencl_setup</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <descr>TODO: Add description here</descr>
+                        <cubepl>
+                        {
+                            ${a} = 0;
+                            if ( ${opencl_setup}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${a} = metric::time(e);
+                            };
+                            return ${a};
+                        }
+                        </cubepl>
+                        <cubeplinit>
+                        {
+                            global(opencl_setup);
+                            ${i} = 0;
+                            while( ${i} < ${cube::#callpaths} )
+                            {
+                                ${opencl_setup}[${i}] = 0;
+                                ${regionid} = ${cube::callpath::calleeid}[${i}];
+                                if (
+                                    ( ${cube::region::paradigm}[${regionid}] seq "opencl" )
+                                    and
+                                    not ( ${cube::region::mod}[${regionid}] seq "OPENCL_KERNEL" )
+                                    and
+                                    (
+                                        ( ${cube::region::name}[${regionid}] seq "clGetPlatformIDs" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clGetDeviceIDs" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clGetDeviceInfo" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clCreateContext" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clCreateProgramWithSource" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clBuildProgram" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clCreateKernel" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clReleaseEvent" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clReleaseContext" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clReleaseKernel" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clReleaseProgram" )
+                                    )
+                                   )
+                                {
+                                    ${opencl_setup}[${i}] = 1;
+                                };
+                                ${i} = ${i} + 1;
+                            };
+                            return 0;
+                        }
+                        </cubeplinit>
+                    </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Data transfer</disp_name>
+                        <uniq_name>opencl_comm</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <descr>TODO: Add description here</descr>
+                        <cubepl>
+                        {
+                            ${a} = 0;
+                            if ( ${opencl_comm}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${a} = metric::time(e);
+                            };
+                            return ${a};
+                        }
+                        </cubepl>
+                        <cubeplinit>
+                        {
+                            global(opencl_comm);
+                            ${i} = 0;
+                            while( ${i} < ${cube::#callpaths} )
+                            {
+                                ${opencl_comm}[${i}] = 0;
+                                ${regionid} = ${cube::callpath::calleeid}[${i}];
+                                if (
+                                    ( ${cube::region::paradigm}[${regionid}] seq "opencl" )
+                                    and
+                                    not ( ${cube::region::mod}[${regionid}] seq "OPENCL_KERNEL" )
+                                    and
+                                    (
+                                        ( ${cube::region::name}[${regionid}] seq "clCreateBuffer" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clEnqueueWriteBuffer" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clEnqueueReadBuffer" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clCreateImage2D" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clRetainMemoryObject" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clReleaseMemObject" )
+                                    )
+                                   )
+                                {
+                                    ${opencl_comm}[${i}] = 1;
+                                };
+                                ${i} = ${i} + 1;
+                            };
+                            return 0;
+                        }
+                        </cubeplinit>
+                    </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Synchronization</disp_name>
+                        <uniq_name>opencl_sync</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <descr>TODO: Add description here</descr>
+                        <cubepl>
+                        {
+                            ${a} = 0;
+                            if ( ${opencl_sync}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${a} = metric::time(e);
+                            };
+                            return ${a};
+                        }
+                        </cubepl>
+                        <cubeplinit>
+                        {
+                            global(opencl_sync);
+                            ${i} = 0;
+                            while( ${i} < ${cube::#callpaths} )
+                            {
+                                ${opencl_sync}[${i}] = 0;
+                                ${regionid} = ${cube::callpath::calleeid}[${i}];
+                                if (
+                                    ( ${cube::region::paradigm}[${regionid}] seq "opencl" )
+                                    and
+                                    not ( ${cube::region::mod}[${regionid}] seq "OPENCL_KERNEL" )
+                                    and
+                                    (
+                                        ( ${cube::region::name}[${regionid}] seq "clFinish" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "cl_sync" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "cl_flush" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clRetainMemoryObject" )
+                                    )
+                                   )
+                                {
+                                    ${opencl_sync}[${i}] = 1;
+                                };
+                                ${i} = ${i} + 1;
+                            };
+                            return 0;
+                        }
+                        </cubeplinit>
+                    </metric>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Kernel launches</disp_name>
+                        <uniq_name>opencl_kernel_launches</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <descr>TODO: Add description here</descr>
+                        <cubepl>
+                        {
+                            ${a} = 0;
+                            if ( ${opencl_kernel_launches}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${a} = metric::time(e);
+                            };
+                            return ${a};
+                        }
+                        </cubepl>
+                        <cubeplinit>
+                        {
+                            global(opencl_kernel_launches);
+                            ${i} = 0;
+                            while( ${i} < ${cube::#callpaths} )
+                            {
+                                ${opencl_kernel_launches}[${i}] = 0;
+                                ${regionid} = ${cube::callpath::calleeid}[${i}];
+                                if (
+                                    ( ${cube::region::paradigm}[${regionid}] seq "opencl" )
+                                    and
+                                    not ( ${cube::region::mod}[${regionid}] seq "OPENCL_KERNEL" )
+                                    and
+                                    (
+                                        ( ${cube::region::name}[${regionid}] seq "clSetKernelArg" )
+                                        or
+                                        ( ${cube::region::name}[${regionid}] seq "clEnqueueNDRangeKernel" )
+                                    )
+                                   )
+                                {
+                                    ${opencl_kernel_launches}[${i}] = 1;
+                                };
+                                ${i} = ${i} + 1;
+                            };
+                            return 0;
+                        }
+                        </cubeplinit>
+                    </metric>
+                </metric>
+                <metric type="PREDERIVED_EXCLUSIVE">
+                    <disp_name>Device</disp_name>
+                    <uniq_name>opencl_device</uniq_name>
+                    <dtype>FLOAT</dtype>
+                    <uom>sec</uom>
+                    <descr>TODO: Add description here</descr>
+                    <cubepl>
+                        metric::opencl_kernel_executions()
+                    </cubepl>
+                    <metric type="PREDERIVED_EXCLUSIVE">
+                        <disp_name>Kernels</disp_name>
+                        <uniq_name>opencl_kernel_executions</uniq_name>
+                        <dtype>FLOAT</dtype>
+                        <uom>sec</uom>
+                        <descr>TODO: Add description here</descr>
+                        <cubepl>
+                        {
+                            ${a} = 0;
+                            if ( ${opencl_kernel_executions}[${calculation::callpath::id}] == 1 )
+                            {
+                                ${a} = metric::time(e);
+                            };
+                            return ${a};
+                        }
+                    </cubepl>
+                    <cubeplinit>
+                    {
+                        global(opencl_kernel_executions);
+                        ${i} = 0;
+                        while( ${i} < ${cube::#callpaths} )
+                        {
+                            ${opencl_kernel_executions}[${i}] = 0;
+                            ${regionid} = ${cube::callpath::calleeid}[${i}];
+                            if ( ${cube::region::mod}[${regionid}] seq "OPENCL_KERNEL" )
+                            {
+                                ${opencl_kernel_executions}[${i}] = 1;
+                            };
+                            ${i} = ${i} + 1;
+                        };
+                        return 0;
+                    }
+                    </cubeplinit>
+                </metric>
+            </metric>
+        </metric>
+        <metric type="POSTDERIVED">
+            <disp_name>Pthread</disp_name>
             <uniq_name>pthread_time</uniq_name>
             <dtype>FLOAT</dtype>
             <uom>sec</uom>
@@ -1291,9 +1279,11 @@
                         {
                             ${pthread_mgmt}[${i}] = 0;
                             ${regionid} = ${cube::callpath::calleeid}[${i}];
-                            if ( ( ${cube::region::paradigm}[${regionid}] eq "pthread" )
-                                 and
-                                 ( ( ${cube::region::name}[${regionid}] seq "pthread_create" )
+                            if (
+                                ( ${cube::region::paradigm}[${regionid}] eq "pthread" )
+                                and
+                                (
+                                    ( ${cube::region::name}[${regionid}] seq "pthread_create" )
                                     or
                                     ( ${cube::region::name}[${regionid}] seq "pthread_join" )
                                     or
@@ -1304,7 +1294,7 @@
                                     ( ${cube::region::name}[${regionid}] seq "pthread_cancel" )
 				    or
                                     ( ${cube::region::name}[${regionid}] seq "pthread_detach" )
-                                 )
+                                )
                                )
                             {
                                 ${pthread_management}[${i}] = 1;
@@ -1331,7 +1321,7 @@
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scalasca_patterns-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#pthread_lock_api</url>
-                         <descr>Time spent in Pthread API calls dealing with mutexes</descr>
+                        <descr>Time spent in Pthread API calls dealing with mutexes</descr>
                         <cubepl>
                         {
                             ${a} = 0;
@@ -1350,7 +1340,7 @@
                             {
                                 ${pthread_mutex_api}[${i}] = 0;
                                 ${regionid} = ${cube::callpath::calleeid}[${i}];
-                                if ( ( lowercase(${cube::region::name}[${regionid}]) =~ /^pthread_mutex_*/ ) )
+                                if ( lowercase(${cube::region::name}[${regionid}]) =~ /^pthread_mutex_*/ )
                                 {
                                     ${pthread_mutex_api}[${i}] = 1;
                                 };
@@ -1385,7 +1375,7 @@
                             {
                                 ${pthread_cond_api}[${i}] = 0;
                                 ${regionid} = ${cube::callpath::calleeid}[${i}];
-                                if ( ( lowercase(${cube::region::name}[${regionid}]) =~ /^pthread_cond_*/ ) )
+                                if ( lowercase(${cube::region::name}[${regionid}]) =~ /^pthread_cond_*/ )
                                 {
                                     ${pthread_cond_api}[${i}] = 1;
                                 };
@@ -1627,25 +1617,25 @@
                 }
                 </cubepl>
                 <cubeplinit>
+                {
+                    global(syncs_locks);
+                    ${i} = 0;
+                    while( ${i} < ${cube::#callpaths} )
                     {
-                        global(syncs_locks);
-                        ${i} = 0;
-                        while( ${i} < ${cube::#callpaths} )
+                        ${syncs_locks}[${i}] = 0;
+                        ${regionid} = ${cube::callpath::calleeid}[${i}];
+                        if (
+                            ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
+                            and
+                            ( ${cube::region::name}[${regionid}] seq "mpi_win_lock" )
+                           )
                         {
-                            ${syncs_locks}[${i}] = 0;
-                            ${regionid} = ${cube::callpath::calleeid}[${i}];
-                            if (
-                                ( ${cube::region::paradigm}[${regionid}] eq "mpi" )
-                                and
-                                ( ${cube::region::name}[${regionid}] seq "mpi_win_lock" )
-                               )
-                            {
-                                ${syncs_locks}[${i}] = 1;
-                            };
-                            ${i} = ${i} + 1;
+                            ${syncs_locks}[${i}] = 1;
                         };
-                        return 0;
-                    }
+                        ${i} = ${i} + 1;
+                    };
+                    return 0;
+                }
                 </cubeplinit>
             </metric>
         </metric>
@@ -2083,7 +2073,6 @@
                 <descr>Number of bytes received in remote memory access operations</descr>
             </metric>
         </metric>
-
     </metric>
     <metric type="PREDERIVED_EXCLUSIVE">
         <disp_name>MPI file operations</disp_name>
@@ -2481,23 +2470,20 @@
             </metric>
         </metric>
     </metric>
-
-        <metric viztype="GHOST">
-            <disp_name>Bytes sent</disp_name>
-            <uniq_name>bytes_sent</uniq_name>
-            <dtype>INTEGER</dtype>
-            <uom>bytes</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent</url>
-            <descr>Number of bytes sent in point-to-point communication operations</descr>
-        </metric>
-        <metric viztype="GHOST">
-            <disp_name>Bytes received</disp_name>
-            <uniq_name>bytes_received</uniq_name>
-            <dtype>INTEGER</dtype>
-            <uom>bytes</uom>
-            <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_rcvd</url>
-            <descr>Number of bytes received in point-to-point communication operations</descr>
-        </metric>
-
-
+    <metric viztype="GHOST">
+        <disp_name>Bytes sent</disp_name>
+        <uniq_name>bytes_sent</uniq_name>
+        <dtype>INTEGER</dtype>
+        <uom>bytes</uom>
+        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent</url>
+        <descr>Number of bytes sent in point-to-point communication operations</descr>
+    </metric>
+    <metric viztype="GHOST">
+        <disp_name>Bytes received</disp_name>
+        <uniq_name>bytes_received</uniq_name>
+        <dtype>INTEGER</dtype>
+        <uom>bytes</uom>
+        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_rcvd</url>
+        <descr>Number of bytes received in point-to-point communication operations</descr>
+    </metric>
 </metrics>
