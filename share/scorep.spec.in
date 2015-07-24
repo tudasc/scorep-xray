@@ -38,7 +38,7 @@
                 {
                     ${execution}[${i}] = 0;
                     ${regionid} = ${cube::callpath::calleeid}[${i}];
-                    if ( not ( ${cube::region::name}[${regionid}] eq "TRACE BUFFER FLUSH" ) )
+                    if ( not ( ${cube::region::name}[${regionid}] =~ /^(TRACE ){0,1}BUFFER FLUSH$/ ) )
                     {
                         ${execution}[${i}] = 1;
                     };
@@ -1140,9 +1140,7 @@
                                     (
                                         ( ${cube::region::name}[${regionid}] seq "clFinish" )
                                         or
-                                        ( ${cube::region::name}[${regionid}] seq "cl_sync" )
-                                        or
-                                        ( ${cube::region::name}[${regionid}] seq "cl_flush" )
+                                        ( ${cube::region::name}[${regionid}] seq "WAIT FOR COMMAND QUEUE" )
                                     )
                                    )
                                 {
@@ -1413,7 +1411,7 @@
                 {
                     ${overhead}[${i}] = 0;
                     ${regionid} = ${cube::callpath::calleeid}[${i}];
-                    if ( ${cube::region::name}[${regionid}] eq "TRACE BUFFER FLUSH" )
+                    if ( ${cube::region::name}[${regionid}] =~ /^(TRACE ){0,1}BUFFER FLUSH$/ )
                     {
                         ${overhead}[${i}] = 1;
                     };
