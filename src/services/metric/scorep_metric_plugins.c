@@ -624,6 +624,8 @@ scorep_metric_plugins_finalize_source( void )
                 dlclose( scorep_metric_plugin_handles[ i ][ j ].dlfcn_handle );
             }
             free( scorep_metric_plugin_handles[ i ] );
+            scorep_metric_plugin_handles[ i ] = NULL;
+            num_plugins[ i ]                  = 0;
         }
 
         /* Set metric plugin usage flag */
