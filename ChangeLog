@@ -23,8 +23,9 @@ User tools and API improvements and changes:
   explicitly specified with the scorep command
 
 Bugfixes:
+- Fixes a possible segementation fault in the user adapter.
 
-------------------- Upcoming version 1.4.2 ---------------------------
+------------------- Released version 1.4.2 ---------------------------
 
 Features and improvements:
 
