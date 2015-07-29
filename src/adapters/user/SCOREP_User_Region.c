@@ -238,6 +238,10 @@ SCOREP_User_RegionByNameBegin( const char*                  name,
                                        ( void* )handle, NULL );
             }
         }
+        else
+        {
+            handle = ( SCOREP_User_RegionHandle )result->value;
+        }
         SCOREP_MutexUnlock( scorep_user_region_by_name_mutex );
     }
     else
@@ -246,6 +250,7 @@ SCOREP_User_RegionByNameBegin( const char*                  name,
         handle = ( SCOREP_User_RegionHandle )result->value;
     }
 
+    UTILS_ASSERT( handle != SCOREP_USER_INVALID_REGION );
     SCOREP_User_RegionEnter( handle );
 }
 
