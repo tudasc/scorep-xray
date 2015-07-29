@@ -29,7 +29,8 @@ if [ ! -e $RESULT_DIR/profile.cubex ]; then
   exit 1
 fi
 
-NUM_CNODES=`GREP_OPTIONS= grep -c "<cnode id=" $RESULT_DIR/profile.cubex`
+#NUM_CNODES=`GREP_OPTIONS= grep -c "<cnode id=" $RESULT_DIR/profile.cubex`
+NUM_CNODES=`@SCOREP_CUBE_BINDIR@/cube_calltree -f $RESULT_DIR/profile.cubex | wc -l`
 if [ ! x$NUM_CNODES = x6 ]; then
   echo "Expected 6 callpath definitions, but found $NUM_CNODES"
   exit 1

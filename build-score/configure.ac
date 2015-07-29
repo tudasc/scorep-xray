@@ -86,7 +86,12 @@ AC_SCOREP_SVN_CONTROLLED
 SCOREP_CUBE_READER
 SCOREP_ESTIMATOR
 
+AC_SUBST([SCOREP_CUBE_BINDIR], [${scorep_cube_bindir}])
+
 AC_SCOREP_ERROR_CODES
 
 AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([../test/profiling/run_profile_depth_limit_test.sh], \
+                [chmod +x ../test/profiling/run_profile_depth_limit_test.sh])
+
 AC_OUTPUT
