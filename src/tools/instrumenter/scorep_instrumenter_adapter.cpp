@@ -511,7 +511,7 @@ SCOREP_Instrumenter_Adapter::printDepList( SCOREP_Instrumenter_DependencyList* l
         output += " instrumentation.\n";
     }
 
-    size_t pos      = output.find( ' ', pos );
+    size_t pos      = output.find( ' ' );
     size_t prev_pos = 0;
     size_t end      = 80;
     while ( pos != std::string::npos )
