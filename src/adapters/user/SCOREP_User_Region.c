@@ -214,7 +214,8 @@ SCOREP_User_RegionByNameBegin( const char*                  name,
     if ( result == NULL )
     {
         SCOREP_MutexLock( scorep_user_region_by_name_mutex );
-        result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, NULL );
+        size_t hash_hint;
+        result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, &hash_hint );
         if ( result == NULL )
         {
             SCOREP_User_RegionInit( &handle, NULL, NULL,
@@ -230,7 +231,7 @@ SCOREP_User_RegionByNameBegin( const char*                  name,
                     scorep_user_region_by_name_hash_table,
                     ( void* )saved_name,
                     ( void* )handle,
-                    NULL );
+                    &hash_hint );
             }
             else
             {
@@ -239,7 +240,7 @@ SCOREP_User_RegionByNameBegin( const char*                  name,
                     scorep_user_region_by_name_hash_table,
                     ( void* )SCOREP_RegionHandle_GetName( handle->handle ),
                     ( void* )handle,
-                    NULL );
+                    &hash_hint );
             }
         }
         SCOREP_MutexUnlock( scorep_user_region_by_name_mutex );
