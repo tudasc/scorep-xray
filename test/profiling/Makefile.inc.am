@@ -44,7 +44,7 @@ profile_depth_limit_test_LDADD    = $(serial_libadd)
 profile_depth_limit_test_LDFLAGS  = $(serial_ldflags)
 
 EXTRA_DIST   += $(SRC_ROOT)test/profiling/run_profile_depth_limit_test.sh
-TESTS_SERIAL += $(srcdir)/../test/profiling/run_profile_depth_limit_test.sh
+TESTS_SERIAL += ../test/profiling/run_profile_depth_limit_test.sh
 
 # -------------------------------------------- clustering test
 check_PROGRAMS += clustering_test
