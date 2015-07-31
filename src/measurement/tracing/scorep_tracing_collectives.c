@@ -223,7 +223,9 @@ scorep_tracing_set_collective_callbacks( OTF2_Archive* archive )
         &scorep_tracing_otf2_collectives,
         NULL,
         ( OTF2_CollectiveContext* )SCOREP_IPC_GROUP_WORLD,
-        ( OTF2_CollectiveContext* )SCOREP_Ipc_GetFileGroup( scorep_tracing_max_procs_per_sion_file ) );
+        scorep_tracing_use_sion
+        ? ( OTF2_CollectiveContext* )SCOREP_Ipc_GetFileGroup( scorep_tracing_max_procs_per_sion_file )
+        : NULL );
     return OTF2_SUCCESS == err
            ? SCOREP_SUCCESS
            : SCOREP_ERROR_PROCESSED_WITH_FAULTS;
