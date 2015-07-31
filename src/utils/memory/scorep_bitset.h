@@ -52,6 +52,7 @@
 
 #define DO_DUMP 0
 
+#if DO_DUMP
 static void
 bitset_dump( const char* name,
              void*       bitset,
@@ -73,7 +74,6 @@ bitset_dump( const char* name,
     buf[ number_of_members ] = 0;
     printf( "%s: %s\n", name, buf );
 }
-#if DO_DUMP
 #define dump_bitset( n, b, s ) bitset_dump( n, b, s )
 #else
 #define dump_bitset( n, b, s ) do { } while ( 0 )
