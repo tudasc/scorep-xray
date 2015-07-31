@@ -209,8 +209,11 @@ SCOREP_Hashtab_Empty( const SCOREP_Hashtab* instance );
  * @param hashValPtr Optional storage where an hash value was previously stored
  *                   by a call to @a SCOREP_Hashtab_Find() with the same key @a
  *                   key. (ignored if @c NULL)
+ *
+ * @return Pointer to hash table entry of the newly inserted key;
+ *         @c NULL otherwise
  */
-void
+SCOREP_Hashtab_Entry*
 SCOREP_Hashtab_Insert( SCOREP_Hashtab* instance,
                        void*           key,
                        void*           value,

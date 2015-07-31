@@ -159,7 +159,7 @@ SCOREP_Hashtab_Empty( const SCOREP_Hashtab* instance )
 
 /*--- Inserting & removing elements ---------------------------------------*/
 
-void
+SCOREP_Hashtab_Entry*
 SCOREP_Hashtab_Insert( SCOREP_Hashtab* instance,
                        void*           key,
                        void*           value,
@@ -188,7 +188,7 @@ SCOREP_Hashtab_Insert( SCOREP_Hashtab* instance,
     if ( !item )
     {
         UTILS_ERROR_POSIX();
-        return;
+        return NULL;
     }
 
     /* Initialize item */
@@ -200,6 +200,8 @@ SCOREP_Hashtab_Insert( SCOREP_Hashtab* instance,
     /* Add item to hash table */
     instance->table[ index ] = item;
     instance->size++;
+
+    return &item->entry;
 }
 
 void

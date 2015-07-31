@@ -226,16 +226,20 @@ SCOREP_User_RegionByNameBegin( const char*                  name,
                 saved_name[ strlen( name ) ] = '\0';
                 strncpy( saved_name, name, strlen( name ) );
 
-                SCOREP_Hashtab_Insert( scorep_user_region_by_name_hash_table,
-                                       ( void* )saved_name,
-                                       ( void* )handle, NULL );
+                result = SCOREP_Hashtab_Insert(
+                    scorep_user_region_by_name_hash_table,
+                    ( void* )saved_name,
+                    ( void* )handle,
+                    NULL );
             }
             else
             {
                 /* insert handle into hashtab, handle is only a ptr hence we can cast to void* */
-                SCOREP_Hashtab_Insert( scorep_user_region_by_name_hash_table,
-                                       ( void* )SCOREP_RegionHandle_GetName( handle->handle ),
-                                       ( void* )handle, NULL );
+                result = SCOREP_Hashtab_Insert(
+                    scorep_user_region_by_name_hash_table,
+                    ( void* )SCOREP_RegionHandle_GetName( handle->handle ),
+                    ( void* )handle,
+                    NULL );
             }
         }
         SCOREP_MutexUnlock( scorep_user_region_by_name_mutex );
