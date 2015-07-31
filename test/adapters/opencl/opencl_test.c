@@ -165,7 +165,7 @@ get_devices()
         {
             OPENCL_CHECK( clGetPlatformInfo( clPlatforms[ i ], CL_PLATFORM_NAME,
                                              256, platformName, NULL ) );
-            printf( "%d: %s\n", i, platformName );
+            printf( "%zu: %s\n", i, platformName );
         }
 
         free( platformName );
