@@ -52,9 +52,6 @@ typedef SCOREP_AnyHandle SCOREP_SystemTreeNodeHandle;
 typedef SCOREP_AnyHandle SCOREP_SystemTreeNodePropertyHandle;
 
 
-typedef SCOREP_AnyHandle SCOREP_SystemTreeNodeDomainHandle;
-
-
 typedef SCOREP_AnyHandle SCOREP_LocationGroupHandle;
 
 
