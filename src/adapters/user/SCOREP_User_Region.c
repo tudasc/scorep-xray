@@ -238,17 +238,12 @@ SCOREP_User_RegionByNameBegin( const char*                  name,
                                        ( void* )handle, NULL );
             }
         }
-        else
-        {
-            handle = ( SCOREP_User_RegionHandle )result->value;
-        }
         SCOREP_MutexUnlock( scorep_user_region_by_name_mutex );
     }
-    else
-    {
-        /* if handle is valid, we can just use it */
-        handle = ( SCOREP_User_RegionHandle )result->value;
-    }
+    UTILS_BUG_ON( result == NULL, "Could not create region-by-name: '%s'", name );
+
+    /* handle is now valid, we can just use it */
+    handle = ( SCOREP_User_RegionHandle )result->value;
 
     UTILS_ASSERT( handle != SCOREP_USER_INVALID_REGION );
     SCOREP_User_RegionEnter( handle );
@@ -265,18 +260,15 @@ SCOREP_User_RegionByNameEnd( const char* name )
 
     UTILS_DEBUG_ENTRY( "end region by name: %s", name );
 
-    /* if no hashtab had been previously initialized, exit with error*/
-    UTILS_BUG_ON( scorep_user_region_by_name_hash_table == NULL, "No hash table initialized, no region to end" ); /* Error */
-
     /* search for handle in hashtab */
     SCOREP_Hashtab_Entry* result = SCOREP_Hashtab_Find( scorep_user_region_by_name_hash_table, ( void* )name, NULL );
 
     /* if handle not found, end-region without begin-region */
-    UTILS_BUG_ON( !result, "Trying to close a region never opened" ); /* Error */
+    UTILS_BUG_ON( !result, "Trying to leave a region-by-name never entered: '%s'", name ); /* Error */
 
     SCOREP_User_RegionHandle handle = result->value;
 
-    UTILS_BUG_ON( handle == SCOREP_USER_INVALID_REGION, "Trying to close a uninitialized region" );
+    UTILS_BUG_ON( handle == SCOREP_USER_INVALID_REGION, "Trying to leave an uninitialized region-by-name: '%s'", name );
 
     SCOREP_User_RegionEnd( handle );
 }
