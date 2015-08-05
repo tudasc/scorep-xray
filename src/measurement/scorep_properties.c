@@ -50,7 +50,6 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_DefinitionHandles.h>
 
-#include <SCOREP_Definitions.h>
 #include "scorep_types.h"
 #include "scorep_status.h"
 

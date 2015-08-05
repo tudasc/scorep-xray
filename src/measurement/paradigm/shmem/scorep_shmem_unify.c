@@ -32,7 +32,6 @@
 #include <SCOREP_Shmem.h>
 
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Definitions.h>
 #include <SCOREP_Memory.h>
 #include <scorep_status.h>
 #include <scorep_ipc.h>
