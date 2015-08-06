@@ -42,7 +42,7 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
                        [scorep_compiler_instrumentation_cppflags=""],
                        [scorep_compiler_instrumentation_cppflags="-g -finstrument-functions"
                         scorep_compiler_instrumentation_needs_symbol_table="yes"])],
-    [cray],     [scorep_compiler_instrumentation_cppflags="-G2 -hfunc_trace"
+    [cray],     [scorep_compiler_instrumentation_cppflags="-hfunc_trace"
                  scorep_compiler_instrumentation_ldflags="-Wl,-u,__pat_tp_func_entry,-u,__pat_tp_func_return"
                  scorep_compiler_instrumentation_needs_symbol_table=yes],
     [fujitsu],  [scorep_compiler_instrumentation_cppflags="-g -Ntl_vtrc -Ntl_notrt"
