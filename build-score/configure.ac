@@ -86,7 +86,13 @@ AC_SCOREP_SVN_CONTROLLED
 SCOREP_CUBE_READER
 SCOREP_ESTIMATOR
 
-AC_SUBST([SCOREP_CUBE_BINDIR], [${scorep_cube_bindir}])
+AS_IF([test -n "${scorep_cube_bindir}"],
+      [AC_SUBST([SCOREP_CUBE_BINDIR], [${scorep_cube_bindir}])],
+      [AS_IF([test "${afs_cross_compiling}" = xyes],
+             [AC_SUBST([SCOREP_CUBE_BINDIR], [../vendor/cube/build-frontend])],
+             [AC_SUBST([SCOREP_CUBE_BINDIR], [../vendor/cube/build-backend])
+      ])
+])
 
 AC_SCOREP_ERROR_CODES
 
