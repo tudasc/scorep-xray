@@ -20,7 +20,9 @@ User tools and API improvements and changes:
   thread-safe execution of the measurement system.
 - POMP user instrumentation is no longer automatically activated
   together with OpenMP instrumentation. The --pomp flag has to be
-  explicitly specified with the scorep command
+  explicitly specified with the scorep command.
+- On Cray systems, compiler instrumentation does not add '-G2' option
+  anymore, which disables some optimizations.
 
 Bugfixes:
 - Fixes a possible segementation fault in the user adapter.
