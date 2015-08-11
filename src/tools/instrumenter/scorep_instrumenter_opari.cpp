@@ -141,8 +141,10 @@ SCOREP_Instrumenter_OpariAdapter::checkOption( std::string arg )
 bool
 SCOREP_Instrumenter_OpariAdapter::isEnabled( void )
 {
-    checkDefaults();
-    return m_usage == enabled;
+    return ( m_parallel == enabled ) ||
+           ( m_openmp == enabled ) ||
+           ( m_pomp == enabled ) ||
+           ( m_usage == enabled );
 }
 
 std::string
@@ -310,7 +312,6 @@ SCOREP_Instrumenter_OpariAdapter::setTpdMode( const bool use_tpd )
 void
 SCOREP_Instrumenter_OpariAdapter::checkDefaults( void )
 {
-    SCOREP_Instrumenter_Adapter::checkDefaults();
     if ( m_openmp == detect )
     {
         m_openmp = disabled;
@@ -330,6 +331,7 @@ SCOREP_Instrumenter_OpariAdapter::checkDefaults( void )
     if ( ( m_parallel == enabled ) || ( m_pomp == enabled ) )
     {
         m_usage = enabled;
+        SCOREP_Instrumenter_Adapter::checkDefaults();
     }
 }
 
