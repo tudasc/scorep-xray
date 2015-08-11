@@ -180,6 +180,12 @@ private:
     void
     create_subsystem_initialization( void );
 
+    /**
+       Creates the object file name.
+     */
+    std::string
+    create_object_name( const std::string& sourceFile );
+
     /* ***************************************************** Private members */
 private:
 

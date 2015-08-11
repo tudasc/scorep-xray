@@ -63,6 +63,8 @@
 #include "scorep_instrumenter_utils.hpp"
 #include "scorep_instrumenter_mutex.hpp"
 
+#include <sys/time.h>
+
 void
 print_help();
 
@@ -184,17 +186,7 @@ SCOREP_Instrumenter::Run( void )
                 }
 
                 // Determine object file name
-                if ( ( !m_command_line.isLinking() ) &&
-                     ( m_command_line.getOutputName() != "" ) &&
-                     ( m_command_line.getInputFileNumber() == 1 ) )
-                {
-                    object_file = m_command_line.getOutputName();
-                }
-                else
-                {
-                    object_file = remove_extension(
-                        remove_path( *current_file ) ) + ".o";
-                }
+                object_file = create_object_name( *current_file );
 
                 /* Setup the config tool calls for the new input file. This
                    will already setup the compiler and user instrumentation
@@ -305,6 +297,38 @@ SCOREP_Instrumenter::getConfigBaseCall( void )
 /* ****************************************************************************
  *                                                              private methods
  * ***************************************************************************/
+std::string
+SCOREP_Instrumenter::create_object_name( const std::string& sourceFile )
+{
+    std::string object_file;
+    if ( ( !m_command_line.isLinking() ) &&
+         ( m_command_line.getOutputName() != "" ) &&
+         ( m_command_line.getInputFileNumber() == 1 ) )
+    {
+        object_file = m_command_line.getOutputName();
+    }
+    else
+    {
+        object_file = remove_extension(
+            remove_path( sourceFile ) ) + ".o";
+        // If we are also linking, we want to add a timestamp
+        // to the object file to avoid name clashes if two source files
+        // from different directories have the same name.
+        if ( m_command_line.isLinking() )
+        {
+            struct timeval tv;
+            gettimeofday( &tv, NULL );
+            std::stringstream new_name;
+            new_name << remove_extension( object_file )
+                     << "_" << tv.tv_sec
+                     << "_" << tv.tv_usec
+                     << get_extension( object_file );
+            object_file = new_name.str();
+        }
+    }
+    return object_file;
+}
+
 void
 SCOREP_Instrumenter::addTempFile( const std::string& filename )
 {
