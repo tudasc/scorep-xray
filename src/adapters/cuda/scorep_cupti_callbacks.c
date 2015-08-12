@@ -2373,7 +2373,7 @@ scorep_cupti_callbacks_init( void )
                 SCOREP_SourceFileHandle scorep_cuda_sync_file_handle =
                     SCOREP_Definitions_NewSourceFile( "CUDA_SYNC" );
                 cuda_sync_region_handle = SCOREP_Definitions_NewRegion(
-                    "cudaSynchronize", NULL, scorep_cuda_sync_file_handle,
+                    "DEVICE SYNCHRONIZE", NULL, scorep_cuda_sync_file_handle,
                     0, 0, SCOREP_PARADIGM_CUDA, SCOREP_REGION_IMPLICIT_BARRIER );
             }
 

@@ -199,7 +199,7 @@ scorep_cupti_activity_init( void )
                 SCOREP_Definitions_NewSourceFile( "CUDA_FLUSH" );
 
             scorep_cupti_buffer_flush_region_handle =
-                SCOREP_Definitions_NewRegion( "flush_cupti_activity_buffer",
+                SCOREP_Definitions_NewRegion( "BUFFER FLUSH",
                                               NULL,
                                               cupti_buffer_flush_file_handle,
                                               0, 0, SCOREP_PARADIGM_CUDA,

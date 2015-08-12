@@ -112,7 +112,7 @@ scorep_cupti_init( void )
                 SCOREP_SourceFileHandle file_handle =
                     SCOREP_Definitions_NewSourceFile( "CUDA_IDLE" );
                 scorep_cupti_idle_region_handle = SCOREP_Definitions_NewRegion(
-                    "gpu_idle", NULL, file_handle,
+                    "GPU IDLE", NULL, file_handle,
                     0, 0, SCOREP_PARADIGM_CUDA, SCOREP_REGION_ARTIFICIAL );
             }
             else if ( scorep_cuda_record_kernels )
@@ -120,7 +120,7 @@ scorep_cupti_init( void )
                 SCOREP_SourceFileHandle file_handle =
                     SCOREP_Definitions_NewSourceFile( "CUDA_IDLE" );
                 scorep_cupti_idle_region_handle = SCOREP_Definitions_NewRegion(
-                    "compute_idle", NULL, file_handle,
+                    "COMPUTE IDLE", NULL, file_handle,
                     0, 0, SCOREP_PARADIGM_CUDA, SCOREP_REGION_ARTIFICIAL );
             }
             else
