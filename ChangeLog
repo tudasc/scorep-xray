@@ -23,6 +23,8 @@ User tools and API improvements and changes:
   explicitly specified with the scorep command.
 - On Cray systems, compiler instrumentation does not add '-G2' option
   anymore, which disables some optimizations.
+- The instrumenter now warns the user, if the provided instrument filter
+  wont be used by the active instrumentations.
 
 Bugfixes:
 - Fixes a possible segementation fault in the user adapter.

@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -32,6 +35,9 @@ class SCOREP_Instrumenter_CompilerAdapter : public SCOREP_Instrumenter_Adapter
 {
 public:
     SCOREP_Instrumenter_CompilerAdapter( void );
+
+    bool
+    supportInstrumentFilters( void ) const;
 
     virtual std::string
     getConfigToolFlag( SCOREP_Instrumenter_CmdLine& cmdLine );

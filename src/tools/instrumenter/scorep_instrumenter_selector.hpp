@@ -7,6 +7,9 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -253,6 +256,12 @@ public:
      */
     static void
     checkDefaults( void );
+
+    /**
+     * Does the selected paradigm make use of the instrumentation filter?
+     */
+    static bool
+    supportInstrumentFilters( void );
 
     /**
      * Prints a list of selected paradigms.

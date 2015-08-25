@@ -130,6 +130,12 @@ public:
     checkDefaults( void );
 
     /**
+     * Does this adapter make use of the instrumentation filter?
+     */
+    virtual bool
+    supportInstrumentFilters( void ) const;
+
+    /**
      * Prints the default help output for this adapter.
      */
     virtual void
@@ -153,7 +159,7 @@ public:
      * Returns whether this adapter is enabled.
      */
     virtual bool
-    isEnabled( void );
+    isEnabled( void ) const;
 
     /**
      * This function performs pre-compiling instrumentation activities.
@@ -379,6 +385,12 @@ public:
      */
     static void
     checkAllDefaults( void );
+
+    /**
+     * Returns true if any of the selected adapters support the instrument filter.
+     */
+    static bool
+    supportAnyInstrumentFilters( void );
 
     /**
      * Prints a space separated list of the names of all enabled adapters.

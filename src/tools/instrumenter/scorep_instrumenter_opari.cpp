@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -139,7 +139,7 @@ SCOREP_Instrumenter_OpariAdapter::checkOption( std::string arg )
 }
 
 bool
-SCOREP_Instrumenter_OpariAdapter::isEnabled( void )
+SCOREP_Instrumenter_OpariAdapter::isEnabled( void ) const
 {
     return ( m_parallel == enabled ) ||
            ( m_openmp == enabled ) ||

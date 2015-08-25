@@ -4,6 +4,9 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -73,6 +76,12 @@ public:
      */
     virtual void
     checkDefaults( void );
+
+    /**
+     * Does this paradigm make use of the instrumentation filter?
+     */
+    virtual bool
+    supportInstrumentFilters( void ) const;
 
     /**
      * Prints the default help output.

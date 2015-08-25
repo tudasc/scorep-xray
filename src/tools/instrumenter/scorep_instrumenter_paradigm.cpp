@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -93,6 +93,12 @@ SCOREP_Instrumenter_Paradigm::checkDefaults( void )
     }
 }
 
+
+bool
+SCOREP_Instrumenter_Paradigm::supportInstrumentFilters( void ) const
+{
+    return false;
+}
 
 void
 SCOREP_Instrumenter_Paradigm::printHelp( void )

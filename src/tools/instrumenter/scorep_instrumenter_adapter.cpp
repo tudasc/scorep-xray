@@ -4,7 +4,7 @@
  * Copyright (c) 2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -115,9 +115,15 @@ SCOREP_Instrumenter_Adapter::checkDefaults( void )
 }
 
 bool
-SCOREP_Instrumenter_Adapter::isEnabled( void )
+SCOREP_Instrumenter_Adapter::isEnabled( void ) const
 {
     return m_usage == enabled;
+}
+
+bool
+SCOREP_Instrumenter_Adapter::supportInstrumentFilters( void ) const
+{
+    return false;
 }
 
 void
@@ -332,6 +338,23 @@ SCOREP_Instrumenter_Adapter::checkAllDefaults( void )
             adapter->second->checkDefaults();
         }
     }
+}
+
+bool
+SCOREP_Instrumenter_Adapter::supportAnyInstrumentFilters( void )
+{
+    SCOREP_Instrumenter_AdapterList::const_iterator adapter_it;
+    for ( adapter_it = m_adapter_list.begin();
+          adapter_it != m_adapter_list.end();
+          adapter_it++ )
+    {
+        const SCOREP_Instrumenter_Adapter& adapter = *adapter_it->second;
+        if ( adapter.isEnabled() && adapter.supportInstrumentFilters() )
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void

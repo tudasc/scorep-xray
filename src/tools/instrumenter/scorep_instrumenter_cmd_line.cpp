@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -771,6 +771,15 @@ SCOREP_Instrumenter_CmdLine::check_parameter( void )
 
     /* Check whether the selected paradigms are supported */
     SCOREP_Instrumenter_Selector::checkAllSupported();
+
+    /* Print a warning if an instrumentation filter was passed, but no active adapter
+     * or paradigm supports the filter */
+    if ( m_filters.size() > 0
+         && ( !SCOREP_Instrumenter_Selector::supportInstrumentFilters()
+              && !SCOREP_Instrumenter_Adapter::supportAnyInstrumentFilters() ) )
+    {
+        std::cerr << "WARNING: Instrument filter(s) will be ignored." << std::endl;
+    }
 
     /* If this is a dry run, enable printing out commands, if it is not already */
     if ( m_is_dry_run && m_verbosity < 1 )

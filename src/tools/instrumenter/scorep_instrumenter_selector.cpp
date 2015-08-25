@@ -7,7 +7,7 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -398,6 +398,23 @@ SCOREP_Instrumenter_Selector::checkDefaults( void )
             ( *selector )->m_current_selection->checkDefaults();
         }
     }
+}
+
+bool
+SCOREP_Instrumenter_Selector::supportInstrumentFilters( void )
+{
+    SCOREP_Instrumenter_SelectorList::const_iterator selector;
+    for ( selector = m_selector_list.begin();
+          selector != m_selector_list.end();
+          selector++ )
+    {
+        if ( ( *selector )->m_current_selection
+             && ( *selector )->m_current_selection->supportInstrumentFilters() )
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void

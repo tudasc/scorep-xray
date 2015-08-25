@@ -4,7 +4,7 @@
  * Copyright (c) 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -41,7 +41,7 @@ public:
     checkOption( std::string arg );
 
     virtual bool
-    isEnabled( void );
+    isEnabled( void ) const;
 
     virtual void
     printHelp( void );
