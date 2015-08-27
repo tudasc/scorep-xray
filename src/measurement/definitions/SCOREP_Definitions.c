@@ -241,6 +241,7 @@ SCOREP_Definitions_Finalize( void )
         free( scorep_unified_definition_manager->marker.hash_table );
         free( scorep_unified_definition_manager->parameter.hash_table );
         free( scorep_unified_definition_manager->callpath.hash_table );
+        free( scorep_unified_definition_manager->property.hash_table );
         free( scorep_unified_definition_manager->attribute.hash_table );
         free( scorep_unified_definition_manager->location_property.hash_table );
     }
