@@ -146,7 +146,7 @@ typedef enum
 {
     SCOREP_PROFILE_FLAG_MPI_IN_SUBTREE = 1, /**< Set if the subtree contains MPI calls */
     SCOREP_PROFILE_FLAG_IS_FORK_NODE   = 2, /**< Set if another thread was forked here */
-    SCOREP_PROFILE_FLAG_IN_UNTIED_TASK = 3  /**< Set if in untied task */
+    SCOREP_PROFILE_FLAG_IN_UNTIED_TASK = 4  /**< Set if in untied task */
 } scorep_profile_node_flag;
 
 /**

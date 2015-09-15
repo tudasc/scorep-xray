@@ -29,6 +29,7 @@ User tools and API improvements and changes:
 Bugfixes:
 - Fixes a possible segementation fault in the user adapter.
 - Fixes an unitialized variable in the instrumenter.
+- Fixed possible mistreatment of a profile node as being in an untied task
 
 ------------------- Released version 1.4.2 ---------------------------
 
