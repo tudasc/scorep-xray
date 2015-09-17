@@ -101,7 +101,7 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
     static SCOREP_RegionHandle root_region = SCOREP_INVALID_REGION;
     if ( root_region == SCOREP_INVALID_REGION )
     {
-        root_region = SCOREP_Definitions_NewRegion( "task_root",
+        root_region = SCOREP_Definitions_NewRegion( "TASKS",
                                                     NULL,
                                                     SCOREP_INVALID_SOURCE_FILE,
                                                     SCOREP_INVALID_LINE_NO,
@@ -120,7 +120,7 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
                                                 NULL,
                                                 SCOREP_PROFILE_NODE_TASK_ROOT,
                                                 data,
-                                                0, false );
+                                                UINT64_MAX, false );
     }
 
     /* move task tree to task_root */
@@ -128,6 +128,11 @@ chroot_tasks( SCOREP_Profile_LocationData* location,
     scorep_profile_add_child( task_root, task );
     scorep_profile_merge_node_inclusive( task_root, task );
 
+    /* give the task root the timestamp of the first task */
+    if ( task->first_enter_time < task_root->first_enter_time )
+    {
+        task_root->first_enter_time = task->first_enter_time;
+    }
     return task_root;
 }
 
