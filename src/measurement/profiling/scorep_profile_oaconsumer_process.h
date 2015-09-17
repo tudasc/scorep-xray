@@ -46,24 +46,25 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Definitions.h>
 
-/**Due to missing time metric definition, this will be created OA processing time and sotred in transmittion buffer.
+/**Due to missing time metric definition, this will be created OA processing time and sorted in transmission buffer.
  * The index of time metric will go below  OACONSUMER_METRIC_DEFINITION_OFFSET. All registered metrics will start after this offset.
- * Later additional metrics could be computed while profile trasformation and will also be stored below the offset*/
+ * Later additional metrics could be computed while profile transformation and will also be stored below the offset
+ */
 #define OACONSUMER_METRIC_DEFINITION_OFFSET                     1
 
 /**
    Contains index for the call-path profile of the OA phase region shared between all threads. It is constructed at the end
-   of Online Acess phase in order to ease transformation of and access to the call-path profile measurements
-   for transfering them over Onaline Access Interface. Shared index consists of the merged region definition index,
+   of Online Access phase in order to ease transformation of and access to the call-path profile measurements
+   for transferring them over Online Access Interface. Shared index consists of the merged region definition index,
    number of region definitions, number of flat profile measurements, number of counter definitions and pointers
-   to transmittion buffers for region definitions, flat profile and counter definitions. While constructing shared
+   to transmission buffers for region definitions, flat profile and counter definitions. While constructing shared
    index merging of the region definitions is performed. This preprocessing
    assigns file name and the line numbers of the parent region (according to the call-tree hierarchy) to the
    regions definitions, which are missing this data when registered (e.g. MPI regions or OMP implicit barriers).
    Index is stored in form of a hash-tables: merged region definitions index where the key is a
    unique identifier of a merged region definition (region id, parent region id). The payload of the table
    is an integer index from 0 to num_def_regions_merged of a definition. This index is used for placement of
-   the definitions into OA transmition buffers and cross-referencing between buffered definitions and measurements on the receive side.
+   the definitions into OA transmission buffers and cross-referencing between buffered definitions and measurements on the receive side.
 
    Here is a list which data this field contains:
    <dl>
@@ -102,12 +103,12 @@ typedef struct
 
 /**
    Contains index for the call-path profile of the OA phase region of one thread. It is constructed at the end
-   of Online Acess phase in order to ease transformation of and access to the call-path profile measurements
-   for transfering them over Onaline Access Interface. While constructing the index flattening of the profile
-   is perfomed. The preprocessing summs up profile measurements of the call-paths having the same region definition.
+   of Online Access phase in order to ease transformation of and access to the call-path profile measurements
+   for transferring them over Online Access Interface. While constructing the index flattening of the profile
+   is performed. The preprocessing sums up profile measurements of the call-paths having the same region definition.
    Index is stored in form of a hash-table: flat profile measurements index where the key is a
    unique identifier of a flat profile measurement (parent region id, region id and counter id). The payload of the table
-   is an integer index from 0 to num_static_measurements. This index is used for placement of the measurements into OA transmition
+   is an integer index from 0 to num_static_measurements. This index is used for placement of the measurements into OA transmission
    buffer and cross-referencing between buffered definitions and measurements on the receive side.
 
    Here is a list which data this field contains:
