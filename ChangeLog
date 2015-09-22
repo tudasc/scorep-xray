@@ -1,6 +1,7 @@
 ------------------- Upcoming version 1.5 -----------------------------
 
 Major features:
+
 - Support for OPARI2 2.0 was integrated. OPARI2 is now more
   flexible to enable support for other pragma/directive based
   paradigms.
@@ -27,6 +28,7 @@ User tools and API improvements and changes:
   wont be used by the active instrumentations.
 
 Bugfixes:
+
 - Fixes a possible segementation fault in the user adapter.
 - Fixes an unitialized variable in the instrumenter.
 - Fixed possible mistreatment of a profile node as being in an untied task
