@@ -7,6 +7,7 @@ Major features:
   paradigms.
 
 Features and improvements:
+
 - When using compiler instrumentation with GNU (not the gcc-plugin but
   the -finstrument-functions variant), Cray, or Fujitsu compilers, one
   can provide a file containing the symbols to be instrumented. This is
