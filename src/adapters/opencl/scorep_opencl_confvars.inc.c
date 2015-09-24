@@ -19,7 +19,6 @@
 
 
 uint64_t scorep_opencl_features;
-size_t   scorep_opencl_buffer_size;
 size_t   scorep_opencl_queue_size;
 
 
@@ -32,7 +31,6 @@ static const SCOREP_ConfigType_SetEntry scorep_opencl_enable_groups[] =
     { "api",     SCOREP_OPENCL_FEATURE_API            },
     { "kernel",  SCOREP_OPENCL_FEATURE_KERNEL         },
     { "memcpy",  SCOREP_OPENCL_FEATURE_MEMCPY         },
-    { "sync",    SCOREP_OPENCL_FEATURE_SYNC           },
     { "default", SCOREP_OPENCL_FEATURES_DEFAULT       },
     { "1",       SCOREP_OPENCL_FEATURES_DEFAULT       },
     { "yes",     SCOREP_OPENCL_FEATURES_DEFAULT       },
@@ -57,19 +55,8 @@ static SCOREP_ConfigVariable scorep_opencl_configs[] =
         "  api:            OpenCL runtime API\n"
         "  kernel:         OpenCL kernels\n"
         "  memcpy:         OpenCL buffer reads/writes\n"
-        /*"  sync:           Record implicit and explicit OpenCL synchronization\n"*/
-        "  memusage:       Record OpenCL memory (de)allocations as a counter\n"
         "  default/yes/1:  OpenCL API and GPU activities\n"
         "  no:             Disable OpenCL measurement"
-    },
-    {
-        "buffer",
-        SCOREP_CONFIG_TYPE_SIZE,
-        &scorep_opencl_buffer_size,
-        NULL,
-        "1M",
-        "Total memory in bytes for the OpenCL record buffer",
-        ""
     },
     {
         "buffer_queue",

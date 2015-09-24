@@ -202,7 +202,7 @@ get_devices()
         {
             OPENCL_CHECK( clGetDeviceInfo( clDevices[ i ], CL_DEVICE_NAME, 256,
                                            deviceName, NULL ) );
-            printf( "%d: %s\n", i, deviceName );
+            printf( "%zu: %s\n", i, deviceName );
         }
 
         free( deviceName );
@@ -300,7 +300,7 @@ init_opencl_program( const char* sProgramStr, size_t deviceID, cl_uint deviceCou
             for ( i = 0; i < deviceCount; i++ )
             {
                 binaries[ i ][ binarySizes[ i ] ] = '\0';
-                fprintf( stderr, "Program %d\n %s\n", i, binaries[ i ] );
+                fprintf( stderr, "Program %zu\n %s\n", i, binaries[ i ] );
             }
 
             for ( i = 0; i < deviceCount; i++ )

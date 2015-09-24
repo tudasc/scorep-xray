@@ -54,15 +54,6 @@ do
 
     for mcpy in "" ",memcpy"
     do
-
-      for synchr in "" ",sync"
-      do
-
-        # continue if neither kernel nor memory copy is enabled
-        if [ "$synchr" = ",sync" -a "x$kernel" = "x" -a "x$mcpy" = "x" ]; then
-          continue
-        fi
-
         features=${openclapi}
 
         if [ "x$features" = "x" -a "$kernel" = ",kernel" ]; then
@@ -73,7 +64,7 @@ do
         if [ "x$features" = "x" -a "${mcpy}" = ",memcpy" ]; then
           mcpy="memcpy"
         fi
-        features="${features}${mcpy}${synchr}"
+        features="${features}${mcpy}"
 
         # Remove old result dir (if any)
         rm -rf $RESULT_DIR
@@ -93,7 +84,6 @@ do
             exit $res
         fi
 
-      done #sync
     done #memcpy
   done #kernel
 done #openclapi
