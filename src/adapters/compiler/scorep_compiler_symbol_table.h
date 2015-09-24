@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -52,5 +52,14 @@ scorep_compiler_load_symbols( void );
 void
 scorep_compiler_process_symbol_table( const char*                       executable,
                                       scorep_compiler_process_symbol_cb processSymbol );
+
+
+/**
+ * @param nmFilename Filename of file that contains nm -l output.
+ * @param processSymbol Callback for processing individual symbols.
+ */
+void
+scorep_compiler_parse_nm_file( const char*                       nmFilename,
+                               scorep_compiler_process_symbol_cb processSymbol );
 
 #endif // SCOREP_COMPILER_SYMBOL_TABLE_H

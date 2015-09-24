@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2012, 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -46,9 +46,14 @@
 char* scorep_compiler_executable = NULL;
 
 /**
+   Filename of file containing nm -l output for compiler instrumentation.
+ */
+char* scorep_compiler_nm_symbols = NULL;
+
+/**
    Configuration variables for the compiler adapter.
    Current configuration variables are:
-   @li executable: Executable of the application. Preferrably, with full path. It is used
+   @li executable: Executable of the application. Preferably, with full path. It is used
                    by some compiler adapters (GNU) to evaluate the symbol table.
  */
 SCOREP_ConfigVariable scorep_compiler_configs[] = {
@@ -59,9 +64,22 @@ SCOREP_ConfigVariable scorep_compiler_configs[] = {
         NULL,
         "",
         "Executable of the application",
-        "File name, preferrrably with full path, of the application's executable.\n"
+        "File name, preferably with full path, of the application's executable.\n"
         "It is used for evaluating the symbol table of the application, which is\n"
         "required by some compiler adapters."
+    },
+    {
+        "nm_symbols",
+        SCOREP_CONFIG_TYPE_STRING,
+        &scorep_compiler_nm_symbols,
+        NULL,
+        "",
+        "Application's symbol table obtained via \'nm -l\' for compiler instrumentation",
+        "File name, preferably with full path, of <file> that contains the\n"
+        "<application>'s symbol table that was obtained by the command\n"
+        "\'nm -l <application> 2> /dev/null > <file>\'. Only needed if\n"
+        "generating the file at measurement initialization time fails, e.g.,\n"
+        "if using the 'system()' command from the compute nodes isn't possible.\n"
     },
     SCOREP_CONFIG_TERMINATOR
 };
@@ -79,11 +97,13 @@ compiler_subsystem_register( size_t subsystem_id )
 
     scorep_compiler_subsystem_id = subsystem_id;
 
-    return SCOREP_ConfigRegister( "", scorep_compiler_configs );
+    return SCOREP_ConfigRegisterCond( "",
+                                      scorep_compiler_configs,
+                                      HAVE_BACKEND_COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE );
 }
 
 /**
-   Called on dereigstration of the compiler adapter. Currently, no action is performed
+   Called on deregistration of the compiler adapter. Currently, no action is performed
    on deregistration.
  */
 static void

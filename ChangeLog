@@ -7,6 +7,13 @@ Major features:
   paradigms.
 
 Features and improvements:
+- When using compiler instrumentation with GNU (not the gcc-plugin but
+  the -finstrument-functions variant), Cray, or Fujitsu compilers, one
+  can provide a file containing the symbols to be instrumented. This is
+  useful when obtaining symbols via 'nm' or 'libbfd' is not an option,
+  e.g, on Blue Gene systems. The symbol file needs to be specified in
+  the environment variable SCOREP_NM_SYMBOLS. The accepted format is
+  as in 'nm -l <executable>'.
 
 User tools and API improvements and changes:
 
@@ -31,7 +38,11 @@ Bugfixes:
 
 - Fixes a possible segementation fault in the user adapter.
 - Fixes an unitialized variable in the instrumenter.
-- Fixed possible mistreatment of a profile node as being in an untied task
+- Fixed possible mistreatment of a profile node as being in an untied
+  task.
+- Fix bug in obtaining executable names longer than 512 characters
+  when using the GNU compiler adapter (applies also to Cray and
+  Fujitsu compilers).
 
 ------------------- Released version 1.4.2 ---------------------------
 
