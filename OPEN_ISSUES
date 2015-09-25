@@ -323,10 +323,9 @@ various Score-P components.
     information. Depending on the compiler this may turn off
     optimization unless optimization flags are explicitly specified.
 
-  - Applications using an autotools-based buildsystem should add the
-    option "--disable-dependency-tracking" to the usual configure
-    call. Score-P is added only at make time like "make CC="scorep
-    <your-CC>" (same for CXX, F77, and FC)
+  - For autotools or CMake based buildsystmes, please consult the usage
+    of `scorep-wrapper` to learn about the recommended way to apply
+    instrumentation.
 
   - Literal file-filter rules like "INCLUDE bt.f" for Fortran files
     that will be processed by OPARI2 (i.e., files containing OpenMP or
@@ -337,14 +336,6 @@ various Score-P components.
     disabled on BlueGene systems.
 
   - Rusage-based metrics are not supported on BlueGene systems.
-
-  - Using scorep as a compiler/linker preposition is sometimes not
-    supported by application build systems, e.g., CMake.  In such
-    cases, it may be appropriate to create scripts which invoke the
-    compiler/linker with the scorep preposition defined.  For example,
-    specify scorep_ftn as the compiler and linker during application
-    configuration, where this is a script executing your Fortran
-    compiler as "scorep ftn $*".
 
   - COBI binary instrumentation is currently disabled due to changes
     in Score-P's linking process that now passes more libraries to

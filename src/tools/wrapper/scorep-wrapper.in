@@ -1,0 +1,255 @@
+#!/bin/sh
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2015,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2015,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+set -e
+
+argv0=${0##*/}
+
+# By default, we install new links into the directory where this script resides
+bindir=${0%/*}
+: ${bindir:=.}
+bindir="$(cd "$bindir"; pwd)"
+
+LN_S="@LN_S@"
+if test "$LN_S" = "@""LN_S""@"
+then
+    LN_S="ln -s"
+fi
+
+usage()
+{
+    printf "Usage: %s --create COMPILER [BINDIR]\n" "$argv0"
+    test $# -gt 0 &&
+    {
+        printf "Try '%s --help' for more information.\n" "$argv0"
+        return
+    }
+    printf "       scorep-<compiler> [COMPILER_FLAGS...]\n"
+
+    cat <<EOH
+
+DESCRIPTION
+
+    The scorep-wrapper script instances like 'scorep-gcc' (see below
+    for a list of provided instances) are intended to simplify configuration
+    and instrumentation for applications where the usual means of
+    instrumentation, i.e., prefixing the compilation command with 'scorep',
+    does not work out of the box.  This applies e.g., to applications that
+    use autotools or CMake.
+
+    The intended usage of the wrapper instances is to replace the
+    application's compiler and linker with the corresponding wrapper at
+    configuration time so that they will be used at build time.  As compiler
+    and linker commands are usually assigned to build variables like 'CC',
+    'CXX', or 'F77', e.g., CC=gcc, using the corresponding wrapper is as
+    simple as giving CC a different value: CC=scorep-gcc.
+
+    E.g., say the original compile command is
+
+    $ gcc COMPILER_FLAGS...
+
+    Using the wrapper instead
+
+    $ scorep-gcc COMPILER_FLAGS...
+
+    will expand to the following call:
+
+    $ scorep \$SCOREP_WRAPPER_INSTRUMENTER_FLAGS \\
+        gcc \$SCOREP_WRAPPER_COMPILER_FLAGS \\
+        COMPILER_FLAGS...
+
+    Used at build time, this expansion performs the desired Score-P
+    instrumentation.
+
+    The variables SCOREP_WRAPPER_INSTRUMENTER_FLAGS and
+    SCOREP_WRAPPER_COMPILER_FLAGS can be used to pass extra arguments to
+    scorep and to the compiler respectively.  Please see the EXAMPLES
+    section below for details.
+
+    If the application's build system includes a configure step (like in
+    autotools or CMake based projects) the expansion needs to be prevented
+    at this stage (the configure step compiles and runs lots of small test
+    programs; instrumenting these would in almost all cases result in
+    failure of the configuration).  To do so, one needs to set the variable
+    'SCOREP_WRAPPER_OFF' to an non-empty value when invoking the configure
+    command.  The wrapper command from above will then expand to the
+    original compile command:
+
+    $ gcc COMPILER_FLAGS...
+
+    See also the EXAMPLES section below.
+
+WRAPPER INSTANCES
+
+    This installation provides these default wrapper instances:
+
+EOH
+    printf "        %s\n" @SCOREP_WRAPPER_NAMES@
+
+    cat <<EOH
+
+    Additional wrapper instances can be created with '$argv0 --create'.
+
+EXAMPLES
+
+  * The most prominent use case is the CMake build system.  As CMake
+    prohibits to change the compiler after the CMake step [1] and it also
+    prohibits that the compiler variable value includes any flags (which
+    renders the usual prefixing "scorep gcc" to a non-functional value).
+    One needs to use a wrapper script which introduces the Score-P
+    instrumenter as compiler replacement as early as possible so that they
+    are hardcoded in the at CMake time generated files.  Apart from that one
+    needs to make sure that the wrappers don't perform their usual
+    instrumentation at this early stage or else the configuration/CMake step
+    is likely to fail.  However, at make time we want the wrappers to do the
+    actual instrumentation.  These goals can be achieved by invoking 'cmake'
+    like follows:
+
+    $ SCOREP_WRAPPER_OFF=1 cmake .. \\
+          -DCMAKE_C_COMPILER=scorep-gcc \\
+          -DCMAKE_CXX_COMPILER=scorep-g++
+
+    The 'SCOREP_WRAPPER_OFF=1' disables the instrumentation only in the
+    environment of the 'cmake' command.  Subsequent calls to 'make' are not
+    affected and will instrument the application as expected.
+
+    [1] http://www.cmake.org/Wiki/CMake_FAQ#I_change_CMAKE_C_COMPILER_in_the_GUI_but_it_changes_back_on_the_next_configure_step._Why.3F
+
+  * For autotools based build systems it is recommended to configure in the
+    following way:
+
+    $ SCOREP_WRAPPER_OFF=1 ../configure \\
+          CC=scorep-gcc \\
+          CXX=scorep-g++ \\
+          --disable-dependency-tracking
+
+  * Both autoconf and CMake based build systems, may automatically
+    re-configure the build tree when calling make, because some build
+    related files have changed (i.e., Makefile.am or CMakeLists.txt files).
+    This usage is not supported by the Score-P wrapper.  Please re-start the
+    configuration from an empty build directory again as described above.
+
+  * To pass options to the 'scorep' command in order to diverge from the
+    default instrumentation or to activate verbose output, use the variable
+    'SCOREP_WRAPPER_INSTRUMENTER_FLAGS' at make time:
+
+    $ make SCOREP_WRAPPER_INSTRUMENTER_FLAGS=--verbose
+
+    This will result in the execution of:
+
+    $ scorep --verbose gcc ...
+
+  * The wrapper also allows to pass flags to the wrapped compiler call by
+    using the variable 'SCOREP_WRAPPER_COMPILER_FLAGS':
+
+    $ make SCOREP_WRAPPER_COMPILER_FLAGS="-D_GNU_SOURCE"
+
+    Will result in the execution of:
+
+    $ scorep gcc -D_GNU_SOURCE ...
+
+  * If there is a need to create additional wrapper instances, e.g., if your
+    build system already uses compiler wrappers, you can do so by calling
+    the $argv script with the '--create' option:
+
+    $ $argv0 --create cc
+
+    This will create a new wrapper instance for the 'cc' compiler named
+    'scorep-cc' in the same directory where $argv0 resides.
+
+Please report bugs to <@PACKAGE_BUGREPORT@>
+EOH
+}
+
+die()
+{
+    printf "%s: " "$argv0" >&2
+    printf "$@" >&2
+    usage 1 >&2
+    exit 1
+}
+
+if test x"${argv0}" = x"scorep-wrapper"
+then
+    if test $# -eq 0 || ( test $# -ge 1 && test "$1" = "--help" )
+    then
+        usage | if test -t 1
+        then
+            ${PAGER-$(type less >/dev/null 2>&1 && echo less || echo cat)}
+        else
+            cat
+        fi
+        test $# -ne 0
+        exit
+    fi
+
+    if test "$1" != "--create" || ( test $# -ne 2 && test $# -ne 3 )
+    then
+        die "invalid arguments\n"
+    fi
+
+    compiler=$2
+    case $compiler in
+    (*/*)
+        die "compiler name should not have path elements: '%s'\n" "$compiler"
+    ;;
+    esac
+
+    targetdir=$bindir
+    if test $# -eq 3
+    then
+        targetdir=$3
+        if test -d "$targetdir"; then :
+        else
+            die "directory does not exists: %s\n" "$targetdir"
+        fi
+    fi
+
+    cd "$targetdir" ||
+        die "cannot change directory to '%s'\n" "$targetdir"
+
+    if test -e "scorep-$compiler"
+    then
+        die "compiler wrapper already exists in '%s'\n" "$targetdir"
+    fi
+
+    if test -e "$argv0"
+    then
+        $LN_S "$argv0" "scorep-$compiler"
+    else
+        $LN_S "$bindir/$argv0" "scorep-$compiler"
+    fi ||
+        die "cannot create wrapper '%s' in directory '%s'\n" "scorep-$compiler" "$targetdir"
+
+    exit 0
+fi
+
+case "$argv0" in
+(scorep-*) : expected format ;;
+(*)
+    die "missing 'scorep-' prefix in script name: '%s'\n" "$argv0"
+;;
+esac
+
+# extract compiler name
+compiler=${argv0##*scorep-}
+
+if test "${SCOREP_WRAPPER_OFF:+set}" = set
+then
+    exec $compiler "$@"
+else
+    exec scorep $SCOREP_WRAPPER_INSTRUMENTER_FLAGS $compiler $SCOREP_WRAPPER_COMPILER_FLAGS "$@"
+fi

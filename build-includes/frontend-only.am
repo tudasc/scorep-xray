@@ -6,3 +6,5 @@ include ../src/tools/info/Makefile.inc.am
 include ../tools/oa_registry/Makefile.inc.am
 
 #include ../test/...
+
+include ../test/tools/wrapper/Makefile.inc.am

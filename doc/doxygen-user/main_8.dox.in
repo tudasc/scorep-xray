@@ -1,0 +1,10 @@
+\endverbatim
+
+*/
+
+/**
+@ifnot LATEX
+@example hello_world.c
+Simple example of a @scorep metric plugin
+@endif
+*/

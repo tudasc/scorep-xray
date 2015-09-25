@@ -338,6 +338,54 @@ AC_SUBST([HARDCODE_LIBDIR_AIX_LIBPATH], [${aix_libpath}])
 
 AC_SUBST([SYS_LIB_DLSEARCH_PATH_SPEC], [${sys_lib_dlsearch_path_spec}])
 
+scorep_list_of_wrappers=
+additional_compiler_prefix_list=
+AM_COND_IF([HAVE_MPI_SUPPORT], [
+    AS_VAR_APPEND([additional_compiler_prefix_list], [" MPI"])
+])
+AM_COND_IF([HAVE_SHMEM_SUPPORT], [
+    AS_VAR_APPEND([additional_compiler_prefix_list], [" SHMEM"])
+])
+for compiler_prefix in '' ${additional_compiler_prefix_list}; do
+    for compiler_var in CC CXX F77 FC; do
+        full_compiler_var=${compiler_prefix}${compiler_var}
+        if eval test x\${${full_compiler_var}+set} != xset; then
+            continue
+        fi
+        eval value=\$${full_compiler_var}
+
+        # strip of compiler flags
+        value="$( (set -- $value; echo $1) )"
+
+        # strip of path elements
+        value=${value##*/}
+
+        # avoid duplicates
+        case " ${scorep_list_of_wrappers} " in
+        (*" scorep-$value "*)
+            continue
+        ;;
+        esac
+
+        AS_VAR_APPEND([scorep_list_of_wrappers], ["scorep-$value "])
+    done
+done
+
+# add nvcc wrapper
+AM_COND_IF([HAVE_CUDA_SUPPORT], [
+    case " ${scorep_list_of_wrappers} " in
+    (*" scorep-nvcc "*) : ignore duplicate ;;
+    (*)
+        AS_VAR_APPEND([scorep_list_of_wrappers], ["scorep-nvcc "])
+    ;;
+    esac
+])
+
+AC_CONFIG_FILES([scorep-wrapper:../src/tools/wrapper/scorep-wrapper.in],
+                [chmod +x scorep-wrapper])
+AC_SUBST([SCOREP_WRAPPER_NAMES], [${scorep_list_of_wrappers}])
+AFS_SUMMARY([Wrappers], [${scorep_list_of_wrappers}])
+
 AC_CONFIG_FILES([Makefile], [
 if test "x${ac_scorep_cross_compiling}" = "xyes"; then
     sed -e 's/_0 = @echo "  \(YACC\|GEN\|LEX\)/&  /; t; s/_0 = @echo "  /&BE/' \
@@ -398,6 +446,9 @@ AC_CONFIG_FILES([../test/OA/serial/C/run_oa_c_test.sh], \
                 [chmod +x ../test/OA/serial/C/run_oa_c_test.sh])
 AC_CONFIG_FILES([../test/OA/serial/Fortran/run_oa_f_test.sh], \
                 [chmod +x ../test/OA/serial/Fortran/run_oa_f_test.sh])
+AC_CONFIG_FILES([../test/tools/wrapper/run_wrapper_checks.sh],
+                [chmod +x ../test/tools/wrapper/run_wrapper_checks.sh])
+
 AS_IF([test "x${enable_shared}" = xno],
     [AS_CASE([${ac_scorep_platform}],
          [crayx*], [AC_CONFIG_COMMANDS([libtool-cray-fix],

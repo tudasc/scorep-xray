@@ -1,0 +1,137 @@
+#!/bin/sh
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2015,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+. "@abs_top_srcdir@/../test/measurement/config/test-framework.sh"
+
+BINDIR="@BINDIR@"
+
+execdir="$(pwd)"
+
+rundir=test-wrapper
+mkdir -p "$rundir"
+rundir="$(cd "$rundir"; pwd)"
+
+cleanup()
+{
+    cd "$execdir"
+    rm -rf "$rundir"
+}
+cleanup
+trap cleanup 0
+
+# we change to this directory for the test, to remove everything at once
+mkdir -p "$rundir"
+cd "$rundir"
+
+# create a fake bin directory, where we put fake executables, which the wrapper script should call
+mkdir bin
+PATH="$(cd bin; pwd):$PATH"
+export PATH
+
+# these are the backend compilers
+CC="$( (set -- @CC@; echo $1) )"
+CC=${CC##*/}
+
+CXX="$( (set -- @CXX@; echo $1) )"
+CXX=${CXX##*/}
+
+create_script()
+{
+cat >bin/$1 <<EOS
+#!/bin/sh
+
+echo "$1" "\$@"
+EOS
+    chmod 755 bin/$1
+}
+
+# first our scorep
+create_script scorep
+# than some compilers
+create_script $CC
+create_script $CXX
+
+test_init 'Score-P wrapper script'
+
+test_expect_success 'The scorep-wrapper script exist and is executable' '
+    test -x "$BINDIR/scorep-wrapper" &&
+    @LN_S@ "$BINDIR/scorep-wrapper" bin
+'
+
+test_expect_success 'The wrapper instance for $CC exist and is executable' '
+    test -x "$BINDIR/scorep-$CC" &&
+    @LN_S@ "$BINDIR/scorep-$CC" bin
+'
+
+test_expect_success 'The wrapper instance for $CXX exist and is executable' '
+    test -x "$BINDIR/scorep-$CXX" &&
+    @LN_S@ "$BINDIR/scorep-$CXX" bin
+'
+
+test_expect_success '"scorep-wrapper --help" works' '
+    scorep-wrapper --help >/dev/null
+'
+
+test_expect_success 'The wrapper works' '
+    echo "scorep $CC -c foo.c" >expect &&
+    scorep-$CC -c foo.c >result &&
+    test_compare expect result
+'
+
+test_expect_success 'SCOREP_WRAPPER_OFF works' '
+    echo "$CC -c foo.c" >expect &&
+    SCOREP_WRAPPER_OFF=1 scorep-$CC -c foo.c >result &&
+    test_compare expect result
+'
+
+test_expect_success 'Passing flags via SCOREP_WRAPPER_INSTRUMENTER_FLAGS works' '
+    echo "scorep --verbose $CC -c foo.c" >expect &&
+    SCOREP_WRAPPER_INSTRUMENTER_FLAGS=--verbose scorep-$CC -c foo.c >result &&
+    test_compare expect result
+'
+
+test_expect_success 'Passing flags via SCOREP_WRAPPER_COMPILER_FLAGS works' '
+    echo "scorep $CC -O0 -g -c foo.c" >expect &&
+    SCOREP_WRAPPER_COMPILER_FLAGS="-O0 -g" scorep-$CC -c foo.c >result &&
+    test_compare expect result
+'
+
+test_expect_success 'SCOREP_WRAPPER_OFF disables SCOREP_WRAPPER_COMPILER_FLAGS' '
+    echo "$CC -c foo.c" >expect &&
+    SCOREP_WRAPPER_OFF=1 SCOREP_WRAPPER_COMPILER_FLAGS="-O0 -g" scorep-$CC -c foo.c >result &&
+    test_compare expect result
+'
+
+test_expect_success 'Creating new instance "foo"' '
+    scorep-wrapper --create foo &&
+    test -x "bin/scorep-foo"
+'
+
+test_expect_success 'Instance "foo" works' '
+    echo "scorep foo -c foo.c" >expect &&
+    scorep-foo -c foo.c >result &&
+    test_compare expect result
+'
+
+test_expect_success 'Creating new instance "bar" in custom dir' '
+    scorep-wrapper --create bar $PWD &&
+    test -x "scorep-bar"
+'
+
+test_expect_success 'Instance "bar" works' '
+    echo "scorep bar -c foo.c" >expect &&
+    ./scorep-bar -c foo.c >result &&
+    test_compare expect result
+'
+
+test_done

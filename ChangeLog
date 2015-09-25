@@ -18,6 +18,10 @@ Features and improvements:
 
 User tools and API improvements and changes:
 
+- A Score-P installation provides new instrumentation wrappers which
+  simplify the application instrumentation of autotools and CMake based
+  projects.  Please consult the usage instruction of the 'scorep-wrapper'
+  command.
 - The option --pomp does not take any options any more.
 - Specific options for OPARI2 are passed via the
   --opari=<parameter-list> option.
