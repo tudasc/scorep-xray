@@ -17,14 +17,6 @@
 
 if HAVE_SCOREP_SCORE
 
-if !HAVE_SCOREP_EXTERNAL_CUBE
-
-BUILT_SOURCES += @CUBE_READER_LIBS@
-@CUBE_READER_LIBS@:
-	@$(am__cd) `dirname $@` && $(MAKE) $(AM_MAKEFLAGS) `basename $@`
-
-endif !HAVE_SCOREP_EXTERNAL_CUBE
-
 bin_PROGRAMS += scorep-score
 
 scorep_score_SOURCES = \
@@ -51,6 +43,16 @@ scorep_score_LDFLAGS = @CUBE_READER_LDFLAGS@
 scorep_score_LDADD = @CUBE_READER_LIBS@ \
     libscorep_filter.la \
     libutils.la
-scorep_score_DEPENDENCIES = $(scorep_score_LDADD)
+scorep_score_DEPENDENCIES = \
+    libscorep_filter.la \
+    libutils.la
+
+if !HAVE_SCOREP_EXTERNAL_CUBE
+
+scorep_score_DEPENDENCIES += @CUBE_READER_LIBS@
+@CUBE_READER_LIBS@:
+	@$(am__cd) `dirname $@` && $(MAKE) $(AM_MAKEFLAGS) `basename $@`
+
+endif !HAVE_SCOREP_EXTERNAL_CUBE
 
 endif HAVE_SCOREP_SCORE
