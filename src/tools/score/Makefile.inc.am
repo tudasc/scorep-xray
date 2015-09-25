@@ -51,5 +51,6 @@ scorep_score_LDFLAGS = @CUBE_READER_LDFLAGS@
 scorep_score_LDADD = @CUBE_READER_LIBS@ \
     libscorep_filter.la \
     libutils.la
+scorep_score_DEPENDENCIES = $(scorep_score_LDADD)
 
 endif HAVE_SCOREP_SCORE
