@@ -475,9 +475,9 @@ create_references_list( SCOREP_Location* location,
             uint32_t             strm_id     = 0;
             scorep_cupti_stream* scorep_strm = NULL;
 
-            cuptiGetStreamId( context, stream, &strm_id );
+            SCOREP_CUPTI_CALL( cuptiGetStreamId( context, stream, &strm_id ) );
             SCOREP_CUPTI_LOCK();
-            scorep_strm = scorep_cupti_stream_get_create( scorep_ctx, stream, strm_id );
+            scorep_strm = scorep_cupti_stream_get_create( scorep_ctx, strm_id );
             SCOREP_CUPTI_UNLOCK();
 
             SCOREP_LocationHandle location_handle =
@@ -1711,8 +1711,7 @@ scorep_cupticb_create_default_stream( scorep_cupti_context* context )
         cuStrmID = context->activity->default_strm_id;
     }
 
-    context->streams = scorep_cupti_stream_create( context, SCOREP_CUPTI_NO_STREAM,
-                                                   cuStrmID );
+    context->streams = scorep_cupti_stream_create( context, cuStrmID );
 }
 
 /*

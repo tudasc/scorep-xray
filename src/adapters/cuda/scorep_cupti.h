@@ -114,7 +114,6 @@ typedef struct scorep_cuda_kernel_hash_node
  */
 typedef struct scorep_cupti_stream
 {
-    CUstream                    cuda_stream;             /**< the CUDA stream */
     uint32_t                    stream_id;               /**< the CUDA stream ID */
     SCOREP_Location*            scorep_location;         /**< Score-P location for this stream (unique) */
     uint32_t                    location_id;             /**< internal location ID used for unification */
@@ -330,7 +329,6 @@ scorep_cupti_context_finalize( scorep_cupti_context* context );
  * Create a Score-P CUPTI stream.
  *
  * @param context Score-P CUPTI context
- * @param cudaStream CUDA stream
  * @param streamId ID of the CUDA stream
  *
  * @return pointer to created Score-P CUPTI stream
@@ -338,7 +336,6 @@ scorep_cupti_context_finalize( scorep_cupti_context* context );
 scorep_cupti_stream*
 scorep_cupti_stream_create(
     scorep_cupti_context* context,
-    CUstream              cudaStream,
     uint32_t              streamId );
 
 /*
@@ -360,7 +357,6 @@ scorep_cupti_stream_get_by_id(
  * created and will return the Score-P CUPTI stream object.
  *
  * @param context Score-P CUPTI Activity context
- * @param cudaStream CUDA stream
  * @param streamId the CUDA stream ID provided by CUPTI callback API
  *
  * @return the Score-P CUPTI stream
@@ -368,7 +364,6 @@ scorep_cupti_stream_get_by_id(
 scorep_cupti_stream*
 scorep_cupti_stream_get_create(
     scorep_cupti_context* context,
-    CUstream              cudaStream,
     uint32_t              streamId );
 
 /*

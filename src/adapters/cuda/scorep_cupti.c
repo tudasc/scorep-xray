@@ -202,14 +202,13 @@ scorep_cupti_finalize( void )
  * Create a Score-P CUPTI stream.
  *
  * @param context Score-P CUPTI context
- * @param cudaStream CUDA stream
  * @param streamId ID of the CUDA stream
  *
  * @return pointer to created Score-P CUPTI stream
  */
 scorep_cupti_stream*
 scorep_cupti_stream_create( scorep_cupti_context* context,
-                            CUstream cudaStream, uint32_t streamId )
+                            uint32_t              streamId )
 {
     scorep_cupti_stream* stream = NULL;
 
@@ -222,21 +221,13 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
     /* create stream by Score-P CUPTI callbacks implementation (CUstream is given) */
     if ( streamId == SCOREP_CUPTI_NO_STREAM_ID )
     {
-        if ( cudaStream != SCOREP_CUPTI_NO_STREAM )
-        {
-            SCOREP_CUPTI_CALL( cuptiGetStreamId( context->cuda_context, cudaStream, &streamId ) );
-        }
-        else
-        {
-            UTILS_WARNING( "[CUPTI] Neither CUDA stream nor stream ID given!" );
-            return NULL;
-        }
+        UTILS_WARNING( "[CUPTI] No CUDA stream ID given!" );
+        return NULL;
     }
 
     stream = ( scorep_cupti_stream* )SCOREP_Memory_AllocForMisc(
         sizeof( scorep_cupti_stream ) );
 
-    stream->cuda_stream           = cudaStream;
     stream->scorep_last_timestamp = SCOREP_GetBeginEpoch();
     stream->stream_id             = streamId;
     stream->next                  = NULL;
@@ -347,14 +338,12 @@ scorep_cupti_stream_create( scorep_cupti_context* context,
  * Note: This function must be locked with a Score-P CUPTI lock
  *
  * @param context Score-P CUPTI Activity context
- * @param cudaStream CUDA stream
  * @param streamId the CUDA stream ID provided by CUPTI callback API
  *
  * @return the Score-P CUPTI stream
  */
 scorep_cupti_stream*
-scorep_cupti_stream_get_create( scorep_cupti_context* context,
-                                CUstream cudaStream, uint32_t streamId )
+scorep_cupti_stream_get_create( scorep_cupti_context* context, uint32_t streamId )
 {
     scorep_cupti_stream* stream      = NULL;
     scorep_cupti_stream* last_stream = NULL;
@@ -366,7 +355,7 @@ scorep_cupti_stream_get_create( scorep_cupti_context* context,
         return NULL;
     }
 
-    if ( streamId == SCOREP_CUPTI_NO_STREAM_ID && cudaStream == SCOREP_CUPTI_NO_STREAM )
+    if ( streamId == SCOREP_CUPTI_NO_STREAM_ID )
     {
         UTILS_ERROR( SCOREP_ERROR_UNKNOWN_TYPE,
                      "[CUPTI] No stream information given!" );
@@ -379,8 +368,7 @@ scorep_cupti_stream_get_create( scorep_cupti_context* context,
     while ( stream != NULL )
     {
         /* check for existing stream */
-        if ( ( streamId != SCOREP_CUPTI_NO_STREAM_ID && stream->stream_id == streamId ) ||
-             ( cudaStream != SCOREP_CUPTI_NO_STREAM && stream->cuda_stream == cudaStream ) )
+        if ( streamId != SCOREP_CUPTI_NO_STREAM_ID && stream->stream_id == streamId )
         {
             return stream;
         }
@@ -402,13 +390,13 @@ scorep_cupti_stream_get_create( scorep_cupti_context* context,
          streamId != context->activity->default_strm_id &&
          scorep_cuda_record_idle && scorep_cuda_record_memcpy )
     {
-        context->streams = scorep_cupti_stream_create( context, cudaStream,
+        context->streams = scorep_cupti_stream_create( context,
                                                        context->activity->default_strm_id );
         last_stream = context->streams;
     }
 
     /* create the stream, which has not been created yet */
-    stream = scorep_cupti_stream_create( context, cudaStream, streamId );
+    stream = scorep_cupti_stream_create( context, streamId );
 
     /* append the newly created stream */
     if ( NULL != last_stream )

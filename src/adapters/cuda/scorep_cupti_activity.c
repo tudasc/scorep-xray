@@ -343,8 +343,7 @@ scorep_cupti_activity_write_kernel( CUpti_ActivityKernelType* kernel,
     scorep_cuda_kernel_hash_node* hashNode        = NULL;
 
     /* get Score-P thread ID for the kernel's stream */
-    stream = scorep_cupti_stream_get_create( context,
-                                             SCOREP_CUPTI_NO_STREAM, kernel->streamId );
+    stream          = scorep_cupti_stream_get_create( context, kernel->streamId );
     stream_location = stream->scorep_location;
 
     /* get the Score-P region ID for the kernel */
@@ -545,8 +544,7 @@ scorep_cupti_activity_write_memcpy( CUpti_ActivityMemcpy* memcpy,
     stop = start + ( memcpy->end - memcpy->start ) * contextActivity->sync.factor;
 
     /* get Score-P thread ID for the kernel's stream */
-    stream = scorep_cupti_stream_get_create( context,
-                                             SCOREP_CUPTI_NO_STREAM, memcpy->streamId );
+    stream          = scorep_cupti_stream_get_create( context, memcpy->streamId );
     stream_location = stream->scorep_location;
 
     /* if current activity's start time is before last written timestamp */
