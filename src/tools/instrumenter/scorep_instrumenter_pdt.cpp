@@ -148,8 +148,7 @@ SCOREP_Instrumenter_PdtAdapter::precompile( SCOREP_Instrumenter&         instrum
 void
 SCOREP_Instrumenter_PdtAdapter::setBuildCheck( SCOREP_Instrumenter_CmdLine& cmdLine )
 {
-    m_pdt_config_file = cmdLine.getPathToBinary() +
-                        AFS_PACKAGE_SRCDIR "share/SCOREP_Pdt_Instrumentation.conf";
+    m_pdt_config_file = cmdLine.getPathToSrc() + "share/SCOREP_Pdt_Instrumentation.conf";
 }
 
 void

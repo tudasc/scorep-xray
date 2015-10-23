@@ -567,8 +567,8 @@ SCOREP_Config_Opari2Adapter::printOpariCFlags( bool                   build_chec
 #if !HAVE( EXTERNAL_OPARI2 )
         if ( build_check )
         {
-            extern std::string path_to_binary;
-            std::cout << "-I" + path_to_binary + AFS_PACKAGE_SRCDIR "vendor/opari2/include ";
+            extern std::string path_to_src;
+            std::cout << "-I" + path_to_src + "vendor/opari2/include ";
             std::cout.flush();
             return;
         }

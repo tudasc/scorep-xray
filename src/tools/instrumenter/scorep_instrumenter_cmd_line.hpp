@@ -125,6 +125,8 @@ public:
      */
     const std::string&
     getPathToBinary( void );
+    std::string
+    getPathToSrc( void ) const;
 
     bool
     isCompiling( void );

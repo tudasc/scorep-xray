@@ -173,6 +173,7 @@ clean_up()
 }
 
 std::string path_to_binary;
+std::string path_to_src;
 
 int
 main( int    argc,
@@ -202,6 +203,9 @@ main( int    argc,
     if ( last_slash != std::string::npos )
     {
         path_to_binary = binary.substr( 0, last_slash + 1 );
+        char* path_c_str = UTILS_IO_JoinPath( 2, path_to_binary.c_str(), AFS_PACKAGE_SRCDIR );
+        path_to_src = path_c_str;
+        free( path_c_str );
     }
 
     /* parsing the command line */
@@ -495,8 +499,8 @@ main( int    argc,
             }
             else
             {
-                str += "-I" + path_to_binary + AFS_PACKAGE_SRCDIR "include " +
-                       "-I" + path_to_binary + AFS_PACKAGE_SRCDIR "include/scorep ";
+                str += "-I" + path_to_src + "include " +
+                       "-I" + path_to_src + "include/scorep ";
             }
             SCOREP_Config_Adapter::addIncFlagsAll( str, !install, nvcc );
             SCOREP_Config_ThreadSystem::current->addIncFlags( str, !install, nvcc );

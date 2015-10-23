@@ -43,6 +43,8 @@
 #include <iostream>
 #include <stdlib.h>
 
+#include <UTILS_IO.h>
+
 extern void
 print_help( void );
 
@@ -155,6 +157,16 @@ const std::string&
 SCOREP_Instrumenter_CmdLine::getPathToBinary( void )
 {
     return m_path_to_binary;
+}
+
+std::string
+SCOREP_Instrumenter_CmdLine::getPathToSrc( void ) const
+{
+    char* path_c_str = UTILS_IO_JoinPath( 2, m_path_to_binary.c_str(),
+                                          AFS_PACKAGE_SRCDIR );
+    const std::string path_to_src = path_c_str;
+    free( path_c_str );
+    return path_to_src;
 }
 
 
