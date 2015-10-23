@@ -5,6 +5,8 @@ Major features:
 - Support for OPARI2 2.0 was integrated. OPARI2 is now more
   flexible to enable support for other pragma/directive based
   paradigms.
+- Support for MPI-3.1 functions (except MPI_Comm_idup). Most new 
+  functions currently provide plain enter/exit wrappers.
 
 Features and improvements:
 

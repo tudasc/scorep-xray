@@ -13,10 +13,10 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -170,6 +170,66 @@
  */
 #define MPI_Graphdims_get_U MPI_GRAPHDIMS_GET
 
+/** @def MPI_Ineighbor_allgather_U
+    Exchange MPI_Ineighbor_allgather_U by MPI_INEIGHBOR_ALLGATHER.
+    It is used for the Fortran wrappers of MPI_Ineighbor_allgather.
+ */
+#define MPI_Ineighbor_allgather_U MPI_INEIGHBOR_ALLGATHER
+
+/** @def MPI_Ineighbor_allgatherv_U
+    Exchange MPI_Ineighbor_allgatherv_U by MPI_INEIGHBOR_ALLGATHERV.
+    It is used for the Fortran wrappers of MPI_Ineighbor_allgatherv.
+ */
+#define MPI_Ineighbor_allgatherv_U MPI_INEIGHBOR_ALLGATHERV
+
+/** @def MPI_Ineighbor_alltoall_U
+    Exchange MPI_Ineighbor_alltoall_U by MPI_INEIGHBOR_ALLTOALL.
+    It is used for the Fortran wrappers of MPI_Ineighbor_alltoall.
+ */
+#define MPI_Ineighbor_alltoall_U MPI_INEIGHBOR_ALLTOALL
+
+/** @def MPI_Ineighbor_alltoallv_U
+    Exchange MPI_Ineighbor_alltoallv_U by MPI_INEIGHBOR_ALLTOALLV.
+    It is used for the Fortran wrappers of MPI_Ineighbor_alltoallv.
+ */
+#define MPI_Ineighbor_alltoallv_U MPI_INEIGHBOR_ALLTOALLV
+
+/** @def MPI_Ineighbor_alltoallw_U
+    Exchange MPI_Ineighbor_alltoallw_U by MPI_INEIGHBOR_ALLTOALLW.
+    It is used for the Fortran wrappers of MPI_Ineighbor_alltoallw.
+ */
+#define MPI_Ineighbor_alltoallw_U MPI_INEIGHBOR_ALLTOALLW
+
+/** @def MPI_Neighbor_allgather_U
+    Exchange MPI_Neighbor_allgather_U by MPI_NEIGHBOR_ALLGATHER.
+    It is used for the Fortran wrappers of MPI_Neighbor_allgather.
+ */
+#define MPI_Neighbor_allgather_U MPI_NEIGHBOR_ALLGATHER
+
+/** @def MPI_Neighbor_allgatherv_U
+    Exchange MPI_Neighbor_allgatherv_U by MPI_NEIGHBOR_ALLGATHERV.
+    It is used for the Fortran wrappers of MPI_Neighbor_allgatherv.
+ */
+#define MPI_Neighbor_allgatherv_U MPI_NEIGHBOR_ALLGATHERV
+
+/** @def MPI_Neighbor_alltoall_U
+    Exchange MPI_Neighbor_alltoall_U by MPI_NEIGHBOR_ALLTOALL.
+    It is used for the Fortran wrappers of MPI_Neighbor_alltoall.
+ */
+#define MPI_Neighbor_alltoall_U MPI_NEIGHBOR_ALLTOALL
+
+/** @def MPI_Neighbor_alltoallv_U
+    Exchange MPI_Neighbor_alltoallv_U by MPI_NEIGHBOR_ALLTOALLV.
+    It is used for the Fortran wrappers of MPI_Neighbor_alltoallv.
+ */
+#define MPI_Neighbor_alltoallv_U MPI_NEIGHBOR_ALLTOALLV
+
+/** @def MPI_Neighbor_alltoallw_U
+    Exchange MPI_Neighbor_alltoallw_U by MPI_NEIGHBOR_ALLTOALLW.
+    It is used for the Fortran wrappers of MPI_Neighbor_alltoallw.
+ */
+#define MPI_Neighbor_alltoallw_U MPI_NEIGHBOR_ALLTOALLW
+
 /** @def MPI_Topo_test_U
     Exchange MPI_Topo_test_U by MPI_TOPO_TEST.
     It is used for the Fortran wrappers of MPI_Topo_test.
@@ -291,6 +351,66 @@
     It is used for the Fortran wrappers of MPI_Graphdims_get.
  */
 #define MPI_Graphdims_get_L mpi_graphdims_get
+
+/** @def MPI_Ineighbor_allgather_L
+    Exchanges MPI_Ineighbor_allgather_L by mpi_ineighbor_allgather.
+    It is used for the Fortran wrappers of MPI_Ineighbor_allgather.
+ */
+#define MPI_Ineighbor_allgather_L mpi_ineighbor_allgather
+
+/** @def MPI_Ineighbor_allgatherv_L
+    Exchanges MPI_Ineighbor_allgatherv_L by mpi_ineighbor_allgatherv.
+    It is used for the Fortran wrappers of MPI_Ineighbor_allgatherv.
+ */
+#define MPI_Ineighbor_allgatherv_L mpi_ineighbor_allgatherv
+
+/** @def MPI_Ineighbor_alltoall_L
+    Exchanges MPI_Ineighbor_alltoall_L by mpi_ineighbor_alltoall.
+    It is used for the Fortran wrappers of MPI_Ineighbor_alltoall.
+ */
+#define MPI_Ineighbor_alltoall_L mpi_ineighbor_alltoall
+
+/** @def MPI_Ineighbor_alltoallv_L
+    Exchanges MPI_Ineighbor_alltoallv_L by mpi_ineighbor_alltoallv.
+    It is used for the Fortran wrappers of MPI_Ineighbor_alltoallv.
+ */
+#define MPI_Ineighbor_alltoallv_L mpi_ineighbor_alltoallv
+
+/** @def MPI_Ineighbor_alltoallw_L
+    Exchanges MPI_Ineighbor_alltoallw_L by mpi_ineighbor_alltoallw.
+    It is used for the Fortran wrappers of MPI_Ineighbor_alltoallw.
+ */
+#define MPI_Ineighbor_alltoallw_L mpi_ineighbor_alltoallw
+
+/** @def MPI_Neighbor_allgather_L
+    Exchanges MPI_Neighbor_allgather_L by mpi_neighbor_allgather.
+    It is used for the Fortran wrappers of MPI_Neighbor_allgather.
+ */
+#define MPI_Neighbor_allgather_L mpi_neighbor_allgather
+
+/** @def MPI_Neighbor_allgatherv_L
+    Exchanges MPI_Neighbor_allgatherv_L by mpi_neighbor_allgatherv.
+    It is used for the Fortran wrappers of MPI_Neighbor_allgatherv.
+ */
+#define MPI_Neighbor_allgatherv_L mpi_neighbor_allgatherv
+
+/** @def MPI_Neighbor_alltoall_L
+    Exchanges MPI_Neighbor_alltoall_L by mpi_neighbor_alltoall.
+    It is used for the Fortran wrappers of MPI_Neighbor_alltoall.
+ */
+#define MPI_Neighbor_alltoall_L mpi_neighbor_alltoall
+
+/** @def MPI_Neighbor_alltoallv_L
+    Exchanges MPI_Neighbor_alltoallv_L by mpi_neighbor_alltoallv.
+    It is used for the Fortran wrappers of MPI_Neighbor_alltoallv.
+ */
+#define MPI_Neighbor_alltoallv_L mpi_neighbor_alltoallv
+
+/** @def MPI_Neighbor_alltoallw_L
+    Exchanges MPI_Neighbor_alltoallw_L by mpi_neighbor_alltoallw.
+    It is used for the Fortran wrappers of MPI_Neighbor_alltoallw.
+ */
+#define MPI_Neighbor_alltoallw_L mpi_neighbor_alltoallw
 
 /** @def MPI_Topo_test_L
     Exchanges MPI_Topo_test_L by mpi_topo_test.
@@ -624,6 +744,334 @@ void
 FSUB( MPI_Graphdims_get )( MPI_Comm* comm, int* nnodes, int* nedges, int* ierr )
 {
     *ierr = MPI_Graphdims_get( *comm, nnodes, nedges );
+}
+#endif
+#if HAVE( DECL_PMPI_INEIGHBOR_ALLGATHER )
+/**
+ * Measurement wrapper for MPI_Ineighbor_allgather
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Ineighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Request* request, int* ierr )
+{
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Ineighbor_allgather( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm, request );
+}
+#endif
+#if HAVE( DECL_PMPI_INEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_allgatherv )
+/**
+ * Measurement wrapper for MPI_Ineighbor_allgatherv
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Ineighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Request* request, int* ierr )
+{
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Ineighbor_allgatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm, request );
+}
+#endif
+#if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALL ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoall )
+/**
+ * Measurement wrapper for MPI_Ineighbor_alltoall
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Ineighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Request* request, int* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Ineighbor_alltoall( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm, request );
+}
+#endif
+#if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoallv )
+/**
+ * Measurement wrapper for MPI_Ineighbor_alltoallv
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Ineighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* rdispls, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Request* request, int* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Ineighbor_alltoallv( sendbuf, sendcounts, sdispls, *sendtype, recvbuf, recvcounts, rdispls, *recvtype, *comm, request );
+}
+#endif
+#if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALLW ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoallw )
+/**
+ * Measurement wrapper for MPI_Ineighbor_alltoallw
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Ineighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdispls[], MPI_Datatype sendtypes[], void* recvbuf, int recvcounts[], MPI_Aint rdispls[], MPI_Datatype recvtypes[], MPI_Comm* comm, MPI_Request* request, int* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Ineighbor_alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, *comm, request );
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHER )
+/**
+ * Measurement wrapper for MPI_Neighbor_allgather
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Neighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Neighbor_allgather( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm );
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgatherv )
+/**
+ * Measurement wrapper for MPI_Neighbor_allgatherv
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Neighbor_allgatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm );
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALL ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoall )
+/**
+ * Measurement wrapper for MPI_Neighbor_alltoall
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Neighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Neighbor_alltoall( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm );
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallv )
+/**
+ * Measurement wrapper for MPI_Neighbor_alltoallv
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* rdispls, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Neighbor_alltoallv( sendbuf, sendcounts, sdispls, *sendtype, recvbuf, recvcounts, rdispls, *recvtype, *comm );
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLW ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallw )
+/**
+ * Measurement wrapper for MPI_Neighbor_alltoallw
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ */
+void
+FSUB( MPI_Neighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdispls[], MPI_Datatype sendtypes[], void* recvbuf, int recvcounts[], MPI_Aint rdispls[], MPI_Datatype recvtypes[], MPI_Comm* comm, int* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Neighbor_alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, *comm );
 }
 #endif
 #if HAVE( DECL_PMPI_TOPO_TEST ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Topo_test )
@@ -1001,6 +1449,375 @@ void
 FSUB( MPI_Graphdims_get )( MPI_Fint* comm, MPI_Fint* nnodes, MPI_Fint* nedges, MPI_Fint* ierr )
 {
     *ierr = MPI_Graphdims_get( PMPI_Comm_f2c( *comm ), nnodes, nedges );
+}
+#endif
+#if HAVE( DECL_PMPI_INEIGHBOR_ALLGATHER )
+/**
+ * Measurement wrapper for MPI_Ineighbor_allgather
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ * For the order of events see @ref MPI_Ineighbor_allgather
+ */
+void
+FSUB( MPI_Ineighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
+{
+    MPI_Request c_request;
+
+
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Ineighbor_allgather( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), &c_request );
+
+    *request = PMPI_Request_c2f( c_request );
+}
+#endif
+#if HAVE( DECL_PMPI_INEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_allgatherv )
+/**
+ * Measurement wrapper for MPI_Ineighbor_allgatherv
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ * For the order of events see @ref MPI_Ineighbor_allgatherv
+ */
+void
+FSUB( MPI_Ineighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* displs, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
+{
+    MPI_Request c_request;
+
+
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Ineighbor_allgatherv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, displs, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), &c_request );
+
+    *request = PMPI_Request_c2f( c_request );
+}
+#endif
+#if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALL ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoall )
+/**
+ * Measurement wrapper for MPI_Ineighbor_alltoall
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ * For the order of events see @ref MPI_Ineighbor_alltoall
+ */
+void
+FSUB( MPI_Ineighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
+{
+    MPI_Request c_request;
+
+
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Ineighbor_alltoall( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), &c_request );
+
+    *request = PMPI_Request_c2f( c_request );
+}
+#endif
+#if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoallv )
+/**
+ * Measurement wrapper for MPI_Ineighbor_alltoallv
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ * For the order of events see @ref MPI_Ineighbor_alltoallv
+ */
+void
+FSUB( MPI_Ineighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* sdispls, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* rdispls, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
+{
+    MPI_Request c_request;
+
+
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Ineighbor_alltoallv( sendbuf, sendcounts, sdispls, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, rdispls, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), &c_request );
+
+    *request = PMPI_Request_c2f( c_request );
+}
+#endif
+#if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALLW ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoallw )
+/**
+ * Measurement wrapper for MPI_Ineighbor_alltoallw
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ * For the order of events see @ref MPI_Ineighbor_alltoallw
+ */
+void
+FSUB( MPI_Ineighbor_alltoallw )( void* sendbuf, MPI_Fint* sendcounts, MPI_Aint sdispls[], MPI_Fint* sendtypes, void* recvbuf, MPI_Fint* recvcounts, MPI_Aint rdispls[], MPI_Fint* recvtypes, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
+{
+    MPI_Request c_request;
+
+
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Ineighbor_alltoallw( sendbuf, sendcounts, sdispls, PMPI_Type_f2c( *sendtypes ), recvbuf, recvcounts, rdispls, PMPI_Type_f2c( *recvtypes ), PMPI_Comm_f2c( *comm ), &c_request );
+
+    *request = PMPI_Request_c2f( c_request );
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHER )
+/**
+ * Measurement wrapper for MPI_Neighbor_allgather
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ * For the order of events see @ref MPI_Neighbor_allgather
+ */
+void
+FSUB( MPI_Neighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Neighbor_allgather( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgatherv )
+/**
+ * Measurement wrapper for MPI_Neighbor_allgatherv
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ * For the order of events see @ref MPI_Neighbor_allgatherv
+ */
+void
+FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* displs, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Neighbor_allgatherv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, displs, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALL ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoall )
+/**
+ * Measurement wrapper for MPI_Neighbor_alltoall
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ * For the order of events see @ref MPI_Neighbor_alltoall
+ */
+void
+FSUB( MPI_Neighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Neighbor_alltoall( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallv )
+/**
+ * Measurement wrapper for MPI_Neighbor_alltoallv
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ * For the order of events see @ref MPI_Neighbor_alltoallv
+ */
+void
+FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* sdispls, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* rdispls, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Neighbor_alltoallv( sendbuf, sendcounts, sdispls, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, rdispls, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
+}
+#endif
+#if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLW ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallw )
+/**
+ * Measurement wrapper for MPI_Neighbor_alltoallw
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup topo
+ * For the order of events see @ref MPI_Neighbor_alltoallw
+ */
+void
+FSUB( MPI_Neighbor_alltoallw )( void* sendbuf, MPI_Fint* sendcounts, MPI_Aint sdispls[], MPI_Fint* sendtypes, void* recvbuf, MPI_Fint* recvcounts, MPI_Aint rdispls[], MPI_Fint* recvtypes, MPI_Fint* comm, MPI_Fint* ierr )
+{
+    #if HAVE( MPI_IN_PLACE )
+    if ( sendbuf == scorep_mpi_fortran_in_place )
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE( MPI_BOTTOM )
+    if ( sendbuf == scorep_mpi_fortran_bottom )
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if ( recvbuf == scorep_mpi_fortran_bottom )
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+        #endif
+
+
+    *ierr = MPI_Neighbor_alltoallw( sendbuf, sendcounts, sdispls, PMPI_Type_f2c( *sendtypes ), recvbuf, recvcounts, rdispls, PMPI_Type_f2c( *recvtypes ), PMPI_Comm_f2c( *comm ) );
 }
 #endif
 #if HAVE( DECL_PMPI_TOPO_TEST ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Topo_test )

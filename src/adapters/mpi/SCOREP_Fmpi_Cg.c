@@ -13,10 +13,10 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -70,11 +70,23 @@
  */
 #define MPI_Comm_create_U MPI_COMM_CREATE
 
+/** @def MPI_Comm_create_group_U
+    Exchange MPI_Comm_create_group_U by MPI_COMM_CREATE_GROUP.
+    It is used for the Fortran wrappers of MPI_Comm_create_group.
+ */
+#define MPI_Comm_create_group_U MPI_COMM_CREATE_GROUP
+
 /** @def MPI_Comm_dup_U
     Exchange MPI_Comm_dup_U by MPI_COMM_DUP.
     It is used for the Fortran wrappers of MPI_Comm_dup.
  */
 #define MPI_Comm_dup_U MPI_COMM_DUP
+
+/** @def MPI_Comm_dup_with_info_U
+    Exchange MPI_Comm_dup_with_info_U by MPI_COMM_DUP_WITH_INFO.
+    It is used for the Fortran wrappers of MPI_Comm_dup_with_info.
+ */
+#define MPI_Comm_dup_with_info_U MPI_COMM_DUP_WITH_INFO
 
 /** @def MPI_Comm_free_U
     Exchange MPI_Comm_free_U by MPI_COMM_FREE.
@@ -87,6 +99,12 @@
     It is used for the Fortran wrappers of MPI_Comm_group.
  */
 #define MPI_Comm_group_U MPI_COMM_GROUP
+
+/** @def MPI_Comm_idup_U
+    Exchange MPI_Comm_idup_U by MPI_COMM_IDUP.
+    It is used for the Fortran wrappers of MPI_Comm_idup.
+ */
+#define MPI_Comm_idup_U MPI_COMM_IDUP
 
 /** @def MPI_Comm_rank_U
     Exchange MPI_Comm_rank_U by MPI_COMM_RANK.
@@ -117,6 +135,12 @@
     It is used for the Fortran wrappers of MPI_Comm_split.
  */
 #define MPI_Comm_split_U MPI_COMM_SPLIT
+
+/** @def MPI_Comm_split_type_U
+    Exchange MPI_Comm_split_type_U by MPI_COMM_SPLIT_TYPE.
+    It is used for the Fortran wrappers of MPI_Comm_split_type.
+ */
+#define MPI_Comm_split_type_U MPI_COMM_SPLIT_TYPE
 
 /** @def MPI_Comm_test_inter_U
     Exchange MPI_Comm_test_inter_U by MPI_COMM_TEST_INTER.
@@ -233,6 +257,12 @@
  */
 #define MPI_Comm_get_attr_U MPI_COMM_GET_ATTR
 
+/** @def MPI_Comm_get_info_U
+    Exchange MPI_Comm_get_info_U by MPI_COMM_GET_INFO.
+    It is used for the Fortran wrappers of MPI_Comm_get_info.
+ */
+#define MPI_Comm_get_info_U MPI_COMM_GET_INFO
+
 /** @def MPI_Comm_get_name_U
     Exchange MPI_Comm_get_name_U by MPI_COMM_GET_NAME.
     It is used for the Fortran wrappers of MPI_Comm_get_name.
@@ -244,6 +274,12 @@
     It is used for the Fortran wrappers of MPI_Comm_set_attr.
  */
 #define MPI_Comm_set_attr_U MPI_COMM_SET_ATTR
+
+/** @def MPI_Comm_set_info_U
+    Exchange MPI_Comm_set_info_U by MPI_COMM_SET_INFO.
+    It is used for the Fortran wrappers of MPI_Comm_set_info.
+ */
+#define MPI_Comm_set_info_U MPI_COMM_SET_INFO
 
 /** @def MPI_Comm_set_name_U
     Exchange MPI_Comm_set_name_U by MPI_COMM_SET_NAME.
@@ -282,11 +318,23 @@
  */
 #define MPI_Comm_create_L mpi_comm_create
 
+/** @def MPI_Comm_create_group_L
+    Exchanges MPI_Comm_create_group_L by mpi_comm_create_group.
+    It is used for the Fortran wrappers of MPI_Comm_create_group.
+ */
+#define MPI_Comm_create_group_L mpi_comm_create_group
+
 /** @def MPI_Comm_dup_L
     Exchanges MPI_Comm_dup_L by mpi_comm_dup.
     It is used for the Fortran wrappers of MPI_Comm_dup.
  */
 #define MPI_Comm_dup_L mpi_comm_dup
+
+/** @def MPI_Comm_dup_with_info_L
+    Exchanges MPI_Comm_dup_with_info_L by mpi_comm_dup_with_info.
+    It is used for the Fortran wrappers of MPI_Comm_dup_with_info.
+ */
+#define MPI_Comm_dup_with_info_L mpi_comm_dup_with_info
 
 /** @def MPI_Comm_free_L
     Exchanges MPI_Comm_free_L by mpi_comm_free.
@@ -299,6 +347,12 @@
     It is used for the Fortran wrappers of MPI_Comm_group.
  */
 #define MPI_Comm_group_L mpi_comm_group
+
+/** @def MPI_Comm_idup_L
+    Exchanges MPI_Comm_idup_L by mpi_comm_idup.
+    It is used for the Fortran wrappers of MPI_Comm_idup.
+ */
+#define MPI_Comm_idup_L mpi_comm_idup
 
 /** @def MPI_Comm_rank_L
     Exchanges MPI_Comm_rank_L by mpi_comm_rank.
@@ -329,6 +383,12 @@
     It is used for the Fortran wrappers of MPI_Comm_split.
  */
 #define MPI_Comm_split_L mpi_comm_split
+
+/** @def MPI_Comm_split_type_L
+    Exchanges MPI_Comm_split_type_L by mpi_comm_split_type.
+    It is used for the Fortran wrappers of MPI_Comm_split_type.
+ */
+#define MPI_Comm_split_type_L mpi_comm_split_type
 
 /** @def MPI_Comm_test_inter_L
     Exchanges MPI_Comm_test_inter_L by mpi_comm_test_inter.
@@ -445,6 +505,12 @@
  */
 #define MPI_Comm_get_attr_L mpi_comm_get_attr
 
+/** @def MPI_Comm_get_info_L
+    Exchanges MPI_Comm_get_info_L by mpi_comm_get_info.
+    It is used for the Fortran wrappers of MPI_Comm_get_info.
+ */
+#define MPI_Comm_get_info_L mpi_comm_get_info
+
 /** @def MPI_Comm_get_name_L
     Exchanges MPI_Comm_get_name_L by mpi_comm_get_name.
     It is used for the Fortran wrappers of MPI_Comm_get_name.
@@ -456,6 +522,12 @@
     It is used for the Fortran wrappers of MPI_Comm_set_attr.
  */
 #define MPI_Comm_set_attr_L mpi_comm_set_attr
+
+/** @def MPI_Comm_set_info_L
+    Exchanges MPI_Comm_set_info_L by mpi_comm_set_info.
+    It is used for the Fortran wrappers of MPI_Comm_set_info.
+ */
+#define MPI_Comm_set_info_L mpi_comm_set_info
 
 /** @def MPI_Comm_set_name_L
     Exchanges MPI_Comm_set_name_L by mpi_comm_set_name.
@@ -683,6 +755,20 @@ void
 FSUB( MPI_Group_union )( MPI_Group* group1, MPI_Group* group2, MPI_Group* newgroup, int* ierr )
 {
     *ierr = MPI_Group_union( *group1, *group2, newgroup );
+}
+#endif
+#if HAVE( DECL_PMPI_COMM_CREATE_GROUP )
+/**
+ * Measurement wrapper for MPI_Comm_create_group
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup cg
+ */
+void
+FSUB( MPI_Comm_create_group )( MPI_Comm* comm, MPI_Group* group, int* tag, MPI_Comm* newcomm, int* ierr )
+{
+    *ierr = MPI_Comm_create_group( *comm, *group, *tag, newcomm );
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_GROUP )
@@ -937,6 +1023,20 @@ FSUB( MPI_Comm_get_attr )( MPI_Comm* comm, int* comm_keyval, void* attribute_val
     *ierr = MPI_Comm_get_attr( *comm, *comm_keyval, attribute_val, flag );
 }
 #endif
+#if HAVE( DECL_PMPI_COMM_GET_INFO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_info )
+/**
+ * Measurement wrapper for MPI_Comm_get_info
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup cg_ext
+ */
+void
+FSUB( MPI_Comm_get_info )( MPI_Comm* comm, MPI_Info* info_used, int* ierr )
+{
+    *ierr = MPI_Comm_get_info( *comm, info_used );
+}
+#endif
 #if HAVE( DECL_PMPI_COMM_GET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_name )
 /**
  * Measurement wrapper for MPI_Comm_get_name
@@ -979,6 +1079,20 @@ void
 FSUB( MPI_Comm_set_attr )( MPI_Comm* comm, int* comm_keyval, void* attribute_val, int* ierr )
 {
     *ierr = MPI_Comm_set_attr( *comm, *comm_keyval, attribute_val );
+}
+#endif
+#if HAVE( DECL_PMPI_COMM_SET_INFO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_info )
+/**
+ * Measurement wrapper for MPI_Comm_set_info
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup cg_ext
+ */
+void
+FSUB( MPI_Comm_set_info )( MPI_Comm* comm, MPI_Info* info, int* ierr )
+{
+    *ierr = MPI_Comm_set_info( *comm, *info );
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_SET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_name )
@@ -1320,6 +1434,26 @@ FSUB( MPI_Group_union )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newgroup,
     *newgroup = PMPI_Group_c2f( c_newgroup );
 }
 #endif
+#if HAVE( DECL_PMPI_COMM_CREATE_GROUP )
+/**
+ * Measurement wrapper for MPI_Comm_create_group
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup cg
+ * For the order of events see @ref MPI_Comm_create_group
+ */
+void
+FSUB( MPI_Comm_create_group )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* tag, MPI_Fint* newcomm, MPI_Fint* ierr )
+{
+    MPI_Comm c_newcomm;
+
+
+    *ierr = MPI_Comm_create_group( PMPI_Comm_f2c( *comm ), PMPI_Group_f2c( *group ), *tag, &c_newcomm );
+
+    *newcomm = PMPI_Comm_c2f( c_newcomm );
+}
+#endif
 #if HAVE( DECL_PMPI_COMM_GROUP )
 /**
  * Measurement wrapper for MPI_Comm_group
@@ -1608,6 +1742,26 @@ FSUB( MPI_Comm_get_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, void* attribut
     *ierr = MPI_Comm_get_attr( PMPI_Comm_f2c( *comm ), *comm_keyval, attribute_val, flag );
 }
 #endif
+#if HAVE( DECL_PMPI_COMM_GET_INFO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_info )
+/**
+ * Measurement wrapper for MPI_Comm_get_info
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup cg_ext
+ * For the order of events see @ref MPI_Comm_get_info
+ */
+void
+FSUB( MPI_Comm_get_info )( MPI_Fint* comm, MPI_Fint* info_used, MPI_Fint* ierr )
+{
+    MPI_Info c_info_used;
+
+
+    *ierr = MPI_Comm_get_info( PMPI_Comm_f2c( *comm ), &c_info_used );
+
+    *info_used = PMPI_Info_c2f( c_info_used );
+}
+#endif
 #if HAVE( DECL_PMPI_COMM_GET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_name )
 /**
  * Measurement wrapper for MPI_Comm_get_name
@@ -1655,6 +1809,26 @@ FSUB( MPI_Comm_set_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, void* attribut
 
 
     *ierr = MPI_Comm_set_attr( c_comm, *comm_keyval, attribute_val );
+
+    *comm = PMPI_Comm_c2f( c_comm );
+}
+#endif
+#if HAVE( DECL_PMPI_COMM_SET_INFO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_info )
+/**
+ * Measurement wrapper for MPI_Comm_set_info
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup cg_ext
+ * For the order of events see @ref MPI_Comm_set_info
+ */
+void
+FSUB( MPI_Comm_set_info )( MPI_Fint* comm, MPI_Fint* info, MPI_Fint* ierr )
+{
+    MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
+
+
+    *ierr = MPI_Comm_set_info( c_comm, PMPI_Info_f2c( *info ) );
 
     *comm = PMPI_Comm_c2f( c_comm );
 }

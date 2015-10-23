@@ -1,5 +1,5 @@
 
-<prototypes count="311" family="mpi" >
+<prototypes count="381" family="mpi" >
 
 <prototype name="MPI_Abort" rtype="int" group="ext" guard="" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
@@ -798,6 +798,14 @@
     <version id="2.0" />
 </prototype>
 
+<prototype name="MPI_Comm_create_group" rtype="int" group="cg" >
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="i" type_modifier="" type="MPI_Group" name="group" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <version id="3.0" />
+</prototype>
+
 <prototype name="MPI_Comm_create_keyval" rtype="int" group="cg_ext" guard="extra,cg,ext" >
     <param access="i" type_modifier="" type="MPI_Comm_copy_attr_function*" name="comm_copy_attr_fn" />
     <param access="i" type_modifier="" type="MPI_Comm_delete_attr_function*" name="comm_delete_attr_fn" />
@@ -821,6 +829,13 @@
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
     <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
     <version id="1.0" />
+</prototype>
+
+<prototype name="MPI_Comm_dup_with_info" rtype="int" group="cg" >
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Comm_f2c" rtype="MPI_Comm" group="cg_misc" guard="extra,cg,misc" >
@@ -852,6 +867,12 @@
     <version id="2.0" />
 </prototype>
 
+<prototype name="MPI_Comm_get_info" rtype="int" group="cg_ext" guard="extra,cg,ext" >
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Info*" name="info_used" />
+    <version id="3.0" />
+</prototype>
+
 <prototype name="MPI_Comm_get_name" rtype="int" group="cg_ext" guard="extra,cg,ext" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <param access="o" type_modifier="" type="char*" name="comm_name" />
@@ -868,6 +889,13 @@
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <param access="o" type_modifier="" type="MPI_Group*" name="group" />
     <version id="1.0" />
+</prototype>
+
+<prototype name="MPI_Comm_idup" rtype="int" group="cg" >
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Comm_join" rtype="int" group="spawn" guard="spawn,extra" >
@@ -905,6 +933,12 @@
     <param access="b" type_modifier="" type="MPI_Comm" name="comm" />
     <param access="i" type_modifier="" type="MPI_Errhandler" name="errhandler" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Comm_set_info" rtype="int" group="cg_ext" guard="extra,cg,ext" >
+    <param access="b" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Comm_set_name" rtype="int" group="cg_ext" guard="extra,cg,ext" >
@@ -952,10 +986,30 @@
     <version id="1.0" />
 </prototype>
 
+<prototype name="MPI_Comm_split_type" rtype="int" group="cg" >
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" special="commparent" />
+    <param access="i" type_modifier="" type="int" name="split_typ" />
+    <param access="i" type_modifier="" type="int" name="key" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="o" type_modifier="" type="MPI_Comm*" name="newcomm" special="commnew" />
+    <version id="3.0" />
+</prototype>
+
 <prototype name="MPI_Comm_test_inter" rtype="int" group="cg" guard="extra,cg" >
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="1.0" />
+</prototype>
+
+<prototype name="MPI_Compare_and_swap" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="compare_addr" />
+    <param access="o" type_modifier="" type="void*" name="result_addr" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="target_rank" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="target_disp" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Dims_create" rtype="int" group="topo" guard="extra,topo" >
@@ -1211,6 +1265,17 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Fetch_and_op" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
+    <param access="o" type_modifier="" type="void*" name="result_addr" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="target_rank" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="target_disp" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <version id="3.0" />
+</prototype>
+
 <prototype name="MPI_File_c2f" rtype="MPI_Fint" group="io_misc" guard="io,extra,misc" >
     <param access="i" type_modifier="" type="MPI_File" name="file" />
     <version id="2.0" />
@@ -1340,6 +1405,31 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_File_iread_all" rtype="int" group="io" guard="io" >
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.1" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (buf == scorep_mpi_fortran_bottom)
+    {
+        buf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (buf == scorep_mpi_fortran_bottom)
+    {
+        buf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
 <prototype name="MPI_File_iread_at" rtype="int" group="io" guard="io" >
     <param access="i" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
@@ -1348,6 +1438,32 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (buf == scorep_mpi_fortran_bottom)
+    {
+        buf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (buf == scorep_mpi_fortran_bottom)
+    {
+        buf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_File_iread_at_all" rtype="int" group="io" guard="io" >
+    <param access="i" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.1" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -1416,6 +1532,31 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_File_iwrite_all" rtype="int" group="io" guard="io" >
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.1" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (buf == scorep_mpi_fortran_bottom)
+    {
+        buf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (buf == scorep_mpi_fortran_bottom)
+    {
+        buf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
 <prototype name="MPI_File_iwrite_at" rtype="int" group="io" guard="io" >
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
@@ -1424,6 +1565,32 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="MPI_Request*" name="request" />
     <version id="2.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (buf == scorep_mpi_fortran_bottom)
+    {
+        buf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (buf == scorep_mpi_fortran_bottom)
+    {
+        buf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_File_iwrite_at_all" rtype="int" group="io" guard="io" >
+    <param access="b" type_modifier="" type="MPI_File" name="fh" />
+    <param access="i" type_modifier="" type="MPI_Offset" name="offset" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.1" />
 <xblock id="fortran"><![CDATA[
     #if HAVE(MPI_BOTTOM)
     if (buf == scorep_mpi_fortran_bottom)
@@ -2219,6 +2386,7 @@
     #endif
 ]]></xblock>
 </prototype>
+
 <prototype name="MPI_File_write_ordered" rtype="int" group="io" guard="io" >
     <param access="b" type_modifier="" type="MPI_File" name="fh" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
@@ -2556,6 +2724,22 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Get_accumulate" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
+    <param access="i" type_modifier="" type="int" name="origin_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
+    <param access="o" type_modifier="" type="void*" name="result_addr" />
+    <param access="i" type_modifier="" type="int" name="result_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="result_datatype" />
+    <param access="i" type_modifier="" type="int" name="target_rank" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="target_disp" />
+    <param access="i" type_modifier="" type="int" name="target_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="target_datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <version id="3.0" />
+</prototype>
+
 <prototype name="MPI_Get_address" rtype="int" group="misc" guard="extra,misc" >
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="location" />
     <param access="o" type_modifier="" type="MPI_Aint*" name="address" />
@@ -2574,6 +2758,19 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="int*" name="count" />
     <version id="1.0" />
+</prototype>
+
+<prototype name="MPI_Get_elements_x" rtype="int" group="ext" guard="extra,ext" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Count*" name="count" />
+    <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Get_library_version" rtype="int" group="env" guard="env" >
+    <param access="o" type_modifier="" type="char*" name="version" />
+    <param access="o" type_modifier="" type="int*" name="resultlen" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Get_processor_name" rtype="int" group="ext" guard="extra,ext" >
@@ -2748,6 +2945,356 @@
     <version id="1.0" />
 </prototype>
 
+<prototype name="MPI_Iallgather" rtype="int" group="coll"  guard="coll">
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Iallgatherv" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="displs" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Iallreduce" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Ialltoall" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Ialltoallv" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sendcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sdispls" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="rdispls" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE( MPI_IN_PLACE )
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Ialltoallw" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sendcounts" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sdispls" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Datatype" name="sendtypes" suffix="[]" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="recvcounts" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="rdispls" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Datatype" name="recvtypes" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Ibarrier" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+    <decl>SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;</decl>
+</prototype>
+
+<prototype name="MPI_Ibcast" rtype="int" group="coll" guard="coll" >
+    <param access="b" type_modifier="" type="void*" name="buffer" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (buffer == scorep_mpi_fortran_bottom)
+    {
+        buffer = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (buffer == scorep_mpi_fortran_bottom)
+    {
+        buffer = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+
 <prototype name="MPI_Ibsend" rtype="int" group="p2p" guard="p2p" >
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
@@ -2773,6 +3320,463 @@
     }
     #endif
 ]]></xblock>
+</prototype>
+
+ <prototype name="MPI_Iexscan" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Igather" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Igatherv" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="displs" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Improbe" rtype="int" group="p2p" guard="extra,p2p" >
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="int*" name="flag" />
+    <param access="o" type_modifier="" type="MPI_Message*" name="message" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_STATUS_IGNORE)
+    if (status == scorep_mpi_fortran_status_ignore)
+    {
+      status = MPI_STATUS_IGNORE;
+    }
+    #endif
+]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_STATUS_IGNORE)
+    if (status == scorep_mpi_fortran_status_ignore)
+    {
+      /* hardcoded c_status_ptr needs to be reset */
+      c_status_ptr = MPI_STATUS_IGNORE;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Imrecv" rtype="int" group="p2p" guard="p2p" >
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="b" type_modifier="" type="MPI_Message*" name="message" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (buf == scorep_mpi_fortran_bottom)
+    {
+        buf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (buf == scorep_mpi_fortran_bottom)
+    {
+        buf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Ineighbor_allgather" rtype="int" group="topo" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+    <xblock id="fortran"><![CDATA[
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Ineighbor_allgatherv" rtype="int" group="topo" guard="topo" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="displs" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+    <xblock id="fortran"><![CDATA[
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Ineighbor_alltoall" rtype="int" group="topo" guard="topo" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+    <xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Ineighbor_alltoallv" rtype="int" group="topo" guard="topo" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sendcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sdispls" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="rdispls" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+    <xblock id="fortran"><![CDATA[
+    #if HAVE( MPI_IN_PLACE )
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Ineighbor_alltoallw" rtype="int" group="topo" guard="topo" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sendcounts" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Aint" name="sdispls" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Datatype" name="sendtypes" suffix="[]" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="recvcounts" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Aint" name="rdispls" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Datatype" name="recvtypes" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+    <xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
 </prototype>
 
 <prototype name="MPI_Info_c2f" rtype="MPI_Fint" group="misc" guard="extra,misc" >
@@ -2933,6 +3937,161 @@
 ]]></xblock>
 </prototype>
 
+<prototype name="MPI_Ireduce" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+
+<prototype name="MPI_Ireduce_scatter" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Ireduce_scatter_block" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
 <prototype name="MPI_Irsend" rtype="int" group="p2p" guard="p2p" >
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="buf" />
     <param access="i" type_modifier="" type="int" name="count" />
@@ -2963,6 +4122,164 @@
 <prototype name="MPI_Is_thread_main" rtype="int" group="env" guard="extra,env" >
     <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Iscan" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Iscatter" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (recvbuf == scorep_mpi_fortran_in_place)
+    {
+        recvbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (recvbuf == scorep_mpi_fortran_in_place)
+    {
+        recvbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Iscatterv" rtype="int" group="coll" guard="coll" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sendcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="displs" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="int" name="root" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (recvbuf == scorep_mpi_fortran_in_place)
+    {
+        recvbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (recvbuf == scorep_mpi_fortran_in_place)
+    {
+        recvbuf = MPI_IN_PLACE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+    {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Isend" rtype="int" group="p2p" guard="p2p" >
@@ -3037,6 +4354,330 @@
     <param access="i" type_modifier="" type="MPI_Info" name="info" />
     <param access="o" type_modifier="" type="char*" name="port_name" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Mprobe" rtype="int" group="p2p" guard="p2p" >
+    <param access="i" type_modifier="" type="int" name="source" />
+    <param access="i" type_modifier="" type="int" name="tag" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Message*" name="message" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_STATUS_IGNORE)
+    if (status == scorep_mpi_fortran_status_ignore)
+    {
+      status = MPI_STATUS_IGNORE;
+    }
+    #endif
+]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_STATUS_IGNORE)
+    if (status == scorep_mpi_fortran_status_ignore)
+    {
+      /* hardcoded c_status_ptr needs to be reset */
+      c_status_ptr = MPI_STATUS_IGNORE;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Mrecv" rtype="int" group="p2p" guard="p2p" >
+    <param access="o" type_modifier="" type="void*" name="buf" />
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="b" type_modifier="" type="MPI_Message*" name="message" />
+    <param access="o" type_modifier="" type="MPI_Status*" name="status" />
+    <version id="3.0" />
+    <xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_STATUS_IGNORE)
+    if (status == scorep_mpi_fortran_status_ignore)
+    {
+      status = MPI_STATUS_IGNORE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (buf == scorep_mpi_fortran_bottom)
+    {
+        buf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_STATUS_IGNORE)
+    if (status == scorep_mpi_fortran_status_ignore)
+    {
+      /* hardcoded c_status_ptr needs to be reset */
+      c_status_ptr = MPI_STATUS_IGNORE;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (buf == scorep_mpi_fortran_bottom)
+    {
+        buf = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Neighbor_allgather" rtype="int" group="topo" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <version id="3.0" />
+    <xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Neighbor_allgatherv" rtype="int" group="topo" guard="topo" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="displs" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <version id="3.0" />
+    <xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Neighbor_alltoall" rtype="int" group="topo" guard="topo" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="" type="int" name="sendcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="" type="int" name="recvcount" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <version id="3.0" />
+    <xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Neighbor_alltoallv" rtype="int" group="topo" guard="topo" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sendcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="sdispls" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="sendtype" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="recvcounts" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int*" name="rdispls" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="recvtype" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <version id="3.0" />
+    <xblock id="fortran"><![CDATA[
+    #if HAVE( MPI_IN_PLACE )
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE( MPI_BOTTOM )
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+</prototype>
+
+<prototype name="MPI_Neighbor_alltoallw" rtype="int" group="topo" guard="topo" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="sendbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="sendcounts" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Aint" name="sdispls" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Datatype" name="sendtypes" suffix="[]" />
+    <param access="o" type_modifier="" type="void*" name="recvbuf" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="int" name="recvcounts" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Aint" name="rdispls" suffix="[]" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Datatype" name="recvtypes" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <version id="3.0" />
+    <xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
+    <xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_IN_PLACE)
+    if (sendbuf == scorep_mpi_fortran_in_place)
+    {
+        sendbuf = MPI_IN_PLACE;
+    }
+    #endif
+        #if HAVE(MPI_BOTTOM)
+    if (sendbuf == scorep_mpi_fortran_bottom)
+        {
+        sendbuf = MPI_BOTTOM;
+    }
+    #endif
+    #if HAVE(MPI_BOTTOM)
+    if (recvbuf == scorep_mpi_fortran_bottom)
+    {
+        recvbuf = MPI_BOTTOM;
+        }
+        #endif
+    ]]></xblock>
 </prototype>
 
 <prototype name="MPI_Op_c2f" rtype="MPI_Fint" group="misc" guard="extra,misc" >
@@ -3219,6 +4860,36 @@
 <prototype name="MPI_Query_thread" rtype="int" group="env" guard="extra,env" >
     <param access="o" type_modifier="" type="int*" name="provided" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Raccumulate" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
+    <param access="i" type_modifier="" type="int" name="origin_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
+    <param access="i" type_modifier="" type="int" name="target_rank" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="target_disp" />
+    <param access="i" type_modifier="" type="int" name="target_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="target_datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (origin_addr == scorep_mpi_fortran_bottom)
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (origin_addr == scorep_mpi_fortran_bottom)
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
 </prototype>
 
 <prototype name="MPI_Recv" rtype="int" group="p2p" guard="p2p" >
@@ -3563,6 +5234,81 @@
     {
       /* hardcoded c_status_ptr needs to be reset */
       c_status_ptr = MPI_STATUS_IGNORE;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Rget" rtype="int" group="rma" guard="rma" >
+    <param access="o" type_modifier="" type="void*" name="origin_addr" />
+    <param access="i" type_modifier="" type="int" name="origin_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
+    <param access="i" type_modifier="" type="int" name="target_rank" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="target_disp" />
+    <param access="i" type_modifier="" type="int" name="target_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="target_datatype" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (origin_addr == scorep_mpi_fortran_bottom)
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (origin_addr == scorep_mpi_fortran_bottom)
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+</prototype>
+
+<prototype name="MPI_Rget_accumulate" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
+    <param access="i" type_modifier="" type="int" name="origin_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
+    <param access="o" type_modifier="" type="void*" name="result_addr" />
+    <param access="i" type_modifier="" type="int" name="result_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="result_datatype" />
+    <param access="i" type_modifier="" type="int" name="target_rank" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="target_disp" />
+    <param access="i" type_modifier="" type="int" name="target_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="target_datatype" />
+    <param access="i" type_modifier="" type="MPI_Op" name="op" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Rput" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="origin_addr" />
+    <param access="i" type_modifier="" type="int" name="origin_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="origin_datatype" />
+    <param access="i" type_modifier="" type="int" name="target_rank" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="target_disp" />
+    <param access="i" type_modifier="" type="int" name="target_count" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="target_datatype" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="o" type_modifier="" type="MPI_Request*" name="request" />
+    <version id="3.0" />
+<xblock id="fortran"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (origin_addr == scorep_mpi_fortran_bottom)
+    {
+        origin_addr = MPI_BOTTOM;
+    }
+    #endif
+]]></xblock>
+<xblock id="f2c_c2f"><![CDATA[
+    #if HAVE(MPI_BOTTOM)
+    if (origin_addr == scorep_mpi_fortran_bottom)
+    {
+        origin_addr = MPI_BOTTOM;
     }
     #endif
 ]]></xblock>
@@ -4115,6 +5861,13 @@
     <version id="2.0" />
 </prototype>
 
+<prototype name="MPI_Status_set_elements_x" rtype="int" group="ext" guard="extra,ext" >
+    <param access="b" type_modifier="" type="MPI_Status*" name="status" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="i" type_modifier="" type="MPI_Count" name="count" />
+    <version id="3.0" />
+</prototype>
+
 <prototype name="MPI_Test" rtype="int" group="p2p" guard="p2p" >
     <param access="b" type_modifier="" type="MPI_Request*" name="request" />
     <param access="o" type_modifier="" type="int*" name="flag" />
@@ -4288,6 +6041,15 @@
     <version id="2.0" />
 </prototype>
 
+<prototype name="MPI_Type_create_hindexed_block" rtype="int" group="type" guard="extra,type" >
+    <param access="i" type_modifier="" type="int" name="count" />
+    <param access="i" type_modifier="" type="int" name="blocklength" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="MPI_Aint" name="array_of_displacements" suffix="[]" />
+    <param access="i" type_modifier="" type="MPI_Datatype" name="oldtype" />
+    <param access="o" type_modifier="" type="MPI_Datatype*" name="newtype" />
+    <version id="3.0" />
+</prototype>
+
 <prototype name="MPI_Type_create_hvector" rtype="int" group="type" guard="extra,type" >
     <param access="i" type_modifier="" type="int" name="count" />
     <param access="i" type_modifier="" type="int" name="blocklength" />
@@ -4410,6 +6172,13 @@
     <version id="2.0" />
 </prototype>
 
+<prototype name="MPI_Type_get_extent_x" rtype="int" group="type" guard="extra,type" >
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Count*" name="lb" />
+    <param access="o" type_modifier="" type="MPI_Count*" name="extent" />
+    <version id="3.0" />
+</prototype>
+
 <prototype name="MPI_Type_get_name" rtype="int" group="type_ext" guard="extra,type,ext" >
     <param access="i" type_modifier="" type="MPI_Datatype" name="type" />
     <param access="o" type_modifier="" type="char*" name="type_name" />
@@ -4422,6 +6191,13 @@
     <param access="o" type_modifier="" type="MPI_Aint*" name="true_lb" />
     <param access="o" type_modifier="" type="MPI_Aint*" name="true_extent" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Type_get_true_extent_x" rtype="int" group="type" guard="extra,type" >
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Count*" name="true_lb" />
+    <param access="o" type_modifier="" type="MPI_Count*" name="true_extent" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Type_hindexed" rtype="int" group="type" guard="extra,type" >
@@ -4481,6 +6257,12 @@
     <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
     <param access="o" type_modifier="" type="int*" name="size" />
     <version id="1.0" />
+</prototype>
+
+<prototype name="MPI_Type_size_x" rtype="int" group="type" guard="extra,type" >
+    <param access="i" type_modifier="" type="MPI_Datatype" name="datatype" />
+    <param access="o" type_modifier="" type="MPI_Count*" name="size" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Type_struct" rtype="int" group="type" guard="extra,type" >
@@ -4670,6 +6452,33 @@
     <version id="1.0" />
 </prototype>
 
+<prototype name="MPI_Win_allocate" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="MPI_Aint" name="size" />
+    <param access="i" type_modifier="" type="int" name="disp_unit" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="void*" name="baseptr" />
+    <param access="o" type_modifier="" type="MPI_Win*" name="win" />
+    <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Win_allocate_shared" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="MPI_Aint" name="size" />
+    <param access="i" type_modifier="" type="int" name="disp_unit" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="void*" name="baseptr" />
+    <param access="o" type_modifier="" type="MPI_Win*" name="win" />
+    <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Win_attach" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="void*" name="base" />
+    <param access="i" type_modifier="" type="MPI_Aint" name="size" />
+    <version id="3.0" />
+</prototype>
+
 <prototype name="MPI_Win_c2f" rtype="MPI_Fint" group="rma_misc" guard="rma,misc,extra" >
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
@@ -4694,6 +6503,19 @@
     <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
     <param access="o" type_modifier="" type="MPI_Win*" name="win" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Win_detach" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="void*" name="base" />
+    <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Win_create_dynamic" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <param access="i" type_modifier="" type="MPI_Comm" name="comm" />
+    <param access="o" type_modifier="" type="MPI_Win*" name="win" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Win_create_errhandler" rtype="int" group="rma_err" guard="rma,extra,err" >
@@ -4736,6 +6558,7 @@
     <param access="b" type_modifier="" type="int*" name="win_keyval" />
     <version id="2.0" />
 </prototype>
+
 <prototype name="MPI_Win_get_attr" rtype="int" group="rma_ext" guard="rma,ext,extra" >
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <param access="i" type_modifier="" type="int" name="win_keyval" />
@@ -4743,6 +6566,7 @@
     <param access="o" type_modifier="" type="int*" name="flag" />
     <version id="2.0" />
 </prototype>
+
 <prototype name="MPI_Win_get_errhandler" rtype="int" group="rma_err" guard="rma,extra,err" >
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <param access="o" type_modifier="" type="MPI_Errhandler*" name="errhandler" />
@@ -4753,6 +6577,12 @@
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <param access="o" type_modifier="" type="MPI_Group*" name="group" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Win_get_info" rtype="int" group="rma_ext" guard="rma,extra" >
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="o" type_modifier="" type="MPI_Info*" name="info_used" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Win_get_name" rtype="int" group="rma_ext" guard="rma,extra" >
@@ -4768,6 +6598,12 @@
     <param access="i" type_modifier="" type="int" name="assert" />
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Win_lock_all" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="int" name="assert" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Win_post" rtype="int" group="rma" guard="rma" >
@@ -4790,10 +6626,47 @@
     <version id="2.0" />
 </prototype>
 
+<prototype name="MPI_Win_flush" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="int" name="rank" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Win_flush_all" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Win_flush_local" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="int" name="rank" />
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Win_flush_local_all" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <version id="3.0" />
+</prototype>
+
+<prototype name="MPI_Win_set_info" rtype="int" group="rma_ext" guard="rma,extra" >
+    <param access="b" type_modifier="" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="MPI_Info" name="info" />
+    <version id="3.0" />
+</prototype>
+
 <prototype name="MPI_Win_set_name" rtype="int" group="rma_ext" guard="rma,ext,extra" >
     <param access="b" type_modifier="" type="MPI_Win" name="win" />
     <param access="i" type_modifier="SCOREP_MPI_CONST_DECL" type="char*" name="win_name" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Win_shared_query" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <param access="i" type_modifier="" type="int" name="rank" />
+    <param access="o" type_modifier="" type="MPI_Aint*" name="size" />
+    <param access="o" type_modifier="" type="int*" name="disp_unit" />
+    <param access="o" type_modifier="" type="void*" name="baseptr" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Win_start" rtype="int" group="rma" guard="rma" >
@@ -4801,6 +6674,11 @@
     <param access="i" type_modifier="" type="int" name="assert" />
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Win_sync" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Win_test" rtype="int" group="rma" guard="rma" >
@@ -4813,6 +6691,11 @@
     <param access="i" type_modifier="" type="int" name="rank" />
     <param access="i" type_modifier="" type="MPI_Win" name="win" />
     <version id="2.0" />
+</prototype>
+
+<prototype name="MPI_Win_unlock_all" rtype="int" group="rma" guard="rma" >
+    <param access="i" type_modifier="" type="MPI_Win" name="win" />
+    <version id="3.0" />
 </prototype>
 
 <prototype name="MPI_Win_wait" rtype="int" group="rma" guard="rma" >

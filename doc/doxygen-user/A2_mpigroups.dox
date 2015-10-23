@@ -179,6 +179,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>CG_ERR</td>
 </tr>
 <tr>
+  <td>MPI_Comm_create_group</td>
+  <td>CG</td>
+</tr>
+<tr>
   <td>MPI_Comm_create_keyval</td>
   <td>CG_EXT</td>
 </tr>
@@ -192,6 +196,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
 </tr>
 <tr>
   <td>MPI_Comm_dup</td>
+  <td>CG</td>
+</tr>
+<tr>
+  <td>MPI_Comm_dup_with_info</td>
   <td>CG</td>
 </tr>
 <tr>
@@ -215,6 +223,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>CG_ERR</td>
 </tr>
 <tr>
+  <td>MPI_Comm_get_info</td>
+  <td>CG_EXT</td>
+</tr>
+<tr>
   <td>MPI_Comm_get_name</td>
   <td>CG_EXT</td>
 </tr>
@@ -224,6 +236,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
 </tr>
 <tr>
   <td>MPI_Comm_group</td>
+  <td>CG</td>
+</tr>
+<tr>
+  <td>MPI_Comm_idup</td>
   <td>CG</td>
 </tr>
 <tr>
@@ -251,6 +267,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>CG_ERR</td>
 </tr>
 <tr>
+  <td>MPI_Comm_set_info</td>
+  <td>CG_EXT</td>
+</tr>
+<tr>
   <td>MPI_Comm_set_name</td>
   <td>CG_EXT</td>
 </tr>
@@ -271,8 +291,16 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>CG</td>
 </tr>
 <tr>
+  <td>MPI_Comm_split_type</td>
+  <td>CG</td>
+</tr>
+<tr>
   <td>MPI_Comm_test_inter</td>
   <td>CG</td>
+</tr>
+<tr>
+  <td>MPI_Compare_and_swap</td>
+  <td>RMA</td>
 </tr>
 <tr>
   <td>MPI_Dims_create</td>
@@ -321,6 +349,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
 <tr>
   <td>MPI_Exscan</td>
   <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Fetch_and_op</td>
+  <td>RMA</td>
 </tr>
 <tr>
   <td>MPI_File_c2f</td>
@@ -395,7 +427,15 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>IO</td>
 </tr>
 <tr>
+  <td>MPI_File_iread_all</td>
+  <td>IO</td>
+</tr>
+<tr>
   <td>MPI_File_iread_at</td>
+  <td>IO</td>
+</tr>
+<tr>
+  <td>MPI_File_iread_at_all</td>
   <td>IO</td>
 </tr>
 <tr>
@@ -407,7 +447,15 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>IO</td>
 </tr>
 <tr>
+  <td>MPI_File_iwrite_all</td>
+  <td>IO</td>
+</tr>
+<tr>
   <td>MPI_File_iwrite_at</td>
+  <td>IO</td>
+</tr>
+<tr>
+  <td>MPI_File_iwrite_at_all</td>
   <td>IO</td>
 </tr>
 <tr>
@@ -575,6 +623,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>RMA</td>
 </tr>
 <tr>
+  <td>MPI_Get_accumulate</td>
+  <td>RMA</td>
+</tr>
+<tr>
   <td>MPI_Get_address</td>
   <td>MISC</td>
 </tr>
@@ -585,6 +637,14 @@ if both groups \p CG and \p MISC are enabled at runtime.
 <tr>
   <td>MPI_Get_elements</td>
   <td>EXT</td>
+</tr>
+<tr>
+  <td>MPI_Get_elements_x</td>
+  <td>EXT</td>
+</tr>
+<tr>
+  <td>MPI_Get_library_version</td>
+  <td>ENV</td>
 </tr>
 <tr>
   <td>MPI_Get_processor_name</td>
@@ -683,8 +743,80 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>CG</td>
 </tr>
 <tr>
+  <td>MPI_Iallgather</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Iallgatherv</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Iallreduce</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Ialltoall</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Ialltoallv</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Ialltoallw</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Ibarrier</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Ibcast</td>
+  <td>COLL</td>
+</tr>
+<tr>
   <td>MPI_Ibsend</td>
   <td>P2P</td>
+</tr>
+<tr>
+  <td>MPI_Iexscan</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Igather</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Igatherv</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Improbe</td>
+  <td>P2P</td>
+</tr>
+<tr>
+  <td>MPI_Imrecv</td>
+  <td>P2P</td>
+</tr>
+<tr>
+  <td>MPI_Ineighbor_allgather</td>
+  <td>TOPO</td>
+</tr>
+<tr>
+  <td>MPI_Ineighbor_allgatherv</td>
+  <td>TOPO</td>
+</tr>
+<tr>
+  <td>MPI_Ineighbor_alltoall</td>
+  <td>TOPO</td>
+</tr>
+<tr>
+  <td>MPI_Ineighbor_alltoallv</td>
+  <td>TOPO</td>
+</tr>
+<tr>
+  <td>MPI_Ineighbor_alltoallw</td>
+  <td>TOPO</td>
 </tr>
 <tr>
   <td>MPI_Info_c2f</td>
@@ -759,12 +891,36 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>P2P</td>
 </tr>
 <tr>
+  <td>MPI_Ireduce</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Ireduce_scatter</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Ireduce_scatter_block</td>
+  <td>COLL</td>
+</tr>
+<tr>
   <td>MPI_Irsend</td>
   <td>P2P</td>
 </tr>
 <tr>
   <td>MPI_Is_thread_main</td>
   <td>ENV</td>
+</tr>
+<tr>
+  <td>MPI_Iscan</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Iscatter</td>
+  <td>COLL</td>
+</tr>
+<tr>
+  <td>MPI_Iscatterv</td>
+  <td>COLL</td>
 </tr>
 <tr>
   <td>MPI_Isend</td>
@@ -785,6 +941,34 @@ if both groups \p CG and \p MISC are enabled at runtime.
 <tr>
   <td>MPI_Lookup_name</td>
   <td>SPAWN</td>
+</tr>
+<tr>
+  <td>MPI_Mprobe</td>
+  <td>P2P</td>
+</tr>
+<tr>
+  <td>MPI_Mrecv</td>
+  <td>P2P</td>
+</tr>
+<tr>
+  <td>MPI_Neighbor_allgather</td>
+  <td>TOPO</td>
+</tr>
+<tr>
+  <td>MPI_Neighbor_allgatherv</td>
+  <td>TOPO</td>
+</tr>
+<tr>
+  <td>MPI_Neighbor_alltoall</td>
+  <td>TOPO</td>
+</tr>
+<tr>
+  <td>MPI_Neighbor_alltoallv</td>
+  <td>TOPO</td>
+</tr>
+<tr>
+  <td>MPI_Neighbor_alltoallw</td>
+  <td>TOPO</td>
 </tr>
 <tr>
   <td>MPI_Op_c2f</td>
@@ -847,6 +1031,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>ENV</td>
 </tr>
 <tr>
+  <td>MPI_Raccumulate</td>
+  <td>RMA</td>
+</tr>
+<tr>
   <td>MPI_Recv</td>
   <td>P2P</td>
 </tr>
@@ -889,6 +1077,18 @@ if both groups \p CG and \p MISC are enabled at runtime.
 <tr>
   <td>MPI_Request_get_status</td>
   <td>MISC</td>
+</tr>
+<tr>
+  <td>MPI_Rget</td>
+  <td>RMA</td>
+</tr>
+<tr>
+  <td>MPI_Rget_accumulate</td>
+  <td>RMA</td>
+</tr>
+<tr>
+  <td>MPI_Rput</td>
+  <td>RMA</td>
 </tr>
 <tr>
   <td>MPI_Rsend</td>
@@ -963,6 +1163,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>EXT</td>
 </tr>
 <tr>
+  <td>MPI_Status_set_elements_x</td>
+  <td>EXT</td>
+</tr>
+<tr>
   <td>MPI_Test</td>
   <td>P2P</td>
 </tr>
@@ -1016,6 +1220,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
 </tr>
 <tr>
   <td>MPI_Type_create_hindexed</td>
+  <td>TYPE</td>
+</tr>
+<tr>
+  <td>MPI_Type_create_hindexed_block</td>
   <td>TYPE</td>
 </tr>
 <tr>
@@ -1083,11 +1291,19 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>TYPE</td>
 </tr>
 <tr>
+  <td>MPI_Type_get_extent_x</td>
+  <td>TYPE</td>
+</tr>
+<tr>
   <td>MPI_Type_get_name</td>
   <td>TYPE_EXT</td>
 </tr>
 <tr>
   <td>MPI_Type_get_true_extent</td>
+  <td>TYPE</td>
+</tr>
+<tr>
+  <td>MPI_Type_get_true_extent_x</td>
   <td>TYPE</td>
 </tr>
 <tr>
@@ -1120,6 +1336,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
 </tr>
 <tr>
   <td>MPI_Type_size</td>
+  <td>TYPE</td>
+</tr>
+<tr>
+  <td>MPI_Type_size_x</td>
   <td>TYPE</td>
 </tr>
 <tr>
@@ -1163,6 +1383,18 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>P2P</td>
 </tr>
 <tr>
+  <td>MPI_Win_allocate</td>
+  <td>RMA</td>
+</tr>
+<tr>
+  <td>MPI_Win_allocate_shared</td>
+  <td>RMA</td>
+</tr>
+<tr>
+  <td>MPI_Win_attach</td>
+  <td>RMA</td>
+</tr>
+<tr>
   <td>MPI_Win_c2f</td>
   <td>RMA_MISC</td>
 </tr>
@@ -1179,6 +1411,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>RMA</td>
 </tr>
 <tr>
+  <td>MPI_Win_create_dynamic</td>
+  <td>RMA</td>
+</tr>
+<tr>
   <td>MPI_Win_create_errhandler</td>
   <td>RMA_ERR</td>
 </tr>
@@ -1191,11 +1427,31 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>RMA_EXT</td>
 </tr>
 <tr>
+  <td>MPI_Win_detach</td>
+  <td>RMA</td>
+</tr>
+<tr>
   <td>MPI_Win_f2c</td>
   <td>RMA_MISC</td>
 </tr>
 <tr>
   <td>MPI_Win_fence</td>
+  <td>RMA</td>
+</tr>
+<tr>
+  <td>MPI_Win_flush</td>
+  <td>RMA</td>
+</tr>
+<tr>
+  <td>MPI_Win_flush_all</td>
+  <td>RMA</td>
+</tr>
+<tr>
+  <td>MPI_Win_flush_local</td>
+  <td>RMA</td>
+</tr>
+<tr>
+  <td>MPI_Win_flush_local_all</td>
   <td>RMA</td>
 </tr>
 <tr>
@@ -1219,11 +1475,19 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>RMA</td>
 </tr>
 <tr>
+  <td>MPI_Win_get_info</td>
+  <td>RMA_EXT</td>
+</tr>
+<tr>
   <td>MPI_Win_get_name</td>
   <td>RMA_EXT</td>
 </tr>
 <tr>
   <td>MPI_Win_lock</td>
+  <td>RMA</td>
+</tr>
+<tr>
+  <td>MPI_Win_lock_all</td>
   <td>RMA</td>
 </tr>
 <tr>
@@ -1239,11 +1503,23 @@ if both groups \p CG and \p MISC are enabled at runtime.
   <td>RMA_ERR</td>
 </tr>
 <tr>
+  <td>MPI_Win_set_info</td>
+  <td>RMA_EXT</td>
+</tr>
+<tr>
   <td>MPI_Win_set_name</td>
   <td>RMA_EXT</td>
 </tr>
 <tr>
+  <td>MPI_Win_shared_query</td>
+  <td>RMA</td>
+</tr>
+<tr>
   <td>MPI_Win_start</td>
+  <td>RMA</td>
+</tr>
+<tr>
+  <td>MPI_Win_sync</td>
   <td>RMA</td>
 </tr>
 <tr>
@@ -1252,6 +1528,10 @@ if both groups \p CG and \p MISC are enabled at runtime.
 </tr>
 <tr>
   <td>MPI_Win_unlock</td>
+  <td>RMA</td>
+</tr>
+<tr>
+  <td>MPI_Win_unlock_all</td>
   <td>RMA</td>
 </tr>
 <tr>
@@ -1277,14 +1557,18 @@ if both groups \p CG and \p MISC are enabled at runtime.
 <tr><td>
 MPI_Comm_compare,
 MPI_Comm_create,
+MPI_Comm_create_group,
 MPI_Comm_dup,
+MPI_Comm_dup_with_info,
 MPI_Comm_free,
 MPI_Comm_group,
+MPI_Comm_idup,
 MPI_Comm_rank,
 MPI_Comm_remote_group,
 MPI_Comm_remote_size,
 MPI_Comm_size,
 MPI_Comm_split,
+MPI_Comm_split_type,
 MPI_Comm_test_inter,
 MPI_Group_compare,
 MPI_Group_difference,
@@ -1329,8 +1613,10 @@ MPI_Comm_create_keyval,
 MPI_Comm_delete_attr,
 MPI_Comm_free_keyval,
 MPI_Comm_get_attr,
+MPI_Comm_get_info,
 MPI_Comm_get_name,
 MPI_Comm_set_attr,
+MPI_Comm_set_info,
 MPI_Comm_set_name,
 MPI_Keyval_create,
 MPI_Keyval_free,
@@ -1366,6 +1652,23 @@ MPI_Bcast,
 MPI_Exscan,
 MPI_Gather,
 MPI_Gatherv,
+MPI_Iallgather,
+MPI_Iallgatherv,
+MPI_Iallreduce,
+MPI_Ialltoall,
+MPI_Ialltoallv,
+MPI_Ialltoallw,
+MPI_Ibarrier,
+MPI_Ibcast,
+MPI_Iexscan,
+MPI_Igather,
+MPI_Igatherv,
+MPI_Ireduce,
+MPI_Ireduce_scatter,
+MPI_Ireduce_scatter_block,
+MPI_Iscan,
+MPI_Iscatter,
+MPI_Iscatterv,
 MPI_Reduce,
 MPI_Reduce_local,
 MPI_Reduce_scatter,
@@ -1383,6 +1686,7 @@ MPI_Scatterv,
 <tr><td>
 MPI_Finalize,
 MPI_Finalized,
+MPI_Get_library_version,
 MPI_Init,
 MPI_Init_thread,
 MPI_Initialized,
@@ -1426,10 +1730,14 @@ MPI_File_get_size,
 MPI_File_get_type_extent,
 MPI_File_get_view,
 MPI_File_iread,
+MPI_File_iread_all,
 MPI_File_iread_at,
+MPI_File_iread_at_all,
 MPI_File_iread_shared,
 MPI_File_iwrite,
+MPI_File_iwrite_all,
 MPI_File_iwrite_at,
+MPI_File_iwrite_at_all,
 MPI_File_iwrite_shared,
 MPI_File_open,
 MPI_File_preallocate,
@@ -1498,11 +1806,13 @@ MPI_File_f2c,
 MPI_Abort,
 MPI_Get_count,
 MPI_Get_elements,
+MPI_Get_elements_x,
 MPI_Get_processor_name,
 MPI_Grequest_complete,
 MPI_Grequest_start,
 MPI_Status_set_cancelled,
 MPI_Status_set_elements,
+MPI_Status_set_elements_x,
 MPI_Wtick,
 MPI_Wtime,
 </td></tr>
@@ -1553,11 +1863,15 @@ MPI_Buffer_attach,
 MPI_Buffer_detach,
 MPI_Cancel,
 MPI_Ibsend,
+MPI_Improbe,
+MPI_Imrecv,
 MPI_Iprobe,
 MPI_Irecv,
 MPI_Irsend,
 MPI_Isend,
 MPI_Issend,
+MPI_Mprobe,
+MPI_Mrecv,
 MPI_Probe,
 MPI_Recv,
 MPI_Recv_init,
@@ -1599,18 +1913,38 @@ MPI_Pcontrol,
 </td></tr>
 <tr><td>
 MPI_Accumulate,
+MPI_Compare_and_swap,
+MPI_Fetch_and_op,
 MPI_Get,
+MPI_Get_accumulate,
 MPI_Put,
+MPI_Raccumulate,
+MPI_Rget,
+MPI_Rget_accumulate,
+MPI_Rput,
+MPI_Win_allocate,
+MPI_Win_allocate_shared,
+MPI_Win_attach,
 MPI_Win_complete,
 MPI_Win_create,
+MPI_Win_create_dynamic,
+MPI_Win_detach,
 MPI_Win_fence,
+MPI_Win_flush,
+MPI_Win_flush_all,
+MPI_Win_flush_local,
+MPI_Win_flush_local_all,
 MPI_Win_free,
 MPI_Win_get_group,
 MPI_Win_lock,
+MPI_Win_lock_all,
 MPI_Win_post,
+MPI_Win_shared_query,
 MPI_Win_start,
+MPI_Win_sync,
 MPI_Win_test,
 MPI_Win_unlock,
+MPI_Win_unlock_all,
 MPI_Win_wait,
 </td></tr>
 </table>
@@ -1638,8 +1972,10 @@ MPI_Win_create_keyval,
 MPI_Win_delete_attr,
 MPI_Win_free_keyval,
 MPI_Win_get_attr,
+MPI_Win_get_info,
 MPI_Win_get_name,
 MPI_Win_set_attr,
+MPI_Win_set_info,
 MPI_Win_set_name,
 </td></tr>
 </table>
@@ -1699,6 +2035,16 @@ MPI_Graph_map,
 MPI_Graph_neighbors,
 MPI_Graph_neighbors_count,
 MPI_Graphdims_get,
+MPI_Ineighbor_allgather,
+MPI_Ineighbor_allgatherv,
+MPI_Ineighbor_alltoall,
+MPI_Ineighbor_alltoallv,
+MPI_Ineighbor_alltoallw,
+MPI_Neighbor_allgather,
+MPI_Neighbor_allgatherv,
+MPI_Neighbor_alltoall,
+MPI_Neighbor_alltoallv,
+MPI_Neighbor_alltoallw,
 MPI_Topo_test,
 </td></tr>
 </table>
@@ -1720,6 +2066,7 @@ MPI_Type_create_f90_complex,
 MPI_Type_create_f90_integer,
 MPI_Type_create_f90_real,
 MPI_Type_create_hindexed,
+MPI_Type_create_hindexed_block,
 MPI_Type_create_hvector,
 MPI_Type_create_indexed_block,
 MPI_Type_create_resized,
@@ -1731,13 +2078,16 @@ MPI_Type_free,
 MPI_Type_get_contents,
 MPI_Type_get_envelope,
 MPI_Type_get_extent,
+MPI_Type_get_extent_x,
 MPI_Type_get_true_extent,
+MPI_Type_get_true_extent_x,
 MPI_Type_hindexed,
 MPI_Type_hvector,
 MPI_Type_indexed,
 MPI_Type_lb,
 MPI_Type_match_size,
 MPI_Type_size,
+MPI_Type_size_x,
 MPI_Type_struct,
 MPI_Type_ub,
 MPI_Type_vector,

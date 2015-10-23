@@ -13,10 +13,10 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
  * Copyright (c) 2009-2013,
@@ -63,17 +63,77 @@
  */
 #define MPI_Accumulate_U MPI_ACCUMULATE
 
+/** @def MPI_Compare_and_swap_U
+    Exchange MPI_Compare_and_swap_U by MPI_COMPARE_AND_SWAP.
+    It is used for the Fortran wrappers of MPI_Compare_and_swap.
+ */
+#define MPI_Compare_and_swap_U MPI_COMPARE_AND_SWAP
+
+/** @def MPI_Fetch_and_op_U
+    Exchange MPI_Fetch_and_op_U by MPI_FETCH_AND_OP.
+    It is used for the Fortran wrappers of MPI_Fetch_and_op.
+ */
+#define MPI_Fetch_and_op_U MPI_FETCH_AND_OP
+
 /** @def MPI_Get_U
     Exchange MPI_Get_U by MPI_GET.
     It is used for the Fortran wrappers of MPI_Get.
  */
 #define MPI_Get_U MPI_GET
 
+/** @def MPI_Get_accumulate_U
+    Exchange MPI_Get_accumulate_U by MPI_GET_ACCUMULATE.
+    It is used for the Fortran wrappers of MPI_Get_accumulate.
+ */
+#define MPI_Get_accumulate_U MPI_GET_ACCUMULATE
+
 /** @def MPI_Put_U
     Exchange MPI_Put_U by MPI_PUT.
     It is used for the Fortran wrappers of MPI_Put.
  */
 #define MPI_Put_U MPI_PUT
+
+/** @def MPI_Raccumulate_U
+    Exchange MPI_Raccumulate_U by MPI_RACCUMULATE.
+    It is used for the Fortran wrappers of MPI_Raccumulate.
+ */
+#define MPI_Raccumulate_U MPI_RACCUMULATE
+
+/** @def MPI_Rget_U
+    Exchange MPI_Rget_U by MPI_RGET.
+    It is used for the Fortran wrappers of MPI_Rget.
+ */
+#define MPI_Rget_U MPI_RGET
+
+/** @def MPI_Rget_accumulate_U
+    Exchange MPI_Rget_accumulate_U by MPI_RGET_ACCUMULATE.
+    It is used for the Fortran wrappers of MPI_Rget_accumulate.
+ */
+#define MPI_Rget_accumulate_U MPI_RGET_ACCUMULATE
+
+/** @def MPI_Rput_U
+    Exchange MPI_Rput_U by MPI_RPUT.
+    It is used for the Fortran wrappers of MPI_Rput.
+ */
+#define MPI_Rput_U MPI_RPUT
+
+/** @def MPI_Win_allocate_U
+    Exchange MPI_Win_allocate_U by MPI_WIN_ALLOCATE.
+    It is used for the Fortran wrappers of MPI_Win_allocate.
+ */
+#define MPI_Win_allocate_U MPI_WIN_ALLOCATE
+
+/** @def MPI_Win_allocate_shared_U
+    Exchange MPI_Win_allocate_shared_U by MPI_WIN_ALLOCATE_SHARED.
+    It is used for the Fortran wrappers of MPI_Win_allocate_shared.
+ */
+#define MPI_Win_allocate_shared_U MPI_WIN_ALLOCATE_SHARED
+
+/** @def MPI_Win_attach_U
+    Exchange MPI_Win_attach_U by MPI_WIN_ATTACH.
+    It is used for the Fortran wrappers of MPI_Win_attach.
+ */
+#define MPI_Win_attach_U MPI_WIN_ATTACH
 
 /** @def MPI_Win_complete_U
     Exchange MPI_Win_complete_U by MPI_WIN_COMPLETE.
@@ -87,11 +147,47 @@
  */
 #define MPI_Win_create_U MPI_WIN_CREATE
 
+/** @def MPI_Win_create_dynamic_U
+    Exchange MPI_Win_create_dynamic_U by MPI_WIN_CREATE_DYNAMIC.
+    It is used for the Fortran wrappers of MPI_Win_create_dynamic.
+ */
+#define MPI_Win_create_dynamic_U MPI_WIN_CREATE_DYNAMIC
+
+/** @def MPI_Win_detach_U
+    Exchange MPI_Win_detach_U by MPI_WIN_DETACH.
+    It is used for the Fortran wrappers of MPI_Win_detach.
+ */
+#define MPI_Win_detach_U MPI_WIN_DETACH
+
 /** @def MPI_Win_fence_U
     Exchange MPI_Win_fence_U by MPI_WIN_FENCE.
     It is used for the Fortran wrappers of MPI_Win_fence.
  */
 #define MPI_Win_fence_U MPI_WIN_FENCE
+
+/** @def MPI_Win_flush_U
+    Exchange MPI_Win_flush_U by MPI_WIN_FLUSH.
+    It is used for the Fortran wrappers of MPI_Win_flush.
+ */
+#define MPI_Win_flush_U MPI_WIN_FLUSH
+
+/** @def MPI_Win_flush_all_U
+    Exchange MPI_Win_flush_all_U by MPI_WIN_FLUSH_ALL.
+    It is used for the Fortran wrappers of MPI_Win_flush_all.
+ */
+#define MPI_Win_flush_all_U MPI_WIN_FLUSH_ALL
+
+/** @def MPI_Win_flush_local_U
+    Exchange MPI_Win_flush_local_U by MPI_WIN_FLUSH_LOCAL.
+    It is used for the Fortran wrappers of MPI_Win_flush_local.
+ */
+#define MPI_Win_flush_local_U MPI_WIN_FLUSH_LOCAL
+
+/** @def MPI_Win_flush_local_all_U
+    Exchange MPI_Win_flush_local_all_U by MPI_WIN_FLUSH_LOCAL_ALL.
+    It is used for the Fortran wrappers of MPI_Win_flush_local_all.
+ */
+#define MPI_Win_flush_local_all_U MPI_WIN_FLUSH_LOCAL_ALL
 
 /** @def MPI_Win_free_U
     Exchange MPI_Win_free_U by MPI_WIN_FREE.
@@ -111,17 +207,35 @@
  */
 #define MPI_Win_lock_U MPI_WIN_LOCK
 
+/** @def MPI_Win_lock_all_U
+    Exchange MPI_Win_lock_all_U by MPI_WIN_LOCK_ALL.
+    It is used for the Fortran wrappers of MPI_Win_lock_all.
+ */
+#define MPI_Win_lock_all_U MPI_WIN_LOCK_ALL
+
 /** @def MPI_Win_post_U
     Exchange MPI_Win_post_U by MPI_WIN_POST.
     It is used for the Fortran wrappers of MPI_Win_post.
  */
 #define MPI_Win_post_U MPI_WIN_POST
 
+/** @def MPI_Win_shared_query_U
+    Exchange MPI_Win_shared_query_U by MPI_WIN_SHARED_QUERY.
+    It is used for the Fortran wrappers of MPI_Win_shared_query.
+ */
+#define MPI_Win_shared_query_U MPI_WIN_SHARED_QUERY
+
 /** @def MPI_Win_start_U
     Exchange MPI_Win_start_U by MPI_WIN_START.
     It is used for the Fortran wrappers of MPI_Win_start.
  */
 #define MPI_Win_start_U MPI_WIN_START
+
+/** @def MPI_Win_sync_U
+    Exchange MPI_Win_sync_U by MPI_WIN_SYNC.
+    It is used for the Fortran wrappers of MPI_Win_sync.
+ */
+#define MPI_Win_sync_U MPI_WIN_SYNC
 
 /** @def MPI_Win_test_U
     Exchange MPI_Win_test_U by MPI_WIN_TEST.
@@ -134,6 +248,12 @@
     It is used for the Fortran wrappers of MPI_Win_unlock.
  */
 #define MPI_Win_unlock_U MPI_WIN_UNLOCK
+
+/** @def MPI_Win_unlock_all_U
+    Exchange MPI_Win_unlock_all_U by MPI_WIN_UNLOCK_ALL.
+    It is used for the Fortran wrappers of MPI_Win_unlock_all.
+ */
+#define MPI_Win_unlock_all_U MPI_WIN_UNLOCK_ALL
 
 /** @def MPI_Win_wait_U
     Exchange MPI_Win_wait_U by MPI_WIN_WAIT.
@@ -166,6 +286,12 @@
  */
 #define MPI_Win_get_attr_U MPI_WIN_GET_ATTR
 
+/** @def MPI_Win_get_info_U
+    Exchange MPI_Win_get_info_U by MPI_WIN_GET_INFO.
+    It is used for the Fortran wrappers of MPI_Win_get_info.
+ */
+#define MPI_Win_get_info_U MPI_WIN_GET_INFO
+
 /** @def MPI_Win_get_name_U
     Exchange MPI_Win_get_name_U by MPI_WIN_GET_NAME.
     It is used for the Fortran wrappers of MPI_Win_get_name.
@@ -177,6 +303,12 @@
     It is used for the Fortran wrappers of MPI_Win_set_attr.
  */
 #define MPI_Win_set_attr_U MPI_WIN_SET_ATTR
+
+/** @def MPI_Win_set_info_U
+    Exchange MPI_Win_set_info_U by MPI_WIN_SET_INFO.
+    It is used for the Fortran wrappers of MPI_Win_set_info.
+ */
+#define MPI_Win_set_info_U MPI_WIN_SET_INFO
 
 /** @def MPI_Win_set_name_U
     Exchange MPI_Win_set_name_U by MPI_WIN_SET_NAME.
@@ -193,17 +325,77 @@
  */
 #define MPI_Accumulate_L mpi_accumulate
 
+/** @def MPI_Compare_and_swap_L
+    Exchanges MPI_Compare_and_swap_L by mpi_compare_and_swap.
+    It is used for the Fortran wrappers of MPI_Compare_and_swap.
+ */
+#define MPI_Compare_and_swap_L mpi_compare_and_swap
+
+/** @def MPI_Fetch_and_op_L
+    Exchanges MPI_Fetch_and_op_L by mpi_fetch_and_op.
+    It is used for the Fortran wrappers of MPI_Fetch_and_op.
+ */
+#define MPI_Fetch_and_op_L mpi_fetch_and_op
+
 /** @def MPI_Get_L
     Exchanges MPI_Get_L by mpi_get.
     It is used for the Fortran wrappers of MPI_Get.
  */
 #define MPI_Get_L mpi_get
 
+/** @def MPI_Get_accumulate_L
+    Exchanges MPI_Get_accumulate_L by mpi_get_accumulate.
+    It is used for the Fortran wrappers of MPI_Get_accumulate.
+ */
+#define MPI_Get_accumulate_L mpi_get_accumulate
+
 /** @def MPI_Put_L
     Exchanges MPI_Put_L by mpi_put.
     It is used for the Fortran wrappers of MPI_Put.
  */
 #define MPI_Put_L mpi_put
+
+/** @def MPI_Raccumulate_L
+    Exchanges MPI_Raccumulate_L by mpi_raccumulate.
+    It is used for the Fortran wrappers of MPI_Raccumulate.
+ */
+#define MPI_Raccumulate_L mpi_raccumulate
+
+/** @def MPI_Rget_L
+    Exchanges MPI_Rget_L by mpi_rget.
+    It is used for the Fortran wrappers of MPI_Rget.
+ */
+#define MPI_Rget_L mpi_rget
+
+/** @def MPI_Rget_accumulate_L
+    Exchanges MPI_Rget_accumulate_L by mpi_rget_accumulate.
+    It is used for the Fortran wrappers of MPI_Rget_accumulate.
+ */
+#define MPI_Rget_accumulate_L mpi_rget_accumulate
+
+/** @def MPI_Rput_L
+    Exchanges MPI_Rput_L by mpi_rput.
+    It is used for the Fortran wrappers of MPI_Rput.
+ */
+#define MPI_Rput_L mpi_rput
+
+/** @def MPI_Win_allocate_L
+    Exchanges MPI_Win_allocate_L by mpi_win_allocate.
+    It is used for the Fortran wrappers of MPI_Win_allocate.
+ */
+#define MPI_Win_allocate_L mpi_win_allocate
+
+/** @def MPI_Win_allocate_shared_L
+    Exchanges MPI_Win_allocate_shared_L by mpi_win_allocate_shared.
+    It is used for the Fortran wrappers of MPI_Win_allocate_shared.
+ */
+#define MPI_Win_allocate_shared_L mpi_win_allocate_shared
+
+/** @def MPI_Win_attach_L
+    Exchanges MPI_Win_attach_L by mpi_win_attach.
+    It is used for the Fortran wrappers of MPI_Win_attach.
+ */
+#define MPI_Win_attach_L mpi_win_attach
 
 /** @def MPI_Win_complete_L
     Exchanges MPI_Win_complete_L by mpi_win_complete.
@@ -217,11 +409,47 @@
  */
 #define MPI_Win_create_L mpi_win_create
 
+/** @def MPI_Win_create_dynamic_L
+    Exchanges MPI_Win_create_dynamic_L by mpi_win_create_dynamic.
+    It is used for the Fortran wrappers of MPI_Win_create_dynamic.
+ */
+#define MPI_Win_create_dynamic_L mpi_win_create_dynamic
+
+/** @def MPI_Win_detach_L
+    Exchanges MPI_Win_detach_L by mpi_win_detach.
+    It is used for the Fortran wrappers of MPI_Win_detach.
+ */
+#define MPI_Win_detach_L mpi_win_detach
+
 /** @def MPI_Win_fence_L
     Exchanges MPI_Win_fence_L by mpi_win_fence.
     It is used for the Fortran wrappers of MPI_Win_fence.
  */
 #define MPI_Win_fence_L mpi_win_fence
+
+/** @def MPI_Win_flush_L
+    Exchanges MPI_Win_flush_L by mpi_win_flush.
+    It is used for the Fortran wrappers of MPI_Win_flush.
+ */
+#define MPI_Win_flush_L mpi_win_flush
+
+/** @def MPI_Win_flush_all_L
+    Exchanges MPI_Win_flush_all_L by mpi_win_flush_all.
+    It is used for the Fortran wrappers of MPI_Win_flush_all.
+ */
+#define MPI_Win_flush_all_L mpi_win_flush_all
+
+/** @def MPI_Win_flush_local_L
+    Exchanges MPI_Win_flush_local_L by mpi_win_flush_local.
+    It is used for the Fortran wrappers of MPI_Win_flush_local.
+ */
+#define MPI_Win_flush_local_L mpi_win_flush_local
+
+/** @def MPI_Win_flush_local_all_L
+    Exchanges MPI_Win_flush_local_all_L by mpi_win_flush_local_all.
+    It is used for the Fortran wrappers of MPI_Win_flush_local_all.
+ */
+#define MPI_Win_flush_local_all_L mpi_win_flush_local_all
 
 /** @def MPI_Win_free_L
     Exchanges MPI_Win_free_L by mpi_win_free.
@@ -241,17 +469,35 @@
  */
 #define MPI_Win_lock_L mpi_win_lock
 
+/** @def MPI_Win_lock_all_L
+    Exchanges MPI_Win_lock_all_L by mpi_win_lock_all.
+    It is used for the Fortran wrappers of MPI_Win_lock_all.
+ */
+#define MPI_Win_lock_all_L mpi_win_lock_all
+
 /** @def MPI_Win_post_L
     Exchanges MPI_Win_post_L by mpi_win_post.
     It is used for the Fortran wrappers of MPI_Win_post.
  */
 #define MPI_Win_post_L mpi_win_post
 
+/** @def MPI_Win_shared_query_L
+    Exchanges MPI_Win_shared_query_L by mpi_win_shared_query.
+    It is used for the Fortran wrappers of MPI_Win_shared_query.
+ */
+#define MPI_Win_shared_query_L mpi_win_shared_query
+
 /** @def MPI_Win_start_L
     Exchanges MPI_Win_start_L by mpi_win_start.
     It is used for the Fortran wrappers of MPI_Win_start.
  */
 #define MPI_Win_start_L mpi_win_start
+
+/** @def MPI_Win_sync_L
+    Exchanges MPI_Win_sync_L by mpi_win_sync.
+    It is used for the Fortran wrappers of MPI_Win_sync.
+ */
+#define MPI_Win_sync_L mpi_win_sync
 
 /** @def MPI_Win_test_L
     Exchanges MPI_Win_test_L by mpi_win_test.
@@ -264,6 +510,12 @@
     It is used for the Fortran wrappers of MPI_Win_unlock.
  */
 #define MPI_Win_unlock_L mpi_win_unlock
+
+/** @def MPI_Win_unlock_all_L
+    Exchanges MPI_Win_unlock_all_L by mpi_win_unlock_all.
+    It is used for the Fortran wrappers of MPI_Win_unlock_all.
+ */
+#define MPI_Win_unlock_all_L mpi_win_unlock_all
 
 /** @def MPI_Win_wait_L
     Exchanges MPI_Win_wait_L by mpi_win_wait.
@@ -296,6 +548,12 @@
  */
 #define MPI_Win_get_attr_L mpi_win_get_attr
 
+/** @def MPI_Win_get_info_L
+    Exchanges MPI_Win_get_info_L by mpi_win_get_info.
+    It is used for the Fortran wrappers of MPI_Win_get_info.
+ */
+#define MPI_Win_get_info_L mpi_win_get_info
+
 /** @def MPI_Win_get_name_L
     Exchanges MPI_Win_get_name_L by mpi_win_get_name.
     It is used for the Fortran wrappers of MPI_Win_get_name.
@@ -307,6 +565,12 @@
     It is used for the Fortran wrappers of MPI_Win_set_attr.
  */
 #define MPI_Win_set_attr_L mpi_win_set_attr
+
+/** @def MPI_Win_set_info_L
+    Exchanges MPI_Win_set_info_L by mpi_win_set_info.
+    It is used for the Fortran wrappers of MPI_Win_set_info.
+ */
+#define MPI_Win_set_info_L mpi_win_set_info
 
 /** @def MPI_Win_set_name_L
     Exchanges MPI_Win_set_name_L by mpi_win_set_name.
@@ -628,6 +892,20 @@ FSUB( MPI_Win_get_attr )( MPI_Win* win, int* win_keyval, void* attribute_val, in
     *ierr = MPI_Win_get_attr( *win, *win_keyval, attribute_val, flag );
 }
 #endif
+#if HAVE( DECL_PMPI_WIN_GET_INFO ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_info )
+/**
+ * Measurement wrapper for MPI_Win_get_info
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup rma_ext
+ */
+void
+FSUB( MPI_Win_get_info )( MPI_Win* win, MPI_Info* info_used, int* ierr )
+{
+    *ierr = MPI_Win_get_info( *win, info_used );
+}
+#endif
 #if HAVE( DECL_PMPI_WIN_GET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_name )
 /**
  * Measurement wrapper for MPI_Win_get_name
@@ -670,6 +948,20 @@ void
 FSUB( MPI_Win_set_attr )( MPI_Win* win, int* win_keyval, void* attribute_val, int* ierr )
 {
     *ierr = MPI_Win_set_attr( *win, *win_keyval, attribute_val );
+}
+#endif
+#if HAVE( DECL_PMPI_WIN_SET_INFO ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_info )
+/**
+ * Measurement wrapper for MPI_Win_set_info
+ * @note Auto-generated by wrapgen from template: SCOREP_Fmpi_Std.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup rma_ext
+ */
+void
+FSUB( MPI_Win_set_info )( MPI_Win* win, MPI_Info* info, int* ierr )
+{
+    *ierr = MPI_Win_set_info( *win, *info );
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_SET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_name )
@@ -1041,6 +1333,26 @@ FSUB( MPI_Win_get_attr )( MPI_Fint* win, MPI_Fint* win_keyval, void* attribute_v
     *ierr = MPI_Win_get_attr( PMPI_Win_f2c( *win ), *win_keyval, attribute_val, flag );
 }
 #endif
+#if HAVE( DECL_PMPI_WIN_GET_INFO ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_info )
+/**
+ * Measurement wrapper for MPI_Win_get_info
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_get_info
+ */
+void
+FSUB( MPI_Win_get_info )( MPI_Fint* win, MPI_Fint* info_used, MPI_Fint* ierr )
+{
+    MPI_Info c_info_used;
+
+
+    *ierr = MPI_Win_get_info( PMPI_Win_f2c( *win ), &c_info_used );
+
+    *info_used = PMPI_Info_c2f( c_info_used );
+}
+#endif
 #if HAVE( DECL_PMPI_WIN_GET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_name )
 /**
  * Measurement wrapper for MPI_Win_get_name
@@ -1088,6 +1400,26 @@ FSUB( MPI_Win_set_attr )( MPI_Fint* win, MPI_Fint* win_keyval, void* attribute_v
 
 
     *ierr = MPI_Win_set_attr( c_win, *win_keyval, attribute_val );
+
+    *win = PMPI_Win_c2f( c_win );
+}
+#endif
+#if HAVE( DECL_PMPI_WIN_SET_INFO ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_info )
+/**
+ * Measurement wrapper for MPI_Win_set_info
+ * @note Auto-generated by wrapgen from template: SCOREP_Mpi_F2c_C2f.w
+ * @note Fortran interface
+ * @note Introduced with MPI-3
+ * @ingroup rma_ext
+ * For the order of events see @ref MPI_Win_set_info
+ */
+void
+FSUB( MPI_Win_set_info )( MPI_Fint* win, MPI_Fint* info, MPI_Fint* ierr )
+{
+    MPI_Win c_win = PMPI_Win_f2c( *win );
+
+
+    *ierr = MPI_Win_set_info( c_win, PMPI_Info_f2c( *info ) );
 
     *win = PMPI_Win_c2f( c_win );
 }

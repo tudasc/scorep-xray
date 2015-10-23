@@ -530,3 +530,25 @@ int MPI_Win_wait(MPI_Win win)
 /**
  * @}
  */
+
+#pragma wrapgen single MPI_Compare_and_swap skel/SCOREP_Mpi_StdWithProto.w
+#pragma wrapgen single MPI_Fetch_and_op skel/SCOREP_Mpi_StdWithProto.w
+#pragma wrapgen single MPI_Get_accumulate skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Raccumulate skel/SCOREP_Mpi_StdWithProto.w
+#pragma wrapgen single MPI_Rget skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Rget_accumulate skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Rput skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Win_allocate skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Win_allocate_shared skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Win_attach skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Win_create_dynamic skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Win_detach skel/SCOREP_Mpi_StdWithProto.w
+#pragma wrapgen single MPI_Win_flush skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Win_flush_all skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Win_flush_local skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Win_flush_local_all skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Win_lock_all skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Win_shared_query skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Win_sync skel/SCOREP_Mpi_Std.w
+#pragma wrapgen single MPI_Win_unlock_all skel/SCOREP_Mpi_Std.w
+ 
