@@ -161,7 +161,8 @@ scorep_write_location_property_definitions(
     typedef OTF2_ErrorCode ( *def_location_property_pointer_t )( void*,
                                                                  OTF2_LocationRef,
                                                                  OTF2_StringRef,
-                                                                 OTF2_StringRef );
+                                                                 OTF2_Type,
+                                                                 OTF2_AttributeValue );
     def_location_property_pointer_t defLocationProperty =
         ( def_location_property_pointer_t )OTF2_DefWriter_WriteLocationProperty;
 
@@ -173,11 +174,14 @@ scorep_write_location_property_definitions(
 
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, LocationProperty, location_property )
     {
+        OTF2_AttributeValue value;
+        value.stringRef = SCOREP_HANDLE_TO_ID( definition->value_handle, String, definitionManager->page_manager );
         OTF2_ErrorCode status = defLocationProperty(
             writerHandle,
             SCOREP_HANDLE_DEREF( definition->location_handle, Location, definitionManager->page_manager )->global_location_id,
             SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
-            SCOREP_HANDLE_TO_ID( definition->value_handle, String, definitionManager->page_manager ) );
+            OTF2_TYPE_STRING,
+            value );
 
         if ( status != OTF2_SUCCESS )
         {
@@ -260,7 +264,8 @@ scorep_write_system_tree_node_definitions(
     ( *def_system_tree_node_property_pointer_t )( void*,
                                                   OTF2_SystemTreeNodeRef,
                                                   OTF2_StringRef,
-                                                  OTF2_StringRef );
+                                                  OTF2_Type,
+                                                  OTF2_AttributeValue );
     def_system_tree_node_property_pointer_t defSystemTreeNodeProperty =
         ( def_system_tree_node_property_pointer_t )OTF2_DefWriter_WriteSystemTreeNodeProperty;
 
@@ -320,6 +325,11 @@ scorep_write_system_tree_node_definitions(
                                      definitionManager->page_manager );
             property_handle = property->properties_next;
 
+            OTF2_AttributeValue value;
+            value.stringRef = SCOREP_HANDLE_TO_ID(
+                property->property_value_handle,
+                String,
+                definitionManager->page_manager );
             status = defSystemTreeNodeProperty(
                 writerHandle,
                 definition->sequence_number,
@@ -327,10 +337,8 @@ scorep_write_system_tree_node_definitions(
                     property->property_name_handle,
                     String,
                     definitionManager->page_manager ),
-                SCOREP_HANDLE_TO_ID(
-                    property->property_value_handle,
-                    String,
-                    definitionManager->page_manager ) );
+                OTF2_TYPE_STRING,
+                value );
             if ( status != OTF2_SUCCESS )
             {
                 scorep_handle_definition_writing_error( status, "SystemTreeNodeProperty" );
@@ -622,7 +630,7 @@ scorep_write_metric_definitions( void*                     writerHandle,
                                                       OTF2_MetricType,
                                                       OTF2_MetricMode,
                                                       OTF2_Type,
-                                                      OTF2_MetricBase,
+                                                      OTF2_Base,
                                                       int64_t,
                                                       OTF2_StringRef );
     def_metric_pointer_t defMetricMember = ( def_metric_pointer_t )
@@ -645,7 +653,7 @@ scorep_write_metric_definitions( void*                     writerHandle,
             scorep_tracing_metric_source_type_to_otf2( definition->source_type ),
             scorep_tracing_metric_mode_to_otf2( definition->mode ),
             scorep_tracing_metric_value_type_to_otf2( definition->value_type ),
-            scorep_tracing_metric_base_to_otf2( definition->base ),
+            scorep_tracing_base_to_otf2( definition->base ),
             definition->exponent,
             SCOREP_HANDLE_TO_ID( definition->unit_handle, String, definitionManager->page_manager ) );
         if ( status != OTF2_SUCCESS )

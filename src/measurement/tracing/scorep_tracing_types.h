@@ -208,8 +208,8 @@ scorep_tracing_metric_value_type_to_otf2( SCOREP_MetricValueType valueType )
 }
 
 
-static inline OTF2_MetricBase
-scorep_tracing_metric_base_to_otf2( SCOREP_MetricBase base )
+static inline OTF2_Base
+scorep_tracing_base_to_otf2( SCOREP_MetricBase base )
 {
     switch ( base )
     {
