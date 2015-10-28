@@ -55,7 +55,7 @@ The second line prints an estimation of the memory space required
 by a single process for the trace. The memory space that @scorep reserves on each process
 at application start must be large enough to hold the process' trace in memory
 in order to avoid flushes during runtime, because flushes heavily disturb
-measurements. In addition to the trace, Score-P requires some additinal memory to
+measurements. In addition to the trace, Score-P requires some additional memory to
 maintain internal data structures. Thus, it provides also an estimation for the
 total amount of required memory on each process. The memory size per process that
 @scorep reserves is set via the environment variable @confvar{SCOREP_TOTAL_MEMORY}.

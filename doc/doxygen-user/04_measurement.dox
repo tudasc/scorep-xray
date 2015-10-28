@@ -959,7 +959,7 @@ Memory in bytes for the OpenCL command queue buffer can be adjusted by setting t
 Online Access (OA) is an interface to the measurement system of @scorep allowing online analysis capable tools to
 configure and retrieve profile measurements remotely over sockets.
 
-The Online Access interface implememts a client-server paradigm, where @scorep acts as a server accepting connections
+The Online Access interface implements a client-server paradigm, where @scorep acts as a server accepting connections
 from the remote tool. During the initialization, the OA module of the @scorep creates one socket for each application
 process. The network addresses and the ports of these sockets are published at the registry service
 and could be later queried by the remote tool. The hostname and the port of the registry service should be specified

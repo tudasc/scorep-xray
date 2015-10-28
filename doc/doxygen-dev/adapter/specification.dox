@@ -2,7 +2,7 @@
 
 Before any application can be measured, the application need some preparation to perform the measurement. The preparation inserts calls the the measurement library using a variety of methods. This process is called instrumentation. Furthermore, the application needs to be linked together with some additional libraries, containing the implementation of the inserted calls, called the adapters, and the measurement libraries itself.
 
-This module can be split in two main parts. First, the instrumentation part, which contains all tools and methods for the application instrumentation. Second the runtime part whih contains the adapters and interfaces to the measurement system. The module architecture is depicted here:
+This module can be split in two main parts. First, the instrumentation part, which contains all tools and methods for the application instrumentation. Second the runtime part which contains the adapters and interfaces to the measurement system. The module architecture is depicted here:
 @image html SCOREP_Adapter_Architecture.png "Architecture of the instrumentation and adapter module"
 @image latex SCOREP_Adapter_Architecture.eps "Architecture of the instrumentation and adapter module" width=14cm
 
@@ -12,12 +12,12 @@ For instrumentation, several methods are possible:
 @li For mpi and pthread wrapper libraries exist, which contain an alternative implementation that call the original function inside, but also perform some measurement.
 @li The source code can be analysed and modified by a instrumentation tool. This approach is used by OPARI to instrument function enter and exit, and OpenMP constructs.
 
-While for each methods separate toole exists which perform the instrumentation, the differences should be hidden to the user, who can access all of the instrumentation through a common tool.
+While for each methods separate tools exists which perform the instrumentation, the differences should be hidden to the user, who can access all of the instrumentation through a common tool.
 
 In the runtime system, each instrumentation method has its own adapter which receive the calls from instrumentation. The adapters generate the calls to the measurement system.
 
-For the design, three (external)interfaces have to be ceated:
-@li The interface to the measurement system, consisting of the funcions of the measurement systems that are called by the adapters if certain events occur, and the functions of the performance counter access.
+For the design, three (external)interfaces have to be created:
+@li The interface to the measurement system, consisting of the functions of the measurement systems that are called by the adapters if certain events occur, and the functions of the performance counter access.
 @li The API for the user manual instrumentation.
 @li The commands and configuration of the instrumentation wrapper tool.
 
@@ -27,25 +27,25 @@ Before describing the design, an overview over the desired functionality of the 
 /** @page feature_overview Feature overview
 
 @subsection region_def Regions
-Regions are a continous pieces of code for which the begin and end is marked through events (enter/exit events). Each region is identified by a unique name. Furthermore, the filename and the line numbers of the region are obtained. From the regions a calltree is constructed. For the construction of the callpathes correct nesting of the enter/exit events are mandatory.
+Regions are a continuous pieces of code for which the begin and end is marked through events (enter/exit events). Each region is identified by a unique name. Furthermore, the filename and the line numbers of the region are obtained. From the regions a calltree is constructed. For the construction of the callpaths correct nesting of the enter/exit events are mandatory.
 
-Region events are the core events for constructing callpathes. They exists is all tools in a very similar manner. Every adapter generates region events.
+Region events are the core events for constructing callpaths. They exists is all tools in a very similar manner. Every adapter generates region events.
 
 For Periscope filename and line numbers are necessary, because Periscope identifies the regions not by name but by filename and first line number of the code block.
 
 
 @section phases Phases
 
-Pases appear in the planned SCALASCA extentions and in Periscope.
+Phases appear in the planned SCALASCA extensions and in Periscope.
 
 @subsection TAU_phases TAU
-Phases are an abstract division of the program. They consist of one or more blocks of the program which might not be continous but scattered through the program. At any time there can be only one active phase. The program start in active phase main. Each phase is a separate root node in the call tree. Each phase is marked through an enter statement, when the phase is entered, and an exit statement, when the phase ended. If a phase ended the phase, which was active before the ended phase started, becomes active again. The main differences to regions are first, that a phase may not be a continous piece of code and second, that it forms a new root node.
+Phases are an abstract division of the program. They consist of one or more blocks of the program which might not be continuous but scattered through the program. At any time there can be only one active phase. The program start in active phase main. Each phase is a separate root node in the call tree. Each phase is marked through an enter statement, when the phase is entered, and an exit statement, when the phase ended. If a phase ended the phase, which was active before the ended phase started, becomes active again. The main differences to regions are first, that a phase may not be a continuous piece of code and second, that it forms a new root node.
 
-@subsection Periscope_phases Persicope
-Persicope peforms a number of different experiments. Each of the experiments performs a different set of measurements. The duration of each experiment is a execution of a so called phase. The user can specify the part of the program on which the experiments are done. Alternativley the outermost user region is defined as the phase. Typically, the phase is the content of the main loop.
+@subsection Periscope_phases Periscope
+Periscope performs a number of different experiments. Each of the experiments performs a different set of measurements. The duration of each experiment is a execution of a so called phase. The user can specify the part of the program on which the experiments are done. Alternatively, the outermost user region is defined as the phase. Typically, the phase is the content of the main loop.
 
 @subsection conclusion_phases Conclusion
-Current plan is to implement a phase via a special region type. During measurement the phases are treated like normal regions. Post-mortem the phases are cut out of the calltree and merged to the new root nodes. Thus, for teh instrumenattion it appears just as another region type.
+Current plan is to implement a phase via a special region type. During measurement the phases are treated like normal regions. Post-mortem the phases are cut out of the calltree and merged to the new root nodes. Thus, for the instrumentation it appears just as another region type.
 
 It appears only the in the user instrumentation.
 
@@ -58,7 +58,7 @@ They are regions/phases, but what makes them dynamic is that on each execution a
 @li  The instrumentation is created in a way, that it registers a new region each time the region is encountered. The measurement system then has no knowledge whether a region is dynamic or not.
 @li  A flag or type is set in the region definition. Then the diversification is done inside the measurement system.
 
-@subsection salasca_dynamic SCALASCA
+@subsection scalasca_dynamic SCALASCA
 Currently, there is ongoing work on this concept in SCALASCA, where several executions of a dynamic phase are clustered, or a set of executions of a phase are aggregated(e.g. execution 1 to 100 is aggregated, and 101 to 110, and ...). Thus, the measurement system should perform the separation and be aware of the fact that different nodes belong to the same region.
 
 @subsection conclusion_dynamic Conclusion
@@ -107,17 +107,17 @@ User metrics stem from the user instrumentation.
 
 Grouping means that several regions are put together in a group. The way groups are defined differs in the tools:
 
-@subsection vamir_grouping VampirTrace
+@subsection vampir_grouping VampirTrace
 VampirTrace has a set of predefined groups (MPI, OMP, OMP_SYNC, OMP_PREG, Pthreads, MEM, I/O, LIBC, Application). Furthermore, the user can create groups via a configuration file to highlight output of the trace to be visualized by Vampir. Besides regions, VampirTrace allows grouping of user counters. The grouping of user counters is done via user instrumentation commands.
 
 @subsection scalasca_grouping SCALASCA
 SCALASCA distinguished a fixed set of groups. In MPI all MPI functions are grouped to a 'family'. Furthermore, a division of MPI functions into fixed groups exists, which is used for filtering during measurement.
 
 @subsection tau_grouping TAU
-Allows the user to deine own groups
+Allows the user to define own groups
 
 @subsection conclusion_grouping Conclusion
-Currently, grouping is mostly defined via configuration file or through the programmer and can be used for filtering or obatining aggrageted metrices for a set of regions during visualization. The adapters are only affected by grouping if filtering, based on groups is implemented in the adapters. Nevertheless, the group definition file is part of the overall user interface. Furthermore, the user adapter is affected from user counter grouping if it is continued to implement it via instrumentation calls.
+Currently, grouping is mostly defined via configuration file or through the programmer and can be used for filtering or obtaining aggregated metrics for a set of regions during visualization. The adapters are only affected by grouping if filtering, based on groups is implemented in the adapters. Nevertheless, the group definition file is part of the overall user interface. Furthermore, the user adapter is affected from user counter grouping if it is continued to implement it via instrumentation calls.
 
 
 @section filtering  Filtering
@@ -125,7 +125,7 @@ Currently, grouping is mostly defined via configuration file or through the prog
 Filtering allows to exclude the recording or measurement of events. In most cases enter/exit events for specified functions can be filtered.
 
 @subsection scalasca_filtering SCALASCA
-SCALASCA can filter enter/exit events inside the compiler adapters. A list with filtered function names is read from configuration file and the processing of the enter/exit event of regions of filtered functions returns immediatly. The replay mechanism of SCALASCA is not tolerant of inconsistencies beause of missing MPI-related events.
+SCALASCA can filter enter/exit events inside the compiler adapters. A list with filtered function names is read from configuration file and the processing of the enter/exit event of regions of filtered functions returns immediately. The replay mechanism of SCALASCA is not tolerant of inconsistencies because of missing MPI-related events.
 
 @subsection tau_filtering TAU
 If a region is visited for a specific number of times (100 000) and the inclusive execution time is less than a specific time (10 us) the measurement system do not obtain the timestamps anymore. This is also called throttling. It was introduced to reduce the overhead of measurement.
@@ -150,13 +150,13 @@ Maybe, a utility can be provided, that reads in a filter configuration and retur
 
 @section mpi_support MPI support
 
-For the MPI support is given through wrapping of the PMI library calls using the PMPI interface. For the adapter level the appoach is very similar. The MPI functions call generic enter/exit events and, additionally, some MPI functions generate a function specific event for special communication analysis. While core function are basically some differences exit for some aspects of the MPI support:
+For the MPI support is given through wrapping of the PMI library calls using the PMPI interface. For the adapter level the approach is very similar. The MPI functions call generic enter/exit events and, additionally, some MPI functions generate a function specific event for special communication analysis. While core function are basically some differences exit for some aspects of the MPI support:
 
-@li In SCALASCA extentions: Marc-Andre added additional grouping and filtering support. Furthermore, one-sided communication has some outdated events and concepts.
+@li In SCALASCA extensions: Marc-Andre added additional grouping and filtering support. Furthermore, one-sided communication has some outdated events and concepts.
 
 @li VampirTrace: Modification of one-sided communication.
 
-When using Periscope, waiting and blocking time are evaluated at runtime and addtional communication is needed. Most probably, a separate adapter must be provided when Periscope is used.
+When using Periscope, waiting and blocking time are evaluated at runtime and additional communication is needed. Most probably, a separate adapter must be provided when Periscope is used.
 
 MPI support affects the MPI wrapper library.
 
@@ -173,7 +173,7 @@ Expected changes to the architecture are:
 
 The only affected adapter is the pomp adapter.
 
-@subsections concluusions_openmp Conclusions
+@subsections conclusions_openmp Conclusions
 The definitions of OpenMP events and adapters is postponed until the results from the OpenMP group are available. New events can be added easily from the point of view of the adapters. The region definitions should be designed in a way that new region types can be added.
 
 
@@ -185,13 +185,13 @@ The extended SCALASCA tools support the same functionality for PThreads.
 
 @section hardware_counter Hardware counter support
 
-SCALASCA and VampirTrace can optionally obtain metrices from hardware counters through the PAPI library. The interface to the PAPI library are nearly the same in both tools. VampirTrace can also be build with support for a few other hardware counter libraries instead of PAPI support. Other libraries use the same interface between the measurement system and the hardware counter support.
+SCALASCA and VampirTrace can optionally obtain metrics from hardware counters through the PAPI library. The interface to the PAPI library are nearly the same in both tools. VampirTrace can also be build with support for a few other hardware counter libraries instead of PAPI support. Other libraries use the same interface between the measurement system and the hardware counter support.
 
 @subsection vampir_hardware VampirTrace
 Additionally, VampirTrace can be build with support for other counter libraries instead of PAPI support. Which library is used is defined during the build process. The interface to the measurement system is the same for all libraries.
 
 @subsection periscope_hardware Periscope
-Persicope needs to reconfigure the counters during one measurement.
+Periscope needs to reconfigure the counters during one measurement.
 
 @subsections conclusions_hardware Conclusions
 A merge should be possible.
@@ -287,7 +287,7 @@ The first step includes
 </ul>
 
 @subsection second_step Second step
-When it becomes more clear, how the OpenMP and general Thread suuport may look like, they are planned to be included in a second step. Furthermore, also ongoing work on other parts of MPI may be finished and then included. Also grouping and filtering are added. Some features of the user manual instrumenatation are still unclear at this point, e.g., parameter profiling, and  user metrics. If theri functionality can be cleatified, the user adapter will be extended.
+When it becomes more clear, how the OpenMP and general Thread support may look like, they are planned to be included in a second step. Furthermore, also ongoing work on other parts of MPI may be finished and then included. Also grouping and filtering are added. Some features of the user manual instrumentation are still unclear at this point, e.g., parameter profiling, and user metrics. If their functionality can be clarified, the user adapter will be extended.
 
 The second step includes:
 <ul>
@@ -300,9 +300,9 @@ The second step includes:
   <li> User metrics
   <li> Parameter-based profiling
 </ul>
-@subsection thurd_step Third step
+@subsection third_step Third step
 All other functionality is then added as the third step.
-The thrid step includes so far:
+The third step includes so far:
 <ul>
   <li> Profile snapshots
   <li> File I/O
@@ -356,7 +356,7 @@ We propose the following time-line to get an early prototype running in order to
 @li user instrumentation (End Feb. 2010)
 @li metrics (PAPI first, later other systems and different types of metrics) (End of Feb 2010)
 
-Because many of the advances features instrumentation are still under global discussion, some features of the user adapter are postponed. One the other hand, through the OpenMP group, basic OPARI instrumentation and the a basic pomp adapter comes now already in stage one. However, advanced functionality of the OpenMP is postponed und without a fixed schedule yet. During the first implementation phase the documentation will be realized via doxygen and only basic concepts are worked out/discussed in the wiki section.
+Because many of the advanced features instrumentation are still under global discussion, some features of the user adapter are postponed. One the other hand, through the OpenMP group, basic OPARI instrumentation and the a basic pomp adapter comes now already in stage one. However, advanced functionality of the OpenMP is postponed and without a fixed schedule yet. During the first implementation phase the documentation will be realized via doxygen and only basic concepts are worked out/discussed in the wiki section.
 
 This approach would allow to provide first adapters (compiler, MPI) to allow early tests with a running proto-system by the end of this year. Furthermore, some examples will be provided not only to test certain adapters (compiler instrumentation, MPI communication), but also to test user interaction tools and their connection to the build system.
 */
