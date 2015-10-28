@@ -27,7 +27,7 @@ dnl a BSD-style license.  See the COPYING file in the package base
 dnl directory for details.
 dnl
 
-AC_PREREQ([2.68])
+AC_PREREQ([2.69])
 AC_INIT([Score-P], m4_esyscmd([vendor/common/build-config/generate-package-version.sh build-config/VERSION]), [support@score-p.org], [scorep])
 
 AFS_PACKAGE_INIT
@@ -44,11 +44,8 @@ AC_SCOREP_TOPLEVEL_ARGS
 ## Need to be called early on configure.ac because other macros search tools
 ## in this directory.
 AC_CONFIG_AUX_DIR([build-config])
-
-## Packages that use aclocal should declare where local macros can be found
-## using AC_CONFIG_MACRO_DIR.
-AC_CONFIG_MACRO_DIR([vendor/common/build-config/m4
-                     build-config/m4])
+## See also ACLOCAL_AMFLAGS in Makefile.am.
+AC_CONFIG_MACRO_DIRS([build-config/m4 vendor/common/build-config/m4])
 
 ## Set the default installation prefix to /opt/scorep instead of /usr/local
 AC_PREFIX_DEFAULT([/opt/scorep])
@@ -56,7 +53,7 @@ AC_PREFIX_DEFAULT([/opt/scorep])
 AC_SCOREP_SVN_CONTROLLED
 
 ## Call not before AC_CONFIG_MACRO_DIR
-AM_INIT_AUTOMAKE([foreign color-tests 1.11.1 -Wall tar-pax])
+AM_INIT_AUTOMAKE([foreign color-tests 1.13.4 -Wall tar-pax])
 AM_SILENT_RULES([yes])
 
 AC_SCOREP_DETECT_PLATFORMS
@@ -126,7 +123,9 @@ AS_IF([test "x$ac_scorep_platform_data_provided" = "x" || \
 AC_SCOREP_UNCRUSTIFY
 
 AC_SCOREP_DOXYGEN
-AC_SCOREP_DOXYGEN_CONFIG_FILES
+AS_IF([test "x${ac_scorep_svn_controlled}" = xyes],
+    [AC_CONFIG_FILES([doc/doxygen-user.cfg:doc/doxygen-user/doxygen-user.cfg.in])
+     AC_CONFIG_FILES([doc/doxygen-dev.cfg:doc/doxygen-dev/doxygen-dev.cfg.in])])
 
 AFS_DEBUG_OPTION
 

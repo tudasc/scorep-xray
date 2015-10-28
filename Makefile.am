@@ -33,14 +33,14 @@
 ## must build.
 SUBDIRS = $(subdirs) $(subdirs_custom)
 
-## ACLOCAL_AMFLAGS contains options to pass to aclocal when aclocal.m4 is to be
-## rebuilt by make. This line is also used by autoreconf to run aclocal with
-## suitable options, or by autopoint and gettextize to locate the place where
-## Gettext's macros should be installed. So even if you do not really care about
-## the rebuild rules, you should define ACLOCAL_AMFLAGS.
-ACLOCAL_AMFLAGS = -I vendor/common/build-config/m4 -I build-config/m4
+## Options passed to aclocal to specify local macro directories. Although
+## ACLOCAL_AMFLAGS should be replaced by AC_CONFIG_MACRO_DIRS, aclocal-1.13.4
+## doesn't honor the paths provided to AC_CONFIG_MACRO_DIRS. See
+## https://debbugs.gnu.org/cgi/bugreport.cgi?bug=21352
+ACLOCAL_AMFLAGS = -I build-config/m4 -I vendor/common/build-config/m4
 
 include vendor/common/build-config/Makefile.inc.am
+include doc/Makefile.inc.am
 include vendor/common/build-config/platforms.am
 
 ## Still, sometimes there are files that must be distributed, but which are not
@@ -101,7 +101,7 @@ install-data-hook:
 	    fi \
 	done
 
-uninstall-hook: common-uninstall
+uninstall-hook: doxygen-uninstall common-uninstall
 
 dist-hook: prohibit-svn-files-in-dist doc/doxygen-user/main.dox doxygen-user-generate
 

@@ -103,8 +103,8 @@ config_headers = \
 
 clean-local:
 	@rm -rf $(clean_files)
-	@cd build-config; rm -f compile config.sub install-sh config.guess depcomp ltmain.sh missing ylwrap
-	@cd vendor/common/build-config/m4; rm -f libtool.m4 ltsugar.m4 lt~obsolete.m4 ltoptions.m4 ltversion.m4
+	@cd build-config; rm -f compile config.sub install-sh config.guess depcomp ltmain.sh missing ylwrap ar-lib test-driver
+	@cd build-config/m4; rm -f libtool.m4 ltsugar.m4 lt~obsolete.m4 ltoptions.m4 ltversion.m4
 	@for build in $(sub_builds); do \
 	    ( cd build-$$build; rm -rf $(clean_files); ); \
 	done

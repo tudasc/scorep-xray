@@ -93,7 +93,9 @@ argument:
 
          CXX="scorep <your-cxx-compiler>" \\
 
-         FC="scorep <your-fc-compiler>" ...</tt></li>
+         FC="scorep <your-fc-compiler>" ...
+</tt>
+</li>
 </ol>
 
 

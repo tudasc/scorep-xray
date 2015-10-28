@@ -82,7 +82,9 @@ libscorep_adapter_compiler_mgmt_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_init.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_weak.c
 
-pkglib_DATA = \
+# Install objectfiles in $(pkglibdir). pkglib_DATA not legitimate since automake 1.11.2
+objectdir = $(pkglibdir)
+object_DATA = \
     scorep_compiler_gcc_plugin_begin.o \
     scorep_compiler_gcc_plugin_end.o
 

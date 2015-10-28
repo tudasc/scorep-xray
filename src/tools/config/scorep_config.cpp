@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -569,24 +569,25 @@ main( int    argc,
 void
 get_rpath_struct_data( void )
 {
-    // Replace ${wl} by LIBDIR_FLAG_WL and erase everything from
+    // Replace $wl by LIBDIR_FLAG_WL and erase everything from
     // $libdir on in order to create m_rpath_head and
     // m_rpath_delimiter. This will work for most and for the relevant
-    // (as we know in 2012-07) values of LIBDIR_FLAG_CC. Possible
+    // (as we know in 2012-07) values of LIBDIR_FLAG_CC. Some possible
     // values are (see also ticket 530,
     // https://silc.zih.tu-dresden.de/trac-silc/ticket/530):
     // '+b $libdir'
     // '-L$libdir'
     // '-R$libdir'
     // '-rpath $libdir'
-    // '${wl}-blibpath:$libdir:'"$aix_libpath"
-    // '${wl}+b ${wl}$libdir'
-    // '${wl}-R,$libdir'
-    // '${wl}-R $libdir:/usr/lib:/lib'
-    // '${wl}-rpath,$libdir'
-    // '${wl}--rpath ${wl}$libdir'
-    // '${wl}-rpath ${wl}$libdir'
-    // '${wl}-R $wl$libdir'
+    // '$wl-blibpath:$libdir:'"$aix_libpath"
+    // '$wl+b $wl$libdir'
+    // '$wl-R,$libdir'
+    // '$wl-R $libdir:/usr/lib:/lib'
+    // '$wl-rpath,$libdir'
+    // '$wl--rpath $wl$libdir'
+    // '$wl-rpath $wl$libdir'
+    // '$wl-R $wl$libdir'
+    // For a complete list, check the currently used libtool.m4.
     std::string            rpath_flag = LIBDIR_FLAG_CC;
     std::string::size_type index      = rpath_flag.find( "$libdir" );
     UTILS_BUG_ON( index == std::string::npos,
@@ -598,12 +599,12 @@ get_rpath_struct_data( void )
     index = 0;
     while ( true )
     {
-        index = rpath_flag.find( "${wl}", index );
+        index = rpath_flag.find( "$wl", index );
         if ( index == std::string::npos )
         {
             break;
         }
-        rpath_flag.replace( index, strlen( "${wl}" ), LIBDIR_FLAG_WL );
+        rpath_flag.replace( index, strlen( "$wl" ), LIBDIR_FLAG_WL );
         ++index;
     }
     index = rpath_flag.find( "$libdir" );

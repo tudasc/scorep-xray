@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -31,7 +31,11 @@
 
 ## file       build-score/Makefile.am
 
-ACLOCAL_AMFLAGS = -I ../vendor/common/build-config/m4 -I ../build-config/m4
+## Options passed to aclocal to specify local macro directories. Although
+## ACLOCAL_AMFLAGS should be replaced by AC_CONFIG_MACRO_DIRS, aclocal-1.13.4
+## doesn't honor the paths provided to AC_CONFIG_MACRO_DIRS. See
+## https://debbugs.gnu.org/cgi/bugreport.cgi?bug=21352
+ACLOCAL_AMFLAGS = -I ../build-config/m4 -I ../vendor/common/build-config/m4
 
 include ../build-includes/common.am
 
