@@ -66,14 +66,18 @@ const pass_data pass_data_instrument =
 class pass_instrument : public gimple_opt_pass
 {
 public:
-    pass_instrument ( gcc::context* ctxt )
+    pass_instrument( gcc::context* ctxt )
         : gimple_opt_pass( pass_data_instrument, ctxt )
     {
     }
 
     /* opt_pass methods: */
     unsigned int
+#if SCOREP_GCC_PLUGIN_TARGET_VERSION >= 5000
+    execute( function* )
+#else
     execute()
+#endif
     {
         return scorep_plugin_pass_instrument_function();
     }

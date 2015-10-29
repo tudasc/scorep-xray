@@ -61,9 +61,8 @@ var_build( scorep_plugin_inst_handle* handle )
                                   get_identifier( region_handle_var_name ),
                                   handle->type );
 
-    DECL_INITIAL( handle_var ) = build_int_cst( handle->type, 0 );
-    DECL_CONTEXT( handle_var ) = current_function_decl;
-    set_decl_section_name( handle_var, region_handles_section );
+    DECL_INITIAL( handle_var )    = build_int_cst( handle->type, 0 );
+    DECL_CONTEXT( handle_var )    = current_function_decl;
     TREE_STATIC( handle_var )     = 1;
     TREE_PUBLIC( handle_var )     = 0;
     TREE_USED( handle_var )       = 1;
@@ -71,6 +70,7 @@ var_build( scorep_plugin_inst_handle* handle )
     DECL_ARTIFICIAL( handle_var ) = 0;
     DECL_IGNORED_P( handle_var )  = 0;
     varpool_finalize_decl( handle_var );
+    set_decl_section_name( handle_var, region_handles_section );
 
     DECL_SEEN_IN_BIND_EXPR_P( handle_var ) = 1;
     record_vars( handle_var );

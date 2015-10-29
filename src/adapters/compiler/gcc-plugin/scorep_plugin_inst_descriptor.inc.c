@@ -203,15 +203,15 @@ scorep_plugin_region_description_build( const char* function_name,
     DECL_SIZE( region_descr_var )      = build_int_cst( size_type_node, 64 * BITS_PER_UNIT );
     DECL_SIZE_UNIT( region_descr_var ) = build_int_cst( size_type_node, 64 );
 
-    DECL_INITIAL( region_descr_var ) = region_descr_value;
-    DECL_CONTEXT( region_descr_var ) = current_function_decl;
-    set_decl_section_name( region_descr_var, region_descrs_section );
+    DECL_INITIAL( region_descr_var )    = region_descr_value;
+    DECL_CONTEXT( region_descr_var )    = current_function_decl;
     TREE_PUBLIC( region_descr_var )     = 0;
     TREE_USED( region_descr_var )       = 1;
     DECL_PRESERVE_P( region_descr_var ) = 1;
     DECL_ARTIFICIAL( region_descr_var ) = 1;
     DECL_IGNORED_P( region_descr_var )  = 1;
     TREE_STATIC( region_descr_var )     = 1;
+    set_decl_section_name( region_descr_var, region_descrs_section );
 
     mark_decl_referenced( region_descr_var );
     varpool_finalize_decl( region_descr_var );
