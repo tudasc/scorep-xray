@@ -156,14 +156,14 @@ with the tarball will be used:
 
   --with-otf2[=<otf2-bindir>]
                Use an already installed and compatible OTF2 library
-               (v1.5 or newer). Provide path to otf2-config.
+               (v2.0 or newer). Provide path to otf2-config.
                Auto-detected if already in $PATH.
   --with-cube[=<cube-bindir>]
                Use already installed and compatible Cube libraries
                (v4.3 or newer). Provide path to cube-config.
                Auto-detected if already in $PATH.
   --with-opari2[=<opari2-bindir>]
-               Use an already installed and compatible OPARI2 (v.2.0
+               Use an already installed and compatible OPARI2 (v2.0
                or newer). Provide path to opari2-config.
                Auto-detected if already in $PATH.
 
