@@ -151,8 +151,10 @@ scorep_plugin_pass_instrument_function( void )
      * _MOD_ can occur at most once, the two underscores are not affected by
      * any command line options like -f[no-]underscoring or
      * -f[no-]second-underscore
+     * use a prefix compare for the language, as later Fortran compilers are
+     * named like "GNU Fortran2008"
      */
-    if ( 0 == strcmp( lang_hooks.name, "GNU Fortran" )
+    if ( 0 == strncmp( lang_hooks.name, "GNU Fortran", strlen( "GNU Fortran" ) )
          && assembler_name[ 0 ] == '_'
          && assembler_name[ 1 ] == '_'
          && strstr( assembler_name + 2, "_MOD_" ) )

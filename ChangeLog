@@ -51,7 +51,8 @@ Bugfixes:
   when using the GNU compiler adapter (applies also to Cray and
   Fujitsu compilers).
 - The GCC compiler instrumentation plug-in was non-functional for GCC 5
-  because of an unnoticed API change.
+  because of an unnoticed API change. And the custom demangling of Fortran
+  module functions is working again too.
 
 ------------------- Released version 1.4.2 ---------------------------
 
