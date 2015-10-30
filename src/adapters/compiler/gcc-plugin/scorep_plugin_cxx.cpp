@@ -78,12 +78,18 @@ public:
 #else
     execute()
 #endif
+#if __cplusplus >= 201103L
+    override
+#endif
     {
         return scorep_plugin_pass_instrument_function();
     }
 
     opt_pass*
     clone()
+#if __cplusplus >= 201103L
+    override
+#endif
     {
         return new pass_instrument( m_ctxt );
     }

@@ -230,8 +230,18 @@ AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],
         [AC_SUBST([SCOREP_GCC_PLUGIN_CXXFLAGS], ["-fno-rtti"])])
     AC_SUBST([SCOREP_GCC_PLUGIN_CPPFLAGS], ["-I${scorep_gcc_plugin_cppflags} -I$srcdir/../src/adapters/compiler/gcc-plugin/fake-gmp"])
     AM_COND_IF([GCC_COMPILED_WITH_CXX],
-        [AFS_SUMMARY([Compiler used], [$CXX])],
-        [AFS_SUMMARY([Compiler used], [$CC])])])
+        [AC_LANG_PUSH([C++])
+        save_CXX="$CXX"
+        CXX="$CXX -std=c++11"
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([], [])],
+            [],
+            [CXX="$save_CXX"])
+        AC_LANG_POP([C++])
+        AFS_SUMMARY([Compiler used], [$CXX])],
+        [AFS_SUMMARY([Compiler used], [$CC])])
+])
+
+
 
 AS_UNSET([scorep_gcc_plugin_cppflags])
 AS_UNSET([scorep_gcc_plugin_support_reason])
