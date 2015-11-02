@@ -707,7 +707,7 @@ Fortran:
       SCOREP_USER_REGION_DEFINE( my_region_handle )
       ! more declarations
 
-      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
+      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "foo", SCOREP_USER_REGION_TYPE_COMMON )
       ! do something
       SCOREP_USER_OA_PHASE_END( my_region_handle )
 
@@ -724,7 +724,7 @@ C/C++:
 
       // do something
 
-      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "foo",SCOREP_USER_REGION_TYPE_COMMON )
+      SCOREP_USER_OA_PHASE_BEGIN( my_region_handle, "foo", SCOREP_USER_REGION_TYPE_COMMON )
 
       // do something
 

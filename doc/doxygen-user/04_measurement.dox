@@ -968,14 +968,14 @@ addresses and ports, the OA module will accept connections. Once the connection 
 application execution and wait for requests. The format of the requests is plain text following the syntax below:
 
 @code
-<request>              = <configuration>|<execution>|<retrieval>
-<configuration>        = BEGINREQUESTS GLOBAL <request_type>
+<request>              = <metric_configuration> | <execution> | <retrieval>
+<metric_configuration> = BEGINREQUESTS GLOBAL <request_type>
                          ENDREQUESTS
 <request_type>         = MPI | EXECUTION_TIME |
                          METRIC <metric_specification>
 <metric_specification> = PERISCOPE <periscope_metric_code> |
                          PAPI "<papi_counter_name>" |
-                         RUSAGE "rusage_metric_name" |
+                         RUSAGE "<rusage_metric_name>" |
                          OTHER "metric_name"
 <execution>            = TERMINATE | RUNTOSTART | RUNTOEND
 <retrieval>            = GETSUMMARYDATA
@@ -1005,12 +1005,12 @@ where
     <tt>PERISCOPE <periscope_metric_code></tt> requests a metric by the Periscope internal code,
  </li>
  <li>
-    <tt>PAPI <papi_counter_name></tt> requests a a PAPI hardware counter metric by the counter name,
+    <tt>PAPI <papi_counter_name></tt> requests a PAPI hardware counter metric by the counter name,
  </li>
  <li>
     <tt>RUSAGE <rusage_counter_name></tt> requests a Resource Usage Counter metric by the counter name,
  </li>
-  <li>
+ <li>
     <tt>OTHER <metric_name></tt> requests a metric, to be defined in @scorep definition system, specified by the name,
  </li>
  <li>
