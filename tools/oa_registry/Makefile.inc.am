@@ -2,30 +2,30 @@
 
 if HAVE_ONLINE_ACCESS
 
-bin_PROGRAMS += online-access-registry
+bin_PROGRAMS += scorep-online-access-registry
 
-online_access_registry_SOURCES = \
-	$(SRC_ROOT)tools/oa_registry/regsrv_client.cc                 	\
-	$(SRC_ROOT)tools/oa_registry/regsrv_client.h                 	\
-	$(SRC_ROOT)tools/oa_registry/regsrv.cc                 		\
-	$(SRC_ROOT)tools/oa_registry/regsrv.h                 			\
-	$(SRC_ROOT)tools/oa_registry/regsrv_sockets.c                 	\
-	$(SRC_ROOT)tools/oa_registry/regsrv_sockets.h                 	\
-	$(SRC_ROOT)tools/oa_registry/stringutil.cc           		    \
-	$(SRC_ROOT)tools/oa_registry/stringutil.h           		    \
-	$(SRC_ROOT)tools/oa_registry/scorep_oa_registry_protocol.h		\
-	$(SRC_ROOT)tools/oa_registry/strutil.c							\
+scorep_online_access_registry_SOURCES = \
+	$(SRC_ROOT)tools/oa_registry/regsrv_client.cc              \
+	$(SRC_ROOT)tools/oa_registry/regsrv_client.h               \
+	$(SRC_ROOT)tools/oa_registry/regsrv.cc                     \
+	$(SRC_ROOT)tools/oa_registry/regsrv.h                      \
+	$(SRC_ROOT)tools/oa_registry/regsrv_sockets.c              \
+	$(SRC_ROOT)tools/oa_registry/regsrv_sockets.h              \
+	$(SRC_ROOT)tools/oa_registry/stringutil.cc                 \
+	$(SRC_ROOT)tools/oa_registry/stringutil.h                  \
+	$(SRC_ROOT)tools/oa_registry/scorep_oa_registry_protocol.h \
+	$(SRC_ROOT)tools/oa_registry/strutil.c                     \
 	$(SRC_ROOT)tools/oa_registry/strutil.h
 
-online_access_registry_CPPFLAGS = $(AM_CPPFLAGS)      \
-    $(UTILS_CPPFLAGS)							\
+scorep_online_access_registry_CPPFLAGS = $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS)                                   \
     -D__STDC_FORMAT_MACROS
 
 if ! PLATFORM_AIX
-online_access_registry_CPPFLAGS += -D_POSIX_SOURCE
+scorep_online_access_registry_CPPFLAGS += -D_POSIX_SOURCE
 endif
 
-online_access_registry_LDADD = $(LIB_ROOT)libutils.la
+scorep_online_access_registry_LDADD = $(LIB_ROOT)libutils.la
 
 EXTRA_DIST += $(SRC_ROOT)tools/oa_registry/scenario_mpi
 EXTRA_DIST += $(SRC_ROOT)tools/oa_registry/scenario_serial
