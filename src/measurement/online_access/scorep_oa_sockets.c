@@ -343,6 +343,9 @@ scorep_oa_sockets_client_connect_retry( char* hostname,
             continue;
         }
     }
+
+    free( port_s );
+
     if ( success == -1 )
     {
         sock = -1;
@@ -554,8 +557,8 @@ scorep_oa_sockets_register_with_registry( uint64_t port,
                 UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entry_id= %d", entry_id );
             }
 
-//			sprintf( str,"PERISCOPE processrank [%i:%i:%i]", nprocs, allinfo[i].rank, allinfo[i].cpu);
-//			registry_store_string(reg, entry_id, str);
+//            sprintf( str, "PERISCOPE processrank [%i:%i:%i]", nprocs, allinfo[i].rank, allinfo[i].cpu );
+//            registry_store_string( reg, entry_id, str );
         }
 
         if ( !scorep_oa_sockets_close_registry( reg ) )
@@ -569,13 +572,15 @@ scorep_oa_sockets_register_with_registry( uint64_t port,
     {
         //client determines local info and provides it to master
         //hostname, port, rank, cpu
-        //MPI_GATHER(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
+        //MPI_GATHER( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm )
 
         int help_int;
         PMPI_Gather( &myinfo, sizeof( P_info ), MPI_BYTE, allinfo, sizeof( P_info ), MPI_BYTE, 0, MPI_COMM_WORLD );
 
         PMPI_Scatter( &help_int, 1, MPI_INTEGER, &entry_id, 1, MPI_INTEGER, 0, MPI_COMM_WORLD );
     }
+
+    free( allinfo );
 #else
 
     myinfo.cpu  = 1;                                                                                    /// get rid of later
