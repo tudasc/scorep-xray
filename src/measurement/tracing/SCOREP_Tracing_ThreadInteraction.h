@@ -65,48 +65,6 @@ SCOREP_Tracing_DeleteLocationData( SCOREP_TracingData* traceLocationData );
 
 
 /**
- * Triggered on thread creation, i.e. when a thread is encountered the first
- * time. Note that several thread can share teh same location data.
- *
- * @param locationData Location data of the current thread.
- * @param parentLocationData Location data of the parent thread, may equal @a
- * locationData.
- */
-void
-SCOREP_Tracing_OnThreadCreation( SCOREP_Location* locationData,
-                                 SCOREP_Location* parentLocationData );
-
-/**
- * Triggered at the start of every thread/parallel region. Always triggered,
- * even after thread creation. In contrast to creation this function may be
- * triggered multiple times, e.g. if we reenter a parallel region again or if
- * we reuse the location/thread in a different parallel region.
- *
- * @param locationData Location data of the current thread inside the paralell
- * region.
- * @param parentLocationData Location data of the parent thread, may equal @a
- * locationData.
- */
-void
-SCOREP_Tracing_OnLocationActivation( SCOREP_Location* locationData,
-                                     SCOREP_Location* parentLocationData );
-
-
-/**
- * Triggered after the end of every thread/parallel region, i.e. in the join
- * event.
- *
- * @param locationData Location data of the deactivated thread inside the
- * parallel region.
- * @param parentLocationData Location data of the parent thread, may equal @a
- * locationData.
- */
-void
-SCOREP_Tracing_OnLocationDeactivation( SCOREP_Location* locationData,
-                                       SCOREP_Location* parentLocationData );
-
-
-/**
  * Triggered on location creation, i.e. when a location is encountered the first
  * time. Note that several threads can share teh same location data.
  *

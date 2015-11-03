@@ -89,30 +89,6 @@ SCOREP_Tracing_DeleteLocationData( SCOREP_TracingData* traceLocationData )
 
 
 void
-SCOREP_Tracing_OnThreadCreation( SCOREP_Location* locationData,
-                                 SCOREP_Location* parentLocationData )
-{
-    return;
-}
-
-
-void
-SCOREP_Tracing_OnLocationActivation( SCOREP_Location* locationData,
-                                     SCOREP_Location* parentLocationData )
-{
-    return;
-}
-
-
-void
-SCOREP_Tracing_OnLocationDeactivation( SCOREP_Location* locationData,
-                                       SCOREP_Location* parentLocationData )
-{
-    return;
-}
-
-
-void
 SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
                                    SCOREP_Location* parentLocationData )
 {

@@ -258,10 +258,6 @@ SCOREP_Location_CallSubstratesOnActivation( SCOREP_Location* current,
     {
         SCOREP_Profile_OnLocationActivation( current, parent, forkSequenceCount );
     }
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        SCOREP_Tracing_OnLocationActivation( current, parent );
-    }
 }
 
 
@@ -272,10 +268,6 @@ SCOREP_Location_CallSubstratesOnDeactivation( SCOREP_Location* current,
     if ( SCOREP_IsProfilingEnabled() )
     {
         SCOREP_Profile_OnLocationDeactivation( current, parent );
-    }
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        SCOREP_Tracing_OnLocationDeactivation( current, parent );
     }
 }
 
@@ -402,9 +394,9 @@ SCOREP_Location_FinalizeDefinitions( void )
 }
 
 void
-SCOREP_Location_ForAll( bool  ( * cb )( SCOREP_Location*,
-                                        void* ),
-                        void* data )
+SCOREP_Location_ForAll( bool ( * cb )( SCOREP_Location*,
+                                       void* ),
+                        void*    data )
 {
     assert( cb );
 
@@ -424,10 +416,10 @@ const char*
 SCOREP_Location_GetName( SCOREP_Location* locationData )
 {
     return SCOREP_LOCAL_HANDLE_DEREF(
-               SCOREP_LOCAL_HANDLE_DEREF(
-                   locationData->location_handle,
-                   Location )->name_handle,
-               String )->string_data;
+        SCOREP_LOCAL_HANDLE_DEREF(
+            locationData->location_handle,
+            Location )->name_handle,
+        String )->string_data;
 }
 
 

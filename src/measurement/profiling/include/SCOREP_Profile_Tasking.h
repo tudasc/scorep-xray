@@ -43,18 +43,6 @@
 #include <SCOREP_Types.h>
 
 /**
-   Implements the handling of a task creation event.
-   @param thread       Location this event happened on.
-   @param timestamp    Timestamp of this event.
-   @param taskId       Id of the created task.
- */
-void
-SCOREP_Profile_TaskCreate( SCOREP_Location* thread,
-                           uint64_t         timestamp,
-                           uint32_t         threadId,
-                           uint32_t         generationNumber );
-
-/**
    Implements the handling of a task switch event.
    @param thread       Location this event happened on.
    @param timestamp    Timestamp of this event.
