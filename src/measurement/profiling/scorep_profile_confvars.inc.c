@@ -224,8 +224,8 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
         "false",
         "Write .core files if an error occured.",
         "If an error occures inside the profiling system, the profiling is disabled. "
-        "For dubugging reasons, it might be feasable to get the state of the local "
-        "local at these points. It is not recommended to enable this feature for "
+        "For debugging reasons, it might be feasible to get the state of the local "
+        "stack at these points. It is not recommended to enable this feature for "
         "large scale measurements."
     },
     SCOREP_CONFIG_TERMINATOR
