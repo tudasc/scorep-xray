@@ -439,7 +439,7 @@ FSUB( MPI_Get_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count,
  * For the order of events see @ref MPI_Get_elements_x
  */
 void
-FSUB( MPI_Get_elements_x )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, MPI_Fint* ierr )
+FSUB( MPI_Get_elements_x )( MPI_Fint* status, MPI_Fint* datatype, MPI_Count* count, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -584,7 +584,7 @@ FSUB( MPI_Status_set_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint*
  * For the order of events see @ref MPI_Status_set_elements_x
  */
 void
-FSUB( MPI_Status_set_elements_x )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, MPI_Fint* ierr )
+FSUB( MPI_Status_set_elements_x )( MPI_Fint* status, MPI_Fint* datatype, MPI_Count* count, MPI_Fint* ierr )
 {
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;

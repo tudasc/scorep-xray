@@ -116,6 +116,7 @@ is_special_int
 )
 {
     return ( param.get_type().find( "MPI_Aint" )   != string::npos ) ||
+           ( param.get_type().find( "MPI_Count" )  != string::npos ) ||
            ( param.get_type().find( "MPI_Offset" ) != string::npos );
 }
 

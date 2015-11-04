@@ -1922,7 +1922,7 @@ FSUB( MPI_Type_get_extent )( MPI_Fint* datatype, MPI_Aint* lb, MPI_Aint* extent,
  * For the order of events see @ref MPI_Type_get_extent_x
  */
 void
-FSUB( MPI_Type_get_extent_x )( MPI_Fint* datatype, MPI_Fint* lb, MPI_Fint* extent, MPI_Fint* ierr )
+FSUB( MPI_Type_get_extent_x )( MPI_Fint* datatype, MPI_Count* lb, MPI_Count* extent, MPI_Fint* ierr )
 {
     *ierr = MPI_Type_get_extent_x( PMPI_Type_f2c( *datatype ), lb, extent );
 }
@@ -1952,7 +1952,7 @@ FSUB( MPI_Type_get_true_extent )( MPI_Fint* datatype, MPI_Aint* true_lb, MPI_Ain
  * For the order of events see @ref MPI_Type_get_true_extent_x
  */
 void
-FSUB( MPI_Type_get_true_extent_x )( MPI_Fint* datatype, MPI_Fint* true_lb, MPI_Fint* true_extent, MPI_Fint* ierr )
+FSUB( MPI_Type_get_true_extent_x )( MPI_Fint* datatype, MPI_Count* true_lb, MPI_Count* true_extent, MPI_Fint* ierr )
 {
     *ierr = MPI_Type_get_true_extent_x( PMPI_Type_f2c( *datatype ), true_lb, true_extent );
 }
@@ -2097,7 +2097,7 @@ FSUB( MPI_Type_size )( MPI_Fint* datatype, MPI_Fint* size, MPI_Fint* ierr )
  * For the order of events see @ref MPI_Type_size_x
  */
 void
-FSUB( MPI_Type_size_x )( MPI_Fint* datatype, MPI_Fint* size, MPI_Fint* ierr )
+FSUB( MPI_Type_size_x )( MPI_Fint* datatype, MPI_Count* size, MPI_Fint* ierr )
 {
     *ierr = MPI_Type_size_x( PMPI_Type_f2c( *datatype ), size );
 }

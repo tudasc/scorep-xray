@@ -2131,6 +2131,7 @@ FSUB( MPI_Ibsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
 void
 FSUB( MPI_Improbe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* flag, MPI_Fint* message, MPI_Fint* status, MPI_Fint* ierr )
 {
+    MPI_Message c_message;
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
 
@@ -2144,8 +2145,9 @@ FSUB( MPI_Improbe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* 
     #endif
 
 
-    *ierr = MPI_Improbe( *source, *tag, PMPI_Comm_f2c( *comm ), flag, message, c_status_ptr );
+    *ierr = MPI_Improbe( *source, *tag, PMPI_Comm_f2c( *comm ), flag, &c_message, c_status_ptr );
 
+    *message = PMPI_Message_c2f( c_message );
     #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
 #endif
@@ -2166,6 +2168,7 @@ FSUB( MPI_Improbe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* 
 void
 FSUB( MPI_Imrecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* message, MPI_Fint* request, MPI_Fint* ierr )
 {
+    MPI_Message c_message = PMPI_Message_f2c( *message );
     MPI_Request c_request;
 
 
@@ -2177,8 +2180,9 @@ FSUB( MPI_Imrecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* me
     #endif
 
 
-    *ierr = MPI_Imrecv( buf, *count, PMPI_Type_f2c( *datatype ), message, &c_request );
+    *ierr = MPI_Imrecv( buf, *count, PMPI_Type_f2c( *datatype ), &c_message, &c_request );
 
+    *message = PMPI_Message_c2f( c_message );
     *request = PMPI_Request_c2f( c_request );
 }
 #endif
@@ -2341,6 +2345,7 @@ FSUB( MPI_Issend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
 void
 FSUB( MPI_Mprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* message, MPI_Fint* status, MPI_Fint* ierr )
 {
+    MPI_Message c_message;
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
 
@@ -2354,8 +2359,9 @@ FSUB( MPI_Mprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* m
     #endif
 
 
-    *ierr = MPI_Mprobe( *source, *tag, PMPI_Comm_f2c( *comm ), message, c_status_ptr );
+    *ierr = MPI_Mprobe( *source, *tag, PMPI_Comm_f2c( *comm ), &c_message, c_status_ptr );
 
+    *message = PMPI_Message_c2f( c_message );
     #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
 #endif
@@ -2376,6 +2382,7 @@ FSUB( MPI_Mprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* m
 void
 FSUB( MPI_Mrecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* message, MPI_Fint* status, MPI_Fint* ierr )
 {
+    MPI_Message c_message = PMPI_Message_f2c( *message );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
 
@@ -2395,8 +2402,9 @@ FSUB( MPI_Mrecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* mes
     #endif
 
 
-    *ierr = MPI_Mrecv( buf, *count, PMPI_Type_f2c( *datatype ), message, c_status_ptr );
+    *ierr = MPI_Mrecv( buf, *count, PMPI_Type_f2c( *datatype ), &c_message, c_status_ptr );
 
+    *message = PMPI_Message_c2f( c_message );
     #if HAVE( MPI_STATUS_IGNORE )
     if ( c_status_ptr != MPI_STATUS_IGNORE )
 #endif

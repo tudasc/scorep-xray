@@ -33,7 +33,7 @@
 
 #if HAVE(DECL_PMPI_ALLTOALLW) && ! defined(SCOREP_MPI_NO_COLL)
 /**
- * Measurement wrapper for MPI_Alltoallv
+ * Measurement wrapper for MPI_Alltoallw
  * @note Manually created wrapper
  * @note Fortran interface
  * @note Introduced with MPI 1.0
@@ -95,7 +95,75 @@ void FSUB(MPI_Alltoallw)(void*     sendbuf,
 }
 #endif
 
-#pragma wrapgen multiple restrict(v2+gcoll+!nAlltoallw) skel/SCOREP_Mpi_F2c_C2f.w
+#if HAVE(DECL_PMPI_IALLTOALLW) && ! defined(SCOREP_MPI_NO_COLL)
+/**
+ * Measurement wrapper for MPI_Ialltoallw
+ * @note Manually created wrapper
+ * @note Fortran interface
+ * @note Introduced with MPI 3.0
+ * @ingroup coll
+ */
+void FSUB(MPI_Ialltoallw)(void*     sendbuf,
+                          MPI_Fint* sendcounts,
+                          MPI_Fint* sdispls,
+                          MPI_Fint* sendtypes,
+                          void*     recvbuf,
+                          MPI_Fint* recvcounts,
+                          MPI_Fint* rdispls,
+                          MPI_Fint* recvtypes,
+                          MPI_Fint* comm,
+                          MPI_Fint* request,
+                          MPI_Fint* ierr)
+{
+  MPI_Datatype* csendtypes;
+  MPI_Datatype* crecvtypes;
+  MPI_Comm      ccomm;
+  MPI_Request   crequest;
+  int           size;
+
+  #if HAVE(MPI_IN_PLACE)
+  if (sendbuf == scorep_mpi_fortran_in_place)
+  {
+    sendbuf = MPI_IN_PLACE;
+  }
+  #endif
+  #if HAVE(MPI_BOTTOM)
+  if (sendbuf == scorep_mpi_fortran_bottom)
+  {
+    sendbuf = MPI_BOTTOM;
+  }
+  #endif
+  #if HAVE(MPI_BOTTOM)
+  if (recvbuf == scorep_mpi_fortran_bottom)
+  {
+    recvbuf = MPI_BOTTOM;
+  }
+  #endif
+
+  ccomm = PMPI_Comm_f2c(*comm);
+  PMPI_Comm_size(ccomm, &size);
+
+  csendtypes = malloc(size * sizeof(MPI_Datatype));
+  crecvtypes = malloc(size * sizeof(MPI_Datatype));
+
+  while (size > 0)
+  {
+    csendtypes[size-1] = PMPI_Type_f2c(sendtypes[size-1]);
+    crecvtypes[size-1] = PMPI_Type_f2c(recvtypes[size-1]);
+    --size;
+  }
+  
+  crequest = PMPI_Request_f2c(*request);
+
+  *ierr = MPI_Ialltoallw(sendbuf, sendcounts, sdispls, csendtypes, recvbuf,
+                recvcounts, rdispls, crecvtypes, ccomm, &crequest);
+
+  free(csendtypes);
+  free(crecvtypes);
+}
+#endif
+
+#pragma wrapgen multiple restrict(v2+gcoll+!nAlltoallw+!nIalltoallw) skel/SCOREP_Mpi_F2c_C2f.w
 #endif
 
 /**
