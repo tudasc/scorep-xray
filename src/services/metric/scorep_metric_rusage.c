@@ -338,12 +338,6 @@ scorep_metric_rusage_deregister( void )
     free( scorep_metrics_rusage_per_process );
     free( scorep_metrics_rusage_separator );
 
-    /* Reset array of pointers to metric definition data */
-    for ( uint32_t i = 0; i < MAX_METRIC_INDEX; i++ )
-    {
-        metric_defs[ i ] = NULL;
-    }
-
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " rusage metric source deregister!" );
 }
 
@@ -409,16 +403,10 @@ scorep_metric_rusage_finalize_source( void )
     /* Call only, if previously initialized */
     if ( !scorep_metric_rusage_initialize )
     {
-        if ( metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ] != NULL )
-        {
-            /* Reset vector of active metrics */
-            for ( uint32_t i = 0; i < SCOREP_RUSAGE_CNTR_MAXNUM; i++ )
-            {
-                metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ]->active_metrics[ i ] = NULL;
-            }
-            /* Reset number of active rusage metrics */
-            metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ]->number_of_metrics = 0;
-        }
+        free( metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ] );
+        metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ] = NULL;
+        free( metric_defs[ PER_PROCESS_METRIC ] );
+        metric_defs[ PER_PROCESS_METRIC ] = NULL;
 
         /* Set initialization flag */
         scorep_metric_rusage_initialize = 1;
