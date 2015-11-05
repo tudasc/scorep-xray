@@ -1215,10 +1215,10 @@ FSUB( MPI_INeighbor_alltoallw )( void*     sendbuf,
         --size;
     }
 
-    crequest = PMPI_Request_f2c( *request );
-
     *ierr = MPI_Ineighbor_alltoallw( sendbuf, sendcounts, sdispls, csendtypes, recvbuf,
                                      recvcounts, rdispls, crecvtypes, ccomm, &crequest );
+
+    *request = PMPI_Request_c2f( crequest );
 
     free( csendtypes );
     free( crecvtypes );

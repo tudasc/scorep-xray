@@ -2182,10 +2182,10 @@ FSUB( MPI_Ialltoallw )( void*     sendbuf,
         --size;
     }
 
-    crequest = PMPI_Request_f2c( *request );
-
     *ierr = MPI_Ialltoallw( sendbuf, sendcounts, sdispls, csendtypes, recvbuf,
                             recvcounts, rdispls, crecvtypes, ccomm, &crequest );
+
+    *request = PMPI_Request_c2f( crequest );
 
     free( csendtypes );
     free( crecvtypes );
