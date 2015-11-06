@@ -50,7 +50,7 @@ static char* scorep_filter_file_name;
 SCOREP_ConfigVariable scorep_filter_configs[] = {
     {
         "file",
-        SCOREP_CONFIG_TYPE_STRING,
+        SCOREP_CONFIG_TYPE_PATH,
         &scorep_filter_file_name,
         NULL,
         "",

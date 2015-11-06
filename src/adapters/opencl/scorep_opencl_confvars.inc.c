@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -26,16 +26,28 @@ size_t   scorep_opencl_queue_size;
  * Mapping of options for OpenCL measurement to internal representation
  * (bit mask).
  */
-static const SCOREP_ConfigType_SetEntry scorep_opencl_enable_groups[] =
-{
-    { "api",     SCOREP_OPENCL_FEATURE_API            },
-    { "kernel",  SCOREP_OPENCL_FEATURE_KERNEL         },
-    { "memcpy",  SCOREP_OPENCL_FEATURE_MEMCPY         },
-    { "default", SCOREP_OPENCL_FEATURES_DEFAULT       },
-    { "1",       SCOREP_OPENCL_FEATURES_DEFAULT       },
-    { "yes",     SCOREP_OPENCL_FEATURES_DEFAULT       },
-    { "true",    SCOREP_OPENCL_FEATURES_DEFAULT       },
-    { NULL,      0                                    }
+static const SCOREP_ConfigType_SetEntry scorep_opencl_enable_groups[] = {
+    {
+        "api",
+        SCOREP_OPENCL_FEATURE_API,
+        "OpenCL runtime API"
+    },
+    {
+        "kernel",
+        SCOREP_OPENCL_FEATURE_KERNEL,
+        "OpenCL kernels"
+    },
+    {
+        "memcpy",
+        SCOREP_OPENCL_FEATURE_MEMCPY,
+        "OpenCL buffer reads/writes"
+    },
+    {
+        "default/yes/true/1",
+        SCOREP_OPENCL_FEATURES_DEFAULT,
+        "OpenCL API and GPU activities"
+    },
+    { NULL, 0, NULL }
 };
 
 
@@ -51,12 +63,7 @@ static SCOREP_ConfigVariable scorep_opencl_configs[] =
         ( void* )scorep_opencl_enable_groups,
         "no",                      /* default value */
         "OpenCL measurement features",
-        "Sets the OpenCL measurement mode to capture:\n"
-        "  api:            OpenCL runtime API\n"
-        "  kernel:         OpenCL kernels\n"
-        "  memcpy:         OpenCL buffer reads/writes\n"
-        "  default/yes/1:  OpenCL API and GPU activities\n"
-        "  no:             Disable OpenCL measurement"
+        "Sets the OpenCL measurement mode to capture:"
     },
     {
         "buffer_queue",

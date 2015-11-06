@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -54,7 +54,6 @@
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME PROFILE
 #include <UTILS_Debug.h>
-#include <scorep_runtime_management.h> /* SCOREP_GetExperimentDirName() */
 #include <scorep_environment.h>
 #include <scorep_ipc.h>
 #include <SCOREP_Thread_Mgmt.h>
@@ -1598,9 +1597,9 @@ add_iter_to_clustering( SCOREP_Profile_LocationData* location,
 static inline bool
 consider_visit_count( int clusterMode, scorep_profile_node* node )
 {
-    if ( clusterMode == 2 ||
-         clusterMode == 5 ||
-         ( clusterMode == 4 && is_mpi_node( node ) ) )
+    if ( clusterMode == SCOREP_PROFILE_CLUSTER_SUBTREE_VISITS ||
+         clusterMode == SCOREP_PROFILE_CLUSTER_MPI_VISITS_ALL ||
+         ( clusterMode == SCOREP_PROFILE_CLUSTER_MPI_VISITS && is_mpi_node( node ) ) )
     {
         if ( node->node_type == SCOREP_PROFILE_NODE_REGULAR_REGION )
         {
@@ -1639,10 +1638,10 @@ static int
 compare_call_trees( scorep_profile_node* a, scorep_profile_node* b,
                     uint32_t itCntA, uint32_t itCntB )
 {
-    scorep_profile_node* a_tail;
-    scorep_profile_node* b_tail;
-    int                  clustering_mode = scorep_profile_get_cluster_mode();
-    if ( 0 == clustering_mode )
+    scorep_profile_node*       a_tail;
+    scorep_profile_node*       b_tail;
+    SCOREP_Profile_ClusterMode clustering_mode = scorep_profile_get_cluster_mode();
+    if ( SCOREP_PROFILE_CLUSTER_NONE == clustering_mode )
     {
         return 0;
     }
@@ -1654,7 +1653,7 @@ compare_call_trees( scorep_profile_node* a, scorep_profile_node* b,
           a_tail = a_tail->next_sibling, b_tail = b_tail->next_sibling )
     {
         /* Search forward until the next child that has MPI in its subtree */
-        if ( clustering_mode >= 3 )
+        if ( clustering_mode >= SCOREP_PROFILE_CLUSTER_MPI )
         {
             while ( NULL != a_tail && !scorep_profile_is_mpi_in_subtree( a_tail ) )
             {
@@ -1705,7 +1704,7 @@ compare_call_trees( scorep_profile_node* a, scorep_profile_node* b,
     }
 
     /* Do this check, just in case */
-    if ( 3 <= clustering_mode )
+    if ( SCOREP_PROFILE_CLUSTER_MPI <= clustering_mode )
     {
         while ( NULL != a_tail && !scorep_profile_is_mpi_in_subtree( a_tail ) )
         {
@@ -1766,7 +1765,7 @@ compare_call_trees( scorep_profile_node* a, scorep_profile_node* b,
                 return 1;
             }
 
-            if ( ( 3 <= clustering_mode )
+            if ( ( SCOREP_PROFILE_CLUSTER_MPI <= clustering_mode )
                  && !scorep_profile_is_mpi_in_subtree( child_a )
                  && !scorep_profile_is_mpi_in_subtree( child_b ) )
             {
@@ -1796,12 +1795,12 @@ compare_call_trees( scorep_profile_node* a, scorep_profile_node* b,
 static uint32_t
 calculate_hash( scorep_profile_node* path )
 {
-    uint32_t             val = 0;
-    uint32_t             ch, used_ch;
-    scorep_profile_node* curr;
-    int                  clustering_mode = scorep_profile_get_cluster_mode();
+    uint32_t                   val = 0;
+    uint32_t                   ch, used_ch;
+    scorep_profile_node*       curr;
+    SCOREP_Profile_ClusterMode clustering_mode = scorep_profile_get_cluster_mode();
 
-    if ( 0 == clustering_mode )
+    if ( SCOREP_PROFILE_CLUSTER_NONE == clustering_mode )
     {
         return scorep_profile_node_hash( path ); /* this is subtracted later, so this is 0 */
     }
@@ -1815,7 +1814,7 @@ calculate_hash( scorep_profile_node* path )
         /* The call also sets mpi_in_subtree in the child */
         int child_val = calculate_hash( curr );
         /* In these modes, only the subtrees with MPI count */
-        if ( 3 <= clustering_mode && !scorep_profile_is_mpi_in_subtree( curr ) )
+        if ( SCOREP_PROFILE_CLUSTER_MPI <= clustering_mode && !scorep_profile_is_mpi_in_subtree( curr ) )
         {
             continue;
         }
@@ -1845,7 +1844,7 @@ calculate_hash( scorep_profile_node* path )
 
             int child_val = calculate_hash( curr ) - scorep_profile_node_hash( curr );
             /* In these modes, only the subtrees with MPI count */
-            if ( 3 <= clustering_mode &&
+            if ( SCOREP_PROFILE_CLUSTER_MPI <= clustering_mode &&
                  !scorep_profile_is_mpi_in_subtree( curr ) )
             {
                 continue;
@@ -2021,11 +2020,11 @@ scorep_cluster_initialize( void )
         return;
     }
 
-    if ( scorep_profile_get_cluster_mode() > 5 )
+    if ( scorep_profile_get_cluster_mode() > SCOREP_PROFILE_CLUSTER_MPI_VISITS_ALL )
     {
         /* Clustering switched off */
-        UTILS_WARNING( "Unknown clustering mode %" PRIu64 " set in "
-                       "SCOREP_CLUSTERING_MODE. Possible modes values are 0 to 6. "
+        UTILS_WARNING( "Unknown clustering mode %d set in "
+                       "SCOREP_CLUSTERING_MODE. Possible modes values are 0 to 5. "
                        "Read the manual for the meaning of the mode values.",
                        scorep_profile_get_cluster_mode() );
         UTILS_WARNING( "Disable clustering." );

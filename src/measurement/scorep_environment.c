@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -117,14 +117,14 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
     },
     {
         "experiment_directory",
-        SCOREP_CONFIG_TYPE_STRING,
+        SCOREP_CONFIG_TYPE_PATH,
         &scorep_env_experiment_directory,
         NULL,
         "",
         "Name of the experiment directory",
-        "When no experiment name is given (the default)Score-P names the\n"
-        "experiment directory `scorep-measurement-tmp' and renames this\n"
-        "after a successful measurement to a generated name based on the\n"
+        "When no experiment name is given (the default) Score-P names the "
+        "experiment directory `scorep-measurement-tmp' and renames this "
+        "after a successful measurement to a generated name based on the "
         "current time."
     },
     {
@@ -134,8 +134,8 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         NULL,
         "true",
         "Overwrite an existing experiment directory",
-        "If you specified a specific experiment directory name, but this name\n"
-        "is already given, you can force overwriting it with this flag.\n"
+        "If you specified a specific experiment directory name, but this name "
+        "is already given, you can force overwriting it with this flag."
         "The previous experiment directory will be renamed."
     },
     {
@@ -144,9 +144,9 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
         &scorep_env_machine_name,
         NULL,
         SCOREP_DEFAULT_MACHINE_NAME, /* configure-provided default */
-        "The machine name used in profile and trace output.",
-        "We suggest using a unique name, e.g., the fully qualified domain name.\n"
-        "The default machine name was set at configure time (see the INSTALL\n"
+        "The machine name used in profile and trace output",
+        "We suggest using a unique name, e.g., the fully qualified domain name. "
+        "The default machine name was set at configure time (see the INSTALL "
         "file for customization options)."
     },
     SCOREP_CONFIG_TERMINATOR
@@ -162,7 +162,7 @@ SCOREP_ConfigVariable scorep_debug_environment_variables[] = {
         &scorep_debug_unify,
         NULL,
         "true",
-        "Writes the pre-unified definitions also in the local definition trace files.",
+        "Writes the pre-unified definitions also in the local definition trace files",
         ""
     },
     SCOREP_CONFIG_TERMINATOR

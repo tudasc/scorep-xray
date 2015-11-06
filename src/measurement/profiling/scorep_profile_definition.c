@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -162,7 +162,7 @@ scorep_profile_get_cluster_count( void )
     return scorep_profile_cluster_count;
 }
 
-uint64_t
+SCOREP_Profile_ClusterMode
 scorep_profile_get_cluster_mode( void )
 {
     return scorep_profile_cluster_mode;

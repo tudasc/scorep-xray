@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -76,10 +76,32 @@ typedef enum
     SCOREP_PROFILE_OUTPUT_NONE         = 0,
     SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT = 1,
     SCOREP_PROFILE_OUTPUT_CUBE4        = 2,
-    SCOREP_PROFILE_OUTPUT_CUBE_TUPLE   = 4,
+    SCOREP_PROFILE_OUTPUT_CUBE_TUPLE   = 3,
 } SCOREP_Profile_OutputFormat;
 
 #define SCOREP_PROFILE_OUTPUT_DEFAULT SCOREP_PROFILE_OUTPUT_CUBE4
+
+/**
+   The clustering mode.
+ */
+typedef enum
+{
+    /** No structural similarity required. */
+    SCOREP_PROFILE_CLUSTER_NONE           = 0,
+    /** The sub-trees structure must match. */
+    SCOREP_PROFILE_CLUSTER_SUBTREE        = 1,
+    /** The sub-trees structure and the number of
+        visits must match. */
+    SCOREP_PROFILE_CLUSTER_SUBTREE_VISITS = 2,
+    /** The structure of the call-path to MPI calls must match.
+        Nodes that are not on an MPI call-path may differ. */
+    SCOREP_PROFILE_CLUSTER_MPI            = 3,
+    /** Like above, but the number of visits of the MPI calls must match, too. */
+    SCOREP_PROFILE_CLUSTER_MPI_VISITS     = 4,
+    /** Like above, but the number of visits must match also match on all
+        nodes on the call-path to an MPI function. */
+    SCOREP_PROFILE_CLUSTER_MPI_VISITS_ALL = 5,
+} SCOREP_Profile_ClusterMode;
 
 /* ----------------------------------------------------- Initialization / Finalization */
 

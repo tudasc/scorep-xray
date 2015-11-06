@@ -280,8 +280,8 @@ typedef enum SCOREP_ParadigmFlags
      */
     SCOREP_PARADIGM_FLAG_RMA_ONLY = 1 << 0,
 
-    /** Value for empty flags. */
-    SCOREP_PARADIGM_FLAG_NONE     = 0
+        /** Value for empty flags. */
+        SCOREP_PARADIGM_FLAG_NONE = 0
 } SCOREP_ParadigmFlags;
 
 
@@ -524,15 +524,6 @@ typedef enum SCOREP_MpiCollectiveType
 typedef enum SCOREP_ConfigType
 {
     /**
-     * A string value with variable expension (Ie. ${HOME})
-     * (path normalization?)
-     *
-     * SCOREP_ConfigVariable::variableReference should point to a variable of
-     * type char*.
-     */
-    SCOREP_CONFIG_TYPE_PATH,
-
-    /**
      * A string value.
      *
      * SCOREP_ConfigVariable::variableReference should point to a variable of
@@ -540,6 +531,14 @@ typedef enum SCOREP_ConfigType
      * returned from the @a malloc family of functions or @a NULL.
      */
     SCOREP_CONFIG_TYPE_STRING,
+
+    /**
+     * A string value. But the documentation indicates, that a path is expected.
+     *
+     * SCOREP_ConfigVariable::variableReference should point to a variable of
+     * type char*.
+     */
+    SCOREP_CONFIG_TYPE_PATH,
 
     /**
      * A boolean value.
@@ -593,20 +592,38 @@ typedef enum SCOREP_ConfigType
      * type uint64_t.
      *
      * SCOREP_ConfigVariable::variableContext should point to an array of type
-     * SCOREP_ConfigType_SetEntry with valid set members and their values.
+     * SCOREP_ConfigType_SetEntry with valid set members, their values,
+     * and a description.
+     * Aliases are allowed and should be separated by "/".
+     * An empty value results in setting the variable to 0.
      * "none" and "no" are always considered as the empty set and should
      * not show up in this list, also entries with value zero are prohibited.
      * For better debugging, they should be in decreasing order of the value
      * field.
-     * Terminate the array with an entry { NULL, 0 }. Case doesn't matter.
+     * Terminate the array with an entry { NULL, 0, NULL }. Case doesn't matter.
      *
-     * The strings can be separated by any of the following characters:
+     * The entries can be separated by any of the following characters:
      *   @li " " - space
      *   @li "," - comma
      *   @li ":" - colon
      *   @li ";" - semicolon
      */
     SCOREP_CONFIG_TYPE_BITSET,
+
+    /**
+     * Selects an option out of possible values.
+     *
+     * SCOREP_ConfigVariable::variableReference should point to a variable of
+     * type uint64_t.
+     *
+     * SCOREP_ConfigVariable::variableContext should point to an array of type
+     * SCOREP_ConfigType_SetEntry with valid set members, their values,
+     * and a description.
+     * Aliases are allowed and should be separated by "/".
+     * An empty value results in setting the variable to 0.
+     * Terminate the array with an entry { NULL, 0, NULL }. Case doesn't matter.
+     */
+    SCOREP_CONFIG_TYPE_OPTIONSET,
 
     SCOREP_INVALID_CONFIG_TYPE /**< For internal use only. */
 } SCOREP_ConfigType;
@@ -632,13 +649,14 @@ typedef struct SCOREP_ConfigVariable
 
 
 /**
- * The type for SCOREP_CONFIG_TYPE_BITSET entries.
+ * The type for SCOREP_CONFIG_TYPE_BITSET and SCOREP_CONFIG_TYPE_OPTIONSET entries.
  *
  */
 typedef struct SCOREP_ConfigType_SetEntry
 {
     const char* name;
     uint64_t    value;
+    const char* description;
 } SCOREP_ConfigType_SetEntry;
 
 
@@ -711,15 +729,15 @@ typedef enum SCOREP_SamplingSetClass
  */
 typedef enum SCOREP_SystemTreeDomain
 {
-    SCOREP_SYSTEM_TREE_DOMAIN_NONE          = 0,
+    SCOREP_SYSTEM_TREE_DOMAIN_NONE              = 0,
 
-    SCOREP_SYSTEM_TREE_DOMAIN_MACHINE       = 1 << 0,
-    SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY = 1 << 1,
-    SCOREP_SYSTEM_TREE_DOMAIN_NUMA          = 1 << 2,
-    SCOREP_SYSTEM_TREE_DOMAIN_SOCKET        = 1 << 3,
-    SCOREP_SYSTEM_TREE_DOMAIN_CACHE         = 1 << 4,
-    SCOREP_SYSTEM_TREE_DOMAIN_CORE          = 1 << 5,
-    SCOREP_SYSTEM_TREE_DOMAIN_PU            = 1 << 6
+    SCOREP_SYSTEM_TREE_DOMAIN_MACHINE           = 1 << 0,
+        SCOREP_SYSTEM_TREE_DOMAIN_SHARED_MEMORY = 1 << 1,
+        SCOREP_SYSTEM_TREE_DOMAIN_NUMA          = 1 << 2,
+        SCOREP_SYSTEM_TREE_DOMAIN_SOCKET        = 1 << 3,
+        SCOREP_SYSTEM_TREE_DOMAIN_CACHE         = 1 << 4,
+        SCOREP_SYSTEM_TREE_DOMAIN_CORE          = 1 << 5,
+        SCOREP_SYSTEM_TREE_DOMAIN_PU            = 1 << 6
 } SCOREP_SystemTreeDomain;
 
 

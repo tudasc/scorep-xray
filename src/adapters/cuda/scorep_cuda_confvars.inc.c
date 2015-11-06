@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -48,22 +48,72 @@ size_t   scorep_cupti_activity_buffer_chunk_size;
  * (bit mask).
  */
 static const SCOREP_ConfigType_SetEntry scorep_cuda_enable_groups[] = {
-    { "runtime",        SCOREP_CUDA_FEATURE_RUNTIME_API           },
-    { "driver",         SCOREP_CUDA_FEATURE_DRIVER_API            },
-    { "kernel",         SCOREP_CUDA_FEATURE_KERNEL                },
-    { "kernel_serial",  SCOREP_CUDA_FEATURE_KERNEL_SERIAL         },
-    { "kernel_counter", SCOREP_CUDA_FEATURE_KERNEL_COUNTER        },
-    { "memcpy",         SCOREP_CUDA_FEATURE_MEMCPY                },
-    { "sync",           SCOREP_CUDA_FEATURE_SYNC                  },
-    { "idle",           SCOREP_CUDA_FEATURE_IDLE                  },
-    { "pure_idle",      SCOREP_CUDA_FEATURE_PURE_IDLE             },
-    { "gpumemusage",    SCOREP_CUDA_FEATURE_GPUMEMUSAGE           },
-    { "references",     SCOREP_CUDA_FEATURE_REFERENCES            },
-    { "flushatexit",    SCOREP_CUDA_FEATURE_FLUSHATEXIT           },
-    { "default",        SCOREP_CUDA_FEATURES_DEFAULT              },
-    { "1",              SCOREP_CUDA_FEATURES_DEFAULT              },
-    { "yes",            SCOREP_CUDA_FEATURES_DEFAULT              },
-    { NULL,             0                                         }
+    {
+        "runtime",
+        SCOREP_CUDA_FEATURE_RUNTIME_API,
+        "CUDA runtime API"
+    },
+    {
+        "driver",
+        SCOREP_CUDA_FEATURE_DRIVER_API,
+        "CUDA driver API"
+    },
+    {
+        "kernel",
+        SCOREP_CUDA_FEATURE_KERNEL,
+        "CUDA kernels"
+    },
+    {
+        "kernel_serial",
+        SCOREP_CUDA_FEATURE_KERNEL_SERIAL,
+        "Serialized kernel recording"
+    },
+    {
+        "kernel_counter",
+        SCOREP_CUDA_FEATURE_KERNEL_COUNTER,
+        "Fixed CUDA kernel metrics"
+    },
+    {
+        "memcpy",
+        SCOREP_CUDA_FEATURE_MEMCPY,
+        "CUDA memory copies"
+    },
+    {
+        "sync",
+        SCOREP_CUDA_FEATURE_SYNC,
+        "Record implicit and explicit CUDA synchronization"
+    },
+    {
+        "idle",
+        SCOREP_CUDA_FEATURE_IDLE,
+        "GPU compute idle time"
+    },
+    {
+        "pure_idle",
+        SCOREP_CUDA_FEATURE_PURE_IDLE,
+        "GPU idle time (memory copies are not idle)"
+    },
+    {
+        "gpumemusage",
+        SCOREP_CUDA_FEATURE_GPUMEMUSAGE,
+        "Record CUDA memory (de)allocations as a counter)"
+    },
+    {
+        "references",
+        SCOREP_CUDA_FEATURE_REFERENCES,
+        "Record references between CUDA activities"
+    },
+    {
+        "flushatexit",
+        SCOREP_CUDA_FEATURE_FLUSHATEXIT,
+        "Flush CUDA activity buffer at program exit"
+    },
+    {
+        "default/yes/1",
+        SCOREP_CUDA_FEATURES_DEFAULT,
+        "CUDA runtime API and GPU activities"
+    },
+    { NULL, 0, NULL }
 };
 
 
@@ -78,21 +128,7 @@ static SCOREP_ConfigVariable scorep_cuda_configs[] = {
         ( void* )scorep_cuda_enable_groups,
         "no",                      /* default value */
         "CUDA measurement features",
-        "Sets the CUDA measurement mode to capture:\n"
-        "  runtime:        CUDA runtime API\n"
-        "  driver:         CUDA driver API\n"
-        "  kernel:         CUDA kernels\n"
-        "  kernel_serial:  Serialized kernel recording.\n"
-        "  kernel_counter: Fixed CUDA kernel metrics.\n"
-        "  idle:           GPU compute idle time\n"
-        "  pure_idle:      GPU idle time (memory copies are not idle)\n"
-        "  memcpy:         CUDA memory copies\n"
-        "  sync:           Record implicit and explicit CUDA synchronization\n"
-        "  gpumemusage:    Record CUDA memory (de)allocations as a counter\n"
-        "  references:     Record references between CUDA activities\n"
-        "  flushatexit:    Flush CUDA activity buffer at program exit\n"
-        "  default/yes/1:  CUDA runtime API and GPU activities\n"
-        "  no:             Disable CUDA measurement"
+        "Sets the CUDA measurement mode to capture:"
     },
     {
         "buffer",

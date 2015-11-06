@@ -61,17 +61,10 @@ extension <tt>.cubex</tt> will be appended to the base name you specify in the
 environment variable \confvar{SCOREP_PROFILING_BASE_NAME}.
 
 By default, @scorep writes the profile in @cube4 base format. Hereby, for every metric
-contains one value, usually only the sum. However, Score-P allows to store the profile
+contains one value, usually only the sum. However, @scorep allows to store the profile
 in two other formats. To change the default format, set the environment variable
-<tt>SCOREP_PROFILING_FORMAT</tt>. The following formats are available:
-<ul>
-  <li> <b>CUBE4</b> is the default format. </li>
-  <li> <b>CUBE_TUPLE</b> is an extended @cube format. It provides a tuple of sum,
-                         minimum, maximum, number of samples, sum of squares for
-                         every metric. </li>
-  <li> <b>TAU_SNAPSHOT</b> is a textual format used by TAU. It creates a file per
-                         location and thus, may not scale to large machines. </li>
-</ul>
+\confvar{SCOREP_PROFILING_FORMAT}. Please refer to the description of this variable for
+possible values.
 
 @scorep records a call tree profile. The maximum call-path depth that is recorded
 is limited to 30, by default. This avoids
@@ -212,67 +205,8 @@ in \confvar{SCOREP_PROFILING_CLUSTER_COUNT}, the maximal number of clusters is
 increased. Thus, you might get more clusters than you specified.
 
 The minimal structural similarity is defined by the clustering mode which can be set
-via the environment variable \confvar{SCOREP_PROFILING_CLUSTERING_MODE}. The value
-of this variable is a number between 0 and 5, specifying one of the modes described
-in Table @tabref{Clustering modes}.
-
-\if LATEX
-\latexonly
-  \begin{table}
-    \centering
-    \caption{Clustering modes}
-    \label{tab:Clustering modes}
-    \begin{tabular}{ | p{1cm} | p{10cm} | }
-      \hline
-      \bf Mode & \bf Description \\
-      \hline
-      0   & No structural similarity required. \\
-      \hline
-      1   & The sub-trees structure must match. \\
-      \hline
-      2   & The sub-trees structure and the number of visits must match. \\
-      \hline
-      3   & The structure of the call-path to MPI calls must match. Nodes that
-            are not on an MPI call-path may differ. \\
-      \hline
-      4   & Like Mode 3, but the number of visits of the MPI calls must match, too. \\
-      \hline
-      5   & Like Mode 4, but the number of visits must match also match on
-            all nodes on the call-path to an MPI function.\\
-      \hline
-    \end{tabular}
-  \end{table}
-\endlatexonly
-\else
-  <table border=1 cellspacing=0>
-    <caption>Clustering modes</caption>
-    <tr>
-      <th WIDTH=10%>Mode</th>
-      <th WIDTH=90%>Description</th>
-    </tr><tr>
-      <td WIDTH=10%>0</td>
-      <td WIDTH=90%>No structural similarity required.</td>
-    </tr><tr>
-      <td WIDTH=10%>1</td>
-      <td WIDTH=90%>The sub-trees structure must match.</td>
-    </tr><tr>
-      <td WIDTH=10%>2</td>
-      <td WIDTH=90%>The sub-trees structure and the number of visits must match.</td>
-    </tr><tr>
-      <td WIDTH=10%>3</td>
-      <td WIDTH=90%>The structure of the call-path to MPI calls must match. Nodes that
-                    are not on an MPI call-path may differ.</td>
-    </tr><tr>
-      <td WIDTH=10%>4</td>
-      <td WIDTH=90%>Like Mode 3, but the number of visits of the MPI calls must match,
-                    too.</td>
-    </tr><tr>
-      <td WIDTH=10%>5</td>
-      <td WIDTH=90%>Like Mode 4, but the number of visits must match also match on
-                    all nodes on the call-path to an MPI function.</td>
-    </tr>
-  </table>
-\endif
+via the environment variable \confvar{SCOREP_PROFILING_CLUSTERING_MODE}. Please refer to the
+description of this variable for possible values.
 
 @subsection profile_debug_output Enabling additional debug output on inconsistent profiles
 @seclabel{profile_debug_output}
@@ -884,25 +818,7 @@ If @scorep has been built with CUDA support it is capable of recording CUDA API 
  Otherwise the program will not be instrumented, as <tt>nvcc</tt> uses the GNU compiler by default.
 
 Setting the environment variable \confvar{SCOREP_CUDA_ENABLE} to <b><tt>yes</tt></b> enables CUDA measurement.
-To enable a particular composition of CUDA measurement features the variable should contain a comma-separated list of the following CUDA measurement options:
-
-@code
-runtime        = CUDA runtime API
-driver         = CUDA driver API
-kernel         = CUDA kernels
-kernel_serial  = Serialized kernel recording
-kernel_counter = Fixed CUDA kernel metrics
-idle           = GPU compute idle time
-pure_idle      = GPU idle time (memory copies are not idle)
-memcpy         = CUDA memory copies
-sync           = Record implicit and explicit CUDA synchronization
-gpumemusage    = Record CUDA memory (de)allocations as a counter
-references     = Record references between CUDA activities
-flushatexit    = Flush CUDA activity buffer at program exit
-yes/DEFAULT/1  = "runtime,kernel,memcpy"
-no             = Disable CUDA measurement
-                 (same as unset SCOREP_CUDA_ENABLE)
-@endcode
+Please refer to the description of this variable to enable a particular composition of CUDA measurement features.
 
 CUPTI uses an extra buffer to store its activity records.
 If the size of this buffer is too small, @scorep will print a warning about the current buffer size and the number of dropped records.

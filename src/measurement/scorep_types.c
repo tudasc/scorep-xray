@@ -178,10 +178,10 @@ scorep_config_type_to_string( SCOREP_ConfigType configType )
 {
     switch ( configType )
     {
-        case SCOREP_CONFIG_TYPE_PATH:
-            return "path";
         case SCOREP_CONFIG_TYPE_STRING:
             return "string";
+        case SCOREP_CONFIG_TYPE_PATH:
+            return "path";
         case SCOREP_CONFIG_TYPE_BOOL:
             return "boolean";
         case SCOREP_CONFIG_TYPE_NUMBER:
@@ -192,6 +192,8 @@ scorep_config_type_to_string( SCOREP_ConfigType configType )
             return "set";
         case SCOREP_CONFIG_TYPE_BITSET:
             return "bitset";
+        case SCOREP_CONFIG_TYPE_OPTIONSET:
+            return "optionset";
         default:
             return "unknown";
     }

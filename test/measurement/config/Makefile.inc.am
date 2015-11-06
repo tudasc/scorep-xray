@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -35,7 +35,9 @@
 check_PROGRAMS += test_scorep_config_bool \
                   test_scorep_config_string \
                   test_scorep_config_number \
-                  test_scorep_config_size
+                  test_scorep_config_size \
+                  test_scorep_config_bitset \
+                  test_scorep_config_optionset
 
 test_scorep_config_cppflags = $(AM_CPPFLAGS) \
                               -I$(INC_DIR_COMMON_CUTEST) \
@@ -72,8 +74,22 @@ test_scorep_config_string_CPPFLAGS = $(test_scorep_config_cppflags)
 test_scorep_config_string_LDADD    = $(test_scorep_config_ldadd)
 test_scorep_config_string_LDFLAGS  = $(test_scorep_config_ldflags)
 
+test_scorep_config_bitset_SOURCES  = $(SRC_ROOT)test/measurement/config/bitset.c \
+                                     $(SRC_ROOT)vendor/common/cutest/CuTest.c
+test_scorep_config_bitset_CPPFLAGS = $(test_scorep_config_cppflags)
+test_scorep_config_bitset_LDADD    = $(test_scorep_config_ldadd)
+test_scorep_config_bitset_LDFLAGS  = $(test_scorep_config_ldflags)
+
+test_scorep_config_optionset_SOURCES  = $(SRC_ROOT)test/measurement/config/optionset.c \
+                                        $(SRC_ROOT)vendor/common/cutest/CuTest.c
+test_scorep_config_optionset_CPPFLAGS = $(test_scorep_config_cppflags)
+test_scorep_config_optionset_LDADD    = $(test_scorep_config_ldadd)
+test_scorep_config_optionset_LDFLAGS  = $(test_scorep_config_ldflags)
+
 TESTS_SERIAL += test_scorep_config_bool \
                 test_scorep_config_string \
+                test_scorep_config_bitset \
+                test_scorep_config_optionset \
                 $(srcdir)/../test/measurement/config/test_scorep_config_number.sh \
                 $(srcdir)/../test/measurement/config/test_scorep_config_size.sh
 

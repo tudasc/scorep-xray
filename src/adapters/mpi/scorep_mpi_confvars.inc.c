@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -46,24 +46,92 @@
  * output. Ie.: if all groups are enabled we get "ALL", because it matches first.
  */
 static const SCOREP_ConfigType_SetEntry scorep_mpi_enable_groups[] = {
-    { "all",       SCOREP_MPI_ENABLED_ALL       },
-    { "cg",        SCOREP_MPI_ENABLED_CG        },
-    { "coll",      SCOREP_MPI_ENABLED_COLL      },
-    { "default",   SCOREP_MPI_ENABLED_DEFAULT   },
-    { "env",       SCOREP_MPI_ENABLED_ENV       },
-    { "err",       SCOREP_MPI_ENABLED_ERR       },
-    { "ext",       SCOREP_MPI_ENABLED_EXT       },
-    { "io",        SCOREP_MPI_ENABLED_IO        },
-    { "p2p",       SCOREP_MPI_ENABLED_P2P       },
-    { "misc",      SCOREP_MPI_ENABLED_MISC      },
-    { "perf",      SCOREP_MPI_ENABLED_PERF      },
-    { "rma",       SCOREP_MPI_ENABLED_RMA       },
-    { "spawn",     SCOREP_MPI_ENABLED_SPAWN     },
-    { "topo",      SCOREP_MPI_ENABLED_TOPO      },
-    { "type",      SCOREP_MPI_ENABLED_TYPE      },
-    { "xnonblock", SCOREP_MPI_ENABLED_XNONBLOCK },
-    { "xreqtest",  SCOREP_MPI_ENABLED_XREQTEST  },
-    { NULL,        0                            }
+    {
+        "all",
+        SCOREP_MPI_ENABLED_ALL,
+        "All MPI functions"
+    },
+    {
+        "cg",
+        SCOREP_MPI_ENABLED_CG,
+        "Communicator and group management"
+    },
+    {
+        "coll",
+        SCOREP_MPI_ENABLED_COLL,
+        "Collective functions"
+    },
+    {
+        "default",
+        SCOREP_MPI_ENABLED_DEFAULT,
+        "Default configuration"
+    },
+    {
+        "env",
+        SCOREP_MPI_ENABLED_ENV,
+        "Environmental management"
+    },
+    {
+        "err",
+        SCOREP_MPI_ENABLED_ERR,
+        "MPI Error handling"
+    },
+    {
+        "ext",
+        SCOREP_MPI_ENABLED_EXT,
+        "External interface functions"
+    },
+    {
+        "io",
+        SCOREP_MPI_ENABLED_IO,
+        "MPI file I/O"
+    },
+    {
+        "p2p",
+        SCOREP_MPI_ENABLED_P2P,
+        "Peer-to-peer communication"
+    },
+    {
+        "misc",
+        SCOREP_MPI_ENABLED_MISC,
+        "Miscellaneous"
+    },
+    {
+        "perf",
+        SCOREP_MPI_ENABLED_PERF,
+        "PControl"
+    },
+    {
+        "rma",
+        SCOREP_MPI_ENABLED_RMA,
+        "One sided communication"
+    },
+    {
+        "spawn",
+        SCOREP_MPI_ENABLED_SPAWN,
+        "Process management"
+    },
+    {
+        "topo",
+        SCOREP_MPI_ENABLED_TOPO,
+        "Topology"
+    },
+    {
+        "type",
+        SCOREP_MPI_ENABLED_TYPE,
+        "MPI datatype functions"
+    },
+    {
+        "xnonblock",
+        SCOREP_MPI_ENABLED_XNONBLOCK,
+        "Extended non-blocking events"
+    },
+    {
+        "xreqtest",
+        SCOREP_MPI_ENABLED_XREQTEST,
+        "Test events for uncompleted requests"
+    },
+    { NULL, 0, NULL }
 };
 
 /**
@@ -160,24 +228,8 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
         "default",
         "The names of the function groups which are measured",
         "Other functions are not measured.\n"
-        "Possible groups are:\n"
-        "  all:       All MPI functions\n"
-        "  cg:        Communicator and group management\n"
-        "  coll:      Collective functions\n"
-        "  default:   Default configuration\n"
-        "  env:       Environmental management\n"
-        "  err:       MPI Error handling\n"
-        "  ext:       External interface functions\n"
-        "  io:        MPI file I/O\n"
-        "  misc:      Miscellaneous\n"
-        "  perf:      PControl\n"
-        "  p2p:       Peer-to-peer communication\n"
-        "  rma:       One sided communication\n"
-        "  spawn:     Process management\n"
-        "  topo:      Topology\n"
-        "  type:      MPI datatype functions\n"
-        "  xnonblock: Extended non-blocking events\n"
-        "  xreqtest:  Test events for uncompleted requests",
+        "\n"
+        "Possible groups are:"
     },
     #if !defined( SCOREP_MPI_NO_HOOKS )
     {

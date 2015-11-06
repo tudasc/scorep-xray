@@ -59,27 +59,29 @@ char* scorep_compiler_nm_symbols = NULL;
 SCOREP_ConfigVariable scorep_compiler_configs[] = {
     {
         "executable",
-        SCOREP_CONFIG_TYPE_STRING,
+        SCOREP_CONFIG_TYPE_PATH,
         &scorep_compiler_executable,
         NULL,
         "",
         "Executable of the application",
-        "File name, preferably with full path, of the application's executable.\n"
-        "It is used for evaluating the symbol table of the application, which is\n"
+        "File name, preferably with full path, of the application's executable. "
+        "It is used for evaluating the symbol table of the application, which is "
         "required by some compiler adapters."
     },
     {
         "nm_symbols",
-        SCOREP_CONFIG_TYPE_STRING,
+        SCOREP_CONFIG_TYPE_PATH,
         &scorep_compiler_nm_symbols,
         NULL,
         "",
         "Application's symbol table obtained via \'nm -l\' for compiler instrumentation",
-        "File name, preferably with full path, of <file> that contains the\n"
-        "<application>'s symbol table that was obtained by the command\n"
-        "\'nm -l <application> 2> /dev/null > <file>\'. Only needed if\n"
-        "generating the file at measurement initialization time fails, e.g.,\n"
-        "if using the 'system()' command from the compute nodes isn't possible.\n"
+        "File name, preferably with full path, of <file> that contains the "
+        "<application>'s symbol table that was obtained by the command:\n"
+        "\n"
+        "$ nm -l <application> 2> /dev/null > <file>\n"
+        "\n"
+        "Only needed if generating the file at measurement initialization time fails, e.g., "
+        "if using the 'system()' command from the compute nodes isn't possible."
     },
     SCOREP_CONFIG_TERMINATOR
 };

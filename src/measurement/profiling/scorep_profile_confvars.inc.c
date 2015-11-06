@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -94,14 +94,75 @@ bool scorep_profile_enable_core_files;
 
 
 /**
-   Bitset table for output format string configuration.
+   Option table for output format configuration.
  */
 static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
-    { "tau_snapshot", SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT },
-    { "cube4",        SCOREP_PROFILE_OUTPUT_CUBE4        },
-    { "cube_tuple",   SCOREP_PROFILE_OUTPUT_CUBE_TUPLE   },
-    { "default",      SCOREP_PROFILE_OUTPUT_DEFAULT      },
-    { NULL,           0                                  }
+    {
+        "none",
+        SCOREP_PROFILE_OUTPUT_NONE,
+        "No profile output. This does not disable profile recording."
+    },
+    {
+        "tau_snapshot",
+        SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT,
+        "Tau snapshot format."
+    },
+    {
+        "cube4",
+        SCOREP_PROFILE_OUTPUT_CUBE4,
+        "Stores the sum for every metric per callpath in Cube4 format."
+    },
+    {
+        "cube_tuple",
+        SCOREP_PROFILE_OUTPUT_CUBE_TUPLE,
+        "Stores an extended set of statistics in Cube4 format."
+    },
+    {
+        "default",
+        SCOREP_PROFILE_OUTPUT_DEFAULT,
+        "Default format. If Cube4 is supported, Cube4 is the default "
+        "else the Tau snapshot format is default."
+    },
+    { NULL, 0, NULL }
+};
+
+/**
+   Option table for cluster mode configuration.
+ */
+static const SCOREP_ConfigType_SetEntry scorep_profile_clustering_mode_table[] = {
+    {
+        "none/0",
+        SCOREP_PROFILE_CLUSTER_SUBTREE,
+        "No structural similarity required."
+    },
+    {
+        "subtree/1",
+        SCOREP_PROFILE_CLUSTER_SUBTREE,
+        "The sub-trees structure must match."
+    },
+    {
+        "subtree_visits/2",
+        SCOREP_PROFILE_CLUSTER_SUBTREE_VISITS,
+        "The sub-trees structure and the number of visits must match."
+    },
+    {
+        "mpi/3",
+        SCOREP_PROFILE_CLUSTER_MPI,
+        "The structure of the call-path to MPI calls must match.\n"
+        "Nodes that are not on an MPI call-path may differ."
+    },
+    {
+        "mpi_visits/4",
+        SCOREP_PROFILE_CLUSTER_MPI_VISITS,
+        "Like above, but the number of visits of the MPI calls must match, too."
+    },
+    {
+        "mpi_visits_all/5",
+        SCOREP_PROFILE_CLUSTER_MPI_VISITS_ALL,
+        "Like above, but the number of visits must match also match on all "
+        "nodes on the call-path to an MPI function."
+    },
+    { NULL, 0, NULL }
 };
 
 /**
@@ -115,7 +176,7 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
         NULL,
         "1024",
         "Number of foreign task objects that are collected before they are put into "
-        "the common task object exchange buffer.",
+        "the common task object exchange buffer",
         "The profiling creates a record for every task instance that is running. "
         "To avoid locking, the required memory is taken from a preallocated memory "
         "block. Each thread has its own memory block. On task completion, the created "
@@ -162,19 +223,14 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
     },
     {
         "format",
-        SCOREP_CONFIG_TYPE_BITSET,
+        SCOREP_CONFIG_TYPE_OPTIONSET,
         &scorep_profile_output_format,
         ( void* )scorep_profile_format_table,
         "default",
         "Profile output format",
         "Sets the output format for the profile.\n"
-        "The following formats are supported:\n"
-        "  none:         No profile output. This does not disable profile recording.\n"
-        "  tau_snapshot: Tau snapshot format\n"
-        "  cube4:        Stores the sum for every metric per callpath in Cube4 format.\n"
-        "  cube_tuple:   Stores an extended set of statistics in Cube4 format.\n"
-        "  default:      Default format. If Cube4 is supported, Cube4 is the default\n"
-        "                else the Tau snapshot format is default"
+        "\n"
+        "The following formats are supported:"
     },
     {
         "enable_clustering",
@@ -191,17 +247,17 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
         &scorep_profile_cluster_count,
         NULL,
         "64",
-        "maximum cluster count for iteration clustering.",
-        "maximum cluster count for iteration clustering."
+        "Maximum cluster count for iteration clustering",
+        ""
     },
     {
         "clustering_mode",
-        SCOREP_CONFIG_TYPE_SIZE,
+        SCOREP_CONFIG_TYPE_OPTIONSET,
         &scorep_profile_cluster_mode,
-        NULL,
-        "1",
-        "Specifies the level of strictness when comparing call trees for equivalence.",
-        "Specifies the level of strictness when comparing call trees for equivalence."
+        ( void* )scorep_profile_clustering_mode_table,
+        "subtree",
+        "Specifies the level of strictness when comparing call trees for equivalence",
+        "Possible levels:"
     },
     {
         "clustered_region",
@@ -222,7 +278,7 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
         &scorep_profile_enable_core_files,
         NULL,
         "false",
-        "Write .core files if an error occured.",
+        "Write .core files if an error occured",
         "If an error occures inside the profiling system, the profiling is disabled. "
         "For debugging reasons, it might be feasible to get the state of the local "
         "stack at these points. It is not recommended to enable this feature for "

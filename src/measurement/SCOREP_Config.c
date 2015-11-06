@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -109,6 +109,15 @@ string_to_lower( char* str );
 
 static void
 string_to_upper( char* str );
+
+static bool
+equal_icase_stringn( const char* str1,
+                     const char* str2,
+                     size_t      length );
+
+static bool
+equal_icase_string( const char* str1,
+                    const char* str2 );
 
 static bool
 parse_value( const char*       value,
@@ -316,6 +325,11 @@ SCOREP_ConfigRegister( const char*            nameSpaceName,
         UTILS_BUG_ON( !variables->variableReference, "Missing variable reference." );
         UTILS_BUG_ON( !variables->defaultValue, "Missing default value." );
         /* the variableContext is checked in the parse_value function */
+
+        UTILS_BUG_ON( !variables->shortHelp, "Missing short description value." );
+        UTILS_BUG_ON( strpbrk( variables->shortHelp, "\n\r\v\t" ),
+                      "Short description should not contain any control characters like \\n/\\r/\\v/\\t." );
+        UTILS_BUG_ON( !variables->longHelp, "Missing long description value." );
 
         size_t name_len = strlen( variables->name );
         UTILS_BUG_ON( name_len == 1 || name_len > 32, "Variable name too long." );
@@ -526,26 +540,118 @@ config_type_as_string( SCOREP_ConfigType type )
 {
     switch ( type )
     {
-        case SCOREP_CONFIG_TYPE_BOOL:
-            return "Boolean";
-        case SCOREP_CONFIG_TYPE_SET:
-        case SCOREP_CONFIG_TYPE_BITSET:
-            return "Set";
-        case SCOREP_CONFIG_TYPE_NUMBER:
-            return "Number";
-        case SCOREP_CONFIG_TYPE_SIZE:
-            return "Number with size suffixes";
         case SCOREP_CONFIG_TYPE_STRING:
             return "String";
         case SCOREP_CONFIG_TYPE_PATH:
             return "Path";
+        case SCOREP_CONFIG_TYPE_BOOL:
+            return "Boolean";
+        case SCOREP_CONFIG_TYPE_NUMBER:
+            return "Number";
+        case SCOREP_CONFIG_TYPE_SIZE:
+            return "Number with size suffixes";
+        case SCOREP_CONFIG_TYPE_SET:
+        case SCOREP_CONFIG_TYPE_BITSET:
+            return "Set";
+        case SCOREP_CONFIG_TYPE_OPTIONSET:
+            return "Option";
         case SCOREP_INVALID_CONFIG_TYPE:
         default:
             return "Invalid";
     }
 }
 
+static inline bool
+config_type_need_quotes( SCOREP_ConfigType type )
+{
+    switch ( type )
+    {
+        case SCOREP_CONFIG_TYPE_STRING:
+        case SCOREP_CONFIG_TYPE_PATH:
+            return true;
+        default:
+            return false;
+    }
+}
 
+static void
+wrap_lines( const char* message,
+            int         width,
+            int         indent,
+            int         firstIndent,
+            bool        html )
+{
+    int         column_width = width - indent;
+    int         reminder     = column_width;
+    int         nl           = 0;
+    const char* sep          = "";
+    const char* curr         = message;
+    while ( true )
+    {
+        /* skip any whitespace */
+        curr += strspn( curr, " \t\n\r\v" );
+
+        /* stop if we reached the end */
+        if ( !*curr )
+        {
+            break;
+        }
+
+        /* print separator to previous word */
+        switch ( nl )
+        {
+            case 0:
+                printf( "%*s%s",
+                        firstIndent, "",
+                        html ? "<p>" : "" );
+                sep = "";
+                break;
+
+            case 3:
+                /* a paragraph, empty line and fall thru to linebreak */
+                printf( "%s\n%s",
+                        html ? "</p>" : "",
+                        html ? "<p>" : "" );
+
+            case 2:
+                printf( "\n%*s", indent, "" );
+                reminder = column_width;
+                sep      = "";
+                break;
+        }
+
+        /* get length of next word */
+        int length = strcspn( curr, " \t\n\r\v" );
+        nl = 1;
+        if ( curr[ length ] == '\n' )
+        {
+            nl = 2;
+            if ( curr[ length + 1 ] == '\n' )
+            {
+                nl = 3;
+            }
+        }
+
+        if ( length < reminder || reminder == column_width )
+        {
+            printf( "%s%.*s", sep, length, curr );
+            curr     += length;
+            reminder -= length + strlen( sep );
+        }
+        else
+        {
+            /* word does not fit anymore in this line, but it was not the first word */
+            nl = 2;
+        }
+        sep = " ";
+    }
+
+    printf( "%s\n",
+            html ? "</p>" : "" );
+}
+
+
+#define WRAP_MARGIN 80
 void
 SCOREP_ConfigHelp( bool full, bool html )
 {
@@ -566,39 +672,98 @@ SCOREP_ConfigHelp( bool full, bool html )
                     html ? "<tt>" : "",
                     variable->env_var_name,
                     html ? "</tt></dt>" : "" );
-            printf( "%s%s%s\n",
-                    html ? " <dd>\n  " : "  Description: ",
-                    variable->data.shortHelp,
-                    html ? "<br/>" : "" );
+
+            printf( "%s",
+                    html ? " <dd>\n  " : "  Description: " );
+            wrap_lines( variable->data.shortHelp, WRAP_MARGIN, 15, 0, html );
+
             printf( "%sType:%s%s%s\n",
                     html ? "  <br/>\n  <dl>\n   <dt>" : "         ",
                     html ? "</dt><dd>" : " ",
                     config_type_as_string( variable->data.type ),
                     html ? "</dd>" : "" );
-            printf( "%sDefault:%s%s%s\n",
+            printf( "%sDefault:%s%s%s%s%s\n",
                     html ? "   <dt>" : "      ",
                     html ? "</dt><dd>" : " ",
+                    config_type_need_quotes( variable->data.type ) ? ( html ? "&quot;" : "\"" ) : "",
                     variable->data.defaultValue,
+                    config_type_need_quotes( variable->data.type ) ? ( html ? "&quot;" : "\"" ) : "",
                     html ? "</dd>\n  </dl>" : "" );
 
-            if ( full && strlen( variable->data.longHelp ) )
+            if ( full )
             {
-                printf( "%s\n", html ? "  <br/>" : "\n  Full description:" );
-                const char* curr = variable->data.longHelp;
-                const char* next;
-                do
+                if ( strlen( variable->data.longHelp ) )
                 {
-                    next = strchr( curr, '\n' );
-                    if ( !next )
-                    {
-                        next = curr + strlen( curr );
-                    }
-                    int len = ( int )( next - curr );
-                    printf( "  %.*s%s\n", len, curr, html ? "<br/>" : "" );
-                    curr = next + 1;
+                    printf( "%s\n", html ? "  " : "\n  Full description:" );
+                    wrap_lines( variable->data.longHelp, WRAP_MARGIN, 2, 2, html );
                 }
-                while ( *next );
+
+                if ( SCOREP_CONFIG_TYPE_BITSET == variable->data.type
+                     || SCOREP_CONFIG_TYPE_OPTIONSET == variable->data.type )
+                {
+                    SCOREP_ConfigType_SetEntry* acceptedValues = variable->data.variableContext;
+
+                    int column_width = 0;
+                    if ( html )
+                    {
+                        printf( "  <dl>\n" );
+                    }
+                    else
+                    {
+                        if ( SCOREP_CONFIG_TYPE_BITSET == variable->data.type )
+                        {
+                            column_width = strlen( "none/no" );
+                        }
+                        while ( acceptedValues->name )
+                        {
+                            size_t length = strlen( acceptedValues->name );
+                            if ( length > ( size_t )column_width )
+                            {
+                                column_width = length;
+                            }
+                            acceptedValues++;
+                        }
+                    }
+
+                    acceptedValues = variable->data.variableContext;
+                    while ( acceptedValues->name )
+                    {
+                        printf( "    %s%s%s",
+                                html ? "<dt>" : "",
+                                acceptedValues->name,
+                                html ? "</dt>\n    <dd>\n" : ": " );
+
+                        wrap_lines( acceptedValues->description,
+                                    WRAP_MARGIN,
+                                    column_width + 6,
+                                    column_width - strlen( acceptedValues->name ),
+                                    html );
+
+                        if ( html )
+                        {
+                            printf( "    </dd>\n" );
+                        }
+
+                        acceptedValues++;
+                    }
+
+                    if ( SCOREP_CONFIG_TYPE_BITSET == variable->data.type )
+                    {
+                        printf( "    %snone/no%s%*s%s%s\n",
+                                html ? "<dt>" : "",
+                                html ? "</dt>\n    <dd>" : ": ",
+                                html ? 0 : ( column_width - ( int )strlen( "none/no" ) ), "",
+                                "Disable feature",
+                                html ? "</dd>" : "" );
+                    }
+
+                    if ( html )
+                    {
+                        printf( "  </dl>\n" );
+                    }
+                }
             }
+
             printf( "%s", html ? " </dd>" : "" );
             sep = html ? "\n <br/>\n" : "\n";
         }
@@ -680,6 +845,37 @@ string_to_lower( char* str )
     }
 }
 
+/** Comapre two strings for equality for a given length.
+ *  @a length must less or equal the length of the strings.
+ */
+static bool
+equal_icase_stringn( const char* str1, const char* str2, size_t length )
+{
+    while ( length-- )
+    {
+        if ( toupper( str1[ length ] ) != toupper( str2[ length ] ) )
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+static bool
+equal_icase_string( const char* str1, const char* str2 )
+{
+    size_t length1 = strlen( str1 );
+    size_t length2 = strlen( str2 );
+
+    if ( length1 == length2 )
+    {
+        return equal_icase_stringn( str1, str2, length1 );
+    }
+
+    return false;
+}
+
 void
 check_name( const char* name, size_t nameLen, bool isNameSpace )
 {
@@ -718,8 +914,8 @@ check_bitset( const char*                 nameSpaceName,
         UTILS_BUG_ON( 0 == acceptedValues->value,
                       "Possible set members for variable %s::%s includes the 0 value!",
                       nameSpaceName, variableName );
-        UTILS_BUG_ON( 0 == strcasecmp( acceptedValues->name, "no" )
-                      || 0 == strcasecmp( acceptedValues->name, "none" ),
+        UTILS_BUG_ON( equal_icase_string( acceptedValues->name, "no" )
+                      || equal_icase_string( acceptedValues->name, "none" ),
                       "Invalid set member name for variable %s::%s: %s",
                       nameSpaceName,
                       variableName,
@@ -755,6 +951,11 @@ parse_bitset( const char*                 value,
               uint64_t*                   bitsetReference,
               SCOREP_ConfigType_SetEntry* acceptedValues );
 
+static bool
+parse_optionset( const char*                 value,
+                 uint64_t*                   optionReference,
+                 SCOREP_ConfigType_SetEntry* acceptedValues );
+
 bool
 parse_value( const char*       value,
              SCOREP_ConfigType type,
@@ -763,6 +964,10 @@ parse_value( const char*       value,
 {
     switch ( type )
     {
+        case SCOREP_CONFIG_TYPE_STRING:
+        case SCOREP_CONFIG_TYPE_PATH:
+            return parse_string( value, variableReference );
+
         case SCOREP_CONFIG_TYPE_BOOL:
             return parse_bool( value, variableReference );
 
@@ -780,10 +985,9 @@ parse_value( const char*       value,
             UTILS_BUG_ON( !variableContext, "Missing config variable context." );
             return parse_bitset( value, variableReference, variableContext );
 
-        case SCOREP_CONFIG_TYPE_STRING:
-            return parse_string( value, variableReference );
-
-        case SCOREP_CONFIG_TYPE_PATH:
+        case SCOREP_CONFIG_TYPE_OPTIONSET:
+            UTILS_BUG_ON( !variableContext, "Missing config variable context." );
+            return parse_optionset( value, variableReference, variableContext );
 
         case SCOREP_INVALID_CONFIG_TYPE:
         default:
@@ -797,9 +1001,9 @@ parse_bool( const char* value,
             bool*       boolReference )
 {
     /* try symbolic constants */
-    if ( 0 == strcasecmp( value, "true" ) ||
-         0 == strcasecmp( value, "yes" ) ||
-         0 == strcasecmp( value, "on" ) )
+    if ( equal_icase_string( value, "true" ) ||
+         equal_icase_string( value, "yes" ) ||
+         equal_icase_string( value, "on" ) )
     {
         *boolReference = true;
         return true;
@@ -1057,8 +1261,6 @@ trim_string( char* str )
         }
     }
 
-    string_to_upper( str );
-
     return str;
 }
 
@@ -1100,6 +1302,11 @@ parse_set( const char* value,
     char*  value_for_strtok = value_copy;
     while ( ( entry = trim_string( strtok( value_for_strtok, " ,:;" ) ) ) )
     {
+        if ( 0 == strlen( entry ) )
+        {
+            continue;
+        }
+
         /* all but the first call to strtok should be NULL */
         value_for_strtok = NULL;
 
@@ -1115,7 +1322,7 @@ parse_set( const char* value,
         size_t i;
         for ( i = 0; i < string_list_len; i++ )
         {
-            if ( 0 == strcasecmp( entry, string_list[ i ] ) )
+            if ( equal_icase_string( entry, string_list[ i ] ) )
             {
                 break;
             }
@@ -1131,7 +1338,7 @@ parse_set( const char* value,
               acceptedValues && *acceptedValue;
               acceptedValue++ )
         {
-            if ( 0 == strcasecmp( entry, *acceptedValue ) )
+            if ( equal_icase_string( entry, *acceptedValue ) )
             {
                 /* found entry in accepted values list */
                 break;
@@ -1156,6 +1363,32 @@ out:
     return success;
 }
 
+static bool
+string_in_alias_list( const char* value, const char* aliases )
+{
+    size_t value_length = strlen( value );
+
+    const char* curr = aliases;
+    const char* next;
+    do
+    {
+        next = strchr( curr, '/' );
+        if ( !next )
+        {
+            next = curr + strlen( curr );
+        }
+        size_t length = next - curr;
+        if ( value_length == length && equal_icase_stringn( value, curr, length ) )
+        {
+            return true;
+        }
+
+        curr = next + 1;
+    }
+    while ( *next );
+
+    return false;
+}
 
 bool
 parse_bitset( const char*                 value,
@@ -1164,7 +1397,8 @@ parse_bitset( const char*                 value,
 {
     *bitsetReference = 0;
 
-    if ( 0 == strcasecmp( value, "none" ) || 0 == strcasecmp( value, "no" ) )
+    if ( equal_icase_string( value, "none" ) ||
+         equal_icase_string( value, "no" ) )
     {
         return true;
     }
@@ -1182,6 +1416,11 @@ parse_bitset( const char*                 value,
     char* value_for_strtok = value_copy;
     while ( ( entry = trim_string( strtok( value_for_strtok, " ,:;" ) ) ) )
     {
+        if ( 0 == strlen( entry ) )
+        {
+            continue;
+        }
+
         /* all but the first call to strtok should be NULL */
         value_for_strtok = NULL;
 
@@ -1191,7 +1430,7 @@ parse_bitset( const char*                 value,
               acceptedValue->name;
               acceptedValue++ )
         {
-            if ( 0 == strcasecmp( entry, acceptedValue->name ) )
+            if ( string_in_alias_list( entry, acceptedValue->name ) )
             {
                 /* found entry in accepted values list
                    add its value to the set */
@@ -1202,7 +1441,58 @@ parse_bitset( const char*                 value,
         if ( !acceptedValue->name )
         {
             UTILS_WARNING( "Value '%s' not in accepted set.", entry );
+            success = false;
+            break;
         }
+    }
+
+    free( value_copy );
+
+    return success;
+}
+
+bool
+parse_optionset( const char*                 value,
+                 uint64_t*                   optionReference,
+                 SCOREP_ConfigType_SetEntry* acceptedValues )
+{
+    *optionReference = 0;
+    bool success = true;
+
+    char* value_copy = malloc( strlen( value ) + 1 );
+    if ( !value_copy )
+    {
+        UTILS_ERROR_POSIX();
+        return false;
+    }
+    strcpy( value_copy, value );
+    value = trim_string( value_copy );
+
+    size_t value_length = strlen( value );
+    if ( 0 == value_length )
+    {
+        free( value_copy );
+        return true;
+    }
+
+    /* check if entry is in acceptedValues */
+    SCOREP_ConfigType_SetEntry* acceptedValue = acceptedValues;
+    while ( acceptedValue->name )
+    {
+        if ( string_in_alias_list( value, acceptedValue->name ) )
+        {
+            /* found entry in accepted values list */
+            *optionReference = acceptedValue->value;
+            break;
+        }
+
+        acceptedValue++;
+    }
+
+    if ( !acceptedValue->name )
+    {
+        UTILS_WARNING( "Value '%s' not in accepted set.", value );
+        success = false;
     }
 
     free( value_copy );
@@ -1212,14 +1502,14 @@ parse_bitset( const char*                 value,
 
 /* quotes a string for shell consumption */
 static char*
-single_quote_string( const char* str )
+single_quote_stringn( const char* str, size_t length )
 {
-    size_t length = strlen( str );
+    const char* end = str + length;
     /* original length plus two ' */
     size_t new_length = length + 2;
 
     const char* string_it = str;
-    while ( *string_it )
+    while ( string_it < end )
     {
         switch ( *string_it )
         {
@@ -1242,7 +1532,7 @@ single_quote_string( const char* str )
     char* new_string_it = new_string;
     string_it        = str;
     *new_string_it++ = '\'';
-    while ( *string_it )
+    while ( string_it < end )
     {
         switch ( *string_it )
         {
@@ -1263,6 +1553,12 @@ single_quote_string( const char* str )
     *new_string_it   = '\0';
 
     return new_string;
+}
+
+static char*
+single_quote_string( const char* str )
+{
+    return single_quote_stringn( str, strlen( str ) );
 }
 
 static void
@@ -1319,6 +1615,40 @@ dump_bitset( FILE*                       out,
     fprintf( out, "\n" );
 }
 
+static void
+dump_optionset( FILE*                       out,
+                const char*                 name,
+                uint64_t                    option,
+                SCOREP_ConfigType_SetEntry* acceptedValues )
+{
+    fprintf( out, "%s=", name );
+    while ( acceptedValues->name )
+    {
+        if ( option == acceptedValues->value )
+        {
+            /* extract first name of alias list */
+            const char* curr = acceptedValues->name;
+            const char* next = strchr( curr, '/' );
+            if ( !next )
+            {
+                next = curr + strlen( curr );
+            }
+
+            char* quoted_string = single_quote_stringn( curr, next - curr );
+            if ( quoted_string )
+            {
+                fprintf( out, "%s", quoted_string );
+                free( quoted_string );
+            }
+
+            break;
+        }
+
+        acceptedValues++;
+    }
+    fprintf( out, "\n" );
+}
+
 void
 dump_value( FILE*             out,
             const char*       name,
@@ -1328,6 +1658,23 @@ dump_value( FILE*             out,
 {
     switch ( type )
     {
+        case SCOREP_CONFIG_TYPE_STRING:
+        case SCOREP_CONFIG_TYPE_PATH:
+        {
+            char* quoted_value = single_quote_string( *( const char** )variableReference );
+            if ( !quoted_value )
+            {
+                break;
+            }
+            fprintf( out,
+                     "%s=%s\n",
+                     name,
+                     quoted_value );
+            free( quoted_value );
+
+            break;
+        }
+
         case SCOREP_CONFIG_TYPE_BOOL:
             fprintf( out,
                      "%s=%s\n",
@@ -1346,6 +1693,13 @@ dump_value( FILE*             out,
                          variableContext );
             break;
 
+        case SCOREP_CONFIG_TYPE_OPTIONSET:
+            dump_optionset( out,
+                            name,
+                            *( uint64_t* )variableReference,
+                            variableContext );
+            break;
+
         case SCOREP_CONFIG_TYPE_NUMBER:
         case SCOREP_CONFIG_TYPE_SIZE:
             fprintf( out,
@@ -1354,23 +1708,6 @@ dump_value( FILE*             out,
                      *( uint64_t* )variableReference );
             break;
 
-        case SCOREP_CONFIG_TYPE_STRING:
-        {
-            char* quoted_value = single_quote_string( *( const char** )variableReference );
-            if ( !quoted_value )
-            {
-                break;
-            }
-            fprintf( out,
-                     "%s=%s\n",
-                     name,
-                     quoted_value );
-            free( quoted_value );
-
-            break;
-        }
-
-        case SCOREP_CONFIG_TYPE_PATH:
         case SCOREP_INVALID_CONFIG_TYPE:
         default:
             break;

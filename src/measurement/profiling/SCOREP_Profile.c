@@ -588,15 +588,15 @@ write( void )
     {
         return;
     }
-    else if ( scorep_profile_output_format & SCOREP_PROFILE_OUTPUT_CUBE4 )
+    else if ( scorep_profile_output_format == SCOREP_PROFILE_OUTPUT_CUBE4 )
     {
         scorep_profile_write_cube4( false );
     }
-    else if ( scorep_profile_output_format & SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT )
+    else if ( scorep_profile_output_format == SCOREP_PROFILE_OUTPUT_TAU_SNAPSHOT )
     {
         scorep_profile_write_tau_snapshot();
     }
-    else if ( scorep_profile_output_format & SCOREP_PROFILE_OUTPUT_CUBE_TUPLE )
+    else if ( scorep_profile_output_format == SCOREP_PROFILE_OUTPUT_CUBE_TUPLE )
     {
         scorep_profile_write_cube4( true );
     }
