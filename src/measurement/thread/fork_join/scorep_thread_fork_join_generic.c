@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -41,13 +41,18 @@
 #include <scorep_thread_fork_join_model_specific.h>
 #include "scorep_thread_fork_join_team.h"
 
+#include <scorep_substrates_definition.h>
+#include <scorep_subsystem.h>
+/* temporary, remove once scorep_subsystems_activate_cpu_location is available */
+#include <SCOREP_Substrates_Management.h>
+
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Paradigms.h>
 #include <SCOREP_Properties.h>
 #include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Profile_Tasking.h>
 #include <SCOREP_Metric_Management.h>
-#include "scorep_events_common.h"
+#include <scorep_events_common.h>
 #include "scorep_task_internal.h"
 
 #include <UTILS_Error.h>
@@ -106,22 +111,9 @@ SCOREP_ThreadForkJoin_Fork( SCOREP_ParadigmType paradigm,
                            scorep_thread_get_model_data( tpd ),
                            location );
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_ThreadFork( location, nRequestedThreads, sequence_count );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadFork( location,
-                                   timestamp,
-                                   paradigm,
-                                   nRequestedThreads );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( ThreadForkJoinFork, THREAD_FORK_JOIN_FORK,
+                           ( location, timestamp, paradigm,
+                             nRequestedThreads, sequence_count ) )
 }
 
 
@@ -147,21 +139,8 @@ SCOREP_ThreadForkJoin_Join( SCOREP_ParadigmType paradigm )
     SCOREP_Location* location  = scorep_thread_get_location( tpd_from_now_on );
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_ThreadJoin( location );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadJoin( location,
-                                   timestamp,
-                                   paradigm );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( ThreadForkJoinJoin, THREAD_FORK_JOIN_JOIN,
+                           ( location, timestamp, paradigm ) )
 }
 
 SCOREP_TaskHandle
@@ -209,8 +188,8 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
 
     if ( location_is_created )
     {
-        SCOREP_Location_CallSubstratesOnNewLocation( current_location,
-                                                     parent_location );
+        scorep_subsystems_initialize_location( current_location,
+                                               parent_location );
     }
 
     /* handles recursion into the same singleton thread-team */
@@ -221,26 +200,13 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
         thread_id );
     scorep_thread_set_team( current_tpd, team );
 
-    SCOREP_Location_CallSubstratesOnActivation( current_location,
-                                                parent_location,
-                                                sequence_count );
+    // scorep_subsystems_activate_cpu_location (location, parent, sequence_count, SCOREP_CPU_LOCATION_PHASE_EVENTS);
+    SCOREP_Substrates_CallSubstratesOnActivation( current_location,
+                                                  parent_location,
+                                                  sequence_count );
 
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadTeamBegin( current_location,
-                                        timestamp,
-                                        paradigm,
-                                        scorep_thread_get_team( current_tpd ) );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
-    }
-
-    if ( scorep_profiling_consume_event() )
-    {
-        //SCOREP_Profiling_ThreadTeamBegin( current_location, timestamp, forkSequenceCount, threadId, paradigm );
-    }
+    SCOREP_CALL_SUBSTRATE( ThreadForkJoinTeamBegin, THREAD_FORK_JOIN_TEAM_BEGIN,
+                           ( current_location, timestamp, paradigm, team ) )
 
     return SCOREP_Task_GetCurrentTask( current_location );
 }
@@ -255,27 +221,17 @@ SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm )
     struct scorep_thread_private_data* parent    = 0;
     SCOREP_Location*                   location  = scorep_thread_get_location( tpd );
     uint64_t                           timestamp = scorep_get_timestamp( location );
+    SCOREP_InterimCommunicatorHandle   team      = scorep_thread_get_team( tpd );
 
     scorep_thread_on_team_end( tpd, &parent, paradigm );
     UTILS_ASSERT( parent );
 
-    /* Nothing to do for profiling. */
+    SCOREP_CALL_SUBSTRATE( ThreadForkJoinTeamEnd, THREAD_FORK_JOIN_TEAM_END,
+                           ( location, timestamp, paradigm, team ) )
 
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadTeamEnd( location,
-                                      timestamp,
-                                      paradigm,
-                                      scorep_thread_get_team( tpd ) );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
-    }
-
-    SCOREP_Location_CallSubstratesOnDeactivation(
-        location,
-        scorep_thread_get_location( parent ) );
+    // scorep_subsystems_deactivate_cpu_location (location, parent, SCOREP_CPU_LOCATION_PHASE_EVENTS);
+    SCOREP_Substrates_CallSubstratesOnDeactivation( location,
+                                                    scorep_thread_get_location( parent ) );
 }
 
 void
@@ -286,23 +242,12 @@ SCOREP_ThreadForkJoin_TaskCreate( SCOREP_ParadigmType paradigm,
     struct scorep_thread_private_data* tpd      = scorep_thread_get_private_data();
     SCOREP_Location*                   location = scorep_thread_get_location( tpd );
     /* use the timestamp from the associated enter */
-    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
+    uint64_t                         timestamp = SCOREP_Location_GetLastTimestamp( location );
+    SCOREP_InterimCommunicatorHandle team      = scorep_thread_get_team( tpd );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadTaskCreate( location,
-                                         timestamp,
-                                         paradigm,
-                                         scorep_thread_get_team( tpd ),
-                                         threadId,
-                                         generationNumber );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( ThreadForkJoinTaskCreate, THREAD_FORK_JOIN_TASK_CREATE,
+                           ( location, timestamp, paradigm,
+                             team, threadId, generationNumber ) )
 }
 
 
@@ -310,37 +255,20 @@ void
 SCOREP_ThreadForkJoin_TaskSwitch( SCOREP_ParadigmType paradigm,
                                   SCOREP_TaskHandle   task )
 {
-    struct scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
-    SCOREP_Location*                   location  = scorep_thread_get_location( tpd );
-    uint64_t                           timestamp = scorep_get_timestamp( location );
+    struct scorep_thread_private_data* tpd           = scorep_thread_get_private_data();
+    SCOREP_Location*                   location      = scorep_thread_get_location( tpd );
+    uint64_t                           timestamp     = scorep_get_timestamp( location );
+    uint64_t*                          metric_values = SCOREP_Metric_Read( location );
+    SCOREP_InterimCommunicatorHandle   team          = scorep_thread_get_team( tpd );
 
     scorep_task_switch( location, task );
 
     uint32_t thread_id     = SCOREP_Task_GetThreadId( task );
     uint32_t generation_no = SCOREP_Task_GetGenerationNumber( task );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        uint64_t* metric_values = SCOREP_Metric_Read( location );
-        SCOREP_Profile_TaskSwitch( location,
-                                   timestamp,
-                                   metric_values,
-                                   task );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadTaskSwitch( location,
-                                         timestamp,
-                                         paradigm,
-                                         scorep_thread_get_team( tpd ),
-                                         thread_id,
-                                         generation_no );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( ThreadForkJoinTaskSwitch, THREAD_FORK_JOIN_TASK_SWITCH,
+                           ( location, timestamp, metric_values, paradigm,
+                             team, thread_id, generation_no, task ) )
 }
 
 
@@ -354,6 +282,7 @@ SCOREP_ThreadForkJoin_TaskBegin( SCOREP_ParadigmType paradigm,
     SCOREP_Location*                   location      = scorep_thread_get_location( tpd );
     uint64_t                           timestamp     = scorep_get_timestamp( location );
     uint64_t*                          metric_values = SCOREP_Metric_Read( location );
+    SCOREP_InterimCommunicatorHandle   team          = scorep_thread_get_team( tpd );
 
     /* We create the task data construct late when the tasks starts running, because
      * the number of tasks that are running concurrently is usually much smaller
@@ -371,38 +300,9 @@ SCOREP_ThreadForkJoin_TaskBegin( SCOREP_ParadigmType paradigm,
                                                      generationNumber );
     scorep_task_switch( location, new_task );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_TaskBegin( location,
-                                  timestamp,
-                                  metric_values,
-                                  regionHandle,
-                                  new_task );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadTaskSwitch( location,
-                                         timestamp,
-                                         paradigm,
-                                         scorep_thread_get_team( tpd ),
-                                         threadId,
-                                         generationNumber );
-
-        if ( metric_values )
-        {
-            /* @todo: Writing metrics to trace file will be improved in the near future */
-
-            SCOREP_Metric_WriteToTrace( location,
-                                        timestamp );
-        }
-
-        SCOREP_Tracing_Enter( location, timestamp, regionHandle );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( ThreadForkJoinTaskBegin, THREAD_FORK_JOIN_TASK_BEGIN,
+                           ( location, timestamp, regionHandle, metric_values,
+                             paradigm, team, threadId, generationNumber, new_task ) )
 
     return new_task;
 }
@@ -416,41 +316,15 @@ SCOREP_ThreadForkJoin_TaskEnd( SCOREP_ParadigmType paradigm,
     struct scorep_thread_private_data* tpd           = scorep_thread_get_private_data();
     SCOREP_Location*                   location      = scorep_thread_get_location( tpd );
     uint64_t                           timestamp     = scorep_get_timestamp( location );
+    SCOREP_InterimCommunicatorHandle   team          = scorep_thread_get_team( tpd );
     uint64_t*                          metric_values = SCOREP_Metric_Read( location );
     uint32_t                           thread_id     = SCOREP_Task_GetThreadId( task );
     uint32_t                           generation_no = SCOREP_Task_GetGenerationNumber( task );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_TaskEnd( location,
-                                timestamp,
-                                metric_values,
-                                regionHandle,
-                                task );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        if ( metric_values )
-        {
-            /* @todo: Writing metrics to trace file will be improved in the near future */
-
-            SCOREP_Metric_WriteToTrace( location,
-                                        timestamp );
-        }
-
-        SCOREP_Tracing_Leave( location, timestamp, regionHandle );
-        SCOREP_Tracing_ThreadTaskComplete( location,
-                                           timestamp,
-                                           paradigm,
-                                           scorep_thread_get_team( tpd ),
-                                           thread_id,
-                                           generation_no );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
-    }
+    /*void*                      task_substrate_data = scorep_task_get_substrate_data( task );*/
+    SCOREP_CALL_SUBSTRATE( ThreadForkJoinTaskEnd, THREAD_FORK_JOIN_TASK_END,
+                           ( location, timestamp, regionHandle, metric_values,
+                             paradigm, team, thread_id, generation_no, task ) )
 
     scorep_task_complete( location, task );
 }

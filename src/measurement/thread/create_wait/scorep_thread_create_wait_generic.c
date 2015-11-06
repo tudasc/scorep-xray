@@ -1,11 +1,14 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
+ *
+ * Copyright (c) 2015,
+ * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
@@ -26,7 +29,11 @@
 #include <scorep_thread_model_specific.h>
 #include <scorep_thread_create_wait_model_specific.h>
 
-#include <SCOREP_Subsystem.h>
+#include <scorep_substrates_definition.h>
+/* temporary, remove once scorep_subsystems_activate_cpu_location is available */
+#include <SCOREP_Substrates_Management.h>
+
+#include <scorep_subsystem.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Definitions.h>
 #include <scorep_events_common.h>
@@ -241,9 +248,10 @@ SCOREP_ThreadCreateWait_Create( SCOREP_ParadigmType                 paradigm,
                   "Provided paradigm not of create/wait class " );
     /* We are in the creator thread. */
 
-    struct scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
-    struct SCOREP_Location*            location  = scorep_thread_get_location( tpd );
-    uint64_t                           timestamp = scorep_get_timestamp( location );
+    struct scorep_thread_private_data* tpd         = scorep_thread_get_private_data();
+    struct SCOREP_Location*            location    = scorep_thread_get_location( tpd );
+    uint64_t                           timestamp   = scorep_get_timestamp( location );
+    SCOREP_InterimCommunicatorHandle   thread_team = scorep_thread_get_team( tpd );
 
     *parent        = tpd;
     *sequenceCount = scorep_thread_get_next_sequence_count();
@@ -252,23 +260,9 @@ SCOREP_ThreadCreateWait_Create( SCOREP_ParadigmType                 paradigm,
                                          scorep_thread_get_model_data( tpd ),
                                          location );
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_ThreadCreate( location, *sequenceCount );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadCreate( location,
-                                     timestamp,
-                                     paradigm,
-                                     scorep_thread_get_team( tpd ),
-                                     *sequenceCount );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( ThreadCreateWaitCreate, THREAD_CREATE_WAIT_CREATE,
+                           ( location, timestamp, paradigm,
+                             thread_team, *sequenceCount ) )
 }
 
 
@@ -280,31 +274,18 @@ SCOREP_ThreadCreateWait_Wait( SCOREP_ParadigmType paradigm,
     UTILS_BUG_ON( !SCOREP_PARADIGM_TEST_CLASS( paradigm, THREAD_CREATE_WAIT ),
                   "Provided paradigm not of create/wait class" );
 
-    struct scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
-    struct SCOREP_Location*            location  = scorep_thread_get_location( tpd );
-    uint64_t                           timestamp = scorep_get_timestamp( location );
+    struct scorep_thread_private_data* tpd         = scorep_thread_get_private_data();
+    struct SCOREP_Location*            location    = scorep_thread_get_location( tpd );
+    uint64_t                           timestamp   = scorep_get_timestamp( location );
+    SCOREP_InterimCommunicatorHandle   thread_team = scorep_thread_get_team( tpd );
 
     scorep_thread_create_wait_on_wait( paradigm,
                                        scorep_thread_get_model_data( tpd ),
                                        location );
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_ThreadWait( location, sequenceCount );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadWait( location,
-                                   timestamp,
-                                   paradigm,
-                                   scorep_thread_get_team( tpd ),
-                                   sequenceCount );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( ThreadCreateWaitWait, THREAD_CREATE_WAIT_WAIT,
+                           ( location, timestamp, paradigm,
+                             thread_team, sequenceCount ) )
 }
 
 
@@ -334,12 +315,13 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
 
     SCOREP_Location* parent_location = scorep_thread_get_location( parentTpd );
     *location = scorep_thread_get_location( current_tpd );
-    uint64_t timestamp = scorep_get_timestamp( *location );
+    uint64_t                         timestamp   = scorep_get_timestamp( *location );
+    SCOREP_InterimCommunicatorHandle thread_team = scorep_thread_get_team( current_tpd );
 
     if ( location_is_created )
     {
-        SCOREP_Location_CallSubstratesOnNewLocation( *location,
-                                                     parent_location );
+        scorep_subsystems_initialize_location( *location,
+                                               parent_location );
     }
 
     SCOREP_MutexLock( thread_create_mutex );
@@ -348,33 +330,14 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
 
     scorep_thread_set_team( current_tpd, thread_team );
 
-    SCOREP_Location_CallSubstratesOnActivation( *location,
-                                                parent_location,
-                                                sequenceCount );
+    // scorep_subsystems_activate_cpu_location (location, parent, sequence_count, SCOREP_CPU_LOCATION_PHASE_EVENTS);
+    SCOREP_Substrates_CallSubstratesOnActivation( *location,
+                                                  parent_location,
+                                                  sequenceCount );
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_ThreadBegin( *location,
-                                    timestamp,
-                                    paradigm,
-                                    scorep_thread_get_team( current_tpd ),
-                                    sequenceCount );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadBegin( *location,
-                                    timestamp,
-                                    paradigm,
-                                    scorep_thread_get_team( current_tpd ),
-                                    sequenceCount );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE );
-    }
-
-    /* Nothing to do for profiling. */
+    SCOREP_CALL_SUBSTRATE( ThreadCreateWaitBegin, THREAD_CREATE_WAIT_BEGIN,
+                           ( *location, timestamp, paradigm,
+                             thread_team, sequenceCount ) )
 }
 
 
@@ -392,32 +355,15 @@ SCOREP_ThreadCreateWait_End( SCOREP_ParadigmType                paradigm,
     struct scorep_thread_private_data* current_tpd      = scorep_thread_get_private_data();
     SCOREP_Location*                   current_location = scorep_thread_get_location( current_tpd );
     uint64_t                           timestamp        = scorep_get_timestamp( current_location );
+    SCOREP_InterimCommunicatorHandle   thread_team      = scorep_thread_get_team( current_tpd );
 
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_ThreadEnd( current_location,
-                                  timestamp,
-                                  paradigm,
-                                  scorep_thread_get_team( current_tpd ),
-                                  sequenceCount );
-    }
+    SCOREP_CALL_SUBSTRATE( ThreadCreateWaitEnd, THREAD_CREATE_WAIT_END,
+                           ( current_location, timestamp, paradigm,
+                             thread_team, sequenceCount ) )
 
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadEnd( current_location,
-                                  timestamp,
-                                  paradigm,
-                                  scorep_thread_get_team( current_tpd ),
-                                  sequenceCount );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE );
-    }
-
-    SCOREP_Location_CallSubstratesOnDeactivation(
-        current_location,
-        scorep_thread_get_location( parentTpd ) );
+    // scorep_subsystems_deactivate_cpu_location (location, parent, SCOREP_CPU_LOCATION_PHASE_EVENTS);
+    SCOREP_Substrates_CallSubstratesOnDeactivation( current_location,
+                                                    scorep_thread_get_location( parentTpd ) );
 
     scorep_thread_create_wait_on_end( paradigm, parentTpd, current_tpd, sequenceCount );
 

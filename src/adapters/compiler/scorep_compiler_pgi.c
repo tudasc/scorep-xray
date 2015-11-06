@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -61,6 +61,10 @@
 /* **************************************************************************************
  * Typedefs and global variables
  ***************************************************************************************/
+
+/* Remove this PGI hack once the SCOREP_IS_MEASUREMENT_PHASE macros
+ * are in place. See  r8969, r8804, r8879, #696. */
+bool scorep_measurement_initialization_complete = false;
 
 /**
  * @brief Data structures to be used by the PGI compiler.
@@ -214,6 +218,13 @@ pgi_enter_region( SCOREP_RegionHandle* region,
                   char*                file_name,
                   int                  lineno )
 {
+    /* Remove this PGI hack once the SCOREP_IS_MEASUREMENT_PHASE macros
+     * are in place. See  r8969, r8804, r8879, #696. */
+    if ( !scorep_measurement_initialization_complete )
+    {
+        return;
+    }
+
     /* Ensure the compiler adapter is initialized */
     if ( !scorep_compiler_initialized )
     {
@@ -320,6 +331,13 @@ ___rouent64( void*                  arg0,
 void
 ___rouret( void )
 {
+    /* Remove this PGI hack once the SCOREP_IS_MEASUREMENT_PHASE macros
+     * are in place. See  r8969, r8804, r8879, #696. */
+    if ( !scorep_measurement_initialization_complete )
+    {
+        return;
+    }
+
     /* Check whether adapter is already finalized */
     if ( scorep_compiler_finalized )
     {

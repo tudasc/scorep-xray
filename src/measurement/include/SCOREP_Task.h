@@ -4,6 +4,9 @@
  * Copyright (c) 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
+ * Copyright (c) 2015,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -20,6 +23,7 @@
  */
 
 #include <SCOREP_Types.h>
+#include <stddef.h>
 
 struct SCOREP_Location;
 
@@ -109,7 +113,7 @@ SCOREP_Task_ExitAllRegions( struct SCOREP_Location* location,
  */
 void*
 SCOREP_Task_GetSubstrateData( SCOREP_TaskHandle task,
-                              uint32_t          substrateId );
+                              size_t            substrateId );
 
 /**
  * Sets the profiling specific data for @a task.
@@ -119,7 +123,7 @@ SCOREP_Task_GetSubstrateData( SCOREP_TaskHandle task,
  */
 void
 SCOREP_Task_SetSubstrateData( SCOREP_TaskHandle task,
-                              uint32_t          substrateId,
+                              size_t            substrateId,
                               void*             data );
 
 #endif

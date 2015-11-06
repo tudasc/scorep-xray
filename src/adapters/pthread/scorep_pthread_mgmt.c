@@ -1,7 +1,7 @@
 /**
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -139,7 +139,8 @@ pthread_subsystem_finalize( void )
 
 
 static SCOREP_ErrorCode
-pthread_subsystem_init_location( struct SCOREP_Location* locationData )
+pthread_subsystem_init_location( struct SCOREP_Location* locationData,
+                                 struct SCOREP_Location* parent )
 {
     UTILS_DEBUG_ENTRY();
 

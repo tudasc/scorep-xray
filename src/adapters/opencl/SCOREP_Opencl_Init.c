@@ -4,6 +4,9 @@
  * Copyright (c) 2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2015,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -117,7 +120,8 @@ opencl_subsystem_init( void )
  *         is returned
  */
 static SCOREP_ErrorCode
-opencl_subsystem_init_location( SCOREP_Location* location )
+opencl_subsystem_init_location( SCOREP_Location* location,
+                                SCOREP_Location* parent )
 {
     return SCOREP_SUCCESS;
 }

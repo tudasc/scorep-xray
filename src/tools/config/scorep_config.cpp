@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -825,6 +825,7 @@ print_adapter_init_source( void )
     {
         init_structs.push_front( "SCOREP_Subsystem_MetricService" );
         init_structs.push_front( "SCOREP_Subsystem_TaskStack" );
+        init_structs.push_front( "SCOREP_Subsystem_Substrates" );
 
         std::cout << deque_to_string( init_structs,
                                       "extern const struct SCOREP_Subsystem ",

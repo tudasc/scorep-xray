@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012, 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -44,46 +44,70 @@
 
 /**
    Implements the handling of a task switch event.
-   @param thread       Location this event happened on.
-   @param timestamp    Timestamp of this event.
-   @param metricValues Array of the dense metric values.
-   @param taskHandle   Handle of the task the runtime switched to.
+   @param thread           Location this event happened on.
+   @param timestamp        Timestamp of this event.
+   @param metricValues     Array of the dense metric values.
+   @param paradigm         Unused.
+   @param threadTeam       Unused.
+   @param threadId         Unused.
+   @param generationNumber Unused.
+   @param taskHandle       Handle of the task the runtime switched to.
  */
 void
-SCOREP_Profile_TaskSwitch( SCOREP_Location*  thread,
-                           uint64_t          timestamp,
-                           uint64_t*         metricValues,
-                           SCOREP_TaskHandle taskHandle );
+SCOREP_Profile_TaskSwitch( SCOREP_Location*                 thread,
+                           uint64_t                         timestamp,
+                           uint64_t*                        metricValues,
+                           SCOREP_ParadigmType              paradigm,
+                           SCOREP_InterimCommunicatorHandle threadTeam,
+                           uint32_t                         threadId,
+                           uint32_t                         generationNumber,
+                           SCOREP_TaskHandle                taskHandle );
 
 /**
    Implements the handling of a task begin event.
-   @param thread       Location this event happened on.
-   @param timestamp    Timestamp of this event.
-   @param metricValues Array of the dense metric values.
-   @param regionHandle Region handle of the task region.
-   @param taskHandle   Handle of the completed task.
+   @param thread           Location this event happened on.
+   @param timestamp        Timestamp of this event.
+   @param regionHandle     Region handle of the task region.
+   @param metricValues     Array of the dense metric values.
+   @param paradigm         Unused.
+   @param threadTeam       Unused.
+   @param threadId         Unused.
+   @param generationNumber Unused.
+   @param taskHandle       Handle of the completed task.
  */
 void
-SCOREP_Profile_TaskBegin( SCOREP_Location*    thread,
-                          uint64_t            timestamp,
-                          uint64_t*           metricValues,
-                          SCOREP_RegionHandle regionHandle,
-                          SCOREP_TaskHandle   taskHandle );
+SCOREP_Profile_TaskBegin( SCOREP_Location*                 thread,
+                          uint64_t                         timestamp,
+                          SCOREP_RegionHandle              regionHandle,
+                          uint64_t*                        metricValues,
+                          SCOREP_ParadigmType              paradigm,
+                          SCOREP_InterimCommunicatorHandle threadTeam,
+                          uint32_t                         threadId,
+                          uint32_t                         generationNumber,
+                          SCOREP_TaskHandle                taskHandle );
 
 /**
    Implements the handling of a task end event.
-   @param thread       Location this event happened on.
-   @param timestamp    Timestamp of this event.
-   @param metricValues Array of the dense metric values.
-   @param regionHandle Region handle of the task region.
-   @param taskHandle   Handle of the completed task.
+   @param thread           Location this event happened on.
+   @param timestamp        Timestamp of this event.
+   @param regionHandle     Region handle of the task region.
+   @param metricValues     Array of the dense metric values.
+   @param paradigm         Unused.
+   @param threadTeam       Unused.
+   @param threadId         Unused.
+   @param generationNumber Unused.
+   @param taskHandle       Unused.
  */
 void
-SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
-                        uint64_t            timestamp,
-                        uint64_t*           metricValues,
-                        SCOREP_RegionHandle regionHandle,
-                        SCOREP_TaskHandle   taskHandle );
+SCOREP_Profile_TaskEnd( SCOREP_Location*                 thread,
+                        uint64_t                         timestamp,
+                        SCOREP_RegionHandle              regionHandle,
+                        uint64_t*                        metricValues,
+                        SCOREP_ParadigmType              paradigm,
+                        SCOREP_InterimCommunicatorHandle threadTeam,
+                        uint32_t                         threadId,
+                        uint32_t                         generationNumber,
+                        SCOREP_TaskHandle                taskHandle );
 
 /**
  * Creates a object of profile task data.

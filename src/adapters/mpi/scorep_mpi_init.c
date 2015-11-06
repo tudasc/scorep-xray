@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -245,7 +245,8 @@ mpi_subsystem_init( void )
    adapter.
  */
 static SCOREP_ErrorCode
-mpi_subsystem_init_location( struct SCOREP_Location* locationData )
+mpi_subsystem_init_location( struct SCOREP_Location* locationData,
+                             struct SCOREP_Location* parent )
 {
     UTILS_DEBUG_ENTRY();
     return SCOREP_SUCCESS;

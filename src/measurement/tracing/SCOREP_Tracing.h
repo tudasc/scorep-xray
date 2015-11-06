@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012, 2014,
+ * Copyright (c) 2009-2012, 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -40,17 +40,28 @@
 
 
 #include <SCOREP_ErrorCodes.h>
+#include <scorep_substrates_definition.h>
+
+struct SCOREP_Location;
 
 
 SCOREP_ErrorCode
 SCOREP_Tracing_Register( void );
 
 
+/**
+   Initializes the tracing substrate.
+   @param substrateId Id to access tracing-specific location and task data.
+ */
 void
-SCOREP_Tracing_Initialize( void );
+SCOREP_Tracing_Initialize( size_t substrateId );
 
 
-void
+/**
+   Finalizes the tracing substrate.
+   @return The substrate id that was passed to SCOREP_Tracing_Initialize().
+ */
+size_t
 SCOREP_Tracing_Finalize( void );
 
 
@@ -70,12 +81,10 @@ void
 SCOREP_Tracing_FinalizeEventWriters( void );
 
 /**
- *  Writes all definitions into the OTF2 archive.
+ *  Writes properties and definitions into the OTF2 archive.
  */
 void
-SCOREP_Tracing_WriteDefinitions( void );
+SCOREP_Tracing_Write( void );
 
-void
-SCOREP_Tracing_WriteProperties();
 
 #endif /* SCOREP_TRACING_H */

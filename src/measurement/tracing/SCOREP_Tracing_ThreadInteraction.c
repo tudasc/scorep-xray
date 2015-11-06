@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -76,14 +76,15 @@ SCOREP_Tracing_CreateLocationData( SCOREP_Location* locationData )
 
 
 void
-SCOREP_Tracing_DeleteLocationData( SCOREP_TracingData* traceLocationData )
+SCOREP_Tracing_DeleteLocationData( SCOREP_Location* location )
 {
-    if ( traceLocationData )
+    SCOREP_TracingData* trace_location_data = scorep_tracing_get_trace_data( location );
+    if ( trace_location_data )
     {
-        traceLocationData->otf_writer = 0;
+        trace_location_data->otf_writer = 0;
         // writer will be deleted by otf in call to OTF2_Archive_Close()
 
-        OTF2_AttributeList_Delete( traceLocationData->otf_attribute_list );
+        OTF2_AttributeList_Delete( trace_location_data->otf_attribute_list );
     }
 }
 
@@ -92,12 +93,16 @@ void
 SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
                                    SCOREP_Location* parentLocationData )
 {
-    SCOREP_TracingData* tracing_data = SCOREP_Location_GetTracingData( locationData );
+    SCOREP_TracingData* tracing_data =
+        SCOREP_Tracing_CreateLocationData( locationData );
+    UTILS_BUG_ON( !tracing_data, "Failed creating trace location data." );
+    SCOREP_Location_SetSubstrateData( locationData, tracing_data,
+                                      scorep_tracing_substrate_id );
 
     /* SCOREP_Tracing_GetEventWriter() aborts on error */
     tracing_data->otf_writer = SCOREP_Tracing_GetEventWriter();
 
-    /* Attach the location to the evetn writer, so that we can access
+    /* Attach the location to the event writer, so that we can access
      * it in case of an buffer flush.
      */
     OTF2_EvtWriter_SetUserData( tracing_data->otf_writer, locationData );
@@ -105,13 +110,13 @@ SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
 
 
 void
-SCOREP_Tracing_AssignLocationId( SCOREP_Location* threadLocationData )
+SCOREP_Tracing_AssignLocationId( SCOREP_Location* location )
 {
     // Does this function needs locking? I don't think so, it operates just on local data.
-    SCOREP_TracingData* tracing_data = SCOREP_Location_GetTracingData( threadLocationData );
-    uint64_t            location_id  = SCOREP_Location_GetGlobalId( threadLocationData );
+    OTF2_EvtWriter* evt_writer  = scorep_tracing_get_trace_data( location )->otf_writer;
+    uint64_t        location_id = SCOREP_Location_GetGlobalId( location );
 
-    OTF2_ErrorCode error = OTF2_EvtWriter_SetLocationID( tracing_data->otf_writer,
+    OTF2_ErrorCode error = OTF2_EvtWriter_SetLocationID( evt_writer,
                                                          location_id );
     if ( OTF2_SUCCESS != error )
     {

@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -41,6 +41,7 @@
 #include <config.h>
 
 #include <SCOREP_Events.h>
+#include <scorep_substrates_definition.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -65,35 +66,19 @@
 /**
  * Process a region enter event in the measurement system.
  */
-static void
-scorep_enter_region( uint64_t            timestamp,
-                     SCOREP_RegionHandle regionHandle,
-                     uint64_t*           metricValues,
-                     SCOREP_Location*    location )
+static inline void
+enter_region( SCOREP_Location*    location,
+              uint64_t            timestamp,
+              SCOREP_RegionHandle regionHandle,
+              uint64_t*           metricValues )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%u",
                         SCOREP_Definitions_HandleToId( regionHandle ) );
 
     SCOREP_Task_Enter( location, regionHandle );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_Enter( location, regionHandle,
-                              SCOREP_RegionHandle_GetType( regionHandle ),
-                              timestamp, metricValues );
-
-        SCOREP_Metric_WriteToProfile( location );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Metric_WriteToTrace( location,
-                                    timestamp );
-
-        SCOREP_Tracing_Enter( location,
-                              timestamp,
-                              regionHandle );
-    }
+    SCOREP_CALL_SUBSTRATE( EnterRegion, ENTER_REGION,
+                           ( location, timestamp, regionHandle, metricValues ) )
 }
 
 
@@ -104,7 +89,7 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
-    scorep_enter_region( timestamp, regionHandle, metric_values, location );
+    enter_region( location, timestamp, regionHandle, metric_values );
 }
 
 
@@ -129,46 +114,24 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
 
     uint64_t* metric_values = SCOREP_Metric_Read( location );
 
-    scorep_enter_region( timestamp, regionHandle, metric_values, location );
+    enter_region( location, timestamp, regionHandle, metric_values );
 }
 
 
 /**
  * Process a region exit event in the measurement system.
  */
-static void
-scorep_exit_region( uint64_t            timestamp,
-                    SCOREP_RegionHandle regionHandle,
-                    uint64_t*           metricValues,
-                    SCOREP_Location*    location )
+static inline void
+exit_region( SCOREP_Location*    location,
+             uint64_t            timestamp,
+             SCOREP_RegionHandle regionHandle,
+             uint64_t*           metricValues )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Reg:%u",
                         SCOREP_Definitions_HandleToId( regionHandle ) );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Metric_WriteToProfile( location );
-
-        SCOREP_Profile_Exit( location,
-                             regionHandle,
-                             timestamp,
-                             metricValues );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        if ( metricValues )
-        {
-            /* @todo: Writing metrics to trace file will be improved in the near future */
-
-            SCOREP_Metric_WriteToTrace( location,
-                                        timestamp );
-        }
-
-        SCOREP_Tracing_Leave( location,
-                              timestamp,
-                              regionHandle );
-    }
+    SCOREP_CALL_SUBSTRATE( ExitRegion, EXIT_REGION,
+                           ( location, timestamp, regionHandle, metricValues ) )
 
     SCOREP_Task_Exit( location );
 }
@@ -181,7 +144,7 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
-    scorep_exit_region( timestamp, regionHandle, metric_values, location );
+    exit_region( location, timestamp, regionHandle, metric_values );
 }
 
 
@@ -202,7 +165,7 @@ SCOREP_Location_ExitRegion( SCOREP_Location*    location,
 
     uint64_t* metric_values = SCOREP_Metric_Read( location );
 
-    scorep_exit_region( timestamp, regionHandle, metric_values, location );
+    exit_region( location, timestamp, regionHandle, metric_values );
 }
 
 
@@ -218,12 +181,8 @@ SCOREP_EnterRewindRegion( SCOREP_RegionHandle regionHandle )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%u",
                         SCOREP_Definitions_HandleToId( regionHandle ) );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_StoreRewindPoint( location, regionHandle, timestamp );
-    }
+    SCOREP_CALL_SUBSTRATE( EnterRewindRegion, ENTER_REWIND_REGION,
+                           ( location, timestamp, regionHandle ) )
 }
 
 
@@ -239,12 +198,8 @@ SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle, bool do_rewind )
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RwR:%u",
                         SCOREP_Definitions_HandleToId( regionHandle ) );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ExitRewindRegion( location, regionHandle, leavetimestamp, do_rewind );
-    }
+    SCOREP_CALL_SUBSTRATE( ExitRewindRegion, EXIT_REWIND_REGION,
+                           ( location, leavetimestamp, regionHandle, do_rewind ) )
 }
 
 
@@ -252,14 +207,12 @@ SCOREP_ExitRewindRegion( SCOREP_RegionHandle regionHandle, bool do_rewind )
  * Add an attribute to the current attribute list.
  */
 void
-SCOREP_AddAttribute( SCOREP_AttributeHandle attrHandle,
+SCOREP_AddAttribute( SCOREP_AttributeHandle attributeHandle,
                      void*                  value )
 {
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-        SCOREP_Tracing_AddAttribute( location, attrHandle, value );
-    }
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
+                           ( location, attributeHandle, value ) )
 }
 
 
@@ -268,13 +221,21 @@ SCOREP_AddAttribute( SCOREP_AttributeHandle attrHandle,
  */
 void
 SCOREP_Location_AddAttribute( SCOREP_Location*       location,
-                              SCOREP_AttributeHandle attrHandle,
+                              SCOREP_AttributeHandle attributeHandle,
                               void*                  value )
 {
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_AddAttribute( location, attrHandle, value );
-    }
+    SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
+                           ( location, attributeHandle, value ) )
+}
+
+
+static inline void
+add_location_property( SCOREP_Location* location,
+                       const char*      name,
+                       const char*      value )
+{
+    SCOREP_LocationHandle handle = SCOREP_Location_GetLocationHandle( location );
+    SCOREP_Definitions_NewLocationProperty( handle, name, value );
 }
 
 
@@ -285,11 +246,8 @@ void
 SCOREP_AddLocationProperty( const char* name,
                             const char* value )
 {
-    SCOREP_Location*      location = SCOREP_Location_GetCurrentCPULocation();
-    SCOREP_LocationHandle handle   = SCOREP_Location_GetLocationHandle( location );
-    SCOREP_Definitions_NewLocationProperty( handle,
-                                            name,
-                                            value );
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    add_location_property( location, name, value );
 }
 
 
@@ -301,8 +259,7 @@ SCOREP_Location_AddLocationProperty( SCOREP_Location* location,
                                      const char*      name,
                                      const char*      value )
 {
-    SCOREP_LocationHandle handle = SCOREP_Location_GetLocationHandle( location );
-    SCOREP_Definitions_NewLocationProperty( handle, name, value );
+    add_location_property( location, name, value );
 }
 
 
@@ -327,28 +284,9 @@ SCOREP_MpiSend( SCOREP_MpiRank                   destinationRank,
                         tag,
                         ( unsigned long long )bytesSent );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_MpiSend( location,
-                                destinationRank,
-                                communicatorHandle,
-                                tag,
-                                bytesSent );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_MpiSend( location,
-                                timestamp,
-                                destinationRank,
-                                communicatorHandle,
-                                tag,
-                                bytesSent );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( MpiSend, MPI_SEND,
+                           ( location, timestamp, destinationRank,
+                             communicatorHandle, tag, bytesSent ) )
 }
 
 
@@ -373,28 +311,9 @@ SCOREP_MpiRecv( SCOREP_MpiRank                   sourceRank,
                         tag,
                         ( unsigned long long )bytesReceived );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_MpiRecv( location,
-                                sourceRank,
-                                communicatorHandle,
-                                tag,
-                                bytesReceived );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_MpiRecv( location,
-                                timestamp,
-                                sourceRank,
-                                communicatorHandle,
-                                tag,
-                                bytesReceived );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( MpiRecv, MPI_RECV,
+                           ( location, timestamp, sourceRank,
+                             communicatorHandle, tag, bytesReceived ) )
 }
 
 /**
@@ -409,19 +328,10 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    scorep_enter_region( timestamp, regionHandle, metric_values, location );
+    enter_region( location, timestamp, regionHandle, metric_values );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_MpiCollectiveBegin( location,
-                                           timestamp );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( MpiCollectiveBegin, MPI_COLLECTIVE_BEGIN,
+                           ( location, timestamp ) )
 
     return timestamp;
 }
@@ -447,33 +357,11 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle              regionHandle,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
+    SCOREP_CALL_SUBSTRATE( MpiCollectiveEnd, MPI_COLLECTIVE_END,
+                           ( location, timestamp, communicatorHandle, rootRank,
+                             collectiveType, bytesSent, bytesReceived ) )
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_CollectiveEnd( location,
-                                      communicatorHandle,
-                                      rootRank,
-                                      collectiveType,
-                                      bytesSent,
-                                      bytesReceived );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_MpiCollectiveEnd( location,
-                                         timestamp,
-                                         communicatorHandle,
-                                         rootRank,
-                                         collectiveType,
-                                         bytesSent,
-                                         bytesReceived );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
-    }
-
-    scorep_exit_region( timestamp, regionHandle, metric_values, location );
+    exit_region( location, timestamp, regionHandle, metric_values );
 }
 
 void
@@ -484,14 +372,8 @@ SCOREP_MpiIsendComplete( SCOREP_MpiRequestId requestId )
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_MpiIsendComplete( location,
-                                         timestamp,
-                                         requestId );
-    }
+    SCOREP_CALL_SUBSTRATE( MpiIsendComplete, MPI_ISEND_COMPLETE,
+                           ( location, timestamp, requestId ) )
 }
 
 void
@@ -502,18 +384,8 @@ SCOREP_MpiIrecvRequest( SCOREP_MpiRequestId requestId )
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_MpiIrecvRequest( location,
-                                        timestamp,
-                                        requestId );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( MpiIrecvRequest, MPI_IRECV_REQUEST,
+                           ( location, timestamp, requestId ) )
 }
 
 void
@@ -524,18 +396,8 @@ SCOREP_MpiRequestTested( SCOREP_MpiRequestId requestId )
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_MpiRequestTested( location,
-                                         timestamp,
-                                         requestId );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( MpiRequestTested, MPI_REQUEST_TESTED,
+                           ( location, timestamp, requestId ) )
 }
 
 void
@@ -546,18 +408,8 @@ SCOREP_MpiRequestCancelled( SCOREP_MpiRequestId requestId )
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_MpiRequestCancelled( location,
-                                            timestamp,
-                                            requestId );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( MpiRequestCancelled, MPI_REQUEST_CANCELLED,
+                           ( location, timestamp, requestId ) )
 }
 
 void
@@ -575,29 +427,9 @@ SCOREP_MpiIsend(  SCOREP_MpiRank                   destinationRank,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_MpiSend( location,
-                                destinationRank,
-                                communicatorHandle,
-                                tag,
-                                bytesSent );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_MpiIsend( location,
-                                 timestamp,
-                                 destinationRank,
-                                 communicatorHandle,
-                                 tag,
-                                 bytesSent,
-                                 requestId );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( MpiIsend, MPI_ISEND,
+                           ( location, timestamp, destinationRank,
+                             communicatorHandle, tag, bytesSent, requestId ) )
 }
 
 void
@@ -615,29 +447,9 @@ SCOREP_MpiIrecv( SCOREP_MpiRank                   sourceRank,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_MpiRecv( location,
-                                sourceRank,
-                                communicatorHandle,
-                                tag,
-                                bytesReceived );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_MpiIrecv( location,
-                                 timestamp,
-                                 sourceRank,
-                                 communicatorHandle,
-                                 tag,
-                                 bytesReceived,
-                                 requestId );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( MpiIrecv, MPI_IRECV,
+                           ( location, timestamp, sourceRank,
+                             communicatorHandle, tag, bytesReceived, requestId ) )
 }
 
 
@@ -647,14 +459,8 @@ SCOREP_RmaWinCreate( SCOREP_InterimRmaWindowHandle windowHandle )
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaWinCreate( location,
-                                     timestamp,
-                                     windowHandle );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaWinCreate, RMA_WIN_CREATE,
+                           ( location, timestamp, windowHandle ) )
 }
 
 
@@ -663,14 +469,8 @@ SCOREP_Location_RmaWinCreate( SCOREP_Location*              location,
                               uint64_t                      timestamp,
                               SCOREP_InterimRmaWindowHandle windowHandle )
 {
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaWinCreate( location,
-                                     timestamp,
-                                     windowHandle );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaWinCreate, RMA_WIN_CREATE,
+                           ( location, timestamp, windowHandle ) )
 }
 
 
@@ -680,14 +480,8 @@ SCOREP_RmaWinDestroy( SCOREP_InterimRmaWindowHandle windowHandle )
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaWinDestroy( location,
-                                      timestamp,
-                                      windowHandle );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaWinDestroy, RMA_WIN_DESTROY,
+                           ( location, timestamp, windowHandle ) )
 }
 
 
@@ -696,14 +490,8 @@ SCOREP_Location_RmaWinDestroy( SCOREP_Location*              location,
                                uint64_t                      timestamp,
                                SCOREP_InterimRmaWindowHandle windowHandle )
 {
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaWinDestroy( location,
-                                      timestamp,
-                                      windowHandle );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaWinDestroy, RMA_WIN_DESTROY,
+                           ( location, timestamp, windowHandle ) )
 }
 
 
@@ -713,13 +501,8 @@ SCOREP_RmaCollectiveBegin( void )
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaCollectiveBegin( location,
-                                           timestamp );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaCollectiveBegin, RMA_COLLECTIVE_BEGIN,
+                           ( location, timestamp ) )
 }
 
 
@@ -734,27 +517,9 @@ SCOREP_RmaCollectiveEnd( SCOREP_MpiCollectiveType      collectiveOp,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_RmaCollectiveEnd( location,
-                                         collectiveOp,
-                                         syncLevel,
-                                         windowHandle,
-                                         root,
-                                         bytesSent,
-                                         bytesReceived );
-    }
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaCollectiveEnd( location,
-                                         timestamp,
-                                         collectiveOp,
-                                         syncLevel,
-                                         windowHandle,
-                                         root,
-                                         bytesSent,
-                                         bytesReceived );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaCollectiveEnd, RMA_COLLECTIVE_END,
+                           ( location, timestamp, collectiveOp, syncLevel,
+                             windowHandle, root, bytesSent, bytesReceived ) )
 }
 
 
@@ -767,21 +532,9 @@ SCOREP_RmaGroupSync( SCOREP_RmaSyncLevel           syncLevel,
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_RmaGroupSync( location,
-                                     syncLevel,
-                                     windowHandle,
-                                     groupHandle );
-    }
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaGroupSync( location,
-                                     timestamp,
-                                     syncLevel,
-                                     windowHandle,
-                                     groupHandle );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaGroupSync, RMA_GROUP_SYNC,
+                           ( location, timestamp, syncLevel,
+                             windowHandle, groupHandle ) )
 }
 
 
@@ -795,17 +548,9 @@ SCOREP_RmaRequestLock( SCOREP_InterimRmaWindowHandle windowHandle,
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaRequestLock( location,
-                                       timestamp,
-                                       windowHandle,
-                                       remote,
-                                       lockId,
-                                       lockType );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaRequestLock, RMA_REQUEST_LOCK,
+                           ( location, timestamp, windowHandle,
+                             remote, lockId, lockType ) )
 }
 
 
@@ -819,17 +564,9 @@ SCOREP_RmaAcquireLock( SCOREP_InterimRmaWindowHandle windowHandle,
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaAcquireLock( location,
-                                       timestamp,
-                                       windowHandle,
-                                       remote,
-                                       lockId,
-                                       lockType );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaAcquireLock, RMA_ACQUIRE_LOCK,
+                           ( location, timestamp, windowHandle,
+                             remote, lockId, lockType ) )
 }
 
 
@@ -843,17 +580,9 @@ SCOREP_RmaTryLock( SCOREP_InterimRmaWindowHandle windowHandle,
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaTryLock( location,
-                                   timestamp,
-                                   windowHandle,
-                                   remote,
-                                   lockId,
-                                   lockType );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaTryLock, RMA_TRY_LOCK,
+                           ( location, timestamp, windowHandle,
+                             remote, lockId, lockType ) )
 }
 
 
@@ -866,16 +595,8 @@ SCOREP_RmaReleaseLock( SCOREP_InterimRmaWindowHandle windowHandle,
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaReleaseLock( location,
-                                       timestamp,
-                                       windowHandle,
-                                       remote,
-                                       lockId );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaReleaseLock, RMA_RELEASE_LOCK,
+                           ( location, timestamp, windowHandle, remote, lockId ) )
 }
 
 
@@ -888,21 +609,8 @@ SCOREP_RmaSync( SCOREP_InterimRmaWindowHandle windowHandle,
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_RmaSync( location,
-                                windowHandle,
-                                remote,
-                                syncType );
-    }
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaSync( location,
-                                timestamp,
-                                windowHandle,
-                                remote,
-                                syncType );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaSync, RMA_SYNC,
+                           ( location, timestamp, windowHandle, remote, syncType ) )
 }
 
 
@@ -914,14 +622,8 @@ SCOREP_RmaWaitChange( SCOREP_InterimRmaWindowHandle windowHandle )
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "RMA window:%x", windowHandle );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaWaitChange( location,
-                                      timestamp,
-                                      windowHandle );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaWaitChange, RMA_WAIT_CHANGE,
+                           ( location, timestamp, windowHandle ) )
 }
 
 
@@ -934,23 +636,9 @@ SCOREP_RmaPut( SCOREP_InterimRmaWindowHandle windowHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_RmaPut( location,
-                               windowHandle,
-                               remote,
-                               bytes,
-                               matchingId );
-    }
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaPut( location,
-                               timestamp,
-                               windowHandle,
-                               remote,
-                               bytes,
-                               matchingId );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaPut, RMA_PUT,
+                           ( location, timestamp, windowHandle,
+                             remote, bytes, matchingId ) )
 }
 
 
@@ -962,23 +650,9 @@ SCOREP_Location_RmaPut( SCOREP_Location*              location,
                         uint64_t                      bytes,
                         uint64_t                      matchingId )
 {
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_RmaPut( location,
-                               windowHandle,
-                               remote,
-                               bytes,
-                               matchingId );
-    }
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaPut( location,
-                               timestamp,
-                               windowHandle,
-                               remote,
-                               bytes,
-                               matchingId );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaPut, RMA_PUT,
+                           ( location, timestamp, windowHandle,
+                             remote, bytes, matchingId ) )
 }
 
 
@@ -991,23 +665,9 @@ SCOREP_RmaGet( SCOREP_InterimRmaWindowHandle windowHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_RmaGet( location,
-                               windowHandle,
-                               remote,
-                               bytes,
-                               matchingId );
-    }
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaGet( location,
-                               timestamp,
-                               windowHandle,
-                               remote,
-                               bytes,
-                               matchingId );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaGet, RMA_GET,
+                           ( location, timestamp, windowHandle,
+                             remote, bytes, matchingId ) )
 }
 
 
@@ -1020,23 +680,9 @@ SCOREP_Location_RmaGet( SCOREP_Location*              location,
                         uint64_t                      bytes,
                         uint64_t                      matchingId )
 {
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_RmaGet( location,
-                               windowHandle,
-                               remote,
-                               bytes,
-                               matchingId );
-    }
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaGet( location,
-                               timestamp,
-                               windowHandle,
-                               remote,
-                               bytes,
-                               matchingId );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaGet, RMA_GET,
+                           ( location, timestamp, windowHandle,
+                             remote, bytes, matchingId ) )
 }
 
 
@@ -1052,27 +698,9 @@ SCOREP_RmaAtomic( SCOREP_InterimRmaWindowHandle windowHandle,
     /* use the timestamp from the associated enter */
     uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_RmaAtomic( location,
-                                  windowHandle,
-                                  remote,
-                                  type,
-                                  bytesSent,
-                                  bytesReceived,
-                                  matchingId );
-    }
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaAtomic( location,
-                                  timestamp,
-                                  windowHandle,
-                                  remote,
-                                  type,
-                                  bytesSent,
-                                  bytesReceived,
-                                  matchingId );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaAtomic, RMA_ATOMIC,
+                           ( location, timestamp, windowHandle, remote,
+                             type, bytesSent, bytesReceived, matchingId ) )
 }
 
 
@@ -1083,15 +711,8 @@ SCOREP_RmaOpCompleteBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaOpCompleteBlocking( location,
-                                              timestamp,
-                                              windowHandle,
-                                              matchingId );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaOpCompleteBlocking, RMA_OP_COMPLETE_BLOCKING,
+                           ( location, timestamp, windowHandle, matchingId ) )
 }
 
 
@@ -1101,15 +722,8 @@ SCOREP_Location_RmaOpCompleteBlocking( SCOREP_Location*              location,
                                        SCOREP_InterimRmaWindowHandle windowHandle,
                                        uint64_t                      matchingId )
 {
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaOpCompleteBlocking( location,
-                                              timestamp,
-                                              windowHandle,
-                                              matchingId );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaOpCompleteBlocking, RMA_OP_COMPLETE_BLOCKING,
+                           ( location, timestamp, windowHandle, matchingId ) )
 }
 
 
@@ -1120,15 +734,8 @@ SCOREP_RmaOpCompleteNonBlocking( SCOREP_InterimRmaWindowHandle windowHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaOpCompleteNonBlocking( location,
-                                                 timestamp,
-                                                 windowHandle,
-                                                 matchingId );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaOpCompleteNonBlocking, RMA_OP_COMPLETE_NON_BLOCKING,
+                           ( location, timestamp, windowHandle, matchingId ) )
 }
 
 
@@ -1139,15 +746,8 @@ SCOREP_RmaOpTest( SCOREP_InterimRmaWindowHandle windowHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaOpTest( location,
-                                  timestamp,
-                                  windowHandle,
-                                  matchingId );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaOpTest, RMA_OP_TEST,
+                           ( location, timestamp, windowHandle, matchingId ) )
 }
 
 
@@ -1158,15 +758,8 @@ SCOREP_RmaOpCompleteRemote( SCOREP_InterimRmaWindowHandle windowHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_RmaOpCompleteRemote( location,
-                                            timestamp,
-                                            windowHandle,
-                                            matchingId );
-    }
+    SCOREP_CALL_SUBSTRATE( RmaOpCompleteRemote, RMA_OP_COMPLETE_REMOTE,
+                           ( location, timestamp, windowHandle, matchingId ) )
 }
 
 
@@ -1180,20 +773,9 @@ SCOREP_ThreadAcquireLock( SCOREP_ParadigmType paradigm,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadAcquireLock( location,
-                                          timestamp,
-                                          paradigm,
-                                          lockId,
-                                          acquisitionOrder );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_LOCK_EVENT_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( ThreadAcquireLock, THREAD_ACQUIRE_LOCK,
+                           ( location, timestamp, paradigm,
+                             lockId, acquisitionOrder ) )
 }
 
 
@@ -1207,20 +789,9 @@ SCOREP_ThreadReleaseLock( SCOREP_ParadigmType paradigm,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "Lock:%x", lockId );
 
-    /* Nothing to do for profiling. */
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ThreadReleaseLock( location,
-                                          timestamp,
-                                          paradigm,
-                                          lockId,
-                                          acquisitionOrder );
-    }
-    else if ( !SCOREP_RecordingEnabled() )
-    {
-        SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_LOCK_EVENT_COMPLETE );
-    }
+    SCOREP_CALL_SUBSTRATE( ThreadReleaseLock, THREAD_RELEASE_LOCK,
+                           ( location, timestamp, paradigm,
+                             lockId, acquisitionOrder ) )
 }
 
 
@@ -1241,27 +812,30 @@ SCOREP_TriggerCounterInt64( SCOREP_SamplingSetHandle counterHandle,
     UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
                   "User sampling set with more than one metric" );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_TriggerInteger( location,
-                                       sampling_set->metric_handles[ 0 ],
-                                       value );
-    }
+    SCOREP_CALL_SUBSTRATE( TriggerCounterInt64, TRIGGER_COUNTER_INT64,
+                           ( location, timestamp,
+                             sampling_set->metric_handles[ 0 ],
+                             counterHandle, value ) )
+}
 
-    if ( scorep_tracing_consume_event() )
-    {
-        union
-        {
-            uint64_t uint64;
-            int64_t  int64;
-        } union_value;
-        union_value.int64 = value;
 
-        SCOREP_Tracing_Metric( location,
-                               timestamp,
-                               counterHandle,
-                               &union_value.uint64 );
-    }
+static inline void
+trigger_counter_uint64( SCOREP_Location*         location,
+                        uint64_t                 timestamp,
+                        SCOREP_SamplingSetHandle counterHandle,
+                        uint64_t                 value )
+{
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
+
+    SCOREP_SamplingSetDef* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
+    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
+                  "User sampling set with more than one metric" );
+
+    SCOREP_CALL_SUBSTRATE( TriggerCounterUint64, TRIGGER_COUNTER_UINT64,
+                           ( location, timestamp,
+                             sampling_set->metric_handles[ 0 ],
+                             counterHandle, value ) )
 }
 
 
@@ -1275,27 +849,7 @@ SCOREP_TriggerCounterUint64( SCOREP_SamplingSetHandle counterHandle,
     SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t         timestamp = scorep_get_timestamp( location );
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
-
-    SCOREP_SamplingSetDef* sampling_set
-        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
-    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
-                  "User sampling set with more than one metric" );
-
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_TriggerInteger( location,
-                                       sampling_set->metric_handles[ 0 ],
-                                       value );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_Metric( location,
-                               timestamp,
-                               counterHandle,
-                               &value );
-    }
+    trigger_counter_uint64( location, timestamp, counterHandle, value );
 }
 
 
@@ -1308,27 +862,7 @@ SCOREP_Location_TriggerCounterUint64( SCOREP_Location*         location,
                                       SCOREP_SamplingSetHandle counterHandle,
                                       uint64_t                 value )
 {
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
-
-    SCOREP_SamplingSetDef* sampling_set
-        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
-    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
-                  "User sampling set with more than one metric" );
-
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_TriggerInteger( location,
-                                       sampling_set->metric_handles[ 0 ],
-                                       value );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_Metric( location,
-                               timestamp,
-                               counterHandle,
-                               &value );
-    }
+    trigger_counter_uint64( location, timestamp, counterHandle, value );
 }
 
 
@@ -1349,27 +883,10 @@ SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
     UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
                   "User sampling set with more than one metric" );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_TriggerDouble( location,
-                                      sampling_set->metric_handles[ 0 ],
-                                      value );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        union
-        {
-            uint64_t uint64;
-            double   float64;
-        } union_value;
-        union_value.float64 = value;
-
-        SCOREP_Tracing_Metric( location,
-                               timestamp,
-                               counterHandle,
-                               &union_value.uint64 );
-    }
+    SCOREP_CALL_SUBSTRATE( TriggerCounterDouble, TRIGGER_COUNTER_DOUBLE,
+                           ( location, timestamp,
+                             sampling_set->metric_handles[ 0 ],
+                             counterHandle, value ) )
 }
 
 
@@ -1398,20 +915,8 @@ SCOREP_TriggerParameterInt64( SCOREP_ParameterHandle parameterHandle,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_ParameterInteger( location,
-                                         parameterHandle,
-                                         value );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ParameterInt64( location,
-                                       timestamp,
-                                       parameterHandle,
-                                       value );
-    }
+    SCOREP_CALL_SUBSTRATE( TriggerParameterInt64, TRIGGER_PARAMETER_INT64,
+                           ( location, timestamp, parameterHandle, value ) )
 }
 
 
@@ -1427,21 +932,8 @@ SCOREP_TriggerParameterUint64( SCOREP_ParameterHandle parameterHandle,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        /* The SCOREP_Profile_ParameterInteger handles unsigned and signed integers */
-        SCOREP_Profile_ParameterInteger( location,
-                                         parameterHandle,
-                                         value );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ParameterUint64( location,
-                                        timestamp,
-                                        parameterHandle,
-                                        value );
-    }
+    SCOREP_CALL_SUBSTRATE( TriggerParameterUint64, TRIGGER_PARAMETER_UINT64,
+                           ( location, timestamp, parameterHandle, value ) )
 }
 
 
@@ -1459,20 +951,9 @@ SCOREP_TriggerParameterString( SCOREP_ParameterHandle parameterHandle,
 
     SCOREP_StringHandle string_handle = SCOREP_Definitions_NewString( value );
 
-    if ( scorep_profiling_consume_event() )
-    {
-        SCOREP_Profile_ParameterString( location,
-                                        parameterHandle,
-                                        string_handle );
-    }
-
-    if ( scorep_tracing_consume_event() )
-    {
-        SCOREP_Tracing_ParameterString( location,
-                                        timestamp,
-                                        parameterHandle,
-                                        string_handle );
-    }
+    SCOREP_CALL_SUBSTRATE( TriggerParameterString, TRIGGER_PARAMETER_STRING,
+                           ( location, timestamp,
+                             parameterHandle, string_handle ) )
 }
 
 /**

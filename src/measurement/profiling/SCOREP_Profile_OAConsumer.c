@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -67,12 +67,11 @@ static thread_private_index_type** thread_index_pointer_array = NULL;
 static uint32_t thread_count = 0;
 
 void
-SCOREP_OAConsumer_Initialize( SCOREP_Location*    location,
-                              SCOREP_RegionHandle phase_handle )
+SCOREP_OAConsumer_Initialize( SCOREP_RegionHandle phaseHandle )
 {
     int i;
 
-    assert( phase_handle != SCOREP_INVALID_REGION );
+    assert( phaseHandle != SCOREP_INVALID_REGION );
 
 //    if ( do_print_out )
 //	{
@@ -82,12 +81,12 @@ SCOREP_OAConsumer_Initialize( SCOREP_Location*    location,
     //   scorep_profile_dump_subtree( scorep_profile.first_root_node, 0 );
 
     /** Performs default profile call-tree transformation */
-    SCOREP_Profile_Process( location );
+    SCOREP_Profile_Process();
 
     thread_count = scorep_oaconsumer_get_number_of_roots();
 
     /** Allocate and initialize thread-shread index data structures */
-    thread_index_pointer_array = scorep_oa_consumer_initialize_index( phase_handle );
+    thread_index_pointer_array = scorep_oa_consumer_initialize_index( phaseHandle );
 
     /** Loop over threads initializing thread-private index data structures*/
     for ( i = 0; i < thread_count; i++ )
@@ -109,14 +108,14 @@ SCOREP_OAConsumer_Initialize( SCOREP_Location*    location,
 }
 
 uint32_t
-SCOREP_OAConsumer_GetDataSize( SCOREP_OAConsumer_DataTypes data_type )
+SCOREP_OAConsumer_GetDataSize( SCOREP_OAConsumer_DataTypes dataType )
 {
     if ( thread_index_pointer_array[ 0 ] == NULL )
     {
         printf( "SCOREP_OAConsumer_GetDataSize: thread_index_pointer_array[0] == NULL\n" );
         return -1;
     }
-    switch ( data_type )
+    switch ( dataType )
     {
         case FLAT_PROFILE:
             return thread_index_pointer_array[ 0 ]->shared_index->num_static_measurements;
@@ -138,14 +137,14 @@ SCOREP_OAConsumer_GetDataSize( SCOREP_OAConsumer_DataTypes data_type )
 }
 
 void*
-SCOREP_OAConsumer_GetData( SCOREP_OAConsumer_DataTypes data_type )
+SCOREP_OAConsumer_GetData( SCOREP_OAConsumer_DataTypes dataType )
 {
     if ( thread_index_pointer_array == NULL )
     {
         printf( "SCOREP_OAConsumer_GetDataSize: thread_index_pointer_array == NULL\n" );
         return NULL;
     }
-    switch ( data_type )
+    switch ( dataType )
     {
         case FLAT_PROFILE:
             return scorep_oaconsumer_get_static_profile_measurements( thread_index_pointer_array );

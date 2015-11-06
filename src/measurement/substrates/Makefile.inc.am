@@ -1,0 +1,41 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2015,
+## Technische Universitaet Muenchen, Germany
+##
+## Copyright (c) 2015,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
+##
+
+## file       src/measurement/substrates/Makefile.inc.am
+
+
+noinst_LTLIBRARIES += libscorep_substrates.la
+
+libscorep_substrates_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
+    @OTF2_CPPFLAGS@ \
+    -I$(INC_DIR_COMMON_HASH) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/services/include \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/measurement \
+    -I$(INC_ROOT)src/measurement/profiling/include \
+    -I$(INC_ROOT)src/measurement/tracing \
+    -I$(INC_ROOT)src/utils/include \
+    -I$(INC_DIR_MUTEX) \
+    -I$(INC_DIR_DEFINITIONS) \
+    -I$(INC_DIR_SUBSTRATES)
+
+libscorep_substrates_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/substrates/SCOREP_Substrates_Management.c \
+    $(SRC_ROOT)src/measurement/substrates/include/SCOREP_Substrates_Management.h \
+    $(SRC_ROOT)src/measurement/substrates/include/scorep_substrates_definition.h

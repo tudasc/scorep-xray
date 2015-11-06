@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -406,6 +406,10 @@ void
 SCOREP_Definitions_Initialize( void );
 
 
+bool
+SCOREP_Definitions_Initialized( void );
+
+
 void
 SCOREP_Definitions_Finalize( void );
 
@@ -422,10 +426,6 @@ SCOREP_Definitions_InitializeDefinitionManager(
     SCOREP_DefinitionManager**           manager,
     struct SCOREP_Allocator_PageManager* pageManager,
     bool                                 allocHashTables );
-
-
-void
-SCOREP_Definitions_Write( void );
 
 
 /**

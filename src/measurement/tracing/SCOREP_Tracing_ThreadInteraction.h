@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -42,7 +42,7 @@
 #include <SCOREP_Location.h>
 
 
-typedef struct SCOREP_TracingData SCOREP_TracingData;
+struct SCOREP_TracingData;
 
 
 /**
@@ -50,35 +50,37 @@ typedef struct SCOREP_TracingData SCOREP_TracingData;
  * SCOREP_Tracing_OnLocationCreation().
  *
  */
-SCOREP_TracingData*
+struct SCOREP_TracingData*
 SCOREP_Tracing_CreateLocationData( SCOREP_Location* locationData );
 
 
 /**
- * Clean up @a traceLocationData at the end of a phase or at the end of the
- * measurement.
+ * Clean up the location specific trace data at the end of a phase or at the
+ * end of the measurement.
  *
- * @param traceLocationData The object to be deleted
+ * @param location The location object holding the trace data to be deleted
  */
 void
-SCOREP_Tracing_DeleteLocationData( SCOREP_TracingData* traceLocationData );
+SCOREP_Tracing_DeleteLocationData( SCOREP_Location* location );
 
 
 /**
  * Triggered on location creation, i.e. when a location is encountered the first
- * time. Note that several threads can share teh same location data.
+ * time. Note that several threads can share the same location data.
  *
- * @param locationData Location data of the current thread.
- * @param parentLocationData Location data of the parent thread, may equal @a
- * locationData.
+ * @param locationData       Location data of the current thread.
+ * @param parentLocationData Unused.
  */
 void
 SCOREP_Tracing_OnLocationCreation( SCOREP_Location* locationData,
                                    SCOREP_Location* parentLocationData );
 
-
+/**
+ * Triggered on
+ *
+ * @param threadLocationData Location data of the current thread.
+ */
 void
 SCOREP_Tracing_AssignLocationId( SCOREP_Location* threadLocationData );
-
 
 #endif /* SCOREP_TRACING_THREAD_INTERACTION_H */

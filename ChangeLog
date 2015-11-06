@@ -17,6 +17,10 @@ Features and improvements:
   e.g, on Blue Gene systems. The symbol file needs to be specified in
   the environment variable SCOREP_NM_SYMBOLS. The accepted format is
   as in 'nm -l <executable>'.
+- Transparent changes to the event-dispatching. Currently events are
+  consumed by either the profiling or tracing substrate (or both). A
+  future release will allow for additional event-consumption via
+  plug-in.
 
 User tools and API improvements and changes:
 

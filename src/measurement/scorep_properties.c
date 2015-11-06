@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -107,18 +107,6 @@ scorep_properties_initialize( void )
     }
 }
 
-void
-scorep_properties_write( void )
-{
-    if ( SCOREP_Status_GetRank() != 0 )
-    {
-        return;
-    }
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        SCOREP_Tracing_WriteProperties();
-    }
-}
 
 void
 SCOREP_InvalidateProperty( SCOREP_Property property )
@@ -128,4 +116,303 @@ SCOREP_InvalidateProperty( SCOREP_Property property )
         scorep_properties[ property ].handle,
         Property );
     property_definition->invalidated = true;
+}
+
+
+static void
+mpi_send( struct SCOREP_Location*          location,
+          uint64_t                         timestamp,
+          SCOREP_MpiRank                   destinationRank,
+          SCOREP_InterimCommunicatorHandle communicatorHandle,
+          uint32_t                         tag,
+          uint64_t                         bytesSent )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+}
+
+
+static void
+mpi_recv( struct SCOREP_Location*          location,
+          SCOREP_MpiRank                   sourceRank,
+          SCOREP_InterimCommunicatorHandle communicatorHandle,
+          uint32_t                         tag,
+          uint64_t                         bytesReceived )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+}
+
+
+static void
+mpi_collective_begin( struct SCOREP_Location* location,
+                      uint64_t                timestamp )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+}
+
+
+static void
+mpi_collective_end( struct SCOREP_Location*          location,
+                    uint64_t                         timestamp,
+                    SCOREP_InterimCommunicatorHandle communicatorHandle,
+                    SCOREP_MpiRank                   rootRank,
+                    SCOREP_MpiCollectiveType         collectiveType,
+                    uint64_t                         bytesSent,
+                    uint64_t                         bytesReceived )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+}
+
+
+static void
+mpi_irecv_request( struct SCOREP_Location* location,
+                   uint64_t                timestamp,
+                   SCOREP_MpiRequestId     requestId )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+}
+
+
+static void
+mpi_request_tested( struct SCOREP_Location* location,
+                    uint64_t                timestamp,
+                    SCOREP_MpiRequestId     requestId )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+}
+
+
+static void
+mpi_request_cancelled( struct SCOREP_Location* location,
+                       uint64_t                timestamp,
+                       SCOREP_MpiRequestId     requestId )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+}
+
+
+static void
+mpi_isend( struct SCOREP_Location*          location,
+           uint64_t                         timestamp,
+           SCOREP_MpiRank                   destinationRank,
+           SCOREP_InterimCommunicatorHandle communicatorHandle,
+           uint32_t                         tag,
+           uint64_t                         bytesSent,
+           SCOREP_MpiRequestId              requestId )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+}
+
+
+static void
+mpi_irecv( struct SCOREP_Location*          location,
+           uint64_t                         timestamp,
+           SCOREP_MpiRank                   sourceRank,
+           SCOREP_InterimCommunicatorHandle communicatorHandle,
+           uint32_t                         tag,
+           uint64_t                         bytesReceived,
+           SCOREP_MpiRequestId              requestId )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_MPI_COMMUNICATION_COMPLETE );
+}
+
+
+static void
+thread_acquire_lock( struct SCOREP_Location* location,
+                     uint64_t                timestamp,
+                     SCOREP_ParadigmType     paradigm,
+                     uint32_t                lockId,
+                     uint32_t                acquisitionOrder )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_LOCK_EVENT_COMPLETE );
+}
+
+
+static void
+thread_release_lock( struct SCOREP_Location* location,
+                     uint64_t                timestamp,
+                     SCOREP_ParadigmType     paradigm,
+                     uint32_t                lockId,
+                     uint32_t                acquisitionOrder )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_LOCK_EVENT_COMPLETE );
+}
+
+
+static void
+thread_fork( struct SCOREP_Location* location,
+             uint64_t                timestamp,
+             SCOREP_ParadigmType     paradigm,
+             uint32_t                nRequestedThreads,
+             uint32_t                forkSequenceCount )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
+}
+
+
+static void
+thread_join( struct SCOREP_Location* location,
+             uint64_t                timestamp,
+             SCOREP_ParadigmType     paradigm )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
+}
+
+
+static void
+thread_team_begin( struct SCOREP_Location*          location,
+                   uint64_t                         timestamp,
+                   SCOREP_ParadigmType              paradigm,
+                   SCOREP_InterimCommunicatorHandle threadTeam )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
+}
+
+
+static void
+thread_team_end( struct SCOREP_Location*          location,
+                 uint64_t                         timestamp,
+                 SCOREP_ParadigmType              paradigm,
+                 SCOREP_InterimCommunicatorHandle threadTeam )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
+}
+
+
+static void
+thread_task_create( struct SCOREP_Location*          location,
+                    uint64_t                         timestamp,
+                    SCOREP_ParadigmType              paradigm,
+                    SCOREP_InterimCommunicatorHandle threadTeam,
+                    uint32_t                         threadId,
+                    uint32_t                         generationNumber )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
+}
+
+
+static void
+thread_task_switch( struct SCOREP_Location*          location,
+                    uint64_t                         timestamp,
+                    uint64_t*                        metricValues,
+                    SCOREP_ParadigmType              paradigm,
+                    SCOREP_InterimCommunicatorHandle threadTeam,
+                    uint32_t                         threadId,
+                    uint32_t                         generationNumber,
+                    SCOREP_TaskHandle                taskHandle )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
+}
+
+
+static void
+thread_task_begin( struct SCOREP_Location*          location,
+                   uint64_t                         timestamp,
+                   SCOREP_RegionHandle              regionHandle,
+                   uint64_t*                        metricValues,
+                   SCOREP_ParadigmType              paradigm,
+                   SCOREP_InterimCommunicatorHandle threadTeam,
+                   uint32_t                         threadId,
+                   uint32_t                         generationNumber,
+                   SCOREP_TaskHandle                taskHandle )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
+}
+
+
+static void
+thread_task_end( struct SCOREP_Location*          location,
+                 uint64_t                         timestamp,
+                 SCOREP_RegionHandle              regionHandle,
+                 uint64_t*                        metricValues,
+                 SCOREP_ParadigmType              paradigm,
+                 SCOREP_InterimCommunicatorHandle threadTeam,
+                 uint32_t                         threadId,
+                 uint32_t                         generationNumber,
+                 SCOREP_TaskHandle                taskHandle )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_FORK_JOIN_EVENT_COMPLETE );
+}
+
+
+static void
+thread_create( struct SCOREP_Location*          location,
+               uint64_t                         timestamp,
+               SCOREP_ParadigmType              paradigm,
+               SCOREP_InterimCommunicatorHandle threadTeam,
+               uint32_t                         createSequenceCount )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE );
+}
+
+
+static void
+thread_wait( struct SCOREP_Location*          location,
+             uint64_t                         timestamp,
+             SCOREP_ParadigmType              paradigm,
+             SCOREP_InterimCommunicatorHandle threadTeam,
+             uint32_t                         createSequenceCount )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE );
+}
+
+
+static void
+thread_begin( struct SCOREP_Location*          location,
+              uint64_t                         timestamp,
+              SCOREP_ParadigmType              paradigm,
+              SCOREP_InterimCommunicatorHandle threadTeam,
+              uint32_t                         createSequenceCount )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE );
+}
+
+
+static void
+thread_end( struct SCOREP_Location*          location,
+            uint64_t                         timestamp,
+            SCOREP_ParadigmType              paradigm,
+            SCOREP_InterimCommunicatorHandle threadTeam,
+            uint32_t                         createSequenceCount )
+{
+    SCOREP_InvalidateProperty( SCOREP_PROPERTY_THREAD_CREATE_WAIT_EVENT_COMPLETE );
+}
+
+
+const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_NUM_EVENTS ] =
+{
+    [ SCOREP_EVENT_MPI_SEND ]                     = ( SCOREP_Substrates_Callback )mpi_send,
+    [ SCOREP_EVENT_MPI_COLLECTIVE_BEGIN ]         = ( SCOREP_Substrates_Callback )mpi_collective_begin,
+    [ SCOREP_EVENT_MPI_COLLECTIVE_END ]           = ( SCOREP_Substrates_Callback )mpi_collective_end,
+    [ SCOREP_EVENT_MPI_IRECV_REQUEST ]            = ( SCOREP_Substrates_Callback )mpi_irecv_request,
+    [ SCOREP_EVENT_MPI_REQUEST_TESTED ]           = ( SCOREP_Substrates_Callback )mpi_request_tested,
+    [ SCOREP_EVENT_MPI_REQUEST_CANCELLED ]        = ( SCOREP_Substrates_Callback )mpi_request_cancelled,
+    [ SCOREP_EVENT_MPI_ISEND ]                    = ( SCOREP_Substrates_Callback )mpi_isend,
+    [ SCOREP_EVENT_MPI_IRECV ]                    = ( SCOREP_Substrates_Callback )mpi_irecv,
+    [ SCOREP_EVENT_THREAD_ACQUIRE_LOCK ]          = ( SCOREP_Substrates_Callback )thread_acquire_lock,
+    [ SCOREP_EVENT_THREAD_RELEASE_LOCK ]          = ( SCOREP_Substrates_Callback )thread_release_lock,
+    [ SCOREP_EVENT_THREAD_FORK_JOIN_FORK ]        = ( SCOREP_Substrates_Callback )thread_fork,
+    [ SCOREP_EVENT_THREAD_FORK_JOIN_JOIN ]        = ( SCOREP_Substrates_Callback )thread_join,
+    [ SCOREP_EVENT_THREAD_FORK_JOIN_TEAM_BEGIN ]  = ( SCOREP_Substrates_Callback )thread_team_begin,
+    [ SCOREP_EVENT_THREAD_FORK_JOIN_TEAM_END ]    = ( SCOREP_Substrates_Callback )thread_team_end,
+    [ SCOREP_EVENT_THREAD_FORK_JOIN_TASK_CREATE ] = ( SCOREP_Substrates_Callback )thread_task_create,
+    [ SCOREP_EVENT_THREAD_FORK_JOIN_TASK_SWITCH ] = ( SCOREP_Substrates_Callback )thread_task_switch,
+    [ SCOREP_EVENT_THREAD_FORK_JOIN_TASK_BEGIN ]  = ( SCOREP_Substrates_Callback )thread_task_begin,
+    [ SCOREP_EVENT_THREAD_FORK_JOIN_TASK_END ]    = ( SCOREP_Substrates_Callback )thread_task_end,
+    [ SCOREP_EVENT_THREAD_CREATE_WAIT_CREATE ]    = ( SCOREP_Substrates_Callback )thread_create,
+    [ SCOREP_EVENT_THREAD_CREATE_WAIT_WAIT ]      = ( SCOREP_Substrates_Callback )thread_wait,
+    [ SCOREP_EVENT_THREAD_CREATE_WAIT_BEGIN ]     = ( SCOREP_Substrates_Callback )thread_begin,
+    [ SCOREP_EVENT_THREAD_CREATE_WAIT_END ]       = ( SCOREP_Substrates_Callback )thread_end
+};
+
+
+
+/**
+   Returns an array of property callbacks.
+   @param mode Recording enabled/disabled.
+   @return Array of property substrate callbacks for the requested mode.
+ */
+const SCOREP_Substrates_Callback*
+scorep_properties_get_substrate_callbacks( void )
+{
+    return substrate_callbacks;
 }

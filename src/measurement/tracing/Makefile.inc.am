@@ -21,7 +21,7 @@
 ## Copyright (c) 2009-2012,
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2015,
 ## Technische Universitaet Muenchen, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -46,7 +46,8 @@ libscorep_tracing_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/utils/include \
     -I$(INC_DIR_MUTEX) \
-    -I$(INC_DIR_DEFINITIONS)
+    -I$(INC_DIR_DEFINITIONS) \
+    -I$(INC_DIR_SUBSTRATES)
 
 libscorep_tracing_la_SOURCES = \
     $(SRC_ROOT)src/measurement/tracing/scorep_tracing_internal.h \

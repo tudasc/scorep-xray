@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * Copyright (c) 2015,
@@ -59,7 +59,10 @@
 #include "scorep_profile_process.h"
 #include "scorep_profile_writer.h"
 #include "scorep_profile_event_base.h"
+#include <SCOREP_Substrates_Management.h>
+#include <SCOREP_RuntimeManagement.h>
 #include "scorep_profile_task_init.h"
+#include <SCOREP_Profile_MpiEvents.h>
 
 /* ***************************************************************************************
    Type definitions and variables
@@ -72,9 +75,13 @@ static SCOREP_Mutex scorep_profile_location_mutex;
 
 static SCOREP_RegionHandle thread_create_wait_regions;
 
-/* ***************************************************************************************
+/****************************************************************************************
    internal helper functions
-*****************************************************************************************/
+ *****************************************************************************************/
+
+/* *INDENT-OFF* */
+static void parameter_integer( SCOREP_Location* thread, uint64_t timestamp, SCOREP_ParameterHandle param, int64_t value );
+/* *INDENT-ON* */
 
 static inline void
 setup_start_from_parent( scorep_profile_node* node )
@@ -92,7 +99,7 @@ setup_start_from_parent( scorep_profile_node* node )
     node->count++;
     if ( parent != NULL )
     {
-        /* If no enclosing region is present, no dense metric valuies can be associated */
+        /* If no enclosing region is present, no dense metric values can be associated */
         node->inclusive_time.start_value = parent->inclusive_time.start_value;
         for ( i = 0; i < SCOREP_Metric_GetNumberOfStrictlySynchronousMetrics(); i++ )
         {
@@ -108,7 +115,7 @@ setup_start_from_parent( scorep_profile_node* node )
 #include "scorep_profile_confvars.inc.c"
 
 void
-SCOREP_Profile_Initialize( void )
+SCOREP_Profile_Initialize( size_t substrateId )
 {
     UTILS_DEBUG_ENTRY();
 
@@ -116,6 +123,7 @@ SCOREP_Profile_Initialize( void )
     {
         return;
     }
+    scorep_profile_substrate_id = substrateId;
 
     SCOREP_MutexCreate( &scorep_profile_location_mutex );
 
@@ -169,7 +177,8 @@ SCOREP_Profile_Initialize( void )
         SCOREP_REGION_ARTIFICIAL /* SCOREP_REGION_PARALLEL ? */ );
 }
 
-void
+
+size_t
 SCOREP_Profile_Finalize( void )
 {
     UTILS_DEBUG_ENTRY();
@@ -215,26 +224,282 @@ SCOREP_Profile_Finalize( void )
 
     /* Delete mutex */
     SCOREP_MutexDestroy( &scorep_profile_location_mutex );
-
-    /* Free all requested memory */
-    SCOREP_Memory_FreeProfileMem();
+    return scorep_profile_substrate_id;
 }
 
-SCOREP_Profile_LocationData*
-SCOREP_Profile_CreateLocationData( SCOREP_Location* locationData )
+
+/**
+ * Enables profile recording. This function activates profile recording.
+ * @ref enable_recording.
+ *
+ * @param location     A pointer to the thread location data of the thread that executed
+ *                     the enable recording event.
+ * @param timestamp    The timestamp, when the enable recording event occurred.
+ * @param regionHandle The handle of the region for which the enable recording occurred.
+ * @param metricValues Array of the dense metric values.
+ */
+static void
+enable_recording( SCOREP_Location*    location,
+                  uint64_t            timestamp,
+                  SCOREP_RegionHandle regionHandle,
+                  int64_t*            metricValues )
 {
-    return scorep_profile_create_location_data( locationData );
+    SCOREP_Profile_Exit( location,
+                         timestamp,
+                         regionHandle,
+                         metricValues );
+}
+
+
+/**
+ * Disables profile recording. This function deactivates profile recording.
+ * @ref disable_recording.
+ *
+ * @param location     A pointer to the thread location data of the thread that executed
+ *                     the disable recording event.
+ * @param timestamp    The timestamp, when the disable recording event occurred.
+ * @param regionHandle The handle of the region for which the disable recording occurred.
+ * @param metricValues Array of the dense metric values.
+ */
+static void
+disable_recording( SCOREP_Location*    location,
+                   uint64_t            timestamp,
+                   SCOREP_RegionHandle regionHandle,
+                   int64_t*            metricValues )
+{
+    SCOREP_Profile_Enter( location,
+                          timestamp,
+                          regionHandle,
+                          metricValues );
+}
+
+
+/**
+ * Triggered on location creation, i.e. when a location is encountered the first
+ * time. Note that several threads can share the same location data.
+ *
+ * @param locationData       Location data of the current thread.
+ * @param parentLocationData Location data of the parent thread, may equal @a
+ * locationData.
+ */
+static void
+on_location_creation( SCOREP_Location* locationData,
+                      SCOREP_Location* parentLocationData )
+{
+    SCOREP_Profile_LocationData* parent_data = NULL;
+    SCOREP_Profile_LocationData* thread_data = NULL;
+    scorep_profile_node*         node        = NULL;
+    scorep_profile_type_data_t   node_data;
+    uint64_t                     thread_id = 0;
+
+    SCOREP_Profile_LocationData* profile_data =
+        scorep_profile_create_location_data( locationData );
+    UTILS_BUG_ON( !profile_data, "Failed creating profile location data." );
+    SCOREP_Location_SetSubstrateData( locationData, profile_data,
+                                      scorep_profile_substrate_id );
+
+    SCOREP_PROFILE_ASSURE_INITIALIZED;
+
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Create Location" );
+
+    /* Initialize type specific data structure */
+    thread_data = scorep_profile_get_profile_data( locationData );
+    thread_id   = SCOREP_Location_GetId( locationData );
+    UTILS_ASSERT( thread_data != NULL );
+
+    scorep_profile_type_set_location_data( &node_data, thread_data );
+    scorep_profile_type_set_int_value( &node_data, thread_id );
+
+    /* Create thread root node */
+    node = scorep_profile_create_node( thread_data,
+                                       NULL,
+                                       SCOREP_PROFILE_NODE_THREAD_ROOT,
+                                       node_data, 0, false );
+
+    /* Disable profiling if node creation failed */
+    if ( node == NULL )
+    {
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Failed to create location" );
+        SCOREP_PROFILE_STOP( thread_data );
+        return;
+    }
+
+    /* Update thread location data */
+    thread_data->root_node = node;
+
+    if ( parentLocationData != NULL )
+    {
+        parent_data                = scorep_profile_get_profile_data( parentLocationData );
+        thread_data->creation_node = NULL;
+        thread_data->current_depth = 0;
+    }
+
+    /* Add it to the profile node list */
+    if ( parent_data == NULL )
+    {
+        /* It is the initial thread. Insert as first new root node. */
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Initial location created" );
+
+        SCOREP_MutexLock( scorep_profile_location_mutex );
+        node->next_sibling             = scorep_profile.first_root_node;
+        scorep_profile.first_root_node = node;
+        SCOREP_MutexUnlock( scorep_profile_location_mutex );
+    }
+    else
+    {
+        /* Append after parent root node */
+        SCOREP_MutexLock( scorep_profile_location_mutex );
+        node->next_sibling                   = parent_data->root_node->next_sibling;
+        parent_data->root_node->next_sibling = node;
+        SCOREP_MutexUnlock( scorep_profile_location_mutex );
+    }
+
+    /* Make the root node the current node of the location.
+       It allows to use the location without an activation, e.g.,
+       for non-CPU-locations. */
+    scorep_profile_set_current_node( thread_data, node );
+}
+
+
+/**
+ * Clean up the location specific profile data at the end of a phase or at the
+ * end of the measurement.
+ *
+ * @param location The location object holding the profile data to be deleted
+ */
+void
+delete_location_data( SCOREP_Location* location )
+{
+    SCOREP_Memory_FreeProfileMem( location );
+    scorep_profile_delete_location_data( scorep_profile_get_profile_data( location ) );
+}
+
+
+/**
+ * Triggered at the start of every thread/parallel region. Always triggered,
+ * even after thread creation. In contrast to creation this function may be
+ * triggered multiple times, e.g. if we reenter a parallel region again or if
+ * we reuse the location/thread in a different parallel region.
+ *
+ * @param locationData       Location data of the current thread inside the parallel
+ * region.
+ * @param parentLocationData Location data of the parent thread, may equal @a
+ * locationData.
+ * @param forkSequenceCount  The forkSequenceCount of the activated thread.
+ */
+void
+on_location_activation( SCOREP_Location* locationData,
+                        SCOREP_Location* parentLocationData,
+                        uint32_t         forkSequenceCount )
+{
+    SCOREP_Profile_LocationData* thread_data    = NULL;
+    SCOREP_Profile_LocationData* parent_data    = NULL;
+    scorep_profile_node*         root           = NULL;
+    scorep_profile_node*         node           = NULL;
+    scorep_profile_node*         creation_point = NULL;
+
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Activated thread" );
+
+    SCOREP_PROFILE_ASSURE_INITIALIZED;
+    UTILS_ASSERT( locationData != NULL );
+
+    /* If it is the same location as the parent, do not do anything */
+    if ( locationData == parentLocationData )
+    {
+        return;
+    }
+
+    /* Get root node of the thread */
+    thread_data = scorep_profile_get_profile_data( locationData );
+    if ( thread_data == NULL )
+    {
+        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                     "Thread activated which was not created." );
+        SCOREP_PROFILE_STOP( thread_data );
+        return;
+    }
+    root = thread_data->root_node;
+    UTILS_ASSERT( root != NULL );
+
+    /* Find creation point if available */
+    if ( parentLocationData != NULL )
+    {
+        parent_data = scorep_profile_get_profile_data( parentLocationData );
+        if ( parent_data != NULL )
+        {
+            creation_point             = scorep_profile_get_fork_node( parent_data, forkSequenceCount );
+            thread_data->current_depth = scorep_profile_get_fork_depth( parent_data, forkSequenceCount );
+        }
+    }
+
+    /* Check wether such an activation node already exists */
+    node = root->first_child;
+    while ( ( node != NULL ) &&
+            ( ( node->node_type != SCOREP_PROFILE_NODE_THREAD_START ) ||
+              ( creation_point != scorep_profile_type_get_fork_node( node->type_specific_data ) ) ) )
+    {
+        node = node->next_sibling;
+    }
+
+    /* Create new node if no one exists */
+    if ( node == NULL )
+    {
+        scorep_profile_type_data_t data;
+        scorep_profile_type_set_fork_node( &data, creation_point );
+        node = scorep_profile_create_node( thread_data,
+                                           root,
+                                           SCOREP_PROFILE_NODE_THREAD_START,
+                                           data, 0, false );
+
+        /* Disable profiling if node creation failed */
+        if ( node == NULL )
+        {
+            UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
+                         "Failed to create location" );
+            SCOREP_PROFILE_STOP( thread_data );
+            return;
+        }
+
+        node->next_sibling = root->first_child;
+        root->first_child  = node;
+    }
+
+    /* Now node points to the starting point of the thread.
+       Make it the current node of the thread. */
+    scorep_profile_set_current_node( thread_data, node );
+}
+
+
+/**
+ * Triggered after the end of every thread/parallel region, i.e. in the join
+ * event.
+ *
+ * @param locationData Location data of the deactivated thread inside the
+ * parallel region.
+ * @param parentLocationData Location data of the parent thread, may equal @a
+ * locationData.
+ */
+void
+on_location_deactivation( SCOREP_Location* locationData,
+                          SCOREP_Location* parentLocationData )
+{
+    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Deactivated thread" );
+
+    /* If it is the same location as the parent, do not do anything */
+    if ( locationData == parentLocationData )
+    {
+        return;
+    }
+
+    /* Remove the current node. */
+    scorep_profile_set_current_node( scorep_profile_get_profile_data( locationData ),
+                                     NULL );
 }
 
 
 void
-SCOREP_Profile_DeleteLocationData( SCOREP_Profile_LocationData* profileLocationData )
-{
-    scorep_profile_delete_location_data( profileLocationData );
-}
-
-void
-SCOREP_Profile_Process( SCOREP_Location* location )
+SCOREP_Profile_Process( void )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
@@ -242,6 +507,7 @@ SCOREP_Profile_Process( SCOREP_Location* location )
        only when we are outside of a parallel region. Thus, we only exit
        regions on the main location.
      */
+    SCOREP_Location*     location  = SCOREP_Location_GetCurrentCPULocation();
     uint64_t             exit_time = SCOREP_GetClockTicks();
     scorep_profile_node* node      = NULL;
     uint64_t*            metrics   = SCOREP_Metric_Read( location );
@@ -250,7 +516,7 @@ SCOREP_Profile_Process( SCOREP_Location* location )
     {
         do
         {
-            node = scorep_profile_get_current_node( SCOREP_Location_GetProfileData( location ) );
+            node = scorep_profile_get_current_node( scorep_profile_get_profile_data( location ) );
             while ( ( node != NULL ) &&
                     ( node->node_type != SCOREP_PROFILE_NODE_REGULAR_REGION ) &&
                     ( node->node_type != SCOREP_PROFILE_NODE_COLLAPSE ) )
@@ -268,13 +534,13 @@ SCOREP_Profile_Process( SCOREP_Location* location )
                     scorep_profile_type_get_region_handle( node->type_specific_data );
                 fprintf( stderr, "Warning: Force exit for region %s\n",
                          SCOREP_RegionHandle_GetName( region ) );
-                SCOREP_Profile_Exit( location, region, exit_time, metrics );
+                SCOREP_Profile_Exit( location, exit_time, region, metrics );
             }
             else if ( node->node_type == SCOREP_PROFILE_NODE_COLLAPSE )
             {
                 fprintf( stderr, "Warning: Force exit from collapsed node\n" );
-                SCOREP_Profile_Exit( location, SCOREP_INVALID_REGION,
-                                     exit_time, metrics );
+                SCOREP_Profile_Exit( location, exit_time,
+                                     SCOREP_INVALID_REGION, metrics );
             }
             else
             {
@@ -309,8 +575,14 @@ SCOREP_Profile_Process( SCOREP_Location* location )
     scorep_profile_assign_callpath_to_workers();
 }
 
-void
-SCOREP_Profile_Write( void )
+
+/**
+   Writes the Profile. The output format can be set via environment variable
+   SCOREP_PROFILING_FORMAT. Possible values are None, TauSnapshot, Cube4, Default.
+   Should be called after unification.
+ */
+static void
+write( void )
 {
     if ( scorep_profile_output_format == SCOREP_PROFILE_OUTPUT_NONE )
     {
@@ -334,22 +606,16 @@ SCOREP_Profile_Write( void )
     }
 }
 
-void
-SCOREP_Profile_SetCalltreeConfiguration( uint32_t maxCallpathDepth,
-                                         uint32_t maxCallpathNum )
-{
-    scorep_profile.max_callpath_depth = maxCallpathDepth;
-    scorep_profile.max_callpath_num   = maxCallpathNum;
-}
+
 /* ***************************************************************************************
    Callpath events
 *****************************************************************************************/
 
+
 void
 SCOREP_Profile_Enter( SCOREP_Location*    thread,
-                      SCOREP_RegionHandle region,
-                      SCOREP_RegionType   type,
                       uint64_t            timestamp,
+                      SCOREP_RegionHandle region,
                       uint64_t*           metrics )
 {
     //printf( "%u: Enter %s\n", SCOREP_Location_GetId( thread ), SCOREP_RegionHandle_GetName( region ) );
@@ -361,12 +627,12 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
     /* Check wether we exceed the depth */
-    SCOREP_Profile_LocationData* location =
-        SCOREP_Location_GetProfileData( thread );
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
     location->current_depth++;
 
     /* Enter on current position */
     scorep_profile_node* current_node = scorep_profile_get_current_node( location );
+    SCOREP_RegionType    type         = SCOREP_RegionHandle_GetType( region );
     node = scorep_profile_enter( location,
                                  current_node,
                                  region,
@@ -392,17 +658,17 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
 
             /* For Dynamic Regions we use a special "instance" parameter defined
              * during initialization */
-            SCOREP_Profile_ParameterInteger( thread,
-                                             scorep_profile_param_instance,
-                                             node->count );
+            parameter_integer( thread, 0,
+                               scorep_profile_param_instance,
+                               node->count );
     }
 }
 
 
 void
 SCOREP_Profile_Exit( SCOREP_Location*    thread,
-                     SCOREP_RegionHandle region,
                      uint64_t            timestamp,
+                     SCOREP_RegionHandle region,
                      uint64_t*           metrics )
 {
     //printf( "%u: Exit %s\n", SCOREP_Location_GetId( thread ), SCOREP_RegionHandle_GetName( region ) );
@@ -416,7 +682,7 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
                         "Exit event of profiling system called" );
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
-    location = SCOREP_Location_GetProfileData( thread );
+    location = scorep_profile_get_profile_data( thread );
 
     /* Store task metrics if exiting a parallel region */
     if ( type == SCOREP_REGION_PARALLEL )
@@ -447,6 +713,79 @@ SCOREP_Profile_Exit( SCOREP_Location*    thread,
     scorep_profile_set_current_node( location, parent );
 }
 
+
+/**
+   Called on enter events to update the profile accordingly.
+   @param location     A pointer to the thread location data of the thread that executed
+                       the enter event.
+   @param timestamp    The timestamp, when the region was entered.
+   @param regionHandle The handle of the entered region.
+   @param metricValues An array with metric samples which were taken on the enter event.
+                       The samples must be in the same order as the metric definitions
+                       at the @ref SCOREP_Profile_Initialize call.
+ */
+static void
+enter_region( SCOREP_Location*    location,
+              uint64_t            timestamp,
+              SCOREP_RegionHandle regionHandle,
+              uint64_t*           metricValues )
+{
+    SCOREP_Profile_Enter( location,
+                          timestamp,
+                          regionHandle,
+                          metricValues );
+
+    SCOREP_Metric_WriteToProfile( location );
+}
+
+
+/**
+   Called on exit events to update the profile accordingly.
+   @param location     A pointer to the thread location data of the thread that executed
+                       the exit event.
+   @param timestamp    The timestamp, when the region was left.
+   @param regionHandle The handle of the left region.
+   @param metricValues An array with metric samples which were taken on the exit event.
+                       The samples must be in the same order as the metric definitions
+                       at the @ref SCOREP_Profile_Initialize call.
+ */
+void
+exit_region( SCOREP_Location*    location,
+             uint64_t            timestamp,
+             SCOREP_RegionHandle regionHandle,
+             uint64_t*           metricValues )
+{
+    SCOREP_Metric_WriteToProfile( location );
+
+    SCOREP_Profile_Exit( location,
+                         timestamp,
+                         regionHandle,
+                         metricValues );
+}
+
+
+/**
+   Called when a user metric / atomic / context event for integer values was triggered.
+   @param location      A pointer to the thread location data of the thread that executed
+                        the event.
+   @param timestamp     Unused.
+   @param metricHandle  Handle of the triggered metric.
+   @param counterHandle Unused.
+   @param value         Sample for the metric.
+ */
+static void
+trigger_counter_integer( SCOREP_Location*         location,
+                         uint64_t                 timestamp,
+                         SCOREP_MetricHandle      metricHandle,
+                         SCOREP_SamplingSetHandle counterHandle,
+                         uint64_t                 value )
+{
+    SCOREP_Profile_TriggerInteger( location,
+                                   metricHandle,
+                                   value );
+}
+
+
 void
 SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
                                SCOREP_MetricHandle metric,
@@ -459,7 +798,7 @@ SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    location = SCOREP_Location_GetProfileData( thread );
+    location = scorep_profile_get_profile_data( thread );
 
     /* Validity check */
     node = scorep_profile_get_current_node( location );
@@ -474,6 +813,29 @@ SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
     scorep_profile_trigger_int64( location, metric, value, node );
 }
 
+
+/**
+   Called when a user metric / atomic / context event for double values was triggered.
+   @param location       A pointer to the thread location data of the thread that executed
+                         the event.
+   @param timestamp      Unused.
+   @param metricHandle   Handle of the triggered metric.
+   @param counterHandle  Unused.
+   @param value          Sample for the metric.
+ */
+static void
+trigger_counter_double( SCOREP_Location*         location,
+                        uint64_t                 timestamp,
+                        SCOREP_MetricHandle      metricHandle,
+                        SCOREP_SamplingSetHandle counterHandle,
+                        double                   value )
+{
+    SCOREP_Profile_TriggerDouble( location,
+                                  metricHandle,
+                                  value );
+}
+
+
 void
 SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
                               SCOREP_MetricHandle metric,
@@ -486,7 +848,7 @@ SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    location = SCOREP_Location_GetProfileData( thread );
+    location = scorep_profile_get_profile_data( thread );
 
     /* Validity check */
     node = scorep_profile_get_current_node( location );
@@ -501,10 +863,20 @@ SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
     scorep_profile_trigger_double( location, metric, value, node );
 }
 
-void
-SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
-                                SCOREP_ParameterHandle param,
-                                SCOREP_StringHandle    string )
+
+/**
+   Called when a integer parameter was triggered
+   @param thread    A pointer to the thread location data of the thread that executed
+                    the event.
+   @param timestamp Unused.
+   @param param     Handle of the triggered parameter.
+   @param value     The parameter integer value.
+ */
+static void
+parameter_integer( SCOREP_Location*       thread,
+                   uint64_t               timestamp,
+                   SCOREP_ParameterHandle param,
+                   int64_t                value )
 {
     scorep_profile_node*       node = NULL;
     scorep_profile_type_data_t node_data;
@@ -514,55 +886,7 @@ SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
     /* If we exceed the maximum callpath depth -> do nothing.
        Do not even increase the depth level, because we do not know how many parameters
        were entered on an exit event. */
-    SCOREP_Profile_LocationData* location =
-        SCOREP_Location_GetProfileData( thread );
-    if ( location->current_depth >= scorep_profile.max_callpath_depth )
-    {
-        return;
-    }
-    location->current_depth++;
-
-    /* Initialize type specific data */
-    scorep_profile_type_set_parameter_handle( &node_data, param );
-    scorep_profile_type_set_string_handle( &node_data, string );
-
-    /* Get new callpath node */
-    node = scorep_profile_find_create_child( location,
-                                             scorep_profile_get_current_node( location ),
-                                             SCOREP_PROFILE_NODE_PARAMETER_STRING,
-                                             node_data, -1 );
-
-    /* Disable profiling if node creation failed */
-    if ( node == NULL )
-    {
-        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                     "Failed to create location" );
-        SCOREP_PROFILE_STOP( location );
-        return;
-    }
-
-    /* Store start values for dense metrics */
-    setup_start_from_parent( node );
-
-    /* Update current node pointer */
-    scorep_profile_set_current_node( location, node );
-}
-
-void
-SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
-                                 SCOREP_ParameterHandle param,
-                                 int64_t                value )
-{
-    scorep_profile_node*       node = NULL;
-    scorep_profile_type_data_t node_data;
-
-    SCOREP_PROFILE_ASSURE_INITIALIZED;
-
-    /* If we exceed the maximum callpath depth -> do nothing.
-       Do not even increase the depth level, because we do not know how many parameters
-       were entered on an exit event. */
-    SCOREP_Profile_LocationData* location =
-        SCOREP_Location_GetProfileData( thread );
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
 
     if ( location->current_depth >= scorep_profile.max_callpath_depth )
     {
@@ -615,194 +939,80 @@ SCOREP_Profile_ParameterInteger( SCOREP_Location*       thread,
     scorep_profile_set_current_node( location, node );
 }
 
-/* ***************************************************************************************
-   Thread events
-*****************************************************************************************/
 
 void
-SCOREP_Profile_OnThreadCreation( SCOREP_Location* locationData,
-                                 SCOREP_Location* parentLocationData )
+SCOREP_Profile_ParameterString( SCOREP_Location*       thread,
+                                uint64_t               timestamp,
+                                SCOREP_ParameterHandle param,
+                                SCOREP_StringHandle    string )
 {
-}
-
-void
-SCOREP_Profile_OnLocationActivation( SCOREP_Location* locationData,
-                                     SCOREP_Location* parentLocationData,
-                                     uint32_t         forkSequenceCount )
-{
-    SCOREP_Profile_LocationData* thread_data    = NULL;
-    SCOREP_Profile_LocationData* parent_data    = NULL;
-    scorep_profile_node*         root           = NULL;
-    scorep_profile_node*         node           = NULL;
-    scorep_profile_node*         creation_point = NULL;
-
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Activated thread" );
-
-    SCOREP_PROFILE_ASSURE_INITIALIZED;
-    UTILS_ASSERT( locationData != NULL );
-
-    /* If it is the same location as the parent, do not do anything */
-    if ( locationData == parentLocationData )
-    {
-        return;
-    }
-
-    /* Get root node of the thread */
-    thread_data = SCOREP_Location_GetProfileData( locationData );
-    if ( thread_data == NULL )
-    {
-        UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                     "Thread activated which was not created." );
-        SCOREP_PROFILE_STOP( thread_data );
-        return;
-    }
-    root = thread_data->root_node;
-    UTILS_ASSERT( root != NULL );
-
-    /* Find creation point if available */
-    if ( parentLocationData != NULL )
-    {
-        parent_data = SCOREP_Location_GetProfileData( parentLocationData );
-        if ( parent_data != NULL )
-        {
-            creation_point             = scorep_profile_get_fork_node( parent_data, forkSequenceCount );
-            thread_data->current_depth = scorep_profile_get_fork_depth( parent_data, forkSequenceCount );
-        }
-    }
-
-    /* Check wether such an activation node already exists */
-    node = root->first_child;
-    while ( ( node != NULL ) &&
-            ( ( node->node_type != SCOREP_PROFILE_NODE_THREAD_START ) ||
-              ( creation_point != scorep_profile_type_get_fork_node( node->type_specific_data ) ) ) )
-    {
-        node = node->next_sibling;
-    }
-
-    /* Create new node if no one exists */
-    if ( node == NULL )
-    {
-        scorep_profile_type_data_t data;
-        scorep_profile_type_set_fork_node( &data, creation_point );
-        node = scorep_profile_create_node( thread_data,
-                                           root,
-                                           SCOREP_PROFILE_NODE_THREAD_START,
-                                           data, 0, false );
-
-        /* Disable profiling if node creation failed */
-        if ( node == NULL )
-        {
-            UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                         "Failed to create location" );
-            SCOREP_PROFILE_STOP( thread_data );
-            return;
-        }
-
-        node->next_sibling = root->first_child;
-        root->first_child  = node;
-    }
-
-    /* Now node points to the starting point of the thread.
-       Make it the current node of the thread. */
-    scorep_profile_set_current_node( thread_data, node );
-}
-
-
-void
-SCOREP_Profile_OnLocationDeactivation( SCOREP_Location* locationData,
-                                       SCOREP_Location* parentLocationData )
-{
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Deactivated thread" );
-
-    /* If it is the same location as the parent, do not do anything */
-    if ( locationData == parentLocationData )
-    {
-        return;
-    }
-
-    /* Remove the current node. */
-    scorep_profile_set_current_node( SCOREP_Location_GetProfileData( locationData ),
-                                     NULL );
-}
-
-
-void
-SCOREP_Profile_OnLocationCreation( SCOREP_Location* locationData,
-                                   SCOREP_Location* parentLocationData )
-{
-    SCOREP_Profile_LocationData* parent_data = NULL;
-    SCOREP_Profile_LocationData* thread_data = NULL;
-    scorep_profile_node*         node        = NULL;
-    scorep_profile_type_data_t   node_data;
-    uint64_t                     thread_id = 0;
+    scorep_profile_node*       node = NULL;
+    scorep_profile_type_data_t node_data;
 
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Create Location" );
+    /* If we exceed the maximum callpath depth -> do nothing.
+       Do not even increase the depth level, because we do not know how many parameters
+       were entered on an exit event. */
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
+    if ( location->current_depth >= scorep_profile.max_callpath_depth )
+    {
+        return;
+    }
+    location->current_depth++;
 
-    /* Initialize type specific data structure */
-    thread_data = SCOREP_Location_GetProfileData( locationData );
-    thread_id   = SCOREP_Location_GetId( locationData );
-    UTILS_ASSERT( thread_data != NULL );
+    /* Initialize type specific data */
+    scorep_profile_type_set_parameter_handle( &node_data, param );
+    scorep_profile_type_set_string_handle( &node_data, string );
 
-    scorep_profile_type_set_location_data( &node_data, thread_data );
-    scorep_profile_type_set_int_value( &node_data, thread_id );
-
-    /* Create thread root node */
-    node = scorep_profile_create_node( thread_data,
-                                       NULL,
-                                       SCOREP_PROFILE_NODE_THREAD_ROOT,
-                                       node_data, 0, false );
+    /* Get new callpath node */
+    node = scorep_profile_find_create_child( location,
+                                             scorep_profile_get_current_node( location ),
+                                             SCOREP_PROFILE_NODE_PARAMETER_STRING,
+                                             node_data, -1 );
 
     /* Disable profiling if node creation failed */
     if ( node == NULL )
     {
         UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
                      "Failed to create location" );
-        SCOREP_PROFILE_STOP( thread_data );
+        SCOREP_PROFILE_STOP( location );
         return;
     }
 
-    /* Update thread location data */
-    thread_data->root_node = node;
+    /* Store start values for dense metrics */
+    setup_start_from_parent( node );
 
-    if ( parentLocationData != NULL )
-    {
-        parent_data                = SCOREP_Location_GetProfileData( parentLocationData );
-        thread_data->creation_node = NULL;
-        thread_data->current_depth = 0;
-    }
-
-    /* Add it to the profile node list */
-    if ( parent_data == NULL )
-    {
-        /* It is the initial thread. Insert as first new root node. */
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Initial location created" );
-
-        SCOREP_MutexLock( scorep_profile_location_mutex );
-        node->next_sibling             = scorep_profile.first_root_node;
-        scorep_profile.first_root_node = node;
-        SCOREP_MutexUnlock( scorep_profile_location_mutex );
-    }
-    else
-    {
-        /* Append after parent root node */
-        SCOREP_MutexLock( scorep_profile_location_mutex );
-        node->next_sibling                   = parent_data->root_node->next_sibling;
-        parent_data->root_node->next_sibling = node;
-        SCOREP_MutexUnlock( scorep_profile_location_mutex );
-    }
-
-    /* Make the root node the current node of the location.
-       It allows to use the location without an activation, e.g.,
-       for non-CPU-locations. */
-    scorep_profile_set_current_node( thread_data, node );
+    /* Update current node pointer */
+    scorep_profile_set_current_node( location, node );
 }
 
-void
-SCOREP_Profile_ThreadFork( SCOREP_Location* threadData,
-                           size_t           maxChildThreads,
-                           uint32_t         forkSequenceCount )
+
+/* ***************************************************************************************
+   Thread events
+*****************************************************************************************/
+
+
+/**
+ * Called if one or more threads are created by this region. It is used to Mark the
+ * creation point in the profile tree. This allows the reconstruction of the full
+ * callpathes per thread later.
+ * @param threadData        A pointer to the thread location data of the thread that executed
+ *                          the event.
+ * @param timestamp         Unused.
+ * @param paradigm          Unused.
+ * @param nRequestedThreads Unused.
+ * @param forkSequenceCount forkSequenceCount of the newly created parallel region. It
+ *                          should be the same number that will be passed to
+ *                          SCOREP_Profile_OnThreadActivation for the threads of the newly
+ *                          created parallel region.
+ */
+static void
+thread_fork( SCOREP_Location*    threadData,
+             uint64_t            timestamp,
+             SCOREP_ParadigmType paradigm,
+             uint32_t            nRequestedThreads,
+             uint32_t            forkSequenceCount )
 {
     scorep_profile_node*         fork_node = NULL;
     SCOREP_Profile_LocationData* location  = NULL;
@@ -810,7 +1020,7 @@ SCOREP_Profile_ThreadFork( SCOREP_Location* threadData,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: On Fork" );
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    location  = SCOREP_Location_GetProfileData( threadData );
+    location  = scorep_profile_get_profile_data( threadData );
     fork_node = scorep_profile_get_current_node( location );
 
     /* In case the fork node is a thread start node, this thread started at the same
@@ -826,62 +1036,140 @@ SCOREP_Profile_ThreadFork( SCOREP_Location* threadData,
     scorep_profile_add_fork_node( location, fork_node, location->current_depth, forkSequenceCount );
 }
 
-void
-SCOREP_Profile_ThreadJoin( SCOREP_Location* locationData )
+
+/**
+ * Called after a parallel region is finished. Is used to clean up some thread
+ * management data.
+ * @param locationData  A pointer to the thread location data of the thread that executed
+ *                      the event.
+ * @param timestamp     Unused.
+ * @param paradigm      Unused.
+ */
+static void
+thread_join( SCOREP_Location*    locationData,
+             uint64_t            timestamp,
+             SCOREP_ParadigmType paradigm )
 {
-    SCOREP_Profile_LocationData* location =
-        SCOREP_Location_GetProfileData( locationData );
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( locationData );
     scorep_profile_remove_fork_node( location );
 }
 
 
-void
-SCOREP_Profile_ThreadCreate( SCOREP_Location* threadData,
-                             uint32_t         createSequenceCount )
-{
-    /* Variant 1: Link current node (which is root of this location) to creator
-     * node like in fork-join threading. */
-    //SCOREP_Profile_ThreadFork( threadData, 1, createSequenceCount );
-
-    /* Variant 2: Consider new thread as asynchronous, do not link current node
-     * to creator node, i.e. do nothing */
-}
-
-
-void
-SCOREP_Profile_ThreadWait( SCOREP_Location* threadData,
-                           uint32_t         createSequenceCount )
-{
-    /* Variant 1: see SCOREP_Profile_ThreadCreate() */
-    //SCOREP_Profile_ThreadJoin( threadData );
-
-    /* Variant 2: do nothing, see SCOREP_Profile_ThreadCreate() */
-}
-
-void
-SCOREP_Profile_ThreadBegin( SCOREP_Location*                 location,
-                            uint64_t                         timestamp,
-                            SCOREP_ParadigmType              paradigm,
-                            SCOREP_InterimCommunicatorHandle threadTeam,
-                            uint32_t                         createSequenceCount )
+/**
+ * Called when a thread begins its execution.
+ *
+ * @param location            A pointer to the thread location data of the thread that executed
+ *                            the event.
+ * @param timestamp           The timestamp, when the thread begin event occurred.
+ * @param paradigm            Unused.
+ * @param threadTeam          Unused.
+ * @param createSequenceCount Unused.
+ */
+static void
+thread_begin( SCOREP_Location*                 location,
+              uint64_t                         timestamp,
+              SCOREP_ParadigmType              paradigm,
+              SCOREP_InterimCommunicatorHandle threadTeam,
+              uint32_t                         createSequenceCount )
 {
     SCOREP_Profile_Enter( location,
-                          thread_create_wait_regions,
-                          SCOREP_RegionHandle_GetType( thread_create_wait_regions ),
                           timestamp,
+                          thread_create_wait_regions,
                           0 );
 }
 
 
-void
-SCOREP_Profile_ThreadEnd( SCOREP_Location*                 location,
-                          uint64_t                         timestamp,
-                          SCOREP_ParadigmType              paradigm,
-                          SCOREP_InterimCommunicatorHandle threadTeam,
-                          uint32_t                         createSequenceCount )
+/**
+ * Called when the thread finishes its execution.
+ *
+ * @param locationData        A pointer to the thread location data of the thread that executed
+ *                            the event.
+ * @param timestamp           The timestamp, when the thread begin event occurred.
+ * @param paradigm            Unused.
+ * @param threadTeam          Unused.
+ * @param createSequenceCount Unused.
+ */
+static void
+thread_end( SCOREP_Location*                 location,
+            uint64_t                         timestamp,
+            SCOREP_ParadigmType              paradigm,
+            SCOREP_InterimCommunicatorHandle threadTeam,
+            uint32_t                         createSequenceCount )
 {
     SCOREP_Profile_Exit( location,
-                         thread_create_wait_regions,
                          timestamp,
+                         thread_create_wait_regions,
                          0 );
+}
+
+
+const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_NUM_MODES ][ SCOREP_SUBSTRATES_NUM_EVENTS ] =
+{
+    {   /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
+        [ SCOREP_EVENT_INIT_SUBSTRATE ]                = ( SCOREP_Substrates_Callback )SCOREP_Profile_Initialize,
+        [ SCOREP_EVENT_FINALIZE_SUBSTRATE ]            = ( SCOREP_Substrates_Callback )SCOREP_Profile_Finalize,
+        [ SCOREP_EVENT_ENABLE_RECORDING ]              = ( SCOREP_Substrates_Callback )enable_recording,
+        [ SCOREP_EVENT_DISABLE_RECORDING ]             = ( SCOREP_Substrates_Callback )disable_recording,
+        [ SCOREP_EVENT_ON_LOCATION_CREATION ]          = ( SCOREP_Substrates_Callback )on_location_creation,
+        [ SCOREP_EVENT_ON_LOCATION_DELETION ]          = ( SCOREP_Substrates_Callback )delete_location_data,
+        [ SCOREP_EVENT_ON_LOCATION_ACTIVATION ]        = ( SCOREP_Substrates_Callback )on_location_activation,
+        [ SCOREP_EVENT_ON_LOCATION_DEACTIVATION ]      = ( SCOREP_Substrates_Callback )on_location_deactivation,
+        [ SCOREP_EVENT_PRE_UNIFY_SUBSTRATE ]           = ( SCOREP_Substrates_Callback )SCOREP_Profile_Process,
+        [ SCOREP_EVENT_WRITE_DATA ]                    = ( SCOREP_Substrates_Callback )write,
+        [ SCOREP_EVENT_CORE_TASK_CREATE ]              = ( SCOREP_Substrates_Callback )SCOREP_Profile_CreateTaskData,
+        [ SCOREP_EVENT_CORE_TASK_COMPLETE ]            = ( SCOREP_Substrates_Callback )SCOREP_Profile_FreeTaskData,
+        [ SCOREP_EVENT_INITIALIZE_MPP ]                = ( SCOREP_Substrates_Callback )SCOREP_Profile_InitializeMpp,
+        [ SCOREP_EVENT_ON_TRACING_BUFFER_FLUSH_BEGIN ] = ( SCOREP_Substrates_Callback )SCOREP_Profile_Enter,
+        [ SCOREP_EVENT_ON_TRACING_BUFFER_FLUSH_END ]   = ( SCOREP_Substrates_Callback )SCOREP_Profile_Exit,
+        [ SCOREP_EVENT_ENTER_REGION ]                  = ( SCOREP_Substrates_Callback )enter_region,
+        [ SCOREP_EVENT_EXIT_REGION ]                   = ( SCOREP_Substrates_Callback )exit_region,
+        [ SCOREP_EVENT_MPI_SEND ]                      = ( SCOREP_Substrates_Callback )SCOREP_Profile_MpiSend,
+        [ SCOREP_EVENT_MPI_RECV ]                      = ( SCOREP_Substrates_Callback )SCOREP_Profile_MpiRecv,
+        [ SCOREP_EVENT_MPI_COLLECTIVE_END ]            = ( SCOREP_Substrates_Callback )SCOREP_Profile_CollectiveEnd,
+        [ SCOREP_EVENT_MPI_ISEND ]                     = ( SCOREP_Substrates_Callback )SCOREP_Profile_MpiIsend,
+        [ SCOREP_EVENT_MPI_IRECV ]                     = ( SCOREP_Substrates_Callback )SCOREP_Profile_MpiIrecv,
+        [ SCOREP_EVENT_RMA_COLLECTIVE_END ]            = ( SCOREP_Substrates_Callback )SCOREP_Profile_RmaCollectiveEnd,
+        [ SCOREP_EVENT_RMA_SYNC ]                      = ( SCOREP_Substrates_Callback )SCOREP_Profile_RmaSync,
+        [ SCOREP_EVENT_RMA_GROUP_SYNC ]                = ( SCOREP_Substrates_Callback )SCOREP_Profile_RmaGroupSync,
+        [ SCOREP_EVENT_RMA_PUT ]                       = ( SCOREP_Substrates_Callback )SCOREP_Profile_RmaPut,
+        [ SCOREP_EVENT_RMA_GET ]                       = ( SCOREP_Substrates_Callback )SCOREP_Profile_RmaGet,
+        [ SCOREP_EVENT_RMA_ATOMIC ]                    = ( SCOREP_Substrates_Callback )SCOREP_Profile_RmaAtomic,
+        [ SCOREP_EVENT_TRIGGER_COUNTER_INT64 ]         = ( SCOREP_Substrates_Callback )trigger_counter_integer,
+        [ SCOREP_EVENT_TRIGGER_COUNTER_UINT64 ]        = ( SCOREP_Substrates_Callback )trigger_counter_integer,
+        [ SCOREP_EVENT_TRIGGER_COUNTER_DOUBLE ]        = ( SCOREP_Substrates_Callback )trigger_counter_double,
+        [ SCOREP_EVENT_TRIGGER_PARAMETER_INT64 ]       = ( SCOREP_Substrates_Callback )parameter_integer,
+        [ SCOREP_EVENT_TRIGGER_PARAMETER_UINT64 ]      = ( SCOREP_Substrates_Callback )parameter_integer,
+        [ SCOREP_EVENT_TRIGGER_PARAMETER_STRING ]      = ( SCOREP_Substrates_Callback )SCOREP_Profile_ParameterString,
+        [ SCOREP_EVENT_THREAD_FORK_JOIN_FORK ]         = ( SCOREP_Substrates_Callback )thread_fork,
+        [ SCOREP_EVENT_THREAD_FORK_JOIN_JOIN ]         = ( SCOREP_Substrates_Callback )thread_join,
+        [ SCOREP_EVENT_THREAD_FORK_JOIN_TASK_SWITCH ]  = ( SCOREP_Substrates_Callback )SCOREP_Profile_TaskSwitch,
+        [ SCOREP_EVENT_THREAD_FORK_JOIN_TASK_BEGIN ]   = ( SCOREP_Substrates_Callback )SCOREP_Profile_TaskBegin,
+        [ SCOREP_EVENT_THREAD_FORK_JOIN_TASK_END ]     = ( SCOREP_Substrates_Callback )SCOREP_Profile_TaskEnd,
+        [ SCOREP_EVENT_THREAD_CREATE_WAIT_BEGIN ]      = ( SCOREP_Substrates_Callback )thread_begin,
+        [ SCOREP_EVENT_THREAD_CREATE_WAIT_END ]        = ( SCOREP_Substrates_Callback )thread_end
+    },
+    {        /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
+        [ SCOREP_EVENT_INIT_SUBSTRATE ]           = ( SCOREP_Substrates_Callback )SCOREP_Profile_Initialize,
+        [ SCOREP_EVENT_FINALIZE_SUBSTRATE ]       = ( SCOREP_Substrates_Callback )SCOREP_Profile_Finalize,
+        [ SCOREP_EVENT_ON_LOCATION_CREATION ]     = ( SCOREP_Substrates_Callback )on_location_creation,
+        [ SCOREP_EVENT_ON_LOCATION_DELETION ]     = ( SCOREP_Substrates_Callback )delete_location_data,
+        [ SCOREP_EVENT_ON_LOCATION_ACTIVATION ]   = ( SCOREP_Substrates_Callback )on_location_activation,
+        [ SCOREP_EVENT_ON_LOCATION_DEACTIVATION ] = ( SCOREP_Substrates_Callback )on_location_deactivation,
+        [ SCOREP_EVENT_PRE_UNIFY_SUBSTRATE ]      = ( SCOREP_Substrates_Callback )SCOREP_Profile_Process,
+        [ SCOREP_EVENT_WRITE_DATA ]               = ( SCOREP_Substrates_Callback )write,
+        [ SCOREP_EVENT_CORE_TASK_CREATE ]         = ( SCOREP_Substrates_Callback )SCOREP_Profile_CreateTaskData,
+        [ SCOREP_EVENT_CORE_TASK_COMPLETE ]       = ( SCOREP_Substrates_Callback )SCOREP_Profile_FreeTaskData,
+        [ SCOREP_EVENT_INITIALIZE_MPP ]           = ( SCOREP_Substrates_Callback )SCOREP_Profile_InitializeMpp,
+        [ SCOREP_EVENT_THREAD_FORK_JOIN_FORK ]    = ( SCOREP_Substrates_Callback )thread_fork,
+        [ SCOREP_EVENT_THREAD_FORK_JOIN_JOIN ]    = ( SCOREP_Substrates_Callback )thread_join,
+        [ SCOREP_EVENT_THREAD_CREATE_WAIT_BEGIN ] = ( SCOREP_Substrates_Callback )thread_begin,
+        [ SCOREP_EVENT_THREAD_CREATE_WAIT_END ]   = ( SCOREP_Substrates_Callback )thread_end
+    }
+};
+
+
+const SCOREP_Substrates_Callback*
+SCOREP_Profile_GetSubstrateCallbacks( SCOREP_Substrates_Mode mode )
+{
+    return substrate_callbacks[ mode ];
 }

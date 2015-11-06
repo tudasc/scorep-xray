@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,6 +38,9 @@
 
 #include <SCOREP_Mutex.h>
 #include <scorep_location.h>
+#include <scorep_subsystem.h>
+/* temporary, remove once scorep_subsystems_activate_cpu_location is available */
+#include <SCOREP_Substrates_Management.h>
 
 #include <UTILS_Error.h>
 
@@ -103,11 +106,12 @@ SCOREP_Thread_ActivateMaster( void )
     UTILS_BUG_ON( initial_tpd == NULL,
                   "Master location not created yet." );
 
-    SCOREP_Location_CallSubstratesOnNewLocation( initial_tpd->location,
-                                                 0 /* parent_location */ );
-    SCOREP_Location_CallSubstratesOnActivation( initial_tpd->location,
-                                                0 /* parent_location */,
-                                                scorep_thread_get_next_sequence_count() );
+    scorep_subsystems_initialize_location( initial_tpd->location,
+                                           0 /* parent_location */ );
+    // scorep_subsystems_activate_cpu_location (location, parent, sequence_count, SCOREP_CPU_LOCATION_PHASE_MGMT);
+    SCOREP_Substrates_CallSubstratesOnActivation( initial_tpd->location,
+                                                  0 /* parent_location */,
+                                                  scorep_thread_get_next_sequence_count() );
 }
 
 

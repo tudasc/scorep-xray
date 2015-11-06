@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2013
+ * Copyright (c) 2009-2011, 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -124,17 +124,16 @@ typedef enum SCOREP_OAConsumer_DataTypes
 
 
 void
-SCOREP_OAConsumer_Initialize( SCOREP_Location*    location,
-                              SCOREP_RegionHandle phase_handle );
+SCOREP_OAConsumer_Initialize( SCOREP_RegionHandle phaseHandle );
 
 void
 SCOREP_OAConsumer_DismissData( void );
 
 void*
-SCOREP_OAConsumer_GetData( SCOREP_OAConsumer_DataTypes data_type );
+SCOREP_OAConsumer_GetData( SCOREP_OAConsumer_DataTypes dataType );
 
 uint32_t
-SCOREP_OAConsumer_GetDataSize( SCOREP_OAConsumer_DataTypes data_type );
+SCOREP_OAConsumer_GetDataSize( SCOREP_OAConsumer_DataTypes dataType );
 
 
 #endif // SCOREP_PROFILE_OACONSUMER_H

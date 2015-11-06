@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2015,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * Copyright (c) 2015,
@@ -47,6 +47,7 @@
 #include <scorep_profile_task_switch.h>
 
 #include <SCOREP_Definitions.h>
+#include <SCOREP_Metric_Management.h>
 #include <SCOREP_Task.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Mutex.h>
@@ -69,7 +70,7 @@ SCOREP_MetricHandle scorep_profile_migration_win_metric  = SCOREP_INVALID_METRIC
  * *************************************************************************************/
 
 static inline scorep_profile_task*
-get_profile_task( SCOREP_TaskHandle task )
+get_profile_task_data( SCOREP_TaskHandle task )
 {
     return SCOREP_Task_GetSubstrateData( task, scorep_profile_substrate_id );
 }
@@ -78,7 +79,7 @@ static scorep_profile_node*
 create_task_root( SCOREP_Profile_LocationData* location,
                   SCOREP_RegionHandle          regionHandle,
                   uint64_t                     timestamp,
-                  uint64_t*                    metric_values,
+                  uint64_t*                    metricValues,
                   bool                         is_untied )
 {
     /* Create the data structure */
@@ -98,7 +99,7 @@ create_task_root( SCOREP_Profile_LocationData* location,
     }
 
     /* Set start values for all dense metrics */
-    scorep_profile_update_on_resume( new_node, timestamp, metric_values );
+    scorep_profile_update_on_resume( new_node, timestamp, metricValues );
 
     /* We have already our first enter */
     new_node->count = 1;
@@ -183,22 +184,25 @@ scorep_profile_update_task_metrics( SCOREP_Profile_LocationData* location )
  * *************************************************************************************/
 
 void
-SCOREP_Profile_TaskBegin( SCOREP_Location*    thread,
-                          uint64_t            timestamp,
-                          uint64_t*           metricValues,
-                          SCOREP_RegionHandle regionHandle,
-                          SCOREP_TaskHandle   taskHandle )
+SCOREP_Profile_TaskBegin( SCOREP_Location*                 thread,
+                          uint64_t                         timestamp,
+                          SCOREP_RegionHandle              regionHandle,
+                          uint64_t*                        metricValues,
+                          SCOREP_ParadigmType              paradigm,
+                          SCOREP_InterimCommunicatorHandle threadTeam,
+                          uint32_t                         threadId,
+                          uint32_t                         generationNumber,
+                          SCOREP_TaskHandle                taskHandle )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
     /* Create new task entry */
-    SCOREP_Profile_LocationData* location =
-        SCOREP_Location_GetProfileData( thread );
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
 
     scorep_profile_type_data_t specific_data;
     scorep_profile_type_set_region_handle( &specific_data, regionHandle );
 
-    scorep_profile_task* task = get_profile_task( taskHandle );
+    scorep_profile_task* task = get_profile_task_data( taskHandle );
 
     scorep_profile_node* task_root = create_task_root( location, regionHandle,
                                                        timestamp, metricValues,
@@ -216,33 +220,39 @@ SCOREP_Profile_TaskBegin( SCOREP_Location*    thread,
 
 
 void
-SCOREP_Profile_TaskSwitch( SCOREP_Location*  thread,
-                           uint64_t          timestamp,
-                           uint64_t*         metricValues,
-                           SCOREP_TaskHandle taskHandle )
+SCOREP_Profile_TaskSwitch( SCOREP_Location*                 thread,
+                           uint64_t                         timestamp,
+                           uint64_t*                        metricValues,
+                           SCOREP_ParadigmType              paradigm,
+                           SCOREP_InterimCommunicatorHandle threadTeam,
+                           uint32_t                         threadId,
+                           uint32_t                         generationNumber,
+                           SCOREP_TaskHandle                taskHandle )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    SCOREP_Profile_LocationData* location =
-        SCOREP_Location_GetProfileData( thread );
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
 
-    scorep_profile_task* task = get_profile_task( taskHandle );
+    scorep_profile_task* task = get_profile_task_data( taskHandle );
 
     scorep_profile_task_switch( location, task, timestamp, metricValues );
 }
 
 
 void
-SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
-                        uint64_t            timestamp,
-                        uint64_t*           metricValues,
-                        SCOREP_RegionHandle regionHandle,
-                        SCOREP_TaskHandle   taskHandle )
+SCOREP_Profile_TaskEnd( SCOREP_Location*                 thread,
+                        uint64_t                         timestamp,
+                        SCOREP_RegionHandle              regionHandle,
+                        uint64_t*                        metricValues,
+                        SCOREP_ParadigmType              paradigm,
+                        SCOREP_InterimCommunicatorHandle threadTeam,
+                        uint32_t                         threadId,
+                        uint32_t                         generationNumber,
+                        SCOREP_TaskHandle                taskHandle )
 {
     SCOREP_PROFILE_ASSURE_INITIALIZED;
 
-    SCOREP_Profile_LocationData* location =
-        SCOREP_Location_GetProfileData( thread );
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( thread );
 
     /* Remember some data before it has changed */
     scorep_profile_task* task      = location->current_task;
@@ -251,7 +261,7 @@ SCOREP_Profile_TaskEnd( SCOREP_Location*    thread,
 
     /* Exit task region and switch control to implicit task to ensure that the
        current task is always valid */
-    SCOREP_Profile_Exit( thread, regionHandle, timestamp, metricValues );
+    SCOREP_Profile_Exit( thread, timestamp, regionHandle, metricValues );
     scorep_profile_task_switch( location,
                                 location->implicit_task,
                                 timestamp,
@@ -273,8 +283,7 @@ void
 SCOREP_Profile_CreateTaskData( SCOREP_Location*  locationData,
                                SCOREP_TaskHandle taskHandle )
 {
-    SCOREP_Profile_LocationData* location =
-        SCOREP_Location_GetProfileData( locationData );
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( locationData );
 
     scorep_profile_task* new_task = scorep_profile_recycle_task( location );
 
@@ -312,11 +321,10 @@ void
 SCOREP_Profile_FreeTaskData( SCOREP_Location*  locationData,
                              SCOREP_TaskHandle taskHandle )
 {
-    scorep_profile_task* task = get_profile_task( taskHandle );
+    scorep_profile_task* task = get_profile_task_data( taskHandle );
     assert( task );
 
-    SCOREP_Profile_LocationData* location =
-        SCOREP_Location_GetProfileData( locationData );
+    SCOREP_Profile_LocationData* location = scorep_profile_get_profile_data( locationData );
 
     scorep_profile_release_task( location, task );
 

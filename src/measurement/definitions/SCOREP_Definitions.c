@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -52,7 +52,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "scorep_ipc.h"
-#include "scorep_status.h"
 #include <jenkins_hash.h>
 #include <tracing/SCOREP_Tracing.h>
 
@@ -60,7 +59,7 @@
 
 SCOREP_DefinitionManager  scorep_local_definition_manager;
 SCOREP_DefinitionManager* scorep_unified_definition_manager = 0;
-static bool               scorep_definitions_initialized    = false;
+static bool               definitions_initialized           = false;
 
 
 /* global definition lock */
@@ -81,11 +80,11 @@ SCOREP_Definitions_Unlock( void )
 void
 SCOREP_Definitions_Initialize( void )
 {
-    if ( scorep_definitions_initialized )
+    if ( definitions_initialized )
     {
         return;
     }
-    scorep_definitions_initialized = true;
+    definitions_initialized = true;
 
     SCOREP_MutexCreate( &definitions_lock );
     scorep_definitions_create_interim_communicator_counter_lock();
@@ -97,6 +96,13 @@ SCOREP_Definitions_Initialize( void )
 
     /* ensure, that the empty string gets id 0 */
     SCOREP_Definitions_NewString( "" );
+}
+
+
+bool
+SCOREP_Definitions_Initialized( void )
+{
+    return definitions_initialized;
 }
 
 
@@ -210,7 +216,7 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
 void
 SCOREP_Definitions_Finalize( void )
 {
-    if ( !scorep_definitions_initialized )
+    if ( !definitions_initialized )
     {
         return;
     }
@@ -253,24 +259,7 @@ SCOREP_Definitions_Finalize( void )
     SCOREP_MutexDestroy( &definitions_lock );
     scorep_definitions_destroy_interim_communicator_counter_lock();
 
-    scorep_definitions_initialized = false;
-}
-
-
-void
-SCOREP_Definitions_Write( void )
-{
-    if ( !scorep_definitions_initialized )
-    {
-        return;
-    }
-
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        SCOREP_Tracing_WriteDefinitions();
-    }
-
-    /// @todo Daniel, what to do here for profiling?
+    definitions_initialized = false;
 }
 
 

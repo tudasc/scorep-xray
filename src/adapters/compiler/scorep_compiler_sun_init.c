@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -78,7 +78,8 @@ scorep_compiler_subsystem_init( void )
 }
 
 SCOREP_ErrorCode
-scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData )
+scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData,
+                                         struct SCOREP_Location* parent )
 {
     UTILS_DEBUG( "studio compiler adapter init location!" );
     /* The studio compiler does not instrument "main" but we want to have a

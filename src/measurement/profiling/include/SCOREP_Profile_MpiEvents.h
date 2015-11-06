@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2012, 2014
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -51,13 +51,15 @@ SCOREP_Profile_InitializeMpp( void );
 /**
  * Process an MPI send event in the profile.
  * @param location           Location object for the thread where the event occurred.
- * @param destinationRank    Destination rank of the message.
- * @param communicatorHandle Handle of the used communicator.
- * @param tag                The message tag.
+ * @param timestamp          Unused.
+ * @param destinationRank    Unused.
+ * @param communicatorHandle Unused.
+ * @param tag                Unused.
  * @param bytesSent          Number of sent bytes.
  */
 void
 SCOREP_Profile_MpiSend( SCOREP_Location*                 location,
+                        uint64_t                         timestamp,
                         SCOREP_MpiRank                   destinationRank,
                         SCOREP_InterimCommunicatorHandle communicatorHandle,
                         uint32_t                         tag,
@@ -66,28 +68,33 @@ SCOREP_Profile_MpiSend( SCOREP_Location*                 location,
 /**
  * Process an MPI receive event in the profile.
  * @param location           Location object for the thread where the event occurred.
- * @param sourceRank         Source rank of the message.
- * @param communicatorHandle Handle of the used communicator.
- * @param tag                The message tag.
+ * @param timestamp          Unused.
+ * @param sourceRank         Unused.
+ * @param communicatorHandle Unused.
+ * @param tag                Unused.
  * @param bytesReceived      Number of received bytes.
  */
 void
 SCOREP_Profile_MpiRecv( SCOREP_Location*                 location,
+                        uint64_t                         timestamp,
                         SCOREP_MpiRank                   sourceRank,
                         SCOREP_InterimCommunicatorHandle communicatorHandle,
                         uint32_t                         tag,
                         uint64_t                         bytesReceived );
 
 /**
- * Process a collective MPI comunication event in the profile.
+ * Process a collective MPI communication event in the profile.
  * @param location           Location object for the thread where the event occurred.
- * @param communicatorHandle Handle of the used communicator.
- * @param rootRank           Root rank of the communication.                                                     * @param collectiveType     The type of collective operation.
+ * @param timestamp          Unused.
+ * @param communicatorHandle Unused.
+ * @param rootRank           Unused.
+ * @param collectiveType     Unused.
  * @param bytesSent          Number of sent bytes.
  * @param bytesReceived      Number of received bytes.
  */
 void
 SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
+                              uint64_t                         timestamp,
                               SCOREP_InterimCommunicatorHandle communicatorHandle,
                               SCOREP_MpiRank                   rootRank,
                               SCOREP_MpiCollectiveType         collectiveType,
@@ -95,16 +102,19 @@ SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
                               uint64_t                         bytesReceived );
 
 /**
- * Process a collective RMA comunication event in the profile.
+ * Process a collective RMA communication event in the profile.
  * @param location      Location object for the thread where the event occurred.
- * @param collectiveOp  Determines type of collective operation.                                                 * @param syncLevel     Synchronization level.
- * @param windowHandle  Memory window.
- * @param root          Root process/rank if there is one.
+ * @param timestamp     Unused.
+ * @param collectiveOp  Unused.
+ * @param syncLevel     Synchronization level.
+ * @param windowHandle  Unused.
+ * @param root          Unused.
  * @param bytesSent     Number of bytes sent.
  * @param bytesReceived Number of bytes received.
  */
 void
 SCOREP_Profile_RmaCollectiveEnd( SCOREP_Location*              location,
+                                 uint64_t                      timestamp,
                                  SCOREP_MpiCollectiveType      collectiveOp,
                                  SCOREP_RmaSyncLevel           syncLevel,
                                  SCOREP_InterimRmaWindowHandle windowHandle,
@@ -114,16 +124,58 @@ SCOREP_Profile_RmaCollectiveEnd( SCOREP_Location*              location,
 
 
 /**
+ * Process an MPI send event in the profile.
+ * @param location           Location object for the thread where the event occurred.
+ * @param timestamp          Unused.
+ * @param destinationRank    Unused.
+ * @param communicatorHandle Unused.
+ * @param tag                Unused.
+ * @param bytesSent          Number of sent bytes.
+ * @param requestId          Unused.
+ */
+void
+SCOREP_Profile_MpiIsend( SCOREP_Location*                 location,
+                         uint64_t                         timestamp,
+                         SCOREP_MpiRank                   destinationRank,
+                         SCOREP_InterimCommunicatorHandle communicatorHandle,
+                         uint32_t                         tag,
+                         uint64_t                         bytesSent,
+                         SCOREP_MpiRequestId              requestId );
+
+
+/**
+ * Process an MPI receive event in the profile.
+ * @param location           Location object for the thread where the event occurred.
+ * @param timestamp          Unused.
+ * @param sourceRank         Unused.
+ * @param communicatorHandle Unused.
+ * @param tag                Unused.
+ * @param bytesReceived      Number of received bytes.
+ * @param requestId          Unused.
+ */
+void
+SCOREP_Profile_MpiIrecv( SCOREP_Location*                 location,
+                         uint64_t                         timestamp,
+                         SCOREP_MpiRank                   sourceRank,
+                         SCOREP_InterimCommunicatorHandle communicatorHandle,
+                         uint32_t                         tag,
+                         uint64_t                         bytesReceived,
+                         SCOREP_MpiRequestId              requestId );
+
+
+/**
  * This record marks a simple pairwise synchronization.
  *
  * @param location     Location object for the thread where the event occurred.
- * @param windowHandle Memory window.
- * @param remote       Rank of target in context of window.
+ * @param timestamp    Unused.
+ * @param windowHandle Unused.
+ * @param remote       Unused.
  * @param syncType     Synchronization level (e.g. SCOREP_RMA_SYNC_LEVEL_NONE,
  *                     SCOREP_RMA_SYNC_LEVEL_PROCESS, SCOREP_RMA_SYNC_LEVEL_MEMORY).
  */
 void
 SCOREP_Profile_RmaSync( SCOREP_Location*              location,
+                        uint64_t                      timestamp,
                         SCOREP_InterimRmaWindowHandle windowHandle,
                         uint32_t                      remote,
                         SCOREP_RmaSyncType            syncType );
@@ -135,12 +187,14 @@ SCOREP_Profile_RmaSync( SCOREP_Location*              location,
  * all participants.
  *
  * @param location     Location object for the thread where the event occurred.
+ * @param timestamp    Timestamp when the event occurred.
  * @param syncLevel    Synchronization level.
- * @param windowHandle Memory window.
- * @param groupHandle  Group of participating processes or threads.
+ * @param windowHandle Unused.
+ * @param groupHandle  Unused.
  */
 void
 SCOREP_Profile_RmaGroupSync( SCOREP_Location*              location,
+                             uint64_t                      timestamp,
                              SCOREP_RmaSyncLevel           syncLevel,
                              SCOREP_InterimRmaWindowHandle windowHandle,
                              SCOREP_GroupHandle            groupHandle );
@@ -151,10 +205,11 @@ SCOREP_Profile_RmaGroupSync( SCOREP_Location*              location,
  * actual start and the completion may happen later.
  *
  * @param location     Location object for the thread where the event occurred.
- * @param windowHandle Memory window.
- * @param remote       Rank of target in context of window.
+ * @param timestamp    Unused.
+ * @param windowHandle Unused.
+ * @param remote       Unused.
  * @param bytes        Number of bytes transferred.
- * @param matchingId   Matching number.
+ * @param matchingId   Unused.
  *
  * @note The matching number allows to reference the point of completion
  * of the operation. It will reappear in a completion record on the same
@@ -163,6 +218,7 @@ SCOREP_Profile_RmaGroupSync( SCOREP_Location*              location,
  */
 void
 SCOREP_Profile_RmaPut( SCOREP_Location*              location,
+                       uint64_t                      timestamp,
                        SCOREP_InterimRmaWindowHandle windowHandle,
                        uint32_t                      remote,
                        uint64_t                      bytes,
@@ -175,10 +231,11 @@ SCOREP_Profile_RmaPut( SCOREP_Location*              location,
  * actual start and the completion may happen later.
  *
  * @param location     Location object for the thread where the event occurred.
- * @param windowHandle Memory window.
- * @param remote       Rank of target in context of window.
+ * @param timestamp    Unused.
+ * @param windowHandle Unused.
+ * @param remote       Unused.
  * @param bytes        Number of bytes transferred.
- * @param matchingId   Matching number.
+ * @param matchingId   Unused.
  *
  * @note The matching number allows to reference the point of completion
  * of the operation. It will reappear in a completion record on the same
@@ -187,6 +244,7 @@ SCOREP_Profile_RmaPut( SCOREP_Location*              location,
  */
 void
 SCOREP_Profile_RmaGet( SCOREP_Location*              location,
+                       uint64_t                      timestamp,
                        SCOREP_InterimRmaWindowHandle windowHandle,
                        uint32_t                      remote,
                        uint64_t                      bytes,
@@ -200,16 +258,18 @@ SCOREP_Profile_RmaGet( SCOREP_Location*              location,
  * remote completion works the same way as for get and put operations.
  *
  * @param location      Location object for the thread where the event occurred.
- * @param windowHandle  Window.
- * @param remote        Rank of target in context of window.
+ * @param timestamp     Timestamp when the event occurred.
+ * @param windowHandle  Unused.
+ * @param remote        Unused.
  * @param type          Type of atomic operation (see @a SCOREP_RmaAtomicType).
  * @param bytesSent     Number of bytes transferred to remote target.
  * @param bytesReceived Number of bytes transferred from remote target.
- * @param matchingId    Matching number.
+ * @param matchingId    Unused.
  *
  */
 void
 SCOREP_Profile_RmaAtomic( SCOREP_Location*              location,
+                          uint64_t                      timestamp,
                           SCOREP_InterimRmaWindowHandle windowHandle,
                           uint32_t                      remote,
                           SCOREP_RmaAtomicType          type,

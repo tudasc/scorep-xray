@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -110,10 +110,10 @@ typedef struct SCOREP_Subsystem
      * The main purpose is to allow the subsystem to register config variables
      * to the system.
      *
-     * The subsystem gets a unique ID assigned, provided as the parameter
-     * of this callback.
+     * @param uniqueId The subsystem gets a unique ID assigned, provided as
+     * the parameter of this callback.
      */
-    SCOREP_ErrorCode ( * subsystem_register )( size_t );
+    SCOREP_ErrorCode ( * subsystem_register )( size_t uniqueId );
 
     /**
      * Callback to be notified about the initialization of your subsystem. This
@@ -126,27 +126,35 @@ typedef struct SCOREP_Subsystem
      * be done from this point on too. You are not supposed to access
      * SCOREP_Location objects even if your subsystem created them. First
      * time to access SCOREP_Location objects is in subsystem_init_location.
+     * It is NOT ok to trigger a subsystem_init_location callback from a
+     * subsystem_init one. For locations created during initialization the
+     * subsystem_init_location step will be performed at the end of
+     * SCOREP_InitMeasurement() (currently SCOREP_Thread_ActivateMaster()).
      * It is ok to use malloc. If you need to realloc during measurement,
      * please consider not to use malloc.
      */
     SCOREP_ErrorCode ( * subsystem_init )( void );
 
     /**
-     * Callback to be notified about a location creation. This takes place
-     * during measurement, except for the initial location/master thread.
+     * Callback to be notified about a location creation.
      *
-     * It is not safe to assume single-threaded mode. A valid
-     * SCOREP_Location objects is provided (this is the first time
-     * your subsystem is supposed to access this SCOREP_Location object
-     * although you might retrieve is earlier).
+     * It is not safe to assume single-threaded mode.
+     *
+     * @param newLocation Partially valid SCOREP_Location object. Subsystem and
+     * substrate specific parts of the object need to be initialized here.
+     * @param parentLocation The parent of @a newLocation. Is NULL for the
+     * initial/master thread.
+     * @return SCOREP_ErrorCode SCOREP_SUCCESS if successful.
      */
-    SCOREP_ErrorCode ( * subsystem_init_location )( struct SCOREP_Location* );
+    SCOREP_ErrorCode ( * subsystem_init_location )( struct SCOREP_Location* newLocation,
+                                                    struct SCOREP_Location* parentLocation );
 
     /**
      * Finalizes the per-location data from this subsystem.
      *
+     * @param location The location object that is going to be finalized.
      */
-    void ( * subsystem_finalize_location )( struct SCOREP_Location* );
+    void ( * subsystem_finalize_location )( struct SCOREP_Location* location );
 
     /**
      * Called before the unification starts.

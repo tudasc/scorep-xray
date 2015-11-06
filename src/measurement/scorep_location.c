@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -66,9 +66,7 @@ struct SCOREP_Location
     SCOREP_LocationType           type;
     SCOREP_LocationHandle         location_handle;
     SCOREP_Allocator_PageManager* page_managers[ SCOREP_NUMBER_OF_MEMORY_TYPES ];
-
-    SCOREP_Profile_LocationData*  profile_data;
-    SCOREP_TracingData*           tracing_data;
+    void*                         substrate_data[ SCOREP_SUBSTRATES_NUM_SUBSTRATES ];
 
 #if !HAVE( THREAD_LOCAL_STORAGE )
     volatile sig_atomic_t scorep_in_measurement;
@@ -115,19 +113,6 @@ scorep_location_create_location( SCOREP_LocationType type,
     SCOREP_Memory_CreatePageManagers( new_location->page_managers );
 
     new_location->type = type;
-
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        new_location->profile_data = SCOREP_Profile_CreateLocationData( new_location );
-        assert( new_location->profile_data );
-    }
-
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        new_location->tracing_data = SCOREP_Tracing_CreateLocationData( new_location );
-        assert( new_location->tracing_data );
-    }
-
     new_location->next = NULL;
 
     SCOREP_ErrorCode result = SCOREP_MutexLock( scorep_location_list_mutex );
@@ -151,7 +136,7 @@ SCOREP_Location_CreateNonCPULocation( SCOREP_Location*    parent,
                   "SCOREP_CreateNonCPULocation() does not support creation of CPU locations." );
 
     SCOREP_Location* new_location = scorep_location_create_location( type, name );
-    SCOREP_Location_CallSubstratesOnNewLocation( new_location, parent );
+    scorep_subsystems_initialize_location( new_location, parent );
 
     return new_location;
 }
@@ -219,60 +204,6 @@ SCOREP_Location_GetLocationHandle( SCOREP_Location* locationData )
 
 
 void
-SCOREP_Location_CallSubstratesOnNewLocation( SCOREP_Location* locationData,
-                                             SCOREP_Location* parent )
-{
-    // Where to do the locking? Well, at the moment we do the locking
-    // in SCOREP_Profile_OnLocationCreation, SCOREP_Tracing_OnLocationCreation
-    // and below for the location definition. The alternative is to lock
-    // this entire function.
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_OnLocationCreation( locationData, parent );
-    }
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        SCOREP_Tracing_OnLocationCreation( locationData, parent );
-    }
-
-    scorep_subsystems_initialize_location( locationData );
-}
-
-
-void
-SCOREP_Location_CallSubstratesOnActivation( SCOREP_Location* current,
-                                            SCOREP_Location* parent,
-                                            uint32_t         forkSequenceCount )
-{
-    /*
-     * Initialize the per-thread in-measurement counter
-     *
-     * If we have thread local storage support the corresponding
-     * variable is initialized at its declaration (see above)
-     */
-#if !HAVE( THREAD_LOCAL_STORAGE )
-    current->scorep_in_measurement = 0;
-#endif /* !HAVE( THREAD_LOCAL_STORAGE ) */
-
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_OnLocationActivation( current, parent, forkSequenceCount );
-    }
-}
-
-
-void
-SCOREP_Location_CallSubstratesOnDeactivation( SCOREP_Location* current,
-                                              SCOREP_Location* parent )
-{
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_OnLocationDeactivation( current, parent );
-    }
-}
-
-
-void
 SCOREP_Location_FinalizeLocations( void )
 {
     assert( !SCOREP_Thread_InParallel() );
@@ -281,16 +212,7 @@ SCOREP_Location_FinalizeLocations( void )
     while ( location_data )
     {
         SCOREP_Location* tmp = location_data->next;
-
         scorep_subsystems_finalize_location( location_data );
-        if ( SCOREP_IsTracingEnabled() )
-        {
-            SCOREP_Tracing_DeleteLocationData( location_data->tracing_data );
-        }
-        if ( SCOREP_IsProfilingEnabled() )
-        {
-            SCOREP_Profile_DeleteLocationData( location_data->profile_data );
-        }
         SCOREP_Memory_DeletePageManagers( location_data->page_managers );
         location_data = tmp;
     }
@@ -321,17 +243,20 @@ SCOREP_Location_GetMemoryPageManager( SCOREP_Location*  locationData,
 }
 
 
-SCOREP_Profile_LocationData*
-SCOREP_Location_GetProfileData( SCOREP_Location* locationData )
+void*
+SCOREP_Location_GetSubstrateData( SCOREP_Location* location,
+                                  size_t           substrateId )
 {
-    return locationData->profile_data;
+    return location->substrate_data[ substrateId ];
 }
 
 
-SCOREP_TracingData*
-SCOREP_Location_GetTracingData( SCOREP_Location* locationData )
+void
+SCOREP_Location_SetSubstrateData( SCOREP_Location* location,
+                                  void*            substrateData,
+                                  size_t           substrateId )
 {
-    return locationData->tracing_data;
+    location->substrate_data[ substrateId ] = substrateData;
 }
 
 
@@ -374,10 +299,8 @@ SCOREP_Location_EnsureGlobalId( SCOREP_Location* location )
     {
         location_definition->global_location_id =
             SCOREP_Location_GetGlobalId( location );
-        if ( SCOREP_IsTracingEnabled() )
-        {
-            SCOREP_Tracing_AssignLocationId( location );
-        }
+
+        SCOREP_CALL_SUBSTRATE( EnsureGlobalId, ENSURE_GLOBAL_ID, ( location ) )
     }
 }
 

@@ -1,11 +1,14 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
  * Technische Universitaet, Germany
+ *
+ * Copyright (c) 2015,
+ * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
@@ -32,9 +35,11 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_MetricService;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin;
 extern const SCOREP_Subsystem SCOREP_Subsystem_TaskStack;
+extern const SCOREP_Subsystem SCOREP_Subsystem_Substrates;
 
 /** @brief a NULL terminated list of linked in subsystems. */
 const SCOREP_Subsystem* scorep_subsystems[] = {
+    &SCOREP_Subsystem_Substrates,
     &SCOREP_Subsystem_TaskStack,
     &SCOREP_Subsystem_MetricService,
     &SCOREP_Subsystem_CompilerAdapter,

@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -74,12 +74,15 @@ SCOREP_Location_GetMemoryPageManager( SCOREP_Location*  locationData,
                                       SCOREP_MemoryType type );
 
 
-SCOREP_Profile_LocationData*
-SCOREP_Location_GetProfileData( SCOREP_Location* locationData );
+void*
+SCOREP_Location_GetSubstrateData( SCOREP_Location* location,
+                                  size_t           substrateId );
 
 
-SCOREP_TracingData*
-SCOREP_Location_GetTracingData( SCOREP_Location* locationData );
+void
+SCOREP_Location_SetSubstrateData( SCOREP_Location* location,
+                                  void*            substrateData,
+                                  size_t           substrateId );
 
 
 /*
@@ -96,22 +99,6 @@ SCOREP_Location_FinalizeDefinitions( void );
 
 void
 SCOREP_Location_FinalizeLocations( void );
-
-
-void
-SCOREP_Location_CallSubstratesOnNewLocation( SCOREP_Location* locationData,
-                                             SCOREP_Location* parent );
-
-
-void
-SCOREP_Location_CallSubstratesOnActivation( SCOREP_Location* current,
-                                            SCOREP_Location* parent,
-                                            uint32_t         forkSequenceCount );
-
-
-void
-SCOREP_Location_CallSubstratesOnDeactivation( SCOREP_Location* current,
-                                              SCOREP_Location* parent );
 
 
 #endif /* SCOREP_INTERNAL_LOCATION_H */

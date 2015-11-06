@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -116,7 +116,8 @@ scorep_subsystems_initialize( void )
  * Initialize subsystems for existing locations.
  */
 void
-scorep_subsystems_initialize_location( SCOREP_Location* locationData )
+scorep_subsystems_initialize_location( SCOREP_Location* newLocation,
+                                       SCOREP_Location* parentLocation )
 {
     /* call initialization functions for all subsystems */
     for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
@@ -126,7 +127,8 @@ scorep_subsystems_initialize_location( SCOREP_Location* locationData )
             continue;
         }
 
-        SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_init_location( locationData );
+        SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_init_location( newLocation,
+                                                                                  parentLocation );
         if ( SCOREP_SUCCESS != error )
         {
             UTILS_ERROR( error, "Can't initialize location for %s subsystem",

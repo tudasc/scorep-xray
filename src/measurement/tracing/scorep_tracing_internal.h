@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -46,12 +46,17 @@
 
 
 #include "scorep_rewind_stack_management.h"
-
+#include <scorep_location.h>
 
 extern bool     scorep_tracing_use_sion;
 extern uint64_t scorep_tracing_max_procs_per_sion_file;
 
+/**
+ * Stores the substrate id of the tracing substrate. Set during initialization.
+ */
+extern size_t scorep_tracing_substrate_id;
 
+typedef struct SCOREP_TracingData SCOREP_TracingData;
 struct SCOREP_TracingData
 {
     OTF2_EvtWriter*      otf_writer;
@@ -59,6 +64,18 @@ struct SCOREP_TracingData
     scorep_rewind_stack* rewind_free_list;
     OTF2_AttributeList*  otf_attribute_list;
 };
+
+
+struct SCOREP_Location;
+
+
+static inline SCOREP_TracingData*
+scorep_tracing_get_trace_data( struct SCOREP_Location* location )
+{
+    return ( SCOREP_TracingData* )
+           SCOREP_Location_GetSubstrateData( location,
+                                             scorep_tracing_substrate_id );
+}
 
 
 OTF2_EvtWriter*

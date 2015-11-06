@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -523,7 +523,8 @@ fork_join_subsystem_register( size_t subsystem_id )
 
 
 static SCOREP_ErrorCode
-fork_join_subsystem_init_location( SCOREP_Location* location )
+fork_join_subsystem_init_location( SCOREP_Location* location,
+                                   SCOREP_Location* parent )
 {
     if ( SCOREP_LOCATION_TYPE_CPU_THREAD == SCOREP_Location_GetType( location ) )
     {

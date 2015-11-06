@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -206,12 +206,12 @@ SCOREP_Location_AllocForProfile( SCOREP_Location* location,
  */
 
 /**
- * Release the entire allocated runtime summarization data memory.
+ * Release the allocated runtime profile memory for @a location.
  *
  * @see SCOREP_Memory_AllocForProfile()
  */
 void
-SCOREP_Memory_FreeProfileMem( void );
+SCOREP_Memory_FreeProfileMem( SCOREP_Location* location );
 
 
 /**

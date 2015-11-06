@@ -4,6 +4,9 @@
  * Copyright (c) 2012-2013,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2015,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -101,7 +104,8 @@ scorep_compiler_subsystem_init( void )
 
 
 SCOREP_ErrorCode
-scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData )
+scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData,
+                                         struct SCOREP_Location* parent )
 {
     return SCOREP_SUCCESS;
 }

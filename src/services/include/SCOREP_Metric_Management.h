@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -68,7 +68,7 @@ SCOREP_Metric_Read( SCOREP_Location* location );
  *  @param timestamp            Time when event occurred.
  */
 void
-SCOREP_Metric_WriteToTrace( SCOREP_Location* locationData,
+SCOREP_Metric_WriteToTrace( SCOREP_Location* location,
                             uint64_t         timestamp );
 
 /** @brief Writes metrics (except strictly synchronous ones which are
@@ -77,7 +77,7 @@ SCOREP_Metric_WriteToTrace( SCOREP_Location* locationData,
  *  @param location             Location data.
  */
 void
-SCOREP_Metric_WriteToProfile( SCOREP_Location* locationData );
+SCOREP_Metric_WriteToProfile( SCOREP_Location* location );
 
 /** @brief  Reinitialize metric management. This functionality is used by
  *          Score-P Online Access to change recorded metrics between

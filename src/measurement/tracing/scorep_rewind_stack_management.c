@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -58,8 +58,8 @@ bool
 scorep_rewind_stack_find( SCOREP_Location* location,
                           uint32_t         id )
 {
-    SCOREP_TracingData*  tracing_data = SCOREP_Location_GetTracingData( location );
-    scorep_rewind_stack* stack_item   = tracing_data->rewind_stack;
+    scorep_rewind_stack* stack_item =
+        scorep_tracing_get_trace_data( location )->rewind_stack;
 
     while ( stack_item && stack_item->id != id )
     {
@@ -85,7 +85,7 @@ scorep_rewind_stack_push( SCOREP_Location* location,
                           uint32_t         id,
                           uint64_t         entertimestamp )
 {
-    SCOREP_TracingData*  tracing_data    = SCOREP_Location_GetTracingData( location );
+    SCOREP_TracingData*  tracing_data    = scorep_tracing_get_trace_data( location );
     scorep_rewind_stack* stack_head      = tracing_data->rewind_stack;
     scorep_rewind_stack* stack_item      = stack_head;
     scorep_rewind_stack* last_stack_item = stack_head;
@@ -148,7 +148,7 @@ scorep_rewind_stack_pop( SCOREP_Location* location,
                          uint64_t*        entertimestamp,
                          bool             paradigm_affected[ SCOREP_REWIND_PARADIGM_MAX ] )
 {
-    SCOREP_TracingData*  tracing_data = SCOREP_Location_GetTracingData( location );
+    SCOREP_TracingData*  tracing_data = scorep_tracing_get_trace_data( location );
     scorep_rewind_stack* stack_head   = tracing_data->rewind_stack;
     scorep_rewind_stack* stack_item   = NULL;
 
@@ -176,7 +176,7 @@ scorep_rewind_stack_pop( SCOREP_Location* location,
 void
 scorep_rewind_stack_delete( SCOREP_Location* location )
 {
-    SCOREP_TracingData*  tracing_data = SCOREP_Location_GetTracingData( location );
+    SCOREP_TracingData*  tracing_data = scorep_tracing_get_trace_data( location );
     scorep_rewind_stack* stack_head   = tracing_data->rewind_stack;
     scorep_rewind_stack* stack_item   = NULL;
 
@@ -201,7 +201,7 @@ scorep_rewind_set_affected_paradigm( SCOREP_Location* location, SCOREP_Rewind_Pa
 {
     UTILS_ASSERT( paradigm < SCOREP_REWIND_PARADIGM_MAX );
 
-    SCOREP_TracingData*  tracing_data = SCOREP_Location_GetTracingData( location );
+    SCOREP_TracingData*  tracing_data = scorep_tracing_get_trace_data( location );
     scorep_rewind_stack* stack_item   = tracing_data->rewind_stack;
 
     while ( stack_item )

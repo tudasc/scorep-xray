@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2012,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -64,6 +64,7 @@
     UTILS_DEFINE_DEBUG_MODULE( PTHREAD,            19 ), \
     UTILS_DEFINE_DEBUG_MODULE( THREAD_CREATE_WAIT, 20 ), \
     UTILS_DEFINE_DEBUG_MODULE( THREAD,             21 ), \
-    UTILS_DEFINE_DEBUG_MODULE( OPENCL,             22 )
+    UTILS_DEFINE_DEBUG_MODULE( OPENCL,             22 ), \
+    UTILS_DEFINE_DEBUG_MODULE( SUBSTRATE,          23 )
 
 #endif /* CONFIG_CUSTOM_H */

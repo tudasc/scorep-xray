@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -68,6 +68,8 @@
 #include <SCOREP_Filter_Init.h>
 #include <scorep_unify.h>
 #include <SCOREP_OA_RuntimeManagement.h>
+#include <SCOREP_Substrates_Management.h>
+#include <scorep_substrates_definition.h>
 #include <SCOREP_ErrorCallback.h>
 #include <SCOREP_Task.h>
 
@@ -133,11 +135,7 @@ static bool scorep_application_aborted = false;
 /* *INDENT-OFF* */
 /** atexit handler for finalization */
 static void scorep_finalize( void );
-static void scorep_otf2_initialize( void );
-static void scorep_otf2_finalize( void );
 static void scorep_initialization_sanity_checks( void );
-static void scorep_profile_initialize( void );
-static void scorep_profile_finalize( void );
 static void scorep_trigger_exit_callbacks( void );
 static void scorep_define_measurement_regions( void );
 /* *INDENT-ON* */
@@ -248,10 +246,6 @@ SCOREP_InitMeasurement( void )
     /* Let the filtering service read its filter file early */
     SCOREP_TIME( SCOREP_Filter_Initialize, ( ) );
 
-    SCOREP_TIME( scorep_profile_initialize, ( ) );
-
-    SCOREP_TIME( scorep_otf2_initialize, ( ) );
-
     /*
      * @dependsOn Mutex
      */
@@ -276,11 +270,6 @@ SCOREP_InitMeasurement( void )
      *            need to be activated yet)
      */
     SCOREP_TIME( scorep_subsystems_initialize, ( ) );
-
-    if ( !SCOREP_Status_IsMpp() && SCOREP_IsTracingEnabled() )
-    {
-        SCOREP_Tracing_OnMppInit();
-    }
 
     /* Register finalization handler, also called in SCOREP_InitMppMeasurement() and
      * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is
@@ -313,6 +302,13 @@ SCOREP_InitMeasurement( void )
 
     SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurement );
     SCOREP_TIME_START_TIMING( MeasurementDuration );
+
+#if SCOREP_BACKEND_COMPILER_PGI
+    /* Remove this PGI hack once the SCOREP_IS_MEASUREMENT_PHASE macros
+     * are in place. See  r8969, r8804, r8879, #696. */
+    extern bool scorep_measurement_initialization_complete;
+    scorep_measurement_initialization_complete = true;
+#endif
 }
 
 
@@ -336,36 +332,6 @@ scorep_initialization_sanity_checks( void )
     if ( scorep_finalized )
     {
         _Exit( EXIT_FAILURE );
-    }
-}
-
-
-void
-scorep_otf2_initialize( void )
-{
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        SCOREP_Tracing_Initialize();
-    }
-}
-
-
-void
-scorep_otf2_finalize( void )
-{
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        SCOREP_Tracing_Finalize();
-    }
-}
-
-
-void
-scorep_profile_initialize( void )
-{
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_Initialize();
     }
 }
 
@@ -413,14 +379,7 @@ SCOREP_InitMppMeasurement( void )
     SCOREP_CreateExperimentDir();
     SCOREP_SynchronizeClocks();
 
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        SCOREP_Tracing_OnMppInit();
-    }
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_InitializeMpp();
-    }
+    SCOREP_Substrates_InitializeMpp();
 
     /* Register finalization handler, also called in SCOREP_InitMeasurement() and
      * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is
@@ -454,6 +413,7 @@ SCOREP_SetDefaultRecodingMode( bool enabled )
     scorep_enable_recording_by_default = enabled;
 }
 
+
 /**
  * Enable event recording for this process.
  */
@@ -462,26 +422,18 @@ SCOREP_EnableRecording( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp = SCOREP_GetClockTicks();
+    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp     = SCOREP_GetClockTicks();
+    uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
     if ( !SCOREP_Thread_InParallel() )
     {
-        if ( SCOREP_IsTracingEnabled() )
-        {
-            SCOREP_Tracing_MeasurementOnOff( location,
-                                             timestamp,
-                                             true );
-        }
-        if ( SCOREP_IsProfilingEnabled() && !scorep_recording_enabled  )
-        {
-            uint64_t* metric_values = SCOREP_Metric_Read( location );
-            SCOREP_Profile_Exit( location,
-                                 scorep_record_off_region,
-                                 timestamp,
-                                 metric_values );
-        }
+        SCOREP_Substrates_EnableRecording();
         scorep_recording_enabled = true;
+
+        SCOREP_CALL_SUBSTRATE( EnableRecording, ENABLE_RECORDING,
+                               ( location, timestamp,
+                                 scorep_record_off_region, metric_values ) )
     }
     else
     {
@@ -501,26 +453,17 @@ SCOREP_DisableRecording( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp = SCOREP_GetClockTicks();
+    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp     = SCOREP_GetClockTicks();
+    uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
     if ( !SCOREP_Thread_InParallel() )
     {
-        if ( SCOREP_IsTracingEnabled() )
-        {
-            SCOREP_Tracing_MeasurementOnOff( location,
-                                             timestamp,
-                                             false );
-        }
-        if ( SCOREP_IsProfilingEnabled() && scorep_recording_enabled )
-        {
-            uint64_t* metric_values = SCOREP_Metric_Read( location );
-            SCOREP_Profile_Enter( location,
-                                  scorep_record_off_region,
-                                  SCOREP_REGION_ARTIFICIAL,
-                                  timestamp,
-                                  metric_values );
-        }
+        SCOREP_CALL_SUBSTRATE( DisableRecording, DISABLE_RECORDING,
+                               ( location, timestamp,
+                                 scorep_record_off_region, metric_values ) )
+
+        SCOREP_Substrates_DisableRecording();
         scorep_recording_enabled = false;
     }
     else
@@ -555,18 +498,18 @@ SCOREP_OnTracingBufferFlushBegin( bool final )
         UTILS_FATAL( "Trace buffer flush before MPP was initialized." );
     }
 
-    if ( SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled() && !final )
+    if ( !final )
     {
+        SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
+        uint64_t         timestamp     = SCOREP_GetClockTicks();
+        uint64_t*        metric_values = SCOREP_Metric_Read( location );
         /*
          * We account the flush time of non-CPU locations (i.e., CUDA streams
          * and metric locations) to the current CPU.
          */
-        SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-        SCOREP_Profile_Enter( location,
-                              scorep_buffer_flush_region,
-                              SCOREP_REGION_ARTIFICIAL,
-                              SCOREP_GetClockTicks(),
-                              SCOREP_Metric_Read( location ) );
+        SCOREP_CALL_SUBSTRATE( OnTracingBufferFlushBegin, ON_TRACING_BUFFER_FLUSH_BEGIN,
+                               ( location, timestamp,
+                                 scorep_buffer_flush_region, metric_values ) )
     }
 }
 
@@ -581,18 +524,16 @@ SCOREP_OnTracingBufferFlushEnd( uint64_t timestamp )
      */
     SCOREP_Status_OnOtf2Flush();
 
-    if ( SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled() )
-    {
-        /*
-         * We account the flush time of non-CPU locations (i.e., CUDA streams
-         * and metric locations) to the current CPU.
-         */
-        SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
-        SCOREP_Profile_Exit( location,
-                             scorep_buffer_flush_region,
-                             timestamp,
-                             SCOREP_Metric_Read( location ) );
-    }
+    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t*        metric_values = SCOREP_Metric_Read( location );
+
+    /*
+     * We account the flush time of non-CPU locations (i.e., CUDA streams
+     * and metric locations) to the current CPU.
+     */
+    SCOREP_CALL_SUBSTRATE( OnTracingBufferFlushEnd, ON_TRACING_BUFFER_FLUSH_END,
+                           ( location, timestamp,
+                             scorep_buffer_flush_region, metric_values ) )
 }
 
 static void
@@ -630,39 +571,20 @@ scorep_finalize( void )
         SCOREP_EnableRecording();
     }
 
-    SCOREP_Task_ExitAllRegions( location,
-                                SCOREP_Task_GetCurrentTask( location ) );
+    SCOREP_TIME( SCOREP_Task_ExitAllRegions, ( location, SCOREP_Task_GetCurrentTask( location ) ) );
     SCOREP_TIME( SCOREP_SynchronizeClocks, ( ) );
     SCOREP_TIME( SCOREP_EndEpoch, ( ) );
     SCOREP_TIME( SCOREP_Filter_Finalize, ( ) );
     SCOREP_TIME( SCOREP_Location_FinalizeDefinitions, ( ) );
-
-    /* finalize and close all event writers */
-    if ( SCOREP_IsTracingEnabled() )
-    {
-        SCOREP_TIME( SCOREP_Tracing_FinalizeEventWriters, ( ) );
-    }
-
-    // Calling SCOREP_Event.h functions after this point is considered
-    // an instrumentation error.
-    // order is important
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_TIME( SCOREP_Profile_Process, ( location ) );
-    }
-
     SCOREP_TIME( SCOREP_FinalizeLocationGroup, ( ) );
 
     SCOREP_TIME( SCOREP_Unify, ( ) );
 
-    SCOREP_TIME( scorep_properties_write, ( ) );
+    SCOREP_TIME( SCOREP_Substrates_WriteData, ( ) );
 
-    SCOREP_TIME( scorep_profile_finalize, ( ) );
-    SCOREP_TIME( SCOREP_Definitions_Write, ( ) );
     SCOREP_TIME( SCOREP_Definitions_Finalize, ( ) );
-    SCOREP_TIME( scorep_otf2_finalize, ( ) );
 
-    /* call finalize_location for all locations */
+    /* Calls scorep_subsystems_finalize_location for all locations */
     SCOREP_TIME( SCOREP_Location_FinalizeLocations, ( ) );
 
     /* finalize all subsystems */
@@ -686,16 +608,6 @@ scorep_finalize( void )
     SCOREP_TIME_PRINT_TIMINGS();
 }
 
-
-static void
-scorep_profile_finalize( void )
-{
-    if ( SCOREP_IsProfilingEnabled() )
-    {
-        SCOREP_Profile_Write();
-        SCOREP_Profile_Finalize();
-    }
-}
 
 void
 SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback )

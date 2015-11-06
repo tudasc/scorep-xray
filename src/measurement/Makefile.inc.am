@@ -21,7 +21,7 @@
 ## Copyright (c) 2009-2014,
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2015,
 ## Technische Universitaet Muenchen, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -35,62 +35,62 @@
 include ../src/measurement/Makefile.common.inc.am
 
 noinst_LTLIBRARIES += libscorep_measurement_core.la
-libscorep_measurement_core_la_SOURCES =                           \
-    $(SRC_ROOT)src/measurement/SCOREP_RuntimeManagement.c         \
-    $(SRC_ROOT)src/measurement/SCOREP_Events.c                    \
-    $(SRC_ROOT)src/measurement/scorep_events_common.h             \
-    $(SRC_ROOT)src/measurement/SCOREP_Config.c                    \
-    $(SRC_ROOT)src/measurement/SCOREP_Memory.c                    \
-    $(SRC_ROOT)src/measurement/SCOREP_Libwrap.c                   \
-    $(SRC_ROOT)src/measurement/SCOREP_Task.c                      \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Subsystem.h         \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Config.h            \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Events.h            \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Libwrap.h           \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Libwrap_Macros.h    \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Memory.h            \
-    $(SRC_ROOT)src/measurement/include/SCOREP_RuntimeManagement.h \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Location.h          \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Types.h             \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Filter_Init.h       \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Properties.h        \
-    $(SRC_ROOT)src/measurement/include/SCOREP_OA_Functions.h      \
-    $(SRC_ROOT)src/measurement/include/SCOREP_ErrorCallback.h     \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Task.h              \
-    $(SRC_ROOT)src/measurement/include/SCOREP_Paradigms.h         \
-    $(SRC_ROOT)src/measurement/filtering/SCOREP_Filter_Init.c     \
-    $(SRC_ROOT)src/measurement/scorep_runtime_management.c        \
-    $(SRC_ROOT)src/measurement/scorep_subsystem.c                 \
-    $(SRC_ROOT)src/measurement/scorep_subsystem.h                 \
-    $(SRC_ROOT)src/measurement/scorep_types.c                     \
-    $(SRC_ROOT)src/measurement/scorep_types.h                     \
-    $(SRC_ROOT)src/measurement/scorep_location.h                  \
-    $(SRC_ROOT)src/measurement/scorep_location.c                  \
-    $(SRC_ROOT)src/measurement/scorep_libwrap_management.h        \
-    $(SRC_ROOT)src/measurement/scorep_runtime_management.h        \
-    $(SRC_ROOT)src/measurement/scorep_status.c                    \
-    $(SRC_ROOT)src/measurement/scorep_status.h                    \
-    $(SRC_ROOT)src/measurement/scorep_mpp.h                       \
-    $(SRC_ROOT)src/measurement/scorep_paradigms.c                 \
-    $(SRC_ROOT)src/measurement/scorep_paradigms_management.h      \
-    $(SRC_ROOT)src/measurement/scorep_properties.c                \
-    $(SRC_ROOT)src/measurement/scorep_properties.h                \
-    $(SRC_ROOT)src/measurement/scorep_ipc.h                       \
-    $(SRC_ROOT)src/measurement/scorep_environment.c               \
-    $(SRC_ROOT)src/measurement/scorep_environment.h               \
-    $(SRC_ROOT)src/measurement/scorep_unify.c                     \
-    $(SRC_ROOT)src/measurement/scorep_unify.h                     \
-    $(SRC_ROOT)src/measurement/scorep_unify_helpers.c             \
-    $(SRC_ROOT)src/measurement/scorep_unify_helpers.h             \
-    $(SRC_ROOT)src/measurement/scorep_definition_cube4.h          \
-    $(SRC_ROOT)src/measurement/scorep_definition_cube4.c          \
-    $(SRC_ROOT)src/measurement/scorep_system_tree.h               \
-    $(SRC_ROOT)src/measurement/scorep_system_tree.c               \
-    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.h     \
-    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.c     \
+libscorep_measurement_core_la_SOURCES =                            \
+    $(SRC_ROOT)src/measurement/SCOREP_RuntimeManagement.c          \
+    $(SRC_ROOT)src/measurement/SCOREP_Events.c                     \
+    $(SRC_ROOT)src/measurement/scorep_events_common.h              \
+    $(SRC_ROOT)src/measurement/SCOREP_Config.c                     \
+    $(SRC_ROOT)src/measurement/SCOREP_Memory.c                     \
+    $(SRC_ROOT)src/measurement/SCOREP_Libwrap.c                    \
+    $(SRC_ROOT)src/measurement/SCOREP_Task.c                       \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Subsystem.h          \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Config.h             \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Events.h             \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Libwrap.h            \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Libwrap_Macros.h     \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Memory.h             \
+    $(SRC_ROOT)src/measurement/include/SCOREP_RuntimeManagement.h  \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Location.h           \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Types.h              \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Filter_Init.h        \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Properties.h         \
+    $(SRC_ROOT)src/measurement/include/SCOREP_OA_Functions.h       \
+    $(SRC_ROOT)src/measurement/include/SCOREP_ErrorCallback.h      \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Task.h               \
+    $(SRC_ROOT)src/measurement/include/SCOREP_Paradigms.h          \
+    $(SRC_ROOT)src/measurement/filtering/SCOREP_Filter_Init.c      \
+    $(SRC_ROOT)src/measurement/scorep_runtime_management.c         \
+    $(SRC_ROOT)src/measurement/scorep_subsystem.c                  \
+    $(SRC_ROOT)src/measurement/scorep_subsystem.h                  \
+    $(SRC_ROOT)src/measurement/scorep_types.c                      \
+    $(SRC_ROOT)src/measurement/scorep_types.h                      \
+    $(SRC_ROOT)src/measurement/scorep_location.h                   \
+    $(SRC_ROOT)src/measurement/scorep_location.c                   \
+    $(SRC_ROOT)src/measurement/scorep_libwrap_management.h         \
+    $(SRC_ROOT)src/measurement/scorep_runtime_management.h         \
+    $(SRC_ROOT)src/measurement/scorep_status.c                     \
+    $(SRC_ROOT)src/measurement/scorep_status.h                     \
+    $(SRC_ROOT)src/measurement/scorep_mpp.h                        \
+    $(SRC_ROOT)src/measurement/scorep_paradigms.c                  \
+    $(SRC_ROOT)src/measurement/scorep_paradigms_management.h       \
+    $(SRC_ROOT)src/measurement/scorep_properties.c                 \
+    $(SRC_ROOT)src/measurement/scorep_properties.h                 \
+    $(SRC_ROOT)src/measurement/scorep_ipc.h                        \
+    $(SRC_ROOT)src/measurement/scorep_environment.c                \
+    $(SRC_ROOT)src/measurement/scorep_environment.h                \
+    $(SRC_ROOT)src/measurement/scorep_unify.c                      \
+    $(SRC_ROOT)src/measurement/scorep_unify.h                      \
+    $(SRC_ROOT)src/measurement/scorep_unify_helpers.c              \
+    $(SRC_ROOT)src/measurement/scorep_unify_helpers.h              \
+    $(SRC_ROOT)src/measurement/scorep_definition_cube4.h           \
+    $(SRC_ROOT)src/measurement/scorep_definition_cube4.c           \
+    $(SRC_ROOT)src/measurement/scorep_system_tree.h                \
+    $(SRC_ROOT)src/measurement/scorep_system_tree.c                \
+    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.h      \
+    $(SRC_ROOT)src/measurement/scorep_clock_synchronization.c      \
     $(SRC_ROOT)src/measurement/scorep_runtime_management_timings.h \
     $(SRC_ROOT)src/measurement/scorep_runtime_management_timings.c \
-    $(SRC_ROOT)src/measurement/scorep_error_callback.c            \
+    $(SRC_ROOT)src/measurement/scorep_error_callback.c             \
     $(SRC_ROOT)src/measurement/scorep_task_internal.h
 
 libscorep_measurement_core_la_CPPFLAGS = \
@@ -99,6 +99,7 @@ libscorep_measurement_core_la_CPPFLAGS = \
     -I$(INC_DIR_THREAD) \
     @CUBE_WRITER_CPPFLAGS@ \
     -I$(INC_DIR_MUTEX) \
+    -I$(INC_DIR_SUBSTRATES) \
     -I$(INC_DIR_DEFINITIONS)
 
 ## paradigm non mpp

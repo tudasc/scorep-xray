@@ -6,6 +6,9 @@
 ## Copyright (c) 2013-2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
+## Copyright (c) 2015,
+## Technische Universitaet Muenchen, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -31,8 +34,8 @@ libscorep_thread_fork_join_omp_tpd_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR) \
     $(UTILS_CPPFLAGS) \
-    -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_ROOT)src/services/include \
+    -I$(INC_DIR_SUBSTRATES) \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_DIR_COMMON_HASH) \
@@ -58,6 +61,7 @@ libscorep_thread_fork_join_omp_ancestry_la_CPPFLAGS = \
     -I$(INC_DIR_THREAD_INTERN) \
     -I$(INC_DIR_THREAD_FORK_JOIN_INTERN) \
     -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_DIR_SUBSTRATES) \
     -I$(PUBLIC_INC_DIR) \
     $(UTILS_CPPFLAGS) \
     -I$(INC_DIR_COMMON_HASH) \
@@ -99,6 +103,7 @@ libscorep_thread_fork_join_generic_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR) \
     $(UTILS_CPPFLAGS) \
+    -I$(INC_DIR_SUBSTRATES) \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_ROOT)src/services/include \

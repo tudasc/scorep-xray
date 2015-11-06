@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -940,7 +940,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
  *          otherwise an error code will be reported.
  */
 static SCOREP_ErrorCode
-metric_subsystem_init_location( SCOREP_Location* location )
+metric_subsystem_init_location( SCOREP_Location* location, SCOREP_Location* parent )
 {
     UTILS_ASSERT( location != NULL );
 

@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -37,12 +37,13 @@
  *
  */
 
-#include <SCOREP_Types.h>
+#include <scorep_substrates_definition.h>
 
 void
 scorep_properties_initialize( void );
 
-void
-scorep_properties_write( void );
+
+const SCOREP_Substrates_Callback*
+scorep_properties_get_substrate_callbacks( void );
 
 #endif /* SCOREP_INTERNAL_PROPERTIES_H */

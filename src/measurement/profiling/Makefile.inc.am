@@ -21,7 +21,7 @@
 ## Copyright (c) 2009-2012, 2014,
 ## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
 ##
-## Copyright (c) 2009-2012,
+## Copyright (c) 2009-2012, 2015,
 ## Technische Universitaet Muenchen, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -48,7 +48,8 @@ PROFILE_FLAGS =                                    \
     -I$(PUBLIC_INC_DIR)                            \
     $(UTILS_CPPFLAGS)                              \
     -I$(INC_DIR_COMMON_HASH)                       \
-    -I$(INC_DIR_DEFINITIONS)
+    -I$(INC_DIR_DEFINITIONS)                       \
+    -I$(INC_DIR_SUBSTRATES)
 
 noinst_LTLIBRARIES += libscorep_profile.la
 

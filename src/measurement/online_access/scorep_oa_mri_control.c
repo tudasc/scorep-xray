@@ -19,7 +19,7 @@
  * Copyright (c) 2009-2011,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -178,7 +178,7 @@ scorep_oa_mri_return_summary_data( int connection )
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 
     /** Initialize OA Consumer interface and index Profile data */
-    SCOREP_OAConsumer_Initialize( SCOREP_Location_GetCurrentCPULocation(), phase_handle );
+    SCOREP_OAConsumer_Initialize( phase_handle );
 
     /** Get number of merged regions definitions*/
     int region_defs_size = ( int )SCOREP_OAConsumer_GetDataSize( MERGED_REGION_DEFINITIONS );

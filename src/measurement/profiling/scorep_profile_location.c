@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2015,
@@ -65,9 +65,7 @@ static scorep_profile_node* scorep_profile_stub_exchange = NULL;
 
 static SCOREP_Mutex scorep_stub_exchange_lock;
 
-/* TODO: Set the substrate ID to 0 as long as we donot yet have substrates.
-   Assign a valid number if we introduce substrates. */
-uint32_t scorep_profile_substrate_id = 0;
+size_t scorep_profile_substrate_id;
 
 /* **************************************************************************************
  *                                                                            Data access
@@ -135,6 +133,11 @@ scorep_profile_finalize_location( SCOREP_Profile_LocationData* location )
     location->num_foreign_stubs     = 0;
 }
 
+
+/**
+ * Allocate and initialize a valid SCOREP_Profile_LocationData object.
+ *
+ */
 SCOREP_Profile_LocationData*
 scorep_profile_create_location_data( SCOREP_Location* locationData )
 {

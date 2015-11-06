@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012, 2014,
@@ -42,9 +42,11 @@
 #include <SCOREP_DefinitionHandles.h>
 #include <SCOREP_Hashtab.h>
 #include <SCOREP_Profile_Tasking.h>
+#include <scorep_profile_definition.h>
+#include <scorep_location.h>
+
 #include <stdint.h>
 #include <stdbool.h>
-#include <scorep_profile_definition.h>
 
 /* **************************************************************************************
    Typedefs
@@ -84,12 +86,9 @@ struct SCOREP_Profile_LocationData
 };
 
 /**
- * Stores the substrate id of the profiling system.
- *
- * TODO: Currently, set this value to a constant value of 0.
- *       Assign a valid value if, we introduce generic substrates.
+ * Stores the substrate id of the profiling substrate. Set during initialization.
  */
-extern uint32_t scorep_profile_substrate_id;
+extern size_t scorep_profile_substrate_id;
 
 /* **************************************************************************************
    Functions
@@ -237,5 +236,12 @@ struct scorep_profile_task*
 scorep_profile_recycle_task( SCOREP_Profile_LocationData* location );
 
 
+static inline SCOREP_Profile_LocationData*
+scorep_profile_get_profile_data( struct SCOREP_Location* location )
+{
+    return ( SCOREP_Profile_LocationData* )
+           SCOREP_Location_GetSubstrateData( location,
+                                             scorep_profile_substrate_id );
+}
 
 #endif // SCOREP_PROFILE_LOCATION_H

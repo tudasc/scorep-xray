@@ -22,7 +22,7 @@
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -65,6 +65,7 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_Initialize )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Thread_ActivateMaster )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filter_Initialize )              \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Substrates_Initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_initialize )          \
     SCOREP_TIMING_TRANSFORM_OP( scorep_profile_initialize )             \
     SCOREP_TIMING_TRANSFORM_OP( scorep_properties_initialize )          \
@@ -73,19 +74,15 @@
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_InitMppMeasurement )             \
     SCOREP_TIMING_TRANSFORM_OP( MeasurementDuration  )                  \
     SCOREP_TIMING_TRANSFORM_OP( scorep_trigger_exit_callbacks )         \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Task_ExitAllRegions )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_SynchronizeClocks )              \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_EndEpoch )                       \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Filter_Finalize )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_FinalizeDefinitions )   \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Tracing_FinalizeEventWriters )   \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Profile_Process )                \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_FinalizeLocationGroup )          \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Unify )                          \
-    SCOREP_TIMING_TRANSFORM_OP( scorep_properties_write )               \
-    SCOREP_TIMING_TRANSFORM_OP( scorep_profile_finalize )               \
-    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Write )              \
+    SCOREP_TIMING_TRANSFORM_OP( SCOREP_Substrates_WriteData )           \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Definitions_Finalize )           \
-    SCOREP_TIMING_TRANSFORM_OP( scorep_otf2_finalize )                  \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_FinalizeLocations )     \
     SCOREP_TIMING_TRANSFORM_OP( scorep_subsystems_finalize )            \
     SCOREP_TIMING_TRANSFORM_OP( SCOREP_Location_Finalize )              \

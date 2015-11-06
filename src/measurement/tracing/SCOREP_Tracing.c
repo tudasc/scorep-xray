@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -51,6 +51,9 @@
 #include <SCOREP_Definitions.h>
 #include "scorep_tracing_definitions.h"
 #include <scorep_clock_synchronization.h>
+#include "scorep_tracing_internal.h"
+
+#include <SCOREP_Substrates_Management.h>
 
 #define SCOREP_DEBUG_MODULE_NAME TRACING
 #include <UTILS_Debug.h>
@@ -58,6 +61,8 @@
 #include <inttypes.h>
 
 static OTF2_Archive* scorep_otf2_archive;
+
+size_t scorep_tracing_substrate_id;
 
 
 /** @todo croessel in OTF2_Archive_Open we need to specify an event
@@ -280,9 +285,11 @@ scorep_tracing_otf2_error_callback( void*          userData,
 
 
 void
-SCOREP_Tracing_Initialize( void )
+SCOREP_Tracing_Initialize( size_t substrateId )
 {
     UTILS_ASSERT( !scorep_otf2_archive );
+
+    scorep_tracing_substrate_id = substrateId;
 
 #if !HAVE( SCOREP_DEBUG )
     OTF2_Error_RegisterCallback( scorep_tracing_otf2_error_callback, NULL );
@@ -325,10 +332,15 @@ SCOREP_Tracing_Initialize( void )
     UTILS_ASSERT( err == SCOREP_SUCCESS );
 
     OTF2_Archive_SetCreator( scorep_otf2_archive, PACKAGE_STRING );
+
+    if ( !SCOREP_Status_IsMpp() )
+    {
+        SCOREP_Tracing_OnMppInit();
+    }
 }
 
 
-void
+size_t
 SCOREP_Tracing_Finalize( void )
 {
     UTILS_ASSERT( scorep_otf2_archive );
@@ -341,6 +353,7 @@ SCOREP_Tracing_Finalize( void )
                      OTF2_Error_GetDescription( ret ) );
     }
     scorep_otf2_archive = 0;
+    return scorep_tracing_substrate_id;
 }
 
 
@@ -385,8 +398,8 @@ scorep_trace_finalize_event_writer_cb( SCOREP_Location* locationData,
     SCOREP_LocationDef* location_definition =
         SCOREP_LOCAL_HANDLE_DEREF( location_handle, Location );
 
-    SCOREP_TracingData* tracing_data =
-        SCOREP_Location_GetTracingData( locationData );
+    SCOREP_TracingData* tracing_data = scorep_tracing_get_trace_data( locationData );
+
 
     UTILS_ASSERT( tracing_data->otf_writer );
 
@@ -429,8 +442,8 @@ SCOREP_Tracing_FinalizeEventWriters( void )
 }
 
 
-void
-SCOREP_Tracing_WriteDefinitions( void )
+static void
+write_definitions( void )
 {
     UTILS_ASSERT( scorep_otf2_archive );
 
@@ -506,10 +519,18 @@ SCOREP_Tracing_WriteDefinitions( void )
 }
 
 
-void
-SCOREP_Tracing_WriteProperties( void )
+static void
+write_properties( void )
 {
     UTILS_ASSERT( scorep_otf2_archive );
 
     scorep_tracing_set_properties( scorep_otf2_archive );
+}
+
+
+void
+SCOREP_Tracing_Write( void )
+{
+    write_properties();
+    write_definitions();
 }

@@ -16,10 +16,10 @@
  * Copyright (c) 2009-2012, 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2009-2012, 2014
+ * Copyright (c) 2009-2012, 2014,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -157,6 +157,7 @@ SCOREP_Profile_InitializeMpp( void )
 
 void
 SCOREP_Profile_MpiSend( SCOREP_Location*                 location,
+                        uint64_t                         timestamp,
                         SCOREP_MpiRank                   destinationRank,
                         SCOREP_InterimCommunicatorHandle communicatorHandle,
                         uint32_t                         tag,
@@ -167,6 +168,7 @@ SCOREP_Profile_MpiSend( SCOREP_Location*                 location,
 
 void
 SCOREP_Profile_MpiRecv( SCOREP_Location*                 location,
+                        uint64_t                         timestamp,
                         SCOREP_MpiRank                   sourceRank,
                         SCOREP_InterimCommunicatorHandle communicatorHandle,
                         uint32_t                         tag,
@@ -178,6 +180,7 @@ SCOREP_Profile_MpiRecv( SCOREP_Location*                 location,
 
 void
 SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
+                              uint64_t                         timestamp,
                               SCOREP_InterimCommunicatorHandle communicatorHandle,
                               SCOREP_MpiRank                   rootRank,
                               SCOREP_MpiCollectiveType         collectiveType,
@@ -190,6 +193,7 @@ SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
 
 void
 SCOREP_Profile_RmaCollectiveEnd( SCOREP_Location*              location,
+                                 uint64_t                      timestamp,
                                  SCOREP_MpiCollectiveType      collectiveOp,
                                  SCOREP_RmaSyncLevel           syncLevel,
                                  SCOREP_InterimRmaWindowHandle windowHandle,
@@ -197,7 +201,7 @@ SCOREP_Profile_RmaCollectiveEnd( SCOREP_Location*              location,
                                  uint64_t                      bytesSent,
                                  uint64_t                      bytesReceived )
 {
-    SCOREP_Profile_ParameterString( location, scorep_sync_level_param,
+    SCOREP_Profile_ParameterString( location, 0, scorep_sync_level_param,
                                     get_sync_level_name( syncLevel ) );
 
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_put_metric, bytesSent );
@@ -205,27 +209,54 @@ SCOREP_Profile_RmaCollectiveEnd( SCOREP_Location*              location,
 }
 
 void
+SCOREP_Profile_MpiIsend( SCOREP_Location*                 location,
+                         uint64_t                         timestamp,
+                         SCOREP_MpiRank                   destinationRank,
+                         SCOREP_InterimCommunicatorHandle communicatorHandle,
+                         uint32_t                         tag,
+                         uint64_t                         bytesSent,
+                         SCOREP_MpiRequestId              requestId )
+{
+    SCOREP_Profile_TriggerInteger( location, scorep_bytes_send_metric, bytesSent );
+}
+
+void
+SCOREP_Profile_MpiIrecv( SCOREP_Location*                 location,
+                         uint64_t                         timestamp,
+                         SCOREP_MpiRank                   sourceRank,
+                         SCOREP_InterimCommunicatorHandle communicatorHandle,
+                         uint32_t                         tag,
+                         uint64_t                         bytesReceived,
+                         SCOREP_MpiRequestId              requestId )
+{
+    SCOREP_Profile_TriggerInteger( location, scorep_bytes_recv_metric, bytesReceived );
+}
+
+void
 SCOREP_Profile_RmaSync( SCOREP_Location*              location,
+                        uint64_t                      timestamp,
                         SCOREP_InterimRmaWindowHandle windowHandle,
                         uint32_t                      remote,
                         SCOREP_RmaSyncType            syncType )
 {
-    SCOREP_Profile_ParameterString( location, scorep_sync_level_param,
+    SCOREP_Profile_ParameterString( location, 0, scorep_sync_level_param,
                                     get_sync_type_name( syncType ) );
 }
 
 void
 SCOREP_Profile_RmaGroupSync( SCOREP_Location*              location,
+                             uint64_t                      timestamp,
                              SCOREP_RmaSyncLevel           syncLevel,
                              SCOREP_InterimRmaWindowHandle windowHandle,
                              SCOREP_GroupHandle            groupHandle )
 {
-    SCOREP_Profile_ParameterString( location, scorep_sync_level_param,
+    SCOREP_Profile_ParameterString( location, timestamp, scorep_sync_level_param,
                                     get_sync_level_name( syncLevel ) );
 }
 
 void
 SCOREP_Profile_RmaPut( SCOREP_Location*              location,
+                       uint64_t                      timestamp,
                        SCOREP_InterimRmaWindowHandle windowHandle,
                        uint32_t                      remote,
                        uint64_t                      bytes,
@@ -236,6 +267,7 @@ SCOREP_Profile_RmaPut( SCOREP_Location*              location,
 
 void
 SCOREP_Profile_RmaGet( SCOREP_Location*              location,
+                       uint64_t                      timestamp,
                        SCOREP_InterimRmaWindowHandle windowHandle,
                        uint32_t                      remote,
                        uint64_t                      bytes,
@@ -246,6 +278,7 @@ SCOREP_Profile_RmaGet( SCOREP_Location*              location,
 
 void
 SCOREP_Profile_RmaAtomic( SCOREP_Location*              location,
+                          uint64_t                      timestamp,
                           SCOREP_InterimRmaWindowHandle windowHandle,
                           uint32_t                      remote,
                           SCOREP_RmaAtomicType          type,
@@ -253,7 +286,7 @@ SCOREP_Profile_RmaAtomic( SCOREP_Location*              location,
                           uint64_t                      bytesReceived,
                           uint64_t                      matchingId )
 {
-    SCOREP_Profile_ParameterString( location, scorep_atomic_type_param,
+    SCOREP_Profile_ParameterString( location, timestamp, scorep_atomic_type_param,
                                     get_atomic_type_name( type ) );
 
     SCOREP_Profile_TriggerInteger( location, scorep_bytes_put_metric, bytesSent );

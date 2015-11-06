@@ -3,11 +3,14 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014,
+## Copyright (c) 2014-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014,
 ## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2015,
+## Technische Universitaet Muenchen, Germany
 ##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
@@ -32,6 +35,7 @@ libscorep_thread_create_wait_pthread_la_CPPFLAGS = \
     -I$(INC_DIR_THREAD_INTERN)                     \
     -I$(INC_DIR_THREAD_CREATE_WAIT_INTERN)         \
     -I$(INC_DIR_MUTEX)                             \
+    -I$(INC_DIR_SUBSTRATES)                        \
     -I$(INC_ROOT)src/measurement/include           \
     -I$(INC_ROOT)src/measurement                   \
     -I$(INC_ROOT)src/measurement/profiling/include \
@@ -72,4 +76,5 @@ libscorep_thread_create_wait_generic_la_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR)                            \
     $(UTILS_CPPFLAGS)                              \
     -I$(INC_DIR_COMMON_HASH)                       \
-    -I$(INC_DIR_DEFINITIONS)
+    -I$(INC_DIR_DEFINITIONS)                       \
+    -I$(INC_DIR_SUBSTRATES)

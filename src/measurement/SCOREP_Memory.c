@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -282,11 +282,11 @@ SCOREP_Location_AllocForProfile( SCOREP_Location* location, size_t size )
 
 
 void
-SCOREP_Memory_FreeProfileMem( void )
+SCOREP_Memory_FreeProfileMem( SCOREP_Location* location )
 {
     // print mem usage statistics
     SCOREP_MemoryType type = SCOREP_MEMORY_TYPE_PROFILING;
-    SCOREP_Location_ForAll( free_memory_type_for_location, &type );
+    free_memory_type_for_location( location, &type );
 }
 
 
@@ -332,8 +332,8 @@ SCOREP_Memory_GetAddressFromMovableMemory( SCOREP_Allocator_MovableMemory movabl
                                            SCOREP_Allocator_PageManager*  movablePageManager )
 {
     return SCOREP_Allocator_GetAddressFromMovableMemory(
-               movablePageManager,
-               movableMemory );
+        movablePageManager,
+        movableMemory );
 }
 
 

@@ -73,10 +73,11 @@ SCOREP_Definitions_Initialize( void );
 void
 scorep_mpi_setup_world( void );
 uint64_t
-SCOREP_Env_GetTotalMemory();
+SCOREP_Env_GetTotalMemory( void );
 uint64_t
-SCOREP_Env_GetPageSize();
-
+SCOREP_Env_GetPageSize( void );
+void
+SCOREP_Status_Initialize( void );
 
 static uint64_t              scorep_test_mpi_unify_verbose;
 static bool                  scorep_test_mpi_unify_define_mpi_group;
@@ -120,6 +121,7 @@ main( int argc, char* argv[] )
     SCOREP_ConfigRegister( "test", scorep_test_mpi_unify_config_variables );
     SCOREP_ConfigApplyEnv();
 
+    SCOREP_Status_Initialize();
     SCOREP_Timer_Initialize();
 
     SCOREP_Memory_Initialize( SCOREP_Env_GetTotalMemory(),

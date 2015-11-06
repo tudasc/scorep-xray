@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011, 2014,
@@ -263,9 +263,10 @@ SCOREP_OA_RequestsSubmit( void )
 
     /** Reinitialize profile module */
     // Finalize profile
+    size_t substrate_id = SIZE_MAX; // denotes invalid substrate id
     if ( scorep_profile.is_initialized )
     {
-        SCOREP_Profile_Finalize();
+        substrate_id = SCOREP_Profile_Finalize();
     }
 
     /* Cleanup the task stack */
@@ -274,7 +275,9 @@ SCOREP_OA_RequestsSubmit( void )
     // Initialize profile
     if ( !scorep_profile.is_initialized && scorep_profile.reinitialize )
     {
-        SCOREP_Profile_Initialize( /* number_of_metrics, metrics */ );
+        UTILS_BUG_ON( substrate_id == SIZE_MAX, "Cannot initialize profiling substrate. "
+                      "First initialization should be done in substrates_subsystem_init()." );
+        SCOREP_Profile_Initialize( substrate_id /* number_of_metrics, metrics */ );
     }
 
     /** Create hashtab storing requested metrics by definition ID*/

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -104,7 +104,8 @@ cuda_subsystem_init( void )
 
 /** Initializes the location specific data of the CUDA adapter */
 static SCOREP_ErrorCode
-cuda_subsystem_init_location( SCOREP_Location* location )
+cuda_subsystem_init_location( SCOREP_Location* location,
+                              SCOREP_Location* parent )
 {
     /* for CPU locations, create location/thread-specific CUDA data */
     if ( SCOREP_Location_GetType( location ) == SCOREP_LOCATION_TYPE_CPU_THREAD )

@@ -13,13 +13,13 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
  * German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Muenchen, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -50,21 +50,6 @@ scorep_get_timestamp( SCOREP_Location* location )
     uint64_t timestamp = SCOREP_GetClockTicks();
     SCOREP_Location_SetLastTimestamp( location, timestamp );
     return timestamp;
-}
-
-
-/* Use this predicate to decide, whether to record an event in the trace. */
-static inline bool
-scorep_tracing_consume_event( void )
-{
-    return SCOREP_IsTracingEnabled() && SCOREP_RecordingEnabled();
-}
-
-
-static inline bool
-scorep_profiling_consume_event( void )
-{
-    return SCOREP_IsProfilingEnabled() && SCOREP_RecordingEnabled();
 }
 
 
