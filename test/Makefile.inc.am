@@ -30,7 +30,6 @@
 
 external_libadd = \
     @OTF2_LIBS@         \
-    @LIBBFD_LIBS@       \
     @SCOREP_PAPI_LIBS@  \
     @SCOREP_DLFCN_LIBS@ \
     @CUBE_WRITER_LIBS@  \

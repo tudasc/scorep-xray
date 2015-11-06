@@ -65,7 +65,6 @@ libscorep_measurement_la_LIBADD =        \
     libscorep_adapter_utils.la           \
     libutils.la                          \
     libjenkins_hash.la                   \
-    @LIBBFD_LIBS@                        \
     @SCOREP_PAPI_LIBS@                   \
     @SCOREP_DLFCN_LIBS@                  \
     @TIMER_LIB@                          \
