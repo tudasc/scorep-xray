@@ -73,6 +73,13 @@ CuStringFree( CuString* str )
 }
 
 void
+CuStringReset( CuString* str )
+{
+    str->length      = 0;
+    str->buffer[ 0 ] = '\0';
+}
+
+void
 CuStringResize( CuString* str,
                 int       newSize )
 {
@@ -169,6 +176,7 @@ CuTestInit( CuTest*      t,
     t->ran           = 0;
     t->message       = NULL;
     t->function      = function;
+    t->userArg       = NULL;
     t->testAllreduce = CuTestAllreduceInternal;
     t->jumpBuf       = NULL;
     t->next          = NULL;

@@ -37,6 +37,8 @@ CuStringClear( CuString* str );
 void
 CuStringFree( CuString* str );
 void
+CuStringReset( CuString* str );
+void
 CuStringAppend( CuString*   str,
                 const char* text );
 void
@@ -62,13 +64,14 @@ CuStringResize( CuString* str,
 
 typedef struct CuTest CuTest;
 
-typedef void ( *TestFunction )( CuTest* );
-typedef void ( *TestAllreduce )( int* );
+typedef void ( * TestFunction )( CuTest* );
+typedef void ( * TestAllreduce )( int* );
 
 struct CuTest
 {
     const char*    name;
     TestFunction   function;
+    void*          userArg;
     TestAllreduce  testAllreduce;
     int            failed;
     int            failedLocally;
