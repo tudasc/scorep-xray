@@ -1108,7 +1108,6 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
     {   /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
         [ SCOREP_EVENT_INIT_SUBSTRATE ]                = ( SCOREP_Substrates_Callback )SCOREP_Profile_Initialize,
         [ SCOREP_EVENT_FINALIZE_SUBSTRATE ]            = ( SCOREP_Substrates_Callback )SCOREP_Profile_Finalize,
-        [ SCOREP_EVENT_ENABLE_RECORDING ]              = ( SCOREP_Substrates_Callback )enable_recording,
         [ SCOREP_EVENT_DISABLE_RECORDING ]             = ( SCOREP_Substrates_Callback )disable_recording,
         [ SCOREP_EVENT_ON_LOCATION_CREATION ]          = ( SCOREP_Substrates_Callback )on_location_creation,
         [ SCOREP_EVENT_ON_LOCATION_DELETION ]          = ( SCOREP_Substrates_Callback )delete_location_data,
@@ -1151,6 +1150,7 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
     {        /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
         [ SCOREP_EVENT_INIT_SUBSTRATE ]           = ( SCOREP_Substrates_Callback )SCOREP_Profile_Initialize,
         [ SCOREP_EVENT_FINALIZE_SUBSTRATE ]       = ( SCOREP_Substrates_Callback )SCOREP_Profile_Finalize,
+        [ SCOREP_EVENT_ENABLE_RECORDING ]         = ( SCOREP_Substrates_Callback )enable_recording,
         [ SCOREP_EVENT_ON_LOCATION_CREATION ]     = ( SCOREP_Substrates_Callback )on_location_creation,
         [ SCOREP_EVENT_ON_LOCATION_DELETION ]     = ( SCOREP_Substrates_Callback )delete_location_data,
         [ SCOREP_EVENT_ON_LOCATION_ACTIVATION ]   = ( SCOREP_Substrates_Callback )on_location_activation,

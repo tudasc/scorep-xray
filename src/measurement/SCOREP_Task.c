@@ -50,7 +50,10 @@ typedef struct SCOREP_Task
     uint32_t                 thread_id;
     uint32_t                 generation_number;
     SCOREP_TaskHandle        next;
-    void*                    substrate_data[ SCOREP_SUBSTRATES_NUM_SUBSTRATES ];
+    /* Keep the array of substrates the last entry. By allocating some
+       space than the size of this struct, it may hold an array of void*
+       pointers to the substrates' data. */
+    void* substrate_data[];
 } SCOREP_Task;
 
 typedef struct scorep_location_task_data

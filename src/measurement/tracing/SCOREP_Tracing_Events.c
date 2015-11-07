@@ -1459,7 +1459,6 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
     {   /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
         [ SCOREP_EVENT_INIT_SUBSTRATE ]               = ( SCOREP_Substrates_Callback )SCOREP_Tracing_Initialize,
         [ SCOREP_EVENT_FINALIZE_SUBSTRATE ]           = ( SCOREP_Substrates_Callback )SCOREP_Tracing_Finalize,
-        [ SCOREP_EVENT_ENABLE_RECORDING ]             = ( SCOREP_Substrates_Callback )enable_recording,
         [ SCOREP_EVENT_DISABLE_RECORDING ]            = ( SCOREP_Substrates_Callback )disable_recording,
         [ SCOREP_EVENT_ON_LOCATION_CREATION ]         = ( SCOREP_Substrates_Callback )SCOREP_Tracing_OnLocationCreation,
         [ SCOREP_EVENT_ON_LOCATION_DELETION ]         = ( SCOREP_Substrates_Callback )SCOREP_Tracing_DeleteLocationData,
@@ -1475,8 +1474,8 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         [ SCOREP_EVENT_MPI_RECV ]                     = ( SCOREP_Substrates_Callback )mpi_recv,
         [ SCOREP_EVENT_MPI_COLLECTIVE_BEGIN ]         = ( SCOREP_Substrates_Callback )mpi_collective_begin,
         [ SCOREP_EVENT_MPI_COLLECTIVE_END ]           = ( SCOREP_Substrates_Callback )mpi_collective_end,
-        [ SCOREP_EVENT_MPI_ISEND ]                    = ( SCOREP_Substrates_Callback )mpi_isend_complete,
-        [ SCOREP_EVENT_MPI_IRECV ]                    = ( SCOREP_Substrates_Callback )mpi_irecv_request,
+        [ SCOREP_EVENT_MPI_ISEND_COMPLETE ]           = ( SCOREP_Substrates_Callback )mpi_isend_complete,
+        [ SCOREP_EVENT_MPI_IRECV_REQUEST ]            = ( SCOREP_Substrates_Callback )mpi_irecv_request,
         [ SCOREP_EVENT_MPI_REQUEST_TESTED ]           = ( SCOREP_Substrates_Callback )mpi_request_tested,
         [ SCOREP_EVENT_MPI_REQUEST_CANCELLED ]        = ( SCOREP_Substrates_Callback )mpi_request_cancelled,
         [ SCOREP_EVENT_MPI_ISEND ]                    = ( SCOREP_Substrates_Callback )mpi_isend,
@@ -1524,6 +1523,7 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
     {         /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
         [ SCOREP_EVENT_INIT_SUBSTRATE ]       = ( SCOREP_Substrates_Callback )SCOREP_Tracing_Initialize,
         [ SCOREP_EVENT_FINALIZE_SUBSTRATE ]   = ( SCOREP_Substrates_Callback )SCOREP_Tracing_Finalize,
+        [ SCOREP_EVENT_ENABLE_RECORDING ]     = ( SCOREP_Substrates_Callback )enable_recording,
         [ SCOREP_EVENT_ON_LOCATION_CREATION ] = ( SCOREP_Substrates_Callback )SCOREP_Tracing_OnLocationCreation,
         [ SCOREP_EVENT_ON_LOCATION_DELETION ] = ( SCOREP_Substrates_Callback )SCOREP_Tracing_DeleteLocationData,
         [ SCOREP_EVENT_PRE_UNIFY_SUBSTRATE ]  = ( SCOREP_Substrates_Callback )SCOREP_Tracing_FinalizeEventWriters,
