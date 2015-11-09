@@ -43,6 +43,21 @@
     } while ( 0 );
 
 /**
+ * Macro initializing substrate callback
+ */
+#ifdef __GNUC__
+#define SCOREP_ASSIGN_CALLBACK( Event, EVENT, cb ) \
+    [ SCOREP_EVENT_##EVENT ] = \
+        __builtin_choose_expr( \
+            __builtin_types_compatible_p( __typeof__( 0 ? ( cb ) : ( cb ) ), \
+                                          SCOREP_Substrates_##Event##Cb ), \
+            ( SCOREP_Substrates_Callback )( cb ), ( cb ) )
+#else
+#define SCOREP_ASSIGN_CALLBACK( Event, EVENT, cb ) \
+    [ SCOREP_EVENT_##EVENT ] = ( SCOREP_Substrates_Callback )( cb )
+#endif
+
+/**
  * Generic void function pointer for substrate functions.
  */
 typedef void ( * SCOREP_Substrates_Callback )( void );
@@ -162,7 +177,7 @@ struct SCOREP_Location;
 typedef void ( * SCOREP_Substrates_InitSubstrateCb )(
     size_t substrateId );
 
-typedef void ( * SCOREP_Substrates_FinalizeSubstrateCb )( void );
+typedef size_t ( * SCOREP_Substrates_FinalizeSubstrateCb )( void );
 
 typedef void ( * SCOREP_Substrates_EnableRecordingCb )(
     struct SCOREP_Location* location,
