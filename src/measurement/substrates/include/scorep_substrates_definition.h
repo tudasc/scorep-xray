@@ -46,14 +46,14 @@
  * Macro initializing substrate callback
  */
 #ifdef __GNUC__
-#define SCOREP_ASSIGN_CALLBACK( Event, EVENT, cb ) \
+#define SCOREP_ASSIGN_SUBSTRATE_CALLBACK( Event, EVENT, cb ) \
     [ SCOREP_EVENT_##EVENT ] = \
         __builtin_choose_expr( \
             __builtin_types_compatible_p( __typeof__( 0 ? ( cb ) : ( cb ) ), \
                                           SCOREP_Substrates_##Event##Cb ), \
             ( SCOREP_Substrates_Callback )( cb ), ( cb ) )
 #else
-#define SCOREP_ASSIGN_CALLBACK( Event, EVENT, cb ) \
+#define SCOREP_ASSIGN_SUBSTRATE_CALLBACK( Event, EVENT, cb ) \
     [ SCOREP_EVENT_##EVENT ] = ( SCOREP_Substrates_Callback )( cb )
 #endif
 
@@ -469,7 +469,7 @@ typedef void ( * SCOREP_Substrates_TriggerCounterInt64Cb )(
     uint64_t                 timestamp,
     SCOREP_MetricHandle      metricHandle,
     SCOREP_SamplingSetHandle counterHandle,
-    uint64_t                 value );
+    int64_t                  value );
 
 typedef void ( * SCOREP_Substrates_TriggerCounterUint64Cb )(
     struct SCOREP_Location*  location,
@@ -483,7 +483,7 @@ typedef void ( * SCOREP_Substrates_TriggerCounterDoubleCb )(
     uint64_t                 timestamp,
     SCOREP_MetricHandle      metricHandle,
     SCOREP_SamplingSetHandle counterHandle,
-    uint64_t                 value );
+    double                   value );
 
 typedef void ( * SCOREP_Substrates_TriggerParameterInt64Cb )(
     struct SCOREP_Location* location,
@@ -495,7 +495,7 @@ typedef void ( * SCOREP_Substrates_TriggerParameterUint64Cb )(
     struct SCOREP_Location* location,
     uint64_t                timestamp,
     SCOREP_ParameterHandle  parameterHandle,
-    int64_t                 value );
+    uint64_t                value );
 
 typedef void ( * SCOREP_Substrates_TriggerParameterStringCb )(
     struct SCOREP_Location* location,

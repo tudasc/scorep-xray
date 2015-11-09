@@ -80,7 +80,7 @@ static SCOREP_RegionHandle thread_create_wait_regions;
  *****************************************************************************************/
 
 /* *INDENT-OFF* */
-static void parameter_integer( SCOREP_Location* thread, uint64_t timestamp, SCOREP_ParameterHandle param, int64_t value );
+static void parameter_uint64( SCOREP_Location* thread, uint64_t timestamp, SCOREP_ParameterHandle param, uint64_t value );
 /* *INDENT-ON* */
 
 static inline void
@@ -658,9 +658,9 @@ SCOREP_Profile_Enter( SCOREP_Location*    thread,
 
             /* For Dynamic Regions we use a special "instance" parameter defined
              * during initialization */
-            parameter_integer( thread, 0,
-                               scorep_profile_param_instance,
-                               node->count );
+            parameter_uint64( thread, 0,
+                              scorep_profile_param_instance,
+                              node->count );
     }
 }
 
@@ -765,7 +765,7 @@ exit_region( SCOREP_Location*    location,
 
 
 /**
-   Called when a user metric / atomic / context event for integer values was triggered.
+   Called when a user metric / atomic / context event for signed integer values was triggered.
    @param location      A pointer to the thread location data of the thread that executed
                         the event.
    @param timestamp     Unused.
@@ -774,15 +774,15 @@ exit_region( SCOREP_Location*    location,
    @param value         Sample for the metric.
  */
 static void
-trigger_counter_integer( SCOREP_Location*         location,
-                         uint64_t                 timestamp,
-                         SCOREP_MetricHandle      metricHandle,
-                         SCOREP_SamplingSetHandle counterHandle,
-                         uint64_t                 value )
+trigger_counter_int64( SCOREP_Location*         location,
+                       uint64_t                 timestamp,
+                       SCOREP_MetricHandle      metricHandle,
+                       SCOREP_SamplingSetHandle counterHandle,
+                       int64_t                  value )
 {
     SCOREP_Profile_TriggerInteger( location,
                                    metricHandle,
-                                   value );
+                                   ( uint64_t )value ); //Losses precision
 }
 
 
@@ -811,6 +811,28 @@ SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
     }
 
     scorep_profile_trigger_int64( location, metric, value, node );
+}
+
+
+/**
+   Called when a user metric / atomic / context event for unsigned integer values was triggered.
+   @param location      A pointer to the thread location data of the thread that executed
+                        the event.
+   @param timestamp     Unused.
+   @param metricHandle  Handle of the triggered metric.
+   @param counterHandle Unused.
+   @param value         Sample for the metric.
+ */
+static void
+trigger_counter_uint64( SCOREP_Location*         location,
+                        uint64_t                 timestamp,
+                        SCOREP_MetricHandle      metricHandle,
+                        SCOREP_SamplingSetHandle counterHandle,
+                        uint64_t                 value )
+{
+    SCOREP_Profile_TriggerInteger( location,
+                                   metricHandle,
+                                   value );
 }
 
 
@@ -865,7 +887,7 @@ SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
 
 
 /**
-   Called when a integer parameter was triggered
+   Called when a signed integer parameter was triggered
    @param thread    A pointer to the thread location data of the thread that executed
                     the event.
    @param timestamp Unused.
@@ -873,10 +895,20 @@ SCOREP_Profile_TriggerDouble( SCOREP_Location*    thread,
    @param value     The parameter integer value.
  */
 static void
-parameter_integer( SCOREP_Location*       thread,
-                   uint64_t               timestamp,
-                   SCOREP_ParameterHandle param,
-                   int64_t                value )
+parameter_int64( SCOREP_Location*       thread,
+                 uint64_t               timestamp,
+                 SCOREP_ParameterHandle param,
+                 int64_t                value )
+{
+    parameter_uint64( thread, timestamp, param, ( uint64_t )value );
+}
+
+
+static void
+parameter_uint64( SCOREP_Location*       thread,
+                  uint64_t               timestamp,
+                  SCOREP_ParameterHandle param,
+                  uint64_t               value )
 {
     scorep_profile_node*       node = NULL;
     scorep_profile_type_data_t node_data;
@@ -1106,64 +1138,64 @@ thread_end( SCOREP_Location*                 location,
 const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_NUM_MODES ][ SCOREP_SUBSTRATES_NUM_EVENTS ] =
 {
     {   /* SCOREP_SUBSTRATES_RECORDING_ENABLED */
-        SCOREP_ASSIGN_CALLBACK( InitSubstrate,             INIT_SUBSTRATE,                SCOREP_Profile_Initialize ),
-        SCOREP_ASSIGN_CALLBACK( FinalizeSubstrate,         FINALIZE_SUBSTRATE,            SCOREP_Profile_Finalize ),
-        SCOREP_ASSIGN_CALLBACK( DisableRecording,          DISABLE_RECORDING,             disable_recording ),
-        SCOREP_ASSIGN_CALLBACK( OnLocationCreation,        ON_LOCATION_CREATION,          on_location_creation ),
-        SCOREP_ASSIGN_CALLBACK( OnLocationDeletion,        ON_LOCATION_DELETION,          delete_location_data ),
-        SCOREP_ASSIGN_CALLBACK( OnLocationActivation,      ON_LOCATION_ACTIVATION,        on_location_activation ),
-        SCOREP_ASSIGN_CALLBACK( OnLocationDeactivation,    ON_LOCATION_DEACTIVATION,      on_location_deactivation ),
-        SCOREP_ASSIGN_CALLBACK( PreUnifySubstrate,         PRE_UNIFY_SUBSTRATE,           SCOREP_Profile_Process ),
-        SCOREP_ASSIGN_CALLBACK( WriteData,                 WRITE_DATA,                    write ),
-        SCOREP_ASSIGN_CALLBACK( CoreTaskCreate,            CORE_TASK_CREATE,              SCOREP_Profile_CreateTaskData ),
-        SCOREP_ASSIGN_CALLBACK( CoreTaskComplete,          CORE_TASK_COMPLETE,            SCOREP_Profile_FreeTaskData ),
-        SCOREP_ASSIGN_CALLBACK( InitializeMpp,             INITIALIZE_MPP,                SCOREP_Profile_InitializeMpp ),
-        SCOREP_ASSIGN_CALLBACK( OnTracingBufferFlushBegin, ON_TRACING_BUFFER_FLUSH_BEGIN, SCOREP_Profile_Enter ),
-        SCOREP_ASSIGN_CALLBACK( OnTracingBufferFlushEnd,   ON_TRACING_BUFFER_FLUSH_END,   SCOREP_Profile_Exit ),
-        SCOREP_ASSIGN_CALLBACK( EnterRegion,               ENTER_REGION,                  enter_region ),
-        SCOREP_ASSIGN_CALLBACK( ExitRegion,                EXIT_REGION,                   exit_region ),
-        SCOREP_ASSIGN_CALLBACK( MpiSend,                   MPI_SEND,                      SCOREP_Profile_MpiSend ),
-        SCOREP_ASSIGN_CALLBACK( MpiRecv,                   MPI_RECV,                      SCOREP_Profile_MpiRecv ),
-        SCOREP_ASSIGN_CALLBACK( MpiCollectiveEnd,          MPI_COLLECTIVE_END,            SCOREP_Profile_CollectiveEnd ),
-        SCOREP_ASSIGN_CALLBACK( MpiIsend,                  MPI_ISEND,                     SCOREP_Profile_MpiIsend ),
-        SCOREP_ASSIGN_CALLBACK( MpiIrecv,                  MPI_IRECV,                     SCOREP_Profile_MpiIrecv ),
-        SCOREP_ASSIGN_CALLBACK( RmaCollectiveEnd,          RMA_COLLECTIVE_END,            SCOREP_Profile_RmaCollectiveEnd ),
-        SCOREP_ASSIGN_CALLBACK( RmaSync,                   RMA_SYNC,                      SCOREP_Profile_RmaSync ),
-        SCOREP_ASSIGN_CALLBACK( RmaGroupSync,              RMA_GROUP_SYNC,                SCOREP_Profile_RmaGroupSync ),
-        SCOREP_ASSIGN_CALLBACK( RmaPut,                    RMA_PUT,                       SCOREP_Profile_RmaPut ),
-        SCOREP_ASSIGN_CALLBACK( RmaGet,                    RMA_GET,                       SCOREP_Profile_RmaGet ),
-        SCOREP_ASSIGN_CALLBACK( RmaAtomic,                 RMA_ATOMIC,                    SCOREP_Profile_RmaAtomic ),
-        SCOREP_ASSIGN_CALLBACK( TriggerCounterInt64,       TRIGGER_COUNTER_INT64,         trigger_counter_integer ),
-        SCOREP_ASSIGN_CALLBACK( TriggerCounterUint64,      TRIGGER_COUNTER_UINT64,        trigger_counter_integer ),
-        SCOREP_ASSIGN_CALLBACK( TriggerCounterDouble,      TRIGGER_COUNTER_DOUBLE,        trigger_counter_double ),
-        SCOREP_ASSIGN_CALLBACK( TriggerParameterInt64,     TRIGGER_PARAMETER_INT64,       parameter_integer ),
-        SCOREP_ASSIGN_CALLBACK( TriggerParameterUint64,    TRIGGER_PARAMETER_UINT64,      parameter_integer ),
-        SCOREP_ASSIGN_CALLBACK( TriggerParameterString,    TRIGGER_PARAMETER_STRING,      SCOREP_Profile_ParameterString ),
-        SCOREP_ASSIGN_CALLBACK( ThreadForkJoinFork,        THREAD_FORK_JOIN_FORK,         thread_fork ),
-        SCOREP_ASSIGN_CALLBACK( ThreadForkJoinJoin,        THREAD_FORK_JOIN_JOIN,         thread_join ),
-        SCOREP_ASSIGN_CALLBACK( ThreadForkJoinTaskSwitch,  THREAD_FORK_JOIN_TASK_SWITCH,  SCOREP_Profile_TaskSwitch ),
-        SCOREP_ASSIGN_CALLBACK( ThreadForkJoinTaskBegin,   THREAD_FORK_JOIN_TASK_BEGIN,   SCOREP_Profile_TaskBegin ),
-        SCOREP_ASSIGN_CALLBACK( ThreadForkJoinTaskEnd,     THREAD_FORK_JOIN_TASK_END,     SCOREP_Profile_TaskEnd ),
-        SCOREP_ASSIGN_CALLBACK( ThreadCreateWaitBegin,     THREAD_CREATE_WAIT_BEGIN,      thread_begin ),
-        SCOREP_ASSIGN_CALLBACK( ThreadCreateWaitWait,      THREAD_CREATE_WAIT_END,        thread_end )
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitSubstrate,             INIT_SUBSTRATE,                SCOREP_Profile_Initialize ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( FinalizeSubstrate,         FINALIZE_SUBSTRATE,            SCOREP_Profile_Finalize ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( DisableRecording,          DISABLE_RECORDING,             disable_recording ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationCreation,        ON_LOCATION_CREATION,          on_location_creation ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationDeletion,        ON_LOCATION_DELETION,          delete_location_data ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationActivation,      ON_LOCATION_ACTIVATION,        on_location_activation ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationDeactivation,    ON_LOCATION_DEACTIVATION,      on_location_deactivation ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( PreUnifySubstrate,         PRE_UNIFY_SUBSTRATE,           SCOREP_Profile_Process ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteData,                 WRITE_DATA,                    write ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CoreTaskCreate,            CORE_TASK_CREATE,              SCOREP_Profile_CreateTaskData ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CoreTaskComplete,          CORE_TASK_COMPLETE,            SCOREP_Profile_FreeTaskData ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitializeMpp,             INITIALIZE_MPP,                SCOREP_Profile_InitializeMpp ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnTracingBufferFlushBegin, ON_TRACING_BUFFER_FLUSH_BEGIN, SCOREP_Profile_Enter ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnTracingBufferFlushEnd,   ON_TRACING_BUFFER_FLUSH_END,   SCOREP_Profile_Exit ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRegion,               ENTER_REGION,                  enter_region ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ExitRegion,                EXIT_REGION,                   exit_region ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiSend,                   MPI_SEND,                      SCOREP_Profile_MpiSend ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRecv,                   MPI_RECV,                      SCOREP_Profile_MpiRecv ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiCollectiveEnd,          MPI_COLLECTIVE_END,            SCOREP_Profile_CollectiveEnd ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIsend,                  MPI_ISEND,                     SCOREP_Profile_MpiIsend ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiIrecv,                  MPI_IRECV,                     SCOREP_Profile_MpiIrecv ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaCollectiveEnd,          RMA_COLLECTIVE_END,            SCOREP_Profile_RmaCollectiveEnd ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaSync,                   RMA_SYNC,                      SCOREP_Profile_RmaSync ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaGroupSync,              RMA_GROUP_SYNC,                SCOREP_Profile_RmaGroupSync ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaPut,                    RMA_PUT,                       SCOREP_Profile_RmaPut ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaGet,                    RMA_GET,                       SCOREP_Profile_RmaGet ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( RmaAtomic,                 RMA_ATOMIC,                    SCOREP_Profile_RmaAtomic ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerCounterInt64,       TRIGGER_COUNTER_INT64,         trigger_counter_int64 ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerCounterUint64,      TRIGGER_COUNTER_UINT64,        trigger_counter_uint64 ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerCounterDouble,      TRIGGER_COUNTER_DOUBLE,        trigger_counter_double ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerParameterInt64,     TRIGGER_PARAMETER_INT64,       parameter_int64 ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerParameterUint64,    TRIGGER_PARAMETER_UINT64,      parameter_uint64 ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( TriggerParameterString,    TRIGGER_PARAMETER_STRING,      SCOREP_Profile_ParameterString ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinFork,        THREAD_FORK_JOIN_FORK,         thread_fork ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinJoin,        THREAD_FORK_JOIN_JOIN,         thread_join ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskSwitch,  THREAD_FORK_JOIN_TASK_SWITCH,  SCOREP_Profile_TaskSwitch ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskBegin,   THREAD_FORK_JOIN_TASK_BEGIN,   SCOREP_Profile_TaskBegin ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskEnd,     THREAD_FORK_JOIN_TASK_END,     SCOREP_Profile_TaskEnd ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,     THREAD_CREATE_WAIT_BEGIN,      thread_begin ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitWait,      THREAD_CREATE_WAIT_END,        thread_end )
     },
     {        /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
-        SCOREP_ASSIGN_CALLBACK( InitSubstrate,             INIT_SUBSTRATE,                SCOREP_Profile_Initialize ),
-        SCOREP_ASSIGN_CALLBACK( FinalizeSubstrate,         FINALIZE_SUBSTRATE,            SCOREP_Profile_Finalize ),
-        SCOREP_ASSIGN_CALLBACK( EnableRecording,           ENABLE_RECORDING,              enable_recording ),
-        SCOREP_ASSIGN_CALLBACK( OnLocationCreation,        ON_LOCATION_CREATION,          on_location_creation ),
-        SCOREP_ASSIGN_CALLBACK( OnLocationDeletion,        ON_LOCATION_DELETION,          delete_location_data ),
-        SCOREP_ASSIGN_CALLBACK( OnLocationActivation,      ON_LOCATION_ACTIVATION,        on_location_activation ),
-        SCOREP_ASSIGN_CALLBACK( OnLocationDeactivation,    ON_LOCATION_DEACTIVATION,      on_location_deactivation ),
-        SCOREP_ASSIGN_CALLBACK( PreUnifySubstrate,         PRE_UNIFY_SUBSTRATE,           SCOREP_Profile_Process ),
-        SCOREP_ASSIGN_CALLBACK( WriteData,                 WRITE_DATA,                    write ),
-        SCOREP_ASSIGN_CALLBACK( CoreTaskCreate,            CORE_TASK_CREATE,              SCOREP_Profile_CreateTaskData ),
-        SCOREP_ASSIGN_CALLBACK( CoreTaskComplete,          CORE_TASK_COMPLETE,            SCOREP_Profile_FreeTaskData ),
-        SCOREP_ASSIGN_CALLBACK( InitializeMpp,             INITIALIZE_MPP,                SCOREP_Profile_InitializeMpp ),
-        SCOREP_ASSIGN_CALLBACK( ThreadForkJoinFork,        THREAD_FORK_JOIN_FORK,         thread_fork ),
-        SCOREP_ASSIGN_CALLBACK( ThreadForkJoinJoin,        THREAD_FORK_JOIN_JOIN,         thread_join ),
-        SCOREP_ASSIGN_CALLBACK( ThreadCreateWaitBegin,     THREAD_CREATE_WAIT_BEGIN,      thread_begin ),
-        SCOREP_ASSIGN_CALLBACK( ThreadCreateWaitEnd,       THREAD_CREATE_WAIT_END,        thread_end )
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitSubstrate,             INIT_SUBSTRATE,                SCOREP_Profile_Initialize ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( FinalizeSubstrate,         FINALIZE_SUBSTRATE,            SCOREP_Profile_Finalize ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnableRecording,           ENABLE_RECORDING,              enable_recording ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationCreation,        ON_LOCATION_CREATION,          on_location_creation ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationDeletion,        ON_LOCATION_DELETION,          delete_location_data ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationActivation,      ON_LOCATION_ACTIVATION,        on_location_activation ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnLocationDeactivation,    ON_LOCATION_DEACTIVATION,      on_location_deactivation ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( PreUnifySubstrate,         PRE_UNIFY_SUBSTRATE,           SCOREP_Profile_Process ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( WriteData,                 WRITE_DATA,                    write ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CoreTaskCreate,            CORE_TASK_CREATE,              SCOREP_Profile_CreateTaskData ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CoreTaskComplete,          CORE_TASK_COMPLETE,            SCOREP_Profile_FreeTaskData ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitializeMpp,             INITIALIZE_MPP,                SCOREP_Profile_InitializeMpp ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinFork,        THREAD_FORK_JOIN_FORK,         thread_fork ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinJoin,        THREAD_FORK_JOIN_JOIN,         thread_join ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,     THREAD_CREATE_WAIT_BEGIN,      thread_begin ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,       THREAD_CREATE_WAIT_END,        thread_end )
     }
 };
 
