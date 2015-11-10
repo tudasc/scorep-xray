@@ -769,19 +769,22 @@ exit_region( SCOREP_Location*    location,
    @param location      A pointer to the thread location data of the thread that executed
                         the event.
    @param timestamp     Unused.
-   @param metricHandle  Handle of the triggered metric.
-   @param counterHandle Unused.
+   @param counterHandle Handle of the sampling set definition.
    @param value         Sample for the metric.
  */
 static void
 trigger_counter_int64( SCOREP_Location*         location,
                        uint64_t                 timestamp,
-                       SCOREP_MetricHandle      metricHandle,
                        SCOREP_SamplingSetHandle counterHandle,
                        int64_t                  value )
 {
+    SCOREP_SamplingSetDef* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
+    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
+                  "User sampling set with more than one metric" );
+
     SCOREP_Profile_TriggerInteger( location,
-                                   metricHandle,
+                                   sampling_set->metric_handles[ 0 ],
                                    ( uint64_t )value ); //Losses precision
 }
 
@@ -819,41 +822,47 @@ SCOREP_Profile_TriggerInteger( SCOREP_Location*    thread,
    @param location      A pointer to the thread location data of the thread that executed
                         the event.
    @param timestamp     Unused.
-   @param metricHandle  Handle of the triggered metric.
-   @param counterHandle Unused.
+   @param counterHandle Handle of the sampling set definition.
    @param value         Sample for the metric.
  */
 static void
 trigger_counter_uint64( SCOREP_Location*         location,
                         uint64_t                 timestamp,
-                        SCOREP_MetricHandle      metricHandle,
                         SCOREP_SamplingSetHandle counterHandle,
                         uint64_t                 value )
 {
+    SCOREP_SamplingSetDef* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
+    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
+                  "User sampling set with more than one metric" );
+
     SCOREP_Profile_TriggerInteger( location,
-                                   metricHandle,
+                                   sampling_set->metric_handles[ 0 ],
                                    value );
 }
 
 
 /**
    Called when a user metric / atomic / context event for double values was triggered.
-   @param location       A pointer to the thread location data of the thread that executed
-                         the event.
-   @param timestamp      Unused.
-   @param metricHandle   Handle of the triggered metric.
-   @param counterHandle  Unused.
-   @param value          Sample for the metric.
+   @param location      A pointer to the thread location data of the thread that executed
+                        the event.
+   @param timestamp     Unused.
+   @param counterHandle Handle of the sampling set definition.
+   @param value         Sample for the metric.
  */
 static void
 trigger_counter_double( SCOREP_Location*         location,
                         uint64_t                 timestamp,
-                        SCOREP_MetricHandle      metricHandle,
                         SCOREP_SamplingSetHandle counterHandle,
                         double                   value )
 {
+    SCOREP_SamplingSetDef* sampling_set
+        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
+    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
+                  "User sampling set with more than one metric" );
+
     SCOREP_Profile_TriggerDouble( location,
-                                  metricHandle,
+                                  sampling_set->metric_handles[ 0 ],
                                   value );
 }
 

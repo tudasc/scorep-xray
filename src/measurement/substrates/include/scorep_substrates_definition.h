@@ -467,21 +467,18 @@ typedef void ( * SCOREP_Substrates_ThreadReleaseLockCb )(
 typedef void ( * SCOREP_Substrates_TriggerCounterInt64Cb )(
     struct SCOREP_Location*  location,
     uint64_t                 timestamp,
-    SCOREP_MetricHandle      metricHandle,
     SCOREP_SamplingSetHandle counterHandle,
     int64_t                  value );
 
 typedef void ( * SCOREP_Substrates_TriggerCounterUint64Cb )(
     struct SCOREP_Location*  location,
     uint64_t                 timestamp,
-    SCOREP_MetricHandle      metricHandle,
     SCOREP_SamplingSetHandle counterHandle,
     uint64_t                 value );
 
 typedef void ( * SCOREP_Substrates_TriggerCounterDoubleCb )(
     struct SCOREP_Location*  location,
     uint64_t                 timestamp,
-    SCOREP_MetricHandle      metricHandle,
     SCOREP_SamplingSetHandle counterHandle,
     double                   value );
 

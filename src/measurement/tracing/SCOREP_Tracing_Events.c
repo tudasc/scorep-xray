@@ -1222,7 +1222,6 @@ thread_task_complete( SCOREP_Location*                 location,
 static void
 trigger_counter_int64( SCOREP_Location*         location,
                        uint64_t                 timestamp,
-                       SCOREP_MetricHandle      metricHandle,
                        SCOREP_SamplingSetHandle counterHandle,
                        int64_t                  value )
 {
@@ -1243,7 +1242,6 @@ trigger_counter_int64( SCOREP_Location*         location,
 static void
 trigger_counter_uint64( SCOREP_Location*         location,
                         uint64_t                 timestamp,
-                        SCOREP_MetricHandle      metricHandle,
                         SCOREP_SamplingSetHandle counterHandle,
                         uint64_t                 value )
 {
@@ -1257,7 +1255,6 @@ trigger_counter_uint64( SCOREP_Location*         location,
 static void
 trigger_counter_double( SCOREP_Location*         location,
                         uint64_t                 timestamp,
-                        SCOREP_MetricHandle      metricHandle,
                         SCOREP_SamplingSetHandle counterHandle,
                         double                   value )
 {

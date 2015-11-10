@@ -807,15 +807,8 @@ SCOREP_TriggerCounterInt64( SCOREP_SamplingSetHandle counterHandle,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    SCOREP_SamplingSetDef* sampling_set
-        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
-    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
-                  "User sampling set with more than one metric" );
-
     SCOREP_CALL_SUBSTRATE( TriggerCounterInt64, TRIGGER_COUNTER_INT64,
-                           ( location, timestamp,
-                             sampling_set->metric_handles[ 0 ],
-                             counterHandle, value ) )
+                           ( location, timestamp, counterHandle, value ) )
 }
 
 
@@ -827,15 +820,8 @@ trigger_counter_uint64( SCOREP_Location*         location,
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    SCOREP_SamplingSetDef* sampling_set
-        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
-    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
-                  "User sampling set with more than one metric" );
-
     SCOREP_CALL_SUBSTRATE( TriggerCounterUint64, TRIGGER_COUNTER_UINT64,
-                           ( location, timestamp,
-                             sampling_set->metric_handles[ 0 ],
-                             counterHandle, value ) )
+                           ( location, timestamp, counterHandle, value ) )
 }
 
 
@@ -878,15 +864,8 @@ SCOREP_TriggerCounterDouble( SCOREP_SamplingSetHandle counterHandle,
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    SCOREP_SamplingSetDef* sampling_set
-        = SCOREP_LOCAL_HANDLE_DEREF( counterHandle, SamplingSet );
-    UTILS_BUG_ON( sampling_set->number_of_metrics != 1,
-                  "User sampling set with more than one metric" );
-
     SCOREP_CALL_SUBSTRATE( TriggerCounterDouble, TRIGGER_COUNTER_DOUBLE,
-                           ( location, timestamp,
-                             sampling_set->metric_handles[ 0 ],
-                             counterHandle, value ) )
+                           ( location, timestamp, counterHandle, value ) )
 }
 
 
