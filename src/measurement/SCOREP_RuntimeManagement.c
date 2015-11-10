@@ -151,6 +151,14 @@ SCOREP_IsInitialized( void )
     return scorep_initialized && !scorep_finalized;
 }
 
+
+#if defined( __PGI )
+/* Remove this PGI hack once the SCOREP_IS_MEASUREMENT_PHASE macros
+ * are in place. See  r8969, r8804, r8879, #696. */
+bool scorep_measurement_initialization_complete;
+#endif
+
+
 /**
  * Initialize the measurement system from the subsystem layer.
  */
@@ -303,10 +311,9 @@ SCOREP_InitMeasurement( void )
     SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurement );
     SCOREP_TIME_START_TIMING( MeasurementDuration );
 
-#if SCOREP_BACKEND_COMPILER_PGI
+#if defined( __PGI )
     /* Remove this PGI hack once the SCOREP_IS_MEASUREMENT_PHASE macros
      * are in place. See  r8969, r8804, r8879, #696. */
-    extern bool scorep_measurement_initialization_complete;
     scorep_measurement_initialization_complete = true;
 #endif
 }
