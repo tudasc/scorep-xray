@@ -455,36 +455,31 @@ create_references_list( SCOREP_Location* location,
                         CUresult         result,
                         int              references )
 {
-    if ( ( references & SCOREP_CUPTI_KEY_CURESULT ) || ( references & SCOREP_CUPTI_KEY_EVENT ) ||
-         ( references & SCOREP_CUPTI_KEY_STREAM ) )
+    if ( references & SCOREP_CUPTI_KEY_CURESULT )
     {
-        scorep_cupti_context* scorep_ctx = scorep_cupti_context_get_create( context );
+        SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.result_ref, &result );
+    }
 
-        if ( references & SCOREP_CUPTI_KEY_CURESULT )
-        {
-            SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.result_ref, &result );
-        }
+    if ( references & SCOREP_CUPTI_KEY_EVENT )
+    {
+        SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.event_ref, &event );
+    }
 
-        if ( references & SCOREP_CUPTI_KEY_EVENT )
-        {
-            SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.event_ref, event );
-        }
+    if ( references & SCOREP_CUPTI_KEY_STREAM )
+    {
+        scorep_cupti_context* scorep_ctx  = scorep_cupti_context_get_create( context );
+        uint32_t              strm_id     = 0;
+        scorep_cupti_stream*  scorep_strm = NULL;
 
-        if ( references & SCOREP_CUPTI_KEY_STREAM )
-        {
-            uint32_t             strm_id     = 0;
-            scorep_cupti_stream* scorep_strm = NULL;
+        SCOREP_CUPTI_CALL( cuptiGetStreamId( context, stream, &strm_id ) );
+        SCOREP_CUPTI_LOCK();
+        scorep_strm = scorep_cupti_stream_get_create( scorep_ctx, strm_id );
+        SCOREP_CUPTI_UNLOCK();
 
-            SCOREP_CUPTI_CALL( cuptiGetStreamId( context, stream, &strm_id ) );
-            SCOREP_CUPTI_LOCK();
-            scorep_strm = scorep_cupti_stream_get_create( scorep_ctx, strm_id );
-            SCOREP_CUPTI_UNLOCK();
+        SCOREP_LocationHandle location_handle =
+            SCOREP_Location_GetLocationHandle( scorep_strm->scorep_location );
 
-            SCOREP_LocationHandle location_handle =
-                SCOREP_Location_GetLocationHandle( scorep_strm->scorep_location );
-
-            SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.stream_ref, &location_handle );
-        }
+        SCOREP_Location_AddAttribute( location, scorep_cupti_attributes.stream_ref, &location_handle );
     }
 }
 

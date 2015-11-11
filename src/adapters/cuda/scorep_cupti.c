@@ -157,7 +157,7 @@ scorep_cupti_init( void )
             scorep_cupti_attributes.event_ref = SCOREP_Definitions_NewAttribute(
                 SCOREP_CUPTI_CUDA_EVENTREF_KEY,
                 "ID (address) of referenced CUDA event",
-                SCOREP_ATTRIBUTE_TYPE_UINT32 );
+                SCOREP_ATTRIBUTE_TYPE_UINT64 );
             scorep_cupti_attributes.result_ref = SCOREP_Definitions_NewAttribute(
                 SCOREP_CUPTI_CUDA_CURESULT_KEY,
                 "CUDA driver API function result",
