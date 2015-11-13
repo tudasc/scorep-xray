@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014,
+## Copyright (c) 2014-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2014-2015,
@@ -32,8 +32,7 @@ external_libadd = \
     @OTF2_LIBS@         \
     @SCOREP_PAPI_LIBS@  \
     @SCOREP_DLFCN_LIBS@ \
-    @CUBE_WRITER_LIBS@  \
-    @TIMER_LIB@
+    @CUBE_WRITER_LIBS@
 
 external_ldflags = \
     @OTF2_LDFLAGS@        \

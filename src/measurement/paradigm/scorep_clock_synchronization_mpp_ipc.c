@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,7 +38,8 @@
 #include <scorep_clock_synchronization.h>
 
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Ticks.h>
+#include <SCOREP_Timer_Utils.h>
 #include <scorep_ipc.h>
 
 #include <stddef.h>
@@ -64,10 +65,10 @@ synchronize_with_worker( int worker, int* min_index )
          * integer value.
          */
         int dummy = 0;
-        master_send_time[ i ] = SCOREP_GetClockTicks();
+        master_send_time[ i ] = SCOREP_Timer_GetClockTicks();
         SCOREP_Ipc_Send( &dummy, 1, SCOREP_IPC_INT, worker );
         SCOREP_Ipc_Recv( &dummy, 1, SCOREP_IPC_INT, worker );
-        master_recv_time[ i ] = SCOREP_GetClockTicks();
+        master_recv_time[ i ] = SCOREP_Timer_GetClockTicks();
     }
 
     uint64_t ping_pong_time = UINT64_MAX;
@@ -88,9 +89,9 @@ synchronize_with_worker( int worker, int* min_index )
 void
 SCOREP_SynchronizeClocks( void )
 {
-    if ( SCOREP_ClockIsGlobal() )
+    if ( SCOREP_Timer_ClockIsGlobal() )
     {
-        SCOREP_AddClockOffset( SCOREP_GetClockTicks(), 0, 0 );
+        SCOREP_AddClockOffset( SCOREP_Timer_GetClockTicks(), 0, 0 );
         return;
     }
 
@@ -111,7 +112,7 @@ SCOREP_SynchronizeClocks( void )
             SCOREP_Ipc_Send( &min_index, 1, SCOREP_IPC_INT, worker );
         }
 
-        offset_time = SCOREP_GetClockTicks();
+        offset_time = SCOREP_Timer_GetClockTicks();
         offset      = 0;
     }
     else
@@ -127,7 +128,7 @@ SCOREP_SynchronizeClocks( void )
              */
             int dummy = 0;
             SCOREP_Ipc_Recv( &dummy, 1, SCOREP_IPC_INT, master );
-            worker_time[ i ] = SCOREP_GetClockTicks();
+            worker_time[ i ] = SCOREP_Timer_GetClockTicks();
             SCOREP_Ipc_Send( &dummy, 1, SCOREP_IPC_INT, master );
         }
 

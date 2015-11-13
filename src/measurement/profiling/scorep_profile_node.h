@@ -156,7 +156,8 @@ typedef enum
    @param param Pointer to a parameter that can be given to
                 @ref scorep_profile_for_all()
  */
-typedef void ( scorep_profile_process_func_t )( scorep_profile_node* node, void* param );
+typedef void ( scorep_profile_process_func_t )( scorep_profile_node* node,
+                                                void*                param );
 
 /**
    Type of the comparison function pointer that must be passed to

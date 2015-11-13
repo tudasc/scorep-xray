@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -44,7 +44,8 @@ mpi_unification_test_CPPFLAGS  = $(AM_CPPFLAGS) \
                                 -I$(INC_ROOT)src/measurement \
                                 -I$(INC_DIR_COMMON_HASH) \
                                 $(UTILS_CPPFLAGS) \
-                                -I$(INC_DIR_DEFINITIONS)
+                                -I$(INC_DIR_DEFINITIONS) \
+                                @SCOREP_TIMER_CPPFLAGS@
 mpi_unification_test_LDADD     = $(mpi_libadd) \
 	$(LIB_DIR_SCOREP)libscorep_measurement.la
 mpi_unification_test_LDFLAGS   = $(mpi_ldflags)

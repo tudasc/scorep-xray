@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,7 +49,8 @@
 #include <mpi.h>
 
 #include <SCOREP_Types.h>
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Ticks.h>
+#include <SCOREP_Timer_Utils.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_RuntimeManagement.h>
@@ -182,9 +183,9 @@ main( int argc, char* argv[] )
         free( group_members );
     }
 
-    double timing = SCOREP_GetClockTicks();
+    double timing = SCOREP_Timer_GetClockTicks();
     SCOREP_Unify();
-    timing = ( SCOREP_GetClockTicks() - timing ) / SCOREP_GetClockResolution();
+    timing = ( SCOREP_Timer_GetClockTicks() - timing ) / SCOREP_Timer_GetClockResolution();
 
     char result_name[ 64 ];
     sprintf( result_name, "mpi_unification_test.%d.result", size );

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -40,6 +40,7 @@
 #include "scorep_cuda.h"     /* CUPTI common structures, functions, etc. */
 #include "scorep_cupti_callbacks.h"
 
+#include <SCOREP_Timer_Ticks.h>
 #include <UTILS_CStr.h>
 
 /* String constants for CUDA attribute references */
@@ -697,7 +698,7 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
     if ( scorep_cuda_record_idle && context->streams != NULL
          && context->activity != NULL && context->activity->gpu_idle == 1 )
     {
-        uint64_t idle_end = SCOREP_GetClockTicks();
+        uint64_t idle_end = SCOREP_Timer_GetClockTicks();
 
         SCOREP_Location_ExitRegion( context->streams->scorep_location, idle_end,
                                     scorep_cupti_idle_region_handle );
@@ -716,7 +717,7 @@ scorep_cupti_context_finalize( scorep_cupti_context* context )
             {
                 /* destroy window on every location, where it is used */
                 SCOREP_Location_RmaWinDestroy( stream->scorep_location,
-                                               SCOREP_GetClockTicks(),
+                                               SCOREP_Timer_GetClockTicks(),
                                                scorep_cuda_interim_window_handle );
             }
 

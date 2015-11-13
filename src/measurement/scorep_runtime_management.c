@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,7 +38,7 @@
 #include <config.h>
 #include "scorep_runtime_management.h"
 
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Ticks.h>
 #include <UTILS_Error.h>
 #include <UTILS_IO.h>
 #include <SCOREP_Thread_Mgmt.h>
@@ -51,7 +51,6 @@
 #include "scorep_environment.h"
 
 #include <stdio.h>
-#include <time.h>
 #include <string.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -201,7 +200,7 @@ scorep_format_time( time_t* timestamp )
     strftime( local_time_buf, FORMAT_TIME_SIZE - 1, "%Y%m%d_%H%M_", local_time );
     snprintf( &( local_time_buf[ strlen( local_time_buf ) ] ),
               FORMAT_TIME_SIZE - strlen( local_time_buf ) - 1,
-              "%" PRIu64, SCOREP_GetClockTicks() );
+              "%" PRIu64, SCOREP_Timer_GetClockTicks() );
     local_time_buf[ FORMAT_TIME_SIZE - 1 ] = '\0';
 
     return local_time_buf;

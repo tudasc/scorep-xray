@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -43,7 +43,7 @@
 #include <SCOREP_Memory.h>
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Utils.h>
 #include <SCOREP_Bitstring.h>
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Definitions.h>
@@ -75,7 +75,8 @@ scorep_cluster_write_cube4( scorep_cube_writing_data* write_data );
    @returns the metric value of @a node.
  */
 typedef uint64_t
-( *scorep_profile_get_uint64_func )( scorep_profile_node* node, void* data );
+( * scorep_profile_get_uint64_func )( scorep_profile_node* node,
+                                      void*                data );
 
 /**
    Defines a function type which returns a metric value from a given node.
@@ -85,7 +86,8 @@ typedef uint64_t
    @returns the metric value of @a node.
  */
 typedef double
-( *scorep_profile_get_doubles_func )( scorep_profile_node* node, void* data );
+( * scorep_profile_get_doubles_func )( scorep_profile_node* node,
+                                       void*                data );
 
 
 /**
@@ -96,8 +98,8 @@ typedef double
    @returns the metric value of @a node.
  */
 typedef cube_type_tau_atomic
-( *scorep_profile_get_cube_type_tau_atomic_func )( scorep_profile_node* node,
-                                                   void*                data );
+( * scorep_profile_get_cube_type_tau_atomic_func )( scorep_profile_node* node,
+                                                    void*                data );
 
 /**
    Contains a mapping structure between scorep handles and cube handles.
@@ -203,7 +205,7 @@ make_unified_mapping( void )
 static double
 get_sum_time_value( scorep_profile_node* node, void* data )
 {
-    return ( ( double )node->inclusive_time.sum ) / ( ( double )SCOREP_GetClockResolution() );
+    return ( ( double )node->inclusive_time.sum ) / ( ( double )SCOREP_Timer_GetClockResolution() );
 }
 
 /**
@@ -216,7 +218,7 @@ get_sum_time_value( scorep_profile_node* node, void* data )
 static double
 get_max_time_value( scorep_profile_node* node, void* data )
 {
-    return ( ( double )node->inclusive_time.max ) / ( ( double )SCOREP_GetClockResolution() );
+    return ( ( double )node->inclusive_time.max ) / ( ( double )SCOREP_Timer_GetClockResolution() );
 }
 
 /**
@@ -229,7 +231,7 @@ get_max_time_value( scorep_profile_node* node, void* data )
 static double
 get_min_time_value( scorep_profile_node* node, void* data )
 {
-    return ( ( double )node->inclusive_time.min ) / ( ( double )SCOREP_GetClockResolution() );
+    return ( ( double )node->inclusive_time.min ) / ( ( double )SCOREP_Timer_GetClockResolution() );
 }
 
 /**

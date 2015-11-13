@@ -100,7 +100,8 @@ libscorep_measurement_core_la_CPPFLAGS = \
     @CUBE_WRITER_CPPFLAGS@ \
     -I$(INC_DIR_MUTEX) \
     -I$(INC_DIR_SUBSTRATES) \
-    -I$(INC_DIR_DEFINITIONS)
+    -I$(INC_DIR_DEFINITIONS) \
+    @SCOREP_TIMER_CPPFLAGS@
 
 ## paradigm non mpp
 
@@ -118,7 +119,8 @@ libscorep_mpp_mockup_la_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_ROOT)src/services/include \
-    -I$(INC_DIR_DEFINITIONS)
+    -I$(INC_DIR_DEFINITIONS) \
+    @SCOREP_TIMER_CPPFLAGS@
 libscorep_mpp_mockup_la_LIBADD = \
     libutils.la
 libscorep_mpp_mockup_la_LDFLAGS = \
@@ -140,4 +142,5 @@ libscorep_mpp_ipc_la_CPPFLAGS = \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_ROOT)src/services/include \
-    -I$(INC_DIR_DEFINITIONS)
+    -I$(INC_DIR_DEFINITIONS) \
+    @SCOREP_TIMER_CPPFLAGS@

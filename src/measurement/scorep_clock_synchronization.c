@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011, 2014,
+ * Copyright (c) 2009-2011, 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -38,7 +38,7 @@
 #include "scorep_clock_synchronization.h"
 
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Ticks.h>
 
 #include <assert.h>
 #include <stdbool.h>
@@ -59,7 +59,7 @@ void
 SCOREP_BeginEpoch( void )
 {
     assert( !scorep_epoch_begin_set );
-    scorep_epoch_begin     = SCOREP_GetClockTicks();
+    scorep_epoch_begin     = SCOREP_Timer_GetClockTicks();
     scorep_epoch_begin_set = true;
 }
 
@@ -77,7 +77,7 @@ SCOREP_EndEpoch( void )
 {
     assert( scorep_epoch_begin_set );
     assert( !scorep_epoch_end_set );
-    scorep_epoch_end = SCOREP_GetClockTicks();
+    scorep_epoch_end = SCOREP_Timer_GetClockTicks();
     assert( scorep_epoch_end > scorep_epoch_begin );
     scorep_epoch_end_set = true;
 }

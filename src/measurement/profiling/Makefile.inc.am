@@ -96,4 +96,5 @@ libscorep_profile_la_CPPFLAGS = \
     $(PROFILE_FLAGS) \
     -DDOCDIR='"$(docdir)"' \
     -I$(INC_DIR_THREAD) \
-    -I$(INC_DIR_MUTEX)
+    -I$(INC_DIR_MUTEX) \
+    @SCOREP_TIMER_CPPFLAGS@

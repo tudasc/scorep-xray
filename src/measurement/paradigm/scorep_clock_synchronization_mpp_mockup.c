@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,8 +38,7 @@
 #include <scorep_clock_synchronization.h>
 
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Timing.h>
-
+#include <SCOREP_Timer_Ticks.h>
 
 /* *INDENT-OFF* */
 extern void scorep_interpolate_epoch(uint64_t* epochBegin, uint64_t* epochEnd);
@@ -49,7 +48,7 @@ void
 SCOREP_SynchronizeClocks( void )
 {
     // We assume that all cores use the same clock.
-    SCOREP_AddClockOffset( SCOREP_GetClockTicks(), 0, 0 );
+    SCOREP_AddClockOffset( SCOREP_Timer_GetClockTicks(), 0, 0 );
 }
 
 

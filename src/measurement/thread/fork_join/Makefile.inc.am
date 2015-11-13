@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2013-2014,
+## Copyright (c) 2013-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2015,
@@ -39,7 +39,8 @@ libscorep_thread_fork_join_omp_tpd_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_DIR_COMMON_HASH) \
-    -I$(INC_DIR_DEFINITIONS)
+    -I$(INC_DIR_DEFINITIONS) \
+    @SCOREP_TIMER_CPPFLAGS@
 libscorep_thread_fork_join_omp_tpd_la_LIBADD = \
     libscorep_thread_fork_join_generic.la \
     libutils.la
@@ -69,7 +70,8 @@ libscorep_thread_fork_join_omp_ancestry_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_DIR_COMMON_HASH) \
-    -I$(INC_DIR_DEFINITIONS)
+    -I$(INC_DIR_DEFINITIONS) \
+    @SCOREP_TIMER_CPPFLAGS@
 libscorep_thread_fork_join_omp_ancestry_la_LIBADD = \
     libscorep_thread_fork_join_generic.la \
     libutils.la
@@ -109,4 +111,5 @@ libscorep_thread_fork_join_generic_la_CPPFLAGS = \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_DIR_MUTEX) \
-    -I$(INC_DIR_DEFINITIONS)
+    -I$(INC_DIR_DEFINITIONS) \
+     @SCOREP_TIMER_CPPFLAGS@

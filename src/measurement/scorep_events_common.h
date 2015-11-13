@@ -38,7 +38,7 @@
 
 
 #include <stdbool.h>
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Ticks.h>
 #include "scorep_status.h"
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Location.h>
@@ -47,7 +47,7 @@
 static inline uint64_t
 scorep_get_timestamp( SCOREP_Location* location )
 {
-    uint64_t timestamp = SCOREP_GetClockTicks();
+    uint64_t timestamp = SCOREP_Timer_GetClockTicks();
     SCOREP_Location_SetLastTimestamp( location, timestamp );
     return timestamp;
 }

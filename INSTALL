@@ -192,36 +192,6 @@ be used to build Score-P are as follows:
                instrumentation. Default is to determine support
                automatically. This disables it by request and fail
                if support can't be satisfied but was requested.
-  --enable-timer-bgl_rts_get_timebase
-               enable bgl_rts_get_timebase timer if available instead
-               of platform default
-  --enable-timer-bgq_mftb
-               enable bgq_mftb timer if available instead of platform
-               default
-  --enable-timer-bgp_get_timebase
-               enable bgp_get_timebase timer if available instead of
-               platform default
-  --enable-timer-clock_gettime
-               enable clock_gettime timer if available
-               [Default on Linux platforms]
-  --enable-timer-cycle_counter_tsc
-               enable cycle_counter_tsc timer if available instead of
-               platform default
-  --enable-timer-gettimeofday
-               enable gettimeofday timer if available instead of
-               platform default
-  --enable-timer-ibm_realtime
-               enable ibm_realtime timer if available instead of
-               platform default
-  --enable-timer-intel_mmtimer
-               enable intel_mmtimer timer if available instead of
-               platform default
-  --enable-timer-papi_real_cyc
-               enable papi_real_cyc timer if available instead of
-               platform default
-  --enable-timer-papi_real_usec
-               enable papi_real_usec timer if available instead of
-               platform default
   --with-pdt=<path-to-binaries>
                Specifies the path to the program database toolkit
                (PDT) binaries, e.g., cparse.

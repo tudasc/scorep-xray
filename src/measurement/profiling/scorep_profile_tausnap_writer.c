@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -51,7 +51,7 @@
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
 #include <SCOREP_Definitions.h>
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Utils.h>
 #include <SCOREP_Metric_Management.h>
 
 #include <scorep_profile_definition.h>
@@ -493,7 +493,7 @@ write_data_tau( scorep_profile_node*      node,
                 SCOREP_DefinitionManager* manager )
 
 {
-    uint64_t tps = SCOREP_GetClockResolution();
+    uint64_t tps = SCOREP_Timer_GetClockResolution();
 
     /* Write data in format:
        <callpath id> <number of calls> <child calls> <exclusive time> <inclusive time>

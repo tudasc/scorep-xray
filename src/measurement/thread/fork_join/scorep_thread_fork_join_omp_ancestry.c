@@ -23,7 +23,7 @@
 #include <scorep_thread_model_specific.h>
 #include <scorep_thread_fork_join_model_specific.h>
 
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Ticks.h>
 #include <scorep_location.h>
 #include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
@@ -146,7 +146,7 @@ scorep_thread_on_fork( uint32_t            nRequestedThreads,
 #define SCOREP_THREAD_ASSERT_TIMESTAMPS_IN_ORDER( location ) \
     do \
     { \
-        uint64_t current_timestamp = SCOREP_GetClockTicks(); \
+        uint64_t current_timestamp = SCOREP_Timer_GetClockTicks(); \
         UTILS_BUG_ON( SCOREP_Location_GetLastTimestamp( location ) > current_timestamp, \
                       "Wrong timestamp order: %" PRIu64 " (last recorded) > %" PRIu64 " (current).", \
                       SCOREP_Location_GetLastTimestamp( location ), current_timestamp ); \

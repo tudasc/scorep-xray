@@ -6,6 +6,7 @@ include ../src/measurement/tracing/Makefile.confvars.inc.am
 include ../src/measurement/online_access/Makefile.confvars.inc.am
 include ../src/measurement/filtering/Makefile.confvars.inc.am
 include ../src/services/metric/Makefile.confvars.inc.am
+include ../src/services/timer/Makefile.confvars.inc.am
 include ../src/adapters/compiler/Makefile.confvars.inc.am
 include ../src/adapters/cuda/Makefile.confvars.inc.am
 include ../src/adapters/opencl/Makefile.confvars.inc.am

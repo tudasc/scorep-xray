@@ -59,7 +59,8 @@
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Config.h>
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Ticks.h>
+#include <SCOREP_Timer_Utils.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Profile.h>
 #include <SCOREP_Profile_MpiEvents.h>
@@ -179,19 +180,20 @@ SCOREP_InitMeasurement( void )
     scorep_initialized = true;
     scorep_initialization_sanity_checks();
 
-    SCOREP_Timer_Initialize();
-    SCOREP_TIME_START_TIMING( SCOREP_InitMeasurement );
-
     /* == Initialize the configuration variables and read them from the environment == */
 
     /* initialize the config system */
-    SCOREP_TIME( SCOREP_ConfigInit, ( ) );
+    SCOREP_ConfigInit();
 
     /* Register all config variables */
-    SCOREP_TIME( SCOREP_RegisterAllConfigVariables, ( ) );
+    SCOREP_RegisterAllConfigVariables();
 
     /* Parse the environment */
-    SCOREP_TIME( SCOREP_ConfigApplyEnv, ( ) );
+    SCOREP_ConfigApplyEnv();
+
+    /* Timer needs environment variables */
+    SCOREP_Timer_Initialize();
+    SCOREP_TIME_START_TIMING( SCOREP_InitMeasurement );
 
     if ( SCOREP_Env_RunVerbose() )
     {
@@ -430,7 +432,7 @@ SCOREP_EnableRecording( void )
     UTILS_DEBUG_ENTRY();
 
     SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp     = SCOREP_GetClockTicks();
+    uint64_t         timestamp     = SCOREP_Timer_GetClockTicks();
     uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
     if ( !SCOREP_Thread_InParallel() )
@@ -461,7 +463,7 @@ SCOREP_DisableRecording( void )
     UTILS_DEBUG_ENTRY();
 
     SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp     = SCOREP_GetClockTicks();
+    uint64_t         timestamp     = SCOREP_Timer_GetClockTicks();
     uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
     if ( !SCOREP_Thread_InParallel() )
@@ -508,7 +510,7 @@ SCOREP_OnTracingBufferFlushBegin( bool final )
     if ( !final )
     {
         SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
-        uint64_t         timestamp     = SCOREP_GetClockTicks();
+        uint64_t         timestamp     = SCOREP_Timer_GetClockTicks();
         uint64_t*        metric_values = SCOREP_Metric_Read( location );
         /*
          * We account the flush time of non-CPU locations (i.e., CUDA streams

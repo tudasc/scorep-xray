@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -41,7 +41,7 @@
 #include "SCOREP_Metric_Source.h"
 
 #include <scorep/SCOREP_MetricPlugins.h>
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Ticks.h>
 
 #include <UTILS_Debug.h>
 #include <UTILS_CStr.h>
@@ -491,7 +491,7 @@ scorep_metric_plugins_initialize_source( void )
             /* Give plugin the wtime function to make it possible to convert times */
             if ( current_plugin->info.set_clock_function != NULL )
             {
-                current_plugin->info.set_clock_function( SCOREP_GetClockTicks );
+                current_plugin->info.set_clock_function( SCOREP_Timer_GetClockTicks );
             }
 
             /* Initialize plugin */
@@ -807,7 +807,7 @@ scorep_metric_plugins_synchronous_read( SCOREP_Metric_EventSet* eventSet,
     UTILS_ASSERT( values );
     UTILS_ASSERT( is_updated );
 
-    uint64_t recent_timestamp = SCOREP_GetClockTicks();
+    uint64_t recent_timestamp = SCOREP_Timer_GetClockTicks();
 
     for ( uint32_t i = 0; i  < eventSet->number_of_metrics; i++ )
     {
@@ -846,7 +846,7 @@ scorep_metric_plugins_asynchronous_read( SCOREP_Metric_EventSet*      eventSet,
     UTILS_ASSERT( eventSet );
     UTILS_ASSERT( timevalue_pointer );
 
-    uint64_t recent_timestamp = SCOREP_GetClockTicks();
+    uint64_t recent_timestamp = SCOREP_Timer_GetClockTicks();
 
     *num_pairs = malloc( eventSet->number_of_metrics * sizeof( uint64_t ) );
     UTILS_ASSERT( *num_pairs );

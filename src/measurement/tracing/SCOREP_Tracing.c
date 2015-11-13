@@ -46,7 +46,8 @@
 #include <scorep_status.h>
 #include <scorep_location.h>
 #include "scorep_rewind_stack_management.h"
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Ticks.h>
+#include <SCOREP_Timer_Utils.h>
 #include "scorep_tracing_internal.h"
 #include <SCOREP_Definitions.h>
 #include "scorep_tracing_definitions.h"
@@ -172,7 +173,7 @@ scorep_on_trace_post_flush( void*         userData,
                             OTF2_FileType fileType,
                             uint64_t      locationId )
 {
-    uint64_t timestamp = SCOREP_GetClockTicks();
+    uint64_t timestamp = SCOREP_Timer_GetClockTicks();
 
     if ( fileType == OTF2_FILETYPE_EVENTS )
     {
@@ -503,7 +504,7 @@ write_definitions( void )
 
         OTF2_GlobalDefWriter_WriteClockProperties(
             global_definition_writer,
-            SCOREP_GetClockResolution(),
+            SCOREP_Timer_GetClockResolution(),
             epoch_begin,
             epoch_end - epoch_begin );
         scorep_tracing_write_global_definitions( global_definition_writer );

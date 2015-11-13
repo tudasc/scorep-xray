@@ -32,10 +32,10 @@
 #define SCOREP_COMPILER_SYMBOL_TABLE_H
 
 typedef void
-( *scorep_compiler_process_symbol_cb )( long         addr,
-                                        const char*  funcname,
-                                        const char*  filename,
-                                        unsigned int lno );
+( * scorep_compiler_process_symbol_cb )( long         addr,
+                                         const char*  funcname,
+                                         const char*  filename,
+                                         unsigned int lno );
 
 /**
  * @brief Symbol table analysis functions declaration.

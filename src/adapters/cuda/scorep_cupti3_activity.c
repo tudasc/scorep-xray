@@ -4,6 +4,9 @@
  * Copyright (c) 2014,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2015,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -18,6 +21,7 @@
 
 #include <config.h>
 
+#include <SCOREP_Timer_Ticks.h>
 #include "scorep_cuda.h"
 #include "scorep_cupti_activity.h"
 #include "scorep_cupti_activity_internal.h"
@@ -134,7 +138,7 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
     double gpu_diff = 0;
 
     SCOREP_CUPTI_CALL( cuptiGetTimestamp( &gpuStop ) );
-    hostStop                         = SCOREP_GetClockTicks();
+    hostStop                         = SCOREP_Timer_GetClockTicks();
     context_activity->sync.host_stop = hostStop;
     scorep_cupti_set_synchronization_point( &( context_activity->sync.gpu_stop ),
                                             &( context_activity->sync.host_stop ) );

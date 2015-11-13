@@ -161,8 +161,8 @@ SCOREP_Config_Adapter::SCOREP_Config_Adapter( const std::string& name,
                                               const std::string& library,
                                               bool               is_default )
     : m_is_enabled( is_default ),
-      m_name( name ),
-      m_library( library )
+    m_name( name ),
+    m_library( library )
 {
 }
 

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,6 +38,7 @@
 
 #include <SCOREP_Config.h>
 #include <SCOREP_Filter.h>
+#include <SCOREP_Timer_Ticks.h>
 
 #include <UTILS_CStr.h>
 
@@ -708,11 +709,11 @@ scorep_cupti_set_synchronization_point( uint64_t* gpu,
 {
     uint64_t t1 = 0, t2 = 0;
 
-    t1 = SCOREP_GetClockTicks();
+    t1 = SCOREP_Timer_GetClockTicks();
 
     SCOREP_CUPTI_CALL( cuptiGetTimestamp( gpu ) );
 
-    t2 = SCOREP_GetClockTicks();
+    t2 = SCOREP_Timer_GetClockTicks();
 
     *host = t1 + ( t2 - t1 ) / 2;
 }

@@ -44,7 +44,7 @@
 
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Memory.h>
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Metric_Management.h>
 #define SCOREP_DEBUG_MODULE_NAME PROFILE
@@ -508,7 +508,7 @@ SCOREP_Profile_Process( void )
        regions on the main location.
      */
     SCOREP_Location*     location  = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t             exit_time = SCOREP_GetClockTicks();
+    uint64_t             exit_time = SCOREP_Timer_GetClockTicks();
     scorep_profile_node* node      = NULL;
     uint64_t*            metrics   = SCOREP_Metric_Read( location );
 

@@ -43,7 +43,7 @@
 #include <UTILS_Debug.h>
 #include <UTILS_IO.h>
 
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Types.h>
 
 #include <stdlib.h>
@@ -76,7 +76,7 @@ scorep_compiler_process_symbol_table( const char*                       executab
     char*  file_prefix = "scorep_nm_file.";
     size_t length      = strlen( file_prefix ) + 20 + 1;     /* UINT64_MAX consumes 20 char */
     char   nm_filename[ length ];
-    snprintf( nm_filename, length, "%s%" PRIu64, file_prefix, SCOREP_GetClockTicks() );
+    snprintf( nm_filename, length, "%s%" PRIu64, file_prefix, SCOREP_Timer_GetClockTicks() );
     UTILS_DEBUG( "Reading symbol table from generated \"%s\" using nm.",
                  nm_filename );
     if ( !create_nm_file( nm_filename, executable ) )

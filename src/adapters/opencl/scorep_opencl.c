@@ -4,6 +4,9 @@
  * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2015,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -23,7 +26,7 @@
 
 #include <SCOREP_Memory.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Ticks.h>
 
 #include <jenkins_hash.h>
 
@@ -303,7 +306,7 @@ scorep_opencl_wrap_finalize( void )
                 if ( SCOREP_OPENCL_NO_ID != queue->device_location_id )
                 {
                     SCOREP_Location_RmaWinDestroy( queue->device_location,
-                                                   SCOREP_GetClockTicks(),
+                                                   SCOREP_Timer_GetClockTicks(),
                                                    scorep_opencl_interim_window_handle );
                 }
 
@@ -317,7 +320,7 @@ scorep_opencl_wrap_finalize( void )
             while ( location != NULL )
             {
                 SCOREP_Location_RmaWinDestroy( location->location,
-                                               SCOREP_GetClockTicks(),
+                                               SCOREP_Timer_GetClockTicks(),
                                                scorep_opencl_interim_window_handle );
 
                 location = location->next;
@@ -504,7 +507,7 @@ opencl_set_cpu_location_id( SCOREP_Location* hostLocation )
         SCOREP_OPENCL_UNLOCK();
 
         // create RMA window on host location
-        uint64_t time = SCOREP_GetClockTicks();
+        uint64_t time = SCOREP_Timer_GetClockTicks();
         SCOREP_Location_RmaWinCreate( hostLocation, time,
                                       scorep_opencl_interim_window_handle );
 
@@ -661,7 +664,7 @@ add_synchronization_event( scorep_opencl_queue* queue )
 
     OPENCL_CALL( clEnqueueMarker, ( queue->queue, tmpEvt ) );
     ret                     = OPENCL_CALL( clWaitForEvents, ( 1, tmpEvt ) );
-    queue->sync.scorep_time = SCOREP_GetClockTicks();
+    queue->sync.scorep_time = SCOREP_Timer_GetClockTicks();
 
     /*
      * For Intel we need submit time so first wait only makes sure
@@ -671,7 +674,7 @@ add_synchronization_event( scorep_opencl_queue* queue )
     {
         OPENCL_CALL( clEnqueueMarker, ( queue->queue, tmpEvt ) );
         ret                     = OPENCL_CALL( clWaitForEvents, ( 1, tmpEvt ) );
-        queue->sync.scorep_time = SCOREP_GetClockTicks();
+        queue->sync.scorep_time = SCOREP_Timer_GetClockTicks();
     }
 
     if ( ret == CL_INVALID_EVENT )
@@ -742,7 +745,7 @@ set_synchronization_point( scorep_opencl_queue* queue )
         SCOREP_EnterRegion( opencl_sync_region_handle );
 
         ret                     = OPENCL_CALL( clWaitForEvents, ( 1, &( lastEntry->event ) ) );
-        queue->sync.scorep_time = SCOREP_GetClockTicks();
+        queue->sync.scorep_time = SCOREP_Timer_GetClockTicks();
 
         SCOREP_ExitRegion( opencl_sync_region_handle );
 

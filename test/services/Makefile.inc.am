@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2011,
+## Copyright (c) 2009-2011, 2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011, 2014,
@@ -31,8 +31,11 @@
 
 check_PROGRAMS      += timer_test
 timer_test_SOURCES   = $(SRC_ROOT)test/services/scorep_timer_test.c
-timer_test_CPPFLAGS  = $(AM_CPPFLAGS) -I$(INC_ROOT)src/services/include
+timer_test_CPPFLAGS  = \
+    $(AM_CPPFLAGS) \
+    -I$(INC_ROOT)src/services/include \
+    $(UTILS_CPPFLAGS) \
+    @SCOREP_TIMER_CPPFLAGS@
 timer_test_LDADD     = $(serial_libadd)
 timer_test_LDFLAGS   = $(serial_ldflags)
 #TESTS_SERIAL += timer_test
-

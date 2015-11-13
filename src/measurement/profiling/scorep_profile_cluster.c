@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -64,7 +64,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 
-#include <SCOREP_Timing.h>
+#include <SCOREP_Timer_Utils.h>
 
 enum
 {

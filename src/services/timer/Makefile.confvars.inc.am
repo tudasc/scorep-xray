@@ -1,0 +1,30 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2015,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+## file       src/services/metric/Makefile.confvars.inc.am
+
+noinst_LTLIBRARIES += libscorep_timer_confvars.la
+
+libscorep_timer_confvars_la_SOURCES = \
+    $(SRC_ROOT)src/services/timer/scorep_timer_confvars.c
+
+libscorep_timer_confvars_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_ROOT)src/services/include \
+    $(UTILS_CPPFLAGS)
+
+libscorep_confvars_la_LIBADD += libscorep_timer_confvars.la
+
+EXTRA_DIST += $(SRC_ROOT)src/services/timer/scorep_timer_confvars.inc.c

@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2011,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2011,
@@ -51,6 +51,7 @@
 #include <tracing/SCOREP_Tracing.h>
 #include <SCOREP_OA_RuntimeManagement.h>
 #include <SCOREP_Filter_Init.h>
+#include <SCOREP_Timer_Utils.h>
 #include "scorep_subsystem.h"
 
 #include "scorep_environment.h"
@@ -263,5 +264,6 @@ SCOREP_RegisterAllConfigVariables( void )
     SCOREP_Tracing_Register();
     SCOREP_OA_Register();
     SCOREP_Filter_Register();
+    SCOREP_Timer_Register();
     scorep_subsystems_register();
 }

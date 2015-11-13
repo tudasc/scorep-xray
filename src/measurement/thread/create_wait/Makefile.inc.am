@@ -77,4 +77,5 @@ libscorep_thread_create_wait_generic_la_CPPFLAGS = \
     $(UTILS_CPPFLAGS)                              \
     -I$(INC_DIR_COMMON_HASH)                       \
     -I$(INC_DIR_DEFINITIONS)                       \
-    -I$(INC_DIR_SUBSTRATES)
+    -I$(INC_DIR_SUBSTRATES)                        \
+    @SCOREP_TIMER_CPPFLAGS@

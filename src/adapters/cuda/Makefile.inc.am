@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -70,7 +70,8 @@ libscorep_adapter_cuda_mgmt_la_CPPFLAGS = \
     -I$(INC_DIR_COMMON_HASH)              \
     -I$(INC_ROOT)src/adapters/cuda        \
     -I$(INC_DIR_MUTEX)                    \
-    -I$(INC_DIR_DEFINITIONS)
+    -I$(INC_DIR_DEFINITIONS)              \
+    @SCOREP_TIMER_CPPFLAGS@
 
 libscorep_adapter_cuda_mgmt_la_LIBADD = \
     @CUDA_LIBS@ \

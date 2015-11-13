@@ -67,7 +67,7 @@ libscorep_measurement_la_LIBADD =        \
     libjenkins_hash.la                   \
     @SCOREP_PAPI_LIBS@                   \
     @SCOREP_DLFCN_LIBS@                  \
-    @TIMER_LIB@                          \
+    @SCOREP_TIMER_LIBS@                  \
     @OTF2_LIBS@                          \
     @CUBE_WRITER_LIBS@
 

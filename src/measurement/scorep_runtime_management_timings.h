@@ -16,7 +16,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -111,23 +111,23 @@ extern double      scorep_timing_recvbuf_durations_min[ scorep_timing_num_entrie
 #define SCOREP_TIME( function, args ) \
     do { \
         scorep_timing_sendbuf_durations[ function ## _ ] = \
-            SCOREP_GetClockTicks(); \
+            SCOREP_Timer_GetClockTicks(); \
         function args; \
         scorep_timing_sendbuf_durations[ function ## _ ] = \
-            SCOREP_GetClockTicks() - \
+            SCOREP_Timer_GetClockTicks() - \
             scorep_timing_sendbuf_durations[ function ## _ ]; \
     } while ( 0 )
 
 #define SCOREP_TIME_START_TIMING( function ) \
     do { \
         scorep_timing_sendbuf_durations[ function ## _ ] = \
-            SCOREP_GetClockTicks(); \
+            SCOREP_Timer_GetClockTicks(); \
     } while ( 0 )
 
 #define SCOREP_TIME_STOP_TIMING( function ) \
     do { \
         scorep_timing_sendbuf_durations[ function ## _ ] = \
-            SCOREP_GetClockTicks() - \
+            SCOREP_Timer_GetClockTicks() - \
             scorep_timing_sendbuf_durations[ function ## _ ]; \
     } while ( 0 )
 
@@ -135,7 +135,7 @@ extern double      scorep_timing_recvbuf_durations_min[ scorep_timing_num_entrie
 #define SCOREP_TIME_PRINT_TIMINGS() \
     if ( SCOREP_Status_GetRank() == 0 ) \
     { \
-        double clock_resolution = SCOREP_GetClockResolution(); \
+        double clock_resolution = SCOREP_Timer_GetClockResolution(); \
         if ( SCOREP_Status_IsMpp() ) \
         { \
             printf( "[Score-P] Score-P runtime-management timings: function              min[s]         mean[s]          max[s]\n" ); \

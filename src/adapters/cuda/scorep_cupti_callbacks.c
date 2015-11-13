@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2012,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2013
+ * Copyright (c) 2009-2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2012,
@@ -36,11 +36,12 @@
  */
 
 #include <config.h>
-#include "SCOREP_Config.h"
-#include "SCOREP_Definitions.h"
-#include "SCOREP_Events.h"
-#include "SCOREP_Types.h"
-#include "SCOREP_Filter.h"
+#include <SCOREP_Config.h>
+#include <SCOREP_Definitions.h>
+#include <SCOREP_Events.h>
+#include <SCOREP_Types.h>
+#include <SCOREP_Filter.h>
+#include <SCOREP_Timer_Ticks.h>
 
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
@@ -610,7 +611,7 @@ scorep_cupti_callbacks_runtime_api( CUpti_CallbackId          callbackId,
     }
 
     /* time stamp for all the following potential events */
-    time = SCOREP_GetClockTicks();
+    time = SCOREP_Timer_GetClockTicks();
 
     if ( scorep_cuda_record_memcpy && !record_driver_api_location )
     {
@@ -950,7 +951,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
             cuda_api_function_put( CUPTI_CB_DOMAIN_DRIVER_API, callbackId, region_handle );
         }
 
-        time = SCOREP_GetClockTicks();
+        time = SCOREP_Timer_GetClockTicks();
     }
 
     /* handle memory copies with full sync option */
@@ -961,7 +962,7 @@ scorep_cupti_callbacks_driver_api( CUpti_CallbackId          callbackId,
         {
             if ( !record_driver_api_location )
             {
-                time = SCOREP_GetClockTicks();
+                time = SCOREP_Timer_GetClockTicks();
             }
 
             /****************** synchronous CUDA memory copies **********************/
@@ -1658,20 +1659,20 @@ scorep_cupticb_synchronize_context( void )
     if ( is_driver_domain_enabled )
     {
         SCOREP_CUDA_DRIVER_CALL( cuCtxSynchronize() );
-        time = SCOREP_GetClockTicks();
+        time = SCOREP_Timer_GetClockTicks();
     }
     else
     {
         if ( scorep_cuda_sync_level > SCOREP_CUDA_RECORD_SYNC )
         {
-            time = SCOREP_GetClockTicks();
+            time = SCOREP_Timer_GetClockTicks();
             /* With 'location == NULL' SCOREP_Location_EnterRegion will
              * write the event on the current CPU location */
             SCOREP_Location_EnterRegion( NULL, time, cuda_sync_region_handle );
         }
 
         SCOREP_CUDA_DRIVER_CALL( cuCtxSynchronize() );
-        time = SCOREP_GetClockTicks();
+        time = SCOREP_Timer_GetClockTicks();
 
         if ( scorep_cuda_sync_level > SCOREP_CUDA_RECORD_SYNC )
         {
@@ -1770,7 +1771,7 @@ handle_cuda_malloc( CUcontext cudaContext,
 
     /* write counter value */
     {
-        uint64_t time = SCOREP_GetClockTicks();
+        uint64_t time = SCOREP_Timer_GetClockTicks();
 
         if ( time < context->streams->scorep_last_timestamp )
         {
@@ -1830,7 +1831,7 @@ handle_cuda_free( CUcontext cudaContext,
     {
         if ( devicePtr == current_gpumem->address )
         {
-            uint64_t time = SCOREP_GetClockTicks();
+            uint64_t time = SCOREP_Timer_GetClockTicks();
 
             if ( time < context->streams->scorep_last_timestamp )
             {
