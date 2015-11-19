@@ -12,7 +12,7 @@ various Score-P components.
 
   - Score-P has been tested on the following platforms:
     + IBM Blue Gene/Q, only static libraries supported
-    + IBM SP & BladeCenter clusters, only static libraries supported
+    + IBM BladeCenter & iDataPlex clusters
     + Cray XC, only static libraries supported
     + SGI Altix/ICE
     + K Computer, Fujitsu FX10 and FX100 systems
@@ -25,6 +25,7 @@ various Score-P components.
     + IBM Blue Gene/P
     + Cray XT, XE, XK
     + Sun Solaris/SPARC-based clusters
+    + IBM SP clusters
     However the supplied build system might still work on these
     systems.
 
