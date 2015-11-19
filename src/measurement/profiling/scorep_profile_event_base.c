@@ -134,7 +134,7 @@ scorep_profile_exit( SCOREP_Profile_LocationData* location,
     if ( node == NULL )
     {
         UTILS_ERROR( SCOREP_ERROR_PROFILE_INCONSISTENT,
-                     "Exit event occured in a thread which never entered a region" );
+                     "Exit event occurred in a thread which never entered a region" );
         SCOREP_PROFILE_STOP( location );
         return NULL;
     }
