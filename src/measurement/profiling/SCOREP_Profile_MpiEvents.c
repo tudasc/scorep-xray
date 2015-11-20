@@ -42,6 +42,7 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_Definitions.h>
 #include <scorep_profile_mpi_events.h>
+#include <scorep_status.h>
 
 static SCOREP_MetricHandle scorep_bytes_send_metric = SCOREP_INVALID_METRIC;
 static SCOREP_MetricHandle scorep_bytes_recv_metric = SCOREP_INVALID_METRIC;
@@ -131,6 +132,11 @@ get_atomic_type_name( SCOREP_RmaAtomicType atomicType )
 void
 SCOREP_Profile_InitializeMpp( void )
 {
+    if ( !SCOREP_Status_IsMpp() )
+    {
+        return;
+    }
+
     scorep_bytes_send_metric =
         SCOREP_Definitions_NewMetric( "bytes_sent",
                                       "Bytes sent",

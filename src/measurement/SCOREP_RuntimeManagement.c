@@ -281,6 +281,11 @@ SCOREP_InitMeasurement( void )
      */
     SCOREP_TIME( scorep_subsystems_initialize, ( ) );
 
+    if ( !SCOREP_Status_IsMpp() )
+    {
+        SCOREP_Substrates_InitializeMpp();
+    }
+
     /* Register finalization handler, also called in SCOREP_InitMppMeasurement() and
      * SCOREP_FinalizeMppMeasurement(). We need to make sure that our handler is
      * called before the MPI one. */

@@ -333,11 +333,6 @@ SCOREP_Tracing_Initialize( size_t substrateId )
     UTILS_ASSERT( err == SCOREP_SUCCESS );
 
     OTF2_Archive_SetCreator( scorep_otf2_archive, PACKAGE_STRING );
-
-    if ( !SCOREP_Status_IsMpp() )
-    {
-        SCOREP_Tracing_OnMppInit();
-    }
 }
 
 
