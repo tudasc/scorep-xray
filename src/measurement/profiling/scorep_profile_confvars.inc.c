@@ -187,9 +187,9 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
         "task objects while in the sink, released task objects are collected. Thus, "
         "if the sink collected a certain number of tasks it should trigger a backflow "
         "of its collected task objects. However, this requires locking which should be "
-        "avoided as much as possible. Thus, we do not want the locking happen on every "
+        "avoided as much as possible. Thus, we do not want the locking to happen on every "
         "migrated task, but only if a certain imbalance occurs. This environment "
-        "variable determines the number of igrated task instances that must be "
+        "variable determines the number of migrated task instances that must be "
         "collected before the backflow is triggered."
     },
     {
