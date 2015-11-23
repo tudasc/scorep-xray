@@ -63,6 +63,9 @@ Bugfixes:
 - The GCC compiler instrumentation plug-in was non-functional for GCC 5
   because of an unnoticed API change. And the custom demangling of Fortran
   module functions is working again too.
+- The GCC instrumentation plug-in does not instrument the `main` function
+  in Fortran programs anymore. As the main entry point for the user is
+  `MAIN__`.
 
 ------------------- Released version 1.4.2 ---------------------------
 

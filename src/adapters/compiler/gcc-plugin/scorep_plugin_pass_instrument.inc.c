@@ -145,30 +145,42 @@ scorep_plugin_pass_instrument_function( void )
                                                      : DECL_NAME( current_function_decl ) );
 
     /*
-     * fortran module mangling scheme:
-     *    '__' + <module-name> + '_MOD_' + <function-name>
-     * where <module-name> and <function-name> are always lowercase, thus
-     * _MOD_ can occur at most once, the two underscores are not affected by
-     * any command line options like -f[no-]underscoring or
-     * -f[no-]second-underscore
      * use a prefix compare for the language, as later Fortran compilers are
      * named like "GNU Fortran2008"
      */
-    if ( 0 == strncmp( lang_hooks.name, "GNU Fortran", strlen( "GNU Fortran" ) )
-         && assembler_name[ 0 ] == '_'
-         && assembler_name[ 1 ] == '_'
-         && strstr( assembler_name + 2, "_MOD_" ) )
+    if ( 0 == strncmp( lang_hooks.name, "GNU Fortran", strlen( "GNU Fortran" ) ) )
     {
-        const char* module_name     = assembler_name + 2;
-        size_t      module_name_len = strstr( module_name, "_MOD_" ) - module_name;
+        /* "main" is considered an artificial function in Fortran, the main
+           user function (entry point) is "MAIN__". */
+        if ( 0 == strcmp( assembler_name, "main" ) )
+        {
+            VERBOSE_MSG( 0, "Ignoring artifical 'main' in %s program", lang_hooks.name );
+            return 0;
+        }
 
-        char* fortran_function_name;
-        fortran_function_name = ( char* )xmalloc( module_name_len + 2 + strlen( function_name ) + 1 );
-        sprintf( fortran_function_name, "%.*s::%s",
-                 ( int )module_name_len, module_name, function_name );
+        /*
+         * fortran module mangling scheme:
+         *    '__' + <module-name> + '_MOD_' + <function-name>
+         * where <module-name> and <function-name> are always lowercase, thus
+         * _MOD_ can occur at most once, the two underscores are not affected by
+         * any command line options like -f[no-]underscoring or
+         * -f[no-]second-underscore
+         */
+        if ( assembler_name[ 0 ] == '_'
+             && assembler_name[ 1 ] == '_'
+             && strstr( assembler_name + 2, "_MOD_" ) )
+        {
+            const char* module_name     = assembler_name + 2;
+            size_t      module_name_len = strstr( module_name, "_MOD_" ) - module_name;
 
-        free( function_name );
-        function_name = fortran_function_name;
+            char* fortran_function_name =
+                ( char* )xmalloc( module_name_len + 2 + strlen( function_name ) + 1 );
+            sprintf( fortran_function_name, "%.*s::%s",
+                     ( int )module_name_len, module_name, function_name );
+
+            free( function_name );
+            function_name = fortran_function_name;
+        }
     }
 
 
