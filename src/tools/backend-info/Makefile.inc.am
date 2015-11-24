@@ -48,13 +48,22 @@ scorep_backend_info_LDADD = \
     libscorep_hashtab.la \
     libutils.la
 
+scorep_backend_info_LDFLAGS =
+
 ## Blue Gene P
 if PLATFORM_BGP
-scorep_backend_info_LDFLAGS = @SCOREP_TIMER_LDFLAGS@
+scorep_backend_info_LDFLAGS += @SCOREP_TIMER_LDFLAGS@
 scorep_backend_info_LDADD += @SCOREP_TIMER_LIBS@
 endif PLATFORM_BGP
 
+## Blue Gene Q
+if PLATFORM_BGQ
+if SCOREP_COMPILER_GNU
+scorep_backend_info_LDFLAGS += -Wl,-Bdynamic
+endif SCOREP_COMPILER_GNU
+endif PLATFORM_BGQ
+
 ## Cray systems
 if HAVE_PMI
-scorep_backend_info_LDFLAGS = $(PMI_LDFLAGS) $(PMI_LIBS)
+scorep_backend_info_LDFLAGS += $(PMI_LDFLAGS) $(PMI_LIBS)
 endif HAVE_PMI

@@ -1,0 +1,59 @@
+Buildung Score-P on Blue Gene systems using GNU compute node compilers
+======================================================================
+
+(tested on JUQUEEN [1] using gcc/4.8.1 with scorep-2.0)
+
+Known issues:
+-------------
+ * Serial and pure OpenMP codes cannot be instrumented.
+ * Score-P's --thread=omp:pomp_tpd option is not available as it
+   doesn't work with Fortran codes.
+ * Score-P's default gcc compiler instrumentation via plugin cannot be
+   used as jobs for unknown reasons don't start running. The 'old'
+   -finstrument-functions approach is used instead. This
+   instrumentation is known to entail high overhead for C++ codes as
+   inlining is implicitly disabled.
+ * Although the default linking behaviour on Blue Gene systems is
+   'static', we switched to dynamic as this reduced the number of
+   symbols to be considered for instrumentation to a reasonable
+   number.
+ * When using module gcc/4.9.1 on JUQUEEN you need to add
+   /bgsys/local/gcc/4.9.1/powerpc64-bgq-linux/lib64 to your
+   LD_LIBRARY_PATH on the login nodes, otherwise several of the tools
+   fail with '/usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.20' not
+   found'.
+
+
+Installation:
+-------------
+$ module load gcc
+$ cd <scorep-source-directory>
+$ mkdir -p _build
+$ cd _build
+$ cp ../share/bg-gnu/platform-* .
+$ ../configure --prefix=<prefix> --with-custom-compilers ...
+$ make all install
+
+
+Usage:
+------
+The automatic compiler instrumentation on Blue Gene systems requires
+symbol information to be provided via file (the reason for this
+inconvenience is that the usual way to obtain symbol information,
+libbfd, is unusable on this system; the alternative via 'nm' is
+discarded because one cannot execute a command via system() from the
+compute nodes). To create the file 'nm_symbols' holding the symbol
+information for <executable> please execute following commands:
+
+$ module load gcc  # if not already loaded
+$ nm -l <executable> 2> /dev/null > nm_symbols # this may take some time
+
+In the jobsript please additionally specify
+
+  export SCOREP_NM_SYMBOLS=nm_symbols
+  runjob --exp-env SCOREP_NM_SYMBOLS ...
+
+
+Please report bugs to <support@score-p.org>.
+
+[1] http://www.fz-juelich.de/ias/jsc/EN/Expertise/Supercomputers/JUQUEEN/JUQUEEN_node.html

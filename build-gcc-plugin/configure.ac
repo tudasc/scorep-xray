@@ -1,7 +1,7 @@
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2012-2014,
+dnl Copyright (c) 2012-2015,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2015,
@@ -128,14 +128,16 @@ AC_SUBST([PKGDATADIR])
 
 # Only if the platform supports shared libraries, try to check for plug-in
 # support in GCC
-AS_CASE([${scorep_gcc_plugin_target_vendor},${enable_shared},${scorep_enable_gcc_plugin}],
-    [*,*,no], dnl early avoid checks if the user disabled detection
+AS_CASE([${ac_scorep_platform},${scorep_gcc_plugin_target_vendor},${enable_shared},${scorep_enable_gcc_plugin}],
+    [*,*,*,no], dnl early avoid checks if the user disabled detection
         [AFS_SUMMARY([GCC plug-in support], [no, explicitly disabled via --disable-gcc-plugin])],
-    [gnu,yes,*],
+    [bg*,gnu,*,detect],
+        [AFS_SUMMARY([GCC plug-in support], [no, currently not available on Blue Gene platforms])],
+    [*,gnu,yes,*],
         [SCOREP_GCC_PLUGIN],
-    [*,no,*],
+    [*,*,no,*],
         [AFS_SUMMARY([GCC plug-in support], [no, need support for shared libraries])],
-    [*,*,*],
+    [*,*,*,*],
         [AFS_SUMMARY([GCC plug-in support], [no, only GNU compilers supported])])
 
 AM_COND_IF([HAVE_GCC_PLUGIN_SUPPORT],

@@ -43,6 +43,9 @@
 
 #if HAVE( BACKEND_SCOREP_TIMER_BGQ )
 # include <firmware/include/personality.h>
+# ifdef __GNUC__
+#  include <ppu_intrinsics.h>
+# endif
 # ifndef DEFAULT_FREQ_MHZ
 #  error "DEFAULT_FREQ_MHZ not defined. Check your includes."
 # endif

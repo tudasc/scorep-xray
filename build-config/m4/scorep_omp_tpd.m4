@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013-2014,
+dnl Copyright (c) 2013-2015,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -23,6 +23,7 @@ dnl file build-config/m4/scorep_omp_tpd.m4
 # automake conditional 'HAVE_SCOREP_OMP_TPD' and the autoconf
 # substitution SCOREP_OMP_TPD.
 AC_DEFUN([SCOREP_OPENMP_TPD],[
+AC_REQUIRE([AX_COMPILER_VENDOR])dnl
 
 AC_LANG_PUSH([C])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
@@ -40,6 +41,12 @@ AS_IF([test "x${ac_scorep_platform}" = xk ||
      # -Xg -noansi needed for Pthreads, but they break OPENMP_TPD.
      # Using OpenMP_ANCESTRY as alternative.
      scorep_has_alignment_attribute="no"])
+
+AS_CASE([${ac_scorep_platform}],
+    [bg*], [AS_IF([test "x${ax_cv_c_compiler_vendor}" = xgnu],
+               [# On Juqueen with gfortan all OpenMP tpd installchecks fail,
+                # ancestry works though
+                scorep_has_alignment_attribute="no"])])
 
 AS_IF([test "x${scorep_has_alignment_attribute}" = "xyes"],
     [AC_DEFINE([FORTRAN_ALIGNED],

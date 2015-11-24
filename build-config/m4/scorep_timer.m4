@@ -249,6 +249,9 @@ AC_LINK_IFELSE(
          * http://publib.boulder.ibm.com/infocenter/comphelp/v101v121/index.jsp?topic=/com.ibm.xlcpp101.aix.doc/compiler_ref/bif_mftb.html
          */
         #include <firmware/include/personality.h>
+        #ifdef __GNUC__
+        #include <ppu_intrinsics.h>
+        #endif
         #ifndef DEFAULT_FREQ_MHZ
         # DEFAULT_FREQ_MHZ_not_defined_Check_your_includes
         #endif

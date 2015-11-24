@@ -66,6 +66,11 @@ EXTRA_DIST += $(srcdir)/src/config.h                                      \
               $(srcdir)/doc/profile/scorep_metrics.html                   \
               $(srcdir)/src/adapters/include/SCOREP_Fortran_Wrapper.h     \
               $(srcdir)/share/scorep.errors                               \
+              $(srcdir)/share/bg-gnu/platform-frontend-user-provided      \
+              $(srcdir)/share/bg-gnu/platform-backend-user-provided       \
+              $(srcdir)/share/bg-gnu/platform-mpi-user-provided           \
+              $(srcdir)/share/bg-gnu/platform-shmem-user-provided         \
+              $(srcdir)/share/bg-gnu/README                               \
               $(srcdir)/THANKS                                            \
               $(srcdir)/OPEN_ISSUES
 

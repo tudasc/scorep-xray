@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013
+dnl Copyright (c) 2013, 2015,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl Copyright (c) 2013-2015,
@@ -80,7 +80,11 @@ AS_CASE([${ax_cv_c_compiler_vendor}],
     [sun],      [],
     [ibm],      [],
     [portland], [],
-    [gnu],      [],
+    [gnu],      [AS_CASE([${ac_scorep_platform}],
+                     [bg*], [# Link shared variant of (system) libs, if available.
+                             # This reduces the nm time and brings the number of
+                             # symbols into a reasonable range.
+                             scorep_instrumentation_ldflags="-dynamic"])],
     [cray],     [],
     [fujitsu],  [scorep_instrumentation_ldflags="-Ntl_notrt"],
     [])dnl

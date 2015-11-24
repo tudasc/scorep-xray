@@ -3,7 +3,7 @@ dnl -*- mode: autoconf -*-
 dnl
 dnl This file is part of the Score-P software (http://www.score-p.org)
 dnl
-dnl Copyright (c) 2013
+dnl Copyright (c) 2013, 2015,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -50,15 +50,22 @@ dnl and http://www.redbooks.ibm.com/redbooks/pdfs/sg247948.pdf
                                "-L/bgsys/drivers/ppcfloor/comm/sys-fast/lib"; do
         for scorep_pami_lib in "pami-gcc" "pami"; do
             LDFLAGS="${scorep_pami_ldflags} ${scorep_pami_ldflags_common}"
-            AC_CHECK_LIB([${scorep_pami_lib}],
-                [PAMI_Client_create],
-                [scorep_pami_lib_found="yes"
-                 AC_SUBST([SCOREP_PAMI_LDFLAGS], ["${scorep_pami_ldflags} ${scorep_pami_ldflags_common}"])
-                 AC_SUBST([SCOREP_PAMI_LIBS], ["-l${scorep_pami_lib} -lstdc++ -lSPI -lSPI_cnk -lrt"])
-                 break
-                ],
-                [scorep_pami_lib_found="no"],
-                [-lstdc++ -lSPI -lSPI_cnk -lrt])
+            for need_pthread in "" "-pthread"; do
+                scorep_pami_additional_libs="-lstdc++ -lSPI -lSPI_cnk -lrt ${need_pthread}"
+                AC_CHECK_LIB([${scorep_pami_lib}],
+                    [PAMI_Client_create],
+                    [scorep_pami_lib_found="yes"
+                     AC_SUBST([SCOREP_PAMI_LDFLAGS], ["${scorep_pami_ldflags} ${scorep_pami_ldflags_common}"])
+                     AC_SUBST([SCOREP_PAMI_LIBS], ["-l${scorep_pami_lib} ${scorep_pami_additional_libs}"])
+                     break
+                    ],
+                    [scorep_pami_lib_found="no"],
+                    [${scorep_pami_additional_libs}])
+                # reset cache variable
+                AS_UNSET([AS_TR_SH([ac_cv_lib_${scorep_pami_lib}___PAMI_Client_create])])
+            done
+            AS_IF([test "x${scorep_pami_lib_found}" = "xyes"],
+                [break])
         done
         AS_IF([test "x${scorep_pami_lib_found}" = "xyes"],
             [break])
@@ -71,5 +78,5 @@ dnl and http://www.redbooks.ibm.com/redbooks/pdfs/sg247948.pdf
          AC_MSG_ERROR([neither -lpami-gcc nor -lpami available. Please search for these libraries under /bgsys/drivers/ppcfloor/. Please provide your search result to <AC_PACKAGE_BUGREPORT>. You will be provided with an updated Score-P version in a timely manner. Thanks.])
         ])
     AC_LANG_POP([C])
-    AFS_SUMMARY([libpami], [yes, using ${scorep_pami_ldflags} ${scorep_pami_ldflags_common} -l${scorep_pami_lib} -lstdc++ -lSPI -lSPI_cnk -lrt])
+    AFS_SUMMARY([libpami], [yes, using ${scorep_pami_ldflags} ${scorep_pami_ldflags_common} -l${scorep_pami_lib} ${scorep_pami_additional_libs}])
 ])

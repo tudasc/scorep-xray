@@ -27,6 +27,11 @@ Features and improvements:
   defaults to a low-overhead time stamp counter, if available. Note
   that we assume all processes to use the same timer and time stamp
   counter timers to run at the same frequency.
+- Building the entire Score-P package on Blue Gene/Q systems using GNU
+  compilers is now supported. The installation currently needs some
+  extra steps, please see share/bg-gnu/README for details. The
+  installation on older Blue Gene systems, though not tested, might
+  work as well.
 
 User tools and API improvements and changes:
 
