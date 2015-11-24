@@ -120,7 +120,7 @@ static const SCOREP_ConfigType_SetEntry scorep_cuda_enable_groups[] = {
 /*
  *  Configuration variables for the CUDA adapter.
  */
-static SCOREP_ConfigVariable scorep_cuda_configs[] = {
+static const SCOREP_ConfigVariable cuda_subsystem_configs[] = {
     {
         "enable",
         SCOREP_CONFIG_TYPE_BITSET, /* type */

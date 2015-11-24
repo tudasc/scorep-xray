@@ -47,7 +47,7 @@ opencl_subsystem_register( size_t subsystemId )
                                       HAVE_BACKEND_OPENCL_SUPPORT );
 }
 
-SCOREP_Subsystem SCOREP_Subsystem_OpenclAdapter =
+const SCOREP_Subsystem SCOREP_Subsystem_OpenclAdapter =
 {
     .subsystem_name              = "OpenCL (config variables only)",
     .subsystem_register          = &opencl_subsystem_register,
