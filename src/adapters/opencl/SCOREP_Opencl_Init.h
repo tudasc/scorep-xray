@@ -25,6 +25,6 @@
 /**
    The OpenCL adapter structure
  */
-extern struct SCOREP_Subsystem SCOREP_Subsystem_OpenclAdapter;
+extern const struct SCOREP_Subsystem SCOREP_Subsystem_OpenclAdapter;
 
 #endif /* SCOREP_OPENCL_INIT_H */

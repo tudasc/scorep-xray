@@ -165,7 +165,7 @@ cuda_subsystem_finalize( void )
     }
 }
 
-SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter =
+const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter =
 {
     .subsystem_name              = "CUDA",
     .subsystem_register          = &cuda_subsystem_register,

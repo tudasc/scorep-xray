@@ -172,7 +172,7 @@ opencl_subsystem_finalize( void )
 }
 
 /** OpenCL adapter with its callbacks */
-SCOREP_Subsystem SCOREP_Subsystem_OpenclAdapter =
+const SCOREP_Subsystem SCOREP_Subsystem_OpenclAdapter =
 {
     .subsystem_name              = "OPENCL",
     .subsystem_register          = &opencl_subsystem_register,

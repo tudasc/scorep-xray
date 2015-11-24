@@ -43,6 +43,6 @@
 /**
    The CUDA adapter structure
  */
-extern struct SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
+extern const struct SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
 
 #endif /* SCOREP_CUDA_INIT_H */
