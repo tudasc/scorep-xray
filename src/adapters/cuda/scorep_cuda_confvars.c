@@ -60,7 +60,7 @@ cuda_subsystem_register( size_t subsystem_id )
                                       HAVE_BACKEND_CUDA_SUPPORT );
 }
 
-SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter =
+const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter =
 {
     .subsystem_name              = "CUDA (config variables only)",
     .subsystem_register          = &cuda_subsystem_register,
