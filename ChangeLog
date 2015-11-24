@@ -12,11 +12,13 @@ Features and improvements:
 
 - When using compiler instrumentation with GNU (not the gcc-plugin but
   the -finstrument-functions variant), Cray, or Fujitsu compilers, one
-  can provide a file containing the symbols to be instrumented. This is
-  useful when obtaining symbols via 'nm' or 'libbfd' is not an option,
-  e.g, on Blue Gene systems. The symbol file needs to be specified in
-  the environment variable SCOREP_NM_SYMBOLS. The accepted format is
-  as in 'nm -l <executable>'.
+  can provide a file containing symbols that will trigger measurement
+  events when the corresponding function is called. These symbols are
+  subject to filtering. Providing symbols this way is useful when
+  obtaining symbols during measurement via 'nm' or 'libbfd' is not an
+  option, e.g, on Blue Gene systems. The symbol file needs to be
+  specified in the environment variable SCOREP_NM_SYMBOLS. The
+  accepted format is as in 'nm -l <executable>'.
 - Transparent changes to the event-dispatching. Currently events are
   consumed by either the profiling or tracing substrate (or both). A
   future release will allow for additional event-consumption via
