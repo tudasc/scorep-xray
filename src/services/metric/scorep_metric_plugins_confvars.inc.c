@@ -54,7 +54,7 @@ static char* scorep_metric_plugins_separator = NULL;
  *  Current configuration variables are:
  *  @li @c SCOREP_METRIC_PLUGINS list of requested metric names.
  */
-static SCOREP_ConfigVariable scorep_metric_plugins_confvars[] = {
+static const SCOREP_ConfigVariable scorep_metric_plugins_confvars[] = {
     {
         "plugins",
         SCOREP_CONFIG_TYPE_STRING,
