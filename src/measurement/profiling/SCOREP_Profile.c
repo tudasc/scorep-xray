@@ -314,7 +314,8 @@ on_location_creation( SCOREP_Location* locationData,
     node = scorep_profile_create_node( thread_data,
                                        NULL,
                                        SCOREP_PROFILE_NODE_THREAD_ROOT,
-                                       node_data, 0, false );
+                                       node_data, 0,
+                                       SCOREP_PROFILE_TASK_CONTEXT_TIED );
 
     /* Disable profiling if node creation failed */
     if ( node == NULL )
@@ -450,7 +451,8 @@ on_location_activation( SCOREP_Location* locationData,
         node = scorep_profile_create_node( thread_data,
                                            root,
                                            SCOREP_PROFILE_NODE_THREAD_START,
-                                           data, 0, false );
+                                           data, 0,
+                                           SCOREP_PROFILE_TASK_CONTEXT_TIED );
 
         /* Disable profiling if node creation failed */
         if ( node == NULL )

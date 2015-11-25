@@ -80,7 +80,7 @@ create_task_root( SCOREP_Profile_LocationData* location,
                   SCOREP_RegionHandle          regionHandle,
                   uint64_t                     timestamp,
                   uint64_t*                    metricValues,
-                  bool                         is_untied )
+                  scorep_profile_task_context  taskContext )
 {
     /* Create the data structure */
     scorep_profile_type_data_t specific_data;
@@ -92,7 +92,7 @@ create_task_root( SCOREP_Profile_LocationData* location,
                                     SCOREP_PROFILE_NODE_TASK_ROOT,
                                     specific_data,
                                     timestamp,
-                                    is_untied );
+                                    taskContext );
     if ( new_node == NULL )
     {
         return NULL;
@@ -204,9 +204,9 @@ SCOREP_Profile_TaskBegin( SCOREP_Location*                 thread,
 
     scorep_profile_task* task = get_profile_task_data( taskHandle );
 
-    scorep_profile_node* task_root = create_task_root( location, regionHandle,
-                                                       timestamp, metricValues,
-                                                       task->can_migrate );
+    scorep_profile_node* task_root
+        = create_task_root( location, regionHandle, timestamp, metricValues,
+                            task->can_migrate ? SCOREP_PROFILE_TASK_CONTEXT_UNTIED : SCOREP_PROFILE_TASK_CONTEXT_TIED );
 
     task->current_node = task_root;
     task->root_node    = task_root;
