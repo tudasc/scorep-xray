@@ -38,13 +38,13 @@
 #include <SCOREP_Config.h>
 
 /** Contains the name of requested metrics. */
-static char* scorep_metrics_rusage = NULL;
+static char* scorep_metric_rusage = NULL;
 
 /** Contains the name of requested per-process metrics. */
-static char* scorep_metrics_rusage_per_process = NULL;
+static char* scorep_metric_rusage_per_process = NULL;
 
 /** Contains the separator of metric names. */
-static char* scorep_metrics_rusage_separator = NULL;
+static char* scorep_metric_rusage_separator = NULL;
 
 /** List of configuration variables for the resource usage metric source.
  *
@@ -58,11 +58,11 @@ static char* scorep_metrics_rusage_separator = NULL;
  *  @li @c SCOREP_METRIC_RUSAGE_PER_PROCESS list of requested metric names recorded per-process.
  *  @li @c SCOREP_METRIC_RUSAGE_SEP character that separates single metric names.
  */
-static SCOREP_ConfigVariable scorep_metric_rusage_configs[] = {
+static const SCOREP_ConfigVariable scorep_metric_rusage_confvars[] = {
     {
         "rusage",
         SCOREP_CONFIG_TYPE_STRING,
-        &scorep_metrics_rusage,
+        &scorep_metric_rusage,
         NULL,
         "",
         "Resource usage metric names to measure",
@@ -71,7 +71,7 @@ static SCOREP_ConfigVariable scorep_metric_rusage_configs[] = {
     {
         "rusage_per_process",
         SCOREP_CONFIG_TYPE_STRING,
-        &scorep_metrics_rusage_per_process,
+        &scorep_metric_rusage_per_process,
         NULL,
         "",
         "Resource usage metric names to measure per-process",
@@ -80,7 +80,7 @@ static SCOREP_ConfigVariable scorep_metric_rusage_configs[] = {
     {
         "rusage_sep",
         SCOREP_CONFIG_TYPE_STRING,
-        &scorep_metrics_rusage_separator,
+        &scorep_metric_rusage_separator,
         NULL,
         ",",
         "Separator of resource usage metric names",

@@ -177,7 +177,7 @@ SCOREP_FORTRAN_GET_MPI_UNWEIGHTED( void );
 
 #include "scorep_mpi_confvars.inc.c"
 
-static size_t scorep_mpi_subsystem_id;
+static size_t mpi_subsystem_id;
 
 /**
    Implementation of the adapter_register function of the @ref
@@ -189,9 +189,9 @@ mpi_subsystem_register( size_t subsystem_id )
 {
     UTILS_DEBUG_ENTRY();
 
-    scorep_mpi_subsystem_id = subsystem_id;
+    mpi_subsystem_id = subsystem_id;
 
-    return SCOREP_ConfigRegister( "mpi", scorep_mpi_configs );
+    return SCOREP_ConfigRegister( "mpi", scorep_mpi_confvars );
 }
 
 /**

@@ -47,7 +47,7 @@ size_t   scorep_cupti_activity_buffer_chunk_size;
  * Mapping of options for CUDA measurement to internal representation
  * (bit mask).
  */
-static const SCOREP_ConfigType_SetEntry scorep_cuda_enable_groups[] = {
+static const SCOREP_ConfigType_SetEntry cuda_enable_groups[] = {
     {
         "runtime",
         SCOREP_CUDA_FEATURE_RUNTIME_API,
@@ -120,12 +120,12 @@ static const SCOREP_ConfigType_SetEntry scorep_cuda_enable_groups[] = {
 /*
  *  Configuration variables for the CUDA adapter.
  */
-static SCOREP_ConfigVariable scorep_cuda_configs[] = {
+static const SCOREP_ConfigVariable scorep_cuda_confvars[] = {
     {
         "enable",
         SCOREP_CONFIG_TYPE_BITSET, /* type */
         &scorep_cuda_features,     /* pointer to target variable */
-        ( void* )scorep_cuda_enable_groups,
+        ( void* )cuda_enable_groups,
         "no",                      /* default value */
         "CUDA measurement features",
         "Sets the CUDA measurement mode to capture:"

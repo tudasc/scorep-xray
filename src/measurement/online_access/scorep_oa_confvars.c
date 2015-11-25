@@ -43,6 +43,6 @@ void
 SCOREP_OA_Register( void )
 {
     SCOREP_ConfigRegisterCond( "onlineaccess",
-                               scorep_oa_configs,
+                               scorep_oa_confvars,
                                HAVE_BACKEND_ONLINE_ACCESS );
 }

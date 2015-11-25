@@ -298,8 +298,8 @@ get_variable( struct scorep_config_name_space* nameSpace,
 
 
 SCOREP_ErrorCode
-SCOREP_ConfigRegister( const char*            nameSpaceName,
-                       SCOREP_ConfigVariable* variables )
+SCOREP_ConfigRegister( const char*                  nameSpaceName,
+                       const SCOREP_ConfigVariable* variables )
 {
     UTILS_ASSERT( name_spaces );
     UTILS_ASSERT( nameSpaceName );
@@ -383,9 +383,9 @@ SCOREP_ConfigRegister( const char*            nameSpaceName,
 static bool force_conditional_registrations;
 
 SCOREP_ErrorCode
-SCOREP_ConfigRegisterCond( const char*            nameSpaceName,
-                           SCOREP_ConfigVariable* variables,
-                           bool                   isAvailable )
+SCOREP_ConfigRegisterCond( const char*                  nameSpaceName,
+                           const SCOREP_ConfigVariable* variables,
+                           bool                         isAvailable )
 {
     if ( isAvailable || force_conditional_registrations )
     {

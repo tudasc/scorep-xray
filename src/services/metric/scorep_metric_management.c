@@ -241,7 +241,7 @@ static bool scorep_metric_management_exit_callback_registered = false;
 static scorep_strictly_synchronous_metrics strictly_synchronous_metrics;
 
 /** Our subsystem id, used to address our per-location metric data */
-static size_t scorep_metric_subsystem_id;
+static size_t metric_subsystem_id;
 
 
 /* *********************************************************************
@@ -367,7 +367,7 @@ metric_subsystem_register( size_t subsystem_id )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " register metric management." );
 
-    scorep_metric_subsystem_id = subsystem_id;
+    metric_subsystem_id = subsystem_id;
 
     /* Register metric sources */
     for ( size_t i = 0; i < SCOREP_NUMBER_OF_METRIC_SOURCES; i++ )
@@ -483,7 +483,7 @@ initialize_location_metric_cb( SCOREP_Location* location,
     {
         /* Get the thread local data related to metrics */
         SCOREP_Metric_LocationData* metric_data =
-            SCOREP_Location_GetSubsystemData( location, scorep_metric_subsystem_id );
+            SCOREP_Location_GetSubsystemData( location, metric_subsystem_id );
         UTILS_ASSERT( metric_data != NULL );
 
         /* Collection of event sets for all metric sources, metric synchronicities, and metric scopes
@@ -956,7 +956,7 @@ metric_subsystem_init_location( SCOREP_Location* location, SCOREP_Location* pare
                                       sizeof( *metric_data ) );
 
     SCOREP_Location_SetSubsystemData( location,
-                                      scorep_metric_subsystem_id,
+                                      metric_subsystem_id,
                                       metric_data );
 
     metric_data->has_metrics                     = false;
@@ -995,7 +995,7 @@ finalize_location_metric_cb( SCOREP_Location* location,
     {
         /* Get the thread local data related to metrics */
         SCOREP_Metric_LocationData* metric_data =
-            SCOREP_Location_GetSubsystemData( location, scorep_metric_subsystem_id );
+            SCOREP_Location_GetSubsystemData( location, metric_subsystem_id );
         UTILS_ASSERT( metric_data != NULL );
 
         /* Handle additional synchronous metrics */
@@ -1106,7 +1106,7 @@ scorep_metric_finalize_callback( void )
 
     /* Get the thread local data related to metrics */
     SCOREP_Metric_LocationData* metric_data =
-        SCOREP_Location_GetSubsystemData( location, scorep_metric_subsystem_id );
+        SCOREP_Location_GetSubsystemData( location, metric_subsystem_id );
     UTILS_ASSERT( metric_data != NULL );
 
     if ( !metric_data->has_metrics )
@@ -1232,7 +1232,7 @@ initialize_location_metric_after_mpp_init_cb( SCOREP_Location* location,
     {
         /* Get the thread local data related to metrics */
         SCOREP_Metric_LocationData* metric_data =
-            SCOREP_Location_GetSubsystemData( location, scorep_metric_subsystem_id );
+            SCOREP_Location_GetSubsystemData( location, metric_subsystem_id );
         UTILS_ASSERT( metric_data != NULL );
 
         /* Collection of event sets for all metric sources, metric synchronicities, and metric scopes
@@ -1675,7 +1675,7 @@ SCOREP_Metric_Read( SCOREP_Location* location )
 
     /* Get the thread local data related to metrics */
     SCOREP_Metric_LocationData* metric_data =
-        SCOREP_Location_GetSubsystemData( location, scorep_metric_subsystem_id );
+        SCOREP_Location_GetSubsystemData( location, metric_subsystem_id );
     UTILS_ASSERT( metric_data != NULL );
 
     if ( !metric_data->has_metrics )
@@ -1764,7 +1764,7 @@ SCOREP_Metric_WriteToTrace( SCOREP_Location* location,
 {
     /* Get the thread local data related to metrics */
     SCOREP_Metric_LocationData* metric_data =
-        SCOREP_Location_GetSubsystemData( location, scorep_metric_subsystem_id );
+        SCOREP_Location_GetSubsystemData( location, metric_subsystem_id );
     UTILS_ASSERT( metric_data != NULL );
 
     if ( !metric_data->has_metrics )
@@ -1825,7 +1825,7 @@ SCOREP_Metric_WriteToProfile( SCOREP_Location* location )
 {
     /* Get the thread local data related to metrics */
     SCOREP_Metric_LocationData* metric_data =
-        SCOREP_Location_GetSubsystemData( location, scorep_metric_subsystem_id );
+        SCOREP_Location_GetSubsystemData( location, metric_subsystem_id );
     UTILS_ASSERT( metric_data != NULL );
 
     if ( !metric_data->has_metrics )

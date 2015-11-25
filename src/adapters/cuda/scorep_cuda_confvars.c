@@ -56,7 +56,7 @@ cuda_subsystem_register( size_t subsystem_id )
     UTILS_DEBUG( "Register environment variables" );
 
     return SCOREP_ConfigRegisterCond( "cuda",
-                                      scorep_cuda_configs,
+                                      scorep_cuda_confvars,
                                       HAVE_BACKEND_CUDA_SUPPORT );
 }
 

@@ -39,10 +39,10 @@
 
 
 /** Contains the name of requested metrics. */
-static char* scorep_metrics_plugins = NULL;
+static char* scorep_metric_plugins = NULL;
 
 /** Contains the separator of metric names. */
-static char* scorep_metrics_plugins_separator = NULL;
+static char* scorep_metric_plugins_separator = NULL;
 
 /** List of configuration variables for the resource usage metric source.
  *
@@ -54,11 +54,11 @@ static char* scorep_metrics_plugins_separator = NULL;
  *  Current configuration variables are:
  *  @li @c SCOREP_METRIC_PLUGINS list of requested metric names.
  */
-static SCOREP_ConfigVariable scorep_metric_plugins_configs[] = {
+static SCOREP_ConfigVariable scorep_metric_plugins_confvars[] = {
     {
         "plugins",
         SCOREP_CONFIG_TYPE_STRING,
-        &scorep_metrics_plugins,
+        &scorep_metric_plugins,
         NULL,
         "",
         "Specify list of used plugins",
@@ -67,7 +67,7 @@ static SCOREP_ConfigVariable scorep_metric_plugins_configs[] = {
     {
         "plugins_sep",
         SCOREP_CONFIG_TYPE_STRING,
-        &scorep_metrics_plugins_separator,
+        &scorep_metric_plugins_separator,
         NULL,
         ",",
         "Separator of plugin names",

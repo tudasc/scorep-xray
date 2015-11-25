@@ -26,7 +26,7 @@ size_t   scorep_opencl_queue_size;
  * Mapping of options for OpenCL measurement to internal representation
  * (bit mask).
  */
-static const SCOREP_ConfigType_SetEntry scorep_opencl_enable_groups[] = {
+static const SCOREP_ConfigType_SetEntry opencl_enable_groups[] = {
     {
         "api",
         SCOREP_OPENCL_FEATURE_API,
@@ -54,13 +54,12 @@ static const SCOREP_ConfigType_SetEntry scorep_opencl_enable_groups[] = {
 /*
  *  Configuration variables for the OpenCL adapter.
  */
-static SCOREP_ConfigVariable scorep_opencl_configs[] =
-{
+static const SCOREP_ConfigVariable scorep_opencl_confvars[] = {
     {
         "enable",
         SCOREP_CONFIG_TYPE_BITSET, /* type */
         &scorep_opencl_features,   /* pointer to target variable */
-        ( void* )scorep_opencl_enable_groups,
+        ( void* )opencl_enable_groups,
         "no",                      /* default value */
         "OpenCL measurement features",
         "Sets the OpenCL measurement mode to capture:"

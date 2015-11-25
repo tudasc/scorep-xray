@@ -45,12 +45,12 @@
 
 #include "scorep_oa_confvars.inc.c"
 
-static int8_t scorep_oa_is_initialized = 0;
+static int8_t is_initialized = 0;
 
 void
 SCOREP_OA_Register( void )
 {
-    SCOREP_ConfigRegister( "onlineaccess", scorep_oa_configs );
+    SCOREP_ConfigRegister( "onlineaccess", scorep_oa_confvars );
 }
 
 int8_t
@@ -59,10 +59,10 @@ SCOREP_OA_Init( void )
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
 
     //printf("ENV variables: %ld %ld %s\n",scorep_oa_port,scorep_oa_registry_port,scorep_oa_registry_host);
-    if ( scorep_oa_is_initialized == 0 && SCOREP_OA_IS_REQUESTED )
+    if ( is_initialized == 0 && SCOREP_OA_IS_REQUESTED )
     {
         /* Set the intialization flag to indicate that the adapter is initialized */
-        scorep_oa_is_initialized = 1;
+        is_initialized = 1;
         scorep_oa_mri_set_appl_control( SCOREP_OA_MRI_STATUS_SUSPENDED_INITIALIZATION );
         scorep_oa_connection = scorep_oa_connection_connect();
         scorep_oa_mri_receive_and_process_requests( scorep_oa_connection );
@@ -74,14 +74,14 @@ SCOREP_OA_Init( void )
 int8_t
 SCOREP_OA_Initialized( void )
 {
-    return scorep_oa_is_initialized;
+    return is_initialized;
 }
 
 void
 SCOREP_OA_Finalize( void )
 {
     UTILS_DEBUG_RAW_PRINTF( SCOREP_DEBUG_OA, "Entering %s", __func__ );
-    if ( scorep_oa_is_initialized
+    if ( is_initialized
          && scorep_oa_mri_get_appl_control() != SCOREP_OA_MRI_EXEC_REQUEST_TERMINATE )
     {
         scorep_oa_connection_send_string( scorep_oa_connection, "SUSPENDEDATEND\n" );

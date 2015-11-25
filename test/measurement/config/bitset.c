@@ -63,7 +63,7 @@ static const SCOREP_ConfigType_SetEntry bitset_entries[] = {
     { NULL,          0,          NULL          }
 };
 
-static SCOREP_ConfigVariable bitset_config_variable[] = {
+static const SCOREP_ConfigVariable bitset_confvars[] = {
     {
         "bitset",
         SCOREP_CONFIG_TYPE_BITSET,
@@ -88,7 +88,7 @@ struct bitset_test
 static void
 test_register( CuTest* tc )
 {
-    SCOREP_ErrorCode ret = SCOREP_ConfigRegister( "test", bitset_config_variable );
+    SCOREP_ErrorCode ret = SCOREP_ConfigRegister( "test", bitset_confvars );
     CuAssert( tc, "SCOREP_ConfigRegister", ret == SCOREP_SUCCESS );
 }
 

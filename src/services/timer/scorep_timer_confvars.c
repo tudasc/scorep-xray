@@ -25,5 +25,5 @@ timer_type timer;
 void
 SCOREP_Timer_Register( void )
 {
-    SCOREP_ConfigRegister( "", timer_configs );
+    SCOREP_ConfigRegister( "", scorep_timer_confvars );
 }

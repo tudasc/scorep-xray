@@ -95,7 +95,7 @@ static const SCOREP_ConfigType_SetEntry timer_table[] = {
 
 extern timer_type timer;
 
-static SCOREP_ConfigVariable timer_configs[] = {
+static const SCOREP_ConfigVariable scorep_timer_confvars[] = {
     {
         "timer",
         SCOREP_CONFIG_TYPE_OPTIONSET,

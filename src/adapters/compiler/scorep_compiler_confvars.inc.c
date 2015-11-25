@@ -56,7 +56,7 @@ char* scorep_compiler_nm_symbols = NULL;
    @li executable: Executable of the application. Preferably, with full path. It is used
                    by some compiler adapters (GNU) to evaluate the symbol table.
  */
-SCOREP_ConfigVariable scorep_compiler_configs[] = {
+static const SCOREP_ConfigVariable scorep_compiler_confvars[] = {
     {
         "executable",
         SCOREP_CONFIG_TYPE_PATH,
@@ -100,7 +100,7 @@ compiler_subsystem_register( size_t subsystem_id )
     scorep_compiler_subsystem_id = subsystem_id;
 
     return SCOREP_ConfigRegisterCond( "",
-                                      scorep_compiler_configs,
+                                      scorep_compiler_confvars,
                                       HAVE_BACKEND_COMPILER_INSTRUMENTATION_NEEDS_SYMBOL_TABLE );
 }
 

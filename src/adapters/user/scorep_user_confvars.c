@@ -42,7 +42,7 @@
 #include "scorep_user_confvars.inc.c"
 
 
-static size_t scorep_user_subsystem_id;
+static size_t user_subsystem_id;
 
 
 /** Registers the required configuration variables of the user adapter
@@ -51,9 +51,9 @@ static size_t scorep_user_subsystem_id;
 static SCOREP_ErrorCode
 user_subsystem_register( size_t subsystem_id )
 {
-    scorep_user_subsystem_id = subsystem_id;
+    user_subsystem_id = subsystem_id;
 
-    return SCOREP_ConfigRegister( "selective", scorep_selective_configs );
+    return SCOREP_ConfigRegister( "selective", scorep_selective_confvars );
 }
 
 /* The initialization struct for the MPI adapter */

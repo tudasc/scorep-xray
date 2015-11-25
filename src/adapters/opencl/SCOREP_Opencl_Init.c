@@ -58,7 +58,7 @@ opencl_subsystem_register( size_t subsystemId )
 
     UTILS_DEBUG( "Register environment variables" );
 
-    return SCOREP_ConfigRegister( "opencl", scorep_opencl_configs );
+    return SCOREP_ConfigRegister( "opencl", scorep_opencl_confvars );
 }
 
 /**

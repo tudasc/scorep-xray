@@ -319,7 +319,7 @@ scorep_metric_rusage_register( void )
     SCOREP_ErrorCode status;
 
     /* Register environment variables for 'synchronous strict' and 'per-process' metrics */
-    status = SCOREP_ConfigRegister( "metric", scorep_metric_rusage_configs );
+    status = SCOREP_ConfigRegister( "metric", scorep_metric_rusage_confvars );
     if ( status != SCOREP_SUCCESS )
     {
         UTILS_WARNING( "Registration of RUSAGE configuration variables failed." );
@@ -334,9 +334,9 @@ static void
 scorep_metric_rusage_deregister( void )
 {
     /* Free environment variables for 'synchronous strict' and per-process metrics */
-    free( scorep_metrics_rusage );
-    free( scorep_metrics_rusage_per_process );
-    free( scorep_metrics_rusage_separator );
+    free( scorep_metric_rusage );
+    free( scorep_metric_rusage_per_process );
+    free( scorep_metric_rusage_separator );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " rusage metric source deregister!" );
 }
@@ -369,9 +369,9 @@ scorep_metric_rusage_initialize_source( void )
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize rusage metric source source." );
 
         /* FIRST: Read specification of global synchronous strict metrics from respective environment variable. */
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[RUSAGE] global synchronous strict metrics = %s", scorep_metrics_rusage );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[RUSAGE] global synchronous strict metrics = %s", scorep_metric_rusage );
         metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ] =
-            scorep_metric_rusage_open( scorep_metrics_rusage, scorep_metrics_rusage_separator );
+            scorep_metric_rusage_open( scorep_metric_rusage, scorep_metric_rusage_separator );
         if ( metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ] != NULL )
         {
             metric_counts = metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ]->number_of_metrics;
@@ -382,9 +382,9 @@ scorep_metric_rusage_initialize_source( void )
          */
 
         /* SECOND: Read specification of per-process metrics from respective environment variable. */
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[RUSAGE] per-process metrics = %s", scorep_metrics_rusage_per_process );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[RUSAGE] per-process metrics = %s", scorep_metric_rusage_per_process );
         metric_defs[ PER_PROCESS_METRIC ] =
-            scorep_metric_rusage_open( scorep_metrics_rusage_per_process, scorep_metrics_rusage_separator );
+            scorep_metric_rusage_open( scorep_metric_rusage_per_process, scorep_metric_rusage_separator );
 
         /* Set flag */
         scorep_metric_rusage_initialize = 0;

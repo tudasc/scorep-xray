@@ -846,7 +846,7 @@ scorep_metric_papi_register( void )
 
     /* Register environment variables for 'synchronous strict' and 'per-process' metrics */
     SCOREP_ErrorCode status;
-    status = SCOREP_ConfigRegister( "metric", scorep_metric_papi_configs );
+    status = SCOREP_ConfigRegister( "metric", scorep_metric_papi_confvars );
     if ( status != SCOREP_SUCCESS )
     {
         UTILS_ERROR( SCOREP_ERROR_PAPI_INIT, "Registration of PAPI configure variables failed." );
@@ -863,9 +863,9 @@ static void
 scorep_metric_papi_deregister( void )
 {
     /* Free environment variables for 'synchronous strict' and per-process metrics */
-    free( scorep_metrics_papi );
-    free( scorep_metrics_papi_per_process );
-    free( scorep_metrics_papi_separator );
+    free( scorep_metric_papi );
+    free( scorep_metric_papi_per_process );
+    free( scorep_metric_papi_separator );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " PAPI metric source deregister!" );
 }
@@ -898,10 +898,10 @@ scorep_metric_papi_initialize_source( void )
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize PAPI metric source." );
 
         /* FIRST: Read specification of global synchronous strict metrics from respective environment variable. */
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] global synchronous strict metrics = %s", scorep_metrics_papi );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] global synchronous strict metrics = %s", scorep_metric_papi );
 
         metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ] =
-            scorep_metric_papi_open( scorep_metrics_papi, scorep_metrics_papi_separator );
+            scorep_metric_papi_open( scorep_metric_papi, scorep_metric_papi_separator );
         if ( metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ] != NULL )
         {
             metric_counts = metric_defs[ STRICTLY_SYNCHRONOUS_METRIC ]->number_of_metrics;
@@ -912,10 +912,10 @@ scorep_metric_papi_initialize_source( void )
          */
 
         /* SECOND: Read specification of per-process metrics from respective environment variable. */
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] per-process metrics = %s", scorep_metrics_papi_per_process );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, "[PAPI] per-process metrics = %s", scorep_metric_papi_per_process );
 
         metric_defs[ PER_PROCESS_METRIC ] =
-            scorep_metric_papi_open( scorep_metrics_papi_per_process, scorep_metrics_papi_separator );
+            scorep_metric_papi_open( scorep_metric_papi_per_process, scorep_metric_papi_separator );
 
         /* Set flag */
         scorep_metric_papi_initialize = 0;

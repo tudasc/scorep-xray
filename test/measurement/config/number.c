@@ -47,9 +47,9 @@
 static void
 test_number( CuTest* tc )
 {
-    SCOREP_ErrorCode      ret;
-    uint64_t              number_variable;
-    SCOREP_ConfigVariable config_variables[] = {
+    SCOREP_ErrorCode            ret;
+    uint64_t                    number_variable;
+    const SCOREP_ConfigVariable confvars[] = {
         {
             "number",
             SCOREP_CONFIG_TYPE_NUMBER,
@@ -66,7 +66,7 @@ test_number( CuTest* tc )
     ret = SCOREP_ConfigInit();
     CuAssert( tc, "SCOREP_ConfigInit", ret == SCOREP_SUCCESS );
 
-    ret = SCOREP_ConfigRegister( "", config_variables );
+    ret = SCOREP_ConfigRegister( "", confvars );
     CuAssert( tc, "SCOREP_ConfigRegister", ret == SCOREP_SUCCESS );
 
     ret = SCOREP_ConfigApplyEnv();

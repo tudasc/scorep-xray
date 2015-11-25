@@ -160,14 +160,14 @@ scorep_metric_plugins_register( void )
 
     /* Register environment variables to specify ised plugins */
     SCOREP_ErrorCode status;
-    status = SCOREP_ConfigRegister( "metric", scorep_metric_plugins_configs );
+    status = SCOREP_ConfigRegister( "metric", scorep_metric_plugins_confvars );
     if ( status != SCOREP_SUCCESS )
     {
-        UTILS_ERROR( SCOREP_ERROR_PROCESSED_WITH_FAULTS,
+        UTILS_ERROR( status,
                      "Registration of plugins configure variables failed." );
     }
 
-    return status;
+    return SCOREP_SUCCESS;
 }
 
 /** @brief Called on deregistration of the metric source.
@@ -177,8 +177,8 @@ scorep_metric_plugins_deregister( void )
 {
     /* Free environment variables for plugin specification */
 
-    free( scorep_metrics_plugins );
-    free( scorep_metrics_plugins_separator );
+    free( scorep_metric_plugins );
+    free( scorep_metric_plugins_separator );
 
     for ( uint32_t i = 0; i < num_additional_environment_variables; i++ )
     {
@@ -216,7 +216,7 @@ scorep_metric_plugins_initialize_source( void )
     if ( scorep_metric_plugins_initialize )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize plugins metric source." );
-        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " list of plugins = %s\n", scorep_metrics_plugins );
+        UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " list of plugins = %s\n", scorep_metric_plugins );
 
         /* Working copy of environment variable content */
         char* env_var_content;
@@ -248,7 +248,7 @@ scorep_metric_plugins_initialize_source( void )
         uint32_t num_selected_plugins = 0;
 
         /* Read content of environment variable */
-        env_var_content = UTILS_CStr_dup( scorep_metrics_plugins );
+        env_var_content = UTILS_CStr_dup( scorep_metric_plugins );
 
         /* Return if environment variable is empty */
         if ( strlen( env_var_content ) == 0 )
@@ -258,7 +258,7 @@ scorep_metric_plugins_initialize_source( void )
         }
 
         /* Read plugin names from specification string */
-        token = strtok( env_var_content, scorep_metrics_plugins_separator );
+        token = strtok( env_var_content, scorep_metric_plugins_separator );
         while ( token )
         {
             bool is_new_plugin = true;
@@ -285,7 +285,7 @@ scorep_metric_plugins_initialize_source( void )
             }
 
             /* Handle next plugin */
-            token = strtok( NULL, scorep_metrics_plugins_separator );
+            token = strtok( NULL, scorep_metric_plugins_separator );
         }
         free( env_var_content );
 
@@ -508,7 +508,7 @@ scorep_metric_plugins_initialize_source( void )
              * the next loop will iterate over the tokens token1, token2, and token3.
              */
             env_var_content = UTILS_CStr_dup( additional_environment_variable->event_variable );
-            token           = strtok( env_var_content, scorep_metrics_plugins_separator );
+            token           = strtok( env_var_content, scorep_metric_plugins_separator );
             while ( token )
             {
                 /*
@@ -568,7 +568,7 @@ scorep_metric_plugins_initialize_source( void )
                 } /* End of: for all metrics related to the metric string */
 
                 /* Handle next plugin */
-                token = strtok( NULL, scorep_metrics_plugins_separator );
+                token = strtok( NULL, scorep_metric_plugins_separator );
             }
             free( env_var_content );
 

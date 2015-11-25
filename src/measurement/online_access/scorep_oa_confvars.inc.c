@@ -53,8 +53,7 @@ uint64_t scorep_oa_port          = 50010;
 /**
    Configuration variable registration structures for the online access system.
  */
-static SCOREP_ConfigVariable scorep_oa_configs[] =
-{
+static const SCOREP_ConfigVariable scorep_oa_confvars[] = {
     {
         "enable",
         SCOREP_CONFIG_TYPE_BOOL,

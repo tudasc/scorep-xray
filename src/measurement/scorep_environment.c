@@ -70,7 +70,7 @@ static bool     scorep_env_overwrite_experiment_directory;
 static char*    scorep_env_machine_name;
 
 /** @brief Measurement system configure variables */
-static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
+static const SCOREP_ConfigVariable core_confvars[] = {
     {
         "enable_profiling",
         SCOREP_CONFIG_TYPE_BOOL,
@@ -155,8 +155,8 @@ static SCOREP_ConfigVariable scorep_env_core_environment_variables[] = {
 
 
 #if HAVE( SCOREP_DEBUG )
-bool                  scorep_debug_unify;
-SCOREP_ConfigVariable scorep_debug_environment_variables[] = {
+bool                               scorep_debug_unify;
+static const SCOREP_ConfigVariable core_debug_confvars[] = {
     {
         "unify",
         SCOREP_CONFIG_TYPE_BOOL,
@@ -244,7 +244,7 @@ SCOREP_RegisterAllConfigVariables( void )
     scorep_env_core_environment_variables_initialized = true;
 
     SCOREP_ErrorCode error;
-    error = SCOREP_ConfigRegister( "", scorep_env_core_environment_variables );
+    error = SCOREP_ConfigRegister( "", core_confvars );
     if ( SCOREP_SUCCESS != error )
     {
         UTILS_ERROR( error, "Can't register core environment variables" );
@@ -252,7 +252,7 @@ SCOREP_RegisterAllConfigVariables( void )
     }
 
 #if HAVE( SCOREP_DEBUG )
-    error = SCOREP_ConfigRegister( "debug", scorep_debug_environment_variables );
+    error = SCOREP_ConfigRegister( "debug", core_debug_confvars );
     if ( SCOREP_SUCCESS != error )
     {
         UTILS_ERROR( error, "Can't register debug environment variables" );

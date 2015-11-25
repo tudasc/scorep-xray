@@ -75,7 +75,7 @@ static uint64_t timer_cmp_freq;
 void
 SCOREP_Timer_Register( void )
 {
-    SCOREP_ConfigRegister( "", timer_configs );
+    SCOREP_ConfigRegister( "", scorep_timer_confvars );
 }
 
 

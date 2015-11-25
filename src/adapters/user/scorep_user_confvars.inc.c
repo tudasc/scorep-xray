@@ -47,7 +47,7 @@ static char* scorep_selective_file_name;
 /**
    Array of configuration variables for the selective recording.
  */
-SCOREP_ConfigVariable scorep_selective_configs[] = {
+static const SCOREP_ConfigVariable scorep_selective_confvars[] = {
     {
         "config_file",
         SCOREP_CONFIG_TYPE_PATH,

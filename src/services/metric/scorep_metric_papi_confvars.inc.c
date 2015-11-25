@@ -40,13 +40,13 @@
 
 
 /** Contains the name of requested metrics. */
-static char* scorep_metrics_papi = NULL;
+static char* scorep_metric_papi = NULL;
 
 /** Contains the name of requested per-process metrics. */
-static char* scorep_metrics_papi_per_process = NULL;
+static char* scorep_metric_papi_per_process = NULL;
 
 /** Contains the separator of metric names. */
-static char* scorep_metrics_papi_separator = NULL;
+static char* scorep_metric_papi_separator = NULL;
 
 /**
  *  List of configuration variables for the PAPI metric adapter.
@@ -60,11 +60,11 @@ static char* scorep_metrics_papi_separator = NULL;
  *  @li @c SCOREP_METRIC_PAPI_PER_PROCESS list of requested metric names recorded per-process.
  *  @li @c SCOREP_METRIC_PAPI_SEP character that separates single metric names.
  */
-static SCOREP_ConfigVariable scorep_metric_papi_configs[] = {
+static const SCOREP_ConfigVariable scorep_metric_papi_confvars[] = {
     {
         "papi",
         SCOREP_CONFIG_TYPE_STRING,
-        &scorep_metrics_papi,
+        &scorep_metric_papi,
         NULL,
         "",
         "PAPI metric names to measure",
@@ -73,7 +73,7 @@ static SCOREP_ConfigVariable scorep_metric_papi_configs[] = {
     {
         "papi_per_process",
         SCOREP_CONFIG_TYPE_STRING,
-        &scorep_metrics_papi_per_process,
+        &scorep_metric_papi_per_process,
         NULL,
         "",
         "PAPI metric names to measure per-process",
@@ -82,7 +82,7 @@ static SCOREP_ConfigVariable scorep_metric_papi_configs[] = {
     {
         "papi_sep",
         SCOREP_CONFIG_TYPE_STRING,
-        &scorep_metrics_papi_separator,
+        &scorep_metric_papi_separator,
         NULL,
         ",",
         "Separator of metric names",

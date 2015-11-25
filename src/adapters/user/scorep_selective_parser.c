@@ -431,7 +431,7 @@ scorep_selective_register( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG | SCOREP_DEBUG_USER,
                         "Register config variables for selective recording" );
-    return SCOREP_ConfigRegister( "selective", scorep_selective_configs );
+    return SCOREP_ConfigRegister( "selective", scorep_selective_confvars );
 }
 
 /**

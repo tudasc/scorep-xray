@@ -47,7 +47,7 @@ static char* scorep_filter_file_name;
 /**
    Array of configuration variables for filtering tracing.
  */
-SCOREP_ConfigVariable scorep_filter_configs[] = {
+static const SCOREP_ConfigVariable scorep_filter_confvars[] = {
     {
         "file",
         SCOREP_CONFIG_TYPE_PATH,
@@ -65,5 +65,5 @@ SCOREP_Filter_Register( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CONFIG,
                         "Register config variables for filtering system" );
-    return SCOREP_ConfigRegister( "filtering", scorep_filter_configs );
+    return SCOREP_ConfigRegister( "filtering", scorep_filter_confvars );
 }

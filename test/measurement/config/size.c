@@ -47,9 +47,9 @@
 static void
 test_size( CuTest* tc )
 {
-    SCOREP_ErrorCode      ret;
-    uint64_t              size_variable;
-    SCOREP_ConfigVariable config_variables[] = {
+    SCOREP_ErrorCode            ret;
+    uint64_t                    size_variable;
+    const SCOREP_ConfigVariable confvars[] = {
         {
             "size",
             SCOREP_CONFIG_TYPE_SIZE,
@@ -65,7 +65,7 @@ test_size( CuTest* tc )
     ret = SCOREP_ConfigInit();
     CuAssert( tc, "SCOREP_ConfigInit", ret == SCOREP_SUCCESS );
 
-    ret = SCOREP_ConfigRegister( "", config_variables );
+    ret = SCOREP_ConfigRegister( "", confvars );
     CuAssert( tc, "SCOREP_ConfigRegister", ret == SCOREP_SUCCESS );
 
     ret = SCOREP_ConfigApplyEnv();

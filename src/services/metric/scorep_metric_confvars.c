@@ -49,13 +49,13 @@ static SCOREP_ErrorCode
 metric_subsystem_register( size_t subsystem_id )
 {
     SCOREP_ConfigRegisterCond( "metric",
-                               scorep_metric_papi_configs,
+                               scorep_metric_papi_confvars,
                                HAVE_BACKEND_PAPI );
     SCOREP_ConfigRegisterCond( "metric",
-                               scorep_metric_rusage_configs,
+                               scorep_metric_rusage_confvars,
                                HAVE_BACKEND_GETRUSAGE );
     SCOREP_ConfigRegisterCond( "metric",
-                               scorep_metric_plugins_configs,
+                               scorep_metric_plugins_confvars,
                                HAVE_BACKEND_DLFCN_SUPPORT );
 
     return SCOREP_SUCCESS;

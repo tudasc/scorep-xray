@@ -80,14 +80,14 @@ SCOREP_Env_GetPageSize( void );
 void
 SCOREP_Status_Initialize( void );
 
-static uint64_t              scorep_test_mpi_unify_verbose;
-static bool                  scorep_test_mpi_unify_define_mpi_group;
-static bool                  scorep_test_mpi_unify_define_mpi_regions;
-static SCOREP_ConfigVariable scorep_test_mpi_unify_config_variables[] = {
+static uint64_t                    test_mpi_unify_verbose;
+static bool                        test_mpi_unify_define_mpi_group;
+static bool                        test_mpi_unify_define_mpi_regions;
+static const SCOREP_ConfigVariable test_mpi_unify_confvars[] = {
     {
         "mpi_unify_verbose",
         SCOREP_CONFIG_TYPE_NUMBER,
-        &scorep_test_mpi_unify_verbose,
+        &test_mpi_unify_verbose,
         NULL,
         "0",
         "verbosity",
@@ -96,7 +96,7 @@ static SCOREP_ConfigVariable scorep_test_mpi_unify_config_variables[] = {
     {
         "mpi_unify_define_mpi_regions",
         SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_test_mpi_unify_define_mpi_regions,
+        &test_mpi_unify_define_mpi_regions,
         NULL,
         "false",
         "",
@@ -105,7 +105,7 @@ static SCOREP_ConfigVariable scorep_test_mpi_unify_config_variables[] = {
     {
         "mpi_unify_define_mpi_group",
         SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_test_mpi_unify_define_mpi_group,
+        &test_mpi_unify_define_mpi_group,
         NULL,
         "true",
         "",
@@ -119,7 +119,7 @@ main( int argc, char* argv[] )
 {
     SCOREP_ConfigInit();
     SCOREP_RegisterAllConfigVariables();
-    SCOREP_ConfigRegister( "test", scorep_test_mpi_unify_config_variables );
+    SCOREP_ConfigRegister( "test", test_mpi_unify_confvars );
     SCOREP_ConfigApplyEnv();
 
     SCOREP_Status_Initialize();
@@ -161,12 +161,12 @@ main( int argc, char* argv[] )
                                   SCOREP_PARADIGM_USER,
                                   SCOREP_REGION_FUNCTION );
 
-    if ( scorep_test_mpi_unify_define_mpi_regions )
+    if ( test_mpi_unify_define_mpi_regions )
     {
         scorep_mpi_register_regions();
     }
 
-    if ( scorep_test_mpi_unify_define_mpi_group )
+    if ( test_mpi_unify_define_mpi_group )
     {
         /* build an MPI group */
         int32_t* group_members;
@@ -198,7 +198,7 @@ main( int argc, char* argv[] )
         fprintf( result, "t: %f\n", timing );
 
         //assert( scorep_unified_definition_manager->region.counter == ( uint32_t )size );
-        if ( scorep_test_mpi_unify_verbose >= 1 )
+        if ( test_mpi_unify_verbose >= 1 )
         {
             SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
                                                                  Region, region )
@@ -216,7 +216,7 @@ main( int argc, char* argv[] )
          * the MPI locations
          * the MPI comm self group
          */
-        if ( scorep_test_mpi_unify_verbose >= 2 )
+        if ( test_mpi_unify_verbose >= 2 )
         {
             SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( scorep_unified_definition_manager,
                                                                  Group, group )
@@ -247,7 +247,7 @@ main( int argc, char* argv[] )
     }
     SCOREP_Ipc_Barrier();
 
-    if ( scorep_test_mpi_unify_verbose >= 2 )
+    if ( test_mpi_unify_verbose >= 2 )
     {
         for ( int the_rank = 0; the_rank < size; the_rank++ )
         {

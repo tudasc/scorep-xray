@@ -49,7 +49,7 @@
 #define SCOREP_USER_REGION_BY_NAME_SIZE 128
 
 int8_t        scorep_user_is_initialized = 0;
-static size_t scorep_user_subsystem_id;
+static size_t user_subsystem_id;
 
 
 /** Registers the required configuration variables of the user adapter
@@ -58,7 +58,7 @@ static size_t scorep_user_subsystem_id;
 static SCOREP_ErrorCode
 user_subsystem_register( size_t subsystem_id )
 {
-    scorep_user_subsystem_id = subsystem_id;
+    user_subsystem_id = subsystem_id;
 
     return scorep_selective_register();
 }

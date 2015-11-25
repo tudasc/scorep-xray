@@ -134,8 +134,8 @@ SCOREP_ConfigFini( void );
  * @return Successful registration or failure
  */
 SCOREP_ErrorCode
-SCOREP_ConfigRegister( const char*            nameSpace,
-                       SCOREP_ConfigVariable* variables );
+SCOREP_ConfigRegister( const char*                  nameSpace,
+                       const SCOREP_ConfigVariable* variables );
 
 /**
  *  Same as @a SCOREP_ConfigRegister() but is effective only if either
@@ -144,9 +144,9 @@ SCOREP_ConfigRegister( const char*            nameSpace,
  *
  */
 SCOREP_ErrorCode
-SCOREP_ConfigRegisterCond( const char*            nameSpaceName,
-                           SCOREP_ConfigVariable* variables,
-                           bool                   isAvailable );
+SCOREP_ConfigRegisterCond( const char*                  nameSpaceName,
+                           const SCOREP_ConfigVariable* variables,
+                           bool                         isAvailable );
 
 /**
  *  Force registrations made with @a SCOREP_ConfigRegisterCond.

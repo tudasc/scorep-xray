@@ -49,7 +49,7 @@ static bool bool_default_0;
 static bool bool_default_garbage;
 
 
-static SCOREP_ConfigVariable bool_config_variables[] =
+static const SCOREP_ConfigVariable bool_confvars[] =
 {
     {
         "bool_default_true",
@@ -245,7 +245,7 @@ main()
 
     SCOREP_ConfigInit();
 
-    SCOREP_ConfigRegister( "", bool_config_variables );
+    SCOREP_ConfigRegister( "", bool_confvars );
 
     CuSuiteRun( suite );
 

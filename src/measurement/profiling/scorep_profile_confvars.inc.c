@@ -96,7 +96,7 @@ bool scorep_profile_enable_core_files;
 /**
    Option table for output format configuration.
  */
-static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
+static const SCOREP_ConfigType_SetEntry profile_format_table[] = {
     {
         "none",
         SCOREP_PROFILE_OUTPUT_NONE,
@@ -129,7 +129,7 @@ static const SCOREP_ConfigType_SetEntry scorep_profile_format_table[] = {
 /**
    Option table for cluster mode configuration.
  */
-static const SCOREP_ConfigType_SetEntry scorep_profile_clustering_mode_table[] = {
+static const SCOREP_ConfigType_SetEntry profile_clustering_mode_table[] = {
     {
         "none/0",
         SCOREP_PROFILE_CLUSTER_SUBTREE,
@@ -168,7 +168,7 @@ static const SCOREP_ConfigType_SetEntry scorep_profile_clustering_mode_table[] =
 /**
    Configuration variable registration structures for the profiling system.
  */
-static SCOREP_ConfigVariable scorep_profile_configs[] = {
+static const SCOREP_ConfigVariable scorep_profile_confvars[] = {
     {
         "task_exchange_num",
         SCOREP_CONFIG_TYPE_NUMBER,
@@ -225,7 +225,7 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
         "format",
         SCOREP_CONFIG_TYPE_OPTIONSET,
         &scorep_profile_output_format,
-        ( void* )scorep_profile_format_table,
+        ( void* )profile_format_table,
         "default",
         "Profile output format",
         "Sets the output format for the profile.\n"
@@ -254,7 +254,7 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
         "clustering_mode",
         SCOREP_CONFIG_TYPE_OPTIONSET,
         &scorep_profile_cluster_mode,
-        ( void* )scorep_profile_clustering_mode_table,
+        ( void* )profile_clustering_mode_table,
         "subtree",
         "Specifies the level of strictness when comparing call trees for equivalence",
         "Possible levels:"
@@ -290,5 +290,5 @@ static SCOREP_ConfigVariable scorep_profile_configs[] = {
 void
 SCOREP_Profile_Register( void )
 {
-    SCOREP_ConfigRegister( "profiling", scorep_profile_configs );
+    SCOREP_ConfigRegister( "profiling", scorep_profile_confvars );
 }

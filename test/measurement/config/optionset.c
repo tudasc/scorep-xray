@@ -64,7 +64,7 @@ static const SCOREP_ConfigType_SetEntry optionset_entries[] = {
     { NULL,          0,          NULL          }
 };
 
-static SCOREP_ConfigVariable optionset_config_variable[] = {
+static const SCOREP_ConfigVariable optionset_confvars[] = {
     {
         "optionset",
         SCOREP_CONFIG_TYPE_OPTIONSET,
@@ -89,7 +89,7 @@ struct optionset_test
 static void
 test_register( CuTest* tc )
 {
-    SCOREP_ErrorCode ret = SCOREP_ConfigRegister( "test", optionset_config_variable );
+    SCOREP_ErrorCode ret = SCOREP_ConfigRegister( "test", optionset_confvars );
     CuAssert( tc, "SCOREP_ConfigRegister", ret == SCOREP_SUCCESS );
 }
 

@@ -45,7 +45,7 @@
  * @note The values are sorted in decreasing order, to beautify the debug
  * output. Ie.: if all groups are enabled we get "ALL", because it matches first.
  */
-static const SCOREP_ConfigType_SetEntry scorep_mpi_enable_groups[] = {
+static const SCOREP_ConfigType_SetEntry mpi_enable_groups[] = {
     {
         "all",
         SCOREP_MPI_ENABLED_ALL,
@@ -181,7 +181,7 @@ bool scorep_mpi_hooks_on = false;
    They are registered to the measurement system and are filled during until the
    initialization function is called.
  */
-SCOREP_ConfigVariable scorep_mpi_configs[] = {
+static const SCOREP_ConfigVariable scorep_mpi_confvars[] = {
     {
         "max_communicators",
         SCOREP_CONFIG_TYPE_NUMBER,
@@ -224,7 +224,7 @@ SCOREP_ConfigVariable scorep_mpi_configs[] = {
         "enable_groups",
         SCOREP_CONFIG_TYPE_BITSET,
         &scorep_mpi_enabled,
-        ( void* )scorep_mpi_enable_groups,
+        ( void* )mpi_enable_groups,
         "default",
         "The names of the function groups which are measured",
         "Other functions are not measured.\n"

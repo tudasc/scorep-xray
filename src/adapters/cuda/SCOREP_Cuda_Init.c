@@ -67,7 +67,7 @@ cuda_subsystem_register( size_t subsystem_id )
 
     scorep_cuda_subsystem_id = subsystem_id;
 
-    return SCOREP_ConfigRegister( "cuda", scorep_cuda_configs );
+    return SCOREP_ConfigRegister( "cuda", scorep_cuda_confvars );
 }
 
 static int

@@ -40,7 +40,7 @@ static char* string_default_empty;
 static char* string_default_foo;
 
 
-static SCOREP_ConfigVariable string_config_variables[] =
+static const SCOREP_ConfigVariable string_confvars[] =
 {
     {
         "string_default_empty",
@@ -97,7 +97,7 @@ main()
 
     SCOREP_ConfigInit();
 
-    SCOREP_ConfigRegister( "", string_config_variables );
+    SCOREP_ConfigRegister( "", string_confvars );
 
     CuSuiteRun( suite );
 

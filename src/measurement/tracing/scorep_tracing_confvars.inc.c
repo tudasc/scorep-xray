@@ -48,7 +48,7 @@ static bool scorep_tracing_compress;
 
 
 /** @brief Measurement system configure variables */
-static SCOREP_ConfigVariable scorep_tracing_config_variables[] = {
+static const SCOREP_ConfigVariable scorep_tracing_confvars[] = {
     {
         "use_sion",
         SCOREP_CONFIG_TYPE_BOOL,
@@ -85,7 +85,7 @@ SCOREP_ErrorCode
 SCOREP_Tracing_Register( void )
 {
     SCOREP_ErrorCode ret;
-    ret = SCOREP_ConfigRegister( "tracing", scorep_tracing_config_variables );
+    ret = SCOREP_ConfigRegister( "tracing", scorep_tracing_confvars );
     if ( SCOREP_SUCCESS != ret )
     {
         UTILS_ERROR( ret, "Can't register tracing config variables" );
