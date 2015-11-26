@@ -34,6 +34,8 @@ Features and improvements:
   extra steps, please see share/bg-gnu/README for details. The
   installation on older Blue Gene systems, though not tested, might
   work as well.
+- Source-to-source instrumentation via PDT on Blue Gene systems was
+  reenabled for PDT versions newer than 3.18.
 
 User tools and API improvements and changes:
 

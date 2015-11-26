@@ -334,7 +334,7 @@ various Score-P components.
     file name (here to bt.opari.f)
 
   - Due to a bug in PDT 3.18 and earlier versions, PDT support is
-    disabled on BlueGene systems.
+    disabled on BlueGene systems for these versions.
 
   - Rusage-based metrics are not supported on BlueGene systems.
 
