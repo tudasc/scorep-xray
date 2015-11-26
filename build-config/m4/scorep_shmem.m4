@@ -6,6 +6,9 @@
 ## Copyright (c) 2013-2014,
 ## Technische Universitaet Dresden, Germany
 ##
+## Copyright (c) 2015,
+## Forschungszentrum Juelich GmbH, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -962,7 +965,7 @@ AC_REQUIRE([_SCOREP_SHMEM_INCLUDE])
 
 AS_IF([test "x${scorep_have_shmem_include}" = "xyes"],
       [AC_SUBST([SCOREP_HAVE_PDT_SHMEM_INSTRUMENTATION], [1])
-       AFS_SUMMARY([PDT SHMEM instrumentation], [yes])],
+       AFS_SUMMARY([PDT SHMEM instrumentation], [yes, if PDT available])],
       [AC_SUBST([SCOREP_HAVE_PDT_SHMEM_INSTRUMENTATION], [0])
        AC_MSG_WARN([cannot determine shmem.h include path. PDT SHMEM instrumentation will be disabled.])
        AFS_SUMMARY([PDT SHMEM instrumentation], [no, shmem.h include path could not be determined.])])

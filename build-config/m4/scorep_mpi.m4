@@ -354,7 +354,7 @@ dnl ----------------------------------------------------------------------------
 
 
 AC_DEFUN([AC_SCOREP_MPI], [
-AC_REQUIRE([_AC_SCOREP_PDT_MPI_INSTRUMENTATION])
+AC_REQUIRE([_SCOREP_PDT_MPI_INSTRUMENTATION])
 
 if test "x${scorep_mpi_c_supported}" = "xyes"; then
   if test "x${scorep_mpi_f77_supported}" = "xyes" -o "x${scorep_mpi_f90_supported}" = "xyes"; then
@@ -482,12 +482,12 @@ AS_IF([test "x${ac_scorep_have_mpi_include}" = "xyes"],
 dnl ----------------------------------------------------------------------------
 
 
-AC_DEFUN([_AC_SCOREP_PDT_MPI_INSTRUMENTATION], [
+AC_DEFUN([_SCOREP_PDT_MPI_INSTRUMENTATION], [
 AC_REQUIRE([_AC_SCOREP_MPI_INCLUDE])
 
 AS_IF([test "x${ac_scorep_have_mpi_include}" = "xyes"],
       [AC_SUBST([SCOREP_HAVE_PDT_MPI_INSTRUMENTATION], [1])
-       AFS_SUMMARY([PDT MPI instrumentation], [yes])],
+       AFS_SUMMARY([PDT MPI instrumentation], [yes, if PDT available])],
       [AC_SUBST([SCOREP_HAVE_PDT_MPI_INSTRUMENTATION], [0])
        AC_MSG_WARN([cannot determine mpi.h include path. PDT MPI instrumentation will be disabled.])
        AFS_SUMMARY([PDT MPI instrumentation], [no, mpi.h include path could not be determined.])])

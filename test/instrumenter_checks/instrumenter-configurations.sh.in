@@ -19,7 +19,7 @@
 ## Copyright (c) 2009-2011,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -78,13 +78,13 @@ done
 @SCOREP_COMPILER_SUN_TRUE@@HAVE_COMPILER_INSTRUMENTATION_TRUE@for comp_arg in nocompiler; do
 
     for pomp_user_arg in pomp nopomp; do
-@HAVE_PDT_FALSE@        for user_arg in user nouser; do
-@HAVE_PDT_TRUE@        for pdt_arg in pdt nopdt; do
-@HAVE_PDT_TRUE@		if [ $pdt_arg = pdt ]; then
-@HAVE_PDT_TRUE@		    prepocessargs="nopreprocess"
-@HAVE_PDT_TRUE@		else
+@HAVE_SCOREP_PDT_FALSE@        for user_arg in user nouser; do
+@HAVE_SCOREP_PDT_TRUE@        for pdt_arg in pdt nopdt; do
+@HAVE_SCOREP_PDT_TRUE@		if [ $pdt_arg = pdt ]; then
+@HAVE_SCOREP_PDT_TRUE@		    prepocessargs="nopreprocess"
+@HAVE_SCOREP_PDT_TRUE@		else
 		    prepocessargs="preprocess nopreprocess"
-@HAVE_PDT_TRUE@                fi
+@HAVE_SCOREP_PDT_TRUE@                fi
 	        for preprocess_user_arg in $prepocessargs; do
 
 @HAVE_COBI_TRUE@                for cobi_arg in cobi nocobi; do
@@ -141,8 +141,8 @@ done
 
 @HAVE_COBI_TRUE@                done
                 done
-@HAVE_PDT_TRUE@        done
-@HAVE_PDT_FALSE@        done
+@HAVE_SCOREP_PDT_TRUE@        done
+@HAVE_SCOREP_PDT_FALSE@        done
     done
 @HAVE_COMPILER_INSTRUMENTATION_TRUE@done
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2014,
@@ -56,7 +56,7 @@ SCOREP_Instrumenter_PdtAdapter::SCOREP_Instrumenter_PdtAdapter( void )
     m_pdt_config_file = SCOREP_DATADIR "/SCOREP_Pdt_Instrumentation.conf";
     m_use_params      = true;
 
-#ifndef HAVE_PDT
+#if !HAVE( SCOREP_PDT )
     unsupported();
 #endif
 }

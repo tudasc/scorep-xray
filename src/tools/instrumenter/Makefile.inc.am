@@ -54,10 +54,6 @@ scorep_CPPFLAGS = \
     $(AM_CPPFLAGS) \
     $(UTILS_CPPFLAGS)
 
-if HAVE_PDT
-scorep_CPPFLAGS += -DHAVE_PDT=1
-endif
-
 scorep_LDADD = \
     libutils.la \
     libscorep_openmp_version.la
