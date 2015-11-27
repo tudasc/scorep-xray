@@ -93,13 +93,13 @@ static const SCOREP_ConfigType_SetEntry timer_table[] = {
     { NULL, 0, NULL }
 };
 
-extern timer_type timer;
+extern timer_type scorep_timer;
 
 static const SCOREP_ConfigVariable scorep_timer_confvars[] = {
     {
         "timer",
         SCOREP_CONFIG_TYPE_OPTIONSET,
-        &timer,
+        &scorep_timer,
         ( void* )timer_table,
         HAVE_BACKEND_SCOREP_TIMER_DEFAULT, /* set by configure */
         "Timer used during measurement",

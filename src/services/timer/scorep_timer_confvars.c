@@ -20,7 +20,7 @@
 
 #include "scorep_timer_confvars.inc.c"
 
-timer_type timer;
+timer_type scorep_timer;
 
 void
 SCOREP_Timer_Register( void )

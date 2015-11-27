@@ -42,12 +42,12 @@
 /* *INDENT-ON*  */
 
 
-timer_type timer;  /**< Timer used throughout measurement. Can take
-                    * one value out of the enum timer_type. Can be set
-                    * before measurement using the SCOREP_TIMER
-                    * environment variable. It defaults to the first
-                    * available timer. Available timers are detected
-                    * at configuration time. */
+timer_type scorep_timer;  /**< Timer used throughout measurement. Can take
+                           * one value out of the enum timer_type. Can be set
+                           * before measurement using the SCOREP_TIMER
+                           * environment variable. It defaults to the first
+                           * available timer. Available timers are detected
+                           * at configuration time. */
 
 static bool is_initialized = false;
 
@@ -87,7 +87,7 @@ SCOREP_Timer_Initialize( void )
         return;
     }
 
-    switch ( timer )
+    switch ( scorep_timer )
     {
 #if HAVE( BACKEND_SCOREP_TIMER_BGL )
         case TIMER_BGL:
@@ -217,7 +217,7 @@ SCOREP_Timer_Initialize( void )
 uint64_t
 SCOREP_Timer_GetClockResolution( void )
 {
-    switch ( timer )
+    switch ( scorep_timer )
     {
 #if HAVE( BACKEND_SCOREP_TIMER_BGL )
         case TIMER_BGL:
@@ -297,7 +297,7 @@ SCOREP_Timer_GetClockResolution( void )
 bool
 SCOREP_Timer_ClockIsGlobal( void )
 {
-    switch ( timer )
+    switch ( scorep_timer )
     {
 #if HAVE( BACKEND_SCOREP_TIMER_BGL )
         case TIMER_BGL:

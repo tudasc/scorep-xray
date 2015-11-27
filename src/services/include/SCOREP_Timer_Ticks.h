@@ -86,8 +86,8 @@ SCOREP_Timer_GetClockTicks( void )
     /* TODO: 1. Convert from static inline to macro to enforce inlining. PGI
      * needs to be extracted into additional function call.
      * 2. Use computed goto instead of switch if available. */
-    extern timer_type timer;
-    switch ( timer )
+    extern timer_type scorep_timer;
+    switch ( scorep_timer )
     {
 #if HAVE( BACKEND_SCOREP_TIMER_BGL )
         case TIMER_BGL:
