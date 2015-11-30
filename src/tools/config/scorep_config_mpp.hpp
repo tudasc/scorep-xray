@@ -34,7 +34,7 @@
 * ***************************************************************************/
 
 /**
- * The class SCOREP_Config_MppSystem represents a multi-process parodigm inside the
+ * The class SCOREP_Config_MppSystem represents a multi-process paradigm inside the
  * scorep-config tool. It contains the paradigm specific data and algorithms.
  * This class is the basis from which specialized paradigm classes may
  * derive their own class.
