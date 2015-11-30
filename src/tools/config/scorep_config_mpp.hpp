@@ -65,7 +65,7 @@ public:
      * and sets the current class member to this paradigm.
      * This implementation checks for the value after the '--mpp=' part.
      * @param arg  The argument which is checked.
-     * @returns True if this argument matches any module. False otherwise.
+     * @return True if this argument matches any module. False otherwise.
      */
     static bool
     checkAll( const std::string& arg );
