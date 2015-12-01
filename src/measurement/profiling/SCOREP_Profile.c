@@ -369,7 +369,7 @@ on_location_creation( SCOREP_Location* locationData,
  *
  * @param location The location object holding the profile data to be deleted
  */
-void
+static void
 delete_location_data( SCOREP_Location* location )
 {
     SCOREP_Memory_FreeProfileMem( location );
@@ -389,7 +389,7 @@ delete_location_data( SCOREP_Location* location )
  * locationData.
  * @param forkSequenceCount  The forkSequenceCount of the activated thread.
  */
-void
+static void
 on_location_activation( SCOREP_Location* locationData,
                         SCOREP_Location* parentLocationData,
                         uint32_t         forkSequenceCount )
@@ -482,7 +482,7 @@ on_location_activation( SCOREP_Location* locationData,
  * @param parentLocationData Location data of the parent thread, may equal @a
  * locationData.
  */
-void
+static void
 on_location_deactivation( SCOREP_Location* locationData,
                           SCOREP_Location* parentLocationData )
 {

@@ -172,7 +172,7 @@ scorep_opari2_user_register_region( SCOREP_Opari2_User_Region* region )
  * != 0.
  *
  */
-void
+static void
 parse_user_init_string( const char                 initString[],
                         SCOREP_Opari2_User_Region* region )
 {
