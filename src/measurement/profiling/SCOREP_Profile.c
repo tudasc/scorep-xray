@@ -751,7 +751,7 @@ enter_region( SCOREP_Location*    location,
                        The samples must be in the same order as the metric definitions
                        at the @ref SCOREP_Profile_Initialize call.
  */
-void
+static void
 exit_region( SCOREP_Location*    location,
              uint64_t            timestamp,
              SCOREP_RegionHandle regionHandle,
