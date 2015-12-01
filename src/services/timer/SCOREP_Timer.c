@@ -132,6 +132,8 @@ SCOREP_Timer_Initialize( void )
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
         case TIMER_TSC:
         {
+# if !( defined( __FUJITSU ) ) /* For Fujitsu we 1. know that the tsc is nonstop and constant
+                                * and 2. /proc/cpuinfo doesn't contain this data. */
 # if HAVE( GETLINE )
             FILE*   fp;
             char*   line   = NULL;
@@ -160,7 +162,7 @@ SCOREP_Timer_Initialize( void )
                 if ( !constant_and_nonstop_tsc )
                 {
                     UTILS_WARNING( "tsc timer is not (\'nonstop_tsc\' && \'constant_tsc\'). "
-                                   "Timings likely to be unreliable. Please switch to a timer." );
+                                   "Timings likely to be unreliable. Please switch to a different timer." );
                 }
                 free( line );
             }
@@ -169,6 +171,7 @@ SCOREP_Timer_Initialize( void )
                            "in /proc/cpuinfo. Switch to a timer different from "
                            "\'tsc\' if you have issues with timings." );
 #endif      /* ! GETLINE */
+# endif /* !(defined(__FUJITSU)) */
 
             /* TODO: assert that all processes use TIMER_TSC running at the
              * same frequency. For this we need to MPP communicate but MPP might
