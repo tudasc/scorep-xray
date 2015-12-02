@@ -49,6 +49,7 @@
 #include <UTILS_CStr.h>
 
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Filter.h>
@@ -145,14 +146,16 @@ __func_trace_enter( char*                region_name,
                     int                  line_no,
                     SCOREP_RegionHandle* handle )
 {
-    if ( !scorep_compiler_initialized )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
-        if ( scorep_compiler_finalized )
-        {
-            *handle = SCOREP_INVALID_REGION;
-            return;
-        }
         SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        *handle = SCOREP_INVALID_REGION;
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
     }
 
     /* The IBM compiler instruments outlined functions of OpenMP parallel regions.
@@ -180,6 +183,8 @@ __func_trace_enter( char*                region_name,
     {
         SCOREP_EnterRegion( *handle );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #else
 void
@@ -187,13 +192,15 @@ __func_trace_enter( char* region_name,
                     char* file_name,
                     int   line_no )
 {
-    if ( !scorep_compiler_initialized )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
-        if ( scorep_compiler_finalized )
-        {
-            return;
-        }
         SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
     }
 
     SCOREP_RegionHandle handle = get_region_handle( region_name, file_name, line_no );
@@ -201,6 +208,8 @@ __func_trace_enter( char* region_name,
     {
         SCOREP_EnterRegion( handle );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -219,8 +228,10 @@ __func_trace_exit( char*                region_name,
                    int                  line_no,
                    SCOREP_RegionHandle* handle )
 {
-    if ( scorep_compiler_finalized )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
     {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
 
@@ -230,6 +241,8 @@ __func_trace_exit( char*                region_name,
     {
         SCOREP_ExitRegion( *handle );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #else
 void
@@ -237,14 +250,16 @@ __func_trace_exit( char* region_name,
                    char* file_name,
                    int   line_no )
 {
-    scorep_compiler_hash_node* hash_node;
-    if ( scorep_compiler_finalized )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
     {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
 
     UTILS_DEBUG_ENTRY();
 
+    scorep_compiler_hash_node* hash_node;
     if ( ( hash_node = scorep_compiler_hash_get( ( long )region_name ) ) )
     {
         /* Invalid handle marks filtered regions */
@@ -253,5 +268,7 @@ __func_trace_exit( char* region_name,
             SCOREP_ExitRegion( hash_node->region_handle );
         }
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif

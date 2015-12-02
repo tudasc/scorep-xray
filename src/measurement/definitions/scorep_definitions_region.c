@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -121,16 +121,16 @@ SCOREP_Definitions_NewRegion( const char*             regionName,
         /* region name (use it for demangled name) */
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            regionName ? regionName : "<unknown region>" ),
+            regionName ? regionName : "<unknown region>", NULL ),
         /* canonical region name (use it for mangled name) */
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
             regionCanonicalName ? regionCanonicalName :
-            regionName ? regionName : "<unknown region>" ),
+            regionName ? regionName : "<unknown region>", NULL ),
         /* description currently not used */
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            "" ),
+            "", NULL ),
         file_name_handle,
         beginLine,
         endLine,

@@ -208,6 +208,20 @@ be used to build Score-P are as follows:
   --with-papi-lib=<path-to-libpapi.*>
                If libpapi.* is not installed in the default location,
                specify the dirname where it can be found.
+  --with-libunwind=(yes|no|<Path to libunwind installation>)
+                          If you want to build with libunwind support but do
+                          not have a libunwind in a standard location, you
+                          need to explicitly specify the directory where it is
+                          installed. On non-cross-compile systems we search
+                          the system include and lib paths per default [yes];
+                          on cross-compile systems, however, you have to
+                          specify a path [no]. --with-libunwind is a shorthand
+                          for --with-libunwind-include=<Path/include> and
+                          --with-libunwind-lib=<Path/lib>. If these shorthand
+                          assumptions are not correct, you can use the
+                          explicit include and lib options directly.
+  --with-libunwind-include=<Path to libunwind headers>
+  --with-libunwind-lib=<Path to libunwind libraries>
   --with-libcudart=<Path to libcudart installation>
                If you want to build scorep with libcudart but do not
                have a libcudart in a standard location then you need
@@ -394,6 +408,10 @@ variables:
               Activation values are '1', 'yes', and 'true'. For developer use.
   PAPI_INC    Include path to the papi.h header.
   PAPI_LIB    Library path to the papi library.
+  LIBUNWIND_INCLUDE
+              Path to libunwind headers.
+  LIBUNWIND_LIB
+              Path to libunwind libraries.
   LIBCUDART_INCLUDE
               Path to libcudart headers.
   LIBCUDART_LIB

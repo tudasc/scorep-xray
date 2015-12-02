@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -73,9 +73,9 @@ test_1( CuTest* tc )
 
     // fill scorep_local_definition_manager
     int                 old_count     = scorep_local_definition_manager.string.counter;
-    SCOREP_StringHandle local_handle1 = scorep_definitions_new_string( &scorep_local_definition_manager, "main_" );
-    SCOREP_StringHandle local_handle2 = scorep_definitions_new_string( &scorep_local_definition_manager, "foo" );
-    SCOREP_StringHandle local_handle3 = scorep_definitions_new_string( &scorep_local_definition_manager, "bar" );
+    SCOREP_StringHandle local_handle1 = scorep_definitions_new_string( &scorep_local_definition_manager, "main_", NULL );
+    SCOREP_StringHandle local_handle2 = scorep_definitions_new_string( &scorep_local_definition_manager, "foo", NULL );
+    SCOREP_StringHandle local_handle3 = scorep_definitions_new_string( &scorep_local_definition_manager, "bar", NULL );
     CuAssert( tc, "member unified != SCOREP_MOVABLE_NULL",
               SCOREP_LOCAL_HANDLE_DEREF( local_handle1, String )->unified ==
               SCOREP_MOVABLE_NULL );
@@ -97,11 +97,11 @@ test_1( CuTest* tc )
 
     // fill remote_manager
     CuAssertIntEquals( tc, 0, remote_manager->string.counter );
-    SCOREP_StringHandle remote_handle1 = scorep_definitions_new_string( remote_manager, "main_" );
-    SCOREP_StringHandle remote_handle2 = scorep_definitions_new_string( remote_manager, "bar" );
-    SCOREP_StringHandle remote_handle3 = scorep_definitions_new_string( remote_manager, "foo" );
-    SCOREP_StringHandle remote_handle4 = scorep_definitions_new_string( remote_manager, "baz" );
-    SCOREP_StringHandle remote_handle5 = scorep_definitions_new_string( remote_manager, "bar" );
+    SCOREP_StringHandle remote_handle1 = scorep_definitions_new_string( remote_manager, "main_", NULL );
+    SCOREP_StringHandle remote_handle2 = scorep_definitions_new_string( remote_manager, "bar", NULL );
+    SCOREP_StringHandle remote_handle3 = scorep_definitions_new_string( remote_manager, "foo", NULL );
+    SCOREP_StringHandle remote_handle4 = scorep_definitions_new_string( remote_manager, "baz", NULL );
+    SCOREP_StringHandle remote_handle5 = scorep_definitions_new_string( remote_manager, "bar", NULL );
     CuAssertIntEquals( tc, 4, remote_manager->string.counter );
     CuAssert( tc, "duplicate string definition", remote_handle5 == remote_handle2 );
 

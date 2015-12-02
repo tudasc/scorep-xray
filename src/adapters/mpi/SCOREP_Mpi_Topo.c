@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -56,6 +56,7 @@
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include <UTILS_Error.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
 /**
@@ -85,16 +86,25 @@ MPI_Cart_create( MPI_Comm                   comm_old,
                  int                        reorder,
                  MPI_Comm*                  comm_cart )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int32_t event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int32_t       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_CART_CREATE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_CART_CREATE ], ( intptr_t )PMPI_Cart_create );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Cart_create( comm_old, ndims, dims, periodv, reorder, comm_cart );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
     if ( *comm_cart != MPI_COMM_NULL )
     {
@@ -172,6 +182,7 @@ MPI_Cart_create( MPI_Comm                   comm_old,
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_CART_CREATE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -190,16 +201,25 @@ MPI_Cart_create( MPI_Comm                   comm_old,
 int
 MPI_Cart_sub( MPI_Comm comm, SCOREP_MPI_CONST_DECL int* remain_dims, MPI_Comm* newcomm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_CART_SUB ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_CART_SUB ], ( intptr_t )PMPI_Cart_sub );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Cart_sub( comm, remain_dims, newcomm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, comm );
@@ -210,6 +230,7 @@ MPI_Cart_sub( MPI_Comm comm, SCOREP_MPI_CONST_DECL int* remain_dims, MPI_Comm* n
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_CART_SUB ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -227,16 +248,25 @@ MPI_Cart_sub( MPI_Comm comm, SCOREP_MPI_CONST_DECL int* remain_dims, MPI_Comm* n
 int
 MPI_Graph_create( MPI_Comm comm_old, int nnodes, SCOREP_MPI_CONST_DECL int* index, SCOREP_MPI_CONST_DECL int* edges, int reorder, MPI_Comm* newcomm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_CREATE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_CREATE ], ( intptr_t )PMPI_Graph_create );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Graph_create( comm_old, nnodes, index, edges, reorder, newcomm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, comm_old );
@@ -247,6 +277,7 @@ MPI_Graph_create( MPI_Comm comm_old, int nnodes, SCOREP_MPI_CONST_DECL int* inde
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_CREATE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -265,16 +296,25 @@ MPI_Graph_create( MPI_Comm comm_old, int nnodes, SCOREP_MPI_CONST_DECL int* inde
 int
 MPI_Dist_graph_create( MPI_Comm comm_old, int n, SCOREP_MPI_CONST_DECL int sources[], SCOREP_MPI_CONST_DECL int degrees[], SCOREP_MPI_CONST_DECL int destinations[], SCOREP_MPI_CONST_DECL int weights[], MPI_Info info, int reorder, MPI_Comm* newcomm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_DIST_GRAPH_CREATE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_DIST_GRAPH_CREATE ], ( intptr_t )PMPI_Dist_graph_create );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Dist_graph_create( comm_old, n, sources, degrees, destinations, weights, info, reorder, newcomm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, comm_old );
@@ -285,6 +325,7 @@ MPI_Dist_graph_create( MPI_Comm comm_old, int n, SCOREP_MPI_CONST_DECL int sourc
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_DIST_GRAPH_CREATE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -302,16 +343,25 @@ MPI_Dist_graph_create( MPI_Comm comm_old, int n, SCOREP_MPI_CONST_DECL int sourc
 int
 MPI_Dist_graph_create_adjacent( MPI_Comm comm_old, int indegree, SCOREP_MPI_CONST_DECL int sources[], SCOREP_MPI_CONST_DECL int sourceweights[], int outdegree, SCOREP_MPI_CONST_DECL int destinations[], SCOREP_MPI_CONST_DECL int destweights[], MPI_Info info, int reorder, MPI_Comm* newcomm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_DIST_GRAPH_CREATE_ADJACENT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_DIST_GRAPH_CREATE_ADJACENT ], ( intptr_t )PMPI_Dist_graph_create_adjacent );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Dist_graph_create_adjacent( comm_old, indegree, sources, sourceweights, outdegree, destinations, destweights, info, reorder, newcomm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, comm_old );
@@ -322,6 +372,7 @@ MPI_Dist_graph_create_adjacent( MPI_Comm comm_old, int indegree, SCOREP_MPI_CONS
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_DIST_GRAPH_CREATE_ADJACENT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -340,14 +391,17 @@ MPI_Dist_graph_create_adjacent( MPI_Comm comm_old, int indegree, SCOREP_MPI_CONS
 int
 MPI_Cart_coords( MPI_Comm comm, int rank, int maxdims, int* coords )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_CART_COORDS ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_CART_COORDS ], ( intptr_t )PMPI_Cart_coords );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Cart_coords( comm, rank, maxdims, coords );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_CART_COORDS ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -356,6 +410,7 @@ MPI_Cart_coords( MPI_Comm comm, int rank, int maxdims, int* coords )
     {
         return_val = PMPI_Cart_coords( comm, rank, maxdims, coords );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -374,14 +429,17 @@ MPI_Cart_coords( MPI_Comm comm, int rank, int maxdims, int* coords )
 int
 MPI_Cart_get( MPI_Comm comm, int maxdims, int* dims, int* periods, int* coords )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_CART_GET ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_CART_GET ], ( intptr_t )PMPI_Cart_get );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Cart_get( comm, maxdims, dims, periods, coords );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_CART_GET ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -390,6 +448,7 @@ MPI_Cart_get( MPI_Comm comm, int maxdims, int* dims, int* periods, int* coords )
     {
         return_val = PMPI_Cart_get( comm, maxdims, dims, periods, coords );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -408,14 +467,17 @@ MPI_Cart_get( MPI_Comm comm, int maxdims, int* dims, int* periods, int* coords )
 int
 MPI_Cart_map( MPI_Comm comm, int ndims, SCOREP_MPI_CONST_DECL int* dims, SCOREP_MPI_CONST_DECL int* periods, int* newrank )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_CART_MAP ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_CART_MAP ], ( intptr_t )PMPI_Cart_map );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Cart_map( comm, ndims, dims, periods, newrank );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_CART_MAP ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -424,6 +486,7 @@ MPI_Cart_map( MPI_Comm comm, int ndims, SCOREP_MPI_CONST_DECL int* dims, SCOREP_
     {
         return_val = PMPI_Cart_map( comm, ndims, dims, periods, newrank );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -442,14 +505,17 @@ MPI_Cart_map( MPI_Comm comm, int ndims, SCOREP_MPI_CONST_DECL int* dims, SCOREP_
 int
 MPI_Cart_rank( MPI_Comm comm, SCOREP_MPI_CONST_DECL int* coords, int* rank )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_CART_RANK ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_CART_RANK ], ( intptr_t )PMPI_Cart_rank );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Cart_rank( comm, coords, rank );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_CART_RANK ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -458,6 +524,7 @@ MPI_Cart_rank( MPI_Comm comm, SCOREP_MPI_CONST_DECL int* coords, int* rank )
     {
         return_val = PMPI_Cart_rank( comm, coords, rank );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -476,14 +543,17 @@ MPI_Cart_rank( MPI_Comm comm, SCOREP_MPI_CONST_DECL int* coords, int* rank )
 int
 MPI_Cart_shift( MPI_Comm comm, int direction, int disp, int* rank_source, int* rank_dest )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_CART_SHIFT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_CART_SHIFT ], ( intptr_t )PMPI_Cart_shift );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Cart_shift( comm, direction, disp, rank_source, rank_dest );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_CART_SHIFT ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -492,6 +562,7 @@ MPI_Cart_shift( MPI_Comm comm, int direction, int disp, int* rank_source, int* r
     {
         return_val = PMPI_Cart_shift( comm, direction, disp, rank_source, rank_dest );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -510,14 +581,17 @@ MPI_Cart_shift( MPI_Comm comm, int direction, int disp, int* rank_source, int* r
 int
 MPI_Cartdim_get( MPI_Comm comm, int* ndims )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_CARTDIM_GET ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_CARTDIM_GET ], ( intptr_t )PMPI_Cartdim_get );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Cartdim_get( comm, ndims );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_CARTDIM_GET ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -526,6 +600,7 @@ MPI_Cartdim_get( MPI_Comm comm, int* ndims )
     {
         return_val = PMPI_Cartdim_get( comm, ndims );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -544,14 +619,17 @@ MPI_Cartdim_get( MPI_Comm comm, int* ndims )
 int
 MPI_Dist_graph_neighbors( MPI_Comm comm, int maxindegree, int sources[], int sourceweights[], int maxoutdegree, int destinations[], int destweights[] )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_DIST_GRAPH_NEIGHBORS ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_DIST_GRAPH_NEIGHBORS ], ( intptr_t )PMPI_Dist_graph_neighbors );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Dist_graph_neighbors( comm, maxindegree, sources, sourceweights, maxoutdegree, destinations, destweights );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_DIST_GRAPH_NEIGHBORS ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -560,6 +638,7 @@ MPI_Dist_graph_neighbors( MPI_Comm comm, int maxindegree, int sources[], int sou
     {
         return_val = PMPI_Dist_graph_neighbors( comm, maxindegree, sources, sourceweights, maxoutdegree, destinations, destweights );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -578,14 +657,17 @@ MPI_Dist_graph_neighbors( MPI_Comm comm, int maxindegree, int sources[], int sou
 int
 MPI_Dist_graph_neighbors_count( MPI_Comm comm, int* indegree, int* outdegree, int* weighted )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_DIST_GRAPH_NEIGHBORS_COUNT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_DIST_GRAPH_NEIGHBORS_COUNT ], ( intptr_t )PMPI_Dist_graph_neighbors_count );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Dist_graph_neighbors_count( comm, indegree, outdegree, weighted );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_DIST_GRAPH_NEIGHBORS_COUNT ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -594,6 +676,7 @@ MPI_Dist_graph_neighbors_count( MPI_Comm comm, int* indegree, int* outdegree, in
     {
         return_val = PMPI_Dist_graph_neighbors_count( comm, indegree, outdegree, weighted );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -612,14 +695,17 @@ MPI_Dist_graph_neighbors_count( MPI_Comm comm, int* indegree, int* outdegree, in
 int
 MPI_Graph_get( MPI_Comm comm, int maxindex, int maxedges, int* index, int* edges )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_GET ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_GET ], ( intptr_t )PMPI_Graph_get );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Graph_get( comm, maxindex, maxedges, index, edges );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_GET ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -628,6 +714,7 @@ MPI_Graph_get( MPI_Comm comm, int maxindex, int maxedges, int* index, int* edges
     {
         return_val = PMPI_Graph_get( comm, maxindex, maxedges, index, edges );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -646,14 +733,17 @@ MPI_Graph_get( MPI_Comm comm, int maxindex, int maxedges, int* index, int* edges
 int
 MPI_Graph_map( MPI_Comm comm, int nnodes, SCOREP_MPI_CONST_DECL int* index, SCOREP_MPI_CONST_DECL int* edges, int* newrank )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_MAP ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_MAP ], ( intptr_t )PMPI_Graph_map );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Graph_map( comm, nnodes, index, edges, newrank );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_MAP ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -662,6 +752,7 @@ MPI_Graph_map( MPI_Comm comm, int nnodes, SCOREP_MPI_CONST_DECL int* index, SCOR
     {
         return_val = PMPI_Graph_map( comm, nnodes, index, edges, newrank );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -680,14 +771,17 @@ MPI_Graph_map( MPI_Comm comm, int nnodes, SCOREP_MPI_CONST_DECL int* index, SCOR
 int
 MPI_Graph_neighbors( MPI_Comm comm, int rank, int maxneighbors, int* neighbors )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_NEIGHBORS ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_NEIGHBORS ], ( intptr_t )PMPI_Graph_neighbors );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Graph_neighbors( comm, rank, maxneighbors, neighbors );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_NEIGHBORS ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -696,6 +790,7 @@ MPI_Graph_neighbors( MPI_Comm comm, int rank, int maxneighbors, int* neighbors )
     {
         return_val = PMPI_Graph_neighbors( comm, rank, maxneighbors, neighbors );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -714,14 +809,17 @@ MPI_Graph_neighbors( MPI_Comm comm, int rank, int maxneighbors, int* neighbors )
 int
 MPI_Graph_neighbors_count( MPI_Comm comm, int rank, int* nneighbors )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_NEIGHBORS_COUNT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_NEIGHBORS_COUNT ], ( intptr_t )PMPI_Graph_neighbors_count );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Graph_neighbors_count( comm, rank, nneighbors );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPH_NEIGHBORS_COUNT ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -730,6 +828,7 @@ MPI_Graph_neighbors_count( MPI_Comm comm, int rank, int* nneighbors )
     {
         return_val = PMPI_Graph_neighbors_count( comm, rank, nneighbors );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -748,14 +847,17 @@ MPI_Graph_neighbors_count( MPI_Comm comm, int rank, int* nneighbors )
 int
 MPI_Graphdims_get( MPI_Comm comm, int* nnodes, int* nedges )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPHDIMS_GET ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPHDIMS_GET ], ( intptr_t )PMPI_Graphdims_get );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Graphdims_get( comm, nnodes, nedges );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GRAPHDIMS_GET ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -764,6 +866,7 @@ MPI_Graphdims_get( MPI_Comm comm, int* nnodes, int* nedges )
     {
         return_val = PMPI_Graphdims_get( comm, nnodes, nedges );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -782,14 +885,17 @@ MPI_Graphdims_get( MPI_Comm comm, int* nnodes, int* nedges )
 int
 MPI_Ineighbor_allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLGATHER ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLGATHER ], ( intptr_t )PMPI_Ineighbor_allgather );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ineighbor_allgather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLGATHER ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -798,6 +904,7 @@ MPI_Ineighbor_allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI
     {
         return_val = PMPI_Ineighbor_allgather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -816,14 +923,17 @@ MPI_Ineighbor_allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI
 int
 MPI_Ineighbor_allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, SCOREP_MPI_CONST_DECL int* recvcounts, SCOREP_MPI_CONST_DECL int* displs, MPI_Datatype recvtype, MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLGATHERV ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLGATHERV ], ( intptr_t )PMPI_Ineighbor_allgatherv );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ineighbor_allgatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLGATHERV ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -832,6 +942,7 @@ MPI_Ineighbor_allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MP
     {
         return_val = PMPI_Ineighbor_allgatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -850,14 +961,17 @@ MPI_Ineighbor_allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MP
 int
 MPI_Ineighbor_alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLTOALL ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLTOALL ], ( intptr_t )PMPI_Ineighbor_alltoall );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ineighbor_alltoall( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLTOALL ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -866,6 +980,7 @@ MPI_Ineighbor_alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_
     {
         return_val = PMPI_Ineighbor_alltoall( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -884,14 +999,17 @@ MPI_Ineighbor_alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_
 int
 MPI_Ineighbor_alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* sendcounts, SCOREP_MPI_CONST_DECL int* sdispls, MPI_Datatype sendtype, void* recvbuf, SCOREP_MPI_CONST_DECL int* recvcounts, SCOREP_MPI_CONST_DECL int* rdispls, MPI_Datatype recvtype, MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLTOALLV ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLTOALLV ], ( intptr_t )PMPI_Ineighbor_alltoallv );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ineighbor_alltoallv( sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLTOALLV ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -900,6 +1018,7 @@ MPI_Ineighbor_alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_D
     {
         return_val = PMPI_Ineighbor_alltoallv( sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -918,14 +1037,17 @@ MPI_Ineighbor_alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_D
 int
 MPI_Ineighbor_alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int sendcounts[], SCOREP_MPI_CONST_DECL MPI_Aint sdispls[], SCOREP_MPI_CONST_DECL MPI_Datatype sendtypes[], void* recvbuf, SCOREP_MPI_CONST_DECL int recvcounts[], SCOREP_MPI_CONST_DECL MPI_Aint rdispls[], SCOREP_MPI_CONST_DECL MPI_Datatype recvtypes[], MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLTOALLW ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLTOALLW ], ( intptr_t )PMPI_Ineighbor_alltoallw );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ineighbor_alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_INEIGHBOR_ALLTOALLW ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -934,6 +1056,7 @@ MPI_Ineighbor_alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_D
     {
         return_val = PMPI_Ineighbor_alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -952,14 +1075,17 @@ MPI_Ineighbor_alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_D
 int
 MPI_Neighbor_allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLGATHER ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLGATHER ], ( intptr_t )PMPI_Neighbor_allgather );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Neighbor_allgather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLGATHER ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -968,6 +1094,7 @@ MPI_Neighbor_allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_
     {
         return_val = PMPI_Neighbor_allgather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -986,14 +1113,17 @@ MPI_Neighbor_allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_
 int
 MPI_Neighbor_allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, SCOREP_MPI_CONST_DECL int* recvcounts, SCOREP_MPI_CONST_DECL int* displs, MPI_Datatype recvtype, MPI_Comm comm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLGATHERV ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLGATHERV ], ( intptr_t )PMPI_Neighbor_allgatherv );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Neighbor_allgatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLGATHERV ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1002,6 +1132,7 @@ MPI_Neighbor_allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI
     {
         return_val = PMPI_Neighbor_allgatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1020,14 +1151,17 @@ MPI_Neighbor_allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI
 int
 MPI_Neighbor_alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLTOALL ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLTOALL ], ( intptr_t )PMPI_Neighbor_alltoall );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Neighbor_alltoall( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLTOALL ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1036,6 +1170,7 @@ MPI_Neighbor_alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_D
     {
         return_val = PMPI_Neighbor_alltoall( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1054,14 +1189,17 @@ MPI_Neighbor_alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_D
 int
 MPI_Neighbor_alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* sendcounts, SCOREP_MPI_CONST_DECL int* sdispls, MPI_Datatype sendtype, void* recvbuf, SCOREP_MPI_CONST_DECL int* recvcounts, SCOREP_MPI_CONST_DECL int* rdispls, MPI_Datatype recvtype, MPI_Comm comm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLTOALLV ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLTOALLV ], ( intptr_t )PMPI_Neighbor_alltoallv );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Neighbor_alltoallv( sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLTOALLV ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1070,6 +1208,7 @@ MPI_Neighbor_alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DE
     {
         return_val = PMPI_Neighbor_alltoallv( sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1088,14 +1227,17 @@ MPI_Neighbor_alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DE
 int
 MPI_Neighbor_alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int sendcounts[], SCOREP_MPI_CONST_DECL MPI_Aint sdispls[], SCOREP_MPI_CONST_DECL MPI_Datatype sendtypes[], void* recvbuf, SCOREP_MPI_CONST_DECL int recvcounts[], SCOREP_MPI_CONST_DECL MPI_Aint rdispls[], SCOREP_MPI_CONST_DECL MPI_Datatype recvtypes[], MPI_Comm comm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLTOALLW ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLTOALLW ], ( intptr_t )PMPI_Neighbor_alltoallw );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Neighbor_alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_NEIGHBOR_ALLTOALLW ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1104,6 +1246,7 @@ MPI_Neighbor_alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DE
     {
         return_val = PMPI_Neighbor_alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1122,14 +1265,17 @@ MPI_Neighbor_alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DE
 int
 MPI_Topo_test( MPI_Comm comm, int* status )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_TOPO_TEST ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_TOPO_TEST ], ( intptr_t )PMPI_Topo_test );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Topo_test( comm, status );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_TOPO_TEST ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1138,6 +1284,7 @@ MPI_Topo_test( MPI_Comm comm, int* status )
     {
         return_val = PMPI_Topo_test( comm, status );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1156,14 +1303,17 @@ MPI_Topo_test( MPI_Comm comm, int* status )
 int
 MPI_Dims_create( int nnodes, int ndims, int* dims )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_TOPO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_DIMS_CREATE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_DIMS_CREATE ], ( intptr_t )PMPI_Dims_create );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Dims_create( nnodes, ndims, dims );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_DIMS_CREATE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1172,6 +1322,7 @@ MPI_Dims_create( int nnodes, int ndims, int* dims )
     {
         return_val = PMPI_Dims_create( nnodes, ndims, dims );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }

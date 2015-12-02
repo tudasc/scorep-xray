@@ -41,6 +41,7 @@
 #include <UTILS_Debug.h>
 
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Mutex.h>
@@ -63,25 +64,23 @@ void
 __cyg_profile_func_enter( void* func,
                           void* callsite )
 {
-    scorep_compiler_hash_node* hash_node;
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    UTILS_DEBUG_ENTRY( "%p, %p", func, callsite );
 
     /*
      * put hash table entries via mechanism for bfd symbol table
      * to calculate function addresses if measurement was not initialized
      */
-
-    if ( !scorep_compiler_initialized )
-    {
-        if ( scorep_compiler_finalized )
-        {
-            return;
-        }
-
-        /* not initialized so far */
-        SCOREP_InitMeasurement();
-    }
-
-    UTILS_DEBUG_ENTRY( "%p, %p", func, callsite );
 
     /* On ARM platform the 0-bit indicates whether it is thumb code or arm code.
        Thus, thumb code address differ from the real function address that we
@@ -91,7 +90,9 @@ __cyg_profile_func_enter( void* func,
     func = ( void* )( ( ( long )func | 1 ) - 1 );
 #endif
 
-    if ( ( hash_node = scorep_compiler_hash_get( ( long )func ) ) )
+    scorep_compiler_hash_node* hash_node =
+        scorep_compiler_hash_get( ( long )func );
+    if ( hash_node )
     {
         if ( hash_node->region_handle == SCOREP_INVALID_REGION )
         {
@@ -105,6 +106,8 @@ __cyg_profile_func_enter( void* func,
         }
         SCOREP_EnterRegion( hash_node->region_handle );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /**
@@ -117,8 +120,11 @@ void
 __cyg_profile_func_exit( void* func,
                          void* callsite )
 {
-    if ( scorep_compiler_finalized )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
     {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
 
@@ -137,4 +143,6 @@ __cyg_profile_func_exit( void* func,
     {
         SCOREP_ExitRegion( hash_node->region_handle );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }

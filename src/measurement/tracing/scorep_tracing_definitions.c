@@ -56,6 +56,7 @@
 
 
 #include <scorep/SCOREP_PublicTypes.h>
+#include <SCOREP_RuntimeManagement.h>
 #include <scorep_runtime_management.h>
 #include <scorep_environment.h>
 #include <scorep_status.h>
@@ -943,6 +944,207 @@ scorep_write_attribute_definitions( void*                     writerHandle,
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
 }
 
+static void
+scorep_write_source_code_location_definitions( void*                     writerHandle,
+                                               SCOREP_DefinitionManager* definitionManager,
+                                               bool                      isGlobal )
+{
+    UTILS_ASSERT( writerHandle );
+
+    typedef  OTF2_ErrorCode ( * def_source_code_location_pointer_t )( void*,
+                                                                      OTF2_SourceCodeLocationRef,
+                                                                      OTF2_StringRef,
+                                                                      uint32_t );
+    def_source_code_location_pointer_t defSourceCodeLocation = ( def_source_code_location_pointer_t )
+                                                               OTF2_DefWriter_WriteSourceCodeLocation;
+    if ( isGlobal )
+    {
+        defSourceCodeLocation = ( def_source_code_location_pointer_t )
+                                OTF2_GlobalDefWriter_WriteSourceCodeLocation;
+    }
+
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager,
+                                                         SourceCodeLocation,
+                                                         source_code_location )
+    {
+        OTF2_ErrorCode status = defSourceCodeLocation(
+            writerHandle,
+            definition->sequence_number,
+            SCOREP_HANDLE_TO_ID( definition->file_handle, String, definitionManager->page_manager ),
+            definition->line_number );
+
+        if ( status != OTF2_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "Source Code Location" );
+        }
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+}
+
+
+static void
+scorep_write_calling_context_definitions( void*                     writerHandle,
+                                          SCOREP_DefinitionManager* definitionManager,
+                                          bool                      isGlobal )
+{
+    UTILS_ASSERT( writerHandle );
+
+    extern SCOREP_StringHandle scorep_tracing_cct_file;
+    extern SCOREP_StringHandle scorep_tracing_cct_ip_offset;
+    extern SCOREP_StringHandle scorep_tracing_cct_ip;
+
+    if ( !SCOREP_IsUnwindingEnabled() )
+    {
+        return;
+    }
+
+    typedef OTF2_ErrorCode
+    ( * def_calling_context_pointer_t )( void*,
+                                         OTF2_CallingContextRef,
+                                         OTF2_RegionRef,
+                                         OTF2_SourceCodeLocationRef,
+                                         OTF2_CallingContextRef );
+    def_calling_context_pointer_t defCallingContext =
+        ( def_calling_context_pointer_t )OTF2_DefWriter_WriteCallingContext;
+
+    typedef OTF2_ErrorCode
+    ( * def_calling_context_property_pointer_t )( void*,
+                                                  OTF2_CallingContextRef,
+                                                  OTF2_StringRef,
+                                                  OTF2_Type,
+                                                  OTF2_AttributeValue );
+    def_calling_context_property_pointer_t defCallingContextProperty =
+        ( def_calling_context_property_pointer_t )OTF2_DefWriter_WriteCallingContextProperty;
+
+    OTF2_StringRef file_property_ref      = SCOREP_HANDLE_TO_ID( scorep_tracing_cct_file, String, scorep_local_definition_manager.page_manager );
+    OTF2_StringRef ip_offset_property_ref = SCOREP_HANDLE_TO_ID( scorep_tracing_cct_ip_offset, String, scorep_local_definition_manager.page_manager );
+    OTF2_StringRef ip_property_ref        = SCOREP_HANDLE_TO_ID( scorep_tracing_cct_ip, String, scorep_local_definition_manager.page_manager );
+
+    if ( isGlobal )
+    {
+        defCallingContext =
+            ( def_calling_context_pointer_t )OTF2_GlobalDefWriter_WriteCallingContext;
+        defCallingContextProperty =
+            ( def_calling_context_property_pointer_t )OTF2_GlobalDefWriter_WriteCallingContextProperty;
+
+        file_property_ref =
+            scorep_local_definition_manager.string.mapping[ file_property_ref ];
+        ip_offset_property_ref =
+            scorep_local_definition_manager.string.mapping[ ip_offset_property_ref ];
+        ip_property_ref =
+            scorep_local_definition_manager.string.mapping[ ip_property_ref ];
+    }
+
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, CallingContext, calling_context )
+    {
+        /* Determine scl id savely */
+        OTF2_SourceCodeLocationRef scl = OTF2_UNDEFINED_SOURCE_CODE_LOCATION;
+        if ( definition->scl_handle != SCOREP_INVALID_SOURCE_CODE_LOCATION )
+        {
+            scl = SCOREP_HANDLE_TO_ID( definition->scl_handle, SourceCodeLocation, definitionManager->page_manager );
+        }
+
+        /* Determine parent id savely */
+        OTF2_CallingContextRef parent = OTF2_UNDEFINED_CALLING_CONTEXT;
+        if ( definition->parent_handle != SCOREP_INVALID_CALLING_CONTEXT )
+        {
+            parent = SCOREP_HANDLE_TO_ID( definition->parent_handle, CallingContext, definitionManager->page_manager );
+        }
+
+        /* Write definition */
+        OTF2_ErrorCode status = defCallingContext(
+            writerHandle,
+            definition->sequence_number,
+            SCOREP_HANDLE_TO_ID( definition->region_handle, Region, definitionManager->page_manager ),
+            scl,
+            parent );
+        if ( status != OTF2_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "CallingContext" );
+        }
+
+        if ( definition->ip_offset )
+        {
+            OTF2_AttributeValue value;
+
+            if ( definition->file_handle != SCOREP_INVALID_STRING )
+            {
+                value.stringRef = SCOREP_HANDLE_TO_ID( definition->file_handle, String, definitionManager->page_manager );
+                defCallingContextProperty(
+                    writerHandle,
+                    definition->sequence_number,
+                    file_property_ref,
+                    OTF2_TYPE_STRING,
+                    value );
+
+                value.uint64 = definition->ip_offset;
+                defCallingContextProperty(
+                    writerHandle,
+                    definition->sequence_number,
+                    ip_offset_property_ref,
+                    OTF2_TYPE_UINT64,
+                    value );
+            }
+            else
+            {
+                value.uint64 = definition->ip_offset;
+                defCallingContextProperty(
+                    writerHandle,
+                    definition->sequence_number,
+                    ip_property_ref,
+                    OTF2_TYPE_UINT64,
+                    value );
+            }
+        }
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+}
+
+
+static void
+scorep_write_interrupt_generator_definitions( void*                     writerHandle,
+                                              SCOREP_DefinitionManager* definitionManager,
+                                              bool                      isGlobal )
+{
+    UTILS_ASSERT( writerHandle );
+
+    typedef OTF2_ErrorCode
+    ( * def_interrupt_generator_pointer_t )( void*,
+                                             OTF2_InterruptGeneratorRef,
+                                             OTF2_StringRef,
+                                             OTF2_InterruptGeneratorMode,
+                                             OTF2_Base,
+                                             int64_t,
+                                             uint64_t );
+    def_interrupt_generator_pointer_t defInterruptGenerator =
+        ( def_interrupt_generator_pointer_t )OTF2_DefWriter_WriteInterruptGenerator;
+
+    if ( isGlobal )
+    {
+        defInterruptGenerator =
+            ( def_interrupt_generator_pointer_t )OTF2_GlobalDefWriter_WriteInterruptGenerator;
+    }
+
+
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( definitionManager, InterruptGenerator, interrupt_generator )
+    {
+        /* Write definition */
+        OTF2_ErrorCode status = defInterruptGenerator(
+            writerHandle,
+            definition->sequence_number,
+            SCOREP_HANDLE_TO_ID( definition->name_handle, String, definitionManager->page_manager ),
+            scorep_tracing_interrupt_generator_mode_to_otf2( definition->mode ),
+            scorep_tracing_base_to_otf2( definition->base ),
+            definition->exponent,
+            definition->period );
+        if ( status != OTF2_SUCCESS )
+        {
+            scorep_handle_definition_writing_error( status, "InterruptGenerator" );
+        }
+    }
+    SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
+}
+
 
 /**
  * Generate and write the id mapping for definition type @a type into the
@@ -993,6 +1195,9 @@ scorep_tracing_write_mappings( OTF2_DefWriter* localDefinitionWriter )
     WRITE_MAPPING( localDefinitionWriter, 32, interim_rma_window, RMA_WIN );
     WRITE_MAPPING( localDefinitionWriter, 32, sampling_set, METRIC );
     WRITE_MAPPING( localDefinitionWriter, 32, attribute, ATTRIBUTE );
+    WRITE_MAPPING( localDefinitionWriter, 32, source_code_location, SOURCE_CODE_LOCATION );
+    WRITE_MAPPING( localDefinitionWriter, 32, calling_context, CALLING_CONTEXT );
+    WRITE_MAPPING( localDefinitionWriter, 32, interrupt_generator, INTERRUPT_GENERATOR );
 
     // do we need Callpath and Parameter mappings for tracing?
     WRITE_MAPPING( localDefinitionWriter, 32, parameter, PARAMETER );
@@ -1027,18 +1232,21 @@ scorep_tracing_write_local_definitions( OTF2_DefWriter* localDefinitionWriter )
         return;
     }
 
-    scorep_write_string_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
-    scorep_write_system_tree_node_definitions(       localDefinitionWriter, &scorep_local_definition_manager, false );
-    scorep_write_location_group_definitions(         localDefinitionWriter, &scorep_local_definition_manager, false );
-    scorep_write_location_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
-    scorep_write_location_property_definitions(      localDefinitionWriter, &scorep_local_definition_manager, false );
-    scorep_write_region_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
-    scorep_write_group_definitions(                  localDefinitionWriter, &scorep_local_definition_manager, false );
-    scorep_write_metric_definitions(                 localDefinitionWriter, &scorep_local_definition_manager, false );
-    scorep_write_sampling_set_definitions(           localDefinitionWriter, &scorep_local_definition_manager, false );
-    scorep_write_parameter_definitions(              localDefinitionWriter, &scorep_local_definition_manager, false );
-    scorep_write_callpath_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
-    scorep_write_attribute_definitions(              localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_string_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_system_tree_node_definitions(     localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_location_group_definitions(       localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_location_definitions(             localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_location_property_definitions(    localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_region_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_group_definitions(                localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_metric_definitions(               localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_sampling_set_definitions(         localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_parameter_definitions(            localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_callpath_definitions(             localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_attribute_definitions(            localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_source_code_location_definitions( localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_calling_context_definitions(      localDefinitionWriter, &scorep_local_definition_manager, false );
+    scorep_write_interrupt_generator_definitions(  localDefinitionWriter, &scorep_local_definition_manager, false );
 }
 #else
 void
@@ -1162,19 +1370,22 @@ scorep_tracing_write_global_definitions( OTF2_GlobalDefWriter* global_definition
     write_paradigms( global_definition_writer,
                      scorep_unified_definition_manager );
 
-    scorep_write_system_tree_node_definitions(       global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_location_group_definitions(         global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_location_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_location_property_definitions(      global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_region_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_group_definitions(                  global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_communicator_definitions(           global_definition_writer, scorep_unified_definition_manager );
-    scorep_write_rma_window_definitions(             global_definition_writer, scorep_unified_definition_manager );
-    scorep_write_metric_definitions(                 global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_sampling_set_definitions(           global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_parameter_definitions(              global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_callpath_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
-    scorep_write_attribute_definitions(              global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_system_tree_node_definitions(     global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_location_group_definitions(       global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_location_definitions(             global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_location_property_definitions(    global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_region_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_group_definitions(                global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_communicator_definitions(         global_definition_writer, scorep_unified_definition_manager );
+    scorep_write_rma_window_definitions(           global_definition_writer, scorep_unified_definition_manager );
+    scorep_write_metric_definitions(               global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_sampling_set_definitions(         global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_parameter_definitions(            global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_callpath_definitions(             global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_attribute_definitions(            global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_source_code_location_definitions( global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_calling_context_definitions(      global_definition_writer, scorep_unified_definition_manager, true );
+    scorep_write_interrupt_generator_definitions(  global_definition_writer, scorep_unified_definition_manager, true );
 }
 
 void

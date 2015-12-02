@@ -39,6 +39,8 @@
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
+#include <SCOREP_RuntimeManagement.h>
+
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data.h"
 #include "scorep_compiler_symbol_table.h"
@@ -51,13 +53,13 @@
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void )
 {
-    if ( !scorep_compiler_initialized )
+    UTILS_DEBUG( "inititialize GNU compiler adapter." );
+
+    /* Initialize region mutex */
+    SCOREP_MutexCreate( &scorep_compiler_region_mutex );
+
+    if ( !SCOREP_IsUnwindingEnabled() )
     {
-        UTILS_DEBUG( "inititialize GNU compiler adapter." );
-
-        /* Initialize region mutex */
-        SCOREP_MutexCreate( &scorep_compiler_region_mutex );
-
         /* Initialize hash tables */
         scorep_compiler_hash_init();
 
@@ -65,14 +67,38 @@ scorep_compiler_subsystem_init( void )
         scorep_compiler_load_symbols();
 
         scorep_compiler_get_hash_statistics();
-
-        /* Set flag */
-        scorep_compiler_initialized = true;
-
-        UTILS_DEBUG( "inititialization of GNU compiler adapter done." );
     }
 
+    UTILS_DEBUG( "inititialization of GNU compiler adapter done." );
+
     return SCOREP_SUCCESS;
+}
+
+SCOREP_ErrorCode
+scorep_compiler_subsystem_begin( void )
+{
+    return SCOREP_SUCCESS;
+}
+
+void
+scorep_compiler_subsystem_end( void )
+{
+}
+
+/* Adapter finalization */
+void
+scorep_compiler_subsystem_finalize( void )
+{
+    UTILS_DEBUG( "finalize GNU compiler adapter." );
+
+    if ( !SCOREP_IsUnwindingEnabled() )
+    {
+        /* Delete hash table */
+        scorep_compiler_hash_free();
+    }
+
+    /* Delete region mutex */
+    SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
 }
 
 SCOREP_ErrorCode
@@ -81,24 +107,4 @@ scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData,
 {
     UTILS_DEBUG( "GNU compiler adapter init location!" );
     return SCOREP_SUCCESS;
-}
-
-/* Adapter finalization */
-void
-scorep_compiler_subsystem_finalize( void )
-{
-    /* call only, if previously initialized */
-    if ( scorep_compiler_initialized )
-    {
-        /* Delete hash table */
-        scorep_compiler_hash_free();
-
-        /* Set initialization flag */
-        scorep_compiler_initialized = false;
-        scorep_compiler_finalized   = true;
-        UTILS_DEBUG( "finalize GNU compiler adapter." );
-
-        /* Delete region mutex */
-        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
-    }
 }

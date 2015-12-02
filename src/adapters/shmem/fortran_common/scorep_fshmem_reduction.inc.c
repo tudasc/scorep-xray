@@ -127,6 +127,7 @@
                                                         DATATYPE *pWork,        \
                                                         int      *pSync )       \
     {                                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                      \
         shmem_ ## C_FUNCNAME ## _ ## OP ## _to_all ( target,                    \
                                                      source,                    \
                                                      *nReduce,                  \
@@ -135,6 +136,7 @@
                                                      *peSize,                   \
                                                      pWork,                     \
                                                      ( long * ) pSync );        \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                      \
     }
 
 /* *INDENT-ON* */

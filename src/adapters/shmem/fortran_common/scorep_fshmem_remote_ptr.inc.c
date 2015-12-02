@@ -9,8 +9,14 @@
     FSUB( shmem_ ## FUNCNAME ) ( void *target,  \
                                  int  *pe )     \
     {                                           \
-        return shmem_ ## FUNCNAME( target,      \
-                                   *pe );       \
+        SCOREP_IN_MEASUREMENT_INCREMENT();      \
+                                                \
+        void* ret = shmem_ ## FUNCNAME( target, \
+                                        *pe );  \
+                                                \
+        SCOREP_IN_MEASUREMENT_DECREMENT();      \
+                                                \
+        return ret;                             \
     }
 
 /* *INDENT-ON* */

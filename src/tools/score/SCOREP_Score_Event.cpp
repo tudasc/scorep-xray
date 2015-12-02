@@ -4,6 +4,9 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -89,7 +92,8 @@ SCOREP_Score_Event::setEventSize( uint32_t size )
 }
 
 bool
-SCOREP_Score_Event::occursInRegion( const string& regionName )
+SCOREP_Score_Event::occursInRegion( const string& regionName,
+                                    bool          hasHits )
 {
     return false;
 }
@@ -102,9 +106,10 @@ SCOREP_Score_EnterEvent::SCOREP_Score_EnterEvent( void ) : SCOREP_Score_Event( "
 }
 
 bool
-SCOREP_Score_EnterEvent::occursInRegion( const string& regionName )
+SCOREP_Score_EnterEvent::occursInRegion( const std::string& regionName,
+                                         bool               hasHits )
 {
-    if ( regionName.find( '=', 0 ) == string::npos )
+    if ( hasHits == false && regionName.find( '=', 0 ) == string::npos )
     {
         return true;
     }
@@ -119,9 +124,10 @@ SCOREP_Score_LeaveEvent::SCOREP_Score_LeaveEvent( void ) : SCOREP_Score_Event( "
 }
 
 bool
-SCOREP_Score_LeaveEvent::occursInRegion( const string& regionName )
+SCOREP_Score_LeaveEvent::occursInRegion( const std::string& regionName,
+                                         bool               hasHits )
 {
-    if ( regionName.find( '=', 0 ) == string::npos )
+    if ( hasHits == false && regionName.find( '=', 0 ) == string::npos )
     {
         return true;
     }
@@ -129,11 +135,54 @@ SCOREP_Score_LeaveEvent::occursInRegion( const string& regionName )
 }
 
 /* **************************************************************************************
+ * class SCOREP_Score_CallingContextEnterEvent
+ ***************************************************************************************/
+SCOREP_Score_CallingContextEnterEvent::SCOREP_Score_CallingContextEnterEvent( void ) : SCOREP_Score_Event( "CallingContextEnter" )
+{
+}
+
+bool
+SCOREP_Score_CallingContextEnterEvent::occursInRegion( const std::string& regionName,
+                                                       bool               hasHits )
+{
+    if ( hasHits == true && regionName.find( '=', 0 ) == string::npos )
+    {
+        return true;
+    }
+    return false; // Is a parameter region which has no enter/exit
+}
+
+/* **************************************************************************************
+ * class SCOREP_Score_CallingContextLeaveEvent
+ ***************************************************************************************/
+SCOREP_Score_CallingContextLeaveEvent::SCOREP_Score_CallingContextLeaveEvent( void ) : SCOREP_Score_Event( "CallingContextLeave" )
+{
+}
+
+bool
+SCOREP_Score_CallingContextLeaveEvent::occursInRegion( const std::string& regionName,
+                                                       bool               hasHits )
+{
+    if ( hasHits == true && regionName.find( '=', 0 ) == string::npos )
+    {
+        return true;
+    }
+    return false; // Is a parameter region which has no enter/exit
+}
+
+/* **************************************************************************************
+ * class SCOREP_Score_CallingContextLeaveEvent
+ ***************************************************************************************/
+SCOREP_Score_CallingContextSampleEvent::SCOREP_Score_CallingContextSampleEvent( void ) : SCOREP_Score_Event( "CallingContextSample" )
+{
+}
+
+/* **************************************************************************************
  * class SCOREP_Score_MetricEvent
  ***************************************************************************************/
 SCOREP_Score_MetricEvent::SCOREP_Score_MetricEvent( uint64_t numDense )
     : SCOREP_Score_Event( "Metric" ),
-      m_num_dense( numDense )
+    m_num_dense( numDense )
 {
     stringstream name;
     name << m_name << " " << m_num_dense;
@@ -141,7 +190,8 @@ SCOREP_Score_MetricEvent::SCOREP_Score_MetricEvent( uint64_t numDense )
 }
 
 bool
-SCOREP_Score_MetricEvent::occursInRegion( const string& regionName )
+SCOREP_Score_MetricEvent::occursInRegion( const string& regionName,
+                                          bool          hasHits )
 {
     if ( regionName.find( '=', 0 ) == string::npos )
     {
@@ -165,7 +215,8 @@ SCOREP_Score_TimestampEvent::SCOREP_Score_TimestampEvent( void )
 }
 
 bool
-SCOREP_Score_TimestampEvent::occursInRegion( const string& regionName )
+SCOREP_Score_TimestampEvent::occursInRegion( const string& regionName,
+                                             bool          hasHits )
 {
     if ( regionName.find( '=', 0 ) == string::npos )
     {
@@ -189,7 +240,8 @@ SCOREP_Score_ParameterEvent::SCOREP_Score_ParameterEvent( void )
 }
 
 bool
-SCOREP_Score_ParameterEvent::occursInRegion( const string& regionName )
+SCOREP_Score_ParameterEvent::occursInRegion( const string& regionName,
+                                             bool          hasHits )
 {
     if ( regionName.find( '=', 0 ) == string::npos )
     {
@@ -213,7 +265,8 @@ SCOREP_Score_NameMatchEvent::SCOREP_Score_NameMatchEvent( const string&      eve
 }
 
 bool
-SCOREP_Score_NameMatchEvent::occursInRegion( const string& regionName )
+SCOREP_Score_NameMatchEvent::occursInRegion( const string& regionName,
+                                             bool          hasHits )
 {
     return m_region_names.count( regionName ) == 1;
 }
@@ -231,7 +284,8 @@ SCOREP_Score_PrefixMatchEvent::SCOREP_Score_PrefixMatchEvent
 }
 
 bool
-SCOREP_Score_PrefixMatchEvent::occursInRegion( const string& regionName )
+SCOREP_Score_PrefixMatchEvent::occursInRegion( const string& regionName,
+                                               bool          hasHits )
 {
     for ( deque<string>::iterator i = m_region_prefix.begin();
           i != m_region_prefix.end(); i++ )

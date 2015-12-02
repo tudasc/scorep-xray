@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2013,
+ * Copyright (c) 2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -37,12 +37,6 @@
 #include <UTILS_Debug.h>
 
 SCOREP_Opari2_Openmp_Region* scorep_opari2_openmp_regions;
-
-/** Flag to indicate whether the adapter is initialized */
-bool scorep_opari2_openmp_is_initialized = false;
-
-/** Flag to indicate whether the adapter is finalized */
-bool scorep_opari2_openmp_is_finalized = false;
 
 /** Lock to protect on-the-fly assignments.*/
 SCOREP_Mutex scorep_opari2_openmp_assign_lock;
@@ -96,42 +90,38 @@ opari2_openmp_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    if ( !scorep_opari2_openmp_is_initialized )
+    SCOREP_Paradigms_RegisterParallelParadigm(
+        SCOREP_PARADIGM_OPENMP,
+        SCOREP_PARADIGM_CLASS_THREAD_FORK_JOIN,
+        "OpenMP",
+        SCOREP_PARADIGM_FLAG_NONE );
+    SCOREP_Paradigms_SetStringProperty( SCOREP_PARADIGM_OPENMP,
+                                        SCOREP_PARADIGM_PROPERTY_COMMUNICATOR_TEMPLATE,
+                                        "Thread team ${id}" );
+
+    SCOREP_MutexCreate( &scorep_opari2_openmp_assign_lock );
+    scorep_opari2_openmp_lock_initialize();
+
+    size_t n = POMP2_Get_num_regions();
+
+    scorep_opari2_openmp_regions = calloc( n, sizeof( SCOREP_Opari2_Openmp_Region ) );
+
+    /* Initialize regions inserted by Opari */
+    POMP2_Init_regions();
+
+    SCOREP_SourceFileHandle scorep_opari2_openmp_file_handle
+        = SCOREP_Definitions_NewSourceFile( "OMP" );
+
+    for ( int i = 0; i < SCOREP_OPARI2_OPENMP_LOCK_NUM; i++ )
     {
-        SCOREP_Paradigms_RegisterParallelParadigm(
-            SCOREP_PARADIGM_OPENMP,
-            SCOREP_PARADIGM_CLASS_THREAD_FORK_JOIN,
-            "OpenMP",
-            SCOREP_PARADIGM_FLAG_NONE );
-        SCOREP_Paradigms_SetStringProperty( SCOREP_PARADIGM_OPENMP,
-                                            SCOREP_PARADIGM_PROPERTY_COMMUNICATOR_TEMPLATE,
-                                            "Thread team ${id}" );
-
-        scorep_opari2_openmp_is_initialized = true;
-        SCOREP_MutexCreate( &scorep_opari2_openmp_assign_lock );
-        scorep_opari2_openmp_lock_initialize();
-
-        size_t n = POMP2_Get_num_regions();
-
-        scorep_opari2_openmp_regions = calloc( n, sizeof( SCOREP_Opari2_Openmp_Region ) );
-
-        /* Initialize regions inserted by Opari */
-        POMP2_Init_regions();
-
-        SCOREP_SourceFileHandle scorep_opari2_openmp_file_handle
-            = SCOREP_Definitions_NewSourceFile( "OMP" );
-
-        for ( int i = 0; i < SCOREP_OPARI2_OPENMP_LOCK_NUM; i++ )
-        {
-            scorep_opari2_openmp_lock_region_handles[ i ] =
-                SCOREP_Definitions_NewRegion( lock_region_names[ i ],
-                                              NULL,
-                                              scorep_opari2_openmp_file_handle,
-                                              SCOREP_INVALID_LINE_NO,
-                                              SCOREP_INVALID_LINE_NO,
-                                              SCOREP_PARADIGM_OPENMP,
-                                              SCOREP_REGION_WRAPPER );
-        }
+        scorep_opari2_openmp_lock_region_handles[ i ] =
+            SCOREP_Definitions_NewRegion( lock_region_names[ i ],
+                                          NULL,
+                                          scorep_opari2_openmp_file_handle,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_INVALID_LINE_NO,
+                                          SCOREP_PARADIGM_OPENMP,
+                                          SCOREP_REGION_WRAPPER );
     }
 
     UTILS_DEBUG_EXIT();
@@ -144,13 +134,6 @@ opari2_openmp_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    if ( !scorep_opari2_openmp_is_initialized ||
-         scorep_opari2_openmp_is_finalized )
-    {
-        return;
-    }
-    scorep_opari2_openmp_is_finalized = true;
-
     free( scorep_opari2_openmp_regions );
     SCOREP_MutexDestroy( &scorep_opari2_openmp_assign_lock );
 
@@ -159,14 +142,8 @@ opari2_openmp_subsystem_finalize( void )
 
 const SCOREP_Subsystem SCOREP_Subsystem_Opari2OpenmpAdapter =
 {
-    .subsystem_name              = "OPARI2 OpenMP Adapter for the POMP2 interface / Version 1.0",
-    .subsystem_register          = &opari2_openmp_subsystem_register,
-    .subsystem_init              = &opari2_openmp_subsystem_init,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &opari2_openmp_subsystem_finalize,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name     = "OPARI2 OpenMP Adapter for the POMP2 interface / Version 1.0",
+    .subsystem_register = &opari2_openmp_subsystem_register,
+    .subsystem_init     = &opari2_openmp_subsystem_init,
+    .subsystem_finalize = &opari2_openmp_subsystem_finalize,
 };

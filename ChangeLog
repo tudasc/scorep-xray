@@ -2,6 +2,14 @@
 
 Major features:
 
+- Score-P supports a new data collecting mode based on sampling. Sampling
+  can be used in conjunction with the usual instrumentation of parallel
+  paradigms. Therefore it combines the lower overhead of statistical
+  sampling and the accuracy of instrumentation. Both call-path profiling
+  and event tracing are supported. As this is rather a major change in the
+  Score-P internals and also for the user experience we appreciate any
+  feedback but need to declare the sampling support as experimental in this
+  first release.
 - Support for OPARI2 2.0 was integrated. OPARI2 is now more
   flexible to enable support for other pragma/directive based
   paradigms.
@@ -36,6 +44,10 @@ Features and improvements:
   work as well.
 - Source-to-source instrumentation via PDT on Blue Gene systems was
   reenabled for PDT versions newer than 3.18.
+- Score-P takes advantage from compilers to initialize the measurement
+  automatically, before triggering any event. This also ensures that the
+  interrupt sources for sampling are registered as early as possible and
+  also when no compiler instrumention is available.
 
 User tools and API improvements and changes:
 

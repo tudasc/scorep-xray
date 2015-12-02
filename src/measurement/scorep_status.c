@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -88,12 +88,14 @@ static scorep_status scorep_process_local_status = {
     .otf2_has_flushed          = false
 };
 
+bool scorep_is_unwinding_enabled = 0;
 
 void
 SCOREP_Status_Initialize( void )
 {
     scorep_process_local_status.is_profiling_enabled = SCOREP_Env_DoProfiling();
     scorep_process_local_status.is_tracing_enabled   = SCOREP_Env_DoTracing();
+    scorep_is_unwinding_enabled                      = SCOREP_Env_DoCallingContext();
 
     // Lets see if we have an IPC, ie multi program paradigm
     if ( !SCOREP_Status_IsMpp() )

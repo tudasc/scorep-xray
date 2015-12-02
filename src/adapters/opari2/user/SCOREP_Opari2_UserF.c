@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -37,6 +37,8 @@
 
 #include <config.h>
 
+#include <SCOREP_InMeasurement.h>
+
 #include "SCOREP_Opari2_User_Fortran.h"
 #include "SCOREP_Opari2_Region_Info.h"
 
@@ -46,43 +48,50 @@
 
 void
 FSUB( POMP2_Begin )( POMP2_Region_handle_fortran* regionHandle,
-                     const char*                  ctc_string )
+                     const char*                  ctc_string,
+                     int                          ctc_string_len )
 {
-    if ( scorep_opari2_recording_on )
-    {
-        POMP2_Begin( SCOREP_POMP_F2C_REGION( regionHandle ), ctc_string );
-    }
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    POMP2_Begin( SCOREP_POMP_F2C_REGION( regionHandle ), ctc_string );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 FSUB( POMP2_End )( POMP2_Region_handle_fortran* regionHandle )
 {
-    if ( scorep_opari2_recording_on )
-    {
-        POMP2_End( SCOREP_POMP_F2C_REGION( regionHandle ) );
-    }
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    POMP2_End( SCOREP_POMP_F2C_REGION( regionHandle ) );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 FSUB( POMP2_Init )( void )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Init();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 FSUB( POMP2_Finalize )( void )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     POMP2_Finalize();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 FSUB( POMP2_On )( void )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     scorep_opari2_recording_on = 1;
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 FSUB( POMP2_Off )( void )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     scorep_opari2_recording_on = 0;
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }

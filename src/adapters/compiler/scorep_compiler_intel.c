@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -46,6 +46,7 @@
 #include <UTILS_Debug.h>
 
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Definitions.h>
@@ -125,23 +126,18 @@ __VT_IntelEntry( char*     str,
                  uint32_t* id,
                  uint32_t* id2 )
 {
-    UTILS_DEBUG_ENTRY( "%s, %u", str, *id );
-
-    /*
-     * put hash table entries via mechanism for bfd symbol table
-     * to calculate function addresses if measurement was not initialized
-     */
-
-    if ( !scorep_compiler_initialized )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
-        if ( scorep_compiler_finalized )
-        {
-            return;
-        }
-
-        /* not initialized so far */
         SCOREP_InitMeasurement();
     }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    UTILS_DEBUG_ENTRY( "%s, %u", str, *id );
 
     /* Register new region if unknown */
     if ( *id == 0 )
@@ -163,6 +159,8 @@ __VT_IntelEntry( char*     str,
 
     /* Set exit id */
     *id2 = *id;
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
@@ -170,7 +168,9 @@ VT_IntelEntry( char*     str,
                uint32_t* id,
                uint32_t* id2 )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     __VT_IntelEntry( str, id, id2 );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 
@@ -181,26 +181,33 @@ VT_IntelEntry( char*     str,
 void
 __VT_IntelExit( uint32_t* id2 )
 {
-    UTILS_DEBUG_ENTRY( "%u", *id2 );
-
-    if ( scorep_compiler_finalized )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
     {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
+
+    UTILS_DEBUG_ENTRY( "%u", *id2 );
 
     /* Check if function is filtered */
     if ( *id2 == SCOREP_FILTERED_REGION )
     {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
 
     SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 VT_IntelExit( uint32_t* id2 )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     __VT_IntelExit( id2 );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /*
@@ -210,49 +217,57 @@ VT_IntelExit( uint32_t* id2 )
 void
 __VT_IntelCatch( uint32_t* id2 )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
     UTILS_DEBUG_ENTRY( "%u", *id2 );
 
-    if ( scorep_compiler_finalized )
-    {
-        return;
-    }
-
     /* Check if function is filtered */
-    if ( *id2 == SCOREP_FILTERED_REGION )
+    if ( *id2 != SCOREP_FILTERED_REGION )
     {
-        return;
+        SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
     }
 
-    SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 VT_IntelCatch( uint32_t* id2 )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     __VT_IntelCatch( id2 );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 __VT_IntelCheck( uint32_t* id2 )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
     UTILS_DEBUG_ENTRY( "%u", *id2 );
 
-    if ( scorep_compiler_finalized )
-    {
-        return;
-    }
-
     /* Check if function is filtered */
-    if ( *id2 == SCOREP_FILTERED_REGION )
+    if ( *id2 != SCOREP_FILTERED_REGION )
     {
-        return;
+        SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
     }
 
-    SCOREP_ExitRegion( ( SCOREP_RegionHandle ) * id2 );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 VT_IntelCheck( uint32_t* id2 )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     __VT_IntelCheck( id2 );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }

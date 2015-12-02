@@ -42,13 +42,16 @@
 
 #include <scorep_subsystem.h>
 
+extern const SCOREP_Subsystem SCOREP_Subsystem_TaskStack;
+extern const SCOREP_Subsystem SCOREP_Subsystem_MetricService;
+extern const SCOREP_Subsystem SCOREP_Subsystem_UnwindingService;
+extern const SCOREP_Subsystem SCOREP_Subsystem_SamplingService;
 extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_Opari2UserAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_Opari2OpenmpAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
-extern const SCOREP_Subsystem SCOREP_Subsystem_MetricService;
 extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_OpenclAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin;
@@ -59,18 +62,21 @@ extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadCreateWait;
  * List of subsystems.
  */
 const SCOREP_Subsystem* scorep_subsystems[] = {
+    &SCOREP_Subsystem_TaskStack,
     &SCOREP_Subsystem_MetricService,
+    &SCOREP_Subsystem_UnwindingService,
+    &SCOREP_Subsystem_SamplingService,
     &SCOREP_Subsystem_CompilerAdapter,
     &SCOREP_Subsystem_UserAdapter,
     &SCOREP_Subsystem_Opari2UserAdapter,
-    &SCOREP_Subsystem_Opari2OpenmpAdapter,
     &SCOREP_Subsystem_MpiAdapter,
+    &SCOREP_Subsystem_ShmemAdapter,
+    &SCOREP_Subsystem_ThreadForkJoin,
+    &SCOREP_Subsystem_Opari2OpenmpAdapter,
+    &SCOREP_Subsystem_ThreadCreateWait,
+    &SCOREP_Subsystem_PthreadAdapter,
     &SCOREP_Subsystem_CudaAdapter,
     &SCOREP_Subsystem_OpenclAdapter,
-    &SCOREP_Subsystem_ThreadForkJoin,
-    &SCOREP_Subsystem_PthreadAdapter,
-    &SCOREP_Subsystem_ThreadCreateWait,
-    &SCOREP_Subsystem_ShmemAdapter
 };
 
 const size_t scorep_number_of_subsystems = sizeof( scorep_subsystems ) /

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -56,6 +56,7 @@
 #include <UTILS_Error.h>
 #define SCOREP_DEBUG_MODULE_NAME DEFINITIONS
 #include <UTILS_Debug.h>
+#include <UTILS_IO.h>
 
 
 #include <jenkins_hash.h>
@@ -91,7 +92,8 @@ SCOREP_Definitions_NewSourceFile( const char* fileName )
         &scorep_local_definition_manager,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            fileName ? fileName : "<unknown source file>" ) );
+            fileName ? fileName : "<unknown source file>",
+            UTILS_IO_SimplifyPath ) );
 
     SCOREP_Definitions_Unlock();
 

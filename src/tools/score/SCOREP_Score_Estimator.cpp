@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -284,6 +284,12 @@ SCOREP_Score_Estimator::SCOREP_Score_Estimator( SCOREP_Score_Profile* profile,
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_TimestampEvent() );
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_EnterEvent() );
     SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_LeaveEvent() );
+    if ( m_profile->hasHits() )
+    {
+        SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_CallingContextEnterEvent() );
+        SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_CallingContextLeaveEvent() );
+        SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_CallingContextSampleEvent() );
+    }
     if ( denseNum > 0 )
     {
         SCOREP_Score_Event::RegisterEvent( new SCOREP_Score_MetricEvent( denseNum ) );
@@ -497,6 +503,11 @@ SCOREP_Score_Estimator::calculate( bool showRegions, bool useMangled )
         initialize_regions( useMangled );
     }
 
+    uint64_t bytes_per_hit = 0;
+    if ( m_profile->hasHits() )
+    {
+        bytes_per_hit = SCOREP_Score_Event::m_all_events[ "CallingContextSample" ]->getEventSize();
+    }
     for ( uint64_t region = 0; region < m_region_num; region++ )
     {
         const string& region_name     = m_profile->getRegionName( region );
@@ -507,10 +518,16 @@ SCOREP_Score_Estimator::calculate( bool showRegions, bool useMangled )
         for ( map<string, SCOREP_Score_Event*>::iterator i = SCOREP_Score_Event::m_all_events.begin();
               i != SCOREP_Score_Event::m_all_events.end(); i++ )
         {
-            if ( i->second->occursInRegion( region_name ) )
+            if ( i->second->occursInRegion( region_name, m_profile->hasHits() ) )
             {
                 bytes_per_visit += i->second->getEventSize();
             }
+        }
+
+        /* visists into sampling regions wont be recorded in the trace */
+        if ( m_profile->getRegionParadigm( region ) == "sampling" )
+        {
+            bytes_per_visit = 0;
         }
 
         /* Apply region data for each process */
@@ -518,19 +535,34 @@ SCOREP_Score_Estimator::calculate( bool showRegions, bool useMangled )
         {
             uint64_t visits = m_profile->getVisits( region, process );
             double   time   = m_profile->getTime( region, process );
+            uint64_t hits   = m_profile->getHits( region, process );
 
-            if ( visits == 0 )
+            if ( visits == 0 && hits == 0 )
             {
                 continue;
             }
 
-            m_groups[ group ]->addRegion( visits, bytes_per_visit, time, process );
-            m_groups[ SCOREP_SCORE_TYPE_ALL ]->addRegion( visits, bytes_per_visit,
-                                                          time, process );
+            m_groups[ group ]->addRegion( visits,
+                                          bytes_per_visit,
+                                          hits,
+                                          bytes_per_hit,
+                                          time,
+                                          process );
+            m_groups[ SCOREP_SCORE_TYPE_ALL ]->addRegion( visits,
+                                                          bytes_per_visit,
+                                                          hits,
+                                                          bytes_per_hit,
+                                                          time,
+                                                          process );
 
             if ( showRegions )
             {
-                m_regions[ region ]->addRegion( visits, bytes_per_visit, time, process );
+                m_regions[ region ]->addRegion( visits,
+                                                bytes_per_visit,
+                                                hits,
+                                                bytes_per_hit,
+                                                time,
+                                                process );
             }
 
             if ( m_has_filter )
@@ -544,17 +576,27 @@ SCOREP_Score_Estimator::calculate( bool showRegions, bool useMangled )
                 }
                 if ( !do_filter )
                 {
-                    m_filtered[ group ]->addRegion( visits, bytes_per_visit,
-                                                    time, process );
+                    m_filtered[ group ]->addRegion( visits,
+                                                    bytes_per_visit,
+                                                    hits,
+                                                    bytes_per_hit,
+                                                    time,
+                                                    process );
                     m_filtered[ SCOREP_SCORE_TYPE_ALL ]->addRegion( visits,
                                                                     bytes_per_visit,
-                                                                    time, process );
+                                                                    hits,
+                                                                    bytes_per_hit,
+                                                                    time,
+                                                                    process );
                 }
                 else
                 {
                     m_filtered[ SCOREP_SCORE_TYPE_FLT ]->addRegion( visits,
                                                                     bytes_per_visit,
-                                                                    time, process );
+                                                                    hits,
+                                                                    bytes_per_hit,
+                                                                    time,
+                                                                    process );
                 }
             }
         }
@@ -585,7 +627,7 @@ SCOREP_Score_Estimator::printGroups( void )
                  ( m_profile->getNumberOfProcesses() * m_profile->getNumberOfMetrics() );
     memory_req = max_buf + memory_req;
     memory_req = value > memory_req ? value : memory_req;
-    memory_req = memory_req + value*  m_profile->getMaxNumberOfLocationsPerProcess();
+    memory_req = memory_req + value *  m_profile->getMaxNumberOfLocationsPerProcess();
 
     cout << endl;
     cout << "Estimated aggregate size of event trace:                   "
@@ -606,15 +648,19 @@ SCOREP_Score_Estimator::printGroups( void )
     cout << "flt"
          << " " << setw( m_widths.m_type ) << "type"
          << " " << setw( m_widths.m_bytes ) << "max_buf[B]"
-         << " " << setw( m_widths.m_visits ) << "visits"
-         << " " << setw( m_widths.m_time ) << "time[s]"
+         << " " << setw( m_widths.m_visits ) << "visits";
+    if ( m_profile->hasHits() )
+    {
+        cout << " " << setw( m_widths.m_hits ) << "hits";
+    }
+    cout << " " << setw( m_widths.m_time ) << "time[s]"
          << " time[%]"
          << " " << setw( m_widths.m_time_per_visit ) << "time/visit[us]"
          << "  region"
          << endl;
     for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
     {
-        m_groups[ i ]->print( total_time, m_widths );
+        m_groups[ i ]->print( total_time, m_widths, m_profile->hasHits() );
     }
 
     if ( m_has_filter )
@@ -624,7 +670,7 @@ SCOREP_Score_Estimator::printGroups( void )
         cout << endl;
         for ( uint64_t i = 0; i < SCOREP_SCORE_TYPE_NUM; i++ )
         {
-            m_filtered[ i ]->print( total_time, m_widths );
+            m_filtered[ i ]->print( total_time, m_widths, m_profile->hasHits() );
         }
     }
 }
@@ -638,7 +684,7 @@ SCOREP_Score_Estimator::printRegions( void )
     cout << endl;
     for ( uint64_t i = 0; i < m_region_num; i++ )
     {
-        m_regions[ i ]->print( total_time, m_widths );
+        m_regions[ i ]->print( total_time, m_widths, m_profile->hasHits() );
     }
 }
 
@@ -671,6 +717,11 @@ SCOREP_Score_Estimator::calculate_event_sizes( void )
 
     estimator_in << "set Region " << m_region_num << "\n";
     estimator_in << "set Metric " << m_profile->getNumberOfMetrics() << "\n";
+    if ( m_profile->hasHits() )
+    {
+        estimator_in << "set CallingContext " << m_profile->getNumberOfCallingContextNodes() << "\n";
+        estimator_in << "set InterruptGenerator " << m_profile->getNumberOfInterruptGenerators() << "\n";
+    }
 
     for ( map<string, SCOREP_Score_Event*>::iterator i = SCOREP_Score_Event::m_all_events.begin(); i != SCOREP_Score_Event::m_all_events.end(); i++ )
     {
@@ -761,7 +812,9 @@ SCOREP_Score_Estimator::initialize_regions( bool useMangled )
 bool
 SCOREP_Score_Estimator::match_filter( uint64_t region )
 {
-    bool do_filter = SCOREP_Filter_Match( m_profile->getFileName( region ).c_str(),
+    /* sampled regions wont get filtered */
+    bool do_filter = m_profile->getRegionParadigm( region ) != "sampling" &&
+                     SCOREP_Filter_Match( m_profile->getFileName( region ).c_str(),
                                           m_profile->getRegionName( region ).c_str(),
                                           m_profile->getMangledName( region ).c_str() );
     return do_filter &&

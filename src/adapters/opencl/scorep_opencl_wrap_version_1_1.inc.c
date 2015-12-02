@@ -7,16 +7,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateSubBuffer ) ( cl_mem                buffer,
                                                 const void*           bufferCreateInfo,
                                                 cl_int*               errcodeRet )
 {
-    cl_mem ret;
+    SCOREP_OPENCL_FUNC_ENTER( clCreateSubBuffer );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateSubBuffer );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_mem ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateSubBuffer, clCreateSubBuffer,
+        ( buffer, flags, bufferCreateType, bufferCreateInfo, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateSubBuffer,
-                                             clCreateSubBuffer,
-                                             ( buffer, flags, bufferCreateType,
-                                               bufferCreateInfo, errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateSubBuffer );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateSubBuffer );
 
     return ret;
 }
@@ -29,15 +28,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetMemObjectDestructorCallback ) ( cl_mem memObj,
                                                                                                 void* ),
                                                                void*  userData )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clSetMemObjectDestructorCallback );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clSetMemObjectDestructorCallback );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clSetMemObjectDestructorCallback, clSetMemObjectDestructorCallback,
+        ( memObj, pfnNotify, userData ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clSetMemObjectDestructorCallback,
-                                             clSetMemObjectDestructorCallback,
-                                             ( memObj, pfnNotify, userData ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clSetMemObjectDestructorCallback );
+    SCOREP_OPENCL_FUNC_EXIT( clSetMemObjectDestructorCallback );
 
     return ret;
 }
@@ -48,15 +47,15 @@ cl_event
 SCOREP_LIBWRAP_FUNC_NAME( clCreateUserEvent ) ( cl_context context,
                                                 cl_int*    errcodeRet )
 {
-    cl_event ret;
+    SCOREP_OPENCL_FUNC_ENTER( clCreateUserEvent );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateUserEvent );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_event ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateUserEvent, clCreateUserEvent,
+        ( context, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateUserEvent,
-                                             clCreateUserEvent,
-                                             ( context, errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateUserEvent );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateUserEvent );
 
     return ret;
 }
@@ -68,15 +67,15 @@ cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clSetUserEventStatus ) ( cl_event event,
                                                    cl_int   executionStatus )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clSetUserEventStatus );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clSetUserEventStatus );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clSetUserEventStatus, clSetUserEventStatus,
+        ( event, executionStatus ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clSetUserEventStatus,
-                                             clSetUserEventStatus,
-                                             ( event, executionStatus ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clSetUserEventStatus );
+    SCOREP_OPENCL_FUNC_EXIT( clSetUserEventStatus );
 
     return ret;
 }
@@ -91,16 +90,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetEventCallback ) ( cl_event event,
                                                                                   void* ),
                                                  void*    userData )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clSetEventCallback );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clSetEventCallback );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clSetEventCallback, clSetEventCallback,
+        ( event, commandExecCallbackType, pfnNotify, userData ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clSetEventCallback,
-                                             clSetEventCallback,
-                                             ( event, commandExecCallbackType,
-                                               pfnNotify, userData ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clSetEventCallback );
+    SCOREP_OPENCL_FUNC_EXIT( clSetEventCallback );
 
     return ret;
 }
@@ -123,20 +121,17 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueReadBufferRect ) ( cl_command_queue commandQu
                                                       const cl_event*  eventWaitList,
                                                       cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueReadBufferRect );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueReadBufferRect );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueReadBufferRect, clEnqueueReadBufferRect,
+        ( commandQueue, buffer, blockingRead, bufferOffset, hostOffset, region,
+          bufferRowPitch, bufferSlicePitch, hostRowPitch, hostSlicePitch, ptr,
+          numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueReadBufferRect,
-                                             clEnqueueReadBufferRect,
-                                             ( commandQueue, buffer, blockingRead,
-                                               bufferOffset, hostOffset, region,
-                                               bufferRowPitch, bufferSlicePitch,
-                                               hostRowPitch, hostSlicePitch, ptr,
-                                               numEventsInWaitList, eventWaitList,
-                                               event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueReadBufferRect );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueReadBufferRect );
 
     return ret;
 }
@@ -159,20 +154,17 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteBufferRect ) ( cl_command_queue commandQ
                                                        const cl_event*  eventWaitList,
                                                        cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueWriteBufferRect );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueWriteBufferRect );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueWriteBufferRect, clEnqueueWriteBufferRect,
+        ( commandQueue, buffer, blockingWrite, bufferOffset, hostOffset, region,
+          bufferRowPitch, bufferSlicePitch, hostRowPitch, hostSlicePitch, ptr,
+          numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueWriteBufferRect,
-                                             clEnqueueWriteBufferRect,
-                                             ( commandQueue, buffer, blockingWrite,
-                                               bufferOffset, hostOffset, region,
-                                               bufferRowPitch, bufferSlicePitch,
-                                               hostRowPitch, hostSlicePitch, ptr,
-                                               numEventsInWaitList, eventWaitList,
-                                               event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueWriteBufferRect );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueWriteBufferRect );
 
     return ret;
 }
@@ -194,18 +186,17 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyBufferRect ) ( cl_command_queue commandQu
                                                       const cl_event*  eventWaitList,
                                                       cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueCopyBufferRect );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueCopyBufferRect );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueCopyBufferRect, clEnqueueCopyBufferRect,
+        ( commandQueue, srcBuffer, dstBuffer, srcOrigin, dstOrigin, region,
+          srcRowPitch, srcSlicePitch, dstRowPitch, dstSlicePitch,
+          numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueCopyBufferRect,
-                                             clEnqueueCopyBufferRect,
-                                             ( commandQueue, srcBuffer, dstBuffer, srcOrigin,
-                                               dstOrigin, region, srcRowPitch, srcSlicePitch,
-                                               dstRowPitch, dstSlicePitch, numEventsInWaitList,
-                                               eventWaitList, event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueCopyBufferRect );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueCopyBufferRect );
 
     return ret;
 }

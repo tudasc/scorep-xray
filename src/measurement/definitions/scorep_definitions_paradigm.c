@@ -68,7 +68,7 @@ SCOREP_Definitions_NewParadigm( SCOREP_ParadigmType  paradigm,
     new_paradigm->next = NULL;
 
     new_paradigm->name_handle = scorep_definitions_new_string(
-        &scorep_local_definition_manager, name );
+        &scorep_local_definition_manager, name, NULL );
     /* Cache paradigm name */
     new_paradigm->name = SCOREP_StringHandle_Get( new_paradigm->name_handle );
 
@@ -108,9 +108,9 @@ SCOREP_Definitions_ParadigmSetProperty( SCOREP_Paradigm*        paradigm,
 
 
 void
-SCOREP_ForAllParadigms( void  ( * cb )( SCOREP_Paradigm*,
-                                        void* ),
-                        void* userData )
+SCOREP_ForAllParadigms( void ( * cb )( SCOREP_Paradigm*,
+                                       void* ),
+                        void*    userData )
 {
     for ( SCOREP_Paradigm* paradigm = head; paradigm; paradigm = paradigm->next )
     {

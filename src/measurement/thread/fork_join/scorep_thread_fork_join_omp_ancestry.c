@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -342,6 +342,7 @@ scorep_thread_get_private_data( void )
 void
 scorep_thread_on_team_end( scorep_thread_private_data*  currentTpd,
                            scorep_thread_private_data** parentTpd,
+                           int*                         threadId,
                            SCOREP_ParadigmType          paradigm )
 {
     UTILS_BUG_ON( currentTpd != TPD, "" );
@@ -349,6 +350,7 @@ scorep_thread_on_team_end( scorep_thread_private_data*  currentTpd,
 
     scorep_thread_private_data_omp_tpd* model_data = scorep_thread_get_model_data( currentTpd );
 
+    *threadId = omp_get_thread_num();
     if ( omp_get_num_threads() == 1 )
     {
         /* There was no additional parallelism in this parallel

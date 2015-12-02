@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -44,6 +44,13 @@
 #include <SCOREP_Location.h>
 
 
+/**
+ * Returns the current Score-P timestamp.
+ *
+ * @param location          Current Score-P location
+ *
+ * @return Current timestamp of requested location.
+ */
 static inline uint64_t
 scorep_get_timestamp( SCOREP_Location* location )
 {

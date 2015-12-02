@@ -158,10 +158,12 @@
                                           int            *size,     \
                                           int            *pe )      \
     {                                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                          \
         shmem_ ## C_FUNCNAME ## _put( target,                       \
                                       src,                          \
                                       *size,                        \
                                       *pe );                        \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                          \
     }
 
 /* *INDENT-ON* */
@@ -195,11 +197,13 @@ SHMEM_FORTRAN_PUT( real,      int,      int )
                                int            *size,            \
                                int            *pe )             \
     {                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                      \
         shmem_## C_FUNCNAME ##_put( target,                     \
                                     src,                        \
                                     *size,                      \
                                     *pe);                       \
-    }                                                           \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                      \
+    }
 
 /* *INDENT-ON* */
 
@@ -229,11 +233,13 @@ SHMEM_FORTRAN_PUT_SIZE( 128, longdouble, long double )
                           int        *size,     \
                           int        *pe )      \
     {                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();      \
         shmem_putmem( target,                   \
                       src,                      \
                       *size,                    \
                       *pe );                    \
-    }                                           \
+        SCOREP_IN_MEASUREMENT_DECREMENT();      \
+    }
 
 /* *INDENT-ON* */
 
@@ -268,13 +274,15 @@ SHMEM_FORTRAN_PUT_MEM
                                           int            *size,     \
                                           int            *pe)       \
     {                                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                          \
         shmem_ ## C_FUNCNAME ## _iput( target,                      \
                                        src,                         \
                                        *tst,                        \
                                        *sst,                        \
                                        *size,                       \
                                        *pe );                       \
-    }                                                               \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                          \
+    }
 
 /* *INDENT-ON* */
 
@@ -309,13 +317,15 @@ SHMEM_FORTRAN_IPUT( real,      int,      int )
                                 int            *size,           \
                                 int            *pe)             \
     {                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                      \
         shmem_ ## C_FUNCNAME ## _iput( target,                  \
                                        src,                     \
                                        *tst,                    \
                                        *sst,                    \
                                        *size,                   \
                                        *pe );                   \
-    }                                                           \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                      \
+    }
 
 /* *INDENT-ON* */
 
@@ -345,11 +355,13 @@ SHMEM_FORTRAN_IPUT_SIZE( 128, longdouble, long double )
                                           int            *size,     \
                                           int            *pe)       \
     {                                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                          \
         shmem_## C_FUNCNAME ## _get( target,                        \
                                      src,                           \
                                      *size,                         \
                                      *pe );                         \
-    }                                                               \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                          \
+    }
 
 /* *INDENT-ON* */
 
@@ -382,11 +394,13 @@ SHMEM_FORTRAN_GET( real,      int,      int )
                                int            *size,            \
                                int            *pe)              \
     {                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                      \
         shmem_## C_FUNCNAME ## _get( target,                    \
                                      src,                       \
                                      *size,                     \
                                      *pe );                     \
-    }                                                           \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                      \
+    }
 
 /* *INDENT-ON* */
 
@@ -416,11 +430,13 @@ SHMEM_FORTRAN_GET_SIZE( 128, longdouble, long double )
                           int        *size,     \
                           int        *pe )      \
     {                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();      \
         shmem_getmem( target,                   \
                       src,                      \
                       *size,                    \
                       *pe );                    \
-    }                                           \
+        SCOREP_IN_MEASUREMENT_DECREMENT();      \
+    }
 
 /* *INDENT-ON* */
 
@@ -455,13 +471,15 @@ SHMEM_FORTRAN_GET_MEM
                                            int            *size,    \
                                            int            *pe )     \
     {                                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                          \
         shmem_## C_FUNCNAME ## _iget( target,                       \
                                       src,                          \
                                       *tst,                         \
                                       *sst,                         \
                                       *size,                        \
                                       *pe );                        \
-    }                                                               \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                          \
+    }
 
 /* *INDENT-ON* */
 
@@ -496,13 +514,15 @@ SHMEM_FORTRAN_IGET( real,      int,      int )
                                 int            *size,           \
                                 int            *pe )            \
     {                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                      \
         shmem_## C_FUNCNAME ## _iget( target,                   \
                                       src,                      \
                                       *tst,                     \
                                       *sst,                     \
                                       *size,                    \
                                       *pe );                    \
-    }                                                           \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                      \
+    }
 
 /* *INDENT-ON* */
 

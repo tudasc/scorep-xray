@@ -11,18 +11,27 @@ ${guard:start}
  */
 ${proto:c}
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase});
   int return_val, sz;
 
   if (event_gen_active)
     {
       SCOREP_MPI_EVENT_GEN_OFF();
-      SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
+      SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__${name|uppercase}], ( intptr_t )P${name});
     }
 
   PMPI_Type_size(datatype, &sz);
 
+  if (event_gen_active)
+  {
+    SCOREP_ENTER_WRAPPED_REGION();
+  }
   return_val = ${call:pmpi};
+  if (event_gen_active)
+  {
+    SCOREP_EXIT_WRAPPED_REGION();
+  }
   if (dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     scorep_mpi_request_create(*request, (SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT),
                        tag, dest, count*sz, datatype, comm,
@@ -32,6 +41,7 @@ ${proto:c}
       SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
       SCOREP_MPI_EVENT_GEN_ON();
     }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }

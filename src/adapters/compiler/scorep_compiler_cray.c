@@ -41,11 +41,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include <SCOREP_RuntimeManagement.h>
-
-static void* scorep_first_func        = NULL;
-static void* scorep_first_callsite    = NULL;
-static bool  scorep_exited_first_func = false;
+#include <SCOREP_InMeasurement.h>
 
 void
 __cyg_profile_func_enter( void* func,
@@ -54,20 +50,6 @@ __cyg_profile_func_enter( void* func,
 void
 __cyg_profile_func_exit( void* func,
                          void* callsite );
-
-
-/* Checks whether the main function was exited. The Cray Fortran compiler instrumentation
- * does not issue the exit */
-static int
-scorep_compiler_cray_final_exit( void )
-{
-    if ( !scorep_exited_first_func )
-    {
-        scorep_exited_first_func = true;
-        __cyg_profile_func_exit( scorep_first_func, scorep_first_callsite );
-    }
-    return 0;
-}
 
 /* ***************************************************************************************
    Implementation of functions called by compiler instrumentation
@@ -83,13 +65,9 @@ void
 __pat_tp_func_entry( void* func,
                      void* callsite )
 {
-    if ( scorep_first_func == NULL )
-    {
-        scorep_first_func     = func;
-        scorep_first_callsite = callsite;
-        SCOREP_RegisterExitCallback( &scorep_compiler_cray_final_exit );
-    }
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     __cyg_profile_func_enter( func, callsite );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /**
@@ -102,9 +80,7 @@ void
 __pat_tp_func_return( void* func,
                       void* callsite )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     __cyg_profile_func_exit( func, callsite );
-    if ( func == scorep_first_func )
-    {
-        scorep_exited_first_func = true;
-    }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }

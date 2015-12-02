@@ -7,6 +7,9 @@
  * Copyright (c) 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -101,6 +104,9 @@ typedef enum SCOREP_Substrates_EventType
     SCOREP_EVENT_ON_TRACING_BUFFER_FLUSH_END,
     SCOREP_EVENT_ENTER_REGION,
     SCOREP_EVENT_EXIT_REGION,
+    SCOREP_EVENT_SAMPLE,
+    SCOREP_EVENT_CALLING_CONTEXT_ENTER,
+    SCOREP_EVENT_CALLING_CONTEXT_EXIT,
     SCOREP_EVENT_ENTER_REWIND_REGION,
     SCOREP_EVENT_EXIT_REWIND_REGION,
     SCOREP_EVENT_MPI_SEND,
@@ -247,6 +253,31 @@ typedef void ( * SCOREP_Substrates_ExitRegionCb )(
     uint64_t                timestamp,
     SCOREP_RegionHandle     regionHandle,
     uint64_t*               metricValues );
+
+typedef void ( * SCOREP_Substrates_SampleCb )(
+    struct SCOREP_Location*         location,
+    uint64_t                        timestamp,
+    SCOREP_CallingContextHandle     callingContext,
+    SCOREP_CallingContextHandle     previousCallingContext,
+    uint32_t                        unwindDistance,
+    SCOREP_InterruptGeneratorHandle interruptGeneratorHandle,
+    uint64_t*                       metricValues );
+
+typedef void ( * SCOREP_Substrates_CallingContextEnterCb )(
+    struct SCOREP_Location*     location,
+    uint64_t                    timestamp,
+    SCOREP_CallingContextHandle callingContext,
+    SCOREP_CallingContextHandle previousCallingContext,
+    uint32_t                    unwindDistance,
+    uint64_t*                   metricValues );
+
+typedef void ( * SCOREP_Substrates_CallingContextExitCb )(
+    struct SCOREP_Location*     location,
+    uint64_t                    timestamp,
+    SCOREP_CallingContextHandle callingContext,
+    SCOREP_CallingContextHandle previousCallingContext,
+    uint32_t                    unwindDistance,
+    uint64_t*                   metricValues );
 
 typedef void ( * SCOREP_Substrates_EnterRewindRegionCb )(
     struct SCOREP_Location* location,

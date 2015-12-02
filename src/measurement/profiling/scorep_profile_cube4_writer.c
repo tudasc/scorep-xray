@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -40,6 +40,7 @@
 #include <sys/stat.h>
 #include <inttypes.h>
 
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Memory.h>
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
@@ -245,6 +246,21 @@ static uint64_t
 get_visits_value( scorep_profile_node* node, void* data )
 {
     return node->count;
+}
+
+
+
+/**
+   Returns the number of hits for @a node.
+   This functions are given to scorep_profile_write_cube_metric.
+   @param node Pointer to a node which should return the metric value.
+   @param data Ignored.
+   @returns the number of visits of @a node.
+ */
+static uint64_t
+get_hits_value( scorep_profile_node* node, void* data )
+{
+    return node->hits;
 }
 
 
@@ -868,6 +884,15 @@ scorep_profile_write_cube4( bool write_tuples )
                                            write_set.global_threads,
                                            write_set.has_tasks,
                                            write_tuples );
+
+        if ( SCOREP_IsUnwindingEnabled() )
+        {
+            char buffer[ 32 ];
+            sprintf( buffer, "%u", scorep_unified_definition_manager->calling_context.counter );
+            cube_def_attr( write_set.my_cube, "SCOREP_NUMBER_OF_CALLING_CONTEXT_NODES", buffer );
+            sprintf( buffer, "%u", scorep_unified_definition_manager->interrupt_generator.counter );
+            cube_def_attr( write_set.my_cube, "SCOREP_NUMBER_OF_INTERRUPT_GENERATORS", buffer );
+        }
     }
 
     /* Build mapping from sequence number in unified callpath definitions to
@@ -886,7 +911,6 @@ scorep_profile_write_cube4( bool write_tuples )
     write_cube_doubles( &write_set, scorep_get_sum_time_handle(),
                         &get_sum_time_value, NULL );
 
-
     write_cube_doubles( &write_set, scorep_get_max_time_handle(),
                         &get_max_time_value, NULL );
 
@@ -895,6 +919,12 @@ scorep_profile_write_cube4( bool write_tuples )
 
     write_cube_uint64( &write_set, scorep_get_visits_handle(),
                        &get_visits_value, NULL );
+
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        write_cube_uint64( &write_set, scorep_get_hits_handle(),
+                           &get_hits_value, NULL );
+    }
 
     /* Write additional dense metrics (e.g. hardware counters) */
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Writing dense metrics" );

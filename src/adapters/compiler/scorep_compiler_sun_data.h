@@ -44,11 +44,6 @@
 
 
 /**
- * Handle for the main region, which is not instrumented by the compiler.
- */
-extern SCOREP_RegionHandle scorep_compiler_main_handle;
-
-/**
  * Register new region with Score-P system
  * 'ragion_name' is passed in from SUN compiler
  */

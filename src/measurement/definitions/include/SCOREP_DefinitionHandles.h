@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -105,6 +105,17 @@ typedef SCOREP_AnyHandle SCOREP_SamplingSetRecorderHandle;
 
 typedef SCOREP_AnyHandle SCOREP_AttributeHandle;
 
+
 typedef SCOREP_AnyHandle SCOREP_LocationPropertyHandle;
+
+
+typedef SCOREP_AnyHandle SCOREP_SourceCodeLocationHandle;
+
+
+typedef SCOREP_AnyHandle SCOREP_CallingContextHandle;
+
+
+typedef SCOREP_AnyHandle SCOREP_InterruptGeneratorHandle;
+
 
 #endif /* SCOREP_DEFINITIONHANDLES_H */

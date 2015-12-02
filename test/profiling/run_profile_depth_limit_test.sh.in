@@ -4,15 +4,29 @@
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2011,
-##    RWTH Aachen University, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2011,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2011, 2015,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2011,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2011,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2011,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2011,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license. See the COPYING file in the package base
+## directory for details.
 ##
 
 ## file       run_profile_depth_limit_test.sh
@@ -30,7 +44,7 @@ if [ ! -e $RESULT_DIR/profile.cubex ]; then
 fi
 
 #NUM_CNODES=`GREP_OPTIONS= grep -c "<cnode id=" $RESULT_DIR/profile.cubex`
-NUM_CNODES=`@SCOREP_CUBE_BINDIR@/cube_calltree -f $RESULT_DIR/profile.cubex | wc -l`
+NUM_CNODES=`@CUBE_BINDIR@/cube_calltree -f $RESULT_DIR/profile.cubex | wc -l`
 if [ ! x$NUM_CNODES = x6 ]; then
   echo "Expected 6 callpath definitions, but found $NUM_CNODES"
   exit 1

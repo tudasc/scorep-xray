@@ -47,9 +47,11 @@
 #include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Metric_Management.h>
+#include <SCOREP_Unwinding.h>
+#include <scorep_location.h>
+
 #define SCOREP_DEBUG_MODULE_NAME PROFILE
 #include <UTILS_Debug.h>
-#include <scorep_location.h>
 
 #include "scorep_profile_node.h"
 #include "scorep_profile_definition.h"
@@ -107,6 +109,7 @@ setup_start_from_parent( scorep_profile_node* node )
         }
     }
 }
+
 
 /* ***************************************************************************************
    Initialization / Finalization
@@ -405,12 +408,6 @@ on_location_activation( SCOREP_Location* locationData,
     SCOREP_PROFILE_ASSURE_INITIALIZED;
     UTILS_ASSERT( locationData != NULL );
 
-    /* If it is the same location as the parent, do not do anything */
-    if ( locationData == parentLocationData )
-    {
-        return;
-    }
-
     /* Get root node of the thread */
     thread_data = scorep_profile_get_profile_data( locationData );
     if ( thread_data == NULL )
@@ -487,12 +484,6 @@ on_location_deactivation( SCOREP_Location* locationData,
                           SCOREP_Location* parentLocationData )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_PROFILE, "Profile: Deactivated thread" );
-
-    /* If it is the same location as the parent, do not do anything */
-    if ( locationData == parentLocationData )
-    {
-        return;
-    }
 
     /* Remove the current node. */
     scorep_profile_set_current_node( scorep_profile_get_profile_data( locationData ),
@@ -765,6 +756,117 @@ exit_region( SCOREP_Location*    location,
                          metricValues );
 }
 
+
+/**
+   Called on samples to update the profile accordingly.
+   @param thread                        A pointer to the thread location data of
+                                        the thread that executed the exit event.
+   @param timestamp                     The timestamp, when the region was left.
+   @param currentCallingContextHandle   Current calling context
+   @param previousCallingContextHandle  Last known calling context
+   @param unwindDistance                Unwind distance
+   @param interruptGeneratorHandle      Interrupt generator of this sample
+   @param metrics                       An array with metric samples which were taken on the sample event.
+                                        The samples must be in the same order as the metric definitions
+                                        at the @ref SCOREP_Profile_Initialize call.
+ */
+static void
+sample( SCOREP_Location*                thread,
+        uint64_t                        timestamp,
+        SCOREP_CallingContextHandle     currentCallingContextHandle,
+        SCOREP_CallingContextHandle     previousCallingContextHandle,
+        uint32_t                        unwindDistance,
+        SCOREP_InterruptGeneratorHandle interruptGeneratorHandle,
+        uint64_t*                       metrics )
+{
+    SCOREP_Unwinding_ProcessCallingContext( thread,
+                                            timestamp,
+                                            metrics,
+                                            currentCallingContextHandle,
+                                            previousCallingContextHandle,
+                                            unwindDistance,
+                                            SCOREP_Profile_Enter,
+                                            SCOREP_Profile_Exit );
+
+    SCOREP_Profile_LocationData* location     = scorep_profile_get_profile_data( thread );
+    scorep_profile_node*         current_node = scorep_profile_get_current_node( location );
+    current_node->hits++;
+}
+
+/**
+   Called on enter events to update the profile accordingly.
+   @param thread A pointer to the thread location data of the thread that executed
+                 the enter event.
+   @param timestamp                    The timestamp, when the region was entered.
+   @param currentCallingContextHandle  Current calling context
+   @param previousCallingContextHandle Last known calling context
+   @param unwindDistance               Unwind distance
+   @param metrics                      An array with metric samples which were taken on the enter event.
+                                       The samples must be in the same order as the metric definitions
+                                       at the @ref SCOREP_Profile_Initialize call.
+ */
+static void
+calling_context_enter( SCOREP_Location*            thread,
+                       uint64_t                    timestamp,
+                       SCOREP_CallingContextHandle currentCallingContextHandle,
+                       SCOREP_CallingContextHandle previousCallingContextHandle,
+                       uint32_t                    unwindDistance,
+                       uint64_t*                   metrics )
+{
+    /* This will only process leave events resulting from the previous
+     * calling context and enter from the current, except the last one into
+     * the current calling context */
+    SCOREP_Unwinding_ProcessCallingContext( thread,
+                                            timestamp,
+                                            metrics,
+                                            SCOREP_CallingContextHandle_GetParent( currentCallingContextHandle ),
+                                            previousCallingContextHandle,
+                                            unwindDistance - 1,
+                                            SCOREP_Profile_Enter,
+                                            SCOREP_Profile_Exit );
+
+    enter_region( thread,
+                  timestamp,
+                  SCOREP_CallingContextHandle_GetRegion( currentCallingContextHandle ),
+                  metrics );
+}
+
+/**
+   Called on exit events to update the profile accordingly.
+   @param thread A pointer to the thread location data of the thread that executed
+                 the exit event.
+   @param timestamp                    The timestamp, when the region was left.
+   @param currentCallingContextHandle  Current calling context
+   @param previousCallingContextHandle Last known calling context
+   @param unwindDistance               Unwind distance
+   @param metrics                      An array with metric samples which were taken on the exit event.
+                                       The samples must be in the same order as the metric definitions
+                                       at the @ref SCOREP_Profile_Initialize call.
+ */
+static void
+calling_context_exit( SCOREP_Location*            thread,
+                      uint64_t                    timestamp,
+                      SCOREP_CallingContextHandle currentCallingContextHandle,
+                      SCOREP_CallingContextHandle previousCallingContextHandle,
+                      uint32_t                    unwindDistance,
+                      uint64_t*                   metrics )
+{
+    /* This will only process leave events resulting from the previous
+     * calling context */
+    SCOREP_Unwinding_ProcessCallingContext( thread,
+                                            timestamp,
+                                            metrics,
+                                            currentCallingContextHandle,
+                                            previousCallingContextHandle,
+                                            1,
+                                            SCOREP_Profile_Enter,
+                                            SCOREP_Profile_Exit );
+
+    exit_region( thread,
+                 timestamp,
+                 SCOREP_CallingContextHandle_GetRegion( currentCallingContextHandle ),
+                 metrics );
+}
 
 /**
    Called when a user metric / atomic / context event for signed integer values was triggered.
@@ -1165,6 +1267,9 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( OnTracingBufferFlushEnd,   ON_TRACING_BUFFER_FLUSH_END,   SCOREP_Profile_Exit ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRegion,               ENTER_REGION,                  enter_region ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ExitRegion,                EXIT_REGION,                   exit_region ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( Sample,                    SAMPLE,                        sample ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CallingContextEnter,       CALLING_CONTEXT_ENTER,         calling_context_enter ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CallingContextExit,        CALLING_CONTEXT_EXIT,          calling_context_exit ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiSend,                   MPI_SEND,                      SCOREP_Profile_MpiSend ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiRecv,                   MPI_RECV,                      SCOREP_Profile_MpiRecv ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiCollectiveEnd,          MPI_COLLECTIVE_END,            SCOREP_Profile_CollectiveEnd ),

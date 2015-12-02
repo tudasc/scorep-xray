@@ -39,6 +39,8 @@
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
+#include <SCOREP_RuntimeManagement.h>
+
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_data.h"
 
@@ -50,21 +52,44 @@
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void )
 {
-    if ( !scorep_compiler_initialized )
+    UTILS_DEBUG( "inititialize ftrace compiler adapter!" );
+
+    /* Initialize region mutex */
+    SCOREP_MutexCreate( &scorep_compiler_region_mutex );
+
+    if ( !SCOREP_IsUnwindingEnabled() )
     {
-        UTILS_DEBUG( "inititialize ftrace compiler adapter!" );
-
-        /* Initialize region mutex */
-        SCOREP_MutexCreate( &scorep_compiler_region_mutex );
-
         /* Initialize hash table */
         scorep_compiler_hash_init();
-
-        /* Set flag */
-        scorep_compiler_initialized = true;
     }
 
     return SCOREP_SUCCESS;
+}
+
+SCOREP_ErrorCode
+scorep_compiler_subsystem_begin( void )
+{
+    return SCOREP_SUCCESS;
+}
+
+void
+scorep_compiler_subsystem_end( void )
+{
+}
+
+void
+scorep_compiler_subsystem_finalize( void )
+{
+    if ( !SCOREP_IsUnwindingEnabled() )
+    {
+        /* Delete hash table */
+        scorep_compiler_hash_free();
+    }
+
+    UTILS_DEBUG( "finalize ftrace compiler adapter!" );
+
+    /* Delete region mutex */
+    SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
 }
 
 SCOREP_ErrorCode
@@ -73,22 +98,4 @@ scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData,
 {
     UTILS_DEBUG( "ftrace Compiler adapter init location!" );
     return SCOREP_SUCCESS;
-}
-
-void
-scorep_compiler_subsystem_finalize( void )
-{
-    /* call only, if previously initialized */
-    if ( scorep_compiler_initialized )
-    {
-        /* Delete hash table */
-        scorep_compiler_hash_free();
-
-        scorep_compiler_initialized = false;
-        scorep_compiler_finalized   = true;
-        UTILS_DEBUG( "finalize ftrace compiler adapter!" );
-
-        /* Delete region mutex */
-        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
-    }
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -21,6 +21,7 @@
 #include <config.h>
 
 #include "scorep_shmem_internal.h"
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
 
@@ -32,17 +33,22 @@
                                            DATATYPE   value,                        \
                                            int        pe )                          \
     {                                                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                          \
+                                                                                    \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                         \
         {                                                                           \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                           \
                                                                                     \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );                \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,           \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );        \
             SCOREP_RmaPut( scorep_shmem_interim_world_window_handle,                \
                            pe, sizeof( DATATYPE ),                                  \
                            scorep_shmem_rma_op_matching_id );                       \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                               \
                                                                                     \
+            SCOREP_EXIT_WRAPPED_REGION();                                           \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, value, pe ) );          \
+            SCOREP_EXIT_WRAPPED_REGION();                                           \
                                                                                     \
             SCOREP_RmaOpCompleteBlocking( scorep_shmem_interim_world_window_handle, \
                                           scorep_shmem_rma_op_matching_id );        \
@@ -54,6 +60,8 @@
         {                                                                           \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, value, pe ) );          \
         }                                                                           \
+                                                                                    \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                          \
     }                                                                               \
 
 /* *INDENT-ON* */
@@ -109,17 +117,22 @@ ELEMENTAL_PUT_ROUTINE( shmem_longdouble_p, long double )
                                            size_t           nElems,                     \
                                            int              pe )                        \
     {                                                                                   \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                              \
+                                                                                        \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                             \
         {                                                                               \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                               \
                                                                                         \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );                    \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,               \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );            \
             SCOREP_RmaPut( scorep_shmem_interim_world_window_handle,                    \
                            pe, nElems * NBYTES,                                         \
                            scorep_shmem_rma_op_matching_id );                           \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                                   \
                                                                                         \
+            SCOREP_ENTER_WRAPPED_REGION();                                              \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, nElems, pe ) );   \
+            SCOREP_EXIT_WRAPPED_REGION();                                               \
                                                                                         \
             SCOREP_RmaOpCompleteBlocking( scorep_shmem_interim_world_window_handle,     \
                                           scorep_shmem_rma_op_matching_id );            \
@@ -131,6 +144,8 @@ ELEMENTAL_PUT_ROUTINE( shmem_longdouble_p, long double )
         {                                                                               \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, nElems, pe ) );   \
         }                                                                               \
+                                                                                        \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                              \
     }
 
 /* *INDENT-ON* */
@@ -213,17 +228,22 @@ BLOCK_DATA_PUT_ROUTINE( shmem_putmem,         void,        1 )
                                            size_t           nElems,                             \
                                            int              pe )                                \
     {                                                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                                      \
+                                                                                                \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                                     \
         {                                                                                       \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                                       \
                                                                                                 \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );                            \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,                       \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );                    \
             SCOREP_RmaPut( scorep_shmem_interim_world_window_handle,                            \
                            pe, nElems * NBYTES,                                                 \
                            scorep_shmem_rma_op_matching_id );                                   \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                                           \
                                                                                                 \
+            SCOREP_ENTER_WRAPPED_REGION();                                                      \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, tst, sst, nElems, pe ) ); \
+            SCOREP_EXIT_WRAPPED_REGION();                                                       \
                                                                                                 \
             SCOREP_RmaOpCompleteBlocking( scorep_shmem_interim_world_window_handle,             \
                                           scorep_shmem_rma_op_matching_id );                    \
@@ -235,6 +255,8 @@ BLOCK_DATA_PUT_ROUTINE( shmem_putmem,         void,        1 )
         {                                                                                       \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, tst, sst, nElems, pe ) ); \
         }                                                                                       \
+                                                                                                \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                                      \
     }
 
 /* *INDENT-ON* */
@@ -305,19 +327,24 @@ STRIDED_PUT_ROUTINE( shmem_iput128,         void,        16 )
     SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( DATATYPE_IN * addr,                      \
                                            int           pe )                       \
     {                                                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                          \
+                                                                                    \
         DATATYPE ret;                                                               \
                                                                                     \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                         \
         {                                                                           \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                           \
                                                                                     \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );                \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,           \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );        \
             SCOREP_RmaGet( scorep_shmem_interim_world_window_handle,                \
                            pe, sizeof( DATATYPE ),                                  \
                            scorep_shmem_rma_op_matching_id );                       \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                               \
                                                                                     \
+            SCOREP_ENTER_WRAPPED_REGION();                                          \
             ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, pe ) );           \
+            SCOREP_EXIT_WRAPPED_REGION();                                           \
                                                                                     \
             SCOREP_RmaOpCompleteBlocking( scorep_shmem_interim_world_window_handle, \
                                           scorep_shmem_rma_op_matching_id );        \
@@ -330,6 +357,7 @@ STRIDED_PUT_ROUTINE( shmem_iput128,         void,        16 )
             ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, pe ) );           \
         }                                                                           \
                                                                                     \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                          \
         return ret;                                                                 \
     }
 
@@ -419,17 +447,22 @@ ELEMENTAL_GET_ROUTINE( shmem_longdouble_g, long double, const long double )
                                            size_t           nElems,                     \
                                            int              pe )                        \
     {                                                                                   \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                              \
+                                                                                        \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                             \
         {                                                                               \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                               \
                                                                                         \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );                    \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,               \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );            \
             SCOREP_RmaGet( scorep_shmem_interim_world_window_handle,                    \
                            pe, nElems * NBYTES,                                         \
                            scorep_shmem_rma_op_matching_id );                           \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                                   \
                                                                                         \
+            SCOREP_ENTER_WRAPPED_REGION();                                              \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, nElems, pe ) );   \
+            SCOREP_EXIT_WRAPPED_REGION();                                               \
                                                                                         \
             SCOREP_RmaOpCompleteBlocking( scorep_shmem_interim_world_window_handle,     \
                                           scorep_shmem_rma_op_matching_id );            \
@@ -441,6 +474,8 @@ ELEMENTAL_GET_ROUTINE( shmem_longdouble_g, long double, const long double )
         {                                                                               \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, nElems, pe ) );   \
         }                                                                               \
+                                                                                        \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                              \
     }
 
 /* *INDENT-ON* */
@@ -523,17 +558,22 @@ BLOCK_DATA_GET_ROUTINE( shmem_getmem,         void,        1 )
                                            size_t           nElems,                             \
                                            int              pe )                                \
     {                                                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                                      \
+                                                                                                \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                                     \
         {                                                                                       \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                                       \
                                                                                                 \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );                            \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,                       \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );                    \
             SCOREP_RmaGet( scorep_shmem_interim_world_window_handle,                            \
                            pe, nElems * NBYTES,                                                 \
                            scorep_shmem_rma_op_matching_id );                                   \
             SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_ON();                                           \
                                                                                                 \
+            SCOREP_ENTER_WRAPPED_REGION();                                                      \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, tst, sst, nElems, pe ) ); \
+            SCOREP_EXIT_WRAPPED_REGION();                                                       \
                                                                                                 \
             SCOREP_RmaOpCompleteBlocking( scorep_shmem_interim_world_window_handle,             \
                                           scorep_shmem_rma_op_matching_id );                    \
@@ -545,6 +585,8 @@ BLOCK_DATA_GET_ROUTINE( shmem_getmem,         void,        1 )
         {                                                                                       \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, tst, sst, nElems, pe ) ); \
         }                                                                                       \
+                                                                                                \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                                      \
     }
 
 /* *INDENT-ON* */

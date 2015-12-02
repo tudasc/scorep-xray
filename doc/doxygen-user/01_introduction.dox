@@ -101,8 +101,8 @@ a basic introduction to performance analysis in general and the
 components of the @scorep system in particular. Chapter @secref{quickstart}
 is a beginner's guide to using the @scorep tool suite. It demonstrates
 the basic steps and commands required to initiate a performance
-analysis of a parallel application. In the Chapters @secref{instrumentation}
-and @secref{measurement}, the
+analysis of a parallel application. In the Chapters @secref{instrumentation},
+@secref{sampling}, and @secref{measurement}, the
 reader can find more detailed information about the components of
 @scorep. Chapter @secref{workflow} provides a typical workflow of
 performance analysis with @scorep and detailed instructions.
@@ -277,8 +277,8 @@ In order to reflect the above-mentioned extensions, this interface also
 had to be replaced by an enhanced version, POMP2.
 
 Additionally, the user may instrument the code manually with convenient
-macros provided by @scorep. Later @scorep may be extended with sampling
-functionality that provides an alternative to direct instrumentation.
+macros provided by @scorep. @scorep also supports sampling functionality
+that provides an alternative to direct instrumentation.
 
 During measurement, the system records several performance metrics
 including execution time, communication metrics, and optionally

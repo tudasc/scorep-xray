@@ -74,7 +74,7 @@ print_help();
 SCOREP_Instrumenter::SCOREP_Instrumenter( SCOREP_Instrumenter_InstallData& install_data,
                                           SCOREP_Instrumenter_CmdLine&     command_line )
     : m_install_data( install_data ),
-      m_command_line( command_line )
+    m_command_line( command_line )
 {
     /* Create adapters */
     //m_cobi_adapter       = new SCOREP_Instrumenter_CobiAdapter();
@@ -502,6 +502,12 @@ SCOREP_Instrumenter::link_step( void )
     command << SCOREP_Instrumenter_InstallData::getCompilerEnvironmentVars();
     command << m_command_line.getCompilerName();
     command << scorep_vector_to_string( m_input_files, " ", "", " " );
+#if HAVE_BACKEND( COMPILER_CONSTRUCTOR_SUPPORT )
+    if ( !m_command_line.isTargetSharedLib() )
+    {
+        command << " `" << m_config_base << " --constructor`";
+    }
+#endif
     command << " " << m_command_line.getFlagsBeforeInterpositionLib();
     command << " " << m_linker_flags;
     command << " " << m_command_line.getFlagsAfterInterpositionLib();

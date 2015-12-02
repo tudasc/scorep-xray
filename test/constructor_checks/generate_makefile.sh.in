@@ -1,0 +1,139 @@
+#!/bin/sh
+
+#  @configure_input@
+
+#
+#  This file is part of the Score-P software (http://www.score-p.org)
+#
+#  Copyright (c) 2015,
+#  Technische Universitaet Dresden, Germany
+#
+#  This software may be modified and distributed under the terms of
+#  a BSD-style license.  See the COPYING file in the package base
+#  directory for details.
+#
+
+#  file test/constructor_checks/generate_makefile.sh.in
+
+SRCDIR="@abs_top_srcdir@/.."
+BINDIR="@BINDIR@"
+OBJEXT="@OBJEXT@"
+EXEEXT="@EXEEXT@"
+
+CC="@CC@"
+CXX="@CXX@"
+FC="@FC@"
+
+OPENMP_CFLAGS="@OPENMP_CFLAGS@"
+OPENMP_CXXFLAGS="@OPENMP_CXXFLAGS@"
+OPENMP_FCFLAGS="@OPENMP_FCFLAGS@"
+
+cat <<_EOF
+
+SRCDIR = $SRCDIR
+BINDIR = $BINDIR
+OBJEXT = $OBJEXT
+EXEEXT = $EXEEXT
+
+CC = $CC
+CCLD = $CC
+CXX = $CXX
+CXXLD = $CXX
+FC = $FC
+FCLD = $FC
+
+AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
+
+SCOREP_V_CC = \$(scorep__v_CC_\$(V))
+scorep__v_CC_ = \$(scorep__v_CC_\$(AM_DEFAULT_VERBOSITY))
+scorep__v_CC_0 = @echo "  SCOREP CC    " \$@;
+SCOREP_V_CCLD = \$(scorep__v_CCLD_\$(V))
+scorep__v_CCLD_ = \$(scorep__v_CCLD_\$(AM_DEFAULT_VERBOSITY))
+scorep__v_CCLD_0 = @echo "  SCOREP CCLD  " \$@;
+
+SCOREP_V_CXX = \$(scorep__v_CXX_\$(V))
+scorep__v_CXX_ = \$(scorep__v_CXX_\$(AM_DEFAULT_VERBOSITY))
+scorep__v_CXX_0 = @echo "  SCOREP CXX   " \$@;
+SCOREP_V_CXXLD = \$(scorep__v_CXXLD_\$(V))
+scorep__v_CXXLD_ = \$(scorep__v_CXXLD_\$(AM_DEFAULT_VERBOSITY))
+scorep__v_CXXLD_0 = @echo "  SCOREP CXXLD " \$@;
+
+SCOREP_V_FC = \$(scorep__v_FC_\$(V))
+scorep__v_FC_ = \$(scorep__v_FC_\$(AM_DEFAULT_VERBOSITY))
+scorep__v_FC_0 = @echo "  SCOREP FC    " \$@;
+SCOREP_V_FCLD = \$(scorep__v_FCLD_\$(V))
+scorep__v_FCLD_ = \$(scorep__v_FCLD_\$(AM_DEFAULT_VERBOSITY))
+scorep__v_FCLD_0 = @echo "  SCOREP FCLD  " \$@;
+
+SCOREP_V_scorep = \$(scorep__v_scorep_\$(V))
+scorep__v_scorep_ =
+scorep__v_scorep_1 = --verbose
+scorep__v_scorep_2 = --verbose=2
+
+# we need at least one active adapter, else scorep-config wont spill out any libs
+SCOREP=\$(BINDIR)/scorep \$(SCOREP_V_scorep) --user --nocompiler --mpp=none
+
+all:
+
+_EOF
+
+paradigm_threads="none"
+@HAVE_OPENMP_SUPPORT_TRUE@paradigm_threads="$paradigm_threads omp:pomp_tpd"
+@HAVE_OPENMP_SUPPORT_TRUE@@HAVE_SCOREP_OMP_ANCESTRY_TRUE@paradigm_threads="$paradigm_threads omp:ancestry"
+
+for thread in $paradigm_threads
+do
+    target=$(echo "${thread}" | tr ":" "_")
+
+    cflags=
+    cxxflags=
+    fcflags=
+    case $thread in
+        (omp:*)
+            cflags="$cflags $OPENMP_CFLAGS"
+            cxxflags="$cxxflags $OPENMP_CXXFLAGS"
+            fcflags="$fcflags $OPENMP_FCFLAGS"
+        ;;
+    esac
+
+    cat <<_EOF
+
+all: bin/constructor_check_${target}_c\$(EXEEXT)
+
+constructor_check_${target}_c.\$(OBJEXT): \\
+    \$(SRCDIR)/test/constructor_checks/constructor_check.c \\
+    \$(BINDIR)/scorep \$(BINDIR)/scorep-config
+	\$(SCOREP_V_CCLD)\$(SCOREP) --thread=$thread \$(CC) $cflags -c -o \$@ \$<
+
+bin/constructor_check_${target}_c\$(EXEEXT): \\
+    constructor_check_${target}_c.\$(OBJEXT) \\
+    \$(BINDIR)/scorep \$(BINDIR)/scorep-config
+	\$(SCOREP_V_CCLD)\$(SCOREP) --thread=$thread \$(CCLD) $cflags \$< -o \$@
+
+all: bin/constructor_check_${target}_cxx\$(EXEEXT)
+
+constructor_check_${target}_cxx.\$(OBJEXT): \\
+    \$(SRCDIR)/test/constructor_checks/constructor_check.cxx \\
+    \$(BINDIR)/scorep \$(BINDIR)/scorep-config
+	\$(SCOREP_V_CCLD)\$(SCOREP) --thread=$thread \$(CXX) $cxxflags -c -o \$@ \$<
+
+bin/constructor_check_${target}_cxx\$(EXEEXT): \\
+    constructor_check_${target}_cxx.\$(OBJEXT) \\
+    \$(BINDIR)/scorep \$(BINDIR)/scorep-config
+	\$(SCOREP_V_CCLD)\$(SCOREP) --thread=$thread \$(CXXLD) $cflags \$< -o \$@
+
+all: bin/constructor_check_${target}_f\$(EXEEXT)
+
+constructor_check_${target}_f.\$(OBJEXT): \\
+    \$(SRCDIR)/test/constructor_checks/constructor_check.F90 \\
+    \$(BINDIR)/scorep \$(BINDIR)/scorep-config
+	\$(SCOREP_V_CCLD)\$(SCOREP) --thread=$thread \$(FC) $fcflags -c -o \$@ \$<
+
+bin/constructor_check_${target}_f\$(EXEEXT): \\
+    constructor_check_${target}_f.\$(OBJEXT) \\
+    \$(BINDIR)/scorep \$(BINDIR)/scorep-config
+	\$(SCOREP_V_CCLD)\$(SCOREP) --thread=$thread \$(FCLD) $fcflags \$< -o \$@
+
+_EOF
+
+done #thread

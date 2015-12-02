@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -752,12 +752,14 @@
 void
 FSUB( MPI_File_close )( MPI_Fint* fh, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
     *ierr = MPI_File_close( &c_fh );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_DELETE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_delete )
@@ -772,6 +774,7 @@ FSUB( MPI_File_close )( MPI_Fint* fh, MPI_Fint* ierr )
 void
 FSUB( MPI_File_delete )( char* filename, MPI_Fint* info, MPI_Fint* ierr, int filename_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_filename = NULL;
     c_filename = scorep_f2c_string( filename, filename_len );
 
@@ -780,6 +783,7 @@ FSUB( MPI_File_delete )( char* filename, MPI_Fint* info, MPI_Fint* ierr, int fil
     *ierr = MPI_File_delete( c_filename, PMPI_Info_f2c( *info ) );
 
     free( c_filename );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_GET_AMODE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_amode )
@@ -794,7 +798,12 @@ FSUB( MPI_File_delete )( char* filename, MPI_Fint* info, MPI_Fint* ierr, int fil
 void
 FSUB( MPI_File_get_amode )( MPI_Fint* fh, MPI_Fint* amode, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_File_get_amode( PMPI_File_f2c( *fh ), amode );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_GET_ATOMICITY ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_atomicity )
@@ -809,7 +818,12 @@ FSUB( MPI_File_get_amode )( MPI_Fint* fh, MPI_Fint* amode, MPI_Fint* ierr )
 void
 FSUB( MPI_File_get_atomicity )( MPI_Fint* fh, MPI_Fint* flag, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_File_get_atomicity( PMPI_File_f2c( *fh ), flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_GET_BYTE_OFFSET ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_byte_offset )
@@ -824,7 +838,12 @@ FSUB( MPI_File_get_atomicity )( MPI_Fint* fh, MPI_Fint* flag, MPI_Fint* ierr )
 void
 FSUB( MPI_File_get_byte_offset )( MPI_Fint* fh, MPI_Offset* offset, MPI_Offset* disp, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_File_get_byte_offset( PMPI_File_f2c( *fh ), *offset, disp );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_GET_GROUP ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_group )
@@ -839,12 +858,14 @@ FSUB( MPI_File_get_byte_offset )( MPI_Fint* fh, MPI_Offset* offset, MPI_Offset* 
 void
 FSUB( MPI_File_get_group )( MPI_Fint* fh, MPI_Fint* group, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Group c_group;
 
 
     *ierr = MPI_File_get_group( PMPI_File_f2c( *fh ), &c_group );
 
     *group = PMPI_Group_c2f( c_group );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_GET_INFO ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_info )
@@ -859,12 +880,14 @@ FSUB( MPI_File_get_group )( MPI_Fint* fh, MPI_Fint* group, MPI_Fint* ierr )
 void
 FSUB( MPI_File_get_info )( MPI_Fint* fh, MPI_Fint* info_used, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Info c_info_used;
 
 
     *ierr = MPI_File_get_info( PMPI_File_f2c( *fh ), &c_info_used );
 
     *info_used = PMPI_Info_c2f( c_info_used );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_GET_POSITION ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_position )
@@ -879,7 +902,12 @@ FSUB( MPI_File_get_info )( MPI_Fint* fh, MPI_Fint* info_used, MPI_Fint* ierr )
 void
 FSUB( MPI_File_get_position )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_File_get_position( PMPI_File_f2c( *fh ), offset );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_GET_POSITION_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_position_shared )
@@ -894,7 +922,12 @@ FSUB( MPI_File_get_position )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* ierr 
 void
 FSUB( MPI_File_get_position_shared )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_File_get_position_shared( PMPI_File_f2c( *fh ), offset );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_GET_SIZE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_size )
@@ -909,7 +942,12 @@ FSUB( MPI_File_get_position_shared )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint
 void
 FSUB( MPI_File_get_size )( MPI_Fint* fh, MPI_Offset* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_File_get_size( PMPI_File_f2c( *fh ), size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_GET_TYPE_EXTENT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_type_extent )
@@ -924,7 +962,12 @@ FSUB( MPI_File_get_size )( MPI_Fint* fh, MPI_Offset* size, MPI_Fint* ierr )
 void
 FSUB( MPI_File_get_type_extent )( MPI_Fint* fh, MPI_Fint* datatype, MPI_Aint* extent, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_File_get_type_extent( PMPI_File_f2c( *fh ), PMPI_Type_f2c( *datatype ), extent );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_GET_VIEW ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_get_view )
@@ -939,6 +982,7 @@ FSUB( MPI_File_get_type_extent )( MPI_Fint* fh, MPI_Fint* datatype, MPI_Aint* ex
 void
 FSUB( MPI_File_get_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_Fint* filetype, char* datarep, MPI_Fint* ierr, int datarep_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_etype;
     MPI_Datatype c_filetype;
     char*        c_datarep     = NULL;
@@ -960,6 +1004,7 @@ FSUB( MPI_File_get_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_
     strncpy( datarep, c_datarep, c_datarep_len );
     memset( datarep + c_datarep_len, ' ', datarep_len - c_datarep_len );
     free( c_datarep );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_OPEN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_open )
@@ -974,6 +1019,7 @@ FSUB( MPI_File_get_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_
 void
 FSUB( MPI_File_open )( MPI_Fint* comm, char* filename, MPI_Fint* amode, MPI_Fint* info, MPI_Fint* fh, MPI_Fint* ierr, int filename_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char*    c_filename = NULL;
     MPI_File c_fh;
     c_filename = scorep_f2c_string( filename, filename_len );
@@ -984,6 +1030,7 @@ FSUB( MPI_File_open )( MPI_Fint* comm, char* filename, MPI_Fint* amode, MPI_Fint
 
     free( c_filename );
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_PREALLOCATE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_preallocate )
@@ -998,12 +1045,14 @@ FSUB( MPI_File_open )( MPI_Fint* comm, char* filename, MPI_Fint* amode, MPI_Fint
 void
 FSUB( MPI_File_preallocate )( MPI_Fint* fh, MPI_Offset* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
     *ierr = MPI_File_preallocate( c_fh, *size );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_SEEK ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek )
@@ -1018,12 +1067,14 @@ FSUB( MPI_File_preallocate )( MPI_Fint* fh, MPI_Offset* size, MPI_Fint* ierr )
 void
 FSUB( MPI_File_seek )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* whence, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
     *ierr = MPI_File_seek( c_fh, *offset, *whence );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_SEEK_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_seek_shared )
@@ -1038,12 +1089,14 @@ FSUB( MPI_File_seek )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* whence, MPI_F
 void
 FSUB( MPI_File_seek_shared )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* whence, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
     *ierr = MPI_File_seek_shared( c_fh, *offset, *whence );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_SET_ATOMICITY ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_set_atomicity )
@@ -1058,12 +1111,14 @@ FSUB( MPI_File_seek_shared )( MPI_Fint* fh, MPI_Offset* offset, MPI_Fint* whence
 void
 FSUB( MPI_File_set_atomicity )( MPI_Fint* fh, MPI_Fint* flag, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
     *ierr = MPI_File_set_atomicity( c_fh, *flag );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_SET_INFO ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_set_info )
@@ -1078,12 +1133,14 @@ FSUB( MPI_File_set_atomicity )( MPI_Fint* fh, MPI_Fint* flag, MPI_Fint* ierr )
 void
 FSUB( MPI_File_set_info )( MPI_Fint* fh, MPI_Fint* info, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
     *ierr = MPI_File_set_info( c_fh, PMPI_Info_f2c( *info ) );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_SET_SIZE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_set_size )
@@ -1098,12 +1155,14 @@ FSUB( MPI_File_set_info )( MPI_Fint* fh, MPI_Fint* info, MPI_Fint* ierr )
 void
 FSUB( MPI_File_set_size )( MPI_Fint* fh, MPI_Offset* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
     *ierr = MPI_File_set_size( c_fh, *size );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_SET_VIEW ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_set_view )
@@ -1118,6 +1177,7 @@ FSUB( MPI_File_set_size )( MPI_Fint* fh, MPI_Offset* size, MPI_Fint* ierr )
 void
 FSUB( MPI_File_set_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_Fint* filetype, char* datarep, MPI_Fint* info, MPI_Fint* ierr, int datarep_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh      = PMPI_File_f2c( *fh );
     char*    c_datarep = NULL;
     c_datarep = scorep_f2c_string( datarep, datarep_len );
@@ -1128,6 +1188,7 @@ FSUB( MPI_File_set_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_
 
     *fh = PMPI_File_c2f( c_fh );
     free( c_datarep );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_SYNC ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_sync )
@@ -1142,12 +1203,14 @@ FSUB( MPI_File_set_view )( MPI_Fint* fh, MPI_Offset* disp, MPI_Fint* etype, MPI_
 void
 FSUB( MPI_File_sync )( MPI_Fint* fh, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
     *ierr = MPI_File_sync( c_fh );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_REGISTER_DATAREP ) && !defined( SCOREP_MPI_NO_IO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Register_datarep )
@@ -1162,6 +1225,7 @@ FSUB( MPI_File_sync )( MPI_Fint* fh, MPI_Fint* ierr )
 void
 FSUB( MPI_Register_datarep )( char* datarep, void* read_conversion_fn, void* write_conversion_fn, void* dtype_file_extent_fn, void* extra_state, MPI_Fint* ierr, int datarep_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
     c_datarep = scorep_f2c_string( datarep, datarep_len );
 
@@ -1170,6 +1234,7 @@ FSUB( MPI_Register_datarep )( char* datarep, void* read_conversion_fn, void* wri
     *ierr = MPI_Register_datarep( c_datarep, ( MPI_Datarep_conversion_function* )read_conversion_fn, ( MPI_Datarep_conversion_function* )write_conversion_fn, ( MPI_Datarep_extent_function* )dtype_file_extent_fn, extra_state );
 
     free( c_datarep );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1192,6 +1257,7 @@ FSUB( MPI_Register_datarep )( char* datarep, void* read_conversion_fn, void* wri
 void
 FSUB( MPI_File_iread )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
 
@@ -1208,6 +1274,7 @@ FSUB( MPI_File_iread )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* data
 
     *fh      = PMPI_File_c2f( c_fh );
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_IREAD_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread_all )
@@ -1222,6 +1289,7 @@ FSUB( MPI_File_iread )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* data
 void
 FSUB( MPI_File_iread_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
 
@@ -1238,6 +1306,7 @@ FSUB( MPI_File_iread_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* 
 
     *fh      = PMPI_File_c2f( c_fh );
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_IREAD_AT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread_at )
@@ -1252,6 +1321,7 @@ FSUB( MPI_File_iread_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* 
 void
 FSUB( MPI_File_iread_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -1266,6 +1336,7 @@ FSUB( MPI_File_iread_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint
     *ierr = MPI_File_iread_at( PMPI_File_f2c( *fh ), *offset, buf, *count, PMPI_Type_f2c( *datatype ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_IREAD_AT_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread_at_all )
@@ -1280,6 +1351,7 @@ FSUB( MPI_File_iread_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint
 void
 FSUB( MPI_File_iread_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -1294,6 +1366,7 @@ FSUB( MPI_File_iread_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_
     *ierr = MPI_File_iread_at_all( PMPI_File_f2c( *fh ), *offset, buf, *count, PMPI_Type_f2c( *datatype ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_IREAD_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iread_shared )
@@ -1308,6 +1381,7 @@ FSUB( MPI_File_iread_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_
 void
 FSUB( MPI_File_iread_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
 
@@ -1324,6 +1398,7 @@ FSUB( MPI_File_iread_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fin
 
     *fh      = PMPI_File_c2f( c_fh );
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_IWRITE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite )
@@ -1338,6 +1413,7 @@ FSUB( MPI_File_iread_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fin
 void
 FSUB( MPI_File_iwrite )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
 
@@ -1354,6 +1430,7 @@ FSUB( MPI_File_iwrite )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* dat
 
     *fh      = PMPI_File_c2f( c_fh );
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_IWRITE_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite_all )
@@ -1368,6 +1445,7 @@ FSUB( MPI_File_iwrite )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* dat
 void
 FSUB( MPI_File_iwrite_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
 
@@ -1384,6 +1462,7 @@ FSUB( MPI_File_iwrite_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint*
 
     *fh      = PMPI_File_c2f( c_fh );
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_IWRITE_AT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite_at )
@@ -1398,6 +1477,7 @@ FSUB( MPI_File_iwrite_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint*
 void
 FSUB( MPI_File_iwrite_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
 
@@ -1414,6 +1494,7 @@ FSUB( MPI_File_iwrite_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fin
 
     *fh      = PMPI_File_c2f( c_fh );
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_IWRITE_AT_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite_at_all )
@@ -1428,6 +1509,7 @@ FSUB( MPI_File_iwrite_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fin
 void
 FSUB( MPI_File_iwrite_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
 
@@ -1444,6 +1526,7 @@ FSUB( MPI_File_iwrite_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI
 
     *fh      = PMPI_File_c2f( c_fh );
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_IWRITE_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_iwrite_shared )
@@ -1458,6 +1541,7 @@ FSUB( MPI_File_iwrite_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI
 void
 FSUB( MPI_File_iwrite_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Request c_request;
 
@@ -1474,6 +1558,7 @@ FSUB( MPI_File_iwrite_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fi
 
     *fh      = PMPI_File_c2f( c_fh );
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read )
@@ -1488,6 +1573,7 @@ FSUB( MPI_File_iwrite_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fi
 void
 FSUB( MPI_File_read )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -1517,6 +1603,8 @@ FSUB( MPI_File_read )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datat
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_all )
@@ -1531,6 +1619,7 @@ FSUB( MPI_File_read )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datat
 void
 FSUB( MPI_File_read_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -1560,6 +1649,8 @@ FSUB( MPI_File_read_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* d
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_ALL_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_all_begin )
@@ -1574,6 +1665,7 @@ FSUB( MPI_File_read_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* d
 void
 FSUB( MPI_File_read_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
@@ -1588,6 +1680,7 @@ FSUB( MPI_File_read_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_F
     *ierr = MPI_File_read_all_begin( c_fh, buf, *count, PMPI_Type_f2c( *datatype ) );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_ALL_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_all_end )
@@ -1602,6 +1695,7 @@ FSUB( MPI_File_read_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_F
 void
 FSUB( MPI_File_read_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -1631,6 +1725,8 @@ FSUB( MPI_File_read_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fi
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_AT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_at )
@@ -1645,6 +1741,7 @@ FSUB( MPI_File_read_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fi
 void
 FSUB( MPI_File_read_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
 
@@ -1672,6 +1769,8 @@ FSUB( MPI_File_read_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint*
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_AT_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_at_all )
@@ -1686,6 +1785,7 @@ FSUB( MPI_File_read_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint*
 void
 FSUB( MPI_File_read_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
 
@@ -1713,6 +1813,8 @@ FSUB( MPI_File_read_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_F
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_AT_ALL_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_at_all_begin )
@@ -1727,6 +1829,9 @@ FSUB( MPI_File_read_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_F
 void
 FSUB( MPI_File_read_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -1736,6 +1841,8 @@ FSUB( MPI_File_read_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf,
 
 
     *ierr = MPI_File_read_at_all_begin( PMPI_File_f2c( *fh ), *offset, buf, *count, PMPI_Type_f2c( *datatype ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_AT_ALL_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_at_all_end )
@@ -1750,6 +1857,7 @@ FSUB( MPI_File_read_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf,
 void
 FSUB( MPI_File_read_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
 
@@ -1777,6 +1885,8 @@ FSUB( MPI_File_read_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_ORDERED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_ordered )
@@ -1791,6 +1901,7 @@ FSUB( MPI_File_read_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI
 void
 FSUB( MPI_File_read_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -1820,6 +1931,8 @@ FSUB( MPI_File_read_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fin
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_ORDERED_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_ordered_begin )
@@ -1834,6 +1947,7 @@ FSUB( MPI_File_read_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fin
 void
 FSUB( MPI_File_read_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
@@ -1848,6 +1962,7 @@ FSUB( MPI_File_read_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, M
     *ierr = MPI_File_read_ordered_begin( c_fh, buf, *count, PMPI_Type_f2c( *datatype ) );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_ORDERED_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_ordered_end )
@@ -1862,6 +1977,7 @@ FSUB( MPI_File_read_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, M
 void
 FSUB( MPI_File_read_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -1891,6 +2007,8 @@ FSUB( MPI_File_read_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MP
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_READ_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_read_shared )
@@ -1905,6 +2023,7 @@ FSUB( MPI_File_read_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MP
 void
 FSUB( MPI_File_read_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -1934,6 +2053,8 @@ FSUB( MPI_File_read_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write )
@@ -1948,6 +2069,7 @@ FSUB( MPI_File_read_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint
 void
 FSUB( MPI_File_write )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -1977,6 +2099,8 @@ FSUB( MPI_File_write )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* data
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_all )
@@ -1991,6 +2115,7 @@ FSUB( MPI_File_write )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* data
 void
 FSUB( MPI_File_write_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2020,6 +2145,8 @@ FSUB( MPI_File_write_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* 
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_ALL_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_all_begin )
@@ -2034,6 +2161,7 @@ FSUB( MPI_File_write_all )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* 
 void
 FSUB( MPI_File_write_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
@@ -2048,6 +2176,7 @@ FSUB( MPI_File_write_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_
     *ierr = MPI_File_write_all_begin( c_fh, buf, *count, PMPI_Type_f2c( *datatype ) );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_ALL_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_all_end )
@@ -2062,6 +2191,7 @@ FSUB( MPI_File_write_all_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_
 void
 FSUB( MPI_File_write_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2091,6 +2221,8 @@ FSUB( MPI_File_write_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_F
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_AT ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_at )
@@ -2105,6 +2237,7 @@ FSUB( MPI_File_write_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_F
 void
 FSUB( MPI_File_write_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2134,6 +2267,8 @@ FSUB( MPI_File_write_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_AT_ALL ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_at_all )
@@ -2148,6 +2283,7 @@ FSUB( MPI_File_write_at )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint
 void
 FSUB( MPI_File_write_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2177,6 +2313,8 @@ FSUB( MPI_File_write_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_AT_ALL_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_at_all_begin )
@@ -2191,6 +2329,7 @@ FSUB( MPI_File_write_at_all )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_
 void
 FSUB( MPI_File_write_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
@@ -2205,6 +2344,7 @@ FSUB( MPI_File_write_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf
     *ierr = MPI_File_write_at_all_begin( c_fh, *offset, buf, *count, PMPI_Type_f2c( *datatype ) );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_AT_ALL_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_at_all_end )
@@ -2219,6 +2359,7 @@ FSUB( MPI_File_write_at_all_begin )( MPI_Fint* fh, MPI_Offset* offset, void* buf
 void
 FSUB( MPI_File_write_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2248,6 +2389,8 @@ FSUB( MPI_File_write_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MP
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_ORDERED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_ordered )
@@ -2262,6 +2405,7 @@ FSUB( MPI_File_write_at_all_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MP
 void
 FSUB( MPI_File_write_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2291,6 +2435,8 @@ FSUB( MPI_File_write_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fi
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_ORDERED_BEGIN ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_ordered_begin )
@@ -2305,6 +2451,7 @@ FSUB( MPI_File_write_ordered )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fi
 void
 FSUB( MPI_File_write_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File c_fh = PMPI_File_f2c( *fh );
 
 
@@ -2319,6 +2466,7 @@ FSUB( MPI_File_write_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, 
     *ierr = MPI_File_write_ordered_begin( c_fh, buf, *count, PMPI_Type_f2c( *datatype ) );
 
     *fh = PMPI_File_c2f( c_fh );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_ORDERED_END ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_ordered_end )
@@ -2333,6 +2481,7 @@ FSUB( MPI_File_write_ordered_begin )( MPI_Fint* fh, void* buf, MPI_Fint* count, 
 void
 FSUB( MPI_File_write_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2362,6 +2511,8 @@ FSUB( MPI_File_write_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, M
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FILE_WRITE_SHARED ) && !defined( SCOREP_MPI_NO_IO ) && !defined( MPI_File_write_shared )
@@ -2376,6 +2527,7 @@ FSUB( MPI_File_write_ordered_end )( MPI_Fint* fh, void* buf, MPI_Fint* status, M
 void
 FSUB( MPI_File_write_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_File    c_fh = PMPI_File_f2c( *fh );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2405,6 +2557,8 @@ FSUB( MPI_File_write_shared )( MPI_Fint* fh, void* buf, MPI_Fint* count, MPI_Fin
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

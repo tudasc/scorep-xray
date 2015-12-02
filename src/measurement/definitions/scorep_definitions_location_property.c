@@ -4,7 +4,7 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -69,10 +69,10 @@ SCOREP_Definitions_NewLocationProperty( SCOREP_LocationHandle locationHandle,
         locationHandle,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "" ),
+            name ? name : "", NULL ),
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            value ? value : "" ) );
+            value ? value : "", NULL ) );
 
     SCOREP_Definitions_Unlock();
 

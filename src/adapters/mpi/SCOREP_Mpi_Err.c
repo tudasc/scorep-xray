@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -54,6 +54,7 @@
 
 #include <config.h>
 #include "SCOREP_Mpi.h"
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
 /**
@@ -74,14 +75,17 @@
 int
 MPI_Add_error_class( int* errorclass )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ADD_ERROR_CLASS ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ADD_ERROR_CLASS ], ( intptr_t )PMPI_Add_error_class );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Add_error_class( errorclass );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ADD_ERROR_CLASS ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -90,6 +94,7 @@ MPI_Add_error_class( int* errorclass )
     {
         return_val = PMPI_Add_error_class( errorclass );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -108,14 +113,17 @@ MPI_Add_error_class( int* errorclass )
 int
 MPI_Add_error_code( int errorclass, int* errorcode )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ADD_ERROR_CODE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ADD_ERROR_CODE ], ( intptr_t )PMPI_Add_error_code );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Add_error_code( errorclass, errorcode );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ADD_ERROR_CODE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -124,6 +132,7 @@ MPI_Add_error_code( int errorclass, int* errorcode )
     {
         return_val = PMPI_Add_error_code( errorclass, errorcode );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -142,14 +151,17 @@ MPI_Add_error_code( int errorclass, int* errorcode )
 int
 MPI_Errhandler_create( MPI_Handler_function* function, MPI_Errhandler* errhandler )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ERRHANDLER_CREATE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ERRHANDLER_CREATE ], ( intptr_t )PMPI_Errhandler_create );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Errhandler_create( function, errhandler );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ERRHANDLER_CREATE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -158,6 +170,7 @@ MPI_Errhandler_create( MPI_Handler_function* function, MPI_Errhandler* errhandle
     {
         return_val = PMPI_Errhandler_create( function, errhandler );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -176,14 +189,17 @@ MPI_Errhandler_create( MPI_Handler_function* function, MPI_Errhandler* errhandle
 int
 MPI_Errhandler_free( MPI_Errhandler* errhandler )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ERRHANDLER_FREE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ERRHANDLER_FREE ], ( intptr_t )PMPI_Errhandler_free );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Errhandler_free( errhandler );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ERRHANDLER_FREE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -192,6 +208,7 @@ MPI_Errhandler_free( MPI_Errhandler* errhandler )
     {
         return_val = PMPI_Errhandler_free( errhandler );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -210,14 +227,17 @@ MPI_Errhandler_free( MPI_Errhandler* errhandler )
 int
 MPI_Errhandler_get( MPI_Comm comm, MPI_Errhandler* errhandler )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ERRHANDLER_GET ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ERRHANDLER_GET ], ( intptr_t )PMPI_Errhandler_get );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Errhandler_get( comm, errhandler );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ERRHANDLER_GET ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -226,6 +246,7 @@ MPI_Errhandler_get( MPI_Comm comm, MPI_Errhandler* errhandler )
     {
         return_val = PMPI_Errhandler_get( comm, errhandler );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -244,14 +265,17 @@ MPI_Errhandler_get( MPI_Comm comm, MPI_Errhandler* errhandler )
 int
 MPI_Errhandler_set( MPI_Comm comm, MPI_Errhandler errhandler )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ERRHANDLER_SET ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ERRHANDLER_SET ], ( intptr_t )PMPI_Errhandler_set );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Errhandler_set( comm, errhandler );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ERRHANDLER_SET ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -260,6 +284,7 @@ MPI_Errhandler_set( MPI_Comm comm, MPI_Errhandler errhandler )
     {
         return_val = PMPI_Errhandler_set( comm, errhandler );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -278,14 +303,17 @@ MPI_Errhandler_set( MPI_Comm comm, MPI_Errhandler errhandler )
 int
 MPI_Error_class( int errorcode, int* errorclass )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ERROR_CLASS ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ERROR_CLASS ], ( intptr_t )PMPI_Error_class );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Error_class( errorcode, errorclass );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ERROR_CLASS ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -294,6 +322,7 @@ MPI_Error_class( int errorcode, int* errorclass )
     {
         return_val = PMPI_Error_class( errorcode, errorclass );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -312,14 +341,17 @@ MPI_Error_class( int errorcode, int* errorclass )
 int
 MPI_Error_string( int errorcode, char* string, int* resultlen )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ERROR_STRING ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ERROR_STRING ], ( intptr_t )PMPI_Error_string );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Error_string( errorcode, string, resultlen );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ERROR_STRING ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -328,6 +360,7 @@ MPI_Error_string( int errorcode, char* string, int* resultlen )
     {
         return_val = PMPI_Error_string( errorcode, string, resultlen );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -347,14 +380,17 @@ MPI_Error_string( int errorcode, char* string, int* resultlen )
 int
 MPI_Add_error_string SCOREP_MPI_ADD_ERROR_STRING_PROTO_ARGS
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ADD_ERROR_STRING ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ADD_ERROR_STRING ], ( intptr_t )PMPI_Add_error_string );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Add_error_string( errorcode, string );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ADD_ERROR_STRING ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -363,6 +399,7 @@ MPI_Add_error_string SCOREP_MPI_ADD_ERROR_STRING_PROTO_ARGS
     {
         return_val = PMPI_Add_error_string( errorcode, string );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }

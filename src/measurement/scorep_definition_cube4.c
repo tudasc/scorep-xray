@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -40,6 +40,7 @@
 #include <assert.h>
 #include "scorep_definition_cube4.h"
 
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Metric_Management.h>
 
@@ -131,6 +132,7 @@ static cube_metric* time_sum_handle;
 static cube_metric* time_max_handle;
 static cube_metric* time_min_handle;
 static cube_metric* visits_handle;
+static cube_metric* hits_handle;
 
 /**
    Node type definition for temporary internal system tree structure for Cube definition
@@ -448,6 +450,13 @@ scorep_get_visits_handle( void )
 
 
 cube_metric*
+scorep_get_hits_handle( void )
+{
+    return hits_handle;
+}
+
+
+cube_metric*
 scorep_get_sum_time_handle( void )
 {
     return time_sum_handle;
@@ -489,6 +498,13 @@ write_metric_definitions( cube_t*                       my_cube,
     visits_handle = cube_def_met( my_cube, "Visits", "visits", "UINT64", "occ", "",
                                   "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#visits",
                                   "Number of visits", NULL, CUBE_METRIC_EXCLUSIVE );
+
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        hits_handle = cube_def_met( my_cube, "Hits", "hits", "UINT64", "occ", "",
+                                    "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#hits",
+                                    "Number of hits", NULL, CUBE_METRIC_EXCLUSIVE );
+    }
 
     time_sum_handle = cube_def_met( my_cube, "Time", "time", "DOUBLE", "sec", "",
                                     "@mirror@scorep_metrics-" PACKAGE_VERSION ".html#time",

@@ -6,7 +6,7 @@ dnl
 dnl Copyright (c) 2013-2014,
 dnl Forschungszentrum Juelich GmbH, Germany
 dnl
-dnl Copyright (c) 2014,
+dnl Copyright (c) 2014-2015,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl This software may be modified and distributed under the terms of
@@ -23,3 +23,4 @@ SCOREP_PTHREAD_SPINLOCK
 
 SCOREP_COMPILER_INSTRUMENTATION_FLAGS
 SCOREP_INSTRUMENTATION_FLAGS
+SCOREP_COMPILER_CONSTRUCTOR

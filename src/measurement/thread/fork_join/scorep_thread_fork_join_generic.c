@@ -43,8 +43,6 @@
 
 #include <scorep_substrates_definition.h>
 #include <scorep_subsystem.h>
-/* temporary, remove once scorep_subsystems_activate_cpu_location is available */
-#include <SCOREP_Substrates_Management.h>
 
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Paradigms.h>
@@ -200,13 +198,26 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
         thread_id );
     scorep_thread_set_team( current_tpd, team );
 
-    // scorep_subsystems_activate_cpu_location (location, parent, sequence_count, SCOREP_CPU_LOCATION_PHASE_EVENTS);
-    SCOREP_Substrates_CallSubstratesOnActivation( current_location,
-                                                  parent_location,
-                                                  sequence_count );
+    /* Only call into the substrate for newly activated locations. */
+    if ( thread_id != 0 )
+    {
+        scorep_subsystems_activate_cpu_location( current_location,
+                                                 parent_location,
+                                                 sequence_count,
+                                                 SCOREP_CPU_LOCATION_PHASE_MGMT );
+    }
 
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTeamBegin, THREAD_FORK_JOIN_TEAM_BEGIN,
                            ( current_location, timestamp, paradigm, team ) )
+
+    // Call subsystems on location activation
+    if ( thread_id != 0 )
+    {
+        /* All but the master thread activates the locations. */
+        scorep_subsystems_activate_cpu_location( current_location,
+                                                 NULL, 0,
+                                                 SCOREP_CPU_LOCATION_PHASE_EVENTS );
+    }
 
     return SCOREP_Task_GetCurrentTask( current_location );
 }
@@ -220,18 +231,33 @@ SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm )
     struct scorep_thread_private_data* tpd       = scorep_thread_get_private_data();
     struct scorep_thread_private_data* parent    = 0;
     SCOREP_Location*                   location  = scorep_thread_get_location( tpd );
-    uint64_t                           timestamp = scorep_get_timestamp( location );
+    int                                thread_id = -1;
     SCOREP_InterimCommunicatorHandle   team      = scorep_thread_get_team( tpd );
 
-    scorep_thread_on_team_end( tpd, &parent, paradigm );
-    UTILS_ASSERT( parent );
 
+    scorep_thread_on_team_end( tpd, &parent, &thread_id, paradigm );
+    UTILS_ASSERT( parent );
+    UTILS_ASSERT( thread_id >= 0 );
+
+    /* First notify the subsystems about the deactivation of the location. */
+    if ( thread_id != 0 )
+    {
+        /* @sampling All but the master thread deactivates the locations. */
+        scorep_subsystems_deactivate_cpu_location( location,
+                                                   NULL,
+                                                   SCOREP_CPU_LOCATION_PHASE_EVENTS );
+    }
+
+    uint64_t timestamp = scorep_get_timestamp( location );
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTeamEnd, THREAD_FORK_JOIN_TEAM_END,
                            ( location, timestamp, paradigm, team ) )
 
-    // scorep_subsystems_deactivate_cpu_location (location, parent, SCOREP_CPU_LOCATION_PHASE_EVENTS);
-    SCOREP_Substrates_CallSubstratesOnDeactivation( location,
-                                                    scorep_thread_get_location( parent ) );
+    if ( thread_id != 0 )
+    {
+        scorep_subsystems_deactivate_cpu_location( location,
+                                                   scorep_thread_get_location( parent ),
+                                                   SCOREP_CPU_LOCATION_PHASE_MGMT );
+    }
 }
 
 void

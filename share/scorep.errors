@@ -57,3 +57,5 @@ error_code POMP_UNKNOWN_REGION_TYPE "Unknown POMP region type specified in CTC s
 error_code DLOPEN_FAILED "Cannot open library handle"
 error_code DLSYM_FAILED "Could not find symbol"
 error_code DLCLOSE_FAILED "Cannot close library handle"
+
+error_code PERF_INIT "An error occurred while initializing Linux PERF infrastructure"

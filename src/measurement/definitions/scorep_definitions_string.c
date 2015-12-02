@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -74,7 +74,7 @@ SCOREP_Definitions_NewString( const char* str )
 
     SCOREP_StringHandle new_handle = scorep_definitions_new_string(
         &scorep_local_definition_manager,
-        str );
+        str, NULL );
 
     SCOREP_Definitions_Unlock();
 
@@ -91,7 +91,7 @@ scorep_definitions_unify_string( SCOREP_StringDef*             definition,
 
     definition->unified = scorep_definitions_new_string(
         scorep_unified_definition_manager,
-        definition->string_data );
+        definition->string_data, NULL );
 }
 
 
@@ -107,8 +107,9 @@ equal_string( const SCOREP_StringDef* existingDefinition,
 
 
 SCOREP_StringHandle
-scorep_definitions_new_string( SCOREP_DefinitionManager* definition_manager,
-                               const char*               str )
+scorep_definitions_new_string( SCOREP_DefinitionManager*         definition_manager,
+                               const char*                       str,
+                               scorep_string_definition_modifier modifier )
 {
     UTILS_ASSERT( definition_manager );
 
@@ -127,6 +128,11 @@ scorep_definitions_new_string( SCOREP_DefinitionManager* definition_manager,
      * faster memcpy
      */
     memcpy( new_definition->string_data, str, string_length + 1 );
+    if ( modifier )
+    {
+        modifier( new_definition->string_data );
+        string_length = strlen( new_definition->string_data );
+    }
     new_definition->string_length = string_length;
     new_definition->hash_value    = jenkins_hash( str, string_length, 0 );
 

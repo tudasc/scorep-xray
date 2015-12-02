@@ -14,7 +14,9 @@
     void                                                    \
     FSUB( FUNCNAME )( int *npes )                           \
     {                                                       \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                  \
         FUNCNAME( *npes );                                  \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                  \
     }
 
 /* *INDENT-ON* */
@@ -31,7 +33,9 @@ SHMEM_FORTRAN_INITIALIZATION_WITH_ARG( start_pes )
     void                                            \
     FSUB( FUNCNAME )( void )                        \
     {                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();          \
         FUNCNAME();                                 \
+        SCOREP_IN_MEASUREMENT_DECREMENT();          \
     }
 
 /* *INDENT-ON* */
@@ -47,7 +51,9 @@ SHMEM_FORTRAN_INITIALIZATION( shmem_init )
     void                                        \
     FSUB( FUNCNAME )( void )                    \
     {                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();      \
         FUNCNAME();                             \
+        SCOREP_IN_MEASUREMENT_DECREMENT();      \
     }
 
 /* *INDENT-ON* */

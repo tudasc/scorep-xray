@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -66,9 +66,12 @@ scorep_definitions_unify_string( SCOREP_StringDef*                    definition
                                  struct SCOREP_Allocator_PageManager* handlesPageManager );
 
 
+typedef void ( * scorep_string_definition_modifier )( char* str );
+
 SCOREP_StringHandle
-scorep_definitions_new_string( SCOREP_DefinitionManager* definition_manager,
-                               const char*               str );
+scorep_definitions_new_string( SCOREP_DefinitionManager*         definition_manager,
+                               const char*                       str,
+                               scorep_string_definition_modifier modifier );
 
 
 #endif /* SCOREP_PRIVATE_DEFINITIONS_STRING_H */

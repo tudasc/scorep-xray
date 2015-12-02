@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -239,17 +239,39 @@ mpi_subsystem_init( void )
     return SCOREP_SUCCESS;
 }
 
+static SCOREP_ErrorCode
+mpi_subsystem_begin( void )
+{
+    SCOREP_MPI_EVENT_GEN_ON();
+    return SCOREP_SUCCESS;
+}
+
+static void
+mpi_subsystem_end( void )
+{
+    /* Prevent all further events */
+    SCOREP_MPI_EVENT_GEN_OFF();
+}
+
 /**
-   Implementation of the subsystem_init_location function of the @ref
+   Implementation of the adapter_finalize function of the @ref
    SCOREP_Subsystem struct for the initialization process of the MPI
    adapter.
  */
-static SCOREP_ErrorCode
-mpi_subsystem_init_location( struct SCOREP_Location* locationData,
-                             struct SCOREP_Location* parent )
+static void
+mpi_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
-    return SCOREP_SUCCESS;
+
+    /* Prevent all further events */
+    scorep_mpi_enabled = 0;
+
+    /* Finalize sub-systems */
+    scorep_mpi_win_finalize();
+    scorep_mpi_request_finalize();
+    scorep_mpi_comm_finalize();
+
+    UTILS_DEBUG_EXIT();
 }
 
 /**
@@ -278,28 +300,6 @@ mpi_subsystem_post_unify( void )
     scorep_mpi_unify_communicators();
 
     return SCOREP_SUCCESS;
-}
-
-/**
-   Implementation of the adapter_finalize function of the @ref
-   SCOREP_Subsystem struct for the initialization process of the MPI
-   adapter.
- */
-static void
-mpi_subsystem_finalize( void )
-{
-    UTILS_DEBUG_ENTRY();
-
-    /* Prevent all further events */
-    SCOREP_MPI_EVENT_GEN_OFF();
-    scorep_mpi_enabled = 0;
-
-    /* Finalize sub-systems */
-    scorep_mpi_win_finalize();
-    scorep_mpi_request_finalize();
-    scorep_mpi_comm_finalize();
-
-    UTILS_DEBUG_EXIT();
 }
 
 /**
@@ -332,41 +332,26 @@ mpi_subsystem_deregister( void )
     }
 }
 
-static void
-mpi_subsystem_control( SCOREP_Subsystem_Command command )
-{
-    switch ( command )
-    {
-        case SCOREP_SUBSYSTEM_COMMAND_ENABLE:
-            scorep_mpi_generate_events = true;
-            break;
-        case SCOREP_SUBSYSTEM_COMMAND_DISABLE:
-            scorep_mpi_generate_events = false;
-            break;
-    }
-}
-
 /* The initialization struct for the MPI adapter */
 const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter =
 {
-    .subsystem_name              = "MPI",
-    .subsystem_register          = &mpi_subsystem_register,
-    .subsystem_init              = &mpi_subsystem_init,
-    .subsystem_init_location     = &mpi_subsystem_init_location,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = &mpi_subsystem_pre_unify,
-    .subsystem_post_unify        = &mpi_subsystem_post_unify,
-    .subsystem_finalize          = &mpi_subsystem_finalize,
-    .subsystem_deregister        = &mpi_subsystem_deregister,
-    .subsystem_control           = &mpi_subsystem_control
+    .subsystem_name       = "MPI",
+    .subsystem_register   = &mpi_subsystem_register,
+    .subsystem_init       = &mpi_subsystem_init,
+    .subsystem_begin      = &mpi_subsystem_begin,
+    .subsystem_end        = &mpi_subsystem_end,
+    .subsystem_finalize   = &mpi_subsystem_finalize,
+    .subsystem_pre_unify  = &mpi_subsystem_pre_unify,
+    .subsystem_post_unify = &mpi_subsystem_post_unify,
+    .subsystem_deregister = &mpi_subsystem_deregister
 };
 
 /**
    Flag to indicate whether event generation is turned on or off. If
-   it is set to 0, events are generated. If it is set to non-zero, no
+   it is set to true, events are generated. If it is set to false, no
    events are generated.
  */
-bool scorep_mpi_generate_events = true;
+bool scorep_mpi_generate_events = false;
 
 /**
  * @internal

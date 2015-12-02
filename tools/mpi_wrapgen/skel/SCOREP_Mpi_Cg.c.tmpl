@@ -8,6 +8,7 @@
 #include <config.h>
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include <UTILS_Error.h>
 
@@ -34,23 +35,33 @@
  */
 int MPI_Comm_free(MPI_Comm* comm)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_CG);
   int       return_val;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterRegion (scorep_mpi_regid[SCOREP__MPI_COMM_FREE]);
+    SCOREP_EnterWrappedRegion (scorep_mpi_regid[SCOREP__MPI_COMM_FREE], ( intptr_t )PMPI_Comm_free);
   }
 
   scorep_mpi_comm_free(*comm);
+  if (event_gen_active)
+  {
+    SCOREP_ENTER_WRAPPED_REGION();
+  }
   return_val = PMPI_Comm_free (comm);
+  if (event_gen_active)
+  {
+    SCOREP_EXIT_WRAPPED_REGION();
+  }
 
   if (event_gen_active)
   {
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_COMM_FREE]);
     SCOREP_MPI_EVENT_GEN_ON ();
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }
@@ -82,23 +93,33 @@ int MPI_Comm_free(MPI_Comm* comm)
  */
 int MPI_Group_free(MPI_Group* group)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_CG);
   int       return_val;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_GROUP_FREE]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_GROUP_FREE], ( intptr_t )PMPI_Group_free);
   }
 
   scorep_mpi_group_free(*group);
+  if (event_gen_active)
+  {
+    SCOREP_ENTER_WRAPPED_REGION();
+  }
   return_val = PMPI_Group_free(group);
+  if (event_gen_active)
+  {
+    SCOREP_EXIT_WRAPPED_REGION();
+  }
 
   if (event_gen_active)
   {
     SCOREP_ExitRegion (scorep_mpi_regid[SCOREP__MPI_GROUP_FREE]);
     SCOREP_MPI_EVENT_GEN_ON ();
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }
@@ -139,14 +160,17 @@ int MPI_Group_free(MPI_Group* group)
 int
 MPI_Comm_set_name( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* comm_name )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_NAME ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_NAME ], ( intptr_t )PMPI_Comm_set_name );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_set_name( comm, comm_name );
+        SCOREP_EXIT_WRAPPED_REGION();
         if ( return_val == MPI_SUCCESS )
         {
             scorep_mpi_comm_set_name( comm, comm_name );
@@ -159,6 +183,7 @@ MPI_Comm_set_name( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* comm_name )
     {
         return_val = PMPI_Comm_set_name( comm, comm_name );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }

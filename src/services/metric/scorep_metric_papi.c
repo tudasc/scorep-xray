@@ -39,6 +39,7 @@
 #include <config.h>
 
 #include "SCOREP_Metric_Source.h"
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Location.h>
 
 #include <UTILS_Debug.h>
@@ -217,11 +218,17 @@ static int scorep_metric_papi_initialize = 1;
 static unsigned long
 scorep_metric_get_location_id( void )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
     /* Get the thread id from the measurement system */
     SCOREP_Location* data = SCOREP_Location_GetCurrentCPULocation();
     UTILS_ASSERT( data != NULL );
 
-    return SCOREP_Location_GetId( data );
+    unsigned long result = SCOREP_Location_GetId( data );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+
+    return result;
 }
 
 

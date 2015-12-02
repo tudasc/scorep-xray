@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -81,6 +81,7 @@ scorep_profile_create_node( SCOREP_Profile_LocationData* location,
     node->first_int_sparse    = NULL;
     node->flags               = 0;
     node->count               = 0; /* Is increased to one during SCOREP_Profile_Enter() */
+    node->hits                = 0;
     node->first_enter_time    = timestamp;
     node->last_exit_time      = timestamp;
     node->node_type           = type;

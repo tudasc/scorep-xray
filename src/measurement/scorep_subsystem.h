@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -54,8 +54,28 @@ void
 scorep_subsystems_initialize( void );
 
 void
+scorep_subsystems_begin( void );
+
+void
+scorep_subsystems_end( void );
+
+void
+scorep_subsystems_finalize( void );
+
+void
 scorep_subsystems_initialize_location( struct SCOREP_Location* newLocation,
                                        struct SCOREP_Location* parentLocation );
+
+void
+scorep_subsystems_activate_cpu_location( struct SCOREP_Location* locationData,
+                                         struct SCOREP_Location* parentLocation,
+                                         uint32_t                forkSequenceCount,
+                                         SCOREP_CPULocationPhase phase );
+
+void
+scorep_subsystems_deactivate_cpu_location( struct SCOREP_Location* locationData,
+                                           struct SCOREP_Location* parentLocation,
+                                           SCOREP_CPULocationPhase phase );
 
 void
 scorep_subsystems_finalize_location( struct SCOREP_Location* locationData );
@@ -65,9 +85,6 @@ scorep_subsystems_pre_unify( void );
 
 void
 scorep_subsystems_post_unify( void );
-
-void
-scorep_subsystems_finalize( void );
 
 void
 scorep_subsystems_deregister( void );

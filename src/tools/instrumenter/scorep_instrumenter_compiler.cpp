@@ -213,16 +213,16 @@ SCOREP_Instrumenter_CompilerAdapter::prelink( SCOREP_Instrumenter&         instr
         if ( cmdLine.isBuildCheck() )
         {
             instrumenter.prependInputFile(
-                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_gcc_plugin_begin.o" );
+                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_gcc_plugin_begin." OBJEXT );
             instrumenter.appendInputFile(
-                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_gcc_plugin_end.o" );
+                cmdLine.getPathToBinary() + "../build-backend/scorep_compiler_gcc_plugin_end." OBJEXT );
         }
         else
         {
             instrumenter.prependInputFile(
-                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_gcc_plugin_begin.o" );
+                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_gcc_plugin_begin." OBJEXT );
             instrumenter.appendInputFile(
-                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_gcc_plugin_end.o" );
+                SCOREP_BACKEND_PKGLIBDIR "/scorep_compiler_gcc_plugin_end." OBJEXT );
         }
     }
 #endif

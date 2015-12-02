@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -142,6 +142,7 @@ SCOREP_OPARI2_OPENMP_FORTRAN_FLAGS =     \
     -I$(INC_ROOT)src/adapters/opari2     \
     -I$(INC_ROOT)src/measurement/include \
     -I$(PUBLIC_INC_DIR)                  \
+    -I$(INC_DIR_DEFINITIONS)             \
     @OPARI2_CPPFLAGS@                    \
     -I@OPARI2_REGION_INFO_INC_DIR@       \
     $(UTILS_CPPFLAGS)                    \
@@ -228,6 +229,7 @@ libscorep_adapter_opari2_openmp_event_la_LIBADD =   \
     libscorep_measurement.la
 
 libscorep_adapter_opari2_openmp_event_la_LDFLAGS = \
-    $(library_api_version_ldflags)
+    $(library_api_version_ldflags) \
+    $(SCOREP_UNWINDING_LDFLAGS)
 
 endif HAVE_OPENMP_SUPPORT

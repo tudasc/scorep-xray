@@ -9,6 +9,7 @@
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include <UTILS_Error.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
 /**
@@ -37,16 +38,25 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
                      int                        reorder,
                      MPI_Comm*                  comm_cart)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   const int32_t event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_TOPO);
   int32_t       return_val;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_CART_CREATE]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_CART_CREATE], ( intptr_t )PMPI_Cart_create);
   }
 
+  if (event_gen_active)
+  {
+    SCOREP_ENTER_WRAPPED_REGION();
+  }
   return_val = PMPI_Cart_create(comm_old, ndims, dims, periodv, reorder, comm_cart);
+  if (event_gen_active)
+  {
+    SCOREP_EXIT_WRAPPED_REGION();
+  }
 
   if (*comm_cart != MPI_COMM_NULL)
   {
@@ -124,6 +134,7 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_CART_CREATE]);
     SCOREP_MPI_EVENT_GEN_ON();
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011, 2013-2014,
+ * Copyright (c) 2009-2011, 2013-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -39,6 +39,8 @@
 #include <scorep/SCOREP_User_Functions.h>
 #include "SCOREP_User_Init.h"
 #include <SCOREP_Types.h>
+#include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Mutex.h>
@@ -62,23 +64,35 @@ FSUB( SCOREP_F_ParameterInt64 )( SCOREP_Fortran_Parameter* handle,
                                  int64_t*                  value,
                                  int                       name_len )
 {
-    char* c_name = NULL;
+    SCOREP_IN_MEASUREMENT_INCREMENT();
 
-#ifdef SCOREP_COMPILER_PGI
-    /* The PGI Fortran interface provides no handle initialization */
-    *handle = SCOREP_USER_INVALID_PARAMETER;
-#endif
-
-    if ( *handle == SCOREP_USER_INVALID_PARAMETER )
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
-        c_name = malloc( name_len + 1 );
-        strncpy( c_name, name, name_len );
-        c_name[ name_len ] = '\0';
+        SCOREP_InitMeasurement();
     }
 
-    SCOREP_User_ParameterInt64( ( SCOREP_User_ParameterHandle* )handle, c_name, *value );
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        char* c_name = NULL;
 
-    free( c_name );
+#ifdef SCOREP_COMPILER_PGI
+        /* The PGI Fortran interface provides no handle initialization */
+        *handle = SCOREP_USER_INVALID_PARAMETER;
+#endif
+
+        if ( *handle == SCOREP_USER_INVALID_PARAMETER )
+        {
+            c_name = malloc( name_len + 1 );
+            strncpy( c_name, name, name_len );
+            c_name[ name_len ] = '\0';
+        }
+
+        SCOREP_User_ParameterInt64( ( SCOREP_User_ParameterHandle* )handle, c_name, *value );
+
+        free( c_name );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
@@ -87,23 +101,35 @@ FSUB( SCOREP_F_ParameterUint64 )( SCOREP_Fortran_Parameter* handle,
                                   uint64_t*                 value,
                                   int                       name_len )
 {
-    char* c_name = NULL;
+    SCOREP_IN_MEASUREMENT_INCREMENT();
 
-#ifdef SCOREP_COMPILER_PGI
-    /* The PGI Fortran interface provides no handle initialization */
-    *handle = SCOREP_USER_INVALID_PARAMETER;
-#endif
-
-    if ( *handle == SCOREP_USER_INVALID_PARAMETER )
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
-        c_name = malloc( name_len + 1 );
-        strncpy( c_name, name, name_len );
-        c_name[ name_len ] = '\0';
+        SCOREP_InitMeasurement();
     }
 
-    SCOREP_User_ParameterUint64( ( SCOREP_User_ParameterHandle* )handle, c_name, *value );
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        char* c_name = NULL;
 
-    free( c_name );
+#ifdef SCOREP_COMPILER_PGI
+        /* The PGI Fortran interface provides no handle initialization */
+        *handle = SCOREP_USER_INVALID_PARAMETER;
+#endif
+
+        if ( *handle == SCOREP_USER_INVALID_PARAMETER )
+        {
+            c_name = malloc( name_len + 1 );
+            strncpy( c_name, name, name_len );
+            c_name[ name_len ] = '\0';
+        }
+
+        SCOREP_User_ParameterUint64( ( SCOREP_User_ParameterHandle* )handle, c_name, *value );
+
+        free( c_name );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
@@ -113,25 +139,37 @@ FSUB( SCOREP_F_ParameterString )( SCOREP_User_ParameterHandle* handle,
                                   int                          name_len,
                                   int                          value_len )
 {
-#ifdef SCOREP_COMPILER_PGI
-    /* The PGI Fortran interface provides no handle initialization */
-    *handle = SCOREP_USER_INVALID_PARAMETER;
-#endif
+    SCOREP_IN_MEASUREMENT_INCREMENT();
 
-    char* c_name  = NULL;
-    char* c_value = malloc( value_len + 1 );
-    strncpy( c_value, value, value_len );
-    c_value[ value_len ] = '\0';
-
-    if ( *handle == SCOREP_USER_INVALID_PARAMETER )
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
-        c_name = malloc( name_len + 1 );
-        strncpy( c_name, name, name_len );
-        c_name[ name_len ] = '\0';
+        SCOREP_InitMeasurement();
     }
 
-    SCOREP_User_ParameterString( ( SCOREP_User_ParameterHandle* )handle, c_name, c_value );
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+#ifdef SCOREP_COMPILER_PGI
+        /* The PGI Fortran interface provides no handle initialization */
+        *handle = SCOREP_USER_INVALID_PARAMETER;
+#endif
 
-    free( c_name );
-    free( c_value );
+        char* c_name  = NULL;
+        char* c_value = malloc( value_len + 1 );
+        strncpy( c_value, value, value_len );
+        c_value[ value_len ] = '\0';
+
+        if ( *handle == SCOREP_USER_INVALID_PARAMETER )
+        {
+            c_name = malloc( name_len + 1 );
+            strncpy( c_name, name, name_len );
+            c_name[ name_len ] = '\0';
+        }
+
+        SCOREP_User_ParameterString( ( SCOREP_User_ParameterHandle* )handle, c_name, c_value );
+
+        free( c_name );
+        free( c_value );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }

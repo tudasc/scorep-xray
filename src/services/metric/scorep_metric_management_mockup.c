@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -99,13 +99,5 @@ SCOREP_Metric_WriteToProfile( SCOREP_Location* location )
  */
 const SCOREP_Subsystem SCOREP_Subsystem_MetricService =
 {
-    .subsystem_name              = "METRIC",
-    .subsystem_register          = NULL,
-    .subsystem_init              = NULL,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = NULL,
-    .subsystem_deregister        = NULL
+    .subsystem_name = "METRIC",
 };

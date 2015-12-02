@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -44,14 +44,5 @@
  */
 const SCOREP_Subsystem SCOREP_Subsystem_Opari2UserAdapter =
 {
-    .subsystem_name              = "POMP2 User Adapter / Version 1.0 (config variables only)",
-    .subsystem_register          = NULL,
-    .subsystem_init              = NULL,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = NULL,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name = "POMP2 User Adapter / Version 1.0 (config variables only)",
 };

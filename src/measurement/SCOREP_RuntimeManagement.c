@@ -54,6 +54,7 @@
 #define SCOREP_DEBUG_MODULE_NAME CORE
 #include <UTILS_Debug.h>
 
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Memory.h>
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_Definitions.h>
@@ -95,13 +96,15 @@ static bool scorep_initialized = false;
 /** @brief Measurement system finalized? */
 static bool scorep_finalized = false;
 
+SCOREP_MeasurementPhase scorep_measurement_phase = SCOREP_MEASUREMENT_PHASE_PRE;
+
 /** @brief Location group handle */
 static SCOREP_LocationGroupHandle location_group_handle = SCOREP_INVALID_LOCATION_GROUP;
 
 /** @brief System tree path */
 static SCOREP_Platform_SystemTreePathElement* system_tree_path;
 
-#define scorep_max_exit_callbacks 8
+#define scorep_max_exit_callbacks 1
 static SCOREP_ExitCallback scorep_exit_callbacks[ scorep_max_exit_callbacks ];
 static int                 scorep_n_exit_callbacks = 0;
 
@@ -139,6 +142,7 @@ static void scorep_finalize( void );
 static void scorep_initialization_sanity_checks( void );
 static void scorep_trigger_exit_callbacks( void );
 static void scorep_define_measurement_regions( void );
+static void scorep_define_measurement_attributes( void );
 /* *INDENT-ON* */
 
 /**
@@ -152,26 +156,26 @@ SCOREP_IsInitialized( void )
     return scorep_initialized && !scorep_finalized;
 }
 
-
-#if defined( __PGI )
-/* Remove this PGI hack once the SCOREP_IS_MEASUREMENT_PHASE macros
- * are in place. See  r8969, r8804, r8879, #696. */
-bool scorep_measurement_initialization_complete;
-#endif
-
-
 /**
  * Initialize the measurement system from the subsystem layer.
  */
 void
 SCOREP_InitMeasurement( void )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
     UTILS_DEBUG_ENTRY();
 
     SCOREP_InitErrorCallback();
 
+    if ( SCOREP_IN_SIGNAL_CONTEXT() )
+    {
+        UTILS_FATAL( "Can't initialize measurement from the signal handler." );
+    }
+
     if ( scorep_initialized )
     {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
 
@@ -251,6 +255,13 @@ SCOREP_InitMeasurement( void )
      */
     scorep_define_measurement_regions();
 
+    /*
+     * Define attributes.
+     *
+     * @dependsOn Definitions
+     */
+    scorep_define_measurement_attributes();
+
     /* == Initialize substrates and subsystems == */
 
     /* Let the filtering service read its filter file early */
@@ -261,7 +272,7 @@ SCOREP_InitMeasurement( void )
      */
     SCOREP_TIME( SCOREP_Location_Initialize, ( ) );
 
-    /* == initialize threading system and create the mater thread == */
+    /* == initialize threading system and create the master thread == */
 
     /*
      * @dependsOn Mutex
@@ -305,6 +316,9 @@ SCOREP_InitMeasurement( void )
      */
     SCOREP_TIME( SCOREP_Thread_ActivateMaster, ( ) );
 
+    SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurement );
+    SCOREP_TIME_START_TIMING( MeasurementDuration );
+
     scorep_default_recoding_mode_changes_allowed = false;
     if ( !scorep_enable_recording_by_default )
     {
@@ -315,14 +329,25 @@ SCOREP_InitMeasurement( void )
         SCOREP_DisableRecording();
     }
 
-    SCOREP_TIME_STOP_TIMING( SCOREP_InitMeasurement );
-    SCOREP_TIME_START_TIMING( MeasurementDuration );
+    /*
+     * Now it is time to fully activate the master thread and allow events from
+     * all subsystems. parent and fork-seq needs only be provided for the MGMT call.
+     */
+    scorep_subsystems_activate_cpu_location( SCOREP_Location_GetCurrentCPULocation(),
+                                             NULL, 0,
+                                             SCOREP_CPU_LOCATION_PHASE_EVENTS );
 
-#if defined( __PGI )
-    /* Remove this PGI hack once the SCOREP_IS_MEASUREMENT_PHASE macros
-     * are in place. See  r8969, r8804, r8879, #696. */
-    scorep_measurement_initialization_complete = true;
-#endif
+    /*
+     * Notify all interesting subsystems that the party started.
+     */
+    scorep_subsystems_begin();
+
+    /*
+     * And now we allow also events from outside the measurement system.
+     */
+    scorep_measurement_phase = SCOREP_MEASUREMENT_PHASE_WITHIN;
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 
@@ -501,12 +526,21 @@ SCOREP_RecordingEnabled( void )
     return scorep_recording_enabled;
 }
 
+
 /**
  * Called by the tracing component before a buffer flush happens.
  */
 void
 SCOREP_OnTracingBufferFlushBegin( bool final )
 {
+    if ( SCOREP_IN_SIGNAL_CONTEXT() )
+    {
+        /* Let this be just a warning, SCOREP_Memory_HandleOutOfMemory will
+         * than abort for us. */
+        UTILS_WARNING( "Can't flush trace buffer when taking a sample." );
+        SCOREP_Memory_HandleOutOfMemory();
+    }
+
     if ( !SCOREP_Status_IsMppInitialized() )
     {
         UTILS_FATAL( "Trace buffer flush before MPP was initialized." );
@@ -553,20 +587,64 @@ SCOREP_OnTracingBufferFlushEnd( uint64_t timestamp )
 static void
 scorep_finalize( void )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
     UTILS_DEBUG_ENTRY();
+
+    if ( SCOREP_IN_SIGNAL_CONTEXT() )
+    {
+        UTILS_FATAL( "Can't finalize measurement from the signal handler." );
+    }
 
     if ( !scorep_initialized || scorep_finalized || scorep_application_aborted )
     {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
     scorep_finalized = true;
 
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+
     SCOREP_OA_Finalize();
+
+    /*
+     * This barrier should prevent entering events from "outside".
+     * Writing events from within is still allowed.
+     */
+    scorep_measurement_phase = SCOREP_MEASUREMENT_PHASE_POST;
+
+    if ( !scorep_enable_recording_by_default )
+    {
+        SCOREP_EnableRecording();
+    }
+
+    /*
+     * We are now leaving the measurement.
+     */
+    scorep_subsystems_end();
+
+    /*
+     * @todo Move to task subsystems deactivate_cpu_location.
+     */
+    SCOREP_TIME( SCOREP_Task_ExitAllRegions, ( location, SCOREP_Task_GetCurrentTask( location ) ) );
+
+    /*
+     * Now tear down the master thread.
+     * First notify the subsystems that the master location will be teared down.
+     * parent needs only be provided for the MGMT call.
+     */
+    scorep_subsystems_deactivate_cpu_location( location, NULL, SCOREP_CPU_LOCATION_PHASE_EVENTS );
+
+    /* Last remaining at-exit user is TAU. Give him the chance to do something. */
+    SCOREP_TIME( scorep_trigger_exit_callbacks, ( ) );
+
+    /*
+     * Second, call into the substrates to deactivate the master.
+     */
+    scorep_subsystems_deactivate_cpu_location( location, NULL, SCOREP_CPU_LOCATION_PHASE_MGMT );
 
     SCOREP_TIME_STOP_TIMING( MeasurementDuration );
     SCOREP_TIME_START_TIMING( scorep_finalize );
-    SCOREP_TIME( scorep_trigger_exit_callbacks, ( ) );
 
     // MPICH1 creates some extra processes that are not properly SCOREP
     // initialized and don't execute normal user code. We need to prevent SCOREP
@@ -577,15 +655,10 @@ scorep_finalize( void )
                          "If not, it seems that your interprocess communication "
                          "library (e.g., MPI) hasn't been initialized. Score-P "
                          "can't generate output." );
+        SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
 
-    if ( !scorep_enable_recording_by_default )
-    {
-        SCOREP_EnableRecording();
-    }
-
-    SCOREP_TIME( SCOREP_Task_ExitAllRegions, ( location, SCOREP_Task_GetCurrentTask( location ) ) );
     SCOREP_TIME( SCOREP_SynchronizeClocks, ( ) );
     SCOREP_TIME( SCOREP_EndEpoch, ( ) );
     SCOREP_TIME( SCOREP_Filter_Finalize, ( ) );
@@ -620,6 +693,8 @@ scorep_finalize( void )
     SCOREP_TIME_STOP_TIMING( scorep_finalize );
 
     SCOREP_TIME_PRINT_TIMINGS();
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 
@@ -634,9 +709,9 @@ SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback )
 void
 scorep_trigger_exit_callbacks( void )
 {
-    assert( scorep_n_exit_callbacks < scorep_max_exit_callbacks );
+    assert( scorep_n_exit_callbacks <= scorep_max_exit_callbacks );
     // trigger in lifo order
-    for ( int i = scorep_n_exit_callbacks - 1; i >= 0; --i )
+    for ( int i = scorep_n_exit_callbacks; i-- > 0; )
     {
         ( *( scorep_exit_callbacks[ i ] ) )();
     }
@@ -663,4 +738,16 @@ scorep_define_measurement_regions( void )
             SCOREP_PARADIGM_MEASUREMENT,
             SCOREP_REGION_ARTIFICIAL );
     }
+}
+
+void
+scorep_define_measurement_attributes( void )
+{
+    /* Resdides in SCOREP_Events.c */
+    extern SCOREP_AttributeHandle scorep_source_code_location_attribute;
+
+    scorep_source_code_location_attribute =
+        SCOREP_Definitions_NewAttribute( "SOURCE_CODE_LOCATION",
+                                         "Source code location",
+                                         SCOREP_ATTRIBUTE_TYPE_SOURCE_CODE_LOCATION );
 }

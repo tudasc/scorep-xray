@@ -309,6 +309,35 @@ various Score-P components.
 
 --------------------------------------------------------------------------------
 
+* Sampling support
+
+  - Sampling is currently supported for x86_64 CPUs only. The compiler
+    needs to support thread-local storage, either via the language
+    extension __thread or the C11 keyword _Thread_local.
+
+  - It is possible to activate sampling for programs that were
+    instrumented with compiler instrumentation. In this case the
+    events originating from the compiler instrumentation will be
+    suppressed. Please note that depending on the compiler
+    instrumentation used, the overhead can still be significant as
+    the compiler instrumentation might affect inlining. If this is
+    the case, consider rebuilding your application using Score-P's
+    --nocompiler switch.
+
+  - If PAPI is used as the interrupt source for sampling, than it is not
+    possible to measure also PAPI metrics.
+
+  - The timer interrupt source only works for non-threaded applications.
+
+  - Flushing the trace buffer from inside a sample signal is not allowed and
+    thus aborts the measurement immediately.
+
+  - Currently untested feature cominations with sampling:
+     - OpenMP tasks
+     - Trace rewinding
+
+--------------------------------------------------------------------------------
+
 * Score-P misc.
 
   - Score-P does not support MPMD style programs where the executables

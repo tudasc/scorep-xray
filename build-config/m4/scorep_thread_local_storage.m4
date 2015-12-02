@@ -3,7 +3,7 @@
 ##
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
-## Copyright (c) 2014
+## Copyright (c) 2014-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -11,10 +11,41 @@
 ## directory for details.
 ##
 
+# SCOREP_THREAD_LOCAL_STORAGE
+# -----------------
+# Checks whether the compiler supports thread-local storage.
+# Sets scorep_have_thread_local_storage to yes if the compiler does,
+# otherwise scorep_have_thread_local_storage is set to no.
 AC_DEFUN([SCOREP_THREAD_LOCAL_STORAGE], [
 
-dnl Do not check for prerequisite of thread local storage support on the frontend.
-AS_IF([test "x$ac_scorep_backend" = xno], [AC_MSG_ERROR([cannot check for thread local storage support on frontend.])])
+scorep_have_thread_local_storage="no"
+thread_local_storage_summary="no"
+thread_local_storage_cflags=""
+
+_SCOREP_CHECK__THREAD(scorep_have_thread_local_storage,thread_local_storage_summary)
+
+AS_IF([test "x${scorep_have_thread_local_storage}" = "xno"],
+      [_SCOREP_CHECK_C11_THREAD_LOCAL(scorep_have_thread_local_storage,thread_local_storage_summary)])
+
+AS_IF([test "x${scorep_have_thread_local_storage}" = "xno"],
+      [thread_local_storage_cflags="-c11"
+       _SCOREP_CHECK_C11_THREAD_LOCAL(scorep_have_thread_local_storage,thread_local_storage_summary,$thread_local_storage_cflags)
+       AS_IF([test "x${scorep_have_thread_local_storage}" = "xyes"],
+             [CC="$CC $thread_local_storage_cflags"])])
+
+AC_SCOREP_COND_HAVE([THREAD_LOCAL_STORAGE],
+                    [test "x${scorep_have_thread_local_storage}" = "xyes"],
+                    [Defined if thread local storage support is available.])
+
+AFS_SUMMARY([TLS support], [${thread_local_storage_summary}])
+])
+
+
+# _SCOREP_CHECK__THREAD( RESULT,
+#                        SUMMARY )
+# -----------------
+# Performs checks whether the compiler supports '__thread'.
+AC_DEFUN([_SCOREP_CHECK__THREAD], [
 
 AC_LANG_PUSH([C])
 
@@ -39,13 +70,50 @@ AC_LINK_IFELSE([AC_LANG_PROGRAM([#if defined(__GNUC__) && ((__GNUC__ < 4) || (__
 
 __thread int global_thread_private_var = 1;
 ], [static __thread int my_thread_private_var = 0])],
-   [scorep_have_thread_local_storage="yes"],
-   [scorep_have_thread_local_storage="no"])
-AC_MSG_RESULT([${scorep_have_thread_local_storage}])
+   [$1="yes"
+    $2="yes, using __thread"
+    AC_DEFINE([SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER],
+              [__thread],
+              [Set specifier to mark a variable as thread-local storage (TLS)])],
+   [$1="no"
+    $2="no"])
+AC_MSG_RESULT([$][$1])
 
 AC_LANG_POP([C])
 
-AC_SCOREP_COND_HAVE([THREAD_LOCAL_STORAGE],
-                    [test "x${scorep_have_thread_local_storage}" = "xyes"],
-                    [Defined if thread local storage support is available.])
 ])
+
+
+# _SCOREP_CHECK_C11_THREAD_LOCAL( RESULT,
+#                                 SUMMARY,
+#                                 [ADDITIONAL_CFLAGS] )
+# -----------------
+# Performs checks whether the compiler supports the C11 '_Thread_local' feature.
+AC_DEFUN([_SCOREP_CHECK_C11_THREAD_LOCAL], [
+
+AC_LANG_PUSH([C])
+
+cflags_save="$CFLAGS"
+CFLAGS="$CFLAGS $3"
+
+AC_MSG_CHECKING([for _Thread_local])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+_Thread_local int global_thread_private_var = 1;
+], [static _Thread_local int my_thread_private_var = 0])],
+   [$1="yes"
+    $2="yes, using _Thread_local"
+    AC_DEFINE([SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER],
+              [_Thread_local],
+              [Set specifier to mark a variable as thread-local storage (TLS)])],
+   [$1="no"
+    $2="no"])
+AC_MSG_RESULT([$][$1])
+
+CFLAGS="$cflags_save"
+
+AC_LANG_POP([C])
+
+])
+
+
+

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -189,6 +189,10 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, property );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, attribute );
     SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, location_property );
+    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, source_code_location );
+    SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, source_code_location );
+    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, calling_context );
+    SCOREP_DEFINITIONS_MANAGER_INIT_MEMBER( *definitionManager, interrupt_generator );
 
     if ( allocHashTables )
     {
@@ -210,6 +214,8 @@ SCOREP_Definitions_InitializeDefinitionManager( SCOREP_DefinitionManager**    de
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, property );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, attribute );
         SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, location_property );
+        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, calling_context );
+        SCOREP_DEFINITIONS_MANAGER_ALLOC_MEMBER_HASH_TABLE( *definitionManager, interrupt_generator );
     }
 }
 
@@ -250,6 +256,9 @@ SCOREP_Definitions_Finalize( void )
         free( scorep_unified_definition_manager->property.hash_table );
         free( scorep_unified_definition_manager->attribute.hash_table );
         free( scorep_unified_definition_manager->location_property.hash_table );
+        free( scorep_unified_definition_manager->source_code_location.hash_table );
+        free( scorep_unified_definition_manager->calling_context.hash_table );
+        free( scorep_unified_definition_manager->interrupt_generator.hash_table );
     }
     free( scorep_unified_definition_manager );
     // the contents of the definition managers is allocated using

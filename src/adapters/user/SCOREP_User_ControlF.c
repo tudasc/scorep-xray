@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -39,6 +39,8 @@
 #include "SCOREP_User_Init.h"
 #include "SCOREP_RuntimeManagement.h"
 #include "SCOREP_Fortran_Wrapper.h"
+#include <SCOREP_InMeasurement.h>
+#include <SCOREP_Events.h>
 
 #define SCOREP_F_EnableRecording_U  SCOREP_F_ENABLERECORDING
 #define SCOREP_F_DisableRecording_U SCOREP_F_DISABLERECORDING
@@ -50,29 +52,57 @@
 void
 FSUB( SCOREP_F_EnableRecording )( void )
 {
-    /* Assert that the adapter and management system are initialized */
-    SCOREP_USER_ASSERT_INITIALIZED;
+    SCOREP_IN_MEASUREMENT_INCREMENT();
 
-    /* (Re)start recording */
-    SCOREP_EnableRecording();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        /* (Re)start recording */
+        SCOREP_EnableRecording();
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 FSUB( SCOREP_F_DisableRecording )( void )
 {
-    /* Assert that the adapter and management system are initialized */
-    SCOREP_USER_ASSERT_INITIALIZED;
+    SCOREP_IN_MEASUREMENT_INCREMENT();
 
-    /* Stop recording */
-    SCOREP_DisableRecording();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        /* Stop recording */
+        SCOREP_DisableRecording();
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 FSUB( SCOREP_F_RecordingEnabled )( int* enabled )
 {
-    /* Assert that the adapter and management system are initialized */
-    SCOREP_USER_ASSERT_INITIALIZED;
+    SCOREP_IN_MEASUREMENT_INCREMENT();
 
-    /* Return value */
-    *enabled = ( int )SCOREP_RecordingEnabled();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+
+    *enabled = 0;
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
+    {
+        /* Return value */
+        *enabled = ( int )SCOREP_RecordingEnabled();
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }

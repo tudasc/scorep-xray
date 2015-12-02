@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -71,6 +71,25 @@ libscorep_measurement_la_LIBADD =        \
     @OTF2_LIBS@                          \
     @CUBE_WRITER_LIBS@
 
+if HAVE_UNWINDING_SUPPORT
+
+libscorep_measurement_la_LIBADD += \
+    libscorep_unwinding.la
+
+else !HAVE_UNWINDING_SUPPORT
+
+libscorep_measurement_la_LIBADD += \
+    libscorep_unwinding_mockup.la
+
+endif !HAVE_UNWINDING_SUPPORT
+
+if HAVE_SAMPLING_SUPPORT
+
+libscorep_measurement_la_LIBADD += \
+    libscorep_sampling.la
+
+endif HAVE_SAMPLING_SUPPORT
+
 if !HAVE_SCOREP_EXTERNAL_OTF2
 
 BUILT_SOURCES += @OTF2_LIBS@
@@ -92,6 +111,7 @@ endif !HAVE_SCOREP_EXTERNAL_CUBE
 libscorep_measurement_la_LDFLAGS = \
     $(library_api_version_ldflags) \
     @OTF2_LDFLAGS@                 \
+    @LIBUNWIND_LDFLAGS@            \
     @LIBBFD_LDFLAGS@               \
     @SCOREP_PAPI_LDFLAGS@          \
     @CUBE_WRITER_LDFLAGS@
@@ -103,7 +123,6 @@ $(LIB_DIR_SCOREP_MPI)libscorep_mpp_mpi.la:
 	@$(am__cd) $(LIB_DIR_SCOREP_MPI) && $(MAKE) $(AM_MAKEFLAGS) libscorep_mpp_mpi.la
 
 endif HAVE_MPI_SUPPORT
-
 
 if HAVE_SHMEM_SUPPORT
 

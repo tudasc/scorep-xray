@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -220,6 +220,12 @@ scorep_cube4_get_number_of_callpathes( scorep_cube4_definitions_map* map );
  */
 cube_metric*
 scorep_get_visits_handle( void );
+
+/**
+   Returns the handle used for the metric 'number of hits'.
+ */
+cube_metric*
+scorep_get_hits_handle( void );
 
 /**
    Returns the handle used for metric 'inclusive time sum'.

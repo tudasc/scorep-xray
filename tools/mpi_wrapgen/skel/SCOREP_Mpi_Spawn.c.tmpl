@@ -9,6 +9,7 @@
 #include <config.h>
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
 /**
@@ -29,23 +30,33 @@
  */
 int MPI_Comm_disconnect(MPI_Comm* comm)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_SPAWN);
   int       return_val;
 
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_COMM_DISCONNECT]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_COMM_DISCONNECT], ( intptr_t )PMPI_Comm_disconnect);
   }
 
   scorep_mpi_comm_free(*comm);
+  if (event_gen_active)
+  {
+    SCOREP_ENTER_WRAPPED_REGION();
+  }
   return_val = PMPI_Comm_disconnect(comm);
+  if (event_gen_active)
+  {
+    SCOREP_EXIT_WRAPPED_REGION();
+  }
 
   if (event_gen_active)
   {
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_COMM_DISCONNECT]);
     SCOREP_MPI_EVENT_GEN_ON();
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }

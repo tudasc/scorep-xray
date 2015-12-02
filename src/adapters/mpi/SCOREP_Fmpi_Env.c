@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -176,7 +176,12 @@
 void
 FSUB( MPI_Initialized )( int* flag, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Initialized( flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -197,7 +202,9 @@ FSUB( MPI_Init_thread )( int* required,
                          int* provided,
                          int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     *ierr = MPI_Init_thread( 0, ( char*** )0, *required, provided );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -211,7 +218,9 @@ FSUB( MPI_Init_thread )( int* required,
 void
 FSUB( MPI_Init )( int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     *ierr = MPI_Init( 0, ( char*** )0 );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 #if HAVE( DECL_PMPI_FINALIZE )
@@ -225,7 +234,12 @@ FSUB( MPI_Init )( int* ierr )
 void
 FSUB( MPI_Finalize )( int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Finalize();
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FINALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Finalized )
@@ -239,7 +253,12 @@ FSUB( MPI_Finalize )( int* ierr )
 void
 FSUB( MPI_Finalized )( int* flag, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Finalized( flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GET_LIBRARY_VERSION ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Get_library_version )
@@ -253,6 +272,7 @@ FSUB( MPI_Finalized )( int* flag, int* ierr )
 void
 FSUB( MPI_Get_library_version )( char* version, int* resultlen, int* ierr, int version_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_version     = NULL;
     int   c_version_len = 0;
     c_version = ( char* )malloc( ( version_len + 1 ) * sizeof( char ) );
@@ -270,6 +290,7 @@ FSUB( MPI_Get_library_version )( char* version, int* resultlen, int* ierr, int v
     strncpy( version, c_version, c_version_len );
     memset( version + c_version_len, ' ', version_len - c_version_len );
     free( c_version );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IS_THREAD_MAIN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Is_thread_main )
@@ -283,7 +304,12 @@ FSUB( MPI_Get_library_version )( char* version, int* resultlen, int* ierr, int v
 void
 FSUB( MPI_Is_thread_main )( int* flag, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Is_thread_main( flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_QUERY_THREAD ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Query_thread )
@@ -297,7 +323,12 @@ FSUB( MPI_Is_thread_main )( int* flag, int* ierr )
 void
 FSUB( MPI_Query_thread )( int* provided, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Query_thread( provided );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -316,12 +347,14 @@ FSUB( MPI_Init_thread )( MPI_Fint* required,
                          MPI_Fint* provided,
                          MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     if ( sizeof( MPI_Fint ) != sizeof( int ) )
     {
         UTILS_ERROR( SCOREP_ERROR_F2C_INT_SIZE_MISMATCH,
                      "Shouldn't this error abort!" );
     }
     *ierr = MPI_Init_thread( 0, ( char*** )0, *required, provided );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -335,12 +368,14 @@ FSUB( MPI_Init_thread )( MPI_Fint* required,
 void
 FSUB( MPI_Init )( MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     if ( sizeof( MPI_Fint ) != sizeof( int ) )
     {
         UTILS_ERROR( SCOREP_ERROR_F2C_INT_SIZE_MISMATCH,
                      "Shouldn't this error abort!" );
     }
     *ierr = MPI_Init( 0, ( char*** )0 );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 #if HAVE( DECL_PMPI_FINALIZE )
@@ -355,7 +390,12 @@ FSUB( MPI_Init )( MPI_Fint* ierr )
 void
 FSUB( MPI_Finalize )( MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Finalize();
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_FINALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Finalized )
@@ -370,7 +410,12 @@ FSUB( MPI_Finalize )( MPI_Fint* ierr )
 void
 FSUB( MPI_Finalized )( MPI_Fint* flag, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Finalized( flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GET_LIBRARY_VERSION ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Get_library_version )
@@ -385,6 +430,7 @@ FSUB( MPI_Finalized )( MPI_Fint* flag, MPI_Fint* ierr )
 void
 FSUB( MPI_Get_library_version )( char* version, MPI_Fint* resultlen, MPI_Fint* ierr, int version_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_version     = NULL;
     int   c_version_len = 0;
     c_version = ( char* )malloc( ( version_len + 1 ) * sizeof( char ) );
@@ -402,6 +448,7 @@ FSUB( MPI_Get_library_version )( char* version, MPI_Fint* resultlen, MPI_Fint* i
     strncpy( version, c_version, c_version_len );
     memset( version + c_version_len, ' ', version_len - c_version_len );
     free( c_version );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IS_THREAD_MAIN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Is_thread_main )
@@ -416,7 +463,12 @@ FSUB( MPI_Get_library_version )( char* version, MPI_Fint* resultlen, MPI_Fint* i
 void
 FSUB( MPI_Is_thread_main )( MPI_Fint* flag, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Is_thread_main( flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_QUERY_THREAD ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Query_thread )
@@ -431,7 +483,12 @@ FSUB( MPI_Is_thread_main )( MPI_Fint* flag, MPI_Fint* ierr )
 void
 FSUB( MPI_Query_thread )( MPI_Fint* provided, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Query_thread( provided );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -446,7 +503,12 @@ FSUB( MPI_Query_thread )( MPI_Fint* provided, MPI_Fint* ierr )
 void
 FSUB( MPI_Initialized )( int* flag, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Initialized( flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

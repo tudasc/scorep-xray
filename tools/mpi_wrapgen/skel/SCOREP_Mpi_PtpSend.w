@@ -12,6 +12,7 @@ ${guard:start}
  */
 ${proto:c}
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   ${rtype} return_val;
   ${guard:hooks}
     ${declarehooks};
@@ -22,7 +23,7 @@ ${proto:c}
     int sz;
 
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__${name|uppercase}], ( intptr_t )P${name});
 
     ${guard:hooks}
       ${check:hooks}
@@ -35,7 +36,10 @@ ${proto:c}
       SCOREP_MpiSend(dest, SCOREP_MPI_COMM_HANDLE(comm),
                      tag, count * sz);
     }
+
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = ${call:pmpi};
+    SCOREP_EXIT_WRAPPED_REGION();
 
     ${guard:hooks}
       ${check:hooks}
@@ -49,6 +53,7 @@ ${proto:c}
   {
     return_val = ${call:pmpi};
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }

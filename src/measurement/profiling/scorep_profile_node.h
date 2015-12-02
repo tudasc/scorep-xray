@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -132,6 +132,7 @@ typedef struct scorep_profile_node_struct
     scorep_profile_sparse_metric_int*    first_int_sparse;
     scorep_profile_dense_metric          inclusive_time;
     uint64_t                             count;            // For dense metrics
+    uint64_t                             hits;             // For samples
     uint64_t                             first_enter_time; // Required by Scalasca
     uint64_t                             last_exit_time;   // Required by Scalasca
     scorep_profile_node_type             node_type;

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,6 +49,8 @@
 #include <UTILS_Error.h>
 #include <UTILS_Debug.h>
 
+#include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Properties.h>
 #include <tracing/SCOREP_Tracing_Events.h>
@@ -56,11 +58,76 @@
 #include <SCOREP_Profile_Tasking.h>
 #include <SCOREP_Profile_MpiEvents.h>
 #include <SCOREP_Metric_Management.h>
+#include <SCOREP_Unwinding.h>
 #include <SCOREP_Task.h>
 
+#include "scorep_environment.h"
 #include "scorep_events_common.h"
 #include "scorep_runtime_management.h"
 #include "scorep_types.h"
+
+
+/**
+ * Stores the handle to the source code location attribute.
+ */
+SCOREP_AttributeHandle scorep_source_code_location_attribute;
+
+
+void
+SCOREP_Sample( SCOREP_InterruptGeneratorHandle interruptGeneratorHandle )
+{
+    UTILS_BUG_ON( !SCOREP_IsUnwindingEnabled(), "Invalid call." );
+
+    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp     = scorep_get_timestamp( location );
+    uint64_t*        metric_values = SCOREP_Metric_Read( location );
+
+    SCOREP_CallingContextHandle current_calling_context  = SCOREP_INVALID_CALLING_CONTEXT;
+    SCOREP_CallingContextHandle previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
+    uint32_t                    unwind_distance;
+    SCOREP_Unwinding_GetCallingContext( location,
+                                        SCOREP_UNWINDING_ORIGIN_SAMPLE,
+                                        SCOREP_INVALID_REGION, 0, 0,
+                                        &current_calling_context,
+                                        &previous_calling_context,
+                                        &unwind_distance );
+    if ( current_calling_context == SCOREP_INVALID_CALLING_CONTEXT )
+    {
+        return;
+    }
+
+    SCOREP_CALL_SUBSTRATE( Sample, SAMPLE,
+                           ( location,
+                             timestamp,
+                             current_calling_context,
+                             previous_calling_context,
+                             unwind_distance,
+                             interruptGeneratorHandle,
+                             metric_values ) )
+}
+
+
+/* Used by the unwinding to trigger a final sample just before CPU deactivation */
+void
+SCOREP_Location_DeactivateCpuSample( SCOREP_Location*            location,
+                                     SCOREP_CallingContextHandle previousCallingContext )
+{
+    UTILS_BUG_ON( !SCOREP_IsUnwindingEnabled(), "Invalid call." );
+    UTILS_BUG_ON( !location || SCOREP_Location_GetType( location ) != SCOREP_LOCATION_TYPE_CPU_THREAD,
+                  "Only CPU locations allowed." );
+
+    uint64_t  timestamp     = scorep_get_timestamp( location );
+    uint64_t* metric_values = SCOREP_Metric_Read( location );
+
+    SCOREP_CALL_SUBSTRATE( Sample, SAMPLE,
+                           ( location,
+                             timestamp,
+                             SCOREP_INVALID_CALLING_CONTEXT,
+                             previousCallingContext,
+                             1,
+                             SCOREP_INVALID_INTERRUPT_GENERATOR,
+                             metric_values ) )
+}
 
 
 /**
@@ -82,6 +149,38 @@ enter_region( SCOREP_Location*    location,
 }
 
 
+static inline void
+calling_context_enter( SCOREP_Location*    location,
+                       uint64_t            timestamp,
+                       SCOREP_RegionHandle regionHandle,
+                       intptr_t            wrappedRegion,
+                       size_t              framesToSkip,
+                       uint64_t*           metricValues )
+{
+    SCOREP_CallingContextHandle current_calling_context  = SCOREP_INVALID_CALLING_CONTEXT;
+    SCOREP_CallingContextHandle previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
+    uint32_t                    unwind_distance;
+    SCOREP_Unwinding_GetCallingContext( location,
+                                        SCOREP_UNWINDING_ORIGIN_INSTRUMENTED_ENTER,
+                                        regionHandle,
+                                        wrappedRegion,
+                                        framesToSkip,
+                                        &current_calling_context,
+                                        &previous_calling_context,
+                                        &unwind_distance );
+    UTILS_BUG_ON( current_calling_context == SCOREP_INVALID_CALLING_CONTEXT,
+                  "Unwinding could not create calling context for enter event." );
+
+    SCOREP_CALL_SUBSTRATE( CallingContextEnter, CALLING_CONTEXT_ENTER,
+                           ( location,
+                             timestamp,
+                             current_calling_context,
+                             previous_calling_context,
+                             unwind_distance,
+                             metricValues ) )
+}
+
+
 void
 SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
 {
@@ -89,7 +188,19 @@ SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle )
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
-    enter_region( location, timestamp, regionHandle, metric_values );
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        calling_context_enter( location,
+                               timestamp,
+                               regionHandle,
+                               0,
+                               0,
+                               metric_values );
+    }
+    else
+    {
+        enter_region( location, timestamp, regionHandle, metric_values );
+    }
 }
 
 
@@ -114,7 +225,43 @@ SCOREP_Location_EnterRegion( SCOREP_Location*    location,
 
     uint64_t* metric_values = SCOREP_Metric_Read( location );
 
-    enter_region( location, timestamp, regionHandle, metric_values );
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        calling_context_enter( location,
+                               timestamp,
+                               regionHandle,
+                               0,
+                               0,
+                               metric_values );
+    }
+    else
+    {
+        enter_region( location, timestamp, regionHandle, metric_values );
+    }
+}
+
+
+void
+SCOREP_EnterWrappedRegion( SCOREP_RegionHandle regionHandle,
+                           intptr_t            wrappedRegion )
+{
+    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp     = scorep_get_timestamp( location );
+    uint64_t*        metric_values = SCOREP_Metric_Read( location );
+
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        calling_context_enter( location,
+                               timestamp,
+                               regionHandle,
+                               wrappedRegion,
+                               SCOREP_IN_MEASUREMENT(),
+                               metric_values );
+    }
+    else
+    {
+        enter_region( location, timestamp, regionHandle, metric_values );
+    }
 }
 
 
@@ -137,6 +284,34 @@ exit_region( SCOREP_Location*    location,
 }
 
 
+static inline void
+calling_context_exit( SCOREP_Location*    location,
+                      uint64_t            timestamp,
+                      SCOREP_RegionHandle regionHandle,
+                      uint64_t*           metricValues )
+{
+    SCOREP_CallingContextHandle current_calling_context  = SCOREP_INVALID_CALLING_CONTEXT;
+    SCOREP_CallingContextHandle previous_calling_context = SCOREP_INVALID_CALLING_CONTEXT;
+    uint32_t                    unwind_distance;
+    SCOREP_Unwinding_GetCallingContext( location,
+                                        SCOREP_UNWINDING_ORIGIN_INSTRUMENTED_EXIT,
+                                        regionHandle, 0, 0,
+                                        &current_calling_context,
+                                        &previous_calling_context,
+                                        &unwind_distance );
+    UTILS_BUG_ON( current_calling_context == SCOREP_INVALID_CALLING_CONTEXT,
+                  "Unwinding could not create calling context for exit event." );
+
+    SCOREP_CALL_SUBSTRATE( CallingContextExit, CALLING_CONTEXT_EXIT,
+                           ( location,
+                             timestamp,
+                             current_calling_context,
+                             previous_calling_context,
+                             unwind_distance,
+                             metricValues ) )
+}
+
+
 void
 SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
 {
@@ -144,7 +319,14 @@ SCOREP_ExitRegion( SCOREP_RegionHandle regionHandle )
     uint64_t         timestamp     = scorep_get_timestamp( location );
     uint64_t*        metric_values = SCOREP_Metric_Read( location );
 
-    exit_region( location, timestamp, regionHandle, metric_values );
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        calling_context_exit( location, timestamp, regionHandle, metric_values );
+    }
+    else
+    {
+        exit_region( location, timestamp, regionHandle, metric_values );
+    }
 }
 
 
@@ -165,7 +347,14 @@ SCOREP_Location_ExitRegion( SCOREP_Location*    location,
 
     uint64_t* metric_values = SCOREP_Metric_Read( location );
 
-    exit_region( location, timestamp, regionHandle, metric_values );
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        calling_context_exit( location, timestamp, regionHandle, metric_values );
+    }
+    else
+    {
+        exit_region( location, timestamp, regionHandle, metric_values );
+    }
 }
 
 
@@ -236,6 +425,42 @@ add_location_property( SCOREP_Location* location,
 {
     SCOREP_LocationHandle handle = SCOREP_Location_GetLocationHandle( location );
     SCOREP_Definitions_NewLocationProperty( handle, name, value );
+}
+
+
+/**
+ * Add a source code location attribute to the current attribute list.
+ */
+void
+SCOREP_AddSourceCodeLocation( const char*   file,
+                              SCOREP_LineNo lineNumber )
+{
+    SCOREP_Location*                location = SCOREP_Location_GetCurrentCPULocation();
+    SCOREP_SourceCodeLocationHandle value    =
+        SCOREP_Definitions_NewSourceCodeLocation( file,
+                                                  lineNumber );
+    SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
+                           ( location,
+                             scorep_source_code_location_attribute,
+                             &value ) )
+}
+
+
+/**
+ * Add a source code location attribute to the attribute list of \p location.
+ */
+void
+SCOREP_Location_AddSourceCodeLocation( SCOREP_Location* location,
+                                       const char*      file,
+                                       SCOREP_LineNo    lineNumber )
+{
+    SCOREP_SourceCodeLocationHandle value =
+        SCOREP_Definitions_NewSourceCodeLocation( file,
+                                                  lineNumber );
+    SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
+                           ( location,
+                             scorep_source_code_location_attribute,
+                             &value ) )
 }
 
 
@@ -319,29 +544,24 @@ SCOREP_MpiRecv( SCOREP_MpiRank                   sourceRank,
 /**
  * Process an mpi collective begin event in the measurement system.
  */
-uint64_t
-SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle )
+void
+SCOREP_MpiCollectiveBegin( void )
 {
-    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp     = scorep_get_timestamp( location );
-    uint64_t*        metric_values = SCOREP_Metric_Read( location );
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    /* use the timestamp from the associated enter */
+    uint64_t timestamp = SCOREP_Location_GetLastTimestamp( location );
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
 
-    enter_region( location, timestamp, regionHandle, metric_values );
-
     SCOREP_CALL_SUBSTRATE( MpiCollectiveBegin, MPI_COLLECTIVE_BEGIN,
                            ( location, timestamp ) )
-
-    return timestamp;
 }
 
 /**
  * Process an mpi collective end event in the measurement system.
  */
 void
-SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle              regionHandle,
-                         SCOREP_InterimCommunicatorHandle communicatorHandle,
+SCOREP_MpiCollectiveEnd( SCOREP_InterimCommunicatorHandle communicatorHandle,
                          SCOREP_MpiRank                   rootRank,
                          SCOREP_MpiCollectiveType         collectiveType,
                          uint64_t                         bytesSent,
@@ -350,9 +570,8 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle              regionHandle,
     UTILS_BUG_ON( ( rootRank < 0 && rootRank != SCOREP_INVALID_ROOT_RANK ),
                   "Invalid rank passed to SCOREP_MpiCollectiveEnd\n" );
 
-    SCOREP_Location* location      = SCOREP_Location_GetCurrentCPULocation();
-    uint64_t         timestamp     = scorep_get_timestamp( location );
-    uint64_t*        metric_values = SCOREP_Metric_Read( location );
+    SCOREP_Location* location  = SCOREP_Location_GetCurrentCPULocation();
+    uint64_t         timestamp = scorep_get_timestamp( location );
 
 
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_EVENTS, "" );
@@ -360,8 +579,6 @@ SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle              regionHandle,
     SCOREP_CALL_SUBSTRATE( MpiCollectiveEnd, MPI_COLLECTIVE_END,
                            ( location, timestamp, communicatorHandle, rootRank,
                              collectiveType, bytesSent, bytesReceived ) )
-
-    exit_region( location, timestamp, regionHandle, metric_values );
 }
 
 void

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -124,6 +124,9 @@ SCOREP_CopyDefinitionsToUnified( SCOREP_DefinitionManager* sourceDefinitionManag
     UNIFY_DEFINITION( sourceDefinitionManager, Property, property );
     UNIFY_DEFINITION( sourceDefinitionManager, Attribute, attribute );
     UNIFY_DEFINITION( sourceDefinitionManager, LocationProperty, location_property );
+    UNIFY_DEFINITION( sourceDefinitionManager, SourceCodeLocation, source_code_location );
+    UNIFY_DEFINITION( sourceDefinitionManager, CallingContext, calling_context );
+    UNIFY_DEFINITION( sourceDefinitionManager, InterruptGenerator, interrupt_generator );
 }
 
 
@@ -231,7 +234,7 @@ SCOREP_Unify_CreateUnifiedDefinitionManager( void )
 
     /* ensure, that the empty string gets id 0 */
     scorep_definitions_new_string( scorep_unified_definition_manager,
-                                   "" );
+                                   "", NULL );
 }
 
 void

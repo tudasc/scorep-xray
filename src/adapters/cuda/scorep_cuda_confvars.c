@@ -62,14 +62,6 @@ cuda_subsystem_register( size_t subsystem_id )
 
 const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter =
 {
-    .subsystem_name              = "CUDA (config variables only)",
-    .subsystem_register          = &cuda_subsystem_register,
-    .subsystem_init              = NULL,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = NULL,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name     = "CUDA (config variables only)",
+    .subsystem_register = &cuda_subsystem_register,
 };

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013,
+## Copyright (c) 2009-2011, 2013, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -114,6 +114,7 @@ fi
 SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp \
     SCOREP_ENABLE_PROFILING=true \
     SCOREP_ENABLE_TRACING=false \
+    SCOREP_TOTAL_MEMORY=32M \
     ./fib_pomp $FIB_NUM
 
 if [ $? -ne 0 ]; then
@@ -126,6 +127,7 @@ SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp_tuple \
     SCOREP_ENABLE_PROFILING=true \
     SCOREP_ENABLE_TRACING=false \
     SCOREP_PROFILING_FORMAT=CUBE_TUPLE \
+    SCOREP_TOTAL_MEMORY=32M \
     ./fib_pomp $FIB_NUM
 
 if [ $? -ne 0 ]; then
@@ -137,6 +139,7 @@ fi
 SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}full \
     SCOREP_ENABLE_PROFILING=true \
     SCOREP_ENABLE_TRACING=false \
+    SCOREP_TOTAL_MEMORY=32M \
     ./fib_full $FIB_NUM
 
 if [ $? -ne 0 ]; then

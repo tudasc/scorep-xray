@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -111,7 +111,7 @@ static size_t
 interim_comm_static_size( void )
 {
     return SCOREP_Allocator_RoundupToAlignment(
-               sizeof( SCOREP_InterimCommunicatorDef ) );
+        sizeof( SCOREP_InterimCommunicatorDef ) );
 }
 
 
@@ -124,14 +124,14 @@ SCOREP_Definitions_NewInterimCommunicator( SCOREP_InterimCommunicatorHandle pare
     UTILS_DEBUG_ENTRY();
 
     return SCOREP_Definitions_NewInterimCommunicatorCustom(
-               NULL,
-               &scorep_local_definition_manager.interim_communicator,
-               NULL,
-               NULL,
-               parentComm,
-               paradigmType,
-               sizeOfPayload,
-               payload );
+        NULL,
+        &scorep_local_definition_manager.interim_communicator,
+        NULL,
+        NULL,
+        parentComm,
+        paradigmType,
+        sizeOfPayload,
+        payload );
 }
 
 
@@ -160,7 +160,7 @@ SCOREP_InterimCommunicatorHandle_SetName( SCOREP_InterimCommunicatorHandle commH
     {
         definition->name_handle = scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "" );
+            name ? name : "", NULL );
     }
 
     SCOREP_Definitions_Unlock();
@@ -357,7 +357,7 @@ SCOREP_Definitions_NewCommunicator( SCOREP_GroupHandle        group_handle,
         group_handle,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "<unnamed communicator>" ),
+            name ? name : "<unnamed communicator>", NULL ),
         parent_handle );
 
     SCOREP_Definitions_Unlock();
@@ -376,12 +376,12 @@ SCOREP_Definitions_NewUnifiedCommunicator( SCOREP_GroupHandle        group_handl
     UTILS_ASSERT( scorep_unified_definition_manager );
 
     return define_communicator(
-               scorep_unified_definition_manager,
-               group_handle,
-               scorep_definitions_new_string(
-                   scorep_unified_definition_manager,
-                   name ? name : "<unnamed communicator>" ),
-               parent_handle );
+        scorep_unified_definition_manager,
+        group_handle,
+        scorep_definitions_new_string(
+            scorep_unified_definition_manager,
+            name ? name : "<unnamed communicator>", NULL ),
+        parent_handle );
 }
 
 

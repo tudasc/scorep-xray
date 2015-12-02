@@ -21,6 +21,7 @@
 #include <config.h>
 
 #include "scorep_shmem_internal.h"
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
 
@@ -30,13 +31,18 @@
     void                                                                        \
     SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( long* lock )                         \
     {                                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                      \
+                                                                                \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                     \
         {                                                                       \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                       \
                                                                                 \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );            \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,       \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );    \
                                                                                 \
+            SCOREP_ENTER_WRAPPED_REGION();                                      \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( lock ) );                 \
+            SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                                 \
             SCOREP_RmaAcquireLock( scorep_shmem_interim_world_window_handle,    \
                                    NO_PROCESSING_ELEMENT,                       \
@@ -51,6 +57,8 @@
         {                                                                       \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( lock ) );                 \
         }                                                                       \
+                                                                                \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                      \
     }
 
 /* *INDENT-ON* */
@@ -66,13 +74,18 @@ SET_LOCK( shmem_set_lock )
     void                                                                        \
     SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( long* lock )                         \
     {                                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                      \
+                                                                                \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                     \
         {                                                                       \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                       \
                                                                                 \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );            \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,       \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );    \
                                                                                 \
+            SCOREP_ENTER_WRAPPED_REGION();                                      \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( lock ) );                 \
+            SCOREP_EXIT_WRAPPED_REGION();                                       \
                                                                                 \
             SCOREP_RmaReleaseLock( scorep_shmem_interim_world_window_handle,    \
                                    NO_PROCESSING_ELEMENT,                       \
@@ -86,6 +99,8 @@ SET_LOCK( shmem_set_lock )
         {                                                                       \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( lock ) );                 \
         }                                                                       \
+                                                                                \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                      \
     }
 
 /* *INDENT-ON* */
@@ -101,15 +116,20 @@ CLEAR_LOCK( shmem_clear_lock )
     int                                                                             \
     SCOREP_LIBWRAP_FUNC_NAME( FUNCNAME ) ( long* lock )                             \
     {                                                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                          \
+                                                                                    \
         int ret;                                                                    \
                                                                                     \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                         \
         {                                                                           \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                           \
                                                                                     \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );                \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,           \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );        \
                                                                                     \
+            SCOREP_ENTER_WRAPPED_REGION();                                          \
             ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( lock ) );               \
+            SCOREP_EXIT_WRAPPED_REGION();                                           \
                                                                                     \
             if ( ret == 0 )                                                         \
             {                                                                       \
@@ -135,6 +155,7 @@ CLEAR_LOCK( shmem_clear_lock )
             ret = SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( lock ) );               \
         }                                                                           \
                                                                                     \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                          \
         return ret;                                                                 \
     }
 

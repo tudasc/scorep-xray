@@ -9,6 +9,7 @@ ${guard:start}
  */
 ${proto:f2c_c2f}
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     ${decl:f2c_c2f}
     ${init:f2c_c2f}
 
@@ -17,5 +18,6 @@ ${proto:f2c_c2f}
     *ierr = ${call:f2c_c2f}
 
     ${cleanup:f2c_c2f}
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 ${guard:end}

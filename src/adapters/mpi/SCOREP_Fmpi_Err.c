@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -141,7 +141,12 @@
 void
 FSUB( MPI_Add_error_class )( int* errorclass, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Add_error_class( errorclass );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ADD_ERROR_CODE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Add_error_code )
@@ -155,7 +160,12 @@ FSUB( MPI_Add_error_class )( int* errorclass, int* ierr )
 void
 FSUB( MPI_Add_error_code )( int* errorclass, int* errorcode, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Add_error_code( *errorclass, errorcode );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ADD_ERROR_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Add_error_string )
@@ -169,6 +179,7 @@ FSUB( MPI_Add_error_code )( int* errorclass, int* errorcode, int* ierr )
 void
 FSUB( MPI_Add_error_string )( int* errorcode, char* string, int* ierr, int string_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_string = NULL;
     c_string = scorep_f2c_string( string, string_len );
 
@@ -177,6 +188,7 @@ FSUB( MPI_Add_error_string )( int* errorcode, char* string, int* ierr, int strin
     *ierr = MPI_Add_error_string( *errorcode, c_string );
 
     free( c_string );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ERROR_CLASS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Error_class )
@@ -190,7 +202,12 @@ FSUB( MPI_Add_error_string )( int* errorcode, char* string, int* ierr, int strin
 void
 FSUB( MPI_Error_class )( int* errorcode, int* errorclass, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Error_class( *errorcode, errorclass );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ERROR_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Error_string )
@@ -204,6 +221,7 @@ FSUB( MPI_Error_class )( int* errorcode, int* errorclass, int* ierr )
 void
 FSUB( MPI_Error_string )( int* errorcode, char* string, int* resultlen, int* ierr, int string_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_string     = NULL;
     int   c_string_len = 0;
     c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );
@@ -221,6 +239,7 @@ FSUB( MPI_Error_string )( int* errorcode, char* string, int* resultlen, int* ier
     strncpy( string, c_string, c_string_len );
     memset( string + c_string_len, ' ', string_len - c_string_len );
     free( c_string );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -238,7 +257,12 @@ FSUB( MPI_Error_string )( int* errorcode, char* string, int* resultlen, int* ier
 void
 FSUB( MPI_Add_error_class )( MPI_Fint* errorclass, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Add_error_class( errorclass );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ADD_ERROR_CODE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Add_error_code )
@@ -253,7 +277,12 @@ FSUB( MPI_Add_error_class )( MPI_Fint* errorclass, MPI_Fint* ierr )
 void
 FSUB( MPI_Add_error_code )( MPI_Fint* errorclass, MPI_Fint* errorcode, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Add_error_code( *errorclass, errorcode );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ADD_ERROR_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Add_error_string )
@@ -268,6 +297,7 @@ FSUB( MPI_Add_error_code )( MPI_Fint* errorclass, MPI_Fint* errorcode, MPI_Fint*
 void
 FSUB( MPI_Add_error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* ierr, int string_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_string = NULL;
     c_string = scorep_f2c_string( string, string_len );
 
@@ -276,6 +306,7 @@ FSUB( MPI_Add_error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* ierr,
     *ierr = MPI_Add_error_string( *errorcode, c_string );
 
     free( c_string );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ERROR_CLASS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Error_class )
@@ -290,7 +321,12 @@ FSUB( MPI_Add_error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* ierr,
 void
 FSUB( MPI_Error_class )( MPI_Fint* errorcode, MPI_Fint* errorclass, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Error_class( *errorcode, errorclass );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ERROR_STRING ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ERR ) && !defined( MPI_Error_string )
@@ -305,6 +341,7 @@ FSUB( MPI_Error_class )( MPI_Fint* errorcode, MPI_Fint* errorclass, MPI_Fint* ie
 void
 FSUB( MPI_Error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* resultlen, MPI_Fint* ierr, int string_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_string     = NULL;
     int   c_string_len = 0;
     c_string = ( char* )malloc( ( string_len + 1 ) * sizeof( char ) );
@@ -322,6 +359,7 @@ FSUB( MPI_Error_string )( MPI_Fint* errorcode, char* string, MPI_Fint* resultlen
     strncpy( string, c_string, c_string_len );
     memset( string + c_string_len, ' ', string_len - c_string_len );
     free( c_string );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

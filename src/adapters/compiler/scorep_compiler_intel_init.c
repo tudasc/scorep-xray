@@ -49,20 +49,35 @@
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void )
 {
-    if ( !scorep_compiler_initialized )
-    {
-        UTILS_DEBUG( "initialize intel compiler adapter." );
+    UTILS_DEBUG( "initialize intel compiler adapter." );
 
-        /* Initialize region mutex */
-        SCOREP_MutexCreate( &scorep_compiler_region_mutex );
+    /* Initialize region mutex */
+    SCOREP_MutexCreate( &scorep_compiler_region_mutex );
 
-        /* Set flag */
-        scorep_compiler_initialized = true;
-
-        UTILS_DEBUG( "initialization of intel compiler adapter done." );
-    }
+    UTILS_DEBUG( "initialization of intel compiler adapter done." );
 
     return SCOREP_SUCCESS;
+}
+
+SCOREP_ErrorCode
+scorep_compiler_subsystem_begin( void )
+{
+    return SCOREP_SUCCESS;
+}
+
+void
+scorep_compiler_subsystem_end( void )
+{
+}
+
+/* Adapter finalization */
+void
+scorep_compiler_subsystem_finalize( void )
+{
+    UTILS_DEBUG( "finalize intel compiler adapter." );
+
+    /* Delete region mutex */
+    SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
 }
 
 SCOREP_ErrorCode
@@ -71,21 +86,4 @@ scorep_compiler_subsystem_init_location( struct SCOREP_Location* location,
 {
     UTILS_DEBUG( "intel compiler adapter init location!" );
     return SCOREP_SUCCESS;
-}
-
-/* Adapter finalization */
-void
-scorep_compiler_subsystem_finalize( void )
-{
-    /* call only, if previously initialized */
-    if ( scorep_compiler_initialized )
-    {
-        /* Set initialization flag */
-        scorep_compiler_initialized = false;
-        scorep_compiler_finalized   = true;
-        UTILS_DEBUG( "finalize intel compiler adapter." );
-
-        /* Delete region mutex */
-        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
-    }
 }

@@ -30,8 +30,6 @@
 #include <scorep_thread_create_wait_model_specific.h>
 
 #include <scorep_substrates_definition.h>
-/* temporary, remove once scorep_subsystems_activate_cpu_location is available */
-#include <SCOREP_Substrates_Management.h>
 
 #include <scorep_subsystem.h>
 #include <SCOREP_Mutex.h>
@@ -74,16 +72,11 @@ static SCOREP_Mutex thread_create_mutex;
 
 const SCOREP_Subsystem SCOREP_Subsystem_ThreadCreateWait =
 {
-    .subsystem_name              = "THREAD CREATE WAIT",
-    .subsystem_register          = NULL,
-    .subsystem_init              = &create_wait_subsystem_init,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = &create_wait_subsystem_pre_unify,
-    .subsystem_post_unify        = &create_wait_subsystem_post_unify,
-    .subsystem_finalize          = &create_wait_subsystem_finalize,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name       = "THREAD CREATE WAIT",
+    .subsystem_init       = &create_wait_subsystem_init,
+    .subsystem_pre_unify  = &create_wait_subsystem_pre_unify,
+    .subsystem_post_unify = &create_wait_subsystem_post_unify,
+    .subsystem_finalize   = &create_wait_subsystem_finalize,
 };
 
 
@@ -316,7 +309,7 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
     SCOREP_Location* parent_location = scorep_thread_get_location( parentTpd );
     *location = scorep_thread_get_location( current_tpd );
     uint64_t                         timestamp   = scorep_get_timestamp( *location );
-    SCOREP_InterimCommunicatorHandle thread_team = scorep_thread_get_team( current_tpd );
+    SCOREP_InterimCommunicatorHandle thread_team = scorep_thread_get_team( parentTpd );
 
     if ( location_is_created )
     {
@@ -330,14 +323,20 @@ SCOREP_ThreadCreateWait_Begin( SCOREP_ParadigmType                paradigm,
 
     scorep_thread_set_team( current_tpd, thread_team );
 
-    // scorep_subsystems_activate_cpu_location (location, parent, sequence_count, SCOREP_CPU_LOCATION_PHASE_EVENTS);
-    SCOREP_Substrates_CallSubstratesOnActivation( *location,
-                                                  parent_location,
-                                                  sequenceCount );
+    /* first notify the subsystem about the comming activation */
+    scorep_subsystems_activate_cpu_location( *location,
+                                             parent_location,
+                                             sequenceCount,
+                                             SCOREP_CPU_LOCATION_PHASE_MGMT );
 
+    /* second trigger the begin event. */
     SCOREP_CALL_SUBSTRATE( ThreadCreateWaitBegin, THREAD_CREATE_WAIT_BEGIN,
                            ( *location, timestamp, paradigm,
                              thread_team, sequenceCount ) )
+
+    /* lastly notify the subsystems that the location can create events */
+    scorep_subsystems_activate_cpu_location( *location, NULL, 0,
+                                             SCOREP_CPU_LOCATION_PHASE_EVENTS );
 }
 
 
@@ -354,17 +353,25 @@ SCOREP_ThreadCreateWait_End( SCOREP_ParadigmType                paradigm,
 
     struct scorep_thread_private_data* current_tpd      = scorep_thread_get_private_data();
     SCOREP_Location*                   current_location = scorep_thread_get_location( current_tpd );
-    uint64_t                           timestamp        = scorep_get_timestamp( current_location );
     SCOREP_InterimCommunicatorHandle   thread_team      = scorep_thread_get_team( current_tpd );
 
+    /* first notify the usbsystems about the deactivation of the location. */
+    scorep_subsystems_deactivate_cpu_location( current_location,
+                                               NULL,
+                                               SCOREP_CPU_LOCATION_PHASE_EVENTS );
+
+    /* Second trigger the end event in the substrates. */
+    uint64_t timestamp = scorep_get_timestamp( current_location );
     SCOREP_CALL_SUBSTRATE( ThreadCreateWaitEnd, THREAD_CREATE_WAIT_END,
                            ( current_location, timestamp, paradigm,
                              thread_team, sequenceCount ) )
 
-    // scorep_subsystems_deactivate_cpu_location (location, parent, SCOREP_CPU_LOCATION_PHASE_EVENTS);
-    SCOREP_Substrates_CallSubstratesOnDeactivation( current_location,
-                                                    scorep_thread_get_location( parentTpd ) );
+    /* Third deactivate the location. */
+    scorep_subsystems_deactivate_cpu_location( current_location,
+                                               scorep_thread_get_location( parentTpd ),
+                                               SCOREP_CPU_LOCATION_PHASE_MGMT );
 
+    /* Fourth tear down the thread. */
     scorep_thread_create_wait_on_end( paradigm, parentTpd, current_tpd, sequenceCount );
 
     SCOREP_MutexLock( thread_create_mutex );

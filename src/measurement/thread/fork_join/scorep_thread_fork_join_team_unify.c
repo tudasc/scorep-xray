@@ -538,14 +538,9 @@ fork_join_subsystem_init_location( SCOREP_Location* location,
 
 const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin =
 {
-    .subsystem_name              = "THREAD FORK JOIN",
-    .subsystem_register          = &fork_join_subsystem_register,
-    .subsystem_init              = NULL,
-    .subsystem_init_location     = &fork_join_subsystem_init_location,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = &fork_join_subsystem_pre_unify,
-    .subsystem_post_unify        = &fork_join_subsystem_post_unify,
-    .subsystem_finalize          = NULL,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name          = "THREAD FORK JOIN",
+    .subsystem_register      = &fork_join_subsystem_register,
+    .subsystem_init_location = &fork_join_subsystem_init_location,
+    .subsystem_pre_unify     = &fork_join_subsystem_pre_unify,
+    .subsystem_post_unify    = &fork_join_subsystem_post_unify,
 };

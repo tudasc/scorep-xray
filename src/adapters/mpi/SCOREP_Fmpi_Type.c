@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -640,6 +640,9 @@
 void
 FSUB( MPI_Pack )( void* inbuf, int* incount, MPI_Datatype* datatype, void* outbuf, int* outsize, int* position, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( inbuf == scorep_mpi_fortran_bottom )
     {
@@ -649,6 +652,8 @@ FSUB( MPI_Pack )( void* inbuf, int* incount, MPI_Datatype* datatype, void* outbu
 
 
     *ierr = MPI_Pack( inbuf, *incount, *datatype, outbuf, *outsize, position, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_PACK_EXTERNAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Pack_external )
@@ -662,6 +667,7 @@ FSUB( MPI_Pack )( void* inbuf, int* incount, MPI_Datatype* datatype, void* outbu
 void
 FSUB( MPI_Pack_external )( char* datarep, void* inbuf, int* incount, MPI_Datatype* datatype, void* outbuf, MPI_Aint* outsize, MPI_Aint* position, int* ierr, int datarep_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
     c_datarep = scorep_f2c_string( datarep, datarep_len );
 
@@ -678,6 +684,7 @@ FSUB( MPI_Pack_external )( char* datarep, void* inbuf, int* incount, MPI_Datatyp
     *ierr = MPI_Pack_external( c_datarep, inbuf, *incount, *datatype, outbuf, *outsize, position );
 
     free( c_datarep );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_PACK_EXTERNAL_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Pack_external_size )
@@ -691,6 +698,7 @@ FSUB( MPI_Pack_external )( char* datarep, void* inbuf, int* incount, MPI_Datatyp
 void
 FSUB( MPI_Pack_external_size )( char* datarep, int* incount, MPI_Datatype* datatype, MPI_Aint* size, int* ierr, int datarep_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
     c_datarep = scorep_f2c_string( datarep, datarep_len );
 
@@ -699,6 +707,7 @@ FSUB( MPI_Pack_external_size )( char* datarep, int* incount, MPI_Datatype* datat
     *ierr = MPI_Pack_external_size( c_datarep, *incount, *datatype, size );
 
     free( c_datarep );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_PACK_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Pack_size )
@@ -712,7 +721,12 @@ FSUB( MPI_Pack_external_size )( char* datarep, int* incount, MPI_Datatype* datat
 void
 FSUB( MPI_Pack_size )( int* incount, MPI_Datatype* datatype, MPI_Comm* comm, int* size, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Pack_size( *incount, *datatype, *comm, size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SIZEOF ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Sizeof )
@@ -726,7 +740,12 @@ FSUB( MPI_Pack_size )( int* incount, MPI_Datatype* datatype, MPI_Comm* comm, int
 void
 FSUB( MPI_Sizeof )( MPI_Datatype* x, int* size, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Sizeof( *x, *size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_COMMIT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_commit )
@@ -740,7 +759,12 @@ FSUB( MPI_Sizeof )( MPI_Datatype* x, int* size, int* ierr )
 void
 FSUB( MPI_Type_commit )( MPI_Datatype* datatype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_commit( datatype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CONTIGUOUS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_contiguous )
@@ -754,7 +778,12 @@ FSUB( MPI_Type_commit )( MPI_Datatype* datatype, int* ierr )
 void
 FSUB( MPI_Type_contiguous )( int* count, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_contiguous( *count, *oldtype, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_DARRAY ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_darray )
@@ -768,7 +797,12 @@ FSUB( MPI_Type_contiguous )( int* count, MPI_Datatype* oldtype, MPI_Datatype* ne
 void
 FSUB( MPI_Type_create_darray )( int* size, int* rank, int* ndims, int array_of_gsizes[], int array_of_distribs[], int array_of_dargs[], int array_of_psizes[], int* order, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_darray( *size, *rank, *ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, *order, *oldtype, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_HINDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_hindexed )
@@ -782,7 +816,12 @@ FSUB( MPI_Type_create_darray )( int* size, int* rank, int* ndims, int array_of_g
 void
 FSUB( MPI_Type_create_hindexed )( int* count, int array_of_blocklengths[], MPI_Aint array_of_displacements[], MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_hindexed( *count, array_of_blocklengths, array_of_displacements, *oldtype, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_HINDEXED_BLOCK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_hindexed_block )
@@ -796,7 +835,12 @@ FSUB( MPI_Type_create_hindexed )( int* count, int array_of_blocklengths[], MPI_A
 void
 FSUB( MPI_Type_create_hindexed_block )( int* count, int* blocklength, MPI_Aint array_of_displacements[], MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_hindexed_block( *count, *blocklength, array_of_displacements, *oldtype, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_HVECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_hvector )
@@ -810,7 +854,12 @@ FSUB( MPI_Type_create_hindexed_block )( int* count, int* blocklength, MPI_Aint a
 void
 FSUB( MPI_Type_create_hvector )( int* count, int* blocklength, MPI_Aint* stride, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_hvector( *count, *blocklength, *stride, *oldtype, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_INDEXED_BLOCK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_indexed_block )
@@ -824,7 +873,12 @@ FSUB( MPI_Type_create_hvector )( int* count, int* blocklength, MPI_Aint* stride,
 void
 FSUB( MPI_Type_create_indexed_block )( int* count, int* blocklength, int array_of_displacements[], MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_indexed_block( *count, *blocklength, array_of_displacements, *oldtype, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_RESIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_resized )
@@ -838,7 +892,12 @@ FSUB( MPI_Type_create_indexed_block )( int* count, int* blocklength, int array_o
 void
 FSUB( MPI_Type_create_resized )( MPI_Datatype* oldtype, MPI_Aint* lb, MPI_Aint* extent, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_resized( *oldtype, *lb, *extent, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_STRUCT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_struct )
@@ -852,7 +911,12 @@ FSUB( MPI_Type_create_resized )( MPI_Datatype* oldtype, MPI_Aint* lb, MPI_Aint* 
 void
 FSUB( MPI_Type_create_struct )( int* count, int array_of_blocklengths[], MPI_Aint array_of_displacements[], MPI_Datatype array_of_types[], MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_struct( *count, array_of_blocklengths, array_of_displacements, array_of_types, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_SUBARRAY ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_subarray )
@@ -866,7 +930,12 @@ FSUB( MPI_Type_create_struct )( int* count, int array_of_blocklengths[], MPI_Ain
 void
 FSUB( MPI_Type_create_subarray )( int* ndims, int array_of_sizes[], int array_of_subsizes[], int array_of_starts[], int* order, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_subarray( *ndims, array_of_sizes, array_of_subsizes, array_of_starts, *order, *oldtype, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_DUP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_dup )
@@ -880,7 +949,12 @@ FSUB( MPI_Type_create_subarray )( int* ndims, int array_of_sizes[], int array_of
 void
 FSUB( MPI_Type_dup )( MPI_Datatype* type, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_dup( *type, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_EXTENT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_extent )
@@ -894,6 +968,7 @@ FSUB( MPI_Type_dup )( MPI_Datatype* type, MPI_Datatype* newtype, int* ierr )
 void
 FSUB( MPI_Type_extent )( MPI_Datatype* datatype, int* extent, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Aint c_extent;
 
 
@@ -905,6 +980,8 @@ FSUB( MPI_Type_extent )( MPI_Datatype* datatype, int* extent, int* ierr )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_extent\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_free )
@@ -918,7 +995,12 @@ FSUB( MPI_Type_extent )( MPI_Datatype* datatype, int* extent, int* ierr )
 void
 FSUB( MPI_Type_free )( MPI_Datatype* datatype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_free( datatype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_CONTENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_contents )
@@ -932,7 +1014,12 @@ FSUB( MPI_Type_free )( MPI_Datatype* datatype, int* ierr )
 void
 FSUB( MPI_Type_get_contents )( MPI_Datatype* datatype, int* max_integers, int* max_addresses, int* max_datatypes, int array_of_integers[], MPI_Aint array_of_addresses[], MPI_Datatype array_of_datatypes[], int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_contents( *datatype, *max_integers, *max_addresses, *max_datatypes, array_of_integers, array_of_addresses, array_of_datatypes );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_ENVELOPE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_envelope )
@@ -946,7 +1033,12 @@ FSUB( MPI_Type_get_contents )( MPI_Datatype* datatype, int* max_integers, int* m
 void
 FSUB( MPI_Type_get_envelope )( MPI_Datatype* datatype, int* num_integers, int* num_addresses, int* num_datatypes, int* combiner, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_envelope( *datatype, num_integers, num_addresses, num_datatypes, combiner );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_EXTENT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_extent )
@@ -960,7 +1052,12 @@ FSUB( MPI_Type_get_envelope )( MPI_Datatype* datatype, int* num_integers, int* n
 void
 FSUB( MPI_Type_get_extent )( MPI_Datatype* datatype, MPI_Aint* lb, MPI_Aint* extent, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_extent( *datatype, lb, extent );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_EXTENT_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_extent_x )
@@ -974,7 +1071,12 @@ FSUB( MPI_Type_get_extent )( MPI_Datatype* datatype, MPI_Aint* lb, MPI_Aint* ext
 void
 FSUB( MPI_Type_get_extent_x )( MPI_Datatype* datatype, MPI_Count* lb, MPI_Count* extent, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_extent_x( *datatype, lb, extent );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_TRUE_EXTENT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_true_extent )
@@ -988,7 +1090,12 @@ FSUB( MPI_Type_get_extent_x )( MPI_Datatype* datatype, MPI_Count* lb, MPI_Count*
 void
 FSUB( MPI_Type_get_true_extent )( MPI_Datatype* datatype, MPI_Aint* true_lb, MPI_Aint* true_extent, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_true_extent( *datatype, true_lb, true_extent );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_TRUE_EXTENT_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_true_extent_x )
@@ -1002,7 +1109,12 @@ FSUB( MPI_Type_get_true_extent )( MPI_Datatype* datatype, MPI_Aint* true_lb, MPI
 void
 FSUB( MPI_Type_get_true_extent_x )( MPI_Datatype* datatype, MPI_Count* true_lb, MPI_Count* true_extent, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_true_extent_x( *datatype, true_lb, true_extent );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_HINDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_hindexed )
@@ -1016,6 +1128,7 @@ FSUB( MPI_Type_get_true_extent_x )( MPI_Datatype* datatype, MPI_Count* true_lb, 
 void
 FSUB( MPI_Type_hindexed )( int* count, int* array_of_blocklengths, int* array_of_displacements, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Aint* c_array_of_displacements;
 
     c_array_of_displacements = ( MPI_Aint* )malloc( *count * sizeof( MPI_Aint ) );
@@ -1029,6 +1142,8 @@ FSUB( MPI_Type_hindexed )( int* count, int* array_of_blocklengths, int* array_of
     *ierr = MPI_Type_hindexed( *count, array_of_blocklengths, c_array_of_displacements, *oldtype, newtype );
 
     free( c_array_of_displacements );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_HVECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_hvector )
@@ -1042,11 +1157,14 @@ FSUB( MPI_Type_hindexed )( int* count, int* array_of_blocklengths, int* array_of
 void
 FSUB( MPI_Type_hvector )( int* count, int* blocklength, int* stride, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Aint c_stride = *stride;
 
 
 
     *ierr = MPI_Type_hvector( *count, *blocklength, *&c_stride, *oldtype, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_INDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_indexed )
@@ -1060,7 +1178,12 @@ FSUB( MPI_Type_hvector )( int* count, int* blocklength, int* stride, MPI_Datatyp
 void
 FSUB( MPI_Type_indexed )( int* count, int* array_of_blocklengths, int* array_of_displacements, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_indexed( *count, array_of_blocklengths, array_of_displacements, *oldtype, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_LB ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_lb )
@@ -1074,6 +1197,7 @@ FSUB( MPI_Type_indexed )( int* count, int* array_of_blocklengths, int* array_of_
 void
 FSUB( MPI_Type_lb )( MPI_Datatype* datatype, int* displacement, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Aint c_displacement;
 
 
@@ -1085,6 +1209,8 @@ FSUB( MPI_Type_lb )( MPI_Datatype* datatype, int* displacement, int* ierr )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_lb\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_MATCH_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_match_size )
@@ -1098,7 +1224,12 @@ FSUB( MPI_Type_lb )( MPI_Datatype* datatype, int* displacement, int* ierr )
 void
 FSUB( MPI_Type_match_size )( int* typeclass, int* size, MPI_Datatype* type, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_match_size( *typeclass, *size, type );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_size )
@@ -1112,7 +1243,12 @@ FSUB( MPI_Type_match_size )( int* typeclass, int* size, MPI_Datatype* type, int*
 void
 FSUB( MPI_Type_size )( MPI_Datatype* datatype, int* size, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_size( *datatype, size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_SIZE_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_size_x )
@@ -1126,7 +1262,12 @@ FSUB( MPI_Type_size )( MPI_Datatype* datatype, int* size, int* ierr )
 void
 FSUB( MPI_Type_size_x )( MPI_Datatype* datatype, MPI_Count* size, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_size_x( *datatype, size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_STRUCT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_struct )
@@ -1140,6 +1281,7 @@ FSUB( MPI_Type_size_x )( MPI_Datatype* datatype, MPI_Count* size, int* ierr )
 void
 FSUB( MPI_Type_struct )( int* count, int* array_of_blocklengths, int* array_of_displacements, MPI_Datatype* array_of_types, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Aint* c_array_of_displacements;
 
     c_array_of_displacements = ( MPI_Aint* )malloc( *count * sizeof( MPI_Aint ) );
@@ -1153,6 +1295,8 @@ FSUB( MPI_Type_struct )( int* count, int* array_of_blocklengths, int* array_of_d
     *ierr = MPI_Type_struct( *count, array_of_blocklengths, c_array_of_displacements, array_of_types, newtype );
 
     free( c_array_of_displacements );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_UB ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_ub )
@@ -1166,6 +1310,7 @@ FSUB( MPI_Type_struct )( int* count, int* array_of_blocklengths, int* array_of_d
 void
 FSUB( MPI_Type_ub )( MPI_Datatype* datatype, int* displacement, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Aint c_displacement;
 
 
@@ -1177,6 +1322,8 @@ FSUB( MPI_Type_ub )( MPI_Datatype* datatype, int* displacement, int* ierr )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_ub\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_VECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_vector )
@@ -1190,7 +1337,12 @@ FSUB( MPI_Type_ub )( MPI_Datatype* datatype, int* displacement, int* ierr )
 void
 FSUB( MPI_Type_vector )( int* count, int* blocklength, int* stride, MPI_Datatype* oldtype, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_vector( *count, *blocklength, *stride, *oldtype, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_UNPACK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Unpack )
@@ -1204,6 +1356,9 @@ FSUB( MPI_Type_vector )( int* count, int* blocklength, int* stride, MPI_Datatype
 void
 FSUB( MPI_Unpack )( void* inbuf, int* insize, int* position, void* outbuf, int* outcount, MPI_Datatype* datatype, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( outbuf == scorep_mpi_fortran_bottom )
     {
@@ -1213,6 +1368,8 @@ FSUB( MPI_Unpack )( void* inbuf, int* insize, int* position, void* outbuf, int* 
 
 
     *ierr = MPI_Unpack( inbuf, *insize, position, outbuf, *outcount, *datatype, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_UNPACK_EXTERNAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Unpack_external )
@@ -1226,6 +1383,7 @@ FSUB( MPI_Unpack )( void* inbuf, int* insize, int* position, void* outbuf, int* 
 void
 FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_Aint* position, void* outbuf, int* outcount, MPI_Datatype* datatype, int* ierr, int datarep_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
     c_datarep = scorep_f2c_string( datarep, datarep_len );
 
@@ -1242,6 +1400,7 @@ FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_A
     *ierr = MPI_Unpack_external( c_datarep, inbuf, *insize, position, outbuf, *outcount, *datatype );
 
     free( c_datarep );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1257,7 +1416,12 @@ FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_A
 void
 FSUB( MPI_Type_create_f90_complex )( int* p, int* r, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_f90_complex( *p, *r, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #endif
@@ -1274,7 +1438,12 @@ FSUB( MPI_Type_create_f90_complex )( int* p, int* r, MPI_Datatype* newtype, int*
 void
 FSUB( MPI_Type_create_f90_integer )( int* r, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_f90_integer( *r, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #endif
@@ -1291,7 +1460,12 @@ FSUB( MPI_Type_create_f90_integer )( int* r, MPI_Datatype* newtype, int* ierr )
 void
 FSUB( MPI_Type_create_f90_real )( int* p, int* r, MPI_Datatype* newtype, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_f90_real( *p, *r, newtype );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #endif
@@ -1314,7 +1488,12 @@ FSUB( MPI_Type_create_f90_real )( int* p, int* r, MPI_Datatype* newtype, int* ie
 void
 FSUB( MPI_Type_create_keyval )( MPI_Type_copy_attr_function* type_copy_attr_fn, MPI_Type_delete_attr_function* type_delete_attr_fn, int* type_keyval, void* extra_state, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_keyval( type_copy_attr_fn, type_delete_attr_fn, type_keyval, extra_state );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_DELETE_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_delete_attr )
@@ -1328,7 +1507,12 @@ FSUB( MPI_Type_create_keyval )( MPI_Type_copy_attr_function* type_copy_attr_fn, 
 void
 FSUB( MPI_Type_delete_attr )( MPI_Datatype* type, int* type_keyval, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_delete_attr( *type, *type_keyval );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_free_keyval )
@@ -1342,7 +1526,12 @@ FSUB( MPI_Type_delete_attr )( MPI_Datatype* type, int* type_keyval, int* ierr )
 void
 FSUB( MPI_Type_free_keyval )( int* type_keyval, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_free_keyval( type_keyval );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_get_attr )
@@ -1356,7 +1545,12 @@ FSUB( MPI_Type_free_keyval )( int* type_keyval, int* ierr )
 void
 FSUB( MPI_Type_get_attr )( MPI_Datatype* type, int* type_keyval, void* attribute_val, int* flag, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_attr( *type, *type_keyval, attribute_val, flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_get_name )
@@ -1370,6 +1564,7 @@ FSUB( MPI_Type_get_attr )( MPI_Datatype* type, int* type_keyval, void* attribute
 void
 FSUB( MPI_Type_get_name )( MPI_Datatype* type, char* type_name, int* resultlen, int* ierr, int type_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_type_name     = NULL;
     int   c_type_name_len = 0;
     c_type_name = ( char* )malloc( ( type_name_len + 1 ) * sizeof( char ) );
@@ -1387,6 +1582,7 @@ FSUB( MPI_Type_get_name )( MPI_Datatype* type, char* type_name, int* resultlen, 
     strncpy( type_name, c_type_name, c_type_name_len );
     memset( type_name + c_type_name_len, ' ', type_name_len - c_type_name_len );
     free( c_type_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_SET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_set_attr )
@@ -1400,7 +1596,12 @@ FSUB( MPI_Type_get_name )( MPI_Datatype* type, char* type_name, int* resultlen, 
 void
 FSUB( MPI_Type_set_attr )( MPI_Datatype* type, int* type_keyval, void* attribute_val, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_set_attr( *type, *type_keyval, attribute_val );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_SET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_set_name )
@@ -1414,6 +1615,7 @@ FSUB( MPI_Type_set_attr )( MPI_Datatype* type, int* type_keyval, void* attribute
 void
 FSUB( MPI_Type_set_name )( MPI_Datatype* type, char* type_name, int* ierr, int type_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_type_name = NULL;
     c_type_name = scorep_f2c_string( type_name, type_name_len );
 
@@ -1422,6 +1624,7 @@ FSUB( MPI_Type_set_name )( MPI_Datatype* type, char* type_name, int* ierr, int t
     *ierr = MPI_Type_set_name( *type, c_type_name );
 
     free( c_type_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1447,7 +1650,12 @@ FSUB( MPI_Type_set_name )( MPI_Datatype* type, char* type_name, int* ierr, int t
 void
 FSUB( MPI_Sizeof )( MPI_Fint* x, MPI_Fint* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Sizeof( PMPI_Type_f2c( *x ), *size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1467,6 +1675,7 @@ FSUB( MPI_Type_create_struct )( MPI_Fint* count,
                                 MPI_Fint* newtype,
                                 MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Fint      i;
     MPI_Datatype  c_newtype;
     MPI_Datatype* c_array_of_types =
@@ -1486,6 +1695,7 @@ FSUB( MPI_Type_create_struct )( MPI_Fint* count,
     *newtype = PMPI_Type_c2f( c_newtype );
 
     free( c_array_of_types );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1507,6 +1717,7 @@ FSUB( MPI_Type_get_contents )( MPI_Fint* datatype,
                                MPI_Fint* array_of_datatypes,
                                MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Fint      i;
     MPI_Datatype* c_array_of_datatypes = NULL;
     /* provide storage for C Datatypes */
@@ -1530,6 +1741,7 @@ FSUB( MPI_Type_get_contents )( MPI_Fint* datatype,
     }
     /* free local buffer */
     free( c_array_of_datatypes );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1545,6 +1757,9 @@ FSUB( MPI_Type_get_contents )( MPI_Fint* datatype,
 void
 FSUB( MPI_Pack )( void* inbuf, MPI_Fint* incount, MPI_Fint* datatype, void* outbuf, MPI_Fint* outsize, MPI_Fint* position, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( inbuf == scorep_mpi_fortran_bottom )
     {
@@ -1554,6 +1769,8 @@ FSUB( MPI_Pack )( void* inbuf, MPI_Fint* incount, MPI_Fint* datatype, void* outb
 
 
     *ierr = MPI_Pack( inbuf, *incount, PMPI_Type_f2c( *datatype ), outbuf, *outsize, position, PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_PACK_EXTERNAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Pack_external )
@@ -1568,6 +1785,7 @@ FSUB( MPI_Pack )( void* inbuf, MPI_Fint* incount, MPI_Fint* datatype, void* outb
 void
 FSUB( MPI_Pack_external )( char* datarep, void* inbuf, MPI_Fint* incount, MPI_Fint* datatype, void* outbuf, MPI_Aint* outsize, MPI_Aint* position, MPI_Fint* ierr, int datarep_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
     c_datarep = scorep_f2c_string( datarep, datarep_len );
 
@@ -1584,6 +1802,7 @@ FSUB( MPI_Pack_external )( char* datarep, void* inbuf, MPI_Fint* incount, MPI_Fi
     *ierr = MPI_Pack_external( c_datarep, inbuf, *incount, PMPI_Type_f2c( *datatype ), outbuf, *outsize, position );
 
     free( c_datarep );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_PACK_EXTERNAL_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Pack_external_size )
@@ -1598,6 +1817,7 @@ FSUB( MPI_Pack_external )( char* datarep, void* inbuf, MPI_Fint* incount, MPI_Fi
 void
 FSUB( MPI_Pack_external_size )( char* datarep, MPI_Fint* incount, MPI_Fint* datatype, MPI_Aint* size, MPI_Fint* ierr, int datarep_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
     c_datarep = scorep_f2c_string( datarep, datarep_len );
 
@@ -1606,6 +1826,7 @@ FSUB( MPI_Pack_external_size )( char* datarep, MPI_Fint* incount, MPI_Fint* data
     *ierr = MPI_Pack_external_size( c_datarep, *incount, PMPI_Type_f2c( *datatype ), size );
 
     free( c_datarep );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_PACK_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Pack_size )
@@ -1620,7 +1841,12 @@ FSUB( MPI_Pack_external_size )( char* datarep, MPI_Fint* incount, MPI_Fint* data
 void
 FSUB( MPI_Pack_size )( MPI_Fint* incount, MPI_Fint* datatype, MPI_Fint* comm, MPI_Fint* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Pack_size( *incount, PMPI_Type_f2c( *datatype ), PMPI_Comm_f2c( *comm ), size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SIZEOF ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Sizeof )
@@ -1635,7 +1861,12 @@ FSUB( MPI_Pack_size )( MPI_Fint* incount, MPI_Fint* datatype, MPI_Fint* comm, MP
 void
 FSUB( MPI_Sizeof )( MPI_Fint* x, MPI_Fint* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Sizeof( PMPI_Type_f2c( *x ), *size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_COMMIT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_commit )
@@ -1650,12 +1881,14 @@ FSUB( MPI_Sizeof )( MPI_Fint* x, MPI_Fint* size, MPI_Fint* ierr )
 void
 FSUB( MPI_Type_commit )( MPI_Fint* datatype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_datatype = PMPI_Type_f2c( *datatype );
 
 
     *ierr = MPI_Type_commit( &c_datatype );
 
     *datatype = PMPI_Type_c2f( c_datatype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CONTIGUOUS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_contiguous )
@@ -1670,12 +1903,14 @@ FSUB( MPI_Type_commit )( MPI_Fint* datatype, MPI_Fint* ierr )
 void
 FSUB( MPI_Type_contiguous )( MPI_Fint* count, MPI_Fint* oldtype, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_contiguous( *count, PMPI_Type_f2c( *oldtype ), &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_DARRAY ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_darray )
@@ -1690,12 +1925,14 @@ FSUB( MPI_Type_contiguous )( MPI_Fint* count, MPI_Fint* oldtype, MPI_Fint* newty
 void
 FSUB( MPI_Type_create_darray )( MPI_Fint* size, MPI_Fint* rank, MPI_Fint* ndims, MPI_Fint* array_of_gsizes, MPI_Fint* array_of_distribs, MPI_Fint* array_of_dargs, MPI_Fint* array_of_psizes, MPI_Fint* order, MPI_Fint* oldtype, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_create_darray( *size, *rank, *ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, *order, PMPI_Type_f2c( *oldtype ), &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_HINDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_hindexed )
@@ -1710,12 +1947,14 @@ FSUB( MPI_Type_create_darray )( MPI_Fint* size, MPI_Fint* rank, MPI_Fint* ndims,
 void
 FSUB( MPI_Type_create_hindexed )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_Aint array_of_displacements[], MPI_Fint* oldtype, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_create_hindexed( *count, array_of_blocklengths, array_of_displacements, PMPI_Type_f2c( *oldtype ), &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_HINDEXED_BLOCK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_hindexed_block )
@@ -1730,12 +1969,14 @@ FSUB( MPI_Type_create_hindexed )( MPI_Fint* count, MPI_Fint* array_of_blocklengt
 void
 FSUB( MPI_Type_create_hindexed_block )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Aint array_of_displacements[], MPI_Fint* oldtype, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_create_hindexed_block( *count, *blocklength, array_of_displacements, PMPI_Type_f2c( *oldtype ), &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_HVECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_hvector )
@@ -1750,12 +1991,14 @@ FSUB( MPI_Type_create_hindexed_block )( MPI_Fint* count, MPI_Fint* blocklength, 
 void
 FSUB( MPI_Type_create_hvector )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Aint* stride, MPI_Fint* oldtype, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_create_hvector( *count, *blocklength, *stride, PMPI_Type_f2c( *oldtype ), &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_INDEXED_BLOCK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_indexed_block )
@@ -1770,12 +2013,14 @@ FSUB( MPI_Type_create_hvector )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Ain
 void
 FSUB( MPI_Type_create_indexed_block )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Fint* array_of_displacements, MPI_Fint* oldtype, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_create_indexed_block( *count, *blocklength, array_of_displacements, PMPI_Type_f2c( *oldtype ), &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_RESIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_resized )
@@ -1790,12 +2035,14 @@ FSUB( MPI_Type_create_indexed_block )( MPI_Fint* count, MPI_Fint* blocklength, M
 void
 FSUB( MPI_Type_create_resized )( MPI_Fint* oldtype, MPI_Aint* lb, MPI_Aint* extent, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_create_resized( PMPI_Type_f2c( *oldtype ), *lb, *extent, &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_CREATE_SUBARRAY ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_create_subarray )
@@ -1810,12 +2057,14 @@ FSUB( MPI_Type_create_resized )( MPI_Fint* oldtype, MPI_Aint* lb, MPI_Aint* exte
 void
 FSUB( MPI_Type_create_subarray )( MPI_Fint* ndims, MPI_Fint* array_of_sizes, MPI_Fint* array_of_subsizes, MPI_Fint* array_of_starts, MPI_Fint* order, MPI_Fint* oldtype, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_create_subarray( *ndims, array_of_sizes, array_of_subsizes, array_of_starts, *order, PMPI_Type_f2c( *oldtype ), &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_DUP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_dup )
@@ -1830,12 +2079,14 @@ FSUB( MPI_Type_create_subarray )( MPI_Fint* ndims, MPI_Fint* array_of_sizes, MPI
 void
 FSUB( MPI_Type_dup )( MPI_Fint* type, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_dup( PMPI_Type_f2c( *type ), &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_EXTENT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_extent )
@@ -1850,6 +2101,7 @@ FSUB( MPI_Type_dup )( MPI_Fint* type, MPI_Fint* newtype, MPI_Fint* ierr )
 void
 FSUB( MPI_Type_extent )( MPI_Fint* datatype, MPI_Fint* extent, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Aint c_extent;
 
 
@@ -1860,6 +2112,8 @@ FSUB( MPI_Type_extent )( MPI_Fint* datatype, MPI_Fint* extent, MPI_Fint* ierr )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_extent\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_free )
@@ -1874,12 +2128,14 @@ FSUB( MPI_Type_extent )( MPI_Fint* datatype, MPI_Fint* extent, MPI_Fint* ierr )
 void
 FSUB( MPI_Type_free )( MPI_Fint* datatype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_datatype = PMPI_Type_f2c( *datatype );
 
 
     *ierr = MPI_Type_free( &c_datatype );
 
     *datatype = PMPI_Type_c2f( c_datatype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_ENVELOPE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_envelope )
@@ -1894,7 +2150,12 @@ FSUB( MPI_Type_free )( MPI_Fint* datatype, MPI_Fint* ierr )
 void
 FSUB( MPI_Type_get_envelope )( MPI_Fint* datatype, MPI_Fint* num_integers, MPI_Fint* num_addresses, MPI_Fint* num_datatypes, MPI_Fint* combiner, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_envelope( PMPI_Type_f2c( *datatype ), num_integers, num_addresses, num_datatypes, combiner );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_EXTENT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_extent )
@@ -1909,7 +2170,12 @@ FSUB( MPI_Type_get_envelope )( MPI_Fint* datatype, MPI_Fint* num_integers, MPI_F
 void
 FSUB( MPI_Type_get_extent )( MPI_Fint* datatype, MPI_Aint* lb, MPI_Aint* extent, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_extent( PMPI_Type_f2c( *datatype ), lb, extent );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_EXTENT_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_extent_x )
@@ -1924,7 +2190,12 @@ FSUB( MPI_Type_get_extent )( MPI_Fint* datatype, MPI_Aint* lb, MPI_Aint* extent,
 void
 FSUB( MPI_Type_get_extent_x )( MPI_Fint* datatype, MPI_Count* lb, MPI_Count* extent, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_extent_x( PMPI_Type_f2c( *datatype ), lb, extent );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_TRUE_EXTENT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_true_extent )
@@ -1939,7 +2210,12 @@ FSUB( MPI_Type_get_extent_x )( MPI_Fint* datatype, MPI_Count* lb, MPI_Count* ext
 void
 FSUB( MPI_Type_get_true_extent )( MPI_Fint* datatype, MPI_Aint* true_lb, MPI_Aint* true_extent, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_true_extent( PMPI_Type_f2c( *datatype ), true_lb, true_extent );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_TRUE_EXTENT_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_get_true_extent_x )
@@ -1954,7 +2230,12 @@ FSUB( MPI_Type_get_true_extent )( MPI_Fint* datatype, MPI_Aint* true_lb, MPI_Ain
 void
 FSUB( MPI_Type_get_true_extent_x )( MPI_Fint* datatype, MPI_Count* true_lb, MPI_Count* true_extent, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_true_extent_x( PMPI_Type_f2c( *datatype ), true_lb, true_extent );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_HINDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_hindexed )
@@ -1969,6 +2250,7 @@ FSUB( MPI_Type_get_true_extent_x )( MPI_Fint* datatype, MPI_Count* true_lb, MPI_
 void
 FSUB( MPI_Type_hindexed )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_Fint* array_of_displacements, MPI_Fint* oldtype, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int          i;
     MPI_Aint*    c_array_of_displacements;
     MPI_Datatype c_newtype;
@@ -1985,6 +2267,7 @@ FSUB( MPI_Type_hindexed )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI
     free( c_array_of_displacements );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_HVECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_hvector )
@@ -1999,6 +2282,7 @@ FSUB( MPI_Type_hindexed )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI
 void
 FSUB( MPI_Type_hvector )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Fint* stride, MPI_Fint* oldtype, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Aint     c_stride = *stride;
     MPI_Datatype c_newtype;
 
@@ -2006,6 +2290,7 @@ FSUB( MPI_Type_hvector )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Fint* stri
     *ierr = MPI_Type_hvector( *count, *blocklength, c_stride, PMPI_Type_f2c( *oldtype ), &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_INDEXED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_indexed )
@@ -2020,12 +2305,14 @@ FSUB( MPI_Type_hvector )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Fint* stri
 void
 FSUB( MPI_Type_indexed )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_Fint* array_of_displacements, MPI_Fint* oldtype, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_indexed( *count, array_of_blocklengths, array_of_displacements, PMPI_Type_f2c( *oldtype ), &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_LB ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_lb )
@@ -2040,6 +2327,7 @@ FSUB( MPI_Type_indexed )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_
 void
 FSUB( MPI_Type_lb )( MPI_Fint* datatype, MPI_Fint* displacement, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Aint c_displacement;
 
 
@@ -2050,6 +2338,8 @@ FSUB( MPI_Type_lb )( MPI_Fint* datatype, MPI_Fint* displacement, MPI_Fint* ierr 
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_lb\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_MATCH_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_match_size )
@@ -2064,12 +2354,14 @@ FSUB( MPI_Type_lb )( MPI_Fint* datatype, MPI_Fint* displacement, MPI_Fint* ierr 
 void
 FSUB( MPI_Type_match_size )( MPI_Fint* typeclass, MPI_Fint* size, MPI_Fint* type, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_type;
 
 
     *ierr = MPI_Type_match_size( *typeclass, *size, &c_type );
 
     *type = PMPI_Type_c2f( c_type );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_size )
@@ -2084,7 +2376,12 @@ FSUB( MPI_Type_match_size )( MPI_Fint* typeclass, MPI_Fint* size, MPI_Fint* type
 void
 FSUB( MPI_Type_size )( MPI_Fint* datatype, MPI_Fint* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_size( PMPI_Type_f2c( *datatype ), size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_SIZE_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_size_x )
@@ -2099,7 +2396,12 @@ FSUB( MPI_Type_size )( MPI_Fint* datatype, MPI_Fint* size, MPI_Fint* ierr )
 void
 FSUB( MPI_Type_size_x )( MPI_Fint* datatype, MPI_Count* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_size_x( PMPI_Type_f2c( *datatype ), size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_STRUCT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_struct )
@@ -2114,6 +2416,7 @@ FSUB( MPI_Type_size_x )( MPI_Fint* datatype, MPI_Count* size, MPI_Fint* ierr )
 void
 FSUB( MPI_Type_struct )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_Fint* array_of_displacements, MPI_Fint* array_of_types, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int           i;
     MPI_Aint*     c_array_of_displacements;
     MPI_Datatype  c_newtype;
@@ -2149,6 +2452,7 @@ FSUB( MPI_Type_struct )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_F
     free( c_array_of_displacements );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_UB ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_ub )
@@ -2163,6 +2467,7 @@ FSUB( MPI_Type_struct )( MPI_Fint* count, MPI_Fint* array_of_blocklengths, MPI_F
 void
 FSUB( MPI_Type_ub )( MPI_Fint* datatype, MPI_Fint* displacement, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Aint c_displacement;
 
 
@@ -2173,6 +2478,8 @@ FSUB( MPI_Type_ub )( MPI_Fint* datatype, MPI_Fint* displacement, MPI_Fint* ierr 
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_MPI, "Value truncated in \"MPI_Type_ub\". Function is deprecated due to mismatching parameter types! Consult the MPI Standard for more details." );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_VECTOR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Type_vector )
@@ -2187,12 +2494,14 @@ FSUB( MPI_Type_ub )( MPI_Fint* datatype, MPI_Fint* displacement, MPI_Fint* ierr 
 void
 FSUB( MPI_Type_vector )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Fint* stride, MPI_Fint* oldtype, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_vector( *count, *blocklength, *stride, PMPI_Type_f2c( *oldtype ), &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_UNPACK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Unpack )
@@ -2207,6 +2516,9 @@ FSUB( MPI_Type_vector )( MPI_Fint* count, MPI_Fint* blocklength, MPI_Fint* strid
 void
 FSUB( MPI_Unpack )( void* inbuf, MPI_Fint* insize, MPI_Fint* position, void* outbuf, MPI_Fint* outcount, MPI_Fint* datatype, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( outbuf == scorep_mpi_fortran_bottom )
     {
@@ -2216,6 +2528,8 @@ FSUB( MPI_Unpack )( void* inbuf, MPI_Fint* insize, MPI_Fint* position, void* out
 
 
     *ierr = MPI_Unpack( inbuf, *insize, position, outbuf, *outcount, PMPI_Type_f2c( *datatype ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_UNPACK_EXTERNAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( MPI_Unpack_external )
@@ -2230,6 +2544,7 @@ FSUB( MPI_Unpack )( void* inbuf, MPI_Fint* insize, MPI_Fint* position, void* out
 void
 FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_Aint* position, void* outbuf, MPI_Fint* outcount, MPI_Fint* datatype, MPI_Fint* ierr, int datarep_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_datarep = NULL;
     c_datarep = scorep_f2c_string( datarep, datarep_len );
 
@@ -2246,6 +2561,7 @@ FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_A
     *ierr = MPI_Unpack_external( c_datarep, inbuf, *insize, position, outbuf, *outcount, PMPI_Type_f2c( *datatype ) );
 
     free( c_datarep );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -2262,12 +2578,14 @@ FSUB( MPI_Unpack_external )( char* datarep, void* inbuf, MPI_Aint* insize, MPI_A
 void
 FSUB( MPI_Type_create_f90_complex )( MPI_Fint* p, MPI_Fint* r, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_create_f90_complex( *p, *r, &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #endif
@@ -2284,12 +2602,14 @@ FSUB( MPI_Type_create_f90_complex )( MPI_Fint* p, MPI_Fint* r, MPI_Fint* newtype
 void
 FSUB( MPI_Type_create_f90_integer )( MPI_Fint* r, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_create_f90_integer( *r, &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #endif
@@ -2306,12 +2626,14 @@ FSUB( MPI_Type_create_f90_integer )( MPI_Fint* r, MPI_Fint* newtype, MPI_Fint* i
 void
 FSUB( MPI_Type_create_f90_real )( MPI_Fint* p, MPI_Fint* r, MPI_Fint* newtype, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_newtype;
 
 
     *ierr = MPI_Type_create_f90_real( *p, *r, &c_newtype );
 
     *newtype = PMPI_Type_c2f( c_newtype );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #endif
@@ -2334,7 +2656,12 @@ FSUB( MPI_Type_create_f90_real )( MPI_Fint* p, MPI_Fint* r, MPI_Fint* newtype, M
 void
 FSUB( MPI_Type_create_keyval )( void* type_copy_attr_fn, void* type_delete_attr_fn, MPI_Fint* type_keyval, void* extra_state, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_create_keyval( ( MPI_Type_copy_attr_function* )type_copy_attr_fn, ( MPI_Type_delete_attr_function* )type_delete_attr_fn, type_keyval, extra_state );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_DELETE_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_delete_attr )
@@ -2349,12 +2676,14 @@ FSUB( MPI_Type_create_keyval )( void* type_copy_attr_fn, void* type_delete_attr_
 void
 FSUB( MPI_Type_delete_attr )( MPI_Fint* type, MPI_Fint* type_keyval, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_type = PMPI_Type_f2c( *type );
 
 
     *ierr = MPI_Type_delete_attr( c_type, *type_keyval );
 
     *type = PMPI_Type_c2f( c_type );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_free_keyval )
@@ -2369,7 +2698,12 @@ FSUB( MPI_Type_delete_attr )( MPI_Fint* type, MPI_Fint* type_keyval, MPI_Fint* i
 void
 FSUB( MPI_Type_free_keyval )( MPI_Fint* type_keyval, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_free_keyval( type_keyval );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_get_attr )
@@ -2384,7 +2718,12 @@ FSUB( MPI_Type_free_keyval )( MPI_Fint* type_keyval, MPI_Fint* ierr )
 void
 FSUB( MPI_Type_get_attr )( MPI_Fint* type, MPI_Fint* type_keyval, void* attribute_val, MPI_Fint* flag, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Type_get_attr( PMPI_Type_f2c( *type ), *type_keyval, attribute_val, flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_GET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_get_name )
@@ -2399,6 +2738,7 @@ FSUB( MPI_Type_get_attr )( MPI_Fint* type, MPI_Fint* type_keyval, void* attribut
 void
 FSUB( MPI_Type_get_name )( MPI_Fint* type, char* type_name, MPI_Fint* resultlen, MPI_Fint* ierr, int type_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_type_name     = NULL;
     int   c_type_name_len = 0;
     c_type_name = ( char* )malloc( ( type_name_len + 1 ) * sizeof( char ) );
@@ -2416,6 +2756,7 @@ FSUB( MPI_Type_get_name )( MPI_Fint* type, char* type_name, MPI_Fint* resultlen,
     strncpy( type_name, c_type_name, c_type_name_len );
     memset( type_name + c_type_name_len, ' ', type_name_len - c_type_name_len );
     free( c_type_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_SET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_set_attr )
@@ -2430,12 +2771,14 @@ FSUB( MPI_Type_get_name )( MPI_Fint* type, char* type_name, MPI_Fint* resultlen,
 void
 FSUB( MPI_Type_set_attr )( MPI_Fint* type, MPI_Fint* type_keyval, void* attribute_val, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_type = PMPI_Type_f2c( *type );
 
 
     *ierr = MPI_Type_set_attr( c_type, *type_keyval, attribute_val );
 
     *type = PMPI_Type_c2f( c_type );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TYPE_SET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TYPE ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Type_set_name )
@@ -2450,6 +2793,7 @@ FSUB( MPI_Type_set_attr )( MPI_Fint* type, MPI_Fint* type_keyval, void* attribut
 void
 FSUB( MPI_Type_set_name )( MPI_Fint* type, char* type_name, MPI_Fint* ierr, int type_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype c_type      = PMPI_Type_f2c( *type );
     char*        c_type_name = NULL;
     c_type_name = scorep_f2c_string( type_name, type_name_len );
@@ -2460,6 +2804,7 @@ FSUB( MPI_Type_set_name )( MPI_Fint* type, char* type_name, MPI_Fint* ierr, int 
 
     *type = PMPI_Type_c2f( c_type );
     free( c_type_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

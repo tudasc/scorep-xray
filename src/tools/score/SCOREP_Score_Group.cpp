@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -95,6 +95,7 @@ SCOREP_Score_Group::SCOREP_Score_Group( uint64_t type,
     m_name       = name;
     m_filter     = SCOREP_SCORE_FILTER_UNSPECIFIED;
     m_visits     = 0;
+    m_hits       = 0;
 }
 
 
@@ -106,12 +107,17 @@ SCOREP_Score_Group::~SCOREP_Score_Group()
 void
 SCOREP_Score_Group::addRegion( uint64_t numberOfVisits,
                                uint64_t bytesPerVisit,
+                               uint64_t numberOfHits,
+                               uint64_t bytesPerHit,
                                double   time,
                                uint64_t process )
 {
     m_visits             += numberOfVisits;
     m_total_buf          += numberOfVisits * bytesPerVisit;
     m_max_buf[ process ] += numberOfVisits * bytesPerVisit;
+    m_hits               += numberOfHits;
+    m_total_buf          += numberOfHits * bytesPerHit;
+    m_max_buf[ process ] += numberOfHits * bytesPerHit;
     m_total_time         += time;
 }
 
@@ -128,6 +134,10 @@ SCOREP_Score_Group::updateWidths( SCOREP_Score_FieldWidths& widths )
         widths.m_type   = std::max<int>( widths.m_type, SCOREP_Score_getTypeName( m_type ).size() );
         widths.m_bytes  = std::max<int>( widths.m_bytes, get_number_with_comma( getMaxTraceBufferSize() ).size() );
         widths.m_visits = std::max<int>( widths.m_visits, get_number_with_comma( m_visits ).size() );
+        if ( m_hits > 0 )
+        {
+            widths.m_hits = std::max<int>( widths.m_hits, get_number_with_comma( m_hits ).size() );
+        }
 
         str << setprecision( 2 ) << m_total_time;
         widths.m_time = std::max<int>( widths.m_time, str.str().size() );
@@ -141,7 +151,8 @@ SCOREP_Score_Group::updateWidths( SCOREP_Score_FieldWidths& widths )
 
 void
 SCOREP_Score_Group::print( double                   totalTime,
-                           SCOREP_Score_FieldWidths widths )
+                           SCOREP_Score_FieldWidths widths,
+                           bool                     withHits )
 {
     cout.setf( ios::fixed, ios::floatfield );
     cout.setf( ios::showpoint );
@@ -152,8 +163,12 @@ SCOREP_Score_Group::print( double                   totalTime,
              << right
              << " " << setw( widths.m_type ) << SCOREP_Score_getTypeName( m_type )
              << " " << setw( widths.m_bytes ) << get_number_with_comma( getMaxTraceBufferSize() )
-             << " " << setw( widths.m_visits ) << get_number_with_comma( m_visits )
-             << " " << setw( widths.m_time ) << setprecision( 2 ) << m_total_time
+             << " " << setw( widths.m_visits ) << get_number_with_comma( m_visits );
+        if ( withHits )
+        {
+            cout << " " << setw( widths.m_hits ) << get_number_with_comma( m_hits );
+        }
+        cout << " " << setw( widths.m_time ) << setprecision( 2 ) << m_total_time
              << " " << setw( 7 )  << setprecision( 1 ) << 100.0 / totalTime * m_total_time
              << " " << setw( widths.m_time_per_visit ) << setprecision( 2 ) << m_total_time / m_visits * 1000000
              << left

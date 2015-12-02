@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -20,6 +20,8 @@
 #include <config.h>
 
 #include <UTILS_Error.h>
+
+#include <SCOREP_InMeasurement.h>
 
 #include "scorep_cuda.h"
 #include "scorep_cupti_activity.h"
@@ -347,6 +349,8 @@ buffer_requested_callback( uint8_t** buffer,
                            size_t*   size,
                            size_t*   maxNumRecords )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
     scorep_cupti_buffer*  free_buffer  = NULL;
     scorep_cupti_context* context      = NULL;
     CUcontext             cuda_context = NULL;
@@ -382,6 +386,8 @@ buffer_requested_callback( uint8_t** buffer,
     }
     /* allow as many records as possible */
     *maxNumRecords = 0;
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 static void
@@ -391,6 +397,8 @@ buffer_completed_callback( CUcontext cudaContext,
                            size_t    size,
                            size_t    validSize )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
     scorep_cupti_context* scorep_ctx = mark_complete_buffer( buffer, validSize, cudaContext, streamId );
     if ( scorep_ctx )
     {
@@ -399,6 +407,8 @@ buffer_completed_callback( CUcontext cudaContext,
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_CUDA,
                         "[CUPTI Activity] Buffer with %zu bytes for context %p, stream %d completed",
                         validSize, cudaContext, streamId );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 static void

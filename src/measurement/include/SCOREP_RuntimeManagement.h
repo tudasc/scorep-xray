@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -41,6 +41,8 @@
  *
  */
 
+
+UTILS_BEGIN_C_DECLS
 
 /**
  * @defgroup SCOREP_RuntimeManagement SCOREP Runtime Management
@@ -180,7 +182,7 @@ void
 SCOREP_SetDefaultRecodingMode( bool enabled );
 
 
-typedef int ( *SCOREP_ExitCallback )( void );
+typedef int ( * SCOREP_ExitCallback )( void );
 
 void
 SCOREP_RegisterExitCallback( SCOREP_ExitCallback exitCallback );
@@ -205,7 +207,19 @@ SCOREP_GetBeginEpoch( void );
 void
 SCOREP_SetAbortFlag( void );
 
+
+/**
+ *  Indicates that the unwinding mode is active.
+ *
+ */
+extern bool scorep_is_unwinding_enabled;
+#define SCOREP_IsUnwindingEnabled() scorep_is_unwinding_enabled
+
+
 /*@}*/
+
+
+UTILS_END_C_DECLS
 
 
 #endif /* SCOREP_RUNTIMEMANAGEMENT_H */

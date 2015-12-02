@@ -50,6 +50,7 @@ void FSUB(MPI_Comm_spawn_multiple)(int* count,
                                    int array_of_commands_len,
                                    int array_of_argv_len)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   MPI_Fint  cur_cmd, cur_arg;
   char**    c_array_of_commands = NULL;
   char***   c_array_of_argv     = NULL;
@@ -199,6 +200,7 @@ void FSUB(MPI_Comm_spawn_multiple)(int* count,
   free(c_array_of_commands);
   free(c_array_of_argv);
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 } /* FSUB(MPI_Comm_spawn_multiple) */
 
 #endif
@@ -224,6 +226,7 @@ void FSUB(MPI_Comm_spawn)(char*     command,
                           int       command_len,
                           int       argv_len)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   char*    c_command = NULL;
   char**   c_argv    = NULL;
   int      arg_count = 0;
@@ -309,6 +312,7 @@ void FSUB(MPI_Comm_spawn)(char*     command,
 
   free(c_command);
   free(c_argv);
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 } /* FSUB(MPI_Comm_spawn) */
 #endif
 
@@ -337,6 +341,7 @@ void FSUB(MPI_Comm_spawn_multiple)(MPI_Fint* count,
                                    MPI_Fint  array_of_commands_len,
                                    MPI_Fint  array_of_argv_len)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   MPI_Fint cur_cmd, cur_arg;
   char**    c_array_of_commands = NULL;
   char***   c_array_of_argv     = NULL;
@@ -491,6 +496,7 @@ void FSUB(MPI_Comm_spawn_multiple)(MPI_Fint* count,
   free(c_array_of_argv);
   free(c_array_of_info);
 
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 } /* FSUB(MPI_Comm_spawn_multiple) */
 #endif
 
@@ -515,6 +521,7 @@ void FSUB(MPI_Comm_spawn)(char*     command,
                           MPI_Fint  command_len,
                           MPI_Fint  argv_len)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   char*    c_command = NULL;
   char**   c_argv    = NULL;
   MPI_Comm c_newcomm = MPI_COMM_NULL;
@@ -596,6 +603,7 @@ void FSUB(MPI_Comm_spawn)(char*     command,
 
   free(c_command);
   free(c_argv);
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 } /* FSUB(MPI_Comm_spawn) */
 #endif
 

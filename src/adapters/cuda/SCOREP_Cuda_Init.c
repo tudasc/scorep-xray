@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -37,6 +37,7 @@
 
 #include <config.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Paradigms.h>
 #include <SCOREP_Events.h>
@@ -70,14 +71,19 @@ cuda_subsystem_register( size_t subsystem_id )
     return SCOREP_ConfigRegister( "cuda", scorep_cuda_confvars );
 }
 
-static int
-scorep_cuda_finalize_callback( void )
+static void
+cuda_subsystem_end( void )
 {
-    UTILS_DEBUG( "Register finalize callback" );
+    SCOREP_IN_MEASUREMENT_INCREMENT();
 
-    scorep_cupti_callbacks_finalize();
+    UTILS_DEBUG_ENTRY();
 
-    return 0;
+    if ( scorep_cuda_features > 0 )
+    {
+        scorep_cupti_callbacks_finalize();
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /** Initializes the CUDA adapter. */
@@ -94,8 +100,6 @@ cuda_subsystem_init( void )
 
     if ( scorep_cuda_features > 0 )
     {
-        SCOREP_RegisterExitCallback( scorep_cuda_finalize_callback );
-
         scorep_cupti_callbacks_init();
     }
 
@@ -143,7 +147,7 @@ cuda_subsystem_pre_unify( void )
     return SCOREP_SUCCESS;
 }
 
-/** Finalizes the CUDA adapter. */
+/** Finalizes the CUDA unification. */
 static SCOREP_ErrorCode
 cuda_subsystem_post_unify( void )
 {
@@ -155,26 +159,13 @@ cuda_subsystem_post_unify( void )
     return SCOREP_SUCCESS;
 }
 
-/** Finalizes the CUDA adapter. */
-static void
-cuda_subsystem_finalize( void )
-{
-    if ( scorep_cuda_features > 0 )
-    {
-        scorep_cupti_callbacks_finalize();
-    }
-}
-
 const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter =
 {
-    .subsystem_name              = "CUDA",
-    .subsystem_register          = &cuda_subsystem_register,
-    .subsystem_init              = &cuda_subsystem_init,
-    .subsystem_init_location     = &cuda_subsystem_init_location,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = &cuda_subsystem_pre_unify,
-    .subsystem_post_unify        = &cuda_subsystem_post_unify,
-    .subsystem_finalize          = &cuda_subsystem_finalize,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name          = "CUDA",
+    .subsystem_register      = &cuda_subsystem_register,
+    .subsystem_end           = &cuda_subsystem_end,
+    .subsystem_init          = &cuda_subsystem_init,
+    .subsystem_init_location = &cuda_subsystem_init_location,
+    .subsystem_pre_unify     = &cuda_subsystem_pre_unify,
+    .subsystem_post_unify    = &cuda_subsystem_post_unify
 };

@@ -42,7 +42,9 @@ void FSUB(MPI_Init_thread)(int* required,
                            int* provided,
                            int* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   *ierr = MPI_Init_thread(0, (char***)0, *required, provided);
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -55,7 +57,9 @@ void FSUB(MPI_Init_thread)(int* required,
  */
 void FSUB(MPI_Init)(int* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   *ierr = MPI_Init(0, (char***)0);
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 #pragma wrapgen multiple restrict(genv+!nMPI_Init) skel/SCOREP_Fmpi_Std.w
@@ -74,12 +78,14 @@ void FSUB(MPI_Init_thread)(MPI_Fint* required,
                            MPI_Fint* provided,
                            MPI_Fint* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   if (sizeof(MPI_Fint) != sizeof(int))
   {
     UTILS_ERROR(SCOREP_ERROR_F2C_INT_SIZE_MISMATCH,
                 "Shouldn't this error abort!" );
   }
   *ierr = MPI_Init_thread(0, (char***)0, *required, provided);
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -92,12 +98,14 @@ void FSUB(MPI_Init_thread)(MPI_Fint* required,
  */
 void FSUB(MPI_Init)(MPI_Fint* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   if (sizeof(MPI_Fint) != sizeof(int))
   {
     UTILS_ERROR(SCOREP_ERROR_F2C_INT_SIZE_MISMATCH,
                 "Shouldn't this error abort!" );
   }
   *ierr = MPI_Init(0, (char***)0);
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 #pragma wrapgen multiple restrict(genv+!nMPI_Init) skel/SCOREP_Mpi_F2c_C2f.w

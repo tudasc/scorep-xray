@@ -67,5 +67,9 @@ install-exec-hook: $(INSTALL_EXEC_HOOK)
 UNINSTALL_HOOK =
 uninstall-hook: $(UNINSTALL_HOOK)
 
+# Install objectfiles in $(pkglibdir). pkglib_DATA not legitimate since automake 1.11.2
+objectdir = $(pkglibdir)
+object_DATA =
+
 # When $(YACC) is invoced, also create a header file.
 AM_YFLAGS = -d

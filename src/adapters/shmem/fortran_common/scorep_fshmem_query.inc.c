@@ -30,8 +30,14 @@
     int                                                     \
     FSUB( F_FUNCNAME )( void )                              \
     {                                                       \
-        return C_FUNCNAME();                                \
-    }                                                       \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                  \
+                                                            \
+        int ret;                                            \
+        ret = C_FUNCNAME();                                 \
+                                                            \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                  \
+        return ret;                                         \
+    }
 
 /* *INDENT-ON* */
 
@@ -62,8 +68,14 @@ SHMEM_FORTRAN_QUERY_PE( shmem_n_pes, shmem_n_pes )
     FSUB( F_FUNCNAME )( void *addr,                             \
                         int  *pe )                              \
     {                                                           \
-        return C_FUNCNAME( addr, *pe );                         \
-    }                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                      \
+                                                                \
+        int ret;                                                \
+        ret= C_FUNCNAME( addr, *pe );                           \
+                                                                \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                      \
+        return ret;                                             \
+    }
 
 /* *INDENT-ON* */
 
@@ -78,8 +90,14 @@ SHMEM_FORTRAN_ADDR_ACCESSIBLE( shmem_addr_accessible, shmem_addr_accessible )
     int                                                         \
     FSUB( F_FUNCNAME )( int  *pe )                              \
     {                                                           \
-        return C_FUNCNAME( *pe );                               \
-    }                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                      \
+                                                                \
+        int ret;                                                \
+        ret = C_FUNCNAME( *pe );                                \
+                                                                \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                      \
+        return ret;                                             \
+    }
 
 /* *INDENT-ON* */
 

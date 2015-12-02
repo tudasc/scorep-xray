@@ -99,7 +99,8 @@ libscorep_adapter_opencl_event_common_libadd = \
 
 libscorep_adapter_opencl_event_common_ldflags = \
     @OPENCL_LDFLAGS@                            \
-    $(library_api_version_ldflags)
+    $(library_api_version_ldflags) \
+    $(SCOREP_UNWINDING_LDFLAGS)
 
 
 lib_LTLIBRARIES += libscorep_adapter_opencl_event_static.la

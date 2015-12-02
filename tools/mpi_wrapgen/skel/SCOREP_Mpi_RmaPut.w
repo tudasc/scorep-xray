@@ -9,6 +9,7 @@ ${guard:start}
  */
 ${proto:c}
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   ${rtype} return_val;
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase}))
@@ -20,7 +21,7 @@ ${proto:c}
     ${decl}
 */
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__${name|uppercase}], ( intptr_t )P${name});
 
 /* One-sided communication not handled in first version
     dpid = scorep_mpi_win_rank_to_pe( target_rank, win );
@@ -29,7 +30,9 @@ ${proto:c}
     PMPI_Type_size(origin_datatype, &sendsz);
     esd_mpi_put_1ts( dpid, wid, SCOREP_NEXT_RMA_ID, origin_count * sendsz);
 */
-    return_val = ${call:pmpi};
+     SCOREP_ENTER_WRAPPED_REGION();
+     return_val = ${call:pmpi};
+     SCOREP_EXIT_WRAPPED_REGION();
 
 /* One-sided communication not handled in first version
     esd_mpi_put_1te_remote(dpid, wid, SCOREP_CURR_RMA_ID);
@@ -42,6 +45,7 @@ ${proto:c}
   {
     return_val = ${call:pmpi};
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }

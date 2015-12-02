@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -54,8 +54,24 @@
 #include <UTILS_Error.h>
 
 #if HAVE( THREAD_LOCAL_STORAGE )
+
 /*  Declare and initialize thread local storage for in-measurement counter */
-__thread volatile sig_atomic_t scorep_in_measurement = 0;
+SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_measurement = 0;
+
+#if HAVE( SAMPLING_SUPPORT )
+/*  Declare and initialize thread local storage for in-signal-context counter */
+SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_signal_context = 0;
+
+/*  Declare and initialize thread local storage for in-wrapped-region counter */
+SCOREP_THREAD_LOCAL_STORAGE_SPECIFIER volatile sig_atomic_t scorep_in_wrapped_region = 0;
+#endif
+
+volatile sig_atomic_t*
+scorep_get_in_measurement( void )
+{
+    return &scorep_in_measurement;
+}
+
 #endif /* HAVE( THREAD_LOCAL_STORAGE ) */
 
 // locations live inside SCOREP_Thread_ThreadPrivateData, may be referenced by
@@ -68,11 +84,7 @@ struct SCOREP_Location
     SCOREP_Allocator_PageManager* page_managers[ SCOREP_NUMBER_OF_MEMORY_TYPES ];
     void*                         substrate_data[ SCOREP_SUBSTRATES_NUM_SUBSTRATES ];
 
-#if !HAVE( THREAD_LOCAL_STORAGE )
-    volatile sig_atomic_t scorep_in_measurement;
-#endif /* !HAVE( THREAD_LOCAL_STORAGE ) */
-
-    SCOREP_Location* next;               // store location objects in list for easy cleanup
+    SCOREP_Location*              next;    // store location objects in list for easy cleanup
 
     /** Flexible array member with length scorep_subsystems_get_number() */
     void* per_subsystem_data[];
@@ -344,28 +356,3 @@ SCOREP_Location_GetName( SCOREP_Location* locationData )
             Location )->name_handle,
         String )->string_data;
 }
-
-
-#if !HAVE( THREAD_LOCAL_STORAGE )
-
-void
-SCOREP_Location_InMeasurementIncrement( SCOREP_Location* locationData )
-{
-    locationData->scorep_in_measurement++;
-}
-
-
-void
-SCOREP_Location_InMeasurementDecrement( SCOREP_Location* locationData )
-{
-    locationData->scorep_in_measurement--;
-}
-
-
-bool
-SCOREP_Location_InMeasurement( SCOREP_Location* locationData )
-{
-    return locationData->scorep_in_measurement > 0;
-}
-
-#endif /* !HAVE( THREAD_LOCAL_STORAGE ) */

@@ -4,56 +4,47 @@
 ## This file is part of the Score-P software (http://www.score-p.org)
 ##
 ## Copyright (c) 2009-2012,
-##    RWTH Aachen, Germany
-##    Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
-##    Technische Universitaet Dresden, Germany
-##    University of Oregon, Eugene, USA
-##    Forschungszentrum Juelich GmbH, Germany
-##    German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
-##    Technische Universitaet Muenchen, Germany
+## RWTH Aachen University, Germany
 ##
-## See the COPYING file in the package base directory for details.
+## Copyright (c) 2009-2012,
+## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
+##
+## Copyright (c) 2009-2012, 2014-2015,
+## Technische Universitaet Dresden, Germany
+##
+## Copyright (c) 2009-2012,
+## University of Oregon, Eugene, USA
+##
+## Copyright (c) 2009-2012,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2009-2012,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2009-2012,
+## Technische Universitaet Muenchen, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
 ##
 
 ## file build-config/m4/scorep_sampling.m4
 
 
-AC_DEFUN([AC_SCOREP_LIBUNWIND], [
-AC_SCOREP_BACKEND_LIB([libunwind], [libunwind.h], [-D_XOPEN_SOURCE=500])
-])
+AC_DEFUN([SCOREP_SAMPLING], [
+# check whether the compiler provides support for thread-local storage
+# (TLS), the sampling check uses scorep_have_thread_local_storage to
+# determine whether TLS is supported or not
+AC_REQUIRE([SCOREP_THREAD_LOCAL_STORAGE])
+# Check whether we can use PAPI as interrupt generator
+AC_REQUIRE([_SCOREP_METRICS_CHECK_LIBPAPI])
+# Check whether we can use perf as interrupt generator
+AC_REQUIRE([_SCOREP_METRICS_CHECK_PERF])
+# needed to pass the bind-now flag to the linker
+AC_REQUIRE([AFS_GNU_LINKER])
 
-dnl ----------------------------------------------------------------------------
-
-AC_DEFUN([_AC_SCOREP_LIBUNWIND_LIB_CHECK], [
-LIBS="-lunwind"
-
-AC_LINK_IFELSE([AC_LANG_PROGRAM([[
-/* see man libunwind */
-#define UNW_LOCAL_ONLY
-#include <libunwind.h>]],
-                [[
-unw_cursor_t cursor;
-unw_context_t uc;
-unw_word_t ip, sp;
-
-unw_getcontext(&uc);
-unw_init_local(&cursor, &uc);
-
-while (unw_step(&cursor) > 0) {
-    unw_get_reg(&cursor, UNW_REG_IP, &ip);
-    unw_get_reg(&cursor, UNW_REG_SP, &sp);
-    /* printf ("ip = %lx, sp = %lx\n", (long) ip, (long) sp); */
-}]])],
-               [with_libunwind_lib_checks_successful="yes"],
-               [with_libunwind_lib_checks_successful="no"])
-
-with_libunwind_libs="-lunwind"
-])
-
-dnl ----------------------------------------------------------------------------
-
-AC_DEFUN([AC_SCOREP_SAMPLING], [
-
+#check sampling prerequisites
 AC_LANG_PUSH([C])
 
 has_sampling_headers="yes"
@@ -62,17 +53,12 @@ AC_CHECK_HEADERS([sys/mman.h stdlib.h signal.h],
                  [has_sampling_headers=no])
 
 has_sampling_functions="yes"
-AC_CHECK_FUNCS([mprotect posix_memalign sigaction],
+AC_CHECK_FUNCS([sigaction],
                [],
                [has_sampling_functions="no"])
 
-AC_CHECK_TYPE([sig_atomic_t],
-              [has_sampling_sig_atomic_t="yes"],
-              [has_sampling_sig_atomic_t="no"],
-              [[#include <signal.h>]])
-
 cppflags_save=${CPPFLAGS}
-sampling_cppflags="-D_XOPEN_SOURCE=500"
+sampling_cppflags="-D_GNU_SOURCE"
 CPPFLAGS="${sampling_cppflags} ${CPPFLAGS}"
 AC_CHECK_MEMBER([struct sigaction.sa_handler],
                 [has_sampling_sigaction_sa_handler="yes"],
@@ -92,24 +78,99 @@ CPPFLAGS="${cppflags_save}"
 
 AC_LANG_POP([C])
 
+AFS_SUMMARY_PUSH
+
+# check for libunwind
+AC_SCOREP_BACKEND_LIB([libunwind], [libunwind.h], [-D_GNU_SOURCE])
+
+# check that we have at least one interrupt generator
+AS_IF([test x"${ac_scorep_have_papi}" = x"yes" ||
+       test x"${ac_scorep_have_perf}" = x"yes" ||
+       ( test x"${has_sampling_sigaction_sa_sigaction}" = x"yes" && test x"${has_sampling_siginfo_t}" = x"yes" )],
+      [have_interrupt_generators=yes],
+      [have_interrupt_generators=no])
+
+scorep_unwinding_support=yes
+scorep_unwinding_summary_reason=
+AS_IF([test x"${scorep_have_libunwind}" != x"yes"],
+      [scorep_unwinding_support=no
+       scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }missing libunwind support"])
+
+AS_IF([test x"${scorep_have_thread_local_storage}" != x"yes"],
+      [scorep_unwinding_support=no
+       scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }missing TLS support"])
+
+AS_IF([test x"${afs_have_gnu_linker}" != x"yes"],
+      [scorep_unwinding_support=no
+       scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }missing GNU linker"])
+
+AS_IF([test x"${build_cpu}" != x"x86_64"],
+      [scorep_unwinding_support=no
+       scorep_unwinding_summary_reason+="${scorep_unwinding_summary_reason:+, }unsuported CPU architecture"])
+
+scorep_unwinding_summary="${scorep_unwinding_support}${scorep_unwinding_summary_reason:+, }${scorep_unwinding_summary_reason}"
+AFS_SUMMARY_POP([Unwinding support], [${scorep_unwinding_summary}])
+
 # generating output
-AS_IF([   test "x${has_sampling_headers}" = "xyes"              \
-       && test "x${has_sampling_functions}" = "xyes"            \
-       && test "x${has_sampling_sig_atomic_t}" = "xyes"         \
-       && test "x${has_sampling_sigaction_sa_handler}" = "xyes"],
-      [has_sampling="yes"
-       sampling_summary="yes, using ${sampling_cppflags}"
-       AC_SUBST([SAMPLING_CPPFLAGS], ["${sampling_cppflags}"])
-       AS_IF([   test "x${has_sampling_sigaction_sa_sigaction}" = "xyes" \
-              && test "x${has_sampling_siginfo_t}" = "xyes"],
-             [AC_DEFINE([HAVE_SAMPLING_SIGACTION], [1],
-                        [Defined if struct member sigaction.sa_sigaction and type siginfo_t are available.])
-              sampling_summary="yes, using ${sampling_cppflags} and sa_sigaction"])],
-      [has_sampling="no"
-       sampling_summary="no"
-       AC_SUBST([SAMPLING_CPPFLAGS], [""])])
+AC_SCOREP_COND_HAVE([UNWINDING_SUPPORT],
+                    [test x"${scorep_unwinding_support}" = x"yes"],
+                    [Defined if unwinding support is available.],
+                    [AC_SUBST([LIBUNWIND_CPPFLAGS], ["${with_libunwind_cppflags}"])
+                     AC_SUBST([LIBUNWIND_LDFLAGS],  ["${with_libunwind_ldflags} ${with_libunwind_rpathflag}"])
+                     AC_SUBST([LIBUNWIND_LIBS],     ["${with_libunwind_libs}"])
+                     # shared case: we need to link all of our event libs with bind-now semantics
+                     AC_SUBST([SCOREP_UNWINDING_LDFLAGS], ["-Wl,-z,now"])])
 
-AM_CONDITIONAL([HAVE_SAMPLING], [test "x${has_sampling}" = "xyes"])
+AC_SCOREP_COND_HAVE([SAMPLING_SUPPORT],
+                    [test x"${scorep_unwinding_support}" = x"yes" &&
+                     test x"${has_sampling_headers}" = x"yes" &&
+                     test x"${has_sampling_functions}" = x"yes" &&
+                     test x"${has_sampling_sigaction_sa_handler}" = x"yes" &&
+                     test x"${have_interrupt_generators}" = x"yes"],
+                    [Defined if sampling support is available.],
+                    [has_sampling="yes"
+                     sampling_summary="yes, using ${sampling_cppflags}"
+                     AC_SUBST([SAMPLING_CPPFLAGS], ["${sampling_cppflags}"])
+                     AS_IF([test x"${has_sampling_sigaction_sa_sigaction}" = x"yes" &&
+                            test x"${has_sampling_siginfo_t}" = x"yes"],
+                           [AC_DEFINE([HAVE_SAMPLING_SIGACTION], [1],
+                                      [Defined if struct member sigaction.sa_sigaction and type siginfo_t are available.])
+                            sampling_summary+=", sa_sigaction"])],
+                    [has_sampling="no"
+                     AS_IF([test x"${have_interrupt_generators}" = x"no"],
+                           [sampling_summary="no, cannot find any interrupt generator"],
+                           [sampling_summary="no"])
+                     AC_SUBST([SAMPLING_CPPFLAGS], [""])])
 
-AFS_SUMMARY([sampling support], [${sampling_summary}])
+AFS_SUMMARY([Sampling support], [${sampling_summary}])
+])
+
+dnl ----------------------------------------------------------------------------
+
+AC_DEFUN([_AC_SCOREP_LIBUNWIND_LIB_CHECK], [
+scorep_unwind_lib_name="unwind"
+
+dnl checking for unwind library
+LIBS="-l${scorep_unwind_lib_name}"
+AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+/* see man libunwind */
+#define UNW_LOCAL_ONLY
+#include <libunwind.h>]],
+                [[
+unw_cursor_t cursor;
+unw_context_t uc;
+unw_word_t ip, sp;
+
+unw_getcontext(&uc);
+unw_init_local(&cursor, &uc);
+
+while (unw_step(&cursor) > 0) {
+    unw_get_reg(&cursor, UNW_REG_IP, &ip);
+    unw_get_reg(&cursor, UNW_REG_SP, &sp);
+    /* printf ("ip = %lx, sp = %lx\n", (long) ip, (long) sp); */
+}]])],
+               [with_$1_lib_checks_successful="yes"
+                with_$1_libs="-l${scorep_unwind_lib_name}"],
+               [with_$1_lib_checks_successful="no"
+                with_$1_libs=""])
 ])

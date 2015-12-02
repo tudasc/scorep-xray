@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014-2015,
@@ -29,6 +29,7 @@
 #include <SCOREP_Config.h>
 #include <SCOREP_Subsystem.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Paradigms.h>
 #include <SCOREP_Events.h>
 
@@ -59,7 +60,7 @@ bool scorep_shmem_write_rma_op_complete_record = false;
  * instrumentation and the call to shmem_init()/start_pes() is the
  * first recorded event.
  */
-bool scorep_shmem_parallel_entered = false;
+bool scorep_shmem_parallel_needed = false;
 
 /**
  * Implementation of the adapter_register function of the @ref
@@ -75,25 +76,6 @@ shmem_subsystem_register( size_t subsystemId )
 
     return SCOREP_SUCCESS;
 }
-
-static int
-exit_callback( void )
-{
-    /* Exit the extra parallel region in case it was */
-    /* entered in start_pes() */
-    if ( scorep_shmem_parallel_entered )
-    {
-        SCOREP_ExitRegion( scorep_shmem_region__SHMEM );
-    }
-
-    /* Destroy all RmaWin in the master thread. */
-    scorep_shmem_close_pe_group();
-
-    scorep_shmem_generate_events = false;
-
-    return 0;
-}
-
 
 /**
  * Implementation of the subsystem_init function of the @ref
@@ -116,9 +98,53 @@ shmem_subsystem_init( void )
 
     scorep_shmem_register_regions();
 
-    SCOREP_RegisterExitCallback( exit_callback );
-
     return SCOREP_SUCCESS;
+}
+
+static SCOREP_ErrorCode
+shmem_subsystem_begin( void )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    /* Enter global SHMEM region */
+    if ( scorep_shmem_parallel_needed )
+    {
+        SCOREP_EnterRegion( scorep_shmem_region__SHMEM );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+    return SCOREP_SUCCESS;
+}
+
+static void
+shmem_subsystem_end( void )
+{
+    /* Exit the extra global SHMEM region in case it was */
+    /* entered */
+    if ( scorep_shmem_parallel_needed )
+    {
+        SCOREP_ExitRegion( scorep_shmem_region__SHMEM );
+    }
+
+    /* Destroy all RmaWin in the master thread. */
+    scorep_shmem_close_pe_group();
+
+    SCOREP_SHMEM_EVENT_GEN_OFF();
+}
+
+/**
+ * Implementation of the adapter_finalize function of the @ref
+ * SCOREP_Subsystem struct for the initialization process of the SHMEM
+ * adapter.
+ */
+static void
+shmem_subsystem_finalize( void )
+{
+    UTILS_DEBUG_ENTRY();
+
+    scorep_shmem_teardown_comm_world();
+
+    UTILS_DEBUG_EXIT();
 }
 
 /**
@@ -174,24 +200,6 @@ shmem_subsystem_post_unify( void )
 }
 
 /**
- * Implementation of the adapter_finalize function of the @ref
- * SCOREP_Subsystem struct for the initialization process of the SHMEM
- * adapter.
- */
-static void
-shmem_subsystem_finalize( void )
-{
-    UTILS_DEBUG_ENTRY();
-
-    /* Prevent all further events */
-    SCOREP_SHMEM_EVENT_GEN_OFF();
-
-    scorep_shmem_teardown_comm_world();
-
-    UTILS_DEBUG_EXIT();
-}
-
-/**
  * Implementation of the adapter_deregister function of the @ref
  * SCOREP_Subsystem struct for the initialization process of the SHMEM
  * adapter.
@@ -207,31 +215,18 @@ shmem_subsystem_deregister( void )
 #endif
 }
 
-static void
-shmem_subsystem_control( SCOREP_Subsystem_Command command )
-{
-    switch ( command )
-    {
-        case SCOREP_SUBSYSTEM_COMMAND_ENABLE:
-            scorep_shmem_generate_events = true;
-            break;
-        case SCOREP_SUBSYSTEM_COMMAND_DISABLE:
-            scorep_shmem_generate_events = false;
-            break;
-    }
-}
-
 /** The initialization struct for the SHMEM adapter */
 const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter =
 {
     .subsystem_name              = "SHMEM",
     .subsystem_register          = &shmem_subsystem_register,
+    .subsystem_begin             = &shmem_subsystem_begin,
+    .subsystem_end               = &shmem_subsystem_end,
     .subsystem_init              = &shmem_subsystem_init,
     .subsystem_init_location     = &shmem_subsystem_init_location,
     .subsystem_finalize_location = &shmem_subsystem_finalize_location,
     .subsystem_pre_unify         = &shmem_subsystem_pre_unify,
     .subsystem_post_unify        = &shmem_subsystem_post_unify,
     .subsystem_finalize          = &shmem_subsystem_finalize,
-    .subsystem_deregister        = &shmem_subsystem_deregister,
-    .subsystem_control           = &shmem_subsystem_control
+    .subsystem_deregister        = &shmem_subsystem_deregister
 };

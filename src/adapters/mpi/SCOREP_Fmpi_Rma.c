@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -601,6 +601,9 @@
 void
 FSUB( MPI_Accumulate )( void* origin_addr, int* origin_count, MPI_Datatype* origin_datatype, int* target_rank, MPI_Aint* target_disp, int* target_count, MPI_Datatype* target_datatype, MPI_Op* op, MPI_Win* win, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
@@ -610,6 +613,8 @@ FSUB( MPI_Accumulate )( void* origin_addr, int* origin_count, MPI_Datatype* orig
 
 
     *ierr = MPI_Accumulate( origin_addr, *origin_count, *origin_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *op, *win );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GET ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Get )
@@ -623,6 +628,9 @@ FSUB( MPI_Accumulate )( void* origin_addr, int* origin_count, MPI_Datatype* orig
 void
 FSUB( MPI_Get )( void* origin_addr, int* origin_count, MPI_Datatype* origin_datatype, int* target_rank, MPI_Aint* target_disp, int* target_count, MPI_Datatype* target_datatype, MPI_Win* win, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
@@ -632,6 +640,8 @@ FSUB( MPI_Get )( void* origin_addr, int* origin_count, MPI_Datatype* origin_data
 
 
     *ierr = MPI_Get( origin_addr, *origin_count, *origin_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *win );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_PUT ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Put )
@@ -645,6 +655,9 @@ FSUB( MPI_Get )( void* origin_addr, int* origin_count, MPI_Datatype* origin_data
 void
 FSUB( MPI_Put )( void* origin_addr, int* origin_count, MPI_Datatype* origin_datatype, int* target_rank, MPI_Aint* target_disp, int* target_count, MPI_Datatype* target_datatype, MPI_Win* win, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
@@ -654,6 +667,8 @@ FSUB( MPI_Put )( void* origin_addr, int* origin_count, MPI_Datatype* origin_data
 
 
     *ierr = MPI_Put( origin_addr, *origin_count, *origin_datatype, *target_rank, *target_disp, *target_count, *target_datatype, *win );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -673,7 +688,12 @@ FSUB( MPI_Put )( void* origin_addr, int* origin_count, MPI_Datatype* origin_data
 void
 FSUB( MPI_Win_create )( void* base, MPI_Aint* size, int* disp_unit, MPI_Info* info, MPI_Comm* comm, MPI_Win* win, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_create( base, *size, *disp_unit, *info, *comm, win );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_FREE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_free )
@@ -687,7 +707,12 @@ FSUB( MPI_Win_create )( void* base, MPI_Aint* size, int* disp_unit, MPI_Info* in
 void
 FSUB( MPI_Win_free )( MPI_Win* win, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_free( win );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -702,7 +727,12 @@ FSUB( MPI_Win_free )( MPI_Win* win, int* ierr )
 void
 FSUB( MPI_Win_get_group )( MPI_Win* win, MPI_Group* group, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_get_group( *win, group );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -722,7 +752,12 @@ FSUB( MPI_Win_get_group )( MPI_Win* win, MPI_Group* group, int* ierr )
 void
 FSUB( MPI_Win_complete )( MPI_Win* win, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_complete( *win );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_FENCE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_fence )
@@ -736,7 +771,12 @@ FSUB( MPI_Win_complete )( MPI_Win* win, int* ierr )
 void
 FSUB( MPI_Win_fence )( int* assert, MPI_Win* win, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_fence( *assert, *win );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_LOCK ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_lock )
@@ -750,7 +790,12 @@ FSUB( MPI_Win_fence )( int* assert, MPI_Win* win, int* ierr )
 void
 FSUB( MPI_Win_lock )( int* lock_type, int* rank, int* assert, MPI_Win* win, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_lock( *lock_type, *rank, *assert, *win );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_POST ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_post )
@@ -764,7 +809,12 @@ FSUB( MPI_Win_lock )( int* lock_type, int* rank, int* assert, MPI_Win* win, int*
 void
 FSUB( MPI_Win_post )( MPI_Group* group, int* assert, MPI_Win* win, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_post( *group, *assert, *win );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_START ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_start )
@@ -778,7 +828,12 @@ FSUB( MPI_Win_post )( MPI_Group* group, int* assert, MPI_Win* win, int* ierr )
 void
 FSUB( MPI_Win_start )( MPI_Group* group, int* assert, MPI_Win* win, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_start( *group, *assert, *win );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_TEST ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_test )
@@ -792,7 +847,12 @@ FSUB( MPI_Win_start )( MPI_Group* group, int* assert, MPI_Win* win, int* ierr )
 void
 FSUB( MPI_Win_test )( MPI_Win* win, int* flag, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_test( *win, flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_UNLOCK ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_unlock )
@@ -806,7 +866,12 @@ FSUB( MPI_Win_test )( MPI_Win* win, int* flag, int* ierr )
 void
 FSUB( MPI_Win_unlock )( int* rank, MPI_Win* win, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_unlock( *rank, *win );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_WAIT ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_wait )
@@ -820,7 +885,12 @@ FSUB( MPI_Win_unlock )( int* rank, MPI_Win* win, int* ierr )
 void
 FSUB( MPI_Win_wait )( MPI_Win* win, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_wait( *win );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -847,7 +917,12 @@ FSUB( MPI_Win_wait )( MPI_Win* win, int* ierr )
 void
 FSUB( MPI_Win_create_keyval )( MPI_Win_copy_attr_function* win_copy_attr_fn, MPI_Win_delete_attr_function* win_delete_attr_fn, int* win_keyval, void* extra_state, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_create_keyval( win_copy_attr_fn, win_delete_attr_fn, win_keyval, extra_state );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_DELETE_ATTR ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_delete_attr )
@@ -861,7 +936,12 @@ FSUB( MPI_Win_create_keyval )( MPI_Win_copy_attr_function* win_copy_attr_fn, MPI
 void
 FSUB( MPI_Win_delete_attr )( MPI_Win* win, int* win_keyval, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_delete_attr( *win, *win_keyval );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_free_keyval )
@@ -875,7 +955,12 @@ FSUB( MPI_Win_delete_attr )( MPI_Win* win, int* win_keyval, int* ierr )
 void
 FSUB( MPI_Win_free_keyval )( int* win_keyval, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_free_keyval( win_keyval );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_GET_ATTR ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_attr )
@@ -889,7 +974,12 @@ FSUB( MPI_Win_free_keyval )( int* win_keyval, int* ierr )
 void
 FSUB( MPI_Win_get_attr )( MPI_Win* win, int* win_keyval, void* attribute_val, int* flag, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_get_attr( *win, *win_keyval, attribute_val, flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_GET_INFO ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_info )
@@ -903,7 +993,12 @@ FSUB( MPI_Win_get_attr )( MPI_Win* win, int* win_keyval, void* attribute_val, in
 void
 FSUB( MPI_Win_get_info )( MPI_Win* win, MPI_Info* info_used, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_get_info( *win, info_used );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_GET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_name )
@@ -917,6 +1012,7 @@ FSUB( MPI_Win_get_info )( MPI_Win* win, MPI_Info* info_used, int* ierr )
 void
 FSUB( MPI_Win_get_name )( MPI_Win* win, char* win_name, int* resultlen, int* ierr, int win_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_win_name     = NULL;
     int   c_win_name_len = 0;
     c_win_name = ( char* )malloc( ( win_name_len + 1 ) * sizeof( char ) );
@@ -934,6 +1030,7 @@ FSUB( MPI_Win_get_name )( MPI_Win* win, char* win_name, int* resultlen, int* ier
     strncpy( win_name, c_win_name, c_win_name_len );
     memset( win_name + c_win_name_len, ' ', win_name_len - c_win_name_len );
     free( c_win_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_SET_ATTR ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Win_set_attr )
@@ -947,7 +1044,12 @@ FSUB( MPI_Win_get_name )( MPI_Win* win, char* win_name, int* resultlen, int* ier
 void
 FSUB( MPI_Win_set_attr )( MPI_Win* win, int* win_keyval, void* attribute_val, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_set_attr( *win, *win_keyval, attribute_val );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_SET_INFO ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_info )
@@ -961,7 +1063,12 @@ FSUB( MPI_Win_set_attr )( MPI_Win* win, int* win_keyval, void* attribute_val, in
 void
 FSUB( MPI_Win_set_info )( MPI_Win* win, MPI_Info* info, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_set_info( *win, *info );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_SET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_name )
@@ -975,6 +1082,7 @@ FSUB( MPI_Win_set_info )( MPI_Win* win, MPI_Info* info, int* ierr )
 void
 FSUB( MPI_Win_set_name )( MPI_Win* win, char* win_name, int* ierr, int win_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_win_name = NULL;
     c_win_name = scorep_f2c_string( win_name, win_name_len );
 
@@ -983,6 +1091,7 @@ FSUB( MPI_Win_set_name )( MPI_Win* win, char* win_name, int* ierr, int win_name_
     *ierr = MPI_Win_set_name( *win, c_win_name );
 
     free( c_win_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1005,6 +1114,9 @@ FSUB( MPI_Win_set_name )( MPI_Win* win, char* win_name, int* ierr, int win_name_
 void
 FSUB( MPI_Accumulate )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* origin_datatype, MPI_Fint* target_rank, MPI_Aint* target_disp, MPI_Fint* target_count, MPI_Fint* target_datatype, MPI_Fint* op, MPI_Fint* win, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
@@ -1014,6 +1126,8 @@ FSUB( MPI_Accumulate )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* ori
 
 
     *ierr = MPI_Accumulate( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Op_f2c( *op ), PMPI_Win_f2c( *win ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GET ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Get )
@@ -1028,6 +1142,9 @@ FSUB( MPI_Accumulate )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* ori
 void
 FSUB( MPI_Get )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* origin_datatype, MPI_Fint* target_rank, MPI_Aint* target_disp, MPI_Fint* target_count, MPI_Fint* target_datatype, MPI_Fint* win, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
@@ -1037,6 +1154,8 @@ FSUB( MPI_Get )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* origin_dat
 
 
     *ierr = MPI_Get( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Win_f2c( *win ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_PUT ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Put )
@@ -1051,6 +1170,9 @@ FSUB( MPI_Get )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* origin_dat
 void
 FSUB( MPI_Put )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* origin_datatype, MPI_Fint* target_rank, MPI_Aint* target_disp, MPI_Fint* target_count, MPI_Fint* target_datatype, MPI_Fint* win, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( origin_addr == scorep_mpi_fortran_bottom )
     {
@@ -1060,6 +1182,8 @@ FSUB( MPI_Put )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* origin_dat
 
 
     *ierr = MPI_Put( origin_addr, *origin_count, PMPI_Type_f2c( *origin_datatype ), *target_rank, *target_disp, *target_count, PMPI_Type_f2c( *target_datatype ), PMPI_Win_f2c( *win ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1080,12 +1204,14 @@ FSUB( MPI_Put )( void* origin_addr, MPI_Fint* origin_count, MPI_Fint* origin_dat
 void
 FSUB( MPI_Win_create )( void* base, MPI_Aint* size, MPI_Fint* disp_unit, MPI_Fint* info, MPI_Fint* comm, MPI_Fint* win, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Win c_win;
 
 
     *ierr = MPI_Win_create( base, *size, *disp_unit, PMPI_Info_f2c( *info ), PMPI_Comm_f2c( *comm ), &c_win );
 
     *win = PMPI_Win_c2f( c_win );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_FREE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_free )
@@ -1100,12 +1226,14 @@ FSUB( MPI_Win_create )( void* base, MPI_Aint* size, MPI_Fint* disp_unit, MPI_Fin
 void
 FSUB( MPI_Win_free )( MPI_Fint* win, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Win c_win = PMPI_Win_f2c( *win );
 
 
     *ierr = MPI_Win_free( &c_win );
 
     *win = PMPI_Win_c2f( c_win );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1121,12 +1249,14 @@ FSUB( MPI_Win_free )( MPI_Fint* win, MPI_Fint* ierr )
 void
 FSUB( MPI_Win_get_group )( MPI_Fint* win, MPI_Fint* group, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Group c_group;
 
 
     *ierr = MPI_Win_get_group( PMPI_Win_f2c( *win ), &c_group );
 
     *group = PMPI_Group_c2f( c_group );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1147,7 +1277,12 @@ FSUB( MPI_Win_get_group )( MPI_Fint* win, MPI_Fint* group, MPI_Fint* ierr )
 void
 FSUB( MPI_Win_complete )( MPI_Fint* win, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_complete( PMPI_Win_f2c( *win ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_FENCE ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_fence )
@@ -1162,7 +1297,12 @@ FSUB( MPI_Win_complete )( MPI_Fint* win, MPI_Fint* ierr )
 void
 FSUB( MPI_Win_fence )( MPI_Fint* assert, MPI_Fint* win, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_fence( *assert, PMPI_Win_f2c( *win ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_LOCK ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_lock )
@@ -1177,7 +1317,12 @@ FSUB( MPI_Win_fence )( MPI_Fint* assert, MPI_Fint* win, MPI_Fint* ierr )
 void
 FSUB( MPI_Win_lock )( MPI_Fint* lock_type, MPI_Fint* rank, MPI_Fint* assert, MPI_Fint* win, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_lock( *lock_type, *rank, *assert, PMPI_Win_f2c( *win ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_POST ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_post )
@@ -1192,7 +1337,12 @@ FSUB( MPI_Win_lock )( MPI_Fint* lock_type, MPI_Fint* rank, MPI_Fint* assert, MPI
 void
 FSUB( MPI_Win_post )( MPI_Fint* group, MPI_Fint* assert, MPI_Fint* win, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_post( PMPI_Group_f2c( *group ), *assert, PMPI_Win_f2c( *win ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_START ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_start )
@@ -1207,7 +1357,12 @@ FSUB( MPI_Win_post )( MPI_Fint* group, MPI_Fint* assert, MPI_Fint* win, MPI_Fint
 void
 FSUB( MPI_Win_start )( MPI_Fint* group, MPI_Fint* assert, MPI_Fint* win, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_start( PMPI_Group_f2c( *group ), *assert, PMPI_Win_f2c( *win ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_TEST ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_test )
@@ -1222,7 +1377,12 @@ FSUB( MPI_Win_start )( MPI_Fint* group, MPI_Fint* assert, MPI_Fint* win, MPI_Fin
 void
 FSUB( MPI_Win_test )( MPI_Fint* win, MPI_Fint* flag, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_test( PMPI_Win_f2c( *win ), flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_UNLOCK ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_unlock )
@@ -1237,7 +1397,12 @@ FSUB( MPI_Win_test )( MPI_Fint* win, MPI_Fint* flag, MPI_Fint* ierr )
 void
 FSUB( MPI_Win_unlock )( MPI_Fint* rank, MPI_Fint* win, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_unlock( *rank, PMPI_Win_f2c( *win ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_WAIT ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( MPI_Win_wait )
@@ -1252,7 +1417,12 @@ FSUB( MPI_Win_unlock )( MPI_Fint* rank, MPI_Fint* win, MPI_Fint* ierr )
 void
 FSUB( MPI_Win_wait )( MPI_Fint* win, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_wait( PMPI_Win_f2c( *win ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1280,7 +1450,12 @@ FSUB( MPI_Win_wait )( MPI_Fint* win, MPI_Fint* ierr )
 void
 FSUB( MPI_Win_create_keyval )( void* win_copy_attr_fn, void* win_delete_attr_fn, MPI_Fint* win_keyval, void* extra_state, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_create_keyval( ( MPI_Win_copy_attr_function* )win_copy_attr_fn, ( MPI_Win_delete_attr_function* )win_delete_attr_fn, win_keyval, extra_state );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_DELETE_ATTR ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_delete_attr )
@@ -1295,12 +1470,14 @@ FSUB( MPI_Win_create_keyval )( void* win_copy_attr_fn, void* win_delete_attr_fn,
 void
 FSUB( MPI_Win_delete_attr )( MPI_Fint* win, MPI_Fint* win_keyval, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Win c_win = PMPI_Win_f2c( *win );
 
 
     *ierr = MPI_Win_delete_attr( c_win, *win_keyval );
 
     *win = PMPI_Win_c2f( c_win );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_free_keyval )
@@ -1315,7 +1492,12 @@ FSUB( MPI_Win_delete_attr )( MPI_Fint* win, MPI_Fint* win_keyval, MPI_Fint* ierr
 void
 FSUB( MPI_Win_free_keyval )( MPI_Fint* win_keyval, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_free_keyval( win_keyval );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_GET_ATTR ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_attr )
@@ -1330,7 +1512,12 @@ FSUB( MPI_Win_free_keyval )( MPI_Fint* win_keyval, MPI_Fint* ierr )
 void
 FSUB( MPI_Win_get_attr )( MPI_Fint* win, MPI_Fint* win_keyval, void* attribute_val, MPI_Fint* flag, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Win_get_attr( PMPI_Win_f2c( *win ), *win_keyval, attribute_val, flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_GET_INFO ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_info )
@@ -1345,12 +1532,14 @@ FSUB( MPI_Win_get_attr )( MPI_Fint* win, MPI_Fint* win_keyval, void* attribute_v
 void
 FSUB( MPI_Win_get_info )( MPI_Fint* win, MPI_Fint* info_used, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Info c_info_used;
 
 
     *ierr = MPI_Win_get_info( PMPI_Win_f2c( *win ), &c_info_used );
 
     *info_used = PMPI_Info_c2f( c_info_used );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_GET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_get_name )
@@ -1365,6 +1554,7 @@ FSUB( MPI_Win_get_info )( MPI_Fint* win, MPI_Fint* info_used, MPI_Fint* ierr )
 void
 FSUB( MPI_Win_get_name )( MPI_Fint* win, char* win_name, MPI_Fint* resultlen, MPI_Fint* ierr, int win_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_win_name     = NULL;
     int   c_win_name_len = 0;
     c_win_name = ( char* )malloc( ( win_name_len + 1 ) * sizeof( char ) );
@@ -1382,6 +1572,7 @@ FSUB( MPI_Win_get_name )( MPI_Fint* win, char* win_name, MPI_Fint* resultlen, MP
     strncpy( win_name, c_win_name, c_win_name_len );
     memset( win_name + c_win_name_len, ' ', win_name_len - c_win_name_len );
     free( c_win_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_SET_ATTR ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Win_set_attr )
@@ -1396,12 +1587,14 @@ FSUB( MPI_Win_get_name )( MPI_Fint* win, char* win_name, MPI_Fint* resultlen, MP
 void
 FSUB( MPI_Win_set_attr )( MPI_Fint* win, MPI_Fint* win_keyval, void* attribute_val, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Win c_win = PMPI_Win_f2c( *win );
 
 
     *ierr = MPI_Win_set_attr( c_win, *win_keyval, attribute_val );
 
     *win = PMPI_Win_c2f( c_win );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_SET_INFO ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_info )
@@ -1416,12 +1609,14 @@ FSUB( MPI_Win_set_attr )( MPI_Fint* win, MPI_Fint* win_keyval, void* attribute_v
 void
 FSUB( MPI_Win_set_info )( MPI_Fint* win, MPI_Fint* info, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Win c_win = PMPI_Win_f2c( *win );
 
 
     *ierr = MPI_Win_set_info( c_win, PMPI_Info_f2c( *info ) );
 
     *win = PMPI_Win_c2f( c_win );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WIN_SET_NAME ) && !defined( SCOREP_MPI_NO_RMA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Win_set_name )
@@ -1436,6 +1631,7 @@ FSUB( MPI_Win_set_info )( MPI_Fint* win, MPI_Fint* info, MPI_Fint* ierr )
 void
 FSUB( MPI_Win_set_name )( MPI_Fint* win, char* win_name, MPI_Fint* ierr, int win_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Win c_win      = PMPI_Win_f2c( *win );
     char*   c_win_name = NULL;
     c_win_name = scorep_f2c_string( win_name, win_name_len );
@@ -1446,6 +1642,7 @@ FSUB( MPI_Win_set_name )( MPI_Fint* win, char* win_name, MPI_Fint* ierr, int win
 
     *win = PMPI_Win_c2f( c_win );
     free( c_win_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

@@ -42,6 +42,7 @@
 #include <scorep/SCOREP_Tau.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
 #include <UTILS_Error.h>
@@ -170,7 +171,9 @@ scorep_tau_convert_region_type( SCOREP_Tau_RegionType region_type )
 void
 SCOREP_Tau_InitMeasurement( void )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     SCOREP_InitMeasurement();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /**
@@ -185,7 +188,9 @@ SCOREP_Tau_InitMeasurement( void )
 void
 SCOREP_Tau_RegisterExitCallback( SCOREP_Tau_ExitCallback callback )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     SCOREP_RegisterExitCallback( callback );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 
@@ -236,11 +241,18 @@ SCOREP_Tau_DefineRegion( const char*                 regionName,
                          SCOREP_Tau_ParadigmType     tauParadigm,
                          SCOREP_Tau_RegionType       tauRegionType )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
     SCOREP_ParadigmType paradigm    = scorep_tau_convert_paradigm_type( tauParadigm );
     SCOREP_RegionType   region_type = scorep_tau_convert_region_type( tauRegionType );
 
-    return ( SCOREP_Tau_RegionHandle )SCOREP_Definitions_NewRegion( regionName, NULL, fileHandle,
-                                                                    beginLine, endLine, paradigm, region_type );
+    SCOREP_Tau_RegionHandle handle =
+        SCOREP_Definitions_NewRegion( regionName, NULL, fileHandle,
+                                      beginLine, endLine, paradigm, region_type );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+
+    return handle;
 }
 
 
@@ -252,7 +264,9 @@ SCOREP_Tau_DefineRegion( const char*                 regionName,
 void
 SCOREP_Tau_EnterRegion( SCOREP_Tau_RegionHandle regionHandle )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     SCOREP_EnterRegion( ( SCOREP_RegionHandle )regionHandle );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /**
@@ -263,14 +277,18 @@ SCOREP_Tau_EnterRegion( SCOREP_Tau_RegionHandle regionHandle )
 void
 SCOREP_Tau_ExitRegion( SCOREP_Tau_RegionHandle regionHandle )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     SCOREP_ExitRegion( ( SCOREP_RegionHandle )regionHandle );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 
 void
 SCOREP_Tau_Metric( SCOREP_Tau_MetricHandle* metricHandle )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     *metricHandle = SCOREP_INVALID_SAMPLING_SET;
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 
@@ -281,15 +299,19 @@ SCOREP_Tau_InitMetric( SCOREP_Tau_MetricHandle* metricHandle,
                        const char*              name,
                        const char*              unit )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     SCOREP_User_InitMetric( ( SCOREP_SamplingSetHandle* )metricHandle, name, unit,
                             SCOREP_USER_METRIC_TYPE_DOUBLE,  SCOREP_USER_METRIC_CONTEXT_GLOBAL );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 SCOREP_Tau_TriggerMetricDouble( SCOREP_Tau_MetricHandle metricHandle,
                                 double                  value )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     SCOREP_User_TriggerMetricDouble( ( SCOREP_SamplingSetHandle )metricHandle, value );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
@@ -297,13 +319,17 @@ SCOREP_Tau_Parameter_INT64( SCOREP_Tau_ParamHandle* paramHandle,
                             const char*             name,
                             int64_t                 value )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     SCOREP_User_ParameterInt64( ( SCOREP_User_ParameterHandle* )paramHandle, name, value );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 SCOREP_Tau_AddLocationProperty( const char* name, const char* value )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     SCOREP_AddLocationProperty( name, value );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /* *INDENT-OFF* */

@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -132,8 +132,9 @@ SCOREP_OPARI2_USER_FORTRAN_FLAGS =       \
     -I$(INC_ROOT)src/adapters/include    \
     -I$(INC_ROOT)src/adapters/opari2     \
     -I$(INC_ROOT)src/measurement/include \
-    -I@OPARI2_REGION_INFO_INC_DIR@        \
+    -I@OPARI2_REGION_INFO_INC_DIR@       \
     -I$(PUBLIC_INC_DIR)                  \
+    -I$(INC_DIR_DEFINITIONS)             \
     @OPARI2_CPPFLAGS@                    \
     $(UTILS_CPPFLAGS)
 

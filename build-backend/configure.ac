@@ -176,6 +176,7 @@ AC_SCOREP_RUNTIME_MANAGEMENT_TIMINGS
 AC_SCOREP_BACKEND_TEST_RUNS
 AC_SCOREP_FORTRAN_SUPPORT_ALLOCATABLE
 SCOREP_THREAD_LOCAL_STORAGE
+SCOREP_SAMPLING
 SCOREP_METRICS_CHECK
 SCOREP_DLFCN
 SCOREP_OPENCL
@@ -257,14 +258,18 @@ AS_IF([test -n "${scorep_cube_bindir}"],
               AS_IF([test "x${ac_scorep_platform}" = "xmic"],
                     [scorep_cube_config_backend_arg="--target=mic"])
              ])
-       AC_SUBST([CUBE_WRITER_CPPFLAGS],      ["`${scorep_cube_bindir}/cube-config --writer-cppflags`"])
-       AC_SUBST([CUBE_WRITER_LIBS],          ["`${scorep_cube_bindir}/cube-config --writer-libs`"])
-       AC_SUBST([CUBE_WRITER_LDFLAGS],       ["`${scorep_cube_bindir}/cube-config --writer-ldflags ${scorep_cube_config_backend_arg}`"])
+       AC_SUBST([CUBE_WRITER_CPPFLAGS], ["`${scorep_cube_bindir}/cube-config --writer-cppflags`"])
+       AC_SUBST([CUBE_WRITER_LIBS],     ["`${scorep_cube_bindir}/cube-config --writer-libs`"])
+       AC_SUBST([CUBE_WRITER_LDFLAGS],  ["`${scorep_cube_bindir}/cube-config --writer-ldflags ${scorep_cube_config_backend_arg}`"])
+       AC_SUBST([CUBE_BINDIR],          ["${scorep_cube_bindir}"])
        AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE], [test 1 -eq 1])
       ],
-      [AC_SUBST([CUBE_WRITER_CPPFLAGS],      ['-I$(srcdir)/../vendor/cube/src/cubew -I../vendor/cube/src'])
-       AC_SUBST([CUBE_WRITER_LIBS],          ['../vendor/cube/build-backend/libcube4w.la ../vendor/cube/build-backend/libcubewriter4.la'])
-       AC_SUBST([CUBE_WRITER_LDFLAGS],       [])
+      [AC_SUBST([CUBE_WRITER_CPPFLAGS], ['-I$(srcdir)/../vendor/cube/src/cubew -I../vendor/cube/src'])
+       AC_SUBST([CUBE_WRITER_LIBS],     ['../vendor/cube/build-backend/libcube4w.la ../vendor/cube/build-backend/libcubewriter4.la'])
+       AC_SUBST([CUBE_WRITER_LDFLAGS],  [])
+       AS_IF([test "${afs_cross_compiling}" = xyes],
+             [AC_SUBST([CUBE_BINDIR], ["../vendor/cube/build-frontend"])],
+             [AC_SUBST([CUBE_BINDIR], ["../vendor/cube/build-backend"])])
        AM_CONDITIONAL([HAVE_SCOREP_EXTERNAL_CUBE], [test 1 -eq 0])
       ])
 
@@ -393,6 +398,7 @@ if test "x${ac_scorep_cross_compiling}" = "xyes"; then
     Makefile >Makefile.be && mv -f Makefile.be Makefile || rm -f Makefile.be
 fi
 ], [ac_scorep_cross_compiling='$ac_scorep_cross_compiling'])
+
 AC_CONFIG_FILES([../installcheck/instrumenter_checks/Makefile.common_rules:../test/instrumenter_checks/Makefile.common_rules.in
                  ../installcheck/instrumenter_checks/Makefile.instrument_configurations:../test/instrumenter_checks/Makefile.instrument_configurations.in
                  ../installcheck/instrumenter_checks/serial/Makefile:../test/instrumenter_checks/serial/Makefile.in
@@ -447,6 +453,12 @@ AC_CONFIG_FILES([../test/OA/serial/C/run_oa_c_test.sh], \
                 [chmod +x ../test/OA/serial/C/run_oa_c_test.sh])
 AC_CONFIG_FILES([../test/OA/serial/Fortran/run_oa_f_test.sh], \
                 [chmod +x ../test/OA/serial/Fortran/run_oa_f_test.sh])
+AC_CONFIG_FILES([../installcheck/constructor_checks/bin/run_constructor_checks.sh:../test/constructor_checks/run_constructor_checks.sh.in],
+                [chmod +x ../installcheck/constructor_checks/bin/run_constructor_checks.sh])
+AC_CONFIG_FILES([../installcheck/constructor_checks/generate_makefile.sh:../test/constructor_checks/generate_makefile.sh.in],
+                [chmod +x ../installcheck/constructor_checks/generate_makefile.sh])
+AC_CONFIG_FILES([run_cct_tests.sh:../test/services/unwinding/run_cct_tests.sh.in],
+                [chmod +x run_cct_tests.sh])
 AC_CONFIG_FILES([../test/tools/wrapper/run_wrapper_checks.sh],
                 [chmod +x ../test/tools/wrapper/run_wrapper_checks.sh])
 

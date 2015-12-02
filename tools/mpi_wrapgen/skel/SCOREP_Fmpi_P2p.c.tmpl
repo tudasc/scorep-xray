@@ -34,6 +34,7 @@ void FSUB(MPI_Waitany)(int*         count,
                        MPI_Status*  status,
                        int*         ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   #if HAVE(MPI_STATUS_IGNORE)
   if (status == scorep_mpi_fortran_status_ignore)
   {
@@ -47,6 +48,7 @@ void FSUB(MPI_Waitany)(int*         count,
   {
     (*index)++;
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -64,6 +66,7 @@ void FSUB(MPI_Waitsome)(int*         incount,
                         MPI_Status*  array_of_statuses,
                         int*         ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int i;
 
   #if HAVE(MPI_STATUSES_IGNORE)
@@ -85,6 +88,7 @@ void FSUB(MPI_Waitsome)(int*         incount,
       }
     }
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -102,6 +106,7 @@ void FSUB(MPI_Testany)(int*         count,
                        MPI_Status*  status,
                        int*         ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   #if HAVE(MPI_STATUS_IGNORE)
   if (status == scorep_mpi_fortran_status_ignore)
   {
@@ -119,6 +124,7 @@ void FSUB(MPI_Testany)(int*         count,
   {
     (*index)++;
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -136,6 +142,7 @@ void FSUB(MPI_Testsome)(int*         incount,
                         MPI_Status*  array_of_statuses,
                         int*         ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int i;
 
   #if HAVE(MPI_STATUSES_IGNORE)
@@ -159,6 +166,7 @@ void FSUB(MPI_Testsome)(int*         incount,
       }
     }
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -224,6 +232,7 @@ void FSUB(MPI_Wait)(MPI_Fint *request,
                     MPI_Fint *status,
                     MPI_Fint *ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   MPI_Request lrequest;
   MPI_Status  c_status;
   MPI_Status* c_status_ptr = &c_status;
@@ -249,6 +258,7 @@ void FSUB(MPI_Wait)(MPI_Fint *request,
       PMPI_Status_c2f(c_status_ptr, status);
     }
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -263,6 +273,7 @@ void FSUB(MPI_Waitall)(MPI_Fint* count,
                        MPI_Fint  array_of_statuses[],
                        MPI_Fint* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int          i;
   MPI_Request* lrequest = NULL;
   MPI_Status*  c_status = NULL;
@@ -307,6 +318,7 @@ void FSUB(MPI_Waitall)(MPI_Fint* count,
       }
     }
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -324,6 +336,7 @@ void FSUB(MPI_Waitany)(MPI_Fint* count,
                        MPI_Fint* status,
                        MPI_Fint* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int          i;
   MPI_Request* lrequest = NULL;
   MPI_Status   c_status;
@@ -364,6 +377,7 @@ void FSUB(MPI_Waitany)(MPI_Fint* count,
       PMPI_Status_c2f(&c_status, status);
     }
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -382,6 +396,7 @@ void FSUB(MPI_Waitsome)(MPI_Fint* incount,
                         MPI_Fint  array_of_statuses[],
                         MPI_Fint* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int          i, j, found;
   MPI_Request* lrequest = NULL;
   MPI_Status*  c_status = NULL;
@@ -456,6 +471,7 @@ void FSUB(MPI_Waitsome)(MPI_Fint* incount,
       }
     }
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -470,6 +486,7 @@ void FSUB(MPI_Test)(MPI_Fint* request,
                     MPI_Fint* status,
                     MPI_Fint* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   MPI_Status  c_status;
   MPI_Status* c_status_ptr = &c_status;
   MPI_Request lrequest = PMPI_Request_f2c(*request);
@@ -497,6 +514,7 @@ void FSUB(MPI_Test)(MPI_Fint* request,
       PMPI_Status_c2f(&c_status, status);
     }
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -515,6 +533,7 @@ void FSUB(MPI_Testany)(MPI_Fint* count,
                        MPI_Fint* status,
                        MPI_Fint* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int          i;
   MPI_Request* lrequest = NULL;
   MPI_Status   c_status;
@@ -557,6 +576,7 @@ void FSUB(MPI_Testany)(MPI_Fint* count,
       PMPI_Status_c2f(&c_status, status);
     }
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -573,6 +593,7 @@ void FSUB(MPI_Testall)(MPI_Fint* count,
                        MPI_Fint  array_of_statuses[],
                        MPI_Fint *ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int          i;
   MPI_Request* lrequest = NULL;
   MPI_Status*  c_status = NULL;
@@ -618,6 +639,7 @@ void FSUB(MPI_Testall)(MPI_Fint* count,
       }
     }
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -636,6 +658,7 @@ void FSUB(MPI_Testsome)(MPI_Fint* incount,
                         MPI_Fint  array_of_statuses[],
                         MPI_Fint* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int          i, j, found;
   MPI_Request* lrequest = NULL;
   MPI_Status*  c_status = NULL;
@@ -703,6 +726,7 @@ void FSUB(MPI_Testsome)(MPI_Fint* incount,
       }
     }
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -716,6 +740,7 @@ void FSUB(MPI_Startall)(MPI_Fint* count,
                         MPI_Fint  array_of_requests[],
                         MPI_Fint* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int          i;
   MPI_Request* lrequest = NULL;
 
@@ -737,6 +762,7 @@ void FSUB(MPI_Startall)(MPI_Fint* count,
       array_of_requests[i] = PMPI_Request_c2f(lrequest[i]);
     }
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -749,6 +775,7 @@ void FSUB(MPI_Startall)(MPI_Fint* count,
 void FSUB(MPI_Request_free)(MPI_Fint* request,
                             MPI_Fint* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   MPI_Request lrequest = PMPI_Request_f2c(*request);
 
   *ierr = MPI_Request_free(&lrequest);
@@ -757,6 +784,7 @@ void FSUB(MPI_Request_free)(MPI_Fint* request,
   {
     *request = PMPI_Request_c2f(lrequest);
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -771,10 +799,12 @@ void FSUB(MPI_Request_free)(MPI_Fint* request,
 void FSUB(MPI_Cancel)(MPI_Fint *request,
                       MPI_Fint *ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   MPI_Request lrequest;
 
   lrequest = PMPI_Request_f2c(*request);
   *ierr = MPI_Cancel(&lrequest);
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

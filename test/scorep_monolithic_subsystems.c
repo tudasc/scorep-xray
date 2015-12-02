@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet, Germany
  *
  * Copyright (c) 2015,
@@ -26,22 +26,34 @@
 
 #include <SCOREP_Subsystem.h>
 
+extern const SCOREP_Subsystem SCOREP_Subsystem_Substrates;
+extern const SCOREP_Subsystem SCOREP_Subsystem_TaskStack;
+extern const SCOREP_Subsystem SCOREP_Subsystem_MetricService;
+#if HAVE( UNWINDING_SUPPORT )
+extern const SCOREP_Subsystem SCOREP_Subsystem_UnwindingService;
+#endif
+#if HAVE( SAMPLING_SUPPORT )
+extern const SCOREP_Subsystem SCOREP_Subsystem_SamplingService;
+#endif
+extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_MpiAdapter;
-extern const SCOREP_Subsystem SCOREP_Subsystem_Opari2OpenmpAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter;
-extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
-extern const SCOREP_Subsystem SCOREP_Subsystem_MetricService;
-extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
 extern const SCOREP_Subsystem SCOREP_Subsystem_ThreadForkJoin;
-extern const SCOREP_Subsystem SCOREP_Subsystem_TaskStack;
-extern const SCOREP_Subsystem SCOREP_Subsystem_Substrates;
+extern const SCOREP_Subsystem SCOREP_Subsystem_Opari2OpenmpAdapter;
+extern const SCOREP_Subsystem SCOREP_Subsystem_CudaAdapter;
 
 /** @brief a NULL terminated list of linked in subsystems. */
 const SCOREP_Subsystem* scorep_subsystems[] = {
     &SCOREP_Subsystem_Substrates,
     &SCOREP_Subsystem_TaskStack,
     &SCOREP_Subsystem_MetricService,
+#if HAVE( UNWINDING_SUPPORT )
+    &SCOREP_Subsystem_UnwindingService,
+#endif
+#if HAVE( SAMPLING_SUPPORT )
+    &SCOREP_Subsystem_SamplingService,
+#endif
     &SCOREP_Subsystem_CompilerAdapter,
     &SCOREP_Subsystem_UserAdapter,
 #ifdef SCOREP_SUBSYSTEMS_OMP

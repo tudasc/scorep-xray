@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -21,6 +21,7 @@
 #include <config.h>
 
 #include "scorep_shmem_internal.h"
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
 
@@ -37,6 +38,8 @@
                                            DATATYPE *     pWork,                                                                \
                                            long*          pSync )                                                               \
     {                                                                                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                                                                      \
+                                                                                                                                \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                                                                     \
         {                                                                                                                       \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                                                                       \
@@ -44,11 +47,14 @@
             SCOREP_InterimRmaWindowHandle window_handle                                                                         \
                 = scorep_shmem_get_pe_group( peStart, logPeStride, peSize );                                                    \
                                                                                                                                 \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );                                                            \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,                                                       \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );                                                    \
                                                                                                                                 \
             SCOREP_RmaCollectiveBegin();                                                                                        \
                                                                                                                                 \
+            SCOREP_ENTER_WRAPPED_REGION();                                                                                      \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, nreduce, peStart, logPeStride, peSize, pWork, pSync ) );  \
+            SCOREP_EXIT_WRAPPED_REGION();                                                                                       \
                                                                                                                                 \
             SCOREP_RmaCollectiveEnd( SCOREP_COLLECTIVE_MPI_REDUCE,                                                              \
                                      SCOREP_RMA_SYNC_LEVEL_PROCESS | SCOREP_RMA_SYNC_LEVEL_MEMORY,                              \
@@ -65,6 +71,8 @@
         {                                                                                                                       \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, nreduce, peStart, logPeStride, peSize, pWork, pSync ) );  \
         }                                                                                                                       \
+                                                                                                                                \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                                                                      \
     }
 
 /* *INDENT-ON* */

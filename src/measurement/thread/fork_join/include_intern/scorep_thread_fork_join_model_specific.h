@@ -4,7 +4,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2013-2014,
@@ -108,16 +108,20 @@ scorep_thread_on_team_begin_get_parent( void );
  * @param parentTpd Parent thread's SCOREP_Thread_PrivateData
  * object.
  *
- * @param currentTpd This thread's SCOREP_Thread_PrivateData object. To be set.
+ * @param[out] currentTpd This thread's SCOREP_Thread_PrivateData object.
  *
  * @param paradigm  One of the predefined threading models. Allows for
  * consistency checks.
  *
- * @param threadId Thread Id in current team. Out of [0,..,team_size). To be set.
+ * @param[out] threadId Thread Id in current team. Out of [0,..,team_size).
+ * 0 is defined to be the master thread, which forked this thread team.
  *
  * @param firstForkLocations Array of pre-created locations to get a mapping
  * between thread-id and location-id for the first fork only. For subsequent
  * forks, pass 0.
+ *
+ * @param[out] locationIsCreated Indicates that the location was newly created
+ * for this thread.
  */
 void
 scorep_thread_on_team_begin( struct scorep_thread_private_data*  parentTpd,
@@ -135,12 +139,19 @@ scorep_thread_on_team_begin( struct scorep_thread_private_data*  parentTpd,
  *
  * @param currentTpd This thread's SCOREP_Thread_PrivateData object.
  *
- * @param parentTpd Parent thread's SCOREP_Thread_PrivateData
+ * @param[out] parentTpd[] Parent thread's SCOREP_Thread_PrivateData
  * object.
+ *
+ * @param[out] threadId Thread Id in current team. Out of [0,..,team_size).
+ * 0 is defined to be the master thread, which forked this thread team.
+ *
+ * @param paradigm  One of the predefined threading models. Allows for
+ * consistency checks.
  */
 void
 scorep_thread_on_team_end( struct scorep_thread_private_data*  currentTpd,
                            struct scorep_thread_private_data** parentTpd,
+                           int*                                threadId,
                            SCOREP_ParadigmType                 paradigm );
 
 

@@ -48,7 +48,6 @@
 /* size of hash map for the regions tagged by name */
 #define SCOREP_USER_REGION_BY_NAME_SIZE 128
 
-int8_t        scorep_user_is_initialized = 0;
 static size_t user_subsystem_id;
 
 
@@ -56,9 +55,9 @@ static size_t user_subsystem_id;
     to the measurement system. Currently, it registers no variables.
  */
 static SCOREP_ErrorCode
-user_subsystem_register( size_t subsystem_id )
+user_subsystem_register( size_t subsystemId )
 {
-    user_subsystem_id = subsystem_id;
+    user_subsystem_id = subsystemId;
 
     return scorep_selective_register();
 }
@@ -68,15 +67,10 @@ user_subsystem_register( size_t subsystem_id )
 static SCOREP_ErrorCode
 user_subsystem_init( void )
 {
-    if ( scorep_user_is_initialized == 0 )
-    {
-        /* Set the intialization flag to indicate that the adapter is initialized */
-        scorep_user_is_initialized = 1;
+    scorep_selective_init();
+    scorep_user_init_regions();
+    scorep_user_init_metrics();
 
-        scorep_selective_init();
-        scorep_user_init_regions();
-        scorep_user_init_metrics();
-    }
     return SCOREP_SUCCESS;
 }
 
@@ -93,29 +87,19 @@ user_subsystem_init_location( SCOREP_Location* locationData,
 static void
 user_subsystem_finalize( void )
 {
-    if ( scorep_user_is_initialized == 1 )
-    {
-        /*  Set the intialization flag to indicate that the adapter is finalized */
-        scorep_user_is_initialized = 2;
-        scorep_user_finalize_metrics();
-        scorep_user_finalize_regions();
-    }
+    scorep_user_finalize_metrics();
+    scorep_user_finalize_regions();
     scorep_selective_finalize();
 }
 
 
 const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter =
 {
-    .subsystem_name              = "USER",
-    .subsystem_register          = &user_subsystem_register,
-    .subsystem_init              = &user_subsystem_init,
-    .subsystem_init_location     = &user_subsystem_init_location,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &user_subsystem_finalize,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name          = "USER",
+    .subsystem_register      = &user_subsystem_register,
+    .subsystem_init          = &user_subsystem_init,
+    .subsystem_init_location = &user_subsystem_init_location,
+    .subsystem_finalize      = &user_subsystem_finalize,
 };
 
 

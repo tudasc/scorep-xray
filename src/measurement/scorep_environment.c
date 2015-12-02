@@ -39,9 +39,7 @@
 
 #include <config.h>
 
-#include <stdlib.h>
-#include <assert.h>
-#include <stdio.h>
+#include "scorep_environment.h"
 
 #include <UTILS_Error.h>
 
@@ -54,27 +52,47 @@
 #include <SCOREP_Timer_Utils.h>
 #include "scorep_subsystem.h"
 
-#include "scorep_environment.h"
+#include <stdlib.h>
+#include <assert.h>
+#include <stdio.h>
 
-static bool scorep_env_core_environment_variables_initialized = false;
+static bool env_variables_initialized = false;
 
 
 // some config variables.
-static bool     scorep_env_verbose;
-static bool     scorep_env_tracing;
-static bool     scorep_env_profiling;
-static uint64_t scorep_env_total_memory;
-static uint64_t scorep_env_page_size;
-static char*    scorep_env_experiment_directory;
-static bool     scorep_env_overwrite_experiment_directory;
-static char*    scorep_env_machine_name;
+
+/*
+ * General measurement setup
+ */
+static bool     env_verbose;
+static uint64_t env_total_memory;
+static uint64_t env_page_size;
+static char*    env_experiment_directory;
+static bool     env_overwrite_experiment_directory;
+static char*    env_machine_name;
+
+/*
+ * Tracing setup
+ */
+static bool env_tracing;
+
+/*
+ * Profiling setup
+ */
+static bool env_profiling;
+
+/*
+ * Calling context setup
+ */
+static bool env_calling_context;
+
 
 /** @brief Measurement system configure variables */
-static const SCOREP_ConfigVariable core_confvars[] = {
+static const SCOREP_ConfigVariable core_enable_confvars[] = {
     {
         "enable_profiling",
         SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_env_profiling,
+        &env_profiling,
         NULL,
         "true",
         "Enable profiling",
@@ -83,16 +101,41 @@ static const SCOREP_ConfigVariable core_confvars[] = {
     {
         "enable_tracing",
         SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_env_tracing,
+        &env_tracing,
         NULL,
         "false",
         "Enable tracing",
         ""
     },
+    SCOREP_CONFIG_TERMINATOR
+};
+
+static const SCOREP_ConfigVariable core_enable_unwinding_confvars[] = {
+    {
+        "enable_unwinding",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &env_calling_context,
+        NULL,
+        "false",
+        "Enables recording calling context information for every event",
+        "The calling context is the call chain of functions to the current "
+        "position in the running program. This call chain will also be "
+        "annotated with source code information if possible.\n"
+        "This is a prerequisite for sampling but also works with instrumented "
+        "applications.\n"
+        "Note that when tracing is also enabled, Score-P does not write the "
+        "usual Enter/Leave records into the OTF2 trace, but new records.\n"
+        "See also SCOREP_TRACING_CONVERT_CALLING_CONTEXT_EVENTS.\n"
+        "Note also that this supresses events from the compiler instrumentation."
+    },
+    SCOREP_CONFIG_TERMINATOR
+};
+
+static const SCOREP_ConfigVariable core_confvars[] = {
     {
         "verbose",
         SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_env_verbose,
+        &env_verbose,
         NULL,
         "false",
         "Be verbose",
@@ -101,7 +144,7 @@ static const SCOREP_ConfigVariable core_confvars[] = {
     {
         "total_memory",
         SCOREP_CONFIG_TYPE_SIZE,
-        &scorep_env_total_memory,
+        &env_total_memory,
         NULL,
         "16000k",
         "Total memory in bytes per process for the measurement system",
@@ -110,7 +153,7 @@ static const SCOREP_ConfigVariable core_confvars[] = {
     {
         "page_size",
         SCOREP_CONFIG_TYPE_SIZE,
-        &scorep_env_page_size,
+        &env_page_size,
         NULL,
         "8k", // with 1200k total memory this means 150 pages
         "Memory page size in bytes",
@@ -119,7 +162,7 @@ static const SCOREP_ConfigVariable core_confvars[] = {
     {
         "experiment_directory",
         SCOREP_CONFIG_TYPE_PATH,
-        &scorep_env_experiment_directory,
+        &env_experiment_directory,
         NULL,
         "",
         "Name of the experiment directory",
@@ -131,7 +174,7 @@ static const SCOREP_ConfigVariable core_confvars[] = {
     {
         "overwrite_experiment_directory",
         SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_env_overwrite_experiment_directory,
+        &env_overwrite_experiment_directory,
         NULL,
         "true",
         "Overwrite an existing experiment directory",
@@ -142,7 +185,7 @@ static const SCOREP_ConfigVariable core_confvars[] = {
     {
         "machine_name",
         SCOREP_CONFIG_TYPE_STRING,
-        &scorep_env_machine_name,
+        &env_machine_name,
         NULL,
         SCOREP_DEFAULT_MACHINE_NAME, /* configure-provided default */
         "The machine name used in profile and trace output",
@@ -152,7 +195,6 @@ static const SCOREP_ConfigVariable core_confvars[] = {
     },
     SCOREP_CONFIG_TERMINATOR
 };
-
 
 #if HAVE( SCOREP_DEBUG )
 bool                               scorep_debug_unify;
@@ -174,76 +216,99 @@ static const SCOREP_ConfigVariable core_debug_confvars[] = {
 bool
 SCOREP_Env_RunVerbose( void )
 {
-    assert( scorep_env_core_environment_variables_initialized );
-    return scorep_env_verbose;
+    assert( env_variables_initialized );
+    return env_verbose;
 }
 
 
 bool
 SCOREP_Env_DoTracing( void )
 {
-    assert( scorep_env_core_environment_variables_initialized );
-    return scorep_env_tracing;
+    assert( env_variables_initialized );
+    return env_tracing;
 }
 
 
 bool
 SCOREP_Env_DoProfiling( void )
 {
-    assert( scorep_env_core_environment_variables_initialized );
-    return scorep_env_profiling;
+    assert( env_variables_initialized );
+    return env_profiling;
+}
+
+
+bool
+SCOREP_Env_DoCallingContext( void )
+{
+    assert( env_variables_initialized );
+    return env_calling_context;
 }
 
 
 uint64_t
 SCOREP_Env_GetTotalMemory( void )
 {
-    assert( scorep_env_core_environment_variables_initialized );
-    assert( scorep_env_total_memory > scorep_env_page_size );
-    return scorep_env_total_memory;
+    assert( env_variables_initialized );
+    assert( env_total_memory > env_page_size );
+    return env_total_memory;
 }
 
 
 uint64_t
 SCOREP_Env_GetPageSize( void )
 {
-    assert( scorep_env_core_environment_variables_initialized );
-    assert( scorep_env_total_memory > scorep_env_page_size );
-    return scorep_env_page_size;
+    assert( env_variables_initialized );
+    assert( env_total_memory > env_page_size );
+    return env_page_size;
 }
 
 const char*
 SCOREP_Env_GetExperimentDirectory( void )
 {
-    assert( scorep_env_core_environment_variables_initialized );
-    return scorep_env_experiment_directory;
+    assert( env_variables_initialized );
+    return env_experiment_directory;
 }
 
 bool
 SCOREP_Env_DoOverwriteExperimentDirectory( void )
 {
-    assert( scorep_env_core_environment_variables_initialized );
-    return scorep_env_overwrite_experiment_directory;
+    assert( env_variables_initialized );
+    return env_overwrite_experiment_directory;
 }
 
 const char*
 SCOREP_Env_GetMachineName( void )
 {
-    assert( scorep_env_core_environment_variables_initialized );
-    return scorep_env_machine_name;
+    assert( env_variables_initialized );
+    return env_machine_name;
 }
 
 void
 SCOREP_RegisterAllConfigVariables( void )
 {
-    if ( scorep_env_core_environment_variables_initialized )
+    if ( env_variables_initialized )
     {
         return;
     }
 
-    scorep_env_core_environment_variables_initialized = true;
+    env_variables_initialized = true;
 
     SCOREP_ErrorCode error;
+    error = SCOREP_ConfigRegister( "", core_enable_confvars );
+    if ( SCOREP_SUCCESS != error )
+    {
+        UTILS_ERROR( error, "Can't register core environment variables" );
+        _Exit( EXIT_FAILURE );
+    }
+
+    error = SCOREP_ConfigRegisterCond( "", core_enable_unwinding_confvars,
+                                       HAVE_BACKEND_UNWINDING_SUPPORT );
+    if ( SCOREP_SUCCESS != error )
+    {
+        UTILS_ERROR( error, "Can't register core environment variables" );
+        _Exit( EXIT_FAILURE );
+    }
+
     error = SCOREP_ConfigRegister( "", core_confvars );
     if ( SCOREP_SUCCESS != error )
     {

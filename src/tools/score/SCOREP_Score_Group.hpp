@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2012,
+ * Copyright (c) 2009-2012, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -55,10 +55,11 @@ struct SCOREP_Score_FieldWidths
      */
     SCOREP_Score_FieldWidths()
         : m_type( 8 ),
-          m_bytes( 10 ),
-          m_visits( 6 ),
-          m_time( 7 ),
-          m_time_per_visit( 14 )
+        m_bytes( 10 ),
+        m_visits( 6 ),
+        m_hits( 4 ),
+        m_time( 7 ),
+        m_time_per_visit( 14 )
     {
     }
 
@@ -76,6 +77,11 @@ struct SCOREP_Score_FieldWidths
      * Stores the required width of the 'visits' column.
      */
     int m_visits;
+
+    /**
+     * Stores the required width of the 'hits' column.
+     */
+    int m_hits;
 
     /**
      * Stores the required width of the 'time[s]' column.
@@ -123,6 +129,8 @@ public:
     void
     addRegion( uint64_t numberOfVisits,
                uint64_t bytesPerVisit,
+               uint64_t numberOfHits,
+               uint64_t bytesPerHit,
                double   time,
                uint64_t process );
 
@@ -140,7 +148,8 @@ public:
      */
     void
     print( double                   totalTime,
-           SCOREP_Score_FieldWidths widths );
+           SCOREP_Score_FieldWidths widths,
+           bool                     withHits );
 
     /**
      * Returns the time spend in this group on all processes.
@@ -194,6 +203,11 @@ private:
      * Stores the number of visits for all processes.
      */
     uint64_t m_visits;
+
+    /**
+     * Stores the number of hits for all processes.
+     */
+    uint64_t m_hits;
 
     /**
      * Stores the total time for all processes.

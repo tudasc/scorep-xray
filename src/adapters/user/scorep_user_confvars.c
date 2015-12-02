@@ -59,14 +59,6 @@ user_subsystem_register( size_t subsystem_id )
 /* The initialization struct for the MPI adapter */
 const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter =
 {
-    .subsystem_name              = "USER (config variables only)",
-    .subsystem_register          = &user_subsystem_register,
-    .subsystem_init              = NULL,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = NULL,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name     = "USER (config variables only)",
+    .subsystem_register = &user_subsystem_register,
 };

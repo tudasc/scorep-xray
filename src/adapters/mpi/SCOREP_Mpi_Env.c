@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -56,8 +56,10 @@
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include <UTILS_Error.h>
-#include <SCOREP_Events.h>
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
+#include <SCOREP_Events.h>
+
 
 /** Flag set if the measurement sysem was already opened by another adapter.
     If the measurement system is not already initilized, it is assumed that
@@ -90,21 +92,26 @@ static int scorep_mpi_parallel_entered = 0;
 int
 MPI_Init( int* argc, char*** argv )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
     int event_gen_active = 0; /* init is deferred to later */
     int return_val;
     int fflag;
     int iflag;
 
-    if ( !SCOREP_IsInitialized() )
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
         /* Initialize the measurement system */
         SCOREP_InitMeasurement();
 
-        /* Enter global MPI region */
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP_PARALLEL__MPI ] );
+        if ( !SCOREP_IsUnwindingEnabled() )
+        {
+            /* Enter global MPI region */
+            SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP_PARALLEL__MPI ] );
 
-        /* Remember that SCOREP_PARALLEL__MPI was entered */
-        scorep_mpi_parallel_entered = 1;
+            /* Remember that SCOREP_PARALLEL__MPI was entered */
+            scorep_mpi_parallel_entered = 1;
+        }
     }
 
     event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ENV );
@@ -114,10 +121,18 @@ MPI_Init( int* argc, char*** argv )
         SCOREP_MPI_EVENT_GEN_OFF();
 
         /* Enter the init region */
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_INIT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_INIT ], ( intptr_t )PMPI_Init );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Init( argc, argv );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
     /* XXXX should only continue if MPI initialised OK! */
 
@@ -139,6 +154,8 @@ MPI_Init( int* argc, char*** argv )
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_INIT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -163,21 +180,26 @@ MPI_Init( int* argc, char*** argv )
 int
 MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
     int event_gen_active = 0;
     int return_val;
     int fflag;
     int iflag;
 
-    if ( !SCOREP_IsInitialized() )
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
         /* Initialize the measurement system */
         SCOREP_InitMeasurement();
 
-        /* Enter global MPI region */
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP_PARALLEL__MPI ] );
+        if ( !SCOREP_IsUnwindingEnabled() )
+        {
+            /* Enter global MPI region */
+            SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP_PARALLEL__MPI ] );
 
-        /* Remember that SCOREP_PARALLEL__MPI was entered */
-        scorep_mpi_parallel_entered = 1;
+            /* Remember that SCOREP_PARALLEL__MPI was entered */
+            scorep_mpi_parallel_entered = 1;
+        }
     }
 
     event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ENV );
@@ -186,10 +208,18 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_INIT_THREAD ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_INIT_THREAD ], ( intptr_t )PMPI_Init_thread );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Init_thread( argc, argv, required, provided );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
     /* XXXX should only continue if MPI initialised OK! */
 
@@ -220,6 +250,8 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
         SCOREP_MPI_EVENT_GEN_ON();
     }
 
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+
     return return_val;
 }
 #endif
@@ -239,13 +271,16 @@ MPI_Init_thread( int* argc, char*** argv, int required, int* provided )
 int
 MPI_Finalize( void )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ENV );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_FINALIZE ] );
+        /* @todo hande <> adress mismatch, check, if we still get samples inside the barrier */
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FINALIZE ], ( intptr_t )PMPI_Barrier );
     }
 
     /* Be so kind and name the MPI_COMM_WORLD, if the user didn't do so already */
@@ -259,7 +294,15 @@ MPI_Finalize( void )
   #endif
 
     /* fake finalization, so that MPI can be used during SCOREP finalization */
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Barrier( MPI_COMM_WORLD );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
     if ( event_gen_active )
     {
@@ -274,6 +317,8 @@ MPI_Finalize( void )
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -291,14 +336,17 @@ MPI_Finalize( void )
 int
 MPI_Get_library_version( char* version, int* resultlen )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ENV ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GET_LIBRARY_VERSION ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GET_LIBRARY_VERSION ], ( intptr_t )PMPI_Get_library_version );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Get_library_version( version, resultlen );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GET_LIBRARY_VERSION ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -307,6 +355,7 @@ MPI_Get_library_version( char* version, int* resultlen )
     {
         return_val = PMPI_Get_library_version( version, resultlen );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -325,14 +374,17 @@ MPI_Get_library_version( char* version, int* resultlen )
 int
 MPI_Is_thread_main( int* flag )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ENV ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_IS_THREAD_MAIN ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IS_THREAD_MAIN ], ( intptr_t )PMPI_Is_thread_main );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Is_thread_main( flag );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IS_THREAD_MAIN ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -341,6 +393,7 @@ MPI_Is_thread_main( int* flag )
     {
         return_val = PMPI_Is_thread_main( flag );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -359,14 +412,17 @@ MPI_Is_thread_main( int* flag )
 int
 MPI_Query_thread( int* provided )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ENV ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_QUERY_THREAD ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_QUERY_THREAD ], ( intptr_t )PMPI_Query_thread );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Query_thread( provided );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_QUERY_THREAD ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -375,6 +431,7 @@ MPI_Query_thread( int* provided )
     {
         return_val = PMPI_Query_thread( provided );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -384,24 +441,27 @@ MPI_Query_thread( int* provided )
 #if HAVE( DECL_PMPI_FINALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Finalized )
 /**
  * Measurement wrapper for MPI_Finalized
- * @note Auto-generated by wrapgen from template: SCOREP_Mpi_Std.w
  * @note C interface
  * @note Introduced with MPI-2
  * @ingroup env
- * Triggers an enter and exit event.
+ * Triggers an enter and exit event but only when within the measurement phase.
  * It wraps the MPI_Finalized call with enter and exit events.
  */
 int
 MPI_Finalized( int* flag )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ENV ) )
+    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ENV ) &&
+         SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_FINALIZED ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FINALIZED ], ( intptr_t )PMPI_Finalized );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Finalized( flag );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FINALIZED ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -410,6 +470,7 @@ MPI_Finalized( int* flag )
     {
         return_val = PMPI_Finalized( flag );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -418,24 +479,27 @@ MPI_Finalized( int* flag )
 #if HAVE( DECL_PMPI_INITIALIZED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_ENV ) && !defined( MPI_Initialized )
 /**
  * Measurement wrapper for MPI_Initialized
- * @note Auto-generated by wrapgen from template: SCOREP_Mpi_Std.w
  * @note C interface
  * @note Introduced with MPI-1
  * @ingroup env
- * Triggers an enter and exit event.
+ * Triggers an enter and exit event but only when within the measurement phase.
  * It wraps the MPI_Initialized call with enter and exit events.
  */
 int
 MPI_Initialized( int* flag )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
-    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ENV ) )
+    if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_ENV ) &&
+         SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_INITIALIZED ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_INITIALIZED ], ( intptr_t )PMPI_Initialized );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Initialized( flag );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_INITIALIZED ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -444,6 +508,7 @@ MPI_Initialized( int* flag )
     {
         return_val = PMPI_Initialized( flag );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }

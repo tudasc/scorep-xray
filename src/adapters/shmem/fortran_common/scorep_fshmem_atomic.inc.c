@@ -53,9 +53,15 @@
                                   DATATYPE *value,                          \
                                   int      *pe )                            \
     {                                                                       \
-        return shmem_ ## C_FUNCNAME ( target,                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
+                                                                            \
+        DATATYPE ret;                                                       \
+        ret = shmem_ ## C_FUNCNAME ( target,                                \
                                       *value,                               \
                                       *pe );                                \
+                                                                            \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
+        return ret;                                                         \
     }
 
 /* *INDENT-ON* */
@@ -95,9 +101,11 @@ SHMEM_FORTRAN_ATOMIC_ROUTINE_1( int8_fadd,  long,   long_fadd )
                                           C_DATATYPE *value,        \
                                           int        *pe )          \
     {                                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                          \
         shmem_ ## C_DATATYPE ## _add ( target,                      \
                                        *value,                      \
                                        *pe );                       \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                          \
     }
 
 /* *INDENT-ON* */
@@ -117,8 +125,10 @@ SHMEM_FORTRAN_ATOMIC_ADD_ROUTINE( int8, long )
     FSUB( shmem_ ## F_DATATYPE ## _inc )( C_DATATYPE *target,               \
                                           int        *pe )                  \
     {                                                                       \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
         shmem_ ## C_DATATYPE ## _inc ( target,                              \
                                        *pe );                               \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
     }
 
 /* *INDENT-ON* */
@@ -140,10 +150,16 @@ SHMEM_FORTRAN_ATOMIC_INCREMENT_ROUTINE( int8, long )
                                             C_DATATYPE *value,          \
                                             int        *pe )            \
     {                                                                   \
-        return shmem_ ## C_DATATYPE ## _cswap ( target,                 \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                              \
+                                                                        \
+        C_DATATYPE ret;                                                 \
+        ret = shmem_ ## C_DATATYPE ## _cswap ( target,                  \
                                                 *cond,                  \
                                                 *value,                 \
                                                 *pe );                  \
+                                                                        \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                              \
+        return ret;                                                     \
     }
 
 /* *INDENT-ON* */
@@ -163,8 +179,14 @@ SHMEM_FORTRAN_ATOMIC_CSWAP_ROUTINE( int8, long )
     FSUB( shmem_ ## F_DATATYPE ## _finc )( C_DATATYPE *target,              \
                                            int        *pe )                 \
     {                                                                       \
-        return shmem_ ## C_DATATYPE ## _finc ( target,                      \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
+                                                                            \
+        C_DATATYPE ret;                                                     \
+        ret = shmem_ ## C_DATATYPE ## _finc ( target,                       \
                                                *pe );                       \
+                                                                            \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
+        return ret;                                                         \
     }
 
 /* *INDENT-ON* */

@@ -50,6 +50,7 @@ libscorep_measurement_core_la_SOURCES =                            \
     $(SRC_ROOT)src/measurement/include/SCOREP_Libwrap_Macros.h     \
     $(SRC_ROOT)src/measurement/include/SCOREP_Memory.h             \
     $(SRC_ROOT)src/measurement/include/SCOREP_RuntimeManagement.h  \
+    $(SRC_ROOT)src/measurement/include/SCOREP_InMeasurement.h      \
     $(SRC_ROOT)src/measurement/include/SCOREP_Location.h           \
     $(SRC_ROOT)src/measurement/include/SCOREP_Types.h              \
     $(SRC_ROOT)src/measurement/include/SCOREP_Filter_Init.h        \
@@ -102,6 +103,68 @@ libscorep_measurement_core_la_CPPFLAGS = \
     -I$(INC_DIR_SUBSTRATES) \
     -I$(INC_DIR_DEFINITIONS) \
     @SCOREP_TIMER_CPPFLAGS@
+
+if HAVE_COMPILER_CONSTRUCTOR_SUPPORT
+
+object_DATA += scorep_constructor.$(OBJEXT)
+scorep_constructor_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/adapters/compiler \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_DIR_DEFINITIONS)
+scorep_constructor_CFLAGS = \
+    $(AM_CFLAGS) \
+    $(SCOREP_COMPILER_CONSTRUCTOR_CFLAGS)
+
+scorep_constructor.o: $(SRC_ROOT)src/measurement/scorep_constructor.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(scorep_constructor_CPPFLAGS) $(CPPFLAGS) $(scorep_constructor_CFLAGS) $(CFLAGS) -MT scorep_constructor.o -MD -MP -MF $(DEPDIR)/scorep_constructor.Tpo -c -o scorep_constructor.o `test -f '$(SRC_ROOT)src/measurement/scorep_constructor.c' || echo '$(srcdir)/'`$(SRC_ROOT)src/measurement/scorep_constructor.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/scorep_constructor.Tpo $(DEPDIR)/scorep_constructor.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(SRC_ROOT)src/measurement/scorep_constructor.c' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	object='scorep_constructor.o' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(scorep_constructor_CPPFLAGS) $(CPPFLAGS) $(scorep_constructor_CFLAGS) $(CFLAGS) -c -o scorep_constructor.o `test -f '$(SRC_ROOT)src/measurement/scorep_constructor.c' || echo '$(srcdir)/'`$(SRC_ROOT)src/measurement/scorep_constructor.c
+
+scorep_constructor.obj: $(SRC_ROOT)src/measurement/scorep_constructor.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(scorep_constructor_CPPFLAGS) $(CPPFLAGS) $(scorep_constructor_CFLAGS) $(CFLAGS) -MT scorep_constructor.obj -MD -MP -MF $(DEPDIR)/scorep_constructor.Tpo -c -o scorep_constructor.obj `if test -f '$(SRC_ROOT)src/measurement/scorep_constructor.c'; then $(CYGPATH_W) '$(SRC_ROOT)src/measurement/scorep_constructor.c'; else $(CYGPATH_W) '$(srcdir)/$(SRC_ROOT)src/measurement/scorep_constructor.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/scorep_constructor.Tpo $(DEPDIR)/scorep_constructor.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(SRC_ROOT)src/measurement/scorep_constructor.c' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	object='scorep_constructor.obj' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(scorep_constructor_CPPFLAGS) $(CPPFLAGS) $(scorep_constructor_CFLAGS) $(CFLAGS) -c -o scorep_constructor.obj `if test -f '$(SRC_ROOT)src/measurement/scorep_constructor.c'; then $(CYGPATH_W) '$(SRC_ROOT)src/measurement/scorep_constructor.c'; else $(CYGPATH_W) '$(srcdir)/$(SRC_ROOT)src/measurement/scorep_constructor.c'; fi`
+
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scorep_constructor.Po@am__quote@
+
+if BUILD_SHARED_LIBRARIES
+
+lib_LTLIBRARIES += libscorep_constructor.la
+libscorep_constructor_la_SOURCES = \
+    $(SRC_ROOT)src/measurement/scorep_constructor.c
+libscorep_constructor_la_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
+    -I$(PUBLIC_INC_DIR) \
+    -I$(INC_ROOT)src/adapters/compiler \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_DIR_DEFINITIONS)
+libscorep_constructor_la_CFLAGS = \
+    $(AM_CFLAGS) \
+    $(SCOREP_COMPILER_CONSTRUCTOR_CFLAGS)
+libscorep_constructor_la_LDFLAGS = \
+    $(AM_LDFLAGS) \
+    -shared
+
+endif BUILD_SHARED_LIBRARIES
+
+endif HAVE_COMPILER_CONSTRUCTOR_SUPPORT
+
+EXTRA_DIST += \
+    $(SRC_ROOT)src/measurement/scorep_constructor.c
 
 ## paradigm non mpp
 

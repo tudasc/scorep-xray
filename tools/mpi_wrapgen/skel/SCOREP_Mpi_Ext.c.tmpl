@@ -8,6 +8,7 @@
 #include <config.h>
 #include "SCOREP_Mpi.h"
 #include <UTILS_Error.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_RuntimeManagement.h>
 
@@ -27,6 +28,7 @@
 int MPI_Abort(MPI_Comm comm,
               int      errorcode)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int return_val;
 
   UTILS_WARNING("Explicit MPI_Abort call abandoning the SCOREP measurement.");
@@ -35,9 +37,11 @@ int MPI_Abort(MPI_Comm comm,
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_EXT))
   {
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_ABORT]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_ABORT], ( intptr_t )PMPI_Abort);
 
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Abort(comm, errorcode);
+    SCOREP_EXIT_WRAPPED_REGION();
 
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_ABORT]);
     SCOREP_MPI_EVENT_GEN_ON();
@@ -46,6 +50,7 @@ int MPI_Abort(MPI_Comm comm,
   {
     return_val = PMPI_Abort(comm, errorcode);
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }

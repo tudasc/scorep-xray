@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2014,
@@ -28,14 +28,5 @@
 /* The initialization struct for the SHMEM adapter */
 const SCOREP_Subsystem SCOREP_Subsystem_ShmemAdapter =
 {
-    .subsystem_name              = "SHMEM (config variables only)",
-    .subsystem_register          = NULL,
-    .subsystem_init              = NULL,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = NULL,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name = "SHMEM (config variables only)",
 };

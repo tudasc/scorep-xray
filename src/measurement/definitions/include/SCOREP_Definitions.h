@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -320,6 +320,8 @@ scorep_definitions_manager_entry_free_mapping( scorep_definitions_manager_entry*
 #include "scorep_definitions_marker.h"
 #include "scorep_definitions_attribute.h"
 #include "scorep_definitions_location_property.h"
+#include "scorep_definitions_source_code_location.h"
+#include "scorep_definitions_calling_context.h"
 
 /* super object for all definitions */
 SCOREP_DEFINE_DEFINITION_TYPE( Any )
@@ -347,7 +349,10 @@ SCOREP_Definitions_HandleToId( SCOREP_AnyHandle handle );
     DEF_WITH_MAPPING( SamplingSet, sampling_set ) \
     DEF_WITH_MAPPING( Parameter, parameter ) \
     DEF_WITH_MAPPING( Callpath, callpath ) \
-    DEF_WITH_MAPPING( Attribute, attribute )
+    DEF_WITH_MAPPING( Attribute, attribute ) \
+    DEF_WITH_MAPPING( SourceCodeLocation, source_code_location ) \
+    DEF_WITH_MAPPING( CallingContext, calling_context ) \
+    DEF_WITH_MAPPING( InterruptGenerator, interrupt_generator )
 
 
 /**
@@ -392,6 +397,9 @@ struct SCOREP_DefinitionManager
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( property );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( attribute );
     SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( location_property );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( source_code_location );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( calling_context );
+    SCOREP_DEFINITIONS_MANAGER_DECLARE_MEMBER( interrupt_generator );
 
     /** The pager manager where all definition objects resides */
     struct SCOREP_Allocator_PageManager* page_manager;

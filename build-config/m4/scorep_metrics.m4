@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -34,9 +34,10 @@
 AC_DEFUN([SCOREP_METRICS_CHECK], [
     _SCOREP_METRICS_CHECK_LIBPAPI
     _SCOREP_METRICS_CHECK_RUSAGE
+    _SCOREP_METRICS_CHECK_PERF
 ]) # AC_DEFUN(SCOREP_METRICS_CHECK)
 
-AC_DEFUN([_SCOREP_METRICS_CHECK_LIBPAPI], [
+AC_DEFUN_ONCE([_SCOREP_METRICS_CHECK_LIBPAPI], [
 
 dnl Don't check for PAPI on the frontend.
 AS_IF([test "x$ac_scorep_backend" = xno], [AC_MSG_ERROR([cannot check for PAPI on frontend.])])
@@ -201,4 +202,151 @@ AFS_SUMMARY([getrusage support], [${ac_scorep_getrusage}])
 AS_IF([test "x${ac_scorep_rusage_thread}" = "xyes"],
       [AFS_SUMMARY([RUSAGE_THREAD support], [${ac_scorep_rusage_thread}, using ${ac_scorep_rusage_cppflags}])],
       [AFS_SUMMARY([RUSAGE_THREAD support], [${ac_scorep_rusage_thread}])])
+])
+
+
+
+AC_DEFUN_ONCE([_SCOREP_METRICS_CHECK_PERF], [
+AC_REQUIRE([AC_SCOREP_POSIX_FUNCTIONS])
+
+dnl Do not check for prerequisite of metric perf on the frontend.
+AS_IF([test "x$ac_scorep_backend" = xno], [AC_MSG_ERROR([cannot check for metric perf on frontend.])])
+
+AC_LANG_PUSH([C])
+
+##
+## Check for perf headers and selected metrics
+##
+has_metric_perf_headers="yes"
+AC_CHECK_HEADERS([linux/perf_event.h],
+                 [],
+                 [has_metric_perf_headers="no"])
+AC_CHECK_DECLS([PERF_COUNT_HW_STALLED_CYCLES_FRONTEND, PERF_COUNT_HW_STALLED_CYCLES_BACKEND, PERF_COUNT_SW_ALIGNMENT_FAULTS, PERF_COUNT_SW_EMULATION_FAULTS],
+               [], [], [[#include <linux/perf_event.h>]])
+
+##
+## Check for syscall
+##
+has_syscall_support="yes"
+AC_CHECK_HEADERS([unistd.h sys/syscall.h],
+                 [],
+                 [has_syscall_support="no"])
+AS_IF([test "x${has_syscall_support}" = "xyes"],
+      [AC_CHECK_DECL([syscall],[],[],[[
+        #include <unistd.h>
+        #include <sys/syscall.h>
+      ]])])
+AS_IF([test "x${has_syscall_support}" = "xyes"],
+      [AC_CHECK_FUNC([syscall],
+                     [],
+                     [has_syscall_support="no"])])
+## (1) Try to link 'int syscall( int, ...)'
+## (2) If this fails, try to link 'long int syscall( long int, ...)'
+AS_IF([test "x${has_syscall_support}" = "xyes"],
+      [AC_MSG_CHECKING([for 'int syscall( int, ...)'])
+       AC_LINK_IFELSE([AC_LANG_SOURCE([
+                        #include <unistd.h>
+                        #include <sys/syscall.h>
+
+                        #if !HAVE_DECL_syscall
+                        int syscall(int number, ...);
+                        #endif
+
+                        int main()
+                        {
+                            int result = syscall(0);
+                            return 0;
+                        }
+                      ])],
+                      [AC_MSG_RESULT([yes])],
+                      [AC_MSG_RESULT([no])
+                       AC_MSG_CHECKING([for 'long int syscall( long int, ...)'])
+                       AC_LINK_IFELSE([AC_LANG_SOURCE([
+                                        #include <unistd.h>
+                                        #include <sys/syscall.h>
+
+                                        #if !HAVE_DECL_syscall
+                                        long int syscall(long int number, ...);
+                                        #endif
+
+                                        int main()
+                                        {
+                                            int result = syscall(0);
+                                            return 0;
+                                        }
+                                      ])],
+                                      [AC_MSG_RESULT([yes])],
+                                      [AC_MSG_RESULT([no])
+                                       has_syscall_support="no"])],
+                      [has_syscall_support="no"])])
+AS_IF([test "x${has_syscall_support}" = "xyes"],
+      [AC_MSG_CHECKING([for __NR_perf_event_open])
+       AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+                                            #include <unistd.h>
+                                            #include <sys/syscall.h>
+                                          ]],
+                                          [[
+                                            #ifndef __NR_sched_setaffinity
+                                            #oops__NR_sched_setaffinity_not_found
+                                            #endif
+                                          ]])],
+                         [AC_MSG_RESULT([yes])],
+                         [AC_MSG_RESULT([no])
+                          has_syscall_support="no"])])
+
+##
+## Check for ioctl
+##
+## The manpage says:
+## int ioctl(int d, int request, ...);
+## sys/ioctl.h says:
+## int ioctl(int d, unsigned long int request, ...);
+has_ioctl_support="yes"
+AC_CHECK_HEADER([sys/ioctl.h],
+                [],
+                [has_ioctl_support="no"])
+AS_IF([test "x${has_ioctl_support}" = "xyes"],
+      [AC_CHECK_FUNC([ioctl],
+                     [],
+                     [has_ioctl_support="no"])])
+AS_IF([test "x${has_ioctl_support}" = "xyes"],
+      [AC_LINK_IFELSE([AC_LANG_SOURCE([
+                        #include <sys/ioctl.h>
+
+                        int main()
+                        {
+                            int result = ioctl(0, 0);
+                            return 0;
+                        }
+                      ])],
+                      [],
+                      [has_ioctl_support="no"])])
+
+AC_LANG_POP([C])
+
+## Check availability of POSIX read and close functions,
+## corresponding AM_CONDITIONALs provided by AC_SCOREP_POSIX_FUNCTIONS
+has_posix_functions="yes"
+AM_COND_IF([HAVE_READ],
+           [],
+           [has_posix_functions="no"])
+AM_COND_IF([HAVE_CLOSE],
+           [],
+           [has_posix_functions="no"])
+
+ac_scorep_have_perf="no"
+if    test "x${has_metric_perf_headers}" = "xyes" \
+   && test "x${has_syscall_support}" = "xyes"     \
+   && test "x${has_ioctl_support}" = "xyes"       \
+   && test "x${has_posix_functions}" = "xyes"; then
+    ac_scorep_have_perf="yes"
+fi
+
+AC_SCOREP_COND_HAVE([METRIC_PERF],
+                    [test "x${ac_scorep_have_perf}" = "xyes"],
+                    [Defined if metric perf support is available.],
+                    [metric_perf_summary="yes"],
+                    [metric_perf_summary="no"])
+
+AFS_SUMMARY([metric perf support], [${metric_perf_summary}])
 ])

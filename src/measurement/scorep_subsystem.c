@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -112,6 +112,44 @@ scorep_subsystems_initialize( void )
 }
 
 
+void
+scorep_subsystems_begin( void )
+{
+    /* call begin functions for all subsystems */
+    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
+    {
+        if ( !scorep_subsystems[ i ]->subsystem_begin )
+        {
+            continue;
+        }
+
+        SCOREP_ErrorCode error = scorep_subsystems[ i ]->subsystem_begin();
+        if ( SCOREP_SUCCESS != error )
+        {
+            UTILS_ERROR( error, "Subsystem %s can't begin measurement",
+                         scorep_subsystems[ i ]->subsystem_name );
+            _Exit( EXIT_FAILURE );
+        }
+    }
+}
+
+
+void
+scorep_subsystems_end( void )
+{
+    /* call end functions for all subsystems */
+    for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
+    {
+        if ( !scorep_subsystems[ i ]->subsystem_end )
+        {
+            continue;
+        }
+
+        scorep_subsystems[ i ]->subsystem_end();
+    }
+}
+
+
 /**
  * Initialize subsystems for existing locations.
  */
@@ -140,6 +178,57 @@ scorep_subsystems_initialize_location( SCOREP_Location* newLocation,
             fprintf( stderr, "[Score-P] successfully initialized location for %s subsystem\n",
                      scorep_subsystems[ i ]->subsystem_name );
         }
+    }
+}
+
+
+void
+scorep_subsystems_activate_cpu_location( SCOREP_Location*        locationData,
+                                         SCOREP_Location*        parentLocation,
+                                         uint32_t                forkSequenceCount,
+                                         SCOREP_CPULocationPhase phase )
+{
+    /* call initialization functions for all subsystems */
+    for ( size_t i = 0; i < scorep_number_of_subsystems; i++ )
+    {
+        if ( !scorep_subsystems[ i ]->subsystem_activate_cpu_location )
+        {
+            continue;
+        }
+
+        SCOREP_ErrorCode error =
+            scorep_subsystems[ i ]->subsystem_activate_cpu_location(
+                locationData,
+                parentLocation,
+                forkSequenceCount,
+                phase );
+        if ( SCOREP_SUCCESS != error )
+        {
+            UTILS_ERROR( error, "Can't activate CPU location for %s subsystem",
+                         scorep_subsystems[ i ]->subsystem_name );
+            _Exit( EXIT_FAILURE );
+        }
+    }
+}
+
+
+void
+scorep_subsystems_deactivate_cpu_location( SCOREP_Location*        locationData,
+                                           SCOREP_Location*        parentLocation,
+                                           SCOREP_CPULocationPhase phase )
+{
+    /* call initialization functions for all subsystems */
+    for ( size_t i = scorep_number_of_subsystems; i-- > 0; )
+    {
+        if ( !scorep_subsystems[ i ]->subsystem_deactivate_cpu_location )
+        {
+            continue;
+        }
+
+        scorep_subsystems[ i ]->subsystem_deactivate_cpu_location(
+            locationData,
+            parentLocation,
+            phase );
     }
 }
 

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -97,7 +97,7 @@ SCOREP_Definitions_NewGroup( SCOREP_GroupType type,
         members,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "" ),
+            name ? name : "", NULL ),
         false /* no need to converted from uint32_t */ );
 
     SCOREP_Definitions_Unlock();
@@ -124,7 +124,7 @@ SCOREP_Definitions_NewGroupFrom32( SCOREP_GroupType type,
         ( const uint64_t* )members,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "" ),
+            name ? name : "", NULL ),
         true /* need to be converted from uint32_t */ );
 
     SCOREP_Definitions_Unlock();
@@ -146,14 +146,14 @@ SCOREP_Definitions_NewUnifiedGroup( SCOREP_GroupType type,
     UTILS_ASSERT( scorep_unified_definition_manager );
 
     return define_group(
-               scorep_unified_definition_manager,
-               type,
-               numberOfMembers,
-               ( const uint64_t* )members,
-               scorep_definitions_new_string(
-                   scorep_unified_definition_manager,
-                   name ),
-               false /* no need to converted from uint32_t */ );
+        scorep_unified_definition_manager,
+        type,
+        numberOfMembers,
+        ( const uint64_t* )members,
+        scorep_definitions_new_string(
+            scorep_unified_definition_manager,
+            name, NULL ),
+        false /* no need to converted from uint32_t */ );
 }
 
 /**
@@ -170,14 +170,14 @@ SCOREP_Definitions_NewUnifiedGroupFrom32( SCOREP_GroupType type,
     UTILS_ASSERT( scorep_unified_definition_manager );
 
     return define_group(
-               scorep_unified_definition_manager,
-               type,
-               numberOfMembers,
-               ( const uint64_t* )members,
-               scorep_definitions_new_string(
-                   scorep_unified_definition_manager,
-                   name ? name : "" ),
-               true /* need to be converted from uint32_t */ );
+        scorep_unified_definition_manager,
+        type,
+        numberOfMembers,
+        ( const uint64_t* )members,
+        scorep_definitions_new_string(
+            scorep_unified_definition_manager,
+            name ? name : "", NULL ),
+        true /* need to be converted from uint32_t */ );
 }
 
 

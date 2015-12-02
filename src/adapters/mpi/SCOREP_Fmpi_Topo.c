@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -441,7 +441,12 @@
 void
 FSUB( MPI_Cart_coords )( MPI_Comm* comm, int* rank, int* maxdims, int* coords, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cart_coords( *comm, *rank, *maxdims, coords );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CART_CREATE )
@@ -455,7 +460,12 @@ FSUB( MPI_Cart_coords )( MPI_Comm* comm, int* rank, int* maxdims, int* coords, i
 void
 FSUB( MPI_Cart_create )( MPI_Comm* comm_old, int* ndims, int* dims, int* periods, int* reorder, MPI_Comm* comm_cart, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cart_create( *comm_old, *ndims, dims, periods, *reorder, comm_cart );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CART_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_get )
@@ -469,7 +479,12 @@ FSUB( MPI_Cart_create )( MPI_Comm* comm_old, int* ndims, int* dims, int* periods
 void
 FSUB( MPI_Cart_get )( MPI_Comm* comm, int* maxdims, int* dims, int* periods, int* coords, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cart_get( *comm, *maxdims, dims, periods, coords );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CART_MAP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_map )
@@ -483,7 +498,12 @@ FSUB( MPI_Cart_get )( MPI_Comm* comm, int* maxdims, int* dims, int* periods, int
 void
 FSUB( MPI_Cart_map )( MPI_Comm* comm, int* ndims, int* dims, int* periods, int* newrank, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cart_map( *comm, *ndims, dims, periods, newrank );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CART_RANK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_rank )
@@ -497,7 +517,12 @@ FSUB( MPI_Cart_map )( MPI_Comm* comm, int* ndims, int* dims, int* periods, int* 
 void
 FSUB( MPI_Cart_rank )( MPI_Comm* comm, int* coords, int* rank, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cart_rank( *comm, coords, rank );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CART_SHIFT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_shift )
@@ -511,7 +536,12 @@ FSUB( MPI_Cart_rank )( MPI_Comm* comm, int* coords, int* rank, int* ierr )
 void
 FSUB( MPI_Cart_shift )( MPI_Comm* comm, int* direction, int* disp, int* rank_source, int* rank_dest, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cart_shift( *comm, *direction, *disp, rank_source, rank_dest );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CART_SUB )
@@ -525,7 +555,12 @@ FSUB( MPI_Cart_shift )( MPI_Comm* comm, int* direction, int* disp, int* rank_sou
 void
 FSUB( MPI_Cart_sub )( MPI_Comm* comm, int* remain_dims, MPI_Comm* newcomm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cart_sub( *comm, remain_dims, newcomm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CARTDIM_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cartdim_get )
@@ -539,7 +574,12 @@ FSUB( MPI_Cart_sub )( MPI_Comm* comm, int* remain_dims, MPI_Comm* newcomm, int* 
 void
 FSUB( MPI_Cartdim_get )( MPI_Comm* comm, int* ndims, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cartdim_get( *comm, ndims );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_DIMS_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dims_create )
@@ -553,7 +593,12 @@ FSUB( MPI_Cartdim_get )( MPI_Comm* comm, int* ndims, int* ierr )
 void
 FSUB( MPI_Dims_create )( int* nnodes, int* ndims, int* dims, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Dims_create( *nnodes, *ndims, dims );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_DIST_GRAPH_CREATE ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_create )
@@ -567,6 +612,9 @@ FSUB( MPI_Dims_create )( int* nnodes, int* ndims, int* dims, int* ierr )
 void
 FSUB( MPI_Dist_graph_create )( MPI_Comm* comm_old, int* n, int sources[], int degrees[], int destinations[], int weights[], MPI_Info* info, int* reorder, MPI_Comm* newcomm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_UNWEIGHTED )
     if ( weights == scorep_mpi_fortran_unweighted )
     {
@@ -576,6 +624,8 @@ FSUB( MPI_Dist_graph_create )( MPI_Comm* comm_old, int* n, int sources[], int de
 
 
     *ierr = MPI_Dist_graph_create( *comm_old, *n, sources, degrees, destinations, weights, *info, *reorder, newcomm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_DIST_GRAPH_CREATE_ADJACENT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_create_adjacent )
@@ -589,6 +639,9 @@ FSUB( MPI_Dist_graph_create )( MPI_Comm* comm_old, int* n, int sources[], int de
 void
 FSUB( MPI_Dist_graph_create_adjacent )( MPI_Comm* comm_old, int* indegree, int sources[], int sourceweights[], int* outdegree, int destinations[], int destweights[], MPI_Info* info, int* reorder, MPI_Comm* newcomm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_UNWEIGHTED )
     if ( sourceweights == scorep_mpi_fortran_unweighted )
     {
@@ -604,6 +657,8 @@ FSUB( MPI_Dist_graph_create_adjacent )( MPI_Comm* comm_old, int* indegree, int s
 
 
     *ierr = MPI_Dist_graph_create_adjacent( *comm_old, *indegree, sources, sourceweights, *outdegree, destinations, destweights, *info, *reorder, newcomm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_DIST_GRAPH_NEIGHBORS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_neighbors )
@@ -617,6 +672,9 @@ FSUB( MPI_Dist_graph_create_adjacent )( MPI_Comm* comm_old, int* indegree, int s
 void
 FSUB( MPI_Dist_graph_neighbors )( MPI_Comm* comm, int* maxindegree, int sources[], int sourceweights[], int* maxoutdegree, int destinations[], int destweights[], int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_UNWEIGHTED )
     if ( sourceweights == scorep_mpi_fortran_unweighted )
     {
@@ -646,6 +704,8 @@ FSUB( MPI_Dist_graph_neighbors )( MPI_Comm* comm, int* maxindegree, int sources[
         destweights = scorep_mpi_fortran_unweighted;
     }
     #endif
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_DIST_GRAPH_NEIGHBORS_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_neighbors_count )
@@ -659,7 +719,12 @@ FSUB( MPI_Dist_graph_neighbors )( MPI_Comm* comm, int* maxindegree, int sources[
 void
 FSUB( MPI_Dist_graph_neighbors_count )( MPI_Comm* comm, int* indegree, int* outdegree, int* weighted, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Dist_graph_neighbors_count( *comm, indegree, outdegree, weighted );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GRAPH_CREATE )
@@ -673,7 +738,12 @@ FSUB( MPI_Dist_graph_neighbors_count )( MPI_Comm* comm, int* indegree, int* outd
 void
 FSUB( MPI_Graph_create )( MPI_Comm* comm_old, int* nnodes, int* index, int* edges, int* reorder, MPI_Comm* newcomm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Graph_create( *comm_old, *nnodes, index, edges, *reorder, newcomm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GRAPH_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_get )
@@ -687,7 +757,12 @@ FSUB( MPI_Graph_create )( MPI_Comm* comm_old, int* nnodes, int* index, int* edge
 void
 FSUB( MPI_Graph_get )( MPI_Comm* comm, int* maxindex, int* maxedges, int* index, int* edges, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Graph_get( *comm, *maxindex, *maxedges, index, edges );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GRAPH_MAP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_map )
@@ -701,7 +776,12 @@ FSUB( MPI_Graph_get )( MPI_Comm* comm, int* maxindex, int* maxedges, int* index,
 void
 FSUB( MPI_Graph_map )( MPI_Comm* comm, int* nnodes, int* index, int* edges, int* newrank, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Graph_map( *comm, *nnodes, index, edges, newrank );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GRAPH_NEIGHBORS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_neighbors )
@@ -715,7 +795,12 @@ FSUB( MPI_Graph_map )( MPI_Comm* comm, int* nnodes, int* index, int* edges, int*
 void
 FSUB( MPI_Graph_neighbors )( MPI_Comm* comm, int* rank, int* maxneighbors, int* neighbors, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Graph_neighbors( *comm, *rank, *maxneighbors, neighbors );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GRAPH_NEIGHBORS_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_neighbors_count )
@@ -729,7 +814,12 @@ FSUB( MPI_Graph_neighbors )( MPI_Comm* comm, int* rank, int* maxneighbors, int* 
 void
 FSUB( MPI_Graph_neighbors_count )( MPI_Comm* comm, int* rank, int* nneighbors, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Graph_neighbors_count( *comm, *rank, nneighbors );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GRAPHDIMS_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graphdims_get )
@@ -743,7 +833,12 @@ FSUB( MPI_Graph_neighbors_count )( MPI_Comm* comm, int* rank, int* nneighbors, i
 void
 FSUB( MPI_Graphdims_get )( MPI_Comm* comm, int* nnodes, int* nedges, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Graphdims_get( *comm, nnodes, nedges );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INEIGHBOR_ALLGATHER )
@@ -757,6 +852,9 @@ FSUB( MPI_Graphdims_get )( MPI_Comm* comm, int* nnodes, int* nedges, int* ierr )
 void
 FSUB( MPI_Ineighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
         #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
@@ -772,6 +870,8 @@ FSUB( MPI_Ineighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* se
 
 
     *ierr = MPI_Ineighbor_allgather( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_allgatherv )
@@ -785,6 +885,9 @@ FSUB( MPI_Ineighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* se
 void
 FSUB( MPI_Ineighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
         #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
@@ -800,6 +903,8 @@ FSUB( MPI_Ineighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* s
 
 
     *ierr = MPI_Ineighbor_allgatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALL ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoall )
@@ -813,6 +918,9 @@ FSUB( MPI_Ineighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* s
 void
 FSUB( MPI_Ineighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -834,6 +942,8 @@ FSUB( MPI_Ineighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sen
 
 
     *ierr = MPI_Ineighbor_alltoall( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoallv )
@@ -847,6 +957,9 @@ FSUB( MPI_Ineighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sen
 void
 FSUB( MPI_Ineighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* rdispls, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -868,6 +981,8 @@ FSUB( MPI_Ineighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, M
 
 
     *ierr = MPI_Ineighbor_alltoallv( sendbuf, sendcounts, sdispls, *sendtype, recvbuf, recvcounts, rdispls, *recvtype, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALLW ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoallw )
@@ -881,6 +996,9 @@ FSUB( MPI_Ineighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, M
 void
 FSUB( MPI_Ineighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdispls[], MPI_Datatype sendtypes[], void* recvbuf, int recvcounts[], MPI_Aint rdispls[], MPI_Datatype recvtypes[], MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -902,6 +1020,8 @@ FSUB( MPI_Ineighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdisp
 
 
     *ierr = MPI_Ineighbor_alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHER )
@@ -915,6 +1035,9 @@ FSUB( MPI_Ineighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdisp
 void
 FSUB( MPI_Neighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -936,6 +1059,8 @@ FSUB( MPI_Neighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sen
 
 
     *ierr = MPI_Neighbor_allgather( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgatherv )
@@ -949,6 +1074,9 @@ FSUB( MPI_Neighbor_allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sen
 void
 FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -970,6 +1098,8 @@ FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* se
 
 
     *ierr = MPI_Neighbor_allgatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALL ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoall )
@@ -983,6 +1113,9 @@ FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* se
 void
 FSUB( MPI_Neighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1004,6 +1137,8 @@ FSUB( MPI_Neighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* send
 
 
     *ierr = MPI_Neighbor_alltoall( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallv )
@@ -1017,6 +1152,9 @@ FSUB( MPI_Neighbor_alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* send
 void
 FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* rdispls, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1038,6 +1176,8 @@ FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MP
 
 
     *ierr = MPI_Neighbor_alltoallv( sendbuf, sendcounts, sdispls, *sendtype, recvbuf, recvcounts, rdispls, *recvtype, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLW ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallw )
@@ -1051,6 +1191,9 @@ FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MP
 void
 FSUB( MPI_Neighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdispls[], MPI_Datatype sendtypes[], void* recvbuf, int recvcounts[], MPI_Aint rdispls[], MPI_Datatype recvtypes[], MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1072,6 +1215,8 @@ FSUB( MPI_Neighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdispl
 
 
     *ierr = MPI_Neighbor_alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TOPO_TEST ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Topo_test )
@@ -1085,7 +1230,12 @@ FSUB( MPI_Neighbor_alltoallw )( void* sendbuf, int sendcounts[], MPI_Aint sdispl
 void
 FSUB( MPI_Topo_test )( MPI_Comm* comm, int* status, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Topo_test( *comm, status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1111,6 +1261,7 @@ FSUB( MPI_Neighbor_alltoallw )( void*     sendbuf,
                                 MPI_Fint* comm,
                                 MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype* csendtypes;
     MPI_Datatype* crecvtypes;
     MPI_Comm      ccomm;
@@ -1153,6 +1304,7 @@ FSUB( MPI_Neighbor_alltoallw )( void*     sendbuf,
 
     free( csendtypes );
     free( crecvtypes );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1177,6 +1329,7 @@ FSUB( MPI_INeighbor_alltoallw )( void*     sendbuf,
                                  MPI_Fint* request,
                                  MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype* csendtypes;
     MPI_Datatype* crecvtypes;
     MPI_Comm      ccomm;
@@ -1222,6 +1375,7 @@ FSUB( MPI_INeighbor_alltoallw )( void*     sendbuf,
 
     free( csendtypes );
     free( crecvtypes );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1237,7 +1391,12 @@ FSUB( MPI_INeighbor_alltoallw )( void*     sendbuf,
 void
 FSUB( MPI_Cart_coords )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* maxdims, MPI_Fint* coords, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cart_coords( PMPI_Comm_f2c( *comm ), *rank, *maxdims, coords );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CART_CREATE )
@@ -1252,12 +1411,14 @@ FSUB( MPI_Cart_coords )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* maxdims, MPI_
 void
 FSUB( MPI_Cart_create )( MPI_Fint* comm_old, MPI_Fint* ndims, MPI_Fint* dims, MPI_Fint* periods, MPI_Fint* reorder, MPI_Fint* comm_cart, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_comm_cart;
 
 
     *ierr = MPI_Cart_create( PMPI_Comm_f2c( *comm_old ), *ndims, dims, periods, *reorder, &c_comm_cart );
 
     *comm_cart = PMPI_Comm_c2f( c_comm_cart );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CART_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_get )
@@ -1272,7 +1433,12 @@ FSUB( MPI_Cart_create )( MPI_Fint* comm_old, MPI_Fint* ndims, MPI_Fint* dims, MP
 void
 FSUB( MPI_Cart_get )( MPI_Fint* comm, MPI_Fint* maxdims, MPI_Fint* dims, MPI_Fint* periods, MPI_Fint* coords, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cart_get( PMPI_Comm_f2c( *comm ), *maxdims, dims, periods, coords );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CART_MAP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_map )
@@ -1287,7 +1453,12 @@ FSUB( MPI_Cart_get )( MPI_Fint* comm, MPI_Fint* maxdims, MPI_Fint* dims, MPI_Fin
 void
 FSUB( MPI_Cart_map )( MPI_Fint* comm, MPI_Fint* ndims, MPI_Fint* dims, MPI_Fint* periods, MPI_Fint* newrank, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cart_map( PMPI_Comm_f2c( *comm ), *ndims, dims, periods, newrank );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CART_RANK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_rank )
@@ -1302,7 +1473,12 @@ FSUB( MPI_Cart_map )( MPI_Fint* comm, MPI_Fint* ndims, MPI_Fint* dims, MPI_Fint*
 void
 FSUB( MPI_Cart_rank )( MPI_Fint* comm, MPI_Fint* coords, MPI_Fint* rank, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cart_rank( PMPI_Comm_f2c( *comm ), coords, rank );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CART_SHIFT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cart_shift )
@@ -1317,7 +1493,12 @@ FSUB( MPI_Cart_rank )( MPI_Fint* comm, MPI_Fint* coords, MPI_Fint* rank, MPI_Fin
 void
 FSUB( MPI_Cart_shift )( MPI_Fint* comm, MPI_Fint* direction, MPI_Fint* disp, MPI_Fint* rank_source, MPI_Fint* rank_dest, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cart_shift( PMPI_Comm_f2c( *comm ), *direction, *disp, rank_source, rank_dest );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CART_SUB )
@@ -1332,12 +1513,14 @@ FSUB( MPI_Cart_shift )( MPI_Fint* comm, MPI_Fint* direction, MPI_Fint* disp, MPI
 void
 FSUB( MPI_Cart_sub )( MPI_Fint* comm, MPI_Fint* remain_dims, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_newcomm;
 
 
     *ierr = MPI_Cart_sub( PMPI_Comm_f2c( *comm ), remain_dims, &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CARTDIM_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Cartdim_get )
@@ -1352,7 +1535,12 @@ FSUB( MPI_Cart_sub )( MPI_Fint* comm, MPI_Fint* remain_dims, MPI_Fint* newcomm, 
 void
 FSUB( MPI_Cartdim_get )( MPI_Fint* comm, MPI_Fint* ndims, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cartdim_get( PMPI_Comm_f2c( *comm ), ndims );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_DIMS_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dims_create )
@@ -1367,7 +1555,12 @@ FSUB( MPI_Cartdim_get )( MPI_Fint* comm, MPI_Fint* ndims, MPI_Fint* ierr )
 void
 FSUB( MPI_Dims_create )( MPI_Fint* nnodes, MPI_Fint* ndims, MPI_Fint* dims, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Dims_create( *nnodes, *ndims, dims );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_DIST_GRAPH_CREATE ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_create )
@@ -1382,6 +1575,7 @@ FSUB( MPI_Dims_create )( MPI_Fint* nnodes, MPI_Fint* ndims, MPI_Fint* dims, MPI_
 void
 FSUB( MPI_Dist_graph_create )( MPI_Fint* comm_old, MPI_Fint* n, MPI_Fint* sources, MPI_Fint* degrees, MPI_Fint* destinations, MPI_Fint* weights, MPI_Fint* info, MPI_Fint* reorder, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_newcomm;
 
 
@@ -1396,6 +1590,7 @@ FSUB( MPI_Dist_graph_create )( MPI_Fint* comm_old, MPI_Fint* n, MPI_Fint* source
     *ierr = MPI_Dist_graph_create( PMPI_Comm_f2c( *comm_old ), *n, sources, degrees, destinations, weights, PMPI_Info_f2c( *info ), *reorder, &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_DIST_GRAPH_CREATE_ADJACENT ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_create_adjacent )
@@ -1410,6 +1605,7 @@ FSUB( MPI_Dist_graph_create )( MPI_Fint* comm_old, MPI_Fint* n, MPI_Fint* source
 void
 FSUB( MPI_Dist_graph_create_adjacent )( MPI_Fint* comm_old, MPI_Fint* indegree, MPI_Fint* sources, MPI_Fint* sourceweights, MPI_Fint* outdegree, MPI_Fint* destinations, MPI_Fint* destweights, MPI_Fint* info, MPI_Fint* reorder, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_newcomm;
 
 
@@ -1430,6 +1626,7 @@ FSUB( MPI_Dist_graph_create_adjacent )( MPI_Fint* comm_old, MPI_Fint* indegree, 
     *ierr = MPI_Dist_graph_create_adjacent( PMPI_Comm_f2c( *comm_old ), *indegree, sources, sourceweights, *outdegree, destinations, destweights, PMPI_Info_f2c( *info ), *reorder, &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_DIST_GRAPH_NEIGHBORS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_neighbors )
@@ -1444,6 +1641,9 @@ FSUB( MPI_Dist_graph_create_adjacent )( MPI_Fint* comm_old, MPI_Fint* indegree, 
 void
 FSUB( MPI_Dist_graph_neighbors )( MPI_Fint* comm, MPI_Fint* maxindegree, MPI_Fint* sources, MPI_Fint* sourceweights, MPI_Fint* maxoutdegree, MPI_Fint* destinations, MPI_Fint* destweights, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_UNWEIGHTED )
     if ( sourceweights == scorep_mpi_fortran_unweighted )
     {
@@ -1473,6 +1673,8 @@ FSUB( MPI_Dist_graph_neighbors )( MPI_Fint* comm, MPI_Fint* maxindegree, MPI_Fin
         destweights = scorep_mpi_fortran_unweighted;
     }
     #endif
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_DIST_GRAPH_NEIGHBORS_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Dist_graph_neighbors_count )
@@ -1487,7 +1689,12 @@ FSUB( MPI_Dist_graph_neighbors )( MPI_Fint* comm, MPI_Fint* maxindegree, MPI_Fin
 void
 FSUB( MPI_Dist_graph_neighbors_count )( MPI_Fint* comm, MPI_Fint* indegree, MPI_Fint* outdegree, MPI_Fint* weighted, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Dist_graph_neighbors_count( PMPI_Comm_f2c( *comm ), indegree, outdegree, weighted );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GRAPH_CREATE )
@@ -1502,12 +1709,14 @@ FSUB( MPI_Dist_graph_neighbors_count )( MPI_Fint* comm, MPI_Fint* indegree, MPI_
 void
 FSUB( MPI_Graph_create )( MPI_Fint* comm_old, MPI_Fint* nnodes, MPI_Fint* index, MPI_Fint* edges, MPI_Fint* reorder, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_newcomm;
 
 
     *ierr = MPI_Graph_create( PMPI_Comm_f2c( *comm_old ), *nnodes, index, edges, *reorder, &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GRAPH_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_get )
@@ -1522,7 +1731,12 @@ FSUB( MPI_Graph_create )( MPI_Fint* comm_old, MPI_Fint* nnodes, MPI_Fint* index,
 void
 FSUB( MPI_Graph_get )( MPI_Fint* comm, MPI_Fint* maxindex, MPI_Fint* maxedges, MPI_Fint* index, MPI_Fint* edges, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Graph_get( PMPI_Comm_f2c( *comm ), *maxindex, *maxedges, index, edges );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GRAPH_MAP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_map )
@@ -1537,7 +1751,12 @@ FSUB( MPI_Graph_get )( MPI_Fint* comm, MPI_Fint* maxindex, MPI_Fint* maxedges, M
 void
 FSUB( MPI_Graph_map )( MPI_Fint* comm, MPI_Fint* nnodes, MPI_Fint* index, MPI_Fint* edges, MPI_Fint* newrank, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Graph_map( PMPI_Comm_f2c( *comm ), *nnodes, index, edges, newrank );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GRAPH_NEIGHBORS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_neighbors )
@@ -1552,7 +1771,12 @@ FSUB( MPI_Graph_map )( MPI_Fint* comm, MPI_Fint* nnodes, MPI_Fint* index, MPI_Fi
 void
 FSUB( MPI_Graph_neighbors )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* maxneighbors, MPI_Fint* neighbors, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Graph_neighbors( PMPI_Comm_f2c( *comm ), *rank, *maxneighbors, neighbors );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GRAPH_NEIGHBORS_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graph_neighbors_count )
@@ -1567,7 +1791,12 @@ FSUB( MPI_Graph_neighbors )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* maxneighb
 void
 FSUB( MPI_Graph_neighbors_count )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* nneighbors, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Graph_neighbors_count( PMPI_Comm_f2c( *comm ), *rank, nneighbors );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GRAPHDIMS_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Graphdims_get )
@@ -1582,7 +1811,12 @@ FSUB( MPI_Graph_neighbors_count )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* nne
 void
 FSUB( MPI_Graphdims_get )( MPI_Fint* comm, MPI_Fint* nnodes, MPI_Fint* nedges, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Graphdims_get( PMPI_Comm_f2c( *comm ), nnodes, nedges );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INEIGHBOR_ALLGATHER )
@@ -1597,6 +1831,7 @@ FSUB( MPI_Graphdims_get )( MPI_Fint* comm, MPI_Fint* nnodes, MPI_Fint* nedges, M
 void
 FSUB( MPI_Ineighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -1617,6 +1852,7 @@ FSUB( MPI_Ineighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* s
     *ierr = MPI_Ineighbor_allgather( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_allgatherv )
@@ -1631,6 +1867,7 @@ FSUB( MPI_Ineighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* s
 void
 FSUB( MPI_Ineighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* displs, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -1657,6 +1894,7 @@ FSUB( MPI_Ineighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* 
     *ierr = MPI_Ineighbor_allgatherv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, displs, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALL ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoall )
@@ -1671,6 +1909,7 @@ FSUB( MPI_Ineighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* 
 void
 FSUB( MPI_Ineighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -1697,6 +1936,7 @@ FSUB( MPI_Ineighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* se
     *ierr = MPI_Ineighbor_alltoall( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Ineighbor_alltoallv )
@@ -1711,6 +1951,7 @@ FSUB( MPI_Ineighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* se
 void
 FSUB( MPI_Ineighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* sdispls, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* rdispls, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -1737,6 +1978,7 @@ FSUB( MPI_Ineighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* 
     *ierr = MPI_Ineighbor_alltoallv( sendbuf, sendcounts, sdispls, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, rdispls, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHER )
@@ -1751,6 +1993,9 @@ FSUB( MPI_Ineighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* 
 void
 FSUB( MPI_Neighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1772,6 +2017,8 @@ FSUB( MPI_Neighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* se
 
 
     *ierr = MPI_Neighbor_allgather( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLGATHERV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_allgatherv )
@@ -1786,6 +2033,9 @@ FSUB( MPI_Neighbor_allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* se
 void
 FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* displs, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1807,6 +2057,8 @@ FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* s
 
 
     *ierr = MPI_Neighbor_allgatherv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, displs, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALL ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoall )
@@ -1821,6 +2073,9 @@ FSUB( MPI_Neighbor_allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* s
 void
 FSUB( MPI_Neighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1842,6 +2097,8 @@ FSUB( MPI_Neighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sen
 
 
     *ierr = MPI_Neighbor_alltoall( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_NEIGHBOR_ALLTOALLV ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Neighbor_alltoallv )
@@ -1856,6 +2113,9 @@ FSUB( MPI_Neighbor_alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sen
 void
 FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* sdispls, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* rdispls, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1877,6 +2137,8 @@ FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* s
 
 
     *ierr = MPI_Neighbor_alltoallv( sendbuf, sendcounts, sdispls, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, rdispls, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TOPO_TEST ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_TOPO ) && !defined( MPI_Topo_test )
@@ -1891,7 +2153,12 @@ FSUB( MPI_Neighbor_alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* s
 void
 FSUB( MPI_Topo_test )( MPI_Fint* comm, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Topo_test( PMPI_Comm_f2c( *comm ), status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

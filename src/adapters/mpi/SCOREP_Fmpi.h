@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -61,6 +61,7 @@
 
 #include "SCOREP_Fortran_Wrapper.h"
 #include "scorep_mpi_fortran.h"
+#include <SCOREP_InMeasurement.h>
 #include <stdlib.h>
 #include <string.h>
 #include <mpi.h>

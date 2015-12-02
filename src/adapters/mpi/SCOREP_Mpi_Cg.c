@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -55,6 +55,7 @@
 #include <config.h>
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include <UTILS_Error.h>
 
@@ -76,16 +77,25 @@
 int
 MPI_Comm_create( MPI_Comm comm, MPI_Group group, MPI_Comm* newcomm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CREATE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CREATE ], ( intptr_t )PMPI_Comm_create );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Comm_create( comm, group, newcomm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, comm );
@@ -96,6 +106,7 @@ MPI_Comm_create( MPI_Comm comm, MPI_Group group, MPI_Comm* newcomm )
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CREATE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -113,16 +124,25 @@ MPI_Comm_create( MPI_Comm comm, MPI_Group group, MPI_Comm* newcomm )
 int
 MPI_Comm_create_group( MPI_Comm comm, MPI_Group group, int tag, MPI_Comm* newcomm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CREATE_GROUP ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CREATE_GROUP ], ( intptr_t )PMPI_Comm_create_group );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Comm_create_group( comm, group, tag, newcomm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, comm );
@@ -133,6 +153,7 @@ MPI_Comm_create_group( MPI_Comm comm, MPI_Group group, int tag, MPI_Comm* newcom
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CREATE_GROUP ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -150,16 +171,25 @@ MPI_Comm_create_group( MPI_Comm comm, MPI_Group group, int tag, MPI_Comm* newcom
 int
 MPI_Comm_dup( MPI_Comm comm, MPI_Comm* newcomm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_DUP ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_DUP ], ( intptr_t )PMPI_Comm_dup );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Comm_dup( comm, newcomm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, comm );
@@ -170,6 +200,7 @@ MPI_Comm_dup( MPI_Comm comm, MPI_Comm* newcomm )
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_DUP ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -187,16 +218,25 @@ MPI_Comm_dup( MPI_Comm comm, MPI_Comm* newcomm )
 int
 MPI_Comm_dup_with_info( MPI_Comm comm, MPI_Info info, MPI_Comm* newcomm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_DUP_WITH_INFO ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_DUP_WITH_INFO ], ( intptr_t )PMPI_Comm_dup_with_info );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Comm_dup_with_info( comm, info, newcomm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, comm );
@@ -207,6 +247,7 @@ MPI_Comm_dup_with_info( MPI_Comm comm, MPI_Info info, MPI_Comm* newcomm )
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_DUP_WITH_INFO ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -224,16 +265,25 @@ MPI_Comm_dup_with_info( MPI_Comm comm, MPI_Info info, MPI_Comm* newcomm )
 int
 MPI_Comm_split( MPI_Comm comm, int color, int key, MPI_Comm* newcomm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SPLIT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SPLIT ], ( intptr_t )PMPI_Comm_split );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Comm_split( comm, color, key, newcomm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, comm );
@@ -244,6 +294,7 @@ MPI_Comm_split( MPI_Comm comm, int color, int key, MPI_Comm* newcomm )
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SPLIT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -261,16 +312,25 @@ MPI_Comm_split( MPI_Comm comm, int color, int key, MPI_Comm* newcomm )
 int
 MPI_Comm_split_type( MPI_Comm comm, int split_typ, int key, MPI_Info info, MPI_Comm* newcomm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SPLIT_TYPE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SPLIT_TYPE ], ( intptr_t )PMPI_Comm_split_type );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Comm_split_type( comm, split_typ, key, info, newcomm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, comm );
@@ -281,6 +341,7 @@ MPI_Comm_split_type( MPI_Comm comm, int split_typ, int key, MPI_Info info, MPI_C
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SPLIT_TYPE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -298,16 +359,25 @@ MPI_Comm_split_type( MPI_Comm comm, int split_typ, int key, MPI_Info info, MPI_C
 int
 MPI_Intercomm_create( MPI_Comm local_comm, int local_leader, MPI_Comm peer_comm, int remote_leader, int tag, MPI_Comm* newcomm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_INTERCOMM_CREATE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_INTERCOMM_CREATE ], ( intptr_t )PMPI_Intercomm_create );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Intercomm_create( local_comm, local_leader, peer_comm, remote_leader, tag, newcomm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, MPI_COMM_NULL );
@@ -318,6 +388,7 @@ MPI_Intercomm_create( MPI_Comm local_comm, int local_leader, MPI_Comm peer_comm,
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_INTERCOMM_CREATE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -335,16 +406,25 @@ MPI_Intercomm_create( MPI_Comm local_comm, int local_leader, MPI_Comm peer_comm,
 int
 MPI_Intercomm_merge( MPI_Comm intercomm, int high, MPI_Comm* newcomm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_INTERCOMM_MERGE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_INTERCOMM_MERGE ], ( intptr_t )PMPI_Intercomm_merge );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Intercomm_merge( intercomm, high, newcomm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newcomm != MPI_COMM_NULL )
     {
         scorep_mpi_comm_create( *newcomm, MPI_COMM_NULL );
@@ -355,6 +435,7 @@ MPI_Intercomm_merge( MPI_Comm intercomm, int high, MPI_Comm* newcomm )
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_INTERCOMM_MERGE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -377,23 +458,33 @@ MPI_Intercomm_merge( MPI_Comm intercomm, int high, MPI_Comm* newcomm )
 int
 MPI_Comm_free( MPI_Comm* comm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_FREE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_FREE ], ( intptr_t )PMPI_Comm_free );
     }
 
     scorep_mpi_comm_free( *comm );
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Comm_free( comm );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
     if ( event_gen_active )
     {
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_FREE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -419,16 +510,25 @@ MPI_Comm_free( MPI_Comm* comm )
 int
 MPI_Group_difference( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_DIFFERENCE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_DIFFERENCE ], ( intptr_t )PMPI_Group_difference );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Group_difference( group1, group2, newgroup );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newgroup != MPI_GROUP_NULL )
     {
         scorep_mpi_group_create( *newgroup );
@@ -439,6 +539,7 @@ MPI_Group_difference( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup )
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_DIFFERENCE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -456,16 +557,25 @@ MPI_Group_difference( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup )
 int
 MPI_Group_excl( MPI_Group group, int n, SCOREP_MPI_CONST_DECL int* ranks, MPI_Group* newgroup )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_EXCL ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_EXCL ], ( intptr_t )PMPI_Group_excl );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Group_excl( group, n, ranks, newgroup );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newgroup != MPI_GROUP_NULL )
     {
         scorep_mpi_group_create( *newgroup );
@@ -476,6 +586,7 @@ MPI_Group_excl( MPI_Group group, int n, SCOREP_MPI_CONST_DECL int* ranks, MPI_Gr
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_EXCL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -493,16 +604,25 @@ MPI_Group_excl( MPI_Group group, int n, SCOREP_MPI_CONST_DECL int* ranks, MPI_Gr
 int
 MPI_Group_incl( MPI_Group group, int n, SCOREP_MPI_CONST_DECL int* ranks, MPI_Group* newgroup )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_INCL ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_INCL ], ( intptr_t )PMPI_Group_incl );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Group_incl( group, n, ranks, newgroup );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newgroup != MPI_GROUP_NULL )
     {
         scorep_mpi_group_create( *newgroup );
@@ -513,6 +633,7 @@ MPI_Group_incl( MPI_Group group, int n, SCOREP_MPI_CONST_DECL int* ranks, MPI_Gr
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_INCL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -530,16 +651,25 @@ MPI_Group_incl( MPI_Group group, int n, SCOREP_MPI_CONST_DECL int* ranks, MPI_Gr
 int
 MPI_Group_intersection( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_INTERSECTION ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_INTERSECTION ], ( intptr_t )PMPI_Group_intersection );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Group_intersection( group1, group2, newgroup );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newgroup != MPI_GROUP_NULL )
     {
         scorep_mpi_group_create( *newgroup );
@@ -550,6 +680,7 @@ MPI_Group_intersection( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_INTERSECTION ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -567,16 +698,25 @@ MPI_Group_intersection( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup 
 int
 MPI_Group_range_excl( MPI_Group group, int n, int ranges[][ 3 ], MPI_Group* newgroup )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_RANGE_EXCL ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_RANGE_EXCL ], ( intptr_t )PMPI_Group_range_excl );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Group_range_excl( group, n, ranges, newgroup );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newgroup != MPI_GROUP_NULL )
     {
         scorep_mpi_group_create( *newgroup );
@@ -587,6 +727,7 @@ MPI_Group_range_excl( MPI_Group group, int n, int ranges[][ 3 ], MPI_Group* newg
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_RANGE_EXCL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -604,16 +745,25 @@ MPI_Group_range_excl( MPI_Group group, int n, int ranges[][ 3 ], MPI_Group* newg
 int
 MPI_Group_range_incl( MPI_Group group, int n, int ranges[][ 3 ], MPI_Group* newgroup )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_RANGE_INCL ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_RANGE_INCL ], ( intptr_t )PMPI_Group_range_incl );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Group_range_incl( group, n, ranges, newgroup );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newgroup != MPI_GROUP_NULL )
     {
         scorep_mpi_group_create( *newgroup );
@@ -624,6 +774,7 @@ MPI_Group_range_incl( MPI_Group group, int n, int ranges[][ 3 ], MPI_Group* newg
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_RANGE_INCL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -641,16 +792,25 @@ MPI_Group_range_incl( MPI_Group group, int n, int ranges[][ 3 ], MPI_Group* newg
 int
 MPI_Group_union( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_UNION ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_UNION ], ( intptr_t )PMPI_Group_union );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Group_union( group1, group2, newgroup );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *newgroup != MPI_GROUP_NULL )
     {
         scorep_mpi_group_create( *newgroup );
@@ -661,6 +821,7 @@ MPI_Group_union( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup )
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_UNION ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -678,16 +839,25 @@ MPI_Group_union( MPI_Group group1, MPI_Group group2, MPI_Group* newgroup )
 int
 MPI_Comm_group( MPI_Comm comm, MPI_Group* group )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GROUP ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GROUP ], ( intptr_t )PMPI_Comm_group );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Comm_group( comm, group );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *group != MPI_GROUP_NULL )
     {
         scorep_mpi_group_create( *group );
@@ -698,6 +868,7 @@ MPI_Comm_group( MPI_Comm comm, MPI_Group* group )
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GROUP ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -715,16 +886,25 @@ MPI_Comm_group( MPI_Comm comm, MPI_Group* group )
 int
 MPI_Comm_remote_group( MPI_Comm comm, MPI_Group* group )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_REMOTE_GROUP ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_REMOTE_GROUP ], ( intptr_t )PMPI_Comm_remote_group );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Comm_remote_group( comm, group );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *group != MPI_GROUP_NULL )
     {
         scorep_mpi_group_create( *group );
@@ -735,6 +915,7 @@ MPI_Comm_remote_group( MPI_Comm comm, MPI_Group* group )
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_REMOTE_GROUP ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -757,23 +938,33 @@ MPI_Comm_remote_group( MPI_Comm comm, MPI_Group* group )
 int
 MPI_Group_free( MPI_Group* group )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG );
     int       return_val;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_FREE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_FREE ], ( intptr_t )PMPI_Group_free );
     }
 
     scorep_mpi_group_free( *group );
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Group_free( group );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
     if ( event_gen_active )
     {
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_FREE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -798,14 +989,17 @@ MPI_Group_free( MPI_Group* group )
 int
 MPI_Comm_compare( MPI_Comm comm1, MPI_Comm comm2, int* result )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_COMPARE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_COMPARE ], ( intptr_t )PMPI_Comm_compare );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_compare( comm1, comm2, result );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_COMPARE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -814,6 +1008,7 @@ MPI_Comm_compare( MPI_Comm comm1, MPI_Comm comm2, int* result )
     {
         return_val = PMPI_Comm_compare( comm1, comm2, result );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -832,14 +1027,17 @@ MPI_Comm_compare( MPI_Comm comm1, MPI_Comm comm2, int* result )
 int
 MPI_Comm_rank( MPI_Comm comm, int* rank )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_RANK ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_RANK ], ( intptr_t )PMPI_Comm_rank );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_rank( comm, rank );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_RANK ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -848,6 +1046,7 @@ MPI_Comm_rank( MPI_Comm comm, int* rank )
     {
         return_val = PMPI_Comm_rank( comm, rank );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -866,14 +1065,17 @@ MPI_Comm_rank( MPI_Comm comm, int* rank )
 int
 MPI_Comm_size( MPI_Comm comm, int* size )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SIZE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SIZE ], ( intptr_t )PMPI_Comm_size );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_size( comm, size );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SIZE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -882,6 +1084,7 @@ MPI_Comm_size( MPI_Comm comm, int* size )
     {
         return_val = PMPI_Comm_size( comm, size );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -900,14 +1103,17 @@ MPI_Comm_size( MPI_Comm comm, int* size )
 int
 MPI_Comm_test_inter( MPI_Comm comm, int* flag )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_TEST_INTER ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_TEST_INTER ], ( intptr_t )PMPI_Comm_test_inter );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_test_inter( comm, flag );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_TEST_INTER ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -916,6 +1122,7 @@ MPI_Comm_test_inter( MPI_Comm comm, int* flag )
     {
         return_val = PMPI_Comm_test_inter( comm, flag );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -934,14 +1141,17 @@ MPI_Comm_test_inter( MPI_Comm comm, int* flag )
 int
 MPI_Group_compare( MPI_Group group1, MPI_Group group2, int* result )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_COMPARE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_COMPARE ], ( intptr_t )PMPI_Group_compare );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Group_compare( group1, group2, result );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_COMPARE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -950,6 +1160,7 @@ MPI_Group_compare( MPI_Group group1, MPI_Group group2, int* result )
     {
         return_val = PMPI_Group_compare( group1, group2, result );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -968,14 +1179,17 @@ MPI_Group_compare( MPI_Group group1, MPI_Group group2, int* result )
 int
 MPI_Group_rank( MPI_Group group, int* rank )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_RANK ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_RANK ], ( intptr_t )PMPI_Group_rank );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Group_rank( group, rank );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_RANK ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -984,6 +1198,7 @@ MPI_Group_rank( MPI_Group group, int* rank )
     {
         return_val = PMPI_Group_rank( group, rank );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1002,14 +1217,17 @@ MPI_Group_rank( MPI_Group group, int* rank )
 int
 MPI_Group_size( MPI_Group group, int* size )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_SIZE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_SIZE ], ( intptr_t )PMPI_Group_size );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Group_size( group, size );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GROUP_SIZE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1018,6 +1236,7 @@ MPI_Group_size( MPI_Group group, int* size )
     {
         return_val = PMPI_Group_size( group, size );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1043,14 +1262,17 @@ MPI_Group_size( MPI_Group group, int* size )
 int
 MPI_Comm_call_errhandler( MPI_Comm comm, int errorcode )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CALL_ERRHANDLER ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CALL_ERRHANDLER ], ( intptr_t )PMPI_Comm_call_errhandler );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_call_errhandler( comm, errorcode );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CALL_ERRHANDLER ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1059,6 +1281,7 @@ MPI_Comm_call_errhandler( MPI_Comm comm, int errorcode )
     {
         return_val = PMPI_Comm_call_errhandler( comm, errorcode );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1077,14 +1300,17 @@ MPI_Comm_call_errhandler( MPI_Comm comm, int errorcode )
 int
 MPI_Comm_create_errhandler( MPI_Comm_errhandler_fn* function, MPI_Errhandler* errhandler )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CREATE_ERRHANDLER ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CREATE_ERRHANDLER ], ( intptr_t )PMPI_Comm_create_errhandler );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_create_errhandler( function, errhandler );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CREATE_ERRHANDLER ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1093,6 +1319,7 @@ MPI_Comm_create_errhandler( MPI_Comm_errhandler_fn* function, MPI_Errhandler* er
     {
         return_val = PMPI_Comm_create_errhandler( function, errhandler );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1111,14 +1338,17 @@ MPI_Comm_create_errhandler( MPI_Comm_errhandler_fn* function, MPI_Errhandler* er
 int
 MPI_Comm_get_errhandler( MPI_Comm comm, MPI_Errhandler* errhandler )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GET_ERRHANDLER ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GET_ERRHANDLER ], ( intptr_t )PMPI_Comm_get_errhandler );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_get_errhandler( comm, errhandler );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GET_ERRHANDLER ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1127,6 +1357,7 @@ MPI_Comm_get_errhandler( MPI_Comm comm, MPI_Errhandler* errhandler )
     {
         return_val = PMPI_Comm_get_errhandler( comm, errhandler );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1145,14 +1376,17 @@ MPI_Comm_get_errhandler( MPI_Comm comm, MPI_Errhandler* errhandler )
 int
 MPI_Comm_set_errhandler( MPI_Comm comm, MPI_Errhandler errhandler )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_ERRHANDLER ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_ERRHANDLER ], ( intptr_t )PMPI_Comm_set_errhandler );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_set_errhandler( comm, errhandler );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_ERRHANDLER ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1161,6 +1395,7 @@ MPI_Comm_set_errhandler( MPI_Comm comm, MPI_Errhandler errhandler )
     {
         return_val = PMPI_Comm_set_errhandler( comm, errhandler );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1186,14 +1421,17 @@ MPI_Comm_set_errhandler( MPI_Comm comm, MPI_Errhandler errhandler )
 int
 MPI_Comm_set_name( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* comm_name )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_NAME ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_NAME ], ( intptr_t )PMPI_Comm_set_name );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_set_name( comm, comm_name );
+        SCOREP_EXIT_WRAPPED_REGION();
         if ( return_val == MPI_SUCCESS )
         {
             scorep_mpi_comm_set_name( comm, comm_name );
@@ -1206,6 +1444,7 @@ MPI_Comm_set_name( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* comm_name )
     {
         return_val = PMPI_Comm_set_name( comm, comm_name );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1224,14 +1463,17 @@ MPI_Comm_set_name( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* comm_name )
 int
 MPI_Attr_delete( MPI_Comm comm, int keyval )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ATTR_DELETE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ATTR_DELETE ], ( intptr_t )PMPI_Attr_delete );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Attr_delete( comm, keyval );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ATTR_DELETE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1240,6 +1482,7 @@ MPI_Attr_delete( MPI_Comm comm, int keyval )
     {
         return_val = PMPI_Attr_delete( comm, keyval );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1258,14 +1501,17 @@ MPI_Attr_delete( MPI_Comm comm, int keyval )
 int
 MPI_Attr_get( MPI_Comm comm, int keyval, void* attribute_val, int* flag )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ATTR_GET ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ATTR_GET ], ( intptr_t )PMPI_Attr_get );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Attr_get( comm, keyval, attribute_val, flag );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ATTR_GET ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1274,6 +1520,7 @@ MPI_Attr_get( MPI_Comm comm, int keyval, void* attribute_val, int* flag )
     {
         return_val = PMPI_Attr_get( comm, keyval, attribute_val, flag );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1292,14 +1539,17 @@ MPI_Attr_get( MPI_Comm comm, int keyval, void* attribute_val, int* flag )
 int
 MPI_Attr_put( MPI_Comm comm, int keyval, void* attribute_val )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ATTR_PUT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ATTR_PUT ], ( intptr_t )PMPI_Attr_put );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Attr_put( comm, keyval, attribute_val );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ATTR_PUT ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1308,6 +1558,7 @@ MPI_Attr_put( MPI_Comm comm, int keyval, void* attribute_val )
     {
         return_val = PMPI_Attr_put( comm, keyval, attribute_val );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1326,14 +1577,17 @@ MPI_Attr_put( MPI_Comm comm, int keyval, void* attribute_val )
 int
 MPI_Comm_create_keyval( MPI_Comm_copy_attr_function* comm_copy_attr_fn, MPI_Comm_delete_attr_function* comm_delete_attr_fn, int* comm_keyval, void* extra_state )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CREATE_KEYVAL ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CREATE_KEYVAL ], ( intptr_t )PMPI_Comm_create_keyval );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_create_keyval( comm_copy_attr_fn, comm_delete_attr_fn, comm_keyval, extra_state );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_CREATE_KEYVAL ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1342,6 +1596,7 @@ MPI_Comm_create_keyval( MPI_Comm_copy_attr_function* comm_copy_attr_fn, MPI_Comm
     {
         return_val = PMPI_Comm_create_keyval( comm_copy_attr_fn, comm_delete_attr_fn, comm_keyval, extra_state );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1360,14 +1615,17 @@ MPI_Comm_create_keyval( MPI_Comm_copy_attr_function* comm_copy_attr_fn, MPI_Comm
 int
 MPI_Comm_delete_attr( MPI_Comm comm, int comm_keyval )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_DELETE_ATTR ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_DELETE_ATTR ], ( intptr_t )PMPI_Comm_delete_attr );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_delete_attr( comm, comm_keyval );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_DELETE_ATTR ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1376,6 +1634,7 @@ MPI_Comm_delete_attr( MPI_Comm comm, int comm_keyval )
     {
         return_val = PMPI_Comm_delete_attr( comm, comm_keyval );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1394,14 +1653,17 @@ MPI_Comm_delete_attr( MPI_Comm comm, int comm_keyval )
 int
 MPI_Comm_free_keyval( int* comm_keyval )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_FREE_KEYVAL ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_FREE_KEYVAL ], ( intptr_t )PMPI_Comm_free_keyval );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_free_keyval( comm_keyval );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_FREE_KEYVAL ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1410,6 +1672,7 @@ MPI_Comm_free_keyval( int* comm_keyval )
     {
         return_val = PMPI_Comm_free_keyval( comm_keyval );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1428,14 +1691,17 @@ MPI_Comm_free_keyval( int* comm_keyval )
 int
 MPI_Comm_get_attr( MPI_Comm comm, int comm_keyval, void* attribute_val, int* flag )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GET_ATTR ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GET_ATTR ], ( intptr_t )PMPI_Comm_get_attr );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_get_attr( comm, comm_keyval, attribute_val, flag );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GET_ATTR ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1444,6 +1710,7 @@ MPI_Comm_get_attr( MPI_Comm comm, int comm_keyval, void* attribute_val, int* fla
     {
         return_val = PMPI_Comm_get_attr( comm, comm_keyval, attribute_val, flag );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1462,14 +1729,17 @@ MPI_Comm_get_attr( MPI_Comm comm, int comm_keyval, void* attribute_val, int* fla
 int
 MPI_Comm_get_info( MPI_Comm comm, MPI_Info* info_used )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GET_INFO ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GET_INFO ], ( intptr_t )PMPI_Comm_get_info );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_get_info( comm, info_used );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GET_INFO ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1478,6 +1748,7 @@ MPI_Comm_get_info( MPI_Comm comm, MPI_Info* info_used )
     {
         return_val = PMPI_Comm_get_info( comm, info_used );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1496,14 +1767,17 @@ MPI_Comm_get_info( MPI_Comm comm, MPI_Info* info_used )
 int
 MPI_Comm_get_name( MPI_Comm comm, char* comm_name, int* resultlen )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GET_NAME ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GET_NAME ], ( intptr_t )PMPI_Comm_get_name );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_get_name( comm, comm_name, resultlen );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_GET_NAME ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1512,6 +1786,7 @@ MPI_Comm_get_name( MPI_Comm comm, char* comm_name, int* resultlen )
     {
         return_val = PMPI_Comm_get_name( comm, comm_name, resultlen );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1530,14 +1805,17 @@ MPI_Comm_get_name( MPI_Comm comm, char* comm_name, int* resultlen )
 int
 MPI_Comm_set_attr( MPI_Comm comm, int comm_keyval, void* attribute_val )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_ATTR ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_ATTR ], ( intptr_t )PMPI_Comm_set_attr );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_set_attr( comm, comm_keyval, attribute_val );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_ATTR ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1546,6 +1824,7 @@ MPI_Comm_set_attr( MPI_Comm comm, int comm_keyval, void* attribute_val )
     {
         return_val = PMPI_Comm_set_attr( comm, comm_keyval, attribute_val );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1564,14 +1843,17 @@ MPI_Comm_set_attr( MPI_Comm comm, int comm_keyval, void* attribute_val )
 int
 MPI_Comm_set_info( MPI_Comm comm, MPI_Info info )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_INFO ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_INFO ], ( intptr_t )PMPI_Comm_set_info );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Comm_set_info( comm, info );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_INFO ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1580,6 +1862,7 @@ MPI_Comm_set_info( MPI_Comm comm, MPI_Info info )
     {
         return_val = PMPI_Comm_set_info( comm, info );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1598,14 +1881,17 @@ MPI_Comm_set_info( MPI_Comm comm, MPI_Info info )
 int
 MPI_Keyval_create( MPI_Copy_function* copy_fn, MPI_Delete_function* delete_fn, int* keyval, void* extra_state )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_KEYVAL_CREATE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_KEYVAL_CREATE ], ( intptr_t )PMPI_Keyval_create );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Keyval_create( copy_fn, delete_fn, keyval, extra_state );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_KEYVAL_CREATE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1614,6 +1900,7 @@ MPI_Keyval_create( MPI_Copy_function* copy_fn, MPI_Delete_function* delete_fn, i
     {
         return_val = PMPI_Keyval_create( copy_fn, delete_fn, keyval, extra_state );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1632,14 +1919,17 @@ MPI_Keyval_create( MPI_Copy_function* copy_fn, MPI_Delete_function* delete_fn, i
 int
 MPI_Keyval_free( int* keyval )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_CG_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_KEYVAL_FREE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_KEYVAL_FREE ], ( intptr_t )PMPI_Keyval_free );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Keyval_free( keyval );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_KEYVAL_FREE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -1648,6 +1938,7 @@ MPI_Keyval_free( int* keyval )
     {
         return_val = PMPI_Keyval_free( keyval );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1673,7 +1964,9 @@ MPI_Keyval_free( int* keyval )
 int
 MPI_Comm_idup( MPI_Comm comm, MPI_Comm* newcomm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     UTILS_FATAL( "The operation %s is currently not supported by Score-P!", __func__ );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

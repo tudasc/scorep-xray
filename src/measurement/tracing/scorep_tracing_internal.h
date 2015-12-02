@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -44,12 +44,14 @@
 
 #include <UTILS_Error.h>
 
+#include <SCOREP_Definitions.h>
 
 #include "scorep_rewind_stack_management.h"
 #include <scorep_location.h>
 
 extern bool     scorep_tracing_use_sion;
 extern uint64_t scorep_tracing_max_procs_per_sion_file;
+extern bool     scorep_tracing_convert_calling_context;
 
 /**
  * Stores the substrate id of the tracing substrate. Set during initialization.

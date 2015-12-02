@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -36,6 +36,7 @@
  */
 
 #include <config.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Config.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
@@ -417,6 +418,8 @@ scorep_cupti_callbacks_all( void*                userdata,
                             CUpti_CallbackId     cbid,
                             const void*          cbInfo )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
     if ( CUPTI_CB_DOMAIN_RUNTIME_API == domain )
     {
         scorep_cupti_callbacks_runtime_api( cbid, ( const CUpti_CallbackData* )cbInfo );
@@ -436,6 +439,8 @@ scorep_cupti_callbacks_all( void*                userdata,
     {
         scorep_cupti_callbacks_sync( cbid, ( const CUpti_SynchronizeData* )cbInfo );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 /**
@@ -2379,6 +2384,9 @@ scorep_cupti_callbacks_init( void )
 
         /* register the finalize function of Score-P CUPTI to be called before
          * the program exits */
+        /* If this has ever an effect, after Score-P itself is finalized, than
+         * it will crash anyway, because this function tries to write events.
+         */
         atexit( scorep_cupti_callbacks_finalize );
 
         scorep_cupti_callbacks_initialized = true;

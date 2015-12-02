@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -240,6 +240,7 @@ FSUB( MPI_Comm_spawn_multiple )( int*      count,
                                  int       array_of_commands_len,
                                  int       array_of_argv_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Fint cur_cmd, cur_arg;
     char**   c_array_of_commands = NULL;
     char***  c_array_of_argv     = NULL;
@@ -388,6 +389,8 @@ FSUB( MPI_Comm_spawn_multiple )( int*      count,
     }
     free( c_array_of_commands );
     free( c_array_of_argv );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 } /* FSUB(MPI_Comm_spawn_multiple) */
 
 #endif
@@ -414,6 +417,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
                         int       command_len,
                         int       argv_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char*  c_command = NULL;
     char** c_argv    = NULL;
     int    arg_count = 0;
@@ -499,6 +503,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
 
     free( c_command );
     free( c_argv );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 } /* FSUB(MPI_Comm_spawn) */
 #endif
 
@@ -513,6 +518,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
 void
 FSUB( MPI_Close_port )( char* port_name, int* ierr, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name = NULL;
     c_port_name = scorep_f2c_string( port_name, port_name_len );
 
@@ -521,6 +527,7 @@ FSUB( MPI_Close_port )( char* port_name, int* ierr, int port_name_len )
     *ierr = MPI_Close_port( c_port_name );
 
     free( c_port_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_ACCEPT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_accept )
@@ -534,6 +541,7 @@ FSUB( MPI_Close_port )( char* port_name, int* ierr, int port_name_len )
 void
 FSUB( MPI_Comm_accept )( char* port_name, MPI_Info* info, int* root, MPI_Comm* comm, MPI_Comm* newcomm, int* ierr, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name = NULL;
     c_port_name = scorep_f2c_string( port_name, port_name_len );
 
@@ -542,6 +550,7 @@ FSUB( MPI_Comm_accept )( char* port_name, MPI_Info* info, int* root, MPI_Comm* c
     *ierr = MPI_Comm_accept( c_port_name, *info, *root, *comm, newcomm );
 
     free( c_port_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_CONNECT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_connect )
@@ -555,6 +564,7 @@ FSUB( MPI_Comm_accept )( char* port_name, MPI_Info* info, int* root, MPI_Comm* c
 void
 FSUB( MPI_Comm_connect )( char* port_name, MPI_Info* info, int* root, MPI_Comm* comm, MPI_Comm* newcomm, int* ierr, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name = NULL;
     c_port_name = scorep_f2c_string( port_name, port_name_len );
 
@@ -563,6 +573,7 @@ FSUB( MPI_Comm_connect )( char* port_name, MPI_Info* info, int* root, MPI_Comm* 
     *ierr = MPI_Comm_connect( c_port_name, *info, *root, *comm, newcomm );
 
     free( c_port_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_DISCONNECT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_disconnect )
@@ -576,7 +587,12 @@ FSUB( MPI_Comm_connect )( char* port_name, MPI_Info* info, int* root, MPI_Comm* 
 void
 FSUB( MPI_Comm_disconnect )( MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_disconnect( comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_GET_PARENT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_get_parent )
@@ -590,7 +606,12 @@ FSUB( MPI_Comm_disconnect )( MPI_Comm* comm, int* ierr )
 void
 FSUB( MPI_Comm_get_parent )( MPI_Comm* parent, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_get_parent( parent );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_JOIN ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_join )
@@ -604,7 +625,12 @@ FSUB( MPI_Comm_get_parent )( MPI_Comm* parent, int* ierr )
 void
 FSUB( MPI_Comm_join )( int* fd, MPI_Comm* newcomm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_join( *fd, newcomm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_LOOKUP_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Lookup_name )
@@ -618,6 +644,7 @@ FSUB( MPI_Comm_join )( int* fd, MPI_Comm* newcomm, int* ierr )
 void
 FSUB( MPI_Lookup_name )( char* service_name, MPI_Info* info, char* port_name, int* ierr, int service_name_len, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name  = NULL;
     char* c_port_name     = NULL;
     int   c_port_name_len = 0;
@@ -639,6 +666,7 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Info* info, char* port_name, in
     strncpy( port_name, c_port_name, c_port_name_len );
     memset( port_name + c_port_name_len, ' ', port_name_len - c_port_name_len );
     free( c_port_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_OPEN_PORT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Open_port )
@@ -652,6 +680,7 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Info* info, char* port_name, in
 void
 FSUB( MPI_Open_port )( MPI_Info* info, char* port_name, int* ierr, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name     = NULL;
     int   c_port_name_len = 0;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -669,6 +698,7 @@ FSUB( MPI_Open_port )( MPI_Info* info, char* port_name, int* ierr, int port_name
     strncpy( port_name, c_port_name, c_port_name_len );
     memset( port_name + c_port_name_len, ' ', port_name_len - c_port_name_len );
     free( c_port_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_PUBLISH_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Publish_name )
@@ -682,6 +712,7 @@ FSUB( MPI_Open_port )( MPI_Info* info, char* port_name, int* ierr, int port_name
 void
 FSUB( MPI_Publish_name )( char* service_name, MPI_Info* info, char* port_name, int* ierr, int service_name_len, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
     c_service_name = scorep_f2c_string( service_name, service_name_len );
@@ -694,6 +725,7 @@ FSUB( MPI_Publish_name )( char* service_name, MPI_Info* info, char* port_name, i
 
     free( c_service_name );
     free( c_port_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_UNPUBLISH_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Unpublish_name )
@@ -707,6 +739,7 @@ FSUB( MPI_Publish_name )( char* service_name, MPI_Info* info, char* port_name, i
 void
 FSUB( MPI_Unpublish_name )( char* service_name, MPI_Info* info, char* port_name, int* ierr, int service_name_len, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
     c_service_name = scorep_f2c_string( service_name, service_name_len );
@@ -719,6 +752,7 @@ FSUB( MPI_Unpublish_name )( char* service_name, MPI_Info* info, char* port_name,
 
     free( c_service_name );
     free( c_port_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -746,6 +780,7 @@ FSUB( MPI_Comm_spawn_multiple )( MPI_Fint* count,
                                  MPI_Fint  array_of_commands_len,
                                  MPI_Fint  array_of_argv_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Fint  cur_cmd, cur_arg;
     char**    c_array_of_commands = NULL;
     char***   c_array_of_argv     = NULL;
@@ -914,6 +949,8 @@ FSUB( MPI_Comm_spawn_multiple )( MPI_Fint* count,
     free( c_array_of_commands );
     free( c_array_of_argv );
     free( c_array_of_info );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 } /* FSUB(MPI_Comm_spawn_multiple) */
 #endif
 
@@ -939,6 +976,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
                         MPI_Fint  command_len,
                         MPI_Fint  argv_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char*    c_command = NULL;
     char**   c_argv    = NULL;
     MPI_Comm c_newcomm = MPI_COMM_NULL;
@@ -1029,6 +1067,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
 
     free( c_command );
     free( c_argv );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 } /* FSUB(MPI_Comm_spawn) */
 #endif
 
@@ -1044,6 +1083,7 @@ FSUB( MPI_Comm_spawn )( char*     command,
 void
 FSUB( MPI_Close_port )( char* port_name, MPI_Fint* ierr, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name = NULL;
     c_port_name = scorep_f2c_string( port_name, port_name_len );
 
@@ -1052,6 +1092,7 @@ FSUB( MPI_Close_port )( char* port_name, MPI_Fint* ierr, int port_name_len )
     *ierr = MPI_Close_port( c_port_name );
 
     free( c_port_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_ACCEPT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_accept )
@@ -1066,6 +1107,7 @@ FSUB( MPI_Close_port )( char* port_name, MPI_Fint* ierr, int port_name_len )
 void
 FSUB( MPI_Comm_accept )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* newcomm, MPI_Fint* ierr, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char*    c_port_name = NULL;
     MPI_Comm c_newcomm;
     c_port_name = scorep_f2c_string( port_name, port_name_len );
@@ -1076,6 +1118,7 @@ FSUB( MPI_Comm_accept )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fi
 
     free( c_port_name );
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_CONNECT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_connect )
@@ -1090,6 +1133,7 @@ FSUB( MPI_Comm_accept )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fi
 void
 FSUB( MPI_Comm_connect )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* newcomm, MPI_Fint* ierr, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char*    c_port_name = NULL;
     MPI_Comm c_newcomm;
     c_port_name = scorep_f2c_string( port_name, port_name_len );
@@ -1100,6 +1144,7 @@ FSUB( MPI_Comm_connect )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_F
 
     free( c_port_name );
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_DISCONNECT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_disconnect )
@@ -1114,12 +1159,14 @@ FSUB( MPI_Comm_connect )( char* port_name, MPI_Fint* info, MPI_Fint* root, MPI_F
 void
 FSUB( MPI_Comm_disconnect )( MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
 
 
     *ierr = MPI_Comm_disconnect( &c_comm );
 
     *comm = PMPI_Comm_c2f( c_comm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_GET_PARENT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_get_parent )
@@ -1134,12 +1181,14 @@ FSUB( MPI_Comm_disconnect )( MPI_Fint* comm, MPI_Fint* ierr )
 void
 FSUB( MPI_Comm_get_parent )( MPI_Fint* parent, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_parent;
 
 
     *ierr = MPI_Comm_get_parent( &c_parent );
 
     *parent = PMPI_Comm_c2f( c_parent );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_JOIN ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Comm_join )
@@ -1154,12 +1203,14 @@ FSUB( MPI_Comm_get_parent )( MPI_Fint* parent, MPI_Fint* ierr )
 void
 FSUB( MPI_Comm_join )( MPI_Fint* fd, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_newcomm;
 
 
     *ierr = MPI_Comm_join( *fd, &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_LOOKUP_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Lookup_name )
@@ -1174,6 +1225,7 @@ FSUB( MPI_Comm_join )( MPI_Fint* fd, MPI_Fint* newcomm, MPI_Fint* ierr )
 void
 FSUB( MPI_Lookup_name )( char* service_name, MPI_Fint* info, char* port_name, MPI_Fint* ierr, int service_name_len, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name  = NULL;
     char* c_port_name     = NULL;
     int   c_port_name_len = 0;
@@ -1195,6 +1247,7 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Fint* info, char* port_name, MP
     strncpy( port_name, c_port_name, c_port_name_len );
     memset( port_name + c_port_name_len, ' ', port_name_len - c_port_name_len );
     free( c_port_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_OPEN_PORT ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Open_port )
@@ -1209,6 +1262,7 @@ FSUB( MPI_Lookup_name )( char* service_name, MPI_Fint* info, char* port_name, MP
 void
 FSUB( MPI_Open_port )( MPI_Fint* info, char* port_name, MPI_Fint* ierr, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_port_name     = NULL;
     int   c_port_name_len = 0;
     c_port_name = ( char* )malloc( ( port_name_len + 1 ) * sizeof( char ) );
@@ -1226,6 +1280,7 @@ FSUB( MPI_Open_port )( MPI_Fint* info, char* port_name, MPI_Fint* ierr, int port
     strncpy( port_name, c_port_name, c_port_name_len );
     memset( port_name + c_port_name_len, ' ', port_name_len - c_port_name_len );
     free( c_port_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_PUBLISH_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Publish_name )
@@ -1240,6 +1295,7 @@ FSUB( MPI_Open_port )( MPI_Fint* info, char* port_name, MPI_Fint* ierr, int port
 void
 FSUB( MPI_Publish_name )( char* service_name, MPI_Fint* info, char* port_name, MPI_Fint* ierr, int service_name_len, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
     c_service_name = scorep_f2c_string( service_name, service_name_len );
@@ -1252,6 +1308,7 @@ FSUB( MPI_Publish_name )( char* service_name, MPI_Fint* info, char* port_name, M
 
     free( c_service_name );
     free( c_port_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_UNPUBLISH_NAME ) && !defined( SCOREP_MPI_NO_SPAWN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( MPI_Unpublish_name )
@@ -1266,6 +1323,7 @@ FSUB( MPI_Publish_name )( char* service_name, MPI_Fint* info, char* port_name, M
 void
 FSUB( MPI_Unpublish_name )( char* service_name, MPI_Fint* info, char* port_name, MPI_Fint* ierr, int service_name_len, int port_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_service_name = NULL;
     char* c_port_name    = NULL;
     c_service_name = scorep_f2c_string( service_name, service_name_len );
@@ -1278,6 +1336,7 @@ FSUB( MPI_Unpublish_name )( char* service_name, MPI_Fint* info, char* port_name,
 
     free( c_service_name );
     free( c_port_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

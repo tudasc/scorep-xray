@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -226,7 +226,12 @@
 void
 FSUB( MPI_Abort )( MPI_Comm* comm, int* errorcode, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Abort( *comm, *errorcode );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GET_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_count )
@@ -240,7 +245,12 @@ FSUB( MPI_Abort )( MPI_Comm* comm, int* errorcode, int* ierr )
 void
 FSUB( MPI_Get_count )( MPI_Status* status, MPI_Datatype* datatype, int* count, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Get_count( status, *datatype, count );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GET_ELEMENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_elements )
@@ -254,7 +264,12 @@ FSUB( MPI_Get_count )( MPI_Status* status, MPI_Datatype* datatype, int* count, i
 void
 FSUB( MPI_Get_elements )( MPI_Status* status, MPI_Datatype* datatype, int* count, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Get_elements( status, *datatype, count );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GET_ELEMENTS_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_elements_x )
@@ -268,7 +283,12 @@ FSUB( MPI_Get_elements )( MPI_Status* status, MPI_Datatype* datatype, int* count
 void
 FSUB( MPI_Get_elements_x )( MPI_Status* status, MPI_Datatype* datatype, MPI_Count* count, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Get_elements_x( status, *datatype, count );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GET_PROCESSOR_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_processor_name )
@@ -282,6 +302,7 @@ FSUB( MPI_Get_elements_x )( MPI_Status* status, MPI_Datatype* datatype, MPI_Coun
 void
 FSUB( MPI_Get_processor_name )( char* name, int* resultlen, int* ierr, int name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_name     = NULL;
     int   c_name_len = 0;
     c_name = ( char* )malloc( ( name_len + 1 ) * sizeof( char ) );
@@ -299,6 +320,7 @@ FSUB( MPI_Get_processor_name )( char* name, int* resultlen, int* ierr, int name_
     strncpy( name, c_name, c_name_len );
     memset( name + c_name_len, ' ', name_len - c_name_len );
     free( c_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GREQUEST_COMPLETE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Grequest_complete )
@@ -312,7 +334,12 @@ FSUB( MPI_Get_processor_name )( char* name, int* resultlen, int* ierr, int name_
 void
 FSUB( MPI_Grequest_complete )( MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Grequest_complete( *request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GREQUEST_START ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Grequest_start )
@@ -326,7 +353,12 @@ FSUB( MPI_Grequest_complete )( MPI_Request* request, int* ierr )
 void
 FSUB( MPI_Grequest_start )( MPI_Grequest_query_function* query_fn, MPI_Grequest_free_function* free_fn, MPI_Grequest_cancel_function* cancel_fn, void* extra_state, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Grequest_start( query_fn, free_fn, cancel_fn, extra_state, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_STATUS_SET_CANCELLED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_cancelled )
@@ -340,7 +372,12 @@ FSUB( MPI_Grequest_start )( MPI_Grequest_query_function* query_fn, MPI_Grequest_
 void
 FSUB( MPI_Status_set_cancelled )( MPI_Status* status, int* flag, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Status_set_cancelled( status, *flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_STATUS_SET_ELEMENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_elements )
@@ -354,7 +391,12 @@ FSUB( MPI_Status_set_cancelled )( MPI_Status* status, int* flag, int* ierr )
 void
 FSUB( MPI_Status_set_elements )( MPI_Status* status, MPI_Datatype* datatype, int* count, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Status_set_elements( status, *datatype, *count );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_STATUS_SET_ELEMENTS_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_elements_x )
@@ -368,7 +410,12 @@ FSUB( MPI_Status_set_elements )( MPI_Status* status, MPI_Datatype* datatype, int
 void
 FSUB( MPI_Status_set_elements_x )( MPI_Status* status, MPI_Datatype* datatype, MPI_Count* count, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Status_set_elements_x( status, *datatype, *count );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -386,7 +433,12 @@ FSUB( MPI_Status_set_elements_x )( MPI_Status* status, MPI_Datatype* datatype, M
 void
 FSUB( MPI_Abort )( MPI_Fint* comm, MPI_Fint* errorcode, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Abort( PMPI_Comm_f2c( *comm ), *errorcode );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GET_COUNT ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_count )
@@ -401,12 +453,15 @@ FSUB( MPI_Abort )( MPI_Fint* comm, MPI_Fint* errorcode, MPI_Fint* ierr )
 void
 FSUB( MPI_Get_count )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
     PMPI_Status_f2c( status, c_status_ptr );
 
 
     *ierr = MPI_Get_count( c_status_ptr, PMPI_Type_f2c( *datatype ), count );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GET_ELEMENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_elements )
@@ -421,12 +476,15 @@ FSUB( MPI_Get_count )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, MP
 void
 FSUB( MPI_Get_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
     PMPI_Status_f2c( status, c_status_ptr );
 
 
     *ierr = MPI_Get_elements( c_status_ptr, PMPI_Type_f2c( *datatype ), count );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GET_ELEMENTS_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_elements_x )
@@ -441,12 +499,15 @@ FSUB( MPI_Get_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count,
 void
 FSUB( MPI_Get_elements_x )( MPI_Fint* status, MPI_Fint* datatype, MPI_Count* count, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
     PMPI_Status_f2c( status, c_status_ptr );
 
 
     *ierr = MPI_Get_elements_x( c_status_ptr, PMPI_Type_f2c( *datatype ), count );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GET_PROCESSOR_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Get_processor_name )
@@ -461,6 +522,7 @@ FSUB( MPI_Get_elements_x )( MPI_Fint* status, MPI_Fint* datatype, MPI_Count* cou
 void
 FSUB( MPI_Get_processor_name )( char* name, MPI_Fint* resultlen, MPI_Fint* ierr, int name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_name     = NULL;
     int   c_name_len = 0;
     c_name = ( char* )malloc( ( name_len + 1 ) * sizeof( char ) );
@@ -478,6 +540,7 @@ FSUB( MPI_Get_processor_name )( char* name, MPI_Fint* resultlen, MPI_Fint* ierr,
     strncpy( name, c_name, c_name_len );
     memset( name + c_name_len, ' ', name_len - c_name_len );
     free( c_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GREQUEST_COMPLETE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Grequest_complete )
@@ -492,12 +555,14 @@ FSUB( MPI_Get_processor_name )( char* name, MPI_Fint* resultlen, MPI_Fint* ierr,
 void
 FSUB( MPI_Grequest_complete )( MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request = PMPI_Request_f2c( *request );
 
 
     *ierr = MPI_Grequest_complete( c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GREQUEST_START ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Grequest_start )
@@ -512,12 +577,14 @@ FSUB( MPI_Grequest_complete )( MPI_Fint* request, MPI_Fint* ierr )
 void
 FSUB( MPI_Grequest_start )( void* query_fn, void* free_fn, void* cancel_fn, void* extra_state, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
     *ierr = MPI_Grequest_start( ( MPI_Grequest_query_function* )query_fn, ( MPI_Grequest_free_function* )free_fn, ( MPI_Grequest_cancel_function* )cancel_fn, extra_state, &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_STATUS_SET_CANCELLED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_cancelled )
@@ -532,6 +599,7 @@ FSUB( MPI_Grequest_start )( void* query_fn, void* free_fn, void* cancel_fn, void
 void
 FSUB( MPI_Status_set_cancelled )( MPI_Fint* status, MPI_Fint* flag, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
     PMPI_Status_f2c( status, c_status_ptr );
@@ -545,6 +613,8 @@ FSUB( MPI_Status_set_cancelled )( MPI_Fint* status, MPI_Fint* flag, MPI_Fint* ie
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_STATUS_SET_ELEMENTS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_elements )
@@ -559,6 +629,7 @@ FSUB( MPI_Status_set_cancelled )( MPI_Fint* status, MPI_Fint* flag, MPI_Fint* ie
 void
 FSUB( MPI_Status_set_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint* count, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
     PMPI_Status_f2c( status, c_status_ptr );
@@ -572,6 +643,8 @@ FSUB( MPI_Status_set_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint*
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_STATUS_SET_ELEMENTS_X ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Status_set_elements_x )
@@ -586,6 +659,7 @@ FSUB( MPI_Status_set_elements )( MPI_Fint* status, MPI_Fint* datatype, MPI_Fint*
 void
 FSUB( MPI_Status_set_elements_x )( MPI_Fint* status, MPI_Fint* datatype, MPI_Count* count, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
     PMPI_Status_f2c( status, c_status_ptr );
@@ -599,6 +673,8 @@ FSUB( MPI_Status_set_elements_x )( MPI_Fint* status, MPI_Fint* datatype, MPI_Cou
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

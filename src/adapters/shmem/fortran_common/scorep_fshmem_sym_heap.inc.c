@@ -17,14 +17,19 @@
                                                    long *errcode,           \
                                                    int  *abort )            \
     {                                                                       \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
+                                                                            \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
                                                                             \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );        \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,   \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );\
                                                                             \
+            SCOREP_ENTER_WRAPPED_REGION();                                  \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, length,         \
                                                       errcode, abort ) );   \
+            SCOREP_EXIT_WRAPPED_REGION();                                   \
                                                                             \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );         \
                                                                             \
@@ -36,7 +41,7 @@
                                                       errcode, abort ) );   \
         }                                                                   \
                                                                             \
-        return ret;                                                         \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
     }
 
 /* *INDENT-ON* */
@@ -52,14 +57,19 @@ SHMEM_FORTRAN_SHPALLOC( shpalloc )
                                                    long *errcode,           \
                                                    int  *abort )            \
     {                                                                       \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
+                                                                            \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
                                                                             \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );        \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,   \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );\
                                                                             \
+            SCOREP_ENTER_WRAPPED_REGION();                                  \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, errcode,        \
                                                       abort ) );            \
+            SCOREP_EXIT_WRAPPED_REGION();                                   \
                                                                             \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );         \
                                                                             \
@@ -71,7 +81,7 @@ SHMEM_FORTRAN_SHPALLOC( shpalloc )
                                                       abort ) );            \
         }                                                                   \
                                                                             \
-        return ret;                                                         \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
     }
 
 /* *INDENT-ON* */
@@ -88,14 +98,19 @@ SHMEM_FORTRAN_SHPDEALLOC( shpdealloc )
                                                    long *errcode,           \
                                                    int  *abort )            \
     {                                                                       \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                                  \
+                                                                            \
         if ( SCOREP_SHMEM_IS_EVENT_GEN_ON )                                 \
         {                                                                   \
             SCOREP_SHMEM_EVENT_GEN_OFF();                                   \
                                                                             \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );        \
+            SCOREP_EnterWrappedRegion( scorep_shmem_region__ ## FUNCNAME,   \
+                                       ( intptr_t )CALL_SHMEM( FUNCNAME ) );\
                                                                             \
+            SCOREP_ENTER_WRAPPED_REGION();                                  \
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( addr, length,         \
                                                       errcode, abort ) );   \
+            SCOREP_EXIT_WRAPPED_REGION();                                   \
                                                                             \
             SCOREP_ExitRegion( scorep_shmem_region__ ## FUNCNAME );         \
                                                                             \
@@ -107,7 +122,7 @@ SHMEM_FORTRAN_SHPDEALLOC( shpdealloc )
                                                       errcode, abort ) );   \
         }                                                                   \
                                                                             \
-        return ret;                                                         \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                                  \
     }
 
 /* *INDENT-ON* */

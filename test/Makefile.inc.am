@@ -50,12 +50,12 @@ endif HAVE_GNU_LINKER
 
 common_event_libadd = \
     libscorep_adapter_compiler_event.la  \
-    libscorep_adapter_user_event.la      \
-    libscorep_measurement.la
+    libscorep_adapter_user_event.la
 
 common_mgmt_libadd = \
     libscorep_adapter_compiler_mgmt.la   \
-    libscorep_adapter_user_mgmt.la
+    libscorep_adapter_user_mgmt.la      \
+    libscorep_measurement.la
 
 if HAVE_CUDA_SUPPORT
 common_mgmt_libadd += libscorep_adapter_cuda_mgmt.la

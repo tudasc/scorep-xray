@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -536,6 +536,7 @@ FSUB( MPI_Waitany )( int*         count,
                      MPI_Status*  status,
                      int*         ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
   #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
@@ -549,6 +550,7 @@ FSUB( MPI_Waitany )( int*         count,
     {
         ( *index )++;
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -567,6 +569,7 @@ FSUB( MPI_Waitsome )( int*         incount,
                       MPI_Status*  array_of_statuses,
                       int*         ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int i;
 
   #if HAVE( MPI_STATUSES_IGNORE )
@@ -588,6 +591,7 @@ FSUB( MPI_Waitsome )( int*         incount,
             }
         }
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -606,6 +610,7 @@ FSUB( MPI_Testany )( int*         count,
                      MPI_Status*  status,
                      int*         ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
   #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
@@ -623,6 +628,7 @@ FSUB( MPI_Testany )( int*         count,
     {
         ( *index )++;
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -641,6 +647,7 @@ FSUB( MPI_Testsome )( int*         incount,
                       MPI_Status*  array_of_statuses,
                       int*         ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int i;
 
   #if HAVE( MPI_STATUSES_IGNORE )
@@ -664,6 +671,7 @@ FSUB( MPI_Testsome )( int*         incount,
             }
         }
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -678,6 +686,9 @@ FSUB( MPI_Testsome )( int*         incount,
 void
 FSUB( MPI_Bsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* tag, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -687,6 +698,8 @@ FSUB( MPI_Bsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int
 
 
     *ierr = MPI_Bsend( buf, *count, *datatype, *dest, *tag, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_BSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Bsend_init )
@@ -700,7 +713,12 @@ FSUB( MPI_Bsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int
 void
 FSUB( MPI_Bsend_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* tag, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Bsend_init( buf, *count, *datatype, *dest, *tag, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_BUFFER_ATTACH ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Buffer_attach )
@@ -714,7 +732,12 @@ FSUB( MPI_Bsend_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest
 void
 FSUB( MPI_Buffer_attach )( void* buffer, int* size, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Buffer_attach( buffer, *size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_BUFFER_DETACH ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Buffer_detach )
@@ -728,7 +751,12 @@ FSUB( MPI_Buffer_attach )( void* buffer, int* size, int* ierr )
 void
 FSUB( MPI_Buffer_detach )( void* buffer, int* size, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Buffer_detach( buffer, size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_CANCEL ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Cancel )
@@ -742,7 +770,12 @@ FSUB( MPI_Buffer_detach )( void* buffer, int* size, int* ierr )
 void
 FSUB( MPI_Cancel )( MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Cancel( request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IBSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Ibsend )
@@ -756,6 +789,9 @@ FSUB( MPI_Cancel )( MPI_Request* request, int* ierr )
 void
 FSUB( MPI_Ibsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* tag, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -765,6 +801,8 @@ FSUB( MPI_Ibsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, in
 
 
     *ierr = MPI_Ibsend( buf, *count, *datatype, *dest, *tag, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IMPROBE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Improbe )
@@ -778,6 +816,9 @@ FSUB( MPI_Ibsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, in
 void
 FSUB( MPI_Improbe )( int* source, int* tag, MPI_Comm* comm, int* flag, MPI_Message* message, MPI_Status* status, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
@@ -787,6 +828,8 @@ FSUB( MPI_Improbe )( int* source, int* tag, MPI_Comm* comm, int* flag, MPI_Messa
 
 
     *ierr = MPI_Improbe( *source, *tag, *comm, flag, message, status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IMRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Imrecv )
@@ -800,6 +843,9 @@ FSUB( MPI_Improbe )( int* source, int* tag, MPI_Comm* comm, int* flag, MPI_Messa
 void
 FSUB( MPI_Imrecv )( void* buf, int* count, MPI_Datatype* datatype, MPI_Message* message, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -809,6 +855,8 @@ FSUB( MPI_Imrecv )( void* buf, int* count, MPI_Datatype* datatype, MPI_Message* 
 
 
     *ierr = MPI_Imrecv( buf, *count, *datatype, message, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IPROBE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Iprobe )
@@ -822,6 +870,9 @@ FSUB( MPI_Imrecv )( void* buf, int* count, MPI_Datatype* datatype, MPI_Message* 
 void
 FSUB( MPI_Iprobe )( int* source, int* tag, MPI_Comm* comm, int* flag, MPI_Status* status, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
@@ -831,6 +882,8 @@ FSUB( MPI_Iprobe )( int* source, int* tag, MPI_Comm* comm, int* flag, MPI_Status
 
 
     *ierr = MPI_Iprobe( *source, *tag, *comm, flag, status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Irecv )
@@ -844,6 +897,9 @@ FSUB( MPI_Iprobe )( int* source, int* tag, MPI_Comm* comm, int* flag, MPI_Status
 void
 FSUB( MPI_Irecv )( void* buf, int* count, MPI_Datatype* datatype, int* source, int* tag, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -853,6 +909,8 @@ FSUB( MPI_Irecv )( void* buf, int* count, MPI_Datatype* datatype, int* source, i
 
 
     *ierr = MPI_Irecv( buf, *count, *datatype, *source, *tag, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IRSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Irsend )
@@ -866,6 +924,9 @@ FSUB( MPI_Irecv )( void* buf, int* count, MPI_Datatype* datatype, int* source, i
 void
 FSUB( MPI_Irsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* tag, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -875,6 +936,8 @@ FSUB( MPI_Irsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, in
 
 
     *ierr = MPI_Irsend( buf, *count, *datatype, *dest, *tag, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ISEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Isend )
@@ -888,6 +951,9 @@ FSUB( MPI_Irsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, in
 void
 FSUB( MPI_Isend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* tag, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -897,6 +963,8 @@ FSUB( MPI_Isend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int
 
 
     *ierr = MPI_Isend( buf, *count, *datatype, *dest, *tag, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ISSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Issend )
@@ -910,6 +978,9 @@ FSUB( MPI_Isend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int
 void
 FSUB( MPI_Issend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* tag, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -919,6 +990,8 @@ FSUB( MPI_Issend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, in
 
 
     *ierr = MPI_Issend( buf, *count, *datatype, *dest, *tag, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_MPROBE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Mprobe )
@@ -932,6 +1005,9 @@ FSUB( MPI_Issend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, in
 void
 FSUB( MPI_Mprobe )( int* source, int* tag, MPI_Comm* comm, MPI_Message* message, MPI_Status* status, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
@@ -941,6 +1017,8 @@ FSUB( MPI_Mprobe )( int* source, int* tag, MPI_Comm* comm, MPI_Message* message,
 
 
     *ierr = MPI_Mprobe( *source, *tag, *comm, message, status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_MRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Mrecv )
@@ -954,6 +1032,9 @@ FSUB( MPI_Mprobe )( int* source, int* tag, MPI_Comm* comm, MPI_Message* message,
 void
 FSUB( MPI_Mrecv )( void* buf, int* count, MPI_Datatype* datatype, MPI_Message* message, MPI_Status* status, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
@@ -969,6 +1050,8 @@ FSUB( MPI_Mrecv )( void* buf, int* count, MPI_Datatype* datatype, MPI_Message* m
 
 
     *ierr = MPI_Mrecv( buf, *count, *datatype, message, status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_PROBE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Probe )
@@ -982,6 +1065,9 @@ FSUB( MPI_Mrecv )( void* buf, int* count, MPI_Datatype* datatype, MPI_Message* m
 void
 FSUB( MPI_Probe )( int* source, int* tag, MPI_Comm* comm, MPI_Status* status, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
@@ -991,6 +1077,8 @@ FSUB( MPI_Probe )( int* source, int* tag, MPI_Comm* comm, MPI_Status* status, in
 
 
     *ierr = MPI_Probe( *source, *tag, *comm, status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_RECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Recv )
@@ -1004,6 +1092,9 @@ FSUB( MPI_Probe )( int* source, int* tag, MPI_Comm* comm, MPI_Status* status, in
 void
 FSUB( MPI_Recv )( void* buf, int* count, MPI_Datatype* datatype, int* source, int* tag, MPI_Comm* comm, MPI_Status* status, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
@@ -1019,6 +1110,8 @@ FSUB( MPI_Recv )( void* buf, int* count, MPI_Datatype* datatype, int* source, in
 
 
     *ierr = MPI_Recv( buf, *count, *datatype, *source, *tag, *comm, status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_RECV_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Recv_init )
@@ -1032,6 +1125,9 @@ FSUB( MPI_Recv )( void* buf, int* count, MPI_Datatype* datatype, int* source, in
 void
 FSUB( MPI_Recv_init )( void* buf, int* count, MPI_Datatype* datatype, int* source, int* tag, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -1041,6 +1137,8 @@ FSUB( MPI_Recv_init )( void* buf, int* count, MPI_Datatype* datatype, int* sourc
 
 
     *ierr = MPI_Recv_init( buf, *count, *datatype, *source, *tag, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_REQUEST_FREE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Request_free )
@@ -1054,7 +1152,12 @@ FSUB( MPI_Recv_init )( void* buf, int* count, MPI_Datatype* datatype, int* sourc
 void
 FSUB( MPI_Request_free )( MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Request_free( request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_RSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Rsend )
@@ -1068,6 +1171,9 @@ FSUB( MPI_Request_free )( MPI_Request* request, int* ierr )
 void
 FSUB( MPI_Rsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* tag, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -1077,6 +1183,8 @@ FSUB( MPI_Rsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int
 
 
     *ierr = MPI_Rsend( buf, *count, *datatype, *dest, *tag, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_RSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Rsend_init )
@@ -1090,6 +1198,9 @@ FSUB( MPI_Rsend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int
 void
 FSUB( MPI_Rsend_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* tag, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -1099,6 +1210,8 @@ FSUB( MPI_Rsend_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest
 
 
     *ierr = MPI_Rsend_init( buf, *count, *datatype, *dest, *tag, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Send )
@@ -1112,6 +1225,9 @@ FSUB( MPI_Rsend_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest
 void
 FSUB( MPI_Send )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* tag, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -1121,6 +1237,8 @@ FSUB( MPI_Send )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int*
 
 
     *ierr = MPI_Send( buf, *count, *datatype, *dest, *tag, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Send_init )
@@ -1134,6 +1252,9 @@ FSUB( MPI_Send )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int*
 void
 FSUB( MPI_Send_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* tag, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -1143,6 +1264,8 @@ FSUB( MPI_Send_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest,
 
 
     *ierr = MPI_Send_init( buf, *count, *datatype, *dest, *tag, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SENDRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Sendrecv )
@@ -1156,6 +1279,9 @@ FSUB( MPI_Send_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest,
 void
 FSUB( MPI_Sendrecv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, int* dest, int* sendtag, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* source, int* recvtag, MPI_Comm* comm, MPI_Status* status, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( sendbuf == scorep_mpi_fortran_bottom )
     {
@@ -1177,6 +1303,8 @@ FSUB( MPI_Sendrecv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, int
 
 
     *ierr = MPI_Sendrecv( sendbuf, *sendcount, *sendtype, *dest, *sendtag, recvbuf, *recvcount, *recvtype, *source, *recvtag, *comm, status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SENDRECV_REPLACE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Sendrecv_replace )
@@ -1190,6 +1318,9 @@ FSUB( MPI_Sendrecv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, int
 void
 FSUB( MPI_Sendrecv_replace )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* sendtag, int* source, int* recvtag, MPI_Comm* comm, MPI_Status* status, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -1205,6 +1336,8 @@ FSUB( MPI_Sendrecv_replace )( void* buf, int* count, MPI_Datatype* datatype, int
 
 
     *ierr = MPI_Sendrecv_replace( buf, *count, *datatype, *dest, *sendtag, *source, *recvtag, *comm, status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Ssend )
@@ -1218,6 +1351,9 @@ FSUB( MPI_Sendrecv_replace )( void* buf, int* count, MPI_Datatype* datatype, int
 void
 FSUB( MPI_Ssend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* tag, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -1227,6 +1363,8 @@ FSUB( MPI_Ssend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int
 
 
     *ierr = MPI_Ssend( buf, *count, *datatype, *dest, *tag, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Ssend_init )
@@ -1240,6 +1378,9 @@ FSUB( MPI_Ssend )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int
 void
 FSUB( MPI_Ssend_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest, int* tag, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -1249,6 +1390,8 @@ FSUB( MPI_Ssend_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest
 
 
     *ierr = MPI_Ssend_init( buf, *count, *datatype, *dest, *tag, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_START ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Start )
@@ -1262,7 +1405,12 @@ FSUB( MPI_Ssend_init )( void* buf, int* count, MPI_Datatype* datatype, int* dest
 void
 FSUB( MPI_Start )( MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Start( request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_STARTALL ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Startall )
@@ -1276,7 +1424,12 @@ FSUB( MPI_Start )( MPI_Request* request, int* ierr )
 void
 FSUB( MPI_Startall )( int* count, MPI_Request* array_of_requests, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Startall( *count, array_of_requests );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TEST ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Test )
@@ -1290,6 +1443,9 @@ FSUB( MPI_Startall )( int* count, MPI_Request* array_of_requests, int* ierr )
 void
 FSUB( MPI_Test )( MPI_Request* request, int* flag, MPI_Status* status, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
@@ -1299,6 +1455,8 @@ FSUB( MPI_Test )( MPI_Request* request, int* flag, MPI_Status* status, int* ierr
 
 
     *ierr = MPI_Test( request, flag, status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TEST_CANCELLED ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Test_cancelled )
@@ -1312,7 +1470,12 @@ FSUB( MPI_Test )( MPI_Request* request, int* flag, MPI_Status* status, int* ierr
 void
 FSUB( MPI_Test_cancelled )( MPI_Status* status, int* flag, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Test_cancelled( status, flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_TESTALL ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Testall )
@@ -1326,6 +1489,9 @@ FSUB( MPI_Test_cancelled )( MPI_Status* status, int* flag, int* ierr )
 void
 FSUB( MPI_Testall )( int* count, MPI_Request* array_of_requests, int* flag, MPI_Status* array_of_statuses, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == scorep_mpi_fortran_statuses_ignore )
     {
@@ -1335,6 +1501,8 @@ FSUB( MPI_Testall )( int* count, MPI_Request* array_of_requests, int* flag, MPI_
 
 
     *ierr = MPI_Testall( *count, array_of_requests, flag, array_of_statuses );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WAIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Wait )
@@ -1348,6 +1516,9 @@ FSUB( MPI_Testall )( int* count, MPI_Request* array_of_requests, int* flag, MPI_
 void
 FSUB( MPI_Wait )( MPI_Request* request, MPI_Status* status, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
@@ -1357,6 +1528,8 @@ FSUB( MPI_Wait )( MPI_Request* request, MPI_Status* status, int* ierr )
 
 
     *ierr = MPI_Wait( request, status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_WAITALL ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Waitall )
@@ -1370,6 +1543,9 @@ FSUB( MPI_Wait )( MPI_Request* request, MPI_Status* status, int* ierr )
 void
 FSUB( MPI_Waitall )( int* count, MPI_Request* array_of_requests, MPI_Status* array_of_statuses, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_STATUSES_IGNORE )
     if ( array_of_statuses == scorep_mpi_fortran_statuses_ignore )
     {
@@ -1379,6 +1555,8 @@ FSUB( MPI_Waitall )( int* count, MPI_Request* array_of_requests, MPI_Status* arr
 
 
     *ierr = MPI_Waitall( *count, array_of_requests, array_of_statuses );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1447,6 +1625,7 @@ FSUB( MPI_Wait )( MPI_Fint* request,
                   MPI_Fint* status,
                   MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request lrequest;
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -1472,6 +1651,7 @@ FSUB( MPI_Wait )( MPI_Fint* request,
             PMPI_Status_c2f( c_status_ptr, status );
         }
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1487,6 +1667,7 @@ FSUB( MPI_Waitall )( MPI_Fint* count,
                      MPI_Fint  array_of_statuses[],
                      MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int          i;
     MPI_Request* lrequest = NULL;
     MPI_Status*  c_status = NULL;
@@ -1532,6 +1713,7 @@ FSUB( MPI_Waitall )( MPI_Fint* count,
             }
         }
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1550,6 +1732,7 @@ FSUB( MPI_Waitany )( MPI_Fint* count,
                      MPI_Fint* status,
                      MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int          i;
     MPI_Request* lrequest = NULL;
     MPI_Status   c_status;
@@ -1590,6 +1773,7 @@ FSUB( MPI_Waitany )( MPI_Fint* count,
             PMPI_Status_c2f( &c_status, status );
         }
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1609,6 +1793,7 @@ FSUB( MPI_Waitsome )( MPI_Fint* incount,
                       MPI_Fint  array_of_statuses[],
                       MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int          i, j, found;
     MPI_Request* lrequest = NULL;
     MPI_Status*  c_status = NULL;
@@ -1686,6 +1871,7 @@ FSUB( MPI_Waitsome )( MPI_Fint* incount,
             }
         }
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1701,6 +1887,7 @@ FSUB( MPI_Test )( MPI_Fint* request,
                   MPI_Fint* status,
                   MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
     MPI_Request lrequest     = PMPI_Request_f2c( *request );
@@ -1728,6 +1915,7 @@ FSUB( MPI_Test )( MPI_Fint* request,
             PMPI_Status_c2f( &c_status, status );
         }
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1747,6 +1935,7 @@ FSUB( MPI_Testany )( MPI_Fint* count,
                      MPI_Fint* status,
                      MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int          i;
     MPI_Request* lrequest = NULL;
     MPI_Status   c_status;
@@ -1789,6 +1978,7 @@ FSUB( MPI_Testany )( MPI_Fint* count,
             PMPI_Status_c2f( &c_status, status );
         }
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1806,6 +1996,7 @@ FSUB( MPI_Testall )( MPI_Fint* count,
                      MPI_Fint  array_of_statuses[],
                      MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int          i;
     MPI_Request* lrequest = NULL;
     MPI_Status*  c_status = NULL;
@@ -1851,6 +2042,7 @@ FSUB( MPI_Testall )( MPI_Fint* count,
             }
         }
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1870,6 +2062,7 @@ FSUB( MPI_Testsome )( MPI_Fint* incount,
                       MPI_Fint  array_of_statuses[],
                       MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int          i, j, found;
     MPI_Request* lrequest = NULL;
     MPI_Status*  c_status = NULL;
@@ -1940,6 +2133,7 @@ FSUB( MPI_Testsome )( MPI_Fint* incount,
             }
         }
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1954,6 +2148,7 @@ FSUB( MPI_Startall )( MPI_Fint* count,
                       MPI_Fint  array_of_requests[],
                       MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int          i;
     MPI_Request* lrequest = NULL;
 
@@ -1975,6 +2170,7 @@ FSUB( MPI_Startall )( MPI_Fint* count,
             array_of_requests[ i ] = PMPI_Request_c2f( lrequest[ i ] );
         }
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1988,6 +2184,7 @@ void
 FSUB( MPI_Request_free )( MPI_Fint* request,
                           MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request lrequest = PMPI_Request_f2c( *request );
 
     *ierr = MPI_Request_free( &lrequest );
@@ -1996,6 +2193,7 @@ FSUB( MPI_Request_free )( MPI_Fint* request,
     {
         *request = PMPI_Request_c2f( lrequest );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -2011,10 +2209,12 @@ void
 FSUB( MPI_Cancel )( MPI_Fint* request,
                     MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request lrequest;
 
     lrequest = PMPI_Request_f2c( *request );
     *ierr    = MPI_Cancel( &lrequest );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -2030,6 +2230,9 @@ FSUB( MPI_Cancel )( MPI_Fint* request,
 void
 FSUB( MPI_Bsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -2039,6 +2242,8 @@ FSUB( MPI_Bsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
 
 
     *ierr = MPI_Bsend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_BSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Bsend_init )
@@ -2053,12 +2258,14 @@ FSUB( MPI_Bsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
 void
 FSUB( MPI_Bsend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
     *ierr = MPI_Bsend_init( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_BUFFER_ATTACH ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Buffer_attach )
@@ -2073,7 +2280,12 @@ FSUB( MPI_Bsend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint
 void
 FSUB( MPI_Buffer_attach )( void* buffer, MPI_Fint* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Buffer_attach( buffer, *size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_BUFFER_DETACH ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Buffer_detach )
@@ -2088,7 +2300,12 @@ FSUB( MPI_Buffer_attach )( void* buffer, MPI_Fint* size, MPI_Fint* ierr )
 void
 FSUB( MPI_Buffer_detach )( void* buffer, MPI_Fint* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Buffer_detach( buffer, size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IBSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Ibsend )
@@ -2103,6 +2320,7 @@ FSUB( MPI_Buffer_detach )( void* buffer, MPI_Fint* size, MPI_Fint* ierr )
 void
 FSUB( MPI_Ibsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -2117,6 +2335,7 @@ FSUB( MPI_Ibsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
     *ierr = MPI_Ibsend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IMPROBE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Improbe )
@@ -2131,6 +2350,7 @@ FSUB( MPI_Ibsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
 void
 FSUB( MPI_Improbe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* flag, MPI_Fint* message, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Message c_message;
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2154,6 +2374,8 @@ FSUB( MPI_Improbe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* 
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IMRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Imrecv )
@@ -2168,6 +2390,7 @@ FSUB( MPI_Improbe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* 
 void
 FSUB( MPI_Imrecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* message, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Message c_message = PMPI_Message_f2c( *message );
     MPI_Request c_request;
 
@@ -2184,6 +2407,7 @@ FSUB( MPI_Imrecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* me
 
     *message = PMPI_Message_c2f( c_message );
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IPROBE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Iprobe )
@@ -2198,6 +2422,7 @@ FSUB( MPI_Imrecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* me
 void
 FSUB( MPI_Iprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* flag, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
 
@@ -2219,6 +2444,8 @@ FSUB( MPI_Iprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* f
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Irecv )
@@ -2233,6 +2460,7 @@ FSUB( MPI_Iprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* f
 void
 FSUB( MPI_Irecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -2247,6 +2475,7 @@ FSUB( MPI_Irecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* sou
     *ierr = MPI_Irecv( buf, *count, PMPI_Type_f2c( *datatype ), *source, *tag, PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IRSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Irsend )
@@ -2261,6 +2490,7 @@ FSUB( MPI_Irecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* sou
 void
 FSUB( MPI_Irsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -2275,6 +2505,7 @@ FSUB( MPI_Irsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
     *ierr = MPI_Irsend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ISEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Isend )
@@ -2289,6 +2520,7 @@ FSUB( MPI_Irsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
 void
 FSUB( MPI_Isend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -2303,6 +2535,7 @@ FSUB( MPI_Isend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
     *ierr = MPI_Isend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ISSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Issend )
@@ -2317,6 +2550,7 @@ FSUB( MPI_Isend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
 void
 FSUB( MPI_Issend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -2331,6 +2565,7 @@ FSUB( MPI_Issend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
     *ierr = MPI_Issend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_MPROBE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Mprobe )
@@ -2345,6 +2580,7 @@ FSUB( MPI_Issend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* de
 void
 FSUB( MPI_Mprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* message, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Message c_message;
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2368,6 +2604,8 @@ FSUB( MPI_Mprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* m
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_MRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Mrecv )
@@ -2382,6 +2620,7 @@ FSUB( MPI_Mprobe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* m
 void
 FSUB( MPI_Mrecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* message, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Message c_message = PMPI_Message_f2c( *message );
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
@@ -2411,6 +2650,8 @@ FSUB( MPI_Mrecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* mes
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_PROBE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Probe )
@@ -2425,6 +2666,7 @@ FSUB( MPI_Mrecv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* mes
 void
 FSUB( MPI_Probe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
 
@@ -2446,6 +2688,8 @@ FSUB( MPI_Probe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* st
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_RECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Recv )
@@ -2460,6 +2704,7 @@ FSUB( MPI_Probe )( MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* st
 void
 FSUB( MPI_Recv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
 
@@ -2487,6 +2732,8 @@ FSUB( MPI_Recv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* sour
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_RECV_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Recv_init )
@@ -2501,6 +2748,7 @@ FSUB( MPI_Recv )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* sour
 void
 FSUB( MPI_Recv_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* source, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -2515,6 +2763,7 @@ FSUB( MPI_Recv_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint*
     *ierr = MPI_Recv_init( buf, *count, PMPI_Type_f2c( *datatype ), *source, *tag, PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_RSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Rsend )
@@ -2529,6 +2778,9 @@ FSUB( MPI_Recv_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint*
 void
 FSUB( MPI_Rsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -2538,6 +2790,8 @@ FSUB( MPI_Rsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
 
 
     *ierr = MPI_Rsend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_RSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Rsend_init )
@@ -2552,6 +2806,7 @@ FSUB( MPI_Rsend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
 void
 FSUB( MPI_Rsend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -2566,6 +2821,7 @@ FSUB( MPI_Rsend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint
     *ierr = MPI_Rsend_init( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Send )
@@ -2580,6 +2836,9 @@ FSUB( MPI_Rsend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint
 void
 FSUB( MPI_Send )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -2589,6 +2848,8 @@ FSUB( MPI_Send )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest
 
 
     *ierr = MPI_Send( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Send_init )
@@ -2603,6 +2864,7 @@ FSUB( MPI_Send )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest
 void
 FSUB( MPI_Send_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -2617,6 +2879,7 @@ FSUB( MPI_Send_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint*
     *ierr = MPI_Send_init( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SENDRECV ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Sendrecv )
@@ -2631,6 +2894,7 @@ FSUB( MPI_Send_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint*
 void
 FSUB( MPI_Sendrecv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, MPI_Fint* dest, MPI_Fint* sendtag, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* source, MPI_Fint* recvtag, MPI_Fint* comm, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
 
@@ -2664,6 +2928,8 @@ FSUB( MPI_Sendrecv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, MP
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SENDRECV_REPLACE ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Sendrecv_replace )
@@ -2678,6 +2944,7 @@ FSUB( MPI_Sendrecv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, MP
 void
 FSUB( MPI_Sendrecv_replace )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* sendtag, MPI_Fint* source, MPI_Fint* recvtag, MPI_Fint* comm, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
 
@@ -2705,6 +2972,8 @@ FSUB( MPI_Sendrecv_replace )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MP
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SSEND ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Ssend )
@@ -2719,6 +2988,9 @@ FSUB( MPI_Sendrecv_replace )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MP
 void
 FSUB( MPI_Ssend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buf == scorep_mpi_fortran_bottom )
     {
@@ -2728,6 +3000,8 @@ FSUB( MPI_Ssend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
 
 
     *ierr = MPI_Ssend( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SSEND_INIT ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Ssend_init )
@@ -2742,6 +3016,7 @@ FSUB( MPI_Ssend )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* des
 void
 FSUB( MPI_Ssend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* dest, MPI_Fint* tag, MPI_Fint* comm, MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request;
 
 
@@ -2756,6 +3031,7 @@ FSUB( MPI_Ssend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint
     *ierr = MPI_Ssend_init( buf, *count, PMPI_Type_f2c( *datatype ), *dest, *tag, PMPI_Comm_f2c( *comm ), &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_START ) && !defined( SCOREP_MPI_NO_P2P ) && !defined( MPI_Start )
@@ -2770,12 +3046,14 @@ FSUB( MPI_Ssend_init )( void* buf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint
 void
 FSUB( MPI_Start )( MPI_Fint* request, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Request c_request = PMPI_Request_f2c( *request );
 
 
     *ierr = MPI_Start( &c_request );
 
     *request = PMPI_Request_c2f( c_request );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -2791,12 +3069,15 @@ FSUB( MPI_Start )( MPI_Fint* request, MPI_Fint* ierr )
 void
 FSUB( MPI_Test_cancelled )( MPI_Fint* status, MPI_Fint* flag, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
     PMPI_Status_f2c( status, c_status_ptr );
 
 
     *ierr = MPI_Test_cancelled( c_status_ptr, flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

@@ -1,0 +1,101 @@
+## -*- mode: makefile -*-
+
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2015,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+
+## file       Makefile.inc.am
+
+
+if HAVE_COMPILER_CONSTRUCTOR_SUPPORT
+
+check_LTLIBRARIES += libtest_constructor_check_c.la
+libtest_constructor_check_c_la_SOURCES = \
+    $(SRC_ROOT)test/constructor_checks/constructor_check.c
+libtest_constructor_check_c_la_CPPFLAGS =
+libtest_constructor_check_c_la_CFLAGS =
+
+check_PROGRAMS += test_constructor_check_c
+test_constructor_check_c_SOURCES = \
+    $(SRC_ROOT)test/constructor_checks/constructor.c
+test_constructor_check_c_CPPFLAGS = \
+    $(AM_CPPFLAGS)
+test_constructor_check_c_CFLAGS = \
+    $(AM_CFLAGS) \
+    $(SCOREP_COMPILER_CONSTRUCTOR_CFLAGS)
+test_constructor_check_c_LDADD = \
+    libtest_constructor_check_c.la
+TESTS_SERIAL += test_constructor_check_c
+XFAIL_TESTS_SERIAL += test_constructor_check_c
+
+check_LTLIBRARIES += libtest_constructor_check_cxx.la
+libtest_constructor_check_cxx_la_SOURCES = \
+    $(SRC_ROOT)test/constructor_checks/constructor_check.cxx
+libtest_constructor_check_cxx_la_CPPFLAGS =
+libtest_constructor_check_cxx_la_CFLAGS =
+
+check_PROGRAMS += test_constructor_check_cxx
+test_constructor_check_cxx_SOURCES = \
+    $(SRC_ROOT)test/constructor_checks/constructor.c
+nodist_EXTRA_test_constructor_check_cxx_SOURCES = \
+    test_constructor_check_cxx_force_link_with_CXXLD.cxx
+test_constructor_check_cxx_CPPFLAGS = \
+    $(AM_CPPFLAGS)
+test_constructor_check_cxx_CFLAGS = \
+    $(AM_CFLAGS) \
+    $(SCOREP_COMPILER_CONSTRUCTOR_CFLAGS)
+test_constructor_check_cxx_LDADD = \
+    libtest_constructor_check_cxx.la
+TESTS_SERIAL += test_constructor_check_cxx
+XFAIL_TESTS_SERIAL += test_constructor_check_cxx
+
+check_LTLIBRARIES += libtest_constructor_check_f.la
+libtest_constructor_check_f_la_SOURCES = \
+    $(SRC_ROOT)test/constructor_checks/constructor_check.F90
+libtest_constructor_check_f_la_CPPFLAGS =
+libtest_constructor_check_f_la_CFLAGS =
+
+check_PROGRAMS += test_constructor_check_f
+test_constructor_check_f_SOURCES = \
+    $(SRC_ROOT)test/constructor_checks/constructor.c
+nodist_EXTRA_test_constructor_check_f_SOURCES = \
+    test_constructor_check_f_force_link_with_FCLD.f90
+test_constructor_check_f_CPPFLAGS = \
+    $(AM_CPPFLAGS)
+test_constructor_check_f_CFLAGS = \
+    $(AM_CFLAGS) \
+    $(SCOREP_COMPILER_CONSTRUCTOR_CFLAGS)
+test_constructor_check_f_LDADD = \
+    libtest_constructor_check_f.la
+TESTS_SERIAL += test_constructor_check_f
+XFAIL_TESTS_SERIAL += test_constructor_check_f
+
+INSTALLCHECK_LOCAL += constructor-checks
+constructor-checks: ../installcheck/constructor_checks/bin/run_constructor_checks.sh \
+                    ../installcheck/constructor_checks/Makefile
+	$(am__cd) ../installcheck/constructor_checks && $(MAKE) $(AM_MAKEFLAGS)
+
+CLEANFILES += ../installcheck/constructor_checks/Makefile
+../installcheck/constructor_checks/Makefile: ../installcheck/constructor_checks/generate_makefile.sh
+	$(AM_V_GEN)$< >$@
+
+CLEAN_LOCAL += clean-local-constructor-checks
+clean-local-constructor-checks:
+	$(RM) ../installcheck/constructor_checks/constructor_check_*.$(OBJEXT)
+	$(RM) ../installcheck/constructor_checks/bin/constructor_check_*
+
+endif
+
+EXTRA_DIST += \
+    $(SRC_ROOT)test/constructor_checks/constructor.c \
+    $(SRC_ROOT)test/constructor_checks/constructor_check.c \
+    $(SRC_ROOT)test/constructor_checks/constructor_check.cxx \
+    $(SRC_ROOT)test/constructor_checks/constructor_check.F90

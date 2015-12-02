@@ -10,6 +10,7 @@ ${guard:start}
  */
 ${proto:c}
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   ${rtype} return_val;
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_${group|uppercase}))
@@ -17,24 +18,27 @@ ${proto:c}
       ${decl}
       SCOREP_MPI_EVENT_GEN_OFF();
       ${xblock}
-      /* Enters region too. */
-      uint64_t start_time_stamp
-        = SCOREP_MpiCollectiveBegin(scorep_mpi_regid[SCOREP__${name|uppercase}]);
 
+      SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__${name|uppercase}], ( intptr_t )P${name});
+      SCOREP_MpiCollectiveBegin();
+      uint64_t start_time_stamp =
+        SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
+
+      SCOREP_ENTER_WRAPPED_REGION();
       return_val = ${call:pmpi};
+      SCOREP_EXIT_WRAPPED_REGION();
 
       ${guard:hooks}
         ${check:hooks}
           ${call:posthook};
       ${guard:end}
 
-      /* Leaves region too. */
-      SCOREP_MpiCollectiveEnd(scorep_mpi_regid[SCOREP__${name|uppercase}],
-                              SCOREP_MPI_COMM_HANDLE(comm),
+      SCOREP_MpiCollectiveEnd(SCOREP_MPI_COMM_HANDLE(comm),
                               root_loc,
                               SCOREP_COLLECTIVE_${name|uppercase},
                               ${mpi:sendcount},
                               ${mpi:recvcount});
+      SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
 
       SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -42,6 +46,7 @@ ${proto:c}
     {
       return_val = ${call:pmpi};
     }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }

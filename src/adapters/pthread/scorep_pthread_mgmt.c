@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -46,8 +46,6 @@ static void register_pthread_regions( void );
 struct SCOREP_Location;
 
 
-bool   scorep_pthread_initialized         = false;
-bool   scorep_pthread_outside_measurement = true;
 size_t scorep_pthread_subsystem_id;
 
 
@@ -69,12 +67,6 @@ static SCOREP_ErrorCode
 pthread_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
-    if ( scorep_pthread_initialized )
-    {
-        return SCOREP_SUCCESS;
-    }
-    scorep_pthread_initialized         = true;
-    scorep_pthread_outside_measurement = false;
 
     SCOREP_Paradigms_RegisterParallelParadigm(
         SCOREP_PARADIGM_PTHREAD,
@@ -127,13 +119,9 @@ static void
 pthread_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
-    if ( scorep_pthread_outside_measurement )
-    {
-        return;
-    }
-    scorep_pthread_outside_measurement = true;
 
     scorep_pthread_mutex_finalize();
+
     UTILS_DEBUG_EXIT();
 }
 
@@ -160,14 +148,9 @@ pthread_subsystem_init_location( struct SCOREP_Location* locationData,
 /* Implementation of the pthread adapter initialization/finalization struct */
 const SCOREP_Subsystem SCOREP_Subsystem_PthreadAdapter =
 {
-    .subsystem_name              = "PTHREAD",
-    .subsystem_register          = &pthread_subsystem_register,
-    .subsystem_init              = &pthread_subsystem_init,
-    .subsystem_init_location     = &pthread_subsystem_init_location,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &pthread_subsystem_finalize,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name          = "PTHREAD",
+    .subsystem_register      = &pthread_subsystem_register,
+    .subsystem_init          = &pthread_subsystem_init,
+    .subsystem_init_location = &pthread_subsystem_init_location,
+    .subsystem_finalize      = &pthread_subsystem_finalize,
 };

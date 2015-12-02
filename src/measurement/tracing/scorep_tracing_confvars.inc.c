@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2012,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2012,
@@ -44,7 +44,11 @@
 
 bool        scorep_tracing_use_sion;
 uint64_t    scorep_tracing_max_procs_per_sion_file;
-static bool scorep_tracing_compress;
+static bool tracing_compress;
+/* Need to initialize variable, as it is not guaranteed that it will be set by
+ * the config system, if unwinding is not supported.
+ */
+bool scorep_tracing_convert_calling_context = false;
 
 
 /** @brief Measurement system configure variables */
@@ -72,11 +76,34 @@ static const SCOREP_ConfigVariable scorep_tracing_confvars[] = {
     {
         "compress",
         SCOREP_CONFIG_TYPE_BOOL,
-        &scorep_tracing_compress,
+        &tracing_compress,
         NULL,
         "false",
         "Whether or not to compress traces with libz",
         ""
+    },
+    SCOREP_CONFIG_TERMINATOR
+};
+
+static const SCOREP_ConfigVariable scorep_tracing_calling_context_confvars[] = {
+    {
+        "convert_calling_context_events",
+        SCOREP_CONFIG_TYPE_BOOL,
+        &scorep_tracing_convert_calling_context,
+        NULL,
+        "false",
+        "Write calling context information as a sequence of Enter/Leave events to trace",
+        "When recording the calling context of events (instrumented or sampled)"
+        "than these could be stored in the trace either as the new CallingContext"
+        "records from OTF2 or they could be converted to the legacy Enter/Leave"
+        "records.  This can be controlled with this variable, where the former is"
+        "the false value.\n"
+        "This is only in effect if SCOREP_ENABLING_UNWINDING is on.\n"
+        "Note that enabling this will result in an increase of records per "
+        "event and also of the loss of the source code locations.\n"
+        "This option exists only for backwards compatibility for tools, which "
+        "cannot handle the new OTF2 records. This option my thus be removed in "
+        "future releases."
     },
     SCOREP_CONFIG_TERMINATOR
 };
@@ -88,8 +115,10 @@ SCOREP_Tracing_Register( void )
     ret = SCOREP_ConfigRegister( "tracing", scorep_tracing_confvars );
     if ( SCOREP_SUCCESS != ret )
     {
-        UTILS_ERROR( ret, "Can't register tracing config variables" );
+        return UTILS_ERROR( ret, "Can't register tracing config variables" );
     }
 
-    return ret;
+    return SCOREP_ConfigRegisterCond( "tracing",
+                                      scorep_tracing_calling_context_confvars,
+                                      HAVE_BACKEND_UNWINDING_SUPPORT  );
 }

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -42,6 +42,7 @@
 
 #include <otf2/otf2.h>
 
+#include <SCOREP_RuntimeManagement.h>
 #include <scorep_runtime_management.h>
 #include <scorep_status.h>
 #include <scorep_location.h>
@@ -76,6 +77,10 @@ size_t scorep_tracing_substrate_id;
 
 
 #include "scorep_tracing_confvars.inc.c"
+
+SCOREP_StringHandle scorep_tracing_cct_file      = SCOREP_INVALID_STRING;
+SCOREP_StringHandle scorep_tracing_cct_ip_offset = SCOREP_INVALID_STRING;
+SCOREP_StringHandle scorep_tracing_cct_ip        = SCOREP_INVALID_STRING;
 
 
 static OTF2_FileSubstrate
@@ -333,6 +338,13 @@ SCOREP_Tracing_Initialize( size_t substrateId )
     UTILS_ASSERT( err == SCOREP_SUCCESS );
 
     OTF2_Archive_SetCreator( scorep_otf2_archive, PACKAGE_STRING );
+
+    if ( SCOREP_IsUnwindingEnabled() )
+    {
+        scorep_tracing_cct_file      = SCOREP_Definitions_NewString( "EXECUTABLE/SHARED OBJECT" );
+        scorep_tracing_cct_ip_offset = SCOREP_Definitions_NewString( "INSTRUCTION OFFSET" );
+        scorep_tracing_cct_ip        = SCOREP_Definitions_NewString( "INSTRUCTION ADDRESS" );
+    }
 }
 
 

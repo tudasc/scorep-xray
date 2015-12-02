@@ -4,6 +4,9 @@
  * Copyright (c) 2009-2013,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -91,7 +94,8 @@ public:
      * @param regionName  The specified regions name.
      */
     virtual bool
-    occursInRegion( const std::string& regionName );
+    occursInRegion( const std::string& regionName,
+                    bool               hasHits = false );
 
     /*------------------------------------------------ protected members */
 protected:
@@ -120,7 +124,8 @@ class SCOREP_Score_EnterEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_EnterEvent( void );
     virtual bool
-    occursInRegion( const std::string& regionName );
+    occursInRegion( const std::string& regionName,
+                    bool               hasHits );
 };
 
 /* **************************************************************************************
@@ -131,7 +136,41 @@ class SCOREP_Score_LeaveEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_LeaveEvent( void );
     virtual bool
-    occursInRegion( const std::string& regionName );
+    occursInRegion( const std::string& regionName,
+                    bool               hasHits );
+};
+
+/* **************************************************************************************
+ * class SCOREP_Score_CallingContextEnterEvent
+ ***************************************************************************************/
+class SCOREP_Score_CallingContextEnterEvent : public SCOREP_Score_Event
+{
+public:
+    SCOREP_Score_CallingContextEnterEvent( void );
+    virtual bool
+    occursInRegion( const std::string& regionName,
+                    bool               hasHits );
+};
+
+/* **************************************************************************************
+ * class SCOREP_Score_CallingContextLeaveEvent
+ ***************************************************************************************/
+class SCOREP_Score_CallingContextLeaveEvent : public SCOREP_Score_Event
+{
+public:
+    SCOREP_Score_CallingContextLeaveEvent( void );
+    virtual bool
+    occursInRegion( const std::string& regionName,
+                    bool               hasHits );
+};
+
+/* **************************************************************************************
+ * class SCOREP_Score_CallingContextSampleEvent
+ ***************************************************************************************/
+class SCOREP_Score_CallingContextSampleEvent : public SCOREP_Score_Event
+{
+public:
+    SCOREP_Score_CallingContextSampleEvent( void );
 };
 
 /* **************************************************************************************
@@ -142,7 +181,8 @@ class SCOREP_Score_MetricEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_MetricEvent( uint64_t numDense );
     virtual bool
-    occursInRegion( const std::string& regionName );
+    occursInRegion( const std::string& regionName,
+                    bool               hasHits );
     virtual void
     setEventSize( uint32_t size );
 
@@ -159,7 +199,8 @@ public:
     SCOREP_Score_TimestampEvent( void );
 
     virtual bool
-    occursInRegion( const std::string& regionName );
+    occursInRegion( const std::string& regionName,
+                    bool               hasHits );
 
     virtual void
     setEventSize( uint32_t size );
@@ -173,7 +214,8 @@ class SCOREP_Score_ParameterEvent : public SCOREP_Score_Event
 public:
     SCOREP_Score_ParameterEvent( void );
     virtual bool
-    occursInRegion( const std::string& regionName );
+    occursInRegion( const std::string& regionName,
+                    bool               hasHits );
 };
 
 /* **************************************************************************************
@@ -185,7 +227,8 @@ public:
     SCOREP_Score_NameMatchEvent( const std::string&           eventName,
                                  const std::set<std::string>& regionNames );
     virtual bool
-    occursInRegion( const std::string& regionName );
+    occursInRegion( const std::string& regionName,
+                    bool               hasHits );
 
 protected:
     std::set<std::string> m_region_names;
@@ -200,7 +243,8 @@ public:
     SCOREP_Score_PrefixMatchEvent( const std::string&             eventName,
                                    const std::deque<std::string>& regionPrefix );
     virtual bool
-    occursInRegion( const std::string& regionName );
+    occursInRegion( const std::string& regionName,
+                    bool               hasHits );
 
 protected:
     std::deque<std::string> m_region_prefix;

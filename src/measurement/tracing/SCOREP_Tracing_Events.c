@@ -55,15 +55,15 @@
 #include <SCOREP_Types.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Properties.h>
+#include <SCOREP_Metric_Management.h>
+#include <SCOREP_Substrates_Management.h>
+#include <SCOREP_Unwinding.h>
 
+#include <scorep_environment.h>
 #include <scorep_status.h>
 
 #include "scorep_tracing_internal.h"
 #include "scorep_tracing_types.h"
-#include <scorep_events_common.h>
-
-#include <SCOREP_Substrates_Management.h>
-#include <SCOREP_Metric_Management.h>
 
 
 /**
@@ -163,14 +163,13 @@ enter( SCOREP_Location*    location,
        SCOREP_RegionHandle regionHandle,
        uint64_t*           metricValues )
 {
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+
     SCOREP_Metric_WriteToTrace( location, timestamp );
-
-    SCOREP_TracingData* tracing_data       = scorep_tracing_get_trace_data( location );
-    OTF2_EvtWriter*     evt_writer         = tracing_data->otf_writer;
-    OTF2_AttributeList* otf_attribute_list = tracing_data->otf_attribute_list;
-
     OTF2_EvtWriter_Enter( evt_writer,
-                          ( OTF2_AttributeList* )otf_attribute_list,
+                          attribute_list,
                           timestamp,
                           SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
 }
@@ -182,22 +181,146 @@ leave( SCOREP_Location*    location,
        SCOREP_RegionHandle regionHandle,
        uint64_t*           metricValues )
 {
-    SCOREP_TracingData* tracing_data       = scorep_tracing_get_trace_data( location );
-    OTF2_EvtWriter*     evt_writer         = tracing_data->otf_writer;
-    OTF2_AttributeList* otf_attribute_list = tracing_data->otf_attribute_list;
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
 
-    if ( metricValues )
-    {
-        /* @todo: Writing metrics to trace file will be improved in the near future */
-
-        SCOREP_Metric_WriteToTrace( location,
-                                    timestamp );
-    }
-
+    SCOREP_Metric_WriteToTrace( location, timestamp );
     OTF2_EvtWriter_Leave( evt_writer,
-                          ( OTF2_AttributeList* )otf_attribute_list,
+                          attribute_list,
                           timestamp,
                           SCOREP_LOCAL_HANDLE_TO_ID( regionHandle, Region ) );
+}
+
+
+static void
+calling_context_enter( SCOREP_Location*            location,
+                       uint64_t                    timestamp,
+                       SCOREP_CallingContextHandle currentCallingContextHandle,
+                       SCOREP_CallingContextHandle previousCallingContextHandle,
+                       uint32_t                    unwindDistance,
+                       uint64_t*                   metricValues )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+
+    if ( scorep_tracing_convert_calling_context )
+    {
+        /* This will only process leave events resulting from the previous
+         * calling context and enter from the current, except the last one into
+         * the current calling context */
+        tracing_data->otf_attribute_list = NULL;
+        SCOREP_Unwinding_ProcessCallingContext( location,
+                                                timestamp,
+                                                metricValues,
+                                                SCOREP_CallingContextHandle_GetParent( currentCallingContextHandle ),
+                                                previousCallingContextHandle,
+                                                unwindDistance - 1,
+                                                enter,
+                                                leave );
+
+        /* The function we actually enter gets the attribute list */
+        tracing_data->otf_attribute_list = attribute_list;
+        enter( location,
+               timestamp,
+               SCOREP_CallingContextHandle_GetRegion( currentCallingContextHandle ),
+               metricValues );
+    }
+    else
+    {
+        SCOREP_Metric_WriteToTrace( location, timestamp );
+        OTF2_EvtWriter_CallingContextEnter( evt_writer,
+                                            attribute_list,
+                                            timestamp,
+                                            SCOREP_LOCAL_HANDLE_TO_ID( currentCallingContextHandle, CallingContext ),
+                                            unwindDistance );
+    }
+}
+
+
+static void
+calling_context_leave( SCOREP_Location*            location,
+                       uint64_t                    timestamp,
+                       SCOREP_CallingContextHandle currentCallingContextHandle,
+                       SCOREP_CallingContextHandle previousCallingContextHandle,
+                       uint32_t                    unwindDistance,
+                       uint64_t*                   metricValues )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+
+    if ( scorep_tracing_convert_calling_context )
+    {
+        /* This will only process leave events resulting from the previous
+         * calling context */
+        tracing_data->otf_attribute_list = NULL;
+        SCOREP_Unwinding_ProcessCallingContext( location,
+                                                timestamp,
+                                                metricValues,
+                                                currentCallingContextHandle,
+                                                previousCallingContextHandle,
+                                                1,
+                                                enter,
+                                                leave );
+
+        /* The function we actually enter gets the attribute list */
+        tracing_data->otf_attribute_list = attribute_list;
+        leave( location,
+               timestamp,
+               SCOREP_CallingContextHandle_GetRegion( currentCallingContextHandle ),
+               metricValues );
+    }
+    else
+    {
+        SCOREP_Metric_WriteToTrace( location, timestamp );
+        OTF2_EvtWriter_CallingContextLeave( evt_writer,
+                                            attribute_list,
+                                            timestamp,
+                                            SCOREP_LOCAL_HANDLE_TO_ID( currentCallingContextHandle, CallingContext ) );
+    }
+}
+
+
+static void
+sample( SCOREP_Location*                location,
+        uint64_t                        timestamp,
+        SCOREP_CallingContextHandle     currentCallingContextHandle,
+        SCOREP_CallingContextHandle     previousCallingContextHandle,
+        uint32_t                        unwindDistance,
+        SCOREP_InterruptGeneratorHandle interruptGeneratorHandle,
+        uint64_t*                       metricValues )
+{
+    SCOREP_TracingData* tracing_data   = scorep_tracing_get_trace_data( location );
+    OTF2_EvtWriter*     evt_writer     = tracing_data->otf_writer;
+    OTF2_AttributeList* attribute_list = tracing_data->otf_attribute_list;
+
+    if ( scorep_tracing_convert_calling_context )
+    {
+        /* No place for them yet, maybe last enter in the future, but currenlty there
+         * is no way the user could add attrbiutes to samples anyway. */
+        OTF2_AttributeList_RemoveAllAttributes( attribute_list );
+
+        SCOREP_Unwinding_ProcessCallingContext( location,
+                                                timestamp,
+                                                metricValues,
+                                                currentCallingContextHandle,
+                                                previousCallingContextHandle,
+                                                unwindDistance,
+                                                enter,
+                                                leave );
+    }
+    else if ( currentCallingContextHandle != SCOREP_INVALID_CALLING_CONTEXT )
+    {
+        SCOREP_Metric_WriteToTrace( location, timestamp );
+        OTF2_EvtWriter_CallingContextSample( evt_writer,
+                                             attribute_list,
+                                             timestamp,
+                                             SCOREP_LOCAL_HANDLE_TO_ID( currentCallingContextHandle, CallingContext ),
+                                             unwindDistance,
+                                             SCOREP_LOCAL_HANDLE_TO_ID( interruptGeneratorHandle, InterruptGenerator ) );
+    }
 }
 
 
@@ -206,7 +329,7 @@ add_attribute( SCOREP_Location*       location,
                SCOREP_AttributeHandle attributeHandle,
                void*                  value )
 {
-    OTF2_AttributeList* otf_attribute_list =
+    OTF2_AttributeList* attribute_list =
         scorep_tracing_get_trace_data( location )->otf_attribute_list;
 
     OTF2_AttributeValue  otf_val;
@@ -312,11 +435,29 @@ add_attribute( SCOREP_Location*       location,
             otf_type = OTF2_TYPE_STRING;
             break;
 
+        case SCOREP_ATTRIBUTE_TYPE_SOURCE_CODE_LOCATION:
+            otf_val.stringRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_SourceCodeLocationHandle* )value ), SourceCodeLocation );
+            otf_type = OTF2_TYPE_SOURCE_CODE_LOCATION;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_CALLING_CONTEXT:
+            otf_val.stringRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_SourceCodeLocationHandle* )value ), CallingContext );
+            otf_type = OTF2_TYPE_CALLING_CONTEXT;
+            break;
+
+        case SCOREP_ATTRIBUTE_TYPE_INTERRUPT_GENERATOR:
+            otf_val.stringRef = SCOREP_LOCAL_HANDLE_TO_ID(
+                *( ( SCOREP_SourceCodeLocationHandle* )value ), InterruptGenerator );
+            otf_type = OTF2_TYPE_INTERRUPT_GENERATOR;
+            break;
+
         default:
             UTILS_BUG( "Invalid attribute type: %u", attrType );
     }
 
-    OTF2_AttributeList_AddAttribute( otf_attribute_list,
+    OTF2_AttributeList_AddAttribute( attribute_list,
                                      SCOREP_LOCAL_HANDLE_TO_ID( attributeHandle, Attribute ),
                                      otf_type,
                                      otf_val );
@@ -1465,6 +1606,9 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnsureGlobalId,           ENSURE_GLOBAL_ID,             SCOREP_Tracing_AssignLocationId ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRegion,              ENTER_REGION,                 enter ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ExitRegion,               EXIT_REGION,                  leave ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( Sample,                   SAMPLE,                       sample ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CallingContextEnter,      CALLING_CONTEXT_ENTER,        calling_context_enter ),
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( CallingContextExit,       CALLING_CONTEXT_EXIT,         calling_context_leave ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( EnterRewindRegion,        ENTER_REWIND_REGION,          store_rewind_point ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ExitRewindRegion,         EXIT_REWIND_REGION,           exit_rewind_point ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( MpiSend,                  MPI_SEND,                     mpi_send ),

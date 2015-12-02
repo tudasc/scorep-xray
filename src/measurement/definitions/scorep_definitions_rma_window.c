@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -92,7 +92,7 @@ SCOREP_Definitions_NewInterimRmaWindow( const char*                      name,
         &scorep_local_definition_manager,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "<unknown RMA window>" ),
+            name ? name : "<unknown RMA window>", NULL ),
         communicatorHandle );
 
     SCOREP_Definitions_Unlock();
@@ -157,7 +157,7 @@ SCOREP_Definitions_NewRmaWindow( const char*               name,
         &scorep_local_definition_manager,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "<unknown RMA window>" ),
+            name ? name : "<unknown RMA window>", NULL ),
         communicatorHandle );
 
     SCOREP_Definitions_Unlock();
@@ -173,11 +173,11 @@ SCOREP_Definitions_NewUnifiedRmaWindow( const char*               name,
     UTILS_DEBUG_ENTRY( "%s", name );
 
     return define_rma_window(
-               scorep_unified_definition_manager,
-               scorep_definitions_new_string(
-                   scorep_unified_definition_manager,
-                   name ? name : "<unknown RMA window>" ),
-               communicatorHandle );
+        scorep_unified_definition_manager,
+        scorep_definitions_new_string(
+            scorep_unified_definition_manager,
+            name ? name : "<unknown RMA window>", NULL ),
+        communicatorHandle );
 }
 
 

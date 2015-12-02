@@ -52,18 +52,33 @@
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void )
 {
-    if ( !scorep_compiler_initialized )
-    {
-        UTILS_DEBUG( "inititialize PGI compiler adapter!" );
+    UTILS_DEBUG( "inititialize PGI compiler adapter!" );
 
-        /* Initialize region mutex */
-        SCOREP_MutexCreate( &scorep_compiler_region_mutex );
-
-        /* Set flag */
-        scorep_compiler_initialized = true;
-    }
+    /* Initialize region mutex */
+    SCOREP_MutexCreate( &scorep_compiler_region_mutex );
 
     return SCOREP_SUCCESS;
+}
+
+SCOREP_ErrorCode
+scorep_compiler_subsystem_begin( void )
+{
+    return SCOREP_SUCCESS;
+}
+
+void
+scorep_compiler_subsystem_end( void )
+{
+}
+
+/* Adapter finalization */
+void
+scorep_compiler_subsystem_finalize( void )
+{
+    /* Delete region mutex */
+    SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
+
+    UTILS_DEBUG( "finalize PGI compiler adapter!" );
 }
 
 /* Location initialization */
@@ -73,20 +88,4 @@ scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData,
 {
     UTILS_DEBUG( "PGI compiler adapter init location!" );
     return SCOREP_SUCCESS;
-}
-
-/* Adapter finalization */
-void
-scorep_compiler_subsystem_finalize( void )
-{
-    /* call only, if previously initialized */
-    if ( scorep_compiler_initialized )
-    {
-        /* Delete region mutex */
-        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
-
-        scorep_compiler_initialized = false;
-        scorep_compiler_finalized   = true;
-        UTILS_DEBUG( "finalize PGI compiler adapter!" );
-    }
 }

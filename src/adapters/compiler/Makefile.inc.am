@@ -82,19 +82,17 @@ libscorep_adapter_compiler_mgmt_la_SOURCES += \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_init.c \
     $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_weak.c
 
-# Install objectfiles in $(pkglibdir). pkglib_DATA not legitimate since automake 1.11.2
-objectdir = $(pkglibdir)
-object_DATA = \
-    scorep_compiler_gcc_plugin_begin.o \
-    scorep_compiler_gcc_plugin_end.o
+object_DATA += \
+    scorep_compiler_gcc_plugin_begin.$(OBJEXT) \
+    scorep_compiler_gcc_plugin_end.$(OBJEXT)
 
 gccplugin_objects_cppflags = \
     -I$(PUBLIC_INC_DIR) \
     -I$(INC_ROOT)src/adapters/compiler \
     -I$(INC_ROOT)src/measurement/include
 
-scorep_compiler_gcc_plugin_begin.o: $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_begin.c \
-                                    $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h
+scorep_compiler_gcc_plugin_begin.$(OBJEXT): $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_begin.c \
+                                            $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo $(gccplugin_objects_cppflags) -c -o $@ $<
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
@@ -102,8 +100,8 @@ scorep_compiler_gcc_plugin_begin.o: $(SRC_ROOT)src/adapters/compiler/scorep_comp
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) $(gccplugin_objects_cppflags) -c $<
 
-scorep_compiler_gcc_plugin_end.o: $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_end.c \
-                                  $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h
+scorep_compiler_gcc_plugin_end.$(OBJEXT): $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin_end.c \
+                                          $(SRC_ROOT)src/adapters/compiler/scorep_compiler_gcc_plugin.h
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo $(gccplugin_objects_cppflags) -c -o $@ $<
 @am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 @am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@

@@ -15,7 +15,9 @@
     void                                    \
     FSUB( FUNCNAME )( long *lock )          \
     {                                       \
+        SCOREP_IN_MEASUREMENT_INCREMENT();  \
         FUNCNAME( lock );                   \
+        SCOREP_IN_MEASUREMENT_DECREMENT();  \
     }
 
 /* *INDENT-ON* */
@@ -34,7 +36,13 @@ SHMEM_FORTRAN_LOCK_1( shmem_set_lock )
     int                                     \
     FSUB( FUNCNAME )( long *lock )          \
     {                                       \
-        return FUNCNAME( lock );            \
+        SCOREP_IN_MEASUREMENT_INCREMENT();  \
+                                            \
+        int ret;                            \
+        ret = FUNCNAME( lock );             \
+                                            \
+        SCOREP_IN_MEASUREMENT_DECREMENT();  \
+        return ret;                         \
     }
 
 /* *INDENT-ON* */

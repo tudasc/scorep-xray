@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -56,6 +56,7 @@
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
 #include <UTILS_Error.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
 /**
@@ -124,6 +125,7 @@ scorep_mpi_get_status_array( int size )
 int
 MPI_Bsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
@@ -134,7 +136,7 @@ MPI_Bsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
         int sz;
 
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_BSEND ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_BSEND ], ( intptr_t )PMPI_Bsend );
 
     #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -149,7 +151,10 @@ MPI_Bsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
             SCOREP_MpiSend( dest, SCOREP_MPI_COMM_HANDLE( comm ),
                             tag, count * sz );
         }
+
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Bsend( buf, count, datatype, dest, tag, comm );
+        SCOREP_EXIT_WRAPPED_REGION();
 
     #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -165,6 +170,7 @@ MPI_Bsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
     {
         return_val = PMPI_Bsend( buf, count, datatype, dest, tag, comm );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -184,6 +190,7 @@ MPI_Bsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
 int
 MPI_Rsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
@@ -194,7 +201,7 @@ MPI_Rsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
         int sz;
 
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_RSEND ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_RSEND ], ( intptr_t )PMPI_Rsend );
 
     #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -209,7 +216,10 @@ MPI_Rsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
             SCOREP_MpiSend( dest, SCOREP_MPI_COMM_HANDLE( comm ),
                             tag, count * sz );
         }
+
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Rsend( buf, count, datatype, dest, tag, comm );
+        SCOREP_EXIT_WRAPPED_REGION();
 
     #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -225,6 +235,7 @@ MPI_Rsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
     {
         return_val = PMPI_Rsend( buf, count, datatype, dest, tag, comm );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -244,6 +255,7 @@ MPI_Rsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
 int
 MPI_Send( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
@@ -254,7 +266,7 @@ MPI_Send( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int
         int sz;
 
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_SEND ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_SEND ], ( intptr_t )PMPI_Send );
 
     #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -269,7 +281,10 @@ MPI_Send( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int
             SCOREP_MpiSend( dest, SCOREP_MPI_COMM_HANDLE( comm ),
                             tag, count * sz );
         }
+
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Send( buf, count, datatype, dest, tag, comm );
+        SCOREP_EXIT_WRAPPED_REGION();
 
     #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -285,6 +300,7 @@ MPI_Send( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int
     {
         return_val = PMPI_Send( buf, count, datatype, dest, tag, comm );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -304,6 +320,7 @@ MPI_Send( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int
 int
 MPI_Ssend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
   #if !defined( SCOREP_MPI_NO_HOOKS )
     uint64_t start_time_stamp;
@@ -314,7 +331,7 @@ MPI_Ssend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
         int sz;
 
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_SSEND ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_SSEND ], ( intptr_t )PMPI_Ssend );
 
     #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -329,7 +346,10 @@ MPI_Ssend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
             SCOREP_MpiSend( dest, SCOREP_MPI_COMM_HANDLE( comm ),
                             tag, count * sz );
         }
+
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ssend( buf, count, datatype, dest, tag, comm );
+        SCOREP_EXIT_WRAPPED_REGION();
 
     #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -345,6 +365,7 @@ MPI_Ssend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
     {
         return_val = PMPI_Ssend( buf, count, datatype, dest, tag, comm );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -370,6 +391,7 @@ MPI_Recv( void* buf,
           MPI_Comm comm,
           MPI_Status* status )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
@@ -380,7 +402,7 @@ MPI_Recv( void* buf,
 
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_RECV ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_RECV ], ( intptr_t )PMPI_Recv );
 
     #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -393,7 +415,9 @@ MPI_Recv( void* buf,
         {
             status = &mystatus;
         }
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Recv( buf, count, datatype, source, tag, comm, status );
+        SCOREP_EXIT_WRAPPED_REGION();
 
     #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -420,6 +444,7 @@ MPI_Recv( void* buf,
     {
         return_val = PMPI_Recv( buf, count, datatype, source, tag, comm, status );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -438,14 +463,17 @@ MPI_Recv( void* buf,
 int
 MPI_Probe( int source, int tag, MPI_Comm comm, MPI_Status* status )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_PROBE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_PROBE ], ( intptr_t )PMPI_Probe );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Probe( source, tag, comm, status );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_PROBE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -454,6 +482,7 @@ MPI_Probe( int source, int tag, MPI_Comm comm, MPI_Status* status )
     {
         return_val = PMPI_Probe( source, tag, comm, status );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -475,6 +504,7 @@ MPI_Probe( int source, int tag, MPI_Comm comm, MPI_Status* status )
 int
 MPI_Sendrecv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sendtype, int dest, int sendtag, void* recvbuf, int recvcount, MPI_Datatype recvtype, int source, int recvtag, MPI_Comm comm, MPI_Status* status )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
@@ -483,7 +513,7 @@ MPI_Sendrecv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
         MPI_Status mystatus;
 
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_SENDRECV ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_SENDRECV ], ( intptr_t )PMPI_Sendrecv );
 
         if ( dest != MPI_PROC_NULL )
         {
@@ -495,7 +525,11 @@ MPI_Sendrecv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
         {
             status = &mystatus;
         }
+
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Sendrecv( sendbuf, sendcount, sendtype, dest, sendtag, recvbuf, recvcount, recvtype, source, recvtag, comm, status );
+        SCOREP_EXIT_WRAPPED_REGION();
+
         if ( source != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
             PMPI_Type_size( recvtype, &recvsz );
@@ -511,6 +545,7 @@ MPI_Sendrecv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
     {
         return_val = PMPI_Sendrecv( sendbuf, sendcount, sendtype, dest, sendtag, recvbuf, recvcount, recvtype, source, recvtag, comm, status );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -530,6 +565,7 @@ MPI_Sendrecv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
 int
 MPI_Sendrecv_replace( void* buf, int count, MPI_Datatype datatype, int dest, int sendtag, int source, int recvtag, MPI_Comm comm, MPI_Status* status )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int          return_val;
     int          sendcount = count, recvcount = count;
     MPI_Datatype sendtype  = datatype, recvtype = datatype;
@@ -540,7 +576,7 @@ MPI_Sendrecv_replace( void* buf, int count, MPI_Datatype datatype, int dest, int
         MPI_Status mystatus;
 
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_SENDRECV_REPLACE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_SENDRECV_REPLACE ], ( intptr_t )PMPI_Sendrecv_replace );
 
         if ( dest != MPI_PROC_NULL )
         {
@@ -552,7 +588,11 @@ MPI_Sendrecv_replace( void* buf, int count, MPI_Datatype datatype, int dest, int
         {
             status = &mystatus;
         }
+
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Sendrecv_replace( buf, count, datatype, dest, sendtag, source, recvtag, comm, status );
+        SCOREP_EXIT_WRAPPED_REGION();
+
         if ( source != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
             PMPI_Type_size( recvtype, &recvsz );
@@ -568,6 +608,7 @@ MPI_Sendrecv_replace( void* buf, int count, MPI_Datatype datatype, int dest, int
     {
         return_val = PMPI_Sendrecv_replace( buf, count, datatype, dest, sendtag, source, recvtag, comm, status );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -590,6 +631,7 @@ MPI_Sendrecv_replace( void* buf, int count, MPI_Datatype datatype, int dest, int
 int
 MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -602,7 +644,7 @@ MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
         int                 sz;
         SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_IBSEND ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IBSEND ], ( intptr_t )PMPI_Ibsend );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -626,7 +668,9 @@ MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
             }
         }
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ibsend( buf, count, datatype, dest, tag, comm, request );
+        SCOREP_EXIT_WRAPPED_REGION();
         if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
             scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
@@ -646,6 +690,7 @@ MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
     {
         return_val = PMPI_Ibsend( buf, count, datatype, dest, tag, comm, request );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -661,6 +706,7 @@ MPI_Ibsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
 int
 MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -673,7 +719,7 @@ MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
         int                 sz;
         SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_IRSEND ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IRSEND ], ( intptr_t )PMPI_Irsend );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -697,7 +743,9 @@ MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
             }
         }
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Irsend( buf, count, datatype, dest, tag, comm, request );
+        SCOREP_EXIT_WRAPPED_REGION();
         if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
             scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
@@ -717,6 +765,7 @@ MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
     {
         return_val = PMPI_Irsend( buf, count, datatype, dest, tag, comm, request );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -732,6 +781,7 @@ MPI_Irsend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
 int
 MPI_Isend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -744,7 +794,7 @@ MPI_Isend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
         int                 sz;
         SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ISEND ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ISEND ], ( intptr_t )PMPI_Isend );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -768,7 +818,9 @@ MPI_Isend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
             }
         }
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Isend( buf, count, datatype, dest, tag, comm, request );
+        SCOREP_EXIT_WRAPPED_REGION();
         if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
             scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
@@ -788,6 +840,7 @@ MPI_Isend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
     {
         return_val = PMPI_Isend( buf, count, datatype, dest, tag, comm, request );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -803,6 +856,7 @@ MPI_Isend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, in
 int
 MPI_Issend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -815,7 +869,7 @@ MPI_Issend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
         int                 sz;
         SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_ISSEND ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ISSEND ], ( intptr_t )PMPI_Issend );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -839,7 +893,9 @@ MPI_Issend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
             }
         }
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Issend( buf, count, datatype, dest, tag, comm, request );
+        SCOREP_EXIT_WRAPPED_REGION();
         if ( xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
         {
             scorep_mpi_request_create( *request, SCOREP_MPI_REQUEST_SEND,
@@ -859,6 +915,7 @@ MPI_Issend( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, i
     {
         return_val = PMPI_Issend( buf, count, datatype, dest, tag, comm, request );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -882,6 +939,7 @@ MPI_Irecv( void*        buf,
            MPI_Comm     comm,
            MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     uint64_t  start_time_stamp;
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     const int xnb_active       = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
@@ -891,7 +949,7 @@ MPI_Irecv( void*        buf,
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_IRECV ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IRECV ], ( intptr_t )PMPI_Irecv );
     }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -901,7 +959,15 @@ MPI_Irecv( void*        buf,
     }
   #endif
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Irecv( buf, count, datatype, source, tag, comm, request );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
     if ( source != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
@@ -930,6 +996,7 @@ MPI_Irecv( void*        buf,
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -948,14 +1015,17 @@ MPI_Irecv( void*        buf,
 int
 MPI_Iprobe( int source, int tag, MPI_Comm comm, int* flag, MPI_Status* status )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_IPROBE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IPROBE ], ( intptr_t )PMPI_Iprobe );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Iprobe( source, tag, comm, flag, status );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IPROBE ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -964,6 +1034,7 @@ MPI_Iprobe( int source, int tag, MPI_Comm comm, int* flag, MPI_Status* status )
     {
         return_val = PMPI_Iprobe( source, tag, comm, flag, status );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -983,6 +1054,7 @@ int
 MPI_Wait( MPI_Request* request,
           MPI_Status*  status )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int                 return_val;
     MPI_Status          mystatus;
@@ -993,7 +1065,7 @@ MPI_Wait( MPI_Request* request,
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_WAIT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_WAIT ], ( intptr_t )PMPI_Wait );
     }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1008,8 +1080,16 @@ MPI_Wait( MPI_Request* request,
         status = &mystatus;
     }
 
-    orig_req   = scorep_mpi_request_get( *request );
+    orig_req = scorep_mpi_request_get( *request );
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Wait( request, status );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
     if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -1026,6 +1106,7 @@ MPI_Wait( MPI_Request* request,
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1045,6 +1126,7 @@ MPI_Waitall( int          count,
              MPI_Request* requests,
              MPI_Status*  array_of_statuses )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     scorep_mpi_request* orig_req;
     int                 i;
@@ -1055,7 +1137,7 @@ MPI_Waitall( int          count,
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_WAITALL ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_WAITALL ], ( intptr_t )PMPI_Waitall );
     }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1075,7 +1157,15 @@ MPI_Waitall( int          count,
 
     scorep_mpi_save_request_array( requests, count );
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Waitall( count, requests, array_of_statuses );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
     for ( i = 0; i < count; i++ )
     {
@@ -1096,6 +1186,7 @@ MPI_Waitall( int          count,
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1116,6 +1207,7 @@ MPI_Waitany( int          count,
              int*         index,
              MPI_Status*  status )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int                 return_val;
     const int           xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
@@ -1127,7 +1219,7 @@ MPI_Waitany( int          count,
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_WAITANY ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_WAITANY ], ( intptr_t )PMPI_Waitany );
     }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1143,7 +1235,15 @@ MPI_Waitany( int          count,
     }
 
     scorep_mpi_save_request_array( requests, count );
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Waitany( count, requests, index, status );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
     if ( event_gen_active && xnb_active )
     {
@@ -1187,6 +1287,7 @@ MPI_Waitany( int          count,
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1208,6 +1309,7 @@ MPI_Waitsome( int          incount,
               int*         array_of_indices,
               MPI_Status*  array_of_statuses )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int                 return_val;
     const int           xnb_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
@@ -1219,7 +1321,7 @@ MPI_Waitsome( int          incount,
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_WAITSOME ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_WAITSOME ], ( intptr_t )PMPI_Waitsome );
     }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1239,8 +1341,16 @@ MPI_Waitsome( int          incount,
 
     scorep_mpi_save_request_array( array_of_requests, incount );
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Waitsome( incount, array_of_requests, outcount,
                                 array_of_indices, array_of_statuses );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( event_gen_active && xnb_active )
     {
         int        j, tmp, cur;
@@ -1305,6 +1415,7 @@ MPI_Waitsome( int          incount,
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1324,6 +1435,7 @@ MPI_Test( MPI_Request* request,
           int*         flag,
           MPI_Status*  status )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int                 return_val;
     const int           xtest_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
@@ -1335,7 +1447,7 @@ MPI_Test( MPI_Request* request,
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_TEST ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_TEST ], ( intptr_t )PMPI_Test );
     }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1349,8 +1461,16 @@ MPI_Test( MPI_Request* request,
     {
         status = &mystatus;
     }
-    orig_req   = scorep_mpi_request_get( *request );
+    orig_req = scorep_mpi_request_get( *request );
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Test( request, flag, status );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( *flag )
     {
           #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1372,6 +1492,7 @@ MPI_Test( MPI_Request* request,
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1393,6 +1514,7 @@ MPI_Testany( int          count,
              int*         flag,
              MPI_Status*  status )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int                 return_val;
     const int           xtest_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
@@ -1404,7 +1526,7 @@ MPI_Testany( int          count,
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_TESTANY ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_TESTANY ], ( intptr_t )PMPI_Testany );
     }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1419,7 +1541,15 @@ MPI_Testany( int          count,
         status = &mystatus;
     }
     scorep_mpi_save_request_array( array_of_requests, count );
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Testany( count, array_of_requests, index, flag, status );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
     if ( event_gen_active && xtest_active )
     {
@@ -1462,6 +1592,7 @@ MPI_Testany( int          count,
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1482,6 +1613,7 @@ MPI_Testall( int          count,
              int*         flag,
              MPI_Status*  array_of_statuses )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int                 return_val;
     const int           xtest_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
@@ -1493,7 +1625,7 @@ MPI_Testall( int          count,
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_TESTALL ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_TESTALL ], ( intptr_t )PMPI_Testall );
     }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1513,7 +1645,15 @@ MPI_Testall( int          count,
 
     scorep_mpi_save_request_array( array_of_requests, count );
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Testall( count, array_of_requests, flag, array_of_statuses );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
     if ( *flag )
     {
@@ -1548,6 +1688,7 @@ MPI_Testall( int          count,
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1569,6 +1710,7 @@ MPI_Testsome( int          incount,
               int*         array_of_indices,
               MPI_Status*  array_of_statuses )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int                 return_val;
     const int           xtest_active = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XREQTEST );
@@ -1580,7 +1722,7 @@ MPI_Testsome( int          incount,
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_TESTSOME ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_TESTSOME ], ( intptr_t )PMPI_Testsome );
     }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -1599,8 +1741,16 @@ MPI_Testsome( int          incount,
   #endif
 
     scorep_mpi_save_request_array( array_of_requests, incount );
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Testsome( incount, array_of_requests, outcount,
                                 array_of_indices, array_of_statuses );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
     if ( event_gen_active && xtest_active )
     {
@@ -1666,6 +1816,7 @@ MPI_Testsome( int          incount,
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1691,18 +1842,27 @@ MPI_Testsome( int          incount,
 int
 MPI_Bsend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val, sz;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_BSEND_INIT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_BSEND_INIT ], ( intptr_t )PMPI_Bsend_init );
     }
 
     PMPI_Type_size( datatype, &sz );
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Bsend_init( buf, count, datatype, dest, tag, comm, request );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
         scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
@@ -1714,6 +1874,7 @@ MPI_Bsend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatyp
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_BSEND_INIT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1732,18 +1893,27 @@ MPI_Bsend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatyp
 int
 MPI_Rsend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val, sz;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_RSEND_INIT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_RSEND_INIT ], ( intptr_t )PMPI_Rsend_init );
     }
 
     PMPI_Type_size( datatype, &sz );
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Rsend_init( buf, count, datatype, dest, tag, comm, request );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
         scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
@@ -1755,6 +1925,7 @@ MPI_Rsend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatyp
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_RSEND_INIT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1773,18 +1944,27 @@ MPI_Rsend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatyp
 int
 MPI_Send_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val, sz;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_SEND_INIT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_SEND_INIT ], ( intptr_t )PMPI_Send_init );
     }
 
     PMPI_Type_size( datatype, &sz );
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Send_init( buf, count, datatype, dest, tag, comm, request );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
         scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
@@ -1796,6 +1976,7 @@ MPI_Send_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SEND_INIT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1814,18 +1995,27 @@ MPI_Send_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype
 int
 MPI_Ssend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val, sz;
 
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_SSEND_INIT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_SSEND_INIT ], ( intptr_t )PMPI_Ssend_init );
     }
 
     PMPI_Type_size( datatype, &sz );
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Ssend_init( buf, count, datatype, dest, tag, comm, request );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( dest != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
         scorep_mpi_request_create( *request, ( SCOREP_MPI_REQUEST_SEND | SCOREP_MPI_REQUEST_IS_PERSISTENT ),
@@ -1837,6 +2027,7 @@ MPI_Ssend_init( SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Datatype datatyp
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SSEND_INIT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1860,6 +2051,7 @@ MPI_Recv_init( void*        buf,
                MPI_Comm     comm,
                MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int       return_val;
 
@@ -1867,10 +2059,18 @@ MPI_Recv_init( void*        buf,
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_RECV_INIT ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_RECV_INIT ], ( intptr_t )PMPI_Recv_init );
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Recv_init( buf, count, datatype, source, tag, comm, request );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
     if ( source != MPI_PROC_NULL && return_val == MPI_SUCCESS )
     {
         int sz;
@@ -1893,6 +2093,7 @@ MPI_Recv_init( void*        buf,
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1910,6 +2111,7 @@ MPI_Recv_init( void*        buf,
 int
 MPI_Start( MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     const int xnb_active       = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
     int       return_val;
@@ -1921,7 +2123,7 @@ MPI_Start( MPI_Request* request )
 
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_START ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_START ], ( intptr_t )PMPI_Start );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -1954,7 +2156,15 @@ MPI_Start( MPI_Request* request )
         }
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Start( request );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
     if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -1968,6 +2178,7 @@ MPI_Start( MPI_Request* request )
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -1986,6 +2197,7 @@ int
 MPI_Startall( int          count,
               MPI_Request* array_of_requests )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     const int xnb_active       = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
     int       return_val, i;
@@ -1999,7 +2211,7 @@ MPI_Startall( int          count,
 
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_STARTALL ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_STARTALL ], ( intptr_t )PMPI_Startall );
 
         #if !defined( SCOREP_MPI_NO_HOOKS )
         if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -2029,7 +2241,15 @@ MPI_Startall( int          count,
         }
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Startall( count, array_of_requests );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
     if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -2047,6 +2267,7 @@ MPI_Startall( int          count,
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -2064,6 +2285,7 @@ MPI_Startall( int          count,
 int
 MPI_Request_free( MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     const int           xnb_active       = ( scorep_mpi_enabled & SCOREP_MPI_ENABLED_XNONBLOCK );
     int                 orig_req_null    = ( *request == MPI_REQUEST_NULL );
@@ -2074,7 +2296,7 @@ MPI_Request_free( MPI_Request* request )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_REQUEST_FREE ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_REQUEST_FREE ], ( intptr_t )PMPI_Request_free );
     }
 
     req = scorep_mpi_request_get( *request );
@@ -2125,7 +2347,15 @@ MPI_Request_free( MPI_Request* request )
      */
     if ( *request != MPI_REQUEST_NULL || orig_req_null )
     {
+        if ( event_gen_active )
+        {
+            SCOREP_ENTER_WRAPPED_REGION();
+        }
         return_val = PMPI_Request_free( request );
+        if ( event_gen_active )
+        {
+            SCOREP_EXIT_WRAPPED_REGION();
+        }
     }
 
 
@@ -2135,6 +2365,7 @@ MPI_Request_free( MPI_Request* request )
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -2152,6 +2383,7 @@ MPI_Request_free( MPI_Request* request )
 int
 MPI_Cancel( MPI_Request* request )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     const int           event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P );
     int                 return_val;
     scorep_mpi_request* req;
@@ -2160,7 +2392,7 @@ MPI_Cancel( MPI_Request* request )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_CANCEL ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_CANCEL ], ( intptr_t )PMPI_Cancel );
     }
 
     /* Mark request as cancellable and check for successful cancellation
@@ -2177,7 +2409,15 @@ MPI_Cancel( MPI_Request* request )
         req->flags |= SCOREP_MPI_REQUEST_CAN_CANCEL;
     }
 
+    if ( event_gen_active )
+    {
+        SCOREP_ENTER_WRAPPED_REGION();
+    }
     return_val = PMPI_Cancel( request );
+    if ( event_gen_active )
+    {
+        SCOREP_EXIT_WRAPPED_REGION();
+    }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
     if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -2192,6 +2432,7 @@ MPI_Cancel( MPI_Request* request )
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -2210,14 +2451,17 @@ MPI_Cancel( MPI_Request* request )
 int
 MPI_Test_cancelled( SCOREP_MPI_CONST_DECL MPI_Status* status, int* flag )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_TEST_CANCELLED ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_TEST_CANCELLED ], ( intptr_t )PMPI_Test_cancelled );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Test_cancelled( status, flag );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_TEST_CANCELLED ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -2226,6 +2470,7 @@ MPI_Test_cancelled( SCOREP_MPI_CONST_DECL MPI_Status* status, int* flag )
     {
         return_val = PMPI_Test_cancelled( status, flag );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -2251,14 +2496,17 @@ MPI_Test_cancelled( SCOREP_MPI_CONST_DECL MPI_Status* status, int* flag )
 int
 MPI_Buffer_attach( void* buffer, int size )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_BUFFER_ATTACH ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_BUFFER_ATTACH ], ( intptr_t )PMPI_Buffer_attach );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Buffer_attach( buffer, size );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_BUFFER_ATTACH ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -2267,6 +2515,7 @@ MPI_Buffer_attach( void* buffer, int size )
     {
         return_val = PMPI_Buffer_attach( buffer, size );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }
@@ -2285,14 +2534,17 @@ MPI_Buffer_attach( void* buffer, int size )
 int
 MPI_Buffer_detach( void* buffer, int* size )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     int return_val;
 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_P2P ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterRegion( scorep_mpi_regid[ SCOREP__MPI_BUFFER_DETACH ] );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_BUFFER_DETACH ], ( intptr_t )PMPI_Buffer_detach );
 
+        SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Buffer_detach( buffer, size );
+        SCOREP_EXIT_WRAPPED_REGION();
 
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_BUFFER_DETACH ] );
         SCOREP_MPI_EVENT_GEN_ON();
@@ -2301,6 +2553,7 @@ MPI_Buffer_detach( void* buffer, int* size )
     {
         return_val = PMPI_Buffer_detach( buffer, size );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 
     return return_val;
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -103,7 +103,7 @@ extern int scorep_shmem_my_rank;
  * case, at first an additional region is entered. Thus, all regions
  * appear as children of this region.
  */
-extern bool scorep_shmem_parallel_entered;
+extern bool scorep_shmem_parallel_needed;
 
 /**
  * Matching ID of consecutive RMA operations.

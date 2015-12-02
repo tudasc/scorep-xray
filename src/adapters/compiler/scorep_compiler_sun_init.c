@@ -49,32 +49,68 @@
 #include "SCOREP_Compiler_Init.h"
 #include "scorep_compiler_sun_data.h"
 
-/* *INDENT-OFF* */
-static int on_scorep_finalize( void );
-/* *INDENT-ON* */
-
 /**
  * Handle for the main region, which is not instrumented by the compiler.
  */
-SCOREP_RegionHandle scorep_compiler_main_handle = SCOREP_INVALID_REGION;
+static SCOREP_RegionHandle main_region_handle = SCOREP_INVALID_REGION;
 
 
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void )
 {
-    if ( !scorep_compiler_initialized )
+    UTILS_DEBUG( "inititialize studio compiler adapter!" );
+
+    SCOREP_MutexCreate( &scorep_compiler_region_mutex );
+
+    if ( !SCOREP_IsUnwindingEnabled() )
     {
-        UTILS_DEBUG( "inititialize studio compiler adapter!" );
-
-        SCOREP_MutexCreate( &scorep_compiler_region_mutex  );
-        scorep_compiler_main_handle = scorep_compiler_register_region( "main" );
-        SCOREP_RegisterExitCallback( &on_scorep_finalize );
-
-        /* Set flag */
-        scorep_compiler_initialized = true;
+        main_region_handle = scorep_compiler_register_region( "main" );
     }
 
     return SCOREP_SUCCESS;
+}
+
+SCOREP_ErrorCode
+scorep_compiler_subsystem_begin( void )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( !SCOREP_IsUnwindingEnabled() )
+    {
+        /* The studio compiler does not instrument "main" but we want to have a
+           main. Note that this main is triggered by the first event that arrives
+           at the measurement system. */
+        SCOREP_EnterRegion( main_region_handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+
+    return SCOREP_SUCCESS;
+}
+
+void
+scorep_compiler_subsystem_end( void )
+{
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+    if ( !SCOREP_IsUnwindingEnabled() )
+    {
+        /* We manually entered the artificial "main" region. We also need to exit
+           it manually. See also scorep_compiler_init_adapter().
+           Still no SCOREP_Location_ExitRegion() here.
+         */
+        SCOREP_ExitRegion( main_region_handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
+
+void
+scorep_compiler_subsystem_finalize( void )
+{
+    UTILS_DEBUG( "finalize studio compiler adapter!" );
+
+    SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
 }
 
 SCOREP_ErrorCode
@@ -82,43 +118,8 @@ scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData,
                                          struct SCOREP_Location* parent )
 {
     UTILS_DEBUG( "studio compiler adapter init location!" );
-    /* The studio compiler does not instrument "main" but we want to have a
-       main. Note that this main is triggered by the first event that arrives
-       at the measurement system. */
-    if ( 0 == SCOREP_Location_GetId( locationData ) )
-    {
-        /* I would like to call SCOREP_Location_EnterRegion() here,
-           but we prevent this for CPU locations. We could check
-           the passed locationData against
-           SCOREP_Location_GetCurrentCPULocation(). */
-        SCOREP_EnterRegion( scorep_compiler_main_handle );
-    }
+
     return SCOREP_SUCCESS;
-}
-
-int
-on_scorep_finalize( void )
-{
-    /* We manually entered the artificial "main" region. We also need to exit
-       it manually. See also scorep_compiler_init_adapter().
-       Still no SCOREP_Location_ExitRegion() here.
-     */
-    SCOREP_ExitRegion( scorep_compiler_main_handle );
-    return 0;
-}
-
-void
-scorep_compiler_subsystem_finalize( void )
-{
-    /* call only, if previously initialized */
-    if ( scorep_compiler_initialized )
-    {
-        scorep_compiler_initialized = false;
-        scorep_compiler_finalized   = true;
-        UTILS_DEBUG( "finalize studio compiler adapter!" );
-
-        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
-    }
 }
 
 SCOREP_RegionHandle

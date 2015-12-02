@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -61,6 +61,12 @@ public:
     ~SCOREP_Score_Profile();
 
     /**
+     * Predicate whether this profile used sampling.
+     */
+    bool
+    hasHits( void ) const;
+
+    /**
      * Returns sum of the time that an application spent in a region on all processes.
      * @param regionId  ID of the region for which the time is requested.
      */
@@ -86,6 +92,15 @@ public:
              uint64_t process );
 
     /**
+     * Returns the number of sampling hits to a region on a specified process.
+     * @param regionId  ID of the region for which the number of hits are requested.
+     * @param process   The process number fo which the number of hits are requested.
+     */
+    uint64_t
+    getHits( uint64_t regionId,
+             uint64_t process );
+
+    /**
      * Returns sum of the number of visits for an specified region on all processes.
      * @param regionId  ID of the region for which the time is requested.
      */
@@ -105,6 +120,13 @@ public:
      */
     std::string
     getRegionName( uint64_t regionId );
+
+    /**
+     * Returns the paradigm name.
+     * @param regionId  ID of the region for which the paradigm is requested.
+     */
+    std::string
+    getRegionParadigm( uint64_t region );
 
     /**
      * Returns the mangled region name.
@@ -143,6 +165,18 @@ public:
      */
     uint64_t
     getNumberOfMetrics( void );
+
+    /**
+     * Returns the number of calling context nodes.
+     */
+    uint64_t
+    getNumberOfCallingContextNodes( void );
+
+    /**
+     * Returns the number of interrupt generators.
+     */
+    uint64_t
+    getNumberOfInterruptGenerators( void );
 
     /**
      * Prints some basic infos on the profile. Used for debug purposes.
@@ -199,6 +233,11 @@ private:
     cube::Metric* m_time;
 
     /**
+     * Stores the CUBE hits metric definition object.
+     */
+    cube::Metric* m_hits;
+
+    /**
      * Stores a list of CUBE process obejcts.
      */
     std::vector<cube::Process*> m_processes;
@@ -217,6 +256,16 @@ private:
      * Stores the size of the CUBE report file.
      */
     uint64_t m_file_size;
+
+    /**
+     * Number of calling context nodes
+     */
+    uint64_t m_number_of_calling_context_nodes;
+
+    /**
+     * Number of interrupt generators
+     */
+    uint64_t m_number_of_interrupt_generators;
 };
 
 

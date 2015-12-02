@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -69,7 +69,8 @@ libscorep_adapter_mpi_mgmt_la_LIBADD = \
     $(LIB_DIR_SCOREP)libutils.la
 libscorep_adapter_mpi_mgmt_la_LDFLAGS = \
     @MPILIB_LDFLAGS@ \
-    $(library_api_version_ldflags)
+    $(library_api_version_ldflags) \
+    $(SCOREP_UNWINDING_LDFLAGS)
 
 noinst_LTLIBRARIES += \
     libscorep_adapter_mpi_mgmt_fortran_sub1.la \
@@ -81,8 +82,11 @@ SCOREP_MPI_MGMT_FORTRAN_SOURCES = \
     $(SRC_ROOT)src/adapters/mpi/SCOREP_Fmpi_Mgmt.c
 
 SCOREP_MPI_MGMT_FORTRAN_CPPFLAGS = \
-    $(AM_CPPFLAGS)                    \
-    -I$(INC_ROOT)src/adapters/include \
+    $(AM_CPPFLAGS)                       \
+    -I$(INC_ROOT)src/adapters/include    \
+    -I$(INC_ROOT)src/measurement/include \
+    -I$(INC_DIR_DEFINITIONS)             \
+    -I$(PUBLIC_INC_DIR)                  \
     $(UTILS_CPPFLAGS)
 
 libscorep_adapter_mpi_mgmt_fortran_sub1_la_SOURCES = \
@@ -143,7 +147,8 @@ libscorep_adapter_mpi_event_la_LIBADD = \
     $(LIB_DIR_SCOREP)libscorep_measurement.la
 libscorep_adapter_mpi_event_la_LDFLAGS = \
     @MPILIB_LDFLAGS@ \
-    $(library_api_version_ldflags)
+    $(library_api_version_ldflags) \
+    $(SCOREP_UNWINDING_LDFLAGS)
 
 noinst_LTLIBRARIES += libscorep_adapter_mpi_c_event.la
 libscorep_adapter_mpi_c_event_la_SOURCES = \
@@ -177,6 +182,7 @@ libscorep_adapter_mpi_c_event_la_CPPFLAGS = \
     -I$(INC_ROOT)src/adapters/include          \
     -I$(INC_ROOT)src/measurement/include       \
     -I$(INC_ROOT)src/measurement/online_access \
+    -I$(INC_ROOT)src/services/include          \
     -I$(PUBLIC_INC_DIR)                        \
     -I$(INC_DIR_MUTEX)                         \
     -I$(INC_DIR_DEFINITIONS)
@@ -210,6 +216,8 @@ SCOREP_MPI_EVENT_FORTRAN_CPPFLAGS = \
     $(AM_CPPFLAGS)                             \
     -I$(INC_ROOT)src/adapters/include          \
     -I$(INC_ROOT)src/measurement/online_access \
+    -I$(INC_ROOT)src/measurement/include       \
+    -I$(INC_DIR_DEFINITIONS)                   \
     -I$(PUBLIC_INC_DIR)                        \
     $(UTILS_CPPFLAGS)
 

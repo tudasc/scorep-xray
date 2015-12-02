@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2013,
+ * Copyright (c) 2012-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -20,6 +20,7 @@
 #include "scorep_compiler_gcc_plugin.h"
 
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Mutex.h>
 
@@ -30,15 +31,15 @@
 void
 scorep_plugin_register_region( const scorep_compiler_region_description* regionDescr )
 {
-    if ( !scorep_compiler_initialized )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
-        if ( scorep_compiler_finalized )
-        {
-            return;
-        }
-
-        /* not initialized so far */
         SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
     }
 
     SCOREP_MutexLock( scorep_compiler_region_mutex );
@@ -49,22 +50,28 @@ scorep_plugin_register_region( const scorep_compiler_region_description* regionD
     }
 
     SCOREP_MutexUnlock( scorep_compiler_region_mutex );
-} /* scorep_compiler_register_region */
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+}
 
 void
 scorep_plugin_enter_region( SCOREP_RegionHandle regionHandle )
 {
-    if ( scorep_compiler_measurement_phase == SCOREP_COMPILER_PHASE_MEASUREMENT )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && !SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_EnterRegion( regionHandle );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 void
 scorep_plugin_exit_region( SCOREP_RegionHandle regionHandle )
 {
-    if ( scorep_compiler_measurement_phase == SCOREP_COMPILER_PHASE_MEASUREMENT )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) && !SCOREP_IsUnwindingEnabled() )
     {
         SCOREP_ExitRegion( regionHandle );
     }
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }

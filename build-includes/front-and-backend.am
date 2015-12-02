@@ -5,8 +5,12 @@ include ../src/measurement/profiling/Makefile.confvars.inc.am
 include ../src/measurement/tracing/Makefile.confvars.inc.am
 include ../src/measurement/online_access/Makefile.confvars.inc.am
 include ../src/measurement/filtering/Makefile.confvars.inc.am
+include ../src/measurement/thread/fork_join/Makefile.confvars.inc.am
+include ../src/measurement/thread/create_wait/Makefile.confvars.inc.am
 include ../src/services/metric/Makefile.confvars.inc.am
 include ../src/services/timer/Makefile.confvars.inc.am
+include ../src/services/sampling/Makefile.confvars.inc.am
+include ../src/services/unwinding/Makefile.confvars.inc.am
 include ../src/adapters/compiler/Makefile.confvars.inc.am
 include ../src/adapters/cuda/Makefile.confvars.inc.am
 include ../src/adapters/opencl/Makefile.confvars.inc.am
@@ -16,8 +20,6 @@ include ../src/adapters/opari2/openmp/Makefile.confvars.inc.am
 include ../src/adapters/opari2/user/Makefile.confvars.inc.am
 include ../src/adapters/user/Makefile.confvars.inc.am
 include ../src/adapters/pthread/Makefile.confvars.inc.am
-include ../src/measurement/thread/fork_join/Makefile.confvars.inc.am
-include ../src/measurement/thread/create_wait/Makefile.confvars.inc.am
 include ../src/utils/filtering/Makefile.inc.am
 include ../src/utils/vector/Makefile.inc.am
 include ../src/utils/hashtab/Makefile.inc.am

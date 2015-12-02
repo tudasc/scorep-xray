@@ -9,6 +9,8 @@ ${guard:start}
  */
 ${proto:c}
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   UTILS_FATAL( "The operation %s is currently not supported by Score-P!",__func__ );
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 ${guard:end}

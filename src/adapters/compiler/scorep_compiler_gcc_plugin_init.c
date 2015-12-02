@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2013,
+ * Copyright (c) 2012-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
@@ -25,6 +25,7 @@
 #define SCOREP_DEBUG_MODULE_NAME COMPILER
 #include <UTILS_Debug.h>
 
+#include <SCOREP_RuntimeManagement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Filter.h>
 
@@ -36,8 +37,6 @@
  */
 extern const scorep_compiler_region_description scorep_region_descriptions_begin;
 extern const scorep_compiler_region_description scorep_region_descriptions_end;
-
-int scorep_compiler_measurement_phase = SCOREP_COMPILER_PHASE_PRE_INIT;
 
 /****************************************************************************************
    Adapter management
@@ -79,13 +78,13 @@ scorep_compiler_register_region( const scorep_compiler_region_description* regio
 SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void )
 {
-    if ( !scorep_compiler_initialized )
+    UTILS_DEBUG( "inititialize GCC plugin compiler adapter" );
+
+    /* Initialize region mutex */
+    SCOREP_MutexCreate( &scorep_compiler_region_mutex );
+
+    if ( !SCOREP_IsUnwindingEnabled() )
     {
-        UTILS_DEBUG( "inititialize GCC plugin compiler adapter" );
-
-        /* Initialize region mutex */
-        SCOREP_MutexCreate( &scorep_compiler_region_mutex );
-
         /* Initialize plugin instrumentation */
         for ( const scorep_compiler_region_description* region_descr = &scorep_region_descriptions_begin + 1;
               region_descr < &scorep_region_descriptions_end;
@@ -93,13 +92,31 @@ scorep_compiler_subsystem_init( void )
         {
             scorep_compiler_register_region( region_descr );
         }
-
-        /* Set flags */
-        scorep_compiler_initialized       = true;
-        scorep_compiler_measurement_phase = SCOREP_COMPILER_PHASE_MEASUREMENT;
     }
 
     return SCOREP_SUCCESS;
+}
+
+
+SCOREP_ErrorCode
+scorep_compiler_subsystem_begin( void )
+{
+    return SCOREP_SUCCESS;
+}
+
+
+void
+scorep_compiler_subsystem_end( void )
+{
+}
+
+
+/* Adapter finalization */
+void
+scorep_compiler_subsystem_finalize( void )
+{
+    /* Delete region mutex */
+    SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
 }
 
 
@@ -108,22 +125,4 @@ scorep_compiler_subsystem_init_location( struct SCOREP_Location* locationData,
                                          struct SCOREP_Location* parent )
 {
     return SCOREP_SUCCESS;
-}
-
-
-/* Adapter finalization */
-void
-scorep_compiler_subsystem_finalize( void )
-{
-    /* call only, if previously initialized */
-    if ( scorep_compiler_initialized )
-    {
-        /* Set flags */
-        scorep_compiler_initialized       = false;
-        scorep_compiler_finalized         = true;
-        scorep_compiler_measurement_phase = SCOREP_COMPILER_PHASE_POST_FINALIZE;
-
-        /* Delete region mutex */
-        SCOREP_MutexDestroy( &scorep_compiler_region_mutex );
-    }
 }

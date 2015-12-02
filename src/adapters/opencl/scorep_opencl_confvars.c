@@ -49,14 +49,6 @@ opencl_subsystem_register( size_t subsystemId )
 
 const SCOREP_Subsystem SCOREP_Subsystem_OpenclAdapter =
 {
-    .subsystem_name              = "OpenCL (config variables only)",
-    .subsystem_register          = &opencl_subsystem_register,
-    .subsystem_init              = NULL,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = NULL,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name     = "OpenCL (config variables only)",
+    .subsystem_register = &opencl_subsystem_register,
 };

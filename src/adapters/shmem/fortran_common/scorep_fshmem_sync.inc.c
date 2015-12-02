@@ -37,8 +37,12 @@
     FSUB( shmem_ ## F_FUNCNAME )( DATATYPE *var,        \
                                   DATATYPE *value )     \
     {                                                   \
+        SCOREP_IN_MEASUREMENT_INCREMENT();              \
+                                                        \
         shmem_ ## DATATYPE ## _wait( var,               \
                                      *value );          \
+                                                        \
+        SCOREP_IN_MEASUREMENT_DECREMENT();              \
     }
 
 /* *INDENT-ON* */
@@ -65,9 +69,13 @@ SHMEM_FORTRAN_P2P_WAIT( wait,      long )
                                 int      *cmp,              \
                                 DATATYPE *value )           \
     {                                                       \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                  \
+                                                            \
         shmem_ ## DATATYPE ## _wait_until( var,             \
                                            *cmp,            \
                                            *value );        \
+                                                            \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                  \
     }
 
 /* *INDENT-ON* */
@@ -92,7 +100,11 @@ SHMEM_FORTRAN_P2P_WAIT_UNTIL( wait_until,      long )
     void                                            \
     FSUB( shmem_ ## FUNCNAME )( void )              \
     {                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();          \
+                                                    \
         shmem_ ## FUNCNAME();                       \
+                                                    \
+        SCOREP_IN_MEASUREMENT_DECREMENT();          \
     }
 
 /* *INDENT-ON* */
@@ -117,10 +129,14 @@ SHMEM_FORTRAN_SYNC_ROUTINE_1( barrier_all )
                                int *PE_size,        \
                                int *pSync )         \
     {                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();          \
+                                                    \
         shmem_ ## FUNCNAME( *PE_start,              \
                             *logPE_stride,          \
                             *PE_size,               \
                             ( long * ) pSync );     \
+                                                    \
+        SCOREP_IN_MEASUREMENT_DECREMENT();          \
     }
 
 /* *INDENT-ON* */

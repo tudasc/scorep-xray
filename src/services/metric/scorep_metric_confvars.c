@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -45,6 +45,8 @@
 
 #include "scorep_metric_plugins_confvars.inc.c"
 
+#include "scorep_metric_perf_confvars.inc.c"
+
 static SCOREP_ErrorCode
 metric_subsystem_register( size_t subsystem_id )
 {
@@ -57,6 +59,9 @@ metric_subsystem_register( size_t subsystem_id )
     SCOREP_ConfigRegisterCond( "metric",
                                scorep_metric_plugins_confvars,
                                HAVE_BACKEND_DLFCN_SUPPORT );
+    SCOREP_ConfigRegisterCond( "metric",
+                               scorep_metric_perf_confvars,
+                               HAVE_BACKEND_METRIC_PERF );
 
     return SCOREP_SUCCESS;
 }
@@ -66,14 +71,6 @@ metric_subsystem_register( size_t subsystem_id )
  */
 const SCOREP_Subsystem SCOREP_Subsystem_MetricService =
 {
-    .subsystem_name              = "METRIC (config variables only)",
-    .subsystem_register          = &metric_subsystem_register,
-    .subsystem_init              = NULL,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = NULL,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name     = "METRIC (config variables only)",
+    .subsystem_register = &metric_subsystem_register,
 };

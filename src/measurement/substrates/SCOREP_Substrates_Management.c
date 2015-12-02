@@ -7,6 +7,9 @@
  * Copyright (c) 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -43,6 +46,8 @@ static SCOREP_ErrorCode substrates_subsystem_register(size_t);
 static SCOREP_ErrorCode substrates_subsystem_init(void);
 static SCOREP_ErrorCode substrates_subsystem_init_location(struct SCOREP_Location*, struct SCOREP_Location*);
 static void substrates_subsystem_finalize_location(struct SCOREP_Location*);
+static SCOREP_ErrorCode substrates_subsystem_activate_cpu_location(struct SCOREP_Location*, struct SCOREP_Location*, uint32_t, SCOREP_CPULocationPhase);
+static void substrates_subsystem_deactivate_cpu_location(struct SCOREP_Location*, struct SCOREP_Location*, SCOREP_CPULocationPhase);
 static SCOREP_ErrorCode substrates_subsystem_pre_unify(void);
 static SCOREP_ErrorCode substrates_subsystem_post_unify(void);
 static void substrates_subsystem_finalize(void);
@@ -57,16 +62,16 @@ SCOREP_Substrates_Callback scorep_substrates[ SCOREP_SUBSTRATES_NUM_EVENTS ][ SC
 
 const SCOREP_Subsystem SCOREP_Subsystem_Substrates =
 {
-    .subsystem_name          = "SUBSTRATES",
-    .subsystem_register      = &substrates_subsystem_register,
-    .subsystem_init          = &substrates_subsystem_init,
-    .subsystem_init_location = &substrates_subsystem_init_location,
-    //.subsystem_activate_cpu_location = &SCOREP_Substrates_CallSubstratesOnActivation,
-    //.subsystem_deactivate_cpu_location = &SCOREP_Substrates_CallSubstratesOnDeactivation,
-    .subsystem_finalize_location = &substrates_subsystem_finalize_location,
-    .subsystem_pre_unify         = &substrates_subsystem_pre_unify,
-    .subsystem_post_unify        = &substrates_subsystem_post_unify,
-    .subsystem_finalize          = &substrates_subsystem_finalize,
+    .subsystem_name                    = "SUBSTRATES",
+    .subsystem_register                = &substrates_subsystem_register,
+    .subsystem_init                    = &substrates_subsystem_init,
+    .subsystem_init_location           = &substrates_subsystem_init_location,
+    .subsystem_activate_cpu_location   = &substrates_subsystem_activate_cpu_location,
+    .subsystem_deactivate_cpu_location = &substrates_subsystem_deactivate_cpu_location,
+    .subsystem_finalize_location       = &substrates_subsystem_finalize_location,
+    .subsystem_pre_unify               = &substrates_subsystem_pre_unify,
+    .subsystem_post_unify              = &substrates_subsystem_post_unify,
+    .subsystem_finalize                = &substrates_subsystem_finalize,
 };
 
 static size_t subsystem_id;
@@ -178,20 +183,32 @@ substrates_subsystem_init_location( struct SCOREP_Location* location,
 }
 
 
-void
-SCOREP_Substrates_CallSubstratesOnActivation( struct SCOREP_Location* current,
-                                              struct SCOREP_Location* parent,
-                                              uint32_t                forkSequenceCount )
+static SCOREP_ErrorCode
+substrates_subsystem_activate_cpu_location( struct SCOREP_Location* current,
+                                            struct SCOREP_Location* parent,
+                                            uint32_t                forkSequenceCount,
+                                            SCOREP_CPULocationPhase phase )
 {
+    if ( SCOREP_CPU_LOCATION_PHASE_MGMT != phase )
+    {
+        return SCOREP_SUCCESS;
+    }
     SCOREP_CALL_SUBSTRATE( OnLocationActivation, ON_LOCATION_ACTIVATION,
                            ( current, parent, forkSequenceCount ) )
+
+    return SCOREP_SUCCESS;
 }
 
 
-void
-SCOREP_Substrates_CallSubstratesOnDeactivation( struct SCOREP_Location* current,
-                                                struct SCOREP_Location* parent )
+static void
+substrates_subsystem_deactivate_cpu_location( struct SCOREP_Location* current,
+                                              struct SCOREP_Location* parent,
+                                              SCOREP_CPULocationPhase phase )
 {
+    if ( SCOREP_CPU_LOCATION_PHASE_MGMT != phase )
+    {
+        return;
+    }
     SCOREP_CALL_SUBSTRATE( OnLocationDeactivation, ON_LOCATION_DEACTIVATION,
                            ( current, parent ) )
 }

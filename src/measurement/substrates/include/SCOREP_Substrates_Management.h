@@ -7,6 +7,9 @@
  * Copyright (c) 2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license. See the COPYING file in the package base
  * directory for details.
@@ -26,23 +29,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
-struct SCOREP_Location;
-
 void
 SCOREP_Substrates_WriteData( void );
-
-
-
-/* temporary, will be triggered by scorep_subsystems_activate_cpu_location once its there. */
-void
-SCOREP_Substrates_CallSubstratesOnActivation( struct SCOREP_Location* current,
-                                              struct SCOREP_Location* parent,
-                                              uint32_t                forkSequenceCount );
-
-/* temporary, will be triggered by scorep_subsystems_activate_cpu_location once its there. */
-void
-SCOREP_Substrates_CallSubstratesOnDeactivation( struct SCOREP_Location* current,
-                                                struct SCOREP_Location* parent );
 
 /**
  * Switch substrate callbacks to enable recording.
@@ -58,10 +46,8 @@ SCOREP_Substrates_EnableRecording( void );
 void
 SCOREP_Substrates_DisableRecording( void );
 
-
 void
 SCOREP_Substrates_InitializeMpp( void );
-
 
 size_t
 SCOREP_Substrates_NumberOfRegisteredSubstrates( void );

@@ -25,6 +25,7 @@
                                   int        *PE_size,              \
                                   int        *pSync )               \
     {                                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                          \
         shmem_ ## C_FUNCNAME( target,                               \
                               source,                               \
                               *nelems,                              \
@@ -33,6 +34,7 @@
                               *logPE_stride,                        \
                               *PE_size,                             \
                               ( long * ) pSync );                   \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                          \
     }
 
 /* *INDENT-ON* */

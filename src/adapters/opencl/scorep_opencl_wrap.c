@@ -21,6 +21,7 @@
 #include <config.h>
 
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 #include "SCOREP_Libwrap_Macros.h"
 
@@ -34,21 +35,62 @@
 #include <stdio.h>
 
 
-#define SCOREP_OPENCL_FUNC_ENTER( func )        \
-    if ( !SCOREP_IsInitialized() )              \
-    {                                           \
-        /* Initialize the measurement system */ \
-        SCOREP_InitMeasurement();               \
-    }                                           \
-    if ( scorep_opencl_record_api )             \
-    {                                           \
-        SCOREP_EnterRegion( func );             \
+#ifdef SCOREP_LIBWRAP_STATIC
+
+#define SCOREP_OPENCL_FUNC_ADDRESS( func ) \
+    ( ( intptr_t )__real_ ## func )
+
+#elif SCOREP_LIBWRAP_SHARED
+
+#define SCOREP_OPENCL_FUNC_ADDRESS( func ) \
+    ( ( intptr_t )scorep_opencl_funcptr_ ## func )
+
+#else
+
+#error Unsupported OpenCL wrapping mode
+
+#endif /* link modes */
+
+
+#define SCOREP_OPENCL_FUNC_ENTER( func )                                    \
+    bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();              \
+                                                                            \
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )                               \
+    {                                                                       \
+        SCOREP_InitMeasurement();                                           \
+    }                                                                       \
+                                                                            \
+    if ( trigger                                                            \
+         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )                           \
+         && scorep_opencl_record_api )                                      \
+    {                                                                       \
+        SCOREP_EnterWrappedRegion( scorep_opencl_region__ ## func,          \
+                                   SCOREP_OPENCL_FUNC_ADDRESS( func ) );    \
     }
 
-#define SCOREP_OPENCL_FUNC_EXIT( func )         \
-    if ( scorep_opencl_record_api )             \
-    {                                           \
-        SCOREP_ExitRegion( func );              \
+#define SCOREP_OPENCL_FUNC_EXIT( func )                         \
+    if ( trigger                                                \
+         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )               \
+         && scorep_opencl_record_api )                          \
+    {                                                           \
+        SCOREP_ExitRegion( scorep_opencl_region__ ## func );    \
+    }                                                           \
+    SCOREP_IN_MEASUREMENT_DECREMENT();
+
+#define SCOREP_OPENCL_WRAP_ENTER()                              \
+    if ( trigger                                                \
+         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )               \
+         && scorep_opencl_record_api )                          \
+    {                                                           \
+        SCOREP_ENTER_WRAPPED_REGION();                          \
+    }
+
+#define SCOREP_OPENCL_WRAP_EXIT()                               \
+    if ( trigger                                                \
+         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )               \
+         && scorep_opencl_record_api )                          \
+    {                                                           \
+        SCOREP_EXIT_WRAPPED_REGION();                           \
     }
 
 /**
@@ -56,59 +98,51 @@
  * function that uses it! It evaluates the return value of the given function
  * 'call' and uses it in the return statement.
  *
- * @param regionHandle          region handle for the wrapped function
+ * @param func                  function name to wrap
  * @param direction             data transfer direction
  * @param bytes                 number of bytes to be transfered
  * @param clQueue               OpenCL command queue
  * @param clEvt                 address of the OpenCL profiling event
  * @param isBlocking            true, if function is blocking, otherwise false
- * @param call                  call of the 'real' function
+ * @param args                  args for the 'real' function call
  */
-#define SCOREP_OPENCL_ENQUEUE_BUFFER( regionHandle, direction, bytes, clQueue, \
-                                      clEvt, isBlocking, call )                \
+#define SCOREP_OPENCL_ENQUEUE_BUFFER( func, direction, bytes, clQueue,         \
+                                      clEvt, isBlocking, args )                \
     {                                                                          \
-        cl_int           ret;                                                  \
-        SCOREP_Location* location = NULL;                                      \
-        uint64_t         time     = 0;                                         \
+        SCOREP_OPENCL_FUNC_ENTER( func );                                      \
                                                                                \
-        if ( !SCOREP_IsInitialized() )                                         \
+        scorep_opencl_queue*        queue;                                     \
+        scorep_opencl_buffer_entry* mcpy;                                      \
+        if ( trigger                                                           \
+             && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )                          \
+             && scorep_opencl_record_memcpy )                                  \
         {                                                                      \
-            /* Initialize the measurement system */                            \
-            SCOREP_InitMeasurement();                                          \
-        }                                                                      \
-                                                                               \
-        if ( scorep_opencl_record_api )                                        \
-        {                                                                      \
-            SCOREP_EnterRegion( regionHandle );                                \
-        }                                                                      \
-                                                                               \
-        /* add the buffer transfer to activity buffer */                       \
-        if ( scorep_opencl_record_memcpy )                                     \
-        {                                                                      \
-            scorep_opencl_queue* queue =                                       \
-                scorep_opencl_queue_get( clQueue );                            \
-            scorep_opencl_buffer_entry* mcpy =                                 \
-                scorep_opencl_get_buffer_entry( queue );                       \
+            queue = scorep_opencl_queue_get( clQueue );                        \
+            mcpy  = scorep_opencl_get_buffer_entry( queue );                   \
                                                                                \
             if ( mcpy && clEvt == NULL )                                       \
             {                                                                  \
                 clEvt = &( mcpy->event );                                      \
             }                                                                  \
-            ret = call;                                                        \
+        }                                                                      \
+                                                                               \
+        SCOREP_OPENCL_WRAP_ENTER();                                            \
+        cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(                        \
+            scorep_opencl_funcptr_ ## func, func, args );                      \
+        SCOREP_OPENCL_WRAP_EXIT();                                             \
+                                                                               \
+        if ( trigger                                                           \
+             && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )                          \
+             && scorep_opencl_record_memcpy )                                  \
+        {                                                                      \
             if ( queue && mcpy && CL_SUCCESS == ret )                          \
             {                                                                  \
                 scorep_opencl_retain_buffer( queue, mcpy, direction, bytes );  \
             }                                                                  \
         }                                                                      \
-        else                                                                   \
-        {                                                                      \
-            ret = call;                                                        \
-        }                                                                      \
                                                                                \
-        if ( scorep_opencl_record_api )                                        \
-        {                                                                      \
-            SCOREP_ExitRegion( regionHandle );                                 \
-        }                                                                      \
+        SCOREP_OPENCL_FUNC_EXIT( func );                                       \
+                                                                               \
         return ret;                                                            \
     }
 

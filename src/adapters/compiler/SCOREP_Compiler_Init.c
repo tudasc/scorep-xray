@@ -46,8 +46,6 @@
 
 #include "scorep_compiler_confvars.inc.c"
 
-bool         scorep_compiler_initialized = false;
-bool         scorep_compiler_finalized   = false;
 SCOREP_Mutex scorep_compiler_region_mutex;
 
 /**
@@ -57,13 +55,11 @@ SCOREP_Mutex scorep_compiler_region_mutex;
 extern SCOREP_ErrorCode
 scorep_compiler_subsystem_init( void );
 
-/**
-   The location init function is compiler specific. Thus it is contained in each
-   compiler adapter implementation.
- */
 extern SCOREP_ErrorCode
-scorep_compiler_subsystem_init_location( struct SCOREP_Location* location,
-                                         struct SCOREP_Location* parent );
+scorep_compiler_subsystem_begin( void );
+
+extern void
+scorep_compiler_subsystem_end( void );
 
 /**
    The adapter finalize function is compiler specific. Thus it is contained in each
@@ -71,6 +67,14 @@ scorep_compiler_subsystem_init_location( struct SCOREP_Location* location,
  */
 extern void
 scorep_compiler_subsystem_finalize( void );
+
+/**
+   The location init function is compiler specific. Thus it is contained in each
+   compiler adapter implementation.
+ */
+extern SCOREP_ErrorCode
+scorep_compiler_subsystem_init_location( struct SCOREP_Location* location,
+                                         struct SCOREP_Location* parent );
 
 /**
    The location finalize function.
@@ -87,11 +91,10 @@ const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter =
     .subsystem_name              = "COMPILER",
     .subsystem_register          = &compiler_subsystem_register,
     .subsystem_init              = &scorep_compiler_subsystem_init,
+    .subsystem_begin             = &scorep_compiler_subsystem_begin,
+    .subsystem_end               = &scorep_compiler_subsystem_end,
+    .subsystem_finalize          = &scorep_compiler_subsystem_finalize,
     .subsystem_init_location     = &scorep_compiler_subsystem_init_location,
     .subsystem_finalize_location = &compiler_subsystem_finalize_location,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &scorep_compiler_subsystem_finalize,
     .subsystem_deregister        = &compiler_subsystem_deregister,
-    .subsystem_control           = NULL
 };

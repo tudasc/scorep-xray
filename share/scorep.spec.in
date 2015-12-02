@@ -1449,6 +1449,15 @@
         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#visits</url>
         <descr>Number of visits</descr>
     </metric>
+    <metric>
+        <!-- This metric is copied from the summary profile -->
+        <disp_name>Hits</disp_name>
+        <uniq_name>hits</uniq_name>
+        <dtype>INTEGER</dtype>
+        <uom>occ</uom>
+        <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#hits</url>
+        <descr>Number of hits</descr>
+    </metric>
     <metric type="POSTDERIVED">
         <disp_name>Synchronizations</disp_name>
         <uniq_name>syncs</uniq_name>

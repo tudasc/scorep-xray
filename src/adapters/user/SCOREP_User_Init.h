@@ -49,12 +49,6 @@
  */
 extern const SCOREP_Subsystem SCOREP_Subsystem_UserAdapter;
 
-/** @internal
-    Flag to indicate whether the adapter was initialized. If it is set to zero it is not
-    initialized. if it is set to non-zero it is initialized
- */
-extern int8_t scorep_user_is_initialized;
-
 /**
    Mutex to avoid parallel assignments to the same user metric.
  */
@@ -84,20 +78,6 @@ extern SCOREP_Hashtab* scorep_user_region_by_name_hash_table;
     to lookup the name in a extra datastructure.
  */
 extern SCOREP_Hashtab* scorep_user_region_table;
-
-/** @def SCOREP_USER_ASSERT_INITIALIZED
-    Checks if the adapter is already initialized. If not, the measurement system is
-    initialized which should initialized the adapter.
- */
-#define SCOREP_USER_ASSERT_INITIALIZED \
-    if ( scorep_user_is_initialized != 1 ) { \
-        if ( scorep_user_is_initialized == 0 ) { SCOREP_InitMeasurement(); } \
-        else { return; } \
-    }
-
-
-#define SCOREP_USER_ASSERT_NOT_FINALIZED \
-    if ( scorep_user_is_initialized == 2 ) { return; }
 
 /** @} */
 

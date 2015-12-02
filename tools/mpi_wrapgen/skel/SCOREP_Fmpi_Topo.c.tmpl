@@ -48,6 +48,7 @@ void FSUB(MPI_Neighbor_alltoallw)(void*     sendbuf,
                                   MPI_Fint* comm,
                                   MPI_Fint* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   MPI_Datatype* csendtypes;
   MPI_Datatype* crecvtypes;
   MPI_Comm      ccomm;
@@ -90,6 +91,7 @@ void FSUB(MPI_Neighbor_alltoallw)(void*     sendbuf,
 
   free(csendtypes);
   free(crecvtypes);
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -113,6 +115,7 @@ void FSUB(MPI_INeighbor_alltoallw)(void*     sendbuf,
                           MPI_Fint* request,
                           MPI_Fint* ierr)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   MPI_Datatype* csendtypes;
   MPI_Datatype* crecvtypes;
   MPI_Comm      ccomm;
@@ -158,6 +161,7 @@ void FSUB(MPI_INeighbor_alltoallw)(void*     sendbuf,
 
   free(csendtypes);
   free(crecvtypes);
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

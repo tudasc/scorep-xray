@@ -69,6 +69,29 @@
 /*@{*/
 
 
+/**
+ * Phases the measurement can be in.
+ */
+typedef enum SCOREP_MeasurementPhase
+{
+    /** @breif The measurement was not initialized yet, or is currently initializing. */
+    SCOREP_MEASUREMENT_PHASE_PRE    = -1,
+
+    /** @breif The measurement is initialized and not finalized yet. */
+    SCOREP_MEASUREMENT_PHASE_WITHIN = 0,
+
+    /** @breif The measurement is finalizing or already finalized. */
+    SCOREP_MEASUREMENT_PHASE_POST   = 1
+} SCOREP_MeasurementPhase;
+
+
+/** Activation and deactivation phase for CPU locations */
+typedef enum SCOREP_CPULocationPhase
+{
+    SCOREP_CPU_LOCATION_PHASE_MGMT,
+    SCOREP_CPU_LOCATION_PHASE_EVENTS
+} SCOREP_CPULocationPhase;
+
 
 /**
  * Type used in specifying line numbers.
@@ -209,6 +232,17 @@ typedef uint32_t SCOREP_LineNo;
  */
 #define SCOREP_INVALID_LOCATION_PROPERTY SCOREP_MOVABLE_NULL
 
+/**
+ * Symbolic constant representing an invalid or unknown calling context entry.
+ */
+#define SCOREP_INVALID_CALLING_CONTEXT SCOREP_MOVABLE_NULL
+
+
+/**
+ * Symbolic constant representing an invalid or unknown interrupt generator entry.
+ */
+#define SCOREP_INVALID_INTERRUPT_GENERATOR SCOREP_MOVABLE_NULL
+
 
 /**
  * Types to be used in defining a region (SCOREP_Definitions_NewRegion()). In order to
@@ -246,7 +280,8 @@ typedef enum SCOREP_ParadigmClass
     SCOREP_PARADIGM( OPENMP,             "openmp",             OPENMP ) \
     SCOREP_PARADIGM( PTHREAD,            "pthread",            PTHREAD ) \
     SCOREP_PARADIGM( CUDA,               "cuda",               CUDA ) \
-    SCOREP_PARADIGM( OPENCL,             "opencl",             OPENCL )
+    SCOREP_PARADIGM( OPENCL,             "opencl",             OPENCL ) \
+    SCOREP_PARADIGM( SAMPLING,           "sampling",           SAMPLING )
 
 
 typedef enum SCOREP_ParadigmType
@@ -850,8 +885,22 @@ typedef enum SCOREP_AttributeType
     SCOREP_ATTRIBUTE_TYPE_METRIC,
     SCOREP_ATTRIBUTE_TYPE_INTERIM_COMMUNICATOR,
     SCOREP_ATTRIBUTE_TYPE_PARAMETER,
-    SCOREP_ATTRIBUTE_TYPE_INTERIM_RMA_WINDOW
+    SCOREP_ATTRIBUTE_TYPE_INTERIM_RMA_WINDOW,
+    SCOREP_ATTRIBUTE_TYPE_SOURCE_CODE_LOCATION,
+    SCOREP_ATTRIBUTE_TYPE_CALLING_CONTEXT,
+    SCOREP_ATTRIBUTE_TYPE_INTERRUPT_GENERATOR
 } SCOREP_AttributeType;
+
+/**
+ * Interrupt generator modes.
+ */
+typedef enum SCOREP_InterruptGeneratorMode
+{
+    /** @brief Denotes that the interrupts generated are time based. */
+    SCOREP_INTERRUPT_GENERATOR_MODE_TIME,
+    /** @brief Denotes that the interrupts generated are count based. */
+    SCOREP_INTERRUPT_GENERATOR_MODE_COUNT
+} SCOREP_InterruptGeneratorMode;
 
 /**
  * Task Handle

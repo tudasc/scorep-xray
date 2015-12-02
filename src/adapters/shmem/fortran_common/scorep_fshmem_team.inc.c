@@ -38,10 +38,14 @@
                        int          * key,          \
                        shmem_team_t * newTeam )     \
     {                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();          \
+                                                    \
         FUNCNAME( *team,                            \
                   *color,                           \
                   *key,                             \
                   newTeam );                        \
+                                                    \
+        SCOREP_IN_MEASUREMENT_DECREMENT();          \
     }
 
 /* *INDENT-ON* */
@@ -60,10 +64,14 @@ TEAM_SPLIT( shmem_team_split )
                        int          * peSize,       \
                        shmem_team_t * newTeam )     \
     {                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();          \
+                                                    \
         FUNCNAME( *peStart,                         \
                   *peStride,                        \
                   *peSize,                          \
                   newTeam );                        \
+                                                    \
+        SCOREP_IN_MEASUREMENT_DECREMENT();          \
     }
 
 /* *INDENT-ON* */
@@ -79,7 +87,11 @@ TEAM_CREATE_STRIDED( shmem_team_create_strided )
     void                                            \
     FSUB( FUNCNAME ) ( shmem_team_t * team )        \
     {                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();          \
+                                                    \
         FUNCNAME( team  );                          \
+                                                    \
+        SCOREP_IN_MEASUREMENT_DECREMENT();          \
     }
 
 /* *INDENT-ON* */
@@ -95,7 +107,13 @@ TEAM_FREE( shmem_team_free )
     int                                             \
     FSUB( FUNCNAME ) ( shmem_team_t * team )        \
     {                                               \
-        return FUNCNAME( *team );                   \
+        SCOREP_IN_MEASUREMENT_INCREMENT();          \
+                                                    \
+        int ret = FUNCNAME( *team );                \
+                                                    \
+        SCOREP_IN_MEASUREMENT_DECREMENT();          \
+                                                    \
+        return ret;                                 \
     }
 
 /* *INDENT-ON* */
@@ -117,9 +135,15 @@ TEAM_QUERY( shmem_team_mype )
                        int          * team1Pe,      \
                        shmem_team_t * team2 )       \
     {                                               \
-        return FUNCNAME( *team1,                    \
-                         *team1Pe,                  \
-                         *team2 );                  \
+        SCOREP_IN_MEASUREMENT_INCREMENT();          \
+                                                    \
+        int ret = FUNCNAME( *team1,                 \
+                            *team1Pe,               \
+                            *team2 );               \
+                                                    \
+        SCOREP_IN_MEASUREMENT_DECREMENT();          \
+                                                    \
+        return ret;                                 \
     }
 
 /* *INDENT-ON* */
@@ -136,8 +160,12 @@ TEAM_TRANSLATE_PE( shmem_team_translate_pe )
     FSUB( FUNCNAME ) ( shmem_team_t * team,         \
                        long         * pSync )       \
     {                                               \
+        SCOREP_IN_MEASUREMENT_INCREMENT();          \
+                                                    \
         FUNCNAME( *team,                            \
                   pSync );                          \
+                                                    \
+        SCOREP_IN_MEASUREMENT_DECREMENT();          \
     }
 
 /* *INDENT-ON* */
@@ -157,11 +185,15 @@ TEAM_BARRIER( shmem_team_barrier )
                        shmem_team_t * team,     \
                        long         * pSync )   \
     {                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();      \
+                                                \
         FUNCNAME( target,                       \
                   src,                          \
                   *len,                         \
                   *team,                        \
                   pSync );                      \
+                                                \
+        SCOREP_IN_MEASUREMENT_DECREMENT();      \
     }
 
 /* *INDENT-ON* */
@@ -184,6 +216,8 @@ TEAM_ALLTOALL( shmem_team_alltoall )
                        shmem_team_t * team,     \
                        long         * pSync )   \
     {                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();      \
+                                                \
         FUNCNAME( target,                       \
                   tOffsets,                     \
                   tSizes,                       \
@@ -192,6 +226,8 @@ TEAM_ALLTOALL( shmem_team_alltoall )
                   sSizes,                       \
                   *team,                        \
                   pSync );                      \
+                                                \
+        SCOREP_IN_MEASUREMENT_DECREMENT();      \
     }
 
 /* *INDENT-ON* */
@@ -214,6 +250,8 @@ TEAM_ALLTOALLV( shmem_team_alltoallv )
                        shmem_team_t * team,     \
                        long         * pSync )   \
     {                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();      \
+                                                \
         FUNCNAME( target,                       \
                   *tLength,                     \
                   tSizes,                       \
@@ -222,6 +260,8 @@ TEAM_ALLTOALLV( shmem_team_alltoallv )
                   sSizes,                       \
                   *team,                        \
                   pSync );                      \
+                                                \
+        SCOREP_IN_MEASUREMENT_DECREMENT();      \
     }
 
 /* *INDENT-ON* */

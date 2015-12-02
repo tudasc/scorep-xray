@@ -1,0 +1,260 @@
+/** @page sampling Application Sampling
+@seclabel{sampling}
+
+This document describes how to use the sampling options within @scorep.
+
+@section sampling_introduction Introduction
+@seclabel{sampling_introduction}
+
+@scorep supports sampling that can be used concurrently to instrumentation to generate profiles and traces.
+In the following, we will describe how sampling differs from instrumentation.
+Reading this text will help you to interpret resulting performance data.
+However, if you are aware of how sampling works, you can skip the preface.
+
+In our context, we understand sampling as a technique to capture the behavior and performance of programs.
+We interrupt the running programs at a specified interval (the sampling period) and capture the current state of the program (i.e., the current stack) and performance metrics (e.g., PAPI).
+The obtained data is than further stored as a trace or a profile and can be used to analyze the behavior of the sampled program.
+
+Before version 2.0 of @scorep, only instrumentation-based performance analysis had been possible.
+Such an instrumentation relies on callbacks to the measurement environment (<tt>instrumentation points</tt>), e.g., a function enter or exit.
+The resulting trace or profile presented the exact runtimes of the functions, augmented with performance data and communication information.
+However, instrumentation introduces a constant overhead for each of the instrumentation points.
+For small instrumented functions, this constant overhead can be overwhelming.
+
+Sampling provides the opportunity to prevent this overwhelming overhead, and even more, the overhead introduced by sampling is controllable by setting the sampling rate.
+However, the resulting performance data is more "fuzzy".
+Not every function call is captured and thus the resulting data should be analyzed carefully.
+Based on the duration of a function and the sampling period, a function call might or might not be included in the gathered performance data.
+However, statistically, the profile information is correct.
+Additionally, the sampling rate allows to regulate the trade-off between overhead and correctness, which is not possible for instrumentation.
+
+In @scorep we support both instrumentation and sampling.
+This allows you for example to get a statistical overview of your program as well as analyzing the communication behavior.
+If a sample hits a function that is known to the measurement environment via instrumentation (e.g., by @opari2), the sample will show the same function in the trace and the profile.
+
+
+@section sampling_prerequisites Prerequisites
+@seclabel{sampling_prerequisites}
+
+This version of @scorep provides support for sampling.
+To enable sampling, several prerequisites have to be met.
+
+<ul>
+  <li>
+    <b>libunwind</b>:<br>
+    Additionally to the usual configuration process of @scorep, <tt>libunwind</tt> is needed.
+    <tt>libunwind</tt> can be installed using a standard package manager or by downloading the latest version from
+
+    http://download.savannah.gnu.org/releases/libunwind/
+
+    This library must be available at your system to enable sampling.
+    In our tests, we used the most current stable version (1.1) as previous versions might result in segmentation faults.
+  </li>
+
+  <li>
+    <b>Sampling Sources</b>:<br>
+    Sampling sources generate interrupts that trigger a sample.
+    We interface three different interrupt generators, which can be chosen at runtime.
+
+    <ol>
+      <li>
+        <b>Interval timer</b>:<br>
+        Interval timers are POSIX compliant but provide a major drawback: They can not be used for multi-threaded programs, but only for single-threaded ones.
+        We check for <tt>setitimer</tt> that is provided by <tt>sys/time.h</tt>.
+      </li>
+
+      <li>
+        <b>PAPI</b>:<br>
+        We interface the PAPI library, if it is found in the configure phase.
+        The PAPI interrupt source uses overflowing performance counters to interrupt the program.
+        This source can be used in multi-threaded programs.
+        Due to limitations from the PAPI library, PAPI counters will not be available if PAPI sampling is enabled.
+        However, you can use perf metrics.
+        E.g.,
+        @code
+        export SCOREP_METRIC_PERF=instructions:page-faults
+        @endcode
+      </li>
+
+      <li>
+        <b>perf</b>:<br>
+        <tt>perf</tt> is comparable to PAPI but much more low-level.
+        We directly use the system call.
+        This source can be used in multi-threaded programs.
+        PAPI counters are available if <tt>perf</tt> is used as an interrupt source.
+        Currently we only provide a cycle based overflow counter via <tt>perf</tt>.
+      </li>
+    </ol>
+
+    We recommend using <tt>PAPI</tt> or <tt>perf</tt> as interrupt sources.
+    However, these also pose a specific disadvantage when power saving techniques such as DVFS or idle states are active on a system.
+    In this case, a constant sampling interval can not be guaranteed.
+    If, for example, an application calls a sleep routine, then the cycle counter might not increase as the CPU might switch to an idle state.
+    This can also influence the result data.
+    Such idling times can also be introduced by @openmp runtimes and can be avoided by setting the block times accordingly or setting the environment variable <tt>OMP_WAIT_POLICY</tt> to <tt>ACTIVE</tt>.
+  </li>
+</ul>
+
+
+@section sampling_configure_options Configure Options
+@seclabel{sampling_configure_options}
+
+@subsection sampling_configure_options_libunwind libunwind
+@seclabel{sampling_configure_options_libunwind}
+
+If libunwind is not installed in a standard directory, you can provide the
+following flags in the configure step:
+
+@code
+  --with-libunwind=(yes|no|<Path to libunwind installation>)
+                          If you want to build scorep with libunwind but do
+                          not have a libunwind in a standard location, you
+                          need to explicitly specify the directory where it is
+                          installed. On non-cross-compile systems we search
+                          the system include and lib paths per default [yes];
+                          on cross-compile systems, however, you have to
+                          specify a path [no]. --with-libunwind is a shorthand
+                          for --with-libunwind-include=<Path/include> and
+                          --with-libunwind-lib=<Path/lib>. If these shorthand
+                          assumptions are not correct, you can use the
+                          explicit include and lib options directly.
+  --with-libunwind-include=<Path to libunwind headers>
+  --with-libunwind-lib=<Path to libunwind libraries>
+@endcode
+
+@section sampling_confvars Sampling Related @scorep Measurement Configuration Variables
+@seclabel{sampling_confvars}
+
+The following lists the @scorep measurement configuration variables which are related to sampling.
+Please refer to the individual variables for a more detailed description.
+
+<ul>
+  <li>\confvar{SCOREP_ENABLE_UNWINDING}</li>
+  <li>\confvar{SCOREP_SAMPLING_EVENTS}</li>
+  <li>\confvar{SCOREP_SAMPLING_SEP}</li>
+  <li>\confvar{SCOREP_TRACING_CONVERT_CALLING_CONTEXT_EVENTS}</li>
+</ul>
+
+@section sampling_use_cases Use Cases
+@seclabel{sampling_use_cases}
+
+@subsection sampling_use_cases_unwind_instrumented_app Enable unwinding in instrumented programs
+@seclabel{sampling_use_cases_unwind_instrumented_app}
+
+Additionally to the instrumentation, you now see where the instrumented region has been called.
+A pure @mpi instrumentation for example does not tell you which functions have been issuing communications.
+With unwinding enabled, this is revealed and stored in the trace or profile.
+
+Instrument your program, e.g. with @mpi instrumentation enabled.
+
+@code
+scorep mpicc my_mpi_code.c -o my_mpi_application
+@endcode
+
+Set the following environment variables:
+
+@code
+export SCOREP_ENABLE_UNWINDING=true
+export SCOREP_SAMPLING_EVENTS=
+@endcode
+
+Run your program
+
+@code
+mpirun -np 16 ./my_mpi_application
+@endcode
+
+
+@subsection sampling_use_cases_instrumented_hybrid_app Instrument a hybrid parallel program and enable sampling
+@seclabel{sampling_use_cases_instrumented_hybrid_app}
+
+In this example you get rid of a possible enormous compiler instrumentation overhead but you are still able to see statistical occurrences of small code regions.
+The NAS Parallel Benchmark BT-MZ for example uses small sub functions within @openmp parallel functions that increase the measurement overhead significantly when compiler instrumentation is enabled.
+
+Instrument your program, e.g. with @mpi and @openmp instrumentation enabled.
+
+@code
+scorep mpicc -fopenmp my_hybrid_code.c -o my_hybrid_application
+@endcode
+
+Note: If you use the GNU compiler and shared libraries of @scorep you might get errors due to undefined references depending on your gcc version.
+Please add <tt>--no-as-needed</tt> to your scorep command line.
+This flag will add a GNU ld linker flag to fix undefined references when using shared @scorep libraries.
+This happens on systems using <tt>--as-needed</tt> as linker default.
+It will be handled transparently in future releases of @scorep.
+
+Set the following environment variables:
+
+@code
+export SCOREP_ENABLE_UNWINDING=true
+@endcode
+
+If you want to use a sampling event and period differing from the default settings you additionally set:
+
+@code
+export SCOREP_SAMPLING_EVENTS=PAPI_TOT_CYC@1000000
+@endcode
+
+Run your program
+
+@code
+mpirun -np 16 ./my_mpi_application
+@endcode
+
+
+@section sampling_test_environment Test Environment
+@seclabel{sampling_test_environment}
+
+Example
+
+@subsection sampling_test_environment__instrument Instrument NAS BT-MZ code
+
+@code
+cd <NAS_BT_MZ_SRC_DIR>
+vim config/make.def
+@endcode
+
+Set add the @scorep wrapper to your @mpi Fortran compiler.
+
+@code
+MPIF77 = scorep mpif77
+@endcode
+
+Recompile the NAS BT-MZ code.
+
+@code
+make clean
+make bt-mz  CLASS=C  NPROCS=128
+@endcode
+
+@subsection sampling_test_environment_run_instrumented Run instrumented binary
+
+@code
+cd bin
+sbatch run.slurm
+@endcode
+
+Batch script example:
+@code
+#!/bin/bash
+#SBATCH -J NAS_BT_C_128x2
+#SBATCH --nodes=32
+#SBATCH --tasks-per-node=4
+#SBATCH --cpus-per-task=2
+#SBATCH --time=00:30:00
+
+export OMP_NUM_THREADS=2
+
+export NPB_MZ_BLOAD=0
+
+export SCOREP_ENABLE_TRACING=true
+export SCOREP_ENABLE_PROFILING=false
+export SCOREP_ENABLE_UNWINDING=true
+export SCOREP_TOTAL_MEMORY=200M
+export SCOREP_SAMPLING_EVENTS=perf@2000000
+export SCOREP_EXPERIMENT_DIRECTORY='bt-mz_C.128x2_trace_unwinding'
+
+srun ./bt-mz_C.128
+@endcode
+
+*/

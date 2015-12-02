@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -54,16 +54,12 @@ SCOREP_RegisterAllConfigVariables( void );
 //SCOREP_Env_CoreEnvironmentVariablesInitialized( void );
 
 
+/*
+ * General measurement setup
+ */
+
 bool
 SCOREP_Env_RunVerbose( void );
-
-
-bool
-SCOREP_Env_DoTracing( void );
-
-
-bool
-SCOREP_Env_DoProfiling( void );
 
 uint64_t
 SCOREP_Env_GetTotalMemory( void );
@@ -77,9 +73,33 @@ SCOREP_Env_GetExperimentDirectory( void );
 bool
 SCOREP_Env_DoOverwriteExperimentDirectory( void );
 
-
 const char*
 SCOREP_Env_GetMachineName( void );
+
+
+/*
+ * Tracing setup
+ */
+
+bool
+SCOREP_Env_DoTracing( void );
+
+
+/*
+ * Profiling setup
+ */
+
+bool
+SCOREP_Env_DoProfiling( void );
+
+
+/*
+ * Calling context setup
+ */
+
+bool
+SCOREP_Env_DoCallingContext( void );
+
 
 UTILS_END_C_DECLS
 

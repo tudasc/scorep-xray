@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -66,6 +66,7 @@
 #define ACTION_COBI_DEPS     11
 #define ACTION_ADAPTER_INIT  12
 #define ACTION_TARGETS       13
+#define ACTION_CONSTRUCTOR   14
 
 #define SHORT_HELP \
     "\nUsage:\nscorep-config <command> [<options>]\n\n" \
@@ -189,6 +190,7 @@ main( int    argc,
     bool                   allow_dynamic = true;
     bool                   allow_static  = true;
     bool                   online_access = true;
+
     /* set default target to plain */
     int         target      = TARGET_PLAIN;
     const char* target_name = 0;
@@ -309,6 +311,10 @@ main( int    argc,
             action = ACTION_COBI_DEPS;
            }
          */
+        else if ( strcmp( argv[ i ], "--constructor" ) == 0 )
+        {
+            action = ACTION_CONSTRUCTOR;
+        }
         else if ( strcmp( argv[ i ], "--dynamic" ) == 0 )
         {
             allow_static = false;
@@ -470,8 +476,9 @@ main( int    argc,
         case ACTION_LIBS:
             if ( !allow_dynamic || !allow_static )
             {
+                std::deque<std::string> rpath = deps.getRpathFlags( libs, install );
                 libs = get_full_library_names( deps.getLibraries( libs ),
-                                               deps.getRpathFlags( libs, install ),
+                                               rpath,
                                                allow_static,
                                                allow_dynamic );
             }
@@ -553,6 +560,24 @@ main( int    argc,
          */
         case ACTION_ADAPTER_INIT:
             print_adapter_init_source();
+            break;
+
+        case ACTION_CONSTRUCTOR:
+            /* ignore this request if no support is avaible */
+#if HAVE_BACKEND( COMPILER_CONSTRUCTOR_SUPPORT )
+            /* only add the constructor object if we would also add libs */
+            if ( !libs.empty() )
+            {
+                if ( install )
+                {
+                    std::cout << SCOREP_BACKEND_PKGLIBDIR "/scorep_constructor." OBJEXT << std::endl;
+                }
+                else
+                {
+                    std::cout << path_to_binary + "../build-backend/scorep_constructor." OBJEXT << std::endl;
+                }
+            }
+#endif
             break;
 
         default:
@@ -823,6 +848,12 @@ print_adapter_init_source( void )
     SCOREP_Config_ThreadSystem::current->getInitStructName( init_structs );
     if ( !init_structs.empty() )
     {
+#if HAVE_BACKEND( SAMPLING_SUPPORT )
+        init_structs.push_front( "SCOREP_Subsystem_SamplingService" );
+#endif
+#if HAVE_BACKEND( UNWINDING_SUPPORT )
+        init_structs.push_front( "SCOREP_Subsystem_UnwindingService" );
+#endif
         init_structs.push_front( "SCOREP_Subsystem_MetricService" );
         init_structs.push_front( "SCOREP_Subsystem_TaskStack" );
         init_structs.push_front( "SCOREP_Subsystem_Substrates" );

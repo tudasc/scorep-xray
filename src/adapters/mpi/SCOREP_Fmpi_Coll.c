@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -501,6 +501,9 @@
 void
 FSUB( MPI_Allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -522,6 +525,8 @@ FSUB( MPI_Allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, vo
 
 
     *ierr = MPI_Allgather( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ALLGATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allgatherv )
@@ -535,6 +540,9 @@ FSUB( MPI_Allgather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, vo
 void
 FSUB( MPI_Allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -556,6 +564,8 @@ FSUB( MPI_Allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, v
 
 
     *ierr = MPI_Allgatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ALLREDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allreduce )
@@ -569,6 +579,9 @@ FSUB( MPI_Allgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, v
 void
 FSUB( MPI_Allreduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -590,6 +603,8 @@ FSUB( MPI_Allreduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* d
 
 
     *ierr = MPI_Allreduce( sendbuf, recvbuf, *count, *datatype, *op, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ALLTOALL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoall )
@@ -603,6 +618,9 @@ FSUB( MPI_Allreduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* d
 void
 FSUB( MPI_Alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -624,6 +642,8 @@ FSUB( MPI_Alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, voi
 
 
     *ierr = MPI_Alltoall( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ALLTOALLV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallv )
@@ -637,6 +657,9 @@ FSUB( MPI_Alltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, voi
 void
 FSUB( MPI_Alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* rdispls, MPI_Datatype* recvtype, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -658,6 +681,8 @@ FSUB( MPI_Alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatyp
 
 
     *ierr = MPI_Alltoallv( sendbuf, sendcounts, sdispls, *sendtype, recvbuf, recvcounts, rdispls, *recvtype, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ALLTOALLW ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallw )
@@ -671,6 +696,9 @@ FSUB( MPI_Alltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatyp
 void
 FSUB( MPI_Alltoallw )( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype sendtypes[], void* recvbuf, int recvcounts[], int rdispls[], MPI_Datatype recvtypes[], MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -692,6 +720,8 @@ FSUB( MPI_Alltoallw )( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datat
 
 
     *ierr = MPI_Alltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_BARRIER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Barrier )
@@ -705,7 +735,12 @@ FSUB( MPI_Alltoallw )( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datat
 void
 FSUB( MPI_Barrier )( MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Barrier( *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_BCAST ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Bcast )
@@ -719,6 +754,9 @@ FSUB( MPI_Barrier )( MPI_Comm* comm, int* ierr )
 void
 FSUB( MPI_Bcast )( void* buffer, int* count, MPI_Datatype* datatype, int* root, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buffer == scorep_mpi_fortran_bottom )
     {
@@ -728,6 +766,8 @@ FSUB( MPI_Bcast )( void* buffer, int* count, MPI_Datatype* datatype, int* root, 
 
 
     *ierr = MPI_Bcast( buffer, *count, *datatype, *root, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_EXSCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Exscan )
@@ -741,6 +781,9 @@ FSUB( MPI_Bcast )( void* buffer, int* count, MPI_Datatype* datatype, int* root, 
 void
 FSUB( MPI_Exscan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -762,6 +805,8 @@ FSUB( MPI_Exscan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* data
 
 
     *ierr = MPI_Exscan( sendbuf, recvbuf, *count, *datatype, *op, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GATHER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gather )
@@ -775,6 +820,9 @@ FSUB( MPI_Exscan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* data
 void
 FSUB( MPI_Gather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -796,6 +844,8 @@ FSUB( MPI_Gather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void*
 
 
     *ierr = MPI_Gather( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gatherv )
@@ -809,6 +859,9 @@ FSUB( MPI_Gather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void*
 void
 FSUB( MPI_Gatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -830,6 +883,8 @@ FSUB( MPI_Gatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void
 
 
     *ierr = MPI_Gatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *root, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IALLGATHER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iallgather )
@@ -843,6 +898,9 @@ FSUB( MPI_Gatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void
 void
 FSUB( MPI_Iallgather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -864,6 +922,8 @@ FSUB( MPI_Iallgather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, v
 
 
     *ierr = MPI_Iallgather( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IALLGATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iallgatherv )
@@ -877,6 +937,9 @@ FSUB( MPI_Iallgather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, v
 void
 FSUB( MPI_Iallgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -898,6 +961,8 @@ FSUB( MPI_Iallgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, 
 
 
     *ierr = MPI_Iallgatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IALLREDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iallreduce )
@@ -911,6 +976,9 @@ FSUB( MPI_Iallgatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, 
 void
 FSUB( MPI_Iallreduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -932,6 +1000,8 @@ FSUB( MPI_Iallreduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* 
 
 
     *ierr = MPI_Iallreduce( sendbuf, recvbuf, *count, *datatype, *op, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IALLTOALL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ialltoall )
@@ -945,6 +1015,9 @@ FSUB( MPI_Iallreduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* 
 void
 FSUB( MPI_Ialltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -966,6 +1039,8 @@ FSUB( MPI_Ialltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, vo
 
 
     *ierr = MPI_Ialltoall( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IALLTOALLV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ialltoallv )
@@ -979,6 +1054,9 @@ FSUB( MPI_Ialltoall )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, vo
 void
 FSUB( MPI_Ialltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* rdispls, MPI_Datatype* recvtype, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1000,6 +1078,8 @@ FSUB( MPI_Ialltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MPI_Dataty
 
 
     *ierr = MPI_Ialltoallv( sendbuf, sendcounts, sdispls, *sendtype, recvbuf, recvcounts, rdispls, *recvtype, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IALLTOALLW ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ialltoallw )
@@ -1013,6 +1093,9 @@ FSUB( MPI_Ialltoallv )( void* sendbuf, int* sendcounts, int* sdispls, MPI_Dataty
 void
 FSUB( MPI_Ialltoallw )( void* sendbuf, int sendcounts[], int sdispls[], MPI_Datatype sendtypes[], void* recvbuf, int recvcounts[], int rdispls[], MPI_Datatype recvtypes[], MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1034,6 +1117,8 @@ FSUB( MPI_Ialltoallw )( void* sendbuf, int sendcounts[], int sdispls[], MPI_Data
 
 
     *ierr = MPI_Ialltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IBARRIER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ibarrier )
@@ -1047,7 +1132,12 @@ FSUB( MPI_Ialltoallw )( void* sendbuf, int sendcounts[], int sdispls[], MPI_Data
 void
 FSUB( MPI_Ibarrier )( MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Ibarrier( *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IBCAST ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ibcast )
@@ -1061,6 +1151,9 @@ FSUB( MPI_Ibarrier )( MPI_Comm* comm, MPI_Request* request, int* ierr )
 void
 FSUB( MPI_Ibcast )( void* buffer, int* count, MPI_Datatype* datatype, int* root, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buffer == scorep_mpi_fortran_bottom )
     {
@@ -1070,6 +1163,8 @@ FSUB( MPI_Ibcast )( void* buffer, int* count, MPI_Datatype* datatype, int* root,
 
 
     *ierr = MPI_Ibcast( buffer, *count, *datatype, *root, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IEXSCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iexscan )
@@ -1083,6 +1178,9 @@ FSUB( MPI_Ibcast )( void* buffer, int* count, MPI_Datatype* datatype, int* root,
 void
 FSUB( MPI_Iexscan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1104,6 +1202,8 @@ FSUB( MPI_Iexscan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* dat
 
 
     *ierr = MPI_Iexscan( sendbuf, recvbuf, *count, *datatype, *op, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IGATHER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Igather )
@@ -1117,6 +1217,9 @@ FSUB( MPI_Iexscan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* dat
 void
 FSUB( MPI_Igather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1138,6 +1241,8 @@ FSUB( MPI_Igather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void
 
 
     *ierr = MPI_Igather( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IGATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Igatherv )
@@ -1151,6 +1256,9 @@ FSUB( MPI_Igather )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void
 void
 FSUB( MPI_Igatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcounts, int* displs, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1172,6 +1280,8 @@ FSUB( MPI_Igatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, voi
 
 
     *ierr = MPI_Igatherv( sendbuf, *sendcount, *sendtype, recvbuf, recvcounts, displs, *recvtype, *root, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IREDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ireduce )
@@ -1185,6 +1295,9 @@ FSUB( MPI_Igatherv )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, voi
 void
 FSUB( MPI_Ireduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, int* root, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1206,6 +1319,8 @@ FSUB( MPI_Ireduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* dat
 
 
     *ierr = MPI_Ireduce( sendbuf, recvbuf, *count, *datatype, *op, *root, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IREDUCE_SCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ireduce_scatter )
@@ -1219,6 +1334,9 @@ FSUB( MPI_Ireduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* dat
 void
 FSUB( MPI_Ireduce_scatter )( void* sendbuf, void* recvbuf, int* recvcounts, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1240,6 +1358,8 @@ FSUB( MPI_Ireduce_scatter )( void* sendbuf, void* recvbuf, int* recvcounts, MPI_
 
 
     *ierr = MPI_Ireduce_scatter( sendbuf, recvbuf, recvcounts, *datatype, *op, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_IREDUCE_SCATTER_BLOCK ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Ireduce_scatter_block )
@@ -1253,6 +1373,9 @@ FSUB( MPI_Ireduce_scatter )( void* sendbuf, void* recvbuf, int* recvcounts, MPI_
 void
 FSUB( MPI_Ireduce_scatter_block )( void* sendbuf, void* recvbuf, int* recvcount, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1274,6 +1397,8 @@ FSUB( MPI_Ireduce_scatter_block )( void* sendbuf, void* recvbuf, int* recvcount,
 
 
     *ierr = MPI_Ireduce_scatter_block( sendbuf, recvbuf, *recvcount, *datatype, *op, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ISCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iscan )
@@ -1287,6 +1412,9 @@ FSUB( MPI_Ireduce_scatter_block )( void* sendbuf, void* recvbuf, int* recvcount,
 void
 FSUB( MPI_Iscan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1308,6 +1436,8 @@ FSUB( MPI_Iscan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datat
 
 
     *ierr = MPI_Iscan( sendbuf, recvbuf, *count, *datatype, *op, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ISCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iscatter )
@@ -1321,6 +1451,9 @@ FSUB( MPI_Iscan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datat
 void
 FSUB( MPI_Iscatter )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( recvbuf == scorep_mpi_fortran_in_place )
     {
@@ -1342,6 +1475,8 @@ FSUB( MPI_Iscatter )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, voi
 
 
     *ierr = MPI_Iscatter( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ISCATTERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Iscatterv )
@@ -1355,6 +1490,9 @@ FSUB( MPI_Iscatter )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, voi
 void
 FSUB( MPI_Iscatterv )( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, MPI_Request* request, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( recvbuf == scorep_mpi_fortran_in_place )
     {
@@ -1376,6 +1514,8 @@ FSUB( MPI_Iscatterv )( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype
 
 
     *ierr = MPI_Iscatterv( sendbuf, sendcounts, displs, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm, request );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_REDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce )
@@ -1389,6 +1529,9 @@ FSUB( MPI_Iscatterv )( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype
 void
 FSUB( MPI_Reduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, int* root, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1410,6 +1553,8 @@ FSUB( MPI_Reduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* data
 
 
     *ierr = MPI_Reduce( sendbuf, recvbuf, *count, *datatype, *op, *root, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_REDUCE_LOCAL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_local )
@@ -1423,7 +1568,12 @@ FSUB( MPI_Reduce )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* data
 void
 FSUB( MPI_Reduce_local )( void* inbuf, void* inoutbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Reduce_local( inbuf, inoutbuf, *count, *datatype, *op );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_REDUCE_SCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter )
@@ -1437,6 +1587,9 @@ FSUB( MPI_Reduce_local )( void* inbuf, void* inoutbuf, int* count, MPI_Datatype*
 void
 FSUB( MPI_Reduce_scatter )( void* sendbuf, void* recvbuf, int* recvcounts, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1458,6 +1611,8 @@ FSUB( MPI_Reduce_scatter )( void* sendbuf, void* recvbuf, int* recvcounts, MPI_D
 
 
     *ierr = MPI_Reduce_scatter( sendbuf, recvbuf, recvcounts, *datatype, *op, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_REDUCE_SCATTER_BLOCK ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter_block )
@@ -1471,6 +1626,9 @@ FSUB( MPI_Reduce_scatter )( void* sendbuf, void* recvbuf, int* recvcounts, MPI_D
 void
 FSUB( MPI_Reduce_scatter_block )( void* sendbuf, void* recvbuf, int* recvcount, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1492,6 +1650,8 @@ FSUB( MPI_Reduce_scatter_block )( void* sendbuf, void* recvbuf, int* recvcount, 
 
 
     *ierr = MPI_Reduce_scatter_block( sendbuf, recvbuf, *recvcount, *datatype, *op, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scan )
@@ -1505,6 +1665,9 @@ FSUB( MPI_Reduce_scatter_block )( void* sendbuf, void* recvbuf, int* recvcount, 
 void
 FSUB( MPI_Scan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* datatype, MPI_Op* op, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1526,6 +1689,8 @@ FSUB( MPI_Scan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* dataty
 
 
     *ierr = MPI_Scan( sendbuf, recvbuf, *count, *datatype, *op, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatter )
@@ -1539,6 +1704,9 @@ FSUB( MPI_Scan )( void* sendbuf, void* recvbuf, int* count, MPI_Datatype* dataty
 void
 FSUB( MPI_Scatter )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( recvbuf == scorep_mpi_fortran_in_place )
     {
@@ -1560,6 +1728,8 @@ FSUB( MPI_Scatter )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void
 
 
     *ierr = MPI_Scatter( sendbuf, *sendcount, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SCATTERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatterv )
@@ -1573,6 +1743,9 @@ FSUB( MPI_Scatter )( void* sendbuf, int* sendcount, MPI_Datatype* sendtype, void
 void
 FSUB( MPI_Scatterv )( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype* sendtype, void* recvbuf, int* recvcount, MPI_Datatype* recvtype, int* root, MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( recvbuf == scorep_mpi_fortran_in_place )
     {
@@ -1594,6 +1767,8 @@ FSUB( MPI_Scatterv )( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype*
 
 
     *ierr = MPI_Scatterv( sendbuf, sendcounts, displs, *sendtype, recvbuf, *recvcount, *recvtype, *root, *comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1611,6 +1786,9 @@ FSUB( MPI_Scatterv )( void* sendbuf, int* sendcounts, int* displs, MPI_Datatype*
 void
 FSUB( MPI_Allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1632,6 +1810,8 @@ FSUB( MPI_Allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, v
 
 
     *ierr = MPI_Allgather( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ALLGATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allgatherv )
@@ -1646,6 +1826,9 @@ FSUB( MPI_Allgather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, v
 void
 FSUB( MPI_Allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* displs, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1667,6 +1850,8 @@ FSUB( MPI_Allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, 
 
 
     *ierr = MPI_Allgatherv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, displs, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ALLREDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Allreduce )
@@ -1681,6 +1866,9 @@ FSUB( MPI_Allgatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, 
 void
 FSUB( MPI_Allreduce )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1702,6 +1890,8 @@ FSUB( MPI_Allreduce )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* 
 
 
     *ierr = MPI_Allreduce( sendbuf, recvbuf, *count, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ALLTOALL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoall )
@@ -1716,6 +1906,9 @@ FSUB( MPI_Allreduce )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* 
 void
 FSUB( MPI_Alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1737,6 +1930,8 @@ FSUB( MPI_Alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, vo
 
 
     *ierr = MPI_Alltoall( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_ALLTOALLV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Alltoallv )
@@ -1751,6 +1946,9 @@ FSUB( MPI_Alltoall )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, vo
 void
 FSUB( MPI_Alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* sdispls, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* rdispls, MPI_Fint* recvtype, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1772,6 +1970,8 @@ FSUB( MPI_Alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* sdispls, M
 
 
     *ierr = MPI_Alltoallv( sendbuf, sendcounts, sdispls, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, rdispls, PMPI_Type_f2c( *recvtype ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_BARRIER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Barrier )
@@ -1786,7 +1986,12 @@ FSUB( MPI_Alltoallv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* sdispls, M
 void
 FSUB( MPI_Barrier )( MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Barrier( PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_BCAST ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Bcast )
@@ -1801,6 +2006,9 @@ FSUB( MPI_Barrier )( MPI_Fint* comm, MPI_Fint* ierr )
 void
 FSUB( MPI_Bcast )( void* buffer, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_BOTTOM )
     if ( buffer == scorep_mpi_fortran_bottom )
     {
@@ -1810,6 +2018,8 @@ FSUB( MPI_Bcast )( void* buffer, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* 
 
 
     *ierr = MPI_Bcast( buffer, *count, PMPI_Type_f2c( *datatype ), *root, PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GATHER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gather )
@@ -1824,6 +2034,9 @@ FSUB( MPI_Bcast )( void* buffer, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* 
 void
 FSUB( MPI_Gather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1845,6 +2058,8 @@ FSUB( MPI_Gather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void
 
 
     *ierr = MPI_Gather( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), *root, PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GATHERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Gatherv )
@@ -1859,6 +2074,9 @@ FSUB( MPI_Gather )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void
 void
 FSUB( MPI_Gatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* displs, MPI_Fint* recvtype, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1880,6 +2098,8 @@ FSUB( MPI_Gatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, voi
 
 
     *ierr = MPI_Gatherv( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, recvcounts, displs, PMPI_Type_f2c( *recvtype ), *root, PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_REDUCE ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce )
@@ -1894,6 +2114,9 @@ FSUB( MPI_Gatherv )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, voi
 void
 FSUB( MPI_Reduce )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1915,6 +2138,8 @@ FSUB( MPI_Reduce )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* dat
 
 
     *ierr = MPI_Reduce( sendbuf, recvbuf, *count, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), *root, PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_REDUCE_SCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter )
@@ -1929,6 +2154,9 @@ FSUB( MPI_Reduce )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* dat
 void
 FSUB( MPI_Reduce_scatter )( void* sendbuf, void* recvbuf, MPI_Fint* recvcounts, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1950,6 +2178,8 @@ FSUB( MPI_Reduce_scatter )( void* sendbuf, void* recvbuf, MPI_Fint* recvcounts, 
 
 
     *ierr = MPI_Reduce_scatter( sendbuf, recvbuf, recvcounts, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SCAN ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scan )
@@ -1964,6 +2194,9 @@ FSUB( MPI_Reduce_scatter )( void* sendbuf, void* recvbuf, MPI_Fint* recvcounts, 
 void
 FSUB( MPI_Scan )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -1985,6 +2218,8 @@ FSUB( MPI_Scan )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* datat
 
 
     *ierr = MPI_Scan( sendbuf, recvbuf, *count, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SCATTER ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatter )
@@ -1999,6 +2234,9 @@ FSUB( MPI_Scan )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* datat
 void
 FSUB( MPI_Scatter )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( recvbuf == scorep_mpi_fortran_in_place )
     {
@@ -2020,6 +2258,8 @@ FSUB( MPI_Scatter )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, voi
 
 
     *ierr = MPI_Scatter( sendbuf, *sendcount, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), *root, PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_SCATTERV ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Scatterv )
@@ -2034,6 +2274,9 @@ FSUB( MPI_Scatter )( void* sendbuf, MPI_Fint* sendcount, MPI_Fint* sendtype, voi
 void
 FSUB( MPI_Scatterv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* displs, MPI_Fint* sendtype, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* recvtype, MPI_Fint* root, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( recvbuf == scorep_mpi_fortran_in_place )
     {
@@ -2055,6 +2298,8 @@ FSUB( MPI_Scatterv )( void* sendbuf, MPI_Fint* sendcounts, MPI_Fint* displs, MPI
 
 
     *ierr = MPI_Scatterv( sendbuf, sendcounts, displs, PMPI_Type_f2c( *sendtype ), recvbuf, *recvcount, PMPI_Type_f2c( *recvtype ), *root, PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -2078,6 +2323,7 @@ FSUB( MPI_Alltoallw )( void*     sendbuf,
                        MPI_Fint* comm,
                        MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype* csendtypes;
     MPI_Datatype* crecvtypes;
     MPI_Comm      ccomm;
@@ -2120,6 +2366,8 @@ FSUB( MPI_Alltoallw )( void*     sendbuf,
 
     free( csendtypes );
     free( crecvtypes );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -2144,6 +2392,7 @@ FSUB( MPI_Ialltoallw )( void*     sendbuf,
                         MPI_Fint* request,
                         MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Datatype* csendtypes;
     MPI_Datatype* crecvtypes;
     MPI_Comm      ccomm;
@@ -2189,6 +2438,7 @@ FSUB( MPI_Ialltoallw )( void*     sendbuf,
 
     free( csendtypes );
     free( crecvtypes );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -2204,6 +2454,9 @@ FSUB( MPI_Ialltoallw )( void*     sendbuf,
 void
 FSUB( MPI_Exscan )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -2225,6 +2478,8 @@ FSUB( MPI_Exscan )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* dat
 
 
     *ierr = MPI_Exscan( sendbuf, recvbuf, *count, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_REDUCE_LOCAL ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_local )
@@ -2239,7 +2494,12 @@ FSUB( MPI_Exscan )( void* sendbuf, void* recvbuf, MPI_Fint* count, MPI_Fint* dat
 void
 FSUB( MPI_Reduce_local )( void* inbuf, void* inoutbuf, MPI_Fint* count, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Reduce_local( inbuf, inoutbuf, *count, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_REDUCE_SCATTER_BLOCK ) && !defined( SCOREP_MPI_NO_COLL ) && !defined( MPI_Reduce_scatter_block )
@@ -2254,6 +2514,9 @@ FSUB( MPI_Reduce_local )( void* inbuf, void* inoutbuf, MPI_Fint* count, MPI_Fint
 void
 FSUB( MPI_Reduce_scatter_block )( void* sendbuf, void* recvbuf, MPI_Fint* recvcount, MPI_Fint* datatype, MPI_Fint* op, MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_IN_PLACE )
     if ( sendbuf == scorep_mpi_fortran_in_place )
     {
@@ -2275,6 +2538,8 @@ FSUB( MPI_Reduce_scatter_block )( void* sendbuf, void* recvbuf, MPI_Fint* recvco
 
 
     *ierr = MPI_Reduce_scatter_block( sendbuf, recvbuf, *recvcount, PMPI_Type_f2c( *datatype ), PMPI_Op_f2c( *op ), PMPI_Comm_f2c( *comm ) );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #endif

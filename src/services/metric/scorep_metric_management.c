@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -82,6 +82,9 @@
 #if HAVE( DLFCN_SUPPORT )
 #include "scorep_metric_plugins.h"
 #endif
+#if HAVE( METRIC_PERF )
+#include "scorep_metric_perf.h"
+#endif
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -96,7 +99,10 @@ static const SCOREP_MetricSource* scorep_metric_sources[] = {
     &SCOREP_Metric_Rusage,
 #endif
 #if HAVE( DLFCN_SUPPORT )
-    &SCOREP_Metric_Plugins
+    &SCOREP_Metric_Plugins,
+#endif
+#if HAVE( METRIC_PERF )
+    &SCOREP_Metric_Perf
 #endif
 };
 
@@ -234,9 +240,6 @@ typedef struct scorep_strictly_synchronous_metrics
 static bool scorep_metric_management_initialized = false;
 
 
-/** Flag indicating whether exit callback is registered or not */
-static bool scorep_metric_management_exit_callback_registered = false;
-
 /** 'strictly synchronous' metrics */
 static scorep_strictly_synchronous_metrics strictly_synchronous_metrics;
 
@@ -260,8 +263,8 @@ static bool
 finalize_location_metric_cb( SCOREP_Location* location,
                              void*            data );
 
-static int
-scorep_metric_finalize_callback( void );
+static void
+scorep_metric_finalize( void );
 
 /* *********************************************************************
  * Macros
@@ -392,6 +395,12 @@ metric_subsystem_deregister( void )
     }
 }
 
+static void
+metric_subsystem_end( void )
+{
+    scorep_metric_finalize();
+}
+
 /** @brief Called on initialization of the metric service.
  *
  *  @return It returns SCOREP_SUCCESS if successful,
@@ -404,14 +413,6 @@ metric_subsystem_init( void )
     if ( !scorep_metric_management_initialized )
     {
         UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " initialize metric management." );
-
-        if ( !scorep_metric_management_exit_callback_registered )
-        {
-            /* Register callback of metric management service which will be
-             * called at the end of the measurement */
-            SCOREP_RegisterExitCallback( scorep_metric_finalize_callback );
-            scorep_metric_management_exit_callback_registered = true;
-        }
 
         strictly_synchronous_metrics.overall_number_of_metrics = 0;
         strictly_synchronous_metrics.sampling_set              = SCOREP_INVALID_SAMPLING_SET;
@@ -1089,11 +1090,9 @@ metric_subsystem_finalize_location( SCOREP_Location* location )
  *         asynchronous metrics for the last time. Especially, this
  *         function is relevant for asynchronous post mortem metrics
  *         which will be called ONLY at the end of the measurement.
- *
- * @return 0 if successful.
  */
-static int
-scorep_metric_finalize_callback( void )
+static void
+scorep_metric_finalize( void )
 {
     UTILS_DEBUG_PRINTF( SCOREP_DEBUG_METRIC, " finalize callback" );
 
@@ -1101,7 +1100,7 @@ scorep_metric_finalize_callback( void )
     SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
     if ( location == NULL )
     {
-        return 0;
+        return;
     }
 
     /* Get the thread local data related to metrics */
@@ -1112,7 +1111,7 @@ scorep_metric_finalize_callback( void )
     if ( !metric_data->has_metrics )
     {
         /* Location does not record any metrics */
-        return 0;
+        return;
     }
 
     /* Just handle additional asynchronous metrics here ! */
@@ -1209,8 +1208,6 @@ scorep_metric_finalize_callback( void )
             location_asynchronous_metric_set = location_asynchronous_metric_set->next;
         }
     }
-
-    return 0;
 }
 
 /** @brief Continues initialization of per-location data structures
@@ -1923,11 +1920,9 @@ const SCOREP_Subsystem SCOREP_Subsystem_MetricService =
     .subsystem_name              = "METRIC",
     .subsystem_register          = &metric_subsystem_register,
     .subsystem_init              = &metric_subsystem_init,
+    .subsystem_end               = &metric_subsystem_end,
     .subsystem_init_location     = &metric_subsystem_init_location,
     .subsystem_finalize_location = &metric_subsystem_finalize_location,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
     .subsystem_finalize          = &metric_subsystem_finalize,
     .subsystem_deregister        = &metric_subsystem_deregister,
-    .subsystem_control           = NULL
 };

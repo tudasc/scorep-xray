@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -572,7 +572,12 @@
 void
 FSUB( MPI_Comm_create )( MPI_Comm* comm, MPI_Group* group, MPI_Comm* newcomm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_create( *comm, *group, newcomm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_DUP )
@@ -586,7 +591,12 @@ FSUB( MPI_Comm_create )( MPI_Comm* comm, MPI_Group* group, MPI_Comm* newcomm, in
 void
 FSUB( MPI_Comm_dup )( MPI_Comm* comm, MPI_Comm* newcomm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_dup( *comm, newcomm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_SPLIT )
@@ -600,7 +610,12 @@ FSUB( MPI_Comm_dup )( MPI_Comm* comm, MPI_Comm* newcomm, int* ierr )
 void
 FSUB( MPI_Comm_split )( MPI_Comm* comm, int* color, int* key, MPI_Comm* newcomm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_split( *comm, *color, *key, newcomm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INTERCOMM_CREATE )
@@ -614,7 +629,12 @@ FSUB( MPI_Comm_split )( MPI_Comm* comm, int* color, int* key, MPI_Comm* newcomm,
 void
 FSUB( MPI_Intercomm_create )( MPI_Comm* local_comm, int* local_leader, MPI_Comm* peer_comm, int* remote_leader, int* tag, MPI_Comm* newcomm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Intercomm_create( *local_comm, *local_leader, *peer_comm, *remote_leader, *tag, newcomm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INTERCOMM_MERGE )
@@ -628,7 +648,12 @@ FSUB( MPI_Intercomm_create )( MPI_Comm* local_comm, int* local_leader, MPI_Comm*
 void
 FSUB( MPI_Intercomm_merge )( MPI_Comm* intercomm, int* high, MPI_Comm* newcomm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Intercomm_merge( *intercomm, *high, newcomm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -649,7 +674,12 @@ FSUB( MPI_Intercomm_merge )( MPI_Comm* intercomm, int* high, MPI_Comm* newcomm, 
 void
 FSUB( MPI_Comm_free )( MPI_Comm* comm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_free( comm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -670,7 +700,12 @@ FSUB( MPI_Comm_free )( MPI_Comm* comm, int* ierr )
 void
 FSUB( MPI_Group_difference )( MPI_Group* group1, MPI_Group* group2, MPI_Group* newgroup, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_difference( *group1, *group2, newgroup );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_EXCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_excl )
@@ -684,7 +719,12 @@ FSUB( MPI_Group_difference )( MPI_Group* group1, MPI_Group* group2, MPI_Group* n
 void
 FSUB( MPI_Group_excl )( MPI_Group* group, int* n, int* ranks, MPI_Group* newgroup, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_excl( *group, *n, ranks, newgroup );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_INCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_incl )
@@ -698,7 +738,12 @@ FSUB( MPI_Group_excl )( MPI_Group* group, int* n, int* ranks, MPI_Group* newgrou
 void
 FSUB( MPI_Group_incl )( MPI_Group* group, int* n, int* ranks, MPI_Group* newgroup, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_incl( *group, *n, ranks, newgroup );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_INTERSECTION ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_intersection )
@@ -712,7 +757,12 @@ FSUB( MPI_Group_incl )( MPI_Group* group, int* n, int* ranks, MPI_Group* newgrou
 void
 FSUB( MPI_Group_intersection )( MPI_Group* group1, MPI_Group* group2, MPI_Group* newgroup, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_intersection( *group1, *group2, newgroup );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_RANGE_EXCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_range_excl )
@@ -726,7 +776,12 @@ FSUB( MPI_Group_intersection )( MPI_Group* group1, MPI_Group* group2, MPI_Group*
 void
 FSUB( MPI_Group_range_excl )( MPI_Group* group, int* n, int ranges[][ 3 ], MPI_Group* newgroup, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_range_excl( *group, *n, ranges, newgroup );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_RANGE_INCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_range_incl )
@@ -740,7 +795,12 @@ FSUB( MPI_Group_range_excl )( MPI_Group* group, int* n, int ranges[][ 3 ], MPI_G
 void
 FSUB( MPI_Group_range_incl )( MPI_Group* group, int* n, int ranges[][ 3 ], MPI_Group* newgroup, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_range_incl( *group, *n, ranges, newgroup );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_UNION ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_union )
@@ -754,7 +814,12 @@ FSUB( MPI_Group_range_incl )( MPI_Group* group, int* n, int ranges[][ 3 ], MPI_G
 void
 FSUB( MPI_Group_union )( MPI_Group* group1, MPI_Group* group2, MPI_Group* newgroup, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_union( *group1, *group2, newgroup );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_CREATE_GROUP )
@@ -768,7 +833,12 @@ FSUB( MPI_Group_union )( MPI_Group* group1, MPI_Group* group2, MPI_Group* newgro
 void
 FSUB( MPI_Comm_create_group )( MPI_Comm* comm, MPI_Group* group, int* tag, MPI_Comm* newcomm, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_create_group( *comm, *group, *tag, newcomm );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_GROUP )
@@ -782,7 +852,12 @@ FSUB( MPI_Comm_create_group )( MPI_Comm* comm, MPI_Group* group, int* tag, MPI_C
 void
 FSUB( MPI_Comm_group )( MPI_Comm* comm, MPI_Group* group, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_group( *comm, group );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_REMOTE_GROUP )
@@ -796,7 +871,12 @@ FSUB( MPI_Comm_group )( MPI_Comm* comm, MPI_Group* group, int* ierr )
 void
 FSUB( MPI_Comm_remote_group )( MPI_Comm* comm, MPI_Group* group, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_remote_group( *comm, group );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -817,7 +897,12 @@ FSUB( MPI_Comm_remote_group )( MPI_Comm* comm, MPI_Group* group, int* ierr )
 void
 FSUB( MPI_Group_free )( MPI_Group* group, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_free( group );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -838,7 +923,12 @@ FSUB( MPI_Group_free )( MPI_Group* group, int* ierr )
 void
 FSUB( MPI_Comm_compare )( MPI_Comm* comm1, MPI_Comm* comm2, int* result, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_compare( *comm1, *comm2, result );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_RANK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_rank )
@@ -852,7 +942,12 @@ FSUB( MPI_Comm_compare )( MPI_Comm* comm1, MPI_Comm* comm2, int* result, int* ie
 void
 FSUB( MPI_Comm_rank )( MPI_Comm* comm, int* rank, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_rank( *comm, rank );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_REMOTE_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_remote_size )
@@ -866,7 +961,12 @@ FSUB( MPI_Comm_rank )( MPI_Comm* comm, int* rank, int* ierr )
 void
 FSUB( MPI_Comm_remote_size )( MPI_Comm* comm, int* size, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_remote_size( *comm, size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_size )
@@ -880,7 +980,12 @@ FSUB( MPI_Comm_remote_size )( MPI_Comm* comm, int* size, int* ierr )
 void
 FSUB( MPI_Comm_size )( MPI_Comm* comm, int* size, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_size( *comm, size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_TEST_INTER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_test_inter )
@@ -894,7 +999,12 @@ FSUB( MPI_Comm_size )( MPI_Comm* comm, int* size, int* ierr )
 void
 FSUB( MPI_Comm_test_inter )( MPI_Comm* comm, int* flag, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_test_inter( *comm, flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_COMPARE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_compare )
@@ -908,7 +1018,12 @@ FSUB( MPI_Comm_test_inter )( MPI_Comm* comm, int* flag, int* ierr )
 void
 FSUB( MPI_Group_compare )( MPI_Group* group1, MPI_Group* group2, int* result, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_compare( *group1, *group2, result );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_RANK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_rank )
@@ -922,7 +1037,12 @@ FSUB( MPI_Group_compare )( MPI_Group* group1, MPI_Group* group2, int* result, in
 void
 FSUB( MPI_Group_rank )( MPI_Group* group, int* rank, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_rank( *group, rank );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_size )
@@ -936,7 +1056,12 @@ FSUB( MPI_Group_rank )( MPI_Group* group, int* rank, int* ierr )
 void
 FSUB( MPI_Group_size )( MPI_Group* group, int* size, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_size( *group, size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_TRANSLATE_RANKS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_translate_ranks )
@@ -950,7 +1075,12 @@ FSUB( MPI_Group_size )( MPI_Group* group, int* size, int* ierr )
 void
 FSUB( MPI_Group_translate_ranks )( MPI_Group* group1, int* n, int* ranks1, MPI_Group* group2, int* ranks2, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_translate_ranks( *group1, *n, ranks1, *group2, ranks2 );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -978,7 +1108,12 @@ FSUB( MPI_Group_translate_ranks )( MPI_Group* group1, int* n, int* ranks1, MPI_G
 void
 FSUB( MPI_Comm_create_keyval )( MPI_Comm_copy_attr_function* comm_copy_attr_fn, MPI_Comm_delete_attr_function* comm_delete_attr_fn, int* comm_keyval, void* extra_state, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_create_keyval( comm_copy_attr_fn, comm_delete_attr_fn, comm_keyval, extra_state );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_DELETE_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_delete_attr )
@@ -992,7 +1127,12 @@ FSUB( MPI_Comm_create_keyval )( MPI_Comm_copy_attr_function* comm_copy_attr_fn, 
 void
 FSUB( MPI_Comm_delete_attr )( MPI_Comm* comm, int* comm_keyval, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_delete_attr( *comm, *comm_keyval );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_free_keyval )
@@ -1006,7 +1146,12 @@ FSUB( MPI_Comm_delete_attr )( MPI_Comm* comm, int* comm_keyval, int* ierr )
 void
 FSUB( MPI_Comm_free_keyval )( int* comm_keyval, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_free_keyval( comm_keyval );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_GET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_attr )
@@ -1020,7 +1165,12 @@ FSUB( MPI_Comm_free_keyval )( int* comm_keyval, int* ierr )
 void
 FSUB( MPI_Comm_get_attr )( MPI_Comm* comm, int* comm_keyval, void* attribute_val, int* flag, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_get_attr( *comm, *comm_keyval, attribute_val, flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_GET_INFO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_info )
@@ -1034,7 +1184,12 @@ FSUB( MPI_Comm_get_attr )( MPI_Comm* comm, int* comm_keyval, void* attribute_val
 void
 FSUB( MPI_Comm_get_info )( MPI_Comm* comm, MPI_Info* info_used, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_get_info( *comm, info_used );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_GET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_name )
@@ -1048,6 +1203,7 @@ FSUB( MPI_Comm_get_info )( MPI_Comm* comm, MPI_Info* info_used, int* ierr )
 void
 FSUB( MPI_Comm_get_name )( MPI_Comm* comm, char* comm_name, int* resultlen, int* ierr, int comm_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_comm_name     = NULL;
     int   c_comm_name_len = 0;
     c_comm_name = ( char* )malloc( ( comm_name_len + 1 ) * sizeof( char ) );
@@ -1065,6 +1221,7 @@ FSUB( MPI_Comm_get_name )( MPI_Comm* comm, char* comm_name, int* resultlen, int*
     strncpy( comm_name, c_comm_name, c_comm_name_len );
     memset( comm_name + c_comm_name_len, ' ', comm_name_len - c_comm_name_len );
     free( c_comm_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_SET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_attr )
@@ -1078,7 +1235,12 @@ FSUB( MPI_Comm_get_name )( MPI_Comm* comm, char* comm_name, int* resultlen, int*
 void
 FSUB( MPI_Comm_set_attr )( MPI_Comm* comm, int* comm_keyval, void* attribute_val, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_set_attr( *comm, *comm_keyval, attribute_val );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_SET_INFO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_info )
@@ -1092,7 +1254,12 @@ FSUB( MPI_Comm_set_attr )( MPI_Comm* comm, int* comm_keyval, void* attribute_val
 void
 FSUB( MPI_Comm_set_info )( MPI_Comm* comm, MPI_Info* info, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_set_info( *comm, *info );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_SET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_name )
@@ -1106,6 +1273,7 @@ FSUB( MPI_Comm_set_info )( MPI_Comm* comm, MPI_Info* info, int* ierr )
 void
 FSUB( MPI_Comm_set_name )( MPI_Comm* comm, char* comm_name, int* ierr, int comm_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_comm_name = NULL;
     c_comm_name = scorep_f2c_string( comm_name, comm_name_len );
 
@@ -1114,6 +1282,7 @@ FSUB( MPI_Comm_set_name )( MPI_Comm* comm, char* comm_name, int* ierr, int comm_
     *ierr = MPI_Comm_set_name( *comm, c_comm_name );
 
     free( c_comm_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_KEYVAL_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Keyval_create )
@@ -1127,7 +1296,12 @@ FSUB( MPI_Comm_set_name )( MPI_Comm* comm, char* comm_name, int* ierr, int comm_
 void
 FSUB( MPI_Keyval_create )( MPI_Copy_function* copy_fn, MPI_Delete_function* delete_fn, int* keyval, void* extra_state, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Keyval_create( copy_fn, delete_fn, keyval, extra_state );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_KEYVAL_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Keyval_free )
@@ -1141,7 +1315,12 @@ FSUB( MPI_Keyval_create )( MPI_Copy_function* copy_fn, MPI_Delete_function* dele
 void
 FSUB( MPI_Keyval_free )( int* keyval, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Keyval_free( keyval );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1172,12 +1351,14 @@ FSUB( MPI_Keyval_free )( int* keyval, int* ierr )
 void
 FSUB( MPI_Comm_create )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_newcomm;
 
 
     *ierr = MPI_Comm_create( PMPI_Comm_f2c( *comm ), PMPI_Group_f2c( *group ), &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_DUP )
@@ -1192,12 +1373,14 @@ FSUB( MPI_Comm_create )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* newcomm, MPI
 void
 FSUB( MPI_Comm_dup )( MPI_Fint* comm, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_newcomm;
 
 
     *ierr = MPI_Comm_dup( PMPI_Comm_f2c( *comm ), &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_SPLIT )
@@ -1212,12 +1395,14 @@ FSUB( MPI_Comm_dup )( MPI_Fint* comm, MPI_Fint* newcomm, MPI_Fint* ierr )
 void
 FSUB( MPI_Comm_split )( MPI_Fint* comm, MPI_Fint* color, MPI_Fint* key, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_newcomm;
 
 
     *ierr = MPI_Comm_split( PMPI_Comm_f2c( *comm ), *color, *key, &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INTERCOMM_CREATE )
@@ -1232,12 +1417,14 @@ FSUB( MPI_Comm_split )( MPI_Fint* comm, MPI_Fint* color, MPI_Fint* key, MPI_Fint
 void
 FSUB( MPI_Intercomm_create )( MPI_Fint* local_comm, MPI_Fint* local_leader, MPI_Fint* peer_comm, MPI_Fint* remote_leader, MPI_Fint* tag, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_newcomm;
 
 
     *ierr = MPI_Intercomm_create( PMPI_Comm_f2c( *local_comm ), *local_leader, PMPI_Comm_f2c( *peer_comm ), *remote_leader, *tag, &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INTERCOMM_MERGE )
@@ -1252,12 +1439,14 @@ FSUB( MPI_Intercomm_create )( MPI_Fint* local_comm, MPI_Fint* local_leader, MPI_
 void
 FSUB( MPI_Intercomm_merge )( MPI_Fint* intercomm, MPI_Fint* high, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_newcomm;
 
 
     *ierr = MPI_Intercomm_merge( PMPI_Comm_f2c( *intercomm ), *high, &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1279,12 +1468,14 @@ FSUB( MPI_Intercomm_merge )( MPI_Fint* intercomm, MPI_Fint* high, MPI_Fint* newc
 void
 FSUB( MPI_Comm_free )( MPI_Fint* comm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
 
 
     *ierr = MPI_Comm_free( &c_comm );
 
     *comm = PMPI_Comm_c2f( c_comm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1306,12 +1497,14 @@ FSUB( MPI_Comm_free )( MPI_Fint* comm, MPI_Fint* ierr )
 void
 FSUB( MPI_Group_difference )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newgroup, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Group c_newgroup;
 
 
     *ierr = MPI_Group_difference( PMPI_Group_f2c( *group1 ), PMPI_Group_f2c( *group2 ), &c_newgroup );
 
     *newgroup = PMPI_Group_c2f( c_newgroup );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_EXCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_excl )
@@ -1326,12 +1519,14 @@ FSUB( MPI_Group_difference )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newg
 void
 FSUB( MPI_Group_excl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint* ranks, MPI_Fint* newgroup, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Group c_newgroup;
 
 
     *ierr = MPI_Group_excl( PMPI_Group_f2c( *group ), *n, ranks, &c_newgroup );
 
     *newgroup = PMPI_Group_c2f( c_newgroup );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_INCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_incl )
@@ -1346,12 +1541,14 @@ FSUB( MPI_Group_excl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint* ranks, MPI_Fint*
 void
 FSUB( MPI_Group_incl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint* ranks, MPI_Fint* newgroup, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Group c_newgroup;
 
 
     *ierr = MPI_Group_incl( PMPI_Group_f2c( *group ), *n, ranks, &c_newgroup );
 
     *newgroup = PMPI_Group_c2f( c_newgroup );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_INTERSECTION ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_intersection )
@@ -1366,12 +1563,14 @@ FSUB( MPI_Group_incl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint* ranks, MPI_Fint*
 void
 FSUB( MPI_Group_intersection )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newgroup, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Group c_newgroup;
 
 
     *ierr = MPI_Group_intersection( PMPI_Group_f2c( *group1 ), PMPI_Group_f2c( *group2 ), &c_newgroup );
 
     *newgroup = PMPI_Group_c2f( c_newgroup );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_RANGE_EXCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_range_excl )
@@ -1386,12 +1585,14 @@ FSUB( MPI_Group_intersection )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* ne
 void
 FSUB( MPI_Group_range_excl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint ranges[][ 3 ], MPI_Fint* newgroup, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Group c_newgroup;
 
 
     *ierr = MPI_Group_range_excl( PMPI_Group_f2c( *group ), *n, ( int( * )[ 3 ] )ranges, &c_newgroup );
 
     *newgroup = PMPI_Group_c2f( c_newgroup );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_RANGE_INCL ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_range_incl )
@@ -1406,12 +1607,14 @@ FSUB( MPI_Group_range_excl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint ranges[][ 3
 void
 FSUB( MPI_Group_range_incl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint ranges[][ 3 ], MPI_Fint* newgroup, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Group c_newgroup;
 
 
     *ierr = MPI_Group_range_incl( PMPI_Group_f2c( *group ), *n, ( int( * )[ 3 ] )ranges, &c_newgroup );
 
     *newgroup = PMPI_Group_c2f( c_newgroup );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_UNION ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_union )
@@ -1426,12 +1629,14 @@ FSUB( MPI_Group_range_incl )( MPI_Fint* group, MPI_Fint* n, MPI_Fint ranges[][ 3
 void
 FSUB( MPI_Group_union )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newgroup, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Group c_newgroup;
 
 
     *ierr = MPI_Group_union( PMPI_Group_f2c( *group1 ), PMPI_Group_f2c( *group2 ), &c_newgroup );
 
     *newgroup = PMPI_Group_c2f( c_newgroup );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_CREATE_GROUP )
@@ -1446,12 +1651,14 @@ FSUB( MPI_Group_union )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* newgroup,
 void
 FSUB( MPI_Comm_create_group )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* tag, MPI_Fint* newcomm, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_newcomm;
 
 
     *ierr = MPI_Comm_create_group( PMPI_Comm_f2c( *comm ), PMPI_Group_f2c( *group ), *tag, &c_newcomm );
 
     *newcomm = PMPI_Comm_c2f( c_newcomm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_GROUP )
@@ -1466,12 +1673,14 @@ FSUB( MPI_Comm_create_group )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* tag, M
 void
 FSUB( MPI_Comm_group )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Group c_group;
 
 
     *ierr = MPI_Comm_group( PMPI_Comm_f2c( *comm ), &c_group );
 
     *group = PMPI_Group_c2f( c_group );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_REMOTE_GROUP )
@@ -1486,12 +1695,14 @@ FSUB( MPI_Comm_group )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* ierr )
 void
 FSUB( MPI_Comm_remote_group )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Group c_group;
 
 
     *ierr = MPI_Comm_remote_group( PMPI_Comm_f2c( *comm ), &c_group );
 
     *group = PMPI_Group_c2f( c_group );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1513,12 +1724,14 @@ FSUB( MPI_Comm_remote_group )( MPI_Fint* comm, MPI_Fint* group, MPI_Fint* ierr )
 void
 FSUB( MPI_Group_free )( MPI_Fint* group, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Group c_group = PMPI_Group_f2c( *group );
 
 
     *ierr = MPI_Group_free( &c_group );
 
     *group = PMPI_Group_c2f( c_group );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1540,7 +1753,12 @@ FSUB( MPI_Group_free )( MPI_Fint* group, MPI_Fint* ierr )
 void
 FSUB( MPI_Comm_compare )( MPI_Fint* comm1, MPI_Fint* comm2, MPI_Fint* result, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_compare( PMPI_Comm_f2c( *comm1 ), PMPI_Comm_f2c( *comm2 ), result );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_RANK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_rank )
@@ -1555,7 +1773,12 @@ FSUB( MPI_Comm_compare )( MPI_Fint* comm1, MPI_Fint* comm2, MPI_Fint* result, MP
 void
 FSUB( MPI_Comm_rank )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_rank( PMPI_Comm_f2c( *comm ), rank );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_REMOTE_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_remote_size )
@@ -1570,7 +1793,12 @@ FSUB( MPI_Comm_rank )( MPI_Fint* comm, MPI_Fint* rank, MPI_Fint* ierr )
 void
 FSUB( MPI_Comm_remote_size )( MPI_Fint* comm, MPI_Fint* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_remote_size( PMPI_Comm_f2c( *comm ), size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MINI ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_size )
@@ -1585,7 +1813,12 @@ FSUB( MPI_Comm_remote_size )( MPI_Fint* comm, MPI_Fint* size, MPI_Fint* ierr )
 void
 FSUB( MPI_Comm_size )( MPI_Fint* comm, MPI_Fint* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_size( PMPI_Comm_f2c( *comm ), size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_TEST_INTER ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Comm_test_inter )
@@ -1600,7 +1833,12 @@ FSUB( MPI_Comm_size )( MPI_Fint* comm, MPI_Fint* size, MPI_Fint* ierr )
 void
 FSUB( MPI_Comm_test_inter )( MPI_Fint* comm, MPI_Fint* flag, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_test_inter( PMPI_Comm_f2c( *comm ), flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_COMPARE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_compare )
@@ -1615,7 +1853,12 @@ FSUB( MPI_Comm_test_inter )( MPI_Fint* comm, MPI_Fint* flag, MPI_Fint* ierr )
 void
 FSUB( MPI_Group_compare )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* result, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_compare( PMPI_Group_f2c( *group1 ), PMPI_Group_f2c( *group2 ), result );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_RANK ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_rank )
@@ -1630,7 +1873,12 @@ FSUB( MPI_Group_compare )( MPI_Fint* group1, MPI_Fint* group2, MPI_Fint* result,
 void
 FSUB( MPI_Group_rank )( MPI_Fint* group, MPI_Fint* rank, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_rank( PMPI_Group_f2c( *group ), rank );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_SIZE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_size )
@@ -1645,7 +1893,12 @@ FSUB( MPI_Group_rank )( MPI_Fint* group, MPI_Fint* rank, MPI_Fint* ierr )
 void
 FSUB( MPI_Group_size )( MPI_Fint* group, MPI_Fint* size, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_size( PMPI_Group_f2c( *group ), size );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_GROUP_TRANSLATE_RANKS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( MPI_Group_translate_ranks )
@@ -1660,7 +1913,12 @@ FSUB( MPI_Group_size )( MPI_Fint* group, MPI_Fint* size, MPI_Fint* ierr )
 void
 FSUB( MPI_Group_translate_ranks )( MPI_Fint* group1, MPI_Fint* n, MPI_Fint* ranks1, MPI_Fint* group2, MPI_Fint* ranks2, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Group_translate_ranks( PMPI_Group_f2c( *group1 ), *n, ranks1, PMPI_Group_f2c( *group2 ), ranks2 );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -1689,7 +1947,12 @@ FSUB( MPI_Group_translate_ranks )( MPI_Fint* group1, MPI_Fint* n, MPI_Fint* rank
 void
 FSUB( MPI_Comm_create_keyval )( void* comm_copy_attr_fn, void* comm_delete_attr_fn, MPI_Fint* comm_keyval, void* extra_state, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_create_keyval( ( MPI_Comm_copy_attr_function* )comm_copy_attr_fn, ( MPI_Comm_delete_attr_function* )comm_delete_attr_fn, comm_keyval, extra_state );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_DELETE_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_delete_attr )
@@ -1704,12 +1967,14 @@ FSUB( MPI_Comm_create_keyval )( void* comm_copy_attr_fn, void* comm_delete_attr_
 void
 FSUB( MPI_Comm_delete_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
 
 
     *ierr = MPI_Comm_delete_attr( c_comm, *comm_keyval );
 
     *comm = PMPI_Comm_c2f( c_comm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_FREE_KEYVAL ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_free_keyval )
@@ -1724,7 +1989,12 @@ FSUB( MPI_Comm_delete_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, MPI_Fint* i
 void
 FSUB( MPI_Comm_free_keyval )( MPI_Fint* comm_keyval, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_free_keyval( comm_keyval );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_GET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_attr )
@@ -1739,7 +2009,12 @@ FSUB( MPI_Comm_free_keyval )( MPI_Fint* comm_keyval, MPI_Fint* ierr )
 void
 FSUB( MPI_Comm_get_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, void* attribute_val, MPI_Fint* flag, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Comm_get_attr( PMPI_Comm_f2c( *comm ), *comm_keyval, attribute_val, flag );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_GET_INFO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_info )
@@ -1754,12 +2029,14 @@ FSUB( MPI_Comm_get_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, void* attribut
 void
 FSUB( MPI_Comm_get_info )( MPI_Fint* comm, MPI_Fint* info_used, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Info c_info_used;
 
 
     *ierr = MPI_Comm_get_info( PMPI_Comm_f2c( *comm ), &c_info_used );
 
     *info_used = PMPI_Info_c2f( c_info_used );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_GET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_get_name )
@@ -1774,6 +2051,7 @@ FSUB( MPI_Comm_get_info )( MPI_Fint* comm, MPI_Fint* info_used, MPI_Fint* ierr )
 void
 FSUB( MPI_Comm_get_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* resultlen, MPI_Fint* ierr, int comm_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_comm_name     = NULL;
     int   c_comm_name_len = 0;
     c_comm_name = ( char* )malloc( ( comm_name_len + 1 ) * sizeof( char ) );
@@ -1791,6 +2069,7 @@ FSUB( MPI_Comm_get_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* resultlen,
     strncpy( comm_name, c_comm_name, c_comm_name_len );
     memset( comm_name + c_comm_name_len, ' ', comm_name_len - c_comm_name_len );
     free( c_comm_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_SET_ATTR ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_attr )
@@ -1805,12 +2084,14 @@ FSUB( MPI_Comm_get_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* resultlen,
 void
 FSUB( MPI_Comm_set_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, void* attribute_val, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
 
 
     *ierr = MPI_Comm_set_attr( c_comm, *comm_keyval, attribute_val );
 
     *comm = PMPI_Comm_c2f( c_comm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_SET_INFO ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_info )
@@ -1825,12 +2106,14 @@ FSUB( MPI_Comm_set_attr )( MPI_Fint* comm, MPI_Fint* comm_keyval, void* attribut
 void
 FSUB( MPI_Comm_set_info )( MPI_Fint* comm, MPI_Fint* info, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_comm = PMPI_Comm_f2c( *comm );
 
 
     *ierr = MPI_Comm_set_info( c_comm, PMPI_Info_f2c( *info ) );
 
     *comm = PMPI_Comm_c2f( c_comm );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_COMM_SET_NAME ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Comm_set_name )
@@ -1845,6 +2128,7 @@ FSUB( MPI_Comm_set_info )( MPI_Fint* comm, MPI_Fint* info, MPI_Fint* ierr )
 void
 FSUB( MPI_Comm_set_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* ierr, int comm_name_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Comm c_comm      = PMPI_Comm_f2c( *comm );
     char*    c_comm_name = NULL;
     c_comm_name = scorep_f2c_string( comm_name, comm_name_len );
@@ -1855,6 +2139,7 @@ FSUB( MPI_Comm_set_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* ierr, int 
 
     *comm = PMPI_Comm_c2f( c_comm );
     free( c_comm_name );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_KEYVAL_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Keyval_create )
@@ -1869,7 +2154,12 @@ FSUB( MPI_Comm_set_name )( MPI_Fint* comm, char* comm_name, MPI_Fint* ierr, int 
 void
 FSUB( MPI_Keyval_create )( void* copy_fn, void* delete_fn, MPI_Fint* keyval, void* extra_state, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Keyval_create( ( MPI_Copy_function* )copy_fn, ( MPI_Delete_function* )delete_fn, keyval, extra_state );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_KEYVAL_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_CG ) && !defined( SCOREP_MPI_NO_EXT ) && !defined( MPI_Keyval_free )
@@ -1884,7 +2174,12 @@ FSUB( MPI_Keyval_create )( void* copy_fn, void* delete_fn, MPI_Fint* keyval, voi
 void
 FSUB( MPI_Keyval_free )( MPI_Fint* keyval, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Keyval_free( keyval );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

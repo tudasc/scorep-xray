@@ -13,11 +13,13 @@
 
 /* *INDENT-OFF* */
 
-#define SHMEM_FORTRAN_EVENT( FUNCNAME ) \
-    void                                \
-    FSUB( FUNCNAME ) ( long * event )   \
-    {                                   \
-        FUNCNAME( event );              \
+#define SHMEM_FORTRAN_EVENT( FUNCNAME )    \
+    void                                   \
+    FSUB( FUNCNAME ) ( long * event )      \
+    {                                      \
+        SCOREP_IN_MEASUREMENT_INCREMENT(); \
+        FUNCNAME( event );                 \
+        SCOREP_IN_MEASUREMENT_DECREMENT(); \
     }
 
 /* *INDENT-ON* */
@@ -39,7 +41,13 @@ SHMEM_FORTRAN_EVENT( shmem_wait_event )
     int                                                 \
     FSUB( FUNCNAME ) ( long * event )                   \
     {                                                   \
-        return FUNCNAME( event );                       \
+        SCOREP_IN_MEASUREMENT_INCREMENT();              \
+                                                        \
+        int ret;                                        \
+        ret = FUNCNAME( event );                        \
+                                                        \
+        SCOREP_IN_MEASUREMENT_DECREMENT();              \
+        return ret;                                     \
     }
 
 /* *INDENT-ON* */

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -96,10 +96,10 @@ SCOREP_Definitions_NewSystemTreeNode( SCOREP_SystemTreeNodeHandle parent,
         domains,
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            name ? name : "<unnamed system tree node>" ),
+            name ? name : "<unnamed system tree node>", NULL ),
         scorep_definitions_new_string(
             &scorep_local_definition_manager,
-            class ? class : "<unnamed system tree class>" ) );
+            class ? class : "<unnamed system tree class>", NULL ) );
 
     SCOREP_Definitions_Unlock();
 

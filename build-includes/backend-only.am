@@ -24,6 +24,8 @@ include ../src/adapters/pthread/Makefile.inc.am
 include ../src/services/metric/Makefile.inc.am
 include ../src/services/platform/Makefile.inc.am
 include ../src/services/timer/Makefile.inc.am
+include ../src/services/sampling/Makefile.inc.am
+include ../src/services/unwinding/Makefile.inc.am
 include ../vendor/common/hash/Makefile.inc.am
 include ../include/scorep/Makefile.inc.am
 include ../src/tools/instrumenter/Makefile.backend-only.inc.am
@@ -38,6 +40,7 @@ include ../src/utils/memory/Makefile.inc.am
 include ../test/Makefile.inc.am
 include ../test/services/Makefile.inc.am
 include ../test/services/metric/Makefile.inc.am
+include ../test/services/unwinding/Makefile.inc.am
 include ../test/measurement/Makefile.inc.am
 include ../test/measurement/config/Makefile.inc.am
 include ../test/public_headers/Makefile.inc.am
@@ -64,3 +67,4 @@ include ../test/memory/Makefile.inc.am
 include ../test/vector/Makefile.inc.am
 include ../test/hashtab/Makefile.inc.am
 include ../test/rewind/Makefile.inc.am
+include ../test/constructor_checks/Makefile.inc.am

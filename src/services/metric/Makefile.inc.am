@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2014,
+## Copyright (c) 2009-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -54,7 +54,11 @@ libscorep_metric_la_SOURCES = \
 if ! HAVE_PAPI
 if ! HAVE_GETRUSAGE
 if ! HAVE_DLFCN_SUPPORT
+if ! HAVE_METRIC_PERF
 libscorep_metric_la_SOURCES += $(SRC_ROOT)src/services/metric/scorep_metric_management_mockup.c
+else
+libscorep_metric_la_SOURCES += $(SRC_ROOT)src/services/metric/scorep_metric_management.c
+endif
 else
 libscorep_metric_la_SOURCES += $(SRC_ROOT)src/services/metric/scorep_metric_management.c
 endif
@@ -111,4 +115,17 @@ libscorep_metric_plugins_la_CPPFLAGS = \
     @SCOREP_TIMER_CPPFLAGS@
 
 libscorep_metric_la_LIBADD += libscorep_metric_plugins.la
+endif
+
+# Perf source specific settings
+
+if HAVE_METRIC_PERF
+noinst_LTLIBRARIES += libscorep_metric_perf.la
+
+libscorep_metric_perf_la_CPPFLAGS = $(scorep_metric_common_cppflags) -D_GNU_SOURCE
+libscorep_metric_perf_la_SOURCES = \
+    $(SRC_ROOT)src/services/metric/scorep_metric_perf.c \
+    $(SRC_ROOT)src/services/metric/scorep_metric_perf.h
+
+libscorep_metric_la_LIBADD += libscorep_metric_perf.la
 endif

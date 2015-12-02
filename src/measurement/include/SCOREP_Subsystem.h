@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -116,6 +116,16 @@ typedef struct SCOREP_Subsystem
     SCOREP_ErrorCode ( * subsystem_register )( size_t uniqueId );
 
     /**
+     *  The next 4 callbacks notify the subsystem about the lifetime of the whole
+     *  measurement:
+     *
+     *  1. init
+     *  2. begin
+     *  3. end
+     *  4. finalize
+     */
+
+    /**
      * Callback to be notified about the initialization of your subsystem. This
      * takes place during measurement initialization.
      *
@@ -136,6 +146,44 @@ typedef struct SCOREP_Subsystem
     SCOREP_ErrorCode ( * subsystem_init )( void );
 
     /**
+     * Notifies the subsystems that Score-P enters the measurement phase.
+     */
+    SCOREP_ErrorCode ( * subsystem_begin )( void );
+
+    /**
+     * Notifies the subsystems that Score-P leavs the measurement phase.
+     *
+     * Called in reverse order in the subsystem list.
+     */
+    void ( * subsystem_end )( void );
+
+    /**
+     * Finalizes the subsystem for measurement.
+     *
+     * Called in reverse order in the subsystem list.
+     */
+    void ( * subsystem_finalize )( void );
+
+    /**
+     *  The next 4 callbacks notify the subsystem about the lifetime of a
+     *  location. For CPU locations:
+     *
+     *  1. init_location
+     *  2. activation_cpu_location(MGMT)     \
+     *  3. activation_cpu_location(EVENTS)   | possibly multiple times
+     *  4. deactivation_cpu_location(EVENTS) |
+     *  5. deactivation_cpu_location(MGMT)   /
+     *  6. finalize_location
+     *
+     *  For none-CPU locations:
+     *
+     *  1. init_location
+     *  2. finalize_location
+     */
+
+    /**
+     * Callback to be notified about a location creation. This takes place
+     * during measurement, except for the initial location/master thread.
      * Callback to be notified about a location creation.
      *
      * It is not safe to assume single-threaded mode.
@@ -150,8 +198,63 @@ typedef struct SCOREP_Subsystem
                                                     struct SCOREP_Location* parentLocation );
 
     /**
+     * Callback to be notified about a CPU location will get activated.
+     *
+     * Activation comes in two phases. Resulting in two calls to this callback,
+     * differentiated by the @a phase parameter.
+     *
+     * (1) SCOREP_CPU_LOCATION_PHASE_MGMT::
+     *     A general notification about the intention to activate the location.
+     *     No events are allowed, just maintenance stuff should be done with
+     *     CPU the location.
+     * (2) SCOREP_CPU_LOCATION_PHASE_EVENTS::
+     *     The location was successfully activated. Events can now be triggered.
+     *
+     * This callback is always called by the CPU thread which owns this location.
+     * I.e., location == SCOREP_Location_GetCurrentCPULocation.
+     *
+     * @param location           The location for the current CPU.
+     * @param parentLocation     The creator of this location.  Only valid in
+     *                           the SCOREP_CPU_LOCATION_PHASE_MGMT pase.
+     * @param forkSequenceCount  The fork sequence count. Only valid in the
+     *                           SCOREP_CPU_LOCATION_PHASE_MGMT pase.
+     * @param phase              The phase.
+     */
+    SCOREP_ErrorCode ( * subsystem_activate_cpu_location )( struct SCOREP_Location* location,
+                                                            struct SCOREP_Location* parentLocation,
+                                                            uint32_t                forkSequenceCount,
+                                                            SCOREP_CPULocationPhase phase );
+
+    /**
+     * Callback to be notified about a CPU location will get deactivated.
+     *
+     * Activation comes in two phases. Resulting in two calls to this callback,
+     * differentiated by the @a phase parameter.
+     *
+     * (1) SCOREP_CPU_LOCATION_PHASE_EVENTS::
+     *     That the location will be deactivated. Events are still allowed in
+     *     this callback.
+     * (2) SCOREP_CPU_LOCATION_PHASE_MGMT::
+     *     The location was successfully deactivated. No events are allowed.
+     *
+     * This callback is always called by the CPU thread which owns this location.
+     * I.e., location == SCOREP_Location_GetCurrentCPULocation.
+     *
+     * Called in reverse order in the subsystem list.
+     *
+     * @param location           The location for the current CPU.
+     * @param parentLocation     The creator of this location.  Only valid in
+     *                           the SCOREP_CPU_LOCATION_PHASE_MGMT pase.
+     * @param phase              The phase.
+     */
+    void ( * subsystem_deactivate_cpu_location )( struct SCOREP_Location* location,
+                                                  struct SCOREP_Location* parentLocation,
+                                                  SCOREP_CPULocationPhase phase );
+
+    /**
      * Finalizes the per-location data from this subsystem.
      *
+     * Called in reverse order in the subsystem list.
      * @param location The location object that is going to be finalized.
      */
     void ( * subsystem_finalize_location )( struct SCOREP_Location* location );
@@ -169,21 +272,11 @@ typedef struct SCOREP_Subsystem
     SCOREP_ErrorCode ( * subsystem_post_unify )( void );
 
     /**
-     * Finalizes the subsystem for measurement.
-     *
-     */
-    void ( * subsystem_finalize )( void );
-
-    /**
      * De-register the subsystem.
      *
+     * Called in reverse order in the subsystem list.
      */
     void ( * subsystem_deregister )( void );
-
-    /**
-     * Allows measurement control over the adapter.
-     */
-    void ( * subsystem_control )( SCOREP_Subsystem_Command command );
 } SCOREP_Subsystem;
 
 

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -253,7 +253,12 @@
 void
 FSUB( MPI_Get_version )( int* version, int* subversion, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Get_version( version, subversion );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_create )
@@ -267,7 +272,12 @@ FSUB( MPI_Get_version )( int* version, int* subversion, int* ierr )
 void
 FSUB( MPI_Info_create )( MPI_Info* info, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Info_create( info );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_DELETE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_delete )
@@ -281,6 +291,7 @@ FSUB( MPI_Info_create )( MPI_Info* info, int* ierr )
 void
 FSUB( MPI_Info_delete )( MPI_Info* info, char* key, int* ierr, int key_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key = NULL;
     c_key = scorep_f2c_string( key, key_len );
 
@@ -289,6 +300,7 @@ FSUB( MPI_Info_delete )( MPI_Info* info, char* key, int* ierr, int key_len )
     *ierr = MPI_Info_delete( *info, c_key );
 
     free( c_key );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_DUP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_dup )
@@ -302,7 +314,12 @@ FSUB( MPI_Info_delete )( MPI_Info* info, char* key, int* ierr, int key_len )
 void
 FSUB( MPI_Info_dup )( MPI_Info* info, MPI_Info* newinfo, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Info_dup( *info, newinfo );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_free )
@@ -316,7 +333,12 @@ FSUB( MPI_Info_dup )( MPI_Info* info, MPI_Info* newinfo, int* ierr )
 void
 FSUB( MPI_Info_free )( MPI_Info* info, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Info_free( info );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get )
@@ -330,6 +352,7 @@ FSUB( MPI_Info_free )( MPI_Info* info, int* ierr )
 void
 FSUB( MPI_Info_get )( MPI_Info* info, char* key, int* valuelen, char* value, int* flag, int* ierr, int key_len, int value_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key       = NULL;
     char* c_value     = NULL;
     int   c_value_len = 0;
@@ -351,6 +374,7 @@ FSUB( MPI_Info_get )( MPI_Info* info, char* key, int* valuelen, char* value, int
     strncpy( value, c_value, c_value_len );
     memset( value + c_value_len, ' ', value_len - c_value_len );
     free( c_value );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_GET_NKEYS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_nkeys )
@@ -364,7 +388,12 @@ FSUB( MPI_Info_get )( MPI_Info* info, char* key, int* valuelen, char* value, int
 void
 FSUB( MPI_Info_get_nkeys )( MPI_Info* info, int* nkeys, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Info_get_nkeys( *info, nkeys );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_GET_NTHKEY ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_nthkey )
@@ -378,6 +407,7 @@ FSUB( MPI_Info_get_nkeys )( MPI_Info* info, int* nkeys, int* ierr )
 void
 FSUB( MPI_Info_get_nthkey )( MPI_Info* info, int* n, char* key, int* ierr, int key_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key     = NULL;
     int   c_key_len = 0;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
@@ -395,6 +425,7 @@ FSUB( MPI_Info_get_nthkey )( MPI_Info* info, int* n, char* key, int* ierr, int k
     strncpy( key, c_key, c_key_len );
     memset( key + c_key_len, ' ', key_len - c_key_len );
     free( c_key );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_GET_VALUELEN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_valuelen )
@@ -408,6 +439,7 @@ FSUB( MPI_Info_get_nthkey )( MPI_Info* info, int* n, char* key, int* ierr, int k
 void
 FSUB( MPI_Info_get_valuelen )( MPI_Info* info, char* key, int* valuelen, int* flag, int* ierr, int key_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key = NULL;
     c_key = scorep_f2c_string( key, key_len );
 
@@ -416,6 +448,7 @@ FSUB( MPI_Info_get_valuelen )( MPI_Info* info, char* key, int* valuelen, int* fl
     *ierr = MPI_Info_get_valuelen( *info, c_key, valuelen, flag );
 
     free( c_key );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_SET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_set )
@@ -429,6 +462,7 @@ FSUB( MPI_Info_get_valuelen )( MPI_Info* info, char* key, int* valuelen, int* fl
 void
 FSUB( MPI_Info_set )( MPI_Info* info, char* key, char* value, int* ierr, int key_len, int value_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key   = NULL;
     char* c_value = NULL;
     c_key = scorep_f2c_string( key, key_len );
@@ -441,6 +475,7 @@ FSUB( MPI_Info_set )( MPI_Info* info, char* key, char* value, int* ierr, int key
 
     free( c_key );
     free( c_value );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_OP_COMMUTATIVE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_commutative )
@@ -454,7 +489,12 @@ FSUB( MPI_Info_set )( MPI_Info* info, char* key, char* value, int* ierr, int key
 void
 FSUB( MPI_Op_commutative )( MPI_Op* op, int* commute, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Op_commutative( *op, commute );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_OP_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_create )
@@ -468,7 +508,12 @@ FSUB( MPI_Op_commutative )( MPI_Op* op, int* commute, int* ierr )
 void
 FSUB( MPI_Op_create )( MPI_User_function* function, int* commute, MPI_Op* op, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Op_create( function, *commute, op );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_OP_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_free )
@@ -482,7 +527,12 @@ FSUB( MPI_Op_create )( MPI_User_function* function, int* commute, MPI_Op* op, in
 void
 FSUB( MPI_Op_free )( MPI_Op* op, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Op_free( op );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_REQUEST_GET_STATUS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Request_get_status )
@@ -496,6 +546,9 @@ FSUB( MPI_Op_free )( MPI_Op* op, int* ierr )
 void
 FSUB( MPI_Request_get_status )( MPI_Request* request, int* flag, MPI_Status* status, int* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     #if HAVE( MPI_STATUS_IGNORE )
     if ( status == scorep_mpi_fortran_status_ignore )
     {
@@ -505,6 +558,8 @@ FSUB( MPI_Request_get_status )( MPI_Request* request, int* flag, MPI_Status* sta
 
 
     *ierr = MPI_Request_get_status( *request, flag, status );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 
@@ -522,7 +577,12 @@ FSUB( MPI_Request_get_status )( MPI_Request* request, int* flag, MPI_Status* sta
 void
 FSUB( MPI_Get_version )( MPI_Fint* version, MPI_Fint* subversion, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Get_version( version, subversion );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_create )
@@ -537,12 +597,14 @@ FSUB( MPI_Get_version )( MPI_Fint* version, MPI_Fint* subversion, MPI_Fint* ierr
 void
 FSUB( MPI_Info_create )( MPI_Fint* info, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Info c_info;
 
 
     *ierr = MPI_Info_create( &c_info );
 
     *info = PMPI_Info_c2f( c_info );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_DELETE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_delete )
@@ -557,6 +619,7 @@ FSUB( MPI_Info_create )( MPI_Fint* info, MPI_Fint* ierr )
 void
 FSUB( MPI_Info_delete )( MPI_Fint* info, char* key, MPI_Fint* ierr, int key_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Info c_info = PMPI_Info_f2c( *info );
     char*    c_key  = NULL;
     c_key = scorep_f2c_string( key, key_len );
@@ -567,6 +630,7 @@ FSUB( MPI_Info_delete )( MPI_Fint* info, char* key, MPI_Fint* ierr, int key_len 
 
     *info = PMPI_Info_c2f( c_info );
     free( c_key );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_DUP ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_dup )
@@ -581,12 +645,14 @@ FSUB( MPI_Info_delete )( MPI_Fint* info, char* key, MPI_Fint* ierr, int key_len 
 void
 FSUB( MPI_Info_dup )( MPI_Fint* info, MPI_Fint* newinfo, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Info c_newinfo;
 
 
     *ierr = MPI_Info_dup( PMPI_Info_f2c( *info ), &c_newinfo );
 
     *newinfo = PMPI_Info_c2f( c_newinfo );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_free )
@@ -601,12 +667,14 @@ FSUB( MPI_Info_dup )( MPI_Fint* info, MPI_Fint* newinfo, MPI_Fint* ierr )
 void
 FSUB( MPI_Info_free )( MPI_Fint* info, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Info c_info = PMPI_Info_f2c( *info );
 
 
     *ierr = MPI_Info_free( &c_info );
 
     *info = PMPI_Info_c2f( c_info );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_GET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get )
@@ -621,6 +689,7 @@ FSUB( MPI_Info_free )( MPI_Fint* info, MPI_Fint* ierr )
 void
 FSUB( MPI_Info_get )( MPI_Fint* info, char* key, MPI_Fint* valuelen, char* value, MPI_Fint* flag, MPI_Fint* ierr, int key_len, int value_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key       = NULL;
     char* c_value     = NULL;
     int   c_value_len = 0;
@@ -642,6 +711,7 @@ FSUB( MPI_Info_get )( MPI_Fint* info, char* key, MPI_Fint* valuelen, char* value
     strncpy( value, c_value, c_value_len );
     memset( value + c_value_len, ' ', value_len - c_value_len );
     free( c_value );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_GET_NKEYS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_nkeys )
@@ -656,7 +726,12 @@ FSUB( MPI_Info_get )( MPI_Fint* info, char* key, MPI_Fint* valuelen, char* value
 void
 FSUB( MPI_Info_get_nkeys )( MPI_Fint* info, MPI_Fint* nkeys, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Info_get_nkeys( PMPI_Info_f2c( *info ), nkeys );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_GET_NTHKEY ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_nthkey )
@@ -671,6 +746,7 @@ FSUB( MPI_Info_get_nkeys )( MPI_Fint* info, MPI_Fint* nkeys, MPI_Fint* ierr )
 void
 FSUB( MPI_Info_get_nthkey )( MPI_Fint* info, MPI_Fint* n, char* key, MPI_Fint* ierr, int key_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key     = NULL;
     int   c_key_len = 0;
     c_key = ( char* )malloc( ( key_len + 1 ) * sizeof( char ) );
@@ -688,6 +764,7 @@ FSUB( MPI_Info_get_nthkey )( MPI_Fint* info, MPI_Fint* n, char* key, MPI_Fint* i
     strncpy( key, c_key, c_key_len );
     memset( key + c_key_len, ' ', key_len - c_key_len );
     free( c_key );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_GET_VALUELEN ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_get_valuelen )
@@ -702,6 +779,7 @@ FSUB( MPI_Info_get_nthkey )( MPI_Fint* info, MPI_Fint* n, char* key, MPI_Fint* i
 void
 FSUB( MPI_Info_get_valuelen )( MPI_Fint* info, char* key, MPI_Fint* valuelen, MPI_Fint* flag, MPI_Fint* ierr, int key_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     char* c_key = NULL;
     c_key = scorep_f2c_string( key, key_len );
 
@@ -710,6 +788,7 @@ FSUB( MPI_Info_get_valuelen )( MPI_Fint* info, char* key, MPI_Fint* valuelen, MP
     *ierr = MPI_Info_get_valuelen( PMPI_Info_f2c( *info ), c_key, valuelen, flag );
 
     free( c_key );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_INFO_SET ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Info_set )
@@ -724,6 +803,7 @@ FSUB( MPI_Info_get_valuelen )( MPI_Fint* info, char* key, MPI_Fint* valuelen, MP
 void
 FSUB( MPI_Info_set )( MPI_Fint* info, char* key, char* value, MPI_Fint* ierr, int key_len, int value_len )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Info c_info  = PMPI_Info_f2c( *info );
     char*    c_key   = NULL;
     char*    c_value = NULL;
@@ -738,6 +818,7 @@ FSUB( MPI_Info_set )( MPI_Fint* info, char* key, char* value, MPI_Fint* ierr, in
     *info = PMPI_Info_c2f( c_info );
     free( c_key );
     free( c_value );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_OP_COMMUTATIVE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_commutative )
@@ -752,7 +833,12 @@ FSUB( MPI_Info_set )( MPI_Fint* info, char* key, char* value, MPI_Fint* ierr, in
 void
 FSUB( MPI_Op_commutative )( MPI_Fint* op, MPI_Fint* commute, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+
+
     *ierr = MPI_Op_commutative( PMPI_Op_f2c( *op ), commute );
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_OP_CREATE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_create )
@@ -767,12 +853,14 @@ FSUB( MPI_Op_commutative )( MPI_Fint* op, MPI_Fint* commute, MPI_Fint* ierr )
 void
 FSUB( MPI_Op_create )( void* function, MPI_Fint* commute, MPI_Fint* op, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Op c_op;
 
 
     *ierr = MPI_Op_create( ( MPI_User_function* )function, *commute, &c_op );
 
     *op = PMPI_Op_c2f( c_op );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_OP_FREE ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Op_free )
@@ -787,12 +875,14 @@ FSUB( MPI_Op_create )( void* function, MPI_Fint* commute, MPI_Fint* op, MPI_Fint
 void
 FSUB( MPI_Op_free )( MPI_Fint* op, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Op c_op = PMPI_Op_f2c( *op );
 
 
     *ierr = MPI_Op_free( &c_op );
 
     *op = PMPI_Op_c2f( c_op );
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 #if HAVE( DECL_PMPI_REQUEST_GET_STATUS ) && !defined( SCOREP_MPI_NO_EXTRA ) && !defined( SCOREP_MPI_NO_MISC ) && !defined( MPI_Request_get_status )
@@ -807,6 +897,7 @@ FSUB( MPI_Op_free )( MPI_Fint* op, MPI_Fint* ierr )
 void
 FSUB( MPI_Request_get_status )( MPI_Fint* request, MPI_Fint* flag, MPI_Fint* status, MPI_Fint* ierr )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     MPI_Status  c_status;
     MPI_Status* c_status_ptr = &c_status;
 
@@ -828,6 +919,8 @@ FSUB( MPI_Request_get_status )( MPI_Fint* request, MPI_Fint* flag, MPI_Fint* sta
     {
         PMPI_Status_c2f( c_status_ptr, status );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 #endif
 

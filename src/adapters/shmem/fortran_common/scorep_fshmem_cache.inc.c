@@ -23,7 +23,9 @@
     void                                                \
     FSUB( FUNCNAME )( void )                            \
     {                                                   \
+        SCOREP_IN_MEASUREMENT_INCREMENT();              \
         FUNCNAME ( );                                   \
+        SCOREP_IN_MEASUREMENT_DECREMENT();              \
     }
 
 /* *INDENT-ON* */
@@ -45,7 +47,9 @@ SHMEM_FORTRAN_DATA_CACHE_ROUTINE( shmem_udcflush )
     void                                                        \
     FSUB( FUNCNAME )( void * target )                           \
     {                                                           \
+        SCOREP_IN_MEASUREMENT_INCREMENT();                      \
         FUNCNAME ( target );                                    \
+        SCOREP_IN_MEASUREMENT_DECREMENT();                      \
     }
 
 /* *INDENT-ON* */

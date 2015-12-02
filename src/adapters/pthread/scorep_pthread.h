@@ -7,7 +7,7 @@
  * Copyright (c) 2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014,
+ * Copyright (c) 2014-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -59,12 +59,6 @@ typedef enum scorep_pthread_region_types
 
 
 extern SCOREP_RegionHandle scorep_pthread_regions[ SCOREP_PTHREAD_REGION_SENTINEL ];
-
-/* Flag to indicate if the adapter was initialized */
-extern bool scorep_pthread_initialized;
-/* Flag to indicate that we are either before measurement initialization or
-   after measurement finalization */
-extern bool scorep_pthread_outside_measurement;
 
 extern size_t scorep_pthread_subsystem_id;
 

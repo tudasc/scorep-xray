@@ -1,0 +1,209 @@
+#!/bin/sh
+
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2015,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+set -e
+
+CC=${CC-@CC@}
+
+_append()
+{
+    eval "$1=\"\${$1}\${$1:+ }$2\""
+}
+
+_CFLAGS="@CFLAGS@"
+DEFAULT_CFLAGS=
+case " ${_CFLAGS} " in
+*" -g"*" "*)
+    # compiler understands -g
+    g="-g${_CFLAGS##*-g}"
+    g="${g%% *}"
+    _append DEFAULT_CFLAGS "-g"
+;;
+esac
+case " ${_CFLAGS} " in
+*" -O"?" "*)
+    # copiler understands -O?, lets pretend that he also understands -O0
+    _append DEFAULT_CFLAGS "-O0"
+;;
+esac
+CFLAGS=${CFLAGS-${DEFAULT_CFLAGS}}
+
+GREP()
+{
+    GREP_OPTIONS= @GREP@ "$@"
+}
+
+# Get SRC_ROOT
+SRC_ROOT="@abs_srcdir@/.."
+
+# Get otf2-print tool
+OTF2_PRINT="@OTF2_BINDIR@/otf2-print"
+CUBE_DUMP="@CUBE_BINDIR@/cube_dump"
+CUBE_INFO="@CUBE_BINDIR@/cube_info"
+
+# Set up directory that will contain experiment results
+RESULT_DIR_PREFIX=$PWD/scorep-test-cct
+
+__v_scorep_=
+__v_scorep_1=--verbose
+__v_scorep_2="--verbose=2 --keep-files"
+eval _V_scorep=\$__v_scorep_${V}
+
+cleanup()
+{
+    rm -f test_cct_*
+    rm -rf ${RESULT_DIR_PREFIX}-*
+}
+trap cleanup EXIT
+cleanup
+
+compile()
+{
+    ./scorep --build-check \
+        ${_V_scorep} \
+        --user \
+        --thread=none \
+        ${CC} ${CFLAGS} \
+            ${SRC_ROOT}/test/services/unwinding/test_cct_${1}.c \
+            -I${SRC_ROOT}/src \
+            -I. \
+            -DBACKEND_BUILD_NOMPI \
+            -DNOCROSS_BUILD \
+            -I../src \
+            -I../src/utils/include \
+            -I${SRC_ROOT}/test/calling_context \
+            -I${SRC_ROOT}/src/utils/include \
+            -I${SRC_ROOT}/src/measurement/include \
+            -I${SRC_ROOT}/src/measurement/definitions/include \
+            -I${SRC_ROOT}/src/services/include \
+            -I${SRC_ROOT}/include \
+            -I${SRC_ROOT}/src/utils/include \
+            -I${SRC_ROOT}/vendor/common/src/utils/include \
+            -o test_cct_${1}
+}
+
+run_profiling()
+{
+    SCOREP_ENABLE_PROFILING=true \
+    SCOREP_ENABLE_TRACING=false \
+    SCOREP_ENABLE_UNWINDING=true \
+    SCOREP_SAMPLING_EVENTS='' \
+    SCOREP_EXPERIMENT_DIRECTORY=${RESULT_DIR_PREFIX}-${1}_profiling \
+        ./test_cct_${1}
+}
+
+print_result_profiling()
+{
+    printf "%d:   regions:\n" $i
+    ${CUBE_DUMP} -w ${RESULT_DIR_PREFIX}-${1}_profiling/profile.cubex 2>&1 |
+        sed -n '/^ -------------------------- LIST OF REGIONS/,/^ -------------------------- CALL TREE/p' |
+        GREP -v '^ -' |
+        sed "s/^/${1}: /"
+    printf "%d:   calltree:\n" $i
+    ${CUBE_INFO} -m visits:excl ${RESULT_DIR_PREFIX}-${1}_profiling/profile.cubex 2>&1 |
+        sed "s/^|/${1}: /"
+}
+
+print_expected_profiling()
+{
+    printf "%d:   regions:\n" $1
+    sed -n "s/^ \* PR /${1}: /p" ${SRC_ROOT}/test/services/unwinding/test_cct_${1}.c
+    printf "%d:   calltree:\n" $1
+    sed -n "s/^ \* PC /${1}: /p" ${SRC_ROOT}/test/services/unwinding/test_cct_${1}.c
+}
+
+run_tracing()
+{
+    SCOREP_ENABLE_PROFILING=false \
+    SCOREP_ENABLE_TRACING=true \
+    SCOREP_ENABLE_UNWINDING=true \
+    SCOREP_SAMPLING_EVENTS='' \
+    SCOREP_EXPERIMENT_DIRECTORY=${RESULT_DIR_PREFIX}-${1}_tracing \
+        ./test_cct_${1}
+}
+
+print_result_tracing()
+{
+    printf "%d:   definitions:\n" $i
+    ${OTF2_PRINT} -G ${RESULT_DIR_PREFIX}-${1}_tracing/traces.otf2 |
+        sed -n "s/^\(REGION\|CALLING_CONTEXT\|INTERRUPT_GENERATOR\)/${1}: &/ p"
+    printf "%d:   events:\n" $1
+    ${OTF2_PRINT} --unwind-calling-context ${RESULT_DIR_PREFIX}-${1}_tracing/traces.otf2 |
+        tail -n +6 |
+        sed "s/^/${1}: /"
+}
+
+print_expected_tracing()
+{
+    printf "%d:   definitions:\n" $1
+    sed -n "s/^ \* TD /${1}: /p" ${SRC_ROOT}/test/services/unwinding/test_cct_${1}.c
+    printf "%d:   events:\n" $1
+    sed -n "s/^ \* TE /${1}: /p" ${SRC_ROOT}/test/services/unwinding/test_cct_${1}.c
+}
+
+run_tracing_legacy()
+{
+    SCOREP_ENABLE_PROFILING=false \
+    SCOREP_ENABLE_TRACING=true \
+    SCOREP_ENABLE_UNWINDING=true \
+    SCOREP_SAMPLING_EVENTS='' \
+    SCOREP_TRACING_CONVERT_CALLING_CONTEXT_EVENTS=true \
+    SCOREP_EXPERIMENT_DIRECTORY=${RESULT_DIR_PREFIX}-${1}_tracing_legacy \
+        ./test_cct_${1}
+}
+
+print_result_tracing_legacy()
+{
+    printf "%d:   definitions:\n" $i
+    ${OTF2_PRINT} -G ${RESULT_DIR_PREFIX}-${1}_tracing_legacy/traces.otf2 |
+        sed -n "s/^\(REGION\)/${1}: &/ p"
+    printf "%d:   events:\n" $1
+    ${OTF2_PRINT} --unwind-calling-context ${RESULT_DIR_PREFIX}-${1}_tracing_legacy/traces.otf2 |
+        tail -n +6 |
+        sed "s/^/${1}: /"
+}
+
+print_expected_tracing_legacy()
+{
+    printf "%d:   definitions:\n" $1
+    sed -n "s/^ \* TDL /${1}: /p" ${SRC_ROOT}/test/services/unwinding/test_cct_${1}.c
+    printf "%d:   events:\n" $1
+    sed -n "s/^ \* TEL /${1}: /p" ${SRC_ROOT}/test/services/unwinding/test_cct_${1}.c
+}
+
+UNWINDING_TESTS=${UNWINDING_TESTS-$(seq 13)}
+for i in ${UNWINDING_TESTS}
+do
+    printf "%d: compiling:\n" $i
+    compile $i
+
+    printf "%d: profiling:\n" $i
+    run_profiling $i false
+    printf "%d:  result:\n" $i
+    print_result_profiling $i
+    printf "%d:  expected:\n" $i
+    print_expected_profiling $i
+
+    printf "%d: tracing:\n" $i
+    run_tracing $i false
+    printf "%d:  result:\n" $i
+    print_result_tracing $i
+    printf "%d:  expected:\n" $i
+    print_expected_tracing $i
+
+    printf "%d: tracing (legacy):\n" $i
+    run_tracing_legacy $i false
+    printf "%d:  result:\n" $i
+    print_result_tracing_legacy $i
+    printf "%d:  expected:\n" $i
+    print_expected_tracing_legacy $i
+done

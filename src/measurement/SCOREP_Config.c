@@ -64,7 +64,19 @@ static int32_t
 compare_variable( const void* key,
                   const void* item_key );
 
-#define ENV_NAME_LEN_MAX 80
+/*
+ * Naming conventions of Score-P configure variables:
+ * SCOREP_<namespace>_<varname>
+ *
+ * ENV_NAME_LEN_MAX restricts the maximum length of the complete
+ * configure variable name.
+ * ENV_NAME_SUB_LEN_MAX restricts the maximum length of the <namespace>
+ * resp. <varname> part. Hence, ENV_NAME_SUB_LEN_MAX is
+ * ( ( ENV_NAME_LEN_MAX - strlen(SCOREP_) - strlen( _ ) ) / 2 )
+ *
+ */
+#define ENV_NAME_LEN_MAX     90
+#define ENV_NAME_SUB_LEN_MAX 41
 struct scorep_config_variable
 {
     SCOREP_ConfigVariable          data;
@@ -277,9 +289,11 @@ get_variable( struct scorep_config_name_space* nameSpace,
 
     /* build env name */
     sprintf( variable->env_var_name,
-             "SCOREP_%.32s%s%.32s",
+             "SCOREP_%.*s%s%.*s",
+             ENV_NAME_SUB_LEN_MAX,
              nameSpace->name,
              nameSpace->name_len ? "_" : "",
+             ENV_NAME_SUB_LEN_MAX,
              variable->data.name );
     string_to_upper( variable->env_var_name );
 
@@ -305,7 +319,8 @@ SCOREP_ConfigRegister( const char*                  nameSpaceName,
     UTILS_ASSERT( nameSpaceName );
 
     size_t name_space_len = strlen( nameSpaceName );
-    UTILS_BUG_ON( name_space_len > 32, "Name space is too long." );
+    UTILS_BUG_ON( name_space_len > ENV_NAME_SUB_LEN_MAX,
+                  "Name space is too long." );
     check_name( nameSpaceName, name_space_len, true );
 
     UTILS_DEBUG( "Register new variables in name space '%s::'",
@@ -332,7 +347,8 @@ SCOREP_ConfigRegister( const char*                  nameSpaceName,
         UTILS_BUG_ON( !variables->longHelp, "Missing long description value." );
 
         size_t name_len = strlen( variables->name );
-        UTILS_BUG_ON( name_len == 1 || name_len > 32, "Variable name too long." );
+        UTILS_BUG_ON( name_len == 1 || name_len > ENV_NAME_SUB_LEN_MAX,
+                      "Variable name too long." );
         check_name( variables->name, name_len, false );
 
         struct scorep_config_variable* variable;

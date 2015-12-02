@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,14 +49,7 @@
 /* Implementation of the compiler adapter initialization/finalization struct */
 const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter =
 {
-    .subsystem_name              = "COMPILER (config variables only)",
-    .subsystem_register          = &compiler_subsystem_register,
-    .subsystem_init              = NULL,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = NULL,
-    .subsystem_deregister        = &compiler_subsystem_deregister,
-    .subsystem_control           = NULL
+    .subsystem_name       = "COMPILER (config variables only)",
+    .subsystem_register   = &compiler_subsystem_register,
+    .subsystem_deregister = &compiler_subsystem_deregister,
 };

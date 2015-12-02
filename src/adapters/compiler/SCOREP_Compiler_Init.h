@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2011,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2011,
+ * Copyright (c) 2009-2011, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2011,
@@ -49,16 +49,6 @@
    compiler adapter.
  */
 extern const SCOREP_Subsystem SCOREP_Subsystem_CompilerAdapter;
-
-/** @internal
-    Flag to indicate whether the adapter was initialized.
- */
-extern bool scorep_compiler_initialized;
-
-/** @internal
-    Flag to indicate whether the adapter was finalized.
- */
-extern bool scorep_compiler_finalized;
 
 /** @internal
      Mutex to avoid parallel assignment of region handles to the same region.

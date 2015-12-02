@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2013,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -47,4 +47,5 @@ libscorep_confvars_la_LIBADD += libscorep_metric_confvars.la
 EXTRA_DIST += \
     $(SRC_ROOT)src/services/metric/scorep_metric_papi_confvars.inc.c \
     $(SRC_ROOT)src/services/metric/scorep_metric_rusage_confvars.inc.c \
-    $(SRC_ROOT)src/services/metric/scorep_metric_plugins_confvars.inc.c
+    $(SRC_ROOT)src/services/metric/scorep_metric_plugins_confvars.inc.c \
+    $(SRC_ROOT)src/services/metric/scorep_metric_perf_confvars.inc.c

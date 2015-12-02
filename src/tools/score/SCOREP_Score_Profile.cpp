@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013,
+ * Copyright (c) 2009-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -61,6 +61,20 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( string cubeFile )
     {
         m_visits = m_time;
     }
+    m_hits                            = m_cube->get_met( "hits" );
+    m_number_of_calling_context_nodes = 0;
+    m_number_of_interrupt_generators  = 0;
+    std::string attribute =
+        m_cube->get_attr( "SCOREP_NUMBER_OF_CALLING_CONTEXT_NODES" );
+    if ( attribute.size() )
+    {
+        m_number_of_calling_context_nodes = atoi( attribute.c_str() );
+    }
+    attribute = m_cube->get_attr( "SCOREP_NUMBER_OF_INTERRUPT_GENERATORS" );
+    if ( attribute.size() )
+    {
+        m_number_of_interrupt_generators = atoi( attribute.c_str() );
+    }
 
     m_processes = m_cube->get_procv();
     m_regions   = m_cube->get_regv();
@@ -88,6 +102,12 @@ SCOREP_Score_Profile::SCOREP_Score_Profile( string cubeFile )
 SCOREP_Score_Profile::~SCOREP_Score_Profile()
 {
     delete ( m_cube );
+}
+
+bool
+SCOREP_Score_Profile::hasHits( void ) const
+{
+    return m_hits != 0;
 }
 
 double
@@ -191,10 +211,43 @@ SCOREP_Score_Profile::getMaxVisits( uint64_t region )
     return max;
 }
 
+uint64_t
+SCOREP_Score_Profile::getHits( uint64_t region, uint64_t process )
+{
+    if ( !m_hits )
+    {
+        return 0;
+    }
+
+    Value* value = m_cube->get_sev_adv( m_hits, CUBE_CALCULATE_EXCLUSIVE,
+                                        m_regions[ region ], CUBE_CALCULATE_EXCLUSIVE,
+                                        m_processes[ process ], CUBE_CALCULATE_INCLUSIVE );
+
+    if ( !value )
+    {
+        return 0;
+    }
+    if ( value->myDataType() == CUBE_DATA_TYPE_TAU_ATOMIC )
+    {
+        TauAtomicValue* tau_value = ( TauAtomicValue* )value;
+        return tau_value->getN().getUnsignedLong();
+    }
+    else
+    {
+        return value->getUnsignedLong();
+    }
+}
+
 string
 SCOREP_Score_Profile::getRegionName( uint64_t region )
 {
     return m_regions[ region ]->get_name();
+}
+
+string
+SCOREP_Score_Profile::getRegionParadigm( uint64_t region )
+{
+    return m_regions[ region ]->get_paradigm();
 }
 
 string
@@ -240,6 +293,18 @@ SCOREP_Score_Profile::getMaxNumberOfLocationsPerProcess()
         max = val > max ? val : max;
     }
     return max;
+}
+
+uint64_t
+SCOREP_Score_Profile::getNumberOfCallingContextNodes( void )
+{
+    return m_number_of_calling_context_nodes;
+}
+
+uint64_t
+SCOREP_Score_Profile::getNumberOfInterruptGenerators( void )
+{
+    return m_number_of_interrupt_generators;
 }
 
 void

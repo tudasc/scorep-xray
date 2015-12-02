@@ -7,6 +7,7 @@ ${guard:start}
  * @ingroup ${group|lowercase}
  */
 ${proto:fortran} {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   ${decl:fortran}
   ${init:fortran}
 
@@ -15,5 +16,6 @@ ${proto:fortran} {
   *ierr = ${call:fortran}
 
   ${cleanup:fortran}
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 ${guard:end}

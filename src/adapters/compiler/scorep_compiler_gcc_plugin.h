@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2012-2013,
+ * Copyright (c) 2012-2013, 2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -40,13 +40,5 @@ scorep_compiler_region_description;
 
 void
 scorep_compiler_register_region( const scorep_compiler_region_description* region_descr );
-
-enum
-{
-    SCOREP_COMPILER_PHASE_PRE_INIT      = -1,
-    SCOREP_COMPILER_PHASE_MEASUREMENT   = 0,
-    SCOREP_COMPILER_PHASE_POST_FINALIZE = +1
-};
-extern int scorep_compiler_measurement_phase;
 
 #endif /* SCOREP_COMPILER_GCC_PLUGIN_H_ */

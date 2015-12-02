@@ -145,6 +145,7 @@ scorep_tracing_metric_source_type_to_otf2( SCOREP_MetricSourceType sourceType )
         case_return( TASK,   OTHER );
         /* RonnyT: @ todo Introduce own PLUGIN type in OTF2 ??? */
         case_return( PLUGIN, OTHER );
+        case_return( PERF, OTHER );
 
 #undef case_return
         default:
@@ -612,6 +613,9 @@ scorep_tracing_attribute_type_to_otf2( SCOREP_AttributeType attrType )
         case_return( INTERIM_COMMUNICATOR, COMM );
         case_return( PARAMETER, PARAMETER );
         case_return( INTERIM_RMA_WINDOW, RMA_WIN );
+        case_return( SOURCE_CODE_LOCATION, SOURCE_CODE_LOCATION );
+        case_return( CALLING_CONTEXT, CALLING_CONTEXT );
+        case_return( INTERRUPT_GENERATOR, INTERRUPT_GENERATOR );
 
 #undef case_return
         default:
@@ -621,5 +625,25 @@ scorep_tracing_attribute_type_to_otf2( SCOREP_AttributeType attrType )
     return OTF2_UNDEFINED_TYPE;
 }
 
+
+static inline OTF2_InterruptGeneratorMode
+scorep_tracing_interrupt_generator_mode_to_otf2( SCOREP_InterruptGeneratorMode mode )
+{
+    switch ( mode )
+    {
+#define case_return( MODE ) \
+    case SCOREP_INTERRUPT_GENERATOR_MODE_ ## MODE: \
+        return OTF2_INTERRUPT_GENERATOR_MODE_ ## MODE
+
+        case_return( TIME );
+        case_return( COUNT );
+
+#undef case_return
+        default:
+            UTILS_BUG( "Invalid interrupt generator mode: %u", mode );
+    }
+
+    return OTF2_UNDEFINED_TYPE;
+}
 
 #endif /* SCOREP_TRACING_INTERNAL_TYPES_H */

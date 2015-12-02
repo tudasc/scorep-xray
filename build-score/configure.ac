@@ -7,7 +7,7 @@ dnl
 dnl Copyright (c) 2009-2013,
 dnl Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 dnl
-dnl Copyright (c) 2009-2013,
+dnl Copyright (c) 2009-2013, 2015,
 dnl Technische Universitaet Dresden, Germany
 dnl
 dnl Copyright (c) 2009-2013,
@@ -88,10 +88,10 @@ SCOREP_CUBE_READER
 SCOREP_ESTIMATOR
 
 AS_IF([test -n "${scorep_cube_bindir}"],
-      [AC_SUBST([SCOREP_CUBE_BINDIR], [${scorep_cube_bindir}])],
+      [AC_SUBST([CUBE_BINDIR], [${scorep_cube_bindir}])],
       [AS_IF([test "${afs_cross_compiling}" = xyes],
-             [AC_SUBST([SCOREP_CUBE_BINDIR], [../vendor/cube/build-frontend])],
-             [AC_SUBST([SCOREP_CUBE_BINDIR], [../vendor/cube/build-backend])
+             [AC_SUBST([CUBE_BINDIR], [../vendor/cube/build-frontend])],
+             [AC_SUBST([CUBE_BINDIR], [../vendor/cube/build-backend])
       ])
 ])
 

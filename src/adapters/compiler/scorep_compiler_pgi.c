@@ -49,6 +49,7 @@
 #include <UTILS_IO.h>
 
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Location.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Events.h>
@@ -61,10 +62,6 @@
 /* **************************************************************************************
  * Typedefs and global variables
  ***************************************************************************************/
-
-/* Remove this PGI hack once the SCOREP_IS_MEASUREMENT_PHASE macros
- * are in place. See  r8969, r8804, r8879, #696. */
-extern bool scorep_measurement_initialization_complete = false;
 
 /**
  * @brief Data structures to be used by the PGI compiler.
@@ -186,18 +183,13 @@ struct PGI_PROFENT_64
 void
 __rouinit( void )
 {
-    UTILS_DEBUG_ENTRY();
-
-    if ( !scorep_compiler_initialized )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
-        /* Check whether adapter is already finalized */
-        if ( scorep_compiler_finalized )
-        {
-            return;
-        }
-
         SCOREP_InitMeasurement();
     }
+    UTILS_DEBUG_ENTRY();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 
@@ -209,43 +201,17 @@ __rouinit( void )
 void
 __rouexit( void )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     UTILS_DEBUG_ENTRY();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 static inline void
-pgi_enter_region( SCOREP_RegionHandle* region,
-                  char*                region_name,
-                  char*                file_name,
-                  int                  lineno )
+check_region( SCOREP_RegionHandle* region,
+              char*                region_name,
+              char*                file_name,
+              int                  lineno )
 {
-    /* Remove this PGI hack once the SCOREP_IS_MEASUREMENT_PHASE macros
-     * are in place. See  r8969, r8804, r8879, #696. */
-    if ( !scorep_measurement_initialization_complete )
-    {
-        static bool been_here_before = false;
-        if ( !been_here_before )
-        {
-            been_here_before = true;
-            SCOREP_InitMeasurement();
-        }
-        else
-        {
-            return;
-        }
-    }
-
-    /* Ensure the compiler adapter is initialized */
-    if ( !scorep_compiler_initialized )
-    {
-        /* Check whether adapter is already finalized */
-        if ( scorep_compiler_finalized )
-        {
-            return;
-        }
-
-        SCOREP_InitMeasurement();
-    }
-
     /* Register new regions */
     if ( !*region )
     {
@@ -275,15 +241,6 @@ pgi_enter_region( SCOREP_RegionHandle* region,
         }
         SCOREP_MutexUnlock( scorep_compiler_region_mutex );
     }
-
-    if ( *region != SCOREP_FILTERED_REGION )
-    {
-        SCOREP_EnterRegion( *region );
-    }
-    else
-    {
-        SCOREP_Task_Enter( SCOREP_Location_GetCurrentCPULocation(), *region );
-    }
 }
 
 #if __i386__
@@ -292,20 +249,64 @@ pgi_enter_region( SCOREP_RegionHandle* region,
 void
 ___rouent( struct PGI_PROFENT_32* profent )
 {
-    pgi_enter_region( &profent->handle,
-                      profent->fcnm,
-                      profent->flnm,
-                      profent->lineno );
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    check_region( &profent->handle,
+                  profent->fcnm,
+                  profent->flnm,
+                  profent->lineno );
+
+    if ( profent->handle != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_EnterRegion( profent->handle );
+    }
+    else
+    {
+        SCOREP_Task_Enter( SCOREP_Location_GetCurrentCPULocation(), profent->handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 #pragma save_all_gp_regs
 void
 ___rouent2( struct PGI_PROFENT_32* profent )
 {
-    pgi_enter_region( &profent->handle,
-                      profent->fcnm,
-                      profent->flnm,
-                      profent->lineno );
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    check_region( &profent->handle,
+                  profent->fcnm,
+                  profent->flnm,
+                  profent->lineno );
+
+    if ( profent->handle != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_EnterRegion( profent->handle );
+    }
+    else
+    {
+        SCOREP_Task_Enter( SCOREP_Location_GetCurrentCPULocation(), profent->handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 #elif __x86_64__
@@ -325,10 +326,32 @@ ___rouent64( void*                  arg0,
              void*                  arg4,
              struct PGI_PROFENT_64* profent )
 {
-    pgi_enter_region( &profent->handle,
-                      profent->fcnm,
-                      profent->flnm,
-                      profent->lineno );
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
+    {
+        SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
+    }
+
+    check_region( &profent->handle,
+                  profent->fcnm,
+                  profent->flnm,
+                  profent->lineno );
+
+    if ( profent->handle != SCOREP_FILTERED_REGION )
+    {
+        SCOREP_EnterRegion( profent->handle );
+    }
+    else
+    {
+        SCOREP_Task_Enter( SCOREP_Location_GetCurrentCPULocation(), profent->handle );
+    }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 #endif
@@ -340,16 +363,10 @@ ___rouent64( void*                  arg0,
 void
 ___rouret( void )
 {
-    /* Remove this PGI hack once the SCOREP_IS_MEASUREMENT_PHASE macros
-     * are in place. See  r8969, r8804, r8879, #696. */
-    if ( !scorep_measurement_initialization_complete )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
     {
-        return;
-    }
-
-    /* Check whether adapter is already finalized */
-    if ( scorep_compiler_finalized )
-    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
 
@@ -371,20 +388,26 @@ ___rouret( void )
     {
         SCOREP_Task_Exit( location );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 #pragma save_all_gp_regs
 void
 ___rouret2( void )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     ___rouret();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 #pragma save_all_gp_regs
 void
 ___rouret64( void )
 {
+    SCOREP_IN_MEASUREMENT_INCREMENT();
     ___rouret();
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 #pragma save_all_gp_regs

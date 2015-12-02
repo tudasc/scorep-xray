@@ -4,6 +4,9 @@
  * Copyright (c) 2013-2014,
  * Forschungszentrum Juelich GmbH, Germany
  *
+ * Copyright (c) 2015,
+ * Technische Universitaet Dresden, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -33,12 +36,6 @@
 
 
 SCOREP_Opari2_User_Region* scorep_opari2_user_regions;
-
-/** Flag to indicate whether the adapter is initialized */
-bool scorep_opari2_user_is_initialized = false;
-
-/** Flag to indicate whether the adapter is finalized */
-bool scorep_opari2_user_is_finalized = false;
 
 /** Lock to protect on-the-fly assignments.*/
 SCOREP_Mutex scorep_opari2_user_assign_lock;
@@ -72,21 +69,18 @@ opari2_user_subsystem_init( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    if ( !scorep_opari2_user_is_initialized )
-    {
-        scorep_opari2_user_is_initialized = true;
-        SCOREP_MutexCreate( &scorep_opari2_user_assign_lock );
+    SCOREP_MutexCreate( &scorep_opari2_user_assign_lock );
 
-        size_t n = POMP2_USER_Get_num_regions();
+    size_t n = POMP2_USER_Get_num_regions();
 
-        scorep_opari2_user_regions = calloc( n, sizeof( SCOREP_Opari2_User_Region ) );
+    scorep_opari2_user_regions = calloc( n, sizeof( SCOREP_Opari2_User_Region ) );
 
-        /* Initialize regions inserted by Opari */
-        POMP2_USER_Init_regions();
+    /* Initialize regions inserted by Opari */
+    POMP2_USER_Init_regions();
 
-        SCOREP_SourceFileHandle scorep_opari2_user_file_handle
-            = SCOREP_Definitions_NewSourceFile( "POMP" );
-    }
+    SCOREP_SourceFileHandle scorep_opari2_user_file_handle
+        = SCOREP_Definitions_NewSourceFile( "POMP" );
+
     UTILS_DEBUG_EXIT();
 
     return SCOREP_SUCCESS;
@@ -98,13 +92,6 @@ opari2_user_subsystem_finalize( void )
 {
     UTILS_DEBUG_ENTRY();
 
-    if ( !scorep_opari2_user_is_initialized ||
-         scorep_opari2_user_is_finalized )
-    {
-        return;
-    }
-    scorep_opari2_user_is_finalized = true;
-
     free( scorep_opari2_user_regions );
     SCOREP_MutexDestroy( &scorep_opari2_user_assign_lock );
 
@@ -113,14 +100,8 @@ opari2_user_subsystem_finalize( void )
 
 const SCOREP_Subsystem SCOREP_Subsystem_Opari2UserAdapter =
 {
-    .subsystem_name              = "OPARI2 Adapter for the POMP2 User interface / Version 1.0",
-    .subsystem_register          = &opari2_user_subsystem_register,
-    .subsystem_init              = &opari2_user_subsystem_init,
-    .subsystem_init_location     = NULL,
-    .subsystem_finalize_location = NULL,
-    .subsystem_pre_unify         = NULL,
-    .subsystem_post_unify        = NULL,
-    .subsystem_finalize          = &opari2_user_subsystem_finalize,
-    .subsystem_deregister        = NULL,
-    .subsystem_control           = NULL
+    .subsystem_name     = "OPARI2 Adapter for the POMP2 User interface / Version 1.0",
+    .subsystem_register = &opari2_user_subsystem_register,
+    .subsystem_init     = &opari2_user_subsystem_init,
+    .subsystem_finalize = &opari2_user_subsystem_finalize,
 };

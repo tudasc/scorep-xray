@@ -8,6 +8,7 @@
 #include <config.h>
 #include "SCOREP_Mpi.h"
 #include "scorep_mpi_communicator.h"
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Events.h>
 
 /** internal id counter for rma operations */
@@ -42,6 +43,7 @@ int MPI_Get(void*        origin_addr,
             MPI_Datatype target_datatype,
             MPI_Win      win)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int return_val;
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
@@ -54,7 +56,7 @@ int MPI_Get(void*        origin_addr,
 
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_GET]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_GET], ( intptr_t )PMPI_Get);
 
 /* One-sided communication not handled in first version
     dest_proc_rank = scorep_mpi_win_rank_to_pe( target_rank, win );
@@ -65,9 +67,11 @@ int MPI_Get(void*        origin_addr,
     PMPI_Type_size(target_datatype, &sendsz);
     esd_mpi_get_1ts_remote(dest_proc_rank, win_handle, SCOREP_NEXT_RMA_ID, target_count * sendsz);
 */
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Get( origin_addr, origin_count,
                   origin_datatype, target_rank, target_disp,
                   target_count, target_datatype, win );
+    SCOREP_EXIT_WRAPPED_REGION();
 
     /* in MPI_GET the origin buffer is local */
 /* One-sided communication not handled in first version
@@ -83,6 +87,7 @@ int MPI_Get(void*        origin_addr,
                   origin_datatype, target_rank, target_disp,
                   target_count, target_datatype, win);
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }
@@ -112,6 +117,7 @@ int MPI_Win_create(void*    base,
                    MPI_Comm comm,
                    MPI_Win* win)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
   int       return_val;
 
@@ -119,11 +125,19 @@ int MPI_Win_create(void*    base,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_WIN_CREATE]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WIN_CREATE], ( intptr_t )PMPI_Win_create);
   }
 
+  if (event_gen_active)
+  {
+    SCOREP_ENTER_WRAPPED_REGION();
+  }
   return_val = PMPI_Win_create(base, size, disp_unit,
                 info, comm, win );
+  if (event_gen_active)
+  {
+    SCOREP_EXIT_WRAPPED_REGION();
+  }
 
 /* One-sided communication not handled in first version
   if (*win != MPI_WIN_NULL)
@@ -137,6 +151,7 @@ int MPI_Win_create(void*    base,
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WIN_CREATE]);
     SCOREP_MPI_EVENT_GEN_ON();
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }
@@ -153,6 +168,7 @@ int MPI_Win_create(void*    base,
  */
 int MPI_Win_free(MPI_Win* win)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   const int event_gen_active = SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA);
   int                 return_val;
 /* One-sided communication not handled in first version
@@ -163,7 +179,7 @@ int MPI_Win_free(MPI_Win* win)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_WIN_FREE]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WIN_FREE], ( intptr_t )PMPI_Win_free);
 /* One-sided communication not handled in first version
     win_handle = scorep_mpi_win_rank_id(*win);
 */
@@ -173,13 +189,22 @@ int MPI_Win_free(MPI_Win* win)
   scorep_mpi_win_rank_free(*win);
 */
 
+  if (event_gen_active)
+  {
+    SCOREP_ENTER_WRAPPED_REGION();
+  }
   return_val = PMPI_Win_free( win );
+  if (event_gen_active)
+  {
+    SCOREP_EXIT_WRAPPED_REGION();
+  }
 
   if (event_gen_active)
   {
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WIN_FREE]);
     SCOREP_MPI_EVENT_GEN_ON();
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }
@@ -202,15 +227,18 @@ int MPI_Win_free(MPI_Win* win)
  */
 int MPI_Win_complete(MPI_Win win)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int return_val;
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_WIN_COMPLETE]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WIN_COMPLETE], ( intptr_t )PMPI_Win_complete);
 
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Win_complete(win);
+    SCOREP_EXIT_WRAPPED_REGION();
 
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WIN_COMPLETE]);
     SCOREP_MPI_EVENT_GEN_ON();
@@ -219,6 +247,7 @@ int MPI_Win_complete(MPI_Win win)
   {
     return_val = PMPI_Win_complete(win);
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }
@@ -236,15 +265,18 @@ int MPI_Win_complete(MPI_Win win)
 int MPI_Win_fence(int     assert,
                   MPI_Win win)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int return_val;
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_WIN_FENCE]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WIN_FENCE], ( intptr_t )PMPI_Win_fence);
 
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Win_fence(assert, win);
+    SCOREP_EXIT_WRAPPED_REGION();
 
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WIN_FENCE]);
 
@@ -254,6 +286,7 @@ int MPI_Win_fence(int     assert,
   {
     return_val = PMPI_Win_fence(assert, win);
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }
@@ -273,19 +306,22 @@ int MPI_Win_lock(int     lock_type,
                  int     assert,
                  MPI_Win win)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int return_val;
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_WIN_LOCK]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WIN_LOCK], ( intptr_t )PMPI_Win_lock);
 
 /* One-sided communication not handled in first version
     esd_mpi_win_lock( rank, scorep_mpi_win_rank_id(win), lock_type==MPI_LOCK_EXCLUSIVE);
 */
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Win_lock( lock_type, rank,
                       assert, win );
+    SCOREP_EXIT_WRAPPED_REGION();
 
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WIN_LOCK]);
 
@@ -296,6 +332,8 @@ int MPI_Win_lock(int     lock_type,
     return_val = PMPI_Win_lock( lock_type, rank,
                       assert, win );
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
+
   return return_val;
 }
 #endif
@@ -313,18 +351,21 @@ int MPI_Win_post(MPI_Group group,
                  int       assert,
                  MPI_Win   win)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int return_val;
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_WIN_POST]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WIN_POST], ( intptr_t )PMPI_Win_post);
 
 /* One-sided communication not handled in first version
     scorep_mpi_winacc_start(win, group, 0);
 */
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Win_post(group, assert, win);
+    SCOREP_EXIT_WRAPPED_REGION();
 
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WIN_POST]);
 
@@ -334,6 +375,7 @@ int MPI_Win_post(MPI_Group group,
   {
     return_val = PMPI_Win_post(group, assert, win);
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }
@@ -352,18 +394,21 @@ int MPI_Win_start(MPI_Group group,
                   int       assert,
                   MPI_Win   win)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int return_val;
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_WIN_START]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WIN_START], ( intptr_t )PMPI_Win_start);
 
 /* One-sided communication not handled in first version
     scorep_mpi_winacc_start(win, group, 1);
 */
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Win_start(group, assert, win);
+    SCOREP_EXIT_WRAPPED_REGION();
 
     SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WIN_START]);
 
@@ -373,6 +418,7 @@ int MPI_Win_start(MPI_Group group,
   {
     return_val = PMPI_Win_start(group, assert, win);
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }
@@ -390,15 +436,18 @@ int MPI_Win_start(MPI_Group group,
 int MPI_Win_test(MPI_Win win,
                  int*    flag)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int return_val;
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_WIN_TEST]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WIN_TEST], ( intptr_t )PMPI_Win_test);
 
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Win_test(win, flag);
+    SCOREP_EXIT_WRAPPED_REGION();
 
 /* One-sided communication not handled in first version
     if (*flag != 0)
@@ -421,6 +470,7 @@ int MPI_Win_test(MPI_Win win,
   {
     return_val = PMPI_Win_test(win, flag);
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }
@@ -438,15 +488,18 @@ int MPI_Win_test(MPI_Win win,
 int MPI_Win_unlock(int     rank,
                    MPI_Win win)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int return_val;
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_WIN_UNLOCK]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WIN_UNLOCK], ( intptr_t )PMPI_Win_unlock);
 
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Win_unlock(rank, win);
+    SCOREP_EXIT_WRAPPED_REGION();
 /* One-sided communication not handled in first version
     esd_mpi_win_unlock(rank, scorep_mpi_win_rank_id(win));
 */
@@ -459,6 +512,7 @@ int MPI_Win_unlock(int     rank,
   {
     return_val = PMPI_Win_unlock(rank, win);
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }
@@ -475,15 +529,18 @@ int MPI_Win_unlock(int     rank,
  */
 int MPI_Win_wait(MPI_Win win)
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   int return_val;
 
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_RMA))
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__MPI_WIN_WAIT]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WIN_WAIT], ( intptr_t )PMPI_Win_wait);
 
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Win_wait(win);
+    SCOREP_EXIT_WRAPPED_REGION();
 
 /* One-sided communication not handled in first version
     esd_mpi_winexit(scorep_mpi_regid[SCOREP__MPI_WIN_WAIT],
@@ -499,6 +556,7 @@ int MPI_Win_wait(MPI_Win win)
   {
     return_val = PMPI_Win_wait(win);
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }

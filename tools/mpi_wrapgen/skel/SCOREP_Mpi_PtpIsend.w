@@ -8,6 +8,7 @@ ${guard:start}
  */
 ${proto:c}
 {
+  SCOREP_IN_MEASUREMENT_INCREMENT();
   ${rtype} return_val;
 
   ${guard:hooks}
@@ -20,7 +21,7 @@ ${proto:c}
     int sz;
     SCOREP_MpiRequestId reqid = scorep_mpi_get_request_id();
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__${name|uppercase}], ( intptr_t )P${name});
 
 	${guard:hooks}
     ${check:hooks}
@@ -39,7 +40,9 @@ ${proto:c}
 
     }
 
+    SCOREP_ENTER_WRAPPED_REGION();
     return_val = ${call:pmpi};
+    SCOREP_EXIT_WRAPPED_REGION();
     if (xnb_active && dest != MPI_PROC_NULL && return_val == MPI_SUCCESS)
     {
        scorep_mpi_request_create(*request, SCOREP_MPI_REQUEST_SEND,
@@ -58,6 +61,7 @@ ${proto:c}
   {
     return_val = ${call:pmpi};
   }
+  SCOREP_IN_MEASUREMENT_DECREMENT();
 
   return return_val;
 }

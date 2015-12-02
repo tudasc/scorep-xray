@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2011,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2011, 2013,
+## Copyright (c) 2009-2011, 2013, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2011,
@@ -117,6 +117,7 @@ SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}pomp \
     SCOREP_PROFILING_ENABLE_CORE_FILES=true \
     SCOREP_ENABLE_PROFILING=true \
     SCOREP_ENABLE_TRACING=false \
+    SCOREP_TOTAL_MEMORY=32M \
     ./task_loop_pomp $LOOP_NUM
 
 if [ $? -ne 0 ]; then
@@ -130,6 +131,7 @@ SCOREP_EXPERIMENT_DIRECTORY=${result_dir_base}full \
     SCOREP_PROFILING_ENABLE_CORE_FILES=true \
     SCOREP_ENABLE_PROFILING=true \
     SCOREP_ENABLE_TRACING=false \
+    SCOREP_TOTAL_MEMORY=32M \
     ./task_loop_full $LOOP_NUM
 
 if [ $? -ne 0 ]; then

@@ -39,6 +39,7 @@
 #include <stdlib.h>
 
 #include <SCOREP_RuntimeManagement.h>
+#include <SCOREP_InMeasurement.h>
 #include <SCOREP_Types.h>
 #include <SCOREP_Events.h>
 #include <SCOREP_Mutex.h>
@@ -55,13 +56,15 @@ void
 phat_enter( char* name,
             int*  id )
 {
-    if ( !scorep_compiler_initialized )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
     {
-        if ( scorep_compiler_finalized )
-        {
-            return;
-        }
         SCOREP_InitMeasurement();
+    }
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
+    {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
+        return;
     }
 
     if ( *id == SCOREP_INVALID_REGION )
@@ -79,6 +82,8 @@ phat_enter( char* name,
     {
         SCOREP_EnterRegion( *id );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }
 
 
@@ -90,8 +95,10 @@ void
 phat_exit( char* name,
            int*  id )
 {
-    if ( scorep_compiler_finalized )
+    SCOREP_IN_MEASUREMENT_INCREMENT();
+    if ( !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) || SCOREP_IsUnwindingEnabled() )
     {
+        SCOREP_IN_MEASUREMENT_DECREMENT();
         return;
     }
 
@@ -99,4 +106,6 @@ phat_exit( char* name,
     {
         SCOREP_ExitRegion( *id );
     }
+
+    SCOREP_IN_MEASUREMENT_DECREMENT();
 }

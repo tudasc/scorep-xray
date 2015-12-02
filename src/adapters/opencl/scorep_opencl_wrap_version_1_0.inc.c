@@ -5,16 +5,16 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetPlatformIDs ) ( cl_uint         numEntries,
                                                cl_platform_id* platforms,
                                                cl_uint*        numPlatforms )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetPlatformIDs );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetPlatformIDs );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetPlatformIDs,
+                                                    clGetPlatformIDs,
+                                                    ( numEntries, platforms,
+                                                      numPlatforms ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetPlatformIDs,
-                                             clGetPlatformIDs,
-                                             ( numEntries, platforms,
-                                               numPlatforms ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetPlatformIDs );
+    SCOREP_OPENCL_FUNC_EXIT( clGetPlatformIDs );
 
     return ret;
 }
@@ -28,16 +28,16 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetPlatformInfo ) ( cl_platform_id   platform,
                                                 void*            paramValue,
                                                 size_t*          paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetPlatformInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetPlatformInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetPlatformInfo,
+                                                    clGetPlatformInfo,
+                                                    ( platform, paramName, paramValueSize,
+                                                      paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetPlatformInfo,
-                                             clGetPlatformInfo,
-                                             ( platform, paramName, paramValueSize,
-                                               paramValue, paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetPlatformInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetPlatformInfo );
 
     return ret;
 }
@@ -51,16 +51,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetDeviceIDs ) ( cl_platform_id platform,
                                              cl_device_id*  devices,
                                              cl_uint*       numDevices )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetDeviceIDs );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetDeviceIDs );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetDeviceIDs, clGetDeviceIDs,
+        ( platform, deviceType, numEntries, devices, numDevices ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetDeviceIDs,
-                                             clGetDeviceIDs,
-                                             ( platform, deviceType, numEntries,
-                                               devices, numDevices ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetDeviceIDs );
+    SCOREP_OPENCL_FUNC_EXIT( clGetDeviceIDs );
 
     return ret;
 }
@@ -74,16 +73,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetDeviceInfo ) ( cl_device_id   device,
                                               void*          paramValue,
                                               size_t*        paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetDeviceInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetDeviceInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetDeviceInfo, clGetDeviceInfo,
+        ( device, paramName, paramValueSize, paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetDeviceInfo,
-                                             clGetDeviceInfo,
-                                             ( device, paramName, paramValueSize,
-                                               paramValue, paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetDeviceInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetDeviceInfo );
 
     return ret;
 }
@@ -101,16 +99,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateContext ) ( const cl_context_properties* prope
                                               void*                        userData,
                                               cl_int*                      errcodeRet )
 {
-    cl_context ret;
+    SCOREP_OPENCL_FUNC_ENTER( clCreateContext );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateContext );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_context ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateContext, clCreateContext,
+        ( properties, numDevices, devices, pfnNotify, userData, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateContext,
-                                             clCreateContext,
-                                             ( properties, numDevices, devices,
-                                               pfnNotify, userData, errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateContext );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateContext );
 
     return ret;
 }
@@ -127,16 +124,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateContextFromType ) ( const cl_context_propertie
                                                       void*                        userData,
                                                       cl_int*                      errcodeRet )
 {
-    cl_context ret;
+    SCOREP_OPENCL_FUNC_ENTER( clCreateContextFromType );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateContextFromType );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_context ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateContextFromType, clCreateContextFromType,
+        ( properties, deviceType, pfnNotify, userData, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateContextFromType,
-                                             clCreateContextFromType,
-                                             ( properties, deviceType, pfnNotify,
-                                               userData, errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateContextFromType );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateContextFromType );
 
     return ret;
 }
@@ -146,15 +142,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateContextFromType ) ( const cl_context_propertie
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainContext ) ( cl_context context )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clRetainContext );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clRetainContext );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clRetainContext, clRetainContext, ( context ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clRetainContext,
-                                             clRetainContext,
-                                             ( context ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clRetainContext );
+    SCOREP_OPENCL_FUNC_EXIT( clRetainContext );
 
     return ret;
 }
@@ -164,14 +159,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainContext ) ( cl_context context )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseContext ) ( cl_context context )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clReleaseContext );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clReleaseContext );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clReleaseContext, clReleaseContext, ( context ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clReleaseContext, clReleaseContext,
-                                             ( context ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clReleaseContext );
+    SCOREP_OPENCL_FUNC_EXIT( clReleaseContext );
 
     return ret;
 }
@@ -185,15 +180,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetContextInfo ) ( cl_context      context,
                                                void*           paramValue,
                                                size_t*         paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetContextInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetContextInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetContextInfo, clGetContextInfo,
+        ( context, paramName, paramValueSize, paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetContextInfo, clGetContextInfo,
-                                             ( context, paramName, paramValueSize,
-                                               paramValue, paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetContextInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetContextInfo );
 
     return ret;
 }
@@ -203,14 +198,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetContextInfo ) ( cl_context      context,
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainCommandQueue ) ( cl_command_queue commandQueue )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clRetainCommandQueue );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clRetainCommandQueue );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clRetainCommandQueue, clRetainCommandQueue,
+        ( commandQueue ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clRetainCommandQueue, clRetainCommandQueue,
-                                             ( commandQueue ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clRetainCommandQueue );
+    SCOREP_OPENCL_FUNC_EXIT( clRetainCommandQueue );
 
     return ret;
 }
@@ -220,14 +216,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainCommandQueue ) ( cl_command_queue commandQueue
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseCommandQueue ) ( cl_command_queue commandQueue )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clReleaseCommandQueue );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clReleaseCommandQueue );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clReleaseCommandQueue, clReleaseCommandQueue,
+        ( commandQueue ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clReleaseCommandQueue, clReleaseCommandQueue,
-                                             ( commandQueue ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clReleaseCommandQueue );
+    SCOREP_OPENCL_FUNC_EXIT( clReleaseCommandQueue );
 
     return ret;
 }
@@ -241,16 +238,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetCommandQueueInfo ) ( cl_command_queue      comman
                                                     void*                 paramValue,
                                                     size_t*               paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetCommandQueueInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetCommandQueueInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetCommandQueueInfo, clGetCommandQueueInfo,
+        ( commandQueue, paramName, paramValueSize, paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetCommandQueueInfo, clGetCommandQueueInfo,
-                                             ( commandQueue, paramName,
-                                               paramValueSize, paramValue,
-                                               paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetCommandQueueInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetCommandQueueInfo );
 
     return ret;
 }
@@ -263,20 +259,22 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetCommandQueueProperty ) ( cl_command_queue        
                                                         cl_bool                      enable,
                                                         cl_command_queue_properties* oldProperties )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clSetCommandQueueProperty );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clSetCommandQueueProperty );
-
-    if ( scorep_opencl_record_kernels || scorep_opencl_record_memcpy )
+    if ( trigger
+         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )
+         && ( scorep_opencl_record_kernels || scorep_opencl_record_memcpy ) )
     {
         properties |= CL_QUEUE_PROFILING_ENABLE;
     }
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clSetCommandQueueProperty, clSetCommandQueueProperty,
-                                             ( commandQueue, properties,
-                                               enable, oldProperties ) );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clSetCommandQueueProperty, clSetCommandQueueProperty,
+        ( commandQueue, properties, enable, oldProperties ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clSetCommandQueueProperty );
+    SCOREP_OPENCL_FUNC_EXIT( clSetCommandQueueProperty );
 
     return ret;
 }
@@ -290,15 +288,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateBuffer ) ( cl_context   context,
                                              void*        hostPtr,
                                              cl_int*      errcodeRet )
 {
-    cl_mem ret;
+    SCOREP_OPENCL_FUNC_ENTER( clCreateBuffer );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateBuffer );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_mem ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateBuffer, clCreateBuffer,
+        ( context, flags, size, hostPtr, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateBuffer, clCreateBuffer,
-                                             ( context, flags, size, hostPtr,
-                                               errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateBuffer );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateBuffer );
 
     return ret;
 }
@@ -308,14 +306,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateBuffer ) ( cl_context   context,
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainMemObject ) ( cl_mem memObj )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clRetainMemObject );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clRetainMemObject );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clRetainMemObject, clRetainMemObject, ( memObj ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clRetainMemObject, clRetainMemObject,
-                                             ( memObj ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clRetainMemObject );
+    SCOREP_OPENCL_FUNC_EXIT( clRetainMemObject );
 
     return ret;
 }
@@ -325,14 +323,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainMemObject ) ( cl_mem memObj )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseMemObject ) ( cl_mem memObj )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clReleaseMemObject );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clReleaseMemObject );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clReleaseMemObject, clReleaseMemObject, ( memObj ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clReleaseMemObject, clReleaseMemObject,
-                                             ( memObj ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clReleaseMemObject );
+    SCOREP_OPENCL_FUNC_EXIT( clReleaseMemObject );
 
     return ret;
 }
@@ -347,16 +345,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetSupportedImageFormats ) ( cl_context         cont
                                                          cl_image_format*   imageFormats,
                                                          cl_uint*           numImageFormats )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetSupportedImageFormats );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetSupportedImageFormats );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetSupportedImageFormats, clGetSupportedImageFormats,
+        ( context, flags, imageType, numEntries, imageFormats, numImageFormats ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetSupportedImageFormats, clGetSupportedImageFormats,
-                                             ( context, flags, imageType,
-                                               numEntries, imageFormats,
-                                               numImageFormats ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetSupportedImageFormats );
+    SCOREP_OPENCL_FUNC_EXIT( clGetSupportedImageFormats );
 
     return ret;
 }
@@ -370,15 +367,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetMemObjectInfo ) ( cl_mem      memObj,
                                                  void*       paramValue,
                                                  size_t*     paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetMemObjectInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetMemObjectInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetMemObjectInfo, clGetMemObjectInfo,
+        ( memObj, paramName, paramValueSize, paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetMemObjectInfo, clGetMemObjectInfo,
-                                             ( memObj, paramName, paramValueSize,
-                                               paramValue, paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetMemObjectInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetMemObjectInfo );
 
     return ret;
 }
@@ -392,15 +389,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetImageInfo ) ( cl_mem        image,
                                              void*         paramValue,
                                              size_t*       paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetImageInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetImageInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetImageInfo, clGetImageInfo,
+        ( image, paramName, paramValueSize, paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetImageInfo, clGetImageInfo,
-                                             ( image, paramName, paramValueSize,
-                                               paramValue, paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetImageInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetImageInfo );
 
     return ret;
 }
@@ -410,14 +407,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetImageInfo ) ( cl_mem        image,
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainSampler ) ( cl_sampler sampler )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clRetainSampler );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clRetainSampler );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clRetainSampler, clRetainSampler, ( sampler ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clRetainSampler, clRetainSampler,
-                                             ( sampler ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clRetainSampler );
+    SCOREP_OPENCL_FUNC_EXIT( clRetainSampler );
 
     return ret;
 }
@@ -427,14 +424,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainSampler ) ( cl_sampler sampler )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseSampler ) ( cl_sampler sampler )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clReleaseSampler );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clReleaseSampler );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clReleaseSampler, clReleaseSampler, ( sampler ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clReleaseSampler, clReleaseSampler,
-                                             ( sampler ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clReleaseSampler );
+    SCOREP_OPENCL_FUNC_EXIT( clReleaseSampler );
 
     return ret;
 }
@@ -448,15 +445,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetSamplerInfo ) ( cl_sampler      sampler,
                                                void*           paramValue,
                                                size_t*         paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetSamplerInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetSamplerInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetSamplerInfo, clGetSamplerInfo,
+        ( sampler, paramName, paramValueSize, paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetSamplerInfo, clGetSamplerInfo,
-                                             ( sampler, paramName, paramValueSize,
-                                               paramValue, paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetSamplerInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetSamplerInfo );
 
     return ret;
 }
@@ -470,15 +467,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateProgramWithSource ) ( cl_context    context,
                                                         const size_t* lengths,
                                                         cl_int*       errcodeRet )
 {
-    cl_program ret;
+    SCOREP_OPENCL_FUNC_ENTER( clCreateProgramWithSource );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateProgramWithSource );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_program ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateProgramWithSource, clCreateProgramWithSource,
+        ( context, count, strings, lengths, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateProgramWithSource, clCreateProgramWithSource,
-                                             ( context, count, strings, lengths,
-                                               errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateProgramWithSource );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateProgramWithSource );
 
     return ret;
 }
@@ -494,16 +491,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateProgramWithBinary ) ( cl_context            co
                                                         cl_int*               binaryStatus,
                                                         cl_int*               errcodeRet )
 {
-    cl_program ret;
+    SCOREP_OPENCL_FUNC_ENTER( clCreateProgramWithBinary );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateProgramWithBinary );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_program ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateProgramWithBinary, clCreateProgramWithBinary,
+        ( context, numDevices, deviceList, lengths, binaries, binaryStatus, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateProgramWithBinary, clCreateProgramWithBinary,
-                                             ( context, numDevices, deviceList,
-                                               lengths, binaries, binaryStatus,
-                                               errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateProgramWithBinary );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateProgramWithBinary );
 
     return ret;
 }
@@ -513,14 +509,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateProgramWithBinary ) ( cl_context            co
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainProgram ) ( cl_program program )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clRetainProgram );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clRetainProgram );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clRetainProgram, clRetainProgram, ( program ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clRetainProgram, clRetainProgram,
-                                             ( program ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clRetainProgram );
+    SCOREP_OPENCL_FUNC_EXIT( clRetainProgram );
 
     return ret;
 }
@@ -530,14 +526,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainProgram ) ( cl_program program )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseProgram ) ( cl_program program )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clReleaseProgram );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clReleaseProgram );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clReleaseProgram, clReleaseProgram, ( program ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clReleaseProgram, clReleaseProgram,
-                                             ( program ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clReleaseProgram );
+    SCOREP_OPENCL_FUNC_EXIT( clReleaseProgram );
 
     return ret;
 }
@@ -553,15 +549,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clBuildProgram ) ( cl_program          program,
                                                                               void* ),
                                              void*               user_data )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clBuildProgram );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clBuildProgram );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clBuildProgram, clBuildProgram,
+        ( program, numDevices, deviceList, options, pfnNotify, user_data ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clBuildProgram, clBuildProgram,
-                                             ( program, numDevices, deviceList,
-                                               options, pfnNotify, user_data ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clBuildProgram );
+    SCOREP_OPENCL_FUNC_EXIT( clBuildProgram );
 
     return ret;
 }
@@ -575,15 +571,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetProgramInfo ) ( cl_program      program,
                                                void*           paramValue,
                                                size_t*         paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetProgramInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetProgramInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetProgramInfo, clGetProgramInfo,
+        ( program, paramName, paramValueSize, paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetProgramInfo, clGetProgramInfo,
-                                             ( program, paramName, paramValueSize,
-                                               paramValue, paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetProgramInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetProgramInfo );
 
     return ret;
 }
@@ -598,16 +594,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetProgramBuildInfo ) ( cl_program            progra
                                                     void*                 paramValue,
                                                     size_t*               paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetProgramBuildInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetProgramBuildInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetProgramBuildInfo, clGetProgramBuildInfo,
+        ( program, device, paramName, paramValueSize, paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetProgramBuildInfo, clGetProgramBuildInfo,
-                                             ( program, device, paramName,
-                                               paramValueSize, paramValue,
-                                               paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetProgramBuildInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetProgramBuildInfo );
 
     return ret;
 }
@@ -619,14 +614,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateKernel ) ( cl_program  program,
                                              const char* kernelName,
                                              cl_int*     errcodeRet )
 {
-    cl_kernel ret;
+    SCOREP_OPENCL_FUNC_ENTER( clCreateKernel );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateKernel );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_kernel ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateKernel, clCreateKernel,
+        ( program, kernelName, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateKernel, clCreateKernel,
-                                             ( program, kernelName, errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateKernel );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateKernel );
 
     return ret;
 }
@@ -639,15 +635,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateKernelsInProgram ) ( cl_program program,
                                                        cl_kernel* kernels,
                                                        cl_uint*   numKernelsRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clCreateKernelsInProgram );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateKernelsInProgram );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateKernelsInProgram, clCreateKernelsInProgram,
+        ( program, numKernels, kernels, numKernelsRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateKernelsInProgram, clCreateKernelsInProgram,
-                                             ( program, numKernels,
-                                               kernels, numKernelsRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateKernelsInProgram );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateKernelsInProgram );
 
     return ret;
 }
@@ -657,14 +653,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateKernelsInProgram ) ( cl_program program,
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainKernel ) ( cl_kernel kernel )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clRetainKernel );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clRetainKernel );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clRetainKernel, clRetainKernel, ( kernel ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clRetainKernel, clRetainKernel,
-                                             ( kernel ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clRetainKernel );
+    SCOREP_OPENCL_FUNC_EXIT( clRetainKernel );
 
     return ret;
 }
@@ -674,14 +670,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainKernel ) ( cl_kernel kernel )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseKernel ) ( cl_kernel kernel )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clReleaseKernel );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clReleaseKernel );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clReleaseKernel, clReleaseKernel, ( kernel ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clReleaseKernel, clReleaseKernel,
-                                             ( kernel ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clReleaseKernel );
+    SCOREP_OPENCL_FUNC_EXIT( clReleaseKernel );
 
     return ret;
 }
@@ -694,14 +690,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetKernelArg ) ( cl_kernel   kernel,
                                              size_t      argSize,
                                              const void* argValue )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clSetKernelArg );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clSetKernelArg );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clSetKernelArg, clSetKernelArg,
+        ( kernel, argIndex, argSize, argValue ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clSetKernelArg, clSetKernelArg,
-                                             ( kernel, argIndex, argSize, argValue ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clSetKernelArg );
+    SCOREP_OPENCL_FUNC_EXIT( clSetKernelArg );
 
     return ret;
 }
@@ -715,15 +712,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetKernelInfo ) ( cl_kernel      kernel,
                                               void*          paramValue,
                                               size_t*        paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetKernelInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetKernelInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetKernelInfo, clGetKernelInfo,
+        ( kernel, paramName, paramValueSize, paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetKernelInfo, clGetKernelInfo,
-                                             ( kernel, paramName, paramValueSize,
-                                               paramValue, paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetKernelInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetKernelInfo );
 
     return ret;
 }
@@ -738,16 +735,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetKernelWorkGroupInfo ) ( cl_kernel                
                                                        void*                     paramValue,
                                                        size_t*                   paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetKernelWorkGroupInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetKernelWorkGroupInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetKernelWorkGroupInfo, clGetKernelWorkGroupInfo,
+        ( kernel, device, paramName, paramValueSize, paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetKernelWorkGroupInfo, clGetKernelWorkGroupInfo,
-                                             ( kernel, device, paramName,
-                                               paramValueSize, paramValue,
-                                               paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetKernelWorkGroupInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetKernelWorkGroupInfo );
 
     return ret;
 }
@@ -758,14 +754,15 @@ cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clWaitForEvents ) ( cl_uint         numEvents,
                                               const cl_event* eventList )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clWaitForEvents );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clWaitForEvents );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clWaitForEvents, clWaitForEvents,
+        ( numEvents, eventList ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clWaitForEvents, clWaitForEvents,
-                                             ( numEvents, eventList ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clWaitForEvents );
+    SCOREP_OPENCL_FUNC_EXIT( clWaitForEvents );
 
     return ret;
 }
@@ -779,15 +776,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetEventInfo ) ( cl_event      event,
                                              void*         paramValue,
                                              size_t*       paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetEventInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetEventInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetEventInfo, clGetEventInfo,
+        ( event, paramName, paramValueSize, paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetEventInfo, clGetEventInfo,
-                                             ( event, paramName, paramValueSize,
-                                               paramValue, paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetEventInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetEventInfo );
 
     return ret;
 }
@@ -797,14 +794,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetEventInfo ) ( cl_event      event,
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clRetainEvent ) ( cl_event event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clRetainEvent );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clRetainEvent );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clRetainEvent, clRetainEvent, ( event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clRetainEvent, clRetainEvent,
-                                             ( event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clRetainEvent );
+    SCOREP_OPENCL_FUNC_EXIT( clRetainEvent );
 
     return ret;
 }
@@ -814,14 +811,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clRetainEvent ) ( cl_event event )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clReleaseEvent ) ( cl_event event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clReleaseEvent );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clReleaseEvent );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clReleaseEvent, clReleaseEvent, ( event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clReleaseEvent, clReleaseEvent,
-                                             ( event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clReleaseEvent );
+    SCOREP_OPENCL_FUNC_EXIT( clReleaseEvent );
 
     return ret;
 }
@@ -835,15 +832,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetEventProfilingInfo ) ( cl_event          event,
                                                       void*             paramValue,
                                                       size_t*           paramValueSizeRet )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetEventProfilingInfo );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetEventProfilingInfo );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetEventProfilingInfo, clGetEventProfilingInfo,
+        ( event, paramName, paramValueSize, paramValue, paramValueSizeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetEventProfilingInfo, clGetEventProfilingInfo,
-                                             ( event, paramName, paramValueSize,
-                                               paramValue, paramValueSizeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetEventProfilingInfo );
+    SCOREP_OPENCL_FUNC_EXIT( clGetEventProfilingInfo );
 
     return ret;
 }
@@ -853,14 +850,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetEventProfilingInfo ) ( cl_event          event,
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clFlush ) ( cl_command_queue commandQueue )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clFlush );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clFlush );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clFlush, clFlush, ( commandQueue ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clFlush, clFlush,
-                                             ( commandQueue ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clFlush );
+    SCOREP_OPENCL_FUNC_EXIT( clFlush );
 
     return ret;
 }
@@ -870,11 +867,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clFlush ) ( cl_command_queue commandQueue )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clFinish ) ( cl_command_queue commandQueue )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clFinish );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clFinish );
-
-    if ( scorep_opencl_record_kernels || scorep_opencl_record_memcpy )
+    if ( trigger
+         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )
+         && ( scorep_opencl_record_kernels || scorep_opencl_record_memcpy ) )
     {
         //UTILS_DEBUG_PRINTF( SCOREP_DEBUG_OPENCL, "[OpenCL] Finish command queue %p", commandQueue );
         scorep_opencl_queue *queue = scorep_opencl_queue_get( commandQueue );
@@ -884,10 +881,12 @@ SCOREP_LIBWRAP_FUNC_NAME( clFinish ) ( cl_command_queue commandQueue )
         SCOREP_MutexUnlock( queue->mutex );
     }
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clFinish, clFinish,
-                                             ( commandQueue ) );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clFinish, clFinish, ( commandQueue ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clFinish );
+    SCOREP_OPENCL_FUNC_EXIT( clFinish );
 
     return ret;
 }
@@ -905,13 +904,12 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueReadBuffer ) ( cl_command_queue commandQueue,
                                                   const cl_event*  eventWaitList,
                                                   cl_event*        event )
 {
-    SCOREP_OPENCL_ENQUEUE_BUFFER( scorep_opencl_region__clEnqueueReadBuffer,
+    SCOREP_OPENCL_ENQUEUE_BUFFER( clEnqueueReadBuffer,
                                   SCOREP_ENQUEUE_BUFFER_DEV2HOST,
                                   size, commandQueue, event, blockingRead,
-                                  SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueReadBuffer, clEnqueueReadBuffer,
-                                                                           ( commandQueue, buffer, blockingRead,
-                                                                             offset, size, ptr, numEventsInWaitList,
-                                                                             eventWaitList, event ) )
+                                  ( commandQueue, buffer, blockingRead,
+                                    offset, size, ptr, numEventsInWaitList,
+                                    eventWaitList, event )
                                   )
 }
 
@@ -928,13 +926,12 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteBuffer ) ( cl_command_queue commandQueue
                                                    const cl_event*  eventWaitList,
                                                    cl_event*        event )
 {
-    SCOREP_OPENCL_ENQUEUE_BUFFER( scorep_opencl_region__clEnqueueWriteBuffer,
+    SCOREP_OPENCL_ENQUEUE_BUFFER( clEnqueueWriteBuffer,
                                   SCOREP_ENQUEUE_BUFFER_HOST2DEV,
                                   size, commandQueue, event, blockingWrite,
-                                  SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueWriteBuffer, clEnqueueWriteBuffer,
-                                                                           ( commandQueue, buffer, blockingWrite,
-                                                                             offset, size, ptr, numEventsInWaitList,
-                                                                             eventWaitList, event ) );
+                                  ( commandQueue, buffer, blockingWrite,
+                                    offset, size, ptr, numEventsInWaitList,
+                                    eventWaitList, event );
                                   )
 }
 
@@ -951,17 +948,16 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyBuffer ) ( cl_command_queue commandQueue,
                                                   const cl_event*  eventWaitList,
                                                   cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueCopyBuffer );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueCopyBuffer );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueCopyBuffer, clEnqueueCopyBuffer,
+        ( commandQueue, srcBuffer, dstBuffer, srcOffset, dstOffset, size,
+          numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueCopyBuffer, clEnqueueCopyBuffer,
-                                             ( commandQueue, srcBuffer, dstBuffer,
-                                               srcOffset, dstOffset, size,
-                                               numEventsInWaitList, eventWaitList,
-                                               event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueCopyBuffer );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueCopyBuffer );
 
     return ret;
 }
@@ -981,18 +977,16 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueReadImage ) ( cl_command_queue commandQueue,
                                                  const cl_event*  eventWaitList,
                                                  cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueReadImage );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueReadImage );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueReadImage, clEnqueueReadImage,
+        ( commandQueue, image, blockingRead, origin, region, rowPitch,
+          slicePitch, ptr, numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueReadImage,
-                                             clEnqueueReadImage,
-                                             ( commandQueue, image, blockingRead,
-                                               origin, region, rowPitch,
-                                               slicePitch, ptr, numEventsInWaitList,
-                                               eventWaitList, event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueReadImage );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueReadImage );
 
     return ret;
 }
@@ -1012,18 +1006,16 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteImage ) ( cl_command_queue commandQueue,
                                                   const cl_event*  eventWaitList,
                                                   cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueWriteImage );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueWriteImage );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueWriteImage, clEnqueueWriteImage,
+        ( commandQueue, image, blockingWrite, origin, region, inputRowPitch,
+          inputSlicePitch, ptr, numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueWriteImage, clEnqueueWriteImage,
-                                             ( commandQueue, image, blockingWrite,
-                                               origin, region, inputRowPitch,
-                                               inputSlicePitch, ptr,
-                                               numEventsInWaitList, eventWaitList,
-                                               event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueWriteImage );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueWriteImage );
 
     return ret;
 }
@@ -1041,18 +1033,16 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyImage ) ( cl_command_queue commandQueue,
                                                  const cl_event*  eventWaitList,
                                                  cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueCopyImage );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueCopyImage );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueCopyImage, clEnqueueCopyImage,
+        ( commandQueue, srcImage, dstImage, srcOrigin, dstOrigin, region,
+          numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueCopyImage,
-                                             clEnqueueCopyImage,
-                                             ( commandQueue, srcImage, dstImage,
-                                               srcOrigin, dstOrigin,
-                                               region, numEventsInWaitList,
-                                               eventWaitList, event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueCopyImage );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueCopyImage );
 
     return ret;
 }
@@ -1070,18 +1060,16 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyImageToBuffer ) ( cl_command_queue comman
                                                          const cl_event*  eventWaitList,
                                                          cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueCopyImageToBuffer );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueCopyImageToBuffer );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueCopyImageToBuffer, clEnqueueCopyImageToBuffer,
+        ( commandQueue, srcImage, dstBuffer, srcOrigin, region, dstOffset,
+          numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueCopyImageToBuffer,
-                                             clEnqueueCopyImageToBuffer,
-                                             ( commandQueue, srcImage, dstBuffer,
-                                               srcOrigin, region,
-                                               dstOffset, numEventsInWaitList,
-                                               eventWaitList, event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueCopyImageToBuffer );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueCopyImageToBuffer );
 
     return ret;
 }
@@ -1099,18 +1087,16 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyBufferToImage ) ( cl_command_queue comman
                                                          const cl_event*  eventWaitList,
                                                          cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueCopyBufferToImage );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueCopyBufferToImage );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueCopyBufferToImage, clEnqueueCopyBufferToImage,
+        ( commandQueue, srcBuffer, dstImage, srcOffset, dstOrigin, region,
+          numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueCopyBufferToImage,
-                                             clEnqueueCopyBufferToImage,
-                                             ( commandQueue, srcBuffer, dstImage,
-                                               srcOffset, dstOrigin,
-                                               region, numEventsInWaitList,
-                                               eventWaitList, event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueCopyBufferToImage );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueCopyBufferToImage );
 
     return ret;
 }
@@ -1129,17 +1115,16 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMapBuffer ) ( cl_command_queue commandQueue,
                                                  cl_event*        event,
                                                  cl_int*          errcodeRet )
 {
-    void* ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueMapBuffer );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueMapBuffer );
+    SCOREP_OPENCL_WRAP_ENTER();
+    void* ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueMapBuffer, clEnqueueMapBuffer,
+        ( commandQueue, buffer, blockingMap, mapFlags, offset, size,
+          numEventsInWaitList, eventWaitList, event, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueMapBuffer, clEnqueueMapBuffer,
-                                             ( commandQueue, buffer, blockingMap,
-                                               mapFlags, offset, size,
-                                               numEventsInWaitList, eventWaitList,
-                                               event, errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueMapBuffer );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueMapBuffer );
 
     return ret;
 }
@@ -1160,19 +1145,17 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMapImage ) ( cl_command_queue commandQueue,
                                                 cl_event*        event,
                                                 cl_int*          errcodeRet )
 {
-    void* ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueMapImage );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueMapImage );
+    SCOREP_OPENCL_WRAP_ENTER();
+    void* ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueMapImage, clEnqueueMapImage,
+        ( commandQueue, image, blockingMap, mapFlags, origin, region,
+          imageRowPitch, imageSlicePitch, numEventsInWaitList, eventWaitList,
+          event, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueMapImage,
-                                             clEnqueueMapImage,
-                                             ( commandQueue, image, blockingMap,
-                                               mapFlags, origin, region,
-                                               imageRowPitch, imageSlicePitch,
-                                               numEventsInWaitList, eventWaitList,
-                                               event, errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueMapImage );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueMapImage );
 
     return ret;
 }
@@ -1187,16 +1170,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueUnmapMemObject ) ( cl_command_queue commandQu
                                                       const cl_event*  eventWaitList,
                                                       cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueUnmapMemObject );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueUnmapMemObject );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueUnmapMemObject, clEnqueueUnmapMemObject,
+        ( commandQueue, memObj, mappedPtr, numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueUnmapMemObject, clEnqueueUnmapMemObject,
-                                             ( commandQueue, memObj, mappedPtr,
-                                               numEventsInWaitList, eventWaitList,
-                                               event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueUnmapMemObject );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueUnmapMemObject );
 
     return ret;
 }
@@ -1214,42 +1196,40 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueNDRangeKernel ) ( cl_command_queue commandQue
                                                      const cl_event*  eventWaitList,
                                                      cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueNDRangeKernel );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueNDRangeKernel );
-
-    if ( scorep_opencl_record_kernels )
+    scorep_opencl_buffer_entry* kernel;
+    if ( trigger
+         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )
+         && scorep_opencl_record_kernels )
     {
-        scorep_opencl_buffer_entry* kernel =
-            scorep_opencl_get_buffer_entry( scorep_opencl_queue_get( commandQueue ) );
+        kernel = scorep_opencl_get_buffer_entry( scorep_opencl_queue_get( commandQueue ) );
 
         if ( kernel && event == NULL )
         {
             event = &( kernel->event );
         }
+    }
 
-        ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueNDRangeKernel, clEnqueueNDRangeKernel,
-                                                 ( commandQueue, clKernel, workDim,
-                                                   globalWorkOffset, globalWorkSize,
-                                                   localWorkSize, numEventsInWaitList,
-                                                   eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueNDRangeKernel, clEnqueueNDRangeKernel,
+        ( commandQueue, clKernel, workDim, globalWorkOffset, globalWorkSize,
+          localWorkSize, numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
+    if ( trigger
+         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )
+         && scorep_opencl_record_kernels )
+    {
         if ( kernel && CL_SUCCESS == ret )
         {
             kernel->u.kernel = clKernel;
             scorep_opencl_retain_kernel( kernel );
         }
     }
-    else
-    {
-        ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueNDRangeKernel, clEnqueueNDRangeKernel,
-                                                 ( commandQueue, clKernel, workDim,
-                                                   globalWorkOffset, globalWorkSize,
-                                                   localWorkSize, numEventsInWaitList,
-                                                   eventWaitList, event ) );
-    }
 
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueNDRangeKernel );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueNDRangeKernel );
 
     return ret;
 }
@@ -1268,17 +1248,16 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueNativeKernel ) ( cl_command_queue commandQueu
                                                     const cl_event*  eventWaitList,
                                                     cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueNativeKernel );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueNativeKernel );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueNativeKernel, clEnqueueNativeKernel,
+        ( commandQueue, pfnNotify, args, cbArgs, numMemObjects, memList,
+          argsMemLoc, numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueNativeKernel, clEnqueueNativeKernel,
-                                             ( commandQueue, pfnNotify, args,
-                                               cbArgs, numMemObjects, memList,
-                                               argsMemLoc, numEventsInWaitList,
-                                               eventWaitList, event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueNativeKernel );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueNativeKernel );
 
     return ret;
 }
@@ -1303,17 +1282,16 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateImage2D ) ( cl_context             context,
                                               void*                  hostPtr,
                                               cl_int*                errcodeRet )
 {
-    cl_mem ret;
+    SCOREP_OPENCL_FUNC_ENTER( clCreateImage2D );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateImage2D );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_mem ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateImage2D, clCreateImage2D,
+        ( context, flags, imageFormat, imageWidth, imageHeight,
+          imageRowPitch, hostPtr, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateImage2D, clCreateImage2D,
-                                             ( context, flags, imageFormat,
-                                               imageWidth, imageHeight,
-                                               imageRowPitch, hostPtr,
-                                               errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateImage2D );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateImage2D );
 
     return ret;
 }
@@ -1332,18 +1310,16 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateImage3D ) ( cl_context             context,
                                               void*                  hostPtr,
                                               cl_int*                errcodeRet )
 {
-    cl_mem ret;
+    SCOREP_OPENCL_FUNC_ENTER( clCreateImage3D );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateImage3D );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_mem ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateImage3D, clCreateImage3D,
+        ( context, flags, imageFormat, imageWidth, imageHeight, imageDepth,
+          imageRowPitch, imageSlicePitch, hostPtr, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateImage3D, clCreateImage3D,
-                                             ( context, flags, imageFormat,
-                                               imageWidth, imageHeight,
-                                               imageDepth, imageRowPitch,
-                                               imageSlicePitch, hostPtr,
-                                               errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateImage3D );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateImage3D );
 
     return ret;
 }
@@ -1354,14 +1330,14 @@ cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueMarker ) ( cl_command_queue commandQueue,
                                               cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueMarker );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueMarker );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueMarker, clEnqueueMarker, ( commandQueue, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueMarker, clEnqueueMarker,
-                                             ( commandQueue, event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueMarker );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueMarker );
 
     return ret;
 }
@@ -1373,15 +1349,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWaitForEvents ) ( cl_command_queue commandQue
                                                      cl_uint          numEvents,
                                                      const cl_event*  eventList )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueWaitForEvents );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueWaitForEvents );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueWaitForEvents, clEnqueueWaitForEvents,
+        ( commandQueue, numEvents, eventList ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueWaitForEvents, clEnqueueWaitForEvents,
-                                             ( commandQueue, numEvents,
-                                               eventList ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueWaitForEvents );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueWaitForEvents );
 
     return ret;
 }
@@ -1391,14 +1367,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWaitForEvents ) ( cl_command_queue commandQue
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clEnqueueBarrier ) ( cl_command_queue commandQueue )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueBarrier );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueBarrier );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueBarrier, clEnqueueBarrier, ( commandQueue ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueBarrier, clEnqueueBarrier,
-                                             ( commandQueue ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueBarrier );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueBarrier );
 
     return ret;
 }
@@ -1406,13 +1382,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueBarrier ) ( cl_command_queue commandQueue )
 cl_int
 SCOREP_LIBWRAP_FUNC_NAME( clUnloadCompiler ) ( void )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clUnloadCompiler );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clUnloadCompiler );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clUnloadCompiler, clUnloadCompiler, ( /* void */ ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clUnloadCompiler, clUnloadCompiler, ( /* void */ ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clUnloadCompiler );
+    SCOREP_OPENCL_FUNC_EXIT( clUnloadCompiler );
 
     return ret;
 }
@@ -1420,14 +1397,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clUnloadCompiler ) ( void )
 void*
 SCOREP_LIBWRAP_FUNC_NAME( clGetExtensionFunctionAddress ) ( const char* funcName )
 {
-    void* ret;
+    SCOREP_OPENCL_FUNC_ENTER( clGetExtensionFunctionAddress );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clGetExtensionFunctionAddress );
+    SCOREP_OPENCL_WRAP_ENTER();
+    void* ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clGetExtensionFunctionAddress, clGetExtensionFunctionAddress,
+        ( funcName ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clGetExtensionFunctionAddress, clGetExtensionFunctionAddress,
-                                             ( funcName ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clGetExtensionFunctionAddress );
+    SCOREP_OPENCL_FUNC_EXIT( clGetExtensionFunctionAddress );
 
     return ret;
 }
@@ -1448,25 +1426,30 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateCommandQueue ) ( cl_context                  c
                                                    cl_command_queue_properties properties,
                                                    cl_int*                     errcodeRet )
 {
-    cl_command_queue ret;
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateCommandQueue );
+    SCOREP_OPENCL_FUNC_ENTER( clCreateCommandQueue );
 
-    if ( scorep_opencl_record_kernels || scorep_opencl_record_memcpy )
+    if ( trigger
+         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )
+         && ( scorep_opencl_record_kernels || scorep_opencl_record_memcpy ) )
     {
         properties |= CL_QUEUE_PROFILING_ENABLE;
     }
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateCommandQueue, clCreateCommandQueue,
-                                             ( context, device, properties,
-                                               errcodeRet ) );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_command_queue ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateCommandQueue, clCreateCommandQueue,
+        ( context, device, properties, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    if ( scorep_opencl_record_kernels || scorep_opencl_record_memcpy )
+    if ( trigger
+         && SCOREP_IS_MEASUREMENT_PHASE( WITHIN )
+         && ( scorep_opencl_record_kernels || scorep_opencl_record_memcpy ) )
     {
         scorep_opencl_queue* queue = scorep_opencl_queue_create( ret, device );
     }
 
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateCommandQueue );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateCommandQueue );
 
     return ret;
 }
@@ -1480,16 +1463,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateSampler ) ( cl_context         context,
                                               cl_filter_mode     filterMode,
                                               cl_int*            errcodeRet )
 {
-    cl_sampler ret;
+    SCOREP_OPENCL_FUNC_ENTER( clCreateSampler );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clCreateSampler );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_sampler ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clCreateSampler, clCreateSampler,
+        ( context, normalizedCoords, addressingMode, filterMode, errcodeRet ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clCreateSampler, clCreateSampler,
-                                             ( context, normalizedCoords,
-                                               addressingMode, filterMode,
-                                               errcodeRet ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clCreateSampler );
+    SCOREP_OPENCL_FUNC_EXIT( clCreateSampler );
 
     return ret;
 }
@@ -1503,16 +1485,15 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueTask ) ( cl_command_queue commandQueue,
                                             const cl_event*  eventWaitList,
                                             cl_event*        event )
 {
-    cl_int ret;
+    SCOREP_OPENCL_FUNC_ENTER( clEnqueueTask );
 
-    SCOREP_OPENCL_FUNC_ENTER( scorep_opencl_region__clEnqueueTask );
+    SCOREP_OPENCL_WRAP_ENTER();
+    cl_int ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL(
+        scorep_opencl_funcptr_clEnqueueTask, clEnqueueTask,
+        ( commandQueue, kernel, numEventsInWaitList, eventWaitList, event ) );
+    SCOREP_OPENCL_WRAP_EXIT();
 
-    ret = SCOREP_LIBWRAP_INTERNAL_FUNC_CALL( scorep_opencl_funcptr_clEnqueueTask, clEnqueueTask,
-                                             ( commandQueue, kernel,
-                                               numEventsInWaitList, eventWaitList,
-                                               event ) );
-
-    SCOREP_OPENCL_FUNC_EXIT( scorep_opencl_region__clEnqueueTask );
+    SCOREP_OPENCL_FUNC_EXIT( clEnqueueTask );
 
     return ret;
 }

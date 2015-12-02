@@ -1,7 +1,7 @@
 /*
  * This file is part of the Score-P software (http://www.score-p.org)
  *
- * Copyright (c) 2013-2014,
+ * Copyright (c) 2013-2015,
  * Technische Universitaet Dresden, Germany
  *
  * This software may be modified and distributed under the terms of
@@ -25,7 +25,7 @@
 
 #include "SCOREP_Fortran_Wrapper.h"
 
-#include <SCOREP_Events.h>
+#include <SCOREP_InMeasurement.h>
 
 /*
  * Handle complex numbers in C / C++

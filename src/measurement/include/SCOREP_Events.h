@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -49,10 +49,6 @@
 
 #include <stdbool.h>
 
-#if HAVE( THREAD_LOCAL_STORAGE )
-#include <signal.h>
-#endif /* HAVE( THREAD_LOCAL_STORAGE ) */
-
 /**
  * @defgroup SCOREP_Events SCOREP Events
  *
@@ -84,6 +80,23 @@
 /*@{*/
 
 
+/**
+ * Process a sample event in the measurement system.
+ *
+ * @param interruptGeneratorHandle Source generating the interrupt of this sample
+ */
+void
+SCOREP_Sample( SCOREP_InterruptGeneratorHandle interruptGeneratorHandle );
+
+/**
+ * Trigger a sample with an invalid current calling context,
+ *
+ * @param location               Location for the last sample
+ * @param previousCallingContext The previous calling context
+ */
+void
+SCOREP_Location_DeactivateCpuSample( SCOREP_Location*            location,
+                                     SCOREP_CallingContextHandle previousCallingContext );
 
 /**
  * Process a region enter event in the measurement system.
@@ -94,6 +107,15 @@ void
 SCOREP_EnterRegion( SCOREP_RegionHandle regionHandle );
 
 
+/**
+ * Process a region enter event of a wrapped region in the measurement system.
+ *
+ * @param regionHandle The corresponding region for the enter event.
+ * @param wrapped      The address of the wrapped region.
+ */
+void
+SCOREP_EnterWrappedRegion( SCOREP_RegionHandle regionHandle,
+                           intptr_t            wrappedRegion );
 
 
 
@@ -192,6 +214,33 @@ SCOREP_Location_AddAttribute( SCOREP_Location*       location,
 
 
 /**
+ * Add a source code location attribute to the current attribute list.
+ *
+ * @param file The file of the source code location.
+ *
+ * @param lineNumber the line number of the source code location.
+ */
+void
+SCOREP_AddSourceCodeLocation( const char*   file,
+                              SCOREP_LineNo lineNumber );
+
+
+/**
+ * Add a source code location attribute to the attribute list of \p location.
+ *
+ * @param location Location for attribute.
+ *
+ * @param file The file of the source code location.
+ *
+ * @param lineNumber the line number of the source code location.
+ */
+void
+SCOREP_Location_AddSourceCodeLocation( SCOREP_Location* location,
+                                       const char*      file,
+                                       SCOREP_LineNo    lineNumber );
+
+
+/**
  * Adds a location property to the current location. A property consists of a
  * key/value pair.
  * @param name   the key of the property.
@@ -276,22 +325,14 @@ SCOREP_MpiRecv( SCOREP_MpiRank                   sourceRank,
  * Process an mpi collective begin event in the measurement system.
  *
  * Records also an enter event into the region @a regionHandle.
- *
- * @param regionHandle The region handle corresponding to the MPI function
- * that triggers this event.
- *
- * @return The used timestamp for this event.
  */
-uint64_t
-SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle );
+void
+SCOREP_MpiCollectiveBegin( void );
 
 /**
  * Process an mpi collective event in the measurement system.
  *
  * Records also an leave event out of the region @a regionHandle.
- *
- * @param regionHandle The region handle corresponding to the MPI function
- * that triggers this event.
  *
  * @param communicatorHandle The previously defined handle belonging to the
  * communicator that is used in this communication.
@@ -308,8 +349,7 @@ SCOREP_MpiCollectiveBegin( SCOREP_RegionHandle regionHandle );
  *
  */
 void
-SCOREP_MpiCollectiveEnd( SCOREP_RegionHandle              regionHandle,
-                         SCOREP_InterimCommunicatorHandle communicatorHandle,
+SCOREP_MpiCollectiveEnd( SCOREP_InterimCommunicatorHandle communicatorHandle,
                          SCOREP_MpiRank                   rootRank,
                          SCOREP_MpiCollectiveType         collectiveType,
                          uint64_t                         bytesSent,
@@ -442,7 +482,7 @@ SCOREP_RmaWinDestroy( SCOREP_InterimRmaWindowHandle windowHandle );
  * @{
  */
 void
-SCOREP_RmaCollectiveBegin();
+SCOREP_RmaCollectiveBegin( void );
 
 
 /**
@@ -993,48 +1033,6 @@ uint64_t
 SCOREP_GetLastTimeStamp( void );
 
 
-
-/*
- * Interface to detect if we are already inside the measurement system.
- * Every adapter event function needs to have SCOREP_IN_MEASUREMENT_INCREMENT
- * as first and SCOREP_IN_MEASUREMENT_DECREMENT as last statement
- * (i.e. before every return).
- */
-
-#if HAVE( THREAD_LOCAL_STORAGE )
-
-extern __thread volatile sig_atomic_t scorep_in_measurement;
-
-/** Enter the measurement system */
-#define SCOREP_IN_MEASUREMENT_INCREMENT \
-    scorep_in_measurement++;
-
-/** Leave the measurement system */
-
-#define SCOREP_IN_MEASUREMENT_DECREMENT \
-    scorep_in_measurement--;
-
-/** Test whether we are already inside the measurement system */
-#define SCOREP_IN_MEASUREMENT           \
-    ( scorep_in_measurement > 0 )
-
-#else
-
-/** Enter the measurement system */
-#define SCOREP_IN_MEASUREMENT_INCREMENT \
-    SCOREP_Location_InMeasurementIncrement( SCOREP_Location_GetCurrentCPULocation() );
-
-/** Leave the measurement system */
-#define SCOREP_IN_MEASUREMENT_DECREMENT \
-    SCOREP_Location_InMeasurementDecrement( SCOREP_Location_GetCurrentCPULocation() );
-
-/** Test whether we are already inside the measurement system */
-#define SCOREP_IN_MEASUREMENT           \
-    ( SCOREP_Location_InMeasurement( SCOREP_Location_GetCurrentCPULocation() ) )
-
-#endif /* HAVE( THREAD_LOCAL_STORAGE ) */
-
 /*@}*/
-
 
 #endif /* SCOREP_EVENTS_H */

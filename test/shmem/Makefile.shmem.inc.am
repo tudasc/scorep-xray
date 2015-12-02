@@ -6,7 +6,7 @@
 ## Copyright (c) 2014,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
-## Copyright (c) 2014,
+## Copyright (c) 2014-2015,
 ## Technische Universitaet Dresden, Germany
 ##
 ## This software may be modified and distributed under the terms of
@@ -47,15 +47,15 @@ if HAVE_SHMEM_SUPPORT
 $(LIB_DIR_SCOREP)libscorep_shmem_event.la:
 	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_shmem_event.la
 
-$(LIB_DIR_SCOREP)libscorep_subsystems_shmem.la:
+$(LIB_DIR_SCOREP)libscorep_subsystems_shmem_la-scorep_monolithic_subsystems.lo:
 	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_subsystems_shmem.la
 
 $(LIB_DIR_SCOREP)libscorep_shmem_mgmt.la:
 	@$(am__cd) $(LIB_DIR_SCOREP) && $(MAKE) $(AM_MAKEFLAGS) libscorep_shmem_mgmt.la
 
-shmem_libadd =  \
-    $(LIB_DIR_SCOREP)libscorep_shmem_event.la      \
-    $(LIB_DIR_SCOREP)libscorep_subsystems_shmem.la \
+shmem_libadd = \
+    $(LIB_DIR_SCOREP)libscorep_subsystems_shmem_la-scorep_monolithic_subsystems.lo \
+    $(LIB_DIR_SCOREP)libscorep_shmem_event.la \
     $(LIB_DIR_SCOREP)libscorep_shmem_mgmt.la
 shmem_ldflags = $(external_ldflags) $(shmem_libwrap_ldflags)
 
