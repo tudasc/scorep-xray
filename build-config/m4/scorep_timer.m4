@@ -401,12 +401,7 @@ AC_LINK_IFELSE(
             [timer_name="${timer_name} (${tsc})"
             AC_DEFINE_UNQUOTED(HAVE_BACKEND_SCOREP_TIMER_TSC_NAME, ["${tsc}"], [TSC timer])
             break])
-    done
-    # check for getline
-    save_CPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="-D_POSIX_C_SOURCE=200809L"
-    AC_CHECK_FUNCS([getline])
-    CPPFLAGS=${save_CPPFLAGS}])
+    done])
 AC_MSG_CHECKING([for time stamp counter (TSC) timer])
 AC_MSG_RESULT([$have_timer])
 ])# _SCOREP_TIMER_TSC

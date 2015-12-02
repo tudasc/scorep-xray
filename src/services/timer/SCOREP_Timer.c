@@ -17,26 +17,15 @@
 
 
 #include <config.h>
-/* no other include here */
-#if HAVE( BACKEND_SCOREP_TIMER_TSC )
-# if HAVE( GETLINE )
-#  ifdef _POSIX_C_SOURCE
-#   if _POSIX_C_SOURCE < 200809L
-#   undef _POSIX_C_SOURCE
-#   define _POSIX_C_SOURCE 200809L
-#   endif
-#  else
-#   define _POSIX_C_SOURCE 200809L
-#  endif
-#  include <stdio.h>
-#  include <stdlib.h>
-#  include <string.h>
-#  include <sys/types.h>
-# endif /* GETLINE */
-#endif  /* BACKEND_SCOREP_TIMER_TSC */
 
 #include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Timer_Utils.h>
+
+#if HAVE( BACKEND_SCOREP_TIMER_TSC )
+#include <UTILS_IO.h>
+#include <string.h>
+#include <stdlib.h>
+#endif  /* BACKEND_SCOREP_TIMER_TSC */
 
 /* *INDENT-OFF* */
 /* *INDENT-ON*  */
@@ -134,23 +123,23 @@ SCOREP_Timer_Initialize( void )
         {
 # if !( defined( __FUJITSU ) ) /* For Fujitsu we 1. know that the tsc is nonstop and constant
                                 * and 2. /proc/cpuinfo doesn't contain this data. */
-# if HAVE( GETLINE )
-            FILE*   fp;
-            char*   line   = NULL;
-            size_t  length = 0;
-            ssize_t read;
+            FILE*            fp;
+            char*            line           = NULL;
+            size_t           length         = 0;
+            char             proc_cpuinfo[] = "/proc/cpuinfo";
+            SCOREP_ErrorCode status;
 
-            fp = fopen( "/proc/cpuinfo", "r" );
+            fp = fopen( proc_cpuinfo, "r" );
             if ( fp == NULL )
             {
-                UTILS_WARNING( "Cannot check for \'nonstop_tsc\' and \'constant_tsc\' "
-                               "in /proc/cpuinfo. Switch to a timer different from "
-                               "\'tsc\' if you have issues with timings." );
+                UTILS_ERROR_POSIX( "Cannot check for \'nonstop_tsc\' and \'constant_tsc\' "
+                                   "in %s. Switch to a timer different from "
+                                   "\'tsc\' if you have issues with timings.", proc_cpuinfo );
             }
             else
             {
                 bool constant_and_nonstop_tsc = false;
-                while ( ( read = getline( &line, &length, fp ) ) != -1 )
+                while ( ( status = UTILS_IO_GetLine( &line, &length, fp ) ) == SCOREP_SUCCESS )
                 {
                     if ( strstr( line, "nonstop_tsc" ) != NULL &&
                          strstr( line, "constant_tsc" ) != NULL )
@@ -161,17 +150,18 @@ SCOREP_Timer_Initialize( void )
                 }
                 if ( !constant_and_nonstop_tsc )
                 {
-                    UTILS_WARNING( "tsc timer is not (\'nonstop_tsc\' && \'constant_tsc\'). "
-                                   "Timings likely to be unreliable. Please switch to a different timer." );
+                    if ( status != SCOREP_ERROR_END_OF_BUFFER )
+                    {
+                        UTILS_ERROR( status, "Error reading %s for timer consistency check.", proc_cpuinfo );
+                    }
+                    UTILS_WARNING( "From %s, could not determine if tsc timer is (\'nonstop_tsc\' "
+                                   "&& \'constant_tsc\'). Timings likely to be unreliable. "
+                                   "Switch to a timer different from \'tsc\' if you have "
+                                   "issues with timings.", proc_cpuinfo );
                 }
                 free( line );
             }
-#else       /* GETLINE */
-            UTILS_WARNING( "Cannot check for \'nonstop_tsc\' and \'constant_tsc\' "
-                           "in /proc/cpuinfo. Switch to a timer different from "
-                           "\'tsc\' if you have issues with timings." );
-#endif      /* ! GETLINE */
-# endif /* !(defined(__FUJITSU)) */
+# endif     /* !(defined(__FUJITSU)) */
 
             /* TODO: assert that all processes use TIMER_TSC running at the
              * same frequency. For this we need to MPP communicate but MPP might
