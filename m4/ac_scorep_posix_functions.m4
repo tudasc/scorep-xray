@@ -41,7 +41,7 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     AC_LANG_PUSH(C)
 
     ## check whether functions are declared and set HAVE_DECL_* appropriately
-    AC_CHECK_DECLS([gethostid, gethostname, fseeko, fseeko64, getcwd], [], [], [[
+    AC_CHECK_DECLS([gethostid, gethostname, fseeko, fseeko64, getcwd, read, close], [], [], [[
       #include <unistd.h>
       #include <stdio.h>
     ]])
@@ -165,6 +165,52 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
          has_getcwd_func="no"]
     ) # AC_LINK_IF_ELSE
 
+    has_read_func="yes"
+    AC_MSG_CHECKING([for read])
+    AC_LINK_IFELSE([
+        AC_LANG_SOURCE([
+            #include <stdlib.h>
+            #include <unistd.h>
+
+            #if !HAVE_DECL_READ
+            ssize_t read(int fd, void *buf, size_t count);
+            #endif
+
+            int main()
+            {
+                ssize_t result = read(0, NULL, 0);
+                return EXIT_SUCCESS;
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_READ, 1, [Can link a read function])],
+        [AC_MSG_RESULT(no)
+         has_read_func="no"]
+    ) # AC_LINK_IF_ELSE
+
+    has_close_func="yes"
+    AC_MSG_CHECKING([for close])
+    AC_LINK_IFELSE([
+        AC_LANG_SOURCE([
+            #include <stdlib.h>
+            #include <unistd.h>
+
+            #if !HAVE_DECL_CLOSE
+            int close(int fd);
+            #endif
+
+            int main()
+            {
+                int result = close(0);
+                return EXIT_SUCCESS;
+            }
+            ])],
+        [AC_MSG_RESULT(yes);
+         AC_DEFINE(HAVE_CLOSE, 1, [Can link a close function])],
+        [AC_MSG_RESULT(no)
+         has_close_func="no"]
+    ) # AC_LINK_IF_ELSE
+
     AC_LANG_POP(C)
 
     ##
@@ -176,6 +222,8 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     AM_CONDITIONAL([HAVE_FSEEKO], [test "x${has_fseeko_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_FSEEKO64], [test "x${has_fseeko64_func}" = "xyes"])
     AM_CONDITIONAL([HAVE_GETCWD], [test "x${has_getcwd_func}" = "xyes"])
+    AM_CONDITIONAL([HAVE_READ], [test "x${has_read_func}" = "xyes"])
+    AM_CONDITIONAL([HAVE_CLOSE], [test "x${has_close_func}" = "xyes"])
 
 
     ##
@@ -189,8 +237,9 @@ AC_DEFUN([AC_SCOREP_POSIX_FUNCTIONS], [
     AC_LANG_PUSH(C++)
 
     ## check whether functions are declared and set HAVE_DECL_* appropriately
-    AC_CHECK_DECLS([gethostid, gethostname, fseeko, fseeko64, getcwd], [], [], [[
+    AC_CHECK_DECLS([gethostid, gethostname, fseeko, fseeko64, getcwd, read, close], [], [], [[
       #include <stdio.h>
+      #include <unistd.h>
     ]])
 
     ##
