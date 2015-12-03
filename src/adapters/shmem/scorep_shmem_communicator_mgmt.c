@@ -176,7 +176,7 @@ scorep_shmem_close_pe_group( void )
         InterimCommunicator,
         SCOREP_Memory_GetLocalDefinitionPageManager() )
     {
-        if ( definition->paradigm_type == SCOREP_PARADIGM_SHMEM )
+        if ( definition->paradigm_type != SCOREP_PARADIGM_SHMEM )
         {
             continue;
         }
@@ -288,17 +288,17 @@ define_comm( int                                    start,
              scorep_shmem_comm_definition_payload** payload )
 {
     return SCOREP_Definitions_NewInterimCommunicatorCustom(
-               NULL,
-               &scorep_shmem_pe_groups,
-               init_payload_fn,
-               equal_payloads_fn,
-               SCOREP_INVALID_INTERIM_COMMUNICATOR,
-               SCOREP_PARADIGM_SHMEM,
-               sizeof( **payload ),
-               ( void** )payload,
-               start,
-               stride,
-               size );
+        NULL,
+        &scorep_shmem_pe_groups,
+        init_payload_fn,
+        equal_payloads_fn,
+        SCOREP_INVALID_INTERIM_COMMUNICATOR,
+        SCOREP_PARADIGM_SHMEM,
+        sizeof( **payload ),
+        ( void** )payload,
+        start,
+        stride,
+        size );
 }
 
 /**
