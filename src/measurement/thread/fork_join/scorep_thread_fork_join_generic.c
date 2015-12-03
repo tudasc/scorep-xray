@@ -112,6 +112,11 @@ SCOREP_ThreadForkJoin_Fork( SCOREP_ParadigmType paradigm,
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinFork, THREAD_FORK_JOIN_FORK,
                            ( location, timestamp, paradigm,
                              nRequestedThreads, sequence_count ) )
+
+    /* We transit the master thread into the PAUSE phase, so that no
+     * events are allowed until we enter the thread team */
+    scorep_subsystems_deactivate_cpu_location( location, NULL,
+                                               SCOREP_CPU_LOCATION_PHASE_PAUSE );
 }
 
 
@@ -139,6 +144,11 @@ SCOREP_ThreadForkJoin_Join( SCOREP_ParadigmType paradigm )
 
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinJoin, THREAD_FORK_JOIN_JOIN,
                            ( location, timestamp, paradigm ) )
+
+    /* The master thread was in the PAUSE phase, so that no events are
+     * allowed since we left the thread team */
+    scorep_subsystems_activate_cpu_location( location, NULL, 0,
+                                             SCOREP_CPU_LOCATION_PHASE_PAUSE );
 }
 
 SCOREP_TaskHandle
@@ -210,14 +220,13 @@ SCOREP_ThreadForkJoin_TeamBegin( SCOREP_ParadigmType paradigm,
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTeamBegin, THREAD_FORK_JOIN_TEAM_BEGIN,
                            ( current_location, timestamp, paradigm, team ) )
 
-    // Call subsystems on location activation
-    if ( thread_id != 0 )
-    {
-        /* All but the master thread activates the locations. */
-        scorep_subsystems_activate_cpu_location( current_location,
-                                                 NULL, 0,
-                                                 SCOREP_CPU_LOCATION_PHASE_EVENTS );
-    }
+    /* Call subsystems on location activation, the master thread transits from
+     * the PAUSE phase */
+    scorep_subsystems_activate_cpu_location( current_location,
+                                             NULL, 0,
+                                             thread_id == 0
+                                             ? SCOREP_CPU_LOCATION_PHASE_PAUSE
+                                             : SCOREP_CPU_LOCATION_PHASE_EVENTS );
 
     return SCOREP_Task_GetCurrentTask( current_location );
 }
@@ -234,19 +243,17 @@ SCOREP_ThreadForkJoin_TeamEnd( SCOREP_ParadigmType paradigm )
     int                                thread_id = -1;
     SCOREP_InterimCommunicatorHandle   team      = scorep_thread_get_team( tpd );
 
-
     scorep_thread_on_team_end( tpd, &parent, &thread_id, paradigm );
     UTILS_ASSERT( parent );
     UTILS_ASSERT( thread_id >= 0 );
 
-    /* First notify the subsystems about the deactivation of the location. */
-    if ( thread_id != 0 )
-    {
-        /* @sampling All but the master thread deactivates the locations. */
-        scorep_subsystems_deactivate_cpu_location( location,
-                                                   NULL,
-                                                   SCOREP_CPU_LOCATION_PHASE_EVENTS );
-    }
+    /* First notify the subsystems about the deactivation of the location.
+     * the master thread goes into the PAUSE phase. */
+    scorep_subsystems_deactivate_cpu_location( location,
+                                               NULL,
+                                               thread_id == 0
+                                               ? SCOREP_CPU_LOCATION_PHASE_PAUSE
+                                               : SCOREP_CPU_LOCATION_PHASE_EVENTS );
 
     uint64_t timestamp = scorep_get_timestamp( location );
     SCOREP_CALL_SUBSTRATE( ThreadForkJoinTeamEnd, THREAD_FORK_JOIN_TEAM_END,

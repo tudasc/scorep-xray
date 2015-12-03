@@ -324,8 +324,7 @@ unwinding_subsystem_deactivate_cpu_location( SCOREP_Location*        location,
 
     if ( phase == SCOREP_CPU_LOCATION_PHASE_EVENTS )
     {
-        /* as long as we don't trigger exit events for instrumented region,
-           this could be also PHASE_MGMT */
+        /* The location really goes into idle state, thus tear down */
         scorep_unwinding_cpu_deactivate( location );
     }
 }

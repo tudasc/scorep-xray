@@ -168,12 +168,14 @@ typedef struct SCOREP_Subsystem
      *  The next 4 callbacks notify the subsystem about the lifetime of a
      *  location. For CPU locations:
      *
-     *  1. init_location
-     *  2. activation_cpu_location(MGMT)     \
-     *  3. activation_cpu_location(EVENTS)   | possibly multiple times
-     *  4. deactivation_cpu_location(EVENTS) |
-     *  5. deactivation_cpu_location(MGMT)   /
-     *  6. finalize_location
+     *  - init_location
+     *  - activate_cpu_location(MGMT)                  \
+     *  - activate_cpu_location(EVENTS)                |
+     *  - deactivate_cpu_location(PAUSE)   \ possible  | at least once
+     *  - activate_cpu_location(PAUSE)     /           |
+     *  - deactivate_cpu_location(EVENTS)              |
+     *  - deactivate_cpu_location(MGMT)                /
+     *  - finalize_location
      *
      *  For none-CPU locations:
      *
@@ -210,6 +212,11 @@ typedef struct SCOREP_Subsystem
      * (2) SCOREP_CPU_LOCATION_PHASE_EVENTS::
      *     The location was successfully activated. Events can now be triggered.
      *
+     * Additionally, a CPU location can be in a PAUSE phase where no events are
+     * allowed.
+     *     SCOREP_CPU_LOCATION_PHASE_PAUSE::
+     *     Location goes into an PAUSE phase were no events are allowed.
+     *
      * This callback is always called by the CPU thread which owns this location.
      * I.e., location == SCOREP_Location_GetCurrentCPULocation.
      *
@@ -236,6 +243,11 @@ typedef struct SCOREP_Subsystem
      *     this callback.
      * (2) SCOREP_CPU_LOCATION_PHASE_MGMT::
      *     The location was successfully deactivated. No events are allowed.
+     *
+     * Additionally, a CPU location can be in a PAUSE phase where no events are
+     * allowed.
+     *     SCOREP_CPU_LOCATION_PHASE_PAUSE::
+     *     Location goes into an PAUSE phase were no events are allowed.
      *
      * This callback is always called by the CPU thread which owns this location.
      * I.e., location == SCOREP_Location_GetCurrentCPULocation.
