@@ -256,7 +256,7 @@ sampling_subsystem_activate_cpu_location( SCOREP_Location*        location,
         return SCOREP_SUCCESS;
     }
 
-    if ( phase != SCOREP_CPU_LOCATION_PHASE_MGMT )
+    if ( phase != SCOREP_CPU_LOCATION_PHASE_EVENTS )
     {
         return SCOREP_SUCCESS;
     }
@@ -290,7 +290,7 @@ sampling_subsystem_deactivate_cpu_location( SCOREP_Location*        location,
         return;
     }
 
-    if ( phase != SCOREP_CPU_LOCATION_PHASE_MGMT )
+    if ( phase != SCOREP_CPU_LOCATION_PHASE_EVENTS )
     {
         return;
     }
