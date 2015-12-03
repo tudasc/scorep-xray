@@ -275,13 +275,13 @@ typedef enum SCOREP_ParadigmClass
     SCOREP_PARADIGM( MEASUREMENT,        "measurement",        MEASUREMENT_SYSTEM ) \
     SCOREP_PARADIGM( USER,               "user",               USER ) \
     SCOREP_PARADIGM( COMPILER,           "compiler",           COMPILER ) \
+    SCOREP_PARADIGM( SAMPLING,           "sampling",           SAMPLING ) \
     SCOREP_PARADIGM( MPI,                "mpi",                MPI ) \
     SCOREP_PARADIGM( SHMEM,              "shmem",              SHMEM ) \
     SCOREP_PARADIGM( OPENMP,             "openmp",             OPENMP ) \
     SCOREP_PARADIGM( PTHREAD,            "pthread",            PTHREAD ) \
     SCOREP_PARADIGM( CUDA,               "cuda",               CUDA ) \
-    SCOREP_PARADIGM( OPENCL,             "opencl",             OPENCL ) \
-    SCOREP_PARADIGM( SAMPLING,           "sampling",           SAMPLING )
+    SCOREP_PARADIGM( OPENCL,             "opencl",             OPENCL )
 
 
 typedef enum SCOREP_ParadigmType
