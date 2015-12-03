@@ -64,13 +64,13 @@
 # include "../timer/scorep_timer_tsc.h"
 #endif /* BACKEND_SCOREP_TIMER_TSC */
 
-#if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
-# include <time.h>
-#endif /* BACKEND_SCOREP_TIMER_CLOCK_GETTIME */
-
 #if HAVE( BACKEND_SCOREP_TIMER_GETTIMEOFDAY )
 # include <sys/time.h>
 #endif /* BACKEND_SCOREP_TIMER_GETTIMEOFDAY */
+
+#if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
+# include <time.h>
+#endif /* BACKEND_SCOREP_TIMER_CLOCK_GETTIME */
 
 
 /**
@@ -131,6 +131,15 @@ SCOREP_Timer_GetClockTicks( void )
         }
 #endif  /* BACKEND_SCOREP_TIMER_TSC */
 
+#if HAVE( BACKEND_SCOREP_TIMER_GETTIMEOFDAY )
+        case TIMER_GETTIMEOFDAY:
+        {
+            struct timeval tp;
+            gettimeofday( &tp, 0 );
+            return ( uint64_t )tp.tv_sec * UINT64_C( 1000000 ) + ( uint64_t )tp.tv_usec;
+        }
+#endif  /* BACKEND_SCOREP_TIMER_GETTIMEOFDAY */
+
 #if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
         case TIMER_CLOCK_GETTIME:
         {
@@ -140,15 +149,6 @@ SCOREP_Timer_GetClockTicks( void )
             return ( uint64_t )time.tv_sec * UINT64_C( 1000000000 ) + ( uint64_t )time.tv_nsec;
         }
 #endif  /* BACKEND_SCOREP_TIMER_CLOCK_GETTIME */
-
-#if HAVE( BACKEND_SCOREP_TIMER_GETTIMEOFDAY )
-        case TIMER_GETTIMEOFDAY:
-        {
-            struct timeval tp;
-            gettimeofday( &tp, 0 );
-            return ( uint64_t )tp.tv_sec * UINT64_C( 1000000 ) + ( uint64_t )tp.tv_usec;
-        }
-#endif  /* BACKEND_SCOREP_TIMER_GETTIMEOFDAY */
 
         default:
             UTILS_FATAL( "Invalid timer selected, shouldn't happen." );

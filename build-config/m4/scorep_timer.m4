@@ -49,8 +49,8 @@ AS_UNSET([scorep_timer_default])
 # error.
 AC_CHECK_TYPE([dummy])
 
-_SCOREP_TIMER_CHECK([clock_gettime], [_SCOREP_TIMER_CLOCK_GETTIME], [-D_POSIX_C_SOURCE=199309L], [], [-lrt])
 _SCOREP_TIMER_CHECK([gettimeofday], [_SCOREP_TIMER_GETTIMEOFDAY])
+_SCOREP_TIMER_CHECK([clock_gettime], [_SCOREP_TIMER_CLOCK_GETTIME], [-D_POSIX_C_SOURCE=199309L], [], [-lrt])
 
 AS_CASE([${ac_scorep_platform}],
     [bgl],   [_SCOREP_TIMER_CHECK([bgl], [_SCOREP_TIMER_BGL], [-I/bgl/BlueLight/ppcfloor/bglsys/include])],
@@ -141,6 +141,26 @@ AS_VAR_SET_IF([timer_libs], [LIBS="$timer_save_LIBS"])
 ])# _SCOREP_TIMER_CHECK
 
 
+# _SCOREP_TIMER_GETTIMEOFDAY
+# --------------------------
+# ...
+AC_DEFUN([_SCOREP_TIMER_GETTIMEOFDAY],
+[AC_MSG_CHECKING([for gettimeofday timer])
+AC_LINK_IFELSE(
+    [AC_LANG_PROGRAM(
+        [[
+        #include <sys/time.h>
+        ]],
+        [[
+        struct timeval tp;
+        gettimeofday( &tp, 0 );
+        ]])
+    ],
+    [have_timer=yes])
+AC_MSG_RESULT([$have_timer])
+])# _SCOREP_TIMER_GETTIMEOFDAY
+
+
 # _SCOREP_TIMER_CLOCK_GETTIME
 # ---------------------------
 # ...
@@ -167,26 +187,6 @@ AS_IF([test "x${have_timer}" = xyes],
         [${timer_clk_id}],
         [The clk_id used in clock_gettime calls.])])
 ])# _SCOREP_TIMER_CLOCK_GETTIME
-
-
-# _SCOREP_TIMER_GETTIMEOFDAY
-# --------------------------
-# ...
-AC_DEFUN([_SCOREP_TIMER_GETTIMEOFDAY],
-[AC_MSG_CHECKING([for gettimeofday timer])
-AC_LINK_IFELSE(
-    [AC_LANG_PROGRAM(
-        [[
-        #include <sys/time.h>
-        ]],
-        [[
-        struct timeval tp;
-        gettimeofday( &tp, 0 );
-        ]])
-    ],
-    [have_timer=yes])
-AC_MSG_RESULT([$have_timer])
-])# _SCOREP_TIMER_GETTIMEOFDAY
 
 
 # _SCOREP_TIMER_BGL

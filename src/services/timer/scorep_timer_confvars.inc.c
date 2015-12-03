@@ -74,14 +74,6 @@ static const SCOREP_ConfigType_SetEntry timer_table[] = {
     },
 #endif /* BACKEND_SCOREP_TIMER_TSC */
 
-#if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
-    {
-        "clock_gettime",
-        TIMER_CLOCK_GETTIME,
-        "clock_gettime timer."
-    },
-#endif /* BACKEND_SCOREP_TIMER_CLOCK_GETTIME */
-
 #if HAVE( BACKEND_SCOREP_TIMER_GETTIMEOFDAY )
     {
         "gettimeofday",
@@ -89,6 +81,14 @@ static const SCOREP_ConfigType_SetEntry timer_table[] = {
         "gettimeofday timer."
     },
 #endif /* BACKEND_SCOREP_TIMER_GETTIMEOFDAY */
+
+#if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
+    {
+        "clock_gettime",
+        TIMER_CLOCK_GETTIME,
+        "clock_gettime timer."
+    },
+#endif /* BACKEND_SCOREP_TIMER_CLOCK_GETTIME */
 
     { NULL, 0, NULL }
 };

@@ -189,15 +189,15 @@ SCOREP_Timer_Initialize( void )
         break;
 #endif  /* BACKEND_SCOREP_TIMER_TSC */
 
-#if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
-        case TIMER_CLOCK_GETTIME:
-            break;
-#endif  /* BACKEND_SCOREP_TIMER_CLOCK_GETTIME */
-
 #if HAVE( BACKEND_SCOREP_TIMER_GETTIMEOFDAY )
         case TIMER_GETTIMEOFDAY:
             break;
 #endif  /* BACKEND_SCOREP_TIMER_GETTIMEOFDAY */
+
+#if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
+        case TIMER_CLOCK_GETTIME:
+            break;
+#endif  /* BACKEND_SCOREP_TIMER_CLOCK_GETTIME */
 
         default:
             UTILS_FATAL( "Invalid timer selected, shouldn't happen." );
@@ -271,15 +271,15 @@ SCOREP_Timer_GetClockResolution( void )
         }
 #endif  /* BACKEND_SCOREP_TIMER_TSC */
 
-#if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
-        case TIMER_CLOCK_GETTIME:
-            return UINT64_C( 1000000000 );
-#endif  /* BACKEND_SCOREP_TIMER_CLOCK_GETTIME */
-
 #if HAVE( BACKEND_SCOREP_TIMER_GETTIMEOFDAY )
         case TIMER_GETTIMEOFDAY:
             return UINT64_C( 1000000 );
 #endif  /* BACKEND_SCOREP_TIMER_GETTIMEOFDAY */
+
+#if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
+        case TIMER_CLOCK_GETTIME:
+            return UINT64_C( 1000000000 );
+#endif  /* BACKEND_SCOREP_TIMER_CLOCK_GETTIME */
 
         default:
             UTILS_FATAL( "Invalid timer selected, shouldn't happen." );
@@ -322,15 +322,15 @@ SCOREP_Timer_ClockIsGlobal( void )
             return false;
 #endif  /* BACKEND_SCOREP_TIMER_TSC */
 
-#if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
-        case TIMER_CLOCK_GETTIME:
-            return false;
-#endif  /* BACKEND_SCOREP_TIMER_CLOCK_GETTIME */
-
 #if HAVE( BACKEND_SCOREP_TIMER_GETTIMEOFDAY )
         case TIMER_GETTIMEOFDAY:
             return false;
 #endif  /* BACKEND_SCOREP_TIMER_GETTIMEOFDAY */
+
+#if HAVE( BACKEND_SCOREP_TIMER_CLOCK_GETTIME )
+        case TIMER_CLOCK_GETTIME:
+            return false;
+#endif  /* BACKEND_SCOREP_TIMER_CLOCK_GETTIME */
 
         default:
             UTILS_FATAL( "Invalid timer selected, shouldn't happen." );
