@@ -56,6 +56,6 @@ void
 scorep_shmem_rank_and_size( void )
 {
     /* Determine own SHMEM rank and number of all PEs. */
-    scorep_shmem_number_of_pes = CALL_SHMEM( _num_pes ) ();
-    scorep_shmem_my_rank       = CALL_SHMEM( _my_pe ) ();
+    scorep_shmem_number_of_pes = CALL_SHMEM( _num_pes )();
+    scorep_shmem_my_rank       = CALL_SHMEM( _my_pe )();
 }

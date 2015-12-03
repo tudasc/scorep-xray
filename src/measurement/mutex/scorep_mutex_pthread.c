@@ -80,7 +80,7 @@ SCOREP_MutexCreate( SCOREP_Mutex* scorepMutex )
     }
 
     /* this call does not give us a success status */
-    CALL_PTHREAD_REAL_FUNC( pthread_mutex_init ) ( *lock, NULL );
+    CALL_PTHREAD_REAL_FUNC( pthread_mutex_init )( *lock, NULL );
     return SCOREP_SUCCESS;
 }
 
@@ -109,7 +109,7 @@ SCOREP_MutexDestroy( SCOREP_Mutex* scorepMutex )
     {
         return SCOREP_SUCCESS;
     }
-    CALL_PTHREAD_REAL_FUNC( pthread_mutex_destroy ) ( *lock );
+    CALL_PTHREAD_REAL_FUNC( pthread_mutex_destroy )( *lock );
     free( *lock );
     *lock = NULL;
 
@@ -139,7 +139,7 @@ SCOREP_MutexLock( SCOREP_Mutex scorepMutex )
     }
 
     pthread_mutex_t* lock = ( pthread_mutex_t* )scorepMutex;
-    CALL_PTHREAD_REAL_FUNC( pthread_mutex_lock ) ( lock );
+    CALL_PTHREAD_REAL_FUNC( pthread_mutex_lock )( lock );
 
     return SCOREP_SUCCESS;
 }
@@ -168,7 +168,7 @@ SCOREP_MutexUnlock( SCOREP_Mutex scorepMutex )
 
     pthread_mutex_t* lock = ( pthread_mutex_t* )scorepMutex;
 
-    CALL_PTHREAD_REAL_FUNC( pthread_mutex_unlock ) ( lock );
+    CALL_PTHREAD_REAL_FUNC( pthread_mutex_unlock )( lock );
 
     return SCOREP_SUCCESS;
 }

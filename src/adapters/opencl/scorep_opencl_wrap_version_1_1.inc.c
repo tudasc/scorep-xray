@@ -1,11 +1,9 @@
-/* *INDENT-OFF* */
-
 cl_mem
-SCOREP_LIBWRAP_FUNC_NAME( clCreateSubBuffer ) ( cl_mem                buffer,
-                                                cl_mem_flags          flags,
-                                                cl_buffer_create_type bufferCreateType,
-                                                const void*           bufferCreateInfo,
-                                                cl_int*               errcodeRet )
+SCOREP_LIBWRAP_FUNC_NAME( clCreateSubBuffer )( cl_mem                buffer,
+                                               cl_mem_flags          flags,
+                                               cl_buffer_create_type bufferCreateType,
+                                               const void*           bufferCreateInfo,
+                                               cl_int*               errcodeRet )
 {
     SCOREP_OPENCL_FUNC_ENTER( clCreateSubBuffer );
 
@@ -23,10 +21,10 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateSubBuffer ) ( cl_mem                buffer,
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clSetMemObjectDestructorCallback ) ( cl_mem memObj,
-                                                               void ( CL_CALLBACK* pfnNotify )( cl_mem,
-                                                                                                void* ),
-                                                               void*  userData )
+SCOREP_LIBWRAP_FUNC_NAME( clSetMemObjectDestructorCallback )( cl_mem memObj,
+                                                              void( CL_CALLBACK * pfnNotify )( cl_mem,
+                                                                                               void* ),
+                                                              void*  userData )
 {
     SCOREP_OPENCL_FUNC_ENTER( clSetMemObjectDestructorCallback );
 
@@ -44,8 +42,8 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetMemObjectDestructorCallback ) ( cl_mem memObj,
 
 
 cl_event
-SCOREP_LIBWRAP_FUNC_NAME( clCreateUserEvent ) ( cl_context context,
-                                                cl_int*    errcodeRet )
+SCOREP_LIBWRAP_FUNC_NAME( clCreateUserEvent )( cl_context context,
+                                               cl_int*    errcodeRet )
 {
     SCOREP_OPENCL_FUNC_ENTER( clCreateUserEvent );
 
@@ -64,8 +62,8 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateUserEvent ) ( cl_context context,
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clSetUserEventStatus ) ( cl_event event,
-                                                   cl_int   executionStatus )
+SCOREP_LIBWRAP_FUNC_NAME( clSetUserEventStatus )( cl_event event,
+                                                  cl_int   executionStatus )
 {
     SCOREP_OPENCL_FUNC_ENTER( clSetUserEventStatus );
 
@@ -83,12 +81,12 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetUserEventStatus ) ( cl_event event,
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clSetEventCallback ) ( cl_event event,
-                                                 cl_int   commandExecCallbackType,
-                                                 void ( CL_CALLBACK* pfnNotify )( cl_event,
-                                                                                  cl_int,
-                                                                                  void* ),
-                                                 void*    userData )
+SCOREP_LIBWRAP_FUNC_NAME( clSetEventCallback )( cl_event event,
+                                                cl_int   commandExecCallbackType,
+                                                void( CL_CALLBACK * pfnNotify )( cl_event,
+                                                                                 cl_int,
+                                                                                 void* ),
+                                                void*    userData )
 {
     SCOREP_OPENCL_FUNC_ENTER( clSetEventCallback );
 
@@ -106,20 +104,20 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetEventCallback ) ( cl_event event,
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clEnqueueReadBufferRect ) ( cl_command_queue commandQueue,
-                                                      cl_mem           buffer,
-                                                      cl_bool          blockingRead,
-                                                      const size_t*    bufferOffset,
-                                                      const size_t*    hostOffset,
-                                                      const size_t*    region,
-                                                      size_t           bufferRowPitch,
-                                                      size_t           bufferSlicePitch,
-                                                      size_t           hostRowPitch,
-                                                      size_t           hostSlicePitch,
-                                                      void*            ptr,
-                                                      cl_uint          numEventsInWaitList,
-                                                      const cl_event*  eventWaitList,
-                                                      cl_event*        event )
+SCOREP_LIBWRAP_FUNC_NAME( clEnqueueReadBufferRect )( cl_command_queue commandQueue,
+                                                     cl_mem           buffer,
+                                                     cl_bool          blockingRead,
+                                                     const size_t*    bufferOffset,
+                                                     const size_t*    hostOffset,
+                                                     const size_t*    region,
+                                                     size_t           bufferRowPitch,
+                                                     size_t           bufferSlicePitch,
+                                                     size_t           hostRowPitch,
+                                                     size_t           hostSlicePitch,
+                                                     void*            ptr,
+                                                     cl_uint          numEventsInWaitList,
+                                                     const cl_event*  eventWaitList,
+                                                     cl_event*        event )
 {
     SCOREP_OPENCL_FUNC_ENTER( clEnqueueReadBufferRect );
 
@@ -139,20 +137,20 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueReadBufferRect ) ( cl_command_queue commandQu
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteBufferRect ) ( cl_command_queue commandQueue,
-                                                       cl_mem           buffer,
-                                                       cl_bool          blockingWrite,
-                                                       const size_t*    bufferOffset,
-                                                       const size_t*    hostOffset,
-                                                       const size_t*    region,
-                                                       size_t           bufferRowPitch,
-                                                       size_t           bufferSlicePitch,
-                                                       size_t           hostRowPitch,
-                                                       size_t           hostSlicePitch,
-                                                       const void*      ptr,
-                                                       cl_uint          numEventsInWaitList,
-                                                       const cl_event*  eventWaitList,
-                                                       cl_event*        event )
+SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteBufferRect )( cl_command_queue commandQueue,
+                                                      cl_mem           buffer,
+                                                      cl_bool          blockingWrite,
+                                                      const size_t*    bufferOffset,
+                                                      const size_t*    hostOffset,
+                                                      const size_t*    region,
+                                                      size_t           bufferRowPitch,
+                                                      size_t           bufferSlicePitch,
+                                                      size_t           hostRowPitch,
+                                                      size_t           hostSlicePitch,
+                                                      const void*      ptr,
+                                                      cl_uint          numEventsInWaitList,
+                                                      const cl_event*  eventWaitList,
+                                                      cl_event*        event )
 {
     SCOREP_OPENCL_FUNC_ENTER( clEnqueueWriteBufferRect );
 
@@ -172,19 +170,19 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueWriteBufferRect ) ( cl_command_queue commandQ
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyBufferRect ) ( cl_command_queue commandQueue,
-                                                      cl_mem           srcBuffer,
-                                                      cl_mem           dstBuffer,
-                                                      const size_t*    srcOrigin,
-                                                      const size_t*    dstOrigin,
-                                                      const size_t*    region,
-                                                      size_t           srcRowPitch,
-                                                      size_t           srcSlicePitch,
-                                                      size_t           dstRowPitch,
-                                                      size_t           dstSlicePitch,
-                                                      cl_uint          numEventsInWaitList,
-                                                      const cl_event*  eventWaitList,
-                                                      cl_event*        event )
+SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyBufferRect )( cl_command_queue commandQueue,
+                                                     cl_mem           srcBuffer,
+                                                     cl_mem           dstBuffer,
+                                                     const size_t*    srcOrigin,
+                                                     const size_t*    dstOrigin,
+                                                     const size_t*    region,
+                                                     size_t           srcRowPitch,
+                                                     size_t           srcSlicePitch,
+                                                     size_t           dstRowPitch,
+                                                     size_t           dstSlicePitch,
+                                                     cl_uint          numEventsInWaitList,
+                                                     const cl_event*  eventWaitList,
+                                                     cl_event*        event )
 {
     SCOREP_OPENCL_FUNC_ENTER( clEnqueueCopyBufferRect );
 
@@ -200,5 +198,3 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueCopyBufferRect ) ( cl_command_queue commandQu
 
     return ret;
 }
-
-/* *INDENT-ON* */

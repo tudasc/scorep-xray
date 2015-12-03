@@ -213,7 +213,7 @@ shmem_subsystem_deregister( void )
     SCOREP_FinalizeMppMeasurement();
 #if SHMEM_HAVE_DECL( SHMEM_FINALIZE )
     UTILS_DEBUG( "Calling shmem_finalize" );
-    CALL_SHMEM( shmem_finalize ) ();
+    CALL_SHMEM( shmem_finalize )();
 #endif
 }
 

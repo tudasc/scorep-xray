@@ -69,10 +69,10 @@ get_reuse_key( scorep_pthread_wrapped_arg* wrappedArg );
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_create ) ( pthread_t *            thread,
-                                             const pthread_attr_t * attr,
-                                             void* ( *start_routine )( void* ),
-                                             void*                 arg )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_create )( pthread_t*            thread,
+                                            const pthread_attr_t* attr,
+                                            void* ( *start_routine )( void* ),
+                                            void*                 arg )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
@@ -251,8 +251,8 @@ cleanup_handler( void* arg )
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_join ) ( pthread_t thread,
-                                           void**    valuePtr )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_join )( pthread_t thread,
+                                          void**    valuePtr )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -308,7 +308,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_join ) ( pthread_t thread,
 
 
 void
-SCOREP_LIBWRAP_FUNC_NAME( pthread_exit ) ( void* valuePtr )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_exit )( void* valuePtr )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -348,7 +348,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_exit ) ( void* valuePtr )
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_cancel ) ( pthread_t thread )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cancel )( pthread_t thread )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -375,7 +375,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_cancel ) ( pthread_t thread )
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_detach ) ( pthread_t thread )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_detach )( pthread_t thread )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -408,8 +408,8 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_detach ) ( pthread_t thread )
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_init ) ( pthread_mutex_t *           pthreadMutex,
-                                                 const pthread_mutexattr_t * pthreadAttr )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_init )( pthread_mutex_t*           pthreadMutex,
+                                                const pthread_mutexattr_t* pthreadAttr )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
@@ -467,7 +467,7 @@ issue_process_shared_mutex_warning( void )
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_destroy ) ( pthread_mutex_t * pthreadMutex )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_destroy )( pthread_mutex_t* pthreadMutex )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -496,7 +496,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_destroy ) ( pthread_mutex_t * pthreadMut
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_lock ) ( pthread_mutex_t * pthreadMutex )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_lock )( pthread_mutex_t* pthreadMutex )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -557,7 +557,7 @@ record_acquire_lock_event( scorep_pthread_mutex* scorepMutex )
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_unlock ) ( pthread_mutex_t * pthreadMutex )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_unlock )( pthread_mutex_t* pthreadMutex )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -608,7 +608,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_unlock ) ( pthread_mutex_t * pthreadMute
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_trylock ) ( pthread_mutex_t * pthreadMutex )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_trylock )( pthread_mutex_t* pthreadMutex )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -646,8 +646,8 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_mutex_trylock ) ( pthread_mutex_t * pthreadMut
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_init ) ( pthread_cond_t * cond,
-                                                const pthread_condattr_t * attr )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_init )( pthread_cond_t*           cond,
+                                               const pthread_condattr_t* attr )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( SCOREP_IS_MEASUREMENT_PHASE( PRE ) )
@@ -678,7 +678,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_init ) ( pthread_cond_t * cond,
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_signal ) ( pthread_cond_t * cond )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_signal )( pthread_cond_t* cond )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -705,7 +705,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_signal ) ( pthread_cond_t * cond )
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_broadcast ) ( pthread_cond_t * cond )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_broadcast )( pthread_cond_t* cond )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -732,8 +732,8 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_broadcast ) ( pthread_cond_t * cond )
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_wait ) ( pthread_cond_t * cond,
-                                                pthread_mutex_t * pthreadMutex )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_wait )( pthread_cond_t*  cond,
+                                               pthread_mutex_t* pthreadMutex )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -797,9 +797,9 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_wait ) ( pthread_cond_t * cond,
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_timedwait ) ( pthread_cond_t *        cond,
-                                                     pthread_mutex_t *       pthreadMutex,
-                                                     const struct timespec* time )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_timedwait )( pthread_cond_t*        cond,
+                                                    pthread_mutex_t*       pthreadMutex,
+                                                    const struct timespec* time )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )
@@ -863,7 +863,7 @@ SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_timedwait ) ( pthread_cond_t *        con
 
 
 int
-SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_destroy ) ( pthread_cond_t * cond )
+SCOREP_LIBWRAP_FUNC_NAME( pthread_cond_destroy )( pthread_cond_t* cond )
 {
     bool trigger = SCOREP_IN_MEASUREMENT_TEST_AND_INCREMENT();
     if ( !trigger || !SCOREP_IS_MEASUREMENT_PHASE( WITHIN ) )

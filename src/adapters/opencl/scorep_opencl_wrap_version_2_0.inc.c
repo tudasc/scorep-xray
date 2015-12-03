@@ -1,10 +1,8 @@
-/* *INDENT-OFF* */
-
 cl_command_queue
-SCOREP_LIBWRAP_FUNC_NAME( clCreateCommandQueueWithProperties ) ( cl_context                 context,
-                                                                 cl_device_id               device,
-                                                                 const cl_queue_properties* properties,
-                                                                 cl_int*                    errcodeRet )
+SCOREP_LIBWRAP_FUNC_NAME( clCreateCommandQueueWithProperties )( cl_context                 context,
+                                                                cl_device_id               device,
+                                                                const cl_queue_properties* properties,
+                                                                cl_int*                    errcodeRet )
 {
     SCOREP_OPENCL_FUNC_ENTER( clCreateCommandQueueWithProperties );
 
@@ -22,12 +20,12 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateCommandQueueWithProperties ) ( cl_context     
 
 
 cl_mem
-SCOREP_LIBWRAP_FUNC_NAME( clCreatePipe ) ( cl_context                context,
-                                           cl_mem_flags              flags,
-                                           cl_uint                   pipePacketSize,
-                                           cl_uint                   pipeMaxPackets,
-                                           const cl_pipe_properties* properties,
-                                           cl_int*                   errcodeRet )
+SCOREP_LIBWRAP_FUNC_NAME( clCreatePipe )( cl_context                context,
+                                          cl_mem_flags              flags,
+                                          cl_uint                   pipePacketSize,
+                                          cl_uint                   pipeMaxPackets,
+                                          const cl_pipe_properties* properties,
+                                          cl_int*                   errcodeRet )
 {
     SCOREP_OPENCL_FUNC_ENTER( clCreatePipe );
 
@@ -45,11 +43,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreatePipe ) ( cl_context                context,
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clGetPipeInfo ) ( cl_mem       pipe,
-                                            cl_pipe_info paramName,
-                                            size_t       paramValueSize,
-                                            void*        paramValue,
-                                            size_t*      paramValueSizeRet )
+SCOREP_LIBWRAP_FUNC_NAME( clGetPipeInfo )( cl_mem       pipe,
+                                           cl_pipe_info paramName,
+                                           size_t       paramValueSize,
+                                           void*        paramValue,
+                                           size_t*      paramValueSizeRet )
 {
     SCOREP_OPENCL_FUNC_ENTER( clGetPipeInfo );
 
@@ -67,10 +65,10 @@ SCOREP_LIBWRAP_FUNC_NAME( clGetPipeInfo ) ( cl_mem       pipe,
 
 
 void*
-SCOREP_LIBWRAP_FUNC_NAME( clSVMAlloc ) ( cl_context       context,
-                                         cl_svm_mem_flags flags,
-                                         size_t           size,
-                                         cl_uint          alignment )
+SCOREP_LIBWRAP_FUNC_NAME( clSVMAlloc )( cl_context       context,
+                                        cl_svm_mem_flags flags,
+                                        size_t           size,
+                                        cl_uint          alignment )
 {
     SCOREP_OPENCL_FUNC_ENTER( clSVMAlloc );
 
@@ -88,8 +86,8 @@ SCOREP_LIBWRAP_FUNC_NAME( clSVMAlloc ) ( cl_context       context,
 
 
 void
-SCOREP_LIBWRAP_FUNC_NAME( clSVMFree ) ( cl_context context,
-                                        void*      svmPointer )
+SCOREP_LIBWRAP_FUNC_NAME( clSVMFree )( cl_context context,
+                                       void*      svmPointer )
 {
     SCOREP_OPENCL_FUNC_ENTER( clSVMFree );
 
@@ -105,9 +103,9 @@ SCOREP_LIBWRAP_FUNC_NAME( clSVMFree ) ( cl_context context,
 
 
 cl_sampler
-SCOREP_LIBWRAP_FUNC_NAME( clCreateSamplerWithProperties ) ( cl_context                   context,
-                                                            const cl_sampler_properties* normalizedCoords,
-                                                            cl_int*                      errcodeRet )
+SCOREP_LIBWRAP_FUNC_NAME( clCreateSamplerWithProperties )( cl_context                   context,
+                                                           const cl_sampler_properties* normalizedCoords,
+                                                           cl_int*                      errcodeRet )
 {
     SCOREP_OPENCL_FUNC_ENTER( clCreateSamplerWithProperties );
 
@@ -125,9 +123,9 @@ SCOREP_LIBWRAP_FUNC_NAME( clCreateSamplerWithProperties ) ( cl_context          
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clSetKernelArgSVMPointer ) ( cl_kernel   kernel,
-                                                       cl_uint     argIndex,
-                                                       const void* argValue )
+SCOREP_LIBWRAP_FUNC_NAME( clSetKernelArgSVMPointer )( cl_kernel   kernel,
+                                                      cl_uint     argIndex,
+                                                      const void* argValue )
 {
     SCOREP_OPENCL_FUNC_ENTER( clSetKernelArgSVMPointer );
 
@@ -145,10 +143,10 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetKernelArgSVMPointer ) ( cl_kernel   kernel,
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clSetKernelExecInfo ) ( cl_kernel           kernel,
-                                                  cl_kernel_exec_info paramName,
-                                                  size_t              paramValueSize,
-                                                  const void*         paramValue )
+SCOREP_LIBWRAP_FUNC_NAME( clSetKernelExecInfo )( cl_kernel           kernel,
+                                                 cl_kernel_exec_info paramName,
+                                                 size_t              paramValueSize,
+                                                 const void*         paramValue )
 {
     SCOREP_OPENCL_FUNC_ENTER( clSetKernelExecInfo );
 
@@ -166,17 +164,17 @@ SCOREP_LIBWRAP_FUNC_NAME( clSetKernelExecInfo ) ( cl_kernel           kernel,
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMFree ) ( cl_command_queue commandQueue,
-                                               cl_uint          numSvmPointers,
-                                               void**           svmPointers,
-                                               void ( CL_CALLBACK* pfnFreeFunc )( cl_command_queue queue,
-                                                                                  cl_uint          num_svm_pointers,
-                                                                                  void**           svm_pointers,
-                                                                                  void*            user_data ),
-                                               void*            userData,
-                                               cl_uint          numEventsInWaitList,
-                                               const cl_event*  eventWaitList,
-                                               cl_event*        event )
+SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMFree )( cl_command_queue commandQueue,
+                                              cl_uint          numSvmPointers,
+                                              void**           svmPointers,
+                                              void( CL_CALLBACK * pfnFreeFunc )( cl_command_queue queue,
+                                                                                 cl_uint num_svm_pointers,
+                                                                                 void**           svm_pointers,
+                                                                                 void*            user_data ),
+                                              void*            userData,
+                                              cl_uint          numEventsInWaitList,
+                                              const cl_event*  eventWaitList,
+                                              cl_event*        event )
 {
     SCOREP_OPENCL_FUNC_ENTER( clEnqueueSVMFree );
 
@@ -195,14 +193,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMFree ) ( cl_command_queue commandQueue,
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMMemcpy ) ( cl_command_queue commandQueue,
-                                                 cl_bool          blockingCopy,
-                                                 void*            dstPtr,
-                                                 const void*      srcPtr,
-                                                 size_t           size,
-                                                 cl_uint          numEventsInWaitList,
-                                                 const cl_event*  eventWaitList,
-                                                 cl_event*        event )
+SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMMemcpy )( cl_command_queue commandQueue,
+                                                cl_bool          blockingCopy,
+                                                void*            dstPtr,
+                                                const void*      srcPtr,
+                                                size_t           size,
+                                                cl_uint          numEventsInWaitList,
+                                                const cl_event*  eventWaitList,
+                                                cl_event*        event )
 {
     SCOREP_OPENCL_FUNC_ENTER( clEnqueueSVMMemcpy );
 
@@ -221,14 +219,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMMemcpy ) ( cl_command_queue commandQueue,
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMMemFill ) ( cl_command_queue commandQueue,
-                                                  void*            svmPtr,
-                                                  const void*      pattern,
-                                                  size_t           patternSize,
-                                                  size_t           size,
-                                                  cl_uint          numEventsInWaitList,
-                                                  const cl_event*  eventWaitList,
-                                                  cl_event*        event )
+SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMMemFill )( cl_command_queue commandQueue,
+                                                 void*            svmPtr,
+                                                 const void*      pattern,
+                                                 size_t           patternSize,
+                                                 size_t           size,
+                                                 cl_uint          numEventsInWaitList,
+                                                 const cl_event*  eventWaitList,
+                                                 cl_event*        event )
 {
     SCOREP_OPENCL_FUNC_ENTER( clEnqueueSVMMemFill );
 
@@ -247,14 +245,14 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMMemFill ) ( cl_command_queue commandQueue,
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMMap ) ( cl_command_queue commandQueue,
-                                              cl_bool          blockingMap,
-                                              cl_map_flags     flags,
-                                              void*            svmPtr,
-                                              size_t           size,
-                                              cl_uint          numEventsInWaitList,
-                                              const cl_event*  eventWaitList,
-                                              cl_event*        event )
+SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMMap )( cl_command_queue commandQueue,
+                                             cl_bool          blockingMap,
+                                             cl_map_flags     flags,
+                                             void*            svmPtr,
+                                             size_t           size,
+                                             cl_uint          numEventsInWaitList,
+                                             const cl_event*  eventWaitList,
+                                             cl_event*        event )
 {
     SCOREP_OPENCL_FUNC_ENTER( clEnqueueSVMMap );
 
@@ -273,11 +271,11 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMMap ) ( cl_command_queue commandQueue,
 
 
 cl_int
-SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMUnmap ) ( cl_command_queue commandQueue,
-                                                void*            svmPtr,
-                                                cl_uint          numEventsInWaitList,
-                                                const cl_event*  eventWaitList,
-                                                cl_event*        event )
+SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMUnmap )( cl_command_queue commandQueue,
+                                               void*            svmPtr,
+                                               cl_uint          numEventsInWaitList,
+                                               const cl_event*  eventWaitList,
+                                               cl_event*        event )
 {
     SCOREP_OPENCL_FUNC_ENTER( clEnqueueSVMUnmap );
 
@@ -291,5 +289,3 @@ SCOREP_LIBWRAP_FUNC_NAME( clEnqueueSVMUnmap ) ( cl_command_queue commandQueue,
 
     return ret;
 }
-
-/* *INDENT-ON* */

@@ -89,28 +89,28 @@ scorep_shmem_setup_comm_world( void )
     UTILS_BUG_ON( scorep_shmem_number_of_pes == 0,
                   "Can't allocate buffers for 0 PEs." );
 
-    scorep_shmem_number_of_root_comms = CALL_SHMEM( shmalloc ) ( sizeof( uint32_t ) );
+    scorep_shmem_number_of_root_comms = CALL_SHMEM( shmalloc )( sizeof( uint32_t ) );
     UTILS_ASSERT( scorep_shmem_number_of_root_comms );
     *scorep_shmem_number_of_root_comms = 0;
 
-    transfer_comm_mgmt = CALL_SHMEM( shmalloc ) ( sizeof( uint32_t ) );
+    transfer_comm_mgmt = CALL_SHMEM( shmalloc )( sizeof( uint32_t ) );
     UTILS_ASSERT( transfer_comm_mgmt );
 
-    barrier_psync = CALL_SHMEM( shmalloc ) ( sizeof( long ) * _SHMEM_BARRIER_SYNC_SIZE );
+    barrier_psync = CALL_SHMEM( shmalloc )( sizeof( long ) * _SHMEM_BARRIER_SYNC_SIZE );
     UTILS_ASSERT( barrier_psync );
     for ( int i = 0; i < _SHMEM_BARRIER_SYNC_SIZE; i++ )
     {
         barrier_psync[ i ] = _SHMEM_SYNC_VALUE;
     }
 
-    bcast_psync = CALL_SHMEM( shmalloc ) ( sizeof( long ) * _SHMEM_BCAST_SYNC_SIZE );
+    bcast_psync = CALL_SHMEM( shmalloc )( sizeof( long ) * _SHMEM_BCAST_SYNC_SIZE );
     UTILS_ASSERT( bcast_psync );
     for ( int i = 0; i < _SHMEM_BCAST_SYNC_SIZE; i++ )
     {
         bcast_psync[ i ] = _SHMEM_SYNC_VALUE;
     }
 
-    CALL_SHMEM( shmem_barrier_all ) ();
+    CALL_SHMEM( shmem_barrier_all )();
 
     scorep_definitions_manager_init_entry( &scorep_shmem_pe_groups );
     scorep_definitions_manager_entry_alloc_hash_table( &scorep_shmem_pe_groups,
@@ -143,22 +143,22 @@ void
 scorep_shmem_teardown_comm_world( void )
 {
     UTILS_ASSERT( scorep_shmem_number_of_root_comms );
-    CALL_SHMEM( shfree ) ( scorep_shmem_number_of_root_comms );
+    CALL_SHMEM( shfree )( scorep_shmem_number_of_root_comms );
     scorep_shmem_number_of_root_comms = NULL;
 
     UTILS_ASSERT( transfer_comm_mgmt );
-    CALL_SHMEM( shfree ) ( transfer_comm_mgmt );
+    CALL_SHMEM( shfree )( transfer_comm_mgmt );
     transfer_comm_mgmt = NULL;
 
     UTILS_ASSERT( barrier_psync );
-    CALL_SHMEM( shfree ) ( barrier_psync );
+    CALL_SHMEM( shfree )( barrier_psync );
     barrier_psync = NULL;
 
     UTILS_ASSERT( bcast_psync );
-    CALL_SHMEM( shfree ) ( bcast_psync );
+    CALL_SHMEM( shfree )( bcast_psync );
     bcast_psync = NULL;
 
-    CALL_SHMEM( shmem_barrier_all ) ();
+    CALL_SHMEM( shmem_barrier_all )();
 
     free( scorep_shmem_pe_groups.hash_table );
 }
@@ -324,10 +324,10 @@ comm_create_id( int start,
     {
         /* root determines the id used by all processes
          */
-        CALL_SHMEM( shmem_broadcast32 ) ( transfer_comm_mgmt,
-                                          scorep_shmem_number_of_root_comms,
-                                          1, start, start, stride, size, bcast_psync );
-        CALL_SHMEM( shmem_barrier ) ( start, stride, size, barrier_psync );
+        CALL_SHMEM( shmem_broadcast32 )( transfer_comm_mgmt,
+                                         scorep_shmem_number_of_root_comms,
+                                         1, start, start, stride, size, bcast_psync );
+        CALL_SHMEM( shmem_barrier )( start, stride, size, barrier_psync );
 
         /* Increase local communicator id counter, if this
          * processing element is root in the new communicator */
