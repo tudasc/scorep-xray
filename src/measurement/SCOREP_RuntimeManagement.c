@@ -193,7 +193,14 @@ SCOREP_InitMeasurement( void )
     SCOREP_RegisterAllConfigVariables();
 
     /* Parse the environment */
-    SCOREP_ConfigApplyEnv();
+    if ( SCOREP_ConfigApplyEnv() != SCOREP_SUCCESS )
+    {
+        UTILS_FATAL( "Error while parsing environment variables. Please check "
+                     "the error messages above for invalid values of Score-P "
+                     "environment variables. A comprehensive list of variables "
+                     "and valid values is available via "
+                     "\'scorep-info config-vars --full\'." );
+    }
 
     /* Timer needs environment variables */
     SCOREP_Timer_Initialize();
