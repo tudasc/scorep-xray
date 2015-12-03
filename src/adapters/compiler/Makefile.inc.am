@@ -199,7 +199,8 @@ libscorep_adapter_compiler_symbol_table_la_SOURCES += \
 # the SCOREP_Timer_Ticks.h dependency is used to generate unique
 # filenames. This should be done differently, see #692
 libscorep_adapter_compiler_symbol_table_la_CPPFLAGS += \
-    -I$(INC_ROOT)src/services/include
+    -I$(INC_ROOT)src/services/include \
+    @SCOREP_TIMER_CPPFLAGS@
 
 endif HAVE_NM
 
