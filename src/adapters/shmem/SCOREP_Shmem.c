@@ -216,7 +216,19 @@ INIT_THREAD_SHMEM_TWO_ARGS( shmem_init_thread )
         if ( event_gen_active )                                         \
         {                                                               \
             SCOREP_SHMEM_EVENT_GEN_OFF();                               \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );    \
+            SCOREP_EnterWrappedRegion(                                  \
+                scorep_shmem_region__ ## FUNCNAME,                      \
+                ( intptr_t )CALL_SHMEM( shmem_barrier_all ) );          \
+        }                                                               \
+                                                                        \
+        if ( event_gen_active )                                         \
+        {                                                               \
+            SCOREP_ENTER_WRAPPED_REGION();                              \
+        }                                                               \
+        SCOREP_LIBWRAP_FUNC_CALL( lw, shmem_barrier_all, ( ) );         \
+        if ( event_gen_active )                                         \
+        {                                                               \
+            SCOREP_EXIT_WRAPPED_REGION();                               \
         }                                                               \
                                                                         \
         SCOREP_RegisterExitHandler();                                   \
@@ -244,7 +256,19 @@ INIT_THREAD_SHMEM_TWO_ARGS( shmem_init_thread )
         if ( event_gen_active )                                         \
         {                                                               \
             SCOREP_SHMEM_EVENT_GEN_OFF();                               \
-            SCOREP_EnterRegion( scorep_shmem_region__ ## FUNCNAME );    \
+            SCOREP_EnterWrappedRegion(                                  \
+                scorep_shmem_region__ ## FUNCNAME,                      \
+                ( intptr_t )CALL_SHMEM( shmem_barrier_all ) );          \
+        }                                                               \
+                                                                        \
+        if ( event_gen_active )                                         \
+        {                                                               \
+            SCOREP_ENTER_WRAPPED_REGION();                              \
+        }                                                               \
+        SCOREP_LIBWRAP_FUNC_CALL( lw, shmem_barrier_all, ( ) );         \
+        if ( event_gen_active )                                         \
+        {                                                               \
+            SCOREP_EXIT_WRAPPED_REGION();                               \
         }                                                               \
                                                                         \
         SCOREP_RegisterExitHandler();                                   \
