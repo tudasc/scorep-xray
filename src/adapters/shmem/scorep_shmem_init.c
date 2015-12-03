@@ -104,7 +104,7 @@ shmem_subsystem_init( void )
 static SCOREP_ErrorCode
 shmem_subsystem_begin( void )
 {
-    SCOREP_IN_MEASUREMENT_INCREMENT();
+    UTILS_DEBUG_ENTRY();
 
     /* Enter global SHMEM region */
     if ( scorep_shmem_parallel_needed )
@@ -112,13 +112,17 @@ shmem_subsystem_begin( void )
         SCOREP_EnterRegion( scorep_shmem_region__SHMEM );
     }
 
-    SCOREP_IN_MEASUREMENT_DECREMENT();
+    SCOREP_SHMEM_EVENT_GEN_ON();
     return SCOREP_SUCCESS;
 }
 
 static void
 shmem_subsystem_end( void )
 {
+    UTILS_DEBUG_ENTRY();
+
+    SCOREP_SHMEM_EVENT_GEN_OFF();
+
     /* Exit the extra global SHMEM region in case it was */
     /* entered */
     if ( scorep_shmem_parallel_needed )
@@ -128,8 +132,6 @@ shmem_subsystem_end( void )
 
     /* Destroy all RmaWin in the master thread. */
     scorep_shmem_close_pe_group();
-
-    SCOREP_SHMEM_EVENT_GEN_OFF();
 }
 
 /**
