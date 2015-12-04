@@ -23,6 +23,7 @@
 
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
 #include <scorep_ipc.h>
+#include <SCOREP_InMeasurement.h>
 #include <UTILS_IO.h>
 #include <string.h>
 #include <stdlib.h>
@@ -213,6 +214,8 @@ SCOREP_Timer_Initialize( void )
 uint64_t
 SCOREP_Timer_GetClockResolution( void )
 {
+    UTILS_BUG_ON( !( SCOREP_IS_MEASUREMENT_PHASE( POST ) ),
+                  "Do not call SCOREP_Timer_GetClockResolution before finalization." );
     switch ( scorep_timer )
     {
 #if HAVE( BACKEND_SCOREP_TIMER_BGL )

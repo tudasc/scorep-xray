@@ -619,6 +619,9 @@ scorep_finalize( void )
      * Writing events from within is still allowed.
      */
     scorep_measurement_phase = SCOREP_MEASUREMENT_PHASE_POST;
+    /* Clock resolution might be calculated once. Do it at the beginning
+     * of finalization. */
+    SCOREP_Timer_GetClockResolution();
 
     if ( !scorep_enable_recording_by_default )
     {

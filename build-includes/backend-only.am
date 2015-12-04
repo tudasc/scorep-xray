@@ -38,7 +38,6 @@ include ../src/utils/memory/Makefile.inc.am
 
 ## include tests
 include ../test/Makefile.inc.am
-include ../test/services/Makefile.inc.am
 include ../test/services/metric/Makefile.inc.am
 include ../test/services/unwinding/Makefile.inc.am
 include ../test/measurement/Makefile.inc.am

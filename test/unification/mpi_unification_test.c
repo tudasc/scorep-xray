@@ -183,7 +183,9 @@ main( int argc, char* argv[] )
         free( group_members );
     }
 
-    double timing = SCOREP_Timer_GetClockTicks();
+    double                         timing = SCOREP_Timer_GetClockTicks();
+    extern SCOREP_MeasurementPhase scorep_measurement_phase;
+    scorep_measurement_phase = SCOREP_MEASUREMENT_PHASE_POST;
     SCOREP_Unify();
     timing = ( SCOREP_Timer_GetClockTicks() - timing ) / SCOREP_Timer_GetClockResolution();
 
