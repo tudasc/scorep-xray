@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2014,
@@ -52,10 +52,6 @@
 
 #include <UTILS_Debug.h>
 #include <UTILS_Error.h>
-
-#ifndef CUBE_REVISION_NUMBER
-#define CUBE_REVISION_NUMBER 0
-#endif
 
 /* ****************************************************************************
  * Internal helper functions
@@ -878,7 +874,6 @@ scorep_write_cube_location_property( cube_t*                   my_cube,
                                      SCOREP_DefinitionManager* manager,
                                      cube_location**           location_map )
 {
-#if HAVE_SCOREP_EXTERNAL_CUBE_WRITER || CUBE_REVISION_NUMBER > 9946
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_BEGIN( manager, LocationProperty, location_property )
     {
         const char* name = SCOREP_UNIFIED_HANDLE_DEREF( definition->name_handle,
@@ -891,15 +886,6 @@ scorep_write_cube_location_property( cube_t*                   my_cube,
         cube_location_def_attr( location_map[ id ], name, value );
     }
     SCOREP_DEFINITIONS_MANAGER_FOREACH_DEFINITION_END();
-#else
-    if ( manager->location_property.counter > 0 )
-    {
-        UTILS_WARNING( "Can not write location properties to profile, because your "
-                       "CUBE4 installation does not support location properties. "
-                       "To enable location properties, you need to install a newer "
-                       "CUBE4 and rebuild Score-P." );
-    }
-#endif
 }
 
 /* ****************************************************************************
