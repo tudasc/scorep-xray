@@ -21,6 +21,8 @@
 #include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Timer_Utils.h>
 
+#include <SCOREP_InMeasurement.h>
+
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
 #include <scorep_ipc.h>
 #include <SCOREP_InMeasurement.h>
