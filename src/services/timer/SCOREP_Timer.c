@@ -22,9 +22,12 @@
 #include <SCOREP_Timer_Utils.h>
 
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
+#include <scorep_ipc.h>
 #include <UTILS_IO.h>
 #include <string.h>
 #include <stdlib.h>
+#include <inttypes.h>
+#include <math.h>
 #endif  /* BACKEND_SCOREP_TIMER_TSC */
 
 /* *INDENT-OFF* */
@@ -255,18 +258,58 @@ SCOREP_Timer_GetClockResolution( void )
             uint64_t timer_cmp_t1 =  ( uint64_t )tp.tv_sec * UINT64_C( 1000000 ) + ( uint64_t )tp.tv_usec;
 # endif
             /* Use interpolation to determine frequency.
-             * Interpolate only once during finalization. */
-            static uint64_t timer_tsc_freq = 0;
-            if ( timer_tsc_freq == 0 )
+             * Interpolate and check consistency only once during finalization. */
+            static bool     first_visit = true;
+            static uint64_t timer_tsc_freq;
+            if ( first_visit )
             {
+                first_visit    = false;
                 timer_tsc_freq = ( double )( timer_tsc_t1 - timer_tsc_t0 ) / ( timer_cmp_t1 - timer_cmp_t0 ) * timer_cmp_freq;
-            }
 
-            /* TODO: assert that all processes use roughly the same frequency.
-             * Collect all frequencies by MPP communication to rank 0. If
-             * frequencies differ too much, print a warning that the data is
-             * useless for trace experiments. Problem to be solved by timer per
-             * process/location record. */
+                /* Assert that all processes use roughly the same frequency.
+                 * Problems with non-uniform frequencies to be solved by timer
+                 * per process/location record.*/
+                if ( SCOREP_Ipc_GetRank() != 0 )
+                {
+                    SCOREP_Ipc_Gather( &timer_tsc_freq, 0, 1, SCOREP_IPC_UINT64_T, 0 );
+                }
+                else
+                {
+                    int      size = SCOREP_Ipc_GetSize();
+                    uint64_t frequencies[ size ];
+                    SCOREP_Ipc_Gather( &timer_tsc_freq,
+                                       frequencies,
+                                       1,
+                                       SCOREP_IPC_UINT64_T,
+                                       0 );
+
+                    double sum            = 0;
+                    double sum_of_squares = 0;
+                    for ( int i = 0; i < size; ++i )
+                    {
+                        sum            += frequencies[ i ];
+                        sum_of_squares += ( double )frequencies[ i ] * frequencies[ i ];
+                    }
+                    double avg_frequency = sum / size;
+                    double stddev        = sqrt( ( sum_of_squares - ( sum * sum ) / size ) / ( size - 1.0 ) );
+                    double percent       = stddev * 100 / avg_frequency;
+                    double threshold     = 0.00001; /* 'invented' value derived from a 4 process
+                                                       run that took 15 seconds. */
+                    if ( percent > threshold )
+                    {
+                        UTILS_WARNING( "Calculated timer (tsc) frequencies differ between processes "
+                                       "by more than %f%% (avg_frequency = %f/s; stddev = %f/s; "
+                                       "threshold = %f%%). Consider using a timer with a fixed "
+                                       "frequency like gettimeofday or clock_gettime or prolong "
+                                       "the measurement duration.",
+                                       percent, avg_frequency, stddev, threshold );
+                        for ( int i = 0; i < size; ++i )
+                        {
+                            printf( "rank[%d]:\t frequency = %" PRIu64 "/s \n", i, frequencies[ i ] );
+                        }
+                    }
+                }
+            }
             return timer_tsc_freq;
         }
 #endif  /* BACKEND_SCOREP_TIMER_TSC */

@@ -62,7 +62,7 @@ AS_CASE([${ac_scorep_platform}],
     [aix],   [_SCOREP_TIMER_CHECK([aix], [_SCOREP_TIMER_AIX])],
     [mic],   [Do nothing but prevent selection of TSC.
              ],
-    [_SCOREP_TIMER_CHECK([tsc], [_SCOREP_TIMER_TSC])])
+    [_SCOREP_TIMER_CHECK([tsc], [_SCOREP_TIMER_TSC], [], [-lm])])
 
 # Output
 AS_VAR_SET_IF([scorep_timers],
