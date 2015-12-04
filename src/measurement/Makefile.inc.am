@@ -140,27 +140,6 @@ scorep_constructor.obj: $(SRC_ROOT)src/measurement/scorep_constructor.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scorep_constructor.Po@am__quote@
 
-if BUILD_SHARED_LIBRARIES
-
-lib_LTLIBRARIES += libscorep_constructor.la
-libscorep_constructor_la_SOURCES = \
-    $(SRC_ROOT)src/measurement/scorep_constructor.c
-libscorep_constructor_la_CPPFLAGS = \
-    $(AM_CPPFLAGS) \
-    $(UTILS_CPPFLAGS) \
-    -I$(PUBLIC_INC_DIR) \
-    -I$(INC_ROOT)src/adapters/compiler \
-    -I$(INC_ROOT)src/measurement/include \
-    -I$(INC_DIR_DEFINITIONS)
-libscorep_constructor_la_CFLAGS = \
-    $(AM_CFLAGS) \
-    $(SCOREP_COMPILER_CONSTRUCTOR_CFLAGS)
-libscorep_constructor_la_LDFLAGS = \
-    $(AM_LDFLAGS) \
-    -shared
-
-endif BUILD_SHARED_LIBRARIES
-
 endif HAVE_COMPILER_CONSTRUCTOR_SUPPORT
 
 EXTRA_DIST += \
