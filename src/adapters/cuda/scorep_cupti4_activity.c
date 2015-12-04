@@ -161,9 +161,6 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
             gpuStop  = context_activity->sync.gpu_stop;
             hostStop = context_activity->sync.host_stop;
 
-            /* expose Score-P CUPTI activity flush as measurement overhead */
-            SCOREP_EnterRegion( scorep_cupti_buffer_flush_region_handle );
-
             gpu_diff = ( double )( gpuStop - context_activity->sync.gpu_start );
 
             if ( gpu_diff == ( double )0 )
@@ -176,6 +173,9 @@ scorep_cupti_activity_context_flush( scorep_cupti_context* context )
             context_activity->sync.factor =
                 ( double )( hostStop - context_activity->sync.host_start ) / gpu_diff;
         }
+
+        /* expose Score-P CUPTI activity flush as measurement overhead */
+        SCOREP_EnterRegion( scorep_cupti_buffer_flush_region_handle );
 
         /* handle all completed buffers for this context */
         current = context_activity->buffers;
