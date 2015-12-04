@@ -419,12 +419,17 @@ SCOREP_Location_AddAttribute( SCOREP_Location*       location,
 
 
 static inline void
-add_location_property( SCOREP_Location* location,
-                       const char*      name,
-                       const char*      value )
+add_source_code_location( SCOREP_Location* location,
+                          const char*      file,
+                          SCOREP_LineNo    lineNumber )
 {
-    SCOREP_LocationHandle handle = SCOREP_Location_GetLocationHandle( location );
-    SCOREP_Definitions_NewLocationProperty( handle, name, value );
+    SCOREP_SourceCodeLocationHandle value =
+        SCOREP_Definitions_NewSourceCodeLocation( file,
+                                                  lineNumber );
+    SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
+                           ( location,
+                             scorep_source_code_location_attribute,
+                             &value ) )
 }
 
 
@@ -435,14 +440,10 @@ void
 SCOREP_AddSourceCodeLocation( const char*   file,
                               SCOREP_LineNo lineNumber )
 {
-    SCOREP_Location*                location = SCOREP_Location_GetCurrentCPULocation();
-    SCOREP_SourceCodeLocationHandle value    =
-        SCOREP_Definitions_NewSourceCodeLocation( file,
-                                                  lineNumber );
-    SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
-                           ( location,
-                             scorep_source_code_location_attribute,
-                             &value ) )
+    SCOREP_Location* location = SCOREP_Location_GetCurrentCPULocation();
+    add_source_code_location( location,
+                              file,
+                              lineNumber );
 }
 
 
@@ -454,13 +455,19 @@ SCOREP_Location_AddSourceCodeLocation( SCOREP_Location* location,
                                        const char*      file,
                                        SCOREP_LineNo    lineNumber )
 {
-    SCOREP_SourceCodeLocationHandle value =
-        SCOREP_Definitions_NewSourceCodeLocation( file,
-                                                  lineNumber );
-    SCOREP_CALL_SUBSTRATE( AddAttribute, ADD_ATTRIBUTE,
-                           ( location,
-                             scorep_source_code_location_attribute,
-                             &value ) )
+    add_source_code_location( location,
+                              file,
+                              lineNumber );
+}
+
+
+static inline void
+add_location_property( SCOREP_Location* location,
+                       const char*      name,
+                       const char*      value )
+{
+    SCOREP_LocationHandle handle = SCOREP_Location_GetLocationHandle( location );
+    SCOREP_Definitions_NewLocationProperty( handle, name, value );
 }
 
 
