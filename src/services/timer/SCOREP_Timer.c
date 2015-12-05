@@ -25,7 +25,6 @@
 
 #if HAVE( BACKEND_SCOREP_TIMER_TSC )
 #include <scorep_ipc.h>
-#include <SCOREP_InMeasurement.h>
 #include <UTILS_IO.h>
 #include <string.h>
 #include <stdlib.h>
