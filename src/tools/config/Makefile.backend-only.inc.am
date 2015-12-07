@@ -32,5 +32,15 @@
 ## file       src/tools/config/Makefile.backend-only.inc.am
 
 ../src/scorep_config_library_dependencies_inc.hpp: $(lib_LTLIBRARIES)
-	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-library-dependencies.sh $^ >$@ || \
-            ($(RM) $@; exit 1)
+	$(AM_V_GEN)$(srcdir)/../vendor/common/build-config/generate-library-dependencies.sh $^ >$@.t && \
+            if test -e $@; then \
+                if cmp --silent $@ $@.t; then \
+                    $(RM) $@.t; \
+                else \
+                    $(RM) $@; \
+                    $(am__mv) $@.t $@; \
+                fi; \
+            else \
+                $(am__mv) $@.t $@; \
+            fi || \
+            ($(RM) $@ $@.t; exit 1)
