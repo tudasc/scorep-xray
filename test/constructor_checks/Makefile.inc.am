@@ -17,44 +17,53 @@
 
 if HAVE_COMPILER_CONSTRUCTOR_SUPPORT
 
+test_constructor.o: $(SRC_ROOT)test/constructor_checks/constructor.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(scorep_constructor_CPPFLAGS) $(CPPFLAGS) $(scorep_constructor_CFLAGS) $(CFLAGS) -MT test_constructor.o -MD -MP -MF $(DEPDIR)/test_constructor.Tpo -c -o test_constructor.o `test -f '$(SRC_ROOT)test/constructor_checks/constructor.c' || echo '$(srcdir)/'`$(SRC_ROOT)test/constructor_checks/constructor.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_constructor.Tpo $(DEPDIR)/test_constructor.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(SRC_ROOT)test/constructor_checks/constructor.c' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	object='test_constructor.o' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(scorep_constructor_CPPFLAGS) $(CPPFLAGS) $(scorep_constructor_CFLAGS) $(CFLAGS) -c -o test_constructor.o `test -f '$(SRC_ROOT)test/constructor_checks/constructor.c' || echo '$(srcdir)/'`$(SRC_ROOT)test/constructor_checks/constructor.c
+
+test_constructor.obj: $(SRC_ROOT)test/constructor_checks/constructor.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(scorep_constructor_CPPFLAGS) $(CPPFLAGS) $(scorep_constructor_CFLAGS) $(CFLAGS) -MT test_constructor.obj -MD -MP -MF $(DEPDIR)/test_constructor.Tpo -c -o test_constructor.obj `if test -f '$(SRC_ROOT)test/constructor_checks/constructor.c'; then $(CYGPATH_W) '$(SRC_ROOT)test/constructor_checks/constructor.c'; else $(CYGPATH_W) '$(srcdir)/$(SRC_ROOT)test/constructor_checks/constructor.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test_constructor.Tpo $(DEPDIR)/test_constructor.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(SRC_ROOT)test/constructor_checks/constructor.c' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	object='test_constructor.obj' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(scorep_constructor_CPPFLAGS) $(CPPFLAGS) $(scorep_constructor_CFLAGS) $(CFLAGS) -c -o test_constructor.obj `if test -f '$(SRC_ROOT)test/constructor_checks/constructor.c'; then $(CYGPATH_W) '$(SRC_ROOT)test/constructor_checks/constructor.c'; else $(CYGPATH_W) '$(srcdir)/$(SRC_ROOT)test/constructor_checks/constructor.c'; fi`
+
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_constructor.Po@am__quote@
+
 check_PROGRAMS += test_constructor_check_c
 test_constructor_check_c_SOURCES = \
-    $(SRC_ROOT)test/constructor_checks/constructor_check.c \
-    $(SRC_ROOT)test/constructor_checks/constructor.c
-test_constructor_check_c_CPPFLAGS = \
-    $(AM_CPPFLAGS)
-test_constructor_check_c_CFLAGS = \
-    $(AM_CFLAGS) \
-    $(SCOREP_COMPILER_CONSTRUCTOR_CFLAGS)
+    $(SRC_ROOT)test/constructor_checks/constructor_check.c
+test_constructor_check_c_CPPFLAGS =
+test_constructor_check_c_LDADD = \
+    test_constructor.$(OBJEXT)
 TESTS_SERIAL += test_constructor_check_c
 XFAIL_TESTS_SERIAL += test_constructor_check_c
 
 check_PROGRAMS += test_constructor_check_cxx
 test_constructor_check_cxx_SOURCES = \
-    $(SRC_ROOT)test/constructor_checks/constructor_check.cxx \
-    $(SRC_ROOT)test/constructor_checks/constructor.c
-test_constructor_check_cxx_CPPFLAGS = \
-    $(AM_CPPFLAGS)
-test_constructor_check_cxx_CFLAGS = \
-    $(AM_CFLAGS) \
-    $(SCOREP_COMPILER_CONSTRUCTOR_CFLAGS)
+    $(SRC_ROOT)test/constructor_checks/constructor_check.cxx
+test_constructor_check_cxx_CPPFLAGS =
+test_constructor_check_cxx_LDADD = \
+    test_constructor.$(OBJEXT)
 TESTS_SERIAL += test_constructor_check_cxx
 XFAIL_TESTS_SERIAL += test_constructor_check_cxx
 
-check_LTLIBRARIES += libtest_constructor_check_f.la
-libtest_constructor_check_f_la_SOURCES =
-libtest_constructor_check_f_la_CPPFLAGS =
-libtest_constructor_check_f_la_CFLAGS =
-
 check_PROGRAMS += test_constructor_check_f
 test_constructor_check_f_SOURCES = \
-    $(SRC_ROOT)test/constructor_checks/constructor_check.F90 \
-    $(SRC_ROOT)test/constructor_checks/constructor.c
-test_constructor_check_f_CPPFLAGS = \
-    $(AM_CPPFLAGS)
-test_constructor_check_f_CFLAGS = \
-    $(AM_CFLAGS) \
-    $(SCOREP_COMPILER_CONSTRUCTOR_CFLAGS)
+    $(SRC_ROOT)test/constructor_checks/constructor_check.F90
+test_constructor_check_f_CPPFLAGS =
+test_constructor_check_f_CFLAGS =
+test_constructor_check_f_LDADD = \
+    test_constructor.$(OBJEXT)
 TESTS_SERIAL += test_constructor_check_f
 XFAIL_TESTS_SERIAL += test_constructor_check_f
 
