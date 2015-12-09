@@ -171,10 +171,10 @@ static const SCOREP_ConfigType_SetEntry profile_clustering_mode_table[] = {
 static const SCOREP_ConfigVariable scorep_profile_confvars[] = {
     {
         "task_exchange_num",
-        SCOREP_CONFIG_TYPE_NUMBER,
+        SCOREP_CONFIG_TYPE_SIZE,
         &scorep_profile_task_exchange_num,
         NULL,
-        "1024",
+        "1K",
         "Number of foreign task objects that are collected before they are put into "
         "the common task object exchange buffer",
         "The profiling creates a record for every task instance that is running. "

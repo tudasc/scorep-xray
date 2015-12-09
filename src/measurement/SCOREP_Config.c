@@ -1689,6 +1689,26 @@ dump_optionset( FILE*                       out,
     fprintf( out, "\n" );
 }
 
+static void
+dump_size( FILE*       out,
+           const char* name,
+           uint64_t    value )
+{
+    const char* suffix = " KMGTPE";
+
+    while ( value % 1024 == 0 && suffix[ 1 ] )
+    {
+        value = value / 1024;
+        suffix++;
+    }
+    fprintf( out,
+             "%s=%" PRIu64 "%.*s\n",
+             name,
+             value,
+             *suffix == ' ' ? 0 : 1,
+             suffix );
+}
+
 void
 dump_value( FILE*             out,
             const char*       name,
@@ -1741,12 +1761,16 @@ dump_value( FILE*             out,
             break;
 
         case SCOREP_CONFIG_TYPE_NUMBER:
-        case SCOREP_CONFIG_TYPE_SIZE:
             fprintf( out,
                      "%s=%" PRIu64 "\n",
                      name,
                      *( uint64_t* )variableReference );
             break;
+
+        case SCOREP_CONFIG_TYPE_SIZE:
+            dump_size( out,
+                       name,
+                       *( uint64_t* )variableReference );
 
         case SCOREP_INVALID_CONFIG_TYPE:
         default:

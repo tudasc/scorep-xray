@@ -64,10 +64,10 @@ static const SCOREP_ConfigVariable scorep_tracing_confvars[] = {
     },
     {
         "max_procs_per_sion_file",
-        SCOREP_CONFIG_TYPE_NUMBER,
+        SCOREP_CONFIG_TYPE_SIZE,
         &scorep_tracing_max_procs_per_sion_file,
         NULL,
-        "1024",
+        "1K",
         "Maximum number of processes that share one sion file (must be >\2400)",
         "All processes are than evenly distributed over the number of needed "
         "files to fulfill this constraint. E.g., having 4 processes and setting "
