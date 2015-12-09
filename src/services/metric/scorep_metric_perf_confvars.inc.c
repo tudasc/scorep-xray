@@ -4,6 +4,9 @@
  * Copyright (c) 2015,
  * Technische Universitaet Dresden, Germany
  *
+ * Copyright (c) 2015,
+ * Forschungszentrum Juelich GmbH, Germany
+ *
  * This software may be modified and distributed under the terms of
  * a BSD-style license.  See the COPYING file in the package base
  * directory for details.
@@ -47,7 +50,7 @@ static const SCOREP_ConfigVariable scorep_metric_perf_confvars[] = {
         NULL,
         "",
         "PERF metric names to measure",
-        "List of requested metric names that will be collected during program run."
+        "List of requested PERF metric names that will be collected during program run."
     },
     {
         "perf_per_process",
@@ -56,7 +59,7 @@ static const SCOREP_ConfigVariable scorep_metric_perf_confvars[] = {
         NULL,
         "",
         "PERF metric names to measure per-process",
-        "List of requested metric names that will be recorded only by first thread of a process."
+        "List of requested PERF metric names that will be recorded only by first thread of a process."
     },
     {
         "perf_sep",
@@ -64,7 +67,7 @@ static const SCOREP_ConfigVariable scorep_metric_perf_confvars[] = {
         &scorep_metrics_perf_separator,
         NULL,
         ",",
-        "Separator of metric names",
+        "Separator of PERF metric names",
         "Character that separates metric names in SCOREP_METRIC_PERF and "
         "SCOREP_METRIC_PERF_PER_PROCESS."
     },

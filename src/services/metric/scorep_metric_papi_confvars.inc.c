@@ -13,7 +13,7 @@
  * Copyright (c) 2009-2013,
  * University of Oregon, Eugene, USA
  *
- * Copyright (c) 2009-2014,
+ * Copyright (c) 2009-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
  * Copyright (c) 2009-2013,
@@ -68,7 +68,7 @@ static const SCOREP_ConfigVariable scorep_metric_papi_confvars[] = {
         NULL,
         "",
         "PAPI metric names to measure",
-        "List of requested metric names that will be collected during program run."
+        "List of requested PAPI metric names that will be collected during program run."
     },
     {
         "papi_per_process",
@@ -77,7 +77,7 @@ static const SCOREP_ConfigVariable scorep_metric_papi_confvars[] = {
         NULL,
         "",
         "PAPI metric names to measure per-process",
-        "List of requested metric names that will be recorded only by first thread of a process."
+        "List of requested PAPI metric names that will be recorded only by first thread of a process."
     },
     {
         "papi_sep",
@@ -85,7 +85,7 @@ static const SCOREP_ConfigVariable scorep_metric_papi_confvars[] = {
         &scorep_metric_papi_separator,
         NULL,
         ",",
-        "Separator of metric names",
+        "Separator of PAPI metric names",
         "Character that separates metric names in SCOREP_METRIC_PAPI and "
         "SCOREP_METRIC_PAPI_PER_PROCESS."
     },
