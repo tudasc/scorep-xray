@@ -96,7 +96,7 @@ static const SCOREP_ConfigType_SetEntry cuda_enable_groups[] = {
     {
         "gpumemusage",
         SCOREP_CUDA_FEATURE_GPUMEMUSAGE,
-        "Record CUDA memory (de)allocations as a counter)"
+        "Record CUDA memory (de)allocations as a counter"
     },
     {
         "references",
@@ -145,7 +145,7 @@ static const SCOREP_ConfigVariable scorep_cuda_confvars[] = {
         &scorep_cupti_activity_buffer_chunk_size,
         NULL,
         "8k",
-        "Chunk size in bytes for the CUDA record buffer (ignored for CUDA 5.5 and earlier)",
+        "Chunk size in bytes for the CUDA record buffer (ignored for CUDA\2405.5 and earlier)",
         ""
     },
     SCOREP_CONFIG_TERMINATOR

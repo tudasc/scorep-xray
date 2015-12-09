@@ -179,7 +179,7 @@ static const SCOREP_ConfigVariable core_confvars[] = {
         "true",
         "Overwrite an existing experiment directory",
         "If you specified a specific experiment directory name, but this name "
-        "is already given, you can force overwriting it with this flag."
+        "is already given, you can force overwriting it with this flag. "
         "The previous experiment directory will be renamed."
     },
     {

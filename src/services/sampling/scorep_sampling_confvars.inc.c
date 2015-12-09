@@ -51,23 +51,24 @@ static const SCOREP_ConfigVariable scorep_sampling_confvars[] = {
 #else
         "timer@10000",
 #endif
-        "Set the sampling event and period: <event_name>(@<period>)",
-        "Possible values:\n\n"
-        "  timer (POSIX timer)\n"
-        "    period in us, default == 10000\n"
-        "    e.g., timer@2000\n"
-#if HAVE_BACKEND( PAPI )
+        "Set the sampling event and period: <event>[@<period>]",
+        "This selects the interrupt source for sampling.\n"
+        "This is only in effect if SCOREP_ENABLE_UNWINDING is on.\n"
         "\n"
-        "  PAPI event (PAPI_<event>)\n"
-        "    period in number of events, default == 10000000\n"
-        "    e.g., PAPI_TOT_CYC@2000000\n"
-#endif
+        "Possible values:\n"
 #if HAVE_BACKEND( METRIC_PERF )
-        "\n"
-        "  perf event (perf_[hw|sw|raw]_<event>)\n"
-        "    period in number of events, default == 10000000\n"
-        "    e.g., perf_cycles@2000000"
+        "\240-\240perf event (perf_<event>, see \"perf\240list\")\n"
+        "\240\240\240\240\240period in number of events, default:\24010000000\n"
+        "\240\240\240\240\240e.g., perf_cycles@2000000\n"
 #endif
+#if HAVE_BACKEND( PAPI )
+        "\240-\240PAPI event (PAPI_<event>, see \"papi_avail\")\n"
+        "\240\240\240\240\240period in number of events, default:\24010000000\n"
+        "\240\240\240\240\240e.g., PAPI_TOT_CYC@2000000\n"
+#endif
+        "\240-\240timer (POSIX timer, invalid for multi-threaded)\n"
+        "\240\240\240\240\240period in us, default:\24010000\n"
+        "\240\240\240\240\240e.g., timer@2000\n"
         ,
     },
     {

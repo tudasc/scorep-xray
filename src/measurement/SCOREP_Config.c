@@ -591,6 +591,26 @@ config_type_need_quotes( SCOREP_ConfigType type )
 }
 
 static void
+dump_line( const char* line,
+           int         length,
+           bool        html )
+{
+    const char* nbsp_repl = html ? "&nbsp;" : " ";
+    while ( length-- )
+    {
+        if ( *line == '\240' )
+        {
+            printf( "%s", nbsp_repl );
+        }
+        else
+        {
+            putchar( *line );
+        }
+        line++;
+    }
+}
+
+static void
 wrap_lines( const char* message,
             int         width,
             int         indent,
@@ -623,11 +643,14 @@ wrap_lines( const char* message,
                 sep = "";
                 break;
 
-            case 3:
+            case 4:
                 /* a paragraph, empty line and fall thru to linebreak */
                 printf( "%s\n%s",
                         html ? "</p>" : "",
                         html ? "<p>" : "" );
+
+            case 3:
+                printf( "%s", html ? "<br/>" : "" );
 
             case 2:
                 printf( "\n%*s", indent, "" );
@@ -641,16 +664,17 @@ wrap_lines( const char* message,
         nl = 1;
         if ( curr[ length ] == '\n' )
         {
-            nl = 2;
+            nl = 3;
             if ( curr[ length + 1 ] == '\n' )
             {
-                nl = 3;
+                nl = 4;
             }
         }
 
         if ( length < reminder || reminder == column_width )
         {
-            printf( "%s%.*s", sep, length, curr );
+            printf( "%s", sep );
+            dump_line( curr, length, html );
             curr     += length;
             reminder -= length + strlen( sep );
         }

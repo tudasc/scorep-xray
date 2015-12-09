@@ -68,7 +68,7 @@ static const SCOREP_ConfigVariable scorep_tracing_confvars[] = {
         &scorep_tracing_max_procs_per_sion_file,
         NULL,
         "1024",
-        "Maximum number of processes that share one sion file (must be > 0)",
+        "Maximum number of processes that share one sion file (must be >\2400)",
         "All processes are than evenly distributed over the number of needed "
         "files to fulfill this constraint. E.g., having 4 processes and setting "
         "the maximum to 3 would result in 2 files each holding 2 processes."
@@ -93,10 +93,10 @@ static const SCOREP_ConfigVariable scorep_tracing_calling_context_confvars[] = {
         NULL,
         "false",
         "Write calling context information as a sequence of Enter/Leave events to trace",
-        "When recording the calling context of events (instrumented or sampled)"
-        "than these could be stored in the trace either as the new CallingContext"
-        "records from OTF2 or they could be converted to the legacy Enter/Leave"
-        "records.  This can be controlled with this variable, where the former is"
+        "When recording the calling context of events (instrumented or sampled) "
+        "than these could be stored in the trace either as the new CallingContext "
+        "records from OTF2 or they could be converted to the legacy Enter/Leave "
+        "records.  This can be controlled with this variable, where the former is "
         "the false value.\n"
         "This is only in effect if SCOREP_ENABLING_UNWINDING is on.\n"
         "Note that enabling this will result in an increase of records per "
