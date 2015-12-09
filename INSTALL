@@ -144,7 +144,7 @@ On cross-compile systems the default frontend compiler is IBM XL for
 the Blue Gene series and GCC on all other platforms.  The backend
 compilers will either be automatically selected by the platform
 detection (IBM Blue Gene series) or by the currently loaded
-environment modules (Cray XT series). If you want to customize these
+environment modules (Cray X series). If you want to customize these
 settings please use the configure option '--with-custom-compilers' as
 described above.
 
