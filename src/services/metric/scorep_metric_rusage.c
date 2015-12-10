@@ -288,7 +288,10 @@ scorep_metric_rusage_open( const char* listOfMetricNames,
 
             /* If found, add the address of this counter specification to vector
              * of active counters; otherwise abort */
-            UTILS_ASSERT( index != SCOREP_RUSAGE_CNTR_MAXNUM );
+            UTILS_BUG_ON( index == SCOREP_RUSAGE_CNTR_MAXNUM,
+                          "Invalid rusage metric name ('%s') specified. "
+                          "Please use 'man getrusage' to get a list of "
+                          "available rusage metrics of your system.", token );
             metric_defs->active_metrics[ ( metric_defs->number_of_metrics )++ ] = &( scorep_rusage_metrics[ index ] );
 
             /* Get next token */
