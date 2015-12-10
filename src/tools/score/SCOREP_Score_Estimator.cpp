@@ -514,20 +514,18 @@ SCOREP_Score_Estimator::calculate( bool showRegions, bool useMangled )
         uint64_t      group           = m_profile->getGroup( region );
         uint64_t      bytes_per_visit = 0;
 
-        /* Calculate bytes per visit */
-        for ( map<string, SCOREP_Score_Event*>::iterator i = SCOREP_Score_Event::m_all_events.begin();
-              i != SCOREP_Score_Event::m_all_events.end(); i++ )
+        /* Calculate bytes per visit, though visists into sampling regions wont
+           be recorded in the trace */
+        if ( m_profile->getRegionParadigm( region ) != "sampling" )
         {
-            if ( i->second->occursInRegion( region_name, m_profile->hasHits() ) )
+            for ( map<string, SCOREP_Score_Event*>::iterator i = SCOREP_Score_Event::m_all_events.begin();
+                  i != SCOREP_Score_Event::m_all_events.end(); i++ )
             {
-                bytes_per_visit += i->second->getEventSize();
+                if ( i->second->occursInRegion( region_name, m_profile->hasHits() ) )
+                {
+                    bytes_per_visit += i->second->getEventSize();
+                }
             }
-        }
-
-        /* visists into sampling regions wont be recorded in the trace */
-        if ( m_profile->getRegionParadigm( region ) == "sampling" )
-        {
-            bytes_per_visit = 0;
         }
 
         /* Apply region data for each process */
