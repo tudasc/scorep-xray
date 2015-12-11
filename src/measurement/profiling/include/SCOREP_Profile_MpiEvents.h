@@ -97,7 +97,7 @@ SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
                               uint64_t                         timestamp,
                               SCOREP_InterimCommunicatorHandle communicatorHandle,
                               SCOREP_MpiRank                   rootRank,
-                              SCOREP_MpiCollectiveType         collectiveType,
+                              SCOREP_CollectiveType            collectiveType,
                               uint64_t                         bytesSent,
                               uint64_t                         bytesReceived );
 
@@ -115,7 +115,7 @@ SCOREP_Profile_CollectiveEnd( SCOREP_Location*                 location,
 void
 SCOREP_Profile_RmaCollectiveEnd( SCOREP_Location*              location,
                                  uint64_t                      timestamp,
-                                 SCOREP_MpiCollectiveType      collectiveOp,
+                                 SCOREP_CollectiveType         collectiveOp,
                                  SCOREP_RmaSyncLevel           syncLevel,
                                  SCOREP_InterimRmaWindowHandle windowHandle,
                                  uint32_t                      root,

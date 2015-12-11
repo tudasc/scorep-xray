@@ -35,7 +35,7 @@ ${proto:c}
 
       SCOREP_MpiCollectiveEnd(SCOREP_MPI_COMM_HANDLE(comm),
                               root_loc,
-                              SCOREP_COLLECTIVE_${name|uppercase},
+                              SCOREP_MPI_COLLECTIVE__${name|uppercase},
                               ${mpi:sendcount},
                               ${mpi:recvcount});
       SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);

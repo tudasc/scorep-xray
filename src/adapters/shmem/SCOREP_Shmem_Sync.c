@@ -186,7 +186,7 @@ P2P_WAIT_UNTIL( shmem_wait_until,          long )
                 /* Reset status flag which indicates need for a SCOREP_RmaOpCompleteRemote record */    \
                 SCOREP_SHMEM_RMA_OP_COMPLETE_RECORD_OFF();                                              \
             }                                                                                           \
-            SCOREP_RmaCollectiveEnd( SCOREP_COLLECTIVE_MPI_BARRIER,                                     \
+            SCOREP_RmaCollectiveEnd( SCOREP_COLLECTIVE_BARRIER,                                         \
                                      SCOREP_RMA_SYNC_LEVEL_PROCESS | SCOREP_RMA_SYNC_LEVEL_MEMORY,      \
                                      scorep_shmem_interim_world_window_handle,                          \
                                      NO_PROCESSING_ELEMENT,   /* root */                                \
@@ -238,7 +238,7 @@ SHMEM_BARRIER_ALL( shmem_barrier_all )
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( peStart, logPeStride, peSize, pSync ) );          \
             SCOREP_EXIT_WRAPPED_REGION();                                                               \
                                                                                                         \
-            SCOREP_RmaCollectiveEnd( SCOREP_COLLECTIVE_MPI_BARRIER,                                     \
+            SCOREP_RmaCollectiveEnd( SCOREP_COLLECTIVE_BARRIER,                                         \
                                      SCOREP_RMA_SYNC_LEVEL_PROCESS | SCOREP_RMA_SYNC_LEVEL_MEMORY,      \
                                      window_handle,                                                     \
                                      NO_PROCESSING_ELEMENT, /* root */                                  \

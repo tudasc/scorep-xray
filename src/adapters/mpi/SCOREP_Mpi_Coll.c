@@ -124,7 +124,7 @@ MPI_Allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_ALLGATHER,
+                                 SCOREP_MPI_COLLECTIVE__MPI_ALLGATHER,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLGATHER ] );
@@ -215,7 +215,7 @@ MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_ALLGATHERV,
+                                 SCOREP_MPI_COLLECTIVE__MPI_ALLGATHERV,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLGATHERV ] );
@@ -288,7 +288,7 @@ MPI_Allreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MP
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_ALLREDUCE,
+                                 SCOREP_MPI_COLLECTIVE__MPI_ALLREDUCE,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLREDUCE ] );
@@ -360,7 +360,7 @@ MPI_Alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_ALLTOALL,
+                                 SCOREP_MPI_COLLECTIVE__MPI_ALLTOALL,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLTOALL ] );
@@ -448,7 +448,7 @@ MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_ALLTOALLV,
+                                 SCOREP_MPI_COLLECTIVE__MPI_ALLTOALLV,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLV ] );
@@ -540,7 +540,7 @@ MPI_Alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int se
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_ALLTOALLW,
+                                 SCOREP_MPI_COLLECTIVE__MPI_ALLTOALLW,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLW ] );
@@ -595,7 +595,7 @@ MPI_Barrier( MPI_Comm comm )
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_BARRIER,
+                                 SCOREP_MPI_COLLECTIVE__MPI_BARRIER,
                                  0,
                                  0 );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_BARRIER ] );
@@ -668,7 +668,7 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_BCAST,
+                                 SCOREP_MPI_COLLECTIVE__MPI_BCAST,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_BCAST ] );
@@ -734,7 +734,7 @@ MPI_Exscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_EXSCAN,
+                                 SCOREP_MPI_COLLECTIVE__MPI_EXSCAN,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_EXSCAN ] );
@@ -816,7 +816,7 @@ MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sen
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_GATHER,
+                                 SCOREP_MPI_COLLECTIVE__MPI_GATHER,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GATHER ] );
@@ -903,7 +903,7 @@ MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_GATHERV,
+                                 SCOREP_MPI_COLLECTIVE__MPI_GATHERV,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GATHERV ] );
@@ -984,7 +984,7 @@ MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_REDUCE,
+                                 SCOREP_MPI_COLLECTIVE__MPI_REDUCE,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE ] );
@@ -1065,7 +1065,7 @@ MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_M
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_REDUCE_SCATTER,
+                                 SCOREP_MPI_COLLECTIVE__MPI_REDUCE_SCATTER,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER ] );
@@ -1137,7 +1137,7 @@ MPI_Reduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, in
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_REDUCE_SCATTER_BLOCK,
+                                 SCOREP_MPI_COLLECTIVE__MPI_REDUCE_SCATTER_BLOCK,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER_BLOCK ] );
@@ -1213,7 +1213,7 @@ MPI_Scan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Dat
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_SCAN,
+                                 SCOREP_MPI_COLLECTIVE__MPI_SCAN,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SCAN ] );
@@ -1298,7 +1298,7 @@ MPI_Scatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_SCATTER,
+                                 SCOREP_MPI_COLLECTIVE__MPI_SCATTER,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SCATTER ] );
@@ -1386,7 +1386,7 @@ MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* se
 
         SCOREP_MpiCollectiveEnd( SCOREP_MPI_COMM_HANDLE( comm ),
                                  root_loc,
-                                 SCOREP_COLLECTIVE_MPI_SCATTERV,
+                                 SCOREP_MPI_COLLECTIVE__MPI_SCATTERV,
                                  sendbytes,
                                  recvbytes );
         SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SCATTERV ] );

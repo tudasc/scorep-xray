@@ -56,7 +56,7 @@
             SCOREP_LIBWRAP_FUNC_CALL( lw, FUNCNAME, ( target, source, nlong, peRoot, peStart, logPeStride, peSize, pSync ) );   \
             SCOREP_EXIT_WRAPPED_REGION();                                                                                       \
                                                                                                                                 \
-            SCOREP_RmaCollectiveEnd( SCOREP_COLLECTIVE_MPI_BCAST,                                                               \
+            SCOREP_RmaCollectiveEnd( SCOREP_COLLECTIVE_BROADCAST,                                                               \
                                      SCOREP_RMA_SYNC_LEVEL_PROCESS | SCOREP_RMA_SYNC_LEVEL_MEMORY,                              \
                                      window_handle,                                                                             \
                                      NO_PROCESSING_ELEMENT,                                                                     \

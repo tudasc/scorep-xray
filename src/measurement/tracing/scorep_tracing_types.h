@@ -298,16 +298,20 @@ scorep_tracing_parameter_type_to_otf2( SCOREP_ParameterType scorepType )
 
 
 static inline OTF2_CollectiveOp
-scorep_tracing_collective_type_to_otf2( SCOREP_MpiCollectiveType scorepType )
+scorep_tracing_collective_type_to_otf2( SCOREP_CollectiveType scorepType )
 {
     switch ( scorepType )
     {
 #define case_return( name ) \
-    case SCOREP_COLLECTIVE_MPI_ ## name: \
+    case SCOREP_COLLECTIVE_ ## name: \
         return OTF2_COLLECTIVE_OP_ ## name
 
+#define case_return2( SCOREP, OTF2 ) \
+    case SCOREP_COLLECTIVE_ ## SCOREP: \
+        return OTF2_COLLECTIVE_OP_ ## OTF2
+
         case_return( BARRIER );
-        case_return( BCAST );
+        case_return2( BROADCAST, BCAST );
         case_return( GATHER );
         case_return( GATHERV );
         case_return( SCATTER );
@@ -334,6 +338,7 @@ scorep_tracing_collective_type_to_otf2( SCOREP_MpiCollectiveType scorepType )
             UTILS_BUG( "Invalid collective type: %u", scorepType );
 
 #undef case_return
+#undef case_return2
     }
 
     return OTF2_UNDEFINED_TYPE;

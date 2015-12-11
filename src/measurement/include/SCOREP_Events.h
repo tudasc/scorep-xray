@@ -351,7 +351,7 @@ SCOREP_MpiCollectiveBegin( void );
 void
 SCOREP_MpiCollectiveEnd( SCOREP_InterimCommunicatorHandle communicatorHandle,
                          SCOREP_MpiRank                   rootRank,
-                         SCOREP_MpiCollectiveType         collectiveType,
+                         SCOREP_CollectiveType            collectiveType,
                          uint64_t                         bytesSent,
                          uint64_t                         bytesReceived );
 
@@ -499,7 +499,7 @@ SCOREP_RmaCollectiveBegin( void );
  * @param bytesReceived Number of bytes received.
  */
 void
-SCOREP_RmaCollectiveEnd( SCOREP_MpiCollectiveType      collectiveOp,
+SCOREP_RmaCollectiveEnd( SCOREP_CollectiveType         collectiveOp,
                          SCOREP_RmaSyncLevel           syncLevel,
                          SCOREP_InterimRmaWindowHandle windowHandle,
                          uint32_t                      root,
