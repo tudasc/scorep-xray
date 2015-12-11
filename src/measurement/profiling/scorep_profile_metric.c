@@ -232,7 +232,7 @@ scorep_profile_alloc_sparse_double( SCOREP_Profile_LocationData* location )
 {
     scorep_profile_sparse_metric_double* new_sparse = NULL;
 
-    if ( ( location != NULL ) && ( location->free_int_metrics != NULL ) )
+    if ( location->free_double_metrics != NULL )
     {
         new_sparse                    = location->free_double_metrics;
         location->free_double_metrics = new_sparse->next_metric;
