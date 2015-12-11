@@ -37,13 +37,14 @@ int MPI_Abort(MPI_Comm comm,
   if (SCOREP_MPI_IS_EVENT_GEN_ON_FOR(SCOREP_MPI_ENABLED_EXT))
   {
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_ABORT], ( intptr_t )PMPI_Abort);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_ABORT],
+                              ( intptr_t )PMPI_Abort);
 
     SCOREP_ENTER_WRAPPED_REGION();
     return_val = PMPI_Abort(comm, errorcode);
     SCOREP_EXIT_WRAPPED_REGION();
 
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_ABORT]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_ABORT]);
     SCOREP_MPI_EVENT_GEN_ON();
   }
   else

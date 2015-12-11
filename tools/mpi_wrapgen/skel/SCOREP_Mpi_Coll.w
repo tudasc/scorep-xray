@@ -19,7 +19,8 @@ ${proto:c}
       SCOREP_MPI_EVENT_GEN_OFF();
       ${xblock}
 
-      SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__${name|uppercase}], ( intptr_t )P${name});
+      SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}],
+                                ( intptr_t )P${name});
       SCOREP_MpiCollectiveBegin();
       uint64_t start_time_stamp =
         SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -38,7 +39,7 @@ ${proto:c}
                               SCOREP_MPI_COLLECTIVE__${name|uppercase},
                               ${mpi:sendcount},
                               ${mpi:recvcount});
-      SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
+      SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
 
       SCOREP_MPI_EVENT_GEN_ON();
     }

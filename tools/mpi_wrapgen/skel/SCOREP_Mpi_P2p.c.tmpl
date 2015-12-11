@@ -94,7 +94,8 @@ int MPI_Recv( void* buf,
 
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_RECV], ( intptr_t )PMPI_Recv);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV],
+                              ( intptr_t )PMPI_Recv);
 
     #if ! defined(SCOREP_MPI_NO_HOOKS)
       if(SCOREP_IS_MPI_HOOKS_ON)
@@ -122,7 +123,7 @@ int MPI_Recv( void* buf,
 
 
 
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_RECV]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -175,7 +176,8 @@ int MPI_Irecv(void* buf,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_IRECV], ( intptr_t )PMPI_Irecv);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_IRECV],
+                              ( intptr_t )PMPI_Irecv);
   }
 
   #if ! defined(SCOREP_MPI_NO_HOOKS)
@@ -212,7 +214,7 @@ int MPI_Irecv(void* buf,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_IRECV]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_IRECV]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -247,7 +249,8 @@ int MPI_Wait(MPI_Request* request,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WAIT], ( intptr_t )PMPI_Wait);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAIT],
+                              ( intptr_t )PMPI_Wait);
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -280,7 +283,7 @@ int MPI_Wait(MPI_Request* request,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WAIT]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAIT]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -314,7 +317,8 @@ int MPI_Waitall(int count,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WAITALL], ( intptr_t )PMPI_Waitall);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITALL],
+                              ( intptr_t )PMPI_Waitall);
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -355,7 +359,7 @@ int MPI_Waitall(int count,
   }
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WAITALL]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITALL]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -391,7 +395,8 @@ int MPI_Waitany(int count,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WAITANY], ( intptr_t )PMPI_Waitany);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITANY],
+                              ( intptr_t )PMPI_Waitany);
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -446,7 +451,7 @@ int MPI_Waitany(int count,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WAITANY]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITANY]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -483,7 +488,8 @@ int MPI_Waitsome(int incount,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_WAITSOME], ( intptr_t )PMPI_Waitsome);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITSOME],
+                              ( intptr_t )PMPI_Waitsome);
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -565,7 +571,7 @@ int MPI_Waitsome(int incount,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_WAITSOME]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_WAITSOME]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -600,7 +606,8 @@ int MPI_Test(MPI_Request* request,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_TEST], ( intptr_t )PMPI_Test);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TEST],
+                              ( intptr_t )PMPI_Test);
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -637,7 +644,7 @@ int MPI_Test(MPI_Request* request,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_TEST]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TEST]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -674,7 +681,8 @@ int MPI_Testany(int count,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_TESTANY], ( intptr_t )PMPI_Testany);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTANY],
+                              ( intptr_t )PMPI_Testany);
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -727,7 +735,7 @@ int MPI_Testany(int count,
     }
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_TESTANY]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTANY]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -763,7 +771,8 @@ int MPI_Testall(int count,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_TESTALL], ( intptr_t )PMPI_Testall);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL],
+                              ( intptr_t )PMPI_Testall);
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -816,7 +825,7 @@ int MPI_Testall(int count,
     }
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_TESTALL]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTALL]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -853,7 +862,8 @@ int MPI_Testsome(int incount,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_TESTSOME], ( intptr_t )PMPI_Testsome);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTSOME],
+                              ( intptr_t )PMPI_Testsome);
   }
 
   #if !defined( SCOREP_MPI_NO_HOOKS )
@@ -935,7 +945,7 @@ int MPI_Testsome(int incount,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_TESTSOME]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_TESTSOME]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -978,7 +988,8 @@ int MPI_Recv_init(void* buf,
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_RECV_INIT], ( intptr_t )PMPI_Recv_init);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV_INIT],
+                              ( intptr_t )PMPI_Recv_init);
   }
 
   if (event_gen_active)
@@ -1006,7 +1017,7 @@ int MPI_Recv_init(void* buf,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_RECV_INIT]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_RECV_INIT]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -1039,7 +1050,8 @@ int MPI_Start(MPI_Request* request)
 
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_START], ( intptr_t )PMPI_Start);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_START],
+                              ( intptr_t )PMPI_Start);
 
 	#if !defined( SCOREP_MPI_NO_HOOKS )
     if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -1082,7 +1094,7 @@ int MPI_Start(MPI_Request* request)
   #endif
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_START]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_START]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -1118,7 +1130,8 @@ int MPI_Startall(int count,
 
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_STARTALL], ( intptr_t )PMPI_Startall);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_STARTALL],
+                              ( intptr_t )PMPI_Startall);
 
 	#if !defined( SCOREP_MPI_NO_HOOKS )
     if ( SCOREP_IS_MPI_HOOKS_ON )
@@ -1167,7 +1180,7 @@ int MPI_Startall(int count,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_STARTALL]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_STARTALL]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -1199,7 +1212,8 @@ int MPI_Request_free( MPI_Request* request )
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_REQUEST_FREE], ( intptr_t )PMPI_Request_free);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_REQUEST_FREE],
+                              ( intptr_t )PMPI_Request_free);
   }
 
   req = scorep_mpi_request_get(*request);
@@ -1260,7 +1274,7 @@ int MPI_Request_free( MPI_Request* request )
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_REQUEST_FREE]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_REQUEST_FREE]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }
@@ -1290,7 +1304,8 @@ int MPI_Cancel( MPI_Request* request )
   {
     SCOREP_MPI_EVENT_GEN_OFF();
 
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_CANCEL], ( intptr_t )PMPI_Cancel);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CANCEL],
+                              ( intptr_t )PMPI_Cancel);
   }
 
   /* Mark request as cancellable and check for successful cancellation
@@ -1322,7 +1337,7 @@ int MPI_Cancel( MPI_Request* request )
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_CANCEL]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CANCEL]);
 
     SCOREP_MPI_EVENT_GEN_ON();
   }

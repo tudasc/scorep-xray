@@ -1,2 +1,2 @@
-/** SCOREP region ID for ${name} */
-#define SCOREP__${name|uppercase|padding right 36} ${id|padding left 3}
+    /** Score-P region ID for ${name} */
+    SCOREP_MPI_REGION__${name|uppercase},

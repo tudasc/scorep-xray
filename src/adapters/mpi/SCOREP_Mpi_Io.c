@@ -81,13 +81,14 @@ MPI_File_close( MPI_File* fh )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_CLOSE ], ( intptr_t )PMPI_File_close );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_CLOSE ],
+                                   ( intptr_t )PMPI_File_close );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_close( fh );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_CLOSE ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_CLOSE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -119,13 +120,14 @@ MPI_File_delete( SCOREP_MPI_CONST_DECL char* filename, MPI_Info info )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_DELETE ], ( intptr_t )PMPI_File_delete );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_DELETE ],
+                                   ( intptr_t )PMPI_File_delete );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_delete( filename, info );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_DELETE ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_DELETE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -157,13 +159,14 @@ MPI_File_get_amode( MPI_File fh, int* amode )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_AMODE ], ( intptr_t )PMPI_File_get_amode );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_AMODE ],
+                                   ( intptr_t )PMPI_File_get_amode );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_get_amode( fh, amode );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_AMODE ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_AMODE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -195,13 +198,14 @@ MPI_File_get_atomicity( MPI_File fh, int* flag )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_ATOMICITY ], ( intptr_t )PMPI_File_get_atomicity );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_ATOMICITY ],
+                                   ( intptr_t )PMPI_File_get_atomicity );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_get_atomicity( fh, flag );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_ATOMICITY ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_ATOMICITY ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -233,13 +237,14 @@ MPI_File_get_byte_offset( MPI_File fh, MPI_Offset offset, MPI_Offset* disp )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_BYTE_OFFSET ], ( intptr_t )PMPI_File_get_byte_offset );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_BYTE_OFFSET ],
+                                   ( intptr_t )PMPI_File_get_byte_offset );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_get_byte_offset( fh, offset, disp );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_BYTE_OFFSET ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_BYTE_OFFSET ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -271,13 +276,14 @@ MPI_File_get_group( MPI_File fh, MPI_Group* group )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_GROUP ], ( intptr_t )PMPI_File_get_group );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_GROUP ],
+                                   ( intptr_t )PMPI_File_get_group );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_get_group( fh, group );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_GROUP ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_GROUP ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -309,13 +315,14 @@ MPI_File_get_info( MPI_File fh, MPI_Info* info_used )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_INFO ], ( intptr_t )PMPI_File_get_info );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_INFO ],
+                                   ( intptr_t )PMPI_File_get_info );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_get_info( fh, info_used );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_INFO ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_INFO ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -347,13 +354,14 @@ MPI_File_get_position( MPI_File fh, MPI_Offset* offset )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_POSITION ], ( intptr_t )PMPI_File_get_position );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_POSITION ],
+                                   ( intptr_t )PMPI_File_get_position );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_get_position( fh, offset );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_POSITION ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_POSITION ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -385,13 +393,14 @@ MPI_File_get_position_shared( MPI_File fh, MPI_Offset* offset )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_POSITION_SHARED ], ( intptr_t )PMPI_File_get_position_shared );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_POSITION_SHARED ],
+                                   ( intptr_t )PMPI_File_get_position_shared );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_get_position_shared( fh, offset );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_POSITION_SHARED ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_POSITION_SHARED ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -423,13 +432,14 @@ MPI_File_get_size( MPI_File fh, MPI_Offset* size )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_SIZE ], ( intptr_t )PMPI_File_get_size );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_SIZE ],
+                                   ( intptr_t )PMPI_File_get_size );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_get_size( fh, size );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_SIZE ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_SIZE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -461,13 +471,14 @@ MPI_File_get_type_extent( MPI_File fh, MPI_Datatype datatype, MPI_Aint* extent )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_TYPE_EXTENT ], ( intptr_t )PMPI_File_get_type_extent );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_TYPE_EXTENT ],
+                                   ( intptr_t )PMPI_File_get_type_extent );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_get_type_extent( fh, datatype, extent );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_TYPE_EXTENT ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_TYPE_EXTENT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -499,13 +510,14 @@ MPI_File_get_view( MPI_File fh, MPI_Offset* disp, MPI_Datatype* etype, MPI_Datat
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_VIEW ], ( intptr_t )PMPI_File_get_view );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_VIEW ],
+                                   ( intptr_t )PMPI_File_get_view );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_get_view( fh, disp, etype, filetype, datarep );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_VIEW ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_VIEW ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -537,13 +549,14 @@ MPI_File_open( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* filename, int amode, M
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_OPEN ], ( intptr_t )PMPI_File_open );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_OPEN ],
+                                   ( intptr_t )PMPI_File_open );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_open( comm, filename, amode, info, fh );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_OPEN ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_OPEN ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -575,13 +588,14 @@ MPI_File_seek( MPI_File fh, MPI_Offset offset, int whence )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SEEK ], ( intptr_t )PMPI_File_seek );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SEEK ],
+                                   ( intptr_t )PMPI_File_seek );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_seek( fh, offset, whence );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SEEK ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SEEK ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -613,13 +627,14 @@ MPI_File_seek_shared( MPI_File fh, MPI_Offset offset, int whence )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SEEK_SHARED ], ( intptr_t )PMPI_File_seek_shared );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SEEK_SHARED ],
+                                   ( intptr_t )PMPI_File_seek_shared );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_seek_shared( fh, offset, whence );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SEEK_SHARED ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SEEK_SHARED ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -651,13 +666,14 @@ MPI_File_set_atomicity( MPI_File fh, int flag )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SET_ATOMICITY ], ( intptr_t )PMPI_File_set_atomicity );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_ATOMICITY ],
+                                   ( intptr_t )PMPI_File_set_atomicity );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_set_atomicity( fh, flag );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SET_ATOMICITY ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_ATOMICITY ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -689,13 +705,14 @@ MPI_File_set_info( MPI_File fh, MPI_Info info )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SET_INFO ], ( intptr_t )PMPI_File_set_info );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_INFO ],
+                                   ( intptr_t )PMPI_File_set_info );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_set_info( fh, info );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SET_INFO ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_INFO ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -727,13 +744,14 @@ MPI_File_set_size( MPI_File fh, MPI_Offset size )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SET_SIZE ], ( intptr_t )PMPI_File_set_size );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_SIZE ],
+                                   ( intptr_t )PMPI_File_set_size );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_set_size( fh, size );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SET_SIZE ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_SIZE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -765,13 +783,14 @@ MPI_File_set_view( MPI_File fh, MPI_Offset disp, MPI_Datatype etype, MPI_Datatyp
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SET_VIEW ], ( intptr_t )PMPI_File_set_view );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_VIEW ],
+                                   ( intptr_t )PMPI_File_set_view );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_set_view( fh, disp, etype, filetype, datarep, info );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SET_VIEW ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_VIEW ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -803,13 +822,14 @@ MPI_File_sync( MPI_File fh )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SYNC ], ( intptr_t )PMPI_File_sync );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SYNC ],
+                                   ( intptr_t )PMPI_File_sync );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_sync( fh );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SYNC ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SYNC ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -841,13 +861,14 @@ MPI_Register_datarep( SCOREP_MPI_CONST_DECL char* datarep, MPI_Datarep_conversio
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_REGISTER_DATAREP ], ( intptr_t )PMPI_Register_datarep );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REGISTER_DATAREP ],
+                                   ( intptr_t )PMPI_Register_datarep );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Register_datarep( datarep, read_conversion_fn, write_conversion_fn, dtype_file_extent_fn, extra_state );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_REGISTER_DATAREP ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REGISTER_DATAREP ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -894,13 +915,14 @@ MPI_File_iread( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Re
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IREAD ], ( intptr_t )PMPI_File_iread );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD ],
+                                   ( intptr_t )PMPI_File_iread );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_iread( fh, buf, count, datatype, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IREAD ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -932,13 +954,14 @@ MPI_File_iread_all( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MP
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IREAD_ALL ], ( intptr_t )PMPI_File_iread_all );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD_ALL ],
+                                   ( intptr_t )PMPI_File_iread_all );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_iread_all( fh, buf, count, datatype, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IREAD_ALL ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD_ALL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -970,13 +993,14 @@ MPI_File_iread_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Dat
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IREAD_AT ], ( intptr_t )PMPI_File_iread_at );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD_AT ],
+                                   ( intptr_t )PMPI_File_iread_at );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_iread_at( fh, offset, buf, count, datatype, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IREAD_AT ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD_AT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1008,13 +1032,14 @@ MPI_File_iread_at_all( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IREAD_AT_ALL ], ( intptr_t )PMPI_File_iread_at_all );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD_AT_ALL ],
+                                   ( intptr_t )PMPI_File_iread_at_all );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_iread_at_all( fh, offset, buf, count, datatype, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IREAD_AT_ALL ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD_AT_ALL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1046,13 +1071,14 @@ MPI_File_iread_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype,
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IREAD_SHARED ], ( intptr_t )PMPI_File_iread_shared );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD_SHARED ],
+                                   ( intptr_t )PMPI_File_iread_shared );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_iread_shared( fh, buf, count, datatype, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IREAD_SHARED ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IREAD_SHARED ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1084,13 +1110,14 @@ MPI_File_iwrite( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Da
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IWRITE ], ( intptr_t )PMPI_File_iwrite );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE ],
+                                   ( intptr_t )PMPI_File_iwrite );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_iwrite( fh, buf, count, datatype, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IWRITE ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1122,13 +1149,14 @@ MPI_File_iwrite_all( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MP
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IWRITE_ALL ], ( intptr_t )PMPI_File_iwrite_all );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE_ALL ],
+                                   ( intptr_t )PMPI_File_iwrite_all );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_iwrite_all( fh, buf, count, datatype, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IWRITE_ALL ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE_ALL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1160,13 +1188,14 @@ MPI_File_iwrite_at( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL void* 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IWRITE_AT ], ( intptr_t )PMPI_File_iwrite_at );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE_AT ],
+                                   ( intptr_t )PMPI_File_iwrite_at );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_iwrite_at( fh, offset, buf, count, datatype, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IWRITE_AT ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE_AT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1198,13 +1227,14 @@ MPI_File_iwrite_at_all( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL vo
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IWRITE_AT_ALL ], ( intptr_t )PMPI_File_iwrite_at_all );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE_AT_ALL ],
+                                   ( intptr_t )PMPI_File_iwrite_at_all );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_iwrite_at_all( fh, offset, buf, count, datatype, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IWRITE_AT_ALL ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE_AT_ALL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1236,13 +1266,14 @@ MPI_File_iwrite_shared( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count,
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IWRITE_SHARED ], ( intptr_t )PMPI_File_iwrite_shared );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE_SHARED ],
+                                   ( intptr_t )PMPI_File_iwrite_shared );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_iwrite_shared( fh, buf, count, datatype, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_IWRITE_SHARED ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_IWRITE_SHARED ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1277,13 +1308,14 @@ MPI_File_read( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI_Sta
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ ], ( intptr_t )PMPI_File_read );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ ],
+                                   ( intptr_t )PMPI_File_read );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_read( fh, buf, count, datatype, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1315,13 +1347,14 @@ MPI_File_read_all( MPI_File fh, void* buf, int count, MPI_Datatype datatype, MPI
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_ALL ], ( intptr_t )PMPI_File_read_all );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ALL ],
+                                   ( intptr_t )PMPI_File_read_all );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_read_all( fh, buf, count, datatype, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_ALL ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ALL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1353,13 +1386,14 @@ MPI_File_read_all_begin( MPI_File fh, void* buf, int count, MPI_Datatype datatyp
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_ALL_BEGIN ], ( intptr_t )PMPI_File_read_all_begin );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ALL_BEGIN ],
+                                   ( intptr_t )PMPI_File_read_all_begin );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_read_all_begin( fh, buf, count, datatype );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_ALL_BEGIN ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ALL_BEGIN ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1391,13 +1425,14 @@ MPI_File_read_all_end( MPI_File fh, void* buf, MPI_Status* status )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_ALL_END ], ( intptr_t )PMPI_File_read_all_end );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ALL_END ],
+                                   ( intptr_t )PMPI_File_read_all_end );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_read_all_end( fh, buf, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_ALL_END ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ALL_END ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1429,13 +1464,14 @@ MPI_File_read_at( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_Data
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_AT ], ( intptr_t )PMPI_File_read_at );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT ],
+                                   ( intptr_t )PMPI_File_read_at );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_read_at( fh, offset, buf, count, datatype, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_AT ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1467,13 +1503,14 @@ MPI_File_read_at_all( MPI_File fh, MPI_Offset offset, void* buf, int count, MPI_
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_AT_ALL ], ( intptr_t )PMPI_File_read_at_all );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT_ALL ],
+                                   ( intptr_t )PMPI_File_read_at_all );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_read_at_all( fh, offset, buf, count, datatype, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_AT_ALL ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT_ALL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1505,13 +1542,14 @@ MPI_File_read_at_all_begin( MPI_File fh, MPI_Offset offset, void* buf, int count
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_AT_ALL_BEGIN ], ( intptr_t )PMPI_File_read_at_all_begin );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT_ALL_BEGIN ],
+                                   ( intptr_t )PMPI_File_read_at_all_begin );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_read_at_all_begin( fh, offset, buf, count, datatype );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_AT_ALL_BEGIN ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT_ALL_BEGIN ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1543,13 +1581,14 @@ MPI_File_read_at_all_end( MPI_File fh, void* buf, MPI_Status* status )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_AT_ALL_END ], ( intptr_t )PMPI_File_read_at_all_end );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT_ALL_END ],
+                                   ( intptr_t )PMPI_File_read_at_all_end );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_read_at_all_end( fh, buf, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_AT_ALL_END ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_AT_ALL_END ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1581,13 +1620,14 @@ MPI_File_read_ordered( MPI_File fh, void* buf, int count, MPI_Datatype datatype,
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_ORDERED ], ( intptr_t )PMPI_File_read_ordered );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ORDERED ],
+                                   ( intptr_t )PMPI_File_read_ordered );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_read_ordered( fh, buf, count, datatype, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_ORDERED ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ORDERED ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1619,13 +1659,14 @@ MPI_File_read_ordered_begin( MPI_File fh, void* buf, int count, MPI_Datatype dat
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_ORDERED_BEGIN ], ( intptr_t )PMPI_File_read_ordered_begin );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ORDERED_BEGIN ],
+                                   ( intptr_t )PMPI_File_read_ordered_begin );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_read_ordered_begin( fh, buf, count, datatype );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_ORDERED_BEGIN ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ORDERED_BEGIN ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1657,13 +1698,14 @@ MPI_File_read_ordered_end( MPI_File fh, void* buf, MPI_Status* status )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_ORDERED_END ], ( intptr_t )PMPI_File_read_ordered_end );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ORDERED_END ],
+                                   ( intptr_t )PMPI_File_read_ordered_end );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_read_ordered_end( fh, buf, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_ORDERED_END ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_ORDERED_END ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1695,13 +1737,14 @@ MPI_File_read_shared( MPI_File fh, void* buf, int count, MPI_Datatype datatype, 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_SHARED ], ( intptr_t )PMPI_File_read_shared );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_SHARED ],
+                                   ( intptr_t )PMPI_File_read_shared );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_read_shared( fh, buf, count, datatype, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_READ_SHARED ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_READ_SHARED ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1733,13 +1776,14 @@ MPI_File_write( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI_Dat
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE ], ( intptr_t )PMPI_File_write );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE ],
+                                   ( intptr_t )PMPI_File_write );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_write( fh, buf, count, datatype, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1771,13 +1815,14 @@ MPI_File_write_all( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, MPI
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_ALL ], ( intptr_t )PMPI_File_write_all );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ALL ],
+                                   ( intptr_t )PMPI_File_write_all );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_write_all( fh, buf, count, datatype, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_ALL ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ALL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1809,13 +1854,14 @@ MPI_File_write_all_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int coun
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_ALL_BEGIN ], ( intptr_t )PMPI_File_write_all_begin );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ALL_BEGIN ],
+                                   ( intptr_t )PMPI_File_write_all_begin );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_write_all_begin( fh, buf, count, datatype );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_ALL_BEGIN ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ALL_BEGIN ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1847,13 +1893,14 @@ MPI_File_write_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Status
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_ALL_END ], ( intptr_t )PMPI_File_write_all_end );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ALL_END ],
+                                   ( intptr_t )PMPI_File_write_all_end );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_write_all_end( fh, buf, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_ALL_END ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ALL_END ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1885,13 +1932,14 @@ MPI_File_write_at( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL void* b
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_AT ], ( intptr_t )PMPI_File_write_at );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT ],
+                                   ( intptr_t )PMPI_File_write_at );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_write_at( fh, offset, buf, count, datatype, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_AT ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1923,13 +1971,14 @@ MPI_File_write_at_all( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DECL voi
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_AT_ALL ], ( intptr_t )PMPI_File_write_at_all );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT_ALL ],
+                                   ( intptr_t )PMPI_File_write_at_all );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_write_at_all( fh, offset, buf, count, datatype, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_AT_ALL ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT_ALL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1961,13 +2010,14 @@ MPI_File_write_at_all_begin( MPI_File fh, MPI_Offset offset, SCOREP_MPI_CONST_DE
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_AT_ALL_BEGIN ], ( intptr_t )PMPI_File_write_at_all_begin );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT_ALL_BEGIN ],
+                                   ( intptr_t )PMPI_File_write_at_all_begin );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_write_at_all_begin( fh, offset, buf, count, datatype );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_AT_ALL_BEGIN ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT_ALL_BEGIN ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1999,13 +2049,14 @@ MPI_File_write_at_all_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_Sta
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_AT_ALL_END ], ( intptr_t )PMPI_File_write_at_all_end );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT_ALL_END ],
+                                   ( intptr_t )PMPI_File_write_at_all_end );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_write_at_all_end( fh, buf, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_AT_ALL_END ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_AT_ALL_END ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -2037,13 +2088,14 @@ MPI_File_write_ordered( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count,
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_ORDERED ], ( intptr_t )PMPI_File_write_ordered );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ORDERED ],
+                                   ( intptr_t )PMPI_File_write_ordered );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_write_ordered( fh, buf, count, datatype, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_ORDERED ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ORDERED ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -2075,13 +2127,14 @@ MPI_File_write_ordered_begin( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_ORDERED_BEGIN ], ( intptr_t )PMPI_File_write_ordered_begin );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ORDERED_BEGIN ],
+                                   ( intptr_t )PMPI_File_write_ordered_begin );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_write_ordered_begin( fh, buf, count, datatype );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_ORDERED_BEGIN ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ORDERED_BEGIN ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -2113,13 +2166,14 @@ MPI_File_write_ordered_end( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, MPI_St
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_ORDERED_END ], ( intptr_t )PMPI_File_write_ordered_end );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ORDERED_END ],
+                                   ( intptr_t )PMPI_File_write_ordered_end );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_write_ordered_end( fh, buf, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_ORDERED_END ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_ORDERED_END ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -2151,13 +2205,14 @@ MPI_File_write_shared( MPI_File fh, SCOREP_MPI_CONST_DECL void* buf, int count, 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_SHARED ], ( intptr_t )PMPI_File_write_shared );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_SHARED ],
+                                   ( intptr_t )PMPI_File_write_shared );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_write_shared( fh, buf, count, datatype, status );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_WRITE_SHARED ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_WRITE_SHARED ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -2196,13 +2251,14 @@ MPI_File_call_errhandler( MPI_File fh, int errorcode )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_CALL_ERRHANDLER ], ( intptr_t )PMPI_File_call_errhandler );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_CALL_ERRHANDLER ],
+                                   ( intptr_t )PMPI_File_call_errhandler );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_call_errhandler( fh, errorcode );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_CALL_ERRHANDLER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_CALL_ERRHANDLER ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -2234,13 +2290,14 @@ MPI_File_create_errhandler( MPI_File_errhandler_fn* function, MPI_Errhandler* er
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_CREATE_ERRHANDLER ], ( intptr_t )PMPI_File_create_errhandler );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_CREATE_ERRHANDLER ],
+                                   ( intptr_t )PMPI_File_create_errhandler );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_create_errhandler( function, errhandler );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_CREATE_ERRHANDLER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_CREATE_ERRHANDLER ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -2272,13 +2329,14 @@ MPI_File_get_errhandler( MPI_File file, MPI_Errhandler* errhandler )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_ERRHANDLER ], ( intptr_t )PMPI_File_get_errhandler );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_ERRHANDLER ],
+                                   ( intptr_t )PMPI_File_get_errhandler );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_get_errhandler( file, errhandler );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_GET_ERRHANDLER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_GET_ERRHANDLER ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -2310,13 +2368,14 @@ MPI_File_set_errhandler( MPI_File file, MPI_Errhandler errhandler )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_IO_ERR ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SET_ERRHANDLER ], ( intptr_t )PMPI_File_set_errhandler );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_ERRHANDLER ],
+                                   ( intptr_t )PMPI_File_set_errhandler );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_File_set_errhandler( file, errhandler );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_FILE_SET_ERRHANDLER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_FILE_SET_ERRHANDLER ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else

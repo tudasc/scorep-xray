@@ -22,7 +22,8 @@ ${proto:c}
     MPI_Status mystatus;
 
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__${name|uppercase}], ( intptr_t )P${name});
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}],
+                              ( intptr_t )P${name});
 
     if (dest != MPI_PROC_NULL)
     {
@@ -47,7 +48,7 @@ ${proto:c}
                      status->MPI_TAG, ${mpi:recvcount});
     }
 
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__${name|uppercase}]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__${name|uppercase}]);
     SCOREP_MPI_EVENT_GEN_ON();
   }
   else

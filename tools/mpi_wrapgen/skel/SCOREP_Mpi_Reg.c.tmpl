@@ -17,7 +17,7 @@
 #define SCOREP_REGION_NONE SCOREP_REGION_FUNCTION
 
 /** Region IDs of MPI functions */
-SCOREP_RegionHandle scorep_mpi_regid[SCOREP__MPI_NUMFUNCS+1];
+SCOREP_RegionHandle scorep_mpi_regions[SCOREP_MPI_NUM_REGIONS];
 
 /**
  * Register MPI functions and initialize data structures
@@ -31,7 +31,7 @@ void scorep_mpi_register_regions( void )
 
   /* Artificial root for MPI-only experiments when no user-code
    * instrumenation is available */
-  scorep_mpi_regid[SCOREP_PARALLEL__MPI] =
+  scorep_mpi_regions[SCOREP_MPI_REGION__PARALLEL] =
       SCOREP_Definitions_NewRegion("PARALLEL",
       			           NULL,
 				   SCOREP_INVALID_SOURCE_FILE,

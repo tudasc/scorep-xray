@@ -37,7 +37,8 @@ int MPI_Comm_disconnect(MPI_Comm* comm)
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_COMM_DISCONNECT], ( intptr_t )PMPI_Comm_disconnect);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_COMM_DISCONNECT],
+                              ( intptr_t )PMPI_Comm_disconnect);
   }
 
   scorep_mpi_comm_free(*comm);
@@ -53,7 +54,7 @@ int MPI_Comm_disconnect(MPI_Comm* comm)
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_COMM_DISCONNECT]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_COMM_DISCONNECT]);
     SCOREP_MPI_EVENT_GEN_ON();
   }
   SCOREP_IN_MEASUREMENT_DECREMENT();

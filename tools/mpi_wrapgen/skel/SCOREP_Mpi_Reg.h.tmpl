@@ -128,17 +128,20 @@ enum scorep_mpi_groups {
 /** Bit vector for runtime measurement wrapper enabling/disabling */
 extern uint64_t scorep_mpi_enabled;
 
+enum scorep_mpi_regions
+{
 #pragma wrapgen multiple restrict() skel/SCOREP_Mpi_RegH.w
 
-/** Number of MPI functions HAVE */
-#define SCOREP__MPI_NUMFUNCS                         381
+    /** Artificial root for MPI-only experiments when no user-code
+     * instrumenation is available */
+    SCOREP_MPI_REGION__PARALLEL,
 
-/** Artificial root for MPI-only experiments when no user-code
- * instrumenation is available */
-#define SCOREP_PARALLEL__MPI           SCOREP__MPI_NUMFUNCS
+    /** Total number of regions */
+    SCOREP_MPI_NUM_REGIONS
+};
 
 /** Region IDs of MPI functions */
-extern SCOREP_RegionHandle scorep_mpi_regid[SCOREP__MPI_NUMFUNCS+1];
+extern SCOREP_RegionHandle scorep_mpi_regions[SCOREP_MPI_NUM_REGIONS];
 
 /**
  * Register MPI functions and initialize data structures

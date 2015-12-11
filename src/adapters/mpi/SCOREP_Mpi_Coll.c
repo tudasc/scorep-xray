@@ -106,7 +106,8 @@ MPI_Allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
      #endif
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ALLGATHER ], ( intptr_t )PMPI_Allgather );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHER ],
+                                   ( intptr_t )PMPI_Allgather );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -127,7 +128,7 @@ MPI_Allgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
                                  SCOREP_MPI_COLLECTIVE__MPI_ALLGATHER,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLGATHER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHER ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -197,7 +198,8 @@ MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
         recvbytes = recvcount * recvsz;
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ALLGATHERV ], ( intptr_t )PMPI_Allgatherv );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHERV ],
+                                   ( intptr_t )PMPI_Allgatherv );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -218,7 +220,7 @@ MPI_Allgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
                                  SCOREP_MPI_COLLECTIVE__MPI_ALLGATHERV,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLGATHERV ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLGATHERV ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -270,7 +272,8 @@ MPI_Allreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MP
         }
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ALLREDUCE ], ( intptr_t )PMPI_Allreduce );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLREDUCE ],
+                                   ( intptr_t )PMPI_Allreduce );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -291,7 +294,7 @@ MPI_Allreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MP
                                  SCOREP_MPI_COLLECTIVE__MPI_ALLREDUCE,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLREDUCE ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLREDUCE ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -342,7 +345,8 @@ MPI_Alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
         recvbytes = sendbytes;
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ALLTOALL ], ( intptr_t )PMPI_Alltoall );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALL ],
+                                   ( intptr_t )PMPI_Alltoall );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -363,7 +367,7 @@ MPI_Alltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
                                  SCOREP_MPI_COLLECTIVE__MPI_ALLTOALL,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLTOALL ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALL ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -430,7 +434,8 @@ MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
       #endif
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLV ], ( intptr_t )PMPI_Alltoallv );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLV ],
+                                   ( intptr_t )PMPI_Alltoallv );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -451,7 +456,7 @@ MPI_Alltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
                                  SCOREP_MPI_COLLECTIVE__MPI_ALLTOALLV,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLV ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLV ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -522,7 +527,8 @@ MPI_Alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int se
       #endif
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLW ], ( intptr_t )PMPI_Alltoallw );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLW ],
+                                   ( intptr_t )PMPI_Alltoallw );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -543,7 +549,7 @@ MPI_Alltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int se
                                  SCOREP_MPI_COLLECTIVE__MPI_ALLTOALLW,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ALLTOALLW ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ALLTOALLW ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -577,7 +583,8 @@ MPI_Barrier( MPI_Comm comm )
         SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
         SCOREP_MPI_EVENT_GEN_OFF();
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_BARRIER ], ( intptr_t )PMPI_Barrier );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BARRIER ],
+                                   ( intptr_t )PMPI_Barrier );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -598,7 +605,7 @@ MPI_Barrier( MPI_Comm comm )
                                  SCOREP_MPI_COLLECTIVE__MPI_BARRIER,
                                  0,
                                  0 );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_BARRIER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BARRIER ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -650,7 +657,8 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
         recvbytes = count * sz;
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_BCAST ], ( intptr_t )PMPI_Bcast );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BCAST ],
+                                   ( intptr_t )PMPI_Bcast );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -671,7 +679,7 @@ MPI_Bcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm co
                                  SCOREP_MPI_COLLECTIVE__MPI_BCAST,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_BCAST ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_BCAST ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -716,7 +724,8 @@ MPI_Exscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
         recvbytes = me * sz * count;
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_EXSCAN ], ( intptr_t )PMPI_Exscan );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_EXSCAN ],
+                                   ( intptr_t )PMPI_Exscan );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -737,7 +746,7 @@ MPI_Exscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
                                  SCOREP_MPI_COLLECTIVE__MPI_EXSCAN,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_EXSCAN ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_EXSCAN ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -798,7 +807,8 @@ MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sen
         }
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GATHER ], ( intptr_t )PMPI_Gather );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHER ],
+                                   ( intptr_t )PMPI_Gather );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -819,7 +829,7 @@ MPI_Gather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype sen
                                  SCOREP_MPI_COLLECTIVE__MPI_GATHER,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GATHER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHER ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -885,7 +895,8 @@ MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
         }
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GATHERV ], ( intptr_t )PMPI_Gatherv );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHERV ],
+                                   ( intptr_t )PMPI_Gatherv );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -906,7 +917,7 @@ MPI_Gatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
                                  SCOREP_MPI_COLLECTIVE__MPI_GATHERV,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GATHERV ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GATHERV ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -966,7 +977,8 @@ MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
         }
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE ], ( intptr_t )PMPI_Reduce );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE ],
+                                   ( intptr_t )PMPI_Reduce );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -987,7 +999,7 @@ MPI_Reduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_D
                                  SCOREP_MPI_COLLECTIVE__MPI_REDUCE,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -1047,7 +1059,8 @@ MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_M
         }
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER ], ( intptr_t )PMPI_Reduce_scatter );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER ],
+                                   ( intptr_t )PMPI_Reduce_scatter );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -1068,7 +1081,7 @@ MPI_Reduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_M
                                  SCOREP_MPI_COLLECTIVE__MPI_REDUCE_SCATTER,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -1119,7 +1132,8 @@ MPI_Reduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, in
         recvbytes = sendbytes;
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER_BLOCK ], ( intptr_t )PMPI_Reduce_scatter_block );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER_BLOCK ],
+                                   ( intptr_t )PMPI_Reduce_scatter_block );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -1140,7 +1154,7 @@ MPI_Reduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, in
                                  SCOREP_MPI_COLLECTIVE__MPI_REDUCE_SCATTER_BLOCK,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE_SCATTER_BLOCK ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_SCATTER_BLOCK ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -1195,7 +1209,8 @@ MPI_Scan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Dat
         }
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_SCAN ], ( intptr_t )PMPI_Scan );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCAN ],
+                                   ( intptr_t )PMPI_Scan );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -1216,7 +1231,7 @@ MPI_Scan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Dat
                                  SCOREP_MPI_COLLECTIVE__MPI_SCAN,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SCAN ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCAN ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -1280,7 +1295,8 @@ MPI_Scatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
       #endif
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_SCATTER ], ( intptr_t )PMPI_Scatter );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTER ],
+                                   ( intptr_t )PMPI_Scatter );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -1301,7 +1317,7 @@ MPI_Scatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
                                  SCOREP_MPI_COLLECTIVE__MPI_SCATTER,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SCATTER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTER ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -1368,7 +1384,8 @@ MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* se
         sendbytes = sendcount * sendsz;
 
 
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_SCATTERV ], ( intptr_t )PMPI_Scatterv );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTERV ],
+                                   ( intptr_t )PMPI_Scatterv );
         SCOREP_MpiCollectiveBegin();
         uint64_t start_time_stamp =
             SCOREP_Location_GetLastTimestamp( SCOREP_Location_GetCurrentCPULocation() );
@@ -1389,7 +1406,7 @@ MPI_Scatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* se
                                  SCOREP_MPI_COLLECTIVE__MPI_SCATTERV,
                                  sendbytes,
                                  recvbytes );
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_SCATTERV ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_SCATTERV ] );
 
         SCOREP_MPI_EVENT_GEN_ON();
     }
@@ -1422,13 +1439,14 @@ MPI_Iallgather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IALLGATHER ], ( intptr_t )PMPI_Iallgather );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHER ],
+                                   ( intptr_t )PMPI_Iallgather );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Iallgather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IALLGATHER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHER ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1460,13 +1478,14 @@ MPI_Iallgatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatyp
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IALLGATHERV ], ( intptr_t )PMPI_Iallgatherv );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHERV ],
+                                   ( intptr_t )PMPI_Iallgatherv );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Iallgatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IALLGATHERV ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLGATHERV ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1498,13 +1517,14 @@ MPI_Iallreduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, M
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IALLREDUCE ], ( intptr_t )PMPI_Iallreduce );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLREDUCE ],
+                                   ( intptr_t )PMPI_Iallreduce );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Iallreduce( sendbuf, recvbuf, count, datatype, op, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IALLREDUCE ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLREDUCE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1536,13 +1556,14 @@ MPI_Ialltoall( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IALLTOALL ], ( intptr_t )PMPI_Ialltoall );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALL ],
+                                   ( intptr_t )PMPI_Ialltoall );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ialltoall( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IALLTOALL ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1574,13 +1595,14 @@ MPI_Ialltoallv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IALLTOALLV ], ( intptr_t )PMPI_Ialltoallv );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLV ],
+                                   ( intptr_t )PMPI_Ialltoallv );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ialltoallv( sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IALLTOALLV ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLV ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1612,13 +1634,14 @@ MPI_Ialltoallw( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int s
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IALLTOALLW ], ( intptr_t )PMPI_Ialltoallw );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLW ],
+                                   ( intptr_t )PMPI_Ialltoallw );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ialltoallw( sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IALLTOALLW ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IALLTOALLW ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1652,13 +1675,14 @@ MPI_Ibarrier( MPI_Comm comm, MPI_Request* request )
         SCOREP_MpiRank root_loc = SCOREP_INVALID_ROOT_RANK;
 
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IBARRIER ], ( intptr_t )PMPI_Ibarrier );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBARRIER ],
+                                   ( intptr_t )PMPI_Ibarrier );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ibarrier( comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IBARRIER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBARRIER ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1690,13 +1714,14 @@ MPI_Ibcast( void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm c
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IBCAST ], ( intptr_t )PMPI_Ibcast );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBCAST ],
+                                   ( intptr_t )PMPI_Ibcast );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ibcast( buffer, count, datatype, root, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IBCAST ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IBCAST ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1728,13 +1753,14 @@ MPI_Iexscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IEXSCAN ], ( intptr_t )PMPI_Iexscan );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IEXSCAN ],
+                                   ( intptr_t )PMPI_Iexscan );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Iexscan( sendbuf, recvbuf, count, datatype, op, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IEXSCAN ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IEXSCAN ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1766,13 +1792,14 @@ MPI_Igather( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype se
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IGATHER ], ( intptr_t )PMPI_Igather );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHER ],
+                                   ( intptr_t )PMPI_Igather );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Igather( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IGATHER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHER ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1804,13 +1831,14 @@ MPI_Igatherv( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IGATHERV ], ( intptr_t )PMPI_Igatherv );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHERV ],
+                                   ( intptr_t )PMPI_Igatherv );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Igatherv( sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IGATHERV ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IGATHERV ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1842,13 +1870,14 @@ MPI_Ireduce( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IREDUCE ], ( intptr_t )PMPI_Ireduce );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE ],
+                                   ( intptr_t )PMPI_Ireduce );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ireduce( sendbuf, recvbuf, count, datatype, op, root, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IREDUCE ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1880,13 +1909,14 @@ MPI_Ireduce_scatter( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, SCOREP_
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IREDUCE_SCATTER ], ( intptr_t )PMPI_Ireduce_scatter );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER ],
+                                   ( intptr_t )PMPI_Ireduce_scatter );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ireduce_scatter( sendbuf, recvbuf, recvcounts, datatype, op, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IREDUCE_SCATTER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1918,13 +1948,14 @@ MPI_Ireduce_scatter_block( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, i
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_IREDUCE_SCATTER_BLOCK ], ( intptr_t )PMPI_Ireduce_scatter_block );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER_BLOCK ],
+                                   ( intptr_t )PMPI_Ireduce_scatter_block );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Ireduce_scatter_block( sendbuf, recvbuf, recvcount, datatype, op, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_IREDUCE_SCATTER_BLOCK ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_IREDUCE_SCATTER_BLOCK ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1956,13 +1987,14 @@ MPI_Iscan( SCOREP_MPI_CONST_DECL void* sendbuf, void* recvbuf, int count, MPI_Da
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ISCAN ], ( intptr_t )PMPI_Iscan );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCAN ],
+                                   ( intptr_t )PMPI_Iscan );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Iscan( sendbuf, recvbuf, count, datatype, op, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ISCAN ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCAN ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -1994,13 +2026,14 @@ MPI_Iscatter( SCOREP_MPI_CONST_DECL void* sendbuf, int sendcount, MPI_Datatype s
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ISCATTER ], ( intptr_t )PMPI_Iscatter );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTER ],
+                                   ( intptr_t )PMPI_Iscatter );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Iscatter( sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ISCATTER ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTER ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -2032,13 +2065,14 @@ MPI_Iscatterv( SCOREP_MPI_CONST_DECL void* sendbuf, SCOREP_MPI_CONST_DECL int* s
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ISCATTERV ], ( intptr_t )PMPI_Iscatterv );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTERV ],
+                                   ( intptr_t )PMPI_Iscatterv );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Iscatterv( sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ISCATTERV ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ISCATTERV ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -2071,13 +2105,14 @@ MPI_Reduce_local( SCOREP_MPI_CONST_DECL void* inbuf, void* inoutbuf, int count, 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_COLL ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE_LOCAL ], ( intptr_t )PMPI_Reduce_local );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_LOCAL ],
+                                   ( intptr_t )PMPI_Reduce_local );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Reduce_local( inbuf, inoutbuf, count, datatype, op );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_REDUCE_LOCAL ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_REDUCE_LOCAL ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else

@@ -45,7 +45,8 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_CART_CREATE], ( intptr_t )PMPI_Cart_create);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CART_CREATE],
+                              ( intptr_t )PMPI_Cart_create);
   }
 
   if (event_gen_active)
@@ -131,7 +132,7 @@ int MPI_Cart_create( MPI_Comm                   comm_old,
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_CART_CREATE]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_CART_CREATE]);
     SCOREP_MPI_EVENT_GEN_ON();
   }
   SCOREP_IN_MEASUREMENT_DECREMENT();

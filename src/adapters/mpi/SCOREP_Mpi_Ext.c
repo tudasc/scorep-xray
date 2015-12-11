@@ -85,13 +85,14 @@ MPI_Abort( MPI_Comm comm,
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_ABORT ], ( intptr_t )PMPI_Abort );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ],
+                                   ( intptr_t )PMPI_Abort );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Abort( comm, errorcode );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_ABORT ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_ABORT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -124,13 +125,14 @@ MPI_Grequest_complete( MPI_Request request )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GREQUEST_COMPLETE ], ( intptr_t )PMPI_Grequest_complete );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ],
+                                   ( intptr_t )PMPI_Grequest_complete );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Grequest_complete( request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GREQUEST_COMPLETE ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_COMPLETE ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -164,13 +166,14 @@ MPI_Get_count( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datatype, 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GET_COUNT ], ( intptr_t )PMPI_Get_count );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ],
+                                   ( intptr_t )PMPI_Get_count );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Get_count( status, datatype, count );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GET_COUNT ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_COUNT ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -202,13 +205,14 @@ MPI_Get_elements( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datatyp
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GET_ELEMENTS ], ( intptr_t )PMPI_Get_elements );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ],
+                                   ( intptr_t )PMPI_Get_elements );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Get_elements( status, datatype, count );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GET_ELEMENTS ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -240,13 +244,14 @@ MPI_Get_elements_x( SCOREP_MPI_CONST_DECL MPI_Status* status, MPI_Datatype datat
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GET_ELEMENTS_X ], ( intptr_t )PMPI_Get_elements_x );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ],
+                                   ( intptr_t )PMPI_Get_elements_x );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Get_elements_x( status, datatype, count );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GET_ELEMENTS_X ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_ELEMENTS_X ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -278,13 +283,14 @@ MPI_Get_processor_name( char* name, int* resultlen )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GET_PROCESSOR_NAME ], ( intptr_t )PMPI_Get_processor_name );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ],
+                                   ( intptr_t )PMPI_Get_processor_name );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Get_processor_name( name, resultlen );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GET_PROCESSOR_NAME ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GET_PROCESSOR_NAME ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -316,13 +322,14 @@ MPI_Grequest_start( MPI_Grequest_query_function* query_fn, MPI_Grequest_free_fun
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_GREQUEST_START ], ( intptr_t )PMPI_Grequest_start );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ],
+                                   ( intptr_t )PMPI_Grequest_start );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Grequest_start( query_fn, free_fn, cancel_fn, extra_state, request );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_GREQUEST_START ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_GREQUEST_START ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -354,13 +361,14 @@ MPI_Status_set_cancelled( MPI_Status* status, int flag )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_STATUS_SET_CANCELLED ], ( intptr_t )PMPI_Status_set_cancelled );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ],
+                                   ( intptr_t )PMPI_Status_set_cancelled );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Status_set_cancelled( status, flag );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_STATUS_SET_CANCELLED ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_CANCELLED ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -392,13 +400,14 @@ MPI_Status_set_elements( MPI_Status* status, MPI_Datatype datatype, int count )
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_STATUS_SET_ELEMENTS ], ( intptr_t )PMPI_Status_set_elements );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ],
+                                   ( intptr_t )PMPI_Status_set_elements );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Status_set_elements( status, datatype, count );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_STATUS_SET_ELEMENTS ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else
@@ -430,13 +439,14 @@ MPI_Status_set_elements_x( MPI_Status* status, MPI_Datatype datatype, MPI_Count 
     if ( SCOREP_MPI_IS_EVENT_GEN_ON_FOR( SCOREP_MPI_ENABLED_EXT ) )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_STATUS_SET_ELEMENTS_X ], ( intptr_t )PMPI_Status_set_elements_x );
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ],
+                                   ( intptr_t )PMPI_Status_set_elements_x );
 
         SCOREP_ENTER_WRAPPED_REGION();
         return_val = PMPI_Status_set_elements_x( status, datatype, count );
         SCOREP_EXIT_WRAPPED_REGION();
 
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_STATUS_SET_ELEMENTS_X ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_STATUS_SET_ELEMENTS_X ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     else

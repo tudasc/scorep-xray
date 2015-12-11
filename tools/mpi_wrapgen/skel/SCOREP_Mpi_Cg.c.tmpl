@@ -42,7 +42,8 @@ int MPI_Comm_free(MPI_Comm* comm)
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterWrappedRegion (scorep_mpi_regid[SCOREP__MPI_COMM_FREE], ( intptr_t )PMPI_Comm_free);
+    SCOREP_EnterWrappedRegion (scorep_mpi_regions[SCOREP_MPI_REGION__MPI_COMM_FREE],
+                               ( intptr_t )PMPI_Comm_free);
   }
 
   scorep_mpi_comm_free(*comm);
@@ -58,7 +59,7 @@ int MPI_Comm_free(MPI_Comm* comm)
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion(scorep_mpi_regid[SCOREP__MPI_COMM_FREE]);
+    SCOREP_ExitRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_COMM_FREE]);
     SCOREP_MPI_EVENT_GEN_ON ();
   }
   SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -100,7 +101,8 @@ int MPI_Group_free(MPI_Group* group)
   if (event_gen_active)
   {
     SCOREP_MPI_EVENT_GEN_OFF();
-    SCOREP_EnterWrappedRegion(scorep_mpi_regid[SCOREP__MPI_GROUP_FREE], ( intptr_t )PMPI_Group_free);
+    SCOREP_EnterWrappedRegion(scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GROUP_FREE],
+                              ( intptr_t )PMPI_Group_free);
   }
 
   scorep_mpi_group_free(*group);
@@ -116,7 +118,7 @@ int MPI_Group_free(MPI_Group* group)
 
   if (event_gen_active)
   {
-    SCOREP_ExitRegion (scorep_mpi_regid[SCOREP__MPI_GROUP_FREE]);
+    SCOREP_ExitRegion (scorep_mpi_regions[SCOREP_MPI_REGION__MPI_GROUP_FREE]);
     SCOREP_MPI_EVENT_GEN_ON ();
   }
   SCOREP_IN_MEASUREMENT_DECREMENT();
@@ -167,7 +169,7 @@ MPI_Comm_set_name( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* comm_name )
     if ( event_gen_active )
     {
         SCOREP_MPI_EVENT_GEN_OFF();
-        SCOREP_EnterWrappedRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_NAME ],
+        SCOREP_EnterWrappedRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SET_NAME ],
                                    ( intptr_t )PMPI_Comm_set_name );
     }
 
@@ -187,7 +189,7 @@ MPI_Comm_set_name( MPI_Comm comm, SCOREP_MPI_CONST_DECL char* comm_name )
 
     if ( event_gen_active )
     {
-        SCOREP_ExitRegion( scorep_mpi_regid[ SCOREP__MPI_COMM_SET_NAME ] );
+        SCOREP_ExitRegion( scorep_mpi_regions[ SCOREP_MPI_REGION__MPI_COMM_SET_NAME ] );
         SCOREP_MPI_EVENT_GEN_ON();
     }
     SCOREP_IN_MEASUREMENT_DECREMENT();
