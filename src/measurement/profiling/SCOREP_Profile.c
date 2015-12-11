@@ -1293,7 +1293,7 @@ const static SCOREP_Substrates_Callback substrate_callbacks[ SCOREP_SUBSTRATES_N
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskBegin,   THREAD_FORK_JOIN_TASK_BEGIN,   SCOREP_Profile_TaskBegin ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadForkJoinTaskEnd,     THREAD_FORK_JOIN_TASK_END,     SCOREP_Profile_TaskEnd ),
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitBegin,     THREAD_CREATE_WAIT_BEGIN,      thread_begin ),
-        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitWait,      THREAD_CREATE_WAIT_END,        thread_end )
+        SCOREP_ASSIGN_SUBSTRATE_CALLBACK( ThreadCreateWaitEnd,       THREAD_CREATE_WAIT_END,        thread_end )
     },
     {        /* SCOREP_SUBSTRATES_RECORDING_DISABLED */
         SCOREP_ASSIGN_SUBSTRATE_CALLBACK( InitSubstrate,             INIT_SUBSTRATE,                SCOREP_Profile_Initialize ),
