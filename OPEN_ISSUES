@@ -319,6 +319,9 @@ various Score-P components.
     extension __thread or the C11 keyword _Thread_local. This excludes
     PGI compilers prior to 'Version 2015'.
 
+  - Sampling uses libunwind as external library. Please use version
+    1.1 or later as earlier versions occasionally segfaulted.
+
   - It is possible to activate sampling for programs that were
     instrumented with compiler instrumentation. In this case the
     events originating from the compiler instrumentation will be
