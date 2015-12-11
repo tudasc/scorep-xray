@@ -6,6 +6,9 @@
 ## Copyright (c) 2013, 2015,
 ## Technische Universitaet Dresden, Germany
 ##
+## Copyright (c) 2015,
+## Forschungszentrum Juelich GmbH, Germany
+##
 ## This software may be modified and distributed under the terms of
 ## a BSD-style license.  See the COPYING file in the package base
 ## directory for details.
@@ -21,11 +24,21 @@ AFS_SUMMARY_PUSH
 scorep_have_pmi="no"
 
 # On Cray system we want to use PMI to get fine granular information about system topology
-AC_SCOREP_BACKEND_LIB([libpmi], [pmi.h])
-
 # PMI needs librca, the Cray compiler will add necessary flags automatically,
 # for other compilers we have to provide path and library name
-AC_SCOREP_BACKEND_LIB([librca])
+AS_CASE([${ac_scorep_platform}],
+    [crayx*], [AC_SCOREP_BACKEND_LIB([libpmi], [pmi.h])
+               AC_SCOREP_BACKEND_LIB([librca])],
+    [scorep_have_libpmi=no
+    AM_CONDITIONAL(HAVE_LIBPMI, [test 1 -eq 0])
+    AC_SUBST(LIBPMI_CPPFLAGS, [""])
+    AC_SUBST(LIBPMI_LDFLAGS,  [""])
+    AC_SUBST(LIBPMI_LIBS,     [""])
+    scorep_have_librca=no
+    AM_CONDITIONAL(HAVE_LIBRCA, [test 1 -eq 0])
+    AC_SUBST(LIBRCA_CPPFLAGS, [""])
+    AC_SUBST(LIBRCA_LDFLAGS,  [""])
+    AC_SUBST(LIBRCA_LIBS,     [""])])
 
 AC_SCOREP_COND_HAVE([PMI],
                     [test "x${scorep_have_libpmi}" = "xyes" && test "x${scorep_have_librca}" = "xyes"],
@@ -38,7 +51,8 @@ AC_SCOREP_COND_HAVE([PMI],
                      AC_SUBST(PMI_LDFLAGS,  [""])
                      AC_SUBST(PMI_LIBS,     [""])])
 
-AFS_SUMMARY_POP([Cray PMI support], [${scorep_have_pmi}])
+AS_CASE([${ac_scorep_platform}],
+    [crayx*], [AFS_SUMMARY_POP([Cray PMI support], [${scorep_have_pmi}])])
 ])
 
 
