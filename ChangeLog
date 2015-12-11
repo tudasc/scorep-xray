@@ -2,14 +2,14 @@
 
 Major features:
 
-- Score-P supports a new data collecting mode based on sampling. Sampling
-  can be used in conjunction with the usual instrumentation of parallel
-  paradigms. Therefore it combines the lower overhead of statistical
-  sampling and the accuracy of instrumentation. Both call-path profiling
-  and event tracing are supported. As this is rather a major change in the
-  Score-P internals and also for the user experience we appreciate any
-  feedback but need to declare the sampling support as experimental in this
-  first release.
+- Score-P supports a new data collecting mode based on sampling.
+  Sampling can be used in conjunction with the usual instrumentation
+  of parallel paradigms. Therefore it combines the lower overhead of
+  statistical sampling and the accuracy of instrumentation. Both
+  call-path profiling and event tracing are supported. As this is
+  rather a major change in the Score-P internals and also for the
+  user experience we appreciate any feedback but need to declare
+  the sampling support as experimental in this first release.
 - Support for OPARI2 2.0 was integrated. OPARI2 is now more
   flexible to enable support for other pragma/directive based
   paradigms.
@@ -45,9 +45,9 @@ Features and improvements:
 - Source-to-source instrumentation via PDT on Blue Gene systems was
   reenabled for PDT versions newer than 3.18.
 - Score-P takes advantage from compilers to initialize the measurement
-  automatically, before triggering any event. This also ensures that the
-  interrupt sources for sampling are registered as early as possible and
-  also when no compiler instrumention is available.
+  system automatically before triggering any event. This also ensures
+  that the interrupt sources for sampling are registered as early as
+  possible and in the case when no compiler instrumention is available.
 
 User tools and API improvements and changes:
 
@@ -62,33 +62,33 @@ User tools and API improvements and changes:
   --openmp and --noopenmp have been added. Note that for compile
   units with enabled OpenMP compilerflag, instrumentation is
   enabled by default. However, when manually disabling, some
-  instrumentation must still be carried out, to ensure a
+  instrumentation must still be carried out to ensure a
   thread-safe execution of the measurement system.
 - POMP user instrumentation is no longer automatically activated
   together with OpenMP instrumentation. The --pomp flag has to be
   explicitly specified with the scorep command.
 - On Cray systems, compiler instrumentation does not add '-G2' option
   anymore, which disables some optimizations.
-- The instrumenter now warns the user, if the provided instrument filter
-  wont be used by the active instrumentations.
+- The instrumenter now warns the user if the provided instrumentation
+  filter wont be used by the active instrumentations.
 
 Bugfixes:
 
-- Fixes a possible segementation fault in the user adapter.
-- Fixes an unitialized variable in the instrumenter.
+- Fixed a possible segementation fault in the user adapter.
+- Fixed an unitialized variable in the instrumenter.
 - Fixed possible mistreatment of a profile node as being in an untied
   task.
-- Fix bug in obtaining executable names longer than 512 characters
+- Fixed bug in obtaining executable names longer than 512 characters
   when using the GNU compiler adapter (applies also to Cray and
   Fujitsu compilers).
 - The GCC compiler instrumentation plug-in was non-functional for GCC 5
-  because of an unnoticed API change. And the custom demangling of Fortran
-  module functions is working again too.
-- The GCC instrumentation plug-in does not instrument the `main` function
-  in Fortran programs anymore. As the main entry point for the user is
-  `MAIN__`.
-- Name assigned to MPI communicators by calls to MPI_Comm_set_name are
-  now also tracked, if the corresponding API calls wont be recorded.
+  because of an unnoticed API change. Additionally, the custom
+  demangling of Fortran module functions is working again.
+- The GCC instrumentation plug-in does not instrument the `main`
+  function in Fortran programs anymore as the main entry point for the
+  user is `MAIN__`.
+- Names assigned to MPI communicators by calls to MPI_Comm_set_name are
+  now also tracked, even if the corresponding API calls wont be recorded.
 
 ------------------- Released version 1.4.2 ---------------------------
 
