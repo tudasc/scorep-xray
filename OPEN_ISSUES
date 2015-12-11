@@ -316,7 +316,8 @@ various Score-P components.
 
   - Sampling is currently supported for x86_64 CPUs only. The compiler
     needs to support thread-local storage, either via the language
-    extension __thread or the C11 keyword _Thread_local.
+    extension __thread or the C11 keyword _Thread_local. This excludes
+    PGI compilers prior to 'Version 2015'.
 
   - It is possible to activate sampling for programs that were
     instrumented with compiler instrumentation. In this case the
