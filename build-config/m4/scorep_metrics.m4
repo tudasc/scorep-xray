@@ -15,7 +15,7 @@
 ## Copyright (c) 2009-2013,
 ## University of Oregon, Eugene, USA
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2015,
 ## Forschungszentrum Juelich GmbH, Germany
 ##
 ## Copyright (c) 2009-2013,
@@ -89,31 +89,28 @@ AS_IF([test "x$ac_scorep_papi_lib_dir" != "x"], [
 AC_LANG_PUSH([C])
 ldflags_save="$LDFLAGS"
 LDFLAGS="$ac_scorep_papi_ldflags $LDFLAGS"
-# To use PAPI on IBM systems you have to link to
-# their performance monitor library (-lpmapi)
-if test "x${ac_scorep_platform}" = "xaix"; then
-    ac_scorep_papi_additional_libs="-lpmapi"
-elif test "x${ac_scorep_platform}" = "xbgq"; then
-    ac_scorep_papi_additional_libs="-lstdc++ -lrt"
-elif test "x${ac_scorep_platform}" = "xmic"; then
-    ac_scorep_papi_additional_libs="-lpfm"
-else
-    ac_scorep_papi_additional_libs=""
-fi
-ac_scorep_papi_lib_name="papi"
-AC_CHECK_LIB([$ac_scorep_papi_lib_name], [PAPI_library_init],
-             [ac_scorep_papi_library="yes"],  # action-if-found
-             [ac_scorep_papi_library="no"],
-             [$ac_scorep_papi_additional_libs]
-)
-if test "x${ac_scorep_papi_library}" = "xno"; then
-    ac_scorep_papi_lib_name="papi64"
-    AC_CHECK_LIB([$ac_scorep_papi_lib_name], [PAPI_library_init],
-                 [ac_scorep_papi_library="yes"],  # action-if-found
-                 [ac_scorep_papi_library="no"],
-                 [$ac_scorep_papi_additional_libs]
-    )
-fi
+
+# To use -papi or -papi64 we need to add additional libraries on several systems
+AS_CASE([${ac_scorep_platform}],
+    [aix],    [scorep_papi_extra_libs="-lpmapi"],
+    [bgq],    [scorep_papi_extra_libs="-lstdc++ -lrt"],
+    [mic],    [scorep_papi_extra_libs="-lpfm"],
+    [crayx*], [scorep_papi_extra_libs="-ldl"])
+
+for ac_scorep_papi_lib_name in papi papi64; do
+    for ac_scorep_papi_additional_libs in "" "${scorep_papi_extra_libs}"; do
+        AC_CHECK_LIB([$ac_scorep_papi_lib_name],
+            [PAPI_library_init],
+            [ac_scorep_papi_library=yes],
+            [ac_scorep_papi_library=no],
+            [${ac_scorep_papi_additional_libs}])
+        AS_IF([test "x${ac_scorep_papi_library}" = xyes],
+            [break])
+    done
+    AS_IF([test "x${ac_scorep_papi_library}" = xyes],
+        [break])
+done
+
 LDFLAGS="$ldflags_save"
 AC_LANG_POP([C])
 
