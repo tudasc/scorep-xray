@@ -257,6 +257,9 @@ various Score-P components.
     work in combination with these CUDA versions but it is not tested.
     Support for CUDA 4.2 and prior versions will become officially
     unsupported in a future release of Score-P.
+  - On Cray systems you need to 'module load cudatoolkit', otherwise
+    the CUDA related configure checks will fail, even if
+    --with-libcuda and --with-libcudart are given.
 
 --------------------------------------------------------------------------------
 
