@@ -31,6 +31,8 @@
 #ifndef SCOREP_COMPILER_SYMBOL_TABLE_H
 #define SCOREP_COMPILER_SYMBOL_TABLE_H
 
+#include <sys/types.h>
+
 typedef void
 ( * scorep_compiler_process_symbol_cb )( long         addr,
                                          const char*  funcname,
