@@ -19,7 +19,6 @@
 ## maintainer Ronny Tschueter <ronny.tschueter@tu-dresden.de>
 
 AC_DEFUN([SCOREP_CRAY_PMI], [
-AFS_SUMMARY_PUSH
 
 scorep_have_pmi="no"
 
@@ -27,8 +26,9 @@ scorep_have_pmi="no"
 # PMI needs librca, the Cray compiler will add necessary flags automatically,
 # for other compilers we have to provide path and library name
 AS_CASE([${ac_scorep_platform}],
-    [crayx*], [AC_SCOREP_BACKEND_LIB([libpmi], [pmi.h])
-               AC_SCOREP_BACKEND_LIB([librca])],
+    [crayx*], [AFS_SUMMARY_PUSH
+              AC_SCOREP_BACKEND_LIB([libpmi], [pmi.h])
+              AC_SCOREP_BACKEND_LIB([librca])],
     [scorep_have_libpmi=no
     AM_CONDITIONAL(HAVE_LIBPMI, [test 1 -eq 0])
     AC_SUBST(LIBPMI_CPPFLAGS, [""])
