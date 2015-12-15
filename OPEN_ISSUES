@@ -60,7 +60,10 @@ various Score-P components.
   - IBM    : only works for xlc/xlC version 7.0 and xlf version 9.1 and
              higher and corresponding bgxl compilers on BlueGene systems
   - Intel  : only works with Intel icc/ifort version 11 and higher compilers
-  - Cray   : tested with version 8.1.8 and later
+  - Cray   : tested with version 8.1.8 and later, uses the GNU interface
+  - Fujitsu: tested with different versions of the language
+             environment K-1.2.0 on K computer and compiler version
+             1.2.1 on FX-10 systems. Uses the GNU interface
 
   - The Intel compiler provides the function name and the source code
     location in one string separated by a colon.  Thus, if the path
@@ -117,8 +120,8 @@ various Score-P components.
     automatically filtered) in the measurement output.
 
   - Due to constant changes in the plug-in API of the GNU compiler
-    infrastructure, it is highly unlikely that the Score-P instrumentation
-    plug-in builds with version newer than GCC 5.
+    infrastructure, it is unlikely that the Score-P instrumentation
+    plug-in builds with GCC versions newer than this release.
 
   - The pgCC compiler versions 13.9 and higher preinclude omp.h for
     OpenMP codes. This results in multiple defined symbols if the
@@ -138,6 +141,12 @@ various Score-P components.
     conflicting with the online access module of Score-P. Please use
     'scorep --noonline-access' to disable the online access and avoid
     multiple symbol definitions.
+
+  - The Fujitsu compiler instrumentation does not handle inlined
+    functions properly. They are recorded as recursive calls of the
+    enclosing function due to a bug in the compiler
+    instrumentation. We suggest to use PDT instrumentation for codes
+    that rely on inlining.
 
 --------------------------------------------------------------------------------
 
