@@ -105,7 +105,7 @@ typedef uint64_t SCOREP_User_ParameterHandle;
 
 /**
     @def SCOREP_USER_REGION_TYPE_LOOP
-    Marks the region as being the codeblock of a look with the same number of iterations
+    Marks the region as being the codeblock of a loop with the same number of iterations
     on all processes.
  */
 #define SCOREP_USER_REGION_TYPE_LOOP 2
