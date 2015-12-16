@@ -15,20 +15,20 @@
             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#execution</url>
             <descr>Execution time (does not include time allocated for idle threads)</descr>
             <cubepl>
-            {
-                ${tmp} = 0;
-                if ( ${execution}[${calculation::callpath::id}] == 1 )
-                {
-                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                };
-                return ${tmp};
-            }
+                ${execution}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
             </cubepl>
             <cubeplinit>
             {
+                //--- Global callpath type masks ----------------------------
+                // Each type mask field contains one entry for each callpath,
+                // by default set to 0.  It is set to 1 if the callpath is of
+                // the corresponding category.
+
+                // Generic masks
                 global(execution);
                 global(overhead);
 
+                // MPI-specific masks
                 global(mpi);
                 global(mpi_sync_collective);
                 global(mpi_rma_sync_active);
@@ -51,6 +51,7 @@
                 global(comms_rma_puts);
                 global(comms_rma_gets);
 
+                // OpenMP-specific masks
                 global(omp_flush);
                 global(omp_management);
                 global(omp_ebarrier);
@@ -60,10 +61,12 @@
                 global(omp_lock_api);
                 global(omp_ordered);
 
+                // Pthread-specific masks
                 global(pthread_management);
                 global(pthread_mutex_api);
                 global(pthread_cond_api);
 
+                // OpenCL-specific masks
                 global(opencl);
                 global(opencl_setup);
                 global(opencl_comm);
@@ -71,6 +74,7 @@
                 global(opencl_kernel_launches);
                 global(opencl_kernel_executions);
 
+                // CUDA-specific masks
                 global(cuda);
                 global(cuda_setup);
                 global(cuda_comm);
@@ -78,81 +82,102 @@
                 global(cuda_kernel_launches);
                 global(cuda_kernel_executions);
 
+                //--- Paradigm flags ----------------------------------------
+                // These flags indicate which of the supported parallel
+                // programming paradigms are used in the experiment to
+                // later enable/disable the corresponding metric subtrees.
+
                 ${includesMPI}     = 0;
                 ${includesOpenMP}  = 0;
                 ${includesPthread} = 0;
                 ${includesOpenCL}  = 0;
                 ${includesCUDA}  = 0;
 
+
+                //--- Callpath categorization -------------------------------
+                // Each callpath is categorized by type and its global type
+                // mask entry is set accordingly.
+
                 ${i} = 0;
                 while ( ${i} < ${cube::#callpaths} )
                 {
+                    ${regionid} = ${cube::callpath::calleeid}[${i}];
+                    ${name}     = ${cube::region::name}[${regionid}];
+                    ${paradigm} = ${cube::region::paradigm}[${regionid}];
+                    ${role}     = ${cube::region::role}[${regionid}];
+
+                    // Default: all callpaths are considered to be execution
                     ${execution}[${i}] = 1;
 
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "mpi" )
+
+                    //--- MPI-specific categorization ---
+                    if ( ${paradigm} eq "mpi" )
                     {
 
                         ${includesMPI} = 1;
-
-                        if ( not ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "PARALLEL" ) )
+                        
+                        // Without compiler instrumentation artificial PARALLEL region
+                        // created with MPI paradigm which should be
+                        // filtered out from MPI 
+                        if ( not ( ${name} =~ /^PARALLEL/ ) )
                         {
                             ${mpi}[${i}]   = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "barrier" )
+                        if ( ${role} eq "barrier" )
                         {
                             ${mpi_sync_collective}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Win_(post|wait|start|complete|fence)$/ )
+                        if ( ${name} =~ /^MPI_Win_(post|wait|start|complete|fence)$/ )
                         {
                             ${mpi_rma_sync_active}[${i}] = 1;
 
-                            if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "MPI_Win_fence" )
+                            if ( ${name} eq "MPI_Win_fence" )
                             {
                                 ${syncs_fence}[${i}] = 1;
                             };
 
-                            if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "MPI_Win_start" )
+                            if ( ${name} eq "MPI_Win_start" )
                             {
                                 ${syncs_gats_access}[${i}] = 1;
                             };
 
-                            if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "MPI_Win_post" )
+                            if ( ${name} eq "MPI_Win_post" )
                             {
                                 ${syncs_gats_exposure}[${i}] = 1;
                             };
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_Win_(lock|unlock)$/ )
+                        if ( ${name} =~ /^MPI_Win_(lock|unlock)$/ )
                         {
                             ${mpi_rma_sync_passive}[${i}] = 1;
 
-                            if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "MPI_Win_lock" )
+                            if ( ${name} eq "MPI_Win_lock" )
                             {
                                 ${syncs_locks}[${i}] = 1;
                             };
                         };
 
                         if (
-                            ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "point2point" )
+                            ( ${role} eq "point2point" )
                             or
-                            ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_.*(buffer|cancel|get_count|request)/ )
+                            ( ${name} =~ /^MPI_.*(buffer|cancel|get_count|request)/ )
                            )
                         {
                             ${mpi_point2point}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] =~ /^(one2all|all2one|all2all|other collective)$/ )
+                        if ( ${role} =~ /^(one2all|all2one|all2all|other collective)$/ )
                         {
                             ${mpi_collective}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_(Put|Get|Accumulate)$/ )
+                        if ( ${name} =~ /^MPI_(Put|Get|Accumulate)$/ )
                         {
                             ${mpi_rma_communication}[${i}] = 1;
 
-                            if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "MPI_Get" )
+                            if ( ${name} eq "MPI_Get" )
                             {
                                 ${comms_rma_gets}[${i}] = 1;
                             }
@@ -162,28 +187,28 @@
                             };
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_File/ )
+                        if ( ${name} =~ /^MPI_File/ )
                         {
                             ${mpi_io}[${i}] = 1;
 
                             if (
-                                not ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_File_set_err/ )
+                                not ( ${name} =~ /^MPI_File_set_err/ )
                                 and
                                 (
-                                    ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_File_(open|close|preallocate|seek_shared|sync)$/ )
+                                    ( ${name} =~ /^MPI_File_(open|close|preallocate|seek_shared|sync)$/ )
                                     or
-                                    ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_File.*_(all|ordered|set)/ )
+                                    ( ${name} =~ /^MPI_File.*_(all|ordered|set)/ )
                                 )
                                )
                             {
                                 ${mpi_io_collective}[${i}] = 1;
 
-                                if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_File_read.*_(all|ordered)$/ )
+                                if ( ${name} =~ /^MPI_File_read.*_(all|ordered)$/ )
                                 {
                                     ${mpi_file_crops}[${i}] = 1;
                                 };
 
-                                if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_File_write.*_(all|ordered)$/ )
+                                if ( ${name} =~ /^MPI_File_write.*_(all|ordered)$/ )
                                 {
                                     ${mpi_file_cwops}[${i}] = 1;
                                 };
@@ -192,211 +217,217 @@
                             {
                                 ${mpi_io_individual}[${i}] = 1;
 
-                                if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_File.*read(_at|_shared)?$/ )
+                                if ( ${name} =~ /^MPI_File.*read(_at|_shared)?$/ )
                                 {
                                     ${mpi_file_irops}[${i}] = 1;
                                 };
 
-                                if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_File.*write(_at|_shared)?$/ )
+                                if ( ${name} =~ /^MPI_File.*write(_at|_shared)?$/ )
                                 {
                                     ${mpi_file_iwops}[${i}] = 1;
                                 };
                             };
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^MPI_(Init|Init_thread|Finalize)$/ )
+                        if ( ${name} =~ /^MPI_(Init|Init_thread|Finalize)$/ )
                         {
                             ${mpi_init_exit}[${i}] = 1;
                         };
-                    };
-
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "openmp" )
+                    }
+                    elseif ( ${paradigm} eq "openmp" )
                     {
                         ${includesOpenMP} = 1;
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "flush" )
+                        if ( ${role} eq "flush" )
                         {
                             ${omp_flush}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "parallel" )
+                        if ( ${role} eq "parallel" )
                         {
                             ${omp_management}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "barrier" )
+                        if ( ${role} eq "barrier" )
                         {
                             ${omp_ebarrier}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "implicit barrier" )
+                        if ( ${role} eq "implicit barrier" )
                         {
                             ${omp_ibarrier}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "task wait" )
+                        if ( ${role} eq "task wait" )
                         {
                             ${omp_taskwait}[${i}] = 1;
                         };
 
-                        if ( ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "atomic" ) or ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "critical" ) )
+                        if ( ( ${role} eq "atomic" ) or ( ${role} eq "critical" ) )
                         {
                             ${omp_critical}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^omp_(destroy|init|set|test|unset)(_nest){0,1}_lock$/ )
+                        if ( ${name} =~ /^omp_(destroy|init|set|test|unset)(_nest){0,1}_lock$/ )
                         {
                             ${omp_lock_api}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::role}[${cube::callpath::calleeid}[${i}]] eq "ordered" )
+                        if ( ${role} eq "ordered" )
                         {
                             ${omp_ordered}[${i}] = 1;
                         };
-                    };
-
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "pthread" )
+                    }
+                    elseif ( ${paradigm} eq "pthread" )
                     {
                         ${includesPthread} = 1;
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^pthread_(create|join|exit|abort|cancel|detach)$/ )
+                        if ( ${name} =~ /^pthread_(create|join|exit|abort|cancel|detach)$/ )
                         {
                             ${pthread_management}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^pthread_mutex_*/ )
+                        if ( ${name} =~ /^pthread_mutex_*/ )
                         {
                             ${pthread_mutex_api}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^pthread_cond_*/ )
+                        if ( ${name} =~ /^pthread_cond_*/ )
                         {
                             ${pthread_cond_api}[${i}] = 1;
                         };
-                    };
-
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "opencl" )
+                    }
+                    elseif ( ${paradigm} eq "opencl" )
                     {
                         ${includesOpenCL} = 1;
 
-                        if ( not ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "BUFFER FLUSH" ) )
+                        if ( not ( ${name} eq "BUFFER FLUSH" ) )
                         {
                             ${opencl}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(GetPlatformIDs|GetPlatformInfo|GetDeviceIDs|GetDeviceInfo|CreateSubDevices|RetainDevice|ReleaseDevice|CreateContext|CreateContextFromType|RetainContext|ReleaseContext|GetContextInfo|CreateProgramWithSource|CreateProgramWithBinary|RetainProgram|ReleaseProgram|GetProgramInfo|GetProgramBuildInfo|CreateKernelsInProgram|CreateProgramWithBuildInKernels|BuildProgram|CompileProgram|LinkProgram|CreateKernel|Retainkernel|ReleaseKernel|GetEventInfo|RetainEvent|ReleaseEvent|GetEventProfilingInfo|CreateUserInfo|SetUserEventStatus|SetEventCallback|CreateCommandQueue|CreateCommandQueueWithProperties|RetainCommandQueue|ReleaseCommandQueue|GetCommandQueueInfo|SetCommandQueueProperty|GetKernelInfo|GetKernelWorkGroupInfo|GetKernelArgInfo|Flush|UnloadCompiler|UnloadPlatformCompiler|GetExtensionFunctionAddress|GetExtensionFunctionAddressForPlatform|SetMemObjectDestructorCallback|GetMemObjectInfo|GetPipeInfo|GetSupportedImageFormats|GetImageInfo|GetSamplerInfo)$/ )
+                        if ( ${name} =~ /^cl(GetPlatformIDs|GetPlatformInfo|GetDeviceIDs|GetDeviceInfo|CreateSubDevices|RetainDevice|ReleaseDevice|CreateContext|CreateContextFromType|RetainContext|ReleaseContext|GetContextInfo|CreateProgramWithSource|CreateProgramWithBinary|RetainProgram|ReleaseProgram|GetProgramInfo|GetProgramBuildInfo|CreateKernelsInProgram|CreateProgramWithBuildInKernels|BuildProgram|CompileProgram|LinkProgram|CreateKernel|Retainkernel|ReleaseKernel|GetEventInfo|RetainEvent|ReleaseEvent|GetEventProfilingInfo|CreateUserInfo|SetUserEventStatus|SetEventCallback|CreateCommandQueue|CreateCommandQueueWithProperties|RetainCommandQueue|ReleaseCommandQueue|GetCommandQueueInfo|SetCommandQueueProperty|GetKernelInfo|GetKernelWorkGroupInfo|GetKernelArgInfo|Flush|UnloadCompiler|UnloadPlatformCompiler|GetExtensionFunctionAddress|GetExtensionFunctionAddressForPlatform|SetMemObjectDestructorCallback|GetMemObjectInfo|GetPipeInfo|GetSupportedImageFormats|GetImageInfo|GetSamplerInfo)$/ )
                         {
                             ${opencl_setup}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(CreateBuffer|CreateSubBuffer|EnqueueReadBuffer|EnqueueReadBufferRect|EnqueueWriteBuffer|EnqueueWriteBufferRect|EnqueueFillBuffer|EnqueueCopyBuffer|EnqueueCopyBufferRect|EnqueueMapBuffer|EnqueueUnmapMemObjectCopy|EnqueueMigrateMemObjects|CreatePipe|SVMAlloc|SVMFree|EnqueueSVMFree|EnqueueSVMMemcpy|EnqueueSVMMemFill|EnqueueSVMMap|EnqueueSVMUnmap|CreateImage|CreateImage2D|CreateImage3D|EnqueueReadImage|EnqueueWriteImage|EnqueueCopyImage|EnqueueCopyImageToBuffer|EnqueueCopyBufferToImage|EnqueueMapImage|EnqueueFillImage|CreateSamplerWithProperties|CreateSampler|ReleaseSampler|RetainSampler|RetainMemObject|ReleaseMemObject)$/ )
+                        if ( ${name} =~ /^cl(CreateBuffer|CreateSubBuffer|EnqueueReadBuffer|EnqueueReadBufferRect|EnqueueWriteBuffer|EnqueueWriteBufferRect|EnqueueFillBuffer|EnqueueCopyBuffer|EnqueueCopyBufferRect|EnqueueMapBuffer|EnqueueUnmapMemObjectCopy|EnqueueMigrateMemObjects|CreatePipe|SVMAlloc|SVMFree|EnqueueSVMFree|EnqueueSVMMemcpy|EnqueueSVMMemFill|EnqueueSVMMap|EnqueueSVMUnmap|CreateImage|CreateImage2D|CreateImage3D|EnqueueReadImage|EnqueueWriteImage|EnqueueCopyImage|EnqueueCopyImageToBuffer|EnqueueCopyBufferToImage|EnqueueMapImage|EnqueueFillImage|CreateSamplerWithProperties|CreateSampler|ReleaseSampler|RetainSampler|RetainMemObject|ReleaseMemObject)$/ )
                         {
                             ${opencl_comm}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^(clFinish|clWaitForEvents|clEnqueueWaitForEvents|clEnqueueBarrier|clEnqueueMarker|clEnqueueMarkerWithWaitList|clEnqueueBarrierWithWaitList)$/ )
+                        if ( ${name} =~ /^(clFinish|clWaitForEvents|clEnqueueWaitForEvents|clEnqueueBarrier|clEnqueueMarker|clEnqueueMarkerWithWaitList|clEnqueueBarrierWithWaitList)$/ )
                         {
                             ${opencl_sync}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "WAIT FOR COMMAND QUEUE" )
+                        if ( ${name} eq "WAIT FOR COMMAND QUEUE" )
                         {
-                            ${opencl_sync}[${i}] = 1; 
+                            ${opencl_sync}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cl(SetKernelArg|SetKernelArgSVMPointer|SetKernelExecInfo|EnqueueNDRangeKernel|EnqueueTask)$/ )
+                        if ( ${name} =~ /^cl(SetKernelArg|SetKernelArgSVMPointer|SetKernelExecInfo|EnqueueNDRangeKernel|EnqueueTask)$/ )
                         {
                             ${opencl_kernel_launches}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] seq "OPENCL_KERNEL" )
+                        if ( ${cube::region::mod}[${regionid}] seq "OPENCL_KERNEL" )
                         {
                             ${opencl_kernel_executions}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "BUFFER FLUSH" )
+                        if ( ${name} eq "BUFFER FLUSH" )
                         {
                             ${opencl}[${i}] = 0;
                             ${execution}[${i}] = 0;
                             ${overhead}[${i}]  = 1;
                         };
-                    };
-                    
-                    if ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "cuda" )
+                    }
+                    elseif ( ${paradigm} eq "cuda" )
                     {
                         ${includesCUDA} = 1;
 
-                        if ( not ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "BUFFER FLUSH" ) )
+
+                        if ( not ( ${name} eq "BUFFER FLUSH" ) )
                         {
                             ${cuda}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(ChooseDevice|DeviceGetAttribute|DeviceGetByPCIBusId|DeviceGetCacheConfig|DeviceGetLimit|DeviceGetPCIBusId|DeviceGetSharedMemConfig|DeviceGetStreamPriorityRange|DeviceReset|DeviceSetCacheConfig|DeviceSetLimit|DeviceSetSharedMemConfig|GetDevice|GetDeviceCount|GetDeviceFlags|GetDeviceProperties|SetDevice|SetDeviceFlags|SetValidDevices|ThreadExit|ThreadGetCacheConfig|ThreadGetLimit|ThreadSetCacheConfig|ThreadSetLimit|StreamCreate|StreamCreateWithFlags|StreamCreateWithPriority|StreamDestroy|EventCreate|EventCreateWithFlags|EventDestroy|FuncSetCacheConfig)$/ )
+                        // CUDA Runtime API
+                        // Initialization and finalization
+                        if ( ${name} =~ /^cuda(ChooseDevice|DeviceGetAttribute|DeviceGetByPCIBusId|DeviceGetCacheConfig|DeviceGetLimit|DeviceGetPCIBusId|DeviceGetSharedMemConfig|DeviceGetStreamPriorityRange|DeviceReset|DeviceSetCacheConfig|DeviceSetLimit|DeviceSetSharedMemConfig|GetDevice|GetDeviceCount|GetDeviceFlags|GetDeviceProperties|SetDevice|SetDeviceFlags|SetValidDevices|ThreadExit|ThreadGetCacheConfig|ThreadGetLimit|ThreadSetCacheConfig|ThreadSetLimit|StreamCreate|StreamCreateWithFlags|StreamCreateWithPriority|StreamDestroy|EventCreate|EventCreateWithFlags|EventDestroy|FuncSetCacheConfig)$/ )
                         {
                             ${cuda_setup}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(Free|FreeArray|FreeHost|FreeMipmappedArray|HostAlloc|Malloc|Malloc3D|Malloc3DArray|MallocArray|MallocHost|MallocManaged|MallocMipmappedArray|MallocPitch|Memcpy|Memcpy2D|Memcpy2DArrayToArray|Memcpy2DAsync|Memcpy2DFromArray|Memcpy2DFromArrayAsync|Memcpy2DToArray|Memcpy2DToArrayAsync|Memcpy3D|Memcpy3DAsync|MemcpyPeer|MemcpyPeerAsync|MemcpyArrayToArray|MemcpyAsync|MemcpyFromArray|MemcpyFromArrayAsync|MemcpyFromSymbol|MemcpyFromSymbolAsync|MemcpyFromPeer|MemcpyFromPeerAsync|MemcpyToArray|MemcpyToArrayAsync|MemcpyToSymbol|MemcpyToSymbolAsync)$/ )
+                        // Data transfer
+                        if ( ${name} =~ /^cuda(Free|FreeArray|FreeHost|FreeMipmappedArray|HostAlloc|Malloc|Malloc3D|Malloc3DArray|MallocArray|MallocHost|MallocManaged|MallocMipmappedArray|MallocPitch|Memcpy|Memcpy2D|Memcpy2DArrayToArray|Memcpy2DAsync|Memcpy2DFromArray|Memcpy2DFromArrayAsync|Memcpy2DToArray|Memcpy2DToArrayAsync|Memcpy3D|Memcpy3DAsync|MemcpyPeer|MemcpyPeerAsync|MemcpyArrayToArray|MemcpyAsync|MemcpyFromArray|MemcpyFromArrayAsync|MemcpyFromSymbol|MemcpyFromSymbolAsync|MemcpyFromPeer|MemcpyFromPeerAsync|MemcpyToArray|MemcpyToArrayAsync|MemcpyToSymbol|MemcpyToSymbolAsync)$/ )
                         {
                             ${cuda_comm}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(StreamWaitEvent|StreamSynchronize|EventSynchronize|DeviceSynchronize|ThreadSynchronize)$/ )
+                        // Synchronization
+                        if ( ${name} =~ /^cuda(StreamWaitEvent|StreamSynchronize|EventSynchronize|DeviceSynchronize|ThreadSynchronize)$/ )
                         {
                             ${cuda_sync}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cuda(LaunchKernel|Launch|GetParameterBufferV2|Memset|Memset2D|Memset2DAsync|Memset3D|Memset3DAsync|MemsetAsync)$/ )
+                        // Kernel launch
+                        if ( ${name} =~ /^cuda(LaunchKernel|Launch|GetParameterBufferV2|Memset|Memset2D|Memset2DAsync|Memset3D|Memset3DAsync|MemsetAsync)$/ )
                         {
                             ${cuda_kernel_launches}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(Init|DeviceGet|DeviceGetAttribute|DeviceGetCount|DeviceGetName|DeviceTotalMem|DeviceComputeCapability|DeviceGetProperties|DevicePrimaryCtxGetState|DevicePrimaryCtxRelease|DevicePrimaryCtxReset|DevicePrimaryCtxRetain|DevicePrimaryCtxSetFlags|CtxCrate|CtxDestroy|CtxGetApiVersion|CtxGetCacheConfig|CtxGetCurrent|CtxGetDevice|CtxGetFlags|CtxGetLimit|CtxGetSharedMemConfig|CtxGetStreamPriorityRange|CtxPopCurrent|CtxPushCurrent|CtxSetCacheConfig|CtxSetCurrent|CtxSetLimit|CtxSetSharedMemConfig|CtxAttach|CtxDetach|LinkCreate|LinkDestroy|EventCreate|EventDestroy|StreamCreate|StreamCreateWithPriority|StreamDestroy|MemFree|MemFreeHost|MemHostAlloc)$/ )
+                        // CUDA Driver API
+                        // Initialization and finalization
+                        if ( ${name} =~ /^cu(Init|DeviceGet|DeviceGetAttribute|DeviceGetCount|DeviceGetName|DeviceTotalMem|DeviceComputeCapability|DeviceGetProperties|DevicePrimaryCtxGetState|DevicePrimaryCtxRelease|DevicePrimaryCtxReset|DevicePrimaryCtxRetain|DevicePrimaryCtxSetFlags|CtxCrate|CtxDestroy|CtxGetApiVersion|CtxGetCacheConfig|CtxGetCurrent|CtxGetDevice|CtxGetFlags|CtxGetLimit|CtxGetSharedMemConfig|CtxGetStreamPriorityRange|CtxPopCurrent|CtxPushCurrent|CtxSetCacheConfig|CtxSetCurrent|CtxSetLimit|CtxSetSharedMemConfig|CtxAttach|CtxDetach|LinkCreate|LinkDestroy|EventCreate|EventDestroy|StreamCreate|StreamCreateWithPriority|StreamDestroy|MemFree|MemFreeHost|MemHostAlloc)$/ )
                         {
                             ${cuda_setup}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(Array3DCreate|ArrayCreate|ArrayDestroy|MemAlloc|MemAllocHost|MemAllocManaged|MemAllocPitch|Memcpy|Memcpy2D|Memcpy2DAsync|Memcpy2DUnaligned|Memcpy3D|Memcpy3DAsync|Memcpy3DPeer|Memcpy3DPeerAsync|MemcpyAsync|MemcpyAtoA|MemcpyAtoD|MemcpyAtoH|MemcpyAtoHAsync|MemcpyDtoA|MemcpyDtoD|MemcpyDtoDAsync|MemcpyDtoH|MemcpyDtoHAsync|MemcpyHtoA|MemcpyHtoAAsync|MemcpyHtoD|MemcpyHtoDAsync|MemcpyPeer|MemcpyPeerAsync|MemsetD16|MemsetD16Async|MemsetD2D16|MemsetD2D16Async|MemsetD2D32|MemsetD2D32Async|MemsetD2D8|MemsetD2D8Async|MemsetD32|MemsetD32Async|MemsetD8|MemsetD8Async|MipmappedArrayCreate|MipmappedArrayDestroy)$/ )
+                        // Data transfer
+                        if ( ${name} =~ /^cu(Array3DCreate|ArrayCreate|ArrayDestroy|MemAlloc|MemAllocHost|MemAllocManaged|MemAllocPitch|Memcpy|Memcpy2D|Memcpy2DAsync|Memcpy2DUnaligned|Memcpy3D|Memcpy3DAsync|Memcpy3DPeer|Memcpy3DPeerAsync|MemcpyAsync|MemcpyAtoA|MemcpyAtoD|MemcpyAtoH|MemcpyAtoHAsync|MemcpyDtoA|MemcpyDtoD|MemcpyDtoDAsync|MemcpyDtoH|MemcpyDtoHAsync|MemcpyHtoA|MemcpyHtoAAsync|MemcpyHtoD|MemcpyHtoDAsync|MemcpyPeer|MemcpyPeerAsync|MemsetD16|MemsetD16Async|MemsetD2D16|MemsetD2D16Async|MemsetD2D32|MemsetD2D32Async|MemsetD2D8|MemsetD2D8Async|MemsetD32|MemsetD32Async|MemsetD8|MemsetD8Async|MipmappedArrayCreate|MipmappedArrayDestroy)$/ )
                         {
                             ${cuda_comm}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(CtxSynchronize|StreamWaitEvent|StreamSynchronize|EventSynchronize)$/ )
+                        // Synchronization
+                        if ( ${name} =~ /^cu(CtxSynchronize|StreamWaitEvent|StreamSynchronize|EventSynchronize)$/ )
                         {
                             ${cuda_sync}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] =~ /^cu(LaunchKernel|Launch|LaunchGrid|LaunchGridAsync)$/ )
+                        // Kernel launch
+                        if ( ${name} =~ /^cu(LaunchKernel|Launch|LaunchGrid|LaunchGridAsync)$/ )
                         {
                             ${cuda_kernel_launches}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "DEVICE SYNCHRONIZE" )
+                        if ( ${name} eq "DEVICE SYNCHRONIZE" )
                         {
                             ${cuda_sync}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::mod}[${cube::callpath::calleeid}[${i}]] seq "CUDA_KERNEL" )
+                        if ( ${cube::region::mod}[${regionid}] seq "CUDA_KERNEL" )
                         {
                             ${cuda_kernel_executions}[${i}] = 1;
                         };
 
-                        if ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "BUFFER FLUSH" )
+                        if ( ${name} eq "BUFFER FLUSH" )
                         {
                             ${cuda}[${i}] = 0;
                             ${execution}[${i}] = 0;
                             ${overhead}[${i}]  = 1;
                         };
-                    };
-
-                    if (
-                        ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "measurement" )
+                    }
+                    elseif (
+                        ( ${paradigm} eq "measurement" )
                         or
-                        ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "BUFFER FLUSH" )
+                        ( ${name} eq "BUFFER FLUSH" )
                         or 
-                        ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "MEASUREMENT OFF" )
+                        ( ${name} eq "MEASUREMENT OFF" )
                         or
-                        ( ( ${cube::region::paradigm}[${cube::callpath::calleeid}[${i}]] eq "thread-fork-join" ) and ( ${cube::region::name}[${cube::callpath::calleeid}[${i}]] eq "TASKS" ) )
+                        ( ( ${paradigm} eq "thread-fork-join" ) and ( ${name} eq "TASKS" ) )
                        )
                     {
                         ${execution}[${i}] = 0;
@@ -405,6 +436,9 @@
 
                     ${i} = ${i} + 1;
                 };
+
+
+                //--- Disable unused metric subtrees ------------------------
 
                 if ( ${includesMPI} == 0 )
                 {
@@ -450,14 +484,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_kernel_executions</url>
                     <descr>Time spend in execution of OpenCL kernels</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${opencl_kernel_executions}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${opencl_kernel_executions}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -468,14 +495,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_kernel_executions</url>
                     <descr>Time spend in execution of CUDA kernels</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${cuda_kernel_executions}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${cuda_kernel_executions}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
             </metric>
@@ -487,14 +507,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi</url>
                 <descr>Time spent in MPI calls</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                 </cubepl>
                 <metric type="POSTDERIVED">
                     <disp_name>Synchronization</disp_name>
@@ -512,16 +525,9 @@
                         <dtype>FLOAT</dtype>
                         <uom>sec</uom>
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_sync_collective</url>
-                        <descr>Time spent in MPI barriers</descr>
+                        <descr>Time spent on MPI barriers</descr>
                         <cubepl>
-                       {
-                            ${tmp} = 0;
-                            if ( ${mpi_sync_collective}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_sync_collective}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="POSTDERIVED">
@@ -542,14 +548,7 @@
                             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_sync_active</url>
                             <descr>Time spent in MPI RMA active target synchronization calls</descr>
                             <cubepl>
-                            {
-                                ${tmp} = 0;
-                                if ( ${mpi_rma_sync_active}[${calculation::callpath::id}] == 1 )
-                                {
-                                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                                };
-                                return ${tmp};
-                             }
+                                ${mpi_rma_sync_active}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                             </cubepl>
                         </metric>
                         <metric type="PREDERIVED_EXCLUSIVE">
@@ -560,14 +559,7 @@
                             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_sync_passive</url>
                             <descr>Time spent in MPI RMA passive target synchronization calls</descr>
                             <cubepl>
-                            {
-                                ${tmp} = 0;
-                                if ( ${mpi_rma_sync_passive}[${calculation::callpath::id}] == 1 )
-                                {
-                                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                                };
-                                return ${tmp};
-                            }
+                                ${mpi_rma_sync_passive}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                             </cubepl>
                         </metric>
                     </metric>
@@ -590,14 +582,7 @@
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_point2point</url>
                         <descr>MPI point-to-point communication</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_point2point}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_point2point}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -608,14 +593,7 @@
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_collective</url>
                         <descr>MPI collective communication</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_collective}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_collective}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -626,14 +604,7 @@
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_rma_communication</url>
                         <descr>MPI remote memory access communication</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_rma_communication}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_rma_communication}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
@@ -645,14 +616,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_io</url>
                     <descr>Time spent in MPI file I/O calls</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${mpi_io}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${mpi_io}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                     <metric type="PREDERIVED_EXCLUSIVE">
                         <disp_name>Collective</disp_name>
@@ -662,14 +626,7 @@
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_io_collective</url>
                         <descr>Time spent in collective MPI file I/O calls</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${mpi_io_collective}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${mpi_io_collective}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
@@ -681,14 +638,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_init_exit</url>
                     <descr>Time spent in MPI initialization calls</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${mpi_init_exit}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${mpi_init_exit}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
             </metric>
@@ -710,14 +660,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_flush</url>
                     <descr>Time spent in the OpenMP flush directives</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${omp_flush}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${omp_flush}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -728,14 +671,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_management</url>
                     <descr>Time needed to start up and shut down team of threads</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${omp_management}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${omp_management}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="POSTDERIVED">
@@ -746,7 +682,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_synchronization</url>
                     <descr>Time spent on OpenMP synchronization</descr>
                     <cubepl>
-                        metric::omp_barrier() + metric::omp_taskwait() + metric::omp_critical() + metric::omp_lock_api() + metric::omp_ordered()
+                        metric::omp_barrier() + metric::omp_critical() + metric::omp_lock_api() + metric::omp_ordered()
                     </cubepl>
                     <metric type="POSTDERIVED">
                         <disp_name>Barrier</disp_name>
@@ -766,14 +702,7 @@
                             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_ebarrier</url>
                             <descr>Time spent in explicit OpenMP barriers</descr>
                             <cubepl>
-                            {
-                                ${tmp} = 0;
-                                if ( ${omp_ebarrier}[${calculation::callpath::id}] == 1 )
-                                {
-                                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                                };
-                                return ${tmp};
-                            }
+                                ${omp_ebarrier}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                             </cubepl>
                         </metric>
                         <metric type="PREDERIVED_EXCLUSIVE">
@@ -784,14 +713,7 @@
                             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_ibarrier</url>
                             <descr>Time spent in implicit OpenMP barriers</descr>
                             <cubepl>
-                            {
-                                ${tmp} = 0;
-                                if ( ${omp_ibarrier}[${calculation::callpath::id}] == 1 )
-                                {
-                                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                                };
-                                return ${tmp};
-                            }
+                                ${omp_ibarrier}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                             </cubepl>
                         </metric>
                     </metric>
@@ -803,14 +725,7 @@
                         <url>@mirror@scorep_metrics-@PACKAGE_MAJOR@.@PACKAGE_MINOR@.html#omp_taskwait</url>
                         <descr>Time spent waiting for child tasks to finish</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${omp_taskwait}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${omp_taskwait}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -821,14 +736,7 @@
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_critical</url>
                         <descr>Time spent in front of a critical section</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${omp_critical}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${omp_critical}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -839,14 +747,7 @@
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_lock_api</url>
                         <descr>Time spent in OpenMP API calls dealing with locks</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${omp_lock_api}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${omp_lock_api}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -857,14 +758,7 @@
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#omp_ordered</url>
                         <descr>Time spent in front of an ordered region</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${omp_ordered}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${omp_ordered}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
@@ -887,14 +781,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_management</url>
                     <descr>Time needed to start up and shut down POSIX threads</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${pthread_management}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${pthread_management}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="POSTDERIVED">
@@ -915,14 +802,7 @@
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_mutex_api</url>
                         <descr>Time spent in Pthread API calls dealing with mutexes</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${pthread_mutex_api}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${pthread_mutex_api}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                     <metric type="PREDERIVED_EXCLUSIVE">
@@ -933,14 +813,7 @@
                         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#pthread_cond_api</url>
                         <descr>Time spent in Pthread API calls dealing with conditional operations</descr>
                         <cubepl>
-                        {
-                            ${tmp} = 0;
-                            if ( ${pthread_cond_api}[${calculation::callpath::id}] == 1 )
-                            {
-                                ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                            };
-                            return ${tmp};
-                        }
+                            ${pthread_cond_api}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                         </cubepl>
                     </metric>
                 </metric>
@@ -953,14 +826,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_time</url>
                 <descr>Time spent in the OpenCL run-time system, API and on device</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${opencl}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::time(e) - metric::opencl_kernel_executions(e) - metric::omp_idle_threads(e);
-                    };
-                    return ${tmp};
-                } 
+                    ${opencl}[${calculation::callpath::id}] * ( metric::time(e) - metric::opencl_kernel_executions(e) -  metric::omp_idle_threads(e) )
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>Initialization and finalization</disp_name>
@@ -970,14 +836,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_setup</url>
                     <descr>Time needed to initialize and finalize OpenCL and OpenCL kernels</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${opencl_setup}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${opencl_setup}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -988,14 +847,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_comm</url>
                     <descr>Time spent on memory management including data transfer from host to device and vice versa</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${opencl_comm}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${opencl_comm}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -1006,14 +858,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_sync</url>
                     <descr>Time spent on OpenCL synchronization</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${opencl_sync}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${opencl_sync}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -1024,14 +869,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#opencl_kernel_launches</url>
                     <descr>Time needed to launch OpenCL kernels</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${opencl_kernel_launches}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${opencl_kernel_launches}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
             </metric>
@@ -1043,14 +881,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_time</url>
                 <descr>Time spent in the CUDA run-time system, API and on device</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${cuda}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::time(e) - metric::cuda_kernel_executions(e) - metric::omp_idle_threads(e);
-                    };
-                    return ${tmp};
-                }
+                    ${cuda}[${calculation::callpath::id}] * ( metric::time(e) - metric::cuda_kernel_executions(e) -  metric::omp_idle_threads(e) )
                 </cubepl>
                 <metric type="PREDERIVED_EXCLUSIVE">
                     <disp_name>Initialization and Finalization</disp_name>
@@ -1060,14 +891,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_setup</url>
                     <descr>Time needed to initialize and finalize CUDA and CUDA kernels</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${cuda_setup}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${cuda_setup}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -1078,14 +902,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_comm</url>
                     <descr>Time spent on memory management including data transfer from host to device and vice versa</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${cuda_comm}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${cuda_comm}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -1096,14 +913,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_sync</url>
                     <descr>Time spent on CUDA synchronization</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${cuda_sync}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${cuda_sync}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -1114,14 +924,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#cuda_kernel_launches</url>
                     <descr>Time spent to launch CUDA kernels</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${cuda_kernel_launches}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${cuda_kernel_launches}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
                     </cubepl>
                 </metric>
             </metric>
@@ -1134,14 +937,7 @@
             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#overhead</url>
             <descr>Time spent performing tasks related to trace generation</descr>
             <cubepl>
-            {
-                ${tmp} = 0;
-                if ( ${overhead}[${calculation::callpath::id}] == 1 )
-                {
-                    ${tmp} = metric::time(e) - metric::omp_idle_threads(e);
-                };
-                return ${tmp};
-            }
+                ${overhead}[${calculation::callpath::id}] * ( metric::time(e) - metric::omp_idle_threads(e) )
             </cubepl>
         </metric>
         <metric>
@@ -1190,7 +986,7 @@
             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_rma</url>
             <descr>Number of Remote Memory Access synchronizations</descr>
             <cubepl>
-                metric::syncs_fence() + metric::syncs_gats() + metric::syncs_locks()
+                metric::syncs_fence() + metric::syncs_gats()  + metric::syncs_locks()
             </cubepl>
             <metric type="PREDERIVED_EXCLUSIVE">
                 <disp_name>Fences</disp_name>
@@ -1200,14 +996,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_fence</url>
                 <descr>Number of fence synchronizations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${syncs_fence}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::visits(e);
-                    };
-                    return ${tmp};
-                }
+                    ${syncs_fence}[${calculation::callpath::id}] * metric::visits(e)
                 </cubepl>
             </metric>
             <metric type="POSTDERIVED">
@@ -1228,14 +1017,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_gats_access</url>
                     <descr>Number of access epochs</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${syncs_gats_access}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::visits(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${syncs_gats_access}[${calculation::callpath::id}] * metric::visits(e)
                     </cubepl>
                 </metric>
                 <metric type="PREDERIVED_EXCLUSIVE">
@@ -1246,14 +1028,7 @@
                     <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_gats_exposure</url>
                     <descr>Number of exposure epochs</descr>
                     <cubepl>
-                    {
-                        ${tmp} = 0;
-                        if ( ${syncs_gats_exposure}[${calculation::callpath::id}] == 1 )
-                        {
-                            ${tmp} = metric::visits(e);
-                        };
-                        return ${tmp};
-                    }
+                        ${syncs_gats_exposure}[${calculation::callpath::id}] * metric::visits(e)
                     </cubepl>
                 </metric>
             </metric>
@@ -1265,14 +1040,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#syncs_locks</url>
                 <descr>Number of lock epochs</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${syncs_locks}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::visits(e);
-                    };
-                    return ${tmp};
-                }
+                    ${syncs_locks}[${calculation::callpath::id}] * metric::visits(e)
                 </cubepl>
             </metric>
         </metric>
@@ -1305,14 +1073,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comms_rma_puts</url>
                 <descr>Number of RMA put and accumulate operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${comms_rma_puts}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::visits(e);
-                    };
-                    return ${tmp};
-                }
+                    ${comms_rma_puts}[${calculation::callpath::id}] * metric::visits(e)
                 </cubepl>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
@@ -1323,14 +1084,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#comms_rma_gets</url>
                 <descr>Number of RMA get operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${comms_rma_gets}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::visits(e);
-                    };
-                    return ${tmp};
-                }
+                    ${comms_rma_gets}[${calculation::callpath::id}] * metric::visits(e)
                 </cubepl>
             </metric>
         </metric>
@@ -1363,14 +1117,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent_p2p</url>
                 <descr>Number of bytes sent in point-to-point communication operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_point2point}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::bytes_sent(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_point2point}[${calculation::callpath::id}] * metric::bytes_sent(e)
                 </cubepl>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
@@ -1381,14 +1128,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_received_p2p</url>
                 <descr>Number of bytes received in point-to-point communication operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_point2point}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::bytes_received(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_point2point}[${calculation::callpath::id}] * metric::bytes_received(e)
                 </cubepl>
             </metric>
         </metric>
@@ -1410,14 +1150,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_sent_coll</url>
                 <descr>Number of bytes sent in collective communication operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_collective}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::bytes_sent(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_collective}[${calculation::callpath::id}] * metric::bytes_sent(e)
                 </cubepl>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
@@ -1428,14 +1161,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#bytes_received_coll</url>
                 <descr>Number of bytes received in collective communication operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_collective}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::bytes_received(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_collective}[${calculation::callpath::id}] * metric::bytes_received(e)
                 </cubepl>
             </metric>
         </metric>
@@ -1477,14 +1203,7 @@
         <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_ops</url>
         <descr>Number of MPI file operations</descr>
         <cubepl>
-        {
-            ${tmp} = 0;
-            if ( ${mpi_io}[${calculation::callpath::id}] == 1 )
-            {
-                ${tmp} = metric::visits(e);
-            };
-            return ${tmp};
-        }
+            ${mpi_io}[${calculation::callpath::id}] * metric::visits(e)
         </cubepl>
         <metric type="PREDERIVED_EXCLUSIVE">
             <disp_name>Individual</disp_name>
@@ -1494,14 +1213,7 @@
             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_iops</url>
             <descr>Number of individual MPI file operations</descr>
             <cubepl>
-            {
-                ${tmp} = 0;
-                if ( ${mpi_io_individual}[${calculation::callpath::id}] == 1 )
-                {
-                    ${tmp} = metric::visits(e);
-                };
-                return ${tmp};
-            }
+                ${mpi_io_individual}[${calculation::callpath::id}] * metric::visits(e)
             </cubepl>
             <metric type="PREDERIVED_EXCLUSIVE">
                 <disp_name>Reads</disp_name>
@@ -1511,14 +1223,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_irops</url>
                 <descr>Number of individual MPI file read operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_file_irops}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::visits(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_file_irops}[${calculation::callpath::id}] * metric::visits(e)
                 </cubepl>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
@@ -1529,14 +1234,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_iwops</url>
                 <descr>Number of individual MPI file write operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_file_iwops}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::visits(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_file_iwops}[${calculation::callpath::id}] * metric::visits(e)
                 </cubepl>
             </metric>
         </metric>
@@ -1548,14 +1246,7 @@
             <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_cops</url>
             <descr>Number of collective MPI file operations</descr>
             <cubepl>
-            {
-                ${tmp} = 0;
-                if ( ${mpi_io_collective}[${calculation::callpath::id}] == 1 )
-                {
-                    ${tmp} = metric::visits(e);
-                };
-                return ${tmp};
-            }
+                ${mpi_io_collective}[${calculation::callpath::id}] * metric::visits(e)
             </cubepl>
             <metric type="PREDERIVED_EXCLUSIVE">
                 <disp_name>Reads</disp_name>
@@ -1565,14 +1256,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_crops</url>
                 <descr>Number of collective MPI file read operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_file_crops}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::visits(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_file_crops}[${calculation::callpath::id}] * metric::visits(e)
                 </cubepl>
             </metric>
             <metric type="PREDERIVED_EXCLUSIVE">
@@ -1583,14 +1267,7 @@
                 <url>@mirror@scorep_metrics-@PACKAGE_VERSION@.html#mpi_file_cwops</url>
                 <descr>Number of collective MPI file write operations</descr>
                 <cubepl>
-                {
-                    ${tmp} = 0;
-                    if ( ${mpi_file_cwops}[${calculation::callpath::id}] == 1 )
-                    {
-                        ${tmp} = metric::visits(e);
-                    };
-                    return ${tmp};
-                }
+                    ${mpi_file_cwops}[${calculation::callpath::id}] * metric::visits(e)
                 </cubepl>
             </metric>
         </metric>
