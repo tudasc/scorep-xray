@@ -152,7 +152,7 @@ get_executable( char** path )
 }
 
 static void
-process_symbol( long         addr,
+process_symbol( long         address,
                 const char*  funcname,
                 const char*  filename,
                 unsigned int lno )
@@ -179,22 +179,34 @@ process_symbol( long         addr,
     }
 #endif  /* GNU_DEMANGLE */
 
-    if ( ( strncmp( funcname_demangled, "POMP", 4 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "Pomp", 4 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "pomp", 4 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "SCOREP_", 7 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "scorep_", 7 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "OTF2_", 5 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "otf2_", 5 ) != 0 ) &&
-         ( strncmp( funcname_demangled, "cube_", 5 ) != 0 ) &&
-         ( !SCOREP_Filter_Match( path, funcname_demangled, funcname ) ) )
+    bool use_address = ( address != 0 );
+
+    use_address &= ( strncmp( funcname_demangled, "POMP", 4 ) != 0 ) &&
+                   ( strncmp( funcname_demangled, "Pomp", 4 ) != 0 ) &&
+                   ( strncmp( funcname_demangled, "pomp", 4 ) != 0 ) &&
+                   ( strncmp( funcname_demangled, "SCOREP_", 7 ) != 0 ) &&
+                   ( strncmp( funcname_demangled, "scorep_", 7 ) != 0 ) &&
+                   ( strncmp( funcname_demangled, "OTF2_", 5 ) != 0 ) &&
+                   ( strncmp( funcname_demangled, "otf2_", 5 ) != 0 ) &&
+                   ( strncmp( funcname_demangled, "cube_", 5 ) != 0 ) &&
+                   ( strncmp( funcname_demangled, "cubew_", 6 ) != 0 );
+
+    use_address &= ( !SCOREP_Filter_Match( path, funcname_demangled, funcname ) );
+
+    if ( path != NULL )
     {
-        scorep_compiler_hash_put( addr, funcname, funcname_demangled, path, lno );
-        UTILS_DEBUG( "hash table: added %p:%s:%s:%d", addr, funcname_demangled, path, lno );
+        static int length = strlen( SCOREP_ABS_TOPLEVEL_SRCDIR );
+        use_address &= ( strncmp( path, SCOREP_ABS_TOPLEVEL_SRCDIR, length ) != 0 );
+    }
+
+    if ( use_address )
+    {
+        scorep_compiler_hash_put( address, funcname, funcname_demangled, path, lno );
+        UTILS_DEBUG( "hash table: added %p:%s:%s:%d", address, funcname_demangled, path, lno );
     }
     else
     {
-        UTILS_DEBUG( "hash table: ignored %p:%s:%s:%d", addr, funcname_demangled, path, lno );
+        UTILS_DEBUG( "hash table: ignored %p:%s:%s:%d", address, funcname_demangled, path, lno );
     }
 
     free( path );

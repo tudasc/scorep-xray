@@ -66,7 +66,15 @@ AC_SCOREP_COND_HAVE([NM],
 
 AS_IF([test "x${have_compiler_instrumentation}" = xyes],
     [AS_IF([test "x${scorep_compiler_instrumentation_needs_symbol_table}" = xyes],
-         [AM_COND_IF([HAVE_LIBBFD],
+         [pwd_save=`pwd`
+          cd ${srcdir}/../
+          scorep_abs_toplevel_srcdir=`pwd`
+          cd ${pwd_save}
+          AC_DEFINE_UNQUOTED([SCOREP_ABS_TOPLEVEL_SRCDIR],
+              ["${scorep_abs_toplevel_srcdir}"],
+              [Toplevel src directory])
+
+          AM_COND_IF([HAVE_LIBBFD],
              [compiler_instrumentation_result="yes, using libbfd"],
              [# try nm if bfd is not available
               AM_COND_IF([HAVE_NM],
