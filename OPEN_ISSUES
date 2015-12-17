@@ -340,6 +340,11 @@ various Score-P components.
     the case, consider rebuilding your application using Score-P's
     --nocompiler switch.
 
+  - Thread management events and intermediate trace buffer flushes may result
+    in unexpected callpaths.
+
+  - CUDA API calls are represented twice in the calling context.
+
   - If PAPI is used as the interrupt source for sampling, than it is not
     possible to measure also PAPI metrics.
 
@@ -348,9 +353,11 @@ various Score-P components.
   - Flushing the trace buffer from inside a sample signal is not allowed and
     thus aborts the measurement immediately.
 
-  - Currently untested feature cominations with sampling:
+  - Untested feature combinations with sampling:
      - OpenMP tasks
      - Trace rewinding
+     - SCOREP_RECORDING_ON/SCOREP_RECORDING_OFF user instrumentation macros
+     - Selective recording (SCOREP_SELECTIVE_CONFIG_FILE)
 
 --------------------------------------------------------------------------------
 
