@@ -195,7 +195,7 @@ process_symbol( long         address,
 
     if ( path != NULL )
     {
-        static int length = strlen( SCOREP_ABS_TOPLEVEL_SRCDIR );
+        static int length = sizeof( SCOREP_ABS_TOPLEVEL_SRCDIR ) - 1;
         use_address &= ( strncmp( path, SCOREP_ABS_TOPLEVEL_SRCDIR, length ) != 0 );
     }
 
