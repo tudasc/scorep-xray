@@ -378,7 +378,7 @@ bool
 exists_file( const std::string& filename )
 {
     std::ifstream ifile( filename.c_str() );
-    return ifile;
+    return ( bool )ifile;
 }
 
 std::string
