@@ -30,7 +30,7 @@
  * SCOREP_Timer_GetClockTicks(). They must not be used by clients of
  * SCOREP_Timer_Ticks.h.
  */
-typedef enum timer_type timer_type;
+typedef uint64_t timer_type;
 enum timer_type
 {
 #if HAVE( BACKEND_SCOREP_TIMER_BGL )
