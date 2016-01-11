@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2013, 2015,
+ * Copyright (c) 2009-2013, 2015-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -38,8 +38,9 @@
 
 #include <config.h>
 
-#include "SCOREP_Tracing_Events.h"
 #include "SCOREP_Tracing.h"
+#include "SCOREP_Tracing_ThreadInteraction.h"
+#include "SCOREP_Tracing_Events.h"
 
 #include <stdlib.h>
 #include <stdio.h>

@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -53,10 +53,6 @@
 #include <SCOREP_InMeasurement.h>
 #include <SCOREP_Definitions.h>
 #include <SCOREP_Properties.h>
-#include <tracing/SCOREP_Tracing_Events.h>
-#include <SCOREP_Profile.h>
-#include <SCOREP_Profile_Tasking.h>
-#include <SCOREP_Profile_MpiEvents.h>
 #include <SCOREP_Metric_Management.h>
 #include <SCOREP_Unwinding.h>
 #include <SCOREP_Task.h>

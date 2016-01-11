@@ -9,7 +9,7 @@
 ## Copyright (c) 2009-2012,
 ## Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 ##
-## Copyright (c) 2009-2013,
+## Copyright (c) 2009-2013, 2016,
 ## Technische Universitaet Dresden, Germany
 ##
 ## Copyright (c) 2009-2012,
@@ -43,7 +43,6 @@ libscorep_tracing_la_CPPFLAGS = \
     -I$(INC_ROOT)src/services/include \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
-    -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_ROOT)src/utils/include \
     -I$(INC_DIR_MUTEX) \
     -I$(INC_DIR_DEFINITIONS) \

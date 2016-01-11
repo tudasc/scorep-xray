@@ -7,7 +7,7 @@
  * Copyright (c) 2009-2013,
  * Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
  *
- * Copyright (c) 2009-2015,
+ * Copyright (c) 2009-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2009-2013,
@@ -63,10 +63,6 @@
 #include <SCOREP_Timer_Ticks.h>
 #include <SCOREP_Timer_Utils.h>
 #include <SCOREP_Events.h>
-#include <SCOREP_Profile.h>
-#include <SCOREP_Profile_MpiEvents.h>
-#include <tracing/SCOREP_Tracing.h>
-#include <tracing/SCOREP_Tracing_Events.h>
 #include <SCOREP_Filter_Init.h>
 #include <scorep_unify.h>
 #include <SCOREP_OA_RuntimeManagement.h>

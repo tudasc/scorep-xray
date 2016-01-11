@@ -45,6 +45,7 @@
 
 
 #include <scorep_location.h>
+#include <scorep_substrates_definition.h>
 
 
 /**

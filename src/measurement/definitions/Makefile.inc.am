@@ -8,7 +8,7 @@
 # Copyright (c) 2009-2013,
 # Gesellschaft fuer numerische Simulation mbH Braunschweig, Germany
 #
-# Copyright (c) 2009-2013, 2015,
+# Copyright (c) 2009-2013, 2015-2016,
 # Technische Universitaet Dresden, Germany
 #
 # Copyright (c) 2009-2013,
@@ -97,7 +97,6 @@ libscorep_definitions_la_CPPFLAGS = \
     -I$(INC_ROOT)src/measurement/include \
     -I$(INC_ROOT)src/measurement \
     -I$(INC_DIR_SUBSTRATES) \
-    -I$(INC_ROOT)src/measurement/profiling/include \
     -I$(INC_DIR_COMMON_HASH) \
     -I$(INC_DIR_MUTEX) \
     -I$(INC_DIR_DEFINITIONS)

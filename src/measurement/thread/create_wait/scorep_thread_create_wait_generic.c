@@ -4,7 +4,7 @@
  * Copyright (c) 2014-2015,
  * Forschungszentrum Juelich GmbH, Germany
  *
- * Copyright (c) 2014-2015,
+ * Copyright (c) 2014-2016,
  * Technische Universitaet Dresden, Germany
  *
  * Copyright (c) 2015,
@@ -35,10 +35,9 @@
 #include <SCOREP_Mutex.h>
 #include <SCOREP_Definitions.h>
 #include <scorep_events_common.h>
+#include <SCOREP_Memory.h>
 #include <SCOREP_Paradigms.h>
 #include <SCOREP_Properties.h>
-#include <SCOREP_Profile.h>
-#include <tracing/SCOREP_Tracing_Events.h>
 #include <scorep_unify_helpers.h>
 
 #define SCOREP_DEBUG_MODULE_NAME THREAD_CREATE_WAIT
